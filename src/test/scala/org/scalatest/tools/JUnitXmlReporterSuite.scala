@@ -270,4 +270,29 @@ class JUnitXmlReporterSuite extends FunSuite {
     assert(!(tcPending \ "skipped").isEmpty)
     assert(!(tcCanceled \ "skipped").isEmpty)
   }
+
+  test("testcase failure message xmlified properly"){
+    //"" - not used parameters
+    val bigFail = TestFailed(new Ordinal(0),
+        "Unusually formed message: \n less:'<', amp:'&', double-quote:\"",
+        "",
+        "",
+        None,
+        "",
+        "",
+        null,
+        Some(new Exception("Unusually formed exception: \n less:'<', more:'>' amp:'&', double-quote:\"")))`
+
+    val testsuite = reporter.Testsuite("TestSuite", 10L)
+    testsuite.testcases += reporter.Testcase("TestCase", Some("someClass"), 1L)
+    testsuite.testcases.foreach(tc => tc.failure = Some(bigFail))
+
+    val rawXml:String = reporter.xmlify(testsuite)
+
+    //correct xml, no exceptions are thrown
+    val res= scala.xml.XML.loadString(rawXml)
+
+    val message = (res \\ "failure" \ "@message").toString
+    assert(message==="""Unusually formed message: &amp;#010; less:'&lt;', amp:'&amp;', double-quote:&quot;""","failure/@message is not as expected")
+  }
 }
