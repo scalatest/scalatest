@@ -1,0 +1,8 @@
+<suite name="Simple Suite">
+	<test verbose="10" name="org.scalatest.testng.test" annotations="JDK">
+		<classes>
+        	<class name="org.scalatest.testng.test.LegacySuite"/>
+            <class name="org.scalatest.testng.test.LegacySuiteWithTwoTests"/>
+        </classes>
+    </test>
+</suite>

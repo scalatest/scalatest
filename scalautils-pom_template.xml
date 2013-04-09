@@ -1,0 +1,70 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>7</version>
+  </parent>
+
+  <properties>
+    <scala.version>@SCALA_VERSION@</scala.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+  </properties>
+	
+  <groupId>org.scalautils</groupId>
+  <artifactId>scalautils_@DEPLOY_SCALA_VERSION@</artifactId>
+  <version>@RELEASE@</version>
+  <packaging>jar</packaging>
+
+  <name>ScalaUtils</name>
+  <description>
+    ScalaUtils is an open-source library for Scala projects that
+    contains portions of the ScalaTest project that may make sense
+    to use in production.
+  </description>
+  <url>http://www.scalatest.org/scalautils</url>
+
+  <licenses>
+    <license>
+      <name>the Apache License, ASL Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <scm>
+    <url>http://code.google.com/p/scalatest/source/browse/</url>
+    <connection>scm:svn:http://scalatest.googlecode.com/svn/trunk/</connection>
+    <developerConnection>
+      scm:svn:http://scalatest.googlecode.com/svn/trunk/
+    </developerConnection>
+  </scm>
+
+  <developers>
+    <developer>
+      <id>bill</id>
+      <name>Bill Venners</name>
+      <email>bill@artima.com</email>
+    </developer>
+  </developers>
+
+  <inceptionYear>2012</inceptionYear>
+  
+  <dependencies>
+    <dependency>
+      <groupId>org.scala-lang</groupId>
+      <artifactId>scala-library</artifactId>
+      <version>@SCALA_VERSION@</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.scala-lang</groupId>
+      <artifactId>scala-compiler</artifactId>
+      <version>@SCALA_VERSION@</version>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+
+</project>

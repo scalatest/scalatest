@@ -1,0 +1,86 @@
+
+pre.stExamples {
+  background-color: #1b3449;
+  padding: 10px;
+  color: white;
+}
+
+pre.stREPL {
+  background-color: #1b3449;
+  padding: 10px;
+  color: white;
+}
+
+.stYellow {
+  color: #cfc923;
+}
+
+.stCyan {
+  color: #00dddd;
+}
+
+.stGreen {
+  color: #00cc00;
+}
+
+.stRed {
+  color: #dd2233;
+}
+
+pre.stHighlighted {
+  font-family: "Lucida Console", Monaco, monospace;
+  font-size: 95%;
+  line-height: 110%;
+  padding: 10px;
+  background-color: #ecedec;
+  color: black;
+  text-align: left;
+}
+
+.stType {
+  color: #418da7;
+}
+
+.stLiteral {
+  color: #2b875e;
+}
+
+.stQuotedString {
+  color: #2b875e;
+}
+
+.stReserved {
+  color: #00008b;
+}
+
+.stBlockComment, .stLineComment {
+  color: gray;
+  font-style: italic;
+}
+
+table.stTable {
+ border-collapse: collapse;
+ border: 1px solid black;
+}
+
+th.stHeadingCell {
+  background-color: #CCCCCC;
+  border-width: 1px;
+  padding: 3px;
+  text-align: center;
+  border: 1px solid black;
+}
+
+td.stTableCell {
+  border-width: 1px;
+  padding: 3px;
+  text-align: center;
+  border: 1px solid black;
+}
+
+td.usage {
+  background-color: #EEEEEE;
+  border-width: 1px;
+  padding: 0.5em;
+  border: 1px solid black;
+}
