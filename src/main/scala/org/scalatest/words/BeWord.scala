@@ -496,24 +496,13 @@ final class BeWord {
    */
   def apply(right: Any): Matcher[Any] =
     new Matcher[Any] {
-      def apply(left: Any): MatchResult =
-        left match {
-          case null =>
-            MatchResult(
-              right == null,
-              FailureMessages("wasNotNull", right),
-              FailureMessages("wasNull"),
-              FailureMessages("wasNotNull", right),
-              FailureMessages("midSentenceWasNull")
-            )
-          case _ => {
-            val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)
-            MatchResult(
-              areEqualComparingArraysStructurally(left, right),
-              FailureMessages("wasNotEqualTo", leftee, rightee),
-              FailureMessages("wasEqualTo", left, right)
-            )
-          }
+      def apply(left: Any): MatchResult = {
+        val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)
+        MatchResult(
+          areEqualComparingArraysStructurally(left, right),
+          FailureMessages("wasNotEqualTo", leftee, rightee),
+          FailureMessages("wasEqualTo", left, right)
+        )
       }
     }
 }

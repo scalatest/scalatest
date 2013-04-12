@@ -2979,7 +2979,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
         )
       }
     }
-    
+
     /**
      * This method enables the following syntax:
      *
@@ -3672,7 +3672,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    *
    * <pre class="stHighlight">
    * result should equal (100 +- 1)
-   *        ^
+   *               ^
    * </pre>
    */
   def equal[T](interval: Interval[T]): Matcher[T] = {

@@ -63,6 +63,11 @@ class ShouldBeNullSpec extends Spec with Matchers with Checkers with ReturnsNorm
         nullMap should not ((be (null)))
       }
       assert(caught5.getMessage === "The reference was null")
+
+      val caught6 = intercept[TestFailedException] {
+        nullMap should be (map)
+      }
+      assert(caught6.getMessage === "null was not equal to Map(1 -> one, 2 -> two)")
     }
 
     def `should throw a NullPointerException if they try to short circuit with a null check first` {
