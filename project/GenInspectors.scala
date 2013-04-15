@@ -2332,14 +2332,14 @@ object GenInspectors {
     }
   }
   
-  def targetDir(targetBaseDir: String, packageName: String): File = {
-    val targetDir = new File(targetBaseDir + "/org/scalatest/inspectors/" + packageName)
+  def targetDir(targetBaseDir: File, packageName: String): File = {
+    val targetDir = new File(targetBaseDir, "org/scalatest/inspectors/" + packageName)
     if (!targetDir.exists)
       targetDir.mkdirs()
     targetDir
   }
 
-  def genTest(targetBaseDir: String, scalaVersion: String) {
+  def genTest(targetBaseDir: File, scalaVersion: String) {
     genNestedInspectorsSpecFile(targetDir(targetBaseDir, "nested"))
     genInspectorShorthandsForAllSpecFile(targetDir(targetBaseDir, "all"))
     genInspectorShorthandsForAtLeastSpecFile(targetDir(targetBaseDir, "atLeast"))
@@ -2353,7 +2353,7 @@ object GenInspectors {
   def main(args: Array[String]) {
     val targetBaseDir = args(0)
     val scalaVersion = args(1)
-    genTest(targetBaseDir, scalaVersion)
+    genTest(new File(targetBaseDir), scalaVersion)
   }
   
 }
