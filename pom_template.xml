@@ -82,7 +82,7 @@
     </dependency>
 
     <dependency>
-      <groupId>org.scala-tools.testing</groupId>
+      <groupId>org.scalatest</groupId>
       <artifactId>test-interface</artifactId>
       <version>1.0-SNAP2</version>
       <optional>true</optional>
