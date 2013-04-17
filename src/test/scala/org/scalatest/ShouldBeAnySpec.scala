@@ -103,7 +103,7 @@ class ShouldBeAnySpec extends Spec with Matchers with Checkers with ReturnsNorma
       val caught3 = intercept[TestFailedException] {
         s should be ("hi")
       }
-      assert(caught3.getMessage === "\"hi\" was not null")
+      assert(caught3.getMessage === "null was not equal to \"hi\"")
     }
 
     def `should throw an assertion error when equal but used with should not` {
