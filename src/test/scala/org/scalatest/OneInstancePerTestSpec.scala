@@ -169,5 +169,43 @@ class OneInstancePerTestSpec extends FunSpec with SharedHelpers {
         aSpec.invokeRunTests()
       }
     }
+    
+    it("should only execute nested suites in outer instance") {
+      
+      class InnerSuite extends FunSuite {
+        test("hi") { info("hi info") }
+      }
+      
+      class OuterSuite extends FunSuite with OneInstancePerTest {
+        override def nestedSuites = Vector(new InnerSuite)
+        test("outer 1") { info("outer 1 info") }
+        test("outer 2") { info("outer 2 info") }
+        
+        override def newInstance = new OuterSuite
+      }
+      
+      val rep = new EventRecordingReporter
+      val outer = new OuterSuite
+      outer.run(None, Args(rep))
+      
+      assert(rep.testStartingEventsReceived.size === 3)
+      val testSucceededEvents = rep.testSucceededEventsReceived
+      assert(testSucceededEvents.size === 3)
+      testSucceededEvents.foreach { e => 
+        e.testName match {
+          case "hi" => 
+            assert(e.recordedEvents.size === 1)
+            assert(e.recordedEvents(0).asInstanceOf[InfoProvided].message === "hi info")
+          case "outer 1" => 
+            assert(e.recordedEvents.size === 1)
+            assert(e.recordedEvents(0).asInstanceOf[InfoProvided].message === "outer 1 info")
+          case "outer 2" => 
+            assert(e.recordedEvents.size === 1)
+            assert(e.recordedEvents(0).asInstanceOf[InfoProvided].message === "outer 2 info")
+          case other => 
+            fail("Unexpected TestSucceeded event: " + other)
+        }
+      }
+    }
   }
 }
