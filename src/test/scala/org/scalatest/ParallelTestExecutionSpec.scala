@@ -9,6 +9,7 @@ import org.scalatest.tools.SuiteRunner
 import org.scalatest.tools.SuiteSortingReporter
 import org.scalatest.events.SuiteStarting
 import org.scalatest.events.SuiteCompleted
+import org.scalatest.events.InfoProvided
 import java.util.concurrent.Future
 import java.util.concurrent.LinkedBlockingQueue
 import org.scalatest.time.Span
@@ -420,6 +421,44 @@ class ParallelTestExecutionSpec extends FunSpec with ShouldMatchers with EventHe
       checkTestStarting(eventRecorded(31), "Thing 2 do thing 2b")
       checkTestSucceeded(eventRecorded(32), "Thing 2 do thing 2b")
       checkScopeClosed(eventRecorded(33), "Thing 2")
+    }
+    
+    it("should only execute nested suites in outer instance") {
+      
+      class InnerSuite extends FunSuite {
+        test("hi") { info("hi info") }
+      }
+      
+      class OuterSuite extends FunSuite with ParallelTestExecution {
+        override def nestedSuites = Vector(new InnerSuite)
+        test("outer 1") { info("outer 1 info") }
+        test("outer 2") { info("outer 2 info") }
+        
+        override def newInstance = new OuterSuite
+      }
+      
+      val rep = new EventRecordingReporter
+      val outer = new OuterSuite
+      outer.run(None, Args(rep))
+      
+      assert(rep.testStartingEventsReceived.size === 3)
+      val testSucceededEvents = rep.testSucceededEventsReceived
+      assert(testSucceededEvents.size === 3)
+      testSucceededEvents.foreach { e => 
+        e.testName match {
+          case "hi" => 
+            assert(e.recordedEvents.size === 1)
+            assert(e.recordedEvents(0).asInstanceOf[InfoProvided].message === "hi info")
+          case "outer 1" => 
+            assert(e.recordedEvents.size === 1)
+            assert(e.recordedEvents(0).asInstanceOf[InfoProvided].message === "outer 1 info")
+          case "outer 2" => 
+            assert(e.recordedEvents.size === 1)
+            assert(e.recordedEvents(0).asInstanceOf[InfoProvided].message === "outer 2 info")
+          case other => 
+            fail("Unexpected TestSucceeded event: " + other)
+        }
+      }
     }
   }
 }
