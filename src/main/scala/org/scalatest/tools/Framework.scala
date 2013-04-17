@@ -31,6 +31,7 @@ class Framework extends SbtFramework {
       new SubclassFingerprint {
         def superclassName = "org.scalatest.Suite"
         def isModule = false
+        def requireNoArgConstructor = true
       }, 
       new AnnotatedFingerprint {
         def annotationName = "org.scalatest.WrapWith"
@@ -198,8 +199,8 @@ class Framework extends SbtFramework {
     }
   }
       
-  class ScalaTestTask(fullyQualifiedName: String, loader: ClassLoader, reporter: Reporter, tracker: Tracker, 
-                      tagsToInclude: Set[String], tagsToExclude: Set[String], selectors: Array[Selector], configMap: ConfigMap, 
+  class ScalaTestTask(fullyQualifiedName: String, loader: ClassLoader, reporter: Reporter, tracker: Tracker, tagsToInclude: Set[String], 
+                      tagsToExclude: Set[String], explicitlySpecified: Boolean, selectors: Array[Selector], configMap: ConfigMap, 
                       summaryCounter: SummaryCounter, useSbtLogInfoReporter: Boolean, presentAllDurations: Boolean, presentInColor: Boolean, 
                       presentShortStackTraces: Boolean, presentFullStackTraces: Boolean, presentUnformatted: Boolean) extends Task {
     
@@ -233,7 +234,7 @@ class Framework extends SbtFramework {
       }
     
     def execute(eventHandler: EventHandler, loggers: Array[Logger]) = {
-      if (!isDiscoverableSuite(suiteClass) && selectors.isEmpty)  // Do nothing if it is annotated with @DoNotDiscover and in discovery
+      if (!explicitlySpecified && !isDiscoverableSuite(suiteClass))  // Do nothing if it is annotated with @DoNotDiscover and it is not explicitly specified.
         Array.empty[Task]
       else if (isAccessibleSuite(suiteClass) || isRunnable(suiteClass)) {
         val wrapWithAnnotation = suiteClass.getAnnotation(classOf[WrapWith])
@@ -321,12 +322,8 @@ class Framework extends SbtFramework {
     
     dispatchReporter(RunStarting(tracker.nextOrdinal(), 0, configMap))
     
-    def task(fullyQualifiedName: String, fingerprint: Fingerprint) = 
-      new ScalaTestTask(fullyQualifiedName, loader, dispatchReporter, tracker, tagsToInclude, tagsToExclude, Array.empty, configMap, summaryCounter, 
-                        useSbtLogInfoReporter, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted)
-    
-    def task(fullyQualifiedName: String, isModule: Boolean, selectors: Array[Selector]) = 
-      new ScalaTestTask(fullyQualifiedName, loader, dispatchReporter, tracker, Set(SELECTED_TAG), Set.empty, selectors, configMap, summaryCounter, 
+    def task(fullyQualifiedName: String, isModule: Boolean, explicitlySpecified: Boolean, selectors: Array[Selector]) = 
+      new ScalaTestTask(fullyQualifiedName, loader, dispatchReporter, tracker, if (selectors.isEmpty) Set.empty else Set(SELECTED_TAG), Set.empty, explicitlySpecified, selectors, configMap, summaryCounter, 
                         useSbtLogInfoReporter, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted)
     
     def done = {
