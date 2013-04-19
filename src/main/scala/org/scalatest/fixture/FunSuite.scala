@@ -26,7 +26,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
  * <strong>Recommended Usage</strong>:
  * Use class <code>fixture.FunSuite</code> in situations for which <a href="../FunSuite.html"><code>FunSuite</code></a>
  * would be a good choice, when all or most tests need the same fixture objects
- * that must be cleaned up afterwords. <em>Note: <code>fixture.FunSuite</code> is intended for use in special situations, with class <code>FunSuite</code> used for general needs. For
+ * that must be cleaned up afterwards. <em>Note: <code>fixture.FunSuite</code> is intended for use in special situations, with class <code>FunSuite</code> used for general needs. For
  * more insight into where <code>fixture.FunSuite</code> fits in the big picture, see the <a href="../FunSuite.html#withFixtureOneArgTest"><code>withFixture(OneArgTest)</code></a> subsection of the <a href="../FunSuite.html#sharedFixtures">Shared fixtures</a> section in the documentation for class <code>FunSuite</code>.</em>
  * </td></tr></table>
  * 
