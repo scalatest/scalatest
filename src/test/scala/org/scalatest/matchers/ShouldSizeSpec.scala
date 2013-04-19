@@ -72,7 +72,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           Array(1, 2) should have size (3)
         }
-        assert(caught1.getMessage endsWith "Array(1, 2) did not have size 3")
+        assert(caught1.getMessage endsWith FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Array(1, 2)"), 2, 3))
         // check((arr: Array[String]) => throwsTestFailedException(arr should have size (arr.size + 1)))
       }
 
@@ -80,7 +80,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           Array(1, 2) should have size (-2)
         }
-        assert(caught1.getMessage endsWith "Array(1, 2) did not have size -2")
+        assert(caught1.getMessage endsWith FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Array(1, 2)"), 2, -2))
         // check((arr: Array[Int]) => throwsTestFailedException(arr should have size (if (arr.size == 0) -1 else -arr.size)))
       }
 
@@ -89,17 +89,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           Array(1, 2) should { have size (5) and (have size (2 - 1)) }
         }
-        assert(caught1.getMessage === "Array(1, 2) did not have size 5")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Array(1, 2)"), 2, 5))
 
         val caught2 = intercept[TestFailedException] {
           Array(1, 2) should ((have size (5)) and (have size (2 - 1)))
         }
-        assert(caught2.getMessage === "Array(1, 2) did not have size 5")
+        assert(caught2.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Array(1, 2)"), 2, 5))
 
         val caught3 = intercept[TestFailedException] {
           Array(1, 2) should (have size (5) and have size (2 - 1))
         }
-        assert(caught3.getMessage === "Array(1, 2) did not have size 5")
+        assert(caught3.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Array(1, 2)"), 2, 5))
       }
 
       def `should throw an assertion error when array size doesn't match and used in a logical-or expression` {
@@ -107,17 +107,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           Array(1, 2) should { have size (55) or (have size (22)) }
         }
-        assert(caught1.getMessage === "Array(1, 2) did not have size 55, and Array(1, 2) did not have size 22")
+        assert(caught1.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Array(1, 2)"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Array(1, 2)"), 2, 22))))
 
         val caught2 = intercept[TestFailedException] {
           Array(1, 2) should ((have size (55)) or (have size (22)))
         }
-        assert(caught2.getMessage === "Array(1, 2) did not have size 55, and Array(1, 2) did not have size 22")
+        assert(caught2.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Array(1, 2)"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Array(1, 2)"), 2, 22))))
 
         val caught3 = intercept[TestFailedException] {
           Array(1, 2) should (have size (55) or have size (22))
         }
-        assert(caught3.getMessage === "Array(1, 2) did not have size 55, and Array(1, 2) did not have size 22")
+        assert(caught3.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Array(1, 2)"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Array(1, 2)"), 2, 22))))
       }
 
       def `should throw an assertion error when array size matches and used in a logical-and expression with not` {
@@ -125,17 +125,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           Array(1, 2) should { not { have size (3) } and not { have size (2) }}
         }
-        assert(caught1.getMessage === "Array(1, 2) did not have size 3, but Array(1, 2) had size 2")
+        assert(caught1.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Array(1, 2)"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("Array(1, 2)"), 2))))
 
         val caught2 = intercept[TestFailedException] {
           Array(1, 2) should ((not have size (3)) and (not have size (2)))
         }
-        assert(caught2.getMessage === "Array(1, 2) did not have size 3, but Array(1, 2) had size 2")
+        assert(caught2.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Array(1, 2)"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("Array(1, 2)"), 2))))
 
         val caught3 = intercept[TestFailedException] {
           Array(1, 2) should (not have size (3) and not have size (2))
         }
-        assert(caught3.getMessage === "Array(1, 2) did not have size 3, but Array(1, 2) had size 2")
+        assert(caught3.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Array(1, 2)"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("Array(1, 2)"), 2))))
       }
 
       def `should throw an assertion error when array size matches and used in a logical-or expression with not` {
@@ -203,7 +203,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           Set(1, 2) should have size (3)
         }
-        assert(caught1.getMessage === "Set(1, 2) did not have size 3")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Set(1, 2)"), 2, 3))
         // check((set: Set[String]) => throwsTestFailedException(set should have size (set.size + 1)))
       }
 
@@ -211,7 +211,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           Set(1, 2) should have size (-2)
         }
-        assert(caught1.getMessage === "Set(1, 2) did not have size -2")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Set(1, 2)"), 2, -2))
         // check((set: Set[Int]) => throwsTestFailedException(set should have size (if (set.size == 0) -1 else -set.size)))
       }
 
@@ -220,17 +220,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           Set(1, 2) should { have size (5) and (have size (2 - 1)) }
         }
-        assert(caught1.getMessage === "Set(1, 2) did not have size 5")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Set(1, 2)"), 2, 5))
 
         val caught2 = intercept[TestFailedException] {
           Set(1, 2) should ((have size (5)) and (have size (2 - 1)))
         }
-        assert(caught2.getMessage === "Set(1, 2) did not have size 5")
+        assert(caught2.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Set(1, 2)"), 2, 5))
 
         val caught3 = intercept[TestFailedException] {
           Set(1, 2) should (have size (5) and have size (2 - 1))
         }
-        assert(caught3.getMessage === "Set(1, 2) did not have size 5")
+        assert(caught3.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Set(1, 2)"), 2, 5))
       }
 
       def `should throw an assertion error when set size doesn't match and used in a logical-or expression` {
@@ -238,17 +238,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           Set(1, 2) should { have size (55) or (have size (22)) }
         }
-        assert(caught1.getMessage === "Set(1, 2) did not have size 55, and Set(1, 2) did not have size 22")
+        assert(caught1.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Set(1, 2)"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Set(1, 2)"), 2, 22))))
 
         val caught2 = intercept[TestFailedException] {
           Set(1, 2) should ((have size (55)) or (have size (22)))
         }
-        assert(caught2.getMessage === "Set(1, 2) did not have size 55, and Set(1, 2) did not have size 22")
+        assert(caught2.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Set(1, 2)"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Set(1, 2)"), 2, 22))))
 
         val caught3 = intercept[TestFailedException] {
           Set(1, 2) should (have size (55) or have size (22))
         }
-        assert(caught3.getMessage === "Set(1, 2) did not have size 55, and Set(1, 2) did not have size 22")
+        assert(caught3.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Set(1, 2)"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Set(1, 2)"), 2, 22))))
       }
 
       def `should throw an assertion error when set size matches and used in a logical-and expression with not` {
@@ -256,17 +256,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           Set(1, 2) should { not { have size (3) } and not { have size (2) }}
         }
-        assert(caught1.getMessage === "Set(1, 2) did not have size 3, but Set(1, 2) had size 2")
+        assert(caught1.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Set(1, 2)"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("Set(1, 2)"), 2))))
 
         val caught2 = intercept[TestFailedException] {
           Set(1, 2) should ((not have size (3)) and (not have size (2)))
         }
-        assert(caught2.getMessage === "Set(1, 2) did not have size 3, but Set(1, 2) had size 2")
+        assert(caught2.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Set(1, 2)"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("Set(1, 2)"), 2))))
 
         val caught3 = intercept[TestFailedException] {
           Set(1, 2) should (not have size (3) and not have size (2))
         }
-        assert(caught3.getMessage === "Set(1, 2) did not have size 3, but Set(1, 2) had size 2")
+        assert(caught3.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Set(1, 2)"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("Set(1, 2)"), 2))))
       }
 
       def `should throw an assertion error when set size matches and used in a logical-or expression with not` {
@@ -337,8 +337,8 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           set should have size (3)
         }
-        // assert(caught1.getMessage === "Set(1, 2) did not have size 3")
-        caught1.getMessage === (set + " did not have size 3")
+        // assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Set(1, 2)"), 2, 3))
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", set, 2, 3))
         // check((set: Set[String]) => throwsTestFailedException(set should have size (set.size + 1)))
       }
 
@@ -347,7 +347,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {(
           set should have size (-2))
         }
-        assert(caught1.getMessage === set + " did not have size -2")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", set, 2, -2))
         // check((set: Set[Int]) => throwsTestFailedException(set should have size (if (set.size == 0) -1 else -set.size)))
       }
 
@@ -356,19 +356,19 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           set1 should { have size (5) and (have size (2 - 1)) }
         }
-        assert(caught1.getMessage === set1 + " did not have size 5")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", set1, 2, 5))
         
         val set2 = mutable.Set(1, 2) 
         val caught2 = intercept[TestFailedException] {(
           set2 should ((have size (5)) and (have size (2 - 1))))
         }
-        assert(caught2.getMessage === set2 + " did not have size 5")
+        assert(caught2.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", set2, 2, 5))
 
         val set3 = mutable.Set(1, 2)
         val caught3 = intercept[TestFailedException] {
           set3 should (have size (5) and have size (2 - 1))
         }
-        assert(caught3.getMessage === set3 + " did not have size 5")
+        assert(caught3.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", set3, 2, 5))
       }
 
       def `should throw an assertion error when set size doesn't match and used in a logical-or expression` {
@@ -376,19 +376,19 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           set1 should { have size (55) or (have size (22)) }
         }
-        assert(caught1.getMessage === set1 + " did not have size 55, and " + set1 + " did not have size 22")
+        assert(caught1.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", set1, 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", set1, 2, 22))))
 
         val set2 = mutable.Set(1, 2)
         val caught2 = intercept[TestFailedException] {
           set2 should ((have size (55)) or (have size (22)))
         }
-        assert(caught2.getMessage === set2 + " did not have size 55, and " + set2 + " did not have size 22")
+        assert(caught2.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", set2, 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", set2, 2, 22))))
 
         val set3 = mutable.Set(1, 2)
         val caught3 = intercept[TestFailedException] {
           set3 should (have size (55) or have size (22))
         }
-        assert(caught3.getMessage === set3 + " did not have size 55, and " + set3 + " did not have size 22")
+        assert(caught3.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", set3, 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", set3, 2, 22))))
       }
 
       def `should throw an assertion error when set size matches and used in a logical-and expression with not` {
@@ -396,19 +396,19 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           set1 should { not { have size (3) } and not { have size (2) }}
         }
-        assert(caught1.getMessage === set1 + " did not have size 3, but " + set1 + " had size 2")
+        assert(caught1.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", set1, 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", set1, 2, 2))))
 
         val set2 = mutable.Set(1, 2)
         val caught2 = intercept[TestFailedException] {
           set2 should ((not have size (3)) and (not have size (2)))
         }
-        assert(caught2.getMessage === set2 + " did not have size 3, but " + set2 + " had size 2")
+        assert(caught2.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", set2, 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", set2, 2, 2))))
 
         val set3 = mutable.Set(1, 2)
         val caught3 = intercept[TestFailedException] {
           set3 should (not have size (3) and not have size (2))
         }
-        assert(caught3.getMessage === set3 + " did not have size 3, but " + set3 + " had size 2")
+        assert(caught3.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", set3, 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", set3, 2, 2))))
       }
 
       def `should throw an assertion error when set size matches and used in a logical-or expression with not` {
@@ -480,7 +480,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           set should have size (3)
         }
-        assert(caught1.getMessage === "Set(1, 2) did not have size 3")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Set(1, 2)"), 2, 3))
         // check((set: Set[String]) => throwsTestFailedException(set should have size (set.size + 1)))
       }
 
@@ -488,7 +488,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           set should have size (-2)
         }
-        assert(caught1.getMessage === "Set(1, 2) did not have size -2")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Set(1, 2)"), 2, -2))
         // check((set: Set[Int]) => throwsTestFailedException(set should have size (if (set.size == 0) -1 else -set.size)))
       }
 
@@ -497,17 +497,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           set should { have size (5) and (have size (2 - 1)) }
         }
-        assert(caught1.getMessage === "Set(1, 2) did not have size 5")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Set(1, 2)"), 2, 5))
 
         val caught2 = intercept[TestFailedException] {
           set should ((have size (5)) and (have size (2 - 1)))
         }
-        assert(caught2.getMessage === "Set(1, 2) did not have size 5")
+        assert(caught2.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Set(1, 2)"), 2, 5))
 
         val caught3 = intercept[TestFailedException] {
           set should (have size (5) and have size (2 - 1))
         }
-        assert(caught3.getMessage === "Set(1, 2) did not have size 5")
+        assert(caught3.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Set(1, 2)"), 2, 5))
       }
 
       def `should throw an assertion error when set size doesn't match and used in a logical-or expression` {
@@ -515,17 +515,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           set should { have size (55) or (have size (22)) }
         }
-        assert(caught1.getMessage === "Set(1, 2) did not have size 55, and Set(1, 2) did not have size 22")
+        assert(caught1.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Set(1, 2)"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Set(1, 2)"), 2, 22))))
 
         val caught2 = intercept[TestFailedException] {
           set should ((have size (55)) or (have size (22)))
         }
-        assert(caught2.getMessage === "Set(1, 2) did not have size 55, and Set(1, 2) did not have size 22")
+        assert(caught2.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Set(1, 2)"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Set(1, 2)"), 2, 22))))
 
         val caught3 = intercept[TestFailedException] {
           set should (have size (55) or have size (22))
         }
-        assert(caught3.getMessage === "Set(1, 2) did not have size 55, and Set(1, 2) did not have size 22")
+        assert(caught3.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Set(1, 2)"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Set(1, 2)"), 2, 22))))
       }
 
       def `should throw an assertion error when set size matches and used in a logical-and expression with not` {
@@ -533,17 +533,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           set should { not { have size (3) } and not { have size (2) }}
         }
-        assert(caught1.getMessage === "Set(1, 2) did not have size 3, but Set(1, 2) had size 2")
+        assert(caught1.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Set(1, 2)"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("Set(1, 2)"), 2))))
 
         val caught2 = intercept[TestFailedException] {
           set should ((not have size (3)) and (not have size (2)))
         }
-        assert(caught2.getMessage === "Set(1, 2) did not have size 3, but Set(1, 2) had size 2")
+        assert(caught2.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Set(1, 2)"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("Set(1, 2)"), 2))))
 
         val caught3 = intercept[TestFailedException] {
           set should (not have size (3) and not have size (2))
         }
-        assert(caught3.getMessage === "Set(1, 2) did not have size 3, but Set(1, 2) had size 2")
+        assert(caught3.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Set(1, 2)"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("Set(1, 2)"), 2))))
       }
 
       def `should throw an assertion error when set size matches and used in a logical-or expression with not` {
@@ -613,7 +613,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           HashSet(1, 2) should have size (3)
         }
-        assert(caught1.getMessage === "Set(1, 2) did not have size 3")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Set(1, 2)"), 2, 3))
         // check((set: Set[String]) => throwsTestFailedException(set should have size (set.size + 1)))
       }
 
@@ -621,7 +621,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           HashSet(1, 2) should have size (-2)
         }
-        assert(caught1.getMessage === "Set(1, 2) did not have size -2")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Set(1, 2)"), 2, -2))
         // check((set: Set[Int]) => throwsTestFailedException(set should have size (if (set.size == 0) -1 else -set.size)))
       }
 
@@ -630,17 +630,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           HashSet(1, 2) should { have size (5) and (have size (2 - 1)) }
         }
-        assert(caught1.getMessage === "Set(1, 2) did not have size 5")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Set(1, 2)"), 2, 5))
 
         val caught2 = intercept[TestFailedException] {
           HashSet(1, 2) should ((have size (5)) and (have size (2 - 1)))
         }
-        assert(caught2.getMessage === "Set(1, 2) did not have size 5")
+        assert(caught2.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Set(1, 2)"), 2, 5))
 
         val caught3 = intercept[TestFailedException] {
           HashSet(1, 2) should (have size (5) and have size (2 - 1))
         }
-        assert(caught3.getMessage === "Set(1, 2) did not have size 5")
+        assert(caught3.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Set(1, 2)"), 2, 5))
       }
 
       def `should throw an assertion error when set size doesn't match and used in a logical-or expression` {
@@ -648,17 +648,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           HashSet(1, 2) should { have size (55) or (have size (22)) }
         }
-        assert(caught1.getMessage === "Set(1, 2) did not have size 55, and Set(1, 2) did not have size 22")
+        assert(caught1.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Set(1, 2)"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Set(1, 2)"), 2, 22))))
 
         val caught2 = intercept[TestFailedException] {
           HashSet(1, 2) should ((have size (55)) or (have size (22)))
         }
-        assert(caught2.getMessage === "Set(1, 2) did not have size 55, and Set(1, 2) did not have size 22")
+        assert(caught2.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Set(1, 2)"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Set(1, 2)"), 2, 22))))
 
         val caught3 = intercept[TestFailedException] {
           HashSet(1, 2) should (have size (55) or have size (22))
         }
-        assert(caught3.getMessage === "Set(1, 2) did not have size 55, and Set(1, 2) did not have size 22")
+        assert(caught3.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Set(1, 2)"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Set(1, 2)"), 2, 22))))
       }
 
       def `should throw an assertion error when set size matches and used in a logical-and expression with not` {
@@ -666,17 +666,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           HashSet(1, 2) should { not { have size (3) } and not { have size (2) }}
         }
-        assert(caught1.getMessage === "Set(1, 2) did not have size 3, but Set(1, 2) had size 2")
+        assert(caught1.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Set(1, 2)"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("Set(1, 2)"), 2))))
 
         val caught2 = intercept[TestFailedException] {
           HashSet(1, 2) should ((not have size (3)) and (not have size (2)))
         }
-        assert(caught2.getMessage === "Set(1, 2) did not have size 3, but Set(1, 2) had size 2")
+        assert(caught2.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Set(1, 2)"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("Set(1, 2)"), 2))))
 
         val caught3 = intercept[TestFailedException] {
           HashSet(1, 2) should (not have size (3) and not have size (2))
         }
-        assert(caught3.getMessage === "Set(1, 2) did not have size 3, but Set(1, 2) had size 2")
+        assert(caught3.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Set(1, 2)"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("Set(1, 2)"), 2))))
       }
 
       def `should throw an assertion error when set size matches and used in a logical-or expression with not` {
@@ -747,7 +747,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           set1 should have size (3)
         }
-        assert(caught1.getMessage === set1 + " did not have size 3")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", set1, 2, 3))
         // check((set: Set[String]) => throwsTestFailedException(set should have size (set.size + 1)))
       }
 
@@ -756,7 +756,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           set2 should have size (-2)
         }
-        assert(caught1.getMessage === set2 + " did not have size -2")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", set2, 2, -2))
         // check((set: Set[Int]) => throwsTestFailedException(set should have size (if (set.size == 0) -1 else -set.size)))
       }
 
@@ -765,19 +765,19 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           set1 should { have size (5) and (have size (2 - 1)) }
         }
-        assert(caught1.getMessage === set1 + " did not have size 5")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", set1, 2, 5))
         
         val set2 = mutable.HashSet(1, 2)
         val caught2 = intercept[TestFailedException] {
           set2 should ((have size (5)) and (have size (2 - 1)))
         }
-        assert(caught2.getMessage === set2 + " did not have size 5")
+        assert(caught2.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", set2, 2, 5))
 
         val set3 = mutable.HashSet(1, 2)
         val caught3 = intercept[TestFailedException] {
           set3 should (have size (5) and have size (2 - 1))
         }
-        assert(caught3.getMessage === set3 + " did not have size 5")
+        assert(caught3.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", set3, 2, 5))
       }
 
       def `should throw an assertion error when set size doesn't match and used in a logical-or expression` {
@@ -785,19 +785,19 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           set1 should { have size (55) or (have size (22)) }
         }
-        assert(caught1.getMessage === set1 + " did not have size 55, and " + set1 + " did not have size 22")
+        assert(caught1.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", set1, 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", set1, 2, 22))))
 
         val set2 = mutable.HashSet(1, 2)
         val caught2 = intercept[TestFailedException] {
           set2 should ((have size (55)) or (have size (22)))
         }
-        assert(caught2.getMessage === set2 + " did not have size 55, and " + set2 + " did not have size 22")
+        assert(caught2.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", set2, 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", set2, 2, 22))))
 
         val set3 = mutable.HashSet(1, 2)
         val caught3 = intercept[TestFailedException] {
           set3 should (have size (55) or have size (22))
         }
-        assert(caught3.getMessage === set3 + " did not have size 55, and " + set3 + " did not have size 22")
+        assert(caught3.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", set3, 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", set3, 2, 22))))
       }
 
       def `should throw an assertion error when set size matches and used in a logical-and expression with not` {
@@ -805,19 +805,19 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           set1 should { not { have size (3) } and not { have size (2) }}
         }
-        assert(caught1.getMessage === set1 + " did not have size 3, but " + set1 + " had size 2")
+        assert(caught1.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", set1, 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", set1, 2, 2))))
 
         val set2 = mutable.HashSet(1, 2)
         val caught2 = intercept[TestFailedException] {
           set2 should ((not have size (3)) and (not have size (2)))
         }
-        assert(caught2.getMessage === set2 + " did not have size 3, but " + set2 + " had size 2")
+        assert(caught2.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", set2, 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", set2, 2, 2))))
 
         val set3 = mutable.HashSet(1, 2)
         val caught3 = intercept[TestFailedException] {
           set3 should (not have size (3) and not have size (2))
         }
-        assert(caught3.getMessage === set3 + " did not have size 3, but " + set3 + " had size 2")
+        assert(caught3.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", set3, 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", set3, 2, 2))))
       }
 
       def `should throw an assertion error when set size matches and used in a logical-or expression with not` {
@@ -887,7 +887,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           List(1, 2) should have size (3)
         }
-        assert(caught1.getMessage === "List(1, 2) did not have size 3")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("List(1, 2)"), 2, 3))
         check((lst: List[String]) => throwsTestFailedException(lst should have size (lst.size + 1)))
       }
 
@@ -895,7 +895,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           List(1, 2) should have size (-2)
         }
-        assert(caught1.getMessage === "List(1, 2) did not have size -2")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("List(1, 2)"), 2, -2))
         check((lst: List[Int]) => throwsTestFailedException(lst should have size (if (lst.size == 0) -1 else -lst.size)))
       }
 
@@ -904,17 +904,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           List(1, 2) should { have size (5) and (have size (2 - 1)) }
         }
-        assert(caught1.getMessage === "List(1, 2) did not have size 5")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("List(1, 2)"), 2, 5))
 
         val caught2 = intercept[TestFailedException] {
           List(1, 2) should ((have size (5)) and (have size (2 - 1)))
         }
-        assert(caught2.getMessage === "List(1, 2) did not have size 5")
+        assert(caught2.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("List(1, 2)"), 2, 5))
 
         val caught3 = intercept[TestFailedException] {
           List(1, 2) should (have size (5) and have size (2 - 1))
         }
-        assert(caught3.getMessage === "List(1, 2) did not have size 5")
+        assert(caught3.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("List(1, 2)"), 2, 5))
       }
 
       def `should throw an assertion error when list size doesn't match and used in a logical-or expression` {
@@ -922,17 +922,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           List(1, 2) should { have size (55) or (have size (22)) }
         }
-        assert(caught1.getMessage === "List(1, 2) did not have size 55, and List(1, 2) did not have size 22")
+        assert(caught1.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("List(1, 2)"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("List(1, 2)"), 2, 22))))
 
         val caught2 = intercept[TestFailedException] {
           List(1, 2) should ((have size (55)) or (have size (22)))
         }
-        assert(caught2.getMessage === "List(1, 2) did not have size 55, and List(1, 2) did not have size 22")
+        assert(caught2.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("List(1, 2)"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("List(1, 2)"), 2, 22))))
 
         val caught3 = intercept[TestFailedException] {
           List(1, 2) should (have size (55) or have size (22))
         }
-        assert(caught3.getMessage === "List(1, 2) did not have size 55, and List(1, 2) did not have size 22")
+        assert(caught3.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("List(1, 2)"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("List(1, 2)"), 2, 22))))
       }
 
       def `should throw an assertion error when list size matches and used in a logical-and expression with not` {
@@ -940,17 +940,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           List(1, 2) should { not { have size (3) } and not { have size (2) }}
         }
-        assert(caught1.getMessage === "List(1, 2) did not have size 3, but List(1, 2) had size 2")
+        assert(caught1.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("List(1, 2)"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("List(1, 2)"), 2))))
 
         val caught2 = intercept[TestFailedException] {
           List(1, 2) should ((not have size (3)) and (not have size (2)))
         }
-        assert(caught2.getMessage === "List(1, 2) did not have size 3, but List(1, 2) had size 2")
+        assert(caught2.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("List(1, 2)"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("List(1, 2)"), 2))))
 
         val caught3 = intercept[TestFailedException] {
           List(1, 2) should (not have size (3) and not have size (2))
         }
-        assert(caught3.getMessage === "List(1, 2) did not have size 3, but List(1, 2) had size 2")
+        assert(caught3.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("List(1, 2)"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("List(1, 2)"), 2))))
       }
 
       def `should throw an assertion error when list size matches and used in a logical-or expression with not` {
@@ -1021,7 +1021,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           javaList should have size (3)
         }
-        assert(caught1.getMessage === "[1, 2] did not have size 3")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("[1, 2]"), 2, 3))
         // check((lst: List[String]) => throwsTestFailedException(lst should have size (lst.size + 1)))
       }
 
@@ -1029,7 +1029,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           javaList should have size (-2)
         }
-        assert(caught1.getMessage === "[1, 2] did not have size -2")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("[1, 2]"), 2, -2))
         // check((lst: List[Int]) => throwsTestFailedException(lst should have size (if (lst.size == 0) -1 else -lst.size)))
       }
 
@@ -1038,17 +1038,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           javaList should { have size (5) and (have size (2 - 1)) }
         }
-        assert(caught1.getMessage === "[1, 2] did not have size 5")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("[1, 2]"), 2, 5))
 
         val caught2 = intercept[TestFailedException] {
           javaList should ((have size (5)) and (have size (2 - 1)))
         }
-        assert(caught2.getMessage === "[1, 2] did not have size 5")
+        assert(caught2.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("[1, 2]"), 2, 5))
 
         val caught3 = intercept[TestFailedException] {
           javaList should (have size (5) and have size (2 - 1))
         }
-        assert(caught3.getMessage === "[1, 2] did not have size 5")
+        assert(caught3.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("[1, 2]"), 2, 5))
       }
 
       def `should throw an assertion error when list size doesn't match and used in a logical-or expression` {
@@ -1056,17 +1056,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           javaList should { have size (55) or (have size (22)) }
         }
-        assert(caught1.getMessage === "[1, 2] did not have size 55, and [1, 2] did not have size 22")
+        assert(caught1.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("[1, 2]"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("[1, 2]"), 2, 22))))
 
         val caught2 = intercept[TestFailedException] {
           javaList should ((have size (55)) or (have size (22)))
         }
-        assert(caught2.getMessage === "[1, 2] did not have size 55, and [1, 2] did not have size 22")
+        assert(caught2.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("[1, 2]"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("[1, 2]"), 2, 22))))
 
         val caught3 = intercept[TestFailedException] {
           javaList should (have size (55) or have size (22))
         }
-        assert(caught3.getMessage === "[1, 2] did not have size 55, and [1, 2] did not have size 22")
+        assert(caught3.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("[1, 2]"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("[1, 2]"), 2, 22))))
       }
 
       def `should throw an assertion error when list size matches and used in a logical-and expression with not` {
@@ -1074,17 +1074,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           javaList should { not { have size (3) } and not { have size (2) }}
         }
-        assert(caught1.getMessage === "[1, 2] did not have size 3, but [1, 2] had size 2")
+        assert(caught1.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("[1, 2]"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("[1, 2]"), 2))))
 
         val caught2 = intercept[TestFailedException] {
           javaList should ((not have size (3)) and (not have size (2)))
         }
-        assert(caught2.getMessage === "[1, 2] did not have size 3, but [1, 2] had size 2")
+        assert(caught2.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("[1, 2]"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("[1, 2]"), 2))))
 
         val caught3 = intercept[TestFailedException] {
           javaList should (not have size (3) and not have size (2))
         }
-        assert(caught3.getMessage === "[1, 2] did not have size 3, but [1, 2] had size 2")
+        assert(caught3.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("[1, 2]"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("[1, 2]"), 2))))
       }
 
       def `should throw an assertion error when list size matches and used in a logical-or expression with not` {
@@ -1148,7 +1148,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           Map("one" -> 1, "two" -> 2) should have size (3)
         }
-        assert(caught1.getMessage === "Map(one -> 1, two -> 2) did not have size 3")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Map(one -> 1, two -> 2)"), 2, 3))
         // check((set: Map[String]) => throwsTestFailedException(set should have size (set.size + 1)))
       }
 
@@ -1156,7 +1156,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           Map("one" -> 1, "two" -> 2) should have size (-2)
         }
-        assert(caught1.getMessage === "Map(one -> 1, two -> 2) did not have size -2")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Map(one -> 1, two -> 2)"), 2, -2))
         // check((set: Map[Int]) => throwsTestFailedException(set should have size (if (set.size == 0) -1 else -set.size)))
       }
 
@@ -1165,17 +1165,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           Map("one" -> 1, "two" -> 2) should { have size (5) and (have size (2 - 1)) }
         }
-        assert(caught1.getMessage === "Map(one -> 1, two -> 2) did not have size 5")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Map(one -> 1, two -> 2)"), 2, 5))
 
         val caught2 = intercept[TestFailedException] {
           Map("one" -> 1, "two" -> 2) should ((have size (5)) and (have size (2 - 1)))
         }
-        assert(caught2.getMessage === "Map(one -> 1, two -> 2) did not have size 5")
+        assert(caught2.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Map(one -> 1, two -> 2)"), 2, 5))
 
         val caught3 = intercept[TestFailedException] {
           Map("one" -> 1, "two" -> 2) should (have size (5) and have size (2 - 1))
         }
-        assert(caught3.getMessage === "Map(one -> 1, two -> 2) did not have size 5")
+        assert(caught3.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Map(one -> 1, two -> 2)"), 2, 5))
       }
 
       def `should throw an assertion error when set size doesn't match and used in a logical-or expression` {
@@ -1183,17 +1183,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           Map("one" -> 1, "two" -> 2) should { have size (55) or (have size (22)) }
         }
-        assert(caught1.getMessage === "Map(one -> 1, two -> 2) did not have size 55, and Map(one -> 1, two -> 2) did not have size 22")
+        assert(caught1.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Map(one -> 1, two -> 2)"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Map(one -> 1, two -> 2)"), 2, 22))))
 
         val caught2 = intercept[TestFailedException] {
           Map("one" -> 1, "two" -> 2) should ((have size (55)) or (have size (22)))
         }
-        assert(caught2.getMessage === "Map(one -> 1, two -> 2) did not have size 55, and Map(one -> 1, two -> 2) did not have size 22")
+        assert(caught2.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Map(one -> 1, two -> 2)"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Map(one -> 1, two -> 2)"), 2, 22))))
 
         val caught3 = intercept[TestFailedException] {
           Map("one" -> 1, "two" -> 2) should (have size (55) or have size (22))
         }
-        assert(caught3.getMessage === "Map(one -> 1, two -> 2) did not have size 55, and Map(one -> 1, two -> 2) did not have size 22")
+        assert(caught3.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Map(one -> 1, two -> 2)"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Map(one -> 1, two -> 2)"), 2, 22))))
       }
 
       def `should throw an assertion error when set size matches and used in a logical-and expression with not` {
@@ -1201,17 +1201,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           Map("one" -> 1, "two" -> 2) should { not { have size (3) } and not { have size (2) }}
         }
-        assert(caught1.getMessage === "Map(one -> 1, two -> 2) did not have size 3, but Map(one -> 1, two -> 2) had size 2")
+        assert(caught1.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Map(one -> 1, two -> 2)"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("Map(one -> 1, two -> 2)"), 2))))
 
         val caught2 = intercept[TestFailedException] {
           Map("one" -> 1, "two" -> 2) should ((not have size (3)) and (not have size (2)))
         }
-        assert(caught2.getMessage === "Map(one -> 1, two -> 2) did not have size 3, but Map(one -> 1, two -> 2) had size 2")
+        assert(caught2.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Map(one -> 1, two -> 2)"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("Map(one -> 1, two -> 2)"), 2))))
 
         val caught3 = intercept[TestFailedException] {
           Map("one" -> 1, "two" -> 2) should (not have size (3) and not have size (2))
         }
-        assert(caught3.getMessage === "Map(one -> 1, two -> 2) did not have size 3, but Map(one -> 1, two -> 2) had size 2")
+        assert(caught3.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Map(one -> 1, two -> 2)"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("Map(one -> 1, two -> 2)"), 2))))
       }
 
       def `should throw an assertion error when set size matches and used in a logical-or expression with not` {
@@ -1282,7 +1282,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
            map should have size (3)
         }
-        assert(caught1.getMessage === map + " did not have size 3")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", map, 2, 3))
         // check((set: Map[String]) => throwsTestFailedException(set should have size (set.size + 1)))
       }
 
@@ -1291,7 +1291,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           map should have size (-2)
         }
-        assert(caught1.getMessage === map + " did not have size -2")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", map, 2, -2))
         // check((set: Map[Int]) => throwsTestFailedException(set should have size (if (set.size == 0) -1 else -set.size)))
       }
 
@@ -1300,19 +1300,19 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           map1 should { have size (5) and (have size (2 - 1)) }
         }
-        assert(caught1.getMessage === map1 + " did not have size 5")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", map1, 2, 5))
 
         val map2 = mutable.Map("one" -> 1, "two" -> 2)
         val caught2 = intercept[TestFailedException] {
           map2 should ((have size (5)) and (have size (2 - 1)))
         }
-        assert(caught2.getMessage === map2 + " did not have size 5")
+        assert(caught2.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", map2, 2, 5))
 
         val map3 = mutable.Map("one" -> 1, "two" -> 2)
         val caught3 = intercept[TestFailedException] {
           map3 should (have size (5) and have size (2 - 1))
         }
-        assert(caught3.getMessage === map3 + " did not have size 5")
+        assert(caught3.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", map3, 2, 5))
       }
 
       def `should throw an assertion error when set size doesn't match and used in a logical-or expression` {
@@ -1320,19 +1320,19 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           map1 should { have size (55) or (have size (22)) }
         }
-        assert(caught1.getMessage === map1 + " did not have size 55, and " + map1 + " did not have size 22")
+        assert(caught1.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", map1, 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", map1, 2, 22))))
 
         val map2 = mutable.Map("one" -> 1, "two" -> 2)
         val caught2 = intercept[TestFailedException] {
           map2 should ((have size (55)) or (have size (22)))
         }
-        assert(caught2.getMessage === map2 + " did not have size 55, and " + map2 + " did not have size 22")
+        assert(caught2.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", map2, 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", map2, 2, 22))))
 
         val map3 = mutable.Map("one" -> 1, "two" -> 2)
         val caught3 = intercept[TestFailedException] {
           map3 should (have size (55) or have size (22))
         }
-        assert(caught3.getMessage === map3 + " did not have size 55, and " + map3 + " did not have size 22")
+        assert(caught3.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", map3, 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", map3, 2, 22))))
       }
 
       def `should throw an assertion error when set size matches and used in a logical-and expression with not` {
@@ -1340,19 +1340,19 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
            map1 should { not { have size (3) } and not { have size (2) }}
         }
-        assert(caught1.getMessage === map1 + " did not have size 3, but " + map1 + " had size 2")
+        assert(caught1.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", map1, 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", map1, 2, 2))))
         
         val map2 = mutable.Map("one" -> 1, "two" -> 2)
         val caught2 = intercept[TestFailedException] {
           map2 should ((not have size (3)) and (not have size (2)))
         }
-        assert(caught2.getMessage === map2 + " did not have size 3, but " + map2 + " had size 2")
+        assert(caught2.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", map2, 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", map2, 2, 2))))
         
         val map3 = mutable.Map("one" -> 1, "two" -> 2)
         val caught3 = intercept[TestFailedException] {
           map3 should (not have size (3) and not have size (2))
         }
-        assert(caught3.getMessage === map3 + " did not have size 3, but " + map3 + " had size 2")
+        assert(caught3.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", map3, 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", map3, 2, 2))))
       }
 
       def `should throw an assertion error when set size matches and used in a logical-or expression with not` {
@@ -1424,7 +1424,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           map should have size (3)
         }
-        assert(caught1.getMessage === "Map(one -> 1, two -> 2) did not have size 3")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Map(one -> 1, two -> 2)"), 2, 3))
         // check((set: Map[String]) => throwsTestFailedException(set should have size (set.size + 1)))
       }
 
@@ -1432,7 +1432,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           map should have size (-2)
         }
-        assert(caught1.getMessage === "Map(one -> 1, two -> 2) did not have size -2")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Map(one -> 1, two -> 2)"), 2, -2))
         // check((set: Map[Int]) => throwsTestFailedException(set should have size (if (set.size == 0) -1 else -set.size)))
       }
 
@@ -1441,17 +1441,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           map should { have size (5) and (have size (2 - 1)) }
         }
-        assert(caught1.getMessage === "Map(one -> 1, two -> 2) did not have size 5")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Map(one -> 1, two -> 2)"), 2, 5))
 
         val caught2 = intercept[TestFailedException] {
           map should ((have size (5)) and (have size (2 - 1)))
         }
-        assert(caught2.getMessage === "Map(one -> 1, two -> 2) did not have size 5")
+        assert(caught2.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Map(one -> 1, two -> 2)"), 2, 5))
 
         val caught3 = intercept[TestFailedException] {
           map should (have size (5) and have size (2 - 1))
         }
-        assert(caught3.getMessage === "Map(one -> 1, two -> 2) did not have size 5")
+        assert(caught3.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Map(one -> 1, two -> 2)"), 2, 5))
       }
 
       def `should throw an assertion error when set size doesn't match and used in a logical-or expression` {
@@ -1459,17 +1459,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           map should { have size (55) or (have size (22)) }
         }
-        assert(caught1.getMessage === "Map(one -> 1, two -> 2) did not have size 55, and Map(one -> 1, two -> 2) did not have size 22")
+        assert(caught1.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Map(one -> 1, two -> 2)"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Map(one -> 1, two -> 2)"), 2, 22))))
 
         val caught2 = intercept[TestFailedException] {
           map should ((have size (55)) or (have size (22)))
         }
-        assert(caught2.getMessage === "Map(one -> 1, two -> 2) did not have size 55, and Map(one -> 1, two -> 2) did not have size 22")
+        assert(caught2.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Map(one -> 1, two -> 2)"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Map(one -> 1, two -> 2)"), 2, 22))))
 
         val caught3 = intercept[TestFailedException] {
           map should (have size (55) or have size (22))
         }
-        assert(caught3.getMessage === "Map(one -> 1, two -> 2) did not have size 55, and Map(one -> 1, two -> 2) did not have size 22")
+        assert(caught3.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Map(one -> 1, two -> 2)"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Map(one -> 1, two -> 2)"), 2, 22))))
       }
 
       def `should throw an assertion error when set size matches and used in a logical-and expression with not` {
@@ -1477,17 +1477,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           map should { not { have size (3) } and not { have size (2) }}
         }
-        assert(caught1.getMessage === "Map(one -> 1, two -> 2) did not have size 3, but Map(one -> 1, two -> 2) had size 2")
+        assert(caught1.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Map(one -> 1, two -> 2)"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("Map(one -> 1, two -> 2)"), 2))))
 
         val caught2 = intercept[TestFailedException] {
           map should ((not have size (3)) and (not have size (2)))
         }
-        assert(caught2.getMessage === "Map(one -> 1, two -> 2) did not have size 3, but Map(one -> 1, two -> 2) had size 2")
+        assert(caught2.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Map(one -> 1, two -> 2)"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("Map(one -> 1, two -> 2)"), 2))))
 
         val caught3 = intercept[TestFailedException] {
           map should (not have size (3) and not have size (2))
         }
-        assert(caught3.getMessage === "Map(one -> 1, two -> 2) did not have size 3, but Map(one -> 1, two -> 2) had size 2")
+        assert(caught3.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Map(one -> 1, two -> 2)"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("Map(one -> 1, two -> 2)"), 2))))
       }
 
       def `should throw an assertion error when set size matches and used in a logical-or expression with not` {
@@ -1554,90 +1554,77 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
       }
 
       def `should throw TestFailedException if set size does not match specified size` {
+        val map = HashMap("one" -> 1, "two" -> 2)
         val caught1 = intercept[TestFailedException] {
-          HashMap("one" -> 1, "two" -> 2) should have size (3)
+          map should have size (3)
         }
-        assert(caught1.getMessage startsWith "Map(")
-        assert(caught1.getMessage endsWith ") did not have size 3")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", map, 2, 3))
         // check((set: Map[String]) => throwsTestFailedException(set should have size (set.size + 1)))
       }
 
       def `should throw TestFailedException with normal error message if specified size is negative` {
+        val map = HashMap("one" -> 1, "two" -> 2)
         val caught1 = intercept[TestFailedException] {
-          HashMap("one" -> 1, "two" -> 2) should have size (-2)
+          map should have size (-2)
         }
-        assert(caught1.getMessage startsWith "Map(")
-        assert(caught1.getMessage endsWith ") did not have size -2")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", map, 2, -2))
         // check((set: Map[Int]) => throwsTestFailedException(set should have size (if (set.size == 0) -1 else -set.size)))
       }
 
       def `should throw an assertion error when set size doesn't match and used in a logical-and expression` {
-
+        val map = HashMap("one" -> 1, "two" -> 2)
         val caught1 = intercept[TestFailedException] {
-          HashMap("one" -> 1, "two" -> 2) should { have size (5) and (have size (2 - 1)) }
+          map should { have size (5) and (have size (2 - 1)) }
         }
-        assert(caught1.getMessage startsWith "Map(")
-        assert(caught1.getMessage endsWith ") did not have size 5")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", map, 2, 5))
 
         val caught2 = intercept[TestFailedException] {
-          HashMap("one" -> 1, "two" -> 2) should ((have size (5)) and (have size (2 - 1)))
+          map should ((have size (5)) and (have size (2 - 1)))
         }
-        assert(caught2.getMessage startsWith "Map(")
-        assert(caught2.getMessage endsWith ") did not have size 5")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", map, 2, 5))
 
         val caught3 = intercept[TestFailedException] {
-          HashMap("one" -> 1, "two" -> 2) should (have size (5) and have size (2 - 1))
+          map should (have size (5) and have size (2 - 1))
         }
-        assert(caught3.getMessage startsWith "Map(")
-        assert(caught3.getMessage endsWith ") did not have size 5")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", map, 2, 5))
       }
 
       def `should throw an assertion error when set size doesn't match and used in a logical-or expression` {
-
+        val map = HashMap("one" -> 1, "two" -> 2)
+        
         val caught1 = intercept[TestFailedException] {
-          HashMap("one" -> 1, "two" -> 2) should { have size (55) or (have size (22)) }
+          map should { have size (55) or (have size (22)) }
         }
-        assert(caught1.getMessage startsWith "Map(")
-        assert(caught1.getMessage contains ") did not have size 55, and Map(")
-        assert(caught1.getMessage endsWith ") did not have size 22")
+        assert(caught1.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", map, 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", map, 2, 22))))
 
         val caught2 = intercept[TestFailedException] {
-          HashMap("one" -> 1, "two" -> 2) should ((have size (55)) or (have size (22)))
+          map should ((have size (55)) or (have size (22)))
         }
-        assert(caught2.getMessage startsWith "Map(")
-        assert(caught2.getMessage contains ") did not have size 55, and Map(")
-        assert(caught2.getMessage endsWith ") did not have size 22")
+        assert(caught1.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", map, 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", map, 2, 22))))
 
         val caught3 = intercept[TestFailedException] {
-          HashMap("one" -> 1, "two" -> 2) should (have size (55) or have size (22))
+          map should (have size (55) or have size (22))
         }
-        assert(caught3.getMessage startsWith "Map(")
-        assert(caught3.getMessage contains ") did not have size 55, and Map(")
-        assert(caught3.getMessage endsWith ") did not have size 22")
+        assert(caught1.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", map, 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", map, 2, 22))))
       }
 
       def `should throw an assertion error when set size matches and used in a logical-and expression with not` {
-
+        val map = HashMap("one" -> 1, "two" -> 2)
+        
         val caught1 = intercept[TestFailedException] {
-          HashMap("one" -> 1, "two" -> 2) should { not { have size (3) } and not { have size (2) }}
+          map should { not { have size (3) } and not { have size (2) }}
         }
-        assert(caught1.getMessage startsWith "Map(")
-        assert(caught1.getMessage contains ") did not have size 3, but Map(")
-        assert(caught1.getMessage endsWith ") had size 2")
+        assert(caught1.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", map, 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", map, 2))))
 
         val caught2 = intercept[TestFailedException] {
-          HashMap("one" -> 1, "two" -> 2) should ((not have size (3)) and (not have size (2)))
+          map should ((not have size (3)) and (not have size (2)))
         }
-        assert(caught2.getMessage startsWith "Map(")
-        assert(caught2.getMessage contains ") did not have size 3, but Map(")
-        assert(caught2.getMessage endsWith ") had size 2")
+        assert(caught1.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", map, 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", map, 2))))
 
         val caught3 = intercept[TestFailedException] {
-          HashMap("one" -> 1, "two" -> 2) should (not have size (3) and not have size (2))
+          map should (not have size (3) and not have size (2))
         }
-        assert(caught3.getMessage startsWith "Map(")
-        assert(caught3.getMessage contains ") did not have size 3, but Map(")
-        assert(caught3.getMessage endsWith ") had size 2")
+        assert(caught1.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", map, 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", map, 2))))
       }
 
       def `should throw an assertion error when set size matches and used in a logical-or expression with not` {
@@ -1714,7 +1701,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           map should have size (3)
         }
-        assert(caught1.getMessage === map + " did not have size 3")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", map, 2, 3))
         // check((set: Map[String]) => throwsTestFailedException(set should have size (set.size + 1)))
       }
 
@@ -1723,7 +1710,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           map should have size (-2)
         }
-        assert(caught1.getMessage === map + " did not have size -2")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", map, 2, -2))
         // check((set: Map[Int]) => throwsTestFailedException(set should have size (if (set.size == 0) -1 else -set.size)))
       }
 
@@ -1732,19 +1719,19 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
            map1 should { have size (5) and (have size (2 - 1)) }
         }
-        assert(caught1.getMessage === map1 + " did not have size 5")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", map1, 2, 5))
         
         val map2 = mutable.HashMap("one" -> 1, "two" -> 2)
         val caught2 = intercept[TestFailedException] {
            map2 should ((have size (5)) and (have size (2 - 1)))
         }
-        assert(caught2.getMessage === map2 + " did not have size 5")
+        assert(caught2.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", map2, 2, 5))
 
         val map3 = mutable.HashMap("one" -> 1, "two" -> 2)
         val caught3 = intercept[TestFailedException] {
           map3 should (have size (5) and have size (2 - 1))
         }
-        assert(caught3.getMessage === map3 + " did not have size 5")
+        assert(caught3.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", map3, 2, 5))
       }
 
       def `should throw an assertion error when set size doesn't match and used in a logical-or expression` {
@@ -1752,19 +1739,19 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           map1 should { have size (55) or (have size (22)) }
         }
-        assert(caught1.getMessage === map1 + " did not have size 55, and " + map1 + " did not have size 22")
+        assert(caught1.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", map1, 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", map1, 2, 22))))
 
         val map2 = mutable.HashMap("one" -> 1, "two" -> 2)
         val caught2 = intercept[TestFailedException] {
           map2 should ((have size (55)) or (have size (22)))
         }
-        assert(caught2.getMessage === map2 + " did not have size 55, and " + map2 + " did not have size 22")
+        assert(caught2.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", map2, 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", map2, 2, 22))))
 
         val map3 = mutable.HashMap("one" -> 1, "two" -> 2)
         val caught3 = intercept[TestFailedException] {
           map3 should (have size (55) or have size (22))
         }
-        assert(caught3.getMessage === map3 + " did not have size 55, and " + map3 + " did not have size 22")
+        assert(caught3.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", map3, 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", map3, 2, 22))))
       }
 
       def `should throw an assertion error when set size matches and used in a logical-and expression with not` {
@@ -1772,19 +1759,19 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           map1 should { not { have size (3) } and not { have size (2) }}
         }
-        assert(caught1.getMessage === map1 + " did not have size 3, but " + map1 + " had size 2")
+        assert(caught1.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", map1, 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", map1, 2))))
 
         val map2 = mutable.HashMap("one" -> 1, "two" -> 2)
         val caught2 = intercept[TestFailedException] {
           map2 should ((not have size (3)) and (not have size (2)))
         }
-        assert(caught2.getMessage === map2 + " did not have size 3, but " + map2 + " had size 2")
+        assert(caught2.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", map2, 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", map2, 2))))
 
         val map3 = mutable.HashMap("one" -> 1, "two" -> 2)
         val caught3 = intercept[TestFailedException] {
           map3 should (not have size (3) and not have size (2))
         }
-        assert(caught3.getMessage === map3 + " did not have size 3, but " + map3 + " had size 2")
+        assert(caught3.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", map3, 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", map3, 2))))
       }
 
       def `should throw an assertion error when set size matches and used in a logical-or expression with not` {
@@ -1857,16 +1844,16 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           javaSet should have size (3)
         }
-        caught1.getMessage should (be === "[2, 1] did not have size 3" or
-          be === "[1, 2] did not have size 3")
+        caught1.getMessage should (be === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("[2, 1]"), 2, 3) or
+          be === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("[1, 2]"), 2, 3))
       }
 
       def `should throw TestFailedException with normal error message if specified size is negative` {
         val caught1 = intercept[TestFailedException] {
           javaSet should have size (-2)
         }
-        caught1.getMessage should (be === "[2, 1] did not have size -2" or
-          be === "[1, 2] did not have size -2")
+        caught1.getMessage should (be === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("[2, 1]"), 2, -2) or
+          be === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("[1, 2]"), 2, -2))
       }
 
       def `should throw an assertion error when list size doesn't match and used in a logical-and expression` {
@@ -1874,20 +1861,20 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           javaSet should { have size (5) and (have size (2 - 1)) }
         }
-        caught1.getMessage should (be === "[2, 1] did not have size 5" or
-          be === "[1, 2] did not have size 5")
+        caught1.getMessage should (be === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("[2, 1]"), 2, 5) or
+          be === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("[1, 2]"), 2, 5))
 
         val caught2 = intercept[TestFailedException] {
           javaSet should ((have size (5)) and (have size (2 - 1)))
         }
-        caught2.getMessage should (be === "[2, 1] did not have size 5" or
-          be === "[1, 2] did not have size 5")
+        caught2.getMessage should (be === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("[2, 1]"), 2, 5) or
+          be === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("[1, 2]"), 2, 5))
 
         val caught3 = intercept[TestFailedException] {
           javaSet should (have size (5) and have size (2 - 1))
         }
-        caught3.getMessage should (be === "[2, 1] did not have size 5" or
-          be === "[1, 2] did not have size 5")
+        caught3.getMessage should (be === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("[2, 1]"), 2, 5) or
+          be === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("[1, 2]"), 2, 5))
       }
 
       def `should throw an assertion error when list size doesn't match and used in a logical-or expression` {
@@ -1895,20 +1882,20 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           javaSet should { have size (55) or (have size (22)) }
         }
-        caught1.getMessage should (be === "[2, 1] did not have size 55, and [2, 1] did not have size 22" or
-          be === "[1, 2] did not have size 55, and [1, 2] did not have size 22")
+        caught1.getMessage should (be === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("[2, 1]"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("[2, 1]"), 2, 22))) or
+          be === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("[1, 2]"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("[1, 2]"), 2, 22))))
 
         val caught2 = intercept[TestFailedException] {
           javaSet should ((have size (55)) or (have size (22)))
         }
-        caught2.getMessage should (be === "[2, 1] did not have size 55, and [2, 1] did not have size 22" or
-          be === "[1, 2] did not have size 55, and [1, 2] did not have size 22")
+        caught2.getMessage should (be === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("[2, 1]"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("[2, 1]"), 2, 22))) or
+          be === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("[1, 2]"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("[1, 2]"), 2, 22))))
 
         val caught3 = intercept[TestFailedException] {
           javaSet should (have size (55) or have size (22))
         }
-        caught3.getMessage should (be === "[2, 1] did not have size 55, and [2, 1] did not have size 22" or
-          be === "[1, 2] did not have size 55, and [1, 2] did not have size 22")
+        caught3.getMessage should (be === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("[2, 1]"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("[2, 1]"), 2, 22))) or
+          be === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("[1, 2]"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("[1, 2]"), 2, 22))))
       }
 
       def `should throw an assertion error when list size matches and used in a logical-and expression with not` {
@@ -1916,20 +1903,20 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           javaSet should { not { have size (3) } and not { have size (2) }}
         }
-        caught1.getMessage should (be === "[2, 1] did not have size 3, but [2, 1] had size 2" or
-          be === "[1, 2] did not have size 3, but [1, 2] had size 2")
+        caught1.getMessage should (be === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("[2, 1]"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("[2, 1]"), 2))) or
+          be === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("[1, 2]"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("[1, 2]"), 2))))
 
         val caught2 = intercept[TestFailedException] {
           javaSet should ((not have size (3)) and (not have size (2)))
         }
-        caught2.getMessage should (be === "[2, 1] did not have size 3, but [2, 1] had size 2" or
-          be === "[1, 2] did not have size 3, but [1, 2] had size 2")
+        caught2.getMessage should (be === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("[2, 1]"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("[2, 1]"), 2))) or
+          be === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("[1, 2]"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("[1, 2]"), 2))))
 
         val caught3 = intercept[TestFailedException] {
           javaSet should (not have size (3) and not have size (2))
         }
-        caught3.getMessage should (be === "[2, 1] did not have size 3, but [2, 1] had size 2" or
-          be === "[1, 2] did not have size 3, but [1, 2] had size 2")
+        caught3.getMessage should (be === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("[2, 1]"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("[2, 1]"), 2))) or
+          be === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("[1, 2]"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("[1, 2]"), 2))))
       }
 
       def `should throw an assertion error when list size matches and used in a logical-or expression with not` {
@@ -1998,16 +1985,16 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           javaMap should have size (3)
         }
-        caught1.getMessage should (be === "{one=1, two=2} did not have size 3" or
-          be === "{two=2, one=1} did not have size 3")
+        caught1.getMessage should (be === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("{one=1, two=2}"), 2, 3) or
+          be === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("{two=2, one=1}"), 2, 3))
       }
 
       def `should throw TestFailedException with normal error message if specified size is negative` {
         val caught1 = intercept[TestFailedException] {
           javaMap should have size (-2)
         }
-        caught1.getMessage should (be === "{one=1, two=2} did not have size -2" or
-          be === "{two=2, one=1} did not have size -2")
+        caught1.getMessage should (be === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("{one=1, two=2}"), 2, -2) or
+          be === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("{two=2, one=1}"), 2, -2))
       }
 
       def `should throw an assertion error when list size doesn't match and used in a logical-and expression` {
@@ -2015,20 +2002,20 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           javaMap should { have size (5) and (have size (2 - 1)) }
         }
-        caught1.getMessage should (be === "{one=1, two=2} did not have size 5" or
-          be === "{two=2, one=1} did not have size 5")
+        caught1.getMessage should (be === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("{one=1, two=2}"), 2, 5) or
+          be === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("{two=2, one=1}"), 2, 5))
 
         val caught2 = intercept[TestFailedException] {
           javaMap should ((have size (5)) and (have size (2 - 1)))
         }
-        caught2.getMessage should (be === "{one=1, two=2} did not have size 5" or
-          be === "{two=2, one=1} did not have size 5")
+        caught2.getMessage should (be === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("{one=1, two=2}"), 2, 5) or
+          be === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("{two=2, one=1}"), 2, 5))
 
         val caught3 = intercept[TestFailedException] {
           javaMap should (have size (5) and have size (2 - 1))
         }
-        caught3.getMessage should (be === "{one=1, two=2} did not have size 5" or
-          be === "{two=2, one=1} did not have size 5")
+        caught3.getMessage should (be === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("{one=1, two=2}"), 2, 5) or
+          be === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("{two=2, one=1}"), 2, 5))
       }
 
       def `should throw an assertion error when list size doesn't match and used in a logical-or expression` {
@@ -2036,20 +2023,20 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           javaMap should { have size (55) or (have size (22)) }
         }
-        caught1.getMessage should (be === "{one=1, two=2} did not have size 55, and {one=1, two=2} did not have size 22" or
-          be === "{two=2, one=1} did not have size 55, and {two=2, one=1} did not have size 22")
+        caught1.getMessage should (be === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("{one=1, two=2}"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("{one=1, two=2}"), 2, 22))) or
+          be === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("{two=2, one=1}"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("{two=2, one=1}"), 2, 22))))
 
         val caught2 = intercept[TestFailedException] {
           javaMap should ((have size (55)) or (have size (22)))
         }
-        caught2.getMessage should (be === "{one=1, two=2} did not have size 55, and {one=1, two=2} did not have size 22" or
-          be === "{two=2, one=1} did not have size 55, and {two=2, one=1} did not have size 22")
+        caught2.getMessage should (be === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("{one=1, two=2}"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("{one=1, two=2}"), 2, 22))) or
+          be === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("{two=2, one=1}"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("{two=2, one=1}"), 2, 22))))
 
         val caught3 = intercept[TestFailedException] {
           javaMap should (have size (55) or have size (22))
         }
-        caught3.getMessage should (be === "{one=1, two=2} did not have size 55, and {one=1, two=2} did not have size 22" or
-          be === "{two=2, one=1} did not have size 55, and {two=2, one=1} did not have size 22")
+        caught3.getMessage should (be === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("{one=1, two=2}"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("{one=1, two=2}"), 2, 22))) or
+          be === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("{two=2, one=1}"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("{two=2, one=1}"), 2, 22))))
       }
 
       def `should throw an assertion error when list size matches and used in a logical-and expression with not` {
@@ -2057,20 +2044,20 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           javaMap should { not { have size (3) } and not { have size (2) }}
         }
-        caught1.getMessage should (be === "{one=1, two=2} did not have size 3, but {one=1, two=2} had size 2" or
-          be === "{two=2, one=1} did not have size 3, but {two=2, one=1} had size 2")
+        caught1.getMessage should (be === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("{one=1, two=2}"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("{one=1, two=2}"), 2))) or
+          be === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("{two=2, one=1}"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("{two=2, one=1}"), 2))))
 
         val caught2 = intercept[TestFailedException] {
           javaMap should ((not have size (3)) and (not have size (2)))
         }
-        caught2.getMessage should (be === "{one=1, two=2} did not have size 3, but {one=1, two=2} had size 2" or
-          be === "{two=2, one=1} did not have size 3, but {two=2, one=1} had size 2")
+        caught2.getMessage should (be === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("{one=1, two=2}"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("{one=1, two=2}"), 2))) or
+          be === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("{two=2, one=1}"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("{two=2, one=1}"), 2))))
 
         val caught3 = intercept[TestFailedException] {
           javaMap should (not have size (3) and not have size (2))
         }
-        caught3.getMessage should (be === "{one=1, two=2} did not have size 3, but {one=1, two=2} had size 2" or
-          be === "{two=2, one=1} did not have size 3, but {two=2, one=1} had size 2")
+        caught3.getMessage should (be === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("{one=1, two=2}"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("{one=1, two=2}"), 2))) or
+          be === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("{two=2, one=1}"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("{two=2, one=1}"), 2))))
       }
 
       def `should throw an assertion error when list size matches and used in a logical-or expression with not` {
@@ -2148,7 +2135,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should have size (3)
         }
-        assert(caught1.getMessage === "sizey did not have size 3")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3))
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (len + 1)))
       }
   
@@ -2156,7 +2143,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should have size (-2)
         }
-        assert(caught1.getMessage === "sizey did not have size -2")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, -2))
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
   
@@ -2165,17 +2152,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should { have size (5) and (have size (2 - 1)) }
         }
-        assert(caught1.getMessage === "sizey did not have size 5")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 5))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((have size (5)) and (have size (2 - 1)))
         }
-        assert(caught2.getMessage === "sizey did not have size 5")
+        assert(caught2.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 5))
 
         val caught3 = intercept[TestFailedException] {
           obj should (have size (5) and have size (2 - 1))
         }
-        assert(caught3.getMessage === "sizey did not have size 5")
+        assert(caught3.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 5))
       }
   
       def `should throw an assertion error when object size doesn't match and used in a logical-or expression` {
@@ -2183,17 +2170,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should { have size (55) or (have size (22)) }
         }
-        assert(caught1.getMessage === "sizey did not have size 55, and sizey did not have size 22")
+        assert(caught1.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 22))))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((have size (55)) or (have size (22)))
         }
-        assert(caught2.getMessage === "sizey did not have size 55, and sizey did not have size 22")
+        assert(caught2.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 22))))
 
         val caught3 = intercept[TestFailedException] {
           obj should (have size (55) or have size (22))
         }
-        assert(caught3.getMessage === "sizey did not have size 55, and sizey did not have size 22")
+        assert(caught3.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 22))))
       }
   
       def `should throw an assertion error when object size matches and used in a logical-and expression with not` {
@@ -2201,17 +2188,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (3) } and not { have size (2) }}
         }
-        assert(caught1.getMessage === "sizey did not have size 3, but sizey had size 2")
+        assert(caught1.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("sizey"), 2))))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((not have size (3)) and (not have size (2)))
         }
-        assert(caught2.getMessage === "sizey did not have size 3, but sizey had size 2")
+        assert(caught2.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("sizey"), 2))))
 
         val caught3 = intercept[TestFailedException] {
           obj should (not have size (3) and not have size (2))
         }
-        assert(caught3.getMessage === "sizey did not have size 3, but sizey had size 2")
+        assert(caught3.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("sizey"), 2))))
       }
   
       def `should throw an assertion error when object size matches and used in a logical-or expression with not` {
@@ -2284,7 +2271,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should have size (3)
         }
-        assert(caught1.getMessage === "sizey did not have size 3")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3))
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (len + 1)))
       }
 
@@ -2292,7 +2279,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should have size (-2)
         }
-        assert(caught1.getMessage === "sizey did not have size -2")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, -2))
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
@@ -2301,17 +2288,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should { have size (5) and (have size (2 - 1)) }
         }
-        assert(caught1.getMessage === "sizey did not have size 5")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 5))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((have size (5)) and (have size (2 - 1)))
         }
-        assert(caught2.getMessage === "sizey did not have size 5")
+        assert(caught2.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 5))
 
         val caught3 = intercept[TestFailedException] {
           obj should (have size (5) and have size (2 - 1))
         }
-        assert(caught3.getMessage === "sizey did not have size 5")
+        assert(caught3.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 5))
       }
 
       def `should throw an assertion error when object size doesn't match and used in a logical-or expression` {
@@ -2319,17 +2306,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should { have size (55) or (have size (22)) }
         }
-        assert(caught1.getMessage === "sizey did not have size 55, and sizey did not have size 22")
+        assert(caught1.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 22))))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((have size (55)) or (have size (22)))
         }
-        assert(caught2.getMessage === "sizey did not have size 55, and sizey did not have size 22")
+        assert(caught2.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 22))))
 
         val caught3 = intercept[TestFailedException] {
           obj should (have size (55) or have size (22))
         }
-        assert(caught3.getMessage === "sizey did not have size 55, and sizey did not have size 22")
+        assert(caught3.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 22))))
       }
 
       def `should throw an assertion error when object size matches and used in a logical-and expression with not` {
@@ -2337,17 +2324,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (3) } and not { have size (2) }}
         }
-        assert(caught1.getMessage === "sizey did not have size 3, but sizey had size 2")
+        assert(caught1.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("sizey"), 2))))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((not have size (3)) and (not have size (2)))
         }
-        assert(caught2.getMessage === "sizey did not have size 3, but sizey had size 2")
+        assert(caught2.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("sizey"), 2))))
 
         val caught3 = intercept[TestFailedException] {
           obj should (not have size (3) and not have size (2))
         }
-        assert(caught3.getMessage === "sizey did not have size 3, but sizey had size 2")
+        assert(caught3.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("sizey"), 2))))
       }
 
       def `should throw an assertion error when object size matches and used in a logical-or expression with not` {
@@ -2420,7 +2407,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should have size (3)
         }
-        assert(caught1.getMessage === "sizey did not have size 3")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3))
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (len + 1)))
       }
 
@@ -2428,7 +2415,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should have size (-2)
         }
-        assert(caught1.getMessage === "sizey did not have size -2")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, -2))
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
@@ -2437,17 +2424,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should { have size (5) and (have size (2 - 1)) }
         }
-        assert(caught1.getMessage === "sizey did not have size 5")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 5))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((have size (5)) and (have size (2 - 1)))
         }
-        assert(caught2.getMessage === "sizey did not have size 5")
+        assert(caught2.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 5))
 
         val caught3 = intercept[TestFailedException] {
           obj should (have size (5) and have size (2 - 1))
         }
-        assert(caught3.getMessage === "sizey did not have size 5")
+        assert(caught3.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 5))
       }
 
       def `should throw an assertion error when object size doesn't match and used in a logical-or expression` {
@@ -2455,17 +2442,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should { have size (55) or (have size (22)) }
         }
-        assert(caught1.getMessage === "sizey did not have size 55, and sizey did not have size 22")
+        assert(caught1.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 22))))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((have size (55)) or (have size (22)))
         }
-        assert(caught2.getMessage === "sizey did not have size 55, and sizey did not have size 22")
+        assert(caught2.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 22))))
 
         val caught3 = intercept[TestFailedException] {
           obj should (have size (55) or have size (22))
         }
-        assert(caught3.getMessage === "sizey did not have size 55, and sizey did not have size 22")
+        assert(caught3.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 22))))
       }
 
       def `should throw an assertion error when object size matches and used in a logical-and expression with not` {
@@ -2473,17 +2460,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (3) } and not { have size (2) }}
         }
-        assert(caught1.getMessage === "sizey did not have size 3, but sizey had size 2")
+        assert(caught1.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("sizey"), 2))))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((not have size (3)) and (not have size (2)))
         }
-        assert(caught2.getMessage === "sizey did not have size 3, but sizey had size 2")
+        assert(caught2.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("sizey"), 2))))
 
         val caught3 = intercept[TestFailedException] {
           obj should (not have size (3) and not have size (2))
         }
-        assert(caught3.getMessage === "sizey did not have size 3, but sizey had size 2")
+        assert(caught3.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("sizey"), 2))))
       }
 
       def `should throw an assertion error when object size matches and used in a logical-or expression with not` {
@@ -2556,7 +2543,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should have size (3)
         }
-        assert(caught1.getMessage === "sizey did not have size 3")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3))
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (len + 1)))
       }
 
@@ -2564,7 +2551,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should have size (-2)
         }
-        assert(caught1.getMessage === "sizey did not have size -2")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, -2))
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
@@ -2573,17 +2560,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should { have size (5) and (have size (2 - 1)) }
         }
-        assert(caught1.getMessage === "sizey did not have size 5")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 5))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((have size (5)) and (have size (2 - 1)))
         }
-        assert(caught2.getMessage === "sizey did not have size 5")
+        assert(caught2.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 5))
 
         val caught3 = intercept[TestFailedException] {
           obj should (have size (5) and have size (2 - 1))
         }
-        assert(caught3.getMessage === "sizey did not have size 5")
+        assert(caught3.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 5))
       }
 
       def `should throw an assertion error when object size doesn't match and used in a logical-or expression` {
@@ -2591,17 +2578,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should { have size (55) or (have size (22)) }
         }
-        assert(caught1.getMessage === "sizey did not have size 55, and sizey did not have size 22")
+        assert(caught1.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 22))))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((have size (55)) or (have size (22)))
         }
-        assert(caught2.getMessage === "sizey did not have size 55, and sizey did not have size 22")
+        assert(caught2.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 22))))
 
         val caught3 = intercept[TestFailedException] {
           obj should (have size (55) or have size (22))
         }
-        assert(caught3.getMessage === "sizey did not have size 55, and sizey did not have size 22")
+        assert(caught3.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 22))))
       }
 
       def `should throw an assertion error when object size matches and used in a logical-and expression with not` {
@@ -2609,17 +2596,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (3) } and not { have size (2) }}
         }
-        assert(caught1.getMessage === "sizey did not have size 3, but sizey had size 2")
+        assert(caught1.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("sizey"), 2))))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((not have size (3)) and (not have size (2)))
         }
-        assert(caught2.getMessage === "sizey did not have size 3, but sizey had size 2")
+        assert(caught2.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("sizey"), 2))))
 
         val caught3 = intercept[TestFailedException] {
           obj should (not have size (3) and not have size (2))
         }
-        assert(caught3.getMessage === "sizey did not have size 3, but sizey had size 2")
+        assert(caught3.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("sizey"), 2))))
       }
 
       def `should throw an assertion error when object size matches and used in a logical-or expression with not` {
@@ -2692,7 +2679,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should have size (3)
         }
-        assert(caught1.getMessage === "sizey did not have size 3")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3))
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (len + 1)))
       }
 
@@ -2700,7 +2687,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should have size (-2)
         }
-        assert(caught1.getMessage === "sizey did not have size -2")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, -2))
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
@@ -2709,17 +2696,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should { have size (5) and (have size (2 - 1)) }
         }
-        assert(caught1.getMessage === "sizey did not have size 5")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 5))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((have size (5)) and (have size (2 - 1)))
         }
-        assert(caught2.getMessage === "sizey did not have size 5")
+        assert(caught2.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 5))
 
         val caught3 = intercept[TestFailedException] {
           obj should (have size (5) and have size (2 - 1))
         }
-        assert(caught3.getMessage === "sizey did not have size 5")
+        assert(caught3.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 5))
       }
 
       def `should throw an assertion error when object size doesn't match and used in a logical-or expression` {
@@ -2727,17 +2714,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should { have size (55) or (have size (22)) }
         }
-        assert(caught1.getMessage === "sizey did not have size 55, and sizey did not have size 22")
+        assert(caught1.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 22))))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((have size (55)) or (have size (22)))
         }
-        assert(caught2.getMessage === "sizey did not have size 55, and sizey did not have size 22")
+        assert(caught2.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 22))))
 
         val caught3 = intercept[TestFailedException] {
           obj should (have size (55) or have size (22))
         }
-        assert(caught3.getMessage === "sizey did not have size 55, and sizey did not have size 22")
+        assert(caught3.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 22))))
       }
 
       def `should throw an assertion error when object size matches and used in a logical-and expression with not` {
@@ -2745,17 +2732,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (3) } and not { have size (2) }}
         }
-        assert(caught1.getMessage === "sizey did not have size 3, but sizey had size 2")
+        assert(caught1.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("sizey"), 2))))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((not have size (3)) and (not have size (2)))
         }
-        assert(caught2.getMessage === "sizey did not have size 3, but sizey had size 2")
+        assert(caught2.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("sizey"), 2))))
 
         val caught3 = intercept[TestFailedException] {
           obj should (not have size (3) and not have size (2))
         }
-        assert(caught3.getMessage === "sizey did not have size 3, but sizey had size 2")
+        assert(caught3.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("sizey"), 2))))
       }
 
       def `should throw an assertion error when object size matches and used in a logical-or expression with not` {
@@ -2828,7 +2815,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should have size (3)
         }
-        assert(caught1.getMessage === "sizey did not have size 3")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3))
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (len + 1)))
       }
 
@@ -2836,7 +2823,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should have size (-2)
         }
-        assert(caught1.getMessage === "sizey did not have size -2")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, -2))
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
@@ -2845,17 +2832,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should { have size (5) and (have size (2 - 1)) }
         }
-        assert(caught1.getMessage === "sizey did not have size 5")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 5))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((have size (5)) and (have size (2 - 1)))
         }
-        assert(caught2.getMessage === "sizey did not have size 5")
+        assert(caught2.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 5))
 
         val caught3 = intercept[TestFailedException] {
           obj should (have size (5) and have size (2 - 1))
         }
-        assert(caught3.getMessage === "sizey did not have size 5")
+        assert(caught3.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 5))
       }
 
       def `should throw an assertion error when object size doesn't match and used in a logical-or expression` {
@@ -2863,17 +2850,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should { have size (55) or (have size (22)) }
         }
-        assert(caught1.getMessage === "sizey did not have size 55, and sizey did not have size 22")
+        assert(caught1.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 22))))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((have size (55)) or (have size (22)))
         }
-        assert(caught2.getMessage === "sizey did not have size 55, and sizey did not have size 22")
+        assert(caught2.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 22))))
 
         val caught3 = intercept[TestFailedException] {
           obj should (have size (55) or have size (22))
         }
-        assert(caught3.getMessage === "sizey did not have size 55, and sizey did not have size 22")
+        assert(caught3.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 22))))
       }
 
       def `should throw an assertion error when object size matches and used in a logical-and expression with not` {
@@ -2881,17 +2868,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (3) } and not { have size (2) }}
         }
-        assert(caught1.getMessage === "sizey did not have size 3, but sizey had size 2")
+        assert(caught1.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("sizey"), 2))))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((not have size (3)) and (not have size (2)))
         }
-        assert(caught2.getMessage === "sizey did not have size 3, but sizey had size 2")
+        assert(caught2.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("sizey"), 2))))
 
         val caught3 = intercept[TestFailedException] {
           obj should (not have size (3) and not have size (2))
         }
-        assert(caught3.getMessage === "sizey did not have size 3, but sizey had size 2")
+        assert(caught3.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("sizey"), 2))))
       }
 
       def `should throw an assertion error when object size matches and used in a logical-or expression with not` {
@@ -2970,7 +2957,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should have size (3)
         }
-        assert(caught1.getMessage === "sizey did not have size 3")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3))
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (len + 1)))
       }
 
@@ -2978,7 +2965,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should have size (-2)
         }
-        assert(caught1.getMessage === "sizey did not have size -2")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, -2))
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
@@ -2987,17 +2974,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should { have size (5) and (have size (2 - 1)) }
         }
-        assert(caught1.getMessage === "sizey did not have size 5")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 5))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((have size (5)) and (have size (2 - 1)))
         }
-        assert(caught2.getMessage === "sizey did not have size 5")
+        assert(caught2.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 5))
 
         val caught3 = intercept[TestFailedException] {
           obj should (have size (5) and have size (2 - 1))
         }
-        assert(caught3.getMessage === "sizey did not have size 5")
+        assert(caught3.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 5))
       }
 
       def `should throw an assertion error when object size doesn't match and used in a logical-or expression` {
@@ -3005,17 +2992,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should { have size (55) or (have size (22)) }
         }
-        assert(caught1.getMessage === "sizey did not have size 55, and sizey did not have size 22")
+        assert(caught1.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 22))))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((have size (55)) or (have size (22)))
         }
-        assert(caught2.getMessage === "sizey did not have size 55, and sizey did not have size 22")
+        assert(caught2.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 22))))
 
         val caught3 = intercept[TestFailedException] {
           obj should (have size (55) or have size (22))
         }
-        assert(caught3.getMessage === "sizey did not have size 55, and sizey did not have size 22")
+        assert(caught3.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 22))))
       }
 
       def `should throw an assertion error when object size matches and used in a logical-and expression with not` {
@@ -3023,17 +3010,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (3) } and not { have size (2) }}
         }
-        assert(caught1.getMessage === "sizey did not have size 3, but sizey had size 2")
+        assert(caught1.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("sizey"), 2))))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((not have size (3)) and (not have size (2)))
         }
-        assert(caught2.getMessage === "sizey did not have size 3, but sizey had size 2")
+        assert(caught2.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("sizey"), 2))))
 
         val caught3 = intercept[TestFailedException] {
           obj should (not have size (3) and not have size (2))
         }
-        assert(caught3.getMessage === "sizey did not have size 3, but sizey had size 2")
+        assert(caught3.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("sizey"), 2))))
       }
 
       def `should throw an assertion error when object size matches and used in a logical-or expression with not` {
@@ -3110,7 +3097,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should have size (3)
         }
-        assert(caught1.getMessage === "sizey did not have size 3")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3))
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (len + 1)))
       }
 
@@ -3118,7 +3105,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should have size (-2)
         }
-        assert(caught1.getMessage === "sizey did not have size -2")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, -2))
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
@@ -3127,17 +3114,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should { have size (5) and (have size (2 - 1)) }
         }
-        assert(caught1.getMessage === "sizey did not have size 5")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 5))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((have size (5)) and (have size (2 - 1)))
         }
-        assert(caught2.getMessage === "sizey did not have size 5")
+        assert(caught2.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 5))
 
         val caught3 = intercept[TestFailedException] {
           obj should (have size (5) and have size (2 - 1))
         }
-        assert(caught3.getMessage === "sizey did not have size 5")
+        assert(caught3.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 5))
       }
 
       def `should throw an assertion error when object size doesn't match and used in a logical-or expression` {
@@ -3145,17 +3132,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should { have size (55) or (have size (22)) }
         }
-        assert(caught1.getMessage === "sizey did not have size 55, and sizey did not have size 22")
+        assert(caught1.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 22))))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((have size (55)) or (have size (22)))
         }
-        assert(caught2.getMessage === "sizey did not have size 55, and sizey did not have size 22")
+        assert(caught2.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 22))))
 
         val caught3 = intercept[TestFailedException] {
           obj should (have size (55) or have size (22))
         }
-        assert(caught3.getMessage === "sizey did not have size 55, and sizey did not have size 22")
+        assert(caught3.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 22))))
       }
 
       def `should throw an assertion error when object size matches and used in a logical-and expression with not` {
@@ -3163,17 +3150,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (3) } and not { have size (2) }}
         }
-        assert(caught1.getMessage === "sizey did not have size 3, but sizey had size 2")
+        assert(caught1.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("sizey"), 2))))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((not have size (3)) and (not have size (2)))
         }
-        assert(caught2.getMessage === "sizey did not have size 3, but sizey had size 2")
+        assert(caught2.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("sizey"), 2))))
 
         val caught3 = intercept[TestFailedException] {
           obj should (not have size (3) and not have size (2))
         }
-        assert(caught3.getMessage === "sizey did not have size 3, but sizey had size 2")
+        assert(caught3.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("sizey"), 2))))
       }
 
       def `should throw an assertion error when object size matches and used in a logical-or expression with not` {
@@ -3248,7 +3235,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should have size (3)
         }
-        assert(caught1.getMessage === "sizey did not have size 3")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3))
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (len + 1)))
       }
 
@@ -3256,7 +3243,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should have size (-2)
         }
-        assert(caught1.getMessage === "sizey did not have size -2")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, -2))
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
@@ -3265,17 +3252,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should { have size (5) and (have size (2 - 1)) }
         }
-        assert(caught1.getMessage === "sizey did not have size 5")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 5))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((have size (5)) and (have size (2 - 1)))
         }
-        assert(caught2.getMessage === "sizey did not have size 5")
+        assert(caught2.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 5))
 
         val caught3 = intercept[TestFailedException] {
           obj should (have size (5) and have size (2 - 1))
         }
-        assert(caught3.getMessage === "sizey did not have size 5")
+        assert(caught3.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 5))
       }
 
       def `should throw an assertion error when object size doesn't match and used in a logical-or expression` {
@@ -3283,17 +3270,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should { have size (55) or (have size (22)) }
         }
-        assert(caught1.getMessage === "sizey did not have size 55, and sizey did not have size 22")
+        assert(caught1.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 22))))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((have size (55)) or (have size (22)))
         }
-        assert(caught2.getMessage === "sizey did not have size 55, and sizey did not have size 22")
+        assert(caught2.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 22))))
 
         val caught3 = intercept[TestFailedException] {
           obj should (have size (55) or have size (22))
         }
-        assert(caught3.getMessage === "sizey did not have size 55, and sizey did not have size 22")
+        assert(caught3.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 22))))
       }
 
       def `should throw an assertion error when object size matches and used in a logical-and expression with not` {
@@ -3301,17 +3288,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (3) } and not { have size (2) }}
         }
-        assert(caught1.getMessage === "sizey did not have size 3, but sizey had size 2")
+        assert(caught1.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("sizey"), 2))))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((not have size (3)) and (not have size (2)))
         }
-        assert(caught2.getMessage === "sizey did not have size 3, but sizey had size 2")
+        assert(caught2.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("sizey"), 2))))
 
         val caught3 = intercept[TestFailedException] {
           obj should (not have size (3) and not have size (2))
         }
-        assert(caught3.getMessage === "sizey did not have size 3, but sizey had size 2")
+        assert(caught3.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("sizey"), 2))))
       }
 
       def `should throw an assertion error when object size matches and used in a logical-or expression with not` {
@@ -3388,7 +3375,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should have size (3)
         }
-        assert(caught1.getMessage === "sizey did not have size 3")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3))
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (len + 1)))
       }
 
@@ -3396,7 +3383,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should have size (-2)
         }
-        assert(caught1.getMessage === "sizey did not have size -2")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, -2))
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
@@ -3405,17 +3392,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should { have size (5) and (have size (2 - 1)) }
         }
-        assert(caught1.getMessage === "sizey did not have size 5")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 5))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((have size (5)) and (have size (2 - 1)))
         }
-        assert(caught2.getMessage === "sizey did not have size 5")
+        assert(caught2.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 5))
 
         val caught3 = intercept[TestFailedException] {
           obj should (have size (5) and have size (2 - 1))
         }
-        assert(caught3.getMessage === "sizey did not have size 5")
+        assert(caught3.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 5))
       }
 
       def `should throw an assertion error when object size doesn't match and used in a logical-or expression` {
@@ -3423,17 +3410,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should { have size (55) or (have size (22)) }
         }
-        assert(caught1.getMessage === "sizey did not have size 55, and sizey did not have size 22")
+        assert(caught1.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 22))))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((have size (55)) or (have size (22)))
         }
-        assert(caught2.getMessage === "sizey did not have size 55, and sizey did not have size 22")
+        assert(caught2.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 22))))
 
         val caught3 = intercept[TestFailedException] {
           obj should (have size (55) or have size (22))
         }
-        assert(caught3.getMessage === "sizey did not have size 55, and sizey did not have size 22")
+        assert(caught3.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 22))))
       }
 
       def `should throw an assertion error when object size matches and used in a logical-and expression with not` {
@@ -3441,17 +3428,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (3) } and not { have size (2) }}
         }
-        assert(caught1.getMessage === "sizey did not have size 3, but sizey had size 2")
+        assert(caught1.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("sizey"), 2))))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((not have size (3)) and (not have size (2)))
         }
-        assert(caught2.getMessage === "sizey did not have size 3, but sizey had size 2")
+        assert(caught2.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("sizey"), 2))))
 
         val caught3 = intercept[TestFailedException] {
           obj should (not have size (3) and not have size (2))
         }
-        assert(caught3.getMessage === "sizey did not have size 3, but sizey had size 2")
+        assert(caught3.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("sizey"), 2))))
       }
 
       def `should throw an assertion error when object size matches and used in a logical-or expression with not` {
@@ -3528,7 +3515,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should have size (3)
         }
-        assert(caught1.getMessage === "sizey did not have size 3")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3))
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (len + 1)))
       }
 
@@ -3536,7 +3523,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should have size (-2)
         }
-        assert(caught1.getMessage === "sizey did not have size -2")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, -2))
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
@@ -3545,17 +3532,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should { have size (5) and (have size (2 - 1)) }
         }
-        assert(caught1.getMessage === "sizey did not have size 5")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 5))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((have size (5)) and (have size (2 - 1)))
         }
-        assert(caught2.getMessage === "sizey did not have size 5")
+        assert(caught2.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 5))
 
         val caught3 = intercept[TestFailedException] {
           obj should (have size (5) and have size (2 - 1))
         }
-        assert(caught3.getMessage === "sizey did not have size 5")
+        assert(caught3.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 5))
       }
 
       def `should throw an assertion error when object size doesn't match and used in a logical-or expression` {
@@ -3563,17 +3550,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should { have size (55) or (have size (22)) }
         }
-        assert(caught1.getMessage === "sizey did not have size 55, and sizey did not have size 22")
+        assert(caught1.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 22))))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((have size (55)) or (have size (22)))
         }
-        assert(caught2.getMessage === "sizey did not have size 55, and sizey did not have size 22")
+        assert(caught2.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 22))))
 
         val caught3 = intercept[TestFailedException] {
           obj should (have size (55) or have size (22))
         }
-        assert(caught3.getMessage === "sizey did not have size 55, and sizey did not have size 22")
+        assert(caught3.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 22))))
       }
 
       def `should throw an assertion error when object size matches and used in a logical-and expression with not` {
@@ -3581,17 +3568,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (3) } and not { have size (2) }}
         }
-        assert(caught1.getMessage === "sizey did not have size 3, but sizey had size 2")
+        assert(caught1.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("sizey"), 2))))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((not have size (3)) and (not have size (2)))
         }
-        assert(caught2.getMessage === "sizey did not have size 3, but sizey had size 2")
+        assert(caught2.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("sizey"), 2))))
 
         val caught3 = intercept[TestFailedException] {
           obj should (not have size (3) and not have size (2))
         }
-        assert(caught3.getMessage === "sizey did not have size 3, but sizey had size 2")
+        assert(caught3.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("sizey"), 2))))
       }
 
       def `should throw an assertion error when object size matches and used in a logical-or expression with not` {
@@ -3668,7 +3655,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should have size (3)
         }
-        assert(caught1.getMessage === "sizey did not have size 3")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3))
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (len + 1)))
       }
 
@@ -3676,7 +3663,7 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should have size (-2)
         }
-        assert(caught1.getMessage === "sizey did not have size -2")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, -2))
         check((len: Int) => throwsTestFailedException(new Sizey(len) should have size (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
@@ -3685,17 +3672,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should { have size (5) and (have size (2 - 1)) }
         }
-        assert(caught1.getMessage === "sizey did not have size 5")
+        assert(caught1.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 5))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((have size (5)) and (have size (2 - 1)))
         }
-        assert(caught2.getMessage === "sizey did not have size 5")
+        assert(caught2.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 5))
 
         val caught3 = intercept[TestFailedException] {
           obj should (have size (5) and have size (2 - 1))
         }
-        assert(caught3.getMessage === "sizey did not have size 5")
+        assert(caught3.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 5))
       }
 
       def `should throw an assertion error when object size doesn't match and used in a logical-or expression` {
@@ -3703,17 +3690,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should { have size (55) or (have size (22)) }
         }
-        assert(caught1.getMessage === "sizey did not have size 55, and sizey did not have size 22")
+        assert(caught1.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 22))))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((have size (55)) or (have size (22)))
         }
-        assert(caught2.getMessage === "sizey did not have size 55, and sizey did not have size 22")
+        assert(caught2.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 22))))
 
         val caught3 = intercept[TestFailedException] {
           obj should (have size (55) or have size (22))
         }
-        assert(caught3.getMessage === "sizey did not have size 55, and sizey did not have size 22")
+        assert(caught3.getMessage === FailureMessages("commaAnd", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 55)), UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 22))))
       }
 
       def `should throw an assertion error when object size matches and used in a logical-and expression with not` {
@@ -3721,17 +3708,17 @@ class ShouldSizeSpec extends Spec with ShouldMatchers with Checkers with Returns
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (3) } and not { have size (2) }}
         }
-        assert(caught1.getMessage === "sizey did not have size 3, but sizey had size 2")
+        assert(caught1.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("sizey"), 2))))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((not have size (3)) and (not have size (2)))
         }
-        assert(caught2.getMessage === "sizey did not have size 3, but sizey had size 2")
+        assert(caught2.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("sizey"), 2))))
 
         val caught3 = intercept[TestFailedException] {
           obj should (not have size (3) and not have size (2))
         }
-        assert(caught3.getMessage === "sizey did not have size 3, but sizey had size 2")
+        assert(caught3.getMessage === FailureMessages("commaBut", UnquotedString(FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("sizey"), 2, 3)), UnquotedString(FailureMessages("hadExpectedSize", UnquotedString("sizey"), 2))))
       }
 
       def `should throw an assertion error when object size matches and used in a logical-or expression with not` {

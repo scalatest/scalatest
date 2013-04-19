@@ -183,16 +183,16 @@ class HadLengthMessageTemplate(left: Any, right: Any, autoQuoteString: Boolean =
   val message = " had length "
 }
 
-class DidNotHaveLengthMessageTemplate(left: Any, right: Any, autoQuoteString: Boolean = true) extends LeftRightMessageTemplate(left, right, autoQuoteString) {
-  val message = " did not have length "
+class HadLengthInsteadOfExpectedLengthMessageTemplate(left: Any, leftLength: Any, right: Any, autoQuoteString: Boolean = true) extends LeftRightMessageTemplate(left, right, autoQuoteString) {
+  val message = " had length " + leftLength + " instead of expected length "
 }
 
 class HadSizeMessageTemplate(left: Any, right: Any, autoQuoteString: Boolean = true) extends LeftRightMessageTemplate(left, right, autoQuoteString) {
   val message = " had size "
 }
 
-class DidNotHaveSizeMessageTemplate(left: Any, right: Any, autoQuoteString: Boolean = true) extends LeftRightMessageTemplate(left, right, autoQuoteString) {
-  val message = " did not have size "
+class HadSizeInsteadOfExpectedSizeMessageTemplate(left: Any, leftSize: Any, right: Any, autoQuoteString: Boolean = true) extends LeftRightMessageTemplate(left, right, autoQuoteString) {
+  val message = " had size " + leftSize + " instead of expected size "
 }
 
 class DidNotStartWithSubstringMessageTemplate(left: Any, right: Any, autoQuoteString: Boolean = true) extends LeftRightMessageTemplate(left, right, autoQuoteString) {
