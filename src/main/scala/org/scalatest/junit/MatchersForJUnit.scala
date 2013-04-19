@@ -121,7 +121,7 @@ trait MatchersForJUnit extends Matchers with AssertionsForJUnit {
  * import org.scalatest.junit.ShouldMatchersForJUnit._
  * 
  * scala&gt; "hi" should have length (3)
- * junit.framework.AssertionFailedError: "hi" did not have length 3
+ * junit.framework.AssertionFailedError: "hi" had length 2 instead of expected length 3
  * 	at org.scalatest.junit.ShouldMatchersForJUnit$class.newTestFailedException(ShouldMatchersForJUnit.scala:22)
  * 	at org.scalatest.junit.ShouldMatchersForJUnit$.newTestFailedException(ShouldMatchersForJUnit.scala:63)
  * 	at org.scalatest.matchers.Matchers$ResultOfHaveWordForString.length(Matchers.scala:4102)
