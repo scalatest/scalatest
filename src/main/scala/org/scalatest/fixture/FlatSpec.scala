@@ -33,7 +33,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
  * <strong>Recommended Usage</strong>:
  * Use class <code>fixture.FlatSpec</code> in situations for which <a href="../FlatSpec.html"><code>FlatSpec</code></a>
  * would be a good choice, when all or most tests need the same fixture objects
- * that must be cleaned up afterwords. <em>Note: <code>fixture.FlatSpec</code> is intended for use in special situations, with class <code>FlatSpec</code> used for general needs. For
+ * that must be cleaned up afterwards. <em>Note: <code>fixture.FlatSpec</code> is intended for use in special situations, with class <code>FlatSpec</code> used for general needs. For
  * more insight into where <code>fixture.FlatSpec</code> fits in the big picture, see the <a href="../FlatSpec.html#withFixtureOneArgTest"><code>withFixture(OneArgTest)</code></a> subsection of the <a href="../FlatSpec.html#sharedFixtures">Shared fixtures</a> section in the documentation for class <code>FlatSpec</code>.</em>
  * </td></tr></table>
  * 
