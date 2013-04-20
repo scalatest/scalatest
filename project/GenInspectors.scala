@@ -62,6 +62,11 @@ object GenInspectors {
       "\" + " + getErrorMessageValuesFunName(colType, errorFun) + "(xs, " + errorValue + ").length + \""
   }
   
+  class DynamicFirstElementSizeTemplate(colType: String, errorFun: String, errorValue: String) extends Template {
+    override def toString = 
+      "\" + " + getErrorMessageValuesFunName(colType, errorFun) + "(xs, " + errorValue + ").size + \""
+  }
+  
   class DynamicNextIndexErrorDetailTemplate(errorValue: String, fileName: String, lineNumber: String, messageTemplate: Template, messageValuesFunName: String) extends 
     DynamicErrorDetailTemplate(fileName, lineNumber, messageTemplate, messageValuesFunName + "(itr, xs, " + errorValue + ")")  
   
@@ -909,10 +914,14 @@ object GenInspectors {
       ("'should be an property' failed", " should be an empty", "IsEmpty", errorFunPrefix + "IsNotEmpty", "\"\"", (errorFun: String, errorValue: String) => new WasNotAnMessageTemplate(leftTemplateFun(errorFun, errorValue), empty, autoQuoteString)), 
       ("'should not be an property' failed", " should not be an (empty)", "IsNotEmpty", errorFunPrefix + "IsEmpty", "\"\"", (errorFun: String, errorValue: String) => new WasAnMessageTemplate(leftTemplateFun(errorFun, errorValue), empty, autoQuoteString)), 
       ("'should have property' failed", " should have (plength(" + expectedLengthSize + "))", "LengthEqual", errorFunPrefix + "LengthNotEqualLength", "" + expectedLengthSize, (errorFun: String, errorValue: String) => new PropertyHadUnexpectedValueMessageTemplate("length", 0, leftLengthTemplateFun(errorFun, errorValue), targetTemplateFun(errorFun, errorValue), autoQuoteString)),
-      ("'should not have property' failed", " should not have plength(" + expectedLengthSize + ")", "LengthNotEqual", errorFunPrefix + "LengthEqual", "" + expectedLengthSize, (errorFun: String, errorValue: String) => new PropertyHadExpectedValueMessageTemplate("length", 0, leftTemplateFun(errorFun, errorValue), autoQuoteString)),
-      ("'should have length' failed", " should have length " + expectedLengthSize, "LengthEqual", errorFunPrefix + "LengthNotEqual", "" + expectedLengthSize, (errorFun: String, errorValue: String) => new DidNotHaveLengthMessageTemplate(leftTemplateFun(errorFun, errorValue), 0, autoQuoteString)),
+      ("'should not have property' failed", " should not have plength(" + expectedLengthSize + ")", "LengthNotEqual", errorFunPrefix + "LengthEqual", "" + expectedLengthSize, (errorFun: String, errorValue: String) => new PropertyHadExpectedValueMessageTemplate("length", 0, leftTemplateFun(errorFun, errorValue), autoQuoteString))
+    )
+    
+  def stdLengthSizeCheckTypes(expectedLengthSize:Int, leftTemplateFun: (String, String) => Template, leftLengthTemplateFun: (String, String) => Template, errorFunPrefix: String, autoQuoteString: Boolean = true) =
+    List(
+      ("'should have length' failed", " should have length " + expectedLengthSize, "LengthEqual", errorFunPrefix + "LengthNotEqual", "" + expectedLengthSize, (errorFun: String, errorValue: String) => new HadLengthInsteadOfExpectedLengthMessageTemplate(leftTemplateFun(errorFun, errorValue), leftLengthTemplateFun(errorFun, errorValue), 0, autoQuoteString)),
       ("'should not have length' failed", " should not have length (" + expectedLengthSize + ")", "LengthNotEqual", errorFunPrefix + "LengthEqual", "" + expectedLengthSize, (errorFun: String, errorValue: String) => new HadLengthMessageTemplate(leftTemplateFun(errorFun, errorValue), 0, autoQuoteString)),
-      ("'should have size' failed", " should have size " + expectedLengthSize, "SizeEqual", errorFunPrefix + "SizeNotEqual", "" + expectedLengthSize, (errorFun: String, errorValue: String) => new DidNotHaveSizeMessageTemplate(leftTemplateFun(errorFun, errorValue), 0, autoQuoteString)), 
+      ("'should have size' failed", " should have size " + expectedLengthSize, "SizeEqual", errorFunPrefix + "SizeNotEqual", "" + expectedLengthSize, (errorFun: String, errorValue: String) => new HadSizeInsteadOfExpectedSizeMessageTemplate(leftTemplateFun(errorFun, errorValue), leftLengthTemplateFun(errorFun, errorValue), 0, autoQuoteString)), 
       ("'should not have size' failed", " should not have size (" + expectedLengthSize + ")", "SizeNotEqual", errorFunPrefix + "SizeEqual", "" + expectedLengthSize, (errorFun: String, errorValue: String) => new HadSizeMessageTemplate(leftTemplateFun(errorFun, errorValue), 0, autoQuoteString))
     )
     
@@ -946,11 +955,11 @@ object GenInspectors {
       ("'traversable should not be symbol' failed", " should not be 'empty", "SizeNotEqualGenTraversable[String]", errorFunPrefix + "SizeEqualGenTraversable[String]", "0", (colType: String, errorFun: String, errorValue: String) => new WasMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), empty, autoQuoteString))
     )
     
-  def stdTraversableCheckTypes(leftTemplateFun: (String, String, String) => Template, size: Int, notSize: Int, containText: String, errorFunPrefix: String, autoQuoteString: Boolean = true) =
+  def stdTraversableCheckTypes(leftTemplateFun: (String, String, String) => Template, leftLengthTemplateFun: (String, String, String) => Template, size: Int, notSize: Int, containText: String, errorFunPrefix: String, autoQuoteString: Boolean = true) =
     List(
-      ("'traversable should have size' failed", " should have size " + size, "SizeEqualGenTraversable[String]", errorFunPrefix + "SizeNotEqualGenTraversable[String]", "" + size, size, (colType: String, errorFun: String, errorValue: String) => new DidNotHaveSizeMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), 0, autoQuoteString)),
+      ("'traversable should have size' failed", " should have size " + size, "SizeEqualGenTraversable[String]", errorFunPrefix + "SizeNotEqualGenTraversable[String]", "" + size, size, (colType: String, errorFun: String, errorValue: String) => new HadSizeInsteadOfExpectedSizeMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), leftLengthTemplateFun(colType, errorFun, errorValue), 0, autoQuoteString)),
       ("'traversable should not have size' failed", " should not have size (" + notSize +")", "SizeNotEqualGenTraversable[String]", errorFunPrefix + "SizeEqualGenTraversable[String]", "" + notSize, notSize, (colType: String, errorFun: String, errorValue: String) => new HadSizeMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), 1, autoQuoteString)),
-      ("'traversable should have length' failed", " should have length " + size, "SizeEqualGenTraversable[String]", errorFunPrefix + "SizeNotEqualGenTraversable[String]", "" + size, size, (colType: String, errorFun: String, errorValue: String) => new DidNotHaveLengthMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), 0, autoQuoteString)),
+      ("'traversable should have length' failed", " should have length " + size, "SizeEqualGenTraversable[String]", errorFunPrefix + "SizeNotEqualGenTraversable[String]", "" + size, size, (colType: String, errorFun: String, errorValue: String) => new HadLengthInsteadOfExpectedLengthMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), leftLengthTemplateFun(colType, errorFun, errorValue), 0, autoQuoteString)),
       ("'traversable should not have length' failed", " should not have length (" + notSize + ")", "SizeNotEqualGenTraversable[String]", errorFunPrefix + "SizeEqualGenTraversable[String]", "" + notSize, notSize, (colType: String, errorFun: String, errorValue: String) => new HadLengthMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), 1, autoQuoteString)),
       ("'traversable should contain' failed", " should contain (\"" + containText + "\")", "ContainGenTraversable[String]", errorFunPrefix + "NotContainGenTraversable[String]", "\"" + containText + "\"", containText, (colType: String, errorFun: String, errorValue: String) => new DidNotContainElementMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), "hi", autoQuoteString)),
       ("'traversable should not contain' failed", " should not contain \"" + containText + "\"", "NotContainGenTraversable[String]", errorFunPrefix + "ContainGenTraversable[String]", "\"" + containText + "\"", containText, (colType: String, errorFun: String, errorValue: String) => new ContainedElementMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), "hi", autoQuoteString))
@@ -964,25 +973,25 @@ object GenInspectors {
       ("'map should not contain value' failed", " should not contain value (\"two\")", "NotContainValue[String, String]", errorFunPrefix + "ContainValue[String, String]", "\"two\"", "two",  (colType: String, errorFun: String, errorValue: String) => new ContainedValueMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), "two", autoQuoteString))
     )
     
-  def stdJavaColCheckTypes(size: Int, notSize: Int, leftTemplateFun: (String, String, String) => Template, errorFunPrefix: String, autoQuoteString: Boolean = true) =
+  def stdJavaColCheckTypes(size: Int, notSize: Int, leftTemplateFun: (String, String, String) => Template, leftSizeTemplateFun: (String, String, String) => Template, errorFunPrefix: String, autoQuoteString: Boolean = true) =
     List(
       ("'java collection should be symbol' failed", " should be ('empty)", "JavaColIsEmpty[String]", errorFunPrefix + "JavaColNotIsEmpty[String]", "0", None, (colType: String, errorFun: String, errorValue: String) => new WasNotMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), empty, autoQuoteString)),
       ("'java collection should not be symbol' failed", " should not be 'empty", "JavaColNotIsEmpty[String]", errorFunPrefix + "JavaColIsEmpty[String]", "0", None, (colType: String, errorFun: String, errorValue: String) => new WasMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), empty, autoQuoteString)), 
-      ("'java collection should have size' failed", " should have size " + size, "JavaColSizeEqual[String]", errorFunPrefix + "JavaColSizeNotEqual[String]", "" + size, size, (colType: String, errorFun: String, errorValue: String) => new DidNotHaveSizeMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), 0, autoQuoteString)),
+      ("'java collection should have size' failed", " should have size " + size, "JavaColSizeEqual[String]", errorFunPrefix + "JavaColSizeNotEqual[String]", "" + size, size, (colType: String, errorFun: String, errorValue: String) => new HadSizeInsteadOfExpectedSizeMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), leftSizeTemplateFun(colType, errorFun, errorValue), 0, autoQuoteString)),
       ("'java collection should not have size' failed", " should not have size (" + notSize + ")", "JavaColSizeNotEqual[String]", errorFunPrefix + "JavaColSizeEqual[String]", "" + notSize, notSize, (colType: String, errorFun: String, errorValue: String) => new HadSizeMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), 1, autoQuoteString)),
-      ("'java collection should have length' failed", " should have length " + size, "JavaColSizeEqual[String]", errorFunPrefix + "JavaColSizeNotEqual[String]", "" + size, size, (colType: String, errorFun: String, errorValue: String) => new DidNotHaveLengthMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), 0, autoQuoteString)),
+      ("'java collection should have length' failed", " should have length " + size, "JavaColSizeEqual[String]", errorFunPrefix + "JavaColSizeNotEqual[String]", "" + size, size, (colType: String, errorFun: String, errorValue: String) => new HadLengthInsteadOfExpectedLengthMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), leftSizeTemplateFun(colType, errorFun, errorValue), 0, autoQuoteString)),
       ("'java collection should not have length' failed", " should not have length (" + notSize + ")", "JavaColSizeNotEqual[String]", errorFunPrefix + "JavaColSizeEqual[String]", "" + notSize, notSize, (colType: String, errorFun: String, errorValue: String) => new HadLengthMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), 1, autoQuoteString)),
       ("'java collection should contain' failed", " should contain (\"hi\")", "JavaColContain[String]", errorFunPrefix + "JavaColNotContain[String]", "\"hi\"", "hi", (colType: String, errorFun: String, errorValue: String) => new DidNotContainElementMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), "hi", autoQuoteString)),
       ("'java collection should not contain' failed", " should not contain \"hi\"", "JavaColNotContain[String]", errorFunPrefix + "JavaColContain[String]", "\"hi\"", "hi", (colType: String, errorFun: String, errorValue: String) => new ContainedElementMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), "hi", autoQuoteString))
     )
     
-  def stdJavaMapCheckTypes(size: Int, notSize: Int, leftTemplateFun: (String, String, String) => Template, errorFunPrefix: String, autoQuoteString: Boolean = true) =
+  def stdJavaMapCheckTypes(size: Int, notSize: Int, leftTemplateFun: (String, String, String) => Template, leftSizeTemplateFun: (String, String, String) => Template, errorFunPrefix: String, autoQuoteString: Boolean = true) =
     List(
       ("'java map should be symbol' failed", " should be ('empty)", "JavaMapIsEmpty[String, String]", errorFunPrefix + "JavaMapNotIsEmpty[String, String]", "0",  None, (colType: String, errorFun: String, errorValue: String) => new WasNotMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), empty, autoQuoteString)),
       ("'java map should not be symbol' failed", " should not be 'empty", "JavaMapNotIsEmpty[String, String]", errorFunPrefix + "JavaMapIsEmpty[String, String]", "0", None, (colType: String, errorFun: String, errorValue: String) => new WasMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), empty, autoQuoteString)), 
-      ("'java map should have size' failed", " should have size " + size, "JavaMapSizeEqual[String, String]", errorFunPrefix + "JavaMapSizeNotEqual[String, String]", "" + size, size, (colType: String, errorFun: String, errorValue: String) => new DidNotHaveSizeMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), 0, autoQuoteString)),
+      ("'java map should have size' failed", " should have size " + size, "JavaMapSizeEqual[String, String]", errorFunPrefix + "JavaMapSizeNotEqual[String, String]", "" + size, size, (colType: String, errorFun: String, errorValue: String) => new HadSizeInsteadOfExpectedSizeMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), leftSizeTemplateFun(colType, errorFun, errorValue), 0, autoQuoteString)),
       ("'java map should not have size' failed", " should not have size (" + notSize + ")", "JavaMapSizeNotEqual[String, String]", errorFunPrefix + "JavaMapSizeEqual[String, String]", "" + notSize, notSize, (colType: String, errorFun: String, errorValue: String) => new HadSizeMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), 1, autoQuoteString)),
-      ("'java map should have length' failed", " should have length " + size, "JavaMapSizeEqual[String, String]", errorFunPrefix + "JavaMapSizeNotEqual[String, String]", "" + size, size, (colType: String, errorFun: String, errorValue: String) => new DidNotHaveLengthMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), 0, autoQuoteString)),
+      ("'java map should have length' failed", " should have length " + size, "JavaMapSizeEqual[String, String]", errorFunPrefix + "JavaMapSizeNotEqual[String, String]", "" + size, size, (colType: String, errorFun: String, errorValue: String) => new HadLengthInsteadOfExpectedLengthMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), leftSizeTemplateFun(colType, errorFun, errorValue), 0, autoQuoteString)),
       ("'java map should not have length' failed", " should not have length (" + notSize + ")", "JavaMapSizeNotEqual[String, String]", errorFunPrefix + "JavaMapSizeEqual[String, String]", "" + notSize, notSize, (colType: String, errorFun: String, errorValue: String) => new HadLengthMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), 1, autoQuoteString)),
       ("'java map should contain key' failed", " should contain key \"b\"", "JavaMapContainKey[String, String]", errorFunPrefix + "JavaMapNotContainKey[String, String]", "\"b\"", "b", (colType: String, errorFun: String, errorValue: String) => new DidNotContainKeyMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), "b", autoQuoteString)),
       ("'java map should not contain key' failed", " should not contain key (\"b\")", "JavaMapNotContainKey[String, String]", errorFunPrefix + "JavaMapContainKey[String, String]", "\"b\"", "b", (colType: String, errorFun: String, errorValue: String) => new ContainedKeyMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), "b", autoQuoteString)), 
@@ -1011,7 +1020,10 @@ object GenInspectors {
   }
   
   def simpleMessageFun(errorFun: String, errorValue: String): Template = new SimpleMessageTemplate("{1}")
+  def lengthSimpleMessageFun(errorFun: String, errorValue: String): Template = new SimpleMessageTemplate("{2}")
   def trvSimpleMessageFun(colType: String, errorFun: String, errorValue: String): Template = new SimpleMessageTemplate("{1}")
+  def trvLengthSimpleMessageFun(colType: String, errorFun: String, errorValue: String): Template = new SimpleMessageTemplate("{2}")
+  def trvSizeSimpleMessageFun(colType: String, errorFun: String, errorValue: String): Template = new SimpleMessageTemplate("{2}")
   def quotedSimpleMessageFun(errorFun: String, errorValue: String): Template = new SimpleMessageTemplate("\\\"{1}\\\"")
   def quotedSimpleMessageFun2(errorFun: String, errorValue: String): Template = new SimpleMessageTemplate("\\\"{2}\\\"")
   
@@ -1045,6 +1057,8 @@ object GenInspectors {
       val propertyCheckCol = genCol("\"\", \"boom!\", \"\"", "\"WrappedArray(, boom!, )\"")
             
       val propertyCheckTypes = stdPropertyCheckTypes(0, stringDynaFirst, stringDynaFirst, stringDynaFirstLength, "getFirst")
+      
+      val lengthSizeCheckTypes = stdLengthSizeCheckTypes(0, stringDynaFirst, stringDynaFirstLength, "getFirst")
               
       val instanceCheckCol = genCol("\"1\", theInstance, \"3\"", "\"WrappedArray(1, 2, 3)\"")
             
@@ -1059,6 +1073,12 @@ object GenInspectors {
           new DynamicFirstArrayElementTemplate(colType, errorFun, errorValue)
         else  
           new DynamicFirstElementTemplate(colType, errorFun, errorValue)
+    
+      def trvStringDynaFirstLength(colType: String, errorFun: String, errorValue: String) = 
+        new DynamicFirstElementLengthTemplate(colType, errorFun, errorValue)
+    
+      def trvStringDynaFirstSize(colType: String, errorFun: String, errorValue: String) = 
+        new DynamicFirstElementSizeTemplate(colType, errorFun, errorValue)
               
       val traversablePropertyCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", ""), "\"WrappedArray(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array())\"")
             
@@ -1066,7 +1086,7 @@ object GenInspectors {
               
       val traversableCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", "\"hello\""), "\"WrappedArray(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array(\\\"hello\\\"))\"")
             
-      val traversableCheckTypes = stdTraversableCheckTypes(trvStringDynaFirst, 0, 1, "hi", "getFirst")
+      val traversableCheckTypes = stdTraversableCheckTypes(trvStringDynaFirst, trvStringDynaFirstSize, 0, 1, "hi", "getFirst")
               
       val maps = genMap(Array("\"1\" -> \"one\", \"2\" -> \"two\", \"3\" -> \"three\"", 
                               "\"4\" -> \"four\", \"5\" -> \"five\", \"6\" -> \"six\"", 
@@ -1086,7 +1106,7 @@ object GenInspectors {
           genColMap(mapText, xsText)
         }
             
-      val javaColCheckTypes = stdJavaColCheckTypes(0, 1, trvStringDynaFirst, "getFirst")
+      val javaColCheckTypes = stdJavaColCheckTypes(0, 1, trvStringDynaFirst, trvStringDynaFirstSize, "getFirst")
               
       val javaMaps = genJavaMap(Array("Map.empty[String, String]", "Map(\"b\" -> \"boom!\")", "Map(\"h\" -> \"hello!\")"), "String", "String")
             
@@ -1097,7 +1117,7 @@ object GenInspectors {
           }
         }
 
-      val javaMapCheckTypes = stdJavaMapCheckTypes(0, 1, trvStringDynaFirst, "getFirst")
+      val javaMapCheckTypes = stdJavaMapCheckTypes(0, 1, trvStringDynaFirst, trvStringDynaFirstSize, "getFirst")
             
       val allColText = "all(xs)"
       val failedTestConfigs = 
@@ -1113,6 +1133,11 @@ object GenInspectors {
          })++ 
         (propertyCheckCol flatMap { case (colText, xsText) =>
           propertyCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) => 
+            (colText, condition, allColText + assertText, "String", okFun, errorFun, errorValue, messageFun(errorFun, errorValue).toString, xsText)
+          }
+        }) ++ 
+        (propertyCheckCol flatMap { case (colText, xsText) =>
+          lengthSizeCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) => 
             (colText, condition, allColText + assertText, "String", okFun, errorFun, errorValue, messageFun(errorFun, errorValue).toString, xsText)
           }
         }) ++ 
@@ -1241,6 +1266,7 @@ object GenInspectors {
     
     val propertyCheckCol = genCol("\"\", \"boom!\", \"hi\"", "\"WrappedArray(, boom!, hi)\"")
     val propertyCheckTypes = stdPropertyCheckTypes(0, quotedSimpleMessageFun, quotedSimpleMessageFun2, simpleMessageFun, "indexElement")
+    val lengthSizeCheckTypes = stdLengthSizeCheckTypes(0, quotedSimpleMessageFun, lengthSimpleMessageFun, "indexElement")
     
     val instanceCheckCol = genCol("\"1\", theInstance, \"3\"", "\"WrappedArray(1, 2, 3)\"")
     val instanceCheckTypes = stdInstanceCheckTypes(quotedSimpleMessageFun, "2", "indexElement")
@@ -1252,7 +1278,7 @@ object GenInspectors {
     val traversablePropertyCheckTypes = stdTraversablePropertyCheckTypes(trvSimpleMessageFun, "indexElement", true)
     
     val traversableCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", "\"hello\""), "\"WrappedArray(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array(\\\"hello\\\"))\"")
-    val traversableCheckTypes = stdTraversableCheckTypes(trvSimpleMessageFun, 0, 1, "hi", "indexElement", true)
+    val traversableCheckTypes = stdTraversableCheckTypes(trvSimpleMessageFun, trvSizeSimpleMessageFun, 0, 1, "hi", "indexElement", true)
     
     val maps = genMap(Array("\"1\" -> \"one\", \"2\" -> \"two\", \"3\" -> \"three\"", 
                               "\"4\" -> \"four\", \"5\" -> \"five\", \"6\" -> \"six\"", 
@@ -1268,7 +1294,7 @@ object GenInspectors {
       javaCols flatMap { case (mapText, xsText) => 
         genColMap(mapText, xsText)
       }
-    val javaColCheckTypes = stdJavaColCheckTypes(0, 1, trvSimpleMessageFun, "indexElement", true)
+    val javaColCheckTypes = stdJavaColCheckTypes(0, 1, trvSimpleMessageFun, trvSizeSimpleMessageFun, "indexElement", true)
     
     val javaMaps = genJavaMap(Array("Map.empty[String, String]", "Map(\"b\" -> \"boom!\")", "Map(\"h\" -> \"hello!\")"), "String", "String")
     val javaMapCheckCol = 
@@ -1277,7 +1303,7 @@ object GenInspectors {
           (colText, xsText, colType)
         }
       }
-    val javaMapCheckTypes = stdJavaMapCheckTypes(0, 1, trvSimpleMessageFun, "indexElement", true)
+    val javaMapCheckTypes = stdJavaMapCheckTypes(0, 1, trvSimpleMessageFun, trvSizeSimpleMessageFun, "indexElement", true)
     
     val atLeast2ColText = "atLeast(3, xs)"
     val failedTestConfigs = 
@@ -1297,6 +1323,13 @@ object GenInspectors {
       }) ++ 
       (propertyCheckCol flatMap { case (colText, xsText) =>
         propertyCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) => 
+          val errorAssertFun = getFun(errorFun, "")
+          val passedCount = 3 - List("", "boom!", "hi").filter(errorAssertFun).length
+          (colText, condition, atLeast2ColText + assertText, "String", okFun, errorFun, errorValue, passedCount, messageFun(errorFun, errorValue).toString, xsText)
+        }
+      }) ++ 
+      (propertyCheckCol flatMap { case (colText, xsText) =>
+        lengthSizeCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) => 
           val errorAssertFun = getFun(errorFun, "")
           val passedCount = 3 - List("", "boom!", "hi").filter(errorAssertFun).length
           (colText, condition, atLeast2ColText + assertText, "String", okFun, errorFun, errorValue, passedCount, messageFun(errorFun, errorValue).toString, xsText)
@@ -1428,6 +1461,7 @@ object GenInspectors {
     
     val propertyCheckCol = genCol("\"\", \"boom!\", \"hi\"", "\"WrappedArray(, boom!, hi)\"")
     val propertyCheckTypes = stdPropertyCheckTypes(0, quotedSimpleMessageFun, quotedSimpleMessageFun2, simpleMessageFun, "indexElement")
+    val lengthSizeCheckTypes = stdLengthSizeCheckTypes(0, quotedSimpleMessageFun, lengthSimpleMessageFun, "indexElement")
     
     val instanceCheckCol = genCol("\"1\", theInstance, \"3\"", "\"WrappedArray(1, 2, 3)\"")
     val instanceCheckTypes = stdInstanceCheckTypes(quotedSimpleMessageFun, "2", "indexElement")
@@ -1439,7 +1473,7 @@ object GenInspectors {
     val traversablePropertyCheckTypes = stdTraversablePropertyCheckTypes(trvSimpleMessageFun, "indexElement", true)
     
     val traversableCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", "\"hello\""), "\"WrappedArray(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array(\\\"hello\\\"))\"")
-    val traversableCheckTypes = stdTraversableCheckTypes(trvSimpleMessageFun, 0, 1, "hi", "indexElement", true)
+    val traversableCheckTypes = stdTraversableCheckTypes(trvSimpleMessageFun, trvSizeSimpleMessageFun, 0, 1, "hi", "indexElement", true)
     
     val maps = genMap(Array("\"1\" -> \"one\", \"2\" -> \"two\", \"3\" -> \"three\"", 
                               "\"4\" -> \"four\", \"5\" -> \"five\", \"6\" -> \"six\"", 
@@ -1455,7 +1489,7 @@ object GenInspectors {
       javaCols flatMap { case (mapText, xsText) => 
         genColMap(mapText, xsText)
       }
-    val javaColCheckTypes = stdJavaColCheckTypes(0, 1, trvSimpleMessageFun, "indexElement", true)
+    val javaColCheckTypes = stdJavaColCheckTypes(0, 1, trvSimpleMessageFun, trvSizeSimpleMessageFun, "indexElement", true)
     
     val javaMaps = genJavaMap(Array("Map.empty[String, String]", "Map(\"b\" -> \"boom!\")", "Map(\"h\" -> \"hello!\")"), "String", "String")
     val javaMapCheckCol = 
@@ -1464,7 +1498,7 @@ object GenInspectors {
           (colText, xsText, colType)
         }
       }
-    val javaMapCheckTypes = stdJavaMapCheckTypes(0, 1, trvSimpleMessageFun, "indexElement", true)
+    val javaMapCheckTypes = stdJavaMapCheckTypes(0, 1, trvSimpleMessageFun, trvSizeSimpleMessageFun, "indexElement", true)
       
     val everyColText = "every(xs)"
     val failedTestConfigs = 
@@ -1484,6 +1518,13 @@ object GenInspectors {
       }) ++ 
       (propertyCheckCol flatMap { case (colText, xsText) =>
         propertyCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) => 
+          val errorAssertFun = getFun(errorFun, "")
+          val passedCount = 3 - List("", "boom!", "hi").filter(errorAssertFun).length
+          (colText, condition, everyColText + assertText, "String", okFun, errorFun, errorValue, passedCount, messageFun(errorFun, errorValue).toString, xsText)
+        }
+      }) ++ 
+      (propertyCheckCol flatMap { case (colText, xsText) =>
+        lengthSizeCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) => 
           val errorAssertFun = getFun(errorFun, "")
           val passedCount = 3 - List("", "boom!", "hi").filter(errorAssertFun).length
           (colText, condition, everyColText + assertText, "String", okFun, errorFun, errorValue, passedCount, messageFun(errorFun, errorValue).toString, xsText)
@@ -1614,6 +1655,7 @@ object GenInspectors {
     
     val propertyCheckCol = genCol("\"\", \"boom!\", \"hi\"", "\"WrappedArray(, boom!, hi)\"")
     val propertyCheckTypes = stdPropertyCheckTypes(0, quotedSimpleMessageFun, quotedSimpleMessageFun2, simpleMessageFun, "indexElement")
+    val lengthSizeCheckTypes = stdLengthSizeCheckTypes(0, quotedSimpleMessageFun, lengthSimpleMessageFun, "indexElement")
       
     val instanceCheckCol = genCol("\"1\", theInstance, \"3\"", "\"WrappedArray(1, 2, 3)\"")
     val instanceCheckTypes = stdInstanceCheckTypes(quotedSimpleMessageFun, "2", "indexElement")
@@ -1625,7 +1667,7 @@ object GenInspectors {
     val traversablePropertyCheckTypes = stdTraversablePropertyCheckTypes(trvSimpleMessageFun, "indexElement", true)
     
     val traversableCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", "\"hello\""), "\"WrappedArray(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array(\\\"hello\\\"))\"")
-    val traversableCheckTypes = stdTraversableCheckTypes(trvSimpleMessageFun, 0, 1, "hi", "indexElement", true)
+    val traversableCheckTypes = stdTraversableCheckTypes(trvSimpleMessageFun, trvSizeSimpleMessageFun, 0, 1, "hi", "indexElement", true)
     
     val maps = genMap(Array("\"1\" -> \"one\", \"2\" -> \"two\", \"3\" -> \"three\"", 
                               "\"4\" -> \"four\", \"5\" -> \"five\", \"6\" -> \"six\"", 
@@ -1641,7 +1683,7 @@ object GenInspectors {
       javaCols flatMap { case (mapText, xsText) => 
         genColMap(mapText, xsText)
       }
-    val javaColCheckTypes = stdJavaColCheckTypes(0, 1, trvSimpleMessageFun, "indexElement", true)
+    val javaColCheckTypes = stdJavaColCheckTypes(0, 1, trvSimpleMessageFun, trvSizeSimpleMessageFun, "indexElement", true)
     
     val javaMaps = genJavaMap(Array("Map.empty[String, String]", "Map(\"b\" -> \"boom!\")", "Map(\"h\" -> \"hello!\")"), "String", "String")
     val javaMapCheckCol = 
@@ -1650,7 +1692,7 @@ object GenInspectors {
           (colText, xsText, colType)
         }
       }
-    val javaMapCheckTypes = stdJavaMapCheckTypes(0, 1, trvSimpleMessageFun, "indexElement", true)
+    val javaMapCheckTypes = stdJavaMapCheckTypes(0, 1, trvSimpleMessageFun, trvSizeSimpleMessageFun, "indexElement", true)
     
     val exactly3ColText = "exactly(3, xs)"
       
@@ -1671,6 +1713,13 @@ object GenInspectors {
       }) ++ 
       (propertyCheckCol flatMap { case (colText, xsText) =>
         propertyCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) => 
+          val errorAssertFun = getFun(errorFun, "")
+          val passedCount = 3 - List("", "boom!", "hi").filter(errorAssertFun).length
+          (colText, condition, exactly3ColText + assertText, "String", okFun, errorFun, errorValue, passedCount, messageFun(errorFun, errorValue).toString, xsText)
+        }
+      }) ++ 
+      (propertyCheckCol flatMap { case (colText, xsText) =>
+        lengthSizeCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) => 
           val errorAssertFun = getFun(errorFun, "")
           val passedCount = 3 - List("", "boom!", "hi").filter(errorAssertFun).length
           (colText, condition, exactly3ColText + assertText, "String", okFun, errorFun, errorValue, passedCount, messageFun(errorFun, errorValue).toString, xsText)
@@ -1801,6 +1850,7 @@ object GenInspectors {
 
     val propertyCheckCol = genCol("\"\", \"boom!\", \"hi\"", "\"WrappedArray(, boom!, hi)\"")
     val propertyCheckTypes = stdPropertyCheckTypes(0, quotedSimpleMessageFun, quotedSimpleMessageFun2, simpleMessageFun, "indexElement")
+    val lengthSizeCheckTypes = stdLengthSizeCheckTypes(0, quotedSimpleMessageFun, lengthSimpleMessageFun, "indexElement")
 
     val instanceCheckCol = genCol("\"1\", theInstance, \"3\"", "\"WrappedArray(1, 2, 3)\"")
     val instanceCheckTypes = stdInstanceCheckTypes(quotedSimpleMessageFun, "2", "indexElement")
@@ -1812,7 +1862,7 @@ object GenInspectors {
     val traversablePropertyCheckTypes = stdTraversablePropertyCheckTypes(trvSimpleMessageFun, "indexElement", true)
 
     val traversableCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", "\"hello\""), "\"WrappedArray(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array(\\\"hello\\\"))\"")
-    val traversableCheckTypes = stdTraversableCheckTypes(trvSimpleMessageFun, 1, 2, "hi", "indexElement", true)
+    val traversableCheckTypes = stdTraversableCheckTypes(trvSimpleMessageFun, trvSizeSimpleMessageFun, 1, 2, "hi", "indexElement", true)
 
     val maps = genMap(Array("\"1\" -> \"one\", \"2\" -> \"two\", \"3\" -> \"three\"",
       "\"4\" -> \"four\", \"5\" -> \"five\", \"6\" -> \"six\"",
@@ -1828,7 +1878,7 @@ object GenInspectors {
       javaCols flatMap { case (mapText, xsText) =>
         genColMap(mapText, xsText)
       }
-    val javaColCheckTypes = stdJavaColCheckTypes(0, 1, trvSimpleMessageFun, "indexElement", true)
+    val javaColCheckTypes = stdJavaColCheckTypes(0, 1, trvSimpleMessageFun, trvSizeSimpleMessageFun, "indexElement", true)
 
     val javaMaps = genJavaMap(Array("Map.empty[String, String]", "Map(\"b\" -> \"boom!\")", "Map(\"h\" -> \"hello!\")"), "String", "String")
     val javaMapCheckCol =
@@ -1837,7 +1887,7 @@ object GenInspectors {
           (colText, xsText, colType)
         }
       }
-    val javaMapCheckTypes = stdJavaMapCheckTypes(0, 1, trvSimpleMessageFun, "indexElement", true)
+    val javaMapCheckTypes = stdJavaMapCheckTypes(0, 1, trvSimpleMessageFun, trvSizeSimpleMessageFun, "indexElement", true)
 
     val noColText = "no(xs)"
     val failedTestConfigs =
@@ -1857,6 +1907,13 @@ object GenInspectors {
       }) ++
       (propertyCheckCol flatMap { case (colText, xsText) =>
         propertyCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
+          val errorAssertFun = getFun(errorFun, "")
+          val passedCount = 3 - List("", "boom!", "hi").filter(errorAssertFun).length
+          (colText, condition, noColText + assertText, "String", okFun, errorFun, errorValue, passedCount, messageFun(errorFun, errorValue).toString, xsText)
+        }
+      }) ++
+      (propertyCheckCol flatMap { case (colText, xsText) =>
+        lengthSizeCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
           val errorAssertFun = getFun(errorFun, "")
           val passedCount = 3 - List("", "boom!", "hi").filter(errorAssertFun).length
           (colText, condition, noColText + assertText, "String", okFun, errorFun, errorValue, passedCount, messageFun(errorFun, errorValue).toString, xsText)
@@ -1987,6 +2044,7 @@ object GenInspectors {
 
     val propertyCheckCol = genCol("\"\", \"boom!\", \"hi\"", "\"WrappedArray(, boom!, hi)\"")
     val propertyCheckTypes = stdPropertyCheckTypes(0, quotedSimpleMessageFun, quotedSimpleMessageFun2, simpleMessageFun, "indexElement")
+    val lengthSizeCheckTypes = stdLengthSizeCheckTypes(0, quotedSimpleMessageFun, lengthSimpleMessageFun, "indexElement")
 
     val instanceCheckCol = genCol("\"1\", theInstance, \"3\"", "\"WrappedArray(1, 2, 3)\"")
     val instanceCheckTypes = stdInstanceCheckTypes(quotedSimpleMessageFun, "2", "indexElement")
@@ -1998,7 +2056,7 @@ object GenInspectors {
     val traversablePropertyCheckTypes = stdTraversablePropertyCheckTypes(trvSimpleMessageFun, "indexElement", true)
 
     val traversableCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", "\"hello\""), "\"WrappedArray(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array(\\\"hello\\\"))\"")
-    val traversableCheckTypes = stdTraversableCheckTypes(trvSimpleMessageFun, 0, 1, "hi", "indexElement", true)
+    val traversableCheckTypes = stdTraversableCheckTypes(trvSimpleMessageFun, trvSizeSimpleMessageFun, 0, 1, "hi", "indexElement", true)
 
     val maps = genMap(Array("\"1\" -> \"one\", \"2\" -> \"two\", \"3\" -> \"three\"",
       "\"4\" -> \"four\", \"5\" -> \"five\", \"6\" -> \"six\"",
@@ -2014,7 +2072,7 @@ object GenInspectors {
       javaCols flatMap { case (mapText, xsText) =>
         genColMap(mapText, xsText)
       }
-    val javaColCheckTypes = stdJavaColCheckTypes(0, 1, trvSimpleMessageFun, "indexElement", true)
+    val javaColCheckTypes = stdJavaColCheckTypes(0, 1, trvSimpleMessageFun, trvSizeSimpleMessageFun, "indexElement", true)
 
     val javaMaps = genJavaMap(Array("Map.empty[String, String]", "Map(\"b\" -> \"boom!\")", "Map(\"h\" -> \"hello!\")"), "String", "String")
     val javaMapCheckCol =
@@ -2023,7 +2081,7 @@ object GenInspectors {
           (colText, xsText, colType)
         }
       }
-    val javaMapCheckTypes = stdJavaMapCheckTypes(0, 1, trvSimpleMessageFun, "indexElement", true)
+    val javaMapCheckTypes = stdJavaMapCheckTypes(0, 1, trvSimpleMessageFun, trvSizeSimpleMessageFun, "indexElement", true)
 
     val betweenColText = "between(7, 8, xs)"
 
@@ -2044,6 +2102,13 @@ object GenInspectors {
       }) ++
       (propertyCheckCol flatMap { case (colText, xsText) =>
         propertyCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
+          val errorAssertFun = getFun(errorFun, "")
+          val passedCount = 3 - List("", "boom!", "hi").filter(errorAssertFun).length
+          (colText, condition, betweenColText + assertText, "String", okFun, errorFun, errorValue, passedCount, messageFun(errorFun, errorValue).toString, xsText)
+        }
+      }) ++
+      (propertyCheckCol flatMap { case (colText, xsText) =>
+        lengthSizeCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
           val errorAssertFun = getFun(errorFun, "")
           val passedCount = 3 - List("", "boom!", "hi").filter(errorAssertFun).length
           (colText, condition, betweenColText + assertText, "String", okFun, errorFun, errorValue, passedCount, messageFun(errorFun, errorValue).toString, xsText)
@@ -2189,6 +2254,7 @@ object GenInspectors {
       condition != "'should be an property' failed" &&
       condition != "'should have property' failed"
     }
+    val lengthSizeCheckTypes = stdLengthSizeCheckTypes(5, quotedSimpleMessageFun, lengthSimpleMessageFun, "indexElement")
 
     val instanceCheckCol = genCol("\"1\", theInstance, \"3\", \"4\", \"5\"", "\"WrappedArray(1, 2, 3, 4, 5)\"")
     val instanceCheckTypes = stdInstanceCheckTypes(quotedSimpleMessageFun, "2", "indexElement").filter { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
@@ -2204,7 +2270,7 @@ object GenInspectors {
     }
 
     val traversableCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", "\"hello\"", "\"boom!\", \"hi\""), "\"WrappedArray(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array(\\\"hello\\\"))\"")
-    val traversableCheckTypes = stdTraversableCheckTypes(trvSimpleMessageFun, 1, 2, "hi", "indexElement", true)
+    val traversableCheckTypes = stdTraversableCheckTypes(trvSimpleMessageFun, trvSizeSimpleMessageFun, 1, 2, "hi", "indexElement", true)
 
     val maps = genMap(Array("\"1\" -> \"one\", \"2\" -> \"two\", \"3\" -> \"three\"",
                             "\"4\" -> \"four\", \"5\" -> \"five\", \"6\" -> \"six\"",
@@ -2221,7 +2287,7 @@ object GenInspectors {
       javaCols flatMap { case (mapText, xsText) =>
         genColMap(mapText, xsText)
       }
-    val javaColCheckTypes = stdJavaColCheckTypes(1, 0, trvSimpleMessageFun, "indexElement", true).filter { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
+    val javaColCheckTypes = stdJavaColCheckTypes(1, 0, trvSimpleMessageFun, trvSizeSimpleMessageFun, "indexElement", true).filter { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
       condition != "'java collection should be symbol' failed"
     }
 
@@ -2232,7 +2298,7 @@ object GenInspectors {
           (colText, xsText, colType)
         }
       }
-    val javaMapCheckTypes = stdJavaMapCheckTypes(1, 0, trvSimpleMessageFun, "indexElement", true).filter { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
+    val javaMapCheckTypes = stdJavaMapCheckTypes(1, 0, trvSimpleMessageFun, trvSizeSimpleMessageFun, "indexElement", true).filter { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
       condition != "'java map should be symbol' failed"
     }
 
@@ -2252,6 +2318,12 @@ object GenInspectors {
       }) ++
       (propertyCheckCol flatMap { case (colText, xsText) =>
         propertyCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
+          val passedCount = 2
+          (colText, condition, atMostColText + assertText, "String", okFun, errorFun, errorValue, passedCount, messageFun(errorFun, errorValue).toString, xsText)
+        }
+      }) ++
+      (propertyCheckCol flatMap { case (colText, xsText) =>
+        lengthSizeCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
           val passedCount = 2
           (colText, condition, atMostColText + assertText, "String", okFun, errorFun, errorValue, passedCount, messageFun(errorFun, errorValue).toString, xsText)
         }

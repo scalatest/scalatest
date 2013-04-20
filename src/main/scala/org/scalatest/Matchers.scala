@@ -1651,12 +1651,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * </pre>
      */
     def size(expectedSize: Int) {
-      if ((left.size == expectedSize) != shouldBeTrue)
+      val leftSize = left.size
+      if ((leftSize == expectedSize) != shouldBeTrue)
         throw newTestFailedException(
-          FailureMessages(
-            if (shouldBeTrue) "didNotHaveExpectedSize" else "hadExpectedSize",
-            left,
-            expectedSize)
+          if (shouldBeTrue)
+            FailureMessages("hadSizeInsteadOfExpectedSize", left, leftSize, expectedSize)
+          else
+            FailureMessages("hadExpectedSize", left, expectedSize)
         )
     }
   }
@@ -1678,12 +1679,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * </pre>
      */
     def size(expectedSize: Int) {
-      if ((left.size == expectedSize) != shouldBeTrue)
+      val leftSize = left.size
+      if ((leftSize == expectedSize) != shouldBeTrue)
         throw newTestFailedException(
-          FailureMessages(
-            if (shouldBeTrue) "didNotHaveExpectedSize" else "hadExpectedSize",
-            left,
-            expectedSize)
+          if (shouldBeTrue)
+            FailureMessages("hadSizeInsteadOfExpectedSize", left, leftSize, expectedSize)
+          else
+            FailureMessages("hadExpectedSize", left, expectedSize)
         )
     }
   }
@@ -1705,12 +1707,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * </pre>
      */
     def size(expectedSize: Int) {
-      if ((left.size == expectedSize) != shouldBeTrue)
+      val leftSize = left.size
+      if ((leftSize == expectedSize) != shouldBeTrue)
         throw newTestFailedException(
-          FailureMessages(
-            if (shouldBeTrue) "didNotHaveExpectedSize" else "hadExpectedSize",
-            left,
-            expectedSize)
+          if (shouldBeTrue)
+            FailureMessages("hadSizeInsteadOfExpectedSize", left, leftSize, expectedSize)
+          else
+            FailureMessages("hadExpectedSize", left, expectedSize)
         )
     }
   }
@@ -1732,12 +1735,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * </pre>
      */
     def length(expectedLength: Int) {
-      if ((left.length == expectedLength) != shouldBeTrue)
+      val leftLength = left.length
+      if ((leftLength == expectedLength) != shouldBeTrue)
         throw newTestFailedException(
-          FailureMessages(
-            if (shouldBeTrue) "didNotHaveExpectedLength" else "hadExpectedLength",
-            left,
-            expectedLength)
+          if (shouldBeTrue)
+            FailureMessages("hadLengthInsteadOfExpectedLength", left, leftLength, expectedLength)
+          else
+            FailureMessages("hadExpectedLength", left, expectedLength)
         )
     }
   }
@@ -1759,12 +1763,13 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      * </pre>
      */
     def size(expectedSize: Int) {
-      if ((left.size == expectedSize) != shouldBeTrue)
+      val leftSize = left.size
+      if ((leftSize == expectedSize) != shouldBeTrue)
         throw newTestFailedException(
-          FailureMessages(
-            if (shouldBeTrue) "didNotHaveExpectedSize" else "hadExpectedSize",
-            left,
-            expectedSize)
+          if (shouldBeTrue)
+            FailureMessages("hadSizeInsteadOfExpectedSize", left, leftSize, expectedSize)
+          else
+            FailureMessages("hadExpectedSize", left, expectedSize)
         )
     }
 
@@ -1777,12 +1782,14 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      * </pre>
      */
     def length(expectedLength: Int) {
-      if ((left.length == expectedLength) != shouldBeTrue)
+      val leftLength = left.length
+      if ((leftLength == expectedLength) != shouldBeTrue)
         throw newTestFailedException(
-          FailureMessages(
-            if (shouldBeTrue) "didNotHaveExpectedLength" else "hadExpectedLength",
-            left,
-            expectedLength)        )
+          if (shouldBeTrue)
+            FailureMessages("hadLengthInsteadOfExpectedLength", left, leftLength, expectedLength)
+          else
+            FailureMessages("hadExpectedLength", left, expectedLength)
+        )
     }
   }
 
@@ -1889,14 +1896,14 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      */
     def have(resultOfSizeWordApplication: ResultOfSizeWordApplication) {
       val right = resultOfSizeWordApplication.expectedSize
-      if ((left.size == right) != shouldBeTrue) {
+      val leftSize = left.size
+      if ((leftSize == right) != shouldBeTrue) {
         throw newTestFailedException(
-          FailureMessages(
-            if (shouldBeTrue) "didNotHaveExpectedSize" else "hadExpectedSize",
-              left,
-              right
-            )
-          )
+          if (shouldBeTrue)
+            FailureMessages("hadSizeInsteadOfExpectedSize", left, leftSize, right)
+          else
+            FailureMessages("hadExpectedSize", left, right)
+        )
       }
     }
   }
@@ -1920,14 +1927,14 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      */
     def have(resultOfSizeWordApplication: ResultOfSizeWordApplication) {
       val right = resultOfSizeWordApplication.expectedSize
-      if ((left.size == right) != shouldBeTrue) {
+      val leftSize = left.size
+      if ((leftSize == right) != shouldBeTrue) {
         throw newTestFailedException(
-          FailureMessages(
-            if (shouldBeTrue) "didNotHaveExpectedSize" else "hadExpectedSize",
-              left,
-              right
-            )
-          )
+          if (shouldBeTrue)
+            FailureMessages("hadSizeInsteadOfExpectedSize", left, leftSize, right)
+          else
+            FailureMessages("hadExpectedSize", left, right)
+        )
       }
     }
 
@@ -2169,14 +2176,14 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      */
     def have(resultOfSizeWordApplication: ResultOfSizeWordApplication) {
       val right = resultOfSizeWordApplication.expectedSize
-      if ((left.size == right) != shouldBeTrue) {
+      val leftSize = left.size
+      if ((leftSize == right) != shouldBeTrue) {
         throw newTestFailedException(
-          FailureMessages(
-            if (shouldBeTrue) "didNotHaveExpectedSize" else "hadExpectedSize",
-              left,
-              right
-            )
-          )
+          if (shouldBeTrue)
+            FailureMessages("hadSizeInsteadOfExpectedSize", left, leftSize, right)
+          else
+            FailureMessages("hadExpectedSize", left, right)
+        )
       }
     }
   }
@@ -2317,13 +2324,13 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      */
     def have(resultOfLengthWordApplication: ResultOfLengthWordApplication) {
       val right = resultOfLengthWordApplication.expectedLength
-      if ((left.length == right) != shouldBeTrue) {
+      val leftLength = left.length
+      if ((leftLength == right) != shouldBeTrue) {
           throw newTestFailedException(
-            FailureMessages(
-             if (shouldBeTrue) "didNotHaveExpectedLength" else "hadExpectedLength",
-              left,
-              right
-            )
+            if (shouldBeTrue)
+              FailureMessages("hadLengthInsteadOfExpectedLength", left, leftLength, right)
+            else
+              FailureMessages("hadExpectedLength", left, right)
           )
       }
     }
@@ -2434,14 +2441,14 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      */
     def have(resultOfSizeWordApplication: ResultOfSizeWordApplication) {
       val right = resultOfSizeWordApplication.expectedSize
-      if ((left.size == right) != shouldBeTrue) {
+      val leftSize = left.size
+      if ((leftSize == right) != shouldBeTrue) {
         throw newTestFailedException(
-          FailureMessages(
-            if (shouldBeTrue) "didNotHaveExpectedSize" else "hadExpectedSize",
-              left,
-              right
-            )
-          )
+          if (shouldBeTrue)
+            FailureMessages("hadSizeInsteadOfExpectedSize", left, leftSize, right)
+          else
+            FailureMessages("hadExpectedSize", left, right)
+        )
       }
     }
 
@@ -2455,13 +2462,14 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      */
     def have(resultOfLengthWordApplication: ResultOfLengthWordApplication) {
       val right = resultOfLengthWordApplication.expectedLength
-      if ((left.length == right) != shouldBeTrue) {
+      val leftLength = left.length
+      if ((leftLength == right) != shouldBeTrue) {
           throw newTestFailedException(
-            FailureMessages(
-             if (shouldBeTrue) "didNotHaveExpectedLength" else "hadExpectedLength",
-              left,
-              right
-            )
+            if (shouldBeTrue)
+              FailureMessages("hadLengthInsteadOfExpectedLength", left, leftLength, right)
+            else
+              FailureMessages("hadExpectedLength", left, right)
+
           )
       }
     }
@@ -2489,12 +2497,13 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      * </p>
      */
     def length(expectedLength: Int) {
-      if ((left.size == expectedLength) != shouldBeTrue)
+      val leftLength = left.size
+      if ((leftLength == expectedLength) != shouldBeTrue)
         throw newTestFailedException(
-          FailureMessages(
-            if (shouldBeTrue) "didNotHaveExpectedLength" else "hadExpectedLength",
-            left,
-            expectedLength)
+          if (shouldBeTrue) 
+            FailureMessages("hadLengthInsteadOfExpectedLength", left, leftLength, expectedLength)
+          else
+            FailureMessages("hadExpectedLength", left, expectedLength)
         )
     }
   }
@@ -2523,14 +2532,14 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      */
     def have(resultOfLengthWordApplication: ResultOfLengthWordApplication) {
       val right = resultOfLengthWordApplication.expectedLength
-      if ((left.size == right) != shouldBeTrue) {
+      val leftLength = left.size
+      if ((leftLength == right) != shouldBeTrue) {
         throw newTestFailedException(
-          FailureMessages(
-            if (shouldBeTrue) "didNotHaveExpectedLength" else "hadExpectedLength",
-              left,
-              right
-            )
-          )
+          if (shouldBeTrue)
+            FailureMessages("hadLengthInsteadOfExpectedLength", left, leftLength, right)
+          else
+            FailureMessages("hadExpectedLength", left, right)
+        )
       }
     }
   }
@@ -3204,13 +3213,13 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      */
     def have(resultOfLengthWordApplication: ResultOfLengthWordApplication) {
       val right = resultOfLengthWordApplication.expectedLength
-      if ((left.length == right) != shouldBeTrue) {
+      val leftLength = left.length
+      if ((leftLength == right) != shouldBeTrue) {
           throw newTestFailedException(
-            FailureMessages(
-             if (shouldBeTrue) "didNotHaveExpectedLength" else "hadExpectedLength",
-              left,
-              right
-            )
+            if (shouldBeTrue)
+              FailureMessages("hadLengthInsteadOfExpectedLength", left, leftLength, right)
+            else
+              FailureMessages("hadExpectedLength", left, right)
           )
       }
     }
@@ -3488,13 +3497,13 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      * </pre>
      */
     def length(expectedLength: Int) {
-      if ((left.length == expectedLength) != shouldBeTrue)
+      val leftLength = left.length
+      if ((leftLength == expectedLength) != shouldBeTrue)
         throw newTestFailedException(
-          FailureMessages(
-            if (shouldBeTrue) "didNotHaveExpectedLength" else "hadExpectedLength",
-            left,
-            expectedLength
-          )
+          if (shouldBeTrue)
+            FailureMessages("hadLengthInsteadOfExpectedLength", left, leftLength, expectedLength)
+          else
+            FailureMessages("hadExpectedLength", left, expectedLength)
         )
     }
   }
@@ -3994,13 +4003,13 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
 // TODO: This should be for "sizey should not have size (12)" Try that test.
     def have(resultOfLengthWordApplication: ResultOfLengthWordApplication) {
       val right = resultOfLengthWordApplication.expectedLength
-      if ((left.length == right) != shouldBeTrue) {
+      val leftLength = left.length
+      if ((leftLength == right) != shouldBeTrue) {
           throw newTestFailedException(
-            FailureMessages(
-             if (shouldBeTrue) "didNotHaveExpectedLength" else "hadExpectedLength",
-              left,
-              right
-            )
+            if (shouldBeTrue)
+              FailureMessages("hadLengthInsteadOfExpectedLength", left, leftLength, right)
+            else
+              FailureMessages("hadExpectedLength", left, right)
           )
       }
     }
@@ -4020,13 +4029,13 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
 // TODO: This should be for "lengthy should not have length (12)" Try that test.
     def have(resultOfLengthWordApplication: ResultOfLengthWordApplication) {
       val right = resultOfLengthWordApplication.expectedLength
-      if ((left.length == right) != shouldBeTrue) {
+      val leftLength = left.length
+      if ((leftLength == right) != shouldBeTrue) {
           throw newTestFailedException(
-            FailureMessages(
-             if (shouldBeTrue) "didNotHaveExpectedLength" else "hadExpectedLength",
-              left,
-              right
-            )
+            if (shouldBeTrue)
+              FailureMessages("hadLengthInsteadOfExpectedLength", left, leftLength, right)
+            else
+              FailureMessages("hadExpectedLength", left, right)
           )
       }
     }
@@ -4059,12 +4068,13 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
     def length(expectedLength: Int)(implicit len: Length[A]) {
       // val len = implicitly[Length[A]]
       // if ((len.extentOf(left.asInstanceOf[A]) == expectedLength) != shouldBeTrue)
-      if ((len.extentOf(left) == expectedLength) != shouldBeTrue)
+      val leftLength = len.extentOf(left)
+      if ((leftLength == expectedLength) != shouldBeTrue)
         throw newTestFailedException(
-          FailureMessages(
-            if (shouldBeTrue) "didNotHaveExpectedLength" else "hadExpectedLength",
-            left,
-            expectedLength)
+          if (shouldBeTrue)
+            FailureMessages("hadLengthInsteadOfExpectedLength", left, leftLength, expectedLength)
+          else
+            FailureMessages("hadExpectedLength", left, expectedLength)
         )
     }
 
@@ -4086,12 +4096,13 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
     def length(expectedLength: Long)(implicit len: Length[A]) {
       // val len = implicitly[Length[A]]
       // if ((len.extentOf(left.asInstanceOf[A]) == expectedLength) != shouldBeTrue)
-      if ((len.extentOf(left) == expectedLength) != shouldBeTrue)
+      val leftLength = len.extentOf(left)
+      if ((leftLength == expectedLength) != shouldBeTrue)
         throw newTestFailedException(
-          FailureMessages(
-            if (shouldBeTrue) "didNotHaveExpectedLength" else "hadExpectedLength",
-            left,
-            expectedLength)
+          if (shouldBeTrue) 
+            FailureMessages("hadLengthInsteadOfExpectedLength", left, leftLength, expectedLength)
+          else
+            FailureMessages("hadExpectedLength", left, expectedLength)
         )
     }
 
@@ -4113,12 +4124,13 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
     def size(expectedSize: Int)(implicit sz: Size[A]) {
       // val sz = implicitly[Size[T]]
       // if ((sz.extentOf(left.asInstanceOf[T]) == expectedSize) != shouldBeTrue)
-      if ((sz.extentOf(left) == expectedSize) != shouldBeTrue)
+      val leftSize = sz.extentOf(left)
+      if ((leftSize == expectedSize) != shouldBeTrue)
         throw newTestFailedException(
-          FailureMessages(
-            if (shouldBeTrue) "didNotHaveExpectedSize" else "hadExpectedSize",
-            left,
-            expectedSize)
+          if (shouldBeTrue)
+            FailureMessages("hadSizeInsteadOfExpectedSize", left, leftSize, expectedSize)
+          else
+            FailureMessages("hadExpectedSize", left, expectedSize)
         )
     }
 
@@ -4140,12 +4152,13 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
     def size(expectedSize: Long)(implicit sz: Size[A]) {
       // val sz = implicitly[Size[T]]
       // if ((sz.extentOf(left.asInstanceOf[T]) == expectedSize) != shouldBeTrue)
-      if ((sz.extentOf(left) == expectedSize) != shouldBeTrue)
+      val leftSize = sz.extentOf(left)
+      if ((leftSize == expectedSize) != shouldBeTrue)
         throw newTestFailedException(
-          FailureMessages(
-            if (shouldBeTrue) "didNotHaveExpectedSize" else "hadExpectedSize",
-            left,
-            expectedSize)
+          if (shouldBeTrue)
+            FailureMessages("hadSizeInsteadOfExpectedSize", left, leftSize, expectedSize)
+          else
+            FailureMessages("hadExpectedSize", left, expectedSize)
         )
     }
   }
@@ -4176,12 +4189,13 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      */
     def length(expectedLength: Int) {
       val len = implicitly[Length[A]]
-      if ((len.extentOf(left) == expectedLength) != shouldBeTrue)
+      val leftLength = len.extentOf(left)
+      if ((leftLength == expectedLength) != shouldBeTrue)
         throw newTestFailedException(
-          FailureMessages(
-            if (shouldBeTrue) "didNotHaveExpectedLength" else "hadExpectedLength",
-            left,
-            expectedLength)
+          if (shouldBeTrue)
+            FailureMessages("hadLengthInsteadOfExpectedLength", left, leftLength, expectedLength)
+          else
+            FailureMessages("hadExpectedLength", left, expectedLength)
         )
     }
 
@@ -4202,12 +4216,13 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      */
     def length(expectedLength: Long) {
       val len = implicitly[Length[A]]
-      if ((len.extentOf(left) == expectedLength) != shouldBeTrue)
+      val leftLength = len.extentOf(left)
+      if ((leftLength == expectedLength) != shouldBeTrue)
         throw newTestFailedException(
-          FailureMessages(
-            if (shouldBeTrue) "didNotHaveExpectedLength" else "hadExpectedLength",
-            left,
-            expectedLength)
+          if (shouldBeTrue)
+            FailureMessages("hadLengthInsteadOfExpectedLength", left, leftLength, expectedLength)
+          else
+            FailureMessages("hadExpectedLength", left, expectedLength)
         )
     }
   }
@@ -4237,12 +4252,13 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      */
     def size(expectedSize: Int) {
       val sz = implicitly[Size[A]]
-      if ((sz.extentOf(left) == expectedSize) != shouldBeTrue)
+      val leftSize = sz.extentOf(left)
+      if ((leftSize == expectedSize) != shouldBeTrue)
         throw newTestFailedException(
-          FailureMessages(
-            if (shouldBeTrue) "didNotHaveExpectedSize" else "hadExpectedSize",
-            left,
-            expectedSize)
+          if (shouldBeTrue)
+            FailureMessages("hadSizeInsteadOfExpectedSize", left, leftSize, expectedSize)
+          else
+            FailureMessages("hadExpectedSize", left, expectedSize)
         )
     }
 
@@ -4263,12 +4279,13 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      */
     def size(expectedSize: Long) {
       val sz = implicitly[Size[A]]
-      if ((sz.extentOf(left) == expectedSize) != shouldBeTrue)
+      val leftSize = sz.extentOf(left)
+      if ((leftSize == expectedSize) != shouldBeTrue)
         throw newTestFailedException(
-          FailureMessages(
-            if (shouldBeTrue) "didNotHaveExpectedSize" else "hadExpectedSize",
-            left,
-            expectedSize)
+          if (shouldBeTrue)
+            FailureMessages("hadSizeInsteadOfExpectedSize", left, leftSize, expectedSize)
+          else
+            FailureMessages("hadExpectedSize", left, expectedSize)
         )
     }
   }
@@ -5365,13 +5382,13 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
     def have(resultOfLengthWordApplication: ResultOfLengthWordApplication) {
       doCollected(collected, xs, "have", 1) { e =>
         val right = resultOfLengthWordApplication.expectedLength
-        if ((e.length == right) != shouldBeTrue) {
+        val eLength = e.length
+        if ((eLength == right) != shouldBeTrue) {
           throw newTestFailedException(
-            FailureMessages(
-              if (shouldBeTrue) "didNotHaveExpectedLength" else "hadExpectedLength",
-              e,
-              right
-            ), 
+            if (shouldBeTrue)
+              FailureMessages("hadLengthInsteadOfExpectedLength", e, eLength, right)
+            else
+              FailureMessages("hadExpectedLength", e, right), 
             None, 
             6
           )
@@ -5390,13 +5407,13 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
     def have(resultOfSizeWordApplication: ResultOfSizeWordApplication) {
       doCollected(collected, xs, "have", 1) { e =>
         val right = resultOfSizeWordApplication.expectedSize
-        if ((e.size == right) != shouldBeTrue) {
+        val eSize = e.size
+        if ((eSize == right) != shouldBeTrue) {
           throw newTestFailedException(
-            FailureMessages(
-              if (shouldBeTrue) "didNotHaveExpectedSize" else "hadExpectedSize",
-              e,
-              right
-            ), 
+            if (shouldBeTrue)
+              FailureMessages("hadSizeInsteadOfExpectedSize", e, eSize, right)
+            else
+              FailureMessages("hadExpectedSize", e, right), 
             None, 
             6
           )
@@ -5607,13 +5624,13 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
     def have(resultOfSizeWordApplication: ResultOfSizeWordApplication) {
       doCollected(collected, xs, "have", 1) { e =>
         val right = resultOfSizeWordApplication.expectedSize
-        if ((e.size == right) != shouldBeTrue) {
+        val eSize = e.size
+        if ((eSize == right) != shouldBeTrue) {
           throw newTestFailedException(
-            FailureMessages(
-              if (shouldBeTrue) "didNotHaveExpectedSize" else "hadExpectedSize",
-              e,
-              right
-            ), 
+            if (shouldBeTrue)
+              FailureMessages("hadSizeInsteadOfExpectedSize", e, eSize, right)
+            else
+              FailureMessages("hadExpectedSize", e, right), 
             None, 
             6
           )
@@ -5632,13 +5649,13 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
     def have(resultOfLengthWordApplication: ResultOfLengthWordApplication) {
       doCollected(collected, xs, "have", 1) { e =>
         val right = resultOfLengthWordApplication.expectedLength
-        if ((e.size == right) != shouldBeTrue) {
+        val eLength = e.size
+        if ((eLength == right) != shouldBeTrue) {
           throw newTestFailedException(
-            FailureMessages(
-              if (shouldBeTrue) "didNotHaveExpectedLength" else "hadExpectedLength",
-              e,
-              right
-            ), 
+            if (shouldBeTrue)
+              FailureMessages("hadLengthInsteadOfExpectedLength", e, eLength, right)
+            else
+              FailureMessages("hadExpectedLength", e, right), 
             None, 
             6
           )
@@ -5715,13 +5732,13 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
     override def have(resultOfLengthWordApplication: ResultOfLengthWordApplication) {
       doCollected(collected, xs, "have", 1) { e =>
         val right = resultOfLengthWordApplication.expectedLength
-        if ((e.length == right) != shouldBeTrue) {
+        val eLength = e.length
+        if ((eLength == right) != shouldBeTrue) {
           throw newTestFailedException(
-            FailureMessages(
-              if (shouldBeTrue) "didNotHaveExpectedLength" else "hadExpectedLength",
-              e,
-              right
-            ), 
+            if (shouldBeTrue)
+              FailureMessages("hadLengthInsteadOfExpectedLength", e, eLength, right)
+            else
+              FailureMessages("hadExpectedLength", e, right), 
             None, 
             6
           )
@@ -5814,13 +5831,13 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
     def have(resultOfSizeWordApplication: ResultOfSizeWordApplication) {
       doCollected(collected, xs, "have", 1) { e =>
         val right = resultOfSizeWordApplication.expectedSize
-        if ((e.size == right) != shouldBeTrue) {
+        val eSize = e.size
+        if ((eSize == right) != shouldBeTrue) {
           throw newTestFailedException(
-            FailureMessages(
-              if (shouldBeTrue) "didNotHaveExpectedSize" else "hadExpectedSize",
-              e,
-              right
-            ), 
+            if (shouldBeTrue)
+              FailureMessages("hadSizeInsteadOfExpectedSize", e, eSize, right)
+            else
+              FailureMessages("hadExpectedSize", e, right), 
             None, 
             6
           )
@@ -5886,13 +5903,13 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
     def have(resultOfLengthWordApplication: ResultOfLengthWordApplication) {
       doCollected(collected, xs, "have", 1) { e =>
         val right = resultOfLengthWordApplication.expectedLength
-        if ((e.size == right) != shouldBeTrue) {
+        val eLength = e.size
+        if ((eLength == right) != shouldBeTrue) {
           throw newTestFailedException(
-            FailureMessages(
-              if (shouldBeTrue) "didNotHaveExpectedLength" else "hadExpectedLength",
-              e,
-              right
-            ), 
+            if (shouldBeTrue) 
+              FailureMessages("hadLengthInsteadOfExpectedLength", e, eLength, right)
+            else
+              FailureMessages("hadExpectedLength", e, right), 
             None, 
             6
           )
@@ -5984,13 +6001,13 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
     def have(resultOfSizeWordApplication: ResultOfSizeWordApplication) {
       doCollected(collected, xs, "have", 1) { e =>
         val right = resultOfSizeWordApplication.expectedSize
-        if ((e.size == right) != shouldBeTrue) {
+        val eSize = e.size
+        if ((eSize == right) != shouldBeTrue) {
           throw newTestFailedException(
-            FailureMessages(
-              if (shouldBeTrue) "didNotHaveExpectedSize" else "hadExpectedSize",
-              e,
-              right
-            ), 
+            if (shouldBeTrue)
+              FailureMessages("hadSizeInsteadOfExpectedSize", e, eSize, right)
+            else
+              FailureMessages("hadExpectedSize", e, right), 
             None, 
             6
           )
@@ -6014,13 +6031,13 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
     def have(resultOfLengthWordApplication: ResultOfLengthWordApplication) {
       doCollected(collected, xs, "have", 1) { e =>
         val right = resultOfLengthWordApplication.expectedLength
-        if ((e.size == right) != shouldBeTrue) {
+        val eLength = e.size
+        if ((eLength == right) != shouldBeTrue) {
           throw newTestFailedException(
-            FailureMessages(
-              if (shouldBeTrue) "didNotHaveExpectedLength" else "hadExpectedLength",
-              e,
-              right
-            ), 
+            if (shouldBeTrue)
+              FailureMessages("hadLengthInsteadOfExpectedLength", e, eLength, right)
+            else
+              FailureMessages("hadExpectedLength", e, right), 
             None, 
             6
           )
@@ -6097,13 +6114,13 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
     def have(resultOfSizeWordApplication: ResultOfSizeWordApplication) {
       doCollected(collected, xs, "have", 1) { e =>
         val right = resultOfSizeWordApplication.expectedSize
-        if ((e.size == right) != shouldBeTrue) {
+        val eSize = e.size
+        if ((eSize == right) != shouldBeTrue) {
           throw newTestFailedException(
-            FailureMessages(
-              if (shouldBeTrue) "didNotHaveExpectedSize" else "hadExpectedSize",
-              e,
-              right
-            ), 
+            if (shouldBeTrue)
+              FailureMessages("hadSizeInsteadOfExpectedSize", e, eSize, right)
+            else
+              FailureMessages("hadExpectedSize", e, right), 
             None, 
             6
           )
@@ -6127,13 +6144,13 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
     def have(resultOfLengthWordApplication: ResultOfLengthWordApplication) {
       doCollected(collected, xs, "have", 1) { e =>
         val right = resultOfLengthWordApplication.expectedLength
-        if ((e.size == right) != shouldBeTrue) {
+        val eLength = e.size
+        if ((eLength == right) != shouldBeTrue) {
           throw newTestFailedException(
-            FailureMessages(
-              if (shouldBeTrue) "didNotHaveExpectedLength" else "hadExpectedLength",
-              e,
-              right
-            ), 
+            if (shouldBeTrue)
+              FailureMessages("hadLengthInsteadOfExpectedLength", e, eLength, right)
+            else
+              FailureMessages("hadExpectedLength", e, right), 
             None, 
             6
           )
@@ -6901,13 +6918,13 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      */
     def length(expectedLength: Long) {
       doCollected(collected, xs, "length", 1) { e =>
-        if ((e.length == expectedLength) != shouldBeTrue)
+        val eLength = e.length
+        if ((eLength == expectedLength) != shouldBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (shouldBeTrue) "didNotHaveExpectedLength" else "hadExpectedLength",
-              e,
-              expectedLength
-            ), 
+            if (shouldBeTrue)
+              FailureMessages("hadLengthInsteadOfExpectedLength", e, eLength, expectedLength)
+            else
+              FailureMessages("hadExpectedLength", e, expectedLength), 
             None, 
             6
           )
@@ -6924,13 +6941,13 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      */
     def size(expectedSize: Int) {
       doCollected(collected, xs, "size", 1) { e =>
-        if ((e.size == expectedSize) != shouldBeTrue)
+        val eSize = e.size
+        if ((eSize == expectedSize) != shouldBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (shouldBeTrue) "didNotHaveExpectedSize" else "hadExpectedSize",
-              e,
-              expectedSize
-            ), 
+            if (shouldBeTrue)
+              FailureMessages("hadSizeInsteadOfExpectedSize", e, eSize, expectedSize)
+            else
+              FailureMessages("hadExpectedSize", e, expectedSize), 
             None, 
             6
           )
@@ -7239,13 +7256,13 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      */
     def size(expectedSize: Long) {
       doCollected(collected, xs, "size", 1) { e =>
-        if ((e.size == expectedSize) != shouldBeTrue)
+        val eSize = e.size
+        if ((eSize == expectedSize) != shouldBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (shouldBeTrue) "didNotHaveExpectedSize" else "hadExpectedSize",
-              e,
-              expectedSize
-            ), 
+            if (shouldBeTrue)
+              FailureMessages("hadSizeInsteadOfExpectedSize", e, eSize, expectedSize)
+            else
+              FailureMessages("hadExpectedSize", e, expectedSize), 
             None, 
             6
           )
@@ -7262,13 +7279,13 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      */
     def length(expectedLength: Long) {
       doCollected(collected, xs, "length", 1) { e =>
-        if ((e.size == expectedLength) != shouldBeTrue)
+        val eLength = e.size
+        if ((eLength == expectedLength) != shouldBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (shouldBeTrue) "didNotHaveExpectedLength" else "hadExpectedLength",
-              e,
-              expectedLength
-            ), 
+            if (shouldBeTrue)
+              FailureMessages("hadLengthInsteadOfExpectedLength", e, eLength, expectedLength)
+            else
+              FailureMessages("hadExpectedLength", e, expectedLength), 
             None, 
             6
           )
@@ -7396,13 +7413,13 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      */
     def length(expectedLength: Long) {
       doCollected(collected, xs, "length", 1) { e =>
-        if ((e.length == expectedLength) != shouldBeTrue)
+        val eLength = e.length
+        if ((eLength == expectedLength) != shouldBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (shouldBeTrue) "didNotHaveExpectedLength" else "hadExpectedLength",
-              e,
-              expectedLength
-            ), 
+            if (shouldBeTrue)
+              FailureMessages("hadLengthInsteadOfExpectedLength", e, eLength, expectedLength)
+            else
+              FailureMessages("hadExpectedLength", e, expectedLength), 
             None, 
             6
           )
@@ -7419,13 +7436,13 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      */
     def size(expectedSize: Long) {
       doCollected(collected, xs, "size", 1) { e =>
-        if ((e.size == expectedSize) != shouldBeTrue)
+        val eSize = e.size
+        if ((eSize == expectedSize) != shouldBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (shouldBeTrue) "didNotHaveExpectedSize" else "hadExpectedSize",
-              e,
-              expectedSize
-            ), 
+            if (shouldBeTrue)
+              FailureMessages("hadSizeInsteadOfExpectedSize", e, eSize, expectedSize)
+            else
+              FailureMessages("hadExpectedSize", e, expectedSize), 
             None, 
             6
           )
@@ -7731,13 +7748,13 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      */
     def size(expectedSize: Int) {
       doCollected(collected, xs, "size", 1) { e =>
-        if ((e.size == expectedSize) != shouldBeTrue)
+        val eSize = e.size
+        if ((eSize == expectedSize) != shouldBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (shouldBeTrue) "didNotHaveExpectedSize" else "hadExpectedSize",
-              e,
-              expectedSize
-            ), 
+            if (shouldBeTrue)
+              FailureMessages("hadSizeInsteadOfExpectedSize", e, eSize, expectedSize)
+            else
+              FailureMessages("hadExpectedSize", e, expectedSize), 
             None, 
             6
           )
@@ -7754,13 +7771,13 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      */
     def length(expectedLength: Long) {
       doCollected(collected, xs, "length", 1) { e =>
-        if ((e.length == expectedLength) != shouldBeTrue)
+        val eLength = e.length
+        if ((eLength == expectedLength) != shouldBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (shouldBeTrue) "didNotHaveExpectedLength" else "hadExpectedLength",
-              e,
-              expectedLength
-            ), 
+            if (shouldBeTrue)
+              FailureMessages("hadLengthInsteadOfExpectedLength", e, eLength, expectedLength)
+            else
+              FailureMessages("hadExpectedLength", e, expectedLength), 
             None, 
             6
           )
@@ -8201,12 +8218,13 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      */
     def size(expectedSize: Long) {
       doCollected(collected, xs, "size", 1) { e =>
-        if ((e.size == expectedSize) != shouldBeTrue)
+        val eSize = e.size
+        if ((eSize == expectedSize) != shouldBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (shouldBeTrue) "didNotHaveExpectedSize" else "hadExpectedSize",
-              e,
-              expectedSize), 
+            if (shouldBeTrue)
+              FailureMessages("hadSizeInsteadOfExpectedSize", e, eSize, expectedSize)
+            else
+              FailureMessages("hadExpectedSize", e, expectedSize), 
             None, 
             6
           )
@@ -8228,12 +8246,13 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      */
     def length(expectedLength: Long) {
       doCollected(collected, xs, "length", 1) { e =>
-        if ((e.size == expectedLength) != shouldBeTrue)
+        val eLength = e.size
+        if ((eLength == expectedLength) != shouldBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (shouldBeTrue) "didNotHaveExpectedLength" else "hadExpectedLength",
-              e,
-              expectedLength), 
+            if (shouldBeTrue)
+              FailureMessages("hadLengthInsteadOfExpectedLength", e, eLength, expectedLength)
+            else
+              FailureMessages("hadExpectedLength", e, expectedLength), 
             None, 
             6
           )
@@ -8539,12 +8558,13 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      */
     def size(expectedSize: Long) {
       doCollected(collected, xs, "size", 1) { e =>
-        if ((e.size == expectedSize) != shouldBeTrue)
+        val eSize = e.size
+        if ((eSize == expectedSize) != shouldBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (shouldBeTrue) "didNotHaveExpectedSize" else "hadExpectedSize",
-              e,
-              expectedSize), 
+            if (shouldBeTrue)
+              FailureMessages("hadSizeInsteadOfExpectedSize", e, eSize, expectedSize)
+            else
+              FailureMessages("hadExpectedSize", e, expectedSize), 
             None, 
             6
           )
@@ -8561,12 +8581,13 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      */
     def length(expectedLength: Long) {
       doCollected(collected, xs, "length", 1) { e =>
-        if ((e.size == expectedLength) != shouldBeTrue)
+        val eLength = e.size
+        if ((eLength == expectedLength) != shouldBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (shouldBeTrue) "didNotHaveExpectedLength" else "hadExpectedLength",
-              e,
-              expectedLength), 
+            if (shouldBeTrue)
+              FailureMessages("hadLengthInsteadOfExpectedLength", e, eLength, expectedLength)
+            else
+              FailureMessages("hadExpectedLength", e, expectedLength), 
             None, 
             6
           )

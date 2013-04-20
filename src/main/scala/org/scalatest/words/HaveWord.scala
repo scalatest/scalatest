@@ -52,7 +52,7 @@ final class HaveWord {
             MatchResult(
               lengthOfLeft == expectedLength,
               // FailureMessages("hadLengthInsteadOfExpectedLength", left, lengthOfLeft, expectedLength),
-              FailureMessages("didNotHaveExpectedLength", left, expectedLength),
+              FailureMessages("hadLengthInsteadOfExpectedLength", left, lengthOfLeft, expectedLength),
               FailureMessages("hadExpectedLength", left, expectedLength)
             )
           }
@@ -85,7 +85,7 @@ final class HaveWord {
             MatchResult(
               lengthOfLeft == expectedSize,
               // FailureMessages("hadSizeInsteadOfExpectedSize", left, lengthOfLeft, expectedSize),
-              FailureMessages("didNotHaveExpectedSize", left, expectedSize),
+              FailureMessages("hadSizeInsteadOfExpectedSize", left, lengthOfLeft, expectedSize),
               FailureMessages("hadExpectedSize", left, expectedSize)
             )
           }
@@ -100,19 +100,19 @@ final class HaveWord {
           case leftArray: Array[_] =>
             MatchResult(
               leftArray.length == expectedSize, 
-              FailureMessages("didNotHaveExpectedSize", left, expectedSize),
+              FailureMessages("hadSizeInsteadOfExpectedSize", left, leftArray.length, expectedSize),
               FailureMessages("hadExpectedSize", left, expectedSize)
             )
           case leftTrav: GenTraversable[_] =>
             MatchResult(
               leftTrav.size == expectedSize, 
-              FailureMessages("didNotHaveExpectedSize", left, expectedSize),
+              FailureMessages("hadSizeInsteadOfExpectedSize", left, leftTrav.size, expectedSize),
               FailureMessages("hadExpectedSize", left, expectedSize)
             )
           case leftJavaList: java.util.List[_] =>
             MatchResult(
               leftJavaList.size == expectedSize,
-              FailureMessages("didNotHaveExpectedSize", left, expectedSize),
+              FailureMessages("hadSizeInsteadOfExpectedSize", left, leftJavaList.size, expectedSize),
               FailureMessages("hadExpectedSize", left, expectedSize)
             )
           case _ =>
@@ -127,7 +127,7 @@ final class HaveWord {
 
                 MatchResult(
                   result == expectedSize,
-                  FailureMessages("didNotHaveExpectedSize", left, expectedSize),
+                  FailureMessages("hadSizeInsteadOfExpectedSize", left, result, expectedSize),
                   FailureMessages("hadExpectedSize", left, expectedSize)
                 )
             }

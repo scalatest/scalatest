@@ -554,10 +554,40 @@ trait SharedHelpers extends Assertions {
     Array(index.toString, (if (element != null && element.isInstanceOf[Array[_]]) element.asInstanceOf[Array[T]].deep.toString else element + "")) 
   } 
   
-  def indexElementLength[T](itr: Iterator[String], xs: GenTraversable[String], errorFun: String => Boolean): Array[String] = { 
+  def indexLengthElement[T](itr: Iterator[String], xs: GenTraversable[String], errorFun: String => Boolean): Array[String] = { 
     val element = getNext[String](itr, errorFun)
     val index = getIndex(xs, element)
     Array(index.toString, element.length.toString, (if (element != null && element.isInstanceOf[Array[_]]) element.asInstanceOf[Array[T]].deep.toString else element.toString)) 
+  }
+  
+  def indexElementLengthString[T](itr: Iterator[String], xs: GenTraversable[String], errorFun: String => Boolean): Array[String] = { 
+    val element = getNext[String](itr, errorFun)
+    val index = getIndex(xs, element)
+    Array(index.toString, (if (element != null && element.isInstanceOf[Array[_]]) element.asInstanceOf[Array[T]].deep.toString else element.toString), element.length.toString) 
+  }
+  
+  def indexElementLengthGenTraversable[T](itr: Iterator[GenTraversable[T]], xs: GenTraversable[GenTraversable[T]], errorFun: GenTraversable[T] => Boolean): Array[String] = { 
+    val element = getNext[GenTraversable[T]](itr, errorFun)
+    val index = getIndex(xs, element)
+    Array(index.toString, (if (element != null && element.isInstanceOf[Array[_]]) element.asInstanceOf[Array[T]].deep.toString else element.toString), element.size.toString) 
+  }
+  
+  def indexElementLengthArray[T](itr: Iterator[Array[T]], xs: GenTraversable[Array[T]], errorFun: Array[T] => Boolean): Array[String] = { 
+    val element = getNext[Array[T]](itr, errorFun)
+    val index = getIndex(xs, element)
+    Array(index.toString, (if (element != null && element.isInstanceOf[Array[_]]) element.asInstanceOf[Array[T]].deep.toString else element.toString), element.size.toString) 
+  }
+  
+  def indexElementLengthJavaCol[T](itr: Iterator[java.util.Collection[T]], xs: GenTraversable[java.util.Collection[T]], errorFun: java.util.Collection[T] => Boolean): Array[String] = { 
+    val element = getNext[java.util.Collection[T]](itr, errorFun)
+    val index = getIndex(xs, element)
+    Array(index.toString, (if (element != null && element.isInstanceOf[Array[_]]) element.asInstanceOf[Array[T]].deep.toString else element.toString), element.size.toString) 
+  }
+  
+  def indexElementLengthJavaMap[K, V](itr: Iterator[java.util.Map[K, V]], xs: GenTraversable[java.util.Map[K, V]], errorFun: java.util.Map[K, V] => Boolean): Array[String] = { 
+    val element = getNext[java.util.Map[K, V]](itr, errorFun)
+    val index = getIndex(xs, element)
+    Array(index.toString, element.toString, element.size.toString) 
   }
   
   def indexElementEqual[T](itr: Iterator[T], xs: GenTraversable[T], right: T): Array[String] = 
@@ -588,16 +618,16 @@ trait SharedHelpers extends Assertions {
     indexElement[String](itr, xs, _.length == right)
     
   def indexElementLengthNotEqual(itr: Iterator[String], xs: GenTraversable[String], right: Int): Array[String] = 
-    indexElement[String](itr, xs, _.length != right)
+    indexElementLengthString[String](itr, xs, _.length != right)
     
   def indexElementSizeEqual(itr: Iterator[String], xs: GenTraversable[String], right: Int): Array[String] = 
     indexElement[String](itr, xs, _.size == right)
     
   def indexElementSizeNotEqual(itr: Iterator[String], xs: GenTraversable[String], right: Int): Array[String] = 
-    indexElement[String](itr, xs, _.size != right)
+    indexElementLengthString[String](itr, xs, _.size != right)
     
   def indexElementLengthNotEqualLength(itr: Iterator[String], xs: GenTraversable[String], right: Int): Array[String] = 
-    indexElementLength[String](itr, xs, _.length != right)
+    indexLengthElement[String](itr, xs, _.length != right)
     
   def indexElementStartsWith(itr: Iterator[String], xs: GenTraversable[String], right: String): Array[String] = 
     indexElement[String](itr, xs, _.startsWith(right))
@@ -627,13 +657,13 @@ trait SharedHelpers extends Assertions {
     indexElement[GenTraversable[T]](itr, xs, _.size == right)
     
   def indexElementSizeNotEqualGenTraversable[T](itr: Iterator[GenTraversable[T]], xs: GenTraversable[GenTraversable[T]], right: Int): Array[String] = 
-    indexElement[GenTraversable[T]](itr, xs, _.size != right)
+    indexElementLengthGenTraversable[T](itr, xs, _.size != right)
     
   def indexElementSizeEqualGenTraversableArray[T](itr: Iterator[Array[T]], xs: GenTraversable[Array[T]], right: Int): Array[T] = 
     indexElement[Array[T]](itr, xs, _.size == right).asInstanceOf[Array[T]]
     
   def indexElementSizeNotEqualGenTraversableArray[T](itr: Iterator[Array[T]], xs: GenTraversable[Array[T]], right: Int): Array[T] = 
-    indexElement[Array[T]](itr, xs, _.size != right).asInstanceOf[Array[T]]
+    indexElementLengthArray[T](itr, xs, _.size != right).asInstanceOf[Array[T]]
   
   def indexElementContainGenTraversable[T](itr: Iterator[GenTraversable[T]], xs: GenTraversable[GenTraversable[T]], right: T): Array[String] = 
     indexElement[GenTraversable[T]](itr, xs, _.exists(_ == right))
@@ -687,13 +717,13 @@ trait SharedHelpers extends Assertions {
     indexElement[java.util.Map[K, V]](itr, xs, _.size == right)
     
   def indexElementJavaMapSizeNotEqual[K, V](itr: Iterator[java.util.Map[K, V]], xs: GenTraversable[java.util.Map[K, V]], right: Int): Array[String] = 
-    indexElement[java.util.Map[K, V]](itr, xs, _.size != right)
+    indexElementLengthJavaMap[K, V](itr, xs, _.size != right)
     
   def indexElementJavaColSizeEqual[T](itr: Iterator[java.util.Collection[T]], xs: GenTraversable[java.util.Collection[T]], right: Int): Array[String] = 
     indexElement[java.util.Collection[T]](itr, xs, _.size == right)
     
   def indexElementJavaColSizeNotEqual[T](itr: Iterator[java.util.Collection[T]], xs: GenTraversable[java.util.Collection[T]], right: Int): Array[String] = 
-    indexElement[java.util.Collection[T]](itr, xs, _.size != right)
+    indexElementLengthJavaCol[T](itr, xs, _.size != right)
     
   def indexElementJavaColContain[T](itr: Iterator[java.util.Collection[T]], xs: GenTraversable[java.util.Collection[T]], right: T): Array[String] = 
     indexElement[java.util.Collection[T]](itr, xs, _.contains(right))
