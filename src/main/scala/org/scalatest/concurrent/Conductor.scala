@@ -391,7 +391,7 @@ final class Conductor {
 
   // Won't write one that takes clockPeriod and timeout for 1.0. For now people
   // can just call conduct(a, b) directly followed by the code they want to run
-  // afterwords. See if anyone asks for a whenFinished(a, b) {}
+  // afterwards. See if anyone asks for a whenFinished(a, b) {}
   /**
    * Invokes <code>conduct</code> and after <code>conduct</code> method returns,
    * if <code>conduct</code> returns normally (<em>i.e.</em>, without throwing

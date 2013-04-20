@@ -31,7 +31,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * <strong>Recommended Usage</strong>:
  * Use class <code>fixture.Spec</code> in situations for which <a href="../Spec.html"><code>Spec</code></a>
  * would be a good choice, when all or most tests need the same fixture objects
- * that must be cleaned up afterwords. <em>Note: <code>fixture.Spec</code> is intended for use in special situations, with class <code>Spec</code> used for general needs. For
+ * that must be cleaned up afterwards. <em>Note: <code>fixture.Spec</code> is intended for use in special situations, with class <code>Spec</code> used for general needs. For
  * more insight into where <code>fixture.Spec</code> fits in the big picture, see the <a href="../Spec.html#withFixtureOneArgTest"><code>withFixture(OneArgTest)</code></a> subsection of the <a href="../Spec.html#sharedFixtures">Shared fixtures</a> section in the documentation for class <code>Spec</code>.</em>
  * </td></tr></table>
  * 

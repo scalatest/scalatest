@@ -33,7 +33,7 @@ import org.scalatest.exceptions.NotAllowedException
  * <strong>Recommended Usage</strong>:
  * Use class <code>fixture.FeatureSpec</code> in situations for which <a href="../FeatureSpec.html"><code>FeatureSpec</code></a>
  * would be a good choice, when all or most tests need the same fixture objects
- * that must be cleaned up afterwords. <em>Note: <code>fixture.FeatureSpec</code> is intended for use in special situations, with class <code>FeatureSpec</code> used for general needs. For
+ * that must be cleaned up afterwards. <em>Note: <code>fixture.FeatureSpec</code> is intended for use in special situations, with class <code>FeatureSpec</code> used for general needs. For
  * more insight into where <code>fixture.FeatureSpec</code> fits in the big picture, see the <a href="../FeatureSpec.html#withFixtureOneArgTest"><code>withFixture(OneArgTest)</code></a> subsection of the <a href="../FeatureSpec.html#sharedFixtures">Shared fixtures</a> section in the documentation for class <code>FeatureSpec</code>.</em>
  * </td></tr></table>
  * 
