@@ -1,13 +1,6 @@
 package org.scalatest.tools
 import org.scalatest.FunSuite
-import sbt.testing.EventHandler
-import sbt.testing.Event
-import sbt.testing.Logger
-import sbt.testing.TestSelector
-import sbt.testing.NestedTestSelector
-import sbt.testing.SuiteSelector
-import sbt.testing.NestedSuiteSelector
-import sbt.testing.Status
+import sbt.testing._
 
 class FrameworkSuite extends FunSuite {
   
@@ -94,6 +87,17 @@ class FrameworkSuite extends FunSuite {
                             }
   
   val framework = new Framework
+  val subclassFingerprint = 
+    new SubclassFingerprint {
+      def superclassName = "org.scalatest.Suite"
+      def isModule = false
+      def requireNoArgConstructor = true
+    }
+  val annotatedFingerprint = 
+    new AnnotatedFingerprint {
+      def annotationName = "org.scalatest.WrapWith"
+      def isModule = false
+    }
   
   def assertSuiteSuccessEvent(event: Event, suiteClassName: String, testName: String) {
     assert(Status.Success === event.status)
@@ -198,7 +202,7 @@ class FrameworkSuite extends FunSuite {
     val testEventHandler = new TestEventHandler
     val runner = framework.runner(Array.empty, Array.empty, testClassLoader)
     
-    val task = runner.task("org.scalatest.tools.scalasbt.SampleSuite", false, false, Array.empty)
+    val task = runner.task("org.scalatest.tools.scalasbt.SampleSuite", subclassFingerprint, false, Array.empty)
     assert(task != null)
     task.execute(testEventHandler, Array(new TestLogger))
     val successEvents = testEventHandler.successEventsReceived
@@ -215,7 +219,7 @@ class FrameworkSuite extends FunSuite {
     val testEventHandler = new TestEventHandler
     val runner = framework.runner(Array.empty, Array.empty, testClassLoader)
     
-    val task = runner.task("org.scalatest.tools.scalasbt.SampleSuite", false, false, Array(new SuiteSelector))
+    val task = runner.task("org.scalatest.tools.scalasbt.SampleSuite", subclassFingerprint, false, Array(new SuiteSelector))
     assert(task != null)
     task.execute(testEventHandler, Array(new TestLogger))
     val successEvents = testEventHandler.successEventsReceived
@@ -233,7 +237,7 @@ class FrameworkSuite extends FunSuite {
     val testEventHandler = new TestEventHandler
     val runner = framework.runner(Array.empty, Array.empty, testClassLoader)
     
-    val task = runner.task("org.scalatest.tools.scalasbt.DoNotDiscoverSuite", false, false, Array.empty)
+    val task = runner.task("org.scalatest.tools.scalasbt.DoNotDiscoverSuite", subclassFingerprint, false, Array.empty)
     assert(task != null)
     task.execute(testEventHandler, Array(new TestLogger))
     assert(testEventHandler.successEventsReceived.length === 0)
@@ -247,7 +251,7 @@ class FrameworkSuite extends FunSuite {
     val testEventHandler = new TestEventHandler
     val runner = framework.runner(Array.empty, Array.empty, testClassLoader)
     
-    val task = runner.task("org.scalatest.tools.scalasbt.DoNotDiscoverSuite", false, false, Array(new SuiteSelector))
+    val task = runner.task("org.scalatest.tools.scalasbt.DoNotDiscoverSuite", subclassFingerprint, false, Array(new SuiteSelector))
     assert(task != null)
     task.execute(testEventHandler, Array(new TestLogger))
     assert(testEventHandler.successEventsReceived.length === 0)
@@ -259,7 +263,7 @@ class FrameworkSuite extends FunSuite {
   test("When suite is neither subclass of org.scalatest.Suite or annotated with WrapWith, IllegalArgumentException will be thrown") {
     intercept[IllegalArgumentException] {
       val runner = framework.runner(Array.empty, Array.empty, testClassLoader)
-      val notASuiteTask = runner.task("org.scalatest.tools.scalasbt.NotASuite", false, false, Array(new SuiteSelector))
+      val notASuiteTask = runner.task("org.scalatest.tools.scalasbt.NotASuite", subclassFingerprint, false, Array(new SuiteSelector))
       notASuiteTask.execute(new TestEventHandler, Array(new TestLogger))
     }
   }
@@ -268,7 +272,7 @@ class FrameworkSuite extends FunSuite {
   	   "will be thrown") {
     intercept[IllegalArgumentException] {
       val runner = framework.runner(Array.empty, Array.empty, testClassLoader)
-      val doesNotExistTask = runner.task("org.scalatest.tools.scalasbt.DoesNotExist", false, false, Array(new SuiteSelector))
+      val doesNotExistTask = runner.task("org.scalatest.tools.scalasbt.DoesNotExist", subclassFingerprint, false, Array(new SuiteSelector))
       doesNotExistTask.execute(new TestEventHandler, Array(new TestLogger))
     }
   }
@@ -277,7 +281,7 @@ class FrameworkSuite extends FunSuite {
     val testEventHandler = new TestEventHandler
     val runner = framework.runner(Array.empty, Array.empty, testClassLoader)
     
-    val task = runner.task("org.scalatest.tools.scalasbt.SuiteWithNestedSuites", false, false, Array(new SuiteSelector))
+    val task = runner.task("org.scalatest.tools.scalasbt.SuiteWithNestedSuites", subclassFingerprint, false, Array(new SuiteSelector))
     assert(task != null)
     val nestedTasks = task.execute(testEventHandler, Array(new TestLogger))
     val successEvents = testEventHandler.successEventsReceived
@@ -321,7 +325,7 @@ class FrameworkSuite extends FunSuite {
     val testEventHandler = new TestEventHandler
     val runner = framework.runner(Array.empty, Array.empty, testClassLoader)
     
-    val task = runner.task("org.scalatest.tools.scalasbt.SuiteWithFailedSkippedTests", false, false, Array(new SuiteSelector))
+    val task = runner.task("org.scalatest.tools.scalasbt.SuiteWithFailedSkippedTests", subclassFingerprint, false, Array(new SuiteSelector))
     assert(task != null)
     val nestedTasks = task.execute(testEventHandler, Array(new TestLogger))
     assert(nestedTasks.size == 3)
@@ -406,7 +410,7 @@ class FrameworkSuite extends FunSuite {
   test("SuiteSelector should select and run test(s) in selected suite") {
     val testEventHandler = new TestEventHandler
     val runner = framework.runner(Array.empty, Array.empty, testClassLoader)
-    val task = runner.task("org.scalatest.tools.scalasbt.SampleSuite", false, false, Array(new SuiteSelector()))
+    val task = runner.task("org.scalatest.tools.scalasbt.SampleSuite", subclassFingerprint, false, Array(new SuiteSelector()))
     task.execute(testEventHandler, Array(new TestLogger))
     val successEvents = testEventHandler.successEventsReceived
     assert(successEvents.length === 3)
@@ -420,7 +424,7 @@ class FrameworkSuite extends FunSuite {
   test("SuiteSelector should select and run test(s) in selected suite when it is explicitly specified, even when the selected suite is annotated with @DoNotDiscover") {
     val testEventHandler = new TestEventHandler
     val runner = framework.runner(Array.empty, Array.empty, testClassLoader)
-    val task = runner.task("org.scalatest.tools.scalasbt.DoNotDiscoverSuite", false, true, Array(new SuiteSelector()))
+    val task = runner.task("org.scalatest.tools.scalasbt.DoNotDiscoverSuite", subclassFingerprint, true, Array(new SuiteSelector()))
     task.execute(testEventHandler, Array(new TestLogger))
     val successEvents = testEventHandler.successEventsReceived
     assert(successEvents.length === 3)
@@ -434,7 +438,7 @@ class FrameworkSuite extends FunSuite {
   test("TestSelector should select and run selected test(s) in suite, excluding nested suites") {
     val testEventHandler = new TestEventHandler
     val runner = framework.runner(Array.empty, Array.empty, testClassLoader)
-    val task = runner.task("org.scalatest.tools.scalasbt.SampleSuite", false, false, Array(new TestSelector("test 1"), new TestSelector("test 3")))
+    val task = runner.task("org.scalatest.tools.scalasbt.SampleSuite", subclassFingerprint, false, Array(new TestSelector("test 1"), new TestSelector("test 3")))
     task.execute(testEventHandler, Array(new TestLogger))
     val successEvents = testEventHandler.successEventsReceived
     assert(successEvents.length === 2)
@@ -446,7 +450,7 @@ class FrameworkSuite extends FunSuite {
     
     val testEventHandler2 = new TestEventHandler
     val runner2 = framework.runner(Array.empty, Array.empty, testClassLoader)
-    val task2 = runner2.task("org.scalatest.tools.scalasbt.SuiteWithNestedSuites", false, false, Array(new TestSelector("test 2")))
+    val task2 = runner2.task("org.scalatest.tools.scalasbt.SuiteWithNestedSuites", subclassFingerprint, false, Array(new TestSelector("test 2")))
     task2.execute(testEventHandler2, Array(new TestLogger))
     val successEvents2 = testEventHandler2.successEventsReceived
     assert(successEvents2.length === 1)
@@ -459,7 +463,7 @@ class FrameworkSuite extends FunSuite {
   test("TestSelector should select and run selected test(s) in suite when it is explicitly specified, even when the suite is annotated with @DoNotDiscover") {    
     val testEventHandler = new TestEventHandler
     val runner = framework.runner(Array.empty, Array.empty, testClassLoader)
-    val task = runner.task("org.scalatest.tools.scalasbt.DoNotDiscoverSuite", false, true, Array(new TestSelector("test 1"), new TestSelector("test 3")))
+    val task = runner.task("org.scalatest.tools.scalasbt.DoNotDiscoverSuite", subclassFingerprint, true, Array(new TestSelector("test 1"), new TestSelector("test 3")))
     task.execute(testEventHandler, Array(new TestLogger))
     val successEvents = testEventHandler.successEventsReceived
     assert(successEvents.length === 2)
@@ -473,7 +477,7 @@ class FrameworkSuite extends FunSuite {
   test("TestSelector should not select and run selected test(s) in suite when it is not explicitly specified and the suite is annotated with @DoNotDiscover") {    
     val testEventHandler = new TestEventHandler
     val runner = framework.runner(Array.empty, Array.empty, testClassLoader)
-    val task = runner.task("org.scalatest.tools.scalasbt.DoNotDiscoverSuite", false, false, Array(new TestSelector("test 1"), new TestSelector("test 3")))
+    val task = runner.task("org.scalatest.tools.scalasbt.DoNotDiscoverSuite", subclassFingerprint, false, Array(new TestSelector("test 1"), new TestSelector("test 3")))
     task.execute(testEventHandler, Array(new TestLogger))
     assert(testEventHandler.successEventsReceived.length === 0)
     assert(testEventHandler.errorEventsReceived.length === 0)
@@ -485,7 +489,7 @@ class FrameworkSuite extends FunSuite {
     val testEventHandler = new TestEventHandler
     val runner = framework.runner(Array.empty, Array.empty, testClassLoader)
     
-    val task = runner.task("org.scalatest.tools.scalasbt.SuiteWithNestedSuites", false, true, Array(new NestedSuiteSelector("nested 1")))
+    val task = runner.task("org.scalatest.tools.scalasbt.SuiteWithNestedSuites", subclassFingerprint, true, Array(new NestedSuiteSelector("nested 1")))
     val nestedTasks = task.execute(testEventHandler, Array(new TestLogger))
     assert(nestedTasks.size === 2)
     
@@ -521,7 +525,7 @@ class FrameworkSuite extends FunSuite {
     val testEventHandler = new TestEventHandler
     val runner = framework.runner(Array.empty, Array.empty, testClassLoader)
     
-    val task = runner.task("org.scalatest.tools.scalasbt.SuiteWithNestedSuites", false, false, Array(new NestedSuiteSelector("nested 1")))
+    val task = runner.task("org.scalatest.tools.scalasbt.SuiteWithNestedSuites", subclassFingerprint, false, Array(new NestedSuiteSelector("nested 1")))
     val nestedTasks = task.execute(testEventHandler, Array(new TestLogger))
     assert(nestedTasks.size === 2)
     
@@ -557,7 +561,7 @@ class FrameworkSuite extends FunSuite {
     val testEventHandler = new TestEventHandler
     val runner = framework.runner(Array.empty, Array.empty, testClassLoader)
     
-    val task = runner.task("org.scalatest.tools.scalasbt.SuiteWithNestedSuites", false, false, Array(new NestedTestSelector("nested 1", "nested 1 test 1"), new NestedTestSelector("nested 2", "nested 2 test 3")))
+    val task = runner.task("org.scalatest.tools.scalasbt.SuiteWithNestedSuites", subclassFingerprint, false, Array(new NestedTestSelector("nested 1", "nested 1 test 1"), new NestedTestSelector("nested 2", "nested 2 test 3")))
     val nestedTasks = task.execute(testEventHandler, Array(new TestLogger))
     assert(nestedTasks.size === 2)
     assert(testEventHandler.successEventsReceived.length === 0)
@@ -592,7 +596,7 @@ class FrameworkSuite extends FunSuite {
     val testEventHandler = new TestEventHandler
     val runner = framework.runner(Array.empty, Array.empty, testClassLoader)
     
-    val task = runner.task("org.scalatest.tools.scalasbt.SuiteWithNestedSuites", false, false, Array(new NestedTestSelector("nested 1", "nested 1 test 1"), new NestedTestSelector("nested 2", "nested 2 test 3")))
+    val task = runner.task("org.scalatest.tools.scalasbt.SuiteWithNestedSuites", subclassFingerprint, false, Array(new NestedTestSelector("nested 1", "nested 1 test 1"), new NestedTestSelector("nested 2", "nested 2 test 3")))
     val nestedTasks = task.execute(testEventHandler, Array(new TestLogger))
     assert(nestedTasks.size === 2)
     assert(testEventHandler.successEventsReceived.length === 0)
@@ -626,7 +630,7 @@ class FrameworkSuite extends FunSuite {
   test("ScalaTestRunner should return summary when 'done' is called, and throw IllegalStateException if 'done' method is called twice.") {
     val testLogger = new TestLogger
     val runner = framework.runner(Array("-oW"), Array.empty, testClassLoader)
-    val task = runner.task("org.scalatest.tools.scalasbt.SampleSuite", false, false, Array(new SuiteSelector()))
+    val task = runner.task("org.scalatest.tools.scalasbt.SampleSuite", subclassFingerprint, false, Array(new SuiteSelector()))
     task.execute(new TestEventHandler, Array(testLogger))
     val summaryText = runner.done.split("\n")
     assert(summaryText.size === 5)
@@ -643,7 +647,7 @@ class FrameworkSuite extends FunSuite {
   test("ScalaTest Task's tags method should return 'cpu' when suite class is annotated with @CPU") {
     val testLogger = new TestLogger
     val runner = framework.runner(Array("-oW"), Array.empty, testClassLoader)
-    val task = runner.task("org.scalatest.tools.scalasbt.CPUTaggedSuite", false, false, Array(new SuiteSelector))
+    val task = runner.task("org.scalatest.tools.scalasbt.CPUTaggedSuite", subclassFingerprint, false, Array(new SuiteSelector))
     val taskTags = task.tags
     assert(taskTags.size === 1)
     assert(taskTags(0) === "cpu")
@@ -652,7 +656,7 @@ class FrameworkSuite extends FunSuite {
   test("ScalaTest Task's tags method should return 'network' when suite class is annotated with @Network") {
     val testLogger = new TestLogger
     val runner = framework.runner(Array("-oW"), Array.empty, testClassLoader)
-    val task = runner.task("org.scalatest.tools.scalasbt.NetworkTaggedSuite", false, false, Array(new SuiteSelector))
+    val task = runner.task("org.scalatest.tools.scalasbt.NetworkTaggedSuite", subclassFingerprint, false, Array(new SuiteSelector))
     val taskTags = task.tags
     assert(taskTags.size === 1)
     assert(taskTags(0) === "network")
@@ -661,7 +665,7 @@ class FrameworkSuite extends FunSuite {
   test("ScalaTest Task's tags method should return 'disk' when suite class is annotated with @Disk") {
     val testLogger = new TestLogger
     val runner = framework.runner(Array("-oW"), Array.empty, testClassLoader)
-    val task = runner.task("org.scalatest.tools.scalasbt.DiskTaggedSuite", false, false, Array(new SuiteSelector))
+    val task = runner.task("org.scalatest.tools.scalasbt.DiskTaggedSuite", subclassFingerprint, false, Array(new SuiteSelector))
     val taskTags = task.tags
     assert(taskTags.size === 1)
     assert(taskTags(0) === "disk")
@@ -670,7 +674,7 @@ class FrameworkSuite extends FunSuite {
   test("ScalaTest Task's tags method should return 'custom' when suite class is annotated with @TagAnnotation('custom')") {
     val testLogger = new TestLogger
     val runner = framework.runner(Array("-oW"), Array.empty, testClassLoader)
-    val task = runner.task("org.scalatest.tools.scalasbt.CustomTaggedSuite", false, false, Array(new SuiteSelector))
+    val task = runner.task("org.scalatest.tools.scalasbt.CustomTaggedSuite", subclassFingerprint, false, Array(new SuiteSelector))
     val taskTags = task.tags
     assert(taskTags.size === 1)
     assert(taskTags(0) === "custom")

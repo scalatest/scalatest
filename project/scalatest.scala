@@ -6,7 +6,7 @@ object ScalatestBuild extends Build {
 
   val scalaVersionToUse = "2.10.0"
     
-  val releaseVersion = "2.0.M6-SNAP14"
+  val releaseVersion = "2.0.M6-SNAP15"
   
   val includeTestPackageSet = Set("org.scalatest", 
                                   "org.scalatest.fixture", 
