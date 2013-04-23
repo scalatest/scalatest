@@ -59,9 +59,9 @@ class ShouldBePropertyMatcherSpec extends Spec with ShouldMatchers with Checkers
       book should be a (goodRead)
       book should be an (goodRead)
       
-      book shouldBe goodRead
-      book shouldBe a (goodRead)
-      book shouldBe an (goodRead)
+      // book shouldBe goodRead
+      // book shouldBe a (goodRead)
+      // book shouldBe an (goodRead)
     }
 
     def `should throw TestFailedException if the property is false` {
@@ -81,6 +81,7 @@ class ShouldBePropertyMatcherSpec extends Spec with ShouldMatchers with Checkers
       }
       assert(caught3.getMessage === "Book(A Tale of Two Cities,Dickens,1859,45,false) was not an goodRead")
       
+/*
       val caught4 = intercept[TestFailedException] {
         badBook shouldBe goodRead
       }
@@ -95,7 +96,7 @@ class ShouldBePropertyMatcherSpec extends Spec with ShouldMatchers with Checkers
         badBook shouldBe an (goodRead)
       }
       assert(caught6.getMessage === "Book(A Tale of Two Cities,Dickens,1859,45,false) was not an goodRead")
-      
+ */
     }
 
     def `should do nothing if the property is false, when used with not` {
@@ -676,7 +677,7 @@ class ShouldBePropertyMatcherSpec extends Spec with ShouldMatchers with Checkers
       goodLibrary should be (filledWithGoodReads)
       badLibrary should not be (filledWithGoodReads)
       
-      goodLibrary shouldBe filledWithGoodReads
+      // goodLibrary shouldBe filledWithGoodReads
     }
   }
   object `A factory method on BePropertyMatcher's companion object` {
@@ -689,7 +690,7 @@ class ShouldBePropertyMatcherSpec extends Spec with ShouldMatchers with Checkers
       "xxx" should not be (empty)
       "xxxx" should not be (empty)
       
-      "" shouldBe empty
+      // "" shouldBe empty
     }
   }
 }

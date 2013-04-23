@@ -2550,7 +2550,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    *
    * @author Bill Venners
    */
-  final class ResultOfBeWordForAny[T](left: T, shouldBeTrue: Boolean) {
+  class ResultOfBeWordForAny[T](left: T, shouldBeTrue: Boolean) {
     
     /**
      * This method enables the following syntax (positiveNumber is a <code>AMatcher</code>):
@@ -2593,7 +2593,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    *
    * @author Bill Venners
    */
-  final class ResultOfBeWordForAnyRef[T <: AnyRef](left: T, shouldBeTrue: Boolean) {
+  final class ResultOfBeWordForAnyRef[T <: AnyRef](left: T, shouldBeTrue: Boolean) extends ResultOfBeWordForAny(left, shouldBeTrue) {
 
     /**
      * This method enables the following syntax:
@@ -2673,40 +2673,6 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
       }
     }
     
-    /**
-     * This method enables the following syntax (longString is a <code>AMatcher</code>):
-     *
-     * <pre class="stHighlight">
-     * "a long string" should be a longString
-     *                           ^
-     * </pre>
-     */
-    def a(aMatcher: AMatcher[T]) {
-      val matcherResult = aMatcher(left)
-      if (matcherResult.matches != shouldBeTrue) {
-        throw newTestFailedException(
-          if (shouldBeTrue) matcherResult.failureMessage else matcherResult.negatedFailureMessage
-        )
-      }
-    }
-    
-    /**
-     * This method enables the following syntax (apple is a <code>AnMatcher</code>):
-     *
-     * <pre class="stHighlight">
-     * result should be an apple
-     *                  ^
-     * </pre>
-     */
-    def an(anMatcher: AnMatcher[T]) {
-      val matcherResult = anMatcher(left)
-      if (matcherResult.matches != shouldBeTrue) {
-        throw newTestFailedException(
-          if (shouldBeTrue) matcherResult.failureMessage else matcherResult.negatedFailureMessage
-        )
-      }
-    }
-
     // TODO, in both of these, the failure message doesn't have a/an
     /**
      * This method enables the following syntax:
@@ -2956,6 +2922,48 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
             result.failureMessage
           else
             result.negatedFailureMessage
+        )
+      }
+    }
+
+    /**
+     * This method enables the following syntax: 
+     *
+     * <pre class="stHighlight">
+     * sevenDotOh should not be (6.5 +- 0.2)
+     *                       ^
+     * </pre>
+     */
+    def be(interval: Interval[T]) {
+      if (interval.isWithin(left) != shouldBeTrue) {
+        throw newTestFailedException(
+          FailureMessages(
+            if (shouldBeTrue) "wasNotPlusOrMinus" else "wasPlusOrMinus",
+            left,
+            interval.pivot,
+            interval.tolerance
+          )
+        )
+      }
+    }
+
+    /**
+     * This method enables the following syntax: 
+     *
+     * <pre class="stHighlight">
+     * sevenDotOh should not equal (6.5 +- 0.2)
+     *                       ^
+     * </pre>
+     */
+    def equal(interval: Interval[T]) {
+      if (interval.isWithin(left) != shouldBeTrue) {
+        throw newTestFailedException(
+          FailureMessages(
+            if (shouldBeTrue) "didNotEqualPlusOrMinus" else "equaledPlusOrMinus",
+            left,
+            interval.pivot,
+            interval.tolerance
+          )
         )
       }
     }
@@ -3408,47 +3416,6 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
   final class ResultOfNotWordForNumeric[T : Numeric](left: T, shouldBeTrue: Boolean)
       extends ResultOfNotWord[T](left, shouldBeTrue) {
 
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * sevenDotOh should not be (6.5 +- 0.2)
-     *                       ^
-     * </pre>
-     */
-    def be(interval: Interval[T]) {
-      if (interval.isWithin(left) != shouldBeTrue) {
-        throw newTestFailedException(
-          FailureMessages(
-            if (shouldBeTrue) "wasNotPlusOrMinus" else "wasPlusOrMinus",
-            left,
-            interval.pivot,
-            interval.tolerance
-          )
-        )
-      }
-    }
-
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * sevenDotOh should not equal (6.5 +- 0.2)
-     *                       ^
-     * </pre>
-     */
-    def equal(interval: Interval[T]) {
-      if (interval.isWithin(left) != shouldBeTrue) {
-        throw newTestFailedException(
-          FailureMessages(
-            if (shouldBeTrue) "didNotEqualPlusOrMinus" else "equaledPlusOrMinus",
-            left,
-            interval.pivot,
-            interval.tolerance
-          )
-        )
-      }
-    }
   }
 
   /**
@@ -9007,6 +8974,21 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
       }
     }
 
+    // TODO: Ensure on inspector shorthands. Moved this here from NumericShouldWrapper.
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * result shouldEqual 7.1 +- 0.2
+     *        ^
+     * </pre>
+     */
+    def shouldEqual(interval: Interval[T]) {
+      if (!interval.isWithin(left)) {
+        throw newTestFailedException(FailureMessages("didNotEqualPlusOrMinus", left, interval.pivot, interval.tolerance))
+      }
+    }
+
     /**
      * This method enables syntax such as the following:
      *
@@ -9038,7 +9020,62 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
         )
     }
 
-    // TODO: Scaladoc
+    // TODO: Need to make sure this works in inspector shorthands. I moved this
+    // up here from NumericShouldWrapper.
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * result should === (100 +- 1)
+     *        ^
+     * </pre>
+     */
+    def should(inv: TripleEqualsInvocationOnInterval[T])(implicit ev: Numeric[T]) {
+      if ((inv.interval.isWithin(left)) != inv.expectingEqual)
+        throw newTestFailedException(
+          FailureMessages(
+            if (inv.expectingEqual) "didNotEqualPlusOrMinus" else "equaledPlusOrMinus",
+            left,
+            inv.interval.pivot,
+            inv.interval.tolerance
+          )
+        )
+    }
+
+    // TODO: Need to make sure this works in inspector shorthands. I moved this
+    // up here from NumericShouldWrapper.
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * result should be a aMatcher
+     *        ^
+     * </pre>
+     */
+    def should(beWord: BeWord): ResultOfBeWordForAny[T] = new ResultOfBeWordForAny(left, true)
+
+    /* *
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * aDouble shouldBe 8.8
+     *         ^
+     * </pre>
+    def shouldBe(right: T) {
+      if (left != right) {
+        val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)
+        throw newTestFailedException(FailureMessages("wasNotEqualTo", leftee, rightee))
+      }
+    }
+
+XXX
+    def shouldBe(beMatcher: BeMatcher[T]) { // TODO: This looks like a bug to me. Investigate. - bv
+      beMatcher.apply(left).matches
+    }
+*/
+
+    // TODO: Scaladoc, and decide whether or not to actually even support this here. It may be best
+    // to let this one always be imported from ScalaUtils.
     def asAny: Any = left
   }
 
@@ -9149,7 +9186,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      *        ^
      * </pre>
      */
-    def shouldEqual(interval: Interval[T]) {
+    override def shouldEqual(interval: Interval[T]) {
       if (!interval.isWithin(left)) {
         throw newTestFailedException(FailureMessages("didNotEqualPlusOrMinus", left, interval.pivot, interval.tolerance))
       }
@@ -9194,16 +9231,15 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      *        ^
      * </pre>
      */
-    def should(beWord: BeWord): ResultOfBeWordForAny[T] = new ResultOfBeWordForAny(left, true)
+    override def should(beWord: BeWord): ResultOfBeWordForAny[T] = new ResultOfBeWordForAny(left, true)
 
-    /**
+    /* *
      * This method enables syntax such as the following:
      *
      * <pre class="stHighlight">
      * aDouble shouldBe 8.8
      *         ^
      * </pre>
-     */
     def shouldBe(right: T) {
       if (left != right) {
         val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)
@@ -9214,26 +9250,8 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
     def shouldBe(beMatcher: BeMatcher[T]) { // TODO: This looks like a bug to me. Investigate. - bv
       beMatcher.apply(left).matches
     }
+*/
 
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * result should === (100 +- 1)
-     *        ^
-     * </pre>
-     */
-    def should(inv: TripleEqualsInvocationOnInterval[T]) {
-      if ((inv.interval.isWithin(left)) != inv.expectingEqual)
-        throw newTestFailedException(
-          FailureMessages(
-            if (inv.expectingEqual) "didNotEqualPlusOrMinus" else "equaledPlusOrMinus",
-            left,
-            inv.interval.pivot,
-            inv.interval.tolerance
-          )
-        )
-    }
   }
 
 // TODO: Am I doing conversions on immutable.GenTraversable and immutable.GenSeq? If so, write a test that fails and make it general.
@@ -9392,7 +9410,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      *        ^
      * </pre>
      */
-    def should(beWord: BeWord): ResultOfBeWordForAnyRef[T] = new ResultOfBeWordForAnyRef(left, true)
+    override def should(beWord: BeWord): ResultOfBeWordForAnyRef[T] = new ResultOfBeWordForAnyRef(left, true)
     
     /**
      * This method enables syntax such as the following:
@@ -9407,13 +9425,15 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
     def should(haveWord: HaveWord)(implicit ev: Extent[T]): ResultOfHaveWordForExtent[T] =
       new ResultOfHaveWordForExtent(left, true)
 
-    def shouldBe = new ResultOfBeWordForAnyRef(left, true)
+/*
+    def shouldBe: ResultOfBeWordForAnyRef[T] = new ResultOfBeWordForAnyRef(left, true)
     
-    def shouldBe[U](right: Null) {
+    def shouldBe(right: Null) {
       if (left != null) {
         throw newTestFailedException(FailureMessages("wasNotNull", left))
       }
     }
+*/
 
 /*
     def shouldBe[U](right: AType[U]) {
@@ -9423,6 +9443,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
     }
 */
 
+/*
     def shouldBe(right: AnyRef) {
 
       def shouldBeEqual(right: AnyRef): Boolean = {
@@ -9477,6 +9498,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
         throw newTestFailedException(FailureMessages(resourceName, leftee, rightee))
       }
     }
+*/
   }
 
   /**
@@ -10007,12 +10029,14 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      */
     def should(beWord: BeWord): ResultOfBeWordForAnyRef[Array[T]] = new ResultOfBeWordForAnyRef(left, true)
     
+/*
     def shouldBe(right: Array[T]) {
       if (!left.deep.equals(right.deep)) {
         val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)
         throw newTestFailedException(FailureMessages("wasNotEqualTo", leftee, rightee))
       }
     }
+*/
 
     /**
      * This method enables syntax such as the following:
@@ -10148,6 +10172,8 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    */
   implicit def convertToAnyShouldWrapper[T](o: T): AnyShouldWrapper[T] = new AnyShouldWrapper(o)
 
+/*
+  implicit def convertToNumericShouldWrapper[N : Numeric](n: N): NumericShouldWrapper[N] = new NumericShouldWrapper[N](n)
   /**
    * Implicitly converts an object of type <code>scala.Double</code> to a <code>DoubleShouldWrapper</code>,
    * to enable <code>should</code> methods to be invokable on that object.
@@ -10183,6 +10209,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    * to enable <code>should</code> methods to be invokable on that object.
    */
   implicit def convertToByteShouldWrapper(o: Byte): NumericShouldWrapper[Byte] = new NumericShouldWrapper[Byte](o)
+*/
 
   /**
    * Implicitly converts a <code>scala.AnyRef</code> of type <code>T</code> to an <code>AnyRefShouldWrapper[T]</code>,

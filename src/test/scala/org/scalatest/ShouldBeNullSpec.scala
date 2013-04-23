@@ -185,6 +185,7 @@ class ShouldBeNullSpec extends Spec with Matchers with Checkers with ReturnsNorm
     }
   }
 
+/*
   object `the shouldBe null syntax` {
 
     def `should work in its basic` {
@@ -196,5 +197,6 @@ class ShouldBeNullSpec extends Spec with Matchers with Checkers with ReturnsNorm
       assert(caught1.getMessage === "Map(1 -> one, 2 -> two) was not null")
     }
   }
+*/
 }
 

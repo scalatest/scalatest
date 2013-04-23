@@ -33,7 +33,7 @@ class ShouldBeAnySpec extends Spec with ShouldMatchers with Checkers with Return
 
     def `should do nothing when equal` {
       1 should be (1)
-      1 shouldBe 1
+      // 1 shouldBe 1
 
       // objects should equal themselves
       check((s: String) => returnsNormally(s should be (s)))

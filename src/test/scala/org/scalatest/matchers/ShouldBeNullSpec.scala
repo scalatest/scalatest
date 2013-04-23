@@ -181,6 +181,7 @@ class ShouldBeNullSpec extends Spec with ShouldMatchers with Checkers with Retur
     }
   }
   
+/*
   object `the shouldBe null syntax` {
     
     def `should work in its basic` {
@@ -193,4 +194,5 @@ class ShouldBeNullSpec extends Spec with ShouldMatchers with Checkers with Retur
     }
 
   }
+*/
 }

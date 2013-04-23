@@ -43,21 +43,21 @@ class ShouldBeMatcherSpec extends Spec with ShouldMatchers with Checkers with Re
       1 should be (odd)
       2 should be (even)
       
-      1 shouldBe odd
-      2 shouldBe even
+      // 1 shouldBe odd
+      // 2 shouldBe even
     }
 
     def `should throw TestFailedException if a BeMatcher does not match` {
 
       val caught1 = intercept[TestFailedException] {
         4 should be (odd)
-        4 shouldBe odd
+        // 4 shouldBe odd
       }
       assert(caught1.getMessage === "4 was even")
 
       val caught2 = intercept[TestFailedException] {
         5 should be (even)
-        5 shouldBe even
+        // 5 shouldBe even
       }
       assert(caught2.getMessage === "5 was odd")
     }
@@ -392,7 +392,7 @@ class ShouldBeMatcherSpec extends Spec with ShouldMatchers with Checkers with Re
       1 should be (likable)
       2 should not be (unlikable)
       
-      1 shouldBe likable
+      // 1 shouldBe likable
 
       val caught1 = intercept[TestFailedException] {
         1 should be (unlikable)
@@ -411,7 +411,7 @@ class ShouldBeMatcherSpec extends Spec with ShouldMatchers with Checkers with Re
       "3" should be (oddAsInt)
       "4" should not be (oddAsInt)
       
-      "3" shouldBe oddAsInt
+      // "3" shouldBe oddAsInt
     }
   }
   object `A factory method on BeMatcher's companion object` {
@@ -424,9 +424,9 @@ class ShouldBeMatcherSpec extends Spec with ShouldMatchers with Checkers with Re
       "xxx" should not be (lessThanThreeInLength)
       "xxxx" should not be (lessThanThreeInLength)
       
-      "" shouldBe lessThanThreeInLength
-      "x" shouldBe lessThanThreeInLength
-      "xx" shouldBe lessThanThreeInLength
+      // "" shouldBe lessThanThreeInLength
+      // "x" shouldBe lessThanThreeInLength
+      // "xx" shouldBe lessThanThreeInLength
     }
   }
 }
