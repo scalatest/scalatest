@@ -9054,8 +9054,8 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      * This method enables syntax such as the following:
      *
      * <pre class="stHighlight">
-     * () shouldEqual ()
-     *    ^
+     * a shouldEqual b
+     *   ^
      * </pre>
      */
     def shouldEqual(right: Any)(implicit equality: Equality[T]) {
@@ -9075,11 +9075,12 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      */
     def should(notWord: NotWord) = new ResultOfNotWord[T](left, false)
 
-    /* * Turns out all the tests compile without this one
+    // In 2.10, will work with AnyVals. TODO: Also, Need to ensure Char works
+    /**
      * This method enables syntax such as the following:
      *
      * <pre class="stHighlight">
-     * () should === (()) // In 2.10, will work with AnyVals. TODO: Also, Need to ensure Char works
+     * a should === (b)
      *        ^
      * </pre>
      */
@@ -9110,90 +9111,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    *
    * @author Bill Venners
    */
-  final class StringShouldWrapper(val left: String) extends StringShouldWrapperForVerb {
-
-    /* *
-     * This method enables syntax such as the following in a <code>FlatSpec</code>:
-     *
-     * <pre class="stHighlight">
-     * "A Stack (when empty)" should "be empty" in {
-     *   assert(emptyStack.empty)
-     * }
-     * </pre>
-     *
-     * <p>
-     * <code>FlatSpec</code> passes in a function via the implicit parameter that takes
-     * three strings and results in a <code>ResultOfStringPassedToVerb</code>. This method
-     * simply invokes this function, passing in left, right, and the verb string
-     * <code>"should"</code>.
-     * </p>
-     *
-    def should(right: String)(implicit fun: (String, String, String) => ResultOfStringPassedToVerb): ResultOfStringPassedToVerb = {
-      fun(left, right, "should")
-    }
-
-    def should(right: => Unit)(implicit fun: (String, () => Unit, String) => Unit) {
-      fun(left, right _, "should")
-    }     */
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * string should be ("hi")
-     *        ^
-     * </pre>
-     */
-    def should(rightMatcherX2: Matcher[String]) {
-      ShouldMethodHelper.shouldMatcher(left, rightMatcherX2)
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * string should equal ("hi")
-     *        ^
-     * </pre>
-     */
-    def should[TC1[_]](rightMatcherFactory: MatcherFactory1[String, TC1])(implicit typeClass1: TC1[String]) {
-      ShouldMethodHelper.shouldMatcher(left, rightMatcherFactory.matcher)
-    }
-
-    def should[TC1[_], TC2[_]](rightMatcherFactory: MatcherFactory2[String, TC1, TC2])(implicit typeClass1: TC1[String], typeClass2: TC2[String]) {
-      ShouldMethodHelper.shouldMatcher(left, rightMatcherFactory.matcher)
-    }
-
-/*
-    def should[TC1[_], TC2[_], TC3[_]](rightMatcherFactory: MatcherFactory3[String, TC1, TC2, TC3])(implicit tc1: TC1[String], tc2: TC2[String], tc3: TC3[String]) {
-      ShouldMethodHelper.shouldMatcher(left, rightMatcherFactory.matcher)
-    }
-*/
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * string shouldEqual "hi"
-     *        ^
-     * </pre>
-     */
-    def shouldEqual(right: Any)(implicit equality: Equality[String]) {
-      if (!equality.areEqual(left, right)) {
-        val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)
-        throw newTestFailedException(FailureMessages("didNotEqual", leftee, rightee))
-      }
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * string should be theSameInstanceAs anotherObject
-     *        ^
-     * </pre>
-     */
-    def should(beWord: BeWord): ResultOfBeWordForAnyRef[String] = new ResultOfBeWordForAnyRef(left, true)
+  final class StringShouldWrapper(val left: String) extends AnyRefShouldWrapper(left) with StringShouldWrapperForVerb {
 
     /**
      * This method enables syntax such as the following:
@@ -9263,28 +9181,8 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      *        ^
      * </pre>
      */
-    def should(notWord: NotWord): ResultOfNotWordForString = {
+    override def should(notWord: NotWord): ResultOfNotWordForString = {
       new ResultOfNotWordForString(left, false)
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * s should === ("hi") 
-     *        ^
-     * </pre>
-     */
-    def should[U](inv: TripleEqualsInvocation[U])(implicit constraint: EqualityConstraint[String, U]) {
-      // if ((left == inv.right) != inv.expectingEqual)
-      if ((constraint.areEqual(left, inv.right)) != inv.expectingEqual)
-        throw newTestFailedException(
-          FailureMessages(
-           if (inv.expectingEqual) "didNotEqual" else "equaled",
-            left,
-            inv.right
-          )
-        )
     }
   }
 
@@ -9592,7 +9490,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    *
    * @author Bill Venners
    */
-  final class AnyRefShouldWrapper[T <: AnyRef](left: T) extends AnyShouldWrapper(left) {
+  class AnyRefShouldWrapper[T <: AnyRef](left: T) extends AnyShouldWrapper(left) {
 
     /**
      * This method enables syntax such as the following:
