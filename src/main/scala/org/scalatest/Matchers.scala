@@ -6752,7 +6752,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
     override def should(notWord: NotWord): ResultOfNotWordForCollectedAnyRef[T] =
       new ResultOfNotWordForCollectedAnyRef(collected, xs, false)
   }
-  
+
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="InspectorsMatchers.html"><code>InspectorsMatchers</code></a> for an overview of
    * the matchers DSL.
@@ -6760,65 +6760,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfCollectedString(collected: Collected, xs: GenTraversable[String]) {
-    
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * all(string) should be ("hi")
-     *             ^
-     * </pre>
-     */
-    def should(rightMatcher: Matcher[String]) {
-      doCollected(collected, xs, "should", 1) { e =>
-        rightMatcher(e) match {
-          case MatchResult(false, failureMessage, _, _, _) => 
-            throw newTestFailedException(failureMessage, None, 6)
-          case _ => ()
-        }
-      }
-    }
-    
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * all(xs) should equal (3)
-     *         ^
-     * </pre>
-     */
-    def should[TYPECLASS1[_]](rightMatcherFactory1: MatcherFactory1[String, TYPECLASS1])(implicit typeClass1: TYPECLASS1[String]) {
-      val rightMatcher = rightMatcherFactory1.matcher
-      doCollected(collected, xs, "should", 1) { e =>
-        rightMatcher(e) match {
-          case MatchResult(false, failureMessage, _, _, _) => 
-            throw newTestFailedException(failureMessage, None, 6)
-          case _ => ()
-        }
-      }
-    }
-    
-    def should[TYPECLASS1[_], TYPECLASS2[_]](rightMatcherFactory2: MatcherFactory2[String, TYPECLASS1, TYPECLASS2])(implicit typeClass1: TYPECLASS1[String], typeClass2: TYPECLASS2[String]) {
-      val rightMatcher = rightMatcherFactory2.matcher
-      doCollected(collected, xs, "should", 1) { e =>
-        rightMatcher(e) match {
-          case MatchResult(false, failureMessage, _, _, _) => 
-            throw newTestFailedException(failureMessage, None, 6)
-          case _ => ()
-        }
-      }
-    }
-    
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * all(string) should be theSameInstanceAs anotherObject
-     *             ^
-     * </pre>
-     */
-    def should(beWord: BeWord) = new ResultOfBeWordForCollectedAnyRef(collected, xs, true)
+  final class ResultOfCollectedString(collected: Collected, xs: GenTraversable[String]) extends ResultOfCollectedAnyRef(collected, xs) {
     
     /**
      * This method enables syntax such as the following:
@@ -6839,7 +6781,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      *             ^
      * </pre>
      */
-    def should(notWord: NotWord): ResultOfNotWordForCollectedString = 
+    override def should(notWord: NotWord): ResultOfNotWordForCollectedString = 
       new ResultOfNotWordForCollectedString(collected, xs, false)
     
     /**
