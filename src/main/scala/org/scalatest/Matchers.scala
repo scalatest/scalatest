@@ -4354,7 +4354,43 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    *
    * @author Bill Venners
    */
-  final class ResultOfEvaluatingApplication(val fun: () => Any)
+  final class ResultOfEvaluatingApplication(val fun: () => Any) {
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * evaluating { "hi".charAt(-1) } should produce [StringIndexOutOfBoundsException]
+     *                                ^
+     * </pre>
+     */
+     def should[T](resultOfProduceApplication: ResultOfProduceInvocation[T]): T =  {
+       val clazz = resultOfProduceApplication.clazz
+       val caught = try {
+         fun()
+         None
+       }
+       catch {
+         case u: Throwable => {
+           if (!clazz.isAssignableFrom(u.getClass)) {
+             val s = Resources("wrongException", clazz.getName, u.getClass.getName)
+             throw newTestFailedException(s, Some(u))
+             // throw new TestFailedException(s, u, 3) 
+           }
+           else {
+             Some(u)
+           }
+         }
+       }
+       caught match {
+         case None =>
+           val message = Resources("exceptionExpected", clazz.getName)
+           throw newTestFailedException(message)
+           // throw new TestFailedException(message, 3)
+         case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase isAssignableFrom succeeded above
+       }
+     }
+  }
 
   /**
    * This method enables syntax such as the following:
@@ -10374,61 +10410,6 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
         )
     }
   }
-
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * <p>
-   * This class is used in conjunction with an implicit conversion to enable a <code>should</code> method to
-   * be invoked on objects that result of <code>evaulating { ... }</code>.
-   * </p>
-   *
-   * @author Bill Venners
-   */
-  final class EvaluatingApplicationShouldWrapper(left: ResultOfEvaluatingApplication) {
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * evaluating { "hi".charAt(-1) } should produce [StringIndexOutOfBoundsException]
-     *                                ^
-     * </pre>
-     */
-     def should[T](resultOfProduceApplication: ResultOfProduceInvocation[T]): T =  {
-       val clazz = resultOfProduceApplication.clazz
-       val caught = try {
-         left.fun()
-         None
-       }
-       catch {
-         case u: Throwable => {
-           if (!clazz.isAssignableFrom(u.getClass)) {
-             val s = Resources("wrongException", clazz.getName, u.getClass.getName)
-             throw newTestFailedException(s, Some(u))
-             // throw new TestFailedException(s, u, 3) 
-           }
-           else {
-             Some(u)
-           }
-         }
-       }
-       caught match {
-         case None =>
-           val message = Resources("exceptionExpected", clazz.getName)
-           throw newTestFailedException(message)
-           // throw new TestFailedException(message, 3)
-         case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase isAssignableFrom succeeded above
-       }
-     }
-  }
-
-  /**
-   * Implicitly converts an object of type <code>T</code> to a <code>EvaluatingApplicationShouldWrapper[T]</code>,
-   * to enable <code>should</code> methods to be invokable on that object.
-   */
-  implicit def convertToEvaluatingApplicationShouldWrapper(o: ResultOfEvaluatingApplication): EvaluatingApplicationShouldWrapper = new EvaluatingApplicationShouldWrapper(o)
 
   /**
    * Implicitly converts an object of type <code>T</code> to a <code>AnyShouldWrapper[T]</code>,
