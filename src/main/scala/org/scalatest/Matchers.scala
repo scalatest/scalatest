@@ -9032,7 +9032,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    *
    * @author Bill Venners
    */
-  final class AnyShouldWrapper[T](left: T) {
+  class AnyShouldWrapper[T](left: T) {
 
     /**
      * This method enables syntax such as the following:
@@ -9604,50 +9604,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    *
    * @author Bill Venners
    */
-  final class AnyRefShouldWrapper[T <: AnyRef](left: T) {
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * anyRef should be (anotherObject)
-     *        ^
-     * </pre>
-     */
-    def should(rightMatcherX5: Matcher[T]) {
-      ShouldMethodHelper.shouldMatcher(left, rightMatcherX5)
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * anyRef should equal (anotherObject)
-     *        ^
-     * </pre>
-     */
-    def should[TYPECLASS1[_]](rightMatcherFactory1: MatcherFactory1[T, TYPECLASS1])(implicit typeClass1: TYPECLASS1[T]) {
-      ShouldMethodHelper.shouldMatcher(left, rightMatcherFactory1.matcher)
-    }
-
-    def should[TYPECLASS1[_], TYPECLASS2[_]](rightMatcherFactory2: MatcherFactory2[T, TYPECLASS1, TYPECLASS2])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T]) {
-      ShouldMethodHelper.shouldMatcher(left, rightMatcherFactory2.matcher)
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * anyRef shouldEqual (anotherObject)
-     *        ^
-     * </pre>
-     */
-    def shouldEqual(right: T)(implicit equality: Equality[T]) {
-      if (!equality.areEqual(left, right)) {
-        val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)
-        throw newTestFailedException(FailureMessages("didNotEqual", leftee, rightee))
-      }
-    }
+  final class AnyRefShouldWrapper[T <: AnyRef](left: T) extends AnyShouldWrapper(left) {
 
     /**
      * This method enables syntax such as the following:
@@ -9657,7 +9614,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      *        ^
      * </pre>
      */
-    def should(notWord: NotWord): ResultOfNotWordForAnyRef[T] =
+    override def should(notWord: NotWord): ResultOfNotWordForAnyRef[T] =
       new ResultOfNotWordForAnyRef(left, false)
 
     /**
@@ -9752,26 +9709,6 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
           }
         throw newTestFailedException(FailureMessages(resourceName, leftee, rightee))
       }
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * result should === (new Person("Abe", "Lincoln"))
-     *        ^
-     * </pre>
-     */
-    def should[U](inv: TripleEqualsInvocation[U])(implicit constraint: EqualityConstraint[T, U]) {
-      // if ((left == inv.right) != inv.expectingEqual)
-      if ((constraint.areEqual(left, inv.right)) != inv.expectingEqual)
-        throw newTestFailedException(
-          FailureMessages(
-           if (inv.expectingEqual) "didNotEqual" else "equaled",
-            left,
-            inv.right
-          )
-        )
     }
   }
 
