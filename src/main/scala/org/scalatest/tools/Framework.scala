@@ -322,7 +322,7 @@ class Framework extends SbtFramework {
     
     dispatchReporter(RunStarting(tracker.nextOrdinal(), 0, configMap))
     
-    def task(fullyQualifiedName: String, isModule: Boolean, explicitlySpecified: Boolean, selectors: Array[Selector]) = 
+    def task(fullyQualifiedName: String, fingerprint: Fingerprint, explicitlySpecified: Boolean, selectors: Array[Selector]) = 
       new ScalaTestTask(fullyQualifiedName, loader, dispatchReporter, tracker, if (selectors.isEmpty) Set.empty else Set(SELECTED_TAG), Set.empty, explicitlySpecified, selectors, configMap, summaryCounter, 
                         useSbtLogInfoReporter, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted)
     
