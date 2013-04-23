@@ -90,7 +90,9 @@ trait CanVerb {
    *
    * @author Bill Venners
    */
-  final class StringCanWrapperForVerb(left: String) {
+  trait StringCanWrapperForVerb {
+
+    val left: String
 
     /**
      * Supports test registration in <code>FlatSpec</code> and <code>fixture.FlatSpec</code>.
@@ -197,5 +199,8 @@ trait CanVerb {
    * Implicitly converts an object of type <code>String</code> to a <code>StringCanWrapper</code>,
    * to enable <code>can</code> methods to be invokable on that object.
    */
-  implicit def convertToStringCanWrapper(o: String): StringCanWrapperForVerb = new StringCanWrapperForVerb(o.trim)
+  implicit def convertToStringCanWrapper(o: String): StringCanWrapperForVerb =
+    new StringCanWrapperForVerb {
+      val left = o.trim
+    }
 }

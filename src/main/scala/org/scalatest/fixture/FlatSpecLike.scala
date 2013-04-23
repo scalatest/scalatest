@@ -1793,7 +1793,7 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb { th
    */
   protected implicit val shorthandTestRegistrationFunction: (String, String, String) => ResultOfStringPassedToVerb = {
     (subject, verb, rest) => {
-      registerFlatBranch(subject, "describeCannotAppearInsideAnIt", sourceFileName, "apply", 5, 0)
+      registerFlatBranch(subject, "describeCannotAppearInsideAnIt", sourceFileName, "apply", 6, 0)
       new ResultOfStringPassedToVerb(verb, rest) {
         def is(testFun: => PendingNothing) {
           registerTestToRun(verb.trim + " " + rest.trim, List(), "is", unusedFixtureParam => testFun)

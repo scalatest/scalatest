@@ -114,7 +114,9 @@ trait ShouldVerb {
    *
    * @author Bill Venners
    */
-  class StringShouldWrapperForVerb(left: String) {
+  trait StringShouldWrapperForVerb {
+
+    val left: String
 
     /**
      * Supports test registration in <code>FlatSpec</code> and <code>fixture.FlatSpec</code>.
@@ -221,5 +223,8 @@ trait ShouldVerb {
    * Implicitly converts an object of type <code>String</code> to a <code>StringShouldWrapperForVerb</code>,
    * to enable <code>should</code> methods to be invokable on that object.
    */
-  implicit def convertToStringShouldWrapper(o: String): StringShouldWrapperForVerb = new StringShouldWrapperForVerb(o.trim)
+  implicit def convertToStringShouldWrapper(o: String): StringShouldWrapperForVerb =
+    new StringShouldWrapperForVerb {
+      val left = o.trim
+    }
 }

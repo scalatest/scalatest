@@ -845,7 +845,7 @@ one error found
    */
   protected implicit val subjectRegistrationFunction: StringVerbBlockRegistration =
     new StringVerbBlockRegistration {
-      def apply(left: String, verb: String, f: () => Unit) = registerBranch(left, Some(verb), "apply", 5, -2, f)
+      def apply(left: String, verb: String, f: () => Unit) = registerBranch(left, Some(verb), "apply", 6, -2, f)
     }
 
   /**

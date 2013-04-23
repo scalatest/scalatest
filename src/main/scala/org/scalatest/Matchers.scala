@@ -9110,7 +9110,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    *
    * @author Bill Venners
    */
-  final class StringShouldWrapper(left: String) extends StringShouldWrapperForVerb(left) {
+  final class StringShouldWrapper(val left: String) extends StringShouldWrapperForVerb {
 
     /* *
      * This method enables syntax such as the following in a <code>FlatSpec</code>:

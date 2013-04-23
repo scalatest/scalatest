@@ -112,7 +112,9 @@ trait MustVerb {
    *
    * @author Bill Venners
    */
-  class StringMustWrapperForVerb(left: String) {
+  trait StringMustWrapperForVerb {
+
+    val left: String
 
     /**
      * Supports test registration in <code>FlatSpec</code> and <code>fixture.FlatSpec</code>.
@@ -219,5 +221,8 @@ trait MustVerb {
    * Implicitly converts an object of type <code>String</code> to a <code>StringMustWrapper</code>,
    * to enable <code>must</code> methods to be invokable on that object.
    */
-  implicit def convertToStringMustWrapper(o: String): StringMustWrapperForVerb = new StringMustWrapperForVerb(o.trim)
+  implicit def convertToStringMustWrapper(o: String): StringMustWrapperForVerb =
+    new StringMustWrapperForVerb {
+      val left = o.trim
+    }
 }
