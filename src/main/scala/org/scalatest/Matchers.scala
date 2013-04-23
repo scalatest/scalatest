@@ -9015,7 +9015,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      *        ^
      * </pre>
      */
-    def should(notWord: NotWord) = new ResultOfNotWord[T](left, false)
+    def should(notWord: NotWord): ResultOfNotWord[T] = new ResultOfNotWord[T](left, false)
 
     // In 2.10, will work with AnyVals. TODO: Also, Need to ensure Char works
     /**
@@ -9139,50 +9139,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    *
    * @author Bill Venners
    */
-  final class NumericShouldWrapper[T : Numeric](left: T) {
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * aDouble should be (8.8)
-     *         ^
-     * </pre>
-     */
-    def should(rightMatcherX3: Matcher[T]) {
-      ShouldMethodHelper.shouldMatcher(left, rightMatcherX3)
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * aDouble should equal (8.8)
-     *         ^
-     * </pre>
-     */
-    def should[TYPECLASS1[_]](rightMatcherFactory1: MatcherFactory1[T, TYPECLASS1])(implicit typeClass1: TYPECLASS1[T]) {
-      ShouldMethodHelper.shouldMatcher(left, rightMatcherFactory1.matcher)
-    }
-
-    def should[TYPECLASS1[_], TYPECLASS2[_]](rightMatcherFactory2: MatcherFactory2[T, TYPECLASS1, TYPECLASS2])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T]) {
-      ShouldMethodHelper.shouldMatcher(left, rightMatcherFactory2.matcher)
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * aDouble shouldEqual 8.8
-     *         ^
-     * </pre>
-     */
-    def shouldEqual(right: T)(implicit equality: Equality[T]) {
-      if (!equality.areEqual(left, right)) {
-        val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)
-        throw newTestFailedException(FailureMessages("didNotEqual", leftee, rightee))
-      }
-    }
+  final class NumericShouldWrapper[T : Numeric](left: T) extends AnyShouldWrapper(left) {
 
     /**
      * This method enables syntax such as the following:
@@ -9206,7 +9163,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      *        ^
      * </pre>
      */
-    def should(notWord: NotWord): ResultOfNotWordForNumeric[T] = {
+    override def should(notWord: NotWord): ResultOfNotWordForNumeric[T] = {
       new ResultOfNotWordForNumeric[T](left, false)
     }
     
@@ -9226,7 +9183,9 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
       }
     }
 */
-    
+
+    // TODO: I think this should be moved up to AnyShouldWrapper, but need to write 
+    // a test first, and a good way to do that would be an AnyVal
     /**
      * This method enables syntax such as the following:
      *
@@ -9254,26 +9213,6 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
 
     def shouldBe(beMatcher: BeMatcher[T]) { // TODO: This looks like a bug to me. Investigate. - bv
       beMatcher.apply(left).matches
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * result should === (3)
-     *        ^
-     * </pre>
-     */
-    def should[U](inv: TripleEqualsInvocation[U])(implicit constraint: EqualityConstraint[T, U]) {
-      // if ((left == inv.right) != inv.expectingEqual)
-      if ((constraint.areEqual(left, inv.right)) != inv.expectingEqual)
-        throw newTestFailedException(
-          FailureMessages(
-           if (inv.expectingEqual) "didNotEqual" else "equaled",
-            left,
-            inv.right
-          )
-        )
     }
 
     /**
@@ -9315,7 +9254,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      * This method enables syntax such as the following:
      *
      * <pre class="stHighlight">
-     * map should be (Map(1 -> "one", 2 -> "two"))
+     * map should be (Map(1 -&gt; "one", 2 -&gt; "two"))
      *     ^
      * </pre>
      */
@@ -9327,7 +9266,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      * This method enables syntax such as the following:
      *
      * <pre class="stHighlight">
-     * map should equal (Map(1 -> "one", 2 -> "two"))
+     * map should equal (Map(1 -&gt; "one", 2 -&gt; "two"))
      *     ^
      * </pre>
      */
