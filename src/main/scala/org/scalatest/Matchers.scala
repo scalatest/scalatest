@@ -6652,7 +6652,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
         }
       }
     }
-    
+
     /**
      * This method enables syntax such as the following:
      *
@@ -6688,7 +6688,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
         }
       }
     }
-    
+
     def should[TYPECLASS1[_], TYPECLASS2[_]](rightMatcherFactory2: MatcherFactory2[T, TYPECLASS1, TYPECLASS2])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T]) {
       val rightMatcher = rightMatcherFactory2.matcher
       doCollected(collected, xs, "should", 1) { e =>
@@ -6699,7 +6699,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
         }
       }
     }
-    
+
     /**
      * This method enables syntax such as the following:
      *
@@ -6709,7 +6709,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      * </pre>
      */
     def should(beWord: BeWord) = new ResultOfBeWordForCollectedAny[T](collected, xs, true)
-    
+
     /**
      * This method enables syntax such as the following:
      *
@@ -6729,56 +6729,8 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    * @author Bill Venners
    * @author Chee Seng
    */
-  class ResultOfCollectedAnyRef[T <: AnyRef](collected: Collected, xs: GenTraversable[T]) {
-    
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * all(xs) should be (3)
-     *         ^
-     * </pre>
-     */
-    def should(rightMatcher: Matcher[T]) {
-      doCollected(collected, xs, "should", 1) { e =>
-        rightMatcher(e) match {
-          case MatchResult(false, failureMessage, _, _, _) => 
-            throw newTestFailedException(failureMessage, None, 6)
-          case _ => ()
-        }
-      }
-    }
-    
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * all(xs) should equal (3)
-     *         ^
-     * </pre>
-     */
-    def should[TYPECLASS1[_]](rightMatcherFactory1: MatcherFactory1[T, TYPECLASS1])(implicit typeClass1: TYPECLASS1[T]) {
-      val rightMatcher = rightMatcherFactory1.matcher
-      doCollected(collected, xs, "should", 1) { e =>
-        rightMatcher(e) match {
-          case MatchResult(false, failureMessage, _, _, _) => 
-            throw newTestFailedException(failureMessage, None, 6)
-          case _ => ()
-        }
-      }
-    }
-    
-    def should[TYPECLASS1[_], TYPECLASS2[_]](rightMatcherFactory2: MatcherFactory2[T, TYPECLASS1, TYPECLASS2])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T]) {
-      val rightMatcher = rightMatcherFactory2.matcher
-      doCollected(collected, xs, "should", 1) { e =>
-        rightMatcher(e) match {
-          case MatchResult(false, failureMessage, _, _, _) => 
-            throw newTestFailedException(failureMessage, None, 6)
-          case _ => ()
-        }
-      }
-    }
-    
+  class ResultOfCollectedAnyRef[T <: AnyRef](collected: Collected, xs: GenTraversable[T]) extends ResultOfCollectedAny[T](collected, xs) {
+
     /**
      * This method enables syntax such as the following:
      *
@@ -6787,8 +6739,8 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      *         ^
      * </pre>
      */
-    def should(beWord: BeWord) = new ResultOfBeWordForCollectedAnyRef[T](collected, xs, true)
-    
+    override def should(beWord: BeWord) = new ResultOfBeWordForCollectedAnyRef[T](collected, xs, true)
+
     /**
      * This method enables syntax such as the following:
      *
@@ -6797,7 +6749,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      *         ^
      * </pre>
      */
-    def should(notWord: NotWord): ResultOfNotWordForCollectedAnyRef[T] = 
+    override def should(notWord: NotWord): ResultOfNotWordForCollectedAnyRef[T] =
       new ResultOfNotWordForCollectedAnyRef(collected, xs, false)
   }
   

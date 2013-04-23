@@ -581,8 +581,10 @@
 	
 	<target name="run-gentests" depends="compile-gentests,taskdefscalatest">
       <scalatest fork="true" runpath="${build.generated.tests.bin}" parallel="true" haltonfailure="true">
-		<jvmarg value="-XX:MaxPermSize=512m"/>
-		<reporter type="graphic"/>
+        <jvmarg value="-XX:MaxPermSize=512m"/>
+        <jvmarg value="-Xmx6000M"/>
+        <jvmarg value="-Xss10M"/>
+	<reporter type="graphic"/>
         <reporter type="stdout" config="DF"/>
         <wildcard package="org.scalatest" />
       </scalatest>
