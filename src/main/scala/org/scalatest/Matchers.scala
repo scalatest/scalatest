@@ -6663,6 +6663,14 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
       }
     }
 
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * all(xs) should (equal (expected) and have length 12)
+     *         ^
+     * </pre>
+     */
     def should[TYPECLASS1[_], TYPECLASS2[_]](rightMatcherFactory2: MatcherFactory2[T, TYPECLASS1, TYPECLASS2])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T]) {
       val rightMatcher = rightMatcherFactory2.matcher
       doCollected(collected, xs, "should", 1) { e =>
@@ -8962,6 +8970,14 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
       ShouldMethodHelper.shouldMatcher(left, rightMatcherFactory1.matcher)
     }
 
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * result should (equal (expected) and have length 3)
+     *        ^
+     * </pre>
+     */
     def should[TYPECLASS1[_], TYPECLASS2[_]](rightMatcherFactory2: MatcherFactory2[T, TYPECLASS1, TYPECLASS2])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T]) {
       ShouldMethodHelper.shouldMatcher(left, rightMatcherFactory2.matcher)
     }
@@ -9104,6 +9120,131 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    *
    * <p>
    * This class is used in conjunction with an implicit conversion to enable <code>should</code> methods to
+   * be invoked on <code>AnyRef</code>s.
+   * </p>
+   *
+   * @author Bill Venners
+   */
+  class AnyRefShouldWrapper[T <: AnyRef](left: T) extends AnyShouldWrapper(left) {
+
+    // TODO: Ensure on inspector shorthands. Had to add this here after moving another shouldEqual method from NumericShouldWrapper.
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * result shouldEqual null
+     *        ^
+     * </pre>
+     */
+    def shouldEqual(right: Null) { 
+      if (left != null) {
+        throw newTestFailedException(FailureMessages("didNotEqualNull", left))
+      }
+    }
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * result should not have length (3)
+     *        ^
+     * </pre>
+     */
+    override def should(notWord: NotWord): ResultOfNotWordForAnyRef[T] =
+      new ResultOfNotWordForAnyRef(left, false)
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * result should be theSameInstanceAs anotherObject
+     *        ^
+     * </pre>
+     */
+    override def should(beWord: BeWord): ResultOfBeWordForAnyRef[T] = new ResultOfBeWordForAnyRef(left, true)
+    
+/*
+    def shouldBe: ResultOfBeWordForAnyRef[T] = new ResultOfBeWordForAnyRef(left, true)
+    
+    def shouldBe(right: Null) {
+      if (left != null) {
+        throw newTestFailedException(FailureMessages("wasNotNull", left))
+      }
+    }
+*/
+
+/*
+    def shouldBe[U](right: AType[U]) {
+      if (!right.isAssignableFromClassOf(left)) {
+        throw newTestFailedException(FailureMessages("wasNotAnInstanceOf", left, UnquotedString(right.className)))
+      }
+    }
+*/
+
+/*
+    def shouldBe(right: AnyRef) {
+
+      def shouldBeEqual(right: AnyRef): Boolean = {
+        if (right.isInstanceOf[ResultOfAWordToBePropertyMatcherApplication[AnyRef]]) {
+          // need to put in if because NoSuchMethodError when pattern match ResultOfAWordToBePropertyMatcherApplication
+          val app = right.asInstanceOf[ResultOfAWordToBePropertyMatcherApplication[AnyRef]]
+          app.bePropertyMatcher.apply(left).matches
+        }
+        else if (right.isInstanceOf[ResultOfAnWordToBePropertyMatcherApplication[AnyRef]]) {
+          val app = right.asInstanceOf[ResultOfAnWordToBePropertyMatcherApplication[AnyRef]]
+          app.bePropertyMatcher.apply(left).matches
+        }
+        else {
+          val beWord = new BeWord
+          right match {
+            case rightSymbol: ResultOfAWordToSymbolApplication => 
+              beWord.a[AnyRef](rightSymbol.symbol)(left).matches
+            case rightSymbol: ResultOfAnWordToSymbolApplication => 
+              beWord.an[AnyRef](rightSymbol.symbol)(left).matches
+            case beMatcher: BeMatcher[AnyRef] => 
+              beMatcher.apply(left).matches
+            case bePropertyMatcher: BePropertyMatcher[AnyRef] => 
+              bePropertyMatcher.apply(left).matches
+            case _ => 
+              left == right
+          }
+        }
+      }
+
+      if (!shouldBeEqual(right)) {
+        val (resourceName, leftee, rightee) = 
+          if (right.isInstanceOf[ResultOfAWordToBePropertyMatcherApplication[AnyRef]]) {
+            val app = right.asInstanceOf[ResultOfAWordToBePropertyMatcherApplication[AnyRef]]
+            val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, UnquotedString(app.bePropertyMatcher.apply(left).propertyName))
+            ("wasNotA", leftee, rightee)
+          }
+          else if (right.isInstanceOf[ResultOfAnWordToBePropertyMatcherApplication[AnyRef]]) {
+            val app = right.asInstanceOf[ResultOfAnWordToBePropertyMatcherApplication[AnyRef]]
+            val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, UnquotedString(app.bePropertyMatcher.apply(left).propertyName))
+            ("wasNotAn", leftee, rightee)
+          }
+          else {
+            right match {
+              case bePropertyMatcher: BePropertyMatcher[AnyRef] => 
+                val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, UnquotedString(bePropertyMatcher.apply(left).propertyName))
+                ("wasNot", leftee, rightee)
+              case _ => 
+                val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)
+                ("wasNotEqualTo", leftee, rightee)
+            }
+          }
+        throw newTestFailedException(FailureMessages(resourceName, leftee, rightee))
+      }
+    }
+*/
+  }
+
+  /**
+   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
+   * the matchers DSL.
+   *
+   * <p>
+   * This class is used in conjunction with an implicit conversion to enable <code>should</code> methods to
    * be invoked on <code>String</code>s.
    * </p>
    *
@@ -9170,6 +9311,51 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
     override def should(notWord: NotWord): ResultOfNotWordForString = {
       new ResultOfNotWordForString(left, false)
     }
+  }
+
+  /**
+   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
+   * the matchers DSL.
+   *
+   * <p>
+   * This class is used in conjunction with an implicit conversion to enable <code>should</code> methods to
+   * be invoked on objects of type <code>scala.Array[T]</code>.
+   * </p>
+   *
+   * @author Bill Venners
+   */
+  final class ArrayShouldWrapper[E](left: Array[E]) extends AnyRefShouldWrapper(left) {
+
+     /**
+     * This method enables syntax such as the following, where <code>positiveNumber</code> is a <code>AMatcher</code>:
+     *
+     * <pre class="stHighlight">
+     * array should contain a positiveNumber
+     *       ^
+     * </pre>
+     */
+    def should(containWord: ContainWord) = 
+      new ResultOfContainWordForTraversable(new ArrayWrapper(left), true)
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * array should not have length (3)
+     *       ^
+     * </pre>
+     */
+    override def should(notWord: NotWord): ResultOfNotWordForArray[E] =
+      new ResultOfNotWordForArray(left, false)
+    
+/*
+    def shouldBe(right: Array[E]) {
+      if (!left.deep.equals(right.deep)) {
+        val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)
+        throw newTestFailedException(FailureMessages("wasNotEqualTo", leftee, rightee))
+      }
+    }
+*/
   }
 
 // TODO: Am I doing conversions on immutable.GenTraversable and immutable.GenSeq? If so, write a test that fails and make it general.
@@ -9294,131 +9480,6 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
           )
         )
     }
-  }
-
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * <p>
-   * This class is used in conjunction with an implicit conversion to enable <code>should</code> methods to
-   * be invoked on <code>AnyRef</code>s.
-   * </p>
-   *
-   * @author Bill Venners
-   */
-  class AnyRefShouldWrapper[T <: AnyRef](left: T) extends AnyShouldWrapper(left) {
-
-    // TODO: Ensure on inspector shorthands. Had to add this here after moving another shouldEqual method from NumericShouldWrapper.
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * result shouldEqual null
-     *        ^
-     * </pre>
-     */
-    def shouldEqual(right: Null) { 
-      if (left != null) {
-        throw newTestFailedException(FailureMessages("didNotEqualNull", left))
-      }
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * result should not have length (3)
-     *        ^
-     * </pre>
-     */
-    override def should(notWord: NotWord): ResultOfNotWordForAnyRef[T] =
-      new ResultOfNotWordForAnyRef(left, false)
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * result should be theSameInstanceAs anotherObject
-     *        ^
-     * </pre>
-     */
-    override def should(beWord: BeWord): ResultOfBeWordForAnyRef[T] = new ResultOfBeWordForAnyRef(left, true)
-    
-/*
-    def shouldBe: ResultOfBeWordForAnyRef[T] = new ResultOfBeWordForAnyRef(left, true)
-    
-    def shouldBe(right: Null) {
-      if (left != null) {
-        throw newTestFailedException(FailureMessages("wasNotNull", left))
-      }
-    }
-*/
-
-/*
-    def shouldBe[U](right: AType[U]) {
-      if (!right.isAssignableFromClassOf(left)) {
-        throw newTestFailedException(FailureMessages("wasNotAnInstanceOf", left, UnquotedString(right.className)))
-      }
-    }
-*/
-
-/*
-    def shouldBe(right: AnyRef) {
-
-      def shouldBeEqual(right: AnyRef): Boolean = {
-        if (right.isInstanceOf[ResultOfAWordToBePropertyMatcherApplication[AnyRef]]) {
-          // need to put in if because NoSuchMethodError when pattern match ResultOfAWordToBePropertyMatcherApplication
-          val app = right.asInstanceOf[ResultOfAWordToBePropertyMatcherApplication[AnyRef]]
-          app.bePropertyMatcher.apply(left).matches
-        }
-        else if (right.isInstanceOf[ResultOfAnWordToBePropertyMatcherApplication[AnyRef]]) {
-          val app = right.asInstanceOf[ResultOfAnWordToBePropertyMatcherApplication[AnyRef]]
-          app.bePropertyMatcher.apply(left).matches
-        }
-        else {
-          val beWord = new BeWord
-          right match {
-            case rightSymbol: ResultOfAWordToSymbolApplication => 
-              beWord.a[AnyRef](rightSymbol.symbol)(left).matches
-            case rightSymbol: ResultOfAnWordToSymbolApplication => 
-              beWord.an[AnyRef](rightSymbol.symbol)(left).matches
-            case beMatcher: BeMatcher[AnyRef] => 
-              beMatcher.apply(left).matches
-            case bePropertyMatcher: BePropertyMatcher[AnyRef] => 
-              bePropertyMatcher.apply(left).matches
-            case _ => 
-              left == right
-          }
-        }
-      }
-
-      if (!shouldBeEqual(right)) {
-        val (resourceName, leftee, rightee) = 
-          if (right.isInstanceOf[ResultOfAWordToBePropertyMatcherApplication[AnyRef]]) {
-            val app = right.asInstanceOf[ResultOfAWordToBePropertyMatcherApplication[AnyRef]]
-            val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, UnquotedString(app.bePropertyMatcher.apply(left).propertyName))
-            ("wasNotA", leftee, rightee)
-          }
-          else if (right.isInstanceOf[ResultOfAnWordToBePropertyMatcherApplication[AnyRef]]) {
-            val app = right.asInstanceOf[ResultOfAnWordToBePropertyMatcherApplication[AnyRef]]
-            val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, UnquotedString(app.bePropertyMatcher.apply(left).propertyName))
-            ("wasNotAn", leftee, rightee)
-          }
-          else {
-            right match {
-              case bePropertyMatcher: BePropertyMatcher[AnyRef] => 
-                val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, UnquotedString(bePropertyMatcher.apply(left).propertyName))
-                ("wasNot", leftee, rightee)
-              case _ => 
-                val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)
-                ("wasNotEqualTo", leftee, rightee)
-            }
-          }
-        throw newTestFailedException(FailureMessages(resourceName, leftee, rightee))
-      }
-    }
-*/
   }
 
   /**
@@ -9862,51 +9923,6 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
           )
         )
     }
-  }
-
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * <p>
-   * This class is used in conjunction with an implicit conversion to enable <code>should</code> methods to
-   * be invoked on objects of type <code>scala.Array[T]</code>.
-   * </p>
-   *
-   * @author Bill Venners
-   */
-  final class ArrayShouldWrapper[E](left: Array[E]) extends AnyRefShouldWrapper(left) {
-
-     /**
-     * This method enables syntax such as the following, where <code>positiveNumber</code> is a <code>AMatcher</code>:
-     *
-     * <pre class="stHighlight">
-     * array should contain a positiveNumber
-     *       ^
-     * </pre>
-     */
-    def should(containWord: ContainWord) = 
-      new ResultOfContainWordForTraversable(new ArrayWrapper(left), true)
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * array should not have length (3)
-     *       ^
-     * </pre>
-     */
-    override def should(notWord: NotWord): ResultOfNotWordForArray[E] =
-      new ResultOfNotWordForArray(left, false)
-    
-/*
-    def shouldBe(right: Array[E]) {
-      if (!left.deep.equals(right.deep)) {
-        val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)
-        throw newTestFailedException(FailureMessages("wasNotEqualTo", leftee, rightee))
-      }
-    }
-*/
   }
 
   /**
