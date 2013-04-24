@@ -588,7 +588,7 @@ import Helper.accessProperty
  * </p>
  * 
  * <pre class="stHighlight">
- * number should (be > (0) and be <= (10))
+ * number should (be &gt; (0) and be &lt;= (10))
  * option should (equal (Some(List(1, 2, 3))) or be (None))
  * string should (
  *   equal ("fee") or
@@ -600,7 +600,7 @@ import Helper.accessProperty
  * 
  * <p>
  * Two differences exist between expressions composed of these <code>and</code> and <code>or</code> operators and the expressions you can write
- * on regular <code>Boolean</code>s using its <code>&&</code> and <code>||</code> operators. First, expressions with <code>and</code>
+ * on regular <code>Boolean</code>s using its <code>&amp;&amp;</code> and <code>||</code> operators. First, expressions with <code>and</code>
  * and <code>or</code> do not short-circuit. The following contrived expression, for example, would print <code>"hello, world!"</code>:
  * </p>
  *
@@ -650,10 +650,10 @@ import Helper.accessProperty
  * </p>
  *
  * <p>
- * The other difference with <code>Boolean</code> operators is that although <code>&&</code> has a higher precedence than <code>||</code>,
+ * The other difference with <code>Boolean</code> operators is that although <code>&amp;&amp;</code> has a higher precedence than <code>||</code>,
  * <code>and</code> and <code>or</code>
- * have the same precedence. Thus although the <code>Boolean</code> expression <code>(a || b && c)</code> will evaluate the <code>&&</code> expression
- * before the <code>||</code> expression, like <code>(a || (b && c))</code>, the following expression:
+ * have the same precedence. Thus although the <code>Boolean</code> expression <code>(a || b &amp;&amp; c)</code> will evaluate the <code>&amp;&amp;</code> expression
+ * before the <code>||</code> expression, like <code>(a || (b &amp;&amp; c))</code>, the following expression:
  * </p>
  * 
  * <pre class="stHighlight">
@@ -3482,34 +3482,6 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
     def apply(regex: Regex): ResultOfRegexWordApplication = new ResultOfRegexWordApplication(regex)
   }
 
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * @author Bill Venners
-   */
-  final class ResultOfHaveWordForString(left: String, shouldBeTrue: Boolean) {
-
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * string should have length (12)
-     *                    ^
-     * </pre>
-     */
-    def length(expectedLength: Int) {
-      val leftLength = left.length
-      if ((leftLength == expectedLength) != shouldBeTrue)
-        throw newTestFailedException(
-          if (shouldBeTrue)
-            FailureMessages("hadLengthInsteadOfExpectedLength", left, leftLength, expectedLength)
-          else
-            FailureMessages("hadExpectedLength", left, expectedLength)
-        )
-    }
-  }
-  
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
    * the matchers DSL.
@@ -9138,18 +9110,6 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    * @author Bill Venners
    */
   final class StringShouldWrapper(val left: String) extends AnyRefShouldWrapper(left) with StringShouldWrapperForVerb {
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * string should have length (3)
-     *        ^
-     * </pre>
-     */
-    def should(haveWord: HaveWord): ResultOfHaveWordForString = {
-      new ResultOfHaveWordForString(left, true)
-    }
 
     /**
      * This method enables syntax such as the following:
