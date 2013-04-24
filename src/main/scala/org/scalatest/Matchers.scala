@@ -2967,6 +2967,25 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
         )
       }
     }
+
+    /**
+     * This method enables the following syntax: 
+     *
+     * <pre class="stHighlight">
+     * result should not equal null
+     *                   ^
+     * </pre>
+     */
+    def equal(right: Null) {
+      if ((left == null) != shouldBeTrue) {
+        throw newTestFailedException(
+          FailureMessages(
+            if (shouldBeTrue) "didNotEqualNull" else "equaledNull",
+            left
+          )
+        )
+      }
+    }
   }
 
   /**
@@ -9165,95 +9184,6 @@ XXX
     }
   }
 
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * <p>
-   * This class is used in conjunction with an implicit conversion to enable <code>should</code> methods to
-   * be invoked on <code>Double</code>s.
-   * </p>
-   *
-   * @author Bill Venners
-   */
-  final class NumericShouldWrapper[T : Numeric](left: T) extends AnyShouldWrapper(left) {
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * result shouldEqual 7.1 +- 0.2
-     *        ^
-     * </pre>
-     */
-    override def shouldEqual(interval: Interval[T]) {
-      if (!interval.isWithin(left)) {
-        throw newTestFailedException(FailureMessages("didNotEqualPlusOrMinus", left, interval.pivot, interval.tolerance))
-      }
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * result should not equal (8.8)
-     *        ^
-     * </pre>
-     */
-    override def should(notWord: NotWord): ResultOfNotWordForNumeric[T] = {
-      new ResultOfNotWordForNumeric[T](left, false)
-    }
-    
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * result shouldNot equal (8.8)
-     *        ^
-     * </pre>
-     */
-/*
-    def shouldNot(rightMatcher: Matcher[T]) {
-      rightMatcher(left) match {
-        case MatchResult(true, _, negatedFailureMessage, _, _) => throw newTestFailedException(negatedFailureMessage, None, 0) // TODO: Stack depth
-        case _ => ()
-      }
-    }
-*/
-
-    // TODO: I think this should be moved up to AnyShouldWrapper, but need to write 
-    // a test first, and a good way to do that would be an AnyVal
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * result should be a aMatcher
-     *        ^
-     * </pre>
-     */
-    override def should(beWord: BeWord): ResultOfBeWordForAny[T] = new ResultOfBeWordForAny(left, true)
-
-    /* *
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * aDouble shouldBe 8.8
-     *         ^
-     * </pre>
-    def shouldBe(right: T) {
-      if (left != right) {
-        val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)
-        throw newTestFailedException(FailureMessages("wasNotEqualTo", leftee, rightee))
-      }
-    }
-
-    def shouldBe(beMatcher: BeMatcher[T]) { // TODO: This looks like a bug to me. Investigate. - bv
-      beMatcher.apply(left).matches
-    }
-*/
-
-  }
-
 // TODO: Am I doing conversions on immutable.GenTraversable and immutable.GenSeq? If so, write a test that fails and make it general.
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
@@ -9390,6 +9320,21 @@ XXX
    * @author Bill Venners
    */
   class AnyRefShouldWrapper[T <: AnyRef](left: T) extends AnyShouldWrapper(left) {
+
+    // TODO: Ensure on inspector shorthands. Had to add this here after moving another shouldEqual method from NumericShouldWrapper.
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * result shouldEqual null
+     *        ^
+     * </pre>
+     */
+    def shouldEqual(right: Null) { 
+      if (left != null) {
+        throw newTestFailedException(FailureMessages("didNotEqualNull", left))
+      }
+    }
 
     /**
      * This method enables syntax such as the following:
@@ -10171,45 +10116,6 @@ XXX
    * to enable <code>should</code> methods to be invokable on that object.
    */
   implicit def convertToAnyShouldWrapper[T](o: T): AnyShouldWrapper[T] = new AnyShouldWrapper(o)
-
-/*
-  implicit def convertToNumericShouldWrapper[N : Numeric](n: N): NumericShouldWrapper[N] = new NumericShouldWrapper[N](n)
-  /**
-   * Implicitly converts an object of type <code>scala.Double</code> to a <code>DoubleShouldWrapper</code>,
-   * to enable <code>should</code> methods to be invokable on that object.
-   */
-  implicit def convertToNumericShouldWrapperForDouble(o: Double): NumericShouldWrapper[Double] = new NumericShouldWrapper[Double](o)
-
-  /**
-   * Implicitly converts an object of type <code>scala.Float</code> to a <code>NumericShouldWrapper[Float]</code>,
-   * to enable <code>should</code> methods to be invokable on that object.
-   */
-  implicit def convertToNumericShouldWrapperForFloat(o: Float): NumericShouldWrapper[Float] = new NumericShouldWrapper[Float](o)
-
-  /**
-   * Implicitly converts an object of type <code>scala.Long</code> to a <code>NumericShouldWrapper[Long]</code>,
-   * to enable <code>should</code> methods to be invokable on that object.
-   */
-  implicit def convertToNumericShouldWrapperForLong(o: Long): NumericShouldWrapper[Long] = new NumericShouldWrapper[Long](o)
-
-  /**
-   * Implicitly converts an object of type <code>scala.Int</code> to a <code>NumericShouldWrapper[Int]</code>,
-   * to enable <code>should</code> methods to be invokable on that object.
-   */
-  implicit def convertToNumericShouldWrapperForInt(o: Int): NumericShouldWrapper[Int] = new NumericShouldWrapper[Int](o)
-
-  /**
-   * Implicitly converts an object of type <code>scala.Short</code> to a <code>NumericShouldWrapper[Short]</code>,
-   * to enable <code>should</code> methods to be invokable on that object.
-   */
-  implicit def convertToNumericShouldWrapperForShort(o: Short): NumericShouldWrapper[Short] = new NumericShouldWrapper[Short](o)
-
-  /**
-   * Implicitly converts an object of type <code>scala.Byte</code> to a <code>NumericShouldWrapper[Byte]</code>,
-   * to enable <code>should</code> methods to be invokable on that object.
-   */
-  implicit def convertToByteShouldWrapper(o: Byte): NumericShouldWrapper[Byte] = new NumericShouldWrapper[Byte](o)
-*/
 
   /**
    * Implicitly converts a <code>scala.AnyRef</code> of type <code>T</code> to an <code>AnyRefShouldWrapper[T]</code>,

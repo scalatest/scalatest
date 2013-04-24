@@ -53,7 +53,7 @@ class ShouldEqualNullSpec extends Spec with Matchers {
       nullSuper should (not (equal (super1)))
 
       val caught3 = intercept[TestFailedException] { nullSuper should not equal (null) }
-      caught3.getMessage should be ("null equaled null")
+      caught3.getMessage should be ("The reference equaled null")
       val caught4 = intercept[TestFailedException] { nullSuper should not (equal (null)) }
       caught4.getMessage should be ("The reference equaled null")
       val caught5 = intercept[TestFailedException] { nullSuper should (not equal (null)) }
