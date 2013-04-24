@@ -37,12 +37,37 @@ class StatusSpec extends Spec {
       assert(succeeded === true)
     }
 
-    def `should invoke multiple functions registered with onComplete, in order of registration, after the status completes` {
+    def `should invoke multiple functions registered with whenCompleted, passing a succeeded value` {
       // register two callbacks
       // ensure neither was executed yet
       // complete the status
-      // ensure both were executed, in order
-      pending
+      // ensure both were executed
+      @volatile var firstCallbackInvoked = false
+      @volatile var secondCallbackInvoked = false
+      @volatile var firstSucceeded = false
+      @volatile var secondSucceeded = false
+
+      val status = SucceededStatus
+
+      // register callback 1
+      status.whenCompleted { st =>
+        firstCallbackInvoked = true
+        firstSucceeded = st
+      }
+
+      // register callback 2
+      status.whenCompleted { st =>
+        secondCallbackInvoked = true
+        secondSucceeded = st
+      }
+
+      // ensure it was executed
+      assert(firstCallbackInvoked)
+      assert(secondCallbackInvoked)
+
+      // ensure it passed the correct success value
+      assert(firstSucceeded === true)
+      assert(secondSucceeded === true)
     }
   }
 
@@ -66,12 +91,37 @@ class StatusSpec extends Spec {
       assert(succeeded === false)
     }
 
-    def `should invoke multiple functions registered with onComplete, in order of registration, after the status completes` {
+    def `should invoke multiple functions registered with whenCompleted, passing a failed value` {
       // register two callbacks
       // ensure neither was executed yet
       // complete the status
-      // ensure both were executed, in order
-      pending
+      // ensure both were executed
+      @volatile var firstCallbackInvoked = false
+      @volatile var secondCallbackInvoked = false
+      @volatile var firstSucceeded = true
+      @volatile var secondSucceeded = true
+
+      val status = FailedStatus
+
+      // register callback 1
+      status.whenCompleted { st =>
+        firstCallbackInvoked = true
+        firstSucceeded = st
+      }
+
+      // register callback 2
+      status.whenCompleted { st =>
+        secondCallbackInvoked = true
+        secondSucceeded = st
+      }
+
+      // ensure it was executed
+      assert(firstCallbackInvoked)
+      assert(secondCallbackInvoked)
+
+      // ensure it passed the correct success value
+      assert(firstSucceeded === false)
+      assert(secondSucceeded === false)
     }
   }
 }
