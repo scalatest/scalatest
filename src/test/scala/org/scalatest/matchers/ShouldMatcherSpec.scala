@@ -308,7 +308,7 @@ class ShouldMatcherSpec extends Spec with ShouldMatchers {
       val caught4 = intercept[TestFailedException] {
         array should have size 2
       }
-      assert(caught4.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("WrappedArray()"), 0, 2))
+      assert(caught4.getMessage === FailureMessages("hadSizeInsteadOfExpectedSize", UnquotedString("Array()"), 0, 2))
     }
 
     def `should work with collection and size, right after a 'should not'` {

@@ -9087,7 +9087,6 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
       }
     }
 
-XXX
     def shouldBe(beMatcher: BeMatcher[T]) { // TODO: This looks like a bug to me. Investigate. - bv
       beMatcher.apply(left).matches
     }
@@ -9900,48 +9899,20 @@ XXX
    *
    * @author Bill Venners
    */
-  final class ArrayShouldWrapper[T](left: Array[T]) {
+  final class ArrayShouldWrapper[E](left: Array[E]) extends AnyRefShouldWrapper(left) {
 
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * array should be (Array("one", "two"))
-     *       ^
-     * </pre>
-     */
-    def should(rightMatcherX10: Matcher[Array[T]]) {
-      ShouldMethodHelper.shouldMatcher(left, rightMatcherX10)
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * array should equal (Array("one", "two"))
-     *       ^
-     * </pre>
-     */
-    def should[TYPECLASS1[_]](rightMatcherFactory1: MatcherFactory1[Array[T], TYPECLASS1])(implicit typeClass1: TYPECLASS1[Array[T]]) {
-      ShouldMethodHelper.shouldMatcher(left, rightMatcherFactory1.matcher)
-    }
-
-    def should[TYPECLASS1[_], TYPECLASS2[_]](rightMatcherFactory2: MatcherFactory2[Array[T], TYPECLASS1, TYPECLASS2])(implicit typeClass1: TYPECLASS1[Array[T]], typeClass2: TYPECLASS2[Array[T]]) {
-      ShouldMethodHelper.shouldMatcher(left, rightMatcherFactory2.matcher)
-    }
-
-    /**
+    /* Going to try just using the Extent one.
      * This method enables syntax such as the following:
      *
      * <pre class="stHighlight">
      * array should have length (3)
      *       ^
      * </pre>
-     */
-    def should(haveWord: HaveWord): ResultOfHaveWordForSeq[T] = {
+    def should(haveWord: HaveWord): ResultOfHaveWordForSeq[E] = {
       new ResultOfHaveWordForSeq(left, true)
     }
-    
+     */
+
      /**
      * This method enables syntax such as the following, where <code>positiveNumber</code> is a <code>AMatcher</code>:
      *
@@ -9961,49 +9932,18 @@ XXX
      *       ^
      * </pre>
      */
-    def should(notWord: NotWord): ResultOfNotWordForArray[T] =
+    override def should(notWord: NotWord): ResultOfNotWordForArray[E] =
       new ResultOfNotWordForArray(left, false)
     
-    /**
-     * This method enables syntax such as the following, where <code>bigArray</code> is a <code>AMatcher</code>:
-     *
-     * <pre class="stHighlight">
-     * array should be a bigArray
-     *       ^
-     * </pre>
-     */
-    def should(beWord: BeWord): ResultOfBeWordForAnyRef[Array[T]] = new ResultOfBeWordForAnyRef(left, true)
-    
 /*
-    def shouldBe(right: Array[T]) {
+    def shouldBe(right: Array[E]) {
       if (!left.deep.equals(right.deep)) {
         val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)
         throw newTestFailedException(FailureMessages("wasNotEqualTo", leftee, rightee))
       }
     }
 */
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * result should === (Array(1, 2, 3))
-     *        ^
-     * </pre>
-     */
-    def should[U](inv: TripleEqualsInvocation[U])(implicit constraint: EqualityConstraint[Array[T], U]) {
-      if ((constraint.areEqual(left, inv.right)) != inv.expectingEqual)
-        throw newTestFailedException(
-          FailureMessages(
-           if (inv.expectingEqual) "didNotEqual" else "equaled",
-            left,
-            inv.right
-          )
-        )
-    }
   }
-  // Note, no should(beWord) is needed here because a different implicit conversion will be used
-  // on "array shoudl be ..." because this one doesn't solve the type error.
 
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
