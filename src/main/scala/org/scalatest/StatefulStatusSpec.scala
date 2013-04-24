@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-class StatusSpec extends fixture.Spec {
+class StatefulStatusSpec extends fixture.Spec {
 
   protected type FixtureParam = { 
     def setCompleted()
