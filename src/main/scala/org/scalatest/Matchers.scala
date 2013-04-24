@@ -9901,18 +9901,6 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    */
   final class ArrayShouldWrapper[E](left: Array[E]) extends AnyRefShouldWrapper(left) {
 
-    /* Going to try just using the Extent one.
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * array should have length (3)
-     *       ^
-     * </pre>
-    def should(haveWord: HaveWord): ResultOfHaveWordForSeq[E] = {
-      new ResultOfHaveWordForSeq(left, true)
-    }
-     */
-
      /**
      * This method enables syntax such as the following, where <code>positiveNumber</code> is a <code>AMatcher</code>:
      *
