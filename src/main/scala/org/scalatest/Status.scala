@@ -158,7 +158,7 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status {
     succeeded
   }
 
-  def isCompleted = latch.getCount() == 0L
+  def isCompleted = latch.getCount == 0L
 
   def waitUntilCompleted() {
     latch.await()
@@ -207,7 +207,7 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status {
  */
 @serializable
 final class StatefulStatus extends Status {
-  final private val latch = new CountDownLatch(1)
+  private final val latch = new CountDownLatch(1)
   @volatile private var succeeded = true
   private final val queue = new ConcurrentLinkedQueue[Boolean => Unit]
 
@@ -227,7 +227,7 @@ final class StatefulStatus extends Status {
    * 
    * @return <code>true</code> if the test or suite run is already completed, <code>false</code> otherwise.
    */
-  def isCompleted = latch.getCount() == 0L
+  def isCompleted = latch.getCount == 0L
 
   /**
    * Blocking call that returns only after <code>setCompleted</code> has been invoked on this <code>StatefulStatus</code> instance.
@@ -297,6 +297,28 @@ final class StatefulStatus extends Status {
 @serializable
 final class CompositeStatus(statuses: Set[Status]) extends Status {
   
+  // TODO: Ensure this is visible to another thread, because I'm letting the reference
+  // escape with my for loop below prior to finishing this object's construction.
+  private final val latch = new CountDownLatch(statuses.size)
+
+  @volatile private var succeeded = true
+
+  private final val queue = new ConcurrentLinkedQueue[Boolean => Unit]
+
+  for (status <- statuses) {
+    status.whenCompleted { st =>
+      synchronized {
+        latch.countDown()
+      }
+      if (!st)
+        succeeded = false
+      if (latch.getCount == 0) {
+        for (f <- queue.iterator.asScala)
+          f(succeeded)
+      }
+    }
+  }
+
   /**
    * Blocking call that waits until all composite <code>Status</code>es have completed, then returns
    * <code>true</code> only if all of the composite <code>Status</code>es succeeded. If any <code>Status</code> passed in the <code>statuses</code> set fails, this method
@@ -329,6 +351,16 @@ final class CompositeStatus(statuses: Set[Status]) extends Status {
    * order.
    * </p>
    */
-  def whenCompleted(f: Boolean => Unit) = ???
+  def whenCompleted(f: Boolean => Unit) {
+    var executeLocally = false
+    synchronized {
+      if (!isCompleted)
+        queue.add(f)
+      else
+        executeLocally = true
+    }
+    if (executeLocally)
+      f(succeeded)
+  }
 }
 

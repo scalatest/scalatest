@@ -149,18 +149,18 @@ class StatefulStatusSpec extends fixture.Spec {
         secondSucceeded = st
       }
 
-      // ensure they was not executed yet
+      // ensure they were not executed yet
       assert(!firstCallbackInvoked)
       assert(!secondCallbackInvoked)
 
       // complete the status
       status.setCompleted()
 
-      // ensure it was executed
+      // ensure they were executed
       assert(firstCallbackInvoked)
       assert(secondCallbackInvoked)
 
-      // ensure it passed the correct success value
+      // ensure they were passed the correct success value
       assert(firstSucceeded === true)
       assert(secondSucceeded === true)
     }
@@ -187,7 +187,7 @@ class StatefulStatusSpec extends fixture.Spec {
         secondSucceeded = st
       }
 
-      // ensure they was not executed yet
+      // ensure they were not executed yet
       assert(!firstCallbackInvoked)
       assert(!secondCallbackInvoked)
 
@@ -197,11 +197,11 @@ class StatefulStatusSpec extends fixture.Spec {
       // complete the status
       status.setCompleted()
 
-      // ensure it was executed
+      // ensure they were executed
       assert(firstCallbackInvoked)
       assert(secondCallbackInvoked)
 
-      // ensure it passed the correct success value
+      // ensure they were passed the correct success value
       assert(firstSucceeded === false)
       assert(secondSucceeded === false)
     }

@@ -124,5 +124,53 @@ class StatusSpec extends Spec {
       assert(secondSucceeded === false)
     }
   }
+
+  object `CompositeStatus ` {
+    def `should invoke multiple functions registered with whenCompleted, passing a succeeded value, only after all composed statuses complete successfully` {
+
+      @volatile var firstCallbackInvoked = false
+      @volatile var secondCallbackInvoked = false
+      @volatile var firstSucceeded = false
+      @volatile var secondSucceeded = false
+
+      val nestedStatus1 = new StatefulStatus
+      val nestedStatus2 = new StatefulStatus
+      val status = new CompositeStatus(Set(nestedStatus1, nestedStatus2))
+
+      // register callback 1
+      status.whenCompleted { st =>
+        firstCallbackInvoked = true
+        firstSucceeded = st
+      }
+
+      // register callback 2
+      status.whenCompleted { st =>
+        secondCallbackInvoked = true
+        secondSucceeded = st
+      }
+
+      // ensure they were not executed yet
+      assert(!firstCallbackInvoked)
+      assert(!secondCallbackInvoked)
+
+      // complete the first status
+      nestedStatus1.setCompleted()
+
+      // ensure they were not executed yet
+      assert(!firstCallbackInvoked)
+      assert(!secondCallbackInvoked)
+
+      // complete the second status
+      nestedStatus2.setCompleted()
+
+      // ensure they were executed
+      assert(firstCallbackInvoked)
+      assert(secondCallbackInvoked)
+
+      // ensure they were passed the correct success value
+      assert(firstSucceeded === true)
+      assert(secondSucceeded === true)
+    }
+  }
 }
 
