@@ -2076,7 +2076,8 @@ class ShouldLengthSpec extends Spec with Matchers with Checkers with ReturnsNorm
         obj should not { have length (3) }
         obj should not { have length (3L) }
         obj should not have length (3)
-        obj should not have length (3L)
+        (obj should not).have(convertResultOfLengthWordApplicationToHavePropertyMatcher(length(3L)))
+        // obj should not have length (3L)
         check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Lengthy(len) should not { have length (wrongLen) }))
         check((len: Long, wrongLen: Long) => len != wrongLen ==> returnsNormally(new Lengthy(len) should not { have length (wrongLen) }))
         check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Lengthy(len) should not have length (wrongLen)))
@@ -2410,6 +2411,7 @@ class ShouldLengthSpec extends Spec with Matchers with Checkers with ReturnsNorm
           def extentOf(dp: DatagramPacket): Long = dp.getLength
         }
       dp should have length 4
+      dp should not have length (99)
       import java.awt.image.DataBufferByte
       val db = new DataBufferByte(4)
       implicit val sizeOfDataBufferByte =
@@ -2417,6 +2419,7 @@ class ShouldLengthSpec extends Spec with Matchers with Checkers with ReturnsNorm
           def extentOf(db: DataBufferByte): Long = db.getSize
         }
       db should have length 4
+      db should not have length (99)
     }
   }
 }

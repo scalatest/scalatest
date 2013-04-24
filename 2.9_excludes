@@ -6,3 +6,4 @@ org/scalatest/TryValues.scala
 org/scalatest/DocSpec.scala
 org/scalatest/DocSpecLike.scala
 org/scalatest/DocSpecSpec.scala
+org/scalatest/AnyValMatchersSpec.scala
