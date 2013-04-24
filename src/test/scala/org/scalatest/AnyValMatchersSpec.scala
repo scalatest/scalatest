@@ -28,10 +28,12 @@ class AnyValMatchersSpec extends Spec {
     def `should allow me to check for length on a custom AnyVal that has a Length type class available` {
       implicit val lengthOfLengthiness = new Length[Lengthiness] { def extentOf(ln: Lengthiness): Long = ln.length }
       new Lengthiness(7) should have length 7
+      new Lengthiness(8) should not have length (7)
     }
     def `should allow me to check for size on a custom AnyVal that has a Size type class available` {
       implicit val sizeOfSiziness = new Size[Siziness] { def extentOf(sz: Siziness): Long = sz.size }
       new Siziness(7) should have size 7
+      new Siziness(8) should not have size (7)
     }
   }
 }

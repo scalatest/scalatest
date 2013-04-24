@@ -26,6 +26,8 @@ import org.scalatest.Resources
  *
  * @author Bill Venners
  */
+final class ResultOfLengthWordApplication(val expectedLength: Long)
+/*
 final class ResultOfLengthWordApplication(val expectedLength: Long) extends HavePropertyMatcher[AnyRef, Long] {
 
   /**
@@ -71,4 +73,4 @@ final class ResultOfLengthWordApplication(val expectedLength: Long) extends Have
     }
   }
 }
-
+*/

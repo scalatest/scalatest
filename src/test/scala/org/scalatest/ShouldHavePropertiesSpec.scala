@@ -24,6 +24,8 @@ import org.scalatest.exceptions.TestFailedException
 
 import matchers.HavePropertyMatcher
 import matchers.HavePropertyMatchResult
+import enablers.Length
+import enablers.Size
 
 // TODO: check not not and not not not to make sure those negative failure messages make sense.
 class ShouldHavePropertiesSpec extends Spec with Matchers with Checkers with ReturnsNormallyThrowsAssertion with BookPropertyMatchers {
@@ -559,44 +561,26 @@ hard to read. Better to have people pull things out and then just do a non-neste
 
       def `should work with length not a symbol without anything special, in case someone forgets you don't need the parens with length` {
 
+        implicit val bookLength = new Length[Book] { def extentOf(book: Book) = book.length }
+
         val caught1 = intercept[TestFailedException] {
           book should have (length (43))
         }
-        assert(caught1.getMessage === "The length property had value 45, instead of its expected value 43, on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
-      }
-
-      def `should throw TestFailedException if length used in parens but the length property is not an integral type` {
-
-        class LengthSeven {
-          def length = "seven"
-        }
-
-        val caught1 = intercept[TestFailedException] {
-          (new LengthSeven) should have (length (43))
-        }
-        assert(caught1.getMessage === "The length property was none of Byte, Short, Int, or Long.")
+        // assert(caught1.getMessage === "The length property had value 45, instead of its expected value 43, on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught1.getMessage === "Book(A Tale of Two Cities,Dickens,1859,45,true) had length 45 instead of expected length 43")
       }
 
       def `should work with size not a symbol without anything special, in case someone forgets you don't need the parens with size` {
 
-        case class Size(val size: Int)
+        case class Sizey(val size: Int)
+
+        implicit val sizeOfSizey = new Size[Sizey] { def extentOf(sizey: Sizey) = sizey.size }
 
         val caught1 = intercept[TestFailedException] {
-          (new Size(7)) should have (size (43))
+          (new Sizey(7)) should have (size (43))
         }
-        assert(caught1.getMessage === "The size property had value 7, instead of its expected value 43, on object Size(7)")
-      }
-
-      def `should throw TestFailedException if size used in parens but the size property is not an integral type` {
-
-        class SizeSeven {
-          def size = "seven"
-        }
-
-        val caught1 = intercept[TestFailedException] {
-          (new SizeSeven) should have (size (43))
-        }
-        assert(caught1.getMessage === "The size property was none of Byte, Short, Int, or Long.")
+        // assert(caught1.getMessage === "The size property had value 7, instead of its expected value 43, on object Size(7)")
+        assert(caught1.getMessage === "Sizey(7) had size 7 instead of expected size 43")
       }
 
 /*

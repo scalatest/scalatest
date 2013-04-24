@@ -93,6 +93,13 @@ final class HaveWord {
       }
     }
 
+  // TODO: Scaladoc, and figure out a way that length can be used as a general have property matcher, or give them another method maybe?
+  def apply[T](resultOfLengthWordApplication: ResultOfLengthWordApplication): MatcherFactory1[Any, Length] = length(resultOfLengthWordApplication.expectedLength)
+
+
+  // TODO: Scaladoc, and figure out a way that length can be used as a general have property matcher, or give them another method maybe?
+  def apply[T](resultOfSizeWordApplication: ResultOfSizeWordApplication): MatcherFactory1[Any, Size] = size(resultOfSizeWordApplication.expectedSize)
+
 /*
     new Matcher[AnyRef] {
       def apply(left: AnyRef): MatchResult =

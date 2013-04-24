@@ -2740,8 +2740,6 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
         )
     }
 
-// TODO: Why isn't there an equal that takes a tolerance? (and later one that takes a null?)
-
     /**
      * This method enables the following syntax:
      *
@@ -2765,7 +2763,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * result should not be <= (7)
+     * result should not be &lt;= (7)
      *                   ^
      * </pre>
      */
@@ -2785,7 +2783,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * result should not be >= (7)
+     * result should not be &gt;= (7)
      *                   ^
      * </pre>
      */
@@ -2805,7 +2803,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * result should not be < (7)
+     * result should not be &lt; (7)
      *                   ^
      * </pre>
      */
@@ -2825,7 +2823,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * result should not be > (7)
+     * result should not be &gt; (7)
      *                   ^
      * </pre>
      */
@@ -2984,6 +2982,93 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
             left
           )
         )
+      }
+    }
+
+/*
+    def have(resultOfLengthWordApplication: ResultOfLengthWordApplication)(implicit len: Length[T]) {
+      val right = resultOfLengthWordApplication.expectedLength
+      val leftLength = len.extentOf(left)
+      if ((leftLength == right) != shouldBeTrue) {
+        throw newTestFailedException(
+          FailureMessages(
+            if (shouldBeTrue)
+              FailureMessages("hadLengthInsteadOfExpectedLength", left, leftLength, right)
+            else
+              FailureMessages("hadExpectedLength", left, right)
+          )
+        )
+      }
+    }
+*/
+    // TODO: Explain this matrix somewhere
+    // The type parameter U has T as its lower bound, which means that U must be T or a supertype of T. Left is T, oh, because
+    // HavePropertyMatcher is contravariant in its type parameter T, and that nmakes sense, because a HavePropertyMatcher of Any should
+    // be able to match on a String.
+    // <code>not have (a (1), b (2))</code> must mean the opposite of <code>have (a (1), b (2))</code>, which means that 
+    // <code>not have (a (1), b (2))</code> will be true if either <code>(a (1)).matches</code> or <code>(b (1)).matches</code> is false.
+    // Only if both <code>(a (1)).matches</code> or <code>(b (1)).matches</code> are true will <code>not have (a (1), b (2))</code> be false.
+    // title/author matches | have | have not
+    // 0 0 | 0 | 1 
+    // 0 1 | 0 | 1
+    // 1 0 | 0 | 1
+    // 1 1 | 1 | 0
+    // 
+    /**
+     * This method enables the following syntax, where <code>badBook</code> is, for example, of type <code>Book</code> and
+     * <code>title ("One Hundred Years of Solitude")</code> results in a <code>HavePropertyMatcher[Book]</code>:
+     *
+     * <pre class="stHighlight">
+     * book should not have (title ("One Hundred Years of Solitude"))
+     *                 ^
+     * </pre>
+     */
+    //def have[U >: T](firstPropertyMatcher: HavePropertyMatcher[U, _], propertyMatchers: HavePropertyMatcher[U, _]*) {
+    def have(firstPropertyMatcher: HavePropertyMatcher[T, _], propertyMatchers: HavePropertyMatcher[T, _]*) {
+
+      val results =
+        for (propertyVerifier <- firstPropertyMatcher :: propertyMatchers.toList) yield
+          propertyVerifier(left)
+
+      val firstFailureOption = results.find(pv => !pv.matches)
+
+      val justOneProperty = propertyMatchers.length == 0
+
+      // if shouldBeTrue is false, then it is like "not have ()", and should throw TFE if firstFailureOption.isDefined is false
+      // if shouldBeTrue is true, then it is like "not (not have ()), which should behave like have ()", and should throw TFE if firstFailureOption.isDefined is true
+      if (firstFailureOption.isDefined == shouldBeTrue) {
+        firstFailureOption match {
+          case Some(firstFailure) =>
+            // This is one of these cases, thus will only get here if shouldBeTrue is true
+            // 0 0 | 0 | 1
+            // 0 1 | 0 | 1
+            // 1 0 | 0 | 1
+            throw newTestFailedException(
+              FailureMessages(
+                "propertyDidNotHaveExpectedValue",
+                 UnquotedString(firstFailure.propertyName),
+                 firstFailure.expectedValue,
+                 firstFailure.actualValue,
+                 left
+              )
+            )
+          case None =>
+            // This is this cases, thus will only get here if shouldBeTrue is false
+            // 1 1 | 1 | 0
+            val failureMessage =
+              if (justOneProperty) {
+                val firstPropertyResult = results.head // know this will succeed, because firstPropertyMatcher was required
+                FailureMessages(
+                  "propertyHadExpectedValue",
+                  UnquotedString(firstPropertyResult.propertyName),
+                  firstPropertyResult.expectedValue,
+                  left
+                )
+              }
+              else FailureMessages("allPropertiesHadExpectedValues", left)
+
+            throw newTestFailedException(failureMessage)
+        } 
       }
     }
   }
@@ -3150,75 +3235,6 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
       }
     }
 
-    // TODO: Explain this matrix somewhere
-    // The type parameter U has T as its lower bound, which means that U must be T or a supertype of T. Left is T, oh, because
-    // HavePropertyMatcher is contravariant in its type parameter T, and that nmakes sense, because a HavePropertyMatcher of Any should
-    // be able to match on a String.
-    // <code>not have (a (1), b (2))</code> must mean the opposite of <code>have (a (1), b (2))</code>, which means that 
-    // <code>not have (a (1), b (2))</code> will be true if either <code>(a (1)).matches</code> or <code>(b (1)).matches</code> is false.
-    // Only if both <code>(a (1)).matches</code> or <code>(b (1)).matches</code> are true will <code>not have (a (1), b (2))</code> be false.
-    // title/author matches | have | have not
-    // 0 0 | 0 | 1 
-    // 0 1 | 0 | 1
-    // 1 0 | 0 | 1
-    // 1 1 | 1 | 0
-    // 
-    /**
-     * This method enables the following syntax, where <code>badBook</code> is, for example, of type <code>Book</code> and
-     * <code>title ("One Hundred Years of Solitude")</code> results in a <code>HavePropertyMatcher[Book]</code>:
-     *
-     * <pre class="stHighlight">
-     * book should not have (title ("One Hundred Years of Solitude"))
-     *                 ^
-     * </pre>
-     */
-    def have[U >: T](firstPropertyMatcher: HavePropertyMatcher[U, _], propertyMatchers: HavePropertyMatcher[U, _]*) {
-
-      val results =
-        for (propertyVerifier <- firstPropertyMatcher :: propertyMatchers.toList) yield
-          propertyVerifier(left)
-
-      val firstFailureOption = results.find(pv => !pv.matches)
-
-      val justOneProperty = propertyMatchers.length == 0
-
-      // if shouldBeTrue is false, then it is like "not have ()", and should throw TFE if firstFailureOption.isDefined is false
-      // if shouldBeTrue is true, then it is like "not (not have ()), which should behave like have ()", and should throw TFE if firstFailureOption.isDefined is true
-      if (firstFailureOption.isDefined == shouldBeTrue) {
-        firstFailureOption match {
-          case Some(firstFailure) =>
-            // This is one of these cases, thus will only get here if shouldBeTrue is true
-            // 0 0 | 0 | 1
-            // 0 1 | 0 | 1
-            // 1 0 | 0 | 1
-            throw newTestFailedException(
-              FailureMessages(
-                "propertyDidNotHaveExpectedValue",
-                 UnquotedString(firstFailure.propertyName),
-                 firstFailure.expectedValue,
-                 firstFailure.actualValue,
-                 left
-              )
-            )
-          case None =>
-            // This is this cases, thus will only get here if shouldBeTrue is false
-            // 1 1 | 1 | 0
-            val failureMessage =
-              if (justOneProperty) {
-                val firstPropertyResult = results.head // know this will succeed, because firstPropertyMatcher was required
-                FailureMessages(
-                  "propertyHadExpectedValue",
-                  UnquotedString(firstPropertyResult.propertyName),
-                  firstPropertyResult.expectedValue,
-                  left
-                )
-              }
-              else FailureMessages("allPropertiesHadExpectedValues", left)
-
-            throw newTestFailedException(failureMessage)
-        } 
-      }
-    }
   }
 
   /**
@@ -10216,6 +10232,34 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
           str.exists((e: Char) => equality.areEqual(e, ele))
       }
   }
+
+  implicit def convertResultOfLengthWordApplicationToHavePropertyMatcher[T](resultOfLengthWordApplication: ResultOfLengthWordApplication)(implicit length: Length[T]): HavePropertyMatcher[T, Long] =
+    new HavePropertyMatcher[T, Long] {
+      def apply(objectWithProperty: T): HavePropertyMatchResult[Long] = {
+        val expectedLength = resultOfLengthWordApplication.expectedLength
+        val result = length.extentOf(objectWithProperty)
+        new HavePropertyMatchResult[Long](
+          result == expectedLength,
+          "length",
+          expectedLength,
+          result
+        )
+      }
+    } 
+
+  implicit def convertResultOfSizeWordApplicationToHavePropertyMatcher[T](resultOfSizeWordApplication: ResultOfSizeWordApplication)(implicit size: Size[T]): HavePropertyMatcher[T, Long] =
+    new HavePropertyMatcher[T, Long] {
+      def apply(objectWithProperty: T): HavePropertyMatchResult[Long] = {
+        val expectedSize = resultOfSizeWordApplication.expectedSize
+        val result = size.extentOf(objectWithProperty)
+        new HavePropertyMatchResult[Long](
+          result == expectedSize,
+          "size",
+          expectedSize,
+          result
+        )
+      }
+    } 
 }
 
 /**
