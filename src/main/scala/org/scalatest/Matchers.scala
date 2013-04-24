@@ -9092,6 +9092,19 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
     }
 */
 
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * result should have length (3)
+     *        ^
+     * result should have size (3)
+     *        ^
+     * </pre>
+     */
+    def should(haveWord: HaveWord)(implicit ev: Extent[T]): ResultOfHaveWordForExtent[T] =
+      new ResultOfHaveWordForExtent(left, true)
+
     // TODO: Scaladoc, and decide whether or not to actually even support this here. It may be best
     // to let this one always be imported from ScalaUtils.
     def asAny: Any = left
@@ -9356,19 +9369,6 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      */
     override def should(beWord: BeWord): ResultOfBeWordForAnyRef[T] = new ResultOfBeWordForAnyRef(left, true)
     
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * result should have length (3)
-     *        ^
-     * result should have size (3)
-     *        ^
-     * </pre>
-     */
-    def should(haveWord: HaveWord)(implicit ev: Extent[T]): ResultOfHaveWordForExtent[T] =
-      new ResultOfHaveWordForExtent(left, true)
-
 /*
     def shouldBe: ResultOfBeWordForAnyRef[T] = new ResultOfBeWordForAnyRef(left, true)
     
