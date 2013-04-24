@@ -405,7 +405,7 @@ private[scalatest] class JUnitXmlReporter(directory: String) extends Reporter {
               (throwableType, throwableText)
           }
         
-        <failure message = { { unparsedXml(failure.message.replaceAll("\n", "&#010;")) } }
+        <failure message = { { failure.message.replaceAll("\n", "&#010;") } }
                  type    = { throwableType   } >
           { throwableText }
         </failure>
@@ -483,7 +483,7 @@ private[scalatest] class JUnitXmlReporter(directory: String) extends Reporter {
   //
   // Class to hold information about an execution of a test suite.
   //
-  private case class Testsuite(name: String, timeStamp: Long) {
+  private[scalatest] case class Testsuite(name: String, timeStamp: Long) {
     var errors   = 0
     var failures = 0
     var time     = 0L
@@ -493,7 +493,7 @@ private[scalatest] class JUnitXmlReporter(directory: String) extends Reporter {
   //
   // Class to hold information about an execution of a testcase.
   //
-  private case class Testcase(name: String, className: Option[String],
+  private[scalatest] case class Testcase(name: String, className: Option[String],
                               timeStamp: Long) {
     var time = 0L
     var pending = false
