@@ -72,7 +72,7 @@ trait Status {
    * Registers the passed function to be executed when this status completes.
    *
    * <p>
-   * You may register multiple functions, which will be executed in registration
+   * You may register multiple functions, which on completion will be executed in an undefined
    * order.
    * </p>
    */
@@ -107,7 +107,7 @@ object SucceededStatus extends Status {
   /**
    * Executes the passed function immediately on the calling thread.
    */
-  def whenCompleted(f: Boolean => Unit) = ???
+  def whenCompleted(f: Boolean => Unit) { f(true) }
 }
 
 /**
@@ -134,11 +134,11 @@ object FailedStatus extends Status {
    * Always returns immediately.
    */
   def waitUntilCompleted() {}
-  
+
   /**
    * Executes the passed function immediately on the calling thread.
    */
-  def whenCompleted(f: Boolean => Unit) = ???
+  def whenCompleted(f: Boolean => Unit) { f(false) }
 }
 
 // Used internally in ScalaTest. We don't use the StatefulStatus, because
@@ -272,7 +272,7 @@ final class StatefulStatus extends Status {
    * Registers the passed function to be executed when this status completes.
    *
    * <p>
-   * You may register multiple functions, which will be executed in registration
+   * You may register multiple functions, which on completion will be executed in an undefined
    * order.
    * </p>
    */
@@ -325,7 +325,7 @@ final class CompositeStatus(statuses: Set[Status]) extends Status {
    * Registers the passed function to be executed when this status completes.
    *
    * <p>
-   * You may register multiple functions, which will be executed in registration
+   * You may register multiple functions, which on completion will be executed in an undefined
    * order.
    * </p>
    */

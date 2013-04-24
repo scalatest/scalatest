@@ -78,7 +78,7 @@ class StatefulStatusSpec extends fixture.Spec {
       assert(status.isCompleted)
     }
 
-    def `should invoke a function registered with onComplete, passing the correct success value, after the status completes`(status: FixtureParam) {
+    def `should invoke a function registered with whenCompleted, passing a succeeded value, after the status completes successfully`(status: FixtureParam) {
       @volatile var callbackInvoked = false
       @volatile var succeeded = false
 
@@ -96,6 +96,35 @@ class StatefulStatusSpec extends fixture.Spec {
 
       // ensure it was executed
       assert(callbackInvoked)
+
+      // ensure it passed the correct success value
+      assert(succeeded === true)
+    }
+
+    def `should invoke a function registered with whenCompleted, passing a failed value, after the status completes without success`(status: FixtureParam) {
+      @volatile var callbackInvoked = false
+      @volatile var succeeded = true
+
+      // register callback
+      status.whenCompleted { st =>
+        callbackInvoked = true
+        succeeded = st
+      }
+
+      // ensure it was not executed yet
+      assert(!callbackInvoked)
+
+      // Fail it
+      status.setFailed()
+
+      // complete the status
+      status.setCompleted()
+
+      // ensure it was executed
+      assert(callbackInvoked)
+
+      // ensure it passed the correct success value
+      assert(succeeded === false)
     }
 
     def `should invoke multiple functions registered with onComplete, in order of registration, after the status completes`(status: FixtureParam) {
