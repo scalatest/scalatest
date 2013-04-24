@@ -1,7 +1,25 @@
+/*
+ * Copyright 2001-2013 Artima, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.scalatest
+
 import org.scalatest.tools.SuiteRunner
 import java.util.concurrent.CountDownLatch
 import scala.collection.GenSet
+import java.util.concurrent.ConcurrentLinkedQueue
+import collection.JavaConverters._
 
 /**
  * The result status of running a test or a suite.
@@ -49,6 +67,16 @@ trait Status {
    * Blocking call that returns only after the underlying test or suite is completed.
    */
   def waitUntilCompleted()
+
+  /**
+   * Registers the passed function to be executed when this status completes.
+   *
+   * <p>
+   * You may register multiple functions, which on completion will be executed in an undefined
+   * order.
+   * </p>
+   */
+  def whenCompleted(f: Boolean => Unit)
 }
 
 /**
@@ -63,18 +91,23 @@ object SucceededStatus extends Status {
    * @return <code>true</code>
    */
   def succeeds() = true
-  
+
   /**
    * Always returns <code>true</code>.
    * 
    * @return <code>true</code>
    */
   def isCompleted = true
-  
+
   /**
    * Always returns immediately.
    */
   def waitUntilCompleted() {}
+
+  /**
+   * Executes the passed function immediately on the calling thread.
+   */
+  def whenCompleted(f: Boolean => Unit) { f(true) }
 }
 
 /**
@@ -89,45 +122,72 @@ object FailedStatus extends Status {
    * @return <code>true</code>
    */
   def succeeds() = false
-  
+
   /**
    * Always returns <code>true</code>.
    * 
    * @return <code>true</code>
    */
   def isCompleted = true
-  
+
   /**
    * Always returns immediately.
    */
   def waitUntilCompleted() {}
+
+  /**
+   * Executes the passed function immediately on the calling thread.
+   */
+  def whenCompleted(f: Boolean => Unit) { f(false) }
 }
 
-// Used internally in ScalaTest
+// Used internally in ScalaTest. We don't use the StatefulStatus, because
+// then user code could pattern match on it and then access the setCompleted
+// and setFailed methods. We wouldn't want that.
 @serializable
 private[scalatest] final class ScalaTestStatefulStatus extends Status {
-  private val latch = new CountDownLatch(1)
+
+  private final val latch = new CountDownLatch(1)
+
   @volatile private var succeeded = true
-  
+
+  private final val queue = new ConcurrentLinkedQueue[Boolean => Unit]
+
   def succeeds() = {
     waitUntilCompleted()
     succeeded
   }
-  
-  def isCompleted = latch.getCount() == 0L
-  
+
+  def isCompleted = latch.getCount == 0L
+
   def waitUntilCompleted() {
     latch.await()
   }
-  
+
   def setFailed() {
     if (isCompleted)
       throw new IllegalStateException("status is already completed")
     succeeded = false
   }
-  
+
   def setCompleted() {
-    latch.countDown()
+    synchronized {
+      latch.countDown()
+    }
+    for (f <- queue.iterator.asScala)
+      f(succeeded)
+  }
+
+  def whenCompleted(f: Boolean => Unit) {
+    var executeLocally = false
+    synchronized {
+      if (!isCompleted)
+        queue.add(f)
+      else
+        executeLocally = true
+    }
+    if (executeLocally)
+      f(succeeded)
   }
 }
 
@@ -147,8 +207,9 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status {
  */
 @serializable
 final class StatefulStatus extends Status {
-  private val latch = new CountDownLatch(1)
+  private final val latch = new CountDownLatch(1)
   @volatile private var succeeded = true
+  private final val queue = new ConcurrentLinkedQueue[Boolean => Unit]
 
   /**
    * Blocking call that waits until completion, as indicated by an invocation of <code>setCompleted</code> on this instance, then returns returns <code>false</code> 
@@ -166,7 +227,7 @@ final class StatefulStatus extends Status {
    * 
    * @return <code>true</code> if the test or suite run is already completed, <code>false</code> otherwise.
    */
-  def isCompleted = latch.getCount() == 0L
+  def isCompleted = latch.getCount == 0L
 
   /**
    * Blocking call that returns only after <code>setCompleted</code> has been invoked on this <code>StatefulStatus</code> instance.
@@ -200,7 +261,31 @@ final class StatefulStatus extends Status {
    * <p>
    */
   def setCompleted() {
-    latch.countDown()
+    synchronized {
+      latch.countDown()
+    }
+    for (f <- queue.iterator.asScala)
+      f(succeeded)
+  }
+
+  /**
+   * Registers the passed function to be executed when this status completes.
+   *
+   * <p>
+   * You may register multiple functions, which on completion will be executed in an undefined
+   * order.
+   * </p>
+   */
+  def whenCompleted(f: Boolean => Unit) {
+    var executeLocally = false
+    synchronized {
+      if (!isCompleted)
+        queue.add(f)
+      else
+        executeLocally = true
+    }
+    if (executeLocally)
+      f(succeeded)
   }
 }
 
@@ -212,6 +297,28 @@ final class StatefulStatus extends Status {
 @serializable
 final class CompositeStatus(statuses: Set[Status]) extends Status {
   
+  // TODO: Ensure this is visible to another thread, because I'm letting the reference
+  // escape with my for loop below prior to finishing this object's construction.
+  private final val latch = new CountDownLatch(statuses.size)
+
+  @volatile private var succeeded = true
+
+  private final val queue = new ConcurrentLinkedQueue[Boolean => Unit]
+
+  for (status <- statuses) {
+    status.whenCompleted { st =>
+      synchronized {
+        latch.countDown()
+      }
+      if (!st)
+        succeeded = false
+      if (latch.getCount == 0) {
+        for (f <- queue.iterator.asScala)
+          f(succeeded)
+      }
+    }
+  }
+
   /**
    * Blocking call that waits until all composite <code>Status</code>es have completed, then returns
    * <code>true</code> only if all of the composite <code>Status</code>es succeeded. If any <code>Status</code> passed in the <code>statuses</code> set fails, this method
@@ -222,18 +329,38 @@ final class CompositeStatus(statuses: Set[Status]) extends Status {
   def succeeds() = statuses.forall(_.succeeds())
   
   /**
-   * Non-blocking call to check if the test or suite run is completed, returns <code>true</code> if all compositite <code>Status</code>es have completed, 
+   * Non-blocking call to check if the test or suite run is completed, returns <code>true</code> if all composite <code>Status</code>es have completed, 
    * <code>false</code> otherwise.  You can use this to poll the run status.
    * 
-   * @return <code>true</code> if all compositite <code>Status</code>es have completed, <code>false</code> otherwise.
+   * @return <code>true</code> if all composite <code>Status</code>es have completed, <code>false</code> otherwise.
    */
   def isCompleted = statuses.forall(_.isCompleted)
   
   /**
-   * Blocking call that returns only after all compositite <code>Status</code>s have completed.
+   * Blocking call that returns only after all composite <code>Status</code>s have completed.
    */
   def waitUntilCompleted() {
     statuses.foreach(_.waitUntilCompleted())
+  }
+
+  /**
+   * Registers the passed function to be executed when this status completes.
+   *
+   * <p>
+   * You may register multiple functions, which on completion will be executed in an undefined
+   * order.
+   * </p>
+   */
+  def whenCompleted(f: Boolean => Unit) {
+    var executeLocally = false
+    synchronized {
+      if (!isCompleted)
+        queue.add(f)
+      else
+        executeLocally = true
+    }
+    if (executeLocally)
+      f(succeeded)
   }
 }
 
