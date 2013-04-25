@@ -219,7 +219,8 @@ private[scalatest] object InspectorsHelper {
           case None => 
             Resources(resourceNamePrefix + "WithoutStackDepth", messageKey, sde.getMessage)
         }
-        
+      case _ =>
+        Resources(resourceNamePrefix + "WithoutStackDepth", messageKey, if (t.getMessage != null) t.getMessage else "null")
     }
   
   def elementLabel(count: Int): String = 

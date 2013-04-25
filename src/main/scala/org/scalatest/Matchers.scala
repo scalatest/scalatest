@@ -4999,12 +4999,10 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
         val leftLength = len.extentOf(e)
         if ((leftLength == right) != shouldBeTrue) {
           throw newTestFailedException(
-            FailureMessages(
-              if (shouldBeTrue)
-                FailureMessages("hadLengthInsteadOfExpectedLength", e, leftLength, right)
-              else
-                FailureMessages("hadExpectedLength", e, right)
-            )
+            if (shouldBeTrue)
+              FailureMessages("hadLengthInsteadOfExpectedLength", e, leftLength, right)
+            else
+              FailureMessages("hadExpectedLength", e, right)
           )
         }
       }
@@ -5016,12 +5014,10 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
         val leftSize = sz.extentOf(e)
         if ((leftSize == right) != shouldBeTrue) {
           throw newTestFailedException(
-            FailureMessages(
-              if (shouldBeTrue)
-                FailureMessages("hadSizeInsteadOfExpectedSize", e, leftSize, right)
-              else
-                FailureMessages("hadExpectedSize", e, right)
-            )
+            if (shouldBeTrue)
+              FailureMessages("hadSizeInsteadOfExpectedSize", e, leftSize, right)
+            else
+              FailureMessages("hadExpectedSize", e, right)
           )
         }
       }
@@ -5196,14 +5192,13 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
   final class ResultOfNotWordForCollectedString(collected: Collected, xs: GenTraversable[String], shouldBeTrue: Boolean) extends 
     ResultOfNotWordForCollectedAnyRef[String](collected, xs, shouldBeTrue) {
     
-    /**
+    /*
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
      * all(string) should not have length (12)
      *                        ^
      * </pre>
-     */
     def have(resultOfLengthWordApplication: ResultOfLengthWordApplication) {
       doCollected(collected, xs, "have", 1) { e =>
         val right = resultOfLengthWordApplication.expectedLength
@@ -5220,15 +5215,15 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
         }
       }
     }
+     */
     
-    /**
+    /*
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
      * all(string) should not have size (12)
      *                        ^
      * </pre>
-     */
     def have(resultOfSizeWordApplication: ResultOfSizeWordApplication) {
       doCollected(collected, xs, "have", 1) { e =>
         val right = resultOfSizeWordApplication.expectedSize
@@ -5245,6 +5240,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
         }
       }
     }
+     */
     
     /**
      * This method enables the following syntax: 
