@@ -1082,7 +1082,9 @@ object GenInspectors {
               
       val traversablePropertyCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", ""), "\"WrappedArray(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array())\"")
             
-      val traversablePropertyCheckTypes = stdTraversablePropertyCheckTypes(trvStringDynaFirst, "getFirst")
+      val traversablePropertyCheckTypes = stdTraversablePropertyCheckTypes(trvStringDynaFirst, "getFirst").filter { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
+        condition != "'traversable should be symbol' failed"
+      }
               
       val traversableCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", "\"hello\""), "\"WrappedArray(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array(\\\"hello\\\"))\"")
             
@@ -1275,7 +1277,9 @@ object GenInspectors {
     val stringCheckTypes = stdStringCheckTypes(quotedSimpleMessageFun, "indexElement", true)
     
     val traversablePropertyCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", ""), "\"WrappedArray(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array())\"")
-    val traversablePropertyCheckTypes = stdTraversablePropertyCheckTypes(trvSimpleMessageFun, "indexElement", true)
+    val traversablePropertyCheckTypes = stdTraversablePropertyCheckTypes(trvSimpleMessageFun, "indexElement", true).filter { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
+      condition != "'traversable should be symbol' failed"
+    }
     
     val traversableCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", "\"hello\""), "\"WrappedArray(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array(\\\"hello\\\"))\"")
     val traversableCheckTypes = stdTraversableCheckTypes(trvSimpleMessageFun, trvSizeSimpleMessageFun, 0, 1, "hi", "indexElement", true)
@@ -1470,7 +1474,9 @@ object GenInspectors {
     val stringCheckTypes = stdStringCheckTypes(quotedSimpleMessageFun, "indexElement", true)
     
     val traversablePropertyCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", ""), "\"WrappedArray(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array())\"")
-    val traversablePropertyCheckTypes = stdTraversablePropertyCheckTypes(trvSimpleMessageFun, "indexElement", true)
+    val traversablePropertyCheckTypes = stdTraversablePropertyCheckTypes(trvSimpleMessageFun, "indexElement", true).filter { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
+      condition != "'traversable should be symbol' failed"
+    }
     
     val traversableCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", "\"hello\""), "\"WrappedArray(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array(\\\"hello\\\"))\"")
     val traversableCheckTypes = stdTraversableCheckTypes(trvSimpleMessageFun, trvSizeSimpleMessageFun, 0, 1, "hi", "indexElement", true)
@@ -1664,7 +1670,9 @@ object GenInspectors {
     val stringCheckTypes = stdStringCheckTypes(quotedSimpleMessageFun, "indexElement", true)
     
     val traversablePropertyCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", ""), "\"WrappedArray(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array())\"")
-    val traversablePropertyCheckTypes = stdTraversablePropertyCheckTypes(trvSimpleMessageFun, "indexElement", true)
+    val traversablePropertyCheckTypes = stdTraversablePropertyCheckTypes(trvSimpleMessageFun, "indexElement", true).filter { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
+      condition != "'traversable should be symbol' failed"
+    }
     
     val traversableCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", "\"hello\""), "\"WrappedArray(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array(\\\"hello\\\"))\"")
     val traversableCheckTypes = stdTraversableCheckTypes(trvSimpleMessageFun, trvSizeSimpleMessageFun, 0, 1, "hi", "indexElement", true)
@@ -1859,7 +1867,9 @@ object GenInspectors {
     val stringCheckTypes = stdStringCheckTypes(quotedSimpleMessageFun, "indexElement", true)
 
     val traversablePropertyCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", ""), "\"WrappedArray(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array())\"")
-    val traversablePropertyCheckTypes = stdTraversablePropertyCheckTypes(trvSimpleMessageFun, "indexElement", true)
+    val traversablePropertyCheckTypes = stdTraversablePropertyCheckTypes(trvSimpleMessageFun, "indexElement", true).filter { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
+      condition != "'traversable should be symbol' failed"
+    }
 
     val traversableCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", "\"hello\""), "\"WrappedArray(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array(\\\"hello\\\"))\"")
     val traversableCheckTypes = stdTraversableCheckTypes(trvSimpleMessageFun, trvSizeSimpleMessageFun, 1, 2, "hi", "indexElement", true)
@@ -2053,9 +2063,12 @@ object GenInspectors {
     val stringCheckTypes = stdStringCheckTypes(quotedSimpleMessageFun, "indexElement", true)
 
     val traversablePropertyCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", ""), "\"WrappedArray(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array())\"")
-    val traversablePropertyCheckTypes = stdTraversablePropertyCheckTypes(trvSimpleMessageFun, "indexElement", true)
+    val traversablePropertyCheckTypes = stdTraversablePropertyCheckTypes(trvSimpleMessageFun, "indexElement", true).filter { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
+      condition != "'traversable should be symbol' failed"
+    }
 
     val traversableCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", "\"hello\""), "\"WrappedArray(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array(\\\"hello\\\"))\"")
+    // XXX
     val traversableCheckTypes = stdTraversableCheckTypes(trvSimpleMessageFun, trvSizeSimpleMessageFun, 0, 1, "hi", "indexElement", true)
 
     val maps = genMap(Array("\"1\" -> \"one\", \"2\" -> \"two\", \"3\" -> \"three\"",
