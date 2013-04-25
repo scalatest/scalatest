@@ -242,7 +242,7 @@ final class BeWord {
    */
   def a[S <: AnyRef](right: Symbol): Matcher[S] =
     new Matcher[S] {
-      def apply(left: S): MatchResult = matchSymbolToPredicateMethod[S](left, right, true, true)
+      def apply(left: S): MatchResult = matchSymbolToPredicateMethod(left, right, true, true)
     }
 
   /**
@@ -289,7 +289,7 @@ final class BeWord {
    */
   def an[S <: AnyRef](right: Symbol): Matcher[S] =
     new Matcher[S] {
-      def apply(left: S): MatchResult = matchSymbolToPredicateMethod[S](left, right, true, false)
+      def apply(left: S): MatchResult = matchSymbolToPredicateMethod(left, right, true, false)
     }
 
   /**
@@ -441,7 +441,7 @@ final class BeWord {
    */
   def apply[S <: AnyRef](right: Symbol): Matcher[S] =
     new Matcher[S] {
-      def apply(left: S): MatchResult = matchSymbolToPredicateMethod[S](left, right, false, false)
+      def apply(left: S): MatchResult = matchSymbolToPredicateMethod(left, right, false, false)
     }
 
   /**

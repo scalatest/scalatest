@@ -9990,7 +9990,7 @@ object Matchers extends Matchers {
       )
     }
   }
-  private[scalatest] def matchSymbolToPredicateMethod[S <: AnyRef](left: S, right: Symbol, hasArticle: Boolean, articleIsA: Boolean): MatchResult = {
+  private[scalatest] def matchSymbolToPredicateMethod(left: AnyRef, right: Symbol, hasArticle: Boolean, articleIsA: Boolean): MatchResult = {
 
     // If 'empty passed, rightNoTick would be "empty"
     val propertyName = right.name
