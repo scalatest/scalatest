@@ -4156,134 +4156,6 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
     }
   }
 
-/*
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * @author Bill Venners
-   */
-  final class ResultOfHaveWordForLength[A : Length](left: A, shouldBeTrue: Boolean) {
-
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * obj should have length (2)
-     *                      ^
-     * </pre>
-     *
-     * <p>
-     * This method is ultimately invoked for objects that have a <code>length</code> property structure
-     * of type <code>Int</code>,
-     * but is of a type that is not handled by implicit conversions from nominal types such as
-     * <code>scala.Seq</code>, <code>java.lang.String</code>, and <code>java.util.List</code>.
-     * </p>
-     */
-    def length(expectedLength: Int) {
-      val len = implicitly[Length[A]]
-      val leftLength = len.extentOf(left)
-      if ((leftLength == expectedLength) != shouldBeTrue)
-        throw newTestFailedException(
-          if (shouldBeTrue)
-            FailureMessages("hadLengthInsteadOfExpectedLength", left, leftLength, expectedLength)
-          else
-            FailureMessages("hadExpectedLength", left, expectedLength)
-        )
-    }
-
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * obj should have length (2L)
-     *                      ^
-     * </pre>
-     *
-     * <p>
-     * This method is ultimately invoked for objects that have a <code>length</code> property structure
-     * of type <code>Long</code>,
-     * but is of a type that is not handled by implicit conversions from nominal types such as
-     * <code>scala.Seq</code>, <code>java.lang.String</code>, and <code>java.util.List</code>.
-     * </p>
-     */
-    def length(expectedLength: Long) {
-      val len = implicitly[Length[A]]
-      val leftLength = len.extentOf(left)
-      if ((leftLength == expectedLength) != shouldBeTrue)
-        throw newTestFailedException(
-          if (shouldBeTrue)
-            FailureMessages("hadLengthInsteadOfExpectedLength", left, leftLength, expectedLength)
-          else
-            FailureMessages("hadExpectedLength", left, expectedLength)
-        )
-    }
-  }
-
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * @author Bill Venners
-   */
-  final class ResultOfHaveWordForSize[A : Size](left: A, shouldBeTrue: Boolean) {
-
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * obj should have size (2)
-     *                 ^
-     * </pre>
-     *
-     * <p>
-     * This method is ultimately invoked for objects that have a <code>size</code> property structure
-     * of type <code>Int</code>,
-     * but is of a type that is not handled by implicit conversions from nominal types such as
-     * <code>Traversable</code> and <code>java.util.Collection</code>.
-     * </p>
-     */
-    def size(expectedSize: Int) {
-      val sz = implicitly[Size[A]]
-      val leftSize = sz.extentOf(left)
-      if ((leftSize == expectedSize) != shouldBeTrue)
-        throw newTestFailedException(
-          if (shouldBeTrue)
-            FailureMessages("hadSizeInsteadOfExpectedSize", left, leftSize, expectedSize)
-          else
-            FailureMessages("hadExpectedSize", left, expectedSize)
-        )
-    }
-
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * obj should have size (2L)
-     *                 ^
-     * </pre>
-     *
-     * <p>
-     * This method is ultimately invoked for objects that have a <code>size</code> property structure
-     * of type <code>Long</code>,
-     * but is of a type that is not handled by implicit conversions from nominal types such as
-     * <code>Traversable</code> and <code>java.util.Collection</code>.
-     * </p>
-     */
-    def size(expectedSize: Long) {
-      val sz = implicitly[Size[A]]
-      val leftSize = sz.extentOf(left)
-      if ((leftSize == expectedSize) != shouldBeTrue)
-        throw newTestFailedException(
-          if (shouldBeTrue)
-            FailureMessages("hadSizeInsteadOfExpectedSize", left, leftSize, expectedSize)
-          else
-            FailureMessages("hadExpectedSize", left, expectedSize)
-        )
-    }
-  }
-*/
-
   /**
    * This method enables the following syntax: 
    *
@@ -6734,7 +6606,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      */
     def should(haveWord: HaveWord)(implicit ev: Extent[T]): ResultOfHaveWordForCollectedExtent[T] =
       new ResultOfHaveWordForCollectedExtent(collected, xs, true)
-  } // XXX 
+  } 
   
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
@@ -6743,7 +6615,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    * @author Bill Venners
    */
   final class ResultOfHaveWordForCollectedExtent[A : Extent](collected: Collected, xs: GenTraversable[A], shouldBeTrue: Boolean) {
-
+// XXX 
     /**
      * This method enables the following syntax: 
      *
@@ -10295,36 +10167,6 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
           str.exists((e: Char) => equality.areEqual(e, ele))
       }
   }
-/*
-
-  implicit def convertResultOfLengthWordApplicationToHavePropertyMatcher[T](resultOfLengthWordApplication: ResultOfLengthWordApplication)(implicit length: Length[T]): HavePropertyMatcher[T, Long] =
-    new HavePropertyMatcher[T, Long] {
-      def apply(objectWithProperty: T): HavePropertyMatchResult[Long] = {
-        val expectedLength = resultOfLengthWordApplication.expectedLength
-        val result = length.extentOf(objectWithProperty)
-        new HavePropertyMatchResult[Long](
-          result == expectedLength,
-          "length",
-          expectedLength,
-          result
-        )
-      }
-    } 
-
-  implicit def convertResultOfSizeWordApplicationToHavePropertyMatcher[T](resultOfSizeWordApplication: ResultOfSizeWordApplication)(implicit size: Size[T]): HavePropertyMatcher[T, Long] =
-    new HavePropertyMatcher[T, Long] {
-      def apply(objectWithProperty: T): HavePropertyMatchResult[Long] = {
-        val expectedSize = resultOfSizeWordApplication.expectedSize
-        val result = size.extentOf(objectWithProperty)
-        new HavePropertyMatchResult[Long](
-          result == expectedSize,
-          "size",
-          expectedSize,
-          result
-        )
-      }
-    } 
-*/
 }
 
 /**
