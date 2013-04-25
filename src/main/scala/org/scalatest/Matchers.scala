@@ -1619,49 +1619,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    */
   implicit def convertSymbolToHavePropertyMatcherGenerator(symbol: Symbol): HavePropertyMatcherGenerator = new HavePropertyMatcherGenerator(symbol)
 
-  //
-  // This class is used as the return type of the overloaded should method (in TraversableShouldWrapper) 
-  // that takes a HaveWord. It's size method will be called in situations like this:
-  //
-  // list should have size 1
-  //
-  // This gets changed to :
-  //
-  // convertToTraversableShouldWrapper(list).should(have).size(1)
-  //
-  // Thus, the list is wrapped in a convertToTraversableShouldWrapper call via an implicit conversion, which results in
-  // a TraversableShouldWrapper. This has a should method that takes a HaveWord. That method returns a
-  // ResultOfHaveWordForTraverablePassedToShould that remembers the map to the left of should. Then this class
-  // has a size method that takes a T type, type parameter of the Traversable. It does the assertion thing.
-  // 
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * @author Bill Venners
-   */
-  sealed class ResultOfHaveWordForTraversable[T](left: GenTraversable[T], shouldBeTrue: Boolean) {
-
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * collection should have size (10)
-     *                        ^
-     * </pre>
-     */
-    def size(expectedSize: Int) {
-      val leftSize = left.size
-      if ((leftSize == expectedSize) != shouldBeTrue)
-        throw newTestFailedException(
-          if (shouldBeTrue)
-            FailureMessages("hadSizeInsteadOfExpectedSize", left, leftSize, expectedSize)
-          else
-            FailureMessages("hadExpectedSize", left, expectedSize)
-        )
-    }
-  }
-
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
    * the matchers DSL.
@@ -1714,34 +1671,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
             FailureMessages("hadSizeInsteadOfExpectedSize", left, leftSize, expectedSize)
           else
             FailureMessages("hadExpectedSize", left, expectedSize)
-        )
-    }
-  }
-
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * @author Bill Venners
-   */
-  final class ResultOfHaveWordForSeq[T](left: GenSeq[T], shouldBeTrue: Boolean) extends ResultOfHaveWordForTraversable[T](left, shouldBeTrue) {
-
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * seq should have length (20)
-     *                 ^
-     * </pre>
-     */
-    def length(expectedLength: Int) {
-      val leftLength = left.length
-      if ((leftLength == expectedLength) != shouldBeTrue)
-        throw newTestFailedException(
-          if (shouldBeTrue)
-            FailureMessages("hadLengthInsteadOfExpectedLength", left, leftLength, expectedLength)
-          else
-            FailureMessages("hadExpectedLength", left, expectedLength)
         )
     }
   }
@@ -1883,27 +1812,6 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
         case None =>
           if (shouldBeTrue)
             throw newTestFailedException(FailureMessages("didNotContainAn", left, UnquotedString(anMatcher.nounName)))
-      }
-    }
-
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * collection should not have size (3)
-     *                       ^
-     * </pre>
-     */
-    def have(resultOfSizeWordApplication: ResultOfSizeWordApplication) {
-      val right = resultOfSizeWordApplication.expectedSize
-      val leftSize = left.size
-      if ((leftSize == right) != shouldBeTrue) {
-        throw newTestFailedException(
-          if (shouldBeTrue)
-            FailureMessages("hadSizeInsteadOfExpectedSize", left, leftSize, right)
-          else
-            FailureMessages("hadExpectedSize", left, right)
-        )
       }
     }
   }
@@ -2301,37 +2209,6 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
         case None =>
           if (shouldBeTrue)
             throw newTestFailedException(FailureMessages("didNotContainAn", leftWrapper, UnquotedString(anMatcher.nounName)))
-      }
-    }
-  }
-
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * @author Bill Venners
-   */
-  final class ResultOfNotWordForSeq[E, T[_] <: GenSeq[_]](left: T[E], shouldBeTrue: Boolean)
-      extends ResultOfNotWordForTraversable[E, T](left, shouldBeTrue) {
-
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * List(1, 2) should not have length (12)
-     *                       ^
-     * </pre>
-     */
-    def have(resultOfLengthWordApplication: ResultOfLengthWordApplication) {
-      val right = resultOfLengthWordApplication.expectedLength
-      val leftLength = left.length
-      if ((leftLength == right) != shouldBeTrue) {
-          throw newTestFailedException(
-            if (shouldBeTrue)
-              FailureMessages("hadLengthInsteadOfExpectedLength", left, leftLength, right)
-            else
-              FailureMessages("hadExpectedLength", left, right)
-          )
       }
     }
   }
@@ -4178,7 +4055,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    *
    * @author Bill Venners
    */
-  final class ResultOfContainWordForTraversable[T](left: GenTraversable[T], shouldBeTrue: Boolean = true) {
+  class ResultOfContainWordForTraversable[T](left: GenTraversable[T], shouldBeTrue: Boolean = true) {
   
     /**
      * This method enables the following syntax: 
@@ -5002,7 +4879,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
             if (shouldBeTrue)
               FailureMessages("hadLengthInsteadOfExpectedLength", e, leftLength, right)
             else
-              FailureMessages("hadExpectedLength", e, right),
+              FailureMessages("hadExpectedLength", e, right), 
             None, 
             6
           )
@@ -9134,8 +9011,8 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      *     ^
      * </pre>
      */
-    def should(haveWord: HaveWord): ResultOfHaveWordForTraversable[(K, V)] = {
-      new ResultOfHaveWordForTraversable(left.asInstanceOf[GenMap[K,V]], true)
+    def should(haveWord: HaveWord): ResultOfHaveWordForExtent[L[K, V]] = {
+      new ResultOfHaveWordForExtent(left.asInstanceOf[L[K,V]], true)
     }
 
     /**
@@ -9183,6 +9060,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
     }
   }
 
+
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
    * the matchers DSL.
@@ -9194,46 +9072,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    *
    * @author Bill Venners
    */
-  final class TraversableShouldWrapper[E, L[_] <: GenTraversable[_]](left: L[E]) {
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * traversable should be (Set(1, 2, 3))
-     *             ^
-     * </pre>
-     */
-    def should(rightMatcherX6: Matcher[GenTraversable[E]]) {
-      ShouldMethodHelper.shouldMatcher(left.asInstanceOf[GenTraversable[E]], rightMatcherX6)
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * traversable should equal (Set(1, 2, 3))
-     *             ^
-     * </pre>
-     */
-    def should[TYPECLASS1[_]](rightMatcherFactory1: MatcherFactory1[L[E], TYPECLASS1])(implicit typeClass1: TYPECLASS1[L[E]]) {
-      ShouldMethodHelper.shouldMatcher(left, rightMatcherFactory1.matcher)
-    }
-
-    def should[TYPECLASS1[_], TYPECLASS2[_]](rightMatcherFactory2: MatcherFactory2[L[E], TYPECLASS1, TYPECLASS2])(implicit typeClass1: TYPECLASS1[L[E]], typeClass2: TYPECLASS2[L[E]]) {
-      ShouldMethodHelper.shouldMatcher(left, rightMatcherFactory2.matcher)
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * traversable should have size (3)
-     *             ^
-     * </pre>
-     */
-    def should(haveWord: HaveWord): ResultOfHaveWordForTraversable[E] = 
-      new ResultOfHaveWordForTraversable(left.asInstanceOf[GenTraversable[E]], true)
+  class TraversableShouldWrapper[E, L[_] <: GenTraversable[_]](left: L[E]) extends AnyRefShouldWrapper(left) {
     
     /**
      * This method enables syntax such as the following:
@@ -9243,18 +9082,8 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      *             ^
      * </pre>
      */
-    def should(containWord: ContainWord) = 
+    def should(containWord: ContainWord): ResultOfContainWordForTraversable[E] = 
       new ResultOfContainWordForTraversable(left.asInstanceOf[GenTraversable[E]], true)
-    
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * traversable should be theSameInstanceAs anotherObject
-     *             ^
-     * </pre>
-     */
-    def should(beWord: BeWord): ResultOfBeWordForAnyRef[L[E]] = new ResultOfBeWordForAnyRef(left.asInstanceOf[L[E]], true)
 
     /**
      * This method enables syntax such as the following:
@@ -9264,28 +9093,8 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      *             ^
      * </pre>
      */
-    def should(notWord: NotWord): ResultOfNotWordForTraversable[E, L] =
+    override def should(notWord: NotWord): ResultOfNotWordForTraversable[E, L] =
       new ResultOfNotWordForTraversable(left, false)
-    
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * result should === (Set(1, 2, 3))
-     *        ^
-     * </pre>
-     */
-    def should[R](inv: TripleEqualsInvocation[R])(implicit constraint: EqualityConstraint[L[E], R]) {
-      // if ((left == inv.right) != inv.expectingEqual)
-      if ((constraint.areEqual(left, inv.right)) != inv.expectingEqual)
-        throw newTestFailedException(
-          FailureMessages(
-           if (inv.expectingEqual) "didNotEqual" else "equaled",
-            left,
-            inv.right
-          )
-        )
-    }
     
     /**
      * This method enables syntax such as the following:
@@ -9526,112 +9335,6 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    *
    * <p>
    * This class is used in conjunction with an implicit conversion to enable <code>should</code> methods to
-   * be invoked on objects of type <code>GenSeq[T]</code>.
-   * </p>
-   *
-   * @author Bill Venners
-   */
-  final class SeqShouldWrapper[E, L[_] <: GenSeq[_]](left: L[E]) {
- 
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * seq should be (List(1, 2, 3))
-     *     ^
-     * </pre>
-     */
-    def should(rightMatcherX9: Matcher[L[E]]) {
-      ShouldMethodHelper.shouldMatcher(left, rightMatcherX9)
-    }
-    
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * seq should equal (List(1, 2, 3))
-     *     ^
-     * </pre>
-     */
-    def should[TYPECLASS1[_]](rightMatcherFactory1: MatcherFactory1[L[E], TYPECLASS1])(implicit typeClass1: TYPECLASS1[L[E]]) {
-      ShouldMethodHelper.shouldMatcher(left, rightMatcherFactory1.matcher)
-    }
-
-    def should[TYPECLASS1[_], TYPECLASS2[_]](rightMatcherFactory2: MatcherFactory2[L[E], TYPECLASS1, TYPECLASS2])(implicit typeClass1: TYPECLASS1[L[E]], typeClass2: TYPECLASS2[L[E]]) {
-      ShouldMethodHelper.shouldMatcher(left, rightMatcherFactory2.matcher)
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * seq should have length (3)
-     *     ^
-     * </pre>
-     */
-    def should(haveWord: HaveWord): ResultOfHaveWordForSeq[E] =
-      new ResultOfHaveWordForSeq(left.asInstanceOf[GenSeq[E]], true)
-    
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * seq should contain theSameElementsAs anotherSeq
-     *     ^
-     * </pre>
-     */
-    def should(containWord: ContainWord) = 
-      new ResultOfContainWordForTraversable(left.asInstanceOf[GenTraversable[E]], true)
-    
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * seq should not have length (3)
-     *     ^
-     * </pre>
-     */
-    def should(notWord: NotWord): ResultOfNotWordForSeq[E, L] =
-      new ResultOfNotWordForSeq(left, false)
-    // def should(notWord: NotWord): ResultOfNotWordForAnyRef[GenSeq[E]] =
-      // new ResultOfNotWordForAnyRef(left, false)
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * seq should be theSameInstanceAs List(1, 2, 3)
-     *     ^
-     * </pre>
-     */
-    def should(beWord: BeWord): ResultOfBeWordForAnyRef[L[E]] = new ResultOfBeWordForAnyRef(left, true)
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * result should === (List(1, 2, 3))
-     *        ^
-     * </pre>
-     */
-    def should[R](inv: TripleEqualsInvocation[R])(implicit constraint: EqualityConstraint[L[E], R]) {
-      if ((constraint.areEqual(left, inv.right)) != inv.expectingEqual)
-        throw newTestFailedException(
-          FailureMessages(
-           if (inv.expectingEqual) "didNotEqual" else "equaled",
-            left,
-            inv.right
-          )
-        )
-    }
-  }
-
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * <p>
-   * This class is used in conjunction with an implicit conversion to enable <code>should</code> methods to
    * be invoked on objects of type <code>java.util.List[T]</code>.
    * </p>
    *
@@ -9751,12 +9454,6 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
   implicit def convertToTraversableShouldWrapper[E, L[_] <: GenTraversable[_]](o: L[E]): TraversableShouldWrapper[E, L] = new TraversableShouldWrapper[E, L](o)
 
   /**
-   * Implicitly converts an object of type <code>GenSeq[T]</code> to a <code>SeqShouldWrapper[T]</code>,
-   * to enable <code>should</code> methods to be invokable on that object.
-   */
-  implicit def convertToSeqShouldWrapper[E, L[_] <: GenSeq[_]](o: L[E]): SeqShouldWrapper[E, L] = new SeqShouldWrapper[E, L](o)
-
-  /**
    * Implicitly converts an object of type <code>scala.Array[T]</code> to a <code>ArrayShouldWrapper[T]</code>,
    * to enable <code>should</code> methods to be invokable on that object.
    */
@@ -9808,8 +9505,8 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
 
   // This one doesn't include Holder in its result type because that would conflict with the
   // one returned by enablersForTraversable.
-  implicit def enablersForSeq[E, SEQ[_] <: scala.collection.GenSeq[_]]: Length[SEQ[E]] = 
-    new Length[SEQ[E]] {
+  implicit def enablersForSeq[E, SEQ[_] <: scala.collection.GenSeq[_]]: Length[SEQ[E]] with Size[SEQ[E]] = 
+    new Length[SEQ[E]] with Size[SEQ[E]] {
       def extentOf(seq: SEQ[E]): Long = seq.length
     }
 
