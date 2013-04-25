@@ -2076,8 +2076,7 @@ class ShouldLengthSpec extends Spec with Matchers with Checkers with ReturnsNorm
         obj should not { have length (3) }
         obj should not { have length (3L) }
         obj should not have length (3)
-        (obj should not).have(convertResultOfLengthWordApplicationToHavePropertyMatcher(length(3L)))
-        // obj should not have length (3L)
+        obj should not have length (3L)
         check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Lengthy(len) should not { have length (wrongLen) }))
         check((len: Long, wrongLen: Long) => len != wrongLen ==> returnsNormally(new Lengthy(len) should not { have length (wrongLen) }))
         check((len: Int, wrongLen: Int) => len != wrongLen ==> returnsNormally(new Lengthy(len) should not have length (wrongLen)))

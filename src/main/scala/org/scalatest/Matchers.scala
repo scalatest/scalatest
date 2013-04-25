@@ -2719,7 +2719,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    *
    * @author Bill Venners
    */
-  sealed class ResultOfNotWord[T](left: T, shouldBeTrue: Boolean) {
+  sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
 
     /**
      * This method enables the following syntax:
@@ -2985,7 +2985,6 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
       }
     }
 
-/*
     def have(resultOfLengthWordApplication: ResultOfLengthWordApplication)(implicit len: Length[T]) {
       val right = resultOfLengthWordApplication.expectedLength
       val leftLength = len.extentOf(left)
@@ -3000,8 +2999,28 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
         )
       }
     }
-*/
-    // TODO: Explain this matrix somewhere
+
+    def have(resultOfSizeWordApplication: ResultOfSizeWordApplication)(implicit sz: Size[T]) {
+      val right = resultOfSizeWordApplication.expectedSize
+      val leftSize = sz.extentOf(left)
+      if ((leftSize == right) != shouldBeTrue) {
+        throw newTestFailedException(
+          FailureMessages(
+            if (shouldBeTrue)
+              FailureMessages("hadSizeInsteadOfExpectedSize", left, leftSize, right)
+            else
+              FailureMessages("hadExpectedSize", left, right)
+          )
+        )
+      }
+    }
+
+    // TODO: See about putting U <: T back in here, now that I got rid of the implicit conversion
+    // that required me to get rid of the U and just use T. The idea is if I have a phoneBook should have (...)
+    // that I could pass HavePropertyMatchers for any supertype of PhoneBook. I could use HavePropertyMatcher[Book]s
+    // for example. So write a test and see if that doesn't work, and then if not, go ahead and put the U back.
+    // Actually because the T is contravariant, a HavePropertyMatcher[Book] is already a subtype of HavePropertyMatcher[PhoneBook]
+    // So I don't need the U <: T anyway. But maybe test to verify this would be worthwhile.
     // The type parameter U has T as its lower bound, which means that U must be T or a supertype of T. Left is T, oh, because
     // HavePropertyMatcher is contravariant in its type parameter T, and that nmakes sense, because a HavePropertyMatcher of Any should
     // be able to match on a String.
@@ -3080,7 +3099,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    * @author Bill Venners
    */
   sealed class ResultOfNotWordForAnyRef[T <: AnyRef](left: T, shouldBeTrue: Boolean)
-      extends ResultOfNotWord[T](left, shouldBeTrue) {
+      extends ResultOfNotWordForAny[T](left, shouldBeTrue) {
 
     /**
      * This method enables the following syntax:
@@ -3448,7 +3467,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    * @author Bill Venners
    */
   final class ResultOfNotWordForNumeric[T : Numeric](left: T, shouldBeTrue: Boolean)
-      extends ResultOfNotWord[T](left, shouldBeTrue) {
+      extends ResultOfNotWordForAny[T](left, shouldBeTrue) {
 
   }
 
@@ -9088,7 +9107,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      *        ^
      * </pre>
      */
-    def should(notWord: NotWord): ResultOfNotWord[T] = new ResultOfNotWord[T](left, false)
+    def should(notWord: NotWord): ResultOfNotWordForAny[T] = new ResultOfNotWordForAny[T](left, false)
 
     // In 2.10, will work with AnyVals. TODO: Also, Need to ensure Char works
     /**
@@ -10276,6 +10295,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
           str.exists((e: Char) => equality.areEqual(e, ele))
       }
   }
+/*
 
   implicit def convertResultOfLengthWordApplicationToHavePropertyMatcher[T](resultOfLengthWordApplication: ResultOfLengthWordApplication)(implicit length: Length[T]): HavePropertyMatcher[T, Long] =
     new HavePropertyMatcher[T, Long] {
@@ -10304,6 +10324,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
         )
       }
     } 
+*/
 }
 
 /**
