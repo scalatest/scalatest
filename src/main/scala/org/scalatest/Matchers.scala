@@ -3234,7 +3234,6 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
         )
       }
     }
-
   }
 
   /**
@@ -4024,6 +4023,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    */
   final class ResultOfHaveWordForExtent[A : Extent](left: A, shouldBeTrue: Boolean) {
 
+// TODO: Try removing the Int ones. Seems like Ints would be widened to Longs.
     /**
      * This method enables the following syntax:
      *
@@ -6702,8 +6702,76 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      */
     def should(notWord: NotWord): ResultOfNotWordForCollectedAny[T] = 
       new ResultOfNotWordForCollectedAny(collected, xs, false)
-  }
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * all (results) should have length (3)
+     *        ^
+     * all (results) should have size (3)
+     *        ^
+     * </pre>
+     */
+    def should(haveWord: HaveWord)(implicit ev: Extent[T]): ResultOfHaveWordForCollectedExtent[T] =
+      new ResultOfHaveWordForCollectedExtent(collected, xs, true)
+  } // XXX 
   
+  /**
+   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
+   * the matchers DSL.
+   *
+   * @author Bill Venners
+   */
+  final class ResultOfHaveWordForCollectedExtent[A : Extent](collected: Collected, xs: GenTraversable[A], shouldBeTrue: Boolean) {
+
+    /**
+     * This method enables the following syntax: 
+     *
+     * <pre class="stHighlight">
+     * all (xs) should have length (12)
+     *                      ^
+     * </pre>
+     */
+    def length(expectedLength: Long)(implicit len: Length[A]) {
+      doCollected(collected, xs, "length", 1) { e =>
+        val eLength = len.extentOf(e)
+        if ((eLength == expectedLength) != shouldBeTrue)
+          throw newTestFailedException(
+            if (shouldBeTrue)
+              FailureMessages("hadLengthInsteadOfExpectedLength", e, eLength, expectedLength)
+            else
+              FailureMessages("hadExpectedLength", e, expectedLength), 
+            None, 
+            6
+          )
+      }
+    }
+    
+    /**
+     * This method enables the following syntax: 
+     *
+     * <pre class="stHighlight">
+     * all (xs) should have size (12)
+     *                      ^
+     * </pre>
+     */
+    def size(expectedSize: Long)(implicit sz: Size[A]) {
+      doCollected(collected, xs, "size", 1) { e =>
+        val eSize = sz.extentOf(e)
+        if ((eSize == expectedSize) != shouldBeTrue)
+          throw newTestFailedException(
+            if (shouldBeTrue)
+              FailureMessages("hadSizeInsteadOfExpectedSize", e, eSize, expectedSize)
+            else
+              FailureMessages("hadExpectedSize", e, expectedSize), 
+            None, 
+            6
+          )
+      }
+    }
+  }
+
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="InspectorsMatchers.html"><code>InspectorsMatchers</code></a> for an overview of
    * the matchers DSL.
