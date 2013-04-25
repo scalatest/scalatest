@@ -21,8 +21,6 @@ import java.awt.FlowLayout
 import java.awt.GridLayout
 import javax.swing.JLabel
 import javax.swing.JPanel
-import javax.swing.ImageIcon
-import java.net.URL
 
 /**
  * A JPanel that shows the number of tests expected, completed, and failed.
@@ -31,9 +29,6 @@ import java.net.URL
  */
 private[scalatest] class StatusJPanel extends JPanel {
   
-  private val runPanel: JPanel = new JPanel
-  private val discoPanel: JPanel = new JPanel
-
   private var testsExpected: Int = 0
   private var testsRun: Int = 0
   private var testsFailed: Int = 0
@@ -67,14 +62,14 @@ private[scalatest] class StatusJPanel extends JPanel {
     testsFailedJPanel.setLayout(new BorderLayout(4, 4))
     testsFailedJPanel.add(testsFailedJLabel, BorderLayout.WEST)
     testsFailedJPanel.add(testsFailedNumJLabel, BorderLayout.CENTER)
+    val centeredJPanel: JPanel = new JPanel()
   
-    runPanel.setLayout(new GridLayout(1, 3, 15, 15))
-    runPanel.add(testsRunJPanel)
-    runPanel.add(testsExpectedJPanel)
-    runPanel.add(testsFailedJPanel)
-
+    centeredJPanel.setLayout(new GridLayout(1, 3, 15, 15))
+    centeredJPanel.add(testsRunJPanel)
+    centeredJPanel.add(testsExpectedJPanel)
+    centeredJPanel.add(testsFailedJPanel)
     setLayout(new FlowLayout(FlowLayout.CENTER))
-    add(runPanel)
+    add(centeredJPanel)
   }
 
   def setTestsRun(testsRun: Int, succeeded: Boolean) {
@@ -93,41 +88,6 @@ private[scalatest] class StatusJPanel extends JPanel {
     testsRunNumJLabel.setText(Integer.toString(testsRun))
     testsExpectedNumJLabel.setText(Integer.toString(testsExpected))
     testsFailedNumJLabel.setText(Integer.toString(testsFailed))
-  }
-
-  //
-  // Builds discovery panel showing animated in-progress icon, and replaces
-  // run panel with it.
-  //
-  def discoveryStarting() {
-    val discoJLabel: JLabel = new JLabel
-    val imageURL: URL =
-      classOf[StatusJPanel].getClassLoader.getResource("images/inProgress.gif")
-    discoJLabel.setIcon(new ImageIcon(imageURL))
-
-    discoPanel.removeAll()
-    discoPanel.add(discoJLabel)
-
-    remove(runPanel)
-    add(discoPanel)
-
-    discoJLabel.setText(Resources("doingDiscovery"))
-  }
-
-  //
-  // Restores run panel.
-  //
-  def runAborted() {
-    remove(discoPanel)
-    add(runPanel)
-  }
-
-  //
-  // Restores run panel.
-  //
-  def discoveryCompleted() {
-    remove(discoPanel)
-    add(runPanel)
   }
 
   def setTestsExpected(testsExpected: Int) {
