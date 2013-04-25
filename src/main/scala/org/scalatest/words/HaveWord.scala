@@ -93,6 +93,11 @@ final class HaveWord {
       }
     }
 
+    // TODO: Write tests and implement cases for:
+    // have(length (9), title ("hi")) (this one we'll use this apply method but add a HavePropertyMatcher* arg)
+    // have(size (9), title ("hi")) (this one we'll use the next apply method but add a HavePropertyMatcher* arg)
+    // have(length(9), size (9), title ("hi")) (for this one we'll need a new overloaded apply(ROLWA, ROSWA, HPM*))
+    // have(size(9), length (9), title ("hi")) (for this one we'll need a new overloaded apply(ROSWA, ROLWA, HPM*))
   // TODO: Scaladoc, and figure out a way that length can be used as a general have property matcher, or give them another method maybe?
   def apply[T](resultOfLengthWordApplication: ResultOfLengthWordApplication): MatcherFactory1[Any, Length] = length(resultOfLengthWordApplication.expectedLength)
 

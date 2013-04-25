@@ -4042,37 +4042,6 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    */
   final class ResultOfHaveWordForExtent[A : Extent](left: A, shouldBeTrue: Boolean) {
 
-// TODO: Try removing the Int ones. Seems like Ints would be widened to Longs.
-/*
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * obj should have length (2)
-     *                      ^
-     * </pre>
-     *
-     * <p>
-     * This method is ultimately invoked for objects that have a <code>length</code> property structure
-     * of type <code>Int</code>,
-     * but is of a type that is not handled by implicit conversions from nominal types such as
-     * <code>scala.Seq</code>, <code>java.lang.String</code>, and <code>java.util.List</code>.
-     * </p>
-     */
-    def length(expectedLength: Int)(implicit len: Length[A]) {
-      // val len = implicitly[Length[A]]
-      // if ((len.extentOf(left.asInstanceOf[A]) == expectedLength) != shouldBeTrue)
-      val leftLength = len.extentOf(left)
-      if ((leftLength == expectedLength) != shouldBeTrue)
-        throw newTestFailedException(
-          if (shouldBeTrue)
-            FailureMessages("hadLengthInsteadOfExpectedLength", left, leftLength, expectedLength)
-          else
-            FailureMessages("hadExpectedLength", left, expectedLength)
-        )
-    }
-*/
-
     /**
      * This method enables the following syntax:
      *
@@ -4100,36 +4069,6 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
             FailureMessages("hadExpectedLength", left, expectedLength)
         )
     }
-
-/*
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * obj should have size (2)
-     *                 ^
-     * </pre>
-     *
-     * <p>
-     * This method is ultimately invoked for objects that have a <code>size</code> property structure
-     * of type <code>Int</code>,
-     * but is of a type that is not handled by implicit conversions from nominal types such as
-     * <code>Traversable</code> and <code>java.util.Collection</code>.
-     * </p>
-     */
-    def size(expectedSize: Int)(implicit sz: Size[A]) {
-      // val sz = implicitly[Size[T]]
-      // if ((sz.extentOf(left.asInstanceOf[T]) == expectedSize) != shouldBeTrue)
-      val leftSize = sz.extentOf(left)
-      if ((leftSize == expectedSize) != shouldBeTrue)
-        throw newTestFailedException(
-          if (shouldBeTrue)
-            FailureMessages("hadSizeInsteadOfExpectedSize", left, leftSize, expectedSize)
-          else
-            FailureMessages("hadExpectedSize", left, expectedSize)
-        )
-    }
-*/
 
     /**
      * This method enables the following syntax:
@@ -5107,8 +5046,11 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
       }
     }
     
-// XXX Put a have methods that take ReusltOfLength/SizeApplciation
-/*
+    // TODO: Write tests and implement cases for:
+    // have(length (9), title ("hi")) (this one we'll use this have method but add a HavePropertyMatcher* arg)
+    // have(size (9), title ("hi")) (this one we'll use the next have method but add a HavePropertyMatcher* arg)
+    // have(length(9), size (9), title ("hi")) (for this one we'll need a new overloaded have(ROLWA, ROSWA, HPM*))
+    // have(size(9), length (9), title ("hi")) (for this one we'll need a new overloaded have(ROSWA, ROLWA, HPM*))
     def have(resultOfLengthWordApplication: ResultOfLengthWordApplication)(implicit len: Length[T]) {
       doCollected(collected, xs, "have", 1) { e => 
         val right = resultOfLengthWordApplication.expectedLength
@@ -5142,7 +5084,6 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
         }
       }
     }
-*/
 
     /**
      * This method enables the following syntax, where <code>badBook</code> is, for example, of type <code>Book</code> and
