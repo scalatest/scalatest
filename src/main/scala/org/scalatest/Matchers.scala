@@ -4043,6 +4043,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
   final class ResultOfHaveWordForExtent[A : Extent](left: A, shouldBeTrue: Boolean) {
 
 // TODO: Try removing the Int ones. Seems like Ints would be widened to Longs.
+/*
     /**
      * This method enables the following syntax:
      *
@@ -4070,6 +4071,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
             FailureMessages("hadExpectedLength", left, expectedLength)
         )
     }
+*/
 
     /**
      * This method enables the following syntax:
@@ -4099,6 +4101,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
         )
     }
 
+/*
     /**
      * This method enables the following syntax:
      *
@@ -4126,6 +4129,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
             FailureMessages("hadExpectedSize", left, expectedSize)
         )
     }
+*/
 
     /**
      * This method enables the following syntax:
@@ -5103,6 +5107,43 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
       }
     }
     
+// XXX Put a have methods that take ReusltOfLength/SizeApplciation
+/*
+    def have(resultOfLengthWordApplication: ResultOfLengthWordApplication)(implicit len: Length[T]) {
+      doCollected(collected, xs, "have", 1) { e => 
+        val right = resultOfLengthWordApplication.expectedLength
+        val leftLength = len.extentOf(e)
+        if ((leftLength == right) != shouldBeTrue) {
+          throw newTestFailedException(
+            FailureMessages(
+              if (shouldBeTrue)
+                FailureMessages("hadLengthInsteadOfExpectedLength", e, leftLength, right)
+              else
+                FailureMessages("hadExpectedLength", e, right)
+            )
+          )
+        }
+      }
+    }
+
+    def have(resultOfSizeWordApplication: ResultOfSizeWordApplication)(implicit sz: Size[T]) {
+      doCollected(collected, xs, "have", 1) { e => 
+        val right = resultOfSizeWordApplication.expectedSize
+        val leftSize = sz.extentOf(e)
+        if ((leftSize == right) != shouldBeTrue) {
+          throw newTestFailedException(
+            FailureMessages(
+              if (shouldBeTrue)
+                FailureMessages("hadSizeInsteadOfExpectedSize", e, leftSize, right)
+              else
+                FailureMessages("hadExpectedSize", e, right)
+            )
+          )
+        }
+      }
+    }
+*/
+
     /**
      * This method enables the following syntax, where <code>badBook</code> is, for example, of type <code>Book</code> and
      * <code>title ("One Hundred Years of Solitude")</code> results in a <code>HavePropertyMatcher[Book]</code>:
