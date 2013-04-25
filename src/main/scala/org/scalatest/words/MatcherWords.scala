@@ -122,6 +122,26 @@ trait MatcherWords {
    * </pre>
    */
   val not = new NotWord
+  
+  /**
+   * This field enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * "hi" should not have length (3)
+   *                      ^
+   * </pre>
+   */
+  val length = new LengthWord
+  
+  /**
+   * This field enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * set should not have size (3)
+   *                     ^
+   * </pre>
+   */
+  val size = new SizeWord
 
   /**
    * This method enables the following syntax: 

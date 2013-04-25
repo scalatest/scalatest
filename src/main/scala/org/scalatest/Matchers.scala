@@ -3715,64 +3715,6 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    *
    * @author Bill Venners
    */
-  final class LengthWord {
-
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * "hi" should not have length (3)
-     *                             ^
-     * </pre>
-     */
-    def apply(expectedLength: Long): ResultOfLengthWordApplication = new ResultOfLengthWordApplication(expectedLength)
-  }
-
-  /**
-   * This field enables the following syntax: 
-   *
-   * <pre class="stHighlight">
-   * "hi" should not have length (3)
-   *                      ^
-   * </pre>
-   */
-  val length = new LengthWord
- 
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * @author Bill Venners
-   */
-  final class SizeWord {
-
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * set should not have size (3)
-     *                          ^
-     * </pre>
-     */
-    def apply(expectedSize: Long): ResultOfSizeWordApplication = new ResultOfSizeWordApplication(expectedSize)
-  }
-
-  /**
-   * This field enables the following syntax: 
-   *
-   * <pre class="stHighlight">
-   * set should not have size (3)
-   *                     ^
-   * </pre>
-   */
-  val size = new SizeWord
-
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * @author Bill Venners
-   */
   final class ResultOfElementWordApplication[T](val expectedElement: T)
 
   /**
