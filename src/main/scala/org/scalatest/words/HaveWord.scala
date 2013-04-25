@@ -105,48 +105,6 @@ final class HaveWord {
   // TODO: Scaladoc, and figure out a way that length can be used as a general have property matcher, or give them another method maybe?
   def apply[T](resultOfSizeWordApplication: ResultOfSizeWordApplication): MatcherFactory1[Any, Size] = size(resultOfSizeWordApplication.expectedSize)
 
-/*
-    new Matcher[AnyRef] {
-      def apply(left: AnyRef): MatchResult =
-        left match {
-          case leftArray: Array[_] =>
-            MatchResult(
-              leftArray.length == expectedSize, 
-              FailureMessages("hadSizeInsteadOfExpectedSize", left, leftArray.length, expectedSize),
-              FailureMessages("hadExpectedSize", left, expectedSize)
-            )
-          case leftTrav: GenTraversable[_] =>
-            MatchResult(
-              leftTrav.size == expectedSize, 
-              FailureMessages("hadSizeInsteadOfExpectedSize", left, leftTrav.size, expectedSize),
-              FailureMessages("hadExpectedSize", left, expectedSize)
-            )
-          case leftJavaList: java.util.List[_] =>
-            MatchResult(
-              leftJavaList.size == expectedSize,
-              FailureMessages("hadSizeInsteadOfExpectedSize", left, leftJavaList.size, expectedSize),
-              FailureMessages("hadExpectedSize", left, expectedSize)
-            )
-          case _ =>
-
-            accessProperty(left, 'size, false) match {
-
-              case None =>
-
-                throw newTestFailedException(Resources("noSizeStructure", expectedSize.toString))
-
-              case Some(result) =>
-
-                MatchResult(
-                  result == expectedSize,
-                  FailureMessages("hadSizeInsteadOfExpectedSize", left, result, expectedSize),
-                  FailureMessages("hadExpectedSize", left, expectedSize)
-                )
-            }
-        }
-    }
-*/
-
   /**
    * This method enables the following syntax:
    *

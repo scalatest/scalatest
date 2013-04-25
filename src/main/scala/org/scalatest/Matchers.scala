@@ -6597,7 +6597,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    * @author Bill Venners
    */
   final class ResultOfHaveWordForCollectedExtent[A : Extent](collected: Collected, xs: GenTraversable[A], shouldBeTrue: Boolean) {
-// XXX 
+
     /**
      * This method enables the following syntax: 
      *
@@ -6689,17 +6689,6 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      * This method enables syntax such as the following:
      *
      * <pre class="stHighlight">
-     * all(string) should have length (3)
-     *             ^
-     * </pre>
-     */
-    def should(haveWord: HaveWord): ResultOfHaveWordForCollectedString = 
-      new ResultOfHaveWordForCollectedString(collected, xs, true)
-    
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
      * all(string) should not have length (3)
      *             ^
      * </pre>
@@ -6750,62 +6739,6 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      */
     def should(fullyMatchWord: FullyMatchWord): ResultOfFullyMatchWordForCollectedString = 
       new ResultOfFullyMatchWordForCollectedString(collected, xs, true)
-  }
-  
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="InspectorsMatchers.html"><code>InspectorsMatchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * @author Bill Venners
-   * @author Chee Seng
-   */
-  final class ResultOfHaveWordForCollectedString(collected: Collected, xs: GenTraversable[String], shouldBeTrue: Boolean) {
-    
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * all(string) should have length (12)
-     *                         ^
-     * </pre>
-     */
-    def length(expectedLength: Long) {
-      doCollected(collected, xs, "length", 1) { e =>
-        val eLength = e.length
-        if ((eLength == expectedLength) != shouldBeTrue)
-          throw newTestFailedException(
-            if (shouldBeTrue)
-              FailureMessages("hadLengthInsteadOfExpectedLength", e, eLength, expectedLength)
-            else
-              FailureMessages("hadExpectedLength", e, expectedLength), 
-            None, 
-            6
-          )
-      }
-    }
-    
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * all(string) should have size (12)
-     *                         ^
-     * </pre>
-     */
-    def size(expectedSize: Int) {
-      doCollected(collected, xs, "size", 1) { e =>
-        val eSize = e.size
-        if ((eSize == expectedSize) != shouldBeTrue)
-          throw newTestFailedException(
-            if (shouldBeTrue)
-              FailureMessages("hadSizeInsteadOfExpectedSize", e, eSize, expectedSize)
-            else
-              FailureMessages("hadExpectedSize", e, expectedSize), 
-            None, 
-            6
-          )
-      }
-    }
   }
   
   /**
@@ -7494,65 +7427,6 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      * This method enables syntax such as the following:
      *
      * <pre class="stHighlight">
-     * all(colOfArray) should have size (3)
-     *                 ^
-     * </pre>
-     */
-    def should(haveWord: HaveWord): ResultOfHaveWordForCollectedArray[T] = 
-      new ResultOfHaveWordForCollectedArray(collected, xs, true)
-    
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * all(colOfTraversable) should be (Set(1, 2, 3))
-     *                       ^
-     * </pre>
-     */
-    def should[T](rightMatcher: Matcher[GenTraversable[T]]) {
-      doCollected(collected, xs, "should", 1) { e =>
-        rightMatcher(e.deep.asInstanceOf[IndexedSeq[T]]) match {  // TODO: Ugly but safe cast here because e is Array[T]
-          case MatchResult(false, failureMessage, _, _, _) => 
-            throw newTestFailedException(failureMessage, None, 6)
-          case _ => ()
-        }
-      }
-    }
-    
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * all(colOfTraversable) should equal (3)
-     *                       ^
-     * </pre>
-     */
-    def should[TYPECLASS1[_]](rightMatcherFactory1: MatcherFactory1[GenTraversable[T], TYPECLASS1])(implicit typeClass1: TYPECLASS1[GenTraversable[T]]) {
-      val rightMatcher = rightMatcherFactory1.matcher
-      doCollected(collected, xs, "should", 1) { e =>
-        rightMatcher(e.deep.asInstanceOf[IndexedSeq[T]]) match {
-          case MatchResult(false, failureMessage, _, _, _) => 
-            throw newTestFailedException(failureMessage, None, 6)
-          case _ => ()
-        }
-      }
-    }
-    
-    def should[TYPECLASS1[_], TYPECLASS2[_]](rightMatcherFactory2: MatcherFactory2[GenTraversable[T], TYPECLASS1, TYPECLASS2])(implicit typeClass1: TYPECLASS1[GenTraversable[T]], typeClass2: TYPECLASS2[GenTraversable[T]]) {
-      val rightMatcher = rightMatcherFactory2.matcher
-      doCollected(collected, xs, "should", 1) { e =>
-        rightMatcher(e.deep.asInstanceOf[IndexedSeq[T]]) match {
-          case MatchResult(false, failureMessage, _, _, _) => 
-            throw newTestFailedException(failureMessage, None, 6)
-          case _ => ()
-        }
-      }
-    }
-    
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
      * all(colOfArray) should be theSameInstanceAs anotherObject
      *                 ^
      * </pre>
@@ -7580,62 +7454,6 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      */
     def should(containWord: ContainWord): ResultOfContainWordForCollectedArray[T] = 
       new ResultOfContainWordForCollectedArray(collected, xs, true)
-  }
-  
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="InspectorsMatchers.html"><code>InspectorsMatchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * @author Bill Venners
-   * @author Chee Seng
-   */
-  final class ResultOfHaveWordForCollectedArray[T](collected: Collected, xs: GenTraversable[Array[T]], shouldBeTrue: Boolean) {
-    
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * all(colOfArray) should have size (12)
-     *                             ^
-     * </pre>
-     */
-    def size(expectedSize: Int) {
-      doCollected(collected, xs, "size", 1) { e =>
-        val eSize = e.size
-        if ((eSize == expectedSize) != shouldBeTrue)
-          throw newTestFailedException(
-            if (shouldBeTrue)
-              FailureMessages("hadSizeInsteadOfExpectedSize", e, eSize, expectedSize)
-            else
-              FailureMessages("hadExpectedSize", e, expectedSize), 
-            None, 
-            6
-          )
-      }
-    }
-    
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * all(colOfArray) should have length (12)
-     *                             ^
-     * </pre>
-     */
-    def length(expectedLength: Long) {
-      doCollected(collected, xs, "length", 1) { e =>
-        val eLength = e.length
-        if ((eLength == expectedLength) != shouldBeTrue)
-          throw newTestFailedException(
-            if (shouldBeTrue)
-              FailureMessages("hadLengthInsteadOfExpectedLength", e, eLength, expectedLength)
-            else
-              FailureMessages("hadExpectedLength", e, expectedLength), 
-            None, 
-            6
-          )
-      }
-    }
   }
   
   /**
