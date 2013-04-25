@@ -5196,56 +5196,6 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
   final class ResultOfNotWordForCollectedString(collected: Collected, xs: GenTraversable[String], shouldBeTrue: Boolean) extends 
     ResultOfNotWordForCollectedAnyRef[String](collected, xs, shouldBeTrue) {
     
-    /*
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * all(string) should not have length (12)
-     *                        ^
-     * </pre>
-    def have(resultOfLengthWordApplication: ResultOfLengthWordApplication) {
-      doCollected(collected, xs, "have", 1) { e =>
-        val right = resultOfLengthWordApplication.expectedLength
-        val eLength = e.length
-        if ((eLength == right) != shouldBeTrue) {
-          throw newTestFailedException(
-            if (shouldBeTrue)
-              FailureMessages("hadLengthInsteadOfExpectedLength", e, eLength, right)
-            else
-              FailureMessages("hadExpectedLength", e, right), 
-            None, 
-            6
-          )
-        }
-      }
-    }
-     */
-    
-    /*
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * all(string) should not have size (12)
-     *                        ^
-     * </pre>
-    def have(resultOfSizeWordApplication: ResultOfSizeWordApplication) {
-      doCollected(collected, xs, "have", 1) { e =>
-        val right = resultOfSizeWordApplication.expectedSize
-        val eSize = e.size
-        if ((eSize == right) != shouldBeTrue) {
-          throw newTestFailedException(
-            if (shouldBeTrue)
-              FailureMessages("hadSizeInsteadOfExpectedSize", e, eSize, right)
-            else
-              FailureMessages("hadExpectedSize", e, right), 
-            None, 
-            6
-          )
-        }
-      }
-    }
-     */
-    
     /**
      * This method enables the following syntax: 
      *
@@ -5649,31 +5599,6 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * all(traversableOfArray) should not have size (12)
-     *                                    ^
-     * </pre>
-     */
-    def have(resultOfSizeWordApplication: ResultOfSizeWordApplication) {
-      doCollected(collected, xs, "have", 1) { e =>
-        val right = resultOfSizeWordApplication.expectedSize
-        val eSize = e.size
-        if ((eSize == right) != shouldBeTrue) {
-          throw newTestFailedException(
-            if (shouldBeTrue)
-              FailureMessages("hadSizeInsteadOfExpectedSize", e, eSize, right)
-            else
-              FailureMessages("hadExpectedSize", e, right), 
-            None, 
-            6
-          )
-        }
-      }
-    }
-    
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
      * all(traversableOfArray) should not contain ("one")
      *                                    ^
      * </pre>
@@ -5710,31 +5635,6 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
         if (result.matches != shouldBeTrue) {
           throw newTestFailedException(
             if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage, 
-            None, 
-            6
-          )
-        }
-      }
-    }
-    
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * all(seqOfArray) should not have length (12)
-     *                            ^
-     * </pre>
-     */
-    def have(resultOfLengthWordApplication: ResultOfLengthWordApplication) {
-      doCollected(collected, xs, "have", 1) { e =>
-        val right = resultOfLengthWordApplication.expectedLength
-        val eLength = e.size
-        if ((eLength == right) != shouldBeTrue) {
-          throw newTestFailedException(
-            if (shouldBeTrue) 
-              FailureMessages("hadLengthInsteadOfExpectedLength", e, eLength, right)
-            else
-              FailureMessages("hadExpectedLength", e, right), 
             None, 
             6
           )
@@ -7363,7 +7263,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfCollectedArray[T](collected: Collected, xs: GenTraversable[Array[T]]) {
+  final class ResultOfCollectedArray[T](collected: Collected, xs: GenTraversable[Array[T]]) extends ResultOfCollectedAnyRef(collected, xs) {
     
     /**
      * This method enables syntax such as the following:
@@ -7373,7 +7273,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      *                 ^
      * </pre>
      */
-    def should(beWord: BeWord) = new ResultOfBeWordForCollectedArray(collected, xs, true)
+    override def should(beWord: BeWord) = new ResultOfBeWordForCollectedArray(collected, xs, true)
     
     /**
      * This method enables syntax such as the following:
@@ -7383,7 +7283,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      *                 ^
      * </pre>
      */
-    def should(notWord: NotWord): ResultOfNotWordForCollectedArray[T, Array[T]] = 
+    override def should(notWord: NotWord): ResultOfNotWordForCollectedArray[T, Array[T]] = 
       new ResultOfNotWordForCollectedArray(collected, xs, false)
     
     /**
