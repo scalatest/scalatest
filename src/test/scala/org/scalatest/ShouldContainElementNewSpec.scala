@@ -37,7 +37,7 @@ class ShouldContainElementNewSpec extends Spec with Matchers with Explicitly {
     }
 
     def `should use an Equality of the element type of the left-hand "holder" on a GenTraversable` {
-      
+
       Vector(2, 2) should contain (2)
       val e1 = intercept[TestFailedException] {
         Vector(2, 2) should not contain (2)

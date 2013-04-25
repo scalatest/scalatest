@@ -684,6 +684,11 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
       }
     }
     
+    def `should allow be symbol to work with arbitrary objects` {
+      case class Person(name: String, happy: Boolean)
+      all (List(Person("Fred", true), Person("Sally", true)) ) should be ('happy)
+    }
+
     def `should throw TestFailedException with correct stack depth and message when 'be symbol' failed` {
       forAll(nullableExamples) { colFun => 
         val col = colFun(Set("", "boom!", ""))
