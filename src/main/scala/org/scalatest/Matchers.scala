@@ -5002,7 +5002,9 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
             if (shouldBeTrue)
               FailureMessages("hadLengthInsteadOfExpectedLength", e, leftLength, right)
             else
-              FailureMessages("hadExpectedLength", e, right)
+              FailureMessages("hadExpectedLength", e, right),
+            None, 
+            6
           )
         }
       }
@@ -5017,7 +5019,9 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
             if (shouldBeTrue)
               FailureMessages("hadSizeInsteadOfExpectedSize", e, leftSize, right)
             else
-              FailureMessages("hadExpectedSize", e, right)
+              FailureMessages("hadExpectedSize", e, right),
+            None, 
+            6
           )
         }
       }
