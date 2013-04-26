@@ -42,7 +42,7 @@ import Suite.autoTagClassAnnotations
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FunSpecFinder"))
-trait FunSpecLike extends Suite { thisSuite =>
+trait FunSpecLike extends Suite with Informing with Documenting { thisSuite =>
 
   private final val engine = new Engine("concurrentSpecMod", "FunSpec")
   import engine._

@@ -40,7 +40,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.SpecFinder"))
-trait SpecLike extends Suite { thisSuite =>
+trait SpecLike extends Suite with Informing with Documenting { thisSuite =>
 
   private final val engine = new Engine("concurrentSpecMod", "SpecLike")
   import engine._

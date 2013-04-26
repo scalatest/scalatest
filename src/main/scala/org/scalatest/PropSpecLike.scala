@@ -39,7 +39,7 @@ import Suite.autoTagClassAnnotations
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.PropSpecFinder"))
-trait PropSpecLike extends Suite { thisSuite =>
+trait PropSpecLike extends Suite with Informing with Documenting { thisSuite =>
 
   private final val engine = new Engine("concurrentPropSpecMod", "PropSpec")
   import engine._

@@ -45,7 +45,7 @@ import Suite.autoTagClassAnnotations
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FeatureSpecFinder"))
-trait FeatureSpecLike extends Suite { thisSuite =>
+trait FeatureSpecLike extends Suite with Informing with Documenting { thisSuite =>
 
   private final val engine = new Engine("concurrentFeatureSpecMod", "FeatureSpec")
   import engine._

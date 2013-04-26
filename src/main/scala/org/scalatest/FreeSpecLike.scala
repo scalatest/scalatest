@@ -48,7 +48,7 @@ import Suite.autoTagClassAnnotations
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FreeSpecFinder"))
-trait FreeSpecLike extends Suite { thisSuite =>
+trait FreeSpecLike extends Suite with Informing with Documenting { thisSuite =>
 
   private final val engine = new Engine("concurrentFreeSpecMod", "FreeSpec")
   import engine._

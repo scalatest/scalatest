@@ -42,7 +42,7 @@ import Suite.autoTagClassAnnotations
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.WordSpecFinder"))
-trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb { thisSuite =>
+trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with Informing with Documenting { thisSuite =>
 
   private final val engine = new Engine("concurrentWordSpecMod", "WordSpecLike")
   import engine._
