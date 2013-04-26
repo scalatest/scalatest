@@ -5399,7 +5399,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfNotWordForCollectedGenMap[K, V, T <: GenMap[K, V]](collected: Collected, xs: GenTraversable[T], shouldBeTrue: Boolean) {
+  final class ResultOfNotWordForCollectedGenMap[K, V, T <: GenMap[K, V]](collected: Collected, xs: GenTraversable[T], shouldBeTrue: Boolean) extends ResultOfNotWordForCollectedAnyRef[T](collected, xs, shouldBeTrue) {
     
     /**
      * This method enables the following syntax:
@@ -5450,57 +5450,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
         }
       }
     }
-    
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * all(traversableOfTraversable) should not have size (12)
-     *                                          ^
-     * </pre>
-     */
-    def have(resultOfSizeWordApplication: ResultOfSizeWordApplication) {
-      doCollected(collected, xs, "have", 1) { e =>
-        val right = resultOfSizeWordApplication.expectedSize
-        val eSize = e.size
-        if ((eSize == right) != shouldBeTrue) {
-          throw newTestFailedException(
-            if (shouldBeTrue)
-              FailureMessages("hadSizeInsteadOfExpectedSize", e, eSize, right)
-            else
-              FailureMessages("hadExpectedSize", e, right), 
-            None, 
-            6
-          )
-        }
-      }
-    }
-    
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * all(traversableOfTraversable) should not have length (12)
-     *                                          ^
-     * </pre>
-     */
-    def have(resultOfLengthWordApplication: ResultOfLengthWordApplication) {
-      doCollected(collected, xs, "have", 1) { e =>
-        val right = resultOfLengthWordApplication.expectedLength
-        val eLength = e.size
-        if ((eLength == right) != shouldBeTrue) {
-          throw newTestFailedException(
-            if (shouldBeTrue)
-              FailureMessages("hadLengthInsteadOfExpectedLength", e, eLength, right)
-            else
-              FailureMessages("hadExpectedLength", e, right), 
-            None, 
-            6
-          )
-        }
-      }
-    }
-    
+
     /**
      * This method enables the following syntax:
      *
@@ -6868,7 +6818,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfCollectedGenMap[K, V](collected: Collected, xs: GenTraversable[GenMap[K, V]]) {
+  final class ResultOfCollectedGenMap[K, V](collected: Collected, xs: GenTraversable[GenMap[K, V]]) extends ResultOfCollectedAnyRef(collected, xs) {
     
     /**
      * This method enables syntax such as the following:
@@ -6885,72 +6835,14 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      * This method enables syntax such as the following:
      *
      * <pre class="stHighlight">
-     * all(colOfMap) should be (Map(1 -> "one", 2 -> "two"))
-     *               ^
-     * </pre>
-     */
-    def should(rightMatcher: Matcher[GenMap[K, V]]) {
-      doCollected(collected, xs, "should", 1) { e =>
-        rightMatcher(e) match {
-          case MatchResult(false, failureMessage, _, _, _) => 
-            throw newTestFailedException(failureMessage, None, 10)
-          case _ => ()
-        }
-      }
-    }
-    
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * all(colOfMap) should equal (3)
-     *               ^
-     * </pre>
-     */
-    def should[TYPECLASS1[_]](rightMatcherFactory1: MatcherFactory1[GenMap[K, V], TYPECLASS1])(implicit typeClass1: TYPECLASS1[GenMap[K, V]]) {
-      val rightMatcher = rightMatcherFactory1.matcher
-      doCollected(collected, xs, "should", 1) { e =>
-        rightMatcher(e) match {
-          case MatchResult(false, failureMessage, _, _, _) => 
-            throw newTestFailedException(failureMessage, None, 10)
-          case _ => ()
-        }
-      }
-    }
-    
-    def should[TYPECLASS1[_], TYPECLASS2[_]](rightMatcherFactory2: MatcherFactory2[GenMap[K, V], TYPECLASS1, TYPECLASS2])(implicit typeClass1: TYPECLASS1[GenMap[K, V]], typeClass2: TYPECLASS2[GenMap[K, V]]) {
-      val rightMatcher = rightMatcherFactory2.matcher
-      doCollected(collected, xs, "should", 1) { e =>
-        rightMatcher(e) match {
-          case MatchResult(false, failureMessage, _, _, _) => 
-            throw newTestFailedException(failureMessage, None, 10)
-          case _ => ()
-        }
-      }
-    }
-    
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * all(colOfMap) should be theSameInstanceAs (anotherMap)
-     *               ^
-     * </pre>
-     */
-    def should(beWord: BeWord) = new ResultOfBeWordForCollectedAnyRef(collected, xs, true)
-    
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
      * all(colOfMap) should not have size (3)
      *               ^
      * </pre>
      */
-    def should(notWord: NotWord): ResultOfNotWordForCollectedGenMap[K, V, GenMap[K, V]] = 
+    override def should(notWord: NotWord): ResultOfNotWordForCollectedGenMap[K, V, GenMap[K, V]] = 
       new ResultOfNotWordForCollectedGenMap(collected, xs, false)
   }
-  
+
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="InspectorsMatchers.html"><code>InspectorsMatchers</code></a> for an overview of
    * the matchers DSL.
