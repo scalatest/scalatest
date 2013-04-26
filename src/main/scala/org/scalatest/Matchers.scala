@@ -1625,34 +1625,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    *
    * @author Bill Venners
    */
-  sealed class ResultOfHaveWordForJavaCollection[E, L[_] <: java.util.Collection[_]](left: L[E], shouldBeTrue: Boolean) {
-
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * javaCollection should have size (10)
-     *                       ^
-     * </pre>
-     */
-    def size(expectedSize: Int) {
-      val leftSize = left.size
-      if ((leftSize == expectedSize) != shouldBeTrue)
-        throw newTestFailedException(
-          if (shouldBeTrue)
-            FailureMessages("hadSizeInsteadOfExpectedSize", left, leftSize, expectedSize)
-          else
-            FailureMessages("hadExpectedSize", left, expectedSize)
-        )
-    }
-  }
-
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * @author Bill Venners
-   */
   final class ResultOfHaveWordForJavaMap(left: java.util.Map[_, _], shouldBeTrue: Boolean) {
 
     /**
@@ -2263,75 +2235,6 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
         case None =>
           if (shouldBeTrue)
             throw newTestFailedException(FailureMessages("didNotContainAn", left, UnquotedString(anMatcher.nounName)))
-      }
-    }
-  }
-  
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * @author Bill Venners
-   */
-  final class ResultOfHaveWordForJavaList[E, L[_] <: java.util.List[_]](left: L[E], shouldBeTrue: Boolean) extends ResultOfHaveWordForJavaCollection[E, L](left, shouldBeTrue) {
-
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * javaList should have length (12)
-     *                      ^
-     * </pre>
-     *
-     * <p>
-     * This method invokes <code>size</code> on the <code>java.util.List</code> passed as <code>left</code> to
-     * determine its length.
-     * </p>
-     */
-    def length(expectedLength: Int) {
-      val leftLength = left.size
-      if ((leftLength == expectedLength) != shouldBeTrue)
-        throw newTestFailedException(
-          if (shouldBeTrue) 
-            FailureMessages("hadLengthInsteadOfExpectedLength", left, leftLength, expectedLength)
-          else
-            FailureMessages("hadExpectedLength", left, expectedLength)
-        )
-    }
-  }
-
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * @author Bill Venners
-   */
-  final class ResultOfNotWordForJavaList[E, T[_] <: java.util.List[_]](left: T[E], shouldBeTrue: Boolean)
-      extends ResultOfNotWordForJavaCollection[E, T](left, shouldBeTrue) {
-
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * javaList should not have length (12)
-     *                     ^
-     * </pre>
-     *
-     * <p>
-     * This method invokes <code>size</code> on the <code>java.util.List</code> passed as <code>left</code> to
-     * determine its length.
-     * </p>
-     */
-    def have(resultOfLengthWordApplication: ResultOfLengthWordApplication) {
-      val right = resultOfLengthWordApplication.expectedLength
-      val leftLength = left.size
-      if ((leftLength == right) != shouldBeTrue) {
-        throw newTestFailedException(
-          if (shouldBeTrue)
-            FailureMessages("hadLengthInsteadOfExpectedLength", left, leftLength, right)
-          else
-            FailureMessages("hadExpectedLength", left, right)
-        )
       }
     }
   }
@@ -8378,48 +8281,8 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    *
    * @author Bill Venners
    */
-  // final class JavaCollectionShouldWrapper[T](left: java.util.Collection[T]) {
-  final class JavaCollectionShouldWrapper[E, L[_] <: java.util.Collection[_]](left: L[E]) {
+  final class JavaCollectionShouldWrapper[E, L[_] <: java.util.Collection[_]](left: L[E]) extends AnyRefShouldWrapper(left) {
 
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * javaCollection should be (aJavaSet)
-     *                ^
-     * </pre>
-     */
-    def should(rightMatcherX7: Matcher[L[E]]) {
-      ShouldMethodHelper.shouldMatcher(left, rightMatcherX7)
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * javaCollection should equal (aJavaSet)
-     *                ^
-     * </pre>
-     */
-    def should[TYPECLASS1[_]](rightMatcherFactory1: MatcherFactory1[L[E], TYPECLASS1])(implicit typeClass1: TYPECLASS1[L[E]]) {
-      ShouldMethodHelper.shouldMatcher(left, rightMatcherFactory1.matcher)
-    }
-
-    def should[TYPECLASS1[_], TYPECLASS2[_]](rightMatcherFactory2: MatcherFactory2[L[E], TYPECLASS1, TYPECLASS2])(implicit typeClass1: TYPECLASS1[L[E]], typeClass2: TYPECLASS2[L[E]]) {
-      ShouldMethodHelper.shouldMatcher(left, rightMatcherFactory2.matcher)
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * javaCollection should have size (3)
-     *                ^
-     * </pre>
-     */
-    def should(haveWord: HaveWord): ResultOfHaveWordForJavaCollection[E, L] =
-      new ResultOfHaveWordForJavaCollection(left, true)
-    
     /**
      * This method enables syntax such as the following:
      *
@@ -8435,41 +8298,12 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      * This method enables syntax such as the following:
      *
      * <pre class="stHighlight">
-     * javaCollection should be theSameInstanceAs anotherObject
-     *                ^
-     * </pre>
-     */
-    def should(beWord: BeWord): ResultOfBeWordForAnyRef[L[E]] = new ResultOfBeWordForAnyRef(left.asInstanceOf[L[E]], true)
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
      * javaCollection should not have size (3)
      *                ^
      * </pre>
      */
-    def should(notWord: NotWord): ResultOfNotWordForJavaCollection[E, L] =
+    override def should(notWord: NotWord): ResultOfNotWordForJavaCollection[E, L] =
       new ResultOfNotWordForJavaCollection(left, false)
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * result should === (jSet)
-     *        ^
-     * </pre>
-     */
-    def should[R](inv: TripleEqualsInvocation[R])(implicit constraint: EqualityConstraint[L[E], R]) {
-      if ((constraint.areEqual(left, inv.right)) != inv.expectingEqual)
-        throw newTestFailedException(
-          FailureMessages(
-           if (inv.expectingEqual) "didNotEqual" else "equaled",
-            left,
-            inv.right
-          )
-        )
-    }
   }
 
   /**
@@ -8580,112 +8414,6 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
   }
 
   /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * <p>
-   * This class is used in conjunction with an implicit conversion to enable <code>should</code> methods to
-   * be invoked on objects of type <code>java.util.List[T]</code>.
-   * </p>
-   *
-   * @author Bill Venners
-   */
-  final class JavaListShouldWrapper[E, L[_] <: java.util.List[_]](left: L[E]) {
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * javaList should be (someOtherJavaList)
-     *          ^
-     * </pre>
-     */
-    def should(rightMatcherX12: Matcher[L[E]]) {
-      ShouldMethodHelper.shouldMatcher(left, rightMatcherX12)
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * javaList should equal (someOtherJavaList)
-     *          ^
-     * </pre>
-     */
-    def should[TYPECLASS1[_]](rightMatcherFactory1: MatcherFactory1[L[E], TYPECLASS1])(implicit typeClass1: TYPECLASS1[L[E]]) {
-      ShouldMethodHelper.shouldMatcher(left, rightMatcherFactory1.matcher)
-    }
-
-    def should[TYPECLASS1[_], TYPECLASS2[_]](rightMatcherFactory2: MatcherFactory2[L[E], TYPECLASS1, TYPECLASS2])(implicit typeClass1: TYPECLASS1[L[E]], typeClass2: TYPECLASS2[L[E]]) {
-      ShouldMethodHelper.shouldMatcher(left, rightMatcherFactory2.matcher)
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * javaList should have length (3)
-     *          ^
-     * </pre>
-     */
-    def should(haveWord: HaveWord): ResultOfHaveWordForJavaList[E, L] = {
-      new ResultOfHaveWordForJavaList(left, true)
-    }
-    
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * javaList should contain theSameElementsAs anotherSeq
-     *          ^
-     * </pre>
-     */
-    def should(containWord: ContainWord) = 
-      new ResultOfContainWordForJavaCollection(left.asInstanceOf[java.util.Collection[E]], true)
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * javaList should not have length (3)
-     *          ^
-     * </pre>
-     */
-    def should(notWord: NotWord): ResultOfNotWordForJavaList[E, L] = {
-      new ResultOfNotWordForJavaList(left, false)
-    }
-    
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * seq should be theSameInstanceAs List(1, 2, 3)
-     *     ^
-     * </pre>
-     */
-    def should(beWord: BeWord): ResultOfBeWordForAnyRef[L[E]] = new ResultOfBeWordForAnyRef(left, true)
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * result should === (jList)
-     *        ^
-     * </pre>
-     */
-    def should[U](inv: TripleEqualsInvocation[U])(implicit constraint: EqualityConstraint[L[E], U]) {
-      if ((constraint.areEqual(left, inv.right)) != inv.expectingEqual)
-        throw newTestFailedException(
-          FailureMessages(
-           if (inv.expectingEqual) "didNotEqual" else "equaled",
-            left,
-            inv.right
-          )
-        )
-    }
-  }
-
-  /**
    * Implicitly converts an object of type <code>T</code> to a <code>AnyShouldWrapper[T]</code>,
    * to enable <code>should</code> methods to be invokable on that object.
    */
@@ -8728,14 +8456,6 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
   implicit def convertToJavaCollectionShouldWrapper[E, L[_] <: java.util.Collection[_]](o: L[E]): JavaCollectionShouldWrapper[E, L] = new JavaCollectionShouldWrapper[E, L](o)
 
   /**
-   * Implicitly converts an object of type <code>java.util.List[T]</code> to a <code>JavaListShouldWrapper[T]</code>,
-   * to enable <code>should</code> methods to be invokable on that object. This conversion is necessary to enable
-   * <code>length</code> to be used on Java <code>List</code>s.
-   */
-  // implicit def convertToJavaListShouldWrapper[T](o: java.util.List[T]): JavaListShouldWrapper[T] = new JavaListShouldWrapper[T](o)
-  implicit def convertToJavaListShouldWrapper[E, L[_] <: java.util.List[_]](o: L[E]): JavaListShouldWrapper[E, L] = new JavaListShouldWrapper[E, L](o)
-
-  /**
    * Implicitly converts an object of type <code>java.util.Map[K, V]</code> to a <code>JavaMapShouldWrapper[K, V]</code>,
    * to enable <code>should</code> methods to be invokable on that object.
    */
@@ -8748,8 +8468,8 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
 
   // This one doesn't include Holder in its result type because that would conflict with the
   // one returned by enablersForJavaCollection.
-  implicit def enablersForJavaList[E, JLIST[_] <: java.util.List[_]]: Length[JLIST[E]] = 
-    new Length[JLIST[E]] {
+  implicit def enablersForJavaList[E, JLIST[_] <: java.util.List[_]]: Length[JLIST[E]] with Size[JLIST[E]] = 
+    new Length[JLIST[E]] with Size[JLIST[E]] {
       def extentOf(javaList: JLIST[E]): Long = javaList.size
     }
 
