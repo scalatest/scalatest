@@ -5269,56 +5269,6 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * all(traversableOfTraversable) should not have size (12)
-     *                                          ^
-     * </pre>
-     */
-    def have(resultOfSizeWordApplication: ResultOfSizeWordApplication) {
-      doCollected(collected, xs, "have", 1) { e =>
-        val right = resultOfSizeWordApplication.expectedSize
-        val eSize = e.size
-        if ((eSize == right) != shouldBeTrue) {
-          throw newTestFailedException(
-            if (shouldBeTrue)
-              FailureMessages("hadSizeInsteadOfExpectedSize", e, eSize, right)
-            else
-              FailureMessages("hadExpectedSize", e, right), 
-            None, 
-            6
-          )
-        }
-      }
-    }
-    
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * all(traversableOfTraversable) should not have length (12)
-     *                                          ^
-     * </pre>
-     */
-    def have(resultOfLengthWordApplication: ResultOfLengthWordApplication) {
-      doCollected(collected, xs, "have", 1) { e =>
-        val right = resultOfLengthWordApplication.expectedLength
-        val eLength = e.size
-        if ((eLength == right) != shouldBeTrue) {
-          throw newTestFailedException(
-            if (shouldBeTrue)
-              FailureMessages("hadLengthInsteadOfExpectedLength", e, eLength, right)
-            else
-              FailureMessages("hadExpectedLength", e, right), 
-            None, 
-            6
-          )
-        }
-      }
-    }
-    
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
      * all(traversableOfTraversable) should not contain ("one")
      *                                          ^
      * </pre>
@@ -5373,30 +5323,6 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
   final class ResultOfNotWordForCollectedGenSeq[E, C[_] <: GenSeq[_]](collected: Collected, xs: GenTraversable[C[E]], shouldBeTrue: Boolean) extends 
     ResultOfNotWordForCollectedGenTraversable[E, C](collected, xs, shouldBeTrue) {
     
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * all(seqOfSeq) should not have length (12)
-     *                          ^
-     * </pre>
-     */
-    override def have(resultOfLengthWordApplication: ResultOfLengthWordApplication) {
-      doCollected(collected, xs, "have", 1) { e =>
-        val right = resultOfLengthWordApplication.expectedLength
-        val eLength = e.length
-        if ((eLength == right) != shouldBeTrue) {
-          throw newTestFailedException(
-            if (shouldBeTrue)
-              FailureMessages("hadLengthInsteadOfExpectedLength", e, eLength, right)
-            else
-              FailureMessages("hadExpectedLength", e, right), 
-            None, 
-            6
-          )
-        }
-      }
-    }
   }
   
   /**
