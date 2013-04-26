@@ -954,7 +954,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
     }
   }
 
-  private[scalatest] def matchContainMatcher[T](left: GenTraversable[T], containMatcher: ContainMatcher[T], shouldBeTrue: Boolean) {
+  private[scalatest] def matchContainMatcher[T](left: scala.collection.GenTraversable[T], containMatcher: ContainMatcher[T], shouldBeTrue: Boolean) {
     val result = containMatcher(left)
     if (result.matches != shouldBeTrue)
       throw newTestFailedException(
@@ -1111,7 +1111,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                    ^
      * </pre>
      */
-    def theSameElementsAs(right: GenTraversable[(K, V)])(implicit equality: Equality[(K, V)]) {
+    def theSameElementsAs(right: scala.collection.GenTraversable[(K, V)])(implicit equality: Equality[(K, V)]) {
       matchContainMatcher(left, new TheSameElementsAsContainMatcher(right, equality), shouldBeTrue)
     }
     
@@ -1123,7 +1123,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                    ^
      * </pre>
      */
-    def theSameIteratedElementsAs(right: GenTraversable[(K, V)])(implicit equality: Equality[(K, V)]) {
+    def theSameIteratedElementsAs(right: scala.collection.GenTraversable[(K, V)])(implicit equality: Equality[(K, V)]) {
       matchContainMatcher(left, new TheSameIteratedElementsAsContainMatcher(right, equality), shouldBeTrue)
     }
     
@@ -1294,7 +1294,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                        ^
      * </pre>
      */
-    def theSameElementsAs(right: GenTraversable[(K, V)])(implicit equality: Equality[(K, V)]) {
+    def theSameElementsAs(right: scala.collection.GenTraversable[(K, V)])(implicit equality: Equality[(K, V)]) {
       matchContainMatcher(left, new TheSameElementsAsContainMatcher(right, equality), shouldBeTrue)
     }
     
@@ -1306,7 +1306,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                        ^
      * </pre>
      */
-    def theSameIteratedElementsAs(right: GenTraversable[(K, V)])(implicit equality: Equality[(K, V)]) {
+    def theSameIteratedElementsAs(right: scala.collection.GenTraversable[(K, V)])(implicit equality: Equality[(K, V)]) {
       matchContainMatcher(left, new TheSameIteratedElementsAsContainMatcher(right, equality), shouldBeTrue)
     }
     
@@ -1437,7 +1437,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    * The <code>(contain ("two"))</code> expression will result in a <code>Matcher[GenTraversable[String]]</code>. This
    * implicit conversion method will convert that matcher to a <code>Matcher[java.util.Collection[String]]</code>.
    */
-  implicit def convertTraversableMatcherToJavaCollectionMatcher[T](traversableMatcher: Matcher[GenTraversable[T]]): Matcher[java.util.Collection[T]] =
+  implicit def convertTraversableMatcherToJavaCollectionMatcher[T](traversableMatcher: Matcher[scala.collection.GenTraversable[T]]): Matcher[java.util.Collection[T]] =
     new Matcher[java.util.Collection[T]] {
       def apply(left: java.util.Collection[T]): MatchResult = 
         traversableMatcher.apply(new JavaCollectionWrapper(left))
@@ -1453,7 +1453,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    * The <code>(not contain ("two"))</code> expression will result in a <code>Matcher[GenTraversable[String]]</code>. This
    * implicit conversion method will convert that matcher to a <code>Matcher[Array[String]]</code>.
   */
-  implicit def convertTraversableMatcherToArrayMatcher[T](traversableMatcher: Matcher[GenTraversable[T]]): Matcher[Array[T]] =
+  implicit def convertTraversableMatcherToArrayMatcher[T](traversableMatcher: Matcher[scala.collection.GenTraversable[T]]): Matcher[Array[T]] =
     new Matcher[Array[T]] {
       def apply(left: Array[T]): MatchResult = 
         traversableMatcher.apply(new ArrayWrapper(left))
@@ -1728,7 +1728,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    *
    * @author Bill Venners
    */
-  sealed class ResultOfNotWordForTraversable[E, T[_] <: GenTraversable[_]](left: T[E], shouldBeTrue: Boolean)
+  sealed class ResultOfNotWordForTraversable[E, T[_] <: scala.collection.GenTraversable[_]](left: T[E], shouldBeTrue: Boolean)
       extends ResultOfNotWordForAnyRef(left, shouldBeTrue) {
 
     /**
@@ -1761,7 +1761,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      * </pre>
      */
     def contain(right: ContainMatcher[E]) {
-      val result = right(left.asInstanceOf[GenTraversable[E]])
+      val result = right(left.asInstanceOf[scala.collection.GenTraversable[E]])
       if (result.matches != shouldBeTrue) {
         throw newTestFailedException(
           if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage
@@ -1953,7 +1953,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      */
     def contain(resultOfValueWordApplication: ResultOfValueWordApplication[V]) {
       val right = resultOfValueWordApplication.expectedValue
-      if ((left.asInstanceOf[GenMap[K, V]].exists(_._2 == right)) != shouldBeTrue) {
+      if ((left.asInstanceOf[scala.collection.GenMap[K, V]].exists(_._2 == right)) != shouldBeTrue) {
         throw newTestFailedException(
           FailureMessages(
             if (shouldBeTrue) "didNotContainValue" else "containedValue",
@@ -3889,7 +3889,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    *
    * @author Bill Venners
    */
-  class ResultOfContainWordForTraversable[T](left: GenTraversable[T], shouldBeTrue: Boolean = true) {
+  class ResultOfContainWordForTraversable[T](left: scala.collection.GenTraversable[T], shouldBeTrue: Boolean = true) {
   
     /**
      * This method enables the following syntax: 
@@ -3899,7 +3899,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      *                            ^
      * </pre>
      */
-    def theSameElementsAs(right: GenTraversable[T])(implicit equality: Equality[T]) {
+    def theSameElementsAs(right: scala.collection.GenTraversable[T])(implicit equality: Equality[T]) {
       matchContainMatcher(left, new TheSameElementsAsContainMatcher(right, equality), shouldBeTrue)
     }
     
@@ -3923,7 +3923,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      *                            ^
      * </pre>
      */
-    def theSameIteratedElementsAs(right: GenTraversable[T])(implicit equality: Equality[T]) {
+    def theSameIteratedElementsAs(right: scala.collection.GenTraversable[T])(implicit equality: Equality[T]) {
       matchContainMatcher(left, new TheSameIteratedElementsAsContainMatcher(right, equality), shouldBeTrue)
     }
     
@@ -4070,7 +4070,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      *                            ^
      * </pre>
      */
-    def theSameElementsAs(right: GenTraversable[E])(implicit equality: Equality[E]) {
+    def theSameElementsAs(right: scala.collection.GenTraversable[E])(implicit equality: Equality[E]) {
       matchContainMatcher(left.asInstanceOf[java.util.Collection[E]], new TheSameElementsAsContainMatcher(right, equality), shouldBeTrue)
     }
     
@@ -4082,7 +4082,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      *                        ^
      * </pre>
      */
-    def theSameIteratedElementsAs(right: GenTraversable[E])(implicit equality: Equality[E]) {
+    def theSameIteratedElementsAs(right: scala.collection.GenTraversable[E])(implicit equality: Equality[E]) {
       matchContainMatcher(left.asInstanceOf[java.util.Collection[E]], new TheSameIteratedElementsAsContainMatcher(right, equality), shouldBeTrue)
     }
     
@@ -4211,7 +4211,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    *                             ^
    * </pre>
    */
-  def theSameElementsAs[T](xs: GenTraversable[T])(implicit equality: Equality[T]) = 
+  def theSameElementsAs[T](xs: scala.collection.GenTraversable[T])(implicit equality: Equality[T]) = 
     new TheSameElementsAsContainMatcher(xs, equality)
   
   /**
@@ -4233,7 +4233,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    *                             ^
    * </pre>
    */
-  def theSameIteratedElementsAs[T](xs: GenTraversable[T])(implicit equality: Equality[T]) = 
+  def theSameIteratedElementsAs[T](xs: scala.collection.GenTraversable[T])(implicit equality: Equality[T]) = 
     new TheSameIteratedElementsAsContainMatcher(xs, equality)
   
   /**
@@ -4360,7 +4360,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
   
   import InspectorsHelper._
   
-  def doCollected[T](collected: Collected, xs: GenTraversable[T], methodName: String, stackDepth: Int)(fun: T => Unit) {
+  def doCollected[T](collected: Collected, xs: scala.collection.GenTraversable[T], methodName: String, stackDepth: Int)(fun: T => Unit) {
     collected match {
       case AllCollected =>
         doForAll(xs, "allShorthandFailed", "Matchers.scala", methodName, stackDepth) { e => 
@@ -4400,7 +4400,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    * @author Bill Venners
    * @author Chee Seng
    */
-  sealed class ResultOfNotWordForCollectedAny[T](collected: Collected, xs: GenTraversable[T], shouldBeTrue: Boolean) {
+  sealed class ResultOfNotWordForCollectedAny[T](collected: Collected, xs: scala.collection.GenTraversable[T], shouldBeTrue: Boolean) {
 
     import org.scalatest.InspectorsHelper._
     
@@ -4809,7 +4809,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    * @author Bill Venners
    * @author Chee Seng
    */
-  sealed class ResultOfNotWordForCollectedAnyRef[T <: AnyRef](collected: Collected, xs: GenTraversable[T], shouldBeTrue: Boolean) 
+  sealed class ResultOfNotWordForCollectedAnyRef[T <: AnyRef](collected: Collected, xs: scala.collection.GenTraversable[T], shouldBeTrue: Boolean) 
     extends ResultOfNotWordForCollectedAny(collected, xs, shouldBeTrue) {
     
     /**
@@ -4906,7 +4906,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfNotWordForCollectedString(collected: Collected, xs: GenTraversable[String], shouldBeTrue: Boolean) extends 
+  final class ResultOfNotWordForCollectedString(collected: Collected, xs: scala.collection.GenTraversable[String], shouldBeTrue: Boolean) extends 
     ResultOfNotWordForCollectedAnyRef[String](collected, xs, shouldBeTrue) {
     
     /**
@@ -5137,7 +5137,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      */
     def contain(right: ContainMatcher[E]) {
       doCollected(collected, xs, "contain", 1) { e =>
-        val result = right(e.asInstanceOf[GenTraversable[E]])
+        val result = right(e.asInstanceOf[scala.collection.GenTraversable[E]])
         if (result.matches != shouldBeTrue) {
           throw newTestFailedException(
             if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage, 
@@ -5156,7 +5156,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    * @author Bill Venners
    * @author Chee Seng
    */
-  sealed class ResultOfNotWordForCollectedArray[E, T <: Array[E]](collected: Collected, xs: GenTraversable[T], shouldBeTrue: Boolean) extends 
+  sealed class ResultOfNotWordForCollectedArray[E, T <: Array[E]](collected: Collected, xs: scala.collection.GenTraversable[T], shouldBeTrue: Boolean) extends 
     ResultOfNotWordForCollectedAnyRef[T](collected, xs, shouldBeTrue) {
     
     /**
@@ -5277,7 +5277,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfNotWordForCollectedGenMap[K, V, T <: GenMap[K, V]](collected: Collected, xs: GenTraversable[T], shouldBeTrue: Boolean) extends ResultOfNotWordForCollectedAnyRef[T](collected, xs, shouldBeTrue) {
+  final class ResultOfNotWordForCollectedGenMap[K, V, T <: scala.collection.GenMap[K, V]](collected: Collected, xs: scala.collection.GenTraversable[T], shouldBeTrue: Boolean) extends ResultOfNotWordForCollectedAnyRef[T](collected, xs, shouldBeTrue) {
     
     /**
      * This method enables the following syntax:
@@ -5384,7 +5384,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    * @author Bill Venners
    * @author Chee Seng
    */
-  class ResultOfNotWordForCollectedJavaCollection[E, T <: java.util.Collection[E]](collected: Collected, xs: GenTraversable[T], shouldBeTrue: Boolean) extends 
+  class ResultOfNotWordForCollectedJavaCollection[E, T <: java.util.Collection[E]](collected: Collected, xs: scala.collection.GenTraversable[T], shouldBeTrue: Boolean) extends 
     ResultOfNotWordForCollectedAnyRef[T](collected, xs, shouldBeTrue) {
     
     /**
@@ -5497,7 +5497,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfNotWordForCollectedJavaMap[K, V, T <: java.util.Map[K, V]](collected: Collected, xs: GenTraversable[T], shouldBeTrue: Boolean) extends 
+  final class ResultOfNotWordForCollectedJavaMap[K, V, T <: java.util.Map[K, V]](collected: Collected, xs: scala.collection.GenTraversable[T], shouldBeTrue: Boolean) extends 
     ResultOfNotWordForCollectedAnyRef[T](collected, xs, shouldBeTrue){
     
     /**
@@ -5635,7 +5635,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    * @author Bill Venners
    * @author Chee Seng
    */
-  sealed class ResultOfBeWordForCollectedAny[T](collected: Collected, xs: GenTraversable[T], shouldBeTrue: Boolean) 
+  sealed class ResultOfBeWordForCollectedAny[T](collected: Collected, xs: scala.collection.GenTraversable[T], shouldBeTrue: Boolean) 
   
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="InspectorsMatchers.html"><code>InspectorsMatchers</code></a> for an overview of
@@ -5644,7 +5644,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    * @author Bill Venners
    * @author Chee Seng
    */
-  class ResultOfBeWordForCollectedAnyRef[T <: AnyRef](collected: Collected, xs: GenTraversable[T], shouldBeTrue: Boolean) 
+  class ResultOfBeWordForCollectedAnyRef[T <: AnyRef](collected: Collected, xs: scala.collection.GenTraversable[T], shouldBeTrue: Boolean) 
     extends ResultOfBeWordForCollectedAny(collected, xs, shouldBeTrue) {
     
     /**
@@ -5773,7 +5773,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfBeWordForCollectedArray[T](collected: Collected, xs: GenTraversable[Array[T]], shouldBeTrue: Boolean) 
+  final class ResultOfBeWordForCollectedArray[T](collected: Collected, xs: scala.collection.GenTraversable[Array[T]], shouldBeTrue: Boolean) 
     extends ResultOfBeWordForCollectedAnyRef(collected, xs, shouldBeTrue) {
   
     /**
@@ -5798,7 +5798,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfContainWordForCollectedArray[T](collected: Collected, xs: GenTraversable[Array[T]], shouldBeTrue: Boolean) {
+  final class ResultOfContainWordForCollectedArray[T](collected: Collected, xs: scala.collection.GenTraversable[Array[T]], shouldBeTrue: Boolean) {
   
     /**
      * This method enables the following syntax:
@@ -5826,7 +5826,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      *                                ^
      * </pre>
      */
-    def theSameElementsAs(right: GenTraversable[T])(implicit equality: Equality[T]) {
+    def theSameElementsAs(right: scala.collection.GenTraversable[T])(implicit equality: Equality[T]) {
       val containMatcher = new TheSameElementsAsContainMatcher(right, equality)
       doCollected(collected, xs, "theSameElementsAs", 1) { e =>
         val result = containMatcher(e)
@@ -5847,7 +5847,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      *                                ^
      * </pre>
      */
-    def theSameIteratedElementsAs(right: GenTraversable[T])(implicit equality: Equality[T]) {
+    def theSameIteratedElementsAs(right: scala.collection.GenTraversable[T])(implicit equality: Equality[T]) {
       val containMatcher = new TheSameIteratedElementsAsContainMatcher(right, equality)
       doCollected(collected, xs, "theSameIteratedElementsAs", 1) { e =>
         val result = containMatcher(e)
@@ -5994,7 +5994,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    * @author Bill Venners
    * @author Chee Seng
    */
-  sealed class ResultOfCollectedAny[T](collected: Collected, xs: GenTraversable[T]) {
+  sealed class ResultOfCollectedAny[T](collected: Collected, xs: scala.collection.GenTraversable[T]) {
     
     /**
      * This method enables syntax such as the following:
@@ -6110,7 +6110,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    *
    * @author Bill Venners
    */
-  final class ResultOfHaveWordForCollectedExtent[A : Extent](collected: Collected, xs: GenTraversable[A], shouldBeTrue: Boolean) {
+  final class ResultOfHaveWordForCollectedExtent[A : Extent](collected: Collected, xs: scala.collection.GenTraversable[A], shouldBeTrue: Boolean) {
 
     /**
      * This method enables the following syntax: 
@@ -6166,7 +6166,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    * @author Bill Venners
    * @author Chee Seng
    */
-  class ResultOfCollectedAnyRef[T <: AnyRef](collected: Collected, xs: GenTraversable[T]) extends ResultOfCollectedAny[T](collected, xs) {
+  class ResultOfCollectedAnyRef[T <: AnyRef](collected: Collected, xs: scala.collection.GenTraversable[T]) extends ResultOfCollectedAny[T](collected, xs) {
 
     /**
      * This method enables syntax such as the following:
@@ -6197,7 +6197,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfCollectedString(collected: Collected, xs: GenTraversable[String]) extends ResultOfCollectedAnyRef(collected, xs) {
+  final class ResultOfCollectedString(collected: Collected, xs: scala.collection.GenTraversable[String]) extends ResultOfCollectedAnyRef(collected, xs) {
     
     /**
      * This method enables syntax such as the following:
@@ -6262,7 +6262,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfStartWithWordForCollectedString(collected: Collected, xs: GenTraversable[String], shouldBeTrue: Boolean) {
+  final class ResultOfStartWithWordForCollectedString(collected: Collected, xs: scala.collection.GenTraversable[String], shouldBeTrue: Boolean) {
 
     /**
      * This method enables the following syntax: 
@@ -6307,7 +6307,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfIncludeWordForCollectedString(collected: Collected, xs: GenTraversable[String], shouldBeTrue: Boolean) {
+  final class ResultOfIncludeWordForCollectedString(collected: Collected, xs: scala.collection.GenTraversable[String], shouldBeTrue: Boolean) {
 
     /**
      * This method enables the following syntax: 
@@ -6352,7 +6352,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfEndWithWordForCollectedString(collected: Collected, xs: GenTraversable[String], shouldBeTrue: Boolean) {
+  final class ResultOfEndWithWordForCollectedString(collected: Collected, xs: scala.collection.GenTraversable[String], shouldBeTrue: Boolean) {
 
     /**
      * This method enables the following syntax: 
@@ -6398,7 +6398,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfFullyMatchWordForCollectedString(collected: Collected, xs: GenTraversable[String], shouldBeTrue: Boolean) {
+  final class ResultOfFullyMatchWordForCollectedString(collected: Collected, xs: scala.collection.GenTraversable[String], shouldBeTrue: Boolean) {
 
     /**
      * This method enables the following syntax: 
@@ -6444,7 +6444,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfCollectedGenTraversable[E, C[_] <: GenTraversable[_]](collected: Collected, xs: GenTraversable[C[E]]) extends ResultOfCollectedAnyRef(collected, xs) {
+  final class ResultOfCollectedGenTraversable[E, C[_] <: scala.collection.GenTraversable[_]](collected: Collected, xs: scala.collection.GenTraversable[C[E]]) extends ResultOfCollectedAnyRef(collected, xs) {
     
     /**
      * This method enables syntax such as the following:
@@ -6476,7 +6476,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfContainWordForCollectedGenTraversable[E, C[_] <: GenTraversable[_]](collected: Collected, xs: GenTraversable[C[E]], shouldBeTrue: Boolean) {
+  final class ResultOfContainWordForCollectedGenTraversable[E, C[_] <: scala.collection.GenTraversable[_]](collected: Collected, xs: scala.collection.GenTraversable[C[E]], shouldBeTrue: Boolean) {
     
     /**
      * This method enables the following syntax: 
@@ -6486,10 +6486,10 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      *                                      ^
      * </pre>
      */
-    def theSameElementsAs(right: GenTraversable[E])(implicit equality: Equality[E]) {
+    def theSameElementsAs(right: scala.collection.GenTraversable[E])(implicit equality: Equality[E]) {
       val containMatcher = new TheSameElementsAsContainMatcher(right, equality)
       doCollected(collected, xs, "theSameElementsAs", 1) { e =>
-        val result = containMatcher(e.asInstanceOf[GenTraversable[E]])
+        val result = containMatcher(e.asInstanceOf[scala.collection.GenTraversable[E]])
         if (result.matches != shouldBeTrue)
           throw newTestFailedException(
             if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage,  
@@ -6507,10 +6507,10 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      *                                      ^
      * </pre>
      */
-    def theSameIteratedElementsAs(right: GenTraversable[E])(implicit equality: Equality[E]) {
+    def theSameIteratedElementsAs(right: scala.collection.GenTraversable[E])(implicit equality: Equality[E]) {
       val containMatcher = new TheSameIteratedElementsAsContainMatcher(right, equality)
       doCollected(collected, xs, "theSameIteratedElementsAs", 1) { e =>
-        val result = containMatcher(e.asInstanceOf[GenTraversable[E]])
+        val result = containMatcher(e.asInstanceOf[scala.collection.GenTraversable[E]])
         if (result.matches != shouldBeTrue)
           throw newTestFailedException(
             if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage,  
@@ -6531,7 +6531,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
     def allOf(right: E*)(implicit equality: Equality[E]) {
       val containMatcher = new AllOfContainMatcher(right, equality)
       doCollected(collected, xs, "allOf", 1) { e =>
-        val result = containMatcher(e.asInstanceOf[GenTraversable[E]])
+        val result = containMatcher(e.asInstanceOf[scala.collection.GenTraversable[E]])
         if (result.matches != shouldBeTrue)
           throw newTestFailedException(
             if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage,  
@@ -6552,7 +6552,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
     def inOrder(right: E*)(implicit equality: Equality[E]) {
       val containMatcher = new InOrderContainMatcher(right, equality)
       doCollected(collected, xs, "inOrder", 1) { e =>
-        val result = containMatcher(e.asInstanceOf[GenTraversable[E]])
+        val result = containMatcher(e.asInstanceOf[scala.collection.GenTraversable[E]])
         if (result.matches != shouldBeTrue)
           throw newTestFailedException(
             if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage,  
@@ -6573,7 +6573,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
     def oneOf(right: E*)(implicit equality: Equality[E]) {
       val containMatcher = new OneOfContainMatcher(right, equality)
       doCollected(collected, xs, "oneOf", 1) { e =>
-        val result = containMatcher(e.asInstanceOf[GenTraversable[E]])
+        val result = containMatcher(e.asInstanceOf[scala.collection.GenTraversable[E]])
         if (result.matches != shouldBeTrue)
           throw newTestFailedException(
             if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage,  
@@ -6594,7 +6594,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
     def only(right: E*)(implicit equality: Equality[E]) {
       val containMatcher = new OnlyContainMatcher(right, equality)
       doCollected(collected, xs, "only", 1) { e =>
-        val result = containMatcher(e.asInstanceOf[GenTraversable[E]])
+        val result = containMatcher(e.asInstanceOf[scala.collection.GenTraversable[E]])
         if (result.matches != shouldBeTrue)
           throw newTestFailedException(
             if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage,  
@@ -6615,7 +6615,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
     def inOrderOnly(right: E*)(implicit equality: Equality[E]) {
       val containMatcher = new InOrderOnlyContainMatcher(right, equality)
       doCollected(collected, xs, "inOrderOnly", 1) { e =>
-        val result = containMatcher(e.asInstanceOf[GenTraversable[E]])
+        val result = containMatcher(e.asInstanceOf[scala.collection.GenTraversable[E]])
         if (result.matches != shouldBeTrue)
           throw newTestFailedException(
             if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage,  
@@ -6636,7 +6636,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
     def noneOf(right: E*)(implicit equality: Equality[E]) {
       val containMatcher = new NoneOfContainMatcher(right, equality)
       doCollected(collected, xs, "noneOf", 1) { e =>
-        val result = containMatcher(e.asInstanceOf[GenTraversable[E]])
+        val result = containMatcher(e.asInstanceOf[scala.collection.GenTraversable[E]])
         if (result.matches != shouldBeTrue)
           throw newTestFailedException(
             if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage,  
@@ -6654,7 +6654,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfCollectedArray[T](collected: Collected, xs: GenTraversable[Array[T]]) extends ResultOfCollectedAnyRef(collected, xs) {
+  final class ResultOfCollectedArray[T](collected: Collected, xs: scala.collection.GenTraversable[Array[T]]) extends ResultOfCollectedAnyRef(collected, xs) {
     
     /**
      * This method enables syntax such as the following:
@@ -6696,7 +6696,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfCollectedGenMap[K, V](collected: Collected, xs: GenTraversable[GenMap[K, V]]) extends ResultOfCollectedAnyRef(collected, xs) {
+  final class ResultOfCollectedGenMap[K, V](collected: Collected, xs: scala.collection.GenTraversable[scala.collection.GenMap[K, V]]) extends ResultOfCollectedAnyRef(collected, xs) {
     
     /**
      * This method enables syntax such as the following:
@@ -6717,7 +6717,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      *               ^
      * </pre>
      */
-    override def should(notWord: NotWord): ResultOfNotWordForCollectedGenMap[K, V, GenMap[K, V]] = 
+    override def should(notWord: NotWord): ResultOfNotWordForCollectedGenMap[K, V, scala.collection.GenMap[K, V]] = 
       new ResultOfNotWordForCollectedGenMap(collected, xs, false)
   }
 
@@ -6728,7 +6728,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfContainWordForCollectedGenMap[K, V](collected: Collected, xs: GenTraversable[GenMap[K, V]], shouldBeTrue: Boolean) {
+  final class ResultOfContainWordForCollectedGenMap[K, V](collected: Collected, xs: scala.collection.GenTraversable[scala.collection.GenMap[K, V]], shouldBeTrue: Boolean) {
     
     /**
      * This method enables the following syntax:
@@ -6783,7 +6783,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      *                              ^
      * </pre>
      */
-    def theSameElementsAs(right: GenTraversable[(K, V)])(implicit equality: Equality[(K, V)]) {
+    def theSameElementsAs(right: scala.collection.GenTraversable[(K, V)])(implicit equality: Equality[(K, V)]) {
       val containMatcher = new TheSameElementsAsContainMatcher(right, equality)
       doCollected(collected, xs, "theSameElementsAs", 1) { e =>
         val result = containMatcher(e)
@@ -6804,7 +6804,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      *                              ^
      * </pre>
      */
-    def theSameIteratedElementsAs(right: GenTraversable[(K, V)])(implicit equality: Equality[(K, V)]) {
+    def theSameIteratedElementsAs(right: scala.collection.GenTraversable[(K, V)])(implicit equality: Equality[(K, V)]) {
       val containMatcher = new TheSameIteratedElementsAsContainMatcher(right, equality)
       doCollected(collected, xs, "theSameIteratedElementsAs", 1) { e =>
         val result = containMatcher(e)
@@ -6951,7 +6951,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfCollectedJavaCollection[T](collected: Collected, xs: GenTraversable[java.util.Collection[T]]) {
+  final class ResultOfCollectedJavaCollection[T](collected: Collected, xs: scala.collection.GenTraversable[java.util.Collection[T]]) {
     
     /**
      * This method enables syntax such as the following:
@@ -7052,7 +7052,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfHaveWordForCollectedJavaCollection[T](collected: Collected, xs: GenTraversable[java.util.Collection[T]], shouldBeTrue: Boolean) {
+  final class ResultOfHaveWordForCollectedJavaCollection[T](collected: Collected, xs: scala.collection.GenTraversable[java.util.Collection[T]], shouldBeTrue: Boolean) {
     
     /**
      * This method enables the following syntax:
@@ -7113,7 +7113,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfContainWordForCollectedJavaCollection[T](collected: Collected, xs: GenTraversable[java.util.Collection[T]], shouldBeTrue: Boolean) {
+  final class ResultOfContainWordForCollectedJavaCollection[T](collected: Collected, xs: scala.collection.GenTraversable[java.util.Collection[T]], shouldBeTrue: Boolean) {
 
     /**
      * This method enables syntax such as the following:
@@ -7123,7 +7123,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      *                                  ^
      * </pre>
      */
-    def theSameElementsAs(right: GenTraversable[T])(implicit equality: Equality[T]) {
+    def theSameElementsAs(right: scala.collection.GenTraversable[T])(implicit equality: Equality[T]) {
       val containMatcher = new TheSameElementsAsContainMatcher(right, equality)
       doCollected(collected, xs, "theSameElementsAs", 1) { e =>
         val result = containMatcher(new JavaCollectionWrapper(e))
@@ -7144,7 +7144,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      *                                  ^
      * </pre>
      */
-    def theSameIteratedElementsAs(right: GenTraversable[T])(implicit equality: Equality[T]) {
+    def theSameIteratedElementsAs(right: scala.collection.GenTraversable[T])(implicit equality: Equality[T]) {
       val containMatcher = new TheSameIteratedElementsAsContainMatcher(right, equality)
       doCollected(collected, xs, "theSameIteratedElementsAs", 1) { e =>
         val result = containMatcher(new JavaCollectionWrapper(e))
@@ -7291,7 +7291,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfCollectedJavaMap[K, V](collected: Collected, xs: GenTraversable[java.util.Map[K, V]]) {
+  final class ResultOfCollectedJavaMap[K, V](collected: Collected, xs: scala.collection.GenTraversable[java.util.Map[K, V]]) {
     
     /**
      * This method enables syntax such as the following:
@@ -7392,7 +7392,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfHaveWordForCollectedJavaMap[K, V](collected: Collected, xs: GenTraversable[java.util.Map[K, V]], shouldBeTrue: Boolean) {
+  final class ResultOfHaveWordForCollectedJavaMap[K, V](collected: Collected, xs: scala.collection.GenTraversable[java.util.Map[K, V]], shouldBeTrue: Boolean) {
     
     /**
      * This method enables the following syntax:
@@ -7449,7 +7449,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfContainWordForCollectedJavaMap[K, V](collected: Collected, xs: GenTraversable[java.util.Map[K, V]], shouldBeTrue: Boolean) {
+  final class ResultOfContainWordForCollectedJavaMap[K, V](collected: Collected, xs: scala.collection.GenTraversable[java.util.Map[K, V]], shouldBeTrue: Boolean) {
     
     /**
      * This method enables the following syntax (<code>javaMap</code> is a <code>java.util.Map</code>):
@@ -7503,7 +7503,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      *                                  ^
      * </pre>
      */
-    def theSameElementsAs(right: GenTraversable[(K, V)])(implicit equality: Equality[(K, V)]) {
+    def theSameElementsAs(right: scala.collection.GenTraversable[(K, V)])(implicit equality: Equality[(K, V)]) {
       val containMatcher = new TheSameElementsAsContainMatcher(right, equality)
       doCollected(collected, xs, "theSameElementsAs", 1) { e =>
         val result = containMatcher(new JavaMapWrapper(e))
@@ -7524,7 +7524,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      *                                  ^
      * </pre>
      */
-    def theSameIteratedElementsAs(right: GenTraversable[(K, V)])(implicit equality: Equality[(K, V)]) {
+    def theSameIteratedElementsAs(right: scala.collection.GenTraversable[(K, V)])(implicit equality: Equality[(K, V)]) {
       val containMatcher = new TheSameIteratedElementsAsContainMatcher(right, equality)
       doCollected(collected, xs, "theSameIteratedElementsAs", 1) { e =>
         val result = containMatcher(new JavaMapWrapper(e))
@@ -7665,172 +7665,172 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
     
   }
 
-  def all[T](xs: GenTraversable[T]): ResultOfCollectedAny[T] = 
+  def all[T](xs: scala.collection.GenTraversable[T]): ResultOfCollectedAny[T] = 
     new ResultOfCollectedAny(AllCollected, xs)
   
-  def all(xs: GenTraversable[AnyRef]): ResultOfCollectedAnyRef[AnyRef] = 
+  def all(xs: scala.collection.GenTraversable[AnyRef]): ResultOfCollectedAnyRef[AnyRef] = 
     new ResultOfCollectedAnyRef(AllCollected, xs)
   
-  def all(xs: GenTraversable[String]): ResultOfCollectedString = 
+  def all(xs: scala.collection.GenTraversable[String]): ResultOfCollectedString = 
     new ResultOfCollectedString(AllCollected, xs)
   
-  def all[E, C[_] <: GenTraversable[_]](xs: GenTraversable[C[E]]) = 
+  def all[E, C[_] <: scala.collection.GenTraversable[_]](xs: scala.collection.GenTraversable[C[E]]) = 
     new ResultOfCollectedGenTraversable(AllCollected, xs)
   
-  def all[T](xs: GenTraversable[Array[T]]) = 
+  def all[T](xs: scala.collection.GenTraversable[Array[T]]) = 
     new ResultOfCollectedArray(AllCollected, xs)
   
-  def all[K, V](xs: GenTraversable[GenMap[K, V]]) = 
+  def all[K, V](xs: scala.collection.GenTraversable[scala.collection.GenMap[K, V]]) = 
     new ResultOfCollectedGenMap(AllCollected, xs)
   
-  def all[T](xs: GenTraversable[java.util.Collection[T]]) = 
+  def all[T](xs: scala.collection.GenTraversable[java.util.Collection[T]]) = 
     new ResultOfCollectedJavaCollection(AllCollected, xs)
   
-  def all[K, V](xs: GenTraversable[java.util.Map[K, V]]) = 
+  def all[K, V](xs: scala.collection.GenTraversable[java.util.Map[K, V]]) = 
     new ResultOfCollectedJavaMap(AllCollected, xs)
   
-  def atLeast[T](num: Int, xs: GenTraversable[T]): ResultOfCollectedAny[T] = 
+  def atLeast[T](num: Int, xs: scala.collection.GenTraversable[T]): ResultOfCollectedAny[T] = 
     new ResultOfCollectedAny(AtLeastCollected(num), xs)
   
-  def atLeast(num: Int, xs: GenTraversable[AnyRef]): ResultOfCollectedAnyRef[AnyRef] = 
+  def atLeast(num: Int, xs: scala.collection.GenTraversable[AnyRef]): ResultOfCollectedAnyRef[AnyRef] = 
     new ResultOfCollectedAnyRef(AtLeastCollected(num), xs)
   
-  def atLeast(num: Int, xs: GenTraversable[String]): ResultOfCollectedString = 
+  def atLeast(num: Int, xs: scala.collection.GenTraversable[String]): ResultOfCollectedString = 
     new ResultOfCollectedString(AtLeastCollected(num), xs)
   
-  def atLeast[E, C[_] <: GenTraversable[_]](num: Int, xs: GenTraversable[C[E]]) = 
+  def atLeast[E, C[_] <: scala.collection.GenTraversable[_]](num: Int, xs: scala.collection.GenTraversable[C[E]]) = 
     new ResultOfCollectedGenTraversable(AtLeastCollected(num), xs)
   
-  def atLeast[T](num: Int, xs: GenTraversable[Array[T]]) = 
+  def atLeast[T](num: Int, xs: scala.collection.GenTraversable[Array[T]]) = 
     new ResultOfCollectedArray(AtLeastCollected(num), xs)
   
-  def atLeast[K, V](num: Int, xs: GenTraversable[GenMap[K, V]]) = 
+  def atLeast[K, V](num: Int, xs: scala.collection.GenTraversable[scala.collection.GenMap[K, V]]) = 
     new ResultOfCollectedGenMap(AtLeastCollected(num), xs)
   
-  def atLeast[T](num: Int, xs: GenTraversable[java.util.Collection[T]]) = 
+  def atLeast[T](num: Int, xs: scala.collection.GenTraversable[java.util.Collection[T]]) = 
     new ResultOfCollectedJavaCollection(AtLeastCollected(num), xs)
   
-  def atLeast[K, V](num: Int, xs: GenTraversable[java.util.Map[K, V]]) = 
+  def atLeast[K, V](num: Int, xs: scala.collection.GenTraversable[java.util.Map[K, V]]) = 
     new ResultOfCollectedJavaMap(AtLeastCollected(num), xs)
   
-  def every[T](xs: GenTraversable[T]): ResultOfCollectedAny[T] = 
+  def every[T](xs: scala.collection.GenTraversable[T]): ResultOfCollectedAny[T] = 
     new ResultOfCollectedAny(EveryCollected, xs)
   
-  def every(xs: GenTraversable[AnyRef]): ResultOfCollectedAnyRef[AnyRef] = 
+  def every(xs: scala.collection.GenTraversable[AnyRef]): ResultOfCollectedAnyRef[AnyRef] = 
     new ResultOfCollectedAnyRef(EveryCollected, xs)
   
-  def every(xs: GenTraversable[String]): ResultOfCollectedString = 
+  def every(xs: scala.collection.GenTraversable[String]): ResultOfCollectedString = 
     new ResultOfCollectedString(EveryCollected, xs)
   
-  def every[E, C[_] <: GenTraversable[_]](xs: GenTraversable[C[E]]) = 
+  def every[E, C[_] <: scala.collection.GenTraversable[_]](xs: scala.collection.GenTraversable[C[E]]) = 
     new ResultOfCollectedGenTraversable(EveryCollected, xs)
   
-  def every[T](xs: GenTraversable[Array[T]]) = 
+  def every[T](xs: scala.collection.GenTraversable[Array[T]]) = 
     new ResultOfCollectedArray(EveryCollected, xs)
   
-  def every[K, V](xs: GenTraversable[GenMap[K, V]]) = 
+  def every[K, V](xs: scala.collection.GenTraversable[scala.collection.GenMap[K, V]]) = 
     new ResultOfCollectedGenMap(EveryCollected, xs)
   
-  def every[T](xs: GenTraversable[java.util.Collection[T]]) = 
+  def every[T](xs: scala.collection.GenTraversable[java.util.Collection[T]]) = 
     new ResultOfCollectedJavaCollection(EveryCollected, xs)
   
-  def every[K, V](xs: GenTraversable[java.util.Map[K, V]]) = 
+  def every[K, V](xs: scala.collection.GenTraversable[java.util.Map[K, V]]) = 
     new ResultOfCollectedJavaMap(EveryCollected, xs)
   
-  def exactly[T](num: Int, xs: GenTraversable[T]): ResultOfCollectedAny[T] = 
+  def exactly[T](num: Int, xs: scala.collection.GenTraversable[T]): ResultOfCollectedAny[T] = 
     new ResultOfCollectedAny(ExactlyCollected(num), xs)
   
-  def exactly(num: Int, xs: GenTraversable[AnyRef]): ResultOfCollectedAnyRef[AnyRef] = 
+  def exactly(num: Int, xs: scala.collection.GenTraversable[AnyRef]): ResultOfCollectedAnyRef[AnyRef] = 
     new ResultOfCollectedAnyRef(ExactlyCollected(num), xs)
   
-  def exactly(num: Int, xs: GenTraversable[String]): ResultOfCollectedString = 
+  def exactly(num: Int, xs: scala.collection.GenTraversable[String]): ResultOfCollectedString = 
     new ResultOfCollectedString(ExactlyCollected(num), xs)
   
-  def exactly[E, C[_] <: GenTraversable[_]](num: Int, xs: GenTraversable[C[E]]) = 
+  def exactly[E, C[_] <: scala.collection.GenTraversable[_]](num: Int, xs: scala.collection.GenTraversable[C[E]]) = 
     new ResultOfCollectedGenTraversable(ExactlyCollected(num), xs)
   
-  def exactly[T](num: Int, xs: GenTraversable[Array[T]]) = 
+  def exactly[T](num: Int, xs: scala.collection.GenTraversable[Array[T]]) = 
     new ResultOfCollectedArray(ExactlyCollected(num), xs)
   
-  def exactly[K, V](num: Int, xs: GenTraversable[GenMap[K, V]]) = 
+  def exactly[K, V](num: Int, xs: scala.collection.GenTraversable[scala.collection.GenMap[K, V]]) = 
     new ResultOfCollectedGenMap(ExactlyCollected(num), xs)
   
-  def exactly[T](num: Int, xs: GenTraversable[java.util.Collection[T]]) = 
+  def exactly[T](num: Int, xs: scala.collection.GenTraversable[java.util.Collection[T]]) = 
     new ResultOfCollectedJavaCollection(ExactlyCollected(num), xs)
   
-  def exactly[K, V](num: Int, xs: GenTraversable[java.util.Map[K, V]]) = 
+  def exactly[K, V](num: Int, xs: scala.collection.GenTraversable[java.util.Map[K, V]]) = 
     new ResultOfCollectedJavaMap(ExactlyCollected(num), xs)
 
-  def no[T](xs: GenTraversable[T]): ResultOfCollectedAny[T] =
+  def no[T](xs: scala.collection.GenTraversable[T]): ResultOfCollectedAny[T] =
     new ResultOfCollectedAny(NoCollected, xs)
 
-  def no(xs: GenTraversable[AnyRef]): ResultOfCollectedAnyRef[AnyRef] =
+  def no(xs: scala.collection.GenTraversable[AnyRef]): ResultOfCollectedAnyRef[AnyRef] =
     new ResultOfCollectedAnyRef(NoCollected, xs)
 
-  def no(xs: GenTraversable[String]): ResultOfCollectedString =
+  def no(xs: scala.collection.GenTraversable[String]): ResultOfCollectedString =
     new ResultOfCollectedString(NoCollected, xs)
 
-  def no[E, C[_] <: GenTraversable[_]](xs: GenTraversable[C[E]]) =
+  def no[E, C[_] <: scala.collection.GenTraversable[_]](xs: scala.collection.GenTraversable[C[E]]) =
     new ResultOfCollectedGenTraversable(NoCollected, xs)
 
-  def no[T](xs: GenTraversable[Array[T]]) =
+  def no[T](xs: scala.collection.GenTraversable[Array[T]]) =
     new ResultOfCollectedArray(NoCollected, xs)
 
-  def no[K, V](xs: GenTraversable[GenMap[K, V]]) =
+  def no[K, V](xs: scala.collection.GenTraversable[scala.collection.GenMap[K, V]]) =
     new ResultOfCollectedGenMap(NoCollected, xs)
 
-  def no[T](xs: GenTraversable[java.util.Collection[T]]) =
+  def no[T](xs: scala.collection.GenTraversable[java.util.Collection[T]]) =
     new ResultOfCollectedJavaCollection(NoCollected, xs)
 
-  def no[K, V](xs: GenTraversable[java.util.Map[K, V]]) =
+  def no[K, V](xs: scala.collection.GenTraversable[java.util.Map[K, V]]) =
     new ResultOfCollectedJavaMap(NoCollected, xs)
 
-  def between[T](from: Int, upTo:Int, xs: GenTraversable[T]): ResultOfCollectedAny[T] =
+  def between[T](from: Int, upTo:Int, xs: scala.collection.GenTraversable[T]): ResultOfCollectedAny[T] =
     new ResultOfCollectedAny(BetweenCollected(from, upTo), xs)
 
-  def between(from: Int, upTo:Int, xs: GenTraversable[AnyRef]): ResultOfCollectedAnyRef[AnyRef] =
+  def between(from: Int, upTo:Int, xs: scala.collection.GenTraversable[AnyRef]): ResultOfCollectedAnyRef[AnyRef] =
     new ResultOfCollectedAnyRef(BetweenCollected(from, upTo), xs)
 
-  def between(from: Int, upTo:Int, xs: GenTraversable[String]): ResultOfCollectedString =
+  def between(from: Int, upTo:Int, xs: scala.collection.GenTraversable[String]): ResultOfCollectedString =
     new ResultOfCollectedString(BetweenCollected(from, upTo), xs)
 
-  def between[E, C[_] <: GenTraversable[_]](from: Int, upTo:Int, xs: GenTraversable[C[E]]) =
+  def between[E, C[_] <: scala.collection.GenTraversable[_]](from: Int, upTo:Int, xs: scala.collection.GenTraversable[C[E]]) =
     new ResultOfCollectedGenTraversable(BetweenCollected(from, upTo), xs)
 
-  def between[T](from: Int, upTo:Int, xs: GenTraversable[Array[T]]) =
+  def between[T](from: Int, upTo:Int, xs: scala.collection.GenTraversable[Array[T]]) =
     new ResultOfCollectedArray(BetweenCollected(from, upTo), xs)
 
-  def between[K, V](from: Int, upTo:Int, xs: GenTraversable[GenMap[K, V]]) =
+  def between[K, V](from: Int, upTo:Int, xs: scala.collection.GenTraversable[scala.collection.GenMap[K, V]]) =
     new ResultOfCollectedGenMap(BetweenCollected(from, upTo), xs)
 
-  def between[T](from: Int, upTo:Int, xs: GenTraversable[java.util.Collection[T]]) =
+  def between[T](from: Int, upTo:Int, xs: scala.collection.GenTraversable[java.util.Collection[T]]) =
     new ResultOfCollectedJavaCollection(BetweenCollected(from, upTo), xs)
 
-  def between[K, V](from: Int, upTo:Int, xs: GenTraversable[java.util.Map[K, V]]) =
+  def between[K, V](from: Int, upTo:Int, xs: scala.collection.GenTraversable[java.util.Map[K, V]]) =
     new ResultOfCollectedJavaMap(BetweenCollected(from, upTo), xs)
 
-  def atMost[T](num: Int, xs: GenTraversable[T]): ResultOfCollectedAny[T] =
+  def atMost[T](num: Int, xs: scala.collection.GenTraversable[T]): ResultOfCollectedAny[T] =
     new ResultOfCollectedAny(AtMostCollected(num), xs)
 
-  def atMost(num: Int, xs: GenTraversable[AnyRef]): ResultOfCollectedAnyRef[AnyRef] =
+  def atMost(num: Int, xs: scala.collection.GenTraversable[AnyRef]): ResultOfCollectedAnyRef[AnyRef] =
     new ResultOfCollectedAnyRef(AtMostCollected(num), xs)
 
-  def atMost(num: Int, xs: GenTraversable[String]): ResultOfCollectedString =
+  def atMost(num: Int, xs: scala.collection.GenTraversable[String]): ResultOfCollectedString =
     new ResultOfCollectedString(AtMostCollected(num), xs)
 
-  def atMost[E, C[_] <: GenTraversable[_]](num: Int, xs: GenTraversable[C[E]]) =
+  def atMost[E, C[_] <: scala.collection.GenTraversable[_]](num: Int, xs: scala.collection.GenTraversable[C[E]]) =
     new ResultOfCollectedGenTraversable(AtMostCollected(num), xs)
 
-  def atMost[T](num: Int, xs: GenTraversable[Array[T]]) =
+  def atMost[T](num: Int, xs: scala.collection.GenTraversable[Array[T]]) =
     new ResultOfCollectedArray(AtMostCollected(num), xs)
 
-  def atMost[K, V](num: Int, xs: GenTraversable[GenMap[K, V]]) =
+  def atMost[K, V](num: Int, xs: scala.collection.GenTraversable[scala.collection.GenMap[K, V]]) =
     new ResultOfCollectedGenMap(AtMostCollected(num), xs)
 
-  def atMost[T](num: Int, xs: GenTraversable[java.util.Collection[T]]) =
+  def atMost[T](num: Int, xs: scala.collection.GenTraversable[java.util.Collection[T]]) =
     new ResultOfCollectedJavaCollection(AtMostCollected(num), xs)
 
-  def atMost[K, V](num: Int, xs: GenTraversable[java.util.Map[K, V]]) =
+  def atMost[K, V](num: Int, xs: scala.collection.GenTraversable[java.util.Map[K, V]]) =
     new ResultOfCollectedJavaMap(AtMostCollected(num), xs)
   // This is where ShouldMatchers.scala started 
 
@@ -8322,7 +8322,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    *
    * @author Bill Venners
    */
-  class TraversableShouldWrapper[E, L[_] <: GenTraversable[_]](left: L[E]) extends AnyRefShouldWrapper(left) {
+  class TraversableShouldWrapper[E, L[_] <: scala.collection.GenTraversable[_]](left: L[E]) extends AnyRefShouldWrapper(left) {
     
     /**
      * This method enables syntax such as the following:
@@ -8333,7 +8333,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      * </pre>
      */
     def should(containWord: ContainWord): ResultOfContainWordForTraversable[E] = 
-      new ResultOfContainWordForTraversable(left.asInstanceOf[GenTraversable[E]], true)
+      new ResultOfContainWordForTraversable(left.asInstanceOf[scala.collection.GenTraversable[E]], true)
 
     /**
      * This method enables syntax such as the following:
@@ -8701,7 +8701,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    * Implicitly converts an object of type <code>scala.Collection[T]</code> to a <code>CollectionShouldWrapper</code>,
    * to enable <code>should</code> methods to be invokable on that object.
    */
-  implicit def convertToTraversableShouldWrapper[E, L[_] <: GenTraversable[_]](o: L[E]): TraversableShouldWrapper[E, L] = new TraversableShouldWrapper[E, L](o)
+  implicit def convertToTraversableShouldWrapper[E, L[_] <: scala.collection.GenTraversable[_]](o: L[E]): TraversableShouldWrapper[E, L] = new TraversableShouldWrapper[E, L](o)
 
   /**
    * Implicitly converts an object of type <code>scala.Array[T]</code> to a <code>ArrayShouldWrapper[T]</code>,
@@ -8744,7 +8744,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
   /**
    * Turn off implicit conversion of LoneElement, so that if user accidentally mixin LoneElement it does conflict with convertToTraversableShouldWrapper
    */
-  override def convertToTraversableLoneElementWrapper[T](xs: GenTraversable[T]): LoneElementTraversableWrapper[T] = new LoneElementTraversableWrapper[T](xs)
+  override def convertToTraversableLoneElementWrapper[T](xs: scala.collection.GenTraversable[T]): LoneElementTraversableWrapper[T] = new LoneElementTraversableWrapper[T](xs)
 
   // This one doesn't include Holder in its result type because that would conflict with the
   // one returned by enablersForJavaCollection.
