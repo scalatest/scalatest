@@ -1829,27 +1829,6 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * javaCollection should not have size (3)
-     *                           ^
-     * </pre>
-     */
-    def have(resultOfSizeWordApplication: ResultOfSizeWordApplication) {
-      val right = resultOfSizeWordApplication.expectedSize
-      val leftSize = left.size
-      if ((leftSize == right) != shouldBeTrue) {
-        throw newTestFailedException(
-          if (shouldBeTrue)
-            FailureMessages("hadSizeInsteadOfExpectedSize", left, leftSize, right)
-          else
-            FailureMessages("hadExpectedSize", left, right)
-        )
-      }
-    }
-
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
      * javaCollection should not contain ("elephant")
      *                           ^
      * </pre>
@@ -2071,27 +2050,6 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
         case None =>
           if (shouldBeTrue)
             throw newTestFailedException(FailureMessages("didNotContainAn", left, UnquotedString(anMatcher.nounName)))
-      }
-    }
-
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * collection should not have size (3)
-     *                       ^
-     * </pre>
-     */
-    def have(resultOfSizeWordApplication: ResultOfSizeWordApplication) {
-      val right = resultOfSizeWordApplication.expectedSize
-      val leftSize = left.size
-      if ((leftSize == right) != shouldBeTrue) {
-        throw newTestFailedException(
-          if (shouldBeTrue)
-            FailureMessages("hadSizeInsteadOfExpectedSize", left, leftSize, right)
-          else
-            FailureMessages("hadExpectedSize", left, right)
-        )
       }
     }
   }
@@ -8555,72 +8513,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    *
    * @author Bill Venners
    */
-  final class MapShouldWrapper[K, V, L[_, _] <: scala.collection.GenMap[_, _]](left: L[K, V]) {
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * map should be (Map(1 -&gt; "one", 2 -&gt; "two"))
-     *     ^
-     * </pre>
-     */
-    def should(rightMatcherX4: Matcher[L[K, V]]) {
-      ShouldMethodHelper.shouldMatcher(left, rightMatcherX4)
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * map should equal (Map(1 -&gt; "one", 2 -&gt; "two"))
-     *     ^
-     * </pre>
-     */
-    def should[TYPECLASS1[_]](rightMatcherFactory1: MatcherFactory1[L[K, V], TYPECLASS1])(implicit typeClass1: TYPECLASS1[L[K, V]]) {
-      ShouldMethodHelper.shouldMatcher(left, rightMatcherFactory1.matcher)
-    }
-
-    def should[TYPECLASS1[_], TYPECLASS2[_]](rightMatcherFactory2: MatcherFactory2[L[K, V], TYPECLASS1, TYPECLASS2])(implicit typeClass1: TYPECLASS1[L[K, V]], typeClass2: TYPECLASS2[L[K, V]]) {
-      ShouldMethodHelper.shouldMatcher(left, rightMatcherFactory2.matcher)
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * map shouldEqual Map(1 -&gt; "one", 2 -&gt; "two")
-     *     ^
-     * </pre>
-     */
-    def shouldEqual(right: L[K, V])(implicit equality: Equality[L[K, V]]) {
-      if (!equality.areEqual(left, right)) {
-        val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)
-        throw newTestFailedException(FailureMessages("didNotEqual", leftee, rightee))
-      }
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * map should be theSameInstanceAs (anotherMap)
-     *     ^
-     * </pre>
-     */
-    def should(beWord: BeWord): ResultOfBeWordForAnyRef[L[K, V]] = new ResultOfBeWordForAnyRef(left.asInstanceOf[L[K, V]], true)
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * map should have size (3)
-     *     ^
-     * </pre>
-     */
-    def should(haveWord: HaveWord): ResultOfHaveWordForExtent[L[K, V]] = {
-      new ResultOfHaveWordForExtent(left.asInstanceOf[L[K,V]], true)
-    }
+  final class MapShouldWrapper[K, V, L[_, _] <: scala.collection.GenMap[_, _]](left: L[K, V]) extends AnyRefShouldWrapper(left) {
 
     /**
      * This method enables syntax such as the following:
@@ -8642,28 +8535,8 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      *     ^
      * </pre>
      */
-    def should(notWord: NotWord): ResultOfNotWordForMap[K, V, L] = {
+    override def should(notWord: NotWord): ResultOfNotWordForMap[K, V, L] = {
       new ResultOfNotWordForMap(left.asInstanceOf[L[K, V]], false)
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * result should === (Map("I" -&gt; 1, "II" -&gt; 2))
-     *        ^
-     * </pre>
-     */
-    def should[R](inv: TripleEqualsInvocation[R])(implicit constraint: EqualityConstraint[L[K, V], R]) {
-      // if ((left == inv.right) != inv.expectingEqual)
-      if ((constraint.areEqual(left, inv.right)) != inv.expectingEqual)
-        throw newTestFailedException(
-          FailureMessages(
-           if (inv.expectingEqual) "didNotEqual" else "equaled",
-            left,
-            inv.right
-          )
-        )
     }
   }
 
