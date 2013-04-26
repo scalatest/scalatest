@@ -133,7 +133,7 @@ private[scalatest] class RunnerJFrame(
   // The detailsJEditorPane displays the text details of a event.
   private val detailsJEditorPane: JEditorPane = new JEditorPane("text/html", null)
 
-  private val progressBar: ColorBar = new ColorBar()
+  private val progressBarPanel: ProgressBarPanel = new ProgressBarPanel()
   private val statusJPanel: StatusJPanel = new StatusJPanel()
   private val rerunColorBox: ColorBar = new ColorBar()
   private val runJButton: JButton = new JButton(Resources("Run"))
@@ -183,14 +183,10 @@ private[scalatest] class RunnerJFrame(
       }
     )
 
-    val progressBarHolder: JPanel = new JPanel()
-    progressBarHolder.setLayout(new BorderLayout())
-    progressBarHolder.setBorder(new BevelBorder(BevelBorder.LOWERED))
-    progressBarHolder.add(progressBar, BorderLayout.CENTER)
     val pBarRunBtnJPanel: JPanel = new JPanel()
 
     pBarRunBtnJPanel.setLayout(new BorderLayout(5, 5))
-    pBarRunBtnJPanel.add(progressBarHolder, BorderLayout.CENTER)
+    pBarRunBtnJPanel.add(progressBarPanel, BorderLayout.CENTER)
     pBarRunBtnJPanel.add(runJButton, BorderLayout.EAST)
 
     val progressJPanel: JPanel = new JPanel()
@@ -887,12 +883,12 @@ private[scalatest] class RunnerJFrame(
       event match {
         case _: DiscoveryStarting  =>
           usingEventDispatchThread {
-            statusJPanel.discoveryStarting()
+            progressBarPanel.discoveryStarting()
           }
 
         case _: DiscoveryCompleted =>
           usingEventDispatchThread {
-            statusJPanel.discoveryCompleted()
+            progressBarPanel.discoveryCompleted()
           }
 
         case RunStarting(ordinal, testCount, configMap, formatter, location, payload, threadName, timeStamp) =>
@@ -904,10 +900,7 @@ private[scalatest] class RunnerJFrame(
 
           usingEventDispatchThread {
             testsCompletedCount = 0
-            progressBar.setMax(testCount)
-            progressBar.setValue(0)
-            progressBar.setGreen()
-  
+            progressBarPanel.runStarting(testCount)
             statusJPanel.reset()
             statusJPanel.setTestsExpected(testCount)
   
@@ -939,8 +932,7 @@ private[scalatest] class RunnerJFrame(
         case RunAborted(ordinal, message, throwable, duration, summary, formatter, location, payload, threadName, timeStamp) => 
 
           usingEventDispatchThread {
-            statusJPanel.runAborted()
-            progressBar.setRed()
+            progressBarPanel.runAborted()
             registerEvent(event)
             // Must do this here, not in RunningState.runFinished, because the runFinished
             // invocation can happen before this runCompleted invocation, which means that 
@@ -975,7 +967,7 @@ private[scalatest] class RunnerJFrame(
         case SuiteAborted(ordinal, message, suiteName, suiteId, suiteClassName, throwable, duration, formatter, location, rerunner, payload, threadName, timeStamp) => 
 
           usingEventDispatchThread {
-            progressBar.setRed()
+            progressBarPanel.suiteAborted()
             registerEvent(event)
             // Must do this here, not in RunningState.runFinished, because the runFinished
             // invocation can happen before this runCompleted invocation, which means that 
@@ -1003,7 +995,7 @@ private[scalatest] class RunnerJFrame(
           usingEventDispatchThread {
             testsCompletedCount += 1
             statusJPanel.setTestsRun(testsCompletedCount, true)
-            progressBar.setValue(testsCompletedCount)
+            progressBarPanel.setTestsRun(testsCompletedCount)
             registerEvent(event)
             recordedEvents.foreach(registerEvent(_))
           }
@@ -1013,7 +1005,7 @@ private[scalatest] class RunnerJFrame(
           usingEventDispatchThread {
             testsCompletedCount += 1
             statusJPanel.setTestsRun(testsCompletedCount, true)
-            progressBar.setValue(testsCompletedCount)
+            progressBarPanel.setTestsRun(testsCompletedCount)
             registerEvent(event)
             recordedEvents.foreach(registerEvent(_))
           }
@@ -1023,7 +1015,7 @@ private[scalatest] class RunnerJFrame(
           usingEventDispatchThread {
             testsCompletedCount += 1
             statusJPanel.setTestsRun(testsCompletedCount, true)
-            progressBar.setValue(testsCompletedCount)
+            progressBarPanel.setTestsRun(testsCompletedCount)
             registerEvent(event)
             recordedEvents.foreach(registerEvent(_))
           }
@@ -1035,8 +1027,7 @@ private[scalatest] class RunnerJFrame(
             // Passing in false here increments the test failed count
             // in the statusJPanel, which updates the counter on the GUI
             statusJPanel.setTestsRun(testsCompletedCount, false)
-            progressBar.setValue(testsCompletedCount)
-            progressBar.setRed()
+            progressBarPanel.testFailed(testsCompletedCount)
             registerEvent(event)
             recordedEvents.foreach(registerEvent(_))
             // Must do this here, not in RunningState.runFinished, because the runFinished
@@ -1107,7 +1098,7 @@ private[scalatest] class RunnerJFrame(
     runJButton.setEnabled(true)
     rerunJButton.setEnabled(false)
     rerunColorBox.setGray()
-    progressBar.setGray()
+    progressBarPanel.reset()
     statusJPanel.reset()
     statusJPanel.setTestsExpected(0)
     collectedEvents = Nil
@@ -1380,7 +1371,7 @@ private[scalatest] class RunnerJFrame(
         case RunAborted(ordinal, message, throwable, duration, summary, formatter, location, payload, threadName, timeStamp) => 
 
           usingEventDispatchThread {
-            statusJPanel.runAborted()
+            progressBarPanel.runAborted()
             rerunColorBox.setRed()
             val eventHolder = registerRerunEvent(event)
             if (!anErrorHasOccurredAlready) {
@@ -1614,3 +1605,4 @@ private[tools] object RunnerJFrame {
       case PresentRunCompleted => "RUN_COMPLETED"
     }
 }
+
