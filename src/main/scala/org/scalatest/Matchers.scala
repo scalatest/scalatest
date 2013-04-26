@@ -5320,18 +5320,6 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfNotWordForCollectedGenSeq[E, C[_] <: GenSeq[_]](collected: Collected, xs: GenTraversable[C[E]], shouldBeTrue: Boolean) extends 
-    ResultOfNotWordForCollectedGenTraversable[E, C](collected, xs, shouldBeTrue) {
-    
-  }
-  
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="InspectorsMatchers.html"><code>InspectorsMatchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * @author Bill Venners
-   * @author Chee Seng
-   */
   sealed class ResultOfNotWordForCollectedArray[E, T <: Array[E]](collected: Collected, xs: GenTraversable[T], shouldBeTrue: Boolean) extends 
     ResultOfNotWordForCollectedAnyRef[T](collected, xs, shouldBeTrue) {
     
@@ -6702,163 +6690,6 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfCollectedGenSeq[T](collected: Collected, xs: GenTraversable[GenSeq[T]]) {
-    
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * all(colOfSeq) should have length (3)
-     *               ^
-     * </pre>
-     */
-    def should(haveWord: HaveWord): ResultOfHaveWordForCollectedGenSeq[T] = 
-      new ResultOfHaveWordForCollectedGenSeq(collected, xs, true)
-    
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * all(colOfSeq) should be (List(1, 2, 3))
-     *               ^
-     * </pre>
-     */
-    def should(rightMatcher: Matcher[GenSeq[T]]) {
-      doCollected(collected, xs, "should", 1) { e =>
-        rightMatcher(e) match {
-          case MatchResult(false, failureMessage, _, _, _) => 
-            throw newTestFailedException(failureMessage, None, 6)
-          case _ => ()
-        }
-      }
-    }
-    
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * all(xs) should equal (3)
-     *         ^
-     * </pre>
-     */
-    def should[TYPECLASS1[_]](rightMatcherFactory1: MatcherFactory1[GenSeq[T], TYPECLASS1])(implicit typeClass1: TYPECLASS1[GenSeq[T]]) {
-      val rightMatcher = rightMatcherFactory1.matcher
-      doCollected(collected, xs, "should", 1) { e =>
-        rightMatcher(e) match {
-          case MatchResult(false, failureMessage, _, _, _) => 
-            throw newTestFailedException(failureMessage, None, 6)
-          case _ => ()
-        }
-      }
-    }
-    
-    def should[TYPECLASS1[_], TYPECLASS2[_]](rightMatcherFactory2: MatcherFactory2[GenSeq[T], TYPECLASS1, TYPECLASS2])(implicit typeClass1: TYPECLASS1[GenSeq[T]], typeClass2: TYPECLASS2[GenSeq[T]]) {
-      val rightMatcher = rightMatcherFactory2.matcher
-      doCollected(collected, xs, "should", 1) { e =>
-        rightMatcher(e) match {
-          case MatchResult(false, failureMessage, _, _, _) => 
-            throw newTestFailedException(failureMessage, None, 6)
-          case _ => ()
-        }
-      }
-    }
-    
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * all(colOfSeq) should be theSameInstanceAs anotherObject
-     *               ^
-     * </pre>
-     */
-    def should(beWord: BeWord) = new ResultOfBeWordForCollectedAnyRef(collected, xs, true)
-    
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * all(colOfSeq) should not have length (3)
-     *               ^
-     * </pre>
-     */
-    def should(notWord: NotWord): ResultOfNotWordForCollectedGenSeq[T, GenSeq] = 
-      new ResultOfNotWordForCollectedGenSeq(collected, xs, false)
-    
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * all(colOfGenSeq) should contain (containMatcher)
-     *                       ^
-     * </pre>
-     */
-    def should(containWord: ContainWord): ResultOfContainWordForCollectedGenTraversable[T, GenSeq] = 
-      new ResultOfContainWordForCollectedGenTraversable(collected, xs, true)
-  }
-  
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="InspectorsMatchers.html"><code>InspectorsMatchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * @author Bill Venners
-   * @author Chee Seng
-   */
-  final class ResultOfHaveWordForCollectedGenSeq[T](collected: Collected, xs: GenTraversable[GenSeq[T]], shouldBeTrue: Boolean) {
-    
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * all(colOfSeq) should have length (12)
-     *                           ^
-     * </pre>
-     */
-    def length(expectedLength: Long) {
-      doCollected(collected, xs, "length", 1) { e =>
-        val eLength = e.length
-        if ((eLength == expectedLength) != shouldBeTrue)
-          throw newTestFailedException(
-            if (shouldBeTrue)
-              FailureMessages("hadLengthInsteadOfExpectedLength", e, eLength, expectedLength)
-            else
-              FailureMessages("hadExpectedLength", e, expectedLength), 
-            None, 
-            6
-          )
-      }
-    }
-    
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * all(colOfSeq) should have size (12)
-     *                           ^
-     * </pre>
-     */
-    def size(expectedSize: Long) {
-      doCollected(collected, xs, "size", 1) { e =>
-        val eSize = e.size
-        if ((eSize == expectedSize) != shouldBeTrue)
-          throw newTestFailedException(
-            if (shouldBeTrue)
-              FailureMessages("hadSizeInsteadOfExpectedSize", e, eSize, expectedSize)
-            else
-              FailureMessages("hadExpectedSize", e, expectedSize), 
-            None, 
-            6
-          )
-      }
-    }
-  }
-  
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="InspectorsMatchers.html"><code>InspectorsMatchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * @author Bill Venners
-   * @author Chee Seng
-   */
   final class ResultOfContainWordForCollectedGenTraversable[E, C[_] <: GenTraversable[_]](collected: Collected, xs: GenTraversable[C[E]], shouldBeTrue: Boolean) {
     
     /**
@@ -8115,11 +7946,8 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
   def all(xs: GenTraversable[String]): ResultOfCollectedString = 
     new ResultOfCollectedString(AllCollected, xs)
   
-  def all[E, C[_] <: GenTraversable[_]](xs: GenTraversable[GenTraversable[E]]) = 
+  def all[E, C[_] <: GenTraversable[_]](xs: GenTraversable[C[E]]) = 
     new ResultOfCollectedGenTraversable(AllCollected, xs)
-  
-  def all[T](xs: GenTraversable[GenSeq[T]]) = 
-    new ResultOfCollectedGenSeq(AllCollected, xs)
   
   def all[T](xs: GenTraversable[Array[T]]) = 
     new ResultOfCollectedArray(AllCollected, xs)
@@ -8142,11 +7970,8 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
   def atLeast(num: Int, xs: GenTraversable[String]): ResultOfCollectedString = 
     new ResultOfCollectedString(AtLeastCollected(num), xs)
   
-  def atLeast[E, C[_] <: GenTraversable[_]](num: Int, xs: GenTraversable[GenTraversable[E]]) = 
+  def atLeast[E, C[_] <: GenTraversable[_]](num: Int, xs: GenTraversable[C[E]]) = 
     new ResultOfCollectedGenTraversable(AtLeastCollected(num), xs)
-  
-  def atLeast[T](num: Int, xs: GenTraversable[GenSeq[T]]) = 
-    new ResultOfCollectedGenSeq(AtLeastCollected(num), xs)
   
   def atLeast[T](num: Int, xs: GenTraversable[Array[T]]) = 
     new ResultOfCollectedArray(AtLeastCollected(num), xs)
@@ -8169,11 +7994,8 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
   def every(xs: GenTraversable[String]): ResultOfCollectedString = 
     new ResultOfCollectedString(EveryCollected, xs)
   
-  def every[E, C[_] <: GenTraversable[_]](xs: GenTraversable[GenTraversable[E]]) = 
+  def every[E, C[_] <: GenTraversable[_]](xs: GenTraversable[C[E]]) = 
     new ResultOfCollectedGenTraversable(EveryCollected, xs)
-  
-  def every[T](xs: GenTraversable[GenSeq[T]]) = 
-    new ResultOfCollectedGenSeq(EveryCollected, xs)
   
   def every[T](xs: GenTraversable[Array[T]]) = 
     new ResultOfCollectedArray(EveryCollected, xs)
@@ -8196,11 +8018,8 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
   def exactly(num: Int, xs: GenTraversable[String]): ResultOfCollectedString = 
     new ResultOfCollectedString(ExactlyCollected(num), xs)
   
-  def exactly[E, C[_] <: GenTraversable[_]](num: Int, xs: GenTraversable[GenTraversable[E]]) = 
+  def exactly[E, C[_] <: GenTraversable[_]](num: Int, xs: GenTraversable[C[E]]) = 
     new ResultOfCollectedGenTraversable(ExactlyCollected(num), xs)
-  
-  def exactly[T](num: Int, xs: GenTraversable[GenSeq[T]]) = 
-    new ResultOfCollectedGenSeq(ExactlyCollected(num), xs)
   
   def exactly[T](num: Int, xs: GenTraversable[Array[T]]) = 
     new ResultOfCollectedArray(ExactlyCollected(num), xs)
@@ -8223,11 +8042,8 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
   def no(xs: GenTraversable[String]): ResultOfCollectedString =
     new ResultOfCollectedString(NoCollected, xs)
 
-  def no[E, C[_] <: GenTraversable[_]](xs: GenTraversable[GenTraversable[E]]) =
+  def no[E, C[_] <: GenTraversable[_]](xs: GenTraversable[C[E]]) =
     new ResultOfCollectedGenTraversable(NoCollected, xs)
-
-  def no[T](xs: GenTraversable[GenSeq[T]]) =
-    new ResultOfCollectedGenSeq(NoCollected, xs)
 
   def no[T](xs: GenTraversable[Array[T]]) =
     new ResultOfCollectedArray(NoCollected, xs)
@@ -8250,11 +8066,8 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
   def between(from: Int, upTo:Int, xs: GenTraversable[String]): ResultOfCollectedString =
     new ResultOfCollectedString(BetweenCollected(from, upTo), xs)
 
-  def between[E, C[_] <: GenTraversable[_]](from: Int, upTo:Int, xs: GenTraversable[GenTraversable[E]]) =
+  def between[E, C[_] <: GenTraversable[_]](from: Int, upTo:Int, xs: GenTraversable[C[E]]) =
     new ResultOfCollectedGenTraversable(BetweenCollected(from, upTo), xs)
-
-  def between[T](from: Int, upTo:Int, xs: GenTraversable[GenSeq[T]]) =
-    new ResultOfCollectedGenSeq(BetweenCollected(from, upTo), xs)
 
   def between[T](from: Int, upTo:Int, xs: GenTraversable[Array[T]]) =
     new ResultOfCollectedArray(BetweenCollected(from, upTo), xs)
@@ -8277,11 +8090,8 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
   def atMost(num: Int, xs: GenTraversable[String]): ResultOfCollectedString =
     new ResultOfCollectedString(AtMostCollected(num), xs)
 
-  def atMost[E, C[_] <: GenTraversable[_]](num: Int, xs: GenTraversable[GenTraversable[E]]) =
+  def atMost[E, C[_] <: GenTraversable[_]](num: Int, xs: GenTraversable[C[E]]) =
     new ResultOfCollectedGenTraversable(AtMostCollected(num), xs)
-
-  def atMost[T](num: Int, xs: GenTraversable[GenSeq[T]]) =
-    new ResultOfCollectedGenSeq(AtMostCollected(num), xs)
 
   def atMost[T](num: Int, xs: GenTraversable[Array[T]]) =
     new ResultOfCollectedArray(AtMostCollected(num), xs)
