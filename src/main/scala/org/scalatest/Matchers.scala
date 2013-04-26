@@ -2265,49 +2265,6 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
             throw newTestFailedException(FailureMessages("didNotContainAn", left, UnquotedString(anMatcher.nounName)))
       }
     }
-
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * Array(1, 2) should not have size (3)
-     *                        ^
-     * </pre>
-     */
-    def have(resultOfSizeWordApplication: ResultOfSizeWordApplication) {
-      val right = resultOfSizeWordApplication.expectedSize
-      val leftSize = left.size
-      if ((leftSize == right) != shouldBeTrue) {
-        throw newTestFailedException(
-          if (shouldBeTrue)
-            FailureMessages("hadSizeInsteadOfExpectedSize", left, leftSize, right)
-          else
-            FailureMessages("hadExpectedSize", left, right)
-        )
-      }
-    }
-
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * Array(1, 2) should not have length (12)
-     *                        ^
-     * </pre>
-     */
-    def have(resultOfLengthWordApplication: ResultOfLengthWordApplication) {
-      val right = resultOfLengthWordApplication.expectedLength
-      val leftLength = left.length
-      if ((leftLength == right) != shouldBeTrue) {
-          throw newTestFailedException(
-            if (shouldBeTrue)
-              FailureMessages("hadLengthInsteadOfExpectedLength", left, leftLength, right)
-            else
-              FailureMessages("hadExpectedLength", left, right)
-
-          )
-      }
-    }
   }
   
   /**
@@ -2820,6 +2777,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
       }
     }
 
+// For Any, TODO: Scaladoc
     def have(resultOfLengthWordApplication: ResultOfLengthWordApplication)(implicit len: Length[T]) {
       val right = resultOfLengthWordApplication.expectedLength
       val leftLength = len.extentOf(left)
@@ -2835,6 +2793,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
       }
     }
 
+// For Any, TODO: Scaladoc
     def have(resultOfSizeWordApplication: ResultOfSizeWordApplication)(implicit sz: Size[T]) {
       val right = resultOfSizeWordApplication.expectedSize
       val leftSize = sz.extentOf(left)
@@ -3098,27 +3057,6 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    */
   final class ResultOfNotWordForString(left: String, shouldBeTrue: Boolean)
       extends ResultOfNotWordForAnyRef[String](left, shouldBeTrue) {
-
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * string should not have length (12)
-     *                   ^
-     * </pre>
-     */
-    def have(resultOfLengthWordApplication: ResultOfLengthWordApplication) {
-      val right = resultOfLengthWordApplication.expectedLength
-      val leftLength = left.length
-      if ((leftLength == right) != shouldBeTrue) {
-          throw newTestFailedException(
-            if (shouldBeTrue)
-              FailureMessages("hadLengthInsteadOfExpectedLength", left, leftLength, right)
-            else
-              FailureMessages("hadExpectedLength", left, right)
-          )
-      }
-    }
 
     /**
      * This method enables the following syntax: 
@@ -3748,68 +3686,6 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    * </pre>
    */
   val regex = new RegexWord
-
-  /**
-   * This method enables the following syntax: 
-   *
-   * <pre class="stHighlight">
-   * "eight" should not include substring ("seven")
-   *                            ^
-   * </pre>
-  val substring = new SubstringWord
-   */
-
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * @author Bill Venners
-   */
-  final class ResultOfNotWordForSize[A <: AnyRef : Size](left: A, shouldBeTrue: Boolean)
-      extends ResultOfNotWordForAnyRef(left, shouldBeTrue) {
-
-/*  I just added this whole thing in here for completeness when doing SizeShouldWrapper. Write some tests to prove it is needed.
-// TODO: This should be for "sizey should not have size (12)" Try that test.
-    def have(resultOfLengthWordApplication: ResultOfLengthWordApplication) {
-      val right = resultOfLengthWordApplication.expectedLength
-      val leftLength = left.length
-      if ((leftLength == right) != shouldBeTrue) {
-          throw newTestFailedException(
-            if (shouldBeTrue)
-              FailureMessages("hadLengthInsteadOfExpectedLength", left, leftLength, right)
-            else
-              FailureMessages("hadExpectedLength", left, right)
-          )
-      }
-    }
-*/
-  }
-
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * @author Bill Venners
-   */
-  final class ResultOfNotWordForLength[A <: AnyRef : Length](left: A, shouldBeTrue: Boolean)
-      extends ResultOfNotWordForAnyRef(left, shouldBeTrue) {
-
-/* TODO What's going on? Why can I drop this and still get a compile
-// TODO: This should be for "lengthy should not have length (12)" Try that test.
-    def have(resultOfLengthWordApplication: ResultOfLengthWordApplication) {
-      val right = resultOfLengthWordApplication.expectedLength
-      val leftLength = left.length
-      if ((leftLength == right) != shouldBeTrue) {
-          throw newTestFailedException(
-            if (shouldBeTrue)
-              FailureMessages("hadLengthInsteadOfExpectedLength", left, leftLength, right)
-            else
-              FailureMessages("hadExpectedLength", left, right)
-          )
-      }
-    }
-*/
-  }
 
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
@@ -4823,6 +4699,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
       }
     }
     
+    // Any for not TODO: Scaladoc
     // TODO: Write tests and implement cases for:
     // have(length (9), title ("hi")) (this one we'll use this have method but add a HavePropertyMatcher* arg)
     // have(size (9), title ("hi")) (this one we'll use the next have method but add a HavePropertyMatcher* arg)
@@ -4845,6 +4722,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
       }
     }
 
+    // Any for not TODO: Scaladoc
     def have(resultOfSizeWordApplication: ResultOfSizeWordApplication)(implicit sz: Size[T]) {
       doCollected(collected, xs, "have", 1) { e => 
         val right = resultOfSizeWordApplication.expectedSize
