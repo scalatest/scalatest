@@ -76,5 +76,9 @@ class StatusSpec extends fixture.Spec {
       status.setCompleted()
       assert(status.isCompleted)
     }
+
+    def `should be serializable`(status: FixtureParam) {
+      SharedHelpers.serializeRoundtrip(status)
+    }
   }
 }

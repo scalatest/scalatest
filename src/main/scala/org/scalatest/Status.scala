@@ -147,7 +147,7 @@ object FailedStatus extends Status {
 @serializable
 private[scalatest] final class ScalaTestStatefulStatus extends Status {
 
-  private final val latch = new CountDownLatch(1)
+  @transient private final val latch = new CountDownLatch(1)
 
   @volatile private var succeeded = true
 
@@ -207,7 +207,7 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status {
  */
 @serializable
 final class StatefulStatus extends Status {
-  private final val latch = new CountDownLatch(1)
+  @transient private final val latch = new CountDownLatch(1)
   @volatile private var succeeded = true
   private final val queue = new ConcurrentLinkedQueue[Boolean => Unit]
 
@@ -299,7 +299,7 @@ final class CompositeStatus(statuses: Set[Status]) extends Status {
   
   // TODO: Ensure this is visible to another thread, because I'm letting the reference
   // escape with my for loop below prior to finishing this object's construction.
-  private final val latch = new CountDownLatch(statuses.size)
+  @transient private final val latch = new CountDownLatch(statuses.size)
 
   @volatile private var succeeded = true
 
