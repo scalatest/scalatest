@@ -17,7 +17,7 @@ package org.scalatest
 
 class StatefulStatusSpec extends fixture.Spec {
 
-  protected type FixtureParam = { 
+  protected type FixtureParam = {
     def setCompleted()
     def isCompleted: Boolean
     def succeeds(): Boolean
@@ -61,14 +61,14 @@ class StatefulStatusSpec extends fixture.Spec {
       status.setCompleted()
       status.waitUntilCompleted()
     }
-    
+
     def `should throw IllegalStateException when setFailed() is called after setCompleted() is set`(status: FixtureParam) {
       status.setCompleted()
       intercept[IllegalStateException] {
         status.setFailed()
       }
     }
-    
+
     def `should allow setCompleted() to be called multiple times`(status: FixtureParam) {
       status.setCompleted()
       assert(status.isCompleted)
@@ -205,6 +205,11 @@ class StatefulStatusSpec extends fixture.Spec {
       assert(firstSucceeded === false)
       assert(secondSucceeded === false)
     }
+
+    def `should be serializable`(status: FixtureParam) {
+      assert(SharedHelpers.serializeRoundtrip(status) === status)
+    }
+
   }
 }
 

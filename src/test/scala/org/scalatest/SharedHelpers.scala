@@ -1105,6 +1105,15 @@ trait SharedHelpers extends Assertions {
     elements.foreach(t => javaMap.put(t._1, t._2))
     javaMap
   }
+
+  def serializeRoundtrip[A](a: A): A = {
+    val baos = new java.io.ByteArrayOutputStream
+    val oos = new java.io.ObjectOutputStream(baos)
+    oos.writeObject(a)
+    oos.flush()
+    val ois = new java.io.ObjectInputStream(new java.io.ByteArrayInputStream(baos.toByteArray))
+    ois.readObject.asInstanceOf[A]
+  }
 }
 
 // Selfless trait pattern
