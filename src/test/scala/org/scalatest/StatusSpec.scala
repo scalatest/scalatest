@@ -78,7 +78,7 @@ class StatusSpec extends fixture.Spec {
     }
 
     def `should be serializable`(status: FixtureParam) {
-      assert(SharedHelpers.serializeRoundtrip(status) === status)
+      SharedHelpers.serializeRoundtrip(status)
     }
   }
 }
