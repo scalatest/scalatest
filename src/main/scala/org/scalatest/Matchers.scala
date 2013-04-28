@@ -3748,7 +3748,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    * @author Bill Venners
    */
   class ResultOfContainWordForTraversable[E](val left: scala.collection.GenTraversable[E], val shouldBeTrue: Boolean = true) extends ContainMethods[E]
-  
+
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
    * the matchers DSL.
