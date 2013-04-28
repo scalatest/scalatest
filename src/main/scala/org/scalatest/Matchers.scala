@@ -1102,146 +1102,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
             expectedValue)
         )
     }
-    
-/*
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * map should contain theSameElementsAs List(1 -> "one", 2 -> "two", 3 -> "three")
-     *                    ^
-     * </pre>
-     */
-    def theSameElementsAs(right: scala.collection.GenTraversable[(K, V)])(implicit equality: Equality[(K, V)]) {
-      matchContainMatcher(left, new TheSameElementsAsContainMatcher(right, equality), shouldBeTrue)
-    }
-    
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * map should contain theSameIteratedElementsAs List(1 -> "one", 2 -> "two", 3 -> "three")
-     *                    ^
-     * </pre>
-     */
-    def theSameIteratedElementsAs(right: scala.collection.GenTraversable[(K, V)])(implicit equality: Equality[(K, V)]) {
-      matchContainMatcher(left, new TheSameIteratedElementsAsContainMatcher(right, equality), shouldBeTrue)
-    }
-    
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * map should contain allOf (1 -> "one", 2 -> "two", 3 -> "three")
-     *                    ^
-     * </pre>
-     */
-    def allOf(right: (K, V)*)(implicit equality: Equality[(K, V)]) {
-      matchContainMatcher(left, new AllOfContainMatcher(right, equality), shouldBeTrue)
-    }
-    
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * map should contain inOrder (1 -> "one", 2 -> "two", 3 -> "three")
-     *                    ^
-     * </pre>
-     */
-    def inOrder(right: (K, V)*)(implicit equality: Equality[(K, V)]) {
-      matchContainMatcher(left, new InOrderContainMatcher(right, equality), shouldBeTrue)
-    }
-    
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * map should contain oneOf (1 -> "one", 2 -> "two", 3 -> "three")
-     *                    ^
-     * </pre>
-     */
-    def oneOf(right: (K, V)*)(implicit equality: Equality[(K, V)]) {
-      matchContainMatcher(left, new OneOfContainMatcher(right, equality), shouldBeTrue)
-    }
-    
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * map should contain only (1 -> "one", 2 -> "two", 3 -> "three")
-     *                    ^
-     * </pre>
-     */
-    def only(right: (K, V)*)(implicit equality: Equality[(K, V)]) {
-      matchContainMatcher(left, new OnlyContainMatcher(right, equality), shouldBeTrue)
-    }
-    
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * map should contain inOrderOnly (1 -> "one", 2 -> "two", 3 -> "three")
-     *                    ^
-     * </pre>
-     */
-    def inOrderOnly(right: (K, V)*)(implicit equality: Equality[(K, V)]) {
-      matchContainMatcher(left, new InOrderOnlyContainMatcher(right, equality), shouldBeTrue)
-    }
-    
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * map should contain noneOf (1 -> "one", 2 -> "two", 3 -> "three")
-     *                    ^
-     * </pre>
-     */
-    def noneOf(right: (K, V)*)(implicit equality: Equality[(K, V)]) {
-      matchContainMatcher(left, new NoneOfContainMatcher(right, equality), shouldBeTrue)
-    }
-    
-    /**
-     * This method enables the following syntax (positiveNumberKey is a <code>AMatcher</code>):
-     *
-     * <pre class="stHighlight">
-     * map should contain a positiveNumberKey
-     *                    ^
-     * </pre>
-     */
-    def a(aMatcher: AMatcher[(K, V)]) {
-      left.find(aMatcher(_).matches) match {
-        case Some(e) => 
-          if (!shouldBeTrue) {
-            val result = aMatcher(e)
-            throw newTestFailedException(FailureMessages("containedA", left, UnquotedString(aMatcher.nounName), UnquotedString(result.negatedFailureMessage)))
-          }
-        case None =>
-          if (shouldBeTrue)
-            throw newTestFailedException(FailureMessages("didNotContainA", left, UnquotedString(aMatcher.nounName)))
-      }
-    }
-    
-    /**
-     * This method enables the following syntax (oddNumberKey is a <code>AnMatcher</code>):
-     *
-     * <pre class="stHighlight">
-     * map should contain an oddNumberKey
-     *                    ^
-     * </pre>
-     */
-    def an(anMatcher: AnMatcher[(K, V)]) {
-      left.find(anMatcher(_).matches) match {
-        case Some(e) => 
-          if (!shouldBeTrue) {
-            val result = anMatcher(e)
-            throw newTestFailedException(FailureMessages("containedAn", left, UnquotedString(anMatcher.nounName), UnquotedString(result.negatedFailureMessage)))
-          }
-        case None =>
-          if (shouldBeTrue)
-            throw newTestFailedException(FailureMessages("didNotContainAn", left, UnquotedString(anMatcher.nounName)))
-      }
-    }
-*/
   }
 
   /**
@@ -1620,81 +1480,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    * <code>HavePropertyMatcherGenerator</code>, to enable the symbol to be used with the <code>have ('author ("Dickens"))</code> syntax.
    */
   implicit def convertSymbolToHavePropertyMatcherGenerator(symbol: Symbol): HavePropertyMatcherGenerator = new HavePropertyMatcherGenerator(symbol)
-
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * @author Bill Venners
-   */
-  final class ResultOfHaveWordForJavaMap(left: java.util.Map[_, _], shouldBeTrue: Boolean) {
-
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * javaMap should have size (10)
-     *                     ^
-     * </pre>
-     */
-    def size(expectedSize: Int) {
-      val leftSize = left.size
-      if ((leftSize == expectedSize) != shouldBeTrue)
-        throw newTestFailedException(
-          if (shouldBeTrue)
-            FailureMessages("hadSizeInsteadOfExpectedSize", left, leftSize, expectedSize)
-          else
-            FailureMessages("hadExpectedSize", left, expectedSize)
-        )
-    }
-  }
-  
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * @author Bill Venners
-   */
-class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
-
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * array should have size (10)
-     *                   ^
-     * </pre>
-     */
-    def size(expectedSize: Int) {
-      val leftSize = left.size
-      if ((leftSize == expectedSize) != shouldBeTrue)
-        throw newTestFailedException(
-          if (shouldBeTrue)
-            FailureMessages("hadSizeInsteadOfExpectedSize", left, leftSize, expectedSize)
-          else
-            FailureMessages("hadExpectedSize", left, expectedSize)
-        )
-    }
-
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * array should have length (20)
-     *                   ^
-     * </pre>
-     */
-    def length(expectedLength: Int) {
-      val leftLength = left.length
-      if ((leftLength == expectedLength) != shouldBeTrue)
-        throw newTestFailedException(
-          if (shouldBeTrue)
-            FailureMessages("hadLengthInsteadOfExpectedLength", left, leftLength, expectedLength)
-          else
-            FailureMessages("hadExpectedLength", left, expectedLength)
-        )
-    }
-  }
 
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
@@ -3963,173 +3748,6 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    * @author Bill Venners
    */
   class ResultOfContainWordForTraversable[E](val left: scala.collection.GenTraversable[E], val shouldBeTrue: Boolean = true) extends ContainMethods[E]
-
-/*
- {
-  
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * traversable should contain theSameElementsAs anotherTraversable
-     *                            ^
-     * </pre>
-     */
-    def theSameElementsAs(right: scala.collection.GenTraversable[T])(implicit equality: Equality[T]) {
-      matchContainMatcher(left, new TheSameElementsAsContainMatcher(right, equality), shouldBeTrue)
-    }
-    
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * traversable should contain theSameElementsAs array
-     *                            ^
-     * </pre>
-     */
-    def theSameElementsAs(right: Array[T])(implicit equality: Equality[T]) {
-      matchContainMatcher(left, new TheSameElementsAsContainMatcher(new ArrayWrapper(right), equality), shouldBeTrue)
-    }
-    
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * traversable should contain theSameIteratedElementsAs anotherTraversable
-     *                            ^
-     * </pre>
-     */
-    def theSameIteratedElementsAs(right: scala.collection.GenTraversable[T])(implicit equality: Equality[T]) {
-      matchContainMatcher(left, new TheSameIteratedElementsAsContainMatcher(right, equality), shouldBeTrue)
-    }
-    
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * traversable should contain theSameIteratedElementsAs array
-     *                            ^
-     * </pre>
-     */
-    def theSameIteratedElementsAs(right: Array[T])(implicit equality: Equality[T]) {
-      matchContainMatcher(left, new TheSameIteratedElementsAsContainMatcher(new ArrayWrapper(right), equality), shouldBeTrue)
-    }
-    
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * traversable should contain allOf (1, 2)
-     *                            ^
-     * </pre>
-     */
-    def allOf(right: T*)(implicit equality: Equality[T]) {
-      matchContainMatcher(left, new AllOfContainMatcher(right, equality), shouldBeTrue)
-    }
-    
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * traversable should contain inOrder (1, 2)
-     *                            ^
-     * </pre>
-     */
-    def inOrder(right: T*)(implicit equality: Equality[T]) {
-      matchContainMatcher(left, new InOrderContainMatcher(right, equality), shouldBeTrue)
-    }
-    
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * traversable should contain oneOf (1, 2)
-     *                            ^
-     * </pre>
-     */
-    def oneOf(right: T*)(implicit equality: Equality[T]) {
-      matchContainMatcher(left, new OneOfContainMatcher(right, equality), shouldBeTrue)
-    }
-    
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * traversable should contain only (1, 2)
-     *                            ^
-     * </pre>
-     */
-    def only(right: T*)(implicit equality: Equality[T]) {
-      matchContainMatcher(left, new OnlyContainMatcher(right, equality), shouldBeTrue)
-    }
-    
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * traversable should contain inOrderOnly (1, 2)
-     *                            ^
-     * </pre>
-     */
-    def inOrderOnly(right: T*)(implicit equality: Equality[T]) {
-      matchContainMatcher(left, new InOrderOnlyContainMatcher(right, equality), shouldBeTrue)
-    }
-    
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * traversable should contain noneOf (1, 2)
-     *                            ^
-     * </pre>
-     */
-    def noneOf(right: T*)(implicit equality: Equality[T]) {
-      matchContainMatcher(left, new NoneOfContainMatcher(right, equality), shouldBeTrue)
-    }
-    
-    /**
-     * This method enables the following syntax (positiveNumber is a <code>AMatcher</code>):
-     *
-     * <pre class="stHighlight">
-     * traversable should contain a positiveNumber
-     *                            ^
-     * </pre>
-     */
-    def a(aMatcher: AMatcher[T]) {
-      left.find(aMatcher(_).matches) match {
-        case Some(e) => 
-          if (!shouldBeTrue) {
-            val result = aMatcher(e)
-            throw newTestFailedException(FailureMessages("containedA", left, UnquotedString(aMatcher.nounName), UnquotedString(result.negatedFailureMessage)))
-          }
-        case None =>
-          if (shouldBeTrue)
-            throw newTestFailedException(FailureMessages("didNotContainA", left, UnquotedString(aMatcher.nounName)))
-      }
-    }
-    
-    /**
-     * This method enables the following syntax (oddNumber is a <code>AMatcher</code>):
-     *
-     * <pre class="stHighlight">
-     * traversable should contain an oddNumber
-     *                            ^
-     * </pre>
-     */
-    def an(anMatcher: AnMatcher[T]) {
-      left.find(anMatcher(_).matches) match {
-        case Some(e) => 
-          if (!shouldBeTrue) {
-            val result = anMatcher(e)
-            throw newTestFailedException(FailureMessages("containedAn", left, UnquotedString(anMatcher.nounName), UnquotedString(result.negatedFailureMessage)))
-          }
-        case None =>
-          if (shouldBeTrue)
-            throw newTestFailedException(FailureMessages("didNotContainAn", left, UnquotedString(anMatcher.nounName)))
-      }
-    }
-  }
-*/
   
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
@@ -7452,8 +7070,9 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      *                ^
      * </pre>
      */
-    def should(containWord: ContainWord) = 
-      new ResultOfContainWordForJavaCollection(left.asInstanceOf[java.util.Collection[E]], true)
+    def should(containWord: ContainWord): ResultOfContainWordForJavaCollection[E, L] = 
+      // new ResultOfContainWordForJavaCollection(left.asInstanceOf[java.util.Collection[E]], true)
+      new ResultOfContainWordForJavaCollection(left, true)
 
     /**
      * This method enables syntax such as the following:
@@ -7478,35 +7097,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    *
    * @author Bill Venners
    */
-  final class JavaMapShouldWrapper[K, V, L[_, _] <: java.util.Map[_, _]](left: L[K, V]) {
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * javaMap should be (someJavaMap)
-     *         ^
-     * </pre>
-     */
-    def should(rightMatcherX8: Matcher[L[K, V]]) {
-      ShouldMethodHelper.shouldMatcher(left, rightMatcherX8)
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * javaMap should equal (someJavaMap)
-     *         ^
-     * </pre>
-     */
-    def should[TYPECLASS1[_]](rightMatcherFactory1: MatcherFactory1[L[K, V], TYPECLASS1])(implicit typeClass1: TYPECLASS1[L[K, V]]) {
-      ShouldMethodHelper.shouldMatcher(left, rightMatcherFactory1.matcher)
-    }
-
-    def should[TYPECLASS1[_], TYPECLASS2[_]](rightMatcherFactory2: MatcherFactory2[L[K, V], TYPECLASS1, TYPECLASS2])(implicit typeClass1: TYPECLASS1[L[K, V]], typeClass2: TYPECLASS2[L[K, V]]) {
-      ShouldMethodHelper.shouldMatcher(left, rightMatcherFactory2.matcher)
-    }
+  final class JavaMapShouldWrapper[K, V, L[_, _] <: java.util.Map[_, _]](left: L[K, V]) extends AnyRefShouldWrapper(left) {
 
     /**
      * This method enables syntax such as the following:
@@ -7524,53 +7115,12 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
      * This method enables syntax such as the following:
      *
      * <pre class="stHighlight">
-     * javaMap should have size (3)
-     *         ^
-     * </pre>
-     */
-    def should(haveWord: HaveWord): ResultOfHaveWordForJavaMap = {
-      new ResultOfHaveWordForJavaMap(left, true)
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
      * javaMap should not have length (3)
      *         ^
      * </pre>
      */
-    def should(notWord: NotWord): ResultOfNotWordForJavaMap[K, V, L] = {
+    override def should(notWord: NotWord): ResultOfNotWordForJavaMap[K, V, L] = {
       new ResultOfNotWordForJavaMap[K, V, L](left, false)
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * javaMap should be theSameInstanceAs anotherObject
-     *         ^
-     * </pre>
-     */
-    def should(beWord: BeWord): ResultOfBeWordForAnyRef[java.util.Map[K, V]] = new ResultOfBeWordForAnyRef(left.asInstanceOf[java.util.Map[K, V]], true)
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * result should === (javaMap)
-     *        ^
-     * </pre>
-     */
-    def should[R](inv: TripleEqualsInvocation[R])(implicit constraint: EqualityConstraint[L[K, V], R]) {
-      if ((constraint.areEqual(left, inv.right)) != inv.expectingEqual)
-        throw newTestFailedException(
-          FailureMessages(
-           if (inv.expectingEqual) "didNotEqual" else "equaled",
-            left,
-            inv.right
-          )
-        )
     }
   }
 
