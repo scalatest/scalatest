@@ -178,7 +178,7 @@ class BeforeNAfterSuite extends FunSuite {
         }
         catch {
           case _: NotAllowedException => notAllowedExceptionThrown = true
-          case e => throw e
+          case e: Throwable => throw e
         }
       }
     }
@@ -222,7 +222,7 @@ class BeforeNAfterSuite extends FunSuite {
         }
         catch {
           case _: NotAllowedException => notAllowedExceptionThrown = true
-          case e => throw e
+          case e: Throwable => throw e
         }
       }
     }
