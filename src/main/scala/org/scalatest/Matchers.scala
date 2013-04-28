@@ -960,7 +960,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
       throw newTestFailedException(
         if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage, 
         None, 
-        2
+        3
       )
   }
   
@@ -1064,7 +1064,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    *
    * @author Bill Venners
    */
-  final class ResultOfContainWordForMap[K, V](left: scala.collection.GenMap[K, V], shouldBeTrue: Boolean) {
+  final class ResultOfContainWordForMap[K, V](val left: scala.collection.GenMap[K, V], val shouldBeTrue: Boolean) extends ContainMethods[(K, V)] {
 
     /**
      * This method enables the following syntax:
@@ -1103,6 +1103,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
         )
     }
     
+/*
     /**
      * This method enables the following syntax: 
      *
@@ -1240,6 +1241,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
             throw newTestFailedException(FailureMessages("didNotContainAn", left, UnquotedString(anMatcher.nounName)))
       }
     }
+*/
   }
 
   /**
@@ -3786,13 +3788,184 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
   def produce[T](implicit manifest: Manifest[T]): ResultOfProduceInvocation[T] =
     new ResultOfProduceInvocation(manifest.erasure.asInstanceOf[Class[T]])
 
+  trait ContainMethods[T] {
+  
+    val left: scala.collection.GenTraversable[T]
+    val shouldBeTrue: Boolean
+
+    /**
+     * This method enables the following syntax: 
+     *
+     * <pre class="stHighlight">
+     * traversable should contain theSameElementsAs anotherTraversable
+     *                            ^
+     * </pre>
+     */
+    def theSameElementsAs(right: scala.collection.GenTraversable[T])(implicit equality: Equality[T]) {
+      matchContainMatcher(left, new TheSameElementsAsContainMatcher(right, equality), shouldBeTrue)
+    }
+    
+    /**
+     * This method enables the following syntax: 
+     *
+     * <pre class="stHighlight">
+     * traversable should contain theSameElementsAs array
+     *                            ^
+     * </pre>
+     */
+    def theSameElementsAs(right: Array[T])(implicit equality: Equality[T]) {
+      matchContainMatcher(left, new TheSameElementsAsContainMatcher(new ArrayWrapper(right), equality), shouldBeTrue)
+    }
+    
+    /**
+     * This method enables the following syntax: 
+     *
+     * <pre class="stHighlight">
+     * traversable should contain theSameIteratedElementsAs anotherTraversable
+     *                            ^
+     * </pre>
+     */
+    def theSameIteratedElementsAs(right: scala.collection.GenTraversable[T])(implicit equality: Equality[T]) {
+      matchContainMatcher(left, new TheSameIteratedElementsAsContainMatcher(right, equality), shouldBeTrue)
+    }
+    
+    /**
+     * This method enables the following syntax: 
+     *
+     * <pre class="stHighlight">
+     * traversable should contain theSameIteratedElementsAs array
+     *                            ^
+     * </pre>
+     */
+    def theSameIteratedElementsAs(right: Array[T])(implicit equality: Equality[T]) {
+      matchContainMatcher(left, new TheSameIteratedElementsAsContainMatcher(new ArrayWrapper(right), equality), shouldBeTrue)
+    }
+    
+    /**
+     * This method enables the following syntax: 
+     *
+     * <pre class="stHighlight">
+     * traversable should contain allOf (1, 2)
+     *                            ^
+     * </pre>
+     */
+    def allOf(right: T*)(implicit equality: Equality[T]) {
+      matchContainMatcher(left, new AllOfContainMatcher(right, equality), shouldBeTrue)
+    }
+    
+    /**
+     * This method enables the following syntax: 
+     *
+     * <pre class="stHighlight">
+     * traversable should contain inOrder (1, 2)
+     *                            ^
+     * </pre>
+     */
+    def inOrder(right: T*)(implicit equality: Equality[T]) {
+      matchContainMatcher(left, new InOrderContainMatcher(right, equality), shouldBeTrue)
+    }
+    
+    /**
+     * This method enables the following syntax: 
+     *
+     * <pre class="stHighlight">
+     * traversable should contain oneOf (1, 2)
+     *                            ^
+     * </pre>
+     */
+    def oneOf(right: T*)(implicit equality: Equality[T]) {
+      matchContainMatcher(left, new OneOfContainMatcher(right, equality), shouldBeTrue)
+    }
+    
+    /**
+     * This method enables the following syntax: 
+     *
+     * <pre class="stHighlight">
+     * traversable should contain only (1, 2)
+     *                            ^
+     * </pre>
+     */
+    def only(right: T*)(implicit equality: Equality[T]) {
+      matchContainMatcher(left, new OnlyContainMatcher(right, equality), shouldBeTrue)
+    }
+    
+    /**
+     * This method enables the following syntax: 
+     *
+     * <pre class="stHighlight">
+     * traversable should contain inOrderOnly (1, 2)
+     *                            ^
+     * </pre>
+     */
+    def inOrderOnly(right: T*)(implicit equality: Equality[T]) {
+      matchContainMatcher(left, new InOrderOnlyContainMatcher(right, equality), shouldBeTrue)
+    }
+    
+    /**
+     * This method enables the following syntax: 
+     *
+     * <pre class="stHighlight">
+     * traversable should contain noneOf (1, 2)
+     *                            ^
+     * </pre>
+     */
+    def noneOf(right: T*)(implicit equality: Equality[T]) {
+      matchContainMatcher(left, new NoneOfContainMatcher(right, equality), shouldBeTrue)
+    }
+    
+    /**
+     * This method enables the following syntax (positiveNumber is a <code>AMatcher</code>):
+     *
+     * <pre class="stHighlight">
+     * traversable should contain a positiveNumber
+     *                            ^
+     * </pre>
+     */
+    def a(aMatcher: AMatcher[T]) {
+      left.find(aMatcher(_).matches) match {
+        case Some(e) => 
+          if (!shouldBeTrue) {
+            val result = aMatcher(e)
+            throw newTestFailedException(FailureMessages("containedA", left, UnquotedString(aMatcher.nounName), UnquotedString(result.negatedFailureMessage)))
+          }
+        case None =>
+          if (shouldBeTrue)
+            throw newTestFailedException(FailureMessages("didNotContainA", left, UnquotedString(aMatcher.nounName)))
+      }
+    }
+    
+    /**
+     * This method enables the following syntax (oddNumber is a <code>AMatcher</code>):
+     *
+     * <pre class="stHighlight">
+     * traversable should contain an oddNumber
+     *                            ^
+     * </pre>
+     */
+    def an(anMatcher: AnMatcher[T]) {
+      left.find(anMatcher(_).matches) match {
+        case Some(e) => 
+          if (!shouldBeTrue) {
+            val result = anMatcher(e)
+            throw newTestFailedException(FailureMessages("containedAn", left, UnquotedString(anMatcher.nounName), UnquotedString(result.negatedFailureMessage)))
+          }
+        case None =>
+          if (shouldBeTrue)
+            throw newTestFailedException(FailureMessages("didNotContainAn", left, UnquotedString(anMatcher.nounName)))
+      }
+    }
+  }
+
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
    * the matchers DSL.
    *
    * @author Bill Venners
    */
-  class ResultOfContainWordForTraversable[T](left: scala.collection.GenTraversable[T], shouldBeTrue: Boolean = true) {
+  class ResultOfContainWordForTraversable[E](val left: scala.collection.GenTraversable[E], val shouldBeTrue: Boolean = true) extends ContainMethods[E]
+
+/*
+ {
   
     /**
      * This method enables the following syntax: 
@@ -3956,6 +4129,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
       }
     }
   }
+*/
   
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
@@ -7213,7 +7387,7 @@ class ResultOfHaveWordForArray[T](left: Array[T], shouldBeTrue: Boolean) {
    * @author Bill Venners
    */
   class TraversableShouldWrapper[E, L[_] <: scala.collection.GenTraversable[_]](left: L[E]) extends AnyRefShouldWrapper(left) {
-    
+
     /**
      * This method enables syntax such as the following:
      *
