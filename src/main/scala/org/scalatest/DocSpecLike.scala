@@ -38,7 +38,7 @@ trait DocSpecLike extends Suite with Informing { thisSuite =>
    * the current reporter immediately. If invoked at any other time, it will
    * throw an exception. This method can be called safely by any thread.
    */
-  implicit protected def info: Informer = atomicInformer.get
+  protected def info: Informer = atomicInformer.get
 
   sealed abstract class Snippet
   case class MarkupSnippet(text: String) extends Snippet
