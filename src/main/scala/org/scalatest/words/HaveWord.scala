@@ -23,7 +23,6 @@ import org.scalatest.UnquotedString
 import org.scalatest.Resources
 import scala.collection.GenTraversable
 import scala.collection.GenSeq
-import org.scalatest.Matchers.newTestFailedException
 import org.scalatest.Helper.accessProperty
 
 /**

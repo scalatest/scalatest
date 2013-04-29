@@ -16,7 +16,6 @@
 package org.scalatest.words
 
 import org.scalatest.matchers._
-import org.scalatest.Matchers.newTestFailedException
 import org.scalatest.Helper.accessProperty
 import org.scalatest.Resources
 
@@ -27,50 +26,3 @@ import org.scalatest.Resources
  * @author Bill Venners
  */
 final class ResultOfLengthWordApplication(val expectedLength: Long)
-/*
-final class ResultOfLengthWordApplication(val expectedLength: Long) extends HavePropertyMatcher[AnyRef, Long] {
-
-  /**
-   * This method enables the following syntax: 
-   *
-   * <pre class="stHighlight">
-   * "hi" should not have (length (3))
-   *                      ^
-   * </pre>
-   *
-   * <p>
-   * This reason <code>ResultOfLengthWordApplication</code> is a <code>HavePropertyMatcher[AnyRef, Long]</code> is
-   * so that you don't have to remember whether <code>length</code> needs to be surrounded by parentheses when following
-   * <code>have</code>. Only <code>length</code> and <code>size</code> can be used without parentheses: everything else
-   * needs the parentheses. So this approach means that if you use the unneeded parentheses with <code>length</code> and
-   * <code>size</code>, it will still work. This <code>apply</code> method uses reflection to find and access the <code>length</code>
-   * property on the passed <code>objectWithProperty</code>. Therefore if the object does not have the appropriate structure, the expression
-   * will compile, but at will produce a <code>TestFailedException</code> at runtime.
-   * </p>
-   */
-  def apply(objectWithProperty: AnyRef): HavePropertyMatchResult[Long] = {
-
-    accessProperty(objectWithProperty, 'length, false) match {
-
-      case None =>
-
-        throw newTestFailedException(Resources("propertyNotFound", "length", expectedLength.toString, "getLength"))
-
-      case Some(result) =>
-
-        new HavePropertyMatchResult[Long](
-          result == expectedLength,
-          "length",
-          expectedLength,
-          result match {
-            case value: Byte => value.toLong
-            case value: Short => value.toLong
-            case value: Int => value.toLong
-            case value: Long => value
-            case _ => throw newTestFailedException(Resources("lengthPropertyNotAnInteger"))
-          }
-        )
-    }
-  }
-}
-*/
