@@ -230,6 +230,9 @@ class BeforeAndAfterEachTestDataSuite extends FunSuite {
     }
     class MySuite extends FunkySuite with BeforeAndAfterEachTestData with BeforeAndAfterAllConfigMap {
       var afterAllCalled = false
+      def test1() {}
+      def test2() {}
+      def test3() {}
       override def afterAll(cm: ConfigMap) {
         afterAllCalled = true
       }
@@ -250,6 +253,9 @@ class BeforeAndAfterEachTestDataSuite extends FunSuite {
     }
     class MySuite extends FunkySuite with BeforeAndAfterEachTestData with BeforeAndAfterAllConfigMap {
       var afterAllCalled = false
+      def test1() {}
+      def test2() {}
+      def test3() {}
       override def afterAll(cm: ConfigMap) {
         afterAllCalled = true
         throw new IllegalArgumentException
