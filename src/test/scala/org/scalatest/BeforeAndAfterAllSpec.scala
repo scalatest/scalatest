@@ -16,6 +16,7 @@
 package org.scalatest
 
 import SharedHelpers._
+import java.util.concurrent.atomic.AtomicInteger
 
 class BeforeAndAfterAllSpec extends FunSpec with ShouldMatchers {
   
@@ -46,6 +47,14 @@ class BeforeAndAfterAllSpec extends FunSpec with ShouldMatchers {
     override def newInstance: Suite with ParallelTestExecution = new ExampleNestedSuite
   }
   
+  @Ignore
+  class ExampleIgnoreNestedSuite extends FunSuite with ParallelTestExecution {
+    test("test 1") { Thread.sleep(100) }
+    test("test 2") { Thread.sleep(100) }
+    test("test 3") { Thread.sleep(100) }
+    override def newInstance: Suite with ParallelTestExecution = new ExampleNestedSuite
+  }
+  
   class ExampleSuites extends Suites(
     new ExampleNestedSuite
   ) with BeforeAndAfterAll { 
@@ -60,8 +69,6 @@ class BeforeAndAfterAllSpec extends FunSpec with ShouldMatchers {
   }
   
   class BeforeAfterAllCounter {
-    
-    import java.util.concurrent.atomic.AtomicInteger
     
     @volatile var beforeAll = new AtomicInteger
     @volatile var afterAll = new AtomicInteger
@@ -150,6 +157,189 @@ class BeforeAndAfterAllSpec extends FunSpec with ShouldMatchers {
       
       counter.beforeAllCount should be (1)
       counter.afterAllCount should be (1)
+    }
+    it ("should have default invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected value false") {
+      class ExampleSpec extends FunSpec with BeforeAndAfterAll {}
+      val spec = new ExampleSpec
+      spec.invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected should be (false)
+    }
+    it ("should invoke beforeAll and afterAll in Suite with no nested suites and some tests, when invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected is true") {
+      class ExampleSpec extends FunSpec with BeforeAndAfterAll {
+        override val invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected = true
+        val beforeAllCount = new AtomicInteger
+        val afterAllCount = new AtomicInteger
+        override protected def beforeAll(configMap: ConfigMap) {
+          beforeAllCount.incrementAndGet()
+        }
+        it("test 1") {}
+        it("test 2") {}
+        it("test 3") {}
+        override protected def afterAll(configMap: ConfigMap) {
+          afterAllCount.incrementAndGet()
+        }
+      }
+      val spec = new ExampleSpec
+      spec.invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected should be (true)
+      spec.run(None, Args(reporter = SilentReporter))
+      spec.beforeAllCount.get should be (1)
+      spec.afterAllCount.get should be (1)
+    }
+    it ("should invoke beforeAll and afterAll in Suite with no nested suites and some tests, when invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected is false") {
+      class ExampleSpec extends FunSpec with BeforeAndAfterAll {
+        val beforeAllCount = new AtomicInteger
+        val afterAllCount = new AtomicInteger
+        override protected def beforeAll(configMap: ConfigMap) {
+          beforeAllCount.incrementAndGet()
+        }
+        it("test 1") {}
+        it("test 2") {}
+        it("test 3") {}
+        override protected def afterAll(configMap: ConfigMap) {
+          afterAllCount.incrementAndGet()
+        }
+      }
+      val spec = new ExampleSpec
+      spec.invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected should be (false)
+      spec.run(None, Args(reporter = SilentReporter))
+      spec.beforeAllCount.get should be (1)
+      spec.afterAllCount.get should be (1)
+    }
+    it ("should invoke beforeAll and afterAll in Suite with nested suites and no test, when invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected is true") {
+      class ExampleSpec extends FunSpec with BeforeAndAfterAll {
+        override val invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected = true
+        val beforeAllCount = new AtomicInteger
+        val afterAllCount = new AtomicInteger
+        override protected def beforeAll(configMap: ConfigMap) {
+          beforeAllCount.incrementAndGet()
+        }
+        override def nestedSuites: collection.immutable.IndexedSeq[Suite] = 
+          Vector(
+            new ExampleNestedSuite, 
+            new ExampleNestedSuite, 
+            new ExampleNestedSuite
+          )
+        override protected def afterAll(configMap: ConfigMap) {
+          afterAllCount.incrementAndGet()
+        }
+      }
+      val spec = new ExampleSpec
+      spec.invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected should be (true)
+      spec.run(None, Args(reporter = SilentReporter))
+      spec.beforeAllCount.get should be (1)
+      spec.afterAllCount.get should be (1)
+    }
+    it ("should invoke beforeAll and afterAll in Suite with nested suites and no tests, when invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected is false") {
+      class ExampleSpec extends FunSpec with BeforeAndAfterAll {
+        val beforeAllCount = new AtomicInteger
+        val afterAllCount = new AtomicInteger
+        override protected def beforeAll(configMap: ConfigMap) {
+          beforeAllCount.incrementAndGet()
+        }
+        override def nestedSuites: collection.immutable.IndexedSeq[Suite] = 
+          Vector(
+            new ExampleNestedSuite, 
+            new ExampleNestedSuite, 
+            new ExampleNestedSuite
+          )
+        override protected def afterAll(configMap: ConfigMap) {
+          afterAllCount.incrementAndGet()
+        }
+      }
+      val spec = new ExampleSpec
+      spec.invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected should be (false)
+      spec.run(None, Args(reporter = SilentReporter))
+      spec.beforeAllCount.get should be (1)
+      spec.afterAllCount.get should be (1)
+    }
+    it("should invoke beforeAll and afterAll in Suite annotated with Ignore, has no nested suites and has tests, when invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected is true") {
+      @Ignore
+      class ExampleSpec extends FunSpec with BeforeAndAfterAll {
+        override val invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected = true
+        val beforeAllCount = new AtomicInteger
+        val afterAllCount = new AtomicInteger
+        override protected def beforeAll(configMap: ConfigMap) {
+          beforeAllCount.incrementAndGet()
+        }
+        it("test 1") {}
+        it("test 2") {}
+        it("test 3") {}
+        override protected def afterAll(configMap: ConfigMap) {
+          afterAllCount.incrementAndGet()
+        }
+      }
+      val spec = new ExampleSpec
+      spec.invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected should be (true)
+      spec.run(None, Args(reporter = SilentReporter))
+      spec.beforeAllCount.get should be (1)
+      spec.afterAllCount.get should be (1)
+    }
+    it("should not invoke beforeAll and afterAll in Suite annotated with Ignore, has no nested suites and has tests, when invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected is false") {
+      @Ignore
+      class ExampleSpec extends FunSpec with BeforeAndAfterAll {
+        val beforeAllCount = new AtomicInteger
+        val afterAllCount = new AtomicInteger
+        override protected def beforeAll(configMap: ConfigMap) {
+          beforeAllCount.incrementAndGet()
+        }
+        it("test 1") {}
+        it("test 2") {}
+        it("test 3") {}
+        override protected def afterAll(configMap: ConfigMap) {
+          afterAllCount.incrementAndGet()
+        }
+      }
+      val spec = new ExampleSpec
+      spec.invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected should be (false)
+      spec.run(None, Args(reporter = SilentReporter))
+      spec.beforeAllCount.get should be (0)
+      spec.afterAllCount.get should be (0)
+    }
+    it("should not invoke beforeAll and afterAll in Suite that has no test but has nested suites annotated with Ignore, when invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected is true") {
+      class ExampleSpec extends FunSpec with BeforeAndAfterAll {
+        override val invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected = true
+        val beforeAllCount = new AtomicInteger
+        val afterAllCount = new AtomicInteger
+        override protected def beforeAll(configMap: ConfigMap) {
+          beforeAllCount.incrementAndGet()
+        }
+        override def nestedSuites: collection.immutable.IndexedSeq[Suite] = 
+          Vector(
+            new ExampleIgnoreNestedSuite, 
+            new ExampleIgnoreNestedSuite, 
+            new ExampleIgnoreNestedSuite
+          )
+        override protected def afterAll(configMap: ConfigMap) {
+          afterAllCount.incrementAndGet()
+        }
+      }
+      val spec = new ExampleSpec
+      spec.invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected should be (true)
+      spec.run(None, Args(reporter = SilentReporter))
+      spec.beforeAllCount.get should be (1)
+      spec.afterAllCount.get should be (1)
+    }
+    it("should not invoke beforeAll and afterAll in Suite that has no test but has nested suites annotated with Ignore, when invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected is false") {
+      class ExampleSpec extends FunSpec with BeforeAndAfterAll {
+        val beforeAllCount = new AtomicInteger
+        val afterAllCount = new AtomicInteger
+        override protected def beforeAll(configMap: ConfigMap) {
+          beforeAllCount.incrementAndGet()
+        }
+        override def nestedSuites: collection.immutable.IndexedSeq[Suite] = 
+          Vector(
+            new ExampleIgnoreNestedSuite, 
+            new ExampleIgnoreNestedSuite, 
+            new ExampleIgnoreNestedSuite
+          )
+        override protected def afterAll(configMap: ConfigMap) {
+          afterAllCount.incrementAndGet()
+        }
+      }
+      val spec = new ExampleSpec
+      spec.invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected should be (false)
+      spec.run(None, Args(reporter = SilentReporter))
+      spec.beforeAllCount.get should be (0)
+      spec.afterAllCount.get should be (0)
     }
   }
 }

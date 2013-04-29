@@ -255,6 +255,9 @@ class BeforeAndAfterSuite extends FunSuite {
     }
     class MySuite extends FunkySuite with BeforeAndAfterEach with BeforeAndAfterAll {
       var afterAllCalled = false
+      def test1 {}
+      def test2 {}
+      def test3 {}
       override def afterAll() {
         afterAllCalled = true
       }
@@ -275,6 +278,9 @@ class BeforeAndAfterSuite extends FunSuite {
     }
     class MySuite extends FunkySuite with BeforeAndAfterEach with BeforeAndAfterAll {
       var afterAllCalled = false
+      def test1 {}
+      def test2 {}
+      def test3 {}
       override def afterAll() {
         afterAllCalled = true
         throw new IllegalArgumentException
