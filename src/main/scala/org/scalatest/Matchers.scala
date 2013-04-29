@@ -5304,25 +5304,129 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * </pre>
      */
     def should(beWord: BeWord): ResultOfBeWordForAny[T] = new ResultOfBeWordForAny(left, true)
-
-    /* *
+  
+    /**
      * This method enables syntax such as the following:
      *
      * <pre class="stHighlight">
      * aDouble shouldBe 8.8
-     *         ^
-     * </pre>
+     * </pre>        ^
+     */
     def shouldBe(right: T) {
-      if (left != right) {
+      if (!areEqualComparingArraysStructurally(left, right)) {
         val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)
         throw complainer.newTestFailedException(FailureMessages("wasNotEqualTo", leftee, rightee))
       }
     }
-
-    def shouldBe(beMatcher: BeMatcher[T]) { // TODO: This looks like a bug to me. Investigate. - bv
-      beMatcher.apply(left).matches
+    
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * 5 shouldBe < (7) 
+     *   ^
+     * </pre>
+     */
+    def shouldBe(comparison: ResultOfLessThanComparison[T]) {
+      if (!comparison(left)) {
+        throw complainer.newTestFailedException(
+          FailureMessages(
+            "wasNotLessThan",
+            left,
+            comparison.right
+          )
+        ) 
+      }
     }
-*/
+    
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * 8 shouldBe > (7) 
+     *   ^
+     * </pre> 
+     */
+    def shouldBe(comparison: ResultOfGreaterThanComparison[T]) {
+      if (!comparison(left)) {
+        throw complainer.newTestFailedException(
+          FailureMessages(
+            "wasNotGreaterThan",
+            left,
+            comparison.right
+          )
+        ) 
+      }
+    }
+    
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * 5 shouldBe <= (7) 
+     *   ^
+     * </pre> 
+     */
+    def shouldBe(comparison: ResultOfLessThanOrEqualToComparison[T]) {
+      if (!comparison(left)) {
+        throw complainer.newTestFailedException(
+          FailureMessages(
+            "wasNotLessThanOrEqualTo",
+            left,
+            comparison.right
+          )
+        ) 
+      }
+    }
+    
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * 8 shouldBe >= (7) 
+     *   ^
+     * </pre> 
+     */
+    def shouldBe(comparison: ResultOfGreaterThanOrEqualToComparison[T]) {
+      if (!comparison(left)) {
+        throw complainer.newTestFailedException(
+          FailureMessages(
+            "wasNotGreaterThanOrEqualTo",
+            left,
+            comparison.right
+          )
+        ) 
+      }
+    }
+    
+    /**
+     * This method enables the following syntax, where <code>odd</code> refers to a <code>BeMatcher[Int]</code>:
+     *
+     * <pre class="stHighlight">testing
+     * 1 shouldBe odd
+     *                                          ^
+     * </pre>
+     */
+    def shouldBe(beMatcher: BeMatcher[T]) { // TODO: This looks like a bug to me. Investigate. - bv
+      val result = beMatcher.apply(left)
+      if (!result.matches)
+        throw complainer.newTestFailedException(result.failureMessage)
+    }
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * result shouldBe 7.1 +- 0.2
+     *        ^
+     * </pre>
+     */
+    def shouldBe(interval: Interval[T]) {
+      if (!interval.isWithin(left)) {
+        throw complainer.newTestFailedException(FailureMessages("wasNotPlusOrMinus", left, interval.pivot, interval.tolerance))
+      }
+    }
+
 
     /**
      * This method enables syntax such as the following:
@@ -5390,6 +5494,118 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * </pre>
      */
     override def should(beWord: BeWord): ResultOfBeWordForAnyRef[T] = new ResultOfBeWordForAnyRef(left, true)
+    
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * result shouldBe theSameInstanceAs (anotherObject)
+     *        ^
+     * </pre>
+     */
+    def shouldBe(resultOfSameInstanceAsApplication: ResultOfTheSameInstanceAsApplication) {
+      if (resultOfSameInstanceAsApplication.right ne left) {
+        throw complainer.newTestFailedException(
+          FailureMessages(
+            "wasNotSameInstanceAs",
+            left,
+            resultOfSameInstanceAsApplication.right
+          )
+        )
+      }
+    }
+    
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * list shouldBe 'empty
+     *      ^
+     * </pre>
+     */
+    def shouldBe(symbol: Symbol) {
+      val matcherResult = matchSymbolToPredicateMethod(left, symbol, true, true)
+      if (!matcherResult.matches) 
+        throw complainer.newTestFailedException(matcherResult.failureMessage)
+    }
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * list shouldBe a ('empty)
+     *      ^
+     * </pre>
+     */
+    def shouldBe(resultOfAWordApplication: ResultOfAWordToSymbolApplication) {
+      val matcherResult = matchSymbolToPredicateMethod(left, resultOfAWordApplication.symbol, true, true)
+      if (!matcherResult.matches) {
+        throw complainer.newTestFailedException(
+          matcherResult.failureMessage
+        )
+      }
+    }
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * list shouldBe an ('empty)
+     *      ^
+     * </pre>
+     */
+    def shouldBe(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication) {
+      val matcherResult = matchSymbolToPredicateMethod(left, resultOfAnWordApplication.symbol, true, true)
+      if (!matcherResult.matches) {
+        throw complainer.newTestFailedException(
+          matcherResult.failureMessage
+        )
+      }
+    }
+    
+    /**
+     * This method enables the following syntax, where <code>excellentRead</code> refers to a <code>BePropertyMatcher[Book]</code>:
+     *
+     * <pre class="stHighlight">
+     * programmingInScala shouldBe excellentRead
+     *                    ^
+     * </pre>
+     */
+    def shouldBe(bePropertyMatcher: BePropertyMatcher[T]) {
+      val result = bePropertyMatcher(left)
+      if (!result.matches) 
+        throw complainer.newTestFailedException(FailureMessages("wasNot", left, UnquotedString(result.propertyName)))
+    }
+    
+    /**
+     * This method enables the following syntax, where <code>goodRead</code> refers to a <code>BePropertyMatcher[Book]</code>:
+     *
+     * <pre class="stHighlight">
+     * programmingInScala shouldBe a (goodRead)
+     *                    ^
+     * </pre>
+     */
+    def shouldBe[U >: T](resultOfAWordApplication: ResultOfAWordToBePropertyMatcherApplication[U]) {
+      val result = resultOfAWordApplication.bePropertyMatcher(left)
+        if (!result.matches) {
+          throw complainer.newTestFailedException(FailureMessages("wasNotA", left, UnquotedString(result.propertyName)))
+        }
+    }
+    
+    /**
+     * This method enables the following syntax, where <code>excellentRead</code> refers to a <code>BePropertyMatcher[Book]</code>:
+     *
+     * <pre class="stHighlight">
+     * programmingInScala shouldBe an (excellentRead)
+     *                    ^
+     * </pre>
+     */
+    def shouldBe[U >: T](resultOfAnWordApplication: ResultOfAnWordToBePropertyMatcherApplication[U]) {
+      val result = resultOfAnWordApplication.bePropertyMatcher(left)
+        if (!result.matches) {
+          throw complainer.newTestFailedException(FailureMessages("wasNotAn", left, UnquotedString(result.propertyName)))
+        }
+    }
     
 /*
     def shouldBe: ResultOfBeWordForAnyRef[T] = new ResultOfBeWordForAnyRef(left, true)
