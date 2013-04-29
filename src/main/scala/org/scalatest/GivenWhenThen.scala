@@ -71,7 +71,7 @@ package org.scalatest
  *
  * @author Bill Venners
  */
-trait GivenWhenThen { this: Informing with Documenting =>
+trait GivenWhenThen { this: Informing =>
 
   /**
    * <p>
@@ -157,11 +157,3 @@ trait GivenWhenThen { this: Informing with Documenting =>
     info(Resources("andMessage", message))
   }
 }
-
-/**
- * Companion object that facilitates the importing of <code>GivenWhenThen</code> members as
- * an alternative to mixing it in.
- *
- * @author Bill Venners
- */
-//object GivenWhenThen extends GivenWhenThen

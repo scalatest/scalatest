@@ -25,10 +25,20 @@ import collection.mutable.ListBuffer
 import Suite.reportMarkupProvided
 import scala.collection.mutable.ListBuffer
 
-trait DocSpecLike extends Suite { thisSuite =>
+trait DocSpecLike extends Suite with Informing { thisSuite =>
 
   private final val engine = new Engine("concurrentFunSuiteMod", "FunSuite")
   import engine._
+  
+  /**
+   * Returns an <code>Informer</code> that during test execution will forward strings (and other objects) passed to its
+   * <code>apply</code> method to the current reporter. If invoked in a constructor, it
+   * will register the passed string for forwarding later during test execution. If invoked while this
+   * <code>FeatureSpec</code> is being executed, such as from inside a test function, it will forward the information to
+   * the current reporter immediately. If invoked at any other time, it will
+   * throw an exception. This method can be called safely by any thread.
+   */
+  implicit protected def info: Informer = atomicInformer.get
 
   sealed abstract class Snippet
   case class MarkupSnippet(text: String) extends Snippet
