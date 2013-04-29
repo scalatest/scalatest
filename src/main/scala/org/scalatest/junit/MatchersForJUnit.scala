@@ -17,6 +17,7 @@ package org.scalatest.junit
 
 import org.scalatest._
 import _root_.junit.framework.AssertionFailedError
+import org.scalatest.words.Complainer
 
 /**
  * Trait that makes ScalaTest's <code>Matchers</code> DSL syntax available for use with JUnit.
@@ -93,17 +94,19 @@ import _root_.junit.framework.AssertionFailedError
  * @author Bill Venners
  */
 trait MatchersForJUnit extends Matchers with AssertionsForJUnit {
-  //private[scalatest] override def newTestFailedException(message: String): Throwable = new AssertionFailedError(message)
-  private[scalatest] override def newTestFailedException(message: String, optionalCause: Option[Throwable] = None, stackDepthAdjustment: Int = 0): Throwable = {
-    val fileNames = List("Matchers.scala", "MatchersForJUnit.scala")
-    val temp = new RuntimeException
-    val stackDepth = temp.getStackTrace.takeWhile(stackTraceElement => fileNames.exists(_ == stackTraceElement.getFileName) || stackTraceElement.getMethodName == "newTestFailedException").length
+  private[scalatest] override val complainer: Complainer =
+    new Complainer {
+      def newTestFailedException(message: String, optionalCause: Option[Throwable] = None, stackDepthAdjustment: Int = 0): Throwable = {
+        val fileNames = List("Matchers.scala", "MatchersForJUnit.scala")
+        val temp = new RuntimeException
+        val stackDepth = temp.getStackTrace.takeWhile(stackTraceElement => fileNames.exists(_ == stackTraceElement.getFileName) || stackTraceElement.getMethodName == "newTestFailedException").length
 
-    optionalCause match {
-      case Some(cause) => new JUnitTestFailedError(message, cause, stackDepth)
-      case None => new JUnitTestFailedError(message, stackDepth)
+        optionalCause match {
+          case Some(cause) => new JUnitTestFailedError(message, cause, stackDepth)
+          case None => new JUnitTestFailedError(message, stackDepth)
+        }
+      }
     }
-  }
 }
 
 /**
