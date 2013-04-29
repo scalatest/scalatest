@@ -140,6 +140,13 @@ package org.scalatest
  * @author Bill Venners
  */
 trait BeforeAndAfterAll  extends SuiteMixin { this: Suite =>
+  
+  /**
+   * Flag to indicate whether to invoke beforeAll and afterAll even when there are no tests expected.
+   * The default value is <code>false</code> which means beforeAll and afterAll will not be invoked 
+   * when there are no tests expected.
+   */
+  val invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected = false
 
   /**
    * Defines a method to be run before any of this suite's tests or nested suites are run.
@@ -222,7 +229,7 @@ trait BeforeAndAfterAll  extends SuiteMixin { this: Suite =>
   abstract override def run(testName: Option[String], args: Args): Status = {
     var thrownException: Option[Throwable] = None
 
-    if (!args.runTestInNewInstance)
+    if (!args.runTestInNewInstance && (expectedTestCount(args.filter) > 0 || invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected))
       beforeAll(args.configMap)
     try {
       val runStatus = super.run(testName, args)
@@ -236,7 +243,7 @@ trait BeforeAndAfterAll  extends SuiteMixin { this: Suite =>
     }
     finally {
       try {
-        if (!args.runTestInNewInstance)
+        if (!args.runTestInNewInstance && (expectedTestCount(args.filter) > 0 || invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected))
           afterAll(args.configMap) // Make sure that afterAll is called even if run completes abruptly.
         thrownException match {
           case Some(e) => throw e
