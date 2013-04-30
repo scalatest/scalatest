@@ -32,7 +32,7 @@ trait MethodSuiteExamples extends Tables {
   def testngSuite: TestNGSuite with FixtureServices
   
   def examples =
-    Table(
+    Table[Suite with FixtureServices](
       "suite",
       suite,
       fixtureSuite,
