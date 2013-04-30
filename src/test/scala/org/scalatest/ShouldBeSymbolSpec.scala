@@ -17,7 +17,7 @@ package org.scalatest
 
 import org.scalatest.exceptions.TestFailedException
 
-class ShouldBeSymbolSpec extends Spec with Matchers with EmptyMocks {
+class ShouldBeSymbolSpec extends Spec with Matchers with EmptyMocks with SharedHelpers {
 
   object `The be ('symbol) syntax` {
 
@@ -92,19 +92,30 @@ class ShouldBeSymbolSpec extends Spec with Matchers with EmptyMocks {
       val ex1 = intercept[TestFailedException] {
         noPredicateMock should not { be ('empty) }
       }
-      ex1.getMessage should equal ("NoPredicateMock has neither an empty nor an isEmpty method")
+      ex1.message should equal (Some("NoPredicateMock has neither an empty nor an isEmpty method"))
+      ex1.failedCodeFileName should equal (Some("ShouldBeSymbolSpec.scala"))
+      ex1.failedCodeLineNumber should equal (Some(thisLineNumber - 4))
+
       val ex2 = intercept[TestFailedException] {
         noPredicateMock should not (be ('full))
       }
-      ex2.getMessage should equal ("NoPredicateMock has neither a full nor an isFull method")
+      ex2.message should equal (Some("NoPredicateMock has neither a full nor an isFull method"))
+      ex2.failedCodeFileName should equal (Some("ShouldBeSymbolSpec.scala"))
+      ex2.failedCodeLineNumber should equal (Some(thisLineNumber - 4))
+
       val ex3 = intercept[TestFailedException] {
         noPredicateMock should not be ('empty)
       }
-      ex3.getMessage should equal ("NoPredicateMock has neither an empty nor an isEmpty method")
+      ex3.message should equal (Some("NoPredicateMock has neither an empty nor an isEmpty method"))
+      ex3.failedCodeFileName should equal (Some("ShouldBeSymbolSpec.scala"))
+      ex3.failedCodeLineNumber should equal (Some(thisLineNumber - 4))
+
       val ex4 = intercept[TestFailedException] {
         noPredicateMock should not be ('full)
       }
-      ex4.getMessage should equal ("NoPredicateMock has neither a full nor an isFull method")
+      ex4.message should equal (Some("NoPredicateMock has neither a full nor an isFull method"))
+      ex4.failedCodeFileName should equal (Some("ShouldBeSymbolSpec.scala"))
+      ex4.failedCodeLineNumber should equal (Some(thisLineNumber - 4))
     }
 
     def `should do nothing if the object has an appropriately named method, which returns true, when used in a logical-and expression` {

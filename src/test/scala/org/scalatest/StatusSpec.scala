@@ -81,4 +81,160 @@ class StatusSpec extends fixture.Spec {
       SharedHelpers.serializeRoundtrip(status)
     }
   }
+
+  object `SucceededStatus ` {
+
+    def `should invoke a function registered with whenCompleted, passing a succeeded value` {
+
+      @volatile var callbackInvoked = false
+      @volatile var succeeded = false
+
+      val status = SucceededStatus
+
+      // register callback
+      status.whenCompleted { st =>
+        callbackInvoked = true
+        succeeded = st
+      }
+
+      // ensure it was executed
+      assert(callbackInvoked)
+      assert(succeeded === true)
+    }
+
+    def `should invoke multiple functions registered with whenCompleted, passing a succeeded value` {
+      // register two callbacks
+      // ensure neither was executed yet
+      // complete the status
+      // ensure both were executed
+      @volatile var firstCallbackInvoked = false
+      @volatile var secondCallbackInvoked = false
+      @volatile var firstSucceeded = false
+      @volatile var secondSucceeded = false
+
+      val status = SucceededStatus
+
+      // register callback 1
+      status.whenCompleted { st =>
+        firstCallbackInvoked = true
+        firstSucceeded = st
+      }
+
+      // register callback 2
+      status.whenCompleted { st =>
+        secondCallbackInvoked = true
+        secondSucceeded = st
+      }
+
+      // ensure it was executed
+      assert(firstCallbackInvoked)
+      assert(secondCallbackInvoked)
+
+      // ensure it passed the correct success value
+      assert(firstSucceeded === true)
+      assert(secondSucceeded === true)
+    }
+  }
+
+  object `FailedStatus ` {
+
+    def `should invoke a function registered with whenCompleted, passing a failed value` {
+
+      @volatile var callbackInvoked = false
+      @volatile var succeeded = true
+
+      val status = FailedStatus
+
+      // register callback
+      status.whenCompleted { st =>
+        callbackInvoked = true
+        succeeded = st
+      }
+
+      // ensure it was executed
+      assert(callbackInvoked)
+      assert(succeeded === false)
+    }
+
+    def `should invoke multiple functions registered with whenCompleted, passing a failed value` {
+      // register two callbacks
+      // ensure neither was executed yet
+      // complete the status
+      // ensure both were executed
+      @volatile var firstCallbackInvoked = false
+      @volatile var secondCallbackInvoked = false
+      @volatile var firstSucceeded = true
+      @volatile var secondSucceeded = true
+
+      val status = FailedStatus
+
+      // register callback 1
+      status.whenCompleted { st =>
+        firstCallbackInvoked = true
+        firstSucceeded = st
+      }
+
+      // register callback 2
+      status.whenCompleted { st =>
+        secondCallbackInvoked = true
+        secondSucceeded = st
+      }
+
+      // ensure it was executed
+      assert(firstCallbackInvoked)
+      assert(secondCallbackInvoked)
+
+      // ensure it passed the correct success value
+      assert(firstSucceeded === false)
+      assert(secondSucceeded === false)
+    }
+  }
+
+  object `CompositeStatus ` {
+    def `should invoke multiple functions registered with whenCompleted, passing a succeeded value, only after all composed statuses complete successfully` {
+
+      @volatile var firstCallbackInvoked = false
+      @volatile var secondCallbackInvoked = false
+      @volatile var firstSucceeded = false
+      @volatile var secondSucceeded = false
+
+      val nestedStatus1 = new StatefulStatus
+      val nestedStatus2 = new StatefulStatus
+      val status = new CompositeStatus(Set(nestedStatus1, nestedStatus2))
+
+      // register callback 1
+      status.whenCompleted { st =>
+        firstCallbackInvoked = true
+        firstSucceeded = st
+      }
+
+      // register callback 2
+      status.whenCompleted { st =>
+        secondCallbackInvoked = true
+        secondSucceeded = st
+      }
+
+      // ensure they were not executed yet
+      assert(!firstCallbackInvoked)
+      assert(!secondCallbackInvoked)
+
+      // complete the first status
+      nestedStatus1.setCompleted()
+
+      // ensure they were not executed yet
+      assert(!firstCallbackInvoked)
+      assert(!secondCallbackInvoked)
+
+      // complete the second status
+      nestedStatus2.setCompleted()
+
+      // ensure they were executed
+      assert(firstCallbackInvoked)
+      assert(secondCallbackInvoked)
+
+      // ensure they were passed the correct success value
+      assert(firstSucceeded === true)
+      assert(secondSucceeded === true)
+    }
+  }
 }

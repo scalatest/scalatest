@@ -1,0 +1,614 @@
+/*
+ * Copyright 2001-2013 Artima, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.scalatest
+
+import matchers.{BeMatcher, MatchResult, BePropertyMatcher, BePropertyMatchResult}
+
+class ShouldNotShorthandSpec extends Spec with Matchers with SharedHelpers with EmptyMocks with BookPropertyMatchers {
+
+  object `The shouldNot syntax` {
+
+    def `should work with theSameInstanceAs` {
+      val string = "Hi"
+      val obj: AnyRef = string
+      val otherString = new String("Hi")
+
+      otherString shouldNot { be theSameInstanceAs (string) }
+      otherString shouldNot be theSameInstanceAs (string)
+
+      val caught1 = intercept[TestFailedException] {
+        obj shouldNot { be theSameInstanceAs (string) }
+      }
+      assert(caught1.message === Some("\"Hi\" was the same instance as \"Hi\""))
+      assert(caught1.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      val caught2 = intercept[TestFailedException] {
+        obj shouldNot be theSameInstanceAs string
+      }
+      assert(caught2.message === Some("\"Hi\" was the same instance as \"Hi\""))
+      assert(caught2.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
+    }
+
+    def `should work with any` {
+      1 shouldNot { be (2) }
+      1 shouldNot be (2)
+
+      val caught1 = intercept[TestFailedException] {
+        1 shouldNot { be (1) }
+      }
+      assert(caught1.message === Some("1 was equal to 1"))
+      assert(caught1.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      val caught2 = intercept[TestFailedException] {
+        1 shouldNot be (1)
+      }
+      assert(caught2.message === Some("1 was equal to 1"))
+      assert(caught2.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      val caught3 = intercept[TestFailedException] {
+        1 shouldNot (not (not be (1)))
+      }
+      assert(caught3.message === Some("1 was equal to 1"))
+      assert(caught3.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      6 shouldNot be > 7
+      val caught4 = intercept[TestFailedException] {
+        8 shouldNot be > 7
+      }
+      assert(caught4.message === Some("8 was greater than 7"))
+      assert(caught4.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      8 shouldNot be < 7
+      val caught5 = intercept[TestFailedException] {
+        5 shouldNot be < 7
+      }
+      assert(caught5.message === Some("5 was less than 7"))
+      assert(caught5.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      3 shouldNot be >= 7
+      val caught6 = intercept[TestFailedException] {
+        8 shouldNot be >= 7
+      }
+      assert(caught6.message === Some("8 was greater than or equal to 7"))
+      assert(caught6.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      8 shouldNot be <= 7
+      val caught7 = intercept[TestFailedException] {
+        3 shouldNot be <= 7
+      }
+      assert(caught7.message === Some("3 was less than or equal to 7"))
+      assert(caught7.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught7.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      true shouldNot be (false)
+      val caught8 = intercept[TestFailedException] {
+        true shouldNot be (true)
+      }
+      assert(caught8.message === Some("true was true"))
+      assert(caught8.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
+    }
+
+    def `should work with BeMatcher` {
+
+      class OddMatcher extends BeMatcher[Int] {
+        def apply(left: Int): MatchResult = {
+          MatchResult(
+            left % 2 == 1,
+            left.toString + " was even",
+            left.toString + " was odd"
+          )
+        }
+      }
+      val odd = new OddMatcher
+      val even = not (odd)
+
+      2 shouldNot be (odd)
+      1 shouldNot be (even)
+      22 shouldNot (not (be (even)))
+      1 shouldNot (not (be (odd)))
+
+      val caught1 = intercept[TestFailedException] {
+        3 shouldNot be (odd)
+      }
+      assert(caught1.getMessage === "3 was odd")
+      assert(caught1.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      val caught2 = intercept[TestFailedException] {
+        6 shouldNot be (even)
+      }
+      assert(caught2.getMessage === "6 was even")
+      assert(caught2.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      val caught3 = intercept[TestFailedException] {
+        6 shouldNot (not (be (odd)))
+      }
+      assert(caught3.getMessage === "6 was even")
+      assert(caught3.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
+    }
+
+    def `should work with symbol` {
+      notEmptyMock shouldNot { be ('empty) }
+      notEmptyMock shouldNot be ('empty)
+      isNotEmptyMock shouldNot { be ('empty) }
+      isNotEmptyMock shouldNot be ('empty)
+
+      val ex1 = intercept[TestFailedException] {
+        noPredicateMock shouldNot { be ('empty) }
+      }
+      assert(ex1.message === Some("NoPredicateMock has neither an empty nor an isEmpty method"))
+      assert(ex1.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(ex1.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      val ex2 = intercept[TestFailedException] {
+        noPredicateMock shouldNot (be ('full))
+      }
+      assert(ex2.message === Some("NoPredicateMock has neither a full nor an isFull method"))
+      assert(ex2.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(ex2.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      val ex3 = intercept[TestFailedException] {
+        noPredicateMock shouldNot be ('empty)
+      }
+      assert(ex3.message === Some("NoPredicateMock has neither an empty nor an isEmpty method"))
+      assert(ex3.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(ex3.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      val ex4 = intercept[TestFailedException] {
+        noPredicateMock shouldNot be ('full)
+      }
+      assert(ex4.message === Some("NoPredicateMock has neither a full nor an isFull method"))
+      assert(ex4.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(ex4.failedCodeLineNumber === Some(thisLineNumber - 4))
+    }
+
+    def `should work with BePropertyMatcher` {
+      case class MyFile(
+                         val name: String,
+                         val file: Boolean,
+                         val isDirectory: Boolean
+                         )
+
+      class FileBePropertyMatcher extends BePropertyMatcher[MyFile] {
+        def apply(file: MyFile) = {
+          new BePropertyMatchResult(file.file, "file")
+        }
+      }
+
+      class DirectoryBePropertyMatcher extends BePropertyMatcher[MyFile] {
+        def apply(file: MyFile) = {
+          new BePropertyMatchResult(file.isDirectory, "directory")
+        }
+      }
+
+      def file = new FileBePropertyMatcher
+      def directory = new DirectoryBePropertyMatcher
+
+      val myFile = new MyFile("temp.txt", true, false)
+
+      val book = new Book("A Tale of Two Cities", "Dickens", 1859, 45, true)
+      val badBook = new Book("A Tale of Two Cities", "Dickens", 1859, 45, false)
+
+      badBook shouldNot be (goodRead)
+      badBook shouldNot be a goodRead
+      badBook shouldNot be an goodRead
+
+      val caught1 = intercept[TestFailedException] {
+        book shouldNot be (goodRead)
+      }
+      assert(caught1.message === Some("Book(A Tale of Two Cities,Dickens,1859,45,true) was goodRead"))
+      assert(caught1.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      val caught2 = intercept[TestFailedException] {
+        book shouldNot be a goodRead
+      }
+      assert(caught2.message === Some("Book(A Tale of Two Cities,Dickens,1859,45,true) was a goodRead"))
+      assert(caught2.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      val caught3 = intercept[TestFailedException] {
+        book shouldNot be an goodRead
+      }
+      assert(caught3.message === Some("Book(A Tale of Two Cities,Dickens,1859,45,true) was an goodRead"))
+      assert(caught3.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      val caught4 = intercept[TestFailedException] {
+        book shouldNot (be (goodRead))
+      }
+      assert(caught4.message === Some("Book(A Tale of Two Cities,Dickens,1859,45,true) was goodRead"))
+      assert(caught4.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      val caught5 = intercept[TestFailedException] {
+        book shouldNot (be a (goodRead))
+      }
+      assert(caught5.message === Some("Book(A Tale of Two Cities,Dickens,1859,45,true) was a goodRead"))
+      assert(caught5.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      val caught6 = intercept[TestFailedException] {
+        book shouldNot (be an (goodRead))
+      }
+      assert(caught6.message === Some("Book(A Tale of Two Cities,Dickens,1859,45,true) was an goodRead"))
+      assert(caught6.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
+    }
+
+    def `should with +-` {
+      val sevenDotOh = 7.0
+      val minusSevenDotOh = -7.0
+      val sevenDotOhFloat = 7.0f
+      val minusSevenDotOhFloat = -7.0f
+      val sevenLong = 7L
+      val minusSevenLong = -7L
+      val sevenInt = 7
+      val minusSevenInt = -7
+      val sevenShort: Short = 7
+      val minusSevenShort: Short = -7
+      val sevenByte: Byte = 7
+      val minusSevenByte: Byte = -7
+
+      // Double +- Double
+      sevenDotOh shouldNot { be (7.5 +- 0.2) }
+      sevenDotOh shouldNot be (7.5 +- 0.2)
+      sevenDotOh shouldNot be (6.5 +- 0.2)
+      minusSevenDotOh shouldNot { be (-7.5 +- 0.2) }
+      minusSevenDotOh shouldNot be (-7.5 +- 0.2)
+      minusSevenDotOh shouldNot be (-6.5 +- 0.2)
+
+      // Double +- Float
+      sevenDotOh shouldNot { be (7.5 +- 0.2f) }
+      sevenDotOh shouldNot be (7.5 +- 0.2f)
+      sevenDotOh shouldNot be (6.5 +- 0.2f)
+      minusSevenDotOh shouldNot { be (-7.5 +- 0.2f) }
+      minusSevenDotOh shouldNot be (-7.5 +- 0.2f)
+      minusSevenDotOh shouldNot be (-6.5 +- 0.2f)
+
+      // Double +- Long
+      sevenDotOh shouldNot { be (10.0 +- 2L) }
+      sevenDotOh shouldNot be (4.0 +- 2L)
+      sevenDotOh shouldNot be (9.1 +- 2L)
+      minusSevenDotOh shouldNot { be (-10.0 +- 2L) }
+      minusSevenDotOh shouldNot be (-4.0 +- 2L)
+      minusSevenDotOh shouldNot be (-9.1 +- 2L)
+
+      // Double +- Int
+      sevenDotOh shouldNot { be (10.0 +- 2) }
+      sevenDotOh shouldNot be (4.0 +- 2)
+      sevenDotOh shouldNot be (9.1 +- 2)
+      minusSevenDotOh shouldNot { be (-10.0 +- 2) }
+      minusSevenDotOh shouldNot be (-4.0 +- 2)
+      minusSevenDotOh shouldNot be (-9.1 +- 2)
+
+      // Double +- Short
+      sevenDotOh shouldNot { be (10.0 +- 2.toShort) }
+      sevenDotOh shouldNot be (4.0 +- 2.toShort)
+      sevenDotOh shouldNot be (9.1 +- 2.toShort)
+      minusSevenDotOh shouldNot { be (-10.0 +- 2.toShort) }
+      minusSevenDotOh shouldNot be (-4.0 +- 2.toShort)
+      minusSevenDotOh shouldNot be (-9.1 +- 2.toShort)
+
+      // Double +- Byte
+      sevenDotOh shouldNot { be (10.0 +- 2.toByte) }
+      sevenDotOh shouldNot be (4.0 +- 2.toByte)
+      sevenDotOh shouldNot be (9.1 +- 2.toByte)
+      minusSevenDotOh shouldNot { be (-10.0 +- 2.toByte) }
+      minusSevenDotOh shouldNot be (-4.0 +- 2.toByte)
+      minusSevenDotOh shouldNot be (-9.1 +- 2.toByte)
+
+      // Float +- Float
+      sevenDotOhFloat shouldNot { be (7.5f +- 0.2f) }
+      sevenDotOhFloat shouldNot be (7.5f +- 0.2f)
+      sevenDotOhFloat shouldNot be (6.5f +- 0.2f)
+      minusSevenDotOhFloat shouldNot { be (-7.5f +- 0.2f) }
+      minusSevenDotOhFloat shouldNot be (-7.5f +- 0.2f)
+      minusSevenDotOhFloat shouldNot be (-6.5f +- 0.2f)
+
+      // Float +- Long
+      sevenDotOhFloat shouldNot { be (10.0f +- 2L) }
+      sevenDotOhFloat shouldNot be (4.0f +- 2L)
+      sevenDotOhFloat shouldNot be (9.1f +- 2L)
+      minusSevenDotOhFloat shouldNot { be (-10.0f +- 2L) }
+      minusSevenDotOhFloat shouldNot be (-4.0f +- 2L)
+      minusSevenDotOhFloat shouldNot be (-9.1f +- 2L)
+
+      // Float +- Int
+      sevenDotOhFloat shouldNot { be (10.0f +- 2) }
+      sevenDotOhFloat shouldNot be (4.0f +- 2)
+      sevenDotOhFloat shouldNot be (9.1f +- 2)
+      minusSevenDotOhFloat shouldNot { be (-10.0f +- 2) }
+      minusSevenDotOhFloat shouldNot be (-4.0f +- 2)
+      minusSevenDotOhFloat shouldNot be (-9.1f +- 2)
+
+      // Float +- Short
+      sevenDotOhFloat shouldNot { be (10.0f +- 2.toShort) }
+      sevenDotOhFloat shouldNot be (4.0f +- 2.toShort)
+      sevenDotOhFloat shouldNot be (9.1f +- 2.toShort)
+      minusSevenDotOhFloat shouldNot { be (-10.0f +- 2.toShort) }
+      minusSevenDotOhFloat shouldNot be (-4.0f +- 2.toShort)
+      minusSevenDotOhFloat shouldNot be (-9.1f +- 2.toShort)
+
+      // Float +- Byte
+      sevenDotOhFloat shouldNot { be (10.0f +- 2.toByte) }
+      sevenDotOhFloat shouldNot be (4.0f +- 2.toByte)
+      sevenDotOhFloat shouldNot be (9.1f +- 2.toByte)
+      minusSevenDotOhFloat shouldNot { be (-10.0f +- 2.toByte) }
+      minusSevenDotOhFloat shouldNot be (-4.0f +- 2.toByte)
+      minusSevenDotOhFloat shouldNot be (-9.1f +- 2.toByte)
+
+      // Long +- Long
+      sevenLong shouldNot { be (10L +- 2L) }
+      sevenLong shouldNot be (4L +- 2L)
+      sevenLong shouldNot be (10L +- 2L)
+      minusSevenLong shouldNot { be (-10L +- 2L) }
+      minusSevenLong shouldNot be (-4L +- 2L)
+      minusSevenLong shouldNot be (-10L +- 2L)
+
+      // Long +- Int
+      sevenLong shouldNot { be (10L +- 2) }
+      sevenLong shouldNot be (4L +- 2)
+      sevenLong shouldNot be (10L +- 2)
+      minusSevenLong shouldNot { be (-10L +- 2) }
+      minusSevenLong shouldNot be (-4L +- 2)
+      minusSevenLong shouldNot be (-10L +- 2)
+
+      // Long +- Short
+      sevenLong shouldNot { be (10L +- 2.toShort) }
+      sevenLong shouldNot be (4L +- 2.toShort)
+      sevenLong shouldNot be (10L +- 2.toShort)
+      minusSevenLong shouldNot { be (-10L +- 2.toShort) }
+      minusSevenLong shouldNot be (-4L +- 2.toShort)
+      minusSevenLong shouldNot be (-10L +- 2.toShort)
+
+      // Long +- Byte
+      sevenLong shouldNot { be (10L +- 2.toByte) }
+      sevenLong shouldNot be (4L +- 2.toByte)
+      sevenLong shouldNot be (10L +- 2.toByte)
+      minusSevenLong shouldNot { be (-10L +- 2.toByte) }
+      minusSevenLong shouldNot be (-4L +- 2.toByte)
+      minusSevenLong shouldNot be (-10L +- 2.toByte)
+
+      // Int +- Int
+      sevenInt shouldNot { be (10 +- 2) }
+      sevenInt shouldNot be (4 +- 2)
+      sevenInt shouldNot be (10 +- 2)
+      minusSevenInt shouldNot { be (-10 +- 2) }
+      minusSevenInt shouldNot be (-4 +- 2)
+      minusSevenInt shouldNot be (-10 +- 2)
+
+      // Int +- Short
+      sevenInt shouldNot { be (10 +- 2.toShort) }
+      sevenInt shouldNot be (4 +- 2.toShort)
+      sevenInt shouldNot be (10 +- 2.toShort)
+      minusSevenInt shouldNot { be (-10 +- 2.toShort) }
+      minusSevenInt shouldNot be (-4 +- 2.toShort)
+      minusSevenInt shouldNot be (-10 +- 2.toShort)
+
+      // Int +- Byte
+      sevenInt shouldNot { be (10 +- 2.toByte) }
+      sevenInt shouldNot be (4 +- 2.toByte)
+      sevenInt shouldNot be (10 +- 2.toByte)
+      minusSevenInt shouldNot { be (-10 +- 2.toByte) }
+      minusSevenInt shouldNot be (-4 +- 2.toByte)
+      minusSevenInt shouldNot be (-10 +- 2.toByte)
+
+      // Short +- Short
+      sevenShort shouldNot { be (10.toShort +- 2.toShort) }
+      sevenShort shouldNot be (4.toShort +- 2.toShort)
+      sevenShort shouldNot be (10.toShort +- 2.toShort)
+      minusSevenShort shouldNot { be ((-10).toShort +- 2.toShort) }
+      minusSevenShort shouldNot be ((-4).toShort +- 2.toShort)
+      minusSevenShort shouldNot be ((-10).toShort +- 2.toShort)
+
+      // Short +- Byte
+      sevenShort shouldNot { be (10.toShort +- 2.toByte) }
+      sevenShort shouldNot be (4.toShort +- 2.toByte)
+      sevenShort shouldNot be (10.toShort +- 2.toByte)
+      minusSevenShort shouldNot { be ((-10).toShort +- 2.toByte) }
+      minusSevenShort shouldNot be ((-4).toShort +- 2.toByte)
+      minusSevenShort shouldNot be ((-10).toShort +- 2.toByte)
+
+      // Byte +- Byte
+      sevenByte shouldNot { be (10.toByte +- 2.toByte) }
+      sevenByte shouldNot be (4.toByte +- 2.toByte)
+      sevenByte shouldNot be (10.toByte +- 2.toByte)
+      minusSevenByte shouldNot { be ((-10).toByte +- 2.toByte) }
+      minusSevenByte shouldNot be ((-4).toByte +- 2.toByte)
+      minusSevenByte shouldNot be ((-10).toByte +- 2.toByte)
+
+      // Double +- Double
+      val caught1 = intercept[TestFailedException] {
+        sevenDotOh shouldNot be (7.1 +- 0.2)
+      }
+      assert(caught1.message === Some("7.0 was 7.1 plus or minus 0.2"))
+      assert(caught1.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      // Double +- Float
+      val caught2 = intercept[TestFailedException] {
+        sevenDotOh shouldNot be (7.1 +- 0.2f)
+      }
+      assert(caught2.message === Some("7.0 was 7.1 plus or minus 0.20000000298023224"))
+      assert(caught2.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      // Double +- Long
+      val caught3 = intercept[TestFailedException] {
+        sevenDotOh shouldNot be (7.1 +- 2L)
+      }
+      assert(caught3.message === Some("7.0 was 7.1 plus or minus 2.0"))
+      assert(caught3.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      // Double +- Int
+      val caught4 = intercept[TestFailedException] {
+        sevenDotOh shouldNot be (7.1 +- 2)
+      }
+      assert(caught4.message === Some("7.0 was 7.1 plus or minus 2.0"))
+      assert(caught4.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      // Double +- Short
+      val caught5 = intercept[TestFailedException] {
+        sevenDotOh shouldNot be (7.1 +- 2.toShort)
+      }
+      assert(caught5.message === Some("7.0 was 7.1 plus or minus 2.0"))
+      assert(caught5.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      // Double +- Byte
+      val caught6 = intercept[TestFailedException] {
+        sevenDotOh shouldNot be (7.1 +- 2.toByte)
+      }
+      assert(caught6.message === Some("7.0 was 7.1 plus or minus 2.0"))
+      assert(caught6.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      // Float +- Float
+      val caught7 = intercept[TestFailedException] {
+        sevenDotOhFloat shouldNot be (7.1f +- 0.2f)
+      }
+      assert(caught7.message === Some("7.0 was 7.1 plus or minus 0.2"))
+      assert(caught7.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught7.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      // Float +- Long
+      val caught8 = intercept[TestFailedException] {
+        sevenDotOhFloat shouldNot be (7.1f +- 2L)
+      }
+      assert(caught8.message === Some("7.0 was 7.1 plus or minus 2.0"))
+      assert(caught8.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      // Float +- Int
+      val caught9 = intercept[TestFailedException] {
+        sevenDotOhFloat shouldNot be (7.1f +- 2)
+      }
+      assert(caught9.message === Some("7.0 was 7.1 plus or minus 2.0"))
+      assert(caught9.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught9.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      // Float +- Short
+      val caught10 = intercept[TestFailedException] {
+        sevenDotOhFloat shouldNot be (7.1f +- 2.toShort)
+      }
+      assert(caught10.message === Some("7.0 was 7.1 plus or minus 2.0"))
+      assert(caught10.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught10.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      // Float +- Byte
+      val caught11 = intercept[TestFailedException] {
+        sevenDotOhFloat shouldNot be (7.1f +- 2.toByte)
+      }
+      assert(caught11.message === Some("7.0 was 7.1 plus or minus 2.0"))
+      assert(caught11.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught11.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      // Long +- Long
+      val caught12 = intercept[TestFailedException] {
+        sevenLong shouldNot be (9L +- 2L)
+      }
+      assert(caught12.message === Some("7 was 9 plus or minus 2"))
+      assert(caught12.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught12.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      // Long +- Int
+      val caught13 = intercept[TestFailedException] {
+        sevenLong shouldNot be (9L +- 2)
+      }
+      assert(caught13.message === Some("7 was 9 plus or minus 2"))
+      assert(caught13.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught13.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      // Long +- Short
+      val caught14 = intercept[TestFailedException] {
+        sevenLong shouldNot be (9L +- 2.toShort)
+      }
+      assert(caught14.message === Some("7 was 9 plus or minus 2"))
+      assert(caught14.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught14.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      // Long +- Byte
+      val caught15 = intercept[TestFailedException] {
+        sevenLong shouldNot be (9L +- 2.toByte)
+      }
+      assert(caught15.message === Some("7 was 9 plus or minus 2"))
+      assert(caught15.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught15.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      // Int +- Int
+      val caught16 = intercept[TestFailedException] {
+        sevenInt shouldNot be (9 +- 2)
+      }
+      assert(caught16.message === Some("7 was 9 plus or minus 2"))
+      assert(caught16.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught16.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      // Int +- Short
+      val caught17 = intercept[TestFailedException] {
+        sevenInt shouldNot be (9 +- 2.toShort)
+      }
+      assert(caught17.message === Some("7 was 9 plus or minus 2"))
+      assert(caught17.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught17.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      // Int +- Byte
+      val caught18 = intercept[TestFailedException] {
+        sevenInt shouldNot be (9 +- 2.toByte)
+      }
+      assert(caught18.message === Some("7 was 9 plus or minus 2"))
+      assert(caught18.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught18.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      // Short +- Short
+      val caught19 = intercept[TestFailedException] {
+        sevenShort shouldNot be (9.toShort +- 2.toShort)
+      }
+      assert(caught19.message === Some("7 was 9 plus or minus 2"))
+      assert(caught19.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught19.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      // Short +- Byte
+      val caught20 = intercept[TestFailedException] {
+        sevenShort shouldNot be (9.toShort +- 2.toByte)
+      }
+      assert(caught20.message === Some("7 was 9 plus or minus 2"))
+      assert(caught20.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught20.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      // Byte +- Byte
+      val caught21 = intercept[TestFailedException] {
+        sevenByte shouldNot be (9.toByte +- 2.toByte)
+      }
+      assert(caught21.message === Some("7 was 9 plus or minus 2"))
+      assert(caught21.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught21.failedCodeLineNumber === Some(thisLineNumber - 4))
+    }
+  }
+}
