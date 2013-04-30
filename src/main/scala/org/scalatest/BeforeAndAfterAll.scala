@@ -140,11 +140,17 @@ package org.scalatest
  * @author Bill Venners
  */
 trait BeforeAndAfterAll  extends SuiteMixin { this: Suite =>
-  
+
   /**
    * Flag to indicate whether to invoke beforeAll and afterAll even when there are no tests expected.
-   * The default value is <code>false</code> which means beforeAll and afterAll will not be invoked 
-   * when there are no tests expected.
+   *
+   * <p>
+   * The default value is <code>false</code>, which means beforeAll and afterAll will not be invoked 
+   * if there are no tests expected. Whether tests are expected is determined by invoking <code>expectedTestCount</code> passing in
+   * the passed filter. Because this count does not include tests excluded based on tags, such as ignored tests, this prevents
+   * any side effects in <code>beforeAll</code> or <code>afterAll</code> if no tests will ultimately be executed anyway.
+   * If you always want to see the side effects even if no tests are expected, override this <code>val</code> and set it to true.
+   * </p>
    */
   val invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected = false
 
@@ -207,7 +213,7 @@ trait BeforeAndAfterAll  extends SuiteMixin { this: Suite =>
    * This trait's implementation of this method ("this method") invokes <code>beforeAll(ConfigMap)</code>
    * before executing any tests or nested suites and <code>afterAll(ConfigMap)</code>
    * after executing all tests and nested suites. It runs the suite by invoking <code>super.run</code>, passing along
-   * the seven parameters passed to it.
+   * the parameters passed to it.
    * </p>
    *
    * <p>
@@ -215,10 +221,19 @@ trait BeforeAndAfterAll  extends SuiteMixin { this: Suite =>
    * method will complete abruptly with the same exception. If any call to
    * <code>super.run</code> completes abruptly with an exception, this method
    * will complete abruptly with the same exception, however, before doing so, it will
-   * invoke <code>afterAll</code>. If <cod>afterAll</code> <em>also</em> completes abruptly with an exception, this
+   * invoke <code>afterAll</code>. If <code>afterAll</code> <em>also</em> completes abruptly with an exception, this
    * method will nevertheless complete abruptly with the exception previously thrown by <code>super.run</code>.
    * If <code>super.run</code> returns normally, but <code>afterAll</code> completes abruptly with an
    * exception, this method will complete abruptly with the same exception.
+   * </p>
+   *
+   * <p>
+   * This method does not invoke either <code>beforeAll</code> or <code>afterAll</code> if <code>runTestsInNewInstance</code> is true so
+   * that any side effects only happen once per test if <code>OneInstancePerTest</code> is being used. In addition, if no tests
+   * are expected, then <code>beforeAll</code> and <code>afterAll</code> will be invoked only if the
+   * <code>invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected</code> flag is true. By default, this flag is false, so that if 
+   * all tests are excluded (such as if the entire suite class has been marked with <code>@Ignore</code>), then side effects
+   * would happen only if at least one test will ultimately be executed in this suite or its nested suites.
    * </p>
    *
    * @param testName an optional name of one test to run. If <code>None</code>, all relevant tests should be run.
