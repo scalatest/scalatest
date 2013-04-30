@@ -94,6 +94,7 @@ import org.scalatest.words.Complainer
  *
  * @author Bill Venners
  */
+@deprecated("Please use MatchersForJUnit instead.")
 trait ShouldMatchersForJUnit extends ShouldMatchers with AssertionsForJUnit {
   private[scalatest] override val complainer: Complainer =
     new Complainer {
@@ -147,4 +148,5 @@ trait ShouldMatchersForJUnit extends ShouldMatchers with AssertionsForJUnit {
  *
  * @author Bill Venners
  */
+@deprecated("Please use MatchersForJUnit instead.")
 object ShouldMatchersForJUnit extends ShouldMatchersForJUnit
