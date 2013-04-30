@@ -917,7 +917,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
         // also, it solves the problem when the suite file that mixin in Matchers has the [suiteFileName]:newTestFailedException appears in the top 2 elements
         // this approach should be better than adding && _.getMethodName == newTestFailedException we used previously.
         val elements = temp.getStackTrace.drop(2) 
-        val stackDepth = elements.indexWhere(st => st.getFileName != "Matchers.scala") + 2 // the first 2 elements dropped previously
+        // TODO: Perhaps we should add org.scalatest.enablers also here later?
+        val stackDepth = elements.indexWhere(st => st.getFileName != "Matchers.scala" && !st.getClassName.startsWith("org.scalatest.words.")) + 2 // the first 2 elements dropped previously
         optionalCause match {
           case Some(cause) => new TestFailedException(message, cause, stackDepth + stackDepthAdjustment)
           case None => new TestFailedException(message, stackDepth + stackDepthAdjustment)
@@ -5159,6 +5160,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
         case _ => ()
       }
     }
+    def shouldNotMatcher[T](left: T, rightMatcher: Matcher[T], stackDepthAdjustment: Int = 0) {
+      rightMatcher(left) match {
+        case MatchResult(true, _, negatedFailureMessage, _, _) => throw complainer.newTestFailedException(negatedFailureMessage, None, stackDepthAdjustment)
+        case _ => ()
+      }
+    }
   }
 
   /**
@@ -5427,6 +5434,27 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
       }
     }
 
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * result shouldNot be (3)
+     *        ^
+     * </pre>
+     */
+    def shouldNot(beWord: BeWord): ResultOfBeWordForAny[T] = new ResultOfBeWordForAny(left, false)
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * result shouldNot (be (3))
+     *        ^
+     * </pre>
+     */
+    def shouldNot(rightMatcherX1: Matcher[T]) {
+      ShouldMethodHelper.shouldNotMatcher(left, rightMatcherX1)
+    }
 
     /**
      * This method enables syntax such as the following:
@@ -5606,6 +5634,16 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
           throw complainer.newTestFailedException(FailureMessages("wasNotAn", left, UnquotedString(result.propertyName)))
         }
     }
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * result shouldNot be theSameInstanceAs anotherInstance
+     *        ^
+     * </pre>
+     */
+    override def shouldNot(beWord: BeWord): ResultOfBeWordForAnyRef[T] = new ResultOfBeWordForAnyRef(left, false)
     
 /*
     def shouldBe: ResultOfBeWordForAnyRef[T] = new ResultOfBeWordForAnyRef(left, true)
