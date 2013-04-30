@@ -20,7 +20,7 @@ import java.io.{File, FileWriter, BufferedWriter}
 
 object GenMatchers {
 
-  val deprecationLine = "@deprecated(\"Please use Matchers instead.\")\n"
+  val deprecationLine = "@deprecated(\"Please use org.scalatest.Matchers instead.\")\n"
 
   def translateShouldToMust(shouldLine: String): String = {
     val temp1 = shouldLine.replaceAll("<code>must</code>", "<code>I_WAS_must_ORIGINALLY</code>")

@@ -17,8 +17,8 @@ package org.scalatest.matchers
 
 import org.scalatest.Matchers
 
-@deprecated("Please use Matchers instead.")
+@deprecated("Please use org.scalatest.Matchers instead.")
 trait ShouldMatchers extends Matchers
 
-@deprecated("Please use Matchers instead.")
+@deprecated("Please use org.scalatest.Matchers instead.")
 object ShouldMatchers extends ShouldMatchers
