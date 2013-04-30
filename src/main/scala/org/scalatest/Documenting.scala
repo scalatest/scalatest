@@ -16,13 +16,12 @@
 package org.scalatest
 
 /**
- * Trait that contains the <code>info</code> method, which can be used to send markup to reporter(s).
+ * Trait that contains a <code>markup</code> method, which can be used to send markup to the reporter.
  */
 trait Documenting {
 
   /**
-   * Send markup to reporter(s).
+   * Send markup text via a <code>MarkupProvided</code> event to the reporter.
    */
   protected def markup: Documenter
-  
 }

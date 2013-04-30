@@ -84,7 +84,7 @@ trait GivenWhenThen { this: Informing =>
   def given(message: String) {
     Given(message)
   }
-  
+
   /**
    * Forwards a message to an implicit <code>Informer</code>, preceded by "Given."
    *
