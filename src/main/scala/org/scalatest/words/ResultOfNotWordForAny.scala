@@ -775,7 +775,7 @@ final class ResultOfNotWordForString(left: String, shouldBeTrue: Boolean, compla
  *
  * @author Bill Venners
  */
-class ResultOfNotWordForTraversable[E, T[_] <: scala.collection.GenTraversable[_]](left: T[E], shouldBeTrue: Boolean, complainer: Complainer)
+class ResultOfNotWordForGenTraversable[E, T[_] <: scala.collection.GenTraversable[_]](left: T[E], shouldBeTrue: Boolean, complainer: Complainer)
     extends ResultOfNotWordForAnyRef(left, shouldBeTrue, complainer) {
 
   /**
@@ -965,7 +965,7 @@ class ResultOfNotWordForJavaCollection[E, T[_] <: java.util.Collection[_]](left:
  *
  * @author Bill Venners
  */
-final class ResultOfNotWordForMap[K, V, L[_, _] <: scala.collection.GenMap[_, _]](left: L[K, V], shouldBeTrue: Boolean, complainer: Complainer)
+final class ResultOfNotWordForGenMap[K, V, L[_, _] <: scala.collection.GenMap[_, _]](left: L[K, V], shouldBeTrue: Boolean, complainer: Complainer)
     extends ResultOfNotWordForAnyRef(left, shouldBeTrue, complainer) {
 
   /**
@@ -993,7 +993,7 @@ final class ResultOfNotWordForMap[K, V, L[_, _] <: scala.collection.GenMap[_, _]
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">
-   * Map("one" -> 1, "two" -> 2) should not contain value (3)
+   * Map("one" -&gt; 1, "two" -&gt; 2) should not contain value (3)
    *                                        ^
    * </pre>
    */

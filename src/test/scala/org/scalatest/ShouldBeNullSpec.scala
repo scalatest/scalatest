@@ -38,11 +38,18 @@ class ShouldBeNullSpec extends Spec with Matchers with Checkers with ReturnsNorm
       nullMap should (be (null))
       // null should be (null) this doesn't compile. can't do implicits on the Null type, which is fine
       // null should (be (null))
+      nullMap shouldBe null
+      nullMap shouldBe (null)
 
       val caught1 = intercept[TestFailedException] {
         map should be (null)
       }
       assert(caught1.getMessage === "Map(1 -> one, 2 -> two) was not null")
+
+      val caught1b = intercept[TestFailedException] {
+        map shouldBe null
+      }
+      assert(caught1b.getMessage === "Map(1 -> one, 2 -> two) was not null")
 
       val caught2 = intercept[TestFailedException] {
         map should (be (null))

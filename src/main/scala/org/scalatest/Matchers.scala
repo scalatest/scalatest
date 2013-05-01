@@ -2831,7 +2831,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * all(xs) should not be < (7)
+     * all(xs) should not be &lt; (7)
      *                    ^
      * </pre>
      */
@@ -2855,7 +2855,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * all(xs) should not be > (7)
+     * all(xs) should not be &gt; (7)
      *                    ^
      * </pre>
      */
@@ -4857,7 +4857,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * This method enables the following syntax: 
      *
      * <pre class="stHighlight">
-     * all(colOfMap) should contain theSameElementsAs List(1 -> "one", 2 -> "two", 3 -> "three")
+     * all(colOfMap) should contain theSameElementsAs List(1 -&gt; "one", 2 -&gt; "two", 3 -&gt; "three")
      *                              ^
      * </pre>
      */
@@ -4878,7 +4878,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * This method enables the following syntax: 
      *
      * <pre class="stHighlight">
-     * all(colOfMap) should contain theSameElementsAs List(1 -> "one", 2 -> "two", 3 -> "three")
+     * all(colOfMap) should contain theSameElementsAs List(1 -&gt; "one", 2 -&gt; "two", 3 -&gt; "three")
      *                              ^
      * </pre>
      */
@@ -4899,7 +4899,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * This method enables the following syntax: 
      *
      * <pre class="stHighlight">
-     * all(colOfMap) should contain allOf List(1 -> "one", 2 -> "two", 3 -> "three")
+     * all(colOfMap) should contain allOf List(1 -&gt; "one", 2 -&gt; "two", 3 -&gt; "three")
      *                              ^
      * </pre>
      */
@@ -4920,7 +4920,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * This method enables the following syntax: 
      *
      * <pre class="stHighlight">
-     * all(colOfMap) should contain inOrder List(1 -> "one", 2 -> "two", 3 -> "three")
+     * all(colOfMap) should contain inOrder List(1 -&gt; "one", 2 -&gt; "two", 3 -&gt; "three")
      *                              ^
      * </pre>
      */
@@ -4941,7 +4941,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * This method enables the following syntax: 
      *
      * <pre class="stHighlight">
-     * all(colOfMap) should contain oneOf Map(1 -> "one", 2 -> "two", 3 -> "three")
+     * all(colOfMap) should contain oneOf Map(1 -&gt; "one", 2 -&gt; "two", 3 -&gt; "three")
      *                              ^
      * </pre>
      */
@@ -4962,7 +4962,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * This method enables the following syntax: 
      *
      * <pre class="stHighlight">
-     * all(colOfMap) should contain only Map(1 -> "one", 2 -> "two", 3 -> "three")
+     * all(colOfMap) should contain only Map(1 -&gt; "one", 2 -&gt; "two", 3 -&gt; "three")
      *                              ^
      * </pre>
      */
@@ -4983,7 +4983,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * This method enables the following syntax: 
      *
      * <pre class="stHighlight">
-     * all(colOfMap) should contain inOrderOnly Map(1 -> "one", 2 -> "two", 3 -> "three")
+     * all(colOfMap) should contain inOrderOnly Map(1 -&gt; "one", 2 -&gt; "two", 3 -&gt; "three")
      *                              ^
      * </pre>
      */
@@ -5004,7 +5004,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * This method enables the following syntax: 
      *
      * <pre class="stHighlight">
-     * all(colOfMap) should contain noneOf Map(1 -> "one", 2 -> "two", 3 -> "three")
+     * all(colOfMap) should contain noneOf Map(1 -&gt; "one", 2 -&gt; "two", 3 -&gt; "three")
      *                              ^
      * </pre>
      */
@@ -5317,7 +5317,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *
      * <pre class="stHighlight">
      * aDouble shouldBe 8.8
-     * </pre>        ^
+     *         ^
+     * </pre>
      */
     def shouldBe(right: T) {
       if (!areEqualComparingArraysStructurally(left, right)) {
@@ -5330,7 +5331,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * This method enables syntax such as the following:
      *
      * <pre class="stHighlight">
-     * 5 shouldBe < (7) 
+     * 5 shouldBe &lt; (7) 
      *   ^
      * </pre>
      */
@@ -5350,7 +5351,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * This method enables syntax such as the following:
      *
      * <pre class="stHighlight">
-     * 8 shouldBe > (7) 
+     * 8 shouldBe &gt; (7) 
      *   ^
      * </pre> 
      */
@@ -5370,7 +5371,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * This method enables syntax such as the following:
      *
      * <pre class="stHighlight">
-     * 5 shouldBe <= (7) 
+     * 5 shouldBe &lt;= (7) 
      *   ^
      * </pre> 
      */
@@ -5390,7 +5391,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * This method enables syntax such as the following:
      *
      * <pre class="stHighlight">
-     * 8 shouldBe >= (7) 
+     * 8 shouldBe &gt;= (7) 
      *   ^
      * </pre> 
      */
@@ -5411,10 +5412,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *
      * <pre class="stHighlight">testing
      * 1 shouldBe odd
-     *                                          ^
+     *   ^
      * </pre>
      */
-    def shouldBe(beMatcher: BeMatcher[T]) { // TODO: This looks like a bug to me. Investigate. - bv
+    def shouldBe(beMatcher: BeMatcher[T]) {
       val result = beMatcher.apply(left)
       if (!result.matches)
         throw complainer.newTestFailedException(result.failureMessage)
@@ -5499,6 +5500,20 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
     def shouldEqual(right: Null) { 
       if (left != null) {
         throw complainer.newTestFailedException(FailureMessages("didNotEqualNull", left))
+      }
+    }
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * result shouldEqual null
+     *        ^
+     * </pre>
+     */
+    def shouldBe(right: Null) {
+      if (left != null) {
+        throw complainer.newTestFailedException(FailureMessages("wasNotNull", left))
       }
     }
 
@@ -5829,15 +5844,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      */
     override def should(notWord: NotWord): ResultOfNotWordForArray[E] =
       new ResultOfNotWordForArray(left, false, complainer)
-    
-/*
-    def shouldBe(right: Array[E]) {
-      if (!left.deep.equals(right.deep)) {
-        val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)
-        throw complainer.newTestFailedException(FailureMessages("wasNotEqualTo", leftee, rightee))
-      }
-    }
-*/
   }
 
 // TODO: Am I doing conversions on immutable.GenTraversable and immutable.GenSeq? If so, write a test that fails and make it general.
@@ -5874,8 +5880,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *     ^
      * </pre>
      */
-    override def should(notWord: NotWord): ResultOfNotWordForMap[K, V, L] = {
-      new ResultOfNotWordForMap(left.asInstanceOf[L[K, V]], false, complainer)
+    override def should(notWord: NotWord): ResultOfNotWordForGenMap[K, V, L] = {
+      new ResultOfNotWordForGenMap(left.asInstanceOf[L[K, V]], false, complainer)
     }
   }
 
@@ -5912,8 +5918,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *             ^
      * </pre>
      */
-    override def should(notWord: NotWord): ResultOfNotWordForTraversable[E, L] =
-      new ResultOfNotWordForTraversable(left, false, complainer)
+    override def should(notWord: NotWord): ResultOfNotWordForGenTraversable[E, L] =
+      new ResultOfNotWordForGenTraversable(left, false, complainer)
     
     /**
      * This method enables syntax such as the following:
