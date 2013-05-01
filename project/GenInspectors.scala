@@ -696,24 +696,24 @@ object GenInspectors {
     
   def genColCol[T](colType: String, colTexts: Array[String], arrayXsText: String) = 
     List[(String, String)](
-      ("Set(" + colTexts.map("Set(" + _ + ")").mkString(", ") + ")", "xs"), 
-      ("List(" + colTexts.map("List(" + _ + ")").mkString(", ") + ")", "xs"), 
-      ("Seq(" + colTexts.map("Seq(" + _ + ")").mkString(", ") + ")", "xs"), 
+      ("Set(" + colTexts.map("Set[" + colType + "](" + _ + ")").mkString(", ") + ")", "xs"), 
+      ("List(" + colTexts.map("List[" + colType + "](" + _ + ")").mkString(", ") + ")", "xs"), 
+      ("Seq(" + colTexts.map("Seq[" + colType + "](" + _ + ")").mkString(", ") + ")", "xs"), 
       ("Array[Array[" + colType + "]](" + colTexts.map("Array[" + colType + "](" + _ + ")").mkString(", ") + ")", "arrayToString(xs)"), 
-      ("IndexedSeq(" + colTexts.map("IndexedSeq(" + _ + ")").mkString(", ") + ")", "xs"), 
-      ("Vector(" + colTexts.map("Vector(" + _ + ")").mkString(", ") + ")", "xs"), 
-      ("Set(" + colTexts.map("Set(" + _ + ").par").mkString(", ") + ").par", "xs"), 
-      ("List(" + colTexts.map("List(" + _ + ").par").mkString(", ") + ").par", "xs"), 
-      ("Seq(" + colTexts.map("Seq(" + _ + ").par").mkString(", ") + ").par", "xs"), 
-      ("IndexedSeq(" + colTexts.map("IndexedSeq(" + _ + ").par").mkString(", ") + ").par", "xs"), 
-      ("collection.mutable.Set(" + colTexts.map("collection.mutable.Set(" + _ + ")").mkString(", ") + ")", "xs"), 
-      ("new collection.mutable.ListBuffer() ++ List(" + colTexts.map("new collection.mutable.ListBuffer() ++ List(" + _ + ")").mkString(", ") + ")", "xs"), 
-      ("collection.mutable.Seq(" + colTexts.map("collection.mutable.Seq(" + _ + ")").mkString(", ") + ")", "xs"), 
-      ("collection.mutable.IndexedSeq(" + colTexts.map("collection.mutable.IndexedSeq(" + _ + ")").mkString(", ") + ")", "xs"), 
-      ("collection.mutable.Set(" + colTexts.map("collection.mutable.Set(" + _ + ").par").mkString(", ") + ").par", "xs"), 
-      ("(new collection.mutable.ListBuffer() ++ List(" + colTexts.map("(new collection.mutable.ListBuffer() ++ List(" + _ + ")).par").mkString(", ") + ")).par", "xs"),  
-      ("collection.mutable.Seq(" + colTexts.map("collection.mutable.Seq(" + _ + ").par").mkString(", ") + ").par", "xs"), 
-      ("collection.mutable.IndexedSeq(" + colTexts.map("collection.mutable.IndexedSeq(" + _ + ").par").mkString(", ") + ").par", "xs")
+      ("IndexedSeq(" + colTexts.map("IndexedSeq[" + colType + "](" + _ + ")").mkString(", ") + ")", "xs"), 
+      ("Vector(" + colTexts.map("Vector[" + colType + "](" + _ + ")").mkString(", ") + ")", "xs"), 
+      ("Set(" + colTexts.map("Set[" + colType + "](" + _ + ").par").mkString(", ") + ").par", "xs"), 
+      ("List(" + colTexts.map("List[" + colType + "](" + _ + ").par").mkString(", ") + ").par", "xs"), 
+      ("Seq(" + colTexts.map("Seq[" + colType + "](" + _ + ").par").mkString(", ") + ").par", "xs"), 
+      ("IndexedSeq(" + colTexts.map("IndexedSeq[" + colType + "](" + _ + ").par").mkString(", ") + ").par", "xs"), 
+      ("collection.mutable.Set(" + colTexts.map("collection.mutable.Set[" + colType + "](" + _ + ")").mkString(", ") + ")", "xs"), 
+      ("new collection.mutable.ListBuffer() ++ List(" + colTexts.map("new collection.mutable.ListBuffer[" + colType + "]() ++ List[" + colType + "](" + _ + ")").mkString(", ") + ")", "xs"), 
+      ("collection.mutable.Seq(" + colTexts.map("collection.mutable.Seq[" + colType + "](" + _ + ")").mkString(", ") + ")", "xs"), 
+      ("collection.mutable.IndexedSeq(" + colTexts.map("collection.mutable.IndexedSeq[" + colType + "](" + _ + ")").mkString(", ") + ")", "xs"), 
+      ("collection.mutable.Set(" + colTexts.map("collection.mutable.Set[" + colType + "](" + _ + ").par").mkString(", ") + ").par", "xs"), 
+      ("(new collection.mutable.ListBuffer() ++ List(" + colTexts.map("(new collection.mutable.ListBuffer[" + colType + "]() ++ List[" + colType + "](" + _ + ")).par").mkString(", ") + ")).par", "xs"),  
+      ("collection.mutable.Seq(" + colTexts.map("collection.mutable.Seq[" + colType + "](" + _ + ").par").mkString(", ") + ").par", "xs"), 
+      ("collection.mutable.IndexedSeq(" + colTexts.map("collection.mutable.IndexedSeq[" + colType + "](" + _ + ").par").mkString(", ") + ").par", "xs")
     )
     
   def genMap[T](colTexts: Array[String]) = 
@@ -1026,6 +1026,16 @@ object GenInspectors {
   def trvSizeSimpleMessageFun(colType: String, errorFun: String, errorValue: String): Template = new SimpleMessageTemplate("{2}")
   def quotedSimpleMessageFun(errorFun: String, errorValue: String): Template = new SimpleMessageTemplate("\\\"{1}\\\"")
   def quotedSimpleMessageFun2(errorFun: String, errorValue: String): Template = new SimpleMessageTemplate("\\\"{2}\\\"")
+
+  def filterSetLength(colText: String, condition: String): Boolean = 
+    !(colText.startsWith("Set(") && condition == "'should have length' failed") && 
+    !(colText.startsWith("Set(") && condition == "'should not have length' failed") && 
+    !(colText.startsWith("collection.mutable.Set") && condition == "'should have length' failed") && 
+    !(colText.startsWith("collection.mutable.Set") && condition == "'should not have length' failed") && 
+    !(colText.startsWith("Set(") && condition == "'traversable should have length' failed") && 
+    !(colText.startsWith("Set(") && condition == "'traversable should not have length' failed") && 
+    !(colText.startsWith("collection.mutable.Set") && condition == "'traversable should have length' failed") && 
+    !(colText.startsWith("collection.mutable.Set") && condition == "'traversable should not have length' failed")
   
   def genInspectorShorthandsForAllSpecFile(targetDir: File) {
     val int123Col = genCol("1, 2, 3", "\"WrappedArray(1, 2, 3)\"")
@@ -1142,7 +1152,7 @@ object GenInspectors {
           lengthSizeCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) => 
             (colText, condition, allColText + assertText, "String", okFun, errorFun, errorValue, messageFun(errorFun, errorValue).toString, xsText)
           }
-        }) ++ 
+        }).filter { case (colText, condition, _, _, _, _, _, _, _) => filterSetLength(colText, condition) } ++ 
         (instanceCheckCol flatMap { case (colText, xsText) =>
           instanceCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) => 
             (colText, condition, allColText + assertText, "String", okFun, errorFun, errorValue, messageFun(errorFun, errorValue).toString, xsText)
@@ -1164,13 +1174,15 @@ object GenInspectors {
             val colType = if (colText.startsWith("Array")) "Array[String]" else "GenTraversable[String]"
             (colText, condition, allColText + assertText, colType, okFun, errorFun, errorValue, messageFun(colType, errorFun, errorValue).toString, xsText)
           }
-        }) ++ 
+        }).filter { case (colText, condition, _, _, _, _, _, _, _) => filterSetLength(colText, condition) } ++ 
         (mapCheckCol flatMap { case (colText, xsText) =>
           mapCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) => 
             val colType = "GenMap[String, String]"
             (colText, condition, allColText + assertText, colType, okFun, errorFun, errorValue, messageFun(colType, errorFun, errorValue).toString, xsText)
           }
-        }) ++
+        })
+        // Commented java collection/map generation as Bill has removed them from Matchers.scala 
+        /*++
         (javaColCheckCol flatMap { case (colText, xsText) =>
           javaColCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) => 
             val colType = "java.util.Collection[String]"
@@ -1181,7 +1193,7 @@ object GenInspectors {
           javaMapCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) => 
             (colText, condition, allColText + assertText, colType, okFun, errorFun, errorValue, messageFun(colType, errorFun, errorValue).toString, xsText)
           }
-        })
+        })*/
     
     genFile(
       new File(targetDir, "InspectorShorthandsForAllSucceededSpec.scala"), 
@@ -1338,7 +1350,7 @@ object GenInspectors {
           val passedCount = 3 - List("", "boom!", "hi").filter(errorAssertFun).length
           (colText, condition, atLeast2ColText + assertText, "String", okFun, errorFun, errorValue, passedCount, messageFun(errorFun, errorValue).toString, xsText)
         }
-      }) ++ 
+      }).filter { case (colText, condition, _, _, _, _, _, _, _, _) => filterSetLength(colText, condition) } ++ 
       (instanceCheckCol flatMap { case (colText, xsText) =>
         instanceCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) => 
           val errorAssertFun = getFun(errorFun, "2")
@@ -1368,7 +1380,7 @@ object GenInspectors {
           val passedCount = 3 - List(List("hi"), List("boom!"), List("hello")).filter(errorAssertFun).length
           (colText, condition, atLeast2ColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
         }
-      }) ++ 
+      }).filter { case (colText, condition, _, _, _, _, _, _, _, _) => filterSetLength(colText, condition) } ++ 
       (mapCheckCol flatMap { case (colText, xsText) =>
         mapCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) => 
           val colType = "GenMap[String, String]"
@@ -1378,7 +1390,9 @@ object GenInspectors {
                                      Map("2" -> "two", "6" -> "six", "8" -> "eight")).filter(errorAssertFun).length  
           (colText, condition, atLeast2ColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
         }
-      }) ++
+      })
+      // Commented java collection/map generation as Bill has removed them from Matchers.scala  
+      /*++
       (javaColCheckCol flatMap { case (colText, xsText) =>
         javaColCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) => 
           val colType = "java.util.Collection[String]"
@@ -1396,7 +1410,7 @@ object GenInspectors {
                                      Map("h" -> "hello!")).filter(errorAssertFun).length  
           (colText, condition, atLeast2ColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
         }
-      })
+      })*/
       
     failedTestConfigs.grouped(500).toList.zipWithIndex foreach { case (configs, i) => 
       val className = "InspectorShorthandsForAtLeastFailedSpec" + i
@@ -1535,7 +1549,7 @@ object GenInspectors {
           val passedCount = 3 - List("", "boom!", "hi").filter(errorAssertFun).length
           (colText, condition, everyColText + assertText, "String", okFun, errorFun, errorValue, passedCount, messageFun(errorFun, errorValue).toString, xsText)
         }
-      }) ++ 
+      }).filter { case (colText, condition, _, _, _, _, _, _, _, _) => filterSetLength(colText, condition) } ++ 
       (instanceCheckCol flatMap { case (colText, xsText) =>
         instanceCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) => 
           val errorAssertFun = getFun(errorFun, "2")
@@ -1565,7 +1579,7 @@ object GenInspectors {
           val passedCount = 3 - List(List("hi"), List("boom!"), List("hello")).filter(errorAssertFun).length
           (colText, condition, everyColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
         }
-      }) ++ 
+      }).filter { case (colText, condition, _, _, _, _, _, _, _, _) => filterSetLength(colText, condition) } ++ 
       (mapCheckCol flatMap { case (colText, xsText) =>
         mapCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) => 
           val colType = "GenMap[String, String]"
@@ -1575,7 +1589,9 @@ object GenInspectors {
                                      Map("2" -> "two", "6" -> "six", "8" -> "eight")).filter(errorAssertFun).length  
           (colText, condition, everyColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
         }
-      }) ++ 
+      }) 
+      // Commented java collection/map generation as Bill has removed them from Matchers.scala 
+      /*++ 
       (javaColCheckCol flatMap { case (colText, xsText) =>
         javaColCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) => 
           val colType = "java.util.Collection[String]"
@@ -1593,7 +1609,7 @@ object GenInspectors {
                                      Map("h" -> "hello!")).filter(errorAssertFun).length  
           (colText, condition, everyColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
         }
-      })
+      })*/
       
     failedTestConfigs.grouped(500).toList.zipWithIndex foreach { case (configs, i) => 
       val className = "InspectorShorthandsForEveryFailedSpec" + i
@@ -1732,7 +1748,7 @@ object GenInspectors {
           val passedCount = 3 - List("", "boom!", "hi").filter(errorAssertFun).length
           (colText, condition, exactly3ColText + assertText, "String", okFun, errorFun, errorValue, passedCount, messageFun(errorFun, errorValue).toString, xsText)
         }
-      }) ++ 
+      }).filter { case (colText, condition, _, _, _, _, _, _, _, _) => filterSetLength(colText, condition) } ++ 
       (instanceCheckCol flatMap { case (colText, xsText) =>
         instanceCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) => 
           val errorAssertFun = getFun(errorFun, "2")
@@ -1762,7 +1778,7 @@ object GenInspectors {
           val passedCount = 3 - List(List("hi"), List("boom!"), List("hello")).filter(errorAssertFun).length
           (colText, condition, exactly3ColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
         }
-      }) ++ 
+      }).filter { case (colText, condition, _, _, _, _, _, _, _, _) => filterSetLength(colText, condition) } ++ 
       (mapCheckCol flatMap { case (colText, xsText) =>
         mapCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) => 
           val colType = "GenMap[String, String]"
@@ -1772,7 +1788,9 @@ object GenInspectors {
                                      Map("2" -> "two", "6" -> "six", "8" -> "eight")).filter(errorAssertFun).length  
           (colText, condition, exactly3ColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
         }
-      }) ++
+      }) 
+      // Commented java collection/map generation as Bill has removed them from Matchers.scala 
+      /*++
       (javaColCheckCol flatMap { case (colText, xsText) =>
         javaColCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) => 
           val colType = "java.util.Collection[String]"
@@ -1790,7 +1808,7 @@ object GenInspectors {
                                      Map("h" -> "hello!")).filter(errorAssertFun).length  
           (colText, condition, exactly3ColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
         }
-      })
+      })*/
       
     failedTestConfigs.grouped(500).toList.zipWithIndex foreach { case (configs, i) => 
       val className = "InspectorShorthandsForExactlyFailedSpec" + i
@@ -1928,7 +1946,7 @@ object GenInspectors {
           val passedCount = 3 - List("", "boom!", "hi").filter(errorAssertFun).length
           (colText, condition, noColText + assertText, "String", okFun, errorFun, errorValue, passedCount, messageFun(errorFun, errorValue).toString, xsText)
         }
-      }) ++
+      }).filter { case (colText, condition, _, _, _, _, _, _, _, _) => filterSetLength(colText, condition) } ++ 
       (instanceCheckCol flatMap { case (colText, xsText) =>
         instanceCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
           val errorAssertFun = getFun(errorFun, "2")
@@ -1958,7 +1976,7 @@ object GenInspectors {
           val passedCount = 3 - List(List("hi"), List("boom!"), List("hello")).filter(errorAssertFun).length
           (colText, condition, noColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
         }
-      }) ++
+      }).filter { case (colText, condition, _, _, _, _, _, _, _, _) => filterSetLength(colText, condition) } ++
       (mapCheckCol flatMap { case (colText, xsText) =>
         mapCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
           val colType = "GenMap[String, String]"
@@ -1968,7 +1986,8 @@ object GenInspectors {
             Map("2" -> "two", "6" -> "six", "8" -> "eight")).filter(errorAssertFun).length
           (colText, condition, noColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
         }
-      }) ++
+      }) 
+      /*++
       (javaColCheckCol flatMap { case (colText, xsText) =>
         javaColCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
           val colType = "java.util.Collection[String]"
@@ -1986,7 +2005,7 @@ object GenInspectors {
             Map("h" -> "hello!")).filter(errorAssertFun).length
           (colText, condition, noColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
         }
-      })
+      })*/
 
     failedTestConfigs.grouped(500).toList.zipWithIndex foreach { case (configs, i) =>
       val className = "InspectorShorthandsForNoFailedSpec" + i
@@ -2126,7 +2145,7 @@ object GenInspectors {
           val passedCount = 3 - List("", "boom!", "hi").filter(errorAssertFun).length
           (colText, condition, betweenColText + assertText, "String", okFun, errorFun, errorValue, passedCount, messageFun(errorFun, errorValue).toString, xsText)
         }
-      }) ++
+      }).filter { case (colText, condition, _, _, _, _, _, _, _, _) => filterSetLength(colText, condition) } ++
       (instanceCheckCol flatMap { case (colText, xsText) =>
         instanceCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
           val errorAssertFun = getFun(errorFun, "2")
@@ -2156,7 +2175,7 @@ object GenInspectors {
           val passedCount = 3 - List(List("hi"), List("boom!"), List("hello")).filter(errorAssertFun).length
           (colText, condition, betweenColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
         }
-      }) ++
+      }).filter { case (colText, condition, _, _, _, _, _, _, _, _) => filterSetLength(colText, condition) } ++
       (mapCheckCol flatMap { case (colText, xsText) =>
         mapCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
           val colType = "GenMap[String, String]"
@@ -2166,7 +2185,9 @@ object GenInspectors {
             Map("2" -> "two", "6" -> "six", "8" -> "eight")).filter(errorAssertFun).length
           (colText, condition, betweenColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
         }
-      }) ++
+      }) 
+      // Commented java collection/map generation as Bill has removed them from Matchers.scala 
+      /*++
       (javaColCheckCol flatMap { case (colText, xsText) =>
         javaColCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
           val colType = "java.util.Collection[String]"
@@ -2184,7 +2205,7 @@ object GenInspectors {
             Map("h" -> "hello!")).filter(errorAssertFun).length
           (colText, condition, betweenColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
         }
-      })
+      })*/
 
     failedTestConfigs.grouped(500).toList.zipWithIndex foreach { case (configs, i) =>
       val className = "InspectorShorthandsForBetweenFailedSpec" + i
@@ -2340,7 +2361,7 @@ object GenInspectors {
           val passedCount = 2
           (colText, condition, atMostColText + assertText, "String", okFun, errorFun, errorValue, passedCount, messageFun(errorFun, errorValue).toString, xsText)
         }
-      }) ++
+      }).filter { case (colText, condition, _, _, _, _, _, _, _, _) => filterSetLength(colText, condition) } ++
       (instanceCheckCol flatMap { case (colText, xsText) =>
         instanceCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
           val passedCount = 2
@@ -2366,14 +2387,16 @@ object GenInspectors {
           val passedCount = 2
           (colText, condition, atMostColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
         }
-      }) ++
+      }).filter { case (colText, condition, _, _, _, _, _, _, _, _) => filterSetLength(colText, condition) } ++
       (mapCheckCol flatMap { case (colText, xsText) =>
         mapCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
           val colType = "GenMap[String, String]"
           val passedCount = 2
           (colText, condition, atMostColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
         }
-      }) ++
+      }) 
+      // Commented java collection/map generation as Bill has removed them from Matchers.scala 
+      /*++
       (javaColCheckCol flatMap { case (colText, xsText) =>
         javaColCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
           val colType = "java.util.Collection[String]"
@@ -2386,7 +2409,7 @@ object GenInspectors {
           val passedCount = 2
           (colText, condition, atMostColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
         }
-      })
+      })*/
 
 
     failedTestConfigs.grouped(500).toList.zipWithIndex foreach { case (configs, i) =>
