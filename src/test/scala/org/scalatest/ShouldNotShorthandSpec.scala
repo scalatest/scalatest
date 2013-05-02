@@ -47,6 +47,7 @@ class ShouldNotShorthandSpec extends Spec with Matchers with SharedHelpers with 
     def `should work with any` {
       1 shouldNot { be (2) }
       1 shouldNot be (2)
+      "hi" shouldNot be (null)
 
       val caught1 = intercept[TestFailedException] {
         1 shouldNot { be (1) }
@@ -55,59 +56,67 @@ class ShouldNotShorthandSpec extends Spec with Matchers with SharedHelpers with 
       assert(caught1.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
 
+      val nullString: String = null
       val caught2 = intercept[TestFailedException] {
-        1 shouldNot be (1)
+        nullString shouldNot be (null)
       }
-      assert(caught2.message === Some("1 was equal to 1"))
+      assert(caught2.message === Some("The reference was null"))
       assert(caught2.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
       assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
-
+      
       val caught3 = intercept[TestFailedException] {
-        1 shouldNot (not (not be (1)))
+        1 shouldNot be (1)
       }
       assert(caught3.message === Some("1 was equal to 1"))
       assert(caught3.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
       assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
 
-      6 shouldNot be > 7
       val caught4 = intercept[TestFailedException] {
-        8 shouldNot be > 7
+        1 shouldNot (not (not be (1)))
       }
-      assert(caught4.message === Some("8 was greater than 7"))
+      assert(caught4.message === Some("1 was equal to 1"))
       assert(caught4.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
       assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
 
-      8 shouldNot be < 7
+      6 shouldNot be > 7
       val caught5 = intercept[TestFailedException] {
-        5 shouldNot be < 7
+        8 shouldNot be > 7
       }
-      assert(caught5.message === Some("5 was less than 7"))
+      assert(caught5.message === Some("8 was greater than 7"))
       assert(caught5.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
       assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
 
-      3 shouldNot be >= 7
+      8 shouldNot be < 7
       val caught6 = intercept[TestFailedException] {
-        8 shouldNot be >= 7
+        5 shouldNot be < 7
       }
-      assert(caught6.message === Some("8 was greater than or equal to 7"))
+      assert(caught6.message === Some("5 was less than 7"))
       assert(caught6.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
       assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
 
-      8 shouldNot be <= 7
+      3 shouldNot be >= 7
       val caught7 = intercept[TestFailedException] {
-        3 shouldNot be <= 7
+        8 shouldNot be >= 7
       }
-      assert(caught7.message === Some("3 was less than or equal to 7"))
+      assert(caught7.message === Some("8 was greater than or equal to 7"))
       assert(caught7.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
       assert(caught7.failedCodeLineNumber === Some(thisLineNumber - 4))
 
-      true shouldNot be (false)
+      8 shouldNot be <= 7
       val caught8 = intercept[TestFailedException] {
-        true shouldNot be (true)
+        3 shouldNot be <= 7
       }
-      assert(caught8.message === Some("true was true"))
+      assert(caught8.message === Some("3 was less than or equal to 7"))
       assert(caught8.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
       assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      true shouldNot be (false)
+      val caught9 = intercept[TestFailedException] {
+        true shouldNot be (true)
+      }
+      assert(caught9.message === Some("true was true"))
+      assert(caught9.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught9.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
 
     def `should work with BeMatcher` {
