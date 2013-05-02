@@ -16,6 +16,7 @@
 package org.scalatest
 
 import org.scalatest.junit.JUnitTestFailedError
+import java.util.concurrent.atomic.AtomicReference
 
 /**
  * Trait to define class Checkpoint, which allows multiple failure
@@ -69,7 +70,18 @@ trait Checkpoints {
    * <p>
    */
   class Checkpoint {
-    var fails: Vector[Throwable] = Vector()
+    private var fails: AtomicReference[Vector[Throwable]] =
+      new AtomicReference(Vector())
+
+    //
+    // Appends specified Throwable to fails Vector.
+    //
+    private def appendToFails(e: Throwable) {
+      val got: Vector[Throwable] = fails.get
+
+      if (!fails.compareAndSet(got, got :+ e))
+        appendToFails(e)
+    }
 
     //
     // Returns a string containing the file name and line number where
@@ -101,8 +113,8 @@ trait Checkpoints {
         f
       }
       catch {
-        case e: TestFailedException  => fails :+= e
-        case e: JUnitTestFailedError => fails :+= e
+        case e: TestFailedException  => appendToFails(e)
+        case e: JUnitTestFailedError => appendToFails(e)
         case e: Throwable => throw e
       }
     }
@@ -113,14 +125,14 @@ trait Checkpoints {
      * failed checkpoints.
      */
     def reportAll() {
-      if (fails.size > 0) {
-        val failMessages = 
-          for (fail <- fails)
+      if (fails.get.size > 0) {
+        val failMessages =
+          for (fail <- fails.get)
             yield
               fail.getMessage + " " + Resources("atCheckpointAt") + " " +
               getFailLine(fail)
 
-        fails(0) match {
+        fails.get.head match {
           case e: TestFailedException =>
             throw new TestFailedException(failMessages.mkString("\n"), 1)
           case e: JUnitTestFailedError =>
