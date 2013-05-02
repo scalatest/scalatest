@@ -69,7 +69,7 @@ trait Checkpoints {
    * <p>
    */
   class Checkpoint {
-    var fails: List[Throwable] = List()
+    var fails: Vector[Throwable] = Vector()
 
     //
     // Returns a string containing the file name and line number where
@@ -101,8 +101,8 @@ trait Checkpoints {
         f
       }
       catch {
-        case e: TestFailedException  => fails ::= e
-        case e: JUnitTestFailedError => fails ::= e
+        case e: TestFailedException  => fails :+= e
+        case e: JUnitTestFailedError => fails :+= e
         case e: Throwable => throw e
       }
     }
@@ -115,8 +115,10 @@ trait Checkpoints {
     def reportAll() {
       if (fails.size > 0) {
         val failMessages = 
-          for (fail <- fails.reverse)
-            yield fail.getMessage + " at checkpoint at " + getFailLine(fail)
+          for (fail <- fails)
+            yield
+              fail.getMessage + " " + Resources("atCheckpointAt") + " " +
+              getFailLine(fail)
 
         fails(0) match {
           case e: TestFailedException =>
