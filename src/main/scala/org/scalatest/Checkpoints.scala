@@ -70,7 +70,7 @@ trait Checkpoints {
    * <p>
    */
   class Checkpoint {
-    private var fails: AtomicReference[Vector[Throwable]] =
+    private val fails: AtomicReference[Vector[Throwable]] =
       new AtomicReference(Vector())
 
     //
