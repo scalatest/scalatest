@@ -140,23 +140,6 @@ object GenMatchers {
         println("Generated " + mustFile.getAbsolutePath)
       }
     }
-
-    val junitDir = new File(targetBaseDir, "junit")
-    junitDir.mkdirs()
-    val mustMatchersForJUnitWordSpecFile = new File(junitDir, "MustMatchersForJUnitWordSpec.scala")
-    val writer = new BufferedWriter(new FileWriter(mustMatchersForJUnitWordSpecFile))
-    try {
-      val shouldLines = Source.fromFile(new File(sourceBaseDir, "junit/" + "ShouldMatchersForJUnitWordSpec.scala")).getLines().toList // for 2.8
-      for (shouldLine <- shouldLines) {
-        val mustLine = translateShouldToMust(shouldLine)
-        writer.write(mustLine.toString)
-        writer.newLine() // add for 2.8
-      }
-    }
-    finally {
-      writer.close()
-      println("Generated " + mustMatchersForJUnitWordSpecFile.getAbsolutePath)
-    }
   }
 
   def main(args: Array[String]) {

@@ -21,7 +21,7 @@ import org.scalatest.FailureMessages
 import org.scalatest.UnquotedString
 import org.scalatest.Suite
 import org.scalatest.Assertions.areEqualComparingArraysStructurally
-import org.scalatest.Matchers.matchSymbolToPredicateMethod
+import org.scalatest.MatchersUtil.matchSymbolToPredicateMethod
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="ShouldMatchers.html"><code>ShouldMatchers</code></a> or <a href="MustMatchers.html"><code>MustMatchers</code></a> for an overview of

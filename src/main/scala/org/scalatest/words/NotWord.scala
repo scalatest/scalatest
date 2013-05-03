@@ -23,7 +23,7 @@ import org.scalatest.FailureMessages
 import org.scalatest.UnquotedString
 import org.scalautils.Equality
 import org.scalatest.Assertions.areEqualComparingArraysStructurally
-import org.scalatest.Matchers.matchSymbolToPredicateMethod
+import org.scalatest.MatchersUtil.matchSymbolToPredicateMethod
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of

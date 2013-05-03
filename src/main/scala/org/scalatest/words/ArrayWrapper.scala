@@ -36,9 +36,9 @@ import scala.annotation.tailrec
 import org.scalautils.Equality
 import org.scalautils.TripleEqualsInvocationOnInterval
 import org.scalautils.EqualityConstraint
-import org.scalatest.Matchers.andMatchersAndApply
-import org.scalatest.Matchers.orMatchersAndApply
-import org.scalatest.Matchers.matchSymbolToPredicateMethod
+import org.scalatest.MatchersUtil.andMatchersAndApply
+import org.scalatest.MatchersUtil.orMatchersAndApply
+import org.scalatest.MatchersUtil.matchSymbolToPredicateMethod
 import org.scalatest.FailureMessages
 
 /**

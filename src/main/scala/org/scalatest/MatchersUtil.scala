@@ -42,8 +42,6 @@ import org.scalatest.matchers.BePropertyMatchResult
 import org.scalatest.matchers.BeMatcher
 import org.scalatest.matchers.Matcher
 import org.scalatest.matchers.MatchResult
-import Matchers.andMatchersAndApply
-import Matchers.orMatchersAndApply
 
 // TODO: drop generic support for be as an equality comparison, in favor of specific ones.
 // TODO: mention on JUnit and TestNG docs that you can now mix in ShouldMatchers or MustMatchers
@@ -163,6 +161,99 @@ private[scalatest] object MatchersUtil {
     optionalCause match {
       case Some(cause) => new TestFailedException(message, cause, stackDepth + stackDepthAdjustment)
       case None => new TestFailedException(message, stackDepth + stackDepthAdjustment)
+    }
+  }
+
+  def andMatchersAndApply[T](left: T, leftMatcher: Matcher[T], rightMatcher: Matcher[T]): MatchResult = {
+    val leftMatchResult = leftMatcher(left)
+    val rightMatchResult = rightMatcher(left) // Not short circuiting anymore
+    if (!leftMatchResult.matches)
+      MatchResult(
+        false,
+        leftMatchResult.failureMessage,
+        leftMatchResult.negatedFailureMessage,
+        leftMatchResult.midSentenceFailureMessage,
+        leftMatchResult.midSentenceNegatedFailureMessage
+      )
+    else {
+      MatchResult(
+        rightMatchResult.matches,
+        Resources("commaBut", leftMatchResult.negatedFailureMessage, rightMatchResult.midSentenceFailureMessage),
+        Resources("commaAnd", leftMatchResult.negatedFailureMessage, rightMatchResult.midSentenceNegatedFailureMessage),
+        Resources("commaBut", leftMatchResult.midSentenceNegatedFailureMessage, rightMatchResult.midSentenceFailureMessage),
+        Resources("commaAnd", leftMatchResult.midSentenceNegatedFailureMessage, rightMatchResult.midSentenceNegatedFailureMessage)
+      )
+    }
+  }
+
+  def orMatchersAndApply[T](left: T, leftMatcher: Matcher[T], rightMatcher: Matcher[T]): MatchResult = {
+    val leftMatchResult = leftMatcher(left)
+    val rightMatchResult = rightMatcher(left) // Not short circuiting anymore
+    if (leftMatchResult.matches)
+      MatchResult(
+        true,
+        leftMatchResult.negatedFailureMessage,
+        leftMatchResult.failureMessage,
+        leftMatchResult.midSentenceNegatedFailureMessage,
+        leftMatchResult.midSentenceFailureMessage
+      )
+    else {
+      MatchResult(
+        rightMatchResult.matches,
+        Resources("commaAnd", leftMatchResult.failureMessage, rightMatchResult.midSentenceFailureMessage),
+        Resources("commaAnd", leftMatchResult.failureMessage, rightMatchResult.midSentenceNegatedFailureMessage),
+        Resources("commaAnd", leftMatchResult.midSentenceFailureMessage, rightMatchResult.midSentenceFailureMessage),
+        Resources("commaAnd", leftMatchResult.midSentenceFailureMessage, rightMatchResult.midSentenceNegatedFailureMessage)
+      )
+    }
+  }
+
+  def matchSymbolToPredicateMethod(left: AnyRef, right: Symbol, hasArticle: Boolean, articleIsA: Boolean, stackDepth: Int = 0): MatchResult = {
+
+    // If 'empty passed, rightNoTick would be "empty"
+    val propertyName = right.name
+
+    accessProperty(left, right, true) match {
+
+      case None =>
+
+        // if propertyName is '>, mangledPropertyName would be "$greater"
+        val mangledPropertyName = transformOperatorChars(propertyName)
+
+        // methodNameToInvoke would also be "empty"
+        val methodNameToInvoke = mangledPropertyName
+
+        // methodNameToInvokeWithIs would be "isEmpty"
+        val methodNameToInvokeWithIs = "is"+ mangledPropertyName(0).toUpper + mangledPropertyName.substring(1)
+
+        val firstChar = propertyName(0).toLower
+        val methodNameStartsWithVowel = firstChar == 'a' || firstChar == 'e' || firstChar == 'i' ||
+          firstChar == 'o' || firstChar == 'u'
+
+        throw newTestFailedException(
+          FailureMessages(
+            if (methodNameStartsWithVowel) "hasNeitherAnOrAnMethod" else "hasNeitherAOrAnMethod",
+            left,
+            UnquotedString(methodNameToInvoke),
+            UnquotedString(methodNameToInvokeWithIs)
+          ), 
+          None, 
+          stackDepth
+        )
+
+      case Some(result) =>
+
+        val (wasNot, was) =
+          if (hasArticle) {
+            if (articleIsA) ("wasNotA", "wasA") else ("wasNotAn", "wasAn")
+          }
+          else ("wasNot", "was")
+
+        MatchResult(
+          result == true, // Right now I just leave the return value of accessProperty as Any
+          FailureMessages(wasNot, left, UnquotedString(propertyName)),
+          FailureMessages(was, left, UnquotedString(propertyName))
+        )
     }
   }
 }
