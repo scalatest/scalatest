@@ -16,6 +16,8 @@
 package org.scalatest
 
 import org.scalatest.junit.JUnitTestFailedError
+import java.util.concurrent.ConcurrentLinkedQueue
+import scala.collection.JavaConversions._
 
 /**
  * Trait to define class Checkpoint, which allows multiple failure
@@ -69,27 +71,18 @@ trait Checkpoints {
    * <p>
    */
   class Checkpoint {
-    var fails: List[Throwable] = List()
+    private val fails: ConcurrentLinkedQueue[Throwable with StackDepth] =
+      new ConcurrentLinkedQueue
 
     //
     // Returns a string containing the file name and line number where
     // the test failure occurred, e.g. "HelloSuite.scala:18".
     //
-    // Accepts a Throwable, but TestFailedExceptions and
-    // JUnitTestFailedErrors both mix in the StackDepth trait, so
-    // its failedCodeFileNameAndLineNumberString method is used
-    // to retrieve the information.
-    //
-    private def getFailLine(t: Throwable): String = {
-      t match {
-        case e: StackDepth =>
-          e.failedCodeFileNameAndLineNumberString match {
-            case Some(failLine) => failLine
-            case None => "unknown line number"
-          }
-        case _ => "" // shouldn't happen
+    private def getFailLine(t: Throwable with StackDepth): String =
+      t.failedCodeFileNameAndLineNumberString match {
+        case Some(failLine) => failLine
+        case None => "unknown line number"
       }
-    }
 
     /**
      * Catches TestFailedExceptions or JUnitTestFailedErrors thrown
@@ -101,8 +94,8 @@ trait Checkpoints {
         f
       }
       catch {
-        case e: TestFailedException  => fails ::= e
-        case e: JUnitTestFailedError => fails ::= e
+        case e: TestFailedException  => fails.add(e)
+        case e: JUnitTestFailedError => fails.add(e)
         case e: Throwable => throw e
       }
     }
@@ -113,16 +106,19 @@ trait Checkpoints {
      * failed checkpoints.
      */
     def reportAll() {
-      if (fails.size > 0) {
-        val failMessages = 
-          for (fail <- fails.reverse)
-            yield fail.getMessage + " at checkpoint at " + getFailLine(fail)
+      if (!fails.isEmpty) {
+        val failMessages =
+          fails.
+            map(f =>
+              f.getMessage + " " + Resources("atCheckpointAt") + " " +
+              getFailLine(f)).
+            mkString("\n")
 
-        fails(0) match {
+        fails.head match {
           case e: TestFailedException =>
-            throw new TestFailedException(failMessages.mkString("\n"), 1)
+            throw new TestFailedException(failMessages, 1)
           case e: JUnitTestFailedError =>
-            throw new JUnitTestFailedError(failMessages.mkString("\n"), 1)
+            throw new JUnitTestFailedError(failMessages, 1)
         }
       }
     }
