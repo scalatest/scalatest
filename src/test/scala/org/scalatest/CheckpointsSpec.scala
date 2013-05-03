@@ -34,8 +34,10 @@ class CheckpointsSpec extends FunSpec with Matchers {
             cp { 1 should equal (2) }
             cp.reportAll()
           } should produce [TestFailedException]
-        val failConditionLineNumber = thisLineNumber - 3
+
+        val failConditionLineNumber = thisLineNumber - 4
         val reportAllLineNumber = failConditionLineNumber + 1
+
         caught.failedCodeLineNumber.value should equal (reportAllLineNumber)
         caught.failedCodeFileName.value should be ("CheckpointsSpec.scala")
         caught.getMessage should include (Resources("atCheckpointAt") +
@@ -90,7 +92,7 @@ class CheckpointsSpec extends FunSpec with Matchers {
 
 class CheckpointsForJUnitMatchersSpec extends FunSpec with MatchersForJUnit {
 
-  describe("a Checkpoint using JUnitMatchers") {
+  describe("a Checkpoint using MatchersForJUnit") {
     describe("with a failure condition") {
 
       it("should throw a JUnitTestFailedError when reportAll is called") {
