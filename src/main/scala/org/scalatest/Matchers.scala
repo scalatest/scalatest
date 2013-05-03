@@ -22,7 +22,7 @@ import java.lang.reflect.Modifier
 import scala.util.matching.Regex
 import java.lang.reflect.Field
 import scala.reflect.Manifest
-import Helper.transformOperatorChars
+import MatchersUtil.transformOperatorChars
 import scala.collection.Traversable
 import Assertions.areEqualComparingArraysStructurally
 import scala.collection.GenTraversable
@@ -49,7 +49,7 @@ import Matchers.matchSymbolToPredicateMethod
 // TODO: document how to turn off the === implicit conversion
 // TODO: Document you can use JMock, EasyMock, etc.
 
-import Helper.accessProperty
+import MatchersUtil.accessProperty
 
 /**
  * Trait that provides a domain specific language (DSL) for expressing assertions in tests
@@ -118,7 +118,7 @@ import Helper.accessProperty
  * Similarly, the <code>size</code> syntax can be used with <code>Array</code>, any <code>scala.collection.GenTraversable</code>,
  * any <code>java.util.List</code>, and any type <code>T</code> for which an implicit <code>Size[T]</code> type class is 
  * available in scope. You can enable the <code>length</code> or <code>size</code> syntax for your own arbitrary types, therefore,
- * by defining <a href="ClassicMatchers$Length.html"><code>Length</code></a> or <a href="ClassicMatchers$Size.html"><code>Size</code></a> type
+ * by defining <a href="enablers/Length.html"><code>Length</code></a> or <a href="enables/Size.html"><code>Size</code></a> type
  * classes for those types.
  * </p>
  * 

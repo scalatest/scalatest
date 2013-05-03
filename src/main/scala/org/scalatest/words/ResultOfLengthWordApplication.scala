@@ -15,10 +15,6 @@
  */
 package org.scalatest.words
 
-import org.scalatest.matchers._
-import org.scalatest.Helper.accessProperty
-import org.scalatest.Resources
-
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
  * the matchers DSL.

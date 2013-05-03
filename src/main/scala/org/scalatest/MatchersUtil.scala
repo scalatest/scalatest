@@ -15,15 +15,12 @@
  */
 package org.scalatest
 
-// TODO: Use this Helper in the matchers/ClassicMatchers.scala
-
 import org.scalatest.matchers._
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
 import scala.util.matching.Regex
 import java.lang.reflect.Field
 import scala.reflect.Manifest
-import Helper.transformOperatorChars
 import scala.collection.Traversable
 import Assertions.areEqualComparingArraysStructurally
 import org.scalatest.exceptions.TestFailedException
@@ -55,7 +52,7 @@ import Matchers.orMatchersAndApply
 // TODO: document how to turn off the === implicit conversion
 // TODO: Document you can use JMock, EasyMock, etc.
 
-private[scalatest] object Helper {
+private[scalatest] object MatchersUtil {
 
   // If the symbol passed is 'title, this will look for a field named "title", a method named "title", or a
   // method named "getTitle". The method must take no parameters.

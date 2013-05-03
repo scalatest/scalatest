@@ -22,7 +22,7 @@ import java.lang.reflect.Modifier
 import scala.util.matching.Regex
 import java.lang.reflect.Field
 import scala.reflect.Manifest
-import org.scalatest.Helper.transformOperatorChars
+import org.scalatest.MatchersUtil.transformOperatorChars
 import scala.collection.Traversable
 import org.scalatest.Assertions.areEqualComparingArraysStructurally
 import scala.collection.GenTraversable
