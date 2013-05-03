@@ -18,7 +18,6 @@ package org.scalatest.junit
 import org.scalatest._
 import _root_.junit.framework.AssertionFailedError
 import org.scalatest.matchers.ShouldMatchers
-import org.scalatest.words.Complainer
 
 /**
  * Trait that makes ScalaTest's <code>ShouldMatchers</code> DSL syntax available for use with JUnit.
@@ -94,22 +93,8 @@ import org.scalatest.words.Complainer
  *
  * @author Bill Venners
  */
-@deprecated("Please use MatchersForJUnit instead.")
-trait ShouldMatchersForJUnit extends ShouldMatchers with AssertionsForJUnit {
-  private[scalatest] override val complainer: Complainer =
-    new Complainer {
-      def newTestFailedException(message: String, optionalCause: Option[Throwable] = None, stackDepthAdjustment: Int = 0): Throwable = {
-        val fileNames = List("Matchers.scala", "ShouldMatchers.scala", "MustMatchers.scala", "ShouldMatchersForJUnit.scala", "MustMatchersForJUnit.scala")
-        val temp = new RuntimeException
-        val stackDepth = temp.getStackTrace.takeWhile(stackTraceElement => fileNames.exists(_ == stackTraceElement.getFileName) || stackTraceElement.getMethodName == "newTestFailedException").length
-
-        optionalCause match {
-          case Some(cause) => new JUnitTestFailedError(message, cause, stackDepth)
-          case None => new JUnitTestFailedError(message, stackDepth)
-        }
-      }
-    }
-}
+@deprecated("Please use org.scalatest.Matchers with AssertionsForJUnit instead.")
+trait ShouldMatchersForJUnit extends ShouldMatchers with AssertionsForJUnit
 
 /**
  * Companion object that facilitates the importing of <code>ShouldMatchersForJUnit</code> members as 
@@ -148,5 +133,5 @@ trait ShouldMatchersForJUnit extends ShouldMatchers with AssertionsForJUnit {
  *
  * @author Bill Venners
  */
-@deprecated("Please use MatchersForJUnit instead.")
+@deprecated("Please use org.scalatest.Matchers with AssertionsForJUnit instead.")
 object ShouldMatchersForJUnit extends ShouldMatchersForJUnit

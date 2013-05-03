@@ -203,57 +203,6 @@ class JUnitTestFailedErrorSpec extends FunSpec with ShouldMatchersForJUnit {
       }
     }
 
-    it("should give the proper line on 1 should be === 2") {
-      try {
-        1 should be === 2
-      }
-      catch {
-        case e: JUnitTestFailedError =>
-          e.failedCodeFileNameAndLineNumberString match {
-            case Some(s) =>
-              if (s != ("JUnitTestFailedErrorSpec.scala:" + (baseLineNumber + 186))) {
-                fail("s was: " + s, e)
-              }
-            case None => fail("1 should be === 2 didn't produce a file name and line number string", e)
-          }
-        case e: Throwable =>
-          fail("1 should be === 2 didn't produce a JUnitTestFailedError", e)
-      }
-    }
-
-    it("should give the proper line on evaluating {} should produce [IllegalArgumentException] {}") {
-      try {
-        evaluating {} should produce [IllegalArgumentException]
-      }
-      catch {
-        case e: JUnitTestFailedError =>
-          e.failedCodeFileNameAndLineNumberString match {
-            case Some(s) => // s should equal ("JUnitTestFailedErrorSpec.scala:" + (baseLineNumber + 204))
-            if (s != ("JUnitTestFailedErrorSpec.scala:" + (baseLineNumber + 204))) {
-                fail("s was: " + s, e)
-              }
-            case None => fail("evaluating {} should produce [IllegalArgumentException] didn't produce a file name and line number string", e)
-          }
-        case e: Throwable =>
-          fail("evaluating {} should produce [IllegalArgumentException] didn't produce a JUnitTestFailedError", e)
-      }
-    }
-
-    it("should give the proper line on evaluating { throw new RuntimeException } should produce [IllegalArgumentException]") {
-      try {
-        evaluating { if (false) 1 else throw new RuntimeException } should produce [IllegalArgumentException]
-      }
-      catch {
-        case e: JUnitTestFailedError =>
-          e.failedCodeFileNameAndLineNumberString match {
-            case Some(s) => s should equal ("JUnitTestFailedErrorSpec.scala:" + (baseLineNumber + 222))
-            case None => fail("evaluating { throw new RuntimeException } should produce [IllegalArgumentException] didn't produce a file name and line number string", e)
-          }
-        case e: Throwable =>
-          fail("evaluating { throw new RuntimeException } should produce [IllegalArgumentException] didn't produce a JUnitTestFailedError", e)
-      }
-    }
-
     it("should return the cause in both cause and getCause") {
       val theCause = new IllegalArgumentException("howdy")
       val tfe = new JUnitTestFailedError(Some("doody"), Some(theCause), 3, None)

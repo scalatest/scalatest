@@ -41,6 +41,7 @@ import org.scalatest.Matchers.orMatchersAndApply
 import org.scalatest.Matchers.matchSymbolToPredicateMethod
 import org.scalatest.FailureMessages
 import org.scalatest.UnquotedString
+import org.scalatest.MatchersUtil.newTestFailedException
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
@@ -48,7 +49,7 @@ import org.scalatest.UnquotedString
  *
  * @author Bill Venners
  */
-sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean, complainer: Complainer) {
+sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
 
   /**
    * This method enables the following syntax:
@@ -60,7 +61,7 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean, complainer
    */
   def equal(right: Any)(implicit equality: Equality[T]) {
     if (equality.areEqual(left, right) != shouldBeTrue)
-      throw complainer.newTestFailedException(
+      throw newTestFailedException(
         FailureMessages(
          if (shouldBeTrue) "didNotEqual" else "equaled",
           left,
@@ -79,7 +80,7 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean, complainer
    */
   def be(right: Any) {
     if ((left == right) != shouldBeTrue)
-      throw complainer.newTestFailedException(
+      throw newTestFailedException(
         FailureMessages(
          if (shouldBeTrue) "wasNotEqualTo" else "wasEqualTo",
           left,
@@ -98,7 +99,7 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean, complainer
    */
   def be(comparison: ResultOfLessThanOrEqualToComparison[T]) {
     if (comparison(left) != shouldBeTrue) {
-      throw complainer.newTestFailedException(
+      throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "wasNotLessThanOrEqualTo" else "wasLessThanOrEqualTo",
           left,
@@ -118,7 +119,7 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean, complainer
    */
   def be(comparison: ResultOfGreaterThanOrEqualToComparison[T]) {
     if (comparison(left) != shouldBeTrue) {
-      throw complainer.newTestFailedException(
+      throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "wasNotGreaterThanOrEqualTo" else "wasGreaterThanOrEqualTo",
           left,
@@ -138,7 +139,7 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean, complainer
    */
   def be(comparison: ResultOfLessThanComparison[T]) {
     if (comparison(left) != shouldBeTrue) {
-      throw complainer.newTestFailedException(
+      throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "wasNotLessThan" else "wasLessThan",
           left,
@@ -158,7 +159,7 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean, complainer
    */
   def be(comparison: ResultOfGreaterThanComparison[T]) {
     if (comparison(left) != shouldBeTrue) {
-      throw complainer.newTestFailedException(
+      throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "wasNotGreaterThan" else "wasGreaterThan",
           left,
@@ -178,7 +179,7 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean, complainer
    */
   def be(comparison: TripleEqualsInvocation[_]) {
     if ((left == comparison.right) != shouldBeTrue) {
-      throw complainer.newTestFailedException(
+      throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "wasNotEqualTo" else "wasEqualTo",
           left,
@@ -200,7 +201,7 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean, complainer
   def be(beMatcher: BeMatcher[T]) {
     val result = beMatcher(left)
     if (result.matches != shouldBeTrue) {
-      throw complainer.newTestFailedException(
+      throw newTestFailedException(
         if (shouldBeTrue)
           result.failureMessage
         else
@@ -222,7 +223,7 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean, complainer
     val aMatcher = resultOfAWordToAMatcherApplication.aMatcher
     val result = aMatcher(left)
     if (result.matches != shouldBeTrue) {
-      throw complainer.newTestFailedException(
+      throw newTestFailedException(
         if (shouldBeTrue)
           result.failureMessage
         else
@@ -244,7 +245,7 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean, complainer
     val anMatcher = resultOfAnWordToAnMatcherApplication.anMatcher
     val result = anMatcher(left)
     if (result.matches != shouldBeTrue) {
-      throw complainer.newTestFailedException(
+      throw newTestFailedException(
         if (shouldBeTrue)
           result.failureMessage
         else
@@ -263,7 +264,7 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean, complainer
    */
   def be(interval: Interval[T]) {
     if (interval.isWithin(left) != shouldBeTrue) {
-      throw complainer.newTestFailedException(
+      throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "wasNotPlusOrMinus" else "wasPlusOrMinus",
           left,
@@ -284,7 +285,7 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean, complainer
    */
   def equal(interval: Interval[T]) {
     if (interval.isWithin(left) != shouldBeTrue) {
-      throw complainer.newTestFailedException(
+      throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "didNotEqualPlusOrMinus" else "equaledPlusOrMinus",
           left,
@@ -305,7 +306,7 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean, complainer
    */
   def equal(right: Null) {
     if ((left == null) != shouldBeTrue) {
-      throw complainer.newTestFailedException(
+      throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "didNotEqualNull" else "equaledNull",
           left
@@ -319,7 +320,7 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean, complainer
     val right = resultOfLengthWordApplication.expectedLength
     val leftLength = len.extentOf(left)
     if ((leftLength == right) != shouldBeTrue) {
-      throw complainer.newTestFailedException(
+      throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue)
             FailureMessages("hadLengthInsteadOfExpectedLength", left, leftLength, right)
@@ -335,7 +336,7 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean, complainer
     val right = resultOfSizeWordApplication.expectedSize
     val leftSize = sz.extentOf(left)
     if ((leftSize == right) != shouldBeTrue) {
-      throw complainer.newTestFailedException(
+      throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue)
             FailureMessages("hadSizeInsteadOfExpectedSize", left, leftSize, right)
@@ -392,7 +393,7 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean, complainer
           // 0 0 | 0 | 1
           // 0 1 | 0 | 1
           // 1 0 | 0 | 1
-          throw complainer.newTestFailedException(
+          throw newTestFailedException(
             FailureMessages(
               "propertyDidNotHaveExpectedValue",
                UnquotedString(firstFailure.propertyName),
@@ -416,7 +417,7 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean, complainer
             }
             else FailureMessages("allPropertiesHadExpectedValues", left)
 
-          throw complainer.newTestFailedException(failureMessage)
+          throw newTestFailedException(failureMessage)
       } 
     }
   }
@@ -428,8 +429,8 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean, complainer
  *
  * @author Bill Venners
  */
-class ResultOfNotWordForAnyRef[T <: AnyRef](left: T, shouldBeTrue: Boolean, complainer: Complainer)
-    extends ResultOfNotWordForAny[T](left, shouldBeTrue, complainer) {
+class ResultOfNotWordForAnyRef[T <: AnyRef](left: T, shouldBeTrue: Boolean)
+    extends ResultOfNotWordForAny[T](left, shouldBeTrue) {
 
   /**
    * This method enables the following syntax:
@@ -441,7 +442,7 @@ class ResultOfNotWordForAnyRef[T <: AnyRef](left: T, shouldBeTrue: Boolean, comp
    */
   def be(o: Null) {
     if ((left == null) != shouldBeTrue) {
-      throw complainer.newTestFailedException(
+      throw newTestFailedException(
         if (shouldBeTrue)
           FailureMessages("wasNotNull", left) 
         else
@@ -461,7 +462,7 @@ class ResultOfNotWordForAnyRef[T <: AnyRef](left: T, shouldBeTrue: Boolean, comp
   def be(symbol: Symbol) {
     val matcherResult = matchSymbolToPredicateMethod(left, symbol, false, false)
     if (matcherResult.matches != shouldBeTrue) {
-      throw complainer.newTestFailedException(
+      throw newTestFailedException(
         if (shouldBeTrue) matcherResult.failureMessage else matcherResult.negatedFailureMessage
       )
     }
@@ -479,7 +480,7 @@ class ResultOfNotWordForAnyRef[T <: AnyRef](left: T, shouldBeTrue: Boolean, comp
   def be(bePropertyMatcher: BePropertyMatcher[T]) {
     val result = bePropertyMatcher(left)
     if (result.matches != shouldBeTrue) {
-      throw complainer.newTestFailedException(
+      throw newTestFailedException(
         if (shouldBeTrue)
           FailureMessages("wasNot", left, UnquotedString(result.propertyName))
         else
@@ -499,7 +500,7 @@ class ResultOfNotWordForAnyRef[T <: AnyRef](left: T, shouldBeTrue: Boolean, comp
   def be(resultOfAWordApplication: ResultOfAWordToSymbolApplication) {
     val matcherResult = matchSymbolToPredicateMethod(left, resultOfAWordApplication.symbol, true, true)
     if (matcherResult.matches != shouldBeTrue) {
-      throw complainer.newTestFailedException(
+      throw newTestFailedException(
         if (shouldBeTrue) matcherResult.failureMessage else matcherResult.negatedFailureMessage
       )
     }
@@ -517,7 +518,7 @@ class ResultOfNotWordForAnyRef[T <: AnyRef](left: T, shouldBeTrue: Boolean, comp
   def be[U >: T](resultOfAWordApplication: ResultOfAWordToBePropertyMatcherApplication[U]) {
     val result = resultOfAWordApplication.bePropertyMatcher(left)
     if (result.matches != shouldBeTrue) {
-      throw complainer.newTestFailedException(
+      throw newTestFailedException(
         if (shouldBeTrue)
           FailureMessages("wasNotA", left, UnquotedString(result.propertyName))
         else
@@ -537,7 +538,7 @@ class ResultOfNotWordForAnyRef[T <: AnyRef](left: T, shouldBeTrue: Boolean, comp
   def be(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication) {
     val matcherResult = matchSymbolToPredicateMethod(left, resultOfAnWordApplication.symbol, true, false)
     if (matcherResult.matches != shouldBeTrue) {
-      throw complainer.newTestFailedException(
+      throw newTestFailedException(
         if (shouldBeTrue) matcherResult.failureMessage else matcherResult.negatedFailureMessage
       )
     }
@@ -555,7 +556,7 @@ class ResultOfNotWordForAnyRef[T <: AnyRef](left: T, shouldBeTrue: Boolean, comp
   def be[U >: T](resultOfAnWordApplication: ResultOfAnWordToBePropertyMatcherApplication[U]) {
     val result = resultOfAnWordApplication.bePropertyMatcher(left)
     if (result.matches != shouldBeTrue) {
-      throw complainer.newTestFailedException(
+      throw newTestFailedException(
         if (shouldBeTrue)
           FailureMessages("wasNotAn", left, UnquotedString(result.propertyName))
         else
@@ -574,7 +575,7 @@ class ResultOfNotWordForAnyRef[T <: AnyRef](left: T, shouldBeTrue: Boolean, comp
    */
   def be(resultOfSameInstanceAsApplication: ResultOfTheSameInstanceAsApplication) {
     if ((resultOfSameInstanceAsApplication.right eq left) != shouldBeTrue) {
-      throw complainer.newTestFailedException(
+      throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "wasNotSameInstanceAs" else "wasSameInstanceAs",
           left,
@@ -591,8 +592,8 @@ class ResultOfNotWordForAnyRef[T <: AnyRef](left: T, shouldBeTrue: Boolean, comp
  *
  * @author Bill Venners
  */
-final class ResultOfNotWordForString(left: String, shouldBeTrue: Boolean, complainer: Complainer)
-    extends ResultOfNotWordForAnyRef[String](left, shouldBeTrue, complainer) {
+final class ResultOfNotWordForString(left: String, shouldBeTrue: Boolean)
+    extends ResultOfNotWordForAnyRef[String](left, shouldBeTrue) {
 
   /**
    * This method enables the following syntax: 
@@ -610,7 +611,7 @@ final class ResultOfNotWordForString(left: String, shouldBeTrue: Boolean, compla
   def fullyMatch(resultOfRegexWordApplication: ResultOfRegexWordApplication) {
     val rightRegex = resultOfRegexWordApplication.regex
     if (rightRegex.pattern.matcher(left).matches != shouldBeTrue)
-      throw complainer.newTestFailedException(
+      throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "didNotFullyMatchRegex" else "fullyMatchedRegex",
           left,
@@ -635,7 +636,7 @@ final class ResultOfNotWordForString(left: String, shouldBeTrue: Boolean, compla
   def include(resultOfRegexWordApplication: ResultOfRegexWordApplication) {
     val rightRegex = resultOfRegexWordApplication.regex
     if (rightRegex.findFirstIn(left).isDefined != shouldBeTrue)
-      throw complainer.newTestFailedException(
+      throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "didNotIncludeRegex" else "includedRegex",
           left,
@@ -654,7 +655,7 @@ final class ResultOfNotWordForString(left: String, shouldBeTrue: Boolean, compla
    */
   def include(expectedSubstring: String) {
     if ((left.indexOf(expectedSubstring) >= 0) != shouldBeTrue)
-      throw complainer.newTestFailedException(
+      throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "didNotIncludeSubstring" else "includedSubstring",
           left,
@@ -679,7 +680,7 @@ final class ResultOfNotWordForString(left: String, shouldBeTrue: Boolean, compla
   def startWith(resultOfRegexWordApplication: ResultOfRegexWordApplication) {
     val rightRegex = resultOfRegexWordApplication.regex
     if (rightRegex.pattern.matcher(left).lookingAt != shouldBeTrue)
-      throw complainer.newTestFailedException(
+      throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "didNotStartWithRegex" else "startedWithRegex",
           left,
@@ -698,7 +699,7 @@ final class ResultOfNotWordForString(left: String, shouldBeTrue: Boolean, compla
    */
   def startWith(expectedSubstring: String) {
     if ((left.indexOf(expectedSubstring) == 0) != shouldBeTrue)
-      throw complainer.newTestFailedException(
+      throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "didNotStartWith" else "startedWith",
           left,
@@ -719,7 +720,7 @@ final class ResultOfNotWordForString(left: String, shouldBeTrue: Boolean, compla
     val rightRegex = resultOfRegexWordApplication.regex
     val allMatches = rightRegex.findAllIn(left)
     if (allMatches.hasNext && (allMatches.end == left.length) != shouldBeTrue)
-      throw complainer.newTestFailedException(
+      throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "didNotEndWithRegex" else "endedWithRegex",
           left,
@@ -738,7 +739,7 @@ final class ResultOfNotWordForString(left: String, shouldBeTrue: Boolean, compla
    */
   def endWith(expectedSubstring: String) {
     if ((left endsWith expectedSubstring) != shouldBeTrue)
-      throw complainer.newTestFailedException(
+      throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "didNotEndWith" else "endedWith",
           left,
@@ -758,7 +759,7 @@ final class ResultOfNotWordForString(left: String, shouldBeTrue: Boolean, compla
   def contain(expectedElement: Char)(implicit holder: Holder[String]) {
     val right = expectedElement
     if (holder.containsElement(left, right) != shouldBeTrue) {
-      throw complainer.newTestFailedException(
+      throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "didNotContainExpectedElement" else "containedExpectedElement",
             left,
@@ -775,8 +776,8 @@ final class ResultOfNotWordForString(left: String, shouldBeTrue: Boolean, compla
  *
  * @author Bill Venners
  */
-class ResultOfNotWordForGenTraversable[E, T[_] <: scala.collection.GenTraversable[_]](left: T[E], shouldBeTrue: Boolean, complainer: Complainer)
-    extends ResultOfNotWordForAnyRef(left, shouldBeTrue, complainer) {
+class ResultOfNotWordForGenTraversable[E, T[_] <: scala.collection.GenTraversable[_]](left: T[E], shouldBeTrue: Boolean)
+    extends ResultOfNotWordForAnyRef(left, shouldBeTrue) {
 
   /**
    * This method enables the following syntax:
@@ -789,7 +790,7 @@ class ResultOfNotWordForGenTraversable[E, T[_] <: scala.collection.GenTraversabl
   def contain(expectedElement: E)(implicit holder: Holder[T[E]]) {
     val right = expectedElement
     if (holder.containsElement(left, right) != shouldBeTrue) {
-      throw complainer.newTestFailedException(
+      throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "didNotContainExpectedElement" else "containedExpectedElement",
             left,
@@ -810,7 +811,7 @@ class ResultOfNotWordForGenTraversable[E, T[_] <: scala.collection.GenTraversabl
   def contain(right: ContainMatcher[E]) {
     val result = right(left.asInstanceOf[scala.collection.GenTraversable[E]])
     if (result.matches != shouldBeTrue) {
-      throw complainer.newTestFailedException(
+      throw newTestFailedException(
         if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage
       )
     }
@@ -831,11 +832,11 @@ class ResultOfNotWordForGenTraversable[E, T[_] <: scala.collection.GenTraversabl
       case Some(e) => 
         if (!shouldBeTrue) {
           val result = aMatcher(e.asInstanceOf[E])
-          throw complainer.newTestFailedException(FailureMessages("containedA", left, UnquotedString(aMatcher.nounName), UnquotedString(result.negatedFailureMessage)))
+          throw newTestFailedException(FailureMessages("containedA", left, UnquotedString(aMatcher.nounName), UnquotedString(result.negatedFailureMessage)))
         }
       case None =>
         if (shouldBeTrue)
-          throw complainer.newTestFailedException(FailureMessages("didNotContainA", left, UnquotedString(aMatcher.nounName)))
+          throw newTestFailedException(FailureMessages("didNotContainA", left, UnquotedString(aMatcher.nounName)))
     }
   }
   
@@ -854,11 +855,11 @@ class ResultOfNotWordForGenTraversable[E, T[_] <: scala.collection.GenTraversabl
       case Some(e) => 
         if (!shouldBeTrue) {
           val result = anMatcher(e.asInstanceOf[E])
-          throw complainer.newTestFailedException(FailureMessages("containedAn", left, UnquotedString(anMatcher.nounName), UnquotedString(result.negatedFailureMessage)))
+          throw newTestFailedException(FailureMessages("containedAn", left, UnquotedString(anMatcher.nounName), UnquotedString(result.negatedFailureMessage)))
         }
       case None =>
         if (shouldBeTrue)
-          throw complainer.newTestFailedException(FailureMessages("didNotContainAn", left, UnquotedString(anMatcher.nounName)))
+          throw newTestFailedException(FailureMessages("didNotContainAn", left, UnquotedString(anMatcher.nounName)))
     }
   }
 }
@@ -869,8 +870,8 @@ class ResultOfNotWordForGenTraversable[E, T[_] <: scala.collection.GenTraversabl
  *
  * @author Bill Venners
  */
-class ResultOfNotWordForJavaCollection[E, T[_] <: java.util.Collection[_]](left: T[E], shouldBeTrue: Boolean, complainer: Complainer)
-    extends ResultOfNotWordForAnyRef(left, shouldBeTrue, complainer) {
+class ResultOfNotWordForJavaCollection[E, T[_] <: java.util.Collection[_]](left: T[E], shouldBeTrue: Boolean)
+    extends ResultOfNotWordForAnyRef(left, shouldBeTrue) {
 
   /**
    * This method enables the following syntax:
@@ -883,7 +884,7 @@ class ResultOfNotWordForJavaCollection[E, T[_] <: java.util.Collection[_]](left:
   def contain(expectedElement: E)(implicit holder: Holder[T[E]]) {
     val right = expectedElement
     if (holder.containsElement(left, right) != shouldBeTrue) {
-      throw complainer.newTestFailedException(
+      throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "didNotContainExpectedElement" else "containedExpectedElement",
             left,
@@ -904,7 +905,7 @@ class ResultOfNotWordForJavaCollection[E, T[_] <: java.util.Collection[_]](left:
   def contain(right: ContainMatcher[E]) {
     val result = right(new JavaCollectionWrapper(left.asInstanceOf[java.util.Collection[E]]))
     if (result.matches != shouldBeTrue) {
-      throw complainer.newTestFailedException(
+      throw newTestFailedException(
         if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage
       )
     }
@@ -926,11 +927,11 @@ class ResultOfNotWordForJavaCollection[E, T[_] <: java.util.Collection[_]](left:
       case Some(e) => 
         if (!shouldBeTrue) {
           val result = aMatcher(e.asInstanceOf[E])
-          throw complainer.newTestFailedException(FailureMessages("containedA", left, UnquotedString(aMatcher.nounName), UnquotedString(result.negatedFailureMessage)))
+          throw newTestFailedException(FailureMessages("containedA", left, UnquotedString(aMatcher.nounName), UnquotedString(result.negatedFailureMessage)))
         }
       case None =>
         if (shouldBeTrue)
-          throw complainer.newTestFailedException(FailureMessages("didNotContainA", left, UnquotedString(aMatcher.nounName)))
+          throw newTestFailedException(FailureMessages("didNotContainA", left, UnquotedString(aMatcher.nounName)))
     }
   }
   
@@ -950,11 +951,11 @@ class ResultOfNotWordForJavaCollection[E, T[_] <: java.util.Collection[_]](left:
       case Some(e) => 
         if (!shouldBeTrue) {
           val result = anMatcher(e.asInstanceOf[E])
-          throw complainer.newTestFailedException(FailureMessages("containedAn", left, UnquotedString(anMatcher.nounName), UnquotedString(result.negatedFailureMessage)))
+          throw newTestFailedException(FailureMessages("containedAn", left, UnquotedString(anMatcher.nounName), UnquotedString(result.negatedFailureMessage)))
         }
       case None =>
         if (shouldBeTrue)
-          throw complainer.newTestFailedException(FailureMessages("didNotContainAn", left, UnquotedString(anMatcher.nounName)))
+          throw newTestFailedException(FailureMessages("didNotContainAn", left, UnquotedString(anMatcher.nounName)))
     }
   }
 }
@@ -965,8 +966,8 @@ class ResultOfNotWordForJavaCollection[E, T[_] <: java.util.Collection[_]](left:
  *
  * @author Bill Venners
  */
-final class ResultOfNotWordForGenMap[K, V, L[_, _] <: scala.collection.GenMap[_, _]](left: L[K, V], shouldBeTrue: Boolean, complainer: Complainer)
-    extends ResultOfNotWordForAnyRef(left, shouldBeTrue, complainer) {
+final class ResultOfNotWordForGenMap[K, V, L[_, _] <: scala.collection.GenMap[_, _]](left: L[K, V], shouldBeTrue: Boolean)
+    extends ResultOfNotWordForAnyRef(left, shouldBeTrue) {
 
   /**
    * This method enables the following syntax:
@@ -979,7 +980,7 @@ final class ResultOfNotWordForGenMap[K, V, L[_, _] <: scala.collection.GenMap[_,
   def contain(resultOfKeyWordApplication: ResultOfKeyWordApplication[K]) {
     val right = resultOfKeyWordApplication.expectedKey
     if ((left.asInstanceOf[GenMap[K, V]].exists(_._1 == right)) != shouldBeTrue) {
-      throw complainer.newTestFailedException(
+      throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "didNotContainKey" else "containedKey",
             left,
@@ -1000,7 +1001,7 @@ final class ResultOfNotWordForGenMap[K, V, L[_, _] <: scala.collection.GenMap[_,
   def contain(resultOfValueWordApplication: ResultOfValueWordApplication[V]) {
     val right = resultOfValueWordApplication.expectedValue
     if ((left.asInstanceOf[scala.collection.GenMap[K, V]].exists(_._2 == right)) != shouldBeTrue) {
-      throw complainer.newTestFailedException(
+      throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "didNotContainValue" else "containedValue",
             left,
@@ -1026,7 +1027,7 @@ final class ResultOfNotWordForGenMap[K, V, L[_, _] <: scala.collection.GenMap[_,
   def contain(expectedElement: (K, V)) {
     val right = expectedElement
     if ((left.exists(_ == right)) != shouldBeTrue) {
-      throw complainer.newTestFailedException(
+      throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "didNotContainExpectedElement" else "containedExpectedElement",
             left,
@@ -1047,7 +1048,7 @@ final class ResultOfNotWordForGenMap[K, V, L[_, _] <: scala.collection.GenMap[_,
   def contain(right: ContainMatcher[(K, V)]) {
     val result = right(left.asInstanceOf[scala.collection.GenTraversable[(K, V)]])
     if (result.matches != shouldBeTrue) {
-      throw complainer.newTestFailedException(
+      throw newTestFailedException(
         if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage
       )
     }
@@ -1068,11 +1069,11 @@ final class ResultOfNotWordForGenMap[K, V, L[_, _] <: scala.collection.GenMap[_,
       case Some(e) => 
         if (!shouldBeTrue) {
           val result = aMatcher(e.asInstanceOf[(K, V)])
-          throw complainer.newTestFailedException(FailureMessages("containedA", left, UnquotedString(aMatcher.nounName), UnquotedString(result.negatedFailureMessage)))
+          throw newTestFailedException(FailureMessages("containedA", left, UnquotedString(aMatcher.nounName), UnquotedString(result.negatedFailureMessage)))
         }
       case None =>
         if (shouldBeTrue)
-          throw complainer.newTestFailedException(FailureMessages("didNotContainA", left, UnquotedString(aMatcher.nounName)))
+          throw newTestFailedException(FailureMessages("didNotContainA", left, UnquotedString(aMatcher.nounName)))
     }
   }
   
@@ -1091,11 +1092,11 @@ final class ResultOfNotWordForGenMap[K, V, L[_, _] <: scala.collection.GenMap[_,
       case Some(e) => 
         if (!shouldBeTrue) {
           val result = anMatcher(e.asInstanceOf[(K, V)])
-          throw complainer.newTestFailedException(FailureMessages("containedAn", left, UnquotedString(anMatcher.nounName), UnquotedString(result.negatedFailureMessage)))
+          throw newTestFailedException(FailureMessages("containedAn", left, UnquotedString(anMatcher.nounName), UnquotedString(result.negatedFailureMessage)))
         }
       case None =>
         if (shouldBeTrue)
-          throw complainer.newTestFailedException(FailureMessages("didNotContainAn", left, UnquotedString(anMatcher.nounName)))
+          throw newTestFailedException(FailureMessages("didNotContainAn", left, UnquotedString(anMatcher.nounName)))
     }
   }
 }
@@ -1106,8 +1107,8 @@ final class ResultOfNotWordForGenMap[K, V, L[_, _] <: scala.collection.GenMap[_,
  *
  * @author Bill Venners
  */
-final class ResultOfNotWordForJavaMap[K, V, L[_, _] <: java.util.Map[_, _]](left: L[K, V], shouldBeTrue: Boolean, complainer: Complainer)
-    extends ResultOfNotWordForAnyRef(left, shouldBeTrue, complainer) {
+final class ResultOfNotWordForJavaMap[K, V, L[_, _] <: java.util.Map[_, _]](left: L[K, V], shouldBeTrue: Boolean)
+    extends ResultOfNotWordForAnyRef(left, shouldBeTrue) {
 
   /**
    * This method enables the following syntax:
@@ -1120,7 +1121,7 @@ final class ResultOfNotWordForJavaMap[K, V, L[_, _] <: java.util.Map[_, _]](left
   def contain(resultOfKeyWordApplication: ResultOfKeyWordApplication[K]) {
     val right = resultOfKeyWordApplication.expectedKey
     if ((left.containsKey(right)) != shouldBeTrue) {
-      throw complainer.newTestFailedException(
+      throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "didNotContainKey" else "containedKey",
             left,
@@ -1141,7 +1142,7 @@ final class ResultOfNotWordForJavaMap[K, V, L[_, _] <: java.util.Map[_, _]](left
   def contain(resultOfValueWordApplication: ResultOfValueWordApplication[V]) {
     val right = resultOfValueWordApplication.expectedValue
     if ((left.containsValue(right)) != shouldBeTrue) {
-      throw complainer.newTestFailedException(
+      throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "didNotContainValue" else "containedValue",
             left,
@@ -1162,7 +1163,7 @@ final class ResultOfNotWordForJavaMap[K, V, L[_, _] <: java.util.Map[_, _]](left
   def contain(right: ContainMatcher[(K, V)]) {
     val result = right(new JavaMapWrapper(left.asInstanceOf[java.util.Map[K, V]]))
     if (result.matches != shouldBeTrue) {
-      throw complainer.newTestFailedException(
+      throw newTestFailedException(
         if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage
       )
     }
@@ -1184,11 +1185,11 @@ final class ResultOfNotWordForJavaMap[K, V, L[_, _] <: java.util.Map[_, _]](left
       case Some(e) => 
         if (!shouldBeTrue) {
           val result = aMatcher(e.asInstanceOf[(K, V)])
-          throw complainer.newTestFailedException(FailureMessages("containedA", leftWrapper, UnquotedString(aMatcher.nounName), UnquotedString(result.negatedFailureMessage)))
+          throw newTestFailedException(FailureMessages("containedA", leftWrapper, UnquotedString(aMatcher.nounName), UnquotedString(result.negatedFailureMessage)))
         }
       case None =>
         if (shouldBeTrue)
-          throw complainer.newTestFailedException(FailureMessages("didNotContainA", leftWrapper, UnquotedString(aMatcher.nounName)))
+          throw newTestFailedException(FailureMessages("didNotContainA", leftWrapper, UnquotedString(aMatcher.nounName)))
     }
   }
   
@@ -1208,11 +1209,11 @@ final class ResultOfNotWordForJavaMap[K, V, L[_, _] <: java.util.Map[_, _]](left
       case Some(e) => 
         if (!shouldBeTrue) {
           val result = anMatcher(e.asInstanceOf[(K, V)])
-          throw complainer.newTestFailedException(FailureMessages("containedAn", leftWrapper, UnquotedString(anMatcher.nounName), UnquotedString(result.negatedFailureMessage)))
+          throw newTestFailedException(FailureMessages("containedAn", leftWrapper, UnquotedString(anMatcher.nounName), UnquotedString(result.negatedFailureMessage)))
         }
       case None =>
         if (shouldBeTrue)
-          throw complainer.newTestFailedException(FailureMessages("didNotContainAn", leftWrapper, UnquotedString(anMatcher.nounName)))
+          throw newTestFailedException(FailureMessages("didNotContainAn", leftWrapper, UnquotedString(anMatcher.nounName)))
     }
   }
 }
@@ -1223,8 +1224,8 @@ final class ResultOfNotWordForJavaMap[K, V, L[_, _] <: java.util.Map[_, _]](left
  *
  * @author Bill Venners
  */
-final class ResultOfNotWordForArray[E](left: Array[E], shouldBeTrue: Boolean, complainer: Complainer)
-    extends ResultOfNotWordForAnyRef(left, shouldBeTrue, complainer) {
+final class ResultOfNotWordForArray[E](left: Array[E], shouldBeTrue: Boolean)
+    extends ResultOfNotWordForAnyRef(left, shouldBeTrue) {
 
   /**
    * This method enables the following syntax:
@@ -1237,7 +1238,7 @@ final class ResultOfNotWordForArray[E](left: Array[E], shouldBeTrue: Boolean, co
   def contain(expectedElement: E)(implicit holder: Holder[Array[E]]) {
     val right = expectedElement
     if (holder.containsElement(left, right) != shouldBeTrue) {
-      throw complainer.newTestFailedException(
+      throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "didNotContainExpectedElement" else "containedExpectedElement",
             left,
@@ -1259,7 +1260,7 @@ final class ResultOfNotWordForArray[E](left: Array[E], shouldBeTrue: Boolean, co
   def contain(right: ContainMatcher[E]) {
     val result = right(new ArrayWrapper(left))
     if (result.matches != shouldBeTrue) {
-      throw complainer.newTestFailedException(
+      throw newTestFailedException(
         if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage
       )
     }
@@ -1280,11 +1281,11 @@ final class ResultOfNotWordForArray[E](left: Array[E], shouldBeTrue: Boolean, co
       case Some(e) => 
         if (!shouldBeTrue) {
           val result = aMatcher(e.asInstanceOf[E])
-          throw complainer.newTestFailedException(FailureMessages("containedA", left, UnquotedString(aMatcher.nounName), UnquotedString(result.negatedFailureMessage)))
+          throw newTestFailedException(FailureMessages("containedA", left, UnquotedString(aMatcher.nounName), UnquotedString(result.negatedFailureMessage)))
         }
       case None =>
         if (shouldBeTrue)
-          throw complainer.newTestFailedException(FailureMessages("didNotContainA", left, UnquotedString(aMatcher.nounName)))
+          throw newTestFailedException(FailureMessages("didNotContainA", left, UnquotedString(aMatcher.nounName)))
     }
   }
   
@@ -1303,11 +1304,11 @@ final class ResultOfNotWordForArray[E](left: Array[E], shouldBeTrue: Boolean, co
       case Some(e) => 
         if (!shouldBeTrue) {
           val result = anMatcher(e.asInstanceOf[E])
-          throw complainer.newTestFailedException(FailureMessages("containedAn", left, UnquotedString(anMatcher.nounName), UnquotedString(result.negatedFailureMessage)))
+          throw newTestFailedException(FailureMessages("containedAn", left, UnquotedString(anMatcher.nounName), UnquotedString(result.negatedFailureMessage)))
         }
       case None =>
         if (shouldBeTrue)
-          throw complainer.newTestFailedException(FailureMessages("didNotContainAn", left, UnquotedString(anMatcher.nounName)))
+          throw newTestFailedException(FailureMessages("didNotContainAn", left, UnquotedString(anMatcher.nounName)))
     }
   }
 }

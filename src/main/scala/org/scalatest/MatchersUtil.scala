@@ -150,4 +150,19 @@ private[scalatest] object MatchersUtil {
     }
     builder.toString
   }
+
+  def newTestFailedException(message: String, optionalCause: Option[Throwable] = None, stackDepthAdjustment: Int = 0): Throwable = {
+    val temp = new RuntimeException
+    // should not look for anything in the first 2 elements, caller stack element is at 3rd/4th
+    // also, it solves the problem when the suite file that mixin in Matchers has the [suiteFileName]:newTestFailedException appears in the top 2 elements
+    // this approach should be better than adding && _.getMethodName == newTestFailedException we used previously.
+    val elements = temp.getStackTrace.drop(2) 
+    // TODO: Perhaps we should add org.scalatest.enablers also here later?
+    // TODO: Probably need a MatchersUtil.scala here also
+    val stackDepth = elements.indexWhere(st => st.getFileName != "Matchers.scala" && !st.getClassName.startsWith("org.scalatest.words.")) + 2 // the first 2 elements dropped previously
+    optionalCause match {
+      case Some(cause) => new TestFailedException(message, cause, stackDepth + stackDepthAdjustment)
+      case None => new TestFailedException(message, stackDepth + stackDepthAdjustment)
+    }
+  }
 }
