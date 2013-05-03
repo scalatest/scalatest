@@ -58,7 +58,7 @@ class ProgressBarPanel() extends JPanel {
   //
   def discoveryStarting() {
     remove(progressBar)
-    add(discoPanel, BorderLayout.CENTER)
+    add(discoPanel, BorderLayout.WEST)
 
     // change text after adding panel in order to get panel to show up
     discoJLabel.setText("")
