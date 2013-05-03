@@ -3785,9 +3785,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                      ^
      * </pre>
      */
-    def a(bePropertyMatcher: BePropertyMatcher[T]) {
+    def a[U <: T](bePropertyMatcher: BePropertyMatcher[U]) {
       doCollected(collected, xs, "a", 1) { e =>
-        val result = bePropertyMatcher(e)
+        val result = bePropertyMatcher(e.asInstanceOf[U])
         if (result.matches != shouldBeTrue) {
           throw newTestFailedException(
             if (shouldBeTrue)
@@ -3810,9 +3810,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                      ^
      * </pre>
      */
-    def an(beTrueMatcher: BePropertyMatcher[T]) {
+    def an[U <: T](beTrueMatcher: BePropertyMatcher[U]) {
       doCollected(collected, xs, "an", 1) { e =>
-        val beTrueMatchResult = beTrueMatcher(e)
+        val beTrueMatchResult = beTrueMatcher(e.asInstanceOf[U])
         if (beTrueMatchResult.matches != shouldBeTrue) {
           throw newTestFailedException(
             if (shouldBeTrue)
@@ -4308,6 +4308,27 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
           throw newTestFailedException(FailureMessages("wasNotPlusOrMinus", e, interval.pivot, interval.tolerance), None, 6)
       }
     }
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * all(xs) shouldNot (be (3))
+     *         ^
+     * </pre>
+     */
+    def shouldNot[U <: T](rightMatcherX1: Matcher[U]) {
+      doCollected(collected, xs, "shouldNot", 1) { e =>
+        val result = 
+          try rightMatcherX1.apply(e.asInstanceOf[U])
+          catch {
+            case tfe: TestFailedException => 
+              throw newTestFailedException(tfe.getMessage, tfe.cause, 6)
+          }
+        if (result.matches)
+          throw newTestFailedException(result.negatedFailureMessage, None, 6)
+      }
+    }
   } 
   
   /**
@@ -4530,6 +4551,17 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
           throw newTestFailedException(FailureMessages("wasNotAn", e, UnquotedString(result.propertyName)), None, 6)
       }
     }
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * all(xs) shouldNot be theSameInstanceAs anotherInstance
+     *         ^
+     * </pre>
+     */
+    def shouldNot(beWord: BeWord): ResultOfBeWordForCollectedAnyRef[T] 
+      = new ResultOfBeWordForCollectedAnyRef[T](collected, xs, false)
   }
 
   /**
