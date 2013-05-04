@@ -4366,13 +4366,37 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * </pre>
      */
     def should[U](inv: TripleEqualsInvocation[U])(implicit constraint: EqualityConstraint[T, U]) {
-      doCollected(collected, xs, "shouldNot", 1) { e =>
+      doCollected(collected, xs, "should", 1) { e =>
         if ((constraint.areEqual(e, inv.right)) != inv.expectingEqual)
           throw newTestFailedException(
             FailureMessages(
              if (inv.expectingEqual) "didNotEqual" else "equaled",
               e,
               inv.right
+            ),
+            None,
+            6
+          )
+      }
+    }
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * all (xs) should === (100 +- 1)
+     *          ^
+     * </pre>
+     */
+    def should(inv: TripleEqualsInvocationOnInterval[T])(implicit ev: Numeric[T]) {
+      doCollected(collected, xs, "should", 1) { e =>
+        if ((inv.interval.isWithin(e)) != inv.expectingEqual)
+          throw newTestFailedException(
+            FailureMessages(
+              if (inv.expectingEqual) "didNotEqualPlusOrMinus" else "equaledPlusOrMinus",
+              e,
+              inv.interval.pivot,
+              inv.interval.tolerance
             ),
             None,
             6
@@ -5637,8 +5661,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
         )
     }
 
-    // TODO: Need to make sure this works in inspector shorthands. I moved this
-    // up here from NumericShouldWrapper.
     /**
      * This method enables syntax such as the following:
      *
