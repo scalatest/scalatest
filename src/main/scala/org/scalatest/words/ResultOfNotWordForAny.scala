@@ -421,6 +421,27 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
       } 
     }
   }
+
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * object should not contain ("one")
+   *                   ^
+   * </pre>
+   */
+  def contain(expectedElement: Any)(implicit holder: Holder[T]) {
+    val right = expectedElement
+    if (holder.containsElement(left, right) != shouldBeTrue) {
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "didNotContainExpectedElement" else "containedExpectedElement",
+            left,
+            right
+          )
+        )
+    }
+  }
 }
 
 /**
@@ -747,27 +768,6 @@ final class ResultOfNotWordForString(left: String, shouldBeTrue: Boolean)
         )
       )
   }
-
-  /**
-   * This method enables the following syntax:
-   *
-   * <pre class="stHighlight">
-   * string should not contain ('c')
-   *                   ^
-   * </pre>
-   */
-  def contain(expectedElement: Char)(implicit holder: Holder[String]) {
-    val right = expectedElement
-    if (holder.containsElement(left, right) != shouldBeTrue) {
-      throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "didNotContainExpectedElement" else "containedExpectedElement",
-            left,
-            right
-          )
-        )
-    }
-  }
 }
 
 /**
@@ -779,27 +779,6 @@ final class ResultOfNotWordForString(left: String, shouldBeTrue: Boolean)
 class ResultOfNotWordForGenTraversable[E, T[_] <: scala.collection.GenTraversable[_]](left: T[E], shouldBeTrue: Boolean)
     extends ResultOfNotWordForAnyRef(left, shouldBeTrue) {
 
-  /**
-   * This method enables the following syntax:
-   *
-   * <pre class="stHighlight">
-   * iterable should not contain ("one")
-   *                     ^
-   * </pre>
-   */
-  def contain(expectedElement: E)(implicit holder: Holder[T[E]]) {
-    val right = expectedElement
-    if (holder.containsElement(left, right) != shouldBeTrue) {
-      throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "didNotContainExpectedElement" else "containedExpectedElement",
-            left,
-            right
-          )
-        )
-    }
-  }
-  
   /**
    * This method enables the following syntax:
    *
@@ -873,27 +852,6 @@ class ResultOfNotWordForGenTraversable[E, T[_] <: scala.collection.GenTraversabl
 class ResultOfNotWordForJavaCollection[E, T[_] <: java.util.Collection[_]](left: T[E], shouldBeTrue: Boolean)
     extends ResultOfNotWordForAnyRef(left, shouldBeTrue) {
 
-  /**
-   * This method enables the following syntax:
-   *
-   * <pre class="stHighlight">
-   * javaCollection should not contain ("elephant")
-   *                           ^
-   * </pre>
-   */
-  def contain(expectedElement: E)(implicit holder: Holder[T[E]]) {
-    val right = expectedElement
-    if (holder.containsElement(left, right) != shouldBeTrue) {
-      throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "didNotContainExpectedElement" else "containedExpectedElement",
-            left,
-            right
-          )
-        )
-    }
-  }
-  
   /**
    * This method enables the following syntax:
    *
@@ -1227,27 +1185,6 @@ final class ResultOfNotWordForJavaMap[K, V, L[_, _] <: java.util.Map[_, _]](left
 final class ResultOfNotWordForArray[E](left: Array[E], shouldBeTrue: Boolean)
     extends ResultOfNotWordForAnyRef(left, shouldBeTrue) {
 
-  /**
-   * This method enables the following syntax:
-   *
-   * <pre class="stHighlight">
-   * Array("two", "three") should not contain ("one")
-   *                                  ^
-   * </pre>
-   */
-  def contain(expectedElement: E)(implicit holder: Holder[Array[E]]) {
-    val right = expectedElement
-    if (holder.containsElement(left, right) != shouldBeTrue) {
-      throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "didNotContainExpectedElement" else "containedExpectedElement",
-            left,
-            right
-          )
-        )
-    }
-  }
-  
   /**
    * This method enables the following syntax, where <code>containMatcher</code> refers to
    * a <code>ContainMatcher</code>:

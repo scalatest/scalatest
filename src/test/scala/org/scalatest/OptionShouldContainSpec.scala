@@ -23,8 +23,8 @@ class OptionShouldContainSpec extends Spec with Matchers with SharedHelpers {
       val none: Option[String] = None
 
       some should contain ("hi")
-      //some should not contain ("ho")
-      //none should not contain ("hi")
+      some should not contain ("ho")
+      none should not contain ("hi")
 
       val e1 = intercept[TestFailedException] {
         some should contain ("ho")
@@ -40,14 +40,12 @@ class OptionShouldContainSpec extends Spec with Matchers with SharedHelpers {
       e2.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
       e2.failedCodeLineNumber.get should be (thisLineNumber - 4)
 
-/*
       val e3 = intercept[TestFailedException] {
         some should not contain ("hi")
       }
       e3.message.get should be (Resources("containedExpectedElement", some, "\"hi\""))
       e3.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
       e3.failedCodeLineNumber.get should be (thisLineNumber - 4)
-*/
     }
   }
 }

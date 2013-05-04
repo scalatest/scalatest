@@ -6417,15 +6417,15 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
     def by[E, TRAV[_] <: scala.collection.GenTraversable[_]](equality: Equality[E]): Holder[TRAV[E]] = 
       new Holder[TRAV[E]] {
         def containsElement(trav: TRAV[E], ele: Any): Boolean = {
-          trav.exists((e: Any) => equality.areEqual(e.asInstanceOf[E], ele)) // Don't know why the compiler thinks e is Any. Should be E. Compiler bug?
-        } // Duh, I declare e to by Any!. FIX THIS NEXT
+          trav.exists((e: Any) => equality.areEqual(e.asInstanceOf[E], ele)) // Don't know why the compiler requires e to be type Any. Should be E.
+        }
       }
   }
 
   implicit def equalityEnablersForTraversable[E, TRAV[_] <: scala.collection.GenTraversable[_]](implicit equality: Equality[E]): Holder[TRAV[E]] = 
     new Holder[TRAV[E]] {
       def containsElement(trav: TRAV[E], ele: Any): Boolean = {
-        trav.exists((e: Any) => equality.areEqual(e.asInstanceOf[E], ele)) // Don't know why the compiler thinks e is Any. Should be E. Compiler bug?
+        trav.exists((e: Any) => equality.areEqual(e.asInstanceOf[E], ele)) // Don't know why the compiler requires e to be type Any. Should be E.
       }
     }
 
