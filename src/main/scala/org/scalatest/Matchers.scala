@@ -5543,6 +5543,20 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * This method enables syntax such as the following:
      *
      * <pre class="stHighlight">
+     * result shouldEqual null
+     *        ^
+     * </pre>
+     */
+    def shouldEqual(right: Null)(implicit ev: T <:< AnyRef) { 
+      if (left != null) {
+        throw newTestFailedException(FailureMessages("didNotEqualNull", left))
+      }
+    }
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
      * result should not equal (3)
      *        ^
      * </pre>
@@ -5781,20 +5795,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
   class AnyRefShouldWrapper[T <: AnyRef](left: T) extends AnyShouldWrapper(left) {
 
     // TODO: Ensure on inspector shorthands. Had to add this here after moving another shouldEqual method from NumericShouldWrapper.
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * result shouldEqual null
-     *        ^
-     * </pre>
-     */
-    def shouldEqual(right: Null) { 
-      if (left != null) {
-        throw newTestFailedException(FailureMessages("didNotEqualNull", left))
-      }
-    }
-
     /**
      * This method enables syntax such as the following:
      *
