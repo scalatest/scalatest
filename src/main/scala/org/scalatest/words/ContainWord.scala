@@ -53,17 +53,6 @@ final class ContainWord {
           }
         }
     }
-/*
-  def apply[T](expectedElement: T): Matcher[GenTraversable[T]] =
-    new Matcher[GenTraversable[T]] {
-      def apply(left: GenTraversable[T]): MatchResult =
-        MatchResult(
-          left.exists(_ == expectedElement), 
-          FailureMessages("didNotContainExpectedElement", left, expectedElement),
-          FailureMessages("containedExpectedElement", left, expectedElement)
-        )
-    }
-*/
   
   /**
    * This method enables the following syntax, where <code>num</code> is, for example, of type <code>Int</code> and

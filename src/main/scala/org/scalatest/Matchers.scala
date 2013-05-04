@@ -940,11 +940,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
       )
   }
   
-  /**
-   * This implicit conversion method enables ScalaTest matchers expressions that involve <code>and</code> and <code>or</code>.
-   */
-  // implicit def convertToMatcherWrapper[T](leftMatcher: Matcher[T]): MatcherWrapper[T] = new MatcherWrapper(leftMatcher)
-
   //
   // This class is used as the return type of the overloaded should method (in MapShouldWrapper)
   // that takes a HaveWord. It's key method will be called in situations like this:
@@ -1191,6 +1186,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
     }
   }
 
+  // TODO: I think I'll be able to drop the next three implicit conversions after the enablers for contain are done.
   /** 
    * This implicit conversion method enables the following syntax (<code>javaColl</code> is a <code>java.util.Collection</code>):
    *
