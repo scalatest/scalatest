@@ -6430,18 +6430,18 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
     }
 
   object decidedForOption {
-    def by[E](equality: Equality[E]): Holder[Option[E]] = 
-      new Holder[Option[E]] {
-        def containsElement(opt: Option[E], ele: Any): Boolean = {
-          opt.exists((e: E) => equality.areEqual(e, ele))
+    def by[E, OPT[_] <: Option[_]](equality: Equality[E]): Holder[OPT[E]] = 
+      new Holder[OPT[E]] {
+        def containsElement(opt: OPT[E], ele: Any): Boolean = {
+          opt.exists((e: Any) => equality.areEqual(e.asInstanceOf[E], ele)) // Don't know why the compiler requires e to be type Any. Should be E.
         }
       }
   }
 
-  implicit def equalityEnablersForOption[E](implicit equality: Equality[E]): Holder[Option[E]] = 
-    new Holder[Option[E]] {
-      def containsElement(opt: Option[E], ele: Any): Boolean = {
-        opt.exists((e: E) => equality.areEqual(e, ele))
+  implicit def equalityEnablersForOption[E, OPT[_] <: Option[_]](implicit equality: Equality[E]): Holder[OPT[E]] = 
+    new Holder[OPT[E]] {
+      def containsElement(opt: OPT[E], ele: Any): Boolean = {
+        opt.exists((e: Any) => equality.areEqual(e.asInstanceOf[E], ele)) // Don't know why the compiler requires e to be type Any. Should be E.
       }
     }
 
