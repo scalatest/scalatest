@@ -248,7 +248,7 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
 
     def `should use Equality from 'shouldEqual'` {
       val xs = List(1, 1, 1)
-      all (xs) should equal (1) 
+      all (xs) shouldEqual 1 
       implicit val e = new Equality[Int] {
         def areEqual(a: Int, b: Any): Boolean = a != b
       }
@@ -257,6 +257,50 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
       }
     }
     
+    def `should throw TestFailedException with correct stack depth and message when 'shouldEqual tolerance' failed` {
+      forAll(examples) { colFun => 
+        val col = colFun(Set(1, 2, 4))
+        val e2 = intercept[exceptions.TestFailedException] {
+          all(col) shouldEqual 2 +- 1
+        }
+        e2.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
+        e2.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+        val firstViolation = getFirstNot[Int](col, i => i >= 1 && i <= 3)
+        e2.message should be (Some("'all' inspection failed, because: \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " did not equal 2 plus or minus 1 (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "in " + col))
+        e2.getCause match {
+          case tfe: exceptions.TestFailedException =>
+            tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
+            tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
+            tfe.message should be (Some(firstViolation + " did not equal 2 plus or minus 1"))
+            tfe.getCause should be (null)
+          case other => fail("Expected cause to be TestFailedException, but got: " + other)
+        }
+      }
+    }
+
+    def `should throw TestFailedException with correct stack depth and message when 'shouldEqual null' failed` {
+      val col: Set[String] = Set(null, null, "hi")
+      val e2 = intercept[exceptions.TestFailedException] {
+        all (col) shouldEqual null 
+      }
+      e2.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
+      e2.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+      val firstViolation = getFirstNot[String](col, _ == null)
+      e2.message should be (Some("'all' inspection failed, because: \n" +
+                                  "  at index " + getIndex(col, firstViolation) + ", \"" + firstViolation + "\" did not equal null (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                  "in " + col))
+      e2.getCause match {
+        case tfe: exceptions.TestFailedException =>
+          tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
+          tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
+          tfe.message should be (Some("\"" + firstViolation + "\" did not equal null"))
+          tfe.getCause should be (null)
+        case other => fail("Expected cause to be TestFailedException, but got: " + other)
+      }
+    }
+
     def `should use Equality from 'should equal'` {
       val xs = List(1, 1, 1)
       all (xs) should equal (1) 

@@ -4093,6 +4093,39 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * This method enables syntax such as the following:
      *
      * <pre class="stHighlight">
+     * result shouldEqual 7.1 +- 0.2
+     *        ^
+     * </pre>
+     */
+    def shouldEqual(interval: Interval[T]) {
+      doCollected(collected, xs, "shouldEqual", 1) { e =>
+        if (!interval.isWithin(e)) {
+          throw newTestFailedException(FailureMessages("didNotEqualPlusOrMinus", e, interval.pivot, interval.tolerance), None, 6)
+        }
+      }
+    }
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * result shouldEqual null
+     *        ^
+     * </pre>
+     */
+    def shouldEqual(right: Null)(implicit ev: T <:< AnyRef) { 
+      doCollected(collected, xs, "shouldEqual", 1) { e =>
+        if (e != null) {
+          throw newTestFailedException(FailureMessages("didNotEqualNull", e), None, 6)
+        }
+      }
+    }
+
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
      * all(xs) should equal (3)
      *         ^
      * </pre>
@@ -5524,7 +5557,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
       }
     }
 
-    // TODO: Ensure on inspector shorthands. Moved this here from NumericShouldWrapper.
     /**
      * This method enables syntax such as the following:
      *
