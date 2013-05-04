@@ -4356,7 +4356,30 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
           throw newTestFailedException(result.negatedFailureMessage, None, 6)
       }
     }
-  } 
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * all (xs) should === (b)
+     *          ^
+     * </pre>
+     */
+    def should[U](inv: TripleEqualsInvocation[U])(implicit constraint: EqualityConstraint[T, U]) {
+      doCollected(collected, xs, "shouldNot", 1) { e =>
+        if ((constraint.areEqual(e, inv.right)) != inv.expectingEqual)
+          throw newTestFailedException(
+            FailureMessages(
+             if (inv.expectingEqual) "didNotEqual" else "equaled",
+              e,
+              inv.right
+            ),
+            None,
+            6
+          )
+      }
+    }
+  }
   
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
