@@ -3821,7 +3821,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
         }
       }
     }
-    
   }
   
   /**
@@ -4053,7 +4052,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    * @author Chee Seng
    */
   sealed class ResultOfCollectedAny[T](collected: Collected, xs: scala.collection.GenTraversable[T]) {
-    
+
     /**
      * This method enables syntax such as the following:
      *
@@ -4120,7 +4119,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
         }
       }
     }
-
 
     /**
      * This method enables syntax such as the following:
@@ -4215,7 +4213,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * This method enables syntax such as the following:
      *
      * <pre class="stHighlight">
-     * all(4, 5, 6) shouldBe < (7) 
+     * all(4, 5, 6) shouldBe &lt; (7) 
      *              ^
      * </pre> 
      */
@@ -4239,7 +4237,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * This method enables syntax such as the following:
      *
      * <pre class="stHighlight">
-     * all(4, 5, 6) shouldBe <= (7) 
+     * all(4, 5, 6) shouldBe &lt;= (7) 
      *              ^
      * </pre> 
      */
@@ -4263,7 +4261,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * This method enables syntax such as the following:
      *
      * <pre class="stHighlight">
-     * all(8, 9, 10) shouldBe > (7) 
+     * all(8, 9, 10) shouldBe &gt; (7) 
      *               ^
      * </pre> 
      */
@@ -4287,7 +4285,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * This method enables syntax such as the following:
      *
      * <pre class="stHighlight">
-     * all(8, 9, 10) shouldBe >= (7) 
+     * all(8, 9, 10) shouldBe &gt;= (7) 
      *               ^
      * </pre> 
      */
