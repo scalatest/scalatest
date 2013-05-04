@@ -6418,7 +6418,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
       new Holder[TRAV[E]] {
         def containsElement(trav: TRAV[E], ele: Any): Boolean = {
           trav.exists((e: Any) => equality.areEqual(e.asInstanceOf[E], ele)) // Don't know why the compiler thinks e is Any. Should be E. Compiler bug?
-        }
+        } // Duh, I declare e to by Any!. FIX THIS NEXT
       }
   }
 
@@ -6426,6 +6426,22 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
     new Holder[TRAV[E]] {
       def containsElement(trav: TRAV[E], ele: Any): Boolean = {
         trav.exists((e: Any) => equality.areEqual(e.asInstanceOf[E], ele)) // Don't know why the compiler thinks e is Any. Should be E. Compiler bug?
+      }
+    }
+
+  object decidedForOption {
+    def by[E](equality: Equality[E]): Holder[Option[E]] = 
+      new Holder[Option[E]] {
+        def containsElement(opt: Option[E], ele: Any): Boolean = {
+          opt.exists((e: E) => equality.areEqual(e, ele))
+        }
+      }
+  }
+
+  implicit def equalityEnablersForOption[E](implicit equality: Equality[E]): Holder[Option[E]] = 
+    new Holder[Option[E]] {
+      def containsElement(opt: Option[E], ele: Any): Boolean = {
+        opt.exists((e: E) => equality.areEqual(e, ele))
       }
     }
 
