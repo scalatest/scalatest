@@ -130,10 +130,10 @@ class ShouldCollectedTripleEqualsSpec extends Spec with NonImplicitAssertions wi
           all (List(1, 1, 1)) should === (1)
           intercept[TestFailedException] { all (List(1, 1, 1)) should !== (1) }
 
-          ap should === (fr)
-          fr should === (ap)
-          ap should === (cr)
-          cr should === (ap)
+          all (List(ap, ap, ap)) should === (fr)
+          all (List(fr, fr, fr)) should === (ap)
+          all (List(ap, ap, ap)) should === (cr)
+          all (List(cr, cr, cr)) should === (ap)
 
           all (List(super1, super1, super1)) should !== (super2)
           all (List(super1, super1, super1)) should !== (sub2)
@@ -153,8 +153,8 @@ class ShouldCollectedTripleEqualsSpec extends Spec with NonImplicitAssertions wi
           // all (List("1", "1", "1")) should !== (1)
           // all (List(1, 1, 1)) should !== ("1")
 
-          // fr should === (cr)
-          // cr should === (fr)
+          // all (List(fr, fr, fr)) should === (cr)
+          // all (List(cr, cr, cr)) should === (fr)
         }
       }
 
@@ -175,10 +175,10 @@ class ShouldCollectedTripleEqualsSpec extends Spec with NonImplicitAssertions wi
             all (List(1, 1, 1)) should === (1)
             intercept[TestFailedException] { all (List(1, 1, 1)) should !== (1) }
   
-            ap should === (fr)
-            fr should === (ap)
-            ap should === (cr)
-            cr should === (ap)
+            all (List(ap, ap, ap)) should === (fr)
+            all (List(fr, fr, fr)) should === (ap)
+            all (List(ap, ap, ap)) should === (cr)
+            all (List(cr, cr, cr)) should === (ap)
 
             all (List(super1, super1, super1)) should !== (super2)
             all (List(super1, super1, super1)) should !== (sub2)
@@ -198,8 +198,8 @@ class ShouldCollectedTripleEqualsSpec extends Spec with NonImplicitAssertions wi
             // all (List("1", "1", "1")) should !== (1)
             // all (List(1, 1, 1)) should !== ("1")
   
-            // fr should === (cr)
-            // cr should === (fr)
+            // all (List(fr, fr, fr)) should === (cr)
+            // all (List(cr, cr, cr)) should === (fr)
           }
         }
       }
@@ -222,10 +222,10 @@ class ShouldCollectedTripleEqualsSpec extends Spec with NonImplicitAssertions wi
             all (List(1, 1, 1)) should === (1)
             intercept[TestFailedException] { all (List(1, 1, 1)) should !== (1) }
 
-            ap should === (fr)
-            fr should === (ap)
-            ap should === (cr)
-            cr should === (ap)
+            all (List(ap, ap, ap)) should === (fr)
+            all (List(fr, fr, fr)) should === (ap)
+            all (List(ap, ap, ap)) should === (cr)
+            all (List(cr, cr, cr)) should === (ap)
 
             all (List(super1, super1, super1)) should !== (super2)
             all (List(super1, super1, super1)) should !== (sub2)
@@ -246,8 +246,8 @@ class ShouldCollectedTripleEqualsSpec extends Spec with NonImplicitAssertions wi
             // all (List("1", "1", "1")) should !== (1)
             // all (List(1, 1, 1)) should !== ("1")
 
-            // fr should === (cr)
-            // cr should === (fr)
+            // all (List(fr, fr, fr)) should === (cr)
+            // all (List(cr, cr, cr)) should === (fr)
         }
       }
 
@@ -268,10 +268,10 @@ class ShouldCollectedTripleEqualsSpec extends Spec with NonImplicitAssertions wi
             all (List(1, 1, 1)) should === (1)
             intercept[TestFailedException] { all (List(1, 1, 1)) should !== (1) }
 
-            ap should === (fr)
-            fr should === (ap)
-            ap should === (cr)
-            cr should === (ap)
+            all (List(ap, ap, ap)) should === (fr)
+            all (List(fr, fr, fr)) should === (ap)
+            all (List(ap, ap, ap)) should === (cr)
+            all (List(cr, cr, cr)) should === (ap)
 
             all (List(super1, super1, super1)) should !== (super2)
             all (List(super1, super1, super1)) should !== (sub2)
@@ -292,8 +292,8 @@ class ShouldCollectedTripleEqualsSpec extends Spec with NonImplicitAssertions wi
             // all (List("1", "1", "1")) should !== (1)
             // all (List(1, 1, 1)) should !== ("1")
 
-            // fr should === (cr)
-            // cr should === (fr)
+            // all (List(fr, fr, fr)) should === (cr)
+            // all (List(cr, cr, cr)) should === (fr)
           }
         }
       }
@@ -316,10 +316,10 @@ class ShouldCollectedTripleEqualsSpec extends Spec with NonImplicitAssertions wi
           all (List(1, 1, 1)) should === (1)
           intercept[TestFailedException] { all (List(1, 1, 1)) should !== (1) }
 
-          ap should === (fr)
-          fr should === (ap)
-          ap should === (cr)
-          cr should === (ap)
+          all (List(ap, ap, ap)) should === (fr)
+          all (List(fr, fr, fr)) should === (ap)
+          all (List(ap, ap, ap)) should === (cr)
+          all (List(cr, cr, cr)) should === (ap)
 
           all (List(super1, super1, super1)) should !== (super2)
           all (List(super1, super1, super1)) should !== (sub2)
@@ -372,8 +372,8 @@ class ShouldCollectedTripleEqualsSpec extends Spec with NonImplicitAssertions wi
           // all (List("1", "1", "1")) should !== (1)
           // all (List(1, 1, 1)) should !== ("1")
 
-          // fr should === (cr)
-          // cr should === (fr)
+          // all (List(fr, fr, fr)) should === (cr)
+          // all (List(cr, cr, cr)) should === (fr)
 
           // all (List(Array(1, 2, 3), Array(1, 2, 3), Array(1, 2, 3))) should === (Seq(1, 2, 3))
           // all (List(Array(1, 2, 3), Array(1, 2, 3), Array(1, 2, 3))) should !== (Seq(2, 3, 4))
@@ -469,10 +469,10 @@ class ShouldCollectedTripleEqualsSpec extends Spec with NonImplicitAssertions wi
           // all (List(1, 1, 1)) should === (1) // compiles on 2.10 but not 2.9
           // intercept[TestFailedException] { all (List(1, 1, 1)) should !== (1)) // compiles on 2.10 but not 2. }
 
-          // ap should === (fr) // compiles on 2.10 but not 2.9
-          // compiles on 2.10 but not 2.9/ fr should === (ap) // compiles on 2.10 but not 2.9
-          // ap should === (cr) // compiles on 2.10 but not 2.9
-          // cr should === (ap) // compiles on 2.10 but not 2.9
+          // all (List(ap, ap, ap)) should === (fr) // compiles on 2.10 but not 2.9
+          // compiles on 2.10 but not 2.9/ all (List(fr, fr, fr)) should === (ap) // compiles on 2.10 but not 2.9
+          // all (List(ap, ap, ap)) should === (cr) // compiles on 2.10 but not 2.9
+          // all (List(cr, cr, cr)) should === (ap) // compiles on 2.10 but not 2.9
 
           // all (List(super1, super1, super1)) should !== (super2) // compiles on 2.10 but not 2.9
           // all (List(super1, super1, super1)) should !== (sub2) // compiles on 2.10 but not 2.9
@@ -493,8 +493,8 @@ class ShouldCollectedTripleEqualsSpec extends Spec with NonImplicitAssertions wi
           // all (List("1", "1", "1")) should !== (1)
           // all (List(1, 1, 1)) should !== ("1")
 
-          // fr should === (cr)
-          // cr should === (fr)
+          // all (List(fr, fr, fr)) should === (cr)
+          // all (List(cr, cr, cr)) should === (fr)
         }
       }
 
@@ -515,10 +515,10 @@ class ShouldCollectedTripleEqualsSpec extends Spec with NonImplicitAssertions wi
             // all (List(1, 1, 1)) should === (1) // compiles on 2.10 but not 2.9
             // intercept[TestFailedException] { all (List(1, 1, 1)) should !== (1)) // compiles on 2.10 but not 2. }
 
-            // ap should === (fr) // compiles on 2.10 but not 2.9
-            // fr should === (ap) // compiles on 2.10 but not 2.9
-            // ap should === (cr) // compiles on 2.10 but not 2.9
-            // cr should === (ap) // compiles on 2.10 but not 2.9
+            // all (List(ap, ap, ap)) should === (fr) // compiles on 2.10 but not 2.9
+            // all (List(fr, fr, fr)) should === (ap) // compiles on 2.10 but not 2.9
+            // all (List(ap, ap, ap)) should === (cr) // compiles on 2.10 but not 2.9
+            // all (List(cr, cr, cr)) should === (ap) // compiles on 2.10 but not 2.9
 
             // all (List(super1, super1, super1)) should !== (super2) // compiles on 2.10 but not 2.9
             // all (List(super1, super1, super1)) should !== (sub2) // compiles on 2.10 but not 2.9
@@ -539,8 +539,8 @@ class ShouldCollectedTripleEqualsSpec extends Spec with NonImplicitAssertions wi
             // all (List("1", "1", "1")) should !== (1)
             // all (List(1, 1, 1)) should !== ("1")
 
-            // fr should === (cr)
-            // cr should === (fr)
+            // all (List(fr, fr, fr)) should === (cr)
+            // all (List(cr, cr, cr)) should === (fr)
           }
         }
       }
@@ -563,10 +563,10 @@ class ShouldCollectedTripleEqualsSpec extends Spec with NonImplicitAssertions wi
           all (List(1, 1, 1)) should === (1)
           intercept[TestFailedException] { all (List(1, 1, 1)) should !== (1) }
 
-          ap should === (fr)
-          fr should === (ap)
-          ap should === (cr)
-          cr should === (ap)
+          all (List(ap, ap, ap)) should === (fr)
+          all (List(fr, fr, fr)) should === (ap)
+          all (List(ap, ap, ap)) should === (cr)
+          all (List(cr, cr, cr)) should === (ap)
 
           all (List(super1, super1, super1)) should !== (super2)
           all (List(super1, super1, super1)) should !== (sub2)
@@ -627,8 +627,8 @@ class ShouldCollectedTripleEqualsSpec extends Spec with NonImplicitAssertions wi
           // all (List("1", "1", "1")) should !== (1)
           // all (List(1, 1, 1)) should !== ("1")
 
-          // fr should === (cr)
-          // cr should === (fr)
+          // all (List(fr, fr, fr)) should === (cr)
+          // all (List(cr, cr, cr)) should === (fr)
 
           // intercept[TestFailedException] { all (List(Map("I" -> 1, "II" -> 2), Map("I" -> 1, "II" -> 2), Map("I" -> 1, "II" -> 2))) should === (7) }
           // all (List(Map("I" -> 1, "II" -> 2), Map("I" -> 1, "II" -> 2), Map("I" -> 1, "II" -> 2))) should !== (7)
@@ -718,10 +718,10 @@ class ShouldCollectedTripleEqualsSpec extends Spec with NonImplicitAssertions wi
           // all (List(1, 1, 1)) should === (1) // compiles on 2.10 but not 2.9
           // intercept[TestFailedException] { all (List(1, 1, 1)) should !== (1)) // compiles on 2.10 but not 2. }
 
-          // ap should === (fr) // compiles on 2.10 but not 2.9
-          // fr should === (ap) // compiles on 2.10 but not 2.9
-          // ap should === (cr) // compiles on 2.10 but not 2.9
-          // cr should === (ap) // compiles on 2.10 but not 2.9
+          // all (List(ap, ap, ap)) should === (fr) // compiles on 2.10 but not 2.9
+          // all (List(fr, fr, fr)) should === (ap) // compiles on 2.10 but not 2.9
+          // all (List(ap, ap, ap)) should === (cr) // compiles on 2.10 but not 2.9
+          // all (List(cr, cr, cr)) should === (ap) // compiles on 2.10 but not 2.9
 
           // all (List(super1, super1, super1)) should !== (super2) // compiles on 2.10 but not 2.9
           // all (List(super1, super1, super1)) should !== (sub2) // compiles on 2.10 but not 2.9
@@ -741,8 +741,8 @@ class ShouldCollectedTripleEqualsSpec extends Spec with NonImplicitAssertions wi
           // all (List("1", "1", "1")) should !== (1)
           // all (List(1, 1, 1)) should !== ("1")
 
-          // fr should === (cr)
-          // cr should === (fr)
+          // all (List(fr, fr, fr)) should === (cr)
+          // all (List(cr, cr, cr)) should === (fr)
         }
       }
 
@@ -763,10 +763,10 @@ class ShouldCollectedTripleEqualsSpec extends Spec with NonImplicitAssertions wi
             // all (List(1, 1, 1)) should === (1) // compiles on 2.10 but not 2.9
             // intercept[TestFailedException] { all (List(1, 1, 1)) should !== (1) } // compiles on 2.10 but not 2.9
 
-            // ap should === (fr) // compiles on 2.10 but not 2.9
-            // fr should === (ap) // compiles on 2.10 but not 2.9
-            // ap should === (cr) // compiles on 2.10 but not 2.9
-            // cr should === (ap) // compiles on 2.10 but not 2.9
+            // all (List(ap, ap, ap)) should === (fr) // compiles on 2.10 but not 2.9
+            // all (List(fr, fr, fr)) should === (ap) // compiles on 2.10 but not 2.9
+            // all (List(ap, ap, ap)) should === (cr) // compiles on 2.10 but not 2.9
+            // all (List(cr, cr, cr)) should === (ap) // compiles on 2.10 but not 2.9
 
             // all (List(super1, super1, super1)) should !== (super2) // compiles on 2.10 but not 2.9
             // all (List(super1, super1, super1)) should !== (sub2) // compiles on 2.10 but not 2.9
@@ -786,8 +786,8 @@ class ShouldCollectedTripleEqualsSpec extends Spec with NonImplicitAssertions wi
             // all (List("1", "1", "1")) should !== (1)
             // all (List(1, 1, 1)) should !== ("1")
 
-            // fr should === (cr)
-            // cr should === (fr)
+            // all (List(fr, fr, fr)) should === (cr)
+            // all (List(cr, cr, cr)) should === (fr)
           }
         }
       }
