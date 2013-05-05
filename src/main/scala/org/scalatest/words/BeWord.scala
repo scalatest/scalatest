@@ -240,9 +240,9 @@ final class BeWord {
    *                          ^
    * </pre>
    */
-  def a[S <: AnyRef](right: Symbol): Matcher[S] =
-    new Matcher[S] {
-      def apply(left: S): MatchResult = matchSymbolToPredicateMethod(left, right, true, true)
+  def a(right: Symbol): Matcher[AnyRef] =
+    new Matcher[AnyRef] {
+      def apply(left: AnyRef): MatchResult = matchSymbolToPredicateMethod(left, right, true, true)
     }
 
   /**
@@ -287,9 +287,9 @@ final class BeWord {
    *                        ^
    * </pre>
    */
-  def an[S <: AnyRef](right: Symbol): Matcher[S] =
-    new Matcher[S] {
-      def apply(left: S): MatchResult = matchSymbolToPredicateMethod(left, right, true, false)
+  def an(right: Symbol): Matcher[AnyRef] =
+    new Matcher[AnyRef] {
+      def apply(left: AnyRef): MatchResult = matchSymbolToPredicateMethod(left, right, true, false)
     }
 
   /**
@@ -382,14 +382,6 @@ final class BeWord {
         )
     }
 
-/* Well heck if I don't need this one
-    [fsc] both method apply in class BeWord of type [T](org.scalatest.BePropertyMatcher[T])org.scalatest.Matcher[T]
-    [fsc] and  method apply in class BeWord of type [T](org.scalatest.BeMatcher[T])org.scalatest.Matcher[T]
-    [fsc] match argument types (Null)
-    [fsc]         o should be (null)
-    [fsc]                  ^
-*/
-
   /**
    * This method enables the following syntax: 
    *
@@ -439,9 +431,9 @@ final class BeWord {
    *               ^
    * </pre>
    */
-  def apply[S <: AnyRef](right: Symbol): Matcher[S] =
-    new Matcher[S] {
-      def apply(left: S): MatchResult = matchSymbolToPredicateMethod(left, right, false, false)
+  def apply(right: Symbol): Matcher[AnyRef] =
+    new Matcher[AnyRef] {
+      def apply(left: AnyRef): MatchResult = matchSymbolToPredicateMethod(left, right, false, false)
     }
 
   /**

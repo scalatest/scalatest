@@ -4053,6 +4053,28 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    */
   sealed class ResultOfCollectedAny[T](collected: Collected, xs: scala.collection.GenTraversable[T]) {
 
+// TODO: shouldBe null works, b ut should be (null) does not when type is Any: 
+/*
+scala> val ys = List(null, null, 1)
+ys: List[Any] = List(null, null, 1)
+
+scala> all (ys) shouldBe null
+<console>:15: error: ambiguous reference to overloaded definition,
+both method shouldBe in class ResultOfCollectedAny of type (interval: org.scalautils.Interval[Any])Unit
+and  method shouldBe in class ResultOfCollectedAny of type (beMatcher: org.scalatest.matchers.BeMatcher[Any])Unit
+match argument types (Null)
+              all (ys) shouldBe null
+                       ^
+
+scala> all (ys) should be (null)
+org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCollectedAny@18515783 was not null
+	at org.scalatest.MatchersUtil$.newTestFailedException(MatchersUtil.scala:163)
+	at org.scalatest.Matchers$ShouldMethodHelper$.shouldMatcher(Matchers.scala:5529)
+	at org.scalatest.Matchers$AnyShouldWrapper.should(Matchers.scala:5563)
+	at .<init>(<console>:15)
+	at .<clinit>(<console>)
+*/
+
     /**
      * This method enables syntax such as the following:
      *
@@ -5650,7 +5672,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * </pre>
      */
     def should[U](inv: TripleEqualsInvocation[U])(implicit constraint: EqualityConstraint[T, U]) {
-      // if ((left == inv.right) != inv.expectingEqual)
       if ((constraint.areEqual(left, inv.right)) != inv.expectingEqual)
         throw newTestFailedException(
           FailureMessages(
