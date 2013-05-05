@@ -3676,7 +3676,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
       }
     }
   }
-  
+
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="InspectorsMatchers.html"><code>InspectorsMatchers</code></a> for an overview of
    * the matchers DSL.
@@ -3684,18 +3684,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    * @author Bill Venners
    * @author Chee Seng
    */
-  sealed class ResultOfBeWordForCollectedAny[T](collected: Collected, xs: scala.collection.GenTraversable[T], shouldBeTrue: Boolean) 
-  
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="InspectorsMatchers.html"><code>InspectorsMatchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * @author Bill Venners
-   * @author Chee Seng
-   */
-  class ResultOfBeWordForCollectedAnyRef[T <: AnyRef](collected: Collected, xs: scala.collection.GenTraversable[T], shouldBeTrue: Boolean) 
-    extends ResultOfBeWordForCollectedAny(collected, xs, shouldBeTrue) {
-    
+  sealed class ResultOfBeWordForCollectedAny[T](collected: Collected, xs: scala.collection.GenTraversable[T], shouldBeTrue: Boolean) {
+
+    // TODO: Missing should(AMatcher) and should(AnMatcher)
+
     /**
      * This method enables the following syntax:
      *
@@ -3704,7 +3696,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                   ^
      * </pre>
      */
-    def theSameInstanceAs(right: AnyRef) {
+    def theSameInstanceAs(right: AnyRef)(implicit ev: T <:< AnyRef) {
       doCollected(collected, xs, "theSameInstanceAs", 1) { e =>
         if ((e eq right) != shouldBeTrue)
           throw newTestFailedException(
@@ -3727,7 +3719,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                   ^
      * </pre>
      */
-    def a(symbol: Symbol) {
+    def a(symbol: Symbol)(implicit ev: T <:< AnyRef) {
       doCollected(collected, xs, "a", 1) { e =>
         val matcherResult = matchSymbolToPredicateMethod(e, symbol, true, true)
         if (matcherResult.matches != shouldBeTrue) {
@@ -3740,7 +3732,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
       }
     }
     
-    // TODO, in both of these, the failure message doesn't have a/an
     /**
      * This method enables the following syntax:
      *
@@ -3749,7 +3740,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                   ^
      * </pre>
      */
-    def an(symbol: Symbol) {
+    def an(symbol: Symbol)(implicit ev: T <:< AnyRef) {
       doCollected(collected, xs, "an", 1) { e =>
         val matcherResult = matchSymbolToPredicateMethod(e, symbol, true, false)
         if (matcherResult.matches != shouldBeTrue) {
@@ -3762,7 +3753,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
       }
     }
     
-    // TODO: Check the shouldBeTrues, are they sometimes always false or true?
     /**
      * This method enables the following syntax, where <code>badBook</code> is, for example, of type <code>Book</code> and
      * <code>goodRead</code> refers to a <code>BePropertyMatcher[Book]</code>:
@@ -3772,7 +3762,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                      ^
      * </pre>
      */
-    def a[U <: T](bePropertyMatcher: BePropertyMatcher[U]) {
+    def a[U <: T](bePropertyMatcher: BePropertyMatcher[U])(implicit ev: T <:< AnyRef) { // TODO: Try supporting 2.10 AnyVals
       doCollected(collected, xs, "a", 1) { e =>
         val result = bePropertyMatcher(e.asInstanceOf[U])
         if (result.matches != shouldBeTrue) {
@@ -3797,7 +3787,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                      ^
      * </pre>
      */
-    def an[U <: T](beTrueMatcher: BePropertyMatcher[U]) {
+    def an[U <: T](beTrueMatcher: BePropertyMatcher[U])(implicit ev: T <:< AnyRef) { // TODO: Try supporting 2.10 AnyVals
       doCollected(collected, xs, "an", 1) { e =>
         val beTrueMatchResult = beTrueMatcher(e.asInstanceOf[U])
         if (beTrueMatchResult.matches != shouldBeTrue) {
@@ -3822,7 +3812,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    * @author Chee Seng
    */
   final class ResultOfBeWordForCollectedArray[T](collected: Collected, xs: scala.collection.GenTraversable[Array[T]], shouldBeTrue: Boolean) 
-    extends ResultOfBeWordForCollectedAnyRef(collected, xs, shouldBeTrue) {
+    extends ResultOfBeWordForCollectedAny(collected, xs, shouldBeTrue) {
   
     /**
      * This method enables the following syntax:
@@ -4552,6 +4542,17 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
           )
       }
     }
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * all(xs) shouldNot be theSameInstanceAs anotherInstance
+     *         ^
+     * </pre>
+     */
+    def shouldNot(beWord: BeWord): ResultOfBeWordForCollectedAny[T] =
+      new ResultOfBeWordForCollectedAny[T](collected, xs, false)
   }
   
   /**
@@ -4622,33 +4623,12 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * This method enables syntax such as the following:
      *
      * <pre class="stHighlight">
-     * all(xs) should be theSameInstanceAs anotherObject
-     *         ^
-     * </pre>
-     */
-    override def should(beWord: BeWord) = new ResultOfBeWordForCollectedAnyRef[T](collected, xs, true)
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
      * all(xs) should not equal (3)
      *         ^
      * </pre>
      */
     override def should(notWord: NotWord): ResultOfNotWordForCollectedAnyRef[T] =
       new ResultOfNotWordForCollectedAnyRef(collected, xs, false)
-
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * all(xs) shouldNot be theSameInstanceAs anotherInstance
-     *         ^
-     * </pre>
-     */
-    def shouldNot(beWord: BeWord): ResultOfBeWordForCollectedAnyRef[T] 
-      = new ResultOfBeWordForCollectedAnyRef[T](collected, xs, false)
   }
 
   /**
