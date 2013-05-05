@@ -4362,6 +4362,142 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * This method enables syntax such as the following:
      *
      * <pre class="stHighlight">
+     * all(xs) shouldBe theSameInstanceAs (anotherObject)
+     *         ^
+     * </pre>
+     */
+    def shouldBe(resultOfSameInstanceAsApplication: ResultOfTheSameInstanceAsApplication)(implicit ev: T <:< AnyRef) {
+      doCollected(collected, xs, "shouldBe", 1) { e =>
+        if (e ne resultOfSameInstanceAsApplication.right)
+          throw newTestFailedException(
+            FailureMessages(
+              "wasNotSameInstanceAs",
+              e,
+              resultOfSameInstanceAsApplication.right
+            ),
+            None, 
+            6
+          )
+      }
+    }
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * all(xs) shouldBe 'empty
+     *         ^
+     * </pre>
+     */
+    def shouldBe(symbol: Symbol)(implicit ev: T <:< AnyRef) {
+      doCollected(collected, xs, "shouldBe", 1) { e =>
+        val matcherResult = matchSymbolToPredicateMethod(e, symbol, true, true, 6)
+        if (!matcherResult.matches) 
+          throw newTestFailedException(matcherResult.failureMessage, None, 6)
+      }
+    }
+    
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * all(xs) shouldBe a ('empty)
+     *      ^
+     * </pre>
+     */
+    def shouldBe(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit ev: T <:< AnyRef) {
+      doCollected(collected, xs, "shouldBe", 1) { e =>
+        val matcherResult = matchSymbolToPredicateMethod(e, resultOfAWordApplication.symbol, true, true, 6)
+        if (!matcherResult.matches) {
+          throw newTestFailedException(matcherResult.failureMessage, None, 6)
+        }
+      }
+    }
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * all(xs) shouldBe an ('empty)
+     *      ^
+     * </pre>
+     */
+    def shouldBe(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit ev: T <:< AnyRef) {
+      doCollected(collected, xs, "shouldBe", 1) { e =>
+        val matcherResult = matchSymbolToPredicateMethod(e, resultOfAnWordApplication.symbol, true, true, 6)
+        if (!matcherResult.matches) {
+          throw newTestFailedException(matcherResult.failureMessage, None, 6)
+        }
+      }
+    }
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * all(xs) shouldBe null
+     *         ^
+     * </pre>
+     */
+    def shouldBe(o: Null)(implicit ev: T <:< AnyRef) {
+      doCollected(collected, xs, "shouldBe", 1) { e =>
+        if (e != null)
+         throw newTestFailedException(FailureMessages("wasNotNull", e), None, 6) 
+      }
+    }
+
+    /**
+     * This method enables the following syntax, where <code>excellentRead</code> refers to a <code>BePropertyMatcher[Book]</code>:
+     *
+     * <pre class="stHighlight">
+     * all(xs) shouldBe excellentRead
+     *         ^
+     * </pre>
+     */
+    def shouldBe[U <: T](bePropertyMatcher: BePropertyMatcher[U])(implicit ev: T <:< AnyRef) { // TODO: Try supporting this with 2.10 AnyVals
+      doCollected(collected, xs, "shouldBe", 1) { e =>
+        val result = bePropertyMatcher(e.asInstanceOf[U])
+        if (!result.matches) 
+          throw newTestFailedException(FailureMessages("wasNot", e, UnquotedString(result.propertyName)), None, 6)
+      }
+    }
+
+    /**
+     * This method enables the following syntax, where <code>goodRead</code> refers to a <code>BePropertyMatcher[Book]</code>:
+     *
+     * <pre class="stHighlight">
+     * all(xs) shouldBe a (goodRead)
+     *         ^
+     * </pre>
+     */
+    def shouldBe[U <: T](resultOfAWordApplication: ResultOfAWordToBePropertyMatcherApplication[U])(implicit ev: T <:< AnyRef) {// TODO: Try supporting this with 2.10 AnyVals
+      doCollected(collected, xs, "shouldBe", 1) { e =>
+        val result = resultOfAWordApplication.bePropertyMatcher(e.asInstanceOf[U])
+        if (!result.matches)
+          throw newTestFailedException(FailureMessages("wasNotA", e, UnquotedString(result.propertyName)), None, 6)
+      }
+    }
+
+    /**
+     * This method enables the following syntax, where <code>excellentRead</code> refers to a <code>BePropertyMatcher[Book]</code>:
+     *
+     * <pre class="stHighlight">
+     * all(xs) shouldBe an (excellentRead)
+     *         ^
+     * </pre>
+     */
+    def shouldBe[U <: T](resultOfAnWordApplication: ResultOfAnWordToBePropertyMatcherApplication[U])(implicit ev: T <:< AnyRef) {// TODO: Try supporting this with 2.10 AnyVals
+      doCollected(collected, xs, "shouldBe", 1) { e =>
+        val result = resultOfAnWordApplication.bePropertyMatcher(e.asInstanceOf[U])
+        if (!result.matches)
+          throw newTestFailedException(FailureMessages("wasNotAn", e, UnquotedString(result.propertyName)), None, 6)
+      }
+    }
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
      * all(xs) shouldNot (be (3))
      *         ^
      * </pre>
@@ -4511,142 +4647,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     override def should(notWord: NotWord): ResultOfNotWordForCollectedAnyRef[T] =
       new ResultOfNotWordForCollectedAnyRef(collected, xs, false)
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * all(xs) shouldBe theSameInstanceAs (anotherObject)
-     *         ^
-     * </pre>
-     */
-    def shouldBe(resultOfSameInstanceAsApplication: ResultOfTheSameInstanceAsApplication) {
-      doCollected(collected, xs, "shouldBe", 1) { e =>
-        if (e ne resultOfSameInstanceAsApplication.right)
-          throw newTestFailedException(
-            FailureMessages(
-              "wasNotSameInstanceAs",
-              e,
-              resultOfSameInstanceAsApplication.right
-            ),
-            None, 
-            6
-          )
-      }
-    }
-
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * all(xs) shouldBe 'empty
-     *         ^
-     * </pre>
-     */
-    def shouldBe(symbol: Symbol) {
-      doCollected(collected, xs, "shouldBe", 1) { e =>
-        val matcherResult = matchSymbolToPredicateMethod(e, symbol, true, true, 6)
-        if (!matcherResult.matches) 
-          throw newTestFailedException(matcherResult.failureMessage, None, 6)
-      }
-    }
-    
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * all(xs) shouldBe a ('empty)
-     *      ^
-     * </pre>
-     */
-    def shouldBe(resultOfAWordApplication: ResultOfAWordToSymbolApplication) {
-      doCollected(collected, xs, "shouldBe", 1) { e =>
-        val matcherResult = matchSymbolToPredicateMethod(e, resultOfAWordApplication.symbol, true, true, 6)
-        if (!matcherResult.matches) {
-          throw newTestFailedException(matcherResult.failureMessage, None, 6)
-        }
-      }
-    }
-
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * all(xs) shouldBe an ('empty)
-     *      ^
-     * </pre>
-     */
-    def shouldBe(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication) {
-      doCollected(collected, xs, "shouldBe", 1) { e =>
-        val matcherResult = matchSymbolToPredicateMethod(e, resultOfAnWordApplication.symbol, true, true, 6)
-        if (!matcherResult.matches) {
-          throw newTestFailedException(matcherResult.failureMessage, None, 6)
-        }
-      }
-    }
-
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * all(xs) shouldBe null
-     *         ^
-     * </pre>
-     */
-    def shouldBe(o: Null) {
-      doCollected(collected, xs, "shouldBe", 1) { e =>
-        if (e != null)
-         throw newTestFailedException(FailureMessages("wasNotNull", e), None, 6) 
-      }
-    }
-
-    /**
-     * This method enables the following syntax, where <code>excellentRead</code> refers to a <code>BePropertyMatcher[Book]</code>:
-     *
-     * <pre class="stHighlight">
-     * all(xs) shouldBe excellentRead
-     *         ^
-     * </pre>
-     */
-    def shouldBe[U <: T](bePropertyMatcher: BePropertyMatcher[U]) {
-      doCollected(collected, xs, "shouldBe", 1) { e =>
-        val result = bePropertyMatcher(e.asInstanceOf[U])
-        if (!result.matches) 
-          throw newTestFailedException(FailureMessages("wasNot", e, UnquotedString(result.propertyName)), None, 6)
-      }
-    }
-
-    /**
-     * This method enables the following syntax, where <code>goodRead</code> refers to a <code>BePropertyMatcher[Book]</code>:
-     *
-     * <pre class="stHighlight">
-     * all(xs) shouldBe a (goodRead)
-     *         ^
-     * </pre>
-     */
-    def shouldBe[U <: T](resultOfAWordApplication: ResultOfAWordToBePropertyMatcherApplication[U]) {
-      doCollected(collected, xs, "shouldBe", 1) { e =>
-        val result = resultOfAWordApplication.bePropertyMatcher(e.asInstanceOf[U])
-        if (!result.matches)
-          throw newTestFailedException(FailureMessages("wasNotA", e, UnquotedString(result.propertyName)), None, 6)
-      }
-    }
-
-    /**
-     * This method enables the following syntax, where <code>excellentRead</code> refers to a <code>BePropertyMatcher[Book]</code>:
-     *
-     * <pre class="stHighlight">
-     * all(xs) shouldBe an (excellentRead)
-     *         ^
-     * </pre>
-     */
-    def shouldBe[U <: T](resultOfAnWordApplication: ResultOfAnWordToBePropertyMatcherApplication[U]) {
-      doCollected(collected, xs, "shouldBe", 1) { e =>
-        val result = resultOfAnWordApplication.bePropertyMatcher(e.asInstanceOf[U])
-        if (!result.matches)
-          throw newTestFailedException(FailureMessages("wasNotAn", e, UnquotedString(result.propertyName)), None, 6)
-      }
-    }
 
     /**
      * This method enables the following syntax:
