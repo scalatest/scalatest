@@ -5872,6 +5872,132 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def should(haveWord: HaveWord)(implicit ev: Extent[T]): ResultOfHaveWordForExtent[T] =
       new ResultOfHaveWordForExtent(left, true)
 
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * result shouldBe null
+     *        ^
+     * </pre>
+     */
+    def shouldBe(right: Null)(implicit ev: T <:< AnyRef) {
+      if (left != null) {
+        throw newTestFailedException(FailureMessages("wasNotNull", left))
+      }
+    }
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * result shouldBe theSameInstanceAs (anotherObject)
+     *        ^
+     * </pre>
+     */
+    def shouldBe(resultOfSameInstanceAsApplication: ResultOfTheSameInstanceAsApplication)(implicit ev: T <:< AnyRef) {
+      if (resultOfSameInstanceAsApplication.right ne left) {
+        throw newTestFailedException(
+          FailureMessages(
+            "wasNotSameInstanceAs",
+            left,
+            resultOfSameInstanceAsApplication.right
+          )
+        )
+      }
+    }
+    
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * list shouldBe 'empty
+     *      ^
+     * </pre>
+     */
+    def shouldBe(symbol: Symbol)(implicit ev: T <:< AnyRef) {
+      val matcherResult = matchSymbolToPredicateMethod(left, symbol, true, true)
+      if (!matcherResult.matches) 
+        throw newTestFailedException(matcherResult.failureMessage)
+    }
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * list shouldBe a ('empty)
+     *      ^
+     * </pre>
+     */
+    def shouldBe(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit ev: T <:< AnyRef) {
+      val matcherResult = matchSymbolToPredicateMethod(left, resultOfAWordApplication.symbol, true, true)
+      if (!matcherResult.matches) {
+        throw newTestFailedException(
+          matcherResult.failureMessage
+        )
+      }
+    }
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * list shouldBe an ('empty)
+     *      ^
+     * </pre>
+     */
+    def shouldBe(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit ev: T <:< AnyRef) {
+      val matcherResult = matchSymbolToPredicateMethod(left, resultOfAnWordApplication.symbol, true, true)
+      if (!matcherResult.matches) {
+        throw newTestFailedException(
+          matcherResult.failureMessage
+        )
+      }
+    }
+    
+    /**
+     * This method enables the following syntax, where <code>excellentRead</code> refers to a <code>BePropertyMatcher[Book]</code>:
+     *
+     * <pre class="stHighlight">
+     * programmingInScala shouldBe excellentRead
+     *                    ^
+     * </pre>
+     */
+    def shouldBe(bePropertyMatcher: BePropertyMatcher[T])(implicit ev: T <:< AnyRef) { // TODO: Try expanding this to 2.10 AnyVal
+      val result = bePropertyMatcher(left)
+      if (!result.matches) 
+        throw newTestFailedException(FailureMessages("wasNot", left, UnquotedString(result.propertyName)))
+    }
+    
+    /**
+     * This method enables the following syntax, where <code>goodRead</code> refers to a <code>BePropertyMatcher[Book]</code>:
+     *
+     * <pre class="stHighlight">
+     * programmingInScala shouldBe a (goodRead)
+     *                    ^
+     * </pre>
+     */
+    def shouldBe[U >: T](resultOfAWordApplication: ResultOfAWordToBePropertyMatcherApplication[U])(implicit ev: T <:< AnyRef) {// TODO: Try expanding this to 2.10 AnyVal
+      val result = resultOfAWordApplication.bePropertyMatcher(left)
+        if (!result.matches) {
+          throw newTestFailedException(FailureMessages("wasNotA", left, UnquotedString(result.propertyName)))
+        }
+    }
+    
+    /**
+     * This method enables the following syntax, where <code>excellentRead</code> refers to a <code>BePropertyMatcher[Book]</code>:
+     *
+     * <pre class="stHighlight">
+     * programmingInScala shouldBe an (excellentRead)
+     *                    ^
+     * </pre>
+     */
+    def shouldBe[U >: T](resultOfAnWordApplication: ResultOfAnWordToBePropertyMatcherApplication[U])(implicit ev: T <:< AnyRef) {// TODO: Try expanding this to 2.10 AnyVal
+      val result = resultOfAnWordApplication.bePropertyMatcher(left)
+        if (!result.matches) {
+          throw newTestFailedException(FailureMessages("wasNotAn", left, UnquotedString(result.propertyName)))
+        }
+    }
+
     // TODO: Scaladoc, and decide whether or not to actually even support this here. It may be best
     // to let this one always be imported from ScalaUtils.
     def asAny: Any = left
@@ -5889,21 +6015,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * @author Bill Venners
    */
   class AnyRefShouldWrapper[T <: AnyRef](left: T) extends AnyShouldWrapper(left) {
-
-    // TODO: Ensure on inspector shorthands. Had to add this here after moving another shouldEqual method from NumericShouldWrapper.
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * result shouldEqual null
-     *        ^
-     * </pre>
-     */
-    def shouldBe(right: Null) {
-      if (left != null) {
-        throw newTestFailedException(FailureMessages("wasNotNull", left))
-      }
-    }
 
     /**
      * This method enables syntax such as the following:
@@ -5925,118 +6036,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     override def should(beWord: BeWord): ResultOfBeWordForAnyRef[T] = new ResultOfBeWordForAnyRef(left, true)
-    
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * result shouldBe theSameInstanceAs (anotherObject)
-     *        ^
-     * </pre>
-     */
-    def shouldBe(resultOfSameInstanceAsApplication: ResultOfTheSameInstanceAsApplication) {
-      if (resultOfSameInstanceAsApplication.right ne left) {
-        throw newTestFailedException(
-          FailureMessages(
-            "wasNotSameInstanceAs",
-            left,
-            resultOfSameInstanceAsApplication.right
-          )
-        )
-      }
-    }
-    
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * list shouldBe 'empty
-     *      ^
-     * </pre>
-     */
-    def shouldBe(symbol: Symbol) {
-      val matcherResult = matchSymbolToPredicateMethod(left, symbol, true, true)
-      if (!matcherResult.matches) 
-        throw newTestFailedException(matcherResult.failureMessage)
-    }
-
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * list shouldBe a ('empty)
-     *      ^
-     * </pre>
-     */
-    def shouldBe(resultOfAWordApplication: ResultOfAWordToSymbolApplication) {
-      val matcherResult = matchSymbolToPredicateMethod(left, resultOfAWordApplication.symbol, true, true)
-      if (!matcherResult.matches) {
-        throw newTestFailedException(
-          matcherResult.failureMessage
-        )
-      }
-    }
-
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * list shouldBe an ('empty)
-     *      ^
-     * </pre>
-     */
-    def shouldBe(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication) {
-      val matcherResult = matchSymbolToPredicateMethod(left, resultOfAnWordApplication.symbol, true, true)
-      if (!matcherResult.matches) {
-        throw newTestFailedException(
-          matcherResult.failureMessage
-        )
-      }
-    }
-    
-    /**
-     * This method enables the following syntax, where <code>excellentRead</code> refers to a <code>BePropertyMatcher[Book]</code>:
-     *
-     * <pre class="stHighlight">
-     * programmingInScala shouldBe excellentRead
-     *                    ^
-     * </pre>
-     */
-    def shouldBe(bePropertyMatcher: BePropertyMatcher[T]) {
-      val result = bePropertyMatcher(left)
-      if (!result.matches) 
-        throw newTestFailedException(FailureMessages("wasNot", left, UnquotedString(result.propertyName)))
-    }
-    
-    /**
-     * This method enables the following syntax, where <code>goodRead</code> refers to a <code>BePropertyMatcher[Book]</code>:
-     *
-     * <pre class="stHighlight">
-     * programmingInScala shouldBe a (goodRead)
-     *                    ^
-     * </pre>
-     */
-    def shouldBe[U >: T](resultOfAWordApplication: ResultOfAWordToBePropertyMatcherApplication[U]) {
-      val result = resultOfAWordApplication.bePropertyMatcher(left)
-        if (!result.matches) {
-          throw newTestFailedException(FailureMessages("wasNotA", left, UnquotedString(result.propertyName)))
-        }
-    }
-    
-    /**
-     * This method enables the following syntax, where <code>excellentRead</code> refers to a <code>BePropertyMatcher[Book]</code>:
-     *
-     * <pre class="stHighlight">
-     * programmingInScala shouldBe an (excellentRead)
-     *                    ^
-     * </pre>
-     */
-    def shouldBe[U >: T](resultOfAnWordApplication: ResultOfAnWordToBePropertyMatcherApplication[U]) {
-      val result = resultOfAnWordApplication.bePropertyMatcher(left)
-        if (!result.matches) {
-          throw newTestFailedException(FailureMessages("wasNotAn", left, UnquotedString(result.propertyName)))
-        }
-    }
 
     /**
      * This method enables the following syntax:
