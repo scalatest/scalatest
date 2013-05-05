@@ -5906,6 +5906,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       }
     }
     
+// TODO: Remember to write tests for inspector shorthands uncovering the bug below, always a empty because always true true passed to matchSym
     /**
      * This method enables the following syntax:
      *
@@ -5915,7 +5916,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldBe(symbol: Symbol)(implicit ev: T <:< AnyRef) {
-      val matcherResult = matchSymbolToPredicateMethod(left, symbol, true, true)
+      val matcherResult = matchSymbolToPredicateMethod(left, symbol, false, true)
       if (!matcherResult.matches) 
         throw newTestFailedException(matcherResult.failureMessage)
     }
@@ -5946,7 +5947,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldBe(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit ev: T <:< AnyRef) {
-      val matcherResult = matchSymbolToPredicateMethod(left, resultOfAnWordApplication.symbol, true, true)
+      val matcherResult = matchSymbolToPredicateMethod(left, resultOfAnWordApplication.symbol, true, false)
       if (!matcherResult.matches) {
         throw newTestFailedException(
           matcherResult.failureMessage

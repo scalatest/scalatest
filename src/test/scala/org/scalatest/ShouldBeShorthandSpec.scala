@@ -167,6 +167,27 @@ class ShouldBeShorthandSpec extends Spec with Matchers with SharedHelpers with E
       assert(ex4.message === Some("NoPredicateMock has neither an empty nor an isEmpty method"))
       assert(ex4.failedCodeFileName === Some("ShouldBeShorthandSpec.scala"))
       assert(ex4.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      val ex5 = intercept[TestFailedException] {
+        List(1, 2) shouldBe 'empty
+      }
+      assert(ex5.message === Some("List(1, 2) was not empty"))
+      assert(ex5.failedCodeFileName === Some("ShouldBeShorthandSpec.scala"))
+      assert(ex5.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      val ex6 = intercept[TestFailedException] {
+        List(1, 2) shouldBe a ('empty)
+      }
+      assert(ex6.message === Some("List(1, 2) was not a empty"))
+      assert(ex6.failedCodeFileName === Some("ShouldBeShorthandSpec.scala"))
+      assert(ex6.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+      val ex7 = intercept[TestFailedException] {
+        List(1, 2) shouldBe an ('empty)
+      }
+      assert(ex7.message === Some("List(1, 2) was not an empty"))
+      assert(ex7.failedCodeFileName === Some("ShouldBeShorthandSpec.scala"))
+      assert(ex7.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
     
     def `should work with BePropertyMatcher` {
