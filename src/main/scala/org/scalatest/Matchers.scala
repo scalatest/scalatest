@@ -3100,18 +3100,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
         }
       }
     }
-  }
-  
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="InspectorsMatchers.html"><code>InspectorsMatchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * @author Bill Venners
-   * @author Chee Seng
-   */
-  sealed class ResultOfNotWordForCollectedAnyRef[T <: AnyRef](collected: Collected, xs: scala.collection.GenTraversable[T], shouldBeTrue: Boolean) 
-    extends ResultOfNotWordForCollectedAny(collected, xs, shouldBeTrue) {
-    
+
     /**
      * This method enables the following syntax:
      *
@@ -3120,7 +3109,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                    ^
      * </pre>
      */
-    def be(o: Null) {
+    def be(o: Null)(implicit ev: T <:< AnyRef) {
       doCollected(collected, xs, "be", 1) { e => 
         if ((e == null) != shouldBeTrue) {
           throw newTestFailedException(
@@ -3143,7 +3132,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                    ^
      * </pre>
      */
-    def be(symbol: Symbol) {
+    def be(symbol: Symbol)(implicit ev: T <:< AnyRef) {
       doCollected(collected, xs, "be", 1) { e => 
         val matcherResult = matchSymbolToPredicateMethod(e, symbol, false, false)
         if (matcherResult.matches != shouldBeTrue) {
@@ -3164,7 +3153,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                    ^
      * </pre>
      */
-    def be(resultOfAWordApplication: ResultOfAWordToSymbolApplication) {
+    def be(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit ev: T <:< AnyRef) {
       doCollected(collected, xs, "be", 1) { e => 
         val matcherResult = matchSymbolToPredicateMethod(e, resultOfAWordApplication.symbol, true, true)
         if (matcherResult.matches != shouldBeTrue) {
@@ -3185,7 +3174,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                    ^
      * </pre>
      */
-    def be(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication) {
+    def be(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit ev: T <:< AnyRef) {
       doCollected(collected, xs, "be", 1) { e => 
         val matcherResult = matchSymbolToPredicateMethod(e, resultOfAnWordApplication.symbol, true, false)
         if (matcherResult.matches != shouldBeTrue) {
@@ -3207,7 +3196,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    * @author Chee Seng
    */
   final class ResultOfNotWordForCollectedString(collected: Collected, xs: scala.collection.GenTraversable[String], shouldBeTrue: Boolean) extends 
-    ResultOfNotWordForCollectedAnyRef[String](collected, xs, shouldBeTrue) {
+    ResultOfNotWordForCollectedAny[String](collected, xs, shouldBeTrue) {
     
     /**
      * This method enables the following syntax: 
@@ -3399,7 +3388,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    * @author Chee Seng
    */
   sealed class ResultOfNotWordForCollectedGenTraversable[E, C[_] <: scala.collection.GenTraversable[_]](collected: Collected, xs: scala.collection.GenTraversable[C[E]], shouldBeTrue: Boolean) extends 
-    ResultOfNotWordForCollectedAnyRef[C[E]](collected, xs, shouldBeTrue) {
+    ResultOfNotWordForCollectedAny[C[E]](collected, xs, shouldBeTrue) {
     
     /**
      * This method enables the following syntax:
@@ -3457,8 +3446,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    * @author Chee Seng
    */
   sealed class ResultOfNotWordForCollectedArray[E, T <: Array[E]](collected: Collected, xs: scala.collection.GenTraversable[T], shouldBeTrue: Boolean) extends 
-    ResultOfNotWordForCollectedAnyRef[T](collected, xs, shouldBeTrue) {
+    ResultOfNotWordForCollectedAny[T](collected, xs, shouldBeTrue) {
     
+// TODO: I think we could merge the next three overrides up, and just do a pattern match looking for arrays.
     /**
      * This method enables the following syntax:
      *
@@ -3467,7 +3457,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                            ^
      * </pre>
      */
-    override def be(symbol: Symbol) {
+    override def be(symbol: Symbol)(implicit ev: T <:< AnyRef) {
       doCollected(collected, xs, "be", 1) { e => 
         val matcherResult = matchSymbolToPredicateMethod(e.deep, symbol, false, false)
         if (matcherResult.matches != shouldBeTrue) {
@@ -3488,7 +3478,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                            ^
      * </pre>
      */
-    override def be(resultOfAWordApplication: ResultOfAWordToSymbolApplication) {
+    override def be(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit ev: T <:< AnyRef) {
       doCollected(collected, xs, "be", 1) { e => 
         val matcherResult = matchSymbolToPredicateMethod(e.deep, resultOfAWordApplication.symbol, true, true)
         if (matcherResult.matches != shouldBeTrue) {
@@ -3509,7 +3499,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                            ^
      * </pre>
      */
-    override def be(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication) {
+    override def be(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit ev: T <:< AnyRef) {
       doCollected(collected, xs, "be", 1) { e => 
         val matcherResult = matchSymbolToPredicateMethod(e.deep, resultOfAnWordApplication.symbol, true, false)
         if (matcherResult.matches != shouldBeTrue) {
@@ -3577,7 +3567,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfNotWordForCollectedGenMap[K, V, T <: scala.collection.GenMap[K, V]](collected: Collected, xs: scala.collection.GenTraversable[T], shouldBeTrue: Boolean) extends ResultOfNotWordForCollectedAnyRef[T](collected, xs, shouldBeTrue) {
+  final class ResultOfNotWordForCollectedGenMap[K, V, T <: scala.collection.GenMap[K, V]](collected: Collected, xs: scala.collection.GenTraversable[T], shouldBeTrue: Boolean) extends ResultOfNotWordForCollectedAny[T](collected, xs, shouldBeTrue) {
     
     /**
      * This method enables the following syntax:
@@ -4617,28 +4607,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * @author Bill Venners
    * @author Chee Seng
    */
-  class ResultOfCollectedAnyRef[T <: AnyRef](collected: Collected, xs: scala.collection.GenTraversable[T]) extends ResultOfCollectedAny[T](collected, xs) {
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * all(xs) should not equal (3)
-     *         ^
-     * </pre>
-     */
-    override def should(notWord: NotWord): ResultOfNotWordForCollectedAnyRef[T] =
-      new ResultOfNotWordForCollectedAnyRef(collected, xs, false)
-  }
-
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="InspectorsMatchers.html"><code>InspectorsMatchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * @author Bill Venners
-   * @author Chee Seng
-   */
-  final class ResultOfCollectedString(collected: Collected, xs: scala.collection.GenTraversable[String]) extends ResultOfCollectedAnyRef(collected, xs) {
+  final class ResultOfCollectedString(collected: Collected, xs: scala.collection.GenTraversable[String]) extends ResultOfCollectedAny(collected, xs) {
     
     /**
      * This method enables syntax such as the following:
@@ -4885,7 +4854,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfCollectedGenTraversable[E, C[_] <: scala.collection.GenTraversable[_]](collected: Collected, xs: scala.collection.GenTraversable[C[E]]) extends ResultOfCollectedAnyRef(collected, xs) {
+  final class ResultOfCollectedGenTraversable[E, C[_] <: scala.collection.GenTraversable[_]](collected: Collected, xs: scala.collection.GenTraversable[C[E]]) extends ResultOfCollectedAny(collected, xs) {
     
     /**
      * This method enables syntax such as the following:
@@ -5095,7 +5064,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfCollectedArray[T](collected: Collected, xs: scala.collection.GenTraversable[Array[T]]) extends ResultOfCollectedAnyRef(collected, xs) {
+  final class ResultOfCollectedArray[T](collected: Collected, xs: scala.collection.GenTraversable[Array[T]]) extends ResultOfCollectedAny(collected, xs) {
     
     /**
      * This method enables syntax such as the following:
@@ -5137,7 +5106,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfCollectedGenMap[K, V](collected: Collected, xs: scala.collection.GenTraversable[scala.collection.GenMap[K, V]]) extends ResultOfCollectedAnyRef(collected, xs) {
+  final class ResultOfCollectedGenMap[K, V](collected: Collected, xs: scala.collection.GenTraversable[scala.collection.GenMap[K, V]]) extends ResultOfCollectedAny(collected, xs) {
     
     /**
      * This method enables syntax such as the following:
@@ -5388,9 +5357,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   def all[T](xs: scala.collection.GenTraversable[T]): ResultOfCollectedAny[T] = 
     new ResultOfCollectedAny(AllCollected, xs)
   
-  def all(xs: scala.collection.GenTraversable[AnyRef]): ResultOfCollectedAnyRef[AnyRef] = 
-    new ResultOfCollectedAnyRef(AllCollected, xs)
-  
   def all(xs: scala.collection.GenTraversable[String]): ResultOfCollectedString = 
     new ResultOfCollectedString(AllCollected, xs)
   
@@ -5405,9 +5371,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   
   def atLeast[T](num: Int, xs: scala.collection.GenTraversable[T]): ResultOfCollectedAny[T] = 
     new ResultOfCollectedAny(AtLeastCollected(num), xs)
-  
-  def atLeast(num: Int, xs: scala.collection.GenTraversable[AnyRef]): ResultOfCollectedAnyRef[AnyRef] = 
-    new ResultOfCollectedAnyRef(AtLeastCollected(num), xs)
   
   def atLeast(num: Int, xs: scala.collection.GenTraversable[String]): ResultOfCollectedString = 
     new ResultOfCollectedString(AtLeastCollected(num), xs)
@@ -5424,9 +5387,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   def every[T](xs: scala.collection.GenTraversable[T]): ResultOfCollectedAny[T] = 
     new ResultOfCollectedAny(EveryCollected, xs)
   
-  def every(xs: scala.collection.GenTraversable[AnyRef]): ResultOfCollectedAnyRef[AnyRef] = 
-    new ResultOfCollectedAnyRef(EveryCollected, xs)
-  
   def every(xs: scala.collection.GenTraversable[String]): ResultOfCollectedString = 
     new ResultOfCollectedString(EveryCollected, xs)
   
@@ -5441,9 +5401,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   
   def exactly[T](num: Int, xs: scala.collection.GenTraversable[T]): ResultOfCollectedAny[T] = 
     new ResultOfCollectedAny(ExactlyCollected(num), xs)
-  
-  def exactly(num: Int, xs: scala.collection.GenTraversable[AnyRef]): ResultOfCollectedAnyRef[AnyRef] = 
-    new ResultOfCollectedAnyRef(ExactlyCollected(num), xs)
   
   def exactly(num: Int, xs: scala.collection.GenTraversable[String]): ResultOfCollectedString = 
     new ResultOfCollectedString(ExactlyCollected(num), xs)
@@ -5460,9 +5417,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   def no[T](xs: scala.collection.GenTraversable[T]): ResultOfCollectedAny[T] =
     new ResultOfCollectedAny(NoCollected, xs)
 
-  def no(xs: scala.collection.GenTraversable[AnyRef]): ResultOfCollectedAnyRef[AnyRef] =
-    new ResultOfCollectedAnyRef(NoCollected, xs)
-
   def no(xs: scala.collection.GenTraversable[String]): ResultOfCollectedString =
     new ResultOfCollectedString(NoCollected, xs)
 
@@ -5478,9 +5432,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   def between[T](from: Int, upTo:Int, xs: scala.collection.GenTraversable[T]): ResultOfCollectedAny[T] =
     new ResultOfCollectedAny(BetweenCollected(from, upTo), xs)
 
-  def between(from: Int, upTo:Int, xs: scala.collection.GenTraversable[AnyRef]): ResultOfCollectedAnyRef[AnyRef] =
-    new ResultOfCollectedAnyRef(BetweenCollected(from, upTo), xs)
-
   def between(from: Int, upTo:Int, xs: scala.collection.GenTraversable[String]): ResultOfCollectedString =
     new ResultOfCollectedString(BetweenCollected(from, upTo), xs)
 
@@ -5495,9 +5446,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
 
   def atMost[T](num: Int, xs: scala.collection.GenTraversable[T]): ResultOfCollectedAny[T] =
     new ResultOfCollectedAny(AtMostCollected(num), xs)
-
-  def atMost(num: Int, xs: scala.collection.GenTraversable[AnyRef]): ResultOfCollectedAnyRef[AnyRef] =
-    new ResultOfCollectedAnyRef(AtMostCollected(num), xs)
 
   def atMost(num: Int, xs: scala.collection.GenTraversable[String]): ResultOfCollectedString =
     new ResultOfCollectedString(AtMostCollected(num), xs)
