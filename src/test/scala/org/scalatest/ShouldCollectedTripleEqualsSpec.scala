@@ -466,20 +466,20 @@ class ShouldCollectedTripleEqualsSpec extends Spec with NonImplicitAssertions wi
           val cr: Crunchy = new Apple
           val ap: Apple = new Apple
 
-          // all (List(1, 1, 1)) should === (1) // compiles on 2.10 but not 2.9
-          // intercept[TestFailedException] { all (List(1, 1, 1)) should !== (1)) // compiles on 2.10 but not 2. }
+          all (List(1, 1, 1)) should === (1) // compiles on 2.10 but not 2.9
+          intercept[TestFailedException] { all (List(1, 1, 1)) should !== (1) } // compiles on 2.10 but not 2.9
 
-          // all (List(ap, ap, ap)) should === (fr) // compiles on 2.10 but not 2.9
-          // compiles on 2.10 but not 2.9/ all (List(fr, fr, fr)) should === (ap) // compiles on 2.10 but not 2.9
-          // all (List(ap, ap, ap)) should === (cr) // compiles on 2.10 but not 2.9
-          // all (List(cr, cr, cr)) should === (ap) // compiles on 2.10 but not 2.9
+          all (List(ap, ap, ap)) should === (fr) // compiles on 2.10 but not 2.9
+          all (List(fr, fr, fr)) should === (ap) // compiles on 2.10 but not 2.9
+          all (List(ap, ap, ap)) should === (cr) // compiles on 2.10 but not 2.9
+          all (List(cr, cr, cr)) should === (ap) // compiles on 2.10 but not 2.9
 
-          // all (List(super1, super1, super1)) should !== (super2) // compiles on 2.10 but not 2.9
-          // all (List(super1, super1, super1)) should !== (sub2) // compiles on 2.10 but not 2.9
-          // all (List(sub2, sub2, sub2)) should !== (super1) // compiles on 2.10 but not 2.9
-          // all (List(super1, super1, super1)) should === (super1) // compiles on 2.10 but not 2.9
-          // all (List(super1, super1, super1)) should === (sub1) // compiles on 2.10 but not 2.9
-          // all (List(sub1, sub1, sub1)) should === (super1) // compiles on 2.10 but not 2.9
+          all (List(super1, super1, super1)) should !== (super2) // compiles on 2.10 but not 2.9
+          all (List(super1, super1, super1)) should !== (sub2) // compiles on 2.10 but not 2.9
+          all (List(sub2, sub2, sub2)) should !== (super1) // compiles on 2.10 but not 2.9
+          all (List(super1, super1, super1)) should === (super1) // compiles on 2.10 but not 2.9
+          all (List(super1, super1, super1)) should === (sub1) // compiles on 2.10 but not 2.9
+          all (List(sub1, sub1, sub1)) should === (super1) // compiles on 2.10 but not 2.9
 
           // These should work with implicit conversions
           all (List(1, 1, 1)) should === (1L)
@@ -512,20 +512,20 @@ class ShouldCollectedTripleEqualsSpec extends Spec with NonImplicitAssertions wi
             val cr: Crunchy = new Apple
             val ap: Apple = new Apple
 
-            // all (List(1, 1, 1)) should === (1) // compiles on 2.10 but not 2.9
-            // intercept[TestFailedException] { all (List(1, 1, 1)) should !== (1)) // compiles on 2.10 but not 2. }
+            all (List(1, 1, 1)) should === (1) // compiles on 2.10 but not 2.9
+            intercept[TestFailedException] { all (List(1, 1, 1)) should !== (1) } // compiles on 2.10 but not 2.9
 
-            // all (List(ap, ap, ap)) should === (fr) // compiles on 2.10 but not 2.9
-            // all (List(fr, fr, fr)) should === (ap) // compiles on 2.10 but not 2.9
-            // all (List(ap, ap, ap)) should === (cr) // compiles on 2.10 but not 2.9
-            // all (List(cr, cr, cr)) should === (ap) // compiles on 2.10 but not 2.9
+            all (List(ap, ap, ap)) should === (fr) // compiles on 2.10 but not 2.9
+            all (List(fr, fr, fr)) should === (ap) // compiles on 2.10 but not 2.9
+            all (List(ap, ap, ap)) should === (cr) // compiles on 2.10 but not 2.9
+            all (List(cr, cr, cr)) should === (ap) // compiles on 2.10 but not 2.9
 
-            // all (List(super1, super1, super1)) should !== (super2) // compiles on 2.10 but not 2.9
-            // all (List(super1, super1, super1)) should !== (sub2) // compiles on 2.10 but not 2.9
-            // all (List(sub2, sub2, sub2)) should !== (super1) // compiles on 2.10 but not 2.9
-            // all (List(super1, super1, super1)) should === (super1) // compiles on 2.10 but not 2.9
-            // all (List(super1, super1, super1)) should === (sub1) // compiles on 2.10 but not 2.9
-            // all (List(sub1, sub1, sub1)) should === (super1) // compiles on 2.10 but not 2.9
+            all (List(super1, super1, super1)) should !== (super2) // compiles on 2.10 but not 2.9
+            all (List(super1, super1, super1)) should !== (sub2) // compiles on 2.10 but not 2.9
+            all (List(sub2, sub2, sub2)) should !== (super1) // compiles on 2.10 but not 2.9
+            all (List(super1, super1, super1)) should === (super1) // compiles on 2.10 but not 2.9
+            all (List(super1, super1, super1)) should === (sub1) // compiles on 2.10 but not 2.9
+            all (List(sub1, sub1, sub1)) should === (super1) // compiles on 2.10 but not 2.9
 
             // These should work with implicit conversions
             all (List(1, 1, 1)) should === (1L)
@@ -648,8 +648,8 @@ class ShouldCollectedTripleEqualsSpec extends Spec with NonImplicitAssertions wi
           all (List(1, 1, 1)) should === (1)
           intercept[TestFailedException] { all (List(1, 1, 1)) should !== (1) }
 
-          // all (List(1, 1, 1)) should === (1L) // compiles on 2.10 but not 2.9
-          // intercept[TestFailedException] { all (List(1, 1, 1)) should !== (1L)) // compiles on 2.10 but not 2. }
+          all (List(1, 1, 1)) should === (1L) // compiles on 2.10 but not 2.9
+          intercept[TestFailedException] { all (List(1, 1, 1)) should !== (1L) } // compiles on 2.10 but not 2.9
 
           all (List(1L, 1L, 1L)) should === (1)
           intercept[TestFailedException] { all (List(1L, 1L, 1L)) should !== (1) }
@@ -662,10 +662,10 @@ class ShouldCollectedTripleEqualsSpec extends Spec with NonImplicitAssertions wi
 
           all (List(super1, super1, super1)) should !== (super2)
           all (List(super1, super1, super1)) should !== (sub2)
-          // all (List(sub2, sub2, sub2)) should !== (super1) // compiles on 2.10 but not 2.9
+          all (List(sub2, sub2, sub2)) should !== (super1) // compiles on 2.10 but not 2.9
           all (List(super1, super1, super1)) should === (super1)
           all (List(super1, super1, super1)) should === (sub1)
-          // all (List(sub1, sub1, sub1)) should === (super1) // compiles on 2.10 but not 2.9
+          all (List(sub1, sub1, sub1)) should === (super1) // compiles on 2.10 but not 2.9
         }
       }
 
@@ -678,8 +678,8 @@ class ShouldCollectedTripleEqualsSpec extends Spec with NonImplicitAssertions wi
             all (List(1, 1, 1)) should === (1)
             intercept[TestFailedException] { all (List(1, 1, 1)) should !== (1) }
 
-            // all (List(1, 1, 1)) should === (1L) // compiles on 2.10 but not 2.9
-            // intercept[TestFailedException] { all (List(1, 1, 1)) should !== (1L)) // compiles on 2.10 but not 2. }
+            all (List(1, 1, 1)) should === (1L) // compiles on 2.10 but not 2.9
+            intercept[TestFailedException] { all (List(1, 1, 1)) should !== (1L) } // compiles on 2.10 but not 2.9
 
             all (List(1L, 1L, 1L)) should === (1)
             intercept[TestFailedException] { all (List(1L, 1L, 1L)) should !== (1) }
@@ -692,10 +692,10 @@ class ShouldCollectedTripleEqualsSpec extends Spec with NonImplicitAssertions wi
 
             all (List(super1, super1, super1)) should !== (super2)
             all (List(super1, super1, super1)) should !== (sub2)
-            // all (List(sub2, sub2, sub2)) should !== (super1) // compiles on 2.10 but not 2.9
+            all (List(sub2, sub2, sub2)) should !== (super1) // compiles on 2.10 but not 2.9
             all (List(super1, super1, super1)) should === (super1)
             all (List(super1, super1, super1)) should === (sub1)
-            // all (List(sub1, sub1, sub1)) should === (super1) // compiles on 2.10 but not 2.9
+            all (List(sub1, sub1, sub1)) should === (super1) // compiles on 2.10 but not 2.9
           }
         }
       }
@@ -715,20 +715,20 @@ class ShouldCollectedTripleEqualsSpec extends Spec with NonImplicitAssertions wi
           val cr: Crunchy = new Apple
           val ap: Apple = new Apple
 
-          // all (List(1, 1, 1)) should === (1) // compiles on 2.10 but not 2.9
-          // intercept[TestFailedException] { all (List(1, 1, 1)) should !== (1)) // compiles on 2.10 but not 2. }
+          all (List(1, 1, 1)) should === (1) // compiles on 2.10 but not 2.9
+          intercept[TestFailedException] { all (List(1, 1, 1)) should !== (1) } // compiles on 2.10 but not 2.9
 
-          // all (List(ap, ap, ap)) should === (fr) // compiles on 2.10 but not 2.9
-          // all (List(fr, fr, fr)) should === (ap) // compiles on 2.10 but not 2.9
-          // all (List(ap, ap, ap)) should === (cr) // compiles on 2.10 but not 2.9
-          // all (List(cr, cr, cr)) should === (ap) // compiles on 2.10 but not 2.9
+          all (List(ap, ap, ap)) should === (fr) // compiles on 2.10 but not 2.9
+          all (List(fr, fr, fr)) should === (ap) // compiles on 2.10 but not 2.9
+          all (List(ap, ap, ap)) should === (cr) // compiles on 2.10 but not 2.9
+          all (List(cr, cr, cr)) should === (ap) // compiles on 2.10 but not 2.9
 
-          // all (List(super1, super1, super1)) should !== (super2) // compiles on 2.10 but not 2.9
-          // all (List(super1, super1, super1)) should !== (sub2) // compiles on 2.10 but not 2.9
-          // all (List(sub2, sub2, sub2)) should !== (super1) // compiles on 2.10 but not 2.9
-          // all (List(super1, super1, super1)) should === (super1) // compiles on 2.10 but not 2.9
-          // all (List(super1, super1, super1)) should === (sub1) // compiles on 2.10 but not 2.9
-          // all (List(sub1, sub1, sub1)) should === (super1) // compiles on 2.10 but not 2.9
+          all (List(super1, super1, super1)) should !== (super2) // compiles on 2.10 but not 2.9
+          all (List(super1, super1, super1)) should !== (sub2) // compiles on 2.10 but not 2.9
+          all (List(sub2, sub2, sub2)) should !== (super1) // compiles on 2.10 but not 2.9
+          all (List(super1, super1, super1)) should === (super1) // compiles on 2.10 but not 2.9
+          all (List(super1, super1, super1)) should === (sub1) // compiles on 2.10 but not 2.9
+          all (List(sub1, sub1, sub1)) should === (super1) // compiles on 2.10 but not 2.9
 
           // The rest should not compile
           // all (List(1, 1, 1)) should === (1L)
@@ -760,20 +760,20 @@ class ShouldCollectedTripleEqualsSpec extends Spec with NonImplicitAssertions wi
             val cr: Crunchy = new Apple
             val ap: Apple = new Apple
 
-            // all (List(1, 1, 1)) should === (1) // compiles on 2.10 but not 2.9
-            // intercept[TestFailedException] { all (List(1, 1, 1)) should !== (1) } // compiles on 2.10 but not 2.9
+            all (List(1, 1, 1)) should === (1) // compiles on 2.10 but not 2.9
+            intercept[TestFailedException] { all (List(1, 1, 1)) should !== (1) } // compiles on 2.10 but not 2.9
 
-            // all (List(ap, ap, ap)) should === (fr) // compiles on 2.10 but not 2.9
-            // all (List(fr, fr, fr)) should === (ap) // compiles on 2.10 but not 2.9
-            // all (List(ap, ap, ap)) should === (cr) // compiles on 2.10 but not 2.9
-            // all (List(cr, cr, cr)) should === (ap) // compiles on 2.10 but not 2.9
+            all (List(ap, ap, ap)) should === (fr) // compiles on 2.10 but not 2.9
+            all (List(fr, fr, fr)) should === (ap) // compiles on 2.10 but not 2.9
+            all (List(ap, ap, ap)) should === (cr) // compiles on 2.10 but not 2.9
+            all (List(cr, cr, cr)) should === (ap) // compiles on 2.10 but not 2.9
 
-            // all (List(super1, super1, super1)) should !== (super2) // compiles on 2.10 but not 2.9
-            // all (List(super1, super1, super1)) should !== (sub2) // compiles on 2.10 but not 2.9
-            // all (List(sub2, sub2, sub2)) should !== (super1) // compiles on 2.10 but not 2.9
-            // all (List(super1, super1, super1)) should === (super1) // compiles on 2.10 but not 2.9
-            // all (List(super1, super1, super1)) should === (sub1) // compiles on 2.10 but not 2.9
-            // all (List(sub1, sub1, sub1)) should === (super1) // compiles on 2.10 but not 2.9
+            all (List(super1, super1, super1)) should !== (super2) // compiles on 2.10 but not 2.9
+            all (List(super1, super1, super1)) should !== (sub2) // compiles on 2.10 but not 2.9
+            all (List(sub2, sub2, sub2)) should !== (super1) // compiles on 2.10 but not 2.9
+            all (List(super1, super1, super1)) should === (super1) // compiles on 2.10 but not 2.9
+            all (List(super1, super1, super1)) should === (sub1) // compiles on 2.10 but not 2.9
+            all (List(sub1, sub1, sub1)) should === (super1) // compiles on 2.10 but not 2.9
 
             // The rest should not compile
             // all (List(1, 1, 1)) should === (1L)
