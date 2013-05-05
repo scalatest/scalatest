@@ -26,6 +26,15 @@ class ShouldBeSymbolSpec extends Spec with Matchers with EmptyMocks with SharedH
       isEmptyMock should be ('empty)
     }
 
+    def `should throw TestFailedException with an appropriate error message if the object has an appropriately named method, but it returns false` {
+      val ex5 = intercept[TestFailedException] {
+        List(1, 2) should be ('empty)
+      }
+      assert(ex5.message === Some("List(1, 2) was not empty"))
+      assert(ex5.failedCodeFileName === Some("ShouldBeSymbolSpec.scala"))
+      assert(ex5.failedCodeLineNumber === Some(thisLineNumber - 4))
+    }
+
     def `should throw TestFailedException if no <symbol> or is<Symbol> method exists` {
       val ex1 = intercept[TestFailedException] {
         noPredicateMock should be ('empty)

@@ -17,13 +17,22 @@ package org.scalatest
 
 import org.scalatest.exceptions.TestFailedException
 
-class ShouldBeASymbolSpec extends Spec with Matchers with FileMocks {
+class ShouldBeASymbolSpec extends Spec with Matchers with FileMocks with SharedHelpers {
 
   object `The be a ('symbol) syntax` {
 
     def `should do nothing if the object has an appropriately named method, which returns true` {
       fileMock should be a ('file)
       isFileMock should be a ('file)
+    }
+
+    def `should throw TestFailedException with an appropriate error message if the object has an appropriately named method, but it returns false` {
+      val ex5 = intercept[TestFailedException] {
+        List(1, 2) should be a ('empty)
+      }
+      assert(ex5.message === Some("List(1, 2) was not a empty"))
+      assert(ex5.failedCodeFileName === Some("ShouldBeASymbolSpec.scala"))
+      assert(ex5.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
 
     def `should throw TestFailedException if no <symbol> or is<Symbol> method exists` {
