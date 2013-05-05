@@ -710,6 +710,29 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
       }
     }
     
+    def `should throw TestFailedException with correct stack depth and message when 'shouldBe symbol' failed` {
+      forAll(nullableExamples) { colFun => 
+        val col = colFun(Set("", "boom!", ""))
+        val e2 = intercept[exceptions.TestFailedException] {
+          all (col) shouldBe 'empty 
+        }
+        e2.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
+        e2.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+        val firstViolation = getFirstNot[String](col, _.isEmpty)
+        e2.message should be (Some("'all' inspection failed, because: \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", \"" + firstViolation + "\" was not empty (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "in " + col))
+        e2.getCause match {
+          case tfe: exceptions.TestFailedException =>
+            tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
+            tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
+            tfe.message should be (Some("\"" + firstViolation + "\" was not empty"))
+            tfe.getCause should be (null)
+          case other => fail("Expected cause to be TestFailedException, but got: " + other)
+        }
+      }
+    }
+    
     def `should throw TestFailedException with correct stack depth and message when 'not be symbol' failed` {
       forAll(nullableExamples) { colFun => 
         val col = colFun(Set("peace 1", "", "peace 2"))
@@ -807,6 +830,29 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
       }
     }
     
+    def `should throw TestFailedException with correct stack depth and message when 'shouldBe a symbol' failed` {
+      forAll(nullableExamples) { colFun => 
+        val col = colFun(Set("", "boom!", ""))
+        val e2 = intercept[exceptions.TestFailedException] {
+          all(col) shouldBe a ('empty) 
+        }
+        e2.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
+        e2.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+        val firstViolation = getFirstNot[String](col, _.isEmpty)
+        e2.message should be (Some("'all' inspection failed, because: \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", \"" + firstViolation + "\" was not a empty (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "in " + col))
+        e2.getCause match {
+          case tfe: exceptions.TestFailedException =>
+            tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
+            tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
+            tfe.message should be (Some("\"" + firstViolation + "\" was not a empty"))
+            tfe.getCause should be (null)
+          case other => fail("Expected cause to be TestFailedException, but got: " + other)
+        }
+      }
+    }
+    
     def `should throw TestFailedException with correct stack depth and message when 'not be a symbol' failed` {
       forAll(nullableExamples) { colFun => 
         val col = colFun(Set("", "boom!", ""))
@@ -881,6 +927,29 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
         val col = colFun(Set("", "boom!", ""))
         val e2 = intercept[exceptions.TestFailedException] {
           all(col) should be an 'empty 
+        }
+        e2.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
+        e2.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+        val firstViolation = getFirstNot[String](col, _.isEmpty)
+        e2.message should be (Some("'all' inspection failed, because: \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", \"" + firstViolation + "\" was not an empty (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "in " + col))
+        e2.getCause match {
+          case tfe: exceptions.TestFailedException =>
+            tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
+            tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
+            tfe.message should be (Some("\"" + firstViolation + "\" was not an empty"))
+            tfe.getCause should be (null)
+          case other => fail("Expected cause to be TestFailedException, but got: " + other)
+        }
+      }
+    }
+    
+    def `should throw TestFailedException with correct stack depth and message when 'shouldBe an symbol' failed` {
+      forAll(nullableExamples) { colFun => 
+        val col = colFun(Set("", "boom!", ""))
+        val e2 = intercept[exceptions.TestFailedException] {
+          all(col) shouldBe an ('empty) 
         }
         e2.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 3))

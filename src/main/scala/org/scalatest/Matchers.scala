@@ -4391,7 +4391,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def shouldBe(symbol: Symbol)(implicit ev: T <:< AnyRef) {
       doCollected(collected, xs, "shouldBe", 1) { e =>
-        val matcherResult = matchSymbolToPredicateMethod(e, symbol, true, true, 6)
+        val matcherResult = matchSymbolToPredicateMethod(e, symbol, false, true, 6)
         if (!matcherResult.matches) 
           throw newTestFailedException(matcherResult.failureMessage, None, 6)
       }
@@ -4424,7 +4424,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def shouldBe(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit ev: T <:< AnyRef) {
       doCollected(collected, xs, "shouldBe", 1) { e =>
-        val matcherResult = matchSymbolToPredicateMethod(e, resultOfAnWordApplication.symbol, true, true, 6)
+        val matcherResult = matchSymbolToPredicateMethod(e, resultOfAnWordApplication.symbol, true, false, 6)
         if (!matcherResult.matches) {
           throw newTestFailedException(matcherResult.failureMessage, None, 6)
         }
