@@ -5973,93 +5973,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     // TODO: Scaladoc, and decide whether or not to actually even support this here. It may be best
     // to let this one always be imported from ScalaUtils.
     def asAny: Any = left
-  }
-
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * <p>
-   * This class is used in conjunction with an implicit conversion to enable <code>should</code> methods to
-   * be invoked on <code>AnyRef</code>s.
-   * </p>
-   *
-   * @author Bill Venners
-   */
-  class AnyRefShouldWrapper[T <: AnyRef](left: T) extends AnyShouldWrapper(left) {
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * result should not have length (3)
-     *        ^
-     * </pre>
-     */
-    override def should(notWord: NotWord): ResultOfNotWordForAnyRef[T] =
-      new ResultOfNotWordForAnyRef(left, false)
-
 /*
     def shouldBe[U](right: AType[U]) {
       if (!right.isAssignableFromClassOf(left)) {
         throw newTestFailedException(FailureMessages("wasNotAnInstanceOf", left, UnquotedString(right.className)))
-      }
-    }
-*/
-
-/*
-    def shouldBe(right: AnyRef) {
-
-      def shouldBeEqual(right: AnyRef): Boolean = {
-        if (right.isInstanceOf[ResultOfAWordToBePropertyMatcherApplication[AnyRef]]) {
-          // need to put in if because NoSuchMethodError when pattern match ResultOfAWordToBePropertyMatcherApplication
-          val app = right.asInstanceOf[ResultOfAWordToBePropertyMatcherApplication[AnyRef]]
-          app.bePropertyMatcher.apply(left).matches
-        }
-        else if (right.isInstanceOf[ResultOfAnWordToBePropertyMatcherApplication[AnyRef]]) {
-          val app = right.asInstanceOf[ResultOfAnWordToBePropertyMatcherApplication[AnyRef]]
-          app.bePropertyMatcher.apply(left).matches
-        }
-        else {
-          val beWord = new BeWord
-          right match {
-            case rightSymbol: ResultOfAWordToSymbolApplication => 
-              beWord.a[AnyRef](rightSymbol.symbol)(left).matches
-            case rightSymbol: ResultOfAnWordToSymbolApplication => 
-              beWord.an[AnyRef](rightSymbol.symbol)(left).matches
-            case beMatcher: BeMatcher[AnyRef] => 
-              beMatcher.apply(left).matches
-            case bePropertyMatcher: BePropertyMatcher[AnyRef] => 
-              bePropertyMatcher.apply(left).matches
-            case _ => 
-              left == right
-          }
-        }
-      }
-
-      if (!shouldBeEqual(right)) {
-        val (resourceName, leftee, rightee) = 
-          if (right.isInstanceOf[ResultOfAWordToBePropertyMatcherApplication[AnyRef]]) {
-            val app = right.asInstanceOf[ResultOfAWordToBePropertyMatcherApplication[AnyRef]]
-            val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, UnquotedString(app.bePropertyMatcher.apply(left).propertyName))
-            ("wasNotA", leftee, rightee)
-          }
-          else if (right.isInstanceOf[ResultOfAnWordToBePropertyMatcherApplication[AnyRef]]) {
-            val app = right.asInstanceOf[ResultOfAnWordToBePropertyMatcherApplication[AnyRef]]
-            val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, UnquotedString(app.bePropertyMatcher.apply(left).propertyName))
-            ("wasNotAn", leftee, rightee)
-          }
-          else {
-            right match {
-              case bePropertyMatcher: BePropertyMatcher[AnyRef] => 
-                val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, UnquotedString(bePropertyMatcher.apply(left).propertyName))
-                ("wasNot", leftee, rightee)
-              case _ => 
-                val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)
-                ("wasNotEqualTo", leftee, rightee)
-            }
-          }
-        throw newTestFailedException(FailureMessages(resourceName, leftee, rightee))
       }
     }
 */
@@ -6076,7 +5993,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    *
    * @author Bill Venners
    */
-  final class StringShouldWrapper(val left: String) extends AnyRefShouldWrapper(left) with StringShouldWrapperForVerb {
+  final class StringShouldWrapper(val left: String) extends AnyShouldWrapper(left) with StringShouldWrapperForVerb {
 
     /**
      * This method enables syntax such as the following:
@@ -6150,7 +6067,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    *
    * @author Bill Venners
    */
-  final class ArrayShouldWrapper[E](left: Array[E]) extends AnyRefShouldWrapper(left) {
+  final class ArrayShouldWrapper[E](left: Array[E]) extends AnyShouldWrapper(left) {
 
      /**
      * This method enables syntax such as the following, where <code>positiveNumber</code> is a <code>AMatcher</code>:
@@ -6187,7 +6104,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    *
    * @author Bill Venners
    */
-  final class MapShouldWrapper[K, V, L[_, _] <: scala.collection.GenMap[_, _]](left: L[K, V]) extends AnyRefShouldWrapper(left) {
+  final class MapShouldWrapper[K, V, L[_, _] <: scala.collection.GenMap[_, _]](left: L[K, V]) extends AnyShouldWrapper(left) {
 
     /**
      * This method enables syntax such as the following:
@@ -6226,7 +6143,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    *
    * @author Bill Venners
    */
-  class TraversableShouldWrapper[E, L[_] <: scala.collection.GenTraversable[_]](left: L[E]) extends AnyRefShouldWrapper(left) {
+  class TraversableShouldWrapper[E, L[_] <: scala.collection.GenTraversable[_]](left: L[E]) extends AnyShouldWrapper(left) {
 
     /**
      * This method enables syntax such as the following:
@@ -6282,7 +6199,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    *
    * @author Bill Venners
    */
-  final class JavaCollectionShouldWrapper[E, L[_] <: java.util.Collection[_]](left: L[E]) extends AnyRefShouldWrapper(left) {
+  final class JavaCollectionShouldWrapper[E, L[_] <: java.util.Collection[_]](left: L[E]) extends AnyShouldWrapper(left) {
 
     /**
      * This method enables syntax such as the following:
@@ -6319,7 +6236,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    *
    * @author Bill Venners
    */
-  final class JavaMapShouldWrapper[K, V, L[_, _] <: java.util.Map[_, _]](left: L[K, V]) extends AnyRefShouldWrapper(left) {
+  final class JavaMapShouldWrapper[K, V, L[_, _] <: java.util.Map[_, _]](left: L[K, V]) extends AnyShouldWrapper(left) {
 
     /**
      * This method enables syntax such as the following:
@@ -6351,12 +6268,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * to enable <code>should</code> methods to be invokable on that object.
    */
   implicit def convertToAnyShouldWrapper[T](o: T): AnyShouldWrapper[T] = new AnyShouldWrapper(o)
-
-  /**
-   * Implicitly converts a <code>scala.AnyRef</code> of type <code>T</code> to an <code>AnyRefShouldWrapper[T]</code>,
-   * to enable <code>should</code> methods to be invokable on that object.
-   */
-  implicit def convertToAnyRefShouldWrapper[T <: AnyRef](o: T): AnyRefShouldWrapper[T] = new AnyRefShouldWrapper[T](o)
 
   /**
    * Implicitly converts an object of type <code>scala.Collection[T]</code> to a <code>CollectionShouldWrapper</code>,

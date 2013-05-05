@@ -442,16 +442,6 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
         )
     }
   }
-}
-
-/**
- * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
- * the matchers DSL.
- *
- * @author Bill Venners
- */
-class ResultOfNotWordForAnyRef[T <: AnyRef](left: T, shouldBeTrue: Boolean)
-    extends ResultOfNotWordForAny[T](left, shouldBeTrue) {
 
   /**
    * This method enables the following syntax:
@@ -461,7 +451,7 @@ class ResultOfNotWordForAnyRef[T <: AnyRef](left: T, shouldBeTrue: Boolean)
    *                ^
    * </pre>
    */
-  def be(o: Null) {
+  def be(o: Null)(implicit ev: T <:< AnyRef) {
     if ((left == null) != shouldBeTrue) {
       throw newTestFailedException(
         if (shouldBeTrue)
@@ -480,7 +470,7 @@ class ResultOfNotWordForAnyRef[T <: AnyRef](left: T, shouldBeTrue: Boolean)
    *                  ^
    * </pre>
    */
-  def be(symbol: Symbol) {
+  def be(symbol: Symbol)(implicit ev: T <:< AnyRef) {
     val matcherResult = matchSymbolToPredicateMethod(left, symbol, false, false)
     if (matcherResult.matches != shouldBeTrue) {
       throw newTestFailedException(
@@ -498,7 +488,7 @@ class ResultOfNotWordForAnyRef[T <: AnyRef](left: T, shouldBeTrue: Boolean)
    *                      ^
    * </pre>
    */
-  def be(bePropertyMatcher: BePropertyMatcher[T]) {
+  def be(bePropertyMatcher: BePropertyMatcher[T])(implicit ev: T <:< AnyRef) {
     val result = bePropertyMatcher(left)
     if (result.matches != shouldBeTrue) {
       throw newTestFailedException(
@@ -518,7 +508,7 @@ class ResultOfNotWordForAnyRef[T <: AnyRef](left: T, shouldBeTrue: Boolean)
    *                        ^
    * </pre>
    */
-  def be(resultOfAWordApplication: ResultOfAWordToSymbolApplication) {
+  def be(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit ev: T <:< AnyRef) {
     val matcherResult = matchSymbolToPredicateMethod(left, resultOfAWordApplication.symbol, true, true)
     if (matcherResult.matches != shouldBeTrue) {
       throw newTestFailedException(
@@ -536,7 +526,7 @@ class ResultOfNotWordForAnyRef[T <: AnyRef](left: T, shouldBeTrue: Boolean)
    *                        ^
    * </pre>
    */
-  def be[U >: T](resultOfAWordApplication: ResultOfAWordToBePropertyMatcherApplication[U]) {
+  def be[U >: T](resultOfAWordApplication: ResultOfAWordToBePropertyMatcherApplication[U])(implicit ev: T <:< AnyRef) {
     val result = resultOfAWordApplication.bePropertyMatcher(left)
     if (result.matches != shouldBeTrue) {
       throw newTestFailedException(
@@ -556,7 +546,7 @@ class ResultOfNotWordForAnyRef[T <: AnyRef](left: T, shouldBeTrue: Boolean)
    *                     ^
    * </pre>
    */
-  def be(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication) {
+  def be(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit ev: T <:< AnyRef) {
     val matcherResult = matchSymbolToPredicateMethod(left, resultOfAnWordApplication.symbol, true, false)
     if (matcherResult.matches != shouldBeTrue) {
       throw newTestFailedException(
@@ -574,7 +564,7 @@ class ResultOfNotWordForAnyRef[T <: AnyRef](left: T, shouldBeTrue: Boolean)
    *                     ^
    * </pre>
    */
-  def be[U >: T](resultOfAnWordApplication: ResultOfAnWordToBePropertyMatcherApplication[U]) {
+  def be[U >: T](resultOfAnWordApplication: ResultOfAnWordToBePropertyMatcherApplication[U])(implicit ev: T <:< AnyRef) {
     val result = resultOfAnWordApplication.bePropertyMatcher(left)
     if (result.matches != shouldBeTrue) {
       throw newTestFailedException(
@@ -594,7 +584,7 @@ class ResultOfNotWordForAnyRef[T <: AnyRef](left: T, shouldBeTrue: Boolean)
    *                        ^
    * </pre>
    */
-  def be(resultOfSameInstanceAsApplication: ResultOfTheSameInstanceAsApplication) {
+  def be(resultOfSameInstanceAsApplication: ResultOfTheSameInstanceAsApplication)(implicit ev: T <:< AnyRef) {
     if ((resultOfSameInstanceAsApplication.right eq left) != shouldBeTrue) {
       throw newTestFailedException(
         FailureMessages(
@@ -614,7 +604,7 @@ class ResultOfNotWordForAnyRef[T <: AnyRef](left: T, shouldBeTrue: Boolean)
  * @author Bill Venners
  */
 final class ResultOfNotWordForString(left: String, shouldBeTrue: Boolean)
-    extends ResultOfNotWordForAnyRef[String](left, shouldBeTrue) {
+    extends ResultOfNotWordForAny[String](left, shouldBeTrue) {
 
   /**
    * This method enables the following syntax: 
@@ -777,7 +767,7 @@ final class ResultOfNotWordForString(left: String, shouldBeTrue: Boolean)
  * @author Bill Venners
  */
 class ResultOfNotWordForGenTraversable[E, T[_] <: scala.collection.GenTraversable[_]](left: T[E], shouldBeTrue: Boolean)
-    extends ResultOfNotWordForAnyRef(left, shouldBeTrue) {
+    extends ResultOfNotWordForAny(left, shouldBeTrue) {
 
   /**
    * This method enables the following syntax:
@@ -850,7 +840,7 @@ class ResultOfNotWordForGenTraversable[E, T[_] <: scala.collection.GenTraversabl
  * @author Bill Venners
  */
 class ResultOfNotWordForJavaCollection[E, T[_] <: java.util.Collection[_]](left: T[E], shouldBeTrue: Boolean)
-    extends ResultOfNotWordForAnyRef(left, shouldBeTrue) {
+    extends ResultOfNotWordForAny(left, shouldBeTrue) {
 
   /**
    * This method enables the following syntax:
@@ -925,7 +915,7 @@ class ResultOfNotWordForJavaCollection[E, T[_] <: java.util.Collection[_]](left:
  * @author Bill Venners
  */
 final class ResultOfNotWordForGenMap[K, V, L[_, _] <: scala.collection.GenMap[_, _]](left: L[K, V], shouldBeTrue: Boolean)
-    extends ResultOfNotWordForAnyRef(left, shouldBeTrue) {
+    extends ResultOfNotWordForAny(left, shouldBeTrue) {
 
   /**
    * This method enables the following syntax:
@@ -1066,7 +1056,7 @@ final class ResultOfNotWordForGenMap[K, V, L[_, _] <: scala.collection.GenMap[_,
  * @author Bill Venners
  */
 final class ResultOfNotWordForJavaMap[K, V, L[_, _] <: java.util.Map[_, _]](left: L[K, V], shouldBeTrue: Boolean)
-    extends ResultOfNotWordForAnyRef(left, shouldBeTrue) {
+    extends ResultOfNotWordForAny(left, shouldBeTrue) {
 
   /**
    * This method enables the following syntax:
@@ -1183,7 +1173,7 @@ final class ResultOfNotWordForJavaMap[K, V, L[_, _] <: java.util.Map[_, _]](left
  * @author Bill Venners
  */
 final class ResultOfNotWordForArray[E](left: Array[E], shouldBeTrue: Boolean)
-    extends ResultOfNotWordForAnyRef(left, shouldBeTrue) {
+    extends ResultOfNotWordForAny(left, shouldBeTrue) {
 
   /**
    * This method enables the following syntax, where <code>containMatcher</code> refers to
