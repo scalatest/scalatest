@@ -1420,15 +1420,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
         )
       }
     }
-  }
-
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * @author Bill Venners
-   */
-  final class ResultOfBeWordForAnyRef[T <: AnyRef](left: T, shouldBeTrue: Boolean) extends ResultOfBeWordForAny(left, shouldBeTrue) {
 
     /**
      * This method enables the following syntax:
@@ -1438,7 +1429,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                  ^
      * </pre>
      */
-    def theSameInstanceAs(right: AnyRef) {
+    def theSameInstanceAs(right: AnyRef)(implicit ev: T <:< AnyRef) {
       if ((left eq right) != shouldBeTrue)
         throw newTestFailedException(
           FailureMessages(
@@ -1477,7 +1468,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                    ^
      * </pre>
      */
-    def a(symbol: Symbol) {
+    def a(symbol: Symbol)(implicit ev: T <:< AnyRef) {
       val matcherResult = matchSymbolToPredicateMethod(left, symbol, true, true)
       if (matcherResult.matches != shouldBeTrue) {
         throw newTestFailedException(
@@ -1496,7 +1487,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                   ^
      * </pre>
      */
-    def a(bePropertyMatcher: BePropertyMatcher[T]) {
+    def a(bePropertyMatcher: BePropertyMatcher[T])(implicit ev: T <:< AnyRef) { // TODO: Try expanding this to 2.10 AnyVals
       val result = bePropertyMatcher(left)
       if (result.matches != shouldBeTrue) {
         throw newTestFailedException(
@@ -1517,7 +1508,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                 ^
      * </pre>
      */
-    def an(symbol: Symbol) {
+    def an(symbol: Symbol)(implicit ev: T <:< AnyRef) {
       val matcherResult = matchSymbolToPredicateMethod(left, symbol, true, false)
       if (matcherResult.matches != shouldBeTrue) {
         throw newTestFailedException(
@@ -1534,8 +1525,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * book should be an (excellentRead)
      *                ^
      * </pre>
-     */
-    def an(beTrueMatcher: BePropertyMatcher[T]) {
+     */ 
+    def an(beTrueMatcher: BePropertyMatcher[T])(implicit ev: T <:< AnyRef) { // TODO: Try expanding this to 2.10 AnyVals
       val beTrueMatchResult = beTrueMatcher(left)
       if (beTrueMatchResult.matches != shouldBeTrue) {
         throw newTestFailedException(
@@ -6027,36 +6018,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     override def should(notWord: NotWord): ResultOfNotWordForAnyRef[T] =
       new ResultOfNotWordForAnyRef(left, false)
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * result should be theSameInstanceAs anotherObject
-     *        ^
-     * </pre>
-     */
-    override def should(beWord: BeWord): ResultOfBeWordForAnyRef[T] = new ResultOfBeWordForAnyRef(left, true)
-
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * result shouldNot be theSameInstanceAs anotherInstance
-     *        ^
-     * </pre>
-     */
-    override def shouldNot(beWord: BeWord): ResultOfBeWordForAnyRef[T] = new ResultOfBeWordForAnyRef(left, false)
-    
-/*
-    def shouldBe: ResultOfBeWordForAnyRef[T] = new ResultOfBeWordForAnyRef(left, true)
-    
-    def shouldBe(right: Null) {
-      if (left != null) {
-        throw newTestFailedException(FailureMessages("wasNotNull", left))
-      }
-    }
-*/
 
 /*
     def shouldBe[U](right: AType[U]) {
