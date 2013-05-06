@@ -43,6 +43,7 @@ import MatchersUtil.matchSymbolToPredicateMethod
 import MatchersUtil.accessProperty
 import MatchersUtil.newTestFailedException
 import MatchersUtil.containsOneOf
+import MatchersUtil.fullyMatchRegexWithGroups
 
 // TODO: drop generic support for be as an equality comparison, in favor of specific ones.
 // TODO: mention on JUnit and TestNG docs that you can now mix in ShouldMatchers or MustMatchers
@@ -1593,7 +1594,18 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                                     ^
      * </pre>
      */
-    def apply(regex: Regex): ResultOfRegexWordApplication = new ResultOfRegexWordApplication(regex)
+    def apply(regex: Regex): ResultOfRegexWordApplication = new ResultOfRegexWordApplication(regex, IndexedSeq.empty)
+
+    /**
+     * This method enables the following syntax: 
+     *
+     * <pre class="stHighlight">
+     * string should not fullyMatch regex ("a(b*)c" withGroup "bb") 
+     *                                    ^
+     * </pre>
+     */
+    def apply(regexWithGroups: RegexWithGroups) = 
+      new ResultOfRegexWordApplication(regexWithGroups.regex, regexWithGroups.groups)
   }
 
   /**
@@ -1728,6 +1740,22 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * </pre>
      */
     def regex(rightRegexString: String) { regex(rightRegexString.r) }
+
+    /**
+     * This method enables the following syntax: 
+     *
+     * <pre class="stHighlight">
+     * string should fullMatch regex ("a(b*)c" withGroup "bb") 
+     *                         ^
+     * </pre>
+     */
+    def regex(regexWithGroups: RegexWithGroups) {
+      val result = fullyMatchRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
+      if (result.matches != shouldBeTrue)
+       throw newTestFailedException(
+         if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage
+       )
+    }
 
     /**
      * This method enables the following syntax: 
@@ -6002,6 +6030,64 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     override def should(notWord: NotWord): ResultOfNotWordForString = {
       new ResultOfNotWordForString(left, false)
     }
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * string should fullyMatch regex ("a(b*)c" withGroup "bb") 
+     *                                          ^
+     * </pre>
+     */
+    def withGroup(group: String) = 
+      new RegexWithGroups(left.r, IndexedSeq(group))
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * string should fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "cc"))
+     *                                          ^
+     * </pre>
+     */
+    def withGroups(groups: String*) = 
+      new RegexWithGroups(left.r, IndexedSeq(groups: _*))
+  }
+
+  /**
+   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
+   * the matchers DSL.
+   *
+   * <p>
+   * This class is used in conjunction with an implicit conversion to enable <code>withGroup</code> and <code>withGroups</code> methods to
+   * be invoked on <code>Regex</code>s.
+   * </p>
+   *
+   * @author Bill Venners
+   */
+  final class RegexWrapper(regex: Regex) {
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * regex should fullyMatch regex ("a(b*)c" withGroup "bb") 
+     *                                         ^
+     * </pre>
+     */
+    def withGroup(group: String) = 
+      new RegexWithGroups(regex, IndexedSeq(group))
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * regex should fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "cc"))
+     *                                            ^
+     * </pre>
+     */
+    def withGroups(groups: String*) = 
+      new RegexWithGroups(regex, IndexedSeq(groups: _*))
   }
 
   /**
@@ -6239,6 +6325,12 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * to enable <code>should</code> methods to be invokable on that object.
    */
   implicit override def convertToStringShouldWrapper(o: String): StringShouldWrapper = new StringShouldWrapper(o)
+
+  /**
+   * Implicitly converts an object of type <code>scala.util.matching.Regex</code> to a <code>RegexWrapper</code>,
+   * to enable <code>withGroup</code> and <code>withGroups</code> methods to be invokable on that object.
+   */
+  implicit def convertToRegexWrapper(o: Regex): RegexWrapper = new RegexWrapper(o)
 
   /**
    * Implicitly converts an object of type <code>java.util.Collection[T]</code> to a <code>JavaCollectionShouldWrapper[T]</code>,

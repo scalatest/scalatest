@@ -26,6 +26,7 @@ import org.scalatest.Assertions.areEqualComparingArraysStructurally
 import org.scalatest.MatchersUtil.matchSymbolToPredicateMethod
 import scala.annotation.tailrec
 import org.scalatest.MatchersUtil.containsOneOf
+import org.scalatest.MatchersUtil.fullyMatchRegexWithGroups
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -605,14 +606,15 @@ final class NotWord {
    * </pre>
    */
   def fullyMatch(resultOfRegexWordApplication: ResultOfRegexWordApplication): Matcher[String] = {
-    val rightRegexString = resultOfRegexWordApplication.regex.toString
     new Matcher[String] {
-      def apply(left: String): MatchResult =
+      def apply(left: String): MatchResult = {
+        val result = fullyMatchRegexWithGroups(left, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
         MatchResult(
-          !java.util.regex.Pattern.matches(rightRegexString, left),
-          FailureMessages("fullyMatchedRegex", left, UnquotedString(rightRegexString)),
-          FailureMessages("didNotFullyMatchRegex", left, UnquotedString(rightRegexString))
+          !result.matches, 
+          result.negatedFailureMessage, 
+          result.failureMessage
         )
+      }
     }
   }
 

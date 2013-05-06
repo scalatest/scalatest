@@ -20,6 +20,7 @@ import org.scalautils._
 import scala.util.matching.Regex
 import org.scalatest.FailureMessages
 import org.scalatest.UnquotedString
+import org.scalatest.MatchersUtil.fullyMatchRegexWithGroups
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -46,6 +47,20 @@ final class FullyMatchWord {
           FailureMessages("didNotFullyMatchRegex", left, UnquotedString(rightRegexString)),
           FailureMessages("fullyMatchedRegex", left, UnquotedString(rightRegexString))
         )
+    }
+
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * string should not { fullyMatch regex ("a(b*)c" withGroup "bb") } 
+   *                          ^
+   * </pre>
+   */	
+  def regex(regexWithGroups: RegexWithGroups) = 
+    new Matcher[String] {
+      def apply(left: String): MatchResult = 
+        fullyMatchRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
     }
 
   /**

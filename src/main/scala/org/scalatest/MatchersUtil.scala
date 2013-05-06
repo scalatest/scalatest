@@ -43,6 +43,7 @@ import org.scalatest.matchers.BeMatcher
 import org.scalatest.matchers.Matcher
 import org.scalatest.matchers.MatchResult
 import org.scalatest.enablers.Holder
+import words.RegexWithGroups
 
 // TODO: drop generic support for be as an equality comparison, in favor of specific ones.
 // TODO: mention on JUnit and TestNG docs that you can now mix in ShouldMatchers or MustMatchers
@@ -269,5 +270,41 @@ private[scalatest] object MatchersUtil {
     }
     else // No more elements in right, left does not contain one of right.
       false
+  }
+  
+  def fullyMatchRegexWithGroups(left: String, regex: Regex, groups: IndexedSeq[String]): MatchResult = {
+    val pMatcher = regex.pattern.matcher(left)
+    if (groups.size == 0 || !pMatcher.matches)
+      MatchResult(
+        pMatcher.matches, 
+        FailureMessages("didNotFullyMatchRegex", left, regex), 
+        FailureMessages("fullyMatchedRegex", left, regex)
+      )
+    else {
+      val count = pMatcher.groupCount
+      val failed = // Find the first group that fails
+        groups.zipWithIndex.find { case (group, idx) => 
+          val groupIdx = idx + 1
+          !(groupIdx <= count && pMatcher.group(groupIdx) == group)
+        }
+      failed match {
+        case Some((group, idx)) =>
+          MatchResult(
+            false, 
+            if (groups.size > 1)
+              FailureMessages("fullyMatchedRegexButNotGroupAtIndex", left, regex, group, idx)
+            else
+              FailureMessages("fullyMatchedRegexButNotGroup", left, regex, group), 
+            FailureMessages("fullyMatchedRegexAndGroup", left, regex, groups.mkString(", "))
+          )
+        case None => 
+          // None of group failed
+          MatchResult(
+            true, 
+            FailureMessages("fullyMatchedRegexButNotGroup", left, regex, UnquotedString(groups.map("\"" + _ + "\"").mkString(", "))), 
+            FailureMessages("fullyMatchedRegexAndGroup", left, regex, UnquotedString(groups.map("\"" + _ + "\"").mkString(", ")))
+          )
+      }
+    }
   }
 }

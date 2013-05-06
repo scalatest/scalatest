@@ -49,6 +49,7 @@ import org.scalatest.words.ResultOfTheSameInstanceAsApplication
 import org.scalatest.words.ResultOfRegexWordApplication
 import org.scalatest.words.ResultOfKeyWordApplication
 import org.scalatest.words.ResultOfValueWordApplication
+import org.scalatest.words.RegexWithGroups
 
 /**
  * Trait extended by objects that can match a value of the specified type. The value to match is
@@ -868,6 +869,16 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def regex(regexString: String): Matcher[T with String] = and(MatcherWords.fullyMatch.regex(regexString))
+    
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * "abbc" should (fullyMatch regex ("a(b*)c" withGroup "bb") and fullyMatch regex ("a(b*)c" withGroup "bb"))
+     *                                                                          ^
+     * </pre>
+     */
+    def regex(regexWithGroups: RegexWithGroups): Matcher[T with String] = and(MatcherWords.fullyMatch.regex(regexWithGroups))
 
     /**
      * This method enables the following syntax:
@@ -1737,6 +1748,16 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def regex(regexString: String): Matcher[T with String] = or(MatcherWords.fullyMatch.regex(regexString))
+    
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * "abbc" should (fullyMatch regex ("a(b*)c" withGroup "bbb") or fullyMatch regex ("a(b*)c" withGroup "bb"))
+     *                                                                          ^
+     * </pre>
+     */
+    def regex(regexWithGroups: RegexWithGroups): Matcher[T with String] = or(MatcherWords.fullyMatch.regex(regexWithGroups))
 
     /**
      * This method enables the following syntax:
