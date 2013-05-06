@@ -64,4 +64,30 @@ class OptionShouldContainSpec extends Spec with Matchers with SharedHelpers {
       e5.failedCodeLineNumber.get should be (thisLineNumber - 4)
     }
   }
+
+  object `a collection of Options` {
+    def `be usable with contain value syntax via inspector shorthands` {
+
+      val some1s: Vector[Option[Int]] = Vector(Some(1), Some(1), Some(1))
+      val somes: Vector[Option[Int]] = Vector(Some(1), Some(1), Some(2))
+      val nones: Vector[Option[Int]] = Vector(None, None, None)
+      val somesNone: Vector[Option[Int]] = Vector(Some(1), Some(1), None)
+
+      all (some1s) should contain (1)
+      atLeast (2, somes) should contain (1)
+      atMost (2, somes) should contain (2)
+      no (somes) should contain (3)
+      no (nones) should contain (1)
+      no (somesNone) should contain (3)
+
+      val e1 = intercept[TestFailedException] {
+        all (somes) should contain (1)
+      }
+      e1.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
+      e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+      e1.message should be (Some("'all' inspection failed, because: \n" +
+                                 "  at index 2, Some(2) did not contain element 1 (OptionShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                 "in Vector(Some(1), Some(1), Some(2))"))
+    }
+  }
 }
