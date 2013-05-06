@@ -13,8 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.enablers
+package org.scalatest.words
 
-trait Holder[A] {
-  def containsElement(holder: A, element: Any): Boolean
-}
+/**
+ * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
+ * the matchers DSL.
+ *
+ * @author Bill Venners
+ */
+final class NewContainWord

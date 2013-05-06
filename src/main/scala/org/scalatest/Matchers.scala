@@ -34,7 +34,6 @@ import org.scalautils.Interval
 import org.scalautils.TripleEqualsInvocation
 import scala.annotation.tailrec
 import org.scalautils.Equality
-import org.scalatest.words.ShouldVerb
 import org.scalautils.TripleEqualsInvocationOnInterval
 import org.scalautils.EqualityConstraint
 import MatchersUtil.andMatchersAndApply
@@ -945,22 +944,42 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    * the matchers DSL.
    *
    * @author Bill Venners
-  class ResultOfNewContainWordForAny[L](left: L, shouldBeTrue: Boolean = true) {
+   */
+  class ResultOfNewContainWord[L](left: L, shouldBeTrue: Boolean = true) {
 
     /**
      * This method enables the following syntax: 
      *
      * <pre class="stHighlight">
-     * javaCol should contain oneOf (1, 2)
-     *                        ^
+     * option should contain oneOf (1, 2)
+     *                       ^
      * </pre>
      */
     def newOneOf(right: Any*)(implicit holder: Holder[L]) {
-      throw new Exception("GOT HERE!")
-      // matchContainMatcher(left.asInstanceOf[java.util.Collection[E]], new OneOfContainMatcher(right, equality), shouldBeTrue)
+      
+      @tailrec
+      def containsOneOf(left: L, rightItr: Iterator[Any], processedSet: Set[Any]): Boolean = {
+        if (rightItr.hasNext) {
+          val nextRight = rightItr.next
+          if (holder.containsElement(left, nextRight)) // Found one of right in left, can succeed early
+            true
+          else
+            containsOneOf(left, rightItr, processedSet + nextRight)
+        }
+        else // No more element in right, left does not contain one of right.
+          false
+      }
+
+      if (containsOneOf(left, right.toIterator, Set.empty) != shouldBeTrue)
+        throw newTestFailedException(
+          FailureMessages(
+            if (shouldBeTrue) "didNotContainOneOfElements" else "containedOneOfElements",
+            left,
+            UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
+          )
+        )
     }
   }
-   */
 
   //
   // This class is used as the return type of the overloaded should method (in MapShouldWrapper)
@@ -5900,6 +5919,18 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       }
     }
 */
+
+   /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * map should contain key (10)
+     *     ^
+     * </pre>
+     */
+    def should(newContainWord: NewContainWord): ResultOfNewContainWord[T] = {
+      new ResultOfNewContainWord(left, true)
+    }
   }
 
   /**
@@ -6050,7 +6081,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       new ResultOfNotWordForGenMap(left.asInstanceOf[L[K, V]], false)
     }
   }
-
 
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
