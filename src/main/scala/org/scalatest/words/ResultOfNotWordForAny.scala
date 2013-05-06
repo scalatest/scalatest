@@ -595,6 +595,9 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
       )
     }
   }
+
+  def newContain() {
+  }
 }
 
 /**

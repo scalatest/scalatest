@@ -2621,6 +2621,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
   def oneOf[T](xs: T*)(implicit equality: Equality[T]) = 
     new OneOfContainMatcher(xs, equality)
   
+// def newOneOf...
+
   /**
    * This method enables the following syntax: 
    *
@@ -6328,9 +6330,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     }
 
   object decidedForOption {
-    def by[E, OPT[_] <: Option[_]](equality: Equality[E]): Holder[OPT[E]] = 
-      new Holder[OPT[E]] {
-        def containsElement(opt: OPT[E], ele: Any): Boolean = {
+    def by[E](equality: Equality[E]): Holder[Option[E]] = 
+      new Holder[Option[E]] {
+        def containsElement(opt: Option[E], ele: Any): Boolean = {
           opt.exists((e: Any) => equality.areEqual(e.asInstanceOf[E], ele)) // Don't know why the compiler requires e to be type Any. Should be E.
         }
       }

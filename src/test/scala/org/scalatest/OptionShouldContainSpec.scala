@@ -65,8 +65,10 @@ class OptionShouldContainSpec extends Spec with Matchers with SharedHelpers {
       e5.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
       e5.failedCodeLineNumber.get should be (thisLineNumber - 4)
     }
+
     def `should use the implicit Equality in scope with contain (value) syntax` {
       val some: Option[String] = Some("hi")
+      some should contain ("hi")
       intercept[TestFailedException] {
         some should contain ("ho")
       }
@@ -74,7 +76,15 @@ class OptionShouldContainSpec extends Spec with Matchers with SharedHelpers {
         def areEqual(a: String, b: Any): Boolean = a != b
       }
       some should contain ("ho")
+      intercept[TestFailedException] {
+        some should contain ("hi")
+      }
+      some should contain ("hi") (decidedForOption by defaultEquality[String])
+      intercept[TestFailedException] {
+        some should contain ("ho") (decidedForOption by defaultEquality[String])
+      }
     }
+
     def `should be usable with contain oneOf syntax` {
       val some: Option[String] = Some("fum")
       some should newContain newOneOf ("fee", "fie", "foe", "fum")
@@ -85,6 +95,18 @@ class OptionShouldContainSpec extends Spec with Matchers with SharedHelpers {
       e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
       e1.message.get should be (Resources("didNotContainOneOfElements", some, "\"happy\", \"birthday\", \"to\", \"you\""))
     }
+/*
+    def `should be usable with not contain oneOf syntax` {
+      val some: Option[String] = Some("to")
+      some should not newContain newOneOf ("fee", "fie", "foe", "fum")
+      val e1 = intercept[TestFailedException] {
+        some should not newContain newOneOf ("happy", "birthday", "to", "you")
+      }
+      e1.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
+      e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+      e1.message.get should be (Resources("containedOneOfElements", some, "\"happy\", \"birthday\", \"to\", \"you\""))
+    }
+*/
   }
 
   object `a collection of Options` {
