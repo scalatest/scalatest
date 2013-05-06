@@ -939,7 +939,29 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
         2
       )
   }
-  
+
+  /*
+   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
+   * the matchers DSL.
+   *
+   * @author Bill Venners
+  class ResultOfNewContainWordForAny[L](left: L, shouldBeTrue: Boolean = true) {
+
+    /**
+     * This method enables the following syntax: 
+     *
+     * <pre class="stHighlight">
+     * javaCol should contain oneOf (1, 2)
+     *                        ^
+     * </pre>
+     */
+    def newOneOf(right: Any*)(implicit holder: Holder[L]) {
+      throw new Exception("GOT HERE!")
+      // matchContainMatcher(left.asInstanceOf[java.util.Collection[E]], new OneOfContainMatcher(right, equality), shouldBeTrue)
+    }
+  }
+   */
+
   //
   // This class is used as the return type of the overloaded should method (in MapShouldWrapper)
   // that takes a HaveWord. It's key method will be called in situations like this:

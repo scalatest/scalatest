@@ -15,6 +15,8 @@
  */
 package org.scalatest
 
+import org.scalautils.Equality
+
 class OptionShouldContainSpec extends Spec with Matchers with SharedHelpers {
   object `an Option` {
     def `should be usable with contain (value) syntax` {
@@ -63,6 +65,22 @@ class OptionShouldContainSpec extends Spec with Matchers with SharedHelpers {
       e5.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
       e5.failedCodeLineNumber.get should be (thisLineNumber - 4)
     }
+    def `should use the implicit Equality in scope with contain (value) syntax` {
+      val some: Option[String] = Some("hi")
+      intercept[TestFailedException] {
+        some should contain ("ho")
+      }
+      implicit val e = new Equality[String] {
+        def areEqual(a: String, b: Any): Boolean = a != b
+      }
+      some should contain ("ho")
+    }
+/*
+    def `should be usable with contain oneOf syntax` {
+      val some: Option[String] = Some("fum")
+      some should contain newOneOf ("fee", "fie", "foe", "fum")
+    }
+*/
   }
 
   object `a collection of Options` {
@@ -115,6 +133,17 @@ class OptionShouldContainSpec extends Spec with Matchers with SharedHelpers {
       e4.message should be (Some("'all' inspection failed, because: \n" +
                                  "  at index 2, Some(2) did not contain element 1 (OptionShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
                                  "in Vector(Some(1), Some(1), Some(2))"))
+    }
+
+    def `should use the implicit Equality in scope with contain (value) syntax` {
+      val somes: Vector[Option[String]] = Vector(Some("hi"), Some("hi"), Some("hi"))
+      intercept[TestFailedException] {
+        all (somes) should contain ("ho")
+      }
+      implicit val e = new Equality[String] {
+        def areEqual(a: String, b: Any): Boolean = a != b
+      }
+      all (somes) should contain ("ho")
     }
   }
 }
