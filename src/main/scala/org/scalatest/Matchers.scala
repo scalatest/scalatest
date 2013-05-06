@@ -2703,7 +2703,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
   sealed class ResultOfNotWordForCollectedAny[T](collected: Collected, xs: scala.collection.GenTraversable[T], shouldBeTrue: Boolean) {
 
     import org.scalatest.InspectorsHelper._
-    
+ 
     /**
      * This method enables the following syntax:
      *
@@ -2754,7 +2754,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * all(xs) should not be <= (7)
+     * all(xs) should not be &lt;= (7)
      *                    ^
      * </pre>
      */
@@ -2778,7 +2778,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * all(xs) should not be >= (7)
+     * all(xs) should not be &gt;= (7)
      *                    ^
      * </pre>
      */
@@ -3183,6 +3183,31 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
               None, 
               6
             )
+        }
+      }
+    }
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * all (xs) should not contain ("one")
+     *                     ^
+     * </pre>
+     */
+    def contain(expectedElement: Any)(implicit holder: Holder[T]) {
+      doCollected(collected, xs, "contain", 1) { e =>
+        val right = expectedElement
+        if ((holder.containsElement(e, right)) != shouldBeTrue) {
+          throw newTestFailedException(
+            FailureMessages(
+              if (shouldBeTrue) "didNotContainExpectedElement" else "containedExpectedElement",
+              e,
+              right
+            ), 
+            None, 
+            6
+          )
         }
       }
     }
