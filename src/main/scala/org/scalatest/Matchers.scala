@@ -966,7 +966,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
           else
             containsOneOf(left, rightItr, processedSet + nextRight)
         }
-        else // No more element in right, left does not contain one of right.
+        else // No more elements in right, left does not contain one of right.
           false
       }
 
@@ -2621,7 +2621,15 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
   def oneOf[T](xs: T*)(implicit equality: Equality[T]) = 
     new OneOfContainMatcher(xs, equality)
   
-// def newOneOf...
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * List(1, 2, 3) should contain (oneOf(1, 2))
+   *                               ^
+   * </pre>
+   */
+  def newOneOf(xs: Any*) = new ResultOfNewOneOfApplication(xs)
 
   /**
    * This method enables the following syntax: 

@@ -95,7 +95,6 @@ class OptionShouldContainSpec extends Spec with Matchers with SharedHelpers {
       e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
       e1.message.get should be (Resources("didNotContainOneOfElements", some, "\"happy\", \"birthday\", \"to\", \"you\""))
     }
-/*
     def `should be usable with not contain oneOf syntax` {
       val some: Option[String] = Some("to")
       some should not newContain newOneOf ("fee", "fie", "foe", "fum")
@@ -106,7 +105,6 @@ class OptionShouldContainSpec extends Spec with Matchers with SharedHelpers {
       e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
       e1.message.get should be (Resources("containedOneOfElements", some, "\"happy\", \"birthday\", \"to\", \"you\""))
     }
-*/
   }
 
   object `a collection of Options` {

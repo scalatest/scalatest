@@ -596,7 +596,31 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
     }
   }
 
-  def newContain() {
+  def newContain(newOneOf: ResultOfNewOneOfApplication)(implicit holder: Holder[T]) {
+
+    @tailrec
+    def containsOneOf(left: T, rightItr: Iterator[Any], processedSet: Set[Any]): Boolean = {
+      if (rightItr.hasNext) {
+        val nextRight = rightItr.next
+        if (holder.containsElement(left, nextRight)) // Found one of right in left, can succeed early
+          true
+        else
+          containsOneOf(left, rightItr, processedSet + nextRight)
+      }
+      else // No more elements in right, left does not contain one of right.
+        false
+    }
+ 
+    val right = newOneOf.right
+
+    if (containsOneOf(left, right.toIterator, Set.empty) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "didNotContainOneOfElements" else "containedOneOfElements",
+          left,
+          UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
+        )
+      )
   }
 }
 
