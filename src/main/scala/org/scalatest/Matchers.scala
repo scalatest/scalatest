@@ -3416,31 +3416,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
     ResultOfNotWordForCollectedAny[C[E]](collected, xs, shouldBeTrue) {
     
     /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * all(traversableOfTraversable) should not contain ("one")
-     *                                          ^
-     * </pre>
-     */
-    def contain(expectedElement: E) {
-      doCollected(collected, xs, "contain", 1) { e =>
-        val right = expectedElement
-        if ((e.exists(_ == right)) != shouldBeTrue) {
-          throw newTestFailedException(
-            FailureMessages(
-              if (shouldBeTrue) "didNotContainExpectedElement" else "containedExpectedElement",
-              e,
-              right
-            ), 
-            None, 
-            6
-          )
-        }
-      }
-    }
-    
-    /**
      * This method enables the following syntax, where <code>num</code> is, for example, of type <code>Int</code> and
      * <code>odd</code> refers to a <code>BeMatcher[Int]</code>:
      *
@@ -3538,31 +3513,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
     }
     
     /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * all(traversableOfArray) should not contain ("one")
-     *                                    ^
-     * </pre>
-     */
-    def contain(expectedElement: E) {
-      doCollected(collected, xs, "contain", 1) { e =>
-        val right = expectedElement
-        if ((e.exists(_ == right)) != shouldBeTrue) {
-          throw newTestFailedException(
-            FailureMessages(
-              if (shouldBeTrue) "didNotContainExpectedElement" else "containedExpectedElement",
-              e,
-              right
-            ), 
-            None, 
-            6
-          )
-        }
-      }
-    }
-    
-    /**
      * This method enables the following syntax, where <code>num</code> is, for example, of type <code>Int</code> and
      * <code>odd</code> refers to a <code>BeMatcher[Int]</code>:
      *
@@ -3644,31 +3594,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
       }
     }
 
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * all(traversableOfTraversable) should not contain ("one")
-     *                                          ^
-     * </pre>
-     */
-    def contain(expectedElement: (K, V)) {
-      doCollected(collected, xs, "contain", 1) { e =>
-        val right = expectedElement
-        if ((e.exists(_ == right)) != shouldBeTrue) {
-          throw newTestFailedException(
-            FailureMessages(
-              if (shouldBeTrue) "didNotContainExpectedElement" else "containedExpectedElement",
-              e,
-              right
-            ), 
-            None, 
-            6
-          )
-        }
-      }
-    }
-    
     /**
      * This method enables the following syntax, where <code>num</code> is, for example, of type <code>Int</code> and
      * <code>odd</code> refers to a <code>BeMatcher[Int]</code>:
