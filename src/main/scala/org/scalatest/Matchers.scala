@@ -6318,11 +6318,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   }
 
   implicit def equalityEnablersForTraversable[E, TRAV[_] <: scala.collection.GenTraversable[_]](implicit equality: Equality[E]): Holder[TRAV[E]] = 
-    new Holder[TRAV[E]] {
-      def containsElement(trav: TRAV[E], ele: Any): Boolean = {
-        trav.exists((e: Any) => equality.areEqual(e.asInstanceOf[E], ele)) // Don't know why the compiler requires e to be type Any. Should be E.
-      }
-    }
+    decidedForTraversable by equality
 
   object decidedForOption {
     def by[E](equality: Equality[E]): Holder[Option[E]] = 
@@ -6333,12 +6329,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       }
   }
 
-  implicit def equalityEnablersForOption[E, OPT[_] <: Option[_]](implicit equality: Equality[E]): Holder[OPT[E]] = 
-    new Holder[OPT[E]] {
-      def containsElement(opt: OPT[E], ele: Any): Boolean = {
-        opt.exists((e: Any) => equality.areEqual(e.asInstanceOf[E], ele)) // Don't know why the compiler requires e to be type Any. Should be E.
-      }
-    }
+  implicit def equalityEnablersForOption[E](implicit equality: Equality[E]): Holder[Option[E]] = 
+    decidedForOption by equality
 
   implicit def enablersForMap[K, V, MAP[_, _] <: scala.collection.GenMap[_, _]]: Size[MAP[K, V]] =
     new Size[MAP[K, V]] {
@@ -6363,10 +6355,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     }
 
   implicit def equalityEnablersForArray[E](implicit equality: Equality[E]): Holder[Array[E]] = 
-    new Holder[Array[E]] {
-      def containsElement(arr: Array[E], ele: Any): Boolean =
-        arr.exists((e: E) => equality.areEqual(e, ele))
-    }
+    decidedForArray by equality
 
   object decidedForArray {
     def by[E](equality: Equality[E]): Holder[Array[E]] = 
@@ -6382,10 +6371,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     }
 
   implicit def equalityEnablersForString(implicit equality: Equality[Char]): Holder[String] = 
-    new Holder[String] {
-      def containsElement(str: String, ele: Any): Boolean =
-          str.exists((e: Char) => equality.areEqual(e, ele))
-    }
+    decidedForString by equality
 
   object decidedForString {
     def by(equality: Equality[Char]): Holder[String] = 
