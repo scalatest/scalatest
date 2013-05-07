@@ -957,7 +957,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * </pre>
      */
     def newOneOf(right: Any*)(implicit holder: Holder[L]) {
-      if (containsOneOf(left, right.toIterator, Set.empty) != shouldBeTrue)
+      if (containsOneOf(left, right.toIterator) != shouldBeTrue)
         throw newTestFailedException(
           FailureMessages(
             if (shouldBeTrue) "didNotContainOneOfElements" else "containedOneOfElements",

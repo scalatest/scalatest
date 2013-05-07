@@ -601,7 +601,7 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
 
     val right = newOneOf.right
 
-    if (containsOneOf(left, right.toIterator, Set.empty) != shouldBeTrue)
+    if (containsOneOf(left, right.toIterator) != shouldBeTrue)
       throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "didNotContainOneOfElements" else "containedOneOfElements",

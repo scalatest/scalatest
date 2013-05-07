@@ -37,7 +37,7 @@ final class NewContainWord {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
             MatchResult(
-              containsOneOf(left, right.toIterator, Set.empty),
+              containsOneOf(left, right.toIterator),
               FailureMessages("didNotContainOneOfElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
               FailureMessages("containedOneOfElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
             )

@@ -773,7 +773,7 @@ final class NotWord {
             val right = oneOf.right
 
             MatchResult(
-              !containsOneOf(left, right.toIterator, Set.empty),
+              !containsOneOf(left, right.toIterator),
               FailureMessages("containedOneOfElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
               FailureMessages("didNotContainOneOfElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
             )

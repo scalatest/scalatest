@@ -259,13 +259,13 @@ private[scalatest] object MatchersUtil {
   }
 
   @tailrec
-  def containsOneOf[T](left: T, rightItr: Iterator[Any], processedSet: Set[Any])(implicit holder: Holder[T]): Boolean = {
+  def containsOneOf[T](left: T, rightItr: Iterator[Any])(implicit holder: Holder[T]): Boolean = {
     if (rightItr.hasNext) {
       val nextRight = rightItr.next
       if (holder.containsElement(left, nextRight)) // Found one of right in left, can succeed early
         true
       else
-        containsOneOf(left, rightItr, processedSet + nextRight)
+        containsOneOf(left, rightItr)
     }
     else // No more elements in right, left does not contain one of right.
       false
