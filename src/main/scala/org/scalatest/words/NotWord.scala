@@ -24,6 +24,7 @@ import org.scalatest.UnquotedString
 import org.scalautils.Equality
 import org.scalatest.Assertions.areEqualComparingArraysStructurally
 import org.scalatest.MatchersUtil.matchSymbolToPredicateMethod
+import scala.annotation.tailrec
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -750,6 +751,46 @@ final class NotWord {
           FailureMessages("containedExpectedElement", left, expectedElement),
           FailureMessages("didNotContainExpectedElement", left, expectedElement)
         )
+      }
+    }
+  }
+
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * Array(1, 2) should (not contain (5) and not contain (3))
+   *                         ^
+   * </pre>
+   */
+  def newContain[T](oneOf: ResultOfNewOneOfApplication): MatcherFactory1[Any, Holder] = {
+    new MatcherFactory1[Any, Holder] {
+      def matcher[T](implicit holder: Holder[T]): Matcher[T] = {
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+        
+            @tailrec
+            def containsOneOf(left: T, rightItr: Iterator[Any], processedSet: Set[Any]): Boolean = {
+              if (rightItr.hasNext) {
+                val nextRight = rightItr.next
+                if (holder.containsElement(left, nextRight)) // Found one of right in left, can succeed early
+                  true
+                else
+                  containsOneOf(left, rightItr, processedSet + nextRight)
+              }
+              else // No more elements in right, left does not contain one of right.
+                false
+            }
+
+            val right = oneOf.right
+
+            MatchResult(
+              !containsOneOf(left, right.toIterator, Set.empty),
+              FailureMessages("containedOneOfElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+              FailureMessages("didNotContainOneOfElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+            )
+          }
+        }
       }
     }
   }
