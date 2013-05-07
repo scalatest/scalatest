@@ -44,6 +44,7 @@ import MatchersUtil.accessProperty
 import MatchersUtil.newTestFailedException
 import MatchersUtil.containsOneOf
 import MatchersUtil.fullyMatchRegexWithGroups
+import MatchersUtil.startWithRegexWithGroups
 
 // TODO: drop generic support for be as an equality comparison, in favor of specific ones.
 // TODO: mention on JUnit and TestNG docs that you can now mix in ShouldMatchers or MustMatchers
@@ -1663,6 +1664,22 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * </pre>
      */
     def regex(rightRegexString: String) { regex(rightRegexString.r) }
+
+    /**
+     * This method enables the following syntax: 
+     *
+     * <pre class="stHighlight">
+     * string should startWith regex ("a(b*)c" withGroup "bb")
+     *                         ^
+     * </pre>
+     */
+    def regex(regexWithGroups: RegexWithGroups) {
+      val result = startWithRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
+      if (result.matches != shouldBeTrue)
+       throw newTestFailedException(
+         if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage
+       )
+    }
 
     /**
      * This method enables the following syntax: 

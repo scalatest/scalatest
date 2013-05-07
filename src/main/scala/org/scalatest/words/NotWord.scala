@@ -27,6 +27,7 @@ import org.scalatest.MatchersUtil.matchSymbolToPredicateMethod
 import scala.annotation.tailrec
 import org.scalatest.MatchersUtil.containsOneOf
 import org.scalatest.MatchersUtil.fullyMatchRegexWithGroups
+import org.scalatest.MatchersUtil.startWithRegexWithGroups
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -668,12 +669,14 @@ final class NotWord {
   def startWith(resultOfRegexWordApplication: ResultOfRegexWordApplication): Matcher[String] = {
     val rightRegex = resultOfRegexWordApplication.regex
     new Matcher[String] {
-      def apply(left: String): MatchResult =
+      def apply(left: String): MatchResult = {
+        val result = startWithRegexWithGroups(left, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
         MatchResult(
-          !rightRegex.pattern.matcher(left).lookingAt,
-          FailureMessages("startedWithRegex", left, rightRegex),
-          FailureMessages("didNotStartWithRegex", left, rightRegex)
+          !result.matches, 
+          result.negatedFailureMessage, 
+          result.failureMessage
         )
+      }
     }
   }
 

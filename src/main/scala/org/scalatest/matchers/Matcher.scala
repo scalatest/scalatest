@@ -957,6 +957,16 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def regex(regexString: String): Matcher[T with String] = and(MatcherWords.startWith.regex(regexString))
+    
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * "abbcdef" should (startWith regex ("a(b*)c" withGroup "bb") and startWith regex ("a(b*)c" withGroup "bb"))
+     *                                                                           ^
+     * </pre>
+     */
+    def regex(regexWithGroups: RegexWithGroups): Matcher[T with String] = and(MatcherWords.startWith.regex(regexWithGroups))
 
     /**
      * This method enables the following syntax:
@@ -1837,6 +1847,16 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def regex(regexString: String): Matcher[T with String] = or(MatcherWords.startWith.regex(regexString))
 
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * "abbcdef" should (startWith regex ("a(b*)c" withGroup "bb") or startWith regex ("a(b*)c" withGroup "bb"))
+     *                                                                          ^
+     * </pre>
+     */
+    def regex(regexWithGroups: RegexWithGroups): Matcher[T with String] = or(MatcherWords.startWith.regex(regexWithGroups))
+    
     /**
      * This method enables the following syntax:
      *
