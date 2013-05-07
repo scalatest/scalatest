@@ -42,6 +42,7 @@ import org.scalatest.MatchersUtil.matchSymbolToPredicateMethod
 import org.scalatest.FailureMessages
 import org.scalatest.UnquotedString
 import org.scalatest.MatchersUtil.newTestFailedException
+import org.scalatest.MatchersUtil.containsOneOf
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
@@ -598,19 +599,6 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
 
   def newContain(newOneOf: ResultOfNewOneOfApplication)(implicit holder: Holder[T]) {
 
-    @tailrec
-    def containsOneOf(left: T, rightItr: Iterator[Any], processedSet: Set[Any]): Boolean = {
-      if (rightItr.hasNext) {
-        val nextRight = rightItr.next
-        if (holder.containsElement(left, nextRight)) // Found one of right in left, can succeed early
-          true
-        else
-          containsOneOf(left, rightItr, processedSet + nextRight)
-      }
-      else // No more elements in right, left does not contain one of right.
-        false
-    }
- 
     val right = newOneOf.right
 
     if (containsOneOf(left, right.toIterator, Set.empty) != shouldBeTrue)

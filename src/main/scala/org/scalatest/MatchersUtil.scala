@@ -42,6 +42,7 @@ import org.scalatest.matchers.BePropertyMatchResult
 import org.scalatest.matchers.BeMatcher
 import org.scalatest.matchers.Matcher
 import org.scalatest.matchers.MatchResult
+import org.scalatest.enablers.Holder
 
 // TODO: drop generic support for be as an equality comparison, in favor of specific ones.
 // TODO: mention on JUnit and TestNG docs that you can now mix in ShouldMatchers or MustMatchers
@@ -255,5 +256,18 @@ private[scalatest] object MatchersUtil {
           FailureMessages(was, left, UnquotedString(propertyName))
         )
     }
+  }
+
+  @tailrec
+  def containsOneOf[T](left: T, rightItr: Iterator[Any], processedSet: Set[Any])(implicit holder: Holder[T]): Boolean = {
+    if (rightItr.hasNext) {
+      val nextRight = rightItr.next
+      if (holder.containsElement(left, nextRight)) // Found one of right in left, can succeed early
+        true
+      else
+        containsOneOf(left, rightItr, processedSet + nextRight)
+    }
+    else // No more elements in right, left does not contain one of right.
+      false
   }
 }

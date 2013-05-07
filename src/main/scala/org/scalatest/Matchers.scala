@@ -42,6 +42,7 @@ import org.scalatest.words._
 import MatchersUtil.matchSymbolToPredicateMethod
 import MatchersUtil.accessProperty
 import MatchersUtil.newTestFailedException
+import MatchersUtil.containsOneOf
 
 // TODO: drop generic support for be as an equality comparison, in favor of specific ones.
 // TODO: mention on JUnit and TestNG docs that you can now mix in ShouldMatchers or MustMatchers
@@ -956,20 +957,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * </pre>
      */
     def newOneOf(right: Any*)(implicit holder: Holder[L]) {
-      
-      @tailrec
-      def containsOneOf(left: L, rightItr: Iterator[Any], processedSet: Set[Any]): Boolean = {
-        if (rightItr.hasNext) {
-          val nextRight = rightItr.next
-          if (holder.containsElement(left, nextRight)) // Found one of right in left, can succeed early
-            true
-          else
-            containsOneOf(left, rightItr, processedSet + nextRight)
-        }
-        else // No more elements in right, left does not contain one of right.
-          false
-      }
-
       if (containsOneOf(left, right.toIterator, Set.empty) != shouldBeTrue)
         throw newTestFailedException(
           FailureMessages(
