@@ -16,6 +16,11 @@
 package org.scalatest.enablers
 
 trait Aggregation[A] {
-  def containsElement(aggregation: A, element: Any): Boolean
   def containsTheSameElementsAs(aggregation: A, it: Iterator[Any]): Boolean
+  def containsTheSameElementsInOrderAs(aggregation: A, it: Iterator[Any]): Boolean
+  def containsAllOf(aggregation: A, eles: Seq[Any]): Boolean
+  def containsAnyOf(aggregation: A, eles: Seq[Any]): Boolean
+  def containsOnly(aggregation: A, eles: Seq[Any]): Boolean
+  def containsInOrderOnly(aggregation: A, eles: Seq[Any]): Boolean
 }
+

@@ -17,4 +17,8 @@ package org.scalatest.enablers
 
 trait Holder[A] {
   def containsElement(holder: A, element: Any): Boolean
+/*
+  def containsOneOf(holder: A, elements: scala.collection.Seq[Any]): Boolean
+  def containsNoneOf(holder: A, elements: scala.collection.Seq[Any]): Boolean
+*/
 }

@@ -6320,16 +6320,17 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   implicit def equalityEnablersForTraversable[E, TRAV[_] <: scala.collection.GenTraversable[_]](implicit equality: Equality[E]): Holder[TRAV[E]] = 
     decidedForTraversable by equality
 
+  // OPT so that it will work with Some also, but it doesn't work with None
   object decidedForOption {
-    def by[E](equality: Equality[E]): Holder[Option[E]] = 
-      new Holder[Option[E]] {
-        def containsElement(opt: Option[E], ele: Any): Boolean = {
+    def by[E, OPT[_] <: Option[_]](equality: Equality[E]): Holder[OPT[E]] = 
+      new Holder[OPT[E]] {
+        def containsElement(opt: OPT[E], ele: Any): Boolean = {
           opt.exists((e: Any) => equality.areEqual(e.asInstanceOf[E], ele)) // Don't know why the compiler requires e to be type Any. Should be E.
         }
       }
   }
 
-  implicit def equalityEnablersForOption[E](implicit equality: Equality[E]): Holder[Option[E]] = 
+  implicit def equalityEnablersForOption[E, OPT[_] <: Option[_]](implicit equality: Equality[E]): Holder[OPT[E]] = 
     decidedForOption by equality
 
   implicit def enablersForMap[K, V, MAP[_, _] <: scala.collection.GenMap[_, _]]: Size[MAP[K, V]] =

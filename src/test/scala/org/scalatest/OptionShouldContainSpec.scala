@@ -79,10 +79,6 @@ class OptionShouldContainSpec extends Spec with Matchers with SharedHelpers {
       intercept[TestFailedException] {
         some should contain ("hi")
       }
-      some should contain ("hi") (decidedForOption by defaultEquality[String])
-      intercept[TestFailedException] {
-        some should contain ("ho") (decidedForOption by defaultEquality[String])
-      }
     }
 
     def `should be usable with contain oneOf syntax` {
