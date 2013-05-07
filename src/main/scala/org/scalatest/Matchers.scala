@@ -6340,11 +6340,22 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       }
     }
 
-  implicit def enablersForMap[K, V, MAP[_, _] <: scala.collection.GenMap[_, _]]: Size[MAP[K, V]] with Holder[MAP[K, V]] = 
-    new Size[MAP[K, V]] with Holder[MAP[K, V]] {
+  implicit def enablersForMap[K, V, MAP[_, _] <: scala.collection.GenMap[_, _]]: Size[MAP[K, V]] =
+    new Size[MAP[K, V]] {
       def extentOf(map: MAP[K, V]): Long = map.size
-      def containsElement(map: MAP[K, V], ele: Any): Boolean = map.exists(_ == ele)
     }
+
+  implicit def equalityEnablersForMap[K, V, MAP[_, _] <: scala.collection.GenMap[_, _]](implicit equality: Equality[(K, V)]): Holder[MAP[K, V]] = 
+    decidedForMap by equality
+
+  object decidedForMap {
+    def by[K, V, MAP[_, _] <: scala.collection.GenMap[_, _]](equality: Equality[(K, V)]): Holder[MAP[K, V]] = 
+      new Holder[MAP[K, V]] {
+        def containsElement(map: MAP[K, V], ele: Any): Boolean = {
+          map.exists((e: Any) => equality.areEqual(e.asInstanceOf[(K, V)], ele)) // Don't know why the compiler requires e to be type Any. Should be E.
+        }
+      }
+  }
 
   implicit def enablersForArray[E]: Length[Array[E]] with Size[Array[E]] = 
     new Length[Array[E]] with Size[Array[E]] {
