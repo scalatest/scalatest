@@ -322,4 +322,12 @@ private[scalatest] object MatchersUtil {
     checkPatternMatchAndGroups(matches, left, pMatcher, regex, groups, "didNotStartWithRegex", "startedWithRegex", "startedWithRegexButNotGroupAtIndex", 
                                "startedWithRegexButNotGroup", "startedWithRegexAndGroup")
   }
+  
+  def endWithRegexWithGroups(left: String, regex: Regex, groups: IndexedSeq[String]): MatchResult = {
+    val pMatcher = regex.pattern.matcher(left)
+    val found = pMatcher.find
+    val matches = found && pMatcher.end == left.length
+    checkPatternMatchAndGroups(matches, left, pMatcher, regex, groups, "didNotEndWithRegex", "endedWithRegex", "endedWithRegexButNotGroupAtIndex", 
+                               "endedWithRegexButNotGroup", "endedWithRegexAndGroup")
+  }
 }

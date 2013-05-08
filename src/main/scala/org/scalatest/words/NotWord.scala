@@ -28,6 +28,7 @@ import scala.annotation.tailrec
 import org.scalatest.MatchersUtil.containsOneOf
 import org.scalatest.MatchersUtil.fullyMatchRegexWithGroups
 import org.scalatest.MatchersUtil.startWithRegexWithGroups
+import org.scalatest.MatchersUtil.endWithRegexWithGroups
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -711,11 +712,11 @@ final class NotWord {
     val rightRegex = resultOfRegexWordApplication.regex
     new Matcher[String] {
       def apply(left: String): MatchResult = {
-        val allMatches = rightRegex.findAllIn(left)
+        val result = endWithRegexWithGroups(left, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
         MatchResult(
-          !(allMatches.hasNext && (allMatches.end == left.length)),
-          FailureMessages("endedWithRegex", left, rightRegex),
-          FailureMessages("didNotEndWithRegex", left, rightRegex)
+          !result.matches, 
+          result.negatedFailureMessage, 
+          result.failureMessage
         )
       }
     }
