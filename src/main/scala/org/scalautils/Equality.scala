@@ -99,7 +99,7 @@ trait Equality[A] {
 
 object Equality {
   def apply[A](normalization: Normalization[A]): Equality[A] = {
-    new NormalizingEquality[A](new DefaultEquality[A]) {
+    new NormalizingEquality[A] {
       def isInstanceOfA(b: Any): Boolean = normalization.isInstanceOfA(b)
       def normalized(a: A): A = normalization.normalized(a)
     }

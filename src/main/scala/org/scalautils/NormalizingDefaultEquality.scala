@@ -30,7 +30,7 @@ package org.scalautils
  * </pre>
  *
  */
-trait DefaultNormalizingEquality[A] extends Equality[A] with Normalization[A] {
+trait NormalizingDefaultEquality[A] extends Equality[A] with Normalization[A] {
 
   private val defaultEquality = new DefaultEquality[A]
 

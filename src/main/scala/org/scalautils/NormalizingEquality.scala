@@ -17,8 +17,9 @@ package org.scalautils
 
 /**
  * An <code>Equality</code> implementation that determines the equality of two objects by normalizing 
- * both objects, if possible, and then comparing the results using default equality (as defined by
- * the <code>areEqual</code> method of <a href="DefaultEquality.html"><code>DefaultEquality</code></a>).
+ * one or both objects, then comparing the results using an "after normalization" equality referenced from
+ * the <code>afterNormalizationEquality</code>  member. By default, the <code>afterNormalizationEquality</code> is 
+ * an instance of <a href="DefaultEquality.html"><code>DefaultEquality</code></a>.
  * </p>
  * <pre class="stHighlight">
  * import org.scalautils._
@@ -30,13 +31,13 @@ package org.scalautils
  * </pre>
  *
  */
-abstract class NormalizingEquality[A](equality: Equality[A] = new DefaultEquality[A]) extends Equality[A] { thisNormEq =>
+trait NormalizingEquality[A] extends Equality[A] { thisNormEq =>
 
-  def usesDefaultEquality: Boolean = equality.isInstanceOf[DefaultEquality[_]]
+  val afterNormalizationEquality: Equality[A] = new DefaultEquality[A]
 
   final def areEqual(a: A, b: Any): Boolean = {
     val nb = if (isInstanceOfA(b)) normalized(b.asInstanceOf[A]) else b
-    equality.areEqual(normalized(a), nb)
+    afterNormalizationEquality.areEqual(normalized(a), nb)
   }
 
   def isInstanceOfA(b: Any): Boolean
@@ -44,7 +45,7 @@ abstract class NormalizingEquality[A](equality: Equality[A] = new DefaultEqualit
   def normalized(a: A): A
 
   final def and(other: Normalization[A]): NormalizingEquality[A] =
-    new ComposedNormalizingEquality[A](equality, this.toNormalization and other)
+    new ComposedNormalizingEquality[A](afterNormalizationEquality, this.toNormalization and other)
 
   final def toNormalization: Normalization[A] =
     new Normalization[A] {
@@ -54,4 +55,3 @@ abstract class NormalizingEquality[A](equality: Equality[A] = new DefaultEqualit
       def normalized(a: A): A = thisNormEq.normalized(a)
     }
 }
-

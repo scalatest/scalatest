@@ -17,7 +17,7 @@ package org.scalautils
 
 /**
  * An <code>Equality</code> implementation that determines the equality of two objects by normalizing 
- * both objects, if possible, and then comparing the results using default equality (as defined by
+ * both objects, if possible, and then comparing the results using an equality (as defined by
  * the <code>areEqual</code> method of <a href="DefaultEquality.html"><code>DefaultEquality</code></a>).
  * </p>
  * <pre class="stHighlight">
@@ -31,9 +31,9 @@ package org.scalautils
  *
  */
 private[scalautils] final class ComposedNormalizingEquality[A](
-  equality: Equality[A],
+  override val afterNormalizationEquality: Equality[A],
   normalization: Normalization[A]
-) extends NormalizingEquality[A](equality) {
+) extends NormalizingEquality[A] {
 
   /**
    * Indicates whether the passed object is an instance of type <code>A</code>.
