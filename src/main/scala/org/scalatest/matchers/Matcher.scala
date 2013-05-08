@@ -923,6 +923,16 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
+     * "abbc" should (include regex ("a(b*)c" withGroup "bb") and include regex ("a(b*)c" withGroup "bb"))
+     *                                                                    ^
+     * </pre>
+     */
+    def regex(regexWithGroups: RegexWithGroups): Matcher[T with String] = and(MatcherWords.include.regex(regexWithGroups))
+    
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
      * "1.7" should (include regex (decimalRegex) and include regex (decimalRegex))
      *                                                        ^
      * </pre>
@@ -1818,6 +1828,16 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def regex(regexString: String): Matcher[T with String] = or(MatcherWords.include.regex(regexString))
 
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * "abbc" should (include regex ("a(b*)c" withGroup "bbb") or include regex ("a(b*)c" withGroup "bb"))
+     *                                                                    ^
+     * </pre>
+     */
+    def regex(regexWithGroups: RegexWithGroups): Matcher[T with String] = or(MatcherWords.include.regex(regexWithGroups))
+    
     /**
      * This method enables the following syntax:
      *

@@ -29,6 +29,7 @@ import org.scalatest.MatchersUtil.containsOneOf
 import org.scalatest.MatchersUtil.fullyMatchRegexWithGroups
 import org.scalatest.MatchersUtil.startWithRegexWithGroups
 import org.scalatest.MatchersUtil.endWithRegexWithGroups
+import org.scalatest.MatchersUtil.includeRegexWithGroups
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -631,12 +632,14 @@ final class NotWord {
   def include(resultOfRegexWordApplication: ResultOfRegexWordApplication): Matcher[String] = {
     val rightRegex = resultOfRegexWordApplication.regex
     new Matcher[String] {
-      def apply(left: String): MatchResult =
+      def apply(left: String): MatchResult = {
+        val result = includeRegexWithGroups(left, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
         MatchResult(
-          !rightRegex.findFirstIn(left).isDefined,
-          FailureMessages("includedRegex", left, rightRegex),
-          FailureMessages("didNotIncludeRegex", left, rightRegex)
+          !result.matches, 
+          result.negatedFailureMessage, 
+          result.failureMessage
         )
+      }
     }
   }
 
