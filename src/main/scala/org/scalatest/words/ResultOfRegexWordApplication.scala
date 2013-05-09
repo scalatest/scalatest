@@ -42,6 +42,6 @@ final class ResultOfRegexWordApplication(val regex: Regex, val groups: IndexedSe
    *                               ^
    * </pre>
    */
-  def this(regexString: String, groups: IndexedSeq[String] = IndexedSeq.empty) = this(new Regex(regexString), groups)
+  def this(regexString: String, groups: IndexedSeq[String]) = this(new Regex(regexString), groups)
 }
 

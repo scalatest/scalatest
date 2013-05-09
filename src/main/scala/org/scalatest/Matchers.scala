@@ -1587,7 +1587,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                                     ^
      * </pre>
      */
-    def apply(regexString: String): ResultOfRegexWordApplication = new ResultOfRegexWordApplication(regexString)
+    def apply(regexString: String): ResultOfRegexWordApplication = new ResultOfRegexWordApplication(regexString, IndexedSeq.empty)
 
     /**
      * This method enables the following syntax: 
