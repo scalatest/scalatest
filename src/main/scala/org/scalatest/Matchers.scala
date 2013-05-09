@@ -3378,14 +3378,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      */
     def startWith(resultOfRegexWordApplication: ResultOfRegexWordApplication) {
       doCollected(collected, xs, "startWith", 1) { e =>
-        val rightRegex = resultOfRegexWordApplication.regex
-        if (rightRegex.pattern.matcher(e).lookingAt != shouldBeTrue)
+        val result = startWithRegexWithGroups(e, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
+        if (result.matches != shouldBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (shouldBeTrue) "didNotStartWithRegex" else "startedWithRegex",
-              e,
-              rightRegex
-            ), 
+            if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage, 
             None, 
             6
           )
@@ -3425,15 +3421,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      */
     def endWith(resultOfRegexWordApplication: ResultOfRegexWordApplication) {
       doCollected(collected, xs, "endWith", 1) { e =>
-        val rightRegex = resultOfRegexWordApplication.regex
-        val allMatches = rightRegex.findAllIn(e)
-        if (allMatches.hasNext && (allMatches.end == e.length) != shouldBeTrue)
+        val result = endWithRegexWithGroups(e, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
+        if (result.matches != shouldBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (shouldBeTrue) "didNotEndWithRegex" else "endedWithRegex",
-              e,
-              rightRegex
-            ), 
+            if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage, 
             None, 
             6
           )
@@ -3455,14 +3446,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      */
     def include(resultOfRegexWordApplication: ResultOfRegexWordApplication) {
       doCollected(collected, xs, "include", 1) { e =>
-        val rightRegex = resultOfRegexWordApplication.regex
-        if (rightRegex.findFirstIn(e).isDefined != shouldBeTrue)
+        val result = includeRegexWithGroups(e, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
+        if (result.matches != shouldBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (shouldBeTrue) "didNotIncludeRegex" else "includedRegex",
-              e,
-              rightRegex
-            ), 
+            if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage, 
             None, 
             6
           )
@@ -3507,14 +3494,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      */
     def fullyMatch(resultOfRegexWordApplication: ResultOfRegexWordApplication) {
       doCollected(collected, xs, "fullyMatch", 1) { e =>
-        val rightRegex = resultOfRegexWordApplication.regex
-        if (rightRegex.pattern.matcher(e).matches != shouldBeTrue)
+        val result = fullyMatchRegexWithGroups(e, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
+        if (result.matches != shouldBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (shouldBeTrue) "didNotFullyMatchRegex" else "fullyMatchedRegex",
-              e,
-              rightRegex
-            ), 
+            if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage, 
             None, 
             6
           )
@@ -4730,6 +4713,50 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def should(fullyMatchWord: FullyMatchWord): ResultOfFullyMatchWordForCollectedString = 
       new ResultOfFullyMatchWordForCollectedString(collected, xs, true)
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * all(string) shouldNot fullyMatch regex ("""(-)?(\d+)(\.\d*)?""")
+     *             ^
+     * </pre>
+     */
+    def shouldNot(fullyMatchWord: FullyMatchWord): ResultOfFullyMatchWordForCollectedString = 
+      new ResultOfFullyMatchWordForCollectedString(collected, xs, false)
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * all(string) shouldNot startWith regex ("Hel*o")
+     *             ^
+     * </pre>
+     */
+    def shouldNot(startWithWord: StartWithWord): ResultOfStartWithWordForCollectedString = 
+      new ResultOfStartWithWordForCollectedString(collected, xs, false)
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * all(string) shouldNot endWith regex ("wo.ld")
+     *             ^
+     * </pre>
+     */
+    def shouldNot(endWithWord: EndWithWord): ResultOfEndWithWordForCollectedString = 
+      new ResultOfEndWithWordForCollectedString(collected, xs, false)
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * all(string) shouldNot include regex ("wo.ld")
+     *             ^
+     * </pre>
+     */
+    def shouldNot(includeWord: IncludeWord): ResultOfIncludeWordForCollectedString = 
+      new ResultOfIncludeWordForCollectedString(collected, xs, false)
   }
   
   /**
@@ -4755,21 +4782,28 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * This method enables the following syntax: 
      *
      * <pre class="stHighlight">
+     * all(string) should fullMatch regex ("a(b*)c" withGroup "bb") 
+     *                              ^
+     * </pre>
+     */
+    def regex(regexWithGroups: RegexWithGroups) { checkRegex(regexWithGroups.regex, regexWithGroups.groups) }
+
+    /**
+     * This method enables the following syntax: 
+     *
+     * <pre class="stHighlight">
      * all(string) should startWith regex ("Hel*o".r)
      *                              ^
      * </pre>
      */
     def regex(rightRegex: Regex) { checkRegex(rightRegex) }
     
-    def checkRegex(rightRegex: Regex) {
+    def checkRegex(rightRegex: Regex, groups: IndexedSeq[String] = IndexedSeq.empty) {
       doCollected(collected, xs, "regex", 2) { e =>
-        if (rightRegex.pattern.matcher(e).lookingAt != shouldBeTrue)
+        val result = startWithRegexWithGroups(e, rightRegex, groups)
+        if (result.matches != shouldBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (shouldBeTrue) "didNotStartWithRegex" else "startedWithRegex",
-              e,
-              rightRegex
-            ), 
+            if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage, 
             None, 
             7
           )
@@ -4800,21 +4834,28 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * This method enables the following syntax: 
      *
      * <pre class="stHighlight">
+     * all(string) should include regex ("a(b*)c" withGroup "bb") 
+     *                            ^
+     * </pre>
+     */
+    def regex(regexWithGroups: RegexWithGroups) { checkRegex(regexWithGroups.regex, regexWithGroups.groups) }
+
+    /**
+     * This method enables the following syntax: 
+     *
+     * <pre class="stHighlight">
      * all(string) should include regex ("wo.ld".r)
      *                            ^
      * </pre>
      */
     def regex(rightRegex: Regex) { checkRegex(rightRegex) }
     
-    private def checkRegex(rightRegex: Regex) {
+    private def checkRegex(rightRegex: Regex, groups: IndexedSeq[String] = IndexedSeq.empty) {
       doCollected(collected, xs, "regex", 2) { e =>
-        if (rightRegex.findFirstIn(e).isDefined != shouldBeTrue)
+        val result = includeRegexWithGroups(e, rightRegex, groups)
+        if (result.matches != shouldBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (shouldBeTrue) "didNotIncludeRegex" else "includedRegex",
-              e,
-              rightRegex
-            ), 
+            if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage, 
             None, 
             7
           )
@@ -4845,22 +4886,28 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * This method enables the following syntax: 
      *
      * <pre class="stHighlight">
+     * all(string) should endWith regex ("a(b*)c" withGroup "bb") 
+     *                            ^
+     * </pre>
+     */
+    def regex(regexWithGroups: RegexWithGroups) { checkRegex(regexWithGroups.regex, regexWithGroups.groups) }
+
+    /**
+     * This method enables the following syntax: 
+     *
+     * <pre class="stHighlight">
      * all(string) should endWith regex ("wor.d".r)
      *                            ^
      * </pre>
      */
     def regex(rightRegex: Regex) { checkRegex(rightRegex) }
     
-    private def checkRegex(rightRegex: Regex) {
+    private def checkRegex(rightRegex: Regex, groups: IndexedSeq[String] = IndexedSeq.empty) {
       doCollected(collected, xs, "regex", 2) { e =>
-        val allMatches = rightRegex.findAllIn(e)
-        if ((allMatches.hasNext && (allMatches.end == e.length)) != shouldBeTrue)
+        val result = endWithRegexWithGroups(e, rightRegex, groups)
+        if (result.matches != shouldBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (shouldBeTrue) "didNotEndWithRegex" else "endedWithRegex",
-              e,
-              rightRegex
-            ), 
+            if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage, 
             None, 
             7
           )
@@ -4891,21 +4938,28 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * This method enables the following syntax: 
      *
      * <pre class="stHighlight">
+     * all(string) should fullMatch regex ("a(b*)c" withGroup "bb") 
+     *                              ^
+     * </pre>
+     */
+    def regex(regexWithGroups: RegexWithGroups) { checkRegex(regexWithGroups.regex, regexWithGroups.groups) }
+
+    /**
+     * This method enables the following syntax: 
+     *
+     * <pre class="stHighlight">
      * all(string) should fullymatch regex ("Hel*o world".r)
      *                               ^
      * </pre>
      */
     def regex(rightRegex: Regex) { checkRegex(rightRegex) }
     
-    private def checkRegex(rightRegex: Regex) {
+    private def checkRegex(rightRegex: Regex, groups: IndexedSeq[String] = IndexedSeq.empty) {
       doCollected(collected, xs, "regex", 2) { e =>
-        if (rightRegex.pattern.matcher(e).matches != shouldBeTrue)
+        val result = fullyMatchRegexWithGroups(e, rightRegex, groups)
+        if (result.matches != shouldBeTrue)
           throw newTestFailedException(
-            FailureMessages(
-              if (shouldBeTrue) "didNotFullyMatchRegex" else "fullyMatchedRegex",
-              e,
-              rightRegex
-            ), 
+            if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage, 
             None, 
             7
           )
