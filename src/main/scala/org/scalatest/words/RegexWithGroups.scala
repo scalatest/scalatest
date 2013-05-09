@@ -21,27 +21,6 @@ import scala.util.matching.Regex
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
  * the matchers DSL.
  *
- * <p>
- * The primary constructor enables the following syntax (with a passed <code>scala.util.matching.Regex</code>): 
- * </p>
- *
- * <pre class="stHighlight">
- * "eight" should not fullyMatch regex ("""(-)?(\d+)(\.\d*)?""".r)
- *                               ^
- * </pre>
- *
  * @author Bill Venners
  */
-final class ResultOfRegexWordApplication(val regex: Regex, val groups: IndexedSeq[String]) {
-
-  /**
-   * This auxiliary constructor enables the following syntax (with a passed <code>java.lang.String</code>): 
-   *
-   * <pre class="stHighlight">
-   * "eight" should not fullyMatch regex ("""(-)?(\d+)(\.\d*)?""")
-   *                               ^
-   * </pre>
-   */
-  def this(regexString: String, groups: IndexedSeq[String] = IndexedSeq.empty) = this(new Regex(regexString), groups)
-}
-
+final class RegexWithGroups(val regex: Regex, val groups: IndexedSeq[String])

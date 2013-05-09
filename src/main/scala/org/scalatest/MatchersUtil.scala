@@ -43,6 +43,7 @@ import org.scalatest.matchers.BeMatcher
 import org.scalatest.matchers.Matcher
 import org.scalatest.matchers.MatchResult
 import org.scalatest.enablers.Holder
+import words.RegexWithGroups
 
 // TODO: drop generic support for be as an equality comparison, in favor of specific ones.
 // TODO: mention on JUnit and TestNG docs that you can now mix in ShouldMatchers or MustMatchers
@@ -269,5 +270,71 @@ private[scalatest] object MatchersUtil {
     }
     else // No more elements in right, left does not contain one of right.
       false
+  }
+  
+  def checkPatternMatchAndGroups(matches: Boolean, left: String, pMatcher: java.util.regex.Matcher, regex: Regex, groups: IndexedSeq[String], 
+                                 didNotMatchResourceName: String, matchResourceName: String, notGroupAtIndexResourceName: String, notGroupResourceName: String, 
+                                 andGroupResourceName: String): MatchResult = {
+    if (groups.size == 0 || !matches)
+      MatchResult(
+        matches, 
+        FailureMessages(didNotMatchResourceName, left, regex), 
+        FailureMessages(matchResourceName, left, regex)
+      )
+    else {
+      val count = pMatcher.groupCount
+      val failed = // Find the first group that fails
+        groups.zipWithIndex.find { case (group, idx) => 
+          val groupIdx = idx + 1
+          !(groupIdx <= count && pMatcher.group(groupIdx) == group)
+        }
+      failed match {
+        case Some((group, idx)) =>
+          MatchResult(
+            false, 
+            if (groups.size > 1)
+              FailureMessages(notGroupAtIndexResourceName, left, regex, group, idx)
+            else
+              FailureMessages(notGroupResourceName, left, regex, group), 
+            FailureMessages(andGroupResourceName, left, regex, groups.mkString(", "))
+          )
+        case None => 
+          // None of group failed
+          MatchResult(
+            true, 
+            FailureMessages(notGroupResourceName, left, regex, UnquotedString(groups.map("\"" + _ + "\"").mkString(", "))), 
+            FailureMessages(andGroupResourceName, left, regex, UnquotedString(groups.map("\"" + _ + "\"").mkString(", ")))
+          )
+      }
+    }
+  }
+  
+  def fullyMatchRegexWithGroups(left: String, regex: Regex, groups: IndexedSeq[String]): MatchResult = {
+    val pMatcher = regex.pattern.matcher(left)
+    val matches = pMatcher.matches
+    checkPatternMatchAndGroups(matches, left, pMatcher, regex, groups, "didNotFullyMatchRegex", "fullyMatchedRegex", "fullyMatchedRegexButNotGroupAtIndex", 
+                               "fullyMatchedRegexButNotGroup", "fullyMatchedRegexAndGroup")
+  }
+  
+  def startWithRegexWithGroups(left: String, regex: Regex, groups: IndexedSeq[String]): MatchResult = {
+    val pMatcher = regex.pattern.matcher(left)
+    val matches = pMatcher.lookingAt
+    checkPatternMatchAndGroups(matches, left, pMatcher, regex, groups, "didNotStartWithRegex", "startedWithRegex", "startedWithRegexButNotGroupAtIndex", 
+                               "startedWithRegexButNotGroup", "startedWithRegexAndGroup")
+  }
+  
+  def endWithRegexWithGroups(left: String, regex: Regex, groups: IndexedSeq[String]): MatchResult = {
+    val pMatcher = regex.pattern.matcher(left)
+    val found = pMatcher.find
+    val matches = found && pMatcher.end == left.length
+    checkPatternMatchAndGroups(matches, left, pMatcher, regex, groups, "didNotEndWithRegex", "endedWithRegex", "endedWithRegexButNotGroupAtIndex", 
+                               "endedWithRegexButNotGroup", "endedWithRegexAndGroup")
+  }
+  
+  def includeRegexWithGroups(left: String, regex: Regex, groups: IndexedSeq[String]): MatchResult = {
+    val pMatcher = regex.pattern.matcher(left)
+    val matches = pMatcher.find
+    checkPatternMatchAndGroups(matches, left, pMatcher, regex, groups, "didNotIncludeRegex", "includedRegex", "includedRegexButNotGroupAtIndex", 
+                               "includedRegexButNotGroup", "includedRegexAndGroup")
   }
 }

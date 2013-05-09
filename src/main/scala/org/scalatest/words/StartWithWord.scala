@@ -19,6 +19,7 @@ import org.scalatest.matchers._
 import org.scalautils._
 import scala.util.matching.Regex
 import org.scalatest.FailureMessages
+import org.scalatest.MatchersUtil.startWithRegexWithGroups
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -56,6 +57,20 @@ final class StartWithWord {
    * </pre>
    */
   def regex[T <: String](right: T): Matcher[T] = regex(right.r)
+  
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * string should not { startWith regex ("a(b*)c" withGroup "bb") } 
+   *                               ^
+   * </pre>
+   */	
+  def regex(regexWithGroups: RegexWithGroups) = 
+    new Matcher[String] {
+      def apply(left: String): MatchResult = 
+        startWithRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
+    }
 
   /**
    * This method enables the following syntax:

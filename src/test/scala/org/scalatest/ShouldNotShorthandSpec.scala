@@ -619,5 +619,311 @@ class ShouldNotShorthandSpec extends Spec with Matchers with SharedHelpers with 
       assert(caught21.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
       assert(caught21.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
+    
+    def `should work with fullyMatch regex withGroup and withGroups` {
+      
+      "abbbc" shouldNot fullyMatch regex ("a(b*)c" withGroup "bb")
+      "abbbc" shouldNot fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "cc"))
+      "abbbc" shouldNot fullyMatch regex ("a(b*)c".r withGroup "bb")
+      "abbbc" shouldNot fullyMatch regex ("a(b*)(c*)".r withGroups ("bb", "cc"))
+      
+      val caught1 = intercept[TestFailedException] {
+        "abbc" shouldNot fullyMatch regex ("a(b*)c" withGroup "bb")
+      }
+      assert(caught1.message === Some("\"abbc\" fully matched the regular expression a(b*)c and group \"bb\""))
+      assert(caught1.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
+      
+      val caught2 = intercept[TestFailedException] {
+        "abbcc" shouldNot fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "cc"))
+      }
+      assert(caught2.message === Some("\"abbcc\" fully matched the regular expression a(b*)(c*) and group \"bb\", \"cc\""))
+      assert(caught2.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
+      
+      val caught3 = intercept[TestFailedException] {
+        "abbc" shouldNot fullyMatch regex ("a(b*)c".r withGroup "bb")
+      }
+      assert(caught3.message === Some("\"abbc\" fully matched the regular expression a(b*)c and group \"bb\""))
+      assert(caught3.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
+      
+      val caught4 = intercept[TestFailedException] {
+        "abbcc" shouldNot fullyMatch regex ("a(b*)(c*)".r withGroups ("bb", "cc"))
+      }
+      assert(caught4.message === Some("\"abbcc\" fully matched the regular expression a(b*)(c*) and group \"bb\", \"cc\""))
+      assert(caught4.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
+    }
+    
+    def `should work with startWith regex withGroup and withGroups` {
+      
+      "abbbc" shouldNot startWith regex ("a(b*)c" withGroup "bb")
+      "abbbc" shouldNot startWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))
+      "abbbcdef" shouldNot startWith regex ("a(b*)c" withGroup "bb")
+      "abbbcdef" shouldNot startWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))
+      
+      "abbbc" shouldNot startWith regex ("a(b*)c".r withGroup "bb")
+      "abbbc" shouldNot startWith regex ("a(b*)(c*)".r withGroups ("bb", "cc"))
+      "abbbcdef" shouldNot startWith regex ("a(b*)c" withGroup "bb")
+      "abbbcdef" shouldNot startWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))
+      
+      val caught1 = intercept[TestFailedException] {
+        "abbc" shouldNot startWith regex ("a(b*)c" withGroup "bb")
+      }
+      assert(caught1.message === Some("\"abbc\" started with a substring that matched the regular expression a(b*)c and group \"bb\""))
+      assert(caught1.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
+      
+      val caught2 = intercept[TestFailedException] {
+        "abbcc" shouldNot startWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))
+      }
+      assert(caught2.message === Some("\"abbcc\" started with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"cc\""))
+      assert(caught2.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
+      
+      val caught3 = intercept[TestFailedException] {
+        "abbcdef" shouldNot startWith regex ("a(b*)c" withGroup "bb")
+      }
+      assert(caught3.message === Some("\"abbcdef\" started with a substring that matched the regular expression a(b*)c and group \"bb\""))
+      assert(caught3.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
+      
+      val caught4 = intercept[TestFailedException] {
+        "abbccdef" shouldNot startWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))
+      }
+      assert(caught4.message === Some("\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"cc\""))
+      assert(caught4.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
+      
+      val caught5 = intercept[TestFailedException] {
+        "abbc" shouldNot startWith regex ("a(b*)c".r withGroup "bb")
+      }
+      assert(caught5.message === Some("\"abbc\" started with a substring that matched the regular expression a(b*)c and group \"bb\""))
+      assert(caught5.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
+      
+      val caught6 = intercept[TestFailedException] {
+        "abbcc" shouldNot startWith regex ("a(b*)(c*)".r withGroups ("bb", "cc"))
+      }
+      assert(caught6.message === Some("\"abbcc\" started with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"cc\""))
+      assert(caught6.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
+      
+      val caught7 = intercept[TestFailedException] {
+        "abbcdef" shouldNot startWith regex ("a(b*)c".r withGroup "bb")
+      }
+      assert(caught7.message === Some("\"abbcdef\" started with a substring that matched the regular expression a(b*)c and group \"bb\""))
+      assert(caught7.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught7.failedCodeLineNumber === Some(thisLineNumber - 4))
+      
+      val caught8 = intercept[TestFailedException] {
+        "abbccdef" shouldNot startWith regex ("a(b*)(c*)".r withGroups ("bb", "cc"))
+      }
+      assert(caught8.message === Some("\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"cc\""))
+      assert(caught8.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
+    }
+    
+    def `should work with endWith regex withGroup and withGroups` {
+      
+      "abbbc" shouldNot endWith regex ("a(b*)c" withGroup "bb")
+      "abbbc" shouldNot endWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))
+      "123abbbc" shouldNot endWith regex ("a(b*)c" withGroup "bb")
+      "123abbbc" shouldNot endWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))
+      
+      "abbbc" shouldNot endWith regex ("a(b*)c".r withGroup "bb")
+      "abbbc" shouldNot endWith regex ("a(b*)(c*)".r withGroups ("bb", "cc"))
+      "123abbbc" shouldNot endWith regex ("a(b*)c" withGroup "bb")
+      "123abbbc" shouldNot endWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))
+      
+      val caught1 = intercept[TestFailedException] {
+        "abbc" shouldNot endWith regex ("a(b*)c" withGroup "bb")
+      }
+      assert(caught1.message === Some("\"abbc\" ended with a substring that matched the regular expression a(b*)c and group \"bb\""))
+      assert(caught1.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
+      
+      val caught2 = intercept[TestFailedException] {
+        "abbcc" shouldNot endWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))
+      }
+      assert(caught2.message === Some("\"abbcc\" ended with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"cc\""))
+      assert(caught2.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
+      
+      val caught3 = intercept[TestFailedException] {
+        "123abbc" shouldNot endWith regex ("a(b*)c" withGroup "bb")
+      }
+      assert(caught3.message === Some("\"123abbc\" ended with a substring that matched the regular expression a(b*)c and group \"bb\""))
+      assert(caught3.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
+      
+      val caught4 = intercept[TestFailedException] {
+        "123abbcc" shouldNot endWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))
+      }
+      assert(caught4.message === Some("\"123abbcc\" ended with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"cc\""))
+      assert(caught4.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
+      
+      val caught5 = intercept[TestFailedException] {
+        "abbc" shouldNot endWith regex ("a(b*)c".r withGroup "bb")
+      }
+      assert(caught5.message === Some("\"abbc\" ended with a substring that matched the regular expression a(b*)c and group \"bb\""))
+      assert(caught5.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
+      
+      val caught6 = intercept[TestFailedException] {
+        "abbcc" shouldNot endWith regex ("a(b*)(c*)".r withGroups ("bb", "cc"))
+      }
+      assert(caught6.message === Some("\"abbcc\" ended with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"cc\""))
+      assert(caught6.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
+      
+      val caught7 = intercept[TestFailedException] {
+        "123abbc" shouldNot endWith regex ("a(b*)c".r withGroup "bb")
+      }
+      assert(caught7.message === Some("\"123abbc\" ended with a substring that matched the regular expression a(b*)c and group \"bb\""))
+      assert(caught7.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught7.failedCodeLineNumber === Some(thisLineNumber - 4))
+      
+      val caught8 = intercept[TestFailedException] {
+        "123abbcc" shouldNot endWith regex ("a(b*)(c*)".r withGroups ("bb", "cc"))
+      }
+      assert(caught8.message === Some("\"123abbcc\" ended with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"cc\""))
+      assert(caught8.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
+    }
+    
+    def `should work with include regex withGroup and withGroups` {
+      
+      "abbbc" shouldNot include regex ("a(b*)c" withGroup "bb")
+      "abbbc" shouldNot include regex ("a(b*)(c*)" withGroups ("bb", "cc"))
+      "123abbbc" shouldNot include regex ("a(b*)c" withGroup "bb")
+      "123abbbc" shouldNot include regex ("a(b*)(c*)" withGroups ("bb", "cc"))
+      "abbbcdef" shouldNot include regex ("a(b*)c" withGroup "bb")
+      "abbbcdef" shouldNot include regex ("a(b*)(c*)" withGroups ("bb", "cc"))
+      "123abbbcdef" shouldNot include regex ("a(b*)c" withGroup "bb")
+      "123abbbcdef" shouldNot include regex ("a(b*)(c*)" withGroups ("bb", "cc"))
+      
+      "abbbc" shouldNot include regex ("a(b*)c".r withGroup "bb")
+      "abbbc" shouldNot include regex ("a(b*)(c*)".r withGroups ("bb", "cc"))
+      "123abbbc" shouldNot include regex ("a(b*)c".r withGroup "bb")
+      "123abbbc" shouldNot include regex ("a(b*)(c*)".r withGroups ("bb", "cc"))
+      "abbbcdef" shouldNot include regex ("a(b*)c".r withGroup "bb")
+      "abbbcdef" shouldNot include regex ("a(b*)(c*)".r withGroups ("bb", "cc"))
+      "123abbbcdef" shouldNot include regex ("a(b*)c".r withGroup "bb")
+      "123abbbcdef" shouldNot include regex ("a(b*)(c*)".r withGroups ("bb", "cc"))
+      
+      val caught1 = intercept[TestFailedException] {
+        "abbc" shouldNot include regex ("a(b*)c" withGroup "bb")
+      }
+      assert(caught1.message === Some("\"abbc\" included substring that matched regex a(b*)c and group \"bb\""))
+      assert(caught1.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
+      
+      val caught2 = intercept[TestFailedException] {
+        "abbcc" shouldNot include regex ("a(b*)(c*)" withGroups ("bb", "cc"))
+      }
+      assert(caught2.message === Some("\"abbcc\" included substring that matched regex a(b*)(c*) and group \"bb\", \"cc\""))
+      assert(caught2.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
+      
+      val caught3 = intercept[TestFailedException] {
+        "123abbcc" shouldNot include regex ("a(b*)c" withGroup "bb")
+      }
+      assert(caught3.message === Some("\"123abbcc\" included substring that matched regex a(b*)c and group \"bb\""))
+      assert(caught3.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
+      
+      val caught4 = intercept[TestFailedException] {
+        "123abbcc" shouldNot include regex ("a(b*)(c*)" withGroups ("bb", "cc"))
+      }
+      assert(caught4.message === Some("\"123abbcc\" included substring that matched regex a(b*)(c*) and group \"bb\", \"cc\""))
+      assert(caught4.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
+      
+      val caught5 = intercept[TestFailedException] {
+        "abbccdef" shouldNot include regex ("a(b*)c" withGroup "bb")
+      }
+      assert(caught5.message === Some("\"abbccdef\" included substring that matched regex a(b*)c and group \"bb\""))
+      assert(caught5.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
+      
+      val caught6 = intercept[TestFailedException] {
+        "abbccdef" shouldNot include regex ("a(b*)(c*)" withGroups ("bb", "cc"))
+      }
+      assert(caught6.message === Some("\"abbccdef\" included substring that matched regex a(b*)(c*) and group \"bb\", \"cc\""))
+      assert(caught6.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
+      
+      val caught7 = intercept[TestFailedException] {
+        "123abbccdef" shouldNot include regex ("a(b*)c" withGroup "bb")
+      }
+      assert(caught7.message === Some("\"123abbccdef\" included substring that matched regex a(b*)c and group \"bb\""))
+      assert(caught7.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught7.failedCodeLineNumber === Some(thisLineNumber - 4))
+      
+      val caught8 = intercept[TestFailedException] {
+        "123abbccdef" shouldNot include regex ("a(b*)(c*)" withGroups ("bb", "cc"))
+      }
+      assert(caught8.message === Some("\"123abbccdef\" included substring that matched regex a(b*)(c*) and group \"bb\", \"cc\""))
+      assert(caught8.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
+      
+      val caught9 = intercept[TestFailedException] {
+        "abbcc" shouldNot include regex ("a(b*)c".r withGroup "bb")
+      }
+      assert(caught9.message === Some("\"abbcc\" included substring that matched regex a(b*)c and group \"bb\""))
+      assert(caught9.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught9.failedCodeLineNumber === Some(thisLineNumber - 4))
+      
+      val caught10 = intercept[TestFailedException] {
+        "abbcc" shouldNot include regex ("a(b*)(c*)".r withGroups ("bb", "cc"))
+      }
+      assert(caught10.message === Some("\"abbcc\" included substring that matched regex a(b*)(c*) and group \"bb\", \"cc\""))
+      assert(caught10.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught10.failedCodeLineNumber === Some(thisLineNumber - 4))
+      
+      val caught11 = intercept[TestFailedException] {
+        "123abbcc" shouldNot include regex ("a(b*)c".r withGroup "bb")
+      }
+      assert(caught11.message === Some("\"123abbcc\" included substring that matched regex a(b*)c and group \"bb\""))
+      assert(caught11.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught11.failedCodeLineNumber === Some(thisLineNumber - 4))
+      
+      val caught12 = intercept[TestFailedException] {
+        "123abbcc" shouldNot include regex ("a(b*)(c*)".r withGroups ("bb", "cc"))
+      }
+      assert(caught12.message === Some("\"123abbcc\" included substring that matched regex a(b*)(c*) and group \"bb\", \"cc\""))
+      assert(caught12.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught12.failedCodeLineNumber === Some(thisLineNumber - 4))
+      
+      val caught13 = intercept[TestFailedException] {
+        "abbccdef" shouldNot include regex ("a(b*)c".r withGroup "bb")
+      }
+      assert(caught13.message === Some("\"abbccdef\" included substring that matched regex a(b*)c and group \"bb\""))
+      assert(caught13.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught13.failedCodeLineNumber === Some(thisLineNumber - 4))
+      
+      val caught14 = intercept[TestFailedException] {
+        "abbccdef" shouldNot include regex ("a(b*)(c*)".r withGroups ("bb", "cc"))
+      }
+      assert(caught14.message === Some("\"abbccdef\" included substring that matched regex a(b*)(c*) and group \"bb\", \"cc\""))
+      assert(caught14.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught14.failedCodeLineNumber === Some(thisLineNumber - 4))
+      
+      val caught15 = intercept[TestFailedException] {
+        "123abbccdef" shouldNot include regex ("a(b*)c".r withGroup "bb")
+      }
+      assert(caught15.message === Some("\"123abbccdef\" included substring that matched regex a(b*)c and group \"bb\""))
+      assert(caught15.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught15.failedCodeLineNumber === Some(thisLineNumber - 4))
+      
+      val caught16 = intercept[TestFailedException] {
+        "123abbccdef" shouldNot include regex ("a(b*)(c*)".r withGroups ("bb", "cc"))
+      }
+      assert(caught16.message === Some("\"123abbccdef\" included substring that matched regex a(b*)(c*) and group \"bb\", \"cc\""))
+      assert(caught16.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+    }
   }
 }
