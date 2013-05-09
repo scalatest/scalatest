@@ -6103,6 +6103,50 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def withGroups(groups: String*) = 
       new RegexWithGroups(left.r, IndexedSeq(groups: _*))
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * string shouldNot fullyMatch regex ("""(-)?(\d+)(\.\d*)?""")
+     *        ^
+     * </pre>
+     */
+    def shouldNot(fullyMatchWord: FullyMatchWord): ResultOfFullyMatchWordForString = 
+      new ResultOfFullyMatchWordForString(left, false)
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * string shouldNot startWith regex ("hello")
+     *        ^
+     * </pre>
+     */
+    def shouldNot(startWithWord: StartWithWord): ResultOfStartWithWordForString = 
+      new ResultOfStartWithWordForString(left, false)
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * string shouldNot endWith regex ("world")
+     *        ^
+     * </pre>
+     */
+    def shouldNot(endWithWord: EndWithWord): ResultOfEndWithWordForString = 
+      new ResultOfEndWithWordForString(left, false)
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * string shouldNot include regex ("hi")
+     *        ^
+     * </pre>
+     */
+    def shouldNot(includeWord: IncludeWord): ResultOfIncludeWordForString = 
+      new ResultOfIncludeWordForString(left, false)
   }
 
   /**
