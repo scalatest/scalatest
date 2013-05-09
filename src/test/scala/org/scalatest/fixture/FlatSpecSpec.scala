@@ -22,6 +22,8 @@ import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestRegistrationClosedException
 import org.scalatest.events.InfoProvided
 
+object SlowTest extends Tag("SlowTest")
+
 class FlatSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester with SharedHelpers {
 
   describe("A fixture.FlatSpec ") {

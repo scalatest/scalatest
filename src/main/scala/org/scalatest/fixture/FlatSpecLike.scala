@@ -16,7 +16,6 @@
 package org.scalatest.fixture
 
 import org.scalatest._
-import FixtureNodeFamily._
 import words.{ResultOfTaggedAsInvocation, ResultOfStringPassedToVerb, BehaveWord, ShouldVerb, MustVerb, CanVerb}
 import scala.collection.immutable.ListSet
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepth
