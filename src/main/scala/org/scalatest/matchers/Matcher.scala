@@ -49,6 +49,7 @@ import org.scalatest.words.ResultOfTheSameInstanceAsApplication
 import org.scalatest.words.ResultOfRegexWordApplication
 import org.scalatest.words.ResultOfKeyWordApplication
 import org.scalatest.words.ResultOfValueWordApplication
+import org.scalatest.words.RegexWithGroups
 
 /**
  * Trait extended by objects that can match a value of the specified type. The value to match is
@@ -868,6 +869,16 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def regex(regexString: String): Matcher[T with String] = and(MatcherWords.fullyMatch.regex(regexString))
+    
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * "abbc" should (fullyMatch regex ("a(b*)c" withGroup "bb") and fullyMatch regex ("a(b*)c" withGroup "bb"))
+     *                                                                          ^
+     * </pre>
+     */
+    def regex(regexWithGroups: RegexWithGroups): Matcher[T with String] = and(MatcherWords.fullyMatch.regex(regexWithGroups))
 
     /**
      * This method enables the following syntax:
@@ -912,6 +923,16 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
+     * "abbc" should (include regex ("a(b*)c" withGroup "bb") and include regex ("a(b*)c" withGroup "bb"))
+     *                                                                    ^
+     * </pre>
+     */
+    def regex(regexWithGroups: RegexWithGroups): Matcher[T with String] = and(MatcherWords.include.regex(regexWithGroups))
+    
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
      * "1.7" should (include regex (decimalRegex) and include regex (decimalRegex))
      *                                                        ^
      * </pre>
@@ -946,6 +967,16 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def regex(regexString: String): Matcher[T with String] = and(MatcherWords.startWith.regex(regexString))
+    
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * "abbcdef" should (startWith regex ("a(b*)c" withGroup "bb") and startWith regex ("a(b*)c" withGroup "bb"))
+     *                                                                           ^
+     * </pre>
+     */
+    def regex(regexWithGroups: RegexWithGroups): Matcher[T with String] = and(MatcherWords.startWith.regex(regexWithGroups))
 
     /**
      * This method enables the following syntax:
@@ -986,6 +1017,16 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def regex(regexString: String): Matcher[T with String] = and(MatcherWords.endWith.regex(regexString))
 
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * "abcdeef" should (endWith regex ("a(b*)c" withGroup "bb") and endWith regex ("a(b*)c" withGroup "bb"))
+     *                                                                       ^
+     * </pre>
+     */
+    def regex(regexWithGroups: RegexWithGroups): Matcher[T with String] = and(MatcherWords.endWith.regex(regexWithGroups))
+    
     /**
      * This method enables the following syntax:
      *
@@ -1737,6 +1778,16 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def regex(regexString: String): Matcher[T with String] = or(MatcherWords.fullyMatch.regex(regexString))
+    
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * "abbc" should (fullyMatch regex ("a(b*)c" withGroup "bbb") or fullyMatch regex ("a(b*)c" withGroup "bb"))
+     *                                                                          ^
+     * </pre>
+     */
+    def regex(regexWithGroups: RegexWithGroups): Matcher[T with String] = or(MatcherWords.fullyMatch.regex(regexWithGroups))
 
     /**
      * This method enables the following syntax:
@@ -1781,6 +1832,16 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
+     * "abbc" should (include regex ("a(b*)c" withGroup "bbb") or include regex ("a(b*)c" withGroup "bb"))
+     *                                                                    ^
+     * </pre>
+     */
+    def regex(regexWithGroups: RegexWithGroups): Matcher[T with String] = or(MatcherWords.include.regex(regexWithGroups))
+    
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
      * "1.7" should (include regex ("hello") or include regex (decimal))
      *                                                  ^
      * </pre>
@@ -1820,6 +1881,16 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
+     * "abbcdef" should (startWith regex ("a(b*)c" withGroup "bb") or startWith regex ("a(b*)c" withGroup "bb"))
+     *                                                                          ^
+     * </pre>
+     */
+    def regex(regexWithGroups: RegexWithGroups): Matcher[T with String] = or(MatcherWords.startWith.regex(regexWithGroups))
+    
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
      * "1.7" should (startWith regex ("hello") or startWith regex (decimal))
      *                                                      ^
      * </pre>
@@ -1855,6 +1926,16 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def regex(regexString: String): Matcher[T with String] = or(MatcherWords.endWith.regex(regexString))
 
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * "abcdeef" should (endWith regex ("d(e*)f" withGroup "ee") or endWith regex ("d(e*)f" withGroup "ee"))
+     *                                                                      ^
+     * </pre>
+     */
+    def regex(regexWithGroups: RegexWithGroups): Matcher[T with String] = or(MatcherWords.endWith.regex(regexWithGroups))
+    
     /**
      * This method enables the following syntax:
      *

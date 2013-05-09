@@ -43,6 +43,10 @@ import org.scalatest.FailureMessages
 import org.scalatest.UnquotedString
 import org.scalatest.MatchersUtil.newTestFailedException
 import org.scalatest.MatchersUtil.containsOneOf
+import org.scalatest.MatchersUtil.fullyMatchRegexWithGroups
+import org.scalatest.MatchersUtil.startWithRegexWithGroups
+import org.scalatest.MatchersUtil.endWithRegexWithGroups
+import org.scalatest.MatchersUtil.includeRegexWithGroups
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
@@ -635,14 +639,10 @@ final class ResultOfNotWordForString(left: String, shouldBeTrue: Boolean)
    * </p>
    */
   def fullyMatch(resultOfRegexWordApplication: ResultOfRegexWordApplication) {
-    val rightRegex = resultOfRegexWordApplication.regex
-    if (rightRegex.pattern.matcher(left).matches != shouldBeTrue)
+    val result = fullyMatchRegexWithGroups(left, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
+    if (result.matches != shouldBeTrue)
       throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "didNotFullyMatchRegex" else "fullyMatchedRegex",
-          left,
-          rightRegex
-        )
+        if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage
       )
   }
 
@@ -660,14 +660,10 @@ final class ResultOfNotWordForString(left: String, shouldBeTrue: Boolean)
    * </p>
    */
   def include(resultOfRegexWordApplication: ResultOfRegexWordApplication) {
-    val rightRegex = resultOfRegexWordApplication.regex
-    if (rightRegex.findFirstIn(left).isDefined != shouldBeTrue)
+    val result = includeRegexWithGroups(left, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
+    if (result.matches != shouldBeTrue)
       throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "didNotIncludeRegex" else "includedRegex",
-          left,
-          rightRegex
-        )
+        if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage
       )
   }
 
@@ -704,14 +700,10 @@ final class ResultOfNotWordForString(left: String, shouldBeTrue: Boolean)
    * </p>
    */
   def startWith(resultOfRegexWordApplication: ResultOfRegexWordApplication) {
-    val rightRegex = resultOfRegexWordApplication.regex
-    if (rightRegex.pattern.matcher(left).lookingAt != shouldBeTrue)
+    val result = startWithRegexWithGroups(left, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
+    if (result.matches != shouldBeTrue)
       throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "didNotStartWithRegex" else "startedWithRegex",
-          left,
-          rightRegex
-        )
+        if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage
       )
   }
 
@@ -743,15 +735,10 @@ final class ResultOfNotWordForString(left: String, shouldBeTrue: Boolean)
    * </pre>
    */
   def endWith(resultOfRegexWordApplication: ResultOfRegexWordApplication) {
-    val rightRegex = resultOfRegexWordApplication.regex
-    val allMatches = rightRegex.findAllIn(left)
-    if (allMatches.hasNext && (allMatches.end == left.length) != shouldBeTrue)
+    val result = endWithRegexWithGroups(left, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
+    if (result.matches != shouldBeTrue)
       throw newTestFailedException(
-        FailureMessages(
-          if (shouldBeTrue) "didNotEndWithRegex" else "endedWithRegex",
-          left,
-          rightRegex
-        )
+        if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage
       )
   }
 

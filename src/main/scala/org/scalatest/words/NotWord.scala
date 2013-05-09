@@ -26,6 +26,10 @@ import org.scalatest.Assertions.areEqualComparingArraysStructurally
 import org.scalatest.MatchersUtil.matchSymbolToPredicateMethod
 import scala.annotation.tailrec
 import org.scalatest.MatchersUtil.containsOneOf
+import org.scalatest.MatchersUtil.fullyMatchRegexWithGroups
+import org.scalatest.MatchersUtil.startWithRegexWithGroups
+import org.scalatest.MatchersUtil.endWithRegexWithGroups
+import org.scalatest.MatchersUtil.includeRegexWithGroups
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -605,14 +609,15 @@ final class NotWord {
    * </pre>
    */
   def fullyMatch(resultOfRegexWordApplication: ResultOfRegexWordApplication): Matcher[String] = {
-    val rightRegexString = resultOfRegexWordApplication.regex.toString
     new Matcher[String] {
-      def apply(left: String): MatchResult =
+      def apply(left: String): MatchResult = {
+        val result = fullyMatchRegexWithGroups(left, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
         MatchResult(
-          !java.util.regex.Pattern.matches(rightRegexString, left),
-          FailureMessages("fullyMatchedRegex", left, UnquotedString(rightRegexString)),
-          FailureMessages("didNotFullyMatchRegex", left, UnquotedString(rightRegexString))
+          !result.matches, 
+          result.negatedFailureMessage, 
+          result.failureMessage
         )
+      }
     }
   }
 
@@ -627,12 +632,14 @@ final class NotWord {
   def include(resultOfRegexWordApplication: ResultOfRegexWordApplication): Matcher[String] = {
     val rightRegex = resultOfRegexWordApplication.regex
     new Matcher[String] {
-      def apply(left: String): MatchResult =
+      def apply(left: String): MatchResult = {
+        val result = includeRegexWithGroups(left, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
         MatchResult(
-          !rightRegex.findFirstIn(left).isDefined,
-          FailureMessages("includedRegex", left, rightRegex),
-          FailureMessages("didNotIncludeRegex", left, rightRegex)
+          !result.matches, 
+          result.negatedFailureMessage, 
+          result.failureMessage
         )
+      }
     }
   }
 
@@ -666,12 +673,14 @@ final class NotWord {
   def startWith(resultOfRegexWordApplication: ResultOfRegexWordApplication): Matcher[String] = {
     val rightRegex = resultOfRegexWordApplication.regex
     new Matcher[String] {
-      def apply(left: String): MatchResult =
+      def apply(left: String): MatchResult = {
+        val result = startWithRegexWithGroups(left, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
         MatchResult(
-          !rightRegex.pattern.matcher(left).lookingAt,
-          FailureMessages("startedWithRegex", left, rightRegex),
-          FailureMessages("didNotStartWithRegex", left, rightRegex)
+          !result.matches, 
+          result.negatedFailureMessage, 
+          result.failureMessage
         )
+      }
     }
   }
 
@@ -706,11 +715,11 @@ final class NotWord {
     val rightRegex = resultOfRegexWordApplication.regex
     new Matcher[String] {
       def apply(left: String): MatchResult = {
-        val allMatches = rightRegex.findAllIn(left)
+        val result = endWithRegexWithGroups(left, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
         MatchResult(
-          !(allMatches.hasNext && (allMatches.end == left.length)),
-          FailureMessages("endedWithRegex", left, rightRegex),
-          FailureMessages("didNotEndWithRegex", left, rightRegex)
+          !result.matches, 
+          result.negatedFailureMessage, 
+          result.failureMessage
         )
       }
     }
