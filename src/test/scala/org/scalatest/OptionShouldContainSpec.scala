@@ -142,7 +142,6 @@ class OptionShouldContainSpec extends Spec with Matchers with SharedHelpers {
       }
     }
 
-/*
     object `when used with (not contain value) syntax` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
@@ -179,7 +178,6 @@ class OptionShouldContainSpec extends Spec with Matchers with SharedHelpers {
         }
       }
     }
-*/
   }
 
   object `a collection of Options` {

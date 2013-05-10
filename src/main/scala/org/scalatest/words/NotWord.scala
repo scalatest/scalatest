@@ -753,15 +753,19 @@ final class NotWord {
    *                         ^
    * </pre>
    */
-  def contain[T](expectedElement: T): Matcher[GenTraversable[T]] = {
-    new Matcher[GenTraversable[T]] {
-      def apply(left: GenTraversable[T]): MatchResult = {
-        MatchResult(
-          !(left.exists(_ == expectedElement)),
-          FailureMessages("containedExpectedElement", left, expectedElement),
-          FailureMessages("didNotContainExpectedElement", left, expectedElement)
-        )
-      }
+  def contain[T](expectedElement: T): MatcherFactory1[Any, Holder] = {
+    new MatcherFactory1[Any, Holder] {
+      def matcher[U <: Any : Holder]: Matcher[U] = 
+        new Matcher[U] {
+          def apply(left: U): MatchResult = {
+            val holder = implicitly[Holder[U]]
+            MatchResult(
+              !holder.containsElement(left, expectedElement),
+              FailureMessages("containedExpectedElement", left, expectedElement),
+              FailureMessages("didNotContainExpectedElement", left, expectedElement)
+            )
+          }
+        }
     }
   }
 

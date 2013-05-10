@@ -1019,7 +1019,7 @@ $endif$
      *                          ^
      * </pre>
      */
-    def contain[U](expectedElement: U): MatcherFactory$arity$[SC with GenTraversable[U], $commaSeparatedTCNs$] =
+    def contain[U](expectedElement: U): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Holder] =
       thisMatcherFactory.and(MatcherWords.not.contain(expectedElement))
 
     /**
@@ -1891,7 +1891,7 @@ $endif$
      *                         ^
      * </pre>
      */
-    def contain[U](expectedElement: U): MatcherFactory$arity$[SC with GenTraversable[U], $commaSeparatedTCNs$] =
+    def contain[U](expectedElement: U): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Holder] =
       thisMatcherFactory.or(MatcherWords.not.contain(expectedElement))
 
     /**

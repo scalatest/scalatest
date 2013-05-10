@@ -1405,7 +1405,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                                                     ^
      * </pre>
      */
-    def contain[U](expectedElement: U): Matcher[T with GenTraversable[U]] =
+    def contain[U](expectedElement: U): MatcherFactory1[T, Holder] =
       outerInstance.and(MatcherWords.not.contain(expectedElement))
 
     /**
@@ -2314,7 +2314,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                                            ^
      * </pre>
      */
-    def contain[U](expectedElement: U): Matcher[T with GenTraversable[U]] =
+    def contain[U](expectedElement: U): MatcherFactory1[T, Holder] =
       outerInstance.or(MatcherWords.not.contain(expectedElement))
 
     /**
