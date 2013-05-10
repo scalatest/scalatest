@@ -21,13 +21,12 @@ class OptionShouldContainSpec extends Spec with Matchers with SharedHelpers {
 
   object `an Option` {
 
+    val some: Option[String] = Some("hi")
+    val none: Option[String] = None
+
     object `when used with contain (value) syntax` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-
-        val some: Option[String] = Some("hi")
-        val none: Option[String] = None
-
         some should contain ("hi")
         Some("hi") should contain ("hi")
 
@@ -54,7 +53,6 @@ class OptionShouldContainSpec extends Spec with Matchers with SharedHelpers {
       }
 
       def `should use the implicit Equality in scope` {
-        val some: Option[String] = Some("hi")
         some should contain ("hi")
         intercept[TestFailedException] {
           some should contain ("ho")
@@ -72,10 +70,6 @@ class OptionShouldContainSpec extends Spec with Matchers with SharedHelpers {
     object `when used with not contain value syntax` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-
-        val some: Option[String] = Some("hi")
-        val none: Option[String] = None
-
         some should not contain "ho"
         Some("hi") should not contain "ho"
         none should not contain "hi"
@@ -96,7 +90,6 @@ class OptionShouldContainSpec extends Spec with Matchers with SharedHelpers {
       }
 
       def `should use the implicit Equality in scope` {
-        val some: Option[String] = Some("hi")
         some should not contain "ho"
         intercept[TestFailedException] {
           some should not contain "hi"
@@ -114,9 +107,6 @@ class OptionShouldContainSpec extends Spec with Matchers with SharedHelpers {
     object `when used with not (contain (value)) syntax` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-
-        val some: Option[String] = Some("hi")
-        val none: Option[String] = None
 
         some should not (contain ("ho"))
         Some("hi") should not (contain ("ho"))
@@ -138,7 +128,6 @@ class OptionShouldContainSpec extends Spec with Matchers with SharedHelpers {
       }
 
       def `should use the implicit Equality in scope` {
-        val some: Option[String] = Some("hi")
         some should not (contain ("ho"))
         intercept[TestFailedException] {
           some should not (contain ("hi"))
@@ -157,10 +146,6 @@ class OptionShouldContainSpec extends Spec with Matchers with SharedHelpers {
     object `when used with (not contain value) syntax` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-
-        val some: Option[String] = Some("hi")
-        val none: Option[String] = None
-
         some should (not contain "ho")
         Some("hi") should (not contain ("ho"))
         none should (not contain "hi")
@@ -181,7 +166,6 @@ class OptionShouldContainSpec extends Spec with Matchers with SharedHelpers {
       }
 
       def `should use the implicit Equality in scope` {
-        val some: Option[String] = Some("hi")
         some should (not contain "ho")
         intercept[TestFailedException] {
           some should (not contain "hi")
@@ -196,98 +180,12 @@ class OptionShouldContainSpec extends Spec with Matchers with SharedHelpers {
       }
     }
 */
-
-    object `when used with contain oneOf (...) syntax` {
-
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-
-        val some: Option[String] = Some("fum")
-        some should newContain newOneOf ("fee", "fie", "foe", "fum")
-        val e1 = intercept[TestFailedException] {
-          some should newContain newOneOf ("happy", "birthday", "to", "you")
-        }
-        e1.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("didNotContainOneOfElements", some, "\"happy\", \"birthday\", \"to\", \"you\""))
-        implicit val e = new Equality[String] {
-          def areEqual(a: String, b: Any): Boolean = a != b
-        }
-        some should newContain newOneOf ("happy", "birthday", "to", "you")
-        val e2 = intercept[TestFailedException] {
-          some should newContain newOneOf ("fum", "fum", "fum", "fum")
-        }
-      }
-    }
-
-    object `when used with not contain oneOf (...) syntax` {
-
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-
-        val some: Option[String] = Some("to")
-        some should not newContain newOneOf ("fee", "fie", "foe", "fum")
-        val e1 = intercept[TestFailedException] {
-          some should not newContain newOneOf ("happy", "birthday", "to", "you")
-        }
-        e1.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("containedOneOfElements", some, "\"happy\", \"birthday\", \"to\", \"you\""))
-        implicit val e = new Equality[String] {
-          def areEqual(a: String, b: Any): Boolean = a != b
-        }
-        some should not newContain newOneOf ("to", "to", "to", "to")
-        val e2 = intercept[TestFailedException] {
-          some should not newContain newOneOf ("fee", "fie", "foe", "fum")
-        }
-      }
-    }
-
-    object `when used with (contain oneOf (...)) syntax` {
-
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-
-        val some: Option[String] = Some("fum")
-        some should (newContain newOneOf ("fee", "fie", "foe", "fum"))
-        val e1 = intercept[TestFailedException] {
-          some should (newContain newOneOf ("happy", "birthday", "to", "you"))
-        }
-        e1.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("didNotContainOneOfElements", some, "\"happy\", \"birthday\", \"to\", \"you\""))
-        implicit val e = new Equality[String] {
-          def areEqual(a: String, b: Any): Boolean = a != b
-        }
-        some should (newContain newOneOf ("happy", "birthday", "to", "you"))
-        val e2 = intercept[TestFailedException] {
-          some should (newContain newOneOf ("fum", "fum", "fum", "fum"))
-        }
-      }
-    }
-
-    object `when used with (not contain oneOf (...)) syntax` {
-
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-
-        val some: Option[String] = Some("to")
-        some should (not newContain newOneOf ("fee", "fie", "foe", "fum"))
-        val e1 = intercept[TestFailedException] {
-          some should (not newContain newOneOf ("happy", "birthday", "to", "you"))
-        }
-        e1.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("containedOneOfElements", some, "\"happy\", \"birthday\", \"to\", \"you\""))
-        implicit val e = new Equality[String] {
-          def areEqual(a: String, b: Any): Boolean = a != b
-        }
-        some should (not newContain newOneOf ("to", "to", "to", "to"))
-        val e2 = intercept[TestFailedException] {
-          some should (not newContain newOneOf ("fee", "fie", "foe", "fum"))
-        }
-      }
-    }
   }
 
   object `a collection of Options` {
+
     object `when used with contain (value) syntax` {
+
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
 
         val some1s: Vector[Option[Int]] = Vector(Some(1), Some(1), Some(1))
