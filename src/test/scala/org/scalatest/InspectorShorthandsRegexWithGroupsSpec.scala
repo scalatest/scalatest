@@ -45,7 +45,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught1 = intercept[TestFailedException] {
         all(list1) should fullyMatch regex ("a(b*)c" withGroup "bb")
       }
-      assert(caught1.message === Some(errorMessage(0, "\"abbbc\" fully matched the regular expression a(b*)c, but did not match group \"bb\"", thisLineNumber - 2, list1)))
+      assert(caught1.message === Some(errorMessage(0, "\"abbbc\" fully matched the regular expression a(b*)c, but \"bbb\" did not match group \"bb\"", thisLineNumber - 2, list1)))
       assert(caught1.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -53,7 +53,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught2 = intercept[TestFailedException] {
         all(list2) should fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "c"))
       }
-      assert(caught2.message === Some(errorMessage(0, "\"abbcc\" fully matched the regular expression a(b*)(c*), but did not match group \"c\" at index 1", thisLineNumber - 2, list2)))
+      assert(caught2.message === Some(errorMessage(0, "\"abbcc\" fully matched the regular expression a(b*)(c*), but \"cc\" did not match group \"c\" at index 1", thisLineNumber - 2, list2)))
       assert(caught2.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -61,7 +61,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught3 = intercept[TestFailedException] {
         all(list3) should fullyMatch regex ("a(b*)c".r withGroup "bb")
       }
-      assert(caught3.message === Some(errorMessage(0, "\"abbbc\" fully matched the regular expression a(b*)c, but did not match group \"bb\"", thisLineNumber - 2, list3)))
+      assert(caught3.message === Some(errorMessage(0, "\"abbbc\" fully matched the regular expression a(b*)c, but \"bbb\" did not match group \"bb\"", thisLineNumber - 2, list3)))
       assert(caught3.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -69,7 +69,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught4 = intercept[TestFailedException] {
         all(list4) should fullyMatch regex ("a(b*)(c*)".r withGroups ("bb", "c"))
       }
-      assert(caught4.message === Some(errorMessage(0, "\"abbcc\" fully matched the regular expression a(b*)(c*), but did not match group \"c\" at index 1", thisLineNumber - 2, list4)))
+      assert(caught4.message === Some(errorMessage(0, "\"abbcc\" fully matched the regular expression a(b*)(c*), but \"cc\" did not match group \"c\" at index 1", thisLineNumber - 2, list4)))
       assert(caught4.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -160,7 +160,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught1 = intercept[TestFailedException] {
         all(list1) should (fullyMatch regex ("a(b*)c" withGroup "bb") and fullyMatch regex ("a(b*)c" withGroup "bbb"))
       }
-      assert(caught1.message === Some(errorMessage(0, "\"abbbc\" fully matched the regular expression a(b*)c, but did not match group \"bb\"", thisLineNumber - 2, list1)))
+      assert(caught1.message === Some(errorMessage(0, "\"abbbc\" fully matched the regular expression a(b*)c, but \"bbb\" did not match group \"bb\"", thisLineNumber - 2, list1)))
       assert(caught1.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -168,7 +168,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught2 = intercept[TestFailedException] {
         all(list2) should (fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "c")) and fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "cc")))
       }
-      assert(caught2.message === Some(errorMessage(0, "\"abbcc\" fully matched the regular expression a(b*)(c*), but did not match group \"c\" at index 1", thisLineNumber - 2, list2)))
+      assert(caught2.message === Some(errorMessage(0, "\"abbcc\" fully matched the regular expression a(b*)(c*), but \"cc\" did not match group \"c\" at index 1", thisLineNumber - 2, list2)))
       assert(caught2.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -176,7 +176,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught3 = intercept[TestFailedException] {
         all(list3) should (fullyMatch regex ("a(b*)c".r withGroup "bb") and fullyMatch regex ("a(b*)c".r withGroup "bbb"))
       }
-      assert(caught3.message === Some(errorMessage(0, "\"abbbc\" fully matched the regular expression a(b*)c, but did not match group \"bb\"", thisLineNumber - 2, list3)))
+      assert(caught3.message === Some(errorMessage(0, "\"abbbc\" fully matched the regular expression a(b*)c, but \"bbb\" did not match group \"bb\"", thisLineNumber - 2, list3)))
       assert(caught3.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -184,7 +184,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught4 = intercept[TestFailedException] {
         all(list4) should (fullyMatch regex ("a(b*)(c*)".r withGroups ("bb", "c")) and fullyMatch regex ("a(b*)(c*)".r withGroups ("bb", "cc")))
       }
-      assert(caught4.message === Some(errorMessage(0, "\"abbcc\" fully matched the regular expression a(b*)(c*), but did not match group \"c\" at index 1", thisLineNumber - 2, list4)))
+      assert(caught4.message === Some(errorMessage(0, "\"abbcc\" fully matched the regular expression a(b*)(c*), but \"cc\" did not match group \"c\" at index 1", thisLineNumber - 2, list4)))
       assert(caught4.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -224,7 +224,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught9 = intercept[TestFailedException] {
         all(list9) should (fullyMatch regex ("a(b*)c" withGroup "bbb") and fullyMatch regex ("a(b*)c" withGroup "bb"))
       }
-      assert(caught9.message === Some(errorMessage(0, "\"abbbc\" fully matched the regular expression a(b*)c and group \"bbb\", but \"abbbc\" fully matched the regular expression a(b*)c, but did not match group \"bb\"", thisLineNumber - 2, list9)))
+      assert(caught9.message === Some(errorMessage(0, "\"abbbc\" fully matched the regular expression a(b*)c and group \"bbb\", but \"abbbc\" fully matched the regular expression a(b*)c, but \"bbb\" did not match group \"bb\"", thisLineNumber - 2, list9)))
       assert(caught9.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught9.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -232,7 +232,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught10 = intercept[TestFailedException] {
         all(list10) should (fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "cc")) and fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "c")))
       }
-      assert(caught10.message === Some(errorMessage(0, "\"abbcc\" fully matched the regular expression a(b*)(c*) and group \"bb\", \"cc\", but \"abbcc\" fully matched the regular expression a(b*)(c*), but did not match group \"c\" at index 1", thisLineNumber - 2, list10)))
+      assert(caught10.message === Some(errorMessage(0, "\"abbcc\" fully matched the regular expression a(b*)(c*) and group \"bb\", \"cc\", but \"abbcc\" fully matched the regular expression a(b*)(c*), but \"cc\" did not match group \"c\" at index 1", thisLineNumber - 2, list10)))
       assert(caught10.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught10.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -240,7 +240,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught11 = intercept[TestFailedException] {
         all(list11) should (fullyMatch regex ("a(b*)c".r withGroup "bbb") and fullyMatch regex ("a(b*)c".r withGroup "bb"))
       }
-      assert(caught11.message === Some(errorMessage(0, "\"abbbc\" fully matched the regular expression a(b*)c and group \"bbb\", but \"abbbc\" fully matched the regular expression a(b*)c, but did not match group \"bb\"", thisLineNumber - 2, list11)))
+      assert(caught11.message === Some(errorMessage(0, "\"abbbc\" fully matched the regular expression a(b*)c and group \"bbb\", but \"abbbc\" fully matched the regular expression a(b*)c, but \"bbb\" did not match group \"bb\"", thisLineNumber - 2, list11)))
       assert(caught11.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught11.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -248,7 +248,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught12 = intercept[TestFailedException] {
         all(list12) should (fullyMatch regex ("a(b*)(c*)".r withGroups ("bb", "cc")) and fullyMatch regex ("a(b*)(c*)".r withGroups ("bb", "c")))
       }
-      assert(caught12.message === Some(errorMessage(0, "\"abbcc\" fully matched the regular expression a(b*)(c*) and group \"bb\", \"cc\", but \"abbcc\" fully matched the regular expression a(b*)(c*), but did not match group \"c\" at index 1", thisLineNumber - 2, list12)))
+      assert(caught12.message === Some(errorMessage(0, "\"abbcc\" fully matched the regular expression a(b*)(c*) and group \"bb\", \"cc\", but \"abbcc\" fully matched the regular expression a(b*)(c*), but \"cc\" did not match group \"c\" at index 1", thisLineNumber - 2, list12)))
       assert(caught12.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught12.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -256,7 +256,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught13 = intercept[TestFailedException] {
         all(list13) should (not fullyMatch regex ("a(b*)c" withGroup "bbb") and not fullyMatch regex ("a(b*)c" withGroup "bb"))
       }
-      assert(caught13.message === Some(errorMessage(0, "\"abbc\" fully matched the regular expression a(b*)c, but did not match group \"bbb\", but \"abbc\" fully matched the regular expression a(b*)c and group \"bb\"", thisLineNumber - 2, list13)))
+      assert(caught13.message === Some(errorMessage(0, "\"abbc\" fully matched the regular expression a(b*)c, but \"bb\" did not match group \"bbb\", but \"abbc\" fully matched the regular expression a(b*)c and group \"bb\"", thisLineNumber - 2, list13)))
       assert(caught13.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught13.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -264,7 +264,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught14 = intercept[TestFailedException] {
         all(list14) should (not fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "ccc")) and not fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "cc")))
       }
-      assert(caught14.message === Some(errorMessage(0, "\"abbcc\" fully matched the regular expression a(b*)(c*), but did not match group \"ccc\" at index 1, but \"abbcc\" fully matched the regular expression a(b*)(c*) and group \"bb\", \"cc\"", thisLineNumber - 2, list14)))
+      assert(caught14.message === Some(errorMessage(0, "\"abbcc\" fully matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1, but \"abbcc\" fully matched the regular expression a(b*)(c*) and group \"bb\", \"cc\"", thisLineNumber - 2, list14)))
       assert(caught14.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught14.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -272,7 +272,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught15 = intercept[TestFailedException] {
         all(list15) should (not fullyMatch regex ("a(b*)c".r withGroup "bbb") and not fullyMatch regex ("a(b*)c".r withGroup "bb"))
       }
-      assert(caught15.message === Some(errorMessage(0, "\"abbc\" fully matched the regular expression a(b*)c, but did not match group \"bbb\", but \"abbc\" fully matched the regular expression a(b*)c and group \"bb\"", thisLineNumber - 2, list15)))
+      assert(caught15.message === Some(errorMessage(0, "\"abbc\" fully matched the regular expression a(b*)c, but \"bb\" did not match group \"bbb\", but \"abbc\" fully matched the regular expression a(b*)c and group \"bb\"", thisLineNumber - 2, list15)))
       assert(caught15.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught15.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -280,7 +280,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught16 = intercept[TestFailedException] {
         all(list16) should (not fullyMatch regex ("a(b*)(c*)".r withGroups ("bb", "ccc")) and not fullyMatch regex ("a(b*)(c*)".r withGroups ("bb", "cc")))
       }
-      assert(caught16.message === Some(errorMessage(0, "\"abbcc\" fully matched the regular expression a(b*)(c*), but did not match group \"ccc\" at index 1, but \"abbcc\" fully matched the regular expression a(b*)(c*) and group \"bb\", \"cc\"", thisLineNumber - 2, list8)))
+      assert(caught16.message === Some(errorMessage(0, "\"abbcc\" fully matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1, but \"abbcc\" fully matched the regular expression a(b*)(c*) and group \"bb\", \"cc\"", thisLineNumber - 2, list8)))
       assert(caught16.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught16.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -349,7 +349,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught1 = intercept[TestFailedException] {
         all(list1) should (fullyMatch regex ("a(b*)c" withGroup "bb") or fullyMatch regex ("a(b*)c" withGroup "bb"))
       }
-      assert(caught1.message === Some(errorMessage(0, "\"abbbc\" fully matched the regular expression a(b*)c, but did not match group \"bb\", and \"abbbc\" fully matched the regular expression a(b*)c, but did not match group \"bb\"", thisLineNumber - 2, list1)))
+      assert(caught1.message === Some(errorMessage(0, "\"abbbc\" fully matched the regular expression a(b*)c, but \"bbb\" did not match group \"bb\", and \"abbbc\" fully matched the regular expression a(b*)c, but \"bbb\" did not match group \"bb\"", thisLineNumber - 2, list1)))
       assert(caught1.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -357,7 +357,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught2 = intercept[TestFailedException] {
         all(list2) should (fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "c")) or fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "c")))
       }
-      assert(caught2.message === Some(errorMessage(0, "\"abbcc\" fully matched the regular expression a(b*)(c*), but did not match group \"c\" at index 1, and \"abbcc\" fully matched the regular expression a(b*)(c*), but did not match group \"c\" at index 1", thisLineNumber - 2, list2)))
+      assert(caught2.message === Some(errorMessage(0, "\"abbcc\" fully matched the regular expression a(b*)(c*), but \"cc\" did not match group \"c\" at index 1, and \"abbcc\" fully matched the regular expression a(b*)(c*), but \"cc\" did not match group \"c\" at index 1", thisLineNumber - 2, list2)))
       assert(caught2.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -365,7 +365,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught3 = intercept[TestFailedException] {
         all(list3) should (fullyMatch regex ("a(b*)c".r withGroup "bb") or fullyMatch regex ("a(b*)c".r withGroup "bb"))
       }
-      assert(caught3.message === Some(errorMessage(0, "\"abbbc\" fully matched the regular expression a(b*)c, but did not match group \"bb\", and \"abbbc\" fully matched the regular expression a(b*)c, but did not match group \"bb\"", thisLineNumber - 2, list3)))
+      assert(caught3.message === Some(errorMessage(0, "\"abbbc\" fully matched the regular expression a(b*)c, but \"bbb\" did not match group \"bb\", and \"abbbc\" fully matched the regular expression a(b*)c, but \"bbb\" did not match group \"bb\"", thisLineNumber - 2, list3)))
       assert(caught3.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -373,7 +373,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught4 = intercept[TestFailedException] {
         all(list4) should (fullyMatch regex ("a(b*)(c*)".r withGroups ("bb", "c")) or fullyMatch regex ("a(b*)(c*)".r withGroups ("bb", "c")))
       }
-      assert(caught4.message === Some(errorMessage(0, "\"abbcc\" fully matched the regular expression a(b*)(c*), but did not match group \"c\" at index 1, and \"abbcc\" fully matched the regular expression a(b*)(c*), but did not match group \"c\" at index 1", thisLineNumber - 2, list4)))
+      assert(caught4.message === Some(errorMessage(0, "\"abbcc\" fully matched the regular expression a(b*)(c*), but \"cc\" did not match group \"c\" at index 1, and \"abbcc\" fully matched the regular expression a(b*)(c*), but \"cc\" did not match group \"c\" at index 1", thisLineNumber - 2, list4)))
       assert(caught4.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -478,7 +478,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught1 = intercept[TestFailedException] {
         all(list1) should startWith regex ("a(b*)c" withGroup "bb")
       }
-      assert(caught1.message === Some(errorMessage(0, "\"abbbc\" started with a substring that matched the regular expression a(b*)c, but did not match group \"bb\"", thisLineNumber - 2, list1)))
+      assert(caught1.message === Some(errorMessage(0, "\"abbbc\" started with a substring that matched the regular expression a(b*)c, but \"bbb\" did not match group \"bb\"", thisLineNumber - 2, list1)))
       assert(caught1.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -486,7 +486,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught2 = intercept[TestFailedException] {
         all(list2) should startWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))
       }
-      assert(caught2.message === Some(errorMessage(0, "\"abbc\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"cc\" at index 1", thisLineNumber - 2, list2)))
+      assert(caught2.message === Some(errorMessage(0, "\"abbc\" started with a substring that matched the regular expression a(b*)(c*), but \"c\" did not match group \"cc\" at index 1", thisLineNumber - 2, list2)))
       assert(caught2.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -494,7 +494,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught3 = intercept[TestFailedException] {
         all(list3) should startWith regex ("a(b*)c" withGroup "bb")
       }
-      assert(caught3.message === Some(errorMessage(0, "\"abbbcdef\" started with a substring that matched the regular expression a(b*)c, but did not match group \"bb\"", thisLineNumber - 2, list3)))
+      assert(caught3.message === Some(errorMessage(0, "\"abbbcdef\" started with a substring that matched the regular expression a(b*)c, but \"bbb\" did not match group \"bb\"", thisLineNumber - 2, list3)))
       assert(caught3.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -502,7 +502,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught4 = intercept[TestFailedException] {
         all(list4) should startWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))
       }
-      assert(caught4.message === Some(errorMessage(0, "\"abbcdef\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"cc\" at index 1", thisLineNumber - 2, list4)))
+      assert(caught4.message === Some(errorMessage(0, "\"abbcdef\" started with a substring that matched the regular expression a(b*)(c*), but \"c\" did not match group \"cc\" at index 1", thisLineNumber - 2, list4)))
       assert(caught4.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -510,7 +510,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught5 = intercept[TestFailedException] {
         all(list5) should startWith regex ("a(b*)c".r withGroup "bb")
       }
-      assert(caught5.message === Some(errorMessage(0, "\"abbbc\" started with a substring that matched the regular expression a(b*)c, but did not match group \"bb\"", thisLineNumber - 2, list5)))
+      assert(caught5.message === Some(errorMessage(0, "\"abbbc\" started with a substring that matched the regular expression a(b*)c, but \"bbb\" did not match group \"bb\"", thisLineNumber - 2, list5)))
       assert(caught5.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -518,7 +518,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught6 = intercept[TestFailedException] {
         all(list6) should startWith regex ("a(b*)(c*)".r withGroups ("bb", "cc"))
       }
-      assert(caught6.message === Some(errorMessage(0, "\"abbc\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"cc\" at index 1", thisLineNumber - 2, list6)))
+      assert(caught6.message === Some(errorMessage(0, "\"abbc\" started with a substring that matched the regular expression a(b*)(c*), but \"c\" did not match group \"cc\" at index 1", thisLineNumber - 2, list6)))
       assert(caught6.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -526,7 +526,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught7 = intercept[TestFailedException] {
         all(list7) should startWith regex ("a(b*)c" withGroup "bb")
       }
-      assert(caught7.message === Some(errorMessage(0, "\"abbbcdef\" started with a substring that matched the regular expression a(b*)c, but did not match group \"bb\"", thisLineNumber - 2, list7)))
+      assert(caught7.message === Some(errorMessage(0, "\"abbbcdef\" started with a substring that matched the regular expression a(b*)c, but \"bbb\" did not match group \"bb\"", thisLineNumber - 2, list7)))
       assert(caught7.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught7.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -534,7 +534,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught8 = intercept[TestFailedException] {
         all(list8) should startWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))
       }
-      assert(caught8.message === Some(errorMessage(0, "\"abbcdef\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"cc\" at index 1", thisLineNumber - 2, list8)))
+      assert(caught8.message === Some(errorMessage(0, "\"abbcdef\" started with a substring that matched the regular expression a(b*)(c*), but \"c\" did not match group \"cc\" at index 1", thisLineNumber - 2, list8)))
       assert(caught8.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -683,7 +683,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught1 = intercept[TestFailedException] {
         all(list1) should (startWith regex ("a(b*)c" withGroup "bb") and startWith regex ("a(b*)c" withGroup "bb"))
       }
-      assert(caught1.message === Some(errorMessage(0, "\"abbbc\" started with a substring that matched the regular expression a(b*)c, but did not match group \"bb\"", thisLineNumber - 2, list1)))
+      assert(caught1.message === Some(errorMessage(0, "\"abbbc\" started with a substring that matched the regular expression a(b*)c, but \"bbb\" did not match group \"bb\"", thisLineNumber - 2, list1)))
       assert(caught1.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -691,7 +691,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught2 = intercept[TestFailedException] {
         all(list2) should (startWith regex ("a(b*)(c*)" withGroups ("bb", "cc")) and startWith regex ("a(b*)(c*)" withGroups ("bb", "cc")))
       }
-      assert(caught2.message === Some(errorMessage(0, "\"abbc\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"cc\" at index 1", thisLineNumber - 2, list2)))
+      assert(caught2.message === Some(errorMessage(0, "\"abbc\" started with a substring that matched the regular expression a(b*)(c*), but \"c\" did not match group \"cc\" at index 1", thisLineNumber - 2, list2)))
       assert(caught2.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -699,7 +699,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught3 = intercept[TestFailedException] {
         all(list3) should (startWith regex ("a(b*)c" withGroup "bb") and startWith regex ("a(b*)c" withGroup "bb"))
       }
-      assert(caught3.message === Some(errorMessage(0, "\"abbbcdef\" started with a substring that matched the regular expression a(b*)c, but did not match group \"bb\"", thisLineNumber - 2, list3)))
+      assert(caught3.message === Some(errorMessage(0, "\"abbbcdef\" started with a substring that matched the regular expression a(b*)c, but \"bbb\" did not match group \"bb\"", thisLineNumber - 2, list3)))
       assert(caught3.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -707,7 +707,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught4 = intercept[TestFailedException] {
         all(list4) should (startWith regex ("a(b*)(c*)" withGroups ("bb", "cc")) and startWith regex ("a(b*)(c*)" withGroups ("bb", "cc")))
       }
-      assert(caught4.message === Some(errorMessage(0, "\"abbcdef\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"cc\" at index 1", thisLineNumber - 2, list4)))
+      assert(caught4.message === Some(errorMessage(0, "\"abbcdef\" started with a substring that matched the regular expression a(b*)(c*), but \"c\" did not match group \"cc\" at index 1", thisLineNumber - 2, list4)))
       assert(caught4.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -747,7 +747,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught9 = intercept[TestFailedException] {
         all(list9) should (startWith regex ("a(b*)c" withGroup "bbb") and startWith regex ("a(b*)c" withGroup "bb"))
       }
-      assert(caught9.message === Some(errorMessage(0, "\"abbbc\" started with a substring that matched the regular expression a(b*)c and group \"bbb\", but \"abbbc\" started with a substring that matched the regular expression a(b*)c, but did not match group \"bb\"", thisLineNumber - 2, list9)))
+      assert(caught9.message === Some(errorMessage(0, "\"abbbc\" started with a substring that matched the regular expression a(b*)c and group \"bbb\", but \"abbbc\" started with a substring that matched the regular expression a(b*)c, but \"bbb\" did not match group \"bb\"", thisLineNumber - 2, list9)))
       assert(caught9.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught9.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -755,7 +755,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught10 = intercept[TestFailedException] {
         all(list10) should (startWith regex ("a(b*)(c*)" withGroups ("bb", "c")) and startWith regex ("a(b*)(c*)" withGroups ("bb", "cc")))
       }
-      assert(caught10.message === Some(errorMessage(0, "\"abbc\" started with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"c\", but \"abbc\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"cc\" at index 1", thisLineNumber - 2, list2)))
+      assert(caught10.message === Some(errorMessage(0, "\"abbc\" started with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"c\", but \"abbc\" started with a substring that matched the regular expression a(b*)(c*), but \"c\" did not match group \"cc\" at index 1", thisLineNumber - 2, list2)))
       assert(caught10.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught10.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -763,7 +763,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught11 = intercept[TestFailedException] {
         all(list11) should (startWith regex ("a(b*)c" withGroup "bbb") and startWith regex ("a(b*)c" withGroup "bb"))
       }
-      assert(caught11.message === Some(errorMessage(0, "\"abbbcdef\" started with a substring that matched the regular expression a(b*)c and group \"bbb\", but \"abbbcdef\" started with a substring that matched the regular expression a(b*)c, but did not match group \"bb\"", thisLineNumber - 2, list11)))
+      assert(caught11.message === Some(errorMessage(0, "\"abbbcdef\" started with a substring that matched the regular expression a(b*)c and group \"bbb\", but \"abbbcdef\" started with a substring that matched the regular expression a(b*)c, but \"bbb\" did not match group \"bb\"", thisLineNumber - 2, list11)))
       assert(caught11.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught11.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -771,7 +771,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught12 = intercept[TestFailedException] {
         all(list12) should (startWith regex ("a(b*)(c*)" withGroups ("bb", "c")) and startWith regex ("a(b*)(c*)" withGroups ("bb", "cc")))
       }
-      assert(caught12.message === Some(errorMessage(0, "\"abbcdef\" started with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"c\", but \"abbcdef\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"cc\" at index 1", thisLineNumber - 2, list12)))
+      assert(caught12.message === Some(errorMessage(0, "\"abbcdef\" started with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"c\", but \"abbcdef\" started with a substring that matched the regular expression a(b*)(c*), but \"c\" did not match group \"cc\" at index 1", thisLineNumber - 2, list12)))
       assert(caught12.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught12.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -779,7 +779,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught13 = intercept[TestFailedException] {
         all(list13) should (not startWith regex ("a(b*)c" withGroup "bbb") and not startWith regex ("a(b*)c" withGroup "bb"))
       }
-      assert(caught13.message === Some(errorMessage(0, "\"abbc\" started with a substring that matched the regular expression a(b*)c, but did not match group \"bbb\", but \"abbc\" started with a substring that matched the regular expression a(b*)c and group \"bb\"", thisLineNumber - 2, list13)))
+      assert(caught13.message === Some(errorMessage(0, "\"abbc\" started with a substring that matched the regular expression a(b*)c, but \"bb\" did not match group \"bbb\", but \"abbc\" started with a substring that matched the regular expression a(b*)c and group \"bb\"", thisLineNumber - 2, list13)))
       assert(caught13.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught13.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -787,7 +787,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught14 = intercept[TestFailedException] {
         all(list14) should (not startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc")) and not startWith regex ("a(b*)(c*)" withGroups ("bb", "cc")))
       }
-      assert(caught14.message === Some(errorMessage(0, "\"abbcc\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"ccc\" at index 1, but \"abbcc\" started with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"cc\"", thisLineNumber - 2, list14)))
+      assert(caught14.message === Some(errorMessage(0, "\"abbcc\" started with a substring that matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1, but \"abbcc\" started with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"cc\"", thisLineNumber - 2, list14)))
       assert(caught14.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught14.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -795,7 +795,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught15 = intercept[TestFailedException] {
         all(list15) should (not startWith regex ("a(b*)c" withGroup "bbb") and not startWith regex ("a(b*)c" withGroup "bb"))
       }
-      assert(caught15.message === Some(errorMessage(0, "\"abbcdef\" started with a substring that matched the regular expression a(b*)c, but did not match group \"bbb\", but \"abbcdef\" started with a substring that matched the regular expression a(b*)c and group \"bb\"", thisLineNumber - 2, list15)))
+      assert(caught15.message === Some(errorMessage(0, "\"abbcdef\" started with a substring that matched the regular expression a(b*)c, but \"bb\" did not match group \"bbb\", but \"abbcdef\" started with a substring that matched the regular expression a(b*)c and group \"bb\"", thisLineNumber - 2, list15)))
       assert(caught15.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught15.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -803,7 +803,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught16 = intercept[TestFailedException] {
         all(list16) should (not startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc")) and not startWith regex ("a(b*)(c*)" withGroups ("bb", "cc")))
       }
-      assert(caught16.message === Some(errorMessage(0, "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"ccc\" at index 1, but \"abbccdef\" started with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"cc\"", thisLineNumber - 2, list16)))
+      assert(caught16.message === Some(errorMessage(0, "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1, but \"abbccdef\" started with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"cc\"", thisLineNumber - 2, list16)))
       assert(caught16.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught16.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
@@ -834,7 +834,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught1 = intercept[TestFailedException] {
         all(list1) should (startWith regex ("a(b*)c" withGroup "bb") or startWith regex ("a(b*)c" withGroup "b"))
       }
-      assert(caught1.message === Some(errorMessage(0, "\"abbbc\" started with a substring that matched the regular expression a(b*)c, but did not match group \"bb\", and \"abbbc\" started with a substring that matched the regular expression a(b*)c, but did not match group \"b\"", thisLineNumber - 2, list1)))
+      assert(caught1.message === Some(errorMessage(0, "\"abbbc\" started with a substring that matched the regular expression a(b*)c, but \"bbb\" did not match group \"bb\", and \"abbbc\" started with a substring that matched the regular expression a(b*)c, but \"bbb\" did not match group \"b\"", thisLineNumber - 2, list1)))
       assert(caught1.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -842,7 +842,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught2 = intercept[TestFailedException] {
         all(list2) should (startWith regex ("a(b*)(c*)" withGroups ("bb", "cc")) or startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc")))
       }
-      assert(caught2.message === Some(errorMessage(0, "\"abbc\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"cc\" at index 1, and \"abbc\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"ccc\" at index 1", thisLineNumber - 2, list2)))
+      assert(caught2.message === Some(errorMessage(0, "\"abbc\" started with a substring that matched the regular expression a(b*)(c*), but \"c\" did not match group \"cc\" at index 1, and \"abbc\" started with a substring that matched the regular expression a(b*)(c*), but \"c\" did not match group \"ccc\" at index 1", thisLineNumber - 2, list2)))
       assert(caught2.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -850,7 +850,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught3 = intercept[TestFailedException] {
         all(list3) should (startWith regex ("a(b*)c" withGroup "bb") or startWith regex ("a(b*)c" withGroup "b"))
       }
-      assert(caught3.message === Some(errorMessage(0, "\"abbbcdef\" started with a substring that matched the regular expression a(b*)c, but did not match group \"bb\", and \"abbbcdef\" started with a substring that matched the regular expression a(b*)c, but did not match group \"b\"", thisLineNumber - 2, list3)))
+      assert(caught3.message === Some(errorMessage(0, "\"abbbcdef\" started with a substring that matched the regular expression a(b*)c, but \"bbb\" did not match group \"bb\", and \"abbbcdef\" started with a substring that matched the regular expression a(b*)c, but \"bbb\" did not match group \"b\"", thisLineNumber - 2, list3)))
       assert(caught3.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -858,7 +858,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught4 = intercept[TestFailedException] {
         all(list4) should (startWith regex ("a(b*)(c*)" withGroups ("bb", "cc")) or startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc")))
       }
-      assert(caught4.message === Some(errorMessage(0, "\"abbcdef\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"cc\" at index 1, and \"abbcdef\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"ccc\" at index 1", thisLineNumber - 2, list4)))
+      assert(caught4.message === Some(errorMessage(0, "\"abbcdef\" started with a substring that matched the regular expression a(b*)(c*), but \"c\" did not match group \"cc\" at index 1, and \"abbcdef\" started with a substring that matched the regular expression a(b*)(c*), but \"c\" did not match group \"ccc\" at index 1", thisLineNumber - 2, list4)))
       assert(caught4.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -931,7 +931,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught1 = intercept[TestFailedException] {
         all(list1) should endWith regex ("a(b*)c" withGroup "bb")
       }
-      assert(caught1.message === Some(errorMessage(0, "\"abbbc\" ended with a substring that matched the regular expression a(b*)c, but did not match group \"bb\"", thisLineNumber - 2, list1)))
+      assert(caught1.message === Some(errorMessage(0, "\"abbbc\" ended with a substring that matched the regular expression a(b*)c, but \"bbb\" did not match group \"bb\"", thisLineNumber - 2, list1)))
       assert(caught1.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -939,7 +939,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught2 = intercept[TestFailedException] {
         all(list2) should endWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))
       }
-      assert(caught2.message === Some(errorMessage(0, "\"abbc\" ended with a substring that matched the regular expression a(b*)(c*), but did not match group \"cc\" at index 1", thisLineNumber - 2, list2)))
+      assert(caught2.message === Some(errorMessage(0, "\"abbc\" ended with a substring that matched the regular expression a(b*)(c*), but \"c\" did not match group \"cc\" at index 1", thisLineNumber - 2, list2)))
       assert(caught2.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -947,7 +947,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught3 = intercept[TestFailedException] {
         all(list3) should endWith regex ("a(b*)c" withGroup "bb")
       }
-      assert(caught3.message === Some(errorMessage(0, "\"123abbbc\" ended with a substring that matched the regular expression a(b*)c, but did not match group \"bb\"", thisLineNumber - 2, list3)))
+      assert(caught3.message === Some(errorMessage(0, "\"123abbbc\" ended with a substring that matched the regular expression a(b*)c, but \"bbb\" did not match group \"bb\"", thisLineNumber - 2, list3)))
       assert(caught3.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -955,7 +955,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught4 = intercept[TestFailedException] {
         all(list4) should endWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))
       }
-      assert(caught4.message === Some(errorMessage(0, "\"123abbc\" ended with a substring that matched the regular expression a(b*)(c*), but did not match group \"cc\" at index 1", thisLineNumber - 2, list4)))
+      assert(caught4.message === Some(errorMessage(0, "\"123abbc\" ended with a substring that matched the regular expression a(b*)(c*), but \"c\" did not match group \"cc\" at index 1", thisLineNumber - 2, list4)))
       assert(caught4.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -963,7 +963,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught5 = intercept[TestFailedException] {
         all(list5) should endWith regex ("a(b*)c".r withGroup "bb")
       }
-      assert(caught5.message === Some(errorMessage(0, "\"abbbc\" ended with a substring that matched the regular expression a(b*)c, but did not match group \"bb\"", thisLineNumber - 2, list5)))
+      assert(caught5.message === Some(errorMessage(0, "\"abbbc\" ended with a substring that matched the regular expression a(b*)c, but \"bbb\" did not match group \"bb\"", thisLineNumber - 2, list5)))
       assert(caught5.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -971,7 +971,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught6 = intercept[TestFailedException] {
         all(list6) should endWith regex ("a(b*)(c*)".r withGroups ("bb", "cc"))
       }
-      assert(caught6.message === Some(errorMessage(0, "\"abbc\" ended with a substring that matched the regular expression a(b*)(c*), but did not match group \"cc\" at index 1", thisLineNumber - 2, list6)))
+      assert(caught6.message === Some(errorMessage(0, "\"abbc\" ended with a substring that matched the regular expression a(b*)(c*), but \"c\" did not match group \"cc\" at index 1", thisLineNumber - 2, list6)))
       assert(caught6.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -979,7 +979,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught7 = intercept[TestFailedException] {
         all(list7) should endWith regex ("a(b*)c" withGroup "bb")
       }
-      assert(caught7.message === Some(errorMessage(0, "\"123abbbc\" ended with a substring that matched the regular expression a(b*)c, but did not match group \"bb\"", thisLineNumber - 2, list7)))
+      assert(caught7.message === Some(errorMessage(0, "\"123abbbc\" ended with a substring that matched the regular expression a(b*)c, but \"bbb\" did not match group \"bb\"", thisLineNumber - 2, list7)))
       assert(caught7.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught7.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -987,7 +987,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught8 = intercept[TestFailedException] {
         all(list8) should endWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))
       }
-      assert(caught8.message === Some(errorMessage(0, "\"123abbc\" ended with a substring that matched the regular expression a(b*)(c*), but did not match group \"cc\" at index 1", thisLineNumber - 2, list8)))
+      assert(caught8.message === Some(errorMessage(0, "\"123abbc\" ended with a substring that matched the regular expression a(b*)(c*), but \"c\" did not match group \"cc\" at index 1", thisLineNumber - 2, list8)))
       assert(caught8.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -1136,7 +1136,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught1 = intercept[TestFailedException] {
         all(list1) should (endWith regex ("a(b*)c" withGroup "bb") and endWith regex ("a(b*)c" withGroup "bb"))
       }
-      assert(caught1.message === Some(errorMessage(0, "\"abbbc\" ended with a substring that matched the regular expression a(b*)c, but did not match group \"bb\"", thisLineNumber - 2, list1)))
+      assert(caught1.message === Some(errorMessage(0, "\"abbbc\" ended with a substring that matched the regular expression a(b*)c, but \"bbb\" did not match group \"bb\"", thisLineNumber - 2, list1)))
       assert(caught1.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -1144,7 +1144,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught2 = intercept[TestFailedException] {
         all(list2) should (endWith regex ("a(b*)(c*)" withGroups ("bb", "cc")) and endWith regex ("a(b*)(c*)" withGroups ("bb", "cc")))
       }
-      assert(caught2.message === Some(errorMessage(0, "\"abbc\" ended with a substring that matched the regular expression a(b*)(c*), but did not match group \"cc\" at index 1", thisLineNumber - 2, list2)))
+      assert(caught2.message === Some(errorMessage(0, "\"abbc\" ended with a substring that matched the regular expression a(b*)(c*), but \"c\" did not match group \"cc\" at index 1", thisLineNumber - 2, list2)))
       assert(caught2.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -1152,7 +1152,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught3 = intercept[TestFailedException] {
         all(list3) should (endWith regex ("a(b*)c" withGroup "bb") and endWith regex ("a(b*)c" withGroup "bb"))
       }
-      assert(caught3.message === Some(errorMessage(0, "\"123abbbc\" ended with a substring that matched the regular expression a(b*)c, but did not match group \"bb\"", thisLineNumber - 2, list3)))
+      assert(caught3.message === Some(errorMessage(0, "\"123abbbc\" ended with a substring that matched the regular expression a(b*)c, but \"bbb\" did not match group \"bb\"", thisLineNumber - 2, list3)))
       assert(caught3.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -1160,7 +1160,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught4 = intercept[TestFailedException] {
         all(list4) should (endWith regex ("a(b*)(c*)" withGroups ("bb", "cc")) and endWith regex ("a(b*)(c*)" withGroups ("bb", "cc")))
       }
-      assert(caught4.message === Some(errorMessage(0, "\"123abbc\" ended with a substring that matched the regular expression a(b*)(c*), but did not match group \"cc\" at index 1", thisLineNumber - 2, list4)))
+      assert(caught4.message === Some(errorMessage(0, "\"123abbc\" ended with a substring that matched the regular expression a(b*)(c*), but \"c\" did not match group \"cc\" at index 1", thisLineNumber - 2, list4)))
       assert(caught4.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -1200,7 +1200,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught9 = intercept[TestFailedException] {
         all(list9) should (endWith regex ("a(b*)c" withGroup "bbb") and endWith regex ("a(b*)c" withGroup "bb"))
       }
-      assert(caught9.message === Some(errorMessage(0, "\"abbbc\" ended with a substring that matched the regular expression a(b*)c and group \"bbb\", but \"abbbc\" ended with a substring that matched the regular expression a(b*)c, but did not match group \"bb\"", thisLineNumber - 2, list9)))
+      assert(caught9.message === Some(errorMessage(0, "\"abbbc\" ended with a substring that matched the regular expression a(b*)c and group \"bbb\", but \"abbbc\" ended with a substring that matched the regular expression a(b*)c, but \"bbb\" did not match group \"bb\"", thisLineNumber - 2, list9)))
       assert(caught9.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught9.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -1208,7 +1208,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught10 = intercept[TestFailedException] {
         all(list10) should (endWith regex ("a(b*)(c*)" withGroups ("bb", "c")) and endWith regex ("a(b*)(c*)" withGroups ("bb", "cc")))
       }
-      assert(caught10.message === Some(errorMessage(0, "\"abbc\" ended with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"c\", but \"abbc\" ended with a substring that matched the regular expression a(b*)(c*), but did not match group \"cc\" at index 1", thisLineNumber - 2, list2)))
+      assert(caught10.message === Some(errorMessage(0, "\"abbc\" ended with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"c\", but \"abbc\" ended with a substring that matched the regular expression a(b*)(c*), but \"c\" did not match group \"cc\" at index 1", thisLineNumber - 2, list2)))
       assert(caught10.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught10.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -1216,7 +1216,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught11 = intercept[TestFailedException] {
         all(list11) should (endWith regex ("a(b*)c" withGroup "bbb") and endWith regex ("a(b*)c" withGroup "bb"))
       }
-      assert(caught11.message === Some(errorMessage(0, "\"123abbbc\" ended with a substring that matched the regular expression a(b*)c and group \"bbb\", but \"123abbbc\" ended with a substring that matched the regular expression a(b*)c, but did not match group \"bb\"", thisLineNumber - 2, list11)))
+      assert(caught11.message === Some(errorMessage(0, "\"123abbbc\" ended with a substring that matched the regular expression a(b*)c and group \"bbb\", but \"123abbbc\" ended with a substring that matched the regular expression a(b*)c, but \"bbb\" did not match group \"bb\"", thisLineNumber - 2, list11)))
       assert(caught11.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught11.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -1224,7 +1224,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught12 = intercept[TestFailedException] {
         all(list12) should (endWith regex ("a(b*)(c*)" withGroups ("bb", "c")) and endWith regex ("a(b*)(c*)" withGroups ("bb", "cc")))
       }
-      assert(caught12.message === Some(errorMessage(0, "\"123abbc\" ended with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"c\", but \"123abbc\" ended with a substring that matched the regular expression a(b*)(c*), but did not match group \"cc\" at index 1", thisLineNumber - 2, list12)))
+      assert(caught12.message === Some(errorMessage(0, "\"123abbc\" ended with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"c\", but \"123abbc\" ended with a substring that matched the regular expression a(b*)(c*), but \"c\" did not match group \"cc\" at index 1", thisLineNumber - 2, list12)))
       assert(caught12.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught12.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -1232,7 +1232,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught13 = intercept[TestFailedException] {
         all(list13) should (not endWith regex ("a(b*)c" withGroup "bbb") and not endWith regex ("a(b*)c" withGroup "bb"))
       }
-      assert(caught13.message === Some(errorMessage(0, "\"abbc\" ended with a substring that matched the regular expression a(b*)c, but did not match group \"bbb\", but \"abbc\" ended with a substring that matched the regular expression a(b*)c and group \"bb\"", thisLineNumber - 2, list13)))
+      assert(caught13.message === Some(errorMessage(0, "\"abbc\" ended with a substring that matched the regular expression a(b*)c, but \"bb\" did not match group \"bbb\", but \"abbc\" ended with a substring that matched the regular expression a(b*)c and group \"bb\"", thisLineNumber - 2, list13)))
       assert(caught13.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught13.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -1240,7 +1240,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught14 = intercept[TestFailedException] {
         all(list14) should (not endWith regex ("a(b*)(c*)" withGroups ("bb", "ccc")) and not endWith regex ("a(b*)(c*)" withGroups ("bb", "cc")))
       }
-      assert(caught14.message === Some(errorMessage(0, "\"abbcc\" ended with a substring that matched the regular expression a(b*)(c*), but did not match group \"ccc\" at index 1, but \"abbcc\" ended with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"cc\"", thisLineNumber - 2, list14)))
+      assert(caught14.message === Some(errorMessage(0, "\"abbcc\" ended with a substring that matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1, but \"abbcc\" ended with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"cc\"", thisLineNumber - 2, list14)))
       assert(caught14.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught14.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -1248,7 +1248,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught15 = intercept[TestFailedException] {
         all(list15) should (not endWith regex ("a(b*)c" withGroup "bbb") and not endWith regex ("a(b*)c" withGroup "bb"))
       }
-      assert(caught15.message === Some(errorMessage(0, "\"123abbc\" ended with a substring that matched the regular expression a(b*)c, but did not match group \"bbb\", but \"123abbc\" ended with a substring that matched the regular expression a(b*)c and group \"bb\"", thisLineNumber - 2, list15)))
+      assert(caught15.message === Some(errorMessage(0, "\"123abbc\" ended with a substring that matched the regular expression a(b*)c, but \"bb\" did not match group \"bbb\", but \"123abbc\" ended with a substring that matched the regular expression a(b*)c and group \"bb\"", thisLineNumber - 2, list15)))
       assert(caught15.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught15.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -1256,7 +1256,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught16 = intercept[TestFailedException] {
         all(list16) should (not endWith regex ("a(b*)(c*)" withGroups ("bb", "ccc")) and not endWith regex ("a(b*)(c*)" withGroups ("bb", "cc")))
       }
-      assert(caught16.message === Some(errorMessage(0, "\"123abbcc\" ended with a substring that matched the regular expression a(b*)(c*), but did not match group \"ccc\" at index 1, but \"123abbcc\" ended with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"cc\"", thisLineNumber - 2, list16)))
+      assert(caught16.message === Some(errorMessage(0, "\"123abbcc\" ended with a substring that matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1, but \"123abbcc\" ended with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"cc\"", thisLineNumber - 2, list16)))
       assert(caught16.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught16.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
@@ -1287,7 +1287,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught1 = intercept[TestFailedException] {
         all(list1) should (endWith regex ("a(b*)c" withGroup "bb") or endWith regex ("a(b*)c" withGroup "b"))
       }
-      assert(caught1.message === Some(errorMessage(0, "\"abbbc\" ended with a substring that matched the regular expression a(b*)c, but did not match group \"bb\", and \"abbbc\" ended with a substring that matched the regular expression a(b*)c, but did not match group \"b\"", thisLineNumber - 2, list1)))
+      assert(caught1.message === Some(errorMessage(0, "\"abbbc\" ended with a substring that matched the regular expression a(b*)c, but \"bbb\" did not match group \"bb\", and \"abbbc\" ended with a substring that matched the regular expression a(b*)c, but \"bbb\" did not match group \"b\"", thisLineNumber - 2, list1)))
       assert(caught1.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -1295,7 +1295,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught2 = intercept[TestFailedException] {
         all(list2) should (endWith regex ("a(b*)(c*)" withGroups ("bb", "cc")) or endWith regex ("a(b*)(c*)" withGroups ("bb", "ccc")))
       }
-      assert(caught2.message === Some(errorMessage(0, "\"abbc\" ended with a substring that matched the regular expression a(b*)(c*), but did not match group \"cc\" at index 1, and \"abbc\" ended with a substring that matched the regular expression a(b*)(c*), but did not match group \"ccc\" at index 1", thisLineNumber - 2, list2)))
+      assert(caught2.message === Some(errorMessage(0, "\"abbc\" ended with a substring that matched the regular expression a(b*)(c*), but \"c\" did not match group \"cc\" at index 1, and \"abbc\" ended with a substring that matched the regular expression a(b*)(c*), but \"c\" did not match group \"ccc\" at index 1", thisLineNumber - 2, list2)))
       assert(caught2.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -1303,7 +1303,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught3 = intercept[TestFailedException] {
         all(list3) should (endWith regex ("a(b*)c" withGroup "bb") or endWith regex ("a(b*)c" withGroup "b"))
       }
-      assert(caught3.message === Some(errorMessage(0, "\"123abbbc\" ended with a substring that matched the regular expression a(b*)c, but did not match group \"bb\", and \"123abbbc\" ended with a substring that matched the regular expression a(b*)c, but did not match group \"b\"", thisLineNumber - 2, list3)))
+      assert(caught3.message === Some(errorMessage(0, "\"123abbbc\" ended with a substring that matched the regular expression a(b*)c, but \"bbb\" did not match group \"bb\", and \"123abbbc\" ended with a substring that matched the regular expression a(b*)c, but \"bbb\" did not match group \"b\"", thisLineNumber - 2, list3)))
       assert(caught3.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -1311,7 +1311,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught4 = intercept[TestFailedException] {
         all(list4) should (endWith regex ("a(b*)(c*)" withGroups ("bb", "cc")) or endWith regex ("a(b*)(c*)" withGroups ("bb", "ccc")))
       }
-      assert(caught4.message === Some(errorMessage(0, "\"123abbc\" ended with a substring that matched the regular expression a(b*)(c*), but did not match group \"cc\" at index 1, and \"123abbc\" ended with a substring that matched the regular expression a(b*)(c*), but did not match group \"ccc\" at index 1", thisLineNumber - 2, list4)))
+      assert(caught4.message === Some(errorMessage(0, "\"123abbc\" ended with a substring that matched the regular expression a(b*)(c*), but \"c\" did not match group \"cc\" at index 1, and \"123abbc\" ended with a substring that matched the regular expression a(b*)(c*), but \"c\" did not match group \"ccc\" at index 1", thisLineNumber - 2, list4)))
       assert(caught4.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -1429,7 +1429,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught1 = intercept[TestFailedException] {
         all(list1) should include regex ("a(b*)c" withGroup "bb")
       }
-      assert(caught1.message === Some(errorMessage(0, "\"abbbc\" included substring that matched regex a(b*)c, but did not match group \"bb\"", thisLineNumber - 2, list1)))
+      assert(caught1.message === Some(errorMessage(0, "\"abbbc\" included substring that matched regex a(b*)c, but \"bbb\" did not match group \"bb\"", thisLineNumber - 2, list1)))
       assert(caught1.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -1437,7 +1437,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught2 = intercept[TestFailedException] {
         all(list2) should include regex ("a(b*)(c*)" withGroups ("bb", "cc"))
       }
-      assert(caught2.message === Some(errorMessage(0, "\"abbc\" included substring that matched regex a(b*)(c*), but did not match group \"cc\" at index 1", thisLineNumber - 2, list2)))
+      assert(caught2.message === Some(errorMessage(0, "\"abbc\" included substring that matched regex a(b*)(c*), but \"c\" did not match group \"cc\" at index 1", thisLineNumber - 2, list2)))
       assert(caught2.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -1445,7 +1445,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught3 = intercept[TestFailedException] {
         all(list3) should include regex ("a(b*)c" withGroup "bb")
       }
-      assert(caught3.message === Some(errorMessage(0, "\"abbbcdef\" included substring that matched regex a(b*)c, but did not match group \"bb\"", thisLineNumber - 2, list3)))
+      assert(caught3.message === Some(errorMessage(0, "\"abbbcdef\" included substring that matched regex a(b*)c, but \"bbb\" did not match group \"bb\"", thisLineNumber - 2, list3)))
       assert(caught3.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -1453,7 +1453,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught4 = intercept[TestFailedException] {
         all(list4) should include regex ("a(b*)(c*)" withGroups ("bb", "cc"))
       }
-      assert(caught4.message === Some(errorMessage(0, "\"abbcdef\" included substring that matched regex a(b*)(c*), but did not match group \"cc\" at index 1", thisLineNumber - 2, list4)))
+      assert(caught4.message === Some(errorMessage(0, "\"abbcdef\" included substring that matched regex a(b*)(c*), but \"c\" did not match group \"cc\" at index 1", thisLineNumber - 2, list4)))
       assert(caught4.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -1461,7 +1461,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught5 = intercept[TestFailedException] {
         all(list5) should include regex ("a(b*)c".r withGroup "bb")
       }
-      assert(caught5.message === Some(errorMessage(0, "\"abbbc\" included substring that matched regex a(b*)c, but did not match group \"bb\"", thisLineNumber - 2, list5)))
+      assert(caught5.message === Some(errorMessage(0, "\"abbbc\" included substring that matched regex a(b*)c, but \"bbb\" did not match group \"bb\"", thisLineNumber - 2, list5)))
       assert(caught5.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -1469,7 +1469,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught6 = intercept[TestFailedException] {
         all(list6) should include regex ("a(b*)(c*)".r withGroups ("bb", "cc"))
       }
-      assert(caught6.message === Some(errorMessage(0, "\"abbc\" included substring that matched regex a(b*)(c*), but did not match group \"cc\" at index 1", thisLineNumber - 2, list6)))
+      assert(caught6.message === Some(errorMessage(0, "\"abbc\" included substring that matched regex a(b*)(c*), but \"c\" did not match group \"cc\" at index 1", thisLineNumber - 2, list6)))
       assert(caught6.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -1477,7 +1477,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught7 = intercept[TestFailedException] {
         all(list7) should include regex ("a(b*)c" withGroup "bb")
       }
-      assert(caught7.message === Some(errorMessage(0, "\"abbbcdef\" included substring that matched regex a(b*)c, but did not match group \"bb\"", thisLineNumber - 2, list7)))
+      assert(caught7.message === Some(errorMessage(0, "\"abbbcdef\" included substring that matched regex a(b*)c, but \"bbb\" did not match group \"bb\"", thisLineNumber - 2, list7)))
       assert(caught7.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught7.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -1485,7 +1485,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught8 = intercept[TestFailedException] {
         all(list8) should include regex ("a(b*)(c*)" withGroups ("bb", "cc"))
       }
-      assert(caught8.message === Some(errorMessage(0, "\"abbcdef\" included substring that matched regex a(b*)(c*), but did not match group \"cc\" at index 1", thisLineNumber - 2, list8)))
+      assert(caught8.message === Some(errorMessage(0, "\"abbcdef\" included substring that matched regex a(b*)(c*), but \"c\" did not match group \"cc\" at index 1", thisLineNumber - 2, list8)))
       assert(caught8.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -1557,7 +1557,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught17 = intercept[TestFailedException] {
         all(list17) should include regex ("a(b*)c" withGroup "bb")
       }
-      assert(caught17.message === Some(errorMessage(0, "\"abbbc\" included substring that matched regex a(b*)c, but did not match group \"bb\"", thisLineNumber - 2, list17)))
+      assert(caught17.message === Some(errorMessage(0, "\"abbbc\" included substring that matched regex a(b*)c, but \"bbb\" did not match group \"bb\"", thisLineNumber - 2, list17)))
       assert(caught17.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught17.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -1565,7 +1565,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught18 = intercept[TestFailedException] {
         all(list18) should include regex ("a(b*)(c*)" withGroups ("bb", "cc"))
       }
-      assert(caught18.message === Some(errorMessage(0, "\"abbc\" included substring that matched regex a(b*)(c*), but did not match group \"cc\" at index 1", thisLineNumber - 2, list18)))
+      assert(caught18.message === Some(errorMessage(0, "\"abbc\" included substring that matched regex a(b*)(c*), but \"c\" did not match group \"cc\" at index 1", thisLineNumber - 2, list18)))
       assert(caught18.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught18.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -1573,7 +1573,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught19 = intercept[TestFailedException] {
         all(list19) should include regex ("a(b*)c" withGroup "bb")
       }
-      assert(caught19.message === Some(errorMessage(0, "\"123abbbc\" included substring that matched regex a(b*)c, but did not match group \"bb\"", thisLineNumber - 2, list19)))
+      assert(caught19.message === Some(errorMessage(0, "\"123abbbc\" included substring that matched regex a(b*)c, but \"bbb\" did not match group \"bb\"", thisLineNumber - 2, list19)))
       assert(caught19.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught19.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -1581,7 +1581,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught20 = intercept[TestFailedException] {
         all(list20) should include regex ("a(b*)(c*)" withGroups ("bb", "cc"))
       }
-      assert(caught20.message === Some(errorMessage(0, "\"123abbc\" included substring that matched regex a(b*)(c*), but did not match group \"cc\" at index 1", thisLineNumber - 2, list20)))
+      assert(caught20.message === Some(errorMessage(0, "\"123abbc\" included substring that matched regex a(b*)(c*), but \"c\" did not match group \"cc\" at index 1", thisLineNumber - 2, list20)))
       assert(caught20.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught20.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -1589,7 +1589,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught21 = intercept[TestFailedException] {
         all(list21) should include regex ("a(b*)c".r withGroup "bb")
       }
-      assert(caught21.message === Some(errorMessage(0, "\"abbbc\" included substring that matched regex a(b*)c, but did not match group \"bb\"", thisLineNumber - 2, list21)))
+      assert(caught21.message === Some(errorMessage(0, "\"abbbc\" included substring that matched regex a(b*)c, but \"bbb\" did not match group \"bb\"", thisLineNumber - 2, list21)))
       assert(caught21.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught21.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -1597,7 +1597,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught22 = intercept[TestFailedException] {
         all(list22) should include regex ("a(b*)(c*)".r withGroups ("bb", "cc"))
       }
-      assert(caught22.message === Some(errorMessage(0, "\"abbc\" included substring that matched regex a(b*)(c*), but did not match group \"cc\" at index 1", thisLineNumber - 2, list22)))
+      assert(caught22.message === Some(errorMessage(0, "\"abbc\" included substring that matched regex a(b*)(c*), but \"c\" did not match group \"cc\" at index 1", thisLineNumber - 2, list22)))
       assert(caught22.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught22.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -1605,7 +1605,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught23 = intercept[TestFailedException] {
         all(list23) should include regex ("a(b*)c" withGroup "bb")
       }
-      assert(caught23.message === Some(errorMessage(0, "\"123abbbc\" included substring that matched regex a(b*)c, but did not match group \"bb\"", thisLineNumber - 2, list23)))
+      assert(caught23.message === Some(errorMessage(0, "\"123abbbc\" included substring that matched regex a(b*)c, but \"bbb\" did not match group \"bb\"", thisLineNumber - 2, list23)))
       assert(caught23.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught23.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -1613,7 +1613,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught24 = intercept[TestFailedException] {
         all(list24) should include regex ("a(b*)(c*)" withGroups ("bb", "cc"))
       }
-      assert(caught24.message === Some(errorMessage(0, "\"123abbc\" included substring that matched regex a(b*)(c*), but did not match group \"cc\" at index 1", thisLineNumber - 2, list24)))
+      assert(caught24.message === Some(errorMessage(0, "\"123abbc\" included substring that matched regex a(b*)(c*), but \"c\" did not match group \"cc\" at index 1", thisLineNumber - 2, list24)))
       assert(caught24.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught24.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -1685,7 +1685,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught33 = intercept[TestFailedException] {
         all(list33) should include regex ("a(b*)c" withGroup "bb")
       }
-      assert(caught33.message === Some(errorMessage(0, "\"123abbbcdef\" included substring that matched regex a(b*)c, but did not match group \"bb\"", thisLineNumber - 2, list33)))
+      assert(caught33.message === Some(errorMessage(0, "\"123abbbcdef\" included substring that matched regex a(b*)c, but \"bbb\" did not match group \"bb\"", thisLineNumber - 2, list33)))
       assert(caught33.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught33.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -1693,7 +1693,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught34 = intercept[TestFailedException] {
         all(list34) should include regex ("a(b*)(c*)" withGroups ("bb", "cc"))
       }
-      assert(caught34.message === Some(errorMessage(0, "\"123abbcdef\" included substring that matched regex a(b*)(c*), but did not match group \"cc\" at index 1", thisLineNumber - 2, list34)))
+      assert(caught34.message === Some(errorMessage(0, "\"123abbcdef\" included substring that matched regex a(b*)(c*), but \"c\" did not match group \"cc\" at index 1", thisLineNumber - 2, list34)))
       assert(caught34.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught34.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -1701,7 +1701,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught35 = intercept[TestFailedException] {
         all(list35) should include regex ("a(b*)c".r withGroup "bb")
       }
-      assert(caught35.message === Some(errorMessage(0, "\"123abbbcdef\" included substring that matched regex a(b*)c, but did not match group \"bb\"", thisLineNumber - 2, list35)))
+      assert(caught35.message === Some(errorMessage(0, "\"123abbbcdef\" included substring that matched regex a(b*)c, but \"bbb\" did not match group \"bb\"", thisLineNumber - 2, list35)))
       assert(caught35.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught35.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -1709,7 +1709,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught36 = intercept[TestFailedException] {
         all(list36) should include regex ("a(b*)(c*)".r withGroups ("bb", "cc"))
       }
-      assert(caught36.message === Some(errorMessage(0, "\"123abbcdef\" included substring that matched regex a(b*)(c*), but did not match group \"cc\" at index 1", thisLineNumber - 2, list36)))
+      assert(caught36.message === Some(errorMessage(0, "\"123abbcdef\" included substring that matched regex a(b*)(c*), but \"c\" did not match group \"cc\" at index 1", thisLineNumber - 2, list36)))
       assert(caught36.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught36.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -1929,7 +1929,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught1 = intercept[TestFailedException] {
         all(list1) should (include regex ("a(b*)c" withGroup "bb") and include regex ("a(b*)c" withGroup "bb"))
       }
-      assert(caught1.message === Some(errorMessage(0, "\"123abbbcdef\" included substring that matched regex a(b*)c, but did not match group \"bb\"", thisLineNumber - 2, list1)))
+      assert(caught1.message === Some(errorMessage(0, "\"123abbbcdef\" included substring that matched regex a(b*)c, but \"bbb\" did not match group \"bb\"", thisLineNumber - 2, list1)))
       assert(caught1.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -1937,7 +1937,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught2 = intercept[TestFailedException] {
         all(list2) should (include regex ("a(b*)(c*)" withGroups ("bb", "cc")) and include regex ("a(b*)(c*)" withGroups ("bb", "cc")))
       }
-      assert(caught2.message === Some(errorMessage(0, "\"123abbcdef\" included substring that matched regex a(b*)(c*), but did not match group \"cc\" at index 1", thisLineNumber - 2, list2)))
+      assert(caught2.message === Some(errorMessage(0, "\"123abbcdef\" included substring that matched regex a(b*)(c*), but \"c\" did not match group \"cc\" at index 1", thisLineNumber - 2, list2)))
       assert(caught2.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -1945,7 +1945,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught3 = intercept[TestFailedException] {
         all(list3) should (include regex ("a(b*)c".r withGroup "bb") and include regex ("a(b*)c".r withGroup "bb"))
       }
-      assert(caught3.message === Some(errorMessage(0, "\"123abbbcdef\" included substring that matched regex a(b*)c, but did not match group \"bb\"", thisLineNumber - 2, list3)))
+      assert(caught3.message === Some(errorMessage(0, "\"123abbbcdef\" included substring that matched regex a(b*)c, but \"bbb\" did not match group \"bb\"", thisLineNumber - 2, list3)))
       assert(caught3.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -1953,7 +1953,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught4 = intercept[TestFailedException] {
         all(list4) should (include regex ("a(b*)(c*)".r withGroups ("bb", "cc")) and include regex ("a(b*)(c*)".r withGroups ("bb", "cc")))
       }
-      assert(caught4.message === Some(errorMessage(0, "\"123abbcdef\" included substring that matched regex a(b*)(c*), but did not match group \"cc\" at index 1", thisLineNumber - 2, list4)))
+      assert(caught4.message === Some(errorMessage(0, "\"123abbcdef\" included substring that matched regex a(b*)(c*), but \"c\" did not match group \"cc\" at index 1", thisLineNumber - 2, list4)))
       assert(caught4.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -1993,7 +1993,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught9 = intercept[TestFailedException] {
         all(list9) should (include regex ("a(b*)c" withGroup "bbb") and include regex ("a(b*)c" withGroup "bb"))
       }
-      assert(caught9.message === Some(errorMessage(0, "\"123abbbcdef\" included substring that matched regex a(b*)c and group \"bbb\", but \"123abbbcdef\" included substring that matched regex a(b*)c, but did not match group \"bb\"", thisLineNumber - 2, list9)))
+      assert(caught9.message === Some(errorMessage(0, "\"123abbbcdef\" included substring that matched regex a(b*)c and group \"bbb\", but \"123abbbcdef\" included substring that matched regex a(b*)c, but \"bbb\" did not match group \"bb\"", thisLineNumber - 2, list9)))
       assert(caught9.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught9.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -2001,7 +2001,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught10 = intercept[TestFailedException] {
         all(list10) should (include regex ("a(b*)(c*)" withGroups ("bb", "c")) and include regex ("a(b*)(c*)" withGroups ("bb", "cc")))
       }
-      assert(caught10.message === Some(errorMessage(0, "\"123abbcdef\" included substring that matched regex a(b*)(c*) and group \"bb\", \"c\", but \"123abbcdef\" included substring that matched regex a(b*)(c*), but did not match group \"cc\" at index 1", thisLineNumber - 2, list10)))
+      assert(caught10.message === Some(errorMessage(0, "\"123abbcdef\" included substring that matched regex a(b*)(c*) and group \"bb\", \"c\", but \"123abbcdef\" included substring that matched regex a(b*)(c*), but \"c\" did not match group \"cc\" at index 1", thisLineNumber - 2, list10)))
       assert(caught10.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught10.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -2009,7 +2009,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught11 = intercept[TestFailedException] {
         all(list11) should (include regex ("a(b*)c".r withGroup "bbb") and include regex ("a(b*)c".r withGroup "bb"))
       }
-      assert(caught11.message === Some(errorMessage(0, "\"123abbbcdef\" included substring that matched regex a(b*)c and group \"bbb\", but \"123abbbcdef\" included substring that matched regex a(b*)c, but did not match group \"bb\"", thisLineNumber - 2, list11)))
+      assert(caught11.message === Some(errorMessage(0, "\"123abbbcdef\" included substring that matched regex a(b*)c and group \"bbb\", but \"123abbbcdef\" included substring that matched regex a(b*)c, but \"bbb\" did not match group \"bb\"", thisLineNumber - 2, list11)))
       assert(caught11.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught11.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -2017,7 +2017,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught12 = intercept[TestFailedException] {
         all(list12) should (include regex ("a(b*)(c*)".r withGroups ("bb", "c")) and include regex ("a(b*)(c*)".r withGroups ("bb", "cc")))
       }
-      assert(caught12.message === Some(errorMessage(0, "\"123abbcdef\" included substring that matched regex a(b*)(c*) and group \"bb\", \"c\", but \"123abbcdef\" included substring that matched regex a(b*)(c*), but did not match group \"cc\" at index 1", thisLineNumber - 2, list4)))
+      assert(caught12.message === Some(errorMessage(0, "\"123abbcdef\" included substring that matched regex a(b*)(c*) and group \"bb\", \"c\", but \"123abbcdef\" included substring that matched regex a(b*)(c*), but \"c\" did not match group \"cc\" at index 1", thisLineNumber - 2, list4)))
       assert(caught12.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught12.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -2025,7 +2025,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught13 = intercept[TestFailedException] {
         all(list13) should (not include regex ("a(b*)c" withGroup "b") and not include regex ("a(b*)c" withGroup "bb"))
       }
-      assert(caught13.message === Some(errorMessage(0, "\"123abbcdef\" included substring that matched regex a(b*)c, but did not match group \"b\", but \"123abbcdef\" included substring that matched regex a(b*)c and group \"bb\"", thisLineNumber - 2, list13)))
+      assert(caught13.message === Some(errorMessage(0, "\"123abbcdef\" included substring that matched regex a(b*)c, but \"bb\" did not match group \"b\", but \"123abbcdef\" included substring that matched regex a(b*)c and group \"bb\"", thisLineNumber - 2, list13)))
       assert(caught13.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught13.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -2033,7 +2033,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught14 = intercept[TestFailedException] {
         all(list14) should (not include regex ("a(b*)(c*)" withGroups ("bb", "c")) and not include regex ("a(b*)(c*)" withGroups ("bb", "cc")))
       }
-      assert(caught14.message === Some(errorMessage(0, "\"123abbccdef\" included substring that matched regex a(b*)(c*), but did not match group \"c\" at index 1, but \"123abbccdef\" included substring that matched regex a(b*)(c*) and group \"bb\", \"cc\"", thisLineNumber - 2, list14)))
+      assert(caught14.message === Some(errorMessage(0, "\"123abbccdef\" included substring that matched regex a(b*)(c*), but \"cc\" did not match group \"c\" at index 1, but \"123abbccdef\" included substring that matched regex a(b*)(c*) and group \"bb\", \"cc\"", thisLineNumber - 2, list14)))
       assert(caught14.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught14.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -2041,7 +2041,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught15 = intercept[TestFailedException] {
         all(list15) should (not include regex ("a(b*)c".r withGroup "b") and not include regex ("a(b*)c".r withGroup "bb"))
       }
-      assert(caught15.message === Some(errorMessage(0, "\"123abbcdef\" included substring that matched regex a(b*)c, but did not match group \"b\", but \"123abbcdef\" included substring that matched regex a(b*)c and group \"bb\"", thisLineNumber - 2, list15)))
+      assert(caught15.message === Some(errorMessage(0, "\"123abbcdef\" included substring that matched regex a(b*)c, but \"bb\" did not match group \"b\", but \"123abbcdef\" included substring that matched regex a(b*)c and group \"bb\"", thisLineNumber - 2, list15)))
       assert(caught15.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught15.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -2049,7 +2049,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught16 = intercept[TestFailedException] {
         all(list16) should (not include regex ("a(b*)(c*)".r withGroups ("bb", "c")) and not include regex ("a(b*)(c*)".r withGroups ("bb", "cc")))
       }
-      assert(caught16.message === Some(errorMessage(0, "\"123abbccdef\" included substring that matched regex a(b*)(c*), but did not match group \"c\" at index 1, but \"123abbccdef\" included substring that matched regex a(b*)(c*) and group \"bb\", \"cc\"", thisLineNumber - 2, list16)))
+      assert(caught16.message === Some(errorMessage(0, "\"123abbccdef\" included substring that matched regex a(b*)(c*), but \"cc\" did not match group \"c\" at index 1, but \"123abbccdef\" included substring that matched regex a(b*)(c*) and group \"bb\", \"cc\"", thisLineNumber - 2, list16)))
       assert(caught16.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught16.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -2114,7 +2114,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught1 = intercept[TestFailedException] {
         all(list1) should (include regex ("a(b*)c" withGroup "bb") or include regex ("a(b*)c" withGroup "bb"))
       }
-      assert(caught1.message === Some(errorMessage(0, "\"123abbbcdef\" included substring that matched regex a(b*)c, but did not match group \"bb\", and \"123abbbcdef\" included substring that matched regex a(b*)c, but did not match group \"bb\"", thisLineNumber - 2, list1)))
+      assert(caught1.message === Some(errorMessage(0, "\"123abbbcdef\" included substring that matched regex a(b*)c, but \"bbb\" did not match group \"bb\", and \"123abbbcdef\" included substring that matched regex a(b*)c, but \"bbb\" did not match group \"bb\"", thisLineNumber - 2, list1)))
       assert(caught1.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -2122,7 +2122,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught2 = intercept[TestFailedException] {
         all(list2) should (include regex ("a(b*)(c*)" withGroups ("bb", "cc")) or include regex ("a(b*)(c*)" withGroups ("bb", "cc")))
       }
-      assert(caught2.message === Some(errorMessage(0, "\"123abbcdef\" included substring that matched regex a(b*)(c*), but did not match group \"cc\" at index 1, and \"123abbcdef\" included substring that matched regex a(b*)(c*), but did not match group \"cc\" at index 1", thisLineNumber - 2, list2)))
+      assert(caught2.message === Some(errorMessage(0, "\"123abbcdef\" included substring that matched regex a(b*)(c*), but \"c\" did not match group \"cc\" at index 1, and \"123abbcdef\" included substring that matched regex a(b*)(c*), but \"c\" did not match group \"cc\" at index 1", thisLineNumber - 2, list2)))
       assert(caught2.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -2130,7 +2130,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught3 = intercept[TestFailedException] {
         all(list3) should (include regex ("a(b*)c".r withGroup "bb") or include regex ("a(b*)c".r withGroup "bb"))
       }
-      assert(caught3.message === Some(errorMessage(0, "\"123abbbcdef\" included substring that matched regex a(b*)c, but did not match group \"bb\", and \"123abbbcdef\" included substring that matched regex a(b*)c, but did not match group \"bb\"", thisLineNumber - 2, list3)))
+      assert(caught3.message === Some(errorMessage(0, "\"123abbbcdef\" included substring that matched regex a(b*)c, but \"bbb\" did not match group \"bb\", and \"123abbbcdef\" included substring that matched regex a(b*)c, but \"bbb\" did not match group \"bb\"", thisLineNumber - 2, list3)))
       assert(caught3.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -2138,7 +2138,7 @@ class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with Sha
       val caught4 = intercept[TestFailedException] {
         all(list4) should (include regex ("a(b*)(c*)".r withGroups ("bb", "cc")) or include regex ("a(b*)(c*)".r withGroups ("bb", "cc")))
       }
-      assert(caught4.message === Some(errorMessage(0, "\"123abbcdef\" included substring that matched regex a(b*)(c*), but did not match group \"cc\" at index 1, and \"123abbcdef\" included substring that matched regex a(b*)(c*), but did not match group \"cc\" at index 1", thisLineNumber - 2, list4)))
+      assert(caught4.message === Some(errorMessage(0, "\"123abbcdef\" included substring that matched regex a(b*)(c*), but \"c\" did not match group \"cc\" at index 1, and \"123abbcdef\" included substring that matched regex a(b*)(c*), but \"c\" did not match group \"cc\" at index 1", thisLineNumber - 2, list4)))
       assert(caught4.failedCodeFileName === Some("InspectorShorthandsRegexWithGroupsSpec.scala"))
       assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
       
