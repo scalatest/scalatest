@@ -18,68 +18,184 @@ package org.scalatest
 import org.scalautils.Equality
 
 class OptionShouldContainSpec extends Spec with Matchers with SharedHelpers {
+
   object `an Option` {
-    def `should be usable with contain (value) syntax` {
 
-      val some: Option[String] = Some("hi")
-      val none: Option[String] = None
+    object `when used with contain (value) syntax` {
 
-      some should contain ("hi")
-      Some("hi") should contain ("hi")
-      some should not contain ("ho")
-      Some("hi") should not contain ("ho")
-      none should not contain ("hi")
+      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
 
-      val e1 = intercept[TestFailedException] {
-        some should contain ("ho")
-      }
-      e1.message.get should be (Resources("didNotContainExpectedElement", some, "\"ho\""))
-      e1.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
-      e1.failedCodeLineNumber.get should be (thisLineNumber - 4)
+        val some: Option[String] = Some("hi")
+        val none: Option[String] = None
 
-      val e2 = intercept[TestFailedException] {
-        none should contain ("ho")
-      }
-      e2.message.get should be (Resources("didNotContainExpectedElement", none, "\"ho\""))
-      e2.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
-      e2.failedCodeLineNumber.get should be (thisLineNumber - 4)
-
-      val e3 = intercept[TestFailedException] {
-        some should not contain ("hi")
-      }
-      e3.message.get should be (Resources("containedExpectedElement", some, "\"hi\""))
-      e3.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
-      e3.failedCodeLineNumber.get should be (thisLineNumber - 4)
-
-      val e4 = intercept[TestFailedException] {
-        Some("hi") should contain ("ho")
-      }
-      e4.message.get should be (Resources("didNotContainExpectedElement", some, "\"ho\""))
-      e4.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
-      e4.failedCodeLineNumber.get should be (thisLineNumber - 4)
-
-      val e5 = intercept[TestFailedException] {
-        Some("hi") should not contain ("hi")
-      }
-      e5.message.get should be (Resources("containedExpectedElement", some, "\"hi\""))
-      e5.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
-      e5.failedCodeLineNumber.get should be (thisLineNumber - 4)
-    }
-
-    def `should use the implicit Equality in scope with contain (value) syntax` {
-      val some: Option[String] = Some("hi")
-      some should contain ("hi")
-      intercept[TestFailedException] {
-        some should contain ("ho")
-      }
-      implicit val e = new Equality[String] {
-        def areEqual(a: String, b: Any): Boolean = a != b
-      }
-      some should contain ("ho")
-      intercept[TestFailedException] {
         some should contain ("hi")
+        Some("hi") should contain ("hi")
+
+        val e1 = intercept[TestFailedException] {
+          some should contain ("ho")
+        }
+        e1.message.get should be (Resources("didNotContainExpectedElement", some, "\"ho\""))
+        e1.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 4)
+
+        val e2 = intercept[TestFailedException] {
+          none should contain ("ho")
+        }
+        e2.message.get should be (Resources("didNotContainExpectedElement", none, "\"ho\""))
+        e2.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
+        e2.failedCodeLineNumber.get should be (thisLineNumber - 4)
+
+        val e4 = intercept[TestFailedException] {
+          Some("hi") should contain ("ho")
+        }
+        e4.message.get should be (Resources("didNotContainExpectedElement", some, "\"ho\""))
+        e4.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
+        e4.failedCodeLineNumber.get should be (thisLineNumber - 4)
+      }
+
+      def `should use the implicit Equality in scope` {
+        val some: Option[String] = Some("hi")
+        some should contain ("hi")
+        intercept[TestFailedException] {
+          some should contain ("ho")
+        }
+        implicit val e = new Equality[String] {
+          def areEqual(a: String, b: Any): Boolean = a != b
+        }
+        some should contain ("ho")
+        intercept[TestFailedException] {
+          some should contain ("hi")
+        }
       }
     }
+
+    object `when used with not contain value syntax` {
+
+      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+
+        val some: Option[String] = Some("hi")
+        val none: Option[String] = None
+
+        some should not contain "ho"
+        Some("hi") should not contain "ho"
+        none should not contain "hi"
+
+        val e3 = intercept[TestFailedException] {
+          some should not contain "hi"
+        }
+        e3.message.get should be (Resources("containedExpectedElement", some, "\"hi\""))
+        e3.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
+        e3.failedCodeLineNumber.get should be (thisLineNumber - 4)
+
+        val e5 = intercept[TestFailedException] {
+          Some("hi") should not contain "hi"
+        }
+        e5.message.get should be (Resources("containedExpectedElement", some, "\"hi\""))
+        e5.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
+        e5.failedCodeLineNumber.get should be (thisLineNumber - 4)
+      }
+
+      def `should use the implicit Equality in scope` {
+        val some: Option[String] = Some("hi")
+        some should not contain "ho"
+        intercept[TestFailedException] {
+          some should not contain "hi"
+        }
+        implicit val e = new Equality[String] {
+          def areEqual(a: String, b: Any): Boolean = a != b
+        }
+        some should not contain "hi"
+        intercept[TestFailedException] {
+          some should not contain "ho"
+        }
+      }
+    }
+
+    object `when used with not (contain (value)) syntax` {
+
+      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+
+        val some: Option[String] = Some("hi")
+        val none: Option[String] = None
+
+        some should not (contain ("ho"))
+        Some("hi") should not (contain ("ho"))
+        none should not (contain ("hi"))
+
+        val e3 = intercept[TestFailedException] {
+          some should not (contain ("hi"))
+        }
+        e3.message.get should be (Resources("containedExpectedElement", some, "\"hi\""))
+        e3.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
+        e3.failedCodeLineNumber.get should be (thisLineNumber - 4)
+
+        val e5 = intercept[TestFailedException] {
+          Some("hi") should not (contain ("hi"))
+        }
+        e5.message.get should be (Resources("containedExpectedElement", some, "\"hi\""))
+        e5.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
+        e5.failedCodeLineNumber.get should be (thisLineNumber - 4)
+      }
+
+      def `should use the implicit Equality in scope` {
+        val some: Option[String] = Some("hi")
+        some should not (contain ("ho"))
+        intercept[TestFailedException] {
+          some should not (contain ("hi"))
+        }
+        implicit val e = new Equality[String] {
+          def areEqual(a: String, b: Any): Boolean = a != b
+        }
+        some should not (contain ("hi"))
+        intercept[TestFailedException] {
+          some should not (contain ("ho"))
+        }
+      }
+    }
+
+/*
+    object `when used with (not contain value) syntax` {
+
+      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+
+        val some: Option[String] = Some("hi")
+        val none: Option[String] = None
+
+        some should (not contain "ho")
+        Some("hi") should (not contain ("ho"))
+        none should (not contain "hi")
+
+        val e3 = intercept[TestFailedException] {
+          some should (not contain "hi")
+        }
+        e3.message.get should be (Resources("containedExpectedElement", some, "\"hi\""))
+        e3.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
+        e3.failedCodeLineNumber.get should be (thisLineNumber - 4)
+
+        val e5 = intercept[TestFailedException] {
+          Some("hi") should (not contain "hi")
+        }
+        e5.message.get should be (Resources("containedExpectedElement", some, "\"hi\""))
+        e5.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
+        e5.failedCodeLineNumber.get should be (thisLineNumber - 4)
+      }
+
+      def `should use the implicit Equality in scope` {
+        val some: Option[String] = Some("hi")
+        some should (not contain "ho")
+        intercept[TestFailedException] {
+          some should (not contain "hi")
+        }
+        implicit val e = new Equality[String] {
+          def areEqual(a: String, b: Any): Boolean = a != b
+        }
+        some should (not contain "hi")
+        intercept[TestFailedException] {
+          some should (not contain "ho")
+        }
+      }
+    }
+*/
 
     def `should be usable with contain oneOf syntax` {
       val some: Option[String] = Some("fum")
