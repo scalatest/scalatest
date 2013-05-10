@@ -66,20 +66,3 @@ object NameInfo {
   }
 }
 
-/**
- * Singleton object containing an extractor that was in the <a href="NameInfo.html"><code>NameInfo</code></a>
- * companion object prior to ScalaTest 2.0. If you get a compiler error when upgrading to 2.0 for that extractor, a quick way
- * to fix it is to put <code>Deprecated</code> in front of <code>NameInfo</code>.
- * Eventually you will need to fix it properly, as this singleton object is deprecated and will be removed in a future version of ScalaTest, but
- * this will work as a quick fix to get you compiling again.
- */
-object DeprecatedNameInfo {
-
-  /**
-   * <strong>This extractor has been deprecated and will be removed in a future version of ScalaTest. Please use
-   * the extractor returning five parameters (including the suiteId, added in ScalaTest 2.0) instead.</strong>
-   */
-  @deprecated("Use the extractor returning five parameters (including the suiteId, added in ScalaTest 2.0) instead.")
-  def unapply(ni: NameInfo): Option[(String, String, Option[String], Option[String])] = Some(ni.suiteName, ni.suiteId, ni.suiteClassName, ni.testName)
-}
-
