@@ -248,5 +248,57 @@ class OptionShouldContainSpec extends Spec with Matchers with SharedHelpers {
         }
       }
     }
+    object `when used with not contain value syntax` {
+
+      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+
+        val some1s: Vector[Option[Int]] = Vector(Some(1), Some(1), Some(1))
+        val somes: Vector[Option[Int]] = Vector(Some(1), Some(1), Some(2))
+        val nones: Vector[Option[Int]] = Vector(None, None, None)
+        val somesNone: Vector[Option[Int]] = Vector(Some(1), Some(1), None)
+
+        all (some1s) should not contain (2)
+        atLeast (2, somes) should not contain (2)
+        atMost (2, somes) should not contain (1)
+        no (some1s) should not contain (1) // I will recommend against double negatives, but we should test it
+        all (nones) should not contain (1)
+        all (somesNone) should not contain (3)
+
+        val e1 = intercept[TestFailedException] {
+          all (somes) should not contain (2)
+        }
+        e1.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some("'all' inspection failed, because: \n" +
+                                   "  at index 2, Some(2) contained element 2 (OptionShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "in Vector(Some(1), Some(1), Some(2))"))
+
+        val e2 = intercept[TestFailedException] {
+          atMost (2, nones) should not contain ("ho")
+        }
+        e2.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
+        e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e2.message should be (Some("'atMost(2)' inspection failed, because 3 elements satisfied the assertion block at index 0, 1 and 2 in Vector(None, None, None)"))
+/*
+        e2.message should be (Some("'atMost(2)' inspection failed, because: \n" +
+                                   "  3 elements satisfied the assertion block at index 0, 1 and 2\n" +
+                                   "in Vector(None, None, None)"))
+*/
+      }
+      def `should use the implicit Equality in scope` {
+        val somes: Vector[Option[String]] = Vector(Some("hi"), Some("hi"), Some("hi"))
+        all (somes) should not contain ("ho")
+        intercept[TestFailedException] {
+          all (somes) should not contain ("hi")
+        }
+        implicit val e = new Equality[String] {
+          def areEqual(a: String, b: Any): Boolean = a != b
+        }
+        all (somes) should not contain ("hi")
+        intercept[TestFailedException] {
+          all (somes) should not contain ("ho")
+        }
+      }
+    }
   }
 }
