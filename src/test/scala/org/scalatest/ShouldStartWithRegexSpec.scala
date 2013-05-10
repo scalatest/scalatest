@@ -239,7 +239,7 @@ s should fullyMatch regex t
         val caught1 = intercept[TestFailedException] {
           "abbcdef" should startWith regex ("a(b*)c" withGroup "b")
         }
-        assert(caught1.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c, but did not match group \"b\"")
+        assert(caught1.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c, but \"bb\" did not match group \"b\"")
         assert(caught1.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -249,7 +249,7 @@ s should fullyMatch regex t
         val caught1 = intercept[TestFailedException] {
           "abbccdef" should startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc"))
         }
-        assert(caught1.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"ccc\" at index 1")
+        assert(caught1.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1")
         assert(caught1.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -396,21 +396,21 @@ s should fullyMatch regex t
         val caught1 = intercept[TestFailedException] {
           "abbcdef" should (startWith regex ("a(b*)c" withGroup "bb") and (startWith regex ("a(b*)c" withGroup "bbb")))
         }
-        assert(caught1.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c and group \"bb\", but \"abbcdef\" started with a substring that matched the regular expression a(b*)c, but did not match group \"bbb\"")
+        assert(caught1.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c and group \"bb\", but \"abbcdef\" started with a substring that matched the regular expression a(b*)c, but \"bb\" did not match group \"bbb\"")
         assert(caught1.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught2 = intercept[TestFailedException] {
           "abbcdef" should ((startWith regex ("a(b*)c" withGroup "bb")) and (startWith regex ("a(b*)c" withGroup "bbb")))
         }
-        assert(caught2.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c and group \"bb\", but \"abbcdef\" started with a substring that matched the regular expression a(b*)c, but did not match group \"bbb\"")
+        assert(caught2.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c and group \"bb\", but \"abbcdef\" started with a substring that matched the regular expression a(b*)c, but \"bb\" did not match group \"bbb\"")
         assert(caught2.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught3 = intercept[TestFailedException] {
           "abbcdef" should (startWith regex ("a(b*)c" withGroup "bb") and startWith regex ("a(b*)c" withGroup "bbb"))
         }
-        assert(caught3.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c and group \"bb\", but \"abbcdef\" started with a substring that matched the regular expression a(b*)c, but did not match group \"bbb\"")
+        assert(caught3.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c and group \"bb\", but \"abbcdef\" started with a substring that matched the regular expression a(b*)c, but \"bb\" did not match group \"bbb\"")
         assert(caught3.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
   
@@ -418,21 +418,21 @@ s should fullyMatch regex t
         val caught4 = intercept[TestFailedException] {
           "abbcdef" should (startWith regex ("a(b*)c" withGroup "bbb") and (startWith regex ("a(b*)c" withGroup "bb")))
         }
-        assert(caught4.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c, but did not match group \"bbb\"")
+        assert(caught4.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c, but \"bb\" did not match group \"bbb\"")
         assert(caught4.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught5 = intercept[TestFailedException] {
           "abbcdef" should ((startWith regex ("a(b*)c" withGroup "bbb")) and (startWith regex ("a(b*)c" withGroup "bb")))
         }
-        assert(caught5.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c, but did not match group \"bbb\"")
+        assert(caught5.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c, but \"bb\" did not match group \"bbb\"")
         assert(caught5.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught6 = intercept[TestFailedException] {
           "abbcdef" should (startWith regex ("a(b*)c" withGroup "bbb") and startWith regex ("a(b*)c" withGroup "bb"))
         }
-        assert(caught6.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c, but did not match group \"bbb\"")
+        assert(caught6.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c, but \"bb\" did not match group \"bbb\"")
         assert(caught6.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -442,21 +442,21 @@ s should fullyMatch regex t
         val caught1 = intercept[TestFailedException] {
           "abbccdef" should (startWith regex ("a(b*)(c*)" withGroups ("bb", "cc")) and (startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc"))))
         }
-        assert(caught1.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"cc\", but \"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"ccc\" at index 1")
+        assert(caught1.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"cc\", but \"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1")
         assert(caught1.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught2 = intercept[TestFailedException] {
           "abbccdef" should ((startWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))) and (startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc"))))
         }
-        assert(caught2.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"cc\", but \"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"ccc\" at index 1")
+        assert(caught2.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"cc\", but \"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1")
         assert(caught2.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught3 = intercept[TestFailedException] {
           "abbccdef" should (startWith regex ("a(b*)(c*)" withGroups ("bb", "cc")) and startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc")))
         }
-        assert(caught3.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"cc\", but \"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"ccc\" at index 1")
+        assert(caught3.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"cc\", but \"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1")
         assert(caught3.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
   
@@ -464,21 +464,21 @@ s should fullyMatch regex t
         val caught4 = intercept[TestFailedException] {
           "abbccdef" should (startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc")) and (startWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))))
         }
-        assert(caught4.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"ccc\" at index 1")
+        assert(caught4.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1")
         assert(caught4.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught5 = intercept[TestFailedException] {
           "abbccdef" should ((startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc"))) and (startWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))))
         }
-        assert(caught5.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"ccc\" at index 1")
+        assert(caught5.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1")
         assert(caught5.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught6 = intercept[TestFailedException] {
           "abbccdef" should (startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc")) and startWith regex ("a(b*)(c*)" withGroups ("bb", "cc")))
         }
-        assert(caught6.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"ccc\" at index 1")
+        assert(caught6.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1")
         assert(caught6.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -506,21 +506,21 @@ s should fullyMatch regex t
         val caught1 = intercept[TestFailedException] {
           "abbcdef" should (startWith regex ("a(b*)c" withGroup "b") or (startWith regex ("a(b*)c" withGroup "bbb")))
         }
-        assert(caught1.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c, but did not match group \"b\", and \"abbcdef\" started with a substring that matched the regular expression a(b*)c, but did not match group \"bbb\"")
+        assert(caught1.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c, but \"bb\" did not match group \"b\", and \"abbcdef\" started with a substring that matched the regular expression a(b*)c, but \"bb\" did not match group \"bbb\"")
         assert(caught1.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught2 = intercept[TestFailedException] {
           "abbcdef" should ((startWith regex ("a(b*)c" withGroup "b")) or (startWith regex ("a(b*)c" withGroup "bbb")))
         }
-        assert(caught2.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c, but did not match group \"b\", and \"abbcdef\" started with a substring that matched the regular expression a(b*)c, but did not match group \"bbb\"")
+        assert(caught2.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c, but \"bb\" did not match group \"b\", and \"abbcdef\" started with a substring that matched the regular expression a(b*)c, but \"bb\" did not match group \"bbb\"")
         assert(caught2.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught3 = intercept[TestFailedException] {
           "abbcdef" should (startWith regex ("a(b*)c" withGroup "b") or startWith regex ("a(b*)c" withGroup "bbb"))
         }
-        assert(caught3.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c, but did not match group \"b\", and \"abbcdef\" started with a substring that matched the regular expression a(b*)c, but did not match group \"bbb\"")
+        assert(caught3.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c, but \"bb\" did not match group \"b\", and \"abbcdef\" started with a substring that matched the regular expression a(b*)c, but \"bb\" did not match group \"bbb\"")
         assert(caught3.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -530,21 +530,21 @@ s should fullyMatch regex t
         val caught1 = intercept[TestFailedException] {
           "abbccdef" should (startWith regex ("a(b*)(c*)" withGroups ("bb", "c")) or (startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc"))))
         }
-        assert(caught1.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"c\" at index 1, and \"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"ccc\" at index 1")
+        assert(caught1.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but \"cc\" did not match group \"c\" at index 1, and \"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1")
         assert(caught1.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught2 = intercept[TestFailedException] {
           "abbccdef" should ((startWith regex ("a(b*)(c*)" withGroups ("bb", "c"))) or (startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc"))))
         }
-        assert(caught2.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"c\" at index 1, and \"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"ccc\" at index 1")
+        assert(caught2.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but \"cc\" did not match group \"c\" at index 1, and \"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1")
         assert(caught2.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught3 = intercept[TestFailedException] {
           "abbccdef" should (startWith regex ("a(b*)(c*)" withGroups ("bb", "c")) or startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc")))
         }
-        assert(caught3.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"c\" at index 1, and \"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"ccc\" at index 1")
+        assert(caught3.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but \"cc\" did not match group \"c\" at index 1, and \"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1")
         assert(caught3.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -582,21 +582,21 @@ s should fullyMatch regex t
         val caught1 = intercept[TestFailedException] {
           "abbcdef" should (not startWith regex ("a(b*)c" withGroup "bbb") and (not startWith regex ("a(b*)c" withGroup "bb")))
         }
-        assert(caught1.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c, but did not match group \"bbb\", but \"abbcdef\" started with a substring that matched the regular expression a(b*)c and group \"bb\"")
+        assert(caught1.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c, but \"bb\" did not match group \"bbb\", but \"abbcdef\" started with a substring that matched the regular expression a(b*)c and group \"bb\"")
         assert(caught1.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
 
         val caught2 = intercept[TestFailedException] {
           "abbcdef" should ((not startWith regex ("a(b*)c" withGroup "bbb")) and (not startWith regex ("a(b*)c" withGroup "bb")))
         }
-        assert(caught2.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c, but did not match group \"bbb\", but \"abbcdef\" started with a substring that matched the regular expression a(b*)c and group \"bb\"")
+        assert(caught2.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c, but \"bb\" did not match group \"bbb\", but \"abbcdef\" started with a substring that matched the regular expression a(b*)c and group \"bb\"")
         assert(caught2.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
 
         val caught3 = intercept[TestFailedException] {
           "abbcdef" should (not startWith regex ("a(b*)c" withGroup "bbb") and not startWith regex ("a(b*)c" withGroup "bb"))
         }
-        assert(caught3.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c, but did not match group \"bbb\", but \"abbcdef\" started with a substring that matched the regular expression a(b*)c and group \"bb\"")
+        assert(caught3.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c, but \"bb\" did not match group \"bbb\", but \"abbcdef\" started with a substring that matched the regular expression a(b*)c and group \"bb\"")
         assert(caught3.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -606,21 +606,21 @@ s should fullyMatch regex t
         val caught1 = intercept[TestFailedException] {
           "abbccdef" should (not startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc")) and (not startWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))))
         }
-        assert(caught1.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"ccc\" at index 1, but \"abbccdef\" started with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"cc\"")
+        assert(caught1.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1, but \"abbccdef\" started with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"cc\"")
         assert(caught1.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
 
         val caught2 = intercept[TestFailedException] {
           "abbccdef" should ((not startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc"))) and (not startWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))))
         }
-        assert(caught2.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"ccc\" at index 1, but \"abbccdef\" started with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"cc\"")
+        assert(caught2.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1, but \"abbccdef\" started with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"cc\"")
         assert(caught2.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
 
         val caught3 = intercept[TestFailedException] {
           "abbccdef" should (not startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc")) and not startWith regex ("a(b*)(c*)" withGroups ("bb", "cc")))
         }
-        assert(caught3.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"ccc\" at index 1, but \"abbccdef\" started with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"cc\"")
+        assert(caught3.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1, but \"abbccdef\" started with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"cc\"")
         assert(caught3.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -913,14 +913,14 @@ s should fullyMatch regex t
         val caught1 = intercept[TestFailedException] {
           "abbcdef" should startWith regex ("a(b*)c" withGroup "bbb")
         }
-        assert(caught1.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c, but did not match group \"bbb\"")
+        assert(caught1.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c, but \"bb\" did not match group \"bbb\"")
         assert(caught1.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught2 = intercept[TestFailedException] {
           "abbcdef" should startWith regex ("a(b*)c".r withGroup "bbb")
         }
-        assert(caught2.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c, but did not match group \"bbb\"")
+        assert(caught2.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c, but \"bb\" did not match group \"bbb\"")
         assert(caught2.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -930,14 +930,14 @@ s should fullyMatch regex t
         val caught1 = intercept[TestFailedException] {
           "abbccdef" should startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc"))
         }
-        assert(caught1.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"ccc\" at index 1")
+        assert(caught1.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1")
         assert(caught1.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught2 = intercept[TestFailedException] {
           "abbccdef" should startWith regex ("a(b*)(c*)".r withGroups ("bb", "ccc"))
         }
-        assert(caught2.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"ccc\" at index 1")
+        assert(caught2.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1")
         assert(caught2.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -1112,21 +1112,21 @@ s should fullyMatch regex t
         val caught1 = intercept[TestFailedException] {
           "abbcdef" should (startWith regex ("a(b*)c" withGroup "bb") and (startWith regex ("a(b*)c" withGroup "bbb")))
         }
-        assert(caught1.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c and group \"bb\", but \"abbcdef\" started with a substring that matched the regular expression a(b*)c, but did not match group \"bbb\"")
+        assert(caught1.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c and group \"bb\", but \"abbcdef\" started with a substring that matched the regular expression a(b*)c, but \"bb\" did not match group \"bbb\"")
         assert(caught1.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught2 = intercept[TestFailedException] {
           "abbcdef" should ((startWith regex ("a(b*)c" withGroup "bb")) and (startWith regex ("a(b*)c" withGroup "bbb")))
         }
-        assert(caught2.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c and group \"bb\", but \"abbcdef\" started with a substring that matched the regular expression a(b*)c, but did not match group \"bbb\"")
+        assert(caught2.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c and group \"bb\", but \"abbcdef\" started with a substring that matched the regular expression a(b*)c, but \"bb\" did not match group \"bbb\"")
         assert(caught2.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught3 = intercept[TestFailedException] {
           "abbcdef" should (startWith regex ("a(b*)c" withGroup "bb") and startWith regex ("a(b*)c" withGroup "bbb"))
         }
-        assert(caught3.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c and group \"bb\", but \"abbcdef\" started with a substring that matched the regular expression a(b*)c, but did not match group \"bbb\"")
+        assert(caught3.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c and group \"bb\", but \"abbcdef\" started with a substring that matched the regular expression a(b*)c, but \"bb\" did not match group \"bbb\"")
         assert(caught3.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
   
@@ -1134,21 +1134,21 @@ s should fullyMatch regex t
         val caught4 = intercept[TestFailedException] {
           "abbccdef" should (startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc")) and (startWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))))
         }
-        assert(caught4.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"ccc\" at index 1")
+        assert(caught4.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1")
         assert(caught4.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught5 = intercept[TestFailedException] {
           "abbccdef" should ((startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc"))) and (startWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))))
         }
-        assert(caught5.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"ccc\" at index 1")
+        assert(caught5.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1")
         assert(caught5.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught6 = intercept[TestFailedException] {
           "abbccdef" should (startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc")) and startWith regex ("a(b*)(c*)" withGroups ("bb", "cc")))
         }
-        assert(caught6.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"ccc\" at index 1")
+        assert(caught6.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1")
         assert(caught6.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -1158,33 +1158,33 @@ s should fullyMatch regex t
         val caught1 = intercept[TestFailedException] {
           "abbccdef" should (startWith regex ("a(b*)(c*)" withGroups ("bb", "cc")) and (startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc"))))
         }
-        assert(caught1.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"cc\", but \"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"ccc\" at index 1")
+        assert(caught1.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"cc\", but \"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1")
   
         val caught2 = intercept[TestFailedException] {
           "abbccdef" should ((startWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))) and (startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc"))))
         }
-        assert(caught2.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"cc\", but \"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"ccc\" at index 1")
+        assert(caught2.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"cc\", but \"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1")
   
         val caught3 = intercept[TestFailedException] {
           "abbccdef" should (startWith regex ("a(b*)(c*)" withGroups ("bb", "cc")) and startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc")))
         }
-        assert(caught3.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"cc\", but \"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"ccc\" at index 1")
+        assert(caught3.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"cc\", but \"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1")
   
         // Check to make sure the error message "short circuits" (i.e., just reports the left side's failure)
         val caught4 = intercept[TestFailedException] {
           "abbccdef" should (startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc")) and (startWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))))
         }
-        assert(caught4.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"ccc\" at index 1")
+        assert(caught4.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1")
   
         val caught5 = intercept[TestFailedException] {
           "abbccdef" should ((startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc"))) and (startWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))))
         }
-        assert(caught5.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"ccc\" at index 1")
+        assert(caught5.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1")
   
         val caught6 = intercept[TestFailedException] {
           "abbccdef" should (startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc")) and startWith regex ("a(b*)(c*)" withGroups ("bb", "cc")))
         }
-        assert(caught6.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"ccc\" at index 1")
+        assert(caught6.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1")
       }
   
       def `should throw TestFailedException if the string starts with substring that matched the regular expression specified as a string when used in a logical-or expression` {
@@ -1210,21 +1210,21 @@ s should fullyMatch regex t
         val caught1 = intercept[TestFailedException] {
           "abbcdef" should (startWith regex ("a(b*)c" withGroup "bbb") or (startWith regex ("a(b*)c" withGroup "bbb")))
         }
-        assert(caught1.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c, but did not match group \"bbb\", and \"abbcdef\" started with a substring that matched the regular expression a(b*)c, but did not match group \"bbb\"")
+        assert(caught1.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c, but \"bb\" did not match group \"bbb\", and \"abbcdef\" started with a substring that matched the regular expression a(b*)c, but \"bb\" did not match group \"bbb\"")
         assert(caught1.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught2 = intercept[TestFailedException] {
           "abbcdef" should ((startWith regex ("a(b*)c" withGroup "bbb")) or (startWith regex ("a(b*)c" withGroup "bbb")))
         }
-        assert(caught2.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c, but did not match group \"bbb\", and \"abbcdef\" started with a substring that matched the regular expression a(b*)c, but did not match group \"bbb\"")
+        assert(caught2.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c, but \"bb\" did not match group \"bbb\", and \"abbcdef\" started with a substring that matched the regular expression a(b*)c, but \"bb\" did not match group \"bbb\"")
         assert(caught2.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught3 = intercept[TestFailedException] {
           "abbcdef" should (startWith regex ("a(b*)c" withGroup "bbb") or startWith regex ("a(b*)c" withGroup "bbb"))
         }
-        assert(caught3.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c, but did not match group \"bbb\", and \"abbcdef\" started with a substring that matched the regular expression a(b*)c, but did not match group \"bbb\"")
+        assert(caught3.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c, but \"bb\" did not match group \"bbb\", and \"abbcdef\" started with a substring that matched the regular expression a(b*)c, but \"bb\" did not match group \"bbb\"")
         assert(caught3.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -1234,21 +1234,21 @@ s should fullyMatch regex t
         val caught1 = intercept[TestFailedException] {
           "abbccdef" should (startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc")) or (startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc"))))
         }
-        assert(caught1.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"ccc\" at index 1, and \"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"ccc\" at index 1")
+        assert(caught1.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1, and \"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1")
         assert(caught1.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught2 = intercept[TestFailedException] {
           "abbccdef" should ((startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc"))) or (startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc"))))
         }
-        assert(caught2.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"ccc\" at index 1, and \"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"ccc\" at index 1")
+        assert(caught2.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1, and \"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1")
         assert(caught2.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught3 = intercept[TestFailedException] {
           "abbccdef" should (startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc")) or startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc")))
         }
-        assert(caught3.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"ccc\" at index 1, and \"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"ccc\" at index 1")
+        assert(caught3.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1, and \"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1")
         assert(caught3.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -1286,21 +1286,21 @@ s should fullyMatch regex t
         val caught1 = intercept[TestFailedException] {
           "abbcdef" should (not startWith regex ("a(b*)c" withGroup "bbb") and (not startWith regex ("a(b*)c" withGroup "bb")))
         }
-        assert(caught1.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c, but did not match group \"bbb\", but \"abbcdef\" started with a substring that matched the regular expression a(b*)c and group \"bb\"")
+        assert(caught1.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c, but \"bb\" did not match group \"bbb\", but \"abbcdef\" started with a substring that matched the regular expression a(b*)c and group \"bb\"")
         assert(caught1.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught2 = intercept[TestFailedException] {
           "abbcdef" should ((not startWith regex ("a(b*)c" withGroup "bbb")) and (not startWith regex ("a(b*)c" withGroup "bb")))
         }
-        assert(caught2.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c, but did not match group \"bbb\", but \"abbcdef\" started with a substring that matched the regular expression a(b*)c and group \"bb\"")
+        assert(caught2.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c, but \"bb\" did not match group \"bbb\", but \"abbcdef\" started with a substring that matched the regular expression a(b*)c and group \"bb\"")
         assert(caught2.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught3 = intercept[TestFailedException] {
           "abbcdef" should (not startWith regex ("a(b*)c" withGroup "bbb") and not startWith regex ("a(b*)c" withGroup "bb"))
         }
-        assert(caught3.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c, but did not match group \"bbb\", but \"abbcdef\" started with a substring that matched the regular expression a(b*)c and group \"bb\"")
+        assert(caught3.getMessage === "\"abbcdef\" started with a substring that matched the regular expression a(b*)c, but \"bb\" did not match group \"bbb\", but \"abbcdef\" started with a substring that matched the regular expression a(b*)c and group \"bb\"")
         assert(caught3.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -1310,21 +1310,21 @@ s should fullyMatch regex t
         val caught1 = intercept[TestFailedException] {
           "abbccdef" should (not startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc")) and (not startWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))))
         }
-        assert(caught1.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"ccc\" at index 1, but \"abbccdef\" started with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"cc\"")
+        assert(caught1.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1, but \"abbccdef\" started with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"cc\"")
         assert(caught1.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught2 = intercept[TestFailedException] {
           "abbccdef" should ((not startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc"))) and (not startWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))))
         }
-        assert(caught2.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"ccc\" at index 1, but \"abbccdef\" started with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"cc\"")
+        assert(caught2.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1, but \"abbccdef\" started with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"cc\"")
         assert(caught2.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught3 = intercept[TestFailedException] {
           "abbccdef" should (not startWith regex ("a(b*)(c*)" withGroups ("bb", "ccc")) and not startWith regex ("a(b*)(c*)" withGroups ("bb", "cc")))
         }
-        assert(caught3.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but did not match group \"ccc\" at index 1, but \"abbccdef\" started with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"cc\"")
+        assert(caught3.getMessage === "\"abbccdef\" started with a substring that matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1, but \"abbccdef\" started with a substring that matched the regular expression a(b*)(c*) and group \"bb\", \"cc\"")
         assert(caught3.failedCodeFileName === Some("ShouldStartWithRegexSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       }

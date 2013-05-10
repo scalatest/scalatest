@@ -293,16 +293,16 @@ private[scalatest] object MatchersHelper {
           MatchResult(
             false, 
             if (groups.size > 1)
-              FailureMessages(notGroupAtIndexResourceName, left, regex, group, idx)
+              FailureMessages(notGroupAtIndexResourceName, left, regex, pMatcher.group(idx + 1), group, idx)
             else
-              FailureMessages(notGroupResourceName, left, regex, group), 
+              FailureMessages(notGroupResourceName, left, regex, pMatcher.group(1), group), // groups.size must be 1 to reach here
             FailureMessages(andGroupResourceName, left, regex, groups.mkString(", "))
           )
         case None => 
           // None of group failed
           MatchResult(
             true, 
-            FailureMessages(notGroupResourceName, left, regex, UnquotedString(groups.map("\"" + _ + "\"").mkString(", "))), 
+            FailureMessages(notGroupResourceName, left, regex, pMatcher.group(1),  UnquotedString(groups.map("\"" + _ + "\"").mkString(", "))), 
             FailureMessages(andGroupResourceName, left, regex, UnquotedString(groups.map("\"" + _ + "\"").mkString(", ")))
           )
       }
