@@ -20,7 +20,7 @@ import org.scalautils._
 import scala.util.matching.Regex
 import org.scalatest.FailureMessages
 import org.scalatest.UnquotedString
-import org.scalatest.MatchersUtil.fullyMatchRegexWithGroups
+import org.scalatest.MatchersHelper.fullyMatchRegexWithGroups
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of

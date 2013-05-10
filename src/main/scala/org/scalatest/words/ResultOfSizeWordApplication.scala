@@ -16,7 +16,7 @@
 package org.scalatest.words
 
 import org.scalatest.matchers._
-import org.scalatest.MatchersUtil.accessProperty
+import org.scalatest.MatchersHelper.accessProperty
 import org.scalatest.Resources
 
 /**

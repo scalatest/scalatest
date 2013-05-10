@@ -22,7 +22,7 @@ import java.lang.reflect.Modifier
 import scala.util.matching.Regex
 import java.lang.reflect.Field
 import scala.reflect.Manifest
-import org.scalatest.MatchersUtil.transformOperatorChars
+import org.scalatest.MatchersHelper.transformOperatorChars
 import scala.collection.Traversable
 import org.scalatest.Assertions.areEqualComparingArraysStructurally
 import scala.collection.GenTraversable
@@ -36,9 +36,9 @@ import scala.annotation.tailrec
 import org.scalautils.Equality
 import org.scalautils.TripleEqualsInvocationOnInterval
 import org.scalautils.EqualityConstraint
-import org.scalatest.MatchersUtil.andMatchersAndApply
-import org.scalatest.MatchersUtil.orMatchersAndApply
-import org.scalatest.MatchersUtil.matchSymbolToPredicateMethod
+import org.scalatest.MatchersHelper.andMatchersAndApply
+import org.scalatest.MatchersHelper.orMatchersAndApply
+import org.scalatest.MatchersHelper.matchSymbolToPredicateMethod
 import org.scalatest.FailureMessages
 
 /**

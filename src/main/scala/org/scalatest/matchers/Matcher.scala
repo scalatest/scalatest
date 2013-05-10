@@ -16,8 +16,8 @@
 package org.scalatest.matchers
 
 import org.scalatest.enablers._
-import org.scalatest.MatchersUtil.orMatchersAndApply
-import org.scalatest.MatchersUtil.andMatchersAndApply
+import org.scalatest.MatchersHelper.orMatchersAndApply
+import org.scalatest.MatchersHelper.andMatchersAndApply
 import org.scalatest.words.MatcherWords
 import scala.collection.GenTraversable
 import scala.util.matching.Regex

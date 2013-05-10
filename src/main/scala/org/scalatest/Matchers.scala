@@ -22,7 +22,7 @@ import java.lang.reflect.Modifier
 import scala.util.matching.Regex
 import java.lang.reflect.Field
 import scala.reflect.Manifest
-import MatchersUtil.transformOperatorChars
+import MatchersHelper.transformOperatorChars
 import scala.collection.Traversable
 import Assertions.areEqualComparingArraysStructurally
 import scala.collection.GenTraversable
@@ -36,17 +36,17 @@ import scala.annotation.tailrec
 import org.scalautils.Equality
 import org.scalautils.TripleEqualsInvocationOnInterval
 import org.scalautils.EqualityConstraint
-import MatchersUtil.andMatchersAndApply
-import MatchersUtil.orMatchersAndApply
+import MatchersHelper.andMatchersAndApply
+import MatchersHelper.orMatchersAndApply
 import org.scalatest.words._
-import MatchersUtil.matchSymbolToPredicateMethod
-import MatchersUtil.accessProperty
-import MatchersUtil.newTestFailedException
-import MatchersUtil.containsOneOf
-import MatchersUtil.fullyMatchRegexWithGroups
-import MatchersUtil.startWithRegexWithGroups
-import MatchersUtil.endWithRegexWithGroups
-import MatchersUtil.includeRegexWithGroups
+import MatchersHelper.matchSymbolToPredicateMethod
+import MatchersHelper.accessProperty
+import MatchersHelper.newTestFailedException
+import MatchersHelper.containsOneOf
+import MatchersHelper.fullyMatchRegexWithGroups
+import MatchersHelper.startWithRegexWithGroups
+import MatchersHelper.endWithRegexWithGroups
+import MatchersHelper.includeRegexWithGroups
 
 // TODO: drop generic support for be as an equality comparison, in favor of specific ones.
 // TODO: mention on JUnit and TestNG docs that you can now mix in ShouldMatchers or MustMatchers
@@ -4089,7 +4089,7 @@ match argument types (Null)
 
 scala> all (ys) should be (null)
 org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCollectedAny@18515783 was not null
-	at org.scalatest.MatchersUtil$.newTestFailedException(MatchersUtil.scala:163)
+	at org.scalatest.MatchersHelper$.newTestFailedException(MatchersHelper.scala:163)
 	at org.scalatest.Matchers$ShouldMethodHelper$.shouldMatcher(Matchers.scala:5529)
 	at org.scalatest.Matchers$AnyShouldWrapper.should(Matchers.scala:5563)
 	at .<init>(<console>:15)

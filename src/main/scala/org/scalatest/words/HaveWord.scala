@@ -23,7 +23,7 @@ import org.scalatest.UnquotedString
 import org.scalatest.Resources
 import scala.collection.GenTraversable
 import scala.collection.GenSeq
-import org.scalatest.MatchersUtil.accessProperty
+import org.scalatest.MatchersHelper.accessProperty
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of

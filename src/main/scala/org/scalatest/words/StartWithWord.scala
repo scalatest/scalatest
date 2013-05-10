@@ -19,7 +19,7 @@ import org.scalatest.matchers._
 import org.scalautils._
 import scala.util.matching.Regex
 import org.scalatest.FailureMessages
-import org.scalatest.MatchersUtil.startWithRegexWithGroups
+import org.scalatest.MatchersHelper.startWithRegexWithGroups
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of

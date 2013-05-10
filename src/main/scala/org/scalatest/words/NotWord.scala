@@ -23,13 +23,13 @@ import org.scalatest.FailureMessages
 import org.scalatest.UnquotedString
 import org.scalautils.Equality
 import org.scalatest.Assertions.areEqualComparingArraysStructurally
-import org.scalatest.MatchersUtil.matchSymbolToPredicateMethod
+import org.scalatest.MatchersHelper.matchSymbolToPredicateMethod
 import scala.annotation.tailrec
-import org.scalatest.MatchersUtil.containsOneOf
-import org.scalatest.MatchersUtil.fullyMatchRegexWithGroups
-import org.scalatest.MatchersUtil.startWithRegexWithGroups
-import org.scalatest.MatchersUtil.endWithRegexWithGroups
-import org.scalatest.MatchersUtil.includeRegexWithGroups
+import org.scalatest.MatchersHelper.containsOneOf
+import org.scalatest.MatchersHelper.fullyMatchRegexWithGroups
+import org.scalatest.MatchersHelper.startWithRegexWithGroups
+import org.scalatest.MatchersHelper.endWithRegexWithGroups
+import org.scalatest.MatchersHelper.includeRegexWithGroups
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
