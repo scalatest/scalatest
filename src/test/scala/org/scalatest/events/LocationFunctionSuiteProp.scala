@@ -1,6 +1,4 @@
 package org.scalatest.events
-
-import org.scalatest.SharedHelpers.thisLineNumber
 import org.scalatest._
 
 class LocationFunctionSuiteProp extends FunctionSuiteProp {
@@ -346,7 +344,8 @@ class LocationFunctionSuiteProp extends FunctionSuiteProp {
   }
   
   def wordSpec = new WordSpec with FixtureServices {
-    "Test 1" should {
+    def provide = afterWord("provide")
+    "Test 1" should provide {
       "succeed" in {
         
       }
@@ -368,7 +367,7 @@ class LocationFunctionSuiteProp extends FunctionSuiteProp {
     }
     
     val suiteTypeName: String = "WordSpec"
-    val expectedStartingList = List(TestStartingPair("Test 1 should succeed", expectedSourceFileName, thisLineNumber - 21), 
+    val expectedStartingList = List(TestStartingPair("Test 1 should provide succeed", expectedSourceFileName, thisLineNumber - 21), 
                                    TestStartingPair("Test 2 when pending", expectedSourceFileName, thisLineNumber - 17),
                                    TestStartingPair("Test 3 which cancel", expectedSourceFileName, thisLineNumber - 13))
     val expectedResultList = List(TestResultPair(classOf[TestSucceeded], expectedSourceFileName, thisLineNumber - 24), 
@@ -376,17 +375,20 @@ class LocationFunctionSuiteProp extends FunctionSuiteProp {
                                  TestResultPair(classOf[TestCanceled], expectedSourceFileName, thisLineNumber - 16),
                                  TestResultPair(classOf[TestIgnored], expectedSourceFileName, thisLineNumber - 12))
     val expectedScopeOpenedList = List(ScopeOpenedPair("Test 1", expectedSourceFileName, thisLineNumber - 29), 
-                                       ScopeOpenedPair("Test 2", expectedSourceFileName, thisLineNumber - 25),
-                                       ScopeOpenedPair("Test 3 which", expectedSourceFileName, thisLineNumber - 21),
-                                       ScopeOpenedPair("Test 4 that", expectedSourceFileName, thisLineNumber - 17))
-    val expectedScopeClosedList = List(ScopeClosedPair("Test 1", expectedSourceFileName, thisLineNumber - 33), 
-                                       ScopeClosedPair("Test 2", expectedSourceFileName, thisLineNumber - 29),
-                                       ScopeClosedPair("Test 3 which", expectedSourceFileName, thisLineNumber - 25),
-                                       ScopeClosedPair("Test 4 that", expectedSourceFileName, thisLineNumber - 21))
+                                       ScopeOpenedPair("should provide", expectedSourceFileName, thisLineNumber - 30), 
+                                       ScopeOpenedPair("Test 2", expectedSourceFileName, thisLineNumber - 26),
+                                       ScopeOpenedPair("Test 3 which", expectedSourceFileName, thisLineNumber - 22),
+                                       ScopeOpenedPair("Test 4 that", expectedSourceFileName, thisLineNumber - 18))
+    val expectedScopeClosedList = List(ScopeClosedPair("Test 1", expectedSourceFileName, thisLineNumber - 34), 
+                                       ScopeClosedPair("should provide", expectedSourceFileName, thisLineNumber - 35), 
+                                       ScopeClosedPair("Test 2", expectedSourceFileName, thisLineNumber - 31),
+                                       ScopeClosedPair("Test 3 which", expectedSourceFileName, thisLineNumber - 27),
+                                       ScopeClosedPair("Test 4 that", expectedSourceFileName, thisLineNumber - 23))
   }
   
   def fixtureWordSpec = new fixture.WordSpec with FixtureServices with StringFixture {
-    "Test 1" should {
+    def provide = afterWord("provide")
+    "Test 1" should provide {
       "succeed" in { param =>
         
       }
@@ -408,7 +410,7 @@ class LocationFunctionSuiteProp extends FunctionSuiteProp {
     }
     
     val suiteTypeName: String = "FixtureWordSpec"
-    val expectedStartingList = List(TestStartingPair("Test 1 should succeed", expectedSourceFileName, thisLineNumber - 21), 
+    val expectedStartingList = List(TestStartingPair("Test 1 should provide succeed", expectedSourceFileName, thisLineNumber - 21), 
                                    TestStartingPair("Test 2 when pending", expectedSourceFileName, thisLineNumber - 17),
                                    TestStartingPair("Test 3 which cancel", expectedSourceFileName, thisLineNumber - 13))
     val expectedResultList = List(TestResultPair(classOf[TestSucceeded], expectedSourceFileName, thisLineNumber - 24), 
@@ -416,13 +418,15 @@ class LocationFunctionSuiteProp extends FunctionSuiteProp {
                                  TestResultPair(classOf[TestCanceled], expectedSourceFileName, thisLineNumber - 16),
                                  TestResultPair(classOf[TestIgnored], expectedSourceFileName, thisLineNumber - 12))
     val expectedScopeOpenedList = List(ScopeOpenedPair("Test 1", expectedSourceFileName, thisLineNumber - 29), 
-                                       ScopeOpenedPair("Test 2", expectedSourceFileName, thisLineNumber - 25),
-                                       ScopeOpenedPair("Test 3 which", expectedSourceFileName, thisLineNumber - 21),
-                                       ScopeOpenedPair("Test 4 that", expectedSourceFileName, thisLineNumber - 17))
-    val expectedScopeClosedList = List(ScopeClosedPair("Test 1", expectedSourceFileName, thisLineNumber - 33), 
-                                       ScopeClosedPair("Test 2", expectedSourceFileName, thisLineNumber - 29),
-                                       ScopeClosedPair("Test 3 which", expectedSourceFileName, thisLineNumber - 25),
-                                       ScopeClosedPair("Test 4 that", expectedSourceFileName, thisLineNumber - 21))
+                                       ScopeOpenedPair("should provide", expectedSourceFileName, thisLineNumber - 30), 
+                                       ScopeOpenedPair("Test 2", expectedSourceFileName, thisLineNumber - 26),
+                                       ScopeOpenedPair("Test 3 which", expectedSourceFileName, thisLineNumber - 22),
+                                       ScopeOpenedPair("Test 4 that", expectedSourceFileName, thisLineNumber - 18))
+    val expectedScopeClosedList = List(ScopeClosedPair("Test 1", expectedSourceFileName, thisLineNumber - 34), 
+                                       ScopeClosedPair("should provide", expectedSourceFileName, thisLineNumber - 35), 
+                                       ScopeClosedPair("Test 2", expectedSourceFileName, thisLineNumber - 31),
+                                       ScopeClosedPair("Test 3 which", expectedSourceFileName, thisLineNumber - 27),
+                                       ScopeClosedPair("Test 4 that", expectedSourceFileName, thisLineNumber - 23))
   }
   
   def pathFreeSpec = new TestLocationFunctionPathFreeSpec
@@ -430,7 +434,7 @@ class LocationFunctionSuiteProp extends FunctionSuiteProp {
   def pathFunSpec = new TestLocationFunctionPathFunSpec
 }
 
-class TestLocationFunctionPathFreeSpec extends path.FreeSpec with TestLocationFunctionServices {
+class TestLocationFunctionPathFreeSpec extends path.FreeSpec with TestLocationFunctionServices with SharedHelpers {
   val expectedSourceFileName = "LocationFunctionSuiteProp.scala"
   "Test" - {
     "should succeed" in {
@@ -458,7 +462,7 @@ class TestLocationFunctionPathFreeSpec extends path.FreeSpec with TestLocationFu
   val expectedScopeClosedList = List(ScopeClosedPair("Test", expectedSourceFileName, thisLineNumber - 23))
 }
 
-class TestLocationFunctionPathFunSpec extends path.FunSpec with TestLocationFunctionServices {
+class TestLocationFunctionPathFunSpec extends path.FunSpec with TestLocationFunctionServices with SharedHelpers {
   val expectedSourceFileName = "LocationFunctionSuiteProp.scala"
   describe("A Spec") {
     it("succeed") {
