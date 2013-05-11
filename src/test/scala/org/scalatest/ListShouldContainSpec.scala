@@ -24,6 +24,7 @@ class ListShouldContainSpec extends Spec with Matchers with SharedHelpers {
 
     val xs: List[String] = List("hi", "hi", "hi")
     val nil: List[String] = List.empty[String]
+    val caseLists: List[String] = List("tell", "them", "Hi")
 
     object `when used with contain (value) syntax` {
 
@@ -57,6 +58,21 @@ class ListShouldContainSpec extends Spec with Matchers with SharedHelpers {
         intercept[TestFailedException] {
           xs should contain ("hi")
         }
+      }
+      def `should minimize normalization if an implicit NormalizingEquality is in scope` {
+        intercept[TestFailedException] {
+          caseLists should contain ("HI")
+        }
+        var normalizedInvokedCount = 0
+        implicit val e = new NormalizingEquality[String] {
+          def isInstanceOfA(b: Any) = b.isInstanceOf[String]
+          def normalized(s: String): String = {
+            normalizedInvokedCount += 1
+            s.toLowerCase
+          }
+        }
+        caseLists should contain ("HI")
+        normalizedInvokedCount should be (4)
       }
     }
 
@@ -216,24 +232,6 @@ class ListShouldContainSpec extends Spec with Matchers with SharedHelpers {
           all (hiLists) should contain ("hi")
         }
       }
-/*
-      def `should minimize normalization if an implicit NormalizingEquality is in scope` {
-        val lists: Vector[ListString]] = Vector(Some("hi"), Some("Hi"), Some("hI"))
-        intercept[TestFailedException] {
-          all (lists) should contain ("HI")
-        }
-        var normalizedInvokedCount = 0
-        implicit val e = new NormalizingEquality[String] {
-          def isInstanceOfA(b: Any) = b.isInstanceOf[String]
-          def normalized(s: String): String = {
-            normalizedInvokedCount += 1
-            s.toLowerCase
-          }
-        }
-        all (lists) should contain ("HI")
-        normalizedInvokedCount should be (4)
-      }
-*/
     }
     object `when used with not contain value syntax` {
 
