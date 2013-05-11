@@ -276,33 +276,32 @@ class ListShouldContainSpec extends Spec with Matchers with SharedHelpers {
         }
       }
     }
-/*
     object `when used with not (contain (value)) syntax` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
 
-        all (list123s) should not (contain (2))
-        atLeast (2, lists) should not (contain (2))
-        atMost (2, lists) should not (contain (1))
+        all (list123s) should not (contain (4))
+        atLeast (2, lists) should not (contain (4))
+        atMost (2, lists) should not (contain (4))
         no (list123s) should not (contain (1)) // I will recommend against double negatives, but we should test it
         all (nils) should not (contain (1))
-        all (mixed) should not (contain (3))
+        all (mixed) should not (contain (4))
 
         val e1 = intercept[TestFailedException] {
-          all (lists) should not (contain (2))
+          all (lists) should not (contain (6))
         }
         e1.failedCodeFileName.get should be ("ListShouldContainSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 2, Some(2) contained element 2 (ListShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
-                                   "in Vector(Some(1), Some(1), Some(2))"))
+                                   "  at index 2, List(4, 5, 6) contained element 6 (ListShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "in List(List(1, 2, 3), List(1, 2, 3), List(4, 5, 6))"))
 
         val e2 = intercept[TestFailedException] {
           atMost (2, nils) should not (contain ("ho"))
         }
         e2.failedCodeFileName.get should be ("ListShouldContainSpec.scala")
         e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e2.message should be (Some("'atMost(2)' inspection failed, because 3 elements satisfied the assertion block at index 0, 1 and 2 in Vector(None, None, None)"))
+        e2.message should be (Some("'atMost(2)' inspection failed, because 3 elements satisfied the assertion block at index 0, 1 and 2 in List(List(), List(), List())"))
       }
       def `should use the implicit Equality in scope` {
         all (hiLists) should not (contain ("ho"))
@@ -322,28 +321,28 @@ class ListShouldContainSpec extends Spec with Matchers with SharedHelpers {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
 
-        all (list123s) should (not contain 2)
-        atLeast (2, lists) should (not contain 2)
-        atMost (2, lists) should (not contain 1)
+        all (list123s) should (not contain 4)
+        atLeast (2, lists) should (not contain 4)
+        atMost (2, lists) should (not contain 4)
         no (list123s) should (not contain 1) // I will recommend against double negatives, but we should test it
         all (nils) should (not contain 1)
-        all (mixed) should (not contain 3)
+        all (mixed) should (not contain 4)
 
         val e1 = intercept[TestFailedException] {
-          all (lists) should (not contain 2)
+          all (lists) should (not contain 6)
         }
         e1.failedCodeFileName.get should be ("ListShouldContainSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 2, Some(2) contained element 2 (ListShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
-                                   "in Vector(Some(1), Some(1), Some(2))"))
+                                   "  at index 2, List(4, 5, 6) contained element 6 (ListShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "in List(List(1, 2, 3), List(1, 2, 3), List(4, 5, 6))"))
 
         val e2 = intercept[TestFailedException] {
           atMost (2, nils) should (not contain "ho")
         }
         e2.failedCodeFileName.get should be ("ListShouldContainSpec.scala")
         e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e2.message should be (Some("'atMost(2)' inspection failed, because 3 elements satisfied the assertion block at index 0, 1 and 2 in Vector(None, None, None)"))
+        e2.message should be (Some("'atMost(2)' inspection failed, because 3 elements satisfied the assertion block at index 0, 1 and 2 in List(List(), List(), List())"))
       }
       def `should use the implicit Equality in scope` {
         all (hiLists) should (not contain "ho")
@@ -359,6 +358,5 @@ class ListShouldContainSpec extends Spec with Matchers with SharedHelpers {
         }
       }
     }
-*/
   }
 }

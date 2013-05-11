@@ -248,24 +248,6 @@ class OptionShouldContainSpec extends Spec with Matchers with SharedHelpers {
           all (somes) should contain ("hi")
         }
       }
-/*
-      def `should minimize normalization if an implicit NormalizingEquality is in scope` {
-        val somes: Vector[Option[String]] = Vector(Some("hi"), Some("Hi"), Some("hI"))
-        intercept[TestFailedException] {
-          all (somes) should contain ("HI")
-        }
-        var normalizedInvokedCount = 0
-        implicit val e = new NormalizingEquality[String] {
-          def isInstanceOfA(b: Any) = b.isInstanceOf[String]
-          def normalized(s: String): String = {
-            normalizedInvokedCount += 1
-            s.toLowerCase
-          }
-        }
-        all (somes) should contain ("HI")
-        normalizedInvokedCount should be (4)
-      }
-*/
     }
     object `when used with not contain value syntax` {
 
