@@ -17,6 +17,7 @@ package org.scalatest
 
 import org.scalautils.Equality
 import org.scalautils.NormalizingEquality
+import org.scalautils.StringNormalizations._
 
 class ListShouldContainSpec extends Spec with Matchers with SharedHelpers {
 
@@ -64,6 +65,13 @@ class ListShouldContainSpec extends Spec with Matchers with SharedHelpers {
           caseLists should contain ("HI")
         }
         var normalizedInvokedCount = 0
+        // DOES WORK caseLists should contain ("HI") (equalityEnablersForTraversable[String, List](decided by defaultEquality[String] afterBeing lowerCased))
+        // next try decided by defaultHolder...
+        // or: decided by holderOf(defaultEquality ... ugly
+        // caseLists should contain ("HI") (equalityEnablersForTraversable(decided by defaultEquality[String] afterBeing lowerCased))
+        // caseLists should contain ("HI") (defaultEquality[String])
+        // caseLists should contain ("HI") (decided by defaultEquality[String])
+        // caseLists should contain ("HI") (decided by defaultEquality[String] afterBeing lowerCased)
         implicit val e = new NormalizingEquality[String] {
           def isInstanceOfA(b: Any) = b.isInstanceOf[String]
           def normalized(s: String): String = {
