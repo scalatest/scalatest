@@ -23,6 +23,19 @@ package org.scalautils
  */
 trait StringNormalizations {
 
+  abstract class StringNormalization extends Normalization[String] {
+    /**
+     * Indicates whether the passed object is an instance of <code>String</code>.
+     *
+     * @return true if the passed object is a <code>String</code>.
+     */
+    def normalizedIfInstanceOfA(b: Any) =
+      b match {
+        case s: String => normalized(s)
+        case _ => b
+     }
+  }
+
   /**
    * Produces a <code>Normalization[String]</code> whose <code>normalized</code> method
    * returns the result of invoking <code>toLowerCase</code> on the passed string.
@@ -30,14 +43,7 @@ trait StringNormalizations {
    * @return a <code>Normalization[String]</code> that normalizes by transforming strings to lower case.
    */
   val lowerCased: Normalization[String] =
-    new Normalization[String] {
-
-      /**
-       * Indicates whether the passed object is an instance of <code>String</code>.
-       *
-       * @return true if the passed object is a <code>String</code>.
-       */
-      def isInstanceOfA(b: Any) = b.isInstanceOf[String]
+    new StringNormalization {
 
       /**
        * Returns the result of invoking <code>toLowerCase</code> on the passed string.
@@ -54,14 +60,7 @@ trait StringNormalizations {
    * @return a <code>Normalization[String]</code> that normalizes strings by trimming them.
    */
   val trimmed: Normalization[String] =
-    new Normalization[String] {
-
-      /**
-       * Indicates whether the passed object is an instance of <code>String</code>.
-       *
-       * @return true if the passed object is a <code>String</code>.
-       */
-      def isInstanceOfA(b: Any) = b.isInstanceOf[String]
+    new StringNormalization {
 
       /**
        * Returns the result of invoking <code>trimmed</code> on the passed string.

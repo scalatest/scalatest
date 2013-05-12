@@ -62,7 +62,7 @@ private[scalautils] final class ComposedNormalizingEquality[A](
    * @param b the object to inspect to determine whether it is an instance of <code>A<code>
    * @return true if the passed object is an instance of <code>A</code>
    */
-  def isInstanceOfA(b: Any): Boolean = normalization.isInstanceOfA(b)
+  def normalizedIfInstanceOfA(b: Any): Any = normalization.normalizedIfInstanceOfA(b)
 
   /**
    * Normalizes the passed object.

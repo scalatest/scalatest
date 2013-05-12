@@ -73,7 +73,11 @@ class ListShouldContainSpec extends Spec with Matchers with SharedHelpers {
         // caseLists should contain ("HI") (decided by defaultEquality[String])
         // caseLists should contain ("HI") (decided by defaultEquality[String] afterBeing lowerCased)
         implicit val e = new NormalizingEquality[String] {
-          def isInstanceOfA(b: Any) = b.isInstanceOf[String]
+          def normalizedIfInstanceOfA(b: Any) =
+            b match {
+              case s: String => normalized(s)
+              case _ => b
+            }
           def normalized(s: String): String = {
             normalizedInvokedCount += 1
             s.toLowerCase

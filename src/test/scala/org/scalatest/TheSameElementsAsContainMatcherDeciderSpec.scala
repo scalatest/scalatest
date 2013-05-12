@@ -25,10 +25,10 @@ class TheSameElementsAsContainMatcherDeciderSpec extends Spec with Matchers with
   val mapTrimmed: Normalization[(Int, String)] =
     new Normalization[(Int, String)] {
 
-      def isInstanceOfA(b: Any) = 
+      def normalizedIfInstanceOfA(b: Any) = 
         b match {
-          case (_: Int, _: String) => true
-          case _ => false
+          case tup: (Int, String) => normalized(tup)
+          case _ => b
         }
 
       def normalized(s: (Int, String)): (Int, String) = (s._1, s._2.trim)
@@ -37,7 +37,11 @@ class TheSameElementsAsContainMatcherDeciderSpec extends Spec with Matchers with
   val incremented: Normalization[Int] = 
     new Normalization[Int] {
       var count = 0
-      def isInstanceOfA(b: Any) = b.isInstanceOf[Int]
+      def normalizedIfInstanceOfA(b: Any) =
+        b match {
+          case i: Int => normalized(i)
+          case _ => b
+        }
     
       def normalized(s: Int): Int = {
         count += 1
@@ -48,10 +52,10 @@ class TheSameElementsAsContainMatcherDeciderSpec extends Spec with Matchers with
   val mapIncremented: Normalization[(Int, String)] = 
     new Normalization[(Int, String)] {
       var count = 0
-      def isInstanceOfA(b: Any) = 
+      def normalizedIfInstanceOfA(b: Any) = 
         b match {
-          case (_: Int, _: String) => true
-          case _ => false
+          case tup: (Int, String) => normalized(tup)
+          case _ => b
         }
     
       def normalized(s: (Int, String)): (Int, String) = {

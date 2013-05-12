@@ -26,18 +26,26 @@ class InOrderOnlyContainMatcherDeciderSpec extends Spec with Matchers with Expli
   val incremented: Normalization[Int] = 
     new Normalization[Int] {
       var count = 0
-      def isInstanceOfA(b: Any) = b.isInstanceOf[Int]
+      def normalizedIfInstanceOfA(b: Any) =
+        b match {
+          case i: Int => normalized(i)
+          case _ => b
+        }
     
       def normalized(s: Int): Int = {
         count += 1
         s + count
       }
     }
-  
+ 
   val appended: Normalization[String] = 
     new Normalization[String] {
       var count = 0
-      def isInstanceOfA(b: Any) = b.isInstanceOf[String]
+      def normalizedIfInstanceOfA(b: Any) =
+        b match {
+          case s: String => normalized(s)
+          case _ => b
+        }
     
       def normalized(s: String): String = {
         count += 1

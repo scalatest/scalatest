@@ -36,7 +36,11 @@ class NormalizedEqualitySpec extends Spec with NonImplicitAssertions {
   }
 
   class NormalizedStringWrapperEquality extends NormalizingEquality[StringWrapper] {
-    def isInstanceOfA(b: Any): Boolean = b.isInstanceOf[StringWrapper]
+      def normalizedIfInstanceOfA(b: Any) =
+        b match {
+          case s: StringWrapper => normalized(s)
+          case _ => b
+        }
     def normalized(sw: StringWrapper): StringWrapper = {
       sw.value = sw.value.toLowerCase
       sw.isNormalized = true
@@ -71,14 +75,15 @@ class NormalizedEqualitySpec extends Spec with NonImplicitAssertions {
     def `should call .deep first if left side, right side, or both are Arrays` {
 
       class NormalizedArrayOfStringEquality extends NormalizingEquality[Array[String]] {
-        def isInstanceOfA(b: Any): Boolean = {
-          if (b.isInstanceOf[Array[_]]) {
-            val arr = b.asInstanceOf[Array[_]]
-            if (arr.isEmpty) true // If it is empty, it doesn't matter what its element type is
-            else arr(0).isInstanceOf[String]
+        def normalizedIfInstanceOfA(b: Any) =
+          b match {
+            case arr: Array[_] =>
+              if (arr.forall(_.isInstanceOf[String]))
+                normalized(arr.asInstanceOf[Array[String]])
+              else
+                b
+            case _ => b
           }
-          else false
-        }
         def normalized(arr: Array[String]): Array[String] = arr.map(_.trim.toLowerCase)
       }
 

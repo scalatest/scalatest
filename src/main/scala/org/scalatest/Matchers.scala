@@ -6556,10 +6556,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
         def containsElement(trav: TRAV[E], ele: Any): Boolean = {
           equality match {
             case normEq: NormalizingEquality[_] => 
-              val normRight =
-                if (normEq.isInstanceOfA(ele))
-                  normEq.normalized(ele.asInstanceOf[E])
-                else ele
+              val normRight = normEq.normalizedIfInstanceOfA(ele)
               trav.exists((e: Any) => normEq.afterNormalizationEquality.areEqual(normEq.normalized(e.asInstanceOf[E]), normRight)) // Don't know why the compiler requires e to be type Any. Should be E.
             case _ => trav.exists((e: Any) => equality.areEqual(e.asInstanceOf[E], ele)) // Don't know why the compiler requires e to be type Any. Should be E.
           }
