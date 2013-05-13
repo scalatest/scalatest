@@ -15,10 +15,11 @@
  */
 package org.scalatest
 
+import SharedHelpers._
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.events._
 
-class FunSpecSuite extends FunSuite with SharedHelpers {
+class FunSpecSuite extends FunSuite {
 
   test("three plain-old specifiers should be invoked in order") {
     class MySpec extends FunSpec with ShouldMatchers {

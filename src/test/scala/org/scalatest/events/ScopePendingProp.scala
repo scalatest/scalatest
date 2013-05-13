@@ -2,6 +2,7 @@ package org.scalatest.events
 
 import org.scalatest.AllSuiteProp
 import org.scalatest._
+import SharedHelpers._
 
 class ScopePendingProp extends AllSuiteProp {
 

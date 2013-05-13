@@ -16,11 +16,12 @@
 package org.scalatest.junit
 
 import org.scalatest._
+import SharedHelpers._
 import collection.immutable.TreeSet
 import helpers._
 import org.scalatest.events._
 
-class JUnit3SuiteSpec extends FunSpec with SharedHelpers {
+class JUnit3SuiteSpec extends FunSpec {
 
   describe("A JUnit3Suite") {
     it("should return the test names in alphabetical order from testNames") {

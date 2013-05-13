@@ -16,10 +16,11 @@
 package org.scalatest.suiteprop
 
 import org.scalatest._
+import SharedHelpers._
 import prop.TableDrivenPropertyChecks
 import matchers.ShouldMatchers
 
-class SuiteMatrix extends PropSpec with ShouldMatchers with TableDrivenPropertyChecks with SharedHelpers {
+class SuiteMatrix extends PropSpec with ShouldMatchers with TableDrivenPropertyChecks {
 
   property("When info appears in the code of a successful test, it should be reported in the TestSucceeded.") {
     new InfoInsideTestFiredAfterTestExamples {

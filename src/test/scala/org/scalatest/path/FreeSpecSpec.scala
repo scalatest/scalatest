@@ -16,6 +16,7 @@
 package org.scalatest.path
 
 import org.scalatest._
+import SharedHelpers._
 
 import org.scalatest.path.{ FreeSpec => PathFreeSpec }
 // elements
@@ -24,7 +25,7 @@ import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.DuplicateTestNameException
 import org.scalatest.exceptions.TestRegistrationClosedException
 
-class FreeSpecSpec extends org.scalatest.FunSpec with SharedHelpers with GivenWhenThen {
+class FreeSpecSpec extends org.scalatest.FunSpec with GivenWhenThen {
 
   describe("A FreeSpec") {
 

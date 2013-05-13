@@ -16,12 +16,13 @@
 package org.scalatest
 
 import org.scalatest.events._
+import SharedHelpers._
 /* Uncomment after remove type aliases in org.scalatest package object
 import org.scalatest.exceptions.DuplicateTestNameException
 import org.scalatest.exceptions.TestFailedException
 */
 
-class PropSpecSpec extends FunSpec with SharedHelpers {
+class PropSpecSpec extends FunSpec {
 
   describe("A PropSpec") {
 

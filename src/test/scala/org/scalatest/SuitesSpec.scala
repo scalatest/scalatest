@@ -15,11 +15,13 @@
  */
 package org.scalatest
 
+import SharedHelpers._
+
 /* Uncomment after remove type aliases in org.scalatest package object
 import org.scalatest.exceptions.NotAllowedException
 */
 
-class SuitesSpec extends FunSpec with SharedHelpers {
+class SuitesSpec extends FunSpec {
 
   val a = new Suite {}
   val b = new FunSuite {}

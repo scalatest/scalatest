@@ -18,8 +18,9 @@ package org.scalatest
 import scala.reflect.NameTransformer.encode
 import org.scalatest.events._
 import collection.immutable.TreeSet
+import SharedHelpers._
 
-class SpecSpec extends FunSpec with PrivateMethodTester with SharedHelpers {
+class SpecSpec extends FunSpec with PrivateMethodTester {
 
   describe("A Spec") {
     /*

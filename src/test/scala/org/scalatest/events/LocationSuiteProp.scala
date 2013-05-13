@@ -1,6 +1,7 @@
 package org.scalatest.events
 import org.scalatest.junit.JUnit3Suite
 import org.scalatest._
+import SharedHelpers._
 
 class LocationSuiteProp extends SuiteProp
 {

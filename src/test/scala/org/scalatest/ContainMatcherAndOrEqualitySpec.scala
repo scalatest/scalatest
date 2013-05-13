@@ -16,8 +16,9 @@
 package org.scalatest
 
 import org.scalautils.Equality
+import SharedHelpers._
 
-class ContainMatcherAndOrEqualitySpec extends Spec with Matchers with SharedHelpers {
+class ContainMatcherAndOrEqualitySpec extends Spec with Matchers {
   
   implicit val equality = new Equality[String] {
     def areEqual(left: String, right: Any) = 

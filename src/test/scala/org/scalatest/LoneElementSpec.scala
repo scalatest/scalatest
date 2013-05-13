@@ -15,7 +15,9 @@
  */
 package org.scalatest
 
-class LoneElementSpec extends Spec with SharedHelpers {
+import SharedHelpers._
+
+class LoneElementSpec extends Spec {
 
   object `when used with Matchers` extends Matchers {
     

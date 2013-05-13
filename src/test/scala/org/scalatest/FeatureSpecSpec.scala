@@ -15,6 +15,7 @@
  */
 package org.scalatest
 
+import SharedHelpers._
 import org.scalatest.events.TestStarting
 import org.scalatest.events.InfoProvided
 import org.scalatest.events.MarkupProvided
@@ -24,7 +25,7 @@ import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.exceptions.TestFailedException
 */
 
-class FeatureSpecSpec extends FunSpec with SharedHelpers {
+class FeatureSpecSpec extends FunSpec {
 
   describe("A FeatureSpec") {
 

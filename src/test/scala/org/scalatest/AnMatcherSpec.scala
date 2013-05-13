@@ -15,10 +15,10 @@
  */
 package org.scalatest
 
-import org.scalatest._
+import SharedHelpers._
 import matchers._
 
-class AnMatcherSpec extends Spec with Matchers with SharedHelpers {
+class AnMatcherSpec extends Spec with Matchers {
 
   object `AnMatcher ` {
     

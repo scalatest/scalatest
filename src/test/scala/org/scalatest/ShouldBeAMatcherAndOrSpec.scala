@@ -17,8 +17,9 @@ package org.scalatest
 
 import matchers.AMatcher
 import matchers.AnMatcher
+import SharedHelpers._
 
-class ShouldBeAMatcherAndOrSpec extends Spec with Matchers with SharedHelpers {
+class ShouldBeAMatcherAndOrSpec extends Spec with Matchers {
 
   object `AMatcher ` {
     

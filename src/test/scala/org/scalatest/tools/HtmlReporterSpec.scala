@@ -1,9 +1,10 @@
 package org.scalatest.tools
 
 import org.scalatest._
+import SharedHelpers._
 import org.scalatest.events.{SuiteCompleted, SuiteAborted, Ordinal, TestStarting}
 
-class HtmlReporterSpec extends Spec with SharedHelpers {
+class HtmlReporterSpec extends Spec {
 
   object `HtmlReporter ` {
     

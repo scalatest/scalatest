@@ -16,8 +16,9 @@
 package org.scalatest
 
 import org.scalatest.events._
+import SharedHelpers._
 
-class TimesOnIntSpec extends FunSpec with SharedHelpers with TimesOnInt {
+class TimesOnIntSpec extends FunSpec with TimesOnInt {
 
   describe("The TimesOnInt trait") {
 

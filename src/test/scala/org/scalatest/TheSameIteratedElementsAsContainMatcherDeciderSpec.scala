@@ -19,8 +19,9 @@ import org.scalautils.Equality
 import org.scalautils.Explicitly
 import org.scalautils.StringNormalizations
 import org.scalautils.Normalization
+import SharedHelpers._
 
-class TheSameIteratedElementsAsContainMatcherDeciderSpec extends Spec with Matchers with Explicitly with StringNormalizations with SharedHelpers {
+class TheSameIteratedElementsAsContainMatcherDeciderSpec extends Spec with Matchers with Explicitly with StringNormalizations {
   
   val incremented: Normalization[Int] = 
     new Normalization[Int] {

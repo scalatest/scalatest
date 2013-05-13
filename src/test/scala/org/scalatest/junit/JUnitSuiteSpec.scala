@@ -16,12 +16,13 @@
 package org.scalatest.junit
 
 import org.scalatest._
+import SharedHelpers._
 import scala.collection.immutable.TreeSet
 import org.scalatest.junit.junit4helpers._
 import org.junit.Test
 import org.junit.Ignore
 
-class JUnitSuiteSpec extends FunSpec with SharedHelpers {
+class JUnitSuiteSpec extends FunSpec {
 
   describe("A JUnitSuite") {
     it("should return the test names in alphabetical order from testNames") {

@@ -37,9 +37,11 @@ import org.scalatest.tools.TestSortingReporter
 import org.scalatest.concurrent.Eventually
 import org.scalatest.tools.DistributedTestRunnerSuite
 import org.scalatest.tools.Runner
+import SharedHelpers._
 
 class ParallelTestExecutionProp extends FunSuite 
-  with TableDrivenPropertyChecks with SharedHelpers with Eventually
+  with TableDrivenPropertyChecks 
+  with Eventually
   with ParallelTestExecutionOrderExamples 
   with ParallelTestExecutionInfoExamples 
   with ParallelTestExecutionTestTimeoutExamples

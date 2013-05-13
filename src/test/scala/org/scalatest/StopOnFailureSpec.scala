@@ -15,7 +15,9 @@
  */
 package org.scalatest
 
-class StopOnFailureSpec extends FlatSpec with SharedHelpers {
+import SharedHelpers._
+
+class StopOnFailureSpec extends FlatSpec {
 
   "StopOnFailure" should "not invoke stop on the stopper if a test succeeds" in {
     class MySuite extends FunSuite with StopOnFailure {

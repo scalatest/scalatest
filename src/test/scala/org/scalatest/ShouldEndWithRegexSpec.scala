@@ -20,8 +20,9 @@ import org.scalacheck._
 import Arbitrary._
 import Prop._
 import org.scalatest.exceptions.TestFailedException
+import SharedHelpers._
 
-class ShouldEndWithRegexSpec extends Spec with Matchers with Checkers with ReturnsNormallyThrowsAssertion with SharedHelpers {
+class ShouldEndWithRegexSpec extends Spec with Matchers with Checkers with ReturnsNormallyThrowsAssertion {
 
 /*
 s should include substring t

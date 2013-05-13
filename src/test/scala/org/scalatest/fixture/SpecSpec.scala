@@ -20,12 +20,13 @@ import org.scalatest.events._
 import org.scalatest.exceptions._
 import collection.immutable.TreeSet
 import org.scalatest.Suite._
-import org.scalatest.{ PrivateMethodTester, SharedHelpers, ShouldMatchers, BeforeAndAfterEach, BeforeAndAfterAll, 
+import org.scalatest.{ PrivateMethodTester, ShouldMatchers, BeforeAndAfterEach, BeforeAndAfterAll, 
                         Filter, Args, Stopper, Tracker, Ignore, SlowAsMolasses, FastAsLight, WeakAsAKitten, Specs, 
                         Reporter, Distributor, OptionValues, NotAllowedException, Resources, DoNotDiscover, WrapWith, 
                         ConfigMapWrapperSuite, StringFixture, Status, SucceededStatus, ConfigMap, Outcome }
+import org.scalatest.SharedHelpers._
 
-class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester with SharedHelpers {
+class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
 
   describe("A fixture.Spec") {
     /*

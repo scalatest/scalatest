@@ -16,9 +16,10 @@
 package org.scalatest.words
 
 import org.scalatest._
+import SharedHelpers._
 import events.TestSucceeded
 
-class CanVerbSuite extends FunSuite with SharedHelpers {
+class CanVerbSuite extends FunSuite {
   test("can use can in WordSpec (which might be very convenient at times)") {
     class MySpec extends WordSpec {
       "A thingy" can {

@@ -22,13 +22,14 @@ import java.nio.charset.CoderMalfunctionError
 import javax.xml.parsers.FactoryConfigurationError
 import javax.xml.transform.TransformerFactoryConfigurationError
 import java.awt.AWTError
+import SharedHelpers._
 
 /* Uncomment after remove type aliases in org.scalatest package object
 import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.exceptions.TestFailedException
 */
 
-class SuiteSuite extends Suite with PrivateMethodTester with SharedHelpers with SeveredStackTraces {
+class SuiteSuite extends Suite with PrivateMethodTester with SeveredStackTraces {
 
   def `test: Suite should discover method names and tags using deprecated Informer form` {
 

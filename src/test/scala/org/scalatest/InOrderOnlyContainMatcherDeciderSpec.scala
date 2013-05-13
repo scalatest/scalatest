@@ -20,8 +20,9 @@ import org.scalautils.Explicitly
 import org.scalautils.StringNormalizations
 import org.scalautils.Normalization
 import collection.GenTraversable
+import SharedHelpers._
 
-class InOrderOnlyContainMatcherDeciderSpec extends Spec with Matchers with Explicitly with StringNormalizations with SharedHelpers {
+class InOrderOnlyContainMatcherDeciderSpec extends Spec with Matchers with Explicitly with StringNormalizations {
   
   val incremented: Normalization[Int] = 
     new Normalization[Int] {

@@ -16,8 +16,9 @@
 package org.scalatest
 
 import org.scalatest.exceptions.TestFailedException
+import SharedHelpers._
 
-class ShouldBeASymbolSpec extends Spec with Matchers with FileMocks with SharedHelpers {
+class ShouldBeASymbolSpec extends Spec with Matchers with FileMocks {
 
   object `The be a ('symbol) syntax` {
 

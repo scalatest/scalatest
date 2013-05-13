@@ -16,6 +16,7 @@
 package org.scalatest.path
 
 import org.scalatest._
+import SharedHelpers._
 
 import org.scalatest.path.{ FunSpec => PathFunSpec }
 import org.scalatest.events._
@@ -23,7 +24,7 @@ import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.DuplicateTestNameException
 import org.scalatest.exceptions.TestRegistrationClosedException
 
-class FunSpecSpec extends org.scalatest.FreeSpec with SharedHelpers with GivenWhenThen {
+class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
 
   "A path.FunSpec" - {
 

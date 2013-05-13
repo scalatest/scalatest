@@ -15,6 +15,7 @@
  */
 package org.scalatest
 
+import SharedHelpers._
 import org.scalatest.events._
 /* Uncomment after remove type aliases in org.scalatest package object
 import org.scalatest.exceptions.DuplicateTestNameException
@@ -22,7 +23,7 @@ import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestRegistrationClosedException
 */
 
-class FunSuiteSpec extends FunSpec with SharedHelpers {
+class FunSuiteSpec extends FunSpec {
 
   describe("A FunSuite") {
 

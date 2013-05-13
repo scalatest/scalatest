@@ -16,8 +16,9 @@
 package org.scalatest
 
 import matchers.{BeMatcher, MatchResult, BePropertyMatcher, BePropertyMatchResult}
+import SharedHelpers._
 
-class ShouldBeShorthandSpec extends Spec with Matchers with SharedHelpers with EmptyMocks with BookPropertyMatchers {
+class ShouldBeShorthandSpec extends Spec with Matchers with EmptyMocks with BookPropertyMatchers {
 
   object `The shouldBe syntax` {
 

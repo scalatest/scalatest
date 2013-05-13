@@ -16,8 +16,9 @@
 package org.scalatest
 
 import org.scalautils.Equality
+import SharedHelpers._
 
-class OptionShouldContainOneOfSpec extends Spec with Matchers with SharedHelpers {
+class OptionShouldContainOneOfSpec extends Spec with Matchers {
 
   object `an Option` {
 

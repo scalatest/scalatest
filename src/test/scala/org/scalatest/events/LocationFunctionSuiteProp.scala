@@ -1,5 +1,6 @@
 package org.scalatest.events
 import org.scalatest._
+import SharedHelpers._
 
 class LocationFunctionSuiteProp extends FunctionSuiteProp {
   
@@ -434,7 +435,7 @@ class LocationFunctionSuiteProp extends FunctionSuiteProp {
   def pathFunSpec = new TestLocationFunctionPathFunSpec
 }
 
-class TestLocationFunctionPathFreeSpec extends path.FreeSpec with TestLocationFunctionServices with SharedHelpers {
+class TestLocationFunctionPathFreeSpec extends path.FreeSpec with TestLocationFunctionServices {
   val expectedSourceFileName = "LocationFunctionSuiteProp.scala"
   "Test" - {
     "should succeed" in {
@@ -462,7 +463,7 @@ class TestLocationFunctionPathFreeSpec extends path.FreeSpec with TestLocationFu
   val expectedScopeClosedList = List(ScopeClosedPair("Test", expectedSourceFileName, thisLineNumber - 23))
 }
 
-class TestLocationFunctionPathFunSpec extends path.FunSpec with TestLocationFunctionServices with SharedHelpers {
+class TestLocationFunctionPathFunSpec extends path.FunSpec with TestLocationFunctionServices {
   val expectedSourceFileName = "LocationFunctionSuiteProp.scala"
   describe("A Spec") {
     it("succeed") {

@@ -18,8 +18,9 @@ package org.scalatest
 import collection.GenTraversable
 import collection.mutable.LinkedHashMap
 import words.InOrderContainMatcher
+import SharedHelpers._
 
-class InOrderContainMatcherSpec extends Spec with Matchers with SharedHelpers {
+class InOrderContainMatcherSpec extends Spec with Matchers {
 
   object `inOrder ` {
     
