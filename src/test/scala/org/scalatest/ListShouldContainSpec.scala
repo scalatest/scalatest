@@ -61,18 +61,23 @@ class ListShouldContainSpec extends Spec with Matchers {
           xs should contain ("hi")
         }
       }
+      def `should use an explicitly provided Equality` {
+        intercept[TestFailedException] {
+          caseLists should contain ("HI")
+        }
+        (caseLists should contain ("HI")) (withGenTraversableElementEquality(decided by defaultEquality afterBeing lowerCased))
+        (caseLists should contain ("HI")) (withGenTraversableElementEquality(decided afterBeing lowerCased))
+        (caseLists should contain ("HI ")) (withGenTraversableElementEquality(decided afterBeing lowerCased and trimmed))
+        implicit val e = new Equality[String] {
+          def areEqual(a: String, b: Any): Boolean = a != b
+        }
+        (xs should contain ("hi")) (withGenTraversableElementEquality(decided by defaultEquality))
+      }
       def `should minimize normalization if an implicit NormalizingEquality is in scope` {
         intercept[TestFailedException] {
           caseLists should contain ("HI")
         }
         var normalizedInvokedCount = 0
-        // DOES WORK caseLists should contain ("HI") (equalityEnablersForTraversable[String, List](decided by defaultEquality[String] afterBeing lowerCased))
-        // next try decided by defaultHolder...
-        // or: decided by holderOf(defaultEquality ... ugly
-        // caseLists should contain ("HI") (equalityEnablersForTraversable(decided by defaultEquality[String] afterBeing lowerCased))
-        // caseLists should contain ("HI") (defaultEquality[String])
-        // caseLists should contain ("HI") (decided by defaultEquality[String])
-        // caseLists should contain ("HI") (decided by defaultEquality[String] afterBeing lowerCased)
         implicit val e = new NormalizingEquality[String] {
           def normalizedIfInstanceOfA(b: Any) =
             b match {
