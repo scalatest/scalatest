@@ -17,6 +17,7 @@ package org.scalatest
 
 import org.scalautils.Equality
 import org.scalautils.NormalizingEquality
+import org.scalautils.Normalization
 import org.scalautils.StringNormalizations._
 import SharedHelpers._
 
@@ -351,6 +352,42 @@ class ListShouldContainSpec extends Spec with Matchers {
         intercept[TestFailedException] {
           all (hiLists) should contain ("hi")
         }
+      }
+      def `should use an explicitly provided Equality` {
+        val mappedToLowerCase: Normalization[List[String]] =
+          new Normalization[List[String]] {
+            def normalized(xs: List[String]): List[String] = xs.map(_.toLowerCase)
+            def normalizedIfInstanceOfA(xs: Any): Any =
+              xs match {
+                case list: List[_] =>
+                  list map {
+                    case s: String => s.toLowerCase
+                    case other => other
+                  }
+                case other => other
+              }
+          }
+        val mappedToTrimmed: Normalization[List[String]] =
+          new Normalization[List[String]] {
+            def normalized(xs: List[String]): List[String] = xs.map(_.toLowerCase)
+            def normalizedIfInstanceOfA(xs: Any): Any =
+              xs match {
+                case list: List[_] =>
+                  list map {
+                    case s: String => s.trim
+                    case other => other
+                  }
+                case other => other
+              }
+          }
+        intercept[TestFailedException] {
+          all (hiLists) should contain (List("HI"))
+        }
+        intercept[TestFailedException] {
+          all (hiLists) should contain (List("HI "))
+        }
+        (hiLists should contain (List("HI"))) (withGenTraversableElementEquality(decided by defaultEquality afterBeing mappedToLowerCase))
+        (hiLists should contain (List("HI "))) (withGenTraversableElementEquality(decided afterBeing mappedToTrimmed and mappedToLowerCase))
       }
     }
     object `when used with not contain value syntax` {
