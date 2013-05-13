@@ -15,6 +15,7 @@
  */
 package org.scalatest
 
+import SharedHelpers._
 import org.scalatest.events._
 /* Uncomment after remove type aliases in org.scalatest package object
 import org.scalatest.exceptions.TestRegistrationClosedException
@@ -27,7 +28,7 @@ package mytags {
   object WeakAsAKitten extends Tag("org.scalatest.WeakAsAKitten")
 }
 
-class FunSuiteSuite extends Suite with SharedHelpers {
+class FunSuiteSuite extends Suite {
 
   def testThatTestMethodsWithNoTagsDontShowUpInTagsMap() {
     

@@ -19,6 +19,7 @@ import org.scalatest.events.Ordinal
 import org.scalatest.junit.JUnit3Suite
 import org.scalatest.junit.JUnitSuite
 import org.scalatest.testng.TestNGSuite
+import SharedHelpers._
 
 class FilterProp extends SuiteProp {
   

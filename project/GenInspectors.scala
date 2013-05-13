@@ -576,11 +576,12 @@ object GenInspectors {
       new SingleClassFile(
         packageName = Some("org.scalatest.inspectors.nested"), 
         importList = List("org.scalatest._", 
+                          "SharedHelpers._", 
                           "collection.GenTraversable"), 
         classTemplate = new ClassTemplate {
           val name = "NestedInspectorsSpec"
           override val extendName = Some("Spec")
-          override val withList = List("Inspectors", "SharedHelpers")
+          override val withList = List("Inspectors")
           override val children = {
             
             val succeededAssertion = "assert(n % 2 == 0, n % 2 + \" was not equal to 0\")"
@@ -1201,6 +1202,7 @@ object GenInspectors {
         packageName = Some("org.scalatest.inspectors.all"), 
         importList = List(
                        "org.scalatest._", 
+                       "SharedHelpers._", 
                        "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}", 
                        "collection.GenTraversable", 
                        "collection.GenMap"
@@ -1208,7 +1210,7 @@ object GenInspectors {
         classTemplate = new ClassTemplate {
           val name = "InspectorShorthandsForAllSucceededSpec"
           override val extendName = Some("Spec")
-          override val withList = List("Matchers", "SharedHelpers")
+          override val withList = List("Matchers")
           override val children = succeedTests
         }
       )
@@ -1227,6 +1229,7 @@ object GenInspectors {
           packageName = Some("org.scalatest.inspectors.all"), 
           importList = List(
                          "org.scalatest._", 
+                         "SharedHelpers._", 
                          "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}", 
                          "collection.GenTraversable", 
                          "collection.GenMap"
@@ -1234,7 +1237,7 @@ object GenInspectors {
           classTemplate = new ClassTemplate {
             val name = className
             override val extendName = Some("Spec")
-            override val withList = List("Matchers", "SharedHelpers")
+            override val withList = List("Matchers")
             override val children = new InspectorShorthandsHelpersTemplate :: failedTests
           }
         )
@@ -1257,6 +1260,7 @@ object GenInspectors {
           packageName = Some("org.scalatest.inspectors.atLeast"), 
           importList = List(
                          "org.scalatest._", 
+                         "SharedHelpers._", 
                          "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}", 
                          "collection.GenTraversable", 
                          "collection.GenMap"
@@ -1264,7 +1268,7 @@ object GenInspectors {
           classTemplate = new ClassTemplate {
             val name = "InspectorShorthandsForAtLeastSucceededSpec"
             override val extendName = Some("Spec")
-            override val withList = List("Matchers", "SharedHelpers")
+            override val withList = List("Matchers")
             override val children = succeedTests
           }
         )
@@ -1425,6 +1429,7 @@ object GenInspectors {
           packageName = Some("org.scalatest.inspectors.atLeast"), 
           importList = List(
                          "org.scalatest._", 
+                         "SharedHelpers._", 
                          "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}", 
                          "collection.GenTraversable", 
                          "collection.GenMap"
@@ -1432,7 +1437,7 @@ object GenInspectors {
           classTemplate = new ClassTemplate {
             val name = className
             override val extendName = Some("Spec")
-            override val withList = List("Matchers", "SharedHelpers")
+            override val withList = List("Matchers")
             override val children = new InspectorShorthandsHelpersTemplate :: failedTests
           }
         )
@@ -1455,6 +1460,7 @@ object GenInspectors {
           packageName = Some("org.scalatest.inspectors.every"), 
           importList = List(
                          "org.scalatest._", 
+                         "SharedHelpers._", 
                          "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}", 
                          "collection.GenTraversable", 
                          "collection.GenMap"
@@ -1462,7 +1468,7 @@ object GenInspectors {
           classTemplate = new ClassTemplate {
             val name = "InspectorShorthandsForEverySucceededSpec"
             override val extendName = Some("Spec")
-            override val withList = List("Matchers", "SharedHelpers")
+            override val withList = List("Matchers")
             override val children = succeedTests
           }
         )
@@ -1624,6 +1630,7 @@ object GenInspectors {
           packageName = Some("org.scalatest.inspectors.every"), 
           importList = List(
                          "org.scalatest._", 
+                         "SharedHelpers._", 
                          "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}", 
                          "collection.GenTraversable", 
                          "collection.GenMap"
@@ -1631,7 +1638,7 @@ object GenInspectors {
           classTemplate = new ClassTemplate {
             val name = className
             override val extendName = Some("Spec")
-            override val withList = List("Matchers", "SharedHelpers")
+            override val withList = List("Matchers")
             override val children = new InspectorShorthandsHelpersTemplate :: failedTests
           }
         )
@@ -1654,6 +1661,7 @@ object GenInspectors {
           packageName = Some("org.scalatest.inspectors.exactly"), 
           importList = List(
                          "org.scalatest._", 
+                         "SharedHelpers._", 
                          "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}", 
                          "collection.GenTraversable", 
                          "collection.GenMap"
@@ -1661,7 +1669,7 @@ object GenInspectors {
           classTemplate = new ClassTemplate {
             val name = "InspectorShorthandsForExactlySucceededSpec"
             override val extendName = Some("Spec")
-            override val withList = List("Matchers", "SharedHelpers")
+            override val withList = List("Matchers")
             override val children = succeedTests
           }
         )
@@ -1823,6 +1831,7 @@ object GenInspectors {
           packageName = Some("org.scalatest.inspectors.exactly"), 
           importList = List(
                          "org.scalatest._", 
+                         "SharedHelpers._", 
                          "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}", 
                          "collection.GenTraversable", 
                          "collection.GenMap"
@@ -1830,7 +1839,7 @@ object GenInspectors {
           classTemplate = new ClassTemplate {
             val name = className
             override val extendName = Some("Spec")
-            override val withList = List("Matchers", "SharedHelpers")
+            override val withList = List("Matchers")
             override val children = new InspectorShorthandsHelpersTemplate :: failedTests
           }
         )
@@ -1853,6 +1862,7 @@ object GenInspectors {
         packageName = Some("org.scalatest.inspectors.no"),
         importList = List(
           "org.scalatest._", 
+          "SharedHelpers._", 
           "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}", 
           "collection.GenTraversable",
           "collection.GenMap"
@@ -1860,7 +1870,7 @@ object GenInspectors {
         classTemplate = new ClassTemplate {
           val name = "InspectorShorthandsForNoSucceededSpec"
           override val extendName = Some("Spec")
-          override val withList = List("Matchers", "SharedHelpers")
+          override val withList = List("Matchers")
           override val children = succeedTests
         }
       )
@@ -2020,6 +2030,7 @@ object GenInspectors {
           packageName = Some("org.scalatest.inspectors.no"),
           importList = List(
             "org.scalatest._", 
+            "SharedHelpers._", 
             "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}", 
             "collection.GenTraversable",
             "collection.GenMap"
@@ -2027,7 +2038,7 @@ object GenInspectors {
           classTemplate = new ClassTemplate {
             val name = className
             override val extendName = Some("Spec")
-            override val withList = List("Matchers", "SharedHelpers")
+            override val withList = List("Matchers")
             override val children = new InspectorShorthandsHelpersTemplate :: failedTests
           }
         )
@@ -2050,6 +2061,7 @@ object GenInspectors {
         packageName = Some("org.scalatest.inspectors.between"),
         importList = List(
           "org.scalatest._", 
+          "SharedHelpers._", 
           "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}", 
           "collection.GenTraversable",
           "collection.GenMap"
@@ -2057,7 +2069,7 @@ object GenInspectors {
         classTemplate = new ClassTemplate {
           val name = "InspectorShorthandsForBetweenSucceededSpec"
           override val extendName = Some("Spec")
-          override val withList = List("Matchers", "SharedHelpers")
+          override val withList = List("Matchers")
           override val children = succeedTests
         }
       )
@@ -2220,6 +2232,7 @@ object GenInspectors {
           packageName = Some("org.scalatest.inspectors.between"),
           importList = List(
             "org.scalatest._", 
+            "SharedHelpers._", 
             "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}", 
             "collection.GenTraversable",
             "collection.GenMap"
@@ -2227,7 +2240,7 @@ object GenInspectors {
           classTemplate = new ClassTemplate {
             val name = className
             override val extendName = Some("Spec")
-            override val withList = List("Matchers", "SharedHelpers")
+            override val withList = List("Matchers")
             override val children = new InspectorShorthandsHelpersTemplate :: failedTests
           }
         )
@@ -2250,6 +2263,7 @@ object GenInspectors {
         packageName = Some("org.scalatest.inspectors.atMost"),
         importList = List(
           "org.scalatest._", 
+          "SharedHelpers._", 
           "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}", 
           "collection.GenTraversable",
           "collection.GenMap"
@@ -2257,7 +2271,7 @@ object GenInspectors {
         classTemplate = new ClassTemplate {
           val name = "InspectorShorthandsForAtMostSucceededSpec"
           override val extendName = Some("Spec")
-          override val withList = List("Matchers", "SharedHelpers")
+          override val withList = List("Matchers")
           override val children = succeedTests
         }
       )
@@ -2425,6 +2439,7 @@ object GenInspectors {
           packageName = Some("org.scalatest.inspectors.atMost"),
           importList = List(
             "org.scalatest._", 
+            "SharedHelpers._", 
             "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}", 
             "collection.GenTraversable",
             "collection.GenMap"
@@ -2432,7 +2447,7 @@ object GenInspectors {
           classTemplate = new ClassTemplate {
             val name = className
             override val extendName = Some("Spec")
-            override val withList = List("Matchers", "SharedHelpers")
+            override val withList = List("Matchers")
             override val children = new InspectorShorthandsHelpersTemplate :: failedTests
           }
         )

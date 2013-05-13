@@ -29,8 +29,9 @@ import org.scalatest.concurrent.Eventually
 import org.scalatest.time.Span
 import org.scalatest.time.Seconds
 import org.scalatest._
+import SharedHelpers._
 
-class XmlSocketReporterSpec extends FunSpec with SharedHelpers with Eventually {
+class XmlSocketReporterSpec extends FunSpec with Eventually {
   
   class SocketEventRecorder(socket: ServerSocket) extends Runnable {
     @volatile

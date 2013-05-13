@@ -15,7 +15,9 @@
  */
 package org.scalatest
 
-class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers with SharedHelpers {
+import SharedHelpers._
+
+class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers {
   
   def errorMessage(index: Int, message: String, lineNumber: Int, left: Any): String = 
     "'all' inspection failed, because: \n" +

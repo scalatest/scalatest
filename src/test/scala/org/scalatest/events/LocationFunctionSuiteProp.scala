@@ -2,6 +2,7 @@ package org.scalatest.events
 
 import org.scalatest.SharedHelpers.thisLineNumber
 import org.scalatest._
+import SharedHelpers._
 
 class LocationFunctionSuiteProp extends FunctionSuiteProp {
   

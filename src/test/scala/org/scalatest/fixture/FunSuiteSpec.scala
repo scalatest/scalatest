@@ -16,12 +16,13 @@
 package org.scalatest.fixture
 
 import org.scalatest._
+import SharedHelpers._
 import events.TestFailed
 import org.scalatest.exceptions.DuplicateTestNameException
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestRegistrationClosedException
 
-class FunSuiteSpec extends org.scalatest.FunSpec with PrivateMethodTester with SharedHelpers {
+class FunSuiteSpec extends org.scalatest.FunSpec with PrivateMethodTester {
 
   describe("A fixture.FunSuite") {
     it("should return the test names in order of registration from testNames") {

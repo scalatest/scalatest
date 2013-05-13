@@ -20,6 +20,7 @@ import org.scalatest.junit.JUnitSuite
 import org.junit.Test
 import org.testng.annotations.{Test => TestNG }
 import org.scalatest.testng.TestNGSuite
+import SharedHelpers._
 
 class BeforeAndAfterAllProp extends AllSuiteProp {
 

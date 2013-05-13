@@ -25,6 +25,7 @@ import java.io.ByteArrayOutputStream
 import org.scalatest.tools.SuiteSortingReporter
 import org.scalatest.time._
 import org.scalatest.tools.TestSortingReporter
+import SharedHelpers._
 
 class CatchReporterProp extends AllSuiteProp {
 

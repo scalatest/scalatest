@@ -22,6 +22,7 @@ import org.junit.Test
 import org.testng.annotations.{Test => TestNG }
 import scala.collection.mutable.ListBuffer
 import org.scalatest.tools.SuiteRunner
+import SharedHelpers._
 
 class StatusProp extends AllSuiteProp {
   

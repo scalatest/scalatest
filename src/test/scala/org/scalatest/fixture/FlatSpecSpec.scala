@@ -16,6 +16,7 @@
 package org.scalatest.fixture
 
 import org.scalatest._
+import SharedHelpers._
 import org.scalatest.events.{TestStarting, TestFailed}
 import org.scalatest.exceptions.DuplicateTestNameException
 import org.scalatest.exceptions.TestFailedException
@@ -24,7 +25,7 @@ import org.scalatest.events.InfoProvided
 
 object SlowTest extends Tag("SlowTest")
 
-class FlatSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester with SharedHelpers {
+class FlatSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
 
   describe("A fixture.FlatSpec ") {
     it("A fixture.Spec should return the test names in order of registration from testNames") {

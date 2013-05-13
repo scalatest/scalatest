@@ -16,10 +16,10 @@
 package org.scalatest
 
 import collection.mutable.LinkedHashMap
-
 import words.TheSameIteratedElementsAsContainMatcher
+import SharedHelpers._
 
-class TheSameIteratedElementsAsContainMatcherSpec extends Spec with Matchers with SharedHelpers  {
+class TheSameIteratedElementsAsContainMatcherSpec extends Spec with Matchers  {
 
   object `theSameIteratedElementsAs ` {
     

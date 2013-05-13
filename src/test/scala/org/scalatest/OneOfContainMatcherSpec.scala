@@ -17,8 +17,9 @@ package org.scalatest
 
 import collection.GenTraversable
 import words.OneOfContainMatcher
+import SharedHelpers._
 
-class OneOfContainMatcherSpec extends Spec with Matchers with SharedHelpers {
+class OneOfContainMatcherSpec extends Spec with Matchers {
 
   object `oneOf ` {
     

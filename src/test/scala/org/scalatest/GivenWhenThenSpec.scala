@@ -15,9 +15,10 @@
  */
 package org.scalatest
 
+import SharedHelpers._
 import events.InfoProvided
 
-class GivenWhenThenSpec extends FunSpec with SharedHelpers {
+class GivenWhenThenSpec extends FunSpec {
   describe("The GivenWhenThen trait") {
 
     val theGiven = "an invalid zip code"

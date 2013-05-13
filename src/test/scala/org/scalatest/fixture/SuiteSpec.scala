@@ -22,8 +22,9 @@ import events.TestSucceeded
 import mock.MockitoSugar
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.events.InfoProvided
+import SharedHelpers._
 
-class SuiteSpec extends org.scalatest.FunSpec with PrivateMethodTester with SharedHelpers {
+class SuiteSpec extends org.scalatest.FunSpec with PrivateMethodTester {
 
   describe("The private testMethodTakesInformer method") {
     val testMethodTakesAFixtureAndInformer = PrivateMethod[Boolean]('testMethodTakesAFixtureAndInformer)

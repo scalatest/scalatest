@@ -27,8 +27,9 @@ import matchers.HavePropertyMatchResult
 import matchers.BePropertyMatcher
 import matchers.BePropertyMatchResult
 import org.scalautils.Equality
+import SharedHelpers._
 
-class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropertyChecks with SharedHelpers {
+class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropertyChecks {
 
   def examples =
     Table[Set[Int] => GenTraversable[Int]](

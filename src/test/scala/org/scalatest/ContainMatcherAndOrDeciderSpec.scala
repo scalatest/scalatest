@@ -18,8 +18,9 @@ package org.scalatest
 import org.scalautils.Equality
 import org.scalautils.Explicitly
 import org.scalautils.StringNormalizations
+import SharedHelpers._
 
-class ContainMatcherAndOrDeciderSpec extends Spec with Matchers with Explicitly with StringNormalizations with SharedHelpers {
+class ContainMatcherAndOrDeciderSpec extends Spec with Matchers with Explicitly with StringNormalizations {
 
   val equality = new Equality[String] {
     def areEqual(left: String, right: Any) = 

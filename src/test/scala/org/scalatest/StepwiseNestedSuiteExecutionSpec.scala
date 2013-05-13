@@ -15,7 +15,9 @@
  */
 package org.scalatest
 
-class StepwiseNestedSuiteExecutionSpec extends Spec with SharedHelpers {
+import SharedHelpers._
+
+class StepwiseNestedSuiteExecutionSpec extends Spec {
   object `the StepwiseNestedSuiteExecution trait` {
     object `when mixed into a Suite` {
       def `should override runNestedSuites such that it calls run on nested suites in stepwise order, but with the distributor passed as is` {

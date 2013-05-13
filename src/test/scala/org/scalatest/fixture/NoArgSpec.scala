@@ -16,9 +16,10 @@
 package org.scalatest.fixture
 
 import org.scalatest._
+import SharedHelpers._
 import NoArgSpec.invokedCount
 
-class NoArgSpec extends org.scalatest.Spec with SharedHelpers {
+class NoArgSpec extends org.scalatest.Spec {
   object `A NoArg` {
     def `should use the init function as the implementation of its apply method` {
       invokedCount = 0

@@ -15,7 +15,9 @@
  */
 package org.scalatest
 
-class CancelAfterFailureSpec extends FlatSpec with SharedHelpers {
+import SharedHelpers._
+
+class CancelAfterFailureSpec extends FlatSpec {
 
   "CancelAfterFailure" should "not interfere if no tests fail" in {
     class MySuite extends FunSuite with CancelAfterFailure {

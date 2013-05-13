@@ -15,13 +15,14 @@
  */
 package org.scalatest
 
+import SharedHelpers._
 import events.InfoProvided
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.events.LineInFile
 import org.scalatest.exceptions._
 import org.scalatest.OutcomeOf.outcomeOf
 
-class EngineSpec extends FlatSpec with SharedHelpers with ShouldMatchers {
+class EngineSpec extends FlatSpec with ShouldMatchers {
 
   "EngineSpec.getTestNamePrefix" should "return empty string for Trunk" in {
     val engine = new Engine("concurrentFunSuiteBundleMod", "FunSuite")

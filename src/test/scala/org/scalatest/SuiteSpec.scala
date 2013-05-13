@@ -18,6 +18,7 @@ package org.scalatest
 import collection.immutable.TreeSet
 import org.scalatest.events._
 import scala.reflect.NameTransformer.encode
+import SharedHelpers._
 /* Uncomment after remove type aliases in org.scalatest package object
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestPendingException
@@ -86,7 +87,7 @@ class MandarinOrangeSpecs(suites: Suite*) extends Specs(suites: _*)
 class MandarinOrangeSequential(suites: Suite*) extends Sequential(suites: _*)
 class MandarinOrangeStepwise(suites: Suite*) extends Stepwise(suites: _*)
 
-class SuiteSpec extends FunSpec with PrivateMethodTester with SharedHelpers {
+class SuiteSpec extends FunSpec with PrivateMethodTester {
 
   describe("the toString method on Suites and SuiteLike traits other than TestNGSuiteLike") {
     describe("when the suite contains no nested suites") {

@@ -16,6 +16,7 @@
 package org.scalatest
 
 import events._
+import SharedHelpers._
 
 class TopLevelSuite extends Suite with OneInstancePerTest {
   import TopLevelSuite.sideEffectWasNotSeen
@@ -37,7 +38,7 @@ object TopLevelSuite {
   var sideEffectWasNotSeen = true
 }
 
-class OneInstancePerTestSpec extends FunSpec with SharedHelpers {
+class OneInstancePerTestSpec extends FunSpec {
   describe("The OneInstancePerTest trait") {
     it("should isolate side effects from one test to the next in a top level Suite class that does not override newInstance") {
       var sideEffectWasNotSeen = true

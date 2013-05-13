@@ -15,6 +15,7 @@
  */
 package org.scalatest
 
+import SharedHelpers._
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.events._
 /* Uncomment after remove type aliases in org.scalatest package object
@@ -22,7 +23,7 @@ import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestRegistrationClosedException
 */
 
-class FlatSpecSpec extends FunSpec with SharedHelpers with GivenWhenThen with ShouldMatchers {
+class FlatSpecSpec extends FunSpec with GivenWhenThen with ShouldMatchers {
 
   describe("A FlatSpec") {
 

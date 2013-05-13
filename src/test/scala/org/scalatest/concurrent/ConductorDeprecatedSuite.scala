@@ -16,14 +16,15 @@
 package org.scalatest.concurrent
 
 import org.scalatest._
+import SharedHelpers._
 import matchers.ShouldMatchers
 import Thread.State._
 import java.util.concurrent.atomic.AtomicBoolean
 import org.scalatest.exceptions.NotAllowedException
 
-class ConductorDeprecatedSuite extends FunSuite with ShouldMatchers with SharedHelpers with SeveredStackTraces {
+class ConductorDeprecatedSuite extends FunSuite with ShouldMatchers with SeveredStackTraces {
 
-  val baseLineNumber = 26
+  val baseLineNumber = thisLineNumber
 
   test("if conduct is called twice, the second time it throws an NotAllowedException") {
     val conductor = new Conductor

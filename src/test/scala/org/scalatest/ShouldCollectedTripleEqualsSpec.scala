@@ -24,8 +24,9 @@ import scala.collection.GenTraversableOnce
 import org.scalautils.TripleEquals
 import org.scalautils.TypeCheckedTripleEquals
 import org.scalautils.ConversionCheckedTripleEquals
+import SharedHelpers._
 
-class ShouldCollectedTripleEqualsSpec extends Spec with NonImplicitAssertions with Matchers with SharedHelpers {
+class ShouldCollectedTripleEqualsSpec extends Spec with NonImplicitAssertions with Matchers {
 
   case class Super(size: Int)
   class Sub(sz: Int) extends Super(sz)

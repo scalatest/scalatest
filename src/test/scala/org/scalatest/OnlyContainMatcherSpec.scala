@@ -16,10 +16,10 @@
 package org.scalatest
 
 import collection.GenTraversable
-
 import words.OnlyContainMatcher
+import SharedHelpers._
 
-class OnlyContainMatcherSpec extends Spec with Matchers with SharedHelpers {
+class OnlyContainMatcherSpec extends Spec with Matchers {
 
   object `only ` {
     

@@ -22,7 +22,7 @@ import scala.annotation.tailrec
 import scala.collection.GenTraversable
 import scala.collection.GenMap
 
-trait SharedHelpers extends Assertions {
+object SharedHelpers extends Assertions {
 
   object SilentReporter extends Reporter {
     def apply(event: Event) = ()  
@@ -1115,7 +1115,4 @@ trait SharedHelpers extends Assertions {
     ois.readObject.asInstanceOf[A]
   }
 }
-
-// Selfless trait pattern
-object SharedHelpers extends SharedHelpers
 

@@ -16,13 +16,14 @@
 package org.scalatest.concurrent
 
 import org.scalatest._
+import SharedHelpers._
 import matchers.ShouldMatchers
 import SharedHelpers.thisLineNumber
 import time.{Span, Millis}
 import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.exceptions.TestFailedException
 
-class AsyncAssertionsSpec extends fixture.FunSpec with ShouldMatchers with SharedHelpers with ConductorFixture with
+class AsyncAssertionsSpec extends fixture.FunSpec with ShouldMatchers with ConductorFixture with
     OptionValues with AsyncAssertions {
 /*
   def withCause(cause: Throwable)(fun: => Unit) {

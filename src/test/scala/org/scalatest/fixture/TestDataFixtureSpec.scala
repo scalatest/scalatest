@@ -16,8 +16,9 @@
 package org.scalatest.fixture
 
 import org.scalatest._
+import SharedHelpers._
 
-class TestDataFixtureSpec extends org.scalatest.FunSpec with SharedHelpers {
+class TestDataFixtureSpec extends org.scalatest.FunSpec {
   describe("A TestDataFixture") {
     it("should pass the test data to each test") {
       val myConfigMap = ConfigMap("hello" -> "world", "salt" -> "pepper")

@@ -26,6 +26,7 @@ import org.scalatest.events.IndentedText
 import org.junit.Test
 import org.testng.annotations.{Test => TestNGTest}
 import org.scalatest.events.Formatter
+import SharedHelpers._
 
 trait TestColonEscapeExamples extends Tables {
   def suite: Suite
@@ -83,7 +84,7 @@ trait NonTestColonEscapeExamples extends Tables {
     (testngSuite, Some("- test: A Succeeded Test"), Some("- test: A Failed Test"), Some("- test: An Ignored Test"), None, None))
 }
 
-class TestColonEscapeProp extends FunSuite with TestColonEscapeExamples with TableDrivenPropertyChecks with ShouldMatchers with SharedHelpers {
+class TestColonEscapeProp extends FunSuite with TestColonEscapeExamples with TableDrivenPropertyChecks with ShouldMatchers {
 
   def assertFormattedText(formatter: Option[Formatter], expected: String) {
     formatter match {
@@ -187,7 +188,7 @@ class TestColonEscapeExamplePathFunSpec extends path.FunSpec {
   }
 }
 
-class NonTestColonEscapeProp extends FunSuite with NonTestColonEscapeExamples with TableDrivenPropertyChecks with ShouldMatchers with SharedHelpers {
+class NonTestColonEscapeProp extends FunSuite with NonTestColonEscapeExamples with TableDrivenPropertyChecks with ShouldMatchers {
   
   def assertFormattedText(formatter: Option[Formatter], expected: Option[String]) {
     expected match {

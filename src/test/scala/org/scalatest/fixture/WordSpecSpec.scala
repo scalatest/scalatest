@@ -16,6 +16,7 @@
 package org.scalatest.fixture
 
 import org.scalatest._
+import SharedHelpers._
 import events.TestFailed
 import org.scalatest.exceptions.DuplicateTestNameException
 import org.scalatest.exceptions.TestRegistrationClosedException
@@ -23,7 +24,7 @@ import org.scalatest.events.InfoProvided
 import org.scalatest.events.MotionToSuppress
 import org.scalatest.events.IndentedText
 
-class WordSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester with SharedHelpers {
+class WordSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
 
   describe("A fixture.WordSpec") {
 

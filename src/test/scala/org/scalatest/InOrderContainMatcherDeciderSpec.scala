@@ -20,8 +20,9 @@ import org.scalautils.Explicitly
 import org.scalautils.StringNormalizations
 import org.scalautils.Normalization
 import collection.GenTraversable
+import SharedHelpers._
 
-class InOrderContainMatcherDeciderSpec extends Spec with Matchers with Explicitly with StringNormalizations with SharedHelpers {
+class InOrderContainMatcherDeciderSpec extends Spec with Matchers with Explicitly with StringNormalizations {
 
   val mapTrimmed: Normalization[(Int, String)] =
     new Normalization[(Int, String)] {

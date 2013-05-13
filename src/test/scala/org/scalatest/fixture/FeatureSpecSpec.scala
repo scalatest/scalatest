@@ -16,6 +16,7 @@
 package org.scalatest.fixture
 
 import org.scalatest._
+import SharedHelpers._
 import events.TestFailed
 import org.scalatest.exceptions.DuplicateTestNameException
 import org.scalatest.exceptions.NotAllowedException
@@ -23,7 +24,7 @@ import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestRegistrationClosedException
 import org.scalatest.events.InfoProvided
 
-class FeatureSpecSpec extends org.scalatest.FunSpec with SharedHelpers {
+class FeatureSpecSpec extends org.scalatest.FunSpec {
 
   describe("A fixture.FeatureSpec") {
     it("should return the test names in order of registration from testNames") {

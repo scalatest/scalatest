@@ -18,6 +18,7 @@ package exceptions
 
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.prop.TableDrivenPropertyChecks
+import org.scalatest.SharedHelpers._
 import time.{Span, Second}
 import junit.JUnitTestFailedError
 
@@ -25,7 +26,7 @@ import junit.JUnitTestFailedError
 import org.scalatest.exceptions.TestFailedException
 */
 
-class PayloadSpec extends FlatSpec with SharedHelpers with ShouldMatchers with TableDrivenPropertyChecks with Payloads with SeveredStackTraces {
+class PayloadSpec extends FlatSpec with ShouldMatchers with TableDrivenPropertyChecks with Payloads with SeveredStackTraces {
 
   def examples =  // TODO, also support payloads in JUnit errors
     Table(

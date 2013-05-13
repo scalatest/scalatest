@@ -15,7 +15,9 @@
  */
 package org.scalatest
 
-class InformerSpec extends FlatSpec with SharedHelpers {
+import SharedHelpers._
+
+class InformerSpec extends FlatSpec {
   /*
   "An Informer" should "give back another Informer from its compose method" in {
     var lastS = "2"

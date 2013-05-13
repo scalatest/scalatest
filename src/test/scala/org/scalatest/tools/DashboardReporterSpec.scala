@@ -1,9 +1,10 @@
 package org.scalatest.tools
 
 import org.scalatest._
+import SharedHelpers._
 import events._
 
-class DashboardReporterSpec extends Spec with SharedHelpers {
+class DashboardReporterSpec extends Spec {
 
   object `DashboardReporter ` {
     

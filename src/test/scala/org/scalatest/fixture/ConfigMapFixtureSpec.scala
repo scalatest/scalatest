@@ -16,8 +16,9 @@
 package org.scalatest.fixture
 
 import org.scalatest._
+import SharedHelpers._
 
-class ConfigMapFixtureSpec extends org.scalatest.FunSpec with SharedHelpers {
+class ConfigMapFixtureSpec extends org.scalatest.FunSpec {
   describe("A ConfigMapFixture") {
     it("should pass the config map to each test") {
       val myConfigMap = ConfigMap("hello" -> "world", "salt" -> "pepper")

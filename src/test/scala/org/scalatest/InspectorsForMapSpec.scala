@@ -23,8 +23,9 @@ import javax.xml.transform.TransformerFactoryConfigurationError
 import scala.collection.GenTraversable
 import scala.annotation.tailrec
 import collection._
+import SharedHelpers._
 
-class InspectorsForMapSpec extends Spec with Matchers with Inspectors with TableDrivenPropertyChecks with SharedHelpers {
+class InspectorsForMapSpec extends Spec with Matchers with Inspectors with TableDrivenPropertyChecks {
 
   def examples =
     Table[Map[Int, String] => collection.GenMap[Int, String]](

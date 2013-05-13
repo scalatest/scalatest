@@ -1,6 +1,7 @@
 package org.scalatest.events
 
 import org.scalatest._
+import SharedHelpers._
 
 class LocationMethodSuiteProp extends MethodSuiteProp {
   
