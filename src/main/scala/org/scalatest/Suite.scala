@@ -1828,18 +1828,22 @@ private[scalatest] object Suite {
       }
       i
     }
-    val commonPrefixLength = findCommonPrefixLength(s, t)
-    val commonSuffixLength = findCommonSuffixLength(s.substring(commonPrefixLength), t.substring(commonPrefixLength))
-    val prefix = s.substring(0, commonPrefixLength)
-    val suffix = if (s.length - commonSuffixLength < 0) "" else s.substring(s.length - commonSuffixLength)
-    val sMiddleEnd = s.length - commonSuffixLength
-    val tMiddleEnd = t.length - commonSuffixLength
-    val sMiddle = s.substring(commonPrefixLength, sMiddleEnd)
-    val tMiddle = t.substring(commonPrefixLength, tMiddleEnd)
-    val MaxContext = 20
-    val shortPrefix = if (commonPrefixLength > MaxContext) "..." + prefix.substring(prefix.length - MaxContext) else prefix
-    val shortSuffix = if (commonSuffixLength > MaxContext) suffix.substring(0, MaxContext) + "..." else suffix
-    (shortPrefix + "[" + sMiddle + "]" + shortSuffix, shortPrefix + "[" + tMiddle + "]" + shortSuffix)
+    if (s != t) {
+      val commonPrefixLength = findCommonPrefixLength(s, t)
+      val commonSuffixLength = findCommonSuffixLength(s.substring(commonPrefixLength), t.substring(commonPrefixLength))
+      val prefix = s.substring(0, commonPrefixLength)
+      val suffix = if (s.length - commonSuffixLength < 0) "" else s.substring(s.length - commonSuffixLength)
+      val sMiddleEnd = s.length - commonSuffixLength
+      val tMiddleEnd = t.length - commonSuffixLength
+      val sMiddle = s.substring(commonPrefixLength, sMiddleEnd)
+      val tMiddle = t.substring(commonPrefixLength, tMiddleEnd)
+      val MaxContext = 20
+      val shortPrefix = if (commonPrefixLength > MaxContext) "..." + prefix.substring(prefix.length - MaxContext) else prefix
+      val shortSuffix = if (commonSuffixLength > MaxContext) suffix.substring(0, MaxContext) + "..." else suffix
+      (shortPrefix + "[" + sMiddle + "]" + shortSuffix, shortPrefix + "[" + tMiddle + "]" + shortSuffix)
+    }
+    else
+      (s, t)
   }
   
   // If the objects are two strings, replace them with whatever is returned by diffStrings.
