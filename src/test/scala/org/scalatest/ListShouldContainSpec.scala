@@ -363,6 +363,26 @@ class ListShouldContainSpec extends Spec with Matchers {
         (all (hiLists) should contain ("HI")) (withGenTraversableElementEquality(decided by defaultEquality afterBeing lowerCased))
         (all (hiLists) should contain ("HI ")) (withGenTraversableElementEquality(decided afterBeing trimmed and lowerCased))
       }
+      def `should minimize normalization if an implicit NormalizingEquality is in scope` {
+        val hiHeHoLists: List[List[String]] = List(List("hi", "he", "ho"), List("hi", "he", "ho"), List("hi", "he", "ho"))
+        intercept[TestFailedException] {
+          all (hiHeHoLists) should contain ("HO")
+        }
+        var normalizedInvokedCount = 0
+        implicit val e = new NormalizingEquality[String] {
+          def normalizedIfInstanceOfA(b: Any) =
+            b match {
+              case s: String => normalized(s)
+              case _ => b
+            }
+          def normalized(s: String): String = {
+            normalizedInvokedCount += 1
+            s.toLowerCase
+          }
+        }
+        all (hiHeHoLists) should contain ("HO")
+        normalizedInvokedCount should be (12)
+      }
     }
     object `when used with not contain value syntax` {
 
