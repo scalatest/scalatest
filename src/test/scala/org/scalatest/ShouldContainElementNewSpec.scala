@@ -58,9 +58,9 @@ class ShouldContainElementNewSpec extends Spec with Matchers with Explicitly {
       e2.failedCodeFileName should be (Some("ShouldContainElementNewSpec.scala"))
       e2.failedCodeLineNumber should be (Some(thisLineNumber - 5))
 
-      (Vector(2, 2) should contain (2)) (decidedForTraversable by defaultEquality)
+      (Vector(2, 2) should contain (2)) (withGenTraversableElementEquality(decided by defaultEquality))
       val e3 = intercept[TestFailedException] {
-        (Vector(2, 2) should not contain (2)) (decidedForTraversable by defaultEquality)
+        (Vector(2, 2) should not contain (2)) (withGenTraversableElementEquality(decided by defaultEquality))
       }
 
       e3.failedCodeFileName should be (Some("ShouldContainElementNewSpec.scala"))
@@ -89,9 +89,9 @@ class ShouldContainElementNewSpec extends Spec with Matchers with Explicitly {
       e2.failedCodeFileName should be (Some("ShouldContainElementNewSpec.scala"))
       e2.failedCodeLineNumber should be (Some(thisLineNumber - 5))
 
-      ("22" should contain ('2')) (decidedForString by defaultEquality)
+      ("22" should contain ('2')) (withStringCharacterEquality(decided by defaultEquality))
       val e3 = intercept[TestFailedException] {
-        ("22" should not contain ('2')) (decidedForString by defaultEquality)
+        ("22" should not contain ('2')) (withStringCharacterEquality(decided by defaultEquality))
       }
 
       e3.failedCodeFileName should be (Some("ShouldContainElementNewSpec.scala"))
@@ -120,9 +120,9 @@ class ShouldContainElementNewSpec extends Spec with Matchers with Explicitly {
       e2.failedCodeFileName should be (Some("ShouldContainElementNewSpec.scala"))
       e2.failedCodeLineNumber should be (Some(thisLineNumber - 5))
 
-      (Array(2, 2) should contain (2)) (decidedForArray by defaultEquality)
+      (Array(2, 2) should contain (2)) (withArrayElementEquality(decided by defaultEquality))
       val e3 = intercept[TestFailedException] {
-        (Array(2, 2) should not contain (2)) (decidedForArray by defaultEquality)
+        (Array(2, 2) should not contain (2)) (withArrayElementEquality(decided by defaultEquality))
       }
 
       e3.failedCodeFileName should be (Some("ShouldContainElementNewSpec.scala"))
@@ -154,9 +154,9 @@ class ShouldContainElementNewSpec extends Spec with Matchers with Explicitly {
       e2.failedCodeFileName should be (Some("ShouldContainElementNewSpec.scala"))
       e2.failedCodeLineNumber should be (Some(thisLineNumber - 5))
 
-      (javaSet should contain (2)) (decidedForJavaCollection by defaultEquality)
+      (javaSet should contain (2)) (withJavaCollectionElementEquality(decided by defaultEquality))
       val e3 = intercept[TestFailedException] {
-        (javaSet should not contain (2)) (decidedForJavaCollection by defaultEquality)
+        (javaSet should not contain (2)) (withJavaCollectionElementEquality(decided by defaultEquality))
       }
 
       e3.failedCodeFileName should be (Some("ShouldContainElementNewSpec.scala"))

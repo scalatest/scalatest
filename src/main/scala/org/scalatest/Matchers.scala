@@ -6508,7 +6508,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
 
   // This one doesn't include Holder in its result type because that would conflict with the
   // one returned by enablersForTraversable.
-  implicit def enablersForSeq[E, SEQ[_] <: scala.collection.GenSeq[_]]: Length[SEQ[E]] with Size[SEQ[E]] = 
+  implicit def enablersForGenSeq[E, SEQ[_] <: scala.collection.GenSeq[_]]: Length[SEQ[E]] with Size[SEQ[E]] = 
     new Length[SEQ[E]] with Size[SEQ[E]] {
       def extentOf(seq: SEQ[E]): Long = seq.length
     }
@@ -6518,22 +6518,17 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       def extentOf(javaColl: JCOL[E]): Long = javaColl.size
     }
 
-  implicit def equalityEnablersForJavaCollection[E, JCOL[_] <: java.util.Collection[_]](implicit equality: Equality[E]): Holder[JCOL[E]] = 
-    decidedForJavaCollection by equality
-
-  object decidedForJavaCollection {
-    def by[E, JCOL[_] <: java.util.Collection[_]](equality: Equality[E]): Holder[JCOL[E]] = 
-      new Holder[JCOL[E]] {
-        def containsElement(javaColl: JCOL[E], ele: Any): Boolean = {
-          val it: java.util.Iterator[E] = javaColl.iterator.asInstanceOf[java.util.Iterator[E]]
-          var found = false
-          while (!found && it.hasNext) {
-            found = equality.areEqual(it.next , ele)
-          }
-          found
+  implicit def withJavaCollectionElementEquality[E, JCOL[_] <: java.util.Collection[_]](implicit equality: Equality[E]): Holder[JCOL[E]] = 
+    new Holder[JCOL[E]] {
+      def containsElement(javaColl: JCOL[E], ele: Any): Boolean = {
+        val it: java.util.Iterator[E] = javaColl.iterator.asInstanceOf[java.util.Iterator[E]]
+        var found = false
+        while (!found && it.hasNext) {
+          found = equality.areEqual(it.next , ele)
         }
+        found
       }
-  }
+    }
 
   // I think Java Maps aren't Holders, because they don't have an element type. The only
   // thing close is the stupid Entry<K, V> type, which is mutable!
@@ -6545,90 +6540,64 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   // This one could also mix in DefaultHolder. Wait, no, a Holder with an explicit equality.
   // ExplicitEqualityHolder. That guy would have a method like:
   // def containsElement(trav: TRAV[E], ele: Any, equality: Equality[E]): Boolean = {
-  implicit def enablersForTraversable[E, TRAV[_] <: scala.collection.GenTraversable[_]]: Size[TRAV[E]] = 
+  implicit def enablersForGenTraversable[E, TRAV[_] <: scala.collection.GenTraversable[_]]: Size[TRAV[E]] = 
     new Size[TRAV[E]] {
       def extentOf(trav: TRAV[E]): Long = trav.size
     }
 
-  object decidedForTraversable {
-    def by[E, TRAV[_] <: scala.collection.GenTraversable[_]](equality: Equality[E]): Holder[TRAV[E]] = 
-      new Holder[TRAV[E]] {
-        def containsElement(trav: TRAV[E], ele: Any): Boolean = {
-          equality match {
-            case normEq: NormalizingEquality[_] => 
-              val normRight = normEq.normalizedIfInstanceOfA(ele)
-              trav.exists((e: Any) => normEq.afterNormalizationEquality.areEqual(normEq.normalized(e.asInstanceOf[E]), normRight)) // Don't know why the compiler requires e to be type Any. Should be E.
-            case _ => trav.exists((e: Any) => equality.areEqual(e.asInstanceOf[E], ele)) // Don't know why the compiler requires e to be type Any. Should be E.
-          }
-          
+  implicit def withGenTraversableElementEquality[E, TRAV[_] <: scala.collection.GenTraversable[_]](implicit equality: Equality[E]): Holder[TRAV[E]] = 
+    new Holder[TRAV[E]] {
+      def containsElement(trav: TRAV[E], ele: Any): Boolean = {
+        equality match {
+          case normEq: NormalizingEquality[_] => 
+            val normRight = normEq.normalizedIfInstanceOfA(ele)
+            trav.exists((e: Any) => normEq.afterNormalizationEquality.areEqual(normEq.normalized(e.asInstanceOf[E]), normRight)) // Don't know why the compiler requires e to be type Any. Should be E.
+          case _ => trav.exists((e: Any) => equality.areEqual(e.asInstanceOf[E], ele)) // Don't know why the compiler requires e to be type Any. Should be E.
         }
       }
-  }
-
-  implicit def equalityEnablersForTraversable[E, TRAV[_] <: scala.collection.GenTraversable[_]](implicit equality: Equality[E]): Holder[TRAV[E]] = 
-    decidedForTraversable by equality
+    }
 
   // OPT so that it will work with Some also, but it doesn't work with None
-  object decidedForOption {
-    def by[E, OPT[_] <: Option[_]](equality: Equality[E]): Holder[OPT[E]] = 
-      new Holder[OPT[E]] {
-        def containsElement(opt: OPT[E], ele: Any): Boolean = {
-          opt.exists((e: Any) => equality.areEqual(e.asInstanceOf[E], ele)) // Don't know why the compiler requires e to be type Any. Should be E.
-        }
+  implicit def withOptionValueEquality[E, OPT[_] <: Option[_]](implicit equality: Equality[E]): Holder[OPT[E]] = 
+    new Holder[OPT[E]] {
+      def containsElement(opt: OPT[E], ele: Any): Boolean = {
+        opt.exists((e: Any) => equality.areEqual(e.asInstanceOf[E], ele)) // Don't know why the compiler requires e to be type Any. Should be E.
       }
-  }
-
-  implicit def equalityEnablersForOption[E, OPT[_] <: Option[_]](implicit equality: Equality[E]): Holder[OPT[E]] = 
-    decidedForOption by equality
+    }
 
   implicit def enablersForMap[K, V, MAP[_, _] <: scala.collection.GenMap[_, _]]: Size[MAP[K, V]] =
     new Size[MAP[K, V]] {
       def extentOf(map: MAP[K, V]): Long = map.size
     }
 
-  implicit def equalityEnablersForMap[K, V, MAP[_, _] <: scala.collection.GenMap[_, _]](implicit equality: Equality[(K, V)]): Holder[MAP[K, V]] = 
-    decidedForMap by equality
-
-  object decidedForMap {
-    def by[K, V, MAP[_, _] <: scala.collection.GenMap[_, _]](equality: Equality[(K, V)]): Holder[MAP[K, V]] = 
-      new Holder[MAP[K, V]] {
-        def containsElement(map: MAP[K, V], ele: Any): Boolean = {
-          map.exists((e: Any) => equality.areEqual(e.asInstanceOf[(K, V)], ele)) // Don't know why the compiler requires e to be type Any. Should be E.
-        }
+  implicit def withGenMapElementEquality[K, V, MAP[_, _] <: scala.collection.GenMap[_, _]](implicit equality: Equality[(K, V)]): Holder[MAP[K, V]] = 
+    new Holder[MAP[K, V]] {
+      def containsElement(map: MAP[K, V], ele: Any): Boolean = {
+        map.exists((e: Any) => equality.areEqual(e.asInstanceOf[(K, V)], ele)) // Don't know why the compiler requires e to be type Any. Should be E.
       }
-  }
+    }
 
   implicit def enablersForArray[E]: Length[Array[E]] with Size[Array[E]] = 
     new Length[Array[E]] with Size[Array[E]] {
       def extentOf(arr: Array[E]): Long = arr.length
     }
 
-  implicit def equalityEnablersForArray[E](implicit equality: Equality[E]): Holder[Array[E]] = 
-    decidedForArray by equality
-
-  object decidedForArray {
-    def by[E](equality: Equality[E]): Holder[Array[E]] = 
-      new Holder[Array[E]] {
-        def containsElement(arr: Array[E], ele: Any): Boolean =
-          arr.exists((e: E) => equality.areEqual(e, ele))
-      }
-  }
+  implicit def withArrayElementEquality[E](implicit equality: Equality[E]): Holder[Array[E]] = 
+    new Holder[Array[E]] {
+      def containsElement(arr: Array[E], ele: Any): Boolean =
+        arr.exists((e: E) => equality.areEqual(e, ele))
+    }
 
   implicit val enablersForString: Length[String] with Size[String] = 
     new Length[String] with Size[String] {
       def extentOf(str: String): Long = str.length
     }
 
-  implicit def equalityEnablersForString(implicit equality: Equality[Char]): Holder[String] = 
-    decidedForString by equality
-
-  object decidedForString {
-    def by(equality: Equality[Char]): Holder[String] = 
-      new Holder[String] {
-        def containsElement(str: String, ele: Any): Boolean =
-          str.exists((e: Char) => equality.areEqual(e, ele))
-      }
-  }
+  implicit def withStringCharacterEquality(implicit equality: Equality[Char]): Holder[String] = 
+    new Holder[String] {
+      def containsElement(str: String, ele: Any): Boolean =
+        str.exists((e: Char) => equality.areEqual(e, ele))
+    }
 }
 
 /**
