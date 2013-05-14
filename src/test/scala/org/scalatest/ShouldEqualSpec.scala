@@ -205,6 +205,9 @@ class ShouldEqualSpec extends Spec with Matchers with Checkers with ReturnsNorma
       
       val caught3 = intercept[TestFailedException] { "hi there mom" should be ===  ("high there mom") }
       caught3.getMessage should be ("\"hi[] there mom\" was not equal to \"hi[gh] there mom\"")
+      
+      val caught4 = intercept[TestFailedException] { "dummy" should (equal ("dummy") and (equal ("dunny"))) }
+      caught4.getMessage should be ("\"dummy\" equaled \"dummy\", but \"du[mm]y\" did not equal \"du[nn]y\"")
     }
     
     def `should not put string differences in square bracket` {
