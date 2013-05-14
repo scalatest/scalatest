@@ -66,13 +66,13 @@ class ListShouldContainSpec extends Spec with Matchers {
         intercept[TestFailedException] {
           caseLists should contain ("HI")
         }
-        (caseLists should contain ("HI")) (withGenTraversableElementEquality(decided by defaultEquality afterBeing lowerCased))
-        (caseLists should contain ("HI")) (withGenTraversableElementEquality(decided afterBeing lowerCased))
-        (caseLists should contain ("HI ")) (withGenTraversableElementEquality(decided afterBeing lowerCased and trimmed))
+        (caseLists should contain ("HI")) (decided by defaultEquality afterBeing lowerCased)
+        (caseLists should contain ("HI")) (after being lowerCased)
+        (caseLists should contain ("HI ")) (after being lowerCased and trimmed)
         implicit val e = new Equality[String] {
           def areEqual(a: String, b: Any): Boolean = a != b
         }
-        (xs should contain ("hi")) (withGenTraversableElementEquality(decided by defaultEquality))
+        (xs should contain ("hi")) (decided by defaultEquality[String])
       }
       def `should minimize normalization if an implicit NormalizingEquality is in scope` {
         intercept[TestFailedException] {
@@ -125,16 +125,13 @@ class ListShouldContainSpec extends Spec with Matchers {
       def `should use an explicitly provided Equality` {
         caseLists should not contain "HI"
         caseLists should not contain "HI "
-        (caseLists should not contain "HI ") (withGenTraversableElementEquality(decided by defaultEquality afterBeing lowerCased))
-        (caseLists should not contain "HI ") (withGenTraversableElementEquality(decided afterBeing lowerCased))
+        (caseLists should not contain "HI ") (decided by defaultEquality afterBeing lowerCased)
+        (caseLists should not contain "HI ") (after being lowerCased)
         intercept[TestFailedException] {
-          (caseLists should not contain "HI") (withGenTraversableElementEquality(decided by defaultEquality afterBeing lowerCased))
+          (caseLists should not contain "HI") (decided by defaultEquality afterBeing lowerCased)
         }
         intercept[TestFailedException] {
-          (caseLists should not contain "HI") (withGenTraversableElementEquality(decided afterBeing lowerCased))
-        }
-        intercept[TestFailedException] {
-          (caseLists should not contain "HI ") (withGenTraversableElementEquality(decided afterBeing lowerCased and trimmed))
+          (caseLists should not contain "HI ") (after being lowerCased and trimmed)
         }
       }
       def `should minimize normalization if an implicit NormalizingEquality is in scope` {
@@ -189,16 +186,16 @@ class ListShouldContainSpec extends Spec with Matchers {
       def `should use an explicitly provided Equality` {
         caseLists should not (contain ("HI"))
         caseLists should not (contain ("HI "))
-        (caseLists should not (contain ("HI "))) (withGenTraversableElementEquality(decided by defaultEquality afterBeing lowerCased))
-        (caseLists should not (contain ("HI "))) (withGenTraversableElementEquality(decided afterBeing lowerCased))
+        (caseLists should not (contain ("HI "))) (decided by defaultEquality afterBeing lowerCased)
+        (caseLists should not (contain ("HI "))) (after being lowerCased)
         intercept[TestFailedException] {
-          (caseLists should not (contain ("HI"))) (withGenTraversableElementEquality(decided by defaultEquality afterBeing lowerCased))
+          (caseLists should not (contain ("HI"))) (decided by defaultEquality afterBeing lowerCased)
         }
         intercept[TestFailedException] {
-          (caseLists should not (contain ("HI"))) (withGenTraversableElementEquality(decided afterBeing lowerCased))
+          (caseLists should not (contain ("HI"))) (after being lowerCased)
         }
         intercept[TestFailedException] {
-          (caseLists should not (contain ("HI "))) (withGenTraversableElementEquality(decided afterBeing lowerCased and trimmed))
+          (caseLists should not (contain ("HI "))) (after being lowerCased and trimmed)
         }
       }
       def `should minimize normalization if an implicit NormalizingEquality is in scope` {
@@ -252,16 +249,16 @@ class ListShouldContainSpec extends Spec with Matchers {
       def `should use an explicitly provided Equality` {
         caseLists should (not contain "HI")
         caseLists should (not contain "HI ")
-        (caseLists should (not contain "HI ")) (withGenTraversableElementEquality(decided by defaultEquality afterBeing lowerCased))
-        (caseLists should (not contain "HI ")) (withGenTraversableElementEquality(decided afterBeing lowerCased))
+        (caseLists should (not contain "HI ")) (decided by defaultEquality afterBeing lowerCased)
+        (caseLists should (not contain "HI ")) (after being lowerCased)
         intercept[TestFailedException] {
-          (caseLists should (not contain "HI")) (withGenTraversableElementEquality(decided by defaultEquality afterBeing lowerCased))
+          (caseLists should (not contain "HI")) (decided by defaultEquality afterBeing lowerCased)
         }
         intercept[TestFailedException] {
-          (caseLists should (not contain "HI")) (withGenTraversableElementEquality(decided afterBeing lowerCased))
+          (caseLists should (not contain "HI")) (after being lowerCased)
         }
         intercept[TestFailedException] {
-          (caseLists should (not contain "HI ")) (withGenTraversableElementEquality(decided afterBeing lowerCased and trimmed))
+          (caseLists should (not contain "HI ")) (after being lowerCased and trimmed)
         }
       }
       def `should minimize normalization if an implicit NormalizingEquality is in scope` {
@@ -360,8 +357,8 @@ class ListShouldContainSpec extends Spec with Matchers {
         intercept[TestFailedException] {
           all (hiLists) should contain ("HI ")
         }
-        (all (hiLists) should contain ("HI")) (withGenTraversableElementEquality(decided by defaultEquality afterBeing lowerCased))
-        (all (hiLists) should contain ("HI ")) (withGenTraversableElementEquality(decided afterBeing trimmed and lowerCased))
+        (all (hiLists) should contain ("HI")) (decided by defaultEquality afterBeing lowerCased)
+        (all (hiLists) should contain ("HI ")) (after being trimmed and lowerCased)
       }
       def `should minimize normalization if an implicit NormalizingEquality is in scope` {
         val hiHeHoLists: List[List[String]] = List(List("hi", "he", "ho"), List("hi", "he", "ho"), List("hi", "he", "ho"))
@@ -428,10 +425,10 @@ class ListShouldContainSpec extends Spec with Matchers {
         all (hiLists) should not contain "HI"
         all (hiLists) should not contain "HI "
         intercept[TestFailedException] {
-          (all (hiLists) should not contain "HI") (withGenTraversableElementEquality(decided by defaultEquality afterBeing lowerCased))
+          (all (hiLists) should not contain "HI") (decided by defaultEquality afterBeing lowerCased)
         }
         intercept[TestFailedException] {
-          (all (hiLists) should not contain "HI ") (withGenTraversableElementEquality(decided afterBeing trimmed and lowerCased))
+          (all (hiLists) should not contain "HI ") (after being trimmed and lowerCased)
         }
       }
     }
@@ -479,10 +476,10 @@ class ListShouldContainSpec extends Spec with Matchers {
         all (hiLists) should not (contain ("HI"))
         all (hiLists) should not (contain ("HI "))
         intercept[TestFailedException] {
-          (all (hiLists) should not (contain ("HI"))) (withGenTraversableElementEquality(decided by defaultEquality afterBeing lowerCased))
+          (all (hiLists) should not (contain ("HI"))) (decided by defaultEquality afterBeing lowerCased)
         }
         intercept[TestFailedException] {
-          (all (hiLists) should not (contain ("HI "))) (withGenTraversableElementEquality(decided afterBeing trimmed and lowerCased))
+          (all (hiLists) should not (contain ("HI "))) (after being trimmed and lowerCased)
         }
       }
     }
@@ -530,10 +527,10 @@ class ListShouldContainSpec extends Spec with Matchers {
         all (hiLists) should (not contain "HI")
         all (hiLists) should (not contain "HI ")
         intercept[TestFailedException] {
-          (all (hiLists) should (not contain "HI")) (withGenTraversableElementEquality(decided by defaultEquality afterBeing lowerCased))
+          (all (hiLists) should (not contain "HI")) (decided by defaultEquality afterBeing lowerCased)
         }
         intercept[TestFailedException] {
-          (all (hiLists) should (not contain "HI ")) (withGenTraversableElementEquality(decided afterBeing trimmed and lowerCased))
+          (all (hiLists) should (not contain "HI ")) (after being trimmed and lowerCased)
         }
       }
     }

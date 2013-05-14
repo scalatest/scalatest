@@ -6545,6 +6545,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       def extentOf(trav: TRAV[E]): Long = trav.size
     }
 
+  // Enables (xs should contain ("HI")) (after being lowerCased)
+  implicit def convertEqualityToGenTraversableHolder[E, TRAV[_] <: scala.collection.GenTraversable[_]](equality: Equality[E]): Holder[TRAV[E]] = 
+    withGenTraversableElementEquality(equality)
+
   implicit def withGenTraversableElementEquality[E, TRAV[_] <: scala.collection.GenTraversable[_]](implicit equality: Equality[E]): Holder[TRAV[E]] = 
     new Holder[TRAV[E]] {
       def containsElement(trav: TRAV[E], ele: Any): Boolean = {
