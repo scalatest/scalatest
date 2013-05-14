@@ -6561,6 +6561,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       }
     }
 
+  // supports (some should contain ("HI")) (after being lowerCased)
+  implicit def convertEqualityToOptionHolder[E, OPT[_] <: Option[_]](equality: Equality[E]): Holder[OPT[E]] = 
+    withOptionValueEquality(equality)
+
   // OPT so that it will work with Some also, but it doesn't work with None
   implicit def withOptionValueEquality[E, OPT[_] <: Option[_]](implicit equality: Equality[E]): Holder[OPT[E]] = 
     new Holder[OPT[E]] {

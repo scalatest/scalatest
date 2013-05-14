@@ -17,6 +17,7 @@ package org.scalatest
 
 import org.scalautils.Equality
 import org.scalautils.NormalizingEquality
+import org.scalautils.StringNormalizations._
 import SharedHelpers._
 
 class OptionShouldContainSpec extends Spec with Matchers {
@@ -27,7 +28,6 @@ class OptionShouldContainSpec extends Spec with Matchers {
     val none: Option[String] = None
 
     object `when used with contain (value) syntax` {
-
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
         some should contain ("hi")
         Some("hi") should contain ("hi")
@@ -53,7 +53,6 @@ class OptionShouldContainSpec extends Spec with Matchers {
         e4.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
         e4.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
-
       def `should use the implicit Equality in scope` {
         some should contain ("hi")
         intercept[TestFailedException] {
@@ -67,10 +66,27 @@ class OptionShouldContainSpec extends Spec with Matchers {
           some should contain ("hi")
         }
       }
+      def `should use an explicitly provided Equality` {
+        intercept[TestFailedException] {
+          some should contain ("HI")
+        }
+        (some should contain ("HI")) (decided by defaultEquality afterBeing lowerCased)
+        (some should contain ("HI")) (after being lowerCased)
+        intercept[TestFailedException] {
+          (some should contain ("HI ")) (after being lowerCased)
+        }
+        (some should contain ("HI ")) (after being lowerCased and trimmed)
+        implicit val e = new Equality[String] {
+          def areEqual(a: String, b: Any): Boolean = a != b
+        }
+        intercept[TestFailedException] {
+          some should contain ("hi")
+        }
+        (some should contain ("hi")) (decided by defaultEquality[String])
+      }
     }
 
     object `when used with not contain value syntax` {
-
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
         some should not contain "ho"
         Some("hi") should not contain "ho"
@@ -90,7 +106,6 @@ class OptionShouldContainSpec extends Spec with Matchers {
         e5.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
         e5.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
-
       def `should use the implicit Equality in scope` {
         some should not contain "ho"
         intercept[TestFailedException] {
@@ -102,6 +117,18 @@ class OptionShouldContainSpec extends Spec with Matchers {
         some should not contain "hi"
         intercept[TestFailedException] {
           some should not contain "ho"
+        }
+      }
+      def `should use an explicitly provided Equality` {
+        some should not contain "HI"
+        some should not contain "HI "
+        (some should not contain "HI ") (decided by defaultEquality afterBeing lowerCased)
+        (some should not contain "HI ") (after being lowerCased)
+        intercept[TestFailedException] {
+          (some should not contain "HI") (decided by defaultEquality afterBeing lowerCased)
+        }
+        intercept[TestFailedException] {
+          (some should not contain "HI ") (after being lowerCased and trimmed)
         }
       }
     }
@@ -142,6 +169,18 @@ class OptionShouldContainSpec extends Spec with Matchers {
           some should not (contain ("ho"))
         }
       }
+      def `should use an explicitly provided Equality` {
+        some should not (contain ("HI"))
+        some should not (contain ("HI "))
+        (some should not (contain ("HI "))) (decided by defaultEquality afterBeing lowerCased)
+        (some should not (contain ("HI "))) (after being lowerCased)
+        intercept[TestFailedException] {
+          (some should not (contain ("HI"))) (decided by defaultEquality afterBeing lowerCased)
+        }
+        intercept[TestFailedException] {
+          (some should not (contain ("HI "))) (after being lowerCased and trimmed)
+        }
+      }
     }
 
     object `when used with (not contain value) syntax` {
@@ -179,6 +218,18 @@ class OptionShouldContainSpec extends Spec with Matchers {
           some should (not contain "ho")
         }
       }
+      def `should use an explicitly provided Equality` {
+        some should (not contain "HI")
+        some should (not contain "HI ")
+        (some should (not contain "HI ")) (decided by defaultEquality afterBeing lowerCased)
+        (some should (not contain "HI ")) (after being lowerCased)
+        intercept[TestFailedException] {
+          (some should (not contain "HI")) (decided by defaultEquality afterBeing lowerCased)
+        }
+        intercept[TestFailedException] {
+          (some should (not contain "HI ")) (after being lowerCased and trimmed)
+        }
+      }
     }
   }
 
@@ -188,6 +239,7 @@ class OptionShouldContainSpec extends Spec with Matchers {
     val somes: Vector[Option[Int]] = Vector(Some(1), Some(1), Some(2))
     val nones: Vector[Option[Int]] = Vector(None, None, None)
     val somesNone: Vector[Option[Int]] = Vector(Some(1), Some(1), None)
+    val hiSomes: Vector[Option[String]] = Vector(Some("hi"), Some("hi"), Some("hi"))
 
     object `when used with contain (value) syntax` {
 
@@ -237,17 +289,26 @@ class OptionShouldContainSpec extends Spec with Matchers {
                                    "in Vector(Some(1), Some(1), Some(2))"))
       }
       def `should use the implicit Equality in scope` {
-        val somes: Vector[Option[String]] = Vector(Some("hi"), Some("hi"), Some("hi"))
         intercept[TestFailedException] {
-          all (somes) should contain ("ho")
+          all (hiSomes) should contain ("ho")
         }
         implicit val e = new Equality[String] {
           def areEqual(a: String, b: Any): Boolean = a != b
         }
-        all (somes) should contain ("ho")
+        all (hiSomes) should contain ("ho")
         intercept[TestFailedException] {
-          all (somes) should contain ("hi")
+          all (hiSomes) should contain ("hi")
         }
+      }
+      def `should use an explicitly provided Equality` {
+        intercept[TestFailedException] {
+          all (somes) should contain ("HI")
+        }
+        intercept[TestFailedException] {
+          all (hiSomes) should contain ("HI ")
+        }
+        (all (hiSomes) should contain ("HI")) (decided by defaultEquality afterBeing lowerCased)
+        (all (hiSomes) should contain ("HI ")) (after being trimmed and lowerCased)
       }
     }
     object `when used with not contain value syntax` {
@@ -278,17 +339,26 @@ class OptionShouldContainSpec extends Spec with Matchers {
         e2.message should be (Some("'atMost(2)' inspection failed, because 3 elements satisfied the assertion block at index 0, 1 and 2 in Vector(None, None, None)"))
       }
       def `should use the implicit Equality in scope` {
-        val somes: Vector[Option[String]] = Vector(Some("hi"), Some("hi"), Some("hi"))
-        all (somes) should not contain "ho"
+        all (hiSomes) should not contain "ho"
         intercept[TestFailedException] {
-          all (somes) should not contain "hi"
+          all (hiSomes) should not contain "hi"
         }
         implicit val e = new Equality[String] {
           def areEqual(a: String, b: Any): Boolean = a != b
         }
-        all (somes) should not contain "hi"
+        all (hiSomes) should not contain "hi"
         intercept[TestFailedException] {
-          all (somes) should not contain "ho"
+          all (hiSomes) should not contain "ho"
+        }
+      }
+      def `should use an explicitly provided Equality` {
+        all (hiSomes) should not contain "HI"
+        all (hiSomes) should not contain "HI "
+        intercept[TestFailedException] {
+          (all (hiSomes) should not contain "HI") (decided by defaultEquality afterBeing lowerCased)
+        }
+        intercept[TestFailedException] {
+          (all (hiSomes) should not contain "HI ") (after being trimmed and lowerCased)
         }
       }
     }
@@ -320,17 +390,26 @@ class OptionShouldContainSpec extends Spec with Matchers {
         e2.message should be (Some("'atMost(2)' inspection failed, because 3 elements satisfied the assertion block at index 0, 1 and 2 in Vector(None, None, None)"))
       }
       def `should use the implicit Equality in scope` {
-        val somes: Vector[Option[String]] = Vector(Some("hi"), Some("hi"), Some("hi"))
-        all (somes) should not (contain ("ho"))
+        all (hiSomes) should not (contain ("ho"))
         intercept[TestFailedException] {
-          all (somes) should not (contain ("hi"))
+          all (hiSomes) should not (contain ("hi"))
         }
         implicit val e = new Equality[String] {
           def areEqual(a: String, b: Any): Boolean = a != b
         }
-        all (somes) should not (contain ("hi"))
+        all (hiSomes) should not (contain ("hi"))
         intercept[TestFailedException] {
-          all (somes) should not (contain ("ho"))
+          all (hiSomes) should not (contain ("ho"))
+        }
+      }
+      def `should use an explicitly provided Equality` {
+        all (hiSomes) should not (contain ("HI"))
+        all (hiSomes) should not (contain ("HI "))
+        intercept[TestFailedException] {
+          (all (hiSomes) should not (contain ("HI"))) (decided by defaultEquality afterBeing lowerCased)
+        }
+        intercept[TestFailedException] {
+          (all (hiSomes) should not (contain ("HI "))) (after being trimmed and lowerCased)
         }
       }
     }
@@ -362,17 +441,26 @@ class OptionShouldContainSpec extends Spec with Matchers {
         e2.message should be (Some("'atMost(2)' inspection failed, because 3 elements satisfied the assertion block at index 0, 1 and 2 in Vector(None, None, None)"))
       }
       def `should use the implicit Equality in scope` {
-        val somes: Vector[Option[String]] = Vector(Some("hi"), Some("hi"), Some("hi"))
-        all (somes) should (not contain "ho")
+        all (hiSomes) should (not contain "ho")
         intercept[TestFailedException] {
-          all (somes) should (not contain "hi")
+          all (hiSomes) should (not contain "hi")
         }
         implicit val e = new Equality[String] {
           def areEqual(a: String, b: Any): Boolean = a != b
         }
-        all (somes) should (not contain "hi")
+        all (hiSomes) should (not contain "hi")
         intercept[TestFailedException] {
-          all (somes) should (not contain "ho")
+          all (hiSomes) should (not contain "ho")
+        }
+      }
+      def `should use an explicitly provided Equality` {
+        all (hiSomes) should (not contain "HI")
+        all (hiSomes) should (not contain "HI ")
+        intercept[TestFailedException] {
+          (all (hiSomes) should (not contain "HI")) (decided by defaultEquality afterBeing lowerCased)
+        }
+        intercept[TestFailedException] {
+          (all (hiSomes) should (not contain "HI ")) (after being trimmed and lowerCased)
         }
       }
     }
