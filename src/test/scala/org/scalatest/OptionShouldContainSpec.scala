@@ -270,15 +270,6 @@ class OptionShouldContainSpec extends Spec with Matchers {
                                    "  at index 0, None did not contain element \"ho\" (OptionShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
                                    "in Vector(None, None, None)"))
 
-        val e3 = intercept[TestFailedException] {
-          all (somes) should not contain (2)
-        }
-        e3.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
-        e3.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e3.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 2, Some(2) contained element 2 (OptionShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
-                                   "in Vector(Some(1), Some(1), Some(2))"))
-
         val e4 = intercept[TestFailedException] {
           all (somes) should contain (1)
         }

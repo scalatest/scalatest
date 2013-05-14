@@ -945,34 +945,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
       )
   }
 
-  /*
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * @author Bill Venners
-   */
-  class ResultOfNewContainWord[L](left: L, shouldBeTrue: Boolean = true) {
-
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * option should contain oneOf (1, 2)
-     *                       ^
-     * </pre>
-     */
-    def newOneOf(right: Any*)(implicit holder: Holder[L]) {
-      if (containsOneOf(left, right.toIterator) != shouldBeTrue)
-        throw newTestFailedException(
-          FailureMessages(
-            if (shouldBeTrue) "didNotContainOneOfElements" else "containedOneOfElements",
-            left,
-            UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
-          )
-        )
-    }
-  }
-
   //
   // This class is used as the return type of the overloaded should method (in MapShouldWrapper)
   // that takes a HaveWord. It's key method will be called in situations like this:
@@ -6055,8 +6027,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * This method enables syntax such as the following:
      *
      * <pre class="stHighlight">
-     * map should contain key (10)
-     *     ^
+     * xs should contain oneOf (1, 2, 3)
+     *    ^
      * </pre>
      */
     def should(newContainWord: NewContainWord): ResultOfNewContainWord[T] = {
