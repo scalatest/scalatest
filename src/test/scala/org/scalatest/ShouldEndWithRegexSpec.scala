@@ -117,6 +117,14 @@ s should fullyMatch regex t
         "deef" should (endWith regex ("d(e*)f" withGroup "ee") and (endWith regex ("d(e*)f" withGroup "ee")))
         "deef" should ((endWith regex ("d(e*)f" withGroup "ee")) and (endWith regex ("d(e*)f" withGroup "ee")))
         "deef" should (endWith regex ("d(e*)f" withGroup "ee") and endWith regex ("d(e*)f" withGroup "ee"))
+        
+        "abcdeef" should (equal ("abcdeef") and (endWith regex ("d(e*)f" withGroup "ee")))
+        "abcdeef" should ((equal ("abcdeef")) and (endWith regex ("d(e*)f" withGroup "ee")))
+        "abcdeef" should (equal ("abcdeef") and endWith regex ("d(e*)f" withGroup "ee"))
+
+        "deef" should (equal ("deef") and (endWith regex ("d(e*)f" withGroup "ee")))
+        "deef" should ((equal ("deef")) and (endWith regex ("d(e*)f" withGroup "ee")))
+        "deef" should (equal ("deef") and endWith regex ("d(e*)f" withGroup "ee"))
       }
       
       def `should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroups when used in a logical-and expression` {
@@ -128,6 +136,14 @@ s should fullyMatch regex t
         "deeff" should (endWith regex ("d(e*)(f*)" withGroups ("ee", "ff")) and (endWith regex ("d(e*)(f*)" withGroups ("ee", "ff"))))
         "deeff" should ((endWith regex ("d(e*)(f*)" withGroups ("ee", "ff"))) and (endWith regex ("d(e*)(f*)" withGroups ("ee", "ff"))))
         "deeff" should (endWith regex ("d(e*)(f*)" withGroups ("ee", "ff")) and endWith regex ("d(e*)(f*)" withGroups ("ee", "ff")))
+        
+        "abcdeeff" should (equal ("abcdeeff") and (endWith regex ("d(e*)(f*)" withGroups ("ee", "ff"))))
+        "abcdeeff" should ((equal ("abcdeeff")) and (endWith regex ("d(e*)(f*)" withGroups ("ee", "ff"))))
+        "abcdeeff" should (equal ("abcdeeff") and endWith regex ("d(e*)(f*)" withGroups ("ee", "ff")))
+
+        "deeff" should (equal ("deeff") and (endWith regex ("d(e*)(f*)" withGroups ("ee", "ff"))))
+        "deeff" should ((equal ("deeff")) and (endWith regex ("d(e*)(f*)" withGroups ("ee", "ff"))))
+        "deeff" should (equal ("deeff") and endWith regex ("d(e*)(f*)" withGroups ("ee", "ff")))
       }
   
       def `should do nothing if the string does not end with a substring that matched the regular expression specified as a string when used in a logical-or expression` {
@@ -150,6 +166,14 @@ s should fullyMatch regex t
         "deef" should (endWith regex ("d(e*)f" withGroup "eee") or (endWith regex ("d(e*)f" withGroup "ee")))
         "deef" should ((endWith regex ("d(e*)f" withGroup "eee")) or (endWith regex ("d(e*)f" withGroup "ee")))
         "deef" should (endWith regex ("d(e*)f" withGroup "eee") or endWith regex ("d(e*)f" withGroup "ee"))
+        
+        "abcdeef" should (equal ("abcdeeef") or (endWith regex ("d(e*)f" withGroup "ee")))
+        "abcdeef" should ((equal ("abcdeeef")) or (endWith regex ("d(e*)f" withGroup "ee")))
+        "abcdeef" should (equal ("abcdeeef") or endWith regex ("d(e*)f" withGroup "ee"))
+  
+        "deef" should (equal ("deef") or (endWith regex ("d(e*)f" withGroup "ee")))
+        "deef" should ((equal ("deef")) or (endWith regex ("d(e*)f" withGroup "ee")))
+        "deef" should (equal ("deef") or endWith regex ("d(e*)f" withGroup "ee"))
       }
       
       def `should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroups when used in a logical-or expression` {
@@ -161,6 +185,14 @@ s should fullyMatch regex t
         "deeff" should (endWith regex ("d(e*)(f*)" withGroups ("ee", "fff")) or (endWith regex ("d(e*)(f*)" withGroups ("ee", "ff"))))
         "deeff" should ((endWith regex ("d(e*)(f*)" withGroups ("ee", "fff"))) or (endWith regex ("d(e*)(f*)" withGroups ("ee", "ff"))))
         "deeff" should (endWith regex ("d(e*)(f*)" withGroups ("ee", "fff")) or endWith regex ("d(e*)(f*)" withGroups ("ee", "ff")))
+        
+        "abcdeeff" should (equal ("abcdeefff") or (endWith regex ("d(e*)(f*)" withGroups ("ee", "ff"))))
+        "abcdeeff" should ((equal ("abcdeefff")) or (endWith regex ("d(e*)(f*)" withGroups ("ee", "ff"))))
+        "abcdeeff" should (equal ("abcdeefff") or endWith regex ("d(e*)(f*)" withGroups ("ee", "ff")))
+  
+        "deeff" should (equal ("deeff") or (endWith regex ("d(e*)(f*)" withGroups ("ee", "ff"))))
+        "deeff" should ((equal ("deeff")) or (endWith regex ("d(e*)(f*)" withGroups ("ee", "ff"))))
+        "deeff" should (equal ("deeff") or endWith regex ("d(e*)(f*)" withGroups ("ee", "ff")))
       }
   
       def `should do nothing if the string does not end with a substring that matched the regular expression specified as a string when used in a logical-and expression with not` {
@@ -173,12 +205,20 @@ s should fullyMatch regex t
         "abcdeef" should (not (endWith regex ("d(e*)f" withGroup "e")) and not (endWith regex ("d(e*)f" withGroup "eee")))
         "abcdeef" should ((not endWith regex ("d(e*)f" withGroup "e")) and (not endWith regex ("d(e*)f" withGroup "eee")))
         "abcdeef" should (not endWith regex ("d(e*)f" withGroup "e") and not endWith regex ("d(e*)f" withGroup "eee"))
+        
+        "abcdeef" should (not (equal ("abcdef")) and not (endWith regex ("d(e*)f" withGroup "eee")))
+        "abcdeef" should ((not equal ("abcdef")) and (not endWith regex ("d(e*)f" withGroup "eee")))
+        "abcdeef" should (not equal ("abcdef") and not endWith regex ("d(e*)f" withGroup "eee"))
       }
       
       def `should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroups when used in a logical-and expression with not` {
         "abcdeeff" should (not (endWith regex ("d(e*)(f*)" withGroups ("ee", "fff"))) and not (endWith regex ("d(e*)(f*)" withGroups ("ee", "fff"))))
         "abcdeeff" should ((not endWith regex ("d(e*)(f*)" withGroups ("ee", "fff"))) and (not endWith regex ("d(e*)(f*)" withGroups ("ee", "fff"))))
         "abcdeeff" should (not endWith regex ("d(e*)(f*)" withGroups ("ee", "fff")) and not endWith regex ("d(e*)(f*)" withGroups ("ee", "fff")))
+        
+        "abcdeeff" should (not (equal ("abcdeefff")) and not (endWith regex ("d(e*)(f*)" withGroups ("ee", "fff"))))
+        "abcdeeff" should ((not equal ("abcdeefff")) and (not endWith regex ("d(e*)(f*)" withGroups ("ee", "fff"))))
+        "abcdeeff" should (not equal ("abcdeefff") and not endWith regex ("d(e*)(f*)" withGroups ("ee", "fff")))
       }
   
       def `should do nothing if the string does not end with a substring that matched the regular expression specified as a string when used in a logical-or expression with not` {
@@ -191,12 +231,20 @@ s should fullyMatch regex t
         "deef" should (not (endWith regex ("d(e*)f" withGroup "ee")) or not (endWith regex ("d(e*)f" withGroup "eee")))
         "deef" should ((not endWith regex ("d(e*)f" withGroup "ee")) or (not endWith regex ("d(e*)f" withGroup "eee")))
         "deef" should (not endWith regex ("d(e*)f" withGroup "ee") or not endWith regex ("d(e*)f" withGroup "eee"))
+        
+        "deef" should (not (equal ("deef")) or not (endWith regex ("d(e*)f" withGroup "eee")))
+        "deef" should ((not equal ("deef")) or (not endWith regex ("d(e*)f" withGroup "eee")))
+        "deef" should (not equal ("deef") or not endWith regex ("d(e*)f" withGroup "eee"))
       }
       
       def `should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroups when used in a logical-or expression with not` {
         "deeff" should (not (endWith regex ("d(e*)(f*)" withGroups ("ee", "ff"))) or not (endWith regex ("d(e*)(f*)" withGroups ("ee", "fff"))))
         "deeff" should ((not endWith regex ("d(e*)(f*)" withGroups ("ee", "ff"))) or (not endWith regex ("d(e*)(f*)" withGroups ("ee", "fff"))))
         "deeff" should (not endWith regex ("d(e*)(f*)" withGroups ("ee", "ff")) or not endWith regex ("d(e*)(f*)" withGroups ("ee", "fff")))
+        
+        "deeff" should (not (equal ("deeff")) or not (endWith regex ("d(e*)(f*)" withGroups ("ee", "fff"))))
+        "deeff" should ((not equal ("deeff")) or (not endWith regex ("d(e*)(f*)" withGroups ("ee", "fff"))))
+        "deeff" should (not equal ("deeff") or not endWith regex ("d(e*)(f*)" withGroups ("ee", "fff")))
       }
   
       def `should throw TestFailedException if the string does not match substring that matched the regular expression specified as a string` {
@@ -472,6 +520,49 @@ s should fullyMatch regex t
         assert(caught6.getMessage === "\"abcdeef\" ended with a substring that matched the regular expression d(e*)f, but \"ee\" did not match group \"eee\"")
         assert(caught6.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
+        
+        val caught7 = intercept[TestFailedException] {
+          "abcdeef" should (equal ("abcdeef") and (endWith regex ("d(e*)f" withGroup "eee")))
+        }
+        assert(caught7.getMessage === "\"abcdeef\" equaled \"abcdeef\", but \"abcdeef\" ended with a substring that matched the regular expression d(e*)f, but \"ee\" did not match group \"eee\"")
+        assert(caught7.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught7.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        val caught8 = intercept[TestFailedException] {
+          "abcdeef" should ((equal ("abcdeef")) and (endWith regex ("d(e*)f" withGroup "eee")))
+        }
+        assert(caught8.getMessage === "\"abcdeef\" equaled \"abcdeef\", but \"abcdeef\" ended with a substring that matched the regular expression d(e*)f, but \"ee\" did not match group \"eee\"")
+        assert(caught8.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        val caught9 = intercept[TestFailedException] {
+          "abcdeef" should (equal ("abcdeef") and endWith regex ("d(e*)f" withGroup "eee"))
+        }
+        assert(caught9.getMessage === "\"abcdeef\" equaled \"abcdeef\", but \"abcdeef\" ended with a substring that matched the regular expression d(e*)f, but \"ee\" did not match group \"eee\"")
+        assert(caught9.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught9.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        // Check to make sure the error message "short circuits" (i.e., just reports the left side's failure)
+        val caught10 = intercept[TestFailedException] {
+          "abcdeef" should (equal ("abcdeeef") and (endWith regex ("d(e*)f" withGroup "ee")))
+        }
+        assert(caught10.getMessage === "\"abcdee[]f\" did not equal \"abcdee[e]f\"")
+        assert(caught10.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught10.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        val caught11 = intercept[TestFailedException] {
+          "abcdeef" should ((equal ("abcdeeef")) and (endWith regex ("d(e*)f" withGroup "ee")))
+        }
+        assert(caught11.getMessage === "\"abcdee[]f\" did not equal \"abcdee[e]f\"")
+        assert(caught11.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught11.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        val caught12 = intercept[TestFailedException] {
+          "abcdeef" should (equal ("abcdeeef") and endWith regex ("d(e*)f" withGroup "ee"))
+        }
+        assert(caught12.getMessage === "\"abcdee[]f\" did not equal \"abcdee[e]f\"")
+        assert(caught12.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught12.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
       def `should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string and withGroups when used in a logical-and expression` {
@@ -518,6 +609,49 @@ s should fullyMatch regex t
         assert(caught6.getMessage === "\"abcdeeff\" ended with a substring that matched the regular expression d(e*)(f*), but \"ff\" did not match group \"fff\" at index 1")
         assert(caught6.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
+        
+        val caught7 = intercept[TestFailedException] {
+          "abcdeeff" should (equal ("abcdeeff") and (endWith regex ("d(e*)(f*)" withGroups ("ee", "fff"))))
+        }
+        assert(caught7.getMessage === "\"abcdeeff\" equaled \"abcdeeff\", but \"abcdeeff\" ended with a substring that matched the regular expression d(e*)(f*), but \"ff\" did not match group \"fff\" at index 1")
+        assert(caught7.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught7.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        val caught8 = intercept[TestFailedException] {
+          "abcdeeff" should ((equal ("abcdeeff")) and (endWith regex ("d(e*)(f*)" withGroups ("ee", "fff"))))
+        }
+        assert(caught8.getMessage === "\"abcdeeff\" equaled \"abcdeeff\", but \"abcdeeff\" ended with a substring that matched the regular expression d(e*)(f*), but \"ff\" did not match group \"fff\" at index 1")
+        assert(caught8.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        val caught9 = intercept[TestFailedException] {
+          "abcdeeff" should (equal ("abcdeeff") and endWith regex ("d(e*)(f*)" withGroups ("ee", "fff")))
+        }
+        assert(caught9.getMessage === "\"abcdeeff\" equaled \"abcdeeff\", but \"abcdeeff\" ended with a substring that matched the regular expression d(e*)(f*), but \"ff\" did not match group \"fff\" at index 1")
+        assert(caught9.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught9.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        // Check to make sure the error message "short circuits" (i.e., just reports the left side's failure)
+        val caught10 = intercept[TestFailedException] {
+          "abcdeeff" should (equal ("abcdeefff") and (endWith regex ("d(e*)(f*)" withGroups ("ee", "ff"))))
+        }
+        assert(caught10.getMessage === "\"abcdeeff[]\" did not equal \"abcdeeff[f]\"")
+        assert(caught10.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught10.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        val caught11 = intercept[TestFailedException] {
+          "abcdeeff" should ((equal ("abcdeefff")) and (endWith regex ("d(e*)(f*)" withGroups ("ee", "ff"))))
+        }
+        assert(caught11.getMessage === "\"abcdeeff[]\" did not equal \"abcdeeff[f]\"")
+        assert(caught11.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught11.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        val caught12 = intercept[TestFailedException] {
+          "abcdeeff" should (equal ("abcdeefff") and endWith regex ("d(e*)(f*)" withGroups ("ee", "ff")))
+        }
+        assert(caught12.getMessage === "\"abcdeeff[]\" did not equal \"abcdeeff[f]\"")
+        assert(caught12.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught12.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
   
       def `should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string when used in a logical-or expression` {
@@ -560,6 +694,27 @@ s should fullyMatch regex t
         assert(caught3.getMessage === "\"abcdeef\" ended with a substring that matched the regular expression d(e*)f, but \"ee\" did not match group \"e\", and \"abcdeef\" ended with a substring that matched the regular expression d(e*)f, but \"ee\" did not match group \"eee\"")
         assert(caught3.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
+        
+        val caught4 = intercept[TestFailedException] {
+          "abcdeef" should (equal ("abcdef") or (endWith regex ("d(e*)f" withGroup "eee")))
+        }
+        assert(caught4.getMessage === "\"abcde[e]f\" did not equal \"abcde[]f\", and \"abcdeef\" ended with a substring that matched the regular expression d(e*)f, but \"ee\" did not match group \"eee\"")
+        assert(caught4.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        val caught5 = intercept[TestFailedException] {
+          "abcdeef" should ((equal ("abcdef")) or (endWith regex ("d(e*)f" withGroup "eee")))
+        }
+        assert(caught5.getMessage === "\"abcde[e]f\" did not equal \"abcde[]f\", and \"abcdeef\" ended with a substring that matched the regular expression d(e*)f, but \"ee\" did not match group \"eee\"")
+        assert(caught5.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        val caught6 = intercept[TestFailedException] {
+          "abcdeef" should (equal ("abcdef") or endWith regex ("d(e*)f" withGroup "eee"))
+        }
+        assert(caught6.getMessage === "\"abcde[e]f\" did not equal \"abcde[]f\", and \"abcdeef\" ended with a substring that matched the regular expression d(e*)f, but \"ee\" did not match group \"eee\"")
+        assert(caught6.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
       def `should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string and withGroups when used in a logical-or expression` {
@@ -584,6 +739,27 @@ s should fullyMatch regex t
         assert(caught3.getMessage === "\"abcdeeff\" ended with a substring that matched the regular expression d(e*)(f*), but \"ff\" did not match group \"f\" at index 1, and \"abcdeeff\" ended with a substring that matched the regular expression d(e*)(f*), but \"ff\" did not match group \"fff\" at index 1")
         assert(caught3.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
+        
+        val caught4 = intercept[TestFailedException] {
+          "abcdeeff" should (equal ("abcdeef") or (endWith regex ("d(e*)(f*)" withGroups ("ee", "fff"))))
+        }
+        assert(caught4.getMessage === "\"abcdeef[f]\" did not equal \"abcdeef[]\", and \"abcdeeff\" ended with a substring that matched the regular expression d(e*)(f*), but \"ff\" did not match group \"fff\" at index 1")
+        assert(caught4.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        val caught5 = intercept[TestFailedException] {
+          "abcdeeff" should ((equal ("abcdeef")) or (endWith regex ("d(e*)(f*)" withGroups ("ee", "fff"))))
+        }
+        assert(caught5.getMessage === "\"abcdeef[f]\" did not equal \"abcdeef[]\", and \"abcdeeff\" ended with a substring that matched the regular expression d(e*)(f*), but \"ff\" did not match group \"fff\" at index 1")
+        assert(caught5.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        val caught6 = intercept[TestFailedException] {
+          "abcdeeff" should (equal ("abcdeef") or endWith regex ("d(e*)(f*)" withGroups ("ee", "fff")))
+        }
+        assert(caught6.getMessage === "\"abcdeef[f]\" did not equal \"abcdeef[]\", and \"abcdeeff\" ended with a substring that matched the regular expression d(e*)(f*), but \"ff\" did not match group \"fff\" at index 1")
+        assert(caught6.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
   
       def `should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string when used in a logical-and expression used with not` {
@@ -643,6 +819,34 @@ s should fullyMatch regex t
         assert(caught4.getMessage === "\"abcdeef\" ended with a substring that matched the regular expression d(e*)f, but \"ee\" did not match group \"e\", but \"abcdeef\" ended with a substring that matched the regular expression d(e*)f and group \"ee\"")
         assert(caught4.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
         assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
+        
+        val caught5 = intercept[TestFailedException] {
+          "deef" should (not equal ("def") and (not endWith regex ("d(e*)f" withGroup "ee")))
+        }
+        assert(caught5.getMessage === "\"de[e]f\" did not equal \"de[]f\", but \"deef\" ended with a substring that matched the regular expression d(e*)f and group \"ee\"")
+        assert(caught5.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+        val caught6 = intercept[TestFailedException] {
+          "deef" should ((not equal ("def")) and (not endWith regex ("d(e*)f" withGroup "ee")))
+        }
+        assert(caught6.getMessage === "\"de[e]f\" did not equal \"de[]f\", but \"deef\" ended with a substring that matched the regular expression d(e*)f and group \"ee\"")
+        assert(caught6.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+        val caught7 = intercept[TestFailedException] {
+          "deef" should (not equal ("def") and not endWith regex ("d(e*)f" withGroup "ee"))
+        }
+        assert(caught7.getMessage === "\"de[e]f\" did not equal \"de[]f\", but \"deef\" ended with a substring that matched the regular expression d(e*)f and group \"ee\"")
+        assert(caught7.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught7.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        val caught8 = intercept[TestFailedException] {
+          "abcdeef" should (not equal ("abcdef") and (not endWith regex ("d(e*)f" withGroup "ee")))
+        }
+        assert(caught8.getMessage === "\"abcde[e]f\" did not equal \"abcde[]f\", but \"abcdeef\" ended with a substring that matched the regular expression d(e*)f and group \"ee\"")
+        assert(caught8.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
       def `should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string withGroups when used in a logical-and expression used with not` {
@@ -674,6 +878,34 @@ s should fullyMatch regex t
         assert(caught4.getMessage === "\"abcdeeff\" ended with a substring that matched the regular expression d(e*)(f*), but \"ff\" did not match group \"f\" at index 1, but \"abcdeeff\" ended with a substring that matched the regular expression d(e*)(f*) and group \"ee\", \"ff\"")
         assert(caught4.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
         assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
+        
+        val caught5 = intercept[TestFailedException] {
+          "deeff" should (not equal ("deef") and (not endWith regex ("d(e*)(f*)" withGroups ("ee", "ff"))))
+        }
+        assert(caught5.getMessage === "\"deef[f]\" did not equal \"deef[]\", but \"deeff\" ended with a substring that matched the regular expression d(e*)(f*) and group \"ee\", \"ff\"")
+        assert(caught5.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+        val caught6 = intercept[TestFailedException] {
+          "deeff" should ((not equal ("deef")) and (not endWith regex ("d(e*)(f*)" withGroups ("ee", "ff"))))
+        }
+        assert(caught6.getMessage === "\"deef[f]\" did not equal \"deef[]\", but \"deeff\" ended with a substring that matched the regular expression d(e*)(f*) and group \"ee\", \"ff\"")
+        assert(caught6.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+        val caught7 = intercept[TestFailedException] {
+          "deeff" should (not equal ("deef") and not endWith regex ("d(e*)(f*)" withGroups ("ee", "ff")))
+        }
+        assert(caught7.getMessage === "\"deef[f]\" did not equal \"deef[]\", but \"deeff\" ended with a substring that matched the regular expression d(e*)(f*) and group \"ee\", \"ff\"")
+        assert(caught7.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught7.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        val caught8 = intercept[TestFailedException] {
+          "abcdeeff" should (not equal ("abcdeef") and (not endWith regex ("d(e*)(f*)" withGroups ("ee", "ff"))))
+        }
+        assert(caught8.getMessage === "\"abcdeef[f]\" did not equal \"abcdeef[]\", but \"abcdeeff\" ended with a substring that matched the regular expression d(e*)(f*) and group \"ee\", \"ff\"")
+        assert(caught8.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
 
       def `should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string when used in a logical-or expression used with not` {
@@ -740,6 +972,41 @@ s should fullyMatch regex t
         assert(caught5.getMessage === "\"abcdeef\" ended with a substring that matched the regular expression d(e*)f and group \"ee\", and \"abcdeef\" ended with a substring that matched the regular expression d(e*)f and group \"ee\"")
         assert(caught5.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
         assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
+        
+        val caught6 = intercept[TestFailedException] {
+          "deef" should (not equal ("deef") or (not endWith regex ("d(e*)f" withGroup "ee")))
+        }
+        assert(caught6.getMessage === "\"deef\" equaled \"deef\", and \"deef\" ended with a substring that matched the regular expression d(e*)f and group \"ee\"")
+        assert(caught6.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        val caught7 = intercept[TestFailedException] {
+          "deef" should ((not equal ("deef")) or (not endWith regex ("d(e*)f" withGroup "ee")))
+        }
+        assert(caught7.getMessage === "\"deef\" equaled \"deef\", and \"deef\" ended with a substring that matched the regular expression d(e*)f and group \"ee\"")
+        assert(caught7.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught7.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        val caught8 = intercept[TestFailedException] {
+          "deef" should (not equal ("deef") or not endWith regex ("d(e*)f" withGroup "ee"))
+        }
+        assert(caught8.getMessage === "\"deef\" equaled \"deef\", and \"deef\" ended with a substring that matched the regular expression d(e*)f and group \"ee\"")
+        assert(caught8.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        val caught9 = intercept[TestFailedException] {
+          "deef" should (not (equal ("deef")) or not (endWith regex ("d(e*)f" withGroup "ee")))
+        }
+        assert(caught9.getMessage === "\"deef\" equaled \"deef\", and \"deef\" ended with a substring that matched the regular expression d(e*)f and group \"ee\"")
+        assert(caught9.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught9.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        val caught10 = intercept[TestFailedException] {
+          "abcdeef" should (not equal ("abcdeef") or (not endWith regex ("d(e*)f" withGroup "ee")))
+        }
+        assert(caught10.getMessage === "\"abcdeef\" equaled \"abcdeef\", and \"abcdeef\" ended with a substring that matched the regular expression d(e*)f and group \"ee\"")
+        assert(caught10.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught10.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
       def `should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string and withGroups when used in a logical-or expression used with not` {
@@ -778,6 +1045,41 @@ s should fullyMatch regex t
         assert(caught5.getMessage === "\"abcdeeff\" ended with a substring that matched the regular expression d(e*)(f*) and group \"ee\", \"ff\", and \"abcdeeff\" ended with a substring that matched the regular expression d(e*)(f*) and group \"ee\", \"ff\"")
         assert(caught5.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
         assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
+        
+        val caught6 = intercept[TestFailedException] {
+          "deeff" should (not equal ("deeff") or (not endWith regex ("d(e*)(f*)" withGroups ("ee", "ff"))))
+        }
+        assert(caught6.getMessage === "\"deeff\" equaled \"deeff\", and \"deeff\" ended with a substring that matched the regular expression d(e*)(f*) and group \"ee\", \"ff\"")
+        assert(caught6.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        val caught7 = intercept[TestFailedException] {
+          "deeff" should ((not equal ("deeff")) or (not endWith regex ("d(e*)(f*)" withGroups ("ee", "ff"))))
+        }
+        assert(caught7.getMessage === "\"deeff\" equaled \"deeff\", and \"deeff\" ended with a substring that matched the regular expression d(e*)(f*) and group \"ee\", \"ff\"")
+        assert(caught7.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught7.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        val caught8 = intercept[TestFailedException] {
+          "deeff" should (not equal ("deeff") or not endWith regex ("d(e*)(f*)" withGroups ("ee", "ff")))
+        }
+        assert(caught8.getMessage === "\"deeff\" equaled \"deeff\", and \"deeff\" ended with a substring that matched the regular expression d(e*)(f*) and group \"ee\", \"ff\"")
+        assert(caught8.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        val caught9 = intercept[TestFailedException] {
+          "deeff" should (not (equal ("deeff")) or not (endWith regex ("d(e*)(f*)" withGroups ("ee", "ff"))))
+        }
+        assert(caught9.getMessage === "\"deeff\" equaled \"deeff\", and \"deeff\" ended with a substring that matched the regular expression d(e*)(f*) and group \"ee\", \"ff\"")
+        assert(caught9.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught9.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        val caught10 = intercept[TestFailedException] {
+          "abcdeeff" should (not equal ("abcdeeff") or (not endWith regex ("d(e*)(f*)" withGroups ("ee", "ff"))))
+        }
+        assert(caught10.getMessage === "\"abcdeeff\" equaled \"abcdeeff\", and \"abcdeeff\" ended with a substring that matched the regular expression d(e*)(f*) and group \"ee\", \"ff\"")
+        assert(caught10.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught10.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
     }
 
@@ -861,6 +1163,14 @@ s should fullyMatch regex t
         "deef" should (endWith regex ("d(e*)f".r withGroup "ee") and (endWith regex ("d(e*)f".r withGroup "ee")))
         "deef" should ((endWith regex ("d(e*)f".r withGroup "ee")) and (endWith regex ("d(e*)f".r withGroup "ee")))
         "deef" should (endWith regex ("d(e*)f".r withGroup "ee") and endWith regex ("d(e*)f".r withGroup "ee"))
+        
+        "abcdeef" should (equal ("abcdeef") and (endWith regex ("d(e*)f".r withGroup "ee")))
+        "abcdeef" should ((equal ("abcdeef")) and (endWith regex ("d(e*)f".r withGroup "ee")))
+        "abcdeef" should (equal ("abcdeef") and endWith regex ("d(e*)f".r withGroup "ee"))
+
+        "deef" should (equal ("deef") and (endWith regex ("d(e*)f".r withGroup "ee")))
+        "deef" should ((equal ("deef")) and (endWith regex ("d(e*)f".r withGroup "ee")))
+        "deef" should (equal ("deef") and endWith regex ("d(e*)f".r withGroup "ee"))
       }
       
       def `should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroups when used in a logical-and expression` {
@@ -872,6 +1182,14 @@ s should fullyMatch regex t
         "deeff" should (endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff")) and (endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff"))))
         "deeff" should ((endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff"))) and (endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff"))))
         "deeff" should (endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff")) and endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff")))
+        
+        "abcdeeff" should (equal ("abcdeeff") and (endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff"))))
+        "abcdeeff" should ((equal ("abcdeeff")) and (endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff"))))
+        "abcdeeff" should (equal ("abcdeeff") and endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff")))
+
+        "deeff" should (equal ("deeff") and (endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff"))))
+        "deeff" should ((equal ("deeff")) and (endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff"))))
+        "deeff" should (equal ("deeff") and endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff")))
       }
   
       def `should do nothing if the string does not end with a substring that matched the regular expression specified as a string when used in a logical-or expression` {
@@ -894,6 +1212,14 @@ s should fullyMatch regex t
         "deef" should (endWith regex ("d(e*)f".r withGroup "e") or (endWith regex ("d(e*)f".r withGroup "ee")))
         "deef" should ((endWith regex ("d(e*)f".r withGroup "e")) or (endWith regex ("d(e*)f".r withGroup "ee")))
         "deef" should (endWith regex ("d(e*)f".r withGroup "e") or endWith regex ("d(e*)f".r withGroup "ee"))
+        
+        "abcdeef" should (equal ("abcdef") or (endWith regex ("d(e*)f".r withGroup "ee")))
+        "abcdeef" should ((equal ("abcdef")) or (endWith regex ("d(e*)f".r withGroup "ee")))
+        "abcdeef" should (equal ("abcdef") or endWith regex ("d(e*)f".r withGroup "ee"))
+  
+        "deef" should (equal ("def") or (endWith regex ("d(e*)f".r withGroup "ee")))
+        "deef" should ((equal ("def")) or (endWith regex ("d(e*)f".r withGroup "ee")))
+        "deef" should (equal ("def") or endWith regex ("d(e*)f".r withGroup "ee"))
       }
       
       def `should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroups when used in a logical-or expression` {
@@ -905,6 +1231,14 @@ s should fullyMatch regex t
         "deeff" should (endWith regex ("d(e*)(f*)".r withGroups ("ee", "f")) or (endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff"))))
         "deeff" should ((endWith regex ("d(e*)(f*)".r withGroups ("ee", "f"))) or (endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff"))))
         "deeff" should (endWith regex ("d(e*)(f*)".r withGroups ("ee", "f")) or endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff")))
+        
+        "abcdeeff" should (equal ("abcdeef") or (endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff"))))
+        "abcdeeff" should ((equal ("abcdeef")) or (endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff"))))
+        "abcdeeff" should (equal ("abcdeef") or endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff")))
+  
+        "deeff" should (equal ("deef") or (endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff"))))
+        "deeff" should ((equal ("deef")) or (endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff"))))
+        "deeff" should (equal ("deef") or endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff")))
       }
   
       def `should do nothing if the string does not end with a substring that matched the regular expression specified as a string when used in a logical-and expression with not` {
@@ -917,12 +1251,20 @@ s should fullyMatch regex t
         "abcdeef" should (not (endWith regex ("d(e*)f".r withGroup "e")) and not (endWith regex ("d(e*)f".r withGroup "eee")))
         "abcdeef" should ((not endWith regex ("d(e*)f".r withGroup "e")) and (not endWith regex ("d(e*)f".r withGroup "eee")))
         "abcdeef" should (not endWith regex ("d(e*)f".r withGroup "e") and not endWith regex ("d(e*)f".r withGroup "eee"))
+        
+        "abcdeef" should (not (equal ("abcdef")) and not (endWith regex ("d(e*)f".r withGroup "eee")))
+        "abcdeef" should ((not equal ("abcdef")) and (not endWith regex ("d(e*)f".r withGroup "eee")))
+        "abcdeef" should (not equal ("abcdef") and not endWith regex ("d(e*)f".r withGroup "eee"))
       }
       
       def `should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroups when used in a logical-and expression with not` {
         "abcdeeff" should (not (endWith regex ("d(e*)(f*)".r withGroups ("ee", "f"))) and not (endWith regex ("d(e*)(f*)".r withGroups ("ee", "fff"))))
         "abcdeeff" should ((not endWith regex ("d(e*)(f*)".r withGroups ("ee", "f"))) and (not endWith regex ("d(e*)(f*)".r withGroups ("ee", "fff"))))
         "abcdeeff" should (not endWith regex ("d(e*)(f*)".r withGroups ("ee", "f")) and not endWith regex ("d(e*)(f*)".r withGroups ("ee", "fff")))
+        
+        "abcdeeff" should (not (equal ("abcdeef")) and not (endWith regex ("d(e*)(f*)".r withGroups ("ee", "fff"))))
+        "abcdeeff" should ((not equal ("abcdeef")) and (not endWith regex ("d(e*)(f*)".r withGroups ("ee", "fff"))))
+        "abcdeeff" should (not equal ("abcdeef") and not endWith regex ("d(e*)(f*)".r withGroups ("ee", "fff")))
       }
   
       def `should do nothing if the string does not end with a substring that matched the regular expression specified as a string when used in a logical-or expression with not` {
@@ -935,12 +1277,20 @@ s should fullyMatch regex t
         "abcdeef" should (not (endWith regex ("d(e*)f".r withGroup "ee")) or not (endWith regex ("d(e*)f".r withGroup "e")))
         "abcdeef" should ((not endWith regex ("d(e*)f".r withGroup "ee")) or (not endWith regex ("d(e*)f".r withGroup "e")))
         "abcdeef" should (not endWith regex ("d(e*)f".r withGroup "ee") or not endWith regex ("d(e*)f".r withGroup "e"))
+        
+        "abcdeef" should (not (equal ("abcdeef")) or not (endWith regex ("d(e*)f".r withGroup "e")))
+        "abcdeef" should ((not equal ("abcdeef")) or (not endWith regex ("d(e*)f".r withGroup "e")))
+        "abcdeef" should (not equal ("abcdeef") or not endWith regex ("d(e*)f".r withGroup "e"))
       }
       
       def `should do nothing if the string does not end with a substring that matched the regular expression specified as a string and withGroups when used in a logical-or expression with not` {
         "abcdeeff" should (not (endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff"))) or not (endWith regex ("d(e*)(f*)".r withGroups ("ee", "f"))))
         "abcdeeff" should ((not endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff"))) or (not endWith regex ("d(e*)(f*)".r withGroups ("ee", "f"))))
         "abcdeeff" should (not endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff")) or not endWith regex ("d(e*)(f*)".r withGroups ("ee", "f")))
+        
+        "abcdeeff" should (not (equal ("abcdeeff")) or not (endWith regex ("d(e*)(f*)".r withGroups ("ee", "f"))))
+        "abcdeeff" should ((not equal ("abcdeeff")) or (not endWith regex ("d(e*)(f*)".r withGroups ("ee", "f"))))
+        "abcdeeff" should (not equal ("abcdeeff") or not endWith regex ("d(e*)(f*)".r withGroups ("ee", "f")))
       }
   
       def `should throw TestFailedException if the string does not match substring that matched the regular expression specified as a string` {
@@ -1228,6 +1578,49 @@ s should fullyMatch regex t
         assert(caught6.getMessage === "\"abcdeef\" ended with a substring that matched the regular expression d(e*)f, but \"ee\" did not match group \"e\"")
         assert(caught6.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
+        
+        val caught7 = intercept[TestFailedException] {
+          "abcdeef" should (equal ("abcdeef") and (endWith regex ("d(e*)f".r withGroup "e")))
+        }
+        assert(caught7.getMessage === "\"abcdeef\" equaled \"abcdeef\", but \"abcdeef\" ended with a substring that matched the regular expression d(e*)f, but \"ee\" did not match group \"e\"")
+        assert(caught7.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught7.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        val caught8 = intercept[TestFailedException] {
+          "abcdeef" should ((equal ("abcdeef")) and (endWith regex ("d(e*)f".r withGroup "e")))
+        }
+        assert(caught8.getMessage === "\"abcdeef\" equaled \"abcdeef\", but \"abcdeef\" ended with a substring that matched the regular expression d(e*)f, but \"ee\" did not match group \"e\"")
+        assert(caught8.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        val caught9 = intercept[TestFailedException] {
+          "abcdeef" should (equal ("abcdeef") and endWith regex ("d(e*)f".r withGroup "e"))
+        }
+        assert(caught9.getMessage === "\"abcdeef\" equaled \"abcdeef\", but \"abcdeef\" ended with a substring that matched the regular expression d(e*)f, but \"ee\" did not match group \"e\"")
+        assert(caught9.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught9.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        // Check to make sure the error message "short circuits" (i.e., just reports the left side's failure)
+        val caught10 = intercept[TestFailedException] {
+          "abcdeef" should (equal ("abcdef") and (endWith regex ("d(e*)f".r withGroup "ee")))
+        }
+        assert(caught10.getMessage === "\"abcde[e]f\" did not equal \"abcde[]f\"")
+        assert(caught10.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught10.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        val caught11 = intercept[TestFailedException] {
+          "abcdeef" should ((equal ("abcdef")) and (endWith regex ("d(e*)f".r withGroup "ee")))
+        }
+        assert(caught11.getMessage === "\"abcde[e]f\" did not equal \"abcde[]f\"")
+        assert(caught11.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught11.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        val caught12 = intercept[TestFailedException] {
+          "abcdeef" should (equal ("abcdef") and endWith regex ("d(e*)f".r withGroup "ee"))
+        }
+        assert(caught12.getMessage === "\"abcde[e]f\" did not equal \"abcde[]f\"")
+        assert(caught12.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught12.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
       def `should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string and withGroups when used in a logical-and expression` {
@@ -1274,6 +1667,49 @@ s should fullyMatch regex t
         assert(caught6.getMessage === "\"abcdeeff\" ended with a substring that matched the regular expression d(e*)(f*), but \"ff\" did not match group \"f\" at index 1")
         assert(caught6.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
+        
+        val caught7 = intercept[TestFailedException] {
+          "abcdeeff" should (equal ("abcdeeff") and (endWith regex ("d(e*)(f*)".r withGroups ("ee", "f"))))
+        }
+        assert(caught7.getMessage === "\"abcdeeff\" equaled \"abcdeeff\", but \"abcdeeff\" ended with a substring that matched the regular expression d(e*)(f*), but \"ff\" did not match group \"f\" at index 1")
+        assert(caught7.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught7.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        val caught8 = intercept[TestFailedException] {
+          "abcdeeff" should ((equal ("abcdeeff")) and (endWith regex ("d(e*)(f*)".r withGroups ("ee", "f"))))
+        }
+        assert(caught8.getMessage === "\"abcdeeff\" equaled \"abcdeeff\", but \"abcdeeff\" ended with a substring that matched the regular expression d(e*)(f*), but \"ff\" did not match group \"f\" at index 1")
+        assert(caught8.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        val caught9 = intercept[TestFailedException] {
+          "abcdeeff" should (equal ("abcdeeff") and endWith regex ("d(e*)(f*)".r withGroups ("ee", "f")))
+        }
+        assert(caught9.getMessage === "\"abcdeeff\" equaled \"abcdeeff\", but \"abcdeeff\" ended with a substring that matched the regular expression d(e*)(f*), but \"ff\" did not match group \"f\" at index 1")
+        assert(caught9.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught9.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        // Check to make sure the error message "short circuits" (i.e., just reports the left side's failure)
+        val caught10 = intercept[TestFailedException] {
+          "abcdeeff" should (equal ("abcdeef") and (endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff"))))
+        }
+        assert(caught10.getMessage === "\"abcdeef[f]\" did not equal \"abcdeef[]\"")
+        assert(caught10.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught10.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        val caught11 = intercept[TestFailedException] {
+          "abcdeeff" should ((equal ("abcdeef")) and (endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff"))))
+        }
+        assert(caught11.getMessage === "\"abcdeef[f]\" did not equal \"abcdeef[]\"")
+        assert(caught11.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught11.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        val caught12 = intercept[TestFailedException] {
+          "abcdeeff" should (equal ("abcdeef") and endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff")))
+        }
+        assert(caught12.getMessage === "\"abcdeef[f]\" did not equal \"abcdeef[]\"")
+        assert(caught12.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught12.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
   
       def `should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string when used in a logical-or expression` {
@@ -1316,6 +1752,27 @@ s should fullyMatch regex t
         assert(caught3.getMessage === "\"abcdeef\" ended with a substring that matched the regular expression d(e*)f, but \"ee\" did not match group \"e\", and \"abcdeef\" ended with a substring that matched the regular expression d(e*)f, but \"ee\" did not match group \"eee\"")
         assert(caught3.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
+        
+        val caught4 = intercept[TestFailedException] {
+          "abcdeef" should (equal ("abcdef") or (endWith regex ("d(e*)f".r withGroup "eee")))
+        }
+        assert(caught4.getMessage === "\"abcde[e]f\" did not equal \"abcde[]f\", and \"abcdeef\" ended with a substring that matched the regular expression d(e*)f, but \"ee\" did not match group \"eee\"")
+        assert(caught4.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        val caught5 = intercept[TestFailedException] {
+          "abcdeef" should ((equal ("abcdef")) or (endWith regex ("d(e*)f".r withGroup "eee")))
+        }
+        assert(caught5.getMessage === "\"abcde[e]f\" did not equal \"abcde[]f\", and \"abcdeef\" ended with a substring that matched the regular expression d(e*)f, but \"ee\" did not match group \"eee\"")
+        assert(caught5.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        val caught6 = intercept[TestFailedException] {
+          "abcdeef" should (equal ("abcdef") or endWith regex ("d(e*)f".r withGroup "eee"))
+        }
+        assert(caught6.getMessage === "\"abcde[e]f\" did not equal \"abcde[]f\", and \"abcdeef\" ended with a substring that matched the regular expression d(e*)f, but \"ee\" did not match group \"eee\"")
+        assert(caught6.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
       def `should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string and withGroups when used in a logical-or expression` {
@@ -1340,6 +1797,27 @@ s should fullyMatch regex t
         assert(caught3.getMessage === "\"abcdeeff\" ended with a substring that matched the regular expression d(e*)(f*), but \"ff\" did not match group \"f\" at index 1, and \"abcdeeff\" ended with a substring that matched the regular expression d(e*)(f*), but \"ff\" did not match group \"fff\" at index 1")
         assert(caught3.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
+        
+        val caught4 = intercept[TestFailedException] {
+          "abcdeeff" should (equal ("abcdeef") or (endWith regex ("d(e*)(f*)".r withGroups ("ee", "fff"))))
+        }
+        assert(caught4.getMessage === "\"abcdeef[f]\" did not equal \"abcdeef[]\", and \"abcdeeff\" ended with a substring that matched the regular expression d(e*)(f*), but \"ff\" did not match group \"fff\" at index 1")
+        assert(caught4.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        val caught5 = intercept[TestFailedException] {
+          "abcdeeff" should ((equal ("abcdeef")) or (endWith regex ("d(e*)(f*)".r withGroups ("ee", "fff"))))
+        }
+        assert(caught5.getMessage === "\"abcdeef[f]\" did not equal \"abcdeef[]\", and \"abcdeeff\" ended with a substring that matched the regular expression d(e*)(f*), but \"ff\" did not match group \"fff\" at index 1")
+        assert(caught5.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        val caught6 = intercept[TestFailedException] {
+          "abcdeeff" should (equal ("abcdeef") or endWith regex ("d(e*)(f*)".r withGroups ("ee", "fff")))
+        }
+        assert(caught6.getMessage === "\"abcdeef[f]\" did not equal \"abcdeef[]\", and \"abcdeeff\" ended with a substring that matched the regular expression d(e*)(f*), but \"ff\" did not match group \"fff\" at index 1")
+        assert(caught6.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
   
       def `should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string when used in a logical-and expression used with not` {
@@ -1399,6 +1877,34 @@ s should fullyMatch regex t
         assert(caught4.getMessage === "\"abcdeef\" ended with a substring that matched the regular expression d(e*)f, but \"ee\" did not match group \"e\", but \"abcdeef\" ended with a substring that matched the regular expression d(e*)f and group \"ee\"")
         assert(caught4.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
         assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
+        
+        val caught5 = intercept[TestFailedException] {
+          "deef" should (not equal ("def") and (not endWith regex ("d(e*)f".r withGroup "ee")))
+        }
+        assert(caught5.getMessage === "\"de[e]f\" did not equal \"de[]f\", but \"deef\" ended with a substring that matched the regular expression d(e*)f and group \"ee\"")
+        assert(caught5.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+        val caught6 = intercept[TestFailedException] {
+          "deef" should ((not equal ("def")) and (not endWith regex ("d(e*)f".r withGroup "ee")))
+        }
+        assert(caught6.getMessage === "\"de[e]f\" did not equal \"de[]f\", but \"deef\" ended with a substring that matched the regular expression d(e*)f and group \"ee\"")
+        assert(caught6.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+        val caught7 = intercept[TestFailedException] {
+          "deef" should (not equal ("def") and not endWith regex ("d(e*)f".r withGroup "ee"))
+        }
+        assert(caught7.getMessage === "\"de[e]f\" did not equal \"de[]f\", but \"deef\" ended with a substring that matched the regular expression d(e*)f and group \"ee\"")
+        assert(caught7.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught7.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        val caught8 = intercept[TestFailedException] {
+          "abcdeef" should (not equal ("abcdef") and (not endWith regex ("d(e*)f".r withGroup "ee")))
+        }
+        assert(caught8.getMessage === "\"abcde[e]f\" did not equal \"abcde[]f\", but \"abcdeef\" ended with a substring that matched the regular expression d(e*)f and group \"ee\"")
+        assert(caught8.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
       def `should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string and withGroups when used in a logical-and expression used with not` {
@@ -1430,6 +1936,34 @@ s should fullyMatch regex t
         assert(caught4.getMessage === "\"abcdeeff\" ended with a substring that matched the regular expression d(e*)(f*), but \"ff\" did not match group \"f\" at index 1, but \"abcdeeff\" ended with a substring that matched the regular expression d(e*)(f*) and group \"ee\", \"ff\"")
         assert(caught4.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
         assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
+        
+        val caught5 = intercept[TestFailedException] {
+          "deeff" should (not equal ("deef") and (not endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff"))))
+        }
+        assert(caught5.getMessage === "\"deef[f]\" did not equal \"deef[]\", but \"deeff\" ended with a substring that matched the regular expression d(e*)(f*) and group \"ee\", \"ff\"")
+        assert(caught5.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+        val caught6 = intercept[TestFailedException] {
+          "deeff" should ((not equal ("deef")) and (not endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff"))))
+        }
+        assert(caught6.getMessage === "\"deef[f]\" did not equal \"deef[]\", but \"deeff\" ended with a substring that matched the regular expression d(e*)(f*) and group \"ee\", \"ff\"")
+        assert(caught6.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+        val caught7 = intercept[TestFailedException] {
+          "deeff" should (not equal ("deef") and not endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff")))
+        }
+        assert(caught7.getMessage === "\"deef[f]\" did not equal \"deef[]\", but \"deeff\" ended with a substring that matched the regular expression d(e*)(f*) and group \"ee\", \"ff\"")
+        assert(caught7.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught7.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        val caught8 = intercept[TestFailedException] {
+          "abcdeeff" should (not equal ("abcdeef") and (not endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff"))))
+        }
+        assert(caught8.getMessage === "\"abcdeef[f]\" did not equal \"abcdeef[]\", but \"abcdeeff\" ended with a substring that matched the regular expression d(e*)(f*) and group \"ee\", \"ff\"")
+        assert(caught8.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
 
       def `should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string when used in a logical-or expression used with not` {
@@ -1496,6 +2030,41 @@ s should fullyMatch regex t
         assert(caught5.getMessage === "\"abcdeef\" ended with a substring that matched the regular expression d(e*)f and group \"ee\", and \"abcdeef\" ended with a substring that matched the regular expression d(e*)f and group \"ee\"")
         assert(caught5.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
         assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
+        
+        val caught6 = intercept[TestFailedException] {
+          "deef" should (not equal ("deef") or (not endWith regex ("d(e*)f".r withGroup "ee")))
+        }
+        assert(caught6.getMessage === "\"deef\" equaled \"deef\", and \"deef\" ended with a substring that matched the regular expression d(e*)f and group \"ee\"")
+        assert(caught6.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        val caught7 = intercept[TestFailedException] {
+          "deef" should ((not equal ("deef")) or (not endWith regex ("d(e*)f".r withGroup "ee")))
+        }
+        assert(caught7.getMessage === "\"deef\" equaled \"deef\", and \"deef\" ended with a substring that matched the regular expression d(e*)f and group \"ee\"")
+        assert(caught7.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught7.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        val caught8 = intercept[TestFailedException] {
+          "deef" should (not equal ("deef") or not endWith regex ("d(e*)f".r withGroup "ee"))
+        }
+        assert(caught8.getMessage === "\"deef\" equaled \"deef\", and \"deef\" ended with a substring that matched the regular expression d(e*)f and group \"ee\"")
+        assert(caught8.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        val caught9 = intercept[TestFailedException] {
+          "deef" should (not (equal ("deef")) or not (endWith regex ("d(e*)f".r withGroup "ee")))
+        }
+        assert(caught9.getMessage === "\"deef\" equaled \"deef\", and \"deef\" ended with a substring that matched the regular expression d(e*)f and group \"ee\"")
+        assert(caught9.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught9.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        val caught10 = intercept[TestFailedException] {
+          "abcdeef" should (not equal ("abcdeef") or (not endWith regex ("d(e*)f".r withGroup "ee")))
+        }
+        assert(caught10.getMessage === "\"abcdeef\" equaled \"abcdeef\", and \"abcdeef\" ended with a substring that matched the regular expression d(e*)f and group \"ee\"")
+        assert(caught10.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught10.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
       def `should throw TestFailedException if the string ends with substring that matched the regular expression specified as a string and withGroups when used in a logical-or expression used with not` {
@@ -1534,6 +2103,41 @@ s should fullyMatch regex t
         assert(caught5.getMessage === "\"abcdeeff\" ended with a substring that matched the regular expression d(e*)(f*) and group \"ee\", \"ff\", and \"abcdeeff\" ended with a substring that matched the regular expression d(e*)(f*) and group \"ee\", \"ff\"")
         assert(caught5.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
         assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
+        
+        val caught6 = intercept[TestFailedException] {
+          "deeff" should (not equal ("deeff") or (not endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff"))))
+        }
+        assert(caught6.getMessage === "\"deeff\" equaled \"deeff\", and \"deeff\" ended with a substring that matched the regular expression d(e*)(f*) and group \"ee\", \"ff\"")
+        assert(caught6.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        val caught7 = intercept[TestFailedException] {
+          "deeff" should ((not equal ("deeff")) or (not endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff"))))
+        }
+        assert(caught7.getMessage === "\"deeff\" equaled \"deeff\", and \"deeff\" ended with a substring that matched the regular expression d(e*)(f*) and group \"ee\", \"ff\"")
+        assert(caught7.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught7.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        val caught8 = intercept[TestFailedException] {
+          "deeff" should (not equal ("deeff") or not endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff")))
+        }
+        assert(caught8.getMessage === "\"deeff\" equaled \"deeff\", and \"deeff\" ended with a substring that matched the regular expression d(e*)(f*) and group \"ee\", \"ff\"")
+        assert(caught8.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        val caught9 = intercept[TestFailedException] {
+          "deeff" should (not (equal ("deeff")) or not (endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff"))))
+        }
+        assert(caught9.getMessage === "\"deeff\" equaled \"deeff\", and \"deeff\" ended with a substring that matched the regular expression d(e*)(f*) and group \"ee\", \"ff\"")
+        assert(caught9.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught9.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+        val caught10 = intercept[TestFailedException] {
+          "abcdeeff" should (not equal ("abcdeeff") or (not endWith regex ("d(e*)(f*)".r withGroups ("ee", "ff"))))
+        }
+        assert(caught10.getMessage === "\"abcdeeff\" equaled \"abcdeeff\", and \"abcdeeff\" ended with a substring that matched the regular expression d(e*)(f*) and group \"ee\", \"ff\"")
+        assert(caught10.failedCodeFileName === Some("ShouldEndWithRegexSpec.scala"))
+        assert(caught10.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
     }
   }
