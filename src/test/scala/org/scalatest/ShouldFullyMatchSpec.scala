@@ -286,6 +286,14 @@ s should fullyMatch regex t
           "abbcc" should ((fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "cc"))) and (fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "cc"))))
           "abbcc" should (fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "cc")) and fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "cc")))
           
+          "abbc" should (equal ("abbc") and (fullyMatch regex ("a(b*)c" withGroup "bb")))
+          "abbc" should ((equal ("abbc")) and (fullyMatch regex ("a(b*)c" withGroup "bb")))
+          "abbc" should (equal ("abbc") and fullyMatch regex ("a(b*)c" withGroup "bb"))
+          
+          "abbcc" should (equal ("abbcc") and (fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "cc"))))
+          "abbcc" should ((equal ("abbcc")) and (fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "cc"))))
+          "abbcc" should (equal ("abbcc") and fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "cc")))
+          
           "abbc" should (fullyMatch regex ("a(b*)c" withGroup "bbb") or (fullyMatch regex ("a(b*)c" withGroup "bb")))
           "abbc" should ((fullyMatch regex ("a(b*)c" withGroup "bbb")) or (fullyMatch regex ("a(b*)c" withGroup "bb")))
           "abbc" should (fullyMatch regex ("a(b*)c" withGroup "bbb") or fullyMatch regex ("a(b*)c" withGroup "bb"))
@@ -293,6 +301,14 @@ s should fullyMatch regex t
           "abbcc" should (fullyMatch regex ("a(b*)(c*)" withGroups ("bbb", "cc")) or (fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "cc"))))
           "abbcc" should ((fullyMatch regex ("a(b*)(c*)" withGroups ("bbb", "cc"))) or (fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "cc"))))
           "abbcc" should (fullyMatch regex ("a(b*)(c*)" withGroups ("bbb", "cc")) or fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "cc")))
+          
+          "abbc" should (equal ("abbc") or (fullyMatch regex ("a(b*)c" withGroup "bb")))
+          "abbc" should ((equal ("abbc")) or (fullyMatch regex ("a(b*)c" withGroup "bb")))
+          "abbc" should (equal ("abbc") or fullyMatch regex ("a(b*)c" withGroup "bb"))
+          
+          "abbcc" should (equal ("abbc") or (fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "cc"))))
+          "abbcc" should ((equal ("abbc")) or (fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "cc"))))
+          "abbcc" should (equal ("abbc") or fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "cc")))
         }
       
         def `should throw TestFailedException if the string fully matches the regular expression but does not match specified group` {
@@ -437,6 +453,90 @@ s should fullyMatch regex t
           assert(caught20.getMessage === "\"abbcc\" fully matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1, and \"abbcc\" fully matched the regular expression a(b*)(c*), but \"cc\" did not match group \"cccc\" at index 1")
           assert(caught20.failedCodeFileName === Some("ShouldFullyMatchSpec.scala"))
           assert(caught20.failedCodeLineNumber === Some(thisLineNumber - 4))
+          
+          val caught21 = intercept[TestFailedException] {
+            "abbc" should (equal ("abbc") and (fullyMatch regex ("a(b*)c" withGroup "bbb")))
+          }
+          assert(caught21.getMessage === "\"abbc\" equaled \"abbc\", but \"abbc\" fully matched the regular expression a(b*)c, but \"bb\" did not match group \"bbb\"")
+          assert(caught21.failedCodeFileName === Some("ShouldFullyMatchSpec.scala"))
+          assert(caught21.failedCodeLineNumber === Some(thisLineNumber - 4))
+          
+          val caught22 = intercept[TestFailedException] {
+            "abbc" should ((equal ("abbc")) and (fullyMatch regex ("a(b*)c" withGroup "bbb")))
+          }
+          assert(caught22.getMessage === "\"abbc\" equaled \"abbc\", but \"abbc\" fully matched the regular expression a(b*)c, but \"bb\" did not match group \"bbb\"")
+          assert(caught22.failedCodeFileName === Some("ShouldFullyMatchSpec.scala"))
+          assert(caught22.failedCodeLineNumber === Some(thisLineNumber - 4))
+          
+          val caught23 = intercept[TestFailedException] {
+            "abbc" should (equal ("abbc") and fullyMatch regex ("a(b*)c" withGroup "bbb"))
+          }
+          assert(caught23.getMessage === "\"abbc\" equaled \"abbc\", but \"abbc\" fully matched the regular expression a(b*)c, but \"bb\" did not match group \"bbb\"")
+          assert(caught23.failedCodeFileName === Some("ShouldFullyMatchSpec.scala"))
+          assert(caught23.failedCodeLineNumber === Some(thisLineNumber - 4))
+          
+          val caught24 = intercept[TestFailedException] {
+            "abbc" should (fullyMatch regex ("a(b*)c" withGroup "bbb") and (equal ("abbc")))
+          }
+          assert(caught24.getMessage === "\"abbc\" fully matched the regular expression a(b*)c, but \"bb\" did not match group \"bbb\"")
+          assert(caught24.failedCodeFileName === Some("ShouldFullyMatchSpec.scala"))
+          assert(caught24.failedCodeLineNumber === Some(thisLineNumber - 4))
+          
+          val caught25 = intercept[TestFailedException] {
+            "abbc" should ((fullyMatch regex ("a(b*)c" withGroup "bbb")) and (equal ("abbc")))
+          }
+          assert(caught25.getMessage === "\"abbc\" fully matched the regular expression a(b*)c, but \"bb\" did not match group \"bbb\"")
+          assert(caught25.failedCodeFileName === Some("ShouldFullyMatchSpec.scala"))
+          assert(caught25.failedCodeLineNumber === Some(thisLineNumber - 4))
+          
+          val caught26 = intercept[TestFailedException] {
+            "abbc" should (fullyMatch regex ("a(b*)c" withGroup "bbb") and equal ("abbc"))
+          }
+          assert(caught26.getMessage === "\"abbc\" fully matched the regular expression a(b*)c, but \"bb\" did not match group \"bbb\"")
+          assert(caught26.failedCodeFileName === Some("ShouldFullyMatchSpec.scala"))
+          assert(caught26.failedCodeLineNumber === Some(thisLineNumber - 4))
+          
+          val caught27 = intercept[TestFailedException] {
+            "abbcc" should (equal ("abbcc") and (fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "ccc"))))
+          }
+          assert(caught27.getMessage === "\"abbcc\" equaled \"abbcc\", but \"abbcc\" fully matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1")
+          assert(caught27.failedCodeFileName === Some("ShouldFullyMatchSpec.scala"))
+          assert(caught27.failedCodeLineNumber === Some(thisLineNumber - 4))
+          
+          val caught28 = intercept[TestFailedException] {
+            "abbcc" should ((equal ("abbcc")) and (fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "ccc"))))
+          }
+          assert(caught28.getMessage === "\"abbcc\" equaled \"abbcc\", but \"abbcc\" fully matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1")
+          assert(caught28.failedCodeFileName === Some("ShouldFullyMatchSpec.scala"))
+          assert(caught28.failedCodeLineNumber === Some(thisLineNumber - 4))
+          
+          val caught29 = intercept[TestFailedException] {
+            "abbcc" should (equal ("abbcc") and fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "ccc")))
+          }
+          assert(caught29.getMessage === "\"abbcc\" equaled \"abbcc\", but \"abbcc\" fully matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1")
+          assert(caught29.failedCodeFileName === Some("ShouldFullyMatchSpec.scala"))
+          assert(caught29.failedCodeLineNumber === Some(thisLineNumber - 4))
+          
+          val caught30 = intercept[TestFailedException] {
+            "abbcc" should (fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "ccc")) and (equal ("abbcc")))
+          }
+          assert(caught30.getMessage === "\"abbcc\" fully matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1")
+          assert(caught30.failedCodeFileName === Some("ShouldFullyMatchSpec.scala"))
+          assert(caught30.failedCodeLineNumber === Some(thisLineNumber - 4))
+          
+          val caught31 = intercept[TestFailedException] {
+            "abbcc" should ((fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "ccc"))) and (equal ("abbcc")))
+          }
+          assert(caught31.getMessage === "\"abbcc\" fully matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1")
+          assert(caught31.failedCodeFileName === Some("ShouldFullyMatchSpec.scala"))
+          assert(caught31.failedCodeLineNumber === Some(thisLineNumber - 4))
+          
+          val caught32 = intercept[TestFailedException] {
+            "abbcc" should (fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "ccc")) and equal ("abbcc"))
+          }
+          assert(caught32.getMessage === "\"abbcc\" fully matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1")
+          assert(caught32.failedCodeFileName === Some("ShouldFullyMatchSpec.scala"))
+          assert(caught32.failedCodeLineNumber === Some(thisLineNumber - 4))
         }
       }
       
@@ -459,6 +559,18 @@ s should fullyMatch regex t
           "abbbc" should (not (fullyMatch regex ("a(b*)c" withGroup "bbb")) or not (fullyMatch regex ("a(b*)c" withGroup "bb")))
           "abbbc" should ((not fullyMatch regex ("a(b*)c" withGroup "bbb")) or (not fullyMatch regex ("a(b*)c" withGroup "bb")))
           "abbbc" should (not fullyMatch regex ("a(b*)c" withGroup "bbb") or not fullyMatch regex ("a(b*)c" withGroup "bb"))
+          
+          "abbbc" should (not (equal ("abbcc")) and not (fullyMatch regex ("a(b*)c" withGroup "bbbb")))
+          "abbbc" should ((not equal "abbcc") and (not fullyMatch regex ("a(b*)c" withGroup "bbbb")))
+          "abbbc" should (not equal "abbcc" and not fullyMatch regex ("a(b*)c" withGroup "bbbb"))
+          
+          "abbccc" should (not (equal ("abbcc")) and not (fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "cccc"))))
+          "abbccc" should ((not equal ("abbcc")) and (not fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "cccc"))))
+          "abbccc" should (not equal ("abbcc") and not fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "cccc")))
+          
+          "abbbc" should (not (equal ("abbbc")) or not (fullyMatch regex ("a(b*)c" withGroup "bb")))
+          "abbbc" should ((not equal ("abbbc")) or (not fullyMatch regex ("a(b*)c" withGroup "bb")))
+          "abbbc" should (not equal ("abbbc") or not fullyMatch regex ("a(b*)c" withGroup "bb"))
         }
       
         def `should throw TestFailedException if the string fully matches the regular expression and with group as specified` {
@@ -531,6 +643,48 @@ s should fullyMatch regex t
           assert(caught10.getMessage === "\"abbcc\" fully matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1, but \"abbcc\" fully matched the regular expression a(b*)(c*) and group \"bb\", \"cc\"")
           assert(caught10.failedCodeFileName === Some("ShouldFullyMatchSpec.scala"))
           assert(caught10.failedCodeLineNumber === Some(thisLineNumber - 4))
+          
+          val caught11 = intercept[TestFailedException] {
+            "abbc" should (not equal ("abbcc") and (not fullyMatch regex ("a(b*)c" withGroup "bb")))
+          }
+          assert(caught11.getMessage === "\"abbc[]\" did not equal \"abbc[c]\", but \"abbc\" fully matched the regular expression a(b*)c and group \"bb\"")
+          assert(caught11.failedCodeFileName === Some("ShouldFullyMatchSpec.scala"))
+          assert(caught11.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+          val caught12 = intercept[TestFailedException] {
+            "abbc" should ((not equal ("abbcc")) and (not fullyMatch regex ("a(b*)c" withGroup "bb")))
+          }
+          assert(caught12.getMessage === "\"abbc[]\" did not equal \"abbc[c]\", but \"abbc\" fully matched the regular expression a(b*)c and group \"bb\"")
+          assert(caught12.failedCodeFileName === Some("ShouldFullyMatchSpec.scala"))
+          assert(caught12.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+          val caught13 = intercept[TestFailedException] {
+            "abbc" should (not equal ("abbcc") and not fullyMatch regex ("a(b*)c" withGroup "bb"))
+          }
+          assert(caught13.getMessage === "\"abbc[]\" did not equal \"abbc[c]\", but \"abbc\" fully matched the regular expression a(b*)c and group \"bb\"")
+          assert(caught13.failedCodeFileName === Some("ShouldFullyMatchSpec.scala"))
+          assert(caught13.failedCodeLineNumber === Some(thisLineNumber - 4))
+          
+          val caught14 = intercept[TestFailedException] {
+            "abbcc" should (not equal ("abbccc") and (not fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "cc"))))
+          }
+          assert(caught14.getMessage === "\"abbcc[]\" did not equal \"abbcc[c]\", but \"abbcc\" fully matched the regular expression a(b*)(c*) and group \"bb\", \"cc\"")
+          assert(caught14.failedCodeFileName === Some("ShouldFullyMatchSpec.scala"))
+          assert(caught14.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+          val caught15 = intercept[TestFailedException] {
+            "abbcc" should ((not equal "abbccc") and (not fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "cc"))))
+          }
+          assert(caught15.getMessage === "\"abbcc[]\" did not equal \"abbcc[c]\", but \"abbcc\" fully matched the regular expression a(b*)(c*) and group \"bb\", \"cc\"")
+          assert(caught15.failedCodeFileName === Some("ShouldFullyMatchSpec.scala"))
+          assert(caught15.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+          val caught16 = intercept[TestFailedException] {
+            "abbcc" should (not equal "abbccc" and not fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "cc")))
+          }
+          assert(caught16.getMessage === "\"abbcc[]\" did not equal \"abbcc[c]\", but \"abbcc\" fully matched the regular expression a(b*)(c*) and group \"bb\", \"cc\"")
+          assert(caught16.failedCodeFileName === Some("ShouldFullyMatchSpec.scala"))
+          assert(caught16.failedCodeLineNumber === Some(thisLineNumber - 4))
         }
       }
     }
@@ -789,6 +943,22 @@ s should fullyMatch regex t
           "abbcc" should (fullyMatch regex ("a(b*)(c*)".r withGroups ("bbb", "cc")) or (fullyMatch regex ("a(b*)(c*)".r withGroups ("bb", "cc"))))
           "abbcc" should ((fullyMatch regex ("a(b*)(c*)".r withGroups ("bbb", "cc"))) or (fullyMatch regex ("a(b*)(c*)".r withGroups ("bb", "cc"))))
           "abbcc" should (fullyMatch regex ("a(b*)(c*)".r withGroups ("bbb", "cc")) or fullyMatch regex ("a(b*)(c*)".r withGroups ("bb", "cc")))
+          
+          "abbc" should (equal ("abbc") and (fullyMatch regex ("a(b*)c".r withGroup "bb")))
+          "abbc" should ((equal ("abbc")) and (fullyMatch regex ("a(b*)c".r withGroup "bb")))
+          "abbc" should (equal ("abbc") and fullyMatch regex ("a(b*)c".r withGroup "bb"))
+          
+          "abbcc" should (equal ("abbcc") and (fullyMatch regex ("a(b*)(c*)".r withGroups ("bb", "cc"))))
+          "abbcc" should ((equal ("abbcc")) and (fullyMatch regex ("a(b*)(c*)".r withGroups ("bb", "cc"))))
+          "abbcc" should (equal ("abbcc") and fullyMatch regex ("a(b*)(c*)".r withGroups ("bb", "cc")))
+          
+          "abbc" should (equal ("abbbc") or (fullyMatch regex ("a(b*)c".r withGroup "bb")))
+          "abbc" should ((equal ("abbbc")) or (fullyMatch regex ("a(b*)c".r withGroup "bb")))
+          "abbc" should (equal ("abbbc") or fullyMatch regex ("a(b*)c".r withGroup "bb"))
+          
+          "abbcc" should (equal ("abbbcc") or (fullyMatch regex ("a(b*)(c*)".r withGroups ("bb", "cc"))))
+          "abbcc" should ((equal ("abbbcc")) or (fullyMatch regex ("a(b*)(c*)".r withGroups ("bb", "cc"))))
+          "abbcc" should (equal ("abbbcc") or fullyMatch regex ("a(b*)(c*)".r withGroups ("bb", "cc")))
         }
       
         def `should throw TestFailedException if the string fully matches the regular expression but does not match specified group` {
@@ -933,6 +1103,134 @@ s should fullyMatch regex t
           assert(caught20.getMessage === "\"abbcc\" fully matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1, and \"abbcc\" fully matched the regular expression a(b*)(c*), but \"cc\" did not match group \"cccc\" at index 1")
           assert(caught20.failedCodeFileName === Some("ShouldFullyMatchSpec.scala"))
           assert(caught20.failedCodeLineNumber === Some(thisLineNumber - 4))
+          
+          val caught21 = intercept[TestFailedException] {
+            "abbc" should (equal ("abbc") and (fullyMatch regex ("a(b*)c".r withGroup "bbb")))
+          }
+          assert(caught21.getMessage === "\"abbc\" equaled \"abbc\", but \"abbc\" fully matched the regular expression a(b*)c, but \"bb\" did not match group \"bbb\"")
+          assert(caught21.failedCodeFileName === Some("ShouldFullyMatchSpec.scala"))
+          assert(caught21.failedCodeLineNumber === Some(thisLineNumber - 4))
+          
+          val caught22 = intercept[TestFailedException] {
+            "abbc" should ((equal ("abbc")) and (fullyMatch regex ("a(b*)c".r withGroup "bbb")))
+          }
+          assert(caught22.getMessage === "\"abbc\" equaled \"abbc\", but \"abbc\" fully matched the regular expression a(b*)c, but \"bb\" did not match group \"bbb\"")
+          assert(caught22.failedCodeFileName === Some("ShouldFullyMatchSpec.scala"))
+          assert(caught22.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+          val caught23 = intercept[TestFailedException] {
+            "abbc" should (equal ("abbc") and fullyMatch regex ("a(b*)c".r withGroup "bbb"))
+          }
+          assert(caught23.getMessage === "\"abbc\" equaled \"abbc\", but \"abbc\" fully matched the regular expression a(b*)c, but \"bb\" did not match group \"bbb\"")
+          assert(caught23.failedCodeFileName === Some("ShouldFullyMatchSpec.scala"))
+          assert(caught23.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+          // Check to make sure the error message "short circuits" (i.e., just reports the left side's failure)
+          val caught24 = intercept[TestFailedException] {
+            "abbc" should (equal ("abbbc") and fullyMatch regex ("a(b*)c".r withGroup "bbbb"))
+          }
+          assert(caught24.getMessage === "\"abb[]c\" did not equal \"abb[b]c\"")
+          assert(caught24.failedCodeFileName === Some("ShouldFullyMatchSpec.scala"))
+          assert(caught24.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+          val caught25 = intercept[TestFailedException] {
+            "abbc" should ((equal ("abbbc")) and (fullyMatch regex ("a(b*)c".r withGroup "bbb")))
+          }
+          assert(caught25.getMessage === "\"abb[]c\" did not equal \"abb[b]c\"")
+          assert(caught25.failedCodeFileName === Some("ShouldFullyMatchSpec.scala"))
+          assert(caught25.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+          val caught26 = intercept[TestFailedException] {
+            "abbc" should (equal ("abbbc") and fullyMatch regex ("a(b*)c".r withGroup "bbbb"))
+          }
+          assert(caught26.getMessage === "\"abb[]c\" did not equal \"abb[b]c\"")
+          assert(caught26.failedCodeFileName === Some("ShouldFullyMatchSpec.scala"))
+          assert(caught26.failedCodeLineNumber === Some(thisLineNumber - 4))
+          
+          val caught27 = intercept[TestFailedException] {
+            "abbcc" should (equal ("abbcc") and (fullyMatch regex ("a(b*)(c*)".r withGroups ("bb", "ccc"))))
+          }
+          assert(caught27.getMessage === "\"abbcc\" equaled \"abbcc\", but \"abbcc\" fully matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1")
+          assert(caught27.failedCodeFileName === Some("ShouldFullyMatchSpec.scala"))
+          assert(caught27.failedCodeLineNumber === Some(thisLineNumber - 4))
+          
+          val caught28 = intercept[TestFailedException] {
+            "abbcc" should ((equal ("abbcc")) and (fullyMatch regex ("a(b*)(c*)".r withGroups ("bb", "ccc"))))
+          }
+          assert(caught28.getMessage === "\"abbcc\" equaled \"abbcc\", but \"abbcc\" fully matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1")
+          assert(caught28.failedCodeFileName === Some("ShouldFullyMatchSpec.scala"))
+          assert(caught28.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+          val caught29 = intercept[TestFailedException] {
+            "abbcc" should (equal ("abbcc") and fullyMatch regex ("a(b*)(c*)".r withGroups ("bb", "ccc")))
+          }
+          assert(caught29.getMessage === "\"abbcc\" equaled \"abbcc\", but \"abbcc\" fully matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1")
+          assert(caught29.failedCodeFileName === Some("ShouldFullyMatchSpec.scala"))
+          assert(caught29.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+          // Check to make sure the error message "short circuits" (i.e., just reports the left side's failure)
+          val caught30 = intercept[TestFailedException] {
+            "abbcc" should (equal ("abbccc") and fullyMatch regex ("a(b*)(c*)".r withGroups ("bb", "cccc")))
+          }
+          assert(caught30.getMessage === "\"abbcc[]\" did not equal \"abbcc[c]\"")
+          assert(caught30.failedCodeFileName === Some("ShouldFullyMatchSpec.scala"))
+          assert(caught30.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+          val caught31 = intercept[TestFailedException] {
+            "abbcc" should ((equal ("abbccc")) and (fullyMatch regex ("a(b*)(c*)".r withGroups ("bb", "cccc"))))
+          }
+          assert(caught31.getMessage === "\"abbcc[]\" did not equal \"abbcc[c]\"")
+          assert(caught31.failedCodeFileName === Some("ShouldFullyMatchSpec.scala"))
+          assert(caught31.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+          val caught32 = intercept[TestFailedException] {
+            "abbcc" should (equal ("abbccc") and fullyMatch regex ("a(b*)(c*)".r withGroups ("bb", "cccc")))
+          }
+          assert(caught32.getMessage === "\"abbcc[]\" did not equal \"abbcc[c]\"")
+          assert(caught32.failedCodeFileName === Some("ShouldFullyMatchSpec.scala"))
+          assert(caught32.failedCodeLineNumber === Some(thisLineNumber - 4))
+          
+          val caught33 = intercept[TestFailedException] {
+            "abbc" should (equal ("abbbc") or (fullyMatch regex ("a(b*)c".r withGroup "bbbb")))
+          }
+          assert(caught33.getMessage === "\"abb[]c\" did not equal \"abb[b]c\", and \"abbc\" fully matched the regular expression a(b*)c, but \"bb\" did not match group \"bbbb\"")
+          assert(caught33.failedCodeFileName === Some("ShouldFullyMatchSpec.scala"))
+          assert(caught33.failedCodeLineNumber === Some(thisLineNumber - 4))
+          
+          val caught34 = intercept[TestFailedException] {
+            "abbc" should ((equal ("abbbc")) or (fullyMatch regex ("a(b*)c".r withGroup "bbbb")))
+          }
+          assert(caught34.getMessage === "\"abb[]c\" did not equal \"abb[b]c\", and \"abbc\" fully matched the regular expression a(b*)c, but \"bb\" did not match group \"bbbb\"")
+          assert(caught34.failedCodeFileName === Some("ShouldFullyMatchSpec.scala"))
+          assert(caught34.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+          val caught35 = intercept[TestFailedException] {
+            "abbc" should (equal ("abbbc") or fullyMatch regex ("a(b*)c".r withGroup "bbbb"))
+          }
+          assert(caught35.getMessage === "\"abb[]c\" did not equal \"abb[b]c\", and \"abbc\" fully matched the regular expression a(b*)c, but \"bb\" did not match group \"bbbb\"")
+          assert(caught35.failedCodeFileName === Some("ShouldFullyMatchSpec.scala"))
+          assert(caught35.failedCodeLineNumber === Some(thisLineNumber - 4))
+          
+          val caught36 = intercept[TestFailedException] {
+            "abbcc" should (equal ("abbccc") or (fullyMatch regex ("a(b*)(c*)".r withGroups ("bb", "cccc"))))
+          }
+          assert(caught36.getMessage === "\"abbcc[]\" did not equal \"abbcc[c]\", and \"abbcc\" fully matched the regular expression a(b*)(c*), but \"cc\" did not match group \"cccc\" at index 1")
+          assert(caught36.failedCodeFileName === Some("ShouldFullyMatchSpec.scala"))
+          assert(caught36.failedCodeLineNumber === Some(thisLineNumber - 4))
+          
+          val caught37 = intercept[TestFailedException] {
+            "abbcc" should ((equal ("abbccc")) or (fullyMatch regex ("a(b*)(c*)".r withGroups ("bb", "cccc"))))
+          }
+          assert(caught37.getMessage === "\"abbcc[]\" did not equal \"abbcc[c]\", and \"abbcc\" fully matched the regular expression a(b*)(c*), but \"cc\" did not match group \"cccc\" at index 1")
+          assert(caught37.failedCodeFileName === Some("ShouldFullyMatchSpec.scala"))
+          assert(caught37.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+          val caught38 = intercept[TestFailedException] {
+            "abbcc" should (equal ("abbccc") or fullyMatch regex ("a(b*)(c*)".r withGroups ("bb", "cccc")))
+          }
+          assert(caught38.getMessage === "\"abbcc[]\" did not equal \"abbcc[c]\", and \"abbcc\" fully matched the regular expression a(b*)(c*), but \"cc\" did not match group \"cccc\" at index 1")
+          assert(caught38.failedCodeFileName === Some("ShouldFullyMatchSpec.scala"))
+          assert(caught38.failedCodeLineNumber === Some(thisLineNumber - 4))
         }
       }
       
@@ -955,6 +1253,18 @@ s should fullyMatch regex t
           "abbbc" should (not (fullyMatch regex ("a(b*)c".r withGroup "bbb")) or not (fullyMatch regex ("a(b*)c".r withGroup "bb")))
           "abbbc" should ((not fullyMatch regex ("a(b*)c".r withGroup "bbb")) or (not fullyMatch regex ("a(b*)c".r withGroup "bb")))
           "abbbc" should (not fullyMatch regex ("a(b*)c".r withGroup "bbb") or not fullyMatch regex ("a(b*)c".r withGroup "bb"))
+          
+          "abbbc" should (not (equal ("abbc")) and not (fullyMatch regex ("a(b*)c".r withGroup "bbbb")))
+          "abbbc" should ((not equal ("abbc")) and (not fullyMatch regex ("a(b*)c".r withGroup "bbbb")))
+          "abbbc" should (not equal ("abbc") and not fullyMatch regex ("a(b*)c".r withGroup "bbbb"))
+          
+          "abbccc" should (not (equal ("abbcc")) and not (fullyMatch regex ("a(b*)(c*)".r withGroups ("bb", "cccc"))))
+          "abbccc" should ((not equal ("abbcc")) and (not fullyMatch regex ("a(b*)(c*)".r withGroups ("bb", "cccc"))))
+          "abbccc" should (not equal ("abbcc") and not fullyMatch regex ("a(b*)(c*)".r withGroups ("bb", "cccc")))
+          
+          "abbbc" should (not (equal ("abbbc")) or not (fullyMatch regex ("a(b*)c".r withGroup "bb")))
+          "abbbc" should ((not equal ("abbbc")) or (not fullyMatch regex ("a(b*)c".r withGroup "bb")))
+          "abbbc" should (not equal ("abbbc") or not fullyMatch regex ("a(b*)c".r withGroup "bb"))
         }
       
         def `should throw TestFailedException if the string fully matches the regular expression and with group as specified` {
@@ -1027,6 +1337,48 @@ s should fullyMatch regex t
           assert(caught10.getMessage === "\"abbcc\" fully matched the regular expression a(b*)(c*), but \"cc\" did not match group \"ccc\" at index 1, but \"abbcc\" fully matched the regular expression a(b*)(c*) and group \"bb\", \"cc\"")
           assert(caught10.failedCodeFileName === Some("ShouldFullyMatchSpec.scala"))
           assert(caught10.failedCodeLineNumber === Some(thisLineNumber - 4))
+          
+          val caught11 = intercept[TestFailedException] {
+            "abbc" should (not equal ("abbbc") and (not fullyMatch regex ("a(b*)c".r withGroup "bb")))
+          }
+          assert(caught11.getMessage === "\"abb[]c\" did not equal \"abb[b]c\", but \"abbc\" fully matched the regular expression a(b*)c and group \"bb\"")
+          assert(caught11.failedCodeFileName === Some("ShouldFullyMatchSpec.scala"))
+          assert(caught11.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+          val caught12 = intercept[TestFailedException] {
+            "abbc" should ((not equal ("abbbc")) and (not fullyMatch regex ("a(b*)c".r withGroup "bb")))
+          }
+          assert(caught12.getMessage === "\"abb[]c\" did not equal \"abb[b]c\", but \"abbc\" fully matched the regular expression a(b*)c and group \"bb\"")
+          assert(caught12.failedCodeFileName === Some("ShouldFullyMatchSpec.scala"))
+          assert(caught12.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+          val caught13 = intercept[TestFailedException] {
+            "abbc" should (not equal ("abbbc") and not fullyMatch regex ("a(b*)c".r withGroup "bb"))
+          }
+          assert(caught13.getMessage === "\"abb[]c\" did not equal \"abb[b]c\", but \"abbc\" fully matched the regular expression a(b*)c and group \"bb\"")
+          assert(caught13.failedCodeFileName === Some("ShouldFullyMatchSpec.scala"))
+          assert(caught13.failedCodeLineNumber === Some(thisLineNumber - 4))
+          
+          val caught14 = intercept[TestFailedException] {
+            "abbcc" should (not equal ("abbccc") and (not fullyMatch regex ("a(b*)(c*)".r withGroups ("bb", "cc"))))
+          }
+          assert(caught14.getMessage === "\"abbcc[]\" did not equal \"abbcc[c]\", but \"abbcc\" fully matched the regular expression a(b*)(c*) and group \"bb\", \"cc\"")
+          assert(caught14.failedCodeFileName === Some("ShouldFullyMatchSpec.scala"))
+          assert(caught14.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+          val caught15 = intercept[TestFailedException] {
+            "abbcc" should ((not equal ("abbccc")) and (not fullyMatch regex ("a(b*)(c*)".r withGroups ("bb", "cc"))))
+          }
+          assert(caught15.getMessage === "\"abbcc[]\" did not equal \"abbcc[c]\", but \"abbcc\" fully matched the regular expression a(b*)(c*) and group \"bb\", \"cc\"")
+          assert(caught15.failedCodeFileName === Some("ShouldFullyMatchSpec.scala"))
+          assert(caught15.failedCodeLineNumber === Some(thisLineNumber - 4))
+  
+          val caught16 = intercept[TestFailedException] {
+            "abbcc" should (not equal ("abbccc") and not fullyMatch regex ("a(b*)(c*)".r withGroups ("bb", "cc")))
+          }
+          assert(caught16.getMessage === "\"abbcc[]\" did not equal \"abbcc[c]\", but \"abbcc\" fully matched the regular expression a(b*)(c*) and group \"bb\", \"cc\"")
+          assert(caught16.failedCodeFileName === Some("ShouldFullyMatchSpec.scala"))
+          assert(caught16.failedCodeLineNumber === Some(thisLineNumber - 4))
         }
       }
     }

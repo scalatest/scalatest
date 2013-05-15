@@ -58,6 +58,7 @@ import org.scalatest.words.ResultOfTheSameInstanceAsApplication
 import org.scalatest.words.ResultOfRegexWordApplication
 import org.scalatest.words.ResultOfKeyWordApplication
 import org.scalatest.words.ResultOfValueWordApplication
+import org.scalatest.words.RegexWithGroups
 
 /**
  * A matcher factory that can produce a matcher given $nTypeclassInstances$.
@@ -523,6 +524,16 @@ $endif$
      * </pre>
      */
     def regex(regexString: String): MatcherFactory$arity$[SC with String, $commaSeparatedTCNs$] = and(MatcherWords.fullyMatch.regex(regexString))
+    
+    /**
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     *
+     * <pre class="stHighlight">
+     * (aMatcherFactory and fullyMatch regex (("a(b*)c" withGroup "bb")))
+     *                                 ^
+     * </pre>
+     */
+    def regex(regexWithGroups: RegexWithGroups): MatcherFactory$arity$[SC with String, $commaSeparatedTCNs$] = and(MatcherWords.fullyMatch.regex(regexWithGroups))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -562,6 +573,16 @@ $endif$
      * </pre>
      */
     def regex(regexString: String): MatcherFactory$arity$[SC with String, $commaSeparatedTCNs$] = and(MatcherWords.include.regex(regexString))
+    
+    /**
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     *
+     * <pre class="stHighlight">
+     * (aMatcherFactory and include regex ("a(b*)c" withGroup "bb"))
+     *                              ^
+     * </pre>
+     */
+    def regex(regexWithGroups: RegexWithGroups): MatcherFactory$arity$[SC with String, $commaSeparatedTCNs$] = and(MatcherWords.include.regex(regexWithGroups))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -601,6 +622,16 @@ $endif$
      * </pre>
      */
     def regex(regexString: String): MatcherFactory$arity$[SC with String, $commaSeparatedTCNs$] = and(MatcherWords.startWith.regex(regexString))
+    
+    /**
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     *
+     * <pre class="stHighlight">
+     * (aMatcherFactory and startWith regex ("a(b*)c" withGroup "bb"))
+     *                                ^
+     * </pre>
+     */
+    def regex(regexWithGroups: RegexWithGroups): MatcherFactory$arity$[SC with String, $commaSeparatedTCNs$] = and(MatcherWords.startWith.regex(regexWithGroups))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -640,6 +671,16 @@ $endif$
      * </pre>
      */
     def regex(regexString: String): MatcherFactory$arity$[SC with String, $commaSeparatedTCNs$] = and(MatcherWords.endWith.regex(regexString))
+    
+    /**
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     *
+     * <pre class="stHighlight">
+     * (aMatcherFactory and endWith regex ("a(b*)c" withGroup "bb"))
+     *                              ^
+     * </pre>
+     */
+    def regex(regexWithGroups: RegexWithGroups): MatcherFactory$arity$[SC with String, $commaSeparatedTCNs$] = and(MatcherWords.endWith.regex(regexWithGroups))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1395,6 +1436,16 @@ $endif$
      * </pre>
      */
     def regex(regexString: String): MatcherFactory$arity$[SC with String, $commaSeparatedTCNs$] = or(MatcherWords.fullyMatch.regex(regexString))
+    
+    /**
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     *
+     * <pre class="stHighlight">
+     * (aMatcherFactory or fullyMatch regex ("a(b*)c" withGroup "bb"))
+     *                                ^
+     * </pre>
+     */
+    def regex(regexWithGroups: RegexWithGroups): MatcherFactory$arity$[SC with String, $commaSeparatedTCNs$] = or(MatcherWords.fullyMatch.regex(regexWithGroups))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1434,6 +1485,16 @@ $endif$
      * </pre>
      */
     def regex(regexString: String): MatcherFactory$arity$[SC with String, $commaSeparatedTCNs$] = or(MatcherWords.include.regex(regexString))
+    
+    /**
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     *
+     * <pre class="stHighlight">
+     * (aMatcherFactory or include regex ("a(b*)c" withGroup "bb"))
+     *                             ^
+     * </pre>
+     */
+    def regex(regexWithGroups: RegexWithGroups): MatcherFactory$arity$[SC with String, $commaSeparatedTCNs$] = or(MatcherWords.include.regex(regexWithGroups))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1473,6 +1534,16 @@ $endif$
      * </pre>
      */
     def regex(regexString: String): MatcherFactory$arity$[SC with String, $commaSeparatedTCNs$] = or(MatcherWords.startWith.regex(regexString))
+    
+    /**
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     *
+     * <pre class="stHighlight">
+     * (aMatcherFactory or startWith regex ("a(b*)c" withGroup "bb"))
+     *                               ^
+     * </pre>
+     */
+    def regex(regexWithGroups: RegexWithGroups): MatcherFactory$arity$[SC with String, $commaSeparatedTCNs$] = or(MatcherWords.startWith.regex(regexWithGroups))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1512,6 +1583,16 @@ $endif$
      * </pre>
      */
     def regex(regexString: String): MatcherFactory$arity$[SC with String, $commaSeparatedTCNs$] = or(MatcherWords.endWith.regex(regexString))
+    
+    /**
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     *
+     * <pre class="stHighlight">
+     * (aMatcherFactory or endWith regex ("d(e*)f" withGroup "ee"))
+     *                             ^
+     * </pre>
+     */
+    def regex(regexWithGroups: RegexWithGroups): MatcherFactory$arity$[SC with String, $commaSeparatedTCNs$] = or(MatcherWords.endWith.regex(regexWithGroups))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
