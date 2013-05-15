@@ -1542,6 +1542,24 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
         )
       }
     }
+
+    /**
+     * This method enables the following syntax, where <code>fraction</code> is, for example, of type <code>PartialFunction</code>:
+     *
+     * <pre class="stHighlight">
+     * fraction should be definedAt (6)
+     *                    ^
+     * </pre>
+     */
+    def definedAt[U](right: U)(implicit ev: T <:< PartialFunction[U, _]) {
+      if (left.isDefinedAt(right) != shouldBeTrue)
+        throw newTestFailedException(
+          if (shouldBeTrue)
+            FailureMessages("wasNotDefinedAt", right, left)
+          else
+            FailureMessages("wasDefinedAt", right, left)
+        )
+    }
   }
 
   /**
@@ -2170,6 +2188,17 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    */
   def >=[T <% Ordered[T]] (right: T): ResultOfGreaterThanOrEqualToComparison[T] =
     new ResultOfGreaterThanOrEqualToComparison(right)
+
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * list should (not be definedAt (7) and not be definedAt (9))
+   *                     ^
+   * </pre>
+   */
+  def definedAt[T](right: T): ResultOfDefinedAt[T] = 
+    new ResultOfDefinedAt(right)
 
   /**
    * This method enables the following syntax:
@@ -3088,6 +3117,29 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
         }
       }
     }
+
+    /**
+     * This method enables the following syntax: 
+     *
+     * <pre class="stHighlight">
+     * all(xs) should not be definedAt ("apple")
+     *                    ^
+     * </pre>
+     */
+    def be[U](resultOfDefinedAt: ResultOfDefinedAt[U])(implicit ev: T <:< PartialFunction[U, _]) {
+      doCollected(collected, xs, "be", 1) { e => 
+        if (e.isDefinedAt(resultOfDefinedAt.right) != shouldBeTrue)
+          throw newTestFailedException(
+            FailureMessages(
+              if (shouldBeTrue) "wasNotDefinedAt" else "wasDefinedAt", 
+              resultOfDefinedAt.right, 
+              e
+            ), 
+            None, 
+            6  
+          )
+      }
+    }
     
     // Any for not TODO: Scaladoc
     // TODO: Write tests and implement cases for:
@@ -3813,6 +3865,28 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
             6
           )
         }
+      }
+    }
+
+    /**
+     * This method enables the following syntax, where <code>fraction</code> is, for example, of type <code>PartialFunction</code>:
+     *
+     * <pre class="stHighlight">
+     * all(xs) should be definedAt (6)
+     *                   ^
+     * </pre>
+     */
+    def definedAt[U](right: U)(implicit ev: T <:< PartialFunction[U, _]) {
+      doCollected(collected, xs, "definedAt", 1) { e =>
+      if (e.isDefinedAt(right) != shouldBeTrue)
+        throw newTestFailedException(
+          if (shouldBeTrue)
+            FailureMessages("wasNotDefinedAt", right, e)
+          else
+            FailureMessages("wasDefinedAt", right, e), 
+          None, 
+          6
+        )
       }
     }
   }

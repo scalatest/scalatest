@@ -279,6 +279,25 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
       )
     }
   }
+  
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * partialFun should not be definedAt ("apple")
+   *                       ^
+   * </pre>
+   */
+  def be[U](resultOfDefinedAt: ResultOfDefinedAt[U])(implicit ev: T <:< PartialFunction[U, _]) {
+    if (left.isDefinedAt(resultOfDefinedAt.right) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "wasNotDefinedAt" else "wasDefinedAt", 
+          resultOfDefinedAt.right, 
+          left
+        )    
+      )
+  }
 
   /**
    * This method enables the following syntax: 

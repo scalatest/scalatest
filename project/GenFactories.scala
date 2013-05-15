@@ -59,6 +59,7 @@ import org.scalatest.words.ResultOfRegexWordApplication
 import org.scalatest.words.ResultOfKeyWordApplication
 import org.scalatest.words.ResultOfValueWordApplication
 import org.scalatest.words.RegexWithGroups
+import org.scalatest.words.ResultOfDefinedAt
 
 /**
  * A matcher factory that can produce a matcher given $nTypeclassInstances$.
@@ -495,6 +496,16 @@ $endif$
      * </pre>
      */
     def theSameInstanceAs(anyRef: AnyRef): MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$] = and(MatcherWords.be.theSameInstanceAs(anyRef))
+    
+    /**
+     * This method enables the following syntax, where <code>fraction</code> refers to a <code>PartialFunction</code>:
+     *
+     * <pre class="stHighlight">
+     * (aMatcherFactory and be definedAt (8))
+     *                         ^
+     * </pre>
+     */
+    def definedAt[A, U <: PartialFunction[A, _]](right: A): MatcherFactory$arity$[SC with U, $commaSeparatedTCNs$] = and(MatcherWords.be.definedAt(right))
   }
 
   /**
@@ -974,6 +985,17 @@ $endif$
      * </pre>
      */
     def be[U](interval: Interval[U]): MatcherFactory$arity$[SC with U, $commaSeparatedTCNs$] = thisMatcherFactory.and(MatcherWords.not.be(interval))
+    
+    /**
+     * This method enables the following syntax, where <code>fraction</code> is a <code>PartialFunction</code>:
+     *
+     * <pre class="stHighlight">
+     * (aMatcherFactory and not be definedAt (8))
+     *                          ^
+     * </pre>
+     */
+    def be[A, U <: PartialFunction[A, _]](resultOfDefinedAt: ResultOfDefinedAt[A]): MatcherFactory$arity$[SC with U, $commaSeparatedTCNs$] = 
+      thisMatcherFactory.and(MatcherWords.not.be(resultOfDefinedAt))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1407,6 +1429,16 @@ $endif$
      * </pre>
      */
     def theSameInstanceAs(anyRef: AnyRef): MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$] = or(MatcherWords.be.theSameInstanceAs(anyRef))
+    
+    /**
+     * This method enables the following syntax, where <code>fraction</code> refers to a <code>PartialFunction</code>:
+     *
+     * <pre class="stHighlight">
+     * (aMatcherFactory or be definedAt (8))
+     *                        ^
+     * </pre>
+     */
+    def definedAt[A, U <: PartialFunction[A, _]](right: A): MatcherFactory$arity$[SC with U, $commaSeparatedTCNs$] = or(MatcherWords.be.definedAt(right))
   }
 
   /**
@@ -1886,6 +1918,17 @@ $endif$
      * </pre>
      */
     def be[U](interval: Interval[U]): MatcherFactory$arity$[SC with U, $commaSeparatedTCNs$] = thisMatcherFactory.or(MatcherWords.not.be(interval))
+    
+    /**
+     * This method enables the following syntax, where <code>fraction</code> is a <code>PartialFunction</code>:
+     *
+     * <pre class="stHighlight">
+     * (aMatcherFactory or not be definedAt (8))
+     *                         ^
+     * </pre>
+     */
+    def be[A, U <: PartialFunction[A, _]](resultOfDefinedAt: ResultOfDefinedAt[A]): MatcherFactory$arity$[SC with U, $commaSeparatedTCNs$] = 
+      thisMatcherFactory.or(MatcherWords.not.be(resultOfDefinedAt))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
