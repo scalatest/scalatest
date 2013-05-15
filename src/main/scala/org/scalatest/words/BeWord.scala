@@ -497,4 +497,40 @@ final class BeWord {
         )
       }
     }
+  
+  /**
+   * This method enables the following syntax, where <code>fraction</code> refers to a <code>PartialFunction</code>:
+   *
+   * <pre class="stHighlight">
+   * fraction should (be definedAt (6) and be definedAt (8))
+   *                     ^
+   * </pre>
+   */
+  def definedAt[A, U <: PartialFunction[A, _]](right: A): Matcher[U] = 
+    new Matcher[U] {
+      def apply(left: U): MatchResult =
+        MatchResult(
+          left.isDefinedAt(right),
+          FailureMessages("wasNotDefinedAt", right, left),
+          FailureMessages("wasDefinedAt", right, left)
+        )
+    }
+  
+  /**
+   * This method enables the following syntax, where <code>fraction</code> refers to a <code>PartialFunction</code>:
+   *
+   * <pre class="stHighlight">
+   * fraction should (be (definedAt (6)) and be (definedAt (8)))
+   *                  ^
+   * </pre>
+   */
+  def apply[A, U <: PartialFunction[A, _]](resultOfDefinedAt: ResultOfDefinedAt[A]): Matcher[U] =
+    new Matcher[U] {
+      def apply(left: U): MatchResult =
+        MatchResult(
+          left.isDefinedAt(resultOfDefinedAt.right),
+          FailureMessages("wasNotDefinedAt", resultOfDefinedAt.right, left),
+          FailureMessages("wasDefinedAt", resultOfDefinedAt.right, left)
+        )
+    }
 }

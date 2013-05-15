@@ -560,6 +560,25 @@ final class NotWord {
       }
     }
   }
+  
+  /**
+   * This method enables the following syntax, where fraction is a <code>PartialFunction</code>:
+   *
+   * <pre class="stHighlight">
+   * fraction should (not be definedAt (8) and not be definedAt (0))
+   *                      ^
+   * </pre>
+   */
+  def be[A, U <: PartialFunction[A, _]](resultOfDefinedAt: ResultOfDefinedAt[A]): Matcher[U] = {
+    new Matcher[U] {
+      def apply(left: U): MatchResult =
+        MatchResult(
+          !(left.isDefinedAt(resultOfDefinedAt.right)),
+          FailureMessages("wasDefinedAt", resultOfDefinedAt.right, left),
+          FailureMessages("wasNotDefinedAt", resultOfDefinedAt.right, left)
+        )
+    }
+  }
 
   /**
    * This method enables <code>be</code> to be used for inequality comparison. Here are some examples:
