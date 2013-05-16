@@ -1109,7 +1109,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
     def oneOf(right: (K, V)*)(implicit equality: Equality[(K, V)]) {
       matchContainMatcher(left, new OneOfContainMatcher(right, equality), shouldBeTrue)
     }
-    
+
     /**
      * This method enables the following syntax: 
      *
@@ -3749,6 +3749,39 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    * @author Bill Venners
    * @author Chee Seng
    */
+  sealed class ResultOfNewContainWordForCollectedAny[T](collected: Collected, xs: scala.collection.GenTraversable[T], shouldBeTrue: Boolean) {
+  
+    /**
+     * This method enables the following syntax: 
+     *
+     * <pre class="stHighlight">
+     * option should contain oneOf (1, 2)
+     *                       ^
+     * </pre>
+     */
+    def newOneOf(right: Any*)(implicit holder: Holder[T]) {
+      doCollected(collected, xs, "newOneOf", 1) { e =>
+        if (containsOneOf(e, right.toIterator) != shouldBeTrue)
+          throw newTestFailedException(
+            FailureMessages(
+              if (shouldBeTrue) "didNotContainOneOfElements" else "containedOneOfElements",
+              e,
+              UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
+            ),
+            None,
+            6
+        )
+      }
+    }
+  }
+
+  /**
+   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="InspectorsMatchers.html"><code>InspectorsMatchers</code></a> for an overview of
+   * the matchers DSL.
+   *
+   * @author Bill Venners
+   * @author Chee Seng
+   */
   sealed class ResultOfBeWordForCollectedAny[T](collected: Collected, xs: scala.collection.GenTraversable[T], shouldBeTrue: Boolean) {
 
     // TODO: Missing should(AMatcher) and should(AnMatcher)
@@ -4640,6 +4673,18 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def shouldNot(beWord: BeWord): ResultOfBeWordForCollectedAny[T] =
       new ResultOfBeWordForCollectedAny[T](collected, xs, false)
+
+   /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * all (xs) should contain oneOf (1, 2, 3)
+     *    ^
+     * </pre>
+     */
+    def should(newContainWord: NewContainWord): ResultOfNewContainWordForCollectedAny[T] = {
+      new ResultOfNewContainWordForCollectedAny(collected, xs, true)
+    }
   }
   
   /**
@@ -6539,7 +6584,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * to enable <code>should</code> methods to be invokable on that object.
    */
   implicit def convertToJavaMapShouldWrapper[K, V, L[_, _] <: java.util.Map[_, _]](o: L[K, V]): JavaMapShouldWrapper[K, V, L] = new JavaMapShouldWrapper[K, V, L](o)
-  
+
   /**
    * Turn off implicit conversion of LoneElement, so that if user accidentally mixin LoneElement it does conflict with convertToTraversableShouldWrapper
    */
