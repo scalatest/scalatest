@@ -574,8 +574,8 @@ final class NotWord {
       def apply(left: U): MatchResult =
         MatchResult(
           !(left.isDefinedAt(resultOfDefinedAt.right)),
-          FailureMessages("wasDefinedAt", resultOfDefinedAt.right, left),
-          FailureMessages("wasNotDefinedAt", resultOfDefinedAt.right, left)
+          FailureMessages("wasDefinedAt", left, resultOfDefinedAt.right),
+          FailureMessages("wasNotDefinedAt", left, resultOfDefinedAt.right)
         )
     }
   }

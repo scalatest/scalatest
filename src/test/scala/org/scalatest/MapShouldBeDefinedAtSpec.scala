@@ -19,6 +19,18 @@ import SharedHelpers.thisLineNumber
 
 class MapShouldBeDefinedAtSpec extends Spec with Matchers {
   
+  def wasDefinedAt(left: Any, right: Any): String = 
+    left + " was defined at " + right
+    
+  def wasNotDefinedAt(left: Any, right: Any): String = 
+    left + " was not defined at " + right
+      
+  def equaled(left: Any, right: Any): String = 
+    left + " equaled " + right
+      
+  def didNotEqual(left: Any, right: Any): String = 
+    left + " did not equal " + right
+  
   object `PartialFunction ` {
     
     val map = Map(6 -> "six", 8 -> "eight")
@@ -35,7 +47,7 @@ class MapShouldBeDefinedAtSpec extends Spec with Matchers {
         val caught = intercept[TestFailedException] {
           map should be definedAt (0)
         }
-        assert(caught.message === Some("0 was not defined at " + map))
+        assert(caught.message === Some(wasNotDefinedAt(map, 0)))
         assert(caught.failedCodeFileName === Some("MapShouldBeDefinedAtSpec.scala"))
         assert(caught.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -58,42 +70,42 @@ class MapShouldBeDefinedAtSpec extends Spec with Matchers {
         val caught1 = intercept[TestFailedException] {
           map should (be definedAt (0) and be definedAt (8))
         }
-        assert(caught1.message === Some("0 was not defined at " + map))
+        assert(caught1.message === Some(wasNotDefinedAt(map, 0)))
         assert(caught1.failedCodeFileName === Some("MapShouldBeDefinedAtSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught2 = intercept[TestFailedException] {
           map should (be definedAt (0) and (be definedAt (8)))
         }
-        assert(caught2.message === Some("0 was not defined at " + map))
+        assert(caught2.message === Some(wasNotDefinedAt(map, 0)))
         assert(caught2.failedCodeFileName === Some("MapShouldBeDefinedAtSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught3 = intercept[TestFailedException] {
           map should (be (definedAt (0)) and be (definedAt (8)))
         }
-        assert(caught3.message === Some("0 was not defined at " + map))
+        assert(caught3.message === Some(wasNotDefinedAt(map, 0)))
         assert(caught3.failedCodeFileName === Some("MapShouldBeDefinedAtSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught4 = intercept[TestFailedException] {
           map should (equal (map2) and be definedAt (8))
         }
-        assert(caught4.message === Some(map + " did not equal " + map2))
+        assert(caught4.message === Some(didNotEqual(map, map2)))
         assert(caught4.failedCodeFileName === Some("MapShouldBeDefinedAtSpec.scala"))
         assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught5 = intercept[TestFailedException] {
           map should (equal (map2) and (be definedAt (8)))
         }
-        assert(caught5.message === Some(map + " did not equal " + map2))
+        assert(caught5.message === Some(didNotEqual(map, map2)))
         assert(caught5.failedCodeFileName === Some("MapShouldBeDefinedAtSpec.scala"))
         assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught6 = intercept[TestFailedException] {
           map should ((equal (map2)) and be (definedAt (8)))
         }
-        assert(caught6.message === Some(map + " did not equal " + map2))
+        assert(caught6.message === Some(didNotEqual(map, map2)))
         assert(caught6.failedCodeFileName === Some("MapShouldBeDefinedAtSpec.scala"))
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -102,42 +114,42 @@ class MapShouldBeDefinedAtSpec extends Spec with Matchers {
         val caught1 = intercept[TestFailedException] {
           map should (be definedAt (8) and be definedAt (0))
         }
-        assert(caught1.message === Some("8 was defined at " + map + ", but 0 was not defined at " + map))
+        assert(caught1.message === Some(wasDefinedAt(map, 8) + ", but " + wasNotDefinedAt(map, 0)))
         assert(caught1.failedCodeFileName === Some("MapShouldBeDefinedAtSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught2 = intercept[TestFailedException] {
           map should (be definedAt (8) and (be definedAt (0)))
         }
-        assert(caught2.message === Some("8 was defined at " + map + ", but 0 was not defined at " + map))
+        assert(caught2.message === Some(wasDefinedAt(map, 8) + ", but " + wasNotDefinedAt(map, 0)))
         assert(caught2.failedCodeFileName === Some("MapShouldBeDefinedAtSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught3 = intercept[TestFailedException] {
           map should (be (definedAt (8)) and be (definedAt (0)))
         }
-        assert(caught3.message === Some("8 was defined at " + map + ", but 0 was not defined at " + map))
+        assert(caught3.message === Some(wasDefinedAt(map, 8) + ", but " + wasNotDefinedAt(map, 0)))
         assert(caught3.failedCodeFileName === Some("MapShouldBeDefinedAtSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught4 = intercept[TestFailedException] {
           map should (be definedAt (8) and equal (map2))
         }
-        assert(caught4.message === Some("8 was defined at " + map + ", but " + map + " did not equal " + map2))
+        assert(caught4.message === Some(wasDefinedAt(map, 8) + ", but " + didNotEqual(map, map2)))
         assert(caught4.failedCodeFileName === Some("MapShouldBeDefinedAtSpec.scala"))
         assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught5 = intercept[TestFailedException] {
           map should (be definedAt (8) and (equal (map2)))
         }
-        assert(caught5.message === Some("8 was defined at " + map + ", but " + map + " did not equal " + map2))
+        assert(caught5.message === Some(wasDefinedAt(map, 8) + ", but " + didNotEqual(map, map2)))
         assert(caught5.failedCodeFileName === Some("MapShouldBeDefinedAtSpec.scala"))
         assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught6 = intercept[TestFailedException] {
           map should (be (definedAt (8)) and (equal (map2)))
         }
-        assert(caught6.message === Some("8 was defined at " + map + ", but " + map + " did not equal " + map2))
+        assert(caught6.message === Some(wasDefinedAt(map, 8) + ", but " + didNotEqual(map, map2)))
         assert(caught6.failedCodeFileName === Some("MapShouldBeDefinedAtSpec.scala"))
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -146,21 +158,21 @@ class MapShouldBeDefinedAtSpec extends Spec with Matchers {
         val caught1 = intercept[TestFailedException] {
           map should (be definedAt (0) and be definedAt (0))
         }
-        assert(caught1.message === Some("0 was not defined at " + map))
+        assert(caught1.message === Some(wasNotDefinedAt(map, 0)))
         assert(caught1.failedCodeFileName === Some("MapShouldBeDefinedAtSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught2 = intercept[TestFailedException] {
           map should (be definedAt (0) and (be definedAt (0)))
         }
-        assert(caught2.message === Some("0 was not defined at " + map))
+        assert(caught2.message === Some(wasNotDefinedAt(map, 0)))
         assert(caught2.failedCodeFileName === Some("MapShouldBeDefinedAtSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught3 = intercept[TestFailedException] {
           map should (be (definedAt (0)) and be (definedAt (0)))
         }
-        assert(caught3.message === Some("0 was not defined at " + map))
+        assert(caught3.message === Some(wasNotDefinedAt(map, 0)))
         assert(caught3.failedCodeFileName === Some("MapShouldBeDefinedAtSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -211,35 +223,35 @@ class MapShouldBeDefinedAtSpec extends Spec with Matchers {
         val caught1 = intercept[TestFailedException] {
           map should (be definedAt (0) or be definedAt (0))
         }
-        assert(caught1.message === Some("0 was not defined at " + map + ", and 0 was not defined at " + map))
+        assert(caught1.message === Some(wasNotDefinedAt(map, 0) + ", and " + wasNotDefinedAt(map, 0)))
         assert(caught1.failedCodeFileName === Some("MapShouldBeDefinedAtSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught2 = intercept[TestFailedException] {
           map should (be definedAt (0) or (be definedAt (0)))
         }
-        assert(caught2.message === Some("0 was not defined at " + map + ", and 0 was not defined at " + map))
+        assert(caught2.message === Some(wasNotDefinedAt(map, 0) + ", and " + wasNotDefinedAt(map, 0)))
         assert(caught2.failedCodeFileName === Some("MapShouldBeDefinedAtSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught3 = intercept[TestFailedException] {
           map should (be (definedAt (0)) or be (definedAt (0)))
         }
-        assert(caught3.message === Some("0 was not defined at " + map + ", and 0 was not defined at " + map))
+        assert(caught3.message === Some(wasNotDefinedAt(map, 0) + ", and " + wasNotDefinedAt(map, 0)))
         assert(caught3.failedCodeFileName === Some("MapShouldBeDefinedAtSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught4 = intercept[TestFailedException] {
           map should (be definedAt (0) or equal (map2))
         }
-        assert(caught4.message === Some("0 was not defined at " + map + ", and " + map + " did not equal " + map2))
+        assert(caught4.message === Some(wasNotDefinedAt(map, 0) + ", and " + didNotEqual(map, map2)))
         assert(caught4.failedCodeFileName === Some("MapShouldBeDefinedAtSpec.scala"))
         assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught5 = intercept[TestFailedException] {
           map should (equal (map2) or (be definedAt (0)))
         }
-        assert(caught5.message === Some(map + " did not equal " + map2 + ", and 0 was not defined at " + map))
+        assert(caught5.message === Some(didNotEqual(map, map2) + ", and " + wasNotDefinedAt(map, 0)))
         assert(caught5.failedCodeFileName === Some("MapShouldBeDefinedAtSpec.scala"))
         assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -255,7 +267,7 @@ class MapShouldBeDefinedAtSpec extends Spec with Matchers {
         val caught = intercept[TestFailedException] {
           map should not be definedAt (8)
         }
-        assert(caught.message === Some("8 was defined at " + map))
+        assert(caught.message === Some(wasDefinedAt(map, 8)))
         assert(caught.failedCodeFileName === Some("MapShouldBeDefinedAtSpec.scala"))
         assert(caught.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -278,42 +290,42 @@ class MapShouldBeDefinedAtSpec extends Spec with Matchers {
         val caught1 = intercept[TestFailedException] {
           map should (not be definedAt (8) and not be definedAt (0))
         }
-        assert(caught1.message === Some("8 was defined at " + map))
+        assert(caught1.message === Some(wasDefinedAt(map, 8)))
         assert(caught1.failedCodeFileName === Some("MapShouldBeDefinedAtSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught2 = intercept[TestFailedException] {
           map should (not be definedAt (8) and (not be definedAt (0)))
         }
-        assert(caught2.message === Some("8 was defined at " + map))
+        assert(caught2.message === Some(wasDefinedAt(map, 8)))
         assert(caught2.failedCodeFileName === Some("MapShouldBeDefinedAtSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught3 = intercept[TestFailedException] {
           map should (not be (definedAt (8)) and not be (definedAt (0)))
         }
-        assert(caught3.message === Some("8 was defined at " + map))
+        assert(caught3.message === Some(wasDefinedAt(map, 8)))
         assert(caught3.failedCodeFileName === Some("MapShouldBeDefinedAtSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught4 = intercept[TestFailedException] {
           map should (not equal (map) and not be definedAt (0))
         }
-        assert(caught4.message === Some(map + " equaled " + map))
+        assert(caught4.message === Some(equaled(map, map)))
         assert(caught4.failedCodeFileName === Some("MapShouldBeDefinedAtSpec.scala"))
         assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught5 = intercept[TestFailedException] {
           map should (not equal (map) and (not be definedAt (8)))
         }
-        assert(caught5.message === Some(map + " equaled " + map))
+        assert(caught5.message === Some(equaled(map, map)))
         assert(caught5.failedCodeFileName === Some("MapShouldBeDefinedAtSpec.scala"))
         assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught6 = intercept[TestFailedException] {
           map should ((not equal (map)) and not be (definedAt (8)))
         }
-        assert(caught6.message === Some(map + " equaled " + map))
+        assert(caught6.message === Some(equaled(map, map)))
         assert(caught6.failedCodeFileName === Some("MapShouldBeDefinedAtSpec.scala"))
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -322,42 +334,42 @@ class MapShouldBeDefinedAtSpec extends Spec with Matchers {
         val caught1 = intercept[TestFailedException] {
           map should (not be definedAt (0) and not be definedAt (8))
         }
-        assert(caught1.message === Some("0 was not defined at " + map + ", but 8 was defined at " + map))
+        assert(caught1.message === Some(wasNotDefinedAt(map, 0) + ", but " + wasDefinedAt(map, 8)))
         assert(caught1.failedCodeFileName === Some("MapShouldBeDefinedAtSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught2 = intercept[TestFailedException] {
           map should (not be definedAt (0) and (not be definedAt (8)))
         }
-        assert(caught2.message === Some("0 was not defined at " + map + ", but 8 was defined at " + map))
+        assert(caught2.message === Some(wasNotDefinedAt(map, 0) + ", but " + wasDefinedAt(map, 8)))
         assert(caught2.failedCodeFileName === Some("MapShouldBeDefinedAtSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught3 = intercept[TestFailedException] {
           map should (not be (definedAt (0)) and not be (definedAt (8)))
         }
-        assert(caught3.message === Some("0 was not defined at " + map + ", but 8 was defined at " + map))
+        assert(caught3.message === Some(wasNotDefinedAt(map, 0) + ", but " + wasDefinedAt(map, 8)))
         assert(caught3.failedCodeFileName === Some("MapShouldBeDefinedAtSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught4 = intercept[TestFailedException] {
           map should (not be definedAt (0) and not equal (map))
         }
-        assert(caught4.message === Some("0 was not defined at " + map + ", but " + map + " equaled " + map))
+        assert(caught4.message === Some(wasNotDefinedAt(map, 0) + ", but " + equaled(map, map)))
         assert(caught4.failedCodeFileName === Some("MapShouldBeDefinedAtSpec.scala"))
         assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught5 = intercept[TestFailedException] {
           map should (not be definedAt (0) and (not equal (map)))
         }
-        assert(caught5.message === Some("0 was not defined at " + map + ", but " + map + " equaled " + map))
+        assert(caught5.message === Some(wasNotDefinedAt(map, 0) + ", but " + equaled(map, map)))
         assert(caught5.failedCodeFileName === Some("MapShouldBeDefinedAtSpec.scala"))
         assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught6 = intercept[TestFailedException] {
           map should (not be (definedAt (0)) and (not equal (map)))
         }
-        assert(caught6.message === Some("0 was not defined at " + map + ", but " + map + " equaled " + map))
+        assert(caught6.message === Some(wasNotDefinedAt(map, 0) + ", but " + equaled(map, map)))
         assert(caught6.failedCodeFileName === Some("MapShouldBeDefinedAtSpec.scala"))
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -366,21 +378,21 @@ class MapShouldBeDefinedAtSpec extends Spec with Matchers {
         val caught1 = intercept[TestFailedException] {
           map should (not be definedAt (8) and not be definedAt (8))
         }
-        assert(caught1.message === Some("8 was defined at " + map))
+        assert(caught1.message === Some(wasDefinedAt(map, 8)))
         assert(caught1.failedCodeFileName === Some("MapShouldBeDefinedAtSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught2 = intercept[TestFailedException] {
           map should (not be definedAt (8) and (not be definedAt (8)))
         }
-        assert(caught2.message === Some("8 was defined at " + map))
+        assert(caught2.message === Some(wasDefinedAt(map, 8)))
         assert(caught2.failedCodeFileName === Some("MapShouldBeDefinedAtSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught3 = intercept[TestFailedException] {
           map should (not be (definedAt (8)) and not be (definedAt (8)))
         }
-        assert(caught3.message === Some("8 was defined at " + map))
+        assert(caught3.message === Some(wasDefinedAt(map, 8)))
         assert(caught3.failedCodeFileName === Some("MapShouldBeDefinedAtSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -431,35 +443,35 @@ class MapShouldBeDefinedAtSpec extends Spec with Matchers {
         val caught1 = intercept[TestFailedException] {
           map should (not be definedAt (8) or not be definedAt (8))
         }
-        assert(caught1.message === Some("8 was defined at " + map + ", and 8 was defined at " + map))
+        assert(caught1.message === Some(wasDefinedAt(map, 8) + ", and " + wasDefinedAt(map, 8)))
         assert(caught1.failedCodeFileName === Some("MapShouldBeDefinedAtSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught2 = intercept[TestFailedException] {
           map should (not be definedAt (8) or (not be definedAt (8)))
         }
-        assert(caught2.message === Some("8 was defined at " + map + ", and 8 was defined at " + map))
+        assert(caught2.message === Some(wasDefinedAt(map, 8) + ", and " + wasDefinedAt(map, 8)))
         assert(caught2.failedCodeFileName === Some("MapShouldBeDefinedAtSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught3 = intercept[TestFailedException] {
           map should (not be (definedAt (8)) or not be (definedAt (8)))
         }
-        assert(caught3.message === Some("8 was defined at " + map + ", and 8 was defined at " + map))
+        assert(caught3.message === Some(wasDefinedAt(map, 8) + ", and " + wasDefinedAt(map, 8)))
         assert(caught3.failedCodeFileName === Some("MapShouldBeDefinedAtSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught4 = intercept[TestFailedException] {
           map should (not be definedAt (8) or not equal (map))
         }
-        assert(caught4.message === Some("8 was defined at " + map + ", and " + map + " equaled " + map))
+        assert(caught4.message === Some(wasDefinedAt(map, 8) + ", and " + equaled(map, map)))
         assert(caught4.failedCodeFileName === Some("MapShouldBeDefinedAtSpec.scala"))
         assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught5 = intercept[TestFailedException] {
           map should (not equal (map) or (not be definedAt (8)))
         }
-        assert(caught5.message === Some(map + " equaled " + map + ", and 8 was defined at " + map))
+        assert(caught5.message === Some(equaled(map, map) + ", and " + wasDefinedAt(map, 8)))
         assert(caught5.failedCodeFileName === Some("MapShouldBeDefinedAtSpec.scala"))
         assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -476,7 +488,7 @@ class MapShouldBeDefinedAtSpec extends Spec with Matchers {
         val caught = intercept[TestFailedException] {
           map shouldNot be definedAt (8)
         }
-        assert(caught.message === Some("8 was defined at " + map))
+        assert(caught.message === Some(wasDefinedAt(map, 8)))
         assert(caught.failedCodeFileName === Some("MapShouldBeDefinedAtSpec.scala"))
         assert(caught.failedCodeLineNumber === Some(thisLineNumber - 4))
       }

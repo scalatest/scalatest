@@ -293,8 +293,8 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
       throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "wasNotDefinedAt" else "wasDefinedAt", 
-          resultOfDefinedAt.right, 
-          left
+          left, 
+          resultOfDefinedAt.right
         )    
       )
   }
