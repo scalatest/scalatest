@@ -169,6 +169,7 @@ The bottom two don't, but still I don't want to support that in general.
       }
     }
   }
+
   object `a collection of Options` {
 
     val some1s: Vector[Option[Int]] = Vector(Some(1), Some(1), Some(1))
@@ -176,6 +177,7 @@ The bottom two don't, but still I don't want to support that in general.
     val nones: Vector[Option[Int]] = Vector(None, None, None)
     val somesNone: Vector[Option[Int]] = Vector(Some(1), Some(1), None)
     val hiSomes: Vector[Option[String]] = Vector(Some("hi"), Some("hi"), Some("hi"))
+    val toSomes: Vector[Option[String]] = Vector(Some("to"), Some("to"), Some("to"))
 
     object `when used with contain oneOf (...) syntax` {
 
@@ -304,21 +306,47 @@ The bottom two don't, but still I don't want to support that in general.
 /*
  I purposely don't want to support this syntax:
 
-        fumSome should newContain (newOneOf ("fee", "fie", "foe", "fum"))
-        fumSome should (newContain (newOneOf ("fee", "fie", "foe", "fum")))
+scala> all (some1s) should newContain (newOneOf (1, 3, 4))
+<console>:15: error: org.scalatest.words.NewContainWord does not take parameters
+              all (some1s) should newContain (newOneOf (1, 3, 4))
+                                             ^
+
+scala> all (some1s) should (newContain (newOneOf (1, 3, 4)))
+<console>:15: error: org.scalatest.words.NewContainWord does not take parameters
+              all (some1s) should (newContain (newOneOf (1, 3, 4)))
+                                              ^
 
  Reason is that I don't want people putting parentheses between contain and oneOf, etc. This will not compile.
 */
     object `when used with not contain oneOf (...) syntax` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        pending
+        all (toSomes) should not newContain newOneOf ("fee", "fie", "foe", "fum")
+        val e1 = intercept[TestFailedException] {
+          all (toSomes) should not newContain newOneOf ("happy", "birthday", "to", "you")
+        }
+        e1.failedCodeFileName.get should be ("OptionShouldContainOneOfSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some("'all' inspection failed, because: \n" +
+                                   "  at index 0, Some(to) contained one of (\"happy\", \"birthday\", \"to\", \"you\") (OptionShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "in Vector(Some(to), Some(to), Some(to))"))
       }
       def `should use the implicit Equality in scope` {
-        pending
+        implicit val ise = invertedStringEquality
+        all (toSomes) should not newContain newOneOf ("to", "to", "to", "to")
+        intercept[TestFailedException] {
+          all (toSomes) should not newContain newOneOf ("fee", "fie", "foe", "fum")
+        }
       }
       def `should use an explicitly provided Equality` {
-        pending
+        (all (toSomes) should not newContain newOneOf ("to", "to", "to", "to")) (decided by invertedStringEquality)
+        intercept[TestFailedException] {
+          (all (toSomes) should not newContain newOneOf ("fee", "fie", "foe", "fum")) (decided by invertedStringEquality)
+        }
+        all (toSomes) should not newContain newOneOf (" TO ", " TO ", " TO ", " TO ")
+        intercept[TestFailedException] {
+          (all (toSomes) should not newContain newOneOf (" TO ", " TO ", " TO ", " TO ")) (after being lowerCased and trimmed)
+        }
       }
     }
 

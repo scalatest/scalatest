@@ -3353,6 +3353,24 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
         }
       }
     }
+
+    def newContain(newOneOf: ResultOfNewOneOfApplication)(implicit holder: Holder[T]) {
+
+      val right = newOneOf.right
+
+      doCollected(collected, xs, "newContain", 1) { e =>
+        if (containsOneOf(e, right.toIterator) != shouldBeTrue)
+          throw newTestFailedException(
+            FailureMessages(
+              if (shouldBeTrue) "didNotContainOneOfElements" else "containedOneOfElements",
+              e,
+              UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
+            ),
+            None,
+            6
+          )
+      }
+    }
   }
   
   /**
