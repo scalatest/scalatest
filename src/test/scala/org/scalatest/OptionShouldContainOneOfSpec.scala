@@ -242,13 +242,62 @@ The bottom two don't, but still I don't want to support that in general.
     object `when used with (contain oneOf (...)) syntax` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        pending
+        all (some1s) should (newContain newOneOf (1, 3, 4))
+        atLeast (2, somes) should (newContain newOneOf (1, 3, 4))
+        atMost (2, somes) should (newContain newOneOf (2, 3, 4))
+        no (somes) should (newContain newOneOf (3, 4, 5))
+        no (nones) should (newContain newOneOf (1, 3, 4))
+        no (somesNone) should (newContain newOneOf (3, 4, 5))
+
+        val e1 = intercept[TestFailedException] {
+          all (somes) should (newContain newOneOf (1, 3, 4))
+        }
+        e1.failedCodeFileName.get should be ("OptionShouldContainOneOfSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some("'all' inspection failed, because: \n" +
+                                   "  at index 2, Some(2) did not contain one of (1, 3, 4) (OptionShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "in Vector(Some(1), Some(1), Some(2))"))
+
+        val e2 = intercept[TestFailedException] {
+          all (nones) should (newContain newOneOf ("ho", "hey", "howdy"))
+        }
+        e2.failedCodeFileName.get should be ("OptionShouldContainOneOfSpec.scala")
+        e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e2.message should be (Some("'all' inspection failed, because: \n" +
+                                   "  at index 0, None did not contain one of (\"ho\", \"hey\", \"howdy\") (OptionShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "in Vector(None, None, None)"))
+
+        val e4 = intercept[TestFailedException] {
+          all (somesNone) should (newContain newOneOf (1, 3, 4))
+        }
+        e4.failedCodeFileName.get should be ("OptionShouldContainOneOfSpec.scala")
+        e4.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e4.message should be (Some("'all' inspection failed, because: \n" +
+                                   "  at index 2, None did not contain one of (1, 3, 4) (OptionShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "in Vector(Some(1), Some(1), None)"))
       }
+
       def `should use the implicit Equality in scope` {
-        pending
+        all (hiSomes) should (newContain newOneOf ("hi"))
+        intercept[TestFailedException] {
+          all (hiSomes) should (newContain newOneOf ("ho"))
+        }
+        implicit val ise = invertedStringEquality
+        all (hiSomes) should (newContain newOneOf ("ho"))
+        intercept[TestFailedException] {
+          all (hiSomes) should (newContain newOneOf ("hi"))
+        }
       }
       def `should use an explicitly provided Equality` {
-        pending
+        (all (hiSomes) should (newContain newOneOf ("ho"))) (decided by invertedStringEquality)
+        intercept[TestFailedException] {
+          (all (hiSomes) should (newContain newOneOf ("hi"))) (decided by invertedStringEquality)
+        }
+        implicit val ise = invertedStringEquality
+        (all (hiSomes) should (newContain newOneOf ("hi"))) (decided by defaultEquality[String])
+        intercept[TestFailedException] {
+          (all (hiSomes) should (newContain newOneOf ("ho"))) (decided by defaultEquality[String])
+        }
       }
     }
 
