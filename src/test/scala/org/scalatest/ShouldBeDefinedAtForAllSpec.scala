@@ -19,6 +19,18 @@ import SharedHelpers.thisLineNumber
 
 class ShouldBeDefinedAtForAllSpec extends Spec with Matchers {
   
+  def wasDefinedAt(left: Any, right: Any): String = 
+    left + " was defined at " + right
+    
+  def wasNotDefinedAt(left: Any, right: Any): String = 
+    left + " was not defined at " + right
+      
+  def equaled(left: Any, right: Any): String = 
+    left + " equaled " + right
+      
+  def didNotEqual(left: Any, right: Any): String = 
+    left + " did not equal " + right
+  
   def errorMessage(index: Int, message: String, lineNumber: Int, left: Any): String = 
     "'all' inspection failed, because: \n" +
     "  at index " + index + ", " + message + " (ShouldBeDefinedAtForAllSpec.scala:" + lineNumber + ") \n" +
@@ -48,7 +60,7 @@ class ShouldBeDefinedAtForAllSpec extends Spec with Matchers {
         val caught = intercept[TestFailedException] {
           all(list) should be definedAt (0)
         }
-        assert(caught.message === Some(errorMessage(0, "0 was not defined at " + fraction, thisLineNumber - 2, list)))
+        assert(caught.message === Some(errorMessage(0, wasNotDefinedAt(fraction, 0), thisLineNumber - 2, list)))
         assert(caught.failedCodeFileName === Some("ShouldBeDefinedAtForAllSpec.scala"))
         assert(caught.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -71,42 +83,42 @@ class ShouldBeDefinedAtForAllSpec extends Spec with Matchers {
         val caught1 = intercept[TestFailedException] {
           all(list) should (be definedAt (0) and be definedAt (8))
         }
-        assert(caught1.message === Some(errorMessage(0, "0 was not defined at " + fraction, thisLineNumber - 2, list)))
+        assert(caught1.message === Some(errorMessage(0, wasNotDefinedAt(fraction, 0), thisLineNumber - 2, list)))
         assert(caught1.failedCodeFileName === Some("ShouldBeDefinedAtForAllSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught2 = intercept[TestFailedException] {
           all(list) should (be definedAt (0) and (be definedAt (8)))
         }
-        assert(caught2.message === Some(errorMessage(0, "0 was not defined at " + fraction, thisLineNumber - 2, list)))
+        assert(caught2.message === Some(errorMessage(0, wasNotDefinedAt(fraction, 0), thisLineNumber - 2, list)))
         assert(caught2.failedCodeFileName === Some("ShouldBeDefinedAtForAllSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught3 = intercept[TestFailedException] {
           all(list) should (be (definedAt (0)) and be (definedAt (8)))
         }
-        assert(caught3.message === Some(errorMessage(0, "0 was not defined at " + fraction, thisLineNumber - 2, list)))
+        assert(caught3.message === Some(errorMessage(0, wasNotDefinedAt(fraction, 0), thisLineNumber - 2, list)))
         assert(caught3.failedCodeFileName === Some("ShouldBeDefinedAtForAllSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught4 = intercept[TestFailedException] {
           all(list) should (equal (fraction2) and be definedAt (8))
         }
-        assert(caught4.message === Some(errorMessage(0, fraction + " did not equal " + fraction2, thisLineNumber - 2, list)))
+        assert(caught4.message === Some(errorMessage(0, didNotEqual(fraction, fraction2), thisLineNumber - 2, list)))
         assert(caught4.failedCodeFileName === Some("ShouldBeDefinedAtForAllSpec.scala"))
         assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught5 = intercept[TestFailedException] {
           all(list) should (equal (fraction2) and (be definedAt (8)))
         }
-        assert(caught5.message === Some(errorMessage(0, fraction + " did not equal " + fraction2, thisLineNumber - 2, list)))
+        assert(caught5.message === Some(errorMessage(0, didNotEqual(fraction, fraction2), thisLineNumber - 2, list)))
         assert(caught5.failedCodeFileName === Some("ShouldBeDefinedAtForAllSpec.scala"))
         assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught6 = intercept[TestFailedException] {
           all(list) should ((equal (fraction2)) and be (definedAt (8)))
         }
-        assert(caught6.message === Some(errorMessage(0, fraction + " did not equal " + fraction2, thisLineNumber - 2, list)))
+        assert(caught6.message === Some(errorMessage(0, didNotEqual(fraction, fraction2), thisLineNumber - 2, list)))
         assert(caught6.failedCodeFileName === Some("ShouldBeDefinedAtForAllSpec.scala"))
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -115,42 +127,42 @@ class ShouldBeDefinedAtForAllSpec extends Spec with Matchers {
         val caught1 = intercept[TestFailedException] {
           all(list) should (be definedAt (8) and be definedAt (0))
         }
-        assert(caught1.message === Some(errorMessage(0, "8 was defined at " + fraction + ", but 0 was not defined at " + fraction, thisLineNumber - 2, list)))
+        assert(caught1.message === Some(errorMessage(0, wasDefinedAt(fraction, 8) + ", but " + wasNotDefinedAt(fraction, 0), thisLineNumber - 2, list)))
         assert(caught1.failedCodeFileName === Some("ShouldBeDefinedAtForAllSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught2 = intercept[TestFailedException] {
           all(list) should (be definedAt (8) and (be definedAt (0)))
         }
-        assert(caught2.message === Some(errorMessage(0, "8 was defined at " + fraction + ", but 0 was not defined at " + fraction, thisLineNumber - 2, list)))
+        assert(caught2.message === Some(errorMessage(0, wasDefinedAt(fraction, 8) + ", but " + wasNotDefinedAt(fraction, 0), thisLineNumber - 2, list)))
         assert(caught2.failedCodeFileName === Some("ShouldBeDefinedAtForAllSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught3 = intercept[TestFailedException] {
           all(list) should (be (definedAt (8)) and be (definedAt (0)))
         }
-        assert(caught3.message === Some(errorMessage(0, "8 was defined at " + fraction + ", but 0 was not defined at " + fraction, thisLineNumber - 2, list)))
+        assert(caught3.message === Some(errorMessage(0, wasDefinedAt(fraction, 8) + ", but " + wasNotDefinedAt(fraction, 0), thisLineNumber - 2, list)))
         assert(caught3.failedCodeFileName === Some("ShouldBeDefinedAtForAllSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught4 = intercept[TestFailedException] {
           all(list) should (be definedAt (8) and equal (fraction2))
         }
-        assert(caught4.message === Some(errorMessage(0, "8 was defined at " + fraction + ", but " + fraction + " did not equal " + fraction2, thisLineNumber - 2, list)))
+        assert(caught4.message === Some(errorMessage(0, wasDefinedAt(fraction, 8) + ", but " + didNotEqual(fraction, fraction2), thisLineNumber - 2, list)))
         assert(caught4.failedCodeFileName === Some("ShouldBeDefinedAtForAllSpec.scala"))
         assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught5 = intercept[TestFailedException] {
           all(list) should (be definedAt (8) and (equal (fraction2)))
         }
-        assert(caught5.message === Some(errorMessage(0, "8 was defined at " + fraction + ", but " + fraction + " did not equal " + fraction2, thisLineNumber - 2, list)))
+        assert(caught5.message === Some(errorMessage(0, wasDefinedAt(fraction, 8) + ", but " + didNotEqual(fraction, fraction2), thisLineNumber - 2, list)))
         assert(caught5.failedCodeFileName === Some("ShouldBeDefinedAtForAllSpec.scala"))
         assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught6 = intercept[TestFailedException] {
           all(list) should (be (definedAt (8)) and (equal (fraction2)))
         }
-        assert(caught6.message === Some(errorMessage(0, "8 was defined at " + fraction + ", but " + fraction + " did not equal " + fraction2, thisLineNumber - 2, list)))
+        assert(caught6.message === Some(errorMessage(0, wasDefinedAt(fraction, 8) + ", but " + didNotEqual(fraction, fraction2), thisLineNumber - 2, list)))
         assert(caught6.failedCodeFileName === Some("ShouldBeDefinedAtForAllSpec.scala"))
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -159,21 +171,21 @@ class ShouldBeDefinedAtForAllSpec extends Spec with Matchers {
         val caught1 = intercept[TestFailedException] {
           all(list) should (be definedAt (0) and be definedAt (0))
         }
-        assert(caught1.message === Some(errorMessage(0, "0 was not defined at " + fraction, thisLineNumber - 2, list)))
+        assert(caught1.message === Some(errorMessage(0, wasNotDefinedAt(fraction, 0), thisLineNumber - 2, list)))
         assert(caught1.failedCodeFileName === Some("ShouldBeDefinedAtForAllSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught2 = intercept[TestFailedException] {
           all(list) should (be definedAt (0) and (be definedAt (0)))
         }
-        assert(caught2.message === Some(errorMessage(0, "0 was not defined at " + fraction, thisLineNumber - 2, list)))
+        assert(caught2.message === Some(errorMessage(0, wasNotDefinedAt(fraction, 0), thisLineNumber - 2, list)))
         assert(caught2.failedCodeFileName === Some("ShouldBeDefinedAtForAllSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught3 = intercept[TestFailedException] {
           all(list) should (be (definedAt (0)) and be (definedAt (0)))
         }
-        assert(caught3.message === Some(errorMessage(0, "0 was not defined at " + fraction, thisLineNumber - 2, list)))
+        assert(caught3.message === Some(errorMessage(0, wasNotDefinedAt(fraction, 0), thisLineNumber - 2, list)))
         assert(caught3.failedCodeFileName === Some("ShouldBeDefinedAtForAllSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -224,35 +236,35 @@ class ShouldBeDefinedAtForAllSpec extends Spec with Matchers {
         val caught1 = intercept[TestFailedException] {
           all(list) should (be definedAt (0) or be definedAt (0))
         }
-        assert(caught1.message === Some(errorMessage(0, "0 was not defined at " + fraction + ", and 0 was not defined at " + fraction, thisLineNumber - 2, list)))
+        assert(caught1.message === Some(errorMessage(0, wasNotDefinedAt(fraction, 0) + ", and " + wasNotDefinedAt(fraction, 0), thisLineNumber - 2, list)))
         assert(caught1.failedCodeFileName === Some("ShouldBeDefinedAtForAllSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught2 = intercept[TestFailedException] {
           all(list) should (be definedAt (0) or (be definedAt (0)))
         }
-        assert(caught2.message === Some(errorMessage(0, "0 was not defined at " + fraction + ", and 0 was not defined at " + fraction, thisLineNumber - 2, list)))
+        assert(caught2.message === Some(errorMessage(0, wasNotDefinedAt(fraction, 0) + ", and " + wasNotDefinedAt(fraction, 0), thisLineNumber - 2, list)))
         assert(caught2.failedCodeFileName === Some("ShouldBeDefinedAtForAllSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught3 = intercept[TestFailedException] {
           all(list) should (be (definedAt (0)) or be (definedAt (0)))
         }
-        assert(caught3.message === Some(errorMessage(0, "0 was not defined at " + fraction + ", and 0 was not defined at " + fraction, thisLineNumber - 2, list)))
+        assert(caught3.message === Some(errorMessage(0, wasNotDefinedAt(fraction, 0) + ", and " + wasNotDefinedAt(fraction, 0), thisLineNumber - 2, list)))
         assert(caught3.failedCodeFileName === Some("ShouldBeDefinedAtForAllSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught4 = intercept[TestFailedException] {
           all(list) should (be definedAt (0) or equal (fraction2))
         }
-        assert(caught4.message === Some(errorMessage(0, "0 was not defined at " + fraction + ", and " + fraction + " did not equal " + fraction2, thisLineNumber - 2, list)))
+        assert(caught4.message === Some(errorMessage(0, wasNotDefinedAt(fraction, 0) + ", and " + didNotEqual(fraction, fraction2), thisLineNumber - 2, list)))
         assert(caught4.failedCodeFileName === Some("ShouldBeDefinedAtForAllSpec.scala"))
         assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught5 = intercept[TestFailedException] {
           all(list) should (equal (fraction2) or (be definedAt (0)))
         }
-        assert(caught5.message === Some(errorMessage(0, fraction + " did not equal " + fraction2 + ", and 0 was not defined at " + fraction, thisLineNumber - 2, list)))
+        assert(caught5.message === Some(errorMessage(0, didNotEqual(fraction, fraction2) + ", and " + wasNotDefinedAt(fraction, 0), thisLineNumber - 2, list)))
         assert(caught5.failedCodeFileName === Some("ShouldBeDefinedAtForAllSpec.scala"))
         assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -268,7 +280,7 @@ class ShouldBeDefinedAtForAllSpec extends Spec with Matchers {
         val caught = intercept[TestFailedException] {
           all(list) should not be definedAt (8)
         }
-        assert(caught.message === Some(errorMessage(0, "8 was defined at " + fraction, thisLineNumber - 2, list)))
+        assert(caught.message === Some(errorMessage(0, wasDefinedAt(fraction, 8), thisLineNumber - 2, list)))
         assert(caught.failedCodeFileName === Some("ShouldBeDefinedAtForAllSpec.scala"))
         assert(caught.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -291,42 +303,42 @@ class ShouldBeDefinedAtForAllSpec extends Spec with Matchers {
         val caught1 = intercept[TestFailedException] {
           all(list) should (not be definedAt (8) and not be definedAt (0))
         }
-        assert(caught1.message === Some(errorMessage(0, "8 was defined at " + fraction, thisLineNumber - 2, list)))
+        assert(caught1.message === Some(errorMessage(0, wasDefinedAt(fraction, 8), thisLineNumber - 2, list)))
         assert(caught1.failedCodeFileName === Some("ShouldBeDefinedAtForAllSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught2 = intercept[TestFailedException] {
           all(list) should (not be definedAt (8) and (not be definedAt (0)))
         }
-        assert(caught2.message === Some(errorMessage(0, "8 was defined at " + fraction, thisLineNumber - 2, list)))
+        assert(caught2.message === Some(errorMessage(0, wasDefinedAt(fraction, 8), thisLineNumber - 2, list)))
         assert(caught2.failedCodeFileName === Some("ShouldBeDefinedAtForAllSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught3 = intercept[TestFailedException] {
           all(list) should (not be (definedAt (8)) and not be (definedAt (0)))
         }
-        assert(caught3.message === Some(errorMessage(0, "8 was defined at " + fraction, thisLineNumber - 2, list)))
+        assert(caught3.message === Some(errorMessage(0, wasDefinedAt(fraction, 8), thisLineNumber - 2, list)))
         assert(caught3.failedCodeFileName === Some("ShouldBeDefinedAtForAllSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught4 = intercept[TestFailedException] {
           all(list) should (not equal (fraction) and not be definedAt (0))
         }
-        assert(caught4.message === Some(errorMessage(0, fraction + " equaled " + fraction, thisLineNumber - 2, list)))
+        assert(caught4.message === Some(errorMessage(0, equaled(fraction, fraction), thisLineNumber - 2, list)))
         assert(caught4.failedCodeFileName === Some("ShouldBeDefinedAtForAllSpec.scala"))
         assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught5 = intercept[TestFailedException] {
           all(list) should (not equal (fraction) and (not be definedAt (8)))
         }
-        assert(caught5.message === Some(errorMessage(0, fraction + " equaled " + fraction, thisLineNumber - 2, list)))
+        assert(caught5.message === Some(errorMessage(0, equaled(fraction, fraction), thisLineNumber - 2, list)))
         assert(caught5.failedCodeFileName === Some("ShouldBeDefinedAtForAllSpec.scala"))
         assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught6 = intercept[TestFailedException] {
           all(list) should ((not equal (fraction)) and not be (definedAt (8)))
         }
-        assert(caught6.message === Some(errorMessage(0, fraction + " equaled " + fraction, thisLineNumber - 2, list)))
+        assert(caught6.message === Some(errorMessage(0, equaled(fraction, fraction), thisLineNumber - 2, list)))
         assert(caught6.failedCodeFileName === Some("ShouldBeDefinedAtForAllSpec.scala"))
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -335,42 +347,42 @@ class ShouldBeDefinedAtForAllSpec extends Spec with Matchers {
         val caught1 = intercept[TestFailedException] {
           all(list) should (not be definedAt (0) and not be definedAt (8))
         }
-        assert(caught1.message === Some(errorMessage(0, "0 was not defined at " + fraction + ", but 8 was defined at " + fraction, thisLineNumber - 2, list)))
+        assert(caught1.message === Some(errorMessage(0, wasNotDefinedAt(fraction, 0) + ", but " + wasDefinedAt(fraction, 8), thisLineNumber - 2, list)))
         assert(caught1.failedCodeFileName === Some("ShouldBeDefinedAtForAllSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught2 = intercept[TestFailedException] {
           all(list) should (not be definedAt (0) and (not be definedAt (8)))
         }
-        assert(caught2.message === Some(errorMessage(0, "0 was not defined at " + fraction + ", but 8 was defined at " + fraction, thisLineNumber - 2, list)))
+        assert(caught2.message === Some(errorMessage(0, wasNotDefinedAt(fraction, 0) + ", but " + wasDefinedAt(fraction, 8), thisLineNumber - 2, list)))
         assert(caught2.failedCodeFileName === Some("ShouldBeDefinedAtForAllSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught3 = intercept[TestFailedException] {
           all(list) should (not be (definedAt (0)) and not be (definedAt (8)))
         }
-        assert(caught3.message === Some(errorMessage(0, "0 was not defined at " + fraction + ", but 8 was defined at " + fraction, thisLineNumber - 2, list)))
+        assert(caught3.message === Some(errorMessage(0, wasNotDefinedAt(fraction, 0) + ", but " + wasDefinedAt(fraction, 8), thisLineNumber - 2, list)))
         assert(caught3.failedCodeFileName === Some("ShouldBeDefinedAtForAllSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught4 = intercept[TestFailedException] {
           all(list) should (not be definedAt (0) and not equal (fraction))
         }
-        assert(caught4.message === Some(errorMessage(0, "0 was not defined at " + fraction + ", but " + fraction + " equaled " + fraction, thisLineNumber - 2, list)))
+        assert(caught4.message === Some(errorMessage(0, wasNotDefinedAt(fraction, 0) + ", but " + equaled(fraction, fraction), thisLineNumber - 2, list)))
         assert(caught4.failedCodeFileName === Some("ShouldBeDefinedAtForAllSpec.scala"))
         assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught5 = intercept[TestFailedException] {
           all(list) should (not be definedAt (0) and (not equal (fraction)))
         }
-        assert(caught5.message === Some(errorMessage(0, "0 was not defined at " + fraction + ", but " + fraction + " equaled " + fraction, thisLineNumber - 2, list)))
+        assert(caught5.message === Some(errorMessage(0, wasNotDefinedAt(fraction, 0) + ", but " + equaled(fraction, fraction), thisLineNumber - 2, list)))
         assert(caught5.failedCodeFileName === Some("ShouldBeDefinedAtForAllSpec.scala"))
         assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught6 = intercept[TestFailedException] {
           all(list) should (not be (definedAt (0)) and (not equal (fraction)))
         }
-        assert(caught6.message === Some(errorMessage(0, "0 was not defined at " + fraction + ", but " + fraction + " equaled " + fraction, thisLineNumber - 2, list)))
+        assert(caught6.message === Some(errorMessage(0, wasNotDefinedAt(fraction, 0) + ", but " + equaled(fraction, fraction), thisLineNumber - 2, list)))
         assert(caught6.failedCodeFileName === Some("ShouldBeDefinedAtForAllSpec.scala"))
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -379,21 +391,21 @@ class ShouldBeDefinedAtForAllSpec extends Spec with Matchers {
         val caught1 = intercept[TestFailedException] {
           all(list) should (not be definedAt (8) and not be definedAt (8))
         }
-        assert(caught1.message === Some(errorMessage(0, "8 was defined at " + fraction, thisLineNumber - 2, list)))
+        assert(caught1.message === Some(errorMessage(0, wasDefinedAt(fraction, 8), thisLineNumber - 2, list)))
         assert(caught1.failedCodeFileName === Some("ShouldBeDefinedAtForAllSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught2 = intercept[TestFailedException] {
           all(list) should (not be definedAt (8) and (not be definedAt (8)))
         }
-        assert(caught2.message === Some(errorMessage(0, "8 was defined at " + fraction, thisLineNumber - 2, list)))
+        assert(caught2.message === Some(errorMessage(0, wasDefinedAt(fraction, 8), thisLineNumber - 2, list)))
         assert(caught2.failedCodeFileName === Some("ShouldBeDefinedAtForAllSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught3 = intercept[TestFailedException] {
           all(list) should (not be (definedAt (8)) and not be (definedAt (8)))
         }
-        assert(caught3.message === Some(errorMessage(0, "8 was defined at " + fraction, thisLineNumber - 2, list)))
+        assert(caught3.message === Some(errorMessage(0, wasDefinedAt(fraction, 8), thisLineNumber - 2, list)))
         assert(caught3.failedCodeFileName === Some("ShouldBeDefinedAtForAllSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -444,35 +456,35 @@ class ShouldBeDefinedAtForAllSpec extends Spec with Matchers {
         val caught1 = intercept[TestFailedException] {
           all(list) should (not be definedAt (8) or not be definedAt (8))
         }
-        assert(caught1.message === Some(errorMessage(0, "8 was defined at " + fraction + ", and 8 was defined at " + fraction, thisLineNumber - 2, list)))
+        assert(caught1.message === Some(errorMessage(0, wasDefinedAt(fraction, 8) + ", and " + wasDefinedAt(fraction, 8), thisLineNumber - 2, list)))
         assert(caught1.failedCodeFileName === Some("ShouldBeDefinedAtForAllSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught2 = intercept[TestFailedException] {
           all(list) should (not be definedAt (8) or (not be definedAt (8)))
         }
-        assert(caught2.message === Some(errorMessage(0, "8 was defined at " + fraction + ", and 8 was defined at " + fraction, thisLineNumber - 2, list)))
+        assert(caught2.message === Some(errorMessage(0, wasDefinedAt(fraction, 8) + ", and " + wasDefinedAt(fraction, 8), thisLineNumber - 2, list)))
         assert(caught2.failedCodeFileName === Some("ShouldBeDefinedAtForAllSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught3 = intercept[TestFailedException] {
           all(list) should (not be (definedAt (8)) or not be (definedAt (8)))
         }
-        assert(caught3.message === Some(errorMessage(0, "8 was defined at " + fraction + ", and 8 was defined at " + fraction, thisLineNumber - 2, list)))
+        assert(caught3.message === Some(errorMessage(0, wasDefinedAt(fraction, 8) + ", and " + wasDefinedAt(fraction, 8), thisLineNumber - 2, list)))
         assert(caught3.failedCodeFileName === Some("ShouldBeDefinedAtForAllSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught4 = intercept[TestFailedException] {
           all(list) should (not be definedAt (8) or not equal (fraction))
         }
-        assert(caught4.message === Some(errorMessage(0, "8 was defined at " + fraction + ", and " + fraction + " equaled " + fraction, thisLineNumber - 2, list)))
+        assert(caught4.message === Some(errorMessage(0, wasDefinedAt(fraction, 8) + ", and " + equaled(fraction, fraction), thisLineNumber - 2, list)))
         assert(caught4.failedCodeFileName === Some("ShouldBeDefinedAtForAllSpec.scala"))
         assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught5 = intercept[TestFailedException] {
           all(list) should (not equal (fraction) or (not be definedAt (8)))
         }
-        assert(caught5.message === Some(errorMessage(0, fraction + " equaled " + fraction + ", and 8 was defined at " + fraction, thisLineNumber - 2, list)))
+        assert(caught5.message === Some(errorMessage(0, equaled(fraction, fraction) + ", and " + wasDefinedAt(fraction, 8), thisLineNumber - 2, list)))
         assert(caught5.failedCodeFileName === Some("ShouldBeDefinedAtForAllSpec.scala"))
         assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -489,7 +501,7 @@ class ShouldBeDefinedAtForAllSpec extends Spec with Matchers {
         val caught = intercept[TestFailedException] {
           all(list) shouldNot be definedAt (8)
         }
-        assert(caught.message === Some(errorMessage(0, "8 was defined at " + fraction, thisLineNumber - 2, list)))
+        assert(caught.message === Some(errorMessage(0, wasDefinedAt(fraction, 8), thisLineNumber - 2, list)))
         assert(caught.failedCodeFileName === Some("ShouldBeDefinedAtForAllSpec.scala"))
         assert(caught.failedCodeLineNumber === Some(thisLineNumber - 4))
       }

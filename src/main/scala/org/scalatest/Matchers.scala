@@ -1555,9 +1555,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
       if (left.isDefinedAt(right) != shouldBeTrue)
         throw newTestFailedException(
           if (shouldBeTrue)
-            FailureMessages("wasNotDefinedAt", right, left)
+            FailureMessages("wasNotDefinedAt", left, right)
           else
-            FailureMessages("wasDefinedAt", right, left)
+            FailureMessages("wasDefinedAt", left, right)
         )
     }
   }
@@ -3132,8 +3132,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
           throw newTestFailedException(
             FailureMessages(
               if (shouldBeTrue) "wasNotDefinedAt" else "wasDefinedAt", 
-              resultOfDefinedAt.right, 
-              e
+              e, 
+              resultOfDefinedAt.right
             ), 
             None, 
             6  
@@ -3881,9 +3881,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
       if (e.isDefinedAt(right) != shouldBeTrue)
         throw newTestFailedException(
           if (shouldBeTrue)
-            FailureMessages("wasNotDefinedAt", right, e)
+            FailureMessages("wasNotDefinedAt", e, right)
           else
-            FailureMessages("wasDefinedAt", right, e), 
+            FailureMessages("wasDefinedAt", e, right), 
           None, 
           6
         )

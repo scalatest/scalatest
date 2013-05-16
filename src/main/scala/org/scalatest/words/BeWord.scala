@@ -511,8 +511,8 @@ final class BeWord {
       def apply(left: U): MatchResult =
         MatchResult(
           left.isDefinedAt(right),
-          FailureMessages("wasNotDefinedAt", right, left),
-          FailureMessages("wasDefinedAt", right, left)
+          FailureMessages("wasNotDefinedAt", left, right),
+          FailureMessages("wasDefinedAt", left, right)
         )
     }
   
@@ -529,8 +529,8 @@ final class BeWord {
       def apply(left: U): MatchResult =
         MatchResult(
           left.isDefinedAt(resultOfDefinedAt.right),
-          FailureMessages("wasNotDefinedAt", resultOfDefinedAt.right, left),
-          FailureMessages("wasDefinedAt", resultOfDefinedAt.right, left)
+          FailureMessages("wasNotDefinedAt", left, resultOfDefinedAt.right),
+          FailureMessages("wasDefinedAt", left, resultOfDefinedAt.right)
         )
     }
 }
