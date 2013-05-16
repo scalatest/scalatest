@@ -7295,6 +7295,12 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * Turn off implicit conversion of LoneElement, so that if user accidentally mixin LoneElement it does conflict with convertToTraversableShouldWrapper
    */
   override def convertToTraversableLoneElementWrapper[T](xs: scala.collection.GenTraversable[T]): LoneElementTraversableWrapper[T] = new LoneElementTraversableWrapper[T](xs)
+
+  implicit def sortEnablersForSeq[E, SEQ[E] <: scala.collection.SeqLike[E, _]](implicit ordering: Ordering[E]): Sorted[SEQ[E]] =
+    new Sorted[SEQ[E]] {
+      def isSorted(seq: SEQ[E]): Boolean = 
+        seq == seq.sorted(ordering) // TODO: to implement it correctly here
+    }
 }
 
 /**

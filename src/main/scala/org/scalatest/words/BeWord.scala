@@ -22,6 +22,7 @@ import org.scalatest.UnquotedString
 import org.scalatest.Suite
 import org.scalatest.Assertions.areEqualComparingArraysStructurally
 import org.scalatest.MatchersHelper.matchSymbolToPredicateMethod
+import org.scalatest.enablers.Sorted
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="ShouldMatchers.html"><code>ShouldMatchers</code></a> or <a href="MustMatchers.html"><code>MustMatchers</code></a> for an overview of
@@ -504,6 +505,29 @@ final class BeWord {
           FailureMessages("wasEqualTo", left, right)
         )
       }
+    }
+  
+  /**
+   * This method enables the following syntax, where <code>open</code> refers to a <code>BePropertyMatcher</code>:
+   *
+   * <pre class="stHighlight">
+   * List(1, 2, 3) should be (sorted)
+   *                          ^
+   * </pre>
+   */
+  def apply(right: SortedWord): MatcherFactory1[Any, Sorted] = 
+    new MatcherFactory1[Any, Sorted] {
+      def matcher[T <: Any : Sorted]: Matcher[T] = 
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+            val sorted = implicitly[Sorted[T]]
+            MatchResult(
+              sorted.isSorted(left), 
+              FailureMessages("wasNotSorted", left), 
+              FailureMessages("wasSorted", left)
+            )
+          }
+        }
     }
   
   /**
