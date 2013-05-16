@@ -21,6 +21,11 @@ import SharedHelpers._
 
 class OptionShouldContainOneOfSpec extends Spec with Matchers {
 
+  val invertedStringEquality =
+    new Equality[String] {
+      def areEqual(a: String, b: Any): Boolean = a != b
+    }
+
   object `an Option` {
 
     val fumSome: Option[String] = Some("fum")
@@ -38,21 +43,16 @@ class OptionShouldContainOneOfSpec extends Spec with Matchers {
         e1.message.get should be (Resources("didNotContainOneOfElements", fumSome, "\"happy\", \"birthday\", \"to\", \"you\""))
       }
       def `should use the implicit Equality in scope` {
-        implicit val e = new Equality[String] {
-          def areEqual(a: String, b: Any): Boolean = a != b
-        }
+        implicit val ise = invertedStringEquality
         fumSome should newContain newOneOf ("happy", "birthday", "to", "you")
         intercept[TestFailedException] {
           fumSome should newContain newOneOf ("fum", "fum", "fum", "fum")
         }
       }
       def `should use an explicitly provided Equality` {
-        val invertedEquality = new Equality[String] {
-          def areEqual(a: String, b: Any): Boolean = a != b
-        }
-        (fumSome should newContain newOneOf ("happy", "birthday", "to", "you")) (decided by invertedEquality)
+        (fumSome should newContain newOneOf ("happy", "birthday", "to", "you")) (decided by invertedStringEquality)
         intercept[TestFailedException] {
-          (fumSome should newContain newOneOf ("fum", "fum", "fum", "fum")) (decided by invertedEquality)
+          (fumSome should newContain newOneOf ("fum", "fum", "fum", "fum")) (decided by invertedStringEquality)
         }
         intercept[TestFailedException] {
           fumSome should newContain newOneOf (" FEE ", " FIE ", " FOE ", " FUM ")
@@ -74,21 +74,16 @@ class OptionShouldContainOneOfSpec extends Spec with Matchers {
         e1.message.get should be (Resources("didNotContainOneOfElements", fumSome, "\"happy\", \"birthday\", \"to\", \"you\""))
       }
       def `should use the implicit Equality in scope` {
-        implicit val e = new Equality[String] {
-          def areEqual(a: String, b: Any): Boolean = a != b
-        }
+        implicit val ise = invertedStringEquality
         fumSome should (newContain newOneOf ("happy", "birthday", "to", "you"))
         intercept[TestFailedException] {
           fumSome should (newContain newOneOf ("fum", "fum", "fum", "fum"))
         }
       }
       def `should use an explicitly provided Equality` {
-        val invertedEquality = new Equality[String] {
-          def areEqual(a: String, b: Any): Boolean = a != b
-        }
-        (fumSome should (newContain newOneOf ("happy", "birthday", "to", "you"))) (decided by invertedEquality)
+        (fumSome should (newContain newOneOf ("happy", "birthday", "to", "you"))) (decided by invertedStringEquality)
         intercept[TestFailedException] {
-          (fumSome should (newContain newOneOf ("fum", "fum", "fum", "fum"))) (decided by invertedEquality)
+          (fumSome should (newContain newOneOf ("fum", "fum", "fum", "fum"))) (decided by invertedStringEquality)
         }
         intercept[TestFailedException] {
           fumSome should (newContain newOneOf (" FEE ", " FIE ", " FOE ", " FUM "))
@@ -117,21 +112,16 @@ class OptionShouldContainOneOfSpec extends Spec with Matchers {
         e1.message.get should be (Resources("containedOneOfElements", toSome, "\"happy\", \"birthday\", \"to\", \"you\""))
       }
       def `should use the implicit Equality in scope` {
-        implicit val e = new Equality[String] {
-          def areEqual(a: String, b: Any): Boolean = a != b
-        }
+        implicit val ise = invertedStringEquality
         toSome should not newContain newOneOf ("to", "to", "to", "to")
         intercept[TestFailedException] {
           toSome should not newContain newOneOf ("fee", "fie", "foe", "fum")
         }
       }
       def `should use an explicitly provided Equality` {
-        val invertedEquality = new Equality[String] {
-          def areEqual(a: String, b: Any): Boolean = a != b
-        }
-        (toSome should not newContain newOneOf ("to", "to", "to", "to")) (decided by invertedEquality)
+        (toSome should not newContain newOneOf ("to", "to", "to", "to")) (decided by invertedStringEquality)
         intercept[TestFailedException] {
-          (toSome should not newContain newOneOf ("fee", "fie", "foe", "fum")) (decided by invertedEquality)
+          (toSome should not newContain newOneOf ("fee", "fie", "foe", "fum")) (decided by invertedStringEquality)
         }
         toSome should not newContain newOneOf (" TO ", " TO ", " TO ", " TO ")
         intercept[TestFailedException] {
@@ -161,21 +151,16 @@ The bottom two don't, but still I don't want to support that in general.
         e1.message.get should be (Resources("containedOneOfElements", toSome, "\"happy\", \"birthday\", \"to\", \"you\""))
       }
       def `should use the implicit Equality in scope` {
-        implicit val e = new Equality[String] {
-          def areEqual(a: String, b: Any): Boolean = a != b
-        }
+        implicit val ise = invertedStringEquality
         toSome should (not newContain newOneOf ("to", "to", "to", "to"))
         intercept[TestFailedException] {
           toSome should (not newContain newOneOf ("fee", "fie", "foe", "fum"))
         }
       }
       def `should use an explicitly provided Equality` {
-        val invertedEquality = new Equality[String] {
-          def areEqual(a: String, b: Any): Boolean = a != b
-        }
-        (toSome should (not newContain newOneOf ("to", "to", "to", "to"))) (decided by invertedEquality)
+        (toSome should (not newContain newOneOf ("to", "to", "to", "to"))) (decided by invertedStringEquality)
         intercept[TestFailedException] {
-          (toSome should (not newContain newOneOf ("fee", "fie", "foe", "fum"))) (decided by invertedEquality)
+          (toSome should (not newContain newOneOf ("fee", "fie", "foe", "fum"))) (decided by invertedStringEquality)
         }
         toSome should (not newContain newOneOf (" TO ", " TO ", " TO ", " TO "))
         intercept[TestFailedException] {
@@ -231,10 +216,26 @@ The bottom two don't, but still I don't want to support that in general.
       }
 
       def `should use the implicit Equality in scope` {
-        pending
+        all (hiSomes) should newContain newOneOf ("hi")
+        intercept[TestFailedException] {
+          all (hiSomes) should newContain newOneOf ("ho")
+        }
+        implicit val ise = invertedStringEquality
+        all (hiSomes) should newContain newOneOf ("ho")
+        intercept[TestFailedException] {
+          all (hiSomes) should newContain newOneOf ("hi")
+        }
       }
       def `should use an explicitly provided Equality` {
-        pending
+        (all (hiSomes) should newContain newOneOf ("ho")) (decided by invertedStringEquality)
+        intercept[TestFailedException] {
+          (all (hiSomes) should newContain newOneOf ("hi")) (decided by invertedStringEquality)
+        }
+        implicit val ise = invertedStringEquality
+        (all (hiSomes) should newContain newOneOf ("hi")) (decided by defaultEquality[String])
+        intercept[TestFailedException] {
+          (all (hiSomes) should newContain newOneOf ("ho")) (decided by defaultEquality[String])
+        }
       }
     }
 
