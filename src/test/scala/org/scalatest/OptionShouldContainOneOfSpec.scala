@@ -351,24 +351,51 @@ scala> all (some1s) should (newContain (newOneOf (1, 3, 4)))
     }
 
 /*
-Interesting, of these three, the top one does happen to compile and run:
+Interesting, of these three, the last one does happen to compile and run:
 
-        toSome should not newContain (newOneOf ("fee", "fie", "foe", "fum"))
-        // toSome should not (newContain (newOneOf ("fee", "fie", "foe", "fum")))
-        // toSome should (not (newContain (newOneOf ("fee", "fie", "foe", "fum"))))
+scala> all (toSomes) should (not (newContain (newOneOf ("fee", "fie", "foe", "fum"))))
+<console>:15: error: org.scalatest.words.NewContainWord does not take parameters
+              all (toSomes) should (not (newContain (newOneOf ("fee", "fie", "foe", "fum"))))
+                                                    ^
 
-The bottom two don't, but still I don't want to support that in general.
+scala> all (toSomes) should not (newContain (newOneOf ("fee", "fie", "foe", "fum")))
+<console>:15: error: org.scalatest.words.NewContainWord does not take parameters
+              all (toSomes) should not (newContain (newOneOf ("fee", "fie", "foe", "fum")))
+                                                   ^
+
+scala> all (toSomes) should not newContain (newOneOf ("fee", "fie", "foe", "fum"))
+
+The top two don't, but still I don't want to support that in general.
 */
     object `when used with (not contain oneOf (...)) syntax` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        pending
+        all (toSomes) should (not newContain newOneOf ("fee", "fie", "foe", "fum"))
+        val e1 = intercept[TestFailedException] {
+          all (toSomes) should (not newContain newOneOf ("happy", "birthday", "to", "you"))
+        }
+        e1.failedCodeFileName.get should be ("OptionShouldContainOneOfSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some("'all' inspection failed, because: \n" +
+                                   "  at index 0, Some(to) contained one of (\"happy\", \"birthday\", \"to\", \"you\") (OptionShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "in Vector(Some(to), Some(to), Some(to))"))
       }
       def `should use the implicit Equality in scope` {
-        pending
+        implicit val ise = invertedStringEquality
+        all (toSomes) should (not newContain newOneOf ("to", "to", "to", "to"))
+        intercept[TestFailedException] {
+          all (toSomes) should (not newContain newOneOf ("fee", "fie", "foe", "fum"))
+        }
       }
       def `should use an explicitly provided Equality` {
-        pending
+        (all (toSomes) should (not newContain newOneOf ("to", "to", "to", "to"))) (decided by invertedStringEquality)
+        intercept[TestFailedException] {
+          (all (toSomes) should (not newContain newOneOf ("fee", "fie", "foe", "fum"))) (decided by invertedStringEquality)
+        }
+        all (toSomes) should (not newContain newOneOf (" TO ", " TO ", " TO ", " TO "))
+        intercept[TestFailedException] {
+          (all (toSomes) should (not newContain newOneOf (" TO ", " TO ", " TO ", " TO "))) (after being lowerCased and trimmed)
+        }
       }
     }
   }
