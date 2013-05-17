@@ -92,14 +92,7 @@ package org.scalautils
  * 
  * @author Bill Venners
  */
-trait EqualityConstraints { // TODO: Maybe say DefaultEquality[A] as the return type of defaultEquality. And of course, see if i can make it implicit here and leave it out of subtraits. Tried that once and it didn't work, but didn't have time to investigate.
-
-  /**
-   * Return an <code>Equality[A]</code> for any type <code>A</code> that determines equality via the <code>==</code> operator on type <code>A</code>.
-   *
-   * @return a <code>DefaultEquality</code> for type <code>A</code>
-   */
-  def defaultEquality[A]: Equality[A]
+trait EqualityConstraints {
 
   /**
    * Convert to an <a href="Equalizer.html"><code>Equalizer</code></a> that provides <code>===</code> and <code>!==</code> operators that

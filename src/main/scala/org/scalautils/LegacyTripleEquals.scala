@@ -59,11 +59,6 @@ package org.scalautils
  */
 trait LegacyTripleEquals extends EqualityConstraints {
 
-// TODO: Maybe found the source of the bug whereby should === initially requires a type constraint that isn't there. There's no
-// unconstrainedEquality implicit override here. I think there likely should be. Yup. That's why it says it can't find a constraint.
-
-  implicit override def defaultEquality[A]: Equality[A] = new DefaultEquality[A]
-
   implicit override def unconstrainedEquality[A, B](implicit equalityOfA: Equality[A]): EqualityConstraint[A, B] = new BasicEqualityConstraint[A, B](equalityOfA)
 
   override def convertToEqualizer[T](left: T): Equalizer[T] = new Equalizer(left)

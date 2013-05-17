@@ -121,8 +121,6 @@ trait TripleEquals extends EqualityConstraints {
 
   // Inherit the Scaladoc for these methods
 
-  implicit override def defaultEquality[A]: Equality[A] = new DefaultEquality[A]
-
   implicit override def convertToEqualizer[T](left: T): Equalizer[T] = new Equalizer(left)
   override def convertToCheckingEqualizer[T](left: T): CheckingEqualizer[T] = new CheckingEqualizer(left)
 

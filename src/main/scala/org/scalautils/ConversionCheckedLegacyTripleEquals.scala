@@ -152,10 +152,6 @@ trait LowPriorityConversionCheckedLegacyConstraint extends EqualityConstraints {
  */
 trait ConversionCheckedLegacyTripleEquals extends LowPriorityConversionCheckedConstraint {
 
-  // override def convertToAsAnyWrapper(o: Any): AsAnyWrapper = super.convertToAsAnyWrapper(o)
-
-  implicit override def defaultEquality[A]: Equality[A] = new DefaultEquality[A]
-
   override def convertToEqualizer[T](left: T): Equalizer[T] = new Equalizer(left)
   override def convertToLegacyEqualizer[T](left: T): LegacyEqualizer[T] = new LegacyEqualizer(left)
   override def convertToCheckingEqualizer[T](left: T): CheckingEqualizer[T] = new CheckingEqualizer(left)

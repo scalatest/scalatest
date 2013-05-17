@@ -36,6 +36,8 @@ trait Explicitly {
   }
 
   val after = new TheAfterWord
+
+  def defaultEquality[A]: Equality[A] = Equality.default[A]
 }
 
 /**

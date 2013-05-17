@@ -216,10 +216,6 @@ trait TypeCheckedTripleEquals extends LowPriorityTypeCheckedConstraint {
 
   // Inherit the Scaladoc for these methods
 
-  // override def convertToAsAnyWrapper(o: Any): AsAnyWrapper = super.convertToAsAnyWrapper(o)
-
-  implicit override def defaultEquality[A]: Equality[A] = new DefaultEquality[A]
-
   override def convertToEqualizer[T](left: T): Equalizer[T] = new Equalizer(left)
   implicit override def convertToCheckingEqualizer[T](left: T): CheckingEqualizer[T] = new CheckingEqualizer(left)
 

@@ -104,6 +104,8 @@ object Equality {
       def normalized(a: A): A = normalization.normalized(a)
     }
   }
+
+  implicit def default[A]: Equality[A] = new DefaultEquality[A]
 }
 
 
