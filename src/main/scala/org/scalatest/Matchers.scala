@@ -6627,18 +6627,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       def extentOf(javaColl: JCOL[E]): Long = javaColl.size
     }
 
-  implicit def withJavaCollectionElementEquality[E, JCOL[_] <: java.util.Collection[_]](implicit equality: Equality[E]): Holder[JCOL[E]] = 
-    new Holder[JCOL[E]] {
-      def containsElement(javaColl: JCOL[E], ele: Any): Boolean = {
-        val it: java.util.Iterator[E] = javaColl.iterator.asInstanceOf[java.util.Iterator[E]]
-        var found = false
-        while (!found && it.hasNext) {
-          found = equality.areEqual(it.next , ele)
-        }
-        found
-      }
-    }
-
   // I think Java Maps aren't Holders, because they don't have an element type. The only
   // thing close is the stupid Entry<K, V> type, which is mutable!
   implicit def enablersForJavaMap[K, V, JMAP[_, _] <: java.util.Map[_, _]]: Size[JMAP[K, V]] = 
@@ -6654,44 +6642,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       def extentOf(trav: TRAV[E]): Long = trav.size
     }
 
-  // Enables (xs should contain ("HI")) (after being lowerCased)
-  implicit def convertEqualityToGenTraversableHolder[E, TRAV[_] <: scala.collection.GenTraversable[_]](equality: Equality[E]): Holder[TRAV[E]] = 
-    withGenTraversableElementEquality(equality)
-
-  implicit def withGenTraversableElementEquality[E, TRAV[_] <: scala.collection.GenTraversable[_]](implicit equality: Equality[E]): Holder[TRAV[E]] = 
-    new Holder[TRAV[E]] {
-      def containsElement(trav: TRAV[E], ele: Any): Boolean = {
-        equality match {
-          case normEq: NormalizingEquality[_] => 
-            val normRight = normEq.normalizedIfInstanceOfA(ele)
-            trav.exists((e: Any) => normEq.afterNormalizationEquality.areEqual(normEq.normalized(e.asInstanceOf[E]), normRight)) // Don't know why the compiler requires e to be type Any. Should be E.
-          case _ => trav.exists((e: Any) => equality.areEqual(e.asInstanceOf[E], ele)) // Don't know why the compiler requires e to be type Any. Should be E.
-        }
-      }
-    }
-
-  // supports (some should contain ("HI")) (after being lowerCased)
-  implicit def convertEqualityToOptionHolder[E, OPT[_] <: Option[_]](equality: Equality[E]): Holder[OPT[E]] = 
-    withOptionValueEquality(equality)
-
-  // OPT so that it will work with Some also, but it doesn't work with None
-  implicit def withOptionValueEquality[E, OPT[_] <: Option[_]](implicit equality: Equality[E]): Holder[OPT[E]] = 
-    new Holder[OPT[E]] {
-      def containsElement(opt: OPT[E], ele: Any): Boolean = {
-        opt.exists((e: Any) => equality.areEqual(e.asInstanceOf[E], ele)) // Don't know why the compiler requires e to be type Any. Should be E.
-      }
-    }
-
   implicit def enablersForMap[K, V, MAP[_, _] <: scala.collection.GenMap[_, _]]: Size[MAP[K, V]] =
     new Size[MAP[K, V]] {
       def extentOf(map: MAP[K, V]): Long = map.size
-    }
-
-  implicit def withGenMapElementEquality[K, V, MAP[_, _] <: scala.collection.GenMap[_, _]](implicit equality: Equality[(K, V)]): Holder[MAP[K, V]] = 
-    new Holder[MAP[K, V]] {
-      def containsElement(map: MAP[K, V], ele: Any): Boolean = {
-        map.exists((e: Any) => equality.areEqual(e.asInstanceOf[(K, V)], ele)) // Don't know why the compiler requires e to be type Any. Should be E.
-      }
     }
 
   implicit def enablersForArray[E]: Length[Array[E]] with Size[Array[E]] = 
@@ -6699,21 +6652,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       def extentOf(arr: Array[E]): Long = arr.length
     }
 
-  implicit def withArrayElementEquality[E](implicit equality: Equality[E]): Holder[Array[E]] = 
-    new Holder[Array[E]] {
-      def containsElement(arr: Array[E], ele: Any): Boolean =
-        arr.exists((e: E) => equality.areEqual(e, ele))
-    }
-
   implicit val enablersForString: Length[String] with Size[String] = 
     new Length[String] with Size[String] {
       def extentOf(str: String): Long = str.length
-    }
-
-  implicit def withStringCharacterEquality(implicit equality: Equality[Char]): Holder[String] = 
-    new Holder[String] {
-      def containsElement(str: String, ele: Any): Boolean =
-        str.exists((e: Char) => equality.areEqual(e, ele))
     }
 }
 
