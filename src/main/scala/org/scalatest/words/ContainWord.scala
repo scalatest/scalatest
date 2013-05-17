@@ -151,7 +151,7 @@ final class ContainWord {
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">
-   * Array(1, 2, 3) should (contain theSameElementsAs List(1, 2, 3) and contain theSameIteratedElementsAs List(3, 2, 1))
+   * Array(1, 2, 3) should (contain theSameElementsAs List(1, 2, 3) and contain theSameElementsInOrderAs List(3, 2, 1))
    *                                ^
    * </pre>
    */
@@ -168,14 +168,14 @@ final class ContainWord {
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">
-   * Array(1, 2, 3) should (contain theSameIteratedElementsAs List(1, 2, 3) and contain theSameElementsAs List(1, 2, 3))
+   * Array(1, 2, 3) should (contain theSameElementsInOrderAs List(1, 2, 3) and contain theSameElementsAs List(1, 2, 3))
    *                                ^
    * </pre>
    */
-  def theSameIteratedElementsAs[E](right: GenTraversable[E])(implicit equality: Equality[E]): Matcher[GenTraversable[E]] = 
+  def theSameElementsInOrderAs[E](right: GenTraversable[E])(implicit equality: Equality[E]): Matcher[GenTraversable[E]] = 
     new Matcher[GenTraversable[E]] {
       def apply(left: GenTraversable[E]): MatchResult = {
-        val result = new TheSameIteratedElementsAsContainMatcher(right, equality).apply(left)
+        val result = new TheSameElementsInOrderAsContainMatcher(right, equality).apply(left)
         MatchResult(result.matches, result.failureMessage, result.negatedFailureMessage)
       }
     }

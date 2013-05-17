@@ -313,12 +313,12 @@ $endif$
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
-     * (aMatcherFactory and contain theSameIteratedElementsAs List(1, 2, 3))
+     * (aMatcherFactory and contain theSameElementsInOrderAs List(1, 2, 3))
      *                              ^
      * </pre>
      */
-    def theSameIteratedElementsAs[E](right: GenTraversable[E])(implicit equality: Equality[E]): MatcherFactory$arity$[SC with GenTraversable[E], $commaSeparatedTCNs$] = 
-      thisMatcherFactory.and(MatcherWords.contain.theSameIteratedElementsAs(right)(equality))
+    def theSameElementsInOrderAs[E](right: GenTraversable[E])(implicit equality: Equality[E]): MatcherFactory$arity$[SC with GenTraversable[E], $commaSeparatedTCNs$] = 
+      thisMatcherFactory.and(MatcherWords.contain.theSameElementsInOrderAs(right)(equality))
     
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1246,12 +1246,12 @@ $endif$
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
-     * (aMatcherFactory or contain theSameIteratedElementsAs List(1, 2, 3))
+     * (aMatcherFactory or contain theSameElementsInOrderAs List(1, 2, 3))
      *                             ^
      * </pre>
      */
-    def theSameIteratedElementsAs[E](right: GenTraversable[E])(implicit equality: Equality[E]): MatcherFactory$arity$[SC with GenTraversable[E], $commaSeparatedTCNs$] = 
-      thisMatcherFactory.or(MatcherWords.contain.theSameIteratedElementsAs(right)(equality))
+    def theSameElementsInOrderAs[E](right: GenTraversable[E])(implicit equality: Equality[E]): MatcherFactory$arity$[SC with GenTraversable[E], $commaSeparatedTCNs$] = 
+      thisMatcherFactory.or(MatcherWords.contain.theSameElementsInOrderAs(right)(equality))
     
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:

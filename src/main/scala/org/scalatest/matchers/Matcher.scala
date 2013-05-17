@@ -658,12 +658,12 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) and contain theSameIteratedElementsAs List(1, 2, 3))
+     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) and contain theSameElementsInOrderAs List(1, 2, 3))
      *                                                                           ^
      * </pre>
      */
-    def theSameIteratedElementsAs[E](right: GenTraversable[E])(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
-      outerInstance.and(MatcherWords.contain.theSameIteratedElementsAs(right)(equality))
+    def theSameElementsInOrderAs[E](right: GenTraversable[E])(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
+      outerInstance.and(MatcherWords.contain.theSameElementsInOrderAs(right)(equality))
     
     /**
      * This method enables the following syntax:
@@ -1588,12 +1588,12 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) or contain theSameIteratedElementsAs List(1, 2, 3))
+     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) or contain theSameElementsInOrderAs List(1, 2, 3))
      *                                                                          ^
      * </pre>
      */
-    def theSameIteratedElementsAs[E](right: GenTraversable[E])(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
-      outerInstance.or(MatcherWords.contain.theSameIteratedElementsAs(right)(equality))
+    def theSameElementsInOrderAs[E](right: GenTraversable[E])(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
+      outerInstance.or(MatcherWords.contain.theSameElementsInOrderAs(right)(equality))
     
     /**
      * This method enables the following syntax:

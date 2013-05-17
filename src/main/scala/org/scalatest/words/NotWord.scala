@@ -861,7 +861,7 @@ final class NotWord {
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">
-   * collection should (not contain theSameIteratedElementsAs List(8, 1, 2) and contain theSameElementsAs List(3, 2, 1))
+   * collection should (not contain theSameElementsInOrderAs List(8, 1, 2) and contain theSameElementsAs List(3, 2, 1))
    *                        ^
    * </pre>
    */

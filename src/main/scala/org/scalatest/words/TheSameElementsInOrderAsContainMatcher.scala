@@ -28,7 +28,7 @@ import scala.annotation.tailrec
  *
  * @author Bill Venners
  */
-class TheSameIteratedElementsAsContainMatcher[T](right: GenTraversable[T], equality: Equality[T]) extends ContainMatcher[T] {
+class TheSameElementsInOrderAsContainMatcher[T](right: GenTraversable[T], equality: Equality[T]) extends ContainMatcher[T] {
   @tailrec
   private def checkEqual(left: Iterator[T], right: Iterator[T]): Boolean = {
     if (left.hasNext && right.hasNext) {
@@ -44,14 +44,13 @@ class TheSameIteratedElementsAsContainMatcher[T](right: GenTraversable[T], equal
   }
   
   /**
-   * This method contains the matching code for theSameIteratedElementsAs.
+   * This method contains the matching code for theSameElementsInOrderAs.
    */
   def apply(left: GenTraversable[T]): MatchResult = 
     MatchResult(
       checkEqual(left.toIterator, right.toIterator), 
-      FailureMessages("didNotContainSameIteratedElements", left, right), 
-      FailureMessages("containedSameIteratedElements", left, right)
+      FailureMessages("didNotContainSameElementsInOrder", left, right), 
+      FailureMessages("containedSameElementsInOrder", left, right)
     )
-  
 }
 

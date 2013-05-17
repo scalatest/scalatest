@@ -34,9 +34,9 @@ class ContainMatcherAndOrSpec extends Spec with Matchers {
         left should ((contain theSameElementsAs (right1)) and (contain theSameElementsAs (right2)))
         left should (contain theSameElementsAs (right1) and (contain theSameElementsAs (right2))) 
         
-        left should (contain theSameElementsAs (right1) and contain theSameIteratedElementsAs (right2)) 
-        left should ((contain theSameElementsAs (right1)) and (contain theSameIteratedElementsAs (right2)))
-        left should (contain theSameElementsAs (right1) and (contain theSameIteratedElementsAs (right2)))
+        left should (contain theSameElementsAs (right1) and contain theSameElementsInOrderAs (right2)) 
+        left should ((contain theSameElementsAs (right1)) and (contain theSameElementsInOrderAs (right2)))
+        left should (contain theSameElementsAs (right1) and (contain theSameElementsInOrderAs (right2)))
         
         left should (contain theSameElementsAs (right1) and contain allOf (3, 2, 1))
         left should ((contain theSameElementsAs (right1)) and (contain allOf (3, 2, 1)))
@@ -62,9 +62,9 @@ class ContainMatcherAndOrSpec extends Spec with Matchers {
         left should ((contain theSameElementsAs (right1)) and (contain noneOf (7, 8, 9)))
         left should (contain theSameElementsAs (right1) and (contain noneOf (7, 8, 9)))
         
-        left should (contain theSameIteratedElementsAs (right2) and contain theSameElementsAs (right1))
-        left should ((contain theSameIteratedElementsAs (right2)) and (contain theSameElementsAs (right1)))
-        left should (contain theSameIteratedElementsAs (right2) and (contain theSameElementsAs (right1)))
+        left should (contain theSameElementsInOrderAs (right2) and contain theSameElementsAs (right1))
+        left should ((contain theSameElementsInOrderAs (right2)) and (contain theSameElementsAs (right1)))
+        left should (contain theSameElementsInOrderAs (right2) and (contain theSameElementsAs (right1)))
         
         left should (contain allOf (3, 2, 1) and contain theSameElementsAs (right1))
         left should ((contain allOf (3, 2, 1)) and (contain theSameElementsAs (right1)))
@@ -93,46 +93,46 @@ class ContainMatcherAndOrSpec extends Spec with Matchers {
       
       def `should failed with correctly stack depth and message when first contain failed but second contain passed` {
         val e1 = intercept[exceptions.TestFailedException] {
-          List(1, 2, 3) should (contain theSameIteratedElementsAs List(3, 2, 1) and contain theSameElementsAs List(3, 2, 1)) 
+          List(1, 2, 3) should (contain theSameElementsInOrderAs List(3, 2, 1) and contain theSameElementsAs List(3, 2, 1)) 
         }
-        e1.message should be (Some("List(1, 2, 3) did not contain the same iterated elements as List(3, 2, 1)"))
+        e1.message should be (Some("List(1, 2, 3) did not contain the same elements in the same (iterated) order as List(3, 2, 1)"))
         e1.failedCodeFileName should be (Some("ContainMatcherAndOrSpec.scala"))
         e1.failedCodeLineNumber should be (Some(thisLineNumber - 4))
         
         val e2 = intercept[exceptions.TestFailedException] {
-          List(1, 2, 3) should ((contain theSameIteratedElementsAs List(3, 2, 1)) and (contain theSameElementsAs List(3, 2, 1))) 
+          List(1, 2, 3) should ((contain theSameElementsInOrderAs List(3, 2, 1)) and (contain theSameElementsAs List(3, 2, 1))) 
         }
-        e2.message should be (Some("List(1, 2, 3) did not contain the same iterated elements as List(3, 2, 1)"))
+        e2.message should be (Some("List(1, 2, 3) did not contain the same elements in the same (iterated) order as List(3, 2, 1)"))
         e2.failedCodeFileName should be (Some("ContainMatcherAndOrSpec.scala"))
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 4))
         
         val e3 = intercept[exceptions.TestFailedException] {
-          List(1, 2, 3) should (contain theSameIteratedElementsAs List(3, 2, 1) and (contain theSameElementsAs List(3, 2, 1))) 
+          List(1, 2, 3) should (contain theSameElementsInOrderAs List(3, 2, 1) and (contain theSameElementsAs List(3, 2, 1))) 
         }
-        e3.message should be (Some("List(1, 2, 3) did not contain the same iterated elements as List(3, 2, 1)"))
+        e3.message should be (Some("List(1, 2, 3) did not contain the same elements in the same (iterated) order as List(3, 2, 1)"))
         e3.failedCodeFileName should be (Some("ContainMatcherAndOrSpec.scala"))
         e3.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
       def `should failed with correctly stack depth and message when first contain passed but second contain failed` {
         val e1 = intercept[exceptions.TestFailedException] {
-          List(1, 2, 3) should (contain theSameElementsAs List(3, 2, 1) and contain theSameIteratedElementsAs List(3, 2, 1)) 
+          List(1, 2, 3) should (contain theSameElementsAs List(3, 2, 1) and contain theSameElementsInOrderAs List(3, 2, 1)) 
         }
-        e1.message should be (Some("List(1, 2, 3) contained the same elements as List(3, 2, 1), but List(1, 2, 3) did not contain the same iterated elements as List(3, 2, 1)"))
+        e1.message should be (Some("List(1, 2, 3) contained the same elements as List(3, 2, 1), but List(1, 2, 3) did not contain the same elements in the same (iterated) order as List(3, 2, 1)"))
         e1.failedCodeFileName should be (Some("ContainMatcherAndOrSpec.scala"))
         e1.failedCodeLineNumber should be (Some(thisLineNumber - 4))
         
         val e2 = intercept[exceptions.TestFailedException] {
-          List(1, 2, 3) should ((contain theSameElementsAs List(3, 2, 1)) and (contain theSameIteratedElementsAs List(3, 2, 1))) 
+          List(1, 2, 3) should ((contain theSameElementsAs List(3, 2, 1)) and (contain theSameElementsInOrderAs List(3, 2, 1))) 
         }
-        e2.message should be (Some("List(1, 2, 3) contained the same elements as List(3, 2, 1), but List(1, 2, 3) did not contain the same iterated elements as List(3, 2, 1)"))
+        e2.message should be (Some("List(1, 2, 3) contained the same elements as List(3, 2, 1), but List(1, 2, 3) did not contain the same elements in the same (iterated) order as List(3, 2, 1)"))
         e2.failedCodeFileName should be (Some("ContainMatcherAndOrSpec.scala"))
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 4))
         
         val e3 = intercept[exceptions.TestFailedException] {
-          List(1, 2, 3) should (contain theSameElementsAs List(3, 2, 1) and (contain theSameIteratedElementsAs List(3, 2, 1))) 
+          List(1, 2, 3) should (contain theSameElementsAs List(3, 2, 1) and (contain theSameElementsInOrderAs List(3, 2, 1))) 
         }
-        e3.message should be (Some("List(1, 2, 3) contained the same elements as List(3, 2, 1), but List(1, 2, 3) did not contain the same iterated elements as List(3, 2, 1)"))
+        e3.message should be (Some("List(1, 2, 3) contained the same elements as List(3, 2, 1), but List(1, 2, 3) did not contain the same elements in the same (iterated) order as List(3, 2, 1)"))
         e3.failedCodeFileName should be (Some("ContainMatcherAndOrSpec.scala"))
         e3.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
@@ -147,9 +147,9 @@ class ContainMatcherAndOrSpec extends Spec with Matchers {
         left should ((not contain theSameElementsAs (right1)) and (contain theSameElementsAs (right2)))
         left should (not { contain theSameElementsAs (right1) } and contain theSameElementsAs (right2))
         
-        left should (not contain theSameIteratedElementsAs (right1) and contain theSameElementsAs (right2))
-        left should ((not contain theSameIteratedElementsAs (right1)) and (contain theSameElementsAs (right2)))
-        left should (not { contain theSameIteratedElementsAs (right1) } and contain theSameElementsAs (right2))
+        left should (not contain theSameElementsInOrderAs (right1) and contain theSameElementsAs (right2))
+        left should ((not contain theSameElementsInOrderAs (right1)) and (contain theSameElementsAs (right2)))
+        left should (not { contain theSameElementsInOrderAs (right1) } and contain theSameElementsAs (right2))
         
         left should (not contain allOf (8, 2, 1) and contain theSameElementsAs (right2))
         left should ((not contain allOf (8, 2, 1)) and (contain theSameElementsAs (right2)))
@@ -186,9 +186,9 @@ class ContainMatcherAndOrSpec extends Spec with Matchers {
         left should ((contain theSameElementsAs (right2)) and (not contain theSameElementsAs (right1)))
         left should (contain theSameElementsAs (right2) and not { contain theSameElementsAs (right1) })
         
-        left should (contain theSameElementsAs (right2) and not contain theSameIteratedElementsAs (right1))
-        left should ((contain theSameElementsAs (right2)) and (not contain theSameIteratedElementsAs (right1)))
-        left should ((contain theSameElementsAs (right2)) and not { contain theSameIteratedElementsAs (right1) })
+        left should (contain theSameElementsAs (right2) and not contain theSameElementsInOrderAs (right1))
+        left should ((contain theSameElementsAs (right2)) and (not contain theSameElementsInOrderAs (right1)))
+        left should ((contain theSameElementsAs (right2)) and not { contain theSameElementsInOrderAs (right1) })
         
         left should (contain theSameElementsAs (right2) and not contain allOf (8, 2, 1))
         left should ((contain theSameElementsAs (right2)) and (not contain allOf (8, 2, 1)))
@@ -225,9 +225,9 @@ class ContainMatcherAndOrSpec extends Spec with Matchers {
         left should ((not contain theSameElementsAs (right2)) and (not contain theSameElementsAs (right1)))
         left should (not { contain theSameElementsAs (right2) } and not { contain theSameElementsAs (right1) })
         
-        left should (not contain theSameElementsAs (right2) and not contain theSameIteratedElementsAs (right1))
-        left should ((not contain theSameElementsAs (right2)) and (not contain theSameIteratedElementsAs (right1)))
-        left should (not { contain theSameElementsAs (right2) } and not { contain theSameIteratedElementsAs (right1) })
+        left should (not contain theSameElementsAs (right2) and not contain theSameElementsInOrderAs (right1))
+        left should ((not contain theSameElementsAs (right2)) and (not contain theSameElementsInOrderAs (right1)))
+        left should (not { contain theSameElementsAs (right2) } and not { contain theSameElementsInOrderAs (right1) })
         
         left should (not contain theSameElementsAs (right2) and not contain allOf (8, 2, 1))
         left should ((not contain theSameElementsAs (right2)) and (not contain allOf (8, 2, 1)))
@@ -256,69 +256,69 @@ class ContainMatcherAndOrSpec extends Spec with Matchers {
       
       def `should failed with correctly stack depth and message when first not contain failed but second contain passed` {
         val e1 = intercept[exceptions.TestFailedException] {
-          List(1, 2, 3) should (not contain theSameIteratedElementsAs (List(1, 2, 3)) and contain theSameElementsAs List(3, 2, 1)) 
+          List(1, 2, 3) should (not contain theSameElementsInOrderAs (List(1, 2, 3)) and contain theSameElementsAs List(3, 2, 1)) 
         }
-        e1.message should be (Some("List(1, 2, 3) contained the same iterated elements as List(1, 2, 3)"))
+        e1.message should be (Some("List(1, 2, 3) contained the same elements in the same (iterated) order as List(1, 2, 3)"))
         e1.failedCodeFileName should be (Some("ContainMatcherAndOrSpec.scala"))
         e1.failedCodeLineNumber should be (Some(thisLineNumber - 4))
         
         val e2 = intercept[exceptions.TestFailedException] {
-          List(1, 2, 3) should ((not contain theSameIteratedElementsAs (List(1, 2, 3))) and (contain theSameElementsAs List(3, 2, 1))) 
+          List(1, 2, 3) should ((not contain theSameElementsInOrderAs (List(1, 2, 3))) and (contain theSameElementsAs List(3, 2, 1))) 
         }
-        e2.message should be (Some("List(1, 2, 3) contained the same iterated elements as List(1, 2, 3)"))
+        e2.message should be (Some("List(1, 2, 3) contained the same elements in the same (iterated) order as List(1, 2, 3)"))
         e2.failedCodeFileName should be (Some("ContainMatcherAndOrSpec.scala"))
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 4))
         
         val e3 = intercept[exceptions.TestFailedException] {
-          List(1, 2, 3) should (not { contain theSameIteratedElementsAs (List(1, 2, 3)) } and contain theSameElementsAs List(3, 2, 1)) 
+          List(1, 2, 3) should (not { contain theSameElementsInOrderAs (List(1, 2, 3)) } and contain theSameElementsAs List(3, 2, 1)) 
         }
-        e3.message should be (Some("List(1, 2, 3) contained the same iterated elements as List(1, 2, 3)"))
+        e3.message should be (Some("List(1, 2, 3) contained the same elements in the same (iterated) order as List(1, 2, 3)"))
         e3.failedCodeFileName should be (Some("ContainMatcherAndOrSpec.scala"))
         e3.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
       def `should failed with correctly stack depth and message when first contain passed but second not contain failed` {
         val e1 = intercept[exceptions.TestFailedException] {
-          List(1, 2, 3) should (contain theSameElementsAs List(3, 2, 1) and not contain theSameIteratedElementsAs (List(1, 2, 3))) 
+          List(1, 2, 3) should (contain theSameElementsAs List(3, 2, 1) and not contain theSameElementsInOrderAs (List(1, 2, 3))) 
         }
-        e1.message should be (Some("List(1, 2, 3) contained the same elements as List(3, 2, 1), but List(1, 2, 3) contained the same iterated elements as List(1, 2, 3)"))
+        e1.message should be (Some("List(1, 2, 3) contained the same elements as List(3, 2, 1), but List(1, 2, 3) contained the same elements in the same (iterated) order as List(1, 2, 3)"))
         e1.failedCodeFileName should be (Some("ContainMatcherAndOrSpec.scala"))
         e1.failedCodeLineNumber should be (Some(thisLineNumber - 4))
         
         val e2 = intercept[exceptions.TestFailedException] {
-          List(1, 2, 3) should ((contain theSameElementsAs List(3, 2, 1)) and (not contain theSameIteratedElementsAs (List(1, 2, 3)))) 
+          List(1, 2, 3) should ((contain theSameElementsAs List(3, 2, 1)) and (not contain theSameElementsInOrderAs (List(1, 2, 3)))) 
         }
-        e2.message should be (Some("List(1, 2, 3) contained the same elements as List(3, 2, 1), but List(1, 2, 3) contained the same iterated elements as List(1, 2, 3)"))
+        e2.message should be (Some("List(1, 2, 3) contained the same elements as List(3, 2, 1), but List(1, 2, 3) contained the same elements in the same (iterated) order as List(1, 2, 3)"))
         e2.failedCodeFileName should be (Some("ContainMatcherAndOrSpec.scala"))
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 4))
         
         val e3 = intercept[exceptions.TestFailedException] {
-          List(1, 2, 3) should (contain theSameElementsAs List(3, 2, 1) and not { contain theSameIteratedElementsAs (List(1, 2, 3)) }) 
+          List(1, 2, 3) should (contain theSameElementsAs List(3, 2, 1) and not { contain theSameElementsInOrderAs (List(1, 2, 3)) }) 
         }
-        e3.message should be (Some("List(1, 2, 3) contained the same elements as List(3, 2, 1), but List(1, 2, 3) contained the same iterated elements as List(1, 2, 3)"))
+        e3.message should be (Some("List(1, 2, 3) contained the same elements as List(3, 2, 1), but List(1, 2, 3) contained the same elements in the same (iterated) order as List(1, 2, 3)"))
         e3.failedCodeFileName should be (Some("ContainMatcherAndOrSpec.scala"))
         e3.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
       def `should failed with correctly stack depth and message when first not contain failed and second not contain failed` {
         val e1 = intercept[exceptions.TestFailedException] {
-          List(1, 2, 3) should (not contain theSameIteratedElementsAs (List(1, 2, 3)) and not contain theSameElementsAs (List(3, 2, 1))) 
+          List(1, 2, 3) should (not contain theSameElementsInOrderAs (List(1, 2, 3)) and not contain theSameElementsAs (List(3, 2, 1))) 
         }
-        e1.message should be (Some("List(1, 2, 3) contained the same iterated elements as List(1, 2, 3)"))
+        e1.message should be (Some("List(1, 2, 3) contained the same elements in the same (iterated) order as List(1, 2, 3)"))
         e1.failedCodeFileName should be (Some("ContainMatcherAndOrSpec.scala"))
         e1.failedCodeLineNumber should be (Some(thisLineNumber - 4))
         
         val e2 = intercept[exceptions.TestFailedException] {
-          List(1, 2, 3) should ((not contain theSameIteratedElementsAs (List(1, 2, 3))) and (not contain theSameElementsAs (List(3, 2, 1)))) 
+          List(1, 2, 3) should ((not contain theSameElementsInOrderAs (List(1, 2, 3))) and (not contain theSameElementsAs (List(3, 2, 1)))) 
         }
-        e2.message should be (Some("List(1, 2, 3) contained the same iterated elements as List(1, 2, 3)"))
+        e2.message should be (Some("List(1, 2, 3) contained the same elements in the same (iterated) order as List(1, 2, 3)"))
         e2.failedCodeFileName should be (Some("ContainMatcherAndOrSpec.scala"))
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 4))
         
         val e3 = intercept[exceptions.TestFailedException] {
-          List(1, 2, 3) should (not { contain theSameIteratedElementsAs (List(1, 2, 3)) } and not { contain theSameElementsAs (List(3, 2, 1)) }) 
+          List(1, 2, 3) should (not { contain theSameElementsInOrderAs (List(1, 2, 3)) } and not { contain theSameElementsAs (List(3, 2, 1)) }) 
         }
-        e3.message should be (Some("List(1, 2, 3) contained the same iterated elements as List(1, 2, 3)"))
+        e3.message should be (Some("List(1, 2, 3) contained the same elements in the same (iterated) order as List(1, 2, 3)"))
         e3.failedCodeFileName should be (Some("ContainMatcherAndOrSpec.scala"))
         e3.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
@@ -334,9 +334,9 @@ class ContainMatcherAndOrSpec extends Spec with Matchers {
         left should ((contain theSameElementsAs (right1)) or (contain theSameElementsAs (right2)))
         left should (contain theSameElementsAs (right1) or (contain theSameElementsAs (right2)))
         
-        left should (contain theSameElementsAs (right1) or contain theSameIteratedElementsAs (right2))
-        left should ((contain theSameElementsAs (right1)) or (contain theSameIteratedElementsAs (right2)))
-        left should (contain theSameElementsAs (right1) or (contain theSameIteratedElementsAs (right2)))
+        left should (contain theSameElementsAs (right1) or contain theSameElementsInOrderAs (right2))
+        left should ((contain theSameElementsAs (right1)) or (contain theSameElementsInOrderAs (right2)))
+        left should (contain theSameElementsAs (right1) or (contain theSameElementsInOrderAs (right2)))
         
         left should (contain theSameElementsAs (right1) or contain allOf (3, 2, 1))
         left should ((contain theSameElementsAs (right1)) or (contain allOf (3, 2, 1)))
@@ -362,9 +362,9 @@ class ContainMatcherAndOrSpec extends Spec with Matchers {
         left should ((contain theSameElementsAs (right1)) or (contain noneOf (7, 8, 9)))
         left should (contain theSameElementsAs (right1) or (contain noneOf (7, 8, 9)))
         
-        left should (contain theSameIteratedElementsAs (right2) or contain theSameElementsAs (right1))
-        left should ((contain theSameIteratedElementsAs (right2)) or (contain theSameElementsAs (right1)))
-        left should (contain theSameIteratedElementsAs (right2) or (contain theSameElementsAs (right1)))
+        left should (contain theSameElementsInOrderAs (right2) or contain theSameElementsAs (right1))
+        left should ((contain theSameElementsInOrderAs (right2)) or (contain theSameElementsAs (right1)))
+        left should (contain theSameElementsInOrderAs (right2) or (contain theSameElementsAs (right1)))
         
         left should (contain allOf (3, 2, 1) or contain theSameElementsAs (right1))
         left should ((contain allOf (3, 2, 1)) or (contain theSameElementsAs (right1)))
@@ -393,23 +393,23 @@ class ContainMatcherAndOrSpec extends Spec with Matchers {
       
       def `should failed with correctly stack depth and message when both of contain failed` {
         val e1 = intercept[exceptions.TestFailedException] {
-          List(1, 2, 3) should (contain theSameElementsAs List(3, 8, 1) or contain theSameIteratedElementsAs List(3, 2, 1)) 
+          List(1, 2, 3) should (contain theSameElementsAs List(3, 8, 1) or contain theSameElementsInOrderAs List(3, 2, 1)) 
         }
-        e1.message should be (Some("List(1, 2, 3) did not contain the same elements as List(3, 8, 1), and List(1, 2, 3) did not contain the same iterated elements as List(3, 2, 1)"))
+        e1.message should be (Some("List(1, 2, 3) did not contain the same elements as List(3, 8, 1), and List(1, 2, 3) did not contain the same elements in the same (iterated) order as List(3, 2, 1)"))
         e1.failedCodeFileName should be (Some("ContainMatcherAndOrSpec.scala"))
         e1.failedCodeLineNumber should be (Some(thisLineNumber - 4))
         
         val e2 = intercept[exceptions.TestFailedException] {
-          List(1, 2, 3) should ((contain theSameElementsAs List(3, 8, 1)) or (contain theSameIteratedElementsAs List(3, 2, 1)))
+          List(1, 2, 3) should ((contain theSameElementsAs List(3, 8, 1)) or (contain theSameElementsInOrderAs List(3, 2, 1)))
         }
-        e2.message should be (Some("List(1, 2, 3) did not contain the same elements as List(3, 8, 1), and List(1, 2, 3) did not contain the same iterated elements as List(3, 2, 1)"))
+        e2.message should be (Some("List(1, 2, 3) did not contain the same elements as List(3, 8, 1), and List(1, 2, 3) did not contain the same elements in the same (iterated) order as List(3, 2, 1)"))
         e2.failedCodeFileName should be (Some("ContainMatcherAndOrSpec.scala"))
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 4))
         
         val e3 = intercept[exceptions.TestFailedException] {
-          List(1, 2, 3) should (contain theSameElementsAs List(3, 8, 1) or (contain theSameIteratedElementsAs List(3, 2, 1)))
+          List(1, 2, 3) should (contain theSameElementsAs List(3, 8, 1) or (contain theSameElementsInOrderAs List(3, 2, 1)))
         }
-        e3.message should be (Some("List(1, 2, 3) did not contain the same elements as List(3, 8, 1), and List(1, 2, 3) did not contain the same iterated elements as List(3, 2, 1)"))
+        e3.message should be (Some("List(1, 2, 3) did not contain the same elements as List(3, 8, 1), and List(1, 2, 3) did not contain the same elements in the same (iterated) order as List(3, 2, 1)"))
         e3.failedCodeFileName should be (Some("ContainMatcherAndOrSpec.scala"))
         e3.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
@@ -424,9 +424,9 @@ class ContainMatcherAndOrSpec extends Spec with Matchers {
         left should ((not contain theSameElementsAs (right1)) or (contain theSameElementsAs (right2))) 
         left should (not { contain theSameElementsAs (right1) } or contain theSameElementsAs (right2)) 
         
-        left should (not contain theSameIteratedElementsAs (right1) or contain theSameElementsAs (right2))
-        left should ((not contain theSameIteratedElementsAs (right1)) or (contain theSameElementsAs (right2)))
-        left should (not { contain theSameIteratedElementsAs (right1) } or contain theSameElementsAs (right2))
+        left should (not contain theSameElementsInOrderAs (right1) or contain theSameElementsAs (right2))
+        left should ((not contain theSameElementsInOrderAs (right1)) or (contain theSameElementsAs (right2)))
+        left should (not { contain theSameElementsInOrderAs (right1) } or contain theSameElementsAs (right2))
         
         left should (not contain allOf (8, 2, 1) or contain theSameElementsAs (right2))
         left should ((not contain allOf (8, 2, 1)) or (contain theSameElementsAs (right2)))
@@ -463,9 +463,9 @@ class ContainMatcherAndOrSpec extends Spec with Matchers {
         left should ((contain theSameElementsAs (right2)) or (not contain theSameElementsAs (right1))) 
         left should (contain theSameElementsAs (right2) or not { contain theSameElementsAs (right1) }) 
         
-        left should (contain theSameElementsAs (right2) or not contain theSameIteratedElementsAs (right1))
-        left should ((contain theSameElementsAs (right2)) or (not contain theSameIteratedElementsAs (right1)))
-        left should (contain theSameElementsAs (right2) or not { contain theSameIteratedElementsAs (right1) })
+        left should (contain theSameElementsAs (right2) or not contain theSameElementsInOrderAs (right1))
+        left should ((contain theSameElementsAs (right2)) or (not contain theSameElementsInOrderAs (right1)))
+        left should (contain theSameElementsAs (right2) or not { contain theSameElementsInOrderAs (right1) })
         
         left should (contain theSameElementsAs (right2) or not contain allOf (8, 2, 1))
         left should ((contain theSameElementsAs (right2)) or (not contain allOf (8, 2, 1)))
@@ -502,9 +502,9 @@ class ContainMatcherAndOrSpec extends Spec with Matchers {
         left should ((not contain theSameElementsAs (right2)) or (not contain theSameElementsAs (right1))) 
         left should (not { contain theSameElementsAs (right2) } or not { contain theSameElementsAs (right1) }) 
         
-        left should (not contain theSameElementsAs (right2) or not contain theSameIteratedElementsAs (right1))
-        left should ((not contain theSameElementsAs (right2)) or (not contain theSameIteratedElementsAs (right1)))
-        left should (not { contain theSameElementsAs (right2) } or not { contain theSameIteratedElementsAs (right1) })
+        left should (not contain theSameElementsAs (right2) or not contain theSameElementsInOrderAs (right1))
+        left should ((not contain theSameElementsAs (right2)) or (not contain theSameElementsInOrderAs (right1)))
+        left should (not { contain theSameElementsAs (right2) } or not { contain theSameElementsInOrderAs (right1) })
         
         left should (not contain theSameElementsAs (right2) or not contain allOf (8, 2, 1))
         left should ((not contain theSameElementsAs (right2)) or (not contain allOf (8, 2, 1)))
@@ -533,69 +533,69 @@ class ContainMatcherAndOrSpec extends Spec with Matchers {
       
       def `should failed with correctly stack depth and message when first not contain failed and second contain failed` {
         val e1 = intercept[exceptions.TestFailedException] {
-          List(1, 2, 3) should (not contain theSameIteratedElementsAs (List(1, 2, 3)) or contain theSameElementsAs List(8, 2, 1)) 
+          List(1, 2, 3) should (not contain theSameElementsInOrderAs (List(1, 2, 3)) or contain theSameElementsAs List(8, 2, 1)) 
         }
-        e1.message should be (Some("List(1, 2, 3) contained the same iterated elements as List(1, 2, 3), and List(1, 2, 3) did not contain the same elements as List(8, 2, 1)"))
+        e1.message should be (Some("List(1, 2, 3) contained the same elements in the same (iterated) order as List(1, 2, 3), and List(1, 2, 3) did not contain the same elements as List(8, 2, 1)"))
         e1.failedCodeFileName should be (Some("ContainMatcherAndOrSpec.scala"))
         e1.failedCodeLineNumber should be (Some(thisLineNumber - 4))
         
         val e2 = intercept[exceptions.TestFailedException] {
-          List(1, 2, 3) should ((not contain theSameIteratedElementsAs (List(1, 2, 3))) or (contain theSameElementsAs List(8, 2, 1))) 
+          List(1, 2, 3) should ((not contain theSameElementsInOrderAs (List(1, 2, 3))) or (contain theSameElementsAs List(8, 2, 1))) 
         }
-        e2.message should be (Some("List(1, 2, 3) contained the same iterated elements as List(1, 2, 3), and List(1, 2, 3) did not contain the same elements as List(8, 2, 1)"))
+        e2.message should be (Some("List(1, 2, 3) contained the same elements in the same (iterated) order as List(1, 2, 3), and List(1, 2, 3) did not contain the same elements as List(8, 2, 1)"))
         e2.failedCodeFileName should be (Some("ContainMatcherAndOrSpec.scala"))
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 4))
         
         val e3 = intercept[exceptions.TestFailedException] {
-          List(1, 2, 3) should (not { contain theSameIteratedElementsAs (List(1, 2, 3)) } or contain theSameElementsAs List(8, 2, 1)) 
+          List(1, 2, 3) should (not { contain theSameElementsInOrderAs (List(1, 2, 3)) } or contain theSameElementsAs List(8, 2, 1)) 
         }
-        e3.message should be (Some("List(1, 2, 3) contained the same iterated elements as List(1, 2, 3), and List(1, 2, 3) did not contain the same elements as List(8, 2, 1)"))
+        e3.message should be (Some("List(1, 2, 3) contained the same elements in the same (iterated) order as List(1, 2, 3), and List(1, 2, 3) did not contain the same elements as List(8, 2, 1)"))
         e3.failedCodeFileName should be (Some("ContainMatcherAndOrSpec.scala"))
         e3.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
       def `should failed with correctly stack depth and message when first contain failed and second not contain failed` {
         val e1 = intercept[exceptions.TestFailedException] {
-          List(1, 2, 3) should (contain theSameIteratedElementsAs (List(3, 2, 1)) or not contain theSameElementsAs (List(3, 2, 1))) 
+          List(1, 2, 3) should (contain theSameElementsInOrderAs (List(3, 2, 1)) or not contain theSameElementsAs (List(3, 2, 1))) 
         }
-        e1.message should be (Some("List(1, 2, 3) did not contain the same iterated elements as List(3, 2, 1), and List(1, 2, 3) contained the same elements as List(3, 2, 1)"))
+        e1.message should be (Some("List(1, 2, 3) did not contain the same elements in the same (iterated) order as List(3, 2, 1), and List(1, 2, 3) contained the same elements as List(3, 2, 1)"))
         e1.failedCodeFileName should be (Some("ContainMatcherAndOrSpec.scala"))
         e1.failedCodeLineNumber should be (Some(thisLineNumber - 4))
         
         val e2 = intercept[exceptions.TestFailedException] {
-          List(1, 2, 3) should ((contain theSameIteratedElementsAs (List(3, 2, 1))) or (not contain theSameElementsAs (List(3, 2, 1)))) 
+          List(1, 2, 3) should ((contain theSameElementsInOrderAs (List(3, 2, 1))) or (not contain theSameElementsAs (List(3, 2, 1)))) 
         }
-        e2.message should be (Some("List(1, 2, 3) did not contain the same iterated elements as List(3, 2, 1), and List(1, 2, 3) contained the same elements as List(3, 2, 1)"))
+        e2.message should be (Some("List(1, 2, 3) did not contain the same elements in the same (iterated) order as List(3, 2, 1), and List(1, 2, 3) contained the same elements as List(3, 2, 1)"))
         e2.failedCodeFileName should be (Some("ContainMatcherAndOrSpec.scala"))
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 4))
         
         val e3 = intercept[exceptions.TestFailedException] {
-          List(1, 2, 3) should (contain theSameIteratedElementsAs (List(3, 2, 1)) or not { contain theSameElementsAs (List(3, 2, 1)) }) 
+          List(1, 2, 3) should (contain theSameElementsInOrderAs (List(3, 2, 1)) or not { contain theSameElementsAs (List(3, 2, 1)) }) 
         }
-        e3.message should be (Some("List(1, 2, 3) did not contain the same iterated elements as List(3, 2, 1), and List(1, 2, 3) contained the same elements as List(3, 2, 1)"))
+        e3.message should be (Some("List(1, 2, 3) did not contain the same elements in the same (iterated) order as List(3, 2, 1), and List(1, 2, 3) contained the same elements as List(3, 2, 1)"))
         e3.failedCodeFileName should be (Some("ContainMatcherAndOrSpec.scala"))
         e3.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
       
       def `should failed with correctly stack depth and message when first not contain failed and second not contain failed` {
         val e1 = intercept[exceptions.TestFailedException] {
-          List(1, 2, 3) should (not contain theSameIteratedElementsAs (List(1, 2, 3)) or not contain theSameElementsAs (List(3, 2, 1))) 
+          List(1, 2, 3) should (not contain theSameElementsInOrderAs (List(1, 2, 3)) or not contain theSameElementsAs (List(3, 2, 1))) 
         }
-        e1.message should be (Some("List(1, 2, 3) contained the same iterated elements as List(1, 2, 3), and List(1, 2, 3) contained the same elements as List(3, 2, 1)"))
+        e1.message should be (Some("List(1, 2, 3) contained the same elements in the same (iterated) order as List(1, 2, 3), and List(1, 2, 3) contained the same elements as List(3, 2, 1)"))
         e1.failedCodeFileName should be (Some("ContainMatcherAndOrSpec.scala"))
         e1.failedCodeLineNumber should be (Some(thisLineNumber - 4))
         
         val e2 = intercept[exceptions.TestFailedException] {
-          List(1, 2, 3) should ((not contain theSameIteratedElementsAs (List(1, 2, 3))) or (not contain theSameElementsAs (List(3, 2, 1)))) 
+          List(1, 2, 3) should ((not contain theSameElementsInOrderAs (List(1, 2, 3))) or (not contain theSameElementsAs (List(3, 2, 1)))) 
         }
-        e2.message should be (Some("List(1, 2, 3) contained the same iterated elements as List(1, 2, 3), and List(1, 2, 3) contained the same elements as List(3, 2, 1)"))
+        e2.message should be (Some("List(1, 2, 3) contained the same elements in the same (iterated) order as List(1, 2, 3), and List(1, 2, 3) contained the same elements as List(3, 2, 1)"))
         e2.failedCodeFileName should be (Some("ContainMatcherAndOrSpec.scala"))
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 4))
         
         val e3 = intercept[exceptions.TestFailedException] {
-          List(1, 2, 3) should (not contain theSameIteratedElementsAs (List(1, 2, 3)) or not { contain theSameElementsAs (List(3, 2, 1)) }) 
+          List(1, 2, 3) should (not contain theSameElementsInOrderAs (List(1, 2, 3)) or not { contain theSameElementsAs (List(3, 2, 1)) }) 
         }
-        e3.message should be (Some("List(1, 2, 3) contained the same iterated elements as List(1, 2, 3), and List(1, 2, 3) contained the same elements as List(3, 2, 1)"))
+        e3.message should be (Some("List(1, 2, 3) contained the same elements in the same (iterated) order as List(1, 2, 3), and List(1, 2, 3) contained the same elements as List(3, 2, 1)"))
         e3.failedCodeFileName should be (Some("ContainMatcherAndOrSpec.scala"))
         e3.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }

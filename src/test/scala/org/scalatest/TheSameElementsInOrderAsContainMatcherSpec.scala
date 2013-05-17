@@ -16,34 +16,34 @@
 package org.scalatest
 
 import collection.mutable.LinkedHashMap
-import words.TheSameIteratedElementsAsContainMatcher
+import words.TheSameElementsInOrderAsContainMatcher
 import SharedHelpers._
 
-class TheSameIteratedElementsAsContainMatcherSpec extends Spec with Matchers  {
+class TheSameElementsInOrderAsContainMatcherSpec extends Spec with Matchers  {
 
-  object `theSameIteratedElementsAs ` {
+  object `theSameElementsInOrderAs ` {
     
     def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: Any, lineNumber: Int) {
       val leftText = FailureMessages.prettifyArrays(left)
       val rightText = FailureMessages.prettifyArrays(right)
-      e.message should be (Some(leftText + " did not contain the same iterated elements as " + rightText))
-      e.failedCodeFileName should be (Some("TheSameIteratedElementsAsContainMatcherSpec.scala"))
+      e.message should be (Some(leftText + " did not contain the same elements in the same (iterated) order as " + rightText))
+      e.failedCodeFileName should be (Some("TheSameElementsInOrderAsContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
     
     def `should succeeded when left List contains same elements in same order as right List` {
-      List(1, 2, 3) should contain theSameIteratedElementsAs List(1, 2, 3)
-      Array(1, 2, 3) should contain theSameIteratedElementsAs Array(1, 2, 3)
-      javaList(1, 2, 3) should contain theSameIteratedElementsAs List(1, 2, 3)
+      List(1, 2, 3) should contain theSameElementsInOrderAs List(1, 2, 3)
+      Array(1, 2, 3) should contain theSameElementsInOrderAs Array(1, 2, 3)
+      javaList(1, 2, 3) should contain theSameElementsInOrderAs List(1, 2, 3)
       
-      LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three") should contain theSameIteratedElementsAs LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three")
-      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should contain theSameIteratedElementsAs Map(1 -> "one", 2 -> "two", 3 -> "three")
+      LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three") should contain theSameElementsInOrderAs LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three")
+      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should contain theSameElementsInOrderAs Map(1 -> "one", 2 -> "two", 3 -> "three")
     }
     
     val matcherRight = List(1, 2, 3)
-    val matcher = new TheSameIteratedElementsAsContainMatcher(matcherRight, defaultEquality)
+    val matcher = new TheSameElementsInOrderAsContainMatcher(matcherRight, defaultEquality)
     val mapMatcherRight = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three")
-    val mapMatcher = new TheSameIteratedElementsAsContainMatcher(mapMatcherRight, defaultEquality)
+    val mapMatcher = new TheSameElementsInOrderAsContainMatcher(mapMatcherRight, defaultEquality)
     
     def `should work with ContainMatcher directly` {
       
@@ -54,53 +54,53 @@ class TheSameIteratedElementsAsContainMatcherSpec extends Spec with Matchers  {
       javaList(1, 2, 3) should contain (matcher)
       javaSet(1, 2, 3) should contain (matcher)
       
-      List(1, 2, 3) should contain (theSameIteratedElementsAs(List(1, 2, 3)))
-      Set(1, 2, 3) should contain (theSameIteratedElementsAs(List(1, 2, 3)))
-      Array(1, 2, 3) should contain (theSameIteratedElementsAs(Array(1, 2, 3)))
+      List(1, 2, 3) should contain (theSameElementsInOrderAs(List(1, 2, 3)))
+      Set(1, 2, 3) should contain (theSameElementsInOrderAs(List(1, 2, 3)))
+      Array(1, 2, 3) should contain (theSameElementsInOrderAs(Array(1, 2, 3)))
       
-      javaList(1, 2, 3) should contain (theSameIteratedElementsAs(List(1, 2, 3)))
-      javaSet(1, 2, 3) should contain (theSameIteratedElementsAs(List(1, 2, 3)))
+      javaList(1, 2, 3) should contain (theSameElementsInOrderAs(List(1, 2, 3)))
+      javaSet(1, 2, 3) should contain (theSameElementsInOrderAs(List(1, 2, 3)))
       
       LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three") should contain (mapMatcher)
-      LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three") should contain (theSameIteratedElementsAs(Map(1 -> "one", 2 -> "two", 3 -> "three")))
+      LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three") should contain (theSameElementsInOrderAs(Map(1 -> "one", 2 -> "two", 3 -> "three")))
       
       javaMap(1 -> "one", 2 -> "two", 3 -> "three") should contain (mapMatcher)
-      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should contain (theSameIteratedElementsAs(Map(1 -> "one", 2 -> "two", 3 -> "three")))
+      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should contain (theSameElementsInOrderAs(Map(1 -> "one", 2 -> "two", 3 -> "three")))
     }
     
     def `should throw TestFailedException with correct stack depth and message when left List contains same elements in different order as right List` {
       val left1 = List(1, 2, 3)
       val right1 = List(2, 1, 3)
       val e1 = intercept[exceptions.TestFailedException] {
-        left1 should contain theSameIteratedElementsAs right1
+        left1 should contain theSameElementsInOrderAs right1
       }
       checkStackDepth(e1, left1, right1, thisLineNumber - 2)
       
       val left2 = javaList(1, 2, 3)
       val right2 = List(2, 1, 3)
       val e2 = intercept[exceptions.TestFailedException] {
-        left2 should contain theSameIteratedElementsAs right2
+        left2 should contain theSameElementsInOrderAs right2
       }
       checkStackDepth(e2, left2, right2, thisLineNumber - 2)
       
       val left3 = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three")
       val right3 = LinkedHashMap(2 -> "two", 1 -> "one", 3 -> "three")
       val e3 = intercept[exceptions.TestFailedException] {
-        left3 should contain theSameIteratedElementsAs right3
+        left3 should contain theSameElementsInOrderAs right3
       }
       checkStackDepth(e3, left3, right3, thisLineNumber - 2)
       
       val left4 = javaMap(1 -> "one", 2 -> "two", 3 -> "three")
       val right4 = LinkedHashMap(2 -> "two", 1 -> "one", 3 -> "three")
       val e4 = intercept[exceptions.TestFailedException] {
-        left4 should contain theSameIteratedElementsAs right4
+        left4 should contain theSameElementsInOrderAs right4
       }
       checkStackDepth(e4, left4, right4, thisLineNumber - 2)
       
       val left5 = Array(1, 2, 3)
       val right5 = Array(2, 1, 3)
       val e5 = intercept[exceptions.TestFailedException] {
-        left5 should contain theSameIteratedElementsAs right5
+        left5 should contain theSameElementsInOrderAs right5
       }
       checkStackDepth(e5, left5, right5, thisLineNumber - 2)
     }
@@ -117,7 +117,7 @@ class TheSameIteratedElementsAsContainMatcherSpec extends Spec with Matchers  {
       checkStackDepth(e1, left1, matcherRight, thisLineNumber - 2)
       
       val e2 = intercept[exceptions.TestFailedException] {
-        left1 should contain (theSameIteratedElementsAs(matcherRight))
+        left1 should contain (theSameElementsInOrderAs(matcherRight))
       }
       checkStackDepth(e2, left1, matcherRight, thisLineNumber - 2)
       
@@ -127,7 +127,7 @@ class TheSameIteratedElementsAsContainMatcherSpec extends Spec with Matchers  {
       checkStackDepth(e3, left2, mapMatcherRight, thisLineNumber - 2)
       
       val e4 = intercept[exceptions.TestFailedException] {
-        left2 should contain (theSameIteratedElementsAs(mapMatcherRight))
+        left2 should contain (theSameElementsInOrderAs(mapMatcherRight))
       }
       checkStackDepth(e4, left2, mapMatcherRight, thisLineNumber - 2)
       
@@ -137,7 +137,7 @@ class TheSameIteratedElementsAsContainMatcherSpec extends Spec with Matchers  {
       checkStackDepth(e5, left3, matcherRight, thisLineNumber - 2)
       
       val e6 = intercept[exceptions.TestFailedException] {
-        left3 should contain (theSameIteratedElementsAs(matcherRight))
+        left3 should contain (theSameElementsInOrderAs(matcherRight))
       }
       checkStackDepth(e6, left3, matcherRight, thisLineNumber - 2)
       
@@ -147,7 +147,7 @@ class TheSameIteratedElementsAsContainMatcherSpec extends Spec with Matchers  {
       checkStackDepth(e7, left4, mapMatcherRight, thisLineNumber - 2)
       
       val e8 = intercept[exceptions.TestFailedException] {
-        left4 should contain (theSameIteratedElementsAs(mapMatcherRight))
+        left4 should contain (theSameElementsInOrderAs(mapMatcherRight))
       }
       checkStackDepth(e8, left4, mapMatcherRight, thisLineNumber - 2)
       
@@ -157,7 +157,7 @@ class TheSameIteratedElementsAsContainMatcherSpec extends Spec with Matchers  {
       checkStackDepth(e9, left5, matcherRight, thisLineNumber - 2)
       
       val e10 = intercept[exceptions.TestFailedException] {
-        left5 should contain (theSameIteratedElementsAs(matcherRight))
+        left5 should contain (theSameElementsInOrderAs(matcherRight))
       }
       checkStackDepth(e10, left5, matcherRight, thisLineNumber - 2)
     }
@@ -166,35 +166,35 @@ class TheSameIteratedElementsAsContainMatcherSpec extends Spec with Matchers  {
       val left1 = List(1, 2, 3)
       val right1 = List(1, 2, 8)
       val e1 = intercept[exceptions.TestFailedException] {
-        left1 should contain theSameIteratedElementsAs right1
+        left1 should contain theSameElementsInOrderAs right1
       }
       checkStackDepth(e1, left1, right1, thisLineNumber - 2)
       
       val left2 = javaList(1, 2, 3)
       val right2 = List(1, 2, 8)
       val e2 = intercept[exceptions.TestFailedException] {
-        left2 should contain theSameIteratedElementsAs right2
+        left2 should contain theSameElementsInOrderAs right2
       }
       checkStackDepth(e2, left2, right2, thisLineNumber - 2)
       
       val left3 = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three")
       val right3 = LinkedHashMap(1 -> "one", 2 -> "two", 8 -> "eight")
       val e3 = intercept[exceptions.TestFailedException] {
-        left3 should contain theSameIteratedElementsAs right3
+        left3 should contain theSameElementsInOrderAs right3
       }
       checkStackDepth(e3, left3, right3, thisLineNumber - 2)
       
       val left4 = javaMap(1 -> "one", 2 -> "two", 3 -> "three")
       val right4 = LinkedHashMap(1 -> "one", 2 -> "two", 8 -> "eight")
       val e4 = intercept[exceptions.TestFailedException] {
-        left4 should contain theSameIteratedElementsAs right4
+        left4 should contain theSameElementsInOrderAs right4
       }
       checkStackDepth(e4, left4, right4, thisLineNumber - 2)
       
       val left5 = Array(1, 2, 3)
       val right5 = Array(1, 2, 8)
       val e5 = intercept[exceptions.TestFailedException] {
-        left5 should contain theSameIteratedElementsAs right5
+        left5 should contain theSameElementsInOrderAs right5
       }
       checkStackDepth(e5, left5, right5, thisLineNumber - 2)
     }
@@ -203,35 +203,35 @@ class TheSameIteratedElementsAsContainMatcherSpec extends Spec with Matchers  {
       val left1 = List(1, 2, 3)
       val right1 = List(1, 2, 3, 4)
       val e1 = intercept[exceptions.TestFailedException] {
-        left1 should contain theSameIteratedElementsAs right1
+        left1 should contain theSameElementsInOrderAs right1
       }
       checkStackDepth(e1, left1, right1, thisLineNumber - 2)
       
       val left2 = javaList(1, 2, 3)
       val right2 = List(1, 2, 3, 4)
       val e2 = intercept[exceptions.TestFailedException] {
-        left2 should contain theSameIteratedElementsAs right2
+        left2 should contain theSameElementsInOrderAs right2
       }
       checkStackDepth(e2, left2, right2, thisLineNumber - 2)
       
       val left3 = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three")
       val right3 = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four")
       val e3 = intercept[exceptions.TestFailedException] {
-        left3 should contain theSameIteratedElementsAs right3
+        left3 should contain theSameElementsInOrderAs right3
       }
       checkStackDepth(e3, left3, right3, thisLineNumber - 2)
       
       val left4 = javaMap(1 -> "one", 2 -> "two", 3 -> "three")
       val right4 = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four")
       val e4 = intercept[exceptions.TestFailedException] {
-        left4 should contain theSameIteratedElementsAs right4
+        left4 should contain theSameElementsInOrderAs right4
       }
       checkStackDepth(e4, left4, right4, thisLineNumber - 2)
       
       val left5 = Array(1, 2, 3)
       val right5 = Array(1, 2, 3, 4)
       val e5 = intercept[exceptions.TestFailedException] {
-        left5 should contain theSameIteratedElementsAs right5
+        left5 should contain theSameElementsInOrderAs right5
       }
       checkStackDepth(e5, left5, right5, thisLineNumber - 2)
     }
@@ -240,141 +240,141 @@ class TheSameIteratedElementsAsContainMatcherSpec extends Spec with Matchers  {
       val left1 = List(1, 2, 3)
       val right1 = List(1, 2)
       val e1 = intercept[exceptions.TestFailedException] {
-        left1 should contain theSameIteratedElementsAs right1
+        left1 should contain theSameElementsInOrderAs right1
       }
       checkStackDepth(e1, left1, right1, thisLineNumber - 2)
       
       val left2 = javaList(1, 2, 3)
       val right2 = List(1, 2)
       val e2 = intercept[exceptions.TestFailedException] {
-        left2 should contain theSameIteratedElementsAs right2
+        left2 should contain theSameElementsInOrderAs right2
       }
       checkStackDepth(e2, left2, right2, thisLineNumber - 2)
       
       val left3 = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three")
       val right3 = LinkedHashMap(1 -> "one", 2 -> "two")
       val e3 = intercept[exceptions.TestFailedException] {
-        left3 should contain theSameIteratedElementsAs right3
+        left3 should contain theSameElementsInOrderAs right3
       }
       checkStackDepth(e3, left3, right3, thisLineNumber - 2)
       
       val left4 = javaMap(1 -> "one", 2 -> "two", 3 -> "three")
       val right4 = LinkedHashMap(1 -> "one", 2 -> "two")
       val e4 = intercept[exceptions.TestFailedException] {
-        left4 should contain theSameIteratedElementsAs right4
+        left4 should contain theSameElementsInOrderAs right4
       }
       checkStackDepth(e4, left4, right4, thisLineNumber - 2)
       
       val left5 = Array(1, 2, 3)
       val right5 = Array(1, 2)
       val e5 = intercept[exceptions.TestFailedException] {
-        left5 should contain theSameIteratedElementsAs right5
+        left5 should contain theSameElementsInOrderAs right5
       }
       checkStackDepth(e5, left5, right5, thisLineNumber - 2)
     }
   }
   
-  object `not theSameIteratedElementsAs ` {
+  object `not theSameElementsInOrderAs ` {
     
     def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: Any, lineNumber: Int) {
       val leftText = FailureMessages.prettifyArrays(left)
       val rightText = FailureMessages.prettifyArrays(right)
-      e.message should be (Some(leftText + " contained the same iterated elements as " + rightText))
-      e.failedCodeFileName should be (Some("TheSameIteratedElementsAsContainMatcherSpec.scala"))
+      e.message should be (Some(leftText + " contained the same elements in the same (iterated) order as " + rightText))
+      e.failedCodeFileName should be (Some("TheSameElementsInOrderAsContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
     
     def `should succeeded when left List contains different elements as right List` {
-      List(1, 2, 3) should not contain theSameIteratedElementsAs (List(1, 2, 8))
-      Array(1, 2, 3) should not contain theSameIteratedElementsAs (List(1, 2, 8))
-      javaList(1, 2, 3) should not contain theSameIteratedElementsAs (List(1, 2, 8))
+      List(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 2, 8))
+      Array(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 2, 8))
+      javaList(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 2, 8))
       
-      LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameIteratedElementsAs (LinkedHashMap(1 -> "one", 2 -> "two", 8 -> "eight"))
-      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameIteratedElementsAs (LinkedHashMap(1 -> "one", 2 -> "two", 8 -> "eight"))
+      LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameElementsInOrderAs (LinkedHashMap(1 -> "one", 2 -> "two", 8 -> "eight"))
+      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameElementsInOrderAs (LinkedHashMap(1 -> "one", 2 -> "two", 8 -> "eight"))
     }
     
     def `should succeeded when left List contains less elements than right List` {
-      List(1, 2, 3) should not contain theSameIteratedElementsAs (List(1, 2, 3, 4))
-      Array(1, 2, 3) should not contain theSameIteratedElementsAs (List(1, 2, 3, 4))
-      javaList(1, 2, 3) should not contain theSameIteratedElementsAs (List(1, 2, 3, 4))
+      List(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 2, 3, 4))
+      Array(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 2, 3, 4))
+      javaList(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 2, 3, 4))
       
-      LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameIteratedElementsAs (LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four"))
-      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameIteratedElementsAs (LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four"))
+      LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameElementsInOrderAs (LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four"))
+      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameElementsInOrderAs (LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four"))
     }
     
     def `should succeeded when left List contains more elements than right List` {
-      List(1, 2, 3) should not contain theSameIteratedElementsAs (List(1, 2))
-      Array(1, 2, 3) should not contain theSameIteratedElementsAs (List(1, 2))
-      javaList(1, 2, 3) should not contain theSameIteratedElementsAs (List(1, 2))
+      List(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 2))
+      Array(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 2))
+      javaList(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 2))
       
-      LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameIteratedElementsAs (LinkedHashMap(1 -> "one", 2 -> "two"))
-      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameIteratedElementsAs (LinkedHashMap(1 -> "one", 2 -> "two"))
+      LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameElementsInOrderAs (LinkedHashMap(1 -> "one", 2 -> "two"))
+      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameElementsInOrderAs (LinkedHashMap(1 -> "one", 2 -> "two"))
     }
     
     def `should succeeded when left List contains same elements as right List but in different order` {
-      List(1, 2, 3) should not contain theSameIteratedElementsAs (List(1, 3, 2))
-      Array(1, 2, 3) should not contain theSameIteratedElementsAs (List(1, 3, 2))
-      javaList(1, 2, 3) should not contain theSameIteratedElementsAs (List(1, 3, 2))
+      List(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 3, 2))
+      Array(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 3, 2))
+      javaList(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 3, 2))
       
-      LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameIteratedElementsAs (LinkedHashMap(1 -> "one", 3 -> "three", 2 -> "two"))
-      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameIteratedElementsAs (LinkedHashMap(1 -> "one", 3 -> "three", 2 -> "two"))
+      LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameElementsInOrderAs (LinkedHashMap(1 -> "one", 3 -> "three", 2 -> "two"))
+      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameElementsInOrderAs (LinkedHashMap(1 -> "one", 3 -> "three", 2 -> "two"))
     }
     
     val matcherRight = List(1, 3, 2)
-    val matcher = new TheSameIteratedElementsAsContainMatcher(matcherRight, defaultEquality)
+    val matcher = new TheSameElementsInOrderAsContainMatcher(matcherRight, defaultEquality)
     val mapMatcherRight = LinkedHashMap(1 -> "one", 3 -> "three", 2 -> "two")
-    val mapMatcher = new TheSameIteratedElementsAsContainMatcher(mapMatcherRight, defaultEquality)
+    val mapMatcher = new TheSameElementsInOrderAsContainMatcher(mapMatcherRight, defaultEquality)
     
     def `should work with ContainMatcher directly` {
       List(1, 2, 3) should not contain matcher
-      List(1, 2, 3) should not contain theSameIteratedElementsAs(List(1, 3, 2))
+      List(1, 2, 3) should not contain theSameElementsInOrderAs(List(1, 3, 2))
       
       Array(1, 2, 3) should not contain matcher
-      Array(1, 2, 3) should not contain theSameIteratedElementsAs(Array(1, 3, 2))
+      Array(1, 2, 3) should not contain theSameElementsInOrderAs(Array(1, 3, 2))
       
       javaList(1, 2, 3) should not contain matcher
-      javaList(1, 2, 3) should not contain theSameIteratedElementsAs(List(1, 3, 2))
+      javaList(1, 2, 3) should not contain theSameElementsInOrderAs(List(1, 3, 2))
       
       LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain mapMatcher
-      LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameIteratedElementsAs(LinkedHashMap(1 -> "one", 3 -> "three", 2 -> "two"))
+      LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameElementsInOrderAs(LinkedHashMap(1 -> "one", 3 -> "three", 2 -> "two"))
       
       javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain mapMatcher
-      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameIteratedElementsAs(LinkedHashMap(1 -> "one", 3 -> "three", 2 -> "two"))
+      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameElementsInOrderAs(LinkedHashMap(1 -> "one", 3 -> "three", 2 -> "two"))
     }
     
     def `should throw TestFailedException with correct stack depth and message when left and right List are same size but contain same elements in same order` {
       val left1 = List(1, 2, 3)
       val right1 = List(1, 2, 3)
       val e1 = intercept[exceptions.TestFailedException] {
-        left1 should not contain theSameIteratedElementsAs (right1)
+        left1 should not contain theSameElementsInOrderAs (right1)
       }
       checkStackDepth(e1, left1, right1, thisLineNumber - 2)
       
       val left2 = javaList(1, 2, 3)
       val right2 = List(1, 2, 3)
       val e2 = intercept[exceptions.TestFailedException] {
-        left2 should not contain theSameIteratedElementsAs (right2)
+        left2 should not contain theSameElementsInOrderAs (right2)
       }
       checkStackDepth(e2, left2, right2, thisLineNumber - 2)
       
       val left3 = Map(1 -> "one", 2 -> "two", 3 -> "three")
       val right3 = Map(1 -> "one", 2 -> "two", 3 -> "three")
       val e3 = intercept[exceptions.TestFailedException] {
-        left3 should not contain theSameIteratedElementsAs (right3)
+        left3 should not contain theSameElementsInOrderAs (right3)
       }
       checkStackDepth(e3, left3, right3, thisLineNumber - 2)
       
       val left4 = javaMap(1 -> "one", 2 -> "two", 3 -> "three")
       val right4 = Map(1 -> "one", 2 -> "two", 3 -> "three")
       val e4 = intercept[exceptions.TestFailedException] {
-        left4 should not contain theSameIteratedElementsAs (right4)
+        left4 should not contain theSameElementsInOrderAs (right4)
       }
       checkStackDepth(e4, left4, right4, thisLineNumber - 2)
       
       val left5 = Array(1, 2, 3)
       val right5 = Array(1, 2, 3)
       val e5 = intercept[exceptions.TestFailedException] {
-        left5 should not contain theSameIteratedElementsAs (right5)
+        left5 should not contain theSameElementsInOrderAs (right5)
       }
       checkStackDepth(e5, left5, right5, thisLineNumber - 2)
     }
@@ -391,7 +391,7 @@ class TheSameIteratedElementsAsContainMatcherSpec extends Spec with Matchers  {
       checkStackDepth(e1, left1, matcherRight, thisLineNumber - 2)
       
       val e2 = intercept[exceptions.TestFailedException] {
-        left1 should not contain theSameIteratedElementsAs(matcherRight)
+        left1 should not contain theSameElementsInOrderAs(matcherRight)
       }
       checkStackDepth(e2, left1, matcherRight, thisLineNumber - 2)
       
@@ -401,7 +401,7 @@ class TheSameIteratedElementsAsContainMatcherSpec extends Spec with Matchers  {
       checkStackDepth(e3, left2, mapMatcherRight, thisLineNumber - 2)
       
       val e4 = intercept[exceptions.TestFailedException] {
-        left2 should not contain theSameIteratedElementsAs(mapMatcherRight)
+        left2 should not contain theSameElementsInOrderAs(mapMatcherRight)
       }
       checkStackDepth(e4, left2, mapMatcherRight, thisLineNumber - 2)
       
@@ -411,7 +411,7 @@ class TheSameIteratedElementsAsContainMatcherSpec extends Spec with Matchers  {
       checkStackDepth(e5, left3, matcherRight, thisLineNumber - 2)
       
       val e6 = intercept[exceptions.TestFailedException] {
-        left3 should not contain theSameIteratedElementsAs(matcherRight)
+        left3 should not contain theSameElementsInOrderAs(matcherRight)
       }
       checkStackDepth(e6, left3, matcherRight, thisLineNumber - 2)
       
@@ -421,7 +421,7 @@ class TheSameIteratedElementsAsContainMatcherSpec extends Spec with Matchers  {
       checkStackDepth(e7, left4, mapMatcherRight, thisLineNumber - 2)
       
       val e8 = intercept[exceptions.TestFailedException] {
-        left4 should not contain theSameIteratedElementsAs(mapMatcherRight)
+        left4 should not contain theSameElementsInOrderAs(mapMatcherRight)
       }
       checkStackDepth(e8, left4, mapMatcherRight, thisLineNumber - 2)
       
@@ -431,7 +431,7 @@ class TheSameIteratedElementsAsContainMatcherSpec extends Spec with Matchers  {
       checkStackDepth(e9, left5, matcherRight, thisLineNumber - 2)
       
       val e10 = intercept[exceptions.TestFailedException] {
-        left5 should not contain theSameIteratedElementsAs(matcherRight)
+        left5 should not contain theSameElementsInOrderAs(matcherRight)
       }
       checkStackDepth(e10, left5, matcherRight, thisLineNumber - 2)
     }

@@ -1066,12 +1066,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * This method enables the following syntax: 
      *
      * <pre class="stHighlight">
-     * javaMap should contain theSameIteratedElementsAs traversable
+     * javaMap should contain theSameElementsInOrderAs traversable
      *                        ^
      * </pre>
      */
-    def theSameIteratedElementsAs(right: scala.collection.GenTraversable[(K, V)])(implicit equality: Equality[(K, V)]) {
-      matchContainMatcher(left, new TheSameIteratedElementsAsContainMatcher(right, equality), shouldBeTrue)
+    def theSameElementsInOrderAs(right: scala.collection.GenTraversable[(K, V)])(implicit equality: Equality[(K, V)]) {
+      matchContainMatcher(left, new TheSameElementsInOrderAsContainMatcher(right, equality), shouldBeTrue)
     }
     
     /**
@@ -2320,24 +2320,24 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * This method enables the following syntax: 
      *
      * <pre class="stHighlight">
-     * traversable should contain theSameIteratedElementsAs anotherTraversable
+     * traversable should contain theSameElementsInOrderAs anotherTraversable
      *                            ^
      * </pre>
      */
-    def theSameIteratedElementsAs(right: scala.collection.GenTraversable[T])(implicit equality: Equality[T]) {
-      matchContainMatcher(left, new TheSameIteratedElementsAsContainMatcher(right, equality), shouldBeTrue)
+    def theSameElementsInOrderAs(right: scala.collection.GenTraversable[T])(implicit equality: Equality[T]) {
+      matchContainMatcher(left, new TheSameElementsInOrderAsContainMatcher(right, equality), shouldBeTrue)
     }
     
     /**
      * This method enables the following syntax: 
      *
      * <pre class="stHighlight">
-     * traversable should contain theSameIteratedElementsAs array
+     * traversable should contain theSameElementsInOrderAs array
      *                            ^
      * </pre>
      */
-    def theSameIteratedElementsAs(right: Array[T])(implicit equality: Equality[T]) {
-      matchContainMatcher(left, new TheSameIteratedElementsAsContainMatcher(new ArrayWrapper(right), equality), shouldBeTrue)
+    def theSameElementsInOrderAs(right: Array[T])(implicit equality: Equality[T]) {
+      matchContainMatcher(left, new TheSameElementsInOrderAsContainMatcher(new ArrayWrapper(right), equality), shouldBeTrue)
     }
     
     /**
@@ -2487,12 +2487,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * This method enables the following syntax: 
      *
      * <pre class="stHighlight">
-     * javaCol should contain theSameIteratedElementsAs anotherTraversable
+     * javaCol should contain theSameElementsInOrderAs anotherTraversable
      *                        ^
      * </pre>
      */
-    def theSameIteratedElementsAs(right: scala.collection.GenTraversable[E])(implicit equality: Equality[E]) {
-      matchContainMatcher(left.asInstanceOf[java.util.Collection[E]], new TheSameIteratedElementsAsContainMatcher(right, equality), shouldBeTrue)
+    def theSameElementsInOrderAs(right: scala.collection.GenTraversable[E])(implicit equality: Equality[E]) {
+      matchContainMatcher(left.asInstanceOf[java.util.Collection[E]], new TheSameElementsInOrderAsContainMatcher(right, equality), shouldBeTrue)
     }
     
     /**
@@ -2638,23 +2638,23 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    * This method enables the following syntax: 
    *
    * <pre class="stHighlight">
-   * traversable should contain (theSameIteratedElementsAs(anotherTraversable))
+   * traversable should contain (theSameElementsInOrderAs(anotherTraversable))
    *                             ^
    * </pre>
    */
-  def theSameIteratedElementsAs[T](xs: scala.collection.GenTraversable[T])(implicit equality: Equality[T]) = 
-    new TheSameIteratedElementsAsContainMatcher(xs, equality)
+  def theSameElementsInOrderAs[T](xs: scala.collection.GenTraversable[T])(implicit equality: Equality[T]) = 
+    new TheSameElementsInOrderAsContainMatcher(xs, equality)
   
   /**
    * This method enables the following syntax: 
    *
    * <pre class="stHighlight">
-   * traversable should contain (theSameIteratedElementsAs(array))
+   * traversable should contain (theSameElementsInOrderAs(array))
    *                             ^
    * </pre>
    */
-  def theSameIteratedElementsAs[T](xs: Array[T])(implicit equality: Equality[T]) = 
-    new TheSameIteratedElementsAsContainMatcher(new ArrayWrapper(xs), equality)
+  def theSameElementsInOrderAs[T](xs: Array[T])(implicit equality: Equality[T]) = 
+    new TheSameElementsInOrderAsContainMatcher(new ArrayWrapper(xs), equality)
   
   /**
    * This method enables the following syntax: 
@@ -4019,13 +4019,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * This method enables the following syntax: 
      *
      * <pre class="stHighlight">
-     * all(colOfArray) should contain theSameIteratedElementsAs List(1, 2, 3)
+     * all(colOfArray) should contain theSameElementsInOrderAs List(1, 2, 3)
      *                                ^
      * </pre>
      */
-    def theSameIteratedElementsAs(right: scala.collection.GenTraversable[T])(implicit equality: Equality[T]) {
-      val containMatcher = new TheSameIteratedElementsAsContainMatcher(right, equality)
-      doCollected(collected, xs, "theSameIteratedElementsAs", 1) { e =>
+    def theSameElementsInOrderAs(right: scala.collection.GenTraversable[T])(implicit equality: Equality[T]) {
+      val containMatcher = new TheSameElementsInOrderAsContainMatcher(right, equality)
+      doCollected(collected, xs, "theSameElementsInOrderAs", 1) { e =>
         val result = containMatcher(e)
         if (result.matches != shouldBeTrue)
           throw newTestFailedException(
@@ -5144,13 +5144,13 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * This method enables the following syntax: 
      *
      * <pre class="stHighlight">
-     * all(colOfTraversable) should contain theSameIteratedElementsAs List(1, 2, 3)
+     * all(colOfTraversable) should contain theSameElementsInOrderAs List(1, 2, 3)
      *                                      ^
      * </pre>
      */
-    def theSameIteratedElementsAs(right: scala.collection.GenTraversable[E])(implicit equality: Equality[E]) {
-      val containMatcher = new TheSameIteratedElementsAsContainMatcher(right, equality)
-      doCollected(collected, xs, "theSameIteratedElementsAs", 1) { e =>
+    def theSameElementsInOrderAs(right: scala.collection.GenTraversable[E])(implicit equality: Equality[E]) {
+      val containMatcher = new TheSameElementsInOrderAsContainMatcher(right, equality)
+      doCollected(collected, xs, "theSameElementsInOrderAs", 1) { e =>
         val result = containMatcher(e.asInstanceOf[scala.collection.GenTraversable[E]])
         if (result.matches != shouldBeTrue)
           throw newTestFailedException(
@@ -5445,9 +5445,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                              ^
      * </pre>
      */
-    def theSameIteratedElementsAs(right: scala.collection.GenTraversable[(K, V)])(implicit equality: Equality[(K, V)]) {
-      val containMatcher = new TheSameIteratedElementsAsContainMatcher(right, equality)
-      doCollected(collected, xs, "theSameIteratedElementsAs", 1) { e =>
+    def theSameElementsInOrderAs(right: scala.collection.GenTraversable[(K, V)])(implicit equality: Equality[(K, V)]) {
+      val containMatcher = new TheSameElementsInOrderAsContainMatcher(right, equality)
+      doCollected(collected, xs, "theSameElementsInOrderAs", 1) { e =>
         val result = containMatcher(e)
         if (result.matches != shouldBeTrue)
           throw newTestFailedException(
@@ -6607,7 +6607,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * Turn off implicit conversion of LoneElement, so that if user accidentally mixin LoneElement it does conflict with convertToTraversableShouldWrapper
    */
   override def convertToTraversableLoneElementWrapper[T](xs: scala.collection.GenTraversable[T]): LoneElementTraversableWrapper[T] = new LoneElementTraversableWrapper[T](xs)
-
 }
 
 /**

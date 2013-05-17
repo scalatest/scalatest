@@ -39,14 +39,14 @@ class ContainMatcherAndOrExplicitEqualitySpec extends Spec with Matchers with Ex
         val right2 = List(" 1", "2 ", " 3")
         
         left should ((contain theSameElementsAs (right1)) (equality) and (contain theSameElementsAs (right2)) (equality))
-        left should ((contain theSameElementsAs (right1)) (equality) and (contain theSameIteratedElementsAs (right2)) (equality))
+        left should ((contain theSameElementsAs (right1)) (equality) and (contain theSameElementsInOrderAs (right2)) (equality))
         left should ((contain theSameElementsAs (right1)) (equality) and (contain allOf (" 3", "2 ", " 1")) (equality))
         left should ((contain theSameElementsAs (right1)) (equality) and (contain inOrder (" 1", "2 ", " 3")) (equality))
         left should ((contain theSameElementsAs (right1)) (equality) and (contain oneOf (" 1", " 3", "5 ")) (equality))
         left should ((contain theSameElementsAs (right1)) (equality) and (contain only (" 3", " 1", "2 "))(equality))
         left should ((contain theSameElementsAs (right1)) (equality) and (contain inOrderOnly (" 1", "2 ", " 3")) (equality))
         left should ((contain theSameElementsAs (right1)) (equality) and (contain noneOf (" 7", "8 ", " 9")) (equality))
-        left should ((contain theSameIteratedElementsAs (right2)) (equality) and (contain theSameElementsAs (right1)) (equality))
+        left should ((contain theSameElementsInOrderAs (right2)) (equality) and (contain theSameElementsAs (right1)) (equality))
         left should ((contain allOf (" 3", " 1", "2 ")) (equality) and (contain theSameElementsAs (right1)) (equality))
         left should ((contain inOrder (" 1", "2 ", " 3")) (equality) and (contain theSameElementsAs (right1)) (equality))
         left should ((contain oneOf (" 1", " 3", "5 ")) (equality) and (contain theSameElementsAs (right1)) (equality))
@@ -61,9 +61,9 @@ class ContainMatcherAndOrExplicitEqualitySpec extends Spec with Matchers with Ex
         val right = List(" 3", "2 ", " 1")
         
         val e = intercept[exceptions.TestFailedException] {
-          left should ((contain theSameIteratedElementsAs right) (equality) and (contain theSameElementsAs right) (equality)) 
+          left should ((contain theSameElementsInOrderAs right) (equality) and (contain theSameElementsAs right) (equality)) 
         }
-        e.message should be (Some(left + " did not contain the same iterated elements as " + right))
+        e.message should be (Some(left + " did not contain the same elements in the same (iterated) order as " + right))
         e.failedCodeFileName should be (Some("ContainMatcherAndOrExplicitEqualitySpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
         
@@ -74,9 +74,9 @@ class ContainMatcherAndOrExplicitEqualitySpec extends Spec with Matchers with Ex
         val right = List(" 3", "2 ", " 1")
         
         val e = intercept[exceptions.TestFailedException] {
-          left should ((contain theSameElementsAs right) (equality) and (contain theSameIteratedElementsAs right) (equality)) 
+          left should ((contain theSameElementsAs right) (equality) and (contain theSameElementsInOrderAs right) (equality)) 
         }
-        e.message should be (Some(left + " contained the same elements as " + right + ", but " + left + " did not contain the same iterated elements as " + right))
+        e.message should be (Some(left + " contained the same elements as " + right + ", but " + left + " did not contain the same elements in the same (iterated) order as " + right))
         e.failedCodeFileName should be (Some("ContainMatcherAndOrExplicitEqualitySpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
         
@@ -89,7 +89,7 @@ class ContainMatcherAndOrExplicitEqualitySpec extends Spec with Matchers with Ex
         val right2 = List(" 1", "2 ", " 3")
         
         left should (not contain theSameElementsAs (right1) (equality) and (contain theSameElementsAs (right2)) (equality))
-        left should (not contain theSameIteratedElementsAs (right1) (equality) and (contain theSameElementsAs (right2)) (equality))
+        left should (not contain theSameElementsInOrderAs (right1) (equality) and (contain theSameElementsAs (right2)) (equality))
         left should (not contain allOf ("8 ", "2 ", " 1") (equality) and (contain theSameElementsAs (right2)) (equality))
         left should (not contain inOrder (" 1", "2 ", "8 ") (equality) and (contain theSameElementsAs (right2)) (equality))
         left should (not contain oneOf (" 6", "8 ", " 5") (equality) and (contain theSameElementsAs (right2)) (equality))
@@ -105,7 +105,7 @@ class ContainMatcherAndOrExplicitEqualitySpec extends Spec with Matchers with Ex
         val right2 = List(" 1", "2 ", " 3")
         
         left should ((contain theSameElementsAs (right2)) (equality) and not contain theSameElementsAs (right1) (equality))        
-        left should ((contain theSameElementsAs (right2)) (equality) and not contain theSameIteratedElementsAs (right1) (equality))
+        left should ((contain theSameElementsAs (right2)) (equality) and not contain theSameElementsInOrderAs (right1) (equality))
         left should ((contain theSameElementsAs (right2)) (equality) and not contain allOf (" 8", " 2", "1 ") (equality))
         left should ((contain theSameElementsAs (right2)) (equality) and not contain inOrder ("1 ", " 2", " 8") (equality))
         left should ((contain theSameElementsAs (right2)) (equality) and not contain oneOf ("6 ", " 8", "5 ") (equality))
@@ -121,7 +121,7 @@ class ContainMatcherAndOrExplicitEqualitySpec extends Spec with Matchers with Ex
         val right2 = List("1 ", " 2", " 8")
         
         left should (not contain theSameElementsAs (right2) (equality) and not contain theSameElementsAs (right1) (equality))
-        left should (not contain theSameElementsAs (right2) (equality) and not contain theSameIteratedElementsAs (right1) (equality))
+        left should (not contain theSameElementsAs (right2) (equality) and not contain theSameElementsInOrderAs (right1) (equality))
         left should (not contain theSameElementsAs (right2) (equality) and not contain allOf (" 8", " 2", "1 ") (equality))
         left should (not contain theSameElementsAs (right2) (equality) and not contain inOrder ("1 ", " 2", " 8") (equality))
         left should (not contain theSameElementsAs (right2) (equality) and not contain oneOf ("6 ", " 8", "5 ") (equality))
@@ -137,9 +137,9 @@ class ContainMatcherAndOrExplicitEqualitySpec extends Spec with Matchers with Ex
         val right2 = List(" 3", "2 ", " 1")
         
         val e = intercept[exceptions.TestFailedException] {
-          left should (not contain theSameIteratedElementsAs (right1) (equality) and (contain theSameElementsAs right2) (equality)) 
+          left should (not contain theSameElementsInOrderAs (right1) (equality) and (contain theSameElementsAs right2) (equality)) 
         }
-        e.message should be (Some(left + " contained the same iterated elements as " + right1))
+        e.message should be (Some(left + " contained the same elements in the same (iterated) order as " + right1))
         e.failedCodeFileName should be (Some("ContainMatcherAndOrExplicitEqualitySpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
         
@@ -152,9 +152,9 @@ class ContainMatcherAndOrExplicitEqualitySpec extends Spec with Matchers with Ex
         val right2 = List(" 1", "2 ", " 3")
         
         val e = intercept[exceptions.TestFailedException] {
-          left should ((contain theSameElementsAs right1) (equality) and not contain theSameIteratedElementsAs (right2) (equality)) 
+          left should ((contain theSameElementsAs right1) (equality) and not contain theSameElementsInOrderAs (right2) (equality)) 
         }
-        e.message should be (Some(left + " contained the same elements as " + right1 + ", but " + left + " contained the same iterated elements as " + right2))
+        e.message should be (Some(left + " contained the same elements as " + right1 + ", but " + left + " contained the same elements in the same (iterated) order as " + right2))
         e.failedCodeFileName should be (Some("ContainMatcherAndOrExplicitEqualitySpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
         
@@ -167,9 +167,9 @@ class ContainMatcherAndOrExplicitEqualitySpec extends Spec with Matchers with Ex
         val right2 = List(" 3", "2 ", " 1")        
         
         val e = intercept[exceptions.TestFailedException] {
-          left should (not contain theSameIteratedElementsAs (right1) (equality) and not contain theSameElementsAs (right2) (equality)) 
+          left should (not contain theSameElementsInOrderAs (right1) (equality) and not contain theSameElementsAs (right2) (equality)) 
         }
-        e.message should be (Some(left + " contained the same iterated elements as " + right1))
+        e.message should be (Some(left + " contained the same elements in the same (iterated) order as " + right1))
         e.failedCodeFileName should be (Some("ContainMatcherAndOrExplicitEqualitySpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
         
@@ -185,14 +185,14 @@ class ContainMatcherAndOrExplicitEqualitySpec extends Spec with Matchers with Ex
         val right2 = List(" 1", "2 ", " 3")
         
         left should ((contain theSameElementsAs (right1)) (equality) or (contain theSameElementsAs (right2)) (equality))
-        left should ((contain theSameElementsAs (right1)) (equality) or (contain theSameIteratedElementsAs (right2)) (equality))
+        left should ((contain theSameElementsAs (right1)) (equality) or (contain theSameElementsInOrderAs (right2)) (equality))
         left should ((contain theSameElementsAs (right1)) (equality) or (contain allOf (" 3", "2 ", " 1")) (equality))
         left should ((contain theSameElementsAs (right1)) (equality) or (contain inOrder (" 1", "2 ", " 3")) (equality))
         left should ((contain theSameElementsAs (right1)) (equality) or (contain oneOf (" 1", " 3", "5 ")) (equality))
         left should ((contain theSameElementsAs (right1)) (equality) or (contain only (" 3", " 1", "2 ")) (equality))
         left should ((contain theSameElementsAs (right1)) (equality) or (contain inOrderOnly (" 1", "2 ", " 3")) (equality))
         left should ((contain theSameElementsAs (right1)) (equality) or (contain noneOf ("7 ", " 8", "9 ")) (equality))
-        left should ((contain theSameIteratedElementsAs (right2)) (equality) or (contain theSameElementsAs (right1)) (equality))
+        left should ((contain theSameElementsInOrderAs (right2)) (equality) or (contain theSameElementsAs (right1)) (equality))
         left should ((contain allOf (" 3", "2 ", " 1")) (equality) or (contain theSameElementsAs (right1)) (equality))
         left should ((contain inOrder (" 1", "2 ", " 3")) (equality) or (contain theSameElementsAs (right1)) (equality))
         left should ((contain oneOf (" 1", " 3", "5 ")) (equality) or (contain theSameElementsAs (right1)) (equality))
@@ -209,9 +209,9 @@ class ContainMatcherAndOrExplicitEqualitySpec extends Spec with Matchers with Ex
         val right2 = List(" 3", "2 ", " 1")
         
         val e = intercept[exceptions.TestFailedException] {
-          left should ((contain theSameElementsAs right1) (equality) or (contain theSameIteratedElementsAs right2) (equality))
+          left should ((contain theSameElementsAs right1) (equality) or (contain theSameElementsInOrderAs right2) (equality))
         }
-        e.message should be (Some(left + " did not contain the same elements as " + right1 + ", and " + left + " did not contain the same iterated elements as " + right2))
+        e.message should be (Some(left + " did not contain the same elements as " + right1 + ", and " + left + " did not contain the same elements in the same (iterated) order as " + right2))
         e.failedCodeFileName should be (Some("ContainMatcherAndOrExplicitEqualitySpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
         
@@ -224,7 +224,7 @@ class ContainMatcherAndOrExplicitEqualitySpec extends Spec with Matchers with Ex
         val right2 = List(" 1", "2 ", " 3")
         
         left should (not contain theSameElementsAs (right1) (equality) or (contain theSameElementsAs (right2)) (equality)) 
-        left should (not contain theSameIteratedElementsAs (right1) (equality) or (contain theSameElementsAs (right2)) (equality))
+        left should (not contain theSameElementsInOrderAs (right1) (equality) or (contain theSameElementsAs (right2)) (equality))
         left should (not contain allOf ("8 ", "2 ", " 1") (equality) or (contain theSameElementsAs (right2)) (equality))
         left should (not contain inOrder (" 1", "2 ", "8 ") (equality) or (contain theSameElementsAs (right2)) (equality))
         left should (not contain oneOf (" 6", "8 ", " 5") (equality) or (contain theSameElementsAs (right2)) (equality))
@@ -240,7 +240,7 @@ class ContainMatcherAndOrExplicitEqualitySpec extends Spec with Matchers with Ex
         val right2 = List(" 1", "2 ", " 3")
         
         left should ((contain theSameElementsAs (right2)) (equality) or not contain theSameElementsAs (right1) (equality)) 
-        left should ((contain theSameElementsAs (right2)) (equality) or not contain theSameIteratedElementsAs (right1) (equality))
+        left should ((contain theSameElementsAs (right2)) (equality) or not contain theSameElementsInOrderAs (right1) (equality))
         left should ((contain theSameElementsAs (right2)) (equality) or not contain allOf ("8 ", "2 ", " 1") (equality))
         left should ((contain theSameElementsAs (right2)) (equality) or not contain inOrder (" 1", "2 ", "8 ") (equality))
         left should ((contain theSameElementsAs (right2)) (equality) or not contain oneOf (" 6", "8 ", " 5") (equality))
@@ -257,7 +257,7 @@ class ContainMatcherAndOrExplicitEqualitySpec extends Spec with Matchers with Ex
         val right2 = List(" 1", "2 ", "8 ")
         
         left should (not contain theSameElementsAs (right2) (equality) or not contain theSameElementsAs (right1) (equality)) 
-        left should (not contain theSameElementsAs (right2) (equality) or not contain theSameIteratedElementsAs (right1) (equality))
+        left should (not contain theSameElementsAs (right2) (equality) or not contain theSameElementsInOrderAs (right1) (equality))
         left should (not contain theSameElementsAs (right2) (equality) or not contain allOf ("8 ", "2 ", " 1") (equality))
         left should (not contain theSameElementsAs (right2) (equality) or not contain inOrder (" 1", "2 ", "8 ") (equality))
         left should (not contain theSameElementsAs (right2) (equality) or not contain oneOf (" 6", "8 ", " 5") (equality))
@@ -273,9 +273,9 @@ class ContainMatcherAndOrExplicitEqualitySpec extends Spec with Matchers with Ex
         val right2 = List(" 8", "2 ", " 1")
         
         val e = intercept[exceptions.TestFailedException] {
-          left should (not contain theSameIteratedElementsAs (right1) (equality) or (contain theSameElementsAs right2) (equality)) 
+          left should (not contain theSameElementsInOrderAs (right1) (equality) or (contain theSameElementsAs right2) (equality)) 
         }
-        e.message should be (Some(left + " contained the same iterated elements as " + right1 + ", and " + left + " did not contain the same elements as " + right2))
+        e.message should be (Some(left + " contained the same elements in the same (iterated) order as " + right1 + ", and " + left + " did not contain the same elements as " + right2))
         e.failedCodeFileName should be (Some("ContainMatcherAndOrExplicitEqualitySpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
         
@@ -287,9 +287,9 @@ class ContainMatcherAndOrExplicitEqualitySpec extends Spec with Matchers with Ex
         val right = List(" 3", "2 ", " 1")
         
         val e = intercept[exceptions.TestFailedException] {
-          left should ((contain theSameIteratedElementsAs (right)) (equality) or not contain theSameElementsAs (right) (equality)) 
+          left should ((contain theSameElementsInOrderAs (right)) (equality) or not contain theSameElementsAs (right) (equality)) 
         }
-        e.message should be (Some(left + " did not contain the same iterated elements as " + right + ", and " + left + " contained the same elements as " + right))
+        e.message should be (Some(left + " did not contain the same elements in the same (iterated) order as " + right + ", and " + left + " contained the same elements as " + right))
         e.failedCodeFileName should be (Some("ContainMatcherAndOrExplicitEqualitySpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
         
@@ -302,9 +302,9 @@ class ContainMatcherAndOrExplicitEqualitySpec extends Spec with Matchers with Ex
         val right2 = List(" 3", "2 ", " 1")
         
         val e = intercept[exceptions.TestFailedException] {
-          left should (not contain theSameIteratedElementsAs (right1) (equality) or not contain theSameElementsAs (right2) (equality)) 
+          left should (not contain theSameElementsInOrderAs (right1) (equality) or not contain theSameElementsAs (right2) (equality)) 
         }
-        e.message should be (Some(left + " contained the same iterated elements as " + right1 + ", and " + left + " contained the same elements as " + right2))
+        e.message should be (Some(left + " contained the same elements in the same (iterated) order as " + right1 + ", and " + left + " contained the same elements as " + right2))
         e.failedCodeFileName should be (Some("ContainMatcherAndOrExplicitEqualitySpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
         
