@@ -16,10 +16,10 @@
 package org.scalatest.enablers
 
 /**
- * Sealed supertrait for <code>Length</code> and <code>Size</code> type classes.
+ * Supertrait for <code>Length</code> and <code>Size</code> type classes.
  *
  * <p>
- * This sealed trait has two subclasses, <code>Length[T]</code> and <code>Size[T]</code>.
+ * This trait has two subtraits, <code>Length[T]</code> and <code>Size[T]</code>.
  * Objects of type T for which an implicit <code>Length[T]</code> is available can be used
  * with the <code>should have length</code> syntax.
  * Similarly, objects of type T for which an implicit <code>Size[T]</code> is available can be used
@@ -119,6 +119,33 @@ sealed trait Extent[T] {
  */
 trait Length[T] extends Extent[T]
 
+object Length {
+
+  // This one doesn't include Holder in its result type because that would conflict with the
+  // one returned by enablersForJavaCollection.
+  implicit def enablersForJavaList[E, JLIST[_] <: java.util.List[_]]: Length[JLIST[E]] = 
+    new Length[JLIST[E]] {
+      def extentOf(javaList: JLIST[E]): Long = javaList.size
+    }
+
+  // This one doesn't include Holder in its result type because that would conflict with the
+  // one returned by enablersForTraversable.
+  implicit def enablersForGenSeq[E, SEQ[_] <: scala.collection.GenSeq[_]]: Length[SEQ[E]] = 
+    new Length[SEQ[E]] {
+      def extentOf(seq: SEQ[E]): Long = seq.length
+    }
+
+  implicit def enablersForArray[E]: Length[Array[E]] = 
+    new Length[Array[E]] {
+      def extentOf(arr: Array[E]): Long = arr.length
+    }
+
+  implicit val enablersForString: Length[String] = 
+    new Length[String] {
+      def extentOf(str: String): Long = str.length
+    }
+}
+
 /**
  * Supertrait for <code>Size</code> type classes.
  *
@@ -165,3 +192,51 @@ trait Length[T] extends Extent[T]
  */
 trait Size[T] extends Extent[T]
 
+object Size {
+
+  // This one doesn't include Holder in its result type because that would conflict with the
+  // one returned by enablersForJavaCollection.
+  implicit def enablersForJavaList[E, JLIST[_] <: java.util.List[_]]: Size[JLIST[E]] = 
+    new Size[JLIST[E]] {
+      def extentOf(javaList: JLIST[E]): Long = javaList.size
+    }
+
+  // This one doesn't include Holder in its result type because that would conflict with the
+  // one returned by enablersForTraversable.
+  implicit def enablersForGenSeq[E, SEQ[_] <: scala.collection.GenSeq[_]]: Size[SEQ[E]] = 
+    new Size[SEQ[E]] {
+      def extentOf(seq: SEQ[E]): Long = seq.length
+    }
+
+  implicit def enablersForJavaCollection[E, JCOL[_] <: java.util.Collection[_]]: Size[JCOL[E]] = 
+    new Size[JCOL[E]] {
+      def extentOf(javaColl: JCOL[E]): Long = javaColl.size
+    }
+
+  // I think Java Maps aren't Holders, because they don't have an element type. The only
+  // thing close is the stupid Entry<K, V> type, which is mutable!
+  implicit def enablersForJavaMap[K, V, JMAP[_, _] <: java.util.Map[_, _]]: Size[JMAP[K, V]] = 
+    new Size[JMAP[K, V]] {
+      def extentOf(javaMap: JMAP[K, V]): Long = javaMap.size
+    }
+
+  implicit def enablersForGenTraversable[E, TRAV[_] <: scala.collection.GenTraversable[_]]: Size[TRAV[E]] = 
+    new Size[TRAV[E]] {
+      def extentOf(trav: TRAV[E]): Long = trav.size
+    }
+
+  implicit def enablersForMap[K, V, MAP[_, _] <: scala.collection.GenMap[_, _]]: Size[MAP[K, V]] =
+    new Size[MAP[K, V]] {
+      def extentOf(map: MAP[K, V]): Long = map.size
+    }
+
+  implicit def enablersForArray[E]: Size[Array[E]] = 
+    new Size[Array[E]] {
+      def extentOf(arr: Array[E]): Long = arr.length
+    }
+
+  implicit val enablersForString: Size[String] = 
+    new Size[String] {
+      def extentOf(str: String): Long = str.length
+    }
+}

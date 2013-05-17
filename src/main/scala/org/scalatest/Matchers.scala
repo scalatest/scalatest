@@ -2086,7 +2086,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    *
    * @author Bill Venners
    */
-  final class ResultOfHaveWordForExtent[A : Extent](left: A, shouldBeTrue: Boolean) {
+  final class ResultOfHaveWordForExtent[A](left: A, shouldBeTrue: Boolean) {
 
     /**
      * This method enables the following syntax:
@@ -4330,7 +4330,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def should(haveWord: HaveWord)(implicit ev: Extent[T]): ResultOfHaveWordForCollectedExtent[T] =
+    def should(haveWord: HaveWord): ResultOfHaveWordForCollectedExtent[T] =
       new ResultOfHaveWordForCollectedExtent(collected, xs, true)
 
     /**
@@ -4711,7 +4711,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    *
    * @author Bill Venners
    */
-  final class ResultOfHaveWordForCollectedExtent[A : Extent](collected: Collected, xs: scala.collection.GenTraversable[A], shouldBeTrue: Boolean) {
+  final class ResultOfHaveWordForCollectedExtent[A](collected: Collected, xs: scala.collection.GenTraversable[A], shouldBeTrue: Boolean) {
 
     /**
      * This method enables the following syntax: 
@@ -6019,7 +6019,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def should(haveWord: HaveWord)(implicit ev: Extent[T]): ResultOfHaveWordForExtent[T] =
+    def should(haveWord: HaveWord): ResultOfHaveWordForExtent[T] =
       new ResultOfHaveWordForExtent(left, true)
 
     /**
@@ -6608,54 +6608,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    */
   override def convertToTraversableLoneElementWrapper[T](xs: scala.collection.GenTraversable[T]): LoneElementTraversableWrapper[T] = new LoneElementTraversableWrapper[T](xs)
 
-  // This one doesn't include Holder in its result type because that would conflict with the
-  // one returned by enablersForJavaCollection.
-  implicit def enablersForJavaList[E, JLIST[_] <: java.util.List[_]]: Length[JLIST[E]] with Size[JLIST[E]] = 
-    new Length[JLIST[E]] with Size[JLIST[E]] {
-      def extentOf(javaList: JLIST[E]): Long = javaList.size
-    }
-
-  // This one doesn't include Holder in its result type because that would conflict with the
-  // one returned by enablersForTraversable.
-  implicit def enablersForGenSeq[E, SEQ[_] <: scala.collection.GenSeq[_]]: Length[SEQ[E]] with Size[SEQ[E]] = 
-    new Length[SEQ[E]] with Size[SEQ[E]] {
-      def extentOf(seq: SEQ[E]): Long = seq.length
-    }
-
-  implicit def enablersForJavaCollection[E, JCOL[_] <: java.util.Collection[_]]: Size[JCOL[E]] = 
-    new Size[JCOL[E]] {
-      def extentOf(javaColl: JCOL[E]): Long = javaColl.size
-    }
-
-  // I think Java Maps aren't Holders, because they don't have an element type. The only
-  // thing close is the stupid Entry<K, V> type, which is mutable!
-  implicit def enablersForJavaMap[K, V, JMAP[_, _] <: java.util.Map[_, _]]: Size[JMAP[K, V]] = 
-    new Size[JMAP[K, V]] {
-      def extentOf(javaMap: JMAP[K, V]): Long = javaMap.size
-    }
-
-  // This one could also mix in DefaultHolder. Wait, no, a Holder with an explicit equality.
-  // ExplicitEqualityHolder. That guy would have a method like:
-  // def containsElement(trav: TRAV[E], ele: Any, equality: Equality[E]): Boolean = {
-  implicit def enablersForGenTraversable[E, TRAV[_] <: scala.collection.GenTraversable[_]]: Size[TRAV[E]] = 
-    new Size[TRAV[E]] {
-      def extentOf(trav: TRAV[E]): Long = trav.size
-    }
-
-  implicit def enablersForMap[K, V, MAP[_, _] <: scala.collection.GenMap[_, _]]: Size[MAP[K, V]] =
-    new Size[MAP[K, V]] {
-      def extentOf(map: MAP[K, V]): Long = map.size
-    }
-
-  implicit def enablersForArray[E]: Length[Array[E]] with Size[Array[E]] = 
-    new Length[Array[E]] with Size[Array[E]] {
-      def extentOf(arr: Array[E]): Long = arr.length
-    }
-
-  implicit val enablersForString: Length[String] with Size[String] = 
-    new Length[String] with Size[String] {
-      def extentOf(str: String): Long = str.length
-    }
 }
 
 /**
