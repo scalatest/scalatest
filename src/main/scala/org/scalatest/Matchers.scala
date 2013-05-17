@@ -7298,8 +7298,25 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
 
   implicit def sortEnablersForSeq[E, SEQ[E] <: scala.collection.SeqLike[E, _]](implicit ordering: Ordering[E]): Sortable[SEQ[E]] =
     new Sortable[SEQ[E]] {
-      def isSorted(seq: SEQ[E]): Boolean = 
-        seq == seq.sorted(ordering) // TODO: to implement it correctly here
+      def isSorted(seq: SEQ[E]): Boolean = {
+        @tailrec
+        def checkSort(current: E, itr: Iterator[E]): Boolean = {
+          if (itr.hasNext) {
+            val next = itr.next
+            if (ordering.lteq(current, next))
+              checkSort(next, itr)
+            else
+              false
+          }
+          else
+            true
+        }
+        val itr = seq.iterator
+        if (itr.hasNext)
+          checkSort(itr.next, itr)
+        else
+          true
+      }
     }
 }
 
