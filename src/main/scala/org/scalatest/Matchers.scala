@@ -7296,8 +7296,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    */
   override def convertToTraversableLoneElementWrapper[T](xs: scala.collection.GenTraversable[T]): LoneElementTraversableWrapper[T] = new LoneElementTraversableWrapper[T](xs)
 
-  implicit def sortEnablersForSeq[E, SEQ[E] <: scala.collection.SeqLike[E, _]](implicit ordering: Ordering[E]): Sorted[SEQ[E]] =
-    new Sorted[SEQ[E]] {
+  implicit def sortEnablersForSeq[E, SEQ[E] <: scala.collection.SeqLike[E, _]](implicit ordering: Ordering[E]): Sortable[SEQ[E]] =
+    new Sortable[SEQ[E]] {
       def isSorted(seq: SEQ[E]): Boolean = 
         seq == seq.sorted(ordering) // TODO: to implement it correctly here
     }

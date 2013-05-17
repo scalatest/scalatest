@@ -15,7 +15,7 @@
  */
 package org.scalatest.enablers
 
-trait Sorted[E] {
+trait Sortable[E] {
   
   def isSorted(seq: E): Boolean
   
