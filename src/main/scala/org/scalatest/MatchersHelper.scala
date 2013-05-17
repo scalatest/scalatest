@@ -337,4 +337,48 @@ private[scalatest] object MatchersHelper {
     checkPatternMatchAndGroups(matches, left, pMatcher, regex, groups, "didNotIncludeRegex", "includedRegex", "includedRegexButNotGroupAtIndex", 
                                "includedRegexButNotGroup", "includedRegexAndGroup")
   }
+  
+  sealed trait Collected
+  case object AllCollected extends Collected
+  case object EveryCollected extends Collected
+  case class BetweenCollected(from: Int, to: Int) extends Collected
+  case class AtLeastCollected(num: Int) extends Collected
+  case class AtMostCollected(num: Int) extends Collected
+  case object NoCollected extends Collected
+  case class ExactlyCollected(num: Int) extends Collected
+  
+  import InspectorsHelper._
+  
+  def doCollected[T](collected: Collected, xs: scala.collection.GenTraversable[T], methodName: String, stackDepth: Int)(fun: T => Unit) {
+    collected match {
+      case AllCollected =>
+        doForAll(xs, "allShorthandFailed", "Matchers.scala", methodName, stackDepth) { e => 
+          fun(e)
+        }
+      case AtLeastCollected(num) => 
+        doForAtLeast(num, xs, "atLeastShorthandFailed", "Matchers.scala", methodName, stackDepth) { e =>
+          fun(e)
+        }
+      case EveryCollected => 
+        doForEvery(xs, "everyShorthandFailed", "Matchers.scala", methodName, stackDepth) { e =>
+          fun(e)
+        }
+      case ExactlyCollected(num) => 
+        doForExactly(num, xs, "exactlyShorthandFailed", "Matchers.scala", methodName, stackDepth) { e =>
+          fun(e)
+        }
+      case NoCollected =>
+        doForNo(xs, "noShorthandFailed", "Matchers.scala", methodName, stackDepth) { e =>
+          fun(e)
+        }
+      case BetweenCollected(from, to) =>
+        doForBetween(from, to, xs, "betweenShorthandFailed", "Matchers.scala", methodName, stackDepth) { e =>
+          fun(e)
+        }
+      case AtMostCollected(num) =>
+        doForAtMost(num, xs, "atMostShorthandFailed", "Matchers.scala", methodName, stackDepth) { e =>
+          fun(e)
+        }
+    }
+  }
 }

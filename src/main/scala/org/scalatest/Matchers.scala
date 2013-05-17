@@ -47,6 +47,15 @@ import MatchersHelper.fullyMatchRegexWithGroups
 import MatchersHelper.startWithRegexWithGroups
 import MatchersHelper.endWithRegexWithGroups
 import MatchersHelper.includeRegexWithGroups
+import MatchersHelper.doCollected
+import MatchersHelper.Collected
+import MatchersHelper.AllCollected
+import MatchersHelper.EveryCollected
+import MatchersHelper.BetweenCollected
+import MatchersHelper.AtLeastCollected
+import MatchersHelper.AtMostCollected
+import MatchersHelper.NoCollected
+import MatchersHelper.ExactlyCollected
 import org.scalautils.NormalizingEquality
 
 // TODO: drop generic support for be as an equality comparison, in favor of specific ones.
@@ -2767,50 +2776,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
 */
 
   // This is where InspectorShorthands started
-
-  private sealed trait Collected
-  private case object AllCollected extends Collected
-  private case object EveryCollected extends Collected
-  private case class BetweenCollected(from: Int, to: Int) extends Collected
-  private case class AtLeastCollected(num: Int) extends Collected
-  private case class AtMostCollected(num: Int) extends Collected
-  private case object NoCollected extends Collected
-  private case class ExactlyCollected(num: Int) extends Collected
-  
-  import InspectorsHelper._
-  
-  def doCollected[T](collected: Collected, xs: scala.collection.GenTraversable[T], methodName: String, stackDepth: Int)(fun: T => Unit) {
-    collected match {
-      case AllCollected =>
-        doForAll(xs, "allShorthandFailed", "Matchers.scala", methodName, stackDepth) { e => 
-          fun(e)
-        }
-      case AtLeastCollected(num) => 
-        doForAtLeast(num, xs, "atLeastShorthandFailed", "Matchers.scala", methodName, stackDepth) { e =>
-          fun(e)
-        }
-      case EveryCollected => 
-        doForEvery(xs, "everyShorthandFailed", "Matchers.scala", methodName, stackDepth) { e =>
-          fun(e)
-        }
-      case ExactlyCollected(num) => 
-        doForExactly(num, xs, "exactlyShorthandFailed", "Matchers.scala", methodName, stackDepth) { e =>
-          fun(e)
-        }
-      case NoCollected =>
-        doForNo(xs, "noShorthandFailed", "Matchers.scala", methodName, stackDepth) { e =>
-          fun(e)
-        }
-      case BetweenCollected(from, to) =>
-        doForBetween(from, to, xs, "betweenShorthandFailed", "Matchers.scala", methodName, stackDepth) { e =>
-          fun(e)
-        }
-      case AtMostCollected(num) =>
-        doForAtMost(num, xs, "atMostShorthandFailed", "Matchers.scala", methodName, stackDepth) { e =>
-          fun(e)
-        }
-    }
-  }
 
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="InspectorsMatchers.html"><code>InspectorsMatchers</code></a> for an overview of
