@@ -791,7 +791,7 @@ final class NotWord {
    * This method enables the following syntax: 
    *
    * <pre class="stHighlight">
-   * Array(1, 2) should (not contain (5) and not contain (3))
+   * Array(1, 2) should (not contain oneOf (5, 6, 7))
    *                         ^
    * </pre>
    */
@@ -807,6 +807,33 @@ final class NotWord {
               !holder.containsOneOf(left, right),
               FailureMessages("containedOneOfElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
               FailureMessages("didNotContainOneOfElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+            )
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * Array(1, 2) should (not contain (5) and not contain (3))
+   *                         ^
+   * </pre>
+   */
+  def newContain[T](atLeastOneOf: ResultOfAtLeastOneOfApplication): MatcherFactory1[Any, Aggregation] = {
+    new MatcherFactory1[Any, Aggregation] {
+      def matcher[T](implicit aggregation: Aggregation[T]): Matcher[T] = {
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+        
+            val right = atLeastOneOf.right
+
+            MatchResult(
+              !aggregation.containsAtLeastOneOf(left, right),
+              FailureMessages("containedAtLeastOneOf", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+              FailureMessages("didNotContainAtLeastOneOf", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
             )
           }
         }

@@ -2702,6 +2702,16 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    * This method enables the following syntax: 
    *
    * <pre class="stHighlight">
+   * List(1, 2, 3) should contain (atLeastOneOf(1, 2))
+   *                               ^
+   * </pre>
+   */
+  def atLeastOneOf(xs: Any*) = new ResultOfAtLeastOneOfApplication(xs)
+
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
    * List(1, 2, 3) should contain (only(1, 2))
    *                               ^
    * </pre>
@@ -3353,6 +3363,14 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
       }
     }
 
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * all (xs) should not contain oneOf ("one")
+     *                     ^
+     * </pre>
+     */
     def newContain(newOneOf: ResultOfNewOneOfApplication)(implicit holder: Holder[T]) {
 
       val right = newOneOf.right
@@ -3370,8 +3388,34 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
           )
       }
     }
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * all (xs) should not contain atLeastOneOf ("one")
+     *                     ^
+     * </pre>
+     */
+    def newContain(atLeastOneOf: ResultOfAtLeastOneOfApplication)(implicit aggregation: Aggregation[T]) {
+
+      val right = atLeastOneOf.right
+
+      doCollected(collected, xs, "newContain", 1) { e =>
+        if (aggregation.containsAtLeastOneOf(e, right) != shouldBeTrue)
+          throw newTestFailedException(
+            FailureMessages(
+              if (shouldBeTrue) "didNotContainAtLeastOneOf" else "containedAtLeastOneOf",
+              e,
+              UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
+            ),
+            None,
+            6
+          )
+      }
+    }
   }
-  
+
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="InspectorsMatchers.html"><code>InspectorsMatchers</code></a> for an overview of
    * the matchers DSL.
@@ -3782,6 +3826,29 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
           throw newTestFailedException(
             FailureMessages(
               if (shouldBeTrue) "didNotContainOneOfElements" else "containedOneOfElements",
+              e,
+              UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
+            ),
+            None,
+            6
+        )
+      }
+    }
+
+    /**
+     * This method enables the following syntax: 
+     *
+     * <pre class="stHighlight">
+     * option should contain atLeastOneOf (1, 2)
+     *                       ^
+     * </pre>
+     */
+    def atLeastOneOf(right: Any*)(implicit aggregation: Aggregation[T]) {
+      doCollected(collected, xs, "atLeastOneOf", 1) { e =>
+        if (aggregation.containsAtLeastOneOf(e, right) != shouldBeTrue)
+          throw newTestFailedException(
+            FailureMessages(
+              if (shouldBeTrue) "didNotContainAtLeastOneOf" else "containedAtLeastOneOf",
               e,
               UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
             ),

@@ -16,6 +16,7 @@
 package org.scalatest.words
 
 import org.scalatest.enablers.Holder
+import org.scalatest.enablers.Aggregation
 import org.scalatest.matchers.Matcher
 import org.scalatest.matchers.MatcherFactory1
 import org.scalatest.matchers.MatchResult
@@ -30,6 +31,7 @@ import scala.annotation.tailrec
  * @author Bill Venners
  */
 final class NewContainWord {
+
   def newOneOf(right: Any*): MatcherFactory1[Any, Holder] = {
     new MatcherFactory1[Any, Holder] {
       def matcher[T](implicit holder: Holder[T]): Matcher[T] = {
@@ -39,6 +41,22 @@ final class NewContainWord {
               holder.containsOneOf(left, right),
               FailureMessages("didNotContainOneOfElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
               FailureMessages("containedOneOfElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+            )
+          }
+        }
+      }
+    }
+  }
+
+  def atLeastOneOf(right: Any*): MatcherFactory1[Any, Aggregation] = {
+    new MatcherFactory1[Any, Aggregation] {
+      def matcher[T](implicit aggregation: Aggregation[T]): Matcher[T] = {
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+            MatchResult(
+              aggregation.containsAtLeastOneOf(left, right),
+              FailureMessages("didNotContainAtLeastOneOf", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+              FailureMessages("containedAtLeastOneOf", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
             )
           }
         }

@@ -15,12 +15,30 @@
  */
 package org.scalatest.enablers
 
+import org.scalautils.Equality
+
 trait Aggregation[A] {
+  def containsAtLeastOneOf(aggregation: A, eles: Seq[Any]): Boolean
+/*
   def containsTheSameElementsAs(aggregation: A, it: Iterator[Any]): Boolean
   def containsTheSameElementsInOrderAs(aggregation: A, it: Iterator[Any]): Boolean
   def containsAllOf(aggregation: A, eles: Seq[Any]): Boolean
-  def containsAnyOf(aggregation: A, eles: Seq[Any]): Boolean
+  def containsAtMostOneOf(aggregation: A, eles: Seq[Any]): Boolean
   def containsOnly(aggregation: A, eles: Seq[Any]): Boolean
   def containsInOrderOnly(aggregation: A, eles: Seq[Any]): Boolean
+*/
 }
 
+object Aggregation {
+
+  implicit def withGenTraversableElementEquality[E, TRAV[_] <: scala.collection.GenTraversable[_]](implicit equality: Equality[E]): Aggregation[TRAV[E]] = 
+    new Aggregation[TRAV[E]] {
+      def containsAtLeastOneOf(trav: TRAV[E], elements: scala.collection.Seq[Any]): Boolean = {
+        trav.exists((e: Any) => elements.exists((ele: Any) => equality.areEqual(e.asInstanceOf[E], ele)))
+      }
+    }
+
+  // Enables (xs should contain ("HI")) (after being lowerCased)
+  implicit def convertEqualityToGenTraversableAggregation[E, TRAV[_] <: scala.collection.GenTraversable[_]](equality: Equality[E]): Aggregation[TRAV[E]] = 
+    withGenTraversableElementEquality(equality)
+}

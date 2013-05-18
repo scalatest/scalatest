@@ -632,6 +632,20 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
         )
       )
   }
+
+  def newContain(atLeastOneOf: ResultOfAtLeastOneOfApplication)(implicit aggregation: Aggregation[T]) {
+
+    val right = atLeastOneOf.right
+
+    if (aggregation.containsAtLeastOneOf(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "didNotContainAtLeastOneOf" else "containedAtLeastOneOf",
+          left,
+          UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
+        )
+      )
+  }
 }
 
 /**

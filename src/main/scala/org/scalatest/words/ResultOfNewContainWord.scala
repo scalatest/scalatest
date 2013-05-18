@@ -16,6 +16,7 @@
 package org.scalatest.words
 
 import org.scalatest.enablers.Holder
+import org.scalatest.enablers.Aggregation
 import org.scalatest.MatchersHelper.newTestFailedException
 import org.scalatest.FailureMessages
 import org.scalatest.UnquotedString
@@ -41,6 +42,25 @@ class ResultOfNewContainWord[L](left: L, shouldBeTrue: Boolean = true) {
       throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "didNotContainOneOfElements" else "containedOneOfElements",
+          left,
+          UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
+        )
+      )
+  }
+
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * option should contain atLeastOneOf (1, 2)
+   *                       ^
+   * </pre>
+   */
+  def atLeastOneOf(right: Any*)(implicit aggregation: Aggregation[L]) {
+    if (aggregation.containsAtLeastOneOf(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "didNotContainAtLeastOneOf" else "containedAtLeastOneOf",
           left,
           UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
         )
