@@ -297,6 +297,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
 
     val stopRequested = args.stopper
     
+    // TODO: Inspect this and make sure it does not need synchronization, and either way, document why.
     val statusList = new ListBuffer[Status]()
 
     branch match {

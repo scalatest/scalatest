@@ -35,6 +35,30 @@ sealed abstract class EqualityConstraint[A, B] {
   def areEqual(a: A, b: B): Boolean
 }
 
+object EqualityConstraint {
+  // The default is no equality constraint
+
+  /**
+   * Provides an <code>EqualityConstraint[A, B]</code> class for any two types <code>A</code> and <code>B</code>, with no type constraint enforced, given an
+   * implicit <code>Equality[A]</code>.
+   *
+   * <p>
+   * The implicitly passed <code>Equality[A]</code> must be used to determine equality by the returned <code>EqualityConstraint</code>'s
+   * <code>areEqual</code> method.
+   * </p>
+   *
+   * <p>
+   * This method is overridden and made implicit by subtraits <a href="TripleEquals.html"><code>TripleEquals</code></a> and <a href="LegacyTripleEquals.html"><code>LegacyTripleEquals</code></a>, and
+   * overriden as non-implicit by the other subtraits in this package.
+   * </p>
+   *
+   * @param equalityOfA an <code>Equality[A]</code> type class to which the <code>EqualityConstraint.areEqual</code> method will delegate to determine equality.
+   * @return an <code>EqualityConstraint[A, B]</code> whose <code>areEqual</code> method delegates to the <code>areEqual</code> method of
+   *     the passed <code>Equality[A]</code>.
+   */
+  implicit def unconstrainedEquality[A, B](implicit equalityOfA: Equality[A]): EqualityConstraint[A, B] = new BasicEqualityConstraint[A, B](equalityOfA)
+}
+
 /**
  * An implementation of <code>EqualityConstraint</code> for two types <code>A</code> and <code>B</code> that requires an <code>Equality[A]</code> to
  * which its <code>areEqual</code> method can delegate an equality comparison.
