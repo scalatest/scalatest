@@ -42,7 +42,6 @@ import org.scalatest.words._
 import MatchersHelper.matchSymbolToPredicateMethod
 import MatchersHelper.accessProperty
 import MatchersHelper.newTestFailedException
-import MatchersHelper.containsOneOf
 import MatchersHelper.fullyMatchRegexWithGroups
 import MatchersHelper.startWithRegexWithGroups
 import MatchersHelper.endWithRegexWithGroups
@@ -3359,7 +3358,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
       val right = newOneOf.right
 
       doCollected(collected, xs, "newContain", 1) { e =>
-        if (containsOneOf(e, right.toIterator) != shouldBeTrue)
+        if (holder.containsOneOf(e, right) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
               if (shouldBeTrue) "didNotContainOneOfElements" else "containedOneOfElements",
@@ -3779,7 +3778,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      */
     def newOneOf(right: Any*)(implicit holder: Holder[T]) {
       doCollected(collected, xs, "newOneOf", 1) { e =>
-        if (containsOneOf(e, right.toIterator) != shouldBeTrue)
+        if (holder.containsOneOf(e, right) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
               if (shouldBeTrue) "didNotContainOneOfElements" else "containedOneOfElements",

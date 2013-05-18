@@ -17,7 +17,6 @@ package org.scalatest.words
 
 import org.scalatest.enablers.Holder
 import org.scalatest.MatchersHelper.newTestFailedException
-import org.scalatest.MatchersHelper.containsOneOf
 import org.scalatest.FailureMessages
 import org.scalatest.UnquotedString
 
@@ -38,7 +37,7 @@ class ResultOfNewContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    * </pre>
    */
   def newOneOf(right: Any*)(implicit holder: Holder[L]) {
-    if (containsOneOf(left, right.toIterator) != shouldBeTrue)
+    if (holder.containsOneOf(left, right) != shouldBeTrue)
       throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "didNotContainOneOfElements" else "containedOneOfElements",

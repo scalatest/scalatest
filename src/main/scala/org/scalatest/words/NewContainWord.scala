@@ -22,7 +22,6 @@ import org.scalatest.matchers.MatchResult
 import org.scalatest.FailureMessages
 import org.scalatest.UnquotedString
 import scala.annotation.tailrec
-import org.scalatest.MatchersHelper.containsOneOf
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -37,7 +36,7 @@ final class NewContainWord {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
             MatchResult(
-              containsOneOf(left, right.toIterator),
+              holder.containsOneOf(left, right),
               FailureMessages("didNotContainOneOfElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
               FailureMessages("containedOneOfElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
             )

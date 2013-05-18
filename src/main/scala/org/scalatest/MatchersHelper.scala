@@ -259,19 +259,6 @@ private[scalatest] object MatchersHelper {
     }
   }
 
-  @tailrec
-  def containsOneOf[T](left: T, rightItr: Iterator[Any])(implicit holder: Holder[T]): Boolean = {
-    if (rightItr.hasNext) {
-      val nextRight = rightItr.next
-      if (holder.contains(left, nextRight)) // Found one of right in left, can succeed early
-        true
-      else
-        containsOneOf(left, rightItr)
-    }
-    else // No more elements in right, left does not contain one of right.
-      false
-  }
-  
   def checkPatternMatchAndGroups(matches: Boolean, left: String, pMatcher: java.util.regex.Matcher, regex: Regex, groups: IndexedSeq[String], 
                                  didNotMatchResourceName: String, matchResourceName: String, notGroupAtIndexResourceName: String, notGroupResourceName: String, 
                                  andGroupResourceName: String): MatchResult = {

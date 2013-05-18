@@ -20,12 +20,27 @@ import org.scalautils.NormalizingEquality
 
 trait Holder[A] {
   def contains(holder: A, element: Any): Boolean
-/*
   def containsOneOf(holder: A, elements: scala.collection.Seq[Any]): Boolean
+/*
   def containsNoneOf(holder: A, elements: scala.collection.Seq[Any]): Boolean
 */
 }
 
+/*
+  @tailrec
+  def containsOneOf[T](left: T, rightItr: Iterator[Any])(implicit holder: Holder[T]): Boolean = {
+    if (rightItr.hasNext) {
+      val nextRight = rightItr.next
+      if (holder.contains(left, nextRight)) // Found one of right in left, can succeed early
+        true
+      else
+        containsOneOf(left, rightItr)
+    }
+    else // No more elements in right, left does not contain one of right.
+      false
+  }
+*/
+  
 object Holder {
 
   implicit def withJavaCollectionElementEquality[E, JCOL[_] <: java.util.Collection[_]](implicit equality: Equality[E]): Holder[JCOL[E]] = 
@@ -38,6 +53,7 @@ object Holder {
         }
         found
       }
+      def containsOneOf(javaColl: JCOL[E], elements: scala.collection.Seq[Any]): Boolean = throw new Exception("Not Yet Implemented")
     }
 
   implicit def convertEqualityToJavaCollectionHolder[E, JCOL[_] <: java.util.Collection[_]](equality: Equality[E]): Holder[JCOL[E]] = 
@@ -53,6 +69,9 @@ object Holder {
           case _ => trav.exists((e: Any) => equality.areEqual(e.asInstanceOf[E], ele)) // Don't know why the compiler requires e to be type Any. Should be E.
         }
       }
+      def containsOneOf(trav: TRAV[E], elements: scala.collection.Seq[Any]): Boolean = {
+        trav.exists((e: Any) => elements.exists((ele: Any) => equality.areEqual(e.asInstanceOf[E], ele)))
+      }
     }
 
   // Enables (xs should contain ("HI")) (after being lowerCased)
@@ -65,6 +84,9 @@ object Holder {
       def contains(opt: OPT[E], ele: Any): Boolean = {
         opt.exists((e: Any) => equality.areEqual(e.asInstanceOf[E], ele)) // Don't know why the compiler requires e to be type Any. Should be E.
       }
+      def containsOneOf(opt: OPT[E], elements: scala.collection.Seq[Any]): Boolean = {
+        opt.exists((e: Any) => elements.exists((ele: Any) => equality.areEqual(e.asInstanceOf[E], ele)))
+      }
     }
 
   // supports (some should contain ("HI")) (after being lowerCased)
@@ -76,6 +98,7 @@ object Holder {
       def contains(map: MAP[K, V], ele: Any): Boolean = {
         map.exists((e: Any) => equality.areEqual(e.asInstanceOf[(K, V)], ele)) // Don't know why the compiler requires e to be type Any. Should be E.
       }
+      def containsOneOf(map: MAP[K, V], elements: scala.collection.Seq[Any]): Boolean = throw new Exception("Not Yet Implemented")
     }
 
   implicit def convertEqualityToGenMapHolder[K, V, MAP[_, _] <: scala.collection.GenMap[_, _]](equality: Equality[(K, V)]): Holder[MAP[K, V]] = 
@@ -85,6 +108,7 @@ object Holder {
     new Holder[Array[E]] {
       def contains(arr: Array[E], ele: Any): Boolean =
         arr.exists((e: E) => equality.areEqual(e, ele))
+      def containsOneOf(arr: Array[E], elements: scala.collection.Seq[Any]): Boolean = throw new Exception("Not Yet Implemented")
     }
 
   implicit def convertEqualityToArrayHolder[E](equality: Equality[E]): Holder[Array[E]] = 
@@ -94,6 +118,7 @@ object Holder {
     new Holder[String] {
       def contains(str: String, ele: Any): Boolean =
         str.exists((e: Char) => equality.areEqual(e, ele))
+      def containsOneOf(str: String, elements: scala.collection.Seq[Any]): Boolean = throw new Exception("Not Yet Implemented")
     }
 
   implicit def convertEqualityToStringHolder(equality: Equality[Char]): Holder[String] = 

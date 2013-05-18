@@ -25,7 +25,6 @@ import org.scalautils.Equality
 import org.scalatest.Assertions.areEqualComparingArraysStructurally
 import org.scalatest.MatchersHelper.matchSymbolToPredicateMethod
 import scala.annotation.tailrec
-import org.scalatest.MatchersHelper.containsOneOf
 import org.scalatest.MatchersHelper.fullyMatchRegexWithGroups
 import org.scalatest.MatchersHelper.startWithRegexWithGroups
 import org.scalatest.MatchersHelper.endWithRegexWithGroups
@@ -805,7 +804,7 @@ final class NotWord {
             val right = oneOf.right
 
             MatchResult(
-              !containsOneOf(left, right.toIterator),
+              !holder.containsOneOf(left, right),
               FailureMessages("containedOneOfElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
               FailureMessages("didNotContainOneOfElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
             )

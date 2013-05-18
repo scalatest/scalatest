@@ -42,7 +42,6 @@ import org.scalatest.MatchersHelper.matchSymbolToPredicateMethod
 import org.scalatest.FailureMessages
 import org.scalatest.UnquotedString
 import org.scalatest.MatchersHelper.newTestFailedException
-import org.scalatest.MatchersHelper.containsOneOf
 import org.scalatest.MatchersHelper.fullyMatchRegexWithGroups
 import org.scalatest.MatchersHelper.startWithRegexWithGroups
 import org.scalatest.MatchersHelper.endWithRegexWithGroups
@@ -624,7 +623,7 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
 
     val right = newOneOf.right
 
-    if (containsOneOf(left, right.toIterator) != shouldBeTrue)
+    if (holder.containsOneOf(left, right) != shouldBeTrue)
       throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "didNotContainOneOfElements" else "containedOneOfElements",
