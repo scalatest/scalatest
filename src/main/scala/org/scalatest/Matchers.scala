@@ -3340,7 +3340,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
     def contain(expectedElement: Any)(implicit holder: Holder[T]) {
       doCollected(collected, xs, "contain", 1) { e =>
         val right = expectedElement
-        if ((holder.containsElement(e, right)) != shouldBeTrue) {
+        if ((holder.contains(e, right)) != shouldBeTrue) {
           throw newTestFailedException(
             FailureMessages(
               if (shouldBeTrue) "didNotContainExpectedElement" else "containedExpectedElement",

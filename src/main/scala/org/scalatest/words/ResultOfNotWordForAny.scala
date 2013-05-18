@@ -456,7 +456,7 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
    */
   def contain(expectedElement: Any)(implicit holder: Holder[T]) {
     val right = expectedElement
-    if (holder.containsElement(left, right) != shouldBeTrue) {
+    if (holder.contains(left, right) != shouldBeTrue) {
       throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "didNotContainExpectedElement" else "containedExpectedElement",

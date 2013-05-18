@@ -779,7 +779,7 @@ final class NotWord {
           def apply(left: U): MatchResult = {
             val holder = implicitly[Holder[U]]
             MatchResult(
-              !holder.containsElement(left, expectedElement),
+              !holder.contains(left, expectedElement),
               FailureMessages("containedExpectedElement", left, expectedElement),
               FailureMessages("didNotContainExpectedElement", left, expectedElement)
             )
