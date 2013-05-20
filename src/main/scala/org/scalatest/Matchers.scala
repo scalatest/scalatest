@@ -32,7 +32,6 @@ import org.scalautils.Tolerance
 import org.scalautils.Explicitly
 import org.scalautils.Interval
 import org.scalautils.TripleEqualsInvocation
-import scala.annotation.tailrec
 import org.scalautils.Equality
 import org.scalautils.TripleEqualsInvocationOnInterval
 import org.scalautils.EqualityConstraint
@@ -7295,29 +7294,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * Turn off implicit conversion of LoneElement, so that if user accidentally mixin LoneElement it does conflict with convertToTraversableShouldWrapper
    */
   override def convertToTraversableLoneElementWrapper[T](xs: scala.collection.GenTraversable[T]): LoneElementTraversableWrapper[T] = new LoneElementTraversableWrapper[T](xs)
-
-  implicit def sortEnablersForSeq[E, SEQ[E] <: scala.collection.SeqLike[E, _]](implicit ordering: Ordering[E]): Sortable[SEQ[E]] =
-    new Sortable[SEQ[E]] {
-      def isSorted(seq: SEQ[E]): Boolean = {
-        @tailrec
-        def checkSort(current: E, itr: Iterator[E]): Boolean = {
-          if (itr.hasNext) {
-            val next = itr.next
-            if (ordering.lteq(current, next))
-              checkSort(next, itr)
-            else
-              false
-          }
-          else
-            true
-        }
-        val itr = seq.iterator
-        if (itr.hasNext)
-          checkSort(itr.next, itr)
-        else
-          true
-      }
-    }
 }
 
 /**

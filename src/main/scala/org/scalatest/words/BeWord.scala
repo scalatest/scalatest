@@ -520,9 +520,9 @@ final class BeWord {
       def matcher[T <: Any : Sortable]: Matcher[T] = 
         new Matcher[T] {
           def apply(left: T): MatchResult = {
-            val sorted = implicitly[Sortable[T]]
+            val sortable = implicitly[Sortable[T]]
             MatchResult(
-              sorted.isSorted(left), 
+              sortable.isSorted(left), 
               FailureMessages("wasNotSorted", left), 
               FailureMessages("wasSorted", left)
             )

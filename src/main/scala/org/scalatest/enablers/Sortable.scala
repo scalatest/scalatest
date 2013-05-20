@@ -16,7 +16,37 @@
 package org.scalatest.enablers
 
 trait Sortable[E] {
-  
   def isSorted(seq: E): Boolean
+}
+
+object Sortable {
+  
+  implicit def sortableForSeq[E, SEQ[_] <: scala.collection.Seq[_]](implicit ordering: Ordering[E]): Sortable[SEQ[E]] =
+    new Sortable[SEQ[E]] {
+      def isSorted(o: SEQ[E]) = o.sliding(2).forall { duo => ordering.lteq(duo(0).asInstanceOf[E], duo(1).asInstanceOf[E]) }
+    }
+  
+  /*implicit def sortEnablersForSeq[E, SEQ[E] <: scala.collection.SeqLike[E, _]](implicit ordering: Ordering[E]): Sortable[SEQ[E]] =
+    new Sortable[SEQ[E]] {
+      def isSorted(seq: SEQ[E]): Boolean = {
+        @tailrec
+        def checkSort(current: E, itr: Iterator[E]): Boolean = {
+          if (itr.hasNext) {
+            val next = itr.next
+            if (ordering.lteq(current, next))
+              checkSort(next, itr)
+            else
+              false
+          }
+          else
+            true
+        }
+        val itr = seq.iterator
+        if (itr.hasNext)
+          checkSort(itr.next, itr)
+        else
+          true
+      }
+    }*/
   
 }

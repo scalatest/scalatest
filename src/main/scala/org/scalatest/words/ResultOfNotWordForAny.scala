@@ -625,6 +625,24 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
       )
     }
   }
+  
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * xs should not be sorted
+   *                  ^
+   * </pre>
+   */
+  def be[U](sortedWord: SortedWord)(implicit sortable: Sortable[T]) {
+    if (sortable.isSorted(left) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "wasNotSorted" else "wasSorted", 
+          left
+        )    
+      )
+  }
 
   def contain(newOneOf: ResultOfNewOneOfApplication)(implicit containing: Containing[T]) {
 
