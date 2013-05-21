@@ -581,56 +581,12 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
 
   protected def makeFinalReport(resourceName: String, duration: Option[Long], summaryOption: Option[Summary]) {
 
-    summaryOption match {
-      case Some(summary) =>
+    import StringReporter.summaryFragments
 
-        import summary._
+    val fragments: Vector[Fragment] = summaryFragments(resourceName, duration, summaryOption) 
 
-        duration match {
-          case Some(msSinceEpoch) =>
-            printPossiblyInColor(Resources(resourceName + "In", makeDurationString(msSinceEpoch)), ansiCyan)
-          case None =>
-            printPossiblyInColor(Resources(resourceName), ansiCyan)
-        }     
-
-        // totalNumberOfTestsRun=Total number of tests run was: {0}
-        printPossiblyInColor(Resources("totalNumberOfTestsRun", testsCompletedCount.toString), ansiCyan)
-
-        if (scopesPendingCount > 0) {
-          // Suite Summary: completed {0}, aborted {1}  Scopes: pending {2}
-          printPossiblyInColor(Resources("suiteScopeSummary", suitesCompletedCount.toString, suitesAbortedCount.toString, scopesPendingCount.toString), ansiCyan)
-        }
-        else {
-          // Suite Summary: completed {0}, aborted {1}
-          printPossiblyInColor(Resources("suiteSummary", suitesCompletedCount.toString, suitesAbortedCount.toString), ansiCyan)
-        }
-
-        // Test Summary: succeeded {0}, failed {1}, ignored, {2}, pending {3}, canceled {4}
-        printPossiblyInColor(Resources("testSummary", testsSucceededCount.toString, testsFailedCount.toString, testsCanceledCount.toString, testsIgnoredCount.toString, testsPendingCount.toString), ansiCyan)
-
-        
-          
-        
-        // *** 1 SUITE ABORTED ***
-        if (suitesAbortedCount == 1)
-          printPossiblyInColor(Resources("oneSuiteAborted"), ansiRed)
-
-        // *** {0} SUITES ABORTED ***
-        else if (suitesAbortedCount > 1)
-          printPossiblyInColor(Resources("multipleSuitesAborted", suitesAbortedCount.toString), ansiRed)
-
-        // *** 1 TEST FAILED ***
-        if (testsFailedCount == 1)
-          printPossiblyInColor(Resources("oneTestFailed"), ansiRed)
-
-        // *** {0} TESTS FAILED ***
-        else if (testsFailedCount > 1)
-          printPossiblyInColor(Resources("multipleTestsFailed", testsFailedCount.toString), ansiRed)
-
-        else if (suitesAbortedCount == 0) // Maybe don't want to say this if the run aborted or stopped because "all"
-          printPossiblyInColor(Resources("allTestsPassed"), ansiGreen)
-
-      case None =>
+    for (Fragment(text, ansiColor) <- fragments) {
+      printPossiblyInColor(text, ansiColor.code)
     }
   }
 
@@ -656,5 +612,64 @@ private[scalatest] object StringReporter {
       text.split("\n").dropWhile(_.isEmpty).map(ansiColor + _ + ansiReset).mkString("\n") +
       ("\n" * countTrailingEOLs(text))
     }
+
+  def summaryFragments(resourceName: String, duration: Option[Long], summaryOption: Option[Summary]): Vector[Fragment] = {
+
+    summaryOption match {
+      case Some(summary) =>
+
+        import summary._
+
+        Vector(
+
+          duration match {
+            case Some(msSinceEpoch) =>
+              Some(Fragment(Resources(resourceName + "In", makeDurationString(msSinceEpoch)), AnsiCyan))
+            case None =>
+              Some(Fragment(Resources(resourceName), AnsiCyan))
+          },
+
+          // totalNumberOfTestsRun=Total number of tests run was: {0}
+          Some(Fragment(Resources("totalNumberOfTestsRun", testsCompletedCount.toString), AnsiCyan)),
+
+          if (scopesPendingCount > 0) {
+            // Suite Summary: completed {0}, aborted {1}  Scopes: pending {2}
+            Some(Fragment(Resources("suiteScopeSummary", suitesCompletedCount.toString, suitesAbortedCount.toString, scopesPendingCount.toString), AnsiCyan))
+          }
+          else {
+            // Suite Summary: completed {0}, aborted {1}
+            Some(Fragment(Resources("suiteSummary", suitesCompletedCount.toString, suitesAbortedCount.toString), AnsiCyan))
+          },
+
+          // Test Summary: succeeded {0}, failed {1}, ignored, {2}, pending {3}, canceled {4}
+          Some(Fragment(Resources("testSummary", testsSucceededCount.toString, testsFailedCount.toString, testsCanceledCount.toString, testsIgnoredCount.toString, testsPendingCount.toString), AnsiCyan)),
+
+          // *** 1 SUITE ABORTED ***
+          if (suitesAbortedCount == 1) {
+            Some(Fragment(Resources("oneSuiteAborted"), AnsiRed))
+          }
+          // *** {0} SUITES ABORTED ***
+          else if (suitesAbortedCount > 1) {
+            Some(Fragment(Resources("multipleSuitesAborted", suitesAbortedCount.toString), AnsiRed))
+          }
+          else None,
+   
+          // *** 1 TEST FAILED ***
+          if (testsFailedCount == 1) {
+            Some(Fragment(Resources("oneTestFailed"), AnsiRed))
+          }
+          // *** {0} TESTS FAILED ***
+          else if (testsFailedCount > 1) {
+            Some(Fragment(Resources("multipleTestsFailed", testsFailedCount.toString), AnsiRed))
+          }
+          else if (suitesAbortedCount == 0) { // Maybe don't want to say this if the run aborted or stopped because "all"
+            Some(Fragment(Resources("allTestsPassed"), AnsiGreen))
+          }
+          else None
+        ).flatten
+
+      case None => Vector.empty
+    }
+  }
 }
 

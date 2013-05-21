@@ -130,7 +130,7 @@ presentUnformatted) {
   // just indent two space to the left.  //  if (times <= 0) s 
   //  else Resources("indentOnce", indent(s, times - 1))
 }
- 
+
 private[tools] object PrintReporter {
 
   final val BufferSize = 4096
