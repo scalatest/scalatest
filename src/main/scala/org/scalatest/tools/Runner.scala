@@ -691,9 +691,9 @@ object Runner {
         runOptionallyWithPassFailReporter(args, true)
 
     if (result)
-      exit(0)
+      System.exit(0)
     else
-      exit(1)
+      System.exit(1)
   }
 
   /**
@@ -729,7 +729,7 @@ object Runner {
     checkArgsForValidity(args) match {
       case Some(s) => {
         println(s)
-        exit(1) // TODO: Shouldn't this be returning false?
+        System.exit(1) // TODO: Shouldn't this be returning false?
       }
       case None =>
     }

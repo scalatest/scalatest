@@ -20,6 +20,7 @@ import java.util.concurrent.CountDownLatch
 import scala.collection.GenSet
 import java.util.concurrent.ConcurrentLinkedQueue
 import collection.JavaConverters._
+import java.io.Serializable
 
 /**
  * The result status of running a test or a suite.
@@ -82,8 +83,7 @@ trait Status {
 /**
  * Singleton status that represents an already completed run with no tests failed and no suites aborted.
  */
-@serializable
-object SucceededStatus extends Status {
+object SucceededStatus extends Status with Serializable {
 
   /**
    * Always returns <code>true</code>.
@@ -113,8 +113,7 @@ object SucceededStatus extends Status {
 /**
  * Singleton status that represents an already completed run with at least one failed test or aborted suite.
  */
-@serializable
-object FailedStatus extends Status {
+object FailedStatus extends Status with Serializable {
 
   /**
    * Always returns <code>false</code>.
@@ -144,8 +143,7 @@ object FailedStatus extends Status {
 // Used internally in ScalaTest. We don't use the StatefulStatus, because
 // then user code could pattern match on it and then access the setCompleted
 // and setFailed methods. We wouldn't want that.
-@serializable
-private[scalatest] final class ScalaTestStatefulStatus extends Status {
+private[scalatest] final class ScalaTestStatefulStatus extends Status with Serializable {
 
   @transient private final val latch = new CountDownLatch(1)
 
@@ -205,8 +203,7 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status {
  * Instances of this class are thread safe.
  * </p>
  */
-@serializable
-final class StatefulStatus extends Status {
+final class StatefulStatus extends Status with Serializable {
   @transient private final val latch = new CountDownLatch(1)
   @volatile private var succeeded = true
   private final val queue = new ConcurrentLinkedQueue[Boolean => Unit]
@@ -294,8 +291,7 @@ final class StatefulStatus extends Status {
  *
  * @param status the <code>Status</code>es out of which this status is composed.
  */
-@serializable
-final class CompositeStatus(statuses: Set[Status]) extends Status {
+final class CompositeStatus(statuses: Set[Status]) extends Status with Serializable {
   
   // TODO: Ensure this is visible to another thread, because I'm letting the reference
   // escape with my for loop below prior to finishing this object's construction.
