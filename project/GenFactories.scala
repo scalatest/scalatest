@@ -42,6 +42,7 @@ import org.scalatest.words.HaveWord
 import org.scalatest.words.BeWord
 import org.scalatest.words.NotWord
 import org.scalatest.words.ContainWord
+import org.scalatest.words.NewContainWord
 import org.scalatest.words.ResultOfLengthWordApplication
 import org.scalatest.words.ResultOfSizeWordApplication
 import org.scalatest.words.ResultOfLessThanComparison
@@ -418,6 +419,46 @@ $endif$
    * </pre>
    */
   def and(containWord: ContainWord): AndContainWord = new AndContainWord
+
+  /**
+   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
+   * the matchers DSL.
+   *
+   * @author Bill Venners
+   */
+  final class AndNewContainWord {
+
+    /**
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     *
+     * <pre class="stHighlight">
+     * (aMatcherFactory and contain (3 - 1))
+     *                              ^
+     * </pre>
+     */
+    def apply(expectedElement: Any): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Holder] = thisMatcherFactory.and(MatcherWords.contain(expectedElement))
+
+    /**
+     * This method enables the following syntax given a <code>MatcherFactory1</code>:
+     *
+     * <pre class="stHighlight">
+     * (aMatcherFactory and contain oneOf (1, 3, 3))
+     *                              ^
+     * </pre>
+     */
+    def newOneOf[E](right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Holder] =
+      thisMatcherFactory.and(MatcherWords.newContain.newOneOf(right: _*))
+  }
+
+  /**
+   * This method enables the following syntax given a <code>MatcherFactory1</code>:
+   *
+   * <pre class="stHighlight">
+   * (aMatcherFactory and contain key ("one"))
+   *                  ^ 
+   * </pre>
+   */
+  def and(containWord: NewContainWord): AndNewContainWord = new AndNewContainWord
 
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
