@@ -47,6 +47,38 @@ class StringReporterSummarySpec extends UnitSpec {
         )
       )
     }
+    def `should produce a good summary when Summary one test failed` {
+/*
+[scalatest] Run completed in 213 milliseconds.
+[scalatest] Total number of tests run: 1
+[scalatest] Suites: completed 1, aborted 0
+[scalatest] Tests: succeeded 0, failed 1, canceled 0, ignored 0, pending 0
+[scalatest] *** 1 TEST FAILED ***
+*/
+
+      val summary =
+        new Summary(
+          testsSucceededCount = 0,
+          testsFailedCount = 1,
+          testsIgnoredCount = 0,
+          testsPendingCount = 0,
+          testsCanceledCount = 0,
+          suitesCompletedCount = 1,
+          suitesAbortedCount = 0,
+          scopesPendingCount = 0
+        )
+
+      val fragments = summaryFragments(true, Some(213L), Some(summary))
+      fragments should be (
+        Vector(
+          Fragment(Resources("runCompletedIn", makeDurationString(213L)), AnsiCyan),
+          Fragment(Resources("totalNumberOfTestsRun", summary.testsCompletedCount.toString), AnsiCyan),
+          Fragment(Resources("suiteSummary", summary.suitesCompletedCount.toString, summary.suitesAbortedCount.toString), AnsiCyan),
+          Fragment(Resources("testSummary", summary.testsSucceededCount.toString, summary.testsFailedCount.toString, summary.testsCanceledCount.toString, summary.testsIgnoredCount.toString, summary.testsPendingCount.toString), AnsiCyan),
+          Fragment(Resources("oneTestFailed"), AnsiRed)
+        )
+      )
+    }
   }
 }
 
