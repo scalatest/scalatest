@@ -365,11 +365,11 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
 
       case RunCompleted(ordinal, duration, summary, formatter, location, payload, threadName, timeStamp) => 
 
-        makeFinalReport("runCompleted", duration, summary)
+        makeFinalReport(true, duration, summary)
 
       case RunStopped(ordinal, duration, summary, formatter, location, payload, threadName, timeStamp) =>
 
-        makeFinalReport("runStopped", duration, summary)
+        makeFinalReport(false, duration, summary)
 
       case RunAborted(ordinal, message, throwable, duration, summary, formatter, location, payload, threadName, timeStamp) => 
 
@@ -579,11 +579,11 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
     }
   }
 
-  protected def makeFinalReport(resourceName: String, duration: Option[Long], summaryOption: Option[Summary]) {
-
+  protected def makeFinalReport(runCompleted: Boolean, duration: Option[Long], summaryOption: Option[Summary]) {
+     
     import StringReporter.summaryFragments
 
-    val fragments: Vector[Fragment] = summaryFragments(resourceName, duration, summaryOption) 
+    val fragments: Vector[Fragment] = summaryFragments(runCompleted, duration, summaryOption) 
 
     for (Fragment(text, ansiColor) <- fragments) {
       printPossiblyInColor(text, ansiColor.code)
@@ -613,7 +613,11 @@ private[scalatest] object StringReporter {
       ("\n" * countTrailingEOLs(text))
     }
 
-  def summaryFragments(resourceName: String, duration: Option[Long], summaryOption: Option[Summary]): Vector[Fragment] = {
+  def summaryFragments(runCompleted: Boolean, duration: Option[Long], summaryOption: Option[Summary]): Vector[Fragment] = {
+
+    val resourceName =
+      if (runCompleted) "runCompleted"
+      else "runStopped"
 
     summaryOption match {
       case Some(summary) =>
@@ -633,15 +637,15 @@ private[scalatest] object StringReporter {
           Some(Fragment(Resources("totalNumberOfTestsRun", testsCompletedCount.toString), AnsiCyan)),
 
           if (scopesPendingCount > 0) {
-            // Suite Summary: completed {0}, aborted {1}  Scopes: pending {2}
+            // Suites: completed {0}, aborted {1}  Scopes: pending {2}
             Some(Fragment(Resources("suiteScopeSummary", suitesCompletedCount.toString, suitesAbortedCount.toString, scopesPendingCount.toString), AnsiCyan))
           }
           else {
-            // Suite Summary: completed {0}, aborted {1}
+            // Suites: completed {0}, aborted {1}
             Some(Fragment(Resources("suiteSummary", suitesCompletedCount.toString, suitesAbortedCount.toString), AnsiCyan))
           },
 
-          // Test Summary: succeeded {0}, failed {1}, ignored, {2}, pending {3}, canceled {4}
+          // Tests: succeeded {0}, failed {1}, ignored, {2}, pending {3}, canceled {4}
           Some(Fragment(Resources("testSummary", testsSucceededCount.toString, testsFailedCount.toString, testsCanceledCount.toString, testsIgnoredCount.toString, testsPendingCount.toString), AnsiCyan)),
 
           // *** 1 SUITE ABORTED ***

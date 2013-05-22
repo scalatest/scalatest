@@ -13,20 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.tools.scalasbt
-import org.scalatest.FunSuite
+package org.scalatest
 
-class SampleSuite extends FunSuite {
+class UnitSpec extends Spec with Matchers 
 
-  test("test 1") {
-    
-  }
-  
-  test("test 2") {
-    
-  }
-  
-  test("test 3") {
-    
-  }
-}

@@ -117,8 +117,8 @@ presentUnformatted) {
     pw.close()
   }
 
-  override def makeFinalReport(resourceName: String, duration: Option[Long], summaryOption: Option[Summary]) {
-    super.makeFinalReport(resourceName, duration, summaryOption)
+  override def makeFinalReport(runCompleted: Boolean, duration: Option[Long], summaryOption: Option[Summary]) {
+    super.makeFinalReport(runCompleted, duration, summaryOption)
     pw.flush()
   }
 

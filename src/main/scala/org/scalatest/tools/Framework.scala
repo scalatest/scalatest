@@ -336,14 +336,14 @@ class Framework extends SbtFramework {
         isDone = true
         val stringWriter = new StringWriter
         val printReporter = new PrintReporter(new PrintWriter(stringWriter), presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted) {}
-        printReporter.makeFinalReport("runCompleted", Some(duration), Some(summary))
+        printReporter.makeFinalReport(true, Some(duration), Some(summary))
         stringWriter.flush() // just to make sure everything is flushed
         stringWriter.toString
       }
       else
         throw new IllegalStateException("done method is called twice")
     }
-    
+
     def args = runArgs
     
     def remoteArgs: Array[String] = {
