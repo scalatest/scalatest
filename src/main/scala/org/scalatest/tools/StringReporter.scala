@@ -235,11 +235,19 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
 
       case RunCompleted(ordinal, duration, summary, formatter, location, payload, threadName, timeStamp) => 
 
-        makeFinalReport(true, duration, summary)
+        val fragments: Vector[Fragment] = summaryFragments(true, duration, summary) 
+
+        for (Fragment(text, ansiColor) <- fragments) {
+          printPossiblyInColor(text, ansiColor.code)
+        }
 
       case RunStopped(ordinal, duration, summary, formatter, location, payload, threadName, timeStamp) =>
 
-        makeFinalReport(false, duration, summary)
+        val fragments: Vector[Fragment] = summaryFragments(false, duration, summary) 
+
+        for (Fragment(text, ansiColor) <- fragments) {
+          printPossiblyInColor(text, ansiColor.code)
+        }
 
       case RunAborted(ordinal, message, throwable, duration, summary, formatter, location, payload, threadName, timeStamp) => 
 

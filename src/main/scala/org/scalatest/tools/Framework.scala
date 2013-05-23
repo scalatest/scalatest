@@ -337,6 +337,7 @@ class Framework extends SbtFramework {
         val stringWriter = new StringWriter
         val printReporter = new PrintReporter(new PrintWriter(stringWriter), presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted) {}
         printReporter.makeFinalReport(true, Some(duration), Some(summary))
+        val fragments: Vector[Fragment] = summaryFragments(true, Some(duration), Some(summary)) 
         stringWriter.flush() // just to make sure everything is flushed
         stringWriter.toString
       }

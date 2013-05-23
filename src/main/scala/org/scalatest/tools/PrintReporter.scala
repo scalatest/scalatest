@@ -117,11 +117,6 @@ presentUnformatted) {
     pw.close()
   }
 
-  override def makeFinalReport(runCompleted: Boolean, duration: Option[Long], summaryOption: Option[Summary]) {
-    super.makeFinalReport(runCompleted, duration, summaryOption)
-    pw.flush()
-  }
-
   // We subtract one from test reports because we add "- " in front, so if one is actually zero, it will come here as -1
   // private def indent(s: String, times: Int) = if (times <= 0) s else ("  " * times) + s
 
