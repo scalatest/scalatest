@@ -62,6 +62,7 @@ import org.scalatest.words.ResultOfValueWordApplication
 import org.scalatest.words.RegexWithGroups
 import org.scalatest.words.ResultOfDefinedAt
 import org.scalatest.words.ResultOfNewOneOfApplication
+import org.scalatest.words.ResultOfAtLeastOneOfApplication
 
 /**
  * A matcher factory that can produce a matcher given $nTypeclassInstances$.
@@ -515,6 +516,17 @@ $endif$
      */
     def newOneOf(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Holder] = 
       thisMatcherFactory.and(MatcherWords.newContain.newOneOf(right.toList: _*))
+    
+    /**
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     *
+     * <pre class="stHighlight">
+     * (aMatcherFactory and contain atLeastOneOf (1, 3, 3))
+     *                              ^
+     * </pre>
+     */
+    def atLeastOneOf(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregation] = 
+      thisMatcherFactory.and(MatcherWords.newContain.atLeastOneOf(right.toList: _*))
     
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1285,11 +1297,22 @@ $endif$
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
-     * (aMatcherFactory and not contain theSameElementsAs (List(8, 1, 2))) 
+     * (aMatcherFactory and not contain oneOf (List(8, 1, 2))) 
      *                          ^
      * </pre>
      */
     def newContain(right: ResultOfNewOneOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Holder] =
+      thisMatcherFactory.and(MatcherWords.not.newContain(right))
+    
+    /**
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     *
+     * <pre class="stHighlight">
+     * (aMatcherFactory and not contain atLeastOneOf (List(8, 1, 2))) 
+     *                          ^
+     * </pre>
+     */
+    def newContain(right: ResultOfAtLeastOneOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregation] =
       thisMatcherFactory.and(MatcherWords.not.newContain(right))
       
     /**
@@ -1618,6 +1641,17 @@ $endif$
      */
     def newOneOf(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Holder] = 
       thisMatcherFactory.or(MatcherWords.newContain.newOneOf(right.toList: _*))
+    
+    /**
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     *
+     * <pre class="stHighlight">
+     * (aMatcherFactory or contain atLeastOneOf (1, 3, 3))
+     *                             ^
+     * </pre>
+     */
+    def atLeastOneOf(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregation] = 
+      thisMatcherFactory.or(MatcherWords.newContain.atLeastOneOf(right.toList: _*))
     
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -2393,6 +2427,17 @@ $endif$
      * </pre>
      */
     def newContain(right: ResultOfNewOneOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Holder] =
+      thisMatcherFactory.or(MatcherWords.not.newContain(right))
+    
+    /**
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     *
+     * <pre class="stHighlight">
+     * (aMatcherFactory or not contain theSameElementsAs (List(8, 1, 2))) 
+     *                         ^
+     * </pre>
+     */
+    def newContain(right: ResultOfAtLeastOneOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregation] =
       thisMatcherFactory.or(MatcherWords.not.newContain(right))
       
     /**

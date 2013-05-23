@@ -53,6 +53,7 @@ import org.scalatest.words.ResultOfValueWordApplication
 import org.scalatest.words.RegexWithGroups
 import org.scalatest.words.ResultOfDefinedAt
 import org.scalatest.words.ResultOfNewOneOfApplication
+import org.scalatest.words.ResultOfAtLeastOneOfApplication
 
 /**
  * Trait extended by objects that can match a value of the specified type. The value to match is
@@ -858,6 +859,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def newOneOf(right: Any*): MatcherFactory1[T with Any, Holder] = 
       outerInstance.and(MatcherWords.newContain.newOneOf(right.toList: _*))
+      
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) and contain atLeastOneOf (1, 3, 3))
+     *                                                                           ^
+     * </pre>
+     */
+    def atLeastOneOf(right: Any*): MatcherFactory1[T with Any, Aggregation] = 
+      outerInstance.and(MatcherWords.newContain.atLeastOneOf(right.toList: _*))
     
     /**
      * This method enables the following syntax:
@@ -1635,6 +1647,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
     def newContain(right: ResultOfNewOneOfApplication): MatcherFactory1[T with Any, Holder] =
       outerInstance.and(MatcherWords.not.newContain(right))
       
+      /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * collection should (contain theSameElementsAs (List(1, 2, 3)) and not contain theSameElementsAs (List(8, 1, 2))) 
+     *                                                                      ^
+     * </pre>
+     */
+    def newContain(right: ResultOfAtLeastOneOfApplication): MatcherFactory1[T with Any, Aggregation] =
+      outerInstance.and(MatcherWords.not.newContain(right))
+      
     /**
      * This method enables the following syntax:
      *
@@ -1958,6 +1981,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def newOneOf(right: Any*): MatcherFactory1[T with Any, Holder] = 
       outerInstance.or(MatcherWords.newContain.newOneOf(right.toList: _*))
+      
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) or contain oneOf (1, 3, 3))
+     *                                                                          ^
+     * </pre>
+     */
+    def atLeastOneOf(right: Any*): MatcherFactory1[T with Any, Aggregation] = 
+      outerInstance.or(MatcherWords.newContain.atLeastOneOf(right.toList: _*))
     
     /**
      * This method enables the following syntax:
@@ -2728,11 +2762,22 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * collection should (contain theSameElementsAs (List(1, 2, 3)) or not contain theSameElementsAs (List(8, 1, 2))) 
+     * collection should (contain theSameElementsAs (List(1, 2, 3)) or not contain oneOf (List(8, 1, 2))) 
      *                                                                     ^
      * </pre>
      */
     def newContain(right: ResultOfNewOneOfApplication): MatcherFactory1[T with Any, Holder] =
+      outerInstance.or(MatcherWords.not.newContain(right))
+      
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * collection should (contain theSameElementsAs (List(1, 2, 3)) or not contain atLeastOneOf (List(8, 1, 2))) 
+     *                                                                     ^
+     * </pre>
+     */
+    def newContain(right: ResultOfAtLeastOneOfApplication): MatcherFactory1[T with Any, Aggregation] =
       outerInstance.or(MatcherWords.not.newContain(right))
       
     /**

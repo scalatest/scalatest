@@ -2384,6 +2384,16 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * </pre>
      */
     def newOneOf(xs: Any*)(implicit holder: Holder[T]) = new ResultOfNewOneOfApplication(xs)
+
+    /**
+     * This method enables the following syntax: 
+     *
+     * <pre class="stHighlight">
+     * List(1, 2, 3) should contain (atLeastOneOf(1, 2))
+     *                               ^
+     * </pre>
+     */
+    def atLeastOneOf(xs: Any*)(implicit holder: Aggregation[T]) = new ResultOfAtLeastOneOfApplication(xs)
     
     /**
      * This method enables the following syntax: 
