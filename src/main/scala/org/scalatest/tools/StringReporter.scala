@@ -33,6 +33,7 @@ import org.scalatest.exceptions.PropertyCheckFailedException
 import org.scalatest.exceptions.TableDrivenPropertyCheckFailedException
 import Suite.indentation
 import org.scalatest.exceptions.StackDepth
+import StringReporter._
 
 /**
  * A <code>Reporter</code> that prints test status information to
@@ -43,18 +44,6 @@ import org.scalatest.exceptions.StackDepth
 private[scalatest] abstract class StringReporter(presentAllDurations: Boolean,
         presentInColor: Boolean, presentShortStackTraces: Boolean, presentFullStackTraces: Boolean,
         presentUnformatted: Boolean) extends ResourcefulReporter {
-
-  private def withPossibleLineNumber(stringToPrint: String, throwable: Option[Throwable]): String = {
-    throwable match {
-      case Some(stackDepth: StackDepth) =>
-        stackDepth.failedCodeFileNameAndLineNumberString match {
-          case Some(lineNumberString) =>
-            Resources("printedReportPlusLineNumber", stringToPrint, lineNumberString)
-          case None => stringToPrint
-        }
-      case _ => stringToPrint
-    }
-  }
 
   protected def printPossiblyInColor(text: String, ansiColor: String)
 
@@ -158,9 +147,442 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
 [scalatest]   )
 
  */
+
+  private def stringToPrintWhenNoError(resourceName: String, formatter: Option[Formatter], suiteName: String, testName: Option[String], message: Option[String]): Option[String] =
+    stringToPrintWhenNoError(resourceName, formatter, suiteName, testName, None, message)
+
+  private def stringToPrintWhenNoError(resourceName: String, formatter: Option[Formatter], suiteName: String, testName: Option[String], duration: Option[Long], message: Option[String]): Option[String] = {
+    def genUnformattedText = {
+        val arg =
+          testName match {
+            case Some(tn) => suiteName + ": " + tn
+            case None => suiteName
+          }
+        val messageText =
+          message match {
+            case Some(text) => ": " + text
+            case None       => ""
+          }
+        val unformattedText = Resources(resourceName, arg + messageText)
+        duration match {
+          case Some(milliseconds) =>
+            if (presentAllDurations)
+              Some(Resources("withDuration", unformattedText, makeDurationString(milliseconds)))
+            else
+              Some(unformattedText)
+          case None => Some(unformattedText)
+        }
+    }
+
+    def genFormattedText = {
+      formatter match {
+        case Some(IndentedText(formattedText, _, _)) =>
+          duration match {
+            case Some(milliseconds) =>
+              if (presentAllDurations)
+                Some(Resources("withDuration", formattedText, makeDurationString(milliseconds)))
+              else
+                Some(formattedText)
+            case None => Some(formattedText)
+          }
+        case Some(MotionToSuppress) => None
+        case _ => genUnformattedText
+      }
+    }
+
+    if (presentUnformatted) genUnformattedText
+    else                    genFormattedText
+  }
+
+  def apply(event: Event) {
+
+    event match {
+      case _: DiscoveryStarting =>
+        val stringToPrint =
+          stringToPrintWhenNoError("discoveryStarting", None, "", None, None)
+
+        stringToPrint match {
+          case Some(string) => printPossiblyInColor(string, ansiCyan)
+          case None =>
+        }
+
+      case DiscoveryCompleted(_, duration, _, _) => 
+        val stringToPrint =
+          duration match {
+            case Some(milliseconds) => 
+              Resources("discoveryCompletedIn", makeDurationString(milliseconds))
+            case None =>
+              Resources("discoveryCompleted")
+          }
+        printPossiblyInColor(stringToPrint, ansiCyan)
+
+      case RunStarting(ordinal, testCount, configMap, formatter, location, payload, threadName, timeStamp) => 
+
+        if (testCount < 0)
+          throw new IllegalArgumentException
+
+        val string = Resources("runStarting", testCount.toString)
+        printPossiblyInColor(string, ansiCyan)
+
+      case RunCompleted(ordinal, duration, summary, formatter, location, payload, threadName, timeStamp) => 
+
+        makeFinalReport(true, duration, summary)
+
+      case RunStopped(ordinal, duration, summary, formatter, location, payload, threadName, timeStamp) =>
+
+        makeFinalReport(false, duration, summary)
+
+      case RunAborted(ordinal, message, throwable, duration, summary, formatter, location, payload, threadName, timeStamp) => 
+
+        val lines = stringsToPrintOnError("abortedNote", "runAborted", message, throwable, formatter, None, None, duration,
+            presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
+
+        for (line <- lines) printPossiblyInColor(line, ansiRed)
+
+      case SuiteStarting(ordinal, suiteName, suiteId, suiteClassName, formatter, location, rerunnable, payload, threadName, timeStamp) =>
+
+        val stringToPrint = stringToPrintWhenNoError("suiteStarting", formatter, suiteName, None, None)
+
+        stringToPrint match {
+          case Some(string) => printPossiblyInColor(string, ansiGreen)
+          case None =>
+        }
+
+      case SuiteCompleted(ordinal, suiteName, suiteId, suiteClassName, duration, formatter, location, rerunnable, payload, threadName, timeStamp) => 
+
+        val stringToPrint = stringToPrintWhenNoError("suiteCompleted", formatter, suiteName, None, duration, None)
+
+        stringToPrint match {
+          case Some(string) => printPossiblyInColor(string, ansiGreen)
+          case None =>
+        }
+
+      case SuiteAborted(ordinal, message, suiteName, suiteId, suiteClassName, throwable, duration, formatter, location, rerunnable, payload, threadName, timeStamp) => 
+
+        val lines = stringsToPrintOnError("abortedNote", "suiteAborted", message, throwable, formatter, Some(suiteName), None, duration,
+            presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
+
+        for (line <- lines) printPossiblyInColor(line, ansiRed)
+
+      case TestStarting(ordinal, suiteName, suiteId, suiteClassName, testName, testText, formatter, location, rerunnable, payload, threadName, timeStamp) =>
+
+        val stringToPrint = stringToPrintWhenNoError("testStarting", formatter, suiteName, Some(testName), None)
+
+        stringToPrint match {
+          case Some(string) => printPossiblyInColor(string, ansiGreen)
+          case None =>
+        }
+
+      case TestSucceeded(ordinal, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, duration, formatter, location, rerunnable, payload, threadName, timeStamp) =>
+
+        val stringToPrint = stringToPrintWhenNoError("testSucceeded", formatter, suiteName, Some(testName), duration, None)
+
+        stringToPrint match {
+          case Some(string) => printPossiblyInColor(string, ansiGreen)
+          case None =>
+        }
+        
+        handleRecordedEvents(recordedEvents)
+    
+      case TestIgnored(ordinal, suiteName, suiteId, suiteClassName, testName, testText, formatter, location, payload, threadName, timeStamp) => 
+
+        val stringToPrint =
+          if (presentUnformatted)
+            Some(Resources("testIgnored", suiteName + ": " + testName))
+          else
+            formatter match {
+              case Some(IndentedText(formattedText, _, _)) => Some(Resources("specTextAndNote", formattedText, Resources("ignoredNote")))
+              case Some(MotionToSuppress) => None
+              case _ => Some(Resources("testIgnored", suiteName + ": " + testName))
+            }
+ 
+        stringToPrint match {
+          case Some(string) => printPossiblyInColor(string, ansiYellow)
+          case None =>
+        }
+
+      case TestFailed(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, throwable, duration, formatter, location, rerunnable, payload, threadName, timeStamp) =>
+
+        val fragments: Vector[Fragment] = testFailedFragments("failedNote", "testFailed", message, throwable, formatter, Some(suiteName), Some(testName), duration,
+            presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
+
+        for (Fragment(text, ansiColor) <- fragments) {
+          printPossiblyInColor(text, ansiColor.code)
+        }
+
+        handleRecordedEvents(recordedEvents, ansiRed)
+
+      case TestCanceled(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, throwable, duration, formatter, location, payload, threadName, timeStamp) =>
+
+        val lines = stringsToPrintOnError("canceledNote", "testCanceled", message, throwable, formatter, Some(suiteName), Some(testName), duration,
+            presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
+
+        for (line <- lines) printPossiblyInColor(line, ansiYellow)
+
+        handleRecordedEvents(recordedEvents, ansiYellow)
+        
+      case ipEvent: InfoProvided =>
+        handleInfoProvided(ipEvent, ansiGreen)        
+
+      case ScopeOpened(ordinal, message, nameInfo, formatter, location, payload, threadName, timeStamp) =>
+
+        val testNameInfo = nameInfo.testName
+        val stringToPrint = stringToPrintWhenNoError("scopeOpened", formatter, nameInfo.suiteName, nameInfo.testName, Some(message))
+        stringToPrint match {
+          case Some(string) => printPossiblyInColor(string, ansiGreen)
+          case None =>
+        }
+
+      // TODO: Reduce duplication among InfoProvided, ScopeOpened, and ScopeClosed
+      case ScopeClosed(ordinal, message, nameInfo, formatter, location, payload, threadName, timeStamp) =>
+        
+        val testNameInfo = nameInfo.testName
+        val stringToPrint = stringToPrintWhenNoError("scopeClosed", formatter, nameInfo.suiteName, nameInfo.testName, Some(message)) // TODO: I htink I want ot say Scope Closed - + message
+        stringToPrint match {
+          case Some(string) => printPossiblyInColor(string, ansiGreen)
+          case None =>
+        }
+        
+      case ScopePending(ordinal, message, nameInfo, formatter, location, payload, threadName, timeStamp) => 
+        val stringToPrint =
+          if (presentUnformatted)
+            Some(Resources("scopePending", nameInfo.suiteName + ": " + message))
+          else
+            formatter match {
+              case Some(IndentedText(formattedText, _, _)) => Some(Resources("specTextAndNote", formattedText, Resources("pendingNote")))
+              case Some(MotionToSuppress) => None
+              case _ => Some(Resources("scopePending", nameInfo.suiteName + ": " + message))
+            }
+        stringToPrint match {
+          case Some(string) => printPossiblyInColor(string, ansiYellow)
+          case None =>
+        }
+        
+      case mpEvent: MarkupProvided =>
+        handleMarkupProvided(mpEvent, ansiGreen)
+
+      case TestPending(ordinal, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, duration, formatter, location, payload, threadName, timeStamp) =>
+
+        val stringToPrint =
+          if (presentUnformatted)
+            Some(Resources("testPending", suiteName + ": " + testName))
+          else
+            formatter match {
+              case Some(IndentedText(formattedText, _, _)) => Some(Resources("specTextAndNote", formattedText, Resources("pendingNote")))
+              case Some(MotionToSuppress) => None
+              case _ => Some(Resources("testPending", suiteName + ": " + testName))
+            }
+
+        stringToPrint match {
+          case Some(string) => printPossiblyInColor(string, ansiYellow)
+          case None =>
+        }
+        
+        handleRecordedEvents(recordedEvents, ansiYellow)
+
+     // case _ => throw new RuntimeException("Unhandled event")
+    }
+  }
+  
+  private def handleInfoProvided(event: InfoProvided, ansiColor: String) {
+    val (suiteName, testName) =
+      event.nameInfo match {
+        case Some(NameInfo(suiteName, _, _, testName)) => (Some(suiteName), testName)
+        case None => (None, None)
+      }
+    val lines = stringsToPrintOnError("infoProvidedNote", "infoProvided", event.message, event.throwable, event.formatter, suiteName, testName, None,
+            presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
+
+    for (line <- lines) printPossiblyInColor(line, ansiColor)
+  }
+  
+  private def stringToPrintWhenMarkup(formatter: Option[Formatter],
+                                      suiteName: Option[String],
+                                      testName:  Option[String],
+                                      text:      String): Option[String] =
+  {
+    def genUnformattedText = {
+      val prefix =
+        (suiteName, testName) match {
+          case (None,        None)        => ""
+          case (None,        Some(tName)) => tName + ": "
+          case (Some(sName), None)        => sName + ": "
+          case (Some(sName), Some(tName)) => sName + ": " + tName + ": "
+        }
+
+      Some(prefix + text)
+    }
+
+    def genFormattedText = {
+      formatter match {
+        case Some(IndentedText(formattedText, _, _)) => Some(formattedText)
+        case Some(MotionToSuppress)                  => None
+        case _                                       => genUnformattedText
+      }
+    }
+
+    if (presentUnformatted) genUnformattedText
+    else                    genFormattedText
+  }
+
+  private def handleMarkupProvided(event: MarkupProvided, ansiColor: String) {
+    val (suiteName, testName) =
+      event.nameInfo match {
+        case Some(NameInfo(suiteName, _, _, testName)) =>
+          (Some(suiteName), testName)
+        case None => (None, None)
+      }
+
+    val stringToPrint =
+      stringToPrintWhenMarkup(event.formatter, suiteName, testName, event.text)
+
+    stringToPrint match {
+      case Some(string) => printPossiblyInColor(string, ansiColor)
+      case None =>
+    }
+  }
+  
+  private def handleRecordedEvents(recordedEvents: collection.immutable.IndexedSeq[RecordableEvent], ansiColor: String = ansiGreen) {
+    recordedEvents.foreach { e =>
+      e match {
+        case ipEvent: InfoProvided => handleInfoProvided(ipEvent, ansiColor)
+        case mpEvent: MarkupProvided => handleMarkupProvided(mpEvent,
+                                                             ansiColor)
+      }
+    }
+  }
+
+  protected def makeFinalReport(runCompleted: Boolean, duration: Option[Long], summaryOption: Option[Summary]) {
+     
+    val fragments: Vector[Fragment] = summaryFragments(runCompleted, duration, summaryOption) 
+
+    for (Fragment(text, ansiColor) <- fragments) {
+      printPossiblyInColor(text, ansiColor.code)
+    }
+  }
+
+  // We subtract one from test reports because we add "- " in front, so if one is actually zero, it will come here as -1
+  // private def indent(s: String, times: Int) = if (times <= 0) s else ("  " * times) + s
+
+  // Stupid properties file won't let me put spaces at the beginning of a property
+  // "  {0}" comes out as "{0}", so I can't do indenting in a localizable way. For now
+  // just indent two space to the left.  //  if (times <= 0) s 
+  //  else Resources("indentOnce", indent(s, times - 1))
+}
+ 
+private[scalatest] object StringReporter {
+  def countTrailingEOLs(s: String): Int = s.length - s.lastIndexWhere(_ != '\n') - 1
+  def countLeadingEOLs(s: String): Int = {
+    val idx = s.indexWhere(_ != '\n')
+    if (idx != -1) idx else 0
+  }
+  def colorizeLinesIndividually(text: String, ansiColor: String): String =
+    if (text.trim.isEmpty) text
+    else {
+      ("\n" * countLeadingEOLs(text)) +
+      text.split("\n").dropWhile(_.isEmpty).map(ansiColor + _ + ansiReset).mkString("\n") +
+      ("\n" * countTrailingEOLs(text))
+    }
+
+  def testFailedFragments(
+    noteResourceName: String,
+    errorResourceName: String,
+    message: String,
+    throwable: Option[Throwable],
+    formatter: Option[Formatter],
+    suiteName: Option[String],
+    testName: Option[String],
+    duration: Option[Long],
+    presentUnformatted: Boolean,
+    presentAllDurations: Boolean,
+    presentShortStackTraces: Boolean,
+    presentFullStackTraces: Boolean
+  ): Vector[Fragment] = {
+
+    val lines: Vector[String] = stringsToPrintOnError("failedNote", "testFailed", message, throwable, formatter, suiteName, testName, duration,
+        presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces).toVector
+
+    lines map (new Fragment(_, AnsiRed))
+  }
+
+  def summaryFragments(runCompleted: Boolean, duration: Option[Long], summaryOption: Option[Summary]): Vector[Fragment] = {
+
+    val resourceName =
+      if (runCompleted) "runCompleted"
+      else "runStopped"
+
+    summaryOption match {
+      case Some(summary) =>
+
+        import summary._
+
+        Vector(
+
+          duration match {
+            case Some(msSinceEpoch) =>
+              Some(Fragment(Resources(resourceName + "In", makeDurationString(msSinceEpoch)), AnsiCyan))
+            case None =>
+              Some(Fragment(Resources(resourceName), AnsiCyan))
+          },
+
+          // totalNumberOfTestsRun=Total number of tests run was: {0}
+          Some(Fragment(Resources("totalNumberOfTestsRun", testsCompletedCount.toString), AnsiCyan)),
+
+          if (scopesPendingCount > 0) {
+            // Suites: completed {0}, aborted {1}  Scopes: pending {2}
+            Some(Fragment(Resources("suiteScopeSummary", suitesCompletedCount.toString, suitesAbortedCount.toString, scopesPendingCount.toString), AnsiCyan))
+          }
+          else {
+            // Suites: completed {0}, aborted {1}
+            Some(Fragment(Resources("suiteSummary", suitesCompletedCount.toString, suitesAbortedCount.toString), AnsiCyan))
+          },
+
+          // Tests: succeeded {0}, failed {1}, ignored, {2}, pending {3}, canceled {4}
+          Some(Fragment(Resources("testSummary", testsSucceededCount.toString, testsFailedCount.toString, testsCanceledCount.toString, testsIgnoredCount.toString, testsPendingCount.toString), AnsiCyan)),
+
+          // *** 1 SUITE ABORTED ***
+          if (suitesAbortedCount == 1) {
+            Some(Fragment(Resources("oneSuiteAborted"), AnsiRed))
+          }
+          // *** {0} SUITES ABORTED ***
+          else if (suitesAbortedCount > 1) {
+            Some(Fragment(Resources("multipleSuitesAborted", suitesAbortedCount.toString), AnsiRed))
+          }
+          else None,
+   
+          // *** 1 TEST FAILED ***
+          if (testsFailedCount == 1) {
+            Some(Fragment(Resources("oneTestFailed"), AnsiRed))
+          }
+          // *** {0} TESTS FAILED ***
+          else if (testsFailedCount > 1) {
+            Some(Fragment(Resources("multipleTestsFailed", testsFailedCount.toString), AnsiRed))
+          }
+          else if (suitesAbortedCount == 0) { // Maybe don't want to say this if the run aborted or stopped because "all"
+            Some(Fragment(Resources("allTestsPassed"), AnsiGreen))
+          }
+          else None
+        ).flatten
+
+      case None => Vector.empty
+    }
+  }
+
   // Called for TestFailed, InfoProvided (because it can have a throwable in it), SuiteAborted, and RunAborted
-  private def stringsToPrintOnError(noteResourceName: String, errorResourceName: String, message: String, throwable: Option[Throwable],
-    formatter: Option[Formatter], suiteName: Option[String], testName: Option[String], duration: Option[Long]): List[String] = {
+  def stringsToPrintOnError(
+    noteResourceName: String,
+    errorResourceName: String,
+    message: String,
+    throwable: Option[Throwable],
+    formatter: Option[Formatter],
+    suiteName: Option[String],
+    testName: Option[String],
+    duration: Option[Long],
+    presentUnformatted: Boolean,
+    presentAllDurations: Boolean,
+    presentShortStackTraces: Boolean,
+    presentFullStackTraces: Boolean
+  ): List[String] = {
 
     def genFormattedText = {
       formatter match {
@@ -287,392 +709,15 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
       stringToPrintWithPossibleDuration :: possiblyEmptyMessageWithPossibleLineNumber.split("\n").toList.map(whiteSpace + _) ::: getStackTrace(throwable)
   }
 
-  private def stringToPrintWhenNoError(resourceName: String, formatter: Option[Formatter], suiteName: String, testName: Option[String], message: Option[String]): Option[String] =
-    stringToPrintWhenNoError(resourceName, formatter, suiteName, testName, None, message)
-
-  private def stringToPrintWhenNoError(resourceName: String, formatter: Option[Formatter], suiteName: String, testName: Option[String], duration: Option[Long], message: Option[String]): Option[String] = {
-    def genUnformattedText = {
-        val arg =
-          testName match {
-            case Some(tn) => suiteName + ": " + tn
-            case None => suiteName
-          }
-        val messageText =
-          message match {
-            case Some(text) => ": " + text
-            case None       => ""
-          }
-        val unformattedText = Resources(resourceName, arg + messageText)
-        duration match {
-          case Some(milliseconds) =>
-            if (presentAllDurations)
-              Some(Resources("withDuration", unformattedText, makeDurationString(milliseconds)))
-            else
-              Some(unformattedText)
-          case None => Some(unformattedText)
+  def withPossibleLineNumber(stringToPrint: String, throwable: Option[Throwable]): String = {
+    throwable match {
+      case Some(stackDepth: StackDepth) =>
+        stackDepth.failedCodeFileNameAndLineNumberString match {
+          case Some(lineNumberString) =>
+            Resources("printedReportPlusLineNumber", stringToPrint, lineNumberString)
+          case None => stringToPrint
         }
-    }
-
-    def genFormattedText = {
-      formatter match {
-        case Some(IndentedText(formattedText, _, _)) =>
-          duration match {
-            case Some(milliseconds) =>
-              if (presentAllDurations)
-                Some(Resources("withDuration", formattedText, makeDurationString(milliseconds)))
-              else
-                Some(formattedText)
-            case None => Some(formattedText)
-          }
-        case Some(MotionToSuppress) => None
-        case _ => genUnformattedText
-      }
-    }
-
-    if (presentUnformatted) genUnformattedText
-    else                    genFormattedText
-  }
-
-  def apply(event: Event) {
-
-    event match {
-      case _: DiscoveryStarting =>
-        val stringToPrint =
-          stringToPrintWhenNoError("discoveryStarting", None, "", None, None)
-
-        stringToPrint match {
-          case Some(string) => printPossiblyInColor(string, ansiCyan)
-          case None =>
-        }
-
-      case DiscoveryCompleted(_, duration, _, _) => 
-        val stringToPrint =
-          duration match {
-            case Some(milliseconds) => 
-              Resources("discoveryCompletedIn", makeDurationString(milliseconds))
-            case None =>
-              Resources("discoveryCompleted")
-          }
-        printPossiblyInColor(stringToPrint, ansiCyan)
-
-      case RunStarting(ordinal, testCount, configMap, formatter, location, payload, threadName, timeStamp) => 
-
-        if (testCount < 0)
-          throw new IllegalArgumentException
-
-        val string = Resources("runStarting", testCount.toString)
-        printPossiblyInColor(string, ansiCyan)
-
-      case RunCompleted(ordinal, duration, summary, formatter, location, payload, threadName, timeStamp) => 
-
-        makeFinalReport(true, duration, summary)
-
-      case RunStopped(ordinal, duration, summary, formatter, location, payload, threadName, timeStamp) =>
-
-        makeFinalReport(false, duration, summary)
-
-      case RunAborted(ordinal, message, throwable, duration, summary, formatter, location, payload, threadName, timeStamp) => 
-
-        val lines = stringsToPrintOnError("abortedNote", "runAborted", message, throwable, formatter, None, None, duration)
-        for (line <- lines) printPossiblyInColor(line, ansiRed)
-
-      case SuiteStarting(ordinal, suiteName, suiteId, suiteClassName, formatter, location, rerunnable, payload, threadName, timeStamp) =>
-
-        val stringToPrint = stringToPrintWhenNoError("suiteStarting", formatter, suiteName, None, None)
-
-        stringToPrint match {
-          case Some(string) => printPossiblyInColor(string, ansiGreen)
-          case None =>
-        }
-
-      case SuiteCompleted(ordinal, suiteName, suiteId, suiteClassName, duration, formatter, location, rerunnable, payload, threadName, timeStamp) => 
-
-        val stringToPrint = stringToPrintWhenNoError("suiteCompleted", formatter, suiteName, None, duration, None)
-
-        stringToPrint match {
-          case Some(string) => printPossiblyInColor(string, ansiGreen)
-          case None =>
-        }
-
-      case SuiteAborted(ordinal, message, suiteName, suiteId, suiteClassName, throwable, duration, formatter, location, rerunnable, payload, threadName, timeStamp) => 
-
-        val lines = stringsToPrintOnError("abortedNote", "suiteAborted", message, throwable, formatter, Some(suiteName), None, duration)
-        for (line <- lines) printPossiblyInColor(line, ansiRed)
-
-      case TestStarting(ordinal, suiteName, suiteId, suiteClassName, testName, testText, formatter, location, rerunnable, payload, threadName, timeStamp) =>
-
-        val stringToPrint = stringToPrintWhenNoError("testStarting", formatter, suiteName, Some(testName), None)
-
-        stringToPrint match {
-          case Some(string) => printPossiblyInColor(string, ansiGreen)
-          case None =>
-        }
-
-      case TestSucceeded(ordinal, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, duration, formatter, location, rerunnable, payload, threadName, timeStamp) =>
-
-        val stringToPrint = stringToPrintWhenNoError("testSucceeded", formatter, suiteName, Some(testName), duration, None)
-
-        stringToPrint match {
-          case Some(string) => printPossiblyInColor(string, ansiGreen)
-          case None =>
-        }
-        
-        handleRecordedEvents(recordedEvents)
-    
-      case TestIgnored(ordinal, suiteName, suiteId, suiteClassName, testName, testText, formatter, location, payload, threadName, timeStamp) => 
-
-        val stringToPrint =
-          if (presentUnformatted)
-            Some(Resources("testIgnored", suiteName + ": " + testName))
-          else
-            formatter match {
-              case Some(IndentedText(formattedText, _, _)) => Some(Resources("specTextAndNote", formattedText, Resources("ignoredNote")))
-              case Some(MotionToSuppress) => None
-              case _ => Some(Resources("testIgnored", suiteName + ": " + testName))
-            }
- 
-        stringToPrint match {
-          case Some(string) => printPossiblyInColor(string, ansiYellow)
-          case None =>
-        }
-
-      case TestFailed(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, throwable, duration, formatter, location, rerunnable, payload, threadName, timeStamp) =>
-
-        val lines = stringsToPrintOnError("failedNote", "testFailed", message, throwable, formatter, Some(suiteName), Some(testName), duration)
-        for (line <- lines) printPossiblyInColor(line, ansiRed)
-
-        handleRecordedEvents(recordedEvents, ansiRed)
-        
-      case TestCanceled(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, throwable, duration, formatter, location, payload, threadName, timeStamp) =>
-
-        val lines = stringsToPrintOnError("canceledNote", "testCanceled", message, throwable, formatter, Some(suiteName), Some(testName), duration)
-        for (line <- lines) printPossiblyInColor(line, ansiYellow)
-
-        handleRecordedEvents(recordedEvents, ansiYellow)
-        
-      case ipEvent: InfoProvided =>
-        handleInfoProvided(ipEvent, ansiGreen)        
-
-      case ScopeOpened(ordinal, message, nameInfo, formatter, location, payload, threadName, timeStamp) =>
-
-        val testNameInfo = nameInfo.testName
-        val stringToPrint = stringToPrintWhenNoError("scopeOpened", formatter, nameInfo.suiteName, nameInfo.testName, Some(message))
-        stringToPrint match {
-          case Some(string) => printPossiblyInColor(string, ansiGreen)
-          case None =>
-        }
-
-      // TODO: Reduce duplication among InfoProvided, ScopeOpened, and ScopeClosed
-      case ScopeClosed(ordinal, message, nameInfo, formatter, location, payload, threadName, timeStamp) =>
-        
-        val testNameInfo = nameInfo.testName
-        val stringToPrint = stringToPrintWhenNoError("scopeClosed", formatter, nameInfo.suiteName, nameInfo.testName, Some(message)) // TODO: I htink I want ot say Scope Closed - + message
-        stringToPrint match {
-          case Some(string) => printPossiblyInColor(string, ansiGreen)
-          case None =>
-        }
-        
-      case ScopePending(ordinal, message, nameInfo, formatter, location, payload, threadName, timeStamp) => 
-        val stringToPrint =
-          if (presentUnformatted)
-            Some(Resources("scopePending", nameInfo.suiteName + ": " + message))
-          else
-            formatter match {
-              case Some(IndentedText(formattedText, _, _)) => Some(Resources("specTextAndNote", formattedText, Resources("pendingNote")))
-              case Some(MotionToSuppress) => None
-              case _ => Some(Resources("scopePending", nameInfo.suiteName + ": " + message))
-            }
-        stringToPrint match {
-          case Some(string) => printPossiblyInColor(string, ansiYellow)
-          case None =>
-        }
-        
-      case mpEvent: MarkupProvided =>
-        handleMarkupProvided(mpEvent, ansiGreen)
-
-      case TestPending(ordinal, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, duration, formatter, location, payload, threadName, timeStamp) =>
-
-        val stringToPrint =
-          if (presentUnformatted)
-            Some(Resources("testPending", suiteName + ": " + testName))
-          else
-            formatter match {
-              case Some(IndentedText(formattedText, _, _)) => Some(Resources("specTextAndNote", formattedText, Resources("pendingNote")))
-              case Some(MotionToSuppress) => None
-              case _ => Some(Resources("testPending", suiteName + ": " + testName))
-            }
-
-        stringToPrint match {
-          case Some(string) => printPossiblyInColor(string, ansiYellow)
-          case None =>
-        }
-        
-        handleRecordedEvents(recordedEvents, ansiYellow)
-
-     // case _ => throw new RuntimeException("Unhandled event")
-    }
-  }
-  
-  private def handleInfoProvided(event: InfoProvided, ansiColor: String) {
-    val (suiteName, testName) =
-      event.nameInfo match {
-        case Some(NameInfo(suiteName, _, _, testName)) => (Some(suiteName), testName)
-        case None => (None, None)
-      }
-    val lines = stringsToPrintOnError("infoProvidedNote", "infoProvided", event.message, event.throwable, event.formatter, suiteName, testName, None)
-    for (line <- lines) printPossiblyInColor(line, ansiColor)
-  }
-  
-  private def stringToPrintWhenMarkup(formatter: Option[Formatter],
-                                      suiteName: Option[String],
-                                      testName:  Option[String],
-                                      text:      String): Option[String] =
-  {
-    def genUnformattedText = {
-      val prefix =
-        (suiteName, testName) match {
-          case (None,        None)        => ""
-          case (None,        Some(tName)) => tName + ": "
-          case (Some(sName), None)        => sName + ": "
-          case (Some(sName), Some(tName)) => sName + ": " + tName + ": "
-        }
-
-      Some(prefix + text)
-    }
-
-    def genFormattedText = {
-      formatter match {
-        case Some(IndentedText(formattedText, _, _)) => Some(formattedText)
-        case Some(MotionToSuppress)                  => None
-        case _                                       => genUnformattedText
-      }
-    }
-
-    if (presentUnformatted) genUnformattedText
-    else                    genFormattedText
-  }
-
-  private def handleMarkupProvided(event: MarkupProvided, ansiColor: String) {
-    val (suiteName, testName) =
-      event.nameInfo match {
-        case Some(NameInfo(suiteName, _, _, testName)) =>
-          (Some(suiteName), testName)
-        case None => (None, None)
-      }
-
-    val stringToPrint =
-      stringToPrintWhenMarkup(event.formatter, suiteName, testName, event.text)
-
-    stringToPrint match {
-      case Some(string) => printPossiblyInColor(string, ansiColor)
-      case None =>
-    }
-  }
-  
-  private def handleRecordedEvents(recordedEvents: collection.immutable.IndexedSeq[RecordableEvent], ansiColor: String = ansiGreen) {
-    recordedEvents.foreach { e =>
-      e match {
-        case ipEvent: InfoProvided => handleInfoProvided(ipEvent, ansiColor)
-        case mpEvent: MarkupProvided => handleMarkupProvided(mpEvent,
-                                                             ansiColor)
-      }
-    }
-  }
-
-  protected def makeFinalReport(runCompleted: Boolean, duration: Option[Long], summaryOption: Option[Summary]) {
-     
-    import StringReporter.summaryFragments
-
-    val fragments: Vector[Fragment] = summaryFragments(runCompleted, duration, summaryOption) 
-
-    for (Fragment(text, ansiColor) <- fragments) {
-      printPossiblyInColor(text, ansiColor.code)
-    }
-  }
-
-  // We subtract one from test reports because we add "- " in front, so if one is actually zero, it will come here as -1
-  // private def indent(s: String, times: Int) = if (times <= 0) s else ("  " * times) + s
-
-  // Stupid properties file won't let me put spaces at the beginning of a property
-  // "  {0}" comes out as "{0}", so I can't do indenting in a localizable way. For now
-  // just indent two space to the left.  //  if (times <= 0) s 
-  //  else Resources("indentOnce", indent(s, times - 1))
-}
- 
-private[scalatest] object StringReporter {
-  def countTrailingEOLs(s: String): Int = s.length - s.lastIndexWhere(_ != '\n') - 1
-  def countLeadingEOLs(s: String): Int = {
-    val idx = s.indexWhere(_ != '\n')
-    if (idx != -1) idx else 0
-  }
-  def colorizeLinesIndividually(text: String, ansiColor: String): String =
-    if (text.trim.isEmpty) text
-    else {
-      ("\n" * countLeadingEOLs(text)) +
-      text.split("\n").dropWhile(_.isEmpty).map(ansiColor + _ + ansiReset).mkString("\n") +
-      ("\n" * countTrailingEOLs(text))
-    }
-
-  def summaryFragments(runCompleted: Boolean, duration: Option[Long], summaryOption: Option[Summary]): Vector[Fragment] = {
-
-    val resourceName =
-      if (runCompleted) "runCompleted"
-      else "runStopped"
-
-    summaryOption match {
-      case Some(summary) =>
-
-        import summary._
-
-        Vector(
-
-          duration match {
-            case Some(msSinceEpoch) =>
-              Some(Fragment(Resources(resourceName + "In", makeDurationString(msSinceEpoch)), AnsiCyan))
-            case None =>
-              Some(Fragment(Resources(resourceName), AnsiCyan))
-          },
-
-          // totalNumberOfTestsRun=Total number of tests run was: {0}
-          Some(Fragment(Resources("totalNumberOfTestsRun", testsCompletedCount.toString), AnsiCyan)),
-
-          if (scopesPendingCount > 0) {
-            // Suites: completed {0}, aborted {1}  Scopes: pending {2}
-            Some(Fragment(Resources("suiteScopeSummary", suitesCompletedCount.toString, suitesAbortedCount.toString, scopesPendingCount.toString), AnsiCyan))
-          }
-          else {
-            // Suites: completed {0}, aborted {1}
-            Some(Fragment(Resources("suiteSummary", suitesCompletedCount.toString, suitesAbortedCount.toString), AnsiCyan))
-          },
-
-          // Tests: succeeded {0}, failed {1}, ignored, {2}, pending {3}, canceled {4}
-          Some(Fragment(Resources("testSummary", testsSucceededCount.toString, testsFailedCount.toString, testsCanceledCount.toString, testsIgnoredCount.toString, testsPendingCount.toString), AnsiCyan)),
-
-          // *** 1 SUITE ABORTED ***
-          if (suitesAbortedCount == 1) {
-            Some(Fragment(Resources("oneSuiteAborted"), AnsiRed))
-          }
-          // *** {0} SUITES ABORTED ***
-          else if (suitesAbortedCount > 1) {
-            Some(Fragment(Resources("multipleSuitesAborted", suitesAbortedCount.toString), AnsiRed))
-          }
-          else None,
-   
-          // *** 1 TEST FAILED ***
-          if (testsFailedCount == 1) {
-            Some(Fragment(Resources("oneTestFailed"), AnsiRed))
-          }
-          // *** {0} TESTS FAILED ***
-          else if (testsFailedCount > 1) {
-            Some(Fragment(Resources("multipleTestsFailed", testsFailedCount.toString), AnsiRed))
-          }
-          else if (suitesAbortedCount == 0) { // Maybe don't want to say this if the run aborted or stopped because "all"
-            Some(Fragment(Resources("allTestsPassed"), AnsiGreen))
-          }
-          else None
-        ).flatten
-
-      case None => Vector.empty
+      case _ => stringToPrint
     }
   }
 }

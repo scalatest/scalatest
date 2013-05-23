@@ -79,6 +79,7 @@ class StringReporterSummarySpec extends UnitSpec {
         )
       )
     }
+    def `should fail spectacularly` { fail("oops") }
   }
 }
 
