@@ -31,6 +31,16 @@ class ListShouldContainOneOfLogicalAndSpec extends Spec with Matchers {
       def areEqual(a: List[String], b: Any): Boolean = a != b
     }
   
+  val upperCaseStringEquality =
+    new Equality[String] {
+      def areEqual(a: String, b: Any): Boolean = a.toUpperCase == b
+    }
+  
+  val upperCaseListOfStringEquality = 
+    new Equality[List[String]] {
+      def areEqual(a: List[String], b: Any): Boolean = a.map(_.toUpperCase) == b
+    }
+  
   val fileName: String = "ListShouldContainOneOfLogicalAndSpec.scala"
   
   object `a List` {
@@ -53,28 +63,28 @@ class ListShouldContainOneOfLogicalAndSpec extends Spec with Matchers {
       }
 
       def `should use the implicit Equality in scope` {
-        implicit val ise = invertedStringEquality
-        fumList should (newContain newOneOf ("happy", "birthday", "to", "you") and newContain newOneOf ("have", "a", "nice", "day"))
+        implicit val ise = upperCaseStringEquality
+        fumList should (newContain newOneOf ("FEE", "FIE", "FOE", "FUM") and newContain newOneOf ("FIE", "FEE", "FUM", "FOE"))
         val e1 = intercept[TestFailedException] {
-          fumList should (newContain newOneOf ("fum", "fum", "fum", "fum") and newContain newOneOf ("fum", "fum", "fum"))
+          fumList should (newContain newOneOf ("fee", "fie", "foe", "fum") and newContain newOneOf ("FEE", "FIE", "FOE", "FUM"))
         }
-        checkMessageStackDepth(e1, Resources("didNotContainOneOfElements", fumList, "\"fum\", \"fum\", \"fum\", \"fum\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("didNotContainOneOfElements", fumList, "\"fee\", \"fie\", \"foe\", \"fum\""), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          fumList should (newContain newOneOf ("happy", "birthday", "to", "you") and (newContain newOneOf ("fum", "fum", "fum")))
+          fumList should (newContain newOneOf ("FEE", "FIE", "FOE", "FUM") and (newContain newOneOf ("fee", "fie", "foe", "fum")))
         }
-        checkMessageStackDepth(e2, Resources("containedOneOfElements", fumList, "\"happy\", \"birthday\", \"to\", \"you\"") + ", but " + Resources("didNotContainOneOfElements", fumList, "\"fum\", \"fum\", \"fum\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, Resources("containedOneOfElements", fumList, "\"FEE\", \"FIE\", \"FOE\", \"FUM\"") + ", but " + Resources("didNotContainOneOfElements", fumList, "\"fee\", \"fie\", \"foe\", \"fum\""), fileName, thisLineNumber - 2)
       }
       
       def `should use an explicitly provided Equality` {
-        (fumList should (newContain newOneOf ("happy", "birthday", "to", "you") and newContain newOneOf ("have", "a", "nice", "day"))) (decided by invertedStringEquality, decided by invertedStringEquality)
+        (fumList should (newContain newOneOf ("FEE", "FIE", "FOE", "FUM") and newContain newOneOf ("FIE", "FEE", "FUM", "FOE"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (newContain newOneOf ("happy", "birthday", "to", "you") and newContain newOneOf ("fum", "fum", "fum"))) (decided by invertedStringEquality, decided by invertedStringEquality)
+          (fumList should (newContain newOneOf ("fee", "fie", "foe", "fum") and newContain newOneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, Resources("containedOneOfElements", fumList, "\"happy\", \"birthday\", \"to\", \"you\"") + ", but " + Resources("didNotContainOneOfElements", fumList, "\"fum\", \"fum\", \"fum\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("didNotContainOneOfElements", fumList, "\"fee\", \"fie\", \"foe\", \"fum\""), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          (fumList should (newContain newOneOf ("fum", "fum", "fum") and newContain newOneOf ("happy", "birthday", "to", "you"))) (decided by invertedStringEquality, decided by invertedStringEquality)
+          (fumList should (newContain newOneOf ("FEE", "FIE", "FOE", "FUM") and newContain newOneOf ("fee", "fie", "foe", "fum"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e2, Resources("didNotContainOneOfElements", fumList, "\"fum\", \"fum\", \"fum\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, Resources("containedOneOfElements", fumList, "\"FEE\", \"FIE\", \"FOE\", \"FUM\"") + ", but " + Resources("didNotContainOneOfElements", fumList, "\"fee\", \"fie\", \"foe\", \"fum\""), fileName, thisLineNumber - 2)
         (fumList should (newContain newOneOf (" FEE ", " FIE ", " FOE ", " FUM ") and newContain newOneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
     }
@@ -94,28 +104,28 @@ class ListShouldContainOneOfLogicalAndSpec extends Spec with Matchers {
       }
       
       def `should use the implicit Equality in scope` {
-        implicit val ise = invertedStringEquality
-        fumList should (equal (fumList) and newContain newOneOf ("have", "a", "nice", "day"))
+        implicit val ise = upperCaseStringEquality
+        fumList should (equal (fumList) and newContain newOneOf ("FEE", "FIE", "FOE", "FUM"))
         val e1 = intercept[TestFailedException] {
-          fumList should (equal (toList) and newContain newOneOf ("fum", "fum", "fum"))
+          fumList should (equal (toList) and newContain newOneOf ("FEE", "FIE", "FOE", "FUM"))
         }
         checkMessageStackDepth(e1, Resources("didNotEqual", fumList, toList), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          fumList should (equal (fumList) and (newContain newOneOf ("fum", "fum", "fum")))
+          fumList should (equal (fumList) and (newContain newOneOf ("fee", "fie", "foe", "fum")))
         }
-        checkMessageStackDepth(e2, Resources("equaled", fumList, fumList) + ", but " + Resources("didNotContainOneOfElements", fumList, "\"fum\", \"fum\", \"fum\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, Resources("equaled", fumList, fumList) + ", but " + Resources("didNotContainOneOfElements", fumList, "\"fee\", \"fie\", \"foe\", \"fum\""), fileName, thisLineNumber - 2)
       }
       
       def `should use an explicitly provided Equality` {
-        (fumList should (equal (toList) and newContain newOneOf ("have", "a", "nice", "day"))) (decided by invertedListOfStringEquality, decided by invertedStringEquality)
+        (fumList should (equal (toList) and newContain newOneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (equal (toList) and newContain newOneOf ("fum", "fum", "fum"))) (decided by invertedListOfStringEquality, decided by invertedStringEquality)
+          (fumList should (equal (fumList) and newContain newOneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, Resources("equaled", fumList, toList) + ", but " + Resources("didNotContainOneOfElements", fumList, "\"fum\", \"fum\", \"fum\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("didNotEqual", fumList, fumList), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          (fumList should (equal (fumList) and newContain newOneOf ("happy", "birthday", "to", "you"))) (decided by invertedListOfStringEquality, decided by invertedStringEquality)
+          (fumList should (equal (toList) and newContain newOneOf ("fee", "fie", "foe", "fum"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e2, Resources("didNotEqual", fumList, fumList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, Resources("equaled", fumList, toList) + ", but " + Resources("didNotContainOneOfElements", fumList, "\"fee\", \"fie\", \"foe\", \"fum\""), fileName, thisLineNumber - 2)
         (fumList should (equal (toList) and newContain newOneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (decided by invertedListOfStringEquality, after being lowerCased and trimmed)
       }
     }
@@ -135,26 +145,26 @@ class ListShouldContainOneOfLogicalAndSpec extends Spec with Matchers {
       }
       
       def `should use the implicit Equality in scope` {
-        implicit val ise = invertedStringEquality
-        fumList should (legacyEqual (fumList) and newContain newOneOf ("have", "a", "nice", "day"))
+        implicit val ise = upperCaseStringEquality
+        fumList should (legacyEqual (fumList) and newContain newOneOf ("FEE", "FIE", "FOE", "FUM"))
         val e1 = intercept[TestFailedException] {
-          fumList should (legacyEqual (toList) and newContain newOneOf ("fum", "fum", "fum"))
+          fumList should (legacyEqual (toList) and newContain newOneOf ("FEE", "FIE", "FOE", "FUM"))
         }
         checkMessageStackDepth(e1, Resources("didNotEqual", fumList, toList), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          fumList should (legacyEqual (fumList) and (newContain newOneOf ("fum", "fum", "fum")))
+          fumList should (legacyEqual (fumList) and (newContain newOneOf ("fee", "fie", "foe", "fum")))
         }
-        checkMessageStackDepth(e2, Resources("equaled", fumList, fumList) + ", but " + Resources("didNotContainOneOfElements", fumList, "\"fum\", \"fum\", \"fum\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, Resources("equaled", fumList, fumList) + ", but " + Resources("didNotContainOneOfElements", fumList, "\"fee\", \"fie\", \"foe\", \"fum\""), fileName, thisLineNumber - 2)
       }
       
       def `should use an explicitly provided Equality` {
-        (fumList should (legacyEqual (fumList) and newContain newOneOf ("have", "a", "nice", "day"))) (decided by invertedStringEquality)
+        (fumList should (legacyEqual (fumList) and newContain newOneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (legacyEqual (fumList) and newContain newOneOf ("fum", "fum", "fum"))) (decided by invertedStringEquality)
+          (fumList should (legacyEqual (fumList) and newContain newOneOf ("fee", "fie", "foe", "fum"))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, Resources("equaled", fumList, fumList) + ", but " + Resources("didNotContainOneOfElements", fumList, "\"fum\", \"fum\", \"fum\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("equaled", fumList, fumList) + ", but " + Resources("didNotContainOneOfElements", fumList, "\"fee\", \"fie\", \"foe\", \"fum\""), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          (fumList should (legacyEqual (toList) and newContain newOneOf ("happy", "birthday", "to", "you"))) (decided by invertedStringEquality)
+          (fumList should (legacyEqual (toList) and newContain newOneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, Resources("didNotEqual", fumList, toList), fileName, thisLineNumber - 2)
         (fumList should (legacyEqual (fumList) and newContain newOneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
@@ -170,34 +180,34 @@ class ListShouldContainOneOfLogicalAndSpec extends Spec with Matchers {
         }
         checkMessageStackDepth(e1, Resources("containedOneOfElements", fumList, "\"fee\", \"fie\", \"foe\", \"fum\"") + ", but " + Resources("didNotEqual", fumList, toList), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          fumList should (newContain newOneOf ("happy", "birthday", "to", "you") and legacyEqual (fumList))
+          fumList should (newContain newOneOf ("FEE", "FIE", "FOE", "FUM") and legacyEqual (fumList))
         }
-        checkMessageStackDepth(e2, Resources("didNotContainOneOfElements", fumList, "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, Resources("didNotContainOneOfElements", fumList, "\"FEE\", \"FIE\", \"FOE\", \"FUM\""), fileName, thisLineNumber - 2)
       }
       
       def `should use the implicit Equality in scope` {
-        implicit val ise = invertedStringEquality
-        fumList should (newContain newOneOf ("have", "a", "nice", "day") and legacyEqual (fumList))
+        implicit val ise = upperCaseStringEquality
+        fumList should (newContain newOneOf ("FEE", "FIE", "FOE", "FUM") and legacyEqual (fumList))
         val e1 = intercept[TestFailedException] {
-          fumList should (newContain newOneOf ("fum", "fum", "fum") and legacyEqual (toList))
+          fumList should (newContain newOneOf ("fie", "fee", "fum", "foe") and legacyEqual (toList))
         }
-        checkMessageStackDepth(e1, Resources("didNotContainOneOfElements", fumList, "\"fum\", \"fum\", \"fum\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("didNotContainOneOfElements", fumList, "\"fie\", \"fee\", \"fum\", \"foe\""), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          fumList should (newContain newOneOf ("fum", "fum", "fum") and (legacyEqual (fumList)))
+          fumList should (newContain newOneOf ("fie", "fee", "fum", "foe") and (legacyEqual (fumList)))
         }
-        checkMessageStackDepth(e2, Resources("didNotContainOneOfElements", fumList, "\"fum\", \"fum\", \"fum\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, Resources("didNotContainOneOfElements", fumList, "\"fie\", \"fee\", \"fum\", \"foe\""), fileName, thisLineNumber - 2)
       }
       
       def `should use an explicitly provided Equality` {
-        (fumList should (newContain newOneOf ("have", "a", "nice", "day") and legacyEqual (fumList))) (decided by invertedStringEquality)
+        (fumList should (newContain newOneOf ("FEE", "FIE", "FOE", "FUM") and legacyEqual (fumList))) (decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (newContain newOneOf ("fum", "fum", "fum") and legacyEqual (fumList))) (decided by invertedStringEquality)
+          (fumList should (newContain newOneOf ("fie", "fee", "fum", "foe") and legacyEqual (fumList))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, Resources("didNotContainOneOfElements", fumList, "\"fum\", \"fum\", \"fum\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("didNotContainOneOfElements", fumList, "\"fie\", \"fee\", \"fum\", \"foe\""), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          (fumList should (newContain newOneOf ("happy", "birthday", "to", "you") and legacyEqual (toList))) (decided by invertedStringEquality)
+          (fumList should (newContain newOneOf ("FEE", "FIE", "FOE", "FUM") and legacyEqual (toList))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e2, Resources("containedOneOfElements", fumList, "\"happy\", \"birthday\", \"to\", \"you\"") + ", but " + Resources("didNotEqual", fumList, toList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, Resources("containedOneOfElements", fumList, "\"FEE\", \"FIE\", \"FOE\", \"FUM\"") + ", but " + Resources("didNotEqual", fumList, toList), fileName, thisLineNumber - 2)
         (fumList should (newContain newOneOf (" FEE ", " FIE ", " FOE ", " FUM ") and legacyEqual (fumList))) (after being lowerCased and trimmed)
       }
     }
@@ -205,40 +215,40 @@ class ListShouldContainOneOfLogicalAndSpec extends Spec with Matchers {
     object `when used with (not contain oneOf (...) and not contain oneOf (...)) syntax` {
       
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        fumList should (not newContain newOneOf ("fee", "fie", "foe", "fuu") and not newContain newOneOf("fie", "fee", "fuu", "foe"))
+        fumList should (not newContain newOneOf ("FEE", "FIE", "FOE", "FUM") and not newContain newOneOf("FEE", "FIE", "FOE", "FUM"))
         val e1 = intercept[TestFailedException] {
-          fumList should (not newContain newOneOf ("fee", "fie", "foe", "fum") and not newContain newOneOf ("happy", "birthday", "to", "you"))
+          fumList should (not newContain newOneOf ("fee", "fie", "foe", "fum") and not newContain newOneOf ("FEE", "FIE", "FOE", "FUM"))
         }
         checkMessageStackDepth(e1, Resources("containedOneOfElements", fumList, "\"fee\", \"fie\", \"foe\", \"fum\""), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          fumList should (not newContain newOneOf ("happy", "birthday", "to", "you") and not newContain newOneOf ("fee", "fie", "foe", "fum"))
+          fumList should (not newContain newOneOf ("FEE", "FIE", "FOE", "FUM") and not newContain newOneOf ("fee", "fie", "foe", "fum"))
         }
-        checkMessageStackDepth(e2, Resources("didNotContainOneOfElements", fumList, "\"happy\", \"birthday\", \"to\", \"you\"") + ", but " + Resources("containedOneOfElements", fumList, "\"fee\", \"fie\", \"foe\", \"fum\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, Resources("didNotContainOneOfElements", fumList, "\"FEE\", \"FIE\", \"FOE\", \"FUM\"") + ", but " + Resources("containedOneOfElements", fumList, "\"fee\", \"fie\", \"foe\", \"fum\""), fileName, thisLineNumber - 2)
       }
       
       def `should use the implicit Equality in scope` {
-        implicit val ise = invertedStringEquality
-        fumList should (not newContain newOneOf ("fum", "fum", "fum", "fum") and not newContain newOneOf ("fum", "fum", "fum"))
+        implicit val ise = upperCaseStringEquality
+        fumList should (not newContain newOneOf ("fee", "fie", "foe", "fum") and not newContain newOneOf ("fee", "fie", "foe", "fum"))
         val e1 = intercept[TestFailedException] {
-          fumList should (not newContain newOneOf ("happy", "birthday", "to", "you") and not newContain newOneOf ("fum", "fum", "fum"))
+          fumList should (not newContain newOneOf ("FEE", "FIE", "FOE", "FUM") and not newContain newOneOf ("fee", "fie", "foe", "fum"))
         }
-        checkMessageStackDepth(e1, Resources("containedOneOfElements", fumList, "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
+        
         val e2 = intercept[TestFailedException] {
-          fumList should (not newContain newOneOf ("fum", "fum", "fum") and (not newContain newOneOf ("happy", "birthday", "to", "you")))
+          fumList should (not newContain newOneOf ("fee", "fie", "foe", "fum") and (not newContain newOneOf ("FEE", "FIE", "FOE", "FUM")))
         }
-        checkMessageStackDepth(e2, Resources("didNotContainOneOfElements", fumList, "\"fum\", \"fum\", \"fum\"") + ", but " + Resources("containedOneOfElements", fumList, "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, Resources("didNotContainOneOfElements", fumList, "\"fee\", \"fie\", \"foe\", \"fum\"") + ", but " + Resources("containedOneOfElements", fumList, "\"FEE\", \"FIE\", \"FOE\", \"FUM\""), fileName, thisLineNumber - 2)
       }
       
       def `should use an explicitly provided Equality` {
-        (fumList should (not newContain newOneOf ("fum", "fum", "fum", "fum") and not newContain newOneOf ("fum", "fum", "fum"))) (decided by invertedStringEquality, decided by invertedStringEquality)
+        (fumList should (not newContain newOneOf ("fee", "fie", "foe", "fum") and not newContain newOneOf ("fee", "fie", "foe", "fum"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (not newContain newOneOf ("fum", "fum", "fum") and not newContain newOneOf ("happy", "birthday", "to", "you"))) (decided by invertedStringEquality, decided by invertedStringEquality)
+          (fumList should (not newContain newOneOf ("FEE", "FIE", "FOE", "FUM") and not newContain newOneOf ("fee", "fie", "foe", "fum"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, Resources("didNotContainOneOfElements", fumList, "\"fum\", \"fum\", \"fum\"") + ", but " + Resources("containedOneOfElements", fumList, "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("containedOneOfElements", fumList, "\"FEE\", \"FIE\", \"FOE\", \"FUM\""), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          (fumList should (not newContain newOneOf ("happy", "birthday", "to", "you") and not newContain newOneOf ("fum", "fum", "fum"))) (decided by invertedStringEquality, decided by invertedStringEquality)
+          (fumList should (not newContain newOneOf ("fee", "fie", "foe", "fum") and not newContain newOneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e2, Resources("containedOneOfElements", fumList, "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, Resources("didNotContainOneOfElements", fumList, "\"fee\", \"fie\", \"foe\", \"fum\"") + ", but " + Resources("containedOneOfElements", fumList, "\"FEE\", \"FIE\", \"FOE\", \"FUM\""), fileName, thisLineNumber - 2)
         (fumList should (newContain newOneOf (" FEE ", " FIE ", " FOE ", " FUM ") and newContain newOneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
     }
@@ -246,9 +256,9 @@ class ListShouldContainOneOfLogicalAndSpec extends Spec with Matchers {
     object `when used with (not equal (...) and not contain oneOf (...)) syntax` {
       
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        fumList should (not equal (toList) and not newContain newOneOf("fie", "fee", "fuu", "foe"))
+        fumList should (not equal (toList) and not newContain newOneOf("FEE", "FIE", "FOE", "FUM"))
         val e1 = intercept[TestFailedException] {
-          fumList should (not equal (fumList) and not newContain newOneOf ("happy", "birthday", "to", "you"))
+          fumList should (not equal (fumList) and not newContain newOneOf ("FEE", "FIE", "FOE", "FUM"))
         }
         checkMessageStackDepth(e1, Resources("equaled", fumList, fumList), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
@@ -258,26 +268,26 @@ class ListShouldContainOneOfLogicalAndSpec extends Spec with Matchers {
       }
       
       def `should use the implicit Equality in scope` {
-        implicit val ise = invertedStringEquality
-        fumList should (not equal (toList) and not newContain newOneOf ("fum", "fum", "fum"))
+        implicit val ise = upperCaseStringEquality
+        fumList should (not equal (toList) and not newContain newOneOf ("fee", "fie", "foe", "fum"))
         val e1 = intercept[TestFailedException] {
-          fumList should (not equal (fumList) and not newContain newOneOf ("fum", "fum", "fum"))
+          fumList should (not equal (fumList) and not newContain newOneOf ("fee", "fie", "foe", "fum"))
         }
         checkMessageStackDepth(e1, Resources("equaled", fumList, fumList), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          fumList should (not equal (toList) and (not newContain newOneOf ("happy", "birthday", "to", "you")))
+          fumList should (not equal (toList) and (not newContain newOneOf ("FEE", "FIE", "FOE", "FUM")))
         }
-        checkMessageStackDepth(e2, Resources("didNotEqual", fumList, toList) + ", but " + Resources("containedOneOfElements", fumList, "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, Resources("didNotEqual", fumList, toList) + ", but " + Resources("containedOneOfElements", fumList, "\"FEE\", \"FIE\", \"FOE\", \"FUM\""), fileName, thisLineNumber - 2)
       }
       
       def `should use an explicitly provided Equality` {
-        (fumList should (not equal (fumList) and not newContain newOneOf ("fum", "fum", "fum"))) (decided by invertedListOfStringEquality, decided by invertedStringEquality)
+        (fumList should (not equal (fumList) and not newContain newOneOf ("fee", "fie", "foe", "fum"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (not equal (fumList) and not newContain newOneOf ("happy", "birthday", "to", "you"))) (decided by invertedListOfStringEquality, decided by invertedStringEquality)
+          (fumList should (not equal (fumList) and not newContain newOneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, Resources("didNotEqual", fumList, fumList) + ", but " + Resources("containedOneOfElements", fumList, "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("didNotEqual", fumList, fumList) + ", but " + Resources("containedOneOfElements", fumList, "\"FEE\", \"FIE\", \"FOE\", \"FUM\""), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          (fumList should (not equal (toList) and not newContain newOneOf ("fum", "fum", "fum"))) (decided by invertedListOfStringEquality, decided by invertedStringEquality)
+          (fumList should (not equal (toList) and not newContain newOneOf ("fee", "fie", "foe", "fum"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, Resources("equaled", fumList, toList), fileName, thisLineNumber - 2)
         (fumList should (not newContain newOneOf (" FEE ", " FIE ", " FOE ", " FUU ") and not newContain newOneOf (" FEE ", " FIE ", " FOE ", " FUU "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
@@ -287,9 +297,9 @@ class ListShouldContainOneOfLogicalAndSpec extends Spec with Matchers {
     object `when used with (not be (...) and not contain oneOf (...)) syntax` {
       
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        fumList should (not be (toList) and not newContain newOneOf("fie", "fee", "fuu", "foe"))
+        fumList should (not be (toList) and not newContain newOneOf("FEE", "FIE", "FOE", "FUM"))
         val e1 = intercept[TestFailedException] {
-          fumList should (not be (fumList) and not newContain newOneOf ("happy", "birthday", "to", "you"))
+          fumList should (not be (fumList) and not newContain newOneOf ("FEE", "FIE", "FOE", "FUM"))
         }
         checkMessageStackDepth(e1, Resources("wasEqualTo", fumList, fumList), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
@@ -299,26 +309,26 @@ class ListShouldContainOneOfLogicalAndSpec extends Spec with Matchers {
       }
       
       def `should use the implicit Equality in scope` {
-        implicit val ise = invertedStringEquality
-        fumList should (not be (toList) and not newContain newOneOf ("fum", "fum", "fum"))
+        implicit val ise = upperCaseStringEquality
+        fumList should (not be (toList) and not newContain newOneOf ("fee", "fie", "foe", "fum"))
         val e1 = intercept[TestFailedException] {
-          fumList should (not be (fumList) and not newContain newOneOf ("fum", "fum", "fum"))
+          fumList should (not be (fumList) and not newContain newOneOf ("fee", "fie", "foe", "fum"))
         }
         checkMessageStackDepth(e1, Resources("wasEqualTo", fumList, fumList), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          fumList should (not be (toList) and (not newContain newOneOf ("happy", "birthday", "to", "you")))
+          fumList should (not be (toList) and (not newContain newOneOf ("FEE", "FIE", "FOE", "FUM")))
         }
-        checkMessageStackDepth(e2, Resources("wasNotEqualTo", fumList, toList) + ", but " + Resources("containedOneOfElements", fumList, "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, Resources("wasNotEqualTo", fumList, toList) + ", but " + Resources("containedOneOfElements", fumList, "\"FEE\", \"FIE\", \"FOE\", \"FUM\""), fileName, thisLineNumber - 2)
       }
       
       def `should use an explicitly provided Equality` {
-        (fumList should (not be (toList) and not newContain newOneOf ("fum", "fum", "fum"))) (decided by invertedStringEquality)
+        (fumList should (not be (toList) and not newContain newOneOf ("fee", "fie", "foe", "fum"))) (decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (not be (toList) and not newContain newOneOf ("happy", "birthday", "to", "you"))) (decided by invertedStringEquality)
+          (fumList should (not be (toList) and not newContain newOneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, Resources("wasNotEqualTo", fumList, toList) + ", but " + Resources("containedOneOfElements", fumList, "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("wasNotEqualTo", fumList, toList) + ", but " + Resources("containedOneOfElements", fumList, "\"FEE\", \"FIE\", \"FOE\", \"FUM\""), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          (fumList should (not be (fumList) and not newContain newOneOf ("fum", "fum", "fum"))) (decided by invertedStringEquality)
+          (fumList should (not be (fumList) and not newContain newOneOf ("fee", "fie", "foe", "fum"))) (decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, Resources("wasEqualTo", fumList, fumList), fileName, thisLineNumber - 2)
         (fumList should (not newContain newOneOf (" FEE ", " FIE ", " FOE ", " FUU ") and not newContain newOneOf (" FEE ", " FIE ", " FOE ", " FUU "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
