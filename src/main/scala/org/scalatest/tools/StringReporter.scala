@@ -300,11 +300,12 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
               case _ => Some(Resources("testIgnored", suiteName + ": " + testName))
             }
  
-        stringToPrint match {
-          case Some(string) => printPossiblyInColor(string, ansiYellow)
-          case None =>
-        }
+        val optFragment = stringToPrint.toVector map (new Fragment(_, AnsiYellow))
 
+        for (Fragment(text, ansiColor) <- optFragment) {
+          printPossiblyInColor(text, ansiColor.code)
+        }
+    
       case TestFailed(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, throwable, duration, formatter, location, rerunnable, payload, threadName, timeStamp) =>
 
         val tff: Vector[Fragment] = testFailedFragments("failedNote", "testFailed", message, throwable, formatter, Some(suiteName), Some(testName), duration,
@@ -320,12 +321,17 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
 
       case TestCanceled(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, throwable, duration, formatter, location, payload, threadName, timeStamp) =>
 
-        val lines = stringsToPrintOnError("canceledNote", "testCanceled", message, throwable, formatter, Some(suiteName), Some(testName), duration,
-            presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
+        val lines: Vector[String] = stringsToPrintOnError("canceledNote", "testCanceled", message, throwable, formatter, Some(suiteName), Some(testName), duration,
+            presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces).toVector
 
-        for (line <- lines) printPossiblyInColor(line, ansiYellow)
+        val tcf =
+          for (line <- lines)
+          yield new Fragment(line, AnsiYellow)
 
-        val fragments = recordedEventFragments(recordedEvents, AnsiYellow, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
+        val ref = recordedEventFragments(recordedEvents, AnsiYellow, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
+
+        val fragments = tcf ++ ref
+
         for (Fragment(text, ansiColor) <- fragments) {
           printPossiblyInColor(text, ansiColor.code)
         }
