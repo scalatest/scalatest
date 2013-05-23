@@ -45,7 +45,7 @@ private[scalatest] abstract class StringReporter(presentAllDurations: Boolean,
         presentInColor: Boolean, presentShortStackTraces: Boolean, presentFullStackTraces: Boolean,
         presentUnformatted: Boolean) extends ResourcefulReporter {
 
-  protected def printPossiblyInColor(text: String, ansiColor: String)
+  protected def printPossiblyInColor(fragment: Fragment)
 
 /*
 I either want to print the full stack trace, like this:
@@ -203,9 +203,7 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
 
         val optFragment: Vector[Fragment] = stringToPrint.toVector map (new Fragment(_, AnsiCyan))
 
-        for (Fragment(text, ansiColor) <- optFragment) {
-          printPossiblyInColor(text, ansiColor.code)
-        }
+        optFragment foreach printPossiblyInColor
     
 // TODO: I think we should let people elide these events in reporters
       case DiscoveryCompleted(_, duration, _, _) => 
@@ -219,9 +217,7 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
 
         val fragment = Vector(Fragment(stringToPrint, AnsiCyan))
 
-        for (Fragment(text, ansiColor) <- fragment) {
-          printPossiblyInColor(text, ansiColor.code)
-        }
+        fragment foreach printPossiblyInColor
 
       case RunStarting(ordinal, testCount, configMap, formatter, location, payload, threadName, timeStamp) => 
 
@@ -229,39 +225,33 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
 
         val fragment = Vector(Fragment(string, AnsiCyan))
 
-        for (Fragment(text, ansiColor) <- fragment) {
-          printPossiblyInColor(text, ansiColor.code)
-        }
+        fragment foreach printPossiblyInColor
 
       case RunCompleted(ordinal, duration, summary, formatter, location, payload, threadName, timeStamp) => 
 
         val fragments: Vector[Fragment] = summaryFragments(true, duration, summary) 
 
-        for (Fragment(text, ansiColor) <- fragments) {
-          printPossiblyInColor(text, ansiColor.code)
-        }
+        fragments foreach printPossiblyInColor
 
       case RunStopped(ordinal, duration, summary, formatter, location, payload, threadName, timeStamp) =>
 
         val fragments: Vector[Fragment] = summaryFragments(false, duration, summary) 
 
-        for (Fragment(text, ansiColor) <- fragments) {
-          printPossiblyInColor(text, ansiColor.code)
-        }
+        fragments foreach printPossiblyInColor
 
       case RunAborted(ordinal, message, throwable, duration, summary, formatter, location, payload, threadName, timeStamp) => 
 
         val lines = stringsToPrintOnError("abortedNote", "runAborted", message, throwable, formatter, None, None, duration,
             presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
 
-        for (line <- lines) printPossiblyInColor(line, ansiRed)
+        for (line <- lines) printPossiblyInColor(Fragment(line, AnsiRed))
 
       case SuiteStarting(ordinal, suiteName, suiteId, suiteClassName, formatter, location, rerunnable, payload, threadName, timeStamp) =>
 
         val stringToPrint = stringToPrintWhenNoError("suiteStarting", formatter, suiteName, None, None)
 
         stringToPrint match {
-          case Some(string) => printPossiblyInColor(string, ansiGreen)
+          case Some(string) => printPossiblyInColor(Fragment(string, AnsiGreen))
           case None =>
         }
 
@@ -270,7 +260,7 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
         val stringToPrint = stringToPrintWhenNoError("suiteCompleted", formatter, suiteName, None, duration, None)
 
         stringToPrint match {
-          case Some(string) => printPossiblyInColor(string, ansiGreen)
+          case Some(string) => printPossiblyInColor(Fragment(string, AnsiGreen))
           case None =>
         }
 
@@ -279,14 +269,14 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
         val lines = stringsToPrintOnError("abortedNote", "suiteAborted", message, throwable, formatter, Some(suiteName), None, duration,
             presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
 
-        for (line <- lines) printPossiblyInColor(line, ansiRed)
+        for (line <- lines) printPossiblyInColor(Fragment(line, AnsiRed))
 
       case TestStarting(ordinal, suiteName, suiteId, suiteClassName, testName, testText, formatter, location, rerunnable, payload, threadName, timeStamp) =>
 
         val stringToPrint = stringToPrintWhenNoError("testStarting", formatter, suiteName, Some(testName), None)
 
         stringToPrint match {
-          case Some(string) => printPossiblyInColor(string, ansiGreen)
+          case Some(string) => printPossiblyInColor(Fragment(string, AnsiGreen))
           case None =>
         }
 
@@ -295,15 +285,13 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
         val stringToPrint = stringToPrintWhenNoError("testSucceeded", formatter, suiteName, Some(testName), duration, None)
 
         stringToPrint match {
-          case Some(string) => printPossiblyInColor(string, ansiGreen)
+          case Some(string) => printPossiblyInColor(Fragment(string, AnsiGreen))
           case None =>
         }
         
        val fragments = recordedEventFragments(recordedEvents, AnsiGreen, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
 
-        for (Fragment(text, ansiColor) <- fragments) {
-          printPossiblyInColor(text, ansiColor.code)
-        }
+        fragments foreach printPossiblyInColor
     
       case TestIgnored(ordinal, suiteName, suiteId, suiteClassName, testName, testText, formatter, location, payload, threadName, timeStamp) => 
 
@@ -319,9 +307,7 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
  
         val optFragment = stringToPrint.toVector map (new Fragment(_, AnsiYellow))
 
-        for (Fragment(text, ansiColor) <- optFragment) {
-          printPossiblyInColor(text, ansiColor.code)
-        }
+        optFragment foreach printPossiblyInColor
     
       case TestFailed(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, throwable, duration, formatter, location, rerunnable, payload, threadName, timeStamp) =>
 
@@ -332,9 +318,7 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
 
         val fragments = tff ++ ref
 
-        for (Fragment(text, ansiColor) <- fragments) {
-          printPossiblyInColor(text, ansiColor.code)
-        }
+        fragments foreach printPossiblyInColor
 
       case TestCanceled(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, throwable, duration, formatter, location, payload, threadName, timeStamp) =>
 
@@ -349,24 +333,20 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
 
         val fragments = tcf ++ ref
 
-        for (Fragment(text, ansiColor) <- fragments) {
-          printPossiblyInColor(text, ansiColor.code)
-        }
+        fragments foreach printPossiblyInColor
 
       case ipEvent: InfoProvided =>
 
         val fragments = infoProvidedFragments(ipEvent, AnsiGreen, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
 
-        for (Fragment(text, ansiColor) <- fragments) {
-          printPossiblyInColor(text, ansiColor.code)
-        }
+        fragments foreach printPossiblyInColor
 
       case ScopeOpened(ordinal, message, nameInfo, formatter, location, payload, threadName, timeStamp) =>
 
         val testNameInfo = nameInfo.testName
         val stringToPrint = stringToPrintWhenNoError("scopeOpened", formatter, nameInfo.suiteName, nameInfo.testName, Some(message))
         stringToPrint match {
-          case Some(string) => printPossiblyInColor(string, ansiGreen)
+          case Some(string) => printPossiblyInColor(Fragment(string, AnsiGreen))
           case None =>
         }
 
@@ -376,7 +356,7 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
         val testNameInfo = nameInfo.testName
         val stringToPrint = stringToPrintWhenNoError("scopeClosed", formatter, nameInfo.suiteName, nameInfo.testName, Some(message)) // TODO: I htink I want ot say Scope Closed - + message
         stringToPrint match {
-          case Some(string) => printPossiblyInColor(string, ansiGreen)
+          case Some(string) => printPossiblyInColor(Fragment(string, AnsiGreen))
           case None =>
         }
         
@@ -391,7 +371,7 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
               case _ => Some(Resources("scopePending", nameInfo.suiteName + ": " + message))
             }
         stringToPrint match {
-          case Some(string) => printPossiblyInColor(string, ansiYellow)
+          case Some(string) => printPossiblyInColor(Fragment(string, AnsiYellow))
           case None =>
         }
         
@@ -399,8 +379,7 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
 
         val optFragment = markupProvidedOptionalFragment(mpEvent, AnsiGreen, presentUnformatted)
 
-        for (Fragment(string, ansiColor) <- optFragment)
-          printPossiblyInColor(string, ansiColor.code)
+        optFragment foreach printPossiblyInColor
 
       case TestPending(ordinal, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, duration, formatter, location, payload, threadName, timeStamp) =>
 
@@ -415,15 +394,13 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
             }
 
         stringToPrint match {
-          case Some(string) => printPossiblyInColor(string, ansiYellow)
+          case Some(string) => printPossiblyInColor(Fragment(string, AnsiYellow))
           case None =>
         }
         
         val fragments = recordedEventFragments(recordedEvents, AnsiYellow, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
 
-        for (Fragment(text, ansiColor) <- fragments) {
-          printPossiblyInColor(text, ansiColor.code)
-        }
+        fragments foreach printPossiblyInColor
 
      // case _ => throw new RuntimeException("Unhandled event")
     }
@@ -433,9 +410,7 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
      
     val fragments: Vector[Fragment] = summaryFragments(runCompleted, duration, summaryOption) 
 
-    for (Fragment(text, ansiColor) <- fragments) {
-      printPossiblyInColor(text, ansiColor.code)
-    }
+    fragments foreach printPossiblyInColor
   }
 
   // We subtract one from test reports because we add "- " in front, so if one is actually zero, it will come here as -1
@@ -448,18 +423,6 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
 }
  
 private[scalatest] object StringReporter {
-  def countTrailingEOLs(s: String): Int = s.length - s.lastIndexWhere(_ != '\n') - 1
-  def countLeadingEOLs(s: String): Int = {
-    val idx = s.indexWhere(_ != '\n')
-    if (idx != -1) idx else 0
-  }
-  def colorizeLinesIndividually(text: String, ansiColor: String): String =
-    if (text.trim.isEmpty) text
-    else {
-      ("\n" * countLeadingEOLs(text)) +
-      text.split("\n").dropWhile(_.isEmpty).map(ansiColor + _ + ansiReset).mkString("\n") +
-      ("\n" * countTrailingEOLs(text))
-    }
 
   def testFailedFragments(
     noteResourceName: String,

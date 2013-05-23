@@ -4,7 +4,6 @@ import org.scalatools.testing.{Framework => SbtFramework, _}
 import org.scalatest.tools.Runner.parsePropertiesArgsIntoMap
 import org.scalatest.tools.Runner.parseCompoundArgIntoSet
 import SuiteDiscoveryHelper._
-import StringReporter.colorizeLinesIndividually
 import org.scalatest.Suite.formatterForSuiteStarting
 import org.scalatest.Suite.formatterForSuiteCompleted
 import org.scalatest.Suite.formatterForSuiteAborted
@@ -189,10 +188,10 @@ class ScalaTestFramework extends SbtFramework {
   
   class SbtLogInfoReporter(loggers: Array[Logger], presentAllDurations: Boolean, presentInColor: Boolean, presentShortStackTraces: Boolean, presentFullStackTraces: Boolean) 
       extends StringReporter(presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, false) {
-    
-    protected def printPossiblyInColor(text: String, ansiColor: String) {
+
+    protected def printPossiblyInColor(fragment: Fragment) {
       loggers.foreach { logger =>
-        logger.info(if (logger.ansiCodesSupported && presentInColor) colorizeLinesIndividually(text, ansiColor) else text)
+        logger.info(fragment.toPossiblyColoredText(logger.ansiCodesSupported && presentInColor))
       }
     }
 

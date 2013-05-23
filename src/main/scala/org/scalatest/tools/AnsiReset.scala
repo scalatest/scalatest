@@ -15,7 +15,7 @@
  */
 package org.scalatest.tools
 
-object AnsiReset {
+private[scalatest] object AnsiReset {
   val code: String =  "\033[0m"
 }
 

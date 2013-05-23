@@ -15,19 +15,19 @@
  */
 package org.scalatest.tools
 
-sealed trait AnsiColor {
+private[scalatest] sealed trait AnsiColor {
   val code: String
 }
-case object AnsiGreen extends AnsiColor {
+private[scalatest] case object AnsiGreen extends AnsiColor {
   val code: String =  "\033[32m"
 }
-case object AnsiCyan extends AnsiColor {
+private[scalatest] case object AnsiCyan extends AnsiColor {
   val code: String =  "\033[36m"
 }
-case object AnsiYellow extends AnsiColor {
+private[scalatest] case object AnsiYellow extends AnsiColor {
   val code: String =  "\033[33m"
 }
-case object AnsiRed extends AnsiColor {
+private[scalatest] case object AnsiRed extends AnsiColor {
   val code: String =  "\033[31m"
 }
 

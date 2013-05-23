@@ -3,7 +3,6 @@ package org.scalatest.tools
 import sbt.testing.{Event => SbtEvent, Framework => SbtFramework, Status => SbtStatus, _}
 import org.scalatest._
 import SuiteDiscoveryHelper._
-import StringReporter.colorizeLinesIndividually
 import Suite.formatterForSuiteStarting
 import Suite.formatterForSuiteCompleted
 import Suite.formatterForSuiteAborted
@@ -300,9 +299,9 @@ class Framework extends SbtFramework {
   class SbtLogInfoReporter(loggers: Array[Logger], presentAllDurations: Boolean, presentInColor: Boolean, presentShortStackTraces: Boolean, presentFullStackTraces: Boolean) 
     extends StringReporter(presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, false) {
     
-    protected def printPossiblyInColor(text: String, ansiColor: String) {
+    protected def printPossiblyInColor(fragment: Fragment) {
       loggers.foreach { logger =>
-        logger.info(if (logger.ansiCodesSupported && presentInColor) colorizeLinesIndividually(text, ansiColor) else text)
+        logger.info(fragment.toPossiblyColoredText(logger.ansiCodesSupported && presentInColor))
       }
     }
 
@@ -334,12 +333,8 @@ class Framework extends SbtFramework {
         dispatchReporter(RunCompleted(tracker.nextOrdinal(), Some(duration), Some(summary)))
         dispatchReporter.dispatchDisposeAndWaitUntilDone()
         isDone = true
-        val stringWriter = new StringWriter
-        val printReporter = new PrintReporter(new PrintWriter(stringWriter), presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted) {}
-        printReporter.makeFinalReport(true, Some(duration), Some(summary))
-        val fragments: Vector[Fragment] = summaryFragments(true, Some(duration), Some(summary)) 
-        stringWriter.flush() // just to make sure everything is flushed
-        stringWriter.toString
+        val fragments: Vector[Fragment] = StringReporter.summaryFragments(true, Some(duration), Some(summary)) 
+        fragments.map(_.toPossiblyColoredText(presentInColor)).mkString("\n")
       }
       else
         throw new IllegalStateException("done method is called twice")

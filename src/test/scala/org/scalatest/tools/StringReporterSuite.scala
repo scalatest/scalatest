@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2011 Artima, Inc.
+ * Copyright 2001-2013 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,21 +17,20 @@ package org.scalatest
 package tools
 
 import org.scalatest.matchers.ShouldMatchers
-import StringReporter.{colorizeLinesIndividually => colorize}
-import StringReporter.{countTrailingEOLs, countLeadingEOLs}
+import Fragment.{countTrailingEOLs, countLeadingEOLs}
 import PrintReporter.ansiReset
 import PrintReporter.ansiCyan
 
 class StringReporterSuite extends FunSuite with ShouldMatchers {
 
   test("Empty string should just come back as an empty string.") {
-    assert(colorize("", ansiCyan) === "")
+    assert(Fragment("", AnsiCyan).toPossiblyColoredText(true) === "")
   }
 
   test("Blank string should just come back as the same string.") {
-    assert(colorize(" ", ansiCyan) === " ")
-    assert(colorize("  ", ansiCyan) === "  ")
-    assert(colorize("   ", ansiCyan) === "   ")
+    assert(Fragment(" ", AnsiCyan).toPossiblyColoredText(true) === " ")
+    assert(Fragment("  ", AnsiCyan).toPossiblyColoredText(true) === "  ")
+    assert(Fragment("   ", AnsiCyan).toPossiblyColoredText(true) === "   ")
   }
 
   val cyanRegex = "\033\\[36m"
@@ -48,7 +47,7 @@ class StringReporterSuite extends FunSuite with ShouldMatchers {
   test("A non-blank string with no EOLs should come back surrounded by ansiColor and ansiReset, " +
       "with no other occurrences of them in the returned string") {
 
-    val aResult = colorize("a", ansiCyan)
+    val aResult = Fragment("a", AnsiCyan).toPossiblyColoredText(true)
     aResult should startWith (ansiCyan)
     aResult should endWith (ansiReset)
     countCyan(aResult) should equal (1)
@@ -58,7 +57,7 @@ class StringReporterSuite extends FunSuite with ShouldMatchers {
   test("A non-blank string with one EOL should come back surrounded by ansiColor and ansiReset, " +
       "with two occurrences of them in the returned string") {
 
-    val aResult = colorize("a\nb", ansiCyan)
+    val aResult = Fragment("a\nb", AnsiCyan).toPossiblyColoredText(true)
     aResult should startWith (ansiCyan)
     aResult should endWith (ansiReset)
     countCyan(aResult) should equal (2)
@@ -96,7 +95,7 @@ class StringReporterSuite extends FunSuite with ShouldMatchers {
   test("A non-blank string with one EOL in the middle and one EOL at the end should come back with the first two " +
       "strings surrounded by ansiColor and ansiReset, but nothing after the trailing EOL") {
 
-    val aResult = colorize("a\nb\n", ansiCyan)
+    val aResult = Fragment("a\nb\n", AnsiCyan).toPossiblyColoredText(true)
     aResult should startWith (ansiCyan)
     aResult should not endWith (ansiReset)
     aResult should endWith (ansiReset + "\n")
@@ -107,7 +106,7 @@ class StringReporterSuite extends FunSuite with ShouldMatchers {
   test("A non-blank string with one EOL in the middle and two EOLs at the end should come back with the first two " +
       "strings surrounded by ansiColor and ansiReset, but nothing after the trailing EOLs") {
 
-    val aResult = colorize("a\nb\n\n", ansiCyan)
+    val aResult = Fragment("a\nb\n\n", AnsiCyan).toPossiblyColoredText(true)
     aResult should startWith (ansiCyan)
     aResult should not endWith (ansiReset)
     aResult should endWith (ansiReset + "\n\n")
@@ -118,7 +117,7 @@ class StringReporterSuite extends FunSuite with ShouldMatchers {
   test("A non-blank string with one EOL in the middle and one EOL at the beginning should come back with the last two " +
       "strings surrounded by ansiColor and ansiReset, but nothing before the initial EOL") {
 
-    val aResult = colorize("\na\nb", ansiCyan)
+    val aResult = Fragment("\na\nb", AnsiCyan).toPossiblyColoredText(true)
     aResult should not startWith (ansiCyan)
     aResult should endWith (ansiReset)
     aResult should startWith ("\n" + ansiCyan)

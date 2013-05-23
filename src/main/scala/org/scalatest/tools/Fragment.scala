@@ -15,6 +15,28 @@
  */
 package org.scalatest.tools
 
-case class Fragment(text: String, ansiColor: AnsiColor)
+import Fragment.countLeadingEOLs
+import Fragment.countTrailingEOLs
+import PrintReporter.ansiReset
 
+private[scalatest] case class Fragment(text: String, ansiColor: AnsiColor) {
+  
+  def toPossiblyColoredText(presentInColor: Boolean): String =
+    if (!presentInColor || text.trim.isEmpty) text
+    else {
+      ("\n" * countLeadingEOLs(text)) +
+      text.split("\n").dropWhile(_.isEmpty).map(ansiColor.code + _ + ansiReset).mkString("\n") +
+      ("\n" * countTrailingEOLs(text))
+    }
+}
+
+private[scalatest] object Fragment {
+
+  def countTrailingEOLs(s: String): Int = s.length - s.lastIndexWhere(_ != '\n') - 1
+
+  def countLeadingEOLs(s: String): Int = {
+    val idx = s.indexWhere(_ != '\n')
+    if (idx != -1) idx else 0
+  }
+}
 
