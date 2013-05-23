@@ -282,7 +282,11 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
           case None =>
         }
         
-        handleRecordedEvents(recordedEvents)
+       val fragments = recordedEventFragments(recordedEvents, AnsiGreen, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
+
+        for (Fragment(text, ansiColor) <- fragments) {
+          printPossiblyInColor(text, ansiColor.code)
+        }
     
       case TestIgnored(ordinal, suiteName, suiteId, suiteClassName, testName, testText, formatter, location, payload, threadName, timeStamp) => 
 
@@ -303,14 +307,16 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
 
       case TestFailed(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, throwable, duration, formatter, location, rerunnable, payload, threadName, timeStamp) =>
 
-        val fragments: Vector[Fragment] = testFailedFragments("failedNote", "testFailed", message, throwable, formatter, Some(suiteName), Some(testName), duration,
+        val tff: Vector[Fragment] = testFailedFragments("failedNote", "testFailed", message, throwable, formatter, Some(suiteName), Some(testName), duration,
             presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
+
+        val ref = recordedEventFragments(recordedEvents, AnsiRed, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
+
+        val fragments = tff ++ ref
 
         for (Fragment(text, ansiColor) <- fragments) {
           printPossiblyInColor(text, ansiColor.code)
         }
-
-        handleRecordedEvents(recordedEvents, ansiRed)
 
       case TestCanceled(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, throwable, duration, formatter, location, payload, threadName, timeStamp) =>
 
@@ -319,10 +325,18 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
 
         for (line <- lines) printPossiblyInColor(line, ansiYellow)
 
-        handleRecordedEvents(recordedEvents, ansiYellow)
-        
+        val fragments = recordedEventFragments(recordedEvents, AnsiYellow, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
+        for (Fragment(text, ansiColor) <- fragments) {
+          printPossiblyInColor(text, ansiColor.code)
+        }
+
       case ipEvent: InfoProvided =>
-        handleInfoProvided(ipEvent, ansiGreen)        
+
+        val fragments = infoProvidedFragments(ipEvent, AnsiGreen, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
+
+        for (Fragment(text, ansiColor) <- fragments) {
+          printPossiblyInColor(text, ansiColor.code)
+        }
 
       case ScopeOpened(ordinal, message, nameInfo, formatter, location, payload, threadName, timeStamp) =>
 
@@ -359,7 +373,11 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
         }
         
       case mpEvent: MarkupProvided =>
-        handleMarkupProvided(mpEvent, ansiGreen)
+
+        val optFragment = markupProvidedOptionalFragment(mpEvent, AnsiGreen, presentUnformatted)
+
+        for (Fragment(string, ansiColor) <- optFragment)
+          printPossiblyInColor(string, ansiColor.code)
 
       case TestPending(ordinal, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, duration, formatter, location, payload, threadName, timeStamp) =>
 
@@ -378,80 +396,16 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
           case None =>
         }
         
-        handleRecordedEvents(recordedEvents, ansiYellow)
+        val fragments = recordedEventFragments(recordedEvents, AnsiYellow, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
+
+        for (Fragment(text, ansiColor) <- fragments) {
+          printPossiblyInColor(text, ansiColor.code)
+        }
 
      // case _ => throw new RuntimeException("Unhandled event")
     }
   }
   
-  private def handleInfoProvided(event: InfoProvided, ansiColor: String) {
-    val (suiteName, testName) =
-      event.nameInfo match {
-        case Some(NameInfo(suiteName, _, _, testName)) => (Some(suiteName), testName)
-        case None => (None, None)
-      }
-    val lines = stringsToPrintOnError("infoProvidedNote", "infoProvided", event.message, event.throwable, event.formatter, suiteName, testName, None,
-            presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
-
-    for (line <- lines) printPossiblyInColor(line, ansiColor)
-  }
-  
-  private def stringToPrintWhenMarkup(formatter: Option[Formatter],
-                                      suiteName: Option[String],
-                                      testName:  Option[String],
-                                      text:      String): Option[String] =
-  {
-    def genUnformattedText = {
-      val prefix =
-        (suiteName, testName) match {
-          case (None,        None)        => ""
-          case (None,        Some(tName)) => tName + ": "
-          case (Some(sName), None)        => sName + ": "
-          case (Some(sName), Some(tName)) => sName + ": " + tName + ": "
-        }
-
-      Some(prefix + text)
-    }
-
-    def genFormattedText = {
-      formatter match {
-        case Some(IndentedText(formattedText, _, _)) => Some(formattedText)
-        case Some(MotionToSuppress)                  => None
-        case _                                       => genUnformattedText
-      }
-    }
-
-    if (presentUnformatted) genUnformattedText
-    else                    genFormattedText
-  }
-
-  private def handleMarkupProvided(event: MarkupProvided, ansiColor: String) {
-    val (suiteName, testName) =
-      event.nameInfo match {
-        case Some(NameInfo(suiteName, _, _, testName)) =>
-          (Some(suiteName), testName)
-        case None => (None, None)
-      }
-
-    val stringToPrint =
-      stringToPrintWhenMarkup(event.formatter, suiteName, testName, event.text)
-
-    stringToPrint match {
-      case Some(string) => printPossiblyInColor(string, ansiColor)
-      case None =>
-    }
-  }
-  
-  private def handleRecordedEvents(recordedEvents: collection.immutable.IndexedSeq[RecordableEvent], ansiColor: String = ansiGreen) {
-    recordedEvents.foreach { e =>
-      e match {
-        case ipEvent: InfoProvided => handleInfoProvided(ipEvent, ansiColor)
-        case mpEvent: MarkupProvided => handleMarkupProvided(mpEvent,
-                                                             ansiColor)
-      }
-    }
-  }
-
   protected def makeFinalReport(runCompleted: Boolean, duration: Option[Long], summaryOption: Option[Summary]) {
      
     val fragments: Vector[Fragment] = summaryFragments(runCompleted, duration, summaryOption) 
@@ -719,6 +673,92 @@ private[scalatest] object StringReporter {
         }
       case _ => stringToPrint
     }
+  }
+
+  def recordedEventFragments(
+    recordedEvents: collection.immutable.IndexedSeq[RecordableEvent],
+    ansiColor: AnsiColor,
+    presentUnformatted: Boolean,
+    presentAllDurations: Boolean,
+    presentShortStackTraces: Boolean,
+    presentFullStackTraces: Boolean
+  ): Vector[Fragment] = {
+    (for (e <- recordedEvents.toVector) yield {
+      e match {
+        case ipEvent: InfoProvided =>
+          infoProvidedFragments(ipEvent, ansiColor, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
+        case mpEvent: MarkupProvided =>
+          markupProvidedOptionalFragment(mpEvent, ansiColor, presentUnformatted)
+      }
+    }).flatten
+  }
+
+  def infoProvidedFragments(
+    event: InfoProvided,
+    ansiColor: AnsiColor,
+    presentUnformatted: Boolean,
+    presentAllDurations: Boolean,
+    presentShortStackTraces: Boolean,
+    presentFullStackTraces: Boolean
+  ): Vector[Fragment] = {
+    val (suiteName, testName) =
+      event.nameInfo match {
+        case Some(NameInfo(suiteName, _, _, testName)) => (Some(suiteName), testName)
+        case None => (None, None)
+      }
+    val lines: Vector[String] = stringsToPrintOnError("infoProvidedNote", "infoProvided", event.message, event.throwable, event.formatter, suiteName, testName, None,
+        presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces).toVector
+
+    lines map (new Fragment(_, ansiColor))
+    // for (line <- lines) printPossiblyInColor(line, ansiColor)
+  }
+
+  // This will return either an empty Vector or a Vector with one element. Vector instead of Option because
+  // that makes it easier to combine them with other Vector[Fragment]s coming back from other sibling methods.
+  def markupProvidedOptionalFragment(event: MarkupProvided, ansiColor: AnsiColor, presentUnformatted: Boolean): Vector[Fragment] = {
+
+    val (suiteName, testName) =
+      event.nameInfo match {
+        case Some(NameInfo(suiteName, _, _, testName)) =>
+          (Some(suiteName), testName)
+        case None => (None, None)
+      }
+
+    val stringToPrint: Option[String] = stringToPrintWhenMarkup(event.formatter, suiteName, testName, event.text, presentUnformatted)
+
+    stringToPrint.toVector map (new Fragment(_, ansiColor))
+  }
+
+  def stringToPrintWhenMarkup(
+    formatter: Option[Formatter],
+    suiteName: Option[String],
+    testName: Option[String],
+    text: String,
+    presentUnformatted: Boolean
+  ): Option[String] = {
+
+    def genUnformattedText = {
+      val prefix =
+        (suiteName, testName) match {
+          case (None,        None)        => ""
+          case (None,        Some(tName)) => tName + ": "
+          case (Some(sName), None)        => sName + ": "
+          case (Some(sName), Some(tName)) => sName + ": " + tName + ": "
+        }
+
+      Some(prefix + text)
+    }
+
+    def genFormattedText = {
+      formatter match {
+        case Some(IndentedText(formattedText, _, _)) => Some(formattedText)
+        case Some(MotionToSuppress)                  => None
+        case _                                       => genUnformattedText
+      }
+    }
+
+    if (presentUnformatted) genUnformattedText
+    else                    genFormattedText
   }
 }
 
