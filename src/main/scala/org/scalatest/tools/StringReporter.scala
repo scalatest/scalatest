@@ -222,14 +222,16 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
         for (Fragment(text, ansiColor) <- fragment) {
           printPossiblyInColor(text, ansiColor.code)
         }
-    
+
       case RunStarting(ordinal, testCount, configMap, formatter, location, payload, threadName, timeStamp) => 
 
-        if (testCount < 0)
-          throw new IllegalArgumentException
-
         val string = Resources("runStarting", testCount.toString)
-        printPossiblyInColor(string, ansiCyan)
+
+        val fragment = Vector(Fragment(string, AnsiCyan))
+
+        for (Fragment(text, ansiColor) <- fragment) {
+          printPossiblyInColor(text, ansiColor.code)
+        }
 
       case RunCompleted(ordinal, duration, summary, formatter, location, payload, threadName, timeStamp) => 
 
