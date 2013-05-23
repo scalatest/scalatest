@@ -198,14 +198,16 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
 
     event match {
       case _: DiscoveryStarting =>
-        val stringToPrint =
+        val stringToPrint: Option[String] =
           stringToPrintWhenNoError("discoveryStarting", None, "", None, None)
 
-        stringToPrint match {
-          case Some(string) => printPossiblyInColor(string, ansiCyan)
-          case None =>
-        }
+        val optFragment: Vector[Fragment] = stringToPrint.toVector map (new Fragment(_, AnsiCyan))
 
+        for (Fragment(text, ansiColor) <- optFragment) {
+          printPossiblyInColor(text, ansiColor.code)
+        }
+    
+// TODO: I think we should let people elide these events in reporters
       case DiscoveryCompleted(_, duration, _, _) => 
         val stringToPrint =
           duration match {
@@ -214,8 +216,13 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
             case None =>
               Resources("discoveryCompleted")
           }
-        printPossiblyInColor(stringToPrint, ansiCyan)
 
+        val fragment = Vector(Fragment(stringToPrint, AnsiCyan))
+
+        for (Fragment(text, ansiColor) <- fragment) {
+          printPossiblyInColor(text, ansiColor.code)
+        }
+    
       case RunStarting(ordinal, testCount, configMap, formatter, location, payload, threadName, timeStamp) => 
 
         if (testCount < 0)
