@@ -314,11 +314,10 @@ println("presentUnformatted = " + presentUnformatted)
               case Some(MotionToSuppress) => None
               case _ => Some(Resources("scopePending", nameInfo.suiteName + ": " + message))
             }
-        stringToPrint match {
-          case Some(string) => printPossiblyInColor(Fragment(string, AnsiYellow))
-          case None =>
-        }
+        val optFragment = stringToPrint.toVector map (new Fragment(_, AnsiYellow))
         
+        optFragment foreach printPossiblyInColor
+
       case mpEvent: MarkupProvided =>
 
         val optFragment = markupProvidedOptionalFragment(mpEvent, AnsiGreen, presentUnformatted)
