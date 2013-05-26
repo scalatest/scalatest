@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2008 Artima, Inc.
+ * Copyright 2001-2013 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// TODO: Scaladoc for -F. Forgot this in 1.8. If have a 1.8.1, or a 1.9, then put it in there too.
 package org.scalatest.tools
 
 import org.scalatest._
@@ -46,22 +45,33 @@ Command line args:
 a - archive count for dashboard reporter     --archive
 A - select previously failed and/or canceled tests to rerun --again
 b - run a testNG test (b for Beust)          --testng
+B - 
 c - parallel execution (--parallel)          --parallel (deprecated, will be custom reporter)
 C - custom reporter (temporarily)
 d - dashboard reporter                       --dashboard
 D - config map pair                          -D
 e - standard error reporter (--stderr-reporter)    --stderr
+E -
 f - file reporter                            --file
-F - Failed tests reporter                    --failed (records failed tests in a file, so they can be rerun with A)
+F - Span scale factor
 g - graphical reporter                       --graphical
+G -
 h - HTML Reporter                            --html
+H -
 i - this one is used for the Suite ID        --suiteId
+I -
 j - currently JUnit directly (can drop and use WrapWith)   --junit
+J - 
 k - This could be chosenVerb must, should, or neither      --chosenStyles
+K -
 l - tags to exclude                          --exclude
+L -
 m - members only path                        --members
+M - memory reporter                          --memory (records failed tests in a file, so they can be rerun with A)
 n - tags to include                          --include
+N -
 o - standard out reporter
+O -
 p - space-separated runpath (currently deprecated, will be parallel execution)
 P - parallel execution (temporarily)
 q - Suffix? -q Spec will only look at class files whose name ends in Spec
@@ -69,15 +79,21 @@ Q - equalivalent to -q Suite -q Spec
 r - custom reporter (currently deprecated, will be runpath)
 R - space-separated runpath (temporarily)
 s - suite class name (to become a glob)
+S -
 t - test name
 T - sorting timeout                        --sorting-timeout
 u - JUnit XML reporter
+U -
 v - ScalaTest version number (also -version and --version)
+V -
 w - wildcard path
+W -
 x - save for ScalaTest native XML
+X -
 y - sets org.scalatest.chosenstyle -y FunSpec or -y "FunSpec FunSuite"
 -Y for after -h to set a custom style sheet
 z - test name wildcard
+Z -
 
 StringReporter configuration params:
 A
@@ -819,17 +835,17 @@ object Runner {
     }
 
     val (
-      runpathArgsList,
-      reporterArgsList,
-      suiteArgsList,
-      junitArgsList,
-      propertiesArgsList,
-      includesArgsList,
-      excludesArgsList,
-      concurrentList,
-      membersOnlyArgsList,
-      wildcardArgsList,
-      testNGArgsList,
+      runpathArgs,
+      reporterArgs,
+      suiteArgs,
+      junitArgs,
+      propertiesArgs,
+      tagsToIncludeArgs,
+      tagsToExcludeArgs,
+      concurrentArgs,
+      membersOnlyArgs,
+      wildcardArgs,
+      testNGArgs,
       suffixes, 
       chosenStyles, 
       spanScaleFactors, 
@@ -837,23 +853,23 @@ object Runner {
     ) = parseArgs(args)
 
     val fullReporterConfigurations: ReporterConfigurations =
-      if (reporterArgsList.isEmpty)
+      if (reporterArgs.isEmpty)
         // If no reporters specified, just give them a graphic reporter
         new ReporterConfigurations(Some(GraphicReporterConfiguration(Set())), Nil, Nil, Nil, Nil, None, None, Nil, Nil, Nil, Nil)
       else
-        parseReporterArgsIntoConfigurations(reporterArgsList)
+        parseReporterArgsIntoConfigurations(reporterArgs)
 
-    val suitesList: List[SuiteParam] = parseSuiteArgsIntoSuiteParam(suiteArgsList, "-s")
-    val junitsList: List[String] = parseSuiteArgsIntoNameStrings(junitArgsList, "-j")
-    val runpathList: List[String] = parseRunpathArgIntoList(runpathArgsList)
-    val propertiesMap: ConfigMap = parsePropertiesArgsIntoMap(propertiesArgsList)
-    val tagsToInclude: Set[String] = parseCompoundArgIntoSet(includesArgsList, "-n")
-    val tagsToExclude: Set[String] = parseCompoundArgIntoSet(excludesArgsList, "-l")
-    val concurrent: Boolean = !concurrentList.isEmpty
-    val concurrentConfig: ConcurrentConfig = parseConcurrentConfig(concurrentList)
-    val membersOnlyList: List[String] = parseSuiteArgsIntoNameStrings(membersOnlyArgsList, "-m")
-    val wildcardList: List[String] = parseSuiteArgsIntoNameStrings(wildcardArgsList, "-w")
-    val testNGList: List[String] = parseSuiteArgsIntoNameStrings(testNGArgsList, "-b")
+    val suitesList: List[SuiteParam] = parseSuiteArgsIntoSuiteParam(suiteArgs, "-s")
+    val junitsList: List[String] = parseSuiteArgsIntoNameStrings(junitArgs, "-j")
+    val runpathList: List[String] = parseRunpathArgIntoList(runpathArgs)
+    val propertiesMap: ConfigMap = parsePropertiesArgsIntoMap(propertiesArgs)
+    val tagsToInclude: Set[String] = parseCompoundArgIntoSet(tagsToIncludeArgs, "-n")
+    val tagsToExclude: Set[String] = parseCompoundArgIntoSet(tagsToExcludeArgs, "-l")
+    val concurrent: Boolean = !concurrentArgs.isEmpty
+    val concurrentConfig: ConcurrentConfig = parseConcurrentConfig(concurrentArgs)
+    val membersOnlyList: List[String] = parseSuiteArgsIntoNameStrings(membersOnlyArgs, "-m")
+    val wildcardList: List[String] = parseSuiteArgsIntoNameStrings(wildcardArgs, "-w")
+    val testNGList: List[String] = parseSuiteArgsIntoNameStrings(testNGArgs, "-b")
     val chosenStyleSet: Set[String] = parseChosenStylesIntoChosenStyleSet(chosenStyles, "-y")
     spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
     testSortingReporterTimeout = Span(parseDoubleArgument(testSortingReporterTimeouts, "-T", 2.0), Seconds)
@@ -1300,7 +1316,6 @@ object Runner {
       testSortingReporterTimeout.toList
     )
   }
-
 
   /**
    * Returns a possibly empty ConfigSet containing configuration
