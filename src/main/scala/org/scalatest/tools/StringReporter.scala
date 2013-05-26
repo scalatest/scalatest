@@ -148,62 +148,16 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
 
  */
 
-  private def stringToPrintWhenNoError(resourceName: String, formatter: Option[Formatter], suiteName: String, testName: Option[String], message: Option[String]): Option[String] =
-    stringToPrintWhenNoError(resourceName, formatter, suiteName, testName, None, message)
-
-  private def stringToPrintWhenNoError(resourceName: String, formatter: Option[Formatter], suiteName: String, testName: Option[String], duration: Option[Long], message: Option[String]): Option[String] = {
-    def genUnformattedText = {
-        val arg =
-          testName match {
-            case Some(tn) => suiteName + ": " + tn
-            case None => suiteName
-          }
-        val messageText =
-          message match {
-            case Some(text) => ": " + text
-            case None       => ""
-          }
-        val unformattedText = Resources(resourceName, arg + messageText)
-        duration match {
-          case Some(milliseconds) =>
-            if (presentAllDurations)
-              Some(Resources("withDuration", unformattedText, makeDurationString(milliseconds)))
-            else
-              Some(unformattedText)
-          case None => Some(unformattedText)
-        }
-    }
-
-    def genFormattedText = {
-      formatter match {
-        case Some(IndentedText(formattedText, _, _)) =>
-          duration match {
-            case Some(milliseconds) =>
-              if (presentAllDurations)
-                Some(Resources("withDuration", formattedText, makeDurationString(milliseconds)))
-              else
-                Some(formattedText)
-            case None => Some(formattedText)
-          }
-        case Some(MotionToSuppress) => None
-        case _ => genUnformattedText
-      }
-    }
-
-    if (presentUnformatted) genUnformattedText
-    else                    genFormattedText
-  }
-
   def apply(event: Event) {
 
     event match {
       case _: DiscoveryStarting =>
-        val stringToPrint: Option[String] =
-          stringToPrintWhenNoError("discoveryStarting", None, "", None, None)
 
-        val optFragment: Vector[Fragment] = stringToPrint.toVector map (new Fragment(_, AnsiCyan))
+println("presentUnformatted = " + presentUnformatted)
+        val fragments: Vector[Fragment] = 
+          fragmentsWhenNoError("discoveryStarting", None, "", None, None, presentAllDurations, presentUnformatted, AnsiCyan)
 
-        optFragment foreach printPossiblyInColor
+        fragments foreach printPossiblyInColor
     
 // TODO: I think we should let people elide these events in reporters
       case DiscoveryCompleted(_, duration, _, _) => 
@@ -241,28 +195,24 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
 
       case RunAborted(ordinal, message, throwable, duration, summary, formatter, location, payload, threadName, timeStamp) => 
 
-        val lines = stringsToPrintOnError("abortedNote", "runAborted", message, throwable, formatter, None, None, duration,
+        val fragments: Vector[Fragment] = fragmentsOnError("abortedNote", "runAborted", message, throwable, formatter, None, None, duration,
             presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
 
-        for (line <- lines) printPossiblyInColor(Fragment(line, AnsiRed))
+        fragments foreach printPossiblyInColor
 
       case SuiteStarting(ordinal, suiteName, suiteId, suiteClassName, formatter, location, rerunnable, payload, threadName, timeStamp) =>
 
-        val stringToPrint = stringToPrintWhenNoError("suiteStarting", formatter, suiteName, None, None)
+        val fragments: Vector[Fragment] = 
+          fragmentsWhenNoError("suiteStarting", formatter, suiteName, None, None, presentAllDurations, presentUnformatted)
 
-        stringToPrint match {
-          case Some(string) => printPossiblyInColor(Fragment(string, AnsiGreen))
-          case None =>
-        }
+        fragments foreach printPossiblyInColor
 
       case SuiteCompleted(ordinal, suiteName, suiteId, suiteClassName, duration, formatter, location, rerunnable, payload, threadName, timeStamp) => 
 
-        val stringToPrint = stringToPrintWhenNoError("suiteCompleted", formatter, suiteName, None, duration, None)
+        val fragments: Vector[Fragment] = 
+          fragmentsWhenNoError("suiteCompleted", formatter, suiteName, None, None, presentAllDurations, presentUnformatted, AnsiGreen, duration)
 
-        stringToPrint match {
-          case Some(string) => printPossiblyInColor(Fragment(string, AnsiGreen))
-          case None =>
-        }
+        fragments foreach printPossiblyInColor
 
       case SuiteAborted(ordinal, message, suiteName, suiteId, suiteClassName, throwable, duration, formatter, location, rerunnable, payload, threadName, timeStamp) => 
 
@@ -273,23 +223,19 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
 
       case TestStarting(ordinal, suiteName, suiteId, suiteClassName, testName, testText, formatter, location, rerunnable, payload, threadName, timeStamp) =>
 
-        val stringToPrint = stringToPrintWhenNoError("testStarting", formatter, suiteName, Some(testName), None)
+        val fragments: Vector[Fragment] = 
+          fragmentsWhenNoError("testStarting", formatter, suiteName, Some(testName), None, presentAllDurations, presentUnformatted)
 
-        stringToPrint match {
-          case Some(string) => printPossiblyInColor(Fragment(string, AnsiGreen))
-          case None =>
-        }
+        fragments foreach printPossiblyInColor
 
       case TestSucceeded(ordinal, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, duration, formatter, location, rerunnable, payload, threadName, timeStamp) =>
 
-        val stringToPrint = stringToPrintWhenNoError("testSucceeded", formatter, suiteName, Some(testName), duration, None)
+        val tsf: Vector[Fragment] = 
+          fragmentsWhenNoError("testSucceeded", formatter, suiteName, Some(testName), None, presentAllDurations, presentUnformatted, AnsiGreen, duration)
 
-        stringToPrint match {
-          case Some(string) => printPossiblyInColor(Fragment(string, AnsiGreen))
-          case None =>
-        }
-        
-       val fragments = recordedEventFragments(recordedEvents, AnsiGreen, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
+        val ref = recordedEventFragments(recordedEvents, AnsiGreen, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
+
+        val fragments = tsf ++ ref
 
         fragments foreach printPossiblyInColor
     
@@ -311,7 +257,7 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
     
       case TestFailed(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, throwable, duration, formatter, location, rerunnable, payload, threadName, timeStamp) =>
 
-        val tff: Vector[Fragment] = testFailedFragments("failedNote", "testFailed", message, throwable, formatter, Some(suiteName), Some(testName), duration,
+        val tff: Vector[Fragment] = fragmentsOnError("failedNote", "testFailed", message, throwable, formatter, Some(suiteName), Some(testName), duration,
             presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
 
         val ref = recordedEventFragments(recordedEvents, AnsiRed, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
@@ -344,21 +290,19 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
       case ScopeOpened(ordinal, message, nameInfo, formatter, location, payload, threadName, timeStamp) =>
 
         val testNameInfo = nameInfo.testName
-        val stringToPrint = stringToPrintWhenNoError("scopeOpened", formatter, nameInfo.suiteName, nameInfo.testName, Some(message))
-        stringToPrint match {
-          case Some(string) => printPossiblyInColor(Fragment(string, AnsiGreen))
-          case None =>
-        }
+        val fragments: Vector[Fragment] = 
+          fragmentsWhenNoError("scopeOpened", formatter, nameInfo.suiteName, nameInfo.testName, Some(message), presentAllDurations, presentUnformatted)
+
+        fragments foreach printPossiblyInColor
 
       // TODO: Reduce duplication among InfoProvided, ScopeOpened, and ScopeClosed
       case ScopeClosed(ordinal, message, nameInfo, formatter, location, payload, threadName, timeStamp) =>
         
         val testNameInfo = nameInfo.testName
-        val stringToPrint = stringToPrintWhenNoError("scopeClosed", formatter, nameInfo.suiteName, nameInfo.testName, Some(message)) // TODO: I htink I want ot say Scope Closed - + message
-        stringToPrint match {
-          case Some(string) => printPossiblyInColor(Fragment(string, AnsiGreen))
-          case None =>
-        }
+        val fragments: Vector[Fragment] = 
+          fragmentsWhenNoError("scopeClosed", formatter, nameInfo.suiteName, nameInfo.testName, Some(message), presentAllDurations, presentUnformatted) // TODO: I htink I want ot say Scope Closed - + message
+
+        fragments foreach printPossiblyInColor
         
       case ScopePending(ordinal, message, nameInfo, formatter, location, payload, threadName, timeStamp) => 
         val stringToPrint =
@@ -424,7 +368,24 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
  
 private[scalatest] object StringReporter {
 
-  def testFailedFragments(
+  def fragmentsWhenNoError(
+    resourceName: String,
+    formatter: Option[Formatter],
+    suiteName: String,
+    testName: Option[String],
+    message: Option[String],
+    presentAllDurations: Boolean,
+    presentUnformatted: Boolean,
+    ansiColor: AnsiColor = AnsiGreen,
+    duration: Option[Long] = None
+  ): Vector[Fragment] = {
+    val lines: Vector[String] = stringToPrintWhenNoError(resourceName, formatter, suiteName, testName, message, presentAllDurations, presentUnformatted,
+      duration).toVector
+
+    lines map (new Fragment(_, ansiColor))
+  }
+
+  def fragmentsOnError(
     noteResourceName: String,
     errorResourceName: String,
     message: String,
@@ -439,7 +400,7 @@ private[scalatest] object StringReporter {
     presentFullStackTraces: Boolean
   ): Vector[Fragment] = {
 
-    val lines: Vector[String] = stringsToPrintOnError("failedNote", "testFailed", message, throwable, formatter, suiteName, testName, duration,
+    val lines: Vector[String] = stringsToPrintOnError(noteResourceName, errorResourceName, message, throwable, formatter, suiteName, testName, duration,
         presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces).toVector
 
     lines map (new Fragment(_, AnsiRed))
@@ -740,6 +701,49 @@ private[scalatest] object StringReporter {
         case Some(IndentedText(formattedText, _, _)) => Some(formattedText)
         case Some(MotionToSuppress)                  => None
         case _                                       => genUnformattedText
+      }
+    }
+
+    if (presentUnformatted) genUnformattedText
+    else                    genFormattedText
+  }
+
+  def stringToPrintWhenNoError(resourceName: String, formatter: Option[Formatter], suiteName: String, testName: Option[String], message: Option[String], presentAllDurations: Boolean, presentUnformatted: Boolean, duration: Option[Long] = None): Option[String] = {
+    def genUnformattedText = {
+        val arg =
+          testName match {
+            case Some(tn) => suiteName + ": " + tn
+            case None => suiteName
+          }
+        val messageText =
+          message match {
+            case Some(text) => ": " + text
+            case None       => ""
+          }
+        val unformattedText = Resources(resourceName, arg + messageText)
+        duration match {
+          case Some(milliseconds) =>
+            if (presentAllDurations)
+              Some(Resources("withDuration", unformattedText, makeDurationString(milliseconds)))
+            else
+              Some(unformattedText)
+          case None => Some(unformattedText)
+        }
+    }
+
+    def genFormattedText = {
+      formatter match {
+        case Some(IndentedText(formattedText, _, _)) =>
+          duration match {
+            case Some(milliseconds) =>
+              if (presentAllDurations)
+                Some(Resources("withDuration", formattedText, makeDurationString(milliseconds)))
+              else
+                Some(formattedText)
+            case None => Some(formattedText)
+          }
+        case Some(MotionToSuppress) => None
+        case _ => genUnformattedText
       }
     }
 
