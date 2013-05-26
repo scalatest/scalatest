@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2008 Artima, Inc.
+ * Copyright 2001-2013 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,9 @@ import java.util.regex.Pattern
 import java.net.URL
 import java.io.File
 
-class RunnerSuite() extends Suite with PrivateMethodTester {
+class RunnerSuite() extends Spec with PrivateMethodTester {
 
-  def testDeprecatedParseArgsIntoLists() {
+  def `parseArgsIntoLists should work correctly using deprecated args` {
 
     // this is how i solved the problem of wanting to reuse these val names, runpathList, reportersList, etc.
     // by putting them in a little verify method, it gets reused each time i call that method
@@ -363,7 +363,7 @@ class RunnerSuite() extends Suite with PrivateMethodTester {
     )
   }
   
-  def testParseArgsIntoLists() {
+  def `parseArgsIntoLists should work correctly using non-deprecated args` {
 
     // this is how i solved the problem of wanting to reuse these val names, runpathList, reportersList, etc.
     // by putting them in a little verify method, it gets reused each time i call that method
@@ -792,13 +792,13 @@ class RunnerSuite() extends Suite with PrivateMethodTester {
     )
   }
 
-  def testParseCompoundArgIntoSet() {
+  def `parseCompoundArgIntoSet should work correctly` {
     assertResult(Set("Cat", "Dog")) {
       Runner.parseCompoundArgIntoSet(List("-n", "Cat Dog"), "-n")
     }
   }
 
-  def testParseConfigSet() {
+  def `parseConfigSet should work correctly` {
 
     val parseConfigSet = PrivateMethod[Set[ReporterConfigParam]]('parseConfigSet)
 
@@ -881,7 +881,7 @@ class RunnerSuite() extends Suite with PrivateMethodTester {
     }
   }
                                          
-  def testParseReporterArgsIntoSpecs() {
+  def `parseReporterArgsIntoSpecs should work correctly` {
     intercept[NullPointerException] {
       Runner.parseReporterArgsIntoConfigurations(null)
     }
@@ -1007,7 +1007,7 @@ class RunnerSuite() extends Suite with PrivateMethodTester {
     }
   }
 
-  def testParseSuiteArgsIntoClassNameStrings() {
+  def `parseSuiteArgsIntoClassNameStrings should work correctly` {
     intercept[NullPointerException] {
       Runner.parseSuiteArgsIntoNameStrings(null, "-j")
     }
@@ -1028,7 +1028,7 @@ class RunnerSuite() extends Suite with PrivateMethodTester {
     }
   }
 
-  def testParseRunpathArgIntoList() {
+  def `parseRunpathArgIntoList should work correctly` {
     intercept[NullPointerException] {
       Runner.parseRunpathArgIntoList(null)
     }
@@ -1067,7 +1067,7 @@ class RunnerSuite() extends Suite with PrivateMethodTester {
     }
   }
 
-  def testParsePropertiesArgsIntoMap() {
+  def `parsePropertiesArgsIntoMap should work correctly` {
     intercept[NullPointerException] {
       Runner.parsePropertiesArgsIntoMap(null)
     }
@@ -1091,7 +1091,7 @@ class RunnerSuite() extends Suite with PrivateMethodTester {
     }
   }
 
-  def testDeprecatedCheckArgsForValidity() {
+  def `deprecatedCheckArgsForValidity should work correctly` {
     intercept[NullPointerException] {
       Runner.checkArgsForValidity(null)
     }
@@ -1112,7 +1112,7 @@ class RunnerSuite() extends Suite with PrivateMethodTester {
     }
   }
   
-  def testParseSuiteArgsIntoSuiteParam() {
+  def `parseSuiteArgsIntoSuiteParam should work correctly` {
     intercept[NullPointerException] {
       Runner.parseSuiteArgsIntoSuiteParam(null, "-s")
     }
@@ -1225,7 +1225,7 @@ class RunnerSuite() extends Suite with PrivateMethodTester {
     assert(case8(0).nestedSuites(0).wildcardTestNames(0) === "test2")
   }
   
-  def testCheckArgsForValidity() {
+  def `checkArgsForValidity should work correctly` {
     intercept[NullPointerException] {
       Runner.checkArgsForValidity(null)
     }
@@ -1240,7 +1240,7 @@ class RunnerSuite() extends Suite with PrivateMethodTester {
     }
   }
   
-  def testParseChosenStylesIntoChosenStyleSet() {
+  def `parseChosenStylesIntoChosenStyleSet should work correctly` {
     intercept[IllegalArgumentException] {
       Runner.parseChosenStylesIntoChosenStyleSet(List("-a", "aStyle"), "-y")
     }
@@ -1260,7 +1260,7 @@ class RunnerSuite() extends Suite with PrivateMethodTester {
     assert(multiStyle.contains("cStyle"))
   }
   
-  def testParseDoubleArgument() {
+  def `parseDoubleArgument should work correctly` {
     intercept[IllegalArgumentException] {
       Runner.parseDoubleArgument(List("-a", "123"), "-F", 1.0)
     }
@@ -1298,7 +1298,7 @@ class RunnerSuite() extends Suite with PrivateMethodTester {
     assert(spanScaleFactor === 888)
   }
   
-  def testParseConcurrentConfig() {
+  def `parseConcurrentConfig should work correctly` {
     val emptyConcurrentConfig = Runner.parseConcurrentConfig(List.empty)
     assert(emptyConcurrentConfig.numThreads === 0)
     assert(emptyConcurrentConfig.enableSuiteSortingReporter === false)
@@ -1335,37 +1335,4 @@ class RunnerSuite() extends Suite with PrivateMethodTester {
     assert(multipDashPSThreadNum.numThreads === 8)
     assert(multipDashPSThreadNum.enableSuiteSortingReporter === true)
   }
-
-/*
-  def testRunpathPropertyAddedToPropertiesMap() {
-    val a = new Suite {
-      var theProperties: Map[String, Any] = Map()
-      override def execute(testName: Option[String], reporter: Reporter, stopper: Stopper, includes: Set[String], excludes: Set[String],
-          properties: Map[String, Any], distributor: Option[Distributor]) {
-        theProperties = properties
-      }
-    }
-
-    val dispatchReporter = new DispatchReporter(Nil, System.out)
-    val suitesList = List("org.scalatest.usefulstuff.RunpathPropCheckerSuite")
-
-    // Runner.doRunRunRunADoRunRun(new DispatchReporter)
-    // Runner.doRunRunRunADoRunRun(dispatchReporter, suitesList, new Stopper {}, Filter(), Map(), false,
-         List(), List(), runpath: "build_tests", loader: ClassLoader,
-      doneListener: RunDoneListener) = {
-
-    ()
-  }
-}
-
-package org.scalatest.usefulstuff {
-
-  class RunpathPropCheckerSuite extends Suite {
-    var theProperties: Map[String, Any] = Map()
-    override def execute(testName: Option[String], reporter: Reporter, stopper: Stopper, includes: Set[String], excludes: Set[String],
-        properties: Map[String, Any], distributor: Option[Distributor]) {
-      theProperties = properties
-    }
-  }
-*/
 }

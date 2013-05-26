@@ -40,6 +40,72 @@ import org.scalatest.time.Span
 import org.scalatest.time.Seconds
 import org.scalatest.time.Millis
 
+/*
+Command line args:
+
+a - archive count for dashboard reporter     --archive
+A - select previously failed and/or canceled tests to rerun --again
+b - run a testNG test (b for Beust)          --testng
+c - parallel execution (--parallel)          --parallel (deprecated, will be custom reporter)
+C - custom reporter (temporarily)
+d - dashboard reporter                       --dashboard
+D - config map pair                          -D
+e - standard error reporter (--stderr-reporter)    --stderr
+f - file reporter                            --file
+F - Failed tests reporter                    --failed (records failed tests in a file, so they can be rerun with A)
+g - graphical reporter                       --graphical
+h - HTML Reporter                            --html
+i - this one is used for the Suite ID        --suiteId
+j - currently JUnit directly (can drop and use WrapWith)   --junit
+k - This could be chosenVerb must, should, or neither      --chosenStyles
+l - tags to exclude                          --exclude
+m - members only path                        --members
+n - tags to include                          --include
+o - standard out reporter
+p - space-separated runpath (currently deprecated, will be parallel execution)
+P - parallel execution (temporarily)
+q - Suffix? -q Spec will only look at class files whose name ends in Spec
+Q - equalivalent to -q Suite -q Spec
+r - custom reporter (currently deprecated, will be runpath)
+R - space-separated runpath (temporarily)
+s - suite class name (to become a glob)
+t - test name
+T - sorting timeout                        --sorting-timeout
+u - JUnit XML reporter
+v - ScalaTest version number (also -version and --version)
+w - wildcard path
+x - save for ScalaTest native XML
+y - sets org.scalatest.chosenstyle -y FunSpec or -y "FunSpec FunSuite"
+-Y for after -h to set a custom style sheet
+z - test name wildcard
+
+StringReporter configuration params:
+A
+B
+C - drop TestSucceeded events
+D - show all durations
+E - drop TestPending events
+F - show full stack traces
+*G - reminder with full stack traces
+H - drop SuiteStarting events
+I
+J
+*K - exclude TestCanceled events from reminder
+L - drop SuiteCompleted events
+M - drop MarkupProvided events
+N - drop TestStarting events
+O - drop InfoProvided events
+P - drop ScopeOpened events
+Q - drop ScopeClosed events
+*R - Reminder without stack traces
+S - show short stack traces
+*T - reminder with short stack traces
+U - unformatted mode
+V
+W - without color
+X - drop TestIgnored events
+Z
+*/
 private[tools] case class SuiteParam(className: String, testNames: Array[String], wildcardTestNames: Array[String], nestedSuites: Array[NestedSuiteParam])
 private[tools] case class NestedSuiteParam(suiteId: String, testNames: Array[String], wildcardTestNames: Array[String])
 private[scalatest] case class ConcurrentConfig(numThreads: Int, enableSuiteSortingReporter: Boolean)
@@ -271,10 +337,14 @@ private[scalatest] case class ConcurrentConfig(numThreads: Int, enableSuiteSorti
  * <li> <code><b>S</b></code> - show short stack traces</li>
  * <li> <code><b>F</b></code> - show full stack traces</li>
  * <li> <code><b>U</b></code> - unformatted mode</li>
+ * <li> <code><b>R</b></code> - show reminder of failed and canceled tests without stack traces</li>
+ * <li> <code><b>T</b></code> - show reminder of failed and canceled tests with short stack traces</li>
+ * <li> <code><b>G</b></code> - show reminder of failed and canceled tests with full stack traces</li>
+ * <li> <code><b>K</b></code> - exclude <code>TestCanceled</code> events from reminder</li>
  * </ul>
  *
  * <p>
- * If you specify a W, D, S, F, or U for any reporter other than standard output, standard error, or file reporters, <code>Runner</code>
+ * If you specify a W, D, S, F, U, R, T, G, or K for any reporter other than standard output, standard error, or file reporters, <code>Runner</code>
  * will complain with an error message and not perform the run.
  * </p>
  *
@@ -296,9 +366,11 @@ private[scalatest] case class ConcurrentConfig(numThreads: Int, enableSuiteSorti
  *
  * <p>
  * The 'U' unformatted configuration removes some formatting from the output and adds verbosity.
- * The purpose of unformatted (or, "ugly") mode is to facilitate debugging of parallel runs. If you have tests that fail or hang during parallel runs, but
- * succeed when run sequentially, unformatted mode can help. In unformatted mode, you can see exactly what is happening when it is happening. Rather than attempting to make the output
- * look as pretty and human-readable as possible, unformatted mode will just print out verbose information about each event as it arrives, helping you track down the problem
+ * The purpose of unformatted (or, "ugly") mode is to facilitate debugging of parallel runs. If you have
+ * tests that fail or hang during parallel runs, but succeed when run sequentially, unformatted mode can help.
+ * In unformatted mode, you can see exactly what is happening when it is happening. Rather than attempting to make the output
+ * look as pretty and human-readable as possible, unformatted mode will just print out verbose information about each event
+ * as it arrives, helping you track down the problem
  * you are trying to debug.
  * </p>
  *
@@ -308,8 +380,20 @@ private[scalatest] case class ConcurrentConfig(numThreads: Int, enableSuiteSorti
  * is printed in cyan. Information printed as a result of ignored or pending test events is shown in yellow. Information printed
  * as a result of test failed, suite aborted, or run aborted events is printed in red. All other information is printed in green.
  * The purpose of these colors is to facilitate speedy reading of the output, especially the finding of failed tests, which can
- * get lost in a sea of passing tests. Configuring a standard output, error, or file reporter into without-color mode ('W') will
+ * get lost in a sea of passing tests. Configuring a standard output, error, or file reporter into without-color mode (<code>W</code>) will
  * turn off this behavior. No ansi codes will be inserted.
+ * </p>
+ *
+ * <p>
+ * The <code>R</code>, <code>T</code>, and <code>G</code> options enable "reminders" of failed and, optionally, canceled tests to be printed
+ * at the end of the summary. This minimizes or eliminates the need to search and scroll backwards to find out what tests failed or were canceled.
+ * For large test suites, the actual failure message could have scrolled off the top of the buffer, making it otherwise impossible
+ * to see what failed. You can configure the detail level of the stack trace for regular reports of failed and canceled tests independently
+ * from that of reminders. To set the detail level for regular reports, use <code>S</code> for short stack traces, <code>F</code> for
+ * full stack traces, or nothing for the default of no stack trace. To set the detail level for reminder reports, use <code>T</code> for
+ * reminders with short stack traces, <code>G</code> for reminders with full stack traces in reminders, or <code>R</code> for reminders
+ * with no stack traces. If you wish to exclude reminders of canceled tests, <em>i.e.</em>, only see reminders of failed tests, specify
+ * <code>K</code> along with one of <code>R</code>, <code>T</code>, or <code>G</code>, as in <code>"-oRK"</code>.
  * </p>
  *
  * <p>

@@ -79,18 +79,6 @@ class StringReporterSummarySpec extends UnitSpec {
         )
       )
     }
-    def `should fail spectacularly` {
-      info("one fish")
-      info("two fish")
-      fail("oops")
-    }
-    def `should cancel expertly` {
-      info("red fish")
-      info("blue fish")
-      cancel("not right now")
-    }
-    @org.scalatest.Ignore def `should ignore this one` {
-    }
   }
 }
 
