@@ -149,204 +149,7 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
  */
 
   def apply(event: Event) {
-
-    event match {
-      case _: DiscoveryStarting =>
-
-println("presentUnformatted = " + presentUnformatted)
-        val fragments: Vector[Fragment] = 
-          fragmentsWhenNoError("discoveryStarting", None, "", None, None, presentAllDurations, presentUnformatted, AnsiCyan)
-
-        fragments foreach printPossiblyInColor
-    
-// TODO: I think we should let people elide these events in reporters
-      case DiscoveryCompleted(_, duration, _, _) => 
-        val stringToPrint =
-          duration match {
-            case Some(milliseconds) => 
-              Resources("discoveryCompletedIn", makeDurationString(milliseconds))
-            case None =>
-              Resources("discoveryCompleted")
-          }
-
-        val fragment = Vector(Fragment(stringToPrint, AnsiCyan))
-
-        fragment foreach printPossiblyInColor
-
-      case RunStarting(ordinal, testCount, configMap, formatter, location, payload, threadName, timeStamp) => 
-
-        val string = Resources("runStarting", testCount.toString)
-
-        val fragment = Vector(Fragment(string, AnsiCyan))
-
-        fragment foreach printPossiblyInColor
-
-      case RunCompleted(ordinal, duration, summary, formatter, location, payload, threadName, timeStamp) => 
-
-        val fragments: Vector[Fragment] = summaryFragments(true, duration, summary) 
-
-        fragments foreach printPossiblyInColor
-
-      case RunStopped(ordinal, duration, summary, formatter, location, payload, threadName, timeStamp) =>
-
-        val fragments: Vector[Fragment] = summaryFragments(false, duration, summary) 
-
-        fragments foreach printPossiblyInColor
-
-      case RunAborted(ordinal, message, throwable, duration, summary, formatter, location, payload, threadName, timeStamp) => 
-
-        val fragments: Vector[Fragment] = fragmentsOnError("abortedNote", "runAborted", message, throwable, formatter, None, None, duration,
-            presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
-
-        fragments foreach printPossiblyInColor
-
-      case SuiteStarting(ordinal, suiteName, suiteId, suiteClassName, formatter, location, rerunnable, payload, threadName, timeStamp) =>
-
-        val fragments: Vector[Fragment] = 
-          fragmentsWhenNoError("suiteStarting", formatter, suiteName, None, None, presentAllDurations, presentUnformatted)
-
-        fragments foreach printPossiblyInColor
-
-      case SuiteCompleted(ordinal, suiteName, suiteId, suiteClassName, duration, formatter, location, rerunnable, payload, threadName, timeStamp) => 
-
-        val fragments: Vector[Fragment] = 
-          fragmentsWhenNoError("suiteCompleted", formatter, suiteName, None, None, presentAllDurations, presentUnformatted, AnsiGreen, duration)
-
-        fragments foreach printPossiblyInColor
-
-      case SuiteAborted(ordinal, message, suiteName, suiteId, suiteClassName, throwable, duration, formatter, location, rerunnable, payload, threadName, timeStamp) => 
-
-        val lines = stringsToPrintOnError("abortedNote", "suiteAborted", message, throwable, formatter, Some(suiteName), None, duration,
-            presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
-
-        for (line <- lines) printPossiblyInColor(Fragment(line, AnsiRed))
-
-      case TestStarting(ordinal, suiteName, suiteId, suiteClassName, testName, testText, formatter, location, rerunnable, payload, threadName, timeStamp) =>
-
-        val fragments: Vector[Fragment] = 
-          fragmentsWhenNoError("testStarting", formatter, suiteName, Some(testName), None, presentAllDurations, presentUnformatted)
-
-        fragments foreach printPossiblyInColor
-
-      case TestSucceeded(ordinal, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, duration, formatter, location, rerunnable, payload, threadName, timeStamp) =>
-
-        val tsf: Vector[Fragment] = 
-          fragmentsWhenNoError("testSucceeded", formatter, suiteName, Some(testName), None, presentAllDurations, presentUnformatted, AnsiGreen, duration)
-
-        val ref = recordedEventFragments(recordedEvents, AnsiGreen, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
-
-        val fragments = tsf ++ ref
-
-        fragments foreach printPossiblyInColor
-    
-      case TestIgnored(ordinal, suiteName, suiteId, suiteClassName, testName, testText, formatter, location, payload, threadName, timeStamp) => 
-
-        val stringToPrint =
-          if (presentUnformatted)
-            Some(Resources("testIgnored", suiteName + ": " + testName))
-          else
-            formatter match {
-              case Some(IndentedText(formattedText, _, _)) => Some(Resources("specTextAndNote", formattedText, Resources("ignoredNote")))
-              case Some(MotionToSuppress) => None
-              case _ => Some(Resources("testIgnored", suiteName + ": " + testName))
-            }
- 
-        val optFragment = stringToPrint.toVector map (new Fragment(_, AnsiYellow))
-
-        optFragment foreach printPossiblyInColor
-    
-      case TestFailed(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, throwable, duration, formatter, location, rerunnable, payload, threadName, timeStamp) =>
-
-        val tff: Vector[Fragment] = fragmentsOnError("failedNote", "testFailed", message, throwable, formatter, Some(suiteName), Some(testName), duration,
-            presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
-
-        val ref = recordedEventFragments(recordedEvents, AnsiRed, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
-
-        val fragments = tff ++ ref
-
-        fragments foreach printPossiblyInColor
-
-      case TestCanceled(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, throwable, duration, formatter, location, payload, threadName, timeStamp) =>
-
-        val lines: Vector[String] = stringsToPrintOnError("canceledNote", "testCanceled", message, throwable, formatter, Some(suiteName), Some(testName), duration,
-            presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces).toVector
-
-        val tcf =
-          for (line <- lines)
-          yield new Fragment(line, AnsiYellow)
-
-        val ref = recordedEventFragments(recordedEvents, AnsiYellow, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
-
-        val fragments = tcf ++ ref
-
-        fragments foreach printPossiblyInColor
-
-      case ipEvent: InfoProvided =>
-
-        val fragments = infoProvidedFragments(ipEvent, AnsiGreen, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
-
-        fragments foreach printPossiblyInColor
-
-      case ScopeOpened(ordinal, message, nameInfo, formatter, location, payload, threadName, timeStamp) =>
-
-        val testNameInfo = nameInfo.testName
-        val fragments: Vector[Fragment] = 
-          fragmentsWhenNoError("scopeOpened", formatter, nameInfo.suiteName, nameInfo.testName, Some(message), presentAllDurations, presentUnformatted)
-
-        fragments foreach printPossiblyInColor
-
-      // TODO: Reduce duplication among InfoProvided, ScopeOpened, and ScopeClosed
-      case ScopeClosed(ordinal, message, nameInfo, formatter, location, payload, threadName, timeStamp) =>
-        
-        val testNameInfo = nameInfo.testName
-        val fragments: Vector[Fragment] = 
-          fragmentsWhenNoError("scopeClosed", formatter, nameInfo.suiteName, nameInfo.testName, Some(message), presentAllDurations, presentUnformatted) // TODO: I htink I want ot say Scope Closed - + message
-
-        fragments foreach printPossiblyInColor
-        
-      case ScopePending(ordinal, message, nameInfo, formatter, location, payload, threadName, timeStamp) => 
-        val stringToPrint =
-          if (presentUnformatted)
-            Some(Resources("scopePending", nameInfo.suiteName + ": " + message))
-          else
-            formatter match {
-              case Some(IndentedText(formattedText, _, _)) => Some(Resources("specTextAndNote", formattedText, Resources("pendingNote")))
-              case Some(MotionToSuppress) => None
-              case _ => Some(Resources("scopePending", nameInfo.suiteName + ": " + message))
-            }
-        val optFragment = stringToPrint.toVector map (new Fragment(_, AnsiYellow))
-        
-        optFragment foreach printPossiblyInColor
-
-      case mpEvent: MarkupProvided =>
-
-        val optFragment = markupProvidedOptionalFragment(mpEvent, AnsiGreen, presentUnformatted)
-
-        optFragment foreach printPossiblyInColor
-
-      case TestPending(ordinal, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, duration, formatter, location, payload, threadName, timeStamp) =>
-
-        val stringToPrint =
-          if (presentUnformatted)
-            Some(Resources("testPending", suiteName + ": " + testName))
-          else
-            formatter match {
-              case Some(IndentedText(formattedText, _, _)) => Some(Resources("specTextAndNote", formattedText, Resources("pendingNote")))
-              case Some(MotionToSuppress) => None
-              case _ => Some(Resources("testPending", suiteName + ": " + testName))
-            }
-
-        stringToPrint match {
-          case Some(string) => printPossiblyInColor(Fragment(string, AnsiYellow))
-          case None =>
-        }
-        
-        val fragments = recordedEventFragments(recordedEvents, AnsiYellow, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
-
-        fragments foreach printPossiblyInColor
-
-     // case _ => throw new RuntimeException("Unhandled event")
-    }
+    fragmentsForEvent(event, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces) foreach printPossiblyInColor
   }
   
   protected def makeFinalReport(runCompleted: Boolean, duration: Option[Long], summaryOption: Option[Summary]) {
@@ -373,8 +176,8 @@ private[scalatest] object StringReporter {
     suiteName: String,
     testName: Option[String],
     message: Option[String],
-    presentAllDurations: Boolean,
     presentUnformatted: Boolean,
+    presentAllDurations: Boolean,
     ansiColor: AnsiColor = AnsiGreen,
     duration: Option[Long] = None
   ): Vector[Fragment] = {
@@ -748,6 +551,161 @@ private[scalatest] object StringReporter {
 
     if (presentUnformatted) genUnformattedText
     else                    genFormattedText
+  }
+
+  def fragmentsForEvent(event: Event, presentUnformatted: Boolean, presentAllDurations: Boolean, presentShortStackTraces: Boolean, presentFullStackTraces: Boolean): Vector[Fragment] = {
+
+    event match {
+      // TODO: I think we should let people elide DiscoveryStarting and DiscoveryCompleted events in reporters
+      case _: DiscoveryStarting =>
+
+        fragmentsWhenNoError("discoveryStarting", None, "", None, None, presentUnformatted, presentAllDurations, AnsiCyan)
+
+      case DiscoveryCompleted(_, duration, _, _) => 
+        val stringToPrint =
+          duration match {
+            case Some(milliseconds) => 
+              Resources("discoveryCompletedIn", makeDurationString(milliseconds))
+            case None =>
+              Resources("discoveryCompleted")
+          }
+
+        Vector(Fragment(stringToPrint, AnsiCyan))
+
+      case RunStarting(ordinal, testCount, configMap, formatter, location, payload, threadName, timeStamp) => 
+
+        val string = Resources("runStarting", testCount.toString)
+
+        Vector(Fragment(string, AnsiCyan))
+
+      case RunCompleted(ordinal, duration, summary, formatter, location, payload, threadName, timeStamp) => 
+
+        summaryFragments(true, duration, summary) 
+
+      case RunStopped(ordinal, duration, summary, formatter, location, payload, threadName, timeStamp) =>
+
+        summaryFragments(false, duration, summary) 
+
+      case RunAborted(ordinal, message, throwable, duration, summary, formatter, location, payload, threadName, timeStamp) => 
+
+        fragmentsOnError("abortedNote", "runAborted", message, throwable, formatter, None, None, duration,
+            presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
+
+      case SuiteStarting(ordinal, suiteName, suiteId, suiteClassName, formatter, location, rerunnable, payload, threadName, timeStamp) =>
+
+        fragmentsWhenNoError("suiteStarting", formatter, suiteName, None, None, presentUnformatted, presentAllDurations)
+
+      case SuiteCompleted(ordinal, suiteName, suiteId, suiteClassName, duration, formatter, location, rerunnable, payload, threadName, timeStamp) => 
+
+        fragmentsWhenNoError("suiteCompleted", formatter, suiteName, None, None, presentUnformatted, presentAllDurations, AnsiGreen, duration)
+
+      case SuiteAborted(ordinal, message, suiteName, suiteId, suiteClassName, throwable, duration, formatter, location, rerunnable, payload, threadName, timeStamp) => 
+
+        val lines = stringsToPrintOnError("abortedNote", "suiteAborted", message, throwable, formatter, Some(suiteName), None, duration,
+            presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
+
+        for (line <- lines.toVector) yield new Fragment(line, AnsiRed)
+
+      case TestStarting(ordinal, suiteName, suiteId, suiteClassName, testName, testText, formatter, location, rerunnable, payload, threadName, timeStamp) =>
+
+        fragmentsWhenNoError("testStarting", formatter, suiteName, Some(testName), None, presentUnformatted, presentAllDurations)
+
+      case TestSucceeded(ordinal, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, duration, formatter, location, rerunnable, payload, threadName, timeStamp) =>
+
+        val tsf: Vector[Fragment] = 
+          fragmentsWhenNoError("testSucceeded", formatter, suiteName, Some(testName), None, presentUnformatted, presentAllDurations, AnsiGreen, duration)
+
+        val ref = recordedEventFragments(recordedEvents, AnsiGreen, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
+
+        tsf ++ ref
+
+      case TestIgnored(ordinal, suiteName, suiteId, suiteClassName, testName, testText, formatter, location, payload, threadName, timeStamp) => 
+
+        val stringToPrint =
+          if (presentUnformatted)
+            Some(Resources("testIgnored", suiteName + ": " + testName))
+          else
+            formatter match {
+              case Some(IndentedText(formattedText, _, _)) => Some(Resources("specTextAndNote", formattedText, Resources("ignoredNote")))
+              case Some(MotionToSuppress) => None
+              case _ => Some(Resources("testIgnored", suiteName + ": " + testName))
+            }
+ 
+        stringToPrint.toVector map (new Fragment(_, AnsiYellow))
+
+      case TestFailed(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, throwable, duration, formatter, location, rerunnable, payload, threadName, timeStamp) =>
+
+        val tff: Vector[Fragment] = fragmentsOnError("failedNote", "testFailed", message, throwable, formatter, Some(suiteName), Some(testName), duration,
+            presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
+
+        val ref = recordedEventFragments(recordedEvents, AnsiRed, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
+
+        tff ++ ref
+
+      case TestCanceled(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, throwable, duration, formatter, location, payload, threadName, timeStamp) =>
+
+        val lines: Vector[String] = stringsToPrintOnError("canceledNote", "testCanceled", message, throwable, formatter, Some(suiteName), Some(testName), duration,
+            presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces).toVector
+
+        val tcf =
+          for (line <- lines)
+          yield new Fragment(line, AnsiYellow)
+
+        val ref = recordedEventFragments(recordedEvents, AnsiYellow, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
+
+        tcf ++ ref
+
+      case ipEvent: InfoProvided =>
+
+        infoProvidedFragments(ipEvent, AnsiGreen, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
+
+      case ScopeOpened(ordinal, message, nameInfo, formatter, location, payload, threadName, timeStamp) =>
+
+        val testNameInfo = nameInfo.testName
+        fragmentsWhenNoError("scopeOpened", formatter, nameInfo.suiteName, nameInfo.testName, Some(message), presentUnformatted, presentAllDurations)
+
+      // TODO: Reduce duplication among InfoProvided, ScopeOpened, and ScopeClosed
+      case ScopeClosed(ordinal, message, nameInfo, formatter, location, payload, threadName, timeStamp) =>
+        
+        val testNameInfo = nameInfo.testName
+        fragmentsWhenNoError("scopeClosed", formatter, nameInfo.suiteName, nameInfo.testName, Some(message), presentUnformatted, presentAllDurations) // TODO: I htink I want ot say Scope Closed - + message
+
+      case ScopePending(ordinal, message, nameInfo, formatter, location, payload, threadName, timeStamp) => 
+        val stringToPrint =
+          if (presentUnformatted)
+            Some(Resources("scopePending", nameInfo.suiteName + ": " + message))
+          else
+            formatter match {
+              case Some(IndentedText(formattedText, _, _)) => Some(Resources("specTextAndNote", formattedText, Resources("pendingNote")))
+              case Some(MotionToSuppress) => None
+              case _ => Some(Resources("scopePending", nameInfo.suiteName + ": " + message))
+            }
+        stringToPrint.toVector map (new Fragment(_, AnsiYellow))
+        
+      case mpEvent: MarkupProvided =>
+
+        markupProvidedOptionalFragment(mpEvent, AnsiGreen, presentUnformatted)
+
+      case TestPending(ordinal, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, duration, formatter, location, payload, threadName, timeStamp) =>
+
+        val stringToPrint =
+          if (presentUnformatted)
+            Some(Resources("testPending", suiteName + ": " + testName))
+          else
+            formatter match {
+              case Some(IndentedText(formattedText, _, _)) => Some(Resources("specTextAndNote", formattedText, Resources("pendingNote")))
+              case Some(MotionToSuppress) => None
+              case _ => Some(Resources("testPending", suiteName + ": " + testName))
+            }
+
+        val tpf = stringToPrint.toVector map (new Fragment(_, AnsiYellow))
+
+        val ref = recordedEventFragments(recordedEvents, AnsiYellow, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
+
+        tpf ++ ref
+
+     // case _ => throw new RuntimeException("Unhandled event")
+    }
   }
 }
 
