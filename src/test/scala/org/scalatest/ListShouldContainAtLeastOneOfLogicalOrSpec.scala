@@ -16,6 +16,7 @@
 package org.scalatest
 
 import org.scalautils.Equality
+import org.scalautils.Normalization
 import org.scalautils.StringNormalizations._
 import SharedHelpers._
 import FailureMessages.prettifyArrays
@@ -31,6 +32,8 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
     new Equality[List[String]] {
       def areEqual(a: List[String], b: Any): Boolean = a != b
     }
+  
+  //ADDITIONAL//
   
   val fileName: String = "ListShouldContainAtLeastOneOfLogicalOrSpec.scala"
   

@@ -16,6 +16,7 @@
 package org.scalatest
 
 import org.scalautils.Equality
+import org.scalautils.Normalization
 import org.scalautils.StringNormalizations._
 import SharedHelpers._
 import FailureMessages.prettifyArrays
@@ -26,6 +27,8 @@ class ListShouldContainAtLeastOneOfSpec extends Spec with Matchers {
     new Equality[String] {
       def areEqual(a: String, b: Any): Boolean = a != b
     }
+  
+  //ADDITIONAL//
 
   object `a List` {
 
@@ -196,7 +199,7 @@ The bottom two don't, but still I don't want to support that in general.
         e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 2, List(2) did not contain at least one of (1, 3, 4) (ListShouldContainAtLeastOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "  at index 2, " + prettifyArrays(List(2)) + " did not contain at least one of (1, 3, 4) (ListShouldContainAtLeastOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
                                    "in " + prettifyArrays(lists)))
 
         val e2 = intercept[TestFailedException] {
@@ -258,7 +261,7 @@ The bottom two don't, but still I don't want to support that in general.
         e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 2, List(2) did not contain at least one of (1, 3, 4) (ListShouldContainAtLeastOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "  at index 2, " + prettifyArrays(List(2)) + " did not contain at least one of (1, 3, 4) (ListShouldContainAtLeastOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
                                    "in " + prettifyArrays(lists)))
 
         val e2 = intercept[TestFailedException] {
@@ -329,7 +332,7 @@ scala> all (list1s) should (newContain (atLeastOneOf (1, 3, 4)))
         e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 0, List(to) contained at least one of (\"happy\", \"birthday\", \"to\", \"you\") (ListShouldContainAtLeastOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "  at index 0, " + prettifyArrays(List("to")) + " contained at least one of (\"happy\", \"birthday\", \"to\", \"you\") (ListShouldContainAtLeastOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
                                    "in " + prettifyArrays(toLists)))
       }
       def `should use the implicit Equality in scope` {
@@ -378,7 +381,7 @@ The top two don't, but still I don't want to support that in general.
         e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 0, List(to) contained at least one of (\"happy\", \"birthday\", \"to\", \"you\") (ListShouldContainAtLeastOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "  at index 0, " + prettifyArrays(List("to")) + " contained at least one of (\"happy\", \"birthday\", \"to\", \"you\") (ListShouldContainAtLeastOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
                                    "in " + prettifyArrays(toLists)))
       }
       def `should use the implicit Equality in scope` {

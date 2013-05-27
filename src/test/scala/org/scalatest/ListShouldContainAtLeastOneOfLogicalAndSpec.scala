@@ -16,6 +16,7 @@
 package org.scalatest
 
 import org.scalautils.Equality
+import org.scalautils.Normalization
 import org.scalautils.StringNormalizations._
 import SharedHelpers._
 import FailureMessages.prettifyArrays
@@ -32,6 +33,8 @@ class ListShouldContainAtLeastOneOfLogicalAndSpec extends Spec with Matchers {
       def areEqual(a: List[String], b: Any): Boolean = a != b
     }
   
+  //ADDITIONAL//
+  
   val fileName: String = "ListShouldContainAtLeastOneOfLogicalAndSpec.scala"
   
   object `a List` {
@@ -39,7 +42,7 @@ class ListShouldContainAtLeastOneOfLogicalAndSpec extends Spec with Matchers {
     val fumList: List[String] = List("fum")
     val toList: List[String] = List("to")
     
-    object `when used with (contain oneOf (...) and contain oneOf (...)) syntax` {
+    object `when used with (contain oneOf (..) and contain oneOf (..))` {
       
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
         fumList should (newContain atLeastOneOf ("fee", "fie", "foe", "fum") and newContain atLeastOneOf("fie", "fee", "fum", "foe"))
@@ -80,7 +83,7 @@ class ListShouldContainAtLeastOneOfLogicalAndSpec extends Spec with Matchers {
       }
     }
     
-    object `when used with (equal (...) and contain oneOf (...)) syntax` {
+    object `when used with (equal (..) and contain oneOf (..))` {
       
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
         fumList should (equal (fumList) and newContain atLeastOneOf("fie", "fee", "fum", "foe"))
@@ -121,7 +124,7 @@ class ListShouldContainAtLeastOneOfLogicalAndSpec extends Spec with Matchers {
       }
     }
     
-    object `when used with (legacyEqual (...) and contain oneOf (...)) syntax` {
+    object `when used with (legacyEqual (..) and contain oneOf (..))` {
       
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
         fumList should (legacyEqual (fumList) and newContain atLeastOneOf("fie", "fee", "fum", "foe"))
@@ -162,7 +165,7 @@ class ListShouldContainAtLeastOneOfLogicalAndSpec extends Spec with Matchers {
       }
     }
 
-    object `when used with (contain oneOf (...) and legacyEqual (...)) syntax` {
+    object `when used with (contain oneOf (..) and legacyEqual (..))` {
       
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
         fumList should (newContain atLeastOneOf("fie", "fee", "fum", "foe") and legacyEqual (fumList))
@@ -203,7 +206,7 @@ class ListShouldContainAtLeastOneOfLogicalAndSpec extends Spec with Matchers {
       }
     }
     
-    object `when used with (not contain oneOf (...) and not contain oneOf (...)) syntax` {
+    object `when used with (not contain oneOf (..) and not contain oneOf (..))` {
       
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
         fumList should (not newContain atLeastOneOf ("fee", "fie", "foe", "fuu") and not newContain atLeastOneOf("fie", "fee", "fuu", "foe"))
@@ -244,7 +247,7 @@ class ListShouldContainAtLeastOneOfLogicalAndSpec extends Spec with Matchers {
       }
     }
     
-    object `when used with (not equal (...) and not contain oneOf (...)) syntax` {
+    object `when used with (not equal (..) and not contain oneOf (..))` {
       
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
         fumList should (not equal (toList) and not newContain atLeastOneOf("fie", "fee", "fuu", "foe"))
@@ -285,7 +288,7 @@ class ListShouldContainAtLeastOneOfLogicalAndSpec extends Spec with Matchers {
       }
     }
     
-    object `when used with (not be (...) and not contain oneOf (...)) syntax` {
+    object `when used with (not be (..) and not contain oneOf (..))` {
       
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
         fumList should (not be (toList) and not newContain atLeastOneOf("fie", "fee", "fuu", "foe"))
@@ -342,7 +345,7 @@ class ListShouldContainAtLeastOneOfLogicalAndSpec extends Spec with Matchers {
       "  at index " + index + ", " + message + " (" + fileName + ":" + (lineNumber) + ") \n" +
       "in " + prettifyArrays(left)
     
-    object `when used with (contain oneOf (...) and contain oneOf (...)) syntax` {
+    object `when used with (contain oneOf (..) and contain oneOf (..))` {
       
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
         all (list1s) should (newContain atLeastOneOf (3, 2, 1) and newContain atLeastOneOf (1, 3, 4))
@@ -355,12 +358,12 @@ class ListShouldContainAtLeastOneOfLogicalAndSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           all (lists) should (newContain atLeastOneOf (1, 6, 8) and newContain atLeastOneOf (1, 3, 4))
         }
-        checkMessageStackDepth(e1, allErrMsg(2, "List(2) did not contain at least one of (1, 6, 8)", thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(2, prettifyArrays(List(2)) + " did not contain at least one of (1, 6, 8)", thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
         
         val e2 = intercept[TestFailedException] {
           all (lists) should (newContain atLeastOneOf (1, 2, 8) and newContain atLeastOneOf (1, 3, 4))
         }
-        checkMessageStackDepth(e2, allErrMsg(2, "List(2) contained at least one of (1, 2, 8), but List(2) did not contain at least one of (1, 3, 4)", thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(2, prettifyArrays(List(2)) + " contained at least one of (1, 2, 8), but " + prettifyArrays(List(2)) + " did not contain at least one of (1, 3, 4)", thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
         
         val e3 = intercept[TestFailedException] {
           all (nils) should (newContain atLeastOneOf ("hi", "hello") and newContain atLeastOneOf ("ho", "hey", "howdy"))
@@ -370,7 +373,7 @@ class ListShouldContainAtLeastOneOfLogicalAndSpec extends Spec with Matchers {
         val e4 = intercept[TestFailedException] {
           all (hiLists) should (newContain atLeastOneOf ("hi", "hello") and newContain atLeastOneOf ("ho", "hey", "howdy"))
         }
-        checkMessageStackDepth(e4, allErrMsg(0, "List(hi) contained at least one of (\"hi\", \"hello\"), but List(hi) did not contain at least one of (\"ho\", \"hey\", \"howdy\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e4, allErrMsg(0, prettifyArrays(List("hi")) + " contained at least one of (\"hi\", \"hello\"), but " + prettifyArrays(List("hi")) + " did not contain at least one of (\"ho\", \"hey\", \"howdy\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
         
         val e5 = intercept[TestFailedException] {
           all (listsNil) should (newContain atLeastOneOf (1, 3, 4) and newContain atLeastOneOf (1, 3, Nil))
@@ -380,7 +383,7 @@ class ListShouldContainAtLeastOneOfLogicalAndSpec extends Spec with Matchers {
         val e6 = intercept[TestFailedException] {
           all (lists) should (newContain atLeastOneOf (1, 2, 8) and newContain atLeastOneOf (1, 3, 4))
         }
-        checkMessageStackDepth(e6, allErrMsg(2, "List(2) contained at least one of (1, 2, 8), but List(2) did not contain at least one of (1, 3, 4)", thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e6, allErrMsg(2, prettifyArrays(List(2)) + " contained at least one of (1, 2, 8), but " + prettifyArrays(List(2)) + " did not contain at least one of (1, 3, 4)", thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
       }
       
       def `should use the implicit Equality in scope` {
@@ -391,12 +394,12 @@ class ListShouldContainAtLeastOneOfLogicalAndSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           all (hiLists) should (newContain atLeastOneOf ("hi") and newContain atLeastOneOf ("ho"))
         }
-        checkMessageStackDepth(e1, allErrMsg(0, "List(hi) did not contain at least one of (\"hi\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, prettifyArrays(List("hi")) + " did not contain at least one of (\"hi\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
         
         val e2 = intercept[TestFailedException] {
           all (hiLists) should (newContain atLeastOneOf ("ho") and newContain atLeastOneOf ("hi"))
         }
-        checkMessageStackDepth(e2, allErrMsg(0, "List(hi) contained at least one of (\"ho\"), but List(hi) did not contain at least one of (\"hi\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(0, prettifyArrays(List("hi")) + " contained at least one of (\"ho\"), but " + prettifyArrays(List("hi")) + " did not contain at least one of (\"hi\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
       
       def `should use an explicitly provided Equality` {
@@ -404,16 +407,16 @@ class ListShouldContainAtLeastOneOfLogicalAndSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           (all (hiLists) should (newContain atLeastOneOf ("hi") and newContain atLeastOneOf ("ho"))) (decided by invertedStringEquality, decided by invertedStringEquality)
         }
-        checkMessageStackDepth(e1, allErrMsg(0, "List(hi) did not contain at least one of (\"hi\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, prettifyArrays(List("hi")) + " did not contain at least one of (\"hi\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
         
         val e2 = intercept[TestFailedException] {
           (all (hiLists) should (newContain atLeastOneOf ("ho") and newContain atLeastOneOf ("hi"))) (decided by invertedStringEquality, decided by invertedStringEquality)
         }
-        checkMessageStackDepth(e2, allErrMsg(0, "List(hi) contained at least one of (\"ho\"), but List(hi) did not contain at least one of (\"hi\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(0, prettifyArrays(List("hi")) + " contained at least one of (\"ho\"), but " + prettifyArrays(List("hi")) + " did not contain at least one of (\"hi\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
     }
     
-    object `when used with (be (...) and contain oneOf (...)) syntax` {
+    object `when used with (be (..) and contain oneOf (..))` {
       
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
         all (list1s) should (be (List(1)) and newContain atLeastOneOf (1, 3, 4))
@@ -426,32 +429,32 @@ class ListShouldContainAtLeastOneOfLogicalAndSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           all (lists) should (be (List(1)) and newContain atLeastOneOf (1, 3, 4))
         }
-        checkMessageStackDepth(e1, allErrMsg(2, "List(2) was not equal to List(1)", thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(2, prettifyArrays(List(2)) + " was not equal to " + prettifyArrays(List(1)), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
         
         val e2 = intercept[TestFailedException] {
           all (list1s) should (be (List(1)) and newContain atLeastOneOf (2, 3, 8))
         }
-        checkMessageStackDepth(e2, allErrMsg(0, "List(1) was equal to List(1), but List(1) did not contain at least one of (2, 3, 8)", thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(0, prettifyArrays(List(1)) + " was equal to " + prettifyArrays(List(1)) + ", but " + prettifyArrays(List(1)) + " did not contain at least one of (2, 3, 8)", thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
         
         val e3 = intercept[TestFailedException] {
           all (nils) should (be (List("hey")) and newContain atLeastOneOf ("ho", "hey", "howdy"))
         }
-        checkMessageStackDepth(e3, allErrMsg(0, prettifyArrays(Nil) + " was not equal to List(hey)", thisLineNumber - 2, nils), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e3, allErrMsg(0, prettifyArrays(Nil) + " was not equal to " + prettifyArrays(List("hey")), thisLineNumber - 2, nils), fileName, thisLineNumber - 2)
         
         val e4 = intercept[TestFailedException] {
           all (hiLists) should (be (List("hi")) and newContain atLeastOneOf ("ho", "hey", "howdy"))
         }
-        checkMessageStackDepth(e4, allErrMsg(0, "List(hi) was equal to List(hi), but List(hi) did not contain at least one of (\"ho\", \"hey\", \"howdy\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e4, allErrMsg(0, prettifyArrays(List("hi")) + " was equal to " + prettifyArrays(List("hi")) + ", but " + prettifyArrays(List("hi")) + " did not contain at least one of (\"ho\", \"hey\", \"howdy\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
         
         val e5 = intercept[TestFailedException] {
           all (listsNil) should (be (List(1)) and newContain atLeastOneOf (1, 3, Nil))
         }
-        checkMessageStackDepth(e5, allErrMsg(2, prettifyArrays(Nil) + " was not equal to List(1)", thisLineNumber - 2, listsNil), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e5, allErrMsg(2, prettifyArrays(Nil) + " was not equal to " + prettifyArrays(List(1)), thisLineNumber - 2, listsNil), fileName, thisLineNumber - 2)
         
         val e6 = intercept[TestFailedException] {
           all (list1s) should (be (List(1)) and newContain atLeastOneOf (2, 3, 8))
         }
-        checkMessageStackDepth(e6, allErrMsg(0, "List(1) was equal to List(1), but List(1) did not contain at least one of (2, 3, 8)", thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e6, allErrMsg(0, prettifyArrays(List(1)) + " was equal to " + prettifyArrays(List(1)) + ", but " + prettifyArrays(List(1)) + " did not contain at least one of (2, 3, 8)", thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
       }
       
       def `should use the implicit Equality in scope` {
@@ -462,12 +465,12 @@ class ListShouldContainAtLeastOneOfLogicalAndSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           all (hiLists) should (be (List("ho")) and newContain atLeastOneOf ("ho"))
         }
-        checkMessageStackDepth(e1, allErrMsg(0, "List(hi) was not equal to List(ho)", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, prettifyArrays(List("hi")) + " was not equal to " + prettifyArrays(List("ho")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
         
         val e2 = intercept[TestFailedException] {
           all (hiLists) should (be (List("hi")) and newContain atLeastOneOf ("hi"))
         }
-        checkMessageStackDepth(e2, allErrMsg(0, "List(hi) was equal to List(hi), but List(hi) did not contain at least one of (\"hi\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(0, prettifyArrays(List("hi")) + " was equal to " + prettifyArrays(List("hi")) + ", but " + prettifyArrays(List("hi")) + " did not contain at least one of (\"hi\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
       
       def `should use an explicitly provided Equality` {
@@ -475,16 +478,16 @@ class ListShouldContainAtLeastOneOfLogicalAndSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           (all (hiLists) should (be (List("ho")) and newContain atLeastOneOf ("ho"))) (decided by invertedStringEquality)
         }
-        checkMessageStackDepth(e1, allErrMsg(0, "List(hi) was not equal to List(ho)", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, prettifyArrays(List("hi")) + " was not equal to " + prettifyArrays(List("ho")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
         
         val e2 = intercept[TestFailedException] {
           (all (hiLists) should (be (List("hi")) and newContain atLeastOneOf ("hi"))) (decided by invertedStringEquality)
         }
-        checkMessageStackDepth(e2, allErrMsg(0, "List(hi) was equal to List(hi), but List(hi) did not contain at least one of (\"hi\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(0, prettifyArrays(List("hi")) + " was equal to " + prettifyArrays(List("hi")) + ", but " + prettifyArrays(List("hi")) + " did not contain at least one of (\"hi\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
     }
     
-    object `when used with (not contain oneOf (..) and not contain oneOf (..)) syntax` {
+    object `when used with (not contain oneOf (..) and not contain oneOf (..))` {
       
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
         all (list1s) should (not newContain atLeastOneOf (3, 2, 8) and not newContain atLeastOneOf (8, 3, 4))
@@ -495,22 +498,22 @@ class ListShouldContainAtLeastOneOfLogicalAndSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           all (lists) should (not newContain atLeastOneOf (2, 6, 8) and not newContain atLeastOneOf (2, 3, 4))
         }
-        checkMessageStackDepth(e1, allErrMsg(2, "List(2) contained at least one of (2, 6, 8)", thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(2, prettifyArrays(List(2)) + " contained at least one of (2, 6, 8)", thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
         
         val e2 = intercept[TestFailedException] {
           all (lists) should (not newContain atLeastOneOf (3, 6, 8) and not newContain atLeastOneOf (2, 3, 4))
         }
-        checkMessageStackDepth(e2, allErrMsg(2, "List(2) did not contain at least one of (3, 6, 8), but List(2) contained at least one of (2, 3, 4)", thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(2, prettifyArrays(List(2)) + " did not contain at least one of (3, 6, 8), but " + prettifyArrays(List(2)) + " contained at least one of (2, 3, 4)", thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
         
         val e3 = intercept[TestFailedException] {
           all (hiLists) should (not newContain atLeastOneOf ("hi", "hello") and not newContain atLeastOneOf ("ho", "hey", "howdy"))
         }
-        checkMessageStackDepth(e3, allErrMsg(0, "List(hi) contained at least one of (\"hi\", \"hello\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e3, allErrMsg(0, prettifyArrays(List("hi")) + " contained at least one of (\"hi\", \"hello\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
         
         val e4 = intercept[TestFailedException] {
           all (hiLists) should (not newContain atLeastOneOf ("ho", "hey", "howdy") and not newContain atLeastOneOf ("hi", "hello"))
         }
-        checkMessageStackDepth(e4, allErrMsg(0, "List(hi) did not contain at least one of (\"ho\", \"hey\", \"howdy\"), but List(hi) contained at least one of (\"hi\", \"hello\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e4, allErrMsg(0, prettifyArrays(List("hi")) + " did not contain at least one of (\"ho\", \"hey\", \"howdy\"), but " + prettifyArrays(List("hi")) + " contained at least one of (\"hi\", \"hello\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
       
       def `should use the implicit Equality in scope` {
@@ -521,12 +524,12 @@ class ListShouldContainAtLeastOneOfLogicalAndSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           all (hiLists) should (not newContain atLeastOneOf ("ho") and not newContain atLeastOneOf ("hi"))
         }
-        checkMessageStackDepth(e1, allErrMsg(0, "List(hi) contained at least one of (\"ho\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, prettifyArrays(List("hi")) + " contained at least one of (\"ho\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
         
         val e2 = intercept[TestFailedException] {
           all (hiLists) should (not newContain atLeastOneOf ("hi") and not newContain atLeastOneOf ("ho"))
         }
-        checkMessageStackDepth(e2, allErrMsg(0, "List(hi) did not contain at least one of (\"hi\"), but List(hi) contained at least one of (\"ho\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(0, prettifyArrays(List("hi")) + " did not contain at least one of (\"hi\"), but " + prettifyArrays(List("hi")) + " contained at least one of (\"ho\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
       
       def `should use an explicitly provided Equality` {
@@ -534,16 +537,16 @@ class ListShouldContainAtLeastOneOfLogicalAndSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           (all (hiLists) should (not newContain atLeastOneOf ("ho") and not newContain atLeastOneOf ("hi"))) (decided by invertedStringEquality, decided by invertedStringEquality)
         }
-        checkMessageStackDepth(e1, allErrMsg(0, "List(hi) contained at least one of (\"ho\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, prettifyArrays(List("hi")) + " contained at least one of (\"ho\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
         
         val e2 = intercept[TestFailedException] {
           (all (hiLists) should (not newContain atLeastOneOf ("hi") and not newContain atLeastOneOf ("ho"))) (decided by invertedStringEquality, decided by invertedStringEquality)
         }
-        checkMessageStackDepth(e2, allErrMsg(0, "List(hi) did not contain at least one of (\"hi\"), but List(hi) contained at least one of (\"ho\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(0, prettifyArrays(List("hi")) + " did not contain at least one of (\"hi\"), but " + prettifyArrays(List("hi")) + " contained at least one of (\"ho\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
     }
     
-    object `when used with (not be (..) and not contain oneOf (..)) syntax` {
+    object `when used with (not be (..) and not contain oneOf (..))` {
       
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
         all (list1s) should (not be (List(2)) and not newContain atLeastOneOf (8, 3, 4))
@@ -554,22 +557,22 @@ class ListShouldContainAtLeastOneOfLogicalAndSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           all (lists) should (not be (List(2)) and not newContain atLeastOneOf (2, 3, 4))
         }
-        checkMessageStackDepth(e1, allErrMsg(2, "List(2) was equal to List(2)", thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(2, prettifyArrays(List(2)) + " was equal to " + prettifyArrays(List(2)), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
         
         val e2 = intercept[TestFailedException] {
           all (lists) should (not be (List(3)) and not newContain atLeastOneOf (2, 3, 4))
         }
-        checkMessageStackDepth(e2, allErrMsg(2, "List(2) was not equal to List(3), but List(2) contained at least one of (2, 3, 4)", thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(2, prettifyArrays(List(2)) + " was not equal to " + prettifyArrays(List(3)) + ", but " + prettifyArrays(List(2)) + " contained at least one of (2, 3, 4)", thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
         
         val e3 = intercept[TestFailedException] {
           all (hiLists) should (not be (List("hi")) and not newContain atLeastOneOf ("ho", "hey", "howdy"))
         }
-        checkMessageStackDepth(e3, allErrMsg(0, "List(hi) was equal to List(hi)", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e3, allErrMsg(0, prettifyArrays(List("hi")) + " was equal to " + prettifyArrays(List("hi")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
         
         val e4 = intercept[TestFailedException] {
           all (hiLists) should (not be (List("ho")) and not newContain atLeastOneOf ("hi", "hello"))
         }
-        checkMessageStackDepth(e4, allErrMsg(0, "List(hi) was not equal to List(ho), but List(hi) contained at least one of (\"hi\", \"hello\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e4, allErrMsg(0, prettifyArrays(List("hi")) + " was not equal to " + prettifyArrays(List("ho")) + ", but " + prettifyArrays(List("hi")) + " contained at least one of (\"hi\", \"hello\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
       
       def `should use the implicit Equality in scope` {
@@ -580,12 +583,12 @@ class ListShouldContainAtLeastOneOfLogicalAndSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           all (hiLists) should (not be (List("hi")) and not newContain atLeastOneOf ("hi"))
         }
-        checkMessageStackDepth(e1, allErrMsg(0, "List(hi) was equal to List(hi)", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, prettifyArrays(List("hi")) + " was equal to " + prettifyArrays(List("hi")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
         
         val e2 = intercept[TestFailedException] {
           all (hiLists) should (not be (List("ho")) and not newContain atLeastOneOf ("ho"))
         }
-        checkMessageStackDepth(e2, allErrMsg(0, "List(hi) was not equal to List(ho), but List(hi) contained at least one of (\"ho\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(0, prettifyArrays(List("hi")) + " was not equal to " + prettifyArrays(List("ho")) + ", but " + prettifyArrays(List("hi")) + " contained at least one of (\"ho\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
       
       def `should use an explicitly provided Equality` {
@@ -593,12 +596,12 @@ class ListShouldContainAtLeastOneOfLogicalAndSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           (all (hiLists) should (not be (List("hi")) and not newContain atLeastOneOf ("hi"))) (decided by invertedStringEquality)
         }
-        checkMessageStackDepth(e1, allErrMsg(0, "List(hi) was equal to List(hi)", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, prettifyArrays(List("hi")) + " was equal to " + prettifyArrays(List("hi")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
         
         val e2 = intercept[TestFailedException] {
           (all (hiLists) should (not be (List("ho")) and not newContain atLeastOneOf ("ho"))) (decided by invertedStringEquality)
         }
-        checkMessageStackDepth(e2, allErrMsg(0, "List(hi) was not equal to List(ho), but List(hi) contained at least one of (\"ho\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(0, prettifyArrays(List("hi")) + " was not equal to " + prettifyArrays(List("ho")) + ", but " + prettifyArrays(List("hi")) + " contained at least one of (\"ho\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
     }
   }
