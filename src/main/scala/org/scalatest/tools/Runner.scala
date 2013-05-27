@@ -834,7 +834,7 @@ object Runner {
       case None =>
     }
 
-    val (
+    val ParsedArgs(
       runpathArgs,
       reporterArgs,
       suiteArgs,
@@ -1095,7 +1095,7 @@ object Runner {
       Some(Pattern.compile(".*(" + suffixesList.mkString("|") + ")$"))
   }
 
-  private[scalatest] def parseArgs(args: Array[String]) = {
+  private[scalatest] def parseArgs(args: Array[String]): ParsedArgs = {
 
     val runpath = new ListBuffer[String]()
     val reporters = new ListBuffer[String]()
@@ -1298,7 +1298,7 @@ object Runner {
       }
     }
 
-    (
+    ParsedArgs(
       runpath.toList,
       reporters.toList,
       suites.toList,

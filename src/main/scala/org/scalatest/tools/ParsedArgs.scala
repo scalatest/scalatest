@@ -17,20 +17,20 @@ package org.scalatest.tools
 
 import java.util.regex.Pattern
 
-case class ParsedArgs(
-  runpath: Vector[String],
-  reporters: Vector[String],
-  suites: Vector[String],
-  junits: Vector[String],
-  props: Vector[String],
-  includes: Vector[String],
-  excludes: Vector[String],
-  concurrent: Vector[String],
-  membersOnly: Vector[String],
-  wildcard: Vector[String],
-  testNGXMLFiles: Vector[String],
+private[scalatest] case class ParsedArgs(
+  runpath: List[String],
+  reporters: List[String],
+  suites: List[String],
+  junits: List[String],
+  props: List[String],
+  includes: List[String],
+  excludes: List[String],
+  concurrent: List[String],
+  membersOnly: List[String],
+  wildcard: List[String],
+  testNGXMLFiles: List[String],
   genSuffixesPattern: Option[Pattern], 
-  chosenStyles: Vector[String], 
-  spanScaleFactor: Vector[String], 
-  testSortingReporterTimeout: Vector[String]
+  chosenStyles: List[String], 
+  spanScaleFactor: List[String], 
+  testSortingReporterTimeout: List[String]
 )

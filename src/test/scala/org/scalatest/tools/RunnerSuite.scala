@@ -45,7 +45,7 @@ class RunnerSuite() extends Spec with PrivateMethodTester {
       expectedTestSortingReporterTimeoutList: List[String]
     ) = {
 
-      val (
+      val ParsedArgs(
         runpathList,
         reportersList,
         suitesList,
@@ -386,7 +386,7 @@ class RunnerSuite() extends Spec with PrivateMethodTester {
       expectedTestSortingReporterTimeoutList: List[String]
     ) = {
 
-      val (
+      val ParsedArgs(
         runpathList,
         reportersList,
         suitesList,
