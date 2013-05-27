@@ -18,6 +18,7 @@ package org.scalatest
 import org.scalautils.Equality
 import org.scalautils.StringNormalizations._
 import SharedHelpers._
+import FailureMessages.prettifyArrays
 
 class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
   
@@ -47,7 +48,7 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           fumList should (newContain atLeastOneOf ("fee", "fie", "foe", "fam") or newContain atLeastOneOf ("happy", "birthday", "to", "you"))
         }
-        checkMessageStackDepth(e1, Resources("didNotContainAtLeastOneOf", fumList, "\"fee\", \"fie\", \"foe\", \"fam\"") + ", and " + Resources("didNotContainAtLeastOneOf", fumList, "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("didNotContainAtLeastOneOf", prettifyArrays(fumList), "\"fee\", \"fie\", \"foe\", \"fam\"") + ", and " + Resources("didNotContainAtLeastOneOf", prettifyArrays(fumList), "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
       }
 
       def `should use the implicit Equality in scope` {
@@ -58,7 +59,7 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           fumList should (newContain atLeastOneOf ("fum", "fum", "fum", "fum") or (newContain atLeastOneOf ("fum", "fum", "fum")))
         }
-        checkMessageStackDepth(e1, Resources("didNotContainAtLeastOneOf", fumList, "\"fum\", \"fum\", \"fum\", \"fum\"") + ", and " + Resources("didNotContainAtLeastOneOf", fumList, "\"fum\", \"fum\", \"fum\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("didNotContainAtLeastOneOf", prettifyArrays(fumList), "\"fum\", \"fum\", \"fum\", \"fum\"") + ", and " + Resources("didNotContainAtLeastOneOf", prettifyArrays(fumList), "\"fum\", \"fum\", \"fum\""), fileName, thisLineNumber - 2)
       }
       
       def `should use an explicitly provided Equality` {
@@ -68,7 +69,7 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           (fumList should (newContain atLeastOneOf ("fum", "fum") or newContain atLeastOneOf ("fum", "fum", "fum"))) (decided by invertedStringEquality, decided by invertedStringEquality)
         }
-        checkMessageStackDepth(e1, Resources("didNotContainAtLeastOneOf", fumList, "\"fum\", \"fum\"") + ", and " + Resources("didNotContainAtLeastOneOf", fumList, "\"fum\", \"fum\", \"fum\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("didNotContainAtLeastOneOf", prettifyArrays(fumList), "\"fum\", \"fum\"") + ", and " + Resources("didNotContainAtLeastOneOf", prettifyArrays(fumList), "\"fum\", \"fum\", \"fum\""), fileName, thisLineNumber - 2)
         (fumList should (newContain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM ") or newContain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
     }
@@ -82,7 +83,7 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           fumList should (equal (toList) or newContain atLeastOneOf ("happy", "birthday", "to", "you"))
         }
-        checkMessageStackDepth(e1, Resources("didNotEqual", fumList, toList) + ", and " + Resources("didNotContainAtLeastOneOf", fumList, "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("didNotEqual", prettifyArrays(fumList), prettifyArrays(toList)) + ", and " + Resources("didNotContainAtLeastOneOf", prettifyArrays(fumList), "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
       }
       
       def `should use the implicit Equality in scope` {
@@ -93,7 +94,7 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           fumList should (equal (toList) or (newContain atLeastOneOf ("fum", "fum", "fum")))
         }
-        checkMessageStackDepth(e1, Resources("didNotEqual", fumList, toList) + ", and " + Resources("didNotContainAtLeastOneOf", fumList, "\"fum\", \"fum\", \"fum\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("didNotEqual", prettifyArrays(fumList), prettifyArrays(toList)) + ", and " + Resources("didNotContainAtLeastOneOf", prettifyArrays(fumList), "\"fum\", \"fum\", \"fum\""), fileName, thisLineNumber - 2)
       }
       
       def `should use an explicitly provided Equality` {
@@ -103,7 +104,7 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           (fumList should (equal (fumList) or newContain atLeastOneOf ("fum", "fum", "fum"))) (decided by invertedListOfStringEquality, decided by invertedStringEquality)
         }
-        checkMessageStackDepth(e1, Resources("didNotEqual", fumList, fumList) + ", and " + Resources("didNotContainAtLeastOneOf", fumList, "\"fum\", \"fum\", \"fum\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("didNotEqual", prettifyArrays(fumList), prettifyArrays(fumList)) + ", and " + Resources("didNotContainAtLeastOneOf", prettifyArrays(fumList), "\"fum\", \"fum\", \"fum\""), fileName, thisLineNumber - 2)
         (fumList should (equal (toList) or newContain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (decided by invertedListOfStringEquality, after being lowerCased and trimmed)
       }
     }
@@ -117,7 +118,7 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           fumList should (legacyEqual (toList) or newContain atLeastOneOf ("happy", "birthday", "to", "you"))
         }
-        checkMessageStackDepth(e1, Resources("didNotEqual", fumList, toList) + ", and " + Resources("didNotContainAtLeastOneOf", fumList, "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("didNotEqual", prettifyArrays(fumList), prettifyArrays(toList)) + ", and " + Resources("didNotContainAtLeastOneOf", prettifyArrays(fumList), "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
       }
       
       def `should use the implicit Equality in scope` {
@@ -128,7 +129,7 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           fumList should (legacyEqual (toList) or (newContain atLeastOneOf ("fum", "fum", "fum")))
         }
-        checkMessageStackDepth(e1, Resources("didNotEqual", fumList, toList) + ", and " + Resources("didNotContainAtLeastOneOf", fumList, "\"fum\", \"fum\", \"fum\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("didNotEqual", prettifyArrays(fumList), prettifyArrays(toList)) + ", and " + Resources("didNotContainAtLeastOneOf", prettifyArrays(fumList), "\"fum\", \"fum\", \"fum\""), fileName, thisLineNumber - 2)
       }
       
       def `should use an explicitly provided Equality` {
@@ -138,7 +139,7 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           (fumList should (legacyEqual (toList) or newContain atLeastOneOf ("fum", "fum", "fum"))) (decided by invertedStringEquality)
         }
-        checkMessageStackDepth(e1, Resources("didNotEqual", fumList, toList) + ", and " + Resources("didNotContainAtLeastOneOf", fumList, "\"fum\", \"fum\", \"fum\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("didNotEqual", prettifyArrays(fumList), prettifyArrays(toList)) + ", and " + Resources("didNotContainAtLeastOneOf", prettifyArrays(fumList), "\"fum\", \"fum\", \"fum\""), fileName, thisLineNumber - 2)
         (fumList should (legacyEqual (fumList) or newContain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
       }
     }
@@ -152,7 +153,7 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           fumList should (newContain atLeastOneOf ("fee", "fie", "foe", "fam") or legacyEqual (toList))
         }
-        checkMessageStackDepth(e1, Resources("didNotContainAtLeastOneOf", fumList, "\"fee\", \"fie\", \"foe\", \"fam\"") + ", and " + Resources("didNotEqual", fumList, toList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("didNotContainAtLeastOneOf", prettifyArrays(fumList), "\"fee\", \"fie\", \"foe\", \"fam\"") + ", and " + Resources("didNotEqual", prettifyArrays(fumList), prettifyArrays(toList)), fileName, thisLineNumber - 2)
       }
       
       def `should use the implicit Equality in scope` {
@@ -163,7 +164,7 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           fumList should (newContain atLeastOneOf ("fum", "fum", "fum") or legacyEqual (toList))
         }
-        checkMessageStackDepth(e1, Resources("didNotContainAtLeastOneOf", fumList, "\"fum\", \"fum\", \"fum\"") + ", and " + Resources("didNotEqual", fumList, toList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("didNotContainAtLeastOneOf", prettifyArrays(fumList), "\"fum\", \"fum\", \"fum\"") + ", and " + Resources("didNotEqual", prettifyArrays(fumList), prettifyArrays(toList)), fileName, thisLineNumber - 2)
       }
       
       def `should use an explicitly provided Equality` {
@@ -173,7 +174,7 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           (fumList should (newContain atLeastOneOf ("fum", "fum", "fum") or legacyEqual (toList))) (decided by invertedStringEquality)
         }
-        checkMessageStackDepth(e1, Resources("didNotContainAtLeastOneOf", fumList, "\"fum\", \"fum\", \"fum\"") + ", and " + Resources("didNotEqual", fumList, toList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("didNotContainAtLeastOneOf", prettifyArrays(fumList), "\"fum\", \"fum\", \"fum\"") + ", and " + Resources("didNotEqual", prettifyArrays(fumList), prettifyArrays(toList)), fileName, thisLineNumber - 2)
         (fumList should (newContain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM ") or legacyEqual (fumList))) (after being lowerCased and trimmed)
       }
     }
@@ -187,7 +188,7 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           fumList should (not newContain atLeastOneOf ("fee", "fie", "foe", "fum") or not newContain atLeastOneOf ("fee", "fie", "foe", "fum"))
         }
-        checkMessageStackDepth(e1, Resources("containedAtLeastOneOf", fumList, "\"fee\", \"fie\", \"foe\", \"fum\"") + ", and " + Resources("containedAtLeastOneOf", fumList, "\"fee\", \"fie\", \"foe\", \"fum\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("containedAtLeastOneOf", prettifyArrays(fumList), "\"fee\", \"fie\", \"foe\", \"fum\"") + ", and " + Resources("containedAtLeastOneOf", prettifyArrays(fumList), "\"fee\", \"fie\", \"foe\", \"fum\""), fileName, thisLineNumber - 2)
       }
       
       def `should use the implicit Equality in scope` {
@@ -198,7 +199,7 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           fumList should (not newContain atLeastOneOf ("happy", "birthday", "to", "you") or not newContain atLeastOneOf ("have", "a", "nice", "day"))
         }
-        checkMessageStackDepth(e1, Resources("containedAtLeastOneOf", fumList, "\"happy\", \"birthday\", \"to\", \"you\"") + ", and " + Resources("containedAtLeastOneOf", fumList, "\"have\", \"a\", \"nice\", \"day\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("containedAtLeastOneOf", prettifyArrays(fumList), "\"happy\", \"birthday\", \"to\", \"you\"") + ", and " + Resources("containedAtLeastOneOf", prettifyArrays(fumList), "\"have\", \"a\", \"nice\", \"day\""), fileName, thisLineNumber - 2)
       }
       
       def `should use an explicitly provided Equality` {
@@ -208,7 +209,7 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           (fumList should (not newContain atLeastOneOf ("happy", "birthday", "to", "you") or not newContain atLeastOneOf ("have", "a", "nice", "day"))) (decided by invertedStringEquality, decided by invertedStringEquality)
         }
-        checkMessageStackDepth(e1, Resources("containedAtLeastOneOf", fumList, "\"happy\", \"birthday\", \"to\", \"you\"") + ", and " + Resources("containedAtLeastOneOf", fumList, "\"have\", \"a\", \"nice\", \"day\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("containedAtLeastOneOf", prettifyArrays(fumList), "\"happy\", \"birthday\", \"to\", \"you\"") + ", and " + Resources("containedAtLeastOneOf", prettifyArrays(fumList), "\"have\", \"a\", \"nice\", \"day\""), fileName, thisLineNumber - 2)
         (fumList should (newContain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM ") or newContain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
     }
@@ -222,7 +223,7 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           fumList should (not equal (fumList) or not newContain atLeastOneOf ("fee", "fie", "foe", "fum"))
         }
-        checkMessageStackDepth(e1, Resources("equaled", fumList, fumList) + ", and " + Resources("containedAtLeastOneOf", fumList, "\"fee\", \"fie\", \"foe\", \"fum\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("equaled", prettifyArrays(fumList), prettifyArrays(fumList)) + ", and " + Resources("containedAtLeastOneOf", prettifyArrays(fumList), "\"fee\", \"fie\", \"foe\", \"fum\""), fileName, thisLineNumber - 2)
       }
       
       def `should use the implicit Equality in scope` {
@@ -233,7 +234,7 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
         val e2 = intercept[TestFailedException] {
           fumList should (not equal (fumList) or (not newContain atLeastOneOf ("happy", "birthday", "to", "you")))
         }
-        checkMessageStackDepth(e2, Resources("equaled", fumList, fumList) + ", and " + Resources("containedAtLeastOneOf", fumList, "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, Resources("equaled", prettifyArrays(fumList), prettifyArrays(fumList)) + ", and " + Resources("containedAtLeastOneOf", prettifyArrays(fumList), "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
       }
       
       def `should use an explicitly provided Equality` {
@@ -243,7 +244,7 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           (fumList should (not equal (toList) or not newContain atLeastOneOf ("happy", "birthday", "to", "you"))) (decided by invertedListOfStringEquality, decided by invertedStringEquality)
         }
-        checkMessageStackDepth(e1, Resources("equaled", fumList, toList) + ", and " + Resources("containedAtLeastOneOf", fumList, "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("equaled", prettifyArrays(fumList), prettifyArrays(toList)) + ", and " + Resources("containedAtLeastOneOf", prettifyArrays(fumList), "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
         (fumList should (not newContain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUU ") or not newContain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUU "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
     }
@@ -257,7 +258,7 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           fumList should (not be (fumList) or not newContain atLeastOneOf ("fee", "fie", "foe", "fum"))
         }
-        checkMessageStackDepth(e1, Resources("wasEqualTo", fumList, fumList) + ", and " + Resources("containedAtLeastOneOf", fumList, "\"fee\", \"fie\", \"foe\", \"fum\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("wasEqualTo", prettifyArrays(fumList), prettifyArrays(fumList)) + ", and " + Resources("containedAtLeastOneOf", prettifyArrays(fumList), "\"fee\", \"fie\", \"foe\", \"fum\""), fileName, thisLineNumber - 2)
       }
       
       def `should use the implicit Equality in scope` {
@@ -268,7 +269,7 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           fumList should (not be (fumList) or (not newContain atLeastOneOf ("happy", "birthday", "to", "you")))
         }
-        checkMessageStackDepth(e1, Resources("wasEqualTo", fumList, fumList) + ", and " + Resources("containedAtLeastOneOf", fumList, "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("wasEqualTo", prettifyArrays(fumList), prettifyArrays(fumList)) + ", and " + Resources("containedAtLeastOneOf", prettifyArrays(fumList), "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
       }
       
       def `should use an explicitly provided Equality` {
@@ -278,7 +279,7 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           (fumList should (not be (fumList) or not newContain atLeastOneOf ("happy", "birthday", "to", "you"))) (decided by invertedStringEquality)
         }
-        checkMessageStackDepth(e1, Resources("wasEqualTo", fumList, fumList) + ", and " + Resources("containedAtLeastOneOf", fumList, "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("wasEqualTo", prettifyArrays(fumList), prettifyArrays(fumList)) + ", and " + Resources("containedAtLeastOneOf", prettifyArrays(fumList), "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
         (fumList should (not newContain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUU ") or not newContain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUU "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
     }

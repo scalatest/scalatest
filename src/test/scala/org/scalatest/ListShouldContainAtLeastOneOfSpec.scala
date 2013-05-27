@@ -18,6 +18,7 @@ package org.scalatest
 import org.scalautils.Equality
 import org.scalautils.StringNormalizations._
 import SharedHelpers._
+import FailureMessages.prettifyArrays
 
 class ListShouldContainAtLeastOneOfSpec extends Spec with Matchers {
 
@@ -40,7 +41,7 @@ class ListShouldContainAtLeastOneOfSpec extends Spec with Matchers {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("didNotContainAtLeastOneOf", fumList, "\"happy\", \"birthday\", \"to\", \"you\""))
+        e1.message.get should be (Resources("didNotContainAtLeastOneOf", prettifyArrays(fumList), "\"happy\", \"birthday\", \"to\", \"you\""))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = invertedStringEquality
@@ -71,7 +72,7 @@ class ListShouldContainAtLeastOneOfSpec extends Spec with Matchers {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("didNotContainAtLeastOneOf", fumList, "\"happy\", \"birthday\", \"to\", \"you\""))
+        e1.message.get should be (Resources("didNotContainAtLeastOneOf", prettifyArrays(fumList), "\"happy\", \"birthday\", \"to\", \"you\""))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = invertedStringEquality
@@ -109,7 +110,7 @@ class ListShouldContainAtLeastOneOfSpec extends Spec with Matchers {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("containedAtLeastOneOf", toList, "\"happy\", \"birthday\", \"to\", \"you\""))
+        e1.message.get should be (Resources("containedAtLeastOneOf", prettifyArrays(toList), "\"happy\", \"birthday\", \"to\", \"you\""))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = invertedStringEquality
@@ -148,7 +149,7 @@ The bottom two don't, but still I don't want to support that in general.
         }
         e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("containedAtLeastOneOf", toList, "\"happy\", \"birthday\", \"to\", \"you\""))
+        e1.message.get should be (Resources("containedAtLeastOneOf", prettifyArrays(toList), "\"happy\", \"birthday\", \"to\", \"you\""))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = invertedStringEquality
@@ -196,7 +197,7 @@ The bottom two don't, but still I don't want to support that in general.
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
                                    "  at index 2, List(2) did not contain at least one of (1, 3, 4) (ListShouldContainAtLeastOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
-                                   "in Vector(List(1), List(1), List(2))"))
+                                   "in " + prettifyArrays(lists)))
 
         val e2 = intercept[TestFailedException] {
           all (nils) should newContain atLeastOneOf ("ho", "hey", "howdy")
@@ -204,8 +205,8 @@ The bottom two don't, but still I don't want to support that in general.
         e2.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
         e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e2.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 0, List() did not contain at least one of (\"ho\", \"hey\", \"howdy\") (ListShouldContainAtLeastOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
-                                   "in Vector(List(), List(), List())"))
+                                   "  at index 0, " + prettifyArrays(Nil) + " did not contain at least one of (\"ho\", \"hey\", \"howdy\") (ListShouldContainAtLeastOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "in " + prettifyArrays(nils)))
 
         val e4 = intercept[TestFailedException] {
           all (listsNil) should newContain atLeastOneOf (1, 3, 4)
@@ -213,8 +214,8 @@ The bottom two don't, but still I don't want to support that in general.
         e4.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
         e4.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e4.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 2, List() did not contain at least one of (1, 3, 4) (ListShouldContainAtLeastOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
-                                   "in Vector(List(1), List(1), List())"))
+                                   "  at index 2, " + prettifyArrays(Nil) + " did not contain at least one of (1, 3, 4) (ListShouldContainAtLeastOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "in " + prettifyArrays(listsNil)))
       }
 
       def `should use the implicit Equality in scope` {
@@ -258,7 +259,7 @@ The bottom two don't, but still I don't want to support that in general.
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
                                    "  at index 2, List(2) did not contain at least one of (1, 3, 4) (ListShouldContainAtLeastOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
-                                   "in Vector(List(1), List(1), List(2))"))
+                                   "in " + prettifyArrays(lists)))
 
         val e2 = intercept[TestFailedException] {
           all (nils) should (newContain atLeastOneOf ("ho", "hey", "howdy"))
@@ -266,8 +267,8 @@ The bottom two don't, but still I don't want to support that in general.
         e2.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
         e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e2.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 0, List() did not contain at least one of (\"ho\", \"hey\", \"howdy\") (ListShouldContainAtLeastOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
-                                   "in Vector(List(), List(), List())"))
+                                   "  at index 0, " + prettifyArrays(Nil) + " did not contain at least one of (\"ho\", \"hey\", \"howdy\") (ListShouldContainAtLeastOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "in " + prettifyArrays(nils)))
 
         val e4 = intercept[TestFailedException] {
           all (listsNil) should (newContain atLeastOneOf (1, 3, 4))
@@ -275,8 +276,8 @@ The bottom two don't, but still I don't want to support that in general.
         e4.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
         e4.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e4.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 2, List() did not contain at least one of (1, 3, 4) (ListShouldContainAtLeastOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
-                                   "in Vector(List(1), List(1), List())"))
+                                   "  at index 2, " + prettifyArrays(Nil) + " did not contain at least one of (1, 3, 4) (ListShouldContainAtLeastOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "in " + prettifyArrays(listsNil)))
       }
 
       def `should use the implicit Equality in scope` {
@@ -329,7 +330,7 @@ scala> all (list1s) should (newContain (atLeastOneOf (1, 3, 4)))
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
                                    "  at index 0, List(to) contained at least one of (\"happy\", \"birthday\", \"to\", \"you\") (ListShouldContainAtLeastOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
-                                   "in Vector(List(to), List(to), List(to))"))
+                                   "in " + prettifyArrays(toLists)))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = invertedStringEquality
@@ -378,7 +379,7 @@ The top two don't, but still I don't want to support that in general.
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
                                    "  at index 0, List(to) contained at least one of (\"happy\", \"birthday\", \"to\", \"you\") (ListShouldContainAtLeastOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
-                                   "in Vector(List(to), List(to), List(to))"))
+                                   "in " + prettifyArrays(toLists)))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = invertedStringEquality

@@ -16,6 +16,7 @@
 package org.scalatest.enablers
 
 import org.scalautils.Equality
+import org.scalatest.words.ArrayWrapper
 
 trait Aggregation[A] {
   def containsAtLeastOneOf(aggregation: A, eles: Seq[Any]): Boolean
@@ -41,4 +42,15 @@ object Aggregation {
   // Enables (xs should contain ("HI")) (after being lowerCased)
   implicit def convertEqualityToGenTraversableAggregation[E, TRAV[_] <: scala.collection.GenTraversable[_]](equality: Equality[E]): Aggregation[TRAV[E]] = 
     withGenTraversableElementEquality(equality)
+    
+  implicit def withArrayElementEquality[E](implicit equality: Equality[E]): Aggregation[Array[E]] = 
+    new Aggregation[Array[E]] {
+      def containsAtLeastOneOf(array: Array[E], elements: scala.collection.Seq[Any]): Boolean = {
+        new ArrayWrapper(array).exists((e: Any) => elements.exists((ele: Any) => equality.areEqual(e.asInstanceOf[E], ele)))
+      }
+    }
+
+  // Enables (xs should contain ("HI")) (after being lowerCased)
+  implicit def convertEqualityToArrayAggregation[E](equality: Equality[E]): Aggregation[Array[E]] = 
+    withArrayElementEquality(equality)
 }
