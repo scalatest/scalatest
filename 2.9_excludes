@@ -8,3 +8,5 @@ org/scalatest/DocSpec.scala
 org/scalatest/DocSpecLike.scala
 org/scalatest/DocSpecSpec.scala
 org/scalatest/AnyValMatchersSpec.scala
+org/scalatest/concurrent/ScalaFutures.scala
+org/scalatest/concurrent/ScalaFuturesSpec.scala
