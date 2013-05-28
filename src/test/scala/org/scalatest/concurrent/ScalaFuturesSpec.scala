@@ -118,8 +118,7 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
         caught.cause.value.getMessage should be ("oops")
       }
 
-      // The VME gets wrapped in a java.util.concurrent.ExecutionException with message Boxed Error
-      ignore("should allow errors that do not normally cause a test to fail to propagate back without being wrapped in a TFE") {
+      it("should allow errors that do not normally cause a test to fail to propagate back without being wrapped in a TFE") {
 
         val vmeFuture: FutureOfScala[String] = {
           val promise = Promise[String]
@@ -247,8 +246,7 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
         caught.cause.value.getMessage should be ("oops")
       }
 
-      // The VME gets wrapped in a java.util.concurrent.ExecutionException with message Boxed Error
-      ignore("should allow errors that do not normally cause a test to fail to propagate back without being wrapped in a TFE") {
+      it("should allow errors that do not normally cause a test to fail to propagate back without being wrapped in a TFE") {
 
         val vmeFuture: FutureOfScala[String] = {
           val promise = Promise[String]
@@ -470,8 +468,7 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
         caught.cause.value.getMessage should be ("oops")
       }
 
-      // The VME gets wrapped in a java.util.concurrent.ExecutionException with message Boxed Error
-      ignore("should allow errors that do not normally cause a test to fail to propagate back without being wrapped in a TFE") {
+      it("should allow errors that do not normally cause a test to fail to propagate back without being wrapped in a TFE") {
 
         val vmeFuture: FutureOfScala[String] = {
           val promise = Promise[String]

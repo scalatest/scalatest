@@ -88,3 +88,9 @@ trait ScalaFutures extends Futures {
     }
 }
 
+/**
+ * Companion object that facilitates the importing of <code>ScalaFutures</code> members as
+ * an alternative to mixing in the trait. One use case is to import <code>ScalaFutures</code>'s members so you can use
+ * them in the Scala interpreter.
+ */
+object ScalaFutures extends ScalaFutures

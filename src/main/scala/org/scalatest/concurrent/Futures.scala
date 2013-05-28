@@ -284,7 +284,11 @@ trait Futures extends PatienceConfiguration {
      * Indicates whether this future is ready within the specified timeout.
      *
      * <p>
-     * If this future
+     * If the <code>eitherValue</code> method of the underlying Scala future returns a <code>scala.Some</code> containing a
+     * <code>scala.util.Failure</code> containing a <code>java.util.concurrent.ExecutionException</code>, and this
+     * exception contains a non-<code>null</code> cause, that cause will be included in the <code>TestFailedException</code> as its cause. The
+     * <code>ExecutionException</code> will be be included as the <code>TestFailedException</code>'s cause only if the
+     * <code>ExecutionException</code>'s cause is <code>null</code>.
      * </p>
      *
      * @param timeout
@@ -321,6 +325,14 @@ trait Futures extends PatienceConfiguration {
      * the <code>Interval</code> specified as <code>interval</code>.
      * </p>
      *
+     * <p>
+     * If the <code>eitherValue</code> method of the underlying Scala future returns a <code>scala.Some</code> containing a
+     * <code>scala.util.Failure</code> containing a <code>java.util.concurrent.ExecutionException</code>, and this
+     * exception contains a non-<code>null</code> cause, that cause will be included in the <code>TestFailedException</code> as its cause. The
+     * <code>ExecutionException</code> will be be included as the <code>TestFailedException</code>'s cause only if the
+     * <code>ExecutionException</code>'s cause is <code>null</code>.
+     * </p>
+     *
      * @param timeout the <code>Timeout</code> configuration parameter
      * @param interval the <code>Interval</code> configuration parameter
      * @return the result of the future once it is ready, if <code>value</code> is defined as a <code>Right</code>
@@ -350,6 +362,14 @@ trait Futures extends PatienceConfiguration {
      * list that contains only one argument, a <code>PatienceConfig</code>, passing a new
      * <code>PatienceConfig</code> with the <code>Timeout</code> specified as <code>timeout</code> and
      * the <code>Interval</code> specified as <code>config.interval</code>.
+     * </p>
+     *
+     * <p>
+     * If the <code>eitherValue</code> method of the underlying Scala future returns a <code>scala.Some</code> containing a
+     * <code>scala.util.Failure</code> containing a <code>java.util.concurrent.ExecutionException</code>, and this
+     * exception contains a non-<code>null</code> cause, that cause will be included in the <code>TestFailedException</code> as its cause. The
+     * <code>ExecutionException</code> will be be included as the <code>TestFailedException</code>'s cause only if the
+     * <code>ExecutionException</code>'s cause is <code>null</code>.
      * </p>
      *
      * @param timeout the <code>Timeout</code> configuration parameter
@@ -384,6 +404,14 @@ trait Futures extends PatienceConfiguration {
      * the <code>Timeout</code> specified as <code>config.timeout</code>.
      * </p>
      *
+     * <p>
+     * If the <code>eitherValue</code> method of the underlying Scala future returns a <code>scala.Some</code> containing a
+     * <code>scala.util.Failure</code> containing a <code>java.util.concurrent.ExecutionException</code>, and this
+     * exception contains a non-<code>null</code> cause, that cause will be included in the <code>TestFailedException</code> as its cause. The
+     * <code>ExecutionException</code> will be be included as the <code>TestFailedException</code>'s cause only if the
+     * <code>ExecutionException</code>'s cause is <code>null</code>.
+     * </p>
+     *
      * @param interval the <code>Interval</code> configuration parameter
      * @param config an <code>PatienceConfig</code> object containing <code>timeout</code> and
      *          <code>interval</code> parameters that are unused by this method
@@ -415,6 +443,14 @@ trait Futures extends PatienceConfiguration {
      * the <code>PatienceConfig</code> passed implicitly as the last parameter.
      * The interval to sleep between queries of the future (used only if the future is polled) is configured by the <code>interval</code> field of
      * the <code>PatienceConfig</code> passed implicitly as the last parameter.
+     * </p>
+     *
+     * <p>
+     * If the <code>eitherValue</code> method of the underlying Scala future returns a <code>scala.Some</code> containing a
+     * <code>scala.util.Failure</code> containing a <code>java.util.concurrent.ExecutionException</code>, and this
+     * exception contains a non-<code>null</code> cause, that cause will be included in the <code>TestFailedException</code> as its cause. The
+     * <code>ExecutionException</code> will be be included as the <code>TestFailedException</code>'s cause only if the
+     * <code>ExecutionException</code>'s cause is <code>null</code>.
      * </p>
      *
      * @param config a <code>PatienceConfig</code> object containing <code>timeout</code> and
@@ -472,6 +508,24 @@ trait Futures extends PatienceConfiguration {
           case Some(Left(tpe: TestPendingException)) => throw tpe
           case Some(Left(tce: TestCanceledException)) => throw tce
           case Some(Left(e)) if anExceptionThatShouldCauseAnAbort(e) => throw e
+          case Some(Left(ee: java.util.concurrent.ExecutionException)) if ee.getCause != null =>
+            val cause = ee.getCause
+            cause match {
+              case tpe: TestPendingException => throw tpe
+              case tce: TestCanceledException => throw tce
+              case e if anExceptionThatShouldCauseAnAbort(e) => throw e
+              case _ =>
+                throw new TestFailedException(
+                  sde => Some {
+                    if (cause.getMessage == null)
+                      Resources("futureReturnedAnException", cause.getClass.getName)
+                    else
+                      Resources("futureReturnedAnExceptionWithMessage", cause.getClass.getName, cause.getMessage)
+                  },
+                  Some(cause),
+                  getStackDepthFun("Futures.scala", methodName, adjustment)
+                )
+            }
           case Some(Left(e)) =>
             throw new TestFailedException(
               sde => Some {
@@ -517,6 +571,14 @@ trait Futures extends PatienceConfiguration {
    * <code>interval</code> parameter.
    * </p>
    *
+   * <p>
+   * If the <code>eitherValue</code> method of the underlying Scala future returns a <code>scala.Some</code> containing a
+   * <code>scala.util.Failure</code> containing a <code>java.util.concurrent.ExecutionException</code>, and this
+   * exception contains a non-<code>null</code> cause, that cause will be included in the <code>TestFailedException</code> as its cause. The
+   * <code>ExecutionException</code> will be be included as the <code>TestFailedException</code>'s cause only if the
+   * <code>ExecutionException</code>'s cause is <code>null</code>.
+   * </p>
+   *
    * @param future the future to query
    * @param timeout the <code>Timeout</code> configuration parameter
    * @param interval the <code>Interval</code> configuration parameter
@@ -542,6 +604,14 @@ trait Futures extends PatienceConfiguration {
    * <code>timeout</code> parameter.
    * The interval to sleep between attempts is configured by the <code>interval</code> field of
    * the <code>PatienceConfig</code> passed implicitly as the last parameter.
+   * </p>
+   *
+   * <p>
+   * If the <code>eitherValue</code> method of the underlying Scala future returns a <code>scala.Some</code> containing a
+   * <code>scala.util.Failure</code> containing a <code>java.util.concurrent.ExecutionException</code>, and this
+   * exception contains a non-<code>null</code> cause, that cause will be included in the <code>TestFailedException</code> as its cause. The
+   * <code>ExecutionException</code> will be be included as the <code>TestFailedException</code>'s cause only if the
+   * <code>ExecutionException</code>'s cause is <code>null</code>.
    * </p>
    *
    * @param future the future to query
@@ -592,6 +662,14 @@ trait Futures extends PatienceConfiguration {
    * the <code>PatienceConfig</code> passed implicitly as the last parameter.
    * The interval to sleep between attempts is configured by the <code>interval</code> field of
    * the <code>PatienceConfig</code> passed implicitly as the last parameter.
+   * </p>
+   *
+   * <p>
+   * If the <code>eitherValue</code> method of the underlying Scala future returns a <code>scala.Some</code> containing a
+   * <code>scala.util.Failure</code> containing a <code>java.util.concurrent.ExecutionException</code>, and this
+   * exception contains a non-<code>null</code> cause, that cause will be included in the <code>TestFailedException</code> as its cause. The
+   * <code>ExecutionException</code> will be be included as the <code>TestFailedException</code>'s cause only if the
+   * <code>ExecutionException</code>'s cause is <code>null</code>.
    * </p>
    *
    *
@@ -659,44 +737,3 @@ trait Futures extends PatienceConfiguration {
 
 }
 
-/**
- * Companion object that facilitates the importing of <code>Futures</code> members as
- * an alternative to mixing in the trait. One use case is to import <code>Futures</code>'s members so you can use
- * them in the Scala interpreter:
- *
- * <pre class="stREPL">
- * $ scala -cp scalatest-1.8.jar
- * Welcome to Scala version 2.9.1.final (Java HotSpot(TM) 64-Bit Server VM, Java 1.6.0_29).
- * Type in expressions to have them evaluated.
- * Type :help for more information.
- *
- * scala&gt; import org.scalatest._
- * import org.scalatest._
- *
- * scala&gt; import matchers.ShouldMatchers._
- * import matchers.ShouldMatchers._
- *
- * scala&gt; import concurrent.Futures._
- * import concurrent.Futures._
- *
- * scala&gt; import java.util.concurrent._
- * import java.util.concurrent._
- *
- * scala&gt; val exec = Executors.newSingleThreadExecutor
- * newSingleThreadExecutor   
- * 
- * scala&gt; val task = new Callable[String] { def call() = { Thread.sleep(500); "hi" } }
- * task: java.lang.Object with java.util.concurrent.Callable[String] = $anon$1@e1a973
- * 
- * scala&gt; whenReady(exec.submit(task)) { s =&gt; s shouldBe "hi" }
- * 
- * scala&gt; val task = new Callable[String] { def call() = { Thread.sleep(5000); "hi" } }
- * task: java.lang.Object with java.util.concurrent.Callable[String] = $anon$1@2993dfb0
- * 
- * scala&gt; whenReady(exec.submit(task)) { s =&gt; s shouldBe "hi" }
- * org.scalatest.TestFailedException: The future passed to whenReady was never ready, so whenReady timed out. Queried 95 times, sleeping 10 milliseconds between each query.
- *   at org.scalatest.concurrent.Futures$class.tryTryAgain$1(Futures.scala03)
- *   ...
- * </pre>
- */
-private[scalatest] object Futures extends Futures
