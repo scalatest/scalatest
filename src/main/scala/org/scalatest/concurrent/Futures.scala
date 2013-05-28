@@ -250,7 +250,7 @@ trait Futures extends PatienceConfiguration {
    */
   trait FutureConcept[T] { thisFuture =>
 
-    /*
+    /**
      * Queries this future for its value.
      *
      * <p>
@@ -355,8 +355,8 @@ trait Futures extends PatienceConfiguration {
      * @param timeout the <code>Timeout</code> configuration parameter
      * @param config an <code>PatienceConfig</code> object containing <code>timeout</code> and
      *          <code>interval</code> parameters that are unused by this method
-     * @return the result of the future once it is ready, if <code>value</code> is defined as a <code>Right</code>
-     * @throws Throwable if once ready, the <code>value</code> of this future is defined as a
+     * @return the result of the future once it is ready, if <code>eitherValue</code> is defined as a <code>Right</code>
+     * @throws Throwable if once ready, the <code>eitherValue</code> of this future is defined as a
      *       <code>Left</code> (in this case, this method throws that same exception)
      * @throws TestFailedException if the future is cancelled, expires, or is still not ready after
      *     the specified timeout has been exceeded
@@ -366,7 +366,7 @@ trait Futures extends PatienceConfiguration {
 
     /**
      * Returns the result of this <code>FutureConcept</code>, once it is ready, or throws either the
-     * exception returned by the future (<em>i.e.</em>, <code>value</code> returned a <code>Left</code>)
+     * exception returned by the future (<em>i.e.</em>, <code>eitherValue</code> returned a <code>Left</code>)
      * or <code>TestFailedException</code>.
      *
      * <p>
@@ -398,7 +398,7 @@ trait Futures extends PatienceConfiguration {
 
     /**
      * Returns the result of this <code>FutureConcept</code>, once it is ready, or throws either the
-     * exception returned by the future (<em>i.e.</em>, <code>value</code> returned a <code>Left</code>)
+     * exception returned by the future (<em>i.e.</em>, <code>futureValue</code> returned a <code>Left</code>)
      * or <code>TestFailedException</code>.
      *
      * <p>
@@ -417,7 +417,7 @@ trait Futures extends PatienceConfiguration {
      * the <code>PatienceConfig</code> passed implicitly as the last parameter.
      * </p>
      *
-     * @param config an <code>PatienceConfig</code> object containing <code>timeout</code> and
+     * @param config a <code>PatienceConfig</code> object containing <code>timeout</code> and
      *          <code>interval</code> parameters that are unused by this method
      * @return the result of the future once it is ready, if <code>value</code> is defined as a <code>Right</code>
      * @throws Throwable if once ready, the <code>value</code> of this future is defined as a
@@ -656,6 +656,7 @@ trait Futures extends PatienceConfiguration {
     }
     tryTryAgain(1)  */
   }
+
 }
 
 /**

@@ -1002,7 +1002,7 @@ class RunnerSuite() extends Spec with PrivateMethodTester {
     assertResult(new ReporterConfigurations(None, Nil, Nil, Nil, Nil, None, None, List(new HtmlReporterConfiguration(Set(), "html", Some(new File("MyStyle.css").toURI.toURL))), Nil, Nil, Nil)) {
       Runner.parseReporterArgsIntoConfigurations(List("-h", "html", "-Y", "MyStyle.css"))
     }
-    expectResult(new ReporterConfigurations(None, Nil, Nil, Nil, Nil, None, None, List(new HtmlReporterConfiguration(Set(), "htmldir", None), new HtmlReporterConfiguration(Set(), "html", Some(new File("MyStyle.css").toURI.toURL))), Nil, Nil, Nil)) {
+    assertResult(new ReporterConfigurations(None, Nil, Nil, Nil, Nil, None, None, List(new HtmlReporterConfiguration(Set(), "htmldir", None), new HtmlReporterConfiguration(Set(), "html", Some(new File("MyStyle.css").toURI.toURL))), Nil, Nil, Nil)) {
       Runner.parseReporterArgsIntoConfigurations(List("-h", "htmldir", "-h", "html", "-Y", "MyStyle.css"))
     }
   }
