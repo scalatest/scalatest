@@ -95,6 +95,13 @@ package org.scalautils
 trait EqualityConstraints {
 
   /**
+   * Return an <code>Equality[A]</code> for any type <code>A</code> that determines equality via the <code>==</code> operator on type <code>A</code>.
+   *
+   * @return a <code>DefaultEquality</code> for type <code>A</code>
+   */
+  def defaultEquality[A]: Equality[A]
+
+  /**
    * Convert to an <a href="Equalizer.html"><code>Equalizer</code></a> that provides <code>===</code> and <code>!==</code> operators that
    * result in <code>Boolean</code> and enforce no type constraint.
    *
@@ -146,6 +153,26 @@ trait EqualityConstraints {
    * @throws NullPointerException if <code>left</code> is <code>null</code>.
    */
   def convertToLegacyCheckingEqualizer[T](left: T): LegacyCheckingEqualizer[T]
+
+  /**
+   * Provides an <code>EqualityConstraint[A, B]</code> class for any two types <code>A</code> and <code>B</code>, with no type constraint enforced, given an
+   * implicit <code>Equality[A]</code>.
+   *
+   * <p>
+   * The implicitly passed <code>Equality[A]</code> must be used to determine equality by the returned <code>EqualityConstraint</code>'s
+   * <code>areEqual</code> method.
+   * </p>
+   *
+   * <p>
+   * This method is overridden and made implicit by subtraits <a href="TripleEquals.html"><code>TripleEquals</code></a> and <a href="LegacyTripleEquals.html"><code>LegacyTripleEquals</code></a>, and
+   * overriden as non-implicit by the other subtraits in this package.
+   * </p>
+   *
+   * @param equalityOfA an <code>Equality[A]</code> type class to which the <code>EqualityConstraint.areEqual</code> method will delegate to determine equality.
+   * @return an <code>EqualityConstraint[A, B]</code> whose <code>areEqual</code> method delegates to the <code>areEqual</code> method of
+   *     the passed <code>Equality[A]</code>.
+   */
+  def unconstrainedEquality[A, B](implicit equalityOfA: Equality[A]): EqualityConstraint[A, B]
 
   /**
    * Provides an <code>EqualityConstraint[A, B]</code> class for any two types <code>A</code> and <code>B</code>, enforcing the type constraint that <code>A</code> must be a subtype of <code>B</code>, given an implicit <code>Equality[A]</code>.

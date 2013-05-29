@@ -15,15 +15,6 @@
  */
 package org.scalautils
 
-/*
-trait LowPriorityConversionCheckedConstraint extends EqualityConstraints {
-
-  // Inherit the Scaladoc for this method
-
-  implicit override def lowPriorityConversionCheckedEqualityConstraint[A, B](implicit equalityOfB: Equality[B], cnv: A => B): EqualityConstraint[A, B] = new AToBEqualityConstraint[A, B](equalityOfB, cnv)
-}
-*/
-
 /**
  * Provides <code>===</code> and <code>!==</code> operators that return <code>Boolean</code>, delegate the equality determination
  * to an <code>Equality</code> type class, and require that either the types of the two values compared are in a subtype/supertype
@@ -218,11 +209,14 @@ trait ConversionCheckedTripleEquals extends LowPriorityConversionCheckedConstrai
 
   // Inherit the Scaladoc for these methods
 
+  implicit override def defaultEquality[A]: Equality[A] = new DefaultEquality[A]
   override def convertToEqualizer[T](left: T): Equalizer[T] = new Equalizer(left)
   implicit override def convertToCheckingEqualizer[T](left: T): CheckingEqualizer[T] = new CheckingEqualizer(left)
 
   override def convertToLegacyEqualizer[T](left: T): LegacyEqualizer[T] = new LegacyEqualizer(left)
   override def convertToLegacyCheckingEqualizer[T](left: T): LegacyCheckingEqualizer[T] = new LegacyCheckingEqualizer(left)
+
+  override def unconstrainedEquality[A, B](implicit equalityOfA: Equality[A]): EqualityConstraint[A, B] = new BasicEqualityConstraint[A, B](equalityOfA)
 
   override def lowPriorityTypeCheckedEqualityConstraint[A, B](implicit equalityOfA: Equality[A], ev: A <:< B): EqualityConstraint[A, B] = new BasicEqualityConstraint[A, B](equalityOfA)
   override def typeCheckedEqualityConstraint[A, B](implicit equalityOfA: Equality[A], ev: B <:< A): EqualityConstraint[A, B] = new BasicEqualityConstraint[A, B](equalityOfA)
