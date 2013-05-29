@@ -5774,9 +5774,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
 
   // This is where ShouldMatchers.scala started 
 
-  // Turn off this implicit conversion, becase asAny method is added via AnyShouldWrapper
-  // override def convertToAsAnyWrapper(o: Any): AsAnyWrapper = new AsAnyWrapper(o)
-
   private object ShouldMethodHelper {
     def shouldMatcher[T](left: T, rightMatcher: Matcher[T], stackDepthAdjustment: Int = 0) {
       rightMatcher(left) match {
@@ -6231,9 +6228,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
         }
     }
 
-    // TODO: Scaladoc, and decide whether or not to actually even support this here. It may be best
-    // to let this one always be imported from ScalaUtils.
-    def asAny: Any = left
 /*
     def shouldBe[U](right: AType[U]) {
       if (!right.isAssignableFromClassOf(left)) {

@@ -31,9 +31,9 @@ class ShouldContainElementNewSpec extends Spec with Matchers with Explicitly {
 
   // Checking for a specific size
   object `The 'contain (<value>)' syntax` {
-    def `should allow subtypes of the element type to be passed in if modified by asAny` {
-      Vector(1, "2") should contain ("2".asAny)
-      Vector(1, "2") should contain (1.asAny)
+    def `should allow any type to be passed in` {
+      Vector(1, "2") should contain ("2")
+      Vector(1, "2") should contain (1)
     }
 
     def `should use an Equality of the element type of the left-hand "holder" on a GenTraversable` {
