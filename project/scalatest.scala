@@ -6,7 +6,7 @@ object ScalatestBuild extends Build {
 
   val scalaVersionToUse = "2.10.0"
     
-  val releaseVersion = "2.0.M6-SNAP15"
+  val releaseVersion = "2.0.M6-SNAP18"
   
   val includeTestPackageSet = Set("org.scalatest", 
                                   "org.scalatest.fixture", 
@@ -132,7 +132,7 @@ object ScalatestBuild extends Build {
    ).dependsOn(scalatest  % "test->test")
 
    def simpledependencies = Seq(
-     "org.scalatest" % "test-interface" % "1.0-SNAP2",  // TODO optional
+     "org.scalatest" % "test-interface" % "1.0-SNAP3",  // TODO optional
      "org.scalacheck" % ("scalacheck_" + scalaVersionToUse) % "1.10.0",   // TODO optional
      "org.easymock" % "easymockclassextension" % "3.1",   // TODO optional
      "org.jmock" % "jmock-legacy" % "2.5.1", // TODO optional
