@@ -121,15 +121,11 @@ trait Length[T] extends Extent[T]
 
 object Length {
 
-  // This one doesn't include Holder in its result type because that would conflict with the
-  // one returned by enablersForJavaCollection.
   implicit def enablersForJavaList[E, JLIST[_] <: java.util.List[_]]: Length[JLIST[E]] = 
     new Length[JLIST[E]] {
       def extentOf(javaList: JLIST[E]): Long = javaList.size
     }
 
-  // This one doesn't include Holder in its result type because that would conflict with the
-  // one returned by enablersForTraversable.
   implicit def enablersForGenSeq[E, SEQ[_] <: scala.collection.GenSeq[_]]: Length[SEQ[E]] = 
     new Length[SEQ[E]] {
       def extentOf(seq: SEQ[E]): Long = seq.length
@@ -194,15 +190,11 @@ trait Size[T] extends Extent[T]
 
 object Size {
 
-  // This one doesn't include Holder in its result type because that would conflict with the
-  // one returned by enablersForJavaCollection.
   implicit def enablersForJavaList[E, JLIST[_] <: java.util.List[_]]: Size[JLIST[E]] = 
     new Size[JLIST[E]] {
       def extentOf(javaList: JLIST[E]): Long = javaList.size
     }
 
-  // This one doesn't include Holder in its result type because that would conflict with the
-  // one returned by enablersForTraversable.
   implicit def enablersForGenSeq[E, SEQ[_] <: scala.collection.GenSeq[_]]: Size[SEQ[E]] = 
     new Size[SEQ[E]] {
       def extentOf(seq: SEQ[E]): Long = seq.length
@@ -213,8 +205,6 @@ object Size {
       def extentOf(javaColl: JCOL[E]): Long = javaColl.size
     }
 
-  // I think Java Maps aren't Holders, because they don't have an element type. The only
-  // thing close is the stupid Entry<K, V> type, which is mutable!
   implicit def enablersForJavaMap[K, V, JMAP[_, _] <: java.util.Map[_, _]]: Size[JMAP[K, V]] = 
     new Size[JMAP[K, V]] {
       def extentOf(javaMap: JMAP[K, V]): Long = javaMap.size

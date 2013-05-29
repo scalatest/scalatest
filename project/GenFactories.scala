@@ -277,7 +277,7 @@ $endif$
      *                              ^
      * </pre>
      */
-    def apply(expectedElement: Any): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Holder] = thisMatcherFactory.and(MatcherWords.contain(expectedElement))
+    def apply(expectedElement: Any): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] = thisMatcherFactory.and(MatcherWords.contain(expectedElement))
 
     // And some, the ones that would by themselves already generate a Matcher, just return a MatcherFactoryN where N is the same.
 
@@ -438,7 +438,7 @@ $endif$
      *                              ^
      * </pre>
      */
-    //def apply(expectedElement: Any): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Holder] = thisMatcherFactory.and(MatcherWords.contain(expectedElement))
+    //def apply(expectedElement: Any): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] = thisMatcherFactory.and(MatcherWords.contain(expectedElement))
 
     // And some, the ones that would by themselves already generate a Matcher, just return a MatcherFactoryN where N is the same.
 
@@ -514,7 +514,7 @@ $endif$
      *                              ^
      * </pre>
      */
-    def newOneOf(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Holder] = 
+    def newOneOf(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] = 
       thisMatcherFactory.and(MatcherWords.newContain.newOneOf(right.toList: _*))
     
     /**
@@ -525,7 +525,7 @@ $endif$
      *                              ^
      * </pre>
      */
-    def atLeastOneOf(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregation] = 
+    def atLeastOneOf(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
       thisMatcherFactory.and(MatcherWords.newContain.atLeastOneOf(right.toList: _*))
     
     /**
@@ -1257,7 +1257,7 @@ $endif$
      *                          ^
      * </pre>
      */
-    def contain[U](expectedElement: U): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Holder] =
+    def contain[U](expectedElement: U): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
       thisMatcherFactory.and(MatcherWords.not.contain(expectedElement))
 
     /**
@@ -1301,7 +1301,7 @@ $endif$
      *                          ^
      * </pre>
      */
-    def newContain(right: ResultOfNewOneOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Holder] =
+    def newContain(right: ResultOfNewOneOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
       thisMatcherFactory.and(MatcherWords.not.newContain(right))
     
     /**
@@ -1312,7 +1312,7 @@ $endif$
      *                          ^
      * </pre>
      */
-    def newContain(right: ResultOfAtLeastOneOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregation] =
+    def newContain(right: ResultOfAtLeastOneOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
       thisMatcherFactory.and(MatcherWords.not.newContain(right))
       
     /**
@@ -1406,7 +1406,7 @@ $endif$
      *                             ^
      * </pre>
      */
-    def apply(expectedElement: Any): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Holder] = thisMatcherFactory.or(MatcherWords.contain(expectedElement))
+    def apply(expectedElement: Any): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] = thisMatcherFactory.or(MatcherWords.contain(expectedElement))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1565,7 +1565,7 @@ $endif$
      *                             ^
      * </pre>
      */
-    //def apply(expectedElement: Any): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Holder] = thisMatcherFactory.or(MatcherWords.contain(expectedElement))
+    //def apply(expectedElement: Any): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] = thisMatcherFactory.or(MatcherWords.contain(expectedElement))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1639,7 +1639,7 @@ $endif$
      *                             ^
      * </pre>
      */
-    def newOneOf(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Holder] = 
+    def newOneOf(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] = 
       thisMatcherFactory.or(MatcherWords.newContain.newOneOf(right.toList: _*))
     
     /**
@@ -1650,7 +1650,7 @@ $endif$
      *                             ^
      * </pre>
      */
-    def atLeastOneOf(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregation] = 
+    def atLeastOneOf(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
       thisMatcherFactory.or(MatcherWords.newContain.atLeastOneOf(right.toList: _*))
     
     /**
@@ -2382,7 +2382,7 @@ $endif$
      *                         ^
      * </pre>
      */
-    def contain[U](expectedElement: U): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Holder] =
+    def contain[U](expectedElement: U): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
       thisMatcherFactory.or(MatcherWords.not.contain(expectedElement))
 
     /**
@@ -2426,7 +2426,7 @@ $endif$
      *                         ^
      * </pre>
      */
-    def newContain(right: ResultOfNewOneOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Holder] =
+    def newContain(right: ResultOfNewOneOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
       thisMatcherFactory.or(MatcherWords.not.newContain(right))
     
     /**
@@ -2437,7 +2437,7 @@ $endif$
      *                         ^
      * </pre>
      */
-    def newContain(right: ResultOfAtLeastOneOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregation] =
+    def newContain(right: ResultOfAtLeastOneOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
       thisMatcherFactory.or(MatcherWords.not.newContain(right))
       
     /**

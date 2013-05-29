@@ -453,7 +453,7 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
    *                   ^
    * </pre>
    */
-  def contain(expectedElement: Any)(implicit holder: Holder[T]) {
+  def contain(expectedElement: Any)(implicit holder: Containing[T]) {
     val right = expectedElement
     if (holder.contains(left, right) != shouldBeTrue) {
       throw newTestFailedException(
@@ -619,7 +619,7 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
     }
   }
 
-  def newContain(newOneOf: ResultOfNewOneOfApplication)(implicit holder: Holder[T]) {
+  def newContain(newOneOf: ResultOfNewOneOfApplication)(implicit holder: Containing[T]) {
 
     val right = newOneOf.right
 
@@ -633,7 +633,7 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
       )
   }
 
-  def newContain(atLeastOneOf: ResultOfAtLeastOneOfApplication)(implicit aggregation: Aggregation[T]) {
+  def newContain(atLeastOneOf: ResultOfAtLeastOneOfApplication)(implicit aggregation: Aggregating[T]) {
 
     val right = atLeastOneOf.right
 

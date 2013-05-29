@@ -773,12 +773,12 @@ final class NotWord {
    *                         ^
    * </pre>
    */
-  def contain[T](expectedElement: T): MatcherFactory1[Any, Holder] = {
-    new MatcherFactory1[Any, Holder] {
-      def matcher[U <: Any : Holder]: Matcher[U] = 
+  def contain[T](expectedElement: T): MatcherFactory1[Any, Containing] = {
+    new MatcherFactory1[Any, Containing] {
+      def matcher[U <: Any : Containing]: Matcher[U] = 
         new Matcher[U] {
           def apply(left: U): MatchResult = {
-            val holder = implicitly[Holder[U]]
+            val holder = implicitly[Containing[U]]
             MatchResult(
               !holder.contains(left, expectedElement),
               FailureMessages("containedExpectedElement", left, expectedElement),
@@ -797,9 +797,9 @@ final class NotWord {
    *                         ^
    * </pre>
    */
-  def newContain[T](oneOf: ResultOfNewOneOfApplication): MatcherFactory1[Any, Holder] = {
-    new MatcherFactory1[Any, Holder] {
-      def matcher[T](implicit holder: Holder[T]): Matcher[T] = {
+  def newContain[T](oneOf: ResultOfNewOneOfApplication): MatcherFactory1[Any, Containing] = {
+    new MatcherFactory1[Any, Containing] {
+      def matcher[T](implicit holder: Containing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
         
@@ -824,9 +824,9 @@ final class NotWord {
    *                         ^
    * </pre>
    */
-  def newContain[T](atLeastOneOf: ResultOfAtLeastOneOfApplication): MatcherFactory1[Any, Aggregation] = {
-    new MatcherFactory1[Any, Aggregation] {
-      def matcher[T](implicit aggregation: Aggregation[T]): Matcher[T] = {
+  def newContain[T](atLeastOneOf: ResultOfAtLeastOneOfApplication): MatcherFactory1[Any, Aggregating] = {
+    new MatcherFactory1[Any, Aggregating] {
+      def matcher[T](implicit aggregation: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
         

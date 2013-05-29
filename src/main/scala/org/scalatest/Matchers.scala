@@ -2383,7 +2383,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                               ^
      * </pre>
      */
-    def newOneOf(xs: Any*)(implicit holder: Holder[T]) = new ResultOfNewOneOfApplication(xs)
+    def newOneOf(xs: Any*)(implicit holder: Containing[T]) = new ResultOfNewOneOfApplication(xs)
 
     /**
      * This method enables the following syntax: 
@@ -2393,7 +2393,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                               ^
      * </pre>
      */
-    def atLeastOneOf(xs: Any*)(implicit holder: Aggregation[T]) = new ResultOfAtLeastOneOfApplication(xs)
+    def atLeastOneOf(xs: Any*)(implicit holder: Aggregating[T]) = new ResultOfAtLeastOneOfApplication(xs)
     
     /**
      * This method enables the following syntax: 
@@ -3366,7 +3366,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                     ^
      * </pre>
      */
-    def contain(expectedElement: Any)(implicit holder: Holder[T]) {
+    def contain(expectedElement: Any)(implicit holder: Containing[T]) {
       doCollected(collected, xs, "contain", 1) { e =>
         val right = expectedElement
         if ((holder.contains(e, right)) != shouldBeTrue) {
@@ -3391,7 +3391,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                     ^
      * </pre>
      */
-    def newContain(newOneOf: ResultOfNewOneOfApplication)(implicit holder: Holder[T]) {
+    def newContain(newOneOf: ResultOfNewOneOfApplication)(implicit holder: Containing[T]) {
 
       val right = newOneOf.right
 
@@ -3417,7 +3417,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                     ^
      * </pre>
      */
-    def newContain(atLeastOneOf: ResultOfAtLeastOneOfApplication)(implicit aggregation: Aggregation[T]) {
+    def newContain(atLeastOneOf: ResultOfAtLeastOneOfApplication)(implicit aggregation: Aggregating[T]) {
 
       val right = atLeastOneOf.right
 
@@ -3840,7 +3840,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                       ^
      * </pre>
      */
-    def newOneOf(right: Any*)(implicit holder: Holder[T]) {
+    def newOneOf(right: Any*)(implicit holder: Containing[T]) {
       doCollected(collected, xs, "newOneOf", 1) { e =>
         if (holder.containsOneOf(e, right) != shouldBeTrue)
           throw newTestFailedException(
@@ -3863,7 +3863,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                       ^
      * </pre>
      */
-    def atLeastOneOf(right: Any*)(implicit aggregation: Aggregation[T]) {
+    def atLeastOneOf(right: Any*)(implicit aggregation: Aggregating[T]) {
       doCollected(collected, xs, "atLeastOneOf", 1) { e =>
         if (aggregation.containsAtLeastOneOf(e, right) != shouldBeTrue)
           throw newTestFailedException(

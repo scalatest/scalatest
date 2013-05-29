@@ -21,7 +21,7 @@ import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
 import org.scalatest.FailureMessages
 
-trait Holder[A] {
+trait Containing[A] {
   def contains(holder: A, element: Any): Boolean
   def containsOneOf(holder: A, elements: scala.collection.Seq[Any]): Boolean
 /*
@@ -31,7 +31,7 @@ trait Holder[A] {
 
 /*
   @tailrec
-  def containsOneOf[T](left: T, rightItr: Iterator[Any])(implicit holder: Holder[T]): Boolean = {
+  def containsOneOf[T](left: T, rightItr: Iterator[Any])(implicit holder: Containing[T]): Boolean = {
     if (rightItr.hasNext) {
       val nextRight = rightItr.next
       if (holder.contains(left, nextRight)) // Found one of right in left, can succeed early
@@ -44,7 +44,7 @@ trait Holder[A] {
   }
 */
   
-object Holder {
+object Containing {
   
   private def checkOneOf[T](left: GenTraversableOnce[T], right: GenTraversable[Any], equality: Equality[T]): (Set[Any], Set[Any]) = {
     /*right.foldLeft(Set.empty[Any], Set.empty[Any]) { case ((fs, rs), r) =>
@@ -127,8 +127,8 @@ object Holder {
     )
   }*/
 
-  implicit def withJavaCollectionElementEquality[E, JCOL[_] <: java.util.Collection[_]](implicit equality: Equality[E]): Holder[JCOL[E]] = 
-    new Holder[JCOL[E]] {
+  implicit def withJavaCollectionElementEquality[E, JCOL[_] <: java.util.Collection[_]](implicit equality: Equality[E]): Containing[JCOL[E]] = 
+    new Containing[JCOL[E]] {
       def contains(javaColl: JCOL[E], ele: Any): Boolean = {
         val it: java.util.Iterator[E] = javaColl.iterator.asInstanceOf[java.util.Iterator[E]]
         var found = false
@@ -144,11 +144,11 @@ object Holder {
       }
     }
 
-  implicit def convertEqualityToJavaCollectionHolder[E, JCOL[_] <: java.util.Collection[_]](equality: Equality[E]): Holder[JCOL[E]] = 
+  implicit def convertEqualityToJavaCollectionContaining[E, JCOL[_] <: java.util.Collection[_]](equality: Equality[E]): Containing[JCOL[E]] = 
     withJavaCollectionElementEquality(equality)
 
-  implicit def withGenTraversableElementEquality[E, TRAV[_] <: scala.collection.GenTraversable[_]](implicit equality: Equality[E]): Holder[TRAV[E]] = 
-    new Holder[TRAV[E]] {
+  implicit def withGenTraversableElementEquality[E, TRAV[_] <: scala.collection.GenTraversable[_]](implicit equality: Equality[E]): Containing[TRAV[E]] = 
+    new Containing[TRAV[E]] {
       def contains(trav: TRAV[E], ele: Any): Boolean = {
         equality match {
           case normEq: NormalizingEquality[_] => 
@@ -164,12 +164,12 @@ object Holder {
     }
 
   // Enables (xs should contain ("HI")) (after being lowerCased)
-  implicit def convertEqualityToGenTraversableHolder[E, TRAV[_] <: scala.collection.GenTraversable[_]](equality: Equality[E]): Holder[TRAV[E]] = 
+  implicit def convertEqualityToGenTraversableContaining[E, TRAV[_] <: scala.collection.GenTraversable[_]](equality: Equality[E]): Containing[TRAV[E]] = 
     withGenTraversableElementEquality(equality)
 
   // OPT so that it will work with Some also, but it doesn't work with None
-  implicit def withOptionValueEquality[E, OPT[_] <: Option[_]](implicit equality: Equality[E]): Holder[OPT[E]] = 
-    new Holder[OPT[E]] {
+  implicit def withOptionValueEquality[E, OPT[_] <: Option[_]](implicit equality: Equality[E]): Containing[OPT[E]] = 
+    new Containing[OPT[E]] {
       def contains(opt: OPT[E], ele: Any): Boolean = {
         opt.exists((e: Any) => equality.areEqual(e.asInstanceOf[E], ele)) // Don't know why the compiler requires e to be type Any. Should be E.
       }
@@ -180,11 +180,11 @@ object Holder {
     }
 
   // supports (some should contain ("HI")) (after being lowerCased)
-  implicit def convertEqualityToOptionHolder[E, OPT[_] <: Option[_]](equality: Equality[E]): Holder[OPT[E]] = 
+  implicit def convertEqualityToOptionContaining[E, OPT[_] <: Option[_]](equality: Equality[E]): Containing[OPT[E]] = 
     withOptionValueEquality(equality)
 
-  implicit def withGenMapElementEquality[K, V, MAP[_, _] <: scala.collection.GenMap[_, _]](implicit equality: Equality[(K, V)]): Holder[MAP[K, V]] = 
-    new Holder[MAP[K, V]] {
+  implicit def withGenMapElementEquality[K, V, MAP[_, _] <: scala.collection.GenMap[_, _]](implicit equality: Equality[(K, V)]): Containing[MAP[K, V]] = 
+    new Containing[MAP[K, V]] {
       def contains(map: MAP[K, V], ele: Any): Boolean = {
         map.exists((e: Any) => equality.areEqual(e.asInstanceOf[(K, V)], ele)) // Don't know why the compiler requires e to be type Any. Should be E.
       }
@@ -194,11 +194,11 @@ object Holder {
       }
     }
 
-  implicit def convertEqualityToGenMapHolder[K, V, MAP[_, _] <: scala.collection.GenMap[_, _]](equality: Equality[(K, V)]): Holder[MAP[K, V]] = 
+  implicit def convertEqualityToGenMapContaining[K, V, MAP[_, _] <: scala.collection.GenMap[_, _]](equality: Equality[(K, V)]): Containing[MAP[K, V]] = 
     withGenMapElementEquality(equality)
 
-  implicit def withArrayElementEquality[E](implicit equality: Equality[E]): Holder[Array[E]] = 
-    new Holder[Array[E]] {
+  implicit def withArrayElementEquality[E](implicit equality: Equality[E]): Containing[Array[E]] = 
+    new Containing[Array[E]] {
       def contains(arr: Array[E], ele: Any): Boolean =
         arr.exists((e: E) => equality.areEqual(e, ele))
       def containsOneOf(arr: Array[E], elements: scala.collection.Seq[Any]): Boolean = {
@@ -207,11 +207,11 @@ object Holder {
       }
     }
 
-  implicit def convertEqualityToArrayHolder[E](equality: Equality[E]): Holder[Array[E]] = 
+  implicit def convertEqualityToArrayContaining[E](equality: Equality[E]): Containing[Array[E]] = 
     withArrayElementEquality(equality)
 
-  implicit def withStringCharacterEquality(implicit equality: Equality[Char]): Holder[String] = 
-    new Holder[String] {
+  implicit def withStringCharacterEquality(implicit equality: Equality[Char]): Containing[String] = 
+    new Containing[String] {
       def contains(str: String, ele: Any): Boolean =
         str.exists((e: Char) => equality.areEqual(e, ele))
       def containsOneOf(str: String, elements: scala.collection.Seq[Any]): Boolean = {
@@ -220,11 +220,11 @@ object Holder {
       }
     }
 
-  implicit def convertEqualityToStringHolder(equality: Equality[Char]): Holder[String] = 
+  implicit def convertEqualityToStringContaining(equality: Equality[Char]): Containing[String] = 
     withStringCharacterEquality(equality)
     
-  implicit def withJavaMapElementEquality[K, V, JMAP[_, _] <: java.util.Map[_, _]](implicit equality: Equality[(K, V)]): Holder[JMAP[K, V]] = 
-    new Holder[JMAP[K, V]] {
+  implicit def withJavaMapElementEquality[K, V, JMAP[_, _] <: java.util.Map[_, _]](implicit equality: Equality[(K, V)]): Containing[JMAP[K, V]] = 
+    new Containing[JMAP[K, V]] {
       def contains(map: JMAP[K, V], ele: Any): Boolean = {
         import scala.collection.JavaConverters._
         map.asInstanceOf[java.util.Map[K, V]].asScala.exists((e: Any) => equality.areEqual(e.asInstanceOf[(K, V)], ele)) // Don't know why the compiler requires e to be type Any. Should be E.
@@ -236,7 +236,7 @@ object Holder {
       }
     }
 
-  implicit def convertEqualityToJavaMapHolder[K, V, JMAP[_, _] <: java.util.Map[_, _]](equality: Equality[(K, V)]): Holder[JMAP[K, V]] = 
+  implicit def convertEqualityToJavaMapContaining[K, V, JMAP[_, _] <: java.util.Map[_, _]](equality: Equality[(K, V)]): Containing[JMAP[K, V]] = 
     withJavaMapElementEquality(equality)
 }
 

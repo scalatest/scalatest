@@ -42,7 +42,6 @@ import org.scalatest.matchers.BePropertyMatchResult
 import org.scalatest.matchers.BeMatcher
 import org.scalatest.matchers.Matcher
 import org.scalatest.matchers.MatchResult
-import org.scalatest.enablers.Holder
 import words.RegexWithGroups
 
 // TODO: drop generic support for be as an equality comparison, in favor of specific ones.

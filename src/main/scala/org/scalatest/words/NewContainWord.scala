@@ -15,8 +15,8 @@
  */
 package org.scalatest.words
 
-import org.scalatest.enablers.Holder
-import org.scalatest.enablers.Aggregation
+import org.scalatest.enablers.Containing
+import org.scalatest.enablers.Aggregating
 import org.scalatest.matchers.Matcher
 import org.scalatest.matchers.MatcherFactory1
 import org.scalatest.matchers.MatchResult
@@ -32,9 +32,9 @@ import scala.annotation.tailrec
  */
 final class NewContainWord {
 
-  def newOneOf(right: Any*): MatcherFactory1[Any, Holder] = {
-    new MatcherFactory1[Any, Holder] {
-      def matcher[T](implicit holder: Holder[T]): Matcher[T] = {
+  def newOneOf(right: Any*): MatcherFactory1[Any, Containing] = {
+    new MatcherFactory1[Any, Containing] {
+      def matcher[T](implicit holder: Containing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
             MatchResult(
@@ -48,9 +48,9 @@ final class NewContainWord {
     }
   }
 
-  def atLeastOneOf(right: Any*): MatcherFactory1[Any, Aggregation] = {
-    new MatcherFactory1[Any, Aggregation] {
-      def matcher[T](implicit aggregation: Aggregation[T]): Matcher[T] = {
+  def atLeastOneOf(right: Any*): MatcherFactory1[Any, Aggregating] = {
+    new MatcherFactory1[Any, Aggregating] {
+      def matcher[T](implicit aggregation: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
             MatchResult(

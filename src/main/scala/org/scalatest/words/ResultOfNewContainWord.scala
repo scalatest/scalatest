@@ -15,8 +15,8 @@
  */
 package org.scalatest.words
 
-import org.scalatest.enablers.Holder
-import org.scalatest.enablers.Aggregation
+import org.scalatest.enablers.Containing
+import org.scalatest.enablers.Aggregating
 import org.scalatest.MatchersHelper.newTestFailedException
 import org.scalatest.FailureMessages
 import org.scalatest.UnquotedString
@@ -37,7 +37,7 @@ class ResultOfNewContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    *                       ^
    * </pre>
    */
-  def newOneOf(right: Any*)(implicit holder: Holder[L]) {
+  def newOneOf(right: Any*)(implicit holder: Containing[L]) {
     if (holder.containsOneOf(left, right) != shouldBeTrue)
       throw newTestFailedException(
         FailureMessages(
@@ -56,7 +56,7 @@ class ResultOfNewContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    *                       ^
    * </pre>
    */
-  def atLeastOneOf(right: Any*)(implicit aggregation: Aggregation[L]) {
+  def atLeastOneOf(right: Any*)(implicit aggregation: Aggregating[L]) {
     if (aggregation.containsAtLeastOneOf(left, right) != shouldBeTrue)
       throw newTestFailedException(
         FailureMessages(

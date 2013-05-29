@@ -21,7 +21,7 @@ import org.scalautils._
 import org.scalatest.FailureMessages
 import org.scalatest.UnquotedString
 import org.scalautils.Equality
-import org.scalatest.enablers.Holder
+import org.scalatest.enablers.Containing
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -39,12 +39,12 @@ final class ContainWord {
    *                             ^
    * </pre>
    */
-  def apply(expectedElement: Any): MatcherFactory1[Any, Holder] =
-    new MatcherFactory1[Any, Holder] {
-      def matcher[U <: Any : Holder]: Matcher[U] = 
+  def apply(expectedElement: Any): MatcherFactory1[Any, Containing] =
+    new MatcherFactory1[Any, Containing] {
+      def matcher[U <: Any : Containing]: Matcher[U] = 
         new Matcher[U] {
           def apply(left: U): MatchResult = {
-            val holder = implicitly[Holder[U]]
+            val holder = implicitly[Containing[U]]
             MatchResult(
               holder.contains(left, expectedElement),
               FailureMessages("didNotContainExpectedElement", left, expectedElement),
