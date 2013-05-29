@@ -18,6 +18,7 @@ package org.scalatest.enablers
 import org.scalautils.Equality
 import org.scalautils.NormalizingEquality
 import scala.collection.GenTraversable
+import scala.collection.GenTraversableOnce
 import org.scalatest.FailureMessages
 
 trait Holder[A] {
@@ -45,7 +46,7 @@ trait Holder[A] {
   
 object Holder {
   
-  private def checkOneOf[T](left: { def exists(e: T => Boolean): Boolean; }, right: GenTraversable[Any], equality: Equality[T]): (Set[Any], Set[Any]) = {
+  private def checkOneOf[T](left: GenTraversableOnce[T], right: GenTraversable[Any], equality: Equality[T]): (Set[Any], Set[Any]) = {
     /*right.foldLeft(Set.empty[Any], Set.empty[Any]) { case ((fs, rs), r) =>
       if (rs.find(e => equality.areEqual(e.asInstanceOf[T], r)).isDefined)
         throw new IllegalArgumentException(FailureMessages("oneOfDuplicate", r))
@@ -60,9 +61,16 @@ object Holder {
         (fs, rs + r) // r is not in the left
     }*/
     // aggregate version is more verbose, but it allows parallel execution.
+    def tryEquality(left: Any, right: Any): Boolean = 
+      try equality.areEqual(left.asInstanceOf[T], right)
+      catch {
+        case cce: ClassCastException => false
+      }
     right.aggregate(Set.empty[Any], Set.empty[Any])( 
       { case (((fs, rs), r)) => 
-          if (rs.find(e => equality.areEqual(e.asInstanceOf[T], r)).isDefined)
+          //if (rs.find(e => equality.areEqual(e.asInstanceOf[T], r)).isDefined)
+            //throw new IllegalArgumentException(FailureMessages("oneOfDuplicate", r))
+          if (rs.find(e => tryEquality(e, r)).isDefined)
             throw new IllegalArgumentException(FailureMessages("oneOfDuplicate", r))
           if (left.exists(t => equality.areEqual(t, r))) {
             // r is in the left
@@ -129,7 +137,11 @@ object Holder {
         }
         found
       }
-      def containsOneOf(javaColl: JCOL[E], elements: scala.collection.Seq[Any]): Boolean = throw new Exception("Not Yet Implemented")
+      def containsOneOf(javaColl: JCOL[E], elements: scala.collection.Seq[Any]): Boolean = {
+        import scala.collection.JavaConverters._
+        val (foundSet, processedSet) = checkOneOf[E](javaColl.asInstanceOf[java.util.Collection[E]].asScala, elements, equality)
+        foundSet.size == 1
+      }
     }
 
   implicit def convertEqualityToJavaCollectionHolder[E, JCOL[_] <: java.util.Collection[_]](equality: Equality[E]): Holder[JCOL[E]] = 
@@ -148,7 +160,6 @@ object Holder {
       def containsOneOf(trav: TRAV[E], elements: scala.collection.Seq[Any]): Boolean = {
         val (foundSet, processedSet) = checkOneOf[E](trav.asInstanceOf[GenTraversable[E]], elements, equality)
         foundSet.size == 1
-        //trav.exists((e: Any) => elements.exists((ele: Any) => equality.areEqual(e.asInstanceOf[E], ele)))
       }
     }
 
@@ -165,7 +176,6 @@ object Holder {
       def containsOneOf(opt: OPT[E], elements: scala.collection.Seq[Any]): Boolean = {
         val (foundSet, processedSet) = checkOneOf[E](opt.asInstanceOf[Option[E]], elements, equality)
         foundSet.size == 1
-        //opt.exists((e: Any) => elements.exists((ele: Any) => equality.areEqual(e.asInstanceOf[E], ele)))
       }
     }
 
@@ -178,7 +188,10 @@ object Holder {
       def contains(map: MAP[K, V], ele: Any): Boolean = {
         map.exists((e: Any) => equality.areEqual(e.asInstanceOf[(K, V)], ele)) // Don't know why the compiler requires e to be type Any. Should be E.
       }
-      def containsOneOf(map: MAP[K, V], elements: scala.collection.Seq[Any]): Boolean = throw new Exception("Not Yet Implemented")
+      def containsOneOf(map: MAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
+        val (foundSet, processedSet) = checkOneOf[(K, V)](map.asInstanceOf[scala.collection.GenMap[K, V]], elements, equality)
+        foundSet.size == 1
+      }
     }
 
   implicit def convertEqualityToGenMapHolder[K, V, MAP[_, _] <: scala.collection.GenMap[_, _]](equality: Equality[(K, V)]): Holder[MAP[K, V]] = 
@@ -188,7 +201,10 @@ object Holder {
     new Holder[Array[E]] {
       def contains(arr: Array[E], ele: Any): Boolean =
         arr.exists((e: E) => equality.areEqual(e, ele))
-      def containsOneOf(arr: Array[E], elements: scala.collection.Seq[Any]): Boolean = throw new Exception("Not Yet Implemented")
+      def containsOneOf(arr: Array[E], elements: scala.collection.Seq[Any]): Boolean = {
+        val (foundSet, processedSet) = checkOneOf[E](arr, elements, equality)
+        foundSet.size == 1
+      }
     }
 
   implicit def convertEqualityToArrayHolder[E](equality: Equality[E]): Holder[Array[E]] = 
@@ -198,10 +214,29 @@ object Holder {
     new Holder[String] {
       def contains(str: String, ele: Any): Boolean =
         str.exists((e: Char) => equality.areEqual(e, ele))
-      def containsOneOf(str: String, elements: scala.collection.Seq[Any]): Boolean = throw new Exception("Not Yet Implemented")
+      def containsOneOf(str: String, elements: scala.collection.Seq[Any]): Boolean = {
+        val (foundSet, processedSet) = checkOneOf[Char](str, elements, equality)
+        foundSet.size == 1
+      }
     }
 
   implicit def convertEqualityToStringHolder(equality: Equality[Char]): Holder[String] = 
     withStringCharacterEquality(equality)
+    
+  implicit def withJavaMapElementEquality[K, V, JMAP[_, _] <: java.util.Map[_, _]](implicit equality: Equality[(K, V)]): Holder[JMAP[K, V]] = 
+    new Holder[JMAP[K, V]] {
+      def contains(map: JMAP[K, V], ele: Any): Boolean = {
+        import scala.collection.JavaConverters._
+        map.asInstanceOf[java.util.Map[K, V]].asScala.exists((e: Any) => equality.areEqual(e.asInstanceOf[(K, V)], ele)) // Don't know why the compiler requires e to be type Any. Should be E.
+      }
+      def containsOneOf(map: JMAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
+        import scala.collection.JavaConverters._
+        val (foundSet, processedSet) = checkOneOf[(K, V)](map.asInstanceOf[java.util.Map[K, V]].asScala, elements, equality)
+        foundSet.size == 1
+      }
+    }
+
+  implicit def convertEqualityToJavaMapHolder[K, V, JMAP[_, _] <: java.util.Map[_, _]](equality: Equality[(K, V)]): Holder[JMAP[K, V]] = 
+    withJavaMapElementEquality(equality)
 }
 
