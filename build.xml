@@ -202,6 +202,7 @@
         	<include name="GenTable.scala" />
         	<include name="GenFactories.scala" />
         	<include name="GenTheyWord.scala" />
+        	<include name="GenContain.scala" />
         </scalac>
     </target>
 
@@ -267,11 +268,20 @@
             <arg value="${scala.version}" />
     	</java>
     </target>
+	
+	<target name="gencontain" depends="init, compile-codegenerators"
+	        unless="gencontain.uptodate">
+      <java classname="GenContain"
+		    classpathref="run.generators.class.path" fork="false">
+		<arg value="${build.generated.tests.src}" />
+		<arg value="${scala.version}" />
+      </java>
+	</target>
 
     <target name="compile" depends="compile-main, compile-tests"/>
 
     <!--<target name="compile-main" depends="init">-->
-    <target name="compile-main" depends="init, gentables, genmatchers, gengen, geninspectors, genfactories, write-excludes-file">
+    <target name="compile-main" depends="init, gentables, genmatchers, gengen, geninspectors, genfactories, gencontain, write-excludes-file">
         <!--<fail message="Wrong JVM [${ant.java.version}]. Include 'java6' target to use java 6."
               unless="jvm.ok"/>-->
 
@@ -378,6 +388,9 @@
       <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
         <include name="org/scalatest/inspectors/nested/*.scala"/>
         <include name="org/scalatest/inspectors/no/*.scala"/>
+      </scalac>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+    	<include name="org/scalatest/contain/*.scala"/>
       </scalac>
     </target>
 

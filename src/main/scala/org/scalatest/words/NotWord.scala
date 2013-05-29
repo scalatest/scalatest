@@ -29,6 +29,7 @@ import org.scalatest.MatchersHelper.fullyMatchRegexWithGroups
 import org.scalatest.MatchersHelper.startWithRegexWithGroups
 import org.scalatest.MatchersHelper.endWithRegexWithGroups
 import org.scalatest.MatchersHelper.includeRegexWithGroups
+import org.scalatest.Suite.getObjectsForFailureMessage
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -608,10 +609,11 @@ final class NotWord {
               FailureMessages("wasNotNull", right)
             )
           case _ => 
+            val (leftee, rightee) = getObjectsForFailureMessage(left, right)
             MatchResult(
               !areEqualComparingArraysStructurally(left, right),
-              FailureMessages("wasEqualTo", left, right),
-              FailureMessages("wasNotEqualTo", left, right)
+              FailureMessages("wasEqualTo", leftee, rightee),
+              FailureMessages("wasNotEqualTo", leftee, rightee)
             )
         }
       }
