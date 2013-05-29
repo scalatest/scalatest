@@ -48,7 +48,7 @@ package org.scalatest.enablers
  *
  * scala&gt; implicit val lengthOfDatagramPacket =
  *     |   new Length[DatagramPacket] {
- *     |     def extentOf(dp: DatagramPacket): Long = dp.getLength
+ *     |     def lengthOf(dp: DatagramPacket): Long = dp.getLength
  *     |   }
  * lengthOfDatagramPacket: java.lang.Object with org.scalatest.matchers.ShouldMatchers.Length[java.net.DatagramPacket] = $anon$1@550c6b37
  *
@@ -68,29 +68,29 @@ trait Length[T] {
    * @param the object whose length to return
    * @return the length of the passed object
    */
-  def extentOf(o: T): Long
+  def lengthOf(o: T): Long
 }
 
 object Length {
 
   implicit def enablersForJavaList[E, JLIST[_] <: java.util.List[_]]: Length[JLIST[E]] = 
     new Length[JLIST[E]] {
-      def extentOf(javaList: JLIST[E]): Long = javaList.size
+      def lengthOf(javaList: JLIST[E]): Long = javaList.size
     }
 
   implicit def enablersForGenSeq[E, SEQ[_] <: scala.collection.GenSeq[_]]: Length[SEQ[E]] = 
     new Length[SEQ[E]] {
-      def extentOf(seq: SEQ[E]): Long = seq.length
+      def lengthOf(seq: SEQ[E]): Long = seq.length
     }
 
   implicit def enablersForArray[E]: Length[Array[E]] = 
     new Length[Array[E]] {
-      def extentOf(arr: Array[E]): Long = arr.length
+      def lengthOf(arr: Array[E]): Long = arr.length
     }
 
   implicit val enablersForString: Length[String] = 
     new Length[String] {
-      def extentOf(str: String): Long = str.length
+      def lengthOf(str: String): Long = str.length
     }
 }
 

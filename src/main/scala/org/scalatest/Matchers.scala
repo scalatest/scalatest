@@ -2103,9 +2103,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * </p>
      */
     def length(expectedLength: Long)(implicit len: Length[A]) {
-      // val len = implicitly[Length[A]]
-      // if ((len.extentOf(left.asInstanceOf[A]) == expectedLength) != shouldBeTrue)
-      val leftLength = len.extentOf(left)
+      val leftLength = len.lengthOf(left)
       if ((leftLength == expectedLength) != shouldBeTrue)
         throw newTestFailedException(
           if (shouldBeTrue) 
@@ -2131,9 +2129,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * </p>
      */
     def size(expectedSize: Long)(implicit sz: Size[A]) {
-      // val sz = implicitly[Size[T]]
-      // if ((sz.extentOf(left.asInstanceOf[T]) == expectedSize) != shouldBeTrue)
-      val leftSize = sz.extentOf(left)
+      val leftSize = sz.sizeOf(left)
       if ((leftSize == expectedSize) != shouldBeTrue)
         throw newTestFailedException(
           if (shouldBeTrue)
@@ -3179,7 +3175,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
     def have(resultOfLengthWordApplication: ResultOfLengthWordApplication)(implicit len: Length[T]) {
       doCollected(collected, xs, "have", 1) { e => 
         val right = resultOfLengthWordApplication.expectedLength
-        val leftLength = len.extentOf(e)
+        val leftLength = len.lengthOf(e)
         if ((leftLength == right) != shouldBeTrue) {
           throw newTestFailedException(
             if (shouldBeTrue)
@@ -3197,7 +3193,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
     def have(resultOfSizeWordApplication: ResultOfSizeWordApplication)(implicit sz: Size[T]) {
       doCollected(collected, xs, "have", 1) { e => 
         val right = resultOfSizeWordApplication.expectedSize
-        val leftSize = sz.extentOf(e)
+        val leftSize = sz.sizeOf(e)
         if ((leftSize == right) != shouldBeTrue) {
           throw newTestFailedException(
             if (shouldBeTrue)
@@ -4809,7 +4805,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def length(expectedLength: Long)(implicit len: Length[A]) {
       doCollected(collected, xs, "length", 1) { e =>
-        val eLength = len.extentOf(e)
+        val eLength = len.lengthOf(e)
         if ((eLength == expectedLength) != shouldBeTrue)
           throw newTestFailedException(
             if (shouldBeTrue)
@@ -4832,7 +4828,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def size(expectedSize: Long)(implicit sz: Size[A]) {
       doCollected(collected, xs, "size", 1) { e =>
-        val eSize = sz.extentOf(e)
+        val eSize = sz.sizeOf(e)
         if ((eSize == expectedSize) != shouldBeTrue)
           throw newTestFailedException(
             if (shouldBeTrue)

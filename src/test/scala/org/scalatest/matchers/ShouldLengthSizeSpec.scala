@@ -36,9 +36,10 @@ class ShouldLengthSizeSpec extends Spec with ShouldMatchers with Checkers with R
     }
     val obj = new Lengthy(2)
 
-    implicit val extentOfLengthy =
+    implicit val lengthOfLengthy =
       new Length[Lengthy] with Size[Lengthy] {
-        def extentOf(o: Lengthy): Long = o.length
+        def lengthOf(o: Lengthy): Long = o.length
+        def sizeOf(o: Lengthy): Long = o.size
       }
 
     def `should do nothing if object length or size matches specified length` {

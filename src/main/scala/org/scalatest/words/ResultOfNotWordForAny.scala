@@ -341,7 +341,7 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
 // For Any, TODO: Scaladoc
   def have(resultOfLengthWordApplication: ResultOfLengthWordApplication)(implicit len: Length[T]) {
     val right = resultOfLengthWordApplication.expectedLength
-    val leftLength = len.extentOf(left)
+    val leftLength = len.lengthOf(left)
     if ((leftLength == right) != shouldBeTrue) {
       throw newTestFailedException(
         FailureMessages(
@@ -357,7 +357,7 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
 // For Any, TODO: Scaladoc
   def have(resultOfSizeWordApplication: ResultOfSizeWordApplication)(implicit sz: Size[T]) {
     val right = resultOfSizeWordApplication.expectedSize
-    val leftSize = sz.extentOf(left)
+    val leftSize = sz.sizeOf(left)
     if ((leftSize == right) != shouldBeTrue) {
       throw newTestFailedException(
         FailureMessages(

@@ -561,7 +561,7 @@ hard to read. Better to have people pull things out and then just do a non-neste
 
       def `should work with length not a symbol without anything special, in case someone forgets you don't need the parens with length` {
 
-        implicit val bookLength = new Length[Book] { def extentOf(book: Book) = book.length }
+        implicit val bookLength = new Length[Book] { def lengthOf(book: Book) = book.length }
 
         val caught1 = intercept[TestFailedException] {
           book should have (length (43))
@@ -574,7 +574,7 @@ hard to read. Better to have people pull things out and then just do a non-neste
 
         case class Sizey(val size: Int)
 
-        implicit val sizeOfSizey = new Size[Sizey] { def extentOf(sizey: Sizey) = sizey.size }
+        implicit val sizeOfSizey = new Size[Sizey] { def sizeOf(sizey: Sizey) = sizey.size }
 
         val caught1 = intercept[TestFailedException] {
           (new Sizey(7)) should have (size (43))

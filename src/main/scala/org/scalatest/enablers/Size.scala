@@ -47,7 +47,7 @@ package org.scalatest.enablers
  *                  ^
  * scala&gt; implicit val sizeOfDataBufferByte =
  *      |   new Size[DataBufferByte] {
- *      |     def extentOf(db: DataBufferByte): Long = db.getSize
+ *      |     def sizeOf(db: DataBufferByte): Long = db.getSize
  *      |   }
  * sizeOfDataBufferByte: java.lang.Object with org.scalatest.matchers.ShouldMatchers.Size[java.awt.image.DataBufferByte] = $anon$1@4c69bdf8
  *
@@ -67,48 +67,48 @@ trait Size[T] {
    * @param the object whose size to return
    * @return the size of the passed object
    */
-  def extentOf(o: T): Long
+  def sizeOf(o: T): Long
 }
 
 object Size {
 
   implicit def enablersForJavaList[E, JLIST[_] <: java.util.List[_]]: Size[JLIST[E]] = 
     new Size[JLIST[E]] {
-      def extentOf(javaList: JLIST[E]): Long = javaList.size
+      def sizeOf(javaList: JLIST[E]): Long = javaList.size
     }
 
   implicit def enablersForGenSeq[E, SEQ[_] <: scala.collection.GenSeq[_]]: Size[SEQ[E]] = 
     new Size[SEQ[E]] {
-      def extentOf(seq: SEQ[E]): Long = seq.length
+      def sizeOf(seq: SEQ[E]): Long = seq.length
     }
 
   implicit def enablersForJavaCollection[E, JCOL[_] <: java.util.Collection[_]]: Size[JCOL[E]] = 
     new Size[JCOL[E]] {
-      def extentOf(javaColl: JCOL[E]): Long = javaColl.size
+      def sizeOf(javaColl: JCOL[E]): Long = javaColl.size
     }
 
   implicit def enablersForJavaMap[K, V, JMAP[_, _] <: java.util.Map[_, _]]: Size[JMAP[K, V]] = 
     new Size[JMAP[K, V]] {
-      def extentOf(javaMap: JMAP[K, V]): Long = javaMap.size
+      def sizeOf(javaMap: JMAP[K, V]): Long = javaMap.size
     }
 
   implicit def enablersForGenTraversable[E, TRAV[_] <: scala.collection.GenTraversable[_]]: Size[TRAV[E]] = 
     new Size[TRAV[E]] {
-      def extentOf(trav: TRAV[E]): Long = trav.size
+      def sizeOf(trav: TRAV[E]): Long = trav.size
     }
 
   implicit def enablersForMap[K, V, MAP[_, _] <: scala.collection.GenMap[_, _]]: Size[MAP[K, V]] =
     new Size[MAP[K, V]] {
-      def extentOf(map: MAP[K, V]): Long = map.size
+      def sizeOf(map: MAP[K, V]): Long = map.size
     }
 
   implicit def enablersForArray[E]: Size[Array[E]] = 
     new Size[Array[E]] {
-      def extentOf(arr: Array[E]): Long = arr.length
+      def sizeOf(arr: Array[E]): Long = arr.length
     }
 
   implicit val enablersForString: Size[String] = 
     new Size[String] {
-      def extentOf(str: String): Long = str.length
+      def sizeOf(str: String): Long = str.length
     }
 }

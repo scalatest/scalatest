@@ -47,7 +47,7 @@ final class HaveWord {
         val length = implicitly[Length[T]]
         new Matcher[T] {
           def apply(left: T): MatchResult = {
-            val lengthOfLeft = length.extentOf(left)
+            val lengthOfLeft = length.lengthOf(left)
             MatchResult(
               lengthOfLeft == expectedLength,
               // FailureMessages("hadLengthInsteadOfExpectedLength", left, lengthOfLeft, expectedLength),
@@ -77,14 +77,14 @@ final class HaveWord {
   def size(expectedSize: Long): MatcherFactory1[Any, Size] =
     new MatcherFactory1[Any, Size] {
       def matcher[T <: Any : Size]: Matcher[T] = {
-        val length = implicitly[Size[T]]
+        val size = implicitly[Size[T]]
         new Matcher[T] {
           def apply(left: T): MatchResult = {
-            val lengthOfLeft = length.extentOf(left)
+            val sizeOfLeft = size.sizeOf(left)
             MatchResult(
-              lengthOfLeft == expectedSize,
+              sizeOfLeft == expectedSize,
               // FailureMessages("hadSizeInsteadOfExpectedSize", left, lengthOfLeft, expectedSize),
-              FailureMessages("hadSizeInsteadOfExpectedSize", left, lengthOfLeft, expectedSize),
+              FailureMessages("hadSizeInsteadOfExpectedSize", left, sizeOfLeft, expectedSize),
               FailureMessages("hadExpectedSize", left, expectedSize)
             )
           }

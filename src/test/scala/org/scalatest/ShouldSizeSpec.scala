@@ -2092,7 +2092,7 @@ class ShouldSizeSpec extends Spec with Matchers with Checkers with ReturnsNormal
   
       implicit val sizeOfSizey =
         new Size[Sizey] {
-          def extentOf(o: Sizey): Long = o.size()
+          def sizeOf(o: Sizey): Long = o.size()
         }
 
       def `should do nothing if object size matches specified size` {
@@ -2228,7 +2228,7 @@ class ShouldSizeSpec extends Spec with Matchers with Checkers with ReturnsNormal
 
       implicit val sizeOfSizey =
         new Size[Sizey] {
-          def extentOf(o: Sizey): Long = o.size
+          def sizeOf(o: Sizey): Long = o.size
         }
 
       def `should do nothing if object size matches specified size` {
@@ -2364,7 +2364,7 @@ class ShouldSizeSpec extends Spec with Matchers with Checkers with ReturnsNormal
 
       implicit val sizeOfSizey =
         new Size[Sizey] {
-          def extentOf(o: Sizey): Long = o.size
+          def sizeOf(o: Sizey): Long = o.size
         }
 
       def `should do nothing if object size matches specified size` {
@@ -2500,7 +2500,7 @@ class ShouldSizeSpec extends Spec with Matchers with Checkers with ReturnsNormal
 
       implicit val sizeOfSizey =
         new Size[Sizey] {
-          def extentOf(o: Sizey): Long = o.getSize()
+          def sizeOf(o: Sizey): Long = o.getSize()
         }
 
       def `should do nothing if object size matches specified size` {
@@ -2636,7 +2636,7 @@ class ShouldSizeSpec extends Spec with Matchers with Checkers with ReturnsNormal
 
       implicit val sizeOfSizey =
         new Size[Sizey] {
-          def extentOf(o: Sizey): Long = o.getSize
+          def sizeOf(o: Sizey): Long = o.getSize
         }
 
       def `should do nothing if object size matches specified size` {
@@ -2772,7 +2772,7 @@ class ShouldSizeSpec extends Spec with Matchers with Checkers with ReturnsNormal
 
       implicit val sizeOfSizey =
         new Size[Sizey] {
-          def extentOf(o: Sizey): Long = o.getSize
+          def sizeOf(o: Sizey): Long = o.getSize
         }
 
       def `should do nothing if object size matches specified size` {
@@ -2908,7 +2908,7 @@ class ShouldSizeSpec extends Spec with Matchers with Checkers with ReturnsNormal
 
       implicit val sizeOfSizey =
         new Size[Sizey] {
-          def extentOf(o: Sizey): Long = o.size()
+          def sizeOf(o: Sizey): Long = o.size()
         }
 
       def `should do nothing if object size matches specified size` {
@@ -3050,7 +3050,7 @@ class ShouldSizeSpec extends Spec with Matchers with Checkers with ReturnsNormal
 
       implicit val sizeOfSizey =
         new Size[Sizey] {
-          def extentOf(o: Sizey): Long = o.size
+          def sizeOf(o: Sizey): Long = o.size
         }
 
       def `should do nothing if object size matches specified size` {
@@ -3190,7 +3190,7 @@ class ShouldSizeSpec extends Spec with Matchers with Checkers with ReturnsNormal
 
       implicit val sizeOfSizey =
         new Size[Sizey] {
-          def extentOf(o: Sizey): Long = o.size
+          def sizeOf(o: Sizey): Long = o.size
         }
 
       def `should do nothing if object size matches specified size` {
@@ -3328,7 +3328,7 @@ class ShouldSizeSpec extends Spec with Matchers with Checkers with ReturnsNormal
 
       implicit val sizeOfSizey =
         new Size[Sizey] {
-          def extentOf(o: Sizey): Long = o.getSize()
+          def sizeOf(o: Sizey): Long = o.getSize()
         }
 
       def `should do nothing if object size matches specified size` {
@@ -3468,7 +3468,7 @@ class ShouldSizeSpec extends Spec with Matchers with Checkers with ReturnsNormal
 
       implicit val sizeOfSizey =
         new Size[Sizey] {
-          def extentOf(o: Sizey): Long = o.getSize
+          def sizeOf(o: Sizey): Long = o.getSize
         }
 
       def `should do nothing if object size matches specified size` {
@@ -3608,7 +3608,7 @@ class ShouldSizeSpec extends Spec with Matchers with Checkers with ReturnsNormal
 
       implicit val sizeOfSizey =
         new Size[Sizey] {
-          def extentOf(o: Sizey): Long = o.getSize
+          def sizeOf(o: Sizey): Long = o.getSize
         }
 
       def `should do nothing if object size matches specified size` {
