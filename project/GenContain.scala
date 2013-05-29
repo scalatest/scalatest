@@ -56,6 +56,15 @@ object GenContain {
       }
     }
     
+    val stringLowerCased = "val lowerCased: Normalization[Char] = new Normalization[Char] {\n" +
+    "    def normalized(c: Char): Char = c.toString.toLowerCase.toCharArray()(0)\n" +
+    "    def normalizedIfInstanceOfA(b: Any) =\n" +
+    "      b match {\n" + 
+    "        case c: Char => normalized(c)\n" + 
+    "        case _ => b\n" + 
+    "      }\n" + 
+    "    }"
+    
     val mapLowerCased = "val lowerCased: Normalization[(String, String)] = new Normalization[(String, String)] {\n" + 
     "    def normalized(s: (String, String)): (String, String) = (s._1.toLowerCase, s._2.toLowerCase)\n" +
     "    def normalizedIfInstanceOfA(b: Any) =\n" + 
@@ -78,6 +87,12 @@ object GenContain {
     "    val l = new java.util.ArrayList[E]\n" +
     "    elements.foreach(l.add(_))\n" +
     "    l\n" +
+    "  }"
+    
+    val javaMap = "def javaMap[K, V](elements: (K, V)*): java.util.HashMap[K, V] = {\n" +
+    "    val m = new java.util.HashMap[K, V]\n" +
+    "    elements.foreach(e => m.put(e._1, e._2))\n" +
+    "    m\n" +
     "  }"
     
     val arrayMapping = 
@@ -176,6 +191,172 @@ object GenContain {
          "listsNil" -> "listsMap", 
          "Nil" -> "Map()"
       )
+      
+    val javaMapMapping = 
+      List(
+        "ListShould" -> "JavaMapShould", 
+        "new Equality\\[String\\]" -> "new Equality[(String, String)]", 
+        "//ADDITIONAL//" -> (mapLowerCased + "\n" + mapTrimmed + "\n" + javaMap), 
+        "def areEqual\\(a: String, b: Any\\)" -> "def areEqual(a: (String, String), b: Any)",
+        "defaultEquality\\[String\\]" -> "defaultEquality[(String, String)]", 
+        "List\\[String\\]" -> "java.util.Map[String, String]", 
+        "List\\[Int\\]" -> "java.util.Map[Int, Int]", 
+        "List\\(\\\"fum\\\"\\)" -> "javaMap(\"fum\" -> \"fum\")", 
+        "List\\(\\\"to\\\"\\)" -> "javaMap(\"to\" -> \"to\")", 
+        "List\\(1\\)" -> "javaMap(1 -> 1)", 
+        "List\\(2\\)" -> "javaMap(2 -> 2)", 
+        "List\\(3\\)" -> "javaMap(3 -> 3)", 
+        "List\\(8\\)" -> "javaMap(8 -> 8)", 
+        "List\\(\\\"hi\\\"\\)" -> "javaMap(\"hi\" -> \"hi\")", 
+        "List\\(\\\"hey\\\"\\)" -> "javaMap(\"hey\" -> \"hey\")", 
+        "\\(\\\"fee\\\", \\\"fie\\\", \\\"foe\\\", \\\"fum\\\"\\)" -> "(\"fee\" -> \"fee\", \"fie\" -> \"fie\", \"foe\" -> \"foe\", \"fum\" -> \"fum\")", 
+        "\\(\\\"fie\\\", \\\"fee\\\", \\\"fum\\\", \\\"foe\\\"\\)" -> "(\"fie\" -> \"fie\", \"fee\" -> \"fee\", \"fum\" -> \"fum\", \"foe\" -> \"foe\")", 
+        "\\(\\\"ho\\\", \\\"hey\\\", \\\"howdy\\\"\\)" -> "(\"ho\" -> \"ho\", \"hey\" -> \"hey\", \"howdy\" -> \"howdy\")", 
+        "\\(\\\"hi\\\", \\\"hello\\\"\\)" -> "(\"hi\" -> \"hi\", \"hello\" -> \"hello\")", 
+        "\\(\\\"fum\\\", \\\"fum\\\", \\\"fum\\\"\\)" -> "(\"fum\" -> \"fum\", \"fum\" -> \"fum\", \"fum\" -> \"fum\")", 
+        "\\(\\\"fum\\\", \\\"fum\\\"\\)" -> "(\"fum\" -> \"fum\", \"fum\" -> \"fum\")", 
+        "\\(\\\"hi\\\"\\)" -> "(\"hi\" -> \"hi\")", 
+        "\\(\\\"ho\\\"\\)" -> "(\"ho\" -> \"ho\")", 
+        "\\(\\\"happy\\\", \\\"birthday\\\", \\\"to\\\", \\\"you\\\"\\)" -> "(\"happy\" -> \"happy\", \"birthday\" -> \"birthday\", \"to\" -> \"to\", \"you\" -> \"you\")",
+        "\\(\\\"have\\\", \\\"a\\\", \\\"nice\\\", \\\"day\\\"\\)" -> "(\"have\" -> \"have\", \"a\" -> \"a\", \"nice\" -> \"nice\", \"day\" -> \"day\")", 
+        "\\(\\\"fum\\\", \\\"fum\\\", \\\"fum\\\", \\\"fum\\\"\\)" -> "(\"fum\" -> \"fum\", \"fum\" -> \"fum\", \"fum\" -> \"fum\", \"fum\" -> \"fum\")",
+        "\\(\\\" FEE \\\", \\\" FIE \\\", \\\" FOE \\\", \\\" FUM \\\"\\)" -> "(\" FEE \" -> \" FEE \", \" FIE \" -> \" FIE \", \" FOE \" -> \" FOE \", \" FUM \" -> \" FUM \")",
+        "\\(\\\"to\\\", \\\"to\\\", \\\"to\\\", \\\"to\\\"\\)"  -> "(\"to\" -> \"to\", \"to\" -> \"to\", \"to\" -> \"to\", \"to\" -> \"to\")", 
+        "\\(\\\" TO \\\", \\\" TO \\\", \\\" TO \\\", \\\" TO \\\"\\)" -> "(\" TO \" -> \" TO \", \" TO \" -> \" TO \", \" TO \" -> \" TO \", \" TO \" -> \" TO \")", 
+        "\\\"\\\\\"happy\\\\\", \\\\\"birthday\\\\\", \\\\\"to\\\\\", \\\\\"you\\\\\\\"\\\"" -> "\"(happy,happy), (birthday,birthday), (to,to), (you,you)\"",
+        "\\\\\"ho\\\\\", \\\\\"hey\\\\\", \\\\\"howdy\\\\\"" -> "(ho,ho), (hey,hey), (howdy,howdy)", 
+        "\\\\\"happy\\\\\", \\\\\"birthday\\\\\", \\\\\"to\\\\\", \\\\\"you\\\\\"" -> "(happy,happy), (birthday,birthday), (to,to), (you,you)", 
+        "\\\\\"have\\\\\", \\\\\"a\\\\\", \\\\\"nice\\\\\", \\\\\"day\\\\\"" -> "(have,have), (a,a), (nice,nice), (day,day)", 
+        "\\\\\"fee\\\\\", \\\\\"fie\\\\\", \\\\\"foe\\\\\", \\\\\"fum\\\\\"" -> "(fee,fee), (fie,fie), (foe,foe), (fum,fum)",
+        "\\\\\"fum\\\\\", \\\\\"fum\\\\\", \\\\\"fum\\\\\", \\\\\"fum\\\\\"" -> "(fum,fum), (fum,fum), (fum,fum), (fum,fum)",
+        "\\\\\"fum\\\\\", \\\\\"fum\\\\\", \\\\\"fum\\\\\"" -> "(fum,fum), (fum,fum), (fum,fum)",
+        "\\\\\"fum\\\\\", \\\\\"fum\\\\\"" -> "(fum,fum), (fum,fum)",
+        "of \\(1, 2, 8\\)" -> "of ((1,1), (2,2), (8,8))", 
+        "of \\(1, 3, 4\\)" -> "of ((1,1), (3,3), (4,4))", 
+        "of \\(1, 6, 8\\)" -> "of ((1,1), (6,6), (8,8))", 
+        "of \\(2, 3, 1\\)" -> "of ((2,2), (3,3), (1,1))", 
+        "of \\(2, 3, 4\\)" -> "of ((2,2), (3,3), (4,4))", 
+        "of \\(2, 3, 8\\)" -> "of ((2,2), (3,3), (8,8))", 
+        "of \\(2, 6, 8\\)" -> "of ((2,2), (6,6), (8,8))", 
+        "of \\(3, 6, 8\\)" -> "of ((3,3), (6,6), (8,8))", 
+        "of \\(\\\\\"ho\\\\\"\\)" -> "of ((ho,ho))", 
+        "of \\(\\\\\"hi\\\\\"\\)" -> "of ((hi,hi))", 
+        "of \\(\\\\\"hi\\\\\", \\\\\"hello\\\\\"\\)" -> "of ((hi,hi), (hello,hello))", 
+        "List\\(to\\)" -> "javaMap(to -> to)", 
+        "List\\(ho\\)" -> "javaMap(ho -> ho)", 
+        "List\\(hi\\)" -> "javaMap(hi -> hi)",
+        "List\\(hey\\)" -> "javaMap(hey -> hey)",
+        "\\(1, 2, 8\\)" -> "(1 -> 1, 2 -> 2, 8 -> 8)", 
+        "\\(1, 2, 9\\)" -> "(1 -> 1, 2 -> 2, 9 -> 9)", 
+        "\\(1, 3, 4\\)" -> "(1 -> 1, 3 -> 3, 4 -> 4)", 
+        "\\(1, 6, 8\\)" -> "(1 -> 1, 6 -> 6, 8 -> 8)", 
+        "\\(2, 1, 5\\)" -> "(2 -> 2, 1 -> 1, 5 -> 5)", 
+        "\\(2, 3, 1\\)" -> "(2 -> 2, 3 -> 3, 1 -> 1)", 
+        "\\(2, 3, 4\\)" -> "(2 -> 2, 3 -> 3, 4 -> 4)", 
+        "\\(2, 3, 8\\)" -> "(2 -> 2, 3 -> 3, 8 -> 8)", 
+        "\\(2, 6, 8\\)" -> "(2 -> 2, 6 -> 6, 8 -> 8)", 
+        "\\(3, 1, 5\\)" -> "(3 -> 3, 1 -> 1, 5 -> 5)", 
+        "\\(3, 2, 1\\)" -> "(3 -> 3, 2 -> 2, 1 -> 1)", 
+        "\\(3, 2, 8\\)" -> "(3 -> 3, 2 -> 2, 8 -> 8)", 
+        "\\(3, 4, 5\\)" -> "(3 -> 3, 4 -> 4, 5 -> 5)", 
+        "\\(3, 6, 8\\)" -> "(3 -> 3, 6 -> 6, 8 -> 8)", 
+        "\\(3, 6, 9\\)" -> "(3 -> 3, 6 -> 6, 9 -> 9)", 
+        "\\(3, 8, 5\\)" -> "(3 -> 3, 8 -> 8, 5 -> 5)", 
+        "\\(5, 3, 4\\)" -> "(5 -> 5, 3 -> 3, 4 -> 4)", 
+        "\\(8, 3, 4\\)" -> "(8 -> 8, 3 -> 3, 4 -> 4)", 
+        "\\(1, 3, Nil\\)" -> "(1 -> 1, 3 -> 3, Map())", 
+        "List" -> "javaMap", 
+        "listsNil" -> "listsMap", 
+        "Nil" -> "javaMap()"
+      )
+      
+    val stringMapping = 
+      List(
+        "ListShould" -> "StringShould", 
+        "new Equality\\[String\\]" -> "new Equality[Char]", 
+        "def areEqual\\(a: String, b: Any\\)" -> "def areEqual(a: Char, b: Any)",
+        "defaultEquality\\[String\\]" -> "defaultEquality[Char]", 
+        " and trimmed" -> "", 
+        "//ADDITIONAL//" -> (stringLowerCased), 
+        "List\\[String\\]" -> "String", 
+        "List\\[Int\\]" -> "String", 
+        "List\\(\\\"fum\\\"\\)" -> "\"u\"", 
+        "List\\(\\\"to\\\"\\)" -> "\"o\"",
+        "List\\(\\\"ho\\\"\\)" -> "\"o\"",
+        "List\\(1\\)" -> "\"1\"", 
+        "List\\(2\\)" -> "\"2\"", 
+        "List\\(3\\)" -> "\"3\"", 
+        "List\\(8\\)" -> "\"8\"", 
+        "List\\(\\\"hi\\\"\\)" -> "\"i\"", 
+        "List\\(\\\"hey\\\"\\)" -> "\"e\"", 
+        "\\(\\\"fee\\\", \\\"fie\\\", \\\"foe\\\", \\\"fum\\\"\\)" -> "('s', 't', 'u', 'v')", 
+        "\\(\\\"fie\\\", \\\"fee\\\", \\\"fum\\\", \\\"foe\\\"\\)" -> "('s', 'u', 't', 'v')", 
+        "\\(\\\"ho\\\", \\\"hey\\\", \\\"howdy\\\"\\)" -> "('o', 'e', 'd')", 
+        "\\(\\\"hi\\\", \\\"hello\\\"\\)" -> "('i', 'e')", 
+        "\\(\\\"fum\\\", \\\"fum\\\", \\\"fum\\\"\\)" -> "('u', 'u', 'u')", 
+        "\\(\\\"fum\\\", \\\"fum\\\"\\)" -> "('u', 'u')", 
+        "\\(\\\"hi\\\"\\)" -> "('i')", 
+        "\\(\\\"ho\\\"\\)" -> "('o')", 
+        "\\(\\\"happy\\\", \\\"birthday\\\", \\\"to\\\", \\\"you\\\"\\)" -> "('h', 'b', 'o', 'y')",
+        "\\(\\\"have\\\", \\\"a\\\", \\\"nice\\\", \\\"day\\\"\\)" -> "('h', 'a', 'n', 'd')", 
+        "\\(\\\"fum\\\", \\\"fum\\\", \\\"fum\\\", \\\"fum\\\"\\)" -> "('u', 'u', 'u', 'u')",
+        "\\(\\\" FEE \\\", \\\" FIE \\\", \\\" FOE \\\", \\\" FUM \\\"\\)" -> "('S', 'T', 'U', 'V')",
+        "\\(\\\"to\\\", \\\"to\\\", \\\"to\\\", \\\"to\\\"\\)"  -> "('o', 'o', 'o', 'o')", 
+        "\\(\\\" TO \\\", \\\" TO \\\", \\\" TO \\\", \\\" TO \\\"\\)" -> "('O', 'O', 'O', 'O')", 
+        "\\\"\\\\\"happy\\\\\", \\\\\"birthday\\\\\", \\\\\"to\\\\\", \\\\\"you\\\\\\\"\\\"" -> "\"'h', 'b', 'o', 'y'\"",
+        "\\\\\"ho\\\\\", \\\\\"hey\\\\\", \\\\\"howdy\\\\\"" -> "'o', 'e', 'd'", 
+        "\\\\\"happy\\\\\", \\\\\"birthday\\\\\", \\\\\"to\\\\\", \\\\\"you\\\\\"" -> "'h', 'b', 'o', 'y'", 
+        "\\\\\"have\\\\\", \\\\\"a\\\\\", \\\\\"nice\\\\\", \\\\\"day\\\\\"" -> "'h', 'a', 'n', 'd'", 
+        "\\\\\"fee\\\\\", \\\\\"fie\\\\\", \\\\\"foe\\\\\", \\\\\"fum\\\\\"" -> "'s', 't', 'u', 'v'",
+        "\\\\\"fum\\\\\", \\\\\"fum\\\\\", \\\\\"fum\\\\\", \\\\\"fum\\\\\"" -> "'u', 'u', 'u', 'u'",
+        "\\\\\"fum\\\\\", \\\\\"fum\\\\\", \\\\\"fum\\\\\"" -> "'u', 'u', 'u'",
+        "\\\\\"fum\\\\\", \\\\\"fum\\\\\"" -> "'u', 'u'",
+        "of \\(1, 2, 8\\)" -> "of ('1', '2', '8')", 
+        "of \\(1, 3, 4\\)" -> "of ('1', '3', '4')", 
+        "of \\(1, 6, 8\\)" -> "of ('1', '6', '8')", 
+        "of \\(2, 3, 1\\)" -> "of ('2', '3', '1')", 
+        "of \\(2, 3, 4\\)" -> "of ('2', '3', '4')", 
+        "of \\(2, 3, 8\\)" -> "of ('2', '3', '8')", 
+        "of \\(2, 6, 8\\)" -> "of ('2', '6', '8')", 
+        "of \\(3, 6, 8\\)" -> "of ('3', '6', '8')", 
+        "of \\(\\\\\"ho\\\\\"\\)" -> "of ('o')", 
+        "of \\(\\\\\"hi\\\\\"\\)" -> "of ('i')", 
+        "of \\(\\\\\"hi\\\\\", \\\\\"hello\\\\\"\\)" -> "of ('i', 'e')", 
+        "List\\(to\\)" -> "\\\"to\\\"", 
+        "List\\(ho\\)" -> "\\\"ho\\\"", 
+        "List\\(hi\\)" -> "\\\"hi\\\"",
+        "List\\(hey\\)" -> "\\\"hey\\\"",
+        "\\(1, 2, 8\\)" -> "('1', '2', '8')", 
+        "\\(1, 2, 9\\)" -> "('1', '2', '9')", 
+        "\\(1, 3, 4\\)" -> "('1', '3', '4')", 
+        "\\(1, 6, 8\\)" -> "('1', '6', '8')", 
+        "\\(2, 1, 5\\)" -> "('2', '1', '5')", 
+        "\\(2, 3, 1\\)" -> "('2', '3', '1')", 
+        "\\(2, 3, 4\\)" -> "('2', '3', '4')", 
+        "\\(2, 3, 8\\)" -> "('2', '3', '8')", 
+        "\\(2, 6, 8\\)" -> "('2', '6', '8')", 
+        "\\(3, 1, 5\\)" -> "('3', '1', '5')", 
+        "\\(3, 2, 1\\)" -> "('3', '2', '1')", 
+        "\\(3, 2, 8\\)" -> "('3', '2', '8')", 
+        "\\(3, 4, 5\\)" -> "('3', '4', '5')", 
+        "\\(3, 6, 8\\)" -> "('3', '6', '8')", 
+        "\\(3, 6, 9\\)" -> "('3', '6', '9')", 
+        "\\(3, 8, 5\\)" -> "('3', '8', '5')", 
+        "\\(5, 3, 4\\)" -> "('5', '3', '4')", 
+        "\\(8, 3, 4\\)" -> "('8', '3', '4')", 
+        "\\(1, 3, Nil\\)" -> "('1', '3')", 
+        "listsNil" -> "listsString", 
+        "Nil" -> "\\\"\\\"", 
+        "Resources\\(\\\"didNotEqual\\\", decorateToStringValue\\(fumList\\), decorateToStringValue\\(toList\\)\\)" -> "Resources(\"didNotEqual\", decorateToStringValue(\"[\" + fumList + \"]\"), decorateToStringValue(\"[\" + toList + \"]\"))", 
+        "Resources\\(\\\"equaled\\\", decorateToStringValue\\(fumList\\), decorateToStringValue\\(toList\\)\\)" -> "Resources(\"equaled\", decorateToStringValue(\"[\" + fumList + \"]\"), decorateToStringValue(\"[\" + toList + \"]\"))",
+        "Resources\\(\\\"wasNotEqualTo\\\", decorateToStringValue\\(fumList\\), decorateToStringValue\\(toList\\)\\)" -> "Resources(\"wasNotEqualTo\", decorateToStringValue(\"[\" + fumList + \"]\"), decorateToStringValue(\"[\" + toList + \"]\"))", 
+        "decorateToStringValue\\(\\\"1\\\"\\) \\+ \\\" was not equal to \\\" \\+ decorateToStringValue\\(\\\"2\\\"\\)" -> "decorateToStringValue(\"[1]\") + \" was not equal to \" + decorateToStringValue(\"[2]\")",
+        "decorateToStringValue\\(\\\"2\\\"\\) \\+ \\\" was not equal to \\\" \\+ decorateToStringValue\\(\\\"1\\\"\\)" -> "decorateToStringValue(\"[2]\") + \" was not equal to \" + decorateToStringValue(\"[1]\")",
+        "decorateToStringValue\\(\\\"\\\"\\) \\+ \\\" was not equal to \\\" \\+ decorateToStringValue\\(\\\"e\\\"\\)" -> "decorateToStringValue(\"[]\") + \" was not equal to \" + decorateToStringValue(\"[e]\")", 
+        "decorateToStringValue\\(\\\"\\\"\\) \\+ \\\" was not equal to \\\" \\+ decorateToStringValue\\(\\\"1\\\"\\)" -> "decorateToStringValue(\"[]\") + \" was not equal to \" + decorateToStringValue(\"[1]\")", 
+        "decorateToStringValue\\(\\\"i\\\"\\) \\+ \\\" was not equal to \\\" \\+ decorateToStringValue\\(\\\"o\\\"\\)" -> "decorateToStringValue(\"[i]\") + \" was not equal to \" + decorateToStringValue(\"[o]\")", 
+        "decorateToStringValue\\(\\\"2\\\"\\) \\+ \\\" was not equal to \\\" \\+ decorateToStringValue\\(\\\"3\\\"\\)" -> "decorateToStringValue(\"[2]\") + \" was not equal to \" + decorateToStringValue(\"[3]\")"
+      )
     
     // Generate tests for atLeastOneOf
     generateFile("ListShouldContainAtLeastOneOfSpec.scala", "Array", arrayMapping: _*)
@@ -186,6 +367,13 @@ object GenContain {
     generateFile("ListShouldContainAtLeastOneOfLogicalOrSpec.scala", "Map", mapMapping: _*)
     generateFile("ListShouldContainAtLeastOneOfSpec.scala", "JavaCol", javaColMapping: _*)
     generateFile("ListShouldContainAtLeastOneOfLogicalAndSpec.scala", "JavaCol", javaColMapping: _*)
+    generateFile("ListShouldContainAtLeastOneOfLogicalOrSpec.scala", "JavaCol", javaColMapping: _*)
+    generateFile("ListShouldContainAtLeastOneOfSpec.scala", "JavaMap", javaMapMapping: _*)
+    generateFile("ListShouldContainAtLeastOneOfLogicalAndSpec.scala", "JavaMap", javaMapMapping: _*)
+    generateFile("ListShouldContainAtLeastOneOfLogicalOrSpec.scala", "JavaMap", javaMapMapping: _*)
+    generateFile("ListShouldContainAtLeastOneOfSpec.scala", "String", stringMapping: _*)
+    generateFile("ListShouldContainAtLeastOneOfLogicalAndSpec.scala", "String", stringMapping: _*)
+    generateFile("ListShouldContainAtLeastOneOfLogicalOrSpec.scala", "String", stringMapping: _*)
   }
   
   def main(args: Array[String]) {
