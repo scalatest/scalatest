@@ -1114,5 +1114,11 @@ object SharedHelpers extends Assertions {
     val ois = new java.io.ObjectInputStream(new java.io.ByteArrayInputStream(baos.toByteArray))
     ois.readObject.asInstanceOf[A]
   }
+  
+  def checkMessageStackDepth(exception: StackDepthException, message: String, fileName: String, lineNumber: Int) {
+    assert(exception.message === Some(message))
+    assert(exception.failedCodeFileName === Some(fileName))
+    assert(exception.failedCodeLineNumber === Some(lineNumber))
+  }
 }
 

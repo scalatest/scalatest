@@ -16,6 +16,7 @@
 package org.scalatest.enablers
 
 import org.scalautils.Equality
+import org.scalatest.words.ArrayWrapper
 
 trait Aggregation[A] {
   def containsAtLeastOneOf(aggregation: A, eles: Seq[Any]): Boolean
@@ -41,4 +42,57 @@ object Aggregation {
   // Enables (xs should contain ("HI")) (after being lowerCased)
   implicit def convertEqualityToGenTraversableAggregation[E, TRAV[_] <: scala.collection.GenTraversable[_]](equality: Equality[E]): Aggregation[TRAV[E]] = 
     withGenTraversableElementEquality(equality)
+    
+  implicit def withArrayElementEquality[E](implicit equality: Equality[E]): Aggregation[Array[E]] = 
+    new Aggregation[Array[E]] {
+      def containsAtLeastOneOf(array: Array[E], elements: scala.collection.Seq[Any]): Boolean = {
+        new ArrayWrapper(array).exists((e: Any) => elements.exists((ele: Any) => equality.areEqual(e.asInstanceOf[E], ele)))
+      }
+    }
+
+  // Enables (xs should contain ("HI")) (after being lowerCased)
+  implicit def convertEqualityToArrayAggregation[E](equality: Equality[E]): Aggregation[Array[E]] = 
+    withArrayElementEquality(equality)
+  
+  implicit def withStringCharacterEquality(implicit equality: Equality[Char]): Aggregation[String] = 
+    new Aggregation[String] {
+      def containsAtLeastOneOf(s: String, elements: scala.collection.Seq[Any]): Boolean = {
+        s.exists((e: Any) => elements.exists((ele: Any) => equality.areEqual(e.asInstanceOf[Char], ele)))
+      }
+    }
+
+  implicit def convertEqualityToStringAggregation(equality: Equality[Char]): Aggregation[String] = 
+    withStringCharacterEquality(equality)
+    
+  implicit def withGenMapElementEquality[K, V, MAP[_, _] <: scala.collection.GenMap[_, _]](implicit equality: Equality[(K, V)]): Aggregation[MAP[K, V]] = 
+    new Aggregation[MAP[K, V]] {
+      def containsAtLeastOneOf(map: MAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
+        map.exists((e: Any) => elements.exists((ele: Any) => equality.areEqual(e.asInstanceOf[(K, V)], ele)))
+      }
+    }
+
+  implicit def convertEqualityToGenMapAggregation[K, V, MAP[_, _] <: scala.collection.GenMap[_, _]](equality: Equality[(K, V)]): Aggregation[MAP[K, V]] = 
+    withGenMapElementEquality(equality)
+    
+  implicit def withJavaCollectionElementEquality[E, JCOL[_] <: java.util.Collection[_]](implicit equality: Equality[E]): Aggregation[JCOL[E]] = 
+    new Aggregation[JCOL[E]] {
+      def containsAtLeastOneOf(col: JCOL[E], elements: scala.collection.Seq[Any]): Boolean = {
+        import scala.collection.JavaConverters._
+        col.asInstanceOf[java.util.Collection[E]].asScala.exists((e: Any) => elements.exists((ele: Any) => equality.areEqual(e.asInstanceOf[E], ele)))
+      }
+    }
+
+  implicit def convertEqualityToJavaCollectionAggregation[E, JCOL[_] <: java.util.Collection[_]](equality: Equality[E]): Aggregation[JCOL[E]] = 
+    withJavaCollectionElementEquality(equality)
+    
+  implicit def withJavaMapElementEquality[K, V, JMAP[_, _] <: java.util.Map[_, _]](implicit equality: Equality[(K, V)]): Aggregation[JMAP[K, V]] = 
+    new Aggregation[JMAP[K, V]] {
+      def containsAtLeastOneOf(map: JMAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
+        import scala.collection.JavaConverters._
+        map.asInstanceOf[java.util.Map[K, V]].asScala.exists((e: Any) => elements.exists((ele: Any) => equality.areEqual(e.asInstanceOf[(K, V)], ele)))
+      }
+    }
+
+  implicit def convertEqualityToJavaMapAggregation[K, V, JMAP[_, _] <: java.util.Map[_, _]](equality: Equality[(K, V)]): Aggregation[JMAP[K, V]] = 
+    withJavaMapElementEquality(equality)
 }

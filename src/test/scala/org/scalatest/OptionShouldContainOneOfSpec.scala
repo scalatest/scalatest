@@ -25,6 +25,11 @@ class OptionShouldContainOneOfSpec extends Spec with Matchers {
     new Equality[String] {
       def areEqual(a: String, b: Any): Boolean = a != b
     }
+  
+  val upperCaseEquality =
+    new Equality[String] {
+      def areEqual(a: String, b: Any): Boolean = a.toUpperCase == b
+    }
 
   object `an Option` {
 
@@ -43,16 +48,16 @@ class OptionShouldContainOneOfSpec extends Spec with Matchers {
         e1.message.get should be (Resources("didNotContainOneOfElements", fumSome, "\"happy\", \"birthday\", \"to\", \"you\""))
       }
       def `should use the implicit Equality in scope` {
-        implicit val ise = invertedStringEquality
-        fumSome should newContain newOneOf ("happy", "birthday", "to", "you")
+        implicit val ise = upperCaseEquality
+        fumSome should newContain newOneOf ("FEE", "FIE", "FOE", "FUM")
         intercept[TestFailedException] {
-          fumSome should newContain newOneOf ("fum", "fum", "fum", "fum")
+          fumSome should newContain newOneOf ("fee", "fie", "foe", "fum")
         }
       }
       def `should use an explicitly provided Equality` {
-        (fumSome should newContain newOneOf ("happy", "birthday", "to", "you")) (decided by invertedStringEquality)
+        (fumSome should newContain newOneOf ("FEE", "FIE", "FOE", "FUM")) (decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (fumSome should newContain newOneOf ("fum", "fum", "fum", "fum")) (decided by invertedStringEquality)
+          (fumSome should newContain newOneOf ("fee", "fie", "foe", "fum")) (decided by upperCaseEquality)
         }
         intercept[TestFailedException] {
           fumSome should newContain newOneOf (" FEE ", " FIE ", " FOE ", " FUM ")
@@ -74,16 +79,16 @@ class OptionShouldContainOneOfSpec extends Spec with Matchers {
         e1.message.get should be (Resources("didNotContainOneOfElements", fumSome, "\"happy\", \"birthday\", \"to\", \"you\""))
       }
       def `should use the implicit Equality in scope` {
-        implicit val ise = invertedStringEquality
-        fumSome should (newContain newOneOf ("happy", "birthday", "to", "you"))
+        implicit val ise = upperCaseEquality
+        fumSome should (newContain newOneOf ("FEE", "FIE", "FOE", "FUM"))
         intercept[TestFailedException] {
-          fumSome should (newContain newOneOf ("fum", "fum", "fum", "fum"))
+          fumSome should (newContain newOneOf ("fee", "fie", "foe", "fum"))
         }
       }
       def `should use an explicitly provided Equality` {
-        (fumSome should (newContain newOneOf ("happy", "birthday", "to", "you"))) (decided by invertedStringEquality)
+        (fumSome should (newContain newOneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (fumSome should (newContain newOneOf ("fum", "fum", "fum", "fum"))) (decided by invertedStringEquality)
+          (fumSome should (newContain newOneOf ("fee", "fie", "foe", "fum"))) (decided by upperCaseEquality)
         }
         intercept[TestFailedException] {
           fumSome should (newContain newOneOf (" FEE ", " FIE ", " FOE ", " FUM "))
@@ -112,20 +117,20 @@ class OptionShouldContainOneOfSpec extends Spec with Matchers {
         e1.message.get should be (Resources("containedOneOfElements", toSome, "\"happy\", \"birthday\", \"to\", \"you\""))
       }
       def `should use the implicit Equality in scope` {
-        implicit val ise = invertedStringEquality
-        toSome should not newContain newOneOf ("to", "to", "to", "to")
+        implicit val ise = upperCaseEquality
+        toSome should not newContain newOneOf ("happy", "birthday", "to", "you")
         intercept[TestFailedException] {
-          toSome should not newContain newOneOf ("fee", "fie", "foe", "fum")
+          toSome should not newContain newOneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")
         }
       }
       def `should use an explicitly provided Equality` {
-        (toSome should not newContain newOneOf ("to", "to", "to", "to")) (decided by invertedStringEquality)
+        (toSome should not newContain newOneOf ("happy", "birthday", "to", "you")) (decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (toSome should not newContain newOneOf ("fee", "fie", "foe", "fum")) (decided by invertedStringEquality)
+          (toSome should not newContain newOneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseEquality)
         }
-        toSome should not newContain newOneOf (" TO ", " TO ", " TO ", " TO ")
+        toSome should not newContain newOneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")
         intercept[TestFailedException] {
-          (toSome should not newContain newOneOf (" TO ", " TO ", " TO ", " TO ")) (after being lowerCased and trimmed)
+          (toSome should not newContain newOneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (after being lowerCased and trimmed)
         }
       }
     }
@@ -151,20 +156,20 @@ The bottom two don't, but still I don't want to support that in general.
         e1.message.get should be (Resources("containedOneOfElements", toSome, "\"happy\", \"birthday\", \"to\", \"you\""))
       }
       def `should use the implicit Equality in scope` {
-        implicit val ise = invertedStringEquality
-        toSome should (not newContain newOneOf ("to", "to", "to", "to"))
+        implicit val ise = upperCaseEquality
+        toSome should (not newContain newOneOf ("happy", "birthday", "to", "you"))
         intercept[TestFailedException] {
-          toSome should (not newContain newOneOf ("fee", "fie", "foe", "fum"))
+          toSome should (not newContain newOneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))
         }
       }
       def `should use an explicitly provided Equality` {
-        (toSome should (not newContain newOneOf ("to", "to", "to", "to"))) (decided by invertedStringEquality)
+        (toSome should (not newContain newOneOf ("happy", "birthday", "to", "you"))) (decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (toSome should (not newContain newOneOf ("fee", "fie", "foe", "fum"))) (decided by invertedStringEquality)
+          (toSome should (not newContain newOneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseEquality)
         }
-        toSome should (not newContain newOneOf (" TO ", " TO ", " TO ", " TO "))
+        toSome should (not newContain newOneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
         intercept[TestFailedException] {
-          (toSome should (not newContain newOneOf (" TO ", " TO ", " TO ", " TO "))) (after being lowerCased and trimmed)
+          (toSome should (not newContain newOneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
         }
       }
     }
@@ -339,13 +344,13 @@ scala> all (some1s) should (newContain (newOneOf (1, 3, 4)))
         }
       }
       def `should use an explicitly provided Equality` {
-        (all (toSomes) should not newContain newOneOf ("to", "to", "to", "to")) (decided by invertedStringEquality)
+        (all (toSomes) should not newContain newOneOf ("happy", "birthday", "to", "you")) (decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (all (toSomes) should not newContain newOneOf ("fee", "fie", "foe", "fum")) (decided by invertedStringEquality)
+          (all (toSomes) should not newContain newOneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseEquality)
         }
-        all (toSomes) should not newContain newOneOf (" TO ", " TO ", " TO ", " TO ")
+        all (toSomes) should not newContain newOneOf (" happy ", " birthday ", " to ", " you ")
         intercept[TestFailedException] {
-          (all (toSomes) should not newContain newOneOf (" TO ", " TO ", " TO ", " TO ")) (after being lowerCased and trimmed)
+          (all (toSomes) should not newContain newOneOf (" happy ", " birthday ", " to ", " you ")) (after being lowerCased and trimmed)
         }
       }
     }
@@ -388,13 +393,13 @@ The top two don't, but still I don't want to support that in general.
         }
       }
       def `should use an explicitly provided Equality` {
-        (all (toSomes) should (not newContain newOneOf ("to", "to", "to", "to"))) (decided by invertedStringEquality)
+        (all (toSomes) should (not newContain newOneOf ("happy", "birthday", "to", "you"))) (decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (all (toSomes) should (not newContain newOneOf ("fee", "fie", "foe", "fum"))) (decided by invertedStringEquality)
+          (all (toSomes) should (not newContain newOneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseEquality)
         }
-        all (toSomes) should (not newContain newOneOf (" TO ", " TO ", " TO ", " TO "))
+        all (toSomes) should (not newContain newOneOf (" happy ", " birthday ", " to ", " you "))
         intercept[TestFailedException] {
-          (all (toSomes) should (not newContain newOneOf (" TO ", " TO ", " TO ", " TO "))) (after being lowerCased and trimmed)
+          (all (toSomes) should (not newContain newOneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
         }
       }
     }
