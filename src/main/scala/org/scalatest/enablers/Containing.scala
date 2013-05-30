@@ -24,6 +24,7 @@ import org.scalatest.FailureMessages
 trait Containing[A] {
   def contains(holder: A, element: Any): Boolean
   def containsOneOf(holder: A, elements: scala.collection.Seq[Any]): Boolean
+  def containsNoneOf(holder: A, elements: scala.collection.Seq[Any]): Boolean
 /*
   def containsNoneOf(holder: A, elements: scala.collection.Seq[Any]): Boolean
 */
@@ -46,6 +47,12 @@ trait Containing[A] {
   
 object Containing {
   
+  private def tryEquality[T](left: Any, right: Any, equality: Equality[T]): Boolean = 
+    try equality.areEqual(left.asInstanceOf[T], right)
+      catch {
+        case cce: ClassCastException => false
+    }
+  
   private def checkOneOf[T](left: GenTraversableOnce[T], right: GenTraversable[Any], equality: Equality[T]): (Set[Any], Set[Any]) = {
     /*right.foldLeft(Set.empty[Any], Set.empty[Any]) { case ((fs, rs), r) =>
       if (rs.find(e => equality.areEqual(e.asInstanceOf[T], r)).isDefined)
@@ -61,16 +68,9 @@ object Containing {
         (fs, rs + r) // r is not in the left
     }*/
     // aggregate version is more verbose, but it allows parallel execution.
-    def tryEquality(left: Any, right: Any): Boolean = 
-      try equality.areEqual(left.asInstanceOf[T], right)
-      catch {
-        case cce: ClassCastException => false
-      }
     right.aggregate(Set.empty[Any], Set.empty[Any])( 
       { case (((fs, rs), r)) => 
-          //if (rs.find(e => equality.areEqual(e.asInstanceOf[T], r)).isDefined)
-            //throw new IllegalArgumentException(FailureMessages("oneOfDuplicate", r))
-          if (rs.find(e => tryEquality(e, r)).isDefined)
+          if (rs.find(e => tryEquality(e, r, equality)).isDefined)
             throw new IllegalArgumentException(FailureMessages("oneOfDuplicate", r))
           if (left.exists(t => equality.areEqual(t, r))) {
             // r is in the left
@@ -97,35 +97,26 @@ object Containing {
     )
   }
   
-  /*private def checkOneOfForOption[T](left: Option[T], right: GenTraversable[Any], equality: Equality[T]): (Set[Any], Set[Any]) = {
-    right.aggregate(Set.empty[Any], Set.empty[Any])( 
-      { case (((fs, rs), r)) => 
-          if (rs.find(e => equality.areEqual(e.asInstanceOf[T], r)).isDefined)
-            throw new IllegalArgumentException(FailureMessages("oneOfDuplicate", r))
-          if (left.exists(t => equality.areEqual(t, r))) {
-            // r is in the left
-            if (fs.size != 0) // This .size should be safe, it won't go > 1
-              return (fs + r, rs) // fail early by returning early, hmm..  not so 'functional'??
-            else
-              (fs + r, rs + r)
-          }
+  private def checkNoneOf[T](left: GenTraversableOnce[T], right: GenTraversable[Any], equality: Equality[T]): (Option[Any], Set[Any]) = {
+    right.aggregate(None, Set.empty[Any])( 
+      { case (((f, rs), r)) => 
+          if (rs.find(e => tryEquality(e, r, equality)).isDefined)
+            throw new IllegalArgumentException(FailureMessages("noneOfDuplicate", r))
+          if (left.exists(t => equality.areEqual(t, r))) 
+            return (Some(r), rs + r) // r is in the left, fail early by returning.
           else 
-            (fs, rs + r) // r is not in the left
+            (None, rs + r) // r is not in the left
       }, 
-      { case ((fs1, rs1), (fs2, rs2)) => 
-        rs1.find(e1 => rs2.exists(e2 => equality.areEqual(e1.asInstanceOf[T], e2))) match {
-          case Some(r) => 
-            throw new IllegalArgumentException(FailureMessages("oneOfDuplicate", r))
-          case None =>
-        }
-        val fs = fs1 + fs2
-        if (fs.size > 1)
-          return (fs, rs1 ++ rs2) // fail early by returning early
-        else
-          (fs, rs1 ++ rs2)
+      { case ((f1, rs1), (f2, rs2)) => 
+          rs1.find(e1 => rs2.exists(e2 => equality.areEqual(e1.asInstanceOf[T], e2))) match {
+            case Some(r) => 
+              throw new IllegalArgumentException(FailureMessages("noneOfDuplicate", r))
+            case None =>
+              (None, rs1 ++ rs2)
+          }
       }
     )
-  }*/
+  }
 
   implicit def withJavaCollectionElementEquality[E, JCOL[_] <: java.util.Collection[_]](implicit equality: Equality[E]): Containing[JCOL[E]] = 
     new Containing[JCOL[E]] {
@@ -137,10 +128,15 @@ object Containing {
         }
         found
       }
+      import scala.collection.JavaConverters._
       def containsOneOf(javaColl: JCOL[E], elements: scala.collection.Seq[Any]): Boolean = {
-        import scala.collection.JavaConverters._
+        
         val (foundSet, processedSet) = checkOneOf[E](javaColl.asInstanceOf[java.util.Collection[E]].asScala, elements, equality)
         foundSet.size == 1
+      }
+      def containsNoneOf(javaColl: JCOL[E], elements: scala.collection.Seq[Any]): Boolean = {
+        val (found, processedSet) = checkNoneOf[E](javaColl.asInstanceOf[java.util.Collection[E]].asScala, elements, equality)
+        !found.isDefined
       }
     }
 
@@ -161,6 +157,10 @@ object Containing {
         val (foundSet, processedSet) = checkOneOf[E](trav.asInstanceOf[GenTraversable[E]], elements, equality)
         foundSet.size == 1
       }
+      def containsNoneOf(trav: TRAV[E], elements: scala.collection.Seq[Any]): Boolean = {
+        val (found, processedSet) = checkNoneOf[E](trav.asInstanceOf[GenTraversable[E]], elements, equality)
+        !found.isDefined
+      }
     }
 
   // Enables (xs should contain ("HI")) (after being lowerCased)
@@ -177,6 +177,10 @@ object Containing {
         val (foundSet, processedSet) = checkOneOf[E](opt.asInstanceOf[Option[E]], elements, equality)
         foundSet.size == 1
       }
+      def containsNoneOf(opt: OPT[E], elements: scala.collection.Seq[Any]): Boolean = {
+        val (found, processedSet) = checkNoneOf[E](opt.asInstanceOf[Option[E]], elements, equality)
+        !found.isDefined
+      }
     }
 
   // supports (some should contain ("HI")) (after being lowerCased)
@@ -192,6 +196,10 @@ object Containing {
         val (foundSet, processedSet) = checkOneOf[(K, V)](map.asInstanceOf[scala.collection.GenMap[K, V]], elements, equality)
         foundSet.size == 1
       }
+      def containsNoneOf(map: MAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
+        val (found, processedSet) = checkNoneOf[(K, V)](map.asInstanceOf[scala.collection.GenMap[K, V]], elements, equality)
+        !found.isDefined
+      }
     }
 
   implicit def convertEqualityToGenMapContaining[K, V, MAP[_, _] <: scala.collection.GenMap[_, _]](equality: Equality[(K, V)]): Containing[MAP[K, V]] = 
@@ -204,6 +212,10 @@ object Containing {
       def containsOneOf(arr: Array[E], elements: scala.collection.Seq[Any]): Boolean = {
         val (foundSet, processedSet) = checkOneOf[E](arr, elements, equality)
         foundSet.size == 1
+      }
+      def containsNoneOf(arr: Array[E], elements: scala.collection.Seq[Any]): Boolean = {
+        val (found, processedSet) = checkNoneOf[E](arr, elements, equality)
+        !found.isDefined
       }
     }
 
@@ -218,6 +230,10 @@ object Containing {
         val (foundSet, processedSet) = checkOneOf[Char](str, elements, equality)
         foundSet.size == 1
       }
+      def containsNoneOf(str: String, elements: scala.collection.Seq[Any]): Boolean = {
+        val (found, processedSet) = checkNoneOf[Char](str, elements, equality)
+        !found.isDefined
+      }
     }
 
   implicit def convertEqualityToStringContaining(equality: Equality[Char]): Containing[String] = 
@@ -229,10 +245,14 @@ object Containing {
         import scala.collection.JavaConverters._
         map.asInstanceOf[java.util.Map[K, V]].asScala.exists((e: Any) => equality.areEqual(e.asInstanceOf[(K, V)], ele)) // Don't know why the compiler requires e to be type Any. Should be E.
       }
+      import scala.collection.JavaConverters._
       def containsOneOf(map: JMAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
-        import scala.collection.JavaConverters._
         val (foundSet, processedSet) = checkOneOf[(K, V)](map.asInstanceOf[java.util.Map[K, V]].asScala, elements, equality)
         foundSet.size == 1
+      }
+      def containsNoneOf(map: JMAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
+        val (found, processedSet) = checkNoneOf[(K, V)](map.asInstanceOf[java.util.Map[K, V]].asScala, elements, equality)
+        !found.isDefined
       }
     }
 

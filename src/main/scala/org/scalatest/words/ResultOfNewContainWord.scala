@@ -66,5 +66,24 @@ class ResultOfNewContainWord[L](left: L, shouldBeTrue: Boolean = true) {
         )
       )
   }
+  
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * option should contain noneOf (1, 2)
+   *                       ^
+   * </pre>
+   */
+  def newNoneOf(right: Any*)(implicit holder: Containing[L]) {
+    if (holder.containsNoneOf(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "containedOneOfElements" else "didNotContainOneOfElements",
+          left,
+          UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
+        )
+      )
+  }
 }
 
