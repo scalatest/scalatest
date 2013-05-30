@@ -646,6 +646,21 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
         )
       )
   }
+
+  def newContain(noneOf: ResultOfNewNoneOfApplication)(implicit holder: Containing[T]) {
+
+    val right = noneOf.right
+
+    if (holder.containsNoneOf(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "containedOneOfElements" else "didNotContainOneOfElements",
+          left,
+          UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
+        )
+      )
+  }
+  
 }
 
 /**
