@@ -28,32 +28,23 @@ private[scalatest] class StandardOutReporter(
   presentInColor: Boolean,
   presentShortStackTraces: Boolean,
   presentFullStackTraces: Boolean,
-  presentUnformatted: Boolean
-/*
   presentUnformatted: Boolean,
   presentReminder: Boolean,
   presentReminderWithShortStackTraces: Boolean,
   presentReminderWithFullStackTraces: Boolean,
   presentReminderWithoutCanceledTests: Boolean
-*/
 ) extends PrintReporter(
   Console.out,
   presentAllDurations,
   presentInColor,
   presentShortStackTraces,
   presentFullStackTraces,
-  presentUnformatted
-/*
   presentUnformatted,
   presentReminder,
   presentReminderWithShortStackTraces,
   presentReminderWithFullStackTraces,
   presentReminderWithoutCanceledTests
-*/
 ) {
-
-  // ARE WE USING THIS? def this() = this(false, false, false, false, false)
-
   /**
    * Does nothing, because don't want to dispose the standard output stream.
    */

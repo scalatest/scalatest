@@ -42,27 +42,21 @@ private[scalatest] abstract class PrintReporter(
   presentInColor: Boolean,
   presentShortStackTraces: Boolean,
   presentFullStackTraces: Boolean,
-  presentUnformatted: Boolean
-/*
   presentUnformatted: Boolean,
   presentReminder: Boolean,
   presentReminderWithShortStackTraces: Boolean,
   presentReminderWithFullStackTraces: Boolean,
   presentReminderWithoutCanceledTests: Boolean
-*/
 ) extends StringReporter(
   presentAllDurations,
   presentInColor,
   presentShortStackTraces,
   presentFullStackTraces,
-  presentUnformatted
-/*
   presentUnformatted,
   presentReminder,
   presentReminderWithShortStackTraces,
   presentReminderWithFullStackTraces,
   presentReminderWithoutCanceledTests
-*/
 ) {
 
   /**
@@ -80,7 +74,11 @@ private[scalatest] abstract class PrintReporter(
     presentInColor: Boolean,
     presentShortStackTraces: Boolean,
     presentFullStackTraces: Boolean,
-    presentUnformatted: Boolean
+    presentUnformatted: Boolean,
+    presentReminder: Boolean,
+    presentReminderWithShortStackTraces: Boolean,
+    presentReminderWithFullStackTraces: Boolean,
+    presentReminderWithoutCanceledTests: Boolean
   ) =
     this(
       new PrintWriter(
@@ -92,7 +90,11 @@ private[scalatest] abstract class PrintReporter(
       presentInColor,
       presentShortStackTraces,
       presentFullStackTraces,
-      presentUnformatted
+      presentUnformatted,
+      presentReminder,
+      presentReminderWithShortStackTraces,
+      presentReminderWithFullStackTraces,
+      presentReminderWithoutCanceledTests
     )
 
   /**
@@ -111,7 +113,11 @@ private[scalatest] abstract class PrintReporter(
     presentInColor: Boolean,
     presentShortStackTraces: Boolean,
     presentFullStackTraces: Boolean,
-    presentUnformatted: Boolean
+    presentUnformatted: Boolean,
+    presentReminder: Boolean,
+    presentReminderWithShortStackTraces: Boolean,
+    presentReminderWithFullStackTraces: Boolean,
+    presentReminderWithoutCanceledTests: Boolean
   ) =
     this(
       new PrintWriter(new BufferedOutputStream(new FileOutputStream(new File(filename)), BufferSize)),
@@ -119,7 +125,11 @@ private[scalatest] abstract class PrintReporter(
       presentInColor,
       presentShortStackTraces,
       presentFullStackTraces,
-      presentUnformatted
+      presentUnformatted,
+      presentReminder,
+      presentReminderWithShortStackTraces,
+      presentReminderWithFullStackTraces,
+      presentReminderWithoutCanceledTests
     )
 
   protected def printPossiblyInColor(fragment: Fragment) {

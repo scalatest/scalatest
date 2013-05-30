@@ -88,12 +88,14 @@ class ScalaTestFramework extends SbtFramework {
         def isModule = false
       }
     )
-    
+
   object RunConfig {
-    
+
+    // TODO: Ack, cockroaches! I mean vars. Refactor to vals.
     private var reporter: DispatchReporter = null
     private var reporterConfigs: ReporterConfigurations = null
-    private var useStdout, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces = false
+    private var useStdout, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted = false
+    private var presentReminder, presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests = false
     private var filter: Filter = null
     private var configMap: ConfigMap = null
     private val resultHolder = new SuiteResultHolder()
@@ -120,15 +122,28 @@ class ScalaTestFramework extends SbtFramework {
               presentInColor = !configSet.contains(PresentWithoutColor)
               presentShortStackTraces = configSet.contains(PresentShortStackTraces) || configSet.contains(PresentFullStackTraces)
               presentFullStackTraces = configSet.contains(PresentFullStackTraces)
+              presentUnformatted = configSet.contains(PresentUnformatted)
+              presentReminder =
+                configSet.exists { ele =>
+                  ele == PresentReminderWithoutStackTraces || ele == PresentReminderWithShortStackTraces || ele == PresentReminderWithFullStackTraces
+                }
+              presentReminderWithShortStackTraces = configSet.contains(PresentReminderWithShortStackTraces) && !configSet.contains(PresentReminderWithFullStackTraces)
+              presentReminderWithFullStackTraces = configSet.contains(PresentReminderWithFullStackTraces)
+              presentReminderWithoutCanceledTests = configSet.contains(PresentReminderWithoutCanceledTests)
             case None => 
               useStdout = repoArgsList.isEmpty  // If no reporters specified, just give them a default stdout reporter
               presentAllDurations = false
               presentInColor = true
               presentShortStackTraces = false
               presentFullStackTraces = false
+              presentUnformatted = false
+              presentReminder = false
+              presentReminderWithShortStackTraces = false
+              presentReminderWithFullStackTraces = false
+              presentReminderWithoutCanceledTests = false
           }
           
-          reporterConfigs = fullReporterConfigurations.copy(standardOutReporterConfiguration = None) //Runner.parseReporterArgsIntoConfigurations(repoArgsList.filter(!_.startsWith("-o")))
+          reporterConfigs = fullReporterConfigurations.copy(standardOutReporterConfiguration = None)
         }
         
         if (reporter == null || reporter.isDisposed) {
@@ -173,7 +188,12 @@ class ScalaTestFramework extends SbtFramework {
           presentAllDurations,
           presentInColor,
           presentShortStackTraces,
-          presentFullStackTraces // If they say both S and F, F overrules
+          presentFullStackTraces, // If they say both S and F, F overrules
+          presentUnformatted,
+          presentReminder,
+          presentReminderWithShortStackTraces,
+          presentReminderWithFullStackTraces,
+          presentReminderWithoutCanceledTests
         )
     }
   }
@@ -186,8 +206,28 @@ class ScalaTestFramework extends SbtFramework {
     new ScalaTestRunner(testLoader, loggers)
   }
   
-  class SbtLogInfoReporter(loggers: Array[Logger], presentAllDurations: Boolean, presentInColor: Boolean, presentShortStackTraces: Boolean, presentFullStackTraces: Boolean) 
-      extends StringReporter(presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, false) {
+  class SbtLogInfoReporter(
+    loggers: Array[Logger],
+    presentAllDurations: Boolean,
+    presentInColor: Boolean,
+    presentShortStackTraces: Boolean,
+    presentFullStackTraces: Boolean,
+    presentUnformatted: Boolean,
+    presentReminder: Boolean,
+    presentReminderWithShortStackTraces: Boolean,
+    presentReminderWithFullStackTraces: Boolean,
+    presentReminderWithoutCanceledTests: Boolean
+  ) extends StringReporter(
+    presentAllDurations,
+    presentInColor,
+    presentShortStackTraces,
+    presentFullStackTraces,
+    presentUnformatted,
+    presentReminder,
+    presentReminderWithShortStackTraces,
+    presentReminderWithFullStackTraces,
+    presentReminderWithoutCanceledTests
+  ) {
 
     protected def printPossiblyInColor(fragment: Fragment) {
       loggers.foreach { logger =>

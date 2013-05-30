@@ -37,9 +37,28 @@ class Framework extends SbtFramework {
         def isModule = false
       })
       
-  class RecordingDistributor(fullyQualifiedName: String, rerunSuiteId: String, originalReporter: Reporter, args: Args, loader: ClassLoader, tagsToInclude: Set[String], tagsToExclude: Set[String], selectors: Array[Selector], configMap: ConfigMap, 
-                             summaryCounter: SummaryCounter, useSbtLogInfoReporter: Boolean, presentAllDurations: Boolean, presentInColor: Boolean, presentShortStackTraces: Boolean, 
-                             presentFullStackTraces: Boolean, presentUnformatted: Boolean) extends Distributor {
+  class RecordingDistributor(
+    fullyQualifiedName: String,
+    rerunSuiteId: String,
+    originalReporter: Reporter,
+    args: Args,
+    loader: ClassLoader,
+    tagsToInclude: Set[String],
+    tagsToExclude: Set[String],
+    selectors: Array[Selector],
+    configMap: ConfigMap, 
+    summaryCounter: SummaryCounter,
+    useSbtLogInfoReporter: Boolean,
+    presentAllDurations: Boolean,
+    presentInColor: Boolean,
+    presentShortStackTraces: Boolean, 
+    presentFullStackTraces: Boolean,
+    presentUnformatted: Boolean,
+    presentReminder: Boolean,
+    presentReminderWithShortStackTraces: Boolean,
+    presentReminderWithFullStackTraces: Boolean,
+    presentReminderWithoutCanceledTests: Boolean
+  ) extends Distributor {
     
     private val taskQueue = new LinkedBlockingQueue[Task]()
     
@@ -53,8 +72,31 @@ class Framework extends SbtFramework {
       if (args == null)
         throw new NullPointerException("args is null")
       val status = new ScalaTestStatefulStatus
-      val nestedTask = new ScalaTestNestedTask(fullyQualifiedName, rerunSuiteId, suite, loader, originalReporter, args.tracker, tagsToInclude, tagsToExclude, selectors, configMap, summaryCounter, status, useSbtLogInfoReporter, 
-                                               presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted)
+      val nestedTask =
+        new ScalaTestNestedTask(
+          fullyQualifiedName,
+          rerunSuiteId,
+          suite,
+          loader,
+          originalReporter,
+          args.tracker,
+          tagsToInclude,
+          tagsToExclude,
+          selectors,
+          configMap,
+          summaryCounter,
+          status,
+          useSbtLogInfoReporter, 
+          presentAllDurations,
+          presentInColor,
+          presentShortStackTraces,
+          presentFullStackTraces,
+          presentUnformatted,
+          presentReminder,
+          presentReminderWithShortStackTraces,
+          presentReminderWithFullStackTraces,
+          presentReminderWithoutCanceledTests
+        )
       taskQueue.put(nestedTask)
       status
     }
@@ -63,8 +105,21 @@ class Framework extends SbtFramework {
       taskQueue.asScala.toArray
   }
   
-  private def createTaskDispatchReporter(reporter: Reporter, loggers: Array[Logger], loader: ClassLoader, useSbtLogInfoReporter: Boolean, presentAllDurations: Boolean, presentInColor: Boolean, 
-                                         presentShortStackTraces: Boolean, presentFullStackTraces: Boolean, presentUnformatted: Boolean) = {
+  private def createTaskDispatchReporter(
+    reporter: Reporter,
+    loggers: Array[Logger],
+    loader: ClassLoader,
+    useSbtLogInfoReporter: Boolean,
+    presentAllDurations: Boolean,
+    presentInColor: Boolean, 
+    presentShortStackTraces: Boolean,
+    presentFullStackTraces: Boolean,
+    presentUnformatted: Boolean,
+    presentReminder: Boolean,
+    presentReminderWithShortStackTraces: Boolean,
+    presentReminderWithFullStackTraces: Boolean,
+    presentReminderWithoutCanceledTests: Boolean
+  ) = {
     if (useSbtLogInfoReporter) {
       val sbtLogInfoReporter = 
         new SbtLogInfoReporter(
@@ -72,7 +127,12 @@ class Framework extends SbtFramework {
           presentAllDurations,
           presentInColor,
           presentShortStackTraces,
-          presentFullStackTraces // If they say both S and F, F overrules
+          presentFullStackTraces, // If they say both S and F, F overrules
+          presentUnformatted,
+          presentReminder,
+          presentReminderWithShortStackTraces,
+          presentReminderWithFullStackTraces,
+          presentReminderWithoutCanceledTests
         )
       ReporterFactory.getDispatchReporter(Seq(reporter, sbtLogInfoReporter), None, None, loader, Some(resultHolder))
     }
@@ -80,10 +140,32 @@ class Framework extends SbtFramework {
       reporter
   }
       
-  def runSuite(fullyQualifiedName: String, rerunSuiteId: String, suite: Suite, loader: ClassLoader, reporter: Reporter, tracker: Tracker, eventHandler: EventHandler, 
-               tagsToInclude: Set[String], tagsToExclude: Set[String], selectors: Array[Selector], configMap: ConfigMap, summaryCounter: SummaryCounter, statefulStatus: Option[ScalaTestStatefulStatus], 
-               loggers: Array[Logger], useSbtLogInfoReporter: Boolean, presentAllDurations: Boolean, presentInColor: Boolean, presentShortStackTraces: Boolean, presentFullStackTraces: Boolean, 
-               presentUnformatted: Boolean): Array[Task] = {
+  def runSuite(
+    fullyQualifiedName: String,
+    rerunSuiteId: String,
+    suite: Suite,
+    loader: ClassLoader,
+    reporter: Reporter,
+    tracker: Tracker,
+    eventHandler: EventHandler, 
+    tagsToInclude: Set[String],
+    tagsToExclude: Set[String],
+    selectors: Array[Selector],
+    configMap: ConfigMap,
+    summaryCounter: SummaryCounter,
+    statefulStatus: Option[ScalaTestStatefulStatus], 
+    loggers: Array[Logger],
+    useSbtLogInfoReporter: Boolean,
+    presentAllDurations: Boolean,
+    presentInColor: Boolean,
+    presentShortStackTraces: Boolean,
+    presentFullStackTraces: Boolean, 
+    presentUnformatted: Boolean,
+    presentReminder: Boolean,
+    presentReminderWithShortStackTraces: Boolean,
+    presentReminderWithFullStackTraces: Boolean,
+    presentReminderWithoutCanceledTests: Boolean
+  ): Array[Task] = {
     val suiteStartTime = System.currentTimeMillis
     val suiteClass = suite.getClass
     val report = new SbtReporter(rerunSuiteId, fullyQualifiedName, eventHandler, reporter, summaryCounter)
@@ -125,8 +207,29 @@ class Framework extends SbtFramework {
     report(SuiteStarting(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), formatter, Some(TopOfClass(suiteClass.getName))))
 
     val args = Args(report, Stopper.default, filter, configMap, None, tracker, Set.empty)
-    val distributor = new RecordingDistributor(fullyQualifiedName, rerunSuiteId, reporter, args, loader, tagsToInclude, tagsToExclude, selectors, configMap, summaryCounter, useSbtLogInfoReporter, presentAllDurations, presentInColor, presentShortStackTraces, 
-                                               presentFullStackTraces, presentUnformatted)
+    val distributor =
+      new RecordingDistributor(
+        fullyQualifiedName,
+        rerunSuiteId,
+        reporter,
+        args,
+        loader,
+        tagsToInclude,
+        tagsToExclude,
+        selectors,
+        configMap,
+        summaryCounter,
+        useSbtLogInfoReporter,
+        presentAllDurations,
+        presentInColor,
+        presentShortStackTraces, 
+        presentFullStackTraces,
+        presentUnformatted,
+        presentReminder,
+        presentReminderWithShortStackTraces,
+        presentReminderWithFullStackTraces,
+        presentReminderWithoutCanceledTests
+      )
     
     try {
       
@@ -171,9 +274,30 @@ class Framework extends SbtFramework {
     distributor.nestedTasks
   }
   
-  class ScalaTestNestedTask(fullyQualifiedName: String, rerunSuiteId: String, suite: Suite, loader: ClassLoader, reporter: Reporter, tracker: Tracker, tagsToInclude: Set[String], tagsToExclude: Set[String], 
-                            selectors: Array[Selector], configMap: ConfigMap, summaryCounter: SummaryCounter, statefulStatus: ScalaTestStatefulStatus, useSbtLogInfoReporter: Boolean, 
-                            presentAllDurations: Boolean, presentInColor: Boolean, presentShortStackTraces: Boolean, presentFullStackTraces: Boolean, presentUnformatted: Boolean) extends Task {
+  class ScalaTestNestedTask(
+    fullyQualifiedName: String,
+    rerunSuiteId: String,
+    suite: Suite,
+    loader: ClassLoader,
+    reporter: Reporter,
+    tracker: Tracker,
+    tagsToInclude: Set[String],
+    tagsToExclude: Set[String], 
+    selectors: Array[Selector],
+    configMap: ConfigMap,
+    summaryCounter: SummaryCounter,
+    statefulStatus: ScalaTestStatefulStatus,
+    useSbtLogInfoReporter: Boolean, 
+    presentAllDurations: Boolean,
+    presentInColor: Boolean,
+    presentShortStackTraces: Boolean,
+    presentFullStackTraces: Boolean,
+    presentUnformatted: Boolean,
+    presentReminder: Boolean,
+    presentReminderWithShortStackTraces: Boolean,
+    presentReminderWithFullStackTraces: Boolean,
+    presentReminderWithoutCanceledTests: Boolean
+  ) extends Task {
     
     def tags = 
       for { 
@@ -193,15 +317,57 @@ class Framework extends SbtFramework {
       }
     
     def execute(eventHandler: EventHandler, loggers: Array[Logger]) = {
-      runSuite(fullyQualifiedName, rerunSuiteId, suite, loader, reporter, tracker, eventHandler, tagsToInclude, tagsToExclude, selectors, configMap, summaryCounter, Some(statefulStatus), 
-               loggers, useSbtLogInfoReporter, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted)
+      runSuite(
+        fullyQualifiedName,
+        rerunSuiteId,
+        suite,
+        loader,
+        reporter,
+        tracker,
+        eventHandler,
+        tagsToInclude,
+        tagsToExclude,
+        selectors,
+        configMap,
+        summaryCounter,
+        Some(statefulStatus), 
+        loggers,
+        useSbtLogInfoReporter,
+        presentAllDurations,
+        presentInColor,
+        presentShortStackTraces,
+        presentFullStackTraces,
+        presentUnformatted,
+        presentReminder,
+        presentReminderWithShortStackTraces,
+        presentReminderWithFullStackTraces,
+        presentReminderWithoutCanceledTests
+      )
     }
   }
       
-  class ScalaTestTask(fullyQualifiedName: String, loader: ClassLoader, reporter: Reporter, tracker: Tracker, tagsToInclude: Set[String], 
-                      tagsToExclude: Set[String], explicitlySpecified: Boolean, selectors: Array[Selector], configMap: ConfigMap, 
-                      summaryCounter: SummaryCounter, useSbtLogInfoReporter: Boolean, presentAllDurations: Boolean, presentInColor: Boolean, 
-                      presentShortStackTraces: Boolean, presentFullStackTraces: Boolean, presentUnformatted: Boolean) extends Task {
+  class ScalaTestTask(
+    fullyQualifiedName: String,
+    loader: ClassLoader,
+    reporter: Reporter,
+    tracker: Tracker,
+    tagsToInclude: Set[String], 
+    tagsToExclude: Set[String],
+    explicitlySpecified: Boolean,
+    selectors: Array[Selector],
+    configMap: ConfigMap, 
+    summaryCounter: SummaryCounter,
+    useSbtLogInfoReporter: Boolean,
+    presentAllDurations: Boolean,
+    presentInColor: Boolean, 
+    presentShortStackTraces: Boolean,
+    presentFullStackTraces: Boolean,
+    presentUnformatted: Boolean,
+    presentReminder: Boolean,
+    presentReminderWithShortStackTraces: Boolean,
+    presentReminderWithFullStackTraces: Boolean,
+    presentReminderWithoutCanceledTests: Boolean
+  ) extends Task {
     
     def loadSuiteClass = {
       try {
@@ -250,10 +416,49 @@ class Framework extends SbtFramework {
           constructor.get.newInstance(suiteClass).asInstanceOf[Suite]
         }
         
-        val taskReporter = createTaskDispatchReporter(reporter, loggers, loader, useSbtLogInfoReporter, presentAllDurations, presentInColor, presentShortStackTraces, 
-                                                      presentFullStackTraces, presentUnformatted)
-        runSuite(fullyQualifiedName, suite.suiteId, suite, loader, taskReporter, tracker, eventHandler, tagsToInclude, tagsToExclude, selectors, configMap, summaryCounter, None, 
-                 loggers, useSbtLogInfoReporter, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted)
+        val taskReporter =
+          createTaskDispatchReporter(
+            reporter,
+            loggers,
+            loader,
+            useSbtLogInfoReporter,
+            presentAllDurations,
+            presentInColor,
+            presentShortStackTraces, 
+            presentFullStackTraces,
+            presentUnformatted,
+            presentReminder,
+            presentReminderWithShortStackTraces,
+            presentReminderWithFullStackTraces,
+            presentReminderWithoutCanceledTests
+          )
+
+        runSuite(
+          fullyQualifiedName,
+          suite.suiteId,
+          suite,
+          loader,
+          taskReporter,
+          tracker,
+          eventHandler,
+          tagsToInclude,
+          tagsToExclude,
+          selectors,
+          configMap,
+          summaryCounter,
+          None, 
+          loggers,
+          useSbtLogInfoReporter,
+          presentAllDurations,
+          presentInColor,
+          presentShortStackTraces,
+          presentFullStackTraces,
+          presentUnformatted,
+          presentReminder,
+          presentReminderWithShortStackTraces,
+          presentReminderWithFullStackTraces,
+          presentReminderWithoutCanceledTests
+        )
       }
        else 
          throw new IllegalArgumentException("Class " + fullyQualifiedName + " is neither accessible accesible org.scalatest.Suite nor runnable.")
@@ -296,8 +501,28 @@ class Framework extends SbtFramework {
     }
   }
   
-  class SbtLogInfoReporter(loggers: Array[Logger], presentAllDurations: Boolean, presentInColor: Boolean, presentShortStackTraces: Boolean, presentFullStackTraces: Boolean) 
-    extends StringReporter(presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, false) {
+  class SbtLogInfoReporter(
+    loggers: Array[Logger],
+    presentAllDurations: Boolean,
+    presentInColor: Boolean,
+    presentShortStackTraces: Boolean,
+    presentFullStackTraces: Boolean,
+    presentUnformatted: Boolean,
+    presentReminder: Boolean,
+    presentReminderWithShortStackTraces: Boolean,
+    presentReminderWithFullStackTraces: Boolean,
+    presentReminderWithoutCanceledTests: Boolean
+  ) extends StringReporter(
+    presentAllDurations,
+    presentInColor,
+    presentShortStackTraces,
+    presentFullStackTraces,
+    presentUnformatted,
+    presentReminder,
+    presentReminderWithShortStackTraces,
+    presentReminderWithFullStackTraces,
+    presentReminderWithoutCanceledTests
+  ) {
     
     protected def printPossiblyInColor(fragment: Fragment) {
       loggers.foreach { logger =>
@@ -308,10 +533,24 @@ class Framework extends SbtFramework {
     def dispose() = ()
   }
   
-  class ScalaTestRunner(runArgs: Array[String], loader: ClassLoader, tagsToInclude: Set[String], tagsToExclude: Set[String], configMap: ConfigMap, 
-                        repConfig: ReporterConfigurations, useSbtLogInfoReporter: Boolean, presentAllDurations: Boolean, presentInColor: Boolean, 
-                        presentShortStackTraces: Boolean, presentFullStackTraces: Boolean, presentUnformatted: Boolean) 
-                        extends sbt.testing.Runner {  
+  class ScalaTestRunner(
+    runArgs: Array[String],
+    loader: ClassLoader,
+    tagsToInclude: Set[String],
+    tagsToExclude: Set[String],
+    configMap: ConfigMap, 
+    repConfig: ReporterConfigurations,
+    useSbtLogInfoReporter: Boolean,
+    presentAllDurations: Boolean,
+    presentInColor: Boolean, 
+    presentShortStackTraces: Boolean,
+    presentFullStackTraces: Boolean,
+    presentUnformatted: Boolean,
+    presentReminder: Boolean,
+    presentReminderWithShortStackTraces: Boolean,
+    presentReminderWithFullStackTraces: Boolean,
+    presentReminderWithoutCanceledTests: Boolean
+  ) extends sbt.testing.Runner {  
     var isDone = false
     val tracker = new Tracker
     val summaryCounter = new SummaryCounter
@@ -322,8 +561,28 @@ class Framework extends SbtFramework {
     dispatchReporter(RunStarting(tracker.nextOrdinal(), 0, configMap))
     
     def task(fullyQualifiedName: String, fingerprint: Fingerprint, explicitlySpecified: Boolean, selectors: Array[Selector]) = 
-      new ScalaTestTask(fullyQualifiedName, loader, dispatchReporter, tracker, if (selectors.isEmpty) Set.empty else Set(SELECTED_TAG), Set.empty, explicitlySpecified, selectors, configMap, summaryCounter, 
-                        useSbtLogInfoReporter, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted)
+      new ScalaTestTask(
+        fullyQualifiedName,
+        loader,
+        dispatchReporter,
+        tracker,
+        if (selectors.isEmpty) Set.empty else Set(SELECTED_TAG),
+        Set.empty,
+        explicitlySpecified,
+        selectors,
+        configMap,
+        summaryCounter, 
+        useSbtLogInfoReporter,
+        presentAllDurations,
+        presentInColor,
+        presentShortStackTraces,
+        presentFullStackTraces,
+        presentUnformatted,
+        presentReminder,
+        presentReminderWithShortStackTraces,
+        presentReminderWithFullStackTraces,
+        presentReminderWithoutCanceledTests
+      )
     
     def done = {
       if (!isDone) {
@@ -429,9 +688,9 @@ class Framework extends SbtFramework {
       Array(InetAddress.getLocalHost.getHostAddress, skeleton.port.toString)
     }
   }
-      
+
   def runner(args: Array[String], remoteArgs: Array[String], testClassLoader: ClassLoader) = {
-    
+
     val translator = new FriendlyParamsTranslator()
     val (propertiesArgsList, includesArgsList, excludesArgsList, repoArgsList, concurrentList, memberOnlyList, wildcardList, 
                suiteList, junitList, testngList) = translator.parsePropsAndTags(args.filter(!_.equals("")))
@@ -450,7 +709,18 @@ class Framework extends SbtFramework {
         Runner.parseReporterArgsIntoConfigurations("-K" :: remoteArgs(0) :: remoteArgs(1) :: Nil)
       }
     
-    val (useStdout, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted) = 
+    val (
+      useStdout,
+      presentAllDurations,
+      presentInColor,
+      presentShortStackTraces,
+      presentFullStackTraces,
+      presentUnformatted,
+      presentReminder,
+      presentReminderWithShortStackTraces,
+      presentReminderWithFullStackTraces,
+      presentReminderWithoutCanceledTests
+    ) = 
       fullReporterConfigurations.standardOutReporterConfiguration match {
         case Some(stdoutConfig) =>
           val configSet = stdoutConfig.configSet
@@ -460,16 +730,38 @@ class Framework extends SbtFramework {
             !configSet.contains(PresentWithoutColor),
             configSet.contains(PresentShortStackTraces) || configSet.contains(PresentFullStackTraces),
             configSet.contains(PresentFullStackTraces), 
-            configSet.contains(PresentUnformatted)
+            configSet.contains(PresentUnformatted),
+            configSet.exists { ele =>
+              ele == PresentReminderWithoutStackTraces || ele == PresentReminderWithShortStackTraces || ele == PresentReminderWithFullStackTraces
+            },
+            configSet.contains(PresentReminderWithShortStackTraces) && !configSet.contains(PresentReminderWithFullStackTraces),
+            configSet.contains(PresentReminderWithFullStackTraces),
+            configSet.contains(PresentReminderWithoutCanceledTests)
           )
         case None => 
-          (!remoteArgs.isEmpty || repoArgsList.isEmpty, false, true, false, false, false)
+          (!remoteArgs.isEmpty || repoArgsList.isEmpty, false, true, false, false, false, false, false, false, false)
       }
     
     val reporterConfigs = fullReporterConfigurations.copy(standardOutReporterConfiguration = None)
     
-    new ScalaTestRunner(args, testClassLoader, tagsToInclude, tagsToExclude, configMap, reporterConfigs, useStdout, 
-                        presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted)
+    new ScalaTestRunner(
+      args,
+      testClassLoader,
+      tagsToInclude,
+      tagsToExclude,
+      configMap,
+      reporterConfigs,
+      useStdout, 
+      presentAllDurations,
+      presentInColor,
+      presentShortStackTraces,
+      presentFullStackTraces,
+      presentUnformatted,
+      presentReminder,
+      presentReminderWithShortStackTraces,
+      presentReminderWithFullStackTraces,
+      presentReminderWithoutCanceledTests
+    )
   }
   
   private case class ScalaTestSbtEvent(

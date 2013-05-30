@@ -55,17 +55,14 @@ private[scalatest] class ReporterFactory {
         presentInColor = !configSet.contains(PresentWithoutColor),
         presentShortStackTraces = configSet.contains(PresentShortStackTraces) || configSet.contains(PresentFullStackTraces),
         presentFullStackTraces = configSet.contains(PresentFullStackTraces), // If they say both S and F, F overrules
-        presentUnformatted = configSet.contains(PresentUnformatted)
-/*
         presentUnformatted = configSet.contains(PresentUnformatted),
         presentReminder =
           configSet.exists { ele =>
-            ele == PresentReminderWithoutStackTraces || ele == PresentReminderWithShortStackTraces || PresentReminderWithFullStackTraces
+            ele == PresentReminderWithoutStackTraces || ele == PresentReminderWithShortStackTraces || ele == PresentReminderWithFullStackTraces
           },
         presentReminderWithShortStackTraces = configSet.contains(PresentReminderWithShortStackTraces) && !configSet.contains(PresentReminderWithFullStackTraces),
         presentReminderWithFullStackTraces = configSet.contains(PresentReminderWithFullStackTraces),
         presentReminderWithoutCanceledTests = configSet.contains(PresentReminderWithoutCanceledTests)
-*/
       )
     else
       new FilterReporter(
@@ -74,17 +71,14 @@ private[scalatest] class ReporterFactory {
           presentInColor = !configSet.contains(PresentWithoutColor),
           presentShortStackTraces = configSet.contains(PresentShortStackTraces) || configSet.contains(PresentFullStackTraces),
           presentFullStackTraces = configSet.contains(PresentFullStackTraces), // If they say both S and F, F overrules
-          presentUnformatted = configSet.contains(PresentUnformatted)
-/*
           presentUnformatted = configSet.contains(PresentUnformatted),
           presentReminder =
             configSet.exists { ele =>
-              ele == PresentReminderWithoutStackTraces || ele == PresentReminderWithShortStackTraces || PresentReminderWithFullStackTraces
+              ele == PresentReminderWithoutStackTraces || ele == PresentReminderWithShortStackTraces || ele == PresentReminderWithFullStackTraces
             },
           presentReminderWithShortStackTraces = configSet.contains(PresentReminderWithShortStackTraces) && !configSet.contains(PresentReminderWithFullStackTraces),
           presentReminderWithFullStackTraces = configSet.contains(PresentReminderWithFullStackTraces),
           presentReminderWithoutCanceledTests = configSet.contains(PresentReminderWithoutCanceledTests)
-*/
         ),
         configSet
       )
@@ -97,17 +91,14 @@ private[scalatest] class ReporterFactory {
         presentInColor = !configSet.contains(PresentWithoutColor),
         presentShortStackTraces = configSet.contains(PresentShortStackTraces) || configSet.contains(PresentFullStackTraces),
         presentFullStackTraces = configSet.contains(PresentFullStackTraces), // If they say both S and F, F overrules
-        presentUnformatted = configSet.contains(PresentUnformatted)
-/*
         presentUnformatted = configSet.contains(PresentUnformatted),
         presentReminder =
           configSet.exists { ele =>
-            ele == PresentReminderWithoutStackTraces || ele == PresentReminderWithShortStackTraces || PresentReminderWithFullStackTraces
+            ele == PresentReminderWithoutStackTraces || ele == PresentReminderWithShortStackTraces || ele == PresentReminderWithFullStackTraces
           },
         presentReminderWithShortStackTraces = configSet.contains(PresentReminderWithShortStackTraces) && !configSet.contains(PresentReminderWithFullStackTraces),
         presentReminderWithFullStackTraces = configSet.contains(PresentReminderWithFullStackTraces),
         presentReminderWithoutCanceledTests = configSet.contains(PresentReminderWithoutCanceledTests)
-*/
       )
     else
       new FilterReporter(
@@ -116,17 +107,14 @@ private[scalatest] class ReporterFactory {
           presentInColor = !configSet.contains(PresentWithoutColor),
           presentShortStackTraces = configSet.contains(PresentShortStackTraces) || configSet.contains(PresentFullStackTraces),
           presentFullStackTraces = configSet.contains(PresentFullStackTraces), // If they say both S and F, F overrules
-          presentUnformatted = configSet.contains(PresentUnformatted)
-/*
           presentUnformatted = configSet.contains(PresentUnformatted),
           presentReminder =
             configSet.exists { ele =>
-              ele == PresentReminderWithoutStackTraces || ele == PresentReminderWithShortStackTraces || PresentReminderWithFullStackTraces
+              ele == PresentReminderWithoutStackTraces || ele == PresentReminderWithShortStackTraces || ele == PresentReminderWithFullStackTraces
             },
           presentReminderWithShortStackTraces = configSet.contains(PresentReminderWithShortStackTraces) && !configSet.contains(PresentReminderWithFullStackTraces),
           presentReminderWithFullStackTraces = configSet.contains(PresentReminderWithFullStackTraces),
           presentReminderWithoutCanceledTests = configSet.contains(PresentReminderWithoutCanceledTests)
-*/
           ),
         configSet
       )
@@ -140,17 +128,14 @@ private[scalatest] class ReporterFactory {
         presentInColor = !configSet.contains(PresentWithoutColor),
         presentShortStackTraces = configSet.contains(PresentShortStackTraces) || configSet.contains(PresentFullStackTraces),
         presentFullStackTraces = configSet.contains(PresentFullStackTraces), // If they say both S and F, F overrules
-        presentUnformatted = configSet.contains(PresentUnformatted)
-/*
         presentUnformatted = configSet.contains(PresentUnformatted),
         presentReminder =
           configSet.exists { ele =>
-            ele == PresentReminderWithoutStackTraces || ele == PresentReminderWithShortStackTraces || PresentReminderWithFullStackTraces
+            ele == PresentReminderWithoutStackTraces || ele == PresentReminderWithShortStackTraces || ele == PresentReminderWithFullStackTraces
           },
         presentReminderWithShortStackTraces = configSet.contains(PresentReminderWithShortStackTraces) && !configSet.contains(PresentReminderWithFullStackTraces),
         presentReminderWithFullStackTraces = configSet.contains(PresentReminderWithFullStackTraces),
         presentReminderWithoutCanceledTests = configSet.contains(PresentReminderWithoutCanceledTests)
-*/
       )
     else
       new FilterReporter(
@@ -160,17 +145,14 @@ private[scalatest] class ReporterFactory {
           presentInColor = !configSet.contains(PresentWithoutColor),
           presentShortStackTraces = configSet.contains(PresentShortStackTraces) || configSet.contains(PresentFullStackTraces),
           presentFullStackTraces = configSet.contains(PresentFullStackTraces), // If they say both S and F, F overrules
-          presentUnformatted = configSet.contains(PresentUnformatted)
-/*
           presentUnformatted = configSet.contains(PresentUnformatted),
           presentReminder =
             configSet.exists { ele =>
-              ele == PresentReminderWithoutStackTraces || ele == PresentReminderWithShortStackTraces || PresentReminderWithFullStackTraces
+              ele == PresentReminderWithoutStackTraces || ele == PresentReminderWithShortStackTraces || ele == PresentReminderWithFullStackTraces
             },
           presentReminderWithShortStackTraces = configSet.contains(PresentReminderWithShortStackTraces) && !configSet.contains(PresentReminderWithFullStackTraces),
           presentReminderWithFullStackTraces = configSet.contains(PresentReminderWithFullStackTraces),
           presentReminderWithoutCanceledTests = configSet.contains(PresentReminderWithoutCanceledTests)
-*/
         ),
         configSet
       )

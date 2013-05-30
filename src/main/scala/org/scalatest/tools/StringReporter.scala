@@ -46,14 +46,11 @@ private[scalatest] abstract class StringReporter(
   presentInColor: Boolean,
   presentShortStackTraces: Boolean,
   presentFullStackTraces: Boolean,
-  presentUnformatted: Boolean
-/*
   presentUnformatted: Boolean,
   presentReminder: Boolean,
   presentReminderWithShortStackTraces: Boolean,
   presentReminderWithFullStackTraces: Boolean,
   presentReminderWithoutCanceledTests: Boolean
-*/
 ) extends ResourcefulReporter {
 
   protected def printPossiblyInColor(fragment: Fragment)
