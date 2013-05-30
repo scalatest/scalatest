@@ -41,9 +41,20 @@ import StringReporter._
  *
  * @author Bill Venners
  */
-private[scalatest] abstract class StringReporter(presentAllDurations: Boolean,
-        presentInColor: Boolean, presentShortStackTraces: Boolean, presentFullStackTraces: Boolean,
-        presentUnformatted: Boolean) extends ResourcefulReporter {
+private[scalatest] abstract class StringReporter(
+  presentAllDurations: Boolean,
+  presentInColor: Boolean,
+  presentShortStackTraces: Boolean,
+  presentFullStackTraces: Boolean,
+  presentUnformatted: Boolean
+/*
+  presentUnformatted: Boolean,
+  presentReminder: Boolean,
+  presentReminderWithShortStackTraces: Boolean,
+  presentReminderWithFullStackTraces: Boolean,
+  presentReminderWithoutCanceledTests: Boolean
+*/
+) extends ResourcefulReporter {
 
   protected def printPossiblyInColor(fragment: Fragment)
 
@@ -448,8 +459,21 @@ private[scalatest] object StringReporter {
         case Some(NameInfo(suiteName, _, _, testName)) => (Some(suiteName), testName)
         case None => (None, None)
       }
-    val lines: Vector[String] = stringsToPrintOnError("infoProvidedNote", "infoProvided", event.message, event.throwable, event.formatter, suiteName, testName, None,
-        presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces).toVector
+    val lines: Vector[String] =
+      stringsToPrintOnError(
+        "infoProvidedNote",
+        "infoProvided",
+        event.message,
+        event.throwable,
+        event.formatter,
+        suiteName,
+        testName,
+        None,
+        presentUnformatted,
+        presentAllDurations,
+        presentShortStackTraces,
+        presentFullStackTraces
+      ).toVector
 
     lines map (new Fragment(_, ansiColor))
     // for (line <- lines) printPossiblyInColor(line, ansiColor)

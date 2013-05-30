@@ -23,13 +23,36 @@ import org.scalatest._
  *
  * @author Bill Venners
  */
-private[scalatest] class StandardOutReporter(presentAllDurations: Boolean,
-    presentInColor: Boolean, presentShortStackTraces: Boolean, presentFullStackTraces: Boolean,
-    presentUnformatted: Boolean)
-    extends PrintReporter(Console.out, presentAllDurations, presentInColor,
-    presentShortStackTraces, presentFullStackTraces, presentUnformatted) {
+private[scalatest] class StandardOutReporter(
+  presentAllDurations: Boolean,
+  presentInColor: Boolean,
+  presentShortStackTraces: Boolean,
+  presentFullStackTraces: Boolean,
+  presentUnformatted: Boolean
+/*
+  presentUnformatted: Boolean,
+  presentReminder: Boolean,
+  presentReminderWithShortStackTraces: Boolean,
+  presentReminderWithFullStackTraces: Boolean,
+  presentReminderWithoutCanceledTests: Boolean
+*/
+) extends PrintReporter(
+  Console.out,
+  presentAllDurations,
+  presentInColor,
+  presentShortStackTraces,
+  presentFullStackTraces,
+  presentUnformatted
+/*
+  presentUnformatted,
+  presentReminder,
+  presentReminderWithShortStackTraces,
+  presentReminderWithFullStackTraces,
+  presentReminderWithoutCanceledTests
+*/
+) {
 
-  def this() = this(false, false, false, false, false)
+  // ARE WE USING THIS? def this() = this(false, false, false, false, false)
 
   /**
    * Does nothing, because don't want to dispose the standard output stream.

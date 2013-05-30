@@ -48,9 +48,12 @@ import java.text.DecimalFormat
 /**
  * A <code>Reporter</code> that prints test status information in HTML format to a file.
  */
-private[scalatest] class HtmlReporter(directoryPath: String, presentAllDurations: Boolean,
-        presentInColor: Boolean, presentStackTraces: Boolean, presentFullStackTraces: Boolean, 
-        cssUrl: Option[URL], resultHolder: Option[SuiteResultHolder]) extends ResourcefulReporter {
+private[scalatest] class HtmlReporter(
+  directoryPath: String,
+  presentAllDurations: Boolean,
+  cssUrl: Option[URL],
+  resultHolder: Option[SuiteResultHolder]
+) extends ResourcefulReporter {
 
   private val specIndent = 15
   private val targetDir = new File(directoryPath)

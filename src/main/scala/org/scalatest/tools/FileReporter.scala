@@ -32,10 +32,34 @@ import java.io.IOException
  *
  * @author Bill Venners
  */
-private[scalatest] class FileReporter(val filename: String, presentAllDurations: Boolean,
-    presentInColor: Boolean, presentShortStackTraces: Boolean, presentFullStackTraces: Boolean,
-    presentUnformatted: Boolean)
-    extends PrintReporter(filename, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces,
-    presentUnformatted) {
-  def this(filename: String) = this(filename, false, true, false, false, false)
+private[scalatest] class FileReporter(
+  val filename: String,
+  presentAllDurations: Boolean,
+  presentInColor: Boolean,
+  presentShortStackTraces: Boolean,
+  presentFullStackTraces: Boolean,
+  presentUnformatted: Boolean
+/*
+  presentUnformatted: Boolean,
+  presentReminder: Boolean,
+  presentReminderWithShortStackTraces: Boolean,
+  presentReminderWithFullStackTraces: Boolean,
+  presentReminderWithoutCanceledTests: Boolean
+*/
+) extends PrintReporter(
+  filename,
+  presentAllDurations,
+  presentInColor,
+  presentShortStackTraces,
+  presentFullStackTraces,
+  presentUnformatted
+/*
+  presentUnformatted,
+  presentReminder,
+  presentReminderWithShortStackTraces,
+  presentReminderWithFullStackTraces,
+  presentReminderWithoutCanceledTests
+*/
+) {
+  // ARE WE USING THIS? def this(filename: String) = this(filename, false, true, false, false, false)
 }

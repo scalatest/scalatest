@@ -51,20 +51,40 @@ private[scalatest] class ReporterFactory {
   protected def createStandardOutReporter(configSet: Set[ReporterConfigParam]) = {
     if (configSetMinusNonFilterParams(configSet).isEmpty)
       new StandardOutReporter(
-        configSet.contains(PresentAllDurations),
-        !configSet.contains(PresentWithoutColor),
-        configSet.contains(PresentShortStackTraces) || configSet.contains(PresentFullStackTraces),
-        configSet.contains(PresentFullStackTraces), // If they say both S and F, F overrules
-        configSet.contains(PresentUnformatted)
+        presentAllDurations = configSet.contains(PresentAllDurations),
+        presentInColor = !configSet.contains(PresentWithoutColor),
+        presentShortStackTraces = configSet.contains(PresentShortStackTraces) || configSet.contains(PresentFullStackTraces),
+        presentFullStackTraces = configSet.contains(PresentFullStackTraces), // If they say both S and F, F overrules
+        presentUnformatted = configSet.contains(PresentUnformatted)
+/*
+        presentUnformatted = configSet.contains(PresentUnformatted),
+        presentReminder =
+          configSet.exists { ele =>
+            ele == PresentReminderWithoutStackTraces || ele == PresentReminderWithShortStackTraces || PresentReminderWithFullStackTraces
+          },
+        presentReminderWithShortStackTraces = configSet.contains(PresentReminderWithShortStackTraces) && !configSet.contains(PresentReminderWithFullStackTraces),
+        presentReminderWithFullStackTraces = configSet.contains(PresentReminderWithFullStackTraces),
+        presentReminderWithoutCanceledTests = configSet.contains(PresentReminderWithoutCanceledTests)
+*/
       )
     else
       new FilterReporter(
         new StandardOutReporter(
-          configSet.contains(PresentAllDurations),
-          !configSet.contains(PresentWithoutColor),
-          configSet.contains(PresentShortStackTraces) || configSet.contains(PresentFullStackTraces),
-          configSet.contains(PresentFullStackTraces), // If they say both S and F, F overrules
-          configSet.contains(PresentUnformatted)
+          presentAllDurations = configSet.contains(PresentAllDurations),
+          presentInColor = !configSet.contains(PresentWithoutColor),
+          presentShortStackTraces = configSet.contains(PresentShortStackTraces) || configSet.contains(PresentFullStackTraces),
+          presentFullStackTraces = configSet.contains(PresentFullStackTraces), // If they say both S and F, F overrules
+          presentUnformatted = configSet.contains(PresentUnformatted)
+/*
+          presentUnformatted = configSet.contains(PresentUnformatted),
+          presentReminder =
+            configSet.exists { ele =>
+              ele == PresentReminderWithoutStackTraces || ele == PresentReminderWithShortStackTraces || PresentReminderWithFullStackTraces
+            },
+          presentReminderWithShortStackTraces = configSet.contains(PresentReminderWithShortStackTraces) && !configSet.contains(PresentReminderWithFullStackTraces),
+          presentReminderWithFullStackTraces = configSet.contains(PresentReminderWithFullStackTraces),
+          presentReminderWithoutCanceledTests = configSet.contains(PresentReminderWithoutCanceledTests)
+*/
         ),
         configSet
       )
@@ -73,47 +93,87 @@ private[scalatest] class ReporterFactory {
   protected def createStandardErrReporter(configSet: Set[ReporterConfigParam]) = {
     if (configSetMinusNonFilterParams(configSet).isEmpty)
       new StandardErrReporter(
-        configSet.contains(PresentAllDurations),
-        !configSet.contains(PresentWithoutColor),
-        configSet.contains(PresentShortStackTraces) || configSet.contains(PresentFullStackTraces),
-        configSet.contains(PresentFullStackTraces), // If they say both S and F, F overrules
-        configSet.contains(PresentUnformatted)
+        presentAllDurations = configSet.contains(PresentAllDurations),
+        presentInColor = !configSet.contains(PresentWithoutColor),
+        presentShortStackTraces = configSet.contains(PresentShortStackTraces) || configSet.contains(PresentFullStackTraces),
+        presentFullStackTraces = configSet.contains(PresentFullStackTraces), // If they say both S and F, F overrules
+        presentUnformatted = configSet.contains(PresentUnformatted)
+/*
+        presentUnformatted = configSet.contains(PresentUnformatted),
+        presentReminder =
+          configSet.exists { ele =>
+            ele == PresentReminderWithoutStackTraces || ele == PresentReminderWithShortStackTraces || PresentReminderWithFullStackTraces
+          },
+        presentReminderWithShortStackTraces = configSet.contains(PresentReminderWithShortStackTraces) && !configSet.contains(PresentReminderWithFullStackTraces),
+        presentReminderWithFullStackTraces = configSet.contains(PresentReminderWithFullStackTraces),
+        presentReminderWithoutCanceledTests = configSet.contains(PresentReminderWithoutCanceledTests)
+*/
       )
-      else
-        new FilterReporter(
-          new StandardErrReporter(
-            configSet.contains(PresentAllDurations),
-            !configSet.contains(PresentWithoutColor),
-            configSet.contains(PresentShortStackTraces) || configSet.contains(PresentFullStackTraces),
-            configSet.contains(PresentFullStackTraces), // If they say both S and F, F overrules
-            configSet.contains(PresentUnformatted)
+    else
+      new FilterReporter(
+        new StandardErrReporter(
+          presentAllDurations = configSet.contains(PresentAllDurations),
+          presentInColor = !configSet.contains(PresentWithoutColor),
+          presentShortStackTraces = configSet.contains(PresentShortStackTraces) || configSet.contains(PresentFullStackTraces),
+          presentFullStackTraces = configSet.contains(PresentFullStackTraces), // If they say both S and F, F overrules
+          presentUnformatted = configSet.contains(PresentUnformatted)
+/*
+          presentUnformatted = configSet.contains(PresentUnformatted),
+          presentReminder =
+            configSet.exists { ele =>
+              ele == PresentReminderWithoutStackTraces || ele == PresentReminderWithShortStackTraces || PresentReminderWithFullStackTraces
+            },
+          presentReminderWithShortStackTraces = configSet.contains(PresentReminderWithShortStackTraces) && !configSet.contains(PresentReminderWithFullStackTraces),
+          presentReminderWithFullStackTraces = configSet.contains(PresentReminderWithFullStackTraces),
+          presentReminderWithoutCanceledTests = configSet.contains(PresentReminderWithoutCanceledTests)
+*/
           ),
-          configSet
-        )
+        configSet
+      )
   }
   
-  protected def createFileReporter(configSet: Set[ReporterConfigParam], fileName: String) = {
+  protected def createFileReporter(configSet: Set[ReporterConfigParam], filename: String) = {
     if (configSetMinusNonFilterParams(configSet).isEmpty)
       new FileReporter(
-        fileName,
-        configSet.contains(PresentAllDurations),
-        !configSet.contains(PresentWithoutColor),
-        configSet.contains(PresentShortStackTraces) || configSet.contains(PresentFullStackTraces),
-        configSet.contains(PresentFullStackTraces), // If they say both S and F, F overrules
-        configSet.contains(PresentUnformatted)
+        filename = filename,
+        presentAllDurations = configSet.contains(PresentAllDurations),
+        presentInColor = !configSet.contains(PresentWithoutColor),
+        presentShortStackTraces = configSet.contains(PresentShortStackTraces) || configSet.contains(PresentFullStackTraces),
+        presentFullStackTraces = configSet.contains(PresentFullStackTraces), // If they say both S and F, F overrules
+        presentUnformatted = configSet.contains(PresentUnformatted)
+/*
+        presentUnformatted = configSet.contains(PresentUnformatted),
+        presentReminder =
+          configSet.exists { ele =>
+            ele == PresentReminderWithoutStackTraces || ele == PresentReminderWithShortStackTraces || PresentReminderWithFullStackTraces
+          },
+        presentReminderWithShortStackTraces = configSet.contains(PresentReminderWithShortStackTraces) && !configSet.contains(PresentReminderWithFullStackTraces),
+        presentReminderWithFullStackTraces = configSet.contains(PresentReminderWithFullStackTraces),
+        presentReminderWithoutCanceledTests = configSet.contains(PresentReminderWithoutCanceledTests)
+*/
       )
-      else
-        new FilterReporter(
-          new FileReporter(
-            fileName,
-            configSet.contains(PresentAllDurations),
-            !configSet.contains(PresentWithoutColor),
-            configSet.contains(PresentShortStackTraces) || configSet.contains(PresentFullStackTraces),
-            configSet.contains(PresentFullStackTraces), // If they say both S and F, F overrules
-            configSet.contains(PresentUnformatted)
-          ),
-          configSet
-        )
+    else
+      new FilterReporter(
+        new FileReporter(
+          filename = filename,
+          presentAllDurations = configSet.contains(PresentAllDurations),
+          presentInColor = !configSet.contains(PresentWithoutColor),
+          presentShortStackTraces = configSet.contains(PresentShortStackTraces) || configSet.contains(PresentFullStackTraces),
+          presentFullStackTraces = configSet.contains(PresentFullStackTraces), // If they say both S and F, F overrules
+          presentUnformatted = configSet.contains(PresentUnformatted)
+/*
+          presentUnformatted = configSet.contains(PresentUnformatted),
+          presentReminder =
+            configSet.exists { ele =>
+              ele == PresentReminderWithoutStackTraces || ele == PresentReminderWithShortStackTraces || PresentReminderWithFullStackTraces
+            },
+          presentReminderWithShortStackTraces = configSet.contains(PresentReminderWithShortStackTraces) && !configSet.contains(PresentReminderWithFullStackTraces),
+          presentReminderWithFullStackTraces = configSet.contains(PresentReminderWithFullStackTraces),
+          presentReminderWithoutCanceledTests = configSet.contains(PresentReminderWithoutCanceledTests)
+*/
+        ),
+        configSet
+      )
   }
   
   protected def createXmlReporter(configSet: Set[ReporterConfigParam], directory: String) = {
@@ -123,24 +183,18 @@ private[scalatest] class ReporterFactory {
   protected def createHtmlReporter(configSet: Set[ReporterConfigParam], directory: String, cssUrl: Option[URL], resultHolder: Option[SuiteResultHolder]) = {
     if (configSetMinusNonFilterParams(configSet).isEmpty)
       new HtmlReporter(
-        directory,
-        configSet.contains(PresentAllDurations),
-        !configSet.contains(PresentWithoutColor),
-        configSet.contains(PresentShortStackTraces) || configSet.contains(PresentFullStackTraces),
-        configSet.contains(PresentFullStackTraces), // If they say both S and F, F overrules
-        cssUrl, 
-        resultHolder
+        directoryPath = directory,
+        presentAllDurations = configSet.contains(PresentAllDurations),
+        cssUrl = cssUrl, 
+        resultHolder = resultHolder
       )
       else
         new FilterReporter(
           new HtmlReporter(
-            directory,
-            configSet.contains(PresentAllDurations),
-            !configSet.contains(PresentWithoutColor),
-            configSet.contains(PresentShortStackTraces) || configSet.contains(PresentFullStackTraces),
-            configSet.contains(PresentFullStackTraces), // If they say both S and F, F overrules
-            cssUrl, 
-            resultHolder
+            directoryPath = directory,
+            presentAllDurations = configSet.contains(PresentAllDurations),
+            cssUrl = cssUrl, 
+            resultHolder = resultHolder
           ),
           configSet
         )
@@ -174,7 +228,7 @@ private[scalatest] class ReporterFactory {
     configuration match {
       case StandardOutReporterConfiguration(configSet) => createStandardOutReporter(configSet)
       case StandardErrReporterConfiguration(configSet) => createStandardErrReporter(configSet)
-      case FileReporterConfiguration(configSet, fileName) => createFileReporter(configSet, fileName)
+      case FileReporterConfiguration(configSet, filename) => createFileReporter(configSet, filename)
       case JunitXmlReporterConfiguration(configSet, directory) => createJunitXmlReporter(configSet, directory)
       case DashboardReporterConfiguration(configSet, directory, numFilesToArchive) => createDashboardReporter(configSet, directory, numFilesToArchive)
       case XmlReporterConfiguration(configSet, directory) => createXmlReporter(configSet, directory)

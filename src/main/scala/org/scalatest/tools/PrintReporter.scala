@@ -36,11 +36,34 @@ import org.scalatest.junit.JUnitTestFailedError
  *
  * @author Bill Venners
  */
-private[scalatest] abstract class PrintReporter(pw: PrintWriter, presentAllDurations: Boolean,
-        presentInColor: Boolean, presentShortStackTraces: Boolean, presentFullStackTraces: Boolean,
-        presentUnformatted: Boolean) extends StringReporter(
-presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces,
-presentUnformatted) {
+private[scalatest] abstract class PrintReporter(
+  pw: PrintWriter,
+  presentAllDurations: Boolean,
+  presentInColor: Boolean,
+  presentShortStackTraces: Boolean,
+  presentFullStackTraces: Boolean,
+  presentUnformatted: Boolean
+/*
+  presentUnformatted: Boolean,
+  presentReminder: Boolean,
+  presentReminderWithShortStackTraces: Boolean,
+  presentReminderWithFullStackTraces: Boolean,
+  presentReminderWithoutCanceledTests: Boolean
+*/
+) extends StringReporter(
+  presentAllDurations,
+  presentInColor,
+  presentShortStackTraces,
+  presentFullStackTraces,
+  presentUnformatted
+/*
+  presentUnformatted,
+  presentReminder,
+  presentReminderWithShortStackTraces,
+  presentReminderWithFullStackTraces,
+  presentReminderWithoutCanceledTests
+*/
+) {
 
   /**
   * Construct a <code>PrintReporter</code> with passed
@@ -51,7 +74,7 @@ presentUnformatted) {
   * @param os the <code>OutputStream</code> to which to print reported info
   * @throws NullPointerException if passed <code>os</code> reference is <code>null</code>
   */
-  def this(
+  def this( // Used by subclasses StandardOutReporter and StandardErrReporter
     os: OutputStream,
     presentAllDurations: Boolean,
     presentInColor: Boolean,
@@ -82,7 +105,7 @@ presentUnformatted) {
   * @throws NullPointerException if passed <code>filename</code> reference is <code>null</code>
   * @throws IOException if unable to open the specified file for writing
   */
-  def this(
+  def this( // Used by subclass FileReporter
     filename: String,
     presentAllDurations: Boolean,
     presentInColor: Boolean,
