@@ -842,6 +842,33 @@ final class NotWord {
       }
     }
   }
+  
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * Array(1, 2) should (not contain noneOf (5, 6, 7))
+   *                         ^
+   * </pre>
+   */
+  def newContain[T](noneOf: ResultOfNewNoneOfApplication): MatcherFactory1[Any, Containing] = {
+    new MatcherFactory1[Any, Containing] {
+      def matcher[T](implicit containing: Containing[T]): Matcher[T] = {
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+        
+            val right = noneOf.right
+
+            MatchResult(
+              !containing.containsNoneOf(left, right),
+              FailureMessages("didNotContainOneOfElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+              FailureMessages("containedOneOfElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+            )
+          }
+        }
+      }
+    }
+  }
 
   /**
    * This method enables the following syntax: 

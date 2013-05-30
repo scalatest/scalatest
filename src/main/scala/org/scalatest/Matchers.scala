@@ -2389,8 +2389,18 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                               ^
      * </pre>
      */
-    def atLeastOneOf(xs: Any*)(implicit holder: Aggregating[T]) = new ResultOfAtLeastOneOfApplication(xs)
+    def atLeastOneOf(xs: Any*)(implicit aggregating: Aggregating[T]) = new ResultOfAtLeastOneOfApplication(xs)
     
+    /**
+     * This method enables the following syntax: 
+     *
+     * <pre class="stHighlight">
+     * List(1, 2, 3) should contain (noneOf(1, 2))
+     *                               ^
+     * </pre>
+     */
+    def newNoneOf(xs: Any*)(implicit containing: Containing[T]) = new ResultOfNewNoneOfApplication(xs)
+
     /**
      * This method enables the following syntax: 
      *
@@ -2723,6 +2733,16 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    * </pre>
    */
   def atLeastOneOf(xs: Any*) = new ResultOfAtLeastOneOfApplication(xs)
+
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * List(1, 2, 3) should contain (noneOf(1, 2))
+   *                               ^
+   * </pre>
+   */
+  def newNoneOf(xs: Any*) = new ResultOfNewNoneOfApplication(xs)
 
   /**
    * This method enables the following syntax: 
@@ -3430,6 +3450,32 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
           )
       }
     }
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * all (xs) should not contain noneOf ("one")
+     *                     ^
+     * </pre>
+     */
+    def newContain(newNoneOf: ResultOfNewNoneOfApplication)(implicit holder: Containing[T]) {
+
+      val right = newNoneOf.right
+
+      doCollected(collected, xs, "newContain", 1) { e =>
+        if (holder.containsNoneOf(e, right) != shouldBeTrue)
+          throw newTestFailedException(
+            FailureMessages(
+              if (shouldBeTrue) "containedOneOfElements" else "didNotContainOneOfElements",
+              e,
+              UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
+            ),
+            None,
+            6
+          )
+      }
+    }
   }
 
   /**
@@ -3865,6 +3911,29 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
           throw newTestFailedException(
             FailureMessages(
               if (shouldBeTrue) "didNotContainAtLeastOneOf" else "containedAtLeastOneOf",
+              e,
+              UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
+            ),
+            None,
+            6
+        )
+      }
+    }
+
+    /**
+     * This method enables the following syntax: 
+     *
+     * <pre class="stHighlight">
+     * option should contain noneOf (1, 2)
+     *                       ^
+     * </pre>
+     */
+    def newNoneOf(right: Any*)(implicit holder: Containing[T]) {
+      doCollected(collected, xs, "newNoneOf", 1) { e =>
+        if (holder.containsNoneOf(e, right) != shouldBeTrue)
+          throw newTestFailedException(
+            FailureMessages(
+              if (shouldBeTrue) "containedOneOfElements" else "didNotContainOneOfElements",
               e,
               UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
             ),

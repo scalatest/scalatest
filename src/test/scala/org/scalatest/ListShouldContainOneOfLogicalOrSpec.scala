@@ -412,7 +412,7 @@ class ListShouldContainOneOfLogicalOrSpec extends Spec with Matchers {
         
         all (hiLists) should (not newContain newOneOf ("hi") or not newContain newOneOf ("hi"))
         all (hiLists) should (not newContain newOneOf ("ho") or not newContain newOneOf ("hi"))
-        all (hiLists) should (not newContain newOneOf ("hi") or not newContain newOneOf ("h0"))
+        all (hiLists) should (not newContain newOneOf ("hi") or not newContain newOneOf ("ho"))
         
         val e1 = intercept[TestFailedException] {
           all (hiLists) should (not newContain newOneOf ("ho") or not newContain newOneOf ("ho"))
