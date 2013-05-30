@@ -826,6 +826,54 @@ class RunnerSpec extends Spec with PrivateMethodTester {
           }
         }
       }
+      object `with short stack traces (T)` {
+        def `including canceled tests` {
+          assertResult(Set(PresentReminderWithShortStackTraces)) {
+            Runner invokePrivate parseConfigSet("-oT")
+          }
+          assertResult(Set(PresentReminderWithShortStackTraces)) {
+            Runner invokePrivate parseConfigSet("-eT")
+          }
+          assertResult(Set(PresentReminderWithShortStackTraces)) {
+            Runner invokePrivate parseConfigSet("-fT")
+          }
+        }
+        def `excluding canceled tests` {
+          assertResult(Set(PresentReminderWithShortStackTraces, PresentReminderWithoutCanceledTests)) {
+            Runner invokePrivate parseConfigSet("-oTK")
+          }
+          assertResult(Set(PresentReminderWithShortStackTraces, PresentReminderWithoutCanceledTests)) {
+            Runner invokePrivate parseConfigSet("-eTK")
+          }
+          assertResult(Set(PresentReminderWithShortStackTraces, PresentReminderWithoutCanceledTests)) {
+            Runner invokePrivate parseConfigSet("-fTK")
+          }
+        }
+      }
+      object `with no stack traces (I)` {
+        def `including canceled tests` {
+          assertResult(Set(PresentReminderWithoutStackTraces)) {
+            Runner invokePrivate parseConfigSet("-oI")
+          }
+          assertResult(Set(PresentReminderWithoutStackTraces)) {
+            Runner invokePrivate parseConfigSet("-eI")
+          }
+          assertResult(Set(PresentReminderWithoutStackTraces)) {
+            Runner invokePrivate parseConfigSet("-fI")
+          }
+        }
+        def `excluding canceled tests` {
+          assertResult(Set(PresentReminderWithoutStackTraces, PresentReminderWithoutCanceledTests)) {
+            Runner invokePrivate parseConfigSet("-oIK")
+          }
+          assertResult(Set(PresentReminderWithoutStackTraces, PresentReminderWithoutCanceledTests)) {
+            Runner invokePrivate parseConfigSet("-eIK")
+          }
+          assertResult(Set(PresentReminderWithoutStackTraces, PresentReminderWithoutCanceledTests)) {
+            Runner invokePrivate parseConfigSet("-fIK")
+          }
+        }
+      }
     }
   }
 

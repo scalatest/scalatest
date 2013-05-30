@@ -104,7 +104,7 @@ E - drop TestPending events
 F - show full stack traces
 *G - reminder with full stack traces
 H - drop SuiteStarting events
-I
+*I - Reminder without stack traces
 J
 *K - exclude TestCanceled events from reminder
 L - drop SuiteCompleted events
@@ -113,7 +113,7 @@ N - drop TestStarting events
 O - drop InfoProvided events
 P - drop ScopeOpened events
 Q - drop ScopeClosed events
-*R - Reminder without stack traces
+R - drop ScopePending events 
 S - show short stack traces
 *T - reminder with short stack traces
 U - unformatted mode
@@ -353,7 +353,7 @@ private[scalatest] case class ConcurrentConfig(numThreads: Int, enableSuiteSorti
  * <li> <code><b>S</b></code> - show short stack traces</li>
  * <li> <code><b>F</b></code> - show full stack traces</li>
  * <li> <code><b>U</b></code> - unformatted mode</li>
- * <li> <code><b>R</b></code> - show reminder of failed and canceled tests without stack traces</li>
+ * <li> <code><b>I</b></code> - show reminder of failed and canceled tests without stack traces</li>
  * <li> <code><b>T</b></code> - show reminder of failed and canceled tests with short stack traces</li>
  * <li> <code><b>G</b></code> - show reminder of failed and canceled tests with full stack traces</li>
  * <li> <code><b>K</b></code> - exclude <code>TestCanceled</code> events from reminder</li>
@@ -1345,13 +1345,13 @@ object Runner {
       it.next match {
         case 'Y' =>  throw new IllegalArgumentException("Use of Y was deprecated in ScalaTest 1.0 and removed in 1.5. Please check the Scaladoc documentation of org.scalatest.Runner for information on valid Reporter config parameters.")
         case 'Z' => throw new IllegalArgumentException("Use of Z was deprecated in ScalaTest 1.0 and removed in 1.5. Please check the Scaladoc documentation of org.scalatest.Runner for information on valid Reporter config parameters.")
-        case 'T' => // Use for Dots
         //case 'P' =>throw new IllegalArgumentException("Use of P was deprecated in ScalaTest 1.0 and removed in 1.5. Please check the Scaladoc documentation of org.scalatest.Runner for information on valid Reporter config parameters.")
         case 'B' =>throw new IllegalArgumentException("Use of B was deprecated in ScalaTest 1.0 and removed in 1.5. Please check the Scaladoc documentation of org.scalatest.Runner for information on valid Reporter config parameters.")
-        case 'I' =>throw new IllegalArgumentException("Use of I was deprecated in ScalaTest 1.0 and removed in 1.5. Please check the Scaladoc documentation of org.scalatest.Runner for information on valid Reporter config parameters.")
         // case 'S' => // Use for Short Stack Traces
         case 'A' =>throw new IllegalArgumentException("Use of A was deprecated in ScalaTest 1.0 and removed in 1.5. Please check the Scaladoc documentation of org.scalatest.Runner for information on valid Reporter config parameters.")
         //case 'R' =>throw new IllegalArgumentException("Use of R was deprecated in ScalaTest 1.0 and removed in 1.5. Please check the Scaladoc documentation of org.scalatest.Runner for information on valid Reporter config parameters.")
+        case 'I' => set += PresentReminderWithoutStackTraces
+        case 'T' => set += PresentReminderWithShortStackTraces
         case 'G' => set += PresentReminderWithFullStackTraces
         case 'K' => set += PresentReminderWithoutCanceledTests
         case 'N' => set += FilterTestStarting

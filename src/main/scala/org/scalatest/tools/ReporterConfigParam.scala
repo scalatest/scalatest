@@ -36,7 +36,7 @@ private[tools] case object PresentFullStackTraces extends ReporterConfigParam("F
 private[tools] case object PresentWithoutColor extends ReporterConfigParam("W")
 private[tools] case object PresentAllDurations extends ReporterConfigParam("D")
 private[tools] case object PresentUnformatted extends ReporterConfigParam("U")
-private[tools] case object PresentReminderWithoutStackTraces extends ReporterConfigParam("R")
+private[tools] case object PresentReminderWithoutStackTraces extends ReporterConfigParam("I")
 private[tools] case object PresentReminderWithShortStackTraces extends ReporterConfigParam("T")
 private[tools] case object PresentReminderWithFullStackTraces extends ReporterConfigParam("G")
 private[tools] case object PresentReminderWithoutCanceledTests extends ReporterConfigParam("K")
