@@ -1352,7 +1352,8 @@ object Runner {
         // case 'S' => // Use for Short Stack Traces
         case 'A' =>throw new IllegalArgumentException("Use of A was deprecated in ScalaTest 1.0 and removed in 1.5. Please check the Scaladoc documentation of org.scalatest.Runner for information on valid Reporter config parameters.")
         //case 'R' =>throw new IllegalArgumentException("Use of R was deprecated in ScalaTest 1.0 and removed in 1.5. Please check the Scaladoc documentation of org.scalatest.Runner for information on valid Reporter config parameters.")
-        case 'G' =>throw new IllegalArgumentException("Use of G was deprecated in ScalaTest 1.0 and removed in 1.5. Please check the Scaladoc documentation of org.scalatest.Runner for information on valid Reporter config parameters.")
+        case 'G' => set += PresentReminderWithFullStackTraces
+        case 'K' => set += PresentReminderWithoutCanceledTests
         case 'N' => set += FilterTestStarting
         case 'C' => set += FilterTestSucceeded
         case 'X' => set += FilterTestIgnored
@@ -2479,38 +2480,3 @@ object Runner {
   }
 }
 
-/*
-Runner command line arguments:
-
-a
-b - sbt reporter (only used inside ScalaTestFramework)
-c - parallel execution
-d
-e - standard error reporter
-f - file reporter
-g - graphical reporter
-h - HTML Reporter
-i
-j - run a JUnit tests class
-k
-l - tags to exclude
-m - members only path
-n - tags to include
-o - standard out reporter
-p - space-separated runpath
-q
-r - custom reporter
-s - suite class name
-t - testNG XML config file
-u - junit xml reporter
-v
-w - wildcard path
-x (saving this for a native xml reporter)
-y
-z
-
-D - configMap pair, key=value
-
- * <!--<tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-d <em>&lt;directory name&gt;</em></code></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">select the dashboard reporter</td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-d target/dashboarddir</code></td></tr>
- * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-a <em>&lt;number of files to archive&gt;</em></code></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">specify the number of dashboard files to archive</td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-a 30</code></td></tr>-->
-*/

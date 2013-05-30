@@ -20,7 +20,7 @@ import java.util.regex.Pattern
 import java.net.URL
 import java.io.File
 
-class RunnerSuite() extends Spec with PrivateMethodTester {
+class RunnerSpec extends Spec with PrivateMethodTester {
 
   def `parseArgsIntoLists should work correctly using deprecated args` {
 
@@ -798,18 +798,41 @@ class RunnerSuite() extends Spec with PrivateMethodTester {
     }
   }
 
-  def `parseConfigSet should work correctly` {
+  val parseConfigSet = PrivateMethod[Set[ReporterConfigParam]]('parseConfigSet)
 
-    val parseConfigSet = PrivateMethod[Set[ReporterConfigParam]]('parseConfigSet)
+  object `parseConfigSet should` {
+    object `handle string reporter options for reminders` {
+      object `with full stack traces (G)` {
+        def `including canceled tests` {
+          assertResult(Set(PresentReminderWithFullStackTraces)) {
+            Runner invokePrivate parseConfigSet("-oG")
+          }
+          assertResult(Set(PresentReminderWithFullStackTraces)) {
+            Runner invokePrivate parseConfigSet("-eG")
+          }
+          assertResult(Set(PresentReminderWithFullStackTraces)) {
+            Runner invokePrivate parseConfigSet("-fG")
+          }
+        }
+        def `excluding canceled tests` {
+          assertResult(Set(PresentReminderWithFullStackTraces, PresentReminderWithoutCanceledTests)) {
+            Runner invokePrivate parseConfigSet("-oGK")
+          }
+          assertResult(Set(PresentReminderWithFullStackTraces, PresentReminderWithoutCanceledTests)) {
+            Runner invokePrivate parseConfigSet("-eGK")
+          }
+          assertResult(Set(PresentReminderWithFullStackTraces, PresentReminderWithoutCanceledTests)) {
+            Runner invokePrivate parseConfigSet("-fGK")
+          }
+        }
+      }
+    }
+  }
+
+  def `parseConfigSet should work correctly` {
 
     intercept[NullPointerException] {
       Runner invokePrivate parseConfigSet(null)
-    }
-    intercept[IllegalArgumentException] {
-      Runner invokePrivate parseConfigSet("-fK")
-    }
-    intercept[IllegalArgumentException] {
-      Runner invokePrivate parseConfigSet("-uK")
     }
     intercept[IllegalArgumentException] {
       Runner invokePrivate parseConfigSet("-oYZTFUPBISARG-")
