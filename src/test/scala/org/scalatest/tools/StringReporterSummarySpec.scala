@@ -79,7 +79,7 @@ class StringReporterSummarySpec extends UnitSpec {
         )
       )
     }
-    def `should fail on purpose` {
+    @org.scalatest.Ignore def `should fail on purpose` {
       fail("I meant to do that!")
     }
   }
