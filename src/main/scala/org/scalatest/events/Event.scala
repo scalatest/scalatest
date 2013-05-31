@@ -197,6 +197,11 @@ sealed abstract class Event extends Ordered[Event] with java.io.Serializable {
 sealed trait RecordableEvent extends Event
 
 /**
+ * Marker trait for test failed and test canceled events.
+ */
+sealed trait ExceptionalEvent extends Event
+
+/**
  * Event that indicates a suite (or other entity) is about to start running a test.
  *
  * <p>
@@ -479,7 +484,7 @@ final case class TestFailed (
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends Event {
+) extends Event with ExceptionalEvent {
 
   if (ordinal == null)
     throw new NullPointerException("ordinal was null")
@@ -792,7 +797,7 @@ final case class TestCanceled (
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends Event {
+) extends Event with ExceptionalEvent {
 
   if (ordinal == null)
     throw new NullPointerException("ordinal was null")

@@ -22,12 +22,9 @@ import scala.collection.GenTraversableOnce
 import org.scalatest.FailureMessages
 
 trait Containing[A] {
-  def contains(holder: A, element: Any): Boolean
-  def containsOneOf(holder: A, elements: scala.collection.Seq[Any]): Boolean
-  def containsNoneOf(holder: A, elements: scala.collection.Seq[Any]): Boolean
-/*
-  def containsNoneOf(holder: A, elements: scala.collection.Seq[Any]): Boolean
-*/
+  def contains(container: A, element: Any): Boolean
+  def containsOneOf(container: A, elements: scala.collection.Seq[Any]): Boolean
+  def containsNoneOf(container: A, elements: scala.collection.Seq[Any]): Boolean
 }
 
 /*
@@ -44,7 +41,7 @@ trait Containing[A] {
       false
   }
 */
-  
+
 object Containing {
   
   private def tryEquality[T](left: Any, right: Any, equality: Equality[T]): Boolean = 

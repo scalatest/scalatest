@@ -592,7 +592,7 @@ class Framework extends SbtFramework {
         dispatchReporter(RunCompleted(tracker.nextOrdinal(), Some(duration), Some(summary)))
         dispatchReporter.dispatchDisposeAndWaitUntilDone()
         isDone = true
-        val fragments: Vector[Fragment] = StringReporter.summaryFragments(true, Some(duration), Some(summary)) 
+        val fragments: Vector[Fragment] = StringReporter.summaryFragments(true, Some(duration), Some(summary), Vector.empty) 
         fragments.map(_.toPossiblyColoredText(presentInColor)).mkString("\n")
       }
       else
@@ -600,7 +600,7 @@ class Framework extends SbtFramework {
     }
 
     def args = runArgs
-    
+
     def remoteArgs: Array[String] = {
       import java.net.{ServerSocket, InetAddress}
       import java.io.{ObjectInputStream, ObjectOutputStream}

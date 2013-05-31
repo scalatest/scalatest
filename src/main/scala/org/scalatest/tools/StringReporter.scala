@@ -209,66 +209,115 @@ private[scalatest] object StringReporter {
     lines map (new Fragment(_, AnsiRed))
   }
 
-  def summaryFragments(runCompleted: Boolean, duration: Option[Long], summaryOption: Option[Summary]): Vector[Fragment] = {
+  def summaryFragments(runCompleted: Boolean, duration: Option[Long], summaryOption: Option[Summary], exceptionalEvents: Vector[ExceptionalEvent]): Vector[Fragment] = {
 
     val resourceName =
       if (runCompleted) "runCompleted"
       else "runStopped"
 
-    summaryOption match {
-      case Some(summary) =>
+    val summaryFrags: Vector[Fragment] = 
+      summaryOption match {
+        case Some(summary) =>
+  
+          import summary._
+  
+          Vector(
+  
+            duration match {
+              case Some(msSinceEpoch) =>
+                Some(Fragment(Resources(resourceName + "In", makeDurationString(msSinceEpoch)), AnsiCyan))
+              case None =>
+                Some(Fragment(Resources(resourceName), AnsiCyan))
+            },
+  
+            // totalNumberOfTestsRun=Total number of tests run was: {0}
+            Some(Fragment(Resources("totalNumberOfTestsRun", testsCompletedCount.toString), AnsiCyan)),
+  
+            if (scopesPendingCount > 0) {
+              // Suites: completed {0}, aborted {1}  Scopes: pending {2}
+              Some(Fragment(Resources("suiteScopeSummary", suitesCompletedCount.toString, suitesAbortedCount.toString, scopesPendingCount.toString), AnsiCyan))
+            }
+            else {
+              // Suites: completed {0}, aborted {1}
+              Some(Fragment(Resources("suiteSummary", suitesCompletedCount.toString, suitesAbortedCount.toString), AnsiCyan))
+            },
+  
+            // Tests: succeeded {0}, failed {1}, ignored, {2}, pending {3}, canceled {4}
+            Some(Fragment(Resources("testSummary", testsSucceededCount.toString, testsFailedCount.toString, testsCanceledCount.toString, testsIgnoredCount.toString, testsPendingCount.toString), AnsiCyan)),
+  
+            // *** 1 SUITE ABORTED ***
+            if (suitesAbortedCount == 1) {
+              Some(Fragment(Resources("oneSuiteAborted"), AnsiRed))
+            }
+            // *** {0} SUITES ABORTED ***
+            else if (suitesAbortedCount > 1) {
+              Some(Fragment(Resources("multipleSuitesAborted", suitesAbortedCount.toString), AnsiRed))
+            }
+            else None,
+  
+            // *** 1 TEST FAILED ***
+            if (testsFailedCount == 1) {
+              Some(Fragment(Resources("oneTestFailed"), AnsiRed))
+            }
+            // *** {0} TESTS FAILED ***
+            else if (testsFailedCount > 1) {
+              Some(Fragment(Resources("multipleTestsFailed", testsFailedCount.toString), AnsiRed))
+            }
+            else if (suitesAbortedCount == 0) { // Maybe don't want to say this if the run aborted or stopped because "all"
+              Some(Fragment(Resources("allTestsPassed"), AnsiGreen))
+            }
+            else None
+          ).flatten
+  
+        case None => Vector(Fragment(Resources(resourceName), AnsiCyan))
+      }
 
-        import summary._
+      val reminderFrags: Vector[Fragment] =
+        for {
+          event <- exceptionalEvents
+          frag <- exceptionalFragments(event)
+        } yield frag
 
-        Vector(
+      summaryFrags ++ reminderFrags
+  }
 
-          duration match {
-            case Some(msSinceEpoch) =>
-              Some(Fragment(Resources(resourceName + "In", makeDurationString(msSinceEpoch)), AnsiCyan))
-            case None =>
-              Some(Fragment(Resources(resourceName), AnsiCyan))
-          },
-
-          // totalNumberOfTestsRun=Total number of tests run was: {0}
-          Some(Fragment(Resources("totalNumberOfTestsRun", testsCompletedCount.toString), AnsiCyan)),
-
-          if (scopesPendingCount > 0) {
-            // Suites: completed {0}, aborted {1}  Scopes: pending {2}
-            Some(Fragment(Resources("suiteScopeSummary", suitesCompletedCount.toString, suitesAbortedCount.toString, scopesPendingCount.toString), AnsiCyan))
+  def exceptionalFragments(exceptionalEvent: ExceptionalEvent): Vector[Fragment] = {
+    exceptionalEvent match {
+      case tf: TestFailed =>
+        // Usually, the testName should end with the testText. In that normal
+        // case we'll separate them, because that makes it easier for people to
+        // search (by searching just for the test text). But we'll put the scopes
+        // all on one line as a "prefix", like:
+        //
+        // FredSpec:
+        // A Stack (when empty)
+        // - should be empty
+        //
+        // Even though this might have come out when it actually failed as:
+        //
+        // FredSpec:
+        // A Stack
+        //   (when empty)
+        //   - should be empty
+        //
+        val prefixLength = tf.testName.length - tf.testText.length
+        val prefix: Option[String] = 
+          if (tf.testName.drop(prefixLength) == tf.testText)
+            Some(tf.testName.take(prefixLength))
+          else
+            None
+        val suiteNameFrag = Fragment(tf.suiteName + ":", AnsiRed)
+        val testNameFrags: Vector[Fragment] =
+          prefix match {
+            case Some(pre) =>
+              Vector(
+                Fragment(pre, AnsiRed),
+                Fragment("- " + tf.testText, AnsiRed)
+              )
+            case None => Vector.empty
           }
-          else {
-            // Suites: completed {0}, aborted {1}
-            Some(Fragment(Resources("suiteSummary", suitesCompletedCount.toString, suitesAbortedCount.toString), AnsiCyan))
-          },
-
-          // Tests: succeeded {0}, failed {1}, ignored, {2}, pending {3}, canceled {4}
-          Some(Fragment(Resources("testSummary", testsSucceededCount.toString, testsFailedCount.toString, testsCanceledCount.toString, testsIgnoredCount.toString, testsPendingCount.toString), AnsiCyan)),
-
-          // *** 1 SUITE ABORTED ***
-          if (suitesAbortedCount == 1) {
-            Some(Fragment(Resources("oneSuiteAborted"), AnsiRed))
-          }
-          // *** {0} SUITES ABORTED ***
-          else if (suitesAbortedCount > 1) {
-            Some(Fragment(Resources("multipleSuitesAborted", suitesAbortedCount.toString), AnsiRed))
-          }
-          else None,
-   
-          // *** 1 TEST FAILED ***
-          if (testsFailedCount == 1) {
-            Some(Fragment(Resources("oneTestFailed"), AnsiRed))
-          }
-          // *** {0} TESTS FAILED ***
-          else if (testsFailedCount > 1) {
-            Some(Fragment(Resources("multipleTestsFailed", testsFailedCount.toString), AnsiRed))
-          }
-          else if (suitesAbortedCount == 0) { // Maybe don't want to say this if the run aborted or stopped because "all"
-            Some(Fragment(Resources("allTestsPassed"), AnsiGreen))
-          }
-          else None
-        ).flatten
-
-      case None => Vector.empty
+        suiteNameFrag +: testNameFrags
+      case tc: TestCanceled => Vector.empty
     }
   }
 
@@ -594,11 +643,11 @@ private[scalatest] object StringReporter {
 
       case RunCompleted(ordinal, duration, summary, formatter, location, payload, threadName, timeStamp) => 
 
-        summaryFragments(true, duration, summary) 
+        summaryFragments(true, duration, summary, Vector.empty) 
 
       case RunStopped(ordinal, duration, summary, formatter, location, payload, threadName, timeStamp) =>
 
-        summaryFragments(false, duration, summary) 
+        summaryFragments(false, duration, summary, Vector.empty) 
 
       case RunAborted(ordinal, message, throwable, duration, summary, formatter, location, payload, threadName, timeStamp) => 
 
@@ -657,6 +706,8 @@ private[scalatest] object StringReporter {
         tff ++ ref
 
       case TestCanceled(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, throwable, duration, formatter, location, payload, threadName, timeStamp) =>
+
+// println("TestCanceled event: " + event)
 
         val lines: Vector[String] = stringsToPrintOnError("canceledNote", "testCanceled", message, throwable, formatter, Some(suiteName), Some(testName), duration,
             presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces).toVector
