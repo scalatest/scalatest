@@ -15,6 +15,7 @@
  */
 package org.scalatest.words
 
+import scala.collection.GenTraversable
 import org.scalatest.enablers.Containing
 import org.scalatest.enablers.Aggregating
 import org.scalatest.matchers.Matcher
@@ -22,7 +23,6 @@ import org.scalatest.matchers.MatcherFactory1
 import org.scalatest.matchers.MatchResult
 import org.scalatest.FailureMessages
 import org.scalatest.UnquotedString
-import scala.annotation.tailrec
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -73,6 +73,22 @@ final class NewContainWord {
               holder.containsNoneOf(left, right),
               FailureMessages("containedOneOfElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
               FailureMessages("didNotContainOneOfElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+            )
+          }
+        }
+      }
+    }
+  }
+  
+  def newTheSameElementsAs(right: GenTraversable[Any]): MatcherFactory1[Any, Aggregating] = {
+    new MatcherFactory1[Any, Aggregating] {
+      def matcher[T](implicit aggregation: Aggregating[T]): Matcher[T] = {
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+            MatchResult(
+              aggregation.containsTheSameElementsAs(left, right),
+              FailureMessages("didNotContainSameElements", left, right),
+              FailureMessages("containedSameElements", left, right)
             )
           }
         }

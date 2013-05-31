@@ -661,6 +661,20 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
       )
   }
   
+  def newContain(theSameElementsAs: ResultOfNewTheSameElementsAsApplication)(implicit aggregation: Aggregating[T]) {
+
+    val right = theSameElementsAs.right
+
+    if (aggregation.containsTheSameElementsAs(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "didNotContainSameElements" else "containedSameElements",
+          left,
+          right
+        )
+      )
+  }
+  
 }
 
 /**

@@ -816,6 +816,16 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     //def newTheSameElementsAs[E](right: GenTraversable[E])(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
       //outerInstance.and(MatcherWords.contain.theSameElementsAs(right)(equality))
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) and contain theSameElementsAs (1, 3, 3))
+     *                                                                           ^
+     * </pre>
+     */
+    def newTheSameElementsAs(right: GenTraversable[_]): MatcherFactory1[T with Any, Aggregating] = 
+      outerInstance.and(MatcherWords.newContain.newTheSameElementsAs(right))
     
     /**
      * This method enables the following syntax:

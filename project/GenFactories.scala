@@ -467,12 +467,12 @@ $endif$
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
-     * (aMatcherFactory and contain theSameElementsAs List(1, 2, 3))
+     * (aMatcherFactory and contain theSameElementsAs (1, 3, 3))
      *                              ^
      * </pre>
      */
-    //def theSameElementsAs[E](right: GenTraversable[E])(implicit equality: Equality[E]): MatcherFactory$arity$[SC with GenTraversable[E], $commaSeparatedTCNs$] = 
-      //thisMatcherFactory.and(MatcherWords.contain.theSameElementsAs(right)(equality))
+    def newTheSameElementsAs(right: GenTraversable[_]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
+      thisMatcherFactory.and(MatcherWords.newContain.newTheSameElementsAs(right))
     
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:

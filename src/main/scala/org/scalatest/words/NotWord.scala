@@ -869,6 +869,33 @@ final class NotWord {
       }
     }
   }
+  
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * Array(1, 2) should (not contain theSameElementsAs (1, 2, 3) and not contain (3))
+   *                                 ^
+   * </pre>
+   */
+  def newContain[T](theSameElementAs: ResultOfNewTheSameElementsAsApplication): MatcherFactory1[Any, Aggregating] = {
+    new MatcherFactory1[Any, Aggregating] {
+      def matcher[T](implicit aggregation: Aggregating[T]): Matcher[T] = {
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+        
+            val right = theSameElementAs.right
+
+            MatchResult(
+              !aggregation.containsTheSameElementsAs(left, right),
+              FailureMessages("containedSameElements", left, right),
+              FailureMessages("didNotContainSameElements", left, right)
+            )
+          }
+        }
+      }
+    }
+  }
 
   /**
    * This method enables the following syntax: 

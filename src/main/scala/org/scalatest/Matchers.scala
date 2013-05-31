@@ -2405,6 +2405,16 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * This method enables the following syntax: 
      *
      * <pre class="stHighlight">
+     * List(1, 2, 3) should contain (theSameElementsAs(1, 2))
+     *                               ^
+     * </pre>
+     */
+    def newTheSameElementsAs(xs: GenTraversable[_])(implicit aggregating: Aggregating[T]) = new ResultOfNewTheSameElementsAsApplication(xs)
+
+    /**
+     * This method enables the following syntax: 
+     *
+     * <pre class="stHighlight">
      * traversable should contain only (1, 2)
      *                            ^
      * </pre>
@@ -2743,6 +2753,16 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    * </pre>
    */
   def newNoneOf(xs: Any*) = new ResultOfNewNoneOfApplication(xs)
+
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * List(1, 2, 3) should contain (theSameElementsAs(1, 2))
+   *                               ^
+   * </pre>
+   */
+  def newTheSameElementsAs(xs: GenTraversable[_]) = new ResultOfNewTheSameElementsAsApplication(xs)
 
   /**
    * This method enables the following syntax: 
@@ -3476,6 +3496,33 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
           )
       }
     }
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * all (xs) should not contain theSameElementsAs ("one")
+     *                     ^
+     * </pre>
+     */
+    def newContain(theSameElementsAs: ResultOfNewTheSameElementsAsApplication)(implicit aggregation: Aggregating[T]) {
+
+      val right = theSameElementsAs.right
+
+      doCollected(collected, xs, "newContain", 1) { e =>
+        if (aggregation.containsTheSameElementsAs(e, right) != shouldBeTrue)
+          throw newTestFailedException(
+            FailureMessages(
+              if (shouldBeTrue) "didNotContainSameElements" else "containedSameElements",
+              e,
+              right
+            ),
+            None,
+            6
+          )
+      }
+    }
+
   }
 
   /**
@@ -3942,6 +3989,30 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
         )
       }
     }
+
+    /**
+     * This method enables the following syntax: 
+     *
+     * <pre class="stHighlight">
+     * option should contain theSameElementsAs (1, 2)
+     *                       ^
+     * </pre>
+     */
+    def newTheSameElementsAs(right: GenTraversable[_])(implicit aggregation: Aggregating[T]) {
+      doCollected(collected, xs, "newTheSameElementsAs", 1) { e =>
+        if (aggregation.containsTheSameElementsAs(e, right) != shouldBeTrue)
+          throw newTestFailedException(
+            FailureMessages(
+              if (shouldBeTrue) "didNotContainSameElements" else "containedSameElements",
+              e,
+              right
+            ),
+            None,
+            6
+        )
+      }
+    }
+
   }
 
   /**

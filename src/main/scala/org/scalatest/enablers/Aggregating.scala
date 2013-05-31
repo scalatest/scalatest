@@ -17,12 +17,16 @@ package org.scalatest.enablers
 
 import org.scalautils.Equality
 import org.scalatest.words.ArrayWrapper
+import scala.collection.GenTraversable
+import scala.collection.GenTraversableOnce
+import org.scalatest.FailureMessages
+import scala.annotation.tailrec
 
 trait Aggregating[A] {
   def containsAtLeastOneOf(aggregation: A, eles: Seq[Any]): Boolean
-/*
-  def containsTheSameElementsAs(aggregation: A, it: Iterator[Any]): Boolean
-  def containsTheSameElementsInOrderAs(aggregation: A, it: Iterator[Any]): Boolean
+
+  def containsTheSameElementsAs(aggregation: A, eles: GenTraversable[Any]): Boolean
+/*  def containsTheSameElementsInOrderAs(aggregation: A, it: Iterator[Any]): Boolean
   def containsAllOf(aggregation: A, eles: Seq[Any]): Boolean
   def containsAtMostOneOf(aggregation: A, eles: Seq[Any]): Boolean
   def containsOnly(aggregation: A, eles: Seq[Any]): Boolean
@@ -31,11 +35,66 @@ trait Aggregating[A] {
 }
 
 object Aggregating {
-
+  
+  private def tryEquality[T](left: Any, right: Any, equality: Equality[T]): Boolean = 
+    try equality.areEqual(left.asInstanceOf[T], right)
+      catch {
+        case cce: ClassCastException => false
+    }
+  
+  private def checkTheSameElementsAs[T](left: GenTraversable[T], right: GenTraversable[Any], equality: Equality[T]): Boolean = {
+    case class ElementCount(element: Any, leftCount: Int, rightCount: Int)
+    object ZipNoMatch
+    
+    def leftNewCount(next: Any, count: IndexedSeq[ElementCount]): IndexedSeq[ElementCount] = {
+      val idx = count.indexWhere(ec => tryEquality(next, ec.element, equality))
+      if (idx >= 0) {
+        val currentElementCount = count(idx)
+        count.updated(idx, ElementCount(currentElementCount.element, currentElementCount.leftCount + 1, currentElementCount.rightCount))
+      }
+      else
+        count :+ ElementCount(next, 1, 0)
+    }
+    
+    def rightNewCount(next: Any, count: IndexedSeq[ElementCount]): IndexedSeq[ElementCount] = {
+      val idx = count.indexWhere(ec => tryEquality(next, ec.element, equality))
+      if (idx >= 0) {
+        val currentElementCount = count(idx)
+        count.updated(idx, ElementCount(currentElementCount.element, currentElementCount.leftCount, currentElementCount.rightCount + 1))
+      }
+      else
+        count :+ ElementCount(next, 0, 1)
+    }
+    
+    val counts = right.toIterable.zipAll(left.toIterable, ZipNoMatch, ZipNoMatch).aggregate(IndexedSeq.empty[ElementCount])( 
+      { case (count, (nextLeft, nextRight)) => 
+          if (nextLeft == ZipNoMatch || nextRight == ZipNoMatch)
+            return false  // size not match, can fail early
+          rightNewCount(nextRight, leftNewCount(nextLeft, count))
+      }, 
+      { case (count1, count2) =>
+          count2.foldLeft(count1) { case (count, next) => 
+            val idx = count.indexWhere(ec => tryEquality(next.element, ec.element, equality))
+            if (idx >= 0) {
+              val currentElementCount = count(idx)
+              count.updated(idx, ElementCount(currentElementCount.element, currentElementCount.leftCount + next.leftCount, currentElementCount.rightCount + next.rightCount))
+            }
+            else
+              count :+ next
+          }
+      }
+    )
+    
+    !counts.exists(e => e.leftCount != e.rightCount)
+  }
+  
   implicit def withGenTraversableElementEquality[E, TRAV[_] <: scala.collection.GenTraversable[_]](implicit equality: Equality[E]): Aggregating[TRAV[E]] = 
     new Aggregating[TRAV[E]] {
       def containsAtLeastOneOf(trav: TRAV[E], elements: scala.collection.Seq[Any]): Boolean = {
         trav.exists((e: Any) => elements.exists((ele: Any) => equality.areEqual(e.asInstanceOf[E], ele)))
+      }
+      def containsTheSameElementsAs(trav: TRAV[E], elements: GenTraversable[Any]): Boolean = {
+        checkTheSameElementsAs[E](trav.asInstanceOf[GenTraversable[E]], elements, equality)
       }
     }
 
@@ -48,6 +107,9 @@ object Aggregating {
       def containsAtLeastOneOf(array: Array[E], elements: scala.collection.Seq[Any]): Boolean = {
         new ArrayWrapper(array).exists((e: Any) => elements.exists((ele: Any) => equality.areEqual(e.asInstanceOf[E], ele)))
       }
+      def containsTheSameElementsAs(array: Array[E], elements: GenTraversable[Any]): Boolean = {
+        throw new UnsupportedOperationException("Not Implemented")
+      }
     }
 
   // Enables (xs should contain ("HI")) (after being lowerCased)
@@ -59,6 +121,9 @@ object Aggregating {
       def containsAtLeastOneOf(s: String, elements: scala.collection.Seq[Any]): Boolean = {
         s.exists((e: Any) => elements.exists((ele: Any) => equality.areEqual(e.asInstanceOf[Char], ele)))
       }
+      def containsTheSameElementsAs(s: String, elements: GenTraversable[Any]): Boolean = {
+        throw new UnsupportedOperationException("Not Implemented")
+      }
     }
 
   implicit def convertEqualityToStringAggregating(equality: Equality[Char]): Aggregating[String] = 
@@ -68,6 +133,9 @@ object Aggregating {
     new Aggregating[MAP[K, V]] {
       def containsAtLeastOneOf(map: MAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
         map.exists((e: Any) => elements.exists((ele: Any) => equality.areEqual(e.asInstanceOf[(K, V)], ele)))
+      }
+      def containsTheSameElementsAs(map: MAP[K, V], elements: GenTraversable[Any]): Boolean = {
+        throw new UnsupportedOperationException("Not Implemented")
       }
     }
 
@@ -80,6 +148,9 @@ object Aggregating {
         import scala.collection.JavaConverters._
         col.asInstanceOf[java.util.Collection[E]].asScala.exists((e: Any) => elements.exists((ele: Any) => equality.areEqual(e.asInstanceOf[E], ele)))
       }
+      def containsTheSameElementsAs(col: JCOL[E], elements: GenTraversable[Any]): Boolean = {
+        throw new UnsupportedOperationException("Not Implemented")
+      }
     }
 
   implicit def convertEqualityToJavaCollectionAggregating[E, JCOL[_] <: java.util.Collection[_]](equality: Equality[E]): Aggregating[JCOL[E]] = 
@@ -90,6 +161,9 @@ object Aggregating {
       def containsAtLeastOneOf(map: JMAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
         import scala.collection.JavaConverters._
         map.asInstanceOf[java.util.Map[K, V]].asScala.exists((e: Any) => elements.exists((ele: Any) => equality.areEqual(e.asInstanceOf[(K, V)], ele)))
+      }
+      def containsTheSameElementsAs(map: JMAP[K, V], elements: GenTraversable[Any]): Boolean = {
+        throw new UnsupportedOperationException("Not Implemented")
       }
     }
 
