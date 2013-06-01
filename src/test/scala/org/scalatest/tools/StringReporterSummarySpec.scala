@@ -22,6 +22,9 @@ import StringReporter.summaryFragments
 import org.scalatest.Resources
 import org.scalatest.events.TestFailed
 import org.scalatest.events.TestCanceled
+import org.scalatest.events.InfoProvided
+import org.scalatest.events.NameInfo
+import org.scalatest.events.LineInFile
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestCanceledException
 import org.scalatest.events.ExceptionalEvent
@@ -68,6 +71,7 @@ class StringReporterSummarySpec extends UnitSpec {
 
   val firstOrdinal = new Ordinal(123)
   val secondOrdinal = firstOrdinal.next
+  val thirdOrdinal = secondOrdinal.next
 
   val justOneTestFailed: Vector[ExceptionalEvent] = 
     Vector(
@@ -94,33 +98,36 @@ class StringReporterSummarySpec extends UnitSpec {
   val oneTestFailedAndOneTestCanceled: Vector[ExceptionalEvent] = 
 
     Vector(
-      TestFailed(
-        ordinal = firstOrdinal,
-        message = "I meant to do that!",
-        suiteName = "StringReporterSummarySpec",
-        suiteId = "org.scalatest.tools.StringReporterSummarySpec",
-        suiteClassName = Some("org.scalatest.tools.StringReporterSummarySpec"),
-        testName = "the summaryFragments method should fail on purpose",
-        testText = "should fail on purpose",
-        recordedEvents = Vector.empty,
-        throwable = Some(testFailedException),
-        duration = Some(16),
-        formatter = Some(IndentedText("THIS SHOULD NOT BE USED", "SHOULD NOT BE USED", 1)),
-        location = Some(SeeStackDepthException),
-        rerunner = Some("org.scalatest.tools.StringReporterSummarySpec"),
-        payload = None,
-        threadName = "Thread-10",
-        timeStamp = 1369965123278L
-      ),
+      justOneTestFailed(0),
       TestCanceled(
-        ordinal = secondOrdinal,
+        ordinal = thirdOrdinal,
         message = "I meant to do that!",
         suiteName = "StringReporterSummarySpec",
         suiteId = "org.scalatest.tools.StringReporterSummarySpec",
         suiteClassName = Some("org.scalatest.tools.StringReporterSummarySpec"),
         testName = "the summaryFragments method should cancel on purpose",
         testText = "should cancel on purpose",
-        recordedEvents = Vector.empty,
+        recordedEvents =
+          Vector(
+            InfoProvided(
+              secondOrdinal,
+              "I should not show up in the reminder",
+              Some(
+                NameInfo(
+                  "StringReporterSummarySpec",
+                  "org.scalatest.tools.StringReporterSummarySpec",
+                  Some("org.scalatest.tools.StringReporterSummarySpec"),
+                  Some("the summaryFragments method should fail on purpose")
+                )
+              ),
+              None,
+              Some(IndentedText("  + I should not show up in the reminder", "I should not show up in the reminder", 2)),
+              Some(LineInFile(442, "StringReporterSummarySpec.scala")),
+              None,
+              "Thread-10",
+              1369965123278L
+            )
+          ),
         throwable = Some(testCanceledException),
         duration = Some(15),
         formatter = Some(IndentedText("THIS SHOULD NOT BE USED", "SHOULD NOT BE USED", 1)),
@@ -433,18 +440,17 @@ class StringReporterSummarySpec extends UnitSpec {
     }
 /*
 A test that ensures that if no summary, I get back just the run completed or run stopped message.
-A test that ensures canceled ones show up if they are on
-A test that ensures canceled tests are elided if they are not on
-A test where I see that they come out in ordinal order in the reminder.
 A test that ensures recorded events don't show up in the summary.
 */
 
 
     /* @org.scalatest.Ignore */
     @org.scalatest.Ignore def `should fail on purpose` {
+      info("I should not show up in the reminder")
       fail("I meant to do that!")
     }
     @org.scalatest.Ignore def `should cancel on purpose` {
+      info("I should not show up in the reminder")
       cancel("I meant to do that!")
     }
   }
