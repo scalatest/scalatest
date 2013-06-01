@@ -359,7 +359,6 @@ class StringReporterSummarySpec extends UnitSpec {
         fragments.drop(initialFragmentsForOneFailedAndOneCanceledTest.size) should be (initialFragmentsTheOneCanceledTestReminder)
       }
 
-/*
       def `should produce a good summary when reminders are enabled with short stack traces` {
         val fragments =
           summaryFragments(
@@ -374,8 +373,9 @@ class StringReporterSummarySpec extends UnitSpec {
             presentReminderWithoutCanceledTests = false
           )
 
-        fragments.take(initialFragmentsForJustOneFailedTest.size) should be (initialFragmentsForJustOneFailedTest)
-        fragments.length should equal (initialFragmentsForJustOneFailedTest.size + StringReporter.shortStackTraceSize) 
+        fragments.take(initialFragmentsForOneFailedAndOneCanceledTest.size) should be (initialFragmentsForOneFailedAndOneCanceledTest)
+        fragments.drop(initialFragmentsForOneFailedAndOneCanceledTest.size + StringReporter.shortStackTraceSize).take(initialFragmentsTheOneCanceledTestReminder.size) should be (initialFragmentsTheOneCanceledTestReminder)
+        fragments.length should equal (initialFragmentsForJustOneFailedTest.size + initialFragmentsTheOneCanceledTestReminder.size + (2 * StringReporter.shortStackTraceSize))
       }
 
       def `should produce a good summary when reminders are enabled with full stack traces` {
@@ -392,10 +392,9 @@ class StringReporterSummarySpec extends UnitSpec {
             presentReminderWithoutCanceledTests = false
           )
 
-        fragments.take(initialFragmentsForJustOneFailedTest.size) should be (initialFragmentsForJustOneFailedTest)
-        fragments.length should be > (initialFragmentsForJustOneFailedTest.size + StringReporter.shortStackTraceSize) 
+        fragments.take(initialFragmentsForOneFailedAndOneCanceledTest.size) should be (initialFragmentsForOneFailedAndOneCanceledTest)
+        fragments.length should be > (initialFragmentsForJustOneFailedTest.size + initialFragmentsTheOneCanceledTestReminder.size + (2 * StringReporter.shortStackTraceSize))
       }
-*/
     }
 /*
 A test that ensures that if no summary, I get back just the run completed or run stopped message.
