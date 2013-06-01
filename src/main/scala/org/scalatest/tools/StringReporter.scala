@@ -295,17 +295,18 @@ private[scalatest] object StringReporter {
       }
 
       val reminderFrags: Vector[Fragment] =
-        for {
-          event <- exceptionalEvents
-          frag <- exceptionalFragments(
-            event,
-            presentAllDurations,
-            presentReminder,
-            presentReminderWithShortStackTraces,
-            presentReminderWithFullStackTraces,
-            presentReminderWithoutCanceledTests
-          )
-        } yield frag
+        if (presentReminder)
+          for {
+            event <- exceptionalEvents
+            frag <- exceptionalFragments(
+              event,
+              presentAllDurations,
+              presentReminderWithShortStackTraces,
+              presentReminderWithFullStackTraces,
+              presentReminderWithoutCanceledTests
+            )
+          } yield frag
+        else Vector.empty
 
       summaryFrags ++ reminderFrags
   }
@@ -313,7 +314,6 @@ private[scalatest] object StringReporter {
   def exceptionalFragments(
      exceptionalEvent: ExceptionalEvent,
      presentAllDurations: Boolean,
-     presentReminder: Boolean,
      presentReminderWithShortStackTraces: Boolean,
      presentReminderWithFullStackTraces: Boolean,
      presentReminderWithoutCanceledTests: Boolean

@@ -69,18 +69,27 @@ class StringReporterSummarySpec extends UnitSpec {
       )
     )
 
-    val initialFragmentsForJustOneFailedTest: Vector[Fragment] =
-      Vector(
-        Fragment(Resources("runCompletedIn", makeDurationString(213L)), AnsiCyan),
-        Fragment(Resources("totalNumberOfTestsRun", summaryWithOneFailedTest.testsCompletedCount.toString), AnsiCyan),
-        Fragment(Resources("suiteSummary", summaryWithOneFailedTest.suitesCompletedCount.toString, summaryWithOneFailedTest.suitesAbortedCount.toString), AnsiCyan),
-        Fragment(Resources("testSummary", summaryWithOneFailedTest.testsSucceededCount.toString, summaryWithOneFailedTest.testsFailedCount.toString, summaryWithOneFailedTest.testsCanceledCount.toString, summaryWithOneFailedTest.testsIgnoredCount.toString, summaryWithOneFailedTest.testsPendingCount.toString), AnsiCyan),
-        Fragment(Resources("oneTestFailed"), AnsiRed),
-        Fragment("StringReporterSummarySpec:", AnsiRed),
-        Fragment("the summaryFragments method ", AnsiRed),
-        Fragment(Resources("specTextAndNote", "- should fail on purpose", Resources("failedNote")), AnsiRed),
-        Fragment("  I meant to do that! (StringReporterSummarySpec.scala:" + tfeLineNumber + ")", AnsiRed)
-      )
+  val initialFragmentsForJustOneFailedTest: Vector[Fragment] =
+    Vector(
+      Fragment(Resources("runCompletedIn", makeDurationString(213L)), AnsiCyan),
+      Fragment(Resources("totalNumberOfTestsRun", summaryWithOneFailedTest.testsCompletedCount.toString), AnsiCyan),
+      Fragment(Resources("suiteSummary", summaryWithOneFailedTest.suitesCompletedCount.toString, summaryWithOneFailedTest.suitesAbortedCount.toString), AnsiCyan),
+      Fragment(Resources("testSummary", summaryWithOneFailedTest.testsSucceededCount.toString, summaryWithOneFailedTest.testsFailedCount.toString, summaryWithOneFailedTest.testsCanceledCount.toString, summaryWithOneFailedTest.testsIgnoredCount.toString, summaryWithOneFailedTest.testsPendingCount.toString), AnsiCyan),
+      Fragment(Resources("oneTestFailed"), AnsiRed),
+      Fragment("StringReporterSummarySpec:", AnsiRed),
+      Fragment("the summaryFragments method ", AnsiRed),
+      Fragment(Resources("specTextAndNote", "- should fail on purpose", Resources("failedNote")), AnsiRed),
+      Fragment("  I meant to do that! (StringReporterSummarySpec.scala:" + tfeLineNumber + ")", AnsiRed)
+    )
+
+  val fragmentsWhenNoReminder: Vector[Fragment] =
+    Vector(
+      Fragment(Resources("runCompletedIn", makeDurationString(213L)), AnsiCyan),
+      Fragment(Resources("totalNumberOfTestsRun", summaryWithOneFailedTest.testsCompletedCount.toString), AnsiCyan),
+      Fragment(Resources("suiteSummary", summaryWithOneFailedTest.suitesCompletedCount.toString, summaryWithOneFailedTest.suitesAbortedCount.toString), AnsiCyan),
+      Fragment(Resources("testSummary", summaryWithOneFailedTest.testsSucceededCount.toString, summaryWithOneFailedTest.testsFailedCount.toString, summaryWithOneFailedTest.testsCanceledCount.toString, summaryWithOneFailedTest.testsIgnoredCount.toString, summaryWithOneFailedTest.testsPendingCount.toString), AnsiCyan),
+      Fragment(Resources("oneTestFailed"), AnsiRed)
+    )
 
   object `the summaryFragments method` {
     def `should produce a good summary when Summary is all zeroes` {
@@ -121,13 +130,22 @@ class StringReporterSummarySpec extends UnitSpec {
 
     object `when one test failed` {
       def `should produce a good summary when reminders are disabled` {
-        /*
-        [scalatest] Run completed in 213 milliseconds.
-        [scalatest] Total number of tests run: 1
-        [scalatest] Suites: completed 1, aborted 0
-        [scalatest] Tests: succeeded 0, failed 1, canceled 0, ignored 0, pending 0
-        [scalatest] *** 1 TEST FAILED ***
-        */
+        val fragments =
+          summaryFragments(
+            true,
+            Some(213L),
+            Some(summaryWithOneFailedTest),
+            justOneTestFailed,
+            presentAllDurations = false,
+            presentReminder = false,
+            presentReminderWithShortStackTraces = false,
+            presentReminderWithFullStackTraces = false,
+            presentReminderWithoutCanceledTests = false
+          )
+        fragments should be (fragmentsWhenNoReminder)
+      }
+
+      def `should produce a good summary when reminders are enabled but the exceptional events vector is empty` {
         val fragments =
           summaryFragments(
             true,
@@ -135,20 +153,12 @@ class StringReporterSummarySpec extends UnitSpec {
             Some(summaryWithOneFailedTest),
             Vector.empty,
             presentAllDurations = false,
-            presentReminder = false,
+            presentReminder = true,
             presentReminderWithShortStackTraces = false,
             presentReminderWithFullStackTraces = false,
             presentReminderWithoutCanceledTests = false
           )
-        fragments should be (
-          Vector(
-            Fragment(Resources("runCompletedIn", makeDurationString(213L)), AnsiCyan),
-            Fragment(Resources("totalNumberOfTestsRun", summaryWithOneFailedTest.testsCompletedCount.toString), AnsiCyan),
-            Fragment(Resources("suiteSummary", summaryWithOneFailedTest.suitesCompletedCount.toString, summaryWithOneFailedTest.suitesAbortedCount.toString), AnsiCyan),
-            Fragment(Resources("testSummary", summaryWithOneFailedTest.testsSucceededCount.toString, summaryWithOneFailedTest.testsFailedCount.toString, summaryWithOneFailedTest.testsCanceledCount.toString, summaryWithOneFailedTest.testsIgnoredCount.toString, summaryWithOneFailedTest.testsPendingCount.toString), AnsiCyan),
-            Fragment(Resources("oneTestFailed"), AnsiRed)
-          )
-        )
+        fragments should be (fragmentsWhenNoReminder)
       }
 
       def `should produce a good summary when reminders are enabled without stack traces` {
