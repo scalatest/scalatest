@@ -319,6 +319,50 @@ private[scalatest] object StringReporter {
      presentReminderWithFullStackTraces: Boolean,
      presentReminderWithoutCanceledTests: Boolean
   ): Vector[Fragment] = {
+
+    def theFragments(
+      testName: String,
+      testText: String,
+      suiteName: String,
+      noteResourceName: String,
+      errorResourceName: String,
+      message: String,
+      throwable: Option[Throwable],
+      duration: Option[Long],
+      ansiColor: AnsiColor
+    ): Vector[Fragment] = {
+        val prefixLength = testName.length - testText.length
+        val prefix: Option[String] = 
+          if (testName.drop(prefixLength) == testText)
+            Some(testName.take(prefixLength))
+          else
+            None
+        val suiteNameFrag = Fragment(suiteName + ":", ansiColor)
+        val testNameFrags: Vector[Fragment] =
+          prefix match {
+            case Some(pre) =>
+              val preFrag = Fragment(pre, ansiColor)
+              val otherFrags =
+                fragmentsOnError(
+                  noteResourceName,
+                  errorResourceName,
+                  message,
+                  throwable,
+                  Some(IndentedText("- " + testText, testText, 0)),
+                  Some(suiteName),
+                  Some(testName),
+                  duration,
+                  false,
+                  presentAllDurations,
+                  presentReminderWithShortStackTraces,
+                  presentReminderWithFullStackTraces,
+                  ansiColor
+                )
+              preFrag +: otherFrags
+            case None => Vector.empty
+          }
+        suiteNameFrag +: testNameFrags
+    }
     exceptionalEvent match {
       case tf: TestFailed =>
         // Usually, the testName should end with the testText. In that normal
@@ -337,69 +381,29 @@ private[scalatest] object StringReporter {
         //   (when empty)
         //   - should be empty
         //
-        val prefixLength = tf.testName.length - tf.testText.length
-        val prefix: Option[String] = 
-          if (tf.testName.drop(prefixLength) == tf.testText)
-            Some(tf.testName.take(prefixLength))
-          else
-            None
-        val suiteNameFrag = Fragment(tf.suiteName + ":", AnsiRed)
-        val testNameFrags: Vector[Fragment] =
-          prefix match {
-            case Some(pre) =>
-              val preFrag = Fragment(pre, AnsiRed)
-              val otherFrags =
-                fragmentsOnError(
-                  "failedNote",
-                  "testFailed",
-                  tf.message,
-                  tf.throwable,
-                  Some(IndentedText("- " + tf.testText, tf.testText, 0)),
-                  Some(tf.suiteName),
-                  Some(tf.testName),
-                  tf.duration,
-                  false,
-                  presentAllDurations,
-                  presentReminderWithShortStackTraces,
-                  presentReminderWithFullStackTraces,
-                  AnsiRed
-                )
-              preFrag +: otherFrags
-            case None => Vector.empty
-          }
-        suiteNameFrag +: testNameFrags
-      case tc: TestCanceled => Vector.empty
-        val prefixLength = tc.testName.length - tc.testText.length
-        val prefix: Option[String] = 
-          if (tc.testName.drop(prefixLength) == tc.testText)
-            Some(tc.testName.take(prefixLength))
-          else
-            None
-        val suiteNameFrag = Fragment(tc.suiteName + ":", AnsiYellow)
-        val testNameFrags: Vector[Fragment] =
-          prefix match {
-            case Some(pre) =>
-              val preFrag = Fragment(pre, AnsiYellow)
-              val otherFrags =
-                fragmentsOnError(
-                  "canceledNote",
-                  "testCanceled",
-                  tc.message,
-                  tc.throwable,
-                  Some(IndentedText("- " + tc.testText, tc.testText, 0)),
-                  Some(tc.suiteName),
-                  Some(tc.testName),
-                  tc.duration,
-                  false,
-                  presentAllDurations,
-                  presentReminderWithShortStackTraces,
-                  presentReminderWithFullStackTraces,
-                  AnsiYellow
-                )
-              preFrag +: otherFrags
-            case None => Vector.empty
-          }
-        suiteNameFrag +: testNameFrags
+        theFragments(
+          tf.testName,
+          tf.testText,
+          tf.suiteName,
+          "failedNote",
+          "testFailed",
+          tf.message,
+          tf.throwable,
+          tf.duration,
+          AnsiRed
+        )
+      case tc: TestCanceled =>
+        theFragments(
+          tc.testName,
+          tc.testText,
+          tc.suiteName,
+          "canceledNote",
+          "testCanceled",
+          tc.message,
+          tc.throwable,
+          tc.duration,
+          AnsiYellow
+        )
     }
   }
 
