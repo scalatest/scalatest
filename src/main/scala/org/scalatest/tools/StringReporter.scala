@@ -34,6 +34,7 @@ import org.scalatest.exceptions.TableDrivenPropertyCheckFailedException
 import Suite.indentation
 import org.scalatest.exceptions.StackDepth
 import StringReporter._
+import scala.collection.mutable.ListBuffer
 
 /**
  * A <code>Reporter</code> that prints test status information to
@@ -52,6 +53,8 @@ private[scalatest] abstract class StringReporter(
   presentReminderWithFullStackTraces: Boolean,
   presentReminderWithoutCanceledTests: Boolean
 ) extends ResourcefulReporter {
+
+  val reminderEventsBuf = new ListBuffer[ExceptionalEvent]
 
   protected def printPossiblyInColor(fragment: Fragment)
 
@@ -153,10 +156,16 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
 [scalatest]   Occurred at table row 0 (zero based, not counting headings), which had values (
 [scalatest]     suite = org.scalatest.InfoInsideTestFiredAfterTestProp$$anon$3@18a4edc4
 [scalatest]   )
-
- */
+*/
 
   def apply(event: Event) {
+    event match {
+      case ee: ExceptionalEvent if presentReminder =>
+        if (!presentReminderWithoutCanceledTests || event.isInstanceOf[TestFailed]) {
+          reminderEventsBuf += ee
+        }
+      case _ =>
+    }
     fragmentsForEvent(
       event,
       presentUnformatted,
@@ -166,10 +175,11 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
       presentReminder,
       presentReminderWithShortStackTraces,
       presentReminderWithFullStackTraces,
-      presentReminderWithoutCanceledTests
+      presentReminderWithoutCanceledTests,
+      reminderEventsBuf
    ) foreach printPossiblyInColor
   }
-  
+
   // We subtract one from test reports because we add "- " in front, so if one is actually zero, it will come here as -1
   // private def indent(s: String, times: Int) = if (times <= 0) s else ("  " * times) + s
 
@@ -717,7 +727,8 @@ private[scalatest] object StringReporter {
     presentReminder: Boolean,
     presentReminderWithShortStackTraces: Boolean,
     presentReminderWithFullStackTraces: Boolean,
-    presentReminderWithoutCanceledTests: Boolean
+    presentReminderWithoutCanceledTests: Boolean,
+    reminderEvents: Seq[ExceptionalEvent]
   ): Vector[Fragment] = {
 
     event match {
@@ -749,7 +760,7 @@ private[scalatest] object StringReporter {
           true,
           duration,
           summary,
-          Vector.empty,
+          reminderEvents.toVector,
           presentAllDurations,
           presentReminder,
           presentReminderWithShortStackTraces,
@@ -763,7 +774,7 @@ private[scalatest] object StringReporter {
           false,
           duration,
           summary,
-          Vector.empty,
+          reminderEvents.toVector,
           presentAllDurations,
           presentReminder,
           presentReminderWithShortStackTraces,
