@@ -819,12 +819,8 @@ private[scalatest] object StringReporter {
 
       case TestCanceled(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, throwable, duration, formatter, location, payload, threadName, timeStamp) =>
 
-        val lines: Vector[String] = stringsToPrintOnError("canceledNote", "testCanceled", message, throwable, formatter, Some(suiteName), Some(testName), duration,
-            presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces).toVector
-
-        val tcf =
-          for (line <- lines)
-          yield new Fragment(line, AnsiYellow)
+        val tcf: Vector[Fragment] = fragmentsOnError("canceledNote", "testCanceled", message, throwable, formatter, Some(suiteName), Some(testName), duration,
+            presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces, AnsiYellow)
 
         val ref = recordedEventFragments(recordedEvents, AnsiYellow, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
 
