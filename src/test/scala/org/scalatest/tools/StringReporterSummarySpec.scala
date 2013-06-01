@@ -220,6 +220,24 @@ class StringReporterSummarySpec extends UnitSpec {
         )
       )
     }
+ 
+    def `should sort the passed exceptionalEvents in ordinal order` {
+      val fragments =
+        summaryFragments(
+          true,
+          Some(213L),
+          Some(summaryWithOneFailedAndOneCanceledTest),
+          Vector(oneTestFailedAndOneTestCanceled(1), oneTestFailedAndOneTestCanceled(0)),
+          presentAllDurations = false,
+          presentReminder = true,
+          presentReminderWithShortStackTraces = false,
+          presentReminderWithFullStackTraces = false,
+          presentReminderWithoutCanceledTests = false
+        )
+
+        fragments.take(initialFragmentsForOneFailedAndOneCanceledTest.size) should be (initialFragmentsForOneFailedAndOneCanceledTest)
+        fragments.drop(initialFragmentsForOneFailedAndOneCanceledTest.size) should be (initialFragmentsTheOneCanceledTestReminder)
+    }
 
     object `when one test failed` {
       def `should produce a good summary when reminders are disabled` {
@@ -403,6 +421,7 @@ A test that ensures canceled tests are elided if they are not on
 A test where I see that they come out in ordinal order in the reminder.
 A test that ensures recorded events don't show up in the summary.
 */
+
 
     /* @org.scalatest.Ignore */
     @org.scalatest.Ignore def `should fail on purpose` {

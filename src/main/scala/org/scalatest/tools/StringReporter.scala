@@ -298,7 +298,7 @@ private[scalatest] object StringReporter {
       val reminderFrags: Vector[Fragment] =
         if (presentReminder)
           for {
-            event <- exceptionalEvents
+            event <- exceptionalEvents.sortBy(_.ordinal)
             frag <- exceptionalFragments(
               event,
               presentAllDurations,
