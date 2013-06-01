@@ -1,3 +1,18 @@
+/*
+ * Copyright 2001-2013 Artima, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.scalatest.tools
 
 import sbt.testing.{Event => SbtEvent, Framework => SbtFramework, Status => SbtStatus, _}
@@ -17,14 +32,14 @@ import java.util.concurrent.atomic.AtomicInteger
 import scala.collection.JavaConverters._
 
 class Framework extends SbtFramework {
-  
+
   /**
    * Test framework name.
    */
   def name = "ScalaTest"
-    
+ 
   private val resultHolder = new SuiteResultHolder()
-    
+
   def fingerprints = 
     Array(
       new SubclassFingerprint {
@@ -36,7 +51,7 @@ class Framework extends SbtFramework {
         def annotationName = "org.scalatest.WrapWith"
         def isModule = false
       })
-      
+
   class RecordingDistributor(
     fullyQualifiedName: String,
     rerunSuiteId: String,
@@ -59,13 +74,13 @@ class Framework extends SbtFramework {
     presentReminderWithFullStackTraces: Boolean,
     presentReminderWithoutCanceledTests: Boolean
   ) extends Distributor {
-    
+
     private val taskQueue = new LinkedBlockingQueue[Task]()
-    
+
     def apply(suite: Suite, tracker: Tracker) {
       apply(suite, args.copy(tracker = tracker))
     }
-    
+
     def apply(suite: Suite, args: Args): Status = {
       if (suite == null)
         throw new NullPointerException("suite is null")
@@ -592,7 +607,18 @@ class Framework extends SbtFramework {
         dispatchReporter(RunCompleted(tracker.nextOrdinal(), Some(duration), Some(summary)))
         dispatchReporter.dispatchDisposeAndWaitUntilDone()
         isDone = true
-        val fragments: Vector[Fragment] = StringReporter.summaryFragments(true, Some(duration), Some(summary), Vector.empty) 
+        val fragments: Vector[Fragment] =
+          StringReporter.summaryFragments(
+            true,
+            Some(duration),
+            Some(summary),
+            Vector.empty, // TODO: Need to get the failed / canceled events here
+            presentAllDurations,
+            presentReminder,
+            presentReminderWithShortStackTraces,
+            presentReminderWithFullStackTraces,
+            presentReminderWithoutCanceledTests
+          ) 
         fragments.map(_.toPossiblyColoredText(presentInColor)).mkString("\n")
       }
       else

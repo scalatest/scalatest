@@ -470,11 +470,11 @@ class StringReporterSummarySpec extends UnitSpec {
     }
 
     /* @org.scalatest.Ignore */
-    def `should fail on purpose` {
+    @org.scalatest.Ignore def `should fail on purpose` {
       info("I should not show up in the reminder")
       fail("I meant to do that!")
     }
-    def `should cancel on purpose` {
+    @org.scalatest.Ignore def `should cancel on purpose` {
       info("I should not show up in the reminder")
       cancel("I meant to do that!")
     }
