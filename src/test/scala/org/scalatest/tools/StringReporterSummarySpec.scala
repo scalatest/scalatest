@@ -60,7 +60,7 @@ class StringReporterSummarySpec extends UnitSpec {
     )
 
   val testFailedException: Throwable =
-    try { assert(false, "I meant to do that!"); new Exception("Not reached") } // TODO: Duh, Nothing! Don't need the new Exception. Try it.
+    try { assert(false, "I meant to do that!"); new Exception("Not reached") }
     catch { case e: TestFailedException => e }
   val tfeLineNumber = thisLineNumber - 2
 
@@ -192,6 +192,36 @@ class StringReporterSummarySpec extends UnitSpec {
     )
 
   object `the summaryFragments method` {
+    def `should produce just a run completed message when the run completes but the summary is not defined` {
+      val fragments =
+        summaryFragments(
+          true,
+          Some(0L),
+          None,
+          Vector.empty,
+          presentAllDurations = false,
+          presentReminder = true,
+          presentReminderWithShortStackTraces = false,
+          presentReminderWithFullStackTraces = false,
+          presentReminderWithoutCanceledTests = false
+        )
+      fragments should be (Vector(Fragment(Resources("runCompleted"), AnsiCyan)))
+    }
+    def `should produce just a run stopped message when the run stops but the summary is not defined` {
+      val fragments =
+        summaryFragments(
+          false,
+          Some(0L),
+          None,
+          Vector.empty,
+          presentAllDurations = false,
+          presentReminder = true,
+          presentReminderWithShortStackTraces = false,
+          presentReminderWithFullStackTraces = false,
+          presentReminderWithoutCanceledTests = false
+        )
+      fragments should be (Vector(Fragment(Resources("runStopped"), AnsiCyan)))
+    }
     def `should produce a good summary when Summary is all zeroes` {
       val summary =
         new Summary(
@@ -438,11 +468,6 @@ class StringReporterSummarySpec extends UnitSpec {
         fragments.length should be > (initialFragmentsForJustOneFailedTest.size + initialFragmentsTheOneCanceledTestReminder.size + (2 * StringReporter.shortStackTraceSize))
       }
     }
-/*
-A test that ensures that if no summary, I get back just the run completed or run stopped message.
-A test that ensures recorded events don't show up in the summary.
-*/
-
 
     /* @org.scalatest.Ignore */
     @org.scalatest.Ignore def `should fail on purpose` {
