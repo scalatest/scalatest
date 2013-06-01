@@ -157,7 +157,17 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
  */
 
   def apply(event: Event) {
-    fragmentsForEvent(event, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces) foreach printPossiblyInColor
+    fragmentsForEvent(
+      event,
+      presentUnformatted,
+      presentAllDurations,
+      presentShortStackTraces,
+      presentFullStackTraces,
+      presentReminder,
+      presentReminderWithShortStackTraces,
+      presentReminderWithFullStackTraces,
+      presentReminderWithoutCanceledTests
+   ) foreach printPossiblyInColor
   }
   
   // We subtract one from test reports because we add "- " in front, so if one is actually zero, it will come here as -1
@@ -170,6 +180,8 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
 }
  
 private[scalatest] object StringReporter {
+
+  val shortStackTraceSize = 10
 
   def fragmentsWhenNoError(
     resourceName: String,
@@ -209,7 +221,17 @@ private[scalatest] object StringReporter {
     lines map (new Fragment(_, AnsiRed))
   }
 
-  def summaryFragments(runCompleted: Boolean, duration: Option[Long], summaryOption: Option[Summary], exceptionalEvents: Vector[ExceptionalEvent]): Vector[Fragment] = {
+  def summaryFragments(
+     runCompleted: Boolean,
+     duration: Option[Long],
+     summaryOption: Option[Summary],
+     exceptionalEvents: Vector[ExceptionalEvent],
+     presentAllDurations: Boolean,
+     presentReminder: Boolean,
+     presentReminderWithShortStackTraces: Boolean,
+     presentReminderWithFullStackTraces: Boolean,
+     presentReminderWithoutCanceledTests: Boolean
+  ): Vector[Fragment] = {
 
     val resourceName =
       if (runCompleted) "runCompleted"
@@ -275,13 +297,27 @@ private[scalatest] object StringReporter {
       val reminderFrags: Vector[Fragment] =
         for {
           event <- exceptionalEvents
-          frag <- exceptionalFragments(event)
+          frag <- exceptionalFragments(
+            event,
+            presentAllDurations,
+            presentReminder,
+            presentReminderWithShortStackTraces,
+            presentReminderWithFullStackTraces,
+            presentReminderWithoutCanceledTests
+          )
         } yield frag
 
       summaryFrags ++ reminderFrags
   }
 
-  def exceptionalFragments(exceptionalEvent: ExceptionalEvent): Vector[Fragment] = {
+  def exceptionalFragments(
+     exceptionalEvent: ExceptionalEvent,
+     presentAllDurations: Boolean,
+     presentReminder: Boolean,
+     presentReminderWithShortStackTraces: Boolean,
+     presentReminderWithFullStackTraces: Boolean,
+     presentReminderWithoutCanceledTests: Boolean
+  ): Vector[Fragment] = {
     exceptionalEvent match {
       case tf: TestFailed =>
         // Usually, the testName should end with the testText. In that normal
@@ -310,10 +346,23 @@ private[scalatest] object StringReporter {
         val testNameFrags: Vector[Fragment] =
           prefix match {
             case Some(pre) =>
-              Vector(
-                Fragment(pre, AnsiRed),
-                Fragment("- " + tf.testText, AnsiRed)
-              )
+              val preFrag = Fragment(pre, AnsiRed)
+              val otherFrags =
+                fragmentsOnError(
+                  "failedNote",
+                  "testFailed",
+                  tf.message,
+                  tf.throwable,
+                  Some(IndentedText("- " + tf.testText, tf.testText, 0)),
+                  Some(tf.suiteName),
+                  Some(tf.testName),
+                  tf.duration,
+                  false,
+                  presentAllDurations,
+                  presentReminderWithShortStackTraces,
+                  presentReminderWithFullStackTraces
+                )
+              preFrag +: otherFrags
             case None => Vector.empty
           }
         suiteNameFrag +: testNameFrags
@@ -438,9 +487,9 @@ private[scalatest] object StringReporter {
                   throwable match {
                     case e: Throwable with StackDepth =>
                       val stackDepth = e.failedCodeStackDepth
-                      stackTraceThisThrowable.head :: (whiteSpace + "...") :: stackTraceThisThrowable.drop(stackDepth + 1).take(7) ::: List(whiteSpace + "...")
+                      stackTraceThisThrowable.head :: (whiteSpace + "...") :: stackTraceThisThrowable.drop(stackDepth + 1).take(shortStackTraceSize - 3) ::: List(whiteSpace + "...")
                     case _ => // In case of IAE or what not, show top 10 stack frames
-                      stackTraceThisThrowable.head :: stackTraceThisThrowable.drop(1).take(10) ::: List(whiteSpace + "...")
+                      stackTraceThisThrowable.head :: stackTraceThisThrowable.drop(1).take(shortStackTraceSize) ::: List(whiteSpace + "...")
                   }
     
                 if (cause == null)
@@ -616,7 +665,17 @@ private[scalatest] object StringReporter {
     else                    genFormattedText
   }
 
-  def fragmentsForEvent(event: Event, presentUnformatted: Boolean, presentAllDurations: Boolean, presentShortStackTraces: Boolean, presentFullStackTraces: Boolean): Vector[Fragment] = {
+  def fragmentsForEvent(
+    event: Event,
+    presentUnformatted: Boolean,
+    presentAllDurations: Boolean,
+    presentShortStackTraces: Boolean,
+    presentFullStackTraces: Boolean,
+    presentReminder: Boolean,
+    presentReminderWithShortStackTraces: Boolean,
+    presentReminderWithFullStackTraces: Boolean,
+    presentReminderWithoutCanceledTests: Boolean
+  ): Vector[Fragment] = {
 
     event match {
       // TODO: I think we should let people elide DiscoveryStarting and DiscoveryCompleted events in reporters
@@ -643,11 +702,31 @@ private[scalatest] object StringReporter {
 
       case RunCompleted(ordinal, duration, summary, formatter, location, payload, threadName, timeStamp) => 
 
-        summaryFragments(true, duration, summary, Vector.empty) 
+        summaryFragments(
+          true,
+          duration,
+          summary,
+          Vector.empty,
+          presentAllDurations,
+          presentReminder,
+          presentReminderWithShortStackTraces,
+          presentReminderWithFullStackTraces,
+          presentReminderWithoutCanceledTests
+        )
 
       case RunStopped(ordinal, duration, summary, formatter, location, payload, threadName, timeStamp) =>
 
-        summaryFragments(false, duration, summary, Vector.empty) 
+        summaryFragments(
+          false,
+          duration,
+          summary,
+          Vector.empty,
+          presentAllDurations,
+          presentReminder,
+          presentReminderWithShortStackTraces,
+          presentReminderWithFullStackTraces,
+          presentReminderWithoutCanceledTests
+       ) 
 
       case RunAborted(ordinal, message, throwable, duration, summary, formatter, location, payload, threadName, timeStamp) => 
 
@@ -733,7 +812,7 @@ private[scalatest] object StringReporter {
       case ScopeClosed(ordinal, message, nameInfo, formatter, location, payload, threadName, timeStamp) =>
         
         val testNameInfo = nameInfo.testName
-        fragmentsWhenNoError("scopeClosed", formatter, nameInfo.suiteName, nameInfo.testName, Some(message), presentUnformatted, presentAllDurations) // TODO: I htink I want ot say Scope Closed - + message
+        fragmentsWhenNoError("scopeClosed", formatter, nameInfo.suiteName, nameInfo.testName, Some(message), presentUnformatted, presentAllDurations) // TODO: I think I want to say Scope Closed - + message
 
       case ScopePending(ordinal, message, nameInfo, formatter, location, payload, threadName, timeStamp) => 
         val stringToPrint =
@@ -773,4 +852,5 @@ private[scalatest] object StringReporter {
     }
   }
 }
+
 
