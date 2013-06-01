@@ -377,6 +377,23 @@ class StringReporterSummarySpec extends UnitSpec {
         fragments.drop(initialFragmentsForOneFailedAndOneCanceledTest.size) should be (initialFragmentsTheOneCanceledTestReminder)
       }
 
+      def `should produce a good summary when reminders are enabled, but canceled tests are deselected` {
+        val fragments =
+          summaryFragments(
+            true,
+            Some(213L),
+            Some(summaryWithOneFailedAndOneCanceledTest),
+            oneTestFailedAndOneTestCanceled,
+            presentAllDurations = false,
+            presentReminder = true,
+            presentReminderWithShortStackTraces = false,
+            presentReminderWithFullStackTraces = false,
+            presentReminderWithoutCanceledTests = true
+          )
+
+        fragments should be (initialFragmentsForOneFailedAndOneCanceledTest)
+      }
+
       def `should produce a good summary when reminders are enabled with short stack traces` {
         val fragments =
           summaryFragments(

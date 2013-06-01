@@ -295,10 +295,16 @@ private[scalatest] object StringReporter {
         case None => Vector(Fragment(Resources(resourceName), AnsiCyan))
       }
 
+      val filteredSortedEvents =
+        if (presentReminderWithoutCanceledTests)
+          exceptionalEvents.filter(_.isInstanceOf[TestFailed]).sortBy(_.ordinal)
+        else
+          exceptionalEvents.sortBy(_.ordinal)
+
       val reminderFrags: Vector[Fragment] =
         if (presentReminder)
           for {
-            event <- exceptionalEvents.sortBy(_.ordinal)
+            event <- filteredSortedEvents
             frag <- exceptionalFragments(
               event,
               presentAllDurations,
