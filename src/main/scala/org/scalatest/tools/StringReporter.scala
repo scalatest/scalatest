@@ -212,13 +212,14 @@ private[scalatest] object StringReporter {
     presentUnformatted: Boolean,
     presentAllDurations: Boolean,
     presentShortStackTraces: Boolean,
-    presentFullStackTraces: Boolean
+    presentFullStackTraces: Boolean,
+    ansiColor: AnsiColor
   ): Vector[Fragment] = {
 
     val lines: Vector[String] = stringsToPrintOnError(noteResourceName, errorResourceName, message, throwable, formatter, suiteName, testName, duration,
         presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces).toVector
 
-    lines map (new Fragment(_, AnsiRed))
+    lines map (new Fragment(_, ansiColor))
   }
 
   def summaryFragments(
@@ -360,13 +361,45 @@ private[scalatest] object StringReporter {
                   false,
                   presentAllDurations,
                   presentReminderWithShortStackTraces,
-                  presentReminderWithFullStackTraces
+                  presentReminderWithFullStackTraces,
+                  AnsiRed
                 )
               preFrag +: otherFrags
             case None => Vector.empty
           }
         suiteNameFrag +: testNameFrags
       case tc: TestCanceled => Vector.empty
+        val prefixLength = tc.testName.length - tc.testText.length
+        val prefix: Option[String] = 
+          if (tc.testName.drop(prefixLength) == tc.testText)
+            Some(tc.testName.take(prefixLength))
+          else
+            None
+        val suiteNameFrag = Fragment(tc.suiteName + ":", AnsiYellow)
+        val testNameFrags: Vector[Fragment] =
+          prefix match {
+            case Some(pre) =>
+              val preFrag = Fragment(pre, AnsiYellow)
+              val otherFrags =
+                fragmentsOnError(
+                  "canceledNote",
+                  "testCanceled",
+                  tc.message,
+                  tc.throwable,
+                  Some(IndentedText("- " + tc.testText, tc.testText, 0)),
+                  Some(tc.suiteName),
+                  Some(tc.testName),
+                  tc.duration,
+                  false,
+                  presentAllDurations,
+                  presentReminderWithShortStackTraces,
+                  presentReminderWithFullStackTraces,
+                  AnsiYellow
+                )
+              preFrag +: otherFrags
+            case None => Vector.empty
+          }
+        suiteNameFrag +: testNameFrags
     }
   }
 
@@ -731,7 +764,7 @@ private[scalatest] object StringReporter {
       case RunAborted(ordinal, message, throwable, duration, summary, formatter, location, payload, threadName, timeStamp) => 
 
         fragmentsOnError("abortedNote", "runAborted", message, throwable, formatter, None, None, duration,
-            presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
+            presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces, AnsiRed)
 
       case SuiteStarting(ordinal, suiteName, suiteId, suiteClassName, formatter, location, rerunnable, payload, threadName, timeStamp) =>
 
@@ -778,15 +811,13 @@ private[scalatest] object StringReporter {
       case TestFailed(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, throwable, duration, formatter, location, rerunnable, payload, threadName, timeStamp) =>
 
         val tff: Vector[Fragment] = fragmentsOnError("failedNote", "testFailed", message, throwable, formatter, Some(suiteName), Some(testName), duration,
-            presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
+            presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces, AnsiRed)
 
         val ref = recordedEventFragments(recordedEvents, AnsiRed, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
 
         tff ++ ref
 
       case TestCanceled(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, throwable, duration, formatter, location, payload, threadName, timeStamp) =>
-
-// println("TestCanceled event: " + event)
 
         val lines: Vector[String] = stringsToPrintOnError("canceledNote", "testCanceled", message, throwable, formatter, Some(suiteName), Some(testName), duration,
             presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces).toVector
