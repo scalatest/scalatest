@@ -16,11 +16,13 @@
 package org.scalatest
 
 /**
- * Trait that contains the <code>failureOf</code> method, which captures an exception thrown by a passed code block and
- * returns it wrapped in a <code>Some</code>, or returns <code>None</code> if no exception is thrown.
+ * <b>Trait <code>FailureOf</code> has been deprecated and will be removed in a future version of ScalaTest.
+ * Instead of the <code>failureOf</code> method provided by this trait, please use the <code>outcomeOf</code> method
+ * provided by trait <code>OutcomeOf</code> instead.</b>
  *
  * @author Bill Venners
  */
+@deprecated("Please use OutcomeOf instead")
 trait FailureOf {
 
   /**

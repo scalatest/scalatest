@@ -47,31 +47,17 @@ trait Suite extends org.scalatest.Suite { thisSuite =>
   protected type FixtureParam
 
   /**
-   * Trait whose instances encapsulate a test function that takes a fixture and config map.
-   *
-   * <p>
-   * The <code>fixture.Suite</code> trait's implementation of <code>runTest</code> passes instances of this trait
-   * to <code>fixture.Suite</code>'s <code>withFixture</code> method, such as:
-   * </p>
-   *
-   * <pre class="stHighlight">
-   * def testSomething(fixture: Fixture) {
-   *   // ...
-   * }
-   * def testSomethingElse(fixture: Fixture, info: Informer) {
-   *   // ...
-   * }
-   * </pre>
+   * A test function taking a fixture parameter and returning an <code>Outcome</code>.
    *
    * <p>
    * For more detail and examples, see the
-   * <a href="Suite.html">documentation for trait <code>fixture.Suite</code></a>.
+   * <a href="FlatSpec.html">documentation for trait <code>fixture.FlatSpec</code></a>.
    * </p>
    */
   protected trait OneArgTest extends (FixtureParam => Outcome) with TestData { thisOneArgTest =>
 
     /**
-     * Run the test, using the passed <code>FixtureParam</code>.
+     * Runs the test, using the passed <code>FixtureParam</code>.
      */
     def apply(fixture: FixtureParam): Outcome
 

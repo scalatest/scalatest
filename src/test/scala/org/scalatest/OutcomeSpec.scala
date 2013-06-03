@@ -88,16 +88,16 @@ class OutcomeSpec extends Spec with OptionValues with OutcomeOf {
     }
 */
     def `can be easily pattern matched on based on whether it is Exceptional` {
-      def isExceptional(res: Outcome): Boolean =
+      def matchesExceptional(res: Outcome): Boolean =
         res match {
           case _: Exceptional => true
           case _ => false
         }
-      assert(!isExceptional(res1))
-      assert(isExceptional(res2))
-      assert(isExceptional(res3))
-      assert(!isExceptional(res4))
-      assert(!isExceptional(res5))
+      assert(!matchesExceptional(res1))
+      assert(matchesExceptional(res2))
+      assert(matchesExceptional(res3))
+      assert(!matchesExceptional(res4))
+      assert(!matchesExceptional(res5))
     }
     def `can be easily pattern matched on, extracting the exception, based on whether it is Exceptional` {
       def insideExceptional(res: Outcome): Option[Throwable] =
@@ -111,19 +111,12 @@ class OutcomeSpec extends Spec with OptionValues with OutcomeOf {
       assert(insideExceptional(res4).isEmpty)
       assert(insideExceptional(res5).isEmpty)
     }
-    def `can be queried to determine whether or not it is defined` {
-      assert(!res1.isDefined)
-      assert(res2.isDefined)
-      assert(res3.isDefined)
-      assert(!res4.isDefined)
-      assert(!res5.isDefined)
-    }
-    def `can be queried to determine whether or not it is empty` {
-      assert(res1.isEmpty)
-      assert(!res2.isEmpty)
-      assert(!res3.isEmpty)
-      assert(res4.isEmpty)
-      assert(res5.isEmpty)
+    def `can be queried to determine whether or not it is "exceptional"` {
+      assert(!res1.isExceptional)
+      assert(res2.isExceptional)
+      assert(res3.isExceptional)
+      assert(!res4.isExceptional)
+      assert(!res5.isExceptional)
     }
     def `can be transformed into an Option[Throwable]` {
       assert(res1.toOption.isEmpty)

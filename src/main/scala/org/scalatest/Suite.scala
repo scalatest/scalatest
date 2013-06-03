@@ -562,20 +562,17 @@ trait Suite extends Assertions with AbstractSuite with Serializable { thisSuite 
   import Suite.TestMethodPrefix, Suite.InformerInParens, Suite.IgnoreAnnotation
 
   /**
-   * A test function taking no arguments, which also provides a test name and config map.
+   * A test function taking no arguments and returning an <code>Outcome</code>.
    *
    * <p>
-   * <code>Suite</code>'s implementation of <code>runTest</code> passes instances of this trait
-   * to <code>withFixture</code> for every test method it executes. It invokes <code>withFixture</code>
-   * for every test, including test methods that take an <code>Informer</code>. For the latter case,
-   * the <code>Informer</code> to pass to the test method is already contained inside the
-   * <code>NoArgTest</code> instance passed to <code>withFixture</code>.
+   * For more detail and examples, see the relevant section in the 
+   * <a href="FlatSpec.html#withFixtureNoArgTest">documentation for trait <code>fixture.FlatSpec</code></a>.
    * </p>
    */
   protected trait NoArgTest extends (() => Outcome) with TestData {
-    
+
     /**
-     * Runs the code of the test.
+     * Runs the body of the test, returning an <code>Outcome</code>.
      */
     def apply(): Outcome
   }
