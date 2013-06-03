@@ -89,31 +89,32 @@ val scaladocForTableFor1VerbatimString = """
  *
  * <p>
  * Because <code>TableFor1</code> is a <code>Seq[(A)]</code>, you can use it as a <code>Seq</code>. For example, here's how
- * you could get a sequence of optional exceptions for each row of the table, indicating whether a property check succeeded or failed
+ * you could get a sequence of <a href="../Outcome.html"><code>Outcome</code></a>s for each row of the table, indicating whether a property check succeeded or failed
  * on each row of the table:
  * </p>
  *
  * <pre class="stHighlight">
  * for (row <- examples) yield {
- *   failureOf { row._1 should not equal (7) }
+ *   outcomeOf { row._1 should not equal (7) }
  * }
  * </pre>
  *
  * <p>
- * Note: the <code>failureOf</code> method, contained in the <code>FailureOf</code> trait, will execute the supplied code (a by-name parameter) and
- * catch any exception. If no exception is thrown by the code, <code>failureOf</code> will result in <code>None</code>, indicating the "property check"
- * succeeded. If the supplied code completes abruptly in an exception that would normally cause a test to fail, <code>failureOf</code> will result in
- * a <code>Some</code> wrapping that exception. For example, the previous for expression would give you:
+ * Note: the <code>outcomeOf</code> method, contained in the <code>OutcomeOf</code> trait, will execute the supplied code (a by-name parameter) and
+ * transform it to an <code>Outcome</code>. If no exception is thrown by the code, <code>outcomeOf</code> will result in a
+ * <a href="../Succeeded\$.html"><code>Succeeded</code></a>, indicating the "property check"
+ * succeeded. If the supplied code completes abruptly in an exception that would normally cause a test to fail, <code>outcomeOf</code> will result in
+ * in a <a href="../Failed.html"><code>Failed</code></a> instance containing that exception. For example, the previous for expression would give you:
  * </p>
  *
  * <pre class="stHighlight">
- * Vector(None, None, None, None, None, None, None,
- *     Some(org.scalatest.TestFailedException: 7 equaled 7), None, None)
+ * Vector(Succeeded, Succeeded, Succeeded, Succeeded, Succeeded, Succeeded, Succeeded,
+ *     Failed(org.scalatest.TestFailedException: 7 equaled 7), Succeeded, Succeeded)
  * </pre>
  *
  * <p>
  * This shows that all the property checks succeeded, except for the one at index 7.
- * <p>
+ * </p>
  *
  * <p>
  * One other way to use a <code>TableFor1</code> is to test subsequent return values

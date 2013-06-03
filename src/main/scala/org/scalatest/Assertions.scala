@@ -97,15 +97,15 @@ import org.scalautils.LegacyTripleEquals
  * as the operands become lengthy, the code becomes less readable. In addition, the <code>===</code> comparison
  * doesn't distinguish between actual and expected values. The operands are just called <code>left</code> and <code>right</code>,
  * because if one were named <code>expected</code> and the other <code>actual</code>, it would be difficult for people to
- * remember which was which. To help with these limitations of assertions, <code>Suite</code> includes a method called <code>expectResult</code> that
- * can be used as an alternative to <code>assert</code> with <code>===</code>. To use <code>expectResult</code>, you place
- * the expected value in parentheses after <code>expectResult</code>, followed by curly braces containing code
+ * remember which was which. To help with these limitations of assertions, <code>Suite</code> includes a method called <code>assertResult</code> that
+ * can be used as an alternative to <code>assert</code> with <code>===</code>. To use <code>assertResult</code>, you place
+ * the expected value in parentheses after <code>assertResult</code>, followed by curly braces containing code
  * that should result in the expected value. For example:
  *
  * <pre class="stHighlight">
  * val a = 5
  * val b = 2
- * expectResult(2) {
+ * assertResult(2) {
  *   a - b
  * }
  * </pre>
@@ -804,15 +804,15 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
   }
 
   /**
-   * This <code>expect</code> method has been deprecated; Please use <code>expectResult</code> instead.
+   * This <code>expect</code> method has been deprecated; Please use <code>assertResult</code> instead.
    *
    * <p>
    * To get rid of the deprecation warning, simply replace <code>expect</code> with
-   * <code>expectResult</code>. The name <code>expect</code> will be used for a different purposes in
+   * <code>assertResult</code>. The name <code>expect</code> will be used for a different purposes in
    * a future version of ScalaTest.
    * </p>
    */
-  @deprecated("This expect method has been deprecated. Please replace all invocations of expect with an identical invocation of expectResult instead.")
+  @deprecated("This expect method has been deprecated. Please replace all invocations of expect with an identical invocation of assertResult instead.")
   def expect(expected: Any, clue: Any)(actual: Any) {
     if (actual != expected) {
       val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
@@ -859,15 +859,15 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
   }
 
   /**
-   * This <code>expect</code> method has been deprecated; Please use <code>expectResult</code> instead.
+   * This <code>expect</code> method has been deprecated; Please use <code>assertResult</code> instead.
    *
    * <p>
    * To get rid of the deprecation warning, simply replace <code>expect</code> with
-   * <code>expectResult</code>. The name <code>expect</code> will be used for a different purposes in
+   * <code>assertResult</code>. The name <code>expect</code> will be used for a different purposes in
    * a future version of ScalaTest.
    * </p>
    */
-  @deprecated("This expect method has been deprecated. Please replace all invocations of expect with an identical invocation of expectResult instead.")
+  @deprecated("This expect method has been deprecated. Please replace all invocations of expect with an identical invocation of assertResult instead.")
   def expect(expected: Any)(actual: Any) {
     if (actual != expected) {
       val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)

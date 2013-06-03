@@ -25,7 +25,7 @@ import collection.mutable.ListBuffer
 import Suite.reportMarkupProvided
 import scala.collection.mutable.ListBuffer
 
-trait DocSpecLike extends Suite with Informing { thisSuite =>
+private[scalatest] trait DocSpecLike extends Suite with Informing { thisSuite =>
 
   private final val engine = new Engine("concurrentFunSuiteMod", "FunSuite")
   import engine._

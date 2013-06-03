@@ -30,7 +30,7 @@ import javax.swing.JPanel
  * 'doing discovery' message with an animated icon if discovery is in
  * process.
  */
-class ProgressBarPanel() extends JPanel {
+private[scalatest] class ProgressBarPanel() extends JPanel {
   private val progressBar = new ColorBar()
   private val discoPanel = new JPanel
   private val discoJLabel = new JLabel

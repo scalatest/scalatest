@@ -24,7 +24,7 @@ import java.util.ConcurrentModificationException
 import collection.mutable.ListBuffer
 
 // TODO: Will need a finder.
-abstract class DocSpec extends DocSpecLike {
+private[scalatest] abstract class DocSpec extends DocSpecLike {
 
   /**
    * Returns a user friendly string for this suite, composed of the
