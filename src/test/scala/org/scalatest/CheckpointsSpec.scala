@@ -22,6 +22,9 @@ import org.scalatest.junit.JUnitTestFailedError
 import org.scalatest.SharedHelpers.thisLineNumber
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestCanceledException
+import org.scalatest.exceptions.TestRegistrationClosedException
+import org.scalatest.exceptions.NotAllowedException
+import org.scalatest.exceptions.DuplicateTestNameException
 
 class CheckpointsSpec extends FunSpec with Matchers with AssertionsForJUnit {
 
@@ -93,6 +96,30 @@ class CheckpointsSpec extends FunSpec with Matchers with AssertionsForJUnit {
         evaluating {
           cp { cancel("This should not be captured by the Checkpoint") }
         } should produce [TestCanceledException]
+      }
+    } 
+    describe("when a TestRegistrationClosedException is thrown") {
+      it("should pass the TestRegistrationClosedException through immediately") {
+        val cp = new Checkpoint
+        evaluating {
+          cp { throw new TestRegistrationClosedException("This should not be captured by the Checkpoint", 0) }
+        } should produce [TestRegistrationClosedException]
+      }
+    } 
+    describe("when a NotAllowedException is thrown") {
+      it("should pass the NotAllowedException through immediately") {
+        val cp = new Checkpoint
+        evaluating {
+          cp { throw new NotAllowedException("This should not be captured by the Checkpoint", 0) }
+        } should produce [NotAllowedException]
+      }
+    } 
+    describe("when a DuplicateTestNameException is thrown") {
+      it("should pass the DuplicateTestNameException through immediately") {
+        val cp = new Checkpoint
+        evaluating {
+          cp { throw new DuplicateTestNameException("This should not be captured by the Checkpoint", 0) }
+        } should produce [DuplicateTestNameException]
       }
     } 
   } 
