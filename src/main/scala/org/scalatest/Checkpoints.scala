@@ -15,41 +15,39 @@
  */
 package org.scalatest
 
-import org.scalatest.junit.JUnitTestFailedError
 import java.util.concurrent.ConcurrentLinkedQueue
 import scala.collection.JavaConversions._
 
 /**
- * Trait to define class Checkpoint, which allows multiple failure
- * conditions within a test to be collected prior to failure being
- * reported.
- *
- * <p>
- * Uses the "selfless trait" pattern to let users either mix in the trait or
- * import its members.
- * </p>
+ * Trait defining class <code>Checkpoint</code>, which allows multiple assertions
+ * to be performed within a test, with any failures accumulated and reported
+ * together at the end of the test.
  */
 trait Checkpoints {
 
   /**
-   * Class to allow multiple failure conditions within a test to be collected
-   * prior to failure being reported.
+   * Class that allows multiple assertions to be performed within a test, with any
+   * failures accumulated and reported together at the end of the test.
    *
    * <p>
-   * E.g.:
+   * To use a <code>Checkpoint</code>, you first need to create one:
    * </p>
    *
    * <pre class="stHighlight">
-   * class MySpec extends FunSpec with Checkpoints
+   * class ExampleSpec extends FlatSpec with Checkpoints {
    * 
-   *   // note no s, trait Checkpoints defines class Checkpoint
-   *   val cp = new Checkpoint
+   *   "This example" should "clarify how to use Checkpoints" in {
+   *
+   *     // note no s, trait Checkpoints defines class Checkpoint
+   *     val cp = new Checkpoint
    * 
-   *   // ...
-   *   cp { a should be > 9 } // invoking apply on Checkpoint
-   *   // i.e., same as:
-   *   // cp apply { a should be > 9 }
-   *   // ...
+   *     val (a, b, c) = (1, 2, 3)
+   *     cp { a should be &lt; 9 }
+   *     // The above line invokes apply on the Checkpoint.
+   *     // I.e., it means the same as:
+   *     // cp apply { a should be &gt; 9 }
+   *     // Note that a is *not* less than 
+   *
    *   cp { b should === 22 }
    * 
    *   // ...
@@ -71,7 +69,7 @@ trait Checkpoints {
    * <p>
    */
   class Checkpoint {
-    private val fails: ConcurrentLinkedQueue[Throwable with StackDepth] =
+    private val failures: ConcurrentLinkedQueue[Throwable with StackDepth] =
       new ConcurrentLinkedQueue
 
     //
@@ -94,8 +92,7 @@ trait Checkpoints {
         f
       }
       catch {
-        case e: TestFailedException  => fails.add(e)
-        case e: JUnitTestFailedError => fails.add(e)
+        case e: StackDepth  => failures.add(e)
         case e: Throwable => throw e
       }
     }
@@ -106,26 +103,25 @@ trait Checkpoints {
      * failed checkpoints.
      */
     def reportAll() {
-      if (!fails.isEmpty) {
+      if (!failures.isEmpty) {
         val failMessages =
-          fails.
+          failures.
             map(f =>
               f.getMessage + " " + Resources("atCheckpointAt") + " " +
               getFailLine(f)).
             mkString("\n")
 
-        fails.head match {
-          case e: TestFailedException =>
-            throw new TestFailedException(failMessages, 1)
-          case e: JUnitTestFailedError =>
-            throw new JUnitTestFailedError(failMessages, 1)
-        }
+        throw new TestFailedException(failMessages, 1)
       }
     }
   }
 }
 
 /**
- * Companion object to Checkpoints.
+ * Companion object that facilitates the importing the members of trait <code>Checkpoints</code> as 
+ * an alternative to mixing it in. One use case is to import <code>Checkpoints</code> so you can use
+ * it in the Scala interpreter.
+ *
+ * @author Bill Venners
  */
 object Checkpoints extends Checkpoints

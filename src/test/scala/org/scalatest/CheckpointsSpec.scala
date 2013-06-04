@@ -29,14 +29,14 @@ class CheckpointsSpec extends FunSpec with Matchers with AssertionsForJUnit {
 
       it("should throw a TestFailedException when reportAll is called") {
         val cp = new Checkpoint
+        cp { 1 should equal (2) }
         val caught = 
           evaluating {
-            cp { 1 should equal (2) }
             cp.reportAll()
           } should produce [TestFailedException]
 
-        val failConditionLineNumber = thisLineNumber - 4
-        val reportAllLineNumber = failConditionLineNumber + 1
+        val failConditionLineNumber = thisLineNumber - 6
+        val reportAllLineNumber = failConditionLineNumber + 3
 
         caught.failedCodeLineNumber.value should equal (reportAllLineNumber)
         caught.failedCodeFileName.value should be ("CheckpointsSpec.scala")
@@ -97,7 +97,7 @@ class CheckpointsSpec extends FunSpec with Matchers with AssertionsForJUnit {
           evaluating {
             cp { assert(1 === 2) }
             cp.reportAll()
-          } should produce [JUnitTestFailedError]
+          } should produce [TestFailedException]
 
         val failConditionLineNumber = thisLineNumber - 4
         val reportAllLineNumber = failConditionLineNumber + 1
