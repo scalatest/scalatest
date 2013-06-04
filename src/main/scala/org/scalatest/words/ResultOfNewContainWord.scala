@@ -124,5 +124,24 @@ class ResultOfNewContainWord[L](left: L, shouldBeTrue: Boolean = true) {
         )
       )
   }
+  
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * option should contain only (1, 2)
+   *                       ^
+   * </pre>
+   */
+  def newOnly(right: Any*)(implicit aggregation: Aggregating[L]) {
+    if (aggregation.containsOnly(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "didNotContainOnlyElements" else "containedOnlyElements",
+          left,
+          UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
+        )
+      )
+  }
 }
 

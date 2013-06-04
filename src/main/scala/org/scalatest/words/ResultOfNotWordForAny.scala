@@ -689,6 +689,19 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
       )
   }
   
+  def newContain(only: ResultOfNewOnlyApplication)(implicit aggregation: Aggregating[T]) {
+
+    val right = only.right
+    if (aggregation.containsOnly(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "didNotContainOnlyElements" else "containedOnlyElements",
+          left,
+          UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
+        )
+      )
+  }
+  
 }
 
 /**

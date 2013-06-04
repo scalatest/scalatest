@@ -2784,6 +2784,16 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    */
   def only[T](xs: T*)(implicit equality: Equality[T]) = 
     new OnlyContainMatcher(xs, equality)
+
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * List(1, 2, 3) should contain (only(1, 2))
+   *                               ^
+   * </pre>
+   */
+  def newOnly(xs: Any*) = new ResultOfNewOnlyApplication(xs)
   
   /**
    * This method enables the following syntax: 
@@ -3559,6 +3569,32 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
       }
     }
 
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * all (xs) should not contain only ("one")
+     *                     ^
+     * </pre>
+     */
+    def newContain(only: ResultOfNewOnlyApplication)(implicit aggregation: Aggregating[T]) {
+
+      val right = only.right
+
+      doCollected(collected, xs, "newContain", 1) { e =>
+        if (aggregation.containsOnly(e, right) != shouldBeTrue)
+          throw newTestFailedException(
+            FailureMessages(
+              if (shouldBeTrue) "didNotContainOnlyElements" else "containedOnlyElements",
+              e,
+              UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
+            ),
+            None,
+            6
+          )
+      }
+    }
+    
   }
 
   /**
@@ -4065,6 +4101,29 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
               if (shouldBeTrue) "didNotContainSameElementsInOrder" else "containedSameElementsInOrder",
               e,
               right
+            ),
+            None,
+            6
+        )
+      }
+    }
+
+    /**
+     * This method enables the following syntax: 
+     *
+     * <pre class="stHighlight">
+     * option should contain only (1, 2)
+     *                       ^
+     * </pre>
+     */
+    def newOnly(right: Any*)(implicit aggregation: Aggregating[T]) {
+      doCollected(collected, xs, "newOnly", 1) { e =>
+        if (aggregation.containsOnly(e, right) != shouldBeTrue)
+          throw newTestFailedException(
+            FailureMessages(
+              if (shouldBeTrue) "didNotContainOnlyElements" else "containedOnlyElements",
+              e,
+              UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
             ),
             None,
             6
