@@ -70,22 +70,22 @@ import java.lang.annotation.*;
  * </p>
  *
  * <p>
- * Another use case for <code>@Ignore</code> is to mark test <em>methods</em> as ignored in traits <a href="Suite.html"><code>Suite</code></a>
- * and <a href="fixture/Suite.html"><code>fixture.Suite</code></a>. Here's an example:
+ * Another use case for <code>@Ignore</code> is to mark test <em>methods</em> as ignored in traits <a href="Spec.html"><code>Spec</code></a>
+ * and <a href="fixture/Spec.html"><code>fixture.Spec</code></a>. Here's an example:
  * </p>
  *
  * <pre class="stHighlight">
- * package org.scalatest.examples.suite.ignore
+ * package org.scalatest.examples.spec.ignore
  *
  * import org.scalatest._
  *
- * class SetSuite extends Suite {
+ * class SetSpec extends Spec {
  *
- *   @Ignore def &#96;test: an empty Set should have size 0&#96; {
+ *   @Ignore def &#96;an empty Set should have size 0&#96; {
  *     assert(Set.empty.size === 0)
  *   }
  *
- *   def &#96;test: invoking head on an empty Set should produce NoSuchElementException&#96; {
+ *   def &#96;invoking head on an empty Set should produce NoSuchElementException&#96; {
  *     intercept[NoSuchElementException] {
  *       Set.empty.head
  *     }
@@ -99,8 +99,8 @@ import java.lang.annotation.*;
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSuite execute
- * <span class="stGreen">SetSuite:
+ * scala&gt; new SetSpec execute
+ * <span class="stGreen">SetSpec:
  * <span class="stYellow">- an empty Set should have size 0 !!! IGNORED !!!</span>
  * <span class="stGreen">- invoking head on an empty Set should produce NoSuchElementException</span>
  * </pre>

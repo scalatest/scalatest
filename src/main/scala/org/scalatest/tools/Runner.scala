@@ -449,8 +449,8 @@ private[scalatest] case class ConcurrentConfig(numThreads: Int, enableSuiteSorti
  * <p>
  * <ul>
  * <li><code>-n CheckinTests</code></li>
- * <li><code>-n FunctionalTests -l SlowTests</code></li>
- * <li><code>-n "CheckinTests FunctionalTests" -l "SlowTests NetworkTests"</code></li>
+ * <li><code>-n FunctionalTests -l org.scalatest.tags.Slow</code></li>
+ * <li><code>-n "CheckinTests FunctionalTests" -l "org.scalatest.tags.Slow org.scalatest.tags.Network"</code></li>
  * </ul>
  * </p>
  *
