@@ -64,6 +64,7 @@ import org.scalatest.words.ResultOfDefinedAt
 import org.scalatest.words.ResultOfNewOneOfApplication
 import org.scalatest.words.ResultOfAtLeastOneOfApplication
 import org.scalatest.words.ResultOfNewNoneOfApplication
+import org.scalatest.words.ResultOfNewTheSameElementsAsApplication
 
 /**
  * A matcher factory that can produce a matcher given $nTypeclassInstances$.
@@ -1309,7 +1310,7 @@ $endif$
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
-     * (aMatcherFactory and not contain atLeastOneOf (List(8, 1, 2))) 
+     * (aMatcherFactory and not contain atLeastOneOf (8, 1, 2)) 
      *                          ^
      * </pre>
      */
@@ -1325,6 +1326,17 @@ $endif$
      * </pre>
      */
     def newContain(right: ResultOfNewNoneOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
+      thisMatcherFactory.and(MatcherWords.not.newContain(right))
+    
+    /**
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     *
+     * <pre class="stHighlight">
+     * (aMatcherFactory and not contain theSameElementsAs (List(8, 1, 2))) 
+     *                          ^
+     * </pre>
+     */
+    def newContain(right: ResultOfNewTheSameElementsAsApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
       thisMatcherFactory.and(MatcherWords.not.newContain(right))
       
     /**
@@ -1603,12 +1615,12 @@ $endif$
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
-     * (aMatcherFactory or contain theSameElementsAs List(1, 2, 3))
+     * (aMatcherFactory or contain theSameElementsAs (1, 3, 3))
      *                             ^
      * </pre>
      */
-    //def theSameElementsAs[E](right: GenTraversable[E])(implicit equality: Equality[E]): MatcherFactory$arity$[SC with GenTraversable[E], $commaSeparatedTCNs$] = 
-      //thisMatcherFactory.or(MatcherWords.contain.theSameElementsAs(right)(equality))
+    def newTheSameElementsAs(right: GenTraversable[_]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
+      thisMatcherFactory.or(MatcherWords.newContain.newTheSameElementsAs(right))
     
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -2445,7 +2457,7 @@ $endif$
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
-     * (aMatcherFactory or not contain theSameElementsAs (List(8, 1, 2))) 
+     * (aMatcherFactory or not contain atLeastOneOf (List(8, 1, 2))) 
      *                         ^
      * </pre>
      */
@@ -2461,6 +2473,17 @@ $endif$
      * </pre>
      */
     def newContain(right: ResultOfNewNoneOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
+      thisMatcherFactory.or(MatcherWords.not.newContain(right))
+    
+    /**
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     *
+     * <pre class="stHighlight">
+     * (aMatcherFactory or not contain theSameElementsAs (List(8, 1, 2))) 
+     *                         ^
+     * </pre>
+     */
+    def newContain(right: ResultOfNewTheSameElementsAsApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
       thisMatcherFactory.or(MatcherWords.not.newContain(right))
       
     /**

@@ -23,12 +23,18 @@ import FailureMessages.decorateToStringValue
 
 class ListShouldContainTheSameElementsAsSpec extends Spec with Matchers {
   
+  private def upperCase(value: Any): Any = 
+    value match {
+      case l: List[_] => l.map(upperCase(_))
+      case s: String => s.toUpperCase
+      case c: Char => c.toString.toUpperCase.charAt(0)
+      case (s1: String, s2: String) => (s1.toUpperCase, s2.toUpperCase)
+      case _ => value
+    }
+  
   val upperCaseStringEquality =
     new Equality[String] {
-      def areEqual(a: String, b: Any): Boolean = b match {
-        case s: String => a.toUpperCase == s.toUpperCase
-        case _ => a.toUpperCase == b
-      }
+      def areEqual(a: String, b: Any): Boolean = upperCase(a) == upperCase(b)
     }
   
   //ADDITIONAL//
@@ -38,7 +44,7 @@ class ListShouldContainTheSameElementsAsSpec extends Spec with Matchers {
     val fumList: List[String] = List("fum", "foe", "fie", "fee")
     val toList: List[String] = List("you", "to", "birthday", "happy")
 
-    object `when used with contain theSameElementsAs (...) syntax` {
+    object `when used with contain theSameElementsAs (..)` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
         fumList should newContain newTheSameElementsAs Set("fee", "fie", "foe", "fum")
@@ -68,7 +74,7 @@ class ListShouldContainTheSameElementsAsSpec extends Spec with Matchers {
       }
     }
 
-    object `when used with (contain theSameElementsAs (...)) syntax` {
+    object `when used with (contain theSameElementsAs (..))` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
 
@@ -99,7 +105,7 @@ class ListShouldContainTheSameElementsAsSpec extends Spec with Matchers {
       }
     }
 
-    object `when used with not contain theSameElementsAs (...) syntax` {
+    object `when used with not contain theSameElementsAs (..)` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
         toList should not newContain newTheSameElementsAs (Set("fee", "fie", "foe", "fum"))
@@ -129,7 +135,7 @@ class ListShouldContainTheSameElementsAsSpec extends Spec with Matchers {
       }
     }
 
-    object `when used with (not contain theSameElementsAs (...)) syntax` {
+    object `when used with (not contain theSameElementsAs (..))` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
         toList should (not newContain newTheSameElementsAs (Set("HAPPY", "BIRTHDAY", "TO", "YOU")))
@@ -160,16 +166,15 @@ class ListShouldContainTheSameElementsAsSpec extends Spec with Matchers {
     }
   }
 
-  object `a collection of Lists` {
+  object `a col of Lists` {
 
     val list1s: Vector[List[Int]] = Vector(List(3, 2, 1), List(3, 2, 1), List(3, 2, 1))
     val lists: Vector[List[Int]] = Vector(List(3, 2, 1), List(3, 2, 1), List(4, 3, 2))
-    val nils: Vector[List[Int]] = Vector(Nil, Nil, Nil)
     val listsNil: Vector[List[Int]] = Vector(List(3, 2, 1), List(3, 2, 1), Nil)
     val hiLists: Vector[List[String]] = Vector(List("hi", "he"), List("hi", "he"), List("hi", "he"))
     val toLists: Vector[List[String]] = Vector(List("to", "you"), List("to", "you"), List("to", "you"))
 
-    object `when used with contain theSameElementsAs (...) syntax` {
+    object `when used with contain theSameElementsAs (..)` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
         all (list1s) should newContain newTheSameElementsAs Set(1, 2, 3)
@@ -185,15 +190,6 @@ class ListShouldContainTheSameElementsAsSpec extends Spec with Matchers {
         e1.message should be (Some("'all' inspection failed, because: \n" +
                                    "  at index 2, " + decorateToStringValue(List(4, 3, 2)) + " did not contain the same elements as " + decorateToStringValue(Set(1, 2, 3)) + " (ListShouldContainTheSameElementsAsSpec.scala:" + (thisLineNumber - 5) + ") \n" +
                                    "in " + decorateToStringValue(lists)))
-
-        val e2 = intercept[TestFailedException] {
-          all (nils) should newContain newTheSameElementsAs Set("ho", "hey", "howdy")
-        }
-        e2.failedCodeFileName.get should be ("ListShouldContainTheSameElementsAsSpec.scala")
-        e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e2.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 0, " + decorateToStringValue(Nil) + " did not contain the same elements as " + decorateToStringValue(Set("ho", "hey", "howdy")) + " (ListShouldContainTheSameElementsAsSpec.scala:" + (thisLineNumber - 5) + ") \n" +
-                                   "in " + decorateToStringValue(nils)))
 
         val e3 = intercept[TestFailedException] {
           all (listsNil) should newContain newTheSameElementsAs Set(1, 2, 3)
@@ -229,14 +225,13 @@ class ListShouldContainTheSameElementsAsSpec extends Spec with Matchers {
       }
     }
 
-    object `when used with (contain theSameElementsAs (...)) syntax` {
+    object `when used with (contain theSameElementsAs (..))` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
         all (list1s) should (newContain newTheSameElementsAs Set(1, 2, 3))
         atLeast (2, lists) should (newContain newTheSameElementsAs Set(1, 2, 3))
         atMost (2, lists) should (newContain newTheSameElementsAs Set(1, 2, 3))
         no (lists) should (newContain newTheSameElementsAs Set(3, 4, 5))
-        no (nils) should (newContain newTheSameElementsAs Set(1, 3, 4))
         no (listsNil) should (newContain newTheSameElementsAs Set(3, 4, 5))
 
         val e1 = intercept[TestFailedException] {
@@ -247,15 +242,6 @@ class ListShouldContainTheSameElementsAsSpec extends Spec with Matchers {
         e1.message should be (Some("'all' inspection failed, because: \n" +
                                    "  at index 2, " + decorateToStringValue(List(4, 3, 2)) + " did not contain the same elements as " + decorateToStringValue(Set(1, 2, 3)) + " (ListShouldContainTheSameElementsAsSpec.scala:" + (thisLineNumber - 5) + ") \n" +
                                    "in " + decorateToStringValue(lists)))
-
-        val e2 = intercept[TestFailedException] {
-          all (nils) should (newContain newTheSameElementsAs Set("ho", "hey", "howdy"))
-        }
-        e2.failedCodeFileName.get should be ("ListShouldContainTheSameElementsAsSpec.scala")
-        e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e2.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 0, " + decorateToStringValue(Nil) + " did not contain the same elements as " + decorateToStringValue(Set("ho", "hey", "howdy")) + " (ListShouldContainTheSameElementsAsSpec.scala:" + (thisLineNumber - 5) + ") \n" +
-                                   "in " + decorateToStringValue(nils)))
 
         val e4 = intercept[TestFailedException] {
           all (listsNil) should (newContain newTheSameElementsAs Set(1, 2, 3))
@@ -291,7 +277,7 @@ class ListShouldContainTheSameElementsAsSpec extends Spec with Matchers {
       }
     }
 
-    object `when used with not contain theSameElementsAs (...) syntax` {
+    object `when used with not contain theSameElementsAs (..)` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
         all (toLists) should not newContain newTheSameElementsAs (Set("fee", "fie", "foe", "fum"))
@@ -323,7 +309,7 @@ class ListShouldContainTheSameElementsAsSpec extends Spec with Matchers {
       }
     }
 
-    object `when used with (not contain theSameElementsAs (...)) syntax` {
+    object `when used with (not contain theSameElementsAs (..))` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
         all (toLists) should (not newContain newTheSameElementsAs (Set("fee", "fie", "foe", "fum")))

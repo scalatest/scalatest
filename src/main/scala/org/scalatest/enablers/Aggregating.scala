@@ -21,6 +21,7 @@ import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
 import org.scalatest.FailureMessages
 import scala.annotation.tailrec
+import scala.collection.JavaConverters._
 
 trait Aggregating[A] {
   def containsAtLeastOneOf(aggregation: A, eles: Seq[Any]): Boolean
@@ -108,7 +109,7 @@ object Aggregating {
         new ArrayWrapper(array).exists((e: Any) => elements.exists((ele: Any) => equality.areEqual(e.asInstanceOf[E], ele)))
       }
       def containsTheSameElementsAs(array: Array[E], elements: GenTraversable[Any]): Boolean = {
-        throw new UnsupportedOperationException("Not Implemented")
+        checkTheSameElementsAs[E](new ArrayWrapper(array), elements, equality)
       }
     }
 
@@ -122,7 +123,7 @@ object Aggregating {
         s.exists((e: Any) => elements.exists((ele: Any) => equality.areEqual(e.asInstanceOf[Char], ele)))
       }
       def containsTheSameElementsAs(s: String, elements: GenTraversable[Any]): Boolean = {
-        throw new UnsupportedOperationException("Not Implemented")
+        checkTheSameElementsAs(s, elements, equality)
       }
     }
 
@@ -135,7 +136,7 @@ object Aggregating {
         map.exists((e: Any) => elements.exists((ele: Any) => equality.areEqual(e.asInstanceOf[(K, V)], ele)))
       }
       def containsTheSameElementsAs(map: MAP[K, V], elements: GenTraversable[Any]): Boolean = {
-        throw new UnsupportedOperationException("Not Implemented")
+        checkTheSameElementsAs(map.asInstanceOf[scala.collection.GenMap[K, V]], elements, equality)
       }
     }
 
@@ -145,11 +146,10 @@ object Aggregating {
   implicit def withJavaCollectionElementEquality[E, JCOL[_] <: java.util.Collection[_]](implicit equality: Equality[E]): Aggregating[JCOL[E]] = 
     new Aggregating[JCOL[E]] {
       def containsAtLeastOneOf(col: JCOL[E], elements: scala.collection.Seq[Any]): Boolean = {
-        import scala.collection.JavaConverters._
         col.asInstanceOf[java.util.Collection[E]].asScala.exists((e: Any) => elements.exists((ele: Any) => equality.areEqual(e.asInstanceOf[E], ele)))
       }
       def containsTheSameElementsAs(col: JCOL[E], elements: GenTraversable[Any]): Boolean = {
-        throw new UnsupportedOperationException("Not Implemented")
+        checkTheSameElementsAs(col.asInstanceOf[java.util.Collection[E]].asScala, elements, equality)
       }
     }
 
@@ -159,11 +159,10 @@ object Aggregating {
   implicit def withJavaMapElementEquality[K, V, JMAP[_, _] <: java.util.Map[_, _]](implicit equality: Equality[(K, V)]): Aggregating[JMAP[K, V]] = 
     new Aggregating[JMAP[K, V]] {
       def containsAtLeastOneOf(map: JMAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
-        import scala.collection.JavaConverters._
         map.asInstanceOf[java.util.Map[K, V]].asScala.exists((e: Any) => elements.exists((ele: Any) => equality.areEqual(e.asInstanceOf[(K, V)], ele)))
       }
       def containsTheSameElementsAs(map: JMAP[K, V], elements: GenTraversable[Any]): Boolean = {
-        throw new UnsupportedOperationException("Not Implemented")
+        checkTheSameElementsAs(map.asInstanceOf[java.util.Map[K, V]].asScala, elements, equality)
       }
     }
 
