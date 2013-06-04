@@ -105,5 +105,24 @@ class ResultOfNewContainWord[L](left: L, shouldBeTrue: Boolean = true) {
         )
       )
   }
+  
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * option should contain theSameElementsInOrderAs (1, 2)
+   *                       ^
+   * </pre>
+   */
+  def newTheSameElementsInOrderAs(right: GenTraversable[_])(implicit aggregation: Aggregating[L]) {
+    if (aggregation.containsTheSameElementsInOrderAs(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "didNotContainSameElementsInOrder" else "containedSameElementsInOrder",
+          left,
+          right
+        )
+      )
+  }
 }
 

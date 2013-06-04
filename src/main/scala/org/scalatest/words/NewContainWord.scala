@@ -95,5 +95,21 @@ final class NewContainWord {
       }
     }
   }
+  
+  def newTheSameElementsInOrderAs(right: GenTraversable[Any]): MatcherFactory1[Any, Aggregating] = {
+    new MatcherFactory1[Any, Aggregating] {
+      def matcher[T](implicit aggregation: Aggregating[T]): Matcher[T] = {
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+            MatchResult(
+              aggregation.containsTheSameElementsInOrderAs(left, right),
+              FailureMessages("didNotContainSameElementsInOrder", left, right),
+              FailureMessages("containedSameElementsInOrder", left, right)
+            )
+          }
+        }
+      }
+    }
+  }
 }
 

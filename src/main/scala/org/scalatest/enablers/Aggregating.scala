@@ -27,8 +27,8 @@ trait Aggregating[A] {
   def containsAtLeastOneOf(aggregation: A, eles: Seq[Any]): Boolean
 
   def containsTheSameElementsAs(aggregation: A, eles: GenTraversable[Any]): Boolean
-/*  def containsTheSameElementsInOrderAs(aggregation: A, it: Iterator[Any]): Boolean
-  def containsAllOf(aggregation: A, eles: Seq[Any]): Boolean
+  def containsTheSameElementsInOrderAs(aggregation: A, eles: GenTraversable[Any]): Boolean
+/*  def containsAllOf(aggregation: A, eles: Seq[Any]): Boolean
   def containsAtMostOneOf(aggregation: A, eles: Seq[Any]): Boolean
   def containsOnly(aggregation: A, eles: Seq[Any]): Boolean
   def containsInOrderOnly(aggregation: A, eles: Seq[Any]): Boolean
@@ -89,6 +89,23 @@ object Aggregating {
     !counts.exists(e => e.leftCount != e.rightCount)
   }
   
+  private def checkTheSameElementsInOrderAs[T](left: GenTraversable[T], right: GenTraversable[Any], equality: Equality[T]): Boolean = {
+    @tailrec
+    def checkEqual(left: Iterator[T], right: Iterator[Any]): Boolean = {
+      if (left.hasNext && right.hasNext) {
+        val nextLeft = left.next
+        val nextRight = right.next
+        if (!equality.areEqual(nextLeft, nextRight))
+          false
+        else
+          checkEqual(left, right)
+      }
+      else
+        left.isEmpty && right.isEmpty
+    }
+    checkEqual(left.toIterator, right.toIterator)
+  }
+  
   implicit def withGenTraversableElementEquality[E, TRAV[_] <: scala.collection.GenTraversable[_]](implicit equality: Equality[E]): Aggregating[TRAV[E]] = 
     new Aggregating[TRAV[E]] {
       def containsAtLeastOneOf(trav: TRAV[E], elements: scala.collection.Seq[Any]): Boolean = {
@@ -96,6 +113,9 @@ object Aggregating {
       }
       def containsTheSameElementsAs(trav: TRAV[E], elements: GenTraversable[Any]): Boolean = {
         checkTheSameElementsAs[E](trav.asInstanceOf[GenTraversable[E]], elements, equality)
+      }
+      def containsTheSameElementsInOrderAs(trav: TRAV[E], elements: GenTraversable[Any]): Boolean = {
+        checkTheSameElementsInOrderAs[E](trav.asInstanceOf[GenTraversable[E]], elements, equality)
       }
     }
 
@@ -111,6 +131,9 @@ object Aggregating {
       def containsTheSameElementsAs(array: Array[E], elements: GenTraversable[Any]): Boolean = {
         checkTheSameElementsAs[E](new ArrayWrapper(array), elements, equality)
       }
+      def containsTheSameElementsInOrderAs(array: Array[E], elements: GenTraversable[Any]): Boolean = {
+        checkTheSameElementsInOrderAs[E](new ArrayWrapper(array), elements, equality)
+      }
     }
 
   // Enables (xs should contain ("HI")) (after being lowerCased)
@@ -125,6 +148,9 @@ object Aggregating {
       def containsTheSameElementsAs(s: String, elements: GenTraversable[Any]): Boolean = {
         checkTheSameElementsAs(s, elements, equality)
       }
+      def containsTheSameElementsInOrderAs(s: String, elements: GenTraversable[Any]): Boolean = {
+        checkTheSameElementsInOrderAs(s, elements, equality)
+      }
     }
 
   implicit def convertEqualityToStringAggregating(equality: Equality[Char]): Aggregating[String] = 
@@ -137,6 +163,9 @@ object Aggregating {
       }
       def containsTheSameElementsAs(map: MAP[K, V], elements: GenTraversable[Any]): Boolean = {
         checkTheSameElementsAs(map.asInstanceOf[scala.collection.GenMap[K, V]], elements, equality)
+      }
+      def containsTheSameElementsInOrderAs(map: MAP[K, V], elements: GenTraversable[Any]): Boolean = {
+        checkTheSameElementsInOrderAs(map.asInstanceOf[scala.collection.GenMap[K, V]], elements, equality)
       }
     }
 
@@ -151,6 +180,9 @@ object Aggregating {
       def containsTheSameElementsAs(col: JCOL[E], elements: GenTraversable[Any]): Boolean = {
         checkTheSameElementsAs(col.asInstanceOf[java.util.Collection[E]].asScala, elements, equality)
       }
+      def containsTheSameElementsInOrderAs(col: JCOL[E], elements: GenTraversable[Any]): Boolean = {
+        checkTheSameElementsInOrderAs(col.asInstanceOf[java.util.Collection[E]].asScala, elements, equality)
+      }
     }
 
   implicit def convertEqualityToJavaCollectionAggregating[E, JCOL[_] <: java.util.Collection[_]](equality: Equality[E]): Aggregating[JCOL[E]] = 
@@ -163,6 +195,9 @@ object Aggregating {
       }
       def containsTheSameElementsAs(map: JMAP[K, V], elements: GenTraversable[Any]): Boolean = {
         checkTheSameElementsAs(map.asInstanceOf[java.util.Map[K, V]].asScala, elements, equality)
+      }
+      def containsTheSameElementsInOrderAs(map: JMAP[K, V], elements: GenTraversable[Any]): Boolean = {
+        checkTheSameElementsInOrderAs(map.asInstanceOf[java.util.Map[K, V]].asScala, elements, equality)
       }
     }
 

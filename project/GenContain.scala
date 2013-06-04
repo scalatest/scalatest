@@ -94,8 +94,8 @@ object GenContain {
     "    l\n" +
     "  }"
     
-    val javaMap = "def javaMap[K, V](elements: (K, V)*): java.util.HashMap[K, V] = {\n" +
-    "    val m = new java.util.HashMap[K, V]\n" +
+    val javaMap = "def javaMap[K, V](elements: (K, V)*): java.util.LinkedHashMap[K, V] = {\n" +
+    "    val m = new java.util.LinkedHashMap[K, V]\n" +
     "    elements.foreach(e => m.put(e._1, e._2))\n" +
     "    m\n" +
     "  }"
@@ -115,7 +115,8 @@ object GenContain {
         "List\\[Int\\]" -> "Array[Int]", 
         "List" -> "Array", 
         "listsNil" -> "listsArray", 
-        "Nil" -> "Array()"  
+        "Nil" -> "Array()", 
+        "LinkedArray" -> "LinkedList"
       )
       
     val javaColMapping = 
@@ -127,7 +128,8 @@ object GenContain {
         "List\\[Int\\]" -> "java.util.List[Int]", 
         "List\\(" -> "javaList(", 
         "listsNil" -> "listsJavaCol", 
-        "Nil" -> "new java.util.ArrayList"  
+        "Nil" -> "new java.util.ArrayList", 
+        "LinkedjavaList" -> "LinkedList"
       )
       
     val mapMapping = 
@@ -178,6 +180,8 @@ object GenContain {
          "\\(\\\"HELLO\\\", \\\"HI\\\"\\)" -> "(\"HELLO\" -> \"HELLO\", \"HI\" -> \"HI\")",
          "\\(\\\"HELLO\\\", \\\"HO\\\"\\)" -> "(\"HELLO\" -> \"HELLO\", \"HO\" -> \"HO\")",
          "\\(\\\"HE\\\", \\\"HI\\\"\\)" -> "(\"HE\" -> \"HE\", \"HI\" -> \"HI\")",
+         "\\(\\\"HI\\\", \\\"HE\\\"\\)" -> "(\"HI\" -> \"HI\", \"HE\" -> \"HE\")",
+         "\\(\\\"HI\\\", \\\"HO\\\"\\)" -> "(\"HI\" -> \"HI\", \"HO\" -> \"HO\")",
          "\\(\\\"HO\\\"\\)" -> "(\"HO\" -> \"HO\")", 
          "\\(\\\"HO\\\", \\\"HI\\\"\\)" -> "(\"HO\" -> \"HO\", \"HI\" -> \"HI\")",
          "\\(\\\"HO\\\", \\\"HELLO\\\"\\)" -> "(\"HO\" -> \"HO\", \"HELLO\" -> \"HELLO\")",
@@ -199,10 +203,14 @@ object GenContain {
          "\\(\\\"FIE\\\", \\\"FEE\\\", \\\"FOE\\\", \\\"FAM\\\"\\)" -> "(\"FIE\" -> \"FIE\", \"FEE\" -> \"FEE\", \"FOE\" -> \"FOE\", \"FAM\" -> \"FAM\")", 
          "\\(\\\"FIE\\\", \\\"FEE\\\", \\\"FOE\\\", \\\"FUM\\\"\\)" -> "(\"FIE\" -> \"FIE\", \"FEE\" -> \"FEE\", \"FOE\" -> \"FOE\", \"FUM\" -> \"FUM\")", 
          "\\(\\\"FIE\\\", \\\"FEE\\\", \\\"FUU\\\", \\\"FOE\\\"\\)" -> "(\"FIE\" -> \"FIE\", \"FEE\" -> \"FEE\", \"FUU\" -> \"FUU\", \"FOE\" -> \"FOE\")", 
+         "\\(\\\"FUM\\\", \\\"FOE\\\", \\\"FIE\\\", \\\"FEE\\\"\\)" -> "(\"FUM\" -> \"FUM\", \"FOE\" -> \"FOE\", \"FIE\" -> \"FIE\", \"FEE\" -> \"FEE\")",
+        "\\(\\\" FUM \\\", \\\" FOE \\\", \\\" FIE \\\", \\\" FEE \\\"\\)" -> "(\" FUM \" -> \" FUM \", \" FOE \" -> \" FOE \", \" FIE \" -> \" FIE \", \" FEE \" -> \" FEE \")",
          "\\(\\\"HAPPY\\\", \\\"BIRTHDAY\\\", \\\"TO\\\", \\\"YOU\\\"\\)" -> "(\"HAPPY\" -> \"HAPPY\", \"BIRTHDAY\" -> \"BIRTHDAY\", \"TO\" -> \"TO\", \"YOU\" -> \"YOU\")", 
          "\\(\\\" HAPPY \\\", \\\" BIRTHDAY \\\", \\\" TO \\\", \\\" YOU \\\"\\)" -> "(\" HAPPY \" -> \" HAPPY \", \" BIRTHDAY \" -> \" BIRTHDAY \", \" TO \" -> \" TO \", \" YOU \" -> \" YOU \")",
          "\\(\\\"to\\\", \\\"you\\\"\\)" -> "(\"to\" -> \"to\", \"you\" -> \"you\")", 
          "\\(\\\"to\\\", \\\"to\\\", \\\"to\\\", \\\"to\\\"\\)"  -> "(\"to\" -> \"to\", \"to\" -> \"to\", \"to\" -> \"to\", \"to\" -> \"to\")", 
+         "\\(\\\"TO\\\", \\\"YOU\\\"\\)" -> "(\"TO\" -> \"TO\", \"YOU\" -> \"YOU\")",
+         "\\(\\\" TO \\\", \\\" YOU \\\"\\)" -> "(\" TO \" -> \" TO \", \" YOU \" -> \" YOU \")",
          "\\(\\\" TO \\\", \\\" TO \\\", \\\" TO \\\", \\\" TO \\\"\\)" -> "(\" TO \" -> \" TO \", \" TO \" -> \" TO \", \" TO \" -> \" TO \", \" TO \" -> \" TO \")", 
          "\\(\\\"you\\\", \\\"to\\\", \\\"birthday\\\", \\\"happy\\\"\\)" -> "(\"you\" -> \"you\", \"to\" -> \"to\", \"birthday\" -> \"birthday\", \"happy\" -> \"happy\")",
          "\\(\\\"you\\\", \\\"to\\\"\\)" -> "(\"you\" -> \"you\", \"to\" -> \"to\")",
@@ -277,7 +285,8 @@ object GenContain {
          "\\(1, 3, Nil\\)" -> "(1 -> 1, 3 -> 3, Map())", 
          "List" -> "Map", 
          "listsNil" -> "listsMap", 
-         "Nil" -> "Map()"
+         "Nil" -> "Map()", 
+         "LinkedMap" -> "LinkedList"
       )
       
     val javaMapMapping = 
@@ -329,6 +338,8 @@ object GenContain {
         "\\(\\\"HELLO\\\", \\\"HI\\\"\\)" -> "(\"HELLO\" -> \"HELLO\", \"HI\" -> \"HI\")",
         "\\(\\\"HELLO\\\", \\\"HO\\\"\\)" -> "(\"HELLO\" -> \"HELLO\", \"HO\" -> \"HO\")",
         "\\(\\\"HE\\\", \\\"HI\\\"\\)" -> "(\"HE\" -> \"HE\", \"HI\" -> \"HI\")",
+        "\\(\\\"HI\\\", \\\"HE\\\"\\)" -> "(\"HI\" -> \"HI\", \"HE\" -> \"HE\")",
+        "\\(\\\"HI\\\", \\\"HO\\\"\\)" -> "(\"HI\" -> \"HI\", \"HO\" -> \"HO\")",
         "\\(\\\"HO\\\"\\)" -> "(\"HO\" -> \"HO\")", 
         "\\(\\\"HO\\\", \\\"HI\\\"\\)" -> "(\"HO\" -> \"HO\", \"HI\" -> \"HI\")",
         "\\(\\\"HO\\\", \\\"HELLO\\\"\\)" -> "(\"HO\" -> \"HO\", \"HELLO\" -> \"HELLO\")",
@@ -350,10 +361,14 @@ object GenContain {
         "\\(\\\"FIE\\\", \\\"FEE\\\", \\\"FOE\\\", \\\"FAM\\\"\\)" -> "(\"FIE\" -> \"FIE\", \"FEE\" -> \"FEE\", \"FOE\" -> \"FOE\", \"FAM\" -> \"FAM\")", 
         "\\(\\\"FIE\\\", \\\"FEE\\\", \\\"FOE\\\", \\\"FUM\\\"\\)" -> "(\"FIE\" -> \"FIE\", \"FEE\" -> \"FEE\", \"FOE\" -> \"FOE\", \"FUM\" -> \"FUM\")", 
         "\\(\\\"FIE\\\", \\\"FEE\\\", \\\"FUU\\\", \\\"FOE\\\"\\)" -> "(\"FIE\" -> \"FIE\", \"FEE\" -> \"FEE\", \"FUU\" -> \"FUU\", \"FOE\" -> \"FOE\")", 
+        "\\(\\\"FUM\\\", \\\"FOE\\\", \\\"FIE\\\", \\\"FEE\\\"\\)" -> "(\"FUM\" -> \"FUM\", \"FOE\" -> \"FOE\", \"FIE\" -> \"FIE\", \"FEE\" -> \"FEE\")",
+        "\\(\\\" FUM \\\", \\\" FOE \\\", \\\" FIE \\\", \\\" FEE \\\"\\)" -> "(\" FUM \" -> \" FUM \", \" FOE \" -> \" FOE \", \" FIE \" -> \" FIE \", \" FEE \" -> \" FEE \")",
         "\\(\\\"HAPPY\\\", \\\"BIRTHDAY\\\", \\\"TO\\\", \\\"YOU\\\"\\)" -> "(\"HAPPY\" -> \"HAPPY\", \"BIRTHDAY\" -> \"BIRTHDAY\", \"TO\" -> \"TO\", \"YOU\" -> \"YOU\")", 
         "\\(\\\" HAPPY \\\", \\\" BIRTHDAY \\\", \\\" TO \\\", \\\" YOU \\\"\\)" -> "(\" HAPPY \" -> \" HAPPY \", \" BIRTHDAY \" -> \" BIRTHDAY \", \" TO \" -> \" TO \", \" YOU \" -> \" YOU \")",
         "\\(\\\"to\\\", \\\"you\\\"\\)" -> "(\"to\" -> \"to\", \"you\" -> \"you\")", 
         "\\(\\\"to\\\", \\\"to\\\", \\\"to\\\", \\\"to\\\"\\)"  -> "(\"to\" -> \"to\", \"to\" -> \"to\", \"to\" -> \"to\", \"to\" -> \"to\")", 
+        "\\(\\\"TO\\\", \\\"YOU\\\"\\)" -> "(\"TO\" -> \"TO\", \"YOU\" -> \"YOU\")",
+        "\\(\\\" TO \\\", \\\" YOU \\\"\\)" -> "(\" TO \" -> \" TO \", \" YOU \" -> \" YOU \")",
         "\\(\\\" TO \\\", \\\" TO \\\", \\\" TO \\\", \\\" TO \\\"\\)" -> "(\" TO \" -> \" TO \", \" TO \" -> \" TO \", \" TO \" -> \" TO \", \" TO \" -> \" TO \")", 
         "\\(\\\"you\\\", \\\"to\\\", \\\"birthday\\\", \\\"happy\\\"\\)" -> "(\"you\" -> \"you\", \"to\" -> \"to\", \"birthday\" -> \"birthday\", \"happy\" -> \"happy\")",
         "\\(\\\"you\\\", \\\"to\\\"\\)" -> "(\"you\" -> \"you\", \"to\" -> \"to\")",
@@ -426,7 +441,8 @@ object GenContain {
         "\\(1, 3, Nil\\)" -> "(1 -> 1, 3 -> 3, Map())", 
         "List" -> "javaMap", 
         "listsNil" -> "listsMap", 
-        "Nil" -> "javaMap()"
+        "Nil" -> "javaMap()", 
+        "LinkedjavaMap" -> "LinkedList"
       )
       
     val stringMapping = 
@@ -445,6 +461,7 @@ object GenContain {
         "defaultEquality\\[String\\]" -> "defaultEquality[Char]", 
         " and trimmed" -> "", 
         "//ADDITIONAL//" -> (stringLowerCased), 
+        "LinkedList" -> "TempL", 
         "List\\[String\\]" -> "String", 
         "List\\[Int\\]" -> "String", 
         "List\\(\\\"fum\\\"\\)" -> "\"u\"",
@@ -455,6 +472,8 @@ object GenContain {
         "List\\(2\\)" -> "\"2\"", 
         "List\\(3\\)" -> "\"3\"", 
         "List\\(8\\)" -> "\"8\"", 
+        "List\\(1, 2, 3\\)" -> "\"123\"", 
+        "List\\(2, 3, 4\\)" -> "\"234\"", 
         "List\\(3, 2, 1\\)" -> "\"321\"", 
         "List\\(4, 3, 2\\)" -> "\"432\"", 
         "List\\(\\\"hi\\\"\\)" -> "\"i\"", 
@@ -465,6 +484,8 @@ object GenContain {
         "List\\(\\\"hey\\\"\\)" -> "\"e\"",
         "List\\(\\\"fum\\\", \\\"foe\\\", \\\"fie\\\", \\\"fee\\\"\\)" -> "\"upie\"", 
         "List\\(\\\"you\\\", \\\"to\\\", \\\"birthday\\\", \\\"happy\\\"\\)" -> "\"yobh\"", 
+        "List\\(\\\"happy\\\", \\\"birthday\\\", \\\"to\\\", \\\"you\\\"\\)" -> "\"hboy\"", 
+        "TempL" -> "LinkedList", 
         "\\(\\\"fee\\\", \\\"fie\\\", \\\"foe\\\", \\\"fum\\\"\\)" -> "('e', 'i', 'p', 'u')", 
         "\\(\\\"fie\\\", \\\"fee\\\", \\\"fum\\\", \\\"foe\\\"\\)" -> "('i', 'e', 'u', 'p')", 
         "\\(\\\"fee\\\", \\\"fum\\\", \\\"foe\\\", \\\"fu\\\"\\)" -> "('e', 'u', 'p', 'f')", 
@@ -491,6 +512,8 @@ object GenContain {
         "\\(\\\"HELLO\\\", \\\"HI\\\"\\)" -> "('L', 'I')",
         "\\(\\\"HELLO\\\", \\\"HO\\\"\\)" -> "('L', 'O')",
         "\\(\\\"HE\\\", \\\"HI\\\"\\)" -> "('E', 'I')",
+        "\\(\\\"HI\\\", \\\"HE\\\"\\)" -> "('I', 'E')",
+        "\\(\\\"HI\\\", \\\"HO\\\"\\)" -> "('I', 'O')",
         "\\(\\\"HO\\\"\\)" -> "('O')", 
         "\\(\\\"HO\\\", \\\"HI\\\"\\)" -> "('O', 'I')",
         "\\(\\\"HO\\\", \\\"HELLO\\\"\\)" -> "('O', 'L')",
@@ -511,8 +534,12 @@ object GenContain {
         "\\(\\\"FIE\\\", \\\"FEE\\\", \\\"FOE\\\", \\\"FAM\\\"\\)" -> "('I', 'E', 'P', 'A')", 
         "\\(\\\"FIE\\\", \\\"FEE\\\", \\\"FOE\\\", \\\"FUM\\\"\\)" -> "('I', 'E', 'P', 'U')", 
         "\\(\\\"FIE\\\", \\\"FEE\\\", \\\"FUU\\\", \\\"FOE\\\"\\)" -> "('I', 'E', 'D', 'P')", 
+        "\\(\\\"FUM\\\", \\\"FOE\\\", \\\"FIE\\\", \\\"FEE\\\"\\)" -> "('U', 'P', 'I', 'E')",
+        "\\(\\\" FUM \\\", \\\" FOE \\\", \\\" FIE \\\", \\\" FEE \\\"\\)" -> "('U', 'P', 'I', 'E')",
         "\\(\\\"to\\\", \\\"you\\\"\\)" -> "('o', 'y')", 
         "\\(\\\"to\\\", \\\"to\\\", \\\"to\\\", \\\"to\\\"\\)"  -> "('o', 'o', 'o', 'o')", 
+        "\\(\\\"TO\\\", \\\"YOU\\\"\\)" -> "('O', 'Y')",
+        "\\(\\\" TO \\\", \\\" YOU \\\"\\)" -> "('O', 'Y')",
         "\\(\\\" TO \\\", \\\" TO \\\", \\\" TO \\\", \\\" TO \\\"\\)" -> "('O', 'O', 'O', 'O')", 
         "\\(\\\"HAPPY\\\", \\\"BIRTHDAY\\\", \\\"TO\\\", \\\"YOU\\\"\\)" -> "('H', 'B', 'O', 'Y')", 
         "\\(\\\" HAPPY \\\", \\\" BIRTHDAY \\\", \\\" TO \\\", \\\" YOU \\\"\\)" -> "('H', 'B', 'O', 'Y')", 
@@ -520,6 +547,7 @@ object GenContain {
         "\\(\\\"you\\\", \\\"to\\\"\\)" -> "('y', 'o')",
         "\\(\\\"YOU\\\", \\\"TO\\\"\\)" -> "('Y', 'O')",
         "\\(\\\" YOU \\\", \\\" TO \\\"\\)" -> "('Y', 'O')",
+        "\\(\\\"YOU\\\", \\\"TO\\\", \\\"BIRTHDAY\\\", \\\"HAPPY\\\"\\)" -> "('Y', 'O', 'B', 'H')", 
         "\\\"\\\\\"happy\\\\\", \\\\\"birthday\\\\\", \\\\\"to\\\\\", \\\\\"you\\\\\\\"\\\"" -> "\"'h', 'b', 'o', 'y'\"",
         "\\\\\"ho\\\\\", \\\\\"hey\\\\\", \\\\\"howdy\\\\\"" -> "'o', 'e', 'd'", 
         "\\\\\"hi\\\\\", \\\\\"hey\\\\\", \\\\\"howdy\\\\\"" -> "'i', 'e', 'd'", 
@@ -597,7 +625,11 @@ object GenContain {
         "decorateToStringValue\\(\\\"il\\\"\\) \\+ \\\" was not equal to \\\" \\+ decorateToStringValue\\(\\\"o\\\"\\)" -> "decorateToStringValue(\"[il]\") + \" was not equal to \" + decorateToStringValue(\"[o]\")", 
         "decorateToStringValue\\(\\\"432\\\"\\) \\+ \\\" was not equal to \\\" \\+ decorateToStringValue\\(\\\"3\\\"\\)" -> "decorateToStringValue(\"[432]\") + \" was not equal to \" + decorateToStringValue(\"[3]\")", 
         "decorateToStringValue\\(\\\"432\\\"\\) \\+ \\\" was not equal to \\\" \\+ decorateToStringValue\\(\\\"321\\\"\\)" -> "decorateToStringValue(\"[432]\") + \" was not equal to \" + decorateToStringValue(\"[321]\")", 
-        "decorateToStringValue\\(\\\"\\\"\\) \\+ \\\" was not equal to \\\" \\+ decorateToStringValue\\(\\\"321\\\"\\)" -> "decorateToStringValue(\"[]\") + \" was not equal to \" + decorateToStringValue(\"[321]\")"
+        "decorateToStringValue\\(\\\"\\\"\\) \\+ \\\" was not equal to \\\" \\+ decorateToStringValue\\(\\\"321\\\"\\)" -> "decorateToStringValue(\"[]\") + \" was not equal to \" + decorateToStringValue(\"[321]\")", 
+        "decorateToStringValue\\(\\\"234\\\"\\) \\+ \\\" was not equal to \\\" \\+ decorateToStringValue\\(\\\"123\\\"\\)" -> "decorateToStringValue(\"[234]\") + \" was not equal to \" + decorateToStringValue(\"[123]\")",
+        "decorateToStringValue\\(\\\"234\\\"\\) \\+ \\\" was not equal to \\\" \\+ decorateToStringValue\\(\\\"3\\\"\\)" -> "decorateToStringValue(\"[234]\") + \" was not equal to \" + decorateToStringValue(\"[3]\")",
+        "decorateToStringValue\\(\\\"123\\\"\\) \\+ \\\" was not equal to \\\" \\+ decorateToStringValue\\(\\\"234\\\"\\)" -> "decorateToStringValue(\"[123]\") + \" was not equal to \" + decorateToStringValue(\"[234]\")",
+        "decorateToStringValue\\(\\\"\\\"\\) \\+ \\\" was not equal to \\\" \\+ decorateToStringValue\\(\\\"123\\\"\\)" -> "decorateToStringValue(\"[]\") + \" was not equal to \" + decorateToStringValue(\"[123]\")"
       )
     
     // Generate tests for atLeastOneOf
@@ -670,6 +702,23 @@ object GenContain {
     generateFile("ListShouldContainTheSameElementsAsSpec.scala", "String", stringMapping: _*)
     generateFile("ListShouldContainTheSameElementsAsLogicalAndSpec.scala", "String", stringMapping: _*)
     generateFile("ListShouldContainTheSameElementsAsLogicalOrSpec.scala", "String", stringMapping: _*)
+      
+    // Generate tests for theSameElementsInOrderAs
+    generateFile("ListShouldContainTheSameElementsInOrderAsSpec.scala", "Array", arrayMapping: _*)
+    generateFile("ListShouldContainTheSameElementsInOrderAsLogicalAndSpec.scala", "Array", arrayMapping: _*)
+    generateFile("ListShouldContainTheSameElementsInOrderAsLogicalOrSpec.scala", "Array", arrayMapping: _*)
+    generateFile("ListShouldContainTheSameElementsInOrderAsSpec.scala", "Map", mapMapping: _*)
+    generateFile("ListShouldContainTheSameElementsInOrderAsLogicalAndSpec.scala", "Map", mapMapping: _*)
+    generateFile("ListShouldContainTheSameElementsInOrderAsLogicalOrSpec.scala", "Map", mapMapping: _*)
+    generateFile("ListShouldContainTheSameElementsInOrderAsSpec.scala", "JavaCol", javaColMapping: _*)
+    generateFile("ListShouldContainTheSameElementsInOrderAsLogicalAndSpec.scala", "JavaCol", javaColMapping: _*)
+    generateFile("ListShouldContainTheSameElementsInOrderAsLogicalOrSpec.scala", "JavaCol", javaColMapping: _*)
+    generateFile("ListShouldContainTheSameElementsInOrderAsSpec.scala", "JavaMap", javaMapMapping: _*)
+    generateFile("ListShouldContainTheSameElementsInOrderAsLogicalAndSpec.scala", "JavaMap", javaMapMapping: _*)
+    generateFile("ListShouldContainTheSameElementsInOrderAsLogicalOrSpec.scala", "JavaMap", javaMapMapping: _*)
+    generateFile("ListShouldContainTheSameElementsInOrderAsSpec.scala", "String", stringMapping: _*)
+    generateFile("ListShouldContainTheSameElementsInOrderAsLogicalAndSpec.scala", "String", stringMapping: _*)
+    generateFile("ListShouldContainTheSameElementsInOrderAsLogicalOrSpec.scala", "String", stringMapping: _*)
   }
   
   def main(args: Array[String]) {

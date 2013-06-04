@@ -2763,6 +2763,16 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    * </pre>
    */
   def newTheSameElementsAs(xs: GenTraversable[_]) = new ResultOfNewTheSameElementsAsApplication(xs)
+  
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * List(1, 2, 3) should contain (theSameElementsInOrderAs(1, 2))
+   *                               ^
+   * </pre>
+   */
+  def newTheSameElementsInOrderAs(xs: GenTraversable[_]) = new ResultOfNewTheSameElementsInOrderAsApplication(xs)
 
   /**
    * This method enables the following syntax: 
@@ -3522,6 +3532,32 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
           )
       }
     }
+    
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * all (xs) should not contain theSameElementsInOrderAs ("one")
+     *                     ^
+     * </pre>
+     */
+    def newContain(theSameElementsInOrderAs: ResultOfNewTheSameElementsInOrderAsApplication)(implicit aggregation: Aggregating[T]) {
+
+      val right = theSameElementsInOrderAs.right
+
+      doCollected(collected, xs, "newContain", 1) { e =>
+        if (aggregation.containsTheSameElementsInOrderAs(e, right) != shouldBeTrue)
+          throw newTestFailedException(
+            FailureMessages(
+              if (shouldBeTrue) "didNotContainSameElementsInOrder" else "containedSameElementsInOrder",
+              e,
+              right
+            ),
+            None,
+            6
+          )
+      }
+    }
 
   }
 
@@ -4004,6 +4040,29 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
           throw newTestFailedException(
             FailureMessages(
               if (shouldBeTrue) "didNotContainSameElements" else "containedSameElements",
+              e,
+              right
+            ),
+            None,
+            6
+        )
+      }
+    }
+    
+    /**
+     * This method enables the following syntax: 
+     *
+     * <pre class="stHighlight">
+     * option should contain theSameElementsInOrderAs (1, 2)
+     *                       ^
+     * </pre>
+     */
+    def newTheSameElementsInOrderAs(right: GenTraversable[_])(implicit aggregation: Aggregating[T]) {
+      doCollected(collected, xs, "newTheSameElementsInOrderAs", 1) { e =>
+        if (aggregation.containsTheSameElementsInOrderAs(e, right) != shouldBeTrue)
+          throw newTestFailedException(
+            FailureMessages(
+              if (shouldBeTrue) "didNotContainSameElementsInOrder" else "containedSameElementsInOrder",
               e,
               right
             ),
