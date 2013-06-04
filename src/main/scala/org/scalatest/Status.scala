@@ -82,6 +82,15 @@ trait Status {
 
 /**
  * Singleton status that represents an already completed run with no tests failed and no suites aborted.
+ *
+ * <p>
+ * Note: the difference between this <code>SucceededStatus</code> object and the similarly named <a href="Succeeded$.html"><code>Succeeded</code></a>
+ * object is that the <code>Succeeded</code> object indicates one test succeeded, whereas this <code>SucceededStatus</code> object indicates the absence
+ * of any failed tests or aborted suites during a run. Both are used as the result type of <code>Suite</code> lifecycle methods, but <code>Succeeded</code>
+ * is a possible result of <code>withFixture</code>, whereas <code>SucceededStatus</code> is a possible result of <code>run</code>, <code>runNestedSuites</code>,
+ * <code>runTests</code>, or <code>runTest</code>. In short, <code>Succeeded</code> is always just about one test, whereas <code>SucceededStatus</code> could be
+ * about something larger: multiple tests or an entire suite.
+ * </p>
  */
 object SucceededStatus extends Status with Serializable {
 
@@ -112,6 +121,15 @@ object SucceededStatus extends Status with Serializable {
 
 /**
  * Singleton status that represents an already completed run with at least one failed test or aborted suite.
+ *
+ * <p>
+ * Note: the difference between this <code>FailedStatus</code> object and the similarly named <a href="Failed.html"><code>Failed</code></a>
+ * class is that a <code>Failed</code> instance indicates one test failed, whereas this <code>FailedStatus</code> object indicates either one or more tests failed
+ * and/or one or more suites aborted during a run. Both are used as the result type of <code>Suite</code> lifecycle methods, but <code>Failed</code>
+ * is a possible result of <code>withFixture</code>, whereas <code>FailedStatus</code> is a possible result of <code>run</code>, <code>runNestedSuites</code>,
+ * <code>runTests</code>, or <code>runTest</code>. In short, <code>Failed</code> is always just about one test, whereas <code>FailedStatus</code> could be
+ * about something larger: multiple tests or an entire suite.
+ * </p>
  */
 object FailedStatus extends Status with Serializable {
 

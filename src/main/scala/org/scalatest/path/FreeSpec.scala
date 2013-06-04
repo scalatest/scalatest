@@ -680,5 +680,16 @@ import org.scalatest.Suite.autoTagClassAnnotations
  * @author Chua Chee Seng
  */
 @Finders(Array("org.scalatest.finders.FreeSpecFinder"))
-class FreeSpec extends FreeSpecLike
+class FreeSpec extends FreeSpecLike {
+
+  /**
+   * Returns a user friendly string for this suite, composed of the
+   * simple name of the class (possibly simplified further by removing dollar signs if added by the Scala interpeter) and, if this suite
+   * contains nested suites, the result of invoking <code>toString</code> on each
+   * of the nested suites, separated by commas and surrounded by parentheses.
+   *
+   * @return a user-friendly string for this suite
+   */
+  override def toString: String = Suite.suiteToString(None, this)
+}
 

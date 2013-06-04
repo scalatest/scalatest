@@ -38,7 +38,7 @@ import org.scalatest.exceptions.TestRegistrationClosedException
  * overhead to mixing in traits compared to extending classes. If you need
  * to mix the behavior of <code>fixture.FunSpec</code> into some other
  * class, you can use this trait instead, because class
- * <code>fixture.FunSpec</code> does nothing more than extend this trait.
+ * <code>fixture.FunSpec</code> does nothing more than extend this trait and add a nice <code>toString</code> implementation.
  * </p>
  *
  * <p>

@@ -17,7 +17,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
  * mixing in traits compared to extending classes. If you need to mix the
  * behavior of <code>path.FreeSpec</code> into some other class, you can use this
  * trait instead, because class <code>path.FreeSpec</code> does nothing more than
- * extend this trait.
+ * extend this trait and add a nice <code>toString</code> implementation.
  * </p>
  *
  * <p>

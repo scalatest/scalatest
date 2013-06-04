@@ -243,6 +243,15 @@ object Exceptional {
 
 /**
  * Outcome for a test that succeeded.
+ *
+ * <p>
+ * Note: the difference between this <code>Succeeded</code> object and the similarly named <a href="SucceededStatus$.html"><code>SucceededStatus</code></a>
+ * object is that this object indicates one test succeeded, whereas the <code>SucceededStatus</code> object indicates the absence of any failed tests or
+ * aborted suites during a run. Both are used as the result type of <code>Suite</code> lifecycle methods, but <code>Succeeded</code>
+ * is a possible result of <code>withFixture</code>, whereas <code>SucceededStatus</code> is a possible result of <code>run</code>, <code>runNestedSuites</code>,
+ * <code>runTests</code>, or <code>runTest</code>. In short, <code>Succeeded</code> is always just about one test, whereas <code>SucceededStatus</code> could be
+ * about something larger: multiple tests or an entire suite.
+ * </p>
  */
 case object Succeeded extends Outcome {
 
@@ -260,6 +269,15 @@ case object Succeeded extends Outcome {
 
 /**
  * Outcome for a test that failed, containing an exception describing the cause of the failure.
+ *
+ * <p>
+ * Note: the difference between this <code>Failed</code> class and the similarly named <a href="FailedStatus$.html"><code>FailedStatus</code></a>
+ * object is that an instance of this class indicates one test failed, whereas the <code>FailedStatus</code> object indicates either one or more tests failed
+ * and/or one or more suites aborted during a run. Both are used as the result type of <code>Suite</code> lifecycle methods, but <code>Failed</code>
+ * is a possible result of <code>withFixture</code>, whereas <code>FailedStatus</code> is a possible result of <code>run</code>, <code>runNestedSuites</code>,
+ * <code>runTests</code>, or <code>runTest</code>. In short, <code>Failed</code> is always just about one test, whereas <code>FailedStatus</code> could be
+ * about something larger: multiple tests or an entire suite.
+ * </p>
  *
  * @param ex the <code>Throwable</code> contained in this <code>Failed</code>.
  */

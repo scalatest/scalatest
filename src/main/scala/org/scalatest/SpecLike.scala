@@ -30,7 +30,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * <p>
  * <a href="Spec.html"><code>Spec</code></a> is a class, not a trait, to minimize compile time given there is a slight compiler overhead to
  * mixing in traits compared to extending classes. If you need to mix the behavior of <code>Spec</code>
- * into some other class, you can use this trait instead, because class <code>Spec</code> does nothing more than extend this trait.
+ * into some other class, you can use this trait instead, because class <code>Spec</code> does nothing more than extend this trait and add a nice <code>toString</code> implementation.
  * </p>
  *
  * <p>
