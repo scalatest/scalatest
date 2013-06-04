@@ -21,6 +21,7 @@ import org.scalatest.junit.AssertionsForJUnit
 import org.scalatest.junit.JUnitTestFailedError
 import org.scalatest.SharedHelpers.thisLineNumber
 import org.scalatest.exceptions.TestFailedException
+import org.scalatest.exceptions.TestCanceledException
 
 class CheckpointsSpec extends FunSpec with Matchers with AssertionsForJUnit {
 
@@ -84,6 +85,14 @@ class CheckpointsSpec extends FunSpec with Matchers with AssertionsForJUnit {
         val cp = new Checkpoint
         cp { 1 should equal (1) }
         cp.reportAll()
+      }
+    } 
+    describe("when a TestCanceledException is thrown") {
+      it("should pass the TestCanceledException through immediately") {
+        val cp = new Checkpoint
+        evaluating {
+          cp { cancel("This should not be captured by the Checkpoint") }
+        } should produce [TestCanceledException]
       }
     } 
   } 

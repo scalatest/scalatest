@@ -16,7 +16,8 @@
 package org.scalatest
 
 import java.util.concurrent.ConcurrentLinkedQueue
-import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
+import exceptions.TestCanceledException
 
 /**
  * Trait defining class <code>Checkpoint</code>, which allows multiple assertions
@@ -92,6 +93,7 @@ trait Checkpoints {
         f
       }
       catch {
+        case e: TestCanceledException => throw e
         case e: StackDepth  => failures.add(e)
         case e: Throwable => throw e
       }
@@ -105,7 +107,7 @@ trait Checkpoints {
     def reportAll() {
       if (!failures.isEmpty) {
         val failMessages =
-          failures.
+          failures.asScala.
             map(f =>
               f.getMessage + " " + Resources("atCheckpointAt") + " " +
               getFailLine(f)).
