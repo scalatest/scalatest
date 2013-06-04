@@ -27,7 +27,9 @@ import org.scalatest._
  * </p>
  *
  * <p>
- * This trait is somewhat magical and therefore may be challenging to understand, so use it as a last resort. It is
+ * This trait is somewhat magical and therefore may be challenging for your collegues to understand, so please use it as a last resort only when the
+ * simpler options described in the "<a href="../FlatSpec.html#sharedFixtures">shared fixtures</a>" section of your chosen style trait won't do
+ * the job. <code>NoArg</code> is
  * intended to address a specific use case that will likely be rare, and is unlikely to be useful outside of its intended use case, but
  * it is quite handy for its intended use case (described in the next paragraph).
  * One potential gotcha, for example, is that a subclass's constructor body could in theory be executed multiple times by simply invoking <code>apply</code> multiple
@@ -117,8 +119,8 @@ import org.scalatest._
  * <p>
  * <a href="UnitFixture.html"><code>UnitFixture</code></a> is used in this example, because in this case, the <code>fixture.WordSpec</code> feature enabling tests to be defined as
  * functions from fixture objects of type <code>FixtureParam</code> to <code>Unit</code> is not being used. Rather, only the secondary feature that enables
- * tests to be defined as functions from <em>no parameters</em> to <code>Unit</code> is being used. This secondary feature is described in the second
- * to last paragraph on the main Scaladoc documentation of <a href="WordSpec.html"><code>fixture.WordSpec</code></a>, which says:
+ * tests to be defined as functions from <em>no parameters</em> to <code>Unit</code> is being used. This secondary feature is described in the second-to-last
+ * paragraph on the main Scaladoc documentation of <a href="WordSpec.html"><code>fixture.WordSpec</code></a>, which says:
  * </p>
  *
  * <blockquote>
