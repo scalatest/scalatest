@@ -17,6 +17,18 @@ package org.scalatest.fixture
 
 import org.scalatest._
 
+/**
+ * Trait that when mixed into a <code>fixture.Suite</code> passes
+ * the unit value as a fixture into each test.
+ *
+ * <p>
+ * Since a unit value is unlikely to be of much use to a test, this trait is useful
+ * when the unit value fixture is actually never passed into any tests. Instead
+ * each test in the <code>fixture.Suite</code> is defined as a <em>no-arg</em> function; no tests are defined as one-arg functions.
+ * This should be quite rare, but occasionally can be useful.
+ * For an example, see the main documentation for trait <a href="NoArg.html"><code>NoArg</code></a>.
+ * </p>
+*/
 trait UnitFixture { this: fixture.Suite =>
 
   /**
