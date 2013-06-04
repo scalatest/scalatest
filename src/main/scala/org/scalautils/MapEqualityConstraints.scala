@@ -15,8 +15,98 @@
  */
 package org.scalautils
 
+/**
+ * Provides an implicit method that loosens the equality constraint defined by <code>TypeCheckedTripleEquals</code> or <code>ConversionCheckedTripleEquals</code>
+ * for Scala <code>Map</code>s to one that more closely matches Scala's approach to <code>Map</code> equality.
+ *
+ * <p>
+ * Scala's approach to <code>Map</code> equality is that if both objects being compared are <code>Map</code>s, the elements are compared to determine equality.
+ * This means you could compare an immutable <code>TreeMap</code> and a mutable <code>HashMap</code> for equality and get true so long as the two maps
+ * contained the same key-value mappings. Here's an example:
+ * </p>
+ *
+ * <pre>
+ * scala&gt; import scala.collection.immutable.TreeMap
+ * import scala.collection.immutable.TreeMap
+ *
+ * scala&gt; import scala.collection.mutable.HashMap
+ * import scala.collection.mutable.HashMap
+ *
+ * scala&gt; TreeMap("one" -&gt; 1, "two" -&gt; 2) == HashMap("one" -&gt; 1, "two" -&gt; 2)
+ * res0: Boolean = true
+ * </pre>
+ *
+ * <p>
+ * Such a comparison would not, however, compile if you used <code>===</code> under either <code>TypeCheckedTripleEquals</code> or <code>ConversionCheckedTripleEquals</code>,
+ * because <code>TreeMap</code> and <code>HashMap</code> are not in a subtype/supertype relationship, nor does an implicit conversion by default exist between them:
+ * </p>
+ *
+ * <pre>
+ * scala&gt; import org.scalautils._
+ * import org.scalautils._
+ *
+ * scala&gt; import TypeCheckedTripleEquals._
+ * import TypeCheckedTripleEquals._
+ *
+ * scala&gt; TreeMap("one" -&gt; 1, "two" -&gt; 2) === HashMap("one" -&gt; 1, "two" -&gt; 2)
+ * &lt;console&gt;:16: error: types scala.collection.immutable.TreeMap[String,Int] and
+ *   scala.collection.mutable.HashMap[String,Int] do not adhere to the equality constraint selected for
+ *   the === and !== operators; the missing implicit parameter is of type
+ *   org.scalautils.EqualityConstraint[scala.collection.immutable.TreeMap[String,Int],
+ *   scala.collection.mutable.HashMap[String,Int]]
+ *               TreeMap("one" -&gt; 1, "two" -&gt; 2) === HashMap("one" -&gt; 1, "two" -&gt; 2)
+ *                                               ^
+ * </pre>
+ *
+ * <p>
+ * If you mix or import the implicit conversion provided by <code>MapEqualityConstraint</code>, however, the comparison will be allowed:
+ * </p>
+ *
+ * <pre>
+ * scala&gt; import MapEqualityConstraints._
+ * import MapEqualityConstraints._
+ *
+ * scala&gt; TreeMap("one" -&gt; 1, "two" -&gt; 2) === HashMap("one" -&gt; 1, "two" -&gt; 2)
+ * res2: Boolean = true
+ * </pre>
+ *
+ * <p>
+ * The equality constraint provided by this trait requires that both left and right sides are subclasses of <code>scala.collection.GenMap</code> and that
+ * an <code>EqualityConstraint</code> can be found for both key types and both value types. In the example above, both the <code>TreeMap</code> and
+ * <code>HashMap</code> are subclasses of <code>scala.collection.GenMap</code>, and the regular <code>TypeCheckedTripleEquals</code> provides equality
+ * constraints for the key types, both of which are <code>String</code>, and value types, both of which are <code>Int</code>. By contrast, this
+ * trait would not allow a <code>TreeMap[String, Int]</code> to be compared against a <code>HashMap[String, java.util.Date]</code>, because no equality constraint
+ * will exist between the value types <code>Int</code> and <code>Date</code>:
+ * </p>
+ *
+ * <pre>
+ * scala&gt; import java.util.Date
+ * import java.util.Date
+ *
+ * scala&gt; TreeMap("one" -&gt; 1, "two" -&gt; 2) === HashMap("one" -&gt; new Date, "two" -&gt; new Date)
+ * &lt;console&gt;:20: error: types scala.collection.immutable.TreeMap[String,Int] and
+ *   scala.collection.mutable.HashMap[String,java.util.Date] do not adhere to the equality constraint selected for
+ *   the === and !== operators; the missing implicit parameter is of type
+ *   org.scalautils.EqualityConstraint[scala.collection.immutable.TreeMap[String,Int],
+ *   scala.collection.mutable.HashMap[String,java.util.Date]]
+ *               TreeMap("one" -&gt; 1, "two" -&gt; 2) === HashMap("one" -&gt; new Date, "two" -&gt; new Date)
+ *                                               ^
+ * </pre>
+ * 
+ * @author Bill Venners
+ */
 trait MapEqualityConstraints {
+
+  /**
+   * Provides an equality constraint that allows two subtypes of <code>scala.collection.GenMap</code>s to be compared for equality with <code>===</code> so long
+   * as an <code>EqualityConstraint</code> is available for both key types and both value types.
+   */
   implicit def mapEqualityConstraint[EAK, EAV, CA[_, _] <: collection.GenMap[_, _], EBK, EBV, CB[_, _] <: collection.GenMap[_, _]](implicit equalityOfA: Equality[CA[EAK, EAV]], evKey: EqualityConstraint[EAK, EBK], evValue: EqualityConstraint[EAV, EBV]): EqualityConstraint[CA[EAK, EAV], CB[EBK, EBV]] = new BasicEqualityConstraint[CA[EAK, EAV], CB[EBK, EBV]](equalityOfA)
 }
 
+/**
+ * Companion object that facilitates the importing of <code>MapEqualityConstraints</code> members as 
+ * an alternative to mixing it in. One use case is to import <code>MapEqualityConstraints</code> members so you can use
+ * them in the Scala interpreter.
+ */
 object MapEqualityConstraints extends MapEqualityConstraints
