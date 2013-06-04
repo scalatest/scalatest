@@ -661,6 +661,47 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
       )
   }
   
+  def newContain(theSameElementsAs: ResultOfNewTheSameElementsAsApplication)(implicit aggregation: Aggregating[T]) {
+
+    val right = theSameElementsAs.right
+
+    if (aggregation.containsTheSameElementsAs(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "didNotContainSameElements" else "containedSameElements",
+          left,
+          right
+        )
+      )
+  }
+  
+  def newContain(theSameElementsInOrderAs: ResultOfNewTheSameElementsInOrderAsApplication)(implicit aggregation: Aggregating[T]) {
+
+    val right = theSameElementsInOrderAs.right
+
+    if (aggregation.containsTheSameElementsInOrderAs(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "didNotContainSameElementsInOrder" else "containedSameElementsInOrder",
+          left,
+          right
+        )
+      )
+  }
+  
+  def newContain(only: ResultOfNewOnlyApplication)(implicit aggregation: Aggregating[T]) {
+
+    val right = only.right
+    if (aggregation.containsOnly(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "didNotContainOnlyElements" else "containedOnlyElements",
+          left,
+          UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
+        )
+      )
+  }
+  
 }
 
 /**

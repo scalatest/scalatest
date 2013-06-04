@@ -55,6 +55,8 @@ import org.scalatest.words.ResultOfDefinedAt
 import org.scalatest.words.ResultOfNewOneOfApplication
 import org.scalatest.words.ResultOfAtLeastOneOfApplication
 import org.scalatest.words.ResultOfNewNoneOfApplication
+import org.scalatest.words.ResultOfNewTheSameElementsAsApplication
+import org.scalatest.words.ResultOfNewTheSameElementsInOrderAsApplication
 
 /**
  * Trait extended by objects that can match a value of the specified type. The value to match is
@@ -810,23 +812,23 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) and contain theSameElementsAs List(1, 2, 3))
+     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) and contain theSameElementsAs (1, 3, 3))
      *                                                                           ^
      * </pre>
      */
-    //def newTheSameElementsAs[E](right: GenTraversable[E])(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
-      //outerInstance.and(MatcherWords.contain.theSameElementsAs(right)(equality))
+    def newTheSameElementsAs(right: GenTraversable[_]): MatcherFactory1[T with Any, Aggregating] = 
+      outerInstance.and(MatcherWords.newContain.newTheSameElementsAs(right))
     
     /**
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) and contain theSameElementsInOrderAs List(1, 2, 3))
+     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) and contain theSameElementsInOrderAs (1, 3, 3))
      *                                                                           ^
      * </pre>
      */
-    //def newTheSameElementsInOrderAs[E](right: GenTraversable[E])(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
-      //outerInstance.and(MatcherWords.contain.theSameElementsInOrderAs(right)(equality))
+    def newTheSameElementsInOrderAs(right: GenTraversable[_]): MatcherFactory1[T with Any, Aggregating] = 
+      outerInstance.and(MatcherWords.newContain.newTheSameElementsInOrderAs(right))
     
     /**
      * This method enables the following syntax:
@@ -1659,11 +1661,11 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
     def newContain(right: ResultOfNewOneOfApplication): MatcherFactory1[T with Any, Containing] =
       outerInstance.and(MatcherWords.not.newContain(right))
       
-      /**
+    /**
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * collection should (contain theSameElementsAs (List(1, 2, 3)) and not contain theSameElementsAs (List(8, 1, 2))) 
+     * collection should (contain theSameElementsAs (List(1, 2, 3)) and not contain atLeastOneOf (List(8, 1, 2))) 
      *                                                                      ^
      * </pre>
      */
@@ -1679,6 +1681,28 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def newContain(right: ResultOfNewNoneOfApplication): MatcherFactory1[T with Any, Containing] =
+      outerInstance.and(MatcherWords.not.newContain(right))
+      
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * collection should (contain theSameElementsAs (List(1, 2, 3)) and not contain theSameElementsAs (List(8, 1, 2))) 
+     *                                                                      ^
+     * </pre>
+     */
+    def newContain(right: ResultOfNewTheSameElementsAsApplication): MatcherFactory1[T with Any, Aggregating] =
+      outerInstance.and(MatcherWords.not.newContain(right))
+      
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * collection should (contain theSameElementsAs (List(1, 2, 3)) and not contain theSameElementsInOrderAs (List(8, 1, 2))) 
+     *                                                                      ^
+     * </pre>
+     */
+    def newContain(right: ResultOfNewTheSameElementsInOrderAsApplication): MatcherFactory1[T with Any, Aggregating] =
       outerInstance.and(MatcherWords.not.newContain(right))
       
     /**
@@ -1958,8 +1982,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                                                                          ^
      * </pre>
      */
-    //def theSameElementsAs[E](right: GenTraversable[E])(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
-      //outerInstance.or(MatcherWords.contain.theSameElementsAs(right)(equality))
+    def newTheSameElementsAs(right: GenTraversable[_]): MatcherFactory1[T with Any, Aggregating] = 
+      outerInstance.or(MatcherWords.newContain.newTheSameElementsAs(right))
     
     /**
      * This method enables the following syntax:
@@ -1969,8 +1993,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                                                                          ^
      * </pre>
      */
-    //def theSameElementsInOrderAs[E](right: GenTraversable[E])(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
-      //outerInstance.or(MatcherWords.contain.theSameElementsInOrderAs(right)(equality))
+    def newTheSameElementsInOrderAs(right: GenTraversable[_]): MatcherFactory1[T with Any, Aggregating] = 
+      outerInstance.or(MatcherWords.newContain.newTheSameElementsInOrderAs(right))
     
     /**
      * This method enables the following syntax:
@@ -2812,6 +2836,28 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def newContain(right: ResultOfNewNoneOfApplication): MatcherFactory1[T with Any, Containing] =
+      outerInstance.or(MatcherWords.not.newContain(right))
+      
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * collection should (contain theSameElementsAs (List(1, 2, 3)) or not contain theSameElementsAs (List(8, 1, 2))) 
+     *                                                                     ^
+     * </pre>
+     */
+    def newContain(right: ResultOfNewTheSameElementsAsApplication): MatcherFactory1[T with Any, Aggregating] =
+      outerInstance.or(MatcherWords.not.newContain(right))
+      
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * collection should (contain theSameElementsAs (List(1, 2, 3)) or not contain theSameElementsInOrderAs (List(8, 1, 2))) 
+     *                                                                     ^
+     * </pre>
+     */
+    def newContain(right: ResultOfNewTheSameElementsInOrderAsApplication): MatcherFactory1[T with Any, Aggregating] =
       outerInstance.or(MatcherWords.not.newContain(right))
       
     /**

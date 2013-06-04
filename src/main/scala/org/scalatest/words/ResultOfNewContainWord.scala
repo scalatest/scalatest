@@ -15,6 +15,7 @@
  */
 package org.scalatest.words
 
+import scala.collection.GenTraversable
 import org.scalatest.enablers.Containing
 import org.scalatest.enablers.Aggregating
 import org.scalatest.MatchersHelper.newTestFailedException
@@ -80,6 +81,63 @@ class ResultOfNewContainWord[L](left: L, shouldBeTrue: Boolean = true) {
       throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "containedOneOfElements" else "didNotContainOneOfElements",
+          left,
+          UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
+        )
+      )
+  }
+  
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * option should contain theSameElementsAs (1, 2)
+   *                       ^
+   * </pre>
+   */
+  def newTheSameElementsAs(right: GenTraversable[_])(implicit aggregation: Aggregating[L]) {
+    if (aggregation.containsTheSameElementsAs(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "didNotContainSameElements" else "containedSameElements",
+          left,
+          right
+        )
+      )
+  }
+  
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * option should contain theSameElementsInOrderAs (1, 2)
+   *                       ^
+   * </pre>
+   */
+  def newTheSameElementsInOrderAs(right: GenTraversable[_])(implicit aggregation: Aggregating[L]) {
+    if (aggregation.containsTheSameElementsInOrderAs(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "didNotContainSameElementsInOrder" else "containedSameElementsInOrder",
+          left,
+          right
+        )
+      )
+  }
+  
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * option should contain only (1, 2)
+   *                       ^
+   * </pre>
+   */
+  def newOnly(right: Any*)(implicit aggregation: Aggregating[L]) {
+    if (aggregation.containsOnly(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "didNotContainOnlyElements" else "containedOnlyElements",
           left,
           UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
         )

@@ -203,7 +203,7 @@ trait MatcherWords {
             MatchResult(
               equality.areEqual(left, right),
               FailureMessages("didNotEqual", leftee, rightee),
-              FailureMessages("equaled", leftee, rightee)
+              FailureMessages("equaled", left, right)
             )
           }
         }
