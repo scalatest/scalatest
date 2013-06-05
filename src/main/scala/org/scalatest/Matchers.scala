@@ -4141,7 +4141,30 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
       }
     }
 
+    /**
+     * This method enables the following syntax: 
+     *
+     * <pre class="stHighlight">
+     * option should contain inOrderOnly (1, 2)
+     *                       ^
+     * </pre>
+     */
+    def newInOrderOnly(right: Any*)(implicit aggregating: Aggregating[T]) {
+      doCollected(collected, xs, "newInOrderOnly", 1) { e =>
+        if (aggregating.containsInOrderOnly(e, right) != shouldBeTrue)
+          throw newTestFailedException(
+            FailureMessages(
+              if (shouldBeTrue) "didNotContainInOrderOnlyElements" else "containedInOrderOnlyElements",
+              e,
+              UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
+            ),
+            None,
+            6
+        )
+      }
+    }
   }
+  // TODO: Change aggregation: Aggregating => aggregating: Aggregating
 
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="InspectorsMatchers.html"><code>InspectorsMatchers</code></a> for an overview of

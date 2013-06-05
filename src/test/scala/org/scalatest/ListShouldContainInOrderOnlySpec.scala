@@ -134,7 +134,7 @@ class ListShouldContainInOrderOnlySpec extends Spec with Matchers {
       }
     }
 
-    object `when used with (not contain theSameElementsInOrderAs (..))` {
+    object `when used with (not contain inOrderOnly (..))` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
         toList should (not newContain newInOrderOnly ("you", "to", "birthday", "happy"))
@@ -165,65 +165,65 @@ class ListShouldContainInOrderOnlySpec extends Spec with Matchers {
     }
   }
 
-/*
   object `a col of Lists` {
 
-    val list1s: Vector[List[Int]] = Vector( List(1, 2, 3), List(1, 2, 3), List(1, 2, 3))
-    val lists: Vector[List[Int]] = Vector( List(1, 2, 3), List(1, 2, 3), List(2, 3, 4))
+    val list1s: Vector[List[Int]] = Vector( List(1, 2, 2, 3), List(1, 1, 2, 3, 3, 3), List(1, 2, 3))
+    val lists: Vector[List[Int]] = Vector( List(1, 2, 2, 3, 3, 3), List(1, 1, 1, 2, 3), List(2, 2, 3, 4))
     val listsNil: Vector[List[Int]] = Vector( List(1, 2, 3), List(1, 2, 3), Nil)
-    val hiLists: Vector[List[String]] = Vector( List("hi", "he"), List("hi", "he"), List("hi", "he"))
+    val hiLists: Vector[List[String]] = Vector( List("hi", "hi", "he"), List("hi", "he", "he", "he"), List("hi", "he"))
     val toLists: Vector[List[String]] = Vector( List("to", "you"), List("to", "you"), List("to", "you"))
 
-    object `when used with contain theSameElementsInOrderAs (..)` {
+    object `when used with contain inOrderOnly (..)` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        all (list1s) should newContain newTheSameElementsInOrderAs LinkedList(1, 2, 3)
-        atLeast (2, lists) should newContain newTheSameElementsInOrderAs LinkedList(1, 2, 3)
-        atMost (2, lists) should newContain newTheSameElementsInOrderAs LinkedList(1, 2, 3)
-        no (lists) should newContain newTheSameElementsInOrderAs LinkedList(3, 4, 5)
+        all (list1s) should newContain newInOrderOnly (1, 2, 3)
+        atLeast (2, lists) should newContain newInOrderOnly (1, 2, 3)
+        atMost (2, lists) should newContain newInOrderOnly (1, 2, 3)
+        no (lists) should newContain newInOrderOnly (3, 4, 5)
 
         val e1 = intercept[TestFailedException] {
-          all (lists) should newContain newTheSameElementsInOrderAs LinkedList(1, 2, 3)
+          all (lists) should newContain newInOrderOnly (1, 2, 3)
         }
         e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 2, " + decorateToStringValue(List(2, 3, 4)) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList(1, 2, 3)) + " (ListShouldContainInOrderOnlySpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "  at index 2, " + decorateToStringValue(List(2, 2, 3, 4)) + " did not contain only " + "(1, 2, 3)" + " in order (ListShouldContainInOrderOnlySpec.scala:" + (thisLineNumber - 5) + ") \n" +
                                    "in " + decorateToStringValue(lists)))
 
         val e3 = intercept[TestFailedException] {
-          all (listsNil) should newContain newTheSameElementsInOrderAs LinkedList(1, 2, 3)
+          all (listsNil) should newContain newInOrderOnly (1, 2, 3)
         }
         e3.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
         e3.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e3.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 2, " + decorateToStringValue(Nil) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList(1, 2, 3)) + " (ListShouldContainInOrderOnlySpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "  at index 2, " + decorateToStringValue(Nil) + " did not contain only " + "(1, 2, 3)" + " in order (ListShouldContainInOrderOnlySpec.scala:" + (thisLineNumber - 5) + ") \n" +
                                    "in " + decorateToStringValue(listsNil)))
       }
 
       def `should use the implicit Equality in scope` {
-        all (hiLists) should newContain newTheSameElementsInOrderAs LinkedList("hi", "he")
+        all (hiLists) should newContain newInOrderOnly ("hi", "he")
         intercept[TestFailedException] {
-          all (hiLists) should newContain newTheSameElementsInOrderAs LinkedList("hi", "ho")
+          all (hiLists) should newContain newInOrderOnly ("hi", "ho")
         }
         implicit val ise = upperCaseStringEquality
-        all (hiLists) should newContain newTheSameElementsInOrderAs LinkedList("HI", "HE")
+        all (hiLists) should newContain newInOrderOnly ("HI", "HE")
         intercept[TestFailedException] {
-          all (hiLists) should newContain newTheSameElementsInOrderAs LinkedList("HI", "HO")
+          all (hiLists) should newContain newInOrderOnly ("HI", "HO")
         }
       }
       def `should use an explicitly provided Equality` {
-        (all (hiLists) should newContain newTheSameElementsInOrderAs LinkedList("HI", "HE")) (decided by upperCaseStringEquality)
+        (all (hiLists) should newContain newInOrderOnly ("HI", "HE")) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (hiLists) should newContain newTheSameElementsInOrderAs LinkedList("HI", "HO")) (decided by upperCaseStringEquality)
+          (all (hiLists) should newContain newInOrderOnly ("HI", "HO")) (decided by upperCaseStringEquality)
         }
         implicit val ise = upperCaseStringEquality
-        (all (hiLists) should newContain newTheSameElementsInOrderAs LinkedList("hi", "he")) (decided by defaultEquality[String])
+        (all (hiLists) should newContain newInOrderOnly ("hi", "he")) (decided by defaultEquality[String])
         intercept[TestFailedException] {
-          (all (hiLists) should newContain newTheSameElementsInOrderAs LinkedList("hi", "ho")) (decided by defaultEquality[String])
+          (all (hiLists) should newContain newInOrderOnly ("hi", "ho")) (decided by defaultEquality[String])
         }
       }
     }
+/*
 
     object `when used with (contain theSameElementsInOrderAs (..))` {
 
@@ -340,6 +340,6 @@ class ListShouldContainInOrderOnlySpec extends Spec with Matchers {
         }
       }
     }
-  }
 */
+  }
 }
