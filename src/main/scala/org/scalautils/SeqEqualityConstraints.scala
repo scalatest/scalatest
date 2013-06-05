@@ -81,8 +81,6 @@ package org.scalautils
  * import java.util.Date
  *
  * scala&gt; Vector(1, 2) === ListBuffer(new Date, new Date)
-<console>:22: error: types scala.collection.immutable.Vector[Int] and scala.collection.mutable.ListBuffer[java.util.Date] do not adhere to the equality constraint selected for the === and !== operators; the missing implicit parameter is of type org.scalautils.EqualityConstraint[scala.collection.immutable.Vector[Int],scala.collection.mutable.ListBuffer[java.util.Date]]
-
  * &lt;console&gt;:20: error: types scala.collection.immutable.Vector[Int] and
  *   scala.collection.mutable.ListBuffer[java.util.Date] do not adhere to the equality constraint selected for
  *   the === and !== operators; the missing implicit parameter is of type
