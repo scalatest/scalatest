@@ -276,39 +276,39 @@ class ListShouldContainInOrderOnlySpec extends Spec with Matchers {
       }
     }
 
-/*
-    object `when used with not contain theSameElementsInOrderAs (..)` {
+    object `when used with not contain inOrderOnly (..)` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        all (toLists) should not newContain newTheSameElementsInOrderAs (LinkedList("you", "to"))
+        all (toLists) should not newContain newInOrderOnly ("you", "to")
         val e1 = intercept[TestFailedException] {
-          all (toLists) should not newContain newTheSameElementsInOrderAs (LinkedList("to", "you"))
+          all (toLists) should not newContain newInOrderOnly ("to", "you")
         }
         e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 0, " + decorateToStringValue(List("to", "you")) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList("to", "you")) +  " (ListShouldContainInOrderOnlySpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "  at index 0, " + decorateToStringValue(List("to", "you")) + " contained only " + "(\"to\", \"you\")" +  " in order (ListShouldContainInOrderOnlySpec.scala:" + (thisLineNumber - 5) + ") \n" +
                                    "in " + decorateToStringValue(toLists)))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
-        all (toLists) should not newContain newTheSameElementsInOrderAs (LinkedList("YOU", "TO"))
+        all (toLists) should not newContain newInOrderOnly ("YOU", "TO")
         intercept[TestFailedException] {
-          all (toLists) should not newContain newTheSameElementsInOrderAs (LinkedList("TO", "YOU"))
+          all (toLists) should not newContain newInOrderOnly ("TO", "YOU")
         }
       }
       def `should use an explicitly provided Equality` {
-        (all (toLists) should not newContain newTheSameElementsInOrderAs (LinkedList("YOU", "TO"))) (decided by upperCaseStringEquality)
+        (all (toLists) should not newContain newInOrderOnly ("YOU", "TO")) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) should not newContain newTheSameElementsInOrderAs (LinkedList("TO", "YOU"))) (decided by upperCaseStringEquality)
+          (all (toLists) should not newContain newInOrderOnly ("TO", "YOU")) (decided by upperCaseStringEquality)
         }
-        all (toLists) should not newContain newTheSameElementsInOrderAs (LinkedList(" TO ", " YOU "))
+        all (toLists) should not newContain newInOrderOnly (" TO ", " YOU ")
         intercept[TestFailedException] {
-          (all (toLists) should not newContain newTheSameElementsInOrderAs (LinkedList(" TO ", " YOU "))) (after being lowerCased and trimmed)
+          (all (toLists) should not newContain newInOrderOnly (" TO ", " YOU ")) (after being lowerCased and trimmed)
         }
       }
     }
 
+/*
     object `when used with (not contain theSameElementsInOrderAs (..))` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {

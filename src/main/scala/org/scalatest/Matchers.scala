@@ -3604,7 +3604,32 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
           )
       }
     }
-    
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * all (xs) should not contain inOrderOnly ("one", "two")
+     *                     ^
+     * </pre>
+     */
+    def newContain(only: ResultOfNewInOrderOnlyApplication)(implicit aggregating: Aggregating[T]) {
+
+      val right = only.right
+
+      doCollected(collected, xs, "newContain", 1) { e =>
+        if (aggregating.containsInOrderOnly(e, right) != shouldBeTrue)
+          throw newTestFailedException(
+            FailureMessages(
+              if (shouldBeTrue) "didNotContainInOrderOnlyElements" else "containedInOrderOnlyElements",
+              e,
+              UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
+            ),
+            None,
+            6
+          )
+      }
+    }
   }
 
   /**
