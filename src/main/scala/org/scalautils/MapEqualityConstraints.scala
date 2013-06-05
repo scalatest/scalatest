@@ -21,7 +21,7 @@ package org.scalautils
  *
  * <p>
  * Scala's approach to <code>Map</code> equality is that if both objects being compared are <code>Map</code>s, the elements are compared to determine equality.
- * This means you could compare an immutable <code>TreeMap</code> and a mutable <code>HashMap</code> for equality and get true so long as the two maps
+ * This means you could compare an immutable <code>TreeMap</code> and a mutable <code>HashMap</code> for equality, for instance, and get true so long as the two maps
  * contained the same key-value mappings. Here's an example:
  * </p>
  *
