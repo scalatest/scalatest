@@ -66,6 +66,8 @@ import org.scalatest.words.ResultOfAtLeastOneOfApplication
 import org.scalatest.words.ResultOfNewNoneOfApplication
 import org.scalatest.words.ResultOfNewTheSameElementsAsApplication
 import org.scalatest.words.ResultOfNewTheSameElementsInOrderAsApplication
+import org.scalatest.words.ResultOfNewOnlyApplication
+import org.scalatest.words.ResultOfNewAllOfApplication
 
 /**
  * A matcher factory that can produce a matcher given $nTypeclassInstances$.
@@ -491,12 +493,12 @@ $endif$
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
-     * (aMatcherFactory and contain allOf (1, 2, 3))
+     * (aMatcherFactory and contain allOf (1, 3, 3))
      *                              ^
      * </pre>
      */
-    //def allOf[E](right: E*)(implicit equality: Equality[E]): MatcherFactory$arity$[SC with GenTraversable[E], $commaSeparatedTCNs$] = 
-      //thisMatcherFactory.and(MatcherWords.contain.allOf(right.toList: _*)(equality))
+    def newAllOf(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
+      thisMatcherFactory.and(MatcherWords.newContain.newAllOf(right.toList: _*))
     
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -535,12 +537,12 @@ $endif$
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
-     * (aMatcherFactory and contain only (3, 1))
+     * (aMatcherFactory and contain only (1, 3, 3))
      *                              ^
      * </pre>
      */
-    //def only[E](right: E*)(implicit equality: Equality[E]): MatcherFactory$arity$[SC with GenTraversable[E], $commaSeparatedTCNs$] = 
-      //thisMatcherFactory.and(MatcherWords.contain.only(right.toList: _*)(equality))
+    def newOnly(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
+      thisMatcherFactory.and(MatcherWords.newContain.newOnly(right.toList: _*))
     
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1350,6 +1352,28 @@ $endif$
      */
     def newContain(right: ResultOfNewTheSameElementsInOrderAsApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
       thisMatcherFactory.and(MatcherWords.not.newContain(right))
+    
+    /**
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     *
+     * <pre class="stHighlight">
+     * (aMatcherFactory and not contain only (8, 1, 2)) 
+     *                          ^
+     * </pre>
+     */
+    def newContain(right: ResultOfNewOnlyApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+      thisMatcherFactory.and(MatcherWords.not.newContain(right))
+    
+    /**
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     *
+     * <pre class="stHighlight">
+     * (aMatcherFactory and not contain allOf (8, 1, 2)) 
+     *                          ^
+     * </pre>
+     */
+    def newContain(right: ResultOfNewAllOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+      thisMatcherFactory.and(MatcherWords.not.newContain(right))
       
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1649,12 +1673,12 @@ $endif$
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
-     * (aMatcherFactory or contain allOf (1, 2, 3))
+     * (aMatcherFactory or contain allOf (1, 3, 3))
      *                             ^
      * </pre>
      */
-    //def allOf[E](right: E*)(implicit equality: Equality[E]): MatcherFactory$arity$[SC with GenTraversable[E], $commaSeparatedTCNs$] = 
-      //thisMatcherFactory.or(MatcherWords.contain.allOf(right.toList: _*)(equality))
+    def newAllOf(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
+      thisMatcherFactory.or(MatcherWords.newContain.newAllOf(right.toList: _*))
     
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1693,12 +1717,13 @@ $endif$
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
-     * (aMatcherFactory or contain only (3, 1))
+     * (aMatcherFactory or contain only (1, 3, 3))
      *                             ^
      * </pre>
      */
-    //def only[E](right: E*)(implicit equality: Equality[E]): MatcherFactory$arity$[SC with GenTraversable[E], $commaSeparatedTCNs$] = 
-      //thisMatcherFactory.or(MatcherWords.contain.only(right.toList: _*)(equality))
+    def newOnly(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
+      thisMatcherFactory.or(MatcherWords.newContain.newOnly(right.toList: _*))
+    
     
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -2469,7 +2494,7 @@ $endif$
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
-     * (aMatcherFactory or not contain atLeastOneOf (List(8, 1, 2))) 
+     * (aMatcherFactory or not contain atLeastOneOf (8, 1, 2)) 
      *                         ^
      * </pre>
      */
@@ -2507,6 +2532,28 @@ $endif$
      * </pre>
      */
     def newContain(right: ResultOfNewTheSameElementsInOrderAsApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+      thisMatcherFactory.or(MatcherWords.not.newContain(right))
+    
+    /**
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     *
+     * <pre class="stHighlight">
+     * (aMatcherFactory or not contain only (8, 1, 2)) 
+     *                         ^
+     * </pre>
+     */
+    def newContain(right: ResultOfNewOnlyApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+      thisMatcherFactory.or(MatcherWords.not.newContain(right))
+    
+    /**
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     *
+     * <pre class="stHighlight">
+     * (aMatcherFactory or not contain allOf (8, 1, 2)) 
+     *                         ^
+     * </pre>
+     */
+    def newContain(right: ResultOfNewAllOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
       thisMatcherFactory.or(MatcherWords.not.newContain(right))
       
     /**

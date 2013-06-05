@@ -162,5 +162,24 @@ class ResultOfNewContainWord[L](left: L, shouldBeTrue: Boolean = true) {
         )
       )
   }
+  
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * xs should contain allOf (1, 2)
+   *                   ^
+   * </pre>
+   */
+  def newAllOf(right: Any*)(implicit aggregation: Aggregating[L]) {
+    if (aggregation.containsAllOf(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "didNotContainAllOfElements" else "containedAllOfElements",
+          left,
+          UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
+        )
+      )
+  }
 }
 

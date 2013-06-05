@@ -713,6 +713,20 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
         )
       )
   }
+  
+  def newContain(only: ResultOfNewAllOfApplication)(implicit aggregation: Aggregating[T]) {
+
+    val right = only.right
+    if (aggregation.containsAllOf(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "didNotContainAllOfElements" else "containedAllOfElements",
+          left,
+          UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
+        )
+      )
+  }
+  
   // TODO: Later change aggregation: Aggregating => aggregating: Aggregating everywhere, when we're not working in parallel
 }
 
