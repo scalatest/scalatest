@@ -20,7 +20,6 @@ import org.scalautils.Normalization
 import org.scalautils.StringNormalizations._
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
-import scala.collection.mutable.LinkedList
 
 class ListShouldContainInOrderOnlyLogicalAndSpec extends Spec with Matchers {
 
@@ -343,7 +342,6 @@ class ListShouldContainInOrderOnlyLogicalAndSpec extends Spec with Matchers {
     }
   }
   
-/*
   object `col of Lists` {
     
     val list1s: Vector[List[Int]] = Vector(List(1, 2, 3), List(1, 2, 3), List(1, 2, 3))
@@ -370,22 +368,22 @@ class ListShouldContainInOrderOnlyLogicalAndSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           all (lists) should (newContain newInOrderOnly (1, 2, 3) and newContain newInOrderOnly (1, 2, 3))
         }
-        checkMessageStackDepth(e1, allErrMsg(2, decorateToStringValue(List(2, 3, 4)) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList(1, 2, 3)), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(2, decorateToStringValue(List(2, 3, 4)) + " did not contain only " + "(1, 2, 3)" + " in order", thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
         
         val e2 = intercept[TestFailedException] {
           all (list1s) should (newContain newInOrderOnly (1, 2, 3) and newContain newInOrderOnly (1, 3, 4))
         }
-        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List(1, 2, 3)) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList(1, 2, 3)) + ", but " + decorateToStringValue(List(1, 2, 3)) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList(1, 3, 4)), thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List(1, 2, 3)) + " contained only " + "(1, 2, 3)" + " in order" + ", but " + decorateToStringValue(List(1, 2, 3)) + " did not contain only " + "(1, 3, 4)" + " in order", thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
         
         val e3 = intercept[TestFailedException] {
           all (nils) should (newContain newInOrderOnly ("hi", "hello") and newContain newInOrderOnly ("ho", "hey", "howdy"))
         }
-        checkMessageStackDepth(e3, allErrMsg(0, decorateToStringValue(Nil) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList("hi", "hello")), thisLineNumber - 2, nils), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e3, allErrMsg(0, decorateToStringValue(Nil) + " did not contain only " + "(\"hi\", \"hello\")" + " in order", thisLineNumber - 2, nils), fileName, thisLineNumber - 2)
         
         val e4 = intercept[TestFailedException] {
           all (hiLists) should (newContain newInOrderOnly ("hi", "hello") and newContain newInOrderOnly ("hello", "hi"))
         }
-        checkMessageStackDepth(e4, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList("hi", "hello")) + ", but " + decorateToStringValue(List("hi", "hello")) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList("hello", "hi")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e4, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " contained only " + "(\"hi\", \"hello\")" + " in order" + ", but " + decorateToStringValue(List("hi", "hello")) + " did not contain only " + "(\"hello\", \"hi\")" + " in order", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
       
       def `should use the implicit Equality in scope` {
@@ -396,28 +394,29 @@ class ListShouldContainInOrderOnlyLogicalAndSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           all (hiLists) should (newContain newInOrderOnly ("HO", "HELLO") and newContain newInOrderOnly ("HI", "HELLO"))
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList("HO", "HELLO")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " did not contain only " + "(\"HO\", \"HELLO\")" + " in order", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
         
         val e2 = intercept[TestFailedException] {
           all (hiLists) should (newContain newInOrderOnly ("HI", "HELLO") and newContain newInOrderOnly ("HELLO", "HI"))
         }
-        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList("HI", "HELLO")) + ", but " + decorateToStringValue(List("hi", "hello")) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList("HELLO", "HI")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " contained only " + "(\"HI\", \"HELLO\")" + " in order" + ", but " + decorateToStringValue(List("hi", "hello")) + " did not contain only " + "(\"HELLO\", \"HI\")" + " in order", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
-      
+
       def `should use an explicitly provided Equality` {
         (all (hiLists) should (newContain newInOrderOnly ("HI", "HELLO") and newContain newInOrderOnly ("HI", "HELLO"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
           (all (hiLists) should (newContain newInOrderOnly ("HO", "HELLO") and newContain newInOrderOnly ("HI", "HELLO"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList("HO", "HELLO")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " did not contain only " + "(\"HO\", \"HELLO\")" + " in order", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
         
         val e2 = intercept[TestFailedException] {
           (all (hiLists) should (newContain newInOrderOnly ("HI", "HELLO") and newContain newInOrderOnly ("HELLO", "HI"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList("HI", "HELLO")) + ", but " + decorateToStringValue(List("hi", "hello")) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList("HELLO", "HI")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " contained only " + "(\"HI\", \"HELLO\")" + " in order" + ", but " + decorateToStringValue(List("hi", "hello")) + " did not contain only " + "(\"HELLO\", \"HI\")" + " in order", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
     }
-    
+
+/*
     object `when used with (be xx and contain inOrderOnly xx)` {
       
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
@@ -436,7 +435,7 @@ class ListShouldContainInOrderOnlyLogicalAndSpec extends Spec with Matchers {
         val e2 = intercept[TestFailedException] {
           all (list1s) should (be (List(1, 2, 3)) and newContain newInOrderOnly (2, 3, 8))
         }
-        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List(1, 2, 3)) + " was equal to " + decorateToStringValue(List(1, 2, 3)) + ", but " + decorateToStringValue(List(1, 2, 3)) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList(2, 3, 8)), thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List(1, 2, 3)) + " was equal to " + decorateToStringValue(List(1, 2, 3)) + ", but " + decorateToStringValue(List(1, 2, 3)) + " did not contain only " + decorateToStringValue(LinkedList(2, 3, 8)) + " in order", thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
         
         val e3 = intercept[TestFailedException] {
           all (nils) should (be (List("hey")) and newContain newInOrderOnly ("hi", "hello"))
@@ -446,7 +445,7 @@ class ListShouldContainInOrderOnlyLogicalAndSpec extends Spec with Matchers {
         val e4 = intercept[TestFailedException] {
           all (hiLists) should (be (List("hi", "hello")) and newContain newInOrderOnly ("hello", "hi"))
         }
-        checkMessageStackDepth(e4, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " was equal to " + decorateToStringValue(List("hi", "hello")) + ", but " + decorateToStringValue(List("hi", "hello")) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList("hello", "hi")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e4, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " was equal to " + decorateToStringValue(List("hi", "hello")) + ", but " + decorateToStringValue(List("hi", "hello")) + " did not contain only " + "(\"hello\", \"hi\")" + " in order", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
         
         val e5 = intercept[TestFailedException] {
           all (listsNil) should (be (List(1, 2, 3)) and newContain newInOrderOnly (1, 2, 3))
@@ -456,7 +455,7 @@ class ListShouldContainInOrderOnlyLogicalAndSpec extends Spec with Matchers {
         val e6 = intercept[TestFailedException] {
           all (list1s) should (be (List(1, 2, 3)) and newContain newInOrderOnly (2, 3, 8))
         }
-        checkMessageStackDepth(e6, allErrMsg(0, decorateToStringValue(List(1, 2, 3)) + " was equal to " + decorateToStringValue(List(1, 2, 3)) + ", but " + decorateToStringValue(List(1, 2, 3)) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList(2, 3, 8)), thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e6, allErrMsg(0, decorateToStringValue(List(1, 2, 3)) + " was equal to " + decorateToStringValue(List(1, 2, 3)) + ", but " + decorateToStringValue(List(1, 2, 3)) + " did not contain only " + decorateToStringValue(LinkedList(2, 3, 8)) + " in order", thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
       }
       
       def `should use the implicit Equality in scope` {
@@ -472,7 +471,7 @@ class ListShouldContainInOrderOnlyLogicalAndSpec extends Spec with Matchers {
         val e2 = intercept[TestFailedException] {
           all (hiLists) should (be (List("hi", "hello")) and newContain newInOrderOnly ("HELLO", "HI"))
         }
-        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " was equal to " + decorateToStringValue(List("hi", "hello")) + ", but " + decorateToStringValue(List("hi", "hello")) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList("HELLO", "HI")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " was equal to " + decorateToStringValue(List("hi", "hello")) + ", but " + decorateToStringValue(List("hi", "hello")) + " did not contain only " + "(\"HELLO\", \"HI\")" + " in order", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
       
       def `should use an explicitly provided Equality` {
@@ -485,7 +484,7 @@ class ListShouldContainInOrderOnlyLogicalAndSpec extends Spec with Matchers {
         val e2 = intercept[TestFailedException] {
           (all (hiLists) should (be (List("hi", "hello")) and newContain newInOrderOnly ("HELLO", "HI"))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " was equal to " + decorateToStringValue(List("hi", "hello")) + ", but " + decorateToStringValue(List("hi", "hello")) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList("HELLO", "HI")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " was equal to " + decorateToStringValue(List("hi", "hello")) + ", but " + decorateToStringValue(List("hi", "hello")) + " did not contain only " + "(\"HELLO\", \"HI\")" + " in order", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
     }
     
@@ -500,22 +499,22 @@ class ListShouldContainInOrderOnlyLogicalAndSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           all (lists) should (not newContain newInOrderOnly (LinkedList(2, 3, 4)) and not newContain newInOrderOnly (LinkedList(8, 3, 4)))
         }
-        checkMessageStackDepth(e1, allErrMsg(2, decorateToStringValue(List(2, 3, 4)) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList(2, 3, 4)), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(2, decorateToStringValue(List(2, 3, 4)) + " contained only " + decorateToStringValue(LinkedList(2, 3, 4)) + " in order", thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
         
         val e2 = intercept[TestFailedException] {
           all (lists) should (not newContain newInOrderOnly (LinkedList(3, 6, 8)) and not newContain newInOrderOnly (LinkedList(2, 3, 4)))
         }
-        checkMessageStackDepth(e2, allErrMsg(2, decorateToStringValue(List(2, 3, 4)) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList(3, 6, 8)) + ", but " + decorateToStringValue(List(2, 3, 4)) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList(2, 3, 4)), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(2, decorateToStringValue(List(2, 3, 4)) + " did not contain only " + decorateToStringValue(LinkedList(3, 6, 8)) + " in order" + ", but " + decorateToStringValue(List(2, 3, 4)) + " contained only " + decorateToStringValue(LinkedList(2, 3, 4)) + " in order", thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
         
         val e3 = intercept[TestFailedException] {
           all (hiLists) should (not newContain newInOrderOnly (LinkedList("hi", "hello")) and not newContain newInOrderOnly (LinkedList("ho", "hey", "howdy")))
         }
-        checkMessageStackDepth(e3, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList("hi", "hello")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e3, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " contained only " + "(\"hi\", \"hello\")" + " in order", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
         
         val e4 = intercept[TestFailedException] {
           all (hiLists) should (not newContain newInOrderOnly (LinkedList("ho", "hey", "howdy")) and not newContain newInOrderOnly (LinkedList("hi", "hello")))
         }
-        checkMessageStackDepth(e4, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList("ho", "hey", "howdy")) + ", but " + decorateToStringValue(List("hi", "hello")) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList("hi", "hello")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e4, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " did not contain only " + decorateToStringValue(LinkedList("ho", "hey", "howdy")) + " in order" + ", but " + decorateToStringValue(List("hi", "hello")) + " contained only " + "(\"hi\", \"hello\")" + " in order", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
       
       def `should use the implicit Equality in scope` {
@@ -526,12 +525,12 @@ class ListShouldContainInOrderOnlyLogicalAndSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           all (hiLists) should (not newContain newInOrderOnly (LinkedList("HI", "HELLO")) and not newContain newInOrderOnly (LinkedList("HO")))
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList("HI", "HELLO")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " contained only " + "(\"HI\", \"HELLO\")" + " in order", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
         
         val e2 = intercept[TestFailedException] {
           all (hiLists) should (not newContain newInOrderOnly (LinkedList("HELLO", "HI")) and not newContain newInOrderOnly (LinkedList("HI", "HELLO")))
         }
-        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList("HELLO", "HI")) + ", but " + decorateToStringValue(List("hi", "hello")) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList("HI", "HELLO")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " did not contain only " + "(\"HELLO\", \"HI\")" + " in order" + ", but " + decorateToStringValue(List("hi", "hello")) + " contained only " + "(\"HI\", \"HELLO\")" + " in order", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
       
       def `should use an explicitly provided Equality` {
@@ -539,12 +538,12 @@ class ListShouldContainInOrderOnlyLogicalAndSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           (all (hiLists) should (not newContain newInOrderOnly (LinkedList("HI", "HELLO")) and not newContain newInOrderOnly (LinkedList("HO")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList("HI", "HELLO")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " contained only " + "(\"HI\", \"HELLO\")" + " in order", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
         
         val e2 = intercept[TestFailedException] {
           (all (hiLists) should (not newContain newInOrderOnly (LinkedList("HELLO", "HI")) and not newContain newInOrderOnly (LinkedList("HI", "HELLO")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList("HELLO", "HI")) + ", but " + decorateToStringValue(List("hi", "hello")) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList("HI", "HELLO")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " did not contain only " + "(\"HELLO\", \"HI\")" + " in order" + ", but " + decorateToStringValue(List("hi", "hello")) + " contained only " + "(\"HI\", \"HELLO\")" + " in order", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
     }
     
@@ -564,7 +563,7 @@ class ListShouldContainInOrderOnlyLogicalAndSpec extends Spec with Matchers {
         val e2 = intercept[TestFailedException] {
           all (lists) should (not be (List(3)) and not newContain newInOrderOnly (LinkedList(2, 3, 4)))
         }
-        checkMessageStackDepth(e2, allErrMsg(2, decorateToStringValue(List(2, 3, 4)) + " was not equal to " + decorateToStringValue(List(3)) + ", but " + decorateToStringValue(List(2, 3, 4)) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList(2, 3, 4)), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(2, decorateToStringValue(List(2, 3, 4)) + " was not equal to " + decorateToStringValue(List(3)) + ", but " + decorateToStringValue(List(2, 3, 4)) + " contained only " + decorateToStringValue(LinkedList(2, 3, 4)) + " in order", thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
         
         val e3 = intercept[TestFailedException] {
           all (hiLists) should (not be (List("hi", "hello")) and not newContain newInOrderOnly (LinkedList("ho", "hey", "howdy")))
@@ -574,7 +573,7 @@ class ListShouldContainInOrderOnlyLogicalAndSpec extends Spec with Matchers {
         val e4 = intercept[TestFailedException] {
           all (hiLists) should (not be (List("ho")) and not newContain newInOrderOnly (LinkedList("hi", "hello")))
         }
-        checkMessageStackDepth(e4, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " was not equal to " + decorateToStringValue(List("ho")) + ", but " + decorateToStringValue(List("hi", "hello")) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList("hi", "hello")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e4, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " was not equal to " + decorateToStringValue(List("ho")) + ", but " + decorateToStringValue(List("hi", "hello")) + " contained only " + "(\"hi\", \"hello\")" + " in order", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
       
       def `should use the implicit Equality in scope` {
@@ -590,7 +589,7 @@ class ListShouldContainInOrderOnlyLogicalAndSpec extends Spec with Matchers {
         val e2 = intercept[TestFailedException] {
           all (hiLists) should (not be (List("ho")) and not newContain newInOrderOnly (LinkedList("HI", "HELLO")))
         }
-        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " was not equal to " + decorateToStringValue(List("ho")) + ", but " + decorateToStringValue(List("hi", "hello")) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList("HI", "HELLO")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " was not equal to " + decorateToStringValue(List("ho")) + ", but " + decorateToStringValue(List("hi", "hello")) + " contained only " + "(\"HI\", \"HELLO\")" + " in order", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
       
       def `should use an explicitly provided Equality` {
@@ -603,9 +602,9 @@ class ListShouldContainInOrderOnlyLogicalAndSpec extends Spec with Matchers {
         val e2 = intercept[TestFailedException] {
           (all (hiLists) should (not be (List("ho")) and not newContain newInOrderOnly (LinkedList("HI", "HELLO")))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " was not equal to " + decorateToStringValue(List("ho")) + ", but " + decorateToStringValue(List("hi", "hello")) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList("HI", "HELLO")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " was not equal to " + decorateToStringValue(List("ho")) + ", but " + decorateToStringValue(List("hi", "hello")) + " contained only " + "(\"HI\", \"HELLO\")" + " in order", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
     }
-  }
 */
+  }
 }
