@@ -34,8 +34,8 @@ class ResultOfNewContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    * This method enables the following syntax: 
    *
    * <pre class="stHighlight">
-   * option should contain oneOf (1, 2)
-   *                       ^
+   * xs should contain oneOf (1, 2)
+   *                   ^
    * </pre>
    */
   def newOneOf(right: Any*)(implicit holder: Containing[L]) {
@@ -53,8 +53,8 @@ class ResultOfNewContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    * This method enables the following syntax: 
    *
    * <pre class="stHighlight">
-   * option should contain atLeastOneOf (1, 2)
-   *                       ^
+   * xs should contain atLeastOneOf (1, 2)
+   *                   ^
    * </pre>
    */
   def atLeastOneOf(right: Any*)(implicit aggregation: Aggregating[L]) {
@@ -72,8 +72,8 @@ class ResultOfNewContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    * This method enables the following syntax: 
    *
    * <pre class="stHighlight">
-   * option should contain noneOf (1, 2)
-   *                       ^
+   * xs should contain noneOf (1, 2)
+   *                   ^
    * </pre>
    */
   def newNoneOf(right: Any*)(implicit holder: Containing[L]) {
@@ -91,8 +91,8 @@ class ResultOfNewContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    * This method enables the following syntax: 
    *
    * <pre class="stHighlight">
-   * option should contain theSameElementsAs (1, 2)
-   *                       ^
+   * xs should contain theSameElementsAs (List(1, 2))
+   *                   ^
    * </pre>
    */
   def newTheSameElementsAs(right: GenTraversable[_])(implicit aggregation: Aggregating[L]) {
@@ -110,8 +110,8 @@ class ResultOfNewContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    * This method enables the following syntax: 
    *
    * <pre class="stHighlight">
-   * option should contain theSameElementsInOrderAs (1, 2)
-   *                       ^
+   * xs should contain theSameElementsInOrderAs (List(1, 2))
+   *                   ^
    * </pre>
    */
   def newTheSameElementsInOrderAs(right: GenTraversable[_])(implicit aggregation: Aggregating[L]) {
@@ -129,8 +129,8 @@ class ResultOfNewContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    * This method enables the following syntax: 
    *
    * <pre class="stHighlight">
-   * option should contain only (1, 2)
-   *                       ^
+   * xs should contain only (1, 2)
+   *                   ^
    * </pre>
    */
   def newOnly(right: Any*)(implicit aggregation: Aggregating[L]) {
@@ -138,6 +138,25 @@ class ResultOfNewContainWord[L](left: L, shouldBeTrue: Boolean = true) {
       throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "didNotContainOnlyElements" else "containedOnlyElements",
+          left,
+          UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
+        )
+      )
+  }
+
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * xs should contain inOrderOnly (1, 2)
+   *                   ^
+   * </pre>
+   */
+  def newInOrderOnly(right: Any*)(implicit aggregation: Aggregating[L]) {
+    if (aggregation.containsInOrderOnly(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "didNotContainInOrderOnlyElements" else "containedInOrderOnlyElements",
           left,
           UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
         )

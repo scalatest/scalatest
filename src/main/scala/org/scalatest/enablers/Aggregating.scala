@@ -28,9 +28,9 @@ trait Aggregating[A] {
   def containsTheSameElementsAs(aggregation: A, eles: GenTraversable[Any]): Boolean
   def containsTheSameElementsInOrderAs(aggregation: A, eles: GenTraversable[Any]): Boolean
   def containsOnly(aggregation: A, eles: Seq[Any]): Boolean
+  def containsInOrderOnly(aggregation: A, eles: Seq[Any]): Boolean
 /*  def containsAllOf(aggregation: A, eles: Seq[Any]): Boolean
   def containsAtMostOneOf(aggregation: A, eles: Seq[Any]): Boolean
-  def containsInOrderOnly(aggregation: A, eles: Seq[Any]): Boolean
 */
 }
 
@@ -104,7 +104,7 @@ object Aggregating {
     }
     checkEqual(left.toIterator, right.toIterator)
   }
-  
+
   private def checkOnly[T](left: GenTraversable[T], right: GenTraversable[Any], equality: Equality[T]): Boolean = {
     @tailrec
     def findNext(value: T, rightItr: Iterator[Any], processedSet: Set[Any]): Set[Any] = 
@@ -119,7 +119,7 @@ object Aggregating {
       }
       else
         processedSet
-   
+
     @tailrec
     def checkEqual(leftItr: Iterator[T], rightItr: Iterator[Any], processedSet: Set[Any]): Boolean = {
       if (leftItr.hasNext) {
@@ -140,6 +140,43 @@ object Aggregating {
     checkEqual(left.toIterator, right.toIterator, Set.empty)
   }
   
+  private def checkInOrderOnly[T](left: GenTraversable[T], right: GenTraversable[Any], equality: Equality[T]): Boolean = {
+  
+    @tailrec
+    def checkEqual(left: T, right: Any, leftItr: Iterator[T], rightItr: Iterator[Any]): Boolean = {
+      if (equality.areEqual(left, right)) { // The first time in, left must equal right
+        // Now need to iterate through the left while it is equal to the right
+        @tailrec
+        def checkNextLeftAgainstCurrentRight(): Option[T] = { // Returns first left that doesn't match the current right, or None, if all remaining lefts matched current right
+          if (leftItr.hasNext) {
+            val nextLeft = leftItr.next
+            if (equality.areEqual(nextLeft, right))
+              checkNextLeftAgainstCurrentRight()
+            else
+              Some(nextLeft)
+          }
+          else None // No more lefts
+        }
+        val nextLeftOption = checkNextLeftAgainstCurrentRight()
+        nextLeftOption match {
+          case Some(nextLeft) => 
+            if (rightItr.hasNext) {
+              checkEqual(nextLeft, rightItr.next, leftItr, rightItr)
+            }
+            else false
+          case None => !rightItr.hasNext // No more lefts remaining, so we're good so long as no more rights remaining either.
+        }
+      }
+      else false
+    }
+
+    val leftItr: Iterator[T] = left.toIterator
+    val rightItr: Iterator[Any] = right.toIterator
+    if (leftItr.hasNext && rightItr.hasNext)
+      checkEqual(leftItr.next, rightItr.next, leftItr, rightItr)
+    else left.isEmpty && right.isEmpty
+  }
+
   implicit def withGenTraversableElementEquality[E, TRAV[_] <: scala.collection.GenTraversable[_]](implicit equality: Equality[E]): Aggregating[TRAV[E]] = 
     new Aggregating[TRAV[E]] {
       def containsAtLeastOneOf(trav: TRAV[E], elements: scala.collection.Seq[Any]): Boolean = {
@@ -153,6 +190,9 @@ object Aggregating {
       }
       def containsOnly(trav: TRAV[E], elements: scala.collection.Seq[Any]): Boolean = {
         checkOnly[E](trav.asInstanceOf[GenTraversable[E]], elements, equality)
+      }
+      def containsInOrderOnly(trav: TRAV[E], elements: scala.collection.Seq[Any]): Boolean = {
+        checkInOrderOnly[E](trav.asInstanceOf[GenTraversable[E]], elements, equality)
       }
     }
 
@@ -172,6 +212,9 @@ object Aggregating {
         checkTheSameElementsInOrderAs[E](new ArrayWrapper(array), elements, equality)
       }
       def containsOnly(array: Array[E], elements: scala.collection.Seq[Any]): Boolean = {
+        throw new UnsupportedOperationException("Not Implemented")
+      }
+      def containsInOrderOnly(array: Array[E], elements: scala.collection.Seq[Any]): Boolean = {
         throw new UnsupportedOperationException("Not Implemented")
       }
     }
@@ -194,6 +237,9 @@ object Aggregating {
       def containsOnly(s: String, elements: scala.collection.Seq[Any]): Boolean = {
         throw new UnsupportedOperationException("Not Implemented")
       }
+      def containsInOrderOnly(s: String, elements: scala.collection.Seq[Any]): Boolean = {
+        throw new UnsupportedOperationException("Not Implemented")
+      }
     }
 
   implicit def convertEqualityToStringAggregating(equality: Equality[Char]): Aggregating[String] = 
@@ -211,6 +257,9 @@ object Aggregating {
         checkTheSameElementsInOrderAs(map.asInstanceOf[scala.collection.GenMap[K, V]], elements, equality)
       }
       def containsOnly(map: MAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
+        throw new UnsupportedOperationException("Not Implemented")
+      }
+      def containsInOrderOnly(map: MAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
         throw new UnsupportedOperationException("Not Implemented")
       }
     }
@@ -232,6 +281,9 @@ object Aggregating {
       def containsOnly(col: JCOL[E], elements: scala.collection.Seq[Any]): Boolean = {
         throw new UnsupportedOperationException("Not Implemented")
       }
+      def containsInOrderOnly(col: JCOL[E], elements: scala.collection.Seq[Any]): Boolean = {
+        throw new UnsupportedOperationException("Not Implemented")
+      }
     }
 
   implicit def convertEqualityToJavaCollectionAggregating[E, JCOL[_] <: java.util.Collection[_]](equality: Equality[E]): Aggregating[JCOL[E]] = 
@@ -249,6 +301,9 @@ object Aggregating {
         checkTheSameElementsInOrderAs(map.asInstanceOf[java.util.Map[K, V]].asScala, elements, equality)
       }
       def containsOnly(map: JMAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
+        throw new UnsupportedOperationException("Not Implemented")
+      }
+      def containsInOrderOnly(map: JMAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
         throw new UnsupportedOperationException("Not Implemented")
       }
     }

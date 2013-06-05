@@ -23,7 +23,7 @@ import FailureMessages.decorateToStringValue
 import scala.collection.mutable.LinkedList
 
 class ListShouldContainInOrderOnlySpec extends Spec with Matchers {
-  
+
   private def upperCase(value: Any): Any = 
     value match {
       case l: List[_] => l.map(upperCase(_))
@@ -32,12 +32,12 @@ class ListShouldContainInOrderOnlySpec extends Spec with Matchers {
       case (s1: String, s2: String) => (s1.toUpperCase, s2.toUpperCase)
       case _ => value
     }
-  
+
   val upperCaseStringEquality =
     new Equality[String] {
       def areEqual(a: String, b: Any): Boolean = upperCase(a) == upperCase(b)
     }
-  
+
   //ADDITIONAL//
 
   object `a List` {
@@ -45,17 +45,18 @@ class ListShouldContainInOrderOnlySpec extends Spec with Matchers {
     val fumList: List[String] = List("fum", "foe", "fie", "fee")
     val toList: List[String] = List("happy", "birthday", "to", "you")
 
-    object `when used with contain theSameElementsInOrderAs (..)` {
+    object `when used with contain inOrderOnly (..)` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        fumList should newContain newTheSameElementsInOrderAs LinkedList("fum", "foe", "fie", "fee")
+        fumList should newContain newInOrderOnly ("fum", "foe", "fie", "fee")
         val e1 = intercept[TestFailedException] {
-          fumList should newContain newTheSameElementsInOrderAs LinkedList("fee", "fie", "foe", "fum")
+          fumList should newContain newInOrderOnly ("fee", "fie", "foe", "fum")
         }
         e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("didNotContainSameElementsInOrder", decorateToStringValue(fumList), LinkedList("fee", "fie", "foe", "fum")))
+        e1.message.get should be (Resources("didNotContainInOrderOnlyElements", decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fum\""))
       }
+/*
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
         fumList should newContain newTheSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE")
@@ -73,8 +74,10 @@ class ListShouldContainInOrderOnlySpec extends Spec with Matchers {
         }
         (fumList should newContain newTheSameElementsInOrderAs LinkedList(" FUM ", " FOE ", " FIE ", " FEE ")) (after being lowerCased and trimmed)
       }
+*/
     }
 
+/*
     object `when used with (contain theSameElementsInOrderAs (..))` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
@@ -341,5 +344,6 @@ class ListShouldContainInOrderOnlySpec extends Spec with Matchers {
         }
       }
     }
+*/
   }
 }
