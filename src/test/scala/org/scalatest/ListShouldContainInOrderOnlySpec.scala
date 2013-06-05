@@ -75,7 +75,6 @@ class ListShouldContainInOrderOnlySpec extends Spec with Matchers {
       }
     }
 
-/*
     object `when used with (contain theSameElementsInOrderAs (..))` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
@@ -86,9 +85,10 @@ class ListShouldContainInOrderOnlySpec extends Spec with Matchers {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("didNotContainSameElementsInOrder", decorateToStringValue(fumList), LinkedList("fee", "fie", "foe", "fum")))
+        e1.message.get should be (Resources("didNotContainInOrderOnlyElements", decorateToStringValue(fumList),  "\"fee\", \"fie\", \"foe\", \"fum\""))
       }
 } // Move this down then delete
+/*
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
         fumList should (newContain newTheSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE"))

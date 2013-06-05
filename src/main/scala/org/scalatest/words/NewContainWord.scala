@@ -127,5 +127,22 @@ final class NewContainWord {
       }
     }
   }
+
+  def newInOrderOnly(right: Any*): MatcherFactory1[Any, Aggregating] = {
+    new MatcherFactory1[Any, Aggregating] {
+      def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+            MatchResult(
+              aggregating.containsInOrderOnly(left, right),
+              FailureMessages("didNotContainInOrderOnlyElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+              FailureMessages("containedInOrderOnlyElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+            )
+          }
+        }
+      }
+    }
+  }
+  // TODO: change aggregation: Aggregating to aggregating: Aggregating throughout, later when Chee Seng and Bill are not working in parallel on this file.
 }
 
