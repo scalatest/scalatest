@@ -169,7 +169,7 @@ class ListShouldContainInOrderOnlySpec extends Spec with Matchers {
 
     val list1s: Vector[List[Int]] = Vector( List(1, 2, 2, 3), List(1, 1, 2, 3, 3, 3), List(1, 2, 3))
     val lists: Vector[List[Int]] = Vector( List(1, 2, 2, 3, 3, 3), List(1, 1, 1, 2, 3), List(2, 2, 3, 4))
-    val listsNil: Vector[List[Int]] = Vector( List(1, 2, 3), List(1, 2, 3), Nil)
+    val listsNil: Vector[List[Int]] = Vector( List(1, 1, 1, 2, 2, 2, 3, 3, 3), List(1, 2, 2, 3), Nil)
     val hiLists: Vector[List[String]] = Vector( List("hi", "hi", "he"), List("hi", "he", "he", "he"), List("hi", "he"))
     val toLists: Vector[List[String]] = Vector( List("to", "you"), List("to", "you"), List("to", "you"))
 
@@ -187,7 +187,7 @@ class ListShouldContainInOrderOnlySpec extends Spec with Matchers {
         e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 2, " + decorateToStringValue(List(2, 2, 3, 4)) + " did not contain only " + "(1, 2, 3)" + " in order (ListShouldContainInOrderOnlySpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "  at index 2, " + decorateToStringValue(lists(2)) + " did not contain only " + "(1, 2, 3)" + " in order (ListShouldContainInOrderOnlySpec.scala:" + (thisLineNumber - 5) + ") \n" +
                                    "in " + decorateToStringValue(lists)))
 
         val e3 = intercept[TestFailedException] {
