@@ -701,7 +701,19 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
         )
       )
   }
-  
+
+  def newContain(only: ResultOfNewInOrderOnlyApplication)(implicit aggregating: Aggregating[T]) {
+    val right = only.right
+    if (aggregating.containsInOrderOnly(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "didNotContainInOrderOnlyElements" else "containedInOrderOnlyElements",
+          left,
+          UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
+        )
+      )
+  }
+  // TODO: Later change aggregation: Aggregating => aggregating: Aggregating everywhere, when we're not working in parallel
 }
 
 /**

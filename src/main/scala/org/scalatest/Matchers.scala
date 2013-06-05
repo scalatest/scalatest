@@ -2810,6 +2810,16 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    * This method enables the following syntax: 
    *
    * <pre class="stHighlight">
+   * List(1, 2, 3) should contain (inOrderOnly(1, 2))
+   *                               ^
+   * </pre>
+   */
+  def newInOrderOnly[T](xs: Any*) = new ResultOfNewInOrderOnlyApplication(xs)
+  
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
    * List(1, 2, 3) should contain (noneOf(1, 2))
    *                               ^
    * </pre>
