@@ -54,8 +54,8 @@ class ListShouldContainInOrderOnlyLogicalAndSpec extends Spec with Matchers {
 
   object `a List` {
 
-    val fumList: List[String] = List("fum", "foe", "fie", "fee")
-    val toList: List[String] = List("you", "to", "birthday", "happy")
+    val fumList: List[String] = List("fum", "fum", "foe", "fie", "fie", "fee")
+    val toList: List[String] = List("you", "you", "to", "birthday", "happy", "happy")
 
     object `when used with (contain inOrderOnly xx and contain inOrderOnly xx)` {
 
