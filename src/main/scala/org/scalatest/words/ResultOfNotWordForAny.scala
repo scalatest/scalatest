@@ -453,9 +453,9 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
    *                   ^
    * </pre>
    */
-  def contain(expectedElement: Any)(implicit holder: Containing[T]) {
+  def contain(expectedElement: Any)(implicit containing: Containing[T]) {
     val right = expectedElement
-    if (holder.contains(left, right) != shouldBeTrue) {
+    if (containing.contains(left, right) != shouldBeTrue) {
       throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "didNotContainExpectedElement" else "containedExpectedElement",
@@ -619,11 +619,11 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
     }
   }
 
-  def newContain(newOneOf: ResultOfNewOneOfApplication)(implicit holder: Containing[T]) {
+  def newContain(newOneOf: ResultOfNewOneOfApplication)(implicit containing: Containing[T]) {
 
     val right = newOneOf.right
 
-    if (holder.containsOneOf(left, right) != shouldBeTrue)
+    if (containing.containsOneOf(left, right) != shouldBeTrue)
       throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "didNotContainOneOfElements" else "containedOneOfElements",
@@ -633,11 +633,11 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
       )
   }
 
-  def newContain(atLeastOneOf: ResultOfAtLeastOneOfApplication)(implicit aggregation: Aggregating[T]) {
+  def newContain(atLeastOneOf: ResultOfAtLeastOneOfApplication)(implicit aggregating: Aggregating[T]) {
 
     val right = atLeastOneOf.right
 
-    if (aggregation.containsAtLeastOneOf(left, right) != shouldBeTrue)
+    if (aggregating.containsAtLeastOneOf(left, right) != shouldBeTrue)
       throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "didNotContainAtLeastOneOf" else "containedAtLeastOneOf",
@@ -647,11 +647,11 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
       )
   }
 
-  def newContain(noneOf: ResultOfNewNoneOfApplication)(implicit holder: Containing[T]) {
+  def newContain(noneOf: ResultOfNewNoneOfApplication)(implicit containing: Containing[T]) {
 
     val right = noneOf.right
 
-    if (holder.containsNoneOf(left, right) != shouldBeTrue)
+    if (containing.containsNoneOf(left, right) != shouldBeTrue)
       throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "containedOneOfElements" else "didNotContainOneOfElements",
@@ -661,11 +661,11 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
       )
   }
   
-  def newContain(theSameElementsAs: ResultOfNewTheSameElementsAsApplication)(implicit aggregation: Aggregating[T]) {
+  def newContain(theSameElementsAs: ResultOfNewTheSameElementsAsApplication)(implicit aggregating: Aggregating[T]) {
 
     val right = theSameElementsAs.right
 
-    if (aggregation.containsTheSameElementsAs(left, right) != shouldBeTrue)
+    if (aggregating.containsTheSameElementsAs(left, right) != shouldBeTrue)
       throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "didNotContainSameElements" else "containedSameElements",
@@ -675,11 +675,11 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
       )
   }
   
-  def newContain(theSameElementsInOrderAs: ResultOfNewTheSameElementsInOrderAsApplication)(implicit aggregation: Aggregating[T]) {
+  def newContain(theSameElementsInOrderAs: ResultOfNewTheSameElementsInOrderAsApplication)(implicit aggregating: Aggregating[T]) {
 
     val right = theSameElementsInOrderAs.right
 
-    if (aggregation.containsTheSameElementsInOrderAs(left, right) != shouldBeTrue)
+    if (aggregating.containsTheSameElementsInOrderAs(left, right) != shouldBeTrue)
       throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "didNotContainSameElementsInOrder" else "containedSameElementsInOrder",
@@ -689,10 +689,10 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
       )
   }
   
-  def newContain(only: ResultOfNewOnlyApplication)(implicit aggregation: Aggregating[T]) {
+  def newContain(only: ResultOfNewOnlyApplication)(implicit aggregating: Aggregating[T]) {
 
     val right = only.right
-    if (aggregation.containsOnly(left, right) != shouldBeTrue)
+    if (aggregating.containsOnly(left, right) != shouldBeTrue)
       throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "didNotContainOnlyElements" else "containedOnlyElements",
@@ -714,10 +714,10 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
       )
   }
   
-  def newContain(only: ResultOfNewAllOfApplication)(implicit aggregation: Aggregating[T]) {
+  def newContain(only: ResultOfNewAllOfApplication)(implicit aggregating: Aggregating[T]) {
 
     val right = only.right
-    if (aggregation.containsAllOf(left, right) != shouldBeTrue)
+    if (aggregating.containsAllOf(left, right) != shouldBeTrue)
       throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "didNotContainAllOfElements" else "containedAllOfElements",
@@ -726,8 +726,6 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
         )
       )
   }
-  
-  // TODO: Later change aggregation: Aggregating => aggregating: Aggregating everywhere, when we're not working in parallel
 }
 
 /**

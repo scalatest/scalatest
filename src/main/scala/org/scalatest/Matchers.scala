@@ -2379,7 +2379,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                               ^
      * </pre>
      */
-    def newOneOf(xs: Any*)(implicit holder: Containing[T]) = new ResultOfNewOneOfApplication(xs)
+    def newOneOf(xs: Any*)(implicit containing: Containing[T]) = new ResultOfNewOneOfApplication(xs)
 
     /**
      * This method enables the following syntax: 
@@ -3442,10 +3442,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                     ^
      * </pre>
      */
-    def contain(expectedElement: Any)(implicit holder: Containing[T]) {
+    def contain(expectedElement: Any)(implicit containing: Containing[T]) {
       doCollected(collected, xs, "contain", 1) { e =>
         val right = expectedElement
-        if ((holder.contains(e, right)) != shouldBeTrue) {
+        if ((containing.contains(e, right)) != shouldBeTrue) {
           throw newTestFailedException(
             FailureMessages(
               if (shouldBeTrue) "didNotContainExpectedElement" else "containedExpectedElement",
@@ -3467,12 +3467,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                     ^
      * </pre>
      */
-    def newContain(newOneOf: ResultOfNewOneOfApplication)(implicit holder: Containing[T]) {
+    def newContain(newOneOf: ResultOfNewOneOfApplication)(implicit containing: Containing[T]) {
 
       val right = newOneOf.right
 
       doCollected(collected, xs, "newContain", 1) { e =>
-        if (holder.containsOneOf(e, right) != shouldBeTrue)
+        if (containing.containsOneOf(e, right) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
               if (shouldBeTrue) "didNotContainOneOfElements" else "containedOneOfElements",
@@ -3493,12 +3493,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                     ^
      * </pre>
      */
-    def newContain(atLeastOneOf: ResultOfAtLeastOneOfApplication)(implicit aggregation: Aggregating[T]) {
+    def newContain(atLeastOneOf: ResultOfAtLeastOneOfApplication)(implicit aggregating: Aggregating[T]) {
 
       val right = atLeastOneOf.right
 
       doCollected(collected, xs, "newContain", 1) { e =>
-        if (aggregation.containsAtLeastOneOf(e, right) != shouldBeTrue)
+        if (aggregating.containsAtLeastOneOf(e, right) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
               if (shouldBeTrue) "didNotContainAtLeastOneOf" else "containedAtLeastOneOf",
@@ -3519,12 +3519,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                     ^
      * </pre>
      */
-    def newContain(newNoneOf: ResultOfNewNoneOfApplication)(implicit holder: Containing[T]) {
+    def newContain(newNoneOf: ResultOfNewNoneOfApplication)(implicit containing: Containing[T]) {
 
       val right = newNoneOf.right
 
       doCollected(collected, xs, "newContain", 1) { e =>
-        if (holder.containsNoneOf(e, right) != shouldBeTrue)
+        if (containing.containsNoneOf(e, right) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
               if (shouldBeTrue) "containedOneOfElements" else "didNotContainOneOfElements",
@@ -3545,12 +3545,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                     ^
      * </pre>
      */
-    def newContain(theSameElementsAs: ResultOfNewTheSameElementsAsApplication)(implicit aggregation: Aggregating[T]) {
+    def newContain(theSameElementsAs: ResultOfNewTheSameElementsAsApplication)(implicit aggregating: Aggregating[T]) {
 
       val right = theSameElementsAs.right
 
       doCollected(collected, xs, "newContain", 1) { e =>
-        if (aggregation.containsTheSameElementsAs(e, right) != shouldBeTrue)
+        if (aggregating.containsTheSameElementsAs(e, right) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
               if (shouldBeTrue) "didNotContainSameElements" else "containedSameElements",
@@ -3571,12 +3571,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                     ^
      * </pre>
      */
-    def newContain(theSameElementsInOrderAs: ResultOfNewTheSameElementsInOrderAsApplication)(implicit aggregation: Aggregating[T]) {
+    def newContain(theSameElementsInOrderAs: ResultOfNewTheSameElementsInOrderAsApplication)(implicit aggregating: Aggregating[T]) {
 
       val right = theSameElementsInOrderAs.right
 
       doCollected(collected, xs, "newContain", 1) { e =>
-        if (aggregation.containsTheSameElementsInOrderAs(e, right) != shouldBeTrue)
+        if (aggregating.containsTheSameElementsInOrderAs(e, right) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
               if (shouldBeTrue) "didNotContainSameElementsInOrder" else "containedSameElementsInOrder",
@@ -3597,12 +3597,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                     ^
      * </pre>
      */
-    def newContain(only: ResultOfNewOnlyApplication)(implicit aggregation: Aggregating[T]) {
+    def newContain(only: ResultOfNewOnlyApplication)(implicit aggregating: Aggregating[T]) {
 
       val right = only.right
 
       doCollected(collected, xs, "newContain", 1) { e =>
-        if (aggregation.containsOnly(e, right) != shouldBeTrue)
+        if (aggregating.containsOnly(e, right) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
               if (shouldBeTrue) "didNotContainOnlyElements" else "containedOnlyElements",
@@ -3649,12 +3649,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                     ^
      * </pre>
      */
-    def newContain(only: ResultOfNewAllOfApplication)(implicit aggregation: Aggregating[T]) {
+    def newContain(only: ResultOfNewAllOfApplication)(implicit aggregating: Aggregating[T]) {
 
       val right = only.right
 
       doCollected(collected, xs, "newContain", 1) { e =>
-        if (aggregation.containsAllOf(e, right) != shouldBeTrue)
+        if (aggregating.containsAllOf(e, right) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
               if (shouldBeTrue) "didNotContainAllOfElements" else "containedAllOfElements",
@@ -4072,9 +4072,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                       ^
      * </pre>
      */
-    def newOneOf(right: Any*)(implicit holder: Containing[T]) {
+    def newOneOf(right: Any*)(implicit containing: Containing[T]) {
       doCollected(collected, xs, "newOneOf", 1) { e =>
-        if (holder.containsOneOf(e, right) != shouldBeTrue)
+        if (containing.containsOneOf(e, right) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
               if (shouldBeTrue) "didNotContainOneOfElements" else "containedOneOfElements",
@@ -4095,9 +4095,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                       ^
      * </pre>
      */
-    def atLeastOneOf(right: Any*)(implicit aggregation: Aggregating[T]) {
+    def atLeastOneOf(right: Any*)(implicit aggregating: Aggregating[T]) {
       doCollected(collected, xs, "atLeastOneOf", 1) { e =>
-        if (aggregation.containsAtLeastOneOf(e, right) != shouldBeTrue)
+        if (aggregating.containsAtLeastOneOf(e, right) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
               if (shouldBeTrue) "didNotContainAtLeastOneOf" else "containedAtLeastOneOf",
@@ -4118,9 +4118,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                       ^
      * </pre>
      */
-    def newNoneOf(right: Any*)(implicit holder: Containing[T]) {
+    def newNoneOf(right: Any*)(implicit containing: Containing[T]) {
       doCollected(collected, xs, "newNoneOf", 1) { e =>
-        if (holder.containsNoneOf(e, right) != shouldBeTrue)
+        if (containing.containsNoneOf(e, right) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
               if (shouldBeTrue) "containedOneOfElements" else "didNotContainOneOfElements",
@@ -4141,9 +4141,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                       ^
      * </pre>
      */
-    def newTheSameElementsAs(right: GenTraversable[_])(implicit aggregation: Aggregating[T]) {
+    def newTheSameElementsAs(right: GenTraversable[_])(implicit aggregating: Aggregating[T]) {
       doCollected(collected, xs, "newTheSameElementsAs", 1) { e =>
-        if (aggregation.containsTheSameElementsAs(e, right) != shouldBeTrue)
+        if (aggregating.containsTheSameElementsAs(e, right) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
               if (shouldBeTrue) "didNotContainSameElements" else "containedSameElements",
@@ -4164,9 +4164,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                       ^
      * </pre>
      */
-    def newTheSameElementsInOrderAs(right: GenTraversable[_])(implicit aggregation: Aggregating[T]) {
+    def newTheSameElementsInOrderAs(right: GenTraversable[_])(implicit aggregating: Aggregating[T]) {
       doCollected(collected, xs, "newTheSameElementsInOrderAs", 1) { e =>
-        if (aggregation.containsTheSameElementsInOrderAs(e, right) != shouldBeTrue)
+        if (aggregating.containsTheSameElementsInOrderAs(e, right) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
               if (shouldBeTrue) "didNotContainSameElementsInOrder" else "containedSameElementsInOrder",
@@ -4187,9 +4187,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                       ^
      * </pre>
      */
-    def newOnly(right: Any*)(implicit aggregation: Aggregating[T]) {
+    def newOnly(right: Any*)(implicit aggregating: Aggregating[T]) {
       doCollected(collected, xs, "newOnly", 1) { e =>
-        if (aggregation.containsOnly(e, right) != shouldBeTrue)
+        if (aggregating.containsOnly(e, right) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
               if (shouldBeTrue) "didNotContainOnlyElements" else "containedOnlyElements",
@@ -4233,9 +4233,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                       ^
      * </pre>
      */
-    def newAllOf(right: Any*)(implicit aggregation: Aggregating[T]) {
+    def newAllOf(right: Any*)(implicit aggregating: Aggregating[T]) {
       doCollected(collected, xs, "newAllOf", 1) { e =>
-        if (aggregation.containsAllOf(e, right) != shouldBeTrue)
+        if (aggregating.containsAllOf(e, right) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
               if (shouldBeTrue) "didNotContainAllOfElements" else "containedAllOfElements",
@@ -4248,7 +4248,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
       }
     }
   }
-  // TODO: Change aggregation: Aggregating => aggregating: Aggregating
 
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="InspectorsMatchers.html"><code>InspectorsMatchers</code></a> for an overview of

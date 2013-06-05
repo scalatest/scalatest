@@ -778,9 +778,9 @@ final class NotWord {
       def matcher[U <: Any : Containing]: Matcher[U] = 
         new Matcher[U] {
           def apply(left: U): MatchResult = {
-            val holder = implicitly[Containing[U]]
+            val containing = implicitly[Containing[U]]
             MatchResult(
-              !holder.contains(left, expectedElement),
+              !containing.contains(left, expectedElement),
               FailureMessages("containedExpectedElement", left, expectedElement),
               FailureMessages("didNotContainExpectedElement", left, expectedElement)
             )
@@ -799,14 +799,14 @@ final class NotWord {
    */
   def newContain[T](oneOf: ResultOfNewOneOfApplication): MatcherFactory1[Any, Containing] = {
     new MatcherFactory1[Any, Containing] {
-      def matcher[T](implicit holder: Containing[T]): Matcher[T] = {
+      def matcher[T](implicit containing: Containing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
         
             val right = oneOf.right
 
             MatchResult(
-              !holder.containsOneOf(left, right),
+              !containing.containsOneOf(left, right),
               FailureMessages("containedOneOfElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
               FailureMessages("didNotContainOneOfElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
             )
@@ -826,14 +826,14 @@ final class NotWord {
    */
   def newContain[T](atLeastOneOf: ResultOfAtLeastOneOfApplication): MatcherFactory1[Any, Aggregating] = {
     new MatcherFactory1[Any, Aggregating] {
-      def matcher[T](implicit aggregation: Aggregating[T]): Matcher[T] = {
+      def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
         
             val right = atLeastOneOf.right
 
             MatchResult(
-              !aggregation.containsAtLeastOneOf(left, right),
+              !aggregating.containsAtLeastOneOf(left, right),
               FailureMessages("containedAtLeastOneOf", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
               FailureMessages("didNotContainAtLeastOneOf", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
             )
@@ -880,14 +880,14 @@ final class NotWord {
    */
   def newContain[T](theSameElementAs: ResultOfNewTheSameElementsAsApplication): MatcherFactory1[Any, Aggregating] = {
     new MatcherFactory1[Any, Aggregating] {
-      def matcher[T](implicit aggregation: Aggregating[T]): Matcher[T] = {
+      def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
         
             val right = theSameElementAs.right
 
             MatchResult(
-              !aggregation.containsTheSameElementsAs(left, right),
+              !aggregating.containsTheSameElementsAs(left, right),
               FailureMessages("containedSameElements", left, right),
               FailureMessages("didNotContainSameElements", left, right)
             )
@@ -907,14 +907,14 @@ final class NotWord {
    */
   def newContain[T](theSameElementInOrderAs: ResultOfNewTheSameElementsInOrderAsApplication): MatcherFactory1[Any, Aggregating] = {
     new MatcherFactory1[Any, Aggregating] {
-      def matcher[T](implicit aggregation: Aggregating[T]): Matcher[T] = {
+      def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
         
             val right = theSameElementInOrderAs.right
 
             MatchResult(
-              !aggregation.containsTheSameElementsInOrderAs(left, right),
+              !aggregating.containsTheSameElementsInOrderAs(left, right),
               FailureMessages("containedSameElementsInOrder", left, right),
               FailureMessages("didNotContainSameElementsInOrder", left, right)
             )
@@ -934,14 +934,14 @@ final class NotWord {
    */
   def newContain[T](only: ResultOfNewOnlyApplication): MatcherFactory1[Any, Aggregating] = {
     new MatcherFactory1[Any, Aggregating] {
-      def matcher[T](implicit aggregation: Aggregating[T]): Matcher[T] = {
+      def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
         
             val right = only.right
 
             MatchResult(
-              !aggregation.containsOnly(left, right),
+              !aggregating.containsOnly(left, right),
               FailureMessages("containedOnlyElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
               FailureMessages("didNotContainOnlyElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
             )
@@ -988,14 +988,14 @@ final class NotWord {
    */
   def newContain[T](only: ResultOfNewAllOfApplication): MatcherFactory1[Any, Aggregating] = {
     new MatcherFactory1[Any, Aggregating] {
-      def matcher[T](implicit aggregation: Aggregating[T]): Matcher[T] = {
+      def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
         
             val right = only.right
 
             MatchResult(
-              !aggregation.containsAllOf(left, right),
+              !aggregating.containsAllOf(left, right),
               FailureMessages("containedAllOfElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
               FailureMessages("didNotContainAllOfElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
             )
@@ -1005,8 +1005,6 @@ final class NotWord {
     }
   }
   
-  // TODO: change aggregation: Aggregating => aggregating: Aggregating, later
-
   /**
    * This method enables the following syntax: 
    *

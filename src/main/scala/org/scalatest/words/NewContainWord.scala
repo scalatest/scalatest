@@ -34,11 +34,11 @@ final class NewContainWord {
 
   def newOneOf(right: Any*): MatcherFactory1[Any, Containing] = {
     new MatcherFactory1[Any, Containing] {
-      def matcher[T](implicit holder: Containing[T]): Matcher[T] = {
+      def matcher[T](implicit containing: Containing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
             MatchResult(
-              holder.containsOneOf(left, right),
+              containing.containsOneOf(left, right),
               FailureMessages("didNotContainOneOfElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
               FailureMessages("containedOneOfElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
             )
@@ -50,11 +50,11 @@ final class NewContainWord {
 
   def atLeastOneOf(right: Any*): MatcherFactory1[Any, Aggregating] = {
     new MatcherFactory1[Any, Aggregating] {
-      def matcher[T](implicit aggregation: Aggregating[T]): Matcher[T] = {
+      def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
             MatchResult(
-              aggregation.containsAtLeastOneOf(left, right),
+              aggregating.containsAtLeastOneOf(left, right),
               FailureMessages("didNotContainAtLeastOneOf", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
               FailureMessages("containedAtLeastOneOf", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
             )
@@ -66,11 +66,11 @@ final class NewContainWord {
   
   def newNoneOf(right: Any*): MatcherFactory1[Any, Containing] = {
     new MatcherFactory1[Any, Containing] {
-      def matcher[T](implicit holder: Containing[T]): Matcher[T] = {
+      def matcher[T](implicit containing: Containing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
             MatchResult(
-              holder.containsNoneOf(left, right),
+              containing.containsNoneOf(left, right),
               FailureMessages("containedOneOfElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
               FailureMessages("didNotContainOneOfElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
             )
@@ -82,11 +82,11 @@ final class NewContainWord {
   
   def newTheSameElementsAs(right: GenTraversable[Any]): MatcherFactory1[Any, Aggregating] = {
     new MatcherFactory1[Any, Aggregating] {
-      def matcher[T](implicit aggregation: Aggregating[T]): Matcher[T] = {
+      def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
             MatchResult(
-              aggregation.containsTheSameElementsAs(left, right),
+              aggregating.containsTheSameElementsAs(left, right),
               FailureMessages("didNotContainSameElements", left, right),
               FailureMessages("containedSameElements", left, right)
             )
@@ -98,11 +98,11 @@ final class NewContainWord {
   
   def newTheSameElementsInOrderAs(right: GenTraversable[Any]): MatcherFactory1[Any, Aggregating] = {
     new MatcherFactory1[Any, Aggregating] {
-      def matcher[T](implicit aggregation: Aggregating[T]): Matcher[T] = {
+      def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
             MatchResult(
-              aggregation.containsTheSameElementsInOrderAs(left, right),
+              aggregating.containsTheSameElementsInOrderAs(left, right),
               FailureMessages("didNotContainSameElementsInOrder", left, right),
               FailureMessages("containedSameElementsInOrder", left, right)
             )
@@ -114,11 +114,11 @@ final class NewContainWord {
   
   def newOnly(right: Any*): MatcherFactory1[Any, Aggregating] = {
     new MatcherFactory1[Any, Aggregating] {
-      def matcher[T](implicit aggregation: Aggregating[T]): Matcher[T] = {
+      def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
             MatchResult(
-              aggregation.containsOnly(left, right),
+              aggregating.containsOnly(left, right),
               FailureMessages("didNotContainOnlyElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
               FailureMessages("containedOnlyElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
             )
@@ -146,11 +146,11 @@ final class NewContainWord {
   
   def newAllOf(right: Any*): MatcherFactory1[Any, Aggregating] = {
     new MatcherFactory1[Any, Aggregating] {
-      def matcher[T](implicit aggregation: Aggregating[T]): Matcher[T] = {
+      def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
             MatchResult(
-              aggregation.containsAllOf(left, right),
+              aggregating.containsAllOf(left, right),
               FailureMessages("didNotContainAllOfElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
               FailureMessages("containedAllOfElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
             )
@@ -159,6 +159,5 @@ final class NewContainWord {
       }
     }
   }
-  // TODO: change aggregation: Aggregating to aggregating: Aggregating throughout, later when Chee Seng and Bill are not working in parallel on this file.
 }
 
