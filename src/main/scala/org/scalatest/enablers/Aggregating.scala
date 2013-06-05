@@ -212,7 +212,7 @@ object Aggregating {
         checkTheSameElementsInOrderAs[E](new ArrayWrapper(array), elements, equality)
       }
       def containsOnly(array: Array[E], elements: scala.collection.Seq[Any]): Boolean = {
-        throw new UnsupportedOperationException("Not Implemented")
+        checkOnly(new ArrayWrapper(array), elements, equality)
       }
       def containsInOrderOnly(array: Array[E], elements: scala.collection.Seq[Any]): Boolean = {
         throw new UnsupportedOperationException("Not Implemented")
@@ -235,7 +235,7 @@ object Aggregating {
         checkTheSameElementsInOrderAs(s, elements, equality)
       }
       def containsOnly(s: String, elements: scala.collection.Seq[Any]): Boolean = {
-        throw new UnsupportedOperationException("Not Implemented")
+        checkOnly(s, elements, equality)
       }
       def containsInOrderOnly(s: String, elements: scala.collection.Seq[Any]): Boolean = {
         throw new UnsupportedOperationException("Not Implemented")
@@ -257,7 +257,7 @@ object Aggregating {
         checkTheSameElementsInOrderAs(map.asInstanceOf[scala.collection.GenMap[K, V]], elements, equality)
       }
       def containsOnly(map: MAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
-        throw new UnsupportedOperationException("Not Implemented")
+        checkOnly(map.asInstanceOf[scala.collection.GenMap[K, V]], elements, equality)
       }
       def containsInOrderOnly(map: MAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
         throw new UnsupportedOperationException("Not Implemented")
@@ -279,7 +279,7 @@ object Aggregating {
         checkTheSameElementsInOrderAs(col.asInstanceOf[java.util.Collection[E]].asScala, elements, equality)
       }
       def containsOnly(col: JCOL[E], elements: scala.collection.Seq[Any]): Boolean = {
-        throw new UnsupportedOperationException("Not Implemented")
+        checkOnly(col.asInstanceOf[java.util.Collection[E]].asScala, elements, equality)
       }
       def containsInOrderOnly(col: JCOL[E], elements: scala.collection.Seq[Any]): Boolean = {
         throw new UnsupportedOperationException("Not Implemented")
@@ -301,7 +301,7 @@ object Aggregating {
         checkTheSameElementsInOrderAs(map.asInstanceOf[java.util.Map[K, V]].asScala, elements, equality)
       }
       def containsOnly(map: JMAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
-        throw new UnsupportedOperationException("Not Implemented")
+        checkOnly(map.asInstanceOf[java.util.Map[K, V]].asScala, elements, equality)
       }
       def containsInOrderOnly(map: JMAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
         throw new UnsupportedOperationException("Not Implemented")
