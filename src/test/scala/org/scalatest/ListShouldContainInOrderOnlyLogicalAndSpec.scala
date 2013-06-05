@@ -98,7 +98,6 @@ class ListShouldContainInOrderOnlyLogicalAndSpec extends Spec with Matchers {
       }
     }
 
-/*
     object `when used with (equal xx and contain inOrderOnly xx)` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
@@ -123,7 +122,7 @@ class ListShouldContainInOrderOnlyLogicalAndSpec extends Spec with Matchers {
         val e2 = intercept[TestFailedException] {
           fumList should (equal (fumList) and (newContain newInOrderOnly ("FEE", "FIE", "FOE", "FAM")))
         }
-        checkMessageStackDepth(e2, Resources("equaled", decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", but " + Resources("didNotContainInOrderOnlyElements", decorateToStringValue(fumList), decorateToStringValue(LinkedList("FEE", "FIE", "FOE", "FAM"))), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, Resources("equaled", decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", but " + Resources("didNotContainInOrderOnlyElements", decorateToStringValue(fumList), "\"FEE\", \"FIE\", \"FOE\", \"FAM\""), fileName, thisLineNumber - 2)
       }
       
       def `should use an explicitly provided Equality` {
@@ -136,10 +135,11 @@ class ListShouldContainInOrderOnlyLogicalAndSpec extends Spec with Matchers {
           (fumList should (equal (fumList) and newContain newInOrderOnly ("FUM", "FOE", "FIE", "FEE"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(fumList)), fileName, thisLineNumber - 2)
-        (fumList should (equal (toList) and newContain newInOrderOnly Set(" FUM ", " FOE ", " FIE ", " FEE "))) (decided by invertedListOfStringEquality, after being lowerCased and trimmed)
+        (fumList should (equal (toList) and newContain newInOrderOnly (" FUM ", " FOE ", " FIE ", " FEE "))) (decided by invertedListOfStringEquality, after being lowerCased and trimmed)
       }
     }
     
+/*
     object `when used with (legacyEqual xx and contain inOrderOnly xx)` {
       
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
