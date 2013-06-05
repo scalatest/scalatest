@@ -59,6 +59,7 @@ import org.scalatest.words.ResultOfNewTheSameElementsAsApplication
 import org.scalatest.words.ResultOfNewTheSameElementsInOrderAsApplication
 import org.scalatest.words.ResultOfNewOnlyApplication
 import org.scalatest.words.ResultOfNewAllOfApplication
+import org.scalatest.words.ResultOfNewInOrderOnlyApplication
 
 /**
  * Trait extended by objects that can match a value of the specified type. The value to match is
@@ -1727,6 +1728,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def newContain(right: ResultOfNewOnlyApplication): MatcherFactory1[T with Any, Aggregating] =
+      outerInstance.and(MatcherWords.not.newContain(right))
+      
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * aMatcher and not contain inOrderOnly (8, 1, 2)
+     *                  ^
+     * </pre>
+     */
+    def newContain(right: ResultOfNewInOrderOnlyApplication): MatcherFactory1[T with Any, Aggregating] =
       outerInstance.and(MatcherWords.not.newContain(right))
       
     /**
