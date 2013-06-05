@@ -221,47 +221,47 @@ class ListShouldContainInOrderOnlyLogicalAndSpec extends Spec with Matchers {
       }
     }
     
-/*
     object `when used with (not contain inOrderOnly xx and not contain inOrderOnly xx)` {
       
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        fumList should (not newContain newInOrderOnly (LinkedList("fee", "fie", "foe", "fum")) and not newContain newInOrderOnly (LinkedList("fee", "fie", "foe", "fum")))
+        fumList should (not newContain newInOrderOnly ("fee", "fie", "foe", "fum") and not newContain newInOrderOnly ("fee", "fie", "foe", "fum"))
         val e1 = intercept[TestFailedException] {
-          fumList should (not newContain newInOrderOnly (LinkedList("fum", "foe", "fie", "fee")) and not newContain newInOrderOnly (LinkedList("happy", "birthday", "to", "you")))
+          fumList should (not newContain newInOrderOnly ("fum", "foe", "fie", "fee") and not newContain newInOrderOnly ("happy", "birthday", "to", "you"))
         }
         checkMessageStackDepth(e1, Resources("containedInOrderOnlyElements", decorateToStringValue(fumList), "\"fum\", \"foe\", \"fie\", \"fee\""), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          fumList should (not newContain newInOrderOnly (LinkedList("fee", "fie", "foe", "fum")) and not newContain newInOrderOnly (LinkedList("fum", "foe", "fie", "fee")))
+          fumList should (not newContain newInOrderOnly ("fee", "fie", "foe", "fum") and not newContain newInOrderOnly ("fum", "foe", "fie", "fee"))
         }
         checkMessageStackDepth(e2, Resources("didNotContainInOrderOnlyElements", decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fum\"") + ", but " + Resources("containedInOrderOnlyElements", decorateToStringValue(fumList), "\"fum\", \"foe\", \"fie\", \"fee\""), fileName, thisLineNumber - 2)
       }
       
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
-        fumList should (not newContain newInOrderOnly (LinkedList("FEE", "FIE", "FOE", "FUM")) and not newContain newInOrderOnly (LinkedList("FEE", "FIE", "FOE", "FUM")))
+        fumList should (not newContain newInOrderOnly ("FEE", "FIE", "FOE", "FUM") and not newContain newInOrderOnly ("FEE", "FIE", "FOE", "FUM"))
         val e1 = intercept[TestFailedException] {
-          fumList should (not newContain newInOrderOnly (LinkedList("FUM", "FOE", "FIE", "FEE")) and not newContain newInOrderOnly (LinkedList("FEE", "FIE", "FOE", "FUM")))
+          fumList should (not newContain newInOrderOnly ("FUM", "FOE", "FIE", "FEE") and not newContain newInOrderOnly ("FEE", "FIE", "FOE", "FUM"))
         }
         checkMessageStackDepth(e1, Resources("containedInOrderOnlyElements", decorateToStringValue(fumList), "\"FUM\", \"FOE\", \"FIE\", \"FEE\""), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          fumList should (not newContain newInOrderOnly (LinkedList("FEE", "FIE", "FOE", "FUM")) and (not newContain newInOrderOnly (LinkedList("FUM", "FOE", "FIE", "FEE"))))
+          fumList should (not newContain newInOrderOnly ("FEE", "FIE", "FOE", "FUM") and (not newContain newInOrderOnly ("FUM", "FOE", "FIE", "FEE")))
         }
         checkMessageStackDepth(e2, Resources("didNotContainInOrderOnlyElements", decorateToStringValue(fumList), "\"FEE\", \"FIE\", \"FOE\", \"FUM\"") + ", but " + Resources("containedInOrderOnlyElements", decorateToStringValue(fumList), "\"FUM\", \"FOE\", \"FIE\", \"FEE\""), fileName, thisLineNumber - 2)
       }
       
       def `should use an explicitly provided Equality` {
-        (fumList should (not newContain newInOrderOnly (LinkedList("FEE", "FIE", "FOE", "FUM")) and not newContain newInOrderOnly (LinkedList("FEE", "FIE", "FOE", "FUM")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+        (fumList should (not newContain newInOrderOnly ("FEE", "FIE", "FOE", "FUM") and not newContain newInOrderOnly ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (not newContain newInOrderOnly (LinkedList("FEE", "FIE", "FOE", "FUM")) and not newContain newInOrderOnly (LinkedList("FUM", "FOE", "FIE", "FEE")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (fumList should (not newContain newInOrderOnly ("FEE", "FIE", "FOE", "FUM") and not newContain newInOrderOnly ("FUM", "FOE", "FIE", "FEE"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources("didNotContainInOrderOnlyElements", decorateToStringValue(fumList), "\"FEE\", \"FIE\", \"FOE\", \"FUM\"") + ", but " + Resources("containedInOrderOnlyElements", decorateToStringValue(fumList), "\"FUM\", \"FOE\", \"FIE\", \"FEE\""), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          (fumList should (not newContain newInOrderOnly (LinkedList("FUM", "FOE", "FIE", "FEE")) and not newContain newInOrderOnly (LinkedList("FEE", "FIE", "FOE", "FUM")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (fumList should (not newContain newInOrderOnly ("FUM", "FOE", "FIE", "FEE") and not newContain newInOrderOnly ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, Resources("containedInOrderOnlyElements", decorateToStringValue(fumList), "\"FUM\", \"FOE\", \"FIE\", \"FEE\""), fileName, thisLineNumber - 2)
       }
     }
     
+/*
     object `when used with (not equal xx and not contain inOrderOnly xx)` {
       
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
