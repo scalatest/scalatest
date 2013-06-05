@@ -143,6 +143,22 @@ final class NewContainWord {
       }
     }
   }
+  
+  def newAllOf(right: Any*): MatcherFactory1[Any, Aggregating] = {
+    new MatcherFactory1[Any, Aggregating] {
+      def matcher[T](implicit aggregation: Aggregating[T]): Matcher[T] = {
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+            MatchResult(
+              aggregation.containsAllOf(left, right),
+              FailureMessages("didNotContainAllOfElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+              FailureMessages("containedAllOfElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+            )
+          }
+        }
+      }
+    }
+  }
   // TODO: change aggregation: Aggregating to aggregating: Aggregating throughout, later when Chee Seng and Bill are not working in parallel on this file.
 }
 

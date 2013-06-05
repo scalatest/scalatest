@@ -2827,6 +2827,16 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
   def noneOf[T](xs: T*)(implicit equality: Equality[T]) = 
     new NoneOfContainMatcher(xs, equality)
   
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * List(1, 2, 3) should contain (allOf(1, 2))
+   *                               ^
+   * </pre>
+   */
+  def newAllOf(xs: Any*) = new ResultOfNewAllOfApplication(xs)
+  
   // For safe keeping
   private implicit def nodeToCanonical(node: scala.xml.Node) = new Canonicalizer(node)
 
@@ -3630,6 +3640,32 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
           )
       }
     }
+    
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * all (xs) should not contain allOf ("one")
+     *                     ^
+     * </pre>
+     */
+    def newContain(only: ResultOfNewAllOfApplication)(implicit aggregation: Aggregating[T]) {
+
+      val right = only.right
+
+      doCollected(collected, xs, "newContain", 1) { e =>
+        if (aggregation.containsAllOf(e, right) != shouldBeTrue)
+          throw newTestFailedException(
+            FailureMessages(
+              if (shouldBeTrue) "didNotContainAllOfElements" else "containedAllOfElements",
+              e,
+              UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
+            ),
+            None,
+            6
+          )
+      }
+    }
   }
 
   /**
@@ -4180,6 +4216,29 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
           throw newTestFailedException(
             FailureMessages(
               if (shouldBeTrue) "didNotContainInOrderOnlyElements" else "containedInOrderOnlyElements",
+              e,
+              UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
+            ),
+            None,
+            6
+        )
+      }
+    }
+    
+    /**
+     * This method enables the following syntax: 
+     *
+     * <pre class="stHighlight">
+     * option should contain allOf (1, 2)
+     *                       ^
+     * </pre>
+     */
+    def newAllOf(right: Any*)(implicit aggregation: Aggregating[T]) {
+      doCollected(collected, xs, "newAllOf", 1) { e =>
+        if (aggregation.containsAllOf(e, right) != shouldBeTrue)
+          throw newTestFailedException(
+            FailureMessages(
+              if (shouldBeTrue) "didNotContainAllOfElements" else "containedAllOfElements",
               e,
               UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
             ),

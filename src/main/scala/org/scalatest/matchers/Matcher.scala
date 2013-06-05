@@ -58,6 +58,7 @@ import org.scalatest.words.ResultOfNewNoneOfApplication
 import org.scalatest.words.ResultOfNewTheSameElementsAsApplication
 import org.scalatest.words.ResultOfNewTheSameElementsInOrderAsApplication
 import org.scalatest.words.ResultOfNewOnlyApplication
+import org.scalatest.words.ResultOfNewAllOfApplication
 
 /**
  * Trait extended by objects that can match a value of the specified type. The value to match is
@@ -835,12 +836,12 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) and contain allOf (1, 2, 3))
+     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) and contain atLeastOneOf (1, 3, 3))
      *                                                                           ^
      * </pre>
      */
-    //def newAllOf[E](right: E*)(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
-      //outerInstance.and(MatcherWords.contain.allOf(right.toList: _*)(equality))
+    def newAllOf(right: Any*): MatcherFactory1[T with Any, Aggregating] = 
+      outerInstance.and(MatcherWords.newContain.newAllOf(right.toList: _*))
     
     /**
      * This method enables the following syntax:
@@ -1721,6 +1722,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
+     * collection should (contain theSameElementsAs (List(1, 2, 3)) and not contain allOf (List(8, 1, 2))) 
+     *                                                                      ^
+     * </pre>
+     */
+    def newContain(right: ResultOfNewAllOfApplication): MatcherFactory1[T with Any, Aggregating] =
+      outerInstance.and(MatcherWords.not.newContain(right))
+      
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
      * result should (not contain a negativeNumber and not contain a primeNumber)
      *                                                     ^
      * </pre>
@@ -2012,12 +2024,12 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) or contain allOf (1, 2, 3))
+     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) or contain allOf (1, 3, 3))
      *                                                                          ^
      * </pre>
      */
-    //def allOf[E](right: E*)(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
-      //outerInstance.or(MatcherWords.contain.allOf(right.toList: _*)(equality))
+    def newAllOf(right: Any*): MatcherFactory1[T with Any, Aggregating] = 
+      outerInstance.or(MatcherWords.newContain.newAllOf(right.toList: _*))
     
     /**
      * This method enables the following syntax:
@@ -2881,6 +2893,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def newContain(right: ResultOfNewOnlyApplication): MatcherFactory1[T with Any, Aggregating] =
+      outerInstance.or(MatcherWords.not.newContain(right))
+      
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * collection should (contain theSameElementsAs (List(1, 2, 3)) or not contain allOf (List(8, 1, 2))) 
+     *                                                                     ^
+     * </pre>
+     */
+    def newContain(right: ResultOfNewAllOfApplication): MatcherFactory1[T with Any, Aggregating] =
       outerInstance.or(MatcherWords.not.newContain(right))
       
     /**
