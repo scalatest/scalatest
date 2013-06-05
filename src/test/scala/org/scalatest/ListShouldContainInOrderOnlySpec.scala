@@ -75,10 +75,8 @@ class ListShouldContainInOrderOnlySpec extends Spec with Matchers {
       }
     }
 
-    object `when used with (contain theSameElementsInOrderAs (..))` {
-
+    object `when used with (contain inOrderOnly (..))` {
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-
         fumList should (newContain newInOrderOnly ("fum", "foe", "fie", "fee"))
         val e1 = intercept[TestFailedException] {
           fumList should (newContain newInOrderOnly ("fee", "fie", "foe", "fum"))
@@ -87,27 +85,26 @@ class ListShouldContainInOrderOnlySpec extends Spec with Matchers {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message.get should be (Resources("didNotContainInOrderOnlyElements", decorateToStringValue(fumList),  "\"fee\", \"fie\", \"foe\", \"fum\""))
       }
-} // Move this down then delete
-/*
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
-        fumList should (newContain newTheSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE"))
+        fumList should (newContain newInOrderOnly ("FUM", "FOE", "FIE", "FEE"))
         intercept[TestFailedException] {
-          fumList should (newContain newTheSameElementsInOrderAs LinkedList("fee", "fie", "foe", "fum"))
+          fumList should (newContain newInOrderOnly ("fee", "fie", "foe", "fum"))
         }
       }
       def `should use an explicitly provided Equality` {
-        (fumList should (newContain newTheSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE"))) (decided by upperCaseStringEquality)
+        (fumList should (newContain newInOrderOnly ("FUM", "FOE", "FIE", "FEE"))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (fumList should (newContain newTheSameElementsInOrderAs LinkedList("fee", "fie", "foe", "fum"))) (decided by upperCaseStringEquality)
+          (fumList should (newContain newInOrderOnly ("fee", "fie", "foe", "fum"))) (decided by upperCaseStringEquality)
         }
         intercept[TestFailedException] {
-          fumList should (newContain newTheSameElementsInOrderAs LinkedList(" FUM ", " FOE ", " FIE ", " FEE "))
+          fumList should (newContain newInOrderOnly (" FUM ", " FOE ", " FIE ", " FEE "))
         }
-        (fumList should (newContain newTheSameElementsInOrderAs LinkedList(" FUM ", " FOE ", " FIE ", " FEE "))) (after being lowerCased and trimmed)
+        (fumList should (newContain newInOrderOnly (" FUM ", " FOE ", " FIE ", " FEE "))) (after being lowerCased and trimmed)
       }
     }
 
+/*
     object `when used with not contain theSameElementsInOrderAs (..)` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
