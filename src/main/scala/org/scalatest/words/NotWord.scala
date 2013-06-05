@@ -950,6 +950,34 @@ final class NotWord {
       }
     }
   }
+  
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * Array(1, 2) should (not contain only (1, 2, 3) and not contain (3))
+   *                                 ^
+   * </pre>
+   */
+  def newContain[T](only: ResultOfNewInOrderOnlyApplication): MatcherFactory1[Any, Aggregating] = {
+    new MatcherFactory1[Any, Aggregating] {
+      def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+        
+            val right = only.right
+
+            MatchResult(
+              !aggregating.containsInOrderOnly(left, right),
+              FailureMessages("containedInOrderOnlyElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+              FailureMessages("didNotContainInOrderOnlyElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+            )
+          }
+        }
+      }
+    }
+  }
+  // TODO: change aggregation: Aggregating => aggregating: Aggregating, later
 
   /**
    * This method enables the following syntax: 

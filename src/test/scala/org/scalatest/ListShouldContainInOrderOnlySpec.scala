@@ -134,38 +134,38 @@ class ListShouldContainInOrderOnlySpec extends Spec with Matchers {
       }
     }
 
-/*
     object `when used with (not contain theSameElementsInOrderAs (..))` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        toList should (not newContain newTheSameElementsInOrderAs (LinkedList("you", "to", "birthday", "happy")))
+        toList should (not newContain newInOrderOnly ("you", "to", "birthday", "happy"))
         val e1 = intercept[TestFailedException] {
-          toList should (not newContain newTheSameElementsInOrderAs (LinkedList("happy", "birthday", "to", "you")))
+          toList should (not newContain newInOrderOnly ("happy", "birthday", "to", "you"))
         }
         e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("containedSameElementsInOrder", decorateToStringValue(toList), LinkedList("happy", "birthday", "to", "you")))
+        e1.message.get should be (Resources("containedInOrderOnlyElements", decorateToStringValue(toList), "\"happy\", \"birthday\", \"to\", \"you\""))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
-        toList should (not newContain newTheSameElementsInOrderAs (LinkedList("YOU", "TO", "BIRTHDAY", "HAPPY")))
+        toList should (not newContain newInOrderOnly ("YOU", "TO", "BIRTHDAY", "HAPPY"))
         intercept[TestFailedException] {
-          toList should (not newContain newTheSameElementsInOrderAs (LinkedList("HAPPY", "BIRTHDAY", "TO", "YOU")))
+          toList should (not newContain newInOrderOnly ("HAPPY", "BIRTHDAY", "TO", "YOU"))
         }
       }
       def `should use an explicitly provided Equality` {
-        (toList should (not newContain newTheSameElementsInOrderAs (LinkedList("YOU", "TO", "BIRTHDAY", "HAPPY")))) (decided by upperCaseStringEquality)
+        (toList should (not newContain newInOrderOnly ("YOU", "TO", "BIRTHDAY", "HAPPY"))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (toList should (not newContain newTheSameElementsInOrderAs (LinkedList("HAPPY", "BIRTHDAY", "TO", "YOU")))) (decided by upperCaseStringEquality)
+          (toList should (not newContain newInOrderOnly ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseStringEquality)
         }
-        toList should (not newContain newTheSameElementsInOrderAs (LinkedList(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))
+        toList should (not newContain newInOrderOnly (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
         intercept[TestFailedException] {
-          (toList should (not newContain newTheSameElementsInOrderAs (LinkedList(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))) (after being lowerCased and trimmed)
+          (toList should (not newContain newInOrderOnly (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
         }
       }
     }
   }
 
+/*
   object `a col of Lists` {
 
     val list1s: Vector[List[Int]] = Vector( List(1, 2, 3), List(1, 2, 3), List(1, 2, 3))
@@ -340,6 +340,6 @@ class ListShouldContainInOrderOnlySpec extends Spec with Matchers {
         }
       }
     }
-*/
   }
+*/
 }
