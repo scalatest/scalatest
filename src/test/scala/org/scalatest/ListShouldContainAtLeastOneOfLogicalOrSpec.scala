@@ -21,7 +21,7 @@ import org.scalautils.StringNormalizations._
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
 
-class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
+class ListShouldContainAtLeastOneOfLogicalOrSpec extends FreeSpec with Matchers {
   
   val invertedStringEquality =
     new Equality[String] {
@@ -37,14 +37,14 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
   
   val fileName: String = "ListShouldContainAtLeastOneOfLogicalOrSpec.scala"
   
-  object `a List` {
+  "a List" - {
     
     val fumList: List[String] = List("fum")
     val toList: List[String] = List("to")
     
-    object `when used with (contain oneOf (...) or contain oneOf (...)) syntax` {
+      "when used with (contain oneOf (...) or contain oneOf (...)) syntax" - {
       
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+        "should do nothing if valid, else throw a TFE with an appropriate error message" in {
         fumList should (newContain atLeastOneOf ("fee", "fie", "foe", "fum") or newContain atLeastOneOf("fie", "fee", "fum", "foe"))
         fumList should (newContain atLeastOneOf ("fee", "fie", "foe", "fam") or newContain atLeastOneOf("fie", "fee", "fum", "foe"))
         fumList should (newContain atLeastOneOf ("fee", "fie", "foe", "fum") or newContain atLeastOneOf("fie", "fee", "fam", "foe"))
@@ -54,7 +54,7 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
         checkMessageStackDepth(e1, Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fam\"") + ", and " + Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
       }
 
-      def `should use the implicit Equality in scope` {
+      "should use the implicit Equality in scope" in {
         implicit val ise = invertedStringEquality
         fumList should (newContain atLeastOneOf ("happy", "birthday", "to", "you") or newContain atLeastOneOf ("have", "a", "nice", "day"))
         fumList should (newContain atLeastOneOf ("happy", "birthday", "to", "you") or newContain atLeastOneOf ("fie", "fee", "fum", "foe"))
@@ -65,7 +65,7 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
         checkMessageStackDepth(e1, Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fum\", \"fum\", \"fum\", \"fum\"") + ", and " + Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fum\", \"fum\", \"fum\""), fileName, thisLineNumber - 2)
       }
       
-      def `should use an explicitly provided Equality` {
+      "should use an explicitly provided Equality" in {
         (fumList should (newContain atLeastOneOf ("happy", "birthday", "to", "you") or newContain atLeastOneOf ("have", "a", "nice", "day"))) (decided by invertedStringEquality, decided by invertedStringEquality)
         (fumList should (newContain atLeastOneOf ("happy", "birthday", "to", "you") or newContain atLeastOneOf ("fie", "fee", "fum", "foe"))) (decided by invertedStringEquality, decided by invertedStringEquality)
         (fumList should (newContain atLeastOneOf ("fie", "fee", "fum", "foe") or newContain atLeastOneOf ("have", "a", "nice", "day"))) (decided by invertedStringEquality, decided by invertedStringEquality)
@@ -77,9 +77,9 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
       }
     }
     
-    object `when used with (equal (...) and contain oneOf (...)) syntax` {
+    "when used with (equal (...) and contain oneOf (...)) syntax" - {
       
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      "should do nothing if valid, else throw a TFE with an appropriate error message" in {
         fumList should (equal (fumList) or newContain atLeastOneOf("fie", "fee", "fum", "foe"))
         fumList should (equal (toList) or newContain atLeastOneOf("fie", "fee", "fum", "foe"))
         fumList should (equal (fumList) or newContain atLeastOneOf("fie", "fee", "fam", "foe"))
@@ -89,7 +89,7 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
         checkMessageStackDepth(e1, Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", and " + Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
       }
       
-      def `should use the implicit Equality in scope` {
+      "should use the implicit Equality in scope" in {
         implicit val ise = invertedStringEquality
         fumList should (equal (fumList) or newContain atLeastOneOf ("have", "a", "nice", "day"))
         fumList should (equal (toList) or newContain atLeastOneOf ("have", "a", "nice", "day"))
@@ -100,7 +100,7 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
         checkMessageStackDepth(e1, Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", and " + Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fum\", \"fum\", \"fum\""), fileName, thisLineNumber - 2)
       }
       
-      def `should use an explicitly provided Equality` {
+      "should use an explicitly provided Equality" in {
         (fumList should (equal (toList) or newContain atLeastOneOf ("have", "a", "nice", "day"))) (decided by invertedListOfStringEquality, decided by invertedStringEquality)
         (fumList should (equal (fumList) or newContain atLeastOneOf ("have", "a", "nice", "day"))) (decided by invertedListOfStringEquality, decided by invertedStringEquality)
         (fumList should (equal (toList) or newContain atLeastOneOf ("fum", "fum", "fum"))) (decided by invertedListOfStringEquality, decided by invertedStringEquality)
@@ -112,9 +112,9 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
       }
     }
     
-    object `when used with (legacyEqual (...) and contain oneOf (...)) syntax` {
+    "when used with (legacyEqual (...) and contain oneOf (...)) syntax" - {
       
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      "should do nothing if valid, else throw a TFE with an appropriate error message" in {
         fumList should (legacyEqual (fumList) or newContain atLeastOneOf("fie", "fee", "fum", "foe"))
         fumList should (legacyEqual (toList) or newContain atLeastOneOf("fie", "fee", "fum", "foe"))
         fumList should (legacyEqual (fumList) or newContain atLeastOneOf("fie", "fee", "fam", "foe"))
@@ -124,7 +124,7 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
         checkMessageStackDepth(e1, Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", and " + Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
       }
       
-      def `should use the implicit Equality in scope` {
+      "should use the implicit Equality in scope" in {
         implicit val ise = invertedStringEquality
         fumList should (legacyEqual (fumList) or newContain atLeastOneOf ("have", "a", "nice", "day"))
         fumList should (legacyEqual (toList) or newContain atLeastOneOf ("have", "a", "nice", "day"))
@@ -135,7 +135,7 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
         checkMessageStackDepth(e1, Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", and " + Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fum\", \"fum\", \"fum\""), fileName, thisLineNumber - 2)
       }
       
-      def `should use an explicitly provided Equality` {
+      "should use an explicitly provided Equality" in {
         (fumList should (legacyEqual (fumList) or newContain atLeastOneOf ("have", "a", "nice", "day"))) (decided by invertedStringEquality)
         (fumList should (legacyEqual (toList) or newContain atLeastOneOf ("have", "a", "nice", "day"))) (decided by invertedStringEquality)
         (fumList should (legacyEqual (fumList) or newContain atLeastOneOf ("fum", "fum", "fum"))) (decided by invertedStringEquality)
@@ -147,9 +147,9 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
       }
     }
 
-    object `when used with (contain oneOf (...) and legacyEqual (...)) syntax` {
+    "when used with (contain oneOf (...) and legacyEqual (...)) syntax" - {
       
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      "should do nothing if valid, else throw a TFE with an appropriate error message" in {
         fumList should (newContain atLeastOneOf("fie", "fee", "fum", "foe") or legacyEqual (fumList))
         fumList should (newContain atLeastOneOf("fie", "fee", "fam", "foe") or legacyEqual (fumList))
         fumList should (newContain atLeastOneOf("fie", "fee", "fum", "foe") or legacyEqual (toList))
@@ -159,7 +159,7 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
         checkMessageStackDepth(e1, Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fam\"") + ", and " + Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
       }
       
-      def `should use the implicit Equality in scope` {
+      "should use the implicit Equality in scope" in {
         implicit val ise = invertedStringEquality
         fumList should (newContain atLeastOneOf ("have", "a", "nice", "day") or legacyEqual (fumList))
         fumList should (newContain atLeastOneOf ("fum", "fum", "fum") or legacyEqual (fumList))
@@ -170,7 +170,7 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
         checkMessageStackDepth(e1, Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fum\", \"fum\", \"fum\"") + ", and " + Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
       }
       
-      def `should use an explicitly provided Equality` {
+      "should use an explicitly provided Equality" in {
         (fumList should (newContain atLeastOneOf ("have", "a", "nice", "day") or legacyEqual (fumList))) (decided by invertedStringEquality)
         (fumList should (newContain atLeastOneOf ("fum", "fum", "fum") or legacyEqual (fumList))) (decided by invertedStringEquality)
         (fumList should (newContain atLeastOneOf ("have", "a", "nice", "day") or legacyEqual (toList))) (decided by invertedStringEquality)
@@ -182,9 +182,9 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
       }
     }
     
-    object `when used with (not contain oneOf (...) and not contain oneOf (...)) syntax` {
+    "when used with (not contain oneOf (...) and not contain oneOf (...)) syntax" - {
       
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      "should do nothing if valid, else throw a TFE with an appropriate error message" in {
         fumList should (not newContain atLeastOneOf ("fee", "fie", "foe", "fuu") or not newContain atLeastOneOf("fie", "fee", "fuu", "foe"))
         fumList should (not newContain atLeastOneOf ("fee", "fie", "foe", "fum") or not newContain atLeastOneOf("fie", "fee", "fuu", "foe"))
         fumList should (not newContain atLeastOneOf ("fee", "fie", "foe", "fuu") or not newContain atLeastOneOf("fie", "fee", "fum", "foe"))
@@ -194,7 +194,7 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
         checkMessageStackDepth(e1, Resources("containedAtLeastOneOf", decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fum\"") + ", and " + Resources("containedAtLeastOneOf", decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fum\""), fileName, thisLineNumber - 2)
       }
       
-      def `should use the implicit Equality in scope` {
+      "should use the implicit Equality in scope" in {
         implicit val ise = invertedStringEquality
         fumList should (not newContain atLeastOneOf ("fum", "fum", "fum", "fum") or not newContain atLeastOneOf ("fum", "fum", "fum"))
         fumList should (not newContain atLeastOneOf ("happy", "birthday", "to", "you") or not newContain atLeastOneOf ("fum", "fum", "fum"))
@@ -205,7 +205,7 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
         checkMessageStackDepth(e1, Resources("containedAtLeastOneOf", decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\"") + ", and " + Resources("containedAtLeastOneOf", decorateToStringValue(fumList), "\"have\", \"a\", \"nice\", \"day\""), fileName, thisLineNumber - 2)
       }
       
-      def `should use an explicitly provided Equality` {
+      "should use an explicitly provided Equality" in {
         (fumList should (not newContain atLeastOneOf ("fum", "fum", "fum", "fum") or not newContain atLeastOneOf ("fum", "fum", "fum"))) (decided by invertedStringEquality, decided by invertedStringEquality)
         (fumList should (not newContain atLeastOneOf ("happy", "birthday", "to", "you") or not newContain atLeastOneOf ("fum", "fum", "fum"))) (decided by invertedStringEquality, decided by invertedStringEquality)
         (fumList should (not newContain atLeastOneOf ("fum", "fum", "fum", "fum") or not newContain atLeastOneOf ("happy", "birthday", "to", "you"))) (decided by invertedStringEquality, decided by invertedStringEquality)
@@ -217,9 +217,9 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
       }
     }
     
-    object `when used with (not equal (...) and not contain oneOf (...)) syntax` {
+    "when used with (not equal (...) and not contain oneOf (...)) syntax" - {
       
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      "should do nothing if valid, else throw a TFE with an appropriate error message" in {
         fumList should (not equal (toList) or not newContain atLeastOneOf("fie", "fee", "fuu", "foe"))
         fumList should (not equal (fumList) or not newContain atLeastOneOf("fie", "fee", "fuu", "foe"))
         fumList should (not equal (toList) or not newContain atLeastOneOf("fie", "fee", "fum", "foe"))
@@ -229,7 +229,7 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
         checkMessageStackDepth(e1, Resources("equaled", decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", and " + Resources("containedAtLeastOneOf", decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fum\""), fileName, thisLineNumber - 2)
       }
       
-      def `should use the implicit Equality in scope` {
+      "should use the implicit Equality in scope" in {
         implicit val ise = invertedStringEquality
         fumList should (not equal (toList) or not newContain atLeastOneOf ("fum", "fum", "fum"))
         fumList should (not equal (fumList) or not newContain atLeastOneOf ("fum", "fum", "fum"))
@@ -240,7 +240,7 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
         checkMessageStackDepth(e2, Resources("equaled", decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", and " + Resources("containedAtLeastOneOf", decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
       }
       
-      def `should use an explicitly provided Equality` {
+      "should use an explicitly provided Equality" in {
         (fumList should (not equal (fumList) or not newContain atLeastOneOf ("fum", "fum", "fum"))) (decided by invertedListOfStringEquality, decided by invertedStringEquality)
         (fumList should (not equal (toList) or not newContain atLeastOneOf ("fum", "fum", "fum"))) (decided by invertedListOfStringEquality, decided by invertedStringEquality)
         (fumList should (not equal (fumList) or not newContain atLeastOneOf ("happy", "birthday", "to", "you"))) (decided by invertedListOfStringEquality, decided by invertedStringEquality)
@@ -252,9 +252,9 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
       }
     }
     
-    object `when used with (not be (...) and not contain oneOf (...)) syntax` {
+    "when used with (not be (...) and not contain oneOf (...)) syntax" - {
       
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      "should do nothing if valid, else throw a TFE with an appropriate error message" in {
         fumList should (not be (toList) or not newContain atLeastOneOf("fie", "fee", "fuu", "foe"))
         fumList should (not be (fumList) or not newContain atLeastOneOf("fie", "fee", "fuu", "foe"))
         fumList should (not be (toList) or not newContain atLeastOneOf("fee", "fie", "foe", "fum"))
@@ -264,7 +264,7 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
         checkMessageStackDepth(e1, Resources("wasEqualTo", decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", and " + Resources("containedAtLeastOneOf", decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fum\""), fileName, thisLineNumber - 2)
       }
       
-      def `should use the implicit Equality in scope` {
+      "should use the implicit Equality in scope" in {
         implicit val ise = invertedStringEquality
         fumList should (not be (toList) or not newContain atLeastOneOf ("fum", "fum", "fum"))
         fumList should (not be (fumList) or not newContain atLeastOneOf ("fum", "fum", "fum"))
@@ -275,7 +275,7 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
         checkMessageStackDepth(e1, Resources("wasEqualTo", decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", and " + Resources("containedAtLeastOneOf", decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
       }
       
-      def `should use an explicitly provided Equality` {
+      "should use an explicitly provided Equality" in {
         (fumList should (not be (toList) or not newContain atLeastOneOf ("fum", "fum", "fum"))) (decided by invertedStringEquality)
         (fumList should (not be (fumList) or not newContain atLeastOneOf ("fum", "fum", "fum"))) (decided by invertedStringEquality)
         (fumList should (not be (toList) or not newContain atLeastOneOf ("happy", "birthday", "to", "you"))) (decided by invertedStringEquality)
@@ -289,7 +289,7 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
     
   }
   
-  object `collection of Lists` {
+  "collection of Lists" - {
     
     val list1s: Vector[List[Int]] = Vector(List(1), List(1), List(1))
     val lists: Vector[List[Int]] = Vector(List(1), List(1), List(2))
@@ -303,9 +303,9 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
       "  at index " + index + ", " + message + " (" + fileName + ":" + (lineNumber) + ") \n" +
       "in " + left
     
-    object `when used with (contain oneOf (..) and contain oneOf (..)) syntax` {
+    "when used with (contain oneOf (..) and contain oneOf (..)) syntax" - {
       
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      "should do nothing if valid, else throw a TFE with an appropriate error message" in {
         all (list1s) should (newContain atLeastOneOf (3, 2, 1) or newContain atLeastOneOf (1, 3, 4))
         all (list1s) should (newContain atLeastOneOf (3, 2, 5) or newContain atLeastOneOf (1, 3, 4))
         all (list1s) should (newContain atLeastOneOf (3, 2, 1) or newContain atLeastOneOf (2, 3, 4))
@@ -320,7 +320,7 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
         checkMessageStackDepth(e1, allErrMsg(2, decorateToStringValue(List(2)) + " did not contain at least one of (6, 7, 8), and " + decorateToStringValue(List(2)) + " did not contain at least one of (1, 3, 4)", thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
       }
       
-      def `should use the implicit Equality in scope` {
+      "should use the implicit Equality in scope" in {
         implicit val ise = invertedStringEquality
         
         all (hiLists) should (newContain atLeastOneOf ("ho") or newContain atLeastOneOf ("he"))
@@ -333,7 +333,7 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("hi")) + " did not contain at least one of (\"hi\"), and " + decorateToStringValue(List("hi")) + " did not contain at least one of (\"hi\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
       
-      def `should use an explicitly provided Equality` {
+      "should use an explicitly provided Equality" in {
         (all (hiLists) should (newContain atLeastOneOf ("ho") or newContain atLeastOneOf ("ho"))) (decided by invertedStringEquality, decided by invertedStringEquality)
         (all (hiLists) should (newContain atLeastOneOf ("hi") or newContain atLeastOneOf ("ho"))) (decided by invertedStringEquality, decided by invertedStringEquality)
         (all (hiLists) should (newContain atLeastOneOf ("ho") or newContain atLeastOneOf ("hi"))) (decided by invertedStringEquality, decided by invertedStringEquality)
@@ -345,9 +345,9 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
       }
     }
     
-    object `when used with (be (...) and contain oneOf (...)) syntax` {
+    "when used with (be (...) and contain oneOf (...)) syntax" - {
       
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      "should do nothing if valid, else throw a TFE with an appropriate error message" in {
         all (list1s) should (be (List(1)) or newContain atLeastOneOf (1, 3, 4))
         all (list1s) should (be (List(2)) or newContain atLeastOneOf (1, 3, 4))
         all (list1s) should (be (List(1)) or newContain atLeastOneOf (2, 3, 4))
@@ -358,7 +358,7 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List(1)) + " was not equal to " + decorateToStringValue(List(2)) + ", and " + decorateToStringValue(List(1)) + " did not contain at least one of (2, 3, 8)", thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
       }
       
-      def `should use the implicit Equality in scope` {
+      "should use the implicit Equality in scope" in {
         implicit val ise = invertedStringEquality
         
         all (hiLists) should (be (List("hi")) or newContain atLeastOneOf ("he"))
@@ -371,7 +371,7 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("hi")) + " was not equal to " + decorateToStringValue(List("ho")) + ", and " + decorateToStringValue(List("hi")) + " did not contain at least one of (\"hi\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
       
-      def `should use an explicitly provided Equality` {
+      "should use an explicitly provided Equality" in {
         (all (hiLists) should (be (List("hi")) or newContain atLeastOneOf ("ho"))) (decided by invertedStringEquality)
         (all (hiLists) should (be (List("ho")) or newContain atLeastOneOf ("ho"))) (decided by invertedStringEquality)
         (all (hiLists) should (be (List("hi")) or newContain atLeastOneOf ("hi"))) (decided by invertedStringEquality)
@@ -383,9 +383,9 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
       }
     }
     
-    object `when used with (not contain oneOf (..) and not contain oneOf (..))` {
+    "when used with (not contain oneOf (..) and not contain oneOf (..))" - {
       
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      "should do nothing if valid, else throw a TFE with an appropriate error message" in {
         all (list1s) should (not newContain atLeastOneOf (3, 2, 8) or not newContain atLeastOneOf (8, 3, 4))
         all (list1s) should (not newContain atLeastOneOf (1, 2, 8) or not newContain atLeastOneOf (8, 3, 4))
         all (list1s) should (not newContain atLeastOneOf (3, 2, 8) or not newContain atLeastOneOf (8, 3, 1))
@@ -396,7 +396,7 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
         checkMessageStackDepth(e1, allErrMsg(2, decorateToStringValue(List(2)) + " contained at least one of (2, 6, 8), and " + decorateToStringValue(List(2)) + " contained at least one of (2, 3, 4)", thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
       }
       
-      def `should use the implicit Equality in scope` {
+      "should use the implicit Equality in scope" in {
         implicit val ise = invertedStringEquality
         
         all (hiLists) should (not newContain atLeastOneOf ("hi") or not newContain atLeastOneOf ("hi"))
@@ -409,7 +409,7 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("hi")) + " contained at least one of (\"ho\"), and " + decorateToStringValue(List("hi")) + " contained at least one of (\"ho\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
       
-      def `should use an explicitly provided Equality` {
+      "should use an explicitly provided Equality" in {
         (all (hiLists) should (not newContain atLeastOneOf ("hi") or not newContain atLeastOneOf ("hi"))) (decided by invertedStringEquality, decided by invertedStringEquality)
         (all (hiLists) should (not newContain atLeastOneOf ("ho") or not newContain atLeastOneOf ("hi"))) (decided by invertedStringEquality, decided by invertedStringEquality)
         (all (hiLists) should (not newContain atLeastOneOf ("hi") or not newContain atLeastOneOf ("ho"))) (decided by invertedStringEquality, decided by invertedStringEquality)
@@ -421,9 +421,9 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
       }
     }
     
-    object `when used with (not be (...) and not contain oneOf (...))` {
+    "when used with (not be (...) and not contain oneOf (...))" - {
       
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      "should do nothing if valid, else throw a TFE with an appropriate error message" in {
         all (list1s) should (not be (List(2)) or not newContain atLeastOneOf (8, 3, 4))
         all (list1s) should (not be (List(1)) or not newContain atLeastOneOf (8, 3, 4))
         all (list1s) should (not be (List(2)) or not newContain atLeastOneOf (8, 3, 1))
@@ -434,7 +434,7 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List(1)) + " was equal to " + decorateToStringValue(List(1)) + ", and " + decorateToStringValue(List(1)) + " contained at least one of (2, 3, 1)", thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
       }
       
-      def `should use the implicit Equality in scope` {
+      "should use the implicit Equality in scope" in {
         implicit val ise = invertedStringEquality
         
         all (hiLists) should (not be (List("ho")) or not newContain atLeastOneOf ("hi"))
@@ -447,7 +447,7 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends Spec with Matchers {
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("hi")) + " was equal to " + decorateToStringValue(List("hi")) + ", and " + decorateToStringValue(List("hi")) + " contained at least one of (\"ho\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
       
-      def `should use an explicitly provided Equality` {
+      "should use an explicitly provided Equality" in {
         (all (hiLists) should (not be (List("ho")) or not newContain atLeastOneOf ("hi"))) (decided by invertedStringEquality)
         (all (hiLists) should (not be (List("hi")) or not newContain atLeastOneOf ("hi"))) (decided by invertedStringEquality)
         (all (hiLists) should (not be (List("ho")) or not newContain atLeastOneOf ("ho"))) (decided by invertedStringEquality)

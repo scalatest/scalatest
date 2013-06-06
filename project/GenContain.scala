@@ -1061,7 +1061,7 @@ object GenContain {
     generateFile("ListShouldContainInOrderOnlyLogicalAndSpec.scala", "String", stringMapping: _*)
     generateFile("ListShouldContainInOrderOnlyLogicalOrSpec.scala", "String", stringMapping: _*)
       
-    // Generate tests for inOrderOnly
+    // Generate tests for inOrder
     generateFile("ListShouldContainInOrderSpec.scala", "Array", arrayMapping: _*)
     generateFile("ListShouldContainInOrderLogicalAndSpec.scala", "Array", arrayMapping: _*)
     generateFile("ListShouldContainInOrderLogicalOrSpec.scala", "Array", arrayMapping: _*)

@@ -392,6 +392,560 @@
       <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
     	<include name="org/scalatest/contain/*.scala"/>
       </scalac>
+<!--
+ <echo message="Compiling ArrayShouldContainAllOfLogicalAndSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/ArrayShouldContainAllOfLogicalAndSpec.scala"/>
+      </scalac>
+      <echo message="Compiling ArrayShouldContainAllOfLogicalOrSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/ArrayShouldContainAllOfLogicalOrSpec.scala"/>
+      </scalac>
+      <echo message="Compiling ArrayShouldContainAllOfSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/ArrayShouldContainAllOfSpec.scala"/>
+      </scalac>
+      <echo message="Compiling ArrayShouldContainAtLeastOneOfLogicalAndSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/ArrayShouldContainAtLeastOneOfLogicalAndSpec.scala"/>
+      </scalac>
+      <echo message="Compiling ArrayShouldContainAtLeastOneOfLogicalOrSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/ArrayShouldContainAtLeastOneOfLogicalOrSpec.scala"/>
+      </scalac>
+      <echo message="Compiling ArrayShouldContainAtLeastOneOfSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/ArrayShouldContainAtLeastOneOfSpec.scala"/>
+      </scalac>
+      <echo message="Compiling ArrayShouldContainInOrderLogicalAndSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/ArrayShouldContainInOrderLogicalAndSpec.scala"/>
+      </scalac>
+      <echo message="Compiling ArrayShouldContainInOrderLogicalOrSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/ArrayShouldContainInOrderLogicalOrSpec.scala"/>
+      </scalac>
+      <echo message="Compiling ArrayShouldContainInOrderOnlyLogicalAndSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/ArrayShouldContainInOrderOnlyLogicalAndSpec.scala"/>
+      </scalac>
+      <echo message="Compiling ArrayShouldContainInOrderOnlyLogicalOrSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/ArrayShouldContainInOrderOnlyLogicalOrSpec.scala"/>
+      </scalac>
+      <echo message="Compiling ArrayShouldContainInOrderOnlySpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/ArrayShouldContainInOrderOnlySpec.scala"/>
+      </scalac>
+      <echo message="Compiling ArrayShouldContainInOrderSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/ArrayShouldContainInOrderSpec.scala"/>
+      </scalac>
+      <echo message="Compiling ArrayShouldContainNoneOfLogicalAndSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/ArrayShouldContainNoneOfLogicalAndSpec.scala"/>
+      </scalac>
+      <echo message="Compiling ArrayShouldContainNoneOfLogicalOrSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/ArrayShouldContainNoneOfLogicalOrSpec.scala"/>
+      </scalac>
+      <echo message="Compiling ArrayShouldContainNoneOfSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/ArrayShouldContainNoneOfSpec.scala"/>
+      </scalac>
+      <echo message="Compiling ArrayShouldContainOneOfLogicalAndSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/ArrayShouldContainOneOfLogicalAndSpec.scala"/>
+      </scalac>
+      <echo message="Compiling ArrayShouldContainOneOfLogicalOrSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/ArrayShouldContainOneOfLogicalOrSpec.scala"/>
+      </scalac>
+      <echo message="Compiling ArrayShouldContainOneOfSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/ArrayShouldContainOneOfSpec.scala"/>
+      </scalac>
+      <echo message="Compiling ArrayShouldContainOnlyLogicalAndSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/ArrayShouldContainOnlyLogicalAndSpec.scala"/>
+      </scalac>
+      <echo message="Compiling ArrayShouldContainOnlyLogicalOrSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/ArrayShouldContainOnlyLogicalOrSpec.scala"/>
+      </scalac>
+      <echo message="Compiling ArrayShouldContainOnlySpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/ArrayShouldContainOnlySpec.scala"/>
+      </scalac>
+      <echo message="Compiling ArrayShouldContainTheSameElementsAsLogicalAndSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/ArrayShouldContainTheSameElementsAsLogicalAndSpec.scala"/>
+      </scalac>
+      <echo message="Compiling ArrayShouldContainTheSameElementsAsLogicalOrSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/ArrayShouldContainTheSameElementsAsLogicalOrSpec.scala"/>
+      </scalac>
+      <echo message="Compiling ArrayShouldContainTheSameElementsAsSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/ArrayShouldContainTheSameElementsAsSpec.scala"/>
+      </scalac>
+      <echo message="Compiling ArrayShouldContainTheSameElementsInOrderAsLogicalAndSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/ArrayShouldContainTheSameElementsInOrderAsLogicalAndSpec.scala"/>
+      </scalac>
+      <echo message="Compiling ArrayShouldContainTheSameElementsInOrderAsLogicalOrSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/ArrayShouldContainTheSameElementsInOrderAsLogicalOrSpec.scala"/>
+      </scalac>
+      <echo message="Compiling ArrayShouldContainTheSameElementsInOrderAsSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/ArrayShouldContainTheSameElementsInOrderAsSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaColShouldContainAllOfLogicalAndSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaColShouldContainAllOfLogicalAndSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaColShouldContainAllOfLogicalOrSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaColShouldContainAllOfLogicalOrSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaColShouldContainAllOfSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaColShouldContainAllOfSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaColShouldContainAtLeastOneOfLogicalAndSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaColShouldContainAtLeastOneOfLogicalAndSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaColShouldContainAtLeastOneOfLogicalOrSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaColShouldContainAtLeastOneOfLogicalOrSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaColShouldContainAtLeastOneOfSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaColShouldContainAtLeastOneOfSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaColShouldContainInOrderLogicalAndSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaColShouldContainInOrderLogicalAndSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaColShouldContainInOrderLogicalOrSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaColShouldContainInOrderLogicalOrSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaColShouldContainInOrderOnlyLogicalAndSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaColShouldContainInOrderOnlyLogicalAndSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaColShouldContainInOrderOnlyLogicalOrSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaColShouldContainInOrderOnlyLogicalOrSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaColShouldContainInOrderOnlySpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaColShouldContainInOrderOnlySpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaColShouldContainInOrderSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaColShouldContainInOrderSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaColShouldContainNoneOfLogicalAndSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaColShouldContainNoneOfLogicalAndSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaColShouldContainNoneOfLogicalOrSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaColShouldContainNoneOfLogicalOrSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaColShouldContainNoneOfSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaColShouldContainNoneOfSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaColShouldContainOneOfLogicalAndSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaColShouldContainOneOfLogicalAndSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaColShouldContainOneOfLogicalOrSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaColShouldContainOneOfLogicalOrSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaColShouldContainOneOfSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaColShouldContainOneOfSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaColShouldContainOnlyLogicalAndSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaColShouldContainOnlyLogicalAndSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaColShouldContainOnlyLogicalOrSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaColShouldContainOnlyLogicalOrSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaColShouldContainOnlySpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaColShouldContainOnlySpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaColShouldContainTheSameElementsAsLogicalAndSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaColShouldContainTheSameElementsAsLogicalAndSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaColShouldContainTheSameElementsAsLogicalOrSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaColShouldContainTheSameElementsAsLogicalOrSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaColShouldContainTheSameElementsAsSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaColShouldContainTheSameElementsAsSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaColShouldContainTheSameElementsInOrderAsLogicalAndSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaColShouldContainTheSameElementsInOrderAsLogicalAndSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaColShouldContainTheSameElementsInOrderAsLogicalOrSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaColShouldContainTheSameElementsInOrderAsLogicalOrSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaColShouldContainTheSameElementsInOrderAsSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaColShouldContainTheSameElementsInOrderAsSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaMapShouldContainAllOfLogicalAndSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaMapShouldContainAllOfLogicalAndSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaMapShouldContainAllOfLogicalOrSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaMapShouldContainAllOfLogicalOrSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaMapShouldContainAllOfSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaMapShouldContainAllOfSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaMapShouldContainAtLeastOneOfLogicalAndSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaMapShouldContainAtLeastOneOfLogicalAndSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaMapShouldContainAtLeastOneOfLogicalOrSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaMapShouldContainAtLeastOneOfLogicalOrSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaMapShouldContainAtLeastOneOfSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaMapShouldContainAtLeastOneOfSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaMapShouldContainInOrderLogicalAndSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaMapShouldContainInOrderLogicalAndSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaMapShouldContainInOrderLogicalOrSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaMapShouldContainInOrderLogicalOrSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaMapShouldContainInOrderOnlyLogicalAndSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaMapShouldContainInOrderOnlyLogicalAndSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaMapShouldContainInOrderOnlyLogicalOrSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaMapShouldContainInOrderOnlyLogicalOrSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaMapShouldContainInOrderOnlySpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaMapShouldContainInOrderOnlySpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaMapShouldContainInOrderSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaMapShouldContainInOrderSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaMapShouldContainNoneOfLogicalAndSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaMapShouldContainNoneOfLogicalAndSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaMapShouldContainNoneOfLogicalOrSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaMapShouldContainNoneOfLogicalOrSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaMapShouldContainNoneOfSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaMapShouldContainNoneOfSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaMapShouldContainOneOfLogicalAndSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaMapShouldContainOneOfLogicalAndSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaMapShouldContainOneOfLogicalOrSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaMapShouldContainOneOfLogicalOrSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaMapShouldContainOneOfSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaMapShouldContainOneOfSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaMapShouldContainOnlyLogicalAndSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaMapShouldContainOnlyLogicalAndSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaMapShouldContainOnlyLogicalOrSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaMapShouldContainOnlyLogicalOrSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaMapShouldContainOnlySpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaMapShouldContainOnlySpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaMapShouldContainTheSameElementsAsLogicalAndSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaMapShouldContainTheSameElementsAsLogicalAndSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaMapShouldContainTheSameElementsAsLogicalOrSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaMapShouldContainTheSameElementsAsLogicalOrSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaMapShouldContainTheSameElementsAsSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaMapShouldContainTheSameElementsAsSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaMapShouldContainTheSameElementsInOrderAsLogicalAndSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaMapShouldContainTheSameElementsInOrderAsLogicalAndSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaMapShouldContainTheSameElementsInOrderAsLogicalOrSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaMapShouldContainTheSameElementsInOrderAsLogicalOrSpec.scala"/>
+      </scalac>
+      <echo message="Compiling JavaMapShouldContainTheSameElementsInOrderAsSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/JavaMapShouldContainTheSameElementsInOrderAsSpec.scala"/>
+      </scalac>
+      <echo message="Compiling MapShouldContainAllOfLogicalAndSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/MapShouldContainAllOfLogicalAndSpec.scala"/>
+      </scalac>
+      <echo message="Compiling MapShouldContainAllOfLogicalOrSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/MapShouldContainAllOfLogicalOrSpec.scala"/>
+      </scalac>
+      <echo message="Compiling MapShouldContainAllOfSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/MapShouldContainAllOfSpec.scala"/>
+      </scalac>
+      <echo message="Compiling MapShouldContainAtLeastOneOfLogicalAndSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/MapShouldContainAtLeastOneOfLogicalAndSpec.scala"/>
+      </scalac>
+      <echo message="Compiling MapShouldContainAtLeastOneOfLogicalOrSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/MapShouldContainAtLeastOneOfLogicalOrSpec.scala"/>
+      </scalac>
+      <echo message="Compiling MapShouldContainAtLeastOneOfSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/MapShouldContainAtLeastOneOfSpec.scala"/>
+      </scalac>
+      <echo message="Compiling MapShouldContainInOrderLogicalAndSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/MapShouldContainInOrderLogicalAndSpec.scala"/>
+      </scalac>
+      <echo message="Compiling MapShouldContainInOrderLogicalOrSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/MapShouldContainInOrderLogicalOrSpec.scala"/>
+      </scalac>
+      <echo message="Compiling MapShouldContainInOrderOnlyLogicalAndSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/MapShouldContainInOrderOnlyLogicalAndSpec.scala"/>
+      </scalac>
+      <echo message="Compiling MapShouldContainInOrderOnlyLogicalOrSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/MapShouldContainInOrderOnlyLogicalOrSpec.scala"/>
+      </scalac>
+      <echo message="Compiling MapShouldContainInOrderOnlySpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/MapShouldContainInOrderOnlySpec.scala"/>
+      </scalac>
+      <echo message="Compiling MapShouldContainInOrderSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/MapShouldContainInOrderSpec.scala"/>
+      </scalac>
+      <echo message="Compiling MapShouldContainNoneOfLogicalAndSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/MapShouldContainNoneOfLogicalAndSpec.scala"/>
+      </scalac>
+      <echo message="Compiling MapShouldContainNoneOfLogicalOrSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/MapShouldContainNoneOfLogicalOrSpec.scala"/>
+      </scalac>
+      <echo message="Compiling MapShouldContainNoneOfSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/MapShouldContainNoneOfSpec.scala"/>
+      </scalac>
+      <echo message="Compiling MapShouldContainOneOfLogicalAndSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/MapShouldContainOneOfLogicalAndSpec.scala"/>
+      </scalac>
+      <echo message="Compiling MapShouldContainOneOfLogicalOrSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/MapShouldContainOneOfLogicalOrSpec.scala"/>
+      </scalac>
+      <echo message="Compiling MapShouldContainOneOfSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/MapShouldContainOneOfSpec.scala"/>
+      </scalac>
+      <echo message="Compiling MapShouldContainOnlyLogicalAndSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/MapShouldContainOnlyLogicalAndSpec.scala"/>
+      </scalac>
+      <echo message="Compiling MapShouldContainOnlyLogicalOrSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/MapShouldContainOnlyLogicalOrSpec.scala"/>
+      </scalac>
+      <echo message="Compiling MapShouldContainOnlySpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/MapShouldContainOnlySpec.scala"/>
+      </scalac>
+      <echo message="Compiling MapShouldContainTheSameElementsAsLogicalAndSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/MapShouldContainTheSameElementsAsLogicalAndSpec.scala"/>
+      </scalac>
+      <echo message="Compiling MapShouldContainTheSameElementsAsLogicalOrSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/MapShouldContainTheSameElementsAsLogicalOrSpec.scala"/>
+      </scalac>
+      <echo message="Compiling MapShouldContainTheSameElementsAsSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/MapShouldContainTheSameElementsAsSpec.scala"/>
+      </scalac>
+      <echo message="Compiling MapShouldContainTheSameElementsInOrderAsLogicalAndSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/MapShouldContainTheSameElementsInOrderAsLogicalAndSpec.scala"/>
+      </scalac>
+      <echo message="Compiling MapShouldContainTheSameElementsInOrderAsLogicalOrSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/MapShouldContainTheSameElementsInOrderAsLogicalOrSpec.scala"/>
+      </scalac>
+      <echo message="Compiling MapShouldContainTheSameElementsInOrderAsSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/MapShouldContainTheSameElementsInOrderAsSpec.scala"/>
+      </scalac>
+      <echo message="Compiling OptionShouldContainNoneOfLogicalAndSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/OptionShouldContainNoneOfLogicalAndSpec.scala"/>
+      </scalac>
+      <echo message="Compiling OptionShouldContainNoneOfLogicalOrSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/OptionShouldContainNoneOfLogicalOrSpec.scala"/>
+      </scalac>
+      <echo message="Compiling OptionShouldContainNoneOfSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/OptionShouldContainNoneOfSpec.scala"/>
+      </scalac>
+      <echo message="Compiling StringShouldContainAllOfLogicalAndSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/StringShouldContainAllOfLogicalAndSpec.scala"/>
+      </scalac>
+      <echo message="Compiling StringShouldContainAllOfLogicalOrSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/StringShouldContainAllOfLogicalOrSpec.scala"/>
+      </scalac>
+      <echo message="Compiling StringShouldContainAllOfSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/StringShouldContainAllOfSpec.scala"/>
+      </scalac>
+      <echo message="Compiling StringShouldContainAtLeastOneOfLogicalAndSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/StringShouldContainAtLeastOneOfLogicalAndSpec.scala"/>
+      </scalac>
+      <echo message="Compiling StringShouldContainAtLeastOneOfLogicalOrSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/StringShouldContainAtLeastOneOfLogicalOrSpec.scala"/>
+      </scalac>
+      <echo message="Compiling StringShouldContainAtLeastOneOfSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/StringShouldContainAtLeastOneOfSpec.scala"/>
+      </scalac>
+      <echo message="Compiling StringShouldContainInOrderLogicalAndSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/StringShouldContainInOrderLogicalAndSpec.scala"/>
+      </scalac>
+      <echo message="Compiling StringShouldContainInOrderLogicalOrSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/StringShouldContainInOrderLogicalOrSpec.scala"/>
+      </scalac>
+      <echo message="Compiling StringShouldContainInOrderOnlyLogicalAndSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/StringShouldContainInOrderOnlyLogicalAndSpec.scala"/>
+      </scalac>
+      <echo message="Compiling StringShouldContainInOrderOnlyLogicalOrSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/StringShouldContainInOrderOnlyLogicalOrSpec.scala"/>
+      </scalac>
+      <echo message="Compiling StringShouldContainInOrderOnlySpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/StringShouldContainInOrderOnlySpec.scala"/>
+      </scalac>
+      <echo message="Compiling StringShouldContainInOrderSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/StringShouldContainInOrderSpec.scala"/>
+      </scalac>
+      <echo message="Compiling StringShouldContainNoneOfLogicalAndSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/StringShouldContainNoneOfLogicalAndSpec.scala"/>
+      </scalac>
+      <echo message="Compiling StringShouldContainNoneOfLogicalOrSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/StringShouldContainNoneOfLogicalOrSpec.scala"/>
+      </scalac>
+      <echo message="Compiling StringShouldContainNoneOfSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/StringShouldContainNoneOfSpec.scala"/>
+      </scalac>
+      <echo message="Compiling StringShouldContainOneOfLogicalAndSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/StringShouldContainOneOfLogicalAndSpec.scala"/>
+      </scalac>
+      <echo message="Compiling StringShouldContainOneOfLogicalOrSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/StringShouldContainOneOfLogicalOrSpec.scala"/>
+      </scalac>
+      <echo message="Compiling StringShouldContainOneOfSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/StringShouldContainOneOfSpec.scala"/>
+      </scalac>
+      <echo message="Compiling StringShouldContainOnlyLogicalAndSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/StringShouldContainOnlyLogicalAndSpec.scala"/>
+      </scalac>
+      <echo message="Compiling StringShouldContainOnlyLogicalOrSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/StringShouldContainOnlyLogicalOrSpec.scala"/>
+      </scalac>
+      <echo message="Compiling StringShouldContainOnlySpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/StringShouldContainOnlySpec.scala"/>
+      </scalac>
+      <echo message="Compiling StringShouldContainTheSameElementsAsLogicalAndSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/StringShouldContainTheSameElementsAsLogicalAndSpec.scala"/>
+      </scalac>
+      <echo message="Compiling StringShouldContainTheSameElementsAsLogicalOrSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/StringShouldContainTheSameElementsAsLogicalOrSpec.scala"/>
+      </scalac>
+      <echo message="Compiling StringShouldContainTheSameElementsAsSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/StringShouldContainTheSameElementsAsSpec.scala"/>
+      </scalac>
+      <echo message="Compiling StringShouldContainTheSameElementsInOrderAsLogicalAndSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/StringShouldContainTheSameElementsInOrderAsLogicalAndSpec.scala"/>
+      </scalac>
+      <echo message="Compiling StringShouldContainTheSameElementsInOrderAsLogicalOrSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/StringShouldContainTheSameElementsInOrderAsLogicalOrSpec.scala"/>
+      </scalac>
+      <echo message="Compiling StringShouldContainTheSameElementsInOrderAsSpec.scala"/>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+         <include name="org/scalatest/contain/StringShouldContainTheSameElementsInOrderAsSpec.scala"/>
+      </scalac>
+-->
     </target>
 
     <target name="jartests" depends="compile">

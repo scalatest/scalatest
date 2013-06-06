@@ -22,7 +22,7 @@ import SharedHelpers._
 import FailureMessages.decorateToStringValue
 import scala.collection.mutable.LinkedList
 
-class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends Spec with Matchers {
+class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends FreeSpec with Matchers {
   
   val invertedStringEquality =
     new Equality[String] {
@@ -52,14 +52,14 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends Spec with M
   
   val fileName: String = "ListShouldContainTheSameElementsInOrderAsLogicalOrSpec.scala"
   
-  object `a List` {
+  "a List" - {
     
     val fumList: List[String] = List("fum", "foe", "fie", "fee")
     val toList: List[String] = List("you", "to", "birthday", "happy")
     
-    object `when used with (contain theSameElementsInOrderAs xx or contain theSameElementsInOrderAs xx)` {
+    "when used with (contain theSameElementsInOrderAs xx or contain theSameElementsInOrderAs xx)" - {
       
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      "should do nothing if valid, else throw a TFE with an appropriate error message" in {
         fumList should (newContain newTheSameElementsInOrderAs LinkedList("fum", "foe", "fie", "fee") or newContain newTheSameElementsInOrderAs LinkedList("fum", "foe", "fie", "fee"))
         fumList should (newContain newTheSameElementsInOrderAs LinkedList("fee", "fie", "foe", "fum") or newContain newTheSameElementsInOrderAs LinkedList("fum", "foe", "fie", "fee"))
         fumList should (newContain newTheSameElementsInOrderAs LinkedList("fum", "foe", "fie", "fee") or newContain newTheSameElementsInOrderAs LinkedList("fee", "fie", "foe", "fum"))
@@ -69,7 +69,7 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends Spec with M
         checkMessageStackDepth(e1, Resources("didNotContainSameElementsInOrder", decorateToStringValue(fumList), decorateToStringValue(LinkedList("fee", "fie", "foe", "fum"))) + ", and " + Resources("didNotContainSameElementsInOrder", decorateToStringValue(fumList), decorateToStringValue(LinkedList("happy", "birthday", "to", "you"))), fileName, thisLineNumber - 2)
       }
 
-      def `should use the implicit Equality in scope` {
+      "should use the implicit Equality in scope" in {
         implicit val ise = upperCaseStringEquality
         fumList should (newContain newTheSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE") or newContain newTheSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE"))
         fumList should (newContain newTheSameElementsInOrderAs LinkedList("FEE", "FIE", "FOE", "FUM") or newContain newTheSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE"))
@@ -80,7 +80,7 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends Spec with M
         checkMessageStackDepth(e1, Resources("didNotContainSameElementsInOrder", decorateToStringValue(fumList), decorateToStringValue(LinkedList("FEE", "FIE", "FOE", "FUM"))) + ", and " + Resources("didNotContainSameElementsInOrder", decorateToStringValue(fumList), decorateToStringValue(LinkedList("FIE", "FEE", "FAM", "FOE"))), fileName, thisLineNumber - 2)
       }
       
-      def `should use an explicitly provided Equality` {
+      "should use an explicitly provided Equality" in {
         (fumList should (newContain newTheSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE") or newContain newTheSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         (fumList should (newContain newTheSameElementsInOrderAs LinkedList("FEE", "FIE", "FOE", "FUM") or newContain newTheSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         (fumList should (newContain newTheSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE") or newContain newTheSameElementsInOrderAs LinkedList("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
@@ -92,9 +92,9 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends Spec with M
       }
     }
     
-    object `when used with (equal xx and contain theSameElementsInOrderAs xx)` {
+    "when used with (equal xx and contain theSameElementsInOrderAs xx)" - {
       
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      "should do nothing if valid, else throw a TFE with an appropriate error message" in {
         fumList should (equal (fumList) or newContain newTheSameElementsInOrderAs LinkedList("fum", "foe", "fie", "fee"))
         fumList should (equal (toList) or newContain newTheSameElementsInOrderAs LinkedList("fum", "foe", "fie", "fee"))
         fumList should (equal (fumList) or newContain newTheSameElementsInOrderAs LinkedList("fee", "fie", "foe", "fum"))
@@ -104,7 +104,7 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends Spec with M
         checkMessageStackDepth(e1, Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", and " + Resources("didNotContainSameElementsInOrder", decorateToStringValue(fumList), decorateToStringValue(LinkedList("fee", "fie", "foe", "fum"))), fileName, thisLineNumber - 2)
       }
       
-      def `should use the implicit Equality in scope` {
+      "should use the implicit Equality in scope" in {
         implicit val ise = upperCaseStringEquality
         fumList should (equal (fumList) or newContain newTheSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE"))
         fumList should (equal (toList) or newContain newTheSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE"))
@@ -115,7 +115,7 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends Spec with M
         checkMessageStackDepth(e1, Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", and " + Resources("didNotContainSameElementsInOrder", decorateToStringValue(fumList), decorateToStringValue(LinkedList("FEE", "FIE", "FOE", "FUM"))), fileName, thisLineNumber - 2)
       }
       
-      def `should use an explicitly provided Equality` {
+      "should use an explicitly provided Equality" in {
         (fumList should (equal (toList) or newContain newTheSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         (fumList should (equal (fumList) or newContain newTheSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         (fumList should (equal (toList) or newContain newTheSameElementsInOrderAs (LinkedList("FEE", "FIE", "FOE", "FUM")))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
@@ -127,9 +127,9 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends Spec with M
       }
     }
     
-    object `when used with (legacyEqual xx and contain theSameElementsInOrderAs xx)` {
+    "when used with (legacyEqual xx and contain theSameElementsInOrderAs xx)" - {
       
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      "should do nothing if valid, else throw a TFE with an appropriate error message" in {
         fumList should (legacyEqual (fumList) or newContain newTheSameElementsInOrderAs LinkedList("fum", "foe", "fie", "fee"))
         fumList should (legacyEqual (toList) or newContain newTheSameElementsInOrderAs LinkedList("fum", "foe", "fie", "fee"))
         fumList should (legacyEqual (fumList) or newContain newTheSameElementsInOrderAs LinkedList("fee", "fie", "foe", "fum"))
@@ -139,7 +139,7 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends Spec with M
         checkMessageStackDepth(e1, Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", and " + Resources("didNotContainSameElementsInOrder", decorateToStringValue(fumList), decorateToStringValue(LinkedList("fee", "fie", "foe", "fum"))), fileName, thisLineNumber - 2)
       }
       
-      def `should use the implicit Equality in scope` {
+      "should use the implicit Equality in scope" in {
         implicit val ise = upperCaseStringEquality
         fumList should (legacyEqual (fumList) or newContain newTheSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE"))
         fumList should (legacyEqual (toList) or newContain newTheSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE"))
@@ -150,7 +150,7 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends Spec with M
         checkMessageStackDepth(e1, Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", and " + Resources("didNotContainSameElementsInOrder", decorateToStringValue(fumList), decorateToStringValue(LinkedList("FEE", "FIE", "FOE", "FUM"))), fileName, thisLineNumber - 2)
       }
       
-      def `should use an explicitly provided Equality` {
+      "should use an explicitly provided Equality" in {
         (fumList should (legacyEqual (fumList) or newContain newTheSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE"))) (decided by upperCaseStringEquality)
         (fumList should (legacyEqual (toList) or newContain newTheSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE"))) (decided by upperCaseStringEquality)
         (fumList should (legacyEqual (fumList) or newContain newTheSameElementsInOrderAs LinkedList("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
@@ -162,9 +162,9 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends Spec with M
       }
     }
 
-    object `when used with (contain theSameElementsInOrderAs xx and legacyEqual xx)` {
+    "when used with (contain theSameElementsInOrderAs xx and legacyEqual xx)" - {
       
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      "should do nothing if valid, else throw a TFE with an appropriate error message" in {
         fumList should (newContain newTheSameElementsInOrderAs LinkedList("fum", "foe", "fie", "fee") or legacyEqual (fumList))
         fumList should (newContain newTheSameElementsInOrderAs LinkedList("fee", "fie", "foe", "fum") or legacyEqual (fumList))
         fumList should (newContain newTheSameElementsInOrderAs LinkedList("fum", "foe", "fie", "fee") or legacyEqual (toList))
@@ -174,7 +174,7 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends Spec with M
         checkMessageStackDepth(e1, Resources("didNotContainSameElementsInOrder", decorateToStringValue(fumList), decorateToStringValue(LinkedList("fee", "fie", "foe", "fum"))) + ", and " + Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
       }
       
-      def `should use the implicit Equality in scope` {
+      "should use the implicit Equality in scope" in {
         implicit val ise = upperCaseStringEquality
         fumList should (newContain newTheSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE") or legacyEqual (fumList))
         fumList should (newContain newTheSameElementsInOrderAs LinkedList("FEE", "FIE", "FOE", "FUM") or legacyEqual (fumList))
@@ -185,7 +185,7 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends Spec with M
         checkMessageStackDepth(e1, Resources("didNotContainSameElementsInOrder", decorateToStringValue(fumList), decorateToStringValue(LinkedList("FEE", "FIE", "FOE", "FUM"))) + ", and " + Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
       }
       
-      def `should use an explicitly provided Equality` {
+      "should use an explicitly provided Equality" in {
         (fumList should (newContain newTheSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE") or legacyEqual (fumList))) (decided by upperCaseStringEquality)
         (fumList should (newContain newTheSameElementsInOrderAs LinkedList("FEE", "FIE", "FOE", "FUM") or legacyEqual (fumList))) (decided by upperCaseStringEquality)
         (fumList should (newContain newTheSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE") or legacyEqual (toList))) (decided by upperCaseStringEquality)
@@ -197,9 +197,9 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends Spec with M
       }
     }
     
-    object `when used with (not contain theSameElementsInOrderAs xx and not contain theSameElementsInOrderAs xx)` {
+    "when used with (not contain theSameElementsInOrderAs xx and not contain theSameElementsInOrderAs xx)" - {
       
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      "should do nothing if valid, else throw a TFE with an appropriate error message" in {
         fumList should (not newContain newTheSameElementsInOrderAs (LinkedList("fee", "fie", "foe", "fum")) or not newContain newTheSameElementsInOrderAs (LinkedList("fee", "fie", "foe", "fum")))
         fumList should (not newContain newTheSameElementsInOrderAs (LinkedList("fum", "foe", "fie", "fee")) or not newContain newTheSameElementsInOrderAs (LinkedList("fee", "fie", "foe", "fum")))
         fumList should (not newContain newTheSameElementsInOrderAs (LinkedList("fee", "fie", "foe", "fum")) or not newContain newTheSameElementsInOrderAs (LinkedList("fum", "foe", "fie", "fee")))
@@ -209,7 +209,7 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends Spec with M
         checkMessageStackDepth(e1, Resources("containedSameElementsInOrder", decorateToStringValue(fumList), decorateToStringValue(LinkedList("fum", "foe", "fie", "fee"))) + ", and " + Resources("containedSameElementsInOrder", decorateToStringValue(fumList), decorateToStringValue(LinkedList("fum", "foe", "fie", "fee"))), fileName, thisLineNumber - 2)
       }
       
-      def `should use the implicit Equality in scope` {
+      "should use the implicit Equality in scope" in {
         implicit val ise = upperCaseStringEquality
         fumList should (not newContain newTheSameElementsInOrderAs (LinkedList("FEE", "FIE", "FOE", "FUM")) or not newContain newTheSameElementsInOrderAs (LinkedList("FEE", "FIE", "FOE", "FUM")))
         fumList should (not newContain newTheSameElementsInOrderAs (LinkedList("FUM", "FOE", "FIE", "FEE")) or not newContain newTheSameElementsInOrderAs (LinkedList("FEE", "FIE", "FOE", "FUM")))
@@ -220,7 +220,7 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends Spec with M
         checkMessageStackDepth(e1, Resources("containedSameElementsInOrder", decorateToStringValue(fumList), decorateToStringValue(LinkedList("FUM", "FOE", "FIE", "FEE"))) + ", and " + Resources("containedSameElementsInOrder", decorateToStringValue(fumList), decorateToStringValue(LinkedList("FUM", "FOE", "FIE", "FEE"))), fileName, thisLineNumber - 2)
       }
       
-      def `should use an explicitly provided Equality` {
+      "should use an explicitly provided Equality" in {
         (fumList should (not newContain newTheSameElementsInOrderAs (LinkedList("FEE", "FIE", "FOE", "FUM")) or not newContain newTheSameElementsInOrderAs (LinkedList("FEE", "FIE", "FOE", "FUM")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         (fumList should (not newContain newTheSameElementsInOrderAs (LinkedList("FUM", "FOE", "FIE", "FEE")) or not newContain newTheSameElementsInOrderAs (LinkedList("FEE", "FIE", "FOE", "FUM")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         (fumList should (not newContain newTheSameElementsInOrderAs (LinkedList("FEE", "FIE", "FOE", "FUM")) or not newContain newTheSameElementsInOrderAs (LinkedList("FUM", "FOE", "FIE", "FEE")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
@@ -231,9 +231,9 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends Spec with M
       }
     }
     
-    object `when used with (not equal xx and not contain theSameElementsInOrderAs xx)` {
+    "when used with (not equal xx and not contain theSameElementsInOrderAs xx)" - {
       
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      "should do nothing if valid, else throw a TFE with an appropriate error message" in {
         fumList should (not equal (toList) or not newContain newTheSameElementsInOrderAs (LinkedList("fee", "fie", "foe", "fum")))
         fumList should (not equal (fumList) or not newContain newTheSameElementsInOrderAs (LinkedList("fee", "fie", "foe", "fum")))
         fumList should (not equal (toList) or not newContain newTheSameElementsInOrderAs (LinkedList("fum", "foe", "fie", "fee")))
@@ -243,7 +243,7 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends Spec with M
         checkMessageStackDepth(e1, Resources("equaled", decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", and " + Resources("containedSameElementsInOrder", decorateToStringValue(fumList), decorateToStringValue(LinkedList("fum", "foe", "fie", "fee"))), fileName, thisLineNumber - 2)
       }
       
-      def `should use the implicit Equality in scope` {
+      "should use the implicit Equality in scope" in {
         implicit val ise = upperCaseStringEquality
         fumList should (not equal (toList) or not newContain newTheSameElementsInOrderAs (LinkedList("FEE", "FIE", "FOE", "FUM")))
         fumList should (not equal (fumList) or not newContain newTheSameElementsInOrderAs (LinkedList("FEE", "FIE", "FOE", "FUM")))
@@ -254,7 +254,7 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends Spec with M
         checkMessageStackDepth(e2, Resources("equaled", decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", and " + Resources("containedSameElementsInOrder", decorateToStringValue(fumList), decorateToStringValue(LinkedList("FUM", "FOE", "FIE", "FEE"))), fileName, thisLineNumber - 2)
       }
       
-      def `should use an explicitly provided Equality` {
+      "should use an explicitly provided Equality" in {
         (fumList should (not equal (fumList) or not newContain newTheSameElementsInOrderAs (LinkedList("FEE", "FIE", "FOE", "FUM")))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         (fumList should (not equal (toList) or not newContain newTheSameElementsInOrderAs (LinkedList("FEE", "FIE", "FOE", "FUM")))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         (fumList should (not equal (fumList) or not newContain newTheSameElementsInOrderAs (LinkedList("FUM", "FOE", "FIE", "FEE")))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
@@ -265,9 +265,9 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends Spec with M
       }
     }
     
-    object `when used with (not be xx and not contain theSameElementsInOrderAs xx)` {
+    "when used with (not be xx and not contain theSameElementsInOrderAs xx)" - {
       
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      "should do nothing if valid, else throw a TFE with an appropriate error message" in {
         fumList should (not be (toList) or not newContain newTheSameElementsInOrderAs (LinkedList("fee", "fie", "foe", "fum")))
         fumList should (not be (fumList) or not newContain newTheSameElementsInOrderAs (LinkedList("fee", "fie", "foe", "fum")))
         fumList should (not be (toList) or not newContain newTheSameElementsInOrderAs (LinkedList("fum", "foe", "fie", "fee")))
@@ -277,7 +277,7 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends Spec with M
         checkMessageStackDepth(e1, Resources("wasEqualTo", decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", and " + Resources("containedSameElementsInOrder", decorateToStringValue(fumList), decorateToStringValue(LinkedList("fum", "foe", "fie", "fee"))), fileName, thisLineNumber - 2)
       }
       
-      def `should use the implicit Equality in scope` {
+      "should use the implicit Equality in scope" in {
         implicit val ise = upperCaseStringEquality
         fumList should (not be (toList) or not newContain newTheSameElementsInOrderAs (LinkedList("FEE", "FIE", "FOE", "FUM")))
         fumList should (not be (fumList) or not newContain newTheSameElementsInOrderAs (LinkedList("FEE", "FIE", "FOE", "FUM")))
@@ -288,7 +288,7 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends Spec with M
         checkMessageStackDepth(e1, Resources("wasEqualTo", decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", and " + Resources("containedSameElementsInOrder", decorateToStringValue(fumList), decorateToStringValue(LinkedList("FUM", "FOE", "FIE", "FEE"))), fileName, thisLineNumber - 2)
       }
       
-      def `should use an explicitly provided Equality` {
+      "should use an explicitly provided Equality" in {
         (fumList should (not be (toList) or not newContain newTheSameElementsInOrderAs (LinkedList("FEE", "FIE", "FOE", "FUM")))) (decided by upperCaseStringEquality)
         (fumList should (not be (fumList) or not newContain newTheSameElementsInOrderAs (LinkedList("FEE", "FIE", "FOE", "FUM")))) (decided by upperCaseStringEquality)
         (fumList should (not be (toList) or not newContain newTheSameElementsInOrderAs (LinkedList("FUM", "FOE", "FIE", "FEE")))) (decided by upperCaseStringEquality)
@@ -302,7 +302,7 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends Spec with M
     
   }
   
-  object `collection of Lists` {
+  "collection of Lists" - {
     
     val list1s: Vector[List[Int]] = Vector(List(1, 2, 3), List(1, 2, 3), List(1, 2, 3))
     val lists: Vector[List[Int]] = Vector(List(1, 2, 3), List(1, 2, 3), List(2, 3, 4))
@@ -316,9 +316,9 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends Spec with M
       "  at index " + index + ", " + message + " (" + fileName + ":" + (lineNumber) + ") \n" +
       "in " + left
     
-    object `when used with (contain theSameElementsInOrderAs xx and contain theSameElementsInOrderAs xx)` {
+    "when used with (contain theSameElementsInOrderAs xx and contain theSameElementsInOrderAs xx)" - {
       
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      "should do nothing if valid, else throw a TFE with an appropriate error message" in {
         all (list1s) should (newContain newTheSameElementsInOrderAs LinkedList(1, 2, 3) or newContain newTheSameElementsInOrderAs LinkedList(1, 2, 3))
         all (list1s) should (newContain newTheSameElementsInOrderAs LinkedList(3, 2, 5) or newContain newTheSameElementsInOrderAs LinkedList(1, 2, 3))
         all (list1s) should (newContain newTheSameElementsInOrderAs LinkedList(1, 2, 3) or newContain newTheSameElementsInOrderAs LinkedList(2, 3, 4))
@@ -333,7 +333,7 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends Spec with M
         checkMessageStackDepth(e1, allErrMsg(2, decorateToStringValue(List(2, 3, 4)) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList(1, 2, 3)) + ", and " + decorateToStringValue(List(2, 3, 4)) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList(1, 2, 3)), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
       }
       
-      def `should use the implicit Equality in scope` {
+      "should use the implicit Equality in scope" in {
         implicit val ise = upperCaseStringEquality
         
         all (hiLists) should (newContain newTheSameElementsInOrderAs LinkedList("HI", "HELLO") or newContain newTheSameElementsInOrderAs LinkedList("hi", "hello"))
@@ -346,7 +346,7 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends Spec with M
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList("HELLO", "HO")) + ", and " + decorateToStringValue(List("hi", "hello")) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList("hello", "ho")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
       
-      def `should use an explicitly provided Equality` {
+      "should use an explicitly provided Equality" in {
         (all (hiLists) should (newContain newTheSameElementsInOrderAs LinkedList("HI", "HELLO") or newContain newTheSameElementsInOrderAs LinkedList("hi", "hello"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         (all (hiLists) should (newContain newTheSameElementsInOrderAs LinkedList("HELLO", "HO") or newContain newTheSameElementsInOrderAs LinkedList("hi", "hello"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         (all (hiLists) should (newContain newTheSameElementsInOrderAs LinkedList("HI", "HELLO") or newContain newTheSameElementsInOrderAs LinkedList("hello", "ho"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
@@ -358,9 +358,9 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends Spec with M
       }
     }
     
-    object `when used with (be xx and contain theSameElementsInOrderAs xx)` {
+    "when used with (be xx and contain theSameElementsInOrderAs xx)" - {
       
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      "should do nothing if valid, else throw a TFE with an appropriate error message" in {
         all (list1s) should (be (List(1, 2, 3)) or newContain newTheSameElementsInOrderAs LinkedList(1, 2, 3))
         all (list1s) should (be (List(2, 3, 4)) or newContain newTheSameElementsInOrderAs LinkedList(1, 2, 3))
         all (list1s) should (be (List(1, 2, 3)) or newContain newTheSameElementsInOrderAs LinkedList(2, 3, 4))
@@ -371,7 +371,7 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends Spec with M
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List(1, 2, 3)) + " was not equal to " + decorateToStringValue(List(2, 3, 4)) + ", and " + decorateToStringValue(List(1, 2, 3)) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList(2, 3, 4)), thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
       }
       
-      def `should use the implicit Equality in scope` {
+      "should use the implicit Equality in scope" in {
         implicit val ise = upperCaseStringEquality
         
         all (hiLists) should (be (List("hi", "hello")) or newContain newTheSameElementsInOrderAs LinkedList("HI", "HELLO"))
@@ -384,7 +384,7 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends Spec with M
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " was not equal to " + decorateToStringValue(List("ho", "hello")) + ", and " + decorateToStringValue(List("hi", "hello")) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList("HELLO", "HI")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
       
-      def `should use an explicitly provided Equality` {
+      "should use an explicitly provided Equality" in {
         (all (hiLists) should (be (List("hi", "hello")) or newContain newTheSameElementsInOrderAs LinkedList("HI", "HELLO"))) (decided by upperCaseStringEquality)
         (all (hiLists) should (be (List("ho", "hello")) or newContain newTheSameElementsInOrderAs LinkedList("HI", "HELLO"))) (decided by upperCaseStringEquality)
         (all (hiLists) should (be (List("hi", "hello")) or newContain newTheSameElementsInOrderAs LinkedList("HELLO", "HI"))) (decided by upperCaseStringEquality)
@@ -396,9 +396,9 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends Spec with M
       }
     }
     
-    object `when used with (not contain theSameElementsInOrderAs xx and not contain theSameElementsInOrderAs xx)` {
+    "when used with (not contain theSameElementsInOrderAs xx and not contain theSameElementsInOrderAs xx)" - {
       
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      "should do nothing if valid, else throw a TFE with an appropriate error message" in {
         all (list1s) should (not newContain newTheSameElementsInOrderAs (LinkedList(3, 2, 8)) or not newContain newTheSameElementsInOrderAs (LinkedList(8, 3, 4)))
         all (list1s) should (not newContain newTheSameElementsInOrderAs (LinkedList(1, 2, 3)) or not newContain newTheSameElementsInOrderAs (LinkedList(8, 3, 4)))
         all (list1s) should (not newContain newTheSameElementsInOrderAs (LinkedList(3, 2, 8)) or not newContain newTheSameElementsInOrderAs (LinkedList(1, 2, 3)))
@@ -409,7 +409,7 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends Spec with M
         checkMessageStackDepth(e1, allErrMsg(2, decorateToStringValue(List(2, 3, 4)) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList(2, 3, 4)) + ", and " + decorateToStringValue(List(2, 3, 4)) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList(2, 3, 4)), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
       }
       
-      def `should use the implicit Equality in scope` {
+      "should use the implicit Equality in scope" in {
         implicit val ise = upperCaseStringEquality
         
         all (hiLists) should (not newContain newTheSameElementsInOrderAs (LinkedList("HELLO", "HI")) or not newContain newTheSameElementsInOrderAs (LinkedList("hello", "hi")))
@@ -422,7 +422,7 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends Spec with M
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList("HI", "HELLO")) + ", and " + decorateToStringValue(List("hi", "hello")) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList("hi", "hello")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
       
-      def `should use an explicitly provided Equality` {
+      "should use an explicitly provided Equality" in {
         (all (hiLists) should (not newContain newTheSameElementsInOrderAs (LinkedList("HELLO", "HI")) or not newContain newTheSameElementsInOrderAs (LinkedList("hello", "hi")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         (all (hiLists) should (not newContain newTheSameElementsInOrderAs (LinkedList("HI", "HELLO")) or not newContain newTheSameElementsInOrderAs (LinkedList("hello", "hi")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         (all (hiLists) should (not newContain newTheSameElementsInOrderAs (LinkedList("HELLO", "HI")) or not newContain newTheSameElementsInOrderAs (LinkedList("hi", "hello")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
@@ -434,9 +434,9 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends Spec with M
       }
     }
     
-    object `when used with (not be xx and not contain theSameElementsInOrderAs xx)` {
+    "when used with (not be xx and not contain theSameElementsInOrderAs xx)" - {
       
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      "should do nothing if valid, else throw a TFE with an appropriate error message" in {
         all (list1s) should (not be (List(2)) or not newContain newTheSameElementsInOrderAs (LinkedList(8, 3, 4)))
         all (list1s) should (not be (List(1, 2, 3)) or not newContain newTheSameElementsInOrderAs (LinkedList(8, 3, 4)))
         all (list1s) should (not be (List(2)) or not newContain newTheSameElementsInOrderAs (LinkedList(1, 2, 3)))
@@ -447,7 +447,7 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends Spec with M
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List(1, 2, 3)) + " was equal to " + decorateToStringValue(List(1, 2, 3)) + ", and " + decorateToStringValue(List(1, 2, 3)) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList(1, 2, 3)), thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
       }
       
-      def `should use the implicit Equality in scope` {
+      "should use the implicit Equality in scope" in {
         implicit val ise = upperCaseStringEquality
         
         all (hiLists) should (not be (List("hello", "ho")) or not newContain newTheSameElementsInOrderAs (LinkedList("HELLO", "HO")))
@@ -460,7 +460,7 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends Spec with M
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " was equal to " + decorateToStringValue(List("hi", "hello")) + ", and " + decorateToStringValue(List("hi", "hello")) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList("HI", "HELLO")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
       
-      def `should use an explicitly provided Equality` {
+      "should use an explicitly provided Equality" in {
         (all (hiLists) should (not be (List("hello", "ho")) or not newContain newTheSameElementsInOrderAs (LinkedList("HELLO", "HO")))) (decided by upperCaseStringEquality)
         (all (hiLists) should (not be (List("hi", "hello")) or not newContain newTheSameElementsInOrderAs (LinkedList("HELLO", "HO")))) (decided by upperCaseStringEquality)
         (all (hiLists) should (not be (List("hello", "ho")) or not newContain newTheSameElementsInOrderAs (LinkedList("HI", "HELLO")))) (decided by upperCaseStringEquality)
