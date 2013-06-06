@@ -2102,12 +2102,12 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) or contain inOrderOnly (1, 3))
-     *                                                                          ^
+     * aMatcher or contain inOrderOnly (1, 2, 3)
+     *                     ^
      * </pre>
      */
-    //def inOrderOnly[E](right: E*)(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
-      //outerInstance.or(MatcherWords.contain.inOrderOnly(right.toList: _*)(equality))
+    def newInOrderOnly(right: Any*): MatcherFactory1[T with Any, Aggregating] = 
+      outerInstance.or(MatcherWords.newContain.newInOrderOnly(right.toList: _*))
     
     /**
      * This method enables the following syntax:
