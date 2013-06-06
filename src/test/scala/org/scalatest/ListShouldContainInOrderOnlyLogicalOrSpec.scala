@@ -394,7 +394,6 @@ class ListShouldContainInOrderOnlyLogicalOrSpec extends Spec with Matchers {
       }
     }
     
-/*
     object `when used with (not contain inOrderOnly xx and not contain inOrderOnly xx)` {
       
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
@@ -433,6 +432,7 @@ class ListShouldContainInOrderOnlyLogicalOrSpec extends Spec with Matchers {
       }
     }
     
+/*
     object `when used with (not be xx and not contain inOrderOnly xx)` {
       
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
