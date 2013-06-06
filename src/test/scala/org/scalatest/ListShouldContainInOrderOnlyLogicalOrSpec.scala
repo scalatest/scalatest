@@ -300,7 +300,6 @@ class ListShouldContainInOrderOnlyLogicalOrSpec extends Spec with Matchers {
     }
   }
   
-/*
   object `collection of Lists` {
     
     val list1s: Vector[List[Int]] = Vector(List(1, 2, 3), List(1, 2, 3), List(1, 2, 3))
@@ -342,21 +341,22 @@ class ListShouldContainInOrderOnlyLogicalOrSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           all (hiLists) should (newContain newInOrderOnly ("HELLO", "HO") or newContain newInOrderOnly ("hello", "ho"))
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " did not contain only " + "\"HELLO\", \"HO\"" + " in order" + ", and " + decorateToStringValue(List("hi", "hello")) + " did not contain only " + "\"hello\", \"ho\"" + " in order", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " did not contain only " + "(\"HELLO\", \"HO\")" + " in order" + ", and " + decorateToStringValue(List("hi", "hello")) + " did not contain only " + "(\"hello\", \"ho\")" + " in order", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
       
       def `should use an explicitly provided Equality` {
         (all (hiLists) should (newContain newInOrderOnly ("HI", "HELLO") or newContain newInOrderOnly ("hi", "hello"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         (all (hiLists) should (newContain newInOrderOnly ("HELLO", "HO") or newContain newInOrderOnly ("hi", "hello"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         (all (hiLists) should (newContain newInOrderOnly ("HI", "HELLO") or newContain newInOrderOnly ("hello", "ho"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
-        
+
         val e1 = intercept[TestFailedException] {
           (all (hiLists) should (newContain newInOrderOnly ("HELLO", "HO") or newContain newInOrderOnly ("hello", "ho"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " did not contain only " + "\"HELLO\", \"HO\"" + " in order" + ", and " + decorateToStringValue(List("hi", "hello")) + " did not contain only " + "\"hello\", \"ho\"" + " in order", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " did not contain only " + "(\"HELLO\", \"HO\")" + " in order" + ", and " + decorateToStringValue(List("hi", "hello")) + " did not contain only " + "(\"hello\", \"ho\")" + " in order", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
     }
-    
+
+/*
     object `when used with (be xx and contain inOrderOnly xx)` {
       
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
@@ -470,6 +470,6 @@ class ListShouldContainInOrderOnlyLogicalOrSpec extends Spec with Matchers {
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " was equal to " + decorateToStringValue(List("hi", "hello")) + ", and " + decorateToStringValue(List("hi", "hello")) + " contained only " + "(\"HI\", \"HELLO\")" + " in order", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
     }
-  }
 */
+  }
 }
