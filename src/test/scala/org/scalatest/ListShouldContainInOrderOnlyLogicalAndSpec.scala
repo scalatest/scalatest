@@ -546,32 +546,31 @@ class ListShouldContainInOrderOnlyLogicalAndSpec extends Spec with Matchers {
       }
     }
     
-/*
     object `when used with (not be xx and not contain inOrderOnly xx)` {
       
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        all (list1s) should (not be (List(2)) and not newContain newInOrderOnly (LinkedList(8, 3, 4)))
-        atLeast (2, lists) should (not be (List(3)) and not newContain newInOrderOnly (LinkedList(8, 3, 4)))
-        atMost (2, lists) should (not be (List(2, 3, 4)) and not newContain newInOrderOnly (LinkedList(2, 3, 4)))
-        no (list1s) should (not be (List(1, 2, 3)) and not newContain newInOrderOnly (LinkedList(1, 2, 3)))
+        all (list1s) should (not be (List(2)) and not newContain newInOrderOnly (8, 3, 4))
+        atLeast (2, lists) should (not be (List(3)) and not newContain newInOrderOnly (8, 3, 4))
+        atMost (2, lists) should (not be (List(2, 3, 4)) and not newContain newInOrderOnly (2, 3, 4))
+        no (list1s) should (not be (List(1, 2, 3)) and not newContain newInOrderOnly (1, 2, 3))
         
         val e1 = intercept[TestFailedException] {
-          all (lists) should (not be (List(2, 3, 4)) and not newContain newInOrderOnly (LinkedList(8, 3, 4)))
+          all (lists) should (not be (List(2, 3, 4)) and not newContain newInOrderOnly (8, 3, 4))
         }
         checkMessageStackDepth(e1, allErrMsg(2, decorateToStringValue(List(2, 3, 4)) + " was equal to " + decorateToStringValue(List(2, 3, 4)), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
         
         val e2 = intercept[TestFailedException] {
-          all (lists) should (not be (List(3)) and not newContain newInOrderOnly (LinkedList(2, 3, 4)))
+          all (lists) should (not be (List(3)) and not newContain newInOrderOnly (2, 3, 4))
         }
         checkMessageStackDepth(e2, allErrMsg(2, decorateToStringValue(List(2, 3, 4)) + " was not equal to " + decorateToStringValue(List(3)) + ", but " + decorateToStringValue(List(2, 3, 4)) + " contained only " + "(2, 3, 4)" + " in order", thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
         
         val e3 = intercept[TestFailedException] {
-          all (hiLists) should (not be (List("hi", "hello")) and not newContain newInOrderOnly (LinkedList("ho", "hey", "howdy")))
+          all (hiLists) should (not be (List("hi", "hello")) and not newContain newInOrderOnly ("ho", "hey", "howdy"))
         }
         checkMessageStackDepth(e3, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " was equal to " + decorateToStringValue(List("hi", "hello")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
         
         val e4 = intercept[TestFailedException] {
-          all (hiLists) should (not be (List("ho")) and not newContain newInOrderOnly (LinkedList("hi", "hello")))
+          all (hiLists) should (not be (List("ho")) and not newContain newInOrderOnly ("hi", "hello"))
         }
         checkMessageStackDepth(e4, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " was not equal to " + decorateToStringValue(List("ho")) + ", but " + decorateToStringValue(List("hi", "hello")) + " contained only " + "(\"hi\", \"hello\")" + " in order", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
@@ -579,32 +578,31 @@ class ListShouldContainInOrderOnlyLogicalAndSpec extends Spec with Matchers {
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
         
-        all (hiLists) should (not be (List("ho")) and not newContain newInOrderOnly (LinkedList("HO", "HELLO")))
+        all (hiLists) should (not be (List("ho")) and not newContain newInOrderOnly ("HO", "HELLO"))
         
         val e1 = intercept[TestFailedException] {
-          all (hiLists) should (not be (List("hi", "hello")) and not newContain newInOrderOnly (LinkedList("HELLO", "HI")))
+          all (hiLists) should (not be (List("hi", "hello")) and not newContain newInOrderOnly ("HELLO", "HI"))
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " was equal to " + decorateToStringValue(List("hi", "hello")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
         
         val e2 = intercept[TestFailedException] {
-          all (hiLists) should (not be (List("ho")) and not newContain newInOrderOnly (LinkedList("HI", "HELLO")))
+          all (hiLists) should (not be (List("ho")) and not newContain newInOrderOnly ("HI", "HELLO"))
         }
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " was not equal to " + decorateToStringValue(List("ho")) + ", but " + decorateToStringValue(List("hi", "hello")) + " contained only " + "(\"HI\", \"HELLO\")" + " in order", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
       
       def `should use an explicitly provided Equality` {
-        (all (hiLists) should (not be (List("ho")) and not newContain newInOrderOnly (LinkedList("HO", "HELLO")))) (decided by upperCaseStringEquality)
+        (all (hiLists) should (not be (List("ho")) and not newContain newInOrderOnly ("HO", "HELLO"))) (decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (all (hiLists) should (not be (List("hi", "hello")) and not newContain newInOrderOnly (LinkedList("HELLO", "HI")))) (decided by upperCaseStringEquality)
+          (all (hiLists) should (not be (List("hi", "hello")) and not newContain newInOrderOnly ("HELLO", "HI"))) (decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " was equal to " + decorateToStringValue(List("hi", "hello")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
         
         val e2 = intercept[TestFailedException] {
-          (all (hiLists) should (not be (List("ho")) and not newContain newInOrderOnly (LinkedList("HI", "HELLO")))) (decided by upperCaseStringEquality)
+          (all (hiLists) should (not be (List("ho")) and not newContain newInOrderOnly ("HI", "HELLO"))) (decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " was not equal to " + decorateToStringValue(List("ho")) + ", but " + decorateToStringValue(List("hi", "hello")) + " contained only " + "(\"HI\", \"HELLO\")" + " in order", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
     }
-*/
   }
 }
