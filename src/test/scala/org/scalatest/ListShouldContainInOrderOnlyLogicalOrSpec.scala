@@ -303,7 +303,7 @@ class ListShouldContainInOrderOnlyLogicalOrSpec extends Spec with Matchers {
   object `collection of Lists` {
     
     val list1s: Vector[List[Int]] = Vector(List(1, 2, 3), List(1, 2, 3), List(1, 2, 3))
-    val lists: Vector[List[Int]] = Vector(List(1, 2, 3), List(1, 2, 3), List(2, 3, 4))
+    val lists: Vector[List[Int]] = Vector(List(1, 2, 2, 3), List(1, 1, 2, 3, 3), List(2, 3, 4))
     val nils: Vector[List[Int]] = Vector(Nil, Nil, Nil)
     val listsNil: Vector[List[Int]] = Vector(List(1, 2, 3), List(1, 2, 3), Nil)
     val hiLists: Vector[List[String]] = Vector(List("hi", "hello"), List("hi", "hello"), List("hi", "hello"))
