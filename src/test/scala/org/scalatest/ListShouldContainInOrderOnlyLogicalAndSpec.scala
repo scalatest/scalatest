@@ -416,7 +416,6 @@ class ListShouldContainInOrderOnlyLogicalAndSpec extends Spec with Matchers {
       }
     }
 
-/*
     object `when used with (be xx and contain inOrderOnly xx)` {
       
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
@@ -435,7 +434,7 @@ class ListShouldContainInOrderOnlyLogicalAndSpec extends Spec with Matchers {
         val e2 = intercept[TestFailedException] {
           all (list1s) should (be (List(1, 2, 3)) and newContain newInOrderOnly (2, 3, 8))
         }
-        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List(1, 2, 3)) + " was equal to " + decorateToStringValue(List(1, 2, 3)) + ", but " + decorateToStringValue(List(1, 2, 3)) + " did not contain only " + decorateToStringValue(LinkedList(2, 3, 8)) + " in order", thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List(1, 2, 3)) + " was equal to " + decorateToStringValue(List(1, 2, 3)) + ", but " + decorateToStringValue(List(1, 2, 3)) + " did not contain only " + "(2, 3, 8)" + " in order", thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
         
         val e3 = intercept[TestFailedException] {
           all (nils) should (be (List("hey")) and newContain newInOrderOnly ("hi", "hello"))
@@ -455,7 +454,7 @@ class ListShouldContainInOrderOnlyLogicalAndSpec extends Spec with Matchers {
         val e6 = intercept[TestFailedException] {
           all (list1s) should (be (List(1, 2, 3)) and newContain newInOrderOnly (2, 3, 8))
         }
-        checkMessageStackDepth(e6, allErrMsg(0, decorateToStringValue(List(1, 2, 3)) + " was equal to " + decorateToStringValue(List(1, 2, 3)) + ", but " + decorateToStringValue(List(1, 2, 3)) + " did not contain only " + decorateToStringValue(LinkedList(2, 3, 8)) + " in order", thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e6, allErrMsg(0, decorateToStringValue(List(1, 2, 3)) + " was equal to " + decorateToStringValue(List(1, 2, 3)) + ", but " + decorateToStringValue(List(1, 2, 3)) + " did not contain only " + "(2, 3, 8)" + " in order", thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
       }
       
       def `should use the implicit Equality in scope` {
@@ -488,6 +487,7 @@ class ListShouldContainInOrderOnlyLogicalAndSpec extends Spec with Matchers {
       }
     }
     
+/*
     object `when used with (not contain inOrderOnly xx and not contain inOrderOnly xx)` {
       
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
