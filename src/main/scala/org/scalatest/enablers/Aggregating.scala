@@ -30,6 +30,7 @@ trait Aggregating[A] {
   def containsOnly(aggregation: A, eles: Seq[Any]): Boolean
   def containsInOrderOnly(aggregation: A, eles: Seq[Any]): Boolean
   def containsAllOf(aggregation: A, eles: Seq[Any]): Boolean
+  def containsInOrder(aggregation: A, eles: Seq[Any]): Boolean
 /*  def containsAtMostOneOf(aggregation: A, eles: Seq[Any]): Boolean
 */
 }
@@ -194,6 +195,39 @@ object Aggregating {
     }
     checkEqual(left, right.toIterator, Set.empty)
   }
+  
+  private def checkInOrder[T](left: GenTraversable[T], right: GenTraversable[Any], equality: Equality[T]): Boolean = {
+    @tailrec
+    def lastIndexOf(itr: Iterator[T], element: Any, idx: Option[Int], i: Int): Option[Int] = {
+      if (itr.hasNext) {
+        val next = itr.next
+        if (equality.areEqual(next, element))
+          lastIndexOf(itr, element, Some(i), i + 1)
+        else
+          lastIndexOf(itr, element, idx, i + 1)
+      }
+      else
+        idx
+    }
+  
+    @tailrec
+    def checkEqual(left: GenTraversable[T], rightItr: Iterator[Any], processedSet: Set[Any]): Boolean = {
+      if (rightItr.hasNext) {
+        val nextRight = rightItr.next
+        if (processedSet.find(tryEquality(_, nextRight, equality)).isDefined)
+          throw new IllegalArgumentException(FailureMessages("inOrderDuplicate", nextRight))
+        lastIndexOf(left.toIterator, nextRight, None, 0) match {
+          case Some(idx) => 
+            checkEqual(left.drop(idx).tail, rightItr, processedSet + nextRight)
+          case None => 
+            false // Element not found, let's fail early
+        }
+      }
+      else // No more element in right, left contains all of right.
+        true
+    }
+    checkEqual(left, right.toIterator, Set.empty)
+  }
 
   implicit def withGenTraversableElementEquality[E, TRAV[_] <: scala.collection.GenTraversable[_]](implicit equality: Equality[E]): Aggregating[TRAV[E]] = 
     new Aggregating[TRAV[E]] {
@@ -214,6 +248,9 @@ object Aggregating {
       }
       def containsAllOf(trav: TRAV[E], elements: scala.collection.Seq[Any]): Boolean = {
         checkAllOf(trav.asInstanceOf[GenTraversable[E]], elements, equality)
+      }
+      def containsInOrder(trav: TRAV[E], elements: scala.collection.Seq[Any]): Boolean = {
+        checkInOrder(trav.asInstanceOf[GenTraversable[E]], elements, equality)
       }
     }
 
@@ -241,6 +278,9 @@ object Aggregating {
       def containsAllOf(array: Array[E], elements: scala.collection.Seq[Any]): Boolean = {
         checkAllOf(new ArrayWrapper(array), elements, equality)
       }
+      def containsInOrder(array: Array[E], elements: scala.collection.Seq[Any]): Boolean = {
+        checkInOrder(new ArrayWrapper(array), elements, equality)
+      }
     }
 
   // Enables (xs should contain ("HI")) (after being lowerCased)
@@ -267,6 +307,9 @@ object Aggregating {
       def containsAllOf(s: String, elements: scala.collection.Seq[Any]): Boolean = {
         checkAllOf(s, elements, equality)
       }
+      def containsInOrder(s: String, elements: scala.collection.Seq[Any]): Boolean = {
+        checkInOrder(s, elements, equality)
+      }
     }
 
   implicit def convertEqualityToStringAggregating(equality: Equality[Char]): Aggregating[String] = 
@@ -291,6 +334,9 @@ object Aggregating {
       }
       def containsAllOf(map: MAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
         checkAllOf(map.asInstanceOf[scala.collection.GenMap[K, V]], elements, equality)
+      }
+      def containsInOrder(map: MAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
+        checkInOrder(map.asInstanceOf[scala.collection.GenMap[K, V]], elements, equality)
       }
     }
 
@@ -317,6 +363,9 @@ object Aggregating {
       def containsAllOf(col: JCOL[E], elements: scala.collection.Seq[Any]): Boolean = {
         checkAllOf(col.asInstanceOf[java.util.Collection[E]].asScala, elements, equality)
       }
+      def containsInOrder(col: JCOL[E], elements: scala.collection.Seq[Any]): Boolean = {
+        checkInOrder(col.asInstanceOf[java.util.Collection[E]].asScala, elements, equality)
+      }
     }
 
   implicit def convertEqualityToJavaCollectionAggregating[E, JCOL[_] <: java.util.Collection[_]](equality: Equality[E]): Aggregating[JCOL[E]] = 
@@ -324,23 +373,37 @@ object Aggregating {
     
   implicit def withJavaMapElementEquality[K, V, JMAP[_, _] <: java.util.Map[_, _]](implicit equality: Equality[(K, V)]): Aggregating[JMAP[K, V]] = 
     new Aggregating[JMAP[K, V]] {
+      // This is needed as asScala does not preserve the original iterated order
+      private def getScalaMapInOrder(javaMap: JMAP[K, V]): scala.collection.GenMap[K, V] = {
+        val map = new collection.mutable.LinkedHashMap[K, V]
+        val itr = javaMap.entrySet.iterator
+        while (itr.hasNext) {
+          val entry = itr.next
+          map += ((entry.getKey.asInstanceOf[K], entry.getValue.asInstanceOf[V]))
+        }
+        map
+      }
+    
       def containsAtLeastOneOf(map: JMAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
-        map.asInstanceOf[java.util.Map[K, V]].asScala.exists((e: Any) => elements.exists((ele: Any) => equality.areEqual(e.asInstanceOf[(K, V)], ele)))
+        getScalaMapInOrder(map).exists((e: Any) => elements.exists((ele: Any) => equality.areEqual(e.asInstanceOf[(K, V)], ele)))
       }
       def containsTheSameElementsAs(map: JMAP[K, V], elements: GenTraversable[Any]): Boolean = {
-        checkTheSameElementsAs(map.asInstanceOf[java.util.Map[K, V]].asScala, elements, equality)
+        checkTheSameElementsAs(getScalaMapInOrder(map), elements, equality)
       }
       def containsTheSameElementsInOrderAs(map: JMAP[K, V], elements: GenTraversable[Any]): Boolean = {
-        checkTheSameElementsInOrderAs(map.asInstanceOf[java.util.Map[K, V]].asScala, elements, equality)
+        checkTheSameElementsInOrderAs(getScalaMapInOrder(map), elements, equality)
       }
       def containsOnly(map: JMAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
-        checkOnly(map.asInstanceOf[java.util.Map[K, V]].asScala, elements, equality)
+        checkOnly(getScalaMapInOrder(map), elements, equality)
       }
       def containsInOrderOnly(map: JMAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
-        checkInOrderOnly(map.asInstanceOf[java.util.Map[K, V]].asScala, elements, equality)
+        checkInOrderOnly(getScalaMapInOrder(map), elements, equality)
       }
       def containsAllOf(map: JMAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
-        checkAllOf(map.asInstanceOf[java.util.Map[K, V]].asScala, elements, equality)
+        checkAllOf(getScalaMapInOrder(map), elements, equality)
+      }
+      def containsInOrder(map: JMAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
+        checkInOrder(getScalaMapInOrder(map), elements, equality)
       }
     }
 

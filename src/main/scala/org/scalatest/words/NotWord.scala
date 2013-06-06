@@ -1009,6 +1009,33 @@ final class NotWord {
    * This method enables the following syntax: 
    *
    * <pre class="stHighlight">
+   * Array(1, 2) should (not contain inOrder (1, 2, 3) and not contain (3))
+   *                                 ^
+   * </pre>
+   */
+  def newContain[T](only: ResultOfNewInOrderApplication): MatcherFactory1[Any, Aggregating] = {
+    new MatcherFactory1[Any, Aggregating] {
+      def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+        
+            val right = only.right
+
+            MatchResult(
+              !aggregating.containsInOrder(left, right),
+              FailureMessages("containedAllOfElementsInOrder", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+              FailureMessages("didNotContainAllOfElementsInOrder", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+            )
+          }
+        }
+      }
+    }
+  }
+  
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
    * Map("one" -> 1, "two" -> 2) should (not contain key ("three"))
    *                                         ^
    * </pre>

@@ -69,6 +69,7 @@ import org.scalatest.words.ResultOfNewTheSameElementsInOrderAsApplication
 import org.scalatest.words.ResultOfNewOnlyApplication
 import org.scalatest.words.ResultOfNewAllOfApplication
 import org.scalatest.words.ResultOfNewInOrderOnlyApplication
+import org.scalatest.words.ResultOfNewInOrderApplication
 
 /**
  * A matcher factory that can produce a matcher given $nTypeclassInstances$.
@@ -516,12 +517,12 @@ $endif$
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
-     * (aMatcherFactory and contain inOrder (1, 2, 3))
+     * (aMatcherFactory and contain allOf (1, 3, 3))
      *                              ^
      * </pre>
      */
-    //def inOrder[E](right: E*)(implicit equality: Equality[E]): MatcherFactory$arity$[SC with GenTraversable[E], $commaSeparatedTCNs$] = 
-      //thisMatcherFactory.and(MatcherWords.contain.inOrder(right.toList: _*)(equality))
+    def newInOrder(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
+      thisMatcherFactory.and(MatcherWords.newContain.newInOrder(right.toList: _*))
     
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1397,6 +1398,17 @@ $endif$
      */
     def newContain(right: ResultOfNewAllOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
       thisMatcherFactory.and(MatcherWords.not.newContain(right))
+    
+    /**
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     *
+     * <pre class="stHighlight">
+     * (aMatcherFactory and not contain inOrder (8, 1, 2)) 
+     *                          ^
+     * </pre>
+     */
+    def newContain(right: ResultOfNewInOrderApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+      thisMatcherFactory.and(MatcherWords.not.newContain(right))
       
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1718,12 +1730,12 @@ $endif$
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
-     * (aMatcherFactory or contain inOrder (1, 2, 3))
+     * (aMatcherFactory or contain inOrder (1, 3, 3))
      *                             ^
      * </pre>
      */
-    //def inOrder[E](right: E*)(implicit equality: Equality[E]): MatcherFactory$arity$[SC with GenTraversable[E], $commaSeparatedTCNs$] = 
-      //thisMatcherFactory.or(MatcherWords.contain.inOrder(right.toList: _*)(equality))
+    def newInOrder(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
+      thisMatcherFactory.or(MatcherWords.newContain.newInOrder(right.toList: _*))
     
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -2599,6 +2611,17 @@ $endif$
      * </pre>
      */
     def newContain(right: ResultOfNewAllOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+      thisMatcherFactory.or(MatcherWords.not.newContain(right))
+    
+    /**
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     *
+     * <pre class="stHighlight">
+     * (aMatcherFactory or not contain inOrder (8, 1, 2)) 
+     *                         ^
+     * </pre>
+     */
+    def newContain(right: ResultOfNewInOrderApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
       thisMatcherFactory.or(MatcherWords.not.newContain(right))
       
     /**
