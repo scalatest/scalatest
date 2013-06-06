@@ -161,7 +161,6 @@ class ListShouldContainInOrderOnlyLogicalOrSpec extends Spec with Matchers {
       }
     }
 
-/*
     object `when used with (contain inOrderOnly xx and legacyEqual xx)` {
       
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
@@ -299,8 +298,6 @@ class ListShouldContainInOrderOnlyLogicalOrSpec extends Spec with Matchers {
         (fumList should (not newContain newInOrderOnly (Set(" FEE ", " FIE ", " FOE ", " FUU ")) or not newContain newInOrderOnly (Set(" FEE ", " FIE ", " FOE ", " FUU ")))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
     }
-    
-*/
   }
   
 /*

@@ -2911,6 +2911,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
+     * aMatcher or not contain only (List(8, 1, 2))) 
+     *                 ^
+     * </pre>
+     */
+    def newContain(right: ResultOfNewInOrderOnlyApplication): MatcherFactory1[T with Any, Aggregating] =
+      outerInstance.or(MatcherWords.not.newContain(right))
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
      * collection should (contain theSameElementsAs (List(1, 2, 3)) or not contain only (List(8, 1, 2))) 
      *                                                                     ^
      * </pre>
