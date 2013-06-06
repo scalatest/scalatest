@@ -181,5 +181,24 @@ class ResultOfNewContainWord[L](left: L, shouldBeTrue: Boolean = true) {
         )
       )
   }
+  
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * xs should contain inOrder (1, 2)
+   *                   ^
+   * </pre>
+   */
+  def newInOrder(right: Any*)(implicit aggregating: Aggregating[L]) {
+    if (aggregating.containsInOrder(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "didNotContainAllOfElementsInOrder" else "containedAllOfElementsInOrder",
+          left,
+          UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
+        )
+      )
+  }
 }
 
