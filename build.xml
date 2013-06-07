@@ -1126,7 +1126,7 @@
             <reporter type="graphic"/>
             <reporter type="dashboard" directory="target/dash" numfiles="3" />
             <reporter type="junitxml" directory="target"/>
-            <reporter type="stdout" config="D"/>
+            <reporter type="stdout" config="DI"/>
         	<reporter type="html" directory="target/html" config="D" />
             <membersonly package="org.scalatest" />
             <membersonly package="org.scalautils" />
@@ -1345,7 +1345,7 @@
         <scalatest runpath="${build.tests};${classes}" haltonfailure="true">
             <reporter type="graphic"/>
             <!--<reporter type="file" filename="test.out" config="ND"/>-->
-            <reporter type="stdout" config="N"/>
+            <reporter type="stdout" config="NI"/>
             <suite classname="${class}"/>
         </scalatest>
     </target>
