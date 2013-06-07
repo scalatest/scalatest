@@ -38,9 +38,9 @@ class ListShouldContainAtLeastOneOfSpec extends Spec with Matchers {
     object `when used with contain atLeastOneOf (...) syntax` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        fumList should newContain atLeastOneOf ("fee", "fie", "foe", "fum")
+        fumList should contain atLeastOneOf ("fee", "fie", "foe", "fum")
         val e1 = intercept[TestFailedException] {
-          fumList should newContain atLeastOneOf ("happy", "birthday", "to", "you")
+          fumList should contain atLeastOneOf ("happy", "birthday", "to", "you")
         }
         e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -48,20 +48,20 @@ class ListShouldContainAtLeastOneOfSpec extends Spec with Matchers {
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = invertedStringEquality
-        fumList should newContain atLeastOneOf ("happy", "birthday", "to", "you")
+        fumList should contain atLeastOneOf ("happy", "birthday", "to", "you")
         intercept[TestFailedException] {
-          fumList should newContain atLeastOneOf ("fum", "fum", "fum", "fum")
+          fumList should contain atLeastOneOf ("fum", "fum", "fum", "fum")
         }
       }
       def `should use an explicitly provided Equality` {
-        (fumList should newContain atLeastOneOf ("happy", "birthday", "to", "you")) (decided by invertedStringEquality)
+        (fumList should contain atLeastOneOf ("happy", "birthday", "to", "you")) (decided by invertedStringEquality)
         intercept[TestFailedException] {
-          (fumList should newContain atLeastOneOf ("fum", "fum", "fum", "fum")) (decided by invertedStringEquality)
+          (fumList should contain atLeastOneOf ("fum", "fum", "fum", "fum")) (decided by invertedStringEquality)
         }
         intercept[TestFailedException] {
-          fumList should newContain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM ")
+          fumList should contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM ")
         }
-        (fumList should newContain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM ")) (after being lowerCased and trimmed)
+        (fumList should contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM ")) (after being lowerCased and trimmed)
       }
     }
 
@@ -69,9 +69,9 @@ class ListShouldContainAtLeastOneOfSpec extends Spec with Matchers {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
 
-        fumList should (newContain atLeastOneOf ("fee", "fie", "foe", "fum"))
+        fumList should (contain atLeastOneOf ("fee", "fie", "foe", "fum"))
         val e1 = intercept[TestFailedException] {
-          fumList should (newContain atLeastOneOf ("happy", "birthday", "to", "you"))
+          fumList should (contain atLeastOneOf ("happy", "birthday", "to", "you"))
         }
         e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -79,37 +79,37 @@ class ListShouldContainAtLeastOneOfSpec extends Spec with Matchers {
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = invertedStringEquality
-        fumList should (newContain atLeastOneOf ("happy", "birthday", "to", "you"))
+        fumList should (contain atLeastOneOf ("happy", "birthday", "to", "you"))
         intercept[TestFailedException] {
-          fumList should (newContain atLeastOneOf ("fum", "fum", "fum", "fum"))
+          fumList should (contain atLeastOneOf ("fum", "fum", "fum", "fum"))
         }
       }
       def `should use an explicitly provided Equality` {
-        (fumList should (newContain atLeastOneOf ("happy", "birthday", "to", "you"))) (decided by invertedStringEquality)
+        (fumList should (contain atLeastOneOf ("happy", "birthday", "to", "you"))) (decided by invertedStringEquality)
         intercept[TestFailedException] {
-          (fumList should (newContain atLeastOneOf ("fum", "fum", "fum", "fum"))) (decided by invertedStringEquality)
+          (fumList should (contain atLeastOneOf ("fum", "fum", "fum", "fum"))) (decided by invertedStringEquality)
         }
         intercept[TestFailedException] {
-          fumList should (newContain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM "))
+          fumList should (contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM "))
         }
-        (fumList should (newContain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
+        (fumList should (contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
       }
     }
 
 /*
  I purposely don't want to support this syntax:
 
-        fumList should newContain (atLeastOneOf ("fee", "fie", "foe", "fum"))
-        fumList should (newContain (atLeastOneOf ("fee", "fie", "foe", "fum")))
+        fumList should contain (atLeastOneOf ("fee", "fie", "foe", "fum"))
+        fumList should (contain (atLeastOneOf ("fee", "fie", "foe", "fum")))
 
  Reason is that I don't want people putting parentheses between contain and atLeastOneOf, etc. This will not compile.
 */
     object `when used with not contain atLeastOneOf (...) syntax` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        toList should not newContain atLeastOneOf ("fee", "fie", "foe", "fum")
+        toList should not contain atLeastOneOf ("fee", "fie", "foe", "fum")
         val e1 = intercept[TestFailedException] {
-          toList should not newContain atLeastOneOf ("happy", "birthday", "to", "you")
+          toList should not contain atLeastOneOf ("happy", "birthday", "to", "you")
         }
         e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -117,19 +117,19 @@ class ListShouldContainAtLeastOneOfSpec extends Spec with Matchers {
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = invertedStringEquality
-        toList should not newContain atLeastOneOf ("to", "to", "to", "to")
+        toList should not contain atLeastOneOf ("to", "to", "to", "to")
         intercept[TestFailedException] {
-          toList should not newContain atLeastOneOf ("fee", "fie", "foe", "fum")
+          toList should not contain atLeastOneOf ("fee", "fie", "foe", "fum")
         }
       }
       def `should use an explicitly provided Equality` {
-        (toList should not newContain atLeastOneOf ("to", "to", "to", "to")) (decided by invertedStringEquality)
+        (toList should not contain atLeastOneOf ("to", "to", "to", "to")) (decided by invertedStringEquality)
         intercept[TestFailedException] {
-          (toList should not newContain atLeastOneOf ("fee", "fie", "foe", "fum")) (decided by invertedStringEquality)
+          (toList should not contain atLeastOneOf ("fee", "fie", "foe", "fum")) (decided by invertedStringEquality)
         }
-        toList should not newContain atLeastOneOf (" TO ", " TO ", " TO ", " TO ")
+        toList should not contain atLeastOneOf (" TO ", " TO ", " TO ", " TO ")
         intercept[TestFailedException] {
-          (toList should not newContain atLeastOneOf (" TO ", " TO ", " TO ", " TO ")) (after being lowerCased and trimmed)
+          (toList should not contain atLeastOneOf (" TO ", " TO ", " TO ", " TO ")) (after being lowerCased and trimmed)
         }
       }
     }
@@ -137,18 +137,18 @@ class ListShouldContainAtLeastOneOfSpec extends Spec with Matchers {
 /*
 Interesting, of these three, the top one does happen to compile and run:
 
-        toList should not newContain (atLeastOneOf ("fee", "fie", "foe", "fum"))
-        // toList should not (newContain (atLeastOneOf ("fee", "fie", "foe", "fum")))
-        // toList should (not (newContain (atLeastOneOf ("fee", "fie", "foe", "fum"))))
+        toList should not contain (atLeastOneOf ("fee", "fie", "foe", "fum"))
+        // toList should not (contain (atLeastOneOf ("fee", "fie", "foe", "fum")))
+        // toList should (not (contain (atLeastOneOf ("fee", "fie", "foe", "fum"))))
 
 The bottom two don't, but still I don't want to support that in general.
 */
     object `when used with (not contain atLeastOneOf (...)) syntax` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        toList should (not newContain atLeastOneOf ("fee", "fie", "foe", "fum"))
+        toList should (not contain atLeastOneOf ("fee", "fie", "foe", "fum"))
         val e1 = intercept[TestFailedException] {
-          toList should (not newContain atLeastOneOf ("happy", "birthday", "to", "you"))
+          toList should (not contain atLeastOneOf ("happy", "birthday", "to", "you"))
         }
         e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -156,19 +156,19 @@ The bottom two don't, but still I don't want to support that in general.
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = invertedStringEquality
-        toList should (not newContain atLeastOneOf ("to", "to", "to", "to"))
+        toList should (not contain atLeastOneOf ("to", "to", "to", "to"))
         intercept[TestFailedException] {
-          toList should (not newContain atLeastOneOf ("fee", "fie", "foe", "fum"))
+          toList should (not contain atLeastOneOf ("fee", "fie", "foe", "fum"))
         }
       }
       def `should use an explicitly provided Equality` {
-        (toList should (not newContain atLeastOneOf ("to", "to", "to", "to"))) (decided by invertedStringEquality)
+        (toList should (not contain atLeastOneOf ("to", "to", "to", "to"))) (decided by invertedStringEquality)
         intercept[TestFailedException] {
-          (toList should (not newContain atLeastOneOf ("fee", "fie", "foe", "fum"))) (decided by invertedStringEquality)
+          (toList should (not contain atLeastOneOf ("fee", "fie", "foe", "fum"))) (decided by invertedStringEquality)
         }
-        toList should (not newContain atLeastOneOf (" TO ", " TO ", " TO ", " TO "))
+        toList should (not contain atLeastOneOf (" TO ", " TO ", " TO ", " TO "))
         intercept[TestFailedException] {
-          (toList should (not newContain atLeastOneOf (" TO ", " TO ", " TO ", " TO "))) (after being lowerCased and trimmed)
+          (toList should (not contain atLeastOneOf (" TO ", " TO ", " TO ", " TO "))) (after being lowerCased and trimmed)
         }
       }
     }
@@ -186,15 +186,15 @@ The bottom two don't, but still I don't want to support that in general.
     object `when used with contain atLeastOneOf (...) syntax` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        all (list1s) should newContain atLeastOneOf (1, 3, 4)
-        atLeast (2, lists) should newContain atLeastOneOf (1, 3, 4)
-        atMost (2, lists) should newContain atLeastOneOf (2, 3, 4)
-        no (lists) should newContain atLeastOneOf (3, 4, 5)
-        no (nils) should newContain atLeastOneOf (1, 3, 4)
-        no (listsNil) should newContain atLeastOneOf (3, 4, 5)
+        all (list1s) should contain atLeastOneOf (1, 3, 4)
+        atLeast (2, lists) should contain atLeastOneOf (1, 3, 4)
+        atMost (2, lists) should contain atLeastOneOf (2, 3, 4)
+        no (lists) should contain atLeastOneOf (3, 4, 5)
+        no (nils) should contain atLeastOneOf (1, 3, 4)
+        no (listsNil) should contain atLeastOneOf (3, 4, 5)
 
         val e1 = intercept[TestFailedException] {
-          all (lists) should newContain atLeastOneOf (1, 3, 4)
+          all (lists) should contain atLeastOneOf (1, 3, 4)
         }
         e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -203,7 +203,7 @@ The bottom two don't, but still I don't want to support that in general.
                                    "in " + decorateToStringValue(lists)))
 
         val e2 = intercept[TestFailedException] {
-          all (nils) should newContain atLeastOneOf ("ho", "hey", "howdy")
+          all (nils) should contain atLeastOneOf ("ho", "hey", "howdy")
         }
         e2.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
         e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -212,7 +212,7 @@ The bottom two don't, but still I don't want to support that in general.
                                    "in " + decorateToStringValue(nils)))
 
         val e4 = intercept[TestFailedException] {
-          all (listsNil) should newContain atLeastOneOf (1, 3, 4)
+          all (listsNil) should contain atLeastOneOf (1, 3, 4)
         }
         e4.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
         e4.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -222,25 +222,25 @@ The bottom two don't, but still I don't want to support that in general.
       }
 
       def `should use the implicit Equality in scope` {
-        all (hiLists) should newContain atLeastOneOf ("hi")
+        all (hiLists) should contain atLeastOneOf ("hi")
         intercept[TestFailedException] {
-          all (hiLists) should newContain atLeastOneOf ("ho")
+          all (hiLists) should contain atLeastOneOf ("ho")
         }
         implicit val ise = invertedStringEquality
-        all (hiLists) should newContain atLeastOneOf ("ho")
+        all (hiLists) should contain atLeastOneOf ("ho")
         intercept[TestFailedException] {
-          all (hiLists) should newContain atLeastOneOf ("hi")
+          all (hiLists) should contain atLeastOneOf ("hi")
         }
       }
       def `should use an explicitly provided Equality` {
-        (all (hiLists) should newContain atLeastOneOf ("ho")) (decided by invertedStringEquality)
+        (all (hiLists) should contain atLeastOneOf ("ho")) (decided by invertedStringEquality)
         intercept[TestFailedException] {
-          (all (hiLists) should newContain atLeastOneOf ("hi")) (decided by invertedStringEquality)
+          (all (hiLists) should contain atLeastOneOf ("hi")) (decided by invertedStringEquality)
         }
         implicit val ise = invertedStringEquality
-        (all (hiLists) should newContain atLeastOneOf ("hi")) (decided by defaultEquality[String])
+        (all (hiLists) should contain atLeastOneOf ("hi")) (decided by defaultEquality[String])
         intercept[TestFailedException] {
-          (all (hiLists) should newContain atLeastOneOf ("ho")) (decided by defaultEquality[String])
+          (all (hiLists) should contain atLeastOneOf ("ho")) (decided by defaultEquality[String])
         }
       }
     }
@@ -248,15 +248,15 @@ The bottom two don't, but still I don't want to support that in general.
     object `when used with (contain atLeastOneOf (...)) syntax` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        all (list1s) should (newContain atLeastOneOf (1, 3, 4))
-        atLeast (2, lists) should (newContain atLeastOneOf (1, 3, 4))
-        atMost (2, lists) should (newContain atLeastOneOf (2, 3, 4))
-        no (lists) should (newContain atLeastOneOf (3, 4, 5))
-        no (nils) should (newContain atLeastOneOf (1, 3, 4))
-        no (listsNil) should (newContain atLeastOneOf (3, 4, 5))
+        all (list1s) should (contain atLeastOneOf (1, 3, 4))
+        atLeast (2, lists) should (contain atLeastOneOf (1, 3, 4))
+        atMost (2, lists) should (contain atLeastOneOf (2, 3, 4))
+        no (lists) should (contain atLeastOneOf (3, 4, 5))
+        no (nils) should (contain atLeastOneOf (1, 3, 4))
+        no (listsNil) should (contain atLeastOneOf (3, 4, 5))
 
         val e1 = intercept[TestFailedException] {
-          all (lists) should (newContain atLeastOneOf (1, 3, 4))
+          all (lists) should (contain atLeastOneOf (1, 3, 4))
         }
         e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -265,7 +265,7 @@ The bottom two don't, but still I don't want to support that in general.
                                    "in " + decorateToStringValue(lists)))
 
         val e2 = intercept[TestFailedException] {
-          all (nils) should (newContain atLeastOneOf ("ho", "hey", "howdy"))
+          all (nils) should (contain atLeastOneOf ("ho", "hey", "howdy"))
         }
         e2.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
         e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -274,7 +274,7 @@ The bottom two don't, but still I don't want to support that in general.
                                    "in " + decorateToStringValue(nils)))
 
         val e4 = intercept[TestFailedException] {
-          all (listsNil) should (newContain atLeastOneOf (1, 3, 4))
+          all (listsNil) should (contain atLeastOneOf (1, 3, 4))
         }
         e4.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
         e4.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -284,25 +284,25 @@ The bottom two don't, but still I don't want to support that in general.
       }
 
       def `should use the implicit Equality in scope` {
-        all (hiLists) should (newContain atLeastOneOf ("hi"))
+        all (hiLists) should (contain atLeastOneOf ("hi"))
         intercept[TestFailedException] {
-          all (hiLists) should (newContain atLeastOneOf ("ho"))
+          all (hiLists) should (contain atLeastOneOf ("ho"))
         }
         implicit val ise = invertedStringEquality
-        all (hiLists) should (newContain atLeastOneOf ("ho"))
+        all (hiLists) should (contain atLeastOneOf ("ho"))
         intercept[TestFailedException] {
-          all (hiLists) should (newContain atLeastOneOf ("hi"))
+          all (hiLists) should (contain atLeastOneOf ("hi"))
         }
       }
       def `should use an explicitly provided Equality` {
-        (all (hiLists) should (newContain atLeastOneOf ("ho"))) (decided by invertedStringEquality)
+        (all (hiLists) should (contain atLeastOneOf ("ho"))) (decided by invertedStringEquality)
         intercept[TestFailedException] {
-          (all (hiLists) should (newContain atLeastOneOf ("hi"))) (decided by invertedStringEquality)
+          (all (hiLists) should (contain atLeastOneOf ("hi"))) (decided by invertedStringEquality)
         }
         implicit val ise = invertedStringEquality
-        (all (hiLists) should (newContain atLeastOneOf ("hi"))) (decided by defaultEquality[String])
+        (all (hiLists) should (contain atLeastOneOf ("hi"))) (decided by defaultEquality[String])
         intercept[TestFailedException] {
-          (all (hiLists) should (newContain atLeastOneOf ("ho"))) (decided by defaultEquality[String])
+          (all (hiLists) should (contain atLeastOneOf ("ho"))) (decided by defaultEquality[String])
         }
       }
     }
@@ -310,14 +310,14 @@ The bottom two don't, but still I don't want to support that in general.
 /*
  I purposely don't want to support this syntax:
 
-scala> all (list1s) should newContain (atLeastOneOf (1, 3, 4))
+scala> all (list1s) should contain (atLeastOneOf (1, 3, 4))
 <console>:15: error: org.scalatest.words.NewContainWord does not take parameters
-              all (list1s) should newContain (atLeastOneOf (1, 3, 4))
+              all (list1s) should contain (atLeastOneOf (1, 3, 4))
                                              ^
 
-scala> all (list1s) should (newContain (atLeastOneOf (1, 3, 4)))
+scala> all (list1s) should (contain (atLeastOneOf (1, 3, 4)))
 <console>:15: error: org.scalatest.words.NewContainWord does not take parameters
-              all (list1s) should (newContain (atLeastOneOf (1, 3, 4)))
+              all (list1s) should (contain (atLeastOneOf (1, 3, 4)))
                                               ^
 
  Reason is that I don't want people putting parentheses between contain and atLeastOneOf, etc. This will not compile.
@@ -325,9 +325,9 @@ scala> all (list1s) should (newContain (atLeastOneOf (1, 3, 4)))
     object `when used with not contain atLeastOneOf (...) syntax` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        all (toLists) should not newContain atLeastOneOf ("fee", "fie", "foe", "fum")
+        all (toLists) should not contain atLeastOneOf ("fee", "fie", "foe", "fum")
         val e1 = intercept[TestFailedException] {
-          all (toLists) should not newContain atLeastOneOf ("happy", "birthday", "to", "you")
+          all (toLists) should not contain atLeastOneOf ("happy", "birthday", "to", "you")
         }
         e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -337,19 +337,19 @@ scala> all (list1s) should (newContain (atLeastOneOf (1, 3, 4)))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = invertedStringEquality
-        all (toLists) should not newContain atLeastOneOf ("to", "to", "to", "to")
+        all (toLists) should not contain atLeastOneOf ("to", "to", "to", "to")
         intercept[TestFailedException] {
-          all (toLists) should not newContain atLeastOneOf ("fee", "fie", "foe", "fum")
+          all (toLists) should not contain atLeastOneOf ("fee", "fie", "foe", "fum")
         }
       }
       def `should use an explicitly provided Equality` {
-        (all (toLists) should not newContain atLeastOneOf ("to", "to", "to", "to")) (decided by invertedStringEquality)
+        (all (toLists) should not contain atLeastOneOf ("to", "to", "to", "to")) (decided by invertedStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) should not newContain atLeastOneOf ("fee", "fie", "foe", "fum")) (decided by invertedStringEquality)
+          (all (toLists) should not contain atLeastOneOf ("fee", "fie", "foe", "fum")) (decided by invertedStringEquality)
         }
-        all (toLists) should not newContain atLeastOneOf (" TO ", " TO ", " TO ", " TO ")
+        all (toLists) should not contain atLeastOneOf (" TO ", " TO ", " TO ", " TO ")
         intercept[TestFailedException] {
-          (all (toLists) should not newContain atLeastOneOf (" TO ", " TO ", " TO ", " TO ")) (after being lowerCased and trimmed)
+          (all (toLists) should not contain atLeastOneOf (" TO ", " TO ", " TO ", " TO ")) (after being lowerCased and trimmed)
         }
       }
     }
@@ -357,26 +357,26 @@ scala> all (list1s) should (newContain (atLeastOneOf (1, 3, 4)))
 /*
 Interesting, of these three, the last one does happen to compile and run:
 
-scala> all (toLists) should (not (newContain (atLeastOneOf ("fee", "fie", "foe", "fum"))))
+scala> all (toLists) should (not (contain (atLeastOneOf ("fee", "fie", "foe", "fum"))))
 <console>:15: error: org.scalatest.words.NewContainWord does not take parameters
-              all (toLists) should (not (newContain (atLeastOneOf ("fee", "fie", "foe", "fum"))))
+              all (toLists) should (not (contain (atLeastOneOf ("fee", "fie", "foe", "fum"))))
                                                     ^
 
-scala> all (toLists) should not (newContain (atLeastOneOf ("fee", "fie", "foe", "fum")))
+scala> all (toLists) should not (contain (atLeastOneOf ("fee", "fie", "foe", "fum")))
 <console>:15: error: org.scalatest.words.NewContainWord does not take parameters
-              all (toLists) should not (newContain (atLeastOneOf ("fee", "fie", "foe", "fum")))
+              all (toLists) should not (contain (atLeastOneOf ("fee", "fie", "foe", "fum")))
                                                    ^
 
-scala> all (toLists) should not newContain (atLeastOneOf ("fee", "fie", "foe", "fum"))
+scala> all (toLists) should not contain (atLeastOneOf ("fee", "fie", "foe", "fum"))
 
 The top two don't, but still I don't want to support that in general.
 */
     object `when used with (not contain atLeastOneOf (...)) syntax` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        all (toLists) should (not newContain atLeastOneOf ("fee", "fie", "foe", "fum"))
+        all (toLists) should (not contain atLeastOneOf ("fee", "fie", "foe", "fum"))
         val e1 = intercept[TestFailedException] {
-          all (toLists) should (not newContain atLeastOneOf ("happy", "birthday", "to", "you"))
+          all (toLists) should (not contain atLeastOneOf ("happy", "birthday", "to", "you"))
         }
         e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -386,19 +386,19 @@ The top two don't, but still I don't want to support that in general.
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = invertedStringEquality
-        all (toLists) should (not newContain atLeastOneOf ("to", "to", "to", "to"))
+        all (toLists) should (not contain atLeastOneOf ("to", "to", "to", "to"))
         intercept[TestFailedException] {
-          all (toLists) should (not newContain atLeastOneOf ("fee", "fie", "foe", "fum"))
+          all (toLists) should (not contain atLeastOneOf ("fee", "fie", "foe", "fum"))
         }
       }
       def `should use an explicitly provided Equality` {
-        (all (toLists) should (not newContain atLeastOneOf ("to", "to", "to", "to"))) (decided by invertedStringEquality)
+        (all (toLists) should (not contain atLeastOneOf ("to", "to", "to", "to"))) (decided by invertedStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) should (not newContain atLeastOneOf ("fee", "fie", "foe", "fum"))) (decided by invertedStringEquality)
+          (all (toLists) should (not contain atLeastOneOf ("fee", "fie", "foe", "fum"))) (decided by invertedStringEquality)
         }
-        all (toLists) should (not newContain atLeastOneOf (" TO ", " TO ", " TO ", " TO "))
+        all (toLists) should (not contain atLeastOneOf (" TO ", " TO ", " TO ", " TO "))
         intercept[TestFailedException] {
-          (all (toLists) should (not newContain atLeastOneOf (" TO ", " TO ", " TO ", " TO "))) (after being lowerCased and trimmed)
+          (all (toLists) should (not contain atLeastOneOf (" TO ", " TO ", " TO ", " TO "))) (after being lowerCased and trimmed)
         }
       }
     }

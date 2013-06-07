@@ -134,9 +134,9 @@ class InOrderOnlyContainMatcherEqualitySpec extends Spec with Matchers with Expl
     
     def `should take passed in custom explicit equality when 'should not contain' is used` {
       implicit val equality = new FalseEquality
-      List(1, 2, 3) should not contain inOrderOnly (1, 2, 3) (equality)
-      Array(1, 2, 3) should not contain inOrderOnly (1, 2, 3) (equality)
-      javaList(1, 2, 3) should not contain inOrderOnly (1, 2, 3) (equality)
+      (List(1, 2, 3) should not contain inOrderOnly (1, 2, 3)) (equality)
+      (Array(1, 2, 3) should not contain inOrderOnly (1, 2, 3)) (equality)
+      (javaList(1, 2, 3) should not contain inOrderOnly (1, 2, 3)) (equality)
     }
     
     def `should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with custom explicit equality` {
@@ -166,19 +166,19 @@ class InOrderOnlyContainMatcherEqualitySpec extends Spec with Matchers with Expl
         
       val left1 = List("1", " 2", "3")
       val e1 = intercept[exceptions.TestFailedException] {
-        left1 should not contain inOrderOnly (" 1", "2 ", " 3") (equality)
+        (left1 should not contain inOrderOnly (" 1", "2 ", " 3")) (equality)
       }
       checkShouldNotContainStackDepth(e1, left1, Array(" 1", "2 ", " 3").deep, thisLineNumber - 2)
         
       val left2 = Array("1", " 2", "3")
       val e2 = intercept[exceptions.TestFailedException] {
-        left2 should not contain inOrderOnly (" 1", "2 ", " 3") (equality)
+        (left2 should not contain inOrderOnly (" 1", "2 ", " 3")) (equality)
       }
       checkShouldNotContainStackDepth(e2, left2, Array(" 1", "2 ", " 3").deep, thisLineNumber - 2)
         
       val left3 = javaList("1", " 2", "3")
       val e3 = intercept[exceptions.TestFailedException] {
-        left3 should not contain inOrderOnly (" 1", "2 ", " 3") (equality)
+        (left3 should not contain inOrderOnly (" 1", "2 ", " 3")) (equality)
       }
       checkShouldNotContainStackDepth(e3, left3, Array(" 1", "2 ", " 3").deep, thisLineNumber - 2)
     }

@@ -797,7 +797,7 @@ final class NotWord {
    *                         ^
    * </pre>
    */
-  def newContain[T](oneOf: ResultOfNewOneOfApplication): MatcherFactory1[Any, Containing] = {
+  def contain[T](oneOf: ResultOfNewOneOfApplication): MatcherFactory1[Any, Containing] = {
     new MatcherFactory1[Any, Containing] {
       def matcher[T](implicit containing: Containing[T]): Matcher[T] = {
         new Matcher[T] {
@@ -824,7 +824,7 @@ final class NotWord {
    *                         ^
    * </pre>
    */
-  def newContain[T](atLeastOneOf: ResultOfAtLeastOneOfApplication): MatcherFactory1[Any, Aggregating] = {
+  def contain[T](atLeastOneOf: ResultOfAtLeastOneOfApplication): MatcherFactory1[Any, Aggregating] = {
     new MatcherFactory1[Any, Aggregating] {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
@@ -851,7 +851,7 @@ final class NotWord {
    *                         ^
    * </pre>
    */
-  def newContain[T](noneOf: ResultOfNewNoneOfApplication): MatcherFactory1[Any, Containing] = {
+  def contain[T](noneOf: ResultOfNewNoneOfApplication): MatcherFactory1[Any, Containing] = {
     new MatcherFactory1[Any, Containing] {
       def matcher[T](implicit containing: Containing[T]): Matcher[T] = {
         new Matcher[T] {
@@ -878,7 +878,7 @@ final class NotWord {
    *                                 ^
    * </pre>
    */
-  def newContain[T](theSameElementAs: ResultOfNewTheSameElementsAsApplication): MatcherFactory1[Any, Aggregating] = {
+  def contain[T](theSameElementAs: ResultOfNewTheSameElementsAsApplication): MatcherFactory1[Any, Aggregating] = {
     new MatcherFactory1[Any, Aggregating] {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
@@ -905,7 +905,7 @@ final class NotWord {
    *                                 ^
    * </pre>
    */
-  def newContain[T](theSameElementInOrderAs: ResultOfNewTheSameElementsInOrderAsApplication): MatcherFactory1[Any, Aggregating] = {
+  def contain[T](theSameElementInOrderAs: ResultOfNewTheSameElementsInOrderAsApplication): MatcherFactory1[Any, Aggregating] = {
     new MatcherFactory1[Any, Aggregating] {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
@@ -932,7 +932,7 @@ final class NotWord {
    *                                 ^
    * </pre>
    */
-  def newContain[T](only: ResultOfNewOnlyApplication): MatcherFactory1[Any, Aggregating] = {
+  def contain[T](only: ResultOfNewOnlyApplication): MatcherFactory1[Any, Aggregating] = {
     new MatcherFactory1[Any, Aggregating] {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
@@ -959,7 +959,7 @@ final class NotWord {
    *                                 ^
    * </pre>
    */
-  def newContain[T](only: ResultOfNewInOrderOnlyApplication): MatcherFactory1[Any, Aggregating] = {
+  def contain[T](only: ResultOfNewInOrderOnlyApplication): MatcherFactory1[Any, Aggregating] = {
     new MatcherFactory1[Any, Aggregating] {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
@@ -986,7 +986,7 @@ final class NotWord {
    *                                 ^
    * </pre>
    */
-  def newContain[T](only: ResultOfNewAllOfApplication): MatcherFactory1[Any, Aggregating] = {
+  def contain[T](only: ResultOfNewAllOfApplication): MatcherFactory1[Any, Aggregating] = {
     new MatcherFactory1[Any, Aggregating] {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
@@ -1013,7 +1013,7 @@ final class NotWord {
    *                                 ^
    * </pre>
    */
-  def newContain[T](only: ResultOfNewInOrderApplication): MatcherFactory1[Any, Aggregating] = {
+  def contain[T](only: ResultOfNewInOrderApplication): MatcherFactory1[Any, Aggregating] = {
     new MatcherFactory1[Any, Aggregating] {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
