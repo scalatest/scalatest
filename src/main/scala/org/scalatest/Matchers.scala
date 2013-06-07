@@ -1011,7 +1011,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    *
    * @author Bill Venners
    */
-  final class ResultOfContainWordForJavaMap[K, V](left: java.util.Map[K, V], shouldBeTrue: Boolean) {
+  final class ResultOfContainWordForJavaMap[K, V](left: java.util.Map[K, V], shouldBeTrue: Boolean) extends ResultOfNewContainWord[java.util.Map[K, V]](left) {
 
     /**
      * This method enables the following syntax (<code>javaMap</code> is a <code>java.util.Map</code>):
@@ -1047,102 +1047,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
             left,
             expectedValue)
         )
-    }
-    
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * javaMap should contain theSameElementsAs traversable
-     *                        ^
-     * </pre>
-     */
-    def theSameElementsAs(right: scala.collection.GenTraversable[(K, V)])(implicit equality: Equality[(K, V)]) {
-      matchContainMatcher(left, new TheSameElementsAsContainMatcher(right, equality), shouldBeTrue)
-    }
-    
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * javaMap should contain theSameElementsInOrderAs traversable
-     *                        ^
-     * </pre>
-     */
-    def theSameElementsInOrderAs(right: scala.collection.GenTraversable[(K, V)])(implicit equality: Equality[(K, V)]) {
-      matchContainMatcher(left, new TheSameElementsInOrderAsContainMatcher(right, equality), shouldBeTrue)
-    }
-    
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * javaMap should contain allOf (1, 2)
-     *                        ^
-     * </pre>
-     */
-    def allOf(right: (K, V)*)(implicit equality: Equality[(K, V)]) {
-      matchContainMatcher(left, new AllOfContainMatcher(right, equality), shouldBeTrue)
-    }
-    
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * javaMap should contain inOrder (1, 2)
-     *                        ^
-     * </pre>
-     */
-    def inOrder(right: (K, V)*)(implicit equality: Equality[(K, V)]) {
-      matchContainMatcher(left, new InOrderContainMatcher(right, equality), shouldBeTrue)
-    }
-    
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * javaMap should contain oneOf (1, 2)
-     *                        ^
-     * </pre>
-     */
-    def oneOf(right: (K, V)*)(implicit equality: Equality[(K, V)]) {
-      matchContainMatcher(left, new OneOfContainMatcher(right, equality), shouldBeTrue)
-    }
-
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * javaMap should contain only (1, 2)
-     *                        ^
-     * </pre>
-     */
-    def only(right: (K, V)*)(implicit equality: Equality[(K, V)]) {
-      matchContainMatcher(left, new OnlyContainMatcher(right, equality), shouldBeTrue)
-    }
-    
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * javaMap should contain inOrderOnly (1, 2)
-     *                        ^
-     * </pre>
-     */
-    def inOrderOnly(right: (K, V)*)(implicit equality: Equality[(K, V)]) {
-      matchContainMatcher(left, new InOrderOnlyContainMatcher(right, equality), shouldBeTrue)
-    }
-    
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * javaMap should contain noneOf (1, 2)
-     *                        ^
-     * </pre>
-     */
-    def noneOf(right: (K, V)*)(implicit equality: Equality[(K, V)]) {
-      matchContainMatcher(left, new NoneOfContainMatcher(right, equality), shouldBeTrue)
     }
     
     /**
@@ -2303,96 +2207,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * This method enables the following syntax: 
      *
      * <pre class="stHighlight">
-     * traversable should contain theSameElementsInOrderAs anotherTraversable
-     *                            ^
-     * </pre>
-     */
-    def theSameElementsInOrderAs(right: scala.collection.GenTraversable[T])(implicit equality: Equality[T]) {
-      matchContainMatcher(left, new TheSameElementsInOrderAsContainMatcher(right, equality), shouldBeTrue)
-    }
-    
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
      * traversable should contain theSameElementsInOrderAs array
      *                            ^
      * </pre>
      */
     def theSameElementsInOrderAs(right: Array[T])(implicit equality: Equality[T]) {
       matchContainMatcher(left, new TheSameElementsInOrderAsContainMatcher(new ArrayWrapper(right), equality), shouldBeTrue)
-    }
-    
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * traversable should contain allOf (1, 2)
-     *                            ^
-     * </pre>
-     */
-    def allOf(right: T*)(implicit equality: Equality[T]) {
-      matchContainMatcher(left, new AllOfContainMatcher(right, equality), shouldBeTrue)
-    }
-    
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * traversable should contain inOrder (1, 2)
-     *                            ^
-     * </pre>
-     */
-    def inOrder(right: T*)(implicit equality: Equality[T]) {
-      matchContainMatcher(left, new InOrderContainMatcher(right, equality), shouldBeTrue)
-    }
-    
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * traversable should contain oneOf (1, 2)
-     *                            ^
-     * </pre>
-     */
-    def oneOf(right: T*)(implicit equality: Equality[T]) {
-      matchContainMatcher(left, new OneOfContainMatcher(right, equality), shouldBeTrue)
-    }
-
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * traversable should contain only (1, 2)
-     *                            ^
-     * </pre>
-     */
-    def only(right: T*)(implicit equality: Equality[T]) {
-      matchContainMatcher(left, new OnlyContainMatcher(right, equality), shouldBeTrue)
-    }
-    
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * traversable should contain inOrderOnly (1, 2)
-     *                            ^
-     * </pre>
-     */
-    def inOrderOnly(right: T*)(implicit equality: Equality[T]) {
-      matchContainMatcher(left, new InOrderOnlyContainMatcher(right, equality), shouldBeTrue)
-    }
-    
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * traversable should contain noneOf (1, 2)
-     *                            ^
-     * </pre>
-     */
-    def noneOf(right: T*)(implicit equality: Equality[T]) {
-      matchContainMatcher(left, new NoneOfContainMatcher(right, equality), shouldBeTrue)
     }
     
     /**
@@ -2452,103 +2272,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    *
    * @author Bill Venners
    */
-  final class ResultOfContainWordForJavaCollection[E, L[_] <: java.util.Collection[_]](left: L[E], shouldBeTrue: Boolean) {
-    // TODO: Chee Seng, why are we casting here to java.util.Collection[E]?
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * javaCol should contain theSameElementsAs traversable
-     *                            ^
-     * </pre>
-     */
-    def theSameElementsAs(right: scala.collection.GenTraversable[E])(implicit equality: Equality[E]) {
-      matchContainMatcher(left.asInstanceOf[java.util.Collection[E]], new TheSameElementsAsContainMatcher(right, equality), shouldBeTrue)
-    }
-    
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * javaCol should contain theSameElementsInOrderAs anotherTraversable
-     *                        ^
-     * </pre>
-     */
-    def theSameElementsInOrderAs(right: scala.collection.GenTraversable[E])(implicit equality: Equality[E]) {
-      matchContainMatcher(left.asInstanceOf[java.util.Collection[E]], new TheSameElementsInOrderAsContainMatcher(right, equality), shouldBeTrue)
-    }
-    
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * javaCol should contain allOf (1, 2)
-     *                        ^
-     * </pre>
-     */
-    def allOf(right: E*)(implicit equality: Equality[E]) {
-      matchContainMatcher(left.asInstanceOf[java.util.Collection[E]], new AllOfContainMatcher(right, equality), shouldBeTrue)
-    }
-    
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * javaCol should contain inOrder (1, 2)
-     *                        ^
-     * </pre>
-     */
-    def inOrder(right: E*)(implicit equality: Equality[E]) {
-      matchContainMatcher(left.asInstanceOf[java.util.Collection[E]], new InOrderContainMatcher(right, equality), shouldBeTrue)
-    }
-    
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * javaCol should contain oneOf (1, 2)
-     *                        ^
-     * </pre>
-     */
-    def oneOf(right: E*)(implicit equality: Equality[E]) {
-      matchContainMatcher(left.asInstanceOf[java.util.Collection[E]], new OneOfContainMatcher(right, equality), shouldBeTrue)
-    }
-    
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * javaCol should contain only (1, 2)
-     *                        ^
-     * </pre>
-     */
-    def only(right: E*)(implicit equality: Equality[E]) {
-      matchContainMatcher(left.asInstanceOf[java.util.Collection[E]], new OnlyContainMatcher(right, equality), shouldBeTrue)
-    }
-    
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * javaCol should contain inOrderOnly (1, 2)
-     *                        ^
-     * </pre>
-     */
-    def inOrderOnly(right: E*)(implicit equality: Equality[E]) {
-      matchContainMatcher(left.asInstanceOf[java.util.Collection[E]], new InOrderOnlyContainMatcher(right, equality), shouldBeTrue)
-    }
-    
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * javaCol should contain noneOf (1, 2)
-     *                        ^
-     * </pre>
-     */
-    def noneOf(right: E*)(implicit equality: Equality[E]) {
-      matchContainMatcher(left.asInstanceOf[java.util.Collection[E]], new NoneOfContainMatcher(right, equality), shouldBeTrue)
-    }
+  final class ResultOfContainWordForJavaCollection[E, L[_] <: java.util.Collection[_]](left: L[E], shouldBeTrue: Boolean) extends ResultOfNewContainWord[L[E]](left) {
     
     /**
      * This method enables the following syntax (positiveNumber is a <code>AMatcher</code>):
