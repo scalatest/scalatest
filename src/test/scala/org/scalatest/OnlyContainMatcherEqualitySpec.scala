@@ -191,14 +191,14 @@ class OnlyContainMatcherEqualitySpec extends Spec with Matchers with Explicitly 
     
     def `should take passed in custom explicit equality when 'should not contain' is used` {
       implicit val equality = new FalseEquality
-      List(1, 2, 3) should not contain only (1, 2, 3) (equality)
-      Set(1, 2, 3) should not contain only (1, 2, 3) (equality)
-      Array(1, 2, 3) should not contain only (1, 2, 3) (equality)
-      javaList(1, 2, 3) should not contain only (1, 2, 3) (equality)
+      (List(1, 2, 3) should not contain only (1, 2, 3)) (equality)
+      (Set(1, 2, 3) should not contain only (1, 2, 3)) (equality)
+      (Array(1, 2, 3) should not contain only (1, 2, 3)) (equality)
+      (javaList(1, 2, 3) should not contain only (1, 2, 3)) (equality)
         
       implicit val mapEquality = new MapFalseEquality
-      Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain only (1 -> "one", 2 -> "two", 3 -> "three") (mapEquality)
-      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain only (1 -> "one", 2 -> "two", 3 -> "three") (mapEquality)
+      (Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain only (1 -> "one", 2 -> "two", 3 -> "three")) (mapEquality)
+      (javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain only (1 -> "one", 2 -> "two", 3 -> "three")) (mapEquality)
     }
     
     def `should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with custom explicit equality` {
@@ -248,25 +248,25 @@ class OnlyContainMatcherEqualitySpec extends Spec with Matchers with Explicitly 
         
       val left1 = List("1", " 2", "3")
       val e1 = intercept[exceptions.TestFailedException] {
-        left1 should not contain only (" 1", "2 ", " 3") (equality)
+        (left1 should not contain only (" 1", "2 ", " 3")) (equality)
       }
       checkShouldNotContainStackDepth(e1, left1, Array(" 1", "2 ", " 3").deep, thisLineNumber - 2)
         
       val left2 = Set("1", " 2", "3")
       val e2 = intercept[exceptions.TestFailedException] {
-        left2 should not contain only (" 1", "2 ", " 3") (equality)
+        (left2 should not contain only (" 1", "2 ", " 3")) (equality)
       }
       checkShouldNotContainStackDepth(e2, left2, Array(" 1", "2 ", " 3").deep, thisLineNumber - 2)
         
       val left3 = Array("1", " 2", "3")
       val e3 = intercept[exceptions.TestFailedException] {
-        left3 should not contain only (" 1", "2 ", " 3") (equality)
+        (left3 should not contain only (" 1", "2 ", " 3")) (equality)
       }
       checkShouldNotContainStackDepth(e3, left3, Array(" 1", "2 ", " 3").deep, thisLineNumber - 2)
         
       val left4 = javaList("1", " 2", "3")
       val e4 = intercept[exceptions.TestFailedException] {
-        left4 should not contain only (" 1", "2 ", " 3") (equality)
+        (left4 should not contain only (" 1", "2 ", " 3")) (equality)
       }
       checkShouldNotContainStackDepth(e4, left4, Array(" 1", "2 ", " 3").deep, thisLineNumber - 2)
         
@@ -274,13 +274,13 @@ class OnlyContainMatcherEqualitySpec extends Spec with Matchers with Explicitly 
        
       val left5 = Map(1 -> "one", 2 -> " two", 3 -> "three")
       val e5 = intercept[exceptions.TestFailedException] {
-        left5 should not contain only (1 -> " one ", 2 -> "two ", 3 -> " three") (mapEquality)
+        (left5 should not contain only (1 -> " one ", 2 -> "two ", 3 -> " three")) (mapEquality)
       }
       checkShouldNotContainStackDepth(e5, left5, Array(1 -> " one ", 2 -> "two ", 3 -> " three").deep, thisLineNumber - 2)
         
       val left6 = Map(1 -> "one", 2 -> " two", 3 -> "three")
       val e6 = intercept[exceptions.TestFailedException] {
-        left6 should not contain only (1 -> " one ", 2 -> "two ", 3 -> " three") (mapEquality)
+        (left6 should not contain only (1 -> " one ", 2 -> "two ", 3 -> " three")) (mapEquality)
       }
       checkShouldNotContainStackDepth(e6, left6, Array(1 -> " one ", 2 -> "two ", 3 -> " three").deep, thisLineNumber - 2)
     }

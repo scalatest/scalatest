@@ -45,245 +45,245 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends FreeSpec with Matchers 
       "when used with (contain oneOf (...) or contain oneOf (...)) syntax" - {
       
         "should do nothing if valid, else throw a TFE with an appropriate error message" in {
-        fumList should (newContain atLeastOneOf ("fee", "fie", "foe", "fum") or newContain atLeastOneOf("fie", "fee", "fum", "foe"))
-        fumList should (newContain atLeastOneOf ("fee", "fie", "foe", "fam") or newContain atLeastOneOf("fie", "fee", "fum", "foe"))
-        fumList should (newContain atLeastOneOf ("fee", "fie", "foe", "fum") or newContain atLeastOneOf("fie", "fee", "fam", "foe"))
+        fumList should (contain atLeastOneOf ("fee", "fie", "foe", "fum") or contain atLeastOneOf("fie", "fee", "fum", "foe"))
+        fumList should (contain atLeastOneOf ("fee", "fie", "foe", "fam") or contain atLeastOneOf("fie", "fee", "fum", "foe"))
+        fumList should (contain atLeastOneOf ("fee", "fie", "foe", "fum") or contain atLeastOneOf("fie", "fee", "fam", "foe"))
         val e1 = intercept[TestFailedException] {
-          fumList should (newContain atLeastOneOf ("fee", "fie", "foe", "fam") or newContain atLeastOneOf ("happy", "birthday", "to", "you"))
+          fumList should (contain atLeastOneOf ("fee", "fie", "foe", "fam") or contain atLeastOneOf ("happy", "birthday", "to", "you"))
         }
         checkMessageStackDepth(e1, Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fam\"") + ", and " + Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
       }
 
       "should use the implicit Equality in scope" in {
         implicit val ise = invertedStringEquality
-        fumList should (newContain atLeastOneOf ("happy", "birthday", "to", "you") or newContain atLeastOneOf ("have", "a", "nice", "day"))
-        fumList should (newContain atLeastOneOf ("happy", "birthday", "to", "you") or newContain atLeastOneOf ("fie", "fee", "fum", "foe"))
-        fumList should (newContain atLeastOneOf ("fie", "fee", "fum", "foe") or newContain atLeastOneOf ("happy", "birthday", "to", "you"))
+        fumList should (contain atLeastOneOf ("happy", "birthday", "to", "you") or contain atLeastOneOf ("have", "a", "nice", "day"))
+        fumList should (contain atLeastOneOf ("happy", "birthday", "to", "you") or contain atLeastOneOf ("fie", "fee", "fum", "foe"))
+        fumList should (contain atLeastOneOf ("fie", "fee", "fum", "foe") or contain atLeastOneOf ("happy", "birthday", "to", "you"))
         val e1 = intercept[TestFailedException] {
-          fumList should (newContain atLeastOneOf ("fum", "fum", "fum", "fum") or (newContain atLeastOneOf ("fum", "fum", "fum")))
+          fumList should (contain atLeastOneOf ("fum", "fum", "fum", "fum") or (contain atLeastOneOf ("fum", "fum", "fum")))
         }
         checkMessageStackDepth(e1, Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fum\", \"fum\", \"fum\", \"fum\"") + ", and " + Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fum\", \"fum\", \"fum\""), fileName, thisLineNumber - 2)
       }
       
       "should use an explicitly provided Equality" in {
-        (fumList should (newContain atLeastOneOf ("happy", "birthday", "to", "you") or newContain atLeastOneOf ("have", "a", "nice", "day"))) (decided by invertedStringEquality, decided by invertedStringEquality)
-        (fumList should (newContain atLeastOneOf ("happy", "birthday", "to", "you") or newContain atLeastOneOf ("fie", "fee", "fum", "foe"))) (decided by invertedStringEquality, decided by invertedStringEquality)
-        (fumList should (newContain atLeastOneOf ("fie", "fee", "fum", "foe") or newContain atLeastOneOf ("have", "a", "nice", "day"))) (decided by invertedStringEquality, decided by invertedStringEquality)
+        (fumList should (contain atLeastOneOf ("happy", "birthday", "to", "you") or contain atLeastOneOf ("have", "a", "nice", "day"))) (decided by invertedStringEquality, decided by invertedStringEquality)
+        (fumList should (contain atLeastOneOf ("happy", "birthday", "to", "you") or contain atLeastOneOf ("fie", "fee", "fum", "foe"))) (decided by invertedStringEquality, decided by invertedStringEquality)
+        (fumList should (contain atLeastOneOf ("fie", "fee", "fum", "foe") or contain atLeastOneOf ("have", "a", "nice", "day"))) (decided by invertedStringEquality, decided by invertedStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (newContain atLeastOneOf ("fum", "fum") or newContain atLeastOneOf ("fum", "fum", "fum"))) (decided by invertedStringEquality, decided by invertedStringEquality)
+          (fumList should (contain atLeastOneOf ("fum", "fum") or contain atLeastOneOf ("fum", "fum", "fum"))) (decided by invertedStringEquality, decided by invertedStringEquality)
         }
         checkMessageStackDepth(e1, Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fum\", \"fum\"") + ", and " + Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fum\", \"fum\", \"fum\""), fileName, thisLineNumber - 2)
-        (fumList should (newContain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM ") or newContain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
+        (fumList should (contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM ") or contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
     }
     
     "when used with (equal (...) and contain oneOf (...)) syntax" - {
       
       "should do nothing if valid, else throw a TFE with an appropriate error message" in {
-        fumList should (equal (fumList) or newContain atLeastOneOf("fie", "fee", "fum", "foe"))
-        fumList should (equal (toList) or newContain atLeastOneOf("fie", "fee", "fum", "foe"))
-        fumList should (equal (fumList) or newContain atLeastOneOf("fie", "fee", "fam", "foe"))
+        fumList should (equal (fumList) or contain atLeastOneOf("fie", "fee", "fum", "foe"))
+        fumList should (equal (toList) or contain atLeastOneOf("fie", "fee", "fum", "foe"))
+        fumList should (equal (fumList) or contain atLeastOneOf("fie", "fee", "fam", "foe"))
         val e1 = intercept[TestFailedException] {
-          fumList should (equal (toList) or newContain atLeastOneOf ("happy", "birthday", "to", "you"))
+          fumList should (equal (toList) or contain atLeastOneOf ("happy", "birthday", "to", "you"))
         }
         checkMessageStackDepth(e1, Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", and " + Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
       }
       
       "should use the implicit Equality in scope" in {
         implicit val ise = invertedStringEquality
-        fumList should (equal (fumList) or newContain atLeastOneOf ("have", "a", "nice", "day"))
-        fumList should (equal (toList) or newContain atLeastOneOf ("have", "a", "nice", "day"))
-        fumList should (equal (fumList) or newContain atLeastOneOf ("fie", "fee", "fum", "foe"))
+        fumList should (equal (fumList) or contain atLeastOneOf ("have", "a", "nice", "day"))
+        fumList should (equal (toList) or contain atLeastOneOf ("have", "a", "nice", "day"))
+        fumList should (equal (fumList) or contain atLeastOneOf ("fie", "fee", "fum", "foe"))
         val e1 = intercept[TestFailedException] {
-          fumList should (equal (toList) or (newContain atLeastOneOf ("fum", "fum", "fum")))
+          fumList should (equal (toList) or (contain atLeastOneOf ("fum", "fum", "fum")))
         }
         checkMessageStackDepth(e1, Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", and " + Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fum\", \"fum\", \"fum\""), fileName, thisLineNumber - 2)
       }
       
       "should use an explicitly provided Equality" in {
-        (fumList should (equal (toList) or newContain atLeastOneOf ("have", "a", "nice", "day"))) (decided by invertedListOfStringEquality, decided by invertedStringEquality)
-        (fumList should (equal (fumList) or newContain atLeastOneOf ("have", "a", "nice", "day"))) (decided by invertedListOfStringEquality, decided by invertedStringEquality)
-        (fumList should (equal (toList) or newContain atLeastOneOf ("fum", "fum", "fum"))) (decided by invertedListOfStringEquality, decided by invertedStringEquality)
+        (fumList should (equal (toList) or contain atLeastOneOf ("have", "a", "nice", "day"))) (decided by invertedListOfStringEquality, decided by invertedStringEquality)
+        (fumList should (equal (fumList) or contain atLeastOneOf ("have", "a", "nice", "day"))) (decided by invertedListOfStringEquality, decided by invertedStringEquality)
+        (fumList should (equal (toList) or contain atLeastOneOf ("fum", "fum", "fum"))) (decided by invertedListOfStringEquality, decided by invertedStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (equal (fumList) or newContain atLeastOneOf ("fum", "fum", "fum"))) (decided by invertedListOfStringEquality, decided by invertedStringEquality)
+          (fumList should (equal (fumList) or contain atLeastOneOf ("fum", "fum", "fum"))) (decided by invertedListOfStringEquality, decided by invertedStringEquality)
         }
         checkMessageStackDepth(e1, Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", and " + Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fum\", \"fum\", \"fum\""), fileName, thisLineNumber - 2)
-        (fumList should (equal (toList) or newContain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (decided by invertedListOfStringEquality, after being lowerCased and trimmed)
+        (fumList should (equal (toList) or contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (decided by invertedListOfStringEquality, after being lowerCased and trimmed)
       }
     }
     
     "when used with (legacyEqual (...) and contain oneOf (...)) syntax" - {
       
       "should do nothing if valid, else throw a TFE with an appropriate error message" in {
-        fumList should (legacyEqual (fumList) or newContain atLeastOneOf("fie", "fee", "fum", "foe"))
-        fumList should (legacyEqual (toList) or newContain atLeastOneOf("fie", "fee", "fum", "foe"))
-        fumList should (legacyEqual (fumList) or newContain atLeastOneOf("fie", "fee", "fam", "foe"))
+        fumList should (legacyEqual (fumList) or contain atLeastOneOf("fie", "fee", "fum", "foe"))
+        fumList should (legacyEqual (toList) or contain atLeastOneOf("fie", "fee", "fum", "foe"))
+        fumList should (legacyEqual (fumList) or contain atLeastOneOf("fie", "fee", "fam", "foe"))
         val e1 = intercept[TestFailedException] {
-          fumList should (legacyEqual (toList) or newContain atLeastOneOf ("happy", "birthday", "to", "you"))
+          fumList should (legacyEqual (toList) or contain atLeastOneOf ("happy", "birthday", "to", "you"))
         }
         checkMessageStackDepth(e1, Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", and " + Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
       }
       
       "should use the implicit Equality in scope" in {
         implicit val ise = invertedStringEquality
-        fumList should (legacyEqual (fumList) or newContain atLeastOneOf ("have", "a", "nice", "day"))
-        fumList should (legacyEqual (toList) or newContain atLeastOneOf ("have", "a", "nice", "day"))
-        fumList should (legacyEqual (fumList) or newContain atLeastOneOf ("fum", "fum", "fum"))
+        fumList should (legacyEqual (fumList) or contain atLeastOneOf ("have", "a", "nice", "day"))
+        fumList should (legacyEqual (toList) or contain atLeastOneOf ("have", "a", "nice", "day"))
+        fumList should (legacyEqual (fumList) or contain atLeastOneOf ("fum", "fum", "fum"))
         val e1 = intercept[TestFailedException] {
-          fumList should (legacyEqual (toList) or (newContain atLeastOneOf ("fum", "fum", "fum")))
+          fumList should (legacyEqual (toList) or (contain atLeastOneOf ("fum", "fum", "fum")))
         }
         checkMessageStackDepth(e1, Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", and " + Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fum\", \"fum\", \"fum\""), fileName, thisLineNumber - 2)
       }
       
       "should use an explicitly provided Equality" in {
-        (fumList should (legacyEqual (fumList) or newContain atLeastOneOf ("have", "a", "nice", "day"))) (decided by invertedStringEquality)
-        (fumList should (legacyEqual (toList) or newContain atLeastOneOf ("have", "a", "nice", "day"))) (decided by invertedStringEquality)
-        (fumList should (legacyEqual (fumList) or newContain atLeastOneOf ("fum", "fum", "fum"))) (decided by invertedStringEquality)
+        (fumList should (legacyEqual (fumList) or contain atLeastOneOf ("have", "a", "nice", "day"))) (decided by invertedStringEquality)
+        (fumList should (legacyEqual (toList) or contain atLeastOneOf ("have", "a", "nice", "day"))) (decided by invertedStringEquality)
+        (fumList should (legacyEqual (fumList) or contain atLeastOneOf ("fum", "fum", "fum"))) (decided by invertedStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (legacyEqual (toList) or newContain atLeastOneOf ("fum", "fum", "fum"))) (decided by invertedStringEquality)
+          (fumList should (legacyEqual (toList) or contain atLeastOneOf ("fum", "fum", "fum"))) (decided by invertedStringEquality)
         }
         checkMessageStackDepth(e1, Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", and " + Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fum\", \"fum\", \"fum\""), fileName, thisLineNumber - 2)
-        (fumList should (legacyEqual (fumList) or newContain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
+        (fumList should (legacyEqual (fumList) or contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
       }
     }
 
     "when used with (contain oneOf (...) and legacyEqual (...)) syntax" - {
       
       "should do nothing if valid, else throw a TFE with an appropriate error message" in {
-        fumList should (newContain atLeastOneOf("fie", "fee", "fum", "foe") or legacyEqual (fumList))
-        fumList should (newContain atLeastOneOf("fie", "fee", "fam", "foe") or legacyEqual (fumList))
-        fumList should (newContain atLeastOneOf("fie", "fee", "fum", "foe") or legacyEqual (toList))
+        fumList should (contain atLeastOneOf("fie", "fee", "fum", "foe") or legacyEqual (fumList))
+        fumList should (contain atLeastOneOf("fie", "fee", "fam", "foe") or legacyEqual (fumList))
+        fumList should (contain atLeastOneOf("fie", "fee", "fum", "foe") or legacyEqual (toList))
         val e1 = intercept[TestFailedException] {
-          fumList should (newContain atLeastOneOf ("fee", "fie", "foe", "fam") or legacyEqual (toList))
+          fumList should (contain atLeastOneOf ("fee", "fie", "foe", "fam") or legacyEqual (toList))
         }
         checkMessageStackDepth(e1, Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fam\"") + ", and " + Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
       }
       
       "should use the implicit Equality in scope" in {
         implicit val ise = invertedStringEquality
-        fumList should (newContain atLeastOneOf ("have", "a", "nice", "day") or legacyEqual (fumList))
-        fumList should (newContain atLeastOneOf ("fum", "fum", "fum") or legacyEqual (fumList))
-        fumList should (newContain atLeastOneOf ("have", "a", "nice", "day") or legacyEqual (toList))
+        fumList should (contain atLeastOneOf ("have", "a", "nice", "day") or legacyEqual (fumList))
+        fumList should (contain atLeastOneOf ("fum", "fum", "fum") or legacyEqual (fumList))
+        fumList should (contain atLeastOneOf ("have", "a", "nice", "day") or legacyEqual (toList))
         val e1 = intercept[TestFailedException] {
-          fumList should (newContain atLeastOneOf ("fum", "fum", "fum") or legacyEqual (toList))
+          fumList should (contain atLeastOneOf ("fum", "fum", "fum") or legacyEqual (toList))
         }
         checkMessageStackDepth(e1, Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fum\", \"fum\", \"fum\"") + ", and " + Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
       }
       
       "should use an explicitly provided Equality" in {
-        (fumList should (newContain atLeastOneOf ("have", "a", "nice", "day") or legacyEqual (fumList))) (decided by invertedStringEquality)
-        (fumList should (newContain atLeastOneOf ("fum", "fum", "fum") or legacyEqual (fumList))) (decided by invertedStringEquality)
-        (fumList should (newContain atLeastOneOf ("have", "a", "nice", "day") or legacyEqual (toList))) (decided by invertedStringEquality)
+        (fumList should (contain atLeastOneOf ("have", "a", "nice", "day") or legacyEqual (fumList))) (decided by invertedStringEquality)
+        (fumList should (contain atLeastOneOf ("fum", "fum", "fum") or legacyEqual (fumList))) (decided by invertedStringEquality)
+        (fumList should (contain atLeastOneOf ("have", "a", "nice", "day") or legacyEqual (toList))) (decided by invertedStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (newContain atLeastOneOf ("fum", "fum", "fum") or legacyEqual (toList))) (decided by invertedStringEquality)
+          (fumList should (contain atLeastOneOf ("fum", "fum", "fum") or legacyEqual (toList))) (decided by invertedStringEquality)
         }
         checkMessageStackDepth(e1, Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fum\", \"fum\", \"fum\"") + ", and " + Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
-        (fumList should (newContain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM ") or legacyEqual (fumList))) (after being lowerCased and trimmed)
+        (fumList should (contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM ") or legacyEqual (fumList))) (after being lowerCased and trimmed)
       }
     }
     
     "when used with (not contain oneOf (...) and not contain oneOf (...)) syntax" - {
       
       "should do nothing if valid, else throw a TFE with an appropriate error message" in {
-        fumList should (not newContain atLeastOneOf ("fee", "fie", "foe", "fuu") or not newContain atLeastOneOf("fie", "fee", "fuu", "foe"))
-        fumList should (not newContain atLeastOneOf ("fee", "fie", "foe", "fum") or not newContain atLeastOneOf("fie", "fee", "fuu", "foe"))
-        fumList should (not newContain atLeastOneOf ("fee", "fie", "foe", "fuu") or not newContain atLeastOneOf("fie", "fee", "fum", "foe"))
+        fumList should (not contain atLeastOneOf ("fee", "fie", "foe", "fuu") or not contain atLeastOneOf("fie", "fee", "fuu", "foe"))
+        fumList should (not contain atLeastOneOf ("fee", "fie", "foe", "fum") or not contain atLeastOneOf("fie", "fee", "fuu", "foe"))
+        fumList should (not contain atLeastOneOf ("fee", "fie", "foe", "fuu") or not contain atLeastOneOf("fie", "fee", "fum", "foe"))
         val e1 = intercept[TestFailedException] {
-          fumList should (not newContain atLeastOneOf ("fee", "fie", "foe", "fum") or not newContain atLeastOneOf ("fee", "fie", "foe", "fum"))
+          fumList should (not contain atLeastOneOf ("fee", "fie", "foe", "fum") or not contain atLeastOneOf ("fee", "fie", "foe", "fum"))
         }
         checkMessageStackDepth(e1, Resources("containedAtLeastOneOf", decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fum\"") + ", and " + Resources("containedAtLeastOneOf", decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fum\""), fileName, thisLineNumber - 2)
       }
       
       "should use the implicit Equality in scope" in {
         implicit val ise = invertedStringEquality
-        fumList should (not newContain atLeastOneOf ("fum", "fum", "fum", "fum") or not newContain atLeastOneOf ("fum", "fum", "fum"))
-        fumList should (not newContain atLeastOneOf ("happy", "birthday", "to", "you") or not newContain atLeastOneOf ("fum", "fum", "fum"))
-        fumList should (not newContain atLeastOneOf ("fum", "fum", "fum", "fum") or not newContain atLeastOneOf ("happy", "birthday", "to", "you"))
+        fumList should (not contain atLeastOneOf ("fum", "fum", "fum", "fum") or not contain atLeastOneOf ("fum", "fum", "fum"))
+        fumList should (not contain atLeastOneOf ("happy", "birthday", "to", "you") or not contain atLeastOneOf ("fum", "fum", "fum"))
+        fumList should (not contain atLeastOneOf ("fum", "fum", "fum", "fum") or not contain atLeastOneOf ("happy", "birthday", "to", "you"))
         val e1 = intercept[TestFailedException] {
-          fumList should (not newContain atLeastOneOf ("happy", "birthday", "to", "you") or not newContain atLeastOneOf ("have", "a", "nice", "day"))
+          fumList should (not contain atLeastOneOf ("happy", "birthday", "to", "you") or not contain atLeastOneOf ("have", "a", "nice", "day"))
         }
         checkMessageStackDepth(e1, Resources("containedAtLeastOneOf", decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\"") + ", and " + Resources("containedAtLeastOneOf", decorateToStringValue(fumList), "\"have\", \"a\", \"nice\", \"day\""), fileName, thisLineNumber - 2)
       }
       
       "should use an explicitly provided Equality" in {
-        (fumList should (not newContain atLeastOneOf ("fum", "fum", "fum", "fum") or not newContain atLeastOneOf ("fum", "fum", "fum"))) (decided by invertedStringEquality, decided by invertedStringEquality)
-        (fumList should (not newContain atLeastOneOf ("happy", "birthday", "to", "you") or not newContain atLeastOneOf ("fum", "fum", "fum"))) (decided by invertedStringEquality, decided by invertedStringEquality)
-        (fumList should (not newContain atLeastOneOf ("fum", "fum", "fum", "fum") or not newContain atLeastOneOf ("happy", "birthday", "to", "you"))) (decided by invertedStringEquality, decided by invertedStringEquality)
+        (fumList should (not contain atLeastOneOf ("fum", "fum", "fum", "fum") or not contain atLeastOneOf ("fum", "fum", "fum"))) (decided by invertedStringEquality, decided by invertedStringEquality)
+        (fumList should (not contain atLeastOneOf ("happy", "birthday", "to", "you") or not contain atLeastOneOf ("fum", "fum", "fum"))) (decided by invertedStringEquality, decided by invertedStringEquality)
+        (fumList should (not contain atLeastOneOf ("fum", "fum", "fum", "fum") or not contain atLeastOneOf ("happy", "birthday", "to", "you"))) (decided by invertedStringEquality, decided by invertedStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (not newContain atLeastOneOf ("happy", "birthday", "to", "you") or not newContain atLeastOneOf ("have", "a", "nice", "day"))) (decided by invertedStringEquality, decided by invertedStringEquality)
+          (fumList should (not contain atLeastOneOf ("happy", "birthday", "to", "you") or not contain atLeastOneOf ("have", "a", "nice", "day"))) (decided by invertedStringEquality, decided by invertedStringEquality)
         }
         checkMessageStackDepth(e1, Resources("containedAtLeastOneOf", decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\"") + ", and " + Resources("containedAtLeastOneOf", decorateToStringValue(fumList), "\"have\", \"a\", \"nice\", \"day\""), fileName, thisLineNumber - 2)
-        (fumList should (newContain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM ") or newContain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
+        (fumList should (contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM ") or contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
     }
     
     "when used with (not equal (...) and not contain oneOf (...)) syntax" - {
       
       "should do nothing if valid, else throw a TFE with an appropriate error message" in {
-        fumList should (not equal (toList) or not newContain atLeastOneOf("fie", "fee", "fuu", "foe"))
-        fumList should (not equal (fumList) or not newContain atLeastOneOf("fie", "fee", "fuu", "foe"))
-        fumList should (not equal (toList) or not newContain atLeastOneOf("fie", "fee", "fum", "foe"))
+        fumList should (not equal (toList) or not contain atLeastOneOf("fie", "fee", "fuu", "foe"))
+        fumList should (not equal (fumList) or not contain atLeastOneOf("fie", "fee", "fuu", "foe"))
+        fumList should (not equal (toList) or not contain atLeastOneOf("fie", "fee", "fum", "foe"))
         val e1 = intercept[TestFailedException] {
-          fumList should (not equal (fumList) or not newContain atLeastOneOf ("fee", "fie", "foe", "fum"))
+          fumList should (not equal (fumList) or not contain atLeastOneOf ("fee", "fie", "foe", "fum"))
         }
         checkMessageStackDepth(e1, Resources("equaled", decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", and " + Resources("containedAtLeastOneOf", decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fum\""), fileName, thisLineNumber - 2)
       }
       
       "should use the implicit Equality in scope" in {
         implicit val ise = invertedStringEquality
-        fumList should (not equal (toList) or not newContain atLeastOneOf ("fum", "fum", "fum"))
-        fumList should (not equal (fumList) or not newContain atLeastOneOf ("fum", "fum", "fum"))
-        fumList should (not equal (toList) or not newContain atLeastOneOf ("fie", "fee", "fuu", "foe"))
+        fumList should (not equal (toList) or not contain atLeastOneOf ("fum", "fum", "fum"))
+        fumList should (not equal (fumList) or not contain atLeastOneOf ("fum", "fum", "fum"))
+        fumList should (not equal (toList) or not contain atLeastOneOf ("fie", "fee", "fuu", "foe"))
         val e2 = intercept[TestFailedException] {
-          fumList should (not equal (fumList) or (not newContain atLeastOneOf ("happy", "birthday", "to", "you")))
+          fumList should (not equal (fumList) or (not contain atLeastOneOf ("happy", "birthday", "to", "you")))
         }
         checkMessageStackDepth(e2, Resources("equaled", decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", and " + Resources("containedAtLeastOneOf", decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
       }
       
       "should use an explicitly provided Equality" in {
-        (fumList should (not equal (fumList) or not newContain atLeastOneOf ("fum", "fum", "fum"))) (decided by invertedListOfStringEquality, decided by invertedStringEquality)
-        (fumList should (not equal (toList) or not newContain atLeastOneOf ("fum", "fum", "fum"))) (decided by invertedListOfStringEquality, decided by invertedStringEquality)
-        (fumList should (not equal (fumList) or not newContain atLeastOneOf ("happy", "birthday", "to", "you"))) (decided by invertedListOfStringEquality, decided by invertedStringEquality)
+        (fumList should (not equal (fumList) or not contain atLeastOneOf ("fum", "fum", "fum"))) (decided by invertedListOfStringEquality, decided by invertedStringEquality)
+        (fumList should (not equal (toList) or not contain atLeastOneOf ("fum", "fum", "fum"))) (decided by invertedListOfStringEquality, decided by invertedStringEquality)
+        (fumList should (not equal (fumList) or not contain atLeastOneOf ("happy", "birthday", "to", "you"))) (decided by invertedListOfStringEquality, decided by invertedStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (not equal (toList) or not newContain atLeastOneOf ("happy", "birthday", "to", "you"))) (decided by invertedListOfStringEquality, decided by invertedStringEquality)
+          (fumList should (not equal (toList) or not contain atLeastOneOf ("happy", "birthday", "to", "you"))) (decided by invertedListOfStringEquality, decided by invertedStringEquality)
         }
         checkMessageStackDepth(e1, Resources("equaled", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", and " + Resources("containedAtLeastOneOf", decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
-        (fumList should (not newContain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUU ") or not newContain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUU "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
+        (fumList should (not contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUU ") or not contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUU "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
     }
     
     "when used with (not be (...) and not contain oneOf (...)) syntax" - {
       
       "should do nothing if valid, else throw a TFE with an appropriate error message" in {
-        fumList should (not be (toList) or not newContain atLeastOneOf("fie", "fee", "fuu", "foe"))
-        fumList should (not be (fumList) or not newContain atLeastOneOf("fie", "fee", "fuu", "foe"))
-        fumList should (not be (toList) or not newContain atLeastOneOf("fee", "fie", "foe", "fum"))
+        fumList should (not be (toList) or not contain atLeastOneOf("fie", "fee", "fuu", "foe"))
+        fumList should (not be (fumList) or not contain atLeastOneOf("fie", "fee", "fuu", "foe"))
+        fumList should (not be (toList) or not contain atLeastOneOf("fee", "fie", "foe", "fum"))
         val e1 = intercept[TestFailedException] {
-          fumList should (not be (fumList) or not newContain atLeastOneOf ("fee", "fie", "foe", "fum"))
+          fumList should (not be (fumList) or not contain atLeastOneOf ("fee", "fie", "foe", "fum"))
         }
         checkMessageStackDepth(e1, Resources("wasEqualTo", decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", and " + Resources("containedAtLeastOneOf", decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fum\""), fileName, thisLineNumber - 2)
       }
       
       "should use the implicit Equality in scope" in {
         implicit val ise = invertedStringEquality
-        fumList should (not be (toList) or not newContain atLeastOneOf ("fum", "fum", "fum"))
-        fumList should (not be (fumList) or not newContain atLeastOneOf ("fum", "fum", "fum"))
-        fumList should (not be (toList) or not newContain atLeastOneOf ("happy", "birthday", "to", "you"))
+        fumList should (not be (toList) or not contain atLeastOneOf ("fum", "fum", "fum"))
+        fumList should (not be (fumList) or not contain atLeastOneOf ("fum", "fum", "fum"))
+        fumList should (not be (toList) or not contain atLeastOneOf ("happy", "birthday", "to", "you"))
         val e1 = intercept[TestFailedException] {
-          fumList should (not be (fumList) or (not newContain atLeastOneOf ("happy", "birthday", "to", "you")))
+          fumList should (not be (fumList) or (not contain atLeastOneOf ("happy", "birthday", "to", "you")))
         }
         checkMessageStackDepth(e1, Resources("wasEqualTo", decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", and " + Resources("containedAtLeastOneOf", decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
       }
       
       "should use an explicitly provided Equality" in {
-        (fumList should (not be (toList) or not newContain atLeastOneOf ("fum", "fum", "fum"))) (decided by invertedStringEquality)
-        (fumList should (not be (fumList) or not newContain atLeastOneOf ("fum", "fum", "fum"))) (decided by invertedStringEquality)
-        (fumList should (not be (toList) or not newContain atLeastOneOf ("happy", "birthday", "to", "you"))) (decided by invertedStringEquality)
+        (fumList should (not be (toList) or not contain atLeastOneOf ("fum", "fum", "fum"))) (decided by invertedStringEquality)
+        (fumList should (not be (fumList) or not contain atLeastOneOf ("fum", "fum", "fum"))) (decided by invertedStringEquality)
+        (fumList should (not be (toList) or not contain atLeastOneOf ("happy", "birthday", "to", "you"))) (decided by invertedStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (not be (fumList) or not newContain atLeastOneOf ("happy", "birthday", "to", "you"))) (decided by invertedStringEquality)
+          (fumList should (not be (fumList) or not contain atLeastOneOf ("happy", "birthday", "to", "you"))) (decided by invertedStringEquality)
         }
         checkMessageStackDepth(e1, Resources("wasEqualTo", decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", and " + Resources("containedAtLeastOneOf", decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
-        (fumList should (not newContain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUU ") or not newContain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUU "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
+        (fumList should (not contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUU ") or not contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUU "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
     }
     
@@ -306,16 +306,16 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends FreeSpec with Matchers 
     "when used with (contain oneOf (..) and contain oneOf (..)) syntax" - {
       
       "should do nothing if valid, else throw a TFE with an appropriate error message" in {
-        all (list1s) should (newContain atLeastOneOf (3, 2, 1) or newContain atLeastOneOf (1, 3, 4))
-        all (list1s) should (newContain atLeastOneOf (3, 2, 5) or newContain atLeastOneOf (1, 3, 4))
-        all (list1s) should (newContain atLeastOneOf (3, 2, 1) or newContain atLeastOneOf (2, 3, 4))
+        all (list1s) should (contain atLeastOneOf (3, 2, 1) or contain atLeastOneOf (1, 3, 4))
+        all (list1s) should (contain atLeastOneOf (3, 2, 5) or contain atLeastOneOf (1, 3, 4))
+        all (list1s) should (contain atLeastOneOf (3, 2, 1) or contain atLeastOneOf (2, 3, 4))
         
-        atLeast (2, lists) should (newContain atLeastOneOf (3, 1, 5) or newContain atLeastOneOf (1, 3, 4))
-        atLeast (2, lists) should (newContain atLeastOneOf (3, 6, 5) or newContain atLeastOneOf (1, 3, 4))
-        atLeast (2, lists) should (newContain atLeastOneOf (3, 1, 5) or newContain atLeastOneOf (8, 3, 4))
+        atLeast (2, lists) should (contain atLeastOneOf (3, 1, 5) or contain atLeastOneOf (1, 3, 4))
+        atLeast (2, lists) should (contain atLeastOneOf (3, 6, 5) or contain atLeastOneOf (1, 3, 4))
+        atLeast (2, lists) should (contain atLeastOneOf (3, 1, 5) or contain atLeastOneOf (8, 3, 4))
         
         val e1 = intercept[TestFailedException] {
-          all (lists) should (newContain atLeastOneOf (6, 7, 8) or newContain atLeastOneOf (1, 3, 4))
+          all (lists) should (contain atLeastOneOf (6, 7, 8) or contain atLeastOneOf (1, 3, 4))
         }
         checkMessageStackDepth(e1, allErrMsg(2, decorateToStringValue(List(2)) + " did not contain at least one of (6, 7, 8), and " + decorateToStringValue(List(2)) + " did not contain at least one of (1, 3, 4)", thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
       }
@@ -323,23 +323,23 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends FreeSpec with Matchers 
       "should use the implicit Equality in scope" in {
         implicit val ise = invertedStringEquality
         
-        all (hiLists) should (newContain atLeastOneOf ("ho") or newContain atLeastOneOf ("he"))
-        all (hiLists) should (newContain atLeastOneOf ("hi") or newContain atLeastOneOf ("he"))
-        all (hiLists) should (newContain atLeastOneOf ("ho") or newContain atLeastOneOf ("hi"))
+        all (hiLists) should (contain atLeastOneOf ("ho") or contain atLeastOneOf ("he"))
+        all (hiLists) should (contain atLeastOneOf ("hi") or contain atLeastOneOf ("he"))
+        all (hiLists) should (contain atLeastOneOf ("ho") or contain atLeastOneOf ("hi"))
         
         val e1 = intercept[TestFailedException] {
-          all (hiLists) should (newContain atLeastOneOf ("hi") or newContain atLeastOneOf ("hi"))
+          all (hiLists) should (contain atLeastOneOf ("hi") or contain atLeastOneOf ("hi"))
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("hi")) + " did not contain at least one of (\"hi\"), and " + decorateToStringValue(List("hi")) + " did not contain at least one of (\"hi\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
       
       "should use an explicitly provided Equality" in {
-        (all (hiLists) should (newContain atLeastOneOf ("ho") or newContain atLeastOneOf ("ho"))) (decided by invertedStringEquality, decided by invertedStringEquality)
-        (all (hiLists) should (newContain atLeastOneOf ("hi") or newContain atLeastOneOf ("ho"))) (decided by invertedStringEquality, decided by invertedStringEquality)
-        (all (hiLists) should (newContain atLeastOneOf ("ho") or newContain atLeastOneOf ("hi"))) (decided by invertedStringEquality, decided by invertedStringEquality)
+        (all (hiLists) should (contain atLeastOneOf ("ho") or contain atLeastOneOf ("ho"))) (decided by invertedStringEquality, decided by invertedStringEquality)
+        (all (hiLists) should (contain atLeastOneOf ("hi") or contain atLeastOneOf ("ho"))) (decided by invertedStringEquality, decided by invertedStringEquality)
+        (all (hiLists) should (contain atLeastOneOf ("ho") or contain atLeastOneOf ("hi"))) (decided by invertedStringEquality, decided by invertedStringEquality)
         
         val e1 = intercept[TestFailedException] {
-          (all (hiLists) should (newContain atLeastOneOf ("hi") or newContain atLeastOneOf ("hi"))) (decided by invertedStringEquality, decided by invertedStringEquality)
+          (all (hiLists) should (contain atLeastOneOf ("hi") or contain atLeastOneOf ("hi"))) (decided by invertedStringEquality, decided by invertedStringEquality)
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("hi")) + " did not contain at least one of (\"hi\"), and " + decorateToStringValue(List("hi")) + " did not contain at least one of (\"hi\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
@@ -348,12 +348,12 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends FreeSpec with Matchers 
     "when used with (be (...) and contain oneOf (...)) syntax" - {
       
       "should do nothing if valid, else throw a TFE with an appropriate error message" in {
-        all (list1s) should (be (List(1)) or newContain atLeastOneOf (1, 3, 4))
-        all (list1s) should (be (List(2)) or newContain atLeastOneOf (1, 3, 4))
-        all (list1s) should (be (List(1)) or newContain atLeastOneOf (2, 3, 4))
+        all (list1s) should (be (List(1)) or contain atLeastOneOf (1, 3, 4))
+        all (list1s) should (be (List(2)) or contain atLeastOneOf (1, 3, 4))
+        all (list1s) should (be (List(1)) or contain atLeastOneOf (2, 3, 4))
         
         val e1 = intercept[TestFailedException] {
-          all (list1s) should (be (List(2)) or newContain atLeastOneOf (2, 3, 8))
+          all (list1s) should (be (List(2)) or contain atLeastOneOf (2, 3, 8))
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List(1)) + " was not equal to " + decorateToStringValue(List(2)) + ", and " + decorateToStringValue(List(1)) + " did not contain at least one of (2, 3, 8)", thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
       }
@@ -361,23 +361,23 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends FreeSpec with Matchers 
       "should use the implicit Equality in scope" in {
         implicit val ise = invertedStringEquality
         
-        all (hiLists) should (be (List("hi")) or newContain atLeastOneOf ("he"))
-        all (hiLists) should (be (List("ho")) or newContain atLeastOneOf ("he"))
-        all (hiLists) should (be (List("hi")) or newContain atLeastOneOf ("hi"))
+        all (hiLists) should (be (List("hi")) or contain atLeastOneOf ("he"))
+        all (hiLists) should (be (List("ho")) or contain atLeastOneOf ("he"))
+        all (hiLists) should (be (List("hi")) or contain atLeastOneOf ("hi"))
         
         val e1 = intercept[TestFailedException] {
-          all (hiLists) should (be (List("ho")) or newContain atLeastOneOf ("hi"))
+          all (hiLists) should (be (List("ho")) or contain atLeastOneOf ("hi"))
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("hi")) + " was not equal to " + decorateToStringValue(List("ho")) + ", and " + decorateToStringValue(List("hi")) + " did not contain at least one of (\"hi\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
       
       "should use an explicitly provided Equality" in {
-        (all (hiLists) should (be (List("hi")) or newContain atLeastOneOf ("ho"))) (decided by invertedStringEquality)
-        (all (hiLists) should (be (List("ho")) or newContain atLeastOneOf ("ho"))) (decided by invertedStringEquality)
-        (all (hiLists) should (be (List("hi")) or newContain atLeastOneOf ("hi"))) (decided by invertedStringEquality)
+        (all (hiLists) should (be (List("hi")) or contain atLeastOneOf ("ho"))) (decided by invertedStringEquality)
+        (all (hiLists) should (be (List("ho")) or contain atLeastOneOf ("ho"))) (decided by invertedStringEquality)
+        (all (hiLists) should (be (List("hi")) or contain atLeastOneOf ("hi"))) (decided by invertedStringEquality)
         
         val e1 = intercept[TestFailedException] {
-          (all (hiLists) should (be (List("ho")) or newContain atLeastOneOf ("hi"))) (decided by invertedStringEquality)
+          (all (hiLists) should (be (List("ho")) or contain atLeastOneOf ("hi"))) (decided by invertedStringEquality)
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("hi")) + " was not equal to " + decorateToStringValue(List("ho")) + ", and " + decorateToStringValue(List("hi")) + " did not contain at least one of (\"hi\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
@@ -386,12 +386,12 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends FreeSpec with Matchers 
     "when used with (not contain oneOf (..) and not contain oneOf (..))" - {
       
       "should do nothing if valid, else throw a TFE with an appropriate error message" in {
-        all (list1s) should (not newContain atLeastOneOf (3, 2, 8) or not newContain atLeastOneOf (8, 3, 4))
-        all (list1s) should (not newContain atLeastOneOf (1, 2, 8) or not newContain atLeastOneOf (8, 3, 4))
-        all (list1s) should (not newContain atLeastOneOf (3, 2, 8) or not newContain atLeastOneOf (8, 3, 1))
+        all (list1s) should (not contain atLeastOneOf (3, 2, 8) or not contain atLeastOneOf (8, 3, 4))
+        all (list1s) should (not contain atLeastOneOf (1, 2, 8) or not contain atLeastOneOf (8, 3, 4))
+        all (list1s) should (not contain atLeastOneOf (3, 2, 8) or not contain atLeastOneOf (8, 3, 1))
         
         val e1 = intercept[TestFailedException] {
-          all (lists) should (not newContain atLeastOneOf (2, 6, 8) or not newContain atLeastOneOf (2, 3, 4))
+          all (lists) should (not contain atLeastOneOf (2, 6, 8) or not contain atLeastOneOf (2, 3, 4))
         }
         checkMessageStackDepth(e1, allErrMsg(2, decorateToStringValue(List(2)) + " contained at least one of (2, 6, 8), and " + decorateToStringValue(List(2)) + " contained at least one of (2, 3, 4)", thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
       }
@@ -399,23 +399,23 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends FreeSpec with Matchers 
       "should use the implicit Equality in scope" in {
         implicit val ise = invertedStringEquality
         
-        all (hiLists) should (not newContain atLeastOneOf ("hi") or not newContain atLeastOneOf ("hi"))
-        all (hiLists) should (not newContain atLeastOneOf ("ho") or not newContain atLeastOneOf ("hi"))
-        all (hiLists) should (not newContain atLeastOneOf ("hi") or not newContain atLeastOneOf ("h0"))
+        all (hiLists) should (not contain atLeastOneOf ("hi") or not contain atLeastOneOf ("hi"))
+        all (hiLists) should (not contain atLeastOneOf ("ho") or not contain atLeastOneOf ("hi"))
+        all (hiLists) should (not contain atLeastOneOf ("hi") or not contain atLeastOneOf ("h0"))
         
         val e1 = intercept[TestFailedException] {
-          all (hiLists) should (not newContain atLeastOneOf ("ho") or not newContain atLeastOneOf ("ho"))
+          all (hiLists) should (not contain atLeastOneOf ("ho") or not contain atLeastOneOf ("ho"))
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("hi")) + " contained at least one of (\"ho\"), and " + decorateToStringValue(List("hi")) + " contained at least one of (\"ho\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
       
       "should use an explicitly provided Equality" in {
-        (all (hiLists) should (not newContain atLeastOneOf ("hi") or not newContain atLeastOneOf ("hi"))) (decided by invertedStringEquality, decided by invertedStringEquality)
-        (all (hiLists) should (not newContain atLeastOneOf ("ho") or not newContain atLeastOneOf ("hi"))) (decided by invertedStringEquality, decided by invertedStringEquality)
-        (all (hiLists) should (not newContain atLeastOneOf ("hi") or not newContain atLeastOneOf ("ho"))) (decided by invertedStringEquality, decided by invertedStringEquality)
+        (all (hiLists) should (not contain atLeastOneOf ("hi") or not contain atLeastOneOf ("hi"))) (decided by invertedStringEquality, decided by invertedStringEquality)
+        (all (hiLists) should (not contain atLeastOneOf ("ho") or not contain atLeastOneOf ("hi"))) (decided by invertedStringEquality, decided by invertedStringEquality)
+        (all (hiLists) should (not contain atLeastOneOf ("hi") or not contain atLeastOneOf ("ho"))) (decided by invertedStringEquality, decided by invertedStringEquality)
         
         val e1 = intercept[TestFailedException] {
-          (all (hiLists) should (not newContain atLeastOneOf ("ho") or not newContain atLeastOneOf ("ho"))) (decided by invertedStringEquality, decided by invertedStringEquality)
+          (all (hiLists) should (not contain atLeastOneOf ("ho") or not contain atLeastOneOf ("ho"))) (decided by invertedStringEquality, decided by invertedStringEquality)
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("hi")) + " contained at least one of (\"ho\"), and " + decorateToStringValue(List("hi")) + " contained at least one of (\"ho\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
@@ -424,12 +424,12 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends FreeSpec with Matchers 
     "when used with (not be (...) and not contain oneOf (...))" - {
       
       "should do nothing if valid, else throw a TFE with an appropriate error message" in {
-        all (list1s) should (not be (List(2)) or not newContain atLeastOneOf (8, 3, 4))
-        all (list1s) should (not be (List(1)) or not newContain atLeastOneOf (8, 3, 4))
-        all (list1s) should (not be (List(2)) or not newContain atLeastOneOf (8, 3, 1))
+        all (list1s) should (not be (List(2)) or not contain atLeastOneOf (8, 3, 4))
+        all (list1s) should (not be (List(1)) or not contain atLeastOneOf (8, 3, 4))
+        all (list1s) should (not be (List(2)) or not contain atLeastOneOf (8, 3, 1))
         
         val e1 = intercept[TestFailedException] {
-          all (list1s) should (not be (List(1)) or not newContain atLeastOneOf (2, 3, 1))
+          all (list1s) should (not be (List(1)) or not contain atLeastOneOf (2, 3, 1))
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List(1)) + " was equal to " + decorateToStringValue(List(1)) + ", and " + decorateToStringValue(List(1)) + " contained at least one of (2, 3, 1)", thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
       }
@@ -437,23 +437,23 @@ class ListShouldContainAtLeastOneOfLogicalOrSpec extends FreeSpec with Matchers 
       "should use the implicit Equality in scope" in {
         implicit val ise = invertedStringEquality
         
-        all (hiLists) should (not be (List("ho")) or not newContain atLeastOneOf ("hi"))
-        all (hiLists) should (not be (List("hi")) or not newContain atLeastOneOf ("hi"))
-        all (hiLists) should (not be (List("ho")) or not newContain atLeastOneOf ("ho"))
+        all (hiLists) should (not be (List("ho")) or not contain atLeastOneOf ("hi"))
+        all (hiLists) should (not be (List("hi")) or not contain atLeastOneOf ("hi"))
+        all (hiLists) should (not be (List("ho")) or not contain atLeastOneOf ("ho"))
         
         val e1 = intercept[TestFailedException] {
-          all (hiLists) should (not be (List("hi")) or not newContain atLeastOneOf ("ho"))
+          all (hiLists) should (not be (List("hi")) or not contain atLeastOneOf ("ho"))
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("hi")) + " was equal to " + decorateToStringValue(List("hi")) + ", and " + decorateToStringValue(List("hi")) + " contained at least one of (\"ho\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
       
       "should use an explicitly provided Equality" in {
-        (all (hiLists) should (not be (List("ho")) or not newContain atLeastOneOf ("hi"))) (decided by invertedStringEquality)
-        (all (hiLists) should (not be (List("hi")) or not newContain atLeastOneOf ("hi"))) (decided by invertedStringEquality)
-        (all (hiLists) should (not be (List("ho")) or not newContain atLeastOneOf ("ho"))) (decided by invertedStringEquality)
+        (all (hiLists) should (not be (List("ho")) or not contain atLeastOneOf ("hi"))) (decided by invertedStringEquality)
+        (all (hiLists) should (not be (List("hi")) or not contain atLeastOneOf ("hi"))) (decided by invertedStringEquality)
+        (all (hiLists) should (not be (List("ho")) or not contain atLeastOneOf ("ho"))) (decided by invertedStringEquality)
         
         val e1 = intercept[TestFailedException] {
-          (all (hiLists) should (not be (List("hi")) or not newContain atLeastOneOf ("ho"))) (decided by invertedStringEquality)
+          (all (hiLists) should (not be (List("hi")) or not contain atLeastOneOf ("ho"))) (decided by invertedStringEquality)
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("hi")) + " was equal to " + decorateToStringValue(List("hi")) + ", and " + decorateToStringValue(List("hi")) + " contained at least one of (\"ho\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
