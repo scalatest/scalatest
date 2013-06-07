@@ -2291,18 +2291,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * This method enables the following syntax: 
      *
      * <pre class="stHighlight">
-     * traversable should contain theSameElementsAs anotherTraversable
-     *                            ^
-     * </pre>
-     */
-    def theSameElementsAs(right: scala.collection.GenTraversable[T])(implicit equality: Equality[T]) {
-      matchContainMatcher(left, new TheSameElementsAsContainMatcher(right, equality), shouldBeTrue)
-    }
-    
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
      * traversable should contain theSameElementsAs array
      *                            ^
      * </pre>
@@ -6840,7 +6828,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(containWord: ContainWord) = 
-      new ResultOfContainWordForTraversable(new ArrayWrapper(left), true)
+      new ResultOfContainWordForTraversable[E, ArrayWrapper](new ArrayWrapper(left), true)
 
     /**
      * This method enables syntax such as the following:

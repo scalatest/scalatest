@@ -95,6 +95,16 @@ class ResultOfNewContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    *                   ^
    * </pre>
    */
+  def theSameElementsAs(right: GenTraversable[_])(implicit aggregating: Aggregating[L]) {
+    if (aggregating.containsTheSameElementsAs(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "didNotContainSameElements" else "containedSameElements",
+          left,
+          right
+        )
+      )
+  }
   def newTheSameElementsAs(right: GenTraversable[_])(implicit aggregating: Aggregating[L]) {
     if (aggregating.containsTheSameElementsAs(left, right) != shouldBeTrue)
       throw newTestFailedException(
