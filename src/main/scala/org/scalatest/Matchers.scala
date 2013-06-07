@@ -965,7 +965,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    *
    * @author Bill Venners
    */
-  final class ResultOfContainWordForMap[K, V, L[_, _] <: scala.collection.GenMap[_, _]](val left: scala.collection.GenMap[K, V], val shouldBeTrue: Boolean) extends ContainMethods[(K, V)] {
+  final class ResultOfContainWordForMap[K, V, L[_, _] <: scala.collection.GenMap[_, _]](val left: scala.collection.GenMap[K, V], val shouldBeTrue: Boolean) extends ResultOfNewContainWord[L[K, V]](left.asInstanceOf[L[K, V]]) with ContainMethods[(K, V)] {
 
     /**
      * This method enables the following syntax:
@@ -2456,7 +2456,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    *
    * @author Bill Venners
    */
-  class ResultOfContainWordForTraversable[E, L[_] <: scala.collection.GenTraversable[_]](val left: scala.collection.GenTraversable[E], val shouldBeTrue: Boolean = true) extends ContainMethods[E]
+  class ResultOfContainWordForTraversable[E, L[_] <: scala.collection.GenTraversable[_]](val left: scala.collection.GenTraversable[E], val shouldBeTrue: Boolean = true) extends ResultOfNewContainWord[L[E]](left.asInstanceOf[L[E]]) with ContainMethods[E]
 
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
