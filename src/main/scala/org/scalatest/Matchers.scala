@@ -965,7 +965,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    *
    * @author Bill Venners
    */
-  final class ResultOfContainWordForMap[K, V](val left: scala.collection.GenMap[K, V], val shouldBeTrue: Boolean) extends ContainMethods[(K, V)] {
+  final class ResultOfContainWordForMap[K, V, L[_, _] <: scala.collection.GenMap[_, _]](val left: scala.collection.GenMap[K, V], val shouldBeTrue: Boolean) extends ContainMethods[(K, V)] {
 
     /**
      * This method enables the following syntax:
@@ -6876,7 +6876,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *     ^
      * </pre>
      */
-    def should(containWord: ContainWord): ResultOfContainWordForMap[K, V] = {
+    def should(containWord: ContainWord): ResultOfContainWordForMap[K, V, L] = {
       new ResultOfContainWordForMap(left.asInstanceOf[GenMap[K, V]], true)
     }
 
