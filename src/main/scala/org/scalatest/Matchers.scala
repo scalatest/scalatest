@@ -2375,46 +2375,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * This method enables the following syntax: 
      *
      * <pre class="stHighlight">
-     * List(1, 2, 3) should contain (oneOf(1, 2))
-     *                               ^
-     * </pre>
-     */
-    def newOneOf(xs: Any*)(implicit containing: Containing[T]) = new ResultOfNewOneOfApplication(xs)
-
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * List(1, 2, 3) should contain (atLeastOneOf(1, 2))
-     *                               ^
-     * </pre>
-     */
-    def atLeastOneOf(xs: Any*)(implicit aggregating: Aggregating[T]) = new ResultOfAtLeastOneOfApplication(xs)
-    
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * List(1, 2, 3) should contain (noneOf(1, 2))
-     *                               ^
-     * </pre>
-     */
-    def newNoneOf(xs: Any*)(implicit containing: Containing[T]) = new ResultOfNewNoneOfApplication(xs)
-
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * List(1, 2, 3) should contain (theSameElementsAs(1, 2))
-     *                               ^
-     * </pre>
-     */
-    def newTheSameElementsAs(xs: GenTraversable[_])(implicit aggregating: Aggregating[T]) = new ResultOfNewTheSameElementsAsApplication(xs)
-
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
      * traversable should contain only (1, 2)
      *                            ^
      * </pre>
