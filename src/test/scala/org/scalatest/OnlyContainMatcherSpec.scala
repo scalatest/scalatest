@@ -46,29 +46,6 @@ class OnlyContainMatcherSpec extends Spec with Matchers {
     val mapMatcherRight = Array(1 -> "one", 2 -> "two", 3 -> "three")
     val mapMatcher = new OnlyContainMatcher(mapMatcherRight, defaultEquality)
     
-    def `should work with ContainMatcher directly` {
-      
-      List(1, 2, 2, 3, 3, 3) should contain (matcher)
-      Array(1, 2, 2, 3, 3, 3) should contain (matcher)
-      Set(1, 2, 3) should contain (matcher)
-      
-      javaList(1, 2, 2, 3, 3, 3) should contain (matcher)
-      javaSet(1, 2, 3) should contain (matcher)
-      
-      List(1, 2, 2, 3, 3, 3) should contain (only(1, 2, 3))
-      Array(1, 2, 2, 3, 3, 3) should contain (only(1, 2, 3))
-      Set(1, 2, 3) should contain (only(1, 2, 3))
-      
-      javaList(1, 2, 2, 3, 3, 3) should contain (only(1, 2, 3))
-      javaSet(1, 2, 3) should contain (only(1, 2, 3))
-      
-      Map(1 -> "one", 2 -> "two", 3 -> "three") should contain (mapMatcher)
-      Map(1 -> "one", 2 -> "two", 3 -> "three") should contain only (1 -> "one", 2 -> "two", 3 -> "three")
-      
-      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should contain (mapMatcher)
-      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should contain only (1 -> "one", 2 -> "two", 3 -> "three")
-    }
-    
     def `should succeeded when left list contains part of right list` {
       List(1, 2, 2, 3, 3, 3) should contain only (1, 2, 3, 4, 5)
       Array(1, 2, 2, 3, 3, 3) should contain only (1, 2, 3, 4, 5)
@@ -220,15 +197,15 @@ class OnlyContainMatcherSpec extends Spec with Matchers {
     }
     
     def `should succeed when left List contains element not in right List` {
-      List(1, 2, 3) should not contain only (1, 2)
-      Array(1, 2, 3) should not contain only (1, 2)
-      javaList(1, 2, 3) should not contain only (1, 2)
+      List(1, 2, 3) should not contain newOnly (1, 2)
+      Array(1, 2, 3) should not contain newOnly (1, 2)
+      javaList(1, 2, 3) should not contain newOnly (1, 2)
       
-      Set(1, 2, 3) should not contain only (1, 2)
-      javaSet(1, 2, 3) should not contain only (1, 2)
+      Set(1, 2, 3) should not contain newOnly (1, 2)
+      javaSet(1, 2, 3) should not contain newOnly (1, 2)
       
-      Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain only (1 -> "one", 2 -> "two")
-      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain only (1 -> "one", 2 -> "two")
+      Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain newOnly (1 -> "one", 2 -> "two")
+      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain newOnly (1 -> "one", 2 -> "two")
     }
     
     val matcher = new OnlyContainMatcher(List(1, 2, 3), defaultEquality)
@@ -244,127 +221,48 @@ class OnlyContainMatcherSpec extends Spec with Matchers {
       javaList(1, 2, 8) should not contain matcher
       javaSet(1, 2, 8) should not contain matcher
       
-      List(1, 2, 8) should not contain only (1, 2, 3)
-      Array(1, 2, 8) should not contain only (1, 2, 3)
-      Set(1, 2, 8) should not contain only (1, 2, 3)
+      List(1, 2, 8) should not contain newOnly (1, 2, 3)
+      Array(1, 2, 8) should not contain newOnly (1, 2, 3)
+      Set(1, 2, 8) should not contain newOnly (1, 2, 3)
       
-      javaList(1, 2, 8) should not contain only (1, 2, 3)
-      javaSet(1, 2, 8) should not contain only (1, 2, 3)
+      javaList(1, 2, 8) should not contain newOnly (1, 2, 3)
+      javaSet(1, 2, 8) should not contain newOnly (1, 2, 3)
       
       Map(1 -> "one", 2 -> "two", 8 -> "eight") should not contain mapMatcher
-      Map(1 -> "one", 2 -> "two", 8 -> "eight") should not contain only (1 -> "one", 2 -> "two", 3 -> "three")
+      Map(1 -> "one", 2 -> "two", 8 -> "eight") should not contain newOnly (1 -> "one", 2 -> "two", 3 -> "three")
       
       javaMap(1 -> "one", 2 -> "two", 8 -> "eight") should not contain mapMatcher
-      javaMap(1 -> "one", 2 -> "two", 8 -> "eight") should not contain only (1 -> "one", 2 -> "two", 3 -> "three")
-    }
-    
-    def `should throw TestFailedException with correct stack depth and message when used with ContainMatcher directly` {
-      val left1 = List(1, 2, 3)
-      val left2 = Set(1, 2, 3)
-      val left3 = Map(1 -> "one", 2 -> "two", 3 -> "three")
-      val left4 = javaList(1, 2, 3)
-      val left5 = javaSet(1, 2, 3)
-      val left6 = javaMap(1 -> "one", 2 -> "two", 3 -> "three")
-      val left7 = Array(1, 2, 3)
-      val e1 = intercept[exceptions.TestFailedException] {
-        left1 should not contain matcher
-      }
-      checkStackDepth(e1, left1, Array(1, 2, 3).deep, thisLineNumber - 2)
-      
-      val e2 = intercept[exceptions.TestFailedException] {
-        left2 should not contain matcher
-      }
-      checkStackDepth(e2, left2, Array(1, 2, 3).deep, thisLineNumber - 2)
-      
-      val e3 = intercept[exceptions.TestFailedException] {
-        left1 should not contain only (1, 2, 3)
-      }
-      checkStackDepth(e3, left1, Array(1, 2, 3).deep, thisLineNumber - 2)
-      
-      val e4 = intercept[exceptions.TestFailedException] {
-        left2 should not contain only (1, 2, 3)
-      }
-      checkStackDepth(e4, left2, Array(1, 2, 3).deep, thisLineNumber - 2)
-      
-      val e5 = intercept[exceptions.TestFailedException] {
-        left3 should not contain mapMatcher
-      }
-      checkStackDepth(e5, left3, mapMatcherRight, thisLineNumber - 2)
-      
-      val e6 = intercept[exceptions.TestFailedException] {
-        left3 should not contain only (1 -> "one", 2 -> "two", 3 -> "three")
-      }
-      checkStackDepth(e6, left3, Array(1 -> "one", 2 -> "two", 3 -> "three"), thisLineNumber - 2)
-      
-      val e7 = intercept[exceptions.TestFailedException] {
-        left4 should not contain matcher
-      }
-      checkStackDepth(e7, left4, Array(1, 2, 3).deep, thisLineNumber - 2)
-      
-      val e8 = intercept[exceptions.TestFailedException] {
-        left5 should not contain matcher
-      }
-      checkStackDepth(e8, left5, Array(1, 2, 3).deep, thisLineNumber - 2)
-      
-      val e9 = intercept[exceptions.TestFailedException] {
-        left4 should not contain only (1, 2, 3)
-      }
-      checkStackDepth(e9, left4, Array(1, 2, 3).deep, thisLineNumber - 2)
-      
-      val e10 = intercept[exceptions.TestFailedException] {
-        left5 should not contain only (1, 2, 3)
-      }
-      checkStackDepth(e10, left5, Array(1, 2, 3).deep, thisLineNumber - 2)
-      
-      val e11 = intercept[exceptions.TestFailedException] {
-        left6 should not contain mapMatcher
-      }
-      checkStackDepth(e11, left6, mapMatcherRight, thisLineNumber - 2)
-      
-      val e12 = intercept[exceptions.TestFailedException] {
-        left6 should not contain only (1 -> "one", 2 -> "two", 3 -> "three")
-      }
-      checkStackDepth(e12, left6, Array(1 -> "one", 2 -> "two", 3 -> "three"), thisLineNumber - 2)
-      
-      val e13 = intercept[exceptions.TestFailedException] {
-        left7 should not contain matcher
-      }
-      checkStackDepth(e13, left7, Array(1, 2, 3).deep, thisLineNumber - 2)
-      
-      val e14 = intercept[exceptions.TestFailedException] {
-        left7 should not contain only (1, 2, 3)
-      }
-      checkStackDepth(e14, left7, Array(1, 2, 3).deep, thisLineNumber - 2)
+      javaMap(1 -> "one", 2 -> "two", 8 -> "eight") should not contain newOnly (1 -> "one", 2 -> "two", 3 -> "three")
     }
     
     def `should throw TestFailedException with correct stack depth and message when left List contains only element in right List in same order` {
       val left1 = List(1, 2, 3)
       val e1 = intercept[exceptions.TestFailedException] {
-        left1 should not contain only (1, 2, 3)
+        left1 should not contain newOnly (1, 2, 3)
       }
       checkStackDepth(e1, left1, Array(1, 2, 3).deep, thisLineNumber - 2)
       
       val left2 = javaList(1, 2, 3)
       val e2 = intercept[exceptions.TestFailedException] {
-        left2 should not contain only (1, 2, 3)
+        left2 should not contain newOnly (1, 2, 3)
       }
       checkStackDepth(e2, left2, Array(1, 2, 3).deep, thisLineNumber - 2)
       
       val left3 = Map(1 -> "one", 2 -> "two", 3 -> "three")
       val e3 = intercept[exceptions.TestFailedException] {
-        left3 should not contain only (1 -> "one", 2 -> "two", 3 -> "three")
+        left3 should not contain newOnly (1 -> "one", 2 -> "two", 3 -> "three")
       }
       checkStackDepth(e3, left3, Array(1 -> "one", 2 -> "two", 3 -> "three"), thisLineNumber - 2)
       
       val left4 = javaMap(1 -> "one", 2 -> "two", 3 -> "three")
       val e4 = intercept[exceptions.TestFailedException] {
-        left4 should not contain only (1 -> "one", 2 -> "two", 3 -> "three")
+        left4 should not contain newOnly (1 -> "one", 2 -> "two", 3 -> "three")
       }
       checkStackDepth(e4, left4, Array(1 -> "one", 2 -> "two", 3 -> "three"), thisLineNumber - 2)
       
       val left5 = Array(1, 2, 3)
       val e5 = intercept[exceptions.TestFailedException] {
-        left5 should not contain only (1, 2, 3)
+        left5 should not contain newOnly (1, 2, 3)
       }
       checkStackDepth(e5, left5, Array(1, 2, 3).deep, thisLineNumber - 2)
     }
@@ -372,31 +270,31 @@ class OnlyContainMatcherSpec extends Spec with Matchers {
     def `should throw TestFailedException with correct stack depth and message when left List contains only element in right List in different order` {
       val left1 = List(1, 2, 3)
       val e1 = intercept[exceptions.TestFailedException] {
-        left1 should not contain only (3, 2, 1)
+        left1 should not contain newOnly (3, 2, 1)
       }
       checkStackDepth(e1, left1, Array(3, 2, 1).deep, thisLineNumber - 2)
       
       val left2 = javaList(1, 2, 3)
       val e2 = intercept[exceptions.TestFailedException] {
-        left2 should not contain only (3, 2, 1)
+        left2 should not contain newOnly (3, 2, 1)
       }
       checkStackDepth(e2, left2, Array(3, 2, 1).deep, thisLineNumber - 2)
       
       val left3 = Map(1 -> "one", 2 -> "two", 3 -> "three")
       val e3 = intercept[exceptions.TestFailedException] {
-        left3 should not contain only (3 -> "three", 2 -> "two", 1 -> "one")
+        left3 should not contain newOnly (3 -> "three", 2 -> "two", 1 -> "one")
       }
       checkStackDepth(e3, left3, Array(3 -> "three", 2 -> "two", 1 -> "one"), thisLineNumber - 2)
       
       val left4 = javaMap(1 -> "one", 2 -> "two", 3 -> "three")
       val e4 = intercept[exceptions.TestFailedException] {
-        left4 should not contain only (3 -> "three", 2 -> "two", 1 -> "one")
+        left4 should not contain newOnly (3 -> "three", 2 -> "two", 1 -> "one")
       }
       checkStackDepth(e4, left4, Array(3 -> "three", 2 -> "two", 1 -> "one"), thisLineNumber - 2)
       
       val left5 = Array(1, 2, 3)
       val e5 = intercept[exceptions.TestFailedException] {
-        left5 should not contain only (3, 2, 1)
+        left5 should not contain newOnly (3, 2, 1)
       }
       checkStackDepth(e5, left5, Array(3, 2, 1).deep, thisLineNumber - 2)
     }

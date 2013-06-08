@@ -38,6 +38,16 @@ class ResultOfNewContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    *                   ^
    * </pre>
    */
+  def oneOf(right: Any*)(implicit containing: Containing[L]) {
+    if (containing.containsOneOf(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "didNotContainOneOfElements" else "containedOneOfElements",
+          left,
+          UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
+        )
+      )
+  }
   def newOneOf(right: Any*)(implicit containing: Containing[L]) {
     if (containing.containsOneOf(left, right) != shouldBeTrue)
       throw newTestFailedException(
@@ -76,6 +86,16 @@ class ResultOfNewContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    *                   ^
    * </pre>
    */
+  def noneOf(right: Any*)(implicit containing: Containing[L]) {
+    if (containing.containsNoneOf(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "containedOneOfElements" else "didNotContainOneOfElements",
+          left,
+          UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
+        )
+      )
+  }
   def newNoneOf(right: Any*)(implicit containing: Containing[L]) {
     if (containing.containsNoneOf(left, right) != shouldBeTrue)
       throw newTestFailedException(
@@ -124,6 +144,16 @@ class ResultOfNewContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    *                   ^
    * </pre>
    */
+  def theSameElementsInOrderAs(right: GenTraversable[_])(implicit aggregating: Aggregating[L]) {
+    if (aggregating.containsTheSameElementsInOrderAs(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "didNotContainSameElementsInOrder" else "containedSameElementsInOrder",
+          left,
+          right
+        )
+      )
+  }
   def newTheSameElementsInOrderAs(right: GenTraversable[_])(implicit aggregating: Aggregating[L]) {
     if (aggregating.containsTheSameElementsInOrderAs(left, right) != shouldBeTrue)
       throw newTestFailedException(
@@ -143,6 +173,16 @@ class ResultOfNewContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    *                   ^
    * </pre>
    */
+  def only(right: Any*)(implicit aggregating: Aggregating[L]) {
+    if (aggregating.containsOnly(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "didNotContainOnlyElements" else "containedOnlyElements",
+          left,
+          UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
+        )
+      )
+  }
   def newOnly(right: Any*)(implicit aggregating: Aggregating[L]) {
     if (aggregating.containsOnly(left, right) != shouldBeTrue)
       throw newTestFailedException(
@@ -162,6 +202,16 @@ class ResultOfNewContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    *                   ^
    * </pre>
    */
+  def inOrderOnly(right: Any*)(implicit aggregating: Aggregating[L]) {
+    if (aggregating.containsInOrderOnly(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "didNotContainInOrderOnlyElements" else "containedInOrderOnlyElements",
+          left,
+          UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
+        )
+      )
+  }
   def newInOrderOnly(right: Any*)(implicit aggregating: Aggregating[L]) {
     if (aggregating.containsInOrderOnly(left, right) != shouldBeTrue)
       throw newTestFailedException(
@@ -181,6 +231,16 @@ class ResultOfNewContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    *                   ^
    * </pre>
    */
+  def allOf(right: Any*)(implicit aggregating: Aggregating[L]) {
+    if (aggregating.containsAllOf(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "didNotContainAllOfElements" else "containedAllOfElements",
+          left,
+          UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
+        )
+      )
+  }
   def newAllOf(right: Any*)(implicit aggregating: Aggregating[L]) {
     if (aggregating.containsAllOf(left, right) != shouldBeTrue)
       throw newTestFailedException(
@@ -201,6 +261,16 @@ class ResultOfNewContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    * </pre>
    */
   def newInOrder(right: Any*)(implicit aggregating: Aggregating[L]) {
+    if (aggregating.containsInOrder(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "didNotContainAllOfElementsInOrder" else "containedAllOfElementsInOrder",
+          left,
+          UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
+        )
+      )
+  }
+  def inOrder(right: Any*)(implicit aggregating: Aggregating[L]) {
     if (aggregating.containsInOrder(left, right) != shouldBeTrue)
       throw newTestFailedException(
         FailureMessages(

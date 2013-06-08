@@ -36,14 +36,14 @@ class InOrderContainMatcherEqualitySpec extends Spec with Matchers with Explicit
     
     def checkShouldContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
       val leftText = FailureMessages.prettifyArrays(left)
-      e.message should be (Some(leftText + " did not contain all of (" + right.mkString(", ") + ") in order"))
+      e.message should be (Some(leftText + " did not contain all of (" + right.map(FailureMessages.decorateToStringValue).mkString(", ") + ") in order"))
       e.failedCodeFileName should be (Some("InOrderContainMatcherEqualitySpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
       
     def checkShouldNotContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
       val leftText = FailureMessages.prettifyArrays(left)
-      e.message should be (Some(leftText + " contained all of (" + right.mkString(", ") + ") in order"))
+      e.message should be (Some(leftText + " contained all of (" + right.map(FailureMessages.decorateToStringValue).mkString(", ") + ") in order"))
       e.failedCodeFileName should be (Some("InOrderContainMatcherEqualitySpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
@@ -55,9 +55,9 @@ class InOrderContainMatcherEqualitySpec extends Spec with Matchers with Explicit
     }
     
     def `should take custom implicit equality in scope when 'should not contain' is used` {
-      List("1 ", "2", "3 ") should not contain inOrder ("3", "2 ", "1")
-      Array("1 ", "2", "3 ") should not contain inOrder ("3", "2 ", "1")
-      javaList("1 ", "2", "3 ") should not contain inOrder ("3", "2 ", "1")
+      List("1 ", "2", "3 ") should not contain newInOrder ("3", "2 ", "1")
+      Array("1 ", "2", "3 ") should not contain newInOrder ("3", "2 ", "1")
+      javaList("1 ", "2", "3 ") should not contain newInOrder ("3", "2 ", "1")
     }
     
     def `should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with custom implicit equality in scope` {
@@ -85,19 +85,19 @@ class InOrderContainMatcherEqualitySpec extends Spec with Matchers with Explicit
 
       val left1 = List("1 ", "2", "3 ")
       val e1 = intercept[exceptions.TestFailedException] {
-        left1 should not contain inOrder ("1", "2 ", "3")
+        left1 should not contain newInOrder ("1", "2 ", "3")
       }
       checkShouldNotContainStackDepth(e1, left1, Array("1", "2 ", "3").deep, thisLineNumber - 2)
         
       val left2 = Array("1 ", "2", "3 ")
       val e2 = intercept[exceptions.TestFailedException] {
-        left2 should not contain inOrder ("1", "2 ", "3")
+        left2 should not contain newInOrder ("1", "2 ", "3")
       }
       checkShouldNotContainStackDepth(e2, left2, Array("1", "2 ", "3").deep, thisLineNumber - 2)
         
       val left3 = javaList("1 ", "2", "3 ")
       val e3 = intercept[exceptions.TestFailedException] {
-        left3 should not contain inOrder ("1", "2 ", "3")
+        left3 should not contain newInOrder ("1", "2 ", "3")
       }
       checkShouldNotContainStackDepth(e3, left3, Array("1", "2 ", "3").deep, thisLineNumber - 2)
     }
@@ -109,9 +109,9 @@ class InOrderContainMatcherEqualitySpec extends Spec with Matchers with Explicit
     }
     
     def `should take passed in custom explicit equality when 'should not contain' is used` {
-      List("1 ", "2", "3 ") should not contain inOrder ("3", "2 ", "1") (equality)
-      Array("1 ", "2", "3 ") should not contain inOrder ("3", "2 ", "1") (equality)
-      javaList("1 ", "2", "3 ") should not contain inOrder ("3", "2 ", "1") (equality)
+      (List("1 ", "2", "3 ") should not contain newInOrder ("3", "2 ", "1")) (equality)
+      (Array("1 ", "2", "3 ") should not contain newInOrder ("3", "2 ", "1")) (equality)
+      (javaList("1 ", "2", "3 ") should not contain newInOrder ("3", "2 ", "1")) (equality)
     }
     
     def `should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with custom explicit equality` {
@@ -139,23 +139,21 @@ class InOrderContainMatcherEqualitySpec extends Spec with Matchers with Explicit
       
       val left1 = List("1 ", "2", "3 ")
       val e1 = intercept[exceptions.TestFailedException] {
-        left1 should not contain inOrder ("1", "2 ", "3") (equality)
+        (left1 should not contain newInOrder ("1", "2 ", "3")) (equality)
       }
       checkShouldNotContainStackDepth(e1, left1, Array("1", "2 ", "3").deep, thisLineNumber - 2)
         
       val left2 = Array("1 ", "2", "3 ")
       val e2 = intercept[exceptions.TestFailedException] {
-        left2 should not contain inOrder ("1", "2 ", "3") (equality)
+        (left2 should not contain newInOrder ("1", "2 ", "3")) (equality)
       }
       checkShouldNotContainStackDepth(e2, left2, Array("1", "2 ", "3").deep, thisLineNumber - 2)
         
       val left3 = javaList("1 ", "2", "3 ")
       val e3 = intercept[exceptions.TestFailedException] {
-        left3 should not contain inOrder ("1", "2 ", "3") (equality)
+        (left3 should not contain newInOrder ("1", "2 ", "3")) (equality)
       }
       checkShouldNotContainStackDepth(e3, left3, Array("1", "2 ", "3").deep, thisLineNumber - 2)
     }
-    
   }
-  
 }

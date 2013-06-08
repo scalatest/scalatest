@@ -77,9 +77,9 @@ class TheSameElementsInOrderAsContainMatcherEqualitySpec extends Spec with Match
     
     def `should take custom implicit equality in scope when 'should not contain' is used` {
       implicit val equality = new FalseEquality
-      List(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 2, 3))
-      Array(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 2, 3))
-      javaList(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 2, 3))
+      List(1, 2, 3) should not contain newTheSameElementsInOrderAs (List(1, 2, 3))
+      Array(1, 2, 3) should not contain newTheSameElementsInOrderAs (List(1, 2, 3))
+      javaList(1, 2, 3) should not contain newTheSameElementsInOrderAs (List(1, 2, 3))
     }
     
     def `should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with custom implicit equality in scope` {
@@ -113,21 +113,21 @@ class TheSameElementsInOrderAsContainMatcherEqualitySpec extends Spec with Match
       val left1 = List("1 ", " 2", "3 ")
       val right1 = List(" 1", "2 ", " 3")
       val e1 = intercept[exceptions.TestFailedException] {
-        left1 should not contain theSameElementsInOrderAs (right1)
+        left1 should not contain newTheSameElementsInOrderAs (right1)
       }
       checkShouldNotContainStackDepth(e1, left1, right1, thisLineNumber - 2)
         
       val left2 = Array("1 ", " 2", "3 ")
       val right2 = List(" 1", "2 ", " 3")
       val e2 = intercept[exceptions.TestFailedException] {
-        left2 should not contain theSameElementsInOrderAs (right2)
+        left2 should not contain newTheSameElementsInOrderAs (right2)
       }
       checkShouldNotContainStackDepth(e2, left2, right2, thisLineNumber - 2)
         
       val left3 = javaList("1 ", " 2", "3 ")
       val right3 = List(" 1", "2 ", " 3")
       val e3 = intercept[exceptions.TestFailedException] {
-        left3 should not contain theSameElementsInOrderAs (right3)
+        left3 should not contain newTheSameElementsInOrderAs (right3)
       }
       checkShouldNotContainStackDepth(e3, left3, right3, thisLineNumber - 2)
     }
@@ -141,9 +141,9 @@ class TheSameElementsInOrderAsContainMatcherEqualitySpec extends Spec with Match
     
     def `should take passed in custom explicit equality when 'should not contain' is used` {
       implicit val equality = new FalseEquality
-      List(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 2, 3)) (equality)
-      Array(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 2, 3)) (equality)
-      javaList(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 2, 3)) (equality)
+      (List(1, 2, 3) should not contain newTheSameElementsInOrderAs (List(1, 2, 3))) (equality)
+      (Array(1, 2, 3) should not contain newTheSameElementsInOrderAs (List(1, 2, 3))) (equality)
+      (javaList(1, 2, 3) should not contain newTheSameElementsInOrderAs (List(1, 2, 3))) (equality)
     }
     
     def `should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with custom explicit equality` {
@@ -177,24 +177,23 @@ class TheSameElementsInOrderAsContainMatcherEqualitySpec extends Spec with Match
       val left1 = List("1 ", " 2", "3 ")
       val right1 = List("1", "2 ", " 3")
       val e1 = intercept[exceptions.TestFailedException] {
-        left1 should not contain theSameElementsInOrderAs (right1) (equality)
+        (left1 should not contain newTheSameElementsInOrderAs (right1)) (equality)
       }
       checkShouldNotContainStackDepth(e1, left1, right1, thisLineNumber - 2)
         
       val left2 = Array("1 ", " 2", "3 ")
       val right2 = List("1", "2 ", " 3")
       val e2 = intercept[exceptions.TestFailedException] {
-        left2 should not contain theSameElementsInOrderAs (right2) (equality)
+        (left2 should not contain newTheSameElementsInOrderAs (right2)) (equality)
       }
       checkShouldNotContainStackDepth(e2, left2, right2, thisLineNumber - 2)
         
       val left3 = javaList("1 ", " 2", "3 ")
       val right3 = List("1", "2 ", " 3")
       val e3 = intercept[exceptions.TestFailedException] {
-        left3 should not contain theSameElementsInOrderAs (right3) (equality)
+        (left3 should not contain newTheSameElementsInOrderAs (right3)) (equality)
       }
       checkShouldNotContainStackDepth(e3, left3, right3, thisLineNumber - 2)
     }
   }
-  
 }

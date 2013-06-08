@@ -55,14 +55,14 @@ class OneOfContainMatcherEqualitySpec extends Spec with Matchers with Explicitly
     
     def checkShouldContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
       val leftText = FailureMessages.prettifyArrays(left)
-      e.message should be (Some(leftText + " did not contain one of (" + right.mkString(", ") + ")"))
+      e.message should be (Some(leftText + " did not contain one of (" + right.map(FailureMessages.decorateToStringValue).mkString(", ") + ")"))
       e.failedCodeFileName should be (Some("OneOfContainMatcherEqualitySpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
       
     def checkShouldNotContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
       val leftText = FailureMessages.prettifyArrays(left)
-      e.message should be (Some(leftText + " contained one of (" + right.mkString(", ") + ")"))
+      e.message should be (Some(leftText + " contained one of (" + right.map(FailureMessages.decorateToStringValue).mkString(", ") + ")"))
       e.failedCodeFileName should be (Some("OneOfContainMatcherEqualitySpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
@@ -82,15 +82,15 @@ class OneOfContainMatcherEqualitySpec extends Spec with Matchers with Explicitly
     
     def `should take custom implicit equality in scope when 'should not contain' is used` {
       implicit val equality = new FalseEquality
-      List(1, 2, 3) should not contain oneOf (1, 6, 8)
-      Set(1, 2, 3) should not contain oneOf (1, 6, 8)
-      Array(1, 2, 3) should not contain oneOf (1, 6, 8)
-      javaList(1, 2, 3) should not contain oneOf (1, 6, 8)
-      javaSet(1, 2, 3) should not contain oneOf (1, 6, 8)
+      List(1, 2, 3) should not contain newOneOf (1, 6, 8)
+      Set(1, 2, 3) should not contain newOneOf (1, 6, 8)
+      Array(1, 2, 3) should not contain newOneOf (1, 6, 8)
+      javaList(1, 2, 3) should not contain newOneOf (1, 6, 8)
+      javaSet(1, 2, 3) should not contain newOneOf (1, 6, 8)
       
       implicit val mapEquality = new MapFalseEquality
-      Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain oneOf (1 -> "one", 2 -> "two", 3 -> "three")
-      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain oneOf (1 -> "one", 2 -> "two", 3 -> "three")
+      Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain newOneOf (1 -> "one", 2 -> "two", 3 -> "three")
+      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain newOneOf (1 -> "one", 2 -> "two", 3 -> "three")
     }
     
     def `should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with custom implicit equality in scope` {
@@ -140,25 +140,25 @@ class OneOfContainMatcherEqualitySpec extends Spec with Matchers with Explicitly
         
       val left1 = List("1", " 2", "3")
       val e1 = intercept[exceptions.TestFailedException] {
-        left1 should not contain oneOf ("2 ", "6", "8")
+        left1 should not contain newOneOf ("2 ", "6", "8")
       }
       checkShouldNotContainStackDepth(e1, left1, Array("2 ", "6", "8").deep, thisLineNumber - 2)
         
       val left2 = Set("1", " 2", "3")
       val e2 = intercept[exceptions.TestFailedException] {
-        left2 should not contain oneOf ("2 ", "6", "8")
+        left2 should not contain newOneOf ("2 ", "6", "8")
       }
       checkShouldNotContainStackDepth(e2, left2, Array("2 ", "6", "8").deep, thisLineNumber - 2)
         
       val left3 = Array("1", " 2", "3")
       val e3 = intercept[exceptions.TestFailedException] {
-        left3 should not contain oneOf ("2 ", "6", "8")
+        left3 should not contain newOneOf ("2 ", "6", "8")
       }
       checkShouldNotContainStackDepth(e3, left3, Array("2 ", "6", "8").deep, thisLineNumber - 2)
         
       val left4 = javaList("1", " 2", "3")
       val e4 = intercept[exceptions.TestFailedException] {
-        left4 should not contain oneOf ("2 ", "6", "8")
+        left4 should not contain newOneOf ("2 ", "6", "8")
       }
       checkShouldNotContainStackDepth(e4, left4, Array("2 ", "6", "8").deep, thisLineNumber - 2)
         
@@ -166,13 +166,13 @@ class OneOfContainMatcherEqualitySpec extends Spec with Matchers with Explicitly
         
       val left5 = Map(1 -> "one", 2 -> " two", 3 -> "three")
       val e5 = intercept[exceptions.TestFailedException] {
-        left5 should not contain oneOf (2 -> "two ", 6 -> "six", 8 -> "eight")
+        left5 should not contain newOneOf (2 -> "two ", 6 -> "six", 8 -> "eight")
       }
       checkShouldNotContainStackDepth(e5, left5, Array(2 -> "two ", 6 -> "six", 8 -> "eight").deep, thisLineNumber - 2)
         
       val left6 = javaMap(1 -> "one", 2 -> " two", 3 -> "three")
       val e6 = intercept[exceptions.TestFailedException] {
-        left6 should not contain oneOf (2 -> "two ", 6 -> "six", 8 -> "eight")
+        left6 should not contain newOneOf (2 -> "two ", 6 -> "six", 8 -> "eight")
       }
       checkShouldNotContainStackDepth(e6, left6, Array(2 -> "two ", 6 -> "six", 8 -> "eight").deep, thisLineNumber - 2)
     }
@@ -191,14 +191,14 @@ class OneOfContainMatcherEqualitySpec extends Spec with Matchers with Explicitly
     
     def `should take passed in custom explicit equality when 'should not contain' is used` {
       implicit val equality = new FalseEquality
-      List(1, 2, 3) should not contain oneOf (1, 2, 3) (equality)
-      Set(1, 2, 3) should not contain oneOf (1, 2, 3) (equality)
-      Array(1, 2, 3) should not contain oneOf (1, 2, 3) (equality)
-      javaList(1, 2, 3) should not contain oneOf (1, 2, 3) (equality)
+      (List(1, 2, 3) should not contain newOneOf (1, 2, 3)) (equality)
+      (Set(1, 2, 3) should not contain newOneOf (1, 2, 3)) (equality)
+      (Array(1, 2, 3) should not contain newOneOf (1, 2, 3)) (equality)
+      (javaList(1, 2, 3) should not contain newOneOf (1, 2, 3)) (equality)
         
       implicit val mapEquality = new MapFalseEquality
-      Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain oneOf (1 -> "one", 2 -> "two", 3 -> "three") (mapEquality)
-      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain oneOf (1 -> "one", 2 -> "two", 3 -> "three") (mapEquality)
+      (Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain newOneOf (1 -> "one", 2 -> "two", 3 -> "three")) (mapEquality)
+      (javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain newOneOf (1 -> "one", 2 -> "two", 3 -> "three")) (mapEquality)
     }
     
     def `should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with custom explicit equality` {
@@ -248,25 +248,25 @@ class OneOfContainMatcherEqualitySpec extends Spec with Matchers with Explicitly
         
       val left1 = List("1", " 2", "3")
       val e1 = intercept[exceptions.TestFailedException] {
-        left1 should not contain oneOf ("2 ", "6", "8") (equality)
+        (left1 should not contain newOneOf ("2 ", "6", "8")) (equality)
       }
       checkShouldNotContainStackDepth(e1, left1, Array("2 ", "6", "8").deep, thisLineNumber - 2)
         
       val left2 = Set("1", " 2", "3")
       val e2 = intercept[exceptions.TestFailedException] {
-        left2 should not contain oneOf ("2 ", "6", "8") (equality)
+        (left2 should not contain newOneOf ("2 ", "6", "8")) (equality)
       }
       checkShouldNotContainStackDepth(e2, left2, Array("2 ", "6", "8").deep, thisLineNumber - 2)
         
       val left3 = Array("1", " 2", "3")
       val e3 = intercept[exceptions.TestFailedException] {
-        left3 should not contain oneOf ("2 ", "6", "8") (equality)
+        (left3 should not contain newOneOf ("2 ", "6", "8")) (equality)
       }
       checkShouldNotContainStackDepth(e3, left3, Array("2 ", "6", "8").deep, thisLineNumber - 2)
         
       val left4 = javaList("1", " 2", "3")
       val e4 = intercept[exceptions.TestFailedException] {
-        left4 should not contain oneOf ("2 ", "6", "8") (equality)
+        (left4 should not contain newOneOf ("2 ", "6", "8")) (equality)
       }
       checkShouldNotContainStackDepth(e4, left4, Array("2 ", "6", "8").deep, thisLineNumber - 2)
         
@@ -274,13 +274,13 @@ class OneOfContainMatcherEqualitySpec extends Spec with Matchers with Explicitly
        
       val left5 = Map(1 -> "one", 2 -> " two", 3 -> "three")
       val e5 = intercept[exceptions.TestFailedException] {
-        left5 should not contain oneOf (2 -> "two ", 6 -> "six", 8 -> "eight") (mapEquality)
+        (left5 should not contain newOneOf (2 -> "two ", 6 -> "six", 8 -> "eight")) (mapEquality)
       }
       checkShouldNotContainStackDepth(e5, left5, Array(2 -> "two ", 6 -> "six", 8 -> "eight").deep, thisLineNumber - 2)
         
       val left6 = javaMap(1 -> "one", 2 -> " two", 3 -> "three")
       val e6 = intercept[exceptions.TestFailedException] {
-        left6 should not contain oneOf (2 -> "two ", 6 -> "six", 8 -> "eight") (mapEquality)
+        (left6 should not contain newOneOf (2 -> "two ", 6 -> "six", 8 -> "eight")) (mapEquality)
       }
       checkShouldNotContainStackDepth(e6, left6, Array(2 -> "two ", 6 -> "six", 8 -> "eight").deep, thisLineNumber - 2)
     }

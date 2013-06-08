@@ -116,14 +116,14 @@ class InOrderContainMatcherDeciderSpec extends Spec with Matchers with Explicitl
     
     def checkShouldContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
       val leftText = FailureMessages.prettifyArrays(left)
-      e.message should be (Some(leftText + " did not contain all of (" + right.mkString(", ") + ") in order"))
+      e.message should be (Some(leftText + " did not contain all of (" + right.map(FailureMessages.decorateToStringValue).mkString(", ") + ") in order"))
       e.failedCodeFileName should be (Some("InOrderContainMatcherDeciderSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
       
     def checkShouldNotContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
       val leftText = FailureMessages.prettifyArrays(left)
-      e.message should be (Some(leftText + " contained all of (" + right.mkString(", ") + ") in order"))
+      e.message should be (Some(leftText + " contained all of (" + right.map(FailureMessages.decorateToStringValue).mkString(", ") + ") in order"))
       e.failedCodeFileName should be (Some("InOrderContainMatcherDeciderSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
@@ -135,9 +135,9 @@ class InOrderContainMatcherDeciderSpec extends Spec with Matchers with Explicitl
     }
     
     def `should take specified equality when 'should not contain' is used` {
-      List("1 ", "2", "3 ") should not contain inOrder ("1", "2 ", "3") (after being appended)
-      Array("1 ", "2", "3 ") should not contain inOrder ("1", "2 ", "3") (after being appended)
-      javaList("1 ", "2", "3 ") should not contain inOrder ("1", "2 ", "3") (after being appended)
+      (List("1 ", "2", "3 ") should not contain newInOrder ("1", "2 ", "3")) (after being appended)
+      (Array("1 ", "2", "3 ") should not contain newInOrder ("1", "2 ", "3")) (after being appended)
+      (javaList("1 ", "2", "3 ") should not contain newInOrder ("1", "2 ", "3")) (after being appended)
     }
     
     def `should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with specified normalization` {
@@ -166,19 +166,19 @@ class InOrderContainMatcherDeciderSpec extends Spec with Matchers with Explicitl
       
       val left1 = List("one", "two", "three")
       val e1 = intercept[exceptions.TestFailedException] {
-        left1 should not contain inOrder ("eno", "two", "three") (after being translated)
+        (left1 should not contain newInOrder ("eno", "two", "three")) (after being translated)
       }
       checkShouldNotContainStackDepth(e1, left1, Array("eno", "two", "three").deep, thisLineNumber - 2)
         
       val left2 = Array("one", "two", "three")
       val e2 = intercept[exceptions.TestFailedException] {
-        left2 should not contain inOrder ("eno", "two", "three") (after being translated)
+        (left2 should not contain newInOrder ("eno", "two", "three")) (after being translated)
       }
       checkShouldNotContainStackDepth(e2, left2, Array("eno", "two", "three").deep, thisLineNumber - 2)
         
       val left3 = javaList("one", "two", "three")
       val e3 = intercept[exceptions.TestFailedException] {
-        left3 should not contain inOrder ("eno", "two", "three") (after being translated)
+        (left3 should not contain newInOrder ("eno", "two", "three")) (after being translated)
       }
       checkShouldNotContainStackDepth(e3, left3, Array("eno", "two", "three").deep, thisLineNumber - 2)
     }
@@ -190,9 +190,9 @@ class InOrderContainMatcherDeciderSpec extends Spec with Matchers with Explicitl
     }
     
     def `should take specified equality and normalization when 'should not contain' is used` {
-      List("one ", "two", "three ") should not contain inOrder ("one", "two ", "three") (decided by reverseEquality afterBeing trimmed)
-      Array("one ", "two", "three ") should not contain inOrder ("one", "two ", "three") (decided by reverseEquality afterBeing trimmed)
-      javaList("one ", "two", "three ") should not contain inOrder ("one", "two ", "three") (decided by reverseEquality afterBeing trimmed)
+      (List("one ", "two", "three ") should not contain newInOrder ("one", "two ", "three")) (decided by reverseEquality afterBeing trimmed)
+      (Array("one ", "two", "three ") should not contain newInOrder ("one", "two ", "three")) (decided by reverseEquality afterBeing trimmed)
+      (javaList("one ", "two", "three ") should not contain newInOrder ("one", "two ", "three")) (decided by reverseEquality afterBeing trimmed)
     }
     
     def `should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with specified equality and normalization` {
@@ -220,23 +220,21 @@ class InOrderContainMatcherDeciderSpec extends Spec with Matchers with Explicitl
       
       val left1 = List("one ", "two", "three ")
       val e1 = intercept[exceptions.TestFailedException] {
-        left1 should not contain inOrder ("eno ", "owt", "eerht ") (decided by reverseEquality afterBeing trimmed)
+        (left1 should not contain newInOrder ("eno ", "owt", "eerht ")) (decided by reverseEquality afterBeing trimmed)
       }
       checkShouldNotContainStackDepth(e1, left1, Array("eno ", "owt", "eerht ").deep, thisLineNumber - 2)
         
       val left2 = Array("one ", "two", "three ")
       val e2 = intercept[exceptions.TestFailedException] {
-        left2 should not contain inOrder ("eno ", "owt", "eerht ") (decided by reverseEquality afterBeing trimmed)
+        (left2 should not contain newInOrder ("eno ", "owt", "eerht ")) (decided by reverseEquality afterBeing trimmed)
       }
       checkShouldNotContainStackDepth(e2, left2, Array("eno ", "owt", "eerht ").deep, thisLineNumber - 2)
         
       val left3 = javaList("one ", "two", "three ")
       val e3 = intercept[exceptions.TestFailedException] {
-        left3 should not contain inOrder ("eno ", "owt", "eerht ") (decided by reverseEquality afterBeing trimmed)
+        (left3 should not contain newInOrder ("eno ", "owt", "eerht ")) (decided by reverseEquality afterBeing trimmed)
       }
       checkShouldNotContainStackDepth(e3, left3, Array("eno ", "owt", "eerht ").deep, thisLineNumber - 2)
     }
-    
   }
-  
 }

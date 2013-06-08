@@ -146,14 +146,14 @@ class AllOfContainMatcherDeciderSpec extends Spec with Matchers with Explicitly 
     
     def checkShouldContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
       val leftText = FailureMessages.prettifyArrays(left)
-      e.message should be (Some(leftText + " did not contain all of (" + right.mkString(", ") + ")"))
+      e.message should be (Some(leftText + " did not contain all of (" + right.map(FailureMessages.decorateToStringValue).mkString(", ") + ")"))
       e.failedCodeFileName should be (Some("AllOfContainMatcherDeciderSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
       
     def checkShouldNotContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
       val leftText = FailureMessages.prettifyArrays(left)
-      e.message should be (Some(leftText + " contained all of (" + right.mkString(", ") + ")"))
+      e.message should be (Some(leftText + " contained all of (" + right.map(FailureMessages.decorateToStringValue).mkString(", ") + ")"))
       e.failedCodeFileName should be (Some("AllOfContainMatcherDeciderSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
@@ -172,14 +172,14 @@ class AllOfContainMatcherDeciderSpec extends Spec with Matchers with Explicitly 
     
     def `should take specified normalization when 'should not contain' is used` {
       
-      List("A ", "B", "C ") should not contain allOf ("a ", "b", "c ") (after being appended)
-      Set("A ", "B", "C ") should not contain allOf ("a ", "b", "c ") (after being appended)
-      Array("A ", "B", "C ") should not contain allOf ("a ", "b", "c ") (after being appended)
-      javaList("A ", "B", "C ") should not contain allOf ("a ", "b", "c ") (after being appended)
-      javaSet("A ", "B", "C ") should not contain allOf ("a ", "b", "c ") (after being appended)
+      (List("A ", "B", "C ") should not contain newAllOf ("a ", "b", "c ")) (after being appended)
+      (Set("A ", "B", "C ") should not contain newAllOf ("a ", "b", "c ")) (after being appended)
+      (Array("A ", "B", "C ") should not contain newAllOf ("a ", "b", "c ")) (after being appended)
+      (javaList("A ", "B", "C ") should not contain newAllOf ("a ", "b", "c ")) (after being appended)
+      (javaSet("A ", "B", "C ") should not contain newAllOf ("a ", "b", "c ")) (after being appended)
       
-      Map(1 -> "A ", 2 -> "B", 3 -> "C ") should not contain allOf (1 -> "a ", 2 -> "b", 3 -> "c ") (after being mapAppended)
-      javaMap(1 -> "A ", 2 -> "B", 3 -> "C ") should not contain allOf (1 -> "a ", 2 -> "b", 3 -> "c ") (after being mapAppended)
+      (Map(1 -> "A ", 2 -> "B", 3 -> "C ") should not contain newAllOf (1 -> "a ", 2 -> "b", 3 -> "c ")) (after being mapAppended)
+      (javaMap(1 -> "A ", 2 -> "B", 3 -> "C ") should not contain newAllOf (1 -> "a ", 2 -> "b", 3 -> "c ")) (after being mapAppended)
     }
     
     def `should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with specified normalization` {
@@ -225,37 +225,37 @@ class AllOfContainMatcherDeciderSpec extends Spec with Matchers with Explicitly 
       
       val left1 = List("1 ", "2", "3 ")
       val e1 = intercept[exceptions.TestFailedException] {
-        left1 should not contain allOf ("1", "2 ", "3") (after being trimmed)
+        (left1 should not contain newAllOf ("1", "2 ", "3")) (after being trimmed)
       }
       checkShouldNotContainStackDepth(e1, left1, Array("1", "2 ", "3").deep, thisLineNumber - 2)
         
       val left2 = Set("1 ", "2", "3 ")
       val e2 = intercept[exceptions.TestFailedException] {
-        left2 should not contain allOf ("1", "2 ", "3") (after being trimmed)
+        (left2 should not contain newAllOf ("1", "2 ", "3")) (after being trimmed)
       }
       checkShouldNotContainStackDepth(e2, left2, Array("1", "2 ", "3").deep, thisLineNumber - 2)
         
       val left3 = Array("1 ", "2", "3 ")
       val e3 = intercept[exceptions.TestFailedException] {
-        left3 should not contain allOf ("1", "2 ", "3") (after being trimmed)
+        (left3 should not contain newAllOf ("1", "2 ", "3")) (after being trimmed)
       }
       checkShouldNotContainStackDepth(e3, left3, Array("1", "2 ", "3").deep, thisLineNumber - 2)
         
       val left4 = javaList("1 ", "2", "3 ")
       val e4 = intercept[exceptions.TestFailedException] {
-        left4 should not contain allOf ("1", "2 ", "3") (after being trimmed)
+        (left4 should not contain newAllOf ("1", "2 ", "3")) (after being trimmed)
       }
       checkShouldNotContainStackDepth(e4, left4, Array("1", "2 ", "3").deep, thisLineNumber - 2)
         
       val left5 = Map(1 -> "one ", 2 -> "two", 3 -> "three ")
       val e5 = intercept[exceptions.TestFailedException] {
-        left5 should not contain allOf (1 -> "one", 2 -> "two ", 3 -> "three") (after being mapTrimmed)
+        (left5 should not contain newAllOf (1 -> "one", 2 -> "two ", 3 -> "three")) (after being mapTrimmed)
       }
       checkShouldNotContainStackDepth(e5, left5, Array(1 -> "one", 2 -> "two ", 3 -> "three").deep, thisLineNumber - 2)
         
       val left6 = javaMap(1 -> "one ", 2 -> "two", 3 -> "three ")
       val e6 = intercept[exceptions.TestFailedException] {
-        left6 should not contain allOf (1 -> "one", 2 -> "two ", 3 -> "three") (after being mapTrimmed)
+        (left6 should not contain newAllOf (1 -> "one", 2 -> "two ", 3 -> "three")) (after being mapTrimmed)
       }
       checkShouldNotContainStackDepth(e6, left6, Array(1 -> "one", 2 -> "two ", 3 -> "three").deep, thisLineNumber - 2)
     }
@@ -272,13 +272,13 @@ class AllOfContainMatcherDeciderSpec extends Spec with Matchers with Explicitly 
     }
     
     def `should take specified equality and normalization when 'should not contain' is used` {
-      List("one ", " two", "three ") should not contain allOf (" one", "two ", " three") (decided by reverseEquality afterBeing trimmed)
-      Set("one ", " two", "three ") should not contain allOf (" one", "two ", " three") (decided by reverseEquality afterBeing trimmed)
-      Array("one ", " two", "three ") should not contain allOf (" one", "two ", " three") (decided by reverseEquality afterBeing trimmed)
-      javaList("one ", " two", "three ") should not contain allOf (" one", "two ", " three") (decided by reverseEquality afterBeing trimmed)
+      (List("one ", " two", "three ") should not contain newAllOf (" one", "two ", " three")) (decided by reverseEquality afterBeing trimmed)
+      (Set("one ", " two", "three ") should not contain newAllOf (" one", "two ", " three")) (decided by reverseEquality afterBeing trimmed)
+      (Array("one ", " two", "three ") should not contain newAllOf (" one", "two ", " three")) (decided by reverseEquality afterBeing trimmed)
+      (javaList("one ", " two", "three ") should not contain newAllOf (" one", "two ", " three")) (decided by reverseEquality afterBeing trimmed)
         
-      Map(1 -> "one ", 2 -> " two", 3 -> "three ") should not contain allOf (1 -> " one", 2 -> "two ", 3 -> " three") (decided by mapReverseEquality afterBeing mapTrimmed)
-      javaMap(1 -> "one ", 2 -> " two", 3 -> "three ") should not contain allOf (1 -> " one", 2 -> "two ", 3 -> " three") (decided by mapReverseEquality afterBeing mapTrimmed)
+      (Map(1 -> "one ", 2 -> " two", 3 -> "three ") should not contain newAllOf (1 -> " one", 2 -> "two ", 3 -> " three")) (decided by mapReverseEquality afterBeing mapTrimmed)
+      (javaMap(1 -> "one ", 2 -> " two", 3 -> "three ") should not contain newAllOf (1 -> " one", 2 -> "two ", 3 -> " three")) (decided by mapReverseEquality afterBeing mapTrimmed)
     }
     
     def `should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with specified equality and normalization` {
@@ -324,37 +324,37 @@ class AllOfContainMatcherDeciderSpec extends Spec with Matchers with Explicitly 
       
       val left1 = List("ONE ", "TWO", "THREE ")
       val e1 = intercept[exceptions.TestFailedException] {
-        left1 should not contain allOf ("one", "two ", "three") (decided by lowerCaseEquality afterBeing trimmed)
+        (left1 should not contain newAllOf ("one", "two ", "three")) (decided by lowerCaseEquality afterBeing trimmed)
       }
       checkShouldNotContainStackDepth(e1, left1, Array("one", "two ", "three").deep, thisLineNumber - 2)
         
       val left2 = Set("ONE ", "TWO", "THREE ")
       val e2 = intercept[exceptions.TestFailedException] {
-        left2 should not contain allOf ("one", "two ", "three") (decided by lowerCaseEquality afterBeing trimmed)
+        (left2 should not contain newAllOf ("one", "two ", "three")) (decided by lowerCaseEquality afterBeing trimmed)
       }
       checkShouldNotContainStackDepth(e2, left2, Array("one", "two ", "three").deep, thisLineNumber - 2)
         
       val left3 = Array("ONE ", "TWO", "THREE ")
       val e3 = intercept[exceptions.TestFailedException] {
-        left3 should not contain allOf ("one", "two ", "three") (decided by lowerCaseEquality afterBeing trimmed)
+        (left3 should not contain newAllOf ("one", "two ", "three")) (decided by lowerCaseEquality afterBeing trimmed)
       }
       checkShouldNotContainStackDepth(e3, left3, Array("one", "two ", "three").deep, thisLineNumber - 2)
         
       val left4 = javaList("ONE ", "TWO", "THREE ")
       val e4 = intercept[exceptions.TestFailedException] {
-        left4 should not contain allOf ("one", "two ", "three") (decided by lowerCaseEquality afterBeing trimmed)
+        (left4 should not contain newAllOf ("one", "two ", "three")) (decided by lowerCaseEquality afterBeing trimmed)
       }
       checkShouldNotContainStackDepth(e4, left4, Array("one", "two ", "three").deep, thisLineNumber - 2)
       
       val left5 = Map(1 -> "ONE ", 2 -> "TWO", 3 -> "THREE ")
       val e5 = intercept[exceptions.TestFailedException] {
-        left5 should not contain allOf (1 -> "one", 2 -> "two ", 3 -> "three") (decided by mapLowerCaseEquality afterBeing mapTrimmed)
+        (left5 should not contain newAllOf (1 -> "one", 2 -> "two ", 3 -> "three")) (decided by mapLowerCaseEquality afterBeing mapTrimmed)
       }
       checkShouldNotContainStackDepth(e5, left5, Array(1 -> "one", 2 -> "two ", 3 -> "three").deep, thisLineNumber - 2)
         
       val left6 = javaMap(1 -> "ONE ", 2 -> "TWO", 3 -> "THREE ")
       val e6 = intercept[exceptions.TestFailedException] {
-        left6 should not contain allOf (1 -> "one", 2 -> "two ", 3 -> "three") (decided by mapLowerCaseEquality afterBeing mapTrimmed)
+        (left6 should not contain newAllOf (1 -> "one", 2 -> "two ", 3 -> "three")) (decided by mapLowerCaseEquality afterBeing mapTrimmed)
       }
       checkShouldNotContainStackDepth(e6, left6, Array(1 -> "one", 2 -> "two ", 3 -> "three").deep, thisLineNumber - 2)
     }

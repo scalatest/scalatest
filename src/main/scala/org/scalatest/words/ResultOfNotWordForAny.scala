@@ -619,6 +619,19 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
     }
   }
 
+  def contain(newOneOf: ResultOfNewOneOfApplication)(implicit containing: Containing[T]) {
+
+    val right = newOneOf.right
+
+    if (containing.containsOneOf(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "didNotContainOneOfElements" else "containedOneOfElements",
+          left,
+          UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
+        )
+      )
+  }
   def newContain(newOneOf: ResultOfNewOneOfApplication)(implicit containing: Containing[T]) {
 
     val right = newOneOf.right
@@ -633,6 +646,19 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
       )
   }
 
+  def contain(atLeastOneOf: ResultOfAtLeastOneOfApplication)(implicit aggregating: Aggregating[T]) {
+
+    val right = atLeastOneOf.right
+
+    if (aggregating.containsAtLeastOneOf(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "didNotContainAtLeastOneOf" else "containedAtLeastOneOf",
+          left,
+          UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
+        )
+      )
+  }
   def newContain(atLeastOneOf: ResultOfAtLeastOneOfApplication)(implicit aggregating: Aggregating[T]) {
 
     val right = atLeastOneOf.right
@@ -647,6 +673,19 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
       )
   }
 
+  def contain(noneOf: ResultOfNewNoneOfApplication)(implicit containing: Containing[T]) {
+
+    val right = noneOf.right
+
+    if (containing.containsNoneOf(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "containedOneOfElements" else "didNotContainOneOfElements",
+          left,
+          UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
+        )
+      )
+  }
   def newContain(noneOf: ResultOfNewNoneOfApplication)(implicit containing: Containing[T]) {
 
     val right = noneOf.right
@@ -661,6 +700,19 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
       )
   }
   
+  def contain(theSameElementsAs: ResultOfNewTheSameElementsAsApplication)(implicit aggregating: Aggregating[T]) {
+
+    val right = theSameElementsAs.right
+
+    if (aggregating.containsTheSameElementsAs(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "didNotContainSameElements" else "containedSameElements",
+          left,
+          right
+        )
+      )
+  }
   def newContain(theSameElementsAs: ResultOfNewTheSameElementsAsApplication)(implicit aggregating: Aggregating[T]) {
 
     val right = theSameElementsAs.right
@@ -675,6 +727,19 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
       )
   }
   
+  def contain(theSameElementsInOrderAs: ResultOfNewTheSameElementsInOrderAsApplication)(implicit aggregating: Aggregating[T]) {
+
+    val right = theSameElementsInOrderAs.right
+
+    if (aggregating.containsTheSameElementsInOrderAs(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "didNotContainSameElementsInOrder" else "containedSameElementsInOrder",
+          left,
+          right
+        )
+      )
+  }
   def newContain(theSameElementsInOrderAs: ResultOfNewTheSameElementsInOrderAsApplication)(implicit aggregating: Aggregating[T]) {
 
     val right = theSameElementsInOrderAs.right
@@ -689,6 +754,18 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
       )
   }
   
+  def contain(only: ResultOfNewOnlyApplication)(implicit aggregating: Aggregating[T]) {
+
+    val right = only.right
+    if (aggregating.containsOnly(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "didNotContainOnlyElements" else "containedOnlyElements",
+          left,
+          UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
+        )
+      )
+  }
   def newContain(only: ResultOfNewOnlyApplication)(implicit aggregating: Aggregating[T]) {
 
     val right = only.right
@@ -702,6 +779,17 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
       )
   }
 
+  def contain(only: ResultOfNewInOrderOnlyApplication)(implicit aggregating: Aggregating[T]) {
+    val right = only.right
+    if (aggregating.containsInOrderOnly(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "didNotContainInOrderOnlyElements" else "containedInOrderOnlyElements",
+          left,
+          UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
+        )
+      )
+  }
   def newContain(only: ResultOfNewInOrderOnlyApplication)(implicit aggregating: Aggregating[T]) {
     val right = only.right
     if (aggregating.containsInOrderOnly(left, right) != shouldBeTrue)
@@ -714,6 +802,18 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
       )
   }
   
+  def contain(only: ResultOfNewAllOfApplication)(implicit aggregating: Aggregating[T]) {
+
+    val right = only.right
+    if (aggregating.containsAllOf(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "didNotContainAllOfElements" else "containedAllOfElements",
+          left,
+          UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
+        )
+      )
+  }
   def newContain(only: ResultOfNewAllOfApplication)(implicit aggregating: Aggregating[T]) {
 
     val right = only.right
@@ -727,6 +827,18 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
       )
   }
   
+  def contain(only: ResultOfNewInOrderApplication)(implicit aggregating: Aggregating[T]) {
+
+    val right = only.right
+    if (aggregating.containsInOrder(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "didNotContainAllOfElementsInOrder" else "containedAllOfElementsInOrder",
+          left,
+          UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
+        )
+      )
+  }
   def newContain(only: ResultOfNewInOrderApplication)(implicit aggregating: Aggregating[T]) {
 
     val right = only.right
@@ -897,23 +1009,6 @@ class ResultOfNotWordForGenTraversable[E, T[_] <: scala.collection.GenTraversabl
     extends ResultOfNotWordForAny(left, shouldBeTrue) {
 
   /**
-   * This method enables the following syntax:
-   *
-   * <pre class="stHighlight">
-   * collection should not contain containMatcher
-   *                       ^
-   * </pre>
-   */
-  def contain(right: ContainMatcher[E]) {
-    val result = right(left.asInstanceOf[scala.collection.GenTraversable[E]])
-    if (result.matches != shouldBeTrue) {
-      throw newTestFailedException(
-        if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage
-      )
-    }
-  }
-  
-  /**
    * This method enables the following syntax, where <code>positiveNumber</code> refers to
    * an <code>AMatcher[Int]</code>:
    *
@@ -969,23 +1064,6 @@ class ResultOfNotWordForGenTraversable[E, T[_] <: scala.collection.GenTraversabl
 class ResultOfNotWordForJavaCollection[E, T[_] <: java.util.Collection[_]](left: T[E], shouldBeTrue: Boolean)
     extends ResultOfNotWordForAny(left, shouldBeTrue) {
 
-  /**
-   * This method enables the following syntax:
-   *
-   * <pre class="stHighlight">
-   * javaCollection should not contain containMatcher
-   *                           ^
-   * </pre>
-   */
-  def contain(right: ContainMatcher[E]) {
-    val result = right(new JavaCollectionWrapper(left.asInstanceOf[java.util.Collection[E]]))
-    if (result.matches != shouldBeTrue) {
-      throw newTestFailedException(
-        if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage
-      )
-    }
-  }
-  
   /**
    * This method enables the following syntax, where <code>positiveNumber</code> refers to
    * an <code>AMatcher[Int]</code>:
@@ -1113,23 +1191,6 @@ final class ResultOfNotWordForGenMap[K, V, L[_, _] <: scala.collection.GenMap[_,
   }
   
   /**
-   * This method enables the following syntax:
-   *
-   * <pre class="stHighlight">
-   * map should not contain containMatcher
-   *                ^
-   * </pre>
-   */
-  def contain(right: ContainMatcher[(K, V)]) {
-    val result = right(left.asInstanceOf[scala.collection.GenTraversable[(K, V)]])
-    if (result.matches != shouldBeTrue) {
-      throw newTestFailedException(
-        if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage
-      )
-    }
-  }
-  
-  /**
    * This method enables the following syntax, where <code>positiveNumberKey</code> refers to
    * an <code>AMatcher[Int]</code>:
    *
@@ -1228,23 +1289,6 @@ final class ResultOfNotWordForJavaMap[K, V, L[_, _] <: java.util.Map[_, _]](left
   }
   
   /**
-   * This method enables the following syntax:
-   *
-   * <pre class="stHighlight">
-   * javaMap should not contain containMatcher
-   *                    ^
-   * </pre>
-   */
-  def contain(right: ContainMatcher[(K, V)]) {
-    val result = right(new JavaMapWrapper(left.asInstanceOf[java.util.Map[K, V]]))
-    if (result.matches != shouldBeTrue) {
-      throw newTestFailedException(
-        if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage
-      )
-    }
-  }
-  
-  /**
    * This method enables the following syntax, where <code>positiveNumber</code> refers to
    * an <code>AMatcher[Int]</code>:
    *
@@ -1302,24 +1346,6 @@ final class ResultOfNotWordForJavaMap[K, V, L[_, _] <: java.util.Map[_, _]](left
 final class ResultOfNotWordForArray[E](left: Array[E], shouldBeTrue: Boolean)
     extends ResultOfNotWordForAny(left, shouldBeTrue) {
 
-  /**
-   * This method enables the following syntax, where <code>containMatcher</code> refers to
-   * a <code>ContainMatcher</code>:
-   *
-   * <pre class="stHighlight">
-   * Array(1, 2, 3) should not contain containMatcher
-   *                           ^
-   * </pre>
-   */
-  def contain(right: ContainMatcher[E]) {
-    val result = right(new ArrayWrapper(left))
-    if (result.matches != shouldBeTrue) {
-      throw newTestFailedException(
-        if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage
-      )
-    }
-  }
-  
   /**
    * This method enables the following syntax, where <code>positiveNumber</code> refers to
    * an <code>AMatcher[Int]</code>:

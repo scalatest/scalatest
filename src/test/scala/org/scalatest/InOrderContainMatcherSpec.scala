@@ -343,21 +343,21 @@ class InOrderContainMatcherSpec extends Spec with Matchers {
     }
     
     def `should succeeded when left List contains different elements as right List` {
-      List(1, 2, 3) should not contain inOrder (1, 2, 8)
-      Array(1, 2, 3) should not contain inOrder (1, 2, 8)
-      javaList(1, 2, 3) should not contain inOrder (1, 2, 8)
+      List(1, 2, 3) should not contain newInOrder (1, 2, 8)
+      Array(1, 2, 3) should not contain newInOrder (1, 2, 8)
+      javaList(1, 2, 3) should not contain newInOrder (1, 2, 8)
       
-      LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain inOrder (1 -> "one", 2 -> "two", 8 -> "eight")
-      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain inOrder (1 -> "one", 2 -> "two", 8 -> "eight")
+      LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain newInOrder (1 -> "one", 2 -> "two", 8 -> "eight")
+      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain newInOrder (1 -> "one", 2 -> "two", 8 -> "eight")
     }
     
     def `should succeeded when left List contains same elements as right List in different order` {
-      List(1, 2, 3) should not contain inOrder (1, 3, 2)
-      Array(1, 2, 3) should not contain inOrder (1, 3, 2)
-      javaList(1, 2, 3) should not contain inOrder (1, 3, 2)
+      List(1, 2, 3) should not contain newInOrder (1, 3, 2)
+      Array(1, 2, 3) should not contain newInOrder (1, 3, 2)
+      javaList(1, 2, 3) should not contain newInOrder (1, 3, 2)
       
-      LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain inOrder (1 -> "one", 3 -> "three", 2 -> "two")
-      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain inOrder (1 -> "one", 3 -> "three", 2 -> "two")
+      LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain newInOrder (1 -> "one", 3 -> "three", 2 -> "two")
+      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain newInOrder (1 -> "one", 3 -> "three", 2 -> "two")
     }
     
     val matcher = new InOrderContainMatcher(List(1, 2, 3), defaultEquality)
@@ -373,105 +373,48 @@ class InOrderContainMatcherSpec extends Spec with Matchers {
       javaList(1, 2, 8) should not contain matcher
       javaSet(1, 2, 8) should not contain matcher
       
-      List(1, 2, 8) should not contain inOrder (1, 2, 3)
-      Set(1, 2, 8) should not contain inOrder (1, 2, 3)
-      Array(1, 2, 8) should not contain inOrder (1, 2, 3)
+      List(1, 2, 8) should not contain newInOrder (1, 2, 3)
+      Set(1, 2, 8) should not contain newInOrder (1, 2, 3)
+      Array(1, 2, 8) should not contain newInOrder (1, 2, 3)
       
-      javaList(1, 2, 8) should not contain inOrder (1, 2, 3)
-      javaSet(1, 2, 8) should not contain inOrder (1, 2, 3)
+      javaList(1, 2, 8) should not contain newInOrder (1, 2, 3)
+      javaSet(1, 2, 8) should not contain newInOrder (1, 2, 3)
       
       LinkedHashMap(1 -> "one", 2 -> "two", 8 -> "eight") should not contain mapMatcher
-      LinkedHashMap(1 -> "one", 2 -> "two", 8 -> "eight") should not contain inOrder (1 -> "one", 2 -> "two", 3 -> "three")
+      LinkedHashMap(1 -> "one", 2 -> "two", 8 -> "eight") should not contain newInOrder (1 -> "one", 2 -> "two", 3 -> "three")
       
       javaMap(1 -> "one", 2 -> "two", 8 -> "eight") should not contain mapMatcher
-      javaMap(1 -> "one", 2 -> "two", 8 -> "eight") should not contain inOrder (1 -> "one", 2 -> "two", 3 -> "three")
-    }
-    
-    def `should throw TestFailedException with correct stack depth and message when used with ContainMatcher directly` {
-      val left1 = List(1, 2, 3)
-      val left2 = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three")
-      val left3 = javaList(1, 2, 3)
-      val left4 = javaMap(1 -> "one", 2 -> "two", 3 -> "three")
-      val left5 = Array(1, 2, 3)
-      val e1 = intercept[exceptions.TestFailedException] {
-        left1 should not contain matcher
-      }
-      checkStackDepth(e1, left1, Array(1, 2, 3).deep, thisLineNumber - 2)
-      
-      val e2 = intercept[exceptions.TestFailedException] {
-        left1 should not contain inOrder (1, 2, 3)
-      }
-      checkStackDepth(e2, left1, Array(1, 2, 3).deep, thisLineNumber - 2)
-      
-      val e3 = intercept[exceptions.TestFailedException] {
-        left2 should not contain mapMatcher
-      }
-      checkStackDepth(e3, left2, mapMatcherRight, thisLineNumber - 2)
-      
-      val e4 = intercept[exceptions.TestFailedException] {
-        left2 should not contain inOrder (1 -> "one", 2 -> "two", 3 -> "three")
-      }
-      checkStackDepth(e4, left2, Array(1 -> "one", 2 -> "two", 3 -> "three"), thisLineNumber - 2)
-      
-      val e5 = intercept[exceptions.TestFailedException] {
-        left3 should not contain matcher
-      }
-      checkStackDepth(e5, left3, Array(1, 2, 3).deep, thisLineNumber - 2)
-      
-      val e6 = intercept[exceptions.TestFailedException] {
-        left3 should not contain inOrder (1, 2, 3)
-      }
-      checkStackDepth(e6, left3, Array(1, 2, 3).deep, thisLineNumber - 2)
-      
-      val e7 = intercept[exceptions.TestFailedException] {
-        left4 should not contain mapMatcher
-      }
-      checkStackDepth(e7, left4, mapMatcherRight, thisLineNumber - 2)
-      
-      val e8 = intercept[exceptions.TestFailedException] {
-        left4 should not contain inOrder (1 -> "one", 2 -> "two", 3 -> "three")
-      }
-      checkStackDepth(e8, left4, Array(1 -> "one", 2 -> "two", 3 -> "three"), thisLineNumber - 2)
-      
-      val e9 = intercept[exceptions.TestFailedException] {
-        left5 should not contain matcher
-      }
-      checkStackDepth(e9, left5, Array(1, 2, 3).deep, thisLineNumber - 2)
-      
-      val e10 = intercept[exceptions.TestFailedException] {
-        left5 should not contain inOrder (1, 2, 3)
-      }
-      checkStackDepth(e10, left5, Array(1, 2, 3).deep, thisLineNumber - 2)
+      javaMap(1 -> "one", 2 -> "two", 8 -> "eight") should not contain newInOrder (1 -> "one", 2 -> "two", 3 -> "three")
     }
     
     def `should throw TestFailedException with correct stack depth and message when left and right List contain same elements in same order` {
       val left1 = List(1, 2, 3)
       val e1 = intercept[exceptions.TestFailedException] {
-        left1 should not contain inOrder (1, 2, 3)
+        left1 should not contain newInOrder (1, 2, 3)
       }
       checkStackDepth(e1, left1, Array(1, 2, 3).deep, thisLineNumber - 2)
       
       val left2 = javaList(1, 2, 3)
       val e2 = intercept[exceptions.TestFailedException] {
-        left2 should not contain inOrder (1, 2, 3)
+        left2 should not contain newInOrder (1, 2, 3)
       }
       checkStackDepth(e2, left2, Array(1, 2, 3).deep, thisLineNumber - 2)
       
       val left3 = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three")
       val e3 = intercept[exceptions.TestFailedException] {
-        left3 should not contain inOrder (1 -> "one", 2 -> "two", 3 -> "three")
+        left3 should not contain newInOrder (1 -> "one", 2 -> "two", 3 -> "three")
       }
       checkStackDepth(e3, left3, Array(1 -> "one", 2 -> "two", 3 -> "three"), thisLineNumber - 2)
       
       val left4 = javaMap(1 -> "one", 2 -> "two", 3 -> "three")
       val e4 = intercept[exceptions.TestFailedException] {
-        left4 should not contain inOrder (1 -> "one", 2 -> "two", 3 -> "three")
+        left4 should not contain newInOrder (1 -> "one", 2 -> "two", 3 -> "three")
       }
       checkStackDepth(e4, left4, Array(1 -> "one", 2 -> "two", 3 -> "three"), thisLineNumber - 2)
       
       val left5 = Array(1, 2, 3)
       val e5 = intercept[exceptions.TestFailedException] {
-        left5 should not contain inOrder (1, 2, 3)
+        left5 should not contain newInOrder (1, 2, 3)
       }
       checkStackDepth(e5, left5, Array(1, 2, 3).deep, thisLineNumber - 2)
     }
