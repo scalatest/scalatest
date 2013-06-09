@@ -32,7 +32,7 @@ import org.scalatest.UnquotedString
  */
 final class NewContainWord {
 
-  def newOneOf(right: Any*): MatcherFactory1[Any, Containing] = {
+  def oneOf(right: Any*): MatcherFactory1[Any, Containing] = {
     new MatcherFactory1[Any, Containing] {
       def matcher[T](implicit containing: Containing[T]): Matcher[T] = {
         new Matcher[T] {
@@ -64,7 +64,7 @@ final class NewContainWord {
     }
   }
   
-  def newNoneOf(right: Any*): MatcherFactory1[Any, Containing] = {
+  def noneOf(right: Any*): MatcherFactory1[Any, Containing] = {
     new MatcherFactory1[Any, Containing] {
       def matcher[T](implicit containing: Containing[T]): Matcher[T] = {
         new Matcher[T] {
@@ -80,7 +80,7 @@ final class NewContainWord {
     }
   }
   
-  def newTheSameElementsAs(right: GenTraversable[Any]): MatcherFactory1[Any, Aggregating] = {
+  def theSameElementsAs(right: GenTraversable[Any]): MatcherFactory1[Any, Aggregating] = {
     new MatcherFactory1[Any, Aggregating] {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
@@ -96,7 +96,7 @@ final class NewContainWord {
     }
   }
   
-  def newTheSameElementsInOrderAs(right: GenTraversable[Any]): MatcherFactory1[Any, Aggregating] = {
+  def theSameElementsInOrderAs(right: GenTraversable[Any]): MatcherFactory1[Any, Aggregating] = {
     new MatcherFactory1[Any, Aggregating] {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
@@ -112,7 +112,7 @@ final class NewContainWord {
     }
   }
   
-  def newOnly(right: Any*): MatcherFactory1[Any, Aggregating] = {
+  def only(right: Any*): MatcherFactory1[Any, Aggregating] = {
     new MatcherFactory1[Any, Aggregating] {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
@@ -128,7 +128,7 @@ final class NewContainWord {
     }
   }
 
-  def newInOrderOnly(right: Any*): MatcherFactory1[Any, Aggregating] = {
+  def inOrderOnly(right: Any*): MatcherFactory1[Any, Aggregating] = {
     new MatcherFactory1[Any, Aggregating] {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
@@ -144,7 +144,7 @@ final class NewContainWord {
     }
   }
   
-  def newAllOf(right: Any*): MatcherFactory1[Any, Aggregating] = {
+  def allOf(right: Any*): MatcherFactory1[Any, Aggregating] = {
     new MatcherFactory1[Any, Aggregating] {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
@@ -160,7 +160,7 @@ final class NewContainWord {
     }
   }
   
-  def newInOrder(right: Any*): MatcherFactory1[Any, Aggregating] = {
+  def inOrder(right: Any*): MatcherFactory1[Any, Aggregating] = {
     new MatcherFactory1[Any, Aggregating] {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {

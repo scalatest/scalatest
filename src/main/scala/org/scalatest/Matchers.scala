@@ -2380,7 +2380,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    *                               ^
    * </pre>
    */
-  def newOneOf(xs: Any*) = new ResultOfNewOneOfApplication(xs)
+  def oneOf(xs: Any*) = new ResultOfNewOneOfApplication(xs)
 
   /**
    * This method enables the following syntax: 
@@ -2400,7 +2400,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    *                               ^
    * </pre>
    */
-  def newNoneOf(xs: Any*) = new ResultOfNewNoneOfApplication(xs)
+  def noneOf(xs: Any*) = new ResultOfNewNoneOfApplication(xs)
 
   /**
    * This method enables the following syntax: 
@@ -2410,7 +2410,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    *                               ^
    * </pre>
    */
-  def newTheSameElementsAs(xs: GenTraversable[_]) = new ResultOfNewTheSameElementsAsApplication(xs)
+  def theSameElementsAs(xs: GenTraversable[_]) = new ResultOfNewTheSameElementsAsApplication(xs)
   
   /**
    * This method enables the following syntax: 
@@ -2420,7 +2420,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    *                               ^
    * </pre>
    */
-  def newTheSameElementsInOrderAs(xs: GenTraversable[_]) = new ResultOfNewTheSameElementsInOrderAsApplication(xs)
+  def theSameElementsInOrderAs(xs: GenTraversable[_]) = new ResultOfNewTheSameElementsInOrderAsApplication(xs)
 
   /**
    * This method enables the following syntax: 
@@ -2441,7 +2441,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    *                               ^
    * </pre>
    */
-  def newOnly(xs: Any*) = new ResultOfNewOnlyApplication(xs)
+  def only(xs: Any*) = new ResultOfNewOnlyApplication(xs)
   
   /**
    * This method enables the following syntax: 
@@ -2462,7 +2462,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    *                               ^
    * </pre>
    */
-  def newInOrderOnly[T](xs: Any*) = new ResultOfNewInOrderOnlyApplication(xs)
+  def inOrderOnly[T](xs: Any*) = new ResultOfNewInOrderOnlyApplication(xs)
   
   /**
    * This method enables the following syntax: 
@@ -2483,7 +2483,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    *                               ^
    * </pre>
    */
-  def newAllOf(xs: Any*) = new ResultOfNewAllOfApplication(xs)
+  def allOf(xs: Any*) = new ResultOfNewAllOfApplication(xs)
   
   /**
    * This method enables the following syntax: 
@@ -2493,7 +2493,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    *                               ^
    * </pre>
    */
-  def newInOrder(xs: Any*) = new ResultOfNewInOrderApplication(xs)
+  def inOrder(xs: Any*) = new ResultOfNewInOrderApplication(xs)
   
   // For safe keeping
   private implicit def nodeToCanonical(node: scala.xml.Node) = new Canonicalizer(node)
@@ -3756,8 +3756,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                       ^
      * </pre>
      */
-    def newOneOf(right: Any*)(implicit containing: Containing[T]) {
-      doCollected(collected, xs, "newOneOf", 1) { e =>
+    def oneOf(right: Any*)(implicit containing: Containing[T]) {
+      doCollected(collected, xs, "oneOf", 1) { e =>
         if (containing.containsOneOf(e, right) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
@@ -3802,8 +3802,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                       ^
      * </pre>
      */
-    def newNoneOf(right: Any*)(implicit containing: Containing[T]) {
-      doCollected(collected, xs, "newNoneOf", 1) { e =>
+    def noneOf(right: Any*)(implicit containing: Containing[T]) {
+      doCollected(collected, xs, "noneOf", 1) { e =>
         if (containing.containsNoneOf(e, right) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
@@ -3825,8 +3825,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                       ^
      * </pre>
      */
-    def newTheSameElementsAs(right: GenTraversable[_])(implicit aggregating: Aggregating[T]) {
-      doCollected(collected, xs, "newTheSameElementsAs", 1) { e =>
+    def theSameElementsAs(right: GenTraversable[_])(implicit aggregating: Aggregating[T]) {
+      doCollected(collected, xs, "theSameElementsAs", 1) { e =>
         if (aggregating.containsTheSameElementsAs(e, right) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
@@ -3848,8 +3848,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                       ^
      * </pre>
      */
-    def newTheSameElementsInOrderAs(right: GenTraversable[_])(implicit aggregating: Aggregating[T]) {
-      doCollected(collected, xs, "newTheSameElementsInOrderAs", 1) { e =>
+    def theSameElementsInOrderAs(right: GenTraversable[_])(implicit aggregating: Aggregating[T]) {
+      doCollected(collected, xs, "theSameElementsInOrderAs", 1) { e =>
         if (aggregating.containsTheSameElementsInOrderAs(e, right) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
@@ -3871,8 +3871,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                       ^
      * </pre>
      */
-    def newOnly(right: Any*)(implicit aggregating: Aggregating[T]) {
-      doCollected(collected, xs, "newOnly", 1) { e =>
+    def only(right: Any*)(implicit aggregating: Aggregating[T]) {
+      doCollected(collected, xs, "only", 1) { e =>
         if (aggregating.containsOnly(e, right) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
@@ -3894,8 +3894,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                       ^
      * </pre>
      */
-    def newInOrderOnly(right: Any*)(implicit aggregating: Aggregating[T]) {
-      doCollected(collected, xs, "newInOrderOnly", 1) { e =>
+    def inOrderOnly(right: Any*)(implicit aggregating: Aggregating[T]) {
+      doCollected(collected, xs, "inOrderOnly", 1) { e =>
         if (aggregating.containsInOrderOnly(e, right) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
@@ -3917,8 +3917,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                       ^
      * </pre>
      */
-    def newAllOf(right: Any*)(implicit aggregating: Aggregating[T]) {
-      doCollected(collected, xs, "newAllOf", 1) { e =>
+    def allOf(right: Any*)(implicit aggregating: Aggregating[T]) {
+      doCollected(collected, xs, "allOf", 1) { e =>
         if (aggregating.containsAllOf(e, right) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
@@ -3940,8 +3940,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                       ^
      * </pre>
      */
-    def newInOrder(right: Any*)(implicit aggregating: Aggregating[T]) {
-      doCollected(collected, xs, "newInOrder", 1) { e =>
+    def inOrder(right: Any*)(implicit aggregating: Aggregating[T]) {
+      doCollected(collected, xs, "inOrder", 1) { e =>
         if (aggregating.containsInOrder(e, right) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(

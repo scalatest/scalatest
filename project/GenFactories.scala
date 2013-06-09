@@ -447,8 +447,8 @@ $endif$
      *                              ^
      * </pre>
      */
-    def newTheSameElementsAs(right: GenTraversable[_]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
-      thisMatcherFactory.and(MatcherWords.newContain.newTheSameElementsAs(right))
+    def theSameElementsAs(right: GenTraversable[_]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
+      thisMatcherFactory.and(MatcherWords.newContain.theSameElementsAs(right))
     
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -458,8 +458,8 @@ $endif$
      *                              ^
      * </pre>
      */
-    def newTheSameElementsInOrderAs(right: GenTraversable[_]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
-      thisMatcherFactory.and(MatcherWords.newContain.newTheSameElementsInOrderAs(right))
+    def theSameElementsInOrderAs(right: GenTraversable[_]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
+      thisMatcherFactory.and(MatcherWords.newContain.theSameElementsInOrderAs(right))
     
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -469,8 +469,8 @@ $endif$
      *                             ^
      * </pre>
      */
-    def newInOrderOnly(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
-      thisMatcherFactory.and(MatcherWords.newContain.newInOrderOnly(right.toList: _*))
+    def inOrderOnly(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
+      thisMatcherFactory.and(MatcherWords.newContain.inOrderOnly(right.toList: _*))
     
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -480,8 +480,8 @@ $endif$
      *                              ^
      * </pre>
      */
-    def newAllOf(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
-      thisMatcherFactory.and(MatcherWords.newContain.newAllOf(right.toList: _*))
+    def allOf(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
+      thisMatcherFactory.and(MatcherWords.newContain.allOf(right.toList: _*))
     
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -491,8 +491,8 @@ $endif$
      *                              ^
      * </pre>
      */
-    def newInOrder(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
-      thisMatcherFactory.and(MatcherWords.newContain.newInOrder(right.toList: _*))
+    def inOrder(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
+      thisMatcherFactory.and(MatcherWords.newContain.inOrder(right.toList: _*))
     
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -502,8 +502,8 @@ $endif$
      *                              ^
      * </pre>
      */
-    def newOneOf(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] = 
-      thisMatcherFactory.and(MatcherWords.newContain.newOneOf(right.toList: _*))
+    def oneOf(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] = 
+      thisMatcherFactory.and(MatcherWords.newContain.oneOf(right.toList: _*))
     
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -524,19 +524,8 @@ $endif$
      *                              ^
      * </pre>
      */
-    def newOnly(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
-      thisMatcherFactory.and(MatcherWords.newContain.newOnly(right.toList: _*))
-    
-    /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
-     *
-     * <pre class="stHighlight">
-     * (and contain inOrderOnly (1, 3))
-     *              ^
-     * </pre>
-     */
-    //def inOrderOnly[E](right: E*)(implicit equality: Equality[E]): MatcherFactory$arity$[SC with GenTraversable[E], $commaSeparatedTCNs$] = 
-      //thisMatcherFactory.and(MatcherWords.contain.inOrderOnly(right.toList: _*)(equality))
+    def only(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
+      thisMatcherFactory.and(MatcherWords.newContain.only(right.toList: _*))
     
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -546,8 +535,8 @@ $endif$
      *                              ^
      * </pre>
      */
-    def newNoneOf(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] = 
-      thisMatcherFactory.and(MatcherWords.newContain.newNoneOf(right.toList: _*))
+    def noneOf(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] = 
+      thisMatcherFactory.and(MatcherWords.newContain.noneOf(right.toList: _*))
   }
 
   /**
@@ -1608,8 +1597,8 @@ $endif$
      *                             ^
      * </pre>
      */
-    def newTheSameElementsAs(right: GenTraversable[_]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
-      thisMatcherFactory.or(MatcherWords.newContain.newTheSameElementsAs(right))
+    def theSameElementsAs(right: GenTraversable[_]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
+      thisMatcherFactory.or(MatcherWords.newContain.theSameElementsAs(right))
     
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1619,8 +1608,8 @@ $endif$
      *                             ^
      * </pre>
      */
-    def newTheSameElementsInOrderAs(right: GenTraversable[_]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
-      thisMatcherFactory.or(MatcherWords.newContain.newTheSameElementsInOrderAs(right))
+    def theSameElementsInOrderAs(right: GenTraversable[_]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
+      thisMatcherFactory.or(MatcherWords.newContain.theSameElementsInOrderAs(right))
     
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1630,8 +1619,8 @@ $endif$
      *                            ^
      * </pre>
      */
-    def newInOrderOnly(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
-      thisMatcherFactory.or(MatcherWords.newContain.newInOrderOnly(right.toList: _*))
+    def inOrderOnly(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
+      thisMatcherFactory.or(MatcherWords.newContain.inOrderOnly(right.toList: _*))
     
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1641,8 +1630,8 @@ $endif$
      *                             ^
      * </pre>
      */
-    def newAllOf(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
-      thisMatcherFactory.or(MatcherWords.newContain.newAllOf(right.toList: _*))
+    def allOf(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
+      thisMatcherFactory.or(MatcherWords.newContain.allOf(right.toList: _*))
     
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1652,8 +1641,8 @@ $endif$
      *                             ^
      * </pre>
      */
-    def newInOrder(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
-      thisMatcherFactory.or(MatcherWords.newContain.newInOrder(right.toList: _*))
+    def inOrder(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
+      thisMatcherFactory.or(MatcherWords.newContain.inOrder(right.toList: _*))
     
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1663,8 +1652,8 @@ $endif$
      *                             ^
      * </pre>
      */
-    def newOneOf(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] = 
-      thisMatcherFactory.or(MatcherWords.newContain.newOneOf(right.toList: _*))
+    def oneOf(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] = 
+      thisMatcherFactory.or(MatcherWords.newContain.oneOf(right.toList: _*))
     
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1685,8 +1674,8 @@ $endif$
      *                             ^
      * </pre>
      */
-    def newOnly(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
-      thisMatcherFactory.or(MatcherWords.newContain.newOnly(right.toList: _*))
+    def only(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
+      thisMatcherFactory.or(MatcherWords.newContain.only(right.toList: _*))
     
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1696,8 +1685,8 @@ $endif$
      *                             ^
      * </pre>
      */
-    def newNoneOf(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] = 
-      thisMatcherFactory.or(MatcherWords.newContain.newNoneOf(right.toList: _*))
+    def noneOf(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] = 
+      thisMatcherFactory.or(MatcherWords.newContain.noneOf(right.toList: _*))
   }
 
   /**
