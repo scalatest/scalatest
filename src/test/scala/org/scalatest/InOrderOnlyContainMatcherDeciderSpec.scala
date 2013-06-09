@@ -22,6 +22,8 @@ import org.scalautils.Normalization
 import collection.GenTraversable
 import SharedHelpers._
 
+class InOrderOnlyContainMatcherDeciderSpec
+/*
 class InOrderOnlyContainMatcherDeciderSpec extends Spec with Matchers with Explicitly with StringNormalizations {
   
   val incremented: Normalization[Int] = 
@@ -197,3 +199,4 @@ class InOrderOnlyContainMatcherDeciderSpec extends Spec with Matchers with Expli
     }
   }
 }
+*/

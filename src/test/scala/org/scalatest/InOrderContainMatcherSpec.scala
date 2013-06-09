@@ -20,6 +20,8 @@ import collection.mutable.LinkedHashMap
 import words.InOrderContainMatcher
 import SharedHelpers._
 
+class InOrderContainMatcherSpec
+/*
 class InOrderContainMatcherSpec extends Spec with Matchers {
 
   object `inOrder ` {
@@ -421,3 +423,4 @@ class InOrderContainMatcherSpec extends Spec with Matchers {
   }
   
 }
+*/

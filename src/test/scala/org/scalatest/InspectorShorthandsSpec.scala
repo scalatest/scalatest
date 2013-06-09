@@ -29,6 +29,8 @@ import matchers.BePropertyMatchResult
 import org.scalautils.Equality
 import SharedHelpers._
 
+class InspectorShorthandsSpec 
+/*
 class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropertyChecks {
 
   def examples =
@@ -3789,3 +3791,4 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
     }
   }
 }
+*/

@@ -22,6 +22,8 @@ import org.scalautils.Normalization
 import collection.GenTraversable
 import SharedHelpers._
 
+class NoneOfContainMatcherDeciderSpec 
+/*
 class NoneOfContainMatcherDeciderSpec extends Spec with Matchers with Explicitly with StringNormalizations {
 
   val mapTrimmed: Normalization[(Int, String)] =
@@ -365,3 +367,4 @@ class NoneOfContainMatcherDeciderSpec extends Spec with Matchers with Explicitly
   }
   
 }
+*/

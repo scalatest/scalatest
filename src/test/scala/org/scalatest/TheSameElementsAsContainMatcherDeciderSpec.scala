@@ -21,6 +21,8 @@ import org.scalautils.StringNormalizations
 import org.scalautils.Normalization
 import SharedHelpers._
 
+class TheSameElementsAsContainMatcherDeciderSpec 
+/*
 class TheSameElementsAsContainMatcherDeciderSpec extends Spec with Matchers with Explicitly with StringNormalizations {
   
   val mapTrimmed: Normalization[(Int, String)] =
@@ -355,3 +357,4 @@ class TheSameElementsAsContainMatcherDeciderSpec extends Spec with Matchers with
     }
   }
 }
+*/

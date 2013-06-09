@@ -20,6 +20,8 @@ import org.scalautils.Explicitly
 import collection.GenTraversable
 import SharedHelpers._
 
+class AllOfContainMatcherEqualitySpec
+/*
 class AllOfContainMatcherEqualitySpec extends Spec with Matchers with Explicitly {
 
   class TrimEquality extends Equality[String] {
@@ -292,3 +294,4 @@ class AllOfContainMatcherEqualitySpec extends Spec with Matchers with Explicitly
   }
   
 }
+*/

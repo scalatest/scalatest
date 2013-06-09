@@ -2303,7 +2303,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    *                             ^
    * </pre>
    */
-  def theSameElementsAs[T](xs: scala.collection.GenTraversable[T])(implicit equality: Equality[T]) = 
+  def oldTheSameElementsAs[T](xs: scala.collection.GenTraversable[T])(implicit equality: Equality[T]) = 
     new TheSameElementsAsContainMatcher(xs, equality)
   
   /**
@@ -2314,7 +2314,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    *                             ^
    * </pre>
    */
-  def theSameElementsAs[T](xs: Array[T])(implicit equality: Equality[T]) = 
+  def oldTheSameElementsAs[T](xs: Array[T])(implicit equality: Equality[T]) = 
     new TheSameElementsAsContainMatcher(new ArrayWrapper(xs), equality)
   
   /**
@@ -2325,7 +2325,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    *                             ^
    * </pre>
    */
-  def theSameElementsInOrderAs[T](xs: scala.collection.GenTraversable[T])(implicit equality: Equality[T]) = 
+  def oldTheSameElementsInOrderAs[T](xs: scala.collection.GenTraversable[T])(implicit equality: Equality[T]) = 
     new TheSameElementsInOrderAsContainMatcher(xs, equality)
   
   /**
@@ -2336,7 +2336,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    *                             ^
    * </pre>
    */
-  def theSameElementsInOrderAs[T](xs: Array[T])(implicit equality: Equality[T]) = 
+  def oldTheSameElementsInOrderAs[T](xs: Array[T])(implicit equality: Equality[T]) = 
     new TheSameElementsInOrderAsContainMatcher(new ArrayWrapper(xs), equality)
   
   /**
@@ -2347,7 +2347,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    *                               ^
    * </pre>
    */
-  def allOf[T](xs: T*)(implicit equality: Equality[T]) = 
+  def oldAllOf[T](xs: T*)(implicit equality: Equality[T]) = 
     new AllOfContainMatcher(xs, equality)
   
   /**
@@ -2358,7 +2358,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    *                               ^
    * </pre>
    */
-  def inOrder[T](xs: T*)(implicit equality: Equality[T]) = 
+  def oldInOrder[T](xs: T*)(implicit equality: Equality[T]) = 
     new InOrderContainMatcher(xs, equality)
   
   /**
@@ -2369,7 +2369,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    *                               ^
    * </pre>
    */
-  def oneOf[T](xs: T*)(implicit equality: Equality[T]) = 
+  def oldOneOf[T](xs: T*)(implicit equality: Equality[T]) = 
     new OneOfContainMatcher(xs, equality)
 
   /**
@@ -2430,7 +2430,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    *                               ^
    * </pre>
    */
-  def only[T](xs: T*)(implicit equality: Equality[T]) = 
+  def oldOnly[T](xs: T*)(implicit equality: Equality[T]) = 
     new OnlyContainMatcher(xs, equality)
 
   /**
@@ -2451,7 +2451,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    *                               ^
    * </pre>
    */
-  def inOrderOnly[T](xs: T*)(implicit equality: Equality[T]) = 
+  def oldInOrderOnly[T](xs: T*)(implicit equality: Equality[T]) = 
     new InOrderOnlyContainMatcher(xs, equality)
   
   /**
@@ -2472,7 +2472,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    *                               ^
    * </pre>
    */
-  def noneOf[T](xs: T*)(implicit equality: Equality[T]) = 
+  def oldNoneOf[T](xs: T*)(implicit equality: Equality[T]) = 
     new NoneOfContainMatcher(xs, equality)
   
   /**
@@ -4165,7 +4165,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                                ^
      * </pre>
      */
-    def theSameElementsAs(right: scala.collection.GenTraversable[T])(implicit equality: Equality[T]) {
+    def oldTheSameElementsAs(right: scala.collection.GenTraversable[T])(implicit equality: Equality[T]) {
       val containMatcher = new TheSameElementsAsContainMatcher(right, equality)
       doCollected(collected, xs, "theSameElementsAs", 1) { e =>
         val result = containMatcher(e)
@@ -4186,7 +4186,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                                ^
      * </pre>
      */
-    def theSameElementsInOrderAs(right: scala.collection.GenTraversable[T])(implicit equality: Equality[T]) {
+    def oldTheSameElementsInOrderAs(right: scala.collection.GenTraversable[T])(implicit equality: Equality[T]) {
       val containMatcher = new TheSameElementsInOrderAsContainMatcher(right, equality)
       doCollected(collected, xs, "theSameElementsInOrderAs", 1) { e =>
         val result = containMatcher(e)
@@ -4207,7 +4207,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                                ^
      * </pre>
      */
-    def allOf(right: T*)(implicit equality: Equality[T]) {
+    def oldAllOf(right: T*)(implicit equality: Equality[T]) {
       val containMatcher = new AllOfContainMatcher(right, equality)
       doCollected(collected, xs, "allOf", 1) { e =>
         val result = containMatcher(e)
@@ -4228,7 +4228,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                                ^
      * </pre>
      */
-    def inOrder(right: T*)(implicit equality: Equality[T]) {
+    def oldInOrder(right: T*)(implicit equality: Equality[T]) {
       val containMatcher = new InOrderContainMatcher(right, equality)
       doCollected(collected, xs, "inOrder", 1) { e =>
         val result = containMatcher(e)
@@ -4249,7 +4249,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                                ^
      * </pre>
      */
-    def oneOf(right: T*)(implicit equality: Equality[T]) {
+    def oldOneOf(right: T*)(implicit equality: Equality[T]) {
       val containMatcher = new OneOfContainMatcher(right, equality)
       doCollected(collected, xs, "oneOf", 1) { e =>
         val result = containMatcher(e)
@@ -4270,7 +4270,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                                ^
      * </pre>
      */
-    def only(right: T*)(implicit equality: Equality[T]) {
+    def oldOnly(right: T*)(implicit equality: Equality[T]) {
       val containMatcher = new OnlyContainMatcher(right, equality)
       doCollected(collected, xs, "only", 1) { e =>
         val result = containMatcher(e)
@@ -4291,7 +4291,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                                ^
      * </pre>
      */
-    def inOrderOnly(right: T*)(implicit equality: Equality[T]) {
+    def oldInOrderOnly(right: T*)(implicit equality: Equality[T]) {
       val containMatcher = new InOrderOnlyContainMatcher(right, equality)
       doCollected(collected, xs, "inOrderOnly", 1) { e =>
         val result = containMatcher(e)
@@ -4312,7 +4312,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                                ^
      * </pre>
      */
-    def noneOf(right: T*)(implicit equality: Equality[T]) {
+    def oldNoneOf(right: T*)(implicit equality: Equality[T]) {
       val containMatcher = new NoneOfContainMatcher(right, equality)
       doCollected(collected, xs, "noneOf", 1) { e =>
         val result = containMatcher(e)
@@ -5290,7 +5290,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                                      ^
      * </pre>
      */
-    def theSameElementsAs(right: scala.collection.GenTraversable[E])(implicit equality: Equality[E]) {
+    def oldTheSameElementsAs(right: scala.collection.GenTraversable[E])(implicit equality: Equality[E]) {
       val containMatcher = new TheSameElementsAsContainMatcher(right, equality)
       doCollected(collected, xs, "theSameElementsAs", 1) { e =>
         val result = containMatcher(e.asInstanceOf[scala.collection.GenTraversable[E]])
@@ -5311,7 +5311,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                                      ^
      * </pre>
      */
-    def theSameElementsInOrderAs(right: scala.collection.GenTraversable[E])(implicit equality: Equality[E]) {
+    def oldTheSameElementsInOrderAs(right: scala.collection.GenTraversable[E])(implicit equality: Equality[E]) {
       val containMatcher = new TheSameElementsInOrderAsContainMatcher(right, equality)
       doCollected(collected, xs, "theSameElementsInOrderAs", 1) { e =>
         val result = containMatcher(e.asInstanceOf[scala.collection.GenTraversable[E]])
@@ -5332,7 +5332,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                                      ^
      * </pre>
      */
-    def allOf(right: E*)(implicit equality: Equality[E]) {
+    def oldAllOf(right: E*)(implicit equality: Equality[E]) {
       val containMatcher = new AllOfContainMatcher(right, equality)
       doCollected(collected, xs, "allOf", 1) { e =>
         val result = containMatcher(e.asInstanceOf[scala.collection.GenTraversable[E]])
@@ -5353,7 +5353,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                                      ^
      * </pre>
      */
-    def inOrder(right: E*)(implicit equality: Equality[E]) {
+    def oldInOrder(right: E*)(implicit equality: Equality[E]) {
       val containMatcher = new InOrderContainMatcher(right, equality)
       doCollected(collected, xs, "inOrder", 1) { e =>
         val result = containMatcher(e.asInstanceOf[scala.collection.GenTraversable[E]])
@@ -5374,7 +5374,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                                      ^
      * </pre>
      */
-    def oneOf(right: E*)(implicit equality: Equality[E]) {
+    def oldOneOf(right: E*)(implicit equality: Equality[E]) {
       val containMatcher = new OneOfContainMatcher(right, equality)
       doCollected(collected, xs, "oneOf", 1) { e =>
         val result = containMatcher(e.asInstanceOf[scala.collection.GenTraversable[E]])
@@ -5395,7 +5395,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                                      ^
      * </pre>
      */
-    def only(right: E*)(implicit equality: Equality[E]) {
+    def oldOnly(right: E*)(implicit equality: Equality[E]) {
       val containMatcher = new OnlyContainMatcher(right, equality)
       doCollected(collected, xs, "only", 1) { e =>
         val result = containMatcher(e.asInstanceOf[scala.collection.GenTraversable[E]])
@@ -5416,7 +5416,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                                      ^
      * </pre>
      */
-    def inOrderOnly(right: E*)(implicit equality: Equality[E]) {
+    def oldInOrderOnly(right: E*)(implicit equality: Equality[E]) {
       val containMatcher = new InOrderOnlyContainMatcher(right, equality)
       doCollected(collected, xs, "inOrderOnly", 1) { e =>
         val result = containMatcher(e.asInstanceOf[scala.collection.GenTraversable[E]])
@@ -5437,7 +5437,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                                      ^
      * </pre>
      */
-    def noneOf(right: E*)(implicit equality: Equality[E]) {
+    def oldNoneOf(right: E*)(implicit equality: Equality[E]) {
       val containMatcher = new NoneOfContainMatcher(right, equality)
       doCollected(collected, xs, "noneOf", 1) { e =>
         val result = containMatcher(e.asInstanceOf[scala.collection.GenTraversable[E]])
@@ -5587,7 +5587,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                              ^
      * </pre>
      */
-    def theSameElementsAs(right: scala.collection.GenTraversable[(K, V)])(implicit equality: Equality[(K, V)]) {
+    def oldTheSameElementsAs(right: scala.collection.GenTraversable[(K, V)])(implicit equality: Equality[(K, V)]) {
       val containMatcher = new TheSameElementsAsContainMatcher(right, equality)
       doCollected(collected, xs, "theSameElementsAs", 1) { e =>
         val result = containMatcher(e)
@@ -5608,7 +5608,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                              ^
      * </pre>
      */
-    def theSameElementsInOrderAs(right: scala.collection.GenTraversable[(K, V)])(implicit equality: Equality[(K, V)]) {
+    def oldTheSameElementsInOrderAs(right: scala.collection.GenTraversable[(K, V)])(implicit equality: Equality[(K, V)]) {
       val containMatcher = new TheSameElementsInOrderAsContainMatcher(right, equality)
       doCollected(collected, xs, "theSameElementsInOrderAs", 1) { e =>
         val result = containMatcher(e)
@@ -5629,7 +5629,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                              ^
      * </pre>
      */
-    def allOf(right: (K, V)*)(implicit equality: Equality[(K, V)]) {
+    def oldAllOf(right: (K, V)*)(implicit equality: Equality[(K, V)]) {
       val containMatcher = new AllOfContainMatcher(right, equality)
       doCollected(collected, xs, "allOf", 1) { e =>
         val result = containMatcher(e)
@@ -5650,7 +5650,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                              ^
      * </pre>
      */
-    def inOrder(right: (K, V)*)(implicit equality: Equality[(K, V)]) {
+    def oldInOrder(right: (K, V)*)(implicit equality: Equality[(K, V)]) {
       val containMatcher = new InOrderContainMatcher(right, equality)
       doCollected(collected, xs, "inOrder", 1) { e =>
         val result = containMatcher(e)
@@ -5671,7 +5671,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                              ^
      * </pre>
      */
-    def oneOf(right: (K, V)*)(implicit equality: Equality[(K, V)]) {
+    def oldOneOf(right: (K, V)*)(implicit equality: Equality[(K, V)]) {
       val containMatcher = new OneOfContainMatcher(right, equality)
       doCollected(collected, xs, "oneOf", 1) { e =>
         val result = containMatcher(e)
@@ -5692,7 +5692,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                              ^
      * </pre>
      */
-    def only(right: (K, V)*)(implicit equality: Equality[(K, V)]) {
+    def oldOnly(right: (K, V)*)(implicit equality: Equality[(K, V)]) {
       val containMatcher = new OnlyContainMatcher(right, equality)
       doCollected(collected, xs, "only", 1) { e =>
         val result = containMatcher(e)
@@ -5713,7 +5713,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                              ^
      * </pre>
      */
-    def inOrderOnly(right: (K, V)*)(implicit equality: Equality[(K, V)]) {
+    def oldInOrderOnly(right: (K, V)*)(implicit equality: Equality[(K, V)]) {
       val containMatcher = new InOrderOnlyContainMatcher(right, equality)
       doCollected(collected, xs, "inOrderOnly", 1) { e =>
         val result = containMatcher(e)
@@ -5734,7 +5734,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                              ^
      * </pre>
      */
-    def noneOf(right: (K, V)*)(implicit equality: Equality[(K, V)]) {
+    def oldNoneOf(right: (K, V)*)(implicit equality: Equality[(K, V)]) {
       val containMatcher = new NoneOfContainMatcher(right, equality)
       doCollected(collected, xs, "noneOf", 1) { e =>
         val result = containMatcher(e)

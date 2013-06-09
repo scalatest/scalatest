@@ -19,6 +19,8 @@ import org.scalautils.Equality
 import org.scalautils.Explicitly
 import SharedHelpers._
 
+class TheSameElementsInOrderAsContainMatcherEqualitySpec 
+/*
 class TheSameElementsInOrderAsContainMatcherEqualitySpec extends Spec with Matchers with Explicitly {
 
   class TrimEquality extends Equality[String] {
@@ -197,3 +199,4 @@ class TheSameElementsInOrderAsContainMatcherEqualitySpec extends Spec with Match
     }
   }
 }
+*/

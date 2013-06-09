@@ -20,6 +20,8 @@ import org.scalautils.Explicitly
 import collection.GenTraversable
 import SharedHelpers._
 
+class InOrderContainMatcherEqualitySpec
+/*
 class InOrderContainMatcherEqualitySpec extends Spec with Matchers with Explicitly {
   
   class CustomEquality extends Equality[String] {
@@ -157,3 +159,4 @@ class InOrderContainMatcherEqualitySpec extends Spec with Matchers with Explicit
     }
   }
 }
+*/

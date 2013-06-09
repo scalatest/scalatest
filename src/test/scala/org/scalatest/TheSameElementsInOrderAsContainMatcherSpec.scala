@@ -19,6 +19,8 @@ import collection.mutable.LinkedHashMap
 import words.TheSameElementsInOrderAsContainMatcher
 import SharedHelpers._
 
+class TheSameElementsInOrderAsContainMatcherSpec 
+/*
 class TheSameElementsInOrderAsContainMatcherSpec extends Spec with Matchers  {
 
   object `theSameElementsInOrderAs ` {
@@ -283,3 +285,4 @@ class TheSameElementsInOrderAsContainMatcherSpec extends Spec with Matchers  {
     }
   }
 }
+*/

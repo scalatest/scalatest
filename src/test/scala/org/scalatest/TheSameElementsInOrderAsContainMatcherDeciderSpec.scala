@@ -21,6 +21,8 @@ import org.scalautils.StringNormalizations
 import org.scalautils.Normalization
 import SharedHelpers._
 
+class TheSameElementsInOrderAsContainMatcherDeciderSpec 
+/*
 class TheSameElementsInOrderAsContainMatcherDeciderSpec extends Spec with Matchers with Explicitly with StringNormalizations {
   
   val incremented: Normalization[Int] = 
@@ -195,3 +197,4 @@ class TheSameElementsInOrderAsContainMatcherDeciderSpec extends Spec with Matche
     }
   }
 }
+*/
