@@ -38,35 +38,35 @@ class ListShouldContainNoneOfSpec extends Spec with Matchers {
     object `when used with contain noneOf (...) syntax` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        fumList should newContain noneOf ("fee", "fie", "foe", "fam")
+        fumList should contain noneOf ("fee", "fie", "foe", "fam")
         val e1 = intercept[TestFailedException] {
-          fumList should newContain noneOf ("fee", "fie", "foe", "fum")
+          fumList should contain noneOf ("fee", "fie", "foe", "fum")
         }
         e1.failedCodeFileName.get should be ("ListShouldContainNoneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message.get should be (Resources("containedOneOfElements", decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fum\""))
         // Contains duplicate elements in the right list
         val e2 = intercept[IllegalArgumentException] {
-          fumList should newContain noneOf ("fee", "fam", "foe", "fam")
+          fumList should contain noneOf ("fee", "fam", "foe", "fam")
         }
         e2.getMessage should be (Resources("noneOfDuplicate", "\"fam\""))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseEquality
-        fumList should newContain noneOf ("FEE", "FAM", "FOE", "FU")
+        fumList should contain noneOf ("FEE", "FAM", "FOE", "FU")
         intercept[TestFailedException] {
-          fumList should newContain noneOf ("FEE", "FUM", "FOE", "FU")
+          fumList should contain noneOf ("FEE", "FUM", "FOE", "FU")
         }
       }
       def `should use an explicitly provided Equality` {
-        (fumList should newContain noneOf ("FEE", "FAM", "FOE", "FU")) (decided by upperCaseEquality)
+        (fumList should contain noneOf ("FEE", "FAM", "FOE", "FU")) (decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (fumList should newContain noneOf ("FEE", "FUM", "FOE", "FU")) (decided by upperCaseEquality)
+          (fumList should contain noneOf ("FEE", "FUM", "FOE", "FU")) (decided by upperCaseEquality)
         }
         intercept[TestFailedException] {
-          (fumList should newContain noneOf (" FEE ", " FIE ", " FOE ", " FUM ")) (after being lowerCased and trimmed)
+          (fumList should contain noneOf (" FEE ", " FIE ", " FOE ", " FUM ")) (after being lowerCased and trimmed)
         }
-        (fumList should newContain noneOf (" FEE ", " FIE ", " FOE ", " FAM ")) (after being lowerCased and trimmed)
+        (fumList should contain noneOf (" FEE ", " FIE ", " FOE ", " FAM ")) (after being lowerCased and trimmed)
       }
     }
 
@@ -74,9 +74,9 @@ class ListShouldContainNoneOfSpec extends Spec with Matchers {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
 
-        fumList should (newContain noneOf ("fee", "fie", "foe", "fam"))
+        fumList should (contain noneOf ("fee", "fie", "foe", "fam"))
         val e1 = intercept[TestFailedException] {
-          fumList should (newContain noneOf ("fee", "fie", "foe", "fum"))
+          fumList should (contain noneOf ("fee", "fie", "foe", "fum"))
         }
         e1.failedCodeFileName.get should be ("ListShouldContainNoneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -84,19 +84,19 @@ class ListShouldContainNoneOfSpec extends Spec with Matchers {
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseEquality
-        fumList should (newContain noneOf ("FEE", "FAM", "FOE", "FU"))
+        fumList should (contain noneOf ("FEE", "FAM", "FOE", "FU"))
         intercept[TestFailedException] {
-          fumList should (newContain noneOf ("FEE", "FUM", "FOE", "FU"))
+          fumList should (contain noneOf ("FEE", "FUM", "FOE", "FU"))
         }
       }
       def `should use an explicitly provided Equality` {
-        (fumList should (newContain noneOf ("FEE", "FAM", "FOE", "FU"))) (decided by upperCaseEquality)
+        (fumList should (contain noneOf ("FEE", "FAM", "FOE", "FU"))) (decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (fumList should (newContain noneOf ("FEE", "FUM", "FOE", "FU"))) (decided by upperCaseEquality)
+          (fumList should (contain noneOf ("FEE", "FUM", "FOE", "FU"))) (decided by upperCaseEquality)
         }
-        fumList should (newContain noneOf (" FEE ", " FIE ", " FOE ", " FUM "))
+        fumList should (contain noneOf (" FEE ", " FIE ", " FOE ", " FUM "))
         intercept[TestFailedException] {
-          (fumList should (newContain noneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
+          (fumList should (contain noneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
         }
       }
     }
@@ -104,9 +104,9 @@ class ListShouldContainNoneOfSpec extends Spec with Matchers {
     object `when used with not contain noneOf (...) syntax` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        fumList should not newContain noneOf ("fee", "fie", "foe", "fum")
+        fumList should not contain noneOf ("fee", "fie", "foe", "fum")
         val e1 = intercept[TestFailedException] {
-          fumList should not newContain noneOf ("happy", "birthday", "to", "you")
+          fumList should not contain noneOf ("happy", "birthday", "to", "you")
         }
         e1.failedCodeFileName.get should be ("ListShouldContainNoneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -114,19 +114,19 @@ class ListShouldContainNoneOfSpec extends Spec with Matchers {
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseEquality
-        fumList should not newContain noneOf ("FEE", "FIE", "FOE", "FUM")
+        fumList should not contain noneOf ("FEE", "FIE", "FOE", "FUM")
         intercept[TestFailedException] {
-          fumList should not newContain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")
+          fumList should not contain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")
         }
       }
       def `should use an explicitly provided Equality` {
-        (fumList should not newContain noneOf ("FEE", "FIE", "FOE", "FUM")) (decided by upperCaseEquality)
+        (fumList should not contain noneOf ("FEE", "FIE", "FOE", "FUM")) (decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (fumList should not newContain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseEquality)
+          (fumList should not contain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseEquality)
         }
-        (fumList should not newContain noneOf (" FEE ", " FIE ", " FOE ", " FUM ")) (after being lowerCased and trimmed)
+        (fumList should not contain noneOf (" FEE ", " FIE ", " FOE ", " FUM ")) (after being lowerCased and trimmed)
         intercept[TestFailedException] {
-          fumList should not newContain noneOf (" FEE ", " FIE ", " FOE ", " FUM ")
+          fumList should not contain noneOf (" FEE ", " FIE ", " FOE ", " FUM ")
         }
       }
     }
@@ -134,9 +134,9 @@ class ListShouldContainNoneOfSpec extends Spec with Matchers {
     object `when used with (not contain noneOf (...)) syntax` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        toList should (not newContain noneOf ("happy", "birthday", "to", "you"))
+        toList should (not contain noneOf ("happy", "birthday", "to", "you"))
         val e1 = intercept[TestFailedException] {
-          toList should (not newContain noneOf ("fee", "fie", "foe", "fum"))
+          toList should (not contain noneOf ("fee", "fie", "foe", "fum"))
         }
         e1.failedCodeFileName.get should be ("ListShouldContainNoneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -144,19 +144,19 @@ class ListShouldContainNoneOfSpec extends Spec with Matchers {
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseEquality
-        toList should (not newContain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))
+        toList should (not contain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))
         intercept[TestFailedException] {
-          toList should (not newContain noneOf ("happy", "birthday", "to", "you"))
+          toList should (not contain noneOf ("happy", "birthday", "to", "you"))
         }
       }
       def `should use an explicitly provided Equality` {
-        (toList should (not newContain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseEquality)
+        (toList should (not contain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (toList should (not newContain noneOf ("happy", "birthday", "to", "you"))) (decided by upperCaseEquality)
+          (toList should (not contain noneOf ("happy", "birthday", "to", "you"))) (decided by upperCaseEquality)
         }
-        (toList should (not newContain noneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
+        (toList should (not contain noneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
         intercept[TestFailedException] {
-          toList should (not newContain noneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
+          toList should (not contain noneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
         }
       }
     }
@@ -174,13 +174,13 @@ class ListShouldContainNoneOfSpec extends Spec with Matchers {
     object `when used with contain noneOf (...) syntax` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        all (list1s) should newContain noneOf (2, 3, 4)
-        atLeast (2, lists) should newContain noneOf (8, 3, 4)
-        atMost (2, lists) should newContain noneOf (2, 3, 4)
-        no (lists) should newContain noneOf (1, 2, 5)
+        all (list1s) should contain noneOf (2, 3, 4)
+        atLeast (2, lists) should contain noneOf (8, 3, 4)
+        atMost (2, lists) should contain noneOf (2, 3, 4)
+        no (lists) should contain noneOf (1, 2, 5)
 
         val e1 = intercept[TestFailedException] {
-          all (lists) should newContain noneOf (2, 3, 4)
+          all (lists) should contain noneOf (2, 3, 4)
         }
         e1.failedCodeFileName.get should be ("ListShouldContainNoneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -190,25 +190,25 @@ class ListShouldContainNoneOfSpec extends Spec with Matchers {
       }
 
       def `should use the implicit Equality in scope` {
-        all (hiLists) should newContain noneOf ("ho")
+        all (hiLists) should contain noneOf ("ho")
         intercept[TestFailedException] {
-          all (hiLists) should newContain noneOf ("hi")
+          all (hiLists) should contain noneOf ("hi")
         }
         implicit val ise = upperCaseEquality
-        all (hiLists) should newContain noneOf ("hi")
+        all (hiLists) should contain noneOf ("hi")
         intercept[TestFailedException] {
-          all (hiLists) should newContain noneOf ("HI")
+          all (hiLists) should contain noneOf ("HI")
         }
       }
       def `should use an explicitly provided Equality` {
-        (all (hiLists) should newContain noneOf ("hi")) (decided by upperCaseEquality)
+        (all (hiLists) should contain noneOf ("hi")) (decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (all (hiLists) should newContain noneOf ("HI")) (decided by upperCaseEquality)
+          (all (hiLists) should contain noneOf ("HI")) (decided by upperCaseEquality)
         }
         implicit val ise = upperCaseEquality
-        (all (hiLists) should newContain noneOf ("ho")) (decided by defaultEquality[String])
+        (all (hiLists) should contain noneOf ("ho")) (decided by defaultEquality[String])
         intercept[TestFailedException] {
-          (all (hiLists) should newContain noneOf ("hi")) (decided by defaultEquality[String])
+          (all (hiLists) should contain noneOf ("hi")) (decided by defaultEquality[String])
         }
       }
     }
@@ -216,13 +216,13 @@ class ListShouldContainNoneOfSpec extends Spec with Matchers {
     object `when used with (contain noneOf (...)) syntax` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        all (list1s) should (newContain noneOf (2, 3, 4))
-        atLeast (2, lists) should (newContain noneOf (2, 3, 4))
-        atMost (2, lists) should (newContain noneOf (2, 3, 4))
-        no (lists) should (newContain noneOf (1, 2, 5))
+        all (list1s) should (contain noneOf (2, 3, 4))
+        atLeast (2, lists) should (contain noneOf (2, 3, 4))
+        atMost (2, lists) should (contain noneOf (2, 3, 4))
+        no (lists) should (contain noneOf (1, 2, 5))
 
         val e1 = intercept[TestFailedException] {
-          all (lists) should (newContain noneOf (2, 3, 4))
+          all (lists) should (contain noneOf (2, 3, 4))
         }
         e1.failedCodeFileName.get should be ("ListShouldContainNoneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -232,25 +232,25 @@ class ListShouldContainNoneOfSpec extends Spec with Matchers {
       }
 
       def `should use the implicit Equality in scope` {
-        all (hiLists) should (newContain noneOf ("ho"))
+        all (hiLists) should (contain noneOf ("ho"))
         intercept[TestFailedException] {
-          all (hiLists) should (newContain noneOf ("hi"))
+          all (hiLists) should (contain noneOf ("hi"))
         }
         implicit val ise = upperCaseEquality
-        all (hiLists) should (newContain noneOf ("hi"))
+        all (hiLists) should (contain noneOf ("hi"))
         intercept[TestFailedException] {
-          all (hiLists) should (newContain noneOf ("HI"))
+          all (hiLists) should (contain noneOf ("HI"))
         }
       }
       def `should use an explicitly provided Equality` {
-        (all (hiLists) should (newContain noneOf ("hi"))) (decided by upperCaseEquality)
+        (all (hiLists) should (contain noneOf ("hi"))) (decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (all (hiLists) should (newContain noneOf ("HI"))) (decided by upperCaseEquality)
+          (all (hiLists) should (contain noneOf ("HI"))) (decided by upperCaseEquality)
         }
         implicit val ise = upperCaseEquality
-        (all (hiLists) should (newContain noneOf ("ho"))) (decided by defaultEquality[String])
+        (all (hiLists) should (contain noneOf ("ho"))) (decided by defaultEquality[String])
         intercept[TestFailedException] {
-          (all (hiLists) should (newContain noneOf ("hi"))) (decided by defaultEquality[String])
+          (all (hiLists) should (contain noneOf ("hi"))) (decided by defaultEquality[String])
         }
       }
     }
@@ -258,9 +258,9 @@ class ListShouldContainNoneOfSpec extends Spec with Matchers {
     object `when used with not contain noneOf (...) syntax` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        all (toLists) should not newContain noneOf ("happy", "birthday", "to", "you")
+        all (toLists) should not contain noneOf ("happy", "birthday", "to", "you")
         val e1 = intercept[TestFailedException] {
-          all (toLists) should not newContain noneOf ("fee", "fie", "foe", "fum")
+          all (toLists) should not contain noneOf ("fee", "fie", "foe", "fum")
         }
         e1.failedCodeFileName.get should be ("ListShouldContainNoneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -270,19 +270,19 @@ class ListShouldContainNoneOfSpec extends Spec with Matchers {
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseEquality
-        all (toLists) should not newContain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")
+        all (toLists) should not contain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")
         intercept[TestFailedException] {
-          all (toLists) should not newContain noneOf ("happy", "birthday", "to", "you")
+          all (toLists) should not contain noneOf ("happy", "birthday", "to", "you")
         }
       }
       def `should use an explicitly provided Equality` {
-        (all (toLists) should not newContain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseEquality)
+        (all (toLists) should not contain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (all (toLists) should not newContain noneOf ("happy", "birthday", "to", "you")) (decided by upperCaseEquality)
+          (all (toLists) should not contain noneOf ("happy", "birthday", "to", "you")) (decided by upperCaseEquality)
         }
-        (all (toLists) should not newContain noneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (after being lowerCased and trimmed)
+        (all (toLists) should not contain noneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (after being lowerCased and trimmed)
         intercept[TestFailedException] {
-          all (toLists) should not newContain noneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")
+          all (toLists) should not contain noneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")
         }
       }
     }
@@ -290,9 +290,9 @@ class ListShouldContainNoneOfSpec extends Spec with Matchers {
     object `when used with (not contain noneOf (...)) syntax` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        all (toLists) should (not newContain noneOf ("happy", "birthday", "to", "you"))
+        all (toLists) should (not contain noneOf ("happy", "birthday", "to", "you"))
         val e1 = intercept[TestFailedException] {
-          all (toLists) should (not newContain noneOf ("fee", "fie", "foe", "fum"))
+          all (toLists) should (not contain noneOf ("fee", "fie", "foe", "fum"))
         }
         e1.failedCodeFileName.get should be ("ListShouldContainNoneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -302,19 +302,19 @@ class ListShouldContainNoneOfSpec extends Spec with Matchers {
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseEquality
-        all (toLists) should (not newContain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))
+        all (toLists) should (not contain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))
         intercept[TestFailedException] {
-          all (toLists) should (not newContain noneOf ("happy", "birthday", "to", "you"))
+          all (toLists) should (not contain noneOf ("happy", "birthday", "to", "you"))
         }
       }
       def `should use an explicitly provided Equality` {
-        (all (toLists) should (not newContain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseEquality)
+        (all (toLists) should (not contain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (all (toLists) should (not newContain noneOf ("happy", "birthday", "to", "you"))) (decided by upperCaseEquality)
+          (all (toLists) should (not contain noneOf ("happy", "birthday", "to", "you"))) (decided by upperCaseEquality)
         }
-        (all (toLists) should (not newContain noneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
+        (all (toLists) should (not contain noneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
         intercept[TestFailedException] {
-          all (toLists) should (not newContain noneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
+          all (toLists) should (not contain noneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
         }
       }
     }

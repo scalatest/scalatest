@@ -48,9 +48,9 @@ class ListShouldContainInOrderOnlySpec extends Spec with Matchers {
     object `when used with contain inOrderOnly (..)` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        fumList should newContain inOrderOnly ("fum", "foe", "fie", "fee")
+        fumList should contain inOrderOnly ("fum", "foe", "fie", "fee")
         val e1 = intercept[TestFailedException] {
-          fumList should newContain inOrderOnly ("fee", "fie", "foe", "fum")
+          fumList should contain inOrderOnly ("fee", "fie", "foe", "fum")
         }
         e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -58,28 +58,28 @@ class ListShouldContainInOrderOnlySpec extends Spec with Matchers {
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
-        fumList should newContain inOrderOnly ("FUM", "FOE", "FIE", "FEE")
+        fumList should contain inOrderOnly ("FUM", "FOE", "FIE", "FEE")
         intercept[TestFailedException] {
-          fumList should newContain inOrderOnly ("fee", "fie", "foe", "fum")
+          fumList should contain inOrderOnly ("fee", "fie", "foe", "fum")
         }
       }
       def `should use an explicitly provided Equality` {
-        (fumList should newContain inOrderOnly ("FUM", "FOE", "FIE", "FEE")) (decided by upperCaseStringEquality)
+        (fumList should contain inOrderOnly ("FUM", "FOE", "FIE", "FEE")) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (fumList should newContain inOrderOnly ("fee", "fie", "foe", "fum")) (decided by upperCaseStringEquality)
+          (fumList should contain inOrderOnly ("fee", "fie", "foe", "fum")) (decided by upperCaseStringEquality)
         }
         intercept[TestFailedException] {
-          fumList should newContain inOrderOnly (" FUM ", " FOE ", " FIE ", " FEE ")
+          fumList should contain inOrderOnly (" FUM ", " FOE ", " FIE ", " FEE ")
         }
-        (fumList should newContain inOrderOnly (" FUM ", " FOE ", " FIE ", " FEE ")) (after being lowerCased and trimmed)
+        (fumList should contain inOrderOnly (" FUM ", " FOE ", " FIE ", " FEE ")) (after being lowerCased and trimmed)
       }
     }
 
     object `when used with (contain inOrderOnly (..))` {
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        fumList should (newContain inOrderOnly ("fum", "foe", "fie", "fee"))
+        fumList should (contain inOrderOnly ("fum", "foe", "fie", "fee"))
         val e1 = intercept[TestFailedException] {
-          fumList should (newContain inOrderOnly ("fee", "fie", "foe", "fum"))
+          fumList should (contain inOrderOnly ("fee", "fie", "foe", "fum"))
         }
         e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -87,29 +87,29 @@ class ListShouldContainInOrderOnlySpec extends Spec with Matchers {
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
-        fumList should (newContain inOrderOnly ("FUM", "FOE", "FIE", "FEE"))
+        fumList should (contain inOrderOnly ("FUM", "FOE", "FIE", "FEE"))
         intercept[TestFailedException] {
-          fumList should (newContain inOrderOnly ("fee", "fie", "foe", "fum"))
+          fumList should (contain inOrderOnly ("fee", "fie", "foe", "fum"))
         }
       }
       def `should use an explicitly provided Equality` {
-        (fumList should (newContain inOrderOnly ("FUM", "FOE", "FIE", "FEE"))) (decided by upperCaseStringEquality)
+        (fumList should (contain inOrderOnly ("FUM", "FOE", "FIE", "FEE"))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (fumList should (newContain inOrderOnly ("fee", "fie", "foe", "fum"))) (decided by upperCaseStringEquality)
+          (fumList should (contain inOrderOnly ("fee", "fie", "foe", "fum"))) (decided by upperCaseStringEquality)
         }
         intercept[TestFailedException] {
-          fumList should (newContain inOrderOnly (" FUM ", " FOE ", " FIE ", " FEE "))
+          fumList should (contain inOrderOnly (" FUM ", " FOE ", " FIE ", " FEE "))
         }
-        (fumList should (newContain inOrderOnly (" FUM ", " FOE ", " FIE ", " FEE "))) (after being lowerCased and trimmed)
+        (fumList should (contain inOrderOnly (" FUM ", " FOE ", " FIE ", " FEE "))) (after being lowerCased and trimmed)
       }
     }
 
     object `when used with not contain inOrderOnly (..)` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        toList should not newContain inOrderOnly ("you", "to", "birthday", "happy")
+        toList should not contain inOrderOnly ("you", "to", "birthday", "happy")
         val e1 = intercept[TestFailedException] {
-          toList should not newContain inOrderOnly ("happy", "birthday", "to", "you")
+          toList should not contain inOrderOnly ("happy", "birthday", "to", "you")
         }
         e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -117,19 +117,19 @@ class ListShouldContainInOrderOnlySpec extends Spec with Matchers {
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
-        toList should not newContain inOrderOnly ("YOU", "TO", "BIRTHDAY", "HAPPY")
+        toList should not contain inOrderOnly ("YOU", "TO", "BIRTHDAY", "HAPPY")
         intercept[TestFailedException] {
-          toList should not newContain inOrderOnly ("HAPPY", "BIRTHDAY", "TO", "YOU")
+          toList should not contain inOrderOnly ("HAPPY", "BIRTHDAY", "TO", "YOU")
         }
       }
       def `should use an explicitly provided Equality` {
-        (toList should not newContain inOrderOnly ("YOU", "TO", "BIRTHDAY", "HAPPY")) (decided by upperCaseStringEquality)
+        (toList should not contain inOrderOnly ("YOU", "TO", "BIRTHDAY", "HAPPY")) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (toList should not newContain inOrderOnly ("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseStringEquality)
+          (toList should not contain inOrderOnly ("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseStringEquality)
         }
-        toList should not newContain inOrderOnly (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")
+        toList should not contain inOrderOnly (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")
         intercept[TestFailedException] {
-          (toList should not newContain inOrderOnly (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (after being lowerCased and trimmed)
+          (toList should not contain inOrderOnly (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (after being lowerCased and trimmed)
         }
       }
     }
@@ -137,9 +137,9 @@ class ListShouldContainInOrderOnlySpec extends Spec with Matchers {
     object `when used with (not contain inOrderOnly (..))` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        toList should (not newContain inOrderOnly ("you", "to", "birthday", "happy"))
+        toList should (not contain inOrderOnly ("you", "to", "birthday", "happy"))
         val e1 = intercept[TestFailedException] {
-          toList should (not newContain inOrderOnly ("happy", "birthday", "to", "you"))
+          toList should (not contain inOrderOnly ("happy", "birthday", "to", "you"))
         }
         e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -147,19 +147,19 @@ class ListShouldContainInOrderOnlySpec extends Spec with Matchers {
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
-        toList should (not newContain inOrderOnly ("YOU", "TO", "BIRTHDAY", "HAPPY"))
+        toList should (not contain inOrderOnly ("YOU", "TO", "BIRTHDAY", "HAPPY"))
         intercept[TestFailedException] {
-          toList should (not newContain inOrderOnly ("HAPPY", "BIRTHDAY", "TO", "YOU"))
+          toList should (not contain inOrderOnly ("HAPPY", "BIRTHDAY", "TO", "YOU"))
         }
       }
       def `should use an explicitly provided Equality` {
-        (toList should (not newContain inOrderOnly ("YOU", "TO", "BIRTHDAY", "HAPPY"))) (decided by upperCaseStringEquality)
+        (toList should (not contain inOrderOnly ("YOU", "TO", "BIRTHDAY", "HAPPY"))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (toList should (not newContain inOrderOnly ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseStringEquality)
+          (toList should (not contain inOrderOnly ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseStringEquality)
         }
-        toList should (not newContain inOrderOnly (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
+        toList should (not contain inOrderOnly (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
         intercept[TestFailedException] {
-          (toList should (not newContain inOrderOnly (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
+          (toList should (not contain inOrderOnly (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
         }
       }
     }
@@ -176,13 +176,13 @@ class ListShouldContainInOrderOnlySpec extends Spec with Matchers {
     object `when used with contain inOrderOnly (..)` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        all (list1s) should newContain inOrderOnly (1, 2, 3)
-        atLeast (2, lists) should newContain inOrderOnly (1, 2, 3)
-        atMost (2, lists) should newContain inOrderOnly (1, 2, 3)
-        no (lists) should newContain inOrderOnly (3, 4, 5)
+        all (list1s) should contain inOrderOnly (1, 2, 3)
+        atLeast (2, lists) should contain inOrderOnly (1, 2, 3)
+        atMost (2, lists) should contain inOrderOnly (1, 2, 3)
+        no (lists) should contain inOrderOnly (3, 4, 5)
 
         val e1 = intercept[TestFailedException] {
-          all (lists) should newContain inOrderOnly (1, 2, 3)
+          all (lists) should contain inOrderOnly (1, 2, 3)
         }
         e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -191,7 +191,7 @@ class ListShouldContainInOrderOnlySpec extends Spec with Matchers {
                                    "in " + decorateToStringValue(lists)))
 
         val e3 = intercept[TestFailedException] {
-          all (listsNil) should newContain inOrderOnly (1, 2, 3)
+          all (listsNil) should contain inOrderOnly (1, 2, 3)
         }
         e3.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
         e3.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -201,25 +201,25 @@ class ListShouldContainInOrderOnlySpec extends Spec with Matchers {
       }
 
       def `should use the implicit Equality in scope` {
-        all (hiLists) should newContain inOrderOnly ("hi", "he")
+        all (hiLists) should contain inOrderOnly ("hi", "he")
         intercept[TestFailedException] {
-          all (hiLists) should newContain inOrderOnly ("hi", "ho")
+          all (hiLists) should contain inOrderOnly ("hi", "ho")
         }
         implicit val ise = upperCaseStringEquality
-        all (hiLists) should newContain inOrderOnly ("HI", "HE")
+        all (hiLists) should contain inOrderOnly ("HI", "HE")
         intercept[TestFailedException] {
-          all (hiLists) should newContain inOrderOnly ("HI", "HO")
+          all (hiLists) should contain inOrderOnly ("HI", "HO")
         }
       }
       def `should use an explicitly provided Equality` {
-        (all (hiLists) should newContain inOrderOnly ("HI", "HE")) (decided by upperCaseStringEquality)
+        (all (hiLists) should contain inOrderOnly ("HI", "HE")) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (hiLists) should newContain inOrderOnly ("HI", "HO")) (decided by upperCaseStringEquality)
+          (all (hiLists) should contain inOrderOnly ("HI", "HO")) (decided by upperCaseStringEquality)
         }
         implicit val ise = upperCaseStringEquality
-        (all (hiLists) should newContain inOrderOnly ("hi", "he")) (decided by defaultEquality[String])
+        (all (hiLists) should contain inOrderOnly ("hi", "he")) (decided by defaultEquality[String])
         intercept[TestFailedException] {
-          (all (hiLists) should newContain inOrderOnly ("hi", "ho")) (decided by defaultEquality[String])
+          (all (hiLists) should contain inOrderOnly ("hi", "ho")) (decided by defaultEquality[String])
         }
       }
     }
@@ -227,14 +227,14 @@ class ListShouldContainInOrderOnlySpec extends Spec with Matchers {
     object `when used with (contain inOrderOnly (..))` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        all (list1s) should (newContain inOrderOnly (1, 2, 3))
-        atLeast (2, lists) should (newContain inOrderOnly (1, 2, 3))
-        atMost (2, lists) should (newContain inOrderOnly (1, 2, 3))
-        no (lists) should (newContain inOrderOnly (3, 4, 5))
-        no (listsNil) should (newContain inOrderOnly (3, 4, 5))
+        all (list1s) should (contain inOrderOnly (1, 2, 3))
+        atLeast (2, lists) should (contain inOrderOnly (1, 2, 3))
+        atMost (2, lists) should (contain inOrderOnly (1, 2, 3))
+        no (lists) should (contain inOrderOnly (3, 4, 5))
+        no (listsNil) should (contain inOrderOnly (3, 4, 5))
 
         val e1 = intercept[TestFailedException] {
-          all (lists) should (newContain inOrderOnly (1, 2, 3))
+          all (lists) should (contain inOrderOnly (1, 2, 3))
         }
         e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -243,7 +243,7 @@ class ListShouldContainInOrderOnlySpec extends Spec with Matchers {
                                    "in " + decorateToStringValue(lists)))
 
         val e4 = intercept[TestFailedException] {
-          all (listsNil) should (newContain inOrderOnly (1, 2, 3))
+          all (listsNil) should (contain inOrderOnly (1, 2, 3))
         }
         e4.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
         e4.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -253,25 +253,25 @@ class ListShouldContainInOrderOnlySpec extends Spec with Matchers {
       }
 
       def `should use the implicit Equality in scope` {
-        all (hiLists) should (newContain inOrderOnly ("hi", "he"))
+        all (hiLists) should (contain inOrderOnly ("hi", "he"))
         intercept[TestFailedException] {
-          all (hiLists) should (newContain inOrderOnly ("he", "hi"))
+          all (hiLists) should (contain inOrderOnly ("he", "hi"))
         }
         implicit val ise = upperCaseStringEquality
-        all (hiLists) should (newContain inOrderOnly ("HI", "HE"))
+        all (hiLists) should (contain inOrderOnly ("HI", "HE"))
         intercept[TestFailedException] {
-          all (hiLists) should (newContain inOrderOnly ("HI", "HO"))
+          all (hiLists) should (contain inOrderOnly ("HI", "HO"))
         }
       }
       def `should use an explicitly provided Equality` {
-        (all (hiLists) should (newContain inOrderOnly ("HI", "HE"))) (decided by upperCaseStringEquality)
+        (all (hiLists) should (contain inOrderOnly ("HI", "HE"))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (hiLists) should (newContain inOrderOnly ("HI", "HO"))) (decided by upperCaseStringEquality)
+          (all (hiLists) should (contain inOrderOnly ("HI", "HO"))) (decided by upperCaseStringEquality)
         }
         implicit val ise = upperCaseStringEquality
-        (all (hiLists) should (newContain inOrderOnly ("hi", "he"))) (decided by defaultEquality[String])
+        (all (hiLists) should (contain inOrderOnly ("hi", "he"))) (decided by defaultEquality[String])
         intercept[TestFailedException] {
-          (all (hiLists) should (newContain inOrderOnly ("he", "hi"))) (decided by defaultEquality[String])
+          (all (hiLists) should (contain inOrderOnly ("he", "hi"))) (decided by defaultEquality[String])
         }
       }
     }
@@ -279,9 +279,9 @@ class ListShouldContainInOrderOnlySpec extends Spec with Matchers {
     object `when used with not contain inOrderOnly (..)` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        all (toLists) should not newContain inOrderOnly ("you", "to")
+        all (toLists) should not contain inOrderOnly ("you", "to")
         val e1 = intercept[TestFailedException] {
-          all (toLists) should not newContain inOrderOnly ("to", "you")
+          all (toLists) should not contain inOrderOnly ("to", "you")
         }
         e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -291,19 +291,19 @@ class ListShouldContainInOrderOnlySpec extends Spec with Matchers {
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
-        all (toLists) should not newContain inOrderOnly ("YOU", "TO")
+        all (toLists) should not contain inOrderOnly ("YOU", "TO")
         intercept[TestFailedException] {
-          all (toLists) should not newContain inOrderOnly ("TO", "YOU")
+          all (toLists) should not contain inOrderOnly ("TO", "YOU")
         }
       }
       def `should use an explicitly provided Equality` {
-        (all (toLists) should not newContain inOrderOnly ("YOU", "TO")) (decided by upperCaseStringEquality)
+        (all (toLists) should not contain inOrderOnly ("YOU", "TO")) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) should not newContain inOrderOnly ("TO", "YOU")) (decided by upperCaseStringEquality)
+          (all (toLists) should not contain inOrderOnly ("TO", "YOU")) (decided by upperCaseStringEquality)
         }
-        all (toLists) should not newContain inOrderOnly (" TO ", " YOU ")
+        all (toLists) should not contain inOrderOnly (" TO ", " YOU ")
         intercept[TestFailedException] {
-          (all (toLists) should not newContain inOrderOnly (" TO ", " YOU ")) (after being lowerCased and trimmed)
+          (all (toLists) should not contain inOrderOnly (" TO ", " YOU ")) (after being lowerCased and trimmed)
         }
       }
     }
@@ -311,9 +311,9 @@ class ListShouldContainInOrderOnlySpec extends Spec with Matchers {
     object `when used with (not contain inOrderOnly (..))` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        all (toLists) should (not newContain inOrderOnly ("you", "to"))
+        all (toLists) should (not contain inOrderOnly ("you", "to"))
         val e1 = intercept[TestFailedException] {
-          all (toLists) should (not newContain inOrderOnly ("to", "you"))
+          all (toLists) should (not contain inOrderOnly ("to", "you"))
         }
         e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -323,19 +323,19 @@ class ListShouldContainInOrderOnlySpec extends Spec with Matchers {
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
-        all (toLists) should (not newContain inOrderOnly ("YOU", "TO"))
+        all (toLists) should (not contain inOrderOnly ("YOU", "TO"))
         intercept[TestFailedException] {
-          all (toLists) should (not newContain inOrderOnly ("TO", "YOU"))
+          all (toLists) should (not contain inOrderOnly ("TO", "YOU"))
         }
       }
       def `should use an explicitly provided Equality` {
-        (all (toLists) should (not newContain inOrderOnly ("YOU", "TO"))) (decided by upperCaseStringEquality)
+        (all (toLists) should (not contain inOrderOnly ("YOU", "TO"))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) should (not newContain inOrderOnly ("TO", "YOU"))) (decided by upperCaseStringEquality)
+          (all (toLists) should (not contain inOrderOnly ("TO", "YOU"))) (decided by upperCaseStringEquality)
         }
-        all (toLists) should (not newContain inOrderOnly (" TO ", " YOU "))
+        all (toLists) should (not contain inOrderOnly (" TO ", " YOU "))
         intercept[TestFailedException] {
-          (all (toLists) should (not newContain inOrderOnly (" TO ", " YOU "))) (after being lowerCased and trimmed)
+          (all (toLists) should (not contain inOrderOnly (" TO ", " YOU "))) (after being lowerCased and trimmed)
         }
       }
     }

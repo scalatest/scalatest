@@ -29,7 +29,7 @@ import org.scalatest.enablers.Containing
  *
  * @author Bill Venners
  */
-final class ContainWord {
+final class ContainWord extends NewContainWord {
 
   /**
    * This method enables the following syntax:

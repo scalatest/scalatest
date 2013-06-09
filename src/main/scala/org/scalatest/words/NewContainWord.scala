@@ -30,7 +30,7 @@ import org.scalatest.UnquotedString
  *
  * @author Bill Venners
  */
-final class NewContainWord {
+class NewContainWord {
 
   def oneOf(right: Any*): MatcherFactory1[Any, Containing] = {
     new MatcherFactory1[Any, Containing] {
