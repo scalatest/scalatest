@@ -76,9 +76,11 @@ import org.scalautils.NormalizingEquality
  * This <code>TestFailedException</code> will cause the test to fail.
  * </p>
  * 
+ * <a name="matchersMigration"></a>
+ * <h2>Matchers migration</h2>
+ *
  * <p>
- * <strong>
- * Note: In ScalaTest 2.0, traits <code>org.scalatest.matchers.ShouldMatchers</code> and <code>org.scalatest.matchers.MustMatchers</code> is being
+ * In ScalaTest 2.0, traits <code>org.scalatest.matchers.ShouldMatchers</code> and <code>org.scalatest.matchers.MustMatchers</code> is being
  * succeeded by trait <code>org.scalatest.Matchers</code>.
  * As of 2.0.M6, both <code>ShouldMatchers</code> and <code>MustMatchers</code> have been deprecated.
  * They will continue to work during a lengthy deprecation cycle, but will eventually be removed. You can migrate existing uses of <code>ShouldMatchers</code> 
@@ -87,11 +89,9 @@ import org.scalautils.NormalizingEquality
  * <code>org.scalatest.matchers.MustMatchers</code>, but with one extra step: replacing "<code>must</code>" with "<code>should</code>". <code>org.scalatest.Matchers</code>
  * only supports the verb "<code>should</code>"; We apologize for imposing such a large search-and-replace job on users, but we want to
  * make the verb <code>"must"</code> available to be used for a different purpose in ScalaTest after the deprecation cycle for <code>MustMatchers</code>.
- * </strong>
  * </p>
  *
  * <p>
- * <strong>
  * All previously documented syntax for matchers should continue to work exactly the same in ScalaTest 2.0.M6, with two potential breakages, both of
  * which should be quite rare, and one deprecation. First, support for "<code>have</code> <code>length</code>" and "<code>have</code> <code>size</code>" based solely on
  * structural types has been removed. Any use of this syntax on types other than Scala or Java collections, arrays, or strings will no longer compile.
@@ -102,22 +102,21 @@ import org.scalautils.NormalizingEquality
  * The deprecation is <code>be</code> <code>===</code> <code>&lt;value&gt;</code> syntax. This will continue to work as before, but will generate a deprecation
  * warning and eventually be removed in a later version of ScalaTest. Please replace uses of this syntax with one of the other
  * ways to check equality described in the next section.
- * </strong>
  * </p>
  *
  * <a name="checkingEqualityWithMatchers"></a>
  * <h2>Checking equality with matchers</h2>
  *
  * <p>
- * ScalaTest matchers provides five different ways to check equality, each focused on addressing a different problem. They are:
+ * ScalaTest matchers provides five different ways to check equality, each designed to address a different need. They are:
  * </p>
  *
  * <pre class="stHighlight">
  * result should equal (3) // can customize equality
  * result should === (3)   // can customize equality and enforce type constraints
  * result should be (3)    // cannot customize equality
- * result shouldEqual 3    // can customize equality, no parentheses needed
- * result shouldBe 3       // cannot customize equality, no parentheses needed
+ * result shouldEqual 3    // can customize equality, no parentheses required
+ * result shouldBe 3       // cannot customize equality, no parentheses required
  * </pre>
  *
  * <p>
@@ -157,7 +156,37 @@ import org.scalautils.NormalizingEquality
  * such as if you want to compare <code>Double</code>s with a tolerance.
  * For an example, see the main documentation of <a href="../scalautils/Equality.html">trait <code>Equality</code></a>.
  * The "<code>should</code> <code>be</code>" and <code>shouldBe</code> syntax to not take an <code>Equality</code> and can therefore not be customized.
- * They always the default approach to equality described above.
+ * They always the default approach to equality described above and will likely compile fastest, since the compiler need not search for
+ * an implicit <code>Equality</code>.
+ * </p>
+ *
+ * <p>
+ * The <code>should</code> <code>===</code> syntax (and its complement, <code>should</code> <code>!==</code>) can be used to enforce type
+ * constraints at compile-time between the left and right sides of the equality comparison. Here's an example:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * scala&gt; import org.scalatest._
+ * import org.scalatest._
+ *
+ * scala&gt; import Matchers._
+ * import Matchers._
+ *
+ * scala&gt; import org.scalautils.TypeCheckedTripleEquals._
+ * import org.scalautils.TypeCheckedTripleEquals._
+ *
+ * scala&gt; Some(2) should === (2)
+ * &lt;console&gt;:17: error: types Some[Int] and Int do not adhere to the equality constraint
+ * selected for the === and !== operators; the missing implicit parameter is of
+ * type org.scalautils.EqualityConstraint[Some[Int],Int]
+ *               Some(2) should === (2)
+ *                       ^
+ * </pre>
+ *
+ * <p>
+ * By default, the "<code>Some(2)</code> <code>should</code> <code>===</code> <code>(2)</code>" statement would fail at runtime. By mixing in
+ * the equality constraints provided by <code>TypeCheckedTripleEquals</code>, however, the statement fails to compile. For more information
+ * and examples, see the main documentation for <a href="../scalautils/TypeCheckedTripleEquals.html">trait <code>TypeCheckedTripleEquals</code></a>.
  * </p>
  *
  * <a name="checkingSizeAndLength"></a>
