@@ -155,7 +155,7 @@ final class ContainWord {
    *                                ^
    * </pre>
    */
-  def theSameElementsAs[E](right: GenTraversable[E])(implicit equality: Equality[E]): Matcher[GenTraversable[E]] = 
+  def oldTheSameElementsAs[E](right: GenTraversable[E])(implicit equality: Equality[E]): Matcher[GenTraversable[E]] = 
     new Matcher[GenTraversable[E]] {
       def apply(left: GenTraversable[E]): MatchResult = {
         val result = new TheSameElementsAsContainMatcher(right, equality).apply(left)
@@ -172,7 +172,7 @@ final class ContainWord {
    *                                ^
    * </pre>
    */
-  def theSameElementsInOrderAs[E](right: GenTraversable[E])(implicit equality: Equality[E]): Matcher[GenTraversable[E]] = 
+  def oldTheSameElementsInOrderAs[E](right: GenTraversable[E])(implicit equality: Equality[E]): Matcher[GenTraversable[E]] = 
     new Matcher[GenTraversable[E]] {
       def apply(left: GenTraversable[E]): MatchResult = {
         val result = new TheSameElementsInOrderAsContainMatcher(right, equality).apply(left)
@@ -188,7 +188,7 @@ final class ContainWord {
    *                                ^
    * </pre>
    */
-  def allOf[E](right: E*)(implicit equality: Equality[E]): Matcher[GenTraversable[E]] = 
+  def oldAllOf[E](right: E*)(implicit equality: Equality[E]): Matcher[GenTraversable[E]] = 
     new Matcher[GenTraversable[E]] {
       def apply(left: GenTraversable[E]): MatchResult = {
         val result = new AllOfContainMatcher(right, equality).apply(left)
@@ -204,7 +204,7 @@ final class ContainWord {
    *                                ^
    * </pre>
    */
-  def inOrder[E](right: E*)(implicit equality: Equality[E]): Matcher[GenTraversable[E]] = 
+  def oldInOrder[E](right: E*)(implicit equality: Equality[E]): Matcher[GenTraversable[E]] = 
     new Matcher[GenTraversable[E]] {
       def apply(left: GenTraversable[E]): MatchResult = {
         val result = new InOrderContainMatcher(right, equality).apply(left)
@@ -220,7 +220,7 @@ final class ContainWord {
    *                                ^
    * </pre>
    */
-  def oneOf[E](right: E*)(implicit equality: Equality[E]): Matcher[GenTraversable[E]] = 
+  def oldOneOf[E](right: E*)(implicit equality: Equality[E]): Matcher[GenTraversable[E]] = 
     new Matcher[GenTraversable[E]] {
       def apply(left: GenTraversable[E]): MatchResult = {
         val result = new OneOfContainMatcher(right, equality).apply(left)
@@ -236,7 +236,7 @@ final class ContainWord {
    *                                ^
    * </pre>
    */
-  def only[E](right: E*)(implicit equality: Equality[E]): Matcher[GenTraversable[E]] = 
+  def oldOnly[E](right: E*)(implicit equality: Equality[E]): Matcher[GenTraversable[E]] = 
     new Matcher[GenTraversable[E]] {
       def apply(left: GenTraversable[E]): MatchResult = {
         val result = new OnlyContainMatcher(right, equality).apply(left)
@@ -252,7 +252,7 @@ final class ContainWord {
    *                                ^
    * </pre>
    */
-  def inOrderOnly[E](right: E*)(implicit equality: Equality[E]): Matcher[GenTraversable[E]] = 
+  def oldInOrderOnly[E](right: E*)(implicit equality: Equality[E]): Matcher[GenTraversable[E]] = 
     new Matcher[GenTraversable[E]] {
       def apply(left: GenTraversable[E]): MatchResult = {
         val result = new InOrderOnlyContainMatcher(right, equality).apply(left)
@@ -268,7 +268,7 @@ final class ContainWord {
    *                                ^
    * </pre>
    */
-  def noneOf[E](right: E*)(implicit equality: Equality[E]): Matcher[GenTraversable[E]] = 
+  def oldNoneOf[E](right: E*)(implicit equality: Equality[E]): Matcher[GenTraversable[E]] = 
     new Matcher[GenTraversable[E]] {
       def apply(left: GenTraversable[E]): MatchResult = {
         val result = new NoneOfContainMatcher(right, equality).apply(left)

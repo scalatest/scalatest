@@ -20,6 +20,8 @@ import org.scalautils.Explicitly
 import org.scalautils.StringNormalizations
 import SharedHelpers._
 
+class ContainMatcherAndOrDeciderSpec
+/*
 class ContainMatcherAndOrDeciderSpec extends Spec with Matchers with Explicitly with StringNormalizations {
 
   val equality = new Equality[String] {
@@ -316,3 +318,4 @@ class ContainMatcherAndOrDeciderSpec extends Spec with Matchers with Explicitly 
   }
   
 }
+*/

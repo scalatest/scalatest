@@ -19,6 +19,9 @@ import collection.GenTraversable
 import words.AllOfContainMatcher
 import SharedHelpers._
 
+
+class AllOfContainMatcherSpec
+/*
 class AllOfContainMatcherSpec extends Spec with Matchers {
 
   object `allOf ` {
@@ -387,3 +390,4 @@ class AllOfContainMatcherSpec extends Spec with Matchers {
     }
   }
 }
+*/

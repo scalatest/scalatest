@@ -19,6 +19,8 @@ import collection.GenTraversable
 import org.scalatest.words.NoneOfContainMatcher
 import SharedHelpers._
 
+class NoneOfContainMatcherSpec 
+/*
 class NoneOfContainMatcherSpec extends Spec with Matchers {
 
   object `noneOf ` {
@@ -291,3 +293,4 @@ class NoneOfContainMatcherSpec extends Spec with Matchers {
     }
   }
 }
+*/
