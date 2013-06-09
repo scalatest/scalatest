@@ -3628,7 +3628,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                                          ^
      * </pre>
      */
-    def contain(right: ContainMatcher[E]) {
+    def oldContain(right: ContainMatcher[E]) {
       doCollected(collected, xs, "contain", 1) { e =>
         val result = right(e.asInstanceOf[scala.collection.GenTraversable[E]])
         if (result.matches != shouldBeTrue) {
@@ -3725,7 +3725,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                                    ^
      * </pre>
      */
-    def contain(right: ContainMatcher[E]) {
+    def oldContain(right: ContainMatcher[E]) {
       doCollected(collected, xs, "contain", 1) { e =>
         val result = right(e)
         if (result.matches != shouldBeTrue) {
@@ -3807,7 +3807,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                                          ^
      * </pre>
      */
-    def contain(right: ContainMatcher[(K, V)]) {
+    def oldContain(right: ContainMatcher[(K, V)]) {
       doCollected(collected, xs, "contain", 1) { e =>
         val result = right(e)
         if (result.matches != shouldBeTrue) {

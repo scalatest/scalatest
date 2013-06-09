@@ -1082,7 +1082,7 @@ final class NotWord {
    *                        ^
    * </pre>
    */
-  def contain[E](right: ContainMatcher[E]): Matcher[GenTraversable[E]] = 
+  def oldContain[E](right: ContainMatcher[E]): Matcher[GenTraversable[E]] = 
     new Matcher[GenTraversable[E]] {
       def apply(left: GenTraversable[E]): MatchResult = {
         val result = right(left)

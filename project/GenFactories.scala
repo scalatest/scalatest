@@ -1245,8 +1245,8 @@ $endif$
      *                          ^
      * </pre>
      */
-    def contain[U](right: ContainMatcher[U]): MatcherFactory$arity$[SC with GenTraversable[U], $commaSeparatedTCNs$] =
-      thisMatcherFactory.and(MatcherWords.not.contain(right))
+    def oldContain[U](right: ContainMatcher[U]): MatcherFactory$arity$[SC with GenTraversable[U], $commaSeparatedTCNs$] =
+      thisMatcherFactory.and(MatcherWords.not.oldContain(right))
     
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -2395,8 +2395,8 @@ $endif$
      *                         ^
      * </pre>
      */
-    def contain[U](right: ContainMatcher[U]): MatcherFactory$arity$[SC with GenTraversable[U], $commaSeparatedTCNs$] =
-      thisMatcherFactory.or(MatcherWords.not.contain(right))
+    def oldContain[U](right: ContainMatcher[U]): MatcherFactory$arity$[SC with GenTraversable[U], $commaSeparatedTCNs$] =
+      thisMatcherFactory.or(MatcherWords.not.oldContain(right))
     
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
