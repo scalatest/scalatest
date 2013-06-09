@@ -661,8 +661,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                                                                           ^
      * </pre>
      */
-    def theSameElementsAs[E](right: GenTraversable[E])(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
-      outerInstance.and(MatcherWords.contain.theSameElementsAs(right)(equality))
+    def oldTheSameElementsAs[E](right: GenTraversable[E])(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
+      outerInstance.and(MatcherWords.contain.oldTheSameElementsAs(right)(equality))
     
     /**
      * This method enables the following syntax:
@@ -672,8 +672,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                                                                           ^
      * </pre>
      */
-    def theSameElementsInOrderAs[E](right: GenTraversable[E])(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
-      outerInstance.and(MatcherWords.contain.theSameElementsInOrderAs(right)(equality))
+    def oldTheSameElementsInOrderAs[E](right: GenTraversable[E])(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
+      outerInstance.and(MatcherWords.contain.oldTheSameElementsInOrderAs(right)(equality))
     
     /**
      * This method enables the following syntax:
@@ -683,8 +683,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                                                                           ^
      * </pre>
      */
-    def allOf[E](right: E*)(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
-      outerInstance.and(MatcherWords.contain.allOf(right.toList: _*)(equality))
+    def oldAllOf[E](right: E*)(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
+      outerInstance.and(MatcherWords.contain.oldAllOf(right.toList: _*)(equality))
     
     /**
      * This method enables the following syntax:
@@ -694,8 +694,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                                                                           ^
      * </pre>
      */
-    def inOrder[E](right: E*)(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
-      outerInstance.and(MatcherWords.contain.inOrder(right.toList: _*)(equality))
+    def oldInOrder[E](right: E*)(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
+      outerInstance.and(MatcherWords.contain.oldInOrder(right.toList: _*)(equality))
     
     /**
      * This method enables the following syntax:
@@ -705,8 +705,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                                                                           ^
      * </pre>
      */
-    def oneOf[E](right: E*)(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
-      outerInstance.and(MatcherWords.contain.oneOf(right.toList: _*)(equality))
+    def oldOneOf[E](right: E*)(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
+      outerInstance.and(MatcherWords.contain.oldOneOf(right.toList: _*)(equality))
     
     /**
      * This method enables the following syntax:
@@ -716,8 +716,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                                                                           ^
      * </pre>
      */
-    def only[E](right: E*)(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
-      outerInstance.and(MatcherWords.contain.only(right.toList: _*)(equality))
+    def oldOnly[E](right: E*)(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
+      outerInstance.and(MatcherWords.contain.oldOnly(right.toList: _*)(equality))
     
     /**
      * This method enables the following syntax:
@@ -727,8 +727,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                                                                           ^
      * </pre>
      */
-    def inOrderOnly[E](right: E*)(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
-      outerInstance.and(MatcherWords.contain.inOrderOnly(right.toList: _*)(equality))
+    def oldInOrderOnly[E](right: E*)(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
+      outerInstance.and(MatcherWords.contain.oldInOrderOnly(right.toList: _*)(equality))
     
     /**
      * This method enables the following syntax:
@@ -738,8 +738,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                                                                           ^
      * </pre>
      */
-    def noneOf[E](right: E*)(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
-      outerInstance.and(MatcherWords.contain.noneOf(right.toList: _*)(equality))
+    def oldNoneOf[E](right: E*)(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
+      outerInstance.and(MatcherWords.contain.oldNoneOf(right.toList: _*)(equality))
       
     /**
      * This method enables the following syntax:
@@ -1882,8 +1882,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                                                                          ^
      * </pre>
      */
-    def theSameElementsAs[E](right: GenTraversable[E])(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
-      outerInstance.or(MatcherWords.contain.theSameElementsAs(right)(equality))
+    def oldTheSameElementsAs[E](right: GenTraversable[E])(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
+      outerInstance.or(MatcherWords.contain.oldTheSameElementsAs(right)(equality))
     
     /**
      * This method enables the following syntax:
@@ -1893,8 +1893,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                                                                          ^
      * </pre>
      */
-    def theSameElementsInOrderAs[E](right: GenTraversable[E])(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
-      outerInstance.or(MatcherWords.contain.theSameElementsInOrderAs(right)(equality))
+    def oldTheSameElementsInOrderAs[E](right: GenTraversable[E])(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
+      outerInstance.or(MatcherWords.contain.oldTheSameElementsInOrderAs(right)(equality))
     
     /**
      * This method enables the following syntax:
@@ -1904,8 +1904,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                                                                          ^
      * </pre>
      */
-    def allOf[E](right: E*)(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
-      outerInstance.or(MatcherWords.contain.allOf(right.toList: _*)(equality))
+    def oldAllOf[E](right: E*)(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
+      outerInstance.or(MatcherWords.contain.oldAllOf(right.toList: _*)(equality))
     
     /**
      * This method enables the following syntax:
@@ -1915,8 +1915,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                                                                          ^
      * </pre>
      */
-    def inOrder[E](right: E*)(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
-      outerInstance.or(MatcherWords.contain.inOrder(right.toList: _*)(equality))
+    def oldInOrder[E](right: E*)(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
+      outerInstance.or(MatcherWords.contain.oldInOrder(right.toList: _*)(equality))
     
     /**
      * This method enables the following syntax:
@@ -1926,8 +1926,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                                                                          ^
      * </pre>
      */
-    def oneOf[E](right: E*)(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
-      outerInstance.or(MatcherWords.contain.oneOf(right.toList: _*)(equality))
+    def oldOneOf[E](right: E*)(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
+      outerInstance.or(MatcherWords.contain.oldOneOf(right.toList: _*)(equality))
     
     /**
      * This method enables the following syntax:
@@ -1937,8 +1937,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                                                                          ^
      * </pre>
      */
-    def only[E](right: E*)(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
-      outerInstance.or(MatcherWords.contain.only(right.toList: _*)(equality))
+    def oldOnly[E](right: E*)(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
+      outerInstance.or(MatcherWords.contain.oldOnly(right.toList: _*)(equality))
     
     /**
      * This method enables the following syntax:
@@ -1948,8 +1948,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                                                                          ^
      * </pre>
      */
-    def inOrderOnly[E](right: E*)(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
-      outerInstance.or(MatcherWords.contain.inOrderOnly(right.toList: _*)(equality))
+    def oldInOrderOnly[E](right: E*)(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
+      outerInstance.or(MatcherWords.contain.oldInOrderOnly(right.toList: _*)(equality))
     
     /**
      * This method enables the following syntax:
@@ -1959,8 +1959,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                                                                          ^
      * </pre>
      */
-    def noneOf[E](right: E*)(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
-      outerInstance.or(MatcherWords.contain.noneOf(right.toList: _*)(equality))
+    def oldNoneOf[E](right: E*)(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
+      outerInstance.or(MatcherWords.contain.oldNoneOf(right.toList: _*)(equality))
       
     /**
      * This method enables the following syntax:
