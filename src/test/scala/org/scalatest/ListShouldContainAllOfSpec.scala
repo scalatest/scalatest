@@ -47,9 +47,9 @@ class ListShouldContainAllOfSpec extends Spec with Matchers {
     object `when used with contain allOf (..)` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        fumList should newContain allOf ("fee", "fie", "foe", "fum")
+        fumList should contain allOf ("fee", "fie", "foe", "fum")
         val e1 = intercept[TestFailedException] {
-          fumList should newContain allOf ("happy", "birthday", "to", "you")
+          fumList should contain allOf ("happy", "birthday", "to", "you")
         }
         e1.failedCodeFileName.get should be ("ListShouldContainAllOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -57,20 +57,20 @@ class ListShouldContainAllOfSpec extends Spec with Matchers {
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
-        fumList should newContain allOf ("FEE", "FIE", "FOE", "FUM")
+        fumList should contain allOf ("FEE", "FIE", "FOE", "FUM")
         intercept[TestFailedException] {
-          fumList should newContain allOf ("fee", "fie", "foe", "fam")
+          fumList should contain allOf ("fee", "fie", "foe", "fam")
         }
       }
       def `should use an explicitly provided Equality` {
-        (fumList should newContain allOf ("FEE", "FIE", "FOE", "FUM")) (decided by upperCaseStringEquality)
+        (fumList should contain allOf ("FEE", "FIE", "FOE", "FUM")) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (fumList should newContain allOf ("fee", "fie", "foe", "fam")) (decided by upperCaseStringEquality)
+          (fumList should contain allOf ("fee", "fie", "foe", "fam")) (decided by upperCaseStringEquality)
         }
         intercept[TestFailedException] {
-          fumList should newContain allOf (" FEE ", " FIE ", " FOE ", " FUM ")
+          fumList should contain allOf (" FEE ", " FIE ", " FOE ", " FUM ")
         }
-        (fumList should newContain allOf (" FEE ", " FIE ", " FOE ", " FUM ")) (after being lowerCased and trimmed)
+        (fumList should contain allOf (" FEE ", " FIE ", " FOE ", " FUM ")) (after being lowerCased and trimmed)
       }
     }
 
@@ -78,9 +78,9 @@ class ListShouldContainAllOfSpec extends Spec with Matchers {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
 
-        fumList should (newContain allOf ("fee", "fie", "foe", "fum"))
+        fumList should (contain allOf ("fee", "fie", "foe", "fum"))
         val e1 = intercept[TestFailedException] {
-          fumList should (newContain allOf ("happy", "birthday", "to", "you"))
+          fumList should (contain allOf ("happy", "birthday", "to", "you"))
         }
         e1.failedCodeFileName.get should be ("ListShouldContainAllOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -88,29 +88,29 @@ class ListShouldContainAllOfSpec extends Spec with Matchers {
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
-        fumList should (newContain allOf ("FEE", "FIE", "FOE", "FUM"))
+        fumList should (contain allOf ("FEE", "FIE", "FOE", "FUM"))
         intercept[TestFailedException] {
-          fumList should (newContain allOf ("fee", "fie", "foe", "fam"))
+          fumList should (contain allOf ("fee", "fie", "foe", "fam"))
         }
       }
       def `should use an explicitly provided Equality` {
-        (fumList should (newContain allOf ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
+        (fumList should (contain allOf ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (fumList should (newContain allOf ("fee", "fie", "foe", "fam"))) (decided by upperCaseStringEquality)
+          (fumList should (contain allOf ("fee", "fie", "foe", "fam"))) (decided by upperCaseStringEquality)
         }
         intercept[TestFailedException] {
-          fumList should (newContain allOf (" FEE ", " FIE ", " FOE ", " FUM "))
+          fumList should (contain allOf (" FEE ", " FIE ", " FOE ", " FUM "))
         }
-        (fumList should (newContain allOf (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
+        (fumList should (contain allOf (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
       }
     }
 
     object `when used with not contain allOf (..)` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        toList should not newContain allOf ("fee", "fie", "foe", "fum")
+        toList should not contain allOf ("fee", "fie", "foe", "fum")
         val e1 = intercept[TestFailedException] {
-          toList should not newContain allOf ("happy", "birthday", "to", "you")
+          toList should not contain allOf ("happy", "birthday", "to", "you")
         }
         e1.failedCodeFileName.get should be ("ListShouldContainAllOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -118,19 +118,19 @@ class ListShouldContainAllOfSpec extends Spec with Matchers {
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
-        toList should not newContain allOf ("happy", "birthday", "to", "you", "dear")
+        toList should not contain allOf ("happy", "birthday", "to", "you", "dear")
         intercept[TestFailedException] {
-          toList should not newContain allOf ("HAPPY", "BIRTHDAY", "TO", "YOU")
+          toList should not contain allOf ("HAPPY", "BIRTHDAY", "TO", "YOU")
         }
       }
       def `should use an explicitly provided Equality` {
-        (toList should not newContain allOf ("happy", "birthday", "to", "you", "dear")) (decided by upperCaseStringEquality)
+        (toList should not contain allOf ("happy", "birthday", "to", "you", "dear")) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (toList should not newContain allOf ("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseStringEquality)
+          (toList should not contain allOf ("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseStringEquality)
         }
-        toList should not newContain allOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")
+        toList should not contain allOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")
         intercept[TestFailedException] {
-          (toList should not newContain allOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (after being lowerCased and trimmed)
+          (toList should not contain allOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (after being lowerCased and trimmed)
         }
       }
     }
@@ -138,9 +138,9 @@ class ListShouldContainAllOfSpec extends Spec with Matchers {
     object `when used with (not contain allOf (..))` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        toList should (not newContain allOf ("HAPPY", "BIRTHDAY", "TO", "YOU", "DEAR"))
+        toList should (not contain allOf ("HAPPY", "BIRTHDAY", "TO", "YOU", "DEAR"))
         val e1 = intercept[TestFailedException] {
-          toList should (not newContain allOf ("happy", "birthday", "to", "you"))
+          toList should (not contain allOf ("happy", "birthday", "to", "you"))
         }
         e1.failedCodeFileName.get should be ("ListShouldContainAllOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -148,19 +148,19 @@ class ListShouldContainAllOfSpec extends Spec with Matchers {
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
-        toList should (not newContain allOf ("NICE", "TO", "MEET", "YOU", "TOO"))
+        toList should (not contain allOf ("NICE", "TO", "MEET", "YOU", "TOO"))
         intercept[TestFailedException] {
-          toList should (not newContain allOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))
+          toList should (not contain allOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))
         }
       }
       def `should use an explicitly provided Equality` {
-        (toList should (not newContain allOf ("NICE", "TO", "MEET", "YOU", "TOO"))) (decided by upperCaseStringEquality)
+        (toList should (not contain allOf ("NICE", "TO", "MEET", "YOU", "TOO"))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (toList should (not newContain allOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseStringEquality)
+          (toList should (not contain allOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseStringEquality)
         }
-        toList should (not newContain allOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
+        toList should (not contain allOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
         intercept[TestFailedException] {
-          (toList should (not newContain allOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
+          (toList should (not contain allOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
         }
       }
     }
@@ -177,13 +177,13 @@ class ListShouldContainAllOfSpec extends Spec with Matchers {
     object `when used with contain allOf (..)` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        all (list1s) should newContain allOf (1, 2, 3)
-        atLeast (2, lists) should newContain allOf (1, 2, 3)
-        atMost (2, lists) should newContain allOf (1, 2, 3)
-        no (lists) should newContain allOf (3, 4, 5)
+        all (list1s) should contain allOf (1, 2, 3)
+        atLeast (2, lists) should contain allOf (1, 2, 3)
+        atMost (2, lists) should contain allOf (1, 2, 3)
+        no (lists) should contain allOf (3, 4, 5)
 
         val e1 = intercept[TestFailedException] {
-          all (lists) should newContain allOf (1, 2, 3)
+          all (lists) should contain allOf (1, 2, 3)
         }
         e1.failedCodeFileName.get should be ("ListShouldContainAllOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -193,25 +193,25 @@ class ListShouldContainAllOfSpec extends Spec with Matchers {
       }
 
       def `should use the implicit Equality in scope` {
-        all (hiLists) should newContain allOf ("he", "hi")
+        all (hiLists) should contain allOf ("he", "hi")
         intercept[TestFailedException] {
-          all (hiLists) should newContain allOf ("ho", "hi")
+          all (hiLists) should contain allOf ("ho", "hi")
         }
         implicit val ise = upperCaseStringEquality
-        all (hiLists) should newContain allOf ("HE", "HI")
+        all (hiLists) should contain allOf ("HE", "HI")
         intercept[TestFailedException] {
-          all (hiLists) should newContain allOf ("HO", "HI")
+          all (hiLists) should contain allOf ("HO", "HI")
         }
       }
       def `should use an explicitly provided Equality` {
-        (all (hiLists) should newContain allOf ("HE", "HI")) (decided by upperCaseStringEquality)
+        (all (hiLists) should contain allOf ("HE", "HI")) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (hiLists) should newContain allOf ("HO", "HI")) (decided by upperCaseStringEquality)
+          (all (hiLists) should contain allOf ("HO", "HI")) (decided by upperCaseStringEquality)
         }
         implicit val ise = upperCaseStringEquality
-        (all (hiLists) should newContain allOf ("he", "hi")) (decided by defaultEquality[String])
+        (all (hiLists) should contain allOf ("he", "hi")) (decided by defaultEquality[String])
         intercept[TestFailedException] {
-          (all (hiLists) should newContain allOf ("ho", "hi")) (decided by defaultEquality[String])
+          (all (hiLists) should contain allOf ("ho", "hi")) (decided by defaultEquality[String])
         }
       }
     }
@@ -219,13 +219,13 @@ class ListShouldContainAllOfSpec extends Spec with Matchers {
     object `when used with (contain allOf (..))` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        all (list1s) should (newContain allOf (1, 2, 3))
-        atLeast (2, lists) should (newContain allOf (1, 2, 3))
-        atMost (2, lists) should (newContain allOf (1, 2, 3))
-        no (lists) should (newContain allOf (3, 4, 5))
+        all (list1s) should (contain allOf (1, 2, 3))
+        atLeast (2, lists) should (contain allOf (1, 2, 3))
+        atMost (2, lists) should (contain allOf (1, 2, 3))
+        no (lists) should (contain allOf (3, 4, 5))
 
         val e1 = intercept[TestFailedException] {
-          all (lists) should (newContain allOf (1, 2, 3))
+          all (lists) should (contain allOf (1, 2, 3))
         }
         e1.failedCodeFileName.get should be ("ListShouldContainAllOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -235,25 +235,25 @@ class ListShouldContainAllOfSpec extends Spec with Matchers {
       }
 
       def `should use the implicit Equality in scope` {
-        all (hiLists) should (newContain allOf ("he", "hi"))
+        all (hiLists) should (contain allOf ("he", "hi"))
         intercept[TestFailedException] {
-          all (hiLists) should (newContain allOf ("ho", "hi"))
+          all (hiLists) should (contain allOf ("ho", "hi"))
         }
         implicit val ise = upperCaseStringEquality
-        all (hiLists) should (newContain allOf ("HE", "HI"))
+        all (hiLists) should (contain allOf ("HE", "HI"))
         intercept[TestFailedException] {
-          all (hiLists) should (newContain allOf ("HO", "HI"))
+          all (hiLists) should (contain allOf ("HO", "HI"))
         }
       }
       def `should use an explicitly provided Equality` {
-        (all (hiLists) should (newContain allOf ("HE", "HI"))) (decided by upperCaseStringEquality)
+        (all (hiLists) should (contain allOf ("HE", "HI"))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (hiLists) should (newContain allOf ("HO", "HI"))) (decided by upperCaseStringEquality)
+          (all (hiLists) should (contain allOf ("HO", "HI"))) (decided by upperCaseStringEquality)
         }
         implicit val ise = upperCaseStringEquality
-        (all (hiLists) should (newContain allOf ("he", "hi"))) (decided by defaultEquality[String])
+        (all (hiLists) should (contain allOf ("he", "hi"))) (decided by defaultEquality[String])
         intercept[TestFailedException] {
-          (all (hiLists) should (newContain allOf ("ho", "hi"))) (decided by defaultEquality[String])
+          (all (hiLists) should (contain allOf ("ho", "hi"))) (decided by defaultEquality[String])
         }
       }
     }
@@ -261,9 +261,9 @@ class ListShouldContainAllOfSpec extends Spec with Matchers {
     object `when used with not contain allOf (..)` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        all (toLists) should not newContain allOf ("fee", "fie", "foe", "fum")
+        all (toLists) should not contain allOf ("fee", "fie", "foe", "fum")
         val e1 = intercept[TestFailedException] {
-          all (toLists) should not newContain allOf ("you", "to")
+          all (toLists) should not contain allOf ("you", "to")
         }
         e1.failedCodeFileName.get should be ("ListShouldContainAllOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -273,19 +273,19 @@ class ListShouldContainAllOfSpec extends Spec with Matchers {
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
-        all (toLists) should not newContain allOf ("NICE", "MEET", "YOU")
+        all (toLists) should not contain allOf ("NICE", "MEET", "YOU")
         intercept[TestFailedException] {
-          all (toLists) should not newContain allOf ("YOU", "TO")
+          all (toLists) should not contain allOf ("YOU", "TO")
         }
       }
       def `should use an explicitly provided Equality` {
-        (all (toLists) should not newContain allOf ("NICE", "MEET", "YOU")) (decided by upperCaseStringEquality)
+        (all (toLists) should not contain allOf ("NICE", "MEET", "YOU")) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) should not newContain allOf ("YOU", "TO")) (decided by upperCaseStringEquality)
+          (all (toLists) should not contain allOf ("YOU", "TO")) (decided by upperCaseStringEquality)
         }
-        all (toLists) should not newContain allOf (" YOU ", " TO ")
+        all (toLists) should not contain allOf (" YOU ", " TO ")
         intercept[TestFailedException] {
-          (all (toLists) should not newContain allOf (" YOU ", " TO ")) (after being lowerCased and trimmed)
+          (all (toLists) should not contain allOf (" YOU ", " TO ")) (after being lowerCased and trimmed)
         }
       }
     }
@@ -293,9 +293,9 @@ class ListShouldContainAllOfSpec extends Spec with Matchers {
     object `when used with (not contain allOf (..))` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        all (toLists) should (not newContain allOf ("fee", "fie", "foe", "fum"))
+        all (toLists) should (not contain allOf ("fee", "fie", "foe", "fum"))
         val e1 = intercept[TestFailedException] {
-          all (toLists) should (not newContain allOf ("you", "to"))
+          all (toLists) should (not contain allOf ("you", "to"))
         }
         e1.failedCodeFileName.get should be ("ListShouldContainAllOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -305,19 +305,19 @@ class ListShouldContainAllOfSpec extends Spec with Matchers {
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
-        all (toLists) should (not newContain allOf ("NICE", "MEET", "YOU"))
+        all (toLists) should (not contain allOf ("NICE", "MEET", "YOU"))
         intercept[TestFailedException] {
-          all (toLists) should (not newContain allOf ("YOU", "TO"))
+          all (toLists) should (not contain allOf ("YOU", "TO"))
         }
       }
       def `should use an explicitly provided Equality` {
-        (all (toLists) should (not newContain allOf ("NICE", "MEET", "YOU"))) (decided by upperCaseStringEquality)
+        (all (toLists) should (not contain allOf ("NICE", "MEET", "YOU"))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) should (not newContain allOf ("YOU", "TO"))) (decided by upperCaseStringEquality)
+          (all (toLists) should (not contain allOf ("YOU", "TO"))) (decided by upperCaseStringEquality)
         }
-        all (toLists) should (not newContain allOf (" YOU ", " TO "))
+        all (toLists) should (not contain allOf (" YOU ", " TO "))
         intercept[TestFailedException] {
-          (all (toLists) should (not newContain allOf (" YOU ", " TO "))) (after being lowerCased and trimmed)
+          (all (toLists) should (not contain allOf (" YOU ", " TO "))) (after being lowerCased and trimmed)
         }
       }
     }

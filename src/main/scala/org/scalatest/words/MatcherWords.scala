@@ -120,16 +120,6 @@ trait MatcherWords {
   val contain = new ContainWord
 
   /**
-   * This method enables syntax such as the following:
-   *
-   * <pre class="stHighlight">
-   * list should (contain ('a') and have length (7))
-   *              ^
-   * </pre>
-   */
-  val newContain = new NewContainWord
-
-  /**
    * This field enables syntax like the following: 
    *
    * <pre class="stHighlight">

@@ -1122,7 +1122,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    *
    * @author Bill Venners
    */
-  final class ResultOfContainWordForJavaMap[K, V](left: java.util.Map[K, V], shouldBeTrue: Boolean) extends ResultOfNewContainWord[java.util.Map[K, V]](left) {
+  final class ResultOfContainWordForJavaMap[K, V, L[_, _] <: java.util.Map[_, _]](left: L[K, V], shouldBeTrue: Boolean) extends ResultOfNewContainWord[L[K, V]](left) {
 
     /**
      * This method enables the following syntax (<code>javaMap</code> is a <code>java.util.Map</code>):
@@ -2353,6 +2353,51 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    */
   class ResultOfContainWordForTraversable[E, L[_] <: scala.collection.GenTraversable[_]](val left: scala.collection.GenTraversable[E], val shouldBeTrue: Boolean = true) extends ResultOfNewContainWord[L[E]](left.asInstanceOf[L[E]]) with ContainMethods[E]
 
+  class ResultOfContainWordForArray[E](val left: Array[E], val shouldBeTrue: Boolean = true) extends ResultOfNewContainWord[Array[E]](left) {
+
+    /**
+     * This method enables the following syntax (positiveNumber is a <code>AMatcher</code>):
+     *
+     * <pre class="stHighlight">
+     * traversable should contain a positiveNumber
+     *                            ^
+     * </pre>
+     */
+    def a(aMatcher: AMatcher[E]) {
+      left.find(aMatcher(_).matches) match {
+        case Some(e) => 
+          if (!shouldBeTrue) {
+            val result = aMatcher(e)
+            throw newTestFailedException(FailureMessages("containedA", left, UnquotedString(aMatcher.nounName), UnquotedString(result.negatedFailureMessage)))
+          }
+        case None =>
+          if (shouldBeTrue)
+            throw newTestFailedException(FailureMessages("didNotContainA", left, UnquotedString(aMatcher.nounName)))
+      }
+    }
+    
+    /**
+     * This method enables the following syntax (oddNumber is a <code>AMatcher</code>):
+     *
+     * <pre class="stHighlight">
+     * traversable should contain an oddNumber
+     *                            ^
+     * </pre>
+     */
+    def an(anMatcher: AnMatcher[E]) {
+      left.find(anMatcher(_).matches) match {
+        case Some(e) => 
+          if (!shouldBeTrue) {
+            val result = anMatcher(e)
+            throw newTestFailedException(FailureMessages("containedAn", left, UnquotedString(anMatcher.nounName), UnquotedString(result.negatedFailureMessage)))
+          }
+        case None =>
+          if (shouldBeTrue)
+            throw newTestFailedException(FailureMessages("didNotContainAn", left, UnquotedString(anMatcher.nounName)))
+      }
+    }
+  }
+
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
    * the matchers DSL.
@@ -3236,11 +3281,11 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                     ^
      * </pre>
      */
-    def newContain(newOneOf: ResultOfNewOneOfApplication)(implicit containing: Containing[T]) {
+    def contain(newOneOf: ResultOfNewOneOfApplication)(implicit containing: Containing[T]) {
 
       val right = newOneOf.right
 
-      doCollected(collected, xs, "newContain", 1) { e =>
+      doCollected(collected, xs, "contain", 1) { e =>
         if (containing.containsOneOf(e, right) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
@@ -3262,11 +3307,11 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                     ^
      * </pre>
      */
-    def newContain(atLeastOneOf: ResultOfAtLeastOneOfApplication)(implicit aggregating: Aggregating[T]) {
+    def contain(atLeastOneOf: ResultOfAtLeastOneOfApplication)(implicit aggregating: Aggregating[T]) {
 
       val right = atLeastOneOf.right
 
-      doCollected(collected, xs, "newContain", 1) { e =>
+      doCollected(collected, xs, "contain", 1) { e =>
         if (aggregating.containsAtLeastOneOf(e, right) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
@@ -3288,11 +3333,11 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                     ^
      * </pre>
      */
-    def newContain(newNoneOf: ResultOfNewNoneOfApplication)(implicit containing: Containing[T]) {
+    def contain(newNoneOf: ResultOfNewNoneOfApplication)(implicit containing: Containing[T]) {
 
       val right = newNoneOf.right
 
-      doCollected(collected, xs, "newContain", 1) { e =>
+      doCollected(collected, xs, "contain", 1) { e =>
         if (containing.containsNoneOf(e, right) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
@@ -3314,11 +3359,11 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                     ^
      * </pre>
      */
-    def newContain(theSameElementsAs: ResultOfNewTheSameElementsAsApplication)(implicit aggregating: Aggregating[T]) {
+    def contain(theSameElementsAs: ResultOfNewTheSameElementsAsApplication)(implicit aggregating: Aggregating[T]) {
 
       val right = theSameElementsAs.right
 
-      doCollected(collected, xs, "newContain", 1) { e =>
+      doCollected(collected, xs, "contain", 1) { e =>
         if (aggregating.containsTheSameElementsAs(e, right) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
@@ -3340,11 +3385,11 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                     ^
      * </pre>
      */
-    def newContain(theSameElementsInOrderAs: ResultOfNewTheSameElementsInOrderAsApplication)(implicit aggregating: Aggregating[T]) {
+    def contain(theSameElementsInOrderAs: ResultOfNewTheSameElementsInOrderAsApplication)(implicit aggregating: Aggregating[T]) {
 
       val right = theSameElementsInOrderAs.right
 
-      doCollected(collected, xs, "newContain", 1) { e =>
+      doCollected(collected, xs, "contain", 1) { e =>
         if (aggregating.containsTheSameElementsInOrderAs(e, right) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
@@ -3366,11 +3411,11 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                     ^
      * </pre>
      */
-    def newContain(only: ResultOfNewOnlyApplication)(implicit aggregating: Aggregating[T]) {
+    def contain(only: ResultOfNewOnlyApplication)(implicit aggregating: Aggregating[T]) {
 
       val right = only.right
 
-      doCollected(collected, xs, "newContain", 1) { e =>
+      doCollected(collected, xs, "contain", 1) { e =>
         if (aggregating.containsOnly(e, right) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
@@ -3392,11 +3437,11 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                     ^
      * </pre>
      */
-    def newContain(only: ResultOfNewInOrderOnlyApplication)(implicit aggregating: Aggregating[T]) {
+    def contain(only: ResultOfNewInOrderOnlyApplication)(implicit aggregating: Aggregating[T]) {
 
       val right = only.right
 
-      doCollected(collected, xs, "newContain", 1) { e =>
+      doCollected(collected, xs, "contain", 1) { e =>
         if (aggregating.containsInOrderOnly(e, right) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
@@ -3418,11 +3463,11 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                     ^
      * </pre>
      */
-    def newContain(only: ResultOfNewAllOfApplication)(implicit aggregating: Aggregating[T]) {
+    def contain(only: ResultOfNewAllOfApplication)(implicit aggregating: Aggregating[T]) {
 
       val right = only.right
 
-      doCollected(collected, xs, "newContain", 1) { e =>
+      doCollected(collected, xs, "contain", 1) { e =>
         if (aggregating.containsAllOf(e, right) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
@@ -3444,11 +3489,11 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                     ^
      * </pre>
      */
-    def newContain(only: ResultOfNewInOrderApplication)(implicit aggregating: Aggregating[T]) {
+    def contain(only: ResultOfNewInOrderApplication)(implicit aggregating: Aggregating[T]) {
 
       val right = only.right
 
-      doCollected(collected, xs, "newContain", 1) { e =>
+      doCollected(collected, xs, "contain", 1) { e =>
         if (aggregating.containsInOrder(e, right) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
@@ -3657,7 +3702,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                                          ^
      * </pre>
      */
-    def contain(right: ContainMatcher[E]) {
+    def oldContain(right: ContainMatcher[E]) {
       doCollected(collected, xs, "contain", 1) { e =>
         val result = right(e.asInstanceOf[scala.collection.GenTraversable[E]])
         if (result.matches != shouldBeTrue) {
@@ -3754,7 +3799,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                                    ^
      * </pre>
      */
-    def contain(right: ContainMatcher[E]) {
+    def oldContain(right: ContainMatcher[E]) {
       doCollected(collected, xs, "contain", 1) { e =>
         val result = right(e)
         if (result.matches != shouldBeTrue) {
@@ -3836,7 +3881,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                                          ^
      * </pre>
      */
-    def contain(right: ContainMatcher[(K, V)]) {
+    def oldContain(right: ContainMatcher[(K, V)]) {
       doCollected(collected, xs, "contain", 1) { e =>
         val result = right(e)
         if (result.matches != shouldBeTrue) {
@@ -4248,7 +4293,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfContainWordForCollectedArray[T](collected: Collected, xs: scala.collection.GenTraversable[Array[T]], shouldBeTrue: Boolean) {
+  final class ResultOfContainWordForCollectedArray[T](collected: Collected, xs: scala.collection.GenTraversable[Array[T]], shouldBeTrue: Boolean) extends ResultOfNewContainWordForCollectedAny[Array[T]](collected, xs, shouldBeTrue) {
   
     /**
      * This method enables the following syntax:
@@ -4974,7 +5019,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *    ^
      * </pre>
      */
-    def should(newContainWord: NewContainWord): ResultOfNewContainWordForCollectedAny[T] = {
+    def should(containWord: ContainWord): ResultOfNewContainWordForCollectedAny[T] = {
       new ResultOfNewContainWordForCollectedAny(collected, xs, true)
     }
   }
@@ -5380,7 +5425,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                       ^
      * </pre>
      */
-    def should(containWord: ContainWord): ResultOfContainWordForCollectedGenTraversable[E, C] = 
+    override def should(containWord: ContainWord): ResultOfContainWordForCollectedGenTraversable[E, C] = 
       new ResultOfContainWordForCollectedGenTraversable(collected, xs, true)
   }
     
@@ -5391,7 +5436,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfContainWordForCollectedGenTraversable[E, C[_] <: scala.collection.GenTraversable[_]](collected: Collected, xs: scala.collection.GenTraversable[C[E]], shouldBeTrue: Boolean) {
+  final class ResultOfContainWordForCollectedGenTraversable[E, C[_] <: scala.collection.GenTraversable[_]](collected: Collected, xs: scala.collection.GenTraversable[C[E]], shouldBeTrue: Boolean) extends ResultOfNewContainWordForCollectedAny[C[E]](collected, xs, shouldBeTrue) {
     
     /**
      * This method enables the following syntax: 
@@ -5600,7 +5645,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                 ^
      * </pre>
      */
-    def should(containWord: ContainWord): ResultOfContainWordForCollectedArray[T] = 
+    override def should(containWord: ContainWord): ResultOfContainWordForCollectedArray[T] = 
       new ResultOfContainWordForCollectedArray(collected, xs, true)
   }
   
@@ -5621,7 +5666,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *               ^
      * </pre>
      */
-    def should(containWord: ContainWord): ResultOfContainWordForCollectedGenMap[K, V] = 
+    override def should(containWord: ContainWord): ResultOfContainWordForCollectedGenMap[K, V] = 
       new ResultOfContainWordForCollectedGenMap(collected, xs, true)
     
     /**
@@ -5643,7 +5688,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfContainWordForCollectedGenMap[K, V](collected: Collected, xs: scala.collection.GenTraversable[scala.collection.GenMap[K, V]], shouldBeTrue: Boolean) {
+  final class ResultOfContainWordForCollectedGenMap[K, V](collected: Collected, xs: scala.collection.GenTraversable[scala.collection.GenMap[K, V]], shouldBeTrue: Boolean) extends ResultOfNewContainWordForCollectedAny[scala.collection.GenMap[K, V]](collected, xs, shouldBeTrue) {
     
     /**
      * This method enables the following syntax:
@@ -6436,7 +6481,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *    ^
      * </pre>
      */
-    def should(newContainWord: NewContainWord): ResultOfNewContainWord[T] = {
+    def should(containWord: ContainWord): ResultOfNewContainWord[T] = {
       new ResultOfNewContainWord(left, true)
     }
   }
@@ -6638,8 +6683,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *       ^
      * </pre>
      */
-    def should(containWord: ContainWord) = 
-      new ResultOfContainWordForTraversable[E, ArrayWrapper](new ArrayWrapper(left), true)
+    override def should(containWord: ContainWord) = 
+      new ResultOfContainWordForArray[E](left, true)
 
     /**
      * This method enables syntax such as the following:
@@ -6675,7 +6720,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *     ^
      * </pre>
      */
-    def should(containWord: ContainWord): ResultOfContainWordForMap[K, V, L] = {
+    override def should(containWord: ContainWord): ResultOfContainWordForMap[K, V, L] = {
       new ResultOfContainWordForMap(left.asInstanceOf[GenMap[K, V]], true)
     }
 
@@ -6713,7 +6758,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *             ^
      * </pre>
      */
-    def should(containWord: ContainWord): ResultOfContainWordForTraversable[E, L] = 
+    override def should(containWord: ContainWord): ResultOfContainWordForTraversable[E, L] = 
       new ResultOfContainWordForTraversable(left.asInstanceOf[scala.collection.GenTraversable[E]], true)
 
     /**
@@ -6769,7 +6814,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                ^
      * </pre>
      */
-    def should(containWord: ContainWord): ResultOfContainWordForJavaCollection[E, L] = 
+    override def should(containWord: ContainWord): ResultOfContainWordForJavaCollection[E, L] = 
       // new ResultOfContainWordForJavaCollection(left.asInstanceOf[java.util.Collection[E]], true)
       new ResultOfContainWordForJavaCollection(left, true)
 
@@ -6806,8 +6851,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def should(containWord: ContainWord): ResultOfContainWordForJavaMap[K, V] = {
-      new ResultOfContainWordForJavaMap(left.asInstanceOf[java.util.Map[K, V]], true)
+    override def should(containWord: ContainWord): ResultOfContainWordForJavaMap[K, V, L] = {
+      new ResultOfContainWordForJavaMap(left, true)
     }
  
     /**

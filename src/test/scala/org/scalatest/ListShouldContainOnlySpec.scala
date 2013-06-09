@@ -47,9 +47,9 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
     object `when used with contain only (..)` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        fumList should newContain only ("fee", "fie", "foe", "fum")
+        fumList should contain only ("fee", "fie", "foe", "fum")
         val e1 = intercept[TestFailedException] {
-          fumList should newContain only ("happy", "birthday", "to", "you")
+          fumList should contain only ("happy", "birthday", "to", "you")
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -57,20 +57,20 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
-        fumList should newContain only ("FEE", "FIE", "FOE", "FUM")
+        fumList should contain only ("FEE", "FIE", "FOE", "FUM")
         intercept[TestFailedException] {
-          fumList should newContain only ("fee", "fie", "foe")
+          fumList should contain only ("fee", "fie", "foe")
         }
       }
       def `should use an explicitly provided Equality` {
-        (fumList should newContain only ("FEE", "FIE", "FOE", "FUM")) (decided by upperCaseStringEquality)
+        (fumList should contain only ("FEE", "FIE", "FOE", "FUM")) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (fumList should newContain only ("fee", "fie", "foe")) (decided by upperCaseStringEquality)
+          (fumList should contain only ("fee", "fie", "foe")) (decided by upperCaseStringEquality)
         }
         intercept[TestFailedException] {
-          fumList should newContain only (" FEE ", " FIE ", " FOE ", " FUM ")
+          fumList should contain only (" FEE ", " FIE ", " FOE ", " FUM ")
         }
-        (fumList should newContain only (" FEE ", " FIE ", " FOE ", " FUM ")) (after being lowerCased and trimmed)
+        (fumList should contain only (" FEE ", " FIE ", " FOE ", " FUM ")) (after being lowerCased and trimmed)
       }
     }
 
@@ -78,9 +78,9 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
 
-        fumList should (newContain only ("fee", "fie", "foe", "fum"))
+        fumList should (contain only ("fee", "fie", "foe", "fum"))
         val e1 = intercept[TestFailedException] {
-          fumList should (newContain only ("happy", "birthday", "to", "you"))
+          fumList should (contain only ("happy", "birthday", "to", "you"))
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -88,29 +88,29 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
-        fumList should (newContain only ("FEE", "FIE", "FOE", "FUM"))
+        fumList should (contain only ("FEE", "FIE", "FOE", "FUM"))
         intercept[TestFailedException] {
-          fumList should (newContain only ("fee", "fie", "foe"))
+          fumList should (contain only ("fee", "fie", "foe"))
         }
       }
       def `should use an explicitly provided Equality` {
-        (fumList should (newContain only ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
+        (fumList should (contain only ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (fumList should (newContain only ("fee", "fie", "foe"))) (decided by upperCaseStringEquality)
+          (fumList should (contain only ("fee", "fie", "foe"))) (decided by upperCaseStringEquality)
         }
         intercept[TestFailedException] {
-          fumList should (newContain only (" FEE ", " FIE ", " FOE ", " FUM "))
+          fumList should (contain only (" FEE ", " FIE ", " FOE ", " FUM "))
         }
-        (fumList should (newContain only (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
+        (fumList should (contain only (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
       }
     }
 
     object `when used with not contain only (..)` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        toList should not newContain only ("fee", "fie", "foe", "fum")
+        toList should not contain only ("fee", "fie", "foe", "fum")
         val e1 = intercept[TestFailedException] {
-          toList should not newContain only ("happy", "birthday", "to", "you")
+          toList should not contain only ("happy", "birthday", "to", "you")
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -118,19 +118,19 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
-        toList should not newContain only ("happy", "birthday", "to")
+        toList should not contain only ("happy", "birthday", "to")
         intercept[TestFailedException] {
-          toList should not newContain only ("HAPPY", "BIRTHDAY", "TO", "YOU")
+          toList should not contain only ("HAPPY", "BIRTHDAY", "TO", "YOU")
         }
       }
       def `should use an explicitly provided Equality` {
-        (toList should not newContain only ("happy", "birthday", "to")) (decided by upperCaseStringEquality)
+        (toList should not contain only ("happy", "birthday", "to")) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (toList should not newContain only ("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseStringEquality)
+          (toList should not contain only ("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseStringEquality)
         }
-        toList should not newContain only (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")
+        toList should not contain only (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")
         intercept[TestFailedException] {
-          (toList should not newContain only (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (after being lowerCased and trimmed)
+          (toList should not contain only (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (after being lowerCased and trimmed)
         }
       }
     }
@@ -138,9 +138,9 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
     object `when used with (not contain only (..))` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        toList should (not newContain only ("HAPPY", "BIRTHDAY", "TO", "YOU"))
+        toList should (not contain only ("HAPPY", "BIRTHDAY", "TO", "YOU"))
         val e1 = intercept[TestFailedException] {
-          toList should (not newContain only ("happy", "birthday", "to", "you"))
+          toList should (not contain only ("happy", "birthday", "to", "you"))
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -148,19 +148,19 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
-        toList should (not newContain only ("NICE", "TO", "MEET", "YOU"))
+        toList should (not contain only ("NICE", "TO", "MEET", "YOU"))
         intercept[TestFailedException] {
-          toList should (not newContain only ("HAPPY", "BIRTHDAY", "TO", "YOU"))
+          toList should (not contain only ("HAPPY", "BIRTHDAY", "TO", "YOU"))
         }
       }
       def `should use an explicitly provided Equality` {
-        (toList should (not newContain only ("NICE", "TO", "MEET", "YOU"))) (decided by upperCaseStringEquality)
+        (toList should (not contain only ("NICE", "TO", "MEET", "YOU"))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (toList should (not newContain only ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseStringEquality)
+          (toList should (not contain only ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseStringEquality)
         }
-        toList should (not newContain only (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
+        toList should (not contain only (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
         intercept[TestFailedException] {
-          (toList should (not newContain only (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
+          (toList should (not contain only (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
         }
       }
     }
@@ -177,13 +177,13 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
     object `when used with contain only (..)` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        all (list1s) should newContain only (1, 2, 3)
-        atLeast (2, lists) should newContain only (1, 2, 3)
-        atMost (2, lists) should newContain only (1, 2, 3)
-        no (lists) should newContain only (3, 4, 5)
+        all (list1s) should contain only (1, 2, 3)
+        atLeast (2, lists) should contain only (1, 2, 3)
+        atMost (2, lists) should contain only (1, 2, 3)
+        no (lists) should contain only (3, 4, 5)
 
         val e1 = intercept[TestFailedException] {
-          all (lists) should newContain only (1, 2, 3)
+          all (lists) should contain only (1, 2, 3)
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -192,7 +192,7 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
                                    "in " + decorateToStringValue(lists)))
 
         val e3 = intercept[TestFailedException] {
-          all (lists) should newContain only (1, 2, 3)
+          all (lists) should contain only (1, 2, 3)
         }
         e3.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e3.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -202,25 +202,25 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
       }
 
       def `should use the implicit Equality in scope` {
-        all (hiLists) should newContain only ("he", "hi")
+        all (hiLists) should contain only ("he", "hi")
         intercept[TestFailedException] {
-          all (hiLists) should newContain only ("ho", "hi")
+          all (hiLists) should contain only ("ho", "hi")
         }
         implicit val ise = upperCaseStringEquality
-        all (hiLists) should newContain only ("HE", "HI")
+        all (hiLists) should contain only ("HE", "HI")
         intercept[TestFailedException] {
-          all (hiLists) should newContain only ("HO", "HI")
+          all (hiLists) should contain only ("HO", "HI")
         }
       }
       def `should use an explicitly provided Equality` {
-        (all (hiLists) should newContain only ("HE", "HI")) (decided by upperCaseStringEquality)
+        (all (hiLists) should contain only ("HE", "HI")) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (hiLists) should newContain only ("HO", "HI")) (decided by upperCaseStringEquality)
+          (all (hiLists) should contain only ("HO", "HI")) (decided by upperCaseStringEquality)
         }
         implicit val ise = upperCaseStringEquality
-        (all (hiLists) should newContain only ("he", "hi")) (decided by defaultEquality[String])
+        (all (hiLists) should contain only ("he", "hi")) (decided by defaultEquality[String])
         intercept[TestFailedException] {
-          (all (hiLists) should newContain only ("ho", "hi")) (decided by defaultEquality[String])
+          (all (hiLists) should contain only ("ho", "hi")) (decided by defaultEquality[String])
         }
       }
     }
@@ -228,13 +228,13 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
     object `when used with (contain only (..))` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        all (list1s) should (newContain only (1, 2, 3))
-        atLeast (2, lists) should (newContain only (1, 2, 3))
-        atMost (2, lists) should (newContain only (1, 2, 3))
-        no (lists) should (newContain only (3, 4, 5))
+        all (list1s) should (contain only (1, 2, 3))
+        atLeast (2, lists) should (contain only (1, 2, 3))
+        atMost (2, lists) should (contain only (1, 2, 3))
+        no (lists) should (contain only (3, 4, 5))
 
         val e1 = intercept[TestFailedException] {
-          all (lists) should (newContain only (1, 2, 3))
+          all (lists) should (contain only (1, 2, 3))
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -243,7 +243,7 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
                                    "in " + decorateToStringValue(lists)))
 
         val e4 = intercept[TestFailedException] {
-          all (lists) should (newContain only (1, 2, 3))
+          all (lists) should (contain only (1, 2, 3))
         }
         e4.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e4.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -253,25 +253,25 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
       }
 
       def `should use the implicit Equality in scope` {
-        all (hiLists) should (newContain only ("he", "hi"))
+        all (hiLists) should (contain only ("he", "hi"))
         intercept[TestFailedException] {
-          all (hiLists) should (newContain only ("ho", "hi"))
+          all (hiLists) should (contain only ("ho", "hi"))
         }
         implicit val ise = upperCaseStringEquality
-        all (hiLists) should (newContain only ("HE", "HI"))
+        all (hiLists) should (contain only ("HE", "HI"))
         intercept[TestFailedException] {
-          all (hiLists) should (newContain only ("HO", "HI"))
+          all (hiLists) should (contain only ("HO", "HI"))
         }
       }
       def `should use an explicitly provided Equality` {
-        (all (hiLists) should (newContain only ("HE", "HI"))) (decided by upperCaseStringEquality)
+        (all (hiLists) should (contain only ("HE", "HI"))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (hiLists) should (newContain only ("HO", "HI"))) (decided by upperCaseStringEquality)
+          (all (hiLists) should (contain only ("HO", "HI"))) (decided by upperCaseStringEquality)
         }
         implicit val ise = upperCaseStringEquality
-        (all (hiLists) should (newContain only ("he", "hi"))) (decided by defaultEquality[String])
+        (all (hiLists) should (contain only ("he", "hi"))) (decided by defaultEquality[String])
         intercept[TestFailedException] {
-          (all (hiLists) should (newContain only ("ho", "hi"))) (decided by defaultEquality[String])
+          (all (hiLists) should (contain only ("ho", "hi"))) (decided by defaultEquality[String])
         }
       }
     }
@@ -279,9 +279,9 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
     object `when used with not contain only (..)` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        all (toLists) should not newContain only ("fee", "fie", "foe", "fum")
+        all (toLists) should not contain only ("fee", "fie", "foe", "fum")
         val e1 = intercept[TestFailedException] {
-          all (toLists) should not newContain only ("you", "to")
+          all (toLists) should not contain only ("you", "to")
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -291,19 +291,19 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
-        all (toLists) should not newContain only ("NICE", "MEET", "YOU")
+        all (toLists) should not contain only ("NICE", "MEET", "YOU")
         intercept[TestFailedException] {
-          all (toLists) should not newContain only ("YOU", "TO")
+          all (toLists) should not contain only ("YOU", "TO")
         }
       }
       def `should use an explicitly provided Equality` {
-        (all (toLists) should not newContain only ("NICE", "MEET", "YOU")) (decided by upperCaseStringEquality)
+        (all (toLists) should not contain only ("NICE", "MEET", "YOU")) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) should not newContain only ("YOU", "TO")) (decided by upperCaseStringEquality)
+          (all (toLists) should not contain only ("YOU", "TO")) (decided by upperCaseStringEquality)
         }
-        all (toLists) should not newContain only (" YOU ", " TO ")
+        all (toLists) should not contain only (" YOU ", " TO ")
         intercept[TestFailedException] {
-          (all (toLists) should not newContain only (" YOU ", " TO ")) (after being lowerCased and trimmed)
+          (all (toLists) should not contain only (" YOU ", " TO ")) (after being lowerCased and trimmed)
         }
       }
     }
@@ -311,9 +311,9 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
     object `when used with (not contain only (..))` {
 
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        all (toLists) should (not newContain only ("fee", "fie", "foe", "fum"))
+        all (toLists) should (not contain only ("fee", "fie", "foe", "fum"))
         val e1 = intercept[TestFailedException] {
-          all (toLists) should (not newContain only ("you", "to"))
+          all (toLists) should (not contain only ("you", "to"))
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -323,19 +323,19 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
-        all (toLists) should (not newContain only ("NICE", "MEET", "YOU"))
+        all (toLists) should (not contain only ("NICE", "MEET", "YOU"))
         intercept[TestFailedException] {
-          all (toLists) should (not newContain only ("YOU", "TO"))
+          all (toLists) should (not contain only ("YOU", "TO"))
         }
       }
       def `should use an explicitly provided Equality` {
-        (all (toLists) should (not newContain only ("NICE", "MEET", "YOU"))) (decided by upperCaseStringEquality)
+        (all (toLists) should (not contain only ("NICE", "MEET", "YOU"))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) should (not newContain only ("YOU", "TO"))) (decided by upperCaseStringEquality)
+          (all (toLists) should (not contain only ("YOU", "TO"))) (decided by upperCaseStringEquality)
         }
-        all (toLists) should (not newContain only (" YOU ", " TO "))
+        all (toLists) should (not contain only (" YOU ", " TO "))
         intercept[TestFailedException] {
-          (all (toLists) should (not newContain only (" YOU ", " TO "))) (after being lowerCased and trimmed)
+          (all (toLists) should (not contain only (" YOU ", " TO "))) (after being lowerCased and trimmed)
         }
       }
     }
