@@ -32,8 +32,8 @@ package org.scalatest.enablers
  * scala&gt; import java.net.DatagramPacket
  * import java.net.DatagramPacket
  * 
- * scala&gt; import org.scalatest.matchers.ShouldMatchers._
- * import org.scalatest.matchers.ShouldMatchers._
+ * scala&gt; import org.scalatest.Matchers._
+ * import org.scalatest.Matchers._
  *
  * scala&gt; val dp = new DatagramPacket(Array(0x0, 0x1, 0x2, 0x3), 4)
  * dp: java.net.DatagramPacket = java.net.DatagramPacket@54906181

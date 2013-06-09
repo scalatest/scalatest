@@ -55,11 +55,14 @@ import org.scalautils.NormalizingEquality
 // TODO: document how to turn off the === implicit conversion
 // TODO: Document you can use JMock, EasyMock, etc.
 
-
 /**
  * Trait that provides a domain specific language (DSL) for expressing assertions in tests
- * using the word <code>should</code>. For example, if you mix <code>Matchers</code> into
+ * using the word <code>should</code>.
+ *
+ * <p>
+ * For example, if you mix <code>Matchers</code> into
  * a suite class, you can write an equality assertion in that suite like this:
+ * </p>
  * 
  * <pre class="stHighlight">
  * result should equal (3)
@@ -74,9 +77,58 @@ import org.scalautils.NormalizingEquality
  * </p>
  * 
  * <p>
- * The <code>left should equal (right)</code> syntax works by calling <code>==</code>  on the <code>left</code>
- * value, passing in the <code>right</code> value, on every type except arrays. If both <code>left</code> and right are arrays, <code>deep</code>
- * will be invoked on both <code>left</code> and <code>right</code> before comparing them with <em>==</em>. Thus, even though this expression
+ * <strong>
+ * Note: In ScalaTest 2.0, traits <code>org.scalatest.matchers.ShouldMatchers</code> and <code>org.scalatest.matchers.MustMatchers</code> is being
+ * succeeded by trait <code>org.scalatest.Matchers</code>.
+ * As of 2.0.M6, both <code>ShouldMatchers</code> and <code>MustMatchers</code> have been deprecated.
+ * They will continue to work during a lengthy deprecation cycle, but will eventually be removed. You can migrate existing uses of <code>ShouldMatchers</code> 
+ * by simply importing or mixing in <code>org.scalatest.Matchers</code> instead of <code>org.scalatest.matchers.ShouldMatchers</code>. You can migrate existing
+ * uses of <code>org.scalatest.matchers.MustMatchers</code> in the same manner, by importing or mixing in <code>org.scalatest.Matchers</code> instead of
+ * <code>org.scalatest.matchers.MustMatchers</code>, but with one extra step: replacing "<code>must</code>" with "<code>should</code>". <code>org.scalatest.Matchers</code>
+ * only supports the verb "<code>should</code>"; We apologize for imposing such a large search-and-replace job on users, but we want to
+ * make the verb <code>"must"</code> available to be used for a different purpose in ScalaTest after the deprecation cycle for <code>MustMatchers</code>.
+ * </strong>
+ * </p>
+ *
+ * <p>
+ * <strong>
+ * All previously documented syntax for matchers should continue to work exactly the same in ScalaTest 2.0.M6, with two potential breakages, both of
+ * which should be quite rare, and one deprecation. First, support for "<code>have</code> <code>length</code>" and "<code>have</code> <code>size</code>" based solely on
+ * structural types has been removed. Any use of this syntax on types other than Scala or Java collections, arrays, or strings will no longer compile.
+ * To migrate such code, you will need to implicitly provide either a <code>Length[T]</code> or </code>Size[T]</code> for your type <code>T</code>, as
+ * <a href="#checkingSizeAndLength">described below</a>.
+ * The other, even rarer, potential breakage is that if <code>length</code> or </code>size</code> were used along with other custom have-property matchers,
+ * <code>length</code> and <code>size</code> must now come first in the list, as <a href="#lengthSizeHavePropertyMatchers">described below</a>.
+ * The deprecation is <code>be</code> <code>===</code> <code>&lt;value&gt;</code> syntax. This will continue to work as before, but will generate a deprecation
+ * warning and eventually be removed in a later version of ScalaTest. Please replace uses of this syntax with one of the other
+ * ways to check equality described in the next section.
+ * </strong>
+ * </p>
+ *
+ * <a name="checkingEqualityWithMatchers"></a>
+ * <h2>Checking equality with matchers</h2>
+ *
+ * <p>
+ * ScalaTest matchers provides five different ways to check equality, each focused on addressing a different problem. They are:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * result should equal (3) // can customize equality
+ * result should === (3)   // can customize equality and enforce type constraints
+ * result should be (3)    // cannot customize equality
+ * result shouldEqual 3    // can customize equality, no parentheses needed
+ * result shouldBe 3       // cannot customize equality, no parentheses needed
+ * </pre>
+ *
+ * <p>
+ * The "<code>left</code> <code>should</code> <code>equal</code> <code>(right)</code>" syntax requires an <a href="../scalautils/Equality.html"><code>org.scalautils.Equality[L]</code></a> to be available implicitly, where
+ * <code>L</code> is the left-hand type on which <code>should</code> is invoked (in the "<code>left</code> <code>should</code> <code>equal</code> <code>(right)</code>" case,
+ * for example, <code>L</code> is the type of <code>left</code>). Thus if <code>left</code> is type <code>Int</code>, the "<code>left</code> <code>should</code>
+ * <code>equal</code> <code>(right)</code>"
+ * statement would require an <code>Equality[Int]</code>. By default, an implicit <code>Equality</code> instance is available for any type that defines equality
+ * by simply invokes <code>==</code>  on the <code>left</code>
+ * value, passing in the <code>right</code> value, with special treatment for arrays. If either <code>left</code> or <code>right</code> is an array, <code>deep</code>
+ * will be invoked on it before comparing with <em>==</em>. Thus, even though the following expression
  * will yield false, because <code>Array</code>'s <code>equals</code> method compares object identity:
  * </p>
  * 
@@ -85,7 +137,7 @@ import org.scalautils.NormalizingEquality
  * </pre>
  *
  * <p>
- * The following expression will <em>not</em> result in a <code>TestFailedException</code>, because ScalaTest compares
+ * The next expression will by default <em>not</em> result in a <code>TestFailedException</code>, because default <code>Equality</code> compares
  * the two arrays structurally, taking into consideration the equality of the array's contents:
  * </p>
  *
@@ -98,11 +150,22 @@ import org.scalautils.NormalizingEquality
  * <code>be theSameInstanceAs</code> syntax, described below.
  * </p>
  *
+ * <p>
+ * You can customize the meaning of equality for a type when using "<code>should</code> <code>equal</code>," "<code>should</code> <code>===</code>,"
+ * or <code>shouldEqual</code> syntax by defining implicit <code>Equality</code> instances that will be used instead of default <code>Equality</code>. 
+ * You might do this to normalize types before comparing them with <code>==</code>, for instance, or to avoid calling the <code>==</code> method entirely,
+ * such as if you want to compare <code>Double</code>s with a tolerance.
+ * For an example, see the main documentation of <a href="../scalautils/Equality.html">trait <code>Equality</code></a>.
+ * The "<code>should</code> <code>be</code>" and <code>shouldBe</code> syntax to not take an <code>Equality</code> and can therefore not be customized.
+ * They always the default approach to equality described above.
+ * </p>
+ *
+ * <a name="checkingSizeAndLength"></a>
  * <h2>Checking size and length</h2>
  * 
  * <p>
- * You can check the size or length of just about any type of object for which it
- * would make sense. Here's how checking for length looks:
+ * You can check the size or length of any type of object for which it
+ * makes sense. Here's how checking for length looks:
  * </p>
  * <pre class="stHighlight">
  * result should have length (3)
@@ -121,7 +184,7 @@ import org.scalautils.NormalizingEquality
  * any <code>java.util.List</code>, and any type <code>T</code> for which an implicit <code>Length[T]</code> type class is 
  * available in scope.
  * Similarly, the <code>size</code> syntax can be used with <code>Array</code>, any <code>scala.collection.GenTraversable</code>,
- * any <code>java.util.List</code>, and any type <code>T</code> for which an implicit <code>Size[T]</code> type class is 
+ * any <code>java.util.Collection</code>, any <code>java.util.Map</code>, and any type <code>T</code> for which an implicit <code>Size[T]</code> type class is 
  * available in scope. You can enable the <code>length</code> or <code>size</code> syntax for your own arbitrary types, therefore,
  * by defining <a href="enablers/Length.html"><code>Length</code></a> or <a href="enables/Size.html"><code>Size</code></a> type
  * classes for those types.
@@ -162,6 +225,18 @@ import org.scalautils.NormalizingEquality
  * or a <code>scala.util.matching.Regex</code>.
  * </p>
  *
+ * <p>
+ * With the <code>startWith</code>, <code>endWith</code>, <code>include</code>, and <code>fullyMatch</code>
+ * tokens can also be used with an optional specification of required groups, like this:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * "abbccxxx" should startWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))
+ * "xxxabbcc" should endWith regex ("a(b*)(c*)" withGroups ("bb", "cc"))
+ * "xxxabbccxxx" should include regex ("a(b*)(c*)" withGroups ("bb", "cc"))
+ * "abbcc" should fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "cc"))
+ * </pre>
+ * 
  * <h2>Greater and less than</h2>
  * <p>
  * You can check whether any type that is, or can be implicitly converted to,
@@ -776,6 +851,13 @@ import org.scalautils.NormalizingEquality
  * might be of type <code>HavePropertyMatcher[org.publiclibrary.Book]</code>. If used with an appropriate type, such an expression will compile
  * and at run time the property method or field will be accessed directly; <em>i.e.</em>, no reflection will be used.
  * See the documentation for <a href="HavePropertyMatcher.html"><code>HavePropertyMatcher</code></a> for more information.
+ * </p>
+ *
+ * <a name="lengthSizeHavePropertyMatchers"></a>
+ * <h3>Using <code>length</code> and <code>size</code> with <code>HavePropertyMatcher</code>s</h3>
+ *
+ * <p>
+ * TODO
  * </p>
  *
  * <h2>Using custom matchers</h2>
