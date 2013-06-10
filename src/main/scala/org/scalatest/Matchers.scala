@@ -553,8 +553,9 @@ import org.scalautils.NormalizingEquality
  * The <code>contain</code> syntax shown above can be used with any type <code>C</code> that has a "containing" nature, as evidenced by
  * an <code>org.scalatest.enablers.Containing[L]</code> instance that must be supplied as a curried parameter to <code>contain</code>, either implicitly or
  * explicitly, with <code>L</code> being the left-hand type on which <code>should</code> is invoked. In the <code>Containing</code>
- * companion object, implicits are provided for types <code>GenTraversable[T]</code>, <code>java.util.Collection[T]</code>, 
- * <code>java.util.Map[K, V]</code>, <code>String</code>, <code>Array[T]</code>, and <code>Option[T]</code>. Here are some examples:
+ * companion object, implicits are provided for types <code>GenTraversable[E]</code>, <code>java.util.Collection[E]</code>, 
+ * <code>java.util.Map[K, V]</code>, <code>String</code>, <code>Array[E]</code>, and <code>Option[E]</code>. (Note: in 2.0.M6, Scala and Java <code>Iterator</code>s
+ * will be added to this list.) Here are some examples:
  * </p>
  *
  * <pre class="stREPL">
@@ -575,7 +576,7 @@ import org.scalautils.NormalizingEquality
  * </pre>
  * 
  * <p>
- * ScalaTest's implicit methods that provide the <code>Containing[T]</code> typeclasses require an <code>Equality[E]</code>, where
+ * ScalaTest's implicit methods that provide the <code>Containing[L]</code> typeclasses require an <code>Equality[E]</code>, where
  * <code>E</code> is an element type. For example, to obtain a <code>Containing[Array[Int]]</code> you must supply an <code>Equality[Int]</code>,
  * either implicitly or explicitly. The <code>contain</code> syntax uses this <code>Equality[E]</code> to determine containership.
  * Thus if you want to change how containership is determined for an element type <code>E</code>, place an implicit <code>Equality[E]</code>
@@ -663,9 +664,10 @@ import org.scalautils.NormalizingEquality
  * <h3>Working with "aggregations"</h3>
  *
  * <p>
- * As mentioned, the <code>contain</code>,  <code>contain</code> <code>oneOf</code>, and <code>contain</code> <code>noneOf</code> syntax requires a
+ * As mentioned, the "<code>contain</code>,"  "<code>contain</code> <code>oneOf</code>," and "<code>contain</code> <code>noneOf</code>" syntax requires a
  * <code>Containing[L]</code> be provided, where <code>L</code> is the left-hand type.  By contrast, the rest of the <code>contain</code> syntax, which
  * will be described in this section, requires an <code>Aggregating[L]</code> be provided, where again <code>L</code> is the left-hand type.
+ * (An <code>Aggregating[L]</code> instance defines the "aggregating nature" of a type <code>L</code>.)
  * The reason, essentially, is that <code>contain</code> syntax that makes sense for <code>Option</code> is enabled by
  * <code>Containing[L]</code>, whereas syntax that does <em>not</em> make sense for <code>Option</code> is enabled
  * by <code>Aggregating[L]</code>. For example, it doesn't make sense to assert that an <code>Option[Int]</code> contains all of a set of integers, as it
@@ -673,10 +675,12 @@ import org.scalautils.NormalizingEquality
  * </p>
  * 
  * <p>
- * The <code>Aggregating</code> companion object provides these implicitly
- * for types <code>GenTraversable[T]</code>, <code>java.util.Collection[T]</code>, 
- * <code>java.util.Map[K, V]</code>, <code>String</code>, <code>Array[T]</code>. Note that these are the same types as are supported with
- * <code>Containing</code>, but with <code>Option[T]</code> missing.
+ * The <code>Aggregating</code> companion object provides implicit instances of <code>Aggregating[L]</code> 
+ * for types <code>GenTraversable[E]</code>, <code>java.util.Collection[E]</code>, 
+ * <code>java.util.Map[K, V]</code>, <code>String</code>, <code>Array[E]</code>. Note that these are the same types as are supported with
+ * <code>Containing</code>, but with <code>Option[E]</code> missing.
+ * (And as with <code>Containing</code>, in 2.0.M6, Scala and Java <code>Iterator</code>s
+ * will be added to this list.) Here are some examples:
  * </p>
  * 
  * <p>
@@ -695,6 +699,20 @@ import org.scalautils.NormalizingEquality
  * </p>
  *
  * <p>
+ * Similar to <code>Containing[L]</code>, the implicit methods that provide the <code>Aggregating[L]</code> instances require an <code>Equality[E]</code>, where
+ * <code>E</code> is an element type. For example, to obtain a <code>Aggregating[Vector[String]]</code> you must supply an <code>Equality[String]</code>,
+ * either implicitly or explicitly. The <code>contain</code> syntax uses this <code>Equality[E]</code> to determine containership.
+ * Thus if you want to change how containership is determined for an element type <code>E</code>, place an implicit <code>Equality[E]</code>
+ * in scope or use the explicitly DSL. Although the implicit parameter required for the <code>contain</code> syntax is of type <code>Aggregating[L]</code>,
+ * implicit conversions are provided in the <code>Aggregating</code> companion object from <code>Equality[E]</code> to the various
+ * types of aggregations of <code>E</code>. Here's an example:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * (Vector(" A", "B ") should contain atLeastOneOf ("a ", "b", "c")) (after being lowerCased and trimmed)
+ * </pre>
+ * 
+ * <p>
  * The "<code>contain</code> <code>allOf</code>" syntax lets you specify a set of objects that should all be contained in the containing object:
  * </p>
  *
@@ -703,17 +721,83 @@ import org.scalautils.NormalizingEquality
  * </pre>
  *
  * <p>
- * The "<code>contain</code> <code>only</code>" syntax lets you assert that the containing object contains only the specified objects, though it may
+ * The "<code>contain</code> <code>only</code>" syntax lets you assert that the containing object contains <em>only</em> the specified objects, though it may
  * contain more than one of each:
  * </p>
  *
  * <pre class="stHighlight">
- * List(1, 2, 3, 4, 5) should contain allOf (2, 3, 5)
+ * List(1, 2, 3, 2, 1) should contain only (1, 2, 3)
  * </pre>
  *
  * <p>
- * <code>only</code>, <code>inOrderOnly</code>, <code>inOrder</code>, <code>theSameElementsAs</code>, and <code>theSameElementsInOrderAs</code> syntax require an 
- * <code>Aggregating[L]</code>, where <code>L</code> is the left-hand type.
+ * Note: In the current SNAP release, <code>contain</code> <code>only</code> currently allows a specified right-hand element to <em>not</em> appear in the left-hand aggregation.
+ * This will be disallowed in 2.0.M6.
+ * </p>
+ *
+ * <p>
+ * The "<code>contain</code> <code>inOrderOnly</code>" syntax lets you assert that the containing object contains <em>only</em> the specified objects, in order. 
+ * The specified objects may appear multiple times, but must appear in the order they appear in the right-hand list. Here's an example:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * List(1, 2, 2, 3, 3, 3) should contain inOrderOnly (1, 2, 3)
+ * </pre>
+ *
+ * <p>
+ * The "<code>contain</code> <code>inOrder</code>" syntax lets you assert that the containing object contains <em>only</em> the specified objects in order, like
+ * <code>inOrderOnly</code>, but allows other objects to appear in the left-hand aggregation as well:
+ * contain more than one of each:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * List(0, 1, 2, 2, 99, 3, 3, 3, 5) should contain inOrder (1, 2, 3)
+ * </pre>
+ *
+ * <p>
+ * Note that "order" in <code>inOrder</code>, <code>inOrderOnly</code>, and <code>theSameElementsInOrderAs</code> (described below)
+ * in the <code>Aggregation[L]</code> instances built-in to ScalaTest is defined as "iteration order".
+ * </p>
+ *
+ * <p>
+ * The "<code>contain</code> <code>theSameElementsAs</code>" and "<code>contain</code> <code>theSameElementsInOrderAs</code> syntax differ from the others
+ * in that the right hand side is a <code>GenTraversable[_]</code> rather than a varargs of <code>Any</code>. (Note: in a future 2.0 milestone release, possibly
+ * 2.0.M6, these will likely be widened to accept any type <code>R</code> for which an <code>Aggregating[R]</code> exists.)
+ * </p>
+ *
+ * <p>
+ * The "<code>contain</code> <code>theSameElementsAs</code>" syntax lets you assert that two aggregations contain the same objects:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * List(1, 2, 2, 3, 3, 3) should contain theSameElementsAs Vector(3, 2, 3, 1, 2, 3)
+ * </pre>
+ *
+ * <p>
+ * The number of times any family of equal objects appears must also be the same in both the left and right aggregations.
+ * The specified objects may appear multiple times, but must appear in the order they appear in the right-hand list. For example, if
+ * the last 3 element is left out of the right-hand list in the previous example, the expression would fail because the left side
+ * has three 3's and the right hand side has only two:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * List(1, 2, 2, 3, 3, 3) should contain theSameElementsAs Vector(3, 2, 3, 1, 2)
+ * org.scalatest.exceptions.TestFailedException: List(1, 2, 2, 3, 3, 3) did not contain the same elements as Vector(3, 2, 3, 1, 2)
+ *         at ...
+ * </pre>
+ * 
+ * <p>
+ * Lastly, the "<code>contain</code> <code>theSameElementsInOrderAs</code>" syntax lets you assert that two aggregations contain
+ * the same exact elements in the same (iteration) order:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * List(1, 2, 3) should contain theSameElementsInOrderAs collection.mutable.TreeSet(3, 2, 1)
+ * </pre>
+ *
+ * <p>
+ * The previous assertion succeeds because the iteration order of a<code>TreeSet</code> is the natural
+ * ordering of its elements, which in this case is 1, 2, 3. An iterator obtained from the left-hand <code>List</code> will produce the same elements
+ * in the same order.
  * </p>
  *
  * <h2>Be as an equality comparison</h2>
