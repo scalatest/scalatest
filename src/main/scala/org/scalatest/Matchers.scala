@@ -3626,6 +3626,26 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
+     * all(xs) should not be sorted
+     *                    ^
+     * </pre>
+     */
+    def be(sortedWord: SortedWord)(implicit sortable: Sortable[T]) {
+      doCollected(collected, xs, "be", 1) { e => 
+        if (sortable.isSorted(e) != shouldBeTrue) {
+          throw newTestFailedException(
+            FailureMessages(if (shouldBeTrue) "wasNotSorted" else "wasSorted", e), 
+            None, 
+            6
+          )
+        }
+      }
+    }
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
      * all (xs) should not contain ("one")
      *                     ^
      * </pre>
@@ -4939,6 +4959,21 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     }
 
     /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * all(xs) shouldBe sorted
+     *         ^
+     * </pre>
+     */
+    def shouldBe(sortedWord: SortedWord)(implicit sortable: Sortable[T]) {
+      doCollected(collected, xs, "shouldBe", 1) { e =>
+        if (!sortable.isSorted(e))
+          throw newTestFailedException(FailureMessages("wasNotSorted", e), None, 6)
+      }
+    }
+
+    /**
      * This method enables syntax such as the following:
      *
      * <pre class="stHighlight">
@@ -5324,6 +5359,18 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
           }
         if (result.matches)
           throw newTestFailedException(result.negatedFailureMessage, None, 6)
+      }
+    }
+    
+    
+    def shouldNot[TYPECLASS1[_]](rightMatcherFactory1: MatcherFactory1[T, TYPECLASS1])(implicit typeClass1: TYPECLASS1[T]) {
+      val rightMatcher = rightMatcherFactory1.matcher
+      doCollected(collected, xs, "shouldNot", 1) { e =>
+        rightMatcher(e) match {
+          case MatchResult(true, _, negatedFailureMessage, _, _) => 
+            throw newTestFailedException(negatedFailureMessage, None, 6)
+          case _ => ()
+        }
       }
     }
 
