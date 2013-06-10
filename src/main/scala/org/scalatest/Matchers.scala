@@ -439,16 +439,16 @@ import org.scalautils.NormalizingEquality
  * seven should be (6 +- 2)
  * </pre>
  * 
- * <h2>Collections</h2>
+ * <h2>Working with collections</h2>
  * 
  * <p>
- * You can use some of the syntax shown previously with <code>GenTraversable</code> and its
+ * You can use some of the syntax shown previously with Scala collections, <em>i.e.</em>, <code>GenTraversable</code> and its
  * subtypes. For example, you can check whether a <code>GenTraversable</code> is <code>empty</code>,
  * like this:
  * </p>
  * 
  * <pre class="stHighlight">
- * iterable should be ('empty)
+ * traversable should be ('empty)
  * </pre>
  * 
  * <p>
@@ -476,7 +476,7 @@ import org.scalautils.NormalizingEquality
  * </p>
  * 
  * <pre class="stHighlight">
- * iterable should contain ("five")
+ * traversable should contain ("five")
  * </pre>
  *
  * <p>
@@ -547,7 +547,7 @@ import org.scalautils.NormalizingEquality
  * javaMap should contain value "Howdy"
  * </pre>
  * 
- * <h3>Contain syntax</h3>
+ * <h3>Working with "containers"</h3>
  *
  * <p>
  * The <code>contain</code> syntax shown above can be used with any type <code>C</code> that has a "containing" nature, as evidenced by
@@ -645,7 +645,7 @@ import org.scalautils.NormalizingEquality
  * to customize how containership is determined, or use the explicitly DSL. Here's an example:
  * </p>
  * 
- * <pre>
+ * <pre class="stHighlight">
  * (Array("Doe", "Ray", "Me") should contain oneOf ("X", "RAY", "BEAM")) (after being lowerCased)
  * </pre>
  *
@@ -660,9 +660,42 @@ import org.scalautils.NormalizingEquality
  * "12345" should contain noneOf ('7', '8', '9')
  * </pre>
  *
+ * <h3>Working with "aggregations"</h3>
+ *
  * <p>
- * The "<code>contain</code> <code>allOf</code>" syntax lets you specify multiple
- * objects that should be contained:
+ * As mentioned, the <code>contain</code>,  <code>contain</code> <code>oneOf</code>, and <code>contain</code> <code>noneOf</code> syntax requires a
+ * <code>Containing[L]</code> be provided, where <code>L</code> is the left-hand type.  By contrast, the rest of the <code>contain</code> syntax, which
+ * will be described in this section, requires an <code>Aggregating[L]</code> be provided, where again <code>L</code> is the left-hand type.
+ * The reason, essentially, is that <code>contain</code> syntax that makes sense for <code>Option</code> is enabled by
+ * <code>Containing[L]</code>, whereas syntax that does <em>not</em> make sense for <code>Option</code> is enabled
+ * by <code>Aggregating[L]</code>. For example, it doesn't make sense to assert that an <code>Option[Int]</code> contains all of a set of integers, as it
+ * could only ever contain one of them. But this does make sense for a type such as <code>List[Int]</code> that can aggregate zero to many integers. 
+ * </p>
+ * 
+ * <p>
+ * The <code>Aggregating</code> companion object provides these implicitly
+ * for types <code>GenTraversable[T]</code>, <code>java.util.Collection[T]</code>, 
+ * <code>java.util.Map[K, V]</code>, <code>String</code>, <code>Array[T]</code>. Note that these are the same types as are supported with
+ * <code>Containing</code>, but with <code>Option[T]</code> missing.
+ * </p>
+ * 
+ * <p>
+ * The <code>contain</code> <code>atLeastOneOf</code> syntax, for example, works for any type <code>L</code> for which an <code>Aggregating[L]</code> exists. It ensures
+ * that at least one of (<em>i.e.</em>, one or more of) the specified objects are contained in the containing object:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * List(1, 2, 3) should contain atLeastOneOf (2, 3, 4)
+ * Array(1, 2, 3) should contain atLeastOneOf (3, 4, 5)
+ * "abc" should contain atLeastOneOf ('c', 'a', 't')
+ * </pre>
+ *
+ * <p>
+ * Note: The <code>contain</code> <code>atMostOneOf</code> syntax is currently unimplemented, but will be added for 2.0.M6.
+ * </p>
+ *
+ * <p>
+ * The "<code>contain</code> <code>allOf</code>" syntax lets you specify a set of objects that should all be contained in the containing object:
  * </p>
  *
  * <pre class="stHighlight">
@@ -670,17 +703,17 @@ import org.scalautils.NormalizingEquality
  * </pre>
  *
  * <p>
- * The <code>oneOf</code> and <code>noneOf</code> syntax requires a <code>Containing[L]</code>, where
- * <code>L</code> is the left-hand type. Here are some examples:
+ * The "<code>contain</code> <code>only</code>" syntax lets you assert that the containing object contains only the specified objects, though it may
+ * contain more than one of each:
  * </p>
- * 
+ *
+ * <pre class="stHighlight">
+ * List(1, 2, 3, 4, 5) should contain allOf (2, 3, 5)
+ * </pre>
+ *
  * <p>
- * The <code>atLeastOneOf</code> (with <code>atMostOneOf</code> coming soon), <code>allOf</code>,
  * <code>only</code>, <code>inOrderOnly</code>, <code>inOrder</code>, <code>theSameElementsAs</code>, and <code>theSameElementsInOrderAs</code> syntax require an 
- * <code>Aggregating[L]</code>, where <code>L</code> is the left-hand type. The <code>Aggregating</code> companion object provides these implicitly
- * for types <code>GenTraversable[T]</code>, <code>java.util.Collection[T]</code>, 
- * <code>java.util.Map[K, V]</code>, <code>String</code>, <code>Array[T]</code>. Note that these are the same types as are supported with
- * <code>Containing</code>, but with <code>Option[T]</code> missing.
+ * <code>Aggregating[L]</code>, where <code>L</code> is the left-hand type.
  * </p>
  *
  * <h2>Be as an equality comparison</h2>

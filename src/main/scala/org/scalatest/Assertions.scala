@@ -1143,13 +1143,22 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
  */
 object Assertions extends Assertions {
   private[scalatest] def areEqualComparingArraysStructurally(left: Any, right: Any) = {
-      left match {
-        case leftArray: Array[_] =>
-          right match {
-            case rightArray: Array[_] => leftArray.deep.equals(rightArray.deep)
-            case _ => left == right
+    // Prior to 2.0 this only called .deep if both sides were arrays. Loosened it
+    // when nearing 2.0.M6 to call .deep if either left or right side is an array.
+    // TODO: this is the same algo as in scalautils.DefaultEquality. Put that one in
+    // a singleton and use it in both places.
+    left match {
+      case leftArray: Array[_] =>
+        right match {
+          case rightArray: Array[_] => leftArray.deep == rightArray.deep
+          case _ => leftArray.deep == right
         }
-        case _ => left == right
+      case _ => {
+        right match {
+          case rightArray: Array[_] => left == rightArray.deep
+          case _ => left == right
+        }
+      }
     }
   }
 }
