@@ -77,18 +77,19 @@ import org.scalautils.NormalizingEquality
  * </p>
  * 
  * <a name="matchersMigration"></a>
- * <h2>Matchers migration</h2>
+ * <h2>Matchers migration in ScalaTest 2.0</h2>
  *
  * <p>
- * In ScalaTest 2.0, traits <code>org.scalatest.matchers.ShouldMatchers</code> and <code>org.scalatest.matchers.MustMatchers</code> is being
- * succeeded by trait <code>org.scalatest.Matchers</code>.
- * As of 2.0.M6, both <code>ShouldMatchers</code> and <code>MustMatchers</code> have been deprecated.
- * They will continue to work during a lengthy deprecation cycle, but will eventually be removed. You can migrate existing uses of <code>ShouldMatchers</code> 
+ * In ScalaTest 2.0, traits <code>org.scalatest.matchers.ShouldMatchers</code> and <code>org.scalatest.matchers.MustMatchers</code> are deprecated, replaced
+ * by trait <code>org.scalatest.Matchers</code>.
+ * <code>ShouldMatchers</code> and <code>MustMatchers</code> will continue to work during a lengthy deprecation cycle, but will eventually be removed in 
+ * a future version of ScalaTest. You can migrate existing uses of <code>ShouldMatchers</code> 
  * by simply importing or mixing in <code>org.scalatest.Matchers</code> instead of <code>org.scalatest.matchers.ShouldMatchers</code>. You can migrate existing
  * uses of <code>org.scalatest.matchers.MustMatchers</code> in the same manner, by importing or mixing in <code>org.scalatest.Matchers</code> instead of
  * <code>org.scalatest.matchers.MustMatchers</code>, but with one extra step: replacing "<code>must</code>" with "<code>should</code>". <code>org.scalatest.Matchers</code>
  * only supports the verb "<code>should</code>"; We apologize for imposing such a large search-and-replace job on users, but we want to
- * make the verb <code>"must"</code> available to be used for a different purpose in ScalaTest after the deprecation cycle for <code>MustMatchers</code>.
+ * make the verb <code>"must"</code> available to be used for a different purpose in ScalaTest after the deprecation cycle for <code>MustMatchers</code>
+ * is completed.
  * </p>
  *
  * <p>
@@ -120,12 +121,16 @@ import org.scalautils.NormalizingEquality
  * </pre>
  *
  * <p>
- * The "<code>left</code> <code>should</code> <code>equal</code> <code>(right)</code>" syntax requires an <a href="../scalautils/Equality.html"><code>org.scalautils.Equality[L]</code></a> to be available implicitly, where
- * <code>L</code> is the left-hand type on which <code>should</code> is invoked (in the "<code>left</code> <code>should</code> <code>equal</code> <code>(right)</code>" case,
- * for example, <code>L</code> is the type of <code>left</code>). Thus if <code>left</code> is type <code>Int</code>, the "<code>left</code> <code>should</code>
+ * The "<code>left</code> <code>should</code> <code>equal</code> <code>(right)</code>" syntax requires an <a href="../scalautils/Equality.html"><code>org.scalautils.Equality[L]</code></a> to be provided (either implicitly or explicitly), where
+ * <code>L</code> is the left-hand type on which <code>should</code> is invoked. In the "<code>left</code> <code>should</code> <code>equal</code> <code>(right)</code>" case,
+ * for example, <code>L</code> is the type of <code>left</code>. Thus if <code>left</code> is type <code>Int</code>, the "<code>left</code> <code>should</code>
  * <code>equal</code> <code>(right)</code>"
- * statement would require an <code>Equality[Int]</code>. By default, an implicit <code>Equality</code> instance is available for any type that defines equality
- * by simply invokes <code>==</code>  on the <code>left</code>
+ * statement would require an <code>Equality[Int]</code>.
+ * </p>
+ * 
+ * <p>
+ * By default, an implicit <code>Equality[T]</code> instance is available for any type <code>T</code>, in which equality is implemented
+ * by simply invoking <code>==</code>  on the <code>left</code>
  * value, passing in the <code>right</code> value, with special treatment for arrays. If either <code>left</code> or <code>right</code> is an array, <code>deep</code>
  * will be invoked on it before comparing with <em>==</em>. Thus, even though the following expression
  * will yield false, because <code>Array</code>'s <code>equals</code> method compares object identity:
@@ -136,7 +141,7 @@ import org.scalautils.NormalizingEquality
  * </pre>
  *
  * <p>
- * The next expression will by default <em>not</em> result in a <code>TestFailedException</code>, because default <code>Equality</code> compares
+ * The next expression will by default <em>not</em> result in a <code>TestFailedException</code>, because default <code>Equality[Array[Int]]</code> compares
  * the two arrays structurally, taking into consideration the equality of the array's contents:
  * </p>
  *
@@ -155,9 +160,38 @@ import org.scalautils.NormalizingEquality
  * You might do this to normalize types before comparing them with <code>==</code>, for instance, or to avoid calling the <code>==</code> method entirely,
  * such as if you want to compare <code>Double</code>s with a tolerance.
  * For an example, see the main documentation of <a href="../scalautils/Equality.html">trait <code>Equality</code></a>.
- * The "<code>should</code> <code>be</code>" and <code>shouldBe</code> syntax to not take an <code>Equality</code> and can therefore not be customized.
- * They always the default approach to equality described above and will likely compile fastest, since the compiler need not search for
- * an implicit <code>Equality</code>.
+ * </p>
+ *
+ * <p>
+ * You can always supply implicit parameters explicitly, but in the case of implicit parameters of type <code>Equality[T]</code>, ScalaTest provides a
+ * simple "explictly" DSL. For example, here's how you could explicitly supply an <code>Equality[String]</code> instance that normalizes both left and right
+ * sides (which must be strings), by transforming them to lowercase:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; import org.scalatest.Matchers._
+ * import org.scalatest.Matchers._
+ *
+ * scala&gt; import org.scalautils.Explicitly._
+ * import org.scalautils.Explicitly._
+ *
+ * scala&gt; import org.scalautils.StringNormalizations._
+ * import org.scalautils.StringNormalizations._
+ *
+ * scala&gt; "Hi" should equal ("hi") (after being lowerCased)
+ * </pre>
+ *
+ * <p>
+ * The <code>after</code> <code>being</code> <code>lowerCased</code> expression results in an <code>Equality[String]</code>, which is then passed
+ * explicitly as the second curried parameter to <code>equal</code>. For more information on the explictly DSL, see the main documentation
+ * for trait <a href="../scalautils/Explicitly.html"><code>Explicitly</code></a>.
+ * </p>
+ *
+ * <p>
+ * The "<code>should</code> <code>be</code>" and <code>shouldBe</code> syntax do not take an <code>Equality[T]</code> and can therefore not be customized.
+ * They always use the default approach to equality described above. As a result, "<code>should</code> <code>be</code>" and <code>shouldBe</code> will
+ * likely be the fastest-compiling matcher syntax for equality comparisons, since the compiler need not search for
+ * an implicit <code>Equality[T]</code> each time.
  * </p>
  *
  * <p>
@@ -165,12 +199,9 @@ import org.scalautils.NormalizingEquality
  * constraints at compile-time between the left and right sides of the equality comparison. Here's an example:
  * </p>
  *
- * <pre class="stHighlight">
- * scala&gt; import org.scalatest._
- * import org.scalatest._
- *
- * scala&gt; import Matchers._
- * import Matchers._
+ * <pre class="stREPL">
+ * scala&gt; import org.scalatest.Matchers._
+ * import org.scalatest.Matchers._
  *
  * scala&gt; import org.scalautils.TypeCheckedTripleEquals._
  * import org.scalautils.TypeCheckedTripleEquals._
@@ -278,50 +309,6 @@ import org.scalautils.NormalizingEquality
  * one should be <= (7)
  * one should be >= (0)
  * </pre>
- * 
- * <h2>Checking equality with <code>be</code> <code>=</code><code>=</code><code>=</code></h2>
- *
- * <p>
- * An alternate way to check for equality of two objects is to use <code>be</code> with
- * <code>===</code>. Here's an example:
- * </p>
- *
- * <pre class="stHighlight">
- * result should be === (3)
- * </pre>
- *
- * <p>
- * Here <code>result</code> is a variable, and can be of any type. If the object is an
- * <code>Int</code> with the value 3, execution will continue (<em>i.e.</em>, the expression will result
- * in the unit value, <code>()</code>). Otherwise, a <code>TestFailedException</code>
- * will be thrown with a detail message that explains the problem, such as <code>"7 was not equal to 3"</code>.
- * This <code>TestFailedException</code> will cause the test to fail.
- * </p>
- *
- * <p>
- * The <code>left should be === (right)</code> syntax works by calling <code>==</code>  on the <code>left</code>
- * value, passing in the <code>right</code> value, on every type except arrays. If both <code>left</code> and right are arrays, <code>deep</code>
- * will be invoked on both <code>left</code> and <code>right</code> before comparing them with <em>==</em>. Thus, even though this expression
- * will yield false, because <code>Array</code>'s <code>equals</code> method compares object identity:
- * </p>
- *
- * <pre class="stHighlight">
- * Array(1, 2) == Array(1, 2) // yields false
- * </pre>
- *
- * <p>
- * The following expression will <em>not</em> result in a <code>TestFailedException</code>, because ScalaTest compares
- * the two arrays structurally, taking into consideration the equality of the array's contents:
- * </p>
- *
- * <pre class="stHighlight">
- * Array(1, 2) should be === (Array(1, 2)) // succeeds (i.e., does not throw TestFailedException)
- * </pre>
- *
- * <p>
- * If you ever do want to verify that two arrays are actually the same object (have the same identity), you can use the
- * <code>be theSameInstanceAs</code> syntax, described below.
- * </p>
  *
  * <h2>Checking <code>Boolean</code> properties with <code>be</code></h2>
  * 
@@ -435,28 +422,28 @@ import org.scalautils.NormalizingEquality
  * 
  * <p>
  * Often, however, you may want to check whether a floating point number is within a
- * range. You can do that using <code>be</code> and <code>plusOrMinus</code>, like this:
+ * range. You can do that using <code>be</code> and <code>+-</code>, like this:
  * </p>
  * 
  * <pre class="stHighlight">
- * sevenDotOh should be (6.9 plusOrMinus 0.2)
+ * sevenDotOh should be (6.9 +- 0.2)
  * </pre>
  * 
  * <p>
  * This expression will cause a <code>TestFailedException</code> to be thrown if the floating point
  * value, <code>sevenDotOh</code> is outside the range <code>6.7</code> to <code>7.1</code>.
- * You can also use <code>plusOrMinus</code> with integral types, for example:
+ * You can also use <code>+-</code> with integral types, for example:
  * </p>
  * 
  * <pre class="stHighlight">
- * seven should be (6 plusOrMinus 2)
+ * seven should be (6 +- 2)
  * </pre>
  * 
- * <h2>Traversables, iterables, sets, sequences, and maps</h2>
+ * <h2>Collections</h2>
  * 
  * <p>
- * You can use some of the syntax shown previously with <code>Iterable</code> and its
- * subtypes. For example, you can check whether an <code>Iterable</code> is <code>empty</code>,
+ * You can use some of the syntax shown previously with <code>GenTraversable</code> and its
+ * subtypes. For example, you can check whether a <code>GenTraversable</code> is <code>empty</code>,
  * like this:
  * </p>
  * 
@@ -465,43 +452,43 @@ import org.scalautils.NormalizingEquality
  * </pre>
  * 
  * <p>
- * You can check the length of an <code>Seq</code> (<code>Array</code>, <code>List</code>, etc.),
+ * You can check the length of a <code>GenSeq</code> (or an <code>Array</code>)
  * like this:
  * </p>
  * 
  * <pre class="stHighlight">
- * array should have length (3)
- * list should have length (9)
+ * array should have length 3
+ * list should have length 9
  * </pre>
  * 
  * <p>
- * You can check the size of any <code>Traversable</code>, like this:
+ * You can check the size of any <code>GenTraversable</code>, like this:
  * </p>
  * 
  * <pre class="stHighlight">
- * map should have size (20)
- * set should have size (90)
+ * map should have size 20
+ * set should have size 90
  * </pre>
  * 
  * <p>
- * In addition, you can check whether an <code>Iterable</code> contains a particular
+ * In addition, you can check whether an <code>GenTraversable</code> contains a particular
  * element, like this:
  * </p>
  * 
  * <pre class="stHighlight">
  * iterable should contain ("five")
  * </pre>
- * 
+ *
  * <p>
- * You can also check whether a <code>Map</code> contains a particular key, or value, like this:
+ * You can also check whether a <code>GenMap</code> contains a particular key, or value, like this:
  * </p>
  * 
  * <pre class="stHighlight">
- * map should contain key (1)
- * map should contain value ("Howdy")
+ * map should contain key 1
+ * map should contain value "Howdy"
  * </pre>
  * 
- * <h2>Java collections and maps</h2>
+ * <h3>Java collections and maps</h3>
  * 
  * <p>
  * You can use similar syntax on Java collections (<code>java.util.Collection</code>) and maps (<code>java.util.Map</code>).
@@ -520,7 +507,7 @@ import org.scalautils.NormalizingEquality
  * </p>
  * 
  * <pre class="stHighlight">
- * javaList should have length (9)
+ * javaList should have length 9
  * </pre>
  * 
  * <p>
@@ -528,8 +515,8 @@ import org.scalautils.NormalizingEquality
  * </p>
  * 
  * <pre class="stHighlight">
- * javaMap should have size (20)
- * javaSet should have size (90)
+ * javaMap should have size 20
+ * javaSet should have size 90
  * </pre>
  * 
  * <p>
@@ -543,7 +530,7 @@ import org.scalautils.NormalizingEquality
  * 
  * <p>
  * One difference to note between the syntax supported on Java collections and that of Scala
- * iterables is that you can't use <code>contain (...)</code> syntax with a Java <code>Map</code>.
+ * <code>GenTraversable</code>s is that you can't use <code>contain (...)</code> syntax with a Java <code>Map</code>.
  * Java differs from Scala in that its <code>Map</code> is not a subtype of its <code>Collection</code> type.
  * If you want to check that a Java <code>Map</code> contains a specific key/value pair, the best approach is
  * to invoke <code>entrySet</code> on the Java <code>Map</code> and check that entry set for the appropriate
@@ -556,16 +543,152 @@ import org.scalautils.NormalizingEquality
  * </p>
  * 
  * <pre class="stHighlight">
- * javaMap should contain key (1)
- * javaMap should contain value ("Howdy")
+ * javaMap should contain key 1
+ * javaMap should contain value "Howdy"
  * </pre>
  * 
+ * <h3>Contain syntax</h3>
+ *
+ * <p>
+ * The <code>contain</code> syntax shown above can be used with any type <code>C</code> that has a "containing" nature, as evidenced by
+ * an <code>org.scalatest.enablers.Containing[L]</code> instance that must be supplied as a curried parameter to <code>contain</code>, either implicitly or
+ * explicitly, with <code>L</code> being the left-hand type on which <code>should</code> is invoked. In the <code>Containing</code>
+ * companion object, implicits are provided for types <code>GenTraversable[T]</code>, <code>java.util.Collection[T]</code>, 
+ * <code>java.util.Map[K, V]</code>, <code>String</code>, <code>Array[T]</code>, and <code>Option[T]</code>. Here are some examples:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; import org.scalatest.Matchers._
+ * import org.scalatest.Matchers._
+ *
+ * scala&gt; List(1, 2, 3) should contain (2)
+ *
+ * scala&gt; Map('a' -&gt; 1, 'b' -&gt; 2, 'c' -&gt; 3) should contain ('b' -&gt; 2)
+ *
+ * scala&gt; Set(1, 2, 3) should contain (2)
+ *
+ * scala&gt; Array(1, 2, 3) should contain (2)
+ *
+ * scala&gt; "123" should contain ('2')
+ *
+ * scala&gt; Some(2) should contain (2)
+ * </pre>
+ * 
+ * <p>
+ * ScalaTest's implicit methods that provide the <code>Containing[T]</code> typeclasses require an <code>Equality[E]</code>, where
+ * <code>E</code> is an element type. For example, to obtain a <code>Containing[Array[Int]]</code> you must supply an <code>Equality[Int]</code>,
+ * either implicitly or explicitly. The <code>contain</code> syntax uses this <code>Equality[E]</code> to determine containership.
+ * Thus if you want to change how containership is determined for an element type <code>E</code>, place an implicit <code>Equality[E]</code>
+ * in scope or use the explicitly DSL. Although the implicit parameter required for the <code>contain</code> syntax is of type <code>Containing[L]</code>,
+ * implicit conversions are provided in the <code>Containing</code> companion object from <code>Equality[E]</code> to the various
+ * types of containers of <code>E</code>. Here's an example:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; import org.scalatest.Matchers._
+ * import org.scalatest.Matchers._
+ *
+ * scala&gt; List("Hi", "Di", "Ho") should contain ("ho")
+ * org.scalatest.exceptions.TestFailedException: List(Hi, Di, Ho) did not contain element "ho"
+ *         at ...
+ *
+ * scala&gt; import org.scalautils.Explicitly._
+ * import org.scalautils.Explicitly._
+ *
+ * scala&gt; import org.scalautils.StringNormalizations._
+ * import org.scalautils.StringNormalizations._
+ *
+ * scala&gt; (List("Hi", "Di", "Ho") should contain ("ho")) (after being lowerCased)
+ * </pre>
+ *
+ * <p>
+ * Note that when you use the explicitly DSL with <code>contain</code> you need to wrap the entire
+ * <code>contain</code> expression in parentheses, as shown here.
+ * </p>
+ *
+ * <pre>
+ * (List("Hi", "Di", "Ho") should contain ("ho")) (after being lowerCased)
+ * ^                                            ^
+ * </pre>
+ *
+ * <p>
+ * In addition to determining whether an object contains another object, you can use <code>contain</code> to
+ * make other determinations.
+ * For exmple, the <code>contain</code> <code>oneOf</code> syntax ensures that one and only one of the specified elements are
+ * contained in the containing object:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * List(1, 2, 3, 4, 5) should contain oneOf (5, 7, 9)
+ * Some(7) should contain oneOf (5, 7, 9)
+ * "howdy" should contain oneOf ('a', 'b', 'c', 'd')
+ * </pre>
+ *
+ * <p>
+ * Note that if multiple specified elements appear in the containing object, <code>oneOf</code> will fail:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; List(1, 2, 3) should contain oneOf (2, 3, 4)
+ * org.scalatest.exceptions.TestFailedException: List(1, 2, 3) did not contain one of (2, 3, 4)
+ *         at ...
+ * </pre>
+ *
+ * <p>
+ * If you really want to ensure one or more of the specified elements are contained in the containing object, 
+ * use <code>atLeastOneOf</code>, described below, instead of <code>oneOf</code>. In other words, <code>oneOf</code>
+ * means "<em>exactly</em> one of."
+ * </p>
+ *
+ * <p>
+ * Note also that with any <code>contain</code> syntax, you can place custom implicit <code>Equality[E]</code> instances in scope
+ * to customize how containership is determined, or use the explicitly DSL. Here's an example:
+ * </p>
+ * 
+ * <pre>
+ * (Array("Doe", "Ray", "Me") should contain oneOf ("X", "RAY", "BEAM")) (after being lowerCased)
+ * </pre>
+ *
+ * <p>
+ * The <code>contain</code> <code>noneOf</code> syntax does the opposite of <code>oneOf</code>: it ensures none of the specified elements
+ * are contained in the containing object:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * List(1, 2, 3, 4, 5) should contain noneOf (7, 8, 9)
+ * Some(0) should contain noneOf (7, 8, 9)
+ * "12345" should contain noneOf ('7', '8', '9')
+ * </pre>
+ *
+ * <p>
+ * The "<code>contain</code> <code>allOf</code>" syntax lets you specify multiple
+ * objects that should be contained:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * List(1, 2, 3, 4, 5) should contain allOf (2, 3, 5)
+ * </pre>
+ *
+ * <p>
+ * The <code>oneOf</code> and <code>noneOf</code> syntax requires a <code>Containing[L]</code>, where
+ * <code>L</code> is the left-hand type. Here are some examples:
+ * </p>
+ * 
+ * <p>
+ * The <code>atLeastOneOf</code> (with <code>atMostOneOf</code> coming soon), <code>allOf</code>,
+ * <code>only</code>, <code>inOrderOnly</code>, <code>inOrder</code>, <code>theSameElementsAs</code>, and <code>theSameElementsInOrderAs</code> syntax require an 
+ * <code>Aggregating[L]</code>, where <code>L</code> is the left-hand type. The <code>Aggregating</code> companion object provides these implicitly
+ * for types <code>GenTraversable[T]</code>, <code>java.util.Collection[T]</code>, 
+ * <code>java.util.Map[K, V]</code>, <code>String</code>, <code>Array[T]</code>. Note that these are the same types as are supported with
+ * <code>Containing</code>, but with <code>Option[T]</code> missing.
+ * </p>
+ *
  * <h2>Be as an equality comparison</h2>
  * 
  * <p>
  * All uses of <code>be</code> other than those shown previously perform an equality comparison. In other words, they work
- * the same as <code>equals</code>. This redundance between <code>be</code> and <code>equals</code> exists because it enables syntax
- * that sometimes sounds more natural. For example, instead of writing: 
+ * the same as <code>equal</code> when it is used with default equality. This redundancy between <code>be</code> and <code>equals</code> exists in part
+ * because it enables syntax that sometimes sounds more natural. For example, instead of writing: 
  * </p>
  * 
  * <pre class="stHighlight">
@@ -596,7 +719,7 @@ import org.scalautils.NormalizingEquality
  * </pre>
  * 
  * <p>
- * As with <code>equal</code>, using <code>be</code> on two arrays results in <code>deep</code> being called on both arrays prior to
+ * As with <code>equal</code> used with default equality, using <code>be</code> on arrays results in <code>deep</code> being called on both arrays prior to
  * calling <code>equal</code>. As a result,
  * the following expression would <em>not</em> throw a <code>TestFailedException</code>:
  * </p>
@@ -635,7 +758,7 @@ import org.scalautils.NormalizingEquality
  * 
  * <pre class="stHighlight">
  * result should not be (null)
- * sum should not be <= (10)
+ * sum should not be &lt;= (10)
  * mylist should not equal (yourList)
  * string should not startWith ("Hello")
  * </pre>
@@ -2211,19 +2334,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
     new ResultOfDefinedAt(right)
 
   /**
-   * This method enables the following syntax:
-   *
-   * <pre class="stHighlight">
-   * num should not be === (10)
-   *                   ^
-   * </pre>
-   */
-/* TODEL
-  def === (right: Any): ResultOfTripleEqualsApplication =
-    new ResultOfTripleEqualsApplication(right)
-*/
-
-  /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
    * the matchers DSL.
    *
@@ -2885,6 +2995,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
     }
 
     /**
+     * <strong>
+     * The should be === syntax has been deprecated and will be removed in a future version of ScalaTest. Please use should equal, should ===, shouldEqual,
+     * should be, or shouldBe instead. Note, the reason this was deprecated was so that === would mean only one thing in ScalaTest: a customizable, type-
+     * checkable equality comparison.
+     * </strong>
+     *
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
@@ -2892,6 +3008,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                    ^
      * </pre>
      */
+    @deprecated("The should be === syntax has been deprecated. Please use should equal, should ===, shouldEqual, should be, or shouldBe instead.")
     def be(comparison: TripleEqualsInvocation[_]) {
       doCollected(collected, xs, "be", 1) { e => 
         if ((e == comparison.right) != shouldBeTrue) {

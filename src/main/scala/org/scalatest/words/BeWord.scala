@@ -194,9 +194,16 @@ final class BeWord {
         )
     }
 
-
   /**
+   * <strong>
+   * The should be === syntax has been deprecated and will be removed in a future version of ScalaTest. Please use should equal, should ===, shouldEqual,
+   * should be, or shouldBe instead. Note, the reason this was deprecated was so that === would mean only one thing in ScalaTest: a customizable, type-
+   * checkable equality comparison.
+   * </strong>
+   *
+   * <p>
    * This method enables the following syntax:
+   * </p>
    *
    * <pre class="stHighlight">
    * result should be === (7)
@@ -220,6 +227,7 @@ final class BeWord {
    *                       ^
    * </pre>
    */
+  @deprecated("The should be === syntax has been deprecated. Please use should equal, should ===, shouldEqual, should be, or shouldBe instead.")
   def ===(right: Any): Matcher[Any] =
     new Matcher[Any] {
       def apply(left: Any): MatchResult = {

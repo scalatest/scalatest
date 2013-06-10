@@ -30,6 +30,11 @@ class ShouldBeAnySpec extends Spec with Matchers with Checkers with ReturnsNorma
       Array(1, 2) should be (Array(1, 2))
     }
 
+    def `should call .deep on an array in either left or ride sides` {
+      Array(1, 2) should be (List(1, 2))
+      List(1, 2) should be (Array(1, 2))
+    }
+
     def `should do nothing when equal` {
       1 should be (1)
       // 1 shouldBe 1

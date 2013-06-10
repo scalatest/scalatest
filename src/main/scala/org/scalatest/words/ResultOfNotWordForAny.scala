@@ -174,6 +174,12 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
   }
 
   /**
+   * <strong>
+   * The should be === syntax has been deprecated and will be removed in a future version of ScalaTest. Please use should equal, should ===, shouldEqual,
+   * should be, or shouldBe instead. Note, the reason this was deprecated was so that === would mean only one thing in ScalaTest: a customizable, type-
+   * checkable equality comparison.
+   * </strong>
+   *
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">
@@ -181,6 +187,7 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
    *                   ^
    * </pre>
    */
+  @deprecated("The should be === syntax has been deprecated. Please use should equal, should ===, shouldEqual, should be, or shouldBe instead.")
   def be(comparison: TripleEqualsInvocation[_]) {
     if ((left == comparison.right) != shouldBeTrue) {
       throw newTestFailedException(
