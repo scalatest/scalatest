@@ -111,7 +111,35 @@ class ShouldBeSortedSpec extends Spec with Matchers {
       }
     }
     
-    
+    object `when work with 'xs shouldBe (sorted)'` {
+      
+      def `should do nothing when xs is empty` {
+        emptyInts shouldBe sorted
+        emptyStudents shouldBe (sorted)
+      }
+      
+      def `should do nothing when xs is sorted` {
+        orderedInts shouldBe sorted
+        orderedStudents shouldBe sorted
+      }
+      
+      def `should throw TestFailedException with correct stack depth when xs is not sorted` {
+        val caught1 = intercept[TestFailedException] {
+          outOfOrderInts shouldBe (sorted)
+        }
+        assert(caught1.message === Some(wasNotSorted(outOfOrderInts)))
+        assert(caught1.failedCodeFileName === Some("ShouldBeSortedSpec.scala"))
+        assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
+        
+        val caught2 = intercept[TestFailedException] {
+          outOfOrderStudents shouldBe (sorted)
+        }
+        assert(caught2.message === Some(wasNotSorted(outOfOrderStudents)))
+        assert(caught2.failedCodeFileName === Some("ShouldBeSortedSpec.scala"))
+        assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
+      }
+      
+    }
     
   }
   

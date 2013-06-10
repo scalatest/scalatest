@@ -6681,6 +6681,19 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * This method enables syntax such as the following:
      *
      * <pre class="stHighlight">
+     * result shouldBe sorted
+     *        ^
+     * </pre>
+     */
+    def shouldBe(right: SortedWord)(implicit sortable: Sortable[T]) {
+      if (!sortable.isSorted(left))
+        throw newTestFailedException(FailureMessages("wasNotSorted", left))
+    }
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
      * result shouldNot be (3)
      *        ^
      * </pre>
