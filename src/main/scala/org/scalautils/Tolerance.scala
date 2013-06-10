@@ -24,7 +24,7 @@ package org.scalautils
  * <code>ConversionCheckedTripleEquals</code>) enable you to write:
  * </p>
  *
- * <pre>
+ * <pre class="stHighlight">
  * a === (1.0 +- 0.1)
  * </pre>
  *

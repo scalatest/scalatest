@@ -25,7 +25,7 @@ package org.scalautils
  * contained the same key-value mappings. Here's an example:
  * </p>
  *
- * <pre>
+ * <pre class="stREPL">
  * scala&gt; import scala.collection.immutable.TreeMap
  * import scala.collection.immutable.TreeMap
  *
@@ -41,7 +41,7 @@ package org.scalautils
  * because <code>TreeMap</code> and <code>HashMap</code> are not in a subtype/supertype relationship, nor does an implicit conversion by default exist between them:
  * </p>
  *
- * <pre>
+ * <pre class="stREPL">
  * scala&gt; import org.scalautils._
  * import org.scalautils._
  *
@@ -62,7 +62,7 @@ package org.scalautils
  * If you mix or import the implicit conversion provided by <code>MapEqualityConstraint</code>, however, the comparison will be allowed:
  * </p>
  *
- * <pre>
+ * <pre class="stREPL">
  * scala&gt; import MapEqualityConstraints._
  * import MapEqualityConstraints._
  *
@@ -79,7 +79,7 @@ package org.scalautils
  * will exist between the value types <code>Int</code> and <code>Date</code>:
  * </p>
  *
- * <pre>
+ * <pre class="stREPL">
  * scala&gt; import java.util.Date
  * import java.util.Date
  *

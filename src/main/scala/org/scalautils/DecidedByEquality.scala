@@ -23,7 +23,7 @@ package org.scalautils
  * a tolerance of &plusmn; 0.01 is allowed:
  * </p>
  *
- * <pre>
+ * <pre class="stHighlight">
  * class TolerantDoubleEquality extends Equality[Double] {
  *
  *   private val Tol = 0.01
@@ -43,7 +43,7 @@ package org.scalautils
  * syntax. Here's an example:
  * </p>
  *
- * <pre>
+ * <pre class="stREPL">
  * $ scala -cp target/jar_contents/
  * Welcome to Scala version 2.10.0 (Java HotSpot(TM) 64-Bit Server VM, Java 1.6.0_33).
  * Type in expressions to have them evaluated.

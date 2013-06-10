@@ -95,7 +95,7 @@ package org.scalautils
  * cause a compiler error:
  * </p>
  * 
- * <pre class=stHighlight>
+ * <pre class="stHighlight">
  * import org.scalautils._
  * import TypeCheckedTripleEquals._
  *
@@ -134,7 +134,7 @@ package org.scalautils
  * the members of <code>ConversionCheckedTripleEquals</code> in a limited scope:
  * </p>
  * 
- * <pre>
+ * <pre class="stHighlight">
  * package org.scalautils.examples.conversioncheckedtripleequals
  * 
  * import org.scalautils._

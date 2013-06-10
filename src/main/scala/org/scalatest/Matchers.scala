@@ -93,12 +93,12 @@ import org.scalautils.NormalizingEquality
  * </p>
  *
  * <p>
- * All previously documented syntax for matchers should continue to work exactly the same in ScalaTest 2.0.M6, with two potential breakages, both of
+ * All previously documented syntax for matchers should continue to work exactly the same in the current ScalaTest 2.0.M6-SNAP release, with two potential breakages, both of
  * which should be quite rare, and one deprecation. First, support for "<code>have</code> <code>length</code>" and "<code>have</code> <code>size</code>" based solely on
  * structural types has been removed. Any use of this syntax on types other than Scala or Java collections, arrays, or strings will no longer compile.
  * To migrate such code, you will need to implicitly provide either a <code>Length[T]</code> or </code>Size[T]</code> for your type <code>T</code>, as
  * <a href="#checkingSizeAndLength">described below</a>.
- * The other, even rarer, potential breakage is that if <code>length</code> or </code>size</code> were used along with other custom have-property matchers,
+ * The other, even rarer (and likely temporary), potential breakage is that if <code>length</code> or </code>size</code> were used along with other custom have-property matchers,
  * <code>length</code> and <code>size</code> must now come first in the list, as <a href="#lengthSizeHavePropertyMatchers">described below</a>.
  * The deprecation is <code>be</code> <code>===</code> <code>&lt;value&gt;</code> syntax. This will continue to work as before, but will generate a deprecation
  * warning and eventually be removed in a later version of ScalaTest. Please replace uses of this syntax with one of the other
@@ -547,6 +547,7 @@ import org.scalautils.NormalizingEquality
  * javaMap should contain value "Howdy"
  * </pre>
  * 
+ * <a name="workingWithContainers"></a>
  * <h3>Working with "containers"</h3>
  *
  * <p>
@@ -661,6 +662,7 @@ import org.scalautils.NormalizingEquality
  * "12345" should contain noneOf ('7', '8', '9')
  * </pre>
  *
+ * <a name="workingWithAggregations"></a>
  * <h3>Working with "aggregations"</h3>
  *
  * <p>
@@ -798,6 +800,117 @@ import org.scalautils.NormalizingEquality
  * The previous assertion succeeds because the iteration order of a<code>TreeSet</code> is the natural
  * ordering of its elements, which in this case is 1, 2, 3. An iterator obtained from the left-hand <code>List</code> will produce the same elements
  * in the same order.
+ * </p>
+ *
+ * <a name="inspectorShorthands"></a>
+ * <h3>Inspector shorthands</h3>
+ *
+ * <p>
+ * You can use the <a href="Inspectors.html"><code>Inspectors</code></a> syntax with matchers as well as assertions. If you have a multi-dimensional collection, such as an
+ * list of lists, using <code>Inspectors</code> is your best option:
+ * </p>
+ * 
+ * <pre class="stHighlight">
+ * val yss =
+ *   List(
+ *     List(1, 2, 3),
+ *     List(1, 2, 3),
+ *     List(1, 2, 3)
+ *   )
+ *
+ * forAll (yss) { ys =&gt;
+ *   forAll (ys) { y =&gt; y should be &gt; 0 }
+ * }
+ * </pre>
+ *
+ * <p>
+ * For assertions on one-dimensional collections, however, matchers provides "inspector shorthands." Instead of writing:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * val xs = List(1, 2, 3)
+ * forAll (xs) { x =&gt; x should be &lt; 10 }
+ * </pre>
+ *
+ * <p>
+ * You can write:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * all (xs) should be &lt; 10
+ * </pre>
+ *
+ * <p>
+ * The previous statement asserts that all elements of the <code>xs</code> list should be less than 10.
+ * All of the inspectors have shorthands in matchers. Here is the full list:
+ * </p>
+ *
+ * <ul>
+ * <li><code>all</code> - succeeds if the assertion holds true for every element</li>
+ * <li><code>atLeast</code> - succeeds if the assertion holds true for at least the specified number of elements</li>
+ * <li><code>atMost</code> - succeeds if the assertion holds true for at most the specified number of elements</li>
+ * <li><code>between</code> - succeeds if the assertion holds true for between the specified minimum and maximum number of elements, inclusive</li>
+ * <li><code>every</code> - same as <code>all</code>, but lists all failing elements if it fails (whereas <code>all</code> just reports the first failing element)</li>
+ * <li><code>exactly</code> - succeeds if the assertion holds true for exactly the specified number of elements</li>
+ * </ul>
+ *
+ * <p>
+ * Here are some examples:
+ * </p>
+ * 
+ * <pre class="stREPL">
+ * scala&gt; import org.scalatest.Matchers._
+ * import org.scalatest.Matchers._
+ *
+ * scala&gt; val xs = List(1, 2, 3, 4, 5)
+ * xs: List[Int] = List(1, 2, 3, 4, 5)
+ *
+ * scala&gt; all (xs) should be &gt; 0
+ *
+ * scala&gt; atMost(2, xs) should be &gt;= 4
+ *
+ * scala&gt; atLeast(3, xs) should be &lt; 5
+ *
+ * scala&gt; between(2, 3, xs) should (be &gt; 1 and be &lt; 5)
+ *
+ * scala&gt; exactly (2, xs) should be &lt;= 2
+ *
+ * scala&gt; every (xs) should be &lt; 10
+ *
+ * scala&gt; // And one that fails...
+ *
+ * scala&gt; exactly (2, xs) shouldEqual 2
+ * org.scalatest.exceptions.TestFailedException: 'exactly(2)' inspection failed, because only 1 element
+ *     satisfied the assertion block at index 1: 
+ *   at index 0, 1 did not equal 2, 
+ *   at index 2, 3 did not equal 2, 
+ *   at index 3, 4 did not equal 2, 
+ *   at index 4, 5 did not equal 2 
+ * in List(1, 2, 3, 4, 5)
+ *         at ...
+ * </pre>
+ * 
+ * <p>
+ * Note: in the current 2.0.M6-SNAP release, the type of object used with inspector shorthands must be <code>GenTraversable</code>, but this will likely be widened to
+ * include Java collections, arrays, iterators, etc., for 2.0.M6.
+ * </p>
+ *
+ * <a name="singleElementCollections"></a>
+ * <h3>Single-element collections</h3>
+ *
+ * <p>
+ * To assert both that a collection contains just one "lone" element as well as something else about that element, you can use
+ * the <code>loneElement</code> syntax. For example, if a <code>Set[Int]</code> should contain just one element, an <code>Int</code>
+ * less than or equal to 10, you could write:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * set.loneElement should be &lt;= 10
+ * </pre>
+ *
+ * <p>
+ * Note: in the current 2.0.M6-SNAP release, the type of object on which you can invoke <code>loneElement</code> must be <code>GenTraversable</code>, but this
+ * will likely be widened to include Java collections, arrays, iterators, etc., for 2.0.M6.
  * </p>
  *
  * <h2>Be as an equality comparison</h2>
@@ -1126,7 +1239,35 @@ import org.scalautils.NormalizingEquality
  * <h3>Using <code>length</code> and <code>size</code> with <code>HavePropertyMatcher</code>s</h3>
  *
  * <p>
- * TODO
+ * In the currenty 2.0.M6-SNAP release, if you want to use <code>length</code> or <code>size</code> syntax with your own custom <code>HavePropertyMatchers</code>, you 
+ * can do so, but you must put the <code>length</code> or <code>size</code> statement first in the list. For example, you could write:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * book should have (
+ *   length (220),
+ *   title ("A Tale of Two Cities"),
+ *   author ("Dickens")
+ * )
+ * </pre>
+ *
+ * <p>
+ * By contrast, the following code would <em>not</em> compile, because <code>length</code> does not come first in the list:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * book should have (
+ *   title ("A Tale of Two Cities"),
+ *   length (220),
+ *   author ("Dickens")
+ * )
+ * </pre>
+ *
+ * <p>
+ * Prior to ScalaTest 2.0, <code>length</code> <code>(22)</code> yielded a <code>HavePropertyMatcher[Any, Int]</code> that used reflection to dynamically look
+ * for a <code>length</code> field or <code>getLength</code> method. In ScalaTest 2.0, <code>length</code> <code>(22)</code> yields a
+ * <code>MatcherFactory1[Any, Length]</code>, so it is no longer a <code>HavePropertyMatcher</code>. In 2.0.M6 this restriction will likely be lifted via
+ * an implicit conversions in the <code>HavePropertyMatcher</code> companion object, but for the current SNAP release the restriction exists.
  * </p>
  *
  * <h2>Using custom matchers</h2>

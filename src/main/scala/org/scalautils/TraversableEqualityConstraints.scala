@@ -26,7 +26,7 @@ package org.scalautils
  * two <code>Seq</code>s contained the same elements in the same order. Here's an example:
  * </p>
  *
- * <pre>
+ * <pre class="stREPL">
  * scala&gt; import scala.collection.mutable.ListBuffer
  * import scala.collection.mutable.ListBuffer
  *
@@ -39,7 +39,7 @@ package org.scalautils
  * because <code>Vector</code> and <code>ListBuffer</code> are not in a subtype/supertype relationship, nor does an implicit conversion by default exist between them:
  * </p>
  *
- * <pre>
+ * <pre class="stREPL">
  * scala&gt; import org.scalautils._
  * import org.scalautils._
  *
@@ -60,7 +60,7 @@ package org.scalautils
  * If you mix or import the implicit conversion provided by <code>TraversableEqualityConstraint</code>, however, the comparison will be allowed:
  * </p>
  *
- * <pre>
+ * <pre class="stREPL">
  * scala&gt; import TraversableEqualityConstraints._
  * import TraversableEqualityConstraints._
  *
@@ -79,7 +79,7 @@ package org.scalautils
  * will exist between the element types <code>Int</code> and <code>Date</code>:
  * </p>
  *
- * <pre>
+ * <pre class="stREPL">
  * scala&gt; import java.util.Date
  * import java.util.Date
  *

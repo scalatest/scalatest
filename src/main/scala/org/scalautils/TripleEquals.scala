@@ -35,7 +35,7 @@ package org.scalautils
  * cause a compiler error:
  * </p>
  * 
- * <pre class=stHighlight>
+ * <pre class="stHighlight">
  * import org.scalautils._
  * import TypeCheckedTripleEquals._
  *
@@ -74,7 +74,7 @@ package org.scalautils
  * a limited scope:
  * </p>
  * 
- * <pre>
+ * <pre class="stHighlight">
  * package org.scalautils.examples.tripleequals
  * 
  * import org.scalautils._

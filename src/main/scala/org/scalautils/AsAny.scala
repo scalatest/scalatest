@@ -26,7 +26,7 @@ package org.scalautils
  * this type checks:
  * </p>
  *
- * <pre>
+ * <pre class="stHighlight">
  * Set(1, 2) should contain (2)
  * </pre>
  * 
@@ -34,7 +34,7 @@ package org.scalautils
  * But this does not type check:
  * </p>
  * 
- * <pre>
+ * <pre class="stHighlight">
  * Set(1, 2) should contain ("2")
  * </pre>
  * 
@@ -43,7 +43,7 @@ package org.scalautils
  * the collection (<code>Any</code>) is a supertype of the type passed to contain (<code>String</code>):
  * </p>
  * 
- * <pre>
+ * <pre class="stHighlight">
  * Set(1, "2") should contain ("2") // Does not compile
  * </pre>
  * 
@@ -52,7 +52,7 @@ package org.scalautils
  * will always succeed. Using <code>asAny</code> makes this prettier:
  * </p>
  * 
- * <pre>
+ * <pre class="stHighlight">
  * Set(1, "2") should contain ("2".asAny)
  * </pre>
  * 

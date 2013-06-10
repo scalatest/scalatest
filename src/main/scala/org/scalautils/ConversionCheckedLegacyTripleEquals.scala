@@ -56,7 +56,7 @@ package org.scalautils
  * is not a subtype or supertype of <code>Long</code>):
  * </p>
  *
- * <pre class="stHighlight">
+ * <pre class="stREPL">
  * scala&gt; import org.scalautils._
  * import org.scalautils._
  * 
@@ -79,7 +79,7 @@ package org.scalautils
  * will allow it:
  * </p>
  * 
- * <pre class="stHighlight">
+ * <pre class="stREPL">
  * scala&gt; import ConversionCheckedLegacyTripleEquals._
  * import ConversionCheckedLegacyTripleEquals._
  * 
@@ -93,7 +93,7 @@ package org.scalautils
  * the other way:
  * </p>
  * 
- * <pre class="stHighlight">
+ * <pre class="stREPL">
  * scala&gt; 1L === 1
  * res2: Option[String] = None
  * </pre>
@@ -119,7 +119,7 @@ package org.scalautils
  * trait offers a convenient syntax, the <code>asAny</code> method, for this purpose:
  * </p>
  *
- * <pre class="stHighlight">
+ * <pre class="stREPL">
  * scala&gt; import org.scalautils._
  * import org.scalautils._
  *
