@@ -281,7 +281,7 @@
     <target name="compile" depends="compile-main, compile-tests"/>
 
     <!--<target name="compile-main" depends="init">-->
-    <target name="compile-main" depends="init, gentables, genmatchers, gengen, geninspectors, genfactories, gencontain, write-excludes-file">
+    <target name="compile-main" depends="init, gentables, genmatchers, gengen, genfactories, write-excludes-file">
         <!--<fail message="Wrong JVM [${ant.java.version}]. Include 'java6' target to use java 6."
               unless="jvm.ok"/>-->
 
@@ -369,7 +369,7 @@
       <echo file="${build}/scalac_excludes"/>
     </target>
 	
-    <target name="compile-gentests" depends="compile-tests">
+    <target name="compile-gentests" depends="compile-tests, geninspectors, gencontain">
       <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
 		<include name="org/scalatest/junit/*.scala"/>
 		<include name="org/scalatest/matchers/*.scala"/>
