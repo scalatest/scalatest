@@ -70,6 +70,7 @@ import org.scalatest.words.ResultOfNewOnlyApplication
 import org.scalatest.words.ResultOfNewAllOfApplication
 import org.scalatest.words.ResultOfNewInOrderOnlyApplication
 import org.scalatest.words.ResultOfNewInOrderApplication
+import org.scalatest.words.SortedWord
 
 /**
  * A matcher factory that can produce a matcher given $nTypeclassInstances$.
@@ -1128,6 +1129,17 @@ $endif$
       thisMatcherFactory.and(MatcherWords.not.be(resultOfDefinedAt))
 
     /**
+     * This method enables the following syntax, where <code>fraction</code> is a <code>PartialFunction</code>:
+     *
+     * <pre class="stHighlight">
+     * (aMatcherFactory and not be sorted)
+     *                          ^
+     * </pre>
+     */
+    def be(sortedWord: SortedWord) = 
+      thisMatcherFactory.and(MatcherWords.not.be(sortedWord))
+    
+    /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
@@ -2001,17 +2013,17 @@ $endif$
    * @author Bill Venners
    */
   final class OrNotWord {
-
+    
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
-     * (aMatcherFactory or not equal (2))
+     * (aMatcherFactory or not equal (3 - 1))
      *                         ^
      * </pre>
      */
-    def equal(any: Any): MatcherFactory$arity$[SC, $commaSeparatedTCNs$] =
-      thisMatcherFactory.or(MatcherWords.not.apply(MatcherWords.legacyEqual(any)))
+    def equal(any: Any): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Equality] =
+      thisMatcherFactory.or(MatcherWords.not.apply(MatcherWords.equal(any)))
 
     /**
      * This method enables the following syntax for the "primitive" numeric types:
@@ -2276,6 +2288,17 @@ $endif$
      */
     def be[A, U <: PartialFunction[A, _]](resultOfDefinedAt: ResultOfDefinedAt[A]): MatcherFactory$arity$[SC with U, $commaSeparatedTCNs$] = 
       thisMatcherFactory.or(MatcherWords.not.be(resultOfDefinedAt))
+    
+    /**
+     * This method enables the following syntax, where <code>fraction</code> is a <code>PartialFunction</code>:
+     *
+     * <pre class="stHighlight">
+     * (aMatcherFactory or not be sorted)
+     *                         ^
+     * </pre>
+     */
+    def be(sortedWord: SortedWord) = 
+      thisMatcherFactory.or(MatcherWords.not.be(sortedWord))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:

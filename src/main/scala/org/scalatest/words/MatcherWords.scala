@@ -148,6 +148,16 @@ trait MatcherWords {
    * </pre>
    */
   val size = new SizeWord
+  
+  /**
+   * This field enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * seq should be sorted
+   *               ^
+   * </pre>
+   */
+  val sorted = new SortedWord
 
   /**
    * This method enables the following syntax: 

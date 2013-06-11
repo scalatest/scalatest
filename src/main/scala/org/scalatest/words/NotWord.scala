@@ -626,6 +626,17 @@ final class NotWord {
       }
     }
   }
+  
+  /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * fraction should (not be sorted and not be sorted)
+     *                      ^
+     * </pre>
+     */
+  def be[T <: Any](sortedWord: SortedWord): MatcherFactory1[Any, Sortable] =
+    apply(MatcherWords.be(sortedWord))
 
   /**
    * This method enables the following syntax: 

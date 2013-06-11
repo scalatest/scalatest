@@ -61,6 +61,7 @@ import org.scalatest.words.ResultOfNewOnlyApplication
 import org.scalatest.words.ResultOfNewAllOfApplication
 import org.scalatest.words.ResultOfNewInOrderOnlyApplication
 import org.scalatest.words.ResultOfNewInOrderApplication
+import org.scalatest.words.SortedWord
 
 /**
  * Trait extended by objects that can match a value of the specified type. The value to match is
@@ -1469,6 +1470,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def be[A, U <: PartialFunction[A, _]](resultOfDefinedAt: ResultOfDefinedAt[A]): Matcher[T with U] =
       outerInstance.and(MatcherWords.not.be(resultOfDefinedAt))
+      
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * fraction should (not be sorted and not be sorted)
+     *                                        ^
+     * </pre>
+     */
+    def be(sortedWord: SortedWord) = 
+      outerInstance.and(MatcherWords.not.be(sortedWord))
 
     /**
      * This method enables the following syntax:
@@ -2616,6 +2628,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def be[A, U <: PartialFunction[A, _]](resultOfDefinedAt: ResultOfDefinedAt[A]): Matcher[T with U] =
       outerInstance.or(MatcherWords.not.be(resultOfDefinedAt))
+      
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * fraction should (not be sorted or not be sorted)
+     *                                        ^
+     * </pre>
+     */
+    def be(sortedWord: SortedWord) = 
+      outerInstance.or(MatcherWords.not.be(sortedWord))
 
     /**
      * This method enables the following syntax:
