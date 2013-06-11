@@ -2013,17 +2013,17 @@ $endif$
    * @author Bill Venners
    */
   final class OrNotWord {
-
+    
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
-     * (aMatcherFactory or not equal (2))
+     * (aMatcherFactory or not equal (3 - 1))
      *                         ^
      * </pre>
      */
-    def equal(any: Any): MatcherFactory$arity$[SC, $commaSeparatedTCNs$] =
-      thisMatcherFactory.or(MatcherWords.not.apply(MatcherWords.legacyEqual(any)))
+    def equal(any: Any): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Equality] =
+      thisMatcherFactory.or(MatcherWords.not.apply(MatcherWords.equal(any)))
 
     /**
      * This method enables the following syntax for the "primitive" numeric types:
