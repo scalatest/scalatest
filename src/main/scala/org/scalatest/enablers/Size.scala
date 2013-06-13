@@ -16,10 +16,10 @@
 package org.scalatest.enablers
 
 /**
- * Supertrait for <code>Size</code> type classes.
+ * Supertrait for <code>Size</code> typeclasses.
  *
  * <p>
- * Trait <code>Size</code> is a type class trait for objects that can be queried for size.
+ * Trait <code>Size</code> is a typeclass trait for objects that can be queried for size.
  * Objects of type T for which an implicit <code>Size[T]</code> is available can be used
  * with the <code>should have size</code> syntax.
  * In other words, this trait enables you to use the size checking

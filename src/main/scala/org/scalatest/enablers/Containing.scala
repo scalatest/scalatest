@@ -21,10 +21,86 @@ import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
 import org.scalatest.FailureMessages
 
-trait Containing[A] {
-  def contains(container: A, element: Any): Boolean
-  def containsOneOf(container: A, elements: scala.collection.Seq[Any]): Boolean
-  def containsNoneOf(container: A, elements: scala.collection.Seq[Any]): Boolean
+/**
+ * Supertrait for typeclasses that enable <code>contain</code> matcher syntax for containers.
+ *
+ * <p>
+ * A <code>Containing[C]</code> provides access to the "containing nature" of type <code>C</code> in such
+ * a way that relevant <code>contain</code> matcher syntax can be used with type <code>C</code>. A <code>C</code>
+ * can be any type of "container," a type that in some way can contains one or more other objects. ScalaTest provides
+ * implicit implementations for several types. You can enable the <code>contain</code> matcher syntax on your own
+ * type <code>U</code> by defining an <code>Containing[U}</code> for the type and making it available implicitly.
+ * 
+ * <p>
+ * ScalaTest provides implicit <code>Aggregating</code> instances for <code>scala.collection.GenTraversable</code>,
+ * <code>java.util.Collection</code>, <code>java.util.Map</code>, <code>String</code>, <code>Array</code>, 
+ * and <code>Option</code> in the <code>Aggregating</code> companion object.
+ * </p>
+ *
+ * <a name="containingVersusAggregating"></a>
+ * <h2><code>Containing</code> versus <code>Aggregating</code></h2>
+ * 
+ * <p>
+ * The difference between <code>Containing</code> and <a href="Aggregating.html"><code>Aggregating</code></a> is that
+ * <code>Containing</code> enables <code>contain</code> matcher syntax that makes sense for "box" types that can
+ * contain at most one value (for example, <code>Option</code>),
+ * whereas <code>Aggregating</code> enables <code>contain</code> matcher syntax for full-blown collections and other 
+ * aggregations of potentially more than one object. For example, it makes sense to make assertions like these, which 
+ * are enabled by <code>Containing</code>, for <code>Option</code>:
+ * </p>
+ * 
+ * <pre class="stHighlight">
+ * val option: Option[Int] = Some(7)
+ * option should contain (7)
+ * option should contain oneOf (6, 7, 8)
+ * option should contain noneOf (3, 4, 5)
+ * </pre>
+ *
+ * <p>
+ * However, given an <code>Option</code> can only ever contain at most one object, it doesn't make
+ * sense to make assertions like the following, which are enabled via <code>Aggregation</code>:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * // Could never succeed, so does not compile
+ * option should contain allOf (6, 7, 8)
+ * </pre>
+ * 
+ * <p>
+ * The above assertion could never succceed, because an option cannot contain more than
+ * one value. By default the above statement does not compile, because <code>contain</code> <code>allOf</code>
+ * is enabled by <code>Aggregating</code>, and ScalaTest provides no implicit <code>Aggregating</code> instance
+ * for type <code>Option</code>.
+ * </p>
+ */
+trait Containing[C] {
+
+  /**
+   * Implements <code>contain</code> <code>&lt;value&gt;</code> syntax for containers of type <code>C</code>.
+   *
+   * @param container a container about which an assertion is being made
+   * @param element an element that should be contained in the passed container
+   * @return true if the passed container contains the passed element
+   */
+  def contains(container: C, element: Any): Boolean
+
+  /**
+   * Implements <code>contain</code> <code>oneOf</code> syntax for containers of type <code>C</code>.
+   *
+   * @param container a container about which an assertion is being made
+   * @param eles elements exactly one (<em>i.e.</em>, one and only one) of which should be contained in the passed container
+   * @return true if the passed container contains exactly one of the passed elements
+   */
+  def containsOneOf(container: C, elements: scala.collection.Seq[Any]): Boolean
+
+  /**
+   * Implements <code>contain</code> <code>atLeastOneOf</code> syntax for containers of type <code>C</code>.
+   *
+   * @param container a container about which an assertion is being made
+   * @param eles elements none of which should be contained in the passed container
+   * @return true if the passed container contains at least one of the passed elements
+   */
+  def containsNoneOf(container: C, elements: scala.collection.Seq[Any]): Boolean
 }
 
 /*

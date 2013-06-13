@@ -23,20 +23,102 @@ import org.scalatest.FailureMessages
 import scala.annotation.tailrec
 import scala.collection.JavaConverters._
 
+/**
+ * Supertrait for typeclasses that enable <code>contain</code> matcher syntax for aggregations.
+ *
+ * <p>
+ * An <code>Aggregating[A]</code> provides access to the "aggregating nature" of type <code>A</code> in such
+ * a way that relevant <code>contain</code> matcher syntax can be used with type <code>A</code>. An <code>A</code>
+ * can be any type of "aggregation," a type that in some way aggregates or brings together other types. ScalaTest provides
+ * implicit implementations for several types. You can enable the <code>contain</code> matcher syntax on your own
+ * type <code>U</code> by defining an <code>Aggregating[U}</code> for the type and making it available implicitly.
+ * 
+ * <p>
+ * ScalaTest provides implicit <code>Aggregating</code> instances for <code>scala.collection.GenTraversable</code>,
+ * <code>java.util.Collection</code>, <code>java.util.Map</code>, <code>String</code>, and <code>Array</code> in the
+ * <code>Aggregating</code> companion object.
+ * </p>
+ *
+ * <p>
+ * Note, for an explanation of the difference between <code>Containing</code> and <code>Aggregating</code>, both of which
+ * enable <code>contain</code> matcher syntax, see the <a href="Containing.html#containingVersusAggregating">Containing
+ * versus Aggregating</a> section of the main documentation for trait <code>Containing</code>.
+ * </p>
+ */
 trait Aggregating[A] {
+
+// TODO: Write tests that a NotAllowedException is thrown when no elements are passed, maybe if only one element is passed, and 
+// likely if an object is repeated in the list.
+  /**
+   * Implements <code>contain</code> <code>atLeastOneOf</code> syntax for aggregations of type <code>A</code>.
+   *
+   * @param aggregation an aggregation about which an assertion is being made
+   * @param eles elements at least one of which should be contained in the passed aggregation
+   * @return true if the passed aggregation contains at least one of the passed elements
+   */
   def containsAtLeastOneOf(aggregation: A, eles: Seq[Any]): Boolean
-  def containsTheSameElementsAs(aggregation: A, eles: GenTraversable[Any]): Boolean
-  def containsTheSameElementsInOrderAs(aggregation: A, eles: GenTraversable[Any]): Boolean
+
+  /**
+   * Implements <code>contain</code> <code>theSameElementsAs</code> syntax for aggregations of type <code>A</code>.
+   *
+   * @param leftAggregation an aggregation about which an assertion is being made
+   * @param rightAggregation an aggregation that should contain the same elements as the passed <code>leftAggregation</code>
+   * @return true if the passed <code>leftAggregation</code> contains the same elements as the passed <code>rightAggregation</code>
+   */
+  def containsTheSameElementsAs(leftAggregation: A, rightAggregation: GenTraversable[Any]): Boolean
+
+  /**
+   * Implements <code>contain</code> <code>theSameElementsInOrderAs</code> syntax for aggregations of type <code>A</code>.
+   *
+   * @param leftAggregation an aggregation about which an assertion is being made
+   * @param rightAggregation an aggregation that should contain the same elements, in (iterated) order as the passed <code>leftAggregation</code>
+   * @return true if the passed <code>leftAggregation</code> contains the same elements, in (iterated) order, as the passed <code>rightAggregation</code>
+   */
+  def containsTheSameElementsInOrderAs(leftAggregation: A, rightAggregation: GenTraversable[Any]): Boolean
+
+  /**
+   * Implements <code>contain</code> <code>only</code> syntax for aggregations of type <code>A</code>.
+   *
+   * @param aggregation an aggregation about which an assertion is being made
+   * @param eles the only elements that should be contained in the passed aggregation
+   * @return true if the passed aggregation contains only the passed elements
+   */
   def containsOnly(aggregation: A, eles: Seq[Any]): Boolean
+
+  /**
+   * Implements <code>contain</code> <code>inOrderOnly</code> syntax for aggregations of type <code>A</code>.
+   *
+   * @param aggregation an aggregation about which an assertion is being made
+   * @param eles the only elements that should be contained, in order of appearence in <code>eles</code>, in the passed aggregation
+   * @return true if the passed aggregation contains only the passed elements in (iteration) order
+   */
   def containsInOrderOnly(aggregation: A, eles: Seq[Any]): Boolean
+
+  /**
+   * Implements <code>contain</code> <code>allOf</code> syntax for aggregations of type <code>A</code>.
+   *
+   * @param aggregation an aggregation about which an assertion is being made
+   * @param eles elements all of which should be contained in the passed aggregation
+   * @return true if the passed aggregation contains all of the passed elements
+   */
   def containsAllOf(aggregation: A, eles: Seq[Any]): Boolean
+
+  /**
+   * Implements <code>contain</code> <code>inOrder</code> syntax for aggregations of type <code>A</code>.
+   *
+   * @param aggregation an aggregation about which an assertion is being made
+   * @param eles elements all of which should be contained, in order of appearance in <code>eles</code>, in the passed aggregation
+   * @return true if the passed aggregation contains all of the passed elements in (iteration) order
+   */
   def containsInOrder(aggregation: A, eles: Seq[Any]): Boolean
+
 /*  def containsAtMostOneOf(aggregation: A, eles: Seq[Any]): Boolean
 */
 }
 
 object Aggregating {
-  
+
+  // TODO: Throwing exceptions is slow. Just do a pattern match and test the type before trying to cast it.
   private def tryEquality[T](left: Any, right: Any, equality: Equality[T]): Boolean = 
     try equality.areEqual(left.asInstanceOf[T], right)
       catch {

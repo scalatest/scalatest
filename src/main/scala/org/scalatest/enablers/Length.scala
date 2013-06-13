@@ -16,10 +16,10 @@
 package org.scalatest.enablers
 
 /**
- * Supertrait for <code>Length</code> type classes.
+ * Supertrait for <code>Length</code> typeclasses.
  *
  * <p>
- * Trait <code>Length</code> is a type class trait for objects that can be queried for length.
+ * Trait <code>Length</code> is a typeclass trait for objects that can be queried for length.
  * Objects of type T for which an implicit <code>Length[T]</code> is available can be used
  * with the <code>should have length</code> syntax.
  * In other words, this trait enables you to use the length checking
