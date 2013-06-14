@@ -16,7 +16,6 @@
 package org.scalatest
 
 import collection.mutable.LinkedHashMap
-import words.TheSameElementsAsContainMatcher
 import SharedHelpers._
 
 class TheSameElementsAsContainMatcherSpec extends Spec with Matchers {

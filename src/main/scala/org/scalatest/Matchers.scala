@@ -1405,36 +1405,6 @@ import org.scalautils.NormalizingEquality
  */
 trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElement with MatcherWords with Explicitly { matchers =>
 
-  private[scalatest] def matchContainMatcher[T](left: scala.collection.GenTraversable[T], containMatcher: ContainMatcher[T], shouldBeTrue: Boolean) {
-    val result = containMatcher(left)
-    if (result.matches != shouldBeTrue)
-      throw newTestFailedException(
-        if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage, 
-        None, 
-        3
-      )
-  }
-  
-  private[scalatest] def matchContainMatcher[T](left: java.util.Collection[T], containMatcher: ContainMatcher[T], shouldBeTrue: Boolean) {
-    val result = containMatcher(new JavaCollectionWrapper(left))
-    if (result.matches != shouldBeTrue)
-      throw newTestFailedException(
-        if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage, 
-        None, 
-        2
-      )
-  }
-  
-  private[scalatest] def matchContainMatcher[K, V](left: java.util.Map[K, V], containMatcher: ContainMatcher[(K, V)], shouldBeTrue: Boolean) {
-    val result = containMatcher(new JavaMapWrapper(left))
-    if (result.matches != shouldBeTrue)
-      throw newTestFailedException(
-        if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage, 
-        None, 
-        2
-      )
-  }
-
   //
   // This class is used as the return type of the overloaded should method (in MapShouldWrapper)
   // that takes a HaveWord. It's key method will be called in situations like this:

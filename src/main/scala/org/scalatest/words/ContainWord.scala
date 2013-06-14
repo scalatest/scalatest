@@ -44,31 +44,14 @@ final class ContainWord extends NewContainWord {
       def matcher[U <: Any : Containing]: Matcher[U] = 
         new Matcher[U] {
           def apply(left: U): MatchResult = {
-            val holder = implicitly[Containing[U]]
+            val containing = implicitly[Containing[U]]
             MatchResult(
-              holder.contains(left, expectedElement),
+              containing.contains(left, expectedElement),
               FailureMessages("didNotContainExpectedElement", left, expectedElement),
               FailureMessages("containedExpectedElement", left, expectedElement)
             )
           }
         }
-    }
-  
-  /**
-   * This method enables the following syntax, where <code>num</code> is, for example, of type <code>Int</code> and
-   * <code>odd</code> refers to a <code>ContainMatcher[Int]</code>:
-   *
-   * <pre class="stHighlight">
-   * num should contain (odd)
-   *            ^
-   * </pre>
-   */
-  def apply[T](right: ContainMatcher[T]): Matcher[GenTraversable[T]] = 
-    new Matcher[GenTraversable[T]] {
-      def apply(left: GenTraversable[T]): MatchResult = {
-        val result = right(left)
-        MatchResult(result.matches, result.failureMessage, result.negatedFailureMessage)
-      }
     }
   
   //
@@ -145,135 +128,6 @@ final class ContainWord extends NewContainWord {
           FailureMessages("didNotContainValue", left, expectedValue),
           FailureMessages("containedValue", left, expectedValue)
         )
-    }
-  
-  /**
-   * This method enables the following syntax:
-   *
-   * <pre class="stHighlight">
-   * Array(1, 2, 3) should (contain theSameElementsAs List(1, 2, 3) and contain theSameElementsInOrderAs List(3, 2, 1))
-   *                                ^
-   * </pre>
-   */
-  def oldTheSameElementsAs[E](right: GenTraversable[E])(implicit equality: Equality[E]): Matcher[GenTraversable[E]] = 
-    new Matcher[GenTraversable[E]] {
-      def apply(left: GenTraversable[E]): MatchResult = {
-        val result = new TheSameElementsAsContainMatcher(right, equality).apply(left)
-        MatchResult(result.matches, result.failureMessage, result.negatedFailureMessage)
-      }
-    }
-    
-  
-  /**
-   * This method enables the following syntax:
-   *
-   * <pre class="stHighlight">
-   * Array(1, 2, 3) should (contain theSameElementsInOrderAs List(1, 2, 3) and contain theSameElementsAs List(1, 2, 3))
-   *                                ^
-   * </pre>
-   */
-  def oldTheSameElementsInOrderAs[E](right: GenTraversable[E])(implicit equality: Equality[E]): Matcher[GenTraversable[E]] = 
-    new Matcher[GenTraversable[E]] {
-      def apply(left: GenTraversable[E]): MatchResult = {
-        val result = new TheSameElementsInOrderAsContainMatcher(right, equality).apply(left)
-        MatchResult(result.matches, result.failureMessage, result.negatedFailureMessage)
-      }
-    }
-  
-  /**
-   * This method enables the following syntax:
-   *
-   * <pre class="stHighlight">
-   * Array(1, 2, 3) should (contain allOf (3, 2, 1) and contain theSameElementsAs List(1, 2, 3))
-   *                                ^
-   * </pre>
-   */
-  def oldAllOf[E](right: E*)(implicit equality: Equality[E]): Matcher[GenTraversable[E]] = 
-    new Matcher[GenTraversable[E]] {
-      def apply(left: GenTraversable[E]): MatchResult = {
-        val result = new AllOfContainMatcher(right, equality).apply(left)
-        MatchResult(result.matches, result.failureMessage, result.negatedFailureMessage)
-      }
-    }
-  
-  /**
-   * This method enables the following syntax:
-   *
-   * <pre class="stHighlight">
-   * Array(1, 2, 3) should (contain inOrder (1, 2, 3) and contain theSameElementsAs List(1, 2, 3))
-   *                                ^
-   * </pre>
-   */
-  def oldInOrder[E](right: E*)(implicit equality: Equality[E]): Matcher[GenTraversable[E]] = 
-    new Matcher[GenTraversable[E]] {
-      def apply(left: GenTraversable[E]): MatchResult = {
-        val result = new InOrderContainMatcher(right, equality).apply(left)
-        MatchResult(result.matches, result.failureMessage, result.negatedFailureMessage)
-      }
-    }
-  
-  /**
-   * This method enables the following syntax:
-   *
-   * <pre class="stHighlight">
-   * Array(1, 2, 3) should (contain oneOf (1, 3, 5) and contain theSameElementsAs List(1, 2, 3))
-   *                                ^
-   * </pre>
-   */
-  def oldOneOf[E](right: E*)(implicit equality: Equality[E]): Matcher[GenTraversable[E]] = 
-    new Matcher[GenTraversable[E]] {
-      def apply(left: GenTraversable[E]): MatchResult = {
-        val result = new OneOfContainMatcher(right, equality).apply(left)
-        MatchResult(result.matches, result.failureMessage, result.negatedFailureMessage)
-      }
-    }
-  
-  /**
-   * This method enables the following syntax:
-   *
-   * <pre class="stHighlight">
-   * Array(1, 2, 3) should (contain only (3, 1, 2) and contain theSameElementsAs List(1, 2, 3))
-   *                                ^
-   * </pre>
-   */
-  def oldOnly[E](right: E*)(implicit equality: Equality[E]): Matcher[GenTraversable[E]] = 
-    new Matcher[GenTraversable[E]] {
-      def apply(left: GenTraversable[E]): MatchResult = {
-        val result = new OnlyContainMatcher(right, equality).apply(left)
-        MatchResult(result.matches, result.failureMessage, result.negatedFailureMessage)
-      }
-    }
-  
-  /**
-   * This method enables the following syntax:
-   *
-   * <pre class="stHighlight">
-   * Array(1, 2, 3) should (contain inOrderOnly (1, 2, 3) and contain theSameElementsAs List(1, 2, 3))
-   *                                ^
-   * </pre>
-   */
-  def oldInOrderOnly[E](right: E*)(implicit equality: Equality[E]): Matcher[GenTraversable[E]] = 
-    new Matcher[GenTraversable[E]] {
-      def apply(left: GenTraversable[E]): MatchResult = {
-        val result = new InOrderOnlyContainMatcher(right, equality).apply(left)
-        MatchResult(result.matches, result.failureMessage, result.negatedFailureMessage)
-      }
-    }
-  
-  /**
-   * This method enables the following syntax:
-   *
-   * <pre class="stHighlight">
-   * Array(1, 2, 3) should (contain noneOf (7, 8, 9) and contain theSameElementsAs List(1, 2, 3))
-   *                                ^
-   * </pre>
-   */
-  def oldNoneOf[E](right: E*)(implicit equality: Equality[E]): Matcher[GenTraversable[E]] = 
-    new Matcher[GenTraversable[E]] {
-      def apply(left: GenTraversable[E]): MatchResult = {
-        val result = new NoneOfContainMatcher(right, equality).apply(left)
-        MatchResult(result.matches, result.failureMessage, result.negatedFailureMessage)
-      }
     }
   
   /**

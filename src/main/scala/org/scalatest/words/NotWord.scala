@@ -1093,22 +1093,6 @@ final class NotWord {
   }
   
   /**
-   * This method enables the following syntax:
-   *
-   * <pre class="stHighlight">
-   * collection should (not contain theSameElementsInOrderAs List(8, 1, 2) and contain theSameElementsAs List(3, 2, 1))
-   *                        ^
-   * </pre>
-   */
-  def oldContain[E](right: ContainMatcher[E]): Matcher[GenTraversable[E]] = 
-    new Matcher[GenTraversable[E]] {
-      def apply(left: GenTraversable[E]): MatchResult = {
-        val result = right(left)
-        MatchResult(!result.matches, result.negatedFailureMessage, result.failureMessage)
-      }
-    }
-  
-  /**
    * This method enables the following syntax: 
    *
    * <pre class="stHighlight">
