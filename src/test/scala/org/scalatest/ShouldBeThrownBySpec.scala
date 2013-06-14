@@ -27,6 +27,9 @@ class ShouldBeThrownBySpec extends Spec with Matchers {
     
   def wrongException(expectedClz: Class[_], actualClz: Class[_]): String = 
     "Expected exception " + expectedClz.getName + " to be thrown, but " + actualClz.getName + " was thrown."
+    
+  def noExceptionExpected(clz: Class[_]): String = 
+    "No exception is expected, but " + clz.getName + " is thrown."
   
   object `a [Exception] should` {
     
@@ -121,6 +124,26 @@ class ShouldBeThrownBySpec extends Spec with Matchers {
       assert(e.message === Some(wrongException(classOf[RuntimeException], classOf[FileNotFoundException])))
       assert(e.failedCodeFileName === Some(fileName))
       assert(e.failedCodeLineNumber === Some(thisLineNumber - 7))
+    }
+  }
+  
+  object `noException should` {
+    
+    def `do nothing when no exception is thrown from the provided code` {
+      noException should be thrownBy {
+        assert(1 === 1)
+      }
+    }
+    
+    def `throw new TestFailedException with correct message and stack depth when provided code produces exception` {
+      val e = intercept[TestFailedException] {
+        noException should be thrownBy {
+          throw new RuntimeException("purposely")
+        }
+      }
+      assert(e.message === Some(noExceptionExpected(classOf[RuntimeException])))
+      assert(e.failedCodeFileName === Some(fileName))
+      assert(e.failedCodeLineNumber === Some(thisLineNumber - 6))
     }
   }
   
