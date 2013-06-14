@@ -33,7 +33,6 @@ import org.scalatest.words.HaveWord
 import org.scalatest.words.BeWord
 import org.scalatest.words.NotWord
 import org.scalatest.words.ContainWord
-import org.scalatest.words.NewContainWord
 import org.scalatest.words.ResultOfLengthWordApplication
 import org.scalatest.words.ResultOfSizeWordApplication
 import org.scalatest.words.ResultOfLessThanComparison
@@ -622,7 +621,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
    *
    * @author Bill Venners
    */
-  final class AndContainWord extends AndNewContainWord {
+  final class AndContainWord {
 
     /**
      * This method enables the following syntax:
@@ -675,25 +674,6 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def an[E](anMatcher: AnMatcher[E]): Matcher[T with GenTraversable[E]] = 
       and(MatcherWords.contain.an(anMatcher))
-  }
-  
-  /**
-   * This method enables the following syntax:
-   *
-   * <pre class="stHighlight">
-   * Map("one" -&gt; 1, "two" -&gt; 2) should (contain key ("two") and contain key ("one"))
-   *                                                               ^ 
-   * </pre>
-   */
-  def and(containWord: ContainWord): AndContainWord = new AndContainWord
-
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * @author Bill Venners
-   */
-  class AndNewContainWord {
 
     /**
      * This method enables the following syntax:
@@ -803,8 +783,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
    *                                                               ^ 
    * </pre>
    */
-  def and(containWord: NewContainWord): AndNewContainWord = new AndNewContainWord
-  
+  def and(containWord: ContainWord): AndContainWord = new AndContainWord
+
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
    * the matchers DSL.
@@ -1681,7 +1661,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
    *
    * @author Bill Venners
    */
-  final class OrContainWord extends OrNewContainWord {
+  final class OrContainWord {
 
     /**
      * This method enables the following syntax:
@@ -1734,25 +1714,6 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def an[E](anMatcher: AnMatcher[E]): Matcher[T with GenTraversable[E]] = 
       or(MatcherWords.contain.an(anMatcher))
-  }
-
-  /**
-   * This method enables the following syntax:
-   *
-   * <pre class="stHighlight">
-   * Map("one" -&gt; 1, "two" -&gt; 2) should (contain value (7) or contain value (1))
-   *                                                       ^
-   * </pre>
-   */
-  def or(containWord: ContainWord): OrContainWord = new OrContainWord
-  
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * @author Bill Venners
-   */
-  class OrNewContainWord {
 
     /**
      * This method enables the following syntax:
@@ -1862,8 +1823,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
    *                                                       ^
    * </pre>
    */
-  def or(containWord: NewContainWord): OrNewContainWord = new OrNewContainWord
-
+  def or(containWord: ContainWord): OrContainWord = new OrContainWord
+  
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
    * the matchers DSL.

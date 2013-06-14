@@ -1426,7 +1426,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    *
    * @author Bill Venners
    */
-  final class ResultOfContainWordForMap[K, V, L[_, _] <: scala.collection.GenMap[_, _]](val left: scala.collection.GenMap[K, V], val shouldBeTrue: Boolean) extends ResultOfNewContainWord[L[K, V]](left.asInstanceOf[L[K, V]]) with ContainMethods[(K, V)] {
+  final class ResultOfContainWordForMap[K, V, L[_, _] <: scala.collection.GenMap[_, _]](val left: scala.collection.GenMap[K, V], val shouldBeTrue: Boolean) extends ResultOfContainWord[L[K, V]](left.asInstanceOf[L[K, V]]) with ContainMethods[(K, V)] {
 
     /**
      * This method enables the following syntax:
@@ -1472,7 +1472,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    *
    * @author Bill Venners
    */
-  final class ResultOfContainWordForJavaMap[K, V, L[_, _] <: java.util.Map[_, _]](left: L[K, V], shouldBeTrue: Boolean) extends ResultOfNewContainWord[L[K, V]](left) {
+  final class ResultOfContainWordForJavaMap[K, V, L[_, _] <: java.util.Map[_, _]](left: L[K, V], shouldBeTrue: Boolean) extends ResultOfContainWord[L[K, V]](left) {
 
     /**
      * This method enables the following syntax (<code>javaMap</code> is a <code>java.util.Map</code>):
@@ -2688,9 +2688,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    *
    * @author Bill Venners
    */
-  class ResultOfContainWordForTraversable[E, L[_] <: scala.collection.GenTraversable[_]](val left: scala.collection.GenTraversable[E], val shouldBeTrue: Boolean = true) extends ResultOfNewContainWord[L[E]](left.asInstanceOf[L[E]]) with ContainMethods[E]
+  class ResultOfContainWordForTraversable[E, L[_] <: scala.collection.GenTraversable[_]](val left: scala.collection.GenTraversable[E], val shouldBeTrue: Boolean = true) extends ResultOfContainWord[L[E]](left.asInstanceOf[L[E]]) with ContainMethods[E]
 
-  class ResultOfContainWordForArray[E](val left: Array[E], val shouldBeTrue: Boolean = true) extends ResultOfNewContainWord[Array[E]](left) {
+  class ResultOfContainWordForArray[E](val left: Array[E], val shouldBeTrue: Boolean = true) extends ResultOfContainWord[Array[E]](left) {
 
     /**
      * This method enables the following syntax (positiveNumber is a <code>AMatcher</code>):
@@ -2741,7 +2741,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    *
    * @author Bill Venners
    */
-  final class ResultOfContainWordForJavaCollection[E, L[_] <: java.util.Collection[_]](left: L[E], shouldBeTrue: Boolean) extends ResultOfNewContainWord[L[E]](left) {
+  final class ResultOfContainWordForJavaCollection[E, L[_] <: java.util.Collection[_]](left: L[E], shouldBeTrue: Boolean) extends ResultOfContainWord[L[E]](left) {
     
     /**
      * This method enables the following syntax (positiveNumber is a <code>AMatcher</code>):
@@ -4089,7 +4089,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    * @author Bill Venners
    * @author Chee Seng
    */
-  sealed class ResultOfNewContainWordForCollectedAny[T](collected: Collected, xs: scala.collection.GenTraversable[T], shouldBeTrue: Boolean) {
+  sealed class ResultOfContainWordForCollectedAny[T](collected: Collected, xs: scala.collection.GenTraversable[T], shouldBeTrue: Boolean) {
   
     /**
      * This method enables the following syntax: 
@@ -4480,7 +4480,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfContainWordForCollectedArray[T](collected: Collected, xs: scala.collection.GenTraversable[Array[T]], shouldBeTrue: Boolean) extends ResultOfNewContainWordForCollectedAny[Array[T]](collected, xs, shouldBeTrue) {
+  final class ResultOfContainWordForCollectedArray[T](collected: Collected, xs: scala.collection.GenTraversable[Array[T]], shouldBeTrue: Boolean) extends ResultOfContainWordForCollectedAny[Array[T]](collected, xs, shouldBeTrue) {
   
 // TODO: This apply method looks very wrong
     /**
@@ -5066,8 +5066,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *    ^
      * </pre>
      */
-    def should(containWord: ContainWord): ResultOfNewContainWordForCollectedAny[T] = {
-      new ResultOfNewContainWordForCollectedAny(collected, xs, true)
+    def should(containWord: ContainWord): ResultOfContainWordForCollectedAny[T] = {
+      new ResultOfContainWordForCollectedAny(collected, xs, true)
     }
   }
   
@@ -5483,7 +5483,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfContainWordForCollectedGenTraversable[E, C[_] <: scala.collection.GenTraversable[_]](collected: Collected, xs: scala.collection.GenTraversable[C[E]], shouldBeTrue: Boolean) extends ResultOfNewContainWordForCollectedAny[C[E]](collected, xs, shouldBeTrue)
+  final class ResultOfContainWordForCollectedGenTraversable[E, C[_] <: scala.collection.GenTraversable[_]](collected: Collected, xs: scala.collection.GenTraversable[C[E]], shouldBeTrue: Boolean) extends ResultOfContainWordForCollectedAny[C[E]](collected, xs, shouldBeTrue)
   
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="InspectorsMatchers.html"><code>InspectorsMatchers</code></a> for an overview of
@@ -5566,7 +5566,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfContainWordForCollectedGenMap[K, V](collected: Collected, xs: scala.collection.GenTraversable[scala.collection.GenMap[K, V]], shouldBeTrue: Boolean) extends ResultOfNewContainWordForCollectedAny[scala.collection.GenMap[K, V]](collected, xs, shouldBeTrue) {
+  final class ResultOfContainWordForCollectedGenMap[K, V](collected: Collected, xs: scala.collection.GenTraversable[scala.collection.GenMap[K, V]], shouldBeTrue: Boolean) extends ResultOfContainWordForCollectedAny[scala.collection.GenMap[K, V]](collected, xs, shouldBeTrue) {
     
     /**
      * This method enables the following syntax:
@@ -6203,8 +6203,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *    ^
      * </pre>
      */
-    def should(containWord: ContainWord): ResultOfNewContainWord[T] = {
-      new ResultOfNewContainWord(left, true)
+    def should(containWord: ContainWord): ResultOfContainWord[T] = {
+      new ResultOfContainWord(left, true)
     }
   }
 

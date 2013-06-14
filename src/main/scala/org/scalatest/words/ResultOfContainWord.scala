@@ -28,7 +28,7 @@ import org.scalatest.UnquotedString
  *
  * @author Bill Venners
  */
-class ResultOfNewContainWord[L](left: L, shouldBeTrue: Boolean = true) {
+class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
 
   /**
    * This method enables the following syntax: 

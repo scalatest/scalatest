@@ -22,6 +22,7 @@ import org.scalatest.FailureMessages
 import org.scalatest.UnquotedString
 import org.scalautils.Equality
 import org.scalatest.enablers.Containing
+import org.scalatest.enablers.Aggregating
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -29,7 +30,7 @@ import org.scalatest.enablers.Containing
  *
  * @author Bill Venners
  */
-final class ContainWord extends NewContainWord {
+final class ContainWord {
 
   /**
    * This method enables the following syntax:
@@ -169,4 +170,148 @@ final class ContainWord extends NewContainWord {
         )
       }
     }
+
+  def oneOf(right: Any*): MatcherFactory1[Any, Containing] = {
+    new MatcherFactory1[Any, Containing] {
+      def matcher[T](implicit containing: Containing[T]): Matcher[T] = {
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+            MatchResult(
+              containing.containsOneOf(left, right),
+              FailureMessages("didNotContainOneOfElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+              FailureMessages("containedOneOfElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+            )
+          }
+        }
+      }
+    }
+  }
+
+  def atLeastOneOf(right: Any*): MatcherFactory1[Any, Aggregating] = {
+    new MatcherFactory1[Any, Aggregating] {
+      def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+            MatchResult(
+              aggregating.containsAtLeastOneOf(left, right),
+              FailureMessages("didNotContainAtLeastOneOf", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+              FailureMessages("containedAtLeastOneOf", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+            )
+          }
+        }
+      }
+    }
+  }
+  
+  def noneOf(right: Any*): MatcherFactory1[Any, Containing] = {
+    new MatcherFactory1[Any, Containing] {
+      def matcher[T](implicit containing: Containing[T]): Matcher[T] = {
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+            MatchResult(
+              containing.containsNoneOf(left, right),
+              FailureMessages("containedOneOfElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+              FailureMessages("didNotContainOneOfElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+            )
+          }
+        }
+      }
+    }
+  }
+  
+  def theSameElementsAs(right: GenTraversable[Any]): MatcherFactory1[Any, Aggregating] = {
+    new MatcherFactory1[Any, Aggregating] {
+      def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+            MatchResult(
+              aggregating.containsTheSameElementsAs(left, right),
+              FailureMessages("didNotContainSameElements", left, right),
+              FailureMessages("containedSameElements", left, right)
+            )
+          }
+        }
+      }
+    }
+  }
+  
+  def theSameElementsInOrderAs(right: GenTraversable[Any]): MatcherFactory1[Any, Aggregating] = {
+    new MatcherFactory1[Any, Aggregating] {
+      def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+            MatchResult(
+              aggregating.containsTheSameElementsInOrderAs(left, right),
+              FailureMessages("didNotContainSameElementsInOrder", left, right),
+              FailureMessages("containedSameElementsInOrder", left, right)
+            )
+          }
+        }
+      }
+    }
+  }
+  
+  def only(right: Any*): MatcherFactory1[Any, Aggregating] = {
+    new MatcherFactory1[Any, Aggregating] {
+      def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+            MatchResult(
+              aggregating.containsOnly(left, right),
+              FailureMessages("didNotContainOnlyElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+              FailureMessages("containedOnlyElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+            )
+          }
+        }
+      }
+    }
+  }
+
+  def inOrderOnly(right: Any*): MatcherFactory1[Any, Aggregating] = {
+    new MatcherFactory1[Any, Aggregating] {
+      def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+            MatchResult(
+              aggregating.containsInOrderOnly(left, right),
+              FailureMessages("didNotContainInOrderOnlyElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+              FailureMessages("containedInOrderOnlyElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+            )
+          }
+        }
+      }
+    }
+  }
+  
+  def allOf(right: Any*): MatcherFactory1[Any, Aggregating] = {
+    new MatcherFactory1[Any, Aggregating] {
+      def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+            MatchResult(
+              aggregating.containsAllOf(left, right),
+              FailureMessages("didNotContainAllOfElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+              FailureMessages("containedAllOfElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+            )
+          }
+        }
+      }
+    }
+  }
+  
+  def inOrder(right: Any*): MatcherFactory1[Any, Aggregating] = {
+    new MatcherFactory1[Any, Aggregating] {
+      def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+            MatchResult(
+              aggregating.containsInOrder(left, right),
+              FailureMessages("didNotContainAllOfElementsInOrder", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+              FailureMessages("containedAllOfElementsInOrder", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+            )
+          }
+        }
+      }
+    }
+  }
 }
