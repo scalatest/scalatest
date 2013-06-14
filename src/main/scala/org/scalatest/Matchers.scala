@@ -5274,6 +5274,39 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   def atMost[K, V](num: Int, xs: scala.collection.GenTraversable[scala.collection.GenMap[K, V]]) =
     new ResultOfCollectedGenMap(AtMostCollected(num), xs)
 
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * a [RuntimeException] should be thrownBy { ... }
+   * ^
+   * </pre>
+   */
+  def a[T <: Throwable]: ResultOfAThrowableApplication[T] = 
+    new ResultOfAThrowableApplication[T]
+
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * an [Exception] should be thrownBy { ... }
+   * ^
+   * </pre>
+   */
+  def an[T <: Throwable]: ResultOfAnThrowableApplication[T] = 
+    new ResultOfAnThrowableApplication[T]
+
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * the [FileNotFoundException] should be thrownBy { ... }
+   * ^
+   * </pre>
+   */
+  def the[T <: Throwable]: ResultOfTheThrowableApplication[T] = 
+    new ResultOfTheThrowableApplication[T]
+
   // This is where ShouldMatchers.scala started 
 
   private object ShouldMethodHelper {
