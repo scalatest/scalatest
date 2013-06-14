@@ -60,7 +60,8 @@ private[scalatest] trait DocSpecLike extends Suite with Informing { thisSuite =>
         buf += SuiteSnippet(suiteIt.next)
         buf += MarkupSnippet(stringIt.next)
       }
-      buf.toVector
+      // buf.toVector
+      Vector.empty ++ buf // While supporting 2.9
     }
   }
 

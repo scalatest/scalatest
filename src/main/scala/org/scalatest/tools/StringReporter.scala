@@ -205,7 +205,7 @@ private[scalatest] object StringReporter {
     duration: Option[Long] = None
   ): Vector[Fragment] = {
     val lines: Vector[String] = stringToPrintWhenNoError(resourceName, formatter, suiteName, testName, message, presentAllDurations, presentUnformatted,
-      duration).toVector
+      duration)
 
     lines map (new Fragment(_, ansiColor))
   }
@@ -227,7 +227,7 @@ private[scalatest] object StringReporter {
   ): Vector[Fragment] = {
 
     val lines: Vector[String] = stringsToPrintOnError(noteResourceName, errorResourceName, message, throwable, formatter, suiteName, testName, duration,
-        presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces).toVector
+        presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
 
     lines map (new Fragment(_, ansiColor))
   }
@@ -437,7 +437,7 @@ private[scalatest] object StringReporter {
     presentAllDurations: Boolean,
     presentShortStackTraces: Boolean,
     presentFullStackTraces: Boolean
-  ): List[String] = {
+  ): Vector[String] = {
 
     def genFormattedText = {
       formatter match {
@@ -558,10 +558,12 @@ private[scalatest] object StringReporter {
         case None => List()
       }
 
-    if (possiblyEmptyMessageWithPossibleLineNumber.isEmpty)
-      stringToPrintWithPossibleDuration :: getStackTrace(throwable)
-    else
-      stringToPrintWithPossibleDuration :: possiblyEmptyMessageWithPossibleLineNumber.split("\n").toList.map(whiteSpace + _) ::: getStackTrace(throwable)
+    val resultAsList =
+      if (possiblyEmptyMessageWithPossibleLineNumber.isEmpty)
+        stringToPrintWithPossibleDuration :: getStackTrace(throwable)
+      else
+        stringToPrintWithPossibleDuration :: possiblyEmptyMessageWithPossibleLineNumber.split("\n").toList.map(whiteSpace + _) ::: getStackTrace(throwable)
+    Vector.empty ++ resultAsList
   }
 
   def withPossibleLineNumber(stringToPrint: String, throwable: Option[Throwable]): String = {
@@ -584,7 +586,8 @@ private[scalatest] object StringReporter {
     presentShortStackTraces: Boolean,
     presentFullStackTraces: Boolean
   ): Vector[Fragment] = {
-    (for (e <- recordedEvents.toVector) yield {
+    // (for (e <- recordedEvents.toVector) yield
+    (for (e <- Vector.empty ++ recordedEvents) yield { // While supporting 2.9, can't use toVector
       e match {
         case ipEvent: InfoProvided =>
           infoProvidedFragments(ipEvent, ansiColor, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
@@ -621,7 +624,7 @@ private[scalatest] object StringReporter {
         presentAllDurations,
         presentShortStackTraces,
         presentFullStackTraces
-      ).toVector
+      )
 
     lines map (new Fragment(_, ansiColor))
     // for (line <- lines) printPossiblyInColor(line, ansiColor)
@@ -638,18 +641,19 @@ private[scalatest] object StringReporter {
         case None => (None, None)
       }
 
-    val stringToPrint: Option[String] = stringToPrintWhenMarkup(event.formatter, suiteName, testName, event.text, presentUnformatted)
+    val stringToPrint: Vector[String] = stringToPrintWhenMarkup(event.formatter, suiteName, testName, event.text, presentUnformatted)
 
-    stringToPrint.toVector map (new Fragment(_, ansiColor))
+    stringToPrint map (new Fragment(_, ansiColor))
   }
 
+  // Will return a Vector that is either empty or contains one string
   def stringToPrintWhenMarkup(
     formatter: Option[Formatter],
     suiteName: Option[String],
     testName: Option[String],
     text: String,
     presentUnformatted: Boolean
-  ): Option[String] = {
+  ): Vector[String] = {
 
     def genUnformattedText = {
       val prefix =
@@ -671,11 +675,16 @@ private[scalatest] object StringReporter {
       }
     }
 
-    if (presentUnformatted) genUnformattedText
-    else                    genFormattedText
+    val resultAsOption: Option[String] =
+      if (presentUnformatted) genUnformattedText
+      else                    genFormattedText
+
+    // resultAsOption.toVector
+    Vector.empty ++ resultAsOption // While supporting 2.9 can't use toVector
   }
 
-  def stringToPrintWhenNoError(resourceName: String, formatter: Option[Formatter], suiteName: String, testName: Option[String], message: Option[String], presentAllDurations: Boolean, presentUnformatted: Boolean, duration: Option[Long] = None): Option[String] = {
+  // Will return a Vector that is either empty or contains one string
+  def stringToPrintWhenNoError(resourceName: String, formatter: Option[Formatter], suiteName: String, testName: Option[String], message: Option[String], presentAllDurations: Boolean, presentUnformatted: Boolean, duration: Option[Long] = None): Vector[String] = {
     def genUnformattedText = {
         val arg =
           testName match {
@@ -714,8 +723,12 @@ private[scalatest] object StringReporter {
       }
     }
 
-    if (presentUnformatted) genUnformattedText
-    else                    genFormattedText
+    val resultAsOption =
+      if (presentUnformatted) genUnformattedText
+      else                    genFormattedText
+
+    // resultAsOption.toVector
+    Vector.empty ++ resultAsOption // While supporting 2.9 can't use toVector
   }
 
   def fragmentsForEvent(
@@ -760,7 +773,8 @@ private[scalatest] object StringReporter {
           true,
           duration,
           summary,
-          reminderEvents.toVector,
+          // reminderEvents.toVector,
+          Vector.empty ++ reminderEvents, // While supporting 2.9, can't use toVector
           presentAllDurations,
           presentReminder,
           presentReminderWithShortStackTraces,
@@ -774,7 +788,8 @@ private[scalatest] object StringReporter {
           false,
           duration,
           summary,
-          reminderEvents.toVector,
+          // reminderEvents.toVector,
+          Vector.empty ++ reminderEvents, // While supporting 2.9, can't use toVector
           presentAllDurations,
           presentReminder,
           presentReminderWithShortStackTraces,
@@ -800,7 +815,7 @@ private[scalatest] object StringReporter {
         val lines = stringsToPrintOnError("abortedNote", "suiteAborted", message, throwable, formatter, Some(suiteName), None, duration,
             presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
 
-        for (line <- lines.toVector) yield new Fragment(line, AnsiRed)
+        for (line <- lines) yield new Fragment(line, AnsiRed)
 
       case TestStarting(ordinal, suiteName, suiteId, suiteClassName, testName, testText, formatter, location, rerunnable, payload, threadName, timeStamp) =>
 
@@ -819,15 +834,15 @@ private[scalatest] object StringReporter {
 
         val stringToPrint =
           if (presentUnformatted)
-            Some(Resources("testIgnored", suiteName + ": " + testName))
+            Vector(Resources("testIgnored", suiteName + ": " + testName))
           else
             formatter match {
-              case Some(IndentedText(formattedText, _, _)) => Some(Resources("specTextAndNote", formattedText, Resources("ignoredNote")))
-              case Some(MotionToSuppress) => None
-              case _ => Some(Resources("testIgnored", suiteName + ": " + testName))
+              case Some(IndentedText(formattedText, _, _)) => Vector(Resources("specTextAndNote", formattedText, Resources("ignoredNote")))
+              case Some(MotionToSuppress) => Vector.empty
+              case _ => Vector(Resources("testIgnored", suiteName + ": " + testName))
             }
  
-        stringToPrint.toVector map (new Fragment(_, AnsiYellow))
+        stringToPrint map (new Fragment(_, AnsiYellow))
 
       case TestFailed(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, throwable, duration, formatter, location, rerunnable, payload, threadName, timeStamp) =>
 
@@ -865,14 +880,14 @@ private[scalatest] object StringReporter {
       case ScopePending(ordinal, message, nameInfo, formatter, location, payload, threadName, timeStamp) => 
         val stringToPrint =
           if (presentUnformatted)
-            Some(Resources("scopePending", nameInfo.suiteName + ": " + message))
+            Vector(Resources("scopePending", nameInfo.suiteName + ": " + message))
           else
             formatter match {
-              case Some(IndentedText(formattedText, _, _)) => Some(Resources("specTextAndNote", formattedText, Resources("pendingNote")))
-              case Some(MotionToSuppress) => None
-              case _ => Some(Resources("scopePending", nameInfo.suiteName + ": " + message))
+              case Some(IndentedText(formattedText, _, _)) => Vector(Resources("specTextAndNote", formattedText, Resources("pendingNote")))
+              case Some(MotionToSuppress) => Vector.empty
+              case _ => Vector(Resources("scopePending", nameInfo.suiteName + ": " + message))
             }
-        stringToPrint.toVector map (new Fragment(_, AnsiYellow))
+        stringToPrint map (new Fragment(_, AnsiYellow))
         
       case mpEvent: MarkupProvided =>
 
@@ -882,15 +897,15 @@ private[scalatest] object StringReporter {
 
         val stringToPrint =
           if (presentUnformatted)
-            Some(Resources("testPending", suiteName + ": " + testName))
+            Vector(Resources("testPending", suiteName + ": " + testName))
           else
             formatter match {
-              case Some(IndentedText(formattedText, _, _)) => Some(Resources("specTextAndNote", formattedText, Resources("pendingNote")))
-              case Some(MotionToSuppress) => None
-              case _ => Some(Resources("testPending", suiteName + ": " + testName))
+              case Some(IndentedText(formattedText, _, _)) => Vector(Resources("specTextAndNote", formattedText, Resources("pendingNote")))
+              case Some(MotionToSuppress) => Vector.empty
+              case _ => Vector(Resources("testPending", suiteName + ": " + testName))
             }
 
-        val tpf = stringToPrint.toVector map (new Fragment(_, AnsiYellow))
+        val tpf = stringToPrint map (new Fragment(_, AnsiYellow))
 
         val ref = recordedEventFragments(recordedEvents, AnsiYellow, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
 
