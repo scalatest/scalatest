@@ -3490,9 +3490,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                    ^
      * </pre>
      */
-    def be(sortedWord: SortedWord)(implicit sortable: Sortable[T]) {
+    def be(sortedWord: SortedWord)(implicit sequencing: Sequencing[T]) {
       doCollected(collected, xs, "be", 1) { e => 
-        if (sortable.isSorted(e) != shouldBeTrue) {
+        if (sequencing.isSorted(e) != shouldBeTrue) {
           throw newTestFailedException(
             FailureMessages(if (shouldBeTrue) "wasNotSorted" else "wasSorted", e), 
             None, 
@@ -4592,9 +4592,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def shouldBe(sortedWord: SortedWord)(implicit sortable: Sortable[T]) {
+    def shouldBe(sortedWord: SortedWord)(implicit sequencing: Sequencing[T]) {
       doCollected(collected, xs, "shouldBe", 1) { e =>
-        if (!sortable.isSorted(e))
+        if (!sequencing.isSorted(e))
           throw newTestFailedException(FailureMessages("wasNotSorted", e), None, 6)
       }
     }
@@ -6020,8 +6020,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def shouldBe(right: SortedWord)(implicit sortable: Sortable[T]) {
-      if (!sortable.isSorted(left))
+    def shouldBe(right: SortedWord)(implicit sequencing: Sequencing[T]) {
+      if (!sequencing.isSorted(left))
         throw newTestFailedException(FailureMessages("wasNotSorted", left))
     }
 

@@ -22,7 +22,7 @@ import org.scalatest.UnquotedString
 import org.scalatest.Suite
 import org.scalatest.Assertions.areEqualComparingArraysStructurally
 import org.scalatest.MatchersHelper.matchSymbolToPredicateMethod
-import org.scalatest.enablers.Sortable
+import org.scalatest.enablers.Sequencing
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="ShouldMatchers.html"><code>ShouldMatchers</code></a> or <a href="MustMatchers.html"><code>MustMatchers</code></a> for an overview of
@@ -515,14 +515,14 @@ final class BeWord {
    *                          ^
    * </pre>
    */
-  def apply(right: SortedWord): MatcherFactory1[Any, Sortable] = 
-    new MatcherFactory1[Any, Sortable] {
-      def matcher[T <: Any : Sortable]: Matcher[T] = 
+  def apply(right: SortedWord): MatcherFactory1[Any, Sequencing] = 
+    new MatcherFactory1[Any, Sequencing] {
+      def matcher[T <: Any : Sequencing]: Matcher[T] = 
         new Matcher[T] {
           def apply(left: T): MatchResult = {
-            val sortable = implicitly[Sortable[T]]
+            val sequencing = implicitly[Sequencing[T]]
             MatchResult(
-              sortable.isSorted(left), 
+              sequencing.isSorted(left), 
               FailureMessages("wasNotSorted", left), 
               FailureMessages("wasSorted", left)
             )

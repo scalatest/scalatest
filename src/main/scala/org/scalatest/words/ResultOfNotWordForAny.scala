@@ -634,8 +634,8 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
    *                  ^
    * </pre>
    */
-  def be[U](sortedWord: SortedWord)(implicit sortable: Sortable[T]) {
-    if (sortable.isSorted(left) != shouldBeTrue)
+  def be[U](sortedWord: SortedWord)(implicit sequencing: Sequencing[T]) {
+    if (sequencing.isSorted(left) != shouldBeTrue)
       throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "wasNotSorted" else "wasSorted", 

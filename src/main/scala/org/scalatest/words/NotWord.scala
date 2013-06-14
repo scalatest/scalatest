@@ -635,7 +635,7 @@ final class NotWord {
      *                      ^
      * </pre>
      */
-  def be[T <: Any](sortedWord: SortedWord): MatcherFactory1[Any, Sortable] =
+  def be[T <: Any](sortedWord: SortedWord): MatcherFactory1[Any, Sequencing] =
     apply(MatcherWords.be(sortedWord))
 
   /**
