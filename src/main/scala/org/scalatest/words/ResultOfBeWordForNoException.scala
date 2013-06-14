@@ -15,8 +15,7 @@
  */
 package org.scalatest.words
 
-import org.scalatest.Resources
-import org.scalatest.Assertions.newAssertionFailedException
+import org.scalatest.Assertions.checkNoException
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -35,15 +34,7 @@ final class ResultOfBeWordForNoException {
    * </pre>
    */
   def thrownBy(fun: => Unit) {
-    val caught = try {
-      fun
-    }
-    catch {
-      case u: Throwable => {
-        val message = Resources("noExceptionExpected", u.getClass.getName)
-        throw newAssertionFailedException(Some(message), Some(u), 4)
-      }
-    }
+    checkNoException(fun)
   }
   
 }

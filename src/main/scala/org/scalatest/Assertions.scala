@@ -1185,4 +1185,15 @@ object Assertions extends Assertions {
       case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase iSAssignableFrom succeeded above
     }
   }
+  private[scalatest] def checkNoException(fun: => Any) {
+    val caught = try {
+      fun
+    }
+    catch {
+      case u: Throwable => {
+        val message = Resources("noExceptionExpected", u.getClass.getName)
+        throw newAssertionFailedException(Some(message), Some(u), 4)
+      }
+    }
+  }
 }

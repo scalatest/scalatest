@@ -47,6 +47,7 @@ import MatchersHelper.endWithRegexWithGroups
 import MatchersHelper.includeRegexWithGroups
 import org.scalautils.NormalizingEquality
 import Assertions.checkExpectedException
+import Assertions.checkNoException
 
 // TODO: drop generic support for be as an equality comparison, in favor of specific ones.
 // TODO: mention on JUnit and TestNG docs that you can now mix in ShouldMatchers or MustMatchers
@@ -6086,6 +6087,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def shouldThrow[T <: Throwable](anThrowable: ResultOfAnThrowableApplication[T])(implicit manifest: Manifest[T]) {
       checkExpectedException(fun, "anWrongException", "anExceptionExpected", 5)
+    }
+
+    def shouldThrow(noException: NoExceptionWord) {
+      checkNoException(fun)
     }
   }
 
