@@ -28,4 +28,4 @@ import scala.annotation.tailrec
  *
  * @author Bill Venners
  */
-class ResultOfNewTheSameElementsAsApplication(val right: scala.collection.GenTraversable[_])
+class ResultOfTheSameElementsInOrderAsApplication(val right: scala.collection.GenTraversable[_])

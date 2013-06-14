@@ -60,15 +60,15 @@ import org.scalatest.words.ResultOfKeyWordApplication
 import org.scalatest.words.ResultOfValueWordApplication
 import org.scalatest.words.RegexWithGroups
 import org.scalatest.words.ResultOfDefinedAt
-import org.scalatest.words.ResultOfNewOneOfApplication
+import org.scalatest.words.ResultOfOneOfApplication
 import org.scalatest.words.ResultOfAtLeastOneOfApplication
-import org.scalatest.words.ResultOfNewNoneOfApplication
-import org.scalatest.words.ResultOfNewTheSameElementsAsApplication
-import org.scalatest.words.ResultOfNewTheSameElementsInOrderAsApplication
-import org.scalatest.words.ResultOfNewOnlyApplication
-import org.scalatest.words.ResultOfNewAllOfApplication
-import org.scalatest.words.ResultOfNewInOrderOnlyApplication
-import org.scalatest.words.ResultOfNewInOrderApplication
+import org.scalatest.words.ResultOfNoneOfApplication
+import org.scalatest.words.ResultOfTheSameElementsAsApplication
+import org.scalatest.words.ResultOfTheSameElementsInOrderAsApplication
+import org.scalatest.words.ResultOfOnlyApplication
+import org.scalatest.words.ResultOfAllOfApplication
+import org.scalatest.words.ResultOfInOrderOnlyApplication
+import org.scalatest.words.ResultOfInOrderApplication
 import org.scalatest.words.SortedWord
 
 /**
@@ -1149,7 +1149,7 @@ $endif$
      *                          ^
      * </pre>
      */
-    def contain(right: ResultOfNewOneOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
+    def contain(right: ResultOfOneOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
       thisMatcherFactory.and(MatcherWords.not.contain(right))
     
     /**
@@ -1171,7 +1171,7 @@ $endif$
      *                          ^
      * </pre>
      */
-    def contain(right: ResultOfNewNoneOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
+    def contain(right: ResultOfNoneOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
       thisMatcherFactory.and(MatcherWords.not.contain(right))
     
     /**
@@ -1182,7 +1182,7 @@ $endif$
      *                          ^
      * </pre>
      */
-    def contain(right: ResultOfNewTheSameElementsAsApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+    def contain(right: ResultOfTheSameElementsAsApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
       thisMatcherFactory.and(MatcherWords.not.contain(right))
     
     /**
@@ -1193,7 +1193,7 @@ $endif$
      *                          ^
      * </pre>
      */
-    def contain(right: ResultOfNewTheSameElementsInOrderAsApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+    def contain(right: ResultOfTheSameElementsInOrderAsApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
       thisMatcherFactory.and(MatcherWords.not.contain(right))
     
     /**
@@ -1204,7 +1204,7 @@ $endif$
      *                          ^
      * </pre>
      */
-    def contain(right: ResultOfNewOnlyApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+    def contain(right: ResultOfOnlyApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
       thisMatcherFactory.and(MatcherWords.not.contain(right))
     
     /**
@@ -1215,7 +1215,7 @@ $endif$
      *                         ^
      * </pre>
      */
-    def contain(right: ResultOfNewInOrderOnlyApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+    def contain(right: ResultOfInOrderOnlyApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
       thisMatcherFactory.and(MatcherWords.not.contain(right))
       
     /**
@@ -1226,7 +1226,7 @@ $endif$
      *                          ^
      * </pre>
      */
-    def contain(right: ResultOfNewAllOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+    def contain(right: ResultOfAllOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
       thisMatcherFactory.and(MatcherWords.not.contain(right))
     
     /**
@@ -1237,7 +1237,7 @@ $endif$
      *                          ^
      * </pre>
      */
-    def contain(right: ResultOfNewInOrderApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+    def contain(right: ResultOfInOrderApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
       thisMatcherFactory.and(MatcherWords.not.contain(right))
       
     /**
@@ -2192,7 +2192,7 @@ $endif$
      *                         ^
      * </pre>
      */
-    def contain(right: ResultOfNewOneOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
+    def contain(right: ResultOfOneOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
       thisMatcherFactory.or(MatcherWords.not.contain(right))
     
     /**
@@ -2214,7 +2214,7 @@ $endif$
      *                         ^
      * </pre>
      */
-    def contain(right: ResultOfNewNoneOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
+    def contain(right: ResultOfNoneOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
       thisMatcherFactory.or(MatcherWords.not.contain(right))
     
     /**
@@ -2225,7 +2225,7 @@ $endif$
      *                         ^
      * </pre>
      */
-    def contain(right: ResultOfNewTheSameElementsAsApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+    def contain(right: ResultOfTheSameElementsAsApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
       thisMatcherFactory.or(MatcherWords.not.contain(right))
     
     /**
@@ -2236,7 +2236,7 @@ $endif$
      *                         ^
      * </pre>
      */
-    def contain(right: ResultOfNewTheSameElementsInOrderAsApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+    def contain(right: ResultOfTheSameElementsInOrderAsApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
       thisMatcherFactory.or(MatcherWords.not.contain(right))
     
     /**
@@ -2247,7 +2247,7 @@ $endif$
      *                         ^
      * </pre>
      */
-    def contain(right: ResultOfNewOnlyApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+    def contain(right: ResultOfOnlyApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
       thisMatcherFactory.or(MatcherWords.not.contain(right))
     
     /**
@@ -2258,7 +2258,7 @@ $endif$
      *                        ^
      * </pre>
      */
-    def contain(right: ResultOfNewInOrderOnlyApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+    def contain(right: ResultOfInOrderOnlyApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
       thisMatcherFactory.or(MatcherWords.not.contain(right))
       
     /**
@@ -2269,7 +2269,7 @@ $endif$
      *                         ^
      * </pre>
      */
-    def contain(right: ResultOfNewAllOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+    def contain(right: ResultOfAllOfApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
       thisMatcherFactory.or(MatcherWords.not.contain(right))
     
     /**
@@ -2280,7 +2280,7 @@ $endif$
      *                         ^
      * </pre>
      */
-    def contain(right: ResultOfNewInOrderApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+    def contain(right: ResultOfInOrderApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
       thisMatcherFactory.or(MatcherWords.not.contain(right))
       
     /**

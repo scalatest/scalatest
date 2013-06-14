@@ -28,4 +28,4 @@ import scala.annotation.tailrec
  *
  * @author Bill Venners
  */
-class ResultOfNewInOrderOnlyApplication(val right: scala.collection.Seq[Any])
+class ResultOfAllOfApplication(val right: scala.collection.Seq[Any])

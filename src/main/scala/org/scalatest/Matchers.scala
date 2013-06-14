@@ -2796,7 +2796,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    *                               ^
    * </pre>
    */
-  def oneOf(xs: Any*) = new ResultOfNewOneOfApplication(xs)
+  def oneOf(xs: Any*) = new ResultOfOneOfApplication(xs)
 
   /**
    * This method enables the following syntax: 
@@ -2816,7 +2816,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    *                               ^
    * </pre>
    */
-  def noneOf(xs: Any*) = new ResultOfNewNoneOfApplication(xs)
+  def noneOf(xs: Any*) = new ResultOfNoneOfApplication(xs)
 
   /**
    * This method enables the following syntax: 
@@ -2826,7 +2826,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    *                               ^
    * </pre>
    */
-  def theSameElementsAs(xs: GenTraversable[_]) = new ResultOfNewTheSameElementsAsApplication(xs)
+  def theSameElementsAs(xs: GenTraversable[_]) = new ResultOfTheSameElementsAsApplication(xs)
   
   /**
    * This method enables the following syntax: 
@@ -2836,7 +2836,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    *                               ^
    * </pre>
    */
-  def theSameElementsInOrderAs(xs: GenTraversable[_]) = new ResultOfNewTheSameElementsInOrderAsApplication(xs)
+  def theSameElementsInOrderAs(xs: GenTraversable[_]) = new ResultOfTheSameElementsInOrderAsApplication(xs)
 
   /**
    * This method enables the following syntax: 
@@ -2846,7 +2846,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    *                               ^
    * </pre>
    */
-  def only(xs: Any*) = new ResultOfNewOnlyApplication(xs)
+  def only(xs: Any*) = new ResultOfOnlyApplication(xs)
   
   /**
    * This method enables the following syntax: 
@@ -2856,7 +2856,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    *                               ^
    * </pre>
    */
-  def inOrderOnly[T](xs: Any*) = new ResultOfNewInOrderOnlyApplication(xs)
+  def inOrderOnly[T](xs: Any*) = new ResultOfInOrderOnlyApplication(xs)
   
   /**
    * This method enables the following syntax: 
@@ -2866,7 +2866,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    *                               ^
    * </pre>
    */
-  def allOf(xs: Any*) = new ResultOfNewAllOfApplication(xs)
+  def allOf(xs: Any*) = new ResultOfAllOfApplication(xs)
   
   /**
    * This method enables the following syntax: 
@@ -2876,7 +2876,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    *                               ^
    * </pre>
    */
-  def inOrder(xs: Any*) = new ResultOfNewInOrderApplication(xs)
+  def inOrder(xs: Any*) = new ResultOfInOrderApplication(xs)
   
   // For safe keeping
   private implicit def nodeToCanonical(node: scala.xml.Node) = new Canonicalizer(node)
@@ -3535,7 +3535,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                     ^
      * </pre>
      */
-    def contain(newOneOf: ResultOfNewOneOfApplication)(implicit containing: Containing[T]) {
+    def contain(newOneOf: ResultOfOneOfApplication)(implicit containing: Containing[T]) {
 
       val right = newOneOf.right
 
@@ -3587,7 +3587,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                     ^
      * </pre>
      */
-    def contain(newNoneOf: ResultOfNewNoneOfApplication)(implicit containing: Containing[T]) {
+    def contain(newNoneOf: ResultOfNoneOfApplication)(implicit containing: Containing[T]) {
 
       val right = newNoneOf.right
 
@@ -3613,7 +3613,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                     ^
      * </pre>
      */
-    def contain(theSameElementsAs: ResultOfNewTheSameElementsAsApplication)(implicit aggregating: Aggregating[T]) {
+    def contain(theSameElementsAs: ResultOfTheSameElementsAsApplication)(implicit aggregating: Aggregating[T]) {
 
       val right = theSameElementsAs.right
 
@@ -3639,7 +3639,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                     ^
      * </pre>
      */
-    def contain(theSameElementsInOrderAs: ResultOfNewTheSameElementsInOrderAsApplication)(implicit aggregating: Aggregating[T]) {
+    def contain(theSameElementsInOrderAs: ResultOfTheSameElementsInOrderAsApplication)(implicit aggregating: Aggregating[T]) {
 
       val right = theSameElementsInOrderAs.right
 
@@ -3665,7 +3665,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                     ^
      * </pre>
      */
-    def contain(only: ResultOfNewOnlyApplication)(implicit aggregating: Aggregating[T]) {
+    def contain(only: ResultOfOnlyApplication)(implicit aggregating: Aggregating[T]) {
 
       val right = only.right
 
@@ -3691,7 +3691,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                     ^
      * </pre>
      */
-    def contain(only: ResultOfNewInOrderOnlyApplication)(implicit aggregating: Aggregating[T]) {
+    def contain(only: ResultOfInOrderOnlyApplication)(implicit aggregating: Aggregating[T]) {
 
       val right = only.right
 
@@ -3717,7 +3717,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                     ^
      * </pre>
      */
-    def contain(only: ResultOfNewAllOfApplication)(implicit aggregating: Aggregating[T]) {
+    def contain(only: ResultOfAllOfApplication)(implicit aggregating: Aggregating[T]) {
 
       val right = only.right
 
@@ -3743,7 +3743,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                     ^
      * </pre>
      */
-    def contain(only: ResultOfNewInOrderApplication)(implicit aggregating: Aggregating[T]) {
+    def contain(only: ResultOfInOrderApplication)(implicit aggregating: Aggregating[T]) {
 
       val right = only.right
 

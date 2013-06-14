@@ -28,5 +28,5 @@ import scala.annotation.tailrec
  *
  * @author Bill Venners
  */
-class ResultOfNewOneOfApplication(val right: scala.collection.Seq[Any])
+class ResultOfOneOfApplication(val right: scala.collection.Seq[Any])
 
