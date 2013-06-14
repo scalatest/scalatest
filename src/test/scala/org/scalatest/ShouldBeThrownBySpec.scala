@@ -30,6 +30,21 @@ class ShouldBeThrownBySpec extends Spec with Matchers {
     
   def noExceptionExpected(clz: Class[_]): String = 
     "No exception is expected, but " + clz.getName + " is thrown."
+    
+  def aExceptionExpected(clz: Class[_]): String = 
+    "Expected a " + clz.getName + " to be thrown, but no exception was thrown."
+    
+  def aWrongException(expectedClz: Class[_], actualClz: Class[_]): String =  
+    "Expected a " + expectedClz.getName + " to be thrown, but " + actualClz.getName + " was thrown."
+    
+  def anExceptionExpected(clz: Class[_]): String = 
+    "Expected an " + clz.getName + " to be thrown, but no exception was thrown."
+    
+  def anWrongException(expectedClz: Class[_], actualClz: Class[_]): String =  
+    "Expected an " + expectedClz.getName + " to be thrown, but " + actualClz.getName + " was thrown."
+    
+  def theExceptionExpected(clz: Class[_]): String = 
+    "Expected the " + clz.getName + " to be thrown, but no exception was thrown."
   
   object `a [Exception] should` {
     
@@ -145,6 +160,91 @@ class ShouldBeThrownBySpec extends Spec with Matchers {
       assert(e.failedCodeFileName === Some(fileName))
       assert(e.failedCodeLineNumber === Some(thisLineNumber - 6))
     }
+  }
+  
+  object `shouldThrow should` {
+    
+    class SomeCode {
+      def throwRuntimeException() {
+        throw new RuntimeException("purposely")
+      }
+      def doNothing() {}
+    }
+    
+    val someCode = new SomeCode
+    
+    def `do nothing when provided code produce expected exception` {
+      someCode.throwRuntimeException shouldThrow a[RuntimeException]
+      someCode.throwRuntimeException shouldThrow an[Exception]
+      
+      // A blank line is needed to separate to avoid compiler confusion, why?
+      { someCode.throwRuntimeException } shouldThrow a[RuntimeException]
+      
+      { someCode.throwRuntimeException } shouldThrow an[Exception]
+    }
+    
+    def `throw new TestFailedException with correct message and stack depth when provided code does not produce any exception` {
+      val e1 = intercept[TestFailedException] {
+        someCode.doNothing shouldThrow a[RuntimeException]
+      }
+      assert(e1.message === Some(aExceptionExpected(classOf[RuntimeException])))
+      assert(e1.failedCodeFileName === Some(fileName))
+      assert(e1.failedCodeLineNumber === Some(thisLineNumber - 4))
+      
+      val e2 = intercept[TestFailedException] {
+        someCode.doNothing shouldThrow an[Exception]
+      }
+      assert(e2.message === Some(anExceptionExpected(classOf[Exception])))
+      assert(e2.failedCodeFileName === Some(fileName))
+      assert(e2.failedCodeLineNumber === Some(thisLineNumber - 4))
+      
+      val e3 = intercept[TestFailedException] {
+        { someCode.doNothing } shouldThrow a[RuntimeException]
+      }
+      assert(e3.message === Some(aExceptionExpected(classOf[RuntimeException])))
+      assert(e3.failedCodeFileName === Some(fileName))
+      assert(e3.failedCodeLineNumber === Some(thisLineNumber - 4))
+      
+      val e4 = intercept[TestFailedException] {
+        { someCode.doNothing } shouldThrow an[Exception]
+      }
+      assert(e4.message === Some(anExceptionExpected(classOf[Exception])))
+      assert(e4.failedCodeFileName === Some(fileName))
+      assert(e4.failedCodeLineNumber === Some(thisLineNumber - 4))
+    }
+    
+    def `throw new TestFailedException with correct message and stack depth when provided code does not produce expected exception ` {
+      import java.io.FileNotFoundException
+      
+      val e1 = intercept[TestFailedException] {
+        someCode.throwRuntimeException shouldThrow a[FileNotFoundException]
+      }
+      assert(e1.message === Some(aWrongException(classOf[FileNotFoundException], classOf[RuntimeException])))
+      assert(e1.failedCodeFileName === Some(fileName))
+      assert(e1.failedCodeLineNumber === Some(thisLineNumber - 4))
+      
+      val e2 = intercept[TestFailedException] {
+        someCode.throwRuntimeException shouldThrow an[UnsupportedOperationException]
+      }
+      assert(e2.message === Some(anWrongException(classOf[UnsupportedOperationException], classOf[RuntimeException])))
+      assert(e2.failedCodeFileName === Some(fileName))
+      assert(e2.failedCodeLineNumber === Some(thisLineNumber - 4))
+      
+      val e3 = intercept[TestFailedException] {
+        { someCode.throwRuntimeException } shouldThrow a[FileNotFoundException]
+      }
+      assert(e3.message === Some(aWrongException(classOf[FileNotFoundException], classOf[RuntimeException])))
+      assert(e3.failedCodeFileName === Some(fileName))
+      assert(e3.failedCodeLineNumber === Some(thisLineNumber - 4))
+      
+      val e4 = intercept[TestFailedException] {
+        { someCode.throwRuntimeException } shouldThrow an[UnsupportedOperationException]
+      }
+      assert(e4.message === Some(anWrongException(classOf[UnsupportedOperationException], classOf[RuntimeException])))
+      assert(e4.failedCodeFileName === Some(fileName))
+      assert(e4.failedCodeLineNumber === Some(thisLineNumber - 4))
+    }
+    
   }
   
 }

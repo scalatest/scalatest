@@ -46,6 +46,7 @@ import MatchersHelper.startWithRegexWithGroups
 import MatchersHelper.endWithRegexWithGroups
 import MatchersHelper.includeRegexWithGroups
 import org.scalautils.NormalizingEquality
+import Assertions.checkExpectedException
 
 // TODO: drop generic support for be as an equality comparison, in favor of specific ones.
 // TODO: mention on JUnit and TestNG docs that you can now mix in ShouldMatchers or MustMatchers
@@ -6051,6 +6052,44 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   }
 
   /**
+   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
+   * the matchers DSL.
+   *
+   * <p>
+   * This class is used in conjunction with an implicit conversion to enable <code>shouldXXX</code> methods to
+   * be invoked on by-name.
+   * </p>
+   *
+   * @author Bill Venners
+   * @author Chee Seng
+   */
+  class ByNameShouldWrapper(fun: => Any) {
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * system.actorOf(Props[MyActor]) shouldThrow a [Exception] 
+     *                                ^
+     * </pre>
+     */
+    def shouldThrow[T <: Throwable](aThrowable: ResultOfAThrowableApplication[T])(implicit manifest: Manifest[T]) {
+      checkExpectedException(fun, "aWrongException", "aExceptionExpected", 5)
+    }
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * system.actorOf(Props[MyActor]) shouldThrow an [Exception] 
+     *                                ^
+     * </pre>
+     */
+    def shouldThrow[T <: Throwable](anThrowable: ResultOfAnThrowableApplication[T])(implicit manifest: Manifest[T]) {
+      checkExpectedException(fun, "anWrongException", "anExceptionExpected", 5)
+    }
+  }
+
+  /**
    * Implicitly converts an object of type <code>T</code> to a <code>AnyShouldWrapper[T]</code>,
    * to enable <code>should</code> methods to be invokable on that object.
    */
@@ -6079,6 +6118,12 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * to enable <code>should</code> methods to be invokable on that object.
    */
   implicit def convertToJavaMapShouldWrapper[K, V, L[_, _] <: java.util.Map[_, _]](o: L[K, V]): JavaMapShouldWrapper[K, V, L] = new JavaMapShouldWrapper[K, V, L](o) 
+
+  /**
+   * Implicitly converts a by name to a <code>ByNameShouldWrapper</code>,
+   * to enable <code>shouldXXX</code> methods to be invokable on that object.
+   */
+  implicit def convertToByNameShouldWrapper(o: => Any): ByNameShouldWrapper = new ByNameShouldWrapper(o)
 }
 
 /**
