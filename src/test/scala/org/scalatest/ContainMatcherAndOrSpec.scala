@@ -17,8 +17,6 @@ package org.scalatest
 
 import SharedHelpers._
 
-class ContainMatcherAndOrSpec
-/*
 class ContainMatcherAndOrSpec extends Spec with Matchers {
 
   // TODO: Should reenable the all 'and/or contain' without paren flavor when we get MatcherGen2, MatcherGen3 working.
@@ -48,9 +46,13 @@ class ContainMatcherAndOrSpec extends Spec with Matchers {
         left should ((contain theSameElementsAs (right1)) and (contain inOrder (1, 2, 3)))
         left should (contain theSameElementsAs (right1) and (contain inOrder (1, 2, 3)))
         
-        left should (contain theSameElementsAs (right1) and contain oneOf (1, 3, 5))
-        left should ((contain theSameElementsAs (right1)) and (contain oneOf (1, 3, 5)))
-        left should (contain theSameElementsAs (right1) and (contain oneOf (1, 3, 5)))
+        left should (contain theSameElementsAs (right1) and contain oneOf (1, 4, 5))
+        left should ((contain theSameElementsAs (right1)) and (contain oneOf (1, 4, 5)))
+        left should (contain theSameElementsAs (right1) and (contain oneOf (1, 4, 5)))
+        
+        left should (contain theSameElementsAs (right1) and contain atLeastOneOf (1, 3, 5))
+        left should ((contain theSameElementsAs (right1)) and (contain atLeastOneOf (1, 3, 5)))
+        left should (contain theSameElementsAs (right1) and (contain atLeastOneOf (1, 3, 5)))
         
         left should (contain theSameElementsAs (right1) and contain only (3, 1, 2))
         left should ((contain theSameElementsAs (right1)) and (contain only (3, 1, 2)))
@@ -76,9 +78,13 @@ class ContainMatcherAndOrSpec extends Spec with Matchers {
         left should ((contain inOrder (1, 2, 3)) and (contain theSameElementsAs (right1)))
         left should (contain inOrder (1, 2, 3) and (contain theSameElementsAs (right1)))
         
-        left should (contain oneOf (1, 3, 5) and contain theSameElementsAs (right1))
-        left should ((contain oneOf (1, 3, 5)) and (contain theSameElementsAs (right1)))
-        left should (contain oneOf (1, 3, 5) and (contain theSameElementsAs (right1)))
+        left should (contain oneOf (1, 4, 5) and contain theSameElementsAs (right1))
+        left should ((contain oneOf (1, 4, 5)) and (contain theSameElementsAs (right1)))
+        left should (contain oneOf (1, 4, 5) and (contain theSameElementsAs (right1)))
+        
+        left should (contain atLeastOneOf (1, 3, 5) and contain theSameElementsAs (right1))
+        left should ((contain atLeastOneOf (1, 3, 5)) and (contain theSameElementsAs (right1)))
+        left should (contain atLeastOneOf (1, 3, 5) and (contain theSameElementsAs (right1)))
         
         left should (contain only (3, 1, 2) and contain theSameElementsAs (right1))
         left should ((contain only (3, 1, 2)) and (contain theSameElementsAs (right1)))
@@ -348,9 +354,13 @@ class ContainMatcherAndOrSpec extends Spec with Matchers {
         left should ((contain theSameElementsAs (right1)) or (contain inOrder (1, 2, 3)))
         left should (contain theSameElementsAs (right1) or (contain inOrder (1, 2, 3)))
         
-        left should (contain theSameElementsAs (right1) or contain oneOf (1, 3, 5))
-        left should ((contain theSameElementsAs (right1)) or (contain oneOf (1, 3, 5)))
-        left should (contain theSameElementsAs (right1) or (contain oneOf (1, 3, 5)))
+        left should (contain theSameElementsAs (right1) or contain oneOf (1, 4, 5))
+        left should ((contain theSameElementsAs (right1)) or (contain oneOf (1, 4, 5)))
+        left should (contain theSameElementsAs (right1) or (contain oneOf (1, 4, 5)))
+        
+        left should (contain theSameElementsAs (right1) or contain atLeastOneOf (1, 3, 5))
+        left should ((contain theSameElementsAs (right1)) or (contain atLeastOneOf (1, 3, 5)))
+        left should (contain theSameElementsAs (right1) or (contain atLeastOneOf (1, 3, 5)))
         
         left should (contain theSameElementsAs (right1) or contain only (3, 1, 2))
         left should ((contain theSameElementsAs (right1)) or (contain only (3, 1, 2)))
@@ -376,9 +386,13 @@ class ContainMatcherAndOrSpec extends Spec with Matchers {
         left should ((contain inOrder (1, 2, 3)) or (contain theSameElementsAs (right1)))
         left should (contain inOrder (1, 2, 3) or (contain theSameElementsAs (right1)))
         
-        left should (contain oneOf (1, 3, 5) or contain theSameElementsAs (right1))
-        left should ((contain oneOf (1, 3, 5)) or (contain theSameElementsAs (right1)))
-        left should (contain oneOf (1, 3, 5) or (contain theSameElementsAs (right1)))
+        left should (contain oneOf (1, 4, 5) or contain theSameElementsAs (right1))
+        left should ((contain oneOf (1, 4, 5)) or (contain theSameElementsAs (right1)))
+        left should (contain oneOf (1, 4, 5) or (contain theSameElementsAs (right1)))
+        
+        left should (contain atLeastOneOf (1, 3, 5) or contain theSameElementsAs (right1))
+        left should ((contain atLeastOneOf (1, 3, 5)) or (contain theSameElementsAs (right1)))
+        left should (contain atLeastOneOf (1, 3, 5) or (contain theSameElementsAs (right1)))
         
         left should (contain only (3, 1, 2) or contain theSameElementsAs (right1))
         left should ((contain only (3, 1, 2)) or (contain theSameElementsAs (right1)))
@@ -606,4 +620,3 @@ class ContainMatcherAndOrSpec extends Spec with Matchers {
   }
   
 }
-*/

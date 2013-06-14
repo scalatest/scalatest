@@ -20,8 +20,6 @@ import org.scalautils.Explicitly
 import org.scalautils.StringNormalizations
 import SharedHelpers._
 
-class ContainMatcherAndOrDeciderSpec
-/*
 class ContainMatcherAndOrDeciderSpec extends Spec with Matchers with Explicitly with StringNormalizations {
 
   val equality = new Equality[String] {
@@ -41,21 +39,23 @@ class ContainMatcherAndOrDeciderSpec extends Spec with Matchers with Explicitly 
         val right1 = List(" three", " one", "two ")
         val right2 = List(" one", "two ", " three")
         
-        left should ((contain theSameElementsAs (right1)) (decided by equality afterBeing trimmed) and (contain theSameElementsAs (right2)) (decided by equality afterBeing trimmed))
-        left should ((contain theSameElementsAs (right1)) (decided by equality afterBeing trimmed) and (contain theSameElementsInOrderAs (right2)) (decided by equality afterBeing trimmed))
-        left should ((contain theSameElementsAs (right1)) (decided by equality afterBeing trimmed) and (contain allOf (" three", "two ", " one")) (decided by equality afterBeing trimmed))
-        left should ((contain theSameElementsAs (right1)) (decided by equality afterBeing trimmed) and (contain inOrder (" one", "two ", " three")) (decided by equality afterBeing trimmed))
-        left should ((contain theSameElementsAs (right1)) (decided by equality afterBeing trimmed) and (contain oneOf (" one", " three", "five ")) (decided by equality afterBeing trimmed))
-        left should ((contain theSameElementsAs (right1)) (decided by equality afterBeing trimmed) and (contain only (" three", " one", "two "))(decided by equality afterBeing trimmed))
-        left should ((contain theSameElementsAs (right1)) (decided by equality afterBeing trimmed) and (contain inOrderOnly (" one", "two ", " three")) (decided by equality afterBeing trimmed))
-        left should ((contain theSameElementsAs (right1)) (decided by equality afterBeing trimmed) and (contain noneOf (" seven", "eight ", " nine")) (decided by equality afterBeing trimmed))
-        left should ((contain theSameElementsInOrderAs (right2)) (decided by equality afterBeing trimmed) and (contain theSameElementsAs (right1)) (decided by equality afterBeing trimmed))
-        left should ((contain allOf (" three", " one", "two ")) (decided by equality afterBeing trimmed) and (contain theSameElementsAs (right1)) (decided by equality afterBeing trimmed))
-        left should ((contain inOrder (" one", "two ", " three")) (decided by equality afterBeing trimmed) and (contain theSameElementsAs (right1)) (decided by equality afterBeing trimmed))
-        left should ((contain oneOf (" one", " three", "five ")) (decided by equality afterBeing trimmed) and (contain theSameElementsAs (right1)) (decided by equality afterBeing trimmed))
-        left should ((contain only (" three", " one", "two ")) (decided by equality afterBeing trimmed) and (contain theSameElementsAs (right1)) (decided by equality afterBeing trimmed))
-        left should ((contain inOrderOnly (" one", "two ", " three")) (decided by equality afterBeing trimmed) and (contain theSameElementsAs (right1)) (decided by equality afterBeing trimmed))
-        left should ((contain noneOf (" seven", "eight ", " nine")) (decided by equality afterBeing trimmed) and (contain theSameElementsAs (right1)) (decided by equality afterBeing trimmed))
+        (left should (contain theSameElementsAs (right1) and contain theSameElementsAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right1) and contain theSameElementsInOrderAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right1) and contain allOf (" three", "two ", " one"))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right1) and contain inOrder (" one", "two ", " three"))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right1) and contain oneOf (" one", " four", "five "))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right1) and contain atLeastOneOf (" one", " three", "five "))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right1) and contain only (" three", " one", "two "))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right1) and contain inOrderOnly (" one", "two ", " three"))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right1) and contain noneOf (" seven", "eight ", " nine"))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsInOrderAs (right2) and contain theSameElementsAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain allOf (" three", " one", "two ") and contain theSameElementsAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain inOrder (" one", "two ", " three") and contain theSameElementsAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain oneOf (" one", " four", "five ") and contain theSameElementsAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain atLeastOneOf (" one", " three", "five ") and contain theSameElementsAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain only (" three", " one", "two ") and contain theSameElementsAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain inOrderOnly (" one", "two ", " three") and contain theSameElementsAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain noneOf (" seven", "eight ", " nine") and contain theSameElementsAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
         
       }
       
@@ -64,7 +64,7 @@ class ContainMatcherAndOrDeciderSpec extends Spec with Matchers with Explicitly 
         val right = List(" three", "two ", " one")
         
         val e = intercept[exceptions.TestFailedException] {
-          left should ((contain theSameElementsInOrderAs right) (decided by equality afterBeing trimmed) and (contain theSameElementsAs right) (decided by equality afterBeing trimmed)) 
+          (left should (contain theSameElementsInOrderAs right and contain theSameElementsAs right)) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
         }
         e.message should be (Some(left + " did not contain the same elements in the same (iterated) order as " + right))
         e.failedCodeFileName should be (Some("ContainMatcherAndOrDeciderSpec.scala"))
@@ -77,7 +77,7 @@ class ContainMatcherAndOrDeciderSpec extends Spec with Matchers with Explicitly 
         val right = List(" three", "two ", " one")
         
         val e = intercept[exceptions.TestFailedException] {
-          left should ((contain theSameElementsAs right) (decided by equality afterBeing trimmed) and (contain theSameElementsInOrderAs right) (decided by equality afterBeing trimmed)) 
+          (left should (contain theSameElementsAs right and contain theSameElementsInOrderAs right)) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
         }
         e.message should be (Some(left + " contained the same elements as " + right + ", but " + left + " did not contain the same elements in the same (iterated) order as " + right))
         e.failedCodeFileName should be (Some("ContainMatcherAndOrDeciderSpec.scala"))
@@ -91,14 +91,14 @@ class ContainMatcherAndOrDeciderSpec extends Spec with Matchers with Explicitly 
         val right1 = List("eight ", " one", "two ")
         val right2 = List(" one", "two ", " three")
         
-        left should (not contain theSameElementsAs (right1) (decided by equality afterBeing trimmed) and (contain theSameElementsAs (right2)) (decided by equality afterBeing trimmed))
-        left should (not contain theSameElementsInOrderAs (right1) (decided by equality afterBeing trimmed) and (contain theSameElementsAs (right2)) (decided by equality afterBeing trimmed))
-        left should (not contain allOf ("eight ", "two ", " one") (decided by equality afterBeing trimmed) and (contain theSameElementsAs (right2)) (decided by equality afterBeing trimmed))
-        left should (not contain inOrder (" one", "two ", "eight ") (decided by equality afterBeing trimmed) and (contain theSameElementsAs (right2)) (decided by equality afterBeing trimmed))
-        left should (not contain oneOf (" six", "eight ", " five") (decided by equality afterBeing trimmed) and (contain theSameElementsAs (right2)) (decided by equality afterBeing trimmed))
-        left should (not contain only ("eight ", " one", "two ") (decided by equality afterBeing trimmed) and (contain theSameElementsAs (right2)) (decided by equality afterBeing trimmed))
-        left should (not contain inOrderOnly (" one", "two ", "eight ") (decided by equality afterBeing trimmed) and (contain theSameElementsAs (right2)) (decided by equality afterBeing trimmed))
-        left should (not contain inOrderOnly (" one", "two ", "eight ") (decided by equality afterBeing trimmed) and (contain theSameElementsAs (right2)) (decided by equality afterBeing trimmed))
+        (left should (not contain theSameElementsAs (right1) and contain theSameElementsAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain theSameElementsInOrderAs (right1) and contain theSameElementsAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain allOf ("eight ", "two ", " one") and contain theSameElementsAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain inOrder (" one", "two ", "eight ") and contain theSameElementsAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain oneOf (" six", "eight ", " five") and contain theSameElementsAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain only ("eight ", " one", "two ") and contain theSameElementsAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain inOrderOnly (" one", "two ", "eight ") and contain theSameElementsAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain inOrderOnly (" one", "two ", "eight ") and contain theSameElementsAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
       }
       
       def `should pass when contain and not contain passes` {
@@ -107,14 +107,14 @@ class ContainMatcherAndOrDeciderSpec extends Spec with Matchers with Explicitly 
         val right1 = List(" eight", "one ", " two")
         val right2 = List(" one", "two ", " three")
         
-        left should ((contain theSameElementsAs (right2)) (decided by equality afterBeing trimmed) and not contain theSameElementsAs (right1) (decided by equality afterBeing trimmed))        
-        left should ((contain theSameElementsAs (right2)) (decided by equality afterBeing trimmed) and not contain theSameElementsInOrderAs (right1) (decided by equality afterBeing trimmed))
-        left should ((contain theSameElementsAs (right2)) (decided by equality afterBeing trimmed) and not contain allOf (" eight", " two", "one ") (decided by equality afterBeing trimmed))
-        left should ((contain theSameElementsAs (right2)) (decided by equality afterBeing trimmed) and not contain inOrder ("one ", " two", " eight") (decided by equality afterBeing trimmed))
-        left should ((contain theSameElementsAs (right2)) (decided by equality afterBeing trimmed) and not contain oneOf ("six ", " eight", "five ") (decided by equality afterBeing trimmed))
-        left should ((contain theSameElementsAs (right2)) (decided by equality afterBeing trimmed) and not contain only (" eight", "one ", " two") (decided by equality afterBeing trimmed))
-        left should ((contain theSameElementsAs (right2)) (decided by equality afterBeing trimmed) and not contain inOrderOnly ("one ", " two", " eight") (decided by equality afterBeing trimmed))
-        left should ((contain theSameElementsAs (right2)) (decided by equality afterBeing trimmed) and not contain noneOf ("one ", " two", " eight") (decided by equality afterBeing trimmed))
+        (left should (contain theSameElementsAs (right2) and not contain theSameElementsAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)        
+        (left should (contain theSameElementsAs (right2) and not contain theSameElementsInOrderAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right2) and not contain allOf (" eight", " two", "one "))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right2) and not contain inOrder ("one ", " two", " eight"))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right2) and not contain oneOf ("six ", " eight", "five "))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right2) and not contain only (" eight", "one ", " two"))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right2) and not contain inOrderOnly ("one ", " two", " eight"))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right2) and not contain noneOf ("one ", " two", " eight"))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
       }
       
       def `should pass when not contain and not contain passes` {
@@ -123,14 +123,14 @@ class ContainMatcherAndOrDeciderSpec extends Spec with Matchers with Explicitly 
         val right1 = List(" eight", "one ", " two")
         val right2 = List("one ", " two", " eight")
         
-        left should (not contain theSameElementsAs (right2) (decided by equality afterBeing trimmed) and not contain theSameElementsAs (right1) (decided by equality afterBeing trimmed))
-        left should (not contain theSameElementsAs (right2) (decided by equality afterBeing trimmed) and not contain theSameElementsInOrderAs (right1) (decided by equality afterBeing trimmed))
-        left should (not contain theSameElementsAs (right2) (decided by equality afterBeing trimmed) and not contain allOf (" eight", " two", "one ") (decided by equality afterBeing trimmed))
-        left should (not contain theSameElementsAs (right2) (decided by equality afterBeing trimmed) and not contain inOrder ("one ", " two", " eight") (decided by equality afterBeing trimmed))
-        left should (not contain theSameElementsAs (right2) (decided by equality afterBeing trimmed) and not contain oneOf ("six ", " eight", "five ") (decided by equality afterBeing trimmed))
-        left should (not contain theSameElementsAs (right2) (decided by equality afterBeing trimmed) and not contain only (" eight", "one ", " two") (decided by equality afterBeing trimmed))
-        left should (not contain theSameElementsAs (right2) (decided by equality afterBeing trimmed) and not contain inOrderOnly ("one ", " two", " eight") (decided by equality afterBeing trimmed))
-        left should (not contain theSameElementsAs (right2) (decided by equality afterBeing trimmed) and not contain noneOf ("one ", " two", " eight") (decided by equality afterBeing trimmed))
+        (left should (not contain theSameElementsAs (right2) and not contain theSameElementsAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain theSameElementsAs (right2) and not contain theSameElementsInOrderAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain theSameElementsAs (right2) and not contain allOf (" eight", " two", "one "))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain theSameElementsAs (right2) and not contain inOrder ("one ", " two", " eight"))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain theSameElementsAs (right2) and not contain oneOf ("six ", " eight", "five "))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain theSameElementsAs (right2) and not contain only (" eight", "one ", " two"))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain theSameElementsAs (right2) and not contain inOrderOnly ("one ", " two", " eight"))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain theSameElementsAs (right2) and not contain noneOf ("one ", " two", " eight"))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
       }
       
       def `should failed with correctly stack depth and message when first not contain failed but second contain passed` {
@@ -140,7 +140,7 @@ class ContainMatcherAndOrDeciderSpec extends Spec with Matchers with Explicitly 
         val right2 = List(" three", "two ", " one")
         
         val e = intercept[exceptions.TestFailedException] {
-          left should (not contain theSameElementsInOrderAs (right1) (decided by equality afterBeing trimmed) and (contain theSameElementsAs right2) (decided by equality afterBeing trimmed)) 
+          (left should (not contain theSameElementsInOrderAs (right1) and contain theSameElementsAs right2)) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
         }
         e.message should be (Some(left + " contained the same elements in the same (iterated) order as " + right1))
         e.failedCodeFileName should be (Some("ContainMatcherAndOrDeciderSpec.scala"))
@@ -155,7 +155,7 @@ class ContainMatcherAndOrDeciderSpec extends Spec with Matchers with Explicitly 
         val right2 = List(" one", "two ", " three")
         
         val e = intercept[exceptions.TestFailedException] {
-          left should ((contain theSameElementsAs right1) (decided by equality afterBeing trimmed) and not contain theSameElementsInOrderAs (right2) (decided by equality afterBeing trimmed)) 
+          (left should (contain theSameElementsAs right1 and not contain theSameElementsInOrderAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed) 
         }
         e.message should be (Some(left + " contained the same elements as " + right1 + ", but " + left + " contained the same elements in the same (iterated) order as " + right2))
         e.failedCodeFileName should be (Some("ContainMatcherAndOrDeciderSpec.scala"))
@@ -170,7 +170,7 @@ class ContainMatcherAndOrDeciderSpec extends Spec with Matchers with Explicitly 
         val right2 = List(" three", "two ", " one")        
         
         val e = intercept[exceptions.TestFailedException] {
-          left should (not contain theSameElementsInOrderAs (right1) (decided by equality afterBeing trimmed) and not contain theSameElementsAs (right2) (decided by equality afterBeing trimmed)) 
+          (left should (not contain theSameElementsInOrderAs (right1) and not contain theSameElementsAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed) 
         }
         e.message should be (Some(left + " contained the same elements in the same (iterated) order as " + right1))
         e.failedCodeFileName should be (Some("ContainMatcherAndOrDeciderSpec.scala"))
@@ -187,21 +187,23 @@ class ContainMatcherAndOrDeciderSpec extends Spec with Matchers with Explicitly 
         val right1 = List("five ", " one", "two ")
         val right2 = List(" one", "two ", " three")
         
-        left should ((contain theSameElementsAs (right1)) (decided by equality afterBeing trimmed) or (contain theSameElementsAs (right2)) (decided by equality afterBeing trimmed))
-        left should ((contain theSameElementsAs (right1)) (decided by equality afterBeing trimmed) or (contain theSameElementsInOrderAs (right2)) (decided by equality afterBeing trimmed))
-        left should ((contain theSameElementsAs (right1)) (decided by equality afterBeing trimmed) or (contain allOf (" three", "two ", " one")) (decided by equality afterBeing trimmed))
-        left should ((contain theSameElementsAs (right1)) (decided by equality afterBeing trimmed) or (contain inOrder (" one", "two ", " three")) (decided by equality afterBeing trimmed))
-        left should ((contain theSameElementsAs (right1)) (decided by equality afterBeing trimmed) or (contain oneOf (" one", " three", "five ")) (decided by equality afterBeing trimmed))
-        left should ((contain theSameElementsAs (right1)) (decided by equality afterBeing trimmed) or (contain only (" three", " one", "two ")) (decided by equality afterBeing trimmed))
-        left should ((contain theSameElementsAs (right1)) (decided by equality afterBeing trimmed) or (contain inOrderOnly (" one", "two ", " three")) (decided by equality afterBeing trimmed))
-        left should ((contain theSameElementsAs (right1)) (decided by equality afterBeing trimmed) or (contain noneOf ("seven ", " eight", "nine ")) (decided by equality afterBeing trimmed))
-        left should ((contain theSameElementsInOrderAs (right2)) (decided by equality afterBeing trimmed) or (contain theSameElementsAs (right1)) (decided by equality afterBeing trimmed))
-        left should ((contain allOf (" three", "two ", " one")) (decided by equality afterBeing trimmed) or (contain theSameElementsAs (right1)) (decided by equality afterBeing trimmed))
-        left should ((contain inOrder (" one", "two ", " three")) (decided by equality afterBeing trimmed) or (contain theSameElementsAs (right1)) (decided by equality afterBeing trimmed))
-        left should ((contain oneOf (" one", " three", "five ")) (decided by equality afterBeing trimmed) or (contain theSameElementsAs (right1)) (decided by equality afterBeing trimmed))
-        left should ((contain only (" three", " one", "two ")) (decided by equality afterBeing trimmed) or (contain theSameElementsAs (right1)) (decided by equality afterBeing trimmed))
-        left should ((contain inOrderOnly (" one", "two ", " three")) (decided by equality afterBeing trimmed) or (contain theSameElementsAs (right1)) (decided by equality afterBeing trimmed))
-        left should ((contain noneOf ("seven ", " eight", "nine ")) (decided by equality afterBeing trimmed) or (contain theSameElementsAs (right1)) (decided by equality afterBeing trimmed))
+        (left should (contain theSameElementsAs (right1) or contain theSameElementsAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right1) or contain theSameElementsInOrderAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right1) or contain allOf (" three", "two ", " one"))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right1) or contain inOrder (" one", "two ", " three"))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right1) or contain oneOf (" one", " four", "five "))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right1) or contain atLeastOneOf (" one", " three", "five "))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right1) or contain only (" three", " one", "two "))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right1) or contain inOrderOnly (" one", "two ", " three"))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right1) or contain noneOf ("seven ", " eight", "nine "))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsInOrderAs (right2) or contain theSameElementsAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain allOf (" three", "two ", " one") or contain theSameElementsAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain inOrder (" one", "two ", " three") or contain theSameElementsAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain oneOf (" one", " four", "five ") or contain theSameElementsAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain atLeastOneOf (" one", " three", "five ") or contain theSameElementsAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain only (" three", " one", "two ") or contain theSameElementsAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain inOrderOnly (" one", "two ", " three") or contain theSameElementsAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain noneOf ("seven ", " eight", "nine ") or contain theSameElementsAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
         
       }
       
@@ -212,7 +214,7 @@ class ContainMatcherAndOrDeciderSpec extends Spec with Matchers with Explicitly 
         val right2 = List(" three", "two ", " one")
         
         val e = intercept[exceptions.TestFailedException] {
-          left should ((contain theSameElementsAs right1) (decided by equality afterBeing trimmed) or (contain theSameElementsInOrderAs right2) (decided by equality afterBeing trimmed))
+          (left should (contain theSameElementsAs right1 or contain theSameElementsInOrderAs right2)) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
         }
         e.message should be (Some(left + " did not contain the same elements as " + right1 + ", and " + left + " did not contain the same elements in the same (iterated) order as " + right2))
         e.failedCodeFileName should be (Some("ContainMatcherAndOrDeciderSpec.scala"))
@@ -226,14 +228,14 @@ class ContainMatcherAndOrDeciderSpec extends Spec with Matchers with Explicitly 
         val right1 = List("eight ", " one", "two ")
         val right2 = List(" one", "two ", " three")
         
-        left should (not contain theSameElementsAs (right1) (decided by equality afterBeing trimmed) or (contain theSameElementsAs (right2)) (decided by equality afterBeing trimmed)) 
-        left should (not contain theSameElementsInOrderAs (right1) (decided by equality afterBeing trimmed) or (contain theSameElementsAs (right2)) (decided by equality afterBeing trimmed))
-        left should (not contain allOf ("eight ", "two ", " one") (decided by equality afterBeing trimmed) or (contain theSameElementsAs (right2)) (decided by equality afterBeing trimmed))
-        left should (not contain inOrder (" one", "two ", "eight ") (decided by equality afterBeing trimmed) or (contain theSameElementsAs (right2)) (decided by equality afterBeing trimmed))
-        left should (not contain oneOf (" six", "eight ", " five") (decided by equality afterBeing trimmed) or (contain theSameElementsAs (right2)) (decided by equality afterBeing trimmed))
-        left should (not contain only ("eight ", " one", "two ") (decided by equality afterBeing trimmed) or (contain theSameElementsAs (right2)) (decided by equality afterBeing trimmed))
-        left should (not contain inOrderOnly (" one", "two ", "eight ") (decided by equality afterBeing trimmed) or (contain theSameElementsAs (right2)) (decided by equality afterBeing trimmed))
-        left should (not contain noneOf (" one", "two ", "eight ") (decided by equality afterBeing trimmed) or (contain theSameElementsAs (right2)) (decided by equality afterBeing trimmed))
+        (left should (not contain theSameElementsAs (right1) or contain theSameElementsAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed) 
+        (left should (not contain theSameElementsInOrderAs (right1) or contain theSameElementsAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain allOf ("eight ", "two ", " one") or contain theSameElementsAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain inOrder (" one", "two ", "eight ") or contain theSameElementsAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain oneOf (" six", "eight ", " five") or contain theSameElementsAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain only ("eight ", " one", "two ") or contain theSameElementsAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain inOrderOnly (" one", "two ", "eight ") or contain theSameElementsAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain noneOf (" one", "two ", "eight ") or contain theSameElementsAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
       }
       
       def `should pass when contain and not contain passes` {
@@ -242,14 +244,14 @@ class ContainMatcherAndOrDeciderSpec extends Spec with Matchers with Explicitly 
         val right1 = List("eight ", " one", "two ")
         val right2 = List(" one", "two ", " three")
         
-        left should ((contain theSameElementsAs (right2)) (decided by equality afterBeing trimmed) or not contain theSameElementsAs (right1) (decided by equality afterBeing trimmed)) 
-        left should ((contain theSameElementsAs (right2)) (decided by equality afterBeing trimmed) or not contain theSameElementsInOrderAs (right1) (decided by equality afterBeing trimmed))
-        left should ((contain theSameElementsAs (right2)) (decided by equality afterBeing trimmed) or not contain allOf ("eight ", "two ", " one") (decided by equality afterBeing trimmed))
-        left should ((contain theSameElementsAs (right2)) (decided by equality afterBeing trimmed) or not contain inOrder (" one", "two ", "eight ") (decided by equality afterBeing trimmed))
-        left should ((contain theSameElementsAs (right2)) (decided by equality afterBeing trimmed) or not contain oneOf (" six", "eight ", " five") (decided by equality afterBeing trimmed))
-        left should ((contain theSameElementsAs (right2)) (decided by equality afterBeing trimmed) or not contain only ("eight ", " one", "two ") (decided by equality afterBeing trimmed))
-        left should ((contain theSameElementsAs (right2)) (decided by equality afterBeing trimmed) or not contain inOrderOnly (" one", "two ", "eight ") (decided by equality afterBeing trimmed))
-        left should ((contain theSameElementsAs (right2)) (decided by equality afterBeing trimmed) or not contain noneOf (" one", "two ", "eight ") (decided by equality afterBeing trimmed))
+        (left should (contain theSameElementsAs (right2) or not contain theSameElementsAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right2) or not contain theSameElementsInOrderAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right2) or not contain allOf ("eight ", "two ", " one"))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right2) or not contain inOrder (" one", "two ", "eight "))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right2) or not contain oneOf (" six", "eight ", " five"))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right2) or not contain only ("eight ", " one", "two "))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right2) or not contain inOrderOnly (" one", "two ", "eight "))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (contain theSameElementsAs (right2) or not contain noneOf (" one", "two ", "eight "))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
         
       }
       
@@ -259,14 +261,14 @@ class ContainMatcherAndOrDeciderSpec extends Spec with Matchers with Explicitly 
         val right1 = List("eight ", " one", "two ")
         val right2 = List(" one", "two ", "eight ")
         
-        left should (not contain theSameElementsAs (right2) (decided by equality afterBeing trimmed) or not contain theSameElementsAs (right1) (decided by equality afterBeing trimmed)) 
-        left should (not contain theSameElementsAs (right2) (decided by equality afterBeing trimmed) or not contain theSameElementsInOrderAs (right1) (decided by equality afterBeing trimmed))
-        left should (not contain theSameElementsAs (right2) (decided by equality afterBeing trimmed) or not contain allOf ("eight ", "two ", " one") (decided by equality afterBeing trimmed))
-        left should (not contain theSameElementsAs (right2) (decided by equality afterBeing trimmed) or not contain inOrder (" one", "two ", "eight ") (decided by equality afterBeing trimmed))
-        left should (not contain theSameElementsAs (right2) (decided by equality afterBeing trimmed) or not contain oneOf (" six", "eight ", " five") (decided by equality afterBeing trimmed))
-        left should (not contain theSameElementsAs (right2) (decided by equality afterBeing trimmed) or not contain only ("eight ", " one", "two ") (decided by equality afterBeing trimmed))
-        left should (not contain theSameElementsAs (right2) (decided by equality afterBeing trimmed) or not contain inOrderOnly (" one", "two ", "eight ") (decided by equality afterBeing trimmed))
-        left should (not contain theSameElementsAs (right2) (decided by equality afterBeing trimmed) or not contain noneOf (" one", "two ", "eight ") (decided by equality afterBeing trimmed))
+        (left should (not contain theSameElementsAs (right2) or not contain theSameElementsAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain theSameElementsAs (right2) or not contain theSameElementsInOrderAs (right1))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain theSameElementsAs (right2) or not contain allOf ("eight ", "two ", " one"))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain theSameElementsAs (right2) or not contain inOrder (" one", "two ", "eight "))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain theSameElementsAs (right2) or not contain oneOf (" six", "eight ", " five"))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain theSameElementsAs (right2) or not contain only ("eight ", " one", "two "))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain theSameElementsAs (right2) or not contain inOrderOnly (" one", "two ", "eight "))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
+        (left should (not contain theSameElementsAs (right2) or not contain noneOf (" one", "two ", "eight "))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
       }
       
       def `should failed with correctly stack depth and message when first not contain failed and second contain failed` {
@@ -276,7 +278,7 @@ class ContainMatcherAndOrDeciderSpec extends Spec with Matchers with Explicitly 
         val right2 = List(" eight", "two ", " one")
         
         val e = intercept[exceptions.TestFailedException] {
-          left should (not contain theSameElementsInOrderAs (right1) (decided by equality afterBeing trimmed) or (contain theSameElementsAs right2) (decided by equality afterBeing trimmed)) 
+          (left should (not contain theSameElementsInOrderAs (right1) or contain theSameElementsAs right2)) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed) 
         }
         e.message should be (Some(left + " contained the same elements in the same (iterated) order as " + right1 + ", and " + left + " did not contain the same elements as " + right2))
         e.failedCodeFileName should be (Some("ContainMatcherAndOrDeciderSpec.scala"))
@@ -290,7 +292,7 @@ class ContainMatcherAndOrDeciderSpec extends Spec with Matchers with Explicitly 
         val right = List(" three", "two ", " one")
         
         val e = intercept[exceptions.TestFailedException] {
-          left should ((contain theSameElementsInOrderAs (right)) (decided by equality afterBeing trimmed) or not contain theSameElementsAs (right) (decided by equality afterBeing trimmed)) 
+          (left should (contain theSameElementsInOrderAs (right) or not contain theSameElementsAs (right))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed)
         }
         e.message should be (Some(left + " did not contain the same elements in the same (iterated) order as " + right + ", and " + left + " contained the same elements as " + right))
         e.failedCodeFileName should be (Some("ContainMatcherAndOrDeciderSpec.scala"))
@@ -305,7 +307,7 @@ class ContainMatcherAndOrDeciderSpec extends Spec with Matchers with Explicitly 
         val right2 = List(" three", "two ", " one")
         
         val e = intercept[exceptions.TestFailedException] {
-          left should (not contain theSameElementsInOrderAs (right1) (decided by equality afterBeing trimmed) or not contain theSameElementsAs (right2) (decided by equality afterBeing trimmed)) 
+          (left should (not contain theSameElementsInOrderAs (right1) or not contain theSameElementsAs (right2))) (decided by equality afterBeing trimmed, decided by equality afterBeing trimmed) 
         }
         e.message should be (Some(left + " contained the same elements in the same (iterated) order as " + right1 + ", and " + left + " contained the same elements as " + right2))
         e.failedCodeFileName should be (Some("ContainMatcherAndOrDeciderSpec.scala"))
@@ -318,4 +320,3 @@ class ContainMatcherAndOrDeciderSpec extends Spec with Matchers with Explicitly 
   }
   
 }
-*/

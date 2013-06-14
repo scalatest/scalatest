@@ -359,5 +359,4 @@ class AllOfContainMatcherDeciderSpec extends Spec with Matchers with Explicitly 
       checkShouldNotContainStackDepth(e6, left6, Array(1 -> "one", 2 -> "two ", 3 -> "three").deep, thisLineNumber - 2)
     }
   }
-  
 }

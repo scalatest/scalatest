@@ -19,8 +19,6 @@ import collection.GenTraversable
 import words.OneOfContainMatcher
 import SharedHelpers._
 
-class OneOfContainMatcherSpec 
-/*
 class OneOfContainMatcherSpec extends Spec with Matchers {
 
   object `oneOf ` {
@@ -42,33 +40,6 @@ class OneOfContainMatcherSpec extends Spec with Matchers {
       
       Map(1 -> "one", 3 -> "three", 5 -> "five", 8 -> "eight") should contain oneOf (7 -> "seven", 8 -> "eight", 9 -> "nine")
       javaMap(1 -> "one", 3 -> "three", 5 -> "five", 8 -> "eight") should contain oneOf (7 -> "seven", 8 -> "eight", 9 -> "nine")
-    }
-    
-    val matcher = new OneOfContainMatcher(List(5, 3, 8), defaultEquality)
-    val mapMatcherRight = Map(5 -> "five", 3 -> "three", 8 -> "eight")
-    val mapMatcher = new OneOfContainMatcher(mapMatcherRight, defaultEquality)
-    
-    def `should work with ContainMatcher directly` {
-      
-      List(1, 2, 3) should contain (matcher)
-      Set(1, 2, 3) should contain (matcher)
-      Array(1, 2, 3) should contain (matcher)
-      
-      javaList(1, 2, 3) should contain (matcher)
-      javaSet(1, 2, 3) should contain (matcher)
-      
-      List(1, 2, 3) should contain (oneOf(5, 3, 8))
-      Set(1, 2, 3) should contain (oneOf(5, 3, 8))
-      Array(1, 2, 3) should contain (oneOf(5, 3, 8))
-      
-      javaList(1, 2, 3) should contain (oneOf(5, 3, 8))
-      javaSet(1, 2, 3) should contain (oneOf(5, 3, 8))
-      
-      Map(1 -> "one", 2 -> "two", 3 -> "three") should contain (mapMatcher)
-      Map(1 -> "one", 2 -> "two", 3 -> "three") should contain oneOf (5 -> "five", 3 -> "three", 8 -> "eight")
-      
-      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should contain (mapMatcher)
-      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should contain oneOf (5 -> "five", 3 -> "three", 8 -> "eight")
     }
     
     def `should succeeded when right List contains at least one element in right List` {
@@ -299,31 +270,31 @@ class OneOfContainMatcherSpec extends Spec with Matchers {
     def `should throw TestFailedException with correct stack depth and message when left and right List contain more than one same element` {
       val left1 = List(1, 2, 3)
       val e1 = intercept[exceptions.TestFailedException] {
-        left1 should contain newOneOf (5, 1, 2)
+        left1 should contain oneOf (5, 1, 2)
       }
       checkStackDepth(e1, left1, Array(5, 1, 2).deep, thisLineNumber - 2)
       
       val left2 = javaList(1, 2, 3)
       val e2 = intercept[exceptions.TestFailedException] {
-        left2 should contain newOneOf (5, 1, 2)
+        left2 should contain oneOf (5, 1, 2)
       }
       checkStackDepth(e2, left2, Array(5, 1, 2).deep, thisLineNumber - 2)
       
       val left3 = Map(1 -> "one", 2 -> "two", 3 -> "three")
       val e3 = intercept[exceptions.TestFailedException] {
-        left3 should contain newOneOf (5 -> "five", 1 -> "one", 2 -> "two")
+        left3 should contain oneOf (5 -> "five", 1 -> "one", 2 -> "two")
       }
       checkStackDepth(e3, left3, Array(5 -> "five", 1 -> "one", 2 -> "two"), thisLineNumber - 2)
       
       val left4 = javaMap(1 -> "one", 2 -> "two", 3 -> "three")
       val e4 = intercept[exceptions.TestFailedException] {
-        left4 should contain newOneOf (5 -> "five", 1 -> "one", 2 -> "two")
+        left4 should contain oneOf (5 -> "five", 1 -> "one", 2 -> "two")
       }
       checkStackDepth(e4, left4, Array(5 -> "five", 1 -> "one", 2 -> "two"), thisLineNumber - 2)
       
       val left5 = Array(1, 2, 3)
       val e5 = intercept[exceptions.TestFailedException] {
-        left5 should contain newOneOf (5, 1, 2)
+        left5 should contain oneOf (5, 1, 2)
       }
       checkStackDepth(e5, left5, Array(5, 1, 2).deep, thisLineNumber - 2)
     }
@@ -339,72 +310,45 @@ class OneOfContainMatcherSpec extends Spec with Matchers {
     }
     
     def `should succeed when left List contains different elements as right List` {
-      List(1, 2, 3) should not contain newOneOf (7, 8, 9)
-      Array(1, 2, 3) should not contain newOneOf (7, 8, 9)
-      javaList(1, 2, 3) should not contain newOneOf (7, 8, 9)
+      List(1, 2, 3) should not contain oneOf (7, 8, 9)
+      Array(1, 2, 3) should not contain oneOf (7, 8, 9)
+      javaList(1, 2, 3) should not contain oneOf (7, 8, 9)
       
-      Set(1, 2, 3) should not contain newOneOf (7, 8, 9)
-      javaSet(1, 2, 3) should not contain newOneOf (7, 8, 9)
+      Set(1, 2, 3) should not contain oneOf (7, 8, 9)
+      javaSet(1, 2, 3) should not contain oneOf (7, 8, 9)
       
-      Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain newOneOf (7 -> "seven", 8 -> "eight", 9 -> "nine")
-      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain newOneOf (7 -> "seven", 8 -> "eight", 9 -> "nine")
-    }
-    
-    val matcher = new OneOfContainMatcher(List(5, 7, 9), defaultEquality)
-    val mapMatcherRight = Array(5 -> "five", 7 -> "seven", 9 -> "nine")
-    val mapMatcher = new OneOfContainMatcher(mapMatcherRight, defaultEquality)
-    
-    def `should work with ContainMatcher directly` {
-      
-      List(1, 2, 8) should not contain matcher
-      Set(1, 2, 8) should not contain matcher
-      Array(1, 2, 8) should not contain matcher
-      
-      javaList(1, 2, 8) should not contain matcher
-      javaSet(1, 2, 8) should not contain matcher
-      
-      List(1, 2, 8) should not contain newOneOf (5, 7, 9)
-      Set(1, 2, 8) should not contain newOneOf (5, 7, 9)
-      Array(1, 2, 8) should not contain newOneOf (5, 7, 9)
-      
-      javaList(1, 2, 8) should not contain newOneOf (5, 7, 9)
-      javaSet(1, 2, 8) should not contain newOneOf (5, 7, 9)
-      
-      Map(1 -> "one", 2 -> "two", 8 -> "eight") should not contain mapMatcher
-      Map(1 -> "one", 2 -> "two", 8 -> "eight") should not contain newOneOf (5 -> "five", 7 -> "seven", 9 -> "nine")
-      
-      javaMap(1 -> "one", 2 -> "two", 8 -> "eight") should not contain mapMatcher
-      javaMap(1 -> "one", 2 -> "two", 8 -> "eight") should not contain newOneOf (5 -> "five", 7 -> "seven", 9 -> "nine")
+      Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain oneOf (7 -> "seven", 8 -> "eight", 9 -> "nine")
+      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain oneOf (7 -> "seven", 8 -> "eight", 9 -> "nine")
     }
     
     def `should throw TestFailedException with correct stack depth and message when left and right List contain at least one same element` {
       val left1 = List(1, 2, 3)
       val e1 = intercept[exceptions.TestFailedException] {
-        left1 should not contain newOneOf (5, 1, 7)
+        left1 should not contain oneOf (5, 1, 7)
       }
       checkStackDepth(e1, left1, Array(5, 1, 7).deep, thisLineNumber - 2)
       
       val left2 = javaList(1, 2, 3)
       val e2 = intercept[exceptions.TestFailedException] {
-        left2 should not contain newOneOf (5, 1, 7)
+        left2 should not contain oneOf (5, 1, 7)
       }
       checkStackDepth(e2, left2, Array(5, 1, 7).deep, thisLineNumber - 2)
       
       val left3 = Map(1 -> "one", 2 -> "two", 3 -> "three")
       val e3 = intercept[exceptions.TestFailedException] {
-        left3 should not contain newOneOf (5 -> "five", 1 -> "one", 7 -> "seven")
+        left3 should not contain oneOf (5 -> "five", 1 -> "one", 7 -> "seven")
       }
       checkStackDepth(e3, left3, Array(5 -> "five", 1 -> "one", 7 -> "seven"), thisLineNumber - 2)
       
       val left4 = javaMap(1 -> "one", 2 -> "two", 3 -> "three")
       val e4 = intercept[exceptions.TestFailedException] {
-        left4 should not contain newOneOf (5 -> "five", 1 -> "one", 7 -> "seven")
+        left4 should not contain oneOf (5 -> "five", 1 -> "one", 7 -> "seven")
       }
       checkStackDepth(e4, left4, Array(5 -> "five", 1 -> "one", 7 -> "seven"), thisLineNumber - 2)
       
       val left5 = Array(1, 2, 3)
       val e5 = intercept[exceptions.TestFailedException] {
-        left5 should not contain newOneOf (5, 1, 7)
+        left5 should not contain oneOf (5, 1, 7)
       }
       checkStackDepth(e5, left5, Array(5, 1, 7).deep, thisLineNumber - 2)
     }
@@ -509,40 +453,39 @@ class OneOfContainMatcherSpec extends Spec with Matchers {
     }
 
     def `should succeeded when right List contains all elements in left List in different order` {
-      List(1, 2, 3) should not contain newOneOf (1, 3, 2)
-      Array(1, 2, 3) should not contain newOneOf (1, 3, 2)
-      javaList(1, 2, 3) should not contain newOneOf (1, 3, 2)
+      List(1, 2, 3) should not contain oneOf (1, 3, 2)
+      Array(1, 2, 3) should not contain oneOf (1, 3, 2)
+      javaList(1, 2, 3) should not contain oneOf (1, 3, 2)
       
-      Set(1, 2, 3) should not contain newOneOf (1, 3, 2)
-      javaSet(1, 2, 3) should not contain newOneOf (1, 3, 2)
+      Set(1, 2, 3) should not contain oneOf (1, 3, 2)
+      javaSet(1, 2, 3) should not contain oneOf (1, 3, 2)
       
       Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain oneOf (1 -> "one", 3 -> "three", 2 -> "twp")
       javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain oneOf (1 -> "one", 3 -> "three", 2 -> "twp")
     }
 
     def `should succeeded when right List contains all elements in left List in same order` {
-      List(1, 2, 3) should not contain newOneOf (1, 2, 3)
-      Array(1, 2, 3) should not contain newOneOf (1, 2, 3)
-      javaList(1, 2, 3) should not contain newOneOf (1, 2, 3)
+      List(1, 2, 3) should not contain oneOf (1, 2, 3)
+      Array(1, 2, 3) should not contain oneOf (1, 2, 3)
+      javaList(1, 2, 3) should not contain oneOf (1, 2, 3)
       
-      Set(1, 2, 3) should not contain newOneOf (1, 2, 3)
-      javaSet(1, 2, 3) should not contain newOneOf (1, 2, 3)
+      Set(1, 2, 3) should not contain oneOf (1, 2, 3)
+      javaSet(1, 2, 3) should not contain oneOf (1, 2, 3)
       
-      Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain newOneOf (1 -> "one", 2 -> "two", 3 -> "three")
-      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain newOneOf (1 -> "one", 2 -> "two", 3 -> "three")
+      Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain oneOf (1 -> "one", 2 -> "two", 3 -> "three")
+      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain oneOf (1 -> "one", 2 -> "two", 3 -> "three")
     }
     
     def `should succeeded when right List contains more than one element in right List` {
-      List(1, 2, 3) should not contain newOneOf (5, 3, 2)
-      Array(1, 2, 3) should not contain newOneOf (5, 3, 2)
-      javaList(1, 2, 3) should not contain newOneOf (5, 3, 2)
+      List(1, 2, 3) should not contain oneOf (5, 3, 2)
+      Array(1, 2, 3) should not contain oneOf (5, 3, 2)
+      javaList(1, 2, 3) should not contain oneOf (5, 3, 2)
       
-      Set(1, 2, 3) should not contain newOneOf (5, 3, 2)
-      javaSet(1, 2, 3) should not contain newOneOf (5, 3, 2)
+      Set(1, 2, 3) should not contain oneOf (5, 3, 2)
+      javaSet(1, 2, 3) should not contain oneOf (5, 3, 2)
       
-      Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain newOneOf (5 -> "five", 3 -> "three", 2 -> "two")
-      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain newOneOf (5 -> "five", 3 -> "three", 2 -> "two")
+      Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain oneOf (5 -> "five", 3 -> "three", 2 -> "two")
+      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain oneOf (5 -> "five", 3 -> "three", 2 -> "two")
     }
   }
 }
-*/
