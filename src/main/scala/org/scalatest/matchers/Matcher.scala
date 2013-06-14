@@ -658,94 +658,6 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) and contain theSameElementsAs List(1, 2, 3))
-     *                                                                           ^
-     * </pre>
-     */
-    def oldTheSameElementsAs[E](right: GenTraversable[E])(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
-      outerInstance.and(MatcherWords.contain.oldTheSameElementsAs(right)(equality))
-    
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) and contain theSameElementsInOrderAs List(1, 2, 3))
-     *                                                                           ^
-     * </pre>
-     */
-    def oldTheSameElementsInOrderAs[E](right: GenTraversable[E])(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
-      outerInstance.and(MatcherWords.contain.oldTheSameElementsInOrderAs(right)(equality))
-    
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) and contain allOf (1, 2, 3))
-     *                                                                           ^
-     * </pre>
-     */
-    def oldAllOf[E](right: E*)(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
-      outerInstance.and(MatcherWords.contain.oldAllOf(right.toList: _*)(equality))
-    
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) and contain inOrder (1, 2, 3))
-     *                                                                           ^
-     * </pre>
-     */
-    def oldInOrder[E](right: E*)(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
-      outerInstance.and(MatcherWords.contain.oldInOrder(right.toList: _*)(equality))
-    
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) and contain oneOf (1, 3, 3))
-     *                                                                           ^
-     * </pre>
-     */
-    def oldOneOf[E](right: E*)(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
-      outerInstance.and(MatcherWords.contain.oldOneOf(right.toList: _*)(equality))
-    
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) and contain only (3, 1))
-     *                                                                           ^
-     * </pre>
-     */
-    def oldOnly[E](right: E*)(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
-      outerInstance.and(MatcherWords.contain.oldOnly(right.toList: _*)(equality))
-    
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) and contain inOrderOnly (1, 3))
-     *                                                                           ^
-     * </pre>
-     */
-    def oldInOrderOnly[E](right: E*)(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
-      outerInstance.and(MatcherWords.contain.oldInOrderOnly(right.toList: _*)(equality))
-    
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) and contain noneOf (7, 8, 9))
-     *                                                                           ^
-     * </pre>
-     */
-    def oldNoneOf[E](right: E*)(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
-      outerInstance.and(MatcherWords.contain.oldNoneOf(right.toList: _*)(equality))
-      
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
      * result should (contain a (positiveNumber) and contain a (validNumber))
      *                                                       ^
      * </pre>
@@ -1596,17 +1508,6 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * collection should (contain theSameElementsAs (List(1, 2, 3)) and not contain theSameElementsAs (List(8, 1, 2))) 
-     *                                                                      ^
-     * </pre>
-     */
-    def oldContain[U](right: ContainMatcher[U]): Matcher[T with GenTraversable[U]] =
-      outerInstance.and(MatcherWords.not.oldContain(right))
-      
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
      * collection should (contain theSameElementsAs (List(1, 2, 3)) and not contain oneOf (List(8, 1, 2))) 
      *                                                                      ^
      * </pre>
@@ -1812,94 +1713,6 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def value[U](expectedValue: U): Matcher[T with scala.collection.GenMap[K, U] forSome { type K }] = outerInstance.or(MatcherWords.contain.value(expectedValue))
     
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) or contain theSameElementsAs List(1, 2, 3))
-     *                                                                          ^
-     * </pre>
-     */
-    def oldTheSameElementsAs[E](right: GenTraversable[E])(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
-      outerInstance.or(MatcherWords.contain.oldTheSameElementsAs(right)(equality))
-    
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) or contain theSameElementsInOrderAs List(1, 2, 3))
-     *                                                                          ^
-     * </pre>
-     */
-    def oldTheSameElementsInOrderAs[E](right: GenTraversable[E])(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
-      outerInstance.or(MatcherWords.contain.oldTheSameElementsInOrderAs(right)(equality))
-    
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) or contain allOf (1, 2, 3))
-     *                                                                          ^
-     * </pre>
-     */
-    def oldAllOf[E](right: E*)(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
-      outerInstance.or(MatcherWords.contain.oldAllOf(right.toList: _*)(equality))
-    
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) or contain inOrder (1, 2, 3))
-     *                                                                          ^
-     * </pre>
-     */
-    def oldInOrder[E](right: E*)(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
-      outerInstance.or(MatcherWords.contain.oldInOrder(right.toList: _*)(equality))
-    
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) or contain oneOf (1, 3, 3))
-     *                                                                          ^
-     * </pre>
-     */
-    def oldOneOf[E](right: E*)(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
-      outerInstance.or(MatcherWords.contain.oldOneOf(right.toList: _*)(equality))
-    
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) or contain only (3, 1))
-     *                                                                          ^
-     * </pre>
-     */
-    def oldOnly[E](right: E*)(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
-      outerInstance.or(MatcherWords.contain.oldOnly(right.toList: _*)(equality))
-    
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) or contain inOrderOnly (1, 3))
-     *                                                                          ^
-     * </pre>
-     */
-    def oldInOrderOnly[E](right: E*)(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
-      outerInstance.or(MatcherWords.contain.oldInOrderOnly(right.toList: _*)(equality))
-    
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) or contain noneOf (7, 8, 9))
-     *                                                                          ^
-     * </pre>
-     */
-    def oldNoneOf[E](right: E*)(implicit equality: Equality[E]): Matcher[T with GenTraversable[E]] = 
-      outerInstance.or(MatcherWords.contain.oldNoneOf(right.toList: _*)(equality))
-      
     /**
      * This method enables the following syntax:
      *
@@ -2749,17 +2562,6 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def contain[U](resultOfValueWordApplication: ResultOfValueWordApplication[U]): Matcher[T with scala.collection.GenMap[K, U] forSome { type K }] =
       outerInstance.or(MatcherWords.not.contain(resultOfValueWordApplication))
-      
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * collection should (contain theSameElementsAs (List(1, 2, 3)) or not contain theSameElementsAs (List(8, 1, 2))) 
-     *                                                                     ^
-     * </pre>
-     */
-    def oldContain[U](right: ContainMatcher[U]): Matcher[T with GenTraversable[U]] =
-      outerInstance.or(MatcherWords.not.oldContain(right))
       
     /**
      * This method enables the following syntax:

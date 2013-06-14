@@ -313,94 +313,6 @@ $endif$
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
-     * (aMatcherFactory and contain theSameElementsAs List(1, 2, 3))
-     *                              ^
-     * </pre>
-     */
-    def oldTheSameElementsAs[E](right: GenTraversable[E])(implicit equality: Equality[E]): MatcherFactory$arity$[SC with GenTraversable[E], $commaSeparatedTCNs$] = 
-      thisMatcherFactory.and(MatcherWords.contain.oldTheSameElementsAs(right)(equality))
-    
-    /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
-     *
-     * <pre class="stHighlight">
-     * (aMatcherFactory and contain theSameElementsInOrderAs List(1, 2, 3))
-     *                              ^
-     * </pre>
-     */
-    def oldTheSameElementsInOrderAs[E](right: GenTraversable[E])(implicit equality: Equality[E]): MatcherFactory$arity$[SC with GenTraversable[E], $commaSeparatedTCNs$] = 
-      thisMatcherFactory.and(MatcherWords.contain.oldTheSameElementsInOrderAs(right)(equality))
-    
-    /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
-     *
-     * <pre class="stHighlight">
-     * (aMatcherFactory and contain allOf (1, 2, 3))
-     *                              ^
-     * </pre>
-     */
-    def oldAllOf[E](right: E*)(implicit equality: Equality[E]): MatcherFactory$arity$[SC with GenTraversable[E], $commaSeparatedTCNs$] = 
-      thisMatcherFactory.and(MatcherWords.contain.oldAllOf(right.toList: _*)(equality))
-    
-    /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
-     *
-     * <pre class="stHighlight">
-     * (aMatcherFactory and contain inOrder (1, 2, 3))
-     *                              ^
-     * </pre>
-     */
-    def oldInOrder[E](right: E*)(implicit equality: Equality[E]): MatcherFactory$arity$[SC with GenTraversable[E], $commaSeparatedTCNs$] = 
-      thisMatcherFactory.and(MatcherWords.contain.oldInOrder(right.toList: _*)(equality))
-    
-    /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
-     *
-     * <pre class="stHighlight">
-     * (aMatcherFactory and contain oneOf (1, 3, 3))
-     *                              ^
-     * </pre>
-     */
-    def oldOneOf[E](right: E*)(implicit equality: Equality[E]): MatcherFactory$arity$[SC with GenTraversable[E], $commaSeparatedTCNs$] = 
-      thisMatcherFactory.and(MatcherWords.contain.oldOneOf(right.toList: _*)(equality))
-    
-    /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
-     *
-     * <pre class="stHighlight">
-     * (aMatcherFactory and contain only (3, 1))
-     *                              ^
-     * </pre>
-     */
-    def oldOnly[E](right: E*)(implicit equality: Equality[E]): MatcherFactory$arity$[SC with GenTraversable[E], $commaSeparatedTCNs$] = 
-      thisMatcherFactory.and(MatcherWords.contain.oldOnly(right.toList: _*)(equality))
-    
-    /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
-     *
-     * <pre class="stHighlight">
-     * (and contain inOrderOnly (1, 3))
-     *              ^
-     * </pre>
-     */
-    def oldInOrderOnly[E](right: E*)(implicit equality: Equality[E]): MatcherFactory$arity$[SC with GenTraversable[E], $commaSeparatedTCNs$] = 
-      thisMatcherFactory.and(MatcherWords.contain.oldInOrderOnly(right.toList: _*)(equality))
-    
-    /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
-     *
-     * <pre class="stHighlight">
-     * (and contain noneOf (7, 8, 9))
-     *              ^
-     * </pre>
-     */
-    def oldNoneOf[E](right: E*)(implicit equality: Equality[E]): MatcherFactory$arity$[SC with GenTraversable[E], $commaSeparatedTCNs$] = 
-      thisMatcherFactory.and(MatcherWords.contain.oldNoneOf(right.toList: _*)(equality))
-      
-    /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
-     *
-     * <pre class="stHighlight">
      * (aMatcherFactory and contain a (validNumber))
      *                              ^
      * </pre>
@@ -1253,17 +1165,6 @@ $endif$
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
-     * (aMatcherFactory and not contain theSameElementsAs (List(8, 1, 2))) 
-     *                          ^
-     * </pre>
-     */
-    def oldContain[U](right: ContainMatcher[U]): MatcherFactory$arity$[SC with GenTraversable[U], $commaSeparatedTCNs$] =
-      thisMatcherFactory.and(MatcherWords.not.oldContain(right))
-    
-    /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
-     *
-     * <pre class="stHighlight">
      * (aMatcherFactory and not contain oneOf (List(8, 1, 2))) 
      *                          ^
      * </pre>
@@ -1472,94 +1373,6 @@ $endif$
      */
     def value[U](expectedValue: U): MatcherFactory$arity$[SC with scala.collection.GenMap[K, U] forSome { type K }, $commaSeparatedTCNs$] = thisMatcherFactory.or(MatcherWords.contain.value(expectedValue))
     
-    /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
-     *
-     * <pre class="stHighlight">
-     * (aMatcherFactory or contain theSameElementsAs List(1, 2, 3))
-     *                             ^
-     * </pre>
-     */
-    def oldTheSameElementsAs[E](right: GenTraversable[E])(implicit equality: Equality[E]): MatcherFactory$arity$[SC with GenTraversable[E], $commaSeparatedTCNs$] = 
-      thisMatcherFactory.or(MatcherWords.contain.oldTheSameElementsAs(right)(equality))
-    
-    /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
-     *
-     * <pre class="stHighlight">
-     * (aMatcherFactory or contain theSameElementsInOrderAs List(1, 2, 3))
-     *                             ^
-     * </pre>
-     */
-    def oldTheSameElementsInOrderAs[E](right: GenTraversable[E])(implicit equality: Equality[E]): MatcherFactory$arity$[SC with GenTraversable[E], $commaSeparatedTCNs$] = 
-      thisMatcherFactory.or(MatcherWords.contain.oldTheSameElementsInOrderAs(right)(equality))
-    
-    /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
-     *
-     * <pre class="stHighlight">
-     * (aMatcherFactory or contain allOf (1, 2, 3))
-     *                             ^
-     * </pre>
-     */
-    def oldAllOf[E](right: E*)(implicit equality: Equality[E]): MatcherFactory$arity$[SC with GenTraversable[E], $commaSeparatedTCNs$] = 
-      thisMatcherFactory.or(MatcherWords.contain.oldAllOf(right.toList: _*)(equality))
-    
-    /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
-     *
-     * <pre class="stHighlight">
-     * (aMatcherFactory or contain inOrder (1, 2, 3))
-     *                             ^
-     * </pre>
-     */
-    def oldInOrder[E](right: E*)(implicit equality: Equality[E]): MatcherFactory$arity$[SC with GenTraversable[E], $commaSeparatedTCNs$] = 
-      thisMatcherFactory.or(MatcherWords.contain.oldInOrder(right.toList: _*)(equality))
-    
-    /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
-     *
-     * <pre class="stHighlight">
-     * (aMatcherFactory or contain oneOf (1, 3, 3))
-     *                             ^
-     * </pre>
-     */
-    def oldOneOf[E](right: E*)(implicit equality: Equality[E]): MatcherFactory$arity$[SC with GenTraversable[E], $commaSeparatedTCNs$] = 
-      thisMatcherFactory.or(MatcherWords.contain.oldOneOf(right.toList: _*)(equality))
-    
-    /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
-     *
-     * <pre class="stHighlight">
-     * (aMatcherFactory or contain only (3, 1))
-     *                             ^
-     * </pre>
-     */
-    def oldOnly[E](right: E*)(implicit equality: Equality[E]): MatcherFactory$arity$[SC with GenTraversable[E], $commaSeparatedTCNs$] = 
-      thisMatcherFactory.or(MatcherWords.contain.oldOnly(right.toList: _*)(equality))
-    
-    /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
-     *
-     * <pre class="stHighlight">
-     * (aMatcherFactory or contain inOrderOnly (1, 3))
-     *                             ^
-     * </pre>
-     */
-    def oldInOrderOnly[E](right: E*)(implicit equality: Equality[E]): MatcherFactory$arity$[SC with GenTraversable[E], $commaSeparatedTCNs$] = 
-      thisMatcherFactory.or(MatcherWords.contain.oldInOrderOnly(right.toList: _*)(equality))
-    
-    /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
-     *
-     * <pre class="stHighlight">
-     * (aMatcherFactory or contain noneOf (7, 8, 9))
-     *                             ^
-     * </pre>
-     */
-    def oldNoneOf[E](right: E*)(implicit equality: Equality[E]): MatcherFactory$arity$[SC with GenTraversable[E], $commaSeparatedTCNs$] = 
-      thisMatcherFactory.or(MatcherWords.contain.oldNoneOf(right.toList: _*)(equality))
-      
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
@@ -2410,17 +2223,6 @@ $endif$
     def contain[U](resultOfValueWordApplication: ResultOfValueWordApplication[U]): MatcherFactory$arity$[SC with scala.collection.GenMap[K, U] forSome { type K }, $commaSeparatedTCNs$] =
       thisMatcherFactory.or(MatcherWords.not.contain(resultOfValueWordApplication))
       
-    /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
-     *
-     * <pre class="stHighlight">
-     * (aMatcherFactory or not contain theSameElementsAs (List(8, 1, 2))) 
-     *                         ^
-     * </pre>
-     */
-    def oldContain[U](right: ContainMatcher[U]): MatcherFactory$arity$[SC with GenTraversable[U], $commaSeparatedTCNs$] =
-      thisMatcherFactory.or(MatcherWords.not.oldContain(right))
-    
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
