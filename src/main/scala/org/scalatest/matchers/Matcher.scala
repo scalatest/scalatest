@@ -657,28 +657,6 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * result should (contain a (positiveNumber) and contain a (validNumber))
-     *                                                       ^
-     * </pre>
-     */
-    def a[E](aMatcher: AMatcher[E]): Matcher[T with GenTraversable[E]] = 
-      and(MatcherWords.contain.a(aMatcher))
-    
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * result should (contain a (positiveNumber) and contain an (invalidNumber))
-     *                                                       ^
-     * </pre>
-     */
-    def an[E](anMatcher: AnMatcher[E]): Matcher[T with GenTraversable[E]] = 
-      and(MatcherWords.contain.an(anMatcher))
-
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
      * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) and contain theSameElementsAs (1, 3, 3))
      *                                                                           ^
      * </pre>
@@ -1582,28 +1560,6 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def contain(right: ResultOfInOrderApplication): MatcherFactory1[T with Any, Sequencing] =
       outerInstance.and(MatcherWords.not.contain(right))
-      
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * result should (not contain a negativeNumber and not contain a primeNumber)
-     *                                                     ^
-     * </pre>
-     */
-    def contain[U](resultOfAWordApplication: ResultOfAWordToAMatcherApplication[U]): Matcher[T with GenTraversable[U]] = 
-      outerInstance.and(MatcherWords.not.contain(resultOfAWordApplication))
-      
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * result should (not contain an oddNumber and not contain an invalidNumber)
-     *                                                 ^
-     * </pre>
-     */
-    def contain[U](resultOfAnWordApplication: ResultOfAnWordToAnMatcherApplication[U]): Matcher[T with GenTraversable[U]] = 
-      outerInstance.and(MatcherWords.not.contain(resultOfAnWordApplication))
   }
 
   /**
@@ -1693,28 +1649,6 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def value[U](expectedValue: U): Matcher[T with scala.collection.GenMap[K, U] forSome { type K }] = outerInstance.or(MatcherWords.contain.value(expectedValue))
     
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * result should (contain a (positiveNumber) or contain a (validNumber))
-     *                                                      ^
-     * </pre>
-     */
-    def a[E](aMatcher: AMatcher[E]): Matcher[T with GenTraversable[E]] = 
-      or(MatcherWords.contain.a(aMatcher))
-    
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * result should (contain a (positiveNumber) or contain an (invalidNumber))
-     *                                                      ^
-     * </pre>
-     */
-    def an[E](anMatcher: AnMatcher[E]): Matcher[T with GenTraversable[E]] = 
-      or(MatcherWords.contain.an(anMatcher))
-
     /**
      * This method enables the following syntax:
      *
@@ -2622,28 +2556,6 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def contain(right: ResultOfInOrderApplication): MatcherFactory1[T with Any, Sequencing] =
       outerInstance.or(MatcherWords.not.contain(right))
-      
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * result should (not contain a negativeNumber or not contain a primeNumber)
-     *                                                    ^
-     * </pre>
-     */
-    def contain[U](resultOfAWordApplication: ResultOfAWordToAMatcherApplication[U]): Matcher[T with GenTraversable[U]] = 
-      outerInstance.or(MatcherWords.not.contain(resultOfAWordApplication))
-      
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * result should (not contain an oddNumber or not contain an invalidNumber)
-     *                                                ^
-     * </pre>
-     */
-    def contain[U](resultOfAnWordApplication: ResultOfAnWordToAnMatcherApplication[U]): Matcher[T with GenTraversable[U]] = 
-      outerInstance.or(MatcherWords.not.contain(resultOfAnWordApplication))
   }
 
   /**

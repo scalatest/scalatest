@@ -308,28 +308,6 @@ $endif$
      */
     def value[U](expectedValue: U): MatcherFactory$arity$[SC with scala.collection.GenMap[K, U] forSome { type K }, $commaSeparatedTCNs$] = thisMatcherFactory.and(MatcherWords.contain.value(expectedValue))
     
-    /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
-     *
-     * <pre class="stHighlight">
-     * (aMatcherFactory and contain a (validNumber))
-     *                              ^
-     * </pre>
-     */
-    def a[E](aMatcher: AMatcher[E]): MatcherFactory$arity$[SC with GenTraversable[E], $commaSeparatedTCNs$] = 
-      and(MatcherWords.contain.a(aMatcher))
-    
-    /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
-     *
-     * <pre class="stHighlight">
-     * (aMatcherFactory and contain an (invalidNumber))
-     *                              ^
-     * </pre>
-     */
-    def an[E](anMatcher: AnMatcher[E]): MatcherFactory$arity$[SC with GenTraversable[E], $commaSeparatedTCNs$] = 
-      and(MatcherWords.contain.an(anMatcher))
-
     // And some, the ones that would by themselves already generate a Matcher, just return a MatcherFactoryN where N is the same.
 
     /**
@@ -1239,28 +1217,6 @@ $endif$
      */
     def contain(right: ResultOfInOrderApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Sequencing] =
       thisMatcherFactory.and(MatcherWords.not.contain(right))
-      
-    /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
-     *
-     * <pre class="stHighlight">
-     * (aMatcherFactory and not contain a primeNumber)
-     *                          ^
-     * </pre>
-     */
-    def contain[U](resultOfAWordApplication: ResultOfAWordToAMatcherApplication[U]): MatcherFactory$arity$[SC with GenTraversable[U], $commaSeparatedTCNs$] = 
-      thisMatcherFactory.and(MatcherWords.not.contain(resultOfAWordApplication))
-      
-    /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
-     *
-     * <pre class="stHighlight">
-     * (aMatcherFactory and not contain an invalidNumber)
-     *                          ^
-     * </pre>
-     */
-    def contain[U](resultOfAnWordApplication: ResultOfAnWordToAnMatcherApplication[U]): MatcherFactory$arity$[SC with GenTraversable[U], $commaSeparatedTCNs$] = 
-      thisMatcherFactory.and(MatcherWords.not.contain(resultOfAnWordApplication))
   }
 """
 
@@ -1353,28 +1309,6 @@ $endif$
      */
     def value[U](expectedValue: U): MatcherFactory$arity$[SC with scala.collection.GenMap[K, U] forSome { type K }, $commaSeparatedTCNs$] = thisMatcherFactory.or(MatcherWords.contain.value(expectedValue))
     
-    /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
-     *
-     * <pre class="stHighlight">
-     * (aMatcherFactory or contain a (validNumber))
-     *                             ^
-     * </pre>
-     */
-    def a[E](aMatcher: AMatcher[E]): MatcherFactory$arity$[SC with GenTraversable[E], $commaSeparatedTCNs$] = 
-      or(MatcherWords.contain.a(aMatcher))
-    
-    /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
-     *
-     * <pre class="stHighlight">
-     * (aMatcherFactory or contain an (invalidNumber))
-     *                             ^
-     * </pre>
-     */
-    def an[E](anMatcher: AnMatcher[E]): MatcherFactory$arity$[SC with GenTraversable[E], $commaSeparatedTCNs$] = 
-      or(MatcherWords.contain.an(anMatcher))
-
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
@@ -2282,28 +2216,6 @@ $endif$
      */
     def contain(right: ResultOfInOrderApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Sequencing] =
       thisMatcherFactory.or(MatcherWords.not.contain(right))
-      
-    /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
-     *
-     * <pre class="stHighlight">
-     * (aMatcherFactory or not contain a primeNumber)
-     *                         ^
-     * </pre>
-     */
-    def contain[U](resultOfAWordApplication: ResultOfAWordToAMatcherApplication[U]): MatcherFactory$arity$[SC with GenTraversable[U], $commaSeparatedTCNs$] = 
-      thisMatcherFactory.or(MatcherWords.not.contain(resultOfAWordApplication))
-      
-    /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
-     *
-     * <pre class="stHighlight">
-     * (aMatcherFactory or not contain an invalidNumber)
-     *                         ^
-     * </pre>
-     */
-    def contain[U](resultOfAnWordApplication: ResultOfAnWordToAnMatcherApplication[U]): MatcherFactory$arity$[SC with GenTraversable[U], $commaSeparatedTCNs$] = 
-      thisMatcherFactory.or(MatcherWords.not.contain(resultOfAnWordApplication))
   }
 
   /**

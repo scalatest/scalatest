@@ -114,35 +114,6 @@ class AnMatcherSpec extends Spec with Matchers {
         e.failedCodeFileName should be (Some("AnMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
-      
-      val oddNumber = AnMatcher[Int]("odd number") { _ % 2 != 0 }
-      
-      def `should work correctly with 'should contain'` {
-        List(2, 5, 8) should contain an oddNumber
-      }
-      
-      def `should throw TestFailedException with correct stack depth and message when 'should contain a' assertion failed` {
-        val e = intercept[exceptions.TestFailedException] {
-          List(2, 6, 8) should contain an oddNumber
-        }
-        e.message should be (Some(List(2, 6, 8) + " did not contain an odd number"))
-        e.failedCodeFileName should be (Some("AnMatcherSpec.scala"))
-        e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
-      }
-      
-      def `should work correctly with 'should not contain'` {
-        List(2, 6, 8) should not contain an (oddNumber)
-      }
-      
-      def `should throw TestFailedException with correct stack depth and message when 'should not contain a' assertion failed` {
-        val e = intercept[exceptions.TestFailedException] {
-          List(1, 2, 6) should not contain an (oddNumber)
-        }
-        e.message should be (Some(List(1, 2, 6) + " contained an odd number: 1 was an odd number"))
-        e.failedCodeFileName should be (Some("AnMatcherSpec.scala"))
-        e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
-      }
-      
     }
     
     object `when used with set` {
@@ -174,35 +145,6 @@ class AnMatcherSpec extends Spec with Matchers {
         e.failedCodeFileName should be (Some("AnMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
-      
-      val oddNumber = AnMatcher[Int]("odd number") { _ % 2 != 0 }
-      
-      def `should work correctly with 'should contain'` {
-        Set(2, 5, 8) should contain an (oddNumber)
-      }
-      
-      def `should throw TestFailedException with correct stack depth and message when 'should contain a' assertion failed` {
-        val e = intercept[exceptions.TestFailedException] {
-          Set(2, 6, 8) should contain an oddNumber
-        }
-        e.message should be (Some(Set(2, 6, 8) + " did not contain an odd number"))
-        e.failedCodeFileName should be (Some("AnMatcherSpec.scala"))
-        e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
-      }
-      
-      def `should work correctly with 'should not contain'` {
-        Set(2, 6, 8) should not contain an (oddNumber)
-      }
-      
-      def `should throw TestFailedException with correct stack depth and message when 'should not contain a' assertion failed` {
-        val e = intercept[exceptions.TestFailedException] {
-          Set(1, 2, 6) should not contain an (oddNumber)
-        }
-        e.message should be (Some(Set(1, 2, 6) + " contained an odd number: 1 was an odd number"))
-        e.failedCodeFileName should be (Some("AnMatcherSpec.scala"))
-        e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
-      }
-      
     }
     
     object `when used with array` {
@@ -234,35 +176,6 @@ class AnMatcherSpec extends Spec with Matchers {
         e.failedCodeFileName should be (Some("AnMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
-      
-      val oddNumber = AnMatcher[Int]("odd number") { _ % 2 != 0 }
-      
-      def `should work correctly with 'should contain'` {
-        Array(2, 5, 8) should contain an (oddNumber)
-      }
-      
-      def `should throw TestFailedException with correct stack depth and message when 'should contain a' assertion failed` {
-        val e = intercept[exceptions.TestFailedException] {
-          Array(2, 6, 8) should contain an oddNumber
-        }
-        e.message should be (Some("Array(2, 6, 8) did not contain an odd number"))
-        e.failedCodeFileName should be (Some("AnMatcherSpec.scala"))
-        e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
-      }
-      
-      def `should work correctly with 'should not contain'` {
-        Array(2, 6, 8) should not contain an (oddNumber)
-      }
-      
-      def `should throw TestFailedException with correct stack depth and message when 'should not contain a' assertion failed` {
-        val e = intercept[exceptions.TestFailedException] {
-          Array(1, 2, 6) should not contain an (oddNumber)
-        }
-        e.message should be (Some("Array(1, 2, 6) contained an odd number: 1 was an odd number"))
-        e.failedCodeFileName should be (Some("AnMatcherSpec.scala"))
-        e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
-      }
-      
     }
     
     
@@ -292,34 +205,6 @@ class AnMatcherSpec extends Spec with Matchers {
           Map(1 -> "one", 2 -> "two", 3 -> "three") should not be an (oddSizeMap)
         }
         e.message should be (Some(Map(1 -> "one", 2 -> "two", 3 -> "three") + " was an odd size map"))
-        e.failedCodeFileName should be (Some("AnMatcherSpec.scala"))
-        e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
-      }
-      
-      val oddNumberKey = AnMatcher[(Int, String)]("odd number key") { _._1 % 2 != 0 }
-      
-      def `should work correctly with 'should contain'` {
-        Map(-2 -> "minus two", 5 -> "five", -8 -> "minus eight") should contain an (oddNumberKey)
-      }
-      
-      def `should throw TestFailedException with correct stack depth and message when 'should contain a' assertion failed` {
-        val e = intercept[exceptions.TestFailedException] {
-          Map(-2 -> "minus two", -6 -> "minus six", -8 -> "minus eight") should contain an oddNumberKey
-        }
-        e.message should be (Some(Map(-2 -> "minus two", -6 -> "minus six", -8 -> "minus eight") + " did not contain an odd number key"))
-        e.failedCodeFileName should be (Some("AnMatcherSpec.scala"))
-        e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
-      }
-      
-      def `should work correctly with 'should not contain'` {
-        Map(-2 -> "minus two", -6 -> "minus six", -8 -> "minus eight") should not contain an (oddNumberKey)
-      }
-      
-      def `should throw TestFailedException with correct stack depth and message when 'should not contain a' assertion failed` {
-        val e = intercept[exceptions.TestFailedException] {
-          Map(1 -> "one", 2 -> "two", -6 -> "minus six") should not contain an (oddNumberKey)
-        }
-        e.message should be (Some(Map(1 -> "one", 2 -> "two", -6 -> "minus six") + " contained an odd number key: (1,one) was an odd number key"))
         e.failedCodeFileName should be (Some("AnMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
@@ -362,37 +247,6 @@ class AnMatcherSpec extends Spec with Matchers {
         e.failedCodeFileName should be (Some("AnMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
-      
-      val oddNumber = AnMatcher[Int]("odd number") { _ % 2 != 0 }
-      
-      def `should work correctly with 'should contain'` {
-        javaList(-2, 5, -8) should contain an (oddNumber)
-      }
-      
-      def `should throw TestFailedException with correct stack depth and message when 'should contain a' assertion failed` {
-        val left = javaList(-2, -6, -8)
-        val e = intercept[exceptions.TestFailedException] {
-          left should contain an oddNumber
-        }
-        e.message should be (Some(left + " did not contain an odd number"))
-        e.failedCodeFileName should be (Some("AnMatcherSpec.scala"))
-        e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
-      }
-      
-      def `should work correctly with 'should not contain'` {
-        javaList(-2, -6, -8) should not contain an (oddNumber)
-      }
-      
-      def `should throw TestFailedException with correct stack depth and message when 'should not contain a' assertion failed` {
-        val left = javaList(-1, 2, -6)
-        val e = intercept[exceptions.TestFailedException] {
-          left should not contain an (oddNumber)
-        }
-        e.message should be (Some(left + " contained an odd number: -1 was an odd number"))
-        e.failedCodeFileName should be (Some("AnMatcherSpec.scala"))
-        e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
-      }
-      
     }
     
     object `when used with java set` {
@@ -432,37 +286,6 @@ class AnMatcherSpec extends Spec with Matchers {
         e.failedCodeFileName should be (Some("AnMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
-      
-      val oddNumber = AnMatcher[Int]("odd number") { _ % 2 != 0 }
-      
-      def `should work correctly with 'should contain'` {
-        javaSet(-2, 5, -8) should contain an (oddNumber)
-      }
-      
-      def `should throw TestFailedException with correct stack depth and message when 'should contain a' assertion failed` {
-        val left = javaSet(-2, -6, -8)
-        val e = intercept[exceptions.TestFailedException] {
-          left should contain an oddNumber
-        }
-        e.message should be (Some(left + " did not contain an odd number"))
-        e.failedCodeFileName should be (Some("AnMatcherSpec.scala"))
-        e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
-      }
-      
-      def `should work correctly with 'should not contain'` {
-        javaSet(-2, -6, -8) should not contain an (oddNumber)
-      }
-      
-      def `should throw TestFailedException with correct stack depth and message when 'should not contain a' assertion failed` {
-        val left = javaSet(-1, 2, -6)
-        val e = intercept[exceptions.TestFailedException] {
-          left should not contain an (oddNumber)
-        }
-        e.message should be (Some(left + " contained an odd number: -1 was an odd number"))
-        e.failedCodeFileName should be (Some("AnMatcherSpec.scala"))
-        e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
-      }
-      
     }
     
     object `when used with java map` {
@@ -502,36 +325,6 @@ class AnMatcherSpec extends Spec with Matchers {
         e.failedCodeFileName should be (Some("AnMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
-      
-      val oddNumberKey = AnMatcher[(Int, String)]("odd number key") { _._1  % 2 != 0 }
-      
-      def `should work correctly with 'should contain'` {
-        javaMap(-2 -> "minus two", 5 -> "five", -8 -> "minus eight") should contain an (oddNumberKey)
-      }
-      
-      def `should throw TestFailedException with correct stack depth and message when 'should contain a' assertion failed` {
-        val left = javaMap(-2 -> "minus two", -6 -> "minus six", -8 -> "minus eight")
-        val e = intercept[exceptions.TestFailedException] {
-          left should contain an oddNumberKey
-        }
-        e.message should be (Some(left + " did not contain an odd number key"))
-        e.failedCodeFileName should be (Some("AnMatcherSpec.scala"))
-        e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
-      }
-      
-      def `should work correctly with 'should not contain'` {
-        javaMap(-2 -> "minus two", -6 -> "minus six", -8 -> "minus eight") should not contain an (oddNumberKey)
-      }
-      
-      def `should throw TestFailedException with correct stack depth and message when 'should not contain a' assertion failed` {
-        val left = javaMap(1 -> "one", 2 -> "two", -6 -> "minus six")
-        val e = intercept[exceptions.TestFailedException] {
-          left should not contain an (oddNumberKey)
-        }
-        e.message should be (Some(left + " contained an odd number key: (1,one) was an odd number key"))
-        e.failedCodeFileName should be (Some("AnMatcherSpec.scala"))
-        e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
-      }
     }
     
     object `when used with custom object` {
@@ -567,37 +360,6 @@ class AnMatcherSpec extends Spec with Matchers {
         e.failedCodeFileName should be (Some("AnMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
-      
-      def `should work correctly with 'should contain'` {
-        List(Person("Tom", 30), Person("Donald", 60), Person("Jerry", 35)) should contain an oldMan
-      }
-      
-      def `should throw TestFailedException with correct stack depth and message when 'should contain a' assertion failed` {
-        val left = List(Person("Tom", 30), Person("Donald", 40), Person("Jerry", 35))
-        val e = intercept[exceptions.TestFailedException] {
-          left should contain an oldMan
-        }
-        e.message should be (Some(left + " did not contain an old man"))
-        e.failedCodeFileName should be (Some("AnMatcherSpec.scala"))
-        e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
-      }
-      
-      def `should work correctly with 'should not contain'` {
-        List(Person("Tom", 30), Person("Donald", 40), Person("Jerry", 35)) should not contain an (oldMan)
-      }
-      
-      def `should throw TestFailedException with correct stack depth and message when 'should not contain a' assertion failed` {
-        val donald = Person("Donald", 60)
-        val left = List(Person("Tom", 30), donald, Person("Jerry", 35))
-        val e = intercept[exceptions.TestFailedException] {
-          left should not contain an (oldMan)
-        }
-        e.message should be (Some(left + " contained an old man: " + donald + " was an old man"))
-        e.failedCodeFileName should be (Some("AnMatcherSpec.scala"))
-        e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
-      }
-      
     }
   }
-  
 }

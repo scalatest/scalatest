@@ -1426,7 +1426,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    *
    * @author Bill Venners
    */
-  final class ResultOfContainWordForMap[K, V, L[_, _] <: scala.collection.GenMap[_, _]](val left: scala.collection.GenMap[K, V], val shouldBeTrue: Boolean) extends ResultOfContainWord[L[K, V]](left.asInstanceOf[L[K, V]]) with ContainMethods[(K, V)] {
+  final class ResultOfContainWordForMap[K, V, L[_, _] <: scala.collection.GenMap[_, _]](val left: scala.collection.GenMap[K, V], val shouldBeTrue: Boolean) extends ResultOfContainWord[L[K, V]](left.asInstanceOf[L[K, V]]) {
 
     /**
      * This method enables the following syntax:
@@ -1508,50 +1508,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
             left,
             expectedValue)
         )
-    }
-    
-    /**
-     * This method enables the following syntax (positiveNumberKey is a <code>AMatcher</code>):
-     *
-     * <pre class="stHighlight">
-     * javaMap should contain a positiveNumberKey
-     *                        ^
-     * </pre>
-     */
-    def a(aMatcher: AMatcher[(K, V)]) {
-      val leftWrapper = new JavaMapWrapper(left.asInstanceOf[java.util.Map[K, V]])
-      leftWrapper.find(e => aMatcher(e).matches) match {
-        case Some(e) => 
-          if (!shouldBeTrue) {
-            val result = aMatcher(e)
-            throw newTestFailedException(FailureMessages("containedA", leftWrapper, UnquotedString(aMatcher.nounName), UnquotedString(result.negatedFailureMessage)))
-          }
-        case None =>
-          if (shouldBeTrue)
-            throw newTestFailedException(FailureMessages("didNotContainA", leftWrapper, UnquotedString(aMatcher.nounName)))
-      }
-    }
-    
-    /**
-     * This method enables the following syntax (oddNumberKey is a <code>AnMatcher</code>):
-     *
-     * <pre class="stHighlight">
-     * javaMap should contain an oddNumberKey
-     *                        ^
-     * </pre>
-     */
-    def an(anMatcher: AnMatcher[(K, V)]) {
-      val leftWrapper = new JavaMapWrapper(left.asInstanceOf[java.util.Map[K, V]])
-      leftWrapper.find(e => anMatcher(e).matches) match {
-        case Some(e) => 
-          if (!shouldBeTrue) {
-            val result = anMatcher(e)
-            throw newTestFailedException(FailureMessages("containedAn", leftWrapper, UnquotedString(anMatcher.nounName), UnquotedString(result.negatedFailureMessage)))
-          }
-        case None =>
-          if (shouldBeTrue)
-            throw newTestFailedException(FailureMessages("didNotContainAn", leftWrapper, UnquotedString(anMatcher.nounName)))
-      }
     }
   }
 
@@ -1774,7 +1730,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
     }
     
     /**
-     * This method enables the following syntax (positiveNumber is a <code>AMatcher</code>):
+     * This method enables the following syntax (positiveNumber is a <code>AnMatcher</code>):
      *
      * <pre class="stHighlight">
      * 1 should be an oddNumber
@@ -2634,61 +2590,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
   def produce[T](implicit manifest: Manifest[T]): ResultOfProduceInvocation[T] =
     new ResultOfProduceInvocation(manifest.erasure.asInstanceOf[Class[T]])
 
-  trait ContainMethods[T] {
-  
-    val left: scala.collection.GenTraversable[T]
-    val shouldBeTrue: Boolean
-
-    /**
-     * This method enables the following syntax (positiveNumber is a <code>AMatcher</code>):
-     *
-     * <pre class="stHighlight">
-     * traversable should contain a positiveNumber
-     *                            ^
-     * </pre>
-     */
-    def a(aMatcher: AMatcher[T]) {
-      left.find(aMatcher(_).matches) match {
-        case Some(e) => 
-          if (!shouldBeTrue) {
-            val result = aMatcher(e)
-            throw newTestFailedException(FailureMessages("containedA", left, UnquotedString(aMatcher.nounName), UnquotedString(result.negatedFailureMessage)))
-          }
-        case None =>
-          if (shouldBeTrue)
-            throw newTestFailedException(FailureMessages("didNotContainA", left, UnquotedString(aMatcher.nounName)))
-      }
-    }
-    
-    /**
-     * This method enables the following syntax (oddNumber is a <code>AMatcher</code>):
-     *
-     * <pre class="stHighlight">
-     * traversable should contain an oddNumber
-     *                            ^
-     * </pre>
-     */
-    def an(anMatcher: AnMatcher[T]) {
-      left.find(anMatcher(_).matches) match {
-        case Some(e) => 
-          if (!shouldBeTrue) {
-            val result = anMatcher(e)
-            throw newTestFailedException(FailureMessages("containedAn", left, UnquotedString(anMatcher.nounName), UnquotedString(result.negatedFailureMessage)))
-          }
-        case None =>
-          if (shouldBeTrue)
-            throw newTestFailedException(FailureMessages("didNotContainAn", left, UnquotedString(anMatcher.nounName)))
-      }
-    }
-  }
-
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
    * the matchers DSL.
    *
    * @author Bill Venners
    */
-  class ResultOfContainWordForTraversable[E, L[_] <: scala.collection.GenTraversable[_]](val left: scala.collection.GenTraversable[E], val shouldBeTrue: Boolean = true) extends ResultOfContainWord[L[E]](left.asInstanceOf[L[E]]) with ContainMethods[E]
+  class ResultOfContainWordForTraversable[E, L[_] <: scala.collection.GenTraversable[_]](val left: scala.collection.GenTraversable[E], val shouldBeTrue: Boolean = true) extends ResultOfContainWord[L[E]](left.asInstanceOf[L[E]])
 
   class ResultOfContainWordForArray[E](val left: Array[E], val shouldBeTrue: Boolean = true) extends ResultOfContainWord[Array[E]](left) {
 

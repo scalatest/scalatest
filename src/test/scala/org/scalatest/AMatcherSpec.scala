@@ -114,35 +114,6 @@ class AMatcherSpec extends Spec with Matchers {
         e.failedCodeFileName should be (Some("AMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
-      
-      val positiveNumber = AMatcher[Int]("positive number") { _ > 0}
-      
-      def `should work correctly with 'should contain'` {
-        List(-2, 5, -8) should contain a (positiveNumber)
-      }
-      
-      def `should throw TestFailedException with correct stack depth and message when 'should contain a' assertion failed` {
-        val e = intercept[exceptions.TestFailedException] {
-          List(-2, -6, -8) should contain a positiveNumber
-        }
-        e.message should be (Some(List(-2, -6, -8) + " did not contain a positive number"))
-        e.failedCodeFileName should be (Some("AMatcherSpec.scala"))
-        e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
-      }
-      
-      def `should work correctly with 'should not contain'` {
-        List(-2, -6, -8) should not contain a (positiveNumber)
-      }
-      
-      def `should throw TestFailedException with correct stack depth and message when 'should not contain a' assertion failed` {
-        val e = intercept[exceptions.TestFailedException] {
-          List(-1, 2, -6) should not contain a (positiveNumber)
-        }
-        e.message should be (Some(List(-1, 2, -6) + " contained a positive number: 2 was a positive number"))
-        e.failedCodeFileName should be (Some("AMatcherSpec.scala"))
-        e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
-      }
-      
     }
     
     object `when used with set` {
@@ -174,35 +145,6 @@ class AMatcherSpec extends Spec with Matchers {
         e.failedCodeFileName should be (Some("AMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
-      
-      val positiveNumber = AMatcher[Int]("positive number") { _ > 0}
-      
-      def `should work correctly with 'should contain'` {
-        Set(-2, 5, -8) should contain a (positiveNumber)
-      }
-      
-      def `should throw TestFailedException with correct stack depth and message when 'should contain a' assertion failed` {
-        val e = intercept[exceptions.TestFailedException] {
-          Set(-2, -6, -8) should contain a positiveNumber
-        }
-        e.message should be (Some(Set(-2, -6, -8) + " did not contain a positive number"))
-        e.failedCodeFileName should be (Some("AMatcherSpec.scala"))
-        e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
-      }
-      
-      def `should work correctly with 'should not contain'` {
-        Set(-2, -6, -8) should not contain a (positiveNumber)
-      }
-      
-      def `should throw TestFailedException with correct stack depth and message when 'should not contain a' assertion failed` {
-        val e = intercept[exceptions.TestFailedException] {
-          Set(-1, 2, -6) should not contain a (positiveNumber)
-        }
-        e.message should be (Some(Set(-1, 2, -6) + " contained a positive number: 2 was a positive number"))
-        e.failedCodeFileName should be (Some("AMatcherSpec.scala"))
-        e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
-      }
-      
     }
     
     object `when used with array` {
@@ -234,35 +176,6 @@ class AMatcherSpec extends Spec with Matchers {
         e.failedCodeFileName should be (Some("AMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
-      
-      val positiveNumber = AMatcher[Int]("positive number") { _ > 0}
-      
-      def `should work correctly with 'should contain'` {
-        Array(-2, 5, -8) should contain a (positiveNumber)
-      }
-      
-      def `should throw TestFailedException with correct stack depth and message when 'should contain a' assertion failed` {
-        val e = intercept[exceptions.TestFailedException] {
-          Array(-2, -6, -8) should contain a positiveNumber
-        }
-        e.message should be (Some("Array(-2, -6, -8) did not contain a positive number"))
-        e.failedCodeFileName should be (Some("AMatcherSpec.scala"))
-        e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
-      }
-      
-      def `should work correctly with 'should not contain'` {
-        Array(-2, -6, -8) should not contain a (positiveNumber)
-      }
-      
-      def `should throw TestFailedException with correct stack depth and message when 'should not contain a' assertion failed` {
-        val e = intercept[exceptions.TestFailedException] {
-          Array(-1, 2, -6) should not contain a (positiveNumber)
-        }
-        e.message should be (Some("Array(-1, 2, -6) contained a positive number: 2 was a positive number"))
-        e.failedCodeFileName should be (Some("AMatcherSpec.scala"))
-        e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
-      }
-      
     }
     
     object `when used with map` {
@@ -291,34 +204,6 @@ class AMatcherSpec extends Spec with Matchers {
           Map(1 -> "one", 2 -> "two", 3 -> "three") should not be a (positiveSizeMap)
         }
         e.message should be (Some(Map(1 -> "one", 2 -> "two", 3 -> "three") + " was a positive size map"))
-        e.failedCodeFileName should be (Some("AMatcherSpec.scala"))
-        e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
-      }
-      
-      val positiveNumberKey = AMatcher[(Int, String)]("positive number key") { _._1 > 0}
-      
-      def `should work correctly with 'should contain'` {
-        Map(-2 -> "minus two", 5 -> "five", -8 -> "minus eight") should contain a (positiveNumberKey)
-      }
-      
-      def `should throw TestFailedException with correct stack depth and message when 'should contain a' assertion failed` {
-        val e = intercept[exceptions.TestFailedException] {
-          Map(-2 -> "minus two", -6 -> "minus six", -8 -> "minus eight") should contain a positiveNumberKey
-        }
-        e.message should be (Some(Map(-2 -> "minus two", -6 -> "minus six", -8 -> "minus eight") + " did not contain a positive number key"))
-        e.failedCodeFileName should be (Some("AMatcherSpec.scala"))
-        e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
-      }
-      
-      def `should work correctly with 'should not contain'` {
-        Map(-2 -> "minus two", -6 -> "minus six", -8 -> "minus eight") should not contain a (positiveNumberKey)
-      }
-      
-      def `should throw TestFailedException with correct stack depth and message when 'should not contain a' assertion failed` {
-        val e = intercept[exceptions.TestFailedException] {
-          Map(-1 -> "minus one", 2 -> "two", -6 -> "minus six") should not contain a (positiveNumberKey)
-        }
-        e.message should be (Some(Map(-1 -> "minus one", 2 -> "two", -6 -> "minus six") + " contained a positive number key: (2,two) was a positive number key"))
         e.failedCodeFileName should be (Some("AMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
@@ -361,37 +246,6 @@ class AMatcherSpec extends Spec with Matchers {
         e.failedCodeFileName should be (Some("AMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
-      
-      val positiveNumber = AMatcher[Int]("positive number") { _ > 0}
-      
-      def `should work correctly with 'should contain'` {
-        javaList(-2, 5, -8) should contain a (positiveNumber)
-      }
-      
-      def `should throw TestFailedException with correct stack depth and message when 'should contain a' assertion failed` {
-        val left = javaList(-2, -6, -8)
-        val e = intercept[exceptions.TestFailedException] {
-          left should contain a positiveNumber
-        }
-        e.message should be (Some(left + " did not contain a positive number"))
-        e.failedCodeFileName should be (Some("AMatcherSpec.scala"))
-        e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
-      }
-      
-      def `should work correctly with 'should not contain'` {
-        javaList(-2, -6, -8) should not contain a (positiveNumber)
-      }
-      
-      def `should throw TestFailedException with correct stack depth and message when 'should not contain a' assertion failed` {
-        val left = javaList(-1, 2, -6)
-        val e = intercept[exceptions.TestFailedException] {
-          left should not contain a (positiveNumber)
-        }
-        e.message should be (Some(left + " contained a positive number: 2 was a positive number"))
-        e.failedCodeFileName should be (Some("AMatcherSpec.scala"))
-        e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
-      }
-      
     }
     
     object `when used with java set` {
@@ -431,37 +285,6 @@ class AMatcherSpec extends Spec with Matchers {
         e.failedCodeFileName should be (Some("AMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
-      
-      val positiveNumber = AMatcher[Int]("positive number") { _ > 0}
-      
-      def `should work correctly with 'should contain'` {
-        javaSet(-2, 5, -8) should contain a (positiveNumber)
-      }
-      
-      def `should throw TestFailedException with correct stack depth and message when 'should contain a' assertion failed` {
-        val left = javaSet(-2, -6, -8)
-        val e = intercept[exceptions.TestFailedException] {
-          left should contain a positiveNumber
-        }
-        e.message should be (Some(left + " did not contain a positive number"))
-        e.failedCodeFileName should be (Some("AMatcherSpec.scala"))
-        e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
-      }
-      
-      def `should work correctly with 'should not contain'` {
-        javaSet(-2, -6, -8) should not contain a (positiveNumber)
-      }
-      
-      def `should throw TestFailedException with correct stack depth and message when 'should not contain a' assertion failed` {
-        val left = javaSet(-1, 2, -6)
-        val e = intercept[exceptions.TestFailedException] {
-          left should not contain a (positiveNumber)
-        }
-        e.message should be (Some(left + " contained a positive number: 2 was a positive number"))
-        e.failedCodeFileName should be (Some("AMatcherSpec.scala"))
-        e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
-      }
-      
     }
     
     object `when used with java map` {
@@ -501,36 +324,6 @@ class AMatcherSpec extends Spec with Matchers {
         e.failedCodeFileName should be (Some("AMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
-      
-      val positiveNumberKey = AMatcher[(Int, String)]("positive number key") { _._1 > 0}
-      
-      def `should work correctly with 'should contain'` {
-        javaMap(-2 -> "minus two", 5 -> "five", -8 -> "minus eight") should contain a (positiveNumberKey)
-      }
-      
-      def `should throw TestFailedException with correct stack depth and message when 'should contain a' assertion failed` {
-        val left = javaMap(-2 -> "minus two", -6 -> "minus six", -8 -> "minus eight")
-        val e = intercept[exceptions.TestFailedException] {
-          left should contain a positiveNumberKey
-        }
-        e.message should be (Some(left + " did not contain a positive number key"))
-        e.failedCodeFileName should be (Some("AMatcherSpec.scala"))
-        e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
-      }
-      
-      def `should work correctly with 'should not contain'` {
-        javaMap(-2 -> "minus two", -6 -> "minus six", -8 -> "minus eight") should not contain a (positiveNumberKey)
-      }
-      
-      def `should throw TestFailedException with correct stack depth and message when 'should not contain a' assertion failed` {
-        val left = javaMap(-1 -> "minus one", 2 -> "two", -6 -> "minus six")
-        val e = intercept[exceptions.TestFailedException] {
-          left should not contain a (positiveNumberKey)
-        }
-        e.message should be (Some(left + " contained a positive number key: (2,two) was a positive number key"))
-        e.failedCodeFileName should be (Some("AMatcherSpec.scala"))
-        e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
-      }
     }
     
     object `when used with custom object` {
@@ -566,36 +359,6 @@ class AMatcherSpec extends Spec with Matchers {
         e.failedCodeFileName should be (Some("AMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
-      
-      def `should work correctly with 'should contain'` {
-        List(Person("Tom", 60), Person("Donald", 30), Person("Jerry", 65)) should contain a youngMan
-      }
-      
-      def `should throw TestFailedException with correct stack depth and message when 'should contain a' assertion failed` {
-        val left = List(Person("Tom", 60), Person("Donald", 70), Person("Jerry", 65))
-        val e = intercept[exceptions.TestFailedException] {
-          left should contain a youngMan
-        }
-        e.message should be (Some(left + " did not contain a young man"))
-        e.failedCodeFileName should be (Some("AMatcherSpec.scala"))
-        e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
-      }
-      
-      def `should work correctly with 'should not contain'` {
-        List(Person("Tom", 60), Person("Donald", 70), Person("Jerry", 65)) should not contain a (youngMan)
-      }
-      
-      def `should throw TestFailedException with correct stack depth and message when 'should not contain a' assertion failed` {
-        val donald = Person("Donald", 30)
-        val left = List(Person("Tom", 60), donald, Person("Jerry", 65))
-        val e = intercept[exceptions.TestFailedException] {
-          left should not contain a (youngMan)
-        }
-        e.message should be (Some(left + " contained a young man: " + donald + " was a young man"))
-        e.failedCodeFileName should be (Some("AMatcherSpec.scala"))
-        e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
-      }
-      
     }
   }
 }
