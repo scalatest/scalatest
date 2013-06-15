@@ -237,4 +237,24 @@ object Sequencing {
 
   implicit def convertEqualityToJavaListSequencing[E, JLIST[_] <: java.util.List[_]](equality: Equality[E]): Sequencing[JLIST[E]] = 
     sequencingNatureOfJavaList(equality)
+
+  implicit def sequencingNatureOfString(implicit equality: Equality[Char]): Sequencing[String] = 
+    new Sequencing[String] {
+
+      def containsInOrder(s: String, elements: scala.collection.Seq[Any]): Boolean = {
+        checkInOrder(s, elements, equality)
+      }
+
+      def containsInOrderOnly(s: String, elements: scala.collection.Seq[Any]): Boolean = {
+        checkInOrderOnly(s, elements, equality)
+      }
+
+      def containsTheSameElementsInOrderAs(s: String, elements: GenTraversable[Any]): Boolean = {
+        checkTheSameElementsInOrderAs(s, elements, equality)
+      }
+    }
+
+  implicit def convertEqualityToStringSequencing(equality: Equality[Char]): Sequencing[String] = 
+    sequencingNatureOfString(equality)
+    
 }

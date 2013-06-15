@@ -1006,9 +1006,9 @@ object GenContain {
     // generateFile("ListShouldContainTheSameElementsInOrderAsSpec.scala", "JavaMap", javaMapMapping: _*)
     // generateFile("ListShouldContainTheSameElementsInOrderAsLogicalAndSpec.scala", "JavaMap", javaMapMapping: _*)
     // generateFile("ListShouldContainTheSameElementsInOrderAsLogicalOrSpec.scala", "JavaMap", javaMapMapping: _*)
-    // generateFile("ListShouldContainTheSameElementsInOrderAsSpec.scala", "String", stringMapping: _*)
-    // generateFile("ListShouldContainTheSameElementsInOrderAsLogicalAndSpec.scala", "String", stringMapping: _*)
-    // generateFile("ListShouldContainTheSameElementsInOrderAsLogicalOrSpec.scala", "String", stringMapping: _*)
+    generateFile("ListShouldContainTheSameElementsInOrderAsSpec.scala", "String", stringMapping: _*)
+    generateFile("ListShouldContainTheSameElementsInOrderAsLogicalAndSpec.scala", "String", stringMapping: _*)
+    generateFile("ListShouldContainTheSameElementsInOrderAsLogicalOrSpec.scala", "String", stringMapping: _*)
     
     // Generate tests for only
     generateFile("ListShouldContainOnlySpec.scala", "Array", arrayMapping: _*)
@@ -1057,9 +1057,9 @@ object GenContain {
     // generateFile("ListShouldContainInOrderOnlySpec.scala", "JavaMap", javaMapMapping: _*)
     // generateFile("ListShouldContainInOrderOnlyLogicalAndSpec.scala", "JavaMap", javaMapMapping: _*)
     // generateFile("ListShouldContainInOrderOnlyLogicalOrSpec.scala", "JavaMap", javaMapMapping: _*)
-    // generateFile("ListShouldContainInOrderOnlySpec.scala", "String", stringMapping: _*)
-    // generateFile("ListShouldContainInOrderOnlyLogicalAndSpec.scala", "String", stringMapping: _*)
-    // generateFile("ListShouldContainInOrderOnlyLogicalOrSpec.scala", "String", stringMapping: _*)
+    generateFile("ListShouldContainInOrderOnlySpec.scala", "String", stringMapping: _*)
+    generateFile("ListShouldContainInOrderOnlyLogicalAndSpec.scala", "String", stringMapping: _*)
+    generateFile("ListShouldContainInOrderOnlyLogicalOrSpec.scala", "String", stringMapping: _*)
       
     // Generate tests for inOrder
     generateFile("ListShouldContainInOrderSpec.scala", "Array", arrayMapping: _*)
@@ -1074,9 +1074,9 @@ object GenContain {
     // generateFile("ListShouldContainInOrderSpec.scala", "JavaMap", javaMapMapping: _*)
     // generateFile("ListShouldContainInOrderLogicalAndSpec.scala", "JavaMap", javaMapMapping: _*)
     // generateFile("ListShouldContainInOrderLogicalOrSpec.scala", "JavaMap", javaMapMapping: _*)
-    // generateFile("ListShouldContainInOrderSpec.scala", "String", stringMapping: _*)
-    // generateFile("ListShouldContainInOrderLogicalAndSpec.scala", "String", stringMapping: _*)
-    // generateFile("ListShouldContainInOrderLogicalOrSpec.scala", "String", stringMapping: _*)
+    generateFile("ListShouldContainInOrderSpec.scala", "String", stringMapping: _*)
+    generateFile("ListShouldContainInOrderLogicalAndSpec.scala", "String", stringMapping: _*)
+    generateFile("ListShouldContainInOrderLogicalOrSpec.scala", "String", stringMapping: _*)
   }
   
   def main(args: Array[String]) {
