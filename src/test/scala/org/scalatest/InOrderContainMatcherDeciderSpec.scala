@@ -30,6 +30,7 @@ class InOrderContainMatcherDeciderSpec extends Spec with Matchers with Explicitl
       def normalizedIfInstanceOfA(b: Any) = 
         b match {
           case tup: (Int, String) => normalized(tup)
+          // case tup: (_, _) if tup._1.isInstanceOf[Int] && tup._2.isInstanceOf[String] => normalized(tup)
           case _ => b
         }
 
@@ -56,6 +57,7 @@ class InOrderContainMatcherDeciderSpec extends Spec with Matchers with Explicitl
       var count = 0
       def normalizedIfInstanceOfA(b: Any) = 
         b match {
+          // case tup: (_, _) if tup._1.isInstanceOf[Int] && tup._2.isInstanceOf[String] => normalized(tup)
           case tup: (Int, String) => normalized(tup)
           case _ => b
         }
