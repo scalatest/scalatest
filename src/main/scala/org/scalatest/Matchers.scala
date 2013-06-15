@@ -2591,112 +2591,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
     new ResultOfProduceInvocation(manifest.erasure.asInstanceOf[Class[T]])
 
   /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * @author Bill Venners
-   */
-  class ResultOfContainWordForTraversable[E, L[_] <: scala.collection.GenTraversable[_]](val left: scala.collection.GenTraversable[E], val shouldBeTrue: Boolean = true) extends ResultOfContainWord[L[E]](left.asInstanceOf[L[E]])
-
-  class ResultOfContainWordForArray[E](val left: Array[E], val shouldBeTrue: Boolean = true) extends ResultOfContainWord[Array[E]](left) {
-
-    /**
-     * This method enables the following syntax (positiveNumber is a <code>AMatcher</code>):
-     *
-     * <pre class="stHighlight">
-     * traversable should contain a positiveNumber
-     *                            ^
-     * </pre>
-     */
-    def a(aMatcher: AMatcher[E]) {
-      left.find(aMatcher(_).matches) match {
-        case Some(e) => 
-          if (!shouldBeTrue) {
-            val result = aMatcher(e)
-            throw newTestFailedException(FailureMessages("containedA", left, UnquotedString(aMatcher.nounName), UnquotedString(result.negatedFailureMessage)))
-          }
-        case None =>
-          if (shouldBeTrue)
-            throw newTestFailedException(FailureMessages("didNotContainA", left, UnquotedString(aMatcher.nounName)))
-      }
-    }
-    
-    /**
-     * This method enables the following syntax (oddNumber is a <code>AMatcher</code>):
-     *
-     * <pre class="stHighlight">
-     * traversable should contain an oddNumber
-     *                            ^
-     * </pre>
-     */
-    def an(anMatcher: AnMatcher[E]) {
-      left.find(anMatcher(_).matches) match {
-        case Some(e) => 
-          if (!shouldBeTrue) {
-            val result = anMatcher(e)
-            throw newTestFailedException(FailureMessages("containedAn", left, UnquotedString(anMatcher.nounName), UnquotedString(result.negatedFailureMessage)))
-          }
-        case None =>
-          if (shouldBeTrue)
-            throw newTestFailedException(FailureMessages("didNotContainAn", left, UnquotedString(anMatcher.nounName)))
-      }
-    }
-  }
-
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * @author Bill Venners
-   */
-  final class ResultOfContainWordForJavaCollection[E, L[_] <: java.util.Collection[_]](left: L[E], shouldBeTrue: Boolean) extends ResultOfContainWord[L[E]](left) {
-    
-    /**
-     * This method enables the following syntax (positiveNumber is a <code>AMatcher</code>):
-     *
-     * <pre class="stHighlight">
-     * javaCol should contain a positiveNumber
-     *                        ^
-     * </pre>
-     */
-    def a(aMatcher: AMatcher[E]) {
-      val leftWrapper = new JavaCollectionWrapper(left.asInstanceOf[java.util.Collection[E]])
-      leftWrapper.find(e => aMatcher(e).matches) match {
-        case Some(e) => 
-          if (!shouldBeTrue) {
-            val result = aMatcher(e)
-            throw newTestFailedException(FailureMessages("containedA", leftWrapper, UnquotedString(aMatcher.nounName), UnquotedString(result.negatedFailureMessage)))
-          }
-        case None =>
-          if (shouldBeTrue)
-            throw newTestFailedException(FailureMessages("didNotContainA", leftWrapper, UnquotedString(aMatcher.nounName)))
-      }
-    }
-    
-    /**
-     * This method enables the following syntax (oddNumber is a <code>AnMatcher</code>):
-     *
-     * <pre class="stHighlight">
-     * javaCol should contain an oddNumber
-     *                        ^
-     * </pre>
-     */
-    def an(anMatcher: AnMatcher[E]) {
-      val leftWrapper = new JavaCollectionWrapper(left.asInstanceOf[java.util.Collection[E]])
-      leftWrapper.find(e => anMatcher(e).matches) match {
-        case Some(e) => 
-          if (!shouldBeTrue) {
-            val result = anMatcher(e)
-            throw newTestFailedException(FailureMessages("containedAn", leftWrapper, UnquotedString(anMatcher.nounName), UnquotedString(result.negatedFailureMessage)))
-          }
-        case None =>
-          if (shouldBeTrue)
-            throw newTestFailedException(FailureMessages("didNotContainAn", leftWrapper, UnquotedString(anMatcher.nounName)))
-      }
-    }
-  }
-  
-  /**
    * This method enables the following syntax: 
    *
    * <pre class="stHighlight">
@@ -6292,42 +6186,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       new RegexWithGroups(regex, IndexedSeq(groups: _*))
   }
 
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * <p>
-   * This class is used in conjunction with an implicit conversion to enable <code>should</code> methods to
-   * be invoked on objects of type <code>scala.Array[T]</code>.
-   * </p>
-   *
-   * @author Bill Venners
-   */
-  final class ArrayShouldWrapper[E](left: Array[E]) extends AnyShouldWrapper(left) {
-
-     /**
-     * This method enables syntax such as the following, where <code>positiveNumber</code> is a <code>AMatcher</code>:
-     *
-     * <pre class="stHighlight">
-     * array should contain a positiveNumber
-     *       ^
-     * </pre>
-     */
-    override def should(containWord: ContainWord) = 
-      new ResultOfContainWordForArray[E](left, true)
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * array should not have length (3)
-     *       ^
-     * </pre>
-     */
-    override def should(notWord: NotWord): ResultOfNotWordForArray[E] =
-      new ResultOfNotWordForArray(left, false)
-  }
-
 // TODO: Am I doing conversions on immutable.GenTraversable and immutable.GenSeq? If so, write a test that fails and make it general.
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
@@ -6384,28 +6242,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * This method enables syntax such as the following:
      *
      * <pre class="stHighlight">
-     * traversable should contain theSameElementsAs anotherTraversable
-     *             ^
-     * </pre>
-     */
-    override def should(containWord: ContainWord): ResultOfContainWordForTraversable[E, L] = 
-      new ResultOfContainWordForTraversable(left.asInstanceOf[scala.collection.GenTraversable[E]], true)
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * traversable should not have size (3)
-     *             ^
-     * </pre>
-     */
-    override def should(notWord: NotWord): ResultOfNotWordForGenTraversable[E, L] =
-      new ResultOfNotWordForGenTraversable(left, false)
-    
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
      * xs.loneElement should be > 9
      *    ^
      * </pre>
@@ -6421,43 +6257,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
             left.size)
         )
     }
-  }
-
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * <p>
-   * This class is used in conjunction with an implicit conversion to enable <code>should</code> methods to
-   * be invoked on objects of type <code>java.util.Collection[T]</code>.
-   * </p>
-   *
-   * @author Bill Venners
-   */
-  final class JavaCollectionShouldWrapper[E, L[_] <: java.util.Collection[_]](left: L[E]) extends AnyShouldWrapper(left) {
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * javaCollection should contain theSameElementsAs anotherSeq
-     *                ^
-     * </pre>
-     */
-    override def should(containWord: ContainWord): ResultOfContainWordForJavaCollection[E, L] = 
-      // new ResultOfContainWordForJavaCollection(left.asInstanceOf[java.util.Collection[E]], true)
-      new ResultOfContainWordForJavaCollection(left, true)
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * javaCollection should not have size (3)
-     *                ^
-     * </pre>
-     */
-    override def should(notWord: NotWord): ResultOfNotWordForJavaCollection[E, L] =
-      new ResultOfNotWordForJavaCollection(left, false)
   }
 
   /**
@@ -6511,12 +6310,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   implicit def convertToTraversableShouldWrapper[E, L[_] <: scala.collection.GenTraversable[_]](o: L[E]): TraversableShouldWrapper[E, L] = new TraversableShouldWrapper[E, L](o)
 
   /**
-   * Implicitly converts an object of type <code>scala.Array[T]</code> to a <code>ArrayShouldWrapper[T]</code>,
-   * to enable <code>should</code> methods to be invokable on that object.
-   */
-  implicit def convertToArrayShouldWrapper[T](o: Array[T]): ArrayShouldWrapper[T] = new ArrayShouldWrapper[T](o)
-
-  /**
    * Implicitly converts an object of type <code>scala.collection.GenMap[K, V]</code> to a <code>MapShouldWrapper[K, V]</code>,
    * to enable <code>should</code> methods to be invokable on that object.
    */
@@ -6535,16 +6328,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   implicit def convertToRegexWrapper(o: Regex): RegexWrapper = new RegexWrapper(o)
 
   /**
-   * Implicitly converts an object of type <code>java.util.Collection[T]</code> to a <code>JavaCollectionShouldWrapper[T]</code>,
-   * to enable <code>should</code> methods to be invokable on that object.
-   */
-  implicit def convertToJavaCollectionShouldWrapper[E, L[_] <: java.util.Collection[_]](o: L[E]): JavaCollectionShouldWrapper[E, L] = new JavaCollectionShouldWrapper[E, L](o)
-
-  /**
    * Implicitly converts an object of type <code>java.util.Map[K, V]</code> to a <code>JavaMapShouldWrapper[K, V]</code>,
    * to enable <code>should</code> methods to be invokable on that object.
    */
-  implicit def convertToJavaMapShouldWrapper[K, V, L[_, _] <: java.util.Map[_, _]](o: L[K, V]): JavaMapShouldWrapper[K, V, L] = new JavaMapShouldWrapper[K, V, L](o)
+  implicit def convertToJavaMapShouldWrapper[K, V, L[_, _] <: java.util.Map[_, _]](o: L[K, V]): JavaMapShouldWrapper[K, V, L] = new JavaMapShouldWrapper[K, V, L](o) 
 
   /**
    * Turn off implicit conversion of LoneElement, so that if user accidentally mixin LoneElement it does conflict with convertToTraversableShouldWrapper

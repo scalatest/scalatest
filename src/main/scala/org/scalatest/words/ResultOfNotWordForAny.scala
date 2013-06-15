@@ -918,120 +918,6 @@ final class ResultOfNotWordForString(left: String, shouldBeTrue: Boolean)
  *
  * @author Bill Venners
  */
-class ResultOfNotWordForGenTraversable[E, T[_] <: scala.collection.GenTraversable[_]](left: T[E], shouldBeTrue: Boolean)
-    extends ResultOfNotWordForAny(left, shouldBeTrue) {
-
-  /**
-   * This method enables the following syntax, where <code>positiveNumber</code> refers to
-   * an <code>AMatcher[Int]</code>:
-   *
-   * <pre class="stHighlight">
-   * collection should not contain a (positiveNumber)
-   *                       ^
-   * </pre>
-   */
-  def contain(resultOfAWordToAMatcherApplication: ResultOfAWordToAMatcherApplication[E]) {
-    val aMatcher = resultOfAWordToAMatcherApplication.aMatcher
-    left.find (e => aMatcher(e.asInstanceOf[E]).matches) match {
-      case Some(e) => 
-        if (!shouldBeTrue) {
-          val result = aMatcher(e.asInstanceOf[E])
-          throw newTestFailedException(FailureMessages("containedA", left, UnquotedString(aMatcher.nounName), UnquotedString(result.negatedFailureMessage)))
-        }
-      case None =>
-        if (shouldBeTrue)
-          throw newTestFailedException(FailureMessages("didNotContainA", left, UnquotedString(aMatcher.nounName)))
-    }
-  }
-  
-  /**
-   * This method enables the following syntax, where <code>positiveNumber</code> refers to
-   * an <code>AnMatcher[Int]</code>:
-   *
-   * <pre class="stHighlight">
-   * collection should not contain a (positiveNumber)
-   *                       ^
-   * </pre>
-   */
-  def contain(resultOfAnWordToAnMatcherApplication: ResultOfAnWordToAnMatcherApplication[E]) {
-    val anMatcher = resultOfAnWordToAnMatcherApplication.anMatcher
-    left.find (e => anMatcher(e.asInstanceOf[E]).matches) match {
-      case Some(e) => 
-        if (!shouldBeTrue) {
-          val result = anMatcher(e.asInstanceOf[E])
-          throw newTestFailedException(FailureMessages("containedAn", left, UnquotedString(anMatcher.nounName), UnquotedString(result.negatedFailureMessage)))
-        }
-      case None =>
-        if (shouldBeTrue)
-          throw newTestFailedException(FailureMessages("didNotContainAn", left, UnquotedString(anMatcher.nounName)))
-    }
-  }
-}
-
-/**
- * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
- * the matchers DSL.
- *
- * @author Bill Venners
- */
-class ResultOfNotWordForJavaCollection[E, T[_] <: java.util.Collection[_]](left: T[E], shouldBeTrue: Boolean)
-    extends ResultOfNotWordForAny(left, shouldBeTrue) {
-
-  /**
-   * This method enables the following syntax, where <code>positiveNumber</code> refers to
-   * an <code>AMatcher[Int]</code>:
-   *
-   * <pre class="stHighlight">
-   * javaCol should not contain a (positiveNumber)
-   *                    ^
-   * </pre>
-   */
-  def contain(resultOfAWordToAMatcherApplication: ResultOfAWordToAMatcherApplication[E]) {
-    val aMatcher = resultOfAWordToAMatcherApplication.aMatcher
-    val leftWrapper = new JavaCollectionWrapper(left.asInstanceOf[java.util.Collection[E]])
-    leftWrapper.find (e => aMatcher(e.asInstanceOf[E]).matches) match {
-      case Some(e) => 
-        if (!shouldBeTrue) {
-          val result = aMatcher(e.asInstanceOf[E])
-          throw newTestFailedException(FailureMessages("containedA", left, UnquotedString(aMatcher.nounName), UnquotedString(result.negatedFailureMessage)))
-        }
-      case None =>
-        if (shouldBeTrue)
-          throw newTestFailedException(FailureMessages("didNotContainA", left, UnquotedString(aMatcher.nounName)))
-    }
-  }
-  
-  /**
-   * This method enables the following syntax, where <code>oddNumber</code> refers to
-   * an <code>AnMatcher[Int]</code>:
-   *
-   * <pre class="stHighlight">
-   * javaCol should not contain an (oddNumber)
-   *                    ^
-   * </pre>
-   */
-  def contain(resultOfAnWordToAnMatcherApplication: ResultOfAnWordToAnMatcherApplication[E]) {
-    val anMatcher = resultOfAnWordToAnMatcherApplication.anMatcher
-    val leftWrapper = new JavaCollectionWrapper(left.asInstanceOf[java.util.Collection[E]])
-    leftWrapper.find (e => anMatcher(e.asInstanceOf[E]).matches) match {
-      case Some(e) => 
-        if (!shouldBeTrue) {
-          val result = anMatcher(e.asInstanceOf[E])
-          throw newTestFailedException(FailureMessages("containedAn", left, UnquotedString(anMatcher.nounName), UnquotedString(result.negatedFailureMessage)))
-        }
-      case None =>
-        if (shouldBeTrue)
-          throw newTestFailedException(FailureMessages("didNotContainAn", left, UnquotedString(anMatcher.nounName)))
-    }
-  }
-}
-
-/**
- * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
- * the matchers DSL.
- *
- * @author Bill Venners
- */
 final class ResultOfNotWordForGenMap[K, V, L[_, _] <: scala.collection.GenMap[_, _]](left: L[K, V], shouldBeTrue: Boolean)
     extends ResultOfNotWordForAny(left, shouldBeTrue) {
 
@@ -1082,7 +968,7 @@ final class ResultOfNotWordForGenMap[K, V, L[_, _] <: scala.collection.GenMap[_,
   // So the wrong Equality type class was chosen. By going around ResultOfNotWordForTraversable, I can
   // get the precise Map type up to ResultOfNotWord's equal method, which requires the Equality type class.
 
-  /**
+  /* I think this was wrong.
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">
@@ -1090,6 +976,7 @@ final class ResultOfNotWordForGenMap[K, V, L[_, _] <: scala.collection.GenMap[_,
    *                     ^
    * </pre>
    */
+/*
   def contain(expectedElement: (K, V)) {
     val right = expectedElement
     if ((left.exists(_ == right)) != shouldBeTrue) {
@@ -1102,52 +989,7 @@ final class ResultOfNotWordForGenMap[K, V, L[_, _] <: scala.collection.GenMap[_,
         )
     }
   }
-  
-  /**
-   * This method enables the following syntax, where <code>positiveNumberKey</code> refers to
-   * an <code>AMatcher[Int]</code>:
-   *
-   * <pre class="stHighlight">
-   * map should not contain a (positiveNumberKey)
-   *                ^
-   * </pre>
-   */
-  def contain(resultOfAWordToAMatcherApplication: ResultOfAWordToAMatcherApplication[(K, V)]) {
-    val aMatcher = resultOfAWordToAMatcherApplication.aMatcher
-    left.find (e => aMatcher(e.asInstanceOf[(K, V)]).matches) match {
-      case Some(e) => 
-        if (!shouldBeTrue) {
-          val result = aMatcher(e.asInstanceOf[(K, V)])
-          throw newTestFailedException(FailureMessages("containedA", left, UnquotedString(aMatcher.nounName), UnquotedString(result.negatedFailureMessage)))
-        }
-      case None =>
-        if (shouldBeTrue)
-          throw newTestFailedException(FailureMessages("didNotContainA", left, UnquotedString(aMatcher.nounName)))
-    }
-  }
-  
-  /**
-   * This method enables the following syntax, where <code>oddNumberKey</code> refers to
-   * an <code>AnMatcher[Int]</code>:
-   *
-   * <pre class="stHighlight">
-   * map should not contain a (oddNumberKey)
-   *                ^
-   * </pre>
-   */
-  def contain(resultOfAnWordToAnMatcherApplication: ResultOfAnWordToAnMatcherApplication[(K, V)]) {
-    val anMatcher = resultOfAnWordToAnMatcherApplication.anMatcher
-    left.find (e => anMatcher(e.asInstanceOf[(K, V)]).matches) match {
-      case Some(e) => 
-        if (!shouldBeTrue) {
-          val result = anMatcher(e.asInstanceOf[(K, V)])
-          throw newTestFailedException(FailureMessages("containedAn", left, UnquotedString(anMatcher.nounName), UnquotedString(result.negatedFailureMessage)))
-        }
-      case None =>
-        if (shouldBeTrue)
-          throw newTestFailedException(FailureMessages("didNotContainAn", left, UnquotedString(anMatcher.nounName)))
-    }
-  }
+*/
 }
 
 /**
@@ -1198,110 +1040,6 @@ final class ResultOfNotWordForJavaMap[K, V, L[_, _] <: java.util.Map[_, _]](left
             right
           )
         )
-    }
-  }
-  
-  /**
-   * This method enables the following syntax, where <code>positiveNumber</code> refers to
-   * an <code>AMatcher[Int]</code>:
-   *
-   * <pre class="stHighlight">
-   * javaMap should not contain a (positiveNumber)
-   *                    ^
-   * </pre>
-   */
-  def contain(resultOfAWordToAMatcherApplication: ResultOfAWordToAMatcherApplication[(K, V)]) {
-    val aMatcher = resultOfAWordToAMatcherApplication.aMatcher
-    val leftWrapper = new JavaMapWrapper(left.asInstanceOf[java.util.Map[K, V]])
-    leftWrapper.find (e => aMatcher(e.asInstanceOf[(K, V)]).matches) match {
-      case Some(e) => 
-        if (!shouldBeTrue) {
-          val result = aMatcher(e.asInstanceOf[(K, V)])
-          throw newTestFailedException(FailureMessages("containedA", leftWrapper, UnquotedString(aMatcher.nounName), UnquotedString(result.negatedFailureMessage)))
-        }
-      case None =>
-        if (shouldBeTrue)
-          throw newTestFailedException(FailureMessages("didNotContainA", leftWrapper, UnquotedString(aMatcher.nounName)))
-    }
-  }
-  
-  /**
-   * This method enables the following syntax, where <code>oddNumber</code> refers to
-   * an <code>AnMatcher[Int]</code>:
-   *
-   * <pre class="stHighlight">
-   * javaMap should not contain an (oddNumber)
-   *                    ^
-   * </pre>
-   */
-  def contain(resultOfAnWordToAnMatcherApplication: ResultOfAnWordToAnMatcherApplication[(K, V)]) {
-    val anMatcher = resultOfAnWordToAnMatcherApplication.anMatcher
-    val leftWrapper = new JavaMapWrapper(left.asInstanceOf[java.util.Map[K, V]])
-    leftWrapper.find (e => anMatcher(e.asInstanceOf[(K, V)]).matches) match {
-      case Some(e) => 
-        if (!shouldBeTrue) {
-          val result = anMatcher(e.asInstanceOf[(K, V)])
-          throw newTestFailedException(FailureMessages("containedAn", leftWrapper, UnquotedString(anMatcher.nounName), UnquotedString(result.negatedFailureMessage)))
-        }
-      case None =>
-        if (shouldBeTrue)
-          throw newTestFailedException(FailureMessages("didNotContainAn", leftWrapper, UnquotedString(anMatcher.nounName)))
-    }
-  }
-}
-
-/**
- * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
- * the matchers DSL.
- *
- * @author Bill Venners
- */
-final class ResultOfNotWordForArray[E](left: Array[E], shouldBeTrue: Boolean)
-    extends ResultOfNotWordForAny(left, shouldBeTrue) {
-
-  /**
-   * This method enables the following syntax, where <code>positiveNumber</code> refers to
-   * an <code>AMatcher[Int]</code>:
-   *
-   * <pre class="stHighlight">
-   * Array(-1, -2) should not contain a (positiveNumber)
-   *                          ^
-   * </pre>
-   */
-  def contain(resultOfAWordToAMatcherApplication: ResultOfAWordToAMatcherApplication[E]) {
-    val aMatcher = resultOfAWordToAMatcherApplication.aMatcher
-    left.find (e => aMatcher(e.asInstanceOf[E]).matches) match {
-      case Some(e) => 
-        if (!shouldBeTrue) {
-          val result = aMatcher(e.asInstanceOf[E])
-          throw newTestFailedException(FailureMessages("containedA", left, UnquotedString(aMatcher.nounName), UnquotedString(result.negatedFailureMessage)))
-        }
-      case None =>
-        if (shouldBeTrue)
-          throw newTestFailedException(FailureMessages("didNotContainA", left, UnquotedString(aMatcher.nounName)))
-    }
-  }
-  
-  /**
-   * This method enables the following syntax, where <code>oddNumber</code> refers to
-   * an <code>AnMatcher[Int]</code>:
-   *
-   * <pre class="stHighlight">
-   * Array(-1, -2) should not contain an (oddNumber)
-   *                          ^
-   * </pre>
-   */
-  def contain(resultOfAnWordToAnMatcherApplication: ResultOfAnWordToAnMatcherApplication[E]) {
-    val anMatcher = resultOfAnWordToAnMatcherApplication.anMatcher
-    left.find (e => anMatcher(e.asInstanceOf[E]).matches) match {
-      case Some(e) => 
-        if (!shouldBeTrue) {
-          val result = anMatcher(e.asInstanceOf[E])
-          throw newTestFailedException(FailureMessages("containedAn", left, UnquotedString(anMatcher.nounName), UnquotedString(result.negatedFailureMessage)))
-        }
-      case None =>
-        if (shouldBeTrue)
-          throw newTestFailedException(FailureMessages("didNotContainAn", left, UnquotedString(anMatcher.nounName)))
     }
   }
 }
