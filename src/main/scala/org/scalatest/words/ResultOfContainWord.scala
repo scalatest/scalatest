@@ -18,6 +18,7 @@ package org.scalatest.words
 import scala.collection.GenTraversable
 import org.scalatest.enablers.Containing
 import org.scalatest.enablers.Aggregating
+import org.scalatest.enablers.Sequencing
 import org.scalatest.MatchersHelper.newTestFailedException
 import org.scalatest.FailureMessages
 import org.scalatest.UnquotedString
@@ -114,8 +115,8 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    *                   ^
    * </pre>
    */
-  def theSameElementsInOrderAs(right: GenTraversable[_])(implicit aggregating: Aggregating[L]) {
-    if (aggregating.containsTheSameElementsInOrderAs(left, right) != shouldBeTrue)
+  def theSameElementsInOrderAs(right: GenTraversable[_])(implicit sequencing: Sequencing[L]) {
+    if (sequencing.containsTheSameElementsInOrderAs(left, right) != shouldBeTrue)
       throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "didNotContainSameElementsInOrder" else "containedSameElementsInOrder",
@@ -152,8 +153,8 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    *                   ^
    * </pre>
    */
-  def inOrderOnly(right: Any*)(implicit aggregating: Aggregating[L]) {
-    if (aggregating.containsInOrderOnly(left, right) != shouldBeTrue)
+  def inOrderOnly(right: Any*)(implicit sequencing: Sequencing[L]) {
+    if (sequencing.containsInOrderOnly(left, right) != shouldBeTrue)
       throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "didNotContainInOrderOnlyElements" else "containedInOrderOnlyElements",
@@ -190,8 +191,8 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    *                   ^
    * </pre>
    */
-  def inOrder(right: Any*)(implicit aggregating: Aggregating[L]) {
-    if (aggregating.containsInOrder(left, right) != shouldBeTrue)
+  def inOrder(right: Any*)(implicit sequencing: Sequencing[L]) {
+    if (sequencing.containsInOrder(left, right) != shouldBeTrue)
       throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "didNotContainAllOfElementsInOrder" else "containedAllOfElementsInOrder",

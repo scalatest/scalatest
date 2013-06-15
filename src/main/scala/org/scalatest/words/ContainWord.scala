@@ -23,6 +23,7 @@ import org.scalatest.UnquotedString
 import org.scalautils.Equality
 import org.scalatest.enablers.Containing
 import org.scalatest.enablers.Aggregating
+import org.scalatest.enablers.Sequencing
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -235,13 +236,13 @@ final class ContainWord {
     }
   }
   
-  def theSameElementsInOrderAs(right: GenTraversable[Any]): MatcherFactory1[Any, Aggregating] = {
-    new MatcherFactory1[Any, Aggregating] {
-      def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
+  def theSameElementsInOrderAs(right: GenTraversable[Any]): MatcherFactory1[Any, Sequencing] = {
+    new MatcherFactory1[Any, Sequencing] {
+      def matcher[T](implicit sequencing: Sequencing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
             MatchResult(
-              aggregating.containsTheSameElementsInOrderAs(left, right),
+              sequencing.containsTheSameElementsInOrderAs(left, right),
               FailureMessages("didNotContainSameElementsInOrder", left, right),
               FailureMessages("containedSameElementsInOrder", left, right)
             )
@@ -267,13 +268,13 @@ final class ContainWord {
     }
   }
 
-  def inOrderOnly(right: Any*): MatcherFactory1[Any, Aggregating] = {
-    new MatcherFactory1[Any, Aggregating] {
-      def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
+  def inOrderOnly(right: Any*): MatcherFactory1[Any, Sequencing] = {
+    new MatcherFactory1[Any, Sequencing] {
+      def matcher[T](implicit sequencing: Sequencing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
             MatchResult(
-              aggregating.containsInOrderOnly(left, right),
+              sequencing.containsInOrderOnly(left, right),
               FailureMessages("didNotContainInOrderOnlyElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
               FailureMessages("containedInOrderOnlyElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
             )
@@ -299,13 +300,13 @@ final class ContainWord {
     }
   }
   
-  def inOrder(right: Any*): MatcherFactory1[Any, Aggregating] = {
-    new MatcherFactory1[Any, Aggregating] {
-      def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
+  def inOrder(right: Any*): MatcherFactory1[Any, Sequencing] = {
+    new MatcherFactory1[Any, Sequencing] {
+      def matcher[T](implicit sequencing: Sequencing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
             MatchResult(
-              aggregating.containsInOrder(left, right),
+              sequencing.containsInOrder(left, right),
               FailureMessages("didNotContainAllOfElementsInOrder", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
               FailureMessages("containedAllOfElementsInOrder", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
             )

@@ -635,7 +635,7 @@ final class NotWord {
      *                      ^
      * </pre>
      */
-  def be[T <: Any](sortedWord: SortedWord): MatcherFactory1[Any, Sequencing] =
+  def be[T <: Any](sortedWord: SortedWord): MatcherFactory1[Any, Sortable] =
     apply(MatcherWords.be(sortedWord))
 
   /**
@@ -923,16 +923,16 @@ final class NotWord {
    *                                 ^
    * </pre>
    */
-  def contain[T](theSameElementInOrderAs: ResultOfTheSameElementsInOrderAsApplication): MatcherFactory1[Any, Aggregating] = {
-    new MatcherFactory1[Any, Aggregating] {
-      def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
+  def contain[T](theSameElementInOrderAs: ResultOfTheSameElementsInOrderAsApplication): MatcherFactory1[Any, Sequencing] = {
+    new MatcherFactory1[Any, Sequencing] {
+      def matcher[T](implicit sequencing: Sequencing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
         
             val right = theSameElementInOrderAs.right
 
             MatchResult(
-              !aggregating.containsTheSameElementsInOrderAs(left, right),
+              !sequencing.containsTheSameElementsInOrderAs(left, right),
               FailureMessages("containedSameElementsInOrder", left, right),
               FailureMessages("didNotContainSameElementsInOrder", left, right)
             )
@@ -977,16 +977,16 @@ final class NotWord {
    *                                 ^
    * </pre>
    */
-  def contain[T](only: ResultOfInOrderOnlyApplication): MatcherFactory1[Any, Aggregating] = {
-    new MatcherFactory1[Any, Aggregating] {
-      def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
+  def contain[T](only: ResultOfInOrderOnlyApplication): MatcherFactory1[Any, Sequencing] = {
+    new MatcherFactory1[Any, Sequencing] {
+      def matcher[T](implicit sequencing: Sequencing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
         
             val right = only.right
 
             MatchResult(
-              !aggregating.containsInOrderOnly(left, right),
+              !sequencing.containsInOrderOnly(left, right),
               FailureMessages("containedInOrderOnlyElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
               FailureMessages("didNotContainInOrderOnlyElements", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
             )
@@ -1031,16 +1031,16 @@ final class NotWord {
    *                                 ^
    * </pre>
    */
-  def contain[T](only: ResultOfInOrderApplication): MatcherFactory1[Any, Aggregating] = {
-    new MatcherFactory1[Any, Aggregating] {
-      def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
+  def contain[T](only: ResultOfInOrderApplication): MatcherFactory1[Any, Sequencing] = {
+    new MatcherFactory1[Any, Sequencing] {
+      def matcher[T](implicit sequencing: Sequencing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
         
             val right = only.right
 
             MatchResult(
-              !aggregating.containsInOrder(left, right),
+              !sequencing.containsInOrder(left, right),
               FailureMessages("containedAllOfElementsInOrder", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
               FailureMessages("didNotContainAllOfElementsInOrder", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
             )

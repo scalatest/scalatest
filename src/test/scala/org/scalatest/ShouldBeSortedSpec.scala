@@ -16,7 +16,7 @@
 package org.scalatest
 
 import SharedHelpers.thisLineNumber
-import enablers.Sequencing
+import enablers.Sortable
 
 class ShouldBeSortedSpec extends Spec with Matchers {
   
@@ -44,13 +44,13 @@ class ShouldBeSortedSpec extends Spec with Matchers {
   val orderedStudents = List(Student("Student 1", 80), Student("Student 2", 88), Student("Student 3", 90))
   val outOfOrderStudents = List(Student("Student 3", 90), Student("Student 2", 88), Student("Student 1", 80))
   
-  val trueSequencing = 
-    new Sequencing[List[Int]] {
+  val trueSortable = 
+    new Sortable[List[Int]] {
       def isSorted(o: List[Int]) = true
     }
   
-  val falseSequencing = 
-    new Sequencing[List[Int]] {
+  val falseSortable = 
+    new Sortable[List[Int]] {
       def isSorted(o: List[Int]) = false
     }
   
@@ -84,25 +84,25 @@ class ShouldBeSortedSpec extends Spec with Matchers {
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should use implicit Sequencing when available` {
+      def `should use implicit Sortable when available` {
         intercept[TestFailedException] {
           outOfOrderInts should be (sorted)
         }
-        implicit val imp = trueSequencing
+        implicit val imp = trueSortable
         outOfOrderInts should be (sorted)
       }
       
-      def `should use explicitly specified Sequencing` {
+      def `should use explicitly specified Sortable` {
         intercept[TestFailedException] {
           outOfOrderInts should be (sorted)
         }
-        outOfOrderInts should be (sorted) (trueSequencing)
+        outOfOrderInts should be (sorted) (trueSortable)
       }
       
     }
     
     object `when work with 'xs should not be sorted'` {
-      import org.scalatest.enablers.Sequencing
+      import org.scalatest.enablers.Sortable
       
       def `should throw TestFailedException wht correct stack depth when xs is empty` {
         val caught1 = intercept[TestFailedException] {
@@ -141,19 +141,19 @@ class ShouldBeSortedSpec extends Spec with Matchers {
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should use implicit Sequencing when available` {
+      def `should use implicit Sortable when available` {
         intercept[TestFailedException] {
           orderedInts should not be (sorted)
         }
-        implicit val imp = falseSequencing
+        implicit val imp = falseSortable
         orderedInts should not be (sorted)
       }
       
-      def `should use explicitly specified Sequencing` {
+      def `should use explicitly specified Sortable` {
         intercept[TestFailedException] {
           orderedInts should not be sorted
         }
-        (orderedInts should not be (sorted)) (falseSequencing)
+        (orderedInts should not be (sorted)) (falseSortable)
       }
     }
     
@@ -185,25 +185,25 @@ class ShouldBeSortedSpec extends Spec with Matchers {
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should use implicit Sequencing when available` {
+      def `should use implicit Sortable when available` {
         intercept[TestFailedException] {
           outOfOrderInts shouldBe sorted
         }
-        implicit val imp = trueSequencing
+        implicit val imp = trueSortable
         outOfOrderInts shouldBe sorted
       }
       
-      def `should use explicitly specified Sequencing` {
+      def `should use explicitly specified Sortable` {
         intercept[TestFailedException] {
           outOfOrderInts shouldBe sorted
         }
-        (outOfOrderInts shouldBe (sorted)) (trueSequencing)
+        (outOfOrderInts shouldBe (sorted)) (trueSortable)
       }
       
     }
     
     object `when work with 'xs shouldNot be (sorted)'` {
-      import org.scalatest.enablers.Sequencing
+      import org.scalatest.enablers.Sortable
       
       def `should throw TestFailedException wht correct stack depth when xs is empty` {
         val caught1 = intercept[TestFailedException] {
@@ -242,19 +242,19 @@ class ShouldBeSortedSpec extends Spec with Matchers {
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should use implicit Sequencing when available` {
+      def `should use implicit Sortable when available` {
         intercept[TestFailedException] {
           orderedInts shouldNot be (sorted)
         }
-        implicit val imp = falseSequencing
+        implicit val imp = falseSortable
         orderedInts shouldNot be (sorted)
       }
       
-      def `should use explicitly specified Sequencing` {
+      def `should use explicitly specified Sortable` {
         intercept[TestFailedException] {
           orderedInts shouldNot be (sorted)
         }
-        orderedInts shouldNot be (sorted) (falseSequencing)
+        orderedInts shouldNot be (sorted) (falseSortable)
       }
     }
     
@@ -288,24 +288,24 @@ class ShouldBeSortedSpec extends Spec with Matchers {
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should use implicit Sequencing when available` {
+      def `should use implicit Sortable when available` {
         intercept[TestFailedException] {
           all(List(outOfOrderInts)) should be (sorted)
         }
-        implicit val imp = trueSequencing
+        implicit val imp = trueSortable
         all(List(outOfOrderInts)) should be (sorted)
       }
       
-      def `should use explicitly specified Sequencing` {
+      def `should use explicitly specified Sortable` {
         intercept[TestFailedException] {
           all(List(outOfOrderInts)) should be (sorted)
         }
-        all(List(outOfOrderInts)) should be (sorted) (trueSequencing)
+        all(List(outOfOrderInts)) should be (sorted) (trueSortable)
       }
     }
     
     object `when work with 'all(xs) should not be sorted'` {
-      import org.scalatest.enablers.Sequencing
+      import org.scalatest.enablers.Sortable
       
       def `should throw TestFailedException wht correct stack depth when xs is empty` {
         val left1 = List(emptyInts)
@@ -348,19 +348,19 @@ class ShouldBeSortedSpec extends Spec with Matchers {
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should use implicit Sequencing when available` {
+      def `should use implicit Sortable when available` {
         intercept[TestFailedException] {
           all(List(orderedInts)) should not be (sorted)
         }
-        implicit val imp = falseSequencing
+        implicit val imp = falseSortable
         all(List(orderedInts)) should not be (sorted)
       }
       
-      def `should use explicitly specified Sequencing` {
+      def `should use explicitly specified Sortable` {
         intercept[TestFailedException] {
           all(List(orderedInts)) should not be sorted
         }
-        (all(List(orderedInts)) should not be (sorted)) (falseSequencing)
+        (all(List(orderedInts)) should not be (sorted)) (falseSortable)
       }
     }
     
@@ -394,25 +394,25 @@ class ShouldBeSortedSpec extends Spec with Matchers {
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should use implicit Sequencing when available` {
+      def `should use implicit Sortable when available` {
         intercept[TestFailedException] {
           all(List(outOfOrderInts)) shouldBe sorted
         }
-        implicit val imp = trueSequencing
+        implicit val imp = trueSortable
         all(List(outOfOrderInts)) shouldBe sorted
       }
       
-      def `should use explicitly specified Sequencing` {
+      def `should use explicitly specified Sortable` {
         intercept[TestFailedException] {
           all(List(outOfOrderInts)) shouldBe sorted
         }
-        (all(List(outOfOrderInts)) shouldBe (sorted)) (trueSequencing)
+        (all(List(outOfOrderInts)) shouldBe (sorted)) (trueSortable)
       }
       
     }
     
     object `when work with 'all(xs) shouldNot be (sorted)'` {
-      import org.scalatest.enablers.Sequencing
+      import org.scalatest.enablers.Sortable
       
       def `should throw TestFailedException wht correct stack depth when xs is empty` {
         val left1 = List(emptyInts)
@@ -455,21 +455,20 @@ class ShouldBeSortedSpec extends Spec with Matchers {
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should use implicit Sequencing when available` {
+      def `should use implicit Sortable when available` {
         intercept[TestFailedException] {
           all(List(orderedInts)) shouldNot be (sorted)
         }
-        implicit val imp = falseSequencing
+        implicit val imp = falseSortable
         all(List(orderedInts)) shouldNot be (sorted)
       }
       
-      def `should use explicitly specified Sequencing` {
+      def `should use explicitly specified Sortable` {
         intercept[TestFailedException] {
           all(List(orderedInts)) shouldNot be (sorted)
         }
-        all(List(orderedInts)) shouldNot be (sorted) (falseSequencing)
+        all(List(orderedInts)) shouldNot be (sorted) (falseSortable)
       }
     }
   }
-  
 }

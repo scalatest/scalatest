@@ -16,7 +16,7 @@
 package org.scalatest
 
 import SharedHelpers.thisLineNumber
-import org.scalatest.enablers.Sequencing
+import org.scalatest.enablers.Sortable
 
 class ShouldBeSortedLogicalAndSpec extends Spec with Matchers {
   
@@ -54,13 +54,13 @@ class ShouldBeSortedLogicalAndSpec extends Spec with Matchers {
   val orderedStudents = List(Student("Student 1", 80), Student("Student 2", 88), Student("Student 3", 90))
   val outOfOrderStudents = List(Student("Student 3", 90), Student("Student 2", 88), Student("Student 1", 80))
   
-  val trueSequencing = 
-    new Sequencing[List[Int]] {
+  val trueSortable = 
+    new Sortable[List[Int]] {
       def isSorted(o: List[Int]) = true
     }
   
-  val falseSequencing = 
-    new Sequencing[List[Int]] {
+  val falseSortable = 
+    new Sortable[List[Int]] {
       def isSorted(o: List[Int]) = false
     }
   
@@ -108,19 +108,19 @@ class ShouldBeSortedLogicalAndSpec extends Spec with Matchers {
         assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should use implicit Sequencing when available` {
+      def `should use implicit Sortable when available` {
         intercept[TestFailedException] {
           outOfOrderInts should (be (sorted) and be (outOfOrderInts))
         }
-        implicit val imp = trueSequencing
+        implicit val imp = trueSortable
         outOfOrderInts should (be (sorted) and be (outOfOrderInts))
       }
       
-      def `should use explicitly specified Sequencing` {
+      def `should use explicitly specified Sortable` {
         intercept[TestFailedException] {
           outOfOrderInts should (be (sorted) and equal (outOfOrderInts))
         }
-        (outOfOrderInts should (be (sorted) and equal (outOfOrderInts))) (trueSequencing, defaultEquality)
+        (outOfOrderInts should (be (sorted) and equal (outOfOrderInts))) (trueSortable, defaultEquality)
       }
     }
     
@@ -164,19 +164,19 @@ class ShouldBeSortedLogicalAndSpec extends Spec with Matchers {
         assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should use implicit Sequencing when available` {
+      def `should use implicit Sortable when available` {
         intercept[TestFailedException] {
           orderedInts should (not be (sorted) and not be (outOfOrderInts))
         }
-        implicit val imp = falseSequencing
+        implicit val imp = falseSortable
         orderedInts should (not be (sorted) and not be (outOfOrderInts))
       }
       
-      def `should use explicitly specified Sequencing` {
+      def `should use explicitly specified Sortable` {
         intercept[TestFailedException] {
           orderedInts should (not be (sorted) and not equal (outOfOrderInts))
         }
-        (orderedInts should (not be (sorted) and not equal (outOfOrderInts))) (falseSequencing, defaultEquality)
+        (orderedInts should (not be (sorted) and not equal (outOfOrderInts))) (falseSortable, defaultEquality)
       }
     }
     
@@ -226,19 +226,19 @@ class ShouldBeSortedLogicalAndSpec extends Spec with Matchers {
         assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should use implicit Sequencing when available` {
+      def `should use implicit Sortable when available` {
         intercept[TestFailedException] {
           all(List(outOfOrderInts)) should (be (sorted) and be (outOfOrderInts))
         }
-        implicit val imp = trueSequencing
+        implicit val imp = trueSortable
         all(List(outOfOrderInts)) should (be (sorted) and be (outOfOrderInts))
       }
       
-      def `should use explicitly specified Sequencing` {
+      def `should use explicitly specified Sortable` {
         intercept[TestFailedException] {
           all(List(outOfOrderInts)) should (be (sorted) and equal (outOfOrderInts))
         }
-        (all(List(outOfOrderInts)) should (be (sorted) and equal (outOfOrderInts))) (trueSequencing, defaultEquality)
+        (all(List(outOfOrderInts)) should (be (sorted) and equal (outOfOrderInts))) (trueSortable, defaultEquality)
       }
     }
     
@@ -285,23 +285,22 @@ class ShouldBeSortedLogicalAndSpec extends Spec with Matchers {
         assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
-      def `should use implicit Sequencing when available` {
+      def `should use implicit Sortable when available` {
         intercept[TestFailedException] {
           all(List(orderedInts)) should (not be (sorted) and not be (outOfOrderInts))
         }
-        implicit val imp = falseSequencing
+        implicit val imp = falseSortable
         all(List(orderedInts)) should (not be (sorted) and not be (outOfOrderInts))
       }
       
-      def `should use explicitly specified Sequencing` {
+      def `should use explicitly specified Sortable` {
         intercept[TestFailedException] {
           all(List(orderedInts)) should (not be (sorted) and not equal (outOfOrderInts))
         }
-        (all(List(orderedInts)) should (not be (sorted) and not equal (outOfOrderInts))) (falseSequencing, defaultEquality)
+        (all(List(orderedInts)) should (not be (sorted) and not equal (outOfOrderInts))) (falseSortable, defaultEquality)
       }
     }
     
-    // shouldBe and shouldNot does not support logical expression yet.
+    // shouldBe and shouldNot does not support logical expression, and they never will!
   }
-  
 }

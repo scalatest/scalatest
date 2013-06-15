@@ -3490,9 +3490,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                    ^
      * </pre>
      */
-    def be(sortedWord: SortedWord)(implicit sequencing: Sequencing[T]) {
+    def be(sortedWord: SortedWord)(implicit sortable: Sortable[T]) {
       doCollected(collected, xs, "be", 1) { e => 
-        if (sequencing.isSorted(e) != shouldBeTrue) {
+        if (sortable.isSorted(e) != shouldBeTrue) {
           throw newTestFailedException(
             FailureMessages(if (shouldBeTrue) "wasNotSorted" else "wasSorted", e), 
             None, 
@@ -3639,12 +3639,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                     ^
      * </pre>
      */
-    def contain(theSameElementsInOrderAs: ResultOfTheSameElementsInOrderAsApplication)(implicit aggregating: Aggregating[T]) {
+    def contain(theSameElementsInOrderAs: ResultOfTheSameElementsInOrderAsApplication)(implicit sequencing: Sequencing[T]) {
 
       val right = theSameElementsInOrderAs.right
 
       doCollected(collected, xs, "contain", 1) { e =>
-        if (aggregating.containsTheSameElementsInOrderAs(e, right) != shouldBeTrue)
+        if (sequencing.containsTheSameElementsInOrderAs(e, right) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
               if (shouldBeTrue) "didNotContainSameElementsInOrder" else "containedSameElementsInOrder",
@@ -3691,12 +3691,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                     ^
      * </pre>
      */
-    def contain(only: ResultOfInOrderOnlyApplication)(implicit aggregating: Aggregating[T]) {
+    def contain(only: ResultOfInOrderOnlyApplication)(implicit sequencing: Sequencing[T]) {
 
       val right = only.right
 
       doCollected(collected, xs, "contain", 1) { e =>
-        if (aggregating.containsInOrderOnly(e, right) != shouldBeTrue)
+        if (sequencing.containsInOrderOnly(e, right) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
               if (shouldBeTrue) "didNotContainInOrderOnlyElements" else "containedInOrderOnlyElements",
@@ -3743,12 +3743,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                     ^
      * </pre>
      */
-    def contain(only: ResultOfInOrderApplication)(implicit aggregating: Aggregating[T]) {
+    def contain(only: ResultOfInOrderApplication)(implicit sequencing: Sequencing[T]) {
 
       val right = only.right
 
       doCollected(collected, xs, "contain", 1) { e =>
-        if (aggregating.containsInOrder(e, right) != shouldBeTrue)
+        if (sequencing.containsInOrder(e, right) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
               if (shouldBeTrue) "didNotContainAllOfElementsInOrder" else "containedAllOfElementsInOrder",
@@ -4191,9 +4191,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                       ^
      * </pre>
      */
-    def theSameElementsInOrderAs(right: GenTraversable[_])(implicit aggregating: Aggregating[T]) {
+    def theSameElementsInOrderAs(right: GenTraversable[_])(implicit sequencing: Sequencing[T]) {
       doCollected(collected, xs, "theSameElementsInOrderAs", 1) { e =>
-        if (aggregating.containsTheSameElementsInOrderAs(e, right) != shouldBeTrue)
+        if (sequencing.containsTheSameElementsInOrderAs(e, right) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
               if (shouldBeTrue) "didNotContainSameElementsInOrder" else "containedSameElementsInOrder",
@@ -4237,9 +4237,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                       ^
      * </pre>
      */
-    def inOrderOnly(right: Any*)(implicit aggregating: Aggregating[T]) {
+    def inOrderOnly(right: Any*)(implicit sequencing: Sequencing[T]) {
       doCollected(collected, xs, "inOrderOnly", 1) { e =>
-        if (aggregating.containsInOrderOnly(e, right) != shouldBeTrue)
+        if (sequencing.containsInOrderOnly(e, right) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
               if (shouldBeTrue) "didNotContainInOrderOnlyElements" else "containedInOrderOnlyElements",
@@ -4283,9 +4283,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
      *                       ^
      * </pre>
      */
-    def inOrder(right: Any*)(implicit aggregating: Aggregating[T]) {
+    def inOrder(right: Any*)(implicit sequencing: Sequencing[T]) {
       doCollected(collected, xs, "inOrder", 1) { e =>
-        if (aggregating.containsInOrder(e, right) != shouldBeTrue)
+        if (sequencing.containsInOrder(e, right) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
               if (shouldBeTrue) "didNotContainAllOfElementsInOrder" else "containedAllOfElementsInOrder",
@@ -4592,9 +4592,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def shouldBe(sortedWord: SortedWord)(implicit sequencing: Sequencing[T]) {
+    def shouldBe(sortedWord: SortedWord)(implicit sortable: Sortable[T]) {
       doCollected(collected, xs, "shouldBe", 1) { e =>
-        if (!sequencing.isSorted(e))
+        if (!sortable.isSorted(e))
           throw newTestFailedException(FailureMessages("wasNotSorted", e), None, 6)
       }
     }
@@ -6020,8 +6020,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def shouldBe(right: SortedWord)(implicit sequencing: Sequencing[T]) {
-      if (!sequencing.isSorted(left))
+    def shouldBe(right: SortedWord)(implicit sortable: Sortable[T]) {
+      if (!sortable.isSorted(left))
         throw newTestFailedException(FailureMessages("wasNotSorted", left))
     }
 

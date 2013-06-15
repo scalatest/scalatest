@@ -634,8 +634,8 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
    *                  ^
    * </pre>
    */
-  def be[U](sortedWord: SortedWord)(implicit sequencing: Sequencing[T]) {
-    if (sequencing.isSorted(left) != shouldBeTrue)
+  def be[U](sortedWord: SortedWord)(implicit sortable: Sortable[T]) {
+    if (sortable.isSorted(left) != shouldBeTrue)
       throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "wasNotSorted" else "wasSorted", 
@@ -699,12 +699,12 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
         )
       )
   }
-  
-  def contain(theSameElementsInOrderAs: ResultOfTheSameElementsInOrderAsApplication)(implicit aggregating: Aggregating[T]) {
+
+  def contain(theSameElementsInOrderAs: ResultOfTheSameElementsInOrderAsApplication)(implicit sequencing: Sequencing[T]) {
 
     val right = theSameElementsInOrderAs.right
 
-    if (aggregating.containsTheSameElementsInOrderAs(left, right) != shouldBeTrue)
+    if (sequencing.containsTheSameElementsInOrderAs(left, right) != shouldBeTrue)
       throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "didNotContainSameElementsInOrder" else "containedSameElementsInOrder",
@@ -727,9 +727,9 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
       )
   }
 
-  def contain(only: ResultOfInOrderOnlyApplication)(implicit aggregating: Aggregating[T]) {
+  def contain(only: ResultOfInOrderOnlyApplication)(implicit sequencing: Sequencing[T]) {
     val right = only.right
-    if (aggregating.containsInOrderOnly(left, right) != shouldBeTrue)
+    if (sequencing.containsInOrderOnly(left, right) != shouldBeTrue)
       throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "didNotContainInOrderOnlyElements" else "containedInOrderOnlyElements",
@@ -752,10 +752,10 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
       )
   }
   
-  def contain(only: ResultOfInOrderApplication)(implicit aggregating: Aggregating[T]) {
+  def contain(only: ResultOfInOrderApplication)(implicit sequencing: Sequencing[T]) {
 
     val right = only.right
-    if (aggregating.containsInOrder(left, right) != shouldBeTrue)
+    if (sequencing.containsInOrder(left, right) != shouldBeTrue)
       throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "didNotContainAllOfElementsInOrder" else "containedAllOfElementsInOrder",
