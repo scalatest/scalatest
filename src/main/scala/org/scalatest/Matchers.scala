@@ -298,8 +298,8 @@ import org.scalautils.NormalizingEquality
  * 
  * <h2>Greater and less than</h2>
  * <p>
- * You can check whether any type that is, or can be implicitly converted to,
- * an <code>Ordered[T]</code> is greater than, less than, greater than or equal, or less
+ * You can check whether any type for which an implicit <code>Ordering[T]</code> is available
+ * is greater than, less than, greater than or equal, or less
  * than or equal to a value of type <code>T</code>. The syntax is:
  * </p>
  * <pre class="stHighlight">
@@ -2509,33 +2509,33 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    * This method enables the following syntax: 
    *
    * <pre class="stHighlight">
-   * num should (not be < (10) and not be > (17))
+   * num should (not be &lt; (10) and not be &gt; (17))
    *                    ^
    * </pre>
    */
-  def <[T <% Ordered[T]] (right: T): ResultOfLessThanComparison[T] =
+  def <[T : Ordering] (right: T): ResultOfLessThanComparison[T] =
     new ResultOfLessThanComparison(right)
 
   /**
    * This method enables the following syntax: 
    *
    * <pre class="stHighlight">
-   * num should (not be > (10) and not be < (7))
+   * num should (not be &gt; (10) and not be &lt; (7))
    *                    ^
    * </pre>
    */
-  def >[T <% Ordered[T]] (right: T): ResultOfGreaterThanComparison[T] =
+  def >[T : Ordering] (right: T): ResultOfGreaterThanComparison[T] =
     new ResultOfGreaterThanComparison(right)
 
   /**
    * This method enables the following syntax: 
    *
    * <pre class="stHighlight">
-   * num should (not be <= (10) and not be > (17))
+   * num should (not be &lt;= (10) and not be &gt; (17))
    *                    ^
    * </pre>
    */
-  def <=[T <% Ordered[T]] (right: T): ResultOfLessThanOrEqualToComparison[T] =
+  def <=[T : Ordering] (right: T): ResultOfLessThanOrEqualToComparison[T] =
     new ResultOfLessThanOrEqualToComparison(right)
 
   /**
@@ -2546,7 +2546,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElemen
    *                    ^
    * </pre>
    */
-  def >=[T <% Ordered[T]] (right: T): ResultOfGreaterThanOrEqualToComparison[T] =
+  def >=[T : Ordering] (right: T): ResultOfGreaterThanOrEqualToComparison[T] =
     new ResultOfGreaterThanOrEqualToComparison(right)
 
   /**

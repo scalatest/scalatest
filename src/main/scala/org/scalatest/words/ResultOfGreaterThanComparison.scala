@@ -21,7 +21,7 @@ package org.scalatest.words
  *
  * @author Bill Venners
  */
-final class ResultOfGreaterThanComparison[T <% Ordered[T]](val right: T) {
+final class ResultOfGreaterThanComparison[T : Ordering](val right: T) {
 
   /**
    * This method is invoked by <code>be</code> methods to which instances of this class are passed, which
@@ -41,6 +41,9 @@ final class ResultOfGreaterThanComparison[T <% Ordered[T]](val right: T) {
    *                 ^  ... invoked by this be method
    * </pre>
    */
-  def apply(left: T): Boolean = left > right
+  def apply(left: T): Boolean = {
+    val ordering = implicitly[Ordering[T]]
+    ordering.gt(left, right) // left > right
+  }
 }
 

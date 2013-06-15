@@ -80,14 +80,16 @@ final class BeWord {
    *                       ^
    * </pre>
    */
-  def <[T <% Ordered[T]](right: T): Matcher[T] =
+  def <[T : Ordering](right: T): Matcher[T] =
     new Matcher[T] {
-      def apply(left: T): MatchResult =
+      def apply(left: T): MatchResult = {
+        val ordering = implicitly[Ordering[T]]
         MatchResult(
-          left < right,
+          ordering.lt(left, right), // left < right
           FailureMessages("wasNotLessThan", left, right),
           FailureMessages("wasLessThan", left, right)
         )
+      }
     }
 
   /**
@@ -115,14 +117,16 @@ final class BeWord {
    *                       ^
    * </pre>
    */
-  def >[T <% Ordered[T]](right: T): Matcher[T] =
+  def >[T : Ordering](right: T): Matcher[T] =
     new Matcher[T] {
-      def apply(left: T): MatchResult =
+      def apply(left: T): MatchResult = {
+        val ordering = implicitly[Ordering[T]]
         MatchResult(
-          left > right,
+          ordering.gt(left, right), // left > right
           FailureMessages("wasNotGreaterThan", left, right),
           FailureMessages("wasGreaterThan", left, right)
         )
+      }
     }
 
   /**
@@ -150,14 +154,16 @@ final class BeWord {
    *                       ^
    * </pre>
    */
-  def <=[T <% Ordered[T]](right: T): Matcher[T] =
+  def <=[T : Ordering](right: T): Matcher[T] =
     new Matcher[T] {
-      def apply(left: T): MatchResult =
+      def apply(left: T): MatchResult = {
+        val ordering = implicitly[Ordering[T]]
         MatchResult(
-          left <= right,
+          ordering.lteq(left, right), // left <= right
           FailureMessages("wasNotLessThanOrEqualTo", left, right),
           FailureMessages("wasLessThanOrEqualTo", left, right)
         )
+      }
     }
 
   /**
@@ -185,14 +191,16 @@ final class BeWord {
    *                       ^
    * </pre>
    */
-  def >=[T <% Ordered[T]](right: T): Matcher[T] =
+  def >=[T : Ordering](right: T): Matcher[T] =
     new Matcher[T] {
-      def apply(left: T): MatchResult =
+      def apply(left: T): MatchResult = {
+        val ordering = implicitly[Ordering[T]]
         MatchResult(
-          left >= right,
+          ordering.gteq(left, right), // left >= right
           FailureMessages("wasNotGreaterThanOrEqualTo", left, right),
           FailureMessages("wasGreaterThanOrEqualTo", left, right)
         )
+      }
     }
 
   /**
