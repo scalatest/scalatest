@@ -3746,81 +3746,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * @author Bill Venners
    * @author Chee Seng
    */
-  sealed class ResultOfNotWordForCollectedArray[E, T <: Array[E]](collected: Collected, xs: scala.collection.GenTraversable[T], shouldBeTrue: Boolean) extends 
-    ResultOfNotWordForCollectedAny[T](collected, xs, shouldBeTrue) {
-    
-// TODO: I think we could merge the next three overrides up, and just do a pattern match looking for arrays.
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * all(colOfArray) should not be ('empty)
-     *                            ^
-     * </pre>
-     */
-    override def be(symbol: Symbol)(implicit ev: T <:< AnyRef) {
-      doCollected(collected, xs, "be", 1) { e => 
-        val matcherResult = matchSymbolToPredicateMethod(e.deep, symbol, false, false)
-        if (matcherResult.matches != shouldBeTrue) {
-          throw newTestFailedException(
-            if (shouldBeTrue) matcherResult.failureMessage else matcherResult.negatedFailureMessage, 
-            None, 
-            6
-          )
-        }
-      }
-    }
-    
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * all(colOfArray) should not be a ('file)
-     *                            ^
-     * </pre>
-     */
-    override def be(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit ev: T <:< AnyRef) {
-      doCollected(collected, xs, "be", 1) { e => 
-        val matcherResult = matchSymbolToPredicateMethod(e.deep, resultOfAWordApplication.symbol, true, true)
-        if (matcherResult.matches != shouldBeTrue) {
-          throw newTestFailedException(
-            if (shouldBeTrue) matcherResult.failureMessage else matcherResult.negatedFailureMessage, 
-            None, 
-            10
-          )
-        }
-      }
-    }
-    
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * all(colOfArray) should not be an ('actionKey)
-     *                            ^
-     * </pre>
-     */
-    override def be(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit ev: T <:< AnyRef) {
-      doCollected(collected, xs, "be", 1) { e => 
-        val matcherResult = matchSymbolToPredicateMethod(e.deep, resultOfAnWordApplication.symbol, true, false)
-        if (matcherResult.matches != shouldBeTrue) {
-          throw newTestFailedException(
-            if (shouldBeTrue) matcherResult.failureMessage else matcherResult.negatedFailureMessage, 
-              None, 
-              10
-            )
-        }
-      }
-    }
-  }
-  
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="InspectorsMatchers.html"><code>InspectorsMatchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * @author Bill Venners
-   * @author Chee Seng
-   */
   final class ResultOfNotWordForCollectedGenMap[K, V, T <: scala.collection.GenMap[K, V]](collected: Collected, xs: scala.collection.GenTraversable[T], shouldBeTrue: Boolean) extends ResultOfNotWordForCollectedAny[T](collected, xs, shouldBeTrue) {
     
     /**
@@ -5212,27 +5137,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfCollectedArray[T](collected: Collected, xs: scala.collection.GenTraversable[Array[T]]) extends ResultOfCollectedAny(collected, xs) {
-    
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * all(colOfArray) should not have size (3)
-     *                 ^
-     * </pre>
-     */
-    override def should(notWord: NotWord): ResultOfNotWordForCollectedArray[T, Array[T]] = 
-      new ResultOfNotWordForCollectedArray(collected, xs, false) // TODO: In this one, calling .deep on the collected arrays. Hmm.
-  }
-  
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="InspectorsMatchers.html"><code>InspectorsMatchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * @author Bill Venners
-   * @author Chee Seng
-   */
   final class ResultOfCollectedGenMap[K, V](collected: Collected, xs: scala.collection.GenTraversable[scala.collection.GenMap[K, V]]) extends ResultOfCollectedAny(collected, xs) {
     
     /**
@@ -5318,8 +5222,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   def all(xs: scala.collection.GenTraversable[String]): ResultOfCollectedString = 
     new ResultOfCollectedString(AllCollected, xs)
   
-  def all[T](xs: scala.collection.GenTraversable[Array[T]]) = 
-    new ResultOfCollectedArray(AllCollected, xs)
   
   def all[K, V](xs: scala.collection.GenTraversable[scala.collection.GenMap[K, V]]) = 
     new ResultOfCollectedGenMap(AllCollected, xs)
@@ -5330,9 +5232,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   def atLeast(num: Int, xs: scala.collection.GenTraversable[String]): ResultOfCollectedString = 
     new ResultOfCollectedString(AtLeastCollected(num), xs)
   
-  def atLeast[T](num: Int, xs: scala.collection.GenTraversable[Array[T]]) = 
-    new ResultOfCollectedArray(AtLeastCollected(num), xs)
-  
   def atLeast[K, V](num: Int, xs: scala.collection.GenTraversable[scala.collection.GenMap[K, V]]) = 
     new ResultOfCollectedGenMap(AtLeastCollected(num), xs)
   
@@ -5341,9 +5240,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   
   def every(xs: scala.collection.GenTraversable[String]): ResultOfCollectedString = 
     new ResultOfCollectedString(EveryCollected, xs)
-  
-  def every[T](xs: scala.collection.GenTraversable[Array[T]]) = 
-    new ResultOfCollectedArray(EveryCollected, xs)
   
   def every[K, V](xs: scala.collection.GenTraversable[scala.collection.GenMap[K, V]]) = 
     new ResultOfCollectedGenMap(EveryCollected, xs)
@@ -5354,9 +5250,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   def exactly(num: Int, xs: scala.collection.GenTraversable[String]): ResultOfCollectedString = 
     new ResultOfCollectedString(ExactlyCollected(num), xs)
   
-  def exactly[T](num: Int, xs: scala.collection.GenTraversable[Array[T]]) = 
-    new ResultOfCollectedArray(ExactlyCollected(num), xs)
-  
   def exactly[K, V](num: Int, xs: scala.collection.GenTraversable[scala.collection.GenMap[K, V]]) = 
     new ResultOfCollectedGenMap(ExactlyCollected(num), xs)
   
@@ -5365,9 +5258,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
 
   def no(xs: scala.collection.GenTraversable[String]): ResultOfCollectedString =
     new ResultOfCollectedString(NoCollected, xs)
-
-  def no[T](xs: scala.collection.GenTraversable[Array[T]]) =
-    new ResultOfCollectedArray(NoCollected, xs)
 
   def no[K, V](xs: scala.collection.GenTraversable[scala.collection.GenMap[K, V]]) =
     new ResultOfCollectedGenMap(NoCollected, xs)
@@ -5378,9 +5268,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   def between(from: Int, upTo:Int, xs: scala.collection.GenTraversable[String]): ResultOfCollectedString =
     new ResultOfCollectedString(BetweenCollected(from, upTo), xs)
 
-  def between[T](from: Int, upTo:Int, xs: scala.collection.GenTraversable[Array[T]]) =
-    new ResultOfCollectedArray(BetweenCollected(from, upTo), xs)
-
   def between[K, V](from: Int, upTo:Int, xs: scala.collection.GenTraversable[scala.collection.GenMap[K, V]]) =
     new ResultOfCollectedGenMap(BetweenCollected(from, upTo), xs)
 
@@ -5389,9 +5276,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
 
   def atMost(num: Int, xs: scala.collection.GenTraversable[String]): ResultOfCollectedString =
     new ResultOfCollectedString(AtMostCollected(num), xs)
-
-  def atMost[T](num: Int, xs: scala.collection.GenTraversable[Array[T]]) =
-    new ResultOfCollectedArray(AtMostCollected(num), xs)
 
   def atMost[K, V](num: Int, xs: scala.collection.GenTraversable[scala.collection.GenMap[K, V]]) =
     new ResultOfCollectedGenMap(AtMostCollected(num), xs)
