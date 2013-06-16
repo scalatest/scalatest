@@ -3746,16 +3746,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * @author Bill Venners
    * @author Chee Seng
    */
-  sealed class ResultOfNotWordForCollectedGenTraversable[E, C[_] <: scala.collection.GenTraversable[_]](collected: Collected, xs: scala.collection.GenTraversable[C[E]], shouldBeTrue: Boolean) extends 
-    ResultOfNotWordForCollectedAny[C[E]](collected, xs, shouldBeTrue)
-  
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="InspectorsMatchers.html"><code>InspectorsMatchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * @author Bill Venners
-   * @author Chee Seng
-   */
   sealed class ResultOfNotWordForCollectedArray[E, T <: Array[E]](collected: Collected, xs: scala.collection.GenTraversable[T], shouldBeTrue: Boolean) extends 
     ResultOfNotWordForCollectedAny[T](collected, xs, shouldBeTrue) {
     
@@ -4271,36 +4261,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def apply(right: Symbol): Matcher[Array[T]] =
       new Matcher[Array[T]] {
         def apply(left: Array[T]): MatchResult = matchSymbolToPredicateMethod(left.deep, right, false, false)
-      }
-    
-  }
-  
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="InspectorsMatchers.html"><code>InspectorsMatchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * @author Bill Venners
-   * @author Chee Seng
-   */
-  final class ResultOfContainWordForCollectedArray[T](collected: Collected, xs: scala.collection.GenTraversable[Array[T]], shouldBeTrue: Boolean) extends ResultOfContainWordForCollectedAny[Array[T]](collected, xs, shouldBeTrue) {
-  
-// TODO: This apply method looks very wrong
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * all(colOfArray) should contain (element)
-     *                        ^
-     * </pre>
-     */
-    def apply(expectedElement: T): Matcher[Array[T]] = 
-      new Matcher[Array[T]] {
-        def apply(left: Array[T]): MatchResult =
-          MatchResult(
-            left.exists(_ == expectedElement), 
-            FailureMessages("didNotContainExpectedElement", left, expectedElement),
-            FailureMessages("containedExpectedElement", left, expectedElement)
-          )
       }
   }
   
@@ -5245,48 +5205,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     }
   }
 
-// TODO add loneElement
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="InspectorsMatchers.html"><code>InspectorsMatchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * @author Bill Venners
-   * @author Chee Seng
-   */
-  final class ResultOfCollectedGenTraversable[E, C[_] <: scala.collection.GenTraversable[_]](collected: Collected, xs: scala.collection.GenTraversable[C[E]]) extends ResultOfCollectedAny(collected, xs) {
-    
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * all(colOfTraversable) should not have size (3)
-     *                       ^
-     * </pre>
-     */
-    override def should(notWord: NotWord): ResultOfNotWordForCollectedGenTraversable[E, C] = 
-      new ResultOfNotWordForCollectedGenTraversable(collected, xs, false)
-    
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * all(colOfTraversable) should contain (containMatcher)
-     *                       ^
-     * </pre>
-     */
-    override def should(containWord: ContainWord): ResultOfContainWordForCollectedGenTraversable[E, C] = 
-      new ResultOfContainWordForCollectedGenTraversable(collected, xs, true)
-  }
-    
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="InspectorsMatchers.html"><code>InspectorsMatchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * @author Bill Venners
-   * @author Chee Seng
-   */
-  final class ResultOfContainWordForCollectedGenTraversable[E, C[_] <: scala.collection.GenTraversable[_]](collected: Collected, xs: scala.collection.GenTraversable[C[E]], shouldBeTrue: Boolean) extends ResultOfContainWordForCollectedAny[C[E]](collected, xs, shouldBeTrue)
-  
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="InspectorsMatchers.html"><code>InspectorsMatchers</code></a> for an overview of
    * the matchers DSL.
@@ -5300,33 +5218,12 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * This method enables syntax such as the following:
      *
      * <pre class="stHighlight">
-     * all(colOfArray) should be theSameInstanceAs anotherObject
-     *                 ^
-     * </pre>
-     */
-    override def should(beWord: BeWord) = new ResultOfBeWordForCollectedArray(collected, xs, true)
-    
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
      * all(colOfArray) should not have size (3)
      *                 ^
      * </pre>
      */
     override def should(notWord: NotWord): ResultOfNotWordForCollectedArray[T, Array[T]] = 
-      new ResultOfNotWordForCollectedArray(collected, xs, false)
-    
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * all(colOfArray) should contain (containMatcher)
-     *                 ^
-     * </pre>
-     */
-    override def should(containWord: ContainWord): ResultOfContainWordForCollectedArray[T] = 
-      new ResultOfContainWordForCollectedArray(collected, xs, true)
+      new ResultOfNotWordForCollectedArray(collected, xs, false) // TODO: In this one, calling .deep on the collected arrays. Hmm.
   }
   
   /**
@@ -5421,9 +5318,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   def all(xs: scala.collection.GenTraversable[String]): ResultOfCollectedString = 
     new ResultOfCollectedString(AllCollected, xs)
   
-  def all[E, C[_] <: scala.collection.GenTraversable[_]](xs: scala.collection.GenTraversable[C[E]]) = 
-    new ResultOfCollectedGenTraversable(AllCollected, xs)
-  
   def all[T](xs: scala.collection.GenTraversable[Array[T]]) = 
     new ResultOfCollectedArray(AllCollected, xs)
   
@@ -5435,9 +5329,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   
   def atLeast(num: Int, xs: scala.collection.GenTraversable[String]): ResultOfCollectedString = 
     new ResultOfCollectedString(AtLeastCollected(num), xs)
-  
-  def atLeast[E, C[_] <: scala.collection.GenTraversable[_]](num: Int, xs: scala.collection.GenTraversable[C[E]]) = 
-    new ResultOfCollectedGenTraversable(AtLeastCollected(num), xs)
   
   def atLeast[T](num: Int, xs: scala.collection.GenTraversable[Array[T]]) = 
     new ResultOfCollectedArray(AtLeastCollected(num), xs)
@@ -5451,9 +5342,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   def every(xs: scala.collection.GenTraversable[String]): ResultOfCollectedString = 
     new ResultOfCollectedString(EveryCollected, xs)
   
-  def every[E, C[_] <: scala.collection.GenTraversable[_]](xs: scala.collection.GenTraversable[C[E]]) = 
-    new ResultOfCollectedGenTraversable(EveryCollected, xs)
-  
   def every[T](xs: scala.collection.GenTraversable[Array[T]]) = 
     new ResultOfCollectedArray(EveryCollected, xs)
   
@@ -5465,9 +5353,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   
   def exactly(num: Int, xs: scala.collection.GenTraversable[String]): ResultOfCollectedString = 
     new ResultOfCollectedString(ExactlyCollected(num), xs)
-  
-  def exactly[E, C[_] <: scala.collection.GenTraversable[_]](num: Int, xs: scala.collection.GenTraversable[C[E]]) = 
-    new ResultOfCollectedGenTraversable(ExactlyCollected(num), xs)
   
   def exactly[T](num: Int, xs: scala.collection.GenTraversable[Array[T]]) = 
     new ResultOfCollectedArray(ExactlyCollected(num), xs)
@@ -5481,9 +5366,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   def no(xs: scala.collection.GenTraversable[String]): ResultOfCollectedString =
     new ResultOfCollectedString(NoCollected, xs)
 
-  def no[E, C[_] <: scala.collection.GenTraversable[_]](xs: scala.collection.GenTraversable[C[E]]) =
-    new ResultOfCollectedGenTraversable(NoCollected, xs)
-
   def no[T](xs: scala.collection.GenTraversable[Array[T]]) =
     new ResultOfCollectedArray(NoCollected, xs)
 
@@ -5496,9 +5378,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   def between(from: Int, upTo:Int, xs: scala.collection.GenTraversable[String]): ResultOfCollectedString =
     new ResultOfCollectedString(BetweenCollected(from, upTo), xs)
 
-  def between[E, C[_] <: scala.collection.GenTraversable[_]](from: Int, upTo:Int, xs: scala.collection.GenTraversable[C[E]]) =
-    new ResultOfCollectedGenTraversable(BetweenCollected(from, upTo), xs)
-
   def between[T](from: Int, upTo:Int, xs: scala.collection.GenTraversable[Array[T]]) =
     new ResultOfCollectedArray(BetweenCollected(from, upTo), xs)
 
@@ -5510,9 +5389,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
 
   def atMost(num: Int, xs: scala.collection.GenTraversable[String]): ResultOfCollectedString =
     new ResultOfCollectedString(AtMostCollected(num), xs)
-
-  def atMost[E, C[_] <: scala.collection.GenTraversable[_]](num: Int, xs: scala.collection.GenTraversable[C[E]]) =
-    new ResultOfCollectedGenTraversable(AtMostCollected(num), xs)
 
   def atMost[T](num: Int, xs: scala.collection.GenTraversable[Array[T]]) =
     new ResultOfCollectedArray(AtMostCollected(num), xs)
