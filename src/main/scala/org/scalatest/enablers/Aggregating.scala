@@ -30,7 +30,7 @@ import scala.collection.JavaConverters._
  * a way that relevant <code>contain</code> matcher syntax can be used with type <code>A</code>. An <code>A</code>
  * can be any type of "aggregation," a type that in some way aggregates or brings together other types. ScalaTest provides
  * implicit implementations for several types. You can enable the <code>contain</code> matcher syntax on your own
- * type <code>U</code> by defining an <code>Aggregating[U}</code> for the type and making it available implicitly.
+ * type <code>U</code> by defining an <code>Aggregating[U]</code> for the type and making it available implicitly.
  * 
  * <p>
  * ScalaTest provides implicit <code>Aggregating</code> instances for <code>scala.collection.GenTraversable</code>,

@@ -1,6 +1,6 @@
 package org.scalatest
 
-import collection.GenTraversable
+import enablers.Collecting
 
 /**
  * Trait that provides an implicit conversion that adds a <code>loneElement</code> method
@@ -37,9 +37,9 @@ trait LoneElement {
    * trav.loneElement should be &gt; 9
    * </pre>
    *
-   * @param trav A <code>GenTraversable</code> to wrap in a <code>LoneElementTraversableWrapper</code>, which provides the <code>loneElement</code> method.
+   * @param trav A <code>GenTraversable</code> to wrap in a <code>LoneElementCollectionWrapper</code>, which provides the <code>loneElement</code> method.
    */
-  final class LoneElementTraversableWrapper[T](trav: GenTraversable[T]) {
+  final class LoneElementCollectionWrapper[E, CTC[_]](collection: CTC[E])(implicit collecting: Collecting[E, CTC[E]]) {
 
     /**
      * Returns the value contained in the wrapped <code>GenTraversable</code>, if it contains one and only one element, else throws <code>TestFailedException</code> with
@@ -54,27 +54,30 @@ trait LoneElement {
      *      ^
      * </pre>
      */
-    def loneElement: T = {
-      if (trav.size == 1)
-        trav.head
-      else
-        throw new exceptions.TestFailedException(
-          Some(FailureMessages(
+    def loneElement: E = {
+      collecting.loneElementOf(collection) match {
+        case Some(ele) => ele
+        case None =>
+          throw new exceptions.TestFailedException(
+            Some(FailureMessages(
                  "notLoneElement",
-                 trav,
-                 trav.size)), 
-          None, 
-          1
-        )
+                 collection,
+                 collecting.sizeOf(collection))), 
+            None, 
+            1
+          )
+      }
     }
   }
 
   /**
    * Implicit conversion that adds a <code>loneElement</code> method to <code>GenTraversable</code>.
    *
+   *
    * @param trav the <code>GenTraversable</code> on which to add the <code>loneElement</code> method
    */
-  implicit def convertToTraversableLoneElementWrapper[T](trav: GenTraversable[T]): LoneElementTraversableWrapper[T] = new LoneElementTraversableWrapper[T](trav)
+// C = CC[E] collection is collected elements (CTC is Collection Type Constructor")
+  implicit def convertToCollectionLoneElementWrapper[E, CTC[_]](collection: CTC[E])(implicit collecting: Collecting[E, CTC[E]]): LoneElementCollectionWrapper[E, CTC] = new LoneElementCollectionWrapper[E, CTC](collection)
 }
 
 /**
