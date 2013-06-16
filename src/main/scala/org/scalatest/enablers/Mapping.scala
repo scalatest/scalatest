@@ -47,9 +47,9 @@ trait Mapping[M] {
    * @param eles elements at least one of which should be contained in the passed aggregation
    * @return true if the passed aggregation contains at least one of the passed elements
    */
-  def containsKey(mapping: M, key: Any): Boolean
+  def containsKey(map: M, key: Any): Boolean
 
-  def containsValue(mapping: M, value: Any): Boolean
+  def containsValue(map: M, value: Any): Boolean
 /*
   // TODO: Write tests that a NotAllowedException is thrown when no elements are passed, maybe if only one element is passed, and 
   // likely if an object is repeated in the list.
@@ -64,9 +64,13 @@ object Mapping {
 /*
   implicit def mappingNatureOfGenMap[K, V, MAP[_, _] <: scala.collection.GenMap[_, _]](implicit equality: Equality[(K, V)]): Mapping[MAP[K, V]] = 
     new Mapping[MAP[K, V]] {
-      def containsKey(mapping: M, key: Any): Boolean = {
+      def containsKey(map: MAP[K, V], key: Any): Boolean = {
+        val genMap = map.asInstanceOf[scala.collection.GenMap[K, V]]
+        genMap.keySet.exists((e: Any) => equality.areEqual(e.asInstanceOf[E], key))
       }
-      def containsValue(mapping: M, value: Any): Boolean = {
+      def containsValue(map: MAP[K, V], value: Any): Boolean = {
+        val genMap = map.asInstanceOf[scala.collection.GenMap[K, V]]
+        genMap.values.exists((e: Any) => equality.areEqual(e.asInstanceOf[E], value))
       }
     }
 
@@ -75,9 +79,9 @@ object Mapping {
     
   implicit def mappingNatureOfJavaMap[K, V, JMAP[_, _] <: java.util.Map[_, _]](implicit equality: Equality[(K, V)]): Mapping[JMAP[K, V]] = 
     new Mapping[JMAP[K, V]] {
-      def containsKey(mapping: M, key: Any): Boolean = {
+      def containsKey(map: JMAP[K, V], key: Any): Boolean = {
       }
-      def containsValue(mapping: M, value: Any): Boolean = {
+      def containsValue(map: JMAP[K, V], value: Any): Boolean = {
       }
     }
 

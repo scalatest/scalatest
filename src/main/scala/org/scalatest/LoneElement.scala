@@ -1,7 +1,6 @@
 package org.scalatest
 
 import collection.GenTraversable
-import matchers.ShouldMatchers.TraversableShouldWrapper
 
 /**
  * Trait that provides an implicit conversion that adds a <code>loneElement</code> method

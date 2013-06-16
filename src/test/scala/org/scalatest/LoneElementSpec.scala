@@ -19,7 +19,7 @@ import SharedHelpers._
 
 class LoneElementSpec extends Spec {
 
-  object `when used with Matchers` extends Matchers {
+  object `when used with Matchers` extends Matchers with LoneElement {
     
     def `should work with xs.loneElement and passed when xs only contains one element and the one element passed the check` {
       List(10).loneElement should be > 9

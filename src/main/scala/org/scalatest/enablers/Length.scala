@@ -73,22 +73,33 @@ trait Length[T] {
 
 object Length {
 
-  implicit def enablersForJavaList[E, JLIST[_] <: java.util.List[_]]: Length[JLIST[E]] = 
+  implicit def lengthOfJavaList[JLIST <: java.util.List[_]]: Length[JLIST] = 
+    new Length[JLIST] {
+      def lengthOf(javaList: JLIST): Long = javaList.size
+    }
+
+  implicit def lengthOfGenSeq[SEQ <: scala.collection.GenSeq[_]]: Length[SEQ] = 
+    new Length[SEQ] {
+      def lengthOf(seq: SEQ): Long = seq.length
+    }
+/*
+  implicit def lengthOfJavaList[E, JLIST[_] <: java.util.List[_]]: Length[JLIST[E]] = 
     new Length[JLIST[E]] {
       def lengthOf(javaList: JLIST[E]): Long = javaList.size
     }
 
-  implicit def enablersForGenSeq[E, SEQ[_] <: scala.collection.GenSeq[_]]: Length[SEQ[E]] = 
+  implicit def lengthOfGenSeq[E, SEQ[_] <: scala.collection.GenSeq[_]]: Length[SEQ[E]] = 
     new Length[SEQ[E]] {
       def lengthOf(seq: SEQ[E]): Long = seq.length
     }
+*/
 
-  implicit def enablersForArray[E]: Length[Array[E]] = 
+  implicit def lengthOfArray[E]: Length[Array[E]] = 
     new Length[Array[E]] {
       def lengthOf(arr: Array[E]): Long = arr.length
     }
 
-  implicit val enablersForString: Length[String] = 
+  implicit val lengthOfString: Length[String] = 
     new Length[String] {
       def lengthOf(str: String): Long = str.length
     }

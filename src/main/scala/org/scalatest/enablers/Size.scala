@@ -72,42 +72,61 @@ trait Size[T] {
 
 object Size {
 
-  implicit def enablersForJavaList[E, JLIST[_] <: java.util.List[_]]: Size[JLIST[E]] = 
+/*
+  implicit def sizeOfJavaList[E, JLIST[_] <: java.util.List[_]]: Size[JLIST[E]] = 
     new Size[JLIST[E]] {
       def sizeOf(javaList: JLIST[E]): Long = javaList.size
     }
 
-  implicit def enablersForGenSeq[E, SEQ[_] <: scala.collection.GenSeq[_]]: Size[SEQ[E]] = 
+  implicit def sizeOfGenSeq[E, SEQ[_] <: scala.collection.GenSeq[_]]: Size[SEQ[E]] = 
     new Size[SEQ[E]] {
       def sizeOf(seq: SEQ[E]): Long = seq.length
     }
+*/
 
-  implicit def enablersForJavaCollection[E, JCOL[_] <: java.util.Collection[_]]: Size[JCOL[E]] = 
+/*
+  implicit def sizeOfJavaCollection[E, JCOL[_] <: java.util.Collection[_]]: Size[JCOL[E]] = 
     new Size[JCOL[E]] {
       def sizeOf(javaColl: JCOL[E]): Long = javaColl.size
     }
 
-  implicit def enablersForJavaMap[K, V, JMAP[_, _] <: java.util.Map[_, _]]: Size[JMAP[K, V]] = 
+  implicit def sizeOfJavaMap[K, V, JMAP[_, _] <: java.util.Map[_, _]]: Size[JMAP[K, V]] = 
     new Size[JMAP[K, V]] {
       def sizeOf(javaMap: JMAP[K, V]): Long = javaMap.size
     }
 
-  implicit def enablersForGenTraversable[E, TRAV[_] <: scala.collection.GenTraversable[_]]: Size[TRAV[E]] = 
+  implicit def sizeOfGenTraversable[E, TRAV[_] <: scala.collection.GenTraversable[_]]: Size[TRAV[E]] = 
     new Size[TRAV[E]] {
       def sizeOf(trav: TRAV[E]): Long = trav.size
     }
 
-  implicit def enablersForMap[K, V, MAP[_, _] <: scala.collection.GenMap[_, _]]: Size[MAP[K, V]] =
+  implicit def sizeOfMap[K, V, MAP[_, _] <: scala.collection.GenMap[_, _]]: Size[MAP[K, V]] =
     new Size[MAP[K, V]] {
       def sizeOf(map: MAP[K, V]): Long = map.size
     }
+*/
 
-  implicit def enablersForArray[E]: Size[Array[E]] = 
+  implicit def sizeOfJavaCollection[JCOL <: java.util.Collection[_]]: Size[JCOL] = 
+    new Size[JCOL] {
+      def sizeOf(javaColl: JCOL): Long = javaColl.size
+    }
+
+  implicit def sizeOfJavaMap[JMAP <: java.util.Map[_, _]]: Size[JMAP] = 
+    new Size[JMAP] {
+      def sizeOf(javaMap: JMAP): Long = javaMap.size
+    }
+
+  implicit def sizeOfGenTraversable[TRAV <: scala.collection.GenTraversable[_]]: Size[TRAV] = 
+    new Size[TRAV] {
+      def sizeOf(trav: TRAV): Long = trav.size
+    }
+
+  implicit def sizeOfArray[E]: Size[Array[E]] = 
     new Size[Array[E]] {
       def sizeOf(arr: Array[E]): Long = arr.length
     }
 
-  implicit val enablersForString: Size[String] = 
+  implicit val sizeOfString: Size[String] = 
     new Size[String] {
       def sizeOf(str: String): Long = str.length
     }

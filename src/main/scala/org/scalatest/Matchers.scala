@@ -1403,7 +1403,7 @@ import org.scalautils.NormalizingEquality
  * forget a set of needed parentheses.
  * </p>
  */
-trait Matchers extends Assertions with Tolerance with ShouldVerb with LoneElement with MatcherWords with Explicitly { matchers =>
+trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWords with Explicitly { matchers =>
 
   //
   // This class is used as the return type of the overloaded should method (in MapShouldWrapper)
@@ -6231,40 +6231,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    *
    * <p>
    * This class is used in conjunction with an implicit conversion to enable <code>should</code> methods to
-   * be invoked on objects of type <code>scala.Collection[T]</code>.
-   * </p>
-   *
-   * @author Bill Venners
-   */
-  class TraversableShouldWrapper[E, L[_] <: scala.collection.GenTraversable[_]](left: L[E]) extends AnyShouldWrapper(left) {
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * xs.loneElement should be > 9
-     *    ^
-     * </pre>
-     */
-    def loneElement: E = {
-      if (left.size == 1)
-        left.head.asInstanceOf[E] // Why do I need to cast?
-      else
-        throw newTestFailedException(
-          FailureMessages(
-            "notLoneElement",
-            left,
-            left.size)
-        )
-    }
-  }
-
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * <p>
-   * This class is used in conjunction with an implicit conversion to enable <code>should</code> methods to
    * be invoked on objects of type <code>java.util.Map[K, V]</code>.
    * </p>
    *
@@ -6304,12 +6270,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   implicit def convertToAnyShouldWrapper[T](o: T): AnyShouldWrapper[T] = new AnyShouldWrapper(o)
 
   /**
-   * Implicitly converts an object of type <code>scala.Collection[T]</code> to a <code>CollectionShouldWrapper</code>,
-   * to enable <code>should</code> methods to be invokable on that object.
-   */
-  implicit def convertToTraversableShouldWrapper[E, L[_] <: scala.collection.GenTraversable[_]](o: L[E]): TraversableShouldWrapper[E, L] = new TraversableShouldWrapper[E, L](o)
-
-  /**
    * Implicitly converts an object of type <code>scala.collection.GenMap[K, V]</code> to a <code>MapShouldWrapper[K, V]</code>,
    * to enable <code>should</code> methods to be invokable on that object.
    */
@@ -6332,11 +6292,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * to enable <code>should</code> methods to be invokable on that object.
    */
   implicit def convertToJavaMapShouldWrapper[K, V, L[_, _] <: java.util.Map[_, _]](o: L[K, V]): JavaMapShouldWrapper[K, V, L] = new JavaMapShouldWrapper[K, V, L](o) 
-
-  /**
-   * Turn off implicit conversion of LoneElement, so that if user accidentally mixin LoneElement it does conflict with convertToTraversableShouldWrapper
-   */
-  override def convertToTraversableLoneElementWrapper[T](xs: scala.collection.GenTraversable[T]): LoneElementTraversableWrapper[T] = new LoneElementTraversableWrapper[T](xs)
 }
 
 /**
