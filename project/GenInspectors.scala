@@ -1037,6 +1037,9 @@ object GenInspectors {
     !(colText.startsWith("Set(") && condition == "'traversable should not have length' failed") && 
     !(colText.startsWith("collection.mutable.Set") && condition == "'traversable should have length' failed") && 
     !(colText.startsWith("collection.mutable.Set") && condition == "'traversable should not have length' failed")
+    
+  def filterArraySymbol(colText: String, condition: String): Boolean = 
+    !(colText.startsWith("Array") && condition == "'traversable should not be symbol' failed")
   
   def genInspectorShorthandsForAllSpecFile(targetDir: File) {
     val int123Col = genCol("1, 2, 3", "\"WrappedArray(1, 2, 3)\"")
@@ -1169,7 +1172,7 @@ object GenInspectors {
             val colType = if (colText.startsWith("Array")) "Array[String]" else "GenTraversable[String]"
             (colText, condition, allColText + assertText, colType, okFun, errorFun, errorValue, messageFun(colType, errorFun, errorValue).toString, xsText)
           }
-        }) ++
+        }).filter { case (colText, condition, _, _, _, _, _, _, _) => filterArraySymbol(colText, condition) } ++
         (traversableCheckCol flatMap { case (colText, xsText) =>
           traversableCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) => 
             val colType = if (colText.startsWith("Array")) "Array[String]" else "GenTraversable[String]"
@@ -1347,7 +1350,7 @@ object GenInspectors {
           val passedCount = 3 - List("", "boom!", "hi").filter(errorAssertFun).length
           (colText, condition, atLeast2ColText + assertText, "String", okFun, errorFun, errorValue, passedCount, messageFun(errorFun, errorValue).toString, xsText)
         }
-      }) ++ 
+      }).filter { case (colText, condition, _, _, _, _, _, _, _, _) => filterSetLength(colText, condition) } ++ 
       (propertyCheckCol flatMap { case (colText, xsText) =>
         lengthSizeCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) => 
           val errorAssertFun = getFun(errorFun, "")
@@ -1376,7 +1379,7 @@ object GenInspectors {
           val passedCount = 3 - List("hi", "boom!", "").filter(errorAssertFun).length
           (colText, condition, atLeast2ColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
         }
-      }) ++ 
+      }).filter { case (colText, condition, _, _, _, _, _, _, _, _) => filterArraySymbol(colText, condition) } ++ 
       (traversableCheckCol flatMap { case (colText, xsText) =>
         traversableCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) => 
           val colType = if (colText.startsWith("Array")) "Array[String]" else "GenTraversable[String]"
@@ -1577,7 +1580,7 @@ object GenInspectors {
           val passedCount = 3 - List("hi", "boom!", "").filter(errorAssertFun).length
           (colText, condition, everyColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
         }
-      }) ++ 
+      }).filter { case (colText, condition, _, _, _, _, _, _, _, _) => filterArraySymbol(colText, condition) } ++ 
       (traversableCheckCol flatMap { case (colText, xsText) =>
         traversableCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) => 
           val colType = if (colText.startsWith("Array")) "Array[String]" else "GenTraversable[String]"
@@ -1778,7 +1781,7 @@ object GenInspectors {
           val passedCount = 3 - List("hi", "boom!", "").filter(errorAssertFun).length
           (colText, condition, exactly3ColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
         }
-      }) ++ 
+      }).filter { case (colText, condition, _, _, _, _, _, _, _, _) => filterArraySymbol(colText, condition) } ++ 
       (traversableCheckCol flatMap { case (colText, xsText) =>
         traversableCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) => 
           val colType = if (colText.startsWith("Array")) "Array[String]" else "GenTraversable[String]"
@@ -1978,7 +1981,7 @@ object GenInspectors {
           val passedCount = 3 - List("hi", "boom!", "").filter(errorAssertFun).length
           (colText, condition, noColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
         }
-      }) ++
+      }).filter { case (colText, condition, _, _, _, _, _, _, _, _) => filterArraySymbol(colText, condition) } ++
       (traversableCheckCol flatMap { case (colText, xsText) =>
         traversableCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
           val colType = if (colText.startsWith("Array")) "Array[String]" else "GenTraversable[String]"
@@ -2179,7 +2182,7 @@ object GenInspectors {
           val passedCount = 3 - List("hi", "boom!", "").filter(errorAssertFun).length
           (colText, condition, betweenColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
         }
-      }) ++
+      }).filter { case (colText, condition, _, _, _, _, _, _, _, _) => filterArraySymbol(colText, condition) } ++
       (traversableCheckCol flatMap { case (colText, xsText) =>
         traversableCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
           val colType = if (colText.startsWith("Array")) "Array[String]" else "GenTraversable[String]"
@@ -2394,7 +2397,7 @@ object GenInspectors {
           val passedCount = 2
           (colText, condition, atMostColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
         }
-      }) ++
+      }).filter { case (colText, condition, _, _, _, _, _, _, _, _) => filterArraySymbol(colText, condition) } ++
       (traversableCheckCol flatMap { case (colText, xsText) =>
         traversableCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
           val colType = if (colText.startsWith("Array")) "Array[String]" else "GenTraversable[String]"
