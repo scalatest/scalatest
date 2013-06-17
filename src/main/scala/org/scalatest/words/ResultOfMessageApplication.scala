@@ -20,28 +20,6 @@ package org.scalatest.words
  * the matchers DSL.
  *
  * @author Bill Venners
+ * @author Chee Seng
  */
-final class ResultOfAThrowableApplication[T <: Throwable] {
-  
-  /**
-   * This method enables the following syntax: 
-   *
-   * <pre class="stHighlight">
-   * a [RuntimeException] should be thrownBy { ... }
-   *                      ^
-   * </pre>
-   */
-  def should(beWord: BeWord): ResultOfBeWordForAThrowable[T] = 
-    new ResultOfBeWordForAThrowable[T]
-  
-  /**
-   * This method enables the following syntax: 
-   *
-   * <pre class="stHighlight">
-   * a [RuntimeException] should not be thrownBy { ... }
-   *                      ^
-   * </pre>
-   */
-  def should(notWord: NotWord): ResultOfNotWordForAThrowable[T] = 
-    new ResultOfNotWordForAThrowable[T]
-}
+final class ResultOfMessageApplication(val expectedMessage: String)

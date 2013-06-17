@@ -2694,6 +2694,26 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    */
   def inOrder(xs: Any*) = new ResultOfInOrderApplication(xs)
   
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * a [RuntimeException] should not be thrownBy {...}
+   *                                    ^
+   * </pre>
+   */
+  def thrownBy(fun: => Any) = new ResultOfThrownByApplication(fun)
+
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * exception should not have message ("file not found")
+   *                           ^
+   * </pre>
+   */
+  def message(expectedMessage: String) = new ResultOfMessageApplication(expectedMessage)
+  
   // For safe keeping
   private implicit def nodeToCanonical(node: scala.xml.Node) = new Canonicalizer(node)
 

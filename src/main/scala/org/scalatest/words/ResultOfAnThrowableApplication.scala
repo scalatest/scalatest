@@ -34,4 +34,14 @@ final class ResultOfAnThrowableApplication[T <: Throwable] {
   def should(beWord: BeWord): ResultOfBeWordForAnThrowable[T] = 
     new ResultOfBeWordForAnThrowable[T]
   
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * an [RuntimeException] should not be thrownBy { ... }
+   *                       ^
+   * </pre>
+   */
+  def should(notWord: NotWord): ResultOfNotWordForAnThrowable[T] = 
+    new ResultOfNotWordForAnThrowable[T]
 }

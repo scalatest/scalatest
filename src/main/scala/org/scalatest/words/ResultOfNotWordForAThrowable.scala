@@ -15,33 +15,39 @@
  */
 package org.scalatest.words
 
+import org.scalatest.Resources
+import org.scalatest.Assertions.newAssertionFailedException
+
+
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
  * the matchers DSL.
  *
  * @author Bill Venners
+ * @author Chee Seng
  */
-final class ResultOfAThrowableApplication[T <: Throwable] {
-  
-  /**
-   * This method enables the following syntax: 
-   *
-   * <pre class="stHighlight">
-   * a [RuntimeException] should be thrownBy { ... }
-   *                      ^
-   * </pre>
-   */
-  def should(beWord: BeWord): ResultOfBeWordForAThrowable[T] = 
-    new ResultOfBeWordForAThrowable[T]
+final class ResultOfNotWordForAThrowable[T <: Throwable] {
   
   /**
    * This method enables the following syntax: 
    *
    * <pre class="stHighlight">
    * a [RuntimeException] should not be thrownBy { ... }
-   *                      ^
+   *                                 ^
    * </pre>
    */
-  def should(notWord: NotWord): ResultOfNotWordForAThrowable[T] = 
-    new ResultOfNotWordForAThrowable[T]
+  def be(thrownBy: ResultOfThrownByApplication)(implicit manifest: Manifest[T]) {
+    val clazz = manifest.erasure.asInstanceOf[Class[T]]
+    try {
+      thrownBy.apply
+    }
+    catch {
+      case u: Throwable => {
+        if (clazz.isAssignableFrom(u.getClass)) {
+          val s = Resources("aExceptionNotExpected", u.getClass.getName)
+          throw newAssertionFailedException(Some(s), Some(u), 4)
+        }
+      }
+    }
+  }  
 }
