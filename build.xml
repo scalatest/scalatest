@@ -205,6 +205,10 @@
         	<include name="GenContain.scala" />
         </scalac>
     </target>
+	
+	<target name="clean-codegenerators">
+		<delete dir="${build.generators}" />
+    </target>
 
     <target name="gentables" depends="init, compile-codegenerators"
             unless="gentables.uptodate">
@@ -368,6 +372,10 @@
     <target name="write-empty-excludes-file" unless="is.2.9">
       <echo file="${build}/scalac_excludes"/>
     </target>
+	
+	<target name="clean-gentests">
+	  <delete dir="${build.generated.tests.bin}" />
+	</target>
 	
     <target name="compile-gentests" depends="compile-tests, geninspectors, gencontain">
       <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
