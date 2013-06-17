@@ -15,6 +15,9 @@
  */
 package org.scalatest.words
 
+import org.scalatest.Resources
+import org.scalatest.Assertions.newAssertionFailedException
+
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
  * the matchers DSL.
@@ -34,4 +37,24 @@ final class NoExceptionWord {
   def should(beWord: BeWord): ResultOfBeWordForNoException = 
     new ResultOfBeWordForNoException
   
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * noException shouldBe thrownBy { ... }
+   *             ^
+   * </pre>
+   */
+  def shouldBe(throwBy: ResultOfThrownByApplication) {
+    val caught = try {
+      throwBy.apply()
+    }
+    catch {
+      case u: Throwable => {
+        val message = Resources("noExceptionExpected", u.getClass.getName)
+        throw newAssertionFailedException(Some(message), Some(u), 4)
+      }
+    }
+  }
+    
 }

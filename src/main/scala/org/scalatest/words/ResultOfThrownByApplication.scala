@@ -22,11 +22,11 @@ package org.scalatest.words
  * @author Bill Venners
  * @author Chee Seng
  */
-final class ResultOfThrownByApplication(fun: => Any) {
+final class ResultOfThrownByApplication(fun: => Any) extends Function0[Any] {
   
   /**
    * Invoke the passed in function.
    */
-  def apply = fun
+  def apply() = fun
   
 }

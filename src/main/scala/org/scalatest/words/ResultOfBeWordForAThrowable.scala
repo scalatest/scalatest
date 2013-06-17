@@ -17,7 +17,7 @@ package org.scalatest.words
 
 import org.scalatest.Resources
 import org.scalatest.Assertions.checkExpectedException
-
+import org.scalatest.Assertions.checkNotException
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -25,7 +25,7 @@ import org.scalatest.Assertions.checkExpectedException
  *
  * @author Bill Venners
  */
-final class ResultOfBeWordForAThrowable[T <: Throwable] {
+final class ResultOfBeWordForAThrowable[T <: Throwable](shouldBeTrue: Boolean) {
   
   /**
    * This method enables the following syntax: 
@@ -36,7 +36,10 @@ final class ResultOfBeWordForAThrowable[T <: Throwable] {
    * </pre>
    */
   def thrownBy(fun: => Unit)(implicit manifest: Manifest[T]) {
-    checkExpectedException(fun, "aWrongException", "aExceptionExpected", 5)
+    if (shouldBeTrue)
+      checkExpectedException(fun, "aWrongException", "aExceptionExpected", 5)
+    else
+      checkNotException(fun, "aExceptionNotExpected")
   }
   
 }

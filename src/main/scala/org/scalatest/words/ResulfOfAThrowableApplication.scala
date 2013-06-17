@@ -15,6 +15,10 @@
  */
 package org.scalatest.words
 
+import org.scalatest.Assertions.checkExpectedException
+import org.scalatest.Resources
+import org.scalatest.Assertions.newAssertionFailedException
+
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
  * the matchers DSL.
@@ -32,7 +36,51 @@ final class ResultOfAThrowableApplication[T <: Throwable] {
    * </pre>
    */
   def should(beWord: BeWord): ResultOfBeWordForAThrowable[T] = 
-    new ResultOfBeWordForAThrowable[T]
+    new ResultOfBeWordForAThrowable[T](true)
+  
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * a [RuntimeException] shouldBe thrownBy { ... }
+   *                      ^
+   * </pre>
+   */
+  def shouldBe(throwBy: ResultOfThrownByApplication)(implicit manifest: Manifest[T]) {    
+    val clazz = manifest.erasure.asInstanceOf[Class[T]]
+    val caught = try {
+      throwBy.apply()
+      None
+    }
+    catch {
+      case u: Throwable => {
+        if (!clazz.isAssignableFrom(u.getClass)) {
+          val s = Resources("aWrongException", clazz.getName, u.getClass.getName)
+          throw newAssertionFailedException(Some(s), Some(u), 4)
+        }
+        else {
+          Some(u)
+        }
+      }
+    }
+    caught match {
+      case None =>
+        val message = Resources("aExceptionExpected", clazz.getName)
+        throw newAssertionFailedException(Some(message), None, 4)
+      case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase iSAssignableFrom succeeded above
+    }
+  }
+  
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * a [RuntimeException] shouldNot be thrownBy { ... }
+   *                      ^
+   * </pre>
+   */
+  def shouldNot(beWord: BeWord): ResultOfBeWordForAThrowable[T] = 
+    new ResultOfBeWordForAThrowable[T](false)
   
   /**
    * This method enables the following syntax: 

@@ -2465,7 +2465,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def message(expectedMessage: String)(implicit ev: A <:< Throwable) {
-      if (left.getMessage != expectedMessage)
+      if ((left.getMessage == expectedMessage) != shouldBeTrue)
         throw newTestFailedException(
           if (shouldBeTrue)
             FailureMessages("hadMessageInsteadOfExpectedMessage", left, left.getMessage, expectedMessage)
@@ -5675,6 +5675,21 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def shouldNot(rightMatcherX1: Matcher[T]) {
       ShouldMethodHelper.shouldNotMatcher(left, rightMatcherX1)
     }
+    
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * result shouldNot have length (3)
+     *        ^
+     * result shouldNot have size (3)
+     *        ^
+     * exception shouldNot have message ("file not found")
+     *           ^
+     * </pre>
+     */
+    def shouldNot(haveWord: HaveWord): ResultOfHaveWordForExtent[T] =
+      new ResultOfHaveWordForExtent(left, false)
 
     /**
      * This method enables syntax such as the following:
@@ -6127,6 +6142,14 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       checkExpectedException(fun, "anWrongException", "anExceptionExpected", 5)
     }
 
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * system.actorOf(Props[MyActor]) shouldThrow noException
+     *                                ^
+     * </pre>
+     */
     def shouldThrow(noException: NoExceptionWord) {
       checkNoException(fun)
     }

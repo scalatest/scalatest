@@ -1196,4 +1196,18 @@ object Assertions extends Assertions {
       }
     }
   }
+  private[scalatest] def checkNotException[T <: AnyRef](f: => Any, exceptionNotExpectedResourceName: String)(implicit manifest: Manifest[T]) {
+    val clazz = manifest.erasure.asInstanceOf[Class[T]]
+    try {
+      f
+    }
+    catch {
+      case u: Throwable => {
+        if (clazz.isAssignableFrom(u.getClass)) {
+          val s = Resources(exceptionNotExpectedResourceName, u.getClass.getName)
+          throw newAssertionFailedException(Some(s), Some(u), 4)
+        }
+      }
+    }
+  }
 }
