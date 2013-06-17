@@ -63,7 +63,7 @@ class ShouldBeThrownBySpec extends Spec with Matchers {
           assert(1 === 1)
         }
       }
-      assert(e.message === Some(exceptionExpected(classOf[RuntimeException])))
+      assert(e.message === Some(aExceptionExpected(classOf[RuntimeException])))
       assert(e.failedCodeFileName === Some(fileName))
       assert(e.failedCodeLineNumber === Some(thisLineNumber - 6))
     }
@@ -74,7 +74,7 @@ class ShouldBeThrownBySpec extends Spec with Matchers {
           throw new FileNotFoundException("secret file not found")
         }
       }
-      assert(e.message === Some(wrongException(classOf[RuntimeException], classOf[FileNotFoundException])))
+      assert(e.message === Some(aWrongException(classOf[RuntimeException], classOf[FileNotFoundException])))
       assert(e.failedCodeFileName === Some(fileName))
       assert(e.failedCodeLineNumber === Some(thisLineNumber - 6))
     }
@@ -94,7 +94,7 @@ class ShouldBeThrownBySpec extends Spec with Matchers {
           assert(1 === 1)
         }
       }
-      assert(e.message === Some(exceptionExpected(classOf[RuntimeException])))
+      assert(e.message === Some(anExceptionExpected(classOf[RuntimeException])))
       assert(e.failedCodeFileName === Some(fileName))
       assert(e.failedCodeLineNumber === Some(thisLineNumber - 6))
     }
@@ -105,7 +105,7 @@ class ShouldBeThrownBySpec extends Spec with Matchers {
           throw new FileNotFoundException("secret file not found")
         }
       }
-      assert(e.message === Some(wrongException(classOf[RuntimeException], classOf[FileNotFoundException])))
+      assert(e.message === Some(anWrongException(classOf[RuntimeException], classOf[FileNotFoundException])))
       assert(e.failedCodeFileName === Some(fileName))
       assert(e.failedCodeLineNumber === Some(thisLineNumber - 6))
     }

@@ -16,7 +16,7 @@
 package org.scalatest.words
 
 import org.scalatest.Resources
-import org.scalatest.Assertions.newAssertionFailedException
+import org.scalatest.Assertions.checkExpectedException
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -35,27 +35,6 @@ final class ResultOfBeWordForAnThrowable[T <: Throwable] {
    * </pre>
    */
   def thrownBy(fun: => Unit)(implicit manifest: Manifest[T]){
-    val clazz = manifest.erasure.asInstanceOf[Class[T]]
-    val caught = try {
-      fun
-      None
-    }
-    catch {
-      case u: Throwable => {
-        if (!clazz.isAssignableFrom(u.getClass)) {
-          val s = Resources("wrongException", clazz.getName, u.getClass.getName)
-          throw newAssertionFailedException(Some(s), Some(u), 4)
-        }
-        else {
-          Some(u)
-        }
-      }
-    }
-    caught match {
-      case None =>
-        val message = Resources("exceptionExpected", clazz.getName)
-        throw newAssertionFailedException(Some(message), None, 4)
-      case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase iSAssignableFrom succeeded above
-    }
+    checkExpectedException(fun, "anWrongException", "anExceptionExpected", 5)
   }
 }
