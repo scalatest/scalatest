@@ -2455,6 +2455,24 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             FailureMessages("hadExpectedSize", left, expectedSize)
         )
     }
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * exception should have message ("file not found")
+     *                       ^
+     * </pre>
+     */
+    def message(expectedMessage: String)(implicit ev: A <:< Throwable) {
+      if (left.getMessage != expectedMessage)
+        throw newTestFailedException(
+          if (shouldBeTrue)
+            FailureMessages("hadMessageInsteadOfExpectedMessage", left, left.getMessage, expectedMessage)
+          else
+            FailureMessages("hadExpectedMessage", left, expectedMessage)
+        )
+    }
   }
 
   /**

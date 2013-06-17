@@ -45,6 +45,9 @@ class ShouldBeThrownBySpec extends Spec with Matchers {
     
   def theExceptionExpected(clz: Class[_]): String = 
     "Expected the " + clz.getName + " to be thrown, but no exception was thrown."
+    
+  def hadMessageInsteadOfExpectedMessage(left: Throwable, actualMessage: String, expectedMessage: String) : String = 
+    left + " had message \"" + actualMessage + "\" instead of expected message \"" + expectedMessage + "\""
   
   object `a [Exception] should` {
     
@@ -139,6 +142,36 @@ class ShouldBeThrownBySpec extends Spec with Matchers {
       assert(e.message === Some(wrongException(classOf[RuntimeException], classOf[FileNotFoundException])))
       assert(e.failedCodeFileName === Some(fileName))
       assert(e.failedCodeLineNumber === Some(thisLineNumber - 7))
+    }
+    
+    def `do nothing when 'should have message' check passed` {
+      the [FileNotFoundException] thrownBy {
+        throw new FileNotFoundException("purposely")
+      } should have message "purposely"
+    }
+    
+    def `throw new TestFailedException with correct message and stack depth when used with 'should have message' and provided code does not produce any exception` {
+      val e = intercept[TestFailedException] {
+        the [RuntimeException] thrownBy {
+          assert(1 === 1)
+        } should have message "purposely"
+      }
+      assert(e.message === Some(exceptionExpected(classOf[RuntimeException])))
+      assert(e.failedCodeFileName === Some(fileName))
+      assert(e.failedCodeLineNumber === Some(thisLineNumber - 6))
+    }
+    
+    def `throw new TestFailedException with correct message and stack depth when used with 'should have message' and provided code produced expected exception with different message` {
+      val fnfe = 
+        the [FileNotFoundException] thrownBy {
+          throw new FileNotFoundException("secret file not found")
+        }
+      val e = intercept[TestFailedException] {
+        fnfe should have message "file not found"
+      }
+      assert(e.message === Some(hadMessageInsteadOfExpectedMessage(fnfe, "secret file not found", "file not found")))
+      assert(e.failedCodeFileName === Some(fileName))
+      assert(e.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
   }
   
