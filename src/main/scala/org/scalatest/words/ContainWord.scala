@@ -24,6 +24,8 @@ import org.scalautils.Equality
 import org.scalatest.enablers.Containing
 import org.scalatest.enablers.Aggregating
 import org.scalatest.enablers.Sequencing
+import org.scalatest.enablers.KeyMapping
+import org.scalatest.enablers.ValueMapping
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -91,6 +93,20 @@ final class ContainWord {
           FailureMessages("didNotContainKey", left, expectedKey),
           FailureMessages("containedKey", left, expectedKey)
         )
+    }
+  def newKey[K](expectedKey: Any): MatcherFactory1[Any, KeyMapping] =
+    new MatcherFactory1[Any, KeyMapping] {
+      def matcher[U <: Any : KeyMapping]: Matcher[U] = 
+        new Matcher[U] {
+          def apply(left: U): MatchResult = {
+            val keyMapping = implicitly[KeyMapping[U]]
+            MatchResult(
+              keyMapping.containsKey(left, expectedKey),
+              FailureMessages("didNotContainKey", left, expectedKey),
+              FailureMessages("containedKey", left, expectedKey)
+            )
+          }
+        }
     }
 
   // Holy smokes I'm starting to scare myself. I fixed the problem of the compiler not being

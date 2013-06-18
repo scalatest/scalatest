@@ -30,7 +30,7 @@ class ShouldContainNewKeySpec extends Spec with Matchers with Checkers with Retu
 
       def `should do nothing if map contains specified key` {
         Map("one" -> 1, "two" -> 2) should contain newKey ("two")
-        Map("one" -> 1, "two" -> 2) should (contain key ("two"))
+        Map("one" -> 1, "two" -> 2) should (contain newKey ("two"))
         Map(1 -> "one", 2 -> "two") should contain key (2)
       }
 
