@@ -162,7 +162,7 @@ class ShouldContainNewKeySpec extends Spec with Matchers with Checkers with Retu
       }
 
       def `should work on parallel form` {
-        Map("one" -> 1, "two" -> 2).par should contain key ("two")
+        Map("one" -> 1, "two" -> 2).par should contain newKey ("two")
       }
     }
 
@@ -171,45 +171,45 @@ class ShouldContainNewKeySpec extends Spec with Matchers with Checkers with Retu
       import scala.collection.mutable
 
       def `should do nothing if map contains specified key` {
-        mutable.Map("one" -> 1, "two" -> 2) should contain key ("two")
-        mutable.Map("one" -> 1, "two" -> 2) should (contain key ("two"))
-        mutable.Map(1 -> "one", 2 -> "two") should contain key (2)
+        mutable.Map("one" -> 1, "two" -> 2) should contain newKey ("two")
+        mutable.Map("one" -> 1, "two" -> 2) should (contain newKey ("two"))
+        mutable.Map(1 -> "one", 2 -> "two") should contain newKey (2)
       }
 
       def `should do nothing if map does not contain the specified key and used with not` {
-        mutable.Map("one" -> 1, "two" -> 2) should not { contain key ("three") }
-        mutable.Map("one" -> 1, "two" -> 2) should not contain key ("three")
-        mutable.Map("one" -> 1, "two" -> 2) should (not contain key ("three"))
+        mutable.Map("one" -> 1, "two" -> 2) should not { contain newKey ("three") }
+        mutable.Map("one" -> 1, "two" -> 2) should not contain newKey ("three")
+        mutable.Map("one" -> 1, "two" -> 2) should (not contain newKey ("three"))
       }
 
       def `should do nothing when map contains specified key and used in a logical-and expression` {
-        mutable.Map("one" -> 1, "two" -> 2) should { contain key ("two") and (contain key ("one")) }
-        mutable.Map("one" -> 1, "two" -> 2) should ((contain key ("two")) and (contain key ("one")))
-        mutable.Map("one" -> 1, "two" -> 2) should (contain key ("two") and contain key ("one"))
+        mutable.Map("one" -> 1, "two" -> 2) should { contain newKey ("two") and (contain newKey ("one")) }
+        mutable.Map("one" -> 1, "two" -> 2) should ((contain newKey ("two")) and (contain newKey ("one")))
+        mutable.Map("one" -> 1, "two" -> 2) should (contain newKey ("two") and contain newKey ("one"))
       }
 
       def `should do nothing when map contains specified key and used in a logical-or expression` {
-        mutable.Map("one" -> 1, "two" -> 2) should { contain key ("cat") or (contain key ("one")) }
-        mutable.Map("one" -> 1, "two" -> 2) should ((contain key ("cat")) or (contain key ("one")))
-        mutable.Map("one" -> 1, "two" -> 2) should (contain key ("cat") or contain key ("one"))
+        mutable.Map("one" -> 1, "two" -> 2) should { contain newKey ("cat") or (contain newKey ("one")) }
+        mutable.Map("one" -> 1, "two" -> 2) should ((contain newKey ("cat")) or (contain newKey ("one")))
+        mutable.Map("one" -> 1, "two" -> 2) should (contain newKey ("cat") or contain newKey ("one"))
       }
 
       def `should do nothing when map does not contain the specified key and used in a logical-and expression with not` {
-        mutable.Map("one" -> 1, "two" -> 2) should { not { contain key ("five") } and not { contain key ("three") }}
-        mutable.Map("one" -> 1, "two" -> 2) should ((not contain key ("five")) and (not contain key ("three")))
-        mutable.Map("one" -> 1, "two" -> 2) should (not contain key ("five") and not contain key ("three"))
+        mutable.Map("one" -> 1, "two" -> 2) should { not { contain newKey ("five") } and not { contain newKey ("three") }}
+        mutable.Map("one" -> 1, "two" -> 2) should ((not contain newKey ("five")) and (not contain newKey ("three")))
+        mutable.Map("one" -> 1, "two" -> 2) should (not contain newKey ("five") and not contain newKey ("three"))
       }
 
       def `should do nothing when map does not contain the specified key and used in a logical-or expression with not` {
-        mutable.Map("one" -> 1, "two" -> 2) should { not { contain key ("two") } or not { contain key ("three") }}
-        mutable.Map("one" -> 1, "two" -> 2) should ((not contain key ("two")) or (not contain key ("three")))
-        mutable.Map("one" -> 1, "two" -> 2) should (not contain key ("two") or not contain key ("three"))
+        mutable.Map("one" -> 1, "two" -> 2) should { not { contain newKey ("two") } or not { contain newKey ("three") }}
+        mutable.Map("one" -> 1, "two" -> 2) should ((not contain newKey ("two")) or (not contain newKey ("three")))
+        mutable.Map("one" -> 1, "two" -> 2) should (not contain newKey ("two") or not contain newKey ("three"))
       }
 
       def `should throw TestFailedException if map does not contain the specified key` {
         val map = mutable.Map("one" -> 1, "two" -> 2) 
         val caught1 = intercept[TestFailedException] {
-          map should contain key ("three")
+          map should contain newKey ("three")
         }
         assert(caught1.getMessage === map + " did not contain key \"three\"")
       }
@@ -217,18 +217,18 @@ class ShouldContainNewKeySpec extends Spec with Matchers with Checkers with Retu
       def `should throw TestFailedException if contains the specified key when used with not` {
         val map1 = mutable.Map("one" -> 1, "two" -> 2) 
         val caught1 = intercept[TestFailedException] {
-          map1 should (not contain key ("two"))
+          map1 should (not contain newKey ("two"))
         }
         assert(caught1.getMessage === map1 + " contained key \"two\"")
         val map2 = mutable.Map("one" -> 1, "two" -> 2) 
         val caught2 = intercept[TestFailedException] {
-          map2 should not (contain key ("two"))
+          map2 should not (contain newKey ("two"))
         }
         assert(caught2.getMessage === map2 + " contained key \"two\"")
         
         val map3 = mutable.Map("one" -> 1, "two" -> 2) 
         val caught3 = intercept[TestFailedException] {
-          map3 should not contain key ("two")
+          map3 should not contain newKey ("two")
         }
         assert(caught3.getMessage === map3 + " contained key \"two\"")
       }
@@ -236,19 +236,19 @@ class ShouldContainNewKeySpec extends Spec with Matchers with Checkers with Retu
       def `should throw an TestFailedException when map doesn't contain specified key and used in a logical-and expression` {
         val map1 = mutable.Map("one" -> 1, "two" -> 2) 
         val caught1 = intercept[TestFailedException] {
-          map1 should { contain key ("five") and (contain key ("two")) }
+          map1 should { contain newKey ("five") and (contain newKey ("two")) }
         }
         assert(caught1.getMessage === map1 + " did not contain key \"five\"")
         
         val map2 = mutable.Map("one" -> 1, "two" -> 2) 
         val caught2 = intercept[TestFailedException] {
-          map2 should ((contain key ("five")) and (contain key ("two")))
+          map2 should ((contain newKey ("five")) and (contain newKey ("two")))
         }
         assert(caught2.getMessage === map2 + " did not contain key \"five\"")
         
         val map3 = mutable.Map("one" -> 1, "two" -> 2) 
         val caught3 = intercept[TestFailedException] {
-          map3 should (contain key ("five") and contain key ("two"))
+          map3 should (contain newKey ("five") and contain newKey ("two"))
         }
         assert(caught3.getMessage === map3 + " did not contain key \"five\"")
       }
@@ -256,19 +256,19 @@ class ShouldContainNewKeySpec extends Spec with Matchers with Checkers with Retu
       def `should throw an TestFailedException when map doesn't contain specified key and used in a logical-or expression` {
         val map1 = mutable.Map("one" -> 1, "two" -> 2) 
         val caught1 = intercept[TestFailedException] {
-          map1 should { contain key ("fifty five") or (contain key ("twenty two")) }
+          map1 should { contain newKey ("fifty five") or (contain newKey ("twenty two")) }
         }
         assert(caught1.getMessage === map1 + " did not contain key \"fifty five\", and " + map1 + " did not contain key \"twenty two\"")
         
         val map2 = mutable.Map("one" -> 1, "two" -> 2) 
         val caught2 = intercept[TestFailedException] {
-          map2 should ((contain key ("fifty five")) or (contain key ("twenty two")))
+          map2 should ((contain newKey ("fifty five")) or (contain newKey ("twenty two")))
         }
         assert(caught2.getMessage === map2 + " did not contain key \"fifty five\", and " + map2 + " did not contain key \"twenty two\"")
         
         val map3 = mutable.Map("one" -> 1, "two" -> 2) 
         val caught3 = intercept[TestFailedException] {
-          map3 should (contain key ("fifty five") or contain key ("twenty two"))
+          map3 should (contain newKey ("fifty five") or contain newKey ("twenty two"))
         }
         assert(caught3.getMessage === map3 + " did not contain key \"fifty five\", and " + map3 + " did not contain key \"twenty two\"")
       }
@@ -276,19 +276,19 @@ class ShouldContainNewKeySpec extends Spec with Matchers with Checkers with Retu
       def `should throw an TestFailedException when map contains specified key and used in a logical-and expression with not` {
         val map1 = mutable.Map("one" -> 1, "two" -> 2) 
         val caught1 = intercept[TestFailedException] {
-          map1 should { not { contain key ("three") } and not { contain key ("two") }}
+          map1 should { not { contain newKey ("three") } and not { contain newKey ("two") }}
         }
         assert(caught1.getMessage === map1 + " did not contain key \"three\", but " + map1 + " contained key \"two\"")
         
         val map2 = mutable.Map("one" -> 1, "two" -> 2) 
         val caught2 = intercept[TestFailedException] {
-          map2 should ((not contain key ("three")) and (not contain key ("two")))
+          map2 should ((not contain newKey ("three")) and (not contain newKey ("two")))
         }
         assert(caught2.getMessage === map2 + " did not contain key \"three\", but " + map2 + " contained key \"two\"")
         
         val map3 = mutable.Map("one" -> 1, "two" -> 2) 
         val caught3 = intercept[TestFailedException] {
-          map3 should (not contain key ("three") and not contain key ("two"))
+          map3 should (not contain newKey ("three") and not contain newKey ("two"))
         }
         assert(caught3.getMessage === map3 + " did not contain key \"three\", but " + map3 + " contained key \"two\"")
       }
@@ -296,25 +296,25 @@ class ShouldContainNewKeySpec extends Spec with Matchers with Checkers with Retu
       def `should throw an TestFailedException when map contains specified key and used in a logical-or expression with not` {
         val map1 = mutable.Map("one" -> 1, "two" -> 2) 
         val caught1 = intercept[TestFailedException] {
-          map1 should { not { contain key ("two") } or not { contain key ("two") }}
+          map1 should { not { contain newKey ("two") } or not { contain newKey ("two") }}
         }
         assert(caught1.getMessage === map1 + " contained key \"two\", and " + map1 + " contained key \"two\"")
         
         val map2 = mutable.Map("one" -> 1, "two" -> 2) 
         val caught2 = intercept[TestFailedException] {
-          map2 should ((not contain key ("two")) or (not contain key ("two")))
+          map2 should ((not contain newKey ("two")) or (not contain newKey ("two")))
         }
         assert(caught2.getMessage === map2 + " contained key \"two\", and " + map2 + " contained key \"two\"")
         
         val map3 = mutable.Map("one" -> 1, "two" -> 2) 
         val caught3 = intercept[TestFailedException] {
-          map3 should (not contain key ("two") or not contain key ("two"))
+          map3 should (not contain newKey ("two") or not contain newKey ("two"))
         }
         assert(caught3.getMessage === map3 + " contained key \"two\", and " + map3 + " contained key \"two\"")
       }
 
       def `should work on parallel form` {
-        mutable.Map("one" -> 1, "two" -> 2).par should contain key ("two")
+        mutable.Map("one" -> 1, "two" -> 2).par should contain newKey ("two")
       }
     }
 
@@ -323,43 +323,43 @@ class ShouldContainNewKeySpec extends Spec with Matchers with Checkers with Retu
       val map: scala.collection.Map[String, Int] = Map("one" -> 1, "two" -> 2)
 
       def `should do nothing if map contains specified key` {
-        map should contain key ("two")
-        map should (contain key ("two"))
+        map should contain newKey ("two")
+        map should (contain newKey ("two"))
       }
 
       def `should do nothing if map does not contain the specified key and used with not` {
-        map should not { contain key ("three") }
-        map should not contain key ("three")
-        map should (not contain key ("three"))
+        map should not { contain newKey ("three") }
+        map should not contain newKey ("three")
+        map should (not contain newKey ("three"))
       }
 
       def `should do nothing when map contains specified key and used in a logical-and expression` {
-        map should { contain key ("two") and (contain key ("one")) }
-        map should ((contain key ("two")) and (contain key ("one")))
-        map should (contain key ("two") and contain key ("one"))
+        map should { contain newKey ("two") and (contain newKey ("one")) }
+        map should ((contain newKey ("two")) and (contain newKey ("one")))
+        map should (contain newKey ("two") and contain newKey ("one"))
       }
 
       def `should do nothing when map contains specified key and used in a logical-or expression` {
-        map should { contain key ("cat") or (contain key ("one")) }
-        map should ((contain key ("cat")) or (contain key ("one")))
-        map should (contain key ("cat") or contain key ("one"))
+        map should { contain newKey ("cat") or (contain newKey ("one")) }
+        map should ((contain newKey ("cat")) or (contain newKey ("one")))
+        map should (contain newKey ("cat") or contain newKey ("one"))
       }
 
       def `should do nothing when map does not contain the specified key and used in a logical-and expression with not` {
-        map should { not { contain key ("five") } and not { contain key ("three") }}
-        map should ((not contain key ("five")) and (not contain key ("three")))
-        map should (not contain key ("five") and not contain key ("three"))
+        map should { not { contain newKey ("five") } and not { contain newKey ("three") }}
+        map should ((not contain newKey ("five")) and (not contain newKey ("three")))
+        map should (not contain newKey ("five") and not contain newKey ("three"))
       }
 
       def `should do nothing when map does not contain the specified key and used in a logical-or expression with not` {
-        map should { not { contain key ("two") } or not { contain key ("three") }}
-        map should ((not contain key ("two")) or (not contain key ("three")))
-        map should (not contain key ("two") or not contain key ("three"))
+        map should { not { contain newKey ("two") } or not { contain newKey ("three") }}
+        map should ((not contain newKey ("two")) or (not contain newKey ("three")))
+        map should (not contain newKey ("two") or not contain newKey ("three"))
       }
 
       def `should throw TestFailedException if map does not contain the specified key` {
         val caught1 = intercept[TestFailedException] {
-          map should contain key ("three")
+          map should contain newKey ("three")
         }
         assert(caught1.getMessage === "Map(one -> 1, two -> 2) did not contain key \"three\"")
       }
@@ -367,17 +367,17 @@ class ShouldContainNewKeySpec extends Spec with Matchers with Checkers with Retu
       def `should throw TestFailedException if contains the specified key when used with not` {
 
         val caught1 = intercept[TestFailedException] {
-          map should (not contain key ("two"))
+          map should (not contain newKey ("two"))
         }
         assert(caught1.getMessage === "Map(one -> 1, two -> 2) contained key \"two\"")
 
         val caught2 = intercept[TestFailedException] {
-          map should not (contain key ("two"))
+          map should not (contain newKey ("two"))
         }
         assert(caught2.getMessage === "Map(one -> 1, two -> 2) contained key \"two\"")
 
         val caught3 = intercept[TestFailedException] {
-          map should not contain key ("two")
+          map should not contain newKey ("two")
         }
         assert(caught3.getMessage === "Map(one -> 1, two -> 2) contained key \"two\"")
       }
@@ -385,17 +385,17 @@ class ShouldContainNewKeySpec extends Spec with Matchers with Checkers with Retu
       def `should throw an TestFailedException when map doesn't contain specified key and used in a logical-and expression` {
 
         val caught1 = intercept[TestFailedException] {
-          map should { contain key ("five") and (contain key ("two")) }
+          map should { contain newKey ("five") and (contain newKey ("two")) }
         }
         assert(caught1.getMessage === "Map(one -> 1, two -> 2) did not contain key \"five\"")
 
         val caught2 = intercept[TestFailedException] {
-          map should ((contain key ("five")) and (contain key ("two")))
+          map should ((contain newKey ("five")) and (contain newKey ("two")))
         }
         assert(caught2.getMessage === "Map(one -> 1, two -> 2) did not contain key \"five\"")
 
         val caught3 = intercept[TestFailedException] {
-          map should (contain key ("five") and contain key ("two"))
+          map should (contain newKey ("five") and contain newKey ("two"))
         }
         assert(caught3.getMessage === "Map(one -> 1, two -> 2) did not contain key \"five\"")
       }
@@ -403,17 +403,17 @@ class ShouldContainNewKeySpec extends Spec with Matchers with Checkers with Retu
       def `should throw an TestFailedException when map doesn't contain specified key and used in a logical-or expression` {
 
         val caught1 = intercept[TestFailedException] {
-          map should { contain key ("fifty five") or (contain key ("twenty two")) }
+          map should { contain newKey ("fifty five") or (contain newKey ("twenty two")) }
         }
         assert(caught1.getMessage === "Map(one -> 1, two -> 2) did not contain key \"fifty five\", and Map(one -> 1, two -> 2) did not contain key \"twenty two\"")
 
         val caught2 = intercept[TestFailedException] {
-          map should ((contain key ("fifty five")) or (contain key ("twenty two")))
+          map should ((contain newKey ("fifty five")) or (contain newKey ("twenty two")))
         }
         assert(caught2.getMessage === "Map(one -> 1, two -> 2) did not contain key \"fifty five\", and Map(one -> 1, two -> 2) did not contain key \"twenty two\"")
 
         val caught3 = intercept[TestFailedException] {
-          map should (contain key ("fifty five") or contain key ("twenty two"))
+          map should (contain newKey ("fifty five") or contain newKey ("twenty two"))
         }
         assert(caught3.getMessage === "Map(one -> 1, two -> 2) did not contain key \"fifty five\", and Map(one -> 1, two -> 2) did not contain key \"twenty two\"")
       }
@@ -421,17 +421,17 @@ class ShouldContainNewKeySpec extends Spec with Matchers with Checkers with Retu
       def `should throw an TestFailedException when map contains specified key and used in a logical-and expression with not` {
 
         val caught1 = intercept[TestFailedException] {
-          map should { not { contain key ("three") } and not { contain key ("two") }}
+          map should { not { contain newKey ("three") } and not { contain newKey ("two") }}
         }
         assert(caught1.getMessage === "Map(one -> 1, two -> 2) did not contain key \"three\", but Map(one -> 1, two -> 2) contained key \"two\"")
 
         val caught2 = intercept[TestFailedException] {
-          map should ((not contain key ("three")) and (not contain key ("two")))
+          map should ((not contain newKey ("three")) and (not contain newKey ("two")))
         }
         assert(caught2.getMessage === "Map(one -> 1, two -> 2) did not contain key \"three\", but Map(one -> 1, two -> 2) contained key \"two\"")
 
         val caught3 = intercept[TestFailedException] {
-          map should (not contain key ("three") and not contain key ("two"))
+          map should (not contain newKey ("three") and not contain newKey ("two"))
         }
         assert(caught3.getMessage === "Map(one -> 1, two -> 2) did not contain key \"three\", but Map(one -> 1, two -> 2) contained key \"two\"")
       }
@@ -439,23 +439,23 @@ class ShouldContainNewKeySpec extends Spec with Matchers with Checkers with Retu
       def `should throw an TestFailedException when map contains specified key and used in a logical-or expression with not` {
 
         val caught1 = intercept[TestFailedException] {
-          map should { not { contain key ("two") } or not { contain key ("two") }}
+          map should { not { contain newKey ("two") } or not { contain newKey ("two") }}
         }
         assert(caught1.getMessage === "Map(one -> 1, two -> 2) contained key \"two\", and Map(one -> 1, two -> 2) contained key \"two\"")
 
         val caught2 = intercept[TestFailedException] {
-          map should ((not contain key ("two")) or (not contain key ("two")))
+          map should ((not contain newKey ("two")) or (not contain newKey ("two")))
         }
         assert(caught2.getMessage === "Map(one -> 1, two -> 2) contained key \"two\", and Map(one -> 1, two -> 2) contained key \"two\"")
 
         val caught3 = intercept[TestFailedException] {
-          map should (not contain key ("two") or not contain key ("two"))
+          map should (not contain newKey ("two") or not contain newKey ("two"))
         }
         assert(caught3.getMessage === "Map(one -> 1, two -> 2) contained key \"two\", and Map(one -> 1, two -> 2) contained key \"two\"")
       }
 
       def `should work on parallel form` {
-        map.par should contain key ("two")
+        map.par should contain newKey ("two")
       }
     }
 
@@ -464,44 +464,44 @@ class ShouldContainNewKeySpec extends Spec with Matchers with Checkers with Retu
       import scala.collection.immutable.HashMap
 
       def `should do nothing if map contains specified key` {
-        HashMap("one" -> 1, "two" -> 2) should contain key ("two")
-        HashMap("one" -> 1, "two" -> 2) should (contain key ("two"))
-        HashMap(1 -> "one", 2 -> "two") should contain key (2)
+        HashMap("one" -> 1, "two" -> 2) should contain newKey ("two")
+        HashMap("one" -> 1, "two" -> 2) should (contain newKey ("two"))
+        HashMap(1 -> "one", 2 -> "two") should contain newKey (2)
       }
 
       def `should do nothing if map does not contain the specified key and used with not` {
-        HashMap("one" -> 1, "two" -> 2) should not { contain key ("three") }
-        HashMap("one" -> 1, "two" -> 2) should not contain key ("three")
-        HashMap("one" -> 1, "two" -> 2) should (not contain key ("three"))
+        HashMap("one" -> 1, "two" -> 2) should not { contain newKey ("three") }
+        HashMap("one" -> 1, "two" -> 2) should not contain newKey ("three")
+        HashMap("one" -> 1, "two" -> 2) should (not contain newKey ("three"))
       }
 
       def `should do nothing when map contains specified key and used in a logical-and expression` {
-        HashMap("one" -> 1, "two" -> 2) should { contain key ("two") and (contain key ("one")) }
-        HashMap("one" -> 1, "two" -> 2) should ((contain key ("two")) and (contain key ("one")))
-        HashMap("one" -> 1, "two" -> 2) should (contain key ("two") and contain key ("one"))
+        HashMap("one" -> 1, "two" -> 2) should { contain newKey ("two") and (contain newKey ("one")) }
+        HashMap("one" -> 1, "two" -> 2) should ((contain newKey ("two")) and (contain newKey ("one")))
+        HashMap("one" -> 1, "two" -> 2) should (contain newKey ("two") and contain newKey ("one"))
       }
 
       def `should do nothing when map contains specified key and used in a logical-or expression` {
-        HashMap("one" -> 1, "two" -> 2) should { contain key ("cat") or (contain key ("one")) }
-        HashMap("one" -> 1, "two" -> 2) should ((contain key ("cat")) or (contain key ("one")))
-        HashMap("one" -> 1, "two" -> 2) should (contain key ("cat") or contain key ("one"))
+        HashMap("one" -> 1, "two" -> 2) should { contain newKey ("cat") or (contain newKey ("one")) }
+        HashMap("one" -> 1, "two" -> 2) should ((contain newKey ("cat")) or (contain newKey ("one")))
+        HashMap("one" -> 1, "two" -> 2) should (contain newKey ("cat") or contain newKey ("one"))
       }
 
       def `should do nothing when map does not contain the specified key and used in a logical-and expression with not` {
-        HashMap("one" -> 1, "two" -> 2) should { not { contain key ("five") } and not { contain key ("three") }}
-        HashMap("one" -> 1, "two" -> 2) should ((not contain key ("five")) and (not contain key ("three")))
-        HashMap("one" -> 1, "two" -> 2) should (not contain key ("five") and not contain key ("three"))
+        HashMap("one" -> 1, "two" -> 2) should { not { contain newKey ("five") } and not { contain newKey ("three") }}
+        HashMap("one" -> 1, "two" -> 2) should ((not contain newKey ("five")) and (not contain newKey ("three")))
+        HashMap("one" -> 1, "two" -> 2) should (not contain newKey ("five") and not contain newKey ("three"))
       }
 
       def `should do nothing when map does not contain the specified key and used in a logical-or expression with not` {
-        HashMap("one" -> 1, "two" -> 2) should { not { contain key ("two") } or not { contain key ("three") }}
-        HashMap("one" -> 1, "two" -> 2) should ((not contain key ("two")) or (not contain key ("three")))
-        HashMap("one" -> 1, "two" -> 2) should (not contain key ("two") or not contain key ("three"))
+        HashMap("one" -> 1, "two" -> 2) should { not { contain newKey ("two") } or not { contain newKey ("three") }}
+        HashMap("one" -> 1, "two" -> 2) should ((not contain newKey ("two")) or (not contain newKey ("three")))
+        HashMap("one" -> 1, "two" -> 2) should (not contain newKey ("two") or not contain newKey ("three"))
       }
 
       def `should throw TestFailedException if map does not contain the specified key` {
         val caught1 = intercept[TestFailedException] {
-          HashMap("one" -> 1, "two" -> 2) should contain key ("three")
+          HashMap("one" -> 1, "two" -> 2) should contain newKey ("three")
         }
         //assert(caught1.getMessage === "Map(one -> 1, two -> 2) did not contain key \"three\"")
         caught1.getMessage should fullyMatch regex ("Map(.*) did not contain key \"three\"")
@@ -510,19 +510,19 @@ class ShouldContainNewKeySpec extends Spec with Matchers with Checkers with Retu
       def `should throw TestFailedException if contains the specified key when used with not` {
 
         val caught1 = intercept[TestFailedException] {
-          HashMap("one" -> 1, "two" -> 2) should (not contain key ("two"))
+          HashMap("one" -> 1, "two" -> 2) should (not contain newKey ("two"))
         }
         //assert(caught1.getMessage === "Map(one -> 1, two -> 2) contained key \"two\"")
         caught1.getMessage should fullyMatch regex ("Map(.*) contained key \"two\"")
 
         val caught2 = intercept[TestFailedException] {
-          HashMap("one" -> 1, "two" -> 2) should not (contain key ("two"))
+          HashMap("one" -> 1, "two" -> 2) should not (contain newKey ("two"))
         }
         //assert(caught2.getMessage === "Map(one -> 1, two -> 2) contained key \"two\"")
         caught1.getMessage should fullyMatch regex ("Map(.*) contained key \"two\"")
 
         val caught3 = intercept[TestFailedException] {
-          HashMap("one" -> 1, "two" -> 2) should not contain key ("two")
+          HashMap("one" -> 1, "two" -> 2) should not contain newKey ("two")
         }
         //assert(caught3.getMessage === "Map(one -> 1, two -> 2) contained key \"two\"")
         caught1.getMessage should fullyMatch regex ("Map(.*) contained key \"two\"")
@@ -531,19 +531,19 @@ class ShouldContainNewKeySpec extends Spec with Matchers with Checkers with Retu
       def `should throw an TestFailedException when map doesn't contain specified key and used in a logical-and expression` {
 
         val caught1 = intercept[TestFailedException] {
-          HashMap("one" -> 1, "two" -> 2) should { contain key ("five") and (contain key ("two")) }
+          HashMap("one" -> 1, "two" -> 2) should { contain newKey ("five") and (contain newKey ("two")) }
         }
         //assert(caught1.getMessage === "Map(one -> 1, two -> 2) did not contain key \"five\"")
         caught1.getMessage should fullyMatch regex ("Map(.*) did not contain key \"five\"")
 
         val caught2 = intercept[TestFailedException] {
-          HashMap("one" -> 1, "two" -> 2) should ((contain key ("five")) and (contain key ("two")))
+          HashMap("one" -> 1, "two" -> 2) should ((contain newKey ("five")) and (contain newKey ("two")))
         }
         //assert(caught2.getMessage === "Map(one -> 1, two -> 2) did not contain key \"five\"")
         caught1.getMessage should fullyMatch regex ("Map(.*) did not contain key \"five\"")
 
         val caught3 = intercept[TestFailedException] {
-          HashMap("one" -> 1, "two" -> 2) should (contain key ("five") and contain key ("two"))
+          HashMap("one" -> 1, "two" -> 2) should (contain newKey ("five") and contain newKey ("two"))
         }
         //assert(caught3.getMessage === "Map(one -> 1, two -> 2) did not contain key \"five\"")
         caught1.getMessage should fullyMatch regex ("Map(.*) did not contain key \"five\"")
@@ -552,19 +552,19 @@ class ShouldContainNewKeySpec extends Spec with Matchers with Checkers with Retu
       def `should throw an TestFailedException when map doesn't contain specified key and used in a logical-or expression` {
 
         val caught1 = intercept[TestFailedException] {
-          HashMap("one" -> 1, "two" -> 2) should { contain key ("fifty five") or (contain key ("twenty two")) }
+          HashMap("one" -> 1, "two" -> 2) should { contain newKey ("fifty five") or (contain newKey ("twenty two")) }
         }
         //assert(caught1.getMessage === "Map(one -> 1, two -> 2) did not contain key \"fifty five\", and Map(one -> 1, two -> 2) did not contain key \"twenty two\"")
         caught1.getMessage should fullyMatch regex ("Map(.*) did not contain key \"fifty five\", and Map(.*) did not contain key \"twenty two\"")
 
         val caught2 = intercept[TestFailedException] {
-          HashMap("one" -> 1, "two" -> 2) should ((contain key ("fifty five")) or (contain key ("twenty two")))
+          HashMap("one" -> 1, "two" -> 2) should ((contain newKey ("fifty five")) or (contain newKey ("twenty two")))
         }
         //assert(caught2.getMessage === "Map(one -> 1, two -> 2) did not contain key \"fifty five\", and Map(one -> 1, two -> 2) did not contain key \"twenty two\"")
         caught1.getMessage should fullyMatch regex ("Map(.*) did not contain key \"fifty five\", and Map(.*) did not contain key \"twenty two\"")
 
         val caught3 = intercept[TestFailedException] {
-          HashMap("one" -> 1, "two" -> 2) should (contain key ("fifty five") or contain key ("twenty two"))
+          HashMap("one" -> 1, "two" -> 2) should (contain newKey ("fifty five") or contain newKey ("twenty two"))
         }
         // assert(caught3.getMessage === "Map(one -> 1, two -> 2) did not contain key \"fifty five\", and Map(one -> 1, two -> 2) did not contain key \"twenty two\"")
         caught1.getMessage should fullyMatch regex ("Map(.*) did not contain key \"fifty five\", and Map(.*) did not contain key \"twenty two\"")
@@ -573,19 +573,19 @@ class ShouldContainNewKeySpec extends Spec with Matchers with Checkers with Retu
       def `should throw an TestFailedException when map contains specified key and used in a logical-and expression with not` {
 
         val caught1 = intercept[TestFailedException] {
-          HashMap("one" -> 1, "two" -> 2) should { not { contain key ("three") } and not { contain key ("two") }}
+          HashMap("one" -> 1, "two" -> 2) should { not { contain newKey ("three") } and not { contain newKey ("two") }}
         }
         //assert(caught1.getMessage === "Map(one -> 1, two -> 2) did not contain key \"three\", but Map(one -> 1, two -> 2) contained key \"two\"")
         caught1.getMessage should fullyMatch regex ("Map(.*) did not contain key \"three\", but Map(.*) contained key \"two\"")
 
         val caught2 = intercept[TestFailedException] {
-          HashMap("one" -> 1, "two" -> 2) should ((not contain key ("three")) and (not contain key ("two")))
+          HashMap("one" -> 1, "two" -> 2) should ((not contain newKey ("three")) and (not contain newKey ("two")))
         }
         //assert(caught2.getMessage === "Map(one -> 1, two -> 2) did not contain key \"three\", but Map(one -> 1, two -> 2) contained key \"two\"")
         caught1.getMessage should fullyMatch regex ("Map(.*) did not contain key \"three\", but Map(.*) contained key \"two\"")
 
         val caught3 = intercept[TestFailedException] {
-          HashMap("one" -> 1, "two" -> 2) should (not contain key ("three") and not contain key ("two"))
+          HashMap("one" -> 1, "two" -> 2) should (not contain newKey ("three") and not contain newKey ("two"))
         }
         //assert(caught3.getMessage === "Map(one -> 1, two -> 2) did not contain key \"three\", but Map(one -> 1, two -> 2) contained key \"two\"")
         caught1.getMessage should fullyMatch regex ("Map(.*) did not contain key \"three\", but Map(.*) contained key \"two\"")
@@ -594,26 +594,26 @@ class ShouldContainNewKeySpec extends Spec with Matchers with Checkers with Retu
       def `should throw an TestFailedException when map contains specified key and used in a logical-or expression with not` {
 
         val caught1 = intercept[TestFailedException] {
-          HashMap("one" -> 1, "two" -> 2) should { not { contain key ("two") } or not { contain key ("two") }}
+          HashMap("one" -> 1, "two" -> 2) should { not { contain newKey ("two") } or not { contain newKey ("two") }}
         }
         //assert(caught1.getMessage === "Map(one -> 1, two -> 2) contained key \"two\", and Map(one -> 1, two -> 2) contained key \"two\"")
         caught1.getMessage should fullyMatch regex ("Map(.*) contained key \"two\", and Map(.*) contained key \"two\"")
 
         val caught2 = intercept[TestFailedException] {
-          HashMap("one" -> 1, "two" -> 2) should ((not contain key ("two")) or (not contain key ("two")))
+          HashMap("one" -> 1, "two" -> 2) should ((not contain newKey ("two")) or (not contain newKey ("two")))
         }
         //assert(caught2.getMessage === "Map(one -> 1, two -> 2) contained key \"two\", and Map(one -> 1, two -> 2) contained key \"two\"")
         caught1.getMessage should fullyMatch regex ("Map(.*) contained key \"two\", and Map(.*) contained key \"two\"")
 
         val caught3 = intercept[TestFailedException] {
-          HashMap("one" -> 1, "two" -> 2) should (not contain key ("two") or not contain key ("two"))
+          HashMap("one" -> 1, "two" -> 2) should (not contain newKey ("two") or not contain newKey ("two"))
         }
         //assert(caught3.getMessage === "Map(one -> 1, two -> 2) contained key \"two\", and Map(one -> 1, two -> 2) contained key \"two\"")
         caught1.getMessage should fullyMatch regex ("Map(.*) contained key \"two\", and Map(.*) contained key \"two\"")
       }
 
       def `should work on parallel form` {
-        HashMap("one" -> 1, "two" -> 2).par should contain key ("two")
+        HashMap("one" -> 1, "two" -> 2).par should contain newKey ("two")
       }
     }
 
@@ -622,45 +622,45 @@ class ShouldContainNewKeySpec extends Spec with Matchers with Checkers with Retu
       import scala.collection.mutable
 
       def `should do nothing if map contains specified key` {
-        mutable.HashMap("one" -> 1, "two" -> 2) should contain key ("two")
-        mutable.HashMap("one" -> 1, "two" -> 2) should (contain key ("two"))
-        mutable.HashMap(1 -> "one", 2 -> "two") should contain key (2)
+        mutable.HashMap("one" -> 1, "two" -> 2) should contain newKey ("two")
+        mutable.HashMap("one" -> 1, "two" -> 2) should (contain newKey ("two"))
+        mutable.HashMap(1 -> "one", 2 -> "two") should contain newKey (2)
       }
 
       def `should do nothing if map does not contain the specified key and used with not` {
-        mutable.HashMap("one" -> 1, "two" -> 2) should not { contain key ("three") }
-        mutable.HashMap("one" -> 1, "two" -> 2) should not contain key ("three")
-        mutable.HashMap("one" -> 1, "two" -> 2) should (not contain key ("three"))
+        mutable.HashMap("one" -> 1, "two" -> 2) should not { contain newKey ("three") }
+        mutable.HashMap("one" -> 1, "two" -> 2) should not contain newKey ("three")
+        mutable.HashMap("one" -> 1, "two" -> 2) should (not contain newKey ("three"))
       }
 
       def `should do nothing when map contains specified key and used in a logical-and expression` {
-        mutable.HashMap("one" -> 1, "two" -> 2) should { contain key ("two") and (contain key ("one")) }
-        mutable.HashMap("one" -> 1, "two" -> 2) should ((contain key ("two")) and (contain key ("one")))
-        mutable.HashMap("one" -> 1, "two" -> 2) should (contain key ("two") and contain key ("one"))
+        mutable.HashMap("one" -> 1, "two" -> 2) should { contain newKey ("two") and (contain newKey ("one")) }
+        mutable.HashMap("one" -> 1, "two" -> 2) should ((contain newKey ("two")) and (contain newKey ("one")))
+        mutable.HashMap("one" -> 1, "two" -> 2) should (contain newKey ("two") and contain newKey ("one"))
       }
 
       def `should do nothing when map contains specified key and used in a logical-or expression` {
-        mutable.HashMap("one" -> 1, "two" -> 2) should { contain key ("cat") or (contain key ("one")) }
-        mutable.HashMap("one" -> 1, "two" -> 2) should ((contain key ("cat")) or (contain key ("one")))
-        mutable.HashMap("one" -> 1, "two" -> 2) should (contain key ("cat") or contain key ("one"))
+        mutable.HashMap("one" -> 1, "two" -> 2) should { contain newKey ("cat") or (contain newKey ("one")) }
+        mutable.HashMap("one" -> 1, "two" -> 2) should ((contain newKey ("cat")) or (contain newKey ("one")))
+        mutable.HashMap("one" -> 1, "two" -> 2) should (contain newKey ("cat") or contain newKey ("one"))
       }
 
       def `should do nothing when map does not contain the specified key and used in a logical-and expression with not` {
-        mutable.HashMap("one" -> 1, "two" -> 2) should { not { contain key ("five") } and not { contain key ("three") }}
-        mutable.HashMap("one" -> 1, "two" -> 2) should ((not contain key ("five")) and (not contain key ("three")))
-        mutable.HashMap("one" -> 1, "two" -> 2) should (not contain key ("five") and not contain key ("three"))
+        mutable.HashMap("one" -> 1, "two" -> 2) should { not { contain newKey ("five") } and not { contain newKey ("three") }}
+        mutable.HashMap("one" -> 1, "two" -> 2) should ((not contain newKey ("five")) and (not contain newKey ("three")))
+        mutable.HashMap("one" -> 1, "two" -> 2) should (not contain newKey ("five") and not contain newKey ("three"))
       }
 
       def `should do nothing when map does not contain the specified key and used in a logical-or expression with not` {
-        mutable.HashMap("one" -> 1, "two" -> 2) should { not { contain key ("two") } or not { contain key ("three") }}
-        mutable.HashMap("one" -> 1, "two" -> 2) should ((not contain key ("two")) or (not contain key ("three")))
-        mutable.HashMap("one" -> 1, "two" -> 2) should (not contain key ("two") or not contain key ("three"))
+        mutable.HashMap("one" -> 1, "two" -> 2) should { not { contain newKey ("two") } or not { contain newKey ("three") }}
+        mutable.HashMap("one" -> 1, "two" -> 2) should ((not contain newKey ("two")) or (not contain newKey ("three")))
+        mutable.HashMap("one" -> 1, "two" -> 2) should (not contain newKey ("two") or not contain newKey ("three"))
       }
 
       def `should throw TestFailedException if map does not contain the specified key` {
         val map = mutable.HashMap("one" -> 1, "two" -> 2) 
         val caught1 = intercept[TestFailedException] {
-          map should contain key ("three")
+          map should contain newKey ("three")
         }
         assert(caught1.getMessage === map + " did not contain key \"three\"")
       }
@@ -668,19 +668,19 @@ class ShouldContainNewKeySpec extends Spec with Matchers with Checkers with Retu
       def `should throw TestFailedException if contains the specified key when used with not` {
         val map1 = mutable.HashMap("one" -> 1, "two" -> 2) 
         val caught1 = intercept[TestFailedException] {
-          map1 should (not contain key ("two"))
+          map1 should (not contain newKey ("two"))
         }
         assert(caught1.getMessage === map1 + " contained key \"two\"")
         
         val map2 = mutable.HashMap("one" -> 1, "two" -> 2) 
         val caught2 = intercept[TestFailedException] {
-          map2 should not (contain key ("two"))
+          map2 should not (contain newKey ("two"))
         }
         assert(caught2.getMessage === map2 + " contained key \"two\"")
         
         val map3 = mutable.HashMap("one" -> 1, "two" -> 2) 
         val caught3 = intercept[TestFailedException] {
-          map3 should not contain key ("two")
+          map3 should not contain newKey ("two")
         }
         assert(caught3.getMessage === map3 + " contained key \"two\"")
       }
@@ -688,19 +688,19 @@ class ShouldContainNewKeySpec extends Spec with Matchers with Checkers with Retu
       def `should throw an TestFailedException when map doesn't contain specified key and used in a logical-and expression` {
         val map1 = mutable.HashMap("one" -> 1, "two" -> 2) 
         val caught1 = intercept[TestFailedException] {
-          map1 should { contain key ("five") and (contain key ("two")) }
+          map1 should { contain newKey ("five") and (contain newKey ("two")) }
         }
         assert(caught1.getMessage === map1 + " did not contain key \"five\"")
         
         val map2 = mutable.HashMap("one" -> 1, "two" -> 2) 
         val caught2 = intercept[TestFailedException] {
-          map2 should ((contain key ("five")) and (contain key ("two")))
+          map2 should ((contain newKey ("five")) and (contain newKey ("two")))
         }
         assert(caught2.getMessage === map2 + " did not contain key \"five\"")
         
         val map3 = mutable.HashMap("one" -> 1, "two" -> 2) 
         val caught3 = intercept[TestFailedException] {
-          map3 should (contain key ("five") and contain key ("two"))
+          map3 should (contain newKey ("five") and contain newKey ("two"))
         }
         assert(caught3.getMessage === map3 + " did not contain key \"five\"")
       }
@@ -708,19 +708,19 @@ class ShouldContainNewKeySpec extends Spec with Matchers with Checkers with Retu
       def `should throw an TestFailedException when map doesn't contain specified key and used in a logical-or expression` {
         val map1 = mutable.HashMap("one" -> 1, "two" -> 2) 
         val caught1 = intercept[TestFailedException] {
-          map1 should { contain key ("fifty five") or (contain key ("twenty two")) }
+          map1 should { contain newKey ("fifty five") or (contain newKey ("twenty two")) }
         }
         assert(caught1.getMessage === map1 + " did not contain key \"fifty five\", and " + map1 + " did not contain key \"twenty two\"")
         
         val map2 = mutable.HashMap("one" -> 1, "two" -> 2) 
         val caught2 = intercept[TestFailedException] {
-          map2 should ((contain key ("fifty five")) or (contain key ("twenty two")))
+          map2 should ((contain newKey ("fifty five")) or (contain newKey ("twenty two")))
         }
         assert(caught2.getMessage === map2 + " did not contain key \"fifty five\", and " + map2 + " did not contain key \"twenty two\"")
         
         val map3 = mutable.HashMap("one" -> 1, "two" -> 2) 
         val caught3 = intercept[TestFailedException] {
-          map3 should (contain key ("fifty five") or contain key ("twenty two"))
+          map3 should (contain newKey ("fifty five") or contain newKey ("twenty two"))
         }
         assert(caught3.getMessage === map3 + " did not contain key \"fifty five\", and " + map3 + " did not contain key \"twenty two\"")
       }
@@ -728,18 +728,18 @@ class ShouldContainNewKeySpec extends Spec with Matchers with Checkers with Retu
       def `should throw an TestFailedException when map contains specified key and used in a logical-and expression with not` {
         val map1 = mutable.HashMap("one" -> 1, "two" -> 2) 
         val caught1 = intercept[TestFailedException] {
-          map1 should { not { contain key ("three") } and not { contain key ("two") }}
+          map1 should { not { contain newKey ("three") } and not { contain newKey ("two") }}
         }
         assert(caught1.getMessage === map1 + " did not contain key \"three\", but " + map1 + " contained key \"two\"")
         
         val map2 = mutable.HashMap("one" -> 1, "two" -> 2) 
         val caught2 = intercept[TestFailedException] {
-          map2 should ((not contain key ("three")) and (not contain key ("two")))
+          map2 should ((not contain newKey ("three")) and (not contain newKey ("two")))
         }
         assert(caught2.getMessage === map2 + " did not contain key \"three\", but " + map2 + " contained key \"two\"")
         val map3 = mutable.HashMap("one" -> 1, "two" -> 2) 
         val caught3 = intercept[TestFailedException] {
-          map3 should (not contain key ("three") and not contain key ("two"))
+          map3 should (not contain newKey ("three") and not contain newKey ("two"))
         }
         assert(caught3.getMessage === map3 + " did not contain key \"three\", but " + map3 + " contained key \"two\"")
       }
@@ -747,25 +747,25 @@ class ShouldContainNewKeySpec extends Spec with Matchers with Checkers with Retu
       def `should throw an TestFailedException when map contains specified key and used in a logical-or expression with not` {
         val map1 = mutable.HashMap("one" -> 1, "two" -> 2) 
         val caught1 = intercept[TestFailedException] {
-          map1 should { not { contain key ("two") } or not { contain key ("two") }}
+          map1 should { not { contain newKey ("two") } or not { contain newKey ("two") }}
         }
         assert(caught1.getMessage === map1 + " contained key \"two\", and " + map1 + " contained key \"two\"")
         
         val map2 = mutable.HashMap("one" -> 1, "two" -> 2) 
         val caught2 = intercept[TestFailedException] {
-          map2 should ((not contain key ("two")) or (not contain key ("two")))
+          map2 should ((not contain newKey ("two")) or (not contain newKey ("two")))
         }
         assert(caught2.getMessage === map2 + " contained key \"two\", and " + map2 + " contained key \"two\"")
         
         val map3 = mutable.HashMap("one" -> 1, "two" -> 2) 
         val caught3 = intercept[TestFailedException] {(
-          map3 should (not contain key ("two") or not contain key ("two")))
+          map3 should (not contain newKey ("two") or not contain newKey ("two")))
         }
         assert(caught3.getMessage === map3 + " contained key \"two\", and " + map3 + " contained key \"two\"")
       }
 
       def `should work on parallel form` {
-        mutable.HashMap("one" -> 1, "two" -> 2).par should contain key ("two")
+        mutable.HashMap("one" -> 1, "two" -> 2).par should contain newKey ("two")
       }
     }
 
@@ -776,43 +776,43 @@ class ShouldContainNewKeySpec extends Spec with Matchers with Checkers with Retu
       javaMap.put("two", 2)
 
       def `should do nothing if map contains specified key` {
-        javaMap should contain key ("two")
-        javaMap should (contain key ("two"))
+        javaMap should contain newKey ("two")
+        javaMap should (contain newKey ("two"))
       }
 
       def `should do nothing if map does not contain the specified key and used with not` {
-        javaMap should not { contain key ("three") }
-        javaMap should not contain key ("three")
-        javaMap should (not contain key ("three"))
+        javaMap should not { contain newKey ("three") }
+        javaMap should not contain newKey ("three")
+        javaMap should (not contain newKey ("three"))
       }
 
       def `should do nothing when map contains specified key and used in a logical-and expression` {
-        javaMap should { contain key ("two") and (contain key ("one")) }
-        javaMap should ((contain key ("two")) and (contain key ("one")))
-        javaMap should (contain key ("two") and contain key ("one"))
+        javaMap should { contain newKey ("two") and (contain newKey ("one")) }
+        javaMap should ((contain newKey ("two")) and (contain newKey ("one")))
+        javaMap should (contain newKey ("two") and contain newKey ("one"))
       }
 
       def `should do nothing when map contains specified key and used in a logical-or expression` {
-        javaMap should { contain key ("cat") or (contain key ("one")) }
-        javaMap should ((contain key ("cat")) or (contain key ("one")))
-        javaMap should (contain key ("cat") or contain key ("one"))
+        javaMap should { contain newKey ("cat") or (contain newKey ("one")) }
+        javaMap should ((contain newKey ("cat")) or (contain newKey ("one")))
+        javaMap should (contain newKey ("cat") or contain newKey ("one"))
       }
 
       def `should do nothing when map does not contain the specified key and used in a logical-and expression with not` {
-        javaMap should { not { contain key ("five") } and not { contain key ("three") }}
-        javaMap should ((not contain key ("five")) and (not contain key ("three")))
-        javaMap should (not contain key ("five") and not contain key ("three"))
+        javaMap should { not { contain newKey ("five") } and not { contain newKey ("three") }}
+        javaMap should ((not contain newKey ("five")) and (not contain newKey ("three")))
+        javaMap should (not contain newKey ("five") and not contain newKey ("three"))
       }
 
       def `should do nothing when map does not contain the specified key and used in a logical-or expression with not` {
-        javaMap should { not { contain key ("two") } or not { contain key ("three") }}
-        javaMap should ((not contain key ("two")) or (not contain key ("three")))
-        javaMap should (not contain key ("two") or not contain key ("three"))
+        javaMap should { not { contain newKey ("two") } or not { contain newKey ("three") }}
+        javaMap should ((not contain newKey ("two")) or (not contain newKey ("three")))
+        javaMap should (not contain newKey ("two") or not contain newKey ("three"))
       }
 
       def `should throw TestFailedException if map does not contain the specified key` {
         val caught1 = intercept[TestFailedException] {
-          javaMap should contain key ("three")
+          javaMap should contain newKey ("three")
         }
         caught1.getMessage should (be === "{one=1, two=2} did not contain key \"three\"" or
           be === "{two=2, one=1} did not contain key \"three\"")
@@ -821,19 +821,19 @@ class ShouldContainNewKeySpec extends Spec with Matchers with Checkers with Retu
       def `should throw TestFailedException if contains the specified key when used with not` {
 
         val caught1 = intercept[TestFailedException] {
-          javaMap should (not contain key ("two"))
+          javaMap should (not contain newKey ("two"))
         }
         caught1.getMessage should (be === "{one=1, two=2} contained key \"two\"" or
           be === "{two=2, one=1} contained key \"two\"")
 
         val caught2 = intercept[TestFailedException] {
-          javaMap should not (contain key ("two"))
+          javaMap should not (contain newKey ("two"))
         }
         caught2.getMessage should (be === "{one=1, two=2} contained key \"two\"" or
           be === "{two=2, one=1} contained key \"two\"")
 
         val caught3 = intercept[TestFailedException] {
-          javaMap should not contain key ("two")
+          javaMap should not contain newKey ("two")
         }
         caught3.getMessage should (be === "{one=1, two=2} contained key \"two\"" or
           be === "{two=2, one=1} contained key \"two\"")
@@ -842,19 +842,19 @@ class ShouldContainNewKeySpec extends Spec with Matchers with Checkers with Retu
       def `should throw an TestFailedException when map doesn't contain specified key and used in a logical-and expression` {
 
         val caught1 = intercept[TestFailedException] {
-          javaMap should { contain key ("five") and (contain key ("two")) }
+          javaMap should { contain newKey ("five") and (contain newKey ("two")) }
         }
         caught1.getMessage should (be === "{one=1, two=2} did not contain key \"five\"" or
           be === "{two=2, one=1} did not contain key \"five\"")
 
         val caught2 = intercept[TestFailedException] {
-          javaMap should ((contain key ("five")) and (contain key ("two")))
+          javaMap should ((contain newKey ("five")) and (contain newKey ("two")))
         }
         caught2.getMessage should (be === "{one=1, two=2} did not contain key \"five\"" or
           be === "{two=2, one=1} did not contain key \"five\"")
 
         val caught3 = intercept[TestFailedException] {
-          javaMap should (contain key ("five") and contain key ("two"))
+          javaMap should (contain newKey ("five") and contain newKey ("two"))
         }
         caught3.getMessage should (be === "{one=1, two=2} did not contain key \"five\"" or
           be === "{two=2, one=1} did not contain key \"five\"")
@@ -863,19 +863,19 @@ class ShouldContainNewKeySpec extends Spec with Matchers with Checkers with Retu
       def `should throw an TestFailedException when map doesn't contain specified key and used in a logical-or expression` {
 
         val caught1 = intercept[TestFailedException] {
-          javaMap should { contain key ("fifty five") or (contain key ("twenty two")) }
+          javaMap should { contain newKey ("fifty five") or (contain newKey ("twenty two")) }
         }
         caught1.getMessage should (be === "{one=1, two=2} did not contain key \"fifty five\", and {one=1, two=2} did not contain key \"twenty two\"" or
           be === "{two=2, one=1} did not contain key \"fifty five\", and {two=2, one=1} did not contain key \"twenty two\"")
 
         val caught2 = intercept[TestFailedException] {
-          javaMap should ((contain key ("fifty five")) or (contain key ("twenty two")))
+          javaMap should ((contain newKey ("fifty five")) or (contain newKey ("twenty two")))
         }
         caught2.getMessage should (be === "{one=1, two=2} did not contain key \"fifty five\", and {one=1, two=2} did not contain key \"twenty two\"" or
           be === "{two=2, one=1} did not contain key \"fifty five\", and {two=2, one=1} did not contain key \"twenty two\"")
 
         val caught3 = intercept[TestFailedException] {
-          javaMap should (contain key ("fifty five") or contain key ("twenty two"))
+          javaMap should (contain newKey ("fifty five") or contain newKey ("twenty two"))
         }
         caught3.getMessage should (be === "{one=1, two=2} did not contain key \"fifty five\", and {one=1, two=2} did not contain key \"twenty two\"" or
           be === "{two=2, one=1} did not contain key \"fifty five\", and {two=2, one=1} did not contain key \"twenty two\"")
@@ -884,19 +884,19 @@ class ShouldContainNewKeySpec extends Spec with Matchers with Checkers with Retu
       def `should throw an TestFailedException when map contains specified key and used in a logical-and expression with not` {
 
         val caught1 = intercept[TestFailedException] {
-          javaMap should { not { contain key ("three") } and not { contain key ("two") }}
+          javaMap should { not { contain newKey ("three") } and not { contain newKey ("two") }}
         }
         caught1.getMessage should (be === "{one=1, two=2} did not contain key \"three\", but {one=1, two=2} contained key \"two\"" or
           be === "{two=2, one=1} did not contain key \"three\", but {two=2, one=1} contained key \"two\"")
 
         val caught2 = intercept[TestFailedException] {
-          javaMap should ((not contain key ("three")) and (not contain key ("two")))
+          javaMap should ((not contain newKey ("three")) and (not contain newKey ("two")))
         }
         caught2.getMessage should (be === "{one=1, two=2} did not contain key \"three\", but {one=1, two=2} contained key \"two\"" or
           be === "{two=2, one=1} did not contain key \"three\", but {two=2, one=1} contained key \"two\"")
 
         val caught3 = intercept[TestFailedException] {
-          javaMap should (not contain key ("three") and not contain key ("two"))
+          javaMap should (not contain newKey ("three") and not contain newKey ("two"))
         }
         caught3.getMessage should (be === "{one=1, two=2} did not contain key \"three\", but {one=1, two=2} contained key \"two\"" or
           be === "{two=2, one=1} did not contain key \"three\", but {two=2, one=1} contained key \"two\"")
@@ -905,19 +905,19 @@ class ShouldContainNewKeySpec extends Spec with Matchers with Checkers with Retu
       def `should throw an TestFailedException when map contains specified key and used in a logical-or expression with not` {
 
         val caught1 = intercept[TestFailedException] {
-          javaMap should { not { contain key ("two") } or not { contain key ("two") }}
+          javaMap should { not { contain newKey ("two") } or not { contain newKey ("two") }}
         }
         caught1.getMessage should (be === "{one=1, two=2} contained key \"two\", and {one=1, two=2} contained key \"two\"" or
           be === "{two=2, one=1} contained key \"two\", and {two=2, one=1} contained key \"two\"")
 
         val caught2 = intercept[TestFailedException] {
-          javaMap should ((not contain key ("two")) or (not contain key ("two")))
+          javaMap should ((not contain newKey ("two")) or (not contain newKey ("two")))
         }
         caught2.getMessage should (be === "{one=1, two=2} contained key \"two\", and {one=1, two=2} contained key \"two\"" or
           be === "{two=2, one=1} contained key \"two\", and {two=2, one=1} contained key \"two\"")
 
         val caught3 = intercept[TestFailedException] {
-          javaMap should (not contain key ("two") or not contain key ("two"))
+          javaMap should (not contain newKey ("two") or not contain newKey ("two"))
         }
         caught3.getMessage should (be === "{one=1, two=2} contained key \"two\", and {one=1, two=2} contained key \"two\"" or
           be === "{two=2, one=1} contained key \"two\", and {two=2, one=1} contained key \"two\"")

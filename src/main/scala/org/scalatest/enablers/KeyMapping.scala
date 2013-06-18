@@ -66,6 +66,8 @@ object KeyMapping {
   implicit def keyMappingNatureOfJavaMap[K, V, JMAP[_, _] <: java.util.Map[_, _]](implicit equality: Equality[K]): KeyMapping[JMAP[K, V]] = 
     new KeyMapping[JMAP[K, V]] {
       def containsKey(map: JMAP[K, V], key: Any): Boolean = { false
+        val jMap = map.asInstanceOf[java.util.Map[K, V]]
+        jMap.asScala.keySet.exists((k: Any) => equality.areEqual(k.asInstanceOf[K], key))
       }
     }
 
