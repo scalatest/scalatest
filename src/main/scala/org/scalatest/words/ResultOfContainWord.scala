@@ -19,6 +19,8 @@ import scala.collection.GenTraversable
 import org.scalatest.enablers.Containing
 import org.scalatest.enablers.Aggregating
 import org.scalatest.enablers.Sequencing
+import org.scalatest.enablers.KeyMapping
+import org.scalatest.enablers.ValueMapping
 import org.scalatest.MatchersHelper.newTestFailedException
 import org.scalatest.FailureMessages
 import org.scalatest.UnquotedString
@@ -199,6 +201,25 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
           left,
           UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
         )
+      )
+  }
+
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * map should contain key ("one")
+   *                    ^
+   * </pre>
+   */
+  def newKey(expectedKey: Any)(implicit keyMapping: KeyMapping[L]) {
+    // if (left.exists(_._1 == expectedKey) != shouldBeTrue)
+    if (keyMapping.containsKey(left, expectedKey) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "didNotContainKey" else "containedKey",
+          left,
+          expectedKey)
       )
   }
 }
