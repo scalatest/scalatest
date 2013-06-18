@@ -1054,7 +1054,7 @@ final class NotWord {
    * This method enables the following syntax: 
    *
    * <pre class="stHighlight">
-   * Map("one" -> 1, "two" -> 2) should (not contain key ("three"))
+   * Map("one" -&gt; 1, "two" -&gt; 2) should (not contain key ("three"))
    *                                         ^
    * </pre>
    */
@@ -1067,6 +1067,22 @@ final class NotWord {
           FailureMessages("containedKey", left, expectedKey),
           FailureMessages("didNotContainKey", left, expectedKey)
         )
+      }
+    }
+  }
+  def contain(resultOfNewKeyWordApplication: ResultOfNewKeyWordApplication): MatcherFactory1[Any, KeyMapping] = {
+    new MatcherFactory1[Any, KeyMapping] {
+      def matcher[T](implicit keyMapping: KeyMapping[T]): Matcher[T] = {
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+            val expectedKey = resultOfNewKeyWordApplication.expectedKey
+            MatchResult(
+              !keyMapping.containsKey(left, expectedKey),
+              FailureMessages("containedKey", left, expectedKey),
+              FailureMessages("didNotContainKey", left, expectedKey)
+            )
+          }
+        }
       }
     }
   }

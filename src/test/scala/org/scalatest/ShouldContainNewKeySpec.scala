@@ -47,26 +47,26 @@ class ShouldContainNewKeySpec extends Spec with Matchers with Checkers with Retu
       }
 
       def `should do nothing when map contains specified key and used in a logical-or expression` {
-        Map("one" -> 1, "two" -> 2) should { contain key ("cat") or (contain key ("one")) }
-        Map("one" -> 1, "two" -> 2) should ((contain key ("cat")) or (contain key ("one")))
-        Map("one" -> 1, "two" -> 2) should (contain key ("cat") or contain key ("one"))
+        Map("one" -> 1, "two" -> 2) should { contain newKey ("cat") or (contain newKey ("one")) }
+        Map("one" -> 1, "two" -> 2) should ((contain newKey ("cat")) or (contain newKey ("one")))
+        Map("one" -> 1, "two" -> 2) should (contain newKey ("cat") or contain newKey ("one"))
       }
 
       def `should do nothing when map does not contain the specified key and used in a logical-and expression with not` {
-        Map("one" -> 1, "two" -> 2) should { not { contain key ("five") } and not { contain key ("three") }}
-        Map("one" -> 1, "two" -> 2) should ((not contain key ("five")) and (not contain key ("three")))
-        Map("one" -> 1, "two" -> 2) should (not contain key ("five") and not contain key ("three"))
+        Map("one" -> 1, "two" -> 2) should { not { contain newKey ("five") } and not { contain newKey ("three") }}
+        Map("one" -> 1, "two" -> 2) should ((not contain newKey ("five")) and (not contain newKey ("three")))
+        Map("one" -> 1, "two" -> 2) should (not contain newKey ("five") and not contain newKey ("three"))
       }
 
       def `should do nothing when map does not contain the specified key and used in a logical-or expression with not` {
-        Map("one" -> 1, "two" -> 2) should { not { contain key ("two") } or not { contain key ("three") }}
-        Map("one" -> 1, "two" -> 2) should ((not contain key ("two")) or (not contain key ("three")))
-        Map("one" -> 1, "two" -> 2) should (not contain key ("two") or not contain key ("three"))
+        Map("one" -> 1, "two" -> 2) should { not { contain newKey ("two") } or not { contain newKey ("three") }}
+        Map("one" -> 1, "two" -> 2) should ((not contain newKey ("two")) or (not contain newKey ("three")))
+        Map("one" -> 1, "two" -> 2) should (not contain newKey ("two") or not contain newKey ("three"))
       }
 
       def `should throw TestFailedException if map does not contain the specified key` {
         val caught1 = intercept[TestFailedException] {
-          Map("one" -> 1, "two" -> 2) should contain key ("three")
+          Map("one" -> 1, "two" -> 2) should contain newKey ("three")
         }
         assert(caught1.getMessage === "Map(one -> 1, two -> 2) did not contain key \"three\"")
       }
@@ -74,17 +74,17 @@ class ShouldContainNewKeySpec extends Spec with Matchers with Checkers with Retu
       def `should throw TestFailedException if contains the specified key when used with not` {
 
         val caught1 = intercept[TestFailedException] {
-          Map("one" -> 1, "two" -> 2) should (not contain key ("two"))
+          Map("one" -> 1, "two" -> 2) should (not contain newKey ("two"))
         }
         assert(caught1.getMessage === "Map(one -> 1, two -> 2) contained key \"two\"")
 
         val caught2 = intercept[TestFailedException] {
-          Map("one" -> 1, "two" -> 2) should not (contain key ("two"))
+          Map("one" -> 1, "two" -> 2) should not (contain newKey ("two"))
         }
         assert(caught2.getMessage === "Map(one -> 1, two -> 2) contained key \"two\"")
 
         val caught3 = intercept[TestFailedException] {
-          Map("one" -> 1, "two" -> 2) should not contain key ("two")
+          Map("one" -> 1, "two" -> 2) should not contain newKey ("two")
         }
         assert(caught3.getMessage === "Map(one -> 1, two -> 2) contained key \"two\"")
       }
@@ -92,17 +92,17 @@ class ShouldContainNewKeySpec extends Spec with Matchers with Checkers with Retu
       def `should throw an TestFailedException when map doesn't contain specified key and used in a logical-and expression` {
 
         val caught1 = intercept[TestFailedException] {
-          Map("one" -> 1, "two" -> 2) should { contain key ("five") and (contain key ("two")) }
+          Map("one" -> 1, "two" -> 2) should { contain newKey ("five") and (contain newKey ("two")) }
         }
         assert(caught1.getMessage === "Map(one -> 1, two -> 2) did not contain key \"five\"")
 
         val caught2 = intercept[TestFailedException] {
-          Map("one" -> 1, "two" -> 2) should ((contain key ("five")) and (contain key ("two")))
+          Map("one" -> 1, "two" -> 2) should ((contain newKey ("five")) and (contain newKey ("two")))
         }
         assert(caught2.getMessage === "Map(one -> 1, two -> 2) did not contain key \"five\"")
 
         val caught3 = intercept[TestFailedException] {
-          Map("one" -> 1, "two" -> 2) should (contain key ("five") and contain key ("two"))
+          Map("one" -> 1, "two" -> 2) should (contain newKey ("five") and contain newKey ("two"))
         }
         assert(caught3.getMessage === "Map(one -> 1, two -> 2) did not contain key \"five\"")
       }
@@ -110,17 +110,17 @@ class ShouldContainNewKeySpec extends Spec with Matchers with Checkers with Retu
       def `should throw an TestFailedException when map doesn't contain specified key and used in a logical-or expression` {
 
         val caught1 = intercept[TestFailedException] {
-          Map("one" -> 1, "two" -> 2) should { contain key ("fifty five") or (contain key ("twenty two")) }
+          Map("one" -> 1, "two" -> 2) should { contain newKey ("fifty five") or (contain newKey ("twenty two")) }
         }
         assert(caught1.getMessage === "Map(one -> 1, two -> 2) did not contain key \"fifty five\", and Map(one -> 1, two -> 2) did not contain key \"twenty two\"")
 
         val caught2 = intercept[TestFailedException] {
-          Map("one" -> 1, "two" -> 2) should ((contain key ("fifty five")) or (contain key ("twenty two")))
+          Map("one" -> 1, "two" -> 2) should ((contain newKey ("fifty five")) or (contain newKey ("twenty two")))
         }
         assert(caught2.getMessage === "Map(one -> 1, two -> 2) did not contain key \"fifty five\", and Map(one -> 1, two -> 2) did not contain key \"twenty two\"")
 
         val caught3 = intercept[TestFailedException] {
-          Map("one" -> 1, "two" -> 2) should (contain key ("fifty five") or contain key ("twenty two"))
+          Map("one" -> 1, "two" -> 2) should (contain newKey ("fifty five") or contain newKey ("twenty two"))
         }
         assert(caught3.getMessage === "Map(one -> 1, two -> 2) did not contain key \"fifty five\", and Map(one -> 1, two -> 2) did not contain key \"twenty two\"")
       }
