@@ -1512,38 +1512,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
   }
 
   // TODO: I think I'll be able to drop the next three implicit conversions after the enablers for contain are done.
-  /** 
-   * This implicit conversion method enables the following syntax (<code>javaColl</code> is a <code>java.util.Collection</code>):
-   *
-   * <pre class="stHighlight">
-   * javaColl should contain ("two")
-   * </pre>
-   *
-   * The <code>(contain ("two"))</code> expression will result in a <code>Matcher[GenTraversable[String]]</code>. This
-   * implicit conversion method will convert that matcher to a <code>Matcher[java.util.Collection[String]]</code>.
-   */
-  implicit def convertTraversableMatcherToJavaCollectionMatcher[T](traversableMatcher: Matcher[scala.collection.GenTraversable[T]]): Matcher[java.util.Collection[T]] =
-    new Matcher[java.util.Collection[T]] {
-      def apply(left: java.util.Collection[T]): MatchResult = 
-        traversableMatcher.apply(new JavaCollectionWrapper(left))
-    }
-
-  /**
-   * This implicit conversion method enables the following syntax:
-   *
-   * <pre class="stHighlight">
-   * Array(1, 2) should (not contain (3) and not contain (2))
-   * </pre>
-   *
-   * The <code>(not contain ("two"))</code> expression will result in a <code>Matcher[GenTraversable[String]]</code>. This
-   * implicit conversion method will convert that matcher to a <code>Matcher[Array[String]]</code>.
-  */
-  implicit def convertTraversableMatcherToArrayMatcher[T](traversableMatcher: Matcher[scala.collection.GenTraversable[T]]): Matcher[Array[T]] =
-    new Matcher[Array[T]] {
-      def apply(left: Array[T]): MatchResult = 
-        traversableMatcher.apply(new ArrayWrapper(left))
-    }
-
   /**
    * This implicit conversion method enables the following syntax (<code>javaMap</code> is a <code>java.util.Map</code>):
    *
