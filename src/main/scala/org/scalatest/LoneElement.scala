@@ -83,6 +83,25 @@ trait LoneElement {
       }
     }
   }
+  
+  final class LoneElementJavaMapWrapper[K, V, JMAP[K, V]](jmap: JMAP[K, V])(implicit collecting: Collecting[(K, V), JMAP[K, V]]) {
+    
+    def loneElement: (K, V) = {
+      collecting.loneElementOf(jmap) match {
+        case Some(ele) => ele
+        case None =>
+          throw new exceptions.TestFailedException(
+            Some(FailureMessages(
+                 "notLoneElement",
+                 jmap,
+                 collecting.sizeOf(jmap))), 
+            None, 
+            1
+          )
+      }
+    }
+    
+  }
 
   /**
    * Implicit conversion that adds a <code>loneElement</code> method to any collection type <code>C</code> for which an
@@ -94,6 +113,11 @@ trait LoneElement {
    * @param collecting a typeclass that enables the <code>loneElement</code> syntax
    */
   implicit def convertToCollectionLoneElementWrapper[E, CTC[_]](collection: CTC[E])(implicit collecting: Collecting[E, CTC[E]]): LoneElementCollectionWrapper[E, CTC] = new LoneElementCollectionWrapper[E, CTC](collection)
+  
+  // Needed for Java Map to work, any better solution?
+  implicit def convertJavaMapToCollectionLoneElementWrapper[K, V](jmap: java.util.Map[K, V])(implicit collecting: Collecting[(K, V), java.util.Map[K, V]]): LoneElementJavaMapWrapper[K, V, java.util.Map] = {
+    new LoneElementJavaMapWrapper(jmap)(collecting)
+  }
 }
 
 /**
