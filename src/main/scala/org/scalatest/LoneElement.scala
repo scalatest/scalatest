@@ -3,8 +3,8 @@ package org.scalatest
 import enablers.Collecting
 
 /**
- * Trait that provides an implicit conversion that adds a <code>loneElement</code> method
- * to <code>GenTraversable</code>, which will return the value of the lone element if the collection does
+ * Trait that provides an implicit conversion that adds to collection types a <code>loneElement</code> method, which
+ * will return the value of the lone element if the collection does
  * indeed contain one and only one element, or throw <code>TestFailedException</code> if not.
  *
  * <p>
@@ -23,11 +23,22 @@ import enablers.Collecting
  * <pre class="stHighlight">
  * assert(set.loneElement &gt; 9)
  * </pre>
+ *
+ * <p>
+ * The <code>loneElement</code> syntax can be used with any collection type <code>C</code> for which an
+ * implicit <a href="enablers/Collecting.html"><code>Collecting[C]</code></a> is available. ScalaTest provides
+ * implicit <code>Collecting</code> instances for <code>scala.collection.GenTraversable</code>, <code>Array</code>,
+ * <code>java.util.Collection</code>, and <code>java.util.Map</code>. You can enable the <code>loneElement</code>
+ * syntax on other collection types by defining an implicit <code>Collecting</code> instances for those types.
+ * </p>
+ *
+ * @author Bill Venners
  */
 trait LoneElement {
 
   /**
-   * Wrapper class that adds a <code>loneElement</code> method to <code>GenTraversable</code>.
+   * Wrapper class that adds a <code>loneElement</code> method to any collection type <code>C</code> for which 
+   * an implicit <code>Collection[C]</code> is available.
    *
    * <p>
    * Through the implicit conversion provided by trait <code>LoneElement</code>, this class allows you to make statements like:
@@ -37,12 +48,15 @@ trait LoneElement {
    * trav.loneElement should be &gt; 9
    * </pre>
    *
-   * @param trav A <code>GenTraversable</code> to wrap in a <code>LoneElementCollectionWrapper</code>, which provides the <code>loneElement</code> method.
+   * @tparam E the element type of the collection on which to add the <code>loneElement</code> method
+   * @tparam CTC the "collection type constructor" for the collection on which to add the <code>loneElement</code> method
+   * @param collection a collection to wrap in a <code>LoneElementCollectionWrapper</code>, which provides the <code>loneElement</code> method.
+   * @param collecting a typeclass that enables the <code>loneElement</code> syntax
    */
   final class LoneElementCollectionWrapper[E, CTC[_]](collection: CTC[E])(implicit collecting: Collecting[E, CTC[E]]) {
 
     /**
-     * Returns the value contained in the wrapped <code>GenTraversable</code>, if it contains one and only one element, else throws <code>TestFailedException</code> with
+     * Returns the value contained in the wrapped collection, if it contains one and only one element, else throws <code>TestFailedException</code> with
      * a detail message describing the problem.
      *
      * <p>
@@ -71,12 +85,14 @@ trait LoneElement {
   }
 
   /**
-   * Implicit conversion that adds a <code>loneElement</code> method to <code>GenTraversable</code>.
+   * Implicit conversion that adds a <code>loneElement</code> method to any collection type <code>C</code> for which an
+   * implicit <code>Collection[C]</code> is available.
    *
-   *
-   * @param trav the <code>GenTraversable</code> on which to add the <code>loneElement</code> method
+   * @tparam E the element type of the collection on which to add the <code>loneElement</code> method
+   * @tparam CTC the "collection type constructor" for the collection on which to add the <code>loneElement</code> method
+   * @param collection the collection on which to add the <code>loneElement</code> method
+   * @param collecting a typeclass that enables the <code>loneElement</code> syntax
    */
-// C = CC[E] collection is collected elements (CTC is Collection Type Constructor")
   implicit def convertToCollectionLoneElementWrapper[E, CTC[_]](collection: CTC[E])(implicit collecting: Collecting[E, CTC[E]]): LoneElementCollectionWrapper[E, CTC] = new LoneElementCollectionWrapper[E, CTC](collection)
 }
 
