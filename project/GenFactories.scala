@@ -57,6 +57,7 @@ import org.scalatest.words.ResultOfAnWordToAnMatcherApplication
 import org.scalatest.words.ResultOfTheSameInstanceAsApplication
 import org.scalatest.words.ResultOfRegexWordApplication
 import org.scalatest.words.ResultOfKeyWordApplication
+import org.scalatest.words.ResultOfNewKeyWordApplication
 import org.scalatest.words.ResultOfValueWordApplication
 import org.scalatest.words.RegexWithGroups
 import org.scalatest.words.ResultOfDefinedAt
@@ -1108,6 +1109,8 @@ $endif$
      */
     def contain[U](resultOfKeyWordApplication: ResultOfKeyWordApplication[U]): MatcherFactory$arity$[SC with scala.collection.GenMap[U, Any], $commaSeparatedTCNs$] =
       thisMatcherFactory.and(MatcherWords.not.contain(resultOfKeyWordApplication))
+    def contain(resultOfNewKeyWordApplication: ResultOfNewKeyWordApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, KeyMapping] =
+      thisMatcherFactory.and(MatcherWords.not.contain(resultOfNewKeyWordApplication))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -2108,6 +2111,8 @@ $endif$
      */
     def contain[U](resultOfKeyWordApplication: ResultOfKeyWordApplication[U]): MatcherFactory$arity$[SC with scala.collection.GenMap[U, Any], $commaSeparatedTCNs$] =
       thisMatcherFactory.or(MatcherWords.not.contain(resultOfKeyWordApplication))
+    def contain(resultOfNewKeyWordApplication: ResultOfNewKeyWordApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, KeyMapping] =
+      thisMatcherFactory.or(MatcherWords.not.contain(resultOfNewKeyWordApplication))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
