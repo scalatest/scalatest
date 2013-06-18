@@ -55,7 +55,7 @@ final class ResultOfAThrowableApplication[T <: Throwable] {
     catch {
       case u: Throwable => {
         if (!clazz.isAssignableFrom(u.getClass)) {
-          val s = Resources("aWrongException", clazz.getName, u.getClass.getName)
+          val s = Resources("wrongException", clazz.getName, u.getClass.getName)
           throw newAssertionFailedException(Some(s), Some(u), 4)
         }
         else {
@@ -65,7 +65,7 @@ final class ResultOfAThrowableApplication[T <: Throwable] {
     }
     caught match {
       case None =>
-        val message = Resources("aExceptionExpected", clazz.getName)
+        val message = Resources("exceptionExpected", clazz.getName)
         throw newAssertionFailedException(Some(message), None, 4)
       case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase iSAssignableFrom succeeded above
     }

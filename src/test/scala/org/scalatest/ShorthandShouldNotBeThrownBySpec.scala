@@ -22,17 +22,14 @@ class ShorthandShouldNotBeThrownBySpec extends Spec with Matchers {
   
   val fileName: String = "ShorthandShouldNotBeThrownBySpec.scala"
     
-  def aExceptionNotExpected(clz: Class[_]): String = 
-    "A " + clz.getName + " thrown was not expected."
-    
-  def anExceptionNotExpected(clz: Class[_]): String = 
-    "An " + clz.getName + " thrown was not expected."
+  def exceptionNotExpected(clz: Class[_]): String = 
+    Resources("exceptionNotExpected", clz.getName)
     
   def exceptionExpected(clz: Class[_]): String = 
-    "Expected exception " + clz.getName + " to be thrown, but no exception was thrown."
+    Resources("exceptionExpected", clz.getName)
     
   def hadExpectedMessage(left: Throwable, expectedMessage: String): String = 
-    left + " had message \"" + expectedMessage + "\""
+    FailureMessages("hadExpectedMessage", left, expectedMessage)
   
   object `a [Exception] should not syntax should` {
     
@@ -54,7 +51,7 @@ class ShorthandShouldNotBeThrownBySpec extends Spec with Matchers {
           throw new RuntimeException("secret file not found")
         }
       }
-      assert(e.message === Some(aExceptionNotExpected(classOf[RuntimeException])))
+      assert(e.message === Some(exceptionNotExpected(classOf[RuntimeException])))
       assert(e.failedCodeFileName === Some(fileName))
       assert(e.failedCodeLineNumber === Some(thisLineNumber - 6))
     }
@@ -80,7 +77,7 @@ class ShorthandShouldNotBeThrownBySpec extends Spec with Matchers {
           throw new UnsupportedOperationException("secret file not found")
         }
       }
-      assert(e.message === Some(anExceptionNotExpected(classOf[UnsupportedOperationException])))
+      assert(e.message === Some(exceptionNotExpected(classOf[UnsupportedOperationException])))
       assert(e.failedCodeFileName === Some(fileName))
       assert(e.failedCodeLineNumber === Some(thisLineNumber - 6))
     }

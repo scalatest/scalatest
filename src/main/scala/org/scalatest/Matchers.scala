@@ -2558,7 +2558,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
          }
          catch {
            case u: Throwable => {
-             val message = Resources("noExceptionExpected", u.getClass.getName)
+             val message = Resources("exceptionNotExpected", u.getClass.getName)
              throw newAssertionFailedException(Some(message), Some(u), 4)
            }
          }
@@ -2605,7 +2605,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
        }
        catch {
          case u: Throwable => {
-           val message = Resources("noExceptionExpected", u.getClass.getName)
+           val message = Resources("exceptionNotExpected", u.getClass.getName)
            throw newAssertionFailedException(Some(message), Some(u), 4)
          }
        }
@@ -6171,7 +6171,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldThrow[T <: Throwable](aThrowable: ResultOfAThrowableApplication[T])(implicit manifest: Manifest[T]) {
-      checkExpectedException(fun, "aWrongException", "aExceptionExpected", 5)
+      checkExpectedException(fun, "wrongException", "exceptionExpected", 5)
     }
 
     /**
@@ -6183,7 +6183,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldThrow[T <: Throwable](anThrowable: ResultOfAnThrowableApplication[T])(implicit manifest: Manifest[T]) {
-      checkExpectedException(fun, "anWrongException", "anExceptionExpected", 5)
+      checkExpectedException(fun, "wrongException", "exceptionExpected", 5)
     }
 
     /**

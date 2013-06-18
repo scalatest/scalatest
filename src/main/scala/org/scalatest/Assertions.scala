@@ -1191,7 +1191,7 @@ object Assertions extends Assertions {
     }
     catch {
       case u: Throwable => {
-        val message = Resources("noExceptionExpected", u.getClass.getName)
+        val message = Resources("exceptionNotExpected", u.getClass.getName)
         throw newAssertionFailedException(Some(message), Some(u), 4)
       }
     }

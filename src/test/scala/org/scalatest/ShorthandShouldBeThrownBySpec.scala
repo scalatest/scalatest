@@ -23,31 +23,16 @@ class ShorthandShouldBeThrownBySpec extends Spec with Matchers {
   val fileName: String = "ShorthandShouldBeThrownBySpec.scala"
   
   def exceptionExpected(clz: Class[_]): String = 
-    "Expected exception " + clz.getName + " to be thrown, but no exception was thrown."
+    Resources("exceptionExpected", clz.getName)
     
   def wrongException(expectedClz: Class[_], actualClz: Class[_]): String = 
-    "Expected exception " + expectedClz.getName + " to be thrown, but " + actualClz.getName + " was thrown."
+    Resources("wrongException", expectedClz.getName, actualClz.getName)
     
-  def noExceptionExpected(clz: Class[_]): String = 
-    "No exception is expected, but " + clz.getName + " is thrown."
-    
-  def aExceptionExpected(clz: Class[_]): String = 
-    "Expected a " + clz.getName + " to be thrown, but no exception was thrown."
-    
-  def aWrongException(expectedClz: Class[_], actualClz: Class[_]): String =  
-    "Expected a " + expectedClz.getName + " to be thrown, but " + actualClz.getName + " was thrown."
-    
-  def anExceptionExpected(clz: Class[_]): String = 
-    "Expected an " + clz.getName + " to be thrown, but no exception was thrown."
-    
-  def anWrongException(expectedClz: Class[_], actualClz: Class[_]): String =  
-    "Expected an " + expectedClz.getName + " to be thrown, but " + actualClz.getName + " was thrown."
-    
-  def theExceptionExpected(clz: Class[_]): String = 
-    "Expected the " + clz.getName + " to be thrown, but no exception was thrown."
+  def exceptionNotExpected(clz: Class[_]): String =
+    Resources("exceptionNotExpected", clz.getName)
     
   def hadMessageInsteadOfExpectedMessage(left: Throwable, actualMessage: String, expectedMessage: String) : String = 
-    left + " had message \"" + actualMessage + "\" instead of expected message \"" + expectedMessage + "\""
+    FailureMessages("hadMessageInsteadOfExpectedMessage", actualMessage, expectedMessage)
   
   object `a [Exception] should` {
     
@@ -63,7 +48,7 @@ class ShorthandShouldBeThrownBySpec extends Spec with Matchers {
           assert(1 === 1)
         }
       }
-      assert(e.message === Some(aExceptionExpected(classOf[RuntimeException])))
+      assert(e.message === Some(exceptionExpected(classOf[RuntimeException])))
       assert(e.failedCodeFileName === Some(fileName))
       assert(e.failedCodeLineNumber === Some(thisLineNumber - 6))
     }
@@ -74,7 +59,7 @@ class ShorthandShouldBeThrownBySpec extends Spec with Matchers {
           throw new FileNotFoundException("secret file not found")
         }
       }
-      assert(e.message === Some(aWrongException(classOf[RuntimeException], classOf[FileNotFoundException])))
+      assert(e.message === Some(wrongException(classOf[RuntimeException], classOf[FileNotFoundException])))
       assert(e.failedCodeFileName === Some(fileName))
       assert(e.failedCodeLineNumber === Some(thisLineNumber - 6))
     }
@@ -94,7 +79,7 @@ class ShorthandShouldBeThrownBySpec extends Spec with Matchers {
           assert(1 === 1)
         }
       }
-      assert(e.message === Some(anExceptionExpected(classOf[RuntimeException])))
+      assert(e.message === Some(exceptionExpected(classOf[RuntimeException])))
       assert(e.failedCodeFileName === Some(fileName))
       assert(e.failedCodeLineNumber === Some(thisLineNumber - 6))
     }
@@ -105,7 +90,7 @@ class ShorthandShouldBeThrownBySpec extends Spec with Matchers {
           throw new FileNotFoundException("secret file not found")
         }
       }
-      assert(e.message === Some(anWrongException(classOf[RuntimeException], classOf[FileNotFoundException])))
+      assert(e.message === Some(wrongException(classOf[RuntimeException], classOf[FileNotFoundException])))
       assert(e.failedCodeFileName === Some(fileName))
       assert(e.failedCodeLineNumber === Some(thisLineNumber - 6))
     }
@@ -125,7 +110,7 @@ class ShorthandShouldBeThrownBySpec extends Spec with Matchers {
           throw new RuntimeException("purposely")
         }
       }
-      assert(e.message === Some(noExceptionExpected(classOf[RuntimeException])))
+      assert(e.message === Some(exceptionNotExpected(classOf[RuntimeException])))
       assert(e.failedCodeFileName === Some(fileName))
       assert(e.failedCodeLineNumber === Some(thisLineNumber - 6))
     }

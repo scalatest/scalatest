@@ -23,31 +23,16 @@ class ShouldBeThrownBySpec extends Spec with Matchers {
   val fileName: String = "ShouldBeThrownBySpec.scala"
   
   def exceptionExpected(clz: Class[_]): String = 
-    "Expected exception " + clz.getName + " to be thrown, but no exception was thrown."
+    Resources("exceptionExpected", clz.getName)
     
   def wrongException(expectedClz: Class[_], actualClz: Class[_]): String = 
-    "Expected exception " + expectedClz.getName + " to be thrown, but " + actualClz.getName + " was thrown."
+    Resources("wrongException", expectedClz.getName, actualClz.getName)
     
   def noExceptionExpected(clz: Class[_]): String = 
-    "No exception is expected, but " + clz.getName + " is thrown."
-    
-  def aExceptionExpected(clz: Class[_]): String = 
-    "Expected a " + clz.getName + " to be thrown, but no exception was thrown."
-    
-  def aWrongException(expectedClz: Class[_], actualClz: Class[_]): String =  
-    "Expected a " + expectedClz.getName + " to be thrown, but " + actualClz.getName + " was thrown."
-    
-  def anExceptionExpected(clz: Class[_]): String = 
-    "Expected an " + clz.getName + " to be thrown, but no exception was thrown."
-    
-  def anWrongException(expectedClz: Class[_], actualClz: Class[_]): String =  
-    "Expected an " + expectedClz.getName + " to be thrown, but " + actualClz.getName + " was thrown."
-    
-  def theExceptionExpected(clz: Class[_]): String = 
-    "Expected the " + clz.getName + " to be thrown, but no exception was thrown."
+    Resources("exceptionNotExpected", clz.getName)
     
   def hadMessageInsteadOfExpectedMessage(left: Throwable, actualMessage: String, expectedMessage: String) : String = 
-    left + " had message \"" + actualMessage + "\" instead of expected message \"" + expectedMessage + "\""
+    FailureMessages("hadMessageInsteadOfExpectedMessage", left, actualMessage, expectedMessage)
   
   object `a [Exception] should` {
     
@@ -63,7 +48,7 @@ class ShouldBeThrownBySpec extends Spec with Matchers {
           assert(1 === 1)
         }
       }
-      assert(e.message === Some(aExceptionExpected(classOf[RuntimeException])))
+      assert(e.message === Some(exceptionExpected(classOf[RuntimeException])))
       assert(e.failedCodeFileName === Some(fileName))
       assert(e.failedCodeLineNumber === Some(thisLineNumber - 6))
     }
@@ -74,7 +59,7 @@ class ShouldBeThrownBySpec extends Spec with Matchers {
           throw new FileNotFoundException("secret file not found")
         }
       }
-      assert(e.message === Some(aWrongException(classOf[RuntimeException], classOf[FileNotFoundException])))
+      assert(e.message === Some(wrongException(classOf[RuntimeException], classOf[FileNotFoundException])))
       assert(e.failedCodeFileName === Some(fileName))
       assert(e.failedCodeLineNumber === Some(thisLineNumber - 6))
     }
@@ -94,7 +79,7 @@ class ShouldBeThrownBySpec extends Spec with Matchers {
           assert(1 === 1)
         }
       }
-      assert(e.message === Some(anExceptionExpected(classOf[RuntimeException])))
+      assert(e.message === Some(exceptionExpected(classOf[RuntimeException])))
       assert(e.failedCodeFileName === Some(fileName))
       assert(e.failedCodeLineNumber === Some(thisLineNumber - 6))
     }
@@ -105,7 +90,7 @@ class ShouldBeThrownBySpec extends Spec with Matchers {
           throw new FileNotFoundException("secret file not found")
         }
       }
-      assert(e.message === Some(anWrongException(classOf[RuntimeException], classOf[FileNotFoundException])))
+      assert(e.message === Some(wrongException(classOf[RuntimeException], classOf[FileNotFoundException])))
       assert(e.failedCodeFileName === Some(fileName))
       assert(e.failedCodeLineNumber === Some(thisLineNumber - 6))
     }
@@ -220,28 +205,28 @@ class ShouldBeThrownBySpec extends Spec with Matchers {
       val e1 = intercept[TestFailedException] {
         someCode.doNothing shouldThrow a[RuntimeException]
       }
-      assert(e1.message === Some(aExceptionExpected(classOf[RuntimeException])))
+      assert(e1.message === Some(exceptionExpected(classOf[RuntimeException])))
       assert(e1.failedCodeFileName === Some(fileName))
       assert(e1.failedCodeLineNumber === Some(thisLineNumber - 4))
       
       val e2 = intercept[TestFailedException] {
         someCode.doNothing shouldThrow an[Exception]
       }
-      assert(e2.message === Some(anExceptionExpected(classOf[Exception])))
+      assert(e2.message === Some(exceptionExpected(classOf[Exception])))
       assert(e2.failedCodeFileName === Some(fileName))
       assert(e2.failedCodeLineNumber === Some(thisLineNumber - 4))
       
       val e3 = intercept[TestFailedException] {
         { someCode.doNothing } shouldThrow a[RuntimeException]
       }
-      assert(e3.message === Some(aExceptionExpected(classOf[RuntimeException])))
+      assert(e3.message === Some(exceptionExpected(classOf[RuntimeException])))
       assert(e3.failedCodeFileName === Some(fileName))
       assert(e3.failedCodeLineNumber === Some(thisLineNumber - 4))
       
       val e4 = intercept[TestFailedException] {
         { someCode.doNothing } shouldThrow an[Exception]
       }
-      assert(e4.message === Some(anExceptionExpected(classOf[Exception])))
+      assert(e4.message === Some(exceptionExpected(classOf[Exception])))
       assert(e4.failedCodeFileName === Some(fileName))
       assert(e4.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
@@ -252,28 +237,28 @@ class ShouldBeThrownBySpec extends Spec with Matchers {
       val e1 = intercept[TestFailedException] {
         someCode.throwRuntimeException shouldThrow a[FileNotFoundException]
       }
-      assert(e1.message === Some(aWrongException(classOf[FileNotFoundException], classOf[RuntimeException])))
+      assert(e1.message === Some(wrongException(classOf[FileNotFoundException], classOf[RuntimeException])))
       assert(e1.failedCodeFileName === Some(fileName))
       assert(e1.failedCodeLineNumber === Some(thisLineNumber - 4))
       
       val e2 = intercept[TestFailedException] {
         someCode.throwRuntimeException shouldThrow an[UnsupportedOperationException]
       }
-      assert(e2.message === Some(anWrongException(classOf[UnsupportedOperationException], classOf[RuntimeException])))
+      assert(e2.message === Some(wrongException(classOf[UnsupportedOperationException], classOf[RuntimeException])))
       assert(e2.failedCodeFileName === Some(fileName))
       assert(e2.failedCodeLineNumber === Some(thisLineNumber - 4))
       
       val e3 = intercept[TestFailedException] {
         { someCode.throwRuntimeException } shouldThrow a[FileNotFoundException]
       }
-      assert(e3.message === Some(aWrongException(classOf[FileNotFoundException], classOf[RuntimeException])))
+      assert(e3.message === Some(wrongException(classOf[FileNotFoundException], classOf[RuntimeException])))
       assert(e3.failedCodeFileName === Some(fileName))
       assert(e3.failedCodeLineNumber === Some(thisLineNumber - 4))
       
       val e4 = intercept[TestFailedException] {
         { someCode.throwRuntimeException } shouldThrow an[UnsupportedOperationException]
       }
-      assert(e4.message === Some(anWrongException(classOf[UnsupportedOperationException], classOf[RuntimeException])))
+      assert(e4.message === Some(wrongException(classOf[UnsupportedOperationException], classOf[RuntimeException])))
       assert(e4.failedCodeFileName === Some(fileName))
       assert(e4.failedCodeLineNumber === Some(thisLineNumber - 4))
     }

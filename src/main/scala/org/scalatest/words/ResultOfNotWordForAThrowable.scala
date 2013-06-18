@@ -44,7 +44,7 @@ final class ResultOfNotWordForAThrowable[T <: Throwable] {
     catch {
       case u: Throwable => {
         if (clazz.isAssignableFrom(u.getClass)) {
-          val s = Resources("aExceptionNotExpected", u.getClass.getName)
+          val s = Resources("exceptionNotExpected", u.getClass.getName)
           throw newAssertionFailedException(Some(s), Some(u), 4)
         }
       }

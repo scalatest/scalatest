@@ -76,7 +76,7 @@ class ShouldThrowSpec extends Spec with OptionValues with Matchers {
       val e = intercept[TestFailedException] {
         evaluating { "hi".charAt(-1) } should produce (noException)
       }
-      assert(e.message === Some("No exception is expected, but java.lang.StringIndexOutOfBoundsException is thrown."))
+      assert(e.message === Some(Resources("exceptionNotExpected", "java.lang.StringIndexOutOfBoundsException")))
       assert(e.failedCodeFileName === Some("ShouldThrowSpec.scala"))
       assert(e.failedCodeLineNumber === Some(thisLineNumber - 4))
     }

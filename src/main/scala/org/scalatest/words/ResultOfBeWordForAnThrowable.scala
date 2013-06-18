@@ -37,8 +37,8 @@ final class ResultOfBeWordForAnThrowable[T <: Throwable](shouldBeTrue: Boolean) 
    */
   def thrownBy(fun: => Unit)(implicit manifest: Manifest[T]){
     if (shouldBeTrue)
-      checkExpectedException(fun, "anWrongException", "anExceptionExpected", 5)
+      checkExpectedException(fun, "wrongException", "exceptionExpected", 5)
     else
-      checkNotException(fun, "anExceptionNotExpected")
+      checkNotException(fun, "exceptionNotExpected")
   }
 }
