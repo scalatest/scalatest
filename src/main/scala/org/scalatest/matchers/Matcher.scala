@@ -642,7 +642,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def key[U](expectedElement: U): Matcher[T with scala.collection.GenMap[U, Any]] = outerInstance.and(MatcherWords.contain.key(expectedElement))
-    def newKey(expectedElement: Any): MatcherFactory1[T with Any, KeyMapping] = outerInstance.and(MatcherWords.contain.newKey(expectedElement))
+    def newKey(expectedKey: Any): MatcherFactory1[T, KeyMapping] = outerInstance.and(MatcherWords.contain.newKey(expectedKey))
 
     /**
      * This method enables the following syntax:
@@ -653,6 +653,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def value[U](expectedValue: U): Matcher[T with scala.collection.GenMap[K, U] forSome { type K }] = outerInstance.and(MatcherWords.contain.value(expectedValue))
+    def newValue(expectedValue: Any): MatcherFactory1[T, ValueMapping] = outerInstance.and(MatcherWords.contain.newValue(expectedValue))
     
     /**
      * This method enables the following syntax:
@@ -662,7 +663,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                                                                           ^
      * </pre>
      */
-    def theSameElementsAs(right: GenTraversable[_]): MatcherFactory1[T with Any, Aggregating] = 
+    def theSameElementsAs(right: GenTraversable[_]): MatcherFactory1[T, Aggregating] = 
       outerInstance.and(MatcherWords.contain.theSameElementsAs(right))
     
     /**
@@ -673,7 +674,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                                                                           ^
      * </pre>
      */
-    def theSameElementsInOrderAs(right: GenTraversable[_]): MatcherFactory1[T with Any, Sequencing] = 
+    def theSameElementsInOrderAs(right: GenTraversable[_]): MatcherFactory1[T, Sequencing] = 
       outerInstance.and(MatcherWords.contain.theSameElementsInOrderAs(right))
     
     /**
@@ -684,7 +685,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                      ^
      * </pre>
      */
-    def inOrderOnly(right: Any*): MatcherFactory1[T with Any, Sequencing] = 
+    def inOrderOnly(right: Any*): MatcherFactory1[T, Sequencing] = 
       outerInstance.and(MatcherWords.contain.inOrderOnly(right.toList: _*))
 
     /**
@@ -695,7 +696,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                                                                           ^
      * </pre>
      */
-    def allOf(right: Any*): MatcherFactory1[T with Any, Aggregating] = 
+    def allOf(right: Any*): MatcherFactory1[T, Aggregating] = 
       outerInstance.and(MatcherWords.contain.allOf(right.toList: _*))
     
     /**
@@ -706,7 +707,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                                                                           ^
      * </pre>
      */
-    def inOrder(right: Any*): MatcherFactory1[T with Any, Sequencing] = 
+    def inOrder(right: Any*): MatcherFactory1[T, Sequencing] = 
       outerInstance.and(MatcherWords.contain.inOrder(right.toList: _*))
     
     /**
@@ -717,7 +718,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                                                                           ^
      * </pre>
      */
-    def oneOf(right: Any*): MatcherFactory1[T with Any, Containing] = 
+    def oneOf(right: Any*): MatcherFactory1[T, Containing] = 
       outerInstance.and(MatcherWords.contain.oneOf(right.toList: _*))
       
     /**
@@ -728,7 +729,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                                                                           ^
      * </pre>
      */
-    def atLeastOneOf(right: Any*): MatcherFactory1[T with Any, Aggregating] = 
+    def atLeastOneOf(right: Any*): MatcherFactory1[T, Aggregating] = 
       outerInstance.and(MatcherWords.contain.atLeastOneOf(right.toList: _*))
     
     /**
@@ -739,7 +740,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                                                                           ^
      * </pre>
      */
-    def only(right: Any*): MatcherFactory1[T with Any, Aggregating] = 
+    def only(right: Any*): MatcherFactory1[T, Aggregating] = 
       outerInstance.and(MatcherWords.contain.only(right.toList: _*))
     
     /**
@@ -750,7 +751,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                                                                           ^
      * </pre>
      */
-    def noneOf(right: Any*): MatcherFactory1[T with Any, Containing] = 
+    def noneOf(right: Any*): MatcherFactory1[T, Containing] = 
       outerInstance.and(MatcherWords.contain.noneOf(right.toList: _*))
   }
   
@@ -1639,6 +1640,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def key[U](expectedKey: U): Matcher[T with scala.collection.GenMap[U, Any]] = outerInstance.or(MatcherWords.contain.key(expectedKey))
+// XXX Come back here and get a failing test
 
     /**
      * This method enables the following syntax:

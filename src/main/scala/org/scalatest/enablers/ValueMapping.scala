@@ -65,7 +65,9 @@ object ValueMapping {
     
   implicit def valueMappingNatureOfJavaMap[K, V, JMAP[_, _] <: java.util.Map[_, _]](implicit equality: Equality[V]): ValueMapping[JMAP[K, V]] = 
     new ValueMapping[JMAP[K, V]] {
-      def containsValue(map: JMAP[K, V], value: Any): Boolean = { false
+      def containsValue(map: JMAP[K, V], value: Any): Boolean = {
+        val jMap = map.asInstanceOf[java.util.Map[K, V]]
+        jMap.asScala.values.exists((v: Any) => equality.areEqual(v.asInstanceOf[V], value))
       }
     }
 

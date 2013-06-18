@@ -1107,6 +1107,22 @@ final class NotWord {
       }
     }
   }
+  def contain(resultOfNewValueWordApplication: ResultOfNewValueWordApplication): MatcherFactory1[Any, ValueMapping] = {
+    new MatcherFactory1[Any, ValueMapping] {
+      def matcher[T](implicit valueMapping: ValueMapping[T]): Matcher[T] = {
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+            val expectedValue = resultOfNewValueWordApplication.expectedValue
+            MatchResult(
+              !valueMapping.containsValue(left, expectedValue),
+              FailureMessages("containedValue", left, expectedValue),
+              FailureMessages("didNotContainValue", left, expectedValue)
+            )
+          }
+        }
+      }
+    }
+  }
   
   /**
    * This method enables the following syntax: 

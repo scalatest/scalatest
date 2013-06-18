@@ -59,6 +59,7 @@ import org.scalatest.words.ResultOfRegexWordApplication
 import org.scalatest.words.ResultOfKeyWordApplication
 import org.scalatest.words.ResultOfNewKeyWordApplication
 import org.scalatest.words.ResultOfValueWordApplication
+import org.scalatest.words.ResultOfNewValueWordApplication
 import org.scalatest.words.RegexWithGroups
 import org.scalatest.words.ResultOfDefinedAt
 import org.scalatest.words.ResultOfOneOfApplication
@@ -309,6 +310,7 @@ $endif$
      * </pre>
      */
     def value[U](expectedValue: U): MatcherFactory$arity$[SC with scala.collection.GenMap[K, U] forSome { type K }, $commaSeparatedTCNs$] = thisMatcherFactory.and(MatcherWords.contain.value(expectedValue))
+    def newValue(expectedValue: Any): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, ValueMapping] = thisMatcherFactory.and(MatcherWords.contain.newValue(expectedValue))
     
     // And some, the ones that would by themselves already generate a Matcher, just return a MatcherFactoryN where N is the same.
 
@@ -1122,6 +1124,8 @@ $endif$
      */
     def contain[U](resultOfValueWordApplication: ResultOfValueWordApplication[U]): MatcherFactory$arity$[SC with scala.collection.GenMap[K, U] forSome { type K }, $commaSeparatedTCNs$] =
       thisMatcherFactory.and(MatcherWords.not.contain(resultOfValueWordApplication))
+    def contain(resultOfNewValueWordApplication: ResultOfNewValueWordApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, ValueMapping] =
+      thisMatcherFactory.and(MatcherWords.not.contain(resultOfNewValueWordApplication))
       
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1313,6 +1317,7 @@ $endif$
      * </pre>
      */
     def value[U](expectedValue: U): MatcherFactory$arity$[SC with scala.collection.GenMap[K, U] forSome { type K }, $commaSeparatedTCNs$] = thisMatcherFactory.or(MatcherWords.contain.value(expectedValue))
+    def newValue(expectedValue: Any): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, ValueMapping] = thisMatcherFactory.or(MatcherWords.contain.newValue(expectedValue))
     
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -2124,6 +2129,8 @@ $endif$
      */
     def contain[U](resultOfValueWordApplication: ResultOfValueWordApplication[U]): MatcherFactory$arity$[SC with scala.collection.GenMap[K, U] forSome { type K }, $commaSeparatedTCNs$] =
       thisMatcherFactory.or(MatcherWords.not.contain(resultOfValueWordApplication))
+    def contain(resultOfNewValueWordApplication: ResultOfNewValueWordApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, ValueMapping] =
+      thisMatcherFactory.or(MatcherWords.not.contain(resultOfNewValueWordApplication))
       
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:

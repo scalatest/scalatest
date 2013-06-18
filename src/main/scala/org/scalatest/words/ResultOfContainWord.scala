@@ -222,5 +222,23 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
           expectedKey)
       )
   }
+
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * map should contain value ("one")
+   *                    ^
+   * </pre>
+   */
+  def newValue(expectedValue: Any)(implicit valueMapping: ValueMapping[L]) {
+    if (valueMapping.containsValue(left, expectedValue) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "didNotContainValue" else "containedValue",
+          left,
+          expectedValue)
+      )
+  }
 }
 

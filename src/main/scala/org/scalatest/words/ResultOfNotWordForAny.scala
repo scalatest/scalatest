@@ -777,6 +777,18 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
         )
     }
   }
+  def contain(resultOfNewValueWordApplication: ResultOfNewValueWordApplication)(implicit valueMapping: ValueMapping[T]) {
+    val right = resultOfNewValueWordApplication.expectedValue
+    if (valueMapping.containsValue(left, right) != shouldBeTrue) {
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "didNotContainValue" else "containedValue",
+            left,
+            right
+          )
+        )
+    }
+  }
 }
 
 /**

@@ -147,6 +147,20 @@ final class ContainWord {
           FailureMessages("containedValue", left, expectedValue)
         )
     }
+  def newValue[K](expectedValue: Any): MatcherFactory1[Any, ValueMapping] =
+    new MatcherFactory1[Any, ValueMapping] {
+      def matcher[U <: Any : ValueMapping]: Matcher[U] = 
+        new Matcher[U] {
+          def apply(left: U): MatchResult = {
+            val valueMapping = implicitly[ValueMapping[U]]
+            MatchResult(
+              valueMapping.containsValue(left, expectedValue),
+              FailureMessages("didNotContainValue", left, expectedValue),
+              FailureMessages("containedValue", left, expectedValue)
+            )
+          }
+        }
+    }
   
   /**
    * This method enables the following syntax, where <code>positiveNumber</code> and <code>validNumber</code> are, for example, of type <code>AMatcher</code>:

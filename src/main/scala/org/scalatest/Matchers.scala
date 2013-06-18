@@ -2263,6 +2263,18 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
     def apply[T](expectedValue: T): ResultOfValueWordApplication[T] = new ResultOfValueWordApplication(expectedValue)
   }
+  final class NewValueWord {
+
+    /**
+     * This method enables the following syntax: 
+     *
+     * <pre class="stHighlight">
+     * map should not contain key (10)
+     *                            ^
+     * </pre>
+     */
+    def apply(expectedValue: Any): ResultOfNewValueWordApplication = new ResultOfNewValueWordApplication(expectedValue)
+  }
 
   /**
    * This field enables the following syntax: 
@@ -2273,6 +2285,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * </pre>
    */
   val value = new ValueWord
+  val newValue = new NewValueWord
 
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
