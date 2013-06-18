@@ -16,36 +16,8 @@
 package org.scalatest
 
 /**
- * A <code>Suite</code> class that takes zero to many (likely specification-style) <code>Suite</code>s,
- *  which will be returned from its <code>nestedSuites</code> method.
- *
- * <p>
- * For example, you can define a suite that always executes a list of
- * nested, specification-style suites like this:
- * </p>
- *
- * <pre class="stHighlight">
- * class StepsSpec extends Specs(
- *   new Step1Spec,
- *   new Step2Spec,
- *   new Step3Spec,
- *   new Step4Spec,
- *   new Step5Spec
- * )
- * </pre>
- *
- * <p>
- * When <code>StepsSpec</code> is executed, it will execute its
- * nested suites in the passed order: <code>Step1Spec</code>, <code>Step2Spec</code>,
- * <code>Step3Spec</code>, <code>Step4Spec</code>, and <code>Step5Spec</code>.
- * </p>
- *
- * @param specsToNest a sequence of <code>Suite</code>s to nest.
- *
- * @throws NullPointerException if <code>suitesToNest</code>, or any suite
- * it contains, is <code>null</code>.
- *
- * @author Bill Venners
+ * <strong>Class <code>Specs</code> has been deprecated and will be removed in a future version of ScalaTest. Please
+ * change all uses of <code>Specs</code> to <a href="Suites.html"><code>Suites</code></a> instead.</code></strong>
  */
 @deprecated("Specs has been deprecated and will be removed in a future version of ScalaTest. Please use Suites instead.")
 class Specs(specsToNest: Suite*) extends Suite { thisSuite => 
@@ -73,16 +45,8 @@ class Specs(specsToNest: Suite*) extends Suite { thisSuite =>
 }
 
 /**
- * Companion object to class <code>Specs</code> that offers an <code>apply</code> factory method
- * for creating a <code>Specs</code> instance.
- *
- * <p>
- * One use case for this object is to run multiple specification-style suites in the Scala interpreter, like this:
- * </p>
- *
- * <pre class="stREPL">
- * scala> Specs(new MyFirstSpec, new MyNextSpec).execute()
- * </pre>
+ * <strong>Object <code>Specs</code> has been deprecated and will be removed in a future version of ScalaTest. Please
+ * change all uses of <code>Specs</code> to <a href="Suites.html"><code>Suites</code></a> instead.</code></strong>
  */
 @deprecated("Specs has been deprecated and will be removed in a future version of ScalaTest. Please use Suites instead.")
 object Specs {

@@ -381,7 +381,7 @@ import org.scalacheck.Test.Params
  * </pre>
  *
  * <p>
- * Note that even if you are use generators that don't produce the invalid values, you still need the
+ * Note that even if you use generators that don't produce the invalid values, you still need the
  * <code>whenever</code> clause. The reason is that once a property fails, ScalaCheck will try and shrink
  * the values to the smallest values that still cause the property to fail. During this shrinking process ScalaCheck
  * may pass invalid values. The <code>whenever</code> clause is still needed to guard against those values. (The
@@ -520,7 +520,7 @@ import org.scalacheck.Test.Params
  * </pre>
  *
  * <p>
- * Or, if hide it by declaring a variable of the same name in whatever scope you want the changed values to be in effect:
+ * Or, hide it by declaring a variable of the same name in whatever scope you want the changed values to be in effect:
  * </p>
  *
  * <pre class="stHighlight">
