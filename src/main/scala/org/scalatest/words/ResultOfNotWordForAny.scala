@@ -764,6 +764,19 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
         )
       )
   }
+
+  def contain(resultOfNewKeyWordApplication: ResultOfNewKeyWordApplication)(implicit keyMapping: KeyMapping[T]) {
+    val right = resultOfNewKeyWordApplication.expectedKey
+    if (keyMapping.containsKey(left, right) != shouldBeTrue) {
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "didNotContainKey" else "containedKey",
+            left,
+            right
+          )
+        )
+    }
+  }
 }
 
 /**

@@ -31,12 +31,12 @@ class ShouldContainNewKeySpec extends Spec with Matchers with Checkers with Retu
       def `should do nothing if map contains specified key` {
         Map("one" -> 1, "two" -> 2) should contain newKey ("two")
         Map("one" -> 1, "two" -> 2) should (contain newKey ("two"))
-        Map(1 -> "one", 2 -> "two") should contain key (2)
+        Map(1 -> "one", 2 -> "two") should contain newKey (2)
       }
 
       def `should do nothing if map does not contain the specified key and used with not` {
-        Map("one" -> 1, "two" -> 2) should not { contain key ("three") }
-        Map("one" -> 1, "two" -> 2) should not contain key ("three")
+        Map("one" -> 1, "two" -> 2) should not { contain newKey ("three") }
+        Map("one" -> 1, "two" -> 2) should not contain newKey ("three")
         Map("one" -> 1, "two" -> 2) should (not contain key ("three"))
       }
 
