@@ -297,6 +297,7 @@ $endif$
      * </pre>
      */
     def key[U](expectedElement: U): MatcherFactory$arity$[SC with scala.collection.GenMap[U, Any], $commaSeparatedTCNs$] = thisMatcherFactory.and(MatcherWords.contain.key(expectedElement))
+    def newKey(expectedKey: Any): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, KeyMapping] = thisMatcherFactory.and(MatcherWords.contain.newKey(expectedKey))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:

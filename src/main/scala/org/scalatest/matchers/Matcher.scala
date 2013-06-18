@@ -642,6 +642,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def key[U](expectedElement: U): Matcher[T with scala.collection.GenMap[U, Any]] = outerInstance.and(MatcherWords.contain.key(expectedElement))
+    def newKey(expectedElement: Any): MatcherFactory1[T with Any, KeyMapping] = outerInstance.and(MatcherWords.contain.newKey(expectedElement))
 
     /**
      * This method enables the following syntax:
