@@ -203,6 +203,7 @@
         	<include name="GenFactories.scala" />
         	<include name="GenTheyWord.scala" />
         	<include name="GenContain.scala" />
+        	<include name="GenLoneElement.scala" />
         </scalac>
     </target>
 	
@@ -280,6 +281,15 @@
 		<arg value="${build.generated.tests.src}" />
 		<arg value="${scala.version}" />
       </java>
+	</target>
+	
+	<target name="genloneelement" depends="init, compile-codegenerators"
+	        unless="genloneelement.uptodate">
+	  <java classname="GenLoneElement"
+	        classpathref="run.generators.class.path" fork="false">
+	    <arg value="${build.generated.tests.src}" />
+	    <arg value="${scala.version}" />
+	  </java>
 	</target>
 
     <target name="compile" depends="compile-main, compile-tests"/>
@@ -377,7 +387,7 @@
 	  <delete dir="${build.generated.tests.bin}" />
 	</target>
 	
-    <target name="compile-gentests" depends="compile-tests, geninspectors, gencontain">
+    <target name="compile-gentests" depends="compile-tests, geninspectors, gencontain, genloneelement">
       <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
 		<include name="org/scalatest/junit/*.scala"/>
 		<include name="org/scalatest/matchers/*.scala"/>
@@ -399,6 +409,9 @@
       </scalac>
       <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
     	<include name="org/scalatest/contain/*.scala"/>
+      </scalac>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+        <include name="org/scalatest/lone/*.scala"/>
       </scalac>
 <!--
  <echo message="Compiling ArrayShouldContainAllOfLogicalAndSpec.scala"/>

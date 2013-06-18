@@ -69,6 +69,25 @@ trait LoneElement {
       }
     }
   }
+  
+  final class LoneElementJavaMapWrapper[K, V, JMAP[K, V]](jmap: JMAP[K, V])(implicit collecting: Collecting[(K, V), JMAP[K, V]]) {
+    
+    def loneElement: (K, V) = {
+      collecting.loneElementOf(jmap) match {
+        case Some(ele) => ele
+        case None =>
+          throw new exceptions.TestFailedException(
+            Some(FailureMessages(
+                 "notLoneElement",
+                 jmap,
+                 collecting.sizeOf(jmap))), 
+            None, 
+            1
+          )
+      }
+    }
+    
+  }
 
   /**
    * Implicit conversion that adds a <code>loneElement</code> method to <code>GenTraversable</code>.
@@ -78,6 +97,11 @@ trait LoneElement {
    */
 // C = CC[E] collection is collected elements (CTC is Collection Type Constructor")
   implicit def convertToCollectionLoneElementWrapper[E, CTC[_]](collection: CTC[E])(implicit collecting: Collecting[E, CTC[E]]): LoneElementCollectionWrapper[E, CTC] = new LoneElementCollectionWrapper[E, CTC](collection)
+  
+  // Needed for Java Map to work, any better solution?
+  implicit def convertJavaMapToCollectionLoneElementWrapper[K, V](jmap: java.util.Map[K, V])(implicit collecting: Collecting[(K, V), java.util.Map[K, V]]): LoneElementJavaMapWrapper[K, V, java.util.Map] = {
+    new LoneElementJavaMapWrapper(jmap)(collecting)
+  }
 }
 
 /**
