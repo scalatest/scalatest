@@ -25,7 +25,7 @@ import org.scalatest.Assertions.checkNotException
  *
  * @author Bill Venners
  */
-final class ResultOfBeWordForAType[T <: AnyRef](clazz: Class[T]) {
+final class ResultOfBeWordForAType[T](clazz: Class[T]) {
   
   /**
    * This method enables the following syntax: 

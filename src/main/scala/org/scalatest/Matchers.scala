@@ -5322,7 +5322,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def a[T <: AnyRef](implicit manifest: Manifest[T]): ResultOfATypeInvocation[T] = 
+  def a[T](implicit manifest: Manifest[T]): ResultOfATypeInvocation[T] = 
     new ResultOfATypeInvocation(manifest.erasure.asInstanceOf[Class[T]])
 
   /**
@@ -5333,7 +5333,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def an[T <: AnyRef](implicit manifest: Manifest[T]): ResultOfAnTypeInvocation[T] = 
+  def an[T](implicit manifest: Manifest[T]): ResultOfAnTypeInvocation[T] = 
     new ResultOfAnTypeInvocation(manifest.erasure.asInstanceOf[Class[T]])
 
   /**

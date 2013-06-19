@@ -1161,7 +1161,7 @@ object Assertions extends Assertions {
       }
     }
   }
-  private[scalatest] def checkExpectedException[T <: AnyRef](f: => Any, clazz: Class[T], wrongExceptionResourceName: String, exceptionExpectedResourceName: String, stackDepth: Int): T = {
+  private[scalatest] def checkExpectedException[T](f: => Any, clazz: Class[T], wrongExceptionResourceName: String, exceptionExpectedResourceName: String, stackDepth: Int): T = {
     val caught = try {
       f
       None
