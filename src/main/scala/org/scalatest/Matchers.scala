@@ -2548,24 +2548,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
      def should[T](resultOfProduceApplication: ResultOfProduceInvocation[T]): T =  {
        val clazz = resultOfProduceApplication.clazz
-       ///////////////This is a workaround as overload should does not work/////////////////
-       // try uncomment the the should method below, and the following syntax is allowed by compiler for unknown reason:
-       //   evaluating { assert(1 ===) } should not
-       //where it should not compile actually.
-       if (clazz.isAssignableFrom(classOf[Unit])) {
-         val caught = try {
-           fun()
-         }
-         catch {
-           case u: Throwable => {
-             val message = Resources("exceptionNotExpected", u.getClass.getName)
-             throw newAssertionFailedException(Some(message), Some(u), 4)
-           }
-         }
-         return Unit.box(Unit).asInstanceOf[T]
-       }
-       //////////////////////////////////////////////////////////////////////////////////////
-       
        val caught = try {
          fun()
          None
@@ -2590,26 +2572,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
          case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase isAssignableFrom succeeded above
        }
      }
-
-     /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * evaluating { "hi".charAt(-1) } should produce (noException)
-     *                                ^
-     * </pre>
-     */
-     /*def should(resultOfProduceNoException: ResultOfProduceNoException) {
-       val caught = try {
-        fun()
-       }
-       catch {
-         case u: Throwable => {
-           val message = Resources("exceptionNotExpected", u.getClass.getName)
-           throw newAssertionFailedException(Some(message), Some(u), 4)
-         }
-       }
-     }*/
   }
 
   /**
@@ -2641,12 +2603,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    */
   def produce[T](implicit manifest: Manifest[T]): ResultOfProduceInvocation[T] =
     new ResultOfProduceInvocation(manifest.erasure.asInstanceOf[Class[T]])
-
-  //def produce(noException: NoExceptionWord): ResultOfProduceNoException = 
-    //new ResultOfProduceNoException
-  
-  def produce(noException: NoExceptionWord): ResultOfProduceInvocation[Unit] = 
-    new ResultOfProduceInvocation(classOf[Unit])
 
   /**
    * This method enables the following syntax: 
@@ -5366,8 +5322,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def a[T <: AnyRef](implicit manifest: Manifest[T]): ResultOfAThrowableApplication[T] = 
-    new ResultOfAThrowableApplication(manifest.erasure.asInstanceOf[Class[T]])
+  def a[T <: AnyRef](implicit manifest: Manifest[T]): ResultOfATypeInvocation[T] = 
+    new ResultOfATypeInvocation(manifest.erasure.asInstanceOf[Class[T]])
 
   /**
    * This method enables the following syntax: 
@@ -5377,8 +5333,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def an[T <: AnyRef](implicit manifest: Manifest[T]): ResultOfAnThrowableApplication[T] = 
-    new ResultOfAnThrowableApplication(manifest.erasure.asInstanceOf[Class[T]])
+  def an[T <: AnyRef](implicit manifest: Manifest[T]): ResultOfAnTypeInvocation[T] = 
+    new ResultOfAnTypeInvocation(manifest.erasure.asInstanceOf[Class[T]])
 
   /**
    * This method enables the following syntax: 
@@ -5388,8 +5344,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def the[T <: AnyRef](implicit manifest: Manifest[T]): ResultOfTheThrowableApplication[T] = 
-    new ResultOfTheThrowableApplication(manifest.erasure.asInstanceOf[Class[T]])
+  def the[T <: AnyRef](implicit manifest: Manifest[T]): ResultOfTheThrowableInvocation[T] = 
+    new ResultOfTheThrowableInvocation(manifest.erasure.asInstanceOf[Class[T]])
 
   // This is where ShouldMatchers.scala started 
 
@@ -6150,56 +6106,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   }
 
   /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * <p>
-   * This class is used in conjunction with an implicit conversion to enable <code>shouldXXX</code> methods to
-   * be invoked on by-name.
-   * </p>
-   *
-   * @author Bill Venners
-   * @author Chee Seng
-   */
-  class ByNameShouldWrapper(fun: => Any) {
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * system.actorOf(Props[MyActor]) shouldThrow a [Exception] 
-     *                                ^
-     * </pre>
-     */
-    def shouldThrow[T <: AnyRef](aThrowable: ResultOfAThrowableApplication[T])(implicit manifest: Manifest[T]) {
-      checkExpectedException(fun, manifest.erasure.asInstanceOf[Class[T]], "wrongException", "exceptionExpected", 5)
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * system.actorOf(Props[MyActor]) shouldThrow an [Exception] 
-     *                                ^
-     * </pre>
-     */
-    def shouldThrow[T <: AnyRef](anThrowable: ResultOfAnThrowableApplication[T])(implicit manifest: Manifest[T]) {
-      checkExpectedException(fun, manifest.erasure.asInstanceOf[Class[T]], "wrongException", "exceptionExpected", 5)
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * system.actorOf(Props[MyActor]) shouldThrow noException
-     *                                ^
-     * </pre>
-     */
-    def shouldThrow(noException: NoExceptionWord) {
-      checkNoException(fun)
-    }
-  }
-
-  /**
    * Implicitly converts an object of type <code>T</code> to a <code>AnyShouldWrapper[T]</code>,
    * to enable <code>should</code> methods to be invokable on that object.
    */
@@ -6228,12 +6134,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * to enable <code>should</code> methods to be invokable on that object.
    */
   implicit def convertToJavaMapShouldWrapper[K, V, L[_, _] <: java.util.Map[_, _]](o: L[K, V]): JavaMapShouldWrapper[K, V, L] = new JavaMapShouldWrapper[K, V, L](o) 
-
-  /**
-   * Implicitly converts a by name to a <code>ByNameShouldWrapper</code>,
-   * to enable <code>shouldXXX</code> methods to be invokable on that object.
-   */
-  implicit def convertToByNameShouldWrapper(o: => Any): ByNameShouldWrapper = new ByNameShouldWrapper(o)
 }
 
 /**

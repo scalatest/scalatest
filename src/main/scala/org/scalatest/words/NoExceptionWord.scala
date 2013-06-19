@@ -45,9 +45,9 @@ final class NoExceptionWord {
    *             ^
    * </pre>
    */
-  def shouldBe(throwBy: ResultOfThrownByApplication) {
+  def shouldBe(thrownBy: ResultOfThrownByApplication) {
     val caught = try {
-      throwBy.apply()
+      thrownBy.execute()
     }
     catch {
       case u: Throwable => {

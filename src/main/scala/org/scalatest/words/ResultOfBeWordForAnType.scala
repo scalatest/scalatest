@@ -25,18 +25,17 @@ import org.scalatest.Assertions.checkNotException
  *
  * @author Bill Venners
  */
-final class ResultOfBeWordForAThrowable[T <: AnyRef](clazz: Class[T]) {
+final class ResultOfBeWordForAnType[T <: AnyRef](clazz: Class[T]) {
   
   /**
    * This method enables the following syntax: 
    *
    * <pre class="stHighlight">
-   * a [RuntimeException] should be thrownBy { ... }
-   *                                ^
+   * an [Exception] should be thrownBy { ... }
+   *                          ^
    * </pre>
    */
-  def thrownBy(fun: => Any) {
+  def thrownBy(fun: => Unit) {
     checkExpectedException(fun, clazz, "wrongException", "exceptionExpected", 5)
   }
-  
 }

@@ -24,7 +24,7 @@ import org.scalatest.Assertions.newAssertionFailedException
  *
  * @author Bill Venners
  */
-final class ResultOfAnThrowableApplication[T <: AnyRef : Manifest](clazz: Class[T]) {
+final class ResultOfAnTypeInvocation[T <: AnyRef](clazz: Class[T]) {
   
   /**
    * This method enables the following syntax: 
@@ -34,8 +34,11 @@ final class ResultOfAnThrowableApplication[T <: AnyRef : Manifest](clazz: Class[
    *                ^
    * </pre>
    */
-  def should(beWord: BeWord): ResultOfBeWordForAnThrowable[T] = 
-    new ResultOfBeWordForAnThrowable[T](clazz)
+  def should(beWord: BeWord): ResultOfBeWordForAnType[T] = 
+    new ResultOfBeWordForAnType[T](clazz)
+
+  def should(notWord: NotWord): PleaseUseNoExceptionShouldSyntaxInstead =
+    new PleaseUseNoExceptionShouldSyntaxInstead
   
   /**
    * This method enables the following syntax: 
@@ -45,11 +48,10 @@ final class ResultOfAnThrowableApplication[T <: AnyRef : Manifest](clazz: Class[
    *                       ^
    * </pre>
    */
-  def shouldBe(throwBy: ResultOfThrownByApplication) {
+  def shouldBe(thrownBy: ResultOfThrownByApplication) {
     
-    val clazz = manifest.erasure.asInstanceOf[Class[T]]
     val caught = try {
-      throwBy.apply()
+      thrownBy.execute()
       None
     }
     catch {
