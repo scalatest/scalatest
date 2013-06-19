@@ -31,9 +31,20 @@ class EntrySpec extends Spec with Matchers {
       jmap.entrySet should not contain (Entry("one", 100))
       jmap.entrySet should contain allOf (Entry("one", 1), Entry("two", 2))
     }
-    def `should have a toString consist with the ones coming from Java` {
+    def `should have a toString consistent with the ones coming from Java` {
       Entry("one", 1).toString should be ("one=1")
       Entry(1, "one").toString should be ("1=one")
+    }
+  }
+  object `the loneElement method` {
+    object `when used with java.util.Map` {
+      def `should return an Entry that has key and value methods` {
+        import LoneElement._
+        val jmap: JMap[String, Int] = new JHashMap[String, Int]
+        jmap.put("one", 1)
+        jmap.loneElement.key should be ("one")
+        jmap.loneElement.value should be (1)
+      }
     }
   }
 }

@@ -97,12 +97,13 @@ object Collecting {
       def sizeOf(coll: JCOL[E]): Int = coll.size
     }
 
-  implicit def collectingNatureOfJavaMap[K, V, JMAP[_, _] <: java.util.Map[_, _]]: Collecting[java.util.Map.Entry[K, V], JMAP[K, V]] = 
-    new Collecting[java.util.Map.Entry[K, V], JMAP[K, V]] {
-      def loneElementOf(jmap: JMAP[K, V]): Option[java.util.Map.Entry[K, V]] = {
+  // Wrap the extracted entry in an org.scalatest.Entry so people can call key and value methods instead of getKey and getValue
+  implicit def collectingNatureOfJavaMap[K, V, JMAP[_, _] <: java.util.Map[_, _]]: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]] = 
+    new Collecting[org.scalatest.Entry[K, V], JMAP[K, V]] {
+      def loneElementOf(jmap: JMAP[K, V]): Option[org.scalatest.Entry[K, V]] = {
         if (jmap.size == 1) {
           val loneEntry = jmap.entrySet.iterator.next.asInstanceOf[java.util.Map.Entry[K, V]]
-          Some(loneEntry)
+          Some(org.scalatest.Entry(loneEntry.getKey, loneEntry.getValue))
         } else None
       }
       def sizeOf(jmap: JMAP[K, V]): Int = jmap.size
