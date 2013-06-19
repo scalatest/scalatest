@@ -2601,7 +2601,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * ^
    * </pre>
    */
-  def produce[T](implicit manifest: Manifest[T]): ResultOfProduceInvocation[T] =
+  def produce[T : Manifest]: ResultOfProduceInvocation[T] =
     new ResultOfProduceInvocation(manifest.erasure.asInstanceOf[Class[T]])
 
   /**
@@ -5322,7 +5322,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def a[T](implicit manifest: Manifest[T]): ResultOfATypeInvocation[T] = 
+  def a[T : Manifest]: ResultOfATypeInvocation[T] = 
     new ResultOfATypeInvocation(manifest.erasure.asInstanceOf[Class[T]])
 
   /**
@@ -5333,7 +5333,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def an[T](implicit manifest: Manifest[T]): ResultOfAnTypeInvocation[T] = 
+  def an[T : Manifest]: ResultOfAnTypeInvocation[T] = 
     new ResultOfAnTypeInvocation(manifest.erasure.asInstanceOf[Class[T]])
 
   /**
@@ -5344,8 +5344,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def the[T <: AnyRef](implicit manifest: Manifest[T]): ResultOfTheThrowableInvocation[T] = 
-    new ResultOfTheThrowableInvocation(manifest.erasure.asInstanceOf[Class[T]])
+  def the[T : Manifest]: ResultOfTheTypeInvocation[T] = 
+    new ResultOfTheTypeInvocation(manifest.erasure.asInstanceOf[Class[T]])
 
   // This is where ShouldMatchers.scala started 
 

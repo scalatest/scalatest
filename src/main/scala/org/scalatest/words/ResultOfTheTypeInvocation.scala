@@ -24,7 +24,7 @@ import org.scalatest.Assertions.checkExpectedException
  *
  * @author Bill Venners
  */
-final class ResultOfTheThrowableInvocation[T <: AnyRef](clazz: Class[T]) {
+final class ResultOfTheTypeInvocation[T](clazz: Class[T]) {
   
   /**
    * This method enables the following syntax: 
