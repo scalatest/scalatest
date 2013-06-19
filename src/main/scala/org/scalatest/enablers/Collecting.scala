@@ -96,16 +96,4 @@ object Collecting {
       }
       def sizeOf(coll: JCOL[E]): Int = coll.size
     }
-
-  implicit def collectingNatureOfJavaMap[K, V, JMAP[_, _] <: java.util.Map[_, _]]: Collecting[(K, V), JMAP[K, V]] = 
-    new Collecting[(K, V), JMAP[K, V]] {
-      def loneElementOf(map: JMAP[K, V]): Option[(K, V)] = {
-        if (map.size == 1) {
-          val keySet = map.keySet
-          val loneKey = keySet.iterator.next
-          Some(loneKey.asInstanceOf[K] -> map.get(loneKey).asInstanceOf[V])
-        } else None
-      }
-      def sizeOf(map: JMAP[K, V]): Int = map.size
-    }
 }
