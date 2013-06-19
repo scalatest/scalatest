@@ -2548,6 +2548,24 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
      def should[T](resultOfProduceApplication: ResultOfProduceInvocation[T]): T =  {
        val clazz = resultOfProduceApplication.clazz
+       ///////////////This is a workaround as overload should does not work/////////////////
+       // try uncomment the the should method below, and the following syntax is allowed by compiler for unknown reason:
+       //   evaluating { assert(1 ===) } should not
+       //where it should not compile actually.
+       if (clazz.isAssignableFrom(classOf[Unit])) {
+         val caught = try {
+           fun()
+         }
+         catch {
+           case u: Throwable => {
+             val message = Resources("noExceptionExpected", u.getClass.getName)
+             throw newAssertionFailedException(Some(message), Some(u), 4)
+           }
+         }
+         return Unit.box(Unit).asInstanceOf[T]
+       }
+       //////////////////////////////////////////////////////////////////////////////////////
+       
        val caught = try {
          fun()
          None
@@ -2572,6 +2590,26 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
          case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase isAssignableFrom succeeded above
        }
      }
+
+     /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * evaluating { "hi".charAt(-1) } should produce (noException)
+     *                                ^
+     * </pre>
+     */
+     /*def should(resultOfProduceNoException: ResultOfProduceNoException) {
+       val caught = try {
+        fun()
+       }
+       catch {
+         case u: Throwable => {
+           val message = Resources("noExceptionExpected", u.getClass.getName)
+           throw newAssertionFailedException(Some(message), Some(u), 4)
+         }
+       }
+     }*/
   }
 
   /**
@@ -2603,6 +2641,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    */
   def produce[T](implicit manifest: Manifest[T]): ResultOfProduceInvocation[T] =
     new ResultOfProduceInvocation(manifest.erasure.asInstanceOf[Class[T]])
+
+  //def produce(noException: NoExceptionWord): ResultOfProduceNoException = 
+    //new ResultOfProduceNoException
+  
+  def produce(noException: NoExceptionWord): ResultOfProduceInvocation[Unit] = 
+    new ResultOfProduceInvocation(classOf[Unit])
 
   /**
    * This method enables the following syntax: 

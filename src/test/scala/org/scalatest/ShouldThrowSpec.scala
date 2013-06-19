@@ -16,6 +16,7 @@
 package org.scalatest
 
 import org.scalatest.exceptions.TestFailedException
+import SharedHelpers.thisLineNumber
 
 class ShouldThrowSpec extends Spec with OptionValues with Matchers {
 
@@ -64,4 +65,22 @@ class ShouldThrowSpec extends Spec with OptionValues with Matchers {
       assert(caught.cause.value eq wrongException)
     }
   }
+  
+  object `The evaluating { ... } should produce noException syntax` {
+    
+    def `should do nothing when the provided code did not produce any exception` {
+      evaluating { assert(1 === 1) } should produce (noException)
+    }
+    
+    def `should throw TestFailedException with correct message and stack depth when provided code produced exception` {
+      val e = intercept[TestFailedException] {
+        evaluating { "hi".charAt(-1) } should produce (noException)
+      }
+      assert(e.message === Some("No exception is expected, but java.lang.StringIndexOutOfBoundsException is thrown."))
+      assert(e.failedCodeFileName === Some("ShouldThrowSpec.scala"))
+      assert(e.failedCodeLineNumber === Some(thisLineNumber - 4))
+    }
+    
+  }
+  
 }
