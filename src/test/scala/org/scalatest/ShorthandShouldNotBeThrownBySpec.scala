@@ -31,58 +31,6 @@ class ShorthandShouldNotBeThrownBySpec extends Spec with Matchers {
   def hadExpectedMessage(left: Throwable, expectedMessage: String): String = 
     FailureMessages("hadExpectedMessage", left, expectedMessage)
   
-  object `a [Exception] should not syntax should` {
-    
-    def `do nothing when provided code did not produce expected exception` {
-      a [RuntimeException] shouldNot be thrownBy {
-        throw new FileNotFoundException("purposely")
-      }
-    }
-    
-    def `do nothing when provided code did not produce any exception` {
-      a [RuntimeException] shouldNot be thrownBy {
-        assert(1 === 1)
-      }
-    }
-    
-    def `throw new TestFailedException with correct message and stack depth when provided code produced expected exception` {
-      val e = intercept[TestFailedException] {
-        a [RuntimeException] shouldNot be thrownBy {
-          throw new RuntimeException("secret file not found")
-        }
-      }
-      assert(e.message === Some(exceptionNotExpected(classOf[RuntimeException])))
-      assert(e.failedCodeFileName === Some(fileName))
-      assert(e.failedCodeLineNumber === Some(thisLineNumber - 6))
-    }
-  }
-  
-  object `an [Exception] should not syntax should` {
-    
-    def `do nothing when provided code did not produce expected exception` {
-      an [UnsupportedOperationException] shouldNot be thrownBy {
-        throw new FileNotFoundException("purposely")
-      }
-    }
-    
-    def `do nothing when provided code did not produce any exception` {
-      an [UnsupportedOperationException] shouldNot be thrownBy {
-        assert(1 === 1)
-      }
-    }
-    
-    def `throw new TestFailedException with correct message and stack depth when provided code produced expected exception` {
-      val e = intercept[TestFailedException] {
-        an [UnsupportedOperationException] shouldNot be thrownBy {
-          throw new UnsupportedOperationException("secret file not found")
-        }
-      }
-      assert(e.message === Some(exceptionNotExpected(classOf[UnsupportedOperationException])))
-      assert(e.failedCodeFileName === Some(fileName))
-      assert(e.failedCodeLineNumber === Some(thisLineNumber - 6))
-    }
-  }
-  
   object `the [Exception] 'should not have message' syntax should` {
     
     def `do nothing when 'should have message' exception's message not equal expected` {

@@ -36,7 +36,7 @@ final class ResultOfAThrowableApplication[T <: Throwable] {
    * </pre>
    */
   def should(beWord: BeWord): ResultOfBeWordForAThrowable[T] = 
-    new ResultOfBeWordForAThrowable[T](true)
+    new ResultOfBeWordForAThrowable[T]
   
   /**
    * This method enables the following syntax: 
@@ -70,26 +70,4 @@ final class ResultOfAThrowableApplication[T <: Throwable] {
       case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase iSAssignableFrom succeeded above
     }
   }
-  
-  /**
-   * This method enables the following syntax: 
-   *
-   * <pre class="stHighlight">
-   * a [RuntimeException] shouldNot be thrownBy { ... }
-   *                      ^
-   * </pre>
-   */
-  def shouldNot(beWord: BeWord): ResultOfBeWordForAThrowable[T] = 
-    new ResultOfBeWordForAThrowable[T](false)
-  
-  /**
-   * This method enables the following syntax: 
-   *
-   * <pre class="stHighlight">
-   * a [RuntimeException] should not be thrownBy { ... }
-   *                      ^
-   * </pre>
-   */
-  def should(notWord: NotWord): ResultOfNotWordForAThrowable[T] = 
-    new ResultOfNotWordForAThrowable[T]
 }

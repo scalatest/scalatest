@@ -25,7 +25,7 @@ import org.scalatest.Assertions.checkNotException
  *
  * @author Bill Venners
  */
-final class ResultOfBeWordForAThrowable[T <: Throwable](shouldBeTrue: Boolean) {
+final class ResultOfBeWordForAThrowable[T <: Throwable] {
   
   /**
    * This method enables the following syntax: 
@@ -36,10 +36,7 @@ final class ResultOfBeWordForAThrowable[T <: Throwable](shouldBeTrue: Boolean) {
    * </pre>
    */
   def thrownBy(fun: => Unit)(implicit manifest: Manifest[T]) {
-    if (shouldBeTrue)
-      checkExpectedException(fun, "wrongException", "exceptionExpected", 5)
-    else
-      checkNotException(fun, "exceptionNotExpected")
+    checkExpectedException(fun, "wrongException", "exceptionExpected", 5)
   }
   
 }
