@@ -567,6 +567,12 @@ hard to read. Better to have people pull things out and then just do a non-neste
         // assert(caught1.getMessage === "The length property had value 45, instead of its expected value 43, on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
         assert(caught1.getMessage === "Book(A Tale of Two Cities,Dickens,1859,45,true) had length 45 instead of expected length 43")
       }
+      def `should work with length and other have property matchers` {
+
+        implicit val bookLength = new Length[Book] { def lengthOf(book: Book) = book.length }
+        book should have (length (45) (of [Book]), title ("A Tale of Two Cities"))
+        book should have (title ("A Tale of Two Cities"), length (45) (of [Book]))
+      }
 
       def `should work with size not a symbol without anything special, in case someone forgets you don't need the parens with size` {
 

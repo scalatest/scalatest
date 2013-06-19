@@ -6134,6 +6134,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * to enable <code>should</code> methods to be invokable on that object.
    */
   implicit def convertToJavaMapShouldWrapper[K, V, L[_, _] <: java.util.Map[_, _]](o: L[K, V]): JavaMapShouldWrapper[K, V, L] = new JavaMapShouldWrapper[K, V, L](o) 
+
+  def of[T]: ResultOfOfTypeInvocation[T] = new ResultOfOfTypeInvocation[T]
 }
 
 /**

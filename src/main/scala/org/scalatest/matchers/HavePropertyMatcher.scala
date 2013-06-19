@@ -165,7 +165,7 @@ trait HavePropertyMatcher[-T, P] extends Function1[T, HavePropertyMatchResult[P]
 /**
  * Companion object for trait <code>HavePropertyMatcher</code> that provides a
  * factory method that creates a <code>HavePropertyMatcher[T]</code> from a
- * passed function of type <code>(T => HavePropertyMatchResult)</code>.
+ * passed function of type <code>(T =&gt; HavePropertyMatchResult)</code>.
  *
  * @author Bill Venners
  */
@@ -173,7 +173,7 @@ object HavePropertyMatcher {
 
   /**
    * Factory method that creates a <code>HavePropertyMatcher[T]</code> from a
-   * passed function of type <code>(T => HavePropertyMatchResult)</code>.
+   * passed function of type <code>(T =&gt; HavePropertyMatchResult)</code>.
    *
    * <p>
    * This allows you to create a <code>HavePropertyMatcher</code> in a slightly
@@ -184,7 +184,7 @@ object HavePropertyMatcher {
    *  case class Person(name: String)
    *  def name(expectedName: String) = {
    *    HavePropertyMatcher { 
-   *      (person: Person) => HavePropertyMatchResult(
+   *      (person: Person) =&gt; HavePropertyMatchResult(
    *        person.name == expectedName,
    *        "name",
    *        expectedName,

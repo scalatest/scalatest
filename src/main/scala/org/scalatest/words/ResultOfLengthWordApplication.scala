@@ -15,10 +15,30 @@
  */
 package org.scalatest.words
 
+import org.scalatest.enablers.Length
+import org.scalatest.matchers.HavePropertyMatcher
+import org.scalatest.matchers.HavePropertyMatchResult
+
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
  * the matchers DSL.
  *
  * @author Bill Venners
  */
-final class ResultOfLengthWordApplication(val expectedLength: Long)
+final class ResultOfLengthWordApplication(val expectedLength: Long) {
+
+  def apply[T : Length](resultOfOfTypeInvocation: ResultOfOfTypeInvocation[T]): HavePropertyMatcher[T, Long] = {
+    new HavePropertyMatcher[T, Long] {
+      def apply(t: T): HavePropertyMatchResult[Long] = {
+        val len = implicitly[Length[T]]
+        val lengthOfT = len.lengthOf(t)
+        new HavePropertyMatchResult(
+          lengthOfT == expectedLength,
+          "length",
+           expectedLength,
+           lengthOfT
+        )
+      }
+    }
+  }
+}
