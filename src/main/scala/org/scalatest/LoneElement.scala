@@ -28,9 +28,33 @@ import enablers.Collecting
  * The <code>loneElement</code> syntax can be used with any collection type <code>C</code> for which an
  * implicit <a href="enablers/Collecting.html"><code>Collecting[C]</code></a> is available. ScalaTest provides
  * implicit <code>Collecting</code> instances for <code>scala.collection.GenTraversable</code>, <code>Array</code>,
- * <code>java.util.Collection</code>, and <code>java.util.Map</code>. You can enable the <code>loneElement</code>
+ * and <code>java.util.Collection</code>. You can enable the <code>loneElement</code>
  * syntax on other collection types by defining an implicit <code>Collecting</code> instances for those types.
  * </p>
+ *
+ * <p>
+ * If you want to use <code>loneElement</code> with a <code>java.util.Map</code>, first transform it to a
+ * set of entries with <code>entrySet</code>, and if helpful, use ScalaTest's <a href="Entry.html"><code>Entry</code></a> class:
+ * </p>
+ * 
+ * <pre class="stREPL">
+ * scala&gt; import org.scalatest._
+ * import org.scalatest._
+ *
+ * scala&gt; import LoneElement._
+ * import LoneElement._
+ *
+ * scala&gt; import Matchers._
+ * import Matchers._
+ *
+ * scala&gt; val jmap = new java.util.HashMap[String, Int]
+ * jmap: java.util.HashMap[String,Int] = {}
+ *
+ * scala&gt; jmap.put("one", 1)
+ * res0: Int = 0
+ *
+ * scala&gt; jmap.entrySet.loneElement should be (Entry("one", 1))
+ * </pre>
  *
  * @author Bill Venners
  */
