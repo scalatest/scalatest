@@ -163,6 +163,16 @@ trait MatcherWords {
    * This method enables the following syntax: 
    *
    * <pre class="stHighlight">
+   * noException should be thrownBy
+   * ^
+   * </pre>
+   */
+  val noException = new NoExceptionWord
+
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
    * result should equal (7)
    *               ^
    * </pre>

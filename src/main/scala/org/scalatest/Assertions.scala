@@ -1161,4 +1161,52 @@ object Assertions extends Assertions {
       }
     }
   }
+  private[scalatest] def checkExpectedException[T <: AnyRef](f: => Any, clazz: Class[T], wrongExceptionResourceName: String, exceptionExpectedResourceName: String, stackDepth: Int): T = {
+    val caught = try {
+      f
+      None
+    }
+    catch {
+      case u: Throwable => {
+        if (!clazz.isAssignableFrom(u.getClass)) {
+          val s = Resources(wrongExceptionResourceName, clazz.getName, u.getClass.getName)
+          throw newAssertionFailedException(Some(s), Some(u), stackDepth)
+        }
+        else {
+          Some(u)
+        }
+      }
+    }
+    caught match {
+      case None =>
+        val message = Resources(exceptionExpectedResourceName, clazz.getName)
+        throw newAssertionFailedException(Some(message), None, stackDepth)
+      case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase iSAssignableFrom succeeded above
+    }
+  }
+  private[scalatest] def checkNoException(fun: => Any) {
+    val caught = try {
+      fun
+    }
+    catch {
+      case u: Throwable => {
+        val message = Resources("exceptionNotExpected", u.getClass.getName)
+        throw newAssertionFailedException(Some(message), Some(u), 4)
+      }
+    }
+  }
+  private[scalatest] def checkNotException[T <: AnyRef](f: => Any, exceptionNotExpectedResourceName: String)(implicit manifest: Manifest[T]) {
+    val clazz = manifest.erasure.asInstanceOf[Class[T]]
+    try {
+      f
+    }
+    catch {
+      case u: Throwable => {
+        if (clazz.isAssignableFrom(u.getClass)) {
+          val s = Resources(exceptionNotExpectedResourceName, u.getClass.getName)
+          throw newAssertionFailedException(Some(s), Some(u), 4)
+        }
+      }
+    }
+  }
 }
