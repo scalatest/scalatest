@@ -20,7 +20,7 @@ import org.scalatest.words.ArrayWrapper
 import scala.collection.GenTraversable
 import org.scalatest.FailureMessages
 import scala.annotation.tailrec
-import scala.collection.JavaConverters._
+// import scala.collection.JavaConverters._
 
 /**
  * Supertrait for typeclasses that enable <code>contain</code> matcher syntax for aggregations.
@@ -95,5 +95,16 @@ object Collecting {
         if (coll.size == 1) Some(coll.iterator.next.asInstanceOf[E]) else None
       }
       def sizeOf(coll: JCOL[E]): Int = coll.size
+    }
+
+  implicit def collectingNatureOfJavaMap[K, V, JMAP[_, _] <: java.util.Map[_, _]]: Collecting[java.util.Map.Entry[K, V], JMAP[K, V]] = 
+    new Collecting[java.util.Map.Entry[K, V], JMAP[K, V]] {
+      def loneElementOf(jmap: JMAP[K, V]): Option[java.util.Map.Entry[K, V]] = {
+        if (jmap.size == 1) {
+          val loneEntry = jmap.entrySet.iterator.next.asInstanceOf[java.util.Map.Entry[K, V]]
+          Some(loneEntry)
+        } else None
+      }
+      def sizeOf(jmap: JMAP[K, V]): Int = jmap.size
     }
 }

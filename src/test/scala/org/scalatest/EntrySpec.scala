@@ -31,6 +31,10 @@ class EntrySpec extends Spec with Matchers {
       jmap.entrySet should not contain (Entry("one", 100))
       jmap.entrySet should contain allOf (Entry("one", 1), Entry("two", 2))
     }
+    def `should have a toString consist with the ones coming from Java` {
+      Entry("one", 1).toString should be ("one=1")
+      Entry(1, "one").toString should be ("1=one")
+    }
   }
 }
 

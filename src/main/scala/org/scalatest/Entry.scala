@@ -37,4 +37,6 @@ case class Entry[K, V](key: K, value: V) extends java.util.Map.Entry[K, V] {
     (if (key == null) 0 else key.hashCode) ^
     (if (value == null) 0 else value.hashCode)
   }
+
+  override def toString: String = key.toString + "=" + value.toString
 }
