@@ -24,7 +24,7 @@ import org.scalatest.Assertions.checkExpectedException
  *
  * @author Bill Venners
  */
-final class ResultOfTheThrowableApplication[T <: Throwable] {
+final class ResultOfTheThrowableApplication[T <: AnyRef : Manifest](clazz: Class[T]) {
   
   /**
    * This method enables the following syntax: 
@@ -34,7 +34,7 @@ final class ResultOfTheThrowableApplication[T <: Throwable] {
    *                                     ^
    * </pre>
    */
-  def thrownBy(fun: => Any)(implicit manifest: Manifest[T]): T = {
-    checkExpectedException(fun, "wrongException", "exceptionExpected", 4)
+  def thrownBy(fun: => Any): T = {
+    checkExpectedException(fun, clazz, "wrongException", "exceptionExpected", 4)
   }
 }

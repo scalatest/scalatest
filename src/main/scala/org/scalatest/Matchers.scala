@@ -5366,8 +5366,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def a[T <: Throwable]: ResultOfAThrowableApplication[T] = 
-    new ResultOfAThrowableApplication[T]
+  def a[T <: AnyRef](implicit manifest: Manifest[T]): ResultOfAThrowableApplication[T] = 
+    new ResultOfAThrowableApplication(manifest.erasure.asInstanceOf[Class[T]])
 
   /**
    * This method enables the following syntax: 
@@ -5377,8 +5377,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def an[T <: Throwable]: ResultOfAnThrowableApplication[T] = 
-    new ResultOfAnThrowableApplication[T]
+  def an[T <: AnyRef](implicit manifest: Manifest[T]): ResultOfAnThrowableApplication[T] = 
+    new ResultOfAnThrowableApplication(manifest.erasure.asInstanceOf[Class[T]])
 
   /**
    * This method enables the following syntax: 
@@ -5388,8 +5388,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def the[T <: Throwable]: ResultOfTheThrowableApplication[T] = 
-    new ResultOfTheThrowableApplication[T]
+  def the[T <: AnyRef](implicit manifest: Manifest[T]): ResultOfTheThrowableApplication[T] = 
+    new ResultOfTheThrowableApplication(manifest.erasure.asInstanceOf[Class[T]])
 
   // This is where ShouldMatchers.scala started 
 
@@ -6170,8 +6170,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                                ^
      * </pre>
      */
-    def shouldThrow[T <: Throwable](aThrowable: ResultOfAThrowableApplication[T])(implicit manifest: Manifest[T]) {
-      checkExpectedException(fun, "wrongException", "exceptionExpected", 5)
+    def shouldThrow[T <: AnyRef](aThrowable: ResultOfAThrowableApplication[T])(implicit manifest: Manifest[T]) {
+      checkExpectedException(fun, manifest.erasure.asInstanceOf[Class[T]], "wrongException", "exceptionExpected", 5)
     }
 
     /**
@@ -6182,8 +6182,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                                ^
      * </pre>
      */
-    def shouldThrow[T <: Throwable](anThrowable: ResultOfAnThrowableApplication[T])(implicit manifest: Manifest[T]) {
-      checkExpectedException(fun, "wrongException", "exceptionExpected", 5)
+    def shouldThrow[T <: AnyRef](anThrowable: ResultOfAnThrowableApplication[T])(implicit manifest: Manifest[T]) {
+      checkExpectedException(fun, manifest.erasure.asInstanceOf[Class[T]], "wrongException", "exceptionExpected", 5)
     }
 
     /**

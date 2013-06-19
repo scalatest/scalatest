@@ -1161,8 +1161,7 @@ object Assertions extends Assertions {
       }
     }
   }
-  private[scalatest] def checkExpectedException[T <: AnyRef](f: => Any, wrongExceptionResourceName: String, exceptionExpectedResourceName: String, stackDepth: Int)(implicit manifest: Manifest[T]): T = {
-    val clazz = manifest.erasure.asInstanceOf[Class[T]]
+  private[scalatest] def checkExpectedException[T <: AnyRef](f: => Any, clazz: Class[T], wrongExceptionResourceName: String, exceptionExpectedResourceName: String, stackDepth: Int): T = {
     val caught = try {
       f
       None
