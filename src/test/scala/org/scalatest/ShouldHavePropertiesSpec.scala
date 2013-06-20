@@ -21,11 +21,11 @@ import Arbitrary._
 import Prop._
 import scala.reflect.BeanProperty
 import org.scalatest.exceptions.TestFailedException
-
 import matchers.HavePropertyMatcher
 import matchers.HavePropertyMatchResult
 import enablers.Length
 import enablers.Size
+import enablers.Messaging
 
 // TODO: check not not and not not not to make sure those negative failure messages make sense.
 class ShouldHavePropertiesSpec extends Spec with Matchers with Checkers with ReturnsNormallyThrowsAssertion with BookPropertyMatchers {
@@ -581,6 +581,34 @@ hard to read. Better to have people pull things out and then just do a non-neste
         }
         // assert(caught1.getMessage === "The size property had value 7, instead of its expected value 43, on object Size(7)")
         assert(caught1.getMessage === "Sizey(7) had size 7 instead of expected size 43")
+      }
+
+      def `should work with length and other have property matchers` {
+
+        implicit val bookLength = new Length[Book] { def lengthOf(book: Book) = book.length }
+        book should have (length (45) (of [Book]), title ("A Tale of Two Cities"))
+        book should have (title ("A Tale of Two Cities"), length (45) (of [Book]))
+
+        book should not have (length (43) (of [Book]), title ("A Tale of Two Cities"))
+        book should not have (title ("A Tale of Two Cities"), length (43) (of [Book]))
+      }
+      def `should work with size and other have property matchers` {
+
+        implicit val bookLength = new Size[Book] { def sizeOf(book: Book) = book.length }
+        book should have (size (45) (of [Book]), title ("A Tale of Two Cities"))
+        book should have (title ("A Tale of Two Cities"), size (45) (of [Book]))
+
+        book should not have (size (43) (of [Book]), title ("A Tale of Two Cities"))
+        book should not have (title ("A Tale of Two Cities"), size (43) (of [Book]))
+      }
+      def `should work with message and other have property matchers` {
+
+        implicit val bookMessaging = new Messaging[Book] { def messageOf(book: Book) = book.title.toUpperCase }
+        book should have (message ("A TALE OF TWO CITIES") (of [Book]), title ("A Tale of Two Cities"))
+        book should have (title ("A Tale of Two Cities"), message ("A TALE OF TWO CITIES") (of [Book]))
+
+        book should not have (message ("A TALE OF TOO CITIES") (of [Book]), title ("A Tale of Two Cities"))
+        book should not have (title ("A Tale of Two Cities"), message ("A TALE OF TOO CITIES") (of [Book]))
       }
 
 /*
