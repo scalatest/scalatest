@@ -3622,6 +3622,31 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         }
       }
     }
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * all(colOfMap) should not contain value (3)
+     *                          ^
+     * </pre>
+     */
+    def contain(resultOfNewValueWordApplication: ResultOfNewValueWordApplication)(implicit valueMapping: ValueMapping[T]) {
+      doCollected(collected, xs, "contain", 1) { map =>
+        val expectedValue = resultOfNewValueWordApplication.expectedValue
+        if ((valueMapping.containsValue(map, expectedValue)) != shouldBeTrue) {
+          throw newTestFailedException(
+            FailureMessages(
+              if (shouldBeTrue) "didNotContainValue" else "containedValue",
+              map,
+              expectedValue
+            ), 
+            None, 
+            6
+          )
+        }
+      }
+    }
   }
 
   /**
@@ -4091,6 +4116,28 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
               if (shouldBeTrue) "didNotContainKey" else "containedKey",
               map,
               expectedKey),
+              None,
+              6
+          )
+      }
+    }
+
+   /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * all(colOfMap) should contain value (1)
+     *                              ^
+     * </pre>
+     */
+    def newValue(expectedValue: Any)(implicit valueMapping: ValueMapping[T]) {
+      doCollected(collected, xs, "newValue", 1) { map =>
+        if (valueMapping.containsValue(map, expectedValue) != shouldBeTrue)
+          throw newTestFailedException(
+            FailureMessages(
+              if (shouldBeTrue) "didNotContainValue" else "containedValue",
+              map,
+              expectedValue),
               None,
               6
           )

@@ -121,7 +121,7 @@ final class ContainWord {
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">
-   * Map("one" -> 1, "two" -> 2) should (not contain value (5) and not contain value (3))
+   * Map("one" -&gt; 1, "two" -&gt; 2) should (not contain value (5) and not contain value (3))
    *                                                 ^
    * </pre>
    *
