@@ -1407,111 +1407,6 @@ import Assertions.checkNoException
  */
 trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWords with Explicitly { matchers =>
 
-  //
-  // This class is used as the return type of the overloaded should method (in MapShouldWrapper)
-  // that takes a HaveWord. It's key method will be called in situations like this:
-  //
-  // map should have key 1
-  //
-  // This gets changed to :
-  //
-  // convertToMapShouldWrapper(map).should(have).key(1)
-  //
-  // Thus, the map is wrapped in a convertToMapShouldWrapper call via an implicit conversion, which results in
-  // a MapShouldWrapper. This has a should method that takes a HaveWord. That method returns a
-  // ResultOfHaveWordPassedToShould that remembers the map to the left of should. Then this class
-  // ha a key method that takes a K type, they key type of the map. It does the assertion thing.
-  // 
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * @author Bill Venners
-   */
-  final class ResultOfContainWordForMap[K, V, L[_, _] <: scala.collection.GenMap[_, _]](val left: scala.collection.GenMap[K, V], val shouldBeTrue: Boolean) extends ResultOfContainWord[L[K, V]](left.asInstanceOf[L[K, V]]) {
-
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * map should contain key ("one")
-     *                    ^
-     * </pre>
-     */
-    def oldKey(expectedKey: K) {
-      if (left.exists(_._1 == expectedKey) != shouldBeTrue)
-        throw newTestFailedException(
-          FailureMessages(
-            if (shouldBeTrue) "didNotContainKey" else "containedKey",
-            left,
-            expectedKey)
-        )
-    }
-
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * map should contain value (1)
-     *                    ^
-     * </pre>
-     */
-    def oldValue(expectedValue: V) {
-      if (left.exists(expectedValue == _._2) != shouldBeTrue)
-        throw newTestFailedException(
-          FailureMessages(
-            if (shouldBeTrue) "didNotContainValue" else "containedValue",
-            left,
-            expectedValue)
-        )
-    }
-  }
-
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * @author Bill Venners
-   */
-  final class ResultOfContainWordForJavaMap[K, V, L[_, _] <: java.util.Map[_, _]](left: L[K, V], shouldBeTrue: Boolean) extends ResultOfContainWord[L[K, V]](left) {
-
-    /**
-     * This method enables the following syntax (<code>javaMap</code> is a <code>java.util.Map</code>):
-     *
-     * <pre class="stHighlight">
-     * javaMap should contain key ("two")
-     *                        ^
-     * </pre>
-     */
-    def oldKey(expectedKey: K) {
-      if (left.containsKey(expectedKey) != shouldBeTrue)
-        throw newTestFailedException(
-          FailureMessages(
-            if (shouldBeTrue) "didNotContainKey" else "containedKey",
-            left,
-            expectedKey)
-        )
-    }
-
-    /**
-     * This method enables the following syntax (<code>javaMap</code> is a <code>java.util.Map</code>):
-     *
-     * <pre class="stHighlight">
-     * javaMap should contain value ("2")
-     *                        ^
-     * </pre>
-     */
-    def oldValue(expectedValue: V) {
-      if (left.containsValue(expectedValue) != shouldBeTrue)
-        throw newTestFailedException(
-          FailureMessages(
-            if (shouldBeTrue) "didNotContainValue" else "containedValue",
-            left,
-            expectedValue)
-        )
-    }
-  }
-
   // TODO: I think I'll be able to drop the next three implicit conversions after the enablers for contain are done.
   /**
    * This implicit conversion method enables the following syntax (<code>javaMap</code> is a <code>java.util.Map</code>):
@@ -1523,11 +1418,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * The <code>(contain key ("two"))</code> expression will result in a <code>Matcher[scala.collection.GenMap[String, Any]]</code>. This
    * implicit conversion method will convert that matcher to a <code>Matcher[java.util.Map[String, Any]]</code>.
    */
+/*
   implicit def convertMapMatcherToJavaMapMatcher[K, V](mapMatcher: Matcher[scala.collection.GenMap[K, V]]): Matcher[java.util.Map[K, V]] =
     new Matcher[java.util.Map[K, V]] {
       def apply(left: java.util.Map[K, V]): MatchResult = 
         mapMatcher.apply(new JavaMapWrapper(left))
     }
+*/
 
   // Ack. The above conversion doesn't apply to java.util.Maps, because java.util.Map is not a subinterface
   // of java.util.Collection. But right now Matcher[Traversable] supports only "contain" and "have size"
@@ -2178,18 +2075,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *
    * @author Bill Venners
    */
-  final class OldKeyWord {
-
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * map should not contain key (10)
-     *                            ^
-     * </pre>
-     */
-    def apply[T](expectedKey: T): ResultOfOldKeyWordApplication[T] = new ResultOfOldKeyWordApplication(expectedKey)
-  }
   final class KeyWord {
 
     /**
@@ -2211,7 +2096,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                        ^
    * </pre>
    */
-  val oldKey = new OldKeyWord
   val key = new KeyWord
 
   /**
@@ -2220,18 +2104,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *
    * @author Bill Venners
    */
-  final class OldValueWord {
-
-    /**
-     * This method enables the following syntax: 
-     *
-     * <pre class="stHighlight">
-     * map should not contain value (10)
-     *                              ^
-     * </pre>
-     */
-    def apply[T](expectedValue: T): ResultOfOldValueWordApplication[T] = new ResultOfOldValueWordApplication(expectedValue)
-  }
   final class ValueWord {
 
     /**
@@ -2253,7 +2125,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                        ^
    * </pre>
    */
-  val oldValue = new OldValueWord
   val value = new ValueWord
 
   /**
@@ -3830,66 +3701,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfNotWordForCollectedGenMap[K, V, T <: scala.collection.GenMap[K, V]](collected: Collected, xs: scala.collection.GenTraversable[T], shouldBeTrue: Boolean) extends ResultOfNotWordForCollectedAny[T](collected, xs, shouldBeTrue) {
-    
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * all(colOfMap) should not contain key ("three")
-     *                          ^
-     * </pre>
-     */
-    def contain(resultOfKeyWordApplication: ResultOfOldKeyWordApplication[K]) {
-      doCollected(collected, xs, "contain", 1) { e =>
-        val right = resultOfKeyWordApplication.expectedKey
-        if ((e.exists(_._1 == right)) != shouldBeTrue) {
-          throw newTestFailedException(
-            FailureMessages(
-              if (shouldBeTrue) "didNotContainKey" else "containedKey",
-              e,
-              right
-            ), 
-            None, 
-            6
-          )
-        }
-      }
-    }
-    
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * all(colOfMap) should not contain value (3)
-     *                          ^
-     * </pre>
-     */
-    def contain(resultOfValueWordApplication: ResultOfOldValueWordApplication[V]) {
-      doCollected(collected, xs, "contain", 1) { e =>
-        val right = resultOfValueWordApplication.expectedValue
-        if ((e.exists(_._2 == right)) != shouldBeTrue) {
-          throw newTestFailedException(
-            FailureMessages(
-              if (shouldBeTrue) "didNotContainValue" else "containedValue",
-              e,
-              right
-            ), 
-            None, 
-            6
-          )
-        }
-      }
-    }
-  }
-
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="InspectorsMatchers.html"><code>InspectorsMatchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * @author Bill Venners
-   * @author Chee Seng
-   */
   sealed class ResultOfContainWordForCollectedAny[T](collected: Collected, xs: scala.collection.GenTraversable[T], shouldBeTrue: Boolean) {
   
     /**
@@ -5258,101 +5069,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     }
   }
 
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="InspectorsMatchers.html"><code>InspectorsMatchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * @author Bill Venners
-   * @author Chee Seng
-   */
-  final class ResultOfCollectedGenMap[K, V](collected: Collected, xs: scala.collection.GenTraversable[scala.collection.GenMap[K, V]]) extends ResultOfCollectedAny(collected, xs) {
-    
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * all(colOfMap) should contain key (10)
-     *               ^
-     * </pre>
-     */
-    override def should(containWord: ContainWord): ResultOfContainWordForCollectedGenMap[K, V] = 
-      new ResultOfContainWordForCollectedGenMap(collected, xs, true)
-    
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * all(colOfMap) should not have size (3)
-     *               ^
-     * </pre>
-     */
-    override def should(notWord: NotWord): ResultOfNotWordForCollectedGenMap[K, V, scala.collection.GenMap[K, V]] = 
-      new ResultOfNotWordForCollectedGenMap(collected, xs, false)
-  }
-
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="InspectorsMatchers.html"><code>InspectorsMatchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * @author Bill Venners
-   * @author Chee Seng
-   */
-  final class ResultOfContainWordForCollectedGenMap[K, V](collected: Collected, xs: scala.collection.GenTraversable[scala.collection.GenMap[K, V]], shouldBeTrue: Boolean) extends ResultOfContainWordForCollectedAny[scala.collection.GenMap[K, V]](collected, xs, shouldBeTrue) {
-    
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * all(colOfMap) should contain key ("one")
-     *                              ^
-     * </pre>
-     */
-    def oldKey(expectedKey: K) {
-      doCollected(collected, xs, "oldKey", 1) { e =>
-        if (e.exists(_._1 == expectedKey) != shouldBeTrue)
-          throw newTestFailedException(
-            FailureMessages(
-              if (shouldBeTrue) "didNotContainKey" else "containedKey",
-              e,
-              expectedKey), 
-              None, 
-              6
-          )
-      }
-    }
-    
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * all(colOfMap) should contain value (1)
-     *                              ^
-     * </pre>
-     */
-    def oldValue(expectedValue: V) {
-      doCollected(collected, xs, "oldValue", 1) { e =>
-        if (e.exists(expectedValue == _._2) != shouldBeTrue)
-          throw newTestFailedException(
-            FailureMessages(
-              if (shouldBeTrue) "didNotContainValue" else "containedValue",
-              e,
-              expectedValue), 
-            None, 
-            6
-          )
-      }
-    }
-  }
-  
   def all[T](xs: scala.collection.GenTraversable[T]): ResultOfCollectedAny[T] = 
     new ResultOfCollectedAny(AllCollected, xs)
   
   def all(xs: scala.collection.GenTraversable[String]): ResultOfCollectedString = 
     new ResultOfCollectedString(AllCollected, xs)
-  
-  
-  def all[K, V](xs: scala.collection.GenTraversable[scala.collection.GenMap[K, V]]) = 
-    new ResultOfCollectedGenMap(AllCollected, xs)
   
   def atLeast[T](num: Int, xs: scala.collection.GenTraversable[T]): ResultOfCollectedAny[T] = 
     new ResultOfCollectedAny(AtLeastCollected(num), xs)
@@ -5360,17 +5081,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   def atLeast(num: Int, xs: scala.collection.GenTraversable[String]): ResultOfCollectedString = 
     new ResultOfCollectedString(AtLeastCollected(num), xs)
   
-  def atLeast[K, V](num: Int, xs: scala.collection.GenTraversable[scala.collection.GenMap[K, V]]) = 
-    new ResultOfCollectedGenMap(AtLeastCollected(num), xs)
-  
   def every[T](xs: scala.collection.GenTraversable[T]): ResultOfCollectedAny[T] = 
     new ResultOfCollectedAny(EveryCollected, xs)
   
   def every(xs: scala.collection.GenTraversable[String]): ResultOfCollectedString = 
     new ResultOfCollectedString(EveryCollected, xs)
-  
-  def every[K, V](xs: scala.collection.GenTraversable[scala.collection.GenMap[K, V]]) = 
-    new ResultOfCollectedGenMap(EveryCollected, xs)
   
   def exactly[T](num: Int, xs: scala.collection.GenTraversable[T]): ResultOfCollectedAny[T] = 
     new ResultOfCollectedAny(ExactlyCollected(num), xs)
@@ -5378,17 +5093,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   def exactly(num: Int, xs: scala.collection.GenTraversable[String]): ResultOfCollectedString = 
     new ResultOfCollectedString(ExactlyCollected(num), xs)
   
-  def exactly[K, V](num: Int, xs: scala.collection.GenTraversable[scala.collection.GenMap[K, V]]) = 
-    new ResultOfCollectedGenMap(ExactlyCollected(num), xs)
-  
   def no[T](xs: scala.collection.GenTraversable[T]): ResultOfCollectedAny[T] =
     new ResultOfCollectedAny(NoCollected, xs)
 
   def no(xs: scala.collection.GenTraversable[String]): ResultOfCollectedString =
     new ResultOfCollectedString(NoCollected, xs)
-
-  def no[K, V](xs: scala.collection.GenTraversable[scala.collection.GenMap[K, V]]) =
-    new ResultOfCollectedGenMap(NoCollected, xs)
 
   def between[T](from: Int, upTo:Int, xs: scala.collection.GenTraversable[T]): ResultOfCollectedAny[T] =
     new ResultOfCollectedAny(BetweenCollected(from, upTo), xs)
@@ -5396,17 +5105,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   def between(from: Int, upTo:Int, xs: scala.collection.GenTraversable[String]): ResultOfCollectedString =
     new ResultOfCollectedString(BetweenCollected(from, upTo), xs)
 
-  def between[K, V](from: Int, upTo:Int, xs: scala.collection.GenTraversable[scala.collection.GenMap[K, V]]) =
-    new ResultOfCollectedGenMap(BetweenCollected(from, upTo), xs)
-
   def atMost[T](num: Int, xs: scala.collection.GenTraversable[T]): ResultOfCollectedAny[T] =
     new ResultOfCollectedAny(AtMostCollected(num), xs)
 
   def atMost(num: Int, xs: scala.collection.GenTraversable[String]): ResultOfCollectedString =
     new ResultOfCollectedString(AtMostCollected(num), xs)
-
-  def atMost[K, V](num: Int, xs: scala.collection.GenTraversable[scala.collection.GenMap[K, V]]) =
-    new ResultOfCollectedGenMap(AtMostCollected(num), xs)
 
   /**
    * This method enables the following syntax: 
@@ -6122,94 +5825,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       new RegexWithGroups(regex, IndexedSeq(groups: _*))
   }
 
-// TODO: Am I doing conversions on immutable.GenTraversable and immutable.GenSeq? If so, write a test that fails and make it general.
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * <p>
-   * This class is used in conjunction with an implicit conversion to enable <code>should</code> methods to
-   * be invoked on objects of type <code>scala.collection.GenMap[K, V]</code>.
-   * </p>
-   *
-   * @author Bill Venners
-   */
-  final class MapShouldWrapper[K, V, L[_, _] <: scala.collection.GenMap[_, _]](left: L[K, V]) extends AnyShouldWrapper(left) {
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * map should contain key (10)
-     *     ^
-     * </pre>
-     */
-    override def should(containWord: ContainWord): ResultOfContainWordForMap[K, V, L] = {
-      new ResultOfContainWordForMap(left.asInstanceOf[GenMap[K, V]], true)
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * map should not have size (3)
-     *     ^
-     * </pre>
-     */
-    override def should(notWord: NotWord): ResultOfNotWordForGenMap[K, V, L] = {
-      new ResultOfNotWordForGenMap(left.asInstanceOf[L[K, V]], false)
-    }
-  }
-
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * <p>
-   * This class is used in conjunction with an implicit conversion to enable <code>should</code> methods to
-   * be invoked on objects of type <code>java.util.Map[K, V]</code>.
-   * </p>
-   *
-   * @author Bill Venners
-   */
-  final class JavaMapShouldWrapper[K, V, L[_, _] <: java.util.Map[_, _]](left: L[K, V]) extends AnyShouldWrapper(left) {
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * javaMap should contain value (3)
-     *         ^
-     * </pre>
-     */
-    override def should(containWord: ContainWord): ResultOfContainWordForJavaMap[K, V, L] = {
-      new ResultOfContainWordForJavaMap(left, true)
-    }
- 
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * javaMap should not have length (3)
-     *         ^
-     * </pre>
-     */
-    override def should(notWord: NotWord): ResultOfNotWordForJavaMap[K, V, L] = {
-      new ResultOfNotWordForJavaMap[K, V, L](left, false)
-    }
-  }
-
   /**
    * Implicitly converts an object of type <code>T</code> to a <code>AnyShouldWrapper[T]</code>,
    * to enable <code>should</code> methods to be invokable on that object.
    */
   implicit def convertToAnyShouldWrapper[T](o: T): AnyShouldWrapper[T] = new AnyShouldWrapper(o)
-
-  /**
-   * Implicitly converts an object of type <code>scala.collection.GenMap[K, V]</code> to a <code>MapShouldWrapper[K, V]</code>,
-   * to enable <code>should</code> methods to be invokable on that object.
-   */
-  implicit def convertToMapShouldWrapper[K, V, L[_, _] <: scala.collection.GenMap[_, _]](o: L[K, V]): MapShouldWrapper[K, V, L] = new MapShouldWrapper[K, V, L](o)
 
   /**
    * Implicitly converts an object of type <code>java.lang.String</code> to a <code>StringShouldWrapper</code>,
@@ -6222,12 +5842,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * to enable <code>withGroup</code> and <code>withGroups</code> methods to be invokable on that object.
    */
   implicit def convertToRegexWrapper(o: Regex): RegexWrapper = new RegexWrapper(o)
-
-  /**
-   * Implicitly converts an object of type <code>java.util.Map[K, V]</code> to a <code>JavaMapShouldWrapper[K, V]</code>,
-   * to enable <code>should</code> methods to be invokable on that object.
-   */
-  implicit def convertToJavaMapShouldWrapper[K, V, L[_, _] <: java.util.Map[_, _]](o: L[K, V]): JavaMapShouldWrapper[K, V, L] = new JavaMapShouldWrapper[K, V, L](o) 
 
   def of[T]: ResultOfOfTypeInvocation[T] = new ResultOfOfTypeInvocation[T]
 }

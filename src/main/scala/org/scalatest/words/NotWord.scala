@@ -1058,18 +1058,6 @@ final class NotWord {
    *                                         ^
    * </pre>
    */
-  def contain[K](resultOfKeyWordApplication: ResultOfOldKeyWordApplication[K]): Matcher[scala.collection.GenMap[K, Any]] = {
-    val expectedKey = resultOfKeyWordApplication.expectedKey
-    new Matcher[scala.collection.GenMap[K, Any]] {
-      def apply(left: scala.collection.GenMap[K, Any]): MatchResult = {
-        MatchResult(
-          !(left.exists(_._1 == expectedKey)),
-          FailureMessages("containedKey", left, expectedKey),
-          FailureMessages("didNotContainKey", left, expectedKey)
-        )
-      }
-    }
-  }
   def contain(resultOfKeyWordApplication: ResultOfKeyWordApplication): MatcherFactory1[Any, KeyMapping] = {
     new MatcherFactory1[Any, KeyMapping] {
       def matcher[T](implicit keyMapping: KeyMapping[T]): Matcher[T] = {
@@ -1095,18 +1083,6 @@ final class NotWord {
    *                                         ^
    * </pre>
    */
-  def contain[K, V](resultOfValueWordApplication: ResultOfOldValueWordApplication[V]): Matcher[scala.collection.GenMap[K, V] forSome { type K }] = {
-    val expectedValue = resultOfValueWordApplication.expectedValue
-    new Matcher[scala.collection.GenMap[K, V] forSome { type K }] {
-      def apply(left: scala.collection.GenMap[K, V] forSome { type K }): MatchResult = {
-        MatchResult(
-          !(left.exists(_._2 == expectedValue)),
-          FailureMessages("containedValue", left, expectedValue),
-          FailureMessages("didNotContainValue", left, expectedValue)
-        )
-      }
-    }
-  }
   def contain(resultOfValueWordApplication: ResultOfValueWordApplication): MatcherFactory1[Any, ValueMapping] = {
     new MatcherFactory1[Any, ValueMapping] {
       def matcher[T](implicit valueMapping: ValueMapping[T]): Matcher[T] = {
