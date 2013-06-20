@@ -1407,36 +1407,6 @@ import Assertions.checkNoException
  */
 trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWords with Explicitly { matchers =>
 
-  // TODO: I think I'll be able to drop the next three implicit conversions after the enablers for contain are done.
-  /**
-   * This implicit conversion method enables the following syntax (<code>javaMap</code> is a <code>java.util.Map</code>):
-   *
-   * <pre class="stHighlight">
-   * javaMap should (contain key ("two"))
-   * </pre>
-   *
-   * The <code>(contain key ("two"))</code> expression will result in a <code>Matcher[scala.collection.GenMap[String, Any]]</code>. This
-   * implicit conversion method will convert that matcher to a <code>Matcher[java.util.Map[String, Any]]</code>.
-   */
-/*
-  implicit def convertMapMatcherToJavaMapMatcher[K, V](mapMatcher: Matcher[scala.collection.GenMap[K, V]]): Matcher[java.util.Map[K, V]] =
-    new Matcher[java.util.Map[K, V]] {
-      def apply(left: java.util.Map[K, V]): MatchResult = 
-        mapMatcher.apply(new JavaMapWrapper(left))
-    }
-*/
-
-  // Ack. The above conversion doesn't apply to java.util.Maps, because java.util.Map is not a subinterface
-  // of java.util.Collection. But right now Matcher[Traversable] supports only "contain" and "have size"
-  // syntax, and thus that should work on Java maps too, why not. Well I'll tell you why not. It is too complicated.
-  // Since java Map is not a java Collection, I'll say the contain syntax doesn't work on it. But you can say
-  // have key.
-
-// The getLength and getSize field conversions seem inconsistent with
-// what I do in symbol HavePropertyMatchers. It isn't, though because the difference is here
-// it's a Scala field and there a Java field: a val getLength is a 
-// perfectly valid Scala way to get a JavaBean property Java method in the bytecodes.
-
   // This guy is generally done through an implicit conversion from a symbol. It takes that symbol, and 
   // then represents an object with an apply method. So it gives an apply method to symbols.
   // book should have ('author ("Gibson"))
@@ -2585,6 +2555,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    */
   def message(expectedMessage: String) = new ResultOfMessageWordApplication(expectedMessage)
   
+/*
   // For safe keeping
   private implicit def nodeToCanonical(node: scala.xml.Node) = new Canonicalizer(node)
 
@@ -2605,6 +2576,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       }
     }
   }
+*/
 
 /*
   class AType[T : ClassManifest] {
