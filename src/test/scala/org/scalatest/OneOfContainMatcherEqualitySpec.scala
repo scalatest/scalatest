@@ -43,12 +43,29 @@ class OneOfContainMatcherEqualitySpec extends Spec with Matchers with Explicitly
       }
   }
   
+  class JavaMapTrimEquality extends Equality[java.util.Map.Entry[Int, String]] {
+    def areEqual(left: java.util.Map.Entry[Int, String], right: Any) = 
+      right match {
+        case entry: java.util.Map.Entry[_, _] =>  
+          left.getKey == entry.getKey && 
+          left.getValue.trim == (entry.getValue match {
+            case s: String => s.trim
+            case other => other
+          })
+        case right => left == right
+      }
+  }
+  
   class FalseEquality extends Equality[Int] {
     def areEqual(left: Int, right: Any): Boolean = false
   }
   
   class MapFalseEquality extends Equality[(Int, String)] {
     def areEqual(left: (Int, String), right: Any): Boolean = false
+  }
+  
+  class JavaMapFalseEquality extends Equality[java.util.Map.Entry[Int, String]] {
+    def areEqual(left: java.util.Map.Entry[Int, String], right: Any): Boolean = false
   }
   
   object `oneOf ` {
@@ -77,7 +94,9 @@ class OneOfContainMatcherEqualitySpec extends Spec with Matchers with Explicitly
         
       implicit val mapEquality = new MapTrimEquality
       Map(1 -> "one", 2 -> " two", 3 -> "three") should contain oneOf (2 -> "two", 6 -> "six", 8 -> "eight")
-      javaMap(1 -> "one", 2 -> " two", 3 -> "three") should contain oneOf (2 -> "two", 6 -> "six", 8 -> "eight")
+      
+      implicit val javaMapEquality = new JavaMapTrimEquality
+      javaMap(1 -> "one", 2 -> " two", 3 -> "three") should contain oneOf (Entry(2, "two"), Entry(6, "six"), Entry(8, "eight"))
     }
     
     def `should take custom implicit equality in scope when 'should not contain' is used` {
@@ -90,7 +109,9 @@ class OneOfContainMatcherEqualitySpec extends Spec with Matchers with Explicitly
       
       implicit val mapEquality = new MapFalseEquality
       Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain oneOf (1 -> "one", 2 -> "two", 3 -> "three")
-      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain oneOf (1 -> "one", 2 -> "two", 3 -> "three")
+      
+      implicit val javaMapEquality = new JavaMapFalseEquality
+      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain oneOf (Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
     }
     
     def `should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with custom implicit equality in scope` {
@@ -128,11 +149,13 @@ class OneOfContainMatcherEqualitySpec extends Spec with Matchers with Explicitly
       }
       checkShouldContainStackDepth(e5, left5, Array(1 -> "one", 6 -> "six", 8 -> "eight").deep, thisLineNumber - 2)
       
+      implicit val javaMapEquality = new JavaMapFalseEquality
+      
       val left6 = javaMap(1 -> "one", 2 -> "two", 3 -> "three")
       val e6 = intercept[exceptions.TestFailedException] {
-        left6 should contain oneOf (1 -> "one", 6 -> "six", 8 -> "eight")
+        left6 should contain oneOf (Entry(1, "one"), Entry(6, "six"), Entry(8, "eight"))
       }
-      checkShouldContainStackDepth(e6, left6, Array(1 -> "one", 6 -> "six", 8 -> "eight").deep, thisLineNumber - 2)
+      checkShouldContainStackDepth(e6, left6, Array(Entry(1, "one"), Entry(6, "six"), Entry(8, "eight")).deep, thisLineNumber - 2)
     }
     
     def `should throw TestFailedException with correct stack depth and message when 'should not contain custom matcher' failed with custom implicit equality in scope` {
@@ -169,12 +192,14 @@ class OneOfContainMatcherEqualitySpec extends Spec with Matchers with Explicitly
         left5 should not contain oneOf (2 -> "two ", 6 -> "six", 8 -> "eight")
       }
       checkShouldNotContainStackDepth(e5, left5, Array(2 -> "two ", 6 -> "six", 8 -> "eight").deep, thisLineNumber - 2)
-        
+      
+      implicit val javaMapEquality = new JavaMapTrimEquality
+      
       val left6 = javaMap(1 -> "one", 2 -> " two", 3 -> "three")
       val e6 = intercept[exceptions.TestFailedException] {
-        left6 should not contain oneOf (2 -> "two ", 6 -> "six", 8 -> "eight")
+        left6 should not contain oneOf (Entry(2, "two "), Entry(6, "six"), Entry(8, "eight"))
       }
-      checkShouldNotContainStackDepth(e6, left6, Array(2 -> "two ", 6 -> "six", 8 -> "eight").deep, thisLineNumber - 2)
+      checkShouldNotContainStackDepth(e6, left6, Array(Entry(2, "two "), Entry(6, "six"), Entry(8, "eight")).deep, thisLineNumber - 2)
     }
     
     def `should take passed in custom explicit equality when 'should contain' is used` {
@@ -186,7 +211,9 @@ class OneOfContainMatcherEqualitySpec extends Spec with Matchers with Explicitly
        
       implicit val mapEquality = new MapTrimEquality
       (Map(1 -> "one", 2 -> " two", 3 -> "three") should contain oneOf (2 -> "two ", 6 -> "six", 8 -> "eight")) (mapEquality)
-      (javaMap(1 -> "one", 2 -> " two", 3 -> "three") should contain oneOf (2 -> "two ", 6 -> "six", 8 -> "eight")) (mapEquality)
+      
+      implicit val javaMapEquality = new JavaMapTrimEquality
+      (javaMap(1 -> "one", 2 -> " two", 3 -> "three") should contain oneOf (Entry(2, "two "), Entry(6, "six"), Entry(8, "eight"))) (javaMapEquality)
     }
     
     def `should take passed in custom explicit equality when 'should not contain' is used` {
@@ -198,7 +225,9 @@ class OneOfContainMatcherEqualitySpec extends Spec with Matchers with Explicitly
         
       implicit val mapEquality = new MapFalseEquality
       (Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain oneOf (1 -> "one", 2 -> "two", 3 -> "three")) (mapEquality)
-      (javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain oneOf (1 -> "one", 2 -> "two", 3 -> "three")) (mapEquality)
+      
+      implicit val javaMapEquality = new JavaMapFalseEquality
+      (javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain oneOf (Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))) (javaMapEquality)
     }
     
     def `should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with custom explicit equality` {
@@ -236,11 +265,13 @@ class OneOfContainMatcherEqualitySpec extends Spec with Matchers with Explicitly
       }
       checkShouldContainStackDepth(e5, left5, Array(1 -> "one", 2 -> "two", 3 -> "three").deep, thisLineNumber - 2)
         
+      implicit val javaMapEquality = new JavaMapFalseEquality
+      
       val left6 = javaMap(1 -> "one", 2 -> "two", 3 -> "three")
       val e6 = intercept[exceptions.TestFailedException] {
-        (left6 should contain oneOf (1 -> "one", 2 -> "two", 3 -> "three")) (mapEquality)
+        (left6 should contain oneOf (Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))) (javaMapEquality)
       }
-      checkShouldContainStackDepth(e6, left6, Array(1 -> "one", 2 -> "two", 3 -> "three").deep, thisLineNumber - 2)
+      checkShouldContainStackDepth(e6, left6, Array(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")).deep, thisLineNumber - 2)
     }
     
     def `should throw TestFailedException with correct stack depth and message when 'should not contain custom matcher' failed with custom explicit equality` {
@@ -277,12 +308,14 @@ class OneOfContainMatcherEqualitySpec extends Spec with Matchers with Explicitly
         (left5 should not contain oneOf (2 -> "two ", 6 -> "six", 8 -> "eight")) (mapEquality)
       }
       checkShouldNotContainStackDepth(e5, left5, Array(2 -> "two ", 6 -> "six", 8 -> "eight").deep, thisLineNumber - 2)
+      
+      implicit val javaMapEquality = new JavaMapTrimEquality
         
       val left6 = javaMap(1 -> "one", 2 -> " two", 3 -> "three")
       val e6 = intercept[exceptions.TestFailedException] {
-        (left6 should not contain oneOf (2 -> "two ", 6 -> "six", 8 -> "eight")) (mapEquality)
+        (left6 should not contain oneOf (Entry(2, "two "), Entry(6, "six"), Entry(8, "eight"))) (javaMapEquality)
       }
-      checkShouldNotContainStackDepth(e6, left6, Array(2 -> "two ", 6 -> "six", 8 -> "eight").deep, thisLineNumber - 2)
+      checkShouldNotContainStackDepth(e6, left6, Array(Entry(2, "two "), Entry(6, "six"), Entry(8, "eight")).deep, thisLineNumber - 2)
     }
   }
 }

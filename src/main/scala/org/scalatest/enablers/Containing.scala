@@ -312,24 +312,23 @@ object Containing {
   implicit def convertEqualityToStringContaining(equality: Equality[Char]): Containing[String] = 
     containingNatureOfString(equality)
     
-  implicit def containingNatureOfJavaMap[K, V, JMAP[_, _] <: java.util.Map[_, _]](implicit equality: Equality[(K, V)]): Containing[JMAP[K, V]] = 
+  implicit def containingNatureOfJavaMap[K, V, JMAP[_, _] <: java.util.Map[_, _]](implicit equality: Equality[java.util.Map.Entry[K, V]]): Containing[JMAP[K, V]] = 
     new Containing[JMAP[K, V]] {
-      def contains(map: JMAP[K, V], ele: Any): Boolean = {
-        import scala.collection.JavaConverters._
-        map.asInstanceOf[java.util.Map[K, V]].asScala.exists((e: Any) => equality.areEqual(e.asInstanceOf[(K, V)], ele)) // Don't know why the compiler requires e to be type Any. Should be E.
-      }
       import scala.collection.JavaConverters._
+      def contains(map: JMAP[K, V], ele: Any): Boolean = {
+        map.asInstanceOf[java.util.Map[K, V]].entrySet.asScala.exists((e: java.util.Map.Entry[K, V]) => equality.areEqual(e, ele))
+      }
       def containsOneOf(map: JMAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
-        val (foundSet, processedSet) = checkOneOf[(K, V)](map.asInstanceOf[java.util.Map[K, V]].asScala, elements, equality)
+        val (foundSet, processedSet) = checkOneOf[java.util.Map.Entry[K, V]](map.asInstanceOf[java.util.Map[K, V]].entrySet.asScala, elements, equality)
         foundSet.size == 1
       }
       def containsNoneOf(map: JMAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
-        val (found, processedSet) = checkNoneOf[(K, V)](map.asInstanceOf[java.util.Map[K, V]].asScala, elements, equality)
+        val (found, processedSet) = checkNoneOf[java.util.Map.Entry[K, V]](map.asInstanceOf[java.util.Map[K, V]].entrySet.asScala, elements, equality)
         !found.isDefined
       }
     }
 
-  implicit def convertEqualityToJavaMapContaining[K, V, JMAP[_, _] <: java.util.Map[_, _]](equality: Equality[(K, V)]): Containing[JMAP[K, V]] = 
+  implicit def convertEqualityToJavaMapContaining[K, V, JMAP[_, _] <: java.util.Map[_, _]](equality: Equality[java.util.Map.Entry[K, V]]): Containing[JMAP[K, V]] = 
     containingNatureOfJavaMap(equality)
 }
 

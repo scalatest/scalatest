@@ -35,6 +35,22 @@ class TheSameElementsAsContainMatcherDeciderSpec extends Spec with Matchers with
       def normalized(s: (Int, String)): (Int, String) = (s._1, s._2.trim)
     }
   
+  val javaMapTrimmed: Normalization[java.util.Map.Entry[Int, String]] =
+    new Normalization[java.util.Map.Entry[Int, String]] {
+
+      def normalizedIfInstanceOfA(b: Any) = 
+        b match {
+          case entry: java.util.Map.Entry[_, _] => 
+            (entry.getKey, entry.getValue) match {
+              case (k: Int, v: String) => normalized(Entry(k, v))
+              case _ => b
+            }
+          case _ => b
+        }
+
+      def normalized(s: java.util.Map.Entry[Int, String]): java.util.Map.Entry[Int, String] = Entry(s.getKey, s.getValue.trim)
+    }
+  
   val incremented: Normalization[Int] = 
     new Normalization[Int] {
       var count = 0
@@ -55,13 +71,32 @@ class TheSameElementsAsContainMatcherDeciderSpec extends Spec with Matchers with
       var count = 0
       def normalizedIfInstanceOfA(b: Any) = 
         b match {
-          case tup: (Int, String) => normalized(tup)
+          case (k: Int, v: String) => normalized(b.asInstanceOf[(Int, String)])
           case _ => b
         }
     
       def normalized(s: (Int, String)): (Int, String) = {
         count += 1
         (s._1 + count, s._2)
+      }
+    }
+  
+  val javaMapIncremented: Normalization[java.util.Map.Entry[Int, String]] = 
+    new Normalization[java.util.Map.Entry[Int, String]] {
+      var count = 0
+      def normalizedIfInstanceOfA(b: Any) = 
+        b match {
+          case entry: java.util.Map.Entry[_, _] => 
+            (entry.getKey, entry.getValue) match {
+              case (k: Int, v: String) => normalized(Entry(k, v))
+              case _ => b
+            }
+          case _ => b
+        }
+    
+      def normalized(s: java.util.Map.Entry[Int, String]): java.util.Map.Entry[Int, String] = {
+        count += 1
+        Entry(s.getKey + count, s.getValue)
       }
     }
   
@@ -88,6 +123,20 @@ class TheSameElementsAsContainMatcherDeciderSpec extends Spec with Matchers with
       }
     }
   
+  val javaMapLowerCaseEquality = 
+    new Equality[java.util.Map.Entry[Int, String]] {
+      def areEqual(left: java.util.Map.Entry[Int, String], right: Any) = 
+        right match {
+          case entry: java.util.Map.Entry[_, _] =>  
+            left.getKey == entry.getKey && 
+            left.getValue.toLowerCase == (entry.getValue match {
+              case s: String => s.toLowerCase
+              case other => other
+            })
+          case right => left == right
+      }
+    }
+  
   val reverseEquality = 
     new Equality[String] {
       def areEqual(left: String, right: Any) = 
@@ -104,6 +153,20 @@ class TheSameElementsAsContainMatcherDeciderSpec extends Spec with Matchers with
           case t2: Tuple2[_, _] =>  
             left._1 == t2._1 && 
             left._2.reverse == (t2._2 match {
+              case s: String => s.toLowerCase
+              case other => other
+            })
+          case right => left == right
+      }
+    }
+  
+  val javaMapReverseEquality = 
+    new Equality[java.util.Map.Entry[Int, String]] {
+      def areEqual(left: java.util.Map.Entry[Int, String], right: Any) = 
+        right match {
+          case entry: java.util.Map.Entry[_, _] =>  
+            left.getKey == entry.getKey && 
+            left.getValue.reverse == (entry.getValue match {
               case s: String => s.toLowerCase
               case other => other
             })
@@ -137,7 +200,7 @@ class TheSameElementsAsContainMatcherDeciderSpec extends Spec with Matchers with
       (javaSet("1 ", "2", "3 ") should contain theSameElementsAs List("1", "2 ", "3")) (after being trimmed)
         
       (Map(1 -> "one ", 2 -> "two", 3 -> "three ") should contain theSameElementsAs Map(1 -> "one", 2 -> "two ", 3 -> "three")) (after being mapTrimmed)
-      (javaMap(1 -> "one ", 2 -> "two", 3 -> "three ") should contain theSameElementsAs Map(1 -> "one", 2 -> "two ", 3 -> "three")) (after being mapTrimmed)
+      (javaMap(1 -> "one ", 2 -> "two", 3 -> "three ") should contain theSameElementsAs List(Entry(1, "one"), Entry(2, "two "), Entry(3, "three"))) (after being javaMapTrimmed)
     }
     
     def `should take specified normalization in scope when 'should not contain' is used` {
@@ -148,7 +211,7 @@ class TheSameElementsAsContainMatcherDeciderSpec extends Spec with Matchers with
       (javaSet(1, 2, 3) should not contain theSameElementsAs (List(1, 2, 3))) (after being incremented)
       
       (Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameElementsAs (Map(1 -> "one", 2 -> "two", 3 -> "three"))) (after being mapIncremented)
-      (javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameElementsAs (Map(1 -> "one", 2 -> "two", 3 -> "three"))) (after being mapIncremented)
+      (javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameElementsAs (List(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")))) (after being javaMapIncremented)
     }
     
     def `should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with specified normalization in scope` {
@@ -190,9 +253,9 @@ class TheSameElementsAsContainMatcherDeciderSpec extends Spec with Matchers with
       checkShouldContainStackDepth(e5, left5, right5, thisLineNumber - 2)
       
       val left6 = javaMap(1 -> "one", 2 -> "two", 3 -> "three")
-      val right6 = Map(1 -> "one", 2 -> "two", 3 -> "three")
+      val right6 = List(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val e6 = intercept[exceptions.TestFailedException] {
-        (left6 should contain theSameElementsAs right6) (after being mapIncremented)
+        (left6 should contain theSameElementsAs right6) (after being javaMapIncremented)
       }
       checkShouldContainStackDepth(e6, left6, right6, thisLineNumber - 2)
     }
@@ -235,9 +298,9 @@ class TheSameElementsAsContainMatcherDeciderSpec extends Spec with Matchers with
       checkShouldNotContainStackDepth(e5, left5, right5, thisLineNumber - 2)
         
       val left6 = javaMap(1 -> "one ", 2 -> "two", 3 -> " three")
-      val right6 = Map(1 -> "one", 2 -> "two ", 3 -> "three")
+      val right6 = List(Entry(1, "one"), Entry(2, "two "), Entry(3, "three"))
       val e6 = intercept[exceptions.TestFailedException] {
-        (left6 should not contain theSameElementsAs (right6)) (after being mapTrimmed)
+        (left6 should not contain theSameElementsAs (right6)) (after being javaMapTrimmed)
       }
       checkShouldNotContainStackDepth(e6, left6, right6, thisLineNumber - 2)
     }
@@ -250,7 +313,7 @@ class TheSameElementsAsContainMatcherDeciderSpec extends Spec with Matchers with
       (javaList("A ", "B", " C") should contain theSameElementsAs List("a", "b ", "c")) (decided by lowerCaseEquality afterBeing trimmed)
        
       (Map(1 -> "ONE ", 2 -> "TWO", 3 -> " THREE") should contain theSameElementsAs Map(1 -> "one", 2 -> " two", 3 -> "three")) (decided by mapLowerCaseEquality afterBeing mapTrimmed)
-      (javaMap(1 -> "ONE ", 2 -> "TWO", 3 -> " THREE") should contain theSameElementsAs Map(1 -> "one", 2 -> " two", 3 -> "three")) (decided by mapLowerCaseEquality afterBeing mapTrimmed)
+      (javaMap(1 -> "ONE ", 2 -> "TWO", 3 -> " THREE") should contain theSameElementsAs List(Entry(1, "one"), Entry(2, " two"), Entry(3, "three"))) (decided by javaMapLowerCaseEquality afterBeing javaMapTrimmed)
     }
       
     def `should take specified explicit equality and normalization when 'should not contain' is used` {
@@ -261,7 +324,7 @@ class TheSameElementsAsContainMatcherDeciderSpec extends Spec with Matchers with
       (javaList("one ", " two", "three ") should not contain theSameElementsAs (List(" one", "two ", " three"))) (decided by reverseEquality afterBeing trimmed)
         
       (Map(1 -> "one ", 2 -> " two", 3 -> "three ") should not contain theSameElementsAs (Map(1 -> " one", 2 -> "two ", 3 -> " three"))) (mapReverseEquality)
-      (javaMap(1 -> "one ", 2 -> " two", 3 -> "three ") should not contain theSameElementsAs (Map(1 -> " one", 2 -> "two ", 3 -> " three"))) (mapReverseEquality)
+      (javaMap(1 -> "one ", 2 -> " two", 3 -> "three ") should not contain theSameElementsAs (List(Entry(1, " one"), Entry(2, "two "), Entry(3, " three")))) (javaMapReverseEquality)
     }
     
     def `should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with specified equality and normalization` {
@@ -302,9 +365,9 @@ class TheSameElementsAsContainMatcherDeciderSpec extends Spec with Matchers with
       checkShouldContainStackDepth(e5, left5, right5, thisLineNumber - 2)
         
       val left6 = javaMap(1 -> "one ", 2 -> " two", 3 -> "three ")
-      val right6 = Map(1 -> " one", 2 -> "two ", 3 -> " three")
+      val right6 = List(Entry(1, " one"), Entry(2, "two "), Entry(3, " three"))
       val e6 = intercept[exceptions.TestFailedException] {
-        (left6 should contain theSameElementsAs right6) (decided by mapReverseEquality afterBeing mapTrimmed)
+        (left6 should contain theSameElementsAs right6) (decided by javaMapReverseEquality afterBeing javaMapTrimmed)
       }
       checkShouldContainStackDepth(e6, left6, right6, thisLineNumber - 2)
     }
@@ -347,9 +410,9 @@ class TheSameElementsAsContainMatcherDeciderSpec extends Spec with Matchers with
       checkShouldNotContainStackDepth(e5, left5, right5, thisLineNumber - 2)
         
       val left6 = javaMap(1 -> "ONE ", 2 -> "TWO", 3 -> " THREE ")
-      val right6 = Map(1 -> "one", 2 -> " two", 3 -> "three ")
+      val right6 = List(Entry(1, "one"), Entry(2, " two"), Entry(3, "three "))
       val e6 = intercept[exceptions.TestFailedException] {
-        (left6 should not contain theSameElementsAs (right6)) (decided by mapLowerCaseEquality afterBeing mapTrimmed)
+        (left6 should not contain theSameElementsAs (right6)) (decided by javaMapLowerCaseEquality afterBeing javaMapTrimmed)
       }
       checkShouldNotContainStackDepth(e6, left6, right6, thisLineNumber - 2)
     }

@@ -38,7 +38,7 @@ class OnlyContainMatcherSpec extends Spec with Matchers {
       javaSet(1, 2, 2, 3, 3, 3) should contain only (1, 2, 3)
       
       Map(1 -> "one", 2 -> "two", 3 -> "three") should contain only (1 -> "one", 2 -> "two", 3 -> "three")
-      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should contain only (1 -> "one", 2 -> "two", 3 -> "three")
+      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should contain only (Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
     }
     
     def `should throw TestFailedException with correct stack depth and message when left list contains part of right list` {
@@ -80,9 +80,9 @@ class OnlyContainMatcherSpec extends Spec with Matchers {
       
       val left7 = javaMap(1 -> "one", 2 -> "two", 3 -> "three")
       val e7 = intercept[TestFailedException] {
-        left7 should contain only (1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four", 5 -> "five")
+        left7 should contain only (Entry(1, "one"), Entry(2, "two"), Entry(3, "three"), Entry(4, "four"), Entry(5, "five"))
       }
-      checkStackDepth(e7, left7, Array(1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four", 5 -> "five").deep, thisLineNumber - 2)
+      checkStackDepth(e7, left7, Array(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"), Entry(4, "four"), Entry(5, "five")).deep, thisLineNumber - 2)
     }
     
     def `should throw IllegalArgumentException when only contains duplicate element` {
@@ -123,9 +123,9 @@ class OnlyContainMatcherSpec extends Spec with Matchers {
       
       val left4 = javaMap(1 -> "one", 2 -> "two", 3 -> "three")
       val e4 = intercept[exceptions.TestFailedException] {
-        left4 should contain only (1 -> "one", 2 -> "two")
+        left4 should contain only (Entry(1, "one"), Entry(2, "two"))
       }
-      checkStackDepth(e4, left4, Array(1 -> "one", 2 -> "two"), thisLineNumber - 2)
+      checkStackDepth(e4, left4, Array(Entry(1, "one"), Entry(2, "two")), thisLineNumber - 2)
       
       val left5 = Array(1, 2, 3)
       val e5 = intercept[exceptions.TestFailedException] {
@@ -153,7 +153,7 @@ class OnlyContainMatcherSpec extends Spec with Matchers {
       javaSet(1, 2, 3) should not contain only (1, 2)
       
       Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain only (1 -> "one", 2 -> "two")
-      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain only (1 -> "one", 2 -> "two")
+      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain only (Entry(1, "one"), Entry(2, "two"))
     }
     
     def `should throw TestFailedException with correct stack depth and message when left List contains only element in right List in same order` {
@@ -177,9 +177,9 @@ class OnlyContainMatcherSpec extends Spec with Matchers {
       
       val left4 = javaMap(1 -> "one", 2 -> "two", 3 -> "three")
       val e4 = intercept[exceptions.TestFailedException] {
-        left4 should not contain only (1 -> "one", 2 -> "two", 3 -> "three")
+        left4 should not contain only (Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       }
-      checkStackDepth(e4, left4, Array(1 -> "one", 2 -> "two", 3 -> "three"), thisLineNumber - 2)
+      checkStackDepth(e4, left4, Array(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")), thisLineNumber - 2)
       
       val left5 = Array(1, 2, 3)
       val e5 = intercept[exceptions.TestFailedException] {
@@ -209,9 +209,9 @@ class OnlyContainMatcherSpec extends Spec with Matchers {
       
       val left4 = javaMap(1 -> "one", 2 -> "two", 3 -> "three")
       val e4 = intercept[exceptions.TestFailedException] {
-        left4 should not contain only (3 -> "three", 2 -> "two", 1 -> "one")
+        left4 should not contain only (Entry(3, "three"), Entry(2, "two"), Entry(1, "one"))
       }
-      checkStackDepth(e4, left4, Array(3 -> "three", 2 -> "two", 1 -> "one"), thisLineNumber - 2)
+      checkStackDepth(e4, left4, Array(Entry(3, "three"), Entry(2, "two"), Entry(1, "one")), thisLineNumber - 2)
       
       val left5 = Array(1, 2, 3)
       val e5 = intercept[exceptions.TestFailedException] {

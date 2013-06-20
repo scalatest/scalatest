@@ -30,6 +30,11 @@ class ListShouldContainInOrderSpec extends Spec with Matchers {
       case s: String => s.toUpperCase
       case c: Char => c.toString.toUpperCase.charAt(0)
       case (s1: String, s2: String) => (s1.toUpperCase, s2.toUpperCase)
+      case e: java.util.Map.Entry[_, _] => 
+        (e.getKey, e.getValue) match {
+          case (k: String, v: String) => Entry(k.toUpperCase, v.toUpperCase)
+          case _ => value
+        }
       case _ => value
     }
 

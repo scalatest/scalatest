@@ -293,10 +293,10 @@ object Aggregating {
   implicit def convertEqualityToJavaCollectionAggregating[E, JCOL[_] <: java.util.Collection[_]](equality: Equality[E]): Aggregating[JCOL[E]] = 
     aggregatingNatureOfJavaCollection(equality)
     
-  implicit def aggregatingNatureOfJavaMap[K, V, JMAP[_, _] <: java.util.Map[_, _]](implicit equality: Equality[(K, V)]): Aggregating[JMAP[K, V]] = 
+  implicit def aggregatingNatureOfJavaMap[K, V, JMAP[_, _] <: java.util.Map[_, _]](implicit equality: Equality[java.util.Map.Entry[K, V]]): Aggregating[JMAP[K, V]] = 
     new Aggregating[JMAP[K, V]] {
       // This is needed as asScala does not preserve the original iterated order
-      private def getScalaMapInOrder(javaMap: JMAP[K, V]): scala.collection.GenMap[K, V] = {
+      /*private def getScalaMapInOrder(javaMap: JMAP[K, V]): scala.collection.GenMap[K, V] = {
         val map = new collection.mutable.LinkedHashMap[K, V]
         val itr = javaMap.entrySet.iterator
         while (itr.hasNext) {
@@ -304,22 +304,27 @@ object Aggregating {
           map += ((entry.getKey.asInstanceOf[K], entry.getValue.asInstanceOf[V]))
         }
         map
-      }
+      }*/
     
+      import scala.collection.JavaConverters._
       def containsAtLeastOneOf(map: JMAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
-        getScalaMapInOrder(map).exists((e: Any) => elements.exists((ele: Any) => equality.areEqual(e.asInstanceOf[(K, V)], ele)))
+        //getScalaMapInOrder(map).exists((e: Any) => elements.exists((ele: Any) => equality.areEqual(e.asInstanceOf[(K, V)], ele)))
+        map.asInstanceOf[java.util.Map[K, V]].entrySet.asScala.exists((e: java.util.Map.Entry[K, V]) => elements.exists((ele: Any) => equality.areEqual(e, ele)))
       }
       def containsTheSameElementsAs(map: JMAP[K, V], elements: GenTraversable[Any]): Boolean = {
-        checkTheSameElementsAs(getScalaMapInOrder(map), elements, equality)
+        //checkTheSameElementsAs(getScalaMapInOrder(map), elements, equality)
+        checkTheSameElementsAs(map.asInstanceOf[java.util.Map[K, V]].entrySet.asScala, elements, equality)
       }
       def containsOnly(map: JMAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
-        checkOnly(getScalaMapInOrder(map), elements, equality)
+        //checkOnly(getScalaMapInOrder(map), elements, equality)
+        checkOnly(map.asInstanceOf[java.util.Map[K, V]].entrySet.asScala, elements, equality)
       }
       def containsAllOf(map: JMAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
-        checkAllOf(getScalaMapInOrder(map), elements, equality)
+        //checkAllOf(getScalaMapInOrder(map), elements, equality)
+        checkAllOf(map.asInstanceOf[java.util.Map[K, V]].entrySet.asScala, elements, equality)
       }
     }
 
-  implicit def convertEqualityToJavaMapAggregating[K, V, JMAP[_, _] <: java.util.Map[_, _]](equality: Equality[(K, V)]): Aggregating[JMAP[K, V]] = 
+  implicit def convertEqualityToJavaMapAggregating[K, V, JMAP[_, _] <: java.util.Map[_, _]](equality: Equality[java.util.Map.Entry[K, V]]): Aggregating[JMAP[K, V]] = 
     aggregatingNatureOfJavaMap(equality)
 }
