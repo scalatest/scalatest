@@ -5621,13 +5621,13 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def shouldBe(right: T) {
+    def shouldBe(right: Any) {
       if (!areEqualComparingArraysStructurally(left, right)) {
         val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)
         throw newTestFailedException(FailureMessages("wasNotEqualTo", leftee, rightee))
       }
     }
-    
+
     /**
      * This method enables syntax such as the following:
      *
@@ -5958,7 +5958,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    *
    * @author Bill Venners
    */
-  final class StringShouldWrapper(val left: String) extends AnyShouldWrapper(left) with StringShouldWrapperForVerb {
+  final class StringShouldWrapper(val leftSideValue: String) extends AnyShouldWrapper(leftSideValue) with StringShouldWrapperForVerb {
 
     /**
      * This method enables syntax such as the following:
@@ -5969,7 +5969,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(includeWord: IncludeWord): ResultOfIncludeWordForString = {
-      new ResultOfIncludeWordForString(left, true)
+      new ResultOfIncludeWordForString(leftSideValue, true)
     }
 
     /**
@@ -5981,7 +5981,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(startWithWord: StartWithWord): ResultOfStartWithWordForString = {
-      new ResultOfStartWithWordForString(left, true)
+      new ResultOfStartWithWordForString(leftSideValue, true)
     }
 
     /**
@@ -5993,7 +5993,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(endWithWord: EndWithWord): ResultOfEndWithWordForString = {
-      new ResultOfEndWithWordForString(left, true)
+      new ResultOfEndWithWordForString(leftSideValue, true)
     }
 
     /**
@@ -6005,7 +6005,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(fullyMatchWord: FullyMatchWord): ResultOfFullyMatchWordForString = {
-      new ResultOfFullyMatchWordForString(left, true)
+      new ResultOfFullyMatchWordForString(leftSideValue, true)
     }
 
     /**
@@ -6017,7 +6017,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     override def should(notWord: NotWord): ResultOfNotWordForString = {
-      new ResultOfNotWordForString(left, false)
+      new ResultOfNotWordForString(leftSideValue, false)
     }
 
     /**
@@ -6029,7 +6029,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def withGroup(group: String) = 
-      new RegexWithGroups(left.r, IndexedSeq(group))
+      new RegexWithGroups(leftSideValue.r, IndexedSeq(group))
 
     /**
      * This method enables syntax such as the following:
@@ -6040,7 +6040,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def withGroups(groups: String*) = 
-      new RegexWithGroups(left.r, IndexedSeq(groups: _*))
+      new RegexWithGroups(leftSideValue.r, IndexedSeq(groups: _*))
 
     /**
      * This method enables syntax such as the following:
@@ -6051,7 +6051,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldNot(fullyMatchWord: FullyMatchWord): ResultOfFullyMatchWordForString = 
-      new ResultOfFullyMatchWordForString(left, false)
+      new ResultOfFullyMatchWordForString(leftSideValue, false)
 
     /**
      * This method enables syntax such as the following:
@@ -6062,7 +6062,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldNot(startWithWord: StartWithWord): ResultOfStartWithWordForString = 
-      new ResultOfStartWithWordForString(left, false)
+      new ResultOfStartWithWordForString(leftSideValue, false)
 
     /**
      * This method enables syntax such as the following:
@@ -6073,7 +6073,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldNot(endWithWord: EndWithWord): ResultOfEndWithWordForString = 
-      new ResultOfEndWithWordForString(left, false)
+      new ResultOfEndWithWordForString(leftSideValue, false)
 
     /**
      * This method enables syntax such as the following:
@@ -6084,7 +6084,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldNot(includeWord: IncludeWord): ResultOfIncludeWordForString = 
-      new ResultOfIncludeWordForString(left, false)
+      new ResultOfIncludeWordForString(leftSideValue, false)
   }
 
   /**

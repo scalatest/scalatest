@@ -116,7 +116,8 @@ trait ShouldVerb {
    */
   trait StringShouldWrapperForVerb {
 
-    val left: String
+    // Don't use "left" because that conflicts with Scalaz's left method on strings
+    val leftSideValue: String
 
     /**
      * Supports test registration in <code>FlatSpec</code> and <code>fixture.FlatSpec</code>.
@@ -134,12 +135,12 @@ trait ShouldVerb {
      * <p>
      * <code>FlatSpec</code> passes in a function via the implicit parameter that takes
      * three strings and results in a <code>ResultOfStringPassedToVerb</code>. This method
-     * simply invokes this function, passing in left, the verb string
+     * simply invokes this function, passing in leftSideValue, the verb string
      * <code>"should"</code>, and right, and returns the result.
      * </p>
      */
     def should(right: String)(implicit fun: (String, String, String) => ResultOfStringPassedToVerb): ResultOfStringPassedToVerb = {
-      fun(left, "should", right)
+      fun(leftSideValue, "should", right)
     }
 
     /**
@@ -158,11 +159,11 @@ trait ShouldVerb {
      * <p>
      * <code>FlatSpec</code> and <code>fixture.FlatSpec</code> passes in a function via the implicit parameter that takes
      * a string and results in a <code>BehaveWord</code>. This method
-     * simply invokes this function, passing in left, and returns the result.
+     * simply invokes this function, passing in leftSideValue, and returns the result.
      * </p>
      */
     def should(right: BehaveWord)(implicit fun: (String) => BehaveWord): BehaveWord = {
-      fun(left)
+      fun(leftSideValue)
     }
 
     /**
@@ -182,13 +183,13 @@ trait ShouldVerb {
      * <p>
      * <code>WordSpec</code> passes in a function via the implicit parameter of type <code>StringVerbBlockRegistration</code>,
      * a function that takes two strings and a no-arg function and results in <code>Unit</code>. This method
-     * simply invokes this function, passing in left, the verb string
+     * simply invokes this function, passing in leftSideValue, the verb string
      * <code>"should"</code>, and the right by-name parameter transformed into a
      * no-arg function.
      * </p>
      */
     def should(right: => Unit)(implicit fun: StringVerbBlockRegistration) {
-      fun(left, "should", right _)
+      fun(leftSideValue, "should", right _)
     }
 
     /**
@@ -210,12 +211,12 @@ trait ShouldVerb {
      * <p>
      * <code>WordSpec</code> passes in a function via the implicit parameter that takes
      * two strings and a <code>ResultOfAfterWordApplication</code> and results in <code>Unit</code>. This method
-     * simply invokes this function, passing in left, the verb string
+     * simply invokes this function, passing in leftSideValue, the verb string
      * <code>"should"</code>, and the <code>ResultOfAfterWordApplication</code> passed to <code>should</code>.
      * </p>
      */
     def should(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit fun: (String, String, ResultOfAfterWordApplication) => Unit) {
-      fun(left, "should", resultOfAfterWordApplication)
+      fun(leftSideValue, "should", resultOfAfterWordApplication)
     }
   }
 
@@ -225,6 +226,6 @@ trait ShouldVerb {
    */
   implicit def convertToStringShouldWrapper(o: String): StringShouldWrapperForVerb =
     new StringShouldWrapperForVerb {
-      val left = o.trim
+      val leftSideValue = o.trim
     }
 }
