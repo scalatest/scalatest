@@ -41,16 +41,48 @@ class OnlyContainMatcherSpec extends Spec with Matchers {
       javaMap(1 -> "one", 2 -> "two", 3 -> "three") should contain only (1 -> "one", 2 -> "two", 3 -> "three")
     }
     
-    def `should succeeded when left list contains part of right list` {
-      List(1, 2, 2, 3, 3, 3) should contain only (1, 2, 3, 4, 5)
-      Array(1, 2, 2, 3, 3, 3) should contain only (1, 2, 3, 4, 5)
-      javaList(1, 2, 2, 3, 3, 3) should contain only (1, 2, 3, 4, 5)
+    def `should throw TestFailedException with correct stack depth and message when left list contains part of right list` {
+      val left1 = List(1, 2, 2, 3, 3, 3)
+      val e1 = intercept[TestFailedException] {
+        left1 should contain only (1, 2, 3, 4, 5)
+      }
+      checkStackDepth(e1, left1, Array(1, 2, 3, 4, 5).deep, thisLineNumber - 2)
       
-      Set(1, 2, 2, 3, 3, 3) should contain only (1, 2, 3, 4, 5)
-      javaSet(1, 2, 2, 3, 3, 3) should contain only (1, 2, 3, 4, 5)
+      val left2 = Array(1, 2, 2, 3, 3, 3)
+      val e2 = intercept[TestFailedException] {
+        left2 should contain only (1, 2, 3, 4, 5)
+      }
+      checkStackDepth(e2, left2, Array(1, 2, 3, 4, 5).deep, thisLineNumber - 2)
       
-      Map(1 -> "one", 2 -> "two", 3 -> "three") should contain only (1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four", 5 -> "five")
-      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should contain only (1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four", 5 -> "five")
+      val left3 = javaList(1, 2, 2, 3, 3, 3)
+      val e3 = intercept[TestFailedException] {
+        left3 should contain only (1, 2, 3, 4, 5)
+      }
+      checkStackDepth(e3, left3, Array(1, 2, 3, 4, 5).deep, thisLineNumber - 2)
+      
+      val left4 = Set(1, 2, 2, 3, 3, 3)
+      val e4 = intercept[TestFailedException] {
+        left4 should contain only (1, 2, 3, 4, 5)
+      }
+      checkStackDepth(e4, left4, Array(1, 2, 3, 4, 5).deep, thisLineNumber - 2)
+      
+      val left5 = javaSet(1, 2, 2, 3, 3, 3)
+      val e5 = intercept[TestFailedException] {
+        left5 should contain only (1, 2, 3, 4, 5)
+      }
+      checkStackDepth(e5, left5, Array(1, 2, 3, 4, 5).deep, thisLineNumber - 2)
+      
+      val left6 = Map(1 -> "one", 2 -> "two", 3 -> "three")
+      val e6 = intercept[TestFailedException] {
+        left6 should contain only (1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four", 5 -> "five")
+      }
+      checkStackDepth(e6, left6, Array(1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four", 5 -> "five").deep, thisLineNumber - 2)
+      
+      val left7 = javaMap(1 -> "one", 2 -> "two", 3 -> "three")
+      val e7 = intercept[TestFailedException] {
+        left7 should contain only (1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four", 5 -> "five")
+      }
+      checkStackDepth(e7, left7, Array(1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four", 5 -> "five").deep, thisLineNumber - 2)
     }
     
     def `should throw IllegalArgumentException when only contains duplicate element` {
