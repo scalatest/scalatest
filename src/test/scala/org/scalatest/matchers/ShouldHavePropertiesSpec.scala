@@ -24,6 +24,7 @@ import scala.reflect.BeanProperty
 import org.scalatest.exceptions.TestFailedException
 import enablers.Length
 import enablers.Size
+import enablers.Messaging
 
 // TODO: check not not and not not not to make sure those negative failure messages make sense.
 class ShouldHavePropertiesSpec extends Spec with ShouldMatchers with Checkers with ReturnsNormallyThrowsAssertion with BookPropertyMatchers {
@@ -578,6 +579,12 @@ hard to read. Better to have people pull things out and then just do a non-neste
         implicit val bookLength = new Size[Book] { def sizeOf(book: Book) = book.length }
         book should have (size (45) (of [Book]), title ("A Tale of Two Cities"))
         book should have (title ("A Tale of Two Cities"), size (45) (of [Book]))
+      }
+      def `should work with message and other have property matchers` {
+
+        implicit val bookMessaging = new Messaging[Book] { def messageOf(book: Book) = book.title.toUpperCase }
+        book should have (message ("A TALE OF TWO CITIES") (of [Book]), title ("A Tale of Two Cities"))
+        book should have (title ("A Tale of Two Cities"), message ("A TALE OF TWO CITIES") (of [Book]))
       }
 
       def `should work with size not a symbol without anything special, in case someone forgets you don't need the parens with size` {

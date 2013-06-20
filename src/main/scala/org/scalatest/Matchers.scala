@@ -2713,7 +2713,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                           ^
    * </pre>
    */
-  def message(expectedMessage: String) = new ResultOfMessageApplication(expectedMessage)
+  def message(expectedMessage: String) = new ResultOfMessageWordApplication(expectedMessage)
   
   // For safe keeping
   private implicit def nodeToCanonical(node: scala.xml.Node) = new Canonicalizer(node)

@@ -15,6 +15,10 @@
  */
 package org.scalatest.words
 
+import org.scalatest.enablers.Messaging
+import org.scalatest.matchers.HavePropertyMatcher
+import org.scalatest.matchers.HavePropertyMatchResult
+
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
  * the matchers DSL.
@@ -22,4 +26,20 @@ package org.scalatest.words
  * @author Bill Venners
  * @author Chee Seng
  */
-final class ResultOfMessageApplication(val expectedMessage: String)
+final class ResultOfMessageWordApplication(val expectedMessage: String) {
+
+  def apply[T : Messaging](resultOfOfTypeInvocation: ResultOfOfTypeInvocation[T]): HavePropertyMatcher[T, String] = {
+    new HavePropertyMatcher[T, String] {
+      def apply(t: T): HavePropertyMatchResult[String] = {
+        val messaging = implicitly[Messaging[T]]
+        val messageOfT = messaging.messageOf(t)
+        new HavePropertyMatchResult(
+          messageOfT == expectedMessage,
+          "message",
+           expectedMessage,
+           messageOfT
+        )
+      }
+    }
+  }
+}

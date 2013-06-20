@@ -452,12 +452,13 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
     }
   }
   
-  def have(resultOfMessageApplication: ResultOfMessageApplication)(implicit ev: T <:< Throwable) {
-    val right = resultOfMessageApplication.expectedMessage
-    if ((left.getMessage == right) != shouldBeTrue) {
+  def have(resultOfMessageWordApplication: ResultOfMessageWordApplication)(implicit messaging: Messaging[T]) {
+    val right = resultOfMessageWordApplication.expectedMessage
+    val actualMessage = messaging.messageOf(left)
+    if ((actualMessage == right) != shouldBeTrue) {
       throw newTestFailedException(
         if (shouldBeTrue)
-          FailureMessages("hadMessageInsteadOfExpectedMessage", left, left.getMessage, right)
+          FailureMessages("hadMessageInsteadOfExpectedMessage", left, actualMessage, right)
         else
           FailureMessages("hadExpectedMessage", left, right)
       )
