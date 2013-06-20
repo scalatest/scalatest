@@ -1058,7 +1058,7 @@ final class NotWord {
    *                                         ^
    * </pre>
    */
-  def contain[K](resultOfKeyWordApplication: ResultOfKeyWordApplication[K]): Matcher[scala.collection.GenMap[K, Any]] = {
+  def contain[K](resultOfKeyWordApplication: ResultOfOldKeyWordApplication[K]): Matcher[scala.collection.GenMap[K, Any]] = {
     val expectedKey = resultOfKeyWordApplication.expectedKey
     new Matcher[scala.collection.GenMap[K, Any]] {
       def apply(left: scala.collection.GenMap[K, Any]): MatchResult = {
@@ -1095,7 +1095,7 @@ final class NotWord {
    *                                         ^
    * </pre>
    */
-  def contain[K, V](resultOfValueWordApplication: ResultOfValueWordApplication[V]): Matcher[scala.collection.GenMap[K, V] forSome { type K }] = {
+  def contain[K, V](resultOfValueWordApplication: ResultOfOldValueWordApplication[V]): Matcher[scala.collection.GenMap[K, V] forSome { type K }] = {
     val expectedValue = resultOfValueWordApplication.expectedValue
     new Matcher[scala.collection.GenMap[K, V] forSome { type K }] {
       def apply(left: scala.collection.GenMap[K, V] forSome { type K }): MatchResult = {

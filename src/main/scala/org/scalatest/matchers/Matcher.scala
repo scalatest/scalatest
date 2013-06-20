@@ -47,8 +47,8 @@ import org.scalatest.words.ResultOfAnWordToBePropertyMatcherApplication
 import org.scalatest.words.ResultOfAnWordToAnMatcherApplication
 import org.scalatest.words.ResultOfTheSameInstanceAsApplication
 import org.scalatest.words.ResultOfRegexWordApplication
-import org.scalatest.words.ResultOfKeyWordApplication
-import org.scalatest.words.ResultOfValueWordApplication
+import org.scalatest.words.ResultOfOldKeyWordApplication
+import org.scalatest.words.ResultOfOldValueWordApplication
 import org.scalatest.words.RegexWithGroups
 import org.scalatest.words.ResultOfDefinedAt
 import org.scalatest.words.ResultOfOneOfApplication
@@ -641,8 +641,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                                                                     ^
      * </pre>
      */
-    def key[U](expectedElement: U): Matcher[T with scala.collection.GenMap[U, Any]] = outerInstance.and(MatcherWords.contain.key(expectedElement))
-    def newKey(expectedKey: Any): MatcherFactory1[T, KeyMapping] = outerInstance.and(MatcherWords.contain.newKey(expectedKey))
+    def oldKey[U](expectedElement: U): Matcher[T with scala.collection.GenMap[U, Any]] = outerInstance.and(MatcherWords.contain.oldKey(expectedElement))
+    def key(expectedKey: Any): MatcherFactory1[T, KeyMapping] = outerInstance.and(MatcherWords.contain.key(expectedKey))
 
     /**
      * This method enables the following syntax:
@@ -652,8 +652,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                                                                   ^
      * </pre>
      */
-    def value[U](expectedValue: U): Matcher[T with scala.collection.GenMap[K, U] forSome { type K }] = outerInstance.and(MatcherWords.contain.value(expectedValue))
-    def newValue(expectedValue: Any): MatcherFactory1[T, ValueMapping] = outerInstance.and(MatcherWords.contain.newValue(expectedValue))
+    def oldValue[U](expectedValue: U): Matcher[T with scala.collection.GenMap[K, U] forSome { type K }] = outerInstance.and(MatcherWords.contain.oldValue(expectedValue))
+    def value(expectedValue: Any): MatcherFactory1[T, ValueMapping] = outerInstance.and(MatcherWords.contain.value(expectedValue))
     
     /**
      * This method enables the following syntax:
@@ -1450,7 +1450,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                                                                      ^
      * </pre>
      */
-    def contain[U](resultOfKeyWordApplication: ResultOfKeyWordApplication[U]): Matcher[T with scala.collection.GenMap[U, Any]] =
+    def contain[U](resultOfKeyWordApplication: ResultOfOldKeyWordApplication[U]): Matcher[T with scala.collection.GenMap[U, Any]] =
       outerInstance.and(MatcherWords.not.contain(resultOfKeyWordApplication))
 
     /**
@@ -1461,7 +1461,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                                                                   ^
      * </pre>
      */
-    def contain[U](resultOfValueWordApplication: ResultOfValueWordApplication[U]): Matcher[T with scala.collection.GenMap[K, U] forSome { type K }] =
+    def contain[U](resultOfValueWordApplication: ResultOfOldValueWordApplication[U]): Matcher[T with scala.collection.GenMap[K, U] forSome { type K }] =
       outerInstance.and(MatcherWords.not.contain(resultOfValueWordApplication))
       
     /**
@@ -1639,8 +1639,9 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                                                                    ^
      * </pre>
      */
-    def key[U](expectedKey: U): Matcher[T with scala.collection.GenMap[U, Any]] = outerInstance.or(MatcherWords.contain.key(expectedKey))
-// XXX Come back here and get a failing test
+    def oldKey[U](expectedKey: U): Matcher[T with scala.collection.GenMap[U, Any]] = outerInstance.or(MatcherWords.contain.oldKey(expectedKey))
+    def key(expectedKey: Any): MatcherFactory1[T, KeyMapping] = outerInstance.or(MatcherWords.contain.key(expectedKey))
+// TODO: Write failing tests for matcher and contain key/value and matcher or contain key/value
 
     /**
      * This method enables the following syntax:
@@ -1650,7 +1651,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                                                                  ^
      * </pre>
      */
-    def value[U](expectedValue: U): Matcher[T with scala.collection.GenMap[K, U] forSome { type K }] = outerInstance.or(MatcherWords.contain.value(expectedValue))
+    def oldValue[U](expectedValue: U): Matcher[T with scala.collection.GenMap[K, U] forSome { type K }] = outerInstance.or(MatcherWords.contain.oldValue(expectedValue))
+    def value(expectedValue: Any): MatcherFactory1[T, ValueMapping] = outerInstance.or(MatcherWords.contain.value(expectedValue))
     
     /**
      * This method enables the following syntax:
@@ -2447,7 +2449,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                                                                    ^
      * </pre>
      */
-    def contain[U](resultOfKeyWordApplication: ResultOfKeyWordApplication[U]): Matcher[T with scala.collection.GenMap[U, Any]] =
+    def contain[U](resultOfKeyWordApplication: ResultOfOldKeyWordApplication[U]): Matcher[T with scala.collection.GenMap[U, Any]] =
       outerInstance.or(MatcherWords.not.contain(resultOfKeyWordApplication))
 
     /**
@@ -2458,7 +2460,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                                                                  ^
      * </pre>
      */
-    def contain[U](resultOfValueWordApplication: ResultOfValueWordApplication[U]): Matcher[T with scala.collection.GenMap[K, U] forSome { type K }] =
+    def contain[U](resultOfValueWordApplication: ResultOfOldValueWordApplication[U]): Matcher[T with scala.collection.GenMap[K, U] forSome { type K }] =
       outerInstance.or(MatcherWords.not.contain(resultOfValueWordApplication))
       
     /**

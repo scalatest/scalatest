@@ -21,5 +21,5 @@ package org.scalatest.words
  *
  * @author Bill Venners
  */
-final class ResultOfKeyWordApplication[T](val expectedKey: T)
+final class ResultOfOldValueWordApplication[T](val expectedValue: T)
 

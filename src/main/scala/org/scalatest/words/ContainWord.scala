@@ -85,7 +85,7 @@ final class ContainWord {
    * This will enable the matcher returned by this method to be used against any <code>Map</code> that has
    * the inferred key type.
    */
-  def key[K](expectedKey: K): Matcher[scala.collection.GenMap[K, Any]] =
+  def oldKey[K](expectedKey: K): Matcher[scala.collection.GenMap[K, Any]] =
     new Matcher[scala.collection.GenMap[K, Any]] {
       def apply(left: scala.collection.GenMap[K, Any]): MatchResult =
         MatchResult(
@@ -94,7 +94,7 @@ final class ContainWord {
           FailureMessages("containedKey", left, expectedKey)
         )
     }
-  def newKey[K](expectedKey: Any): MatcherFactory1[Any, KeyMapping] =
+  def key[K](expectedKey: Any): MatcherFactory1[Any, KeyMapping] =
     new MatcherFactory1[Any, KeyMapping] {
       def matcher[U <: Any : KeyMapping]: Matcher[U] = 
         new Matcher[U] {
@@ -137,7 +137,7 @@ final class ContainWord {
    * the inferred value type.
    *
    */
-  def value[V](expectedValue: V): Matcher[scala.collection.GenMap[K, V] forSome { type K }] =
+  def oldValue[V](expectedValue: V): Matcher[scala.collection.GenMap[K, V] forSome { type K }] =
     new Matcher[scala.collection.GenMap[K, V] forSome { type K }] {
       def apply(left: scala.collection.GenMap[K, V] forSome { type K }): MatchResult =
         MatchResult(
@@ -147,7 +147,7 @@ final class ContainWord {
           FailureMessages("containedValue", left, expectedValue)
         )
     }
-  def newValue[K](expectedValue: Any): MatcherFactory1[Any, ValueMapping] =
+  def value[K](expectedValue: Any): MatcherFactory1[Any, ValueMapping] =
     new MatcherFactory1[Any, ValueMapping] {
       def matcher[U <: Any : ValueMapping]: Matcher[U] = 
         new Matcher[U] {

@@ -212,8 +212,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    *                    ^
    * </pre>
    */
-  def newKey(expectedKey: Any)(implicit keyMapping: KeyMapping[L]) {
-    // if (left.exists(_._1 == expectedKey) != shouldBeTrue)
+  def key(expectedKey: Any)(implicit keyMapping: KeyMapping[L]) {
     if (keyMapping.containsKey(left, expectedKey) != shouldBeTrue)
       throw newTestFailedException(
         FailureMessages(
@@ -231,7 +230,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    *                    ^
    * </pre>
    */
-  def newValue(expectedValue: Any)(implicit valueMapping: ValueMapping[L]) {
+  def value(expectedValue: Any)(implicit valueMapping: ValueMapping[L]) {
     if (valueMapping.containsValue(left, expectedValue) != shouldBeTrue)
       throw newTestFailedException(
         FailureMessages(

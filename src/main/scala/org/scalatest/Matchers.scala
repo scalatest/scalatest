@@ -1438,7 +1438,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
-    def key(expectedKey: K) {
+    def oldKey(expectedKey: K) {
       if (left.exists(_._1 == expectedKey) != shouldBeTrue)
         throw newTestFailedException(
           FailureMessages(
@@ -1456,8 +1456,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
-    def value(expectedValue: V) {
-      // if (left.values.contains(expectedValue) != shouldBeTrue) CHANGING FOR 2.8.0 RC1
+    def oldValue(expectedValue: V) {
       if (left.exists(expectedValue == _._2) != shouldBeTrue)
         throw newTestFailedException(
           FailureMessages(
@@ -1484,7 +1483,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                        ^
      * </pre>
      */
-    def key(expectedKey: K) {
+    def oldKey(expectedKey: K) {
       if (left.containsKey(expectedKey) != shouldBeTrue)
         throw newTestFailedException(
           FailureMessages(
@@ -1502,7 +1501,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                        ^
      * </pre>
      */
-    def value(expectedValue: V) {
+    def oldValue(expectedValue: V) {
       if (left.containsValue(expectedValue) != shouldBeTrue)
         throw newTestFailedException(
           FailureMessages(
@@ -2179,7 +2178,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *
    * @author Bill Venners
    */
-  final class KeyWord {
+  final class OldKeyWord {
 
     /**
      * This method enables the following syntax: 
@@ -2189,9 +2188,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                            ^
      * </pre>
      */
-    def apply[T](expectedKey: T): ResultOfKeyWordApplication[T] = new ResultOfKeyWordApplication(expectedKey)
+    def apply[T](expectedKey: T): ResultOfOldKeyWordApplication[T] = new ResultOfOldKeyWordApplication(expectedKey)
   }
-  final class NewKeyWord {
+  final class KeyWord {
 
     /**
      * This method enables the following syntax: 
@@ -2212,8 +2211,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                        ^
    * </pre>
    */
+  val oldKey = new OldKeyWord
   val key = new KeyWord
-  val newKey = new NewKeyWord
 
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
@@ -2221,7 +2220,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *
    * @author Bill Venners
    */
-  final class ValueWord {
+  final class OldValueWord {
 
     /**
      * This method enables the following syntax: 
@@ -2231,9 +2230,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                              ^
      * </pre>
      */
-    def apply[T](expectedValue: T): ResultOfValueWordApplication[T] = new ResultOfValueWordApplication(expectedValue)
+    def apply[T](expectedValue: T): ResultOfOldValueWordApplication[T] = new ResultOfOldValueWordApplication(expectedValue)
   }
-  final class NewValueWord {
+  final class ValueWord {
 
     /**
      * This method enables the following syntax: 
@@ -2254,8 +2253,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                        ^
    * </pre>
    */
+  val oldValue = new OldValueWord
   val value = new ValueWord
-  val newValue = new NewValueWord
 
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
@@ -3841,7 +3840,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                          ^
      * </pre>
      */
-    def contain(resultOfKeyWordApplication: ResultOfKeyWordApplication[K]) {
+    def contain(resultOfKeyWordApplication: ResultOfOldKeyWordApplication[K]) {
       doCollected(collected, xs, "contain", 1) { e =>
         val right = resultOfKeyWordApplication.expectedKey
         if ((e.exists(_._1 == right)) != shouldBeTrue) {
@@ -3866,7 +3865,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                          ^
      * </pre>
      */
-    def contain(resultOfValueWordApplication: ResultOfValueWordApplication[V]) {
+    def contain(resultOfValueWordApplication: ResultOfOldValueWordApplication[V]) {
       doCollected(collected, xs, "contain", 1) { e =>
         val right = resultOfValueWordApplication.expectedValue
         if ((e.exists(_._2 == right)) != shouldBeTrue) {
@@ -4108,8 +4107,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                              ^
      * </pre>
      */
-    def newKey(expectedKey: Any)(implicit keyMapping: KeyMapping[T]) {
-      doCollected(collected, xs, "newKey", 1) { map =>
+    def key(expectedKey: Any)(implicit keyMapping: KeyMapping[T]) {
+      doCollected(collected, xs, "key", 1) { map =>
         if (keyMapping.containsKey(map, expectedKey) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
@@ -4130,8 +4129,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                              ^
      * </pre>
      */
-    def newValue(expectedValue: Any)(implicit valueMapping: ValueMapping[T]) {
-      doCollected(collected, xs, "newValue", 1) { map =>
+    def value(expectedValue: Any)(implicit valueMapping: ValueMapping[T]) {
+      doCollected(collected, xs, "value", 1) { map =>
         if (valueMapping.containsValue(map, expectedValue) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
@@ -5308,8 +5307,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                              ^
      * </pre>
      */
-    def key(expectedKey: K) {
-      doCollected(collected, xs, "key", 1) { e =>
+    def oldKey(expectedKey: K) {
+      doCollected(collected, xs, "oldKey", 1) { e =>
         if (e.exists(_._1 == expectedKey) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
@@ -5330,8 +5329,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                              ^
      * </pre>
      */
-    def value(expectedValue: V) {
-      doCollected(collected, xs, "value", 1) { e =>
+    def oldValue(expectedValue: V) {
+      doCollected(collected, xs, "oldValue", 1) { e =>
         if (e.exists(expectedValue == _._2) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(

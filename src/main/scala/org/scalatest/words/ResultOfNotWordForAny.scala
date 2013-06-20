@@ -967,7 +967,7 @@ final class ResultOfNotWordForGenMap[K, V, L[_, _] <: scala.collection.GenMap[_,
    *                ^
    * </pre>
    */
-  def contain(resultOfKeyWordApplication: ResultOfKeyWordApplication[K]) {
+  def contain(resultOfKeyWordApplication: ResultOfOldKeyWordApplication[K]) {
     val right = resultOfKeyWordApplication.expectedKey
     if ((left.asInstanceOf[GenMap[K, V]].exists(_._1 == right)) != shouldBeTrue) {
       throw newTestFailedException(
@@ -988,7 +988,7 @@ final class ResultOfNotWordForGenMap[K, V, L[_, _] <: scala.collection.GenMap[_,
    *                                        ^
    * </pre>
    */
-  def contain(resultOfValueWordApplication: ResultOfValueWordApplication[V]) {
+  def contain(resultOfValueWordApplication: ResultOfOldValueWordApplication[V]) {
     val right = resultOfValueWordApplication.expectedValue
     if ((left.asInstanceOf[scala.collection.GenMap[K, V]].exists(_._2 == right)) != shouldBeTrue) {
       throw newTestFailedException(
@@ -1047,7 +1047,7 @@ final class ResultOfNotWordForJavaMap[K, V, L[_, _] <: java.util.Map[_, _]](left
    *                    ^
    * </pre>
    */
-  def contain(resultOfKeyWordApplication: ResultOfKeyWordApplication[K]) {
+  def contain(resultOfKeyWordApplication: ResultOfOldKeyWordApplication[K]) {
     val right = resultOfKeyWordApplication.expectedKey
     if ((left.containsKey(right)) != shouldBeTrue) {
       throw newTestFailedException(
@@ -1068,7 +1068,7 @@ final class ResultOfNotWordForJavaMap[K, V, L[_, _] <: java.util.Map[_, _]](left
    *                            ^
    * </pre>
    */
-  def contain(resultOfValueWordApplication: ResultOfValueWordApplication[V]) {
+  def contain(resultOfValueWordApplication: ResultOfOldValueWordApplication[V]) {
     val right = resultOfValueWordApplication.expectedValue
     if ((left.containsValue(right)) != shouldBeTrue) {
       throw newTestFailedException(
