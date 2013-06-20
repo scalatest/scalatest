@@ -3064,8 +3064,8 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
       
       def `should work correctly with all(traversable) should contain succeeded` {
         forAll(traversableExamples) { colFun => 
-          val col = colFun(Set(Set("1", "2", "3"), Set("1", "2")))
-          all(col) should contain only ("1", "2", "3")
+          val col = colFun(Set(Set("2", "1"), Set("1", "2")))
+          all(col) should contain only ("1", "2")
         }
       }
     

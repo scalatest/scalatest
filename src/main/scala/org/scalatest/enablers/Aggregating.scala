@@ -172,8 +172,8 @@ object Aggregating {
             false
         }
       }
-      else // No more element in left, left contains only elements of right.
-        true
+      else 
+        !rightItr.hasNext // No more lefts remaining, so we're good so long as no more rights remaining either.
     }
     checkEqual(left.toIterator, right.toIterator, Set.empty)
   }
