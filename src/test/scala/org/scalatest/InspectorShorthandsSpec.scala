@@ -1785,6 +1785,29 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
       }
     }
 
+    def `should throw TestFailedException with correct stack depth and message when 'map not contain newKey' failed` {
+      forAll(mapExamples) { colFun => 
+        val col = colFun(Set(Map("1" -> "one", "2" -> "two", "3" -> "three"), Map("4" -> "four", "5" -> "five", "6" -> "six"), Map("2" -> "two", "6" -> "six", "8" -> "eight")))
+        val e2 = intercept[exceptions.TestFailedException] {
+          all(col) should not contain newKey ("2")
+        }
+        e2.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
+        e2.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+        val firstViolation = getFirst[GenMap[String, String]](col, _.exists(_._1 == "2"))
+        e2.message should be (Some("'all' inspection failed, because: \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " contained key \"2\" (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "in " + col))
+        e2.getCause match {
+          case tfe: exceptions.TestFailedException =>
+            tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
+            tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
+            tfe.message should be (Some(firstViolation.toString + " contained key \"2\""))
+            tfe.getCause should be (null)
+          case other => fail("Expected cause to be TestFailedException, but got: " + other)
+        }
+      }
+    }
+
     def `should throw TestFailedException with correct stack depth and message when 'map not contain key' failed` {
       forAll(mapExamples) { colFun => 
         val col = colFun(Set(Map("1" -> "one", "2" -> "two", "3" -> "three"), Map("4" -> "four", "5" -> "five", "6" -> "six"), Map("2" -> "two", "6" -> "six", "8" -> "eight")))

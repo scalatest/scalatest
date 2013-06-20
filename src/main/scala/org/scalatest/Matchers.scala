@@ -3597,6 +3597,31 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
           )
       }
     }
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * all(colOfMap) should not contain key ("three")
+     *                          ^
+     * </pre>
+     */
+    def contain(resultOfNewKeyWordApplication: ResultOfNewKeyWordApplication)(implicit keyMapping: KeyMapping[T]) {
+      doCollected(collected, xs, "contain", 1) { map =>
+        val expectedKey = resultOfNewKeyWordApplication.expectedKey
+        if ((keyMapping.containsKey(map, expectedKey)) != shouldBeTrue) {
+          throw newTestFailedException(
+            FailureMessages(
+              if (shouldBeTrue) "didNotContainKey" else "containedKey",
+              map,
+              expectedKey
+            ), 
+            None, 
+            6
+          )
+        }
+      }
+    }
   }
 
   /**
@@ -4059,12 +4084,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def newKey(expectedKey: Any)(implicit keyMapping: KeyMapping[T]) {
-      doCollected(collected, xs, "newKey", 1) { e =>
-        if (keyMapping.containsKey(e, expectedKey) != shouldBeTrue)
+      doCollected(collected, xs, "newKey", 1) { map =>
+        if (keyMapping.containsKey(map, expectedKey) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
               if (shouldBeTrue) "didNotContainKey" else "containedKey",
-              e,
+              map,
               expectedKey),
               None,
               6
