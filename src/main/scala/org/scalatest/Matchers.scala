@@ -2464,11 +2464,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    def message(expectedMessage: String)(implicit ev: A <:< Throwable) {
-      if ((left.getMessage == expectedMessage) != shouldBeTrue)
+    def message(expectedMessage: String)(implicit messaging: Messaging[A]) {
+      val actualMessage = messaging.messageOf(left)
+      if ((actualMessage== expectedMessage) != shouldBeTrue)
         throw newTestFailedException(
           if (shouldBeTrue)
-            FailureMessages("hadMessageInsteadOfExpectedMessage", left, left.getMessage, expectedMessage)
+            FailureMessages("hadMessageInsteadOfExpectedMessage", left, actualMessage, expectedMessage)
           else
             FailureMessages("hadExpectedMessage", left, expectedMessage)
         )
@@ -2698,8 +2699,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * This method enables the following syntax: 
    *
    * <pre class="stHighlight">
-   * a [RuntimeException] should not be thrownBy {...}
-   *                                    ^
+   * a [RuntimeException] should be thrownBy {...}
+   *                                ^
    * </pre>
    */
   def thrownBy(fun: => Any) = new ResultOfThrownByApplication(fun)
