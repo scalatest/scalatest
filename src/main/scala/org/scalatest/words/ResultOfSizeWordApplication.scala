@@ -15,9 +15,9 @@
  */
 package org.scalatest.words
 
-import org.scalatest.matchers._
-import org.scalatest.MatchersHelper.accessProperty
-import org.scalatest.Resources
+import org.scalatest.enablers.Size
+import org.scalatest.matchers.HavePropertyMatcher
+import org.scalatest.matchers.HavePropertyMatchResult
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -25,5 +25,20 @@ import org.scalatest.Resources
  *
  * @author Bill Venners
  */
-final class ResultOfSizeWordApplication(val expectedSize: Long)
+final class ResultOfSizeWordApplication(val expectedSize: Long) {
 
+  def apply[T : Size](resultOfOfTypeInvocation: ResultOfOfTypeInvocation[T]): HavePropertyMatcher[T, Long] = {
+    new HavePropertyMatcher[T, Long] {
+      def apply(t: T): HavePropertyMatchResult[Long] = {
+        val sz = implicitly[Size[T]]
+        val sizeOfT = sz.sizeOf(t)
+        new HavePropertyMatchResult(
+          sizeOfT == expectedSize,
+          "size",
+           expectedSize,
+           sizeOfT
+        )
+      }
+    }
+  }
+}

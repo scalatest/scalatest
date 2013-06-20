@@ -573,6 +573,12 @@ hard to read. Better to have people pull things out and then just do a non-neste
         book should have (length (45) (of [Book]), title ("A Tale of Two Cities"))
         book should have (title ("A Tale of Two Cities"), length (45) (of [Book]))
       }
+      def `should work with size and other have property matchers` {
+
+        implicit val bookLength = new Size[Book] { def sizeOf(book: Book) = book.length }
+        book should have (size (45) (of [Book]), title ("A Tale of Two Cities"))
+        book should have (title ("A Tale of Two Cities"), size (45) (of [Book]))
+      }
 
       def `should work with size not a symbol without anything special, in case someone forgets you don't need the parens with size` {
 
