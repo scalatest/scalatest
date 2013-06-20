@@ -778,8 +778,8 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
       )
   }
 
-  def contain(resultOfNewKeyWordApplication: ResultOfNewKeyWordApplication)(implicit keyMapping: KeyMapping[T]) {
-    val right = resultOfNewKeyWordApplication.expectedKey
+  def contain(resultOfKeyWordApplication: ResultOfKeyWordApplication)(implicit keyMapping: KeyMapping[T]) {
+    val right = resultOfKeyWordApplication.expectedKey
     if (keyMapping.containsKey(left, right) != shouldBeTrue) {
       throw newTestFailedException(
         FailureMessages(
@@ -790,8 +790,8 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
         )
     }
   }
-  def contain(resultOfNewValueWordApplication: ResultOfNewValueWordApplication)(implicit valueMapping: ValueMapping[T]) {
-    val right = resultOfNewValueWordApplication.expectedValue
+  def contain(resultOfValueWordApplication: ResultOfValueWordApplication)(implicit valueMapping: ValueMapping[T]) {
+    val right = resultOfValueWordApplication.expectedValue
     if (valueMapping.containsValue(left, right) != shouldBeTrue) {
       throw newTestFailedException(
         FailureMessages(

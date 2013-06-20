@@ -2200,7 +2200,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                            ^
      * </pre>
      */
-    def apply(expectedKey: Any): ResultOfNewKeyWordApplication = new ResultOfNewKeyWordApplication(expectedKey)
+    def apply(expectedKey: Any): ResultOfKeyWordApplication = new ResultOfKeyWordApplication(expectedKey)
   }
 
   /**
@@ -2242,7 +2242,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                            ^
      * </pre>
      */
-    def apply(expectedValue: Any): ResultOfNewValueWordApplication = new ResultOfNewValueWordApplication(expectedValue)
+    def apply(expectedValue: Any): ResultOfValueWordApplication = new ResultOfValueWordApplication(expectedValue)
   }
 
   /**
@@ -3605,9 +3605,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                          ^
      * </pre>
      */
-    def contain(resultOfNewKeyWordApplication: ResultOfNewKeyWordApplication)(implicit keyMapping: KeyMapping[T]) {
+    def contain(resultOfKeyWordApplication: ResultOfKeyWordApplication)(implicit keyMapping: KeyMapping[T]) {
       doCollected(collected, xs, "contain", 1) { map =>
-        val expectedKey = resultOfNewKeyWordApplication.expectedKey
+        val expectedKey = resultOfKeyWordApplication.expectedKey
         if ((keyMapping.containsKey(map, expectedKey)) != shouldBeTrue) {
           throw newTestFailedException(
             FailureMessages(
@@ -3630,9 +3630,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                          ^
      * </pre>
      */
-    def contain(resultOfNewValueWordApplication: ResultOfNewValueWordApplication)(implicit valueMapping: ValueMapping[T]) {
+    def contain(resultOfValueWordApplication: ResultOfValueWordApplication)(implicit valueMapping: ValueMapping[T]) {
       doCollected(collected, xs, "contain", 1) { map =>
-        val expectedValue = resultOfNewValueWordApplication.expectedValue
+        val expectedValue = resultOfValueWordApplication.expectedValue
         if ((valueMapping.containsValue(map, expectedValue)) != shouldBeTrue) {
           throw newTestFailedException(
             FailureMessages(

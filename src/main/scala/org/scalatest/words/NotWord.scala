@@ -1070,12 +1070,12 @@ final class NotWord {
       }
     }
   }
-  def contain(resultOfNewKeyWordApplication: ResultOfNewKeyWordApplication): MatcherFactory1[Any, KeyMapping] = {
+  def contain(resultOfKeyWordApplication: ResultOfKeyWordApplication): MatcherFactory1[Any, KeyMapping] = {
     new MatcherFactory1[Any, KeyMapping] {
       def matcher[T](implicit keyMapping: KeyMapping[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
-            val expectedKey = resultOfNewKeyWordApplication.expectedKey
+            val expectedKey = resultOfKeyWordApplication.expectedKey
             MatchResult(
               !keyMapping.containsKey(left, expectedKey),
               FailureMessages("containedKey", left, expectedKey),
@@ -1091,7 +1091,7 @@ final class NotWord {
    * This method enables the following syntax: 
    *
    * <pre class="stHighlight">
-   * Map("one" -> 1, "two" -> 2) should (not contain value (3))
+   * Map("one" -&gt; 1, "two" -&gt; 2) should (not contain value (3))
    *                                         ^
    * </pre>
    */
@@ -1107,12 +1107,12 @@ final class NotWord {
       }
     }
   }
-  def contain(resultOfNewValueWordApplication: ResultOfNewValueWordApplication): MatcherFactory1[Any, ValueMapping] = {
+  def contain(resultOfValueWordApplication: ResultOfValueWordApplication): MatcherFactory1[Any, ValueMapping] = {
     new MatcherFactory1[Any, ValueMapping] {
       def matcher[T](implicit valueMapping: ValueMapping[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
-            val expectedValue = resultOfNewValueWordApplication.expectedValue
+            val expectedValue = resultOfValueWordApplication.expectedValue
             MatchResult(
               !valueMapping.containsValue(left, expectedValue),
               FailureMessages("containedValue", left, expectedValue),

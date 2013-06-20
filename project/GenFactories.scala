@@ -57,9 +57,9 @@ import org.scalatest.words.ResultOfAnWordToAnMatcherApplication
 import org.scalatest.words.ResultOfTheSameInstanceAsApplication
 import org.scalatest.words.ResultOfRegexWordApplication
 import org.scalatest.words.ResultOfOldKeyWordApplication
-import org.scalatest.words.ResultOfNewKeyWordApplication
+import org.scalatest.words.ResultOfKeyWordApplication
 import org.scalatest.words.ResultOfOldValueWordApplication
-import org.scalatest.words.ResultOfNewValueWordApplication
+import org.scalatest.words.ResultOfValueWordApplication
 import org.scalatest.words.RegexWithGroups
 import org.scalatest.words.ResultOfDefinedAt
 import org.scalatest.words.ResultOfOneOfApplication
@@ -1111,8 +1111,8 @@ $endif$
      */
     def contain[U](resultOfKeyWordApplication: ResultOfOldKeyWordApplication[U]): MatcherFactory$arity$[SC with scala.collection.GenMap[U, Any], $commaSeparatedTCNs$] =
       thisMatcherFactory.and(MatcherWords.not.contain(resultOfKeyWordApplication))
-    def contain(resultOfNewKeyWordApplication: ResultOfNewKeyWordApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, KeyMapping] =
-      thisMatcherFactory.and(MatcherWords.not.contain(resultOfNewKeyWordApplication))
+    def contain(resultOfKeyWordApplication: ResultOfKeyWordApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, KeyMapping] =
+      thisMatcherFactory.and(MatcherWords.not.contain(resultOfKeyWordApplication))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1124,8 +1124,8 @@ $endif$
      */
     def contain[U](resultOfValueWordApplication: ResultOfOldValueWordApplication[U]): MatcherFactory$arity$[SC with scala.collection.GenMap[K, U] forSome { type K }, $commaSeparatedTCNs$] =
       thisMatcherFactory.and(MatcherWords.not.contain(resultOfValueWordApplication))
-    def contain(resultOfNewValueWordApplication: ResultOfNewValueWordApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, ValueMapping] =
-      thisMatcherFactory.and(MatcherWords.not.contain(resultOfNewValueWordApplication))
+    def contain(resultOfValueWordApplication: ResultOfValueWordApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, ValueMapping] =
+      thisMatcherFactory.and(MatcherWords.not.contain(resultOfValueWordApplication))
       
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -2116,8 +2116,8 @@ $endif$
      */
     def contain[U](resultOfKeyWordApplication: ResultOfOldKeyWordApplication[U]): MatcherFactory$arity$[SC with scala.collection.GenMap[U, Any], $commaSeparatedTCNs$] =
       thisMatcherFactory.or(MatcherWords.not.contain(resultOfKeyWordApplication))
-    def contain(resultOfNewKeyWordApplication: ResultOfNewKeyWordApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, KeyMapping] =
-      thisMatcherFactory.or(MatcherWords.not.contain(resultOfNewKeyWordApplication))
+    def contain(resultOfKeyWordApplication: ResultOfKeyWordApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, KeyMapping] =
+      thisMatcherFactory.or(MatcherWords.not.contain(resultOfKeyWordApplication))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -2129,8 +2129,8 @@ $endif$
      */
     def contain[U](resultOfValueWordApplication: ResultOfOldValueWordApplication[U]): MatcherFactory$arity$[SC with scala.collection.GenMap[K, U] forSome { type K }, $commaSeparatedTCNs$] =
       thisMatcherFactory.or(MatcherWords.not.contain(resultOfValueWordApplication))
-    def contain(resultOfNewValueWordApplication: ResultOfNewValueWordApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, ValueMapping] =
-      thisMatcherFactory.or(MatcherWords.not.contain(resultOfNewValueWordApplication))
+    def contain(resultOfValueWordApplication: ResultOfValueWordApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, ValueMapping] =
+      thisMatcherFactory.or(MatcherWords.not.contain(resultOfValueWordApplication))
       
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
