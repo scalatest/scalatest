@@ -38,7 +38,7 @@ class NoneOfContainMatcherSpec extends Spec with Matchers {
       javaSet(1, 2, 3, 4, 5) should contain noneOf (6, 7, 8)
       
       Map(1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four", 5 -> "five") should contain noneOf (6 -> "six", 7 -> "seven", 8 -> "eight")
-      javaMap(1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four", 5 -> "five") should contain noneOf (6 -> "six", 7 -> "seven", 8 -> "eight")
+      javaMap(1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four", 5 -> "five") should contain noneOf (Entry(6, "six"), Entry(7, "seven"), Entry(8, "eight"))
     }
     
     def `should succeed when left list contains none of right list` {
@@ -50,7 +50,7 @@ class NoneOfContainMatcherSpec extends Spec with Matchers {
       javaSet(1, 2, 3) should contain noneOf (7, 8)
       
       Map(1 -> "one", 2 -> "two", 3 -> "three") should contain noneOf (7 -> "seven", 8 -> "eight")
-      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should contain noneOf (7 -> "seven", 8 -> "eight")
+      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should contain noneOf (Entry(7, "seven"), Entry(8, "eight"))
     }
     
     def `should throw IllegalArgumentException when noneOf contains duplicate element` {
@@ -91,9 +91,9 @@ class NoneOfContainMatcherSpec extends Spec with Matchers {
       
       val left4 = javaMap(1 -> "one", 2 -> "two", 3 -> "three")
       val e4 = intercept[exceptions.TestFailedException] {
-        left4 should contain noneOf (0 -> "zero", 3 -> "three", 8 -> "eight")
+        left4 should contain noneOf (Entry(0, "zero"), Entry(3, "three"), Entry(8, "eight"))
       }
-      checkStackDepth(e4, left4, Array(0 -> "zero", 3 -> "three", 8 -> "eight"), thisLineNumber - 2)
+      checkStackDepth(e4, left4, Array(Entry(0, "zero"), Entry(3, "three"), Entry(8, "eight")), thisLineNumber - 2)
       
       val left5 = Array(1, 2, 3)
       val e5 = intercept[exceptions.TestFailedException] {
@@ -121,7 +121,7 @@ class NoneOfContainMatcherSpec extends Spec with Matchers {
       javaSet(1, 2, 3) should not contain noneOf (0, 2, 8)
       
       Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain noneOf (0 -> "zero", 2 -> "two", 8 -> "eight")
-      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain noneOf (0 -> "zero", 2 -> "two", 8 -> "eight")
+      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain noneOf (Entry(0, "zero"), Entry(2, "two"), Entry(8, "eight"))
     }
     
     def `should throw TestFailedException with correct stack depth and message when left List contains only element in right List in same order` {
@@ -145,9 +145,9 @@ class NoneOfContainMatcherSpec extends Spec with Matchers {
       
       val left4 = javaMap(1 -> "one", 2 -> "two", 3 -> "three")
       val e4 = intercept[exceptions.TestFailedException] {
-        left4 should not contain noneOf (7 -> "seven", 8 -> "eight", 9 -> "nine")
+        left4 should not contain noneOf (Entry(7, "seven"), Entry(8, "eight"), Entry(9, "nine"))
       }
-      checkStackDepth(e4, left4, Array(7 -> "seven", 8 -> "eight", 9 -> "nine"), thisLineNumber - 2)
+      checkStackDepth(e4, left4, Array(Entry(7, "seven"), Entry(8, "eight"), Entry(9, "nine")), thisLineNumber - 2)
       
       val left5 = Array(1, 2, 3)
       val e5 = intercept[exceptions.TestFailedException] {

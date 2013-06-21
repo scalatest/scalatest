@@ -36,7 +36,7 @@ class TheSameElementsAsContainMatcherSpec extends Spec with Matchers {
       javaList(1, 2, 3) should contain theSameElementsAs List(1, 2, 3)
       
       Map(1 -> "one", 2 -> "two", 3 -> "three") should contain theSameElementsAs Map(1 -> "one", 2 -> "two", 3 -> "three")
-      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should contain theSameElementsAs Map(1 -> "one", 2 -> "two", 3 -> "three")
+      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should contain theSameElementsAs List(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
     }
     
     def `should succeeded when left List contains same elements in different order as right List` {
@@ -45,7 +45,7 @@ class TheSameElementsAsContainMatcherSpec extends Spec with Matchers {
       javaList(1, 2, 3) should contain theSameElementsAs List(2, 1, 3)
       
       LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three") should contain theSameElementsAs LinkedHashMap(2 -> "two", 1 -> "one", 3 -> "three")
-      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should contain theSameElementsAs LinkedHashMap(2 -> "two", 1 -> "one", 3 -> "three")
+      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should contain theSameElementsAs List(Entry(2, "two"), Entry(1, "one"), Entry(3, "three"))
     }
     
     def `should succeeded when left List contains same elements in different order as right Set` {
@@ -54,7 +54,7 @@ class TheSameElementsAsContainMatcherSpec extends Spec with Matchers {
       javaList(1, 2, 3) should contain theSameElementsAs Set(2, 1, 3)
       
       LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three") should contain theSameElementsAs LinkedHashMap(2 -> "two", 1 -> "one", 3 -> "three")
-      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should contain theSameElementsAs LinkedHashMap(2 -> "two", 1 -> "one", 3 -> "three")
+      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should contain theSameElementsAs List(Entry(2, "two"), Entry(1, "one"), Entry(3, "three"))
     }
     
     def `should succeeded when left List contains same elements in same order as right Set` {
@@ -63,12 +63,12 @@ class TheSameElementsAsContainMatcherSpec extends Spec with Matchers {
       javaList(1, 2, 3) should contain theSameElementsAs Set(1, 2, 3)
       
       LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three") should contain theSameElementsAs LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three")
-      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should contain theSameElementsAs LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three")
+      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should contain theSameElementsAs List(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
     }
     
     def `should succeeded when left Map contains same elements as right Map` {
       Map(1 -> "one", 2 -> "two", 3 -> "three") should contain theSameElementsAs Map(1 -> "one", 2 -> "two", 3 -> "three")
-      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should contain theSameElementsAs Map(1 -> "one", 2 -> "two", 3 -> "three")
+      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should contain theSameElementsAs List(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
     }
     
     def `should throw TestFailedException with correct stack depth and message when left and right List are same size but contain different elements` {
@@ -94,7 +94,7 @@ class TheSameElementsAsContainMatcherSpec extends Spec with Matchers {
       checkStackDepth(e3, left3, right3, thisLineNumber - 2)
       
       val left4 = javaMap(1 -> "one", 2 -> "two", 3 -> "three")
-      val right4 = Map(2 -> "two", 5 -> "five", 3 -> "three")
+      val right4 = List(Entry(2, "two"), Entry(5, "five"), Entry(3, "three"))
       val e4 = intercept[exceptions.TestFailedException] {
         left4 should contain theSameElementsAs right4
       }
@@ -131,7 +131,7 @@ class TheSameElementsAsContainMatcherSpec extends Spec with Matchers {
       checkStackDepth(e3, left3, right3, thisLineNumber - 2)
       
       val left4 = javaMap(1 -> "one", 2 -> "two", 3 -> "three")
-      val right4 = Map(1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four")
+      val right4 = List(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"), Entry(4, "four"))
       val e4 = intercept[exceptions.TestFailedException] {
         left4 should contain theSameElementsAs right4
       }
@@ -168,7 +168,7 @@ class TheSameElementsAsContainMatcherSpec extends Spec with Matchers {
       checkStackDepth(e3, left3, right3, thisLineNumber - 2)
       
       val left4 = javaMap(1 -> "one", 2 -> "two", 3 -> "three")
-      val right4 = Map(1 -> "one", 2 -> "two")
+      val right4 = List(Entry(1, "one"), Entry(2, "two"))
       val e4 = intercept[exceptions.TestFailedException] {
         left4 should contain theSameElementsAs right4
       }
@@ -205,7 +205,7 @@ class TheSameElementsAsContainMatcherSpec extends Spec with Matchers {
       checkStackDepth(e3, left3, right3, thisLineNumber - 2)
       
       val left4 = javaMap(1 -> "one", 2 -> "two", 3 -> "three")
-      val right4 = Map(2 -> "two", 5 -> "five", 3 -> "three")
+      val right4 = List(Entry(2, "two"), Entry(5, "five"), Entry(3, "three"))
       val e4 = intercept[exceptions.TestFailedException] {
         left4 should contain theSameElementsAs right4
       }
@@ -273,7 +273,7 @@ class TheSameElementsAsContainMatcherSpec extends Spec with Matchers {
       checkStackDepth(e3, left3, right3, thisLineNumber - 2)
       
       val left4 = javaMap(1 -> "one", 2 -> "two", 3 -> "three")
-      val right4 = Map(1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four")
+      val right4 = List(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"), Entry(4, "four"))
       val e4 = intercept[exceptions.TestFailedException] {
         left4 should contain theSameElementsAs right4
       }
@@ -310,7 +310,7 @@ class TheSameElementsAsContainMatcherSpec extends Spec with Matchers {
       checkStackDepth(e3, left3, right3, thisLineNumber - 2)
       
       val left4 = javaMap(1 -> "one", 2 -> "two", 3 -> "three")
-      val right4 = Map(1 -> "one", 2 -> "two")
+      val right4 = List(Entry(1, "one"), Entry(2, "two"))
       val e4 = intercept[exceptions.TestFailedException] {
         left4 should contain theSameElementsAs right4
       }
@@ -364,7 +364,7 @@ class TheSameElementsAsContainMatcherSpec extends Spec with Matchers {
       javaList(1, 2, 3) should not contain theSameElementsAs (List(1, 2, 8))
       
       Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameElementsAs (Map(1 -> "one", 2 -> "two", 8 -> "eight"))
-      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameElementsAs (Map(1 -> "one", 2 -> "two", 8 -> "eight"))
+      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameElementsAs (List(Entry(1, "one"), Entry(2, "two"), Entry(8, "eight")))
     }
     
     def `should succeeded when left List contains different elements in different order as right List` {
@@ -373,7 +373,7 @@ class TheSameElementsAsContainMatcherSpec extends Spec with Matchers {
       javaList(1, 2, 3) should not contain theSameElementsAs (List(2, 1, 8))
       
       Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameElementsAs (Map(2 -> "two", 1 -> "one", 8 -> "eight"))
-      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameElementsAs (Map(2 -> "two", 1 -> "one", 8 -> "eight"))
+      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameElementsAs (List(Entry(2, "two"), Entry(1, "one"), Entry(8, "eight")))
     }
     
     def `should succeeded when left List contains different elements in different order as right Set` {
@@ -382,7 +382,7 @@ class TheSameElementsAsContainMatcherSpec extends Spec with Matchers {
       javaList(1, 2, 3) should not contain theSameElementsAs (Set(2, 1, 8))
       
       LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameElementsAs (LinkedHashMap(2 -> "two", 1 -> "one", 8 -> "eight"))
-      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameElementsAs (Map(2 -> "two", 1 -> "one", 8 -> "eight"))
+      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameElementsAs (List(Entry(2, "two"), Entry(1, "one"), Entry(8, "eight")))
     }
     
     def `should succeeded when left List contains different elements in same order as right Set` {
@@ -391,7 +391,7 @@ class TheSameElementsAsContainMatcherSpec extends Spec with Matchers {
       javaList(1, 2, 3) should not contain theSameElementsAs (Set(1, 2, 8))
       
       LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameElementsAs (LinkedHashMap(1 -> "one", 2 -> "two", 8 -> "eight"))
-      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameElementsAs (LinkedHashMap(1 -> "one", 2 -> "two", 8 -> "eight"))
+      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameElementsAs (List(Entry(1, "one"), Entry(2, "two"), Entry(8, "eight")))
     }
     
     def `should succeed when left and right List contains same element but has different size` {
@@ -423,7 +423,7 @@ class TheSameElementsAsContainMatcherSpec extends Spec with Matchers {
       checkStackDepth(e3, left3, right3, thisLineNumber - 2)
       
       val left4 = javaMap(1 -> "one", 2 -> "two", 3 -> "three")
-      val right4 = Map(2 -> "two", 1 -> "one", 3 -> "three")
+      val right4 = List(Entry(2, "two"), Entry(1, "one"), Entry(3, "three"))
       val e4 = intercept[exceptions.TestFailedException] {
         left4 should not contain theSameElementsAs (right4)
       }
