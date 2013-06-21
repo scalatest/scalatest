@@ -41,24 +41,40 @@ class ShouldContainValueSpec extends Spec with Matchers with Checkers with Retur
       }
 
       def `should do nothing when map contains specified value and used in a logical-and expression` {
+        Map("one" -> 1, "two" -> 2) should { be (Map("one" -> 1, "two" -> 2)) and (contain value (1)) }
+        Map("one" -> 1, "two" -> 2) should ((be (Map("one" -> 1, "two" -> 2))) and (contain value (1)))
+        Map("one" -> 1, "two" -> 2) should (be (Map("one" -> 1, "two" -> 2)) and contain value (1))
+
         Map("one" -> 1, "two" -> 2) should { contain value (2) and (contain value (1)) }
         Map("one" -> 1, "two" -> 2) should ((contain value (2)) and (contain value (1)))
         Map("one" -> 1, "two" -> 2) should (contain value (2) and contain value (1))
       }
 
       def `should do nothing when map contains specified value and used in a logical-or expression` {
+        Map("one" -> 1, "two" -> 2) should { be (Map("one" -> 1, "two" -> 2)) or (contain value (1)) }
+        Map("one" -> 1, "two" -> 2) should ((be (Map("one" -> 1, "two" -> 2))) or (contain value (1)))
+        Map("one" -> 1, "two" -> 2) should (be (Map("one" -> 1, "two" -> 2)) or contain value (1))
+
         Map("one" -> 1, "two" -> 2) should { contain value (7) or (contain value (1)) }
         Map("one" -> 1, "two" -> 2) should ((contain value (7)) or (contain value (1)))
         Map("one" -> 1, "two" -> 2) should (contain value (7) or contain value (1))
       }
 
       def `should do nothing when map does not contain the specified value and used in a logical-and expression with not` {
+        Map("one" -> 1, "two" -> 2) should { be (Map("one" -> 1, "two" -> 2)) and not { contain value (3) }}
+        Map("one" -> 1, "two" -> 2) should ((be (Map("one" -> 1, "two" -> 2))) and (not contain value (3)))
+        Map("one" -> 1, "two" -> 2) should (be (Map("one" -> 1, "two" -> 2)) and not contain value (3))
+
         Map("one" -> 1, "two" -> 2) should { not { contain value (5) } and not { contain value (3) }}
         Map("one" -> 1, "two" -> 2) should ((not contain value (5)) and (not contain value (3)))
         Map("one" -> 1, "two" -> 2) should (not contain value (5) and not contain value (3))
       }
 
       def `should do nothing when map does not contain the specified value and used in a logical-or expression with not` {
+        Map("one" -> 1, "two" -> 2) should { be (Map("one" -> 1, "three" -> 2)) or not { contain value (3) }}
+        Map("one" -> 1, "two" -> 2) should ((be (Map("one" -> 1, "three" -> 2))) or (not contain value (3)))
+        Map("one" -> 1, "two" -> 2) should (be (Map("one" -> 1, "three" -> 2)) or not contain value (3))
+
         Map("one" -> 1, "two" -> 2) should { not { contain value (2) } or not { contain value (3) }}
         Map("one" -> 1, "two" -> 2) should ((not contain value (2)) or (not contain value (3)))
         Map("one" -> 1, "two" -> 2) should (not contain value (2) or not contain value (3))
@@ -91,6 +107,16 @@ class ShouldContainValueSpec extends Spec with Matchers with Checkers with Retur
 
       def `should throw an TestFailedException when map doesn't contain specified value and used in a logical-and expression` {
 
+        intercept[TestFailedException] {
+          Map("one" -> 1, "two" -> 2) should { be (Map("one" -> 1, "two" -> 2)) and (contain value (5)) }
+        }
+        intercept[TestFailedException] {
+          Map("one" -> 1, "two" -> 2) should ((be (Map("one" -> 1, "two" -> 2))) and (contain value (5)))
+        }
+        intercept[TestFailedException] {
+          Map("one" -> 1, "two" -> 2) should (be (Map("one" -> 1, "two" -> 2)) and contain value (5))
+        }
+
         val caught1 = intercept[TestFailedException] {
           Map("one" -> 1, "two" -> 2) should { contain value (5) and (contain value (2)) }
         }
@@ -108,6 +134,16 @@ class ShouldContainValueSpec extends Spec with Matchers with Checkers with Retur
       }
 
       def `should throw an TestFailedException when map doesn't contain specified value and used in a logical-or expression` {
+
+        intercept[TestFailedException] {
+          Map("one" -> 1, "two" -> 2) should { be (Map.empty) or (contain value (22)) }
+        }
+        intercept[TestFailedException] {
+          Map("one" -> 1, "two" -> 2) should ((be (Map.empty)) or (contain value (22)))
+        }
+        intercept[TestFailedException] {
+          Map("one" -> 1, "two" -> 2) should (be (Map.empty) or contain value (22))
+        }
 
         val caught1 = intercept[TestFailedException] {
           Map("one" -> 1, "two" -> 2) should { contain value (55) or (contain value (22)) }
@@ -127,6 +163,16 @@ class ShouldContainValueSpec extends Spec with Matchers with Checkers with Retur
 
       def `should throw an TestFailedException when map contains specified value and used in a logical-and expression with not` {
 
+        intercept[TestFailedException] {
+          Map("one" -> 1, "two" -> 2) should { be (Map("one" -> 1, "two" -> 2)) and not { contain value (2) }}
+        }
+        intercept[TestFailedException] {
+          Map("one" -> 1, "two" -> 2) should ((be (Map("one" -> 1, "two" -> 2))) and (not contain value (2)))
+        }
+        intercept[TestFailedException] {
+          Map("one" -> 1, "two" -> 2) should (be (Map("one" -> 1, "two" -> 2)) and not contain value (2))
+        }
+
         val caught1 = intercept[TestFailedException] {
           Map("one" -> 1, "two" -> 2) should { not { contain value (3) } and not { contain value (2) }}
         }
@@ -144,6 +190,16 @@ class ShouldContainValueSpec extends Spec with Matchers with Checkers with Retur
       }
 
       def `should throw an TestFailedException when map contains specified value and used in a logical-or expression with not` {
+
+        intercept[TestFailedException] {
+          Map("one" -> 1, "two" -> 2) should { be (Map.empty) or not { contain value (2) }}
+        }
+        intercept[TestFailedException] {
+          Map("one" -> 1, "two" -> 2) should ((be (Map.empty)) or (not contain value (2)))
+        }
+        intercept[TestFailedException] {
+          Map("one" -> 1, "two" -> 2) should (be (Map.empty) or not contain value (2))
+        }
 
         val caught1 = intercept[TestFailedException] {
           Map("one" -> 1, "two" -> 2) should { not { contain value (2) } or not { contain value (2) }}
