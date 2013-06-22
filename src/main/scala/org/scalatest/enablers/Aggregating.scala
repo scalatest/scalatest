@@ -195,31 +195,31 @@ object Aggregating {
     }
     checkEqual(left, right.toIterator, Set.empty)
   }
-  
-  implicit def aggregatingNatureOfGenTraversable[E, TRAV[_] <: scala.collection.GenTraversable[_]](implicit equality: Equality[E]): Aggregating[TRAV[E]] = 
+
+  implicit def aggregatingNatureOfGenTraversable[E, TRAV[e] <: scala.collection.GenTraversable[e]](implicit equality: Equality[E]): Aggregating[TRAV[E]] = 
     new Aggregating[TRAV[E]] {
       def containsAtLeastOneOf(trav: TRAV[E], elements: scala.collection.Seq[Any]): Boolean = {
-        trav.exists((e: Any) => elements.exists((ele: Any) => equality.areEqual(e.asInstanceOf[E], ele)))
+        trav.exists((e: E) => elements.exists((ele: Any) => equality.areEqual(e, ele)))
       }
       def containsTheSameElementsAs(trav: TRAV[E], elements: GenTraversable[Any]): Boolean = {
-        checkTheSameElementsAs[E](trav.asInstanceOf[GenTraversable[E]], elements, equality)
+        checkTheSameElementsAs[E](trav, elements, equality)
       }
       def containsOnly(trav: TRAV[E], elements: scala.collection.Seq[Any]): Boolean = {
-        checkOnly[E](trav.asInstanceOf[GenTraversable[E]], elements, equality)
+        checkOnly[E](trav, elements, equality)
       }
       def containsAllOf(trav: TRAV[E], elements: scala.collection.Seq[Any]): Boolean = {
-        checkAllOf(trav.asInstanceOf[GenTraversable[E]], elements, equality)
+        checkAllOf(trav, elements, equality)
       }
     }
 
   // Enables (xs should contain ("HI")) (after being lowerCased)
-  implicit def convertEqualityToGenTraversableAggregating[E, TRAV[_] <: scala.collection.GenTraversable[_]](equality: Equality[E]): Aggregating[TRAV[E]] = 
+  implicit def convertEqualityToGenTraversableAggregating[E, TRAV[e] <: scala.collection.GenTraversable[e]](equality: Equality[E]): Aggregating[TRAV[E]] = 
     aggregatingNatureOfGenTraversable(equality)
     
   implicit def aggregatingNatureOfArray[E](implicit equality: Equality[E]): Aggregating[Array[E]] = 
     new Aggregating[Array[E]] {
       def containsAtLeastOneOf(array: Array[E], elements: scala.collection.Seq[Any]): Boolean = {
-        new ArrayWrapper(array).exists((e: Any) => elements.exists((ele: Any) => equality.areEqual(e.asInstanceOf[E], ele)))
+        new ArrayWrapper(array).exists((e: E) => elements.exists((ele: Any) => equality.areEqual(e, ele)))
       }
       def containsTheSameElementsAs(array: Array[E], elements: GenTraversable[Any]): Boolean = {
         checkTheSameElementsAs[E](new ArrayWrapper(array), elements, equality)
@@ -239,7 +239,7 @@ object Aggregating {
   implicit def aggregatingNatureOfString(implicit equality: Equality[Char]): Aggregating[String] = 
     new Aggregating[String] {
       def containsAtLeastOneOf(s: String, elements: scala.collection.Seq[Any]): Boolean = {
-        s.exists((e: Any) => elements.exists((ele: Any) => equality.areEqual(e.asInstanceOf[Char], ele)))
+        s.exists((e: Char) => elements.exists((ele: Any) => equality.areEqual(e, ele)))
       }
       def containsTheSameElementsAs(s: String, elements: GenTraversable[Any]): Boolean = {
         checkTheSameElementsAs(s, elements, equality)
@@ -255,76 +255,62 @@ object Aggregating {
   implicit def convertEqualityToStringAggregating(equality: Equality[Char]): Aggregating[String] = 
     aggregatingNatureOfString(equality)
     
-  implicit def aggregatingNatureOfGenMap[K, V, MAP[_, _] <: scala.collection.GenMap[_, _]](implicit equality: Equality[(K, V)]): Aggregating[MAP[K, V]] = 
+  implicit def aggregatingNatureOfGenMap[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](implicit equality: Equality[(K, V)]): Aggregating[MAP[K, V]] = 
     new Aggregating[MAP[K, V]] {
       def containsAtLeastOneOf(map: MAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
-        map.exists((e: Any) => elements.exists((ele: Any) => equality.areEqual(e.asInstanceOf[(K, V)], ele)))
+        map.exists((e: (K, V)) => elements.exists((ele: Any) => equality.areEqual(e, ele)))
       }
       def containsTheSameElementsAs(map: MAP[K, V], elements: GenTraversable[Any]): Boolean = {
-        checkTheSameElementsAs(map.asInstanceOf[scala.collection.GenMap[K, V]], elements, equality)
+        checkTheSameElementsAs(map, elements, equality)
       }
       def containsOnly(map: MAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
-        checkOnly(map.asInstanceOf[scala.collection.GenMap[K, V]], elements, equality)
+        checkOnly(map, elements, equality)
       }
       def containsAllOf(map: MAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
-        checkAllOf(map.asInstanceOf[scala.collection.GenMap[K, V]], elements, equality)
+        checkAllOf(map, elements, equality)
       }
     }
 
-  implicit def convertEqualityToGenMapAggregating[K, V, MAP[_, _] <: scala.collection.GenMap[_, _]](equality: Equality[(K, V)]): Aggregating[MAP[K, V]] = 
+  implicit def convertEqualityToGenMapAggregating[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](equality: Equality[(K, V)]): Aggregating[MAP[K, V]] = 
     aggregatingNatureOfGenMap(equality)
     
-  implicit def aggregatingNatureOfJavaCollection[E, JCOL[_] <: java.util.Collection[_]](implicit equality: Equality[E]): Aggregating[JCOL[E]] = 
+  implicit def aggregatingNatureOfJavaCollection[E, JCOL[e] <: java.util.Collection[e]](implicit equality: Equality[E]): Aggregating[JCOL[E]] = 
     new Aggregating[JCOL[E]] {
       def containsAtLeastOneOf(col: JCOL[E], elements: scala.collection.Seq[Any]): Boolean = {
-        col.asInstanceOf[java.util.Collection[E]].asScala.exists((e: Any) => elements.exists((ele: Any) => equality.areEqual(e.asInstanceOf[E], ele)))
+        col.asScala.exists((e: E) => elements.exists((ele: Any) => equality.areEqual(e, ele)))
       }
       def containsTheSameElementsAs(col: JCOL[E], elements: GenTraversable[Any]): Boolean = {
-        checkTheSameElementsAs(col.asInstanceOf[java.util.Collection[E]].asScala, elements, equality)
+        checkTheSameElementsAs(col.asScala, elements, equality)
       }
       def containsOnly(col: JCOL[E], elements: scala.collection.Seq[Any]): Boolean = {
-        checkOnly(col.asInstanceOf[java.util.Collection[E]].asScala, elements, equality)
+        checkOnly(col.asScala, elements, equality)
       }
       def containsAllOf(col: JCOL[E], elements: scala.collection.Seq[Any]): Boolean = {
-        checkAllOf(col.asInstanceOf[java.util.Collection[E]].asScala, elements, equality)
+        checkAllOf(col.asScala, elements, equality)
       }
     }
 
-  implicit def convertEqualityToJavaCollectionAggregating[E, JCOL[_] <: java.util.Collection[_]](equality: Equality[E]): Aggregating[JCOL[E]] = 
+  implicit def convertEqualityToJavaCollectionAggregating[E, JCOL[e] <: java.util.Collection[e]](equality: Equality[E]): Aggregating[JCOL[E]] = 
     aggregatingNatureOfJavaCollection(equality)
     
-  implicit def aggregatingNatureOfJavaMap[K, V, JMAP[_, _] <: java.util.Map[_, _]](implicit equality: Equality[java.util.Map.Entry[K, V]]): Aggregating[JMAP[K, V]] = 
+  implicit def aggregatingNatureOfJavaMap[K, V, JMAP[k, v] <: java.util.Map[k, v]](implicit equality: Equality[java.util.Map.Entry[K, V]]): Aggregating[JMAP[K, V]] = 
     new Aggregating[JMAP[K, V]] {
-      // This is needed as asScala does not preserve the original iterated order
-      /*private def getScalaMapInOrder(javaMap: JMAP[K, V]): scala.collection.GenMap[K, V] = {
-        val map = new collection.mutable.LinkedHashMap[K, V]
-        val itr = javaMap.entrySet.iterator
-        while (itr.hasNext) {
-          val entry = itr.next
-          map += ((entry.getKey.asInstanceOf[K], entry.getValue.asInstanceOf[V]))
-        }
-        map
-      }*/
     
       import scala.collection.JavaConverters._
       def containsAtLeastOneOf(map: JMAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
-        //getScalaMapInOrder(map).exists((e: Any) => elements.exists((ele: Any) => equality.areEqual(e.asInstanceOf[(K, V)], ele)))
-        map.asInstanceOf[java.util.Map[K, V]].entrySet.asScala.exists((e: java.util.Map.Entry[K, V]) => elements.exists((ele: Any) => equality.areEqual(e, ele)))
+        map.entrySet.asScala.exists((e: java.util.Map.Entry[K, V]) => elements.exists((ele: Any) => equality.areEqual(e, ele)))
       }
       def containsTheSameElementsAs(map: JMAP[K, V], elements: GenTraversable[Any]): Boolean = {
-        //checkTheSameElementsAs(getScalaMapInOrder(map), elements, equality)
-        checkTheSameElementsAs(map.asInstanceOf[java.util.Map[K, V]].entrySet.asScala, elements, equality)
+        checkTheSameElementsAs(map.entrySet.asScala, elements, equality)
       }
       def containsOnly(map: JMAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
-        //checkOnly(getScalaMapInOrder(map), elements, equality)
-        checkOnly(map.asInstanceOf[java.util.Map[K, V]].entrySet.asScala, elements, equality)
+        checkOnly(map.entrySet.asScala, elements, equality)
       }
       def containsAllOf(map: JMAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
-        //checkAllOf(getScalaMapInOrder(map), elements, equality)
-        checkAllOf(map.asInstanceOf[java.util.Map[K, V]].entrySet.asScala, elements, equality)
+        checkAllOf(map.entrySet.asScala, elements, equality)
       }
     }
 
-  implicit def convertEqualityToJavaMapAggregating[K, V, JMAP[_, _] <: java.util.Map[_, _]](equality: Equality[java.util.Map.Entry[K, V]]): Aggregating[JMAP[K, V]] = 
+  implicit def convertEqualityToJavaMapAggregating[K, V, JMAP[k, v] <: java.util.Map[k, v]](equality: Equality[java.util.Map.Entry[K, V]]): Aggregating[JMAP[K, V]] = 
     aggregatingNatureOfJavaMap(equality)
 }
