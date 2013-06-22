@@ -101,7 +101,7 @@ trait MapEqualityConstraints {
    * Provides an equality constraint that allows two subtypes of <code>scala.collection.GenMap</code>s to be compared for equality with <code>===</code> so long
    * as an <code>EqualityConstraint</code> is available for both key types and both value types.
    */
-  implicit def mapEqualityConstraint[EAK, EAV, CA[_, _] <: collection.GenMap[_, _], EBK, EBV, CB[_, _] <: collection.GenMap[_, _]](implicit equalityOfA: Equality[CA[EAK, EAV]], evKey: EqualityConstraint[EAK, EBK], evValue: EqualityConstraint[EAV, EBV]): EqualityConstraint[CA[EAK, EAV], CB[EBK, EBV]] = new BasicEqualityConstraint[CA[EAK, EAV], CB[EBK, EBV]](equalityOfA)
+  implicit def mapEqualityConstraint[KA, VA, CA[ka, kb] <: collection.GenMap[ka, kb], KB, VB, CB[kb, vb] <: collection.GenMap[kb, vb]](implicit equalityOfA: Equality[CA[KA, VA]], evKey: EqualityConstraint[KA, KB], evValue: EqualityConstraint[VA, VB]): EqualityConstraint[CA[KA, VA], CB[KB, VB]] = new BasicEqualityConstraint[CA[KA, VA], CB[KB, VB]](equalityOfA)
 }
 
 /**
