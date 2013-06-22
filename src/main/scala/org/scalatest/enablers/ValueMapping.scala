@@ -52,25 +52,23 @@ trait ValueMapping[M] {
 
 object ValueMapping {
 
-  implicit def valueMappingNatureOfGenMap[K, V, MAP[_, _] <: scala.collection.GenMap[_, _]](implicit equality: Equality[V]): ValueMapping[MAP[K, V]] = 
+  implicit def valueMappingNatureOfGenMap[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](implicit equality: Equality[V]): ValueMapping[MAP[K, V]] = 
     new ValueMapping[MAP[K, V]] {
       def containsValue(map: MAP[K, V], value: Any): Boolean = {
-        val genMap = map.asInstanceOf[scala.collection.GenMap[K, V]]
-        genMap.values.exists((v: Any) => equality.areEqual(v.asInstanceOf[V], value))
+        map.values.exists((v: V) => equality.areEqual(v, value))
       }
     }
 
-  implicit def convertEqualityToGenMapValueMapping[K, V, MAP[_, _] <: scala.collection.GenMap[_, _]](equality: Equality[V]): ValueMapping[MAP[K, V]] = 
+  implicit def convertEqualityToGenMapValueMapping[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](equality: Equality[V]): ValueMapping[MAP[K, V]] = 
     valueMappingNatureOfGenMap(equality)
     
-  implicit def valueMappingNatureOfJavaMap[K, V, JMAP[_, _] <: java.util.Map[_, _]](implicit equality: Equality[V]): ValueMapping[JMAP[K, V]] = 
+  implicit def valueMappingNatureOfJavaMap[K, V, JMAP[k, v] <: java.util.Map[k, v]](implicit equality: Equality[V]): ValueMapping[JMAP[K, V]] = 
     new ValueMapping[JMAP[K, V]] {
-      def containsValue(map: JMAP[K, V], value: Any): Boolean = {
-        val jMap = map.asInstanceOf[java.util.Map[K, V]]
-        jMap.asScala.values.exists((v: Any) => equality.areEqual(v.asInstanceOf[V], value))
+      def containsValue(jMap: JMAP[K, V], value: Any): Boolean = {
+        jMap.asScala.values.exists((v: V) => equality.areEqual(v, value))
       }
     }
 
-  implicit def convertEqualityToJavaMapValueMapping[K, V, JMAP[_, _] <: java.util.Map[_, _]](equality: Equality[V]): ValueMapping[JMAP[K, V]] = 
+  implicit def convertEqualityToJavaMapValueMapping[K, V, JMAP[k, v] <: java.util.Map[k, v]](equality: Equality[V]): ValueMapping[JMAP[K, V]] = 
     valueMappingNatureOfJavaMap(equality)
 }

@@ -65,10 +65,10 @@ trait Collecting[E, C] {
 
 object Collecting {
 
-  implicit def collectingNatureOfGenTraversable[E, TRAV[_] <: scala.collection.GenTraversable[_]]: Collecting[E, TRAV[E]] = 
+  implicit def collectingNatureOfGenTraversable[E, TRAV[e] <: scala.collection.GenTraversable[e]]: Collecting[E, TRAV[E]] = 
     new Collecting[E, TRAV[E]] {
       def loneElementOf(trav: TRAV[E]): Option[E] = {
-        if (trav.size == 1) Some(trav.head.asInstanceOf[E]) else None
+        if (trav.size == 1) Some(trav.head) else None
       }
       def sizeOf(trav: TRAV[E]): Int = trav.size
     }
@@ -81,28 +81,28 @@ object Collecting {
       def sizeOf(array: Array[E]): Int = array.length
     }
 
-  implicit def collectingNatureOfGenMap[K, V, MAP[_, _] <: scala.collection.GenMap[_, _]]: Collecting[(K, V), MAP[K, V]] = 
+  implicit def collectingNatureOfGenMap[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]]: Collecting[(K, V), MAP[K, V]] = 
     new Collecting[(K, V), MAP[K, V]] {
       def loneElementOf(map: MAP[K, V]): Option[(K, V)] = {
-        if (map.size == 1) Some(map.head.asInstanceOf[(K, V)]) else None
+        if (map.size == 1) Some(map.head) else None
       }
       def sizeOf(map: MAP[K, V]): Int = map.size
     }
 
-  implicit def collectingNatureOfJavaCollection[E, JCOL[_] <: java.util.Collection[_]]: Collecting[E, JCOL[E]] = 
+  implicit def collectingNatureOfJavaCollection[E, JCOL[e] <: java.util.Collection[e]]: Collecting[E, JCOL[E]] = 
     new Collecting[E, JCOL[E]] {
       def loneElementOf(coll: JCOL[E]): Option[E] = {
-        if (coll.size == 1) Some(coll.iterator.next.asInstanceOf[E]) else None
+        if (coll.size == 1) Some(coll.iterator.next) else None
       }
       def sizeOf(coll: JCOL[E]): Int = coll.size
     }
 
   // Wrap the extracted entry in an org.scalatest.Entry so people can call key and value methods instead of getKey and getValue
-  implicit def collectingNatureOfJavaMap[K, V, JMAP[_, _] <: java.util.Map[_, _]]: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]] = 
+  implicit def collectingNatureOfJavaMap[K, V, JMAP[k, v] <: java.util.Map[k, v]]: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]] = 
     new Collecting[org.scalatest.Entry[K, V], JMAP[K, V]] {
       def loneElementOf(jmap: JMAP[K, V]): Option[org.scalatest.Entry[K, V]] = {
         if (jmap.size == 1) {
-          val loneEntry = jmap.entrySet.iterator.next.asInstanceOf[java.util.Map.Entry[K, V]]
+          val loneEntry = jmap.entrySet.iterator.next
           Some(org.scalatest.Entry(loneEntry.getKey, loneEntry.getValue))
         } else None
       }

@@ -127,19 +127,6 @@ object Containing {
     }
   
   private def checkOneOf[T](left: GenTraversableOnce[T], right: GenTraversable[Any], equality: Equality[T]): (Set[Any], Set[Any]) = {
-    /*right.foldLeft(Set.empty[Any], Set.empty[Any]) { case ((fs, rs), r) =>
-      if (rs.find(e => equality.areEqual(e.asInstanceOf[T], r)).isDefined)
-        throw new IllegalArgumentException(FailureMessages("oneOfDuplicate", r))
-      if (left.exists(t => equality.areEqual(t, r))) {
-        // r is in the left
-        if (fs.size != 0) // This .size should be safe, it won't go > 1
-          return (fs + r, rs) // fail early by returning early, hmm..  not so 'functional'??
-        else
-          (fs + r, rs + r)
-      }
-      else 
-        (fs, rs + r) // r is not in the left
-    }*/
     // aggregate version is more verbose, but it allows parallel execution.
     right.aggregate(Set.empty[Any], Set.empty[Any])( 
       { case (((fs, rs), r)) => 
@@ -191,10 +178,10 @@ object Containing {
     )
   }
 
-  implicit def containingNatureOfJavaCollection[E, JCOL[_] <: java.util.Collection[_]](implicit equality: Equality[E]): Containing[JCOL[E]] = 
+  implicit def containingNatureOfJavaCollection[E, JCOL[e] <: java.util.Collection[e]](implicit equality: Equality[E]): Containing[JCOL[E]] = 
     new Containing[JCOL[E]] {
       def contains(javaColl: JCOL[E], ele: Any): Boolean = {
-        val it: java.util.Iterator[E] = javaColl.iterator.asInstanceOf[java.util.Iterator[E]]
+        val it: java.util.Iterator[E] = javaColl.iterator
         var found = false
         while (!found && it.hasNext) {
           found = equality.areEqual(it.next , ele)
@@ -204,78 +191,78 @@ object Containing {
       import scala.collection.JavaConverters._
       def containsOneOf(javaColl: JCOL[E], elements: scala.collection.Seq[Any]): Boolean = {
         
-        val (foundSet, processedSet) = checkOneOf[E](javaColl.asInstanceOf[java.util.Collection[E]].asScala, elements, equality)
+        val (foundSet, processedSet) = checkOneOf[E](javaColl.asScala, elements, equality)
         foundSet.size == 1
       }
       def containsNoneOf(javaColl: JCOL[E], elements: scala.collection.Seq[Any]): Boolean = {
-        val (found, processedSet) = checkNoneOf[E](javaColl.asInstanceOf[java.util.Collection[E]].asScala, elements, equality)
+        val (found, processedSet) = checkNoneOf[E](javaColl.asScala, elements, equality)
         !found.isDefined
       }
     }
 
-  implicit def convertEqualityToJavaCollectionContaining[E, JCOL[_] <: java.util.Collection[_]](equality: Equality[E]): Containing[JCOL[E]] = 
+  implicit def convertEqualityToJavaCollectionContaining[E, JCOL[e] <: java.util.Collection[e]](equality: Equality[E]): Containing[JCOL[E]] = 
     containingNatureOfJavaCollection(equality)
 
-  implicit def containingNatureOfGenTraversable[E, TRAV[_] <: scala.collection.GenTraversable[_]](implicit equality: Equality[E]): Containing[TRAV[E]] = 
+  implicit def containingNatureOfGenTraversable[E, TRAV[e] <: scala.collection.GenTraversable[e]](implicit equality: Equality[E]): Containing[TRAV[E]] = 
     new Containing[TRAV[E]] {
       def contains(trav: TRAV[E], ele: Any): Boolean = {
         equality match {
           case normEq: NormalizingEquality[_] => 
             val normRight = normEq.normalizedIfInstanceOfA(ele)
-            trav.exists((e: Any) => normEq.afterNormalizationEquality.areEqual(normEq.normalized(e.asInstanceOf[E]), normRight)) // Don't know why the compiler requires e to be type Any. Should be E.
-          case _ => trav.exists((e: Any) => equality.areEqual(e.asInstanceOf[E], ele)) // Don't know why the compiler requires e to be type Any. Should be E.
+            trav.exists((e: E) => normEq.afterNormalizationEquality.areEqual(normEq.normalized(e), normRight))
+          case _ => trav.exists((e: E) => equality.areEqual(e, ele))
         }
       }
       def containsOneOf(trav: TRAV[E], elements: scala.collection.Seq[Any]): Boolean = {
-        val (foundSet, processedSet) = checkOneOf[E](trav.asInstanceOf[GenTraversable[E]], elements, equality)
+        val (foundSet, processedSet) = checkOneOf[E](trav, elements, equality)
         foundSet.size == 1
       }
       def containsNoneOf(trav: TRAV[E], elements: scala.collection.Seq[Any]): Boolean = {
-        val (found, processedSet) = checkNoneOf[E](trav.asInstanceOf[GenTraversable[E]], elements, equality)
+        val (found, processedSet) = checkNoneOf[E](trav, elements, equality)
         !found.isDefined
       }
     }
 
   // Enables (xs should contain ("HI")) (after being lowerCased)
-  implicit def convertEqualityToGenTraversableContaining[E, TRAV[_] <: scala.collection.GenTraversable[_]](equality: Equality[E]): Containing[TRAV[E]] = 
+  implicit def convertEqualityToGenTraversableContaining[E, TRAV[e] <: scala.collection.GenTraversable[e]](equality: Equality[E]): Containing[TRAV[E]] = 
     containingNatureOfGenTraversable(equality)
 
   // OPT so that it will work with Some also, but it doesn't work with None
-  implicit def containingNatureOfOption[E, OPT[_] <: Option[_]](implicit equality: Equality[E]): Containing[OPT[E]] = 
+  implicit def containingNatureOfOption[E, OPT[e] <: Option[e]](implicit equality: Equality[E]): Containing[OPT[E]] = 
     new Containing[OPT[E]] {
       def contains(opt: OPT[E], ele: Any): Boolean = {
-        opt.exists((e: Any) => equality.areEqual(e.asInstanceOf[E], ele)) // Don't know why the compiler requires e to be type Any. Should be E.
+        opt.exists((e: E) => equality.areEqual(e, ele))
       }
       def containsOneOf(opt: OPT[E], elements: scala.collection.Seq[Any]): Boolean = {
-        val (foundSet, processedSet) = checkOneOf[E](opt.asInstanceOf[Option[E]], elements, equality)
+        val (foundSet, processedSet) = checkOneOf[E](opt, elements, equality)
         foundSet.size == 1
       }
       def containsNoneOf(opt: OPT[E], elements: scala.collection.Seq[Any]): Boolean = {
-        val (found, processedSet) = checkNoneOf[E](opt.asInstanceOf[Option[E]], elements, equality)
+        val (found, processedSet) = checkNoneOf[E](opt, elements, equality)
         !found.isDefined
       }
     }
 
   // supports (some should contain ("HI")) (after being lowerCased)
-  implicit def convertEqualityToOptionContaining[E, OPT[_] <: Option[_]](equality: Equality[E]): Containing[OPT[E]] = 
+  implicit def convertEqualityToOptionContaining[E, OPT[e] <: Option[e]](equality: Equality[E]): Containing[OPT[E]] = 
     containingNatureOfOption(equality)
 
-  implicit def containingNatureOfGenMap[K, V, MAP[_, _] <: scala.collection.GenMap[_, _]](implicit equality: Equality[(K, V)]): Containing[MAP[K, V]] = 
+  implicit def containingNatureOfGenMap[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](implicit equality: Equality[(K, V)]): Containing[MAP[K, V]] = 
     new Containing[MAP[K, V]] {
       def contains(map: MAP[K, V], ele: Any): Boolean = {
-        map.exists((e: Any) => equality.areEqual(e.asInstanceOf[(K, V)], ele)) // Don't know why the compiler requires e to be type Any. Should be E.
+        map.exists((e: (K, V)) => equality.areEqual(e, ele))
       }
       def containsOneOf(map: MAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
-        val (foundSet, processedSet) = checkOneOf[(K, V)](map.asInstanceOf[scala.collection.GenMap[K, V]], elements, equality)
+        val (foundSet, processedSet) = checkOneOf[(K, V)](map, elements, equality)
         foundSet.size == 1
       }
       def containsNoneOf(map: MAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
-        val (found, processedSet) = checkNoneOf[(K, V)](map.asInstanceOf[scala.collection.GenMap[K, V]], elements, equality)
+        val (found, processedSet) = checkNoneOf[(K, V)](map, elements, equality)
         !found.isDefined
       }
     }
 
-  implicit def convertEqualityToGenMapContaining[K, V, MAP[_, _] <: scala.collection.GenMap[_, _]](equality: Equality[(K, V)]): Containing[MAP[K, V]] = 
+  implicit def convertEqualityToGenMapContaining[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](equality: Equality[(K, V)]): Containing[MAP[K, V]] = 
     containingNatureOfGenMap(equality)
 
   implicit def containingNatureOfArray[E](implicit equality: Equality[E]): Containing[Array[E]] = 
@@ -312,23 +299,23 @@ object Containing {
   implicit def convertEqualityToStringContaining(equality: Equality[Char]): Containing[String] = 
     containingNatureOfString(equality)
     
-  implicit def containingNatureOfJavaMap[K, V, JMAP[_, _] <: java.util.Map[_, _]](implicit equality: Equality[java.util.Map.Entry[K, V]]): Containing[JMAP[K, V]] = 
+  implicit def containingNatureOfJavaMap[K, V, JMAP[k, v] <: java.util.Map[k, v]](implicit equality: Equality[java.util.Map.Entry[K, V]]): Containing[JMAP[K, V]] = 
     new Containing[JMAP[K, V]] {
       import scala.collection.JavaConverters._
       def contains(map: JMAP[K, V], ele: Any): Boolean = {
-        map.asInstanceOf[java.util.Map[K, V]].entrySet.asScala.exists((e: java.util.Map.Entry[K, V]) => equality.areEqual(e, ele))
+        map.entrySet.asScala.exists((e: java.util.Map.Entry[K, V]) => equality.areEqual(e, ele))
       }
       def containsOneOf(map: JMAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
-        val (foundSet, processedSet) = checkOneOf[java.util.Map.Entry[K, V]](map.asInstanceOf[java.util.Map[K, V]].entrySet.asScala, elements, equality)
+        val (foundSet, processedSet) = checkOneOf[java.util.Map.Entry[K, V]](map.entrySet.asScala, elements, equality)
         foundSet.size == 1
       }
       def containsNoneOf(map: JMAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
-        val (found, processedSet) = checkNoneOf[java.util.Map.Entry[K, V]](map.asInstanceOf[java.util.Map[K, V]].entrySet.asScala, elements, equality)
+        val (found, processedSet) = checkNoneOf[java.util.Map.Entry[K, V]](map.entrySet.asScala, elements, equality)
         !found.isDefined
       }
     }
 
-  implicit def convertEqualityToJavaMapContaining[K, V, JMAP[_, _] <: java.util.Map[_, _]](equality: Equality[java.util.Map.Entry[K, V]]): Containing[JMAP[K, V]] = 
+  implicit def convertEqualityToJavaMapContaining[K, V, JMAP[k, v] <: java.util.Map[k, v]](equality: Equality[java.util.Map.Entry[K, V]]): Containing[JMAP[K, V]] = 
     containingNatureOfJavaMap(equality)
 }
 

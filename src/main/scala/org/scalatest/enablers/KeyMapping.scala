@@ -52,25 +52,23 @@ trait KeyMapping[M] {
 
 object KeyMapping {
 
-  implicit def keyMappingNatureOfGenMap[K, V, MAP[_, _] <: scala.collection.GenMap[_, _]](implicit equality: Equality[K]): KeyMapping[MAP[K, V]] = 
+  implicit def keyMappingNatureOfGenMap[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](implicit equality: Equality[K]): KeyMapping[MAP[K, V]] = 
     new KeyMapping[MAP[K, V]] {
       def containsKey(map: MAP[K, V], key: Any): Boolean = {
-        val genMap = map.asInstanceOf[scala.collection.GenMap[K, V]]
-        genMap.keySet.exists((k: Any) => equality.areEqual(k.asInstanceOf[K], key))
+        map.keySet.exists((k: K) => equality.areEqual(k, key))
       }
     }
 
-  implicit def convertEqualityToGenMapKeyMapping[K, V, MAP[_, _] <: scala.collection.GenMap[_, _]](equality: Equality[K]): KeyMapping[MAP[K, V]] = 
+  implicit def convertEqualityToGenMapKeyMapping[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](equality: Equality[K]): KeyMapping[MAP[K, V]] = 
     keyMappingNatureOfGenMap(equality)
     
-  implicit def keyMappingNatureOfJavaMap[K, V, JMAP[_, _] <: java.util.Map[_, _]](implicit equality: Equality[K]): KeyMapping[JMAP[K, V]] = 
+  implicit def keyMappingNatureOfJavaMap[K, V, JMAP[k, v] <: java.util.Map[k, v]](implicit equality: Equality[K]): KeyMapping[JMAP[K, V]] = 
     new KeyMapping[JMAP[K, V]] {
-      def containsKey(map: JMAP[K, V], key: Any): Boolean = {
-        val jMap = map.asInstanceOf[java.util.Map[K, V]]
-        jMap.asScala.keySet.exists((k: Any) => equality.areEqual(k.asInstanceOf[K], key))
+      def containsKey(jMap: JMAP[K, V], key: Any): Boolean = {
+        jMap.asScala.keySet.exists((k: K) => equality.areEqual(k, key))
       }
     }
 
-  implicit def convertEqualityToJavaMapKeyMapping[K, V, JMAP[_, _] <: java.util.Map[_, _]](equality: Equality[K]): KeyMapping[JMAP[K, V]] = 
+  implicit def convertEqualityToJavaMapKeyMapping[K, V, JMAP[k, v] <: java.util.Map[k, v]](equality: Equality[K]): KeyMapping[JMAP[K, V]] = 
     keyMappingNatureOfJavaMap(equality)
 }

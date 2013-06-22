@@ -157,46 +157,46 @@ object Sequencing {
     checkEqual(left, right.toIterator, Set.empty)
   }
 
-  implicit def sequencingNatureOfGenSeq[E, SEQ[_] <: scala.collection.GenSeq[_]](implicit equality: Equality[E]): Sequencing[SEQ[E]] =
+  implicit def sequencingNatureOfGenSeq[E, SEQ[e] <: scala.collection.GenSeq[e]](implicit equality: Equality[E]): Sequencing[SEQ[E]] =
     new Sequencing[SEQ[E]] {
 
       def containsInOrder(seq: SEQ[E], elements: scala.collection.Seq[Any]): Boolean = {
-        checkInOrder(seq.asInstanceOf[GenTraversable[E]], elements, equality)
+        checkInOrder(seq, elements, equality)
       }
 
       def containsInOrderOnly(seq: SEQ[E], elements: scala.collection.Seq[Any]): Boolean = {
-        checkInOrderOnly[E](seq.asInstanceOf[GenTraversable[E]], elements, equality)
+        checkInOrderOnly[E](seq, elements, equality)
       }
 
 // TODO: Make elements a Sequencing
       def containsTheSameElementsInOrderAs(seq: SEQ[E], elements: GenTraversable[Any]): Boolean = {
-        checkTheSameElementsInOrderAs[E](seq.asInstanceOf[GenTraversable[E]], elements, equality)
+        checkTheSameElementsInOrderAs[E](seq, elements, equality)
       }
     }
 
   // Enables (xs should contain ("HI")) (after being lowerCased)
-  implicit def convertEqualityToGenSeqSequencing[E, SEQ[_] <: scala.collection.GenSeq[_]](equality: Equality[E]): Sequencing[SEQ[E]] = 
+  implicit def convertEqualityToGenSeqSequencing[E, SEQ[e] <: scala.collection.GenSeq[e]](equality: Equality[E]): Sequencing[SEQ[E]] = 
     sequencingNatureOfGenSeq(equality)
 
-  implicit def sequencingNatureOfIterator[E, IT[_] <: scala.collection.Iterator[_]](implicit equality: Equality[E]): Sequencing[IT[E]] =
+  implicit def sequencingNatureOfIterator[E, IT[e] <: scala.collection.Iterator[e]](implicit equality: Equality[E]): Sequencing[IT[E]] =
     new Sequencing[IT[E]] {
 
       def containsInOrder(it: IT[E], elements: scala.collection.Seq[Any]): Boolean = {
-        checkInOrder(it.asInstanceOf[Iterator[E]].toVector, elements, equality) // TODO: Don't like converting iterator to vector here.
+        checkInOrder(it.toVector, elements, equality) // TODO: Don't like converting iterator to vector here.
       }
 
       def containsInOrderOnly(it: IT[E], elements: scala.collection.Seq[Any]): Boolean = {
-        checkInOrderOnly[E](it.asInstanceOf[Iterator[E]].toVector, elements, equality)
+        checkInOrderOnly[E](it.toVector, elements, equality)
       }
 
 // TODO: Make elements a Sequencing
       def containsTheSameElementsInOrderAs(it: IT[E], elements: GenTraversable[Any]): Boolean = {
-        checkTheSameElementsInOrderAs[E](it.asInstanceOf[Iterator[E]].toVector, elements, equality)
+        checkTheSameElementsInOrderAs[E](it.toVector, elements, equality)
       }
     }
 
   // Enables (xs should contain ("HI")) (after being lowerCased)
-  implicit def convertEqualityToIteratorSequencing[E, IT[_] <: scala.collection.Iterator[_]](equality: Equality[E]): Sequencing[IT[E]] = 
+  implicit def convertEqualityToIteratorSequencing[E, IT[e] <: scala.collection.Iterator[e]](equality: Equality[E]): Sequencing[IT[E]] = 
     sequencingNatureOfIterator(equality)
 
   implicit def sequencingNatureOfArray[E](implicit equality: Equality[E]): Sequencing[Array[E]] = 
@@ -219,23 +219,23 @@ object Sequencing {
   implicit def convertEqualityToArraySequencing[E](equality: Equality[E]): Sequencing[Array[E]] = 
     sequencingNatureOfArray(equality)
 
-  implicit def sequencingNatureOfJavaList[E, JLIST[_] <: java.util.List[_]](implicit equality: Equality[E]): Sequencing[JLIST[E]] = 
+  implicit def sequencingNatureOfJavaList[E, JLIST[e] <: java.util.List[e]](implicit equality: Equality[E]): Sequencing[JLIST[E]] = 
     new Sequencing[JLIST[E]] {
 
       def containsInOrder(col: JLIST[E], elements: scala.collection.Seq[Any]): Boolean = {
-        checkInOrder(col.asInstanceOf[java.util.List[E]].asScala, elements, equality)
+        checkInOrder(col.asScala, elements, equality)
       }
 
       def containsInOrderOnly(col: JLIST[E], elements: scala.collection.Seq[Any]): Boolean = {
-        checkInOrderOnly(col.asInstanceOf[java.util.List[E]].asScala, elements, equality)
+        checkInOrderOnly(col.asScala, elements, equality)
       }
 
       def containsTheSameElementsInOrderAs(col: JLIST[E], elements: GenTraversable[Any]): Boolean = {
-        checkTheSameElementsInOrderAs(col.asInstanceOf[java.util.List[E]].asScala, elements, equality)
+        checkTheSameElementsInOrderAs(col.asScala, elements, equality)
       }
     }
 
-  implicit def convertEqualityToJavaListSequencing[E, JLIST[_] <: java.util.List[_]](equality: Equality[E]): Sequencing[JLIST[E]] = 
+  implicit def convertEqualityToJavaListSequencing[E, JLIST[e] <: java.util.List[e]](equality: Equality[E]): Sequencing[JLIST[E]] = 
     sequencingNatureOfJavaList(equality)
 
   implicit def sequencingNatureOfString(implicit equality: Equality[Char]): Sequencing[String] = 

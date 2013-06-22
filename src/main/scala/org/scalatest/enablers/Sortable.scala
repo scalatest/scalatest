@@ -49,21 +49,22 @@ trait Sortable[S] {
 object Sortable {
 
 // Sliding doesn't exist on GenSeq, and this is inherently sequential, so make them say .seq if they have a parallel Seq
-  implicit def sequencingNatureOfSeq[E, SEQ[_] <: scala.collection.Seq[_]](implicit ordering: Ordering[E]): Sortable[SEQ[E]] =
+// Actually on second thought, I think just do a .seq on it.
+  implicit def sequencingNatureOfSeq[E, SEQ[e] <: scala.collection.GenSeq[e]](implicit ordering: Ordering[E]): Sortable[SEQ[E]] =
     new Sortable[SEQ[E]] {
-      def isSorted(o: SEQ[E]): Boolean = o.asInstanceOf[scala.collection.Seq[E]].sliding(2).forall { duo => ordering.lteq(duo(0).asInstanceOf[E], duo(1).asInstanceOf[E]) }
+      def isSorted(o: SEQ[E]): Boolean = o.seq.sliding(2).forall { duo => ordering.lteq(duo(0), duo(1)) }
     }
 
 // TODO: Tests!
   implicit def sequencingNatureOfArray[E](implicit ordering: Ordering[E]): Sortable[Array[E]] = 
     new Sortable[Array[E]] {
-      def isSorted(o: Array[E]): Boolean = o.sliding(2).forall { duo => ordering.lteq(duo(0).asInstanceOf[E], duo(1).asInstanceOf[E]) }
+      def isSorted(o: Array[E]): Boolean = o.sliding(2).forall { duo => ordering.lteq(duo(0), duo(1)) }
     }
 
 // TODO: Tests!
-  implicit def sequencingNatureOfJavaList[E, JLIST[_] <: java.util.List[_]](implicit ordering: Ordering[E]): Sortable[JLIST[E]] = 
+  implicit def sequencingNatureOfJavaList[E, JLIST[e] <: java.util.List[e]](implicit ordering: Ordering[E]): Sortable[JLIST[E]] = 
     new Sortable[JLIST[E]] {
-      def isSorted(o: JLIST[E]): Boolean = o.asInstanceOf[java.util.List[E]].asScala.sliding(2).forall { duo => ordering.lteq(duo(0).asInstanceOf[E], duo(1).asInstanceOf[E]) }
+      def isSorted(o: JLIST[E]): Boolean = o.asScala.sliding(2).forall { duo => ordering.lteq(duo(0), duo(1)) }
     }
 }
 
