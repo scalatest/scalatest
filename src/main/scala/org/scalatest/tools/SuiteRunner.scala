@@ -58,11 +58,15 @@ private[scalatest] class SuiteRunner(suite: Suite, args: Args, status: ScalaTest
         val formatter = formatterForSuiteCompleted(suite)
 
         val duration = System.currentTimeMillis - suiteStartTime
-        if (!suite.isInstanceOf[DistributedTestRunnerSuite])
-          dispatch(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), Some(duration), formatter, Some(TopOfClass(suite.getClass.getName)), suite.rerunner))
-          
+
+        // Must call succeeds before dispatching SuiteCompleted, because if parallel test execution is mixed in,
+        // the main thread will return before the tests are done. And the HTMLReporter uses SuiteCompleted to
+        // determine when to write the page for that suite.
         if (!runStatus.succeeds())
           status.setFailed()
+
+        if (!suite.isInstanceOf[DistributedTestRunnerSuite])
+          dispatch(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), Some(duration), formatter, Some(TopOfClass(suite.getClass.getName)), suite.rerunner))
       }
       catch {
         case e: NotAllowedException =>
