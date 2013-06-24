@@ -1054,6 +1054,33 @@ final class NotWord {
    * This method enables the following syntax: 
    *
    * <pre class="stHighlight">
+   * Array(1, 2) should (not contain atMostOneOf (5) and not contain (3))
+   *                         ^
+   * </pre>
+   */
+  def contain[T](atMostOneOf: ResultOfAtMostOneOfApplication): MatcherFactory1[Any, Aggregating] = {
+    new MatcherFactory1[Any, Aggregating] {
+      def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+        
+            val right = atMostOneOf.right
+
+            MatchResult(
+              !aggregating.containsAtMostOneOf(left, right),
+              FailureMessages("containedAtMostOneOf", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+              FailureMessages("didNotContainAtMostOneOf", left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+            )
+          }
+        }
+      }
+    }
+  }
+  
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
    * Map("one" -&gt; 1, "two" -&gt; 2) should (not contain key ("three"))
    *                                         ^
    * </pre>

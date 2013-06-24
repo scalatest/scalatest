@@ -84,8 +84,14 @@ trait Aggregating[A] {
    */
   def containsAllOf(aggregation: A, eles: Seq[Any]): Boolean
 
-/*  def containsAtMostOneOf(aggregation: A, eles: Seq[Any]): Boolean
-*/
+  /**
+   * Implements <code>contain</code> <code>atMostOneOf</code> syntax for aggregations of type <code>A</code>.
+   *
+   * @param aggregation an aggregation about which an assertion is being made
+   * @param eles elements at most one of which should be contained in the passed aggregation
+   * @return true if the passed aggregation contains at most one of the passed elements
+   */
+  def containsAtMostOneOf(aggregation: A, eles: Seq[Any]): Boolean
 }
 
 object Aggregating {
@@ -195,6 +201,40 @@ object Aggregating {
     }
     checkEqual(left, right.toIterator, Set.empty)
   }
+  
+  private def checkAtMostOneOf[T](left: GenTraversable[T], right: GenTraversable[Any], equality: Equality[T]): Boolean = {
+    
+    def countElements: (IndexedSeq[Any], Int) = 
+      right.aggregate((IndexedSeq.empty[Any], 0))(
+        { case ((processedSet, count), nextRight) => 
+            if (processedSet.exists(tryEquality(_, nextRight, equality)))
+              throw new IllegalArgumentException(FailureMessages("atMostOneOfDuplicate", nextRight))
+            if (left.exists(l => equality.areEqual(l, nextRight))) {
+              val newCount = count + 1
+              if (newCount > 1)
+                return (processedSet :+ nextRight, newCount)
+              else
+                (processedSet :+ nextRight, newCount)
+            }
+            else
+              (processedSet :+ nextRight, count)
+        }, 
+        { case ((processedSet1, count1), (processedSet2, count2)) => 
+            processedSet1.find((e: Any) => processedSet2.exists((ele: Any) => tryEquality(e, ele, equality))) match {
+              case Some(e) => 
+                throw new IllegalArgumentException(FailureMessages("atMostOneOfDuplicate", e))
+              case None => 
+                val newCount = count1 + count2
+                if (newCount > 1)
+                  return (processedSet1 ++ processedSet2, newCount)
+                else
+                  (processedSet1 ++ processedSet2, newCount)
+            }
+        }
+      )
+    val (processedSet, count) = countElements
+    count <= 1      
+  }
 
   implicit def aggregatingNatureOfGenTraversable[E, TRAV[e] <: scala.collection.GenTraversable[e]](implicit equality: Equality[E]): Aggregating[TRAV[E]] = 
     new Aggregating[TRAV[E]] {
@@ -209,6 +249,9 @@ object Aggregating {
       }
       def containsAllOf(trav: TRAV[E], elements: scala.collection.Seq[Any]): Boolean = {
         checkAllOf(trav, elements, equality)
+      }
+      def containsAtMostOneOf(trav: TRAV[E], elements: scala.collection.Seq[Any]): Boolean = {
+        checkAtMostOneOf(trav, elements, equality)
       }
     }
 
@@ -230,6 +273,9 @@ object Aggregating {
       def containsAllOf(array: Array[E], elements: scala.collection.Seq[Any]): Boolean = {
         checkAllOf(new ArrayWrapper(array), elements, equality)
       }
+      def containsAtMostOneOf(array: Array[E], elements: scala.collection.Seq[Any]): Boolean = {
+        checkAtMostOneOf(new ArrayWrapper(array), elements, equality)
+      }
     }
 
   // Enables (xs should contain ("HI")) (after being lowerCased)
@@ -250,6 +296,9 @@ object Aggregating {
       def containsAllOf(s: String, elements: scala.collection.Seq[Any]): Boolean = {
         checkAllOf(s, elements, equality)
       }
+      def containsAtMostOneOf(s: String, elements: scala.collection.Seq[Any]): Boolean = {
+        checkAtMostOneOf(s, elements, equality)
+      }
     }
 
   implicit def convertEqualityToStringAggregating(equality: Equality[Char]): Aggregating[String] = 
@@ -269,6 +318,9 @@ object Aggregating {
       def containsAllOf(map: MAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
         checkAllOf(map, elements, equality)
       }
+      def containsAtMostOneOf(map: MAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
+        checkAtMostOneOf(map, elements, equality)
+      }
     }
 
   implicit def convertEqualityToGenMapAggregating[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](equality: Equality[(K, V)]): Aggregating[MAP[K, V]] = 
@@ -287,6 +339,9 @@ object Aggregating {
       }
       def containsAllOf(col: JCOL[E], elements: scala.collection.Seq[Any]): Boolean = {
         checkAllOf(col.asScala, elements, equality)
+      }
+      def containsAtMostOneOf(col: JCOL[E], elements: scala.collection.Seq[Any]): Boolean = {
+        checkAtMostOneOf(col.asScala, elements, equality)
       }
     }
 
@@ -308,6 +363,9 @@ object Aggregating {
       }
       def containsAllOf(map: JMAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
         checkAllOf(map.entrySet.asScala, elements, equality)
+      }
+      def containsAtMostOneOf(map: JMAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
+        checkAtMostOneOf(map.entrySet.asScala, elements, equality)
       }
     }
 

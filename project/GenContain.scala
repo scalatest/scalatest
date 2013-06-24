@@ -188,7 +188,10 @@ object GenContain {
          "List\\(2\\)" -> "scala.collection.mutable.LinkedHashMap(2 -> 2)", 
          "List\\(3\\)" -> "scala.collection.mutable.LinkedHashMap(3 -> 3)", 
          "List\\(8\\)" -> "scala.collection.mutable.LinkedHashMap(8 -> 8)", 
+         "List\\(1, 2\\)" -> "scala.collection.mutable.LinkedHashMap(1 -> 1, 2 -> 2)", 
+         "List\\(2, 3\\)" -> "scala.collection.mutable.LinkedHashMap(2 -> 2, 3 -> 3)", 
          "List\\(\\\"hi\\\"\\)" -> "scala.collection.mutable.LinkedHashMap(\"hi\" -> \"hi\")", 
+         "List\\(\\\"hi\\\", \\\"ho\\\"\\)" -> "scala.collection.mutable.LinkedHashMap(\"hi\" -> \"hi\", \"ho\" -> \"ho\")", 
          "List\\(\\\"hey\\\"\\)" -> "scala.collection.mutable.LinkedHashMap(\"hey\" -> \"hey\")", 
          "\\(\\\"fee\\\", \\\"fie\\\", \\\"foe\\\", \\\"fum\\\"\\)" -> "(\"fee\" -> \"fee\", \"fie\" -> \"fie\", \"foe\" -> \"foe\", \"fum\" -> \"fum\")", 
          "\\(\\\"fie\\\", \\\"fee\\\", \\\"fum\\\", \\\"foe\\\"\\)" -> "(\"fie\" -> \"fie\", \"fee\" -> \"fee\", \"fum\" -> \"fum\", \"foe\" -> \"foe\")", 
@@ -211,6 +214,7 @@ object GenContain {
          "\\(\\\"howdy\\\", \\\"hi\\\", \\\"hello\\\"\\)" -> "(\"howdy\" -> \"howdy\", \"hi\" -> \"hi\", \"hello\" -> \"hello\")", 
          "\\(\\\"howdy\\\", \\\"hi\\\", \\\"he\\\"\\)" -> "(\"howdy\" -> \"howdy\", \"hi\" -> \"hi\", \"he\" -> \"he\")", 
          "\\(\\\"howdy\\\", \\\"hello\\\", \\\"hi\\\"\\)" -> "(\"howdy\" -> \"howdy\", \"hello\" -> \"hello\", \"hi\" -> \"hi\")", 
+         "\\(\\\"fum\\\", \\\"foe\\\"\\)" -> "(\"fum\" -> \"fum\", \"foe\" -> \"foe\")",
          "\\(\\\"fum\\\", \\\"fum\\\", \\\"fum\\\"\\)" -> "(\"fum\" -> \"fum\", \"fum\" -> \"fum\", \"fum\" -> \"fum\")", 
          "\\(\\\"fum\\\", \\\"fum\\\"\\)" -> "(\"fum\" -> \"fum\", \"fum\" -> \"fum\")", 
          "\\(\\\"hi\\\"\\)" -> "(\"hi\" -> \"hi\")", 
@@ -288,9 +292,12 @@ object GenContain {
          "\\\\\"happy\\\\\", \\\\\"birthday\\\\\", \\\\\"to\\\\\", \\\\\"you\\\\\"" -> "(happy,happy), (birthday,birthday), (to,to), (you,you)", 
          "\\\\\"have\\\\\", \\\\\"a\\\\\", \\\\\"nice\\\\\", \\\\\"day\\\\\"" -> "(have,have), (a,a), (nice,nice), (day,day)",
          "\\\\\"HELLO\\\\\", \\\\\"HI\\\\\"" -> "(HELLO,HELLO), (HI,HI)", 
+         "\\\\\"hi\\\\\", \\\\\"he\\\\\"" -> "(hi,hi), (he,he)", 
          "\\\\\"hi\\\\\"" -> "(hi,hi)", 
          "\\\\\"ho\\\\\"" -> "(ho,ho)", 
          "\\\\\"hello\\\\\"" -> "(hello,hello)", 
+         "\\\\\"HE\\\\\", \\\\\"HI\\\\\"" -> "(HE,HE), (HI,HI)", 
+         "\\\\\"HI\\\\\", \\\\\"HE\\\\\"" -> "(HI,HI), (HE,HE)", 
          "\\\\\"HI\\\\\"" -> "(HI,HI)", 
          "\\\\\"HO\\\\\"" -> "(HO,HO)", 
          "\\\\\"HELLO\\\\\"" -> "(HELLO,HELLO)", 
@@ -305,6 +312,7 @@ object GenContain {
          "\\\\\"fum\\\\\", \\\\\"fum\\\\\", \\\\\"fum\\\\\"" -> "(fum,fum), (fum,fum), (fum,fum)",
          "\\\\\"fum\\\\\", \\\\\"fum\\\\\"" -> "(fum,fum), (fum,fum)",
          "\\\\\"FEE\\\\\", \\\\\"FIE\\\\\", \\\\\"FOE\\\\\", \\\\\"FUM\\\\\"" -> "(FEE,FEE), (FIE,FIE), (FOE,FOE), (FUM,FUM)", 
+         "\\\\\"FEE\\\\\", \\\\\"FIE\\\\\", \\\\\"FOE\\\\\", \\\\\"FUU\\\\\"" -> "(FEE,FEE), (FIE,FIE), (FOE,FOE), (FUU,FUU)", 
          "\\\\\"FEE\\\\\", \\\\\"FIE\\\\\", \\\\\"FOE\\\\\", \\\\\"FAM\\\\\"" -> "(FEE,FEE), (FIE,FIE), (FOE,FOE), (FAM,FAM)", 
          "\\\\\"FEE\\\\\", \\\\\"FIE\\\\\", \\\\\"FAM\\\\\", \\\\\"FOE\\\\\"" -> "(FEE,FEE), (FIE,FIE), (FAM,FAM), (FOE,FOE)", 
          "\\\\\"FEE\\\\\", \\\\\"FIE\\\\\", \\\\\"FUM\\\\\", \\\\\"FOE\\\\\"" -> "(FEE,FEE), (FIE,FIE), (FUM,FUM), (FOE,FOE)",
@@ -325,6 +333,7 @@ object GenContain {
          "of \\(2, 6, 8\\)" -> "of ((2,2), (6,6), (8,8))", 
          "of \\(3, 6, 8\\)" -> "of ((3,3), (6,6), (8,8))", 
          "of \\(3, 6, 9\\)" -> "of ((3,3), (6,6), (9,9))", 
+         "of \\(4, 3, 2\\)" -> "of ((4,4), (3,3), (2,2))", 
          "of \\(6, 7, 8\\)" -> "of ((6,6), (7,7), (8,8))", 
          "of \\(\\\\\"ho\\\\\"\\)" -> "of ((ho,ho))", 
          "of \\(\\\\\"hi\\\\\"\\)" -> "of ((hi,hi))", 
@@ -427,7 +436,10 @@ object GenContain {
         "List\\(2\\)" -> "javaMap(Entry(2, 2))", 
         "List\\(3\\)" -> "javaMap(Entry(3, 3))", 
         "List\\(8\\)" -> "javaMap(Entry(8, 8))", 
+        "List\\(1, 2\\)" -> "javaMap(Entry(1, 1), Entry(2, 2))", 
+        "List\\(2, 3\\)" -> "javaMap(Entry(2, 2), Entry(3, 3))", 
         "List\\(\\\"hi\\\"\\)" -> "javaMap(Entry(\"hi\", \"hi\"))", 
+        "List\\(\\\"hi\\\", \\\"ho\\\"\\)" -> "javaMap(Entry(\"hi\", \"hi\"), Entry(\"ho\", \"ho\"))", 
         "List\\(\\\"hey\\\"\\)" -> "javaMap(Entry(\"hey\", \"hey\"))", 
         "\\(\\\"fee\\\", \\\"fie\\\", \\\"foe\\\", \\\"fum\\\"\\)" -> "(Entry(\"fee\", \"fee\"), Entry(\"fie\", \"fie\"), Entry(\"foe\", \"foe\"), Entry(\"fum\", \"fum\"))", 
          "\\(\\\"fie\\\", \\\"fee\\\", \\\"fum\\\", \\\"foe\\\"\\)" -> "(Entry(\"fie\", \"fie\"), Entry(\"fee\", \"fee\"), Entry(\"fum\", \"fum\"), Entry(\"foe\", \"foe\"))", 
@@ -450,6 +462,7 @@ object GenContain {
          "\\(\\\"howdy\\\", \\\"hi\\\", \\\"hello\\\"\\)" -> "(Entry(\"howdy\", \"howdy\"), Entry(\"hi\", \"hi\"), Entry(\"hello\", \"hello\"))", 
          "\\(\\\"howdy\\\", \\\"hi\\\", \\\"he\\\"\\)" -> "(Entry(\"howdy\", \"howdy\"), Entry(\"hi\", \"hi\"), Entry(\"he\", \"he\"))", 
          "\\(\\\"howdy\\\", \\\"hello\\\", \\\"hi\\\"\\)" -> "(Entry(\"howdy\", \"howdy\"), Entry(\"hello\", \"hello\"), Entry(\"hi\", \"hi\"))", 
+         "\\(\\\"fum\\\", \\\"foe\\\"\\)" -> "(Entry(\"fum\", \"fum\"), Entry(\"foe\", \"foe\"))",
          "\\(\\\"fum\\\", \\\"fum\\\", \\\"fum\\\"\\)" -> "(Entry(\"fum\", \"fum\"), Entry(\"fum\", \"fum\"), Entry(\"fum\", \"fum\"))", 
          "\\(\\\"hi\\\"\\)" -> "(Entry(\"hi\", \"hi\"))", 
          "\\(\\\"hi\\\", \\\"he\\\"\\)" -> "(Entry(\"hi\", \"hi\"), Entry(\"he\", \"he\"))", 
@@ -526,9 +539,12 @@ object GenContain {
          "\\\\\"happy\\\\\", \\\\\"birthday\\\\\", \\\\\"to\\\\\", \\\\\"you\\\\\"" -> "happy=happy, birthday=birthday, to=to, you=you", 
          "\\\\\"have\\\\\", \\\\\"a\\\\\", \\\\\"nice\\\\\", \\\\\"day\\\\\"" -> "have=have, a=a, nice=nice, day=day",
          "\\\\\"HELLO\\\\\", \\\\\"HI\\\\\"" -> "HELLO=HELLO, HI=HI", 
+         "\\\\\"hi\\\\\", \\\\\"he\\\\\"" -> "hi=hi, he=he", 
          "\\\\\"hi\\\\\"" -> "hi=hi", 
          "\\\\\"ho\\\\\"" -> "ho=ho", 
          "\\\\\"hello\\\\\"" -> "hello=hello", 
+         "\\\\\"HE\\\\\", \\\\\"HI\\\\\"" -> "HE=HE, HI=HI", 
+         "\\\\\"HI\\\\\", \\\\\"HE\\\\\"" -> "HI=HI, HE=HE", 
          "\\\\\"HI\\\\\"" -> "HI=HI", 
          "\\\\\"HO\\\\\"" -> "HO=HO", 
          "\\\\\"HELLO\\\\\"" -> "HELLO=HELLO", 
@@ -543,6 +559,7 @@ object GenContain {
          "\\\\\"fum\\\\\", \\\\\"fum\\\\\", \\\\\"fum\\\\\"" -> "fum=fum, fum=fum, fum=fum",
          "\\\\\"fum\\\\\", \\\\\"fum\\\\\"" -> "fum=fum, fum=fum",
          "\\\\\"FEE\\\\\", \\\\\"FIE\\\\\", \\\\\"FOE\\\\\", \\\\\"FUM\\\\\"" -> "FEE=FEE, FIE=FIE, FOE=FOE, FUM=FUM", 
+         "\\\\\"FEE\\\\\", \\\\\"FIE\\\\\", \\\\\"FOE\\\\\", \\\\\"FUU\\\\\"" -> "FEE=FEE, FIE=FIE, FOE=FOE, FUU=FUU", 
          "\\\\\"FEE\\\\\", \\\\\"FIE\\\\\", \\\\\"FOE\\\\\", \\\\\"FAM\\\\\"" -> "FEE=FEE, FIE=FIE, FOE=FOE, FAM=FAM", 
          "\\\\\"FEE\\\\\", \\\\\"FIE\\\\\", \\\\\"FAM\\\\\", \\\\\"FOE\\\\\"" -> "FEE=FEE, FIE=FIE, FAM=FAM, FOE=FOE", 
          "\\\\\"FEE\\\\\", \\\\\"FIE\\\\\", \\\\\"FUM\\\\\", \\\\\"FOE\\\\\"" -> "FEE=FEE, FIE=FIE, FUM=FUM, FOE=FOE",
@@ -563,6 +580,7 @@ object GenContain {
          "of \\(2, 6, 8\\)" -> "of (2=2, 6=6, 8=8)", 
          "of \\(3, 6, 8\\)" -> "of (3=3, 6=6, 8=8)", 
          "of \\(3, 6, 9\\)" -> "of (3=3, 6=6, 9=9)", 
+         "of \\(4, 3, 2\\)" -> "of (4=4, 3=3, 2=2)", 
          "of \\(6, 7, 8\\)" -> "of (6=6, 7=7, 8=8)", 
          "of \\(\\\\\"ho\\\\\"\\)" -> "of (ho=ho)", 
          "of \\(\\\\\"hi\\\\\"\\)" -> "of (hi=hi)", 
@@ -660,6 +678,7 @@ object GenContain {
         "List\\[String\\]" -> "String", 
         "List\\[Int\\]" -> "String", 
         "List\\(\\\"fum\\\"\\)" -> "\"u\"",
+        "List\\(\\\"fum\\\", \\\"foe\\\"\\)" -> "\"up\"",
         "List\\(\\\"fum\\\", \\\"fu\\\"\\)" -> "\"uf\"",
         "List\\(\\\"to\\\"\\)" -> "\"o\"",
         "List\\(\\\"ho\\\"\\)" -> "\"o\"",
@@ -667,6 +686,8 @@ object GenContain {
         "List\\(2\\)" -> "\"2\"", 
         "List\\(3\\)" -> "\"3\"", 
         "List\\(8\\)" -> "\"8\"",
+        "List\\(1, 2\\)" -> "\"12\"",
+        "List\\(2, 3\\)" -> "\"23\"", 
         "List\\(0, 1, 1, 1, 2, 2, 2, 3, 3, 3\\)" -> "\"0111222333\"", 
         "List\\(0, 1, 2, 2, 3\\)" -> "\"01223\"", 
         "List\\(0, 1, 2, 3, 3\\)" -> "\"01233\"", 
@@ -700,6 +721,7 @@ object GenContain {
         "List\\(\\\"howdy\\\", \\\"hi\\\", \\\"hello\\\"\\)" -> "\"dil\"", 
         "List\\(\\\"howdy\\\", \\\"hi\\\", \\\"he\\\"\\)" -> "\"die\"", 
         "List\\(\\\"hi\\\", \\\"he\\\"\\)" -> "\"ie\"", 
+        "List\\(\\\"hi\\\", \\\"ho\\\"\\)" -> "\"io\"", 
         "List\\(\\\"hi\\\", \\\"hi\\\", \\\"he\\\"\\)" -> "\"iie\"", 
         "List\\(\\\"hi\\\", \\\"he\\\", \\\"he\\\", \\\"he\\\"\\)" -> "\"ieee\"",
         "List\\(\\\"to\\\", \\\"you\\\"\\)" -> "\"oy\"", 
@@ -745,6 +767,7 @@ object GenContain {
         "\\(\\\"howdy\\\", \\\"hi\\\", \\\"hello\\\"\\)" -> "('d', 'i', 'l')", 
         "\\(\\\"howdy\\\", \\\"hi\\\", \\\"he\\\"\\)" -> "('d', 'i', 'e')", 
         "\\(\\\"howdy\\\", \\\"hello\\\", \\\"hi\\\"\\)" -> "('d', 'l', 'i')",
+        "\\(\\\"fum\\\", \\\"foe\\\"\\)" -> "('u', 'p')",
         "\\(\\\"fum\\\", \\\"fum\\\", \\\"fum\\\"\\)" -> "('u', 'u', 'u')", 
         "\\(\\\"fum\\\", \\\"fum\\\"\\)" -> "('u', 'u')", 
         "\\(\\\"hi\\\"\\)" -> "('i')", 
@@ -819,9 +842,12 @@ object GenContain {
         "\\\\\"happy\\\\\", \\\\\"birthday\\\\\", \\\\\"to\\\\\", \\\\\"you\\\\\"" -> "'h', 'b', 'o', 'y'", 
         "\\\\\"have\\\\\", \\\\\"a\\\\\", \\\\\"nice\\\\\", \\\\\"day\\\\\"" -> "'h', 'a', 'n', 'd'", 
         "\\\\\"HELLO\\\\\", \\\\\"HI\\\\\"" -> "'L', 'I'", 
+        "\\\\\"hi\\\\\", \\\\\"he\\\\\"" -> "'i', 'e'", 
         "\\\\\"hi\\\\\"" -> "'i'", 
         "\\\\\"ho\\\\\"" -> "'o'", 
         "\\\\\"hello\\\\\"" -> "'l'", 
+        "\\\\\"HE\\\\\", \\\\\"HI\\\\\"" -> "'E', 'I'", 
+        "\\\\\"HI\\\\\", \\\\\"HE\\\\\"" -> "'I', 'E'", 
         "\\\\\"HI\\\\\"" -> "'I'", 
         "\\\\\"HO\\\\\"" -> "'O'", 
         "\\\\\"HELLO\\\\\"" -> "'L'", 
@@ -836,6 +862,7 @@ object GenContain {
         "\\\\\"fie\\\\\", \\\\\"fee\\\\\", \\\\\"fum\\\\\", \\\\\"foe\\\\\"" -> "'i', 'e', 'u', 'p'", 
         "\\\\\"fie\\\\\", \\\\\"fee\\\\\", \\\\\"fam\\\\\", \\\\\"foe\\\\\"" -> "'i', 'e', 'a', 'p'",
         "\\\\\"FEE\\\\\", \\\\\"FIE\\\\\", \\\\\"FOE\\\\\", \\\\\"FUM\\\\\"" -> "'E', 'I', 'P', 'U'", 
+        "\\\\\"FEE\\\\\", \\\\\"FIE\\\\\", \\\\\"FOE\\\\\", \\\\\"FUU\\\\\"" -> "'E', 'I', 'P', 'D'", 
         "\\\\\"FEE\\\\\", \\\\\"FIE\\\\\", \\\\\"FOE\\\\\", \\\\\"FAM\\\\\"" -> "'E', 'I', 'P', 'A'",
         "\\\\\"FEE\\\\\", \\\\\"FIE\\\\\", \\\\\"FAM\\\\\", \\\\\"FOE\\\\\"" -> "'E', 'I', 'A', 'P'",
         "\\\\\"FEE\\\\\", \\\\\"FIE\\\\\", \\\\\"FUM\\\\\", \\\\\"FOE\\\\\"" -> "'E', 'I', 'U', 'P'", 
@@ -855,6 +882,7 @@ object GenContain {
         "of \\(2, 3, 8\\)" -> "of ('2', '3', '8')", 
         "of \\(2, 6, 8\\)" -> "of ('2', '6', '8')", 
         "of \\(3, 6, 8\\)" -> "of ('3', '6', '8')", 
+        "of \\(4, 3, 2\\)" -> "of ('4', '3', '2')", 
         "of \\(\\\\\"ho\\\\\"\\)" -> "of ('o')", 
         "of \\(\\\\\"hi\\\\\"\\)" -> "of ('i')", 
         "of \\(\\\\\"he\\\\\"\\)" -> "of ('e')", 
@@ -958,8 +986,12 @@ object GenContain {
         "decorateToStringValue\\(nils\\(0\\)\\) \\+ \\\" was not equal to \\\" \\+ decorateToStringValue\\(\\\"e\\\"\\)" -> "decorateToStringValue(\"[\" + nils(0) + \"]\") + \" was not equal to \" + decorateToStringValue(\"[e]\")",
         "decorateToStringValue\\(listsString\\(2\\)\\) \\+ \\\" was not equal to \\\" \\+ decorateToStringValue\\(\\\"0123\\\"\\)" -> "decorateToStringValue(\"[\" + listsString(2) + \"]\") + \" was not equal to \" + decorateToStringValue(\"[0123]\")",
         "decorateToStringValue\\(lists\\(2\\)\\) \\+ \\\" was not equal to \\\" \\+ decorateToStringValue\\(\\\"3\\\"\\)" -> "decorateToStringValue(\"[\" + lists(2) + \"]\") + \" was not equal to \" + decorateToStringValue(\"[3]\")",
+        "decorateToStringValue\\(lists\\(2\\)\\) \\+ \\\" was not equal to \\\" \\+ decorateToStringValue\\(\\\"12\\\"\\)" -> "decorateToStringValue(\"[\" + lists(2) + \"]\") + \" was not equal to \" + decorateToStringValue(\"[12]\")",
+        "decorateToStringValue\\(lists\\(2\\)\\) \\+ \\\" was not equal to \\\" \\+ decorateToStringValue\\(\\\"234\\\"\\)" -> "decorateToStringValue(lists(2) + \"[]\") + \" was not equal to \" + decorateToStringValue(\"23[4]\")",
         "decorateToStringValue\\(hiLists\\(0\\)\\) \\+ \\\" was not equal to \\\" \\+ decorateToStringValue\\(\\\"o\\\"\\)" -> "decorateToStringValue(\"[\" + hiLists(0) + \"]\") + \" was not equal to \" + decorateToStringValue(\"[o]\")",
+        "decorateToStringValue\\(hiLists\\(0\\)\\) \\+ \\\" was not equal to \\\" \\+ decorateToStringValue\\(\\\"io\\\"\\)" -> "decorateToStringValue(\"i[e]\") + \" was not equal to \" + decorateToStringValue(\"i[o]\")",
         "decorateToStringValue\\(list1s\\(0\\)\\) \\+ \\\" was not equal to \\\" \\+ decorateToStringValue\\(\\\"8234\\\"\\)" -> "decorateToStringValue(\"[\" + list1s(0) + \"]\") + \" was not equal to \" + decorateToStringValue(\"[8234]\")",
+        "decorateToStringValue\\(list1s\\(0\\)\\) \\+ \\\" was not equal to \\\" \\+ decorateToStringValue\\(\\\"23\\\"\\)" -> "decorateToStringValue(\"[\" + list1s(0) + \"]\") + \" was not equal to \" + decorateToStringValue(\"[23]\")",
         "decorateToStringValue\\(lists\\(2\\)\\) \\+ \\\" was not equal to \\\" \\+ decorateToStringValue\\(\\\"01233\\\"\\)" -> "decorateToStringValue(\"[\" + lists(2) + \"]\") + \" was not equal to \" + decorateToStringValue(\"[01233]\")"
       )
     
@@ -1118,6 +1150,23 @@ object GenContain {
     generateFile("ListShouldContainInOrderSpec.scala", "String", stringMapping: _*)
     generateFile("ListShouldContainInOrderLogicalAndSpec.scala", "String", stringMapping: _*)
     generateFile("ListShouldContainInOrderLogicalOrSpec.scala", "String", stringMapping: _*)
+      
+    // Generate tests for atMostOneOf
+    generateFile("ListShouldContainAtMostOneOfSpec.scala", "Array", arrayMapping: _*)
+    generateFile("ListShouldContainAtMostOneOfLogicalAndSpec.scala", "Array", arrayMapping: _*)
+    generateFile("ListShouldContainAtMostOneOfLogicalOrSpec.scala", "Array", arrayMapping: _*)
+    generateFile("ListShouldContainAtMostOneOfSpec.scala", "Map", mapMapping: _*)
+    generateFile("ListShouldContainAtMostOneOfLogicalAndSpec.scala", "Map", mapMapping: _*)
+    generateFile("ListShouldContainAtMostOneOfLogicalOrSpec.scala", "Map", mapMapping: _*)
+    generateFile("ListShouldContainAtMostOneOfSpec.scala", "JavaCol", javaColMapping: _*)
+    generateFile("ListShouldContainAtMostOneOfLogicalAndSpec.scala", "JavaCol", javaColMapping: _*)
+    generateFile("ListShouldContainAtMostOneOfLogicalOrSpec.scala", "JavaCol", javaColMapping: _*)
+    generateFile("ListShouldContainAtMostOneOfSpec.scala", "JavaMap", javaMapMapping: _*)
+    generateFile("ListShouldContainAtMostOneOfLogicalAndSpec.scala", "JavaMap", javaMapMapping: _*)
+    generateFile("ListShouldContainAtMostOneOfLogicalOrSpec.scala", "JavaMap", javaMapMapping: _*)
+    generateFile("ListShouldContainAtMostOneOfSpec.scala", "String", stringMapping: _*)
+    generateFile("ListShouldContainAtMostOneOfLogicalAndSpec.scala", "String", stringMapping: _*)
+    generateFile("ListShouldContainAtMostOneOfLogicalOrSpec.scala", "String", stringMapping: _*)
   }
   
   def main(args: Array[String]) {
