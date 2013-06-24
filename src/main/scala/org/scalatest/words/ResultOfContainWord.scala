@@ -239,5 +239,24 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
           expectedValue)
       )
   }
+  
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * xs should contain atMostOneOf (1, 2)
+   *                   ^
+   * </pre>
+   */
+  def atMostOneOf(right: Any*)(implicit aggregating: Aggregating[L]) {
+    if (aggregating.containsAtMostOneOf(left, right) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "didNotContainAtMostOneOf" else "containedAtMostOneOf",
+          left,
+          UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
+        )
+      )
+  }
 }
 

@@ -60,6 +60,7 @@ import org.scalatest.words.ResultOfInOrderOnlyApplication
 import org.scalatest.words.ResultOfInOrderApplication
 import org.scalatest.words.ResultOfKeyWordApplication
 import org.scalatest.words.ResultOfValueWordApplication
+import org.scalatest.words.ResultOfAtMostOneOfApplication
 import org.scalatest.words.SortedWord
 
 /**
@@ -751,6 +752,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def noneOf(right: Any*): MatcherFactory1[T, Containing] = 
       outerInstance.and(MatcherWords.contain.noneOf(right.toList: _*))
+      
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) and contain atMostOneOf (1, 3, 3))
+     *                                                                           ^
+     * </pre>
+     */
+    def atMostOneOf(right: Any*): MatcherFactory1[T, Aggregating] = 
+      outerInstance.and(MatcherWords.contain.atMostOneOf(right.toList: _*))
   }
   
   /**
@@ -1538,6 +1550,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def contain(right: ResultOfInOrderApplication): MatcherFactory1[T, Sequencing] =
       outerInstance.and(MatcherWords.not.contain(right))
+      
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * collection should (contain theSameElementsAs (List(1, 2, 3)) and not contain atMostOneOf (List(8, 1, 2))) 
+     *                                                                      ^
+     * </pre>
+     */
+    def contain(right: ResultOfAtMostOneOfApplication): MatcherFactory1[T with Any, Aggregating] =
+      outerInstance.and(MatcherWords.not.contain(right))
 
 // TODO: Write tests and impl for contain ResultOfKey/ValueWordApplication
     /**
@@ -1709,7 +1732,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) or contain oneOf (1, 3, 3))
+     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) or contain atMostOneOf (1, 3, 3))
      *                                                                          ^
      * </pre>
      */
@@ -1748,6 +1771,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def noneOf(right: Any*): MatcherFactory1[T, Containing] = 
       outerInstance.or(MatcherWords.contain.noneOf(right.toList: _*))
+      
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) or contain atMostOneOf (1, 3, 3))
+     *                                                                          ^
+     * </pre>
+     */
+    def atMostOneOf(right: Any*): MatcherFactory1[T, Aggregating] = 
+      outerInstance.or(MatcherWords.contain.atMostOneOf(right.toList: _*))
   }
 
   /**
@@ -2561,6 +2595,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def contain(right: ResultOfInOrderApplication): MatcherFactory1[T, Sequencing] =
+      outerInstance.or(MatcherWords.not.contain(right))
+      
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * collection should (contain theSameElementsAs (List(1, 2, 3)) or not contain atMostOneOf (List(8, 1, 2))) 
+     *                                                                     ^
+     * </pre>
+     */
+    def contain(right: ResultOfAtMostOneOfApplication): MatcherFactory1[T, Aggregating] =
       outerInstance.or(MatcherWords.not.contain(right))
 
     /**

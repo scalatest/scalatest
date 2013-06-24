@@ -2539,6 +2539,16 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * This method enables the following syntax: 
    *
    * <pre class="stHighlight">
+   * List(1, 2, 3) should contain (atMostOneOf(1, 2))
+   *                               ^
+   * </pre>
+   */
+  def atMostOneOf(xs: Any*) = new ResultOfAtMostOneOfApplication(xs)
+  
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
    * a [RuntimeException] should be thrownBy {...}
    *                                ^
    * </pre>
@@ -3439,6 +3449,32 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
           )
       }
     }
+    
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * all (xs) should not contain atMostOneOf ("one")
+     *                     ^
+     * </pre>
+     */
+    def contain(atMostOneOf: ResultOfAtMostOneOfApplication)(implicit aggregating: Aggregating[T]) {
+
+      val right = atMostOneOf.right
+
+      doCollected(collected, xs, "contain", 1) { e =>
+        if (aggregating.containsAtMostOneOf(e, right) != shouldBeTrue)
+          throw newTestFailedException(
+            FailureMessages(
+              if (shouldBeTrue) "didNotContainAtMostOneOf" else "containedAtMostOneOf",
+              e,
+              UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
+            ),
+            None,
+            6
+          )
+      }
+    }
 
     /**
      * This method enables the following syntax:
@@ -3873,6 +3909,29 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
           throw newTestFailedException(
             FailureMessages(
               if (shouldBeTrue) "didNotContainAllOfElementsInOrder" else "containedAllOfElementsInOrder",
+              e,
+              UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
+            ),
+            None,
+            6
+        )
+      }
+    }
+
+    /**
+     * This method enables the following syntax: 
+     *
+     * <pre class="stHighlight">
+     * all(xs) should contain atMostOneOf (1, 2)
+     *                        ^
+     * </pre>
+     */
+    def atMostOneOf(right: Any*)(implicit aggregating: Aggregating[T]) {
+      doCollected(collected, xs, "atMostOneOf", 1) { e =>
+        if (aggregating.containsAtMostOneOf(e, right) != shouldBeTrue)
+          throw newTestFailedException(
+            FailureMessages(
+              if (shouldBeTrue) "didNotContainAtMostOneOf" else "containedAtMostOneOf",
               e,
               UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
             ),
