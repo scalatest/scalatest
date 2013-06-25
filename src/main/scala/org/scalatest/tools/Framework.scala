@@ -59,6 +59,7 @@ class Framework extends SbtFramework {
 
   class RecordingDistributor(
     fullyQualifiedName: String,
+    fingerprint: Fingerprint, 
     rerunSuiteId: String,
     originalReporter: Reporter,
     args: Args,
@@ -97,6 +98,7 @@ class Framework extends SbtFramework {
           fullyQualifiedName,
           rerunSuiteId,
           suite,
+          fingerprint, 
           loader,
           originalReporter,
           args.tracker,
@@ -164,6 +166,7 @@ class Framework extends SbtFramework {
     fullyQualifiedName: String,
     rerunSuiteId: String,
     suite: Suite,
+    fingerprint: Fingerprint, 
     loader: ClassLoader,
     reporter: Reporter,
     tracker: Tracker,
@@ -188,7 +191,7 @@ class Framework extends SbtFramework {
   ): Array[Task] = {
     val suiteStartTime = System.currentTimeMillis
     val suiteClass = suite.getClass
-    val report = new SbtReporter(rerunSuiteId, fullyQualifiedName, eventHandler, reporter, summaryCounter)
+    val report = new SbtReporter(rerunSuiteId, fullyQualifiedName, fingerprint, eventHandler, reporter, summaryCounter)
     val formatter = formatterForSuiteStarting(suite)
         
     val filter = 
@@ -205,15 +208,15 @@ class Framework extends SbtFramework {
             case suiteSelector: SuiteSelector => 
               suiteTags = mergeMap[String, Set[String]](List(suiteTags, Map(suite.suiteId -> Set(SELECTED_TAG)))) { _ ++ _ }
             case testSelector: TestSelector =>
-              testTags = mergeMap[String, Map[String, Set[String]]](List(testTags, Map(suite.suiteId -> Map(testSelector.getTestName() -> Set(SELECTED_TAG))))) { (testMap1, testMap2) => 
+              testTags = mergeMap[String, Map[String, Set[String]]](List(testTags, Map(suite.suiteId -> Map(testSelector.testName -> Set(SELECTED_TAG))))) { (testMap1, testMap2) => 
                 mergeMap[String, Set[String]](List(testMap1, testMap2)) { _ ++ _}
               }
               hasTest = true
             case nestedSuiteSelector: NestedSuiteSelector => 
-              suiteTags = mergeMap[String, Set[String]](List(suiteTags, Map(nestedSuiteSelector.getSuiteId -> Set(SELECTED_TAG)))) { _ ++ _ }
+              suiteTags = mergeMap[String, Set[String]](List(suiteTags, Map(nestedSuiteSelector.suiteId -> Set(SELECTED_TAG)))) { _ ++ _ }
               hasNested = true
             case nestedTestSelector: NestedTestSelector => 
-              testTags = mergeMap[String, Map[String, Set[String]]](List(testTags, Map(nestedTestSelector.getSuiteId -> Map(nestedTestSelector.getTestName -> Set(SELECTED_TAG))))) { (testMap1, testMap2) => 
+              testTags = mergeMap[String, Map[String, Set[String]]](List(testTags, Map(nestedTestSelector.suiteId -> Map(nestedTestSelector.testName -> Set(SELECTED_TAG))))) { (testMap1, testMap2) => 
                 mergeMap[String, Set[String]](List(testMap1, testMap2)) { _ ++ _}
               }
               hasNested = true
@@ -230,6 +233,7 @@ class Framework extends SbtFramework {
     val distributor =
       new RecordingDistributor(
         fullyQualifiedName,
+        fingerprint, 
         rerunSuiteId,
         reporter,
         args,
@@ -298,6 +302,7 @@ class Framework extends SbtFramework {
     fullyQualifiedName: String,
     rerunSuiteId: String,
     suite: Suite,
+    fingerprint: Fingerprint, 
     loader: ClassLoader,
     reporter: Reporter,
     tracker: Tracker,
@@ -341,6 +346,7 @@ class Framework extends SbtFramework {
         fullyQualifiedName,
         rerunSuiteId,
         suite,
+        fingerprint, 
         loader,
         reporter,
         tracker,
@@ -368,6 +374,7 @@ class Framework extends SbtFramework {
       
   class ScalaTestTask(
     fullyQualifiedName: String,
+    fingerprint: Fingerprint, 
     loader: ClassLoader,
     reporter: Reporter,
     tracker: Tracker,
@@ -400,6 +407,7 @@ class Framework extends SbtFramework {
     }
     
     lazy val suiteClass = loadSuiteClass
+    lazy val doNotDiscover = !explicitlySpecified && !isDiscoverableSuite(suiteClass)
     
     def tags = 
       for { 
@@ -419,9 +427,7 @@ class Framework extends SbtFramework {
       }
     
     def execute(eventHandler: EventHandler, loggers: Array[Logger]) = {
-      if (!explicitlySpecified && !isDiscoverableSuite(suiteClass))  // Do nothing if it is annotated with @DoNotDiscover and it is not explicitly specified.
-        Array.empty[Task]
-      else if (isAccessibleSuite(suiteClass) || isRunnable(suiteClass)) {
+      if (isAccessibleSuite(suiteClass) || isRunnable(suiteClass)) {
         val wrapWithAnnotation = suiteClass.getAnnotation(classOf[WrapWith])
         val suite = 
         if (wrapWithAnnotation == null)
@@ -457,6 +463,7 @@ class Framework extends SbtFramework {
           fullyQualifiedName,
           suite.suiteId,
           suite,
+          fingerprint, 
           loader,
           taskReporter,
           tracker,
@@ -580,29 +587,37 @@ class Framework extends SbtFramework {
     
     dispatchReporter(RunStarting(tracker.nextOrdinal(), 0, configMap))
     
-    def task(fullyQualifiedName: String, fingerprint: Fingerprint, explicitlySpecified: Boolean, selectors: Array[Selector]) = 
+    private def createTask(td: TaskDef): ScalaTestTask = 
       new ScalaTestTask(
-        fullyQualifiedName,
-        loader,
-        dispatchReporter,
-        tracker,
-        if (selectors.isEmpty) Set.empty else Set(SELECTED_TAG),
-        Set.empty,
-        explicitlySpecified,
-        selectors,
-        configMap,
-        summaryCounter, 
-        useSbtLogInfoReporter,
-        presentAllDurations,
-        presentInColor,
-        presentShortStackTraces,
-        presentFullStackTraces,
-        presentUnformatted,
-        presentReminder,
-        presentReminderWithShortStackTraces,
-        presentReminderWithFullStackTraces,
-        presentReminderWithoutCanceledTests
-      )
+          td.fullyQualifiedName, 
+          td.fingerprint, 
+          loader,
+          dispatchReporter,
+          tracker,
+          if (td.selectors.isEmpty) Set.empty else Set(SELECTED_TAG),
+          Set.empty,
+          td.explicitlySpecified,
+          td.selectors,
+          configMap,
+          summaryCounter, 
+          useSbtLogInfoReporter,
+          presentAllDurations,
+          presentInColor,
+          presentShortStackTraces,
+          presentFullStackTraces,
+          presentUnformatted,
+          presentReminder,
+          presentReminderWithShortStackTraces,
+          presentReminderWithFullStackTraces,
+          presentReminderWithoutCanceledTests
+        )
+      
+    def tasks(taskDefs: Array[TaskDef]): Array[Task] = 
+      for { 
+        taskDef <- taskDefs 
+        val task = createTask(taskDef)
+        if !task.doNotDiscover
+      } yield task
     
     def done = {
       if (!isDone) {
@@ -797,12 +812,13 @@ class Framework extends SbtFramework {
   
   private case class ScalaTestSbtEvent(
       fullyQualifiedName: String, 
-      isModule: Boolean, 
+      fingerprint: Fingerprint, 
       selector: Selector, 
       status: SbtStatus, 
-      throwable: Throwable) extends SbtEvent
+      throwable: OptionalThrowable, 
+      duration: Long) extends SbtEvent
   
-  private class SbtReporter(suiteId: String, fullyQualifiedName: String, eventHandler: EventHandler, report: Reporter, summaryCounter: SummaryCounter) extends Reporter {
+  private class SbtReporter(suiteId: String, fullyQualifiedName: String, fingerprint: Fingerprint, eventHandler: EventHandler, report: Reporter, summaryCounter: SummaryCounter) extends Reporter {
       
       import org.scalatest.events._
       
@@ -820,30 +836,36 @@ class Framework extends SbtFramework {
           new NestedSuiteSelector(eventSuiteId)
       }
       
+      private def getOptionalThrowable(throwable: Option[Throwable]): OptionalThrowable = 
+        throwable match {
+          case Some(t) => new OptionalThrowable(t)
+          case None => new OptionalThrowable
+        }
+      
       override def apply(event: Event) {
         report(event)
         event match {
           // the results of running an actual test
           case t: TestPending => 
             summaryCounter.incrementTestsPendingCount()
-            eventHandler.handle(ScalaTestSbtEvent(fullyQualifiedName, false, getTestSelector(t.suiteId, t.testName), SbtStatus.Skipped, null))
+            eventHandler.handle(ScalaTestSbtEvent(fullyQualifiedName, fingerprint, getTestSelector(t.suiteId, t.testName), SbtStatus.Pending, new OptionalThrowable, t.duration.getOrElse(0)))
           case t: TestFailed => 
             summaryCounter.incrementTestsFailedCount()
-            eventHandler.handle(ScalaTestSbtEvent(fullyQualifiedName, false, getTestSelector(t.suiteId, t.testName), SbtStatus.Failure, t.throwable.getOrElse(null)))
+            eventHandler.handle(ScalaTestSbtEvent(fullyQualifiedName, fingerprint, getTestSelector(t.suiteId, t.testName), SbtStatus.Failure, getOptionalThrowable(t.throwable), t.duration.getOrElse(0)))
           case t: TestSucceeded => 
             summaryCounter.incrementTestsSucceededCount()
-            eventHandler.handle(ScalaTestSbtEvent(fullyQualifiedName, false, getTestSelector(t.suiteId, t.testName), SbtStatus.Success, null))
+            eventHandler.handle(ScalaTestSbtEvent(fullyQualifiedName, fingerprint, getTestSelector(t.suiteId, t.testName), SbtStatus.Success, new OptionalThrowable, t.duration.getOrElse(0)))
           case t: TestIgnored => 
             summaryCounter.incrementTestsIgnoredCount()
-            eventHandler.handle(ScalaTestSbtEvent(fullyQualifiedName, false, getTestSelector(t.suiteId, t.testName), SbtStatus.Skipped, null))
+            eventHandler.handle(ScalaTestSbtEvent(fullyQualifiedName, fingerprint, getTestSelector(t.suiteId, t.testName), SbtStatus.Ignored, new OptionalThrowable, 0))
           case t: TestCanceled =>
             summaryCounter.incrementTestsCanceledCount()
-            eventHandler.handle(ScalaTestSbtEvent(fullyQualifiedName, false, getTestSelector(t.suiteId, t.testName), SbtStatus.Skipped, null))
+            eventHandler.handle(ScalaTestSbtEvent(fullyQualifiedName, fingerprint, getTestSelector(t.suiteId, t.testName), SbtStatus.Canceled, new OptionalThrowable, t.duration.getOrElse(0)))
           case t: SuiteCompleted => 
             summaryCounter.incrementSuitesCompletedCount()
           case t: SuiteAborted => 
             summaryCounter.incrementSuitesAbortedCount()
-            eventHandler.handle(ScalaTestSbtEvent(fullyQualifiedName, false, getSuiteSelector(t.suiteId), SbtStatus.Error, t.throwable.getOrElse(null)))
+            eventHandler.handle(ScalaTestSbtEvent(fullyQualifiedName, fingerprint, getSuiteSelector(t.suiteId), SbtStatus.Error, getOptionalThrowable(t.throwable), t.duration.getOrElse(0)))
           case t: ScopePending => 
             summaryCounter.incrementScopesPendingCount()
           case _ => 
