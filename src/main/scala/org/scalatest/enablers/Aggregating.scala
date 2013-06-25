@@ -23,19 +23,41 @@ import scala.annotation.tailrec
 import scala.collection.JavaConverters._
 
 /**
- * Supertrait for typeclasses that enable <code>contain</code> matcher syntax for aggregations.
+ * Typeclass that enables for aggregations certain <code>contain</code> syntax in the ScalaTest matchers DSL.
  *
  * <p>
  * An <code>Aggregating[A]</code> provides access to the "aggregating nature" of type <code>A</code> in such
  * a way that relevant <code>contain</code> matcher syntax can be used with type <code>A</code>. An <code>A</code>
- * can be any type of "aggregation," a type that in some way aggregates or brings together other types. ScalaTest provides
- * implicit implementations for several types. You can enable the <code>contain</code> matcher syntax on your own
- * type <code>U</code> by defining an <code>Aggregating[U]</code> for the type and making it available implicitly.
+ * can be any type of <em>aggregation</em>&#8212;an object that in some way aggregates or brings together other objects. ScalaTest provides
+ * implicit implementations for several types out of the box in the
+ * <a href="Aggregating$.html"><code>Aggregating</code> companion object</a>:
+ * </p>
+ * 
+ * <ul>
+ * <li><code>scala.collection.GenTraversable</code></li>
+ * <li><code>scala.collection.Iterator</code> (coming soon)</li>
+ * <li><code>String</code></li>
+ * <li><code>Array</code></li>
+ * <li><code>java.util.Collection</code></li>
+ * <li><code>java.util.Map</code></li>
+ * <li><code>java.util.Iterator</code> (coming soon)</li>
+ * </ul>
  * 
  * <p>
- * ScalaTest provides implicit <code>Aggregating</code> instances for <code>scala.collection.GenTraversable</code>,
- * <code>java.util.Collection</code>, <code>java.util.Map</code>, <code>String</code>, and <code>Array</code> in the
- * <code>Aggregating</code> companion object.
+ * The <code>contain</code> syntax enabled by this trait is:
+ * <p>
+ * 
+ * <ul>
+ * <li><code>result</code> <code>should</code> <code>contain</code> <code>atLeastOneOf</code> <code>(1, 2, 3)</code></li>
+ * <li><code>result</code> <code>should</code> <code>contain</code> <code>atMostOneOf</code> <code>(1, 2, 3)</code> (coming soon)</li>
+ * <li><code>result</code> <code>should</code> <code>contain</code> <code>only</code> <code>(1, 2, 3)</code></li>
+ * <li><code>result</code> <code>should</code> <code>contain</code> <code>allOf</code> <code>(1, 2, 3)</code></li>
+ * <li><code>result</code> <code>should</code> <code>contain</code> <code>theSameElementsAs</code> <code>(List(1, 2, 3))</code></li>
+ * </ul>
+ * 
+ * <p>
+ * You can enable the <code>contain</code> matcher syntax enabled by <code>Aggregating</code> on your own
+ * type <code>U</code> by defining an <code>Aggregating[U]</code> for the type and making it available implicitly.
  * </p>
  *
  * <p>
