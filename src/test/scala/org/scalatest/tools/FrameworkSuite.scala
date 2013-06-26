@@ -866,4 +866,33 @@ class FrameworkSuite extends FunSuite {
     assert(taskTags.size === 1)
     assert(taskTags(0) === "custom")
   }
+  
+  test("ScalaTest Task's taskDef method should return TaskDef that defines the task") {
+    val testEventHandler = new TestEventHandler
+    val runner = framework.runner(Array.empty, Array.empty, testClassLoader)
+    
+    val suiteSelector = new SuiteSelector();
+    
+    val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.SampleSuite", subclassFingerprint, false, Array.empty), 
+                                   new TaskDef("org.scalatest.tools.scalasbt.DoNotDiscoverSuite", subclassFingerprint, false, Array(suiteSelector)), 
+                                   new TaskDef("org.scalatest.tools.scalasbt.DoNotDiscoverSuite", subclassFingerprint, true, Array(suiteSelector))))
+                                   
+    assert(tasks.length === 2)
+    
+    val task1 = tasks(0)
+    val taskDef1 = task1.taskDef
+    assert(taskDef1.fullyQualifiedName === "org.scalatest.tools.scalasbt.SampleSuite")
+    assert(taskDef1.fingerprint === subclassFingerprint)
+    assert(taskDef1.explicitlySpecified === false)
+    assert(taskDef1.selectors.length === 0)
+    
+    val task2 = tasks(1)
+    val taskDef2 = task2.taskDef
+    assert(taskDef2.fullyQualifiedName === "org.scalatest.tools.scalasbt.DoNotDiscoverSuite")
+    assert(taskDef2.fingerprint === subclassFingerprint)
+    assert(taskDef2.explicitlySpecified === true)
+    val task2Selectors = taskDef2.selectors
+    assert(task2Selectors.length === 1)
+    assert(task2Selectors(0) === suiteSelector)
+  }
 }

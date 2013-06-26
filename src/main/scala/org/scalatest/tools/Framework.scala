@@ -58,8 +58,7 @@ class Framework extends SbtFramework {
       })
 
   class RecordingDistributor(
-    fullyQualifiedName: String,
-    fingerprint: Fingerprint, 
+    taskDefinition: TaskDef, 
     rerunSuiteId: String,
     originalReporter: Reporter,
     args: Args,
@@ -95,10 +94,9 @@ class Framework extends SbtFramework {
       val status = new ScalaTestStatefulStatus
       val nestedTask =
         new ScalaTestNestedTask(
-          fullyQualifiedName,
+          taskDefinition,
           rerunSuiteId,
           suite,
-          fingerprint, 
           loader,
           originalReporter,
           args.tracker,
@@ -163,10 +161,9 @@ class Framework extends SbtFramework {
   }
       
   def runSuite(
-    fullyQualifiedName: String,
+    taskDefinition: TaskDef,
     rerunSuiteId: String,
     suite: Suite,
-    fingerprint: Fingerprint, 
     loader: ClassLoader,
     reporter: Reporter,
     tracker: Tracker,
@@ -191,7 +188,7 @@ class Framework extends SbtFramework {
   ): Array[Task] = {
     val suiteStartTime = System.currentTimeMillis
     val suiteClass = suite.getClass
-    val report = new SbtReporter(rerunSuiteId, fullyQualifiedName, fingerprint, eventHandler, reporter, summaryCounter)
+    val report = new SbtReporter(rerunSuiteId, taskDefinition.fullyQualifiedName, taskDefinition.fingerprint, eventHandler, reporter, summaryCounter)
     val formatter = formatterForSuiteStarting(suite)
         
     val filter = 
@@ -232,8 +229,7 @@ class Framework extends SbtFramework {
     val args = Args(report, Stopper.default, filter, configMap, None, tracker, Set.empty)
     val distributor =
       new RecordingDistributor(
-        fullyQualifiedName,
-        fingerprint, 
+        taskDefinition, 
         rerunSuiteId,
         reporter,
         args,
@@ -299,10 +295,9 @@ class Framework extends SbtFramework {
   }
   
   class ScalaTestNestedTask(
-    fullyQualifiedName: String,
+    taskDefinition: TaskDef, 
     rerunSuiteId: String,
     suite: Suite,
-    fingerprint: Fingerprint, 
     loader: ClassLoader,
     reporter: Reporter,
     tracker: Tracker,
@@ -343,10 +338,9 @@ class Framework extends SbtFramework {
     
     def execute(eventHandler: EventHandler, loggers: Array[Logger]) = {
       runSuite(
-        fullyQualifiedName,
+        taskDefinition,
         rerunSuiteId,
         suite,
-        fingerprint, 
         loader,
         reporter,
         tracker,
@@ -370,17 +364,17 @@ class Framework extends SbtFramework {
         presentReminderWithoutCanceledTests
       )
     }
+    
+    def taskDef = taskDefinition
   }
       
   class ScalaTestTask(
-    fullyQualifiedName: String,
-    fingerprint: Fingerprint, 
+    taskDefinition: TaskDef, 
     loader: ClassLoader,
     reporter: Reporter,
     tracker: Tracker,
     tagsToInclude: Set[String], 
     tagsToExclude: Set[String],
-    explicitlySpecified: Boolean,
     selectors: Array[Selector],
     configMap: ConfigMap, 
     summaryCounter: SummaryCounter,
@@ -398,16 +392,16 @@ class Framework extends SbtFramework {
     
     def loadSuiteClass = {
       try {
-        Class.forName(fullyQualifiedName, true, loader)
+        Class.forName(taskDefinition.fullyQualifiedName, true, loader)
       }
       catch {
         case e: Exception => 
-          throw new IllegalArgumentException("Unable to load class: " + fullyQualifiedName)
+          throw new IllegalArgumentException("Unable to load class: " + taskDefinition.fullyQualifiedName)
       }
     }
     
     lazy val suiteClass = loadSuiteClass
-    lazy val doNotDiscover = !explicitlySpecified && !isDiscoverableSuite(suiteClass)
+    lazy val doNotDiscover = !taskDefinition.explicitlySpecified && !isDiscoverableSuite(suiteClass)
     
     def tags = 
       for { 
@@ -460,10 +454,9 @@ class Framework extends SbtFramework {
           )
 
         runSuite(
-          fullyQualifiedName,
+          taskDefinition,
           suite.suiteId,
           suite,
-          fingerprint, 
           loader,
           taskReporter,
           tracker,
@@ -488,8 +481,10 @@ class Framework extends SbtFramework {
         )
       }
        else 
-         throw new IllegalArgumentException("Class " + fullyQualifiedName + " is neither accessible accesible org.scalatest.Suite nor runnable.")
+         throw new IllegalArgumentException("Class " + taskDefinition.fullyQualifiedName + " is neither accessible accesible org.scalatest.Suite nor runnable.")
     }
+    
+    def taskDef = taskDefinition
   }
   
   private[tools] class SummaryCounter {
@@ -589,14 +584,12 @@ class Framework extends SbtFramework {
     
     private def createTask(td: TaskDef): ScalaTestTask = 
       new ScalaTestTask(
-          td.fullyQualifiedName, 
-          td.fingerprint, 
+          td, 
           loader,
           dispatchReporter,
           tracker,
           if (td.selectors.isEmpty) Set.empty else Set(SELECTED_TAG),
           Set.empty,
-          td.explicitlySpecified,
           td.selectors,
           configMap,
           summaryCounter, 
