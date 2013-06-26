@@ -70,6 +70,7 @@ import org.scalatest.TagAnnotation;
  * package org.scalatest.examples.spec.slow
  *
  * import org.scalatest._
+ * import tags.Slow
  *
  * class SetSpec extends Spec {
  *
