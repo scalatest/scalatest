@@ -1899,5 +1899,14 @@
             </or>
         </condition>
     </target>
+
+  <target name="compile-examples" depends="init">
+    <mkdir dir="${build}/examples"/>
+    <scalac destdir="${build}/examples" target="jvm-1.5" deprecation="no"
+            classpathref="build.class.path" addparams="-no-specialization"
+            fork="true" jvmargs="${jvmargs}" >
+      <src path="examples/src/main/java:examples/src/main/scala"/>
+    </scalac>
+  </target>
 </project>
 
