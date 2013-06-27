@@ -29,7 +29,7 @@ trait StringNormalizations {
      *
      * @return true if the passed object is a <code>String</code>.
      */
-    def normalizedIfInstanceOfA(b: Any) =
+    def normalizedAny(b: Any) =
       b match {
         case s: String => normalized(s)
         case _ => b

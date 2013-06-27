@@ -26,7 +26,7 @@ class TheSameElementsAsContainMatcherDeciderSpec extends Spec with Matchers with
   val mapTrimmed: Normalization[(Int, String)] =
     new Normalization[(Int, String)] {
 
-      def normalizedIfInstanceOfA(b: Any) = 
+      def normalizedAny(b: Any) = 
         b match {
           case tup: (Int, String) => normalized(tup)
           case _ => b
@@ -38,7 +38,7 @@ class TheSameElementsAsContainMatcherDeciderSpec extends Spec with Matchers with
   val javaMapTrimmed: Normalization[java.util.Map.Entry[Int, String]] =
     new Normalization[java.util.Map.Entry[Int, String]] {
 
-      def normalizedIfInstanceOfA(b: Any) = 
+      def normalizedAny(b: Any) = 
         b match {
           case entry: java.util.Map.Entry[_, _] => 
             (entry.getKey, entry.getValue) match {
@@ -54,7 +54,7 @@ class TheSameElementsAsContainMatcherDeciderSpec extends Spec with Matchers with
   val incremented: Normalization[Int] = 
     new Normalization[Int] {
       var count = 0
-      def normalizedIfInstanceOfA(b: Any) =
+      def normalizedAny(b: Any) =
         b match {
           case i: Int => normalized(i)
           case _ => b
@@ -69,7 +69,7 @@ class TheSameElementsAsContainMatcherDeciderSpec extends Spec with Matchers with
   val mapIncremented: Normalization[(Int, String)] = 
     new Normalization[(Int, String)] {
       var count = 0
-      def normalizedIfInstanceOfA(b: Any) = 
+      def normalizedAny(b: Any) = 
         b match {
           case (k: Int, v: String) => normalized(b.asInstanceOf[(Int, String)])
           case _ => b
@@ -84,7 +84,7 @@ class TheSameElementsAsContainMatcherDeciderSpec extends Spec with Matchers with
   val javaMapIncremented: Normalization[java.util.Map.Entry[Int, String]] = 
     new Normalization[java.util.Map.Entry[Int, String]] {
       var count = 0
-      def normalizedIfInstanceOfA(b: Any) = 
+      def normalizedAny(b: Any) = 
         b match {
           case entry: java.util.Map.Entry[_, _] => 
             (entry.getKey, entry.getValue) match {

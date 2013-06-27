@@ -80,7 +80,7 @@ class ListShouldContainSpec extends Spec with Matchers {
         }
         var normalizedInvokedCount = 0
         implicit val e = new NormalizingEquality[String] {
-          def normalizedIfInstanceOfA(b: Any) =
+          def normalizedAny(b: Any) =
             b match {
               case s: String => normalized(s)
               case _ => b
@@ -138,7 +138,7 @@ class ListShouldContainSpec extends Spec with Matchers {
         caseLists should not contain "HI"
         var normalizedInvokedCount = 0
         implicit val e = new NormalizingEquality[String] {
-          def normalizedIfInstanceOfA(b: Any) =
+          def normalizedAny(b: Any) =
             b match {
               case s: String => normalized(s)
               case _ => b
@@ -202,7 +202,7 @@ class ListShouldContainSpec extends Spec with Matchers {
         caseLists should not (contain ("HI"))
         var normalizedInvokedCount = 0
         implicit val e = new NormalizingEquality[String] {
-          def normalizedIfInstanceOfA(b: Any) =
+          def normalizedAny(b: Any) =
             b match {
               case s: String => normalized(s)
               case _ => b
@@ -265,7 +265,7 @@ class ListShouldContainSpec extends Spec with Matchers {
         caseLists should (not contain "HI")
         var normalizedInvokedCount = 0
         implicit val e = new NormalizingEquality[String] {
-          def normalizedIfInstanceOfA(b: Any) =
+          def normalizedAny(b: Any) =
             b match {
               case s: String => normalized(s)
               case _ => b
@@ -367,7 +367,7 @@ class ListShouldContainSpec extends Spec with Matchers {
         }
         var normalizedInvokedCount = 0
         implicit val e = new NormalizingEquality[String] {
-          def normalizedIfInstanceOfA(b: Any) =
+          def normalizedAny(b: Any) =
             b match {
               case s: String => normalized(s)
               case _ => b

@@ -27,7 +27,7 @@ class InOrderOnlyContainMatcherDeciderSpec extends Spec with Matchers with Expli
   val incremented: Normalization[Int] = 
     new Normalization[Int] {
       var count = 0
-      def normalizedIfInstanceOfA(b: Any) =
+      def normalizedAny(b: Any) =
         b match {
           case i: Int => normalized(i)
           case _ => b
@@ -42,7 +42,7 @@ class InOrderOnlyContainMatcherDeciderSpec extends Spec with Matchers with Expli
   val appended: Normalization[String] = 
     new Normalization[String] {
       var count = 0
-      def normalizedIfInstanceOfA(b: Any) =
+      def normalizedAny(b: Any) =
         b match {
           case s: String => normalized(s)
           case _ => b

@@ -28,7 +28,7 @@ package org.scalautils
 trait Normalization[A] { thisNormalization =>
 
 // TODO: Add an example of Array[String] isInstanceOfA here and in NormalizedEquality
-  /**
+  /* TODO: Need to fix this scaladoc!
    * Indicates whether the passed object is an instance of type <code>A</code>.
    *
    * <p>
@@ -55,7 +55,7 @@ trait Normalization[A] { thisNormalization =>
    * @param b the object to inspect to determine whether it is an instance of <code>A<code>
    * @return true if the passed object is an instance of <code>A</code>
    */
-  def normalizedIfInstanceOfA(b: Any): Any
+  def normalizedAny(b: Any): Any
 
   /**
    * Normalizes the passed object.
@@ -67,7 +67,7 @@ trait Normalization[A] { thisNormalization =>
 
   final def and(other: Normalization[A]): Normalization[A] =
     new Normalization[A] {
-      def normalizedIfInstanceOfA(b: Any): Any = other.normalizedIfInstanceOfA(thisNormalization.normalizedIfInstanceOfA(b))
+      def normalizedAny(b: Any): Any = other.normalizedAny(thisNormalization.normalizedAny(b))
       // Note in Scaladoc what order, and recommend people don't do side effects anyway.
       // By order, I mean left's normalized gets called first then right's normalized gets called on that result, for "left and right"
       def normalized(a: A): A = other.normalized(thisNormalization.normalized(a))

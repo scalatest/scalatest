@@ -208,7 +208,7 @@ object Containing {
       def contains(trav: TRAV[E], ele: Any): Boolean = {
         equality match {
           case normEq: NormalizingEquality[_] => 
-            val normRight = normEq.normalizedIfInstanceOfA(ele)
+            val normRight = normEq.normalizedAny(ele)
             trav.exists((e: E) => normEq.afterNormalizationEquality.areEqual(normEq.normalized(e), normRight))
           case _ => trav.exists((e: E) => equality.areEqual(e, ele))
         }

@@ -26,7 +26,7 @@ class TheSameElementsInOrderAsContainMatcherDeciderSpec extends Spec with Matche
   val incremented: Normalization[Int] = 
     new Normalization[Int] {
       var count = 0
-      def normalizedIfInstanceOfA(b: Any) =
+      def normalizedAny(b: Any) =
         b match {
           case i: Int => normalized(i)
           case _ => b

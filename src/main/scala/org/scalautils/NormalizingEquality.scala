@@ -36,10 +36,10 @@ trait NormalizingEquality[A] extends Equality[A] { thisNormEq =>
   val afterNormalizationEquality: Equality[A] = new DefaultEquality[A]
 
   final def areEqual(a: A, b: Any): Boolean = {
-    afterNormalizationEquality.areEqual(normalized(a), normalizedIfInstanceOfA(b))
+    afterNormalizationEquality.areEqual(normalized(a), normalizedAny(b))
   }
 
-  def normalizedIfInstanceOfA(b: Any): Any
+  def normalizedAny(b: Any): Any
 
   def normalized(a: A): A
 
@@ -48,7 +48,7 @@ trait NormalizingEquality[A] extends Equality[A] { thisNormEq =>
 
   final def toNormalization: Normalization[A] =
     new Normalization[A] {
-      def normalizedIfInstanceOfA(b: Any): Any = thisNormEq.normalizedIfInstanceOfA(b)
+      def normalizedAny(b: Any): Any = thisNormEq.normalizedAny(b)
       // Note in Scaladoc what order, and recommend people don't do side effects anyway.
       def normalized(a: A): A = thisNormEq.normalized(a)
     }

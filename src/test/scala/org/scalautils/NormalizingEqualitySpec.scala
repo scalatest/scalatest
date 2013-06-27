@@ -36,7 +36,7 @@ class NormalizedEqualitySpec extends Spec with NonImplicitAssertions {
   }
 
   class NormalizedStringWrapperEquality extends NormalizingEquality[StringWrapper] {
-      def normalizedIfInstanceOfA(b: Any) =
+      def normalizedAny(b: Any) =
         b match {
           case s: StringWrapper => normalized(s)
           case _ => b
@@ -75,7 +75,7 @@ class NormalizedEqualitySpec extends Spec with NonImplicitAssertions {
     def `should call .deep first if left side, right side, or both are Arrays` {
 
       class NormalizedArrayOfStringEquality extends NormalizingEquality[Array[String]] {
-        def normalizedIfInstanceOfA(b: Any) =
+        def normalizedAny(b: Any) =
           b match {
             case arr: Array[_] =>
               if (arr.forall(_.isInstanceOf[String]))

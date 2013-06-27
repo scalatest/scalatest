@@ -27,7 +27,7 @@ class OneOfContainMatcherDeciderSpec extends Spec with Matchers with Explicitly 
   val mapTrimmed: Normalization[(Int, String)] =
     new Normalization[(Int, String)] {
 
-      def normalizedIfInstanceOfA(b: Any) = 
+      def normalizedAny(b: Any) = 
         b match {
           case (k: Int, v: String) => normalized(b.asInstanceOf[(Int, String)])
           case _ => b
@@ -39,7 +39,7 @@ class OneOfContainMatcherDeciderSpec extends Spec with Matchers with Explicitly 
   val javaMapTrimmed: Normalization[java.util.Map.Entry[Int, String]] =
     new Normalization[java.util.Map.Entry[Int, String]] {
 
-      def normalizedIfInstanceOfA(b: Any) = 
+      def normalizedAny(b: Any) = 
         b match {
           case entry: java.util.Map.Entry[_, _] => 
             (entry.getKey, entry.getValue) match {
@@ -55,7 +55,7 @@ class OneOfContainMatcherDeciderSpec extends Spec with Matchers with Explicitly 
   val incremented: Normalization[Int] = 
     new Normalization[Int] {
       var count = 0
-      def normalizedIfInstanceOfA(b: Any) =
+      def normalizedAny(b: Any) =
         b match {
           case i: Int => normalized(i)
           case _ => b
@@ -70,7 +70,7 @@ class OneOfContainMatcherDeciderSpec extends Spec with Matchers with Explicitly 
   val mapIncremented: Normalization[(Int, String)] = 
     new Normalization[(Int, String)] {
       var count = 0
-      def normalizedIfInstanceOfA(b: Any) = 
+      def normalizedAny(b: Any) = 
         b match {
           case tup: (Int, String) => normalized(tup)
           case _ => b
@@ -85,7 +85,7 @@ class OneOfContainMatcherDeciderSpec extends Spec with Matchers with Explicitly 
   val appended: Normalization[String] = 
     new Normalization[String] {
       var count = 0
-      def normalizedIfInstanceOfA(b: Any) =
+      def normalizedAny(b: Any) =
         b match {
           case s: String => normalized(s)
           case _ => b
@@ -100,7 +100,7 @@ class OneOfContainMatcherDeciderSpec extends Spec with Matchers with Explicitly 
   val mapAppended: Normalization[(Int, String)] = 
     new Normalization[(Int, String)] {
       var count = 0
-      def normalizedIfInstanceOfA(b: Any) = 
+      def normalizedAny(b: Any) = 
         b match {
           case (k: Int, v: String) => normalized(b.asInstanceOf[(Int, String)])
           case _ => b
@@ -115,7 +115,7 @@ class OneOfContainMatcherDeciderSpec extends Spec with Matchers with Explicitly 
   val javaMapAppended: Normalization[java.util.Map.Entry[Int, String]] = 
     new Normalization[java.util.Map.Entry[Int, String]] {
       var count = 0
-      def normalizedIfInstanceOfA(b: Any) = 
+      def normalizedAny(b: Any) = 
         b match {
           case entry: java.util.Map.Entry[_, _] => 
             (entry.getKey, entry.getValue) match {

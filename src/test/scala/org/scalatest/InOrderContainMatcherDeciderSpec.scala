@@ -27,7 +27,7 @@ class InOrderContainMatcherDeciderSpec extends Spec with Matchers with Explicitl
   val mapTrimmed: Normalization[(Int, String)] =
     new Normalization[(Int, String)] {
 
-      def normalizedIfInstanceOfA(b: Any) = 
+      def normalizedAny(b: Any) = 
         b match {
           case tup: (Int, String) => normalized(tup)
           // case tup: (_, _) if tup._1.isInstanceOf[Int] && tup._2.isInstanceOf[String] => normalized(tup)
@@ -40,7 +40,7 @@ class InOrderContainMatcherDeciderSpec extends Spec with Matchers with Explicitl
   val incremented: Normalization[Int] = 
     new Normalization[Int] {
       var count = 0
-      def normalizedIfInstanceOfA(b: Any) =
+      def normalizedAny(b: Any) =
         b match {
           case i: Int => normalized(i)
           case _ => b
@@ -55,7 +55,7 @@ class InOrderContainMatcherDeciderSpec extends Spec with Matchers with Explicitl
   val mapIncremented: Normalization[(Int, String)] = 
     new Normalization[(Int, String)] {
       var count = 0
-      def normalizedIfInstanceOfA(b: Any) = 
+      def normalizedAny(b: Any) = 
         b match {
           // case tup: (_, _) if tup._1.isInstanceOf[Int] && tup._2.isInstanceOf[String] => normalized(tup)
           case tup: (Int, String) => normalized(tup)
@@ -71,7 +71,7 @@ class InOrderContainMatcherDeciderSpec extends Spec with Matchers with Explicitl
   val appended: Normalization[String] = 
     new Normalization[String] {
       var count = 0
-      def normalizedIfInstanceOfA(b: Any) =
+      def normalizedAny(b: Any) =
         b match {
           case s: String => normalized(s)
           case _ => b
@@ -84,7 +84,7 @@ class InOrderContainMatcherDeciderSpec extends Spec with Matchers with Explicitl
     }
   
   class Translated(map: Map[String, String]) extends Normalization[String] {
-      def normalizedIfInstanceOfA(b: Any) =
+      def normalizedAny(b: Any) =
         b match {
           case s: String => normalized(s)
           case _ => b
