@@ -26,74 +26,88 @@ class InOrderContainMatcherDeciderSpec extends Spec with Matchers with Explicitl
 
   val mapTrimmed: Normalization[(Int, String)] =
     new Normalization[(Int, String)] {
-
-      def normalizedAny(b: Any) = 
+      def normalized(s: (Int, String)): (Int, String) = (s._1, s._2.trim)
+      def canNormalize(b: Any) = 
         b match {
-          case tup: (Int, String) => normalized(tup)
-          // case tup: (_, _) if tup._1.isInstanceOf[Int] && tup._2.isInstanceOf[String] => normalized(tup)
+          case (_: Int, _: String) => true
+          case _ => false
+        }
+      def normalizedOrSame(b: Any) = 
+        b match {
+          case (k: Int, v: String) => normalized((k, v))
           case _ => b
         }
-
-      def normalized(s: (Int, String)): (Int, String) = (s._1, s._2.trim)
     }
   
   val incremented: Normalization[Int] = 
     new Normalization[Int] {
       var count = 0
-      def normalizedAny(b: Any) =
-        b match {
-          case i: Int => normalized(i)
-          case _ => b
-        }
-    
       def normalized(s: Int): Int = {
         count += 1
         s + count
       }
+      def canNormalize(b: Any) = b.isInstanceOf[Int]
+      def normalizedOrSame(b: Any) =
+        b match {
+          case i: Int => normalized(i)
+          case _ => b
+        }
     }
   
   val mapIncremented: Normalization[(Int, String)] = 
     new Normalization[(Int, String)] {
       var count = 0
-      def normalizedAny(b: Any) = 
-        b match {
-          // case tup: (_, _) if tup._1.isInstanceOf[Int] && tup._2.isInstanceOf[String] => normalized(tup)
-          case tup: (Int, String) => normalized(tup)
-          case _ => b
-        }
-    
       def normalized(s: (Int, String)): (Int, String) = {
         count += 1
         (s._1 + count, s._2)
       }
+      def canNormalize(b: Any) = 
+        b match {
+          case (_: Int, _: String) => true
+          case _ => false
+        }
+      def normalizedOrSame(b: Any) = 
+        b match {
+          case (k: Int, v: String) => normalized((k, v))
+          case _ => b
+        }
     }
   
   val appended: Normalization[String] = 
     new Normalization[String] {
       var count = 0
-      def normalizedAny(b: Any) =
-        b match {
-          case s: String => normalized(s)
-          case _ => b
-        }
-    
       def normalized(s: String): String = {
         count += 1
         s + count
       }
-    }
-  
-  class Translated(map: Map[String, String]) extends Normalization[String] {
-      def normalizedAny(b: Any) =
+      def canNormalize(b: Any) =
+        b match {
+          case _: String => true
+          case _ => false
+        }
+      def normalizedOrSame(b: Any) =
         b match {
           case s: String => normalized(s)
           case _ => b
         }
+    }
+  
+  class Translated(map: Map[String, String]) extends Normalization[String] {
     def normalized(s: String): String = 
       map.get(s) match {
         case Some(translated) => translated
         case None => s
       }
+      def canNormalize(b: Any) =
+        b match {
+          case _: String => true
+          case _ => false
+        }
+      def normalizedOrSame(b: Any) =
+        b match {
+          case s: String => normalized(s)
+          case _ => b
+        }
   }
   
   val lowerCaseEquality = 

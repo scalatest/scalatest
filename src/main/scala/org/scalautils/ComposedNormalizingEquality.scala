@@ -35,6 +35,17 @@ private[scalautils] final class ComposedNormalizingEquality[A](
   normalization: Normalization[A]
 ) extends NormalizingEquality[A] {
 
+
+  /**
+   * Normalizes the passed object.
+   *
+   * @param o the object to normalize
+   * @return the normalized form of the passed object
+   */
+  def normalized(a: A): A = normalization.normalized(a)
+
+  def canNormalize(b: Any): Boolean = normalization.canNormalize(b)
+
   /* TODO: Fix scaladoc
    * Indicates whether the passed object is an instance of type <code>A</code>.
    *
@@ -62,14 +73,6 @@ private[scalautils] final class ComposedNormalizingEquality[A](
    * @param b the object to inspect to determine whether it is an instance of <code>A<code>
    * @return true if the passed object is an instance of <code>A</code>
    */
-  def normalizedAny(b: Any): Any = normalization.normalizedAny(b)
-
-  /**
-   * Normalizes the passed object.
-   *
-   * @param o the object to normalize
-   * @return the normalized form of the passed object
-   */
-  def normalized(a: A): A = normalization.normalized(a)
+  def normalizedOrSame(b: Any): Any = normalization.normalizedOrSame(b)
 }
 

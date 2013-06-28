@@ -36,16 +36,21 @@ class NormalizedEqualitySpec extends Spec with NonImplicitAssertions {
   }
 
   class NormalizedStringWrapperEquality extends NormalizingEquality[StringWrapper] {
-      def normalizedAny(b: Any) =
-        b match {
-          case s: StringWrapper => normalized(s)
-          case _ => b
-        }
     def normalized(sw: StringWrapper): StringWrapper = {
       sw.value = sw.value.toLowerCase
       sw.isNormalized = true
       sw
     }
+    def canNormalize(b: Any) =
+      b match {
+        case s: StringWrapper => true
+        case _ => false
+      }
+    def normalizedOrSame(b: Any) =
+      b match {
+        case s: StringWrapper => normalized(s)
+        case _ => b
+      }
   }
 
   object `A NormalizingEquality type class` {
@@ -75,7 +80,17 @@ class NormalizedEqualitySpec extends Spec with NonImplicitAssertions {
     def `should call .deep first if left side, right side, or both are Arrays` {
 
       class NormalizedArrayOfStringEquality extends NormalizingEquality[Array[String]] {
-        def normalizedAny(b: Any) =
+        def normalized(arr: Array[String]): Array[String] = arr.map(_.trim.toLowerCase)
+        def canNormalize(b: Any) =
+          b match {
+            case arr: Array[_] =>
+              if (arr.forall(_.isInstanceOf[String]))
+                true
+              else
+                false
+            case _ => false
+          }
+        def normalizedOrSame(b: Any) =
           b match {
             case arr: Array[_] =>
               if (arr.forall(_.isInstanceOf[String]))
@@ -84,7 +99,6 @@ class NormalizedEqualitySpec extends Spec with NonImplicitAssertions {
                 b
             case _ => b
           }
-        def normalized(arr: Array[String]): Array[String] = arr.map(_.trim.toLowerCase)
       }
 
       val a = Array(" hi", "ThErE    ", "DuDeS  ")

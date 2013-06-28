@@ -26,16 +26,16 @@ class TheSameElementsInOrderAsContainMatcherDeciderSpec extends Spec with Matche
   val incremented: Normalization[Int] = 
     new Normalization[Int] {
       var count = 0
-      def normalizedAny(b: Any) =
-        b match {
-          case i: Int => normalized(i)
-          case _ => b
-        }
-    
       def normalized(s: Int): Int = {
         count += 1
         s + count
       }
+      def canNormalize(b: Any): Boolean = b.isInstanceOf[Int]
+      def normalizedOrSame(b: Any) =
+        b match {
+          case i: Int => normalized(i)
+          case _ => b
+        }
     }
   
   val lowerCaseEquality = 

@@ -80,15 +80,16 @@ class ListShouldContainSpec extends Spec with Matchers {
         }
         var normalizedInvokedCount = 0
         implicit val e = new NormalizingEquality[String] {
-          def normalizedAny(b: Any) =
-            b match {
-              case s: String => normalized(s)
-              case _ => b
-            }
           def normalized(s: String): String = {
             normalizedInvokedCount += 1
             s.toLowerCase
           }
+          def canNormalize(b: Any): Boolean = b.isInstanceOf[String]
+          def normalizedOrSame(b: Any) =
+            b match {
+              case s: String => normalized(s)
+              case _ => b
+            }
         }
         caseLists should contain ("HI")
         normalizedInvokedCount should be (4)
@@ -138,15 +139,16 @@ class ListShouldContainSpec extends Spec with Matchers {
         caseLists should not contain "HI"
         var normalizedInvokedCount = 0
         implicit val e = new NormalizingEquality[String] {
-          def normalizedAny(b: Any) =
-            b match {
-              case s: String => normalized(s)
-              case _ => b
-            }
           def normalized(s: String): String = {
             normalizedInvokedCount += 1
             s.toLowerCase
           }
+          def canNormalize(b: Any): Boolean = b.isInstanceOf[String]
+          def normalizedOrSame(b: Any) =
+            b match {
+              case s: String => normalized(s)
+              case _ => b
+            }
         }
         intercept[TestFailedException] {
           caseLists should not contain "HI"
@@ -202,15 +204,16 @@ class ListShouldContainSpec extends Spec with Matchers {
         caseLists should not (contain ("HI"))
         var normalizedInvokedCount = 0
         implicit val e = new NormalizingEquality[String] {
-          def normalizedAny(b: Any) =
-            b match {
-              case s: String => normalized(s)
-              case _ => b
-            }
           def normalized(s: String): String = {
             normalizedInvokedCount += 1
             s.toLowerCase
           }
+          def canNormalize(b: Any): Boolean = b.isInstanceOf[String]
+          def normalizedOrSame(b: Any) =
+            b match {
+              case s: String => normalized(s)
+              case _ => b
+            }
         }
         intercept[TestFailedException] {
           caseLists should not (contain ("HI"))
@@ -265,15 +268,16 @@ class ListShouldContainSpec extends Spec with Matchers {
         caseLists should (not contain "HI")
         var normalizedInvokedCount = 0
         implicit val e = new NormalizingEquality[String] {
-          def normalizedAny(b: Any) =
-            b match {
-              case s: String => normalized(s)
-              case _ => b
-            }
           def normalized(s: String): String = {
             normalizedInvokedCount += 1
             s.toLowerCase
           }
+          def canNormalize(b: Any): Boolean = b.isInstanceOf[String]
+          def normalizedOrSame(b: Any) =
+            b match {
+              case s: String => normalized(s)
+              case _ => b
+            }
         }
         intercept[TestFailedException] {
           caseLists should (not contain "HI")
@@ -367,15 +371,16 @@ class ListShouldContainSpec extends Spec with Matchers {
         }
         var normalizedInvokedCount = 0
         implicit val e = new NormalizingEquality[String] {
-          def normalizedAny(b: Any) =
-            b match {
-              case s: String => normalized(s)
-              case _ => b
-            }
           def normalized(s: String): String = {
             normalizedInvokedCount += 1
             s.toLowerCase
           }
+          def canNormalize(b: Any): Boolean = b.isInstanceOf[String]
+          def normalizedOrSame(b: Any) =
+            b match {
+              case s: String => normalized(s)
+              case _ => b
+            }
         }
         all (hiHeHoLists) should contain ("HO")
         normalizedInvokedCount should be (12)

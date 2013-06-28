@@ -55,7 +55,9 @@ trait Normalization[A] { thisNormalization =>
    * @param b the object to inspect to determine whether it is an instance of <code>A<code>
    * @return true if the passed object is an instance of <code>A</code>
    */
-  def normalizedAny(b: Any): Any
+  def normalizedOrSame(b: Any): Any
+
+  def canNormalize(b: Any): Boolean
 
   /**
    * Normalizes the passed object.
@@ -67,10 +69,11 @@ trait Normalization[A] { thisNormalization =>
 
   final def and(other: Normalization[A]): Normalization[A] =
     new Normalization[A] {
-      def normalizedAny(b: Any): Any = other.normalizedAny(thisNormalization.normalizedAny(b))
       // Note in Scaladoc what order, and recommend people don't do side effects anyway.
       // By order, I mean left's normalized gets called first then right's normalized gets called on that result, for "left and right"
       def normalized(a: A): A = other.normalized(thisNormalization.normalized(a))
+      def canNormalize(b: Any): Boolean = other.canNormalize(b) || thisNormalization.canNormalize(b)
+      def normalizedOrSame(b: Any): Any = other.normalizedOrSame(thisNormalization.normalizedOrSame(b))
     }
 }
 

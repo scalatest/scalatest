@@ -26,20 +26,32 @@ class NoneOfContainMatcherDeciderSpec extends Spec with Matchers with Explicitly
 
   val mapTrimmed: Normalization[(Int, String)] =
     new Normalization[(Int, String)] {
-
-      def normalizedAny(b: Any) = 
+      def normalized(s: (Int, String)): (Int, String) = (s._1, s._2.trim)
+      def canNormalize(b: Any) = 
         b match {
-          case tup: (Int, String) => normalized(tup)
+          case (_: Int, _: String) => true
+          case _ => false
+        }
+      def normalizedOrSame(b: Any) = 
+        b match {
+          case (k: Int, v: String) => normalized((k, v))
           case _ => b
         }
-
-      def normalized(s: (Int, String)): (Int, String) = (s._1, s._2.trim)
     }
   
   val javaMapTrimmed: Normalization[java.util.Map.Entry[Int, String]] =
     new Normalization[java.util.Map.Entry[Int, String]] {
-
-      def normalizedAny(b: Any) = 
+      def normalized(s: java.util.Map.Entry[Int, String]): java.util.Map.Entry[Int, String] = Entry(s.getKey, s.getValue.trim)
+      def canNormalize(b: Any) = 
+        b match {
+          case entry: java.util.Map.Entry[_, _] => 
+            (entry.getKey, entry.getValue) match {
+              case (_: Int, _: String) => true
+              case _ => false
+            }
+          case _ => false
+        }
+      def normalizedOrSame(b: Any) = 
         b match {
           case entry: java.util.Map.Entry[_, _] => 
             (entry.getKey, entry.getValue) match {
@@ -48,74 +60,93 @@ class NoneOfContainMatcherDeciderSpec extends Spec with Matchers with Explicitly
             }
           case _ => b
         }
-
-      def normalized(s: java.util.Map.Entry[Int, String]): java.util.Map.Entry[Int, String] = Entry(s.getKey, s.getValue.trim)
     }
   
   val incremented: Normalization[Int] = 
     new Normalization[Int] {
       var count = 0
-      def normalizedAny(b: Any) =
-        b match {
-          case i: Int => normalized(i)
-          case _ => b
-        }
-    
       def normalized(s: Int): Int = {
         count += 1
         s + count
       }
+      def canNormalize(b: Any): Boolean = b.isInstanceOf[Int]
+      def normalizedOrSame(b: Any) =
+        b match {
+          case i: Int => normalized(i)
+          case _ => b
+        }
     }
   
   val mapIncremented: Normalization[(Int, String)] = 
     new Normalization[(Int, String)] {
       var count = 0
-      def normalizedAny(b: Any) = 
-        b match {
-          case tup: (Int, String) => normalized(tup)
-          case _ => b
-        }
-    
       def normalized(s: (Int, String)): (Int, String) = {
         count += 1
         (s._1 + count, s._2)
       }
+      def canNormalize(b: Any) = 
+        b match {
+          case (_: Int, _: String) => true
+          case _ => false
+        }
+      def normalizedOrSame(b: Any) = 
+        b match {
+          case (k: Int, v: String) => normalized((k, v))
+          case _ => b
+        }
     }
   
   val appended: Normalization[String] = 
     new Normalization[String] {
       var count = 0
-      def normalizedAny(b: Any) =
-        b match {
-          case s: String => normalized(s)
-          case _ => b
-        }
-    
       def normalized(s: String): String = {
         count += 1
         s + count
       }
+      def canNormalize(b: Any): Boolean = b.isInstanceOf[String]
+      def normalizedOrSame(b: Any) =
+        b match {
+          case s: String => normalized(s)
+          case _ => b
+        }
     }
   
   val mapAppended: Normalization[(Int, String)] = 
     new Normalization[(Int, String)] {
       var count = 0
-      def normalizedAny(b: Any) = 
-        b match {
-          case (k: Int, v: String) => normalized(b.asInstanceOf[(Int, String)])
-          case _ => b
-        }
-    
       def normalized(s: (Int, String)): (Int, String) = {
         count += 1
         (s._1, s._2 + count)
       }
+      def canNormalize(b: Any) = 
+        b match {
+          case (_: Int, _: String) => true
+          case _ => false
+        }
+      def normalizedOrSame(b: Any) = 
+        b match {
+          case (k: Int, v: String) => normalized(b.asInstanceOf[(Int, String)])
+          case _ => b
+        }
     }
   
   val javaMapAppended: Normalization[java.util.Map.Entry[Int, String]] = 
     new Normalization[java.util.Map.Entry[Int, String]] {
       var count = 0
-      def normalizedAny(b: Any) = 
+      def normalized(s: java.util.Map.Entry[Int, String]): java.util.Map.Entry[Int, String] = {
+        count += 1
+        Entry(s.getKey, s.getValue + count)
+      }
+      def canNormalize(b: Any) = 
+        b match {
+          case entry: java.util.Map.Entry[_, _] => 
+            (entry.getKey, entry.getValue) match {
+              case (_: Int, _: String) => true
+              case _ => false
+            }
+          case _ => false
+        }
+      def normalizedOrSame(b: Any) = 
         b match {
           case entry: java.util.Map.Entry[_, _] => 
             (entry.getKey, entry.getValue) match {
@@ -125,11 +156,6 @@ class NoneOfContainMatcherDeciderSpec extends Spec with Matchers with Explicitly
             }
           case _ => b
         }
-    
-      def normalized(s: java.util.Map.Entry[Int, String]): java.util.Map.Entry[Int, String] = {
-        count += 1
-        Entry(s.getKey, s.getValue + count)
-      }
     }
   
   val lowerCaseEquality = 

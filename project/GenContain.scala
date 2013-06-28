@@ -58,7 +58,8 @@ object GenContain {
     
     val stringLowerCased = "val lowerCased: Normalization[Char] = new Normalization[Char] {\n" +
     "    def normalized(c: Char): Char = c.toString.toLowerCase.toCharArray()(0)\n" +
-    "    def normalizedAny(b: Any) =\n" +
+    "    def canNormalize(b: Any): Boolean = b.isInstanceOf[Char]\n" +
+    "    def normalizedOrSame(b: Any) =\n" +
     "      b match {\n" + 
     "        case c: Char => normalized(c)\n" + 
     "        case _ => b\n" + 
@@ -67,7 +68,12 @@ object GenContain {
     
     val mapLowerCased = "val lowerCased: Normalization[(String, String)] = new Normalization[(String, String)] {\n" + 
     "    def normalized(s: (String, String)): (String, String) = (s._1.toLowerCase, s._2.toLowerCase)\n" +
-    "    def normalizedAny(b: Any) =\n" + 
+    "    def canNormalize(b: Any): Boolean =\n" +
+    "      b match {\n" + 
+    "        case (_: String, _: String) => true\n" + 
+    "        case _ => false\n" + 
+    "      }\n" + 
+    "    def normalizedOrSame(b: Any) =\n" + 
     "      b match {\n" + 
     "        case (s1: String, s2: String) => normalized((s1, s2))\n" + 
     "        case _ => b\n" + 
@@ -81,7 +87,12 @@ object GenContain {
     
     val mapTrimmed = "val trimmed: Normalization[(String, String)] = new Normalization[(String, String)] {\n" + 
     "    def normalized(s: (String, String)): (String, String) = (s._1.trim, s._2.trim)\n" +
-    "    def normalizedAny(b: Any) =\n" + 
+    "    def canNormalize(b: Any): Boolean =\n" +
+    "      b match {\n" + 
+    "        case (_: String, _: String) => true\n" + 
+    "        case _ => false\n" + 
+    "      }\n" + 
+    "    def normalizedOrSame(b: Any) =\n" + 
     "      b match {\n" + 
     "        case (s1: String, s2: String) => normalized((s1, s2))\n" + 
     "        case _ => b\n" + 
@@ -90,7 +101,16 @@ object GenContain {
     
     val javaMapLowerCased = "val lowerCased: Normalization[java.util.Map.Entry[String, String]] = new Normalization[java.util.Map.Entry[String, String]] {\n" + 
     "    def normalized(s: java.util.Map.Entry[String, String]): java.util.Map.Entry[String, String] = org.scalatest.Entry(s.getKey.toLowerCase, s.getValue.toLowerCase)\n" +
-    "    def normalizedAny(b: Any) =\n" + 
+    "    def canNormalize(b: Any): Boolean =\n" +
+    "      b match {\n" + 
+    "        case entry: java.util.Map.Entry[_, _] => \n" +
+    "          (entry.getKey, entry.getValue) match {\n" +
+    "            case (k: String, v: String) => true\n" +
+    "            case _ => false\n" +
+    "        }\n" + 
+    "        case _ => false\n" + 
+    "      }\n" + 
+    "    def normalizedOrSame(b: Any) =\n" + 
     "      b match {\n" + 
     "        case entry: java.util.Map.Entry[_, _] => \n" +
     "          (entry.getKey, entry.getValue) match {\n" +
@@ -112,7 +132,16 @@ object GenContain {
     
     val javaMapTrimmed = "val trimmed: Normalization[java.util.Map.Entry[String, String]] = new Normalization[java.util.Map.Entry[String, String]] {\n" + 
     "    def normalized(s: java.util.Map.Entry[String, String]): java.util.Map.Entry[String, String] = org.scalatest.Entry(s.getKey.trim, s.getValue.trim)\n" +
-    "    def normalizedAny(b: Any) =\n" + 
+    "    def canNormalize(b: Any): Boolean =\n" +
+    "      b match {\n" + 
+    "        case entry: java.util.Map.Entry[_, _] => \n" +
+    "          (entry.getKey, entry.getValue) match {\n " +
+    "            case (_: String, _: String) => true\n" +
+    "            case _ => false\n" +
+    "          }\n" + 
+    "        case _ => false\n" + 
+    "      }\n" + 
+    "    def normalizedOrSame(b: Any) =\n" + 
     "      b match {\n" + 
     "        case entry: java.util.Map.Entry[_, _] => \n" +
     "          (entry.getKey, entry.getValue) match {\n " +
