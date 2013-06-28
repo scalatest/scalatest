@@ -84,7 +84,7 @@
     <dependency>
       <groupId>org.scalatest</groupId>
       <artifactId>test-interface</artifactId>
-      <version>1.0-SNAP3</version>
+      <version>1.0-SNAP7</version>
       <optional>true</optional>
     </dependency>
 
