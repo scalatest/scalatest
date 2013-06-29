@@ -27,38 +27,6 @@ package org.scalautils
  */
 trait Normalization[A] { thisNormalization =>
 
-// TODO: Add an example of Array[String] isInstanceOfA here and in NormalizedEquality
-  /* TODO: Need to fix this scaladoc!
-   * Indicates whether the passed object is an instance of type <code>A</code>.
-   *
-   * <p>
-   * This method is invoked by the <code>areEqual</code> method of subclass <code>NormalizedEquality</code> to determine whether or not
-   * <code>b</code> can be cast to </code>A</code> so that it can be safely passed to <code>normalized</code>.
-   * To implement this method, simply call <code>b.isInstanceOf[A]</code> for the actual <code>A</code> type.
-   * For example, if you are defining a <code>NormalizedEquality[String]</code>, your <code>isInstanceOf</code>
-   * method should look like:
-   * </p>
-   *
-   * <pre class="stHighlight">
-   * def isInstanceOfA(b: Any) = b.isInstanceOf[String]
-   * </pre>
-   *
-   * <p>
-   * If you are defining a <code>NormalizedEquality[xml.Node]</code> your <code>isInstanceOf</code> method
-   * should look like:
-   * </p>
-   *
-   * <pre class="stHighlight">
-   * def isInstanceOfA(b: Any) = b.isInstanceOf[xml.Node]
-   * </pre>
-   *
-   * @param b the object to inspect to determine whether it is an instance of <code>A<code>
-   * @return true if the passed object is an instance of <code>A</code>
-   */
-  def normalizedOrSame(b: Any): Any
-
-  def canNormalize(b: Any): Boolean
-
   /**
    * Normalizes the passed object.
    *
@@ -72,8 +40,6 @@ trait Normalization[A] { thisNormalization =>
       // Note in Scaladoc what order, and recommend people don't do side effects anyway.
       // By order, I mean left's normalized gets called first then right's normalized gets called on that result, for "left and right"
       def normalized(a: A): A = other.normalized(thisNormalization.normalized(a))
-      def canNormalize(b: Any): Boolean = other.canNormalize(b) || thisNormalization.canNormalize(b)
-      def normalizedOrSame(b: Any): Any = other.normalizedOrSame(thisNormalization.normalizedOrSame(b))
     }
 }
 
