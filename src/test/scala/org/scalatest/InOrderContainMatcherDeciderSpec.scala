@@ -17,15 +17,15 @@ package org.scalatest
 
 import org.scalautils.Equality
 import org.scalautils.Explicitly
-import org.scalautils.StringNormalizers
-import org.scalautils.Normalizer
+import org.scalautils.StringNormalizations
+import org.scalautils.Normality
 import collection.GenTraversable
 import SharedHelpers._
 
-class InOrderContainMatcherDeciderSpec extends Spec with Matchers with Explicitly with StringNormalizers {
+class InOrderContainMatcherDeciderSpec extends Spec with Matchers with Explicitly with StringNormalizations {
 
-  val mapTrimmed: Normalizer[(Int, String)] =
-    new Normalizer[(Int, String)] {
+  val mapTrimmed: Normality[(Int, String)] =
+    new Normality[(Int, String)] {
       def normalized(s: (Int, String)): (Int, String) = (s._1, s._2.trim)
       def canNormalize(b: Any) = 
         b match {
@@ -39,8 +39,8 @@ class InOrderContainMatcherDeciderSpec extends Spec with Matchers with Explicitl
         }
     }
   
-  val incremented: Normalizer[Int] = 
-    new Normalizer[Int] {
+  val incremented: Normality[Int] = 
+    new Normality[Int] {
       var count = 0
       def normalized(s: Int): Int = {
         count += 1
@@ -54,8 +54,8 @@ class InOrderContainMatcherDeciderSpec extends Spec with Matchers with Explicitl
         }
     }
   
-  val mapIncremented: Normalizer[(Int, String)] = 
-    new Normalizer[(Int, String)] {
+  val mapIncremented: Normality[(Int, String)] = 
+    new Normality[(Int, String)] {
       var count = 0
       def normalized(s: (Int, String)): (Int, String) = {
         count += 1
@@ -73,8 +73,8 @@ class InOrderContainMatcherDeciderSpec extends Spec with Matchers with Explicitl
         }
     }
   
-  val appended: Normalizer[String] = 
-    new Normalizer[String] {
+  val appended: Normality[String] = 
+    new Normality[String] {
       var count = 0
       def normalized(s: String): String = {
         count += 1
@@ -92,7 +92,7 @@ class InOrderContainMatcherDeciderSpec extends Spec with Matchers with Explicitl
         }
     }
   
-  class Translated(map: Map[String, String]) extends Normalizer[String] {
+  class Translated(map: Map[String, String]) extends Normality[String] {
     def normalized(s: String): String = 
       map.get(s) match {
         case Some(translated) => translated

@@ -17,9 +17,9 @@ package org.scalautils
 
 import org.scalatest._
 
-class StringNormalizersSpec extends Spec with StringNormalizers {
+class StringNormalizationsSpec extends Spec with StringNormalizations {
 
-  object `StringNormalizers ` {
+  object `StringNormalizations ` {
     def `should provide a way to normalize a string by making it lower case` { 
       assert(lowerCased.normalized("Hello") === "hello")
       assert(lowerCased.normalized("hello") === "hello")

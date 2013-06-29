@@ -17,14 +17,14 @@ package org.scalatest
 
 import org.scalautils.Equality
 import org.scalautils.Explicitly
-import org.scalautils.StringNormalizers
-import org.scalautils.Normalizer
+import org.scalautils.StringNormalizations
+import org.scalautils.Normality
 import SharedHelpers._
 
-class TheSameElementsInOrderAsContainMatcherDeciderSpec extends Spec with Matchers with Explicitly with StringNormalizers {
+class TheSameElementsInOrderAsContainMatcherDeciderSpec extends Spec with Matchers with Explicitly with StringNormalizations {
   
-  val incremented: Normalizer[Int] = 
-    new Normalizer[Int] {
+  val incremented: Normality[Int] = 
+    new Normality[Int] {
       var count = 0
       def normalized(s: Int): Int = {
         count += 1

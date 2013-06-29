@@ -21,7 +21,7 @@ package org.scalautils
  *
  * @author Bill Venners
  */
-trait StringNormalizers {
+trait StringNormalizations {
 
   /**
    * Produces a <code>Normalization[String]</code> whose <code>normalized</code> method
@@ -29,8 +29,8 @@ trait StringNormalizers {
    *
    * @return a <code>Normalization[String]</code> that normalizes by transforming strings to lower case.
    */
-  val lowerCased: Normalizer[String] =
-    new AbstractStringNormalizer {
+  val lowerCased: Normality[String] =
+    new StringNormality {
 
       /**
        * Returns the result of invoking <code>toLowerCase</code> on the passed string.
@@ -46,8 +46,8 @@ trait StringNormalizers {
    *
    * @return a <code>Normalization[String]</code> that normalizes strings by trimming them.
    */
-  val trimmed: Normalizer[String] =
-    new AbstractStringNormalizer {
+  val trimmed: Normality[String] =
+    new StringNormality {
 
       /**
        * Returns the result of invoking <code>trimmed</code> on the passed string.
@@ -59,7 +59,9 @@ trait StringNormalizers {
 } 
 
 /**
- * Companion object to trait <code>StringNormalizers</code> that provides an 
+ * Companion object to trait <code>StringNormalizations</code> that provides an 
  * alternative to mixing it in.
  */
-object StringNormalizers extends StringNormalizers
+object StringNormalizations extends StringNormalizations
+
+

@@ -15,7 +15,7 @@
  */
 package org.scalautils
 
-abstract class AbstractStringNormalizer extends Normalizer[String] {
+trait StringNormality extends Normality[String] {
 
   // TODO: Scaladoc
   def canNormalize(b: Any): Boolean = b.isInstanceOf[String]

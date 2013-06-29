@@ -96,7 +96,7 @@ class DecidedByEquality[A](equality: Equality[A]) extends Equality[A] {
    */
   def areEqual(a: A, b: Any): Boolean = equality.areEqual(a, b)
 
-  def afterBeing(normalizer: Normalizer[A]): NormalizingEquality[A] =
-    new ComposedNormalizingEquality[A](equality, normalizer)
+  def afterBeing(normality: Normality[A]): NormalizingEquality[A] =
+    new ComposedNormalizingEquality[A](equality, normality)
 } 
 

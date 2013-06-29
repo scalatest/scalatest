@@ -17,7 +17,7 @@ package org.scalatest
 
 import org.scalautils.Equality
 import org.scalautils.NormalizingEquality
-import org.scalautils.StringNormalizers._
+import org.scalautils.StringNormalizations._
 import SharedHelpers._
 
 class OptionShouldContainSpec extends Spec with Matchers {

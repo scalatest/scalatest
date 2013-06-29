@@ -25,7 +25,7 @@ package org.scalautils
  * 
  * @tparam A the type whose normalization is being defined
  */
-trait Normalizer[A] extends Normalization[A] { thisNormalization =>
+trait Normality[A] extends Normalization[A] { thisNormality =>
 
   // TODO: Add an example of Array[String] isInstanceOfA here and in NormalizedEquality
   /* TODO: Need to fix this scaladoc!
@@ -59,12 +59,12 @@ trait Normalizer[A] extends Normalization[A] { thisNormalization =>
 
   def canNormalize(b: Any): Boolean
 
-  final def and(other: Normalizer[A]): Normalizer[A] =
-    new Normalizer[A] {
+  final def and(other: Normality[A]): Normality[A] =
+    new Normality[A] {
       // Note in Scaladoc what order, and recommend people don't do side effects anyway.
       // By order, I mean left's normalized gets called first then right's normalized gets called on that result, for "left and right"
-      def normalized(a: A): A = other.normalized(thisNormalization.normalized(a))
-      def canNormalize(b: Any): Boolean = other.canNormalize(b) || thisNormalization.canNormalize(b)
-      def normalizedOrSame(b: Any): Any = other.normalizedOrSame(thisNormalization.normalizedOrSame(b))
+      def normalized(a: A): A = other.normalized(thisNormality.normalized(a))
+      def canNormalize(b: Any): Boolean = other.canNormalize(b) || thisNormality.canNormalize(b)
+      def normalizedOrSame(b: Any): Any = other.normalizedOrSame(thisNormality.normalizedOrSame(b))
     }
 }
