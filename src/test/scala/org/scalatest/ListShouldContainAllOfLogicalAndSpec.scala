@@ -16,7 +16,7 @@
 package org.scalatest
 
 import org.scalautils.Equality
-import org.scalautils.Normalization
+import org.scalautils.OpenNormalization
 import org.scalautils.StringNormalizations._
 import SharedHelpers._
 import FailureMessages.decorateToStringValue

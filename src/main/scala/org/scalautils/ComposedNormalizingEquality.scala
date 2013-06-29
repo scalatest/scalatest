@@ -32,9 +32,8 @@ package org.scalautils
  */
 private[scalautils] final class ComposedNormalizingEquality[A](
   override val afterNormalizationEquality: Equality[A],
-  normalization: Normalization[A]
+  normalization: OpenNormalization[A]
 ) extends NormalizingEquality[A] {
-
 
   /**
    * Normalizes the passed object.

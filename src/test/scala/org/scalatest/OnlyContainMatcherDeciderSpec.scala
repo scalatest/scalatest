@@ -18,14 +18,14 @@ package org.scalatest
 import org.scalautils.Equality
 import org.scalautils.Explicitly
 import org.scalautils.StringNormalizations
-import org.scalautils.Normalization
+import org.scalautils.OpenNormalization
 import collection.GenTraversable
 import SharedHelpers._
 
 class OnlyContainMatcherDeciderSpec extends Spec with Matchers with Explicitly with StringNormalizations {
 
-  val mapTrimmed: Normalization[(Int, String)] =
-    new Normalization[(Int, String)] {
+  val mapTrimmed: OpenNormalization[(Int, String)] =
+    new OpenNormalization[(Int, String)] {
       def normalized(s: (Int, String)): (Int, String) = (s._1, s._2.trim)
       def canNormalize(b: Any) = 
         b match {
@@ -39,8 +39,8 @@ class OnlyContainMatcherDeciderSpec extends Spec with Matchers with Explicitly w
         }
     }
   
-  val javaMapTrimmed: Normalization[java.util.Map.Entry[Int, String]] =
-    new Normalization[java.util.Map.Entry[Int, String]] {
+  val javaMapTrimmed: OpenNormalization[java.util.Map.Entry[Int, String]] =
+    new OpenNormalization[java.util.Map.Entry[Int, String]] {
       def normalized(s: java.util.Map.Entry[Int, String]): java.util.Map.Entry[Int, String] = Entry(s.getKey, s.getValue.trim)
       def canNormalize(b: Any) = 
         b match {
@@ -62,8 +62,8 @@ class OnlyContainMatcherDeciderSpec extends Spec with Matchers with Explicitly w
         }
     }
   
-  val incremented: Normalization[Int] = 
-    new Normalization[Int] {
+  val incremented: OpenNormalization[Int] = 
+    new OpenNormalization[Int] {
       var count = 0
       def normalized(s: Int): Int = {
         count += 1
@@ -77,8 +77,8 @@ class OnlyContainMatcherDeciderSpec extends Spec with Matchers with Explicitly w
         }
     }
   
-  val mapIncremented: Normalization[(Int, String)] = 
-    new Normalization[(Int, String)] {
+  val mapIncremented: OpenNormalization[(Int, String)] = 
+    new OpenNormalization[(Int, String)] {
       var count = 0
       def normalized(s: (Int, String)): (Int, String) = {
         count += 1
@@ -96,8 +96,8 @@ class OnlyContainMatcherDeciderSpec extends Spec with Matchers with Explicitly w
         }
     }
   
-  val appended: Normalization[String] = 
-    new Normalization[String] {
+  val appended: OpenNormalization[String] = 
+    new OpenNormalization[String] {
       var count = 0
       def normalized(s: String): String = {
         count += 1
@@ -111,8 +111,8 @@ class OnlyContainMatcherDeciderSpec extends Spec with Matchers with Explicitly w
         }
     }
   
-  val mapAppended: Normalization[(Int, String)] = 
-    new Normalization[(Int, String)] {
+  val mapAppended: OpenNormalization[(Int, String)] = 
+    new OpenNormalization[(Int, String)] {
       var count = 0
       def normalized(s: (Int, String)): (Int, String) = {
         count += 1
@@ -130,8 +130,8 @@ class OnlyContainMatcherDeciderSpec extends Spec with Matchers with Explicitly w
         }
     }
   
-  val javaMapAppended: Normalization[java.util.Map.Entry[Int, String]] = 
-    new Normalization[java.util.Map.Entry[Int, String]] {
+  val javaMapAppended: OpenNormalization[java.util.Map.Entry[Int, String]] = 
+    new OpenNormalization[java.util.Map.Entry[Int, String]] {
       var count = 0
       def normalized(s: java.util.Map.Entry[Int, String]): java.util.Map.Entry[Int, String] = {
         count += 1

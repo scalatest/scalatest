@@ -23,7 +23,7 @@ package org.scalautils
  */
 trait StringNormalizations {
 
-  abstract class StringNormalization extends Normalization[String] {
+  abstract class StringNormalization extends OpenNormalization[String] {
 
     // TODO: Scaladoc
     def canNormalize(b: Any): Boolean = b.isInstanceOf[String]
@@ -46,7 +46,7 @@ trait StringNormalizations {
    *
    * @return a <code>Normalization[String]</code> that normalizes by transforming strings to lower case.
    */
-  val lowerCased: Normalization[String] =
+  val lowerCased: OpenNormalization[String] =
     new StringNormalization {
 
       /**
@@ -63,7 +63,7 @@ trait StringNormalizations {
    *
    * @return a <code>Normalization[String]</code> that normalizes strings by trimming them.
    */
-  val trimmed: Normalization[String] =
+  val trimmed: OpenNormalization[String] =
     new StringNormalization {
 
       /**

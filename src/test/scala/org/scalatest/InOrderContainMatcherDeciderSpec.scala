@@ -18,14 +18,14 @@ package org.scalatest
 import org.scalautils.Equality
 import org.scalautils.Explicitly
 import org.scalautils.StringNormalizations
-import org.scalautils.Normalization
+import org.scalautils.OpenNormalization
 import collection.GenTraversable
 import SharedHelpers._
 
 class InOrderContainMatcherDeciderSpec extends Spec with Matchers with Explicitly with StringNormalizations {
 
-  val mapTrimmed: Normalization[(Int, String)] =
-    new Normalization[(Int, String)] {
+  val mapTrimmed: OpenNormalization[(Int, String)] =
+    new OpenNormalization[(Int, String)] {
       def normalized(s: (Int, String)): (Int, String) = (s._1, s._2.trim)
       def canNormalize(b: Any) = 
         b match {
@@ -39,8 +39,8 @@ class InOrderContainMatcherDeciderSpec extends Spec with Matchers with Explicitl
         }
     }
   
-  val incremented: Normalization[Int] = 
-    new Normalization[Int] {
+  val incremented: OpenNormalization[Int] = 
+    new OpenNormalization[Int] {
       var count = 0
       def normalized(s: Int): Int = {
         count += 1
@@ -54,8 +54,8 @@ class InOrderContainMatcherDeciderSpec extends Spec with Matchers with Explicitl
         }
     }
   
-  val mapIncremented: Normalization[(Int, String)] = 
-    new Normalization[(Int, String)] {
+  val mapIncremented: OpenNormalization[(Int, String)] = 
+    new OpenNormalization[(Int, String)] {
       var count = 0
       def normalized(s: (Int, String)): (Int, String) = {
         count += 1
@@ -73,8 +73,8 @@ class InOrderContainMatcherDeciderSpec extends Spec with Matchers with Explicitl
         }
     }
   
-  val appended: Normalization[String] = 
-    new Normalization[String] {
+  val appended: OpenNormalization[String] = 
+    new OpenNormalization[String] {
       var count = 0
       def normalized(s: String): String = {
         count += 1
@@ -92,7 +92,7 @@ class InOrderContainMatcherDeciderSpec extends Spec with Matchers with Explicitl
         }
     }
   
-  class Translated(map: Map[String, String]) extends Normalization[String] {
+  class Translated(map: Map[String, String]) extends OpenNormalization[String] {
     def normalized(s: String): String = 
       map.get(s) match {
         case Some(translated) => translated

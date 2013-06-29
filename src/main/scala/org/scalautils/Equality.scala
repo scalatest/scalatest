@@ -98,11 +98,11 @@ trait Equality[A] {
 } 
 
 object Equality {
-  def apply[A](normalization: Normalization[A]): Equality[A] = {
+  def apply[A](openNormalization: OpenNormalization[A]): Equality[A] = {
     new NormalizingEquality[A] {
-      def normalized(a: A): A = normalization.normalized(a)
-      def canNormalize(b: Any): Boolean = normalization.canNormalize(b)
-      def normalizedOrSame(b: Any): Any = normalization.normalizedOrSame(b)
+      def normalized(a: A): A = openNormalization.normalized(a)
+      def canNormalize(b: Any): Boolean = openNormalization.canNormalize(b)
+      def normalizedOrSame(b: Any): Any = openNormalization.normalizedOrSame(b)
     }
   }
 }

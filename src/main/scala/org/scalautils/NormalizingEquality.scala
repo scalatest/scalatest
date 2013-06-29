@@ -45,11 +45,16 @@ trait NormalizingEquality[A] extends Equality[A] { thisNormEq =>
 
   def normalizedOrSame(b: Any): Any
 
-  final def and(other: Normalization[A]): NormalizingEquality[A] =
+  final def and(other: OpenNormalization[A]): NormalizingEquality[A] =
     new ComposedNormalizingEquality[A](afterNormalizationEquality, this.toNormalization and other)
 
-  final def toNormalization: Normalization[A] =
-    new Normalization[A] {
+/*
+  final def and(other: Normalization[A]): NormalizingEquality[A] =
+    new ComposedNormalizingEquality[A](afterNormalizationEquality, this.toNormalization and other)
+*/
+
+  final def toNormalization: OpenNormalization[A] =
+    new OpenNormalization[A] {
       // Note in Scaladoc what order, and recommend people don't do side effects anyway.
       def normalized(a: A): A = thisNormEq.normalized(a)
       def canNormalize(b: Any): Boolean = thisNormEq.canNormalize(b)

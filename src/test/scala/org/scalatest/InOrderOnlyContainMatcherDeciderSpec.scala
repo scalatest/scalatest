@@ -18,14 +18,14 @@ package org.scalatest
 import org.scalautils.Equality
 import org.scalautils.Explicitly
 import org.scalautils.StringNormalizations
-import org.scalautils.Normalization
+import org.scalautils.OpenNormalization
 import collection.GenTraversable
 import SharedHelpers._
 
 class InOrderOnlyContainMatcherDeciderSpec extends Spec with Matchers with Explicitly with StringNormalizations {
   
-  val incremented: Normalization[Int] = 
-    new Normalization[Int] {
+  val incremented: OpenNormalization[Int] = 
+    new OpenNormalization[Int] {
       var count = 0
       def normalized(s: Int): Int = {
         count += 1
@@ -39,8 +39,8 @@ class InOrderOnlyContainMatcherDeciderSpec extends Spec with Matchers with Expli
         }
     }
  
-  val appended: Normalization[String] = 
-    new Normalization[String] {
+  val appended: OpenNormalization[String] = 
+    new OpenNormalization[String] {
       var count = 0
       def normalized(s: String): String = {
         count += 1
