@@ -16,18 +16,18 @@
 package org.scalautils
 
 /**
- * Provides methods that produce <code>Normalization[String]</code> instances for various
- * ways to normalize strings.
+ * Provides methods that produce <code>Normality[String]</code> instances for various
+ * ways to normalize strings for equality comparisons.
  *
  * @author Bill Venners
  */
 trait StringNormalizations {
 
   /**
-   * Produces a <code>Normalization[String]</code> whose <code>normalized</code> method
+   * Produces a <code>Normality[String]</code> whose <code>normalized</code> method
    * returns the result of invoking <code>toLowerCase</code> on the passed string.
    *
-   * @return a <code>Normalization[String]</code> that normalizes by transforming strings to lower case.
+   * @return a <code>Normality[String]</code> that normalizes by transforming strings to lower case.
    */
   val lowerCased: Normality[String] =
     new StringNormality {
@@ -41,10 +41,27 @@ trait StringNormalizations {
     }
 
   /**
-   * Produces a <code>Normalization[String]</code> whose <code>normalized</code> method
+   * Produces a <code>Normality[String]</code> whose <code>normalized</code> method
+   * returns the result of invoking <code>toUpperCase</code> on the passed string.
+   *
+   * @return a <code>Normality[String]</code> that normalizes by transforming strings to upper case.
+   */
+  val upperCased: Normality[String] =
+    new StringNormality {
+
+      /**
+       * Returns the result of invoking <code>toUpperCase</code> on the passed string.
+       *
+       * @return the passed string transformed to upper case.
+       */
+      def normalized(s: String): String = s.toUpperCase
+    }
+
+  /**
+   * Produces a <code>Normality[String]</code> whose <code>normalized</code> method
    * returns the result of invoking <code>trim</code> on the passed string.
    *
-   * @return a <code>Normalization[String]</code> that normalizes strings by trimming them.
+   * @return a <code>Normality[String]</code> that normalizes strings by trimming them.
    */
   val trimmed: Normality[String] =
     new StringNormality {

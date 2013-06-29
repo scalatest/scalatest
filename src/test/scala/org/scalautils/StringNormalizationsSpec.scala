@@ -36,6 +36,12 @@ class StringNormalizationsSpec extends Spec with StringNormalizations {
       assert(trimmed.normalized("  ") === "")
       assert(trimmed.normalized("") === "")
     }
+    def `should provide a way to normalize a string by making it upper case` { 
+      assert(upperCased.normalized("Hello") === "HELLO")
+      assert(upperCased.normalized("hello") === "HELLO")
+      assert(upperCased.normalized("") === "")
+      assert(upperCased.normalized("HELLO") === "HELLO")
+    }
   }
 }
 
