@@ -16,8 +16,8 @@
 package org.scalatest
 
 import org.scalautils.Equality
-import org.scalautils.OpenNormalization
-import org.scalautils.StringNormalizations._
+import org.scalautils.Normalizer
+import org.scalautils.StringNormalizers._
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
 import scala.collection.JavaConverters._

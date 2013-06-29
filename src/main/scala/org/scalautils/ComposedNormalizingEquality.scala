@@ -32,7 +32,7 @@ package org.scalautils
  */
 private[scalautils] final class ComposedNormalizingEquality[A](
   override val afterNormalizationEquality: Equality[A],
-  normalization: OpenNormalization[A]
+  normalizer: Normalizer[A]
 ) extends NormalizingEquality[A] {
 
   /**
@@ -41,9 +41,9 @@ private[scalautils] final class ComposedNormalizingEquality[A](
    * @param o the object to normalize
    * @return the normalized form of the passed object
    */
-  def normalized(a: A): A = normalization.normalized(a)
+  def normalized(a: A): A = normalizer.normalized(a)
 
-  def canNormalize(b: Any): Boolean = normalization.canNormalize(b)
+  def canNormalize(b: Any): Boolean = normalizer.canNormalize(b)
 
   /* TODO: Fix scaladoc
    * Indicates whether the passed object is an instance of type <code>A</code>.
@@ -72,6 +72,6 @@ private[scalautils] final class ComposedNormalizingEquality[A](
    * @param b the object to inspect to determine whether it is an instance of <code>A<code>
    * @return true if the passed object is an instance of <code>A</code>
    */
-  def normalizedOrSame(b: Any): Any = normalization.normalizedOrSame(b)
+  def normalizedOrSame(b: Any): Any = normalizer.normalizedOrSame(b)
 }
 

@@ -17,7 +17,7 @@ package org.scalautils
 
 /**
  * Provides <code>decidedBy</code> and <code>whenBothAre</code> syntax, which facilitates the
- * explicit specification of <code>Equality[T]</code> and/or <code>OpenNormalization[T]</code> where
+ * explicit specification of <code>Equality[T]</code> and/or <code>Normalizer[T]</code> where
  * <code>Equality[T]</code> is taken implicitly.
  *
  * @author Bill Venners
@@ -31,8 +31,8 @@ trait Explicitly {
   val decided = new DecidedWord
 
   class TheAfterWord {
-    def being[N](openNormalization: OpenNormalization[N])(implicit equality: Equality[N]): NormalizingEquality[N] =
-      new ComposedNormalizingEquality[N](equality, openNormalization)
+    def being[N](normalizer: Normalizer[N])(implicit equality: Equality[N]): NormalizingEquality[N] =
+      new ComposedNormalizingEquality[N](equality, normalizer)
   }
 
   val after = new TheAfterWord

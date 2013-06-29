@@ -17,33 +17,27 @@ package org.scalautils
 
 import org.scalatest._
 
-class NormalizationSpec extends Spec with StringNormalizations {
+class NormalizationSpec extends Spec with StringNormalizers {
 
-  object `An OpenNormalization` {
-    object `when anded with another OpenNormalization` {
-      def `should produce an OpenNormalization` { 
-        assert(lowerCased.isInstanceOf[OpenNormalization[_]])
-        assert((lowerCased and trimmed).isInstanceOf[OpenNormalization[_]])
+  object `A Normalizer` {
+    object `when anded with another Normalizer` {
+      def `should produce a Normalizer` { 
+        assert(lowerCased.isInstanceOf[Normalizer[_]])
+        assert((lowerCased and trimmed).isInstanceOf[Normalizer[_]])
       }
     }
     object `when anded with a regular Normalization (on left or right)` {
       val shouted: Normalization[String] = 
         new Normalization[String] {
           def normalized(s: String): String = s.toUpperCase
-          def canNormalize(b: Any): Boolean = b.isInstanceOf[String]
-          def normalizedOrSame(b: Any) =
-            b match {
-              case s: String => normalized(s)
-              case _ => b
-           }
         }
-      def `should produce a regular Normalization` { 
-        assert(!shouted.isInstanceOf[OpenNormalization[_]])
-        assert(trimmed.isInstanceOf[OpenNormalization[_]])
+      def `should produce a Normalization that is not also a Normalizer` { 
+        assert(!shouted.isInstanceOf[Normalizer[_]])
+        assert(trimmed.isInstanceOf[Normalizer[_]])
         val tAndS: Normalization[String] = trimmed and shouted
-        assert(!tAndS.isInstanceOf[OpenNormalization[_]])
+        assert(!tAndS.isInstanceOf[Normalizer[_]])
         val sAndT: Normalization[String] = shouted and trimmed
-        assert(!sAndT.isInstanceOf[OpenNormalization[_]])
+        assert(!sAndT.isInstanceOf[Normalizer[_]])
       }
     }
   }

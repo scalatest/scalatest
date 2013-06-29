@@ -17,10 +17,10 @@ package org.scalatest
 
 import org.scalautils.Equality
 import org.scalautils.Explicitly
-import org.scalautils.StringNormalizations
+import org.scalautils.StringNormalizers
 import SharedHelpers._
 
-class ContainMatcherAndOrDeciderSpec extends Spec with Matchers with Explicitly with StringNormalizations {
+class ContainMatcherAndOrDeciderSpec extends Spec with Matchers with Explicitly with StringNormalizers {
 
   val equality = new Equality[String] {
     def areEqual(left: String, right: Any) = 

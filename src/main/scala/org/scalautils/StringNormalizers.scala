@@ -21,24 +21,7 @@ package org.scalautils
  *
  * @author Bill Venners
  */
-trait StringNormalizations {
-
-  abstract class StringNormalization extends OpenNormalization[String] {
-
-    // TODO: Scaladoc
-    def canNormalize(b: Any): Boolean = b.isInstanceOf[String]
-
-    /**
-     * Indicates whether the passed object is an instance of <code>String</code>.
-     *
-     * @return true if the passed object is a <code>String</code>.
-     */
-    def normalizedOrSame(b: Any) =
-      b match {
-        case s: String => normalized(s)
-        case _ => b
-     }
-  }
+trait StringNormalizers {
 
   /**
    * Produces a <code>Normalization[String]</code> whose <code>normalized</code> method
@@ -46,8 +29,8 @@ trait StringNormalizations {
    *
    * @return a <code>Normalization[String]</code> that normalizes by transforming strings to lower case.
    */
-  val lowerCased: OpenNormalization[String] =
-    new StringNormalization {
+  val lowerCased: Normalizer[String] =
+    new AbstractStringNormalizer {
 
       /**
        * Returns the result of invoking <code>toLowerCase</code> on the passed string.
@@ -63,8 +46,8 @@ trait StringNormalizations {
    *
    * @return a <code>Normalization[String]</code> that normalizes strings by trimming them.
    */
-  val trimmed: OpenNormalization[String] =
-    new StringNormalization {
+  val trimmed: Normalizer[String] =
+    new AbstractStringNormalizer {
 
       /**
        * Returns the result of invoking <code>trimmed</code> on the passed string.
@@ -76,7 +59,7 @@ trait StringNormalizations {
 } 
 
 /**
- * Companion object to trait <code>StringNormalizations</code> that provides an 
+ * Companion object to trait <code>StringNormalizers</code> that provides an 
  * alternative to mixing it in.
  */
-object StringNormalizations extends StringNormalizations
+object StringNormalizers extends StringNormalizers

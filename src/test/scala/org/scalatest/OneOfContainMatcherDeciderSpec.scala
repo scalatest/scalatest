@@ -17,15 +17,15 @@ package org.scalatest
 
 import org.scalautils.Equality
 import org.scalautils.Explicitly
-import org.scalautils.StringNormalizations
-import org.scalautils.OpenNormalization
+import org.scalautils.StringNormalizers
+import org.scalautils.Normalizer
 import collection.GenTraversable
 import SharedHelpers._
 
-class OneOfContainMatcherDeciderSpec extends Spec with Matchers with Explicitly with StringNormalizations {
+class OneOfContainMatcherDeciderSpec extends Spec with Matchers with Explicitly with StringNormalizers {
 
-  val mapTrimmed: OpenNormalization[(Int, String)] =
-    new OpenNormalization[(Int, String)] {
+  val mapTrimmed: Normalizer[(Int, String)] =
+    new Normalizer[(Int, String)] {
 
       def normalized(s: (Int, String)): (Int, String) = (s._1, s._2.trim)
       def canNormalize(b: Any) = 
@@ -40,8 +40,8 @@ class OneOfContainMatcherDeciderSpec extends Spec with Matchers with Explicitly 
         }
     }
 
-  val javaMapTrimmed: OpenNormalization[java.util.Map.Entry[Int, String]] =
-    new OpenNormalization[java.util.Map.Entry[Int, String]] {
+  val javaMapTrimmed: Normalizer[java.util.Map.Entry[Int, String]] =
+    new Normalizer[java.util.Map.Entry[Int, String]] {
 
       def normalized(s: java.util.Map.Entry[Int, String]): java.util.Map.Entry[Int, String] = Entry(s.getKey, s.getValue.trim)
       def canNormalize(b: Any) = 
@@ -64,8 +64,8 @@ class OneOfContainMatcherDeciderSpec extends Spec with Matchers with Explicitly 
         }
     }
   
-  val incremented: OpenNormalization[Int] = 
-    new OpenNormalization[Int] {
+  val incremented: Normalizer[Int] = 
+    new Normalizer[Int] {
       var count = 0
       def normalized(s: Int): Int = {
         count += 1
@@ -79,8 +79,8 @@ class OneOfContainMatcherDeciderSpec extends Spec with Matchers with Explicitly 
         }
     }
   
-  val mapIncremented: OpenNormalization[(Int, String)] = 
-    new OpenNormalization[(Int, String)] {
+  val mapIncremented: Normalizer[(Int, String)] = 
+    new Normalizer[(Int, String)] {
       var count = 0
       def normalized(s: (Int, String)): (Int, String) = {
         count += 1
@@ -98,8 +98,8 @@ class OneOfContainMatcherDeciderSpec extends Spec with Matchers with Explicitly 
         }
     }
   
-  val appended: OpenNormalization[String] = 
-    new OpenNormalization[String] {
+  val appended: Normalizer[String] = 
+    new Normalizer[String] {
       var count = 0
       def normalized(s: String): String = {
         count += 1
@@ -113,8 +113,8 @@ class OneOfContainMatcherDeciderSpec extends Spec with Matchers with Explicitly 
         }
     }
   
-  val mapAppended: OpenNormalization[(Int, String)] = 
-    new OpenNormalization[(Int, String)] {
+  val mapAppended: Normalizer[(Int, String)] = 
+    new Normalizer[(Int, String)] {
       var count = 0
       def normalized(s: (Int, String)): (Int, String) = {
         count += 1
@@ -132,8 +132,8 @@ class OneOfContainMatcherDeciderSpec extends Spec with Matchers with Explicitly 
         }
     }
   
-  val javaMapAppended: OpenNormalization[java.util.Map.Entry[Int, String]] = 
-    new OpenNormalization[java.util.Map.Entry[Int, String]] {
+  val javaMapAppended: Normalizer[java.util.Map.Entry[Int, String]] = 
+    new Normalizer[java.util.Map.Entry[Int, String]] {
       var count = 0
       def normalized(s: java.util.Map.Entry[Int, String]): java.util.Map.Entry[Int, String] = {
         count += 1

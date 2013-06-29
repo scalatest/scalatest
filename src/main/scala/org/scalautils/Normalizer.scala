@@ -25,7 +25,7 @@ package org.scalautils
  * 
  * @tparam A the type whose normalization is being defined
  */
-trait OpenNormalization[A] extends Normalization[A] { thisNormalization =>
+trait Normalizer[A] extends Normalization[A] { thisNormalization =>
 
   // TODO: Add an example of Array[String] isInstanceOfA here and in NormalizedEquality
   /* TODO: Need to fix this scaladoc!
@@ -59,8 +59,8 @@ trait OpenNormalization[A] extends Normalization[A] { thisNormalization =>
 
   def canNormalize(b: Any): Boolean
 
-  final def and(other: OpenNormalization[A]): OpenNormalization[A] =
-    new OpenNormalization[A] {
+  final def and(other: Normalizer[A]): Normalizer[A] =
+    new Normalizer[A] {
       // Note in Scaladoc what order, and recommend people don't do side effects anyway.
       // By order, I mean left's normalized gets called first then right's normalized gets called on that result, for "left and right"
       def normalized(a: A): A = other.normalized(thisNormalization.normalized(a))
