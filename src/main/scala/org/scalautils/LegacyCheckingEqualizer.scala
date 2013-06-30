@@ -122,7 +122,7 @@ class LegacyCheckingEqualizer[L](left: L) {
    * @return None if the <code>left</code> and <code>right</code> objects are equal according to the passed <code>Equality</code> type class.
    *    else returns an error message string wrapped in a <code>Some</code>.
    */
-  def ===[R](right: R)(implicit constraint: EqualityConstraint[L, R]): Option[String] = 
+  def ===[R](right: R)(implicit constraint: TripleEqualsConstraint[L, R]): Option[String] = 
     if (constraint.areEqual(left, right))
       None
     else {
@@ -139,7 +139,7 @@ class LegacyCheckingEqualizer[L](left: L) {
    * @return None if the <code>left</code> and <code>right</code> objects are <em>not</em> equal according to the passed <code>Equality</code> type class.
    *    else returns an error message string wrapped in a <code>Some</code>.
    */
-  def !==[R](right: R)(implicit constraint: EqualityConstraint[L, R]): Option[String] =
+  def !==[R](right: R)(implicit constraint: TripleEqualsConstraint[L, R]): Option[String] =
     if (!constraint.areEqual(left, right))
       None
     else {

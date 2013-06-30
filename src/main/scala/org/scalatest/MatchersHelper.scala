@@ -34,7 +34,6 @@ import scala.annotation.tailrec
 import org.scalautils.Equality
 import org.scalatest.words.ShouldVerb
 import org.scalautils.TripleEqualsInvocationOnInterval
-import org.scalautils.EqualityConstraint
 import org.scalatest.matchers.HavePropertyMatcher
 import org.scalatest.matchers.HavePropertyMatchResult
 import org.scalatest.matchers.BePropertyMatcher

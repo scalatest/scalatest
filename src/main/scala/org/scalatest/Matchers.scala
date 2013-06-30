@@ -34,7 +34,7 @@ import org.scalautils.Interval
 import org.scalautils.TripleEqualsInvocation
 import org.scalautils.Equality
 import org.scalautils.TripleEqualsInvocationOnInterval
-import org.scalautils.EqualityConstraint
+import org.scalautils.TripleEqualsConstraint
 import MatchersHelper.andMatchersAndApply
 import MatchersHelper.orMatchersAndApply
 import org.scalatest.words._
@@ -210,7 +210,7 @@ import Assertions.checkNoException
  * scala&gt; Some(2) should === (2)
  * &lt;console&gt;:17: error: types Some[Int] and Int do not adhere to the equality constraint
  * selected for the === and !== operators; the missing implicit parameter is of
- * type org.scalautils.EqualityConstraint[Some[Int],Int]
+ * type org.scalautils.TripleEqualsConstraint[Some[Int],Int]
  *               Some(2) should === (2)
  *                       ^
  * </pre>
@@ -4665,7 +4665,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *          ^
      * </pre>
      */
-    def should[U](inv: TripleEqualsInvocation[U])(implicit constraint: EqualityConstraint[T, U]) {
+    def should[U](inv: TripleEqualsInvocation[U])(implicit constraint: TripleEqualsConstraint[T, U]) {
       doCollected(collected, xs, "should", 1) { e =>
         if ((constraint.areEqual(e, inv.right)) != inv.expectingEqual)
           throw newTestFailedException(
@@ -5303,7 +5303,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def should[U](inv: TripleEqualsInvocation[U])(implicit constraint: EqualityConstraint[T, U]) {
+    def should[U](inv: TripleEqualsInvocation[U])(implicit constraint: TripleEqualsConstraint[T, U]) {
       if ((constraint.areEqual(left, inv.right)) != inv.expectingEqual)
         throw newTestFailedException(
           FailureMessages(

@@ -50,10 +50,10 @@ package org.scalautils
  * priority conversion will be selected.
  * </p>
  */
-trait LowPriorityConversionCheckedConstraint extends EqualityConstraints {
+trait LowPriorityConversionCheckedConstraint extends TripleEqualsConstraints {
 
   // Inherit the Scaladoc for this method
 
-  implicit override def lowPriorityConversionCheckedEqualityConstraint[A, B](implicit equalityOfB: Equality[B], cnv: A => B): EqualityConstraint[A, B] = new AToBEqualityConstraint[A, B](equalityOfB, cnv)
+  implicit override def lowPriorityConversionCheckedEqualityConstraint[A, B](implicit equalityOfB: Equality[B], cnv: A => B): TripleEqualsConstraint[A, B] = new AToBEqualityConstraint[A, B](equalityOfB, cnv)
 }
 

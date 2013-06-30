@@ -49,7 +49,7 @@ class CheckingEqualizer[L](left: L) {
    *    defines a way of calculating equality for objects of type <code>L</code>
    * @return true if the <code>left</code> and <code>right</code> objects are equal according to the passed <code>EqualityConstraint</code> instance.
    */
-  def ===[R](right: R)(implicit constraint: EqualityConstraint[L, R]): Boolean = constraint.areEqual(left, right)
+  def ===[R](right: R)(implicit constraint: TripleEqualsConstraint[L, R]): Boolean = constraint.areEqual(left, right)
 
   /**
    * Compare two objects for inequality, returning a <code>Boolean</code>, using the <code>EqualityConstraint</code> instance passed as <code>constraint</code>.
@@ -59,7 +59,7 @@ class CheckingEqualizer[L](left: L) {
    *    defines a way of calculating equality for objects of type <code>L</code>
    * @return true if the <code>left</code> and <code>right</code> objects are <em>not</em> equal according to the passed <code>EqualityConstraint</code> instance.
    */
-  def !==[R](right: R)(implicit constraint: EqualityConstraint[L, R]): Boolean = !constraint.areEqual(left, right)
+  def !==[R](right: R)(implicit constraint: TripleEqualsConstraint[L, R]): Boolean = !constraint.areEqual(left, right)
 
   /**
    * Determine whether a numeric object is within the passed <code>Interval</code>, returning a <code>Boolean</code>.
