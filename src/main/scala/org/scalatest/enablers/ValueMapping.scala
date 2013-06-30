@@ -55,7 +55,8 @@ object ValueMapping {
   implicit def valueMappingNatureOfGenMap[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](implicit equality: Equality[V]): ValueMapping[MAP[K, V]] = 
     new ValueMapping[MAP[K, V]] {
       def containsValue(map: MAP[K, V], value: Any): Boolean = {
-        map.values.exists((v: V) => equality.areEqual(v, value))
+        // map.values.exists((v: V) => equality.areEqual(v, value)) go back to this once I'm off 2.9
+        map.iterator.map(_._2).exists((v: V) => equality.areEqual(v, value))
       }
     }
 

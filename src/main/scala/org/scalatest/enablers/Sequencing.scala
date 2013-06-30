@@ -182,16 +182,16 @@ object Sequencing {
     new Sequencing[IT[E]] {
 
       def containsInOrder(it: IT[E], elements: scala.collection.Seq[Any]): Boolean = {
-        checkInOrder(it.toVector, elements, equality) // TODO: Don't like converting iterator to vector here.
+        checkInOrder(Vector.empty ++ it, elements, equality) // TODO: Don't like converting iterator to vector here.
       }
 
       def containsInOrderOnly(it: IT[E], elements: scala.collection.Seq[Any]): Boolean = {
-        checkInOrderOnly[E](it.toVector, elements, equality)
+        checkInOrderOnly[E](Vector.empty ++ it, elements, equality)
       }
 
 // TODO: Make elements a Sequencing
       def containsTheSameElementsInOrderAs(it: IT[E], elements: GenTraversable[Any]): Boolean = {
-        checkTheSameElementsInOrderAs[E](it.toVector, elements, equality)
+        checkTheSameElementsInOrderAs[E](Vector.empty ++ it, elements, equality)
       }
     }
 
