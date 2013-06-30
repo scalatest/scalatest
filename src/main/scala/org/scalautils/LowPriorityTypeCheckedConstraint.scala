@@ -53,6 +53,6 @@ package org.scalautils
  */
 trait LowPriorityTypeCheckedConstraint extends TripleEqualsConstraints {
   // Inherit the scaladoc for this method
-  implicit override def lowPriorityTypeCheckedTripleEqualsConstraint[A, B](implicit equalityOfA: Equality[A], ev: A <:< B): TripleEqualsConstraint[A, B] = new BasicEqualityConstraint[A, B](equalityOfA)
+  implicit override def lowPriorityTypeCheckedTripleEqualsConstraint[A, B](implicit equalityOfB: Equality[B], ev: A <:< B): TripleEqualsConstraint[A, B] = new AToBEqualityConstraint[A, B](equalityOfB, ev)
 }
 
