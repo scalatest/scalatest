@@ -63,7 +63,7 @@ package org.scalautils
  * Example.scala:9: error: types Int and Long do not adhere to the equality constraint selected for
  * the === and !== operators; they must either be in a subtype/supertype relationship, or, if
  * ConversionCheckedTripleEquals is in force, implicitly convertible in one direction or the other;
- * the missing implicit parameter is of type org.scalautils.EqualityConstraint[Int,Long]
+ * the missing implicit parameter is of type org.scalautils.TripleEqualsConstraint[Int,Long]
  *     if (a === b) 0      // This line won't compile
  *           ^
  * one error found
@@ -131,11 +131,11 @@ trait TripleEquals extends TripleEqualsConstraints {
 
   implicit override def unconstrainedEquality[A, B](implicit equalityOfA: Equality[A]): TripleEqualsConstraint[A, B] = new BasicEqualityConstraint[A, B](equalityOfA)
 
-  override def lowPriorityTypeCheckedEqualityConstraint[A, B](implicit equalityOfA: Equality[A], ev: A <:< B): TripleEqualsConstraint[A, B] = new BasicEqualityConstraint[A, B](equalityOfA)
-  override def typeCheckedEqualityConstraint[A, B](implicit equalityOfA: Equality[A], ev: B <:< A): TripleEqualsConstraint[A, B] = new BasicEqualityConstraint[A, B](equalityOfA)
+  override def lowPriorityTypeCheckedTripleEqualsConstraint[A, B](implicit equalityOfA: Equality[A], ev: A <:< B): TripleEqualsConstraint[A, B] = new BasicEqualityConstraint[A, B](equalityOfA)
+  override def typeCheckedTripleEqualsConstraint[A, B](implicit equalityOfA: Equality[A], ev: B <:< A): TripleEqualsConstraint[A, B] = new BasicEqualityConstraint[A, B](equalityOfA)
 
-  override def lowPriorityConversionCheckedEqualityConstraint[A, B](implicit equalityOfB: Equality[B], cnv: A => B): TripleEqualsConstraint[A, B] = new AToBEqualityConstraint[A, B](equalityOfB, cnv)
-  override def conversionCheckedEqualityConstraint[A, B](implicit equalityOfA: Equality[A], cnv: B => A): TripleEqualsConstraint[A, B] = new BToAEqualityConstraint[A, B](equalityOfA, cnv)
+  override def lowPriorityConversionCheckedTripleEqualsConstraint[A, B](implicit equalityOfB: Equality[B], cnv: A => B): TripleEqualsConstraint[A, B] = new AToBEqualityConstraint[A, B](equalityOfB, cnv)
+  override def conversionCheckedTripleEqualsConstraint[A, B](implicit equalityOfA: Equality[A], cnv: B => A): TripleEqualsConstraint[A, B] = new BToAEqualityConstraint[A, B](equalityOfA, cnv)
 }
 
 /**

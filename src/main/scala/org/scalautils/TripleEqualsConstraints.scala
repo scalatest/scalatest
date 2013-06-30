@@ -72,8 +72,8 @@ package org.scalautils
  *
  * <ul>
  * <li><code>convertToCheckingEqualize</code></li>
- * <li><code>typeCheckedEqualityConstraint</code></li>
- * <li><code>lowPriorityTypeCheckedEqualityConstraint</code></li>
+ * <li><code>typeCheckedTripleEqualsConstraint</code></li>
+ * <li><code>lowPriorityTypeCheckedTripleEqualsConstraint</code></li>
  * </ul>
  * 
  * <p>
@@ -155,11 +155,11 @@ trait TripleEqualsConstraints {
   def convertToLegacyCheckingEqualizer[T](left: T): LegacyCheckingEqualizer[T]
 
   /**
-   * Provides an <code>EqualityConstraint[A, B]</code> class for any two types <code>A</code> and <code>B</code>, with no type constraint enforced, given an
+   * Provides an <code>TripleEqualsConstraint[A, B]</code> class for any two types <code>A</code> and <code>B</code>, with no type constraint enforced, given an
    * implicit <code>Equality[A]</code>.
    *
    * <p>
-   * The implicitly passed <code>Equality[A]</code> must be used to determine equality by the returned <code>EqualityConstraint</code>'s
+   * The implicitly passed <code>Equality[A]</code> must be used to determine equality by the returned <code>TripleEqualsConstraint</code>'s
    * <code>areEqual</code> method.
    * </p>
    *
@@ -168,17 +168,17 @@ trait TripleEqualsConstraints {
    * overriden as non-implicit by the other subtraits in this package.
    * </p>
    *
-   * @param equalityOfA an <code>Equality[A]</code> type class to which the <code>EqualityConstraint.areEqual</code> method will delegate to determine equality.
-   * @return an <code>EqualityConstraint[A, B]</code> whose <code>areEqual</code> method delegates to the <code>areEqual</code> method of
+   * @param equalityOfA an <code>Equality[A]</code> type class to which the <code>TripleEqualsConstraint.areEqual</code> method will delegate to determine equality.
+   * @return an <code>TripleEqualsConstraint[A, B]</code> whose <code>areEqual</code> method delegates to the <code>areEqual</code> method of
    *     the passed <code>Equality[A]</code>.
    */
   def unconstrainedEquality[A, B](implicit equalityOfA: Equality[A]): TripleEqualsConstraint[A, B]
 
   /**
-   * Provides an <code>EqualityConstraint[A, B]</code> class for any two types <code>A</code> and <code>B</code>, enforcing the type constraint that <code>A</code> must be a subtype of <code>B</code>, given an implicit <code>Equality[A]</code>.
+   * Provides an <code>TripleEqualsConstraint[A, B]</code> class for any two types <code>A</code> and <code>B</code>, enforcing the type constraint that <code>A</code> must be a subtype of <code>B</code>, given an implicit <code>Equality[A]</code>.
    *
    * <p>
-   * The implicitly passed <code>Equality[A]</code> must be used to determine equality by the returned <code>EqualityConstraint</code>'s
+   * The implicitly passed <code>Equality[A]</code> must be used to determine equality by the returned <code>TripleEqualsConstraint</code>'s
    * <code>areEqual</code> method.
    * </p>
    *
@@ -191,19 +191,19 @@ trait TripleEqualsConstraints {
    * overriden as non-implicit by the other subtraits in this package.
    * </p>
    *
-   * @param equalityOfA an <code>Equality[A]</code> type class to which the <code>EqualityConstraint.areEqual</code> method
+   * @param equalityOfA an <code>Equality[A]</code> type class to which the <code>TripleEqualsConstraint.areEqual</code> method
    *    will delegate to determine equality.
    * @param ev evidence that <code>A</code> is a subype of </code>B</code>
-   * @return an <code>EqualityConstraint[A, B]</code> whose <code>areEqual</code> method delegates to the
+   * @return an <code>TripleEqualsConstraint[A, B]</code> whose <code>areEqual</code> method delegates to the
    * <code>areEqual</code> method of the passed <code>Equality[A]</code>.
    */
-  def lowPriorityTypeCheckedEqualityConstraint[A, B](implicit equalityOfA: Equality[A], ev: A <:< B): TripleEqualsConstraint[A, B]
+  def lowPriorityTypeCheckedTripleEqualsConstraint[A, B](implicit equalityOfA: Equality[A], ev: A <:< B): TripleEqualsConstraint[A, B]
 
   /**
-   * Provides an <code>EqualityConstraint[A, B]</code> class for any two types <code>A</code> and <code>B</code>, enforcing the type constraint that <code>B</code> must be a subtype of <code>A</code>, given an implicit <code>Equality[A]</code>.
+   * Provides an <code>TripleEqualsConstraint[A, B]</code> class for any two types <code>A</code> and <code>B</code>, enforcing the type constraint that <code>B</code> must be a subtype of <code>A</code>, given an implicit <code>Equality[A]</code>.
    *
    * <p>
-   * The implicitly passed <code>Equality[A]</code> must be used to determine equality by the returned <code>EqualityConstraint</code>'s
+   * The implicitly passed <code>Equality[A]</code> must be used to determine equality by the returned <code>TripleEqualsConstraint</code>'s
    * <code>areEqual</code> method.
    * </p>
    *
@@ -214,18 +214,18 @@ trait TripleEqualsConstraints {
    * overriden as non-implicit by the other subtraits in this package.
    * </p>
    *
-   * @param equalityOfA an <code>Equality[A]</code> type class to which the <code>EqualityConstraint.areEqual</code> method will delegate to determine equality.
+   * @param equalityOfA an <code>Equality[A]</code> type class to which the <code>TripleEqualsConstraint.areEqual</code> method will delegate to determine equality.
    * @param ev evidence that <code>B</code> is a subype of </code>A</code>
-   * @return an <code>EqualityConstraint[A, B]</code> whose <code>areEqual</code> method delegates to the <code>areEqual</code> method of
+   * @return an <code>TripleEqualsConstraint[A, B]</code> whose <code>areEqual</code> method delegates to the <code>areEqual</code> method of
    *     the passed <code>Equality[A]</code>.
    */
-  def typeCheckedEqualityConstraint[A, B](implicit equalityOfA: Equality[A], ev: B <:< A): TripleEqualsConstraint[A, B]
+  def typeCheckedTripleEqualsConstraint[A, B](implicit equalityOfA: Equality[A], ev: B <:< A): TripleEqualsConstraint[A, B]
 
   /**
-   * Provides an <code>EqualityConstraint[A, B]</code> class for any two types <code>A</code> and <code>B</code>, enforcing the type constraint that <code>A</code> is implicitly convertible to <code>B</code>, given an implicit <code>Equality[A]</code>.
+   * Provides an <code>TripleEqualsConstraint[A, B]</code> class for any two types <code>A</code> and <code>B</code>, enforcing the type constraint that <code>A</code> is implicitly convertible to <code>B</code>, given an implicit <code>Equality[A]</code>.
    *
    * <p>
-   * The implicitly passed <code>Equality[A]</code> must be used to determine equality by the returned <code>EqualityConstraint</code>'s
+   * The implicitly passed <code>Equality[A]</code> must be used to determine equality by the returned <code>TripleEqualsConstraint</code>'s
    * <code>areEqual</code> method.
    * </p>
    *
@@ -238,18 +238,18 @@ trait TripleEqualsConstraints {
    * overriden as non-implicit by the other subtraits in this package.
    * </p>
    *
-   * @param equalityOfA an <code>Equality[A]</code> type class to which the <code>EqualityConstraint.areEqual</code> method will delegate to determine equality.
+   * @param equalityOfA an <code>Equality[A]</code> type class to which the <code>TripleEqualsConstraint.areEqual</code> method will delegate to determine equality.
    * @param cnv an implicit conversion from <code>A</code> to </code>B</code>
-   * @return an <code>EqualityConstraint[A, B]</code> whose <code>areEqual</code> method delegates to the <code>areEqual</code> method of
+   * @return an <code>TripleEqualsConstraint[A, B]</code> whose <code>areEqual</code> method delegates to the <code>areEqual</code> method of
    *     the passed <code>Equality[A]</code>.
    */
-  def lowPriorityConversionCheckedEqualityConstraint[A, B](implicit equalityOfB: Equality[B], cnv: A => B): TripleEqualsConstraint[A, B]
+  def lowPriorityConversionCheckedTripleEqualsConstraint[A, B](implicit equalityOfB: Equality[B], cnv: A => B): TripleEqualsConstraint[A, B]
 
   /**
-   * Provides an <code>EqualityConstraint[A, B]</code> class for any two types <code>A</code> and <code>B</code>, enforcing the type constraint that <code>B</code> is implicitly convertible to <code>A</code>, given an implicit <code>Equality[A]</code>.
+   * Provides an <code>TripleEqualsConstraint[A, B]</code> class for any two types <code>A</code> and <code>B</code>, enforcing the type constraint that <code>B</code> is implicitly convertible to <code>A</code>, given an implicit <code>Equality[A]</code>.
    *
    * <p>
-   * The implicitly passed <code>Equality[A]</code> must be used to determine equality by the returned <code>EqualityConstraint</code>'s
+   * The implicitly passed <code>Equality[A]</code> must be used to determine equality by the returned <code>TripleEqualsConstraint</code>'s
    * <code>areEqual</code> method.
    * </p>
    *
@@ -260,12 +260,12 @@ trait TripleEqualsConstraints {
    * overriden as non-implicit by the other subtraits in this package.
    * </p>
    *
-   * @param equalityOfA an <code>Equality[A]</code> type class to which the <code>EqualityConstraint.areEqual</code> method will delegate to determine equality.
+   * @param equalityOfA an <code>Equality[A]</code> type class to which the <code>TripleEqualsConstraint.areEqual</code> method will delegate to determine equality.
    * @param cnv an implicit conversion from <code>B</code> to </code>A</code>
-   * @return an <code>EqualityConstraint[A, B]</code> whose <code>areEqual</code> method delegates to the <code>areEqual</code> method of
+   * @return an <code>TripleEqualsConstraint[A, B]</code> whose <code>areEqual</code> method delegates to the <code>areEqual</code> method of
    *     the passed <code>Equality[A]</code>.
    */
-  def conversionCheckedEqualityConstraint[A, B](implicit equalityOfA: Equality[A], cnv: B => A): TripleEqualsConstraint[A, B]
+  def conversionCheckedTripleEqualsConstraint[A, B](implicit equalityOfA: Equality[A], cnv: B => A): TripleEqualsConstraint[A, B]
 
   /**
    * Returns a <code>TripleEqualsInvocation[T]</code>, given an object of type <code>T</code>, to facilitate

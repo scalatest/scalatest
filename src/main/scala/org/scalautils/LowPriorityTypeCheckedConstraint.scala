@@ -38,10 +38,10 @@ package org.scalautils
  * </pre>
  *
  * <p>
- * The first expression above is enabled by the implicit conversion <code>typeCheckedEqualityConstraint</code> in traits
+ * The first expression above is enabled by the implicit conversion <code>typeCheckedTripleEqualsConstraint</code> in traits
  * <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a> and
  * <a href="TypeCheckedLegacyTripleEquals.html"><code>TypeCheckedLegacyTripleEquals</code></a>. The second expression above is
- * enabled by the implicit conversion <code>lowPriorityTypeCheckedEqualityConstraint</code> in this trait.
+ * enabled by the implicit conversion <code>lowPriorityTypeCheckedTripleEqualsConstraint</code> in this trait.
  * </p>
  *
  * <p>
@@ -53,6 +53,6 @@ package org.scalautils
  */
 trait LowPriorityTypeCheckedConstraint extends TripleEqualsConstraints {
   // Inherit the scaladoc for this method
-  implicit override def lowPriorityTypeCheckedEqualityConstraint[A, B](implicit equalityOfA: Equality[A], ev: A <:< B): TripleEqualsConstraint[A, B] = new BasicEqualityConstraint[A, B](equalityOfA)
+  implicit override def lowPriorityTypeCheckedTripleEqualsConstraint[A, B](implicit equalityOfA: Equality[A], ev: A <:< B): TripleEqualsConstraint[A, B] = new BasicEqualityConstraint[A, B](equalityOfA)
 }
 
