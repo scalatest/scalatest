@@ -85,7 +85,7 @@ package org.scalautils
  *
  * @tparam A the type whose equality is being customized
  */
-trait Equality[A] extends Equivalence[A] {
+trait TolerantEquivalence {
 
   /**
    * Indicates whether the objects passed as <code>a</code> and <code>b</code> are equal.
@@ -94,19 +94,19 @@ trait Equality[A] extends Equivalence[A] {
    * @param b a right-hand-side object being compared with another (left-hand-side one) for equality (<em>e.g.</em>, <code>a == b</code>)
    * @return true if the passed objects are "equal," as defined by this <code>Equality</code> instance
    */
-  def areEqual(a: A, b: Any): Boolean
-
-  final def areEquivalent(a: A, b: A): Boolean = areEqual(a, b)
+  def tolerantEquivalence[N : Numeric](tolerance: N): Equivalence[N] = {
+    val numeric = implicitly[Numeric[N]]
+    if (numeric.lt(tolerance, numeric.zero))
+      throw new IllegalArgumentException(tolerance.toString + " passed to tolerantEquivalence was zero or negative. Must be a positive non-zero number.")
+    new Equivalence[N] {
+      def areEquivalent(a: N, b: N): Boolean = {
+        val bPlusTolerance = numeric.plus(b, tolerance)
+        val bMinusTolerance = numeric.minus(b, tolerance)
+        (numeric.lteq(a, bPlusTolerance)) && (numeric.gteq(a, bMinusTolerance))
+      }
+    } 
+  } 
 } 
 
-object Equality {
-  def apply[A](normality: Normality[A]): Equality[A] = {
-    new NormalizingEquality[A] {
-      def normalized(a: A): A = normality.normalized(a)
-      def canNormalize(b: Any): Boolean = normality.canNormalize(b)
-      def normalizedOrSame(b: Any): Any = normality.normalizedOrSame(b)
-    }
-  }
-  implicit def default[A]: Equality[A] = new DefaultEquality[A]
-}
+object TolerantEquivalence extends TolerantEquivalence
 

@@ -19,3 +19,6 @@ trait Equivalence[T] {
   def areEquivalent(a: T, b: T): Boolean
 } 
 
+object Equivalence {
+  implicit def default[T]: Equivalence[T] = Equality.default[T]
+}

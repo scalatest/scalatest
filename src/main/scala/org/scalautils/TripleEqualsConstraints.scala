@@ -99,7 +99,7 @@ trait TripleEqualsConstraints {
    *
    * @return a <code>DefaultEquality</code> for type <code>A</code>
    */
-  def defaultEquality[A]: Equality[A]
+  def defaultEquality[A]: Equality[A] = Equality.default
 
   /**
    * Convert to an <a href="Equalizer.html"><code>Equalizer</code></a> that provides <code>===</code> and <code>!==</code> operators that
