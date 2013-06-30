@@ -85,7 +85,7 @@ package org.scalautils
  *
  * @tparam A the type whose equality is being customized
  */
-trait Equality[A] {
+trait Equality[A] extends Equivalence[A] {
 
   /**
    * Indicates whether the objects passed as <code>a</code> and <code>b</code> are equal.
@@ -95,6 +95,8 @@ trait Equality[A] {
    * @return true if the passed objects are "equal," as defined by this <code>Equality</code> instance
    */
   def areEqual(a: A, b: Any): Boolean
+
+  final def areEquivalent(a: A, b: A): Boolean = areEqual(a, b)
 } 
 
 object Equality {
