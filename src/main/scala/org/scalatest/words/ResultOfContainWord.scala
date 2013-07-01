@@ -46,6 +46,8 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
   def oneOf(right: Any*)(implicit containing: Containing[L]) {
     if (right.isEmpty)
       throw new NotAllowedException(FailureMessages("oneOfEmpty"), getStackDepthFun("ResultOfContainWord.scala", "oneOf"))
+    if (right.distinct.size != right.size)
+      throw new NotAllowedException(FailureMessages("oneOfDuplicate"), getStackDepthFun("ResultOfContainWord.scala", "oneOf"))
     if (containing.containsOneOf(left, right) != shouldBeTrue)
       throw newTestFailedException(
         FailureMessages(
@@ -67,6 +69,8 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
   def atLeastOneOf(right: Any*)(implicit aggregating: Aggregating[L]) {
     if (right.isEmpty)
       throw new NotAllowedException(FailureMessages("atLeastOneOfEmpty"), getStackDepthFun("ResultOfContainWord.scala", "atLeastOneOf"))
+    if (right.distinct.size != right.size)
+      throw new NotAllowedException(FailureMessages("atLeastOneOfDuplicate"), getStackDepthFun("ResultOfContainWord.scala", "atLeastOneOf"))
     if (aggregating.containsAtLeastOneOf(left, right) != shouldBeTrue)
       throw newTestFailedException(
         FailureMessages(
@@ -88,6 +92,8 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
   def noneOf(right: Any*)(implicit containing: Containing[L]) {
     if (right.isEmpty)
       throw new NotAllowedException(FailureMessages("noneOfEmpty"), getStackDepthFun("ResultOfContainWord.scala", "noneOf"))
+    if (right.distinct.size != right.size)
+      throw new NotAllowedException(FailureMessages("noneOfDuplicate"), getStackDepthFun("ResultOfContainWord.scala", "noneOf"))
     if (containing.containsNoneOf(left, right) != shouldBeTrue)
       throw newTestFailedException(
         FailureMessages(
@@ -147,6 +153,8 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
   def only(right: Any*)(implicit aggregating: Aggregating[L]) {
     if (right.isEmpty)
       throw new NotAllowedException(FailureMessages("onlyEmpty"), getStackDepthFun("ResultOfContainWord.scala", "only"))
+    if (right.distinct.size != right.size)
+      throw new NotAllowedException(FailureMessages("onlyDuplicate"), getStackDepthFun("ResultOfContainWord.scala", "only"))
     if (aggregating.containsOnly(left, right) != shouldBeTrue)
       throw newTestFailedException(
         FailureMessages(
@@ -168,6 +176,8 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
   def inOrderOnly(right: Any*)(implicit sequencing: Sequencing[L]) {
     if (right.isEmpty)
       throw new NotAllowedException(FailureMessages("inOrderOnlyEmpty"), getStackDepthFun("ResultOfContainWord.scala", "inOrderOnly"))
+    if (right.distinct.size != right.size)
+      throw new NotAllowedException(FailureMessages("inOrderOnlyDuplicate"), getStackDepthFun("ResultOfContainWord.scala", "inOrderOnly"))
     if (sequencing.containsInOrderOnly(left, right) != shouldBeTrue)
       throw newTestFailedException(
         FailureMessages(
@@ -189,6 +199,8 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
   def allOf(right: Any*)(implicit aggregating: Aggregating[L]) {
     if (right.isEmpty)
       throw new NotAllowedException(FailureMessages("allOfEmpty"), getStackDepthFun("ResultOfContainWord.scala", "allOf"))
+    if (right.distinct.size != right.size)
+      throw new NotAllowedException(FailureMessages("allOfDuplicate"), getStackDepthFun("ResultOfContainWord.scala", "allOf"))
     if (aggregating.containsAllOf(left, right) != shouldBeTrue)
       throw newTestFailedException(
         FailureMessages(
@@ -210,6 +222,8 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
   def inOrder(right: Any*)(implicit sequencing: Sequencing[L]) {
     if (right.isEmpty)
       throw new NotAllowedException(FailureMessages("inOrderEmpty"), getStackDepthFun("ResultOfContainWord.scala", "inOrder"))
+    if (right.distinct.size != right.size)
+      throw new NotAllowedException(FailureMessages("inOrderDuplicate"), getStackDepthFun("ResultOfContainWord.scala", "inOrder"))
     if (sequencing.containsInOrder(left, right) != shouldBeTrue)
       throw newTestFailedException(
         FailureMessages(

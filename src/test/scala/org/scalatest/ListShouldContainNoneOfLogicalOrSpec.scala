@@ -116,6 +116,22 @@ class ListShouldContainNoneOfLogicalOrSpec extends Spec with Matchers {
         e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e2.message should be (Some(Resources("noneOfEmpty")))
       }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (contain noneOf ("fee", "fie", "foe", "fie", "fum") or contain noneOf("fie", "fee", "fam", "foe"))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("noneOfDuplicate")))
+        
+        val e2 = intercept[exceptions.NotAllowedException] {
+          fumList should (contain noneOf ("fie", "fee", "fam", "foe") or contain noneOf("fee", "fie", "foe", "fie", "fum"))
+        }
+        e2.failedCodeFileName.get should be (fileName)
+        e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e2.message should be (Some(Resources("noneOfDuplicate")))
+      }
     }
     
     object `when used with (equal (..) and contain noneOf (..))` {
@@ -159,6 +175,15 @@ class ListShouldContainNoneOfLogicalOrSpec extends Spec with Matchers {
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("noneOfEmpty")))
+      }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (equal (fumList) or contain noneOf("fee", "fie", "foe", "fie", "fum"))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("noneOfDuplicate")))
       }
     }
     
@@ -204,6 +229,15 @@ class ListShouldContainNoneOfLogicalOrSpec extends Spec with Matchers {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("noneOfEmpty")))
       }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (legacyEqual (fumList) or contain noneOf("fee", "fie", "foe", "fie", "fum"))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("noneOfDuplicate")))
+      }
     }
 
     object `when used with (contain noneOf (..) and legacyEqual (..))` {
@@ -247,6 +281,15 @@ class ListShouldContainNoneOfLogicalOrSpec extends Spec with Matchers {
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("noneOfEmpty")))
+      }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (contain noneOf("fee", "fie", "foe", "fie", "fum") or legacyEqual (fumList))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("noneOfDuplicate")))
       }
     }
     
@@ -298,6 +341,22 @@ class ListShouldContainNoneOfLogicalOrSpec extends Spec with Matchers {
         e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e2.message should be (Some(Resources("noneOfEmpty")))
       }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (not contain noneOf ("fee", "fie", "foe", "fie", "fum") or not contain noneOf("fee", "fie", "fum", "foe"))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("noneOfDuplicate")))
+        
+        val e2 = intercept[exceptions.NotAllowedException] {
+          fumList should (not contain noneOf ("fee", "fie", "fum", "foe") or not contain noneOf("fee", "fie", "foe", "fie", "fum"))
+        }
+        e2.failedCodeFileName.get should be (fileName)
+        e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e2.message should be (Some(Resources("noneOfDuplicate")))
+      }
     }
     
     object `when used with (not equal (..) and not contain noneOf (..))` {
@@ -342,6 +401,15 @@ class ListShouldContainNoneOfLogicalOrSpec extends Spec with Matchers {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("noneOfEmpty")))
       }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (not equal (toList) or not contain noneOf("fee", "fie", "foe", "fie", "fum"))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("noneOfDuplicate")))
+      }
     }
     
     object `when used with (not be (..) and not contain noneOf (..))` {
@@ -385,6 +453,15 @@ class ListShouldContainNoneOfLogicalOrSpec extends Spec with Matchers {
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("noneOfEmpty")))
+      }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (not be (toList) or not contain noneOf("fee", "fie", "foe", "fie", "fum"))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("noneOfDuplicate")))
       }
     }
     
@@ -460,6 +537,22 @@ class ListShouldContainNoneOfLogicalOrSpec extends Spec with Matchers {
         e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e2.message should be (Some(Resources("noneOfEmpty")))
       }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should (contain noneOf (1, 2, 2, 3) or contain noneOf (2, 6, 8))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("noneOfDuplicate")))
+        
+        val e2 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should (contain noneOf (2, 6, 8) or contain noneOf (1, 2, 2, 3))
+        }
+        e2.failedCodeFileName.get should be (fileName)
+        e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e2.message should be (Some(Resources("noneOfDuplicate")))
+      }
     }
     
     object `when used with (be (..) and contain noneOf (..))` {
@@ -506,6 +599,15 @@ class ListShouldContainNoneOfLogicalOrSpec extends Spec with Matchers {
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("noneOfEmpty")))
+      }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should (be (List(1)) or contain noneOf (1, 2, 2, 3))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("noneOfDuplicate")))
       }
     }
     
@@ -561,6 +663,22 @@ class ListShouldContainNoneOfLogicalOrSpec extends Spec with Matchers {
         e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e2.message should be (Some(Resources("noneOfEmpty")))
       }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should (not contain noneOf (1, 2, 2, 3) or not contain noneOf (1, 6, 8))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("noneOfDuplicate")))
+        
+        val e2 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should (not contain noneOf (1, 6, 8) or not contain noneOf (1, 2, 2, 3))
+        }
+        e2.failedCodeFileName.get should be (fileName)
+        e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e2.message should be (Some(Resources("noneOfDuplicate")))
+      }
     }
     
     object `when used with (not be (..) and not contain noneOf (..))` {
@@ -607,6 +725,15 @@ class ListShouldContainNoneOfLogicalOrSpec extends Spec with Matchers {
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("noneOfEmpty")))
+      }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should (not be (List(2)) or not contain noneOf (1, 2, 2, 3))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("noneOfDuplicate")))
       }
     }
   }

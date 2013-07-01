@@ -86,6 +86,14 @@ class ListShouldContainInOrderSpec extends Spec with Matchers {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("inOrderEmpty")))
       }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should contain inOrder ("fee", "fie", "foe", "fie", "fum")
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainInOrderSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("inOrderDuplicate")))
+      }
     }
 
     object `when used with (contain inOrder (..))` {
@@ -122,6 +130,14 @@ class ListShouldContainInOrderSpec extends Spec with Matchers {
         e1.failedCodeFileName.get should be ("ListShouldContainInOrderSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("inOrderEmpty")))
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (contain inOrder ("fee", "fie", "foe", "fie", "fum"))
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainInOrderSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("inOrderDuplicate")))
       }
     }
 
@@ -161,6 +177,14 @@ class ListShouldContainInOrderSpec extends Spec with Matchers {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("inOrderEmpty")))
       }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          toList should not contain inOrder ("fee", "fie", "foe", "fie", "fum")
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainInOrderSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("inOrderDuplicate")))
+      }
     }
 
     object `when used with (not contain inOrder (..))` {
@@ -198,6 +222,14 @@ class ListShouldContainInOrderSpec extends Spec with Matchers {
         e1.failedCodeFileName.get should be ("ListShouldContainInOrderSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("inOrderEmpty")))
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          toList should (not contain inOrder ("fee", "fie", "foe", "fie", "fum"))
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainInOrderSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("inOrderDuplicate")))
       }
     }
   }
@@ -267,6 +299,14 @@ class ListShouldContainInOrderSpec extends Spec with Matchers {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("inOrderEmpty")))
       }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should contain inOrder (1, 2, 2, 3)
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainInOrderSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("inOrderDuplicate")))
+      }
     }
 
     object `when used with (contain inOrder (..))` {
@@ -327,6 +367,14 @@ class ListShouldContainInOrderSpec extends Spec with Matchers {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("inOrderEmpty")))
       }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should (contain inOrder (1, 2, 2, 3))
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainInOrderSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("inOrderDuplicate")))
+      }
     }
 
     object `when used with not contain inOrder (..)` {
@@ -367,6 +415,14 @@ class ListShouldContainInOrderSpec extends Spec with Matchers {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("inOrderEmpty")))
       }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (toLists) should not contain inOrder ("fee", "fie", "foe", "fie", "fum")
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainInOrderSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("inOrderDuplicate")))
+      }
     }
 
     object `when used with (not contain inOrder (..))` {
@@ -406,6 +462,14 @@ class ListShouldContainInOrderSpec extends Spec with Matchers {
         e1.failedCodeFileName.get should be ("ListShouldContainInOrderSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("inOrderEmpty")))
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (toLists) should (not contain inOrder ("fee", "fie", "foe", "fie", "fum"))
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainInOrderSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("inOrderDuplicate")))
       }
     }
   }

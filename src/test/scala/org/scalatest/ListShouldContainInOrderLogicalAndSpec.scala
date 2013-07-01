@@ -116,6 +116,22 @@ class ListShouldContainInOrderLogicalAndSpec extends Spec with Matchers {
         e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e2.message should be (Some(Resources("inOrderEmpty")))
       }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (contain inOrder ("fee", "fie", "foe", "fie", "fum") and contain inOrder ("fum", "foe", "fie", "fee"))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("inOrderDuplicate")))
+        
+        val e2 = intercept[exceptions.NotAllowedException] {
+          fumList should (contain inOrder ("fum", "foe", "fie", "fee") and contain inOrder ("fee", "fie", "foe", "fie", "fum"))
+        }
+        e2.failedCodeFileName.get should be (fileName)
+        e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e2.message should be (Some(Resources("inOrderDuplicate")))
+      }
     }
 
     object `when used with (equal xx and contain inOrder xx)` {
@@ -165,6 +181,15 @@ class ListShouldContainInOrderLogicalAndSpec extends Spec with Matchers {
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("inOrderEmpty")))
+      }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (equal (fumList) and contain inOrder ("fee", "fie", "foe", "fie", "fum"))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("inOrderDuplicate")))
       }
     }
     
@@ -216,6 +241,15 @@ class ListShouldContainInOrderLogicalAndSpec extends Spec with Matchers {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("inOrderEmpty")))
       }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (legacyEqual (fumList) and contain inOrder ("fee", "fie", "foe", "fie", "fum"))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("inOrderDuplicate")))
+      }
     }
 
     object `when used with (contain inOrder xx and legacyEqual xx)` {
@@ -265,6 +299,15 @@ class ListShouldContainInOrderLogicalAndSpec extends Spec with Matchers {
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("inOrderEmpty")))
+      }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (contain inOrder ("fee", "fie", "foe", "fie", "fum") and legacyEqual (fumList))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("inOrderDuplicate")))
       }
     }
     
@@ -322,6 +365,22 @@ class ListShouldContainInOrderLogicalAndSpec extends Spec with Matchers {
         e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e2.message should be (Some(Resources("inOrderEmpty")))
       }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (not contain inOrder ("fee", "fie", "foe", "fie", "fum") and not contain inOrder ("fee", "fie", "foe", "fum"))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("inOrderDuplicate")))
+        
+        val e2 = intercept[exceptions.NotAllowedException] {
+          fumList should (not contain inOrder ("fee", "fie", "foe", "fum") and not contain inOrder ("fee", "fie", "foe", "fie", "fum"))
+        }
+        e2.failedCodeFileName.get should be (fileName)
+        e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e2.message should be (Some(Resources("inOrderDuplicate")))
+      }
     }
     
     object `when used with (not equal xx and not contain inOrder xx)` {
@@ -370,6 +429,15 @@ class ListShouldContainInOrderLogicalAndSpec extends Spec with Matchers {
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("inOrderEmpty")))
+      }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (not equal (toList) and not contain inOrder ("fee", "fie", "foe", "fie", "fum"))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("inOrderDuplicate")))
       }
     }
     
@@ -420,6 +488,15 @@ class ListShouldContainInOrderLogicalAndSpec extends Spec with Matchers {
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("inOrderEmpty")))
+      }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (not be (toList) and not contain inOrder ("fee", "fie", "foe", "fie", "fum"))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("inOrderDuplicate")))
       }
     }
   }
@@ -512,6 +589,22 @@ class ListShouldContainInOrderLogicalAndSpec extends Spec with Matchers {
         e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e2.message should be (Some(Resources("inOrderEmpty")))
       }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should (contain inOrder (1, 2, 2, 3) and contain inOrder (1, 2, 3))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("inOrderDuplicate")))
+        
+        val e2 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should (contain inOrder (1, 2, 3) and contain inOrder (1, 2, 2, 3))
+        }
+        e2.failedCodeFileName.get should be (fileName)
+        e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e2.message should be (Some(Resources("inOrderDuplicate")))
+      }
     }
 
     object `when used with (be xx and contain inOrder xx)` {
@@ -592,6 +685,15 @@ class ListShouldContainInOrderLogicalAndSpec extends Spec with Matchers {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("inOrderEmpty")))
       }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should (be (List(0, 1, 2, 2, 3)) and contain inOrder (1, 2, 2, 3))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("inOrderDuplicate")))
+      }
     }
 
     object `when used with (not contain inOrder xx and not contain inOrder xx)` {
@@ -667,6 +769,22 @@ class ListShouldContainInOrderLogicalAndSpec extends Spec with Matchers {
         e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e2.message should be (Some(Resources("inOrderEmpty")))
       }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should (not contain inOrder (1, 2, 2, 3) and not contain inOrder (8, 3, 4))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("inOrderDuplicate")))
+        
+        val e2 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should (not contain inOrder (1, 2, 2, 3) and not contain inOrder (8, 3, 4))
+        }
+        e2.failedCodeFileName.get should be (fileName)
+        e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e2.message should be (Some(Resources("inOrderDuplicate")))
+      }
     }
     
     object `when used with (not be xx and not contain inOrder xx)` {
@@ -734,6 +852,15 @@ class ListShouldContainInOrderLogicalAndSpec extends Spec with Matchers {
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("inOrderEmpty")))
+      }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should (not be (List(2)) and not contain inOrder (1, 2, 2, 3))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("inOrderDuplicate")))
       }
     }
   }

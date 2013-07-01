@@ -116,6 +116,22 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec with Matchers {
         e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e2.message should be (Some(Resources("onlyEmpty")))
       }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (contain only ("fee", "fie", "foe", "fie", "fum") and contain only ("fie", "fee", "fum", "foe"))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("onlyDuplicate")))
+        
+        val e2 = intercept[exceptions.NotAllowedException] {
+          fumList should (contain only ("fie", "fee", "fum", "foe") and contain only ("fee", "fie", "foe", "fie", "fum"))
+        }
+        e2.failedCodeFileName.get should be (fileName)
+        e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e2.message should be (Some(Resources("onlyDuplicate")))
+      }
     }
     
     object `when used with (equal (..) and contain only (..))` {
@@ -165,6 +181,15 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec with Matchers {
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("onlyEmpty")))
+      }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (equal (fumList) and contain only ("fee", "fie", "foe", "fie", "fum"))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("onlyDuplicate")))
       }
     }
     
@@ -216,6 +241,15 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec with Matchers {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("onlyEmpty")))
       }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (legacyEqual (fumList) and contain only ("fee", "fie", "foe", "fie", "fum"))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("onlyDuplicate")))
+      }
     }
 
     object `when used with (contain only (..) and legacyEqual (..))` {
@@ -265,6 +299,15 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec with Matchers {
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("onlyEmpty")))
+      }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (contain only ("fee", "fie", "foe", "fie", "fum") and legacyEqual (fumList))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("onlyDuplicate")))
       }
     }
     
@@ -323,6 +366,22 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec with Matchers {
         e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e2.message should be (Some(Resources("onlyEmpty")))
       }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (not contain only ("fee", "fie", "foe", "fie", "fum") and not contain only ("fie", "fee", "fuu", "foe"))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("onlyDuplicate")))
+        
+        val e2 = intercept[exceptions.NotAllowedException] {
+          fumList should (not contain only ("fie", "fee", "fuu", "foe") and not contain only ("fee", "fie", "foe", "fie", "fum"))
+        }
+        e2.failedCodeFileName.get should be (fileName)
+        e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e2.message should be (Some(Resources("onlyDuplicate")))
+      }
     }
     
     object `when used with (not equal (..) and not contain only (..))` {
@@ -373,6 +432,15 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec with Matchers {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("onlyEmpty")))
       }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (not equal (toList) and not contain only ("fee", "fie", "foe", "fie", "fum"))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("onlyDuplicate")))
+      }
     }
     
     object `when used with (not be (..) and not contain only (..))` {
@@ -422,6 +490,15 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec with Matchers {
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("onlyEmpty")))
+      }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (not be (toList) and not contain only ("fee", "fie", "foe", "fie", "fum"))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("onlyDuplicate")))
       }
     }
     
@@ -508,6 +585,22 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec with Matchers {
         e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e2.message should be (Some(Resources("onlyEmpty")))
       }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should (contain only (3, 2, 2, 1) and contain only (1, 3, 2))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("onlyDuplicate")))
+        
+        val e2 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should (contain only (1, 3, 2) and contain only (3, 2, 2, 1))
+        }
+        e2.failedCodeFileName.get should be (fileName)
+        e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e2.message should be (Some(Resources("onlyDuplicate")))
+      }
     }
     
     object `when used with (be (..) and contain only (..))` {
@@ -588,6 +681,15 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec with Matchers {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("onlyEmpty")))
       }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should (be (List(3, 2, 1)) and contain only (3, 2, 2, 1))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("onlyDuplicate")))
+      }
     }
     
     object `when used with (not contain only xx and not contain only xx)` {
@@ -663,6 +765,22 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec with Matchers {
         e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e2.message should be (Some(Resources("onlyEmpty")))
       }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should (not contain only (3, 2, 2, 1) and not contain only (8, 3, 4))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("onlyDuplicate")))
+        
+        val e2 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should (not contain only (8, 3, 4) and not contain only (3, 2, 2, 1))
+        }
+        e2.failedCodeFileName.get should be (fileName)
+        e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e2.message should be (Some(Resources("onlyDuplicate")))
+      }
     }
     
     object `when used with (not be (..) and not contain only (..))` {
@@ -730,6 +848,15 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec with Matchers {
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("onlyEmpty")))
+      }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should (not be (List(2)) and not contain only (3, 2, 2, 1))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("onlyDuplicate")))
       }
     }
   }

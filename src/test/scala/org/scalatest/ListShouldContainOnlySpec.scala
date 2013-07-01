@@ -85,6 +85,14 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("onlyEmpty")))
       }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should contain only ("fee", "fie", "foe", "fie", "fum")
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("onlyDuplicate")))
+      }
     }
 
     object `when used with (contain only (..))` {
@@ -124,6 +132,14 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("onlyEmpty")))
       }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (contain only ("fee", "fie", "foe", "fie", "fum"))
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("onlyDuplicate")))
+      }
     }
 
     object `when used with not contain only (..)` {
@@ -162,6 +178,14 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("onlyEmpty")))
       }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          toList should not contain only ("fee", "fie", "foe", "fie", "fum")
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("onlyDuplicate")))
+      }
     }
 
     object `when used with (not contain only (..))` {
@@ -199,6 +223,14 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("onlyEmpty")))
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          toList should (not contain only ("fee", "fie", "foe", "fie", "fum"))
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("onlyDuplicate")))
       }
     }
   }
@@ -268,6 +300,14 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("onlyEmpty")))
       }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should contain only (1, 2, 2, 3)
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("onlyDuplicate")))
+      }
     }
 
     object `when used with (contain only (..))` {
@@ -327,6 +367,14 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("onlyEmpty")))
       }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should (contain only (1, 2, 2, 3))
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("onlyDuplicate")))
+      }
     }
 
     object `when used with not contain only (..)` {
@@ -367,6 +415,14 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("onlyEmpty")))
       }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (toLists) should not contain only ("fee", "fie", "foe", "fie", "fum")
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("onlyDuplicate")))
+      }
     }
 
     object `when used with (not contain only (..))` {
@@ -406,6 +462,14 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("onlyEmpty")))
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (toLists) should (not contain only ("fee", "fie", "foe", "fie", "fum"))
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("onlyDuplicate")))
       }
     }
   }

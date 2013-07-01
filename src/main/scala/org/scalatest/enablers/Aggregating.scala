@@ -176,8 +176,6 @@ object Aggregating {
     def findNext(value: T, rightItr: Iterator[Any], processedSet: Set[Any]): Set[Any] = 
       if (rightItr.hasNext) {
         val nextRight = rightItr.next
-        if (processedSet.find(tryEquality(_, nextRight, equality)).isDefined)
-          throw new IllegalArgumentException(FailureMessages("onlyDuplicate", nextRight))
         if (tryEquality(nextRight, value, equality))
           processedSet + nextRight
         else
@@ -208,20 +206,18 @@ object Aggregating {
   
   private def checkAllOf[T](left: GenTraversable[T], right: GenTraversable[Any], equality: Equality[T]): Boolean = {
     @tailrec
-    def checkEqual(left: GenTraversable[T], rightItr: Iterator[Any], processedSet: Set[Any]): Boolean = {
+    def checkEqual(left: GenTraversable[T], rightItr: Iterator[Any]): Boolean = {
       if (rightItr.hasNext) {
         val nextRight = rightItr.next
-        if (processedSet.contains(nextRight))
-          throw new IllegalArgumentException(FailureMessages("allOfDuplicate", nextRight))
         if (left.exists(t => equality.areEqual(t, nextRight))) 
-          checkEqual(left, rightItr, processedSet + nextRight)
+          checkEqual(left, rightItr)
         else
           false // Element not found, let's fail early
       }
       else // No more element in right, left contains all of right.
         true
     }
-    checkEqual(left, right.toIterator, Set.empty)
+    checkEqual(left, right.toIterator)
   }
   
   private def checkAtMostOneOf[T](left: GenTraversable[T], right: GenTraversable[Any], equality: Equality[T]): Boolean = {

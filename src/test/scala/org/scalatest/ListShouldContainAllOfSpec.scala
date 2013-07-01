@@ -85,6 +85,14 @@ class ListShouldContainAllOfSpec extends Spec with Matchers {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("allOfEmpty")))
       }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should contain allOf ("fee", "fie", "foe", "fie", "fum")
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainAllOfSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("allOfDuplicate")))
+      }
     }
 
     object `when used with (contain allOf (..))` {
@@ -124,6 +132,14 @@ class ListShouldContainAllOfSpec extends Spec with Matchers {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("allOfEmpty")))
       }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (contain allOf ("fee", "fie", "foe", "fie", "fum"))
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainAllOfSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("allOfDuplicate")))
+      }
     }
 
     object `when used with not contain allOf (..)` {
@@ -162,6 +178,14 @@ class ListShouldContainAllOfSpec extends Spec with Matchers {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("allOfEmpty")))
       }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          toList should not contain allOf ("fee", "fie", "foe", "fie", "fum")
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainAllOfSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("allOfDuplicate")))
+      }
     }
 
     object `when used with (not contain allOf (..))` {
@@ -199,6 +223,14 @@ class ListShouldContainAllOfSpec extends Spec with Matchers {
         e1.failedCodeFileName.get should be ("ListShouldContainAllOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("allOfEmpty")))
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          toList should (not contain allOf ("fee", "fie", "foe", "fie", "fum"))
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainAllOfSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("allOfDuplicate")))
       }
     }
   }
@@ -259,6 +291,14 @@ class ListShouldContainAllOfSpec extends Spec with Matchers {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("allOfEmpty")))
       }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should contain allOf (1, 2, 2, 3)
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainAllOfSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("allOfDuplicate")))
+      }
     }
 
     object `when used with (contain allOf (..))` {
@@ -309,6 +349,14 @@ class ListShouldContainAllOfSpec extends Spec with Matchers {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("allOfEmpty")))
       }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should (contain allOf (1, 2, 2, 3))
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainAllOfSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("allOfDuplicate")))
+      }
     }
 
     object `when used with not contain allOf (..)` {
@@ -349,6 +397,14 @@ class ListShouldContainAllOfSpec extends Spec with Matchers {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("allOfEmpty")))
       }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (toLists) should not contain allOf ("fee", "fie", "foe", "fie", "fum")
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainAllOfSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("allOfDuplicate")))
+      }
     }
 
     object `when used with (not contain allOf (..))` {
@@ -388,6 +444,14 @@ class ListShouldContainAllOfSpec extends Spec with Matchers {
         e1.failedCodeFileName.get should be ("ListShouldContainAllOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("allOfEmpty")))
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (toLists) should (not contain allOf ("fee", "fie", "foe", "fie", "fum"))
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainAllOfSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("allOfDuplicate")))
       }
     }
   }
