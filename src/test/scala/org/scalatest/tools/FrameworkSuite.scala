@@ -234,7 +234,7 @@ class FrameworkSuite extends FunSuite {
     assert(Status.Ignored === event.status)
     assert(suiteClassName === event.fullyQualifiedName)
     assert(fingerprint === event.fingerprint)
-    assert(event.duration === 0)
+    assert(event.duration === -1)
     assert(!event.throwable.isDefined)
     val selector = event.selector
     selector match {
@@ -295,7 +295,7 @@ class FrameworkSuite extends FunSuite {
     assert(Status.Ignored === event.status)
     assert(suiteClassName === event.fullyQualifiedName)
     assert(fingerprint === event.fingerprint)
-    assert(event.duration === 0)
+    assert(event.duration === -1)
     assert(!event.throwable.isDefined)
     val selector = event.selector
     selector match {
