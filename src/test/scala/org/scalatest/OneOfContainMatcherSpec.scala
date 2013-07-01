@@ -93,17 +93,17 @@ class OneOfContainMatcherSpec extends Spec with Matchers {
       val e1 = intercept[IllegalArgumentException] {
         List(1, 2, 3) should contain oneOf(6, 7, 6)
       }
-      e1.getMessage() should be ("oneOf must not contained duplicated value, but 6 is duplicated")
+      e1.getMessage() should be ("oneOf must not contain duplicated value, but 6 is duplicated")
       
       val e2 = intercept[IllegalArgumentException] {
         Set(1, 2, 3) should contain oneOf(6, 7, 6)
       }
-      e2.getMessage() should be ("oneOf must not contained duplicated value, but 6 is duplicated")
+      e2.getMessage() should be ("oneOf must not contain duplicated value, but 6 is duplicated")
       
       val e3 = intercept[IllegalArgumentException] {
         Array(1, 2, 3) should contain oneOf(6, 7, 6)
       }
-      e3.getMessage() should be ("oneOf must not contained duplicated value, but 6 is duplicated")
+      e3.getMessage() should be ("oneOf must not contain duplicated value, but 6 is duplicated")
     }
     
     def `should throw TestFailedException with correct stack depth and message when left and right List are same size but does not contain any same element` {

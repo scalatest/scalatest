@@ -60,17 +60,17 @@ class AllOfContainMatcherSpec extends Spec with Matchers {
       val e1 = intercept[IllegalArgumentException] {
         List(1, 2, 3) should contain allOf(1, 2, 1)
       }
-      e1.getMessage() should be ("allOf must not contained duplicated value, but 1 is duplicated")
+      e1.getMessage() should be ("allOf must not contain duplicated value, but 1 is duplicated")
       
       val e2 = intercept[IllegalArgumentException] {
         javaList(1, 2, 3) should contain allOf(1, 2, 1)
       }
-      e2.getMessage() should be ("allOf must not contained duplicated value, but 1 is duplicated")
+      e2.getMessage() should be ("allOf must not contain duplicated value, but 1 is duplicated")
       
       val e3 = intercept[IllegalArgumentException] {
         Array(1, 2, 3) should contain allOf(1, 2, 1)
       }
-      e3.getMessage() should be ("allOf must not contained duplicated value, but 1 is duplicated")
+      e3.getMessage() should be ("allOf must not contain duplicated value, but 1 is duplicated")
     }
     
     def `should throw TestFailedException with correct stack depth and message when left and right List are same size but contain different elements` {
