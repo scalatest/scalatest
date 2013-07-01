@@ -48,6 +48,7 @@ import MatchersHelper.includeRegexWithGroups
 import org.scalautils.NormalizingEquality
 import Assertions.checkExpectedException
 import Assertions.checkNoException
+import exceptions.StackDepthExceptionHelper.getStackDepthFun
 
 // TODO: drop generic support for be as an equality comparison, in favor of specific ones.
 // TODO: mention on JUnit and TestNG docs that you can now mix in ShouldMatchers or MustMatchers
@@ -2453,7 +2454,11 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  def oneOf(xs: Any*) = new ResultOfOneOfApplication(xs)
+  def oneOf(xs: Any*) = {
+    if (xs.isEmpty)
+      throw new NotAllowedException(FailureMessages("oneOfEmpty"), getStackDepthFun("Matchers.scala", "oneOf"))
+    new ResultOfOneOfApplication(xs)
+  }
 
   /**
    * This method enables the following syntax: 
@@ -2463,7 +2468,11 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  def atLeastOneOf(xs: Any*) = new ResultOfAtLeastOneOfApplication(xs)
+  def atLeastOneOf(xs: Any*) = {
+    if (xs.isEmpty)
+      throw new NotAllowedException(FailureMessages("atLeastOneOfEmpty"), getStackDepthFun("Matchers.scala", "atLeastOneOf"))
+    new ResultOfAtLeastOneOfApplication(xs)
+  }
 
   /**
    * This method enables the following syntax: 
@@ -2473,7 +2482,11 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  def noneOf(xs: Any*) = new ResultOfNoneOfApplication(xs)
+  def noneOf(xs: Any*) = { 
+    if (xs.isEmpty)
+      throw new NotAllowedException(FailureMessages("noneOfEmpty"), getStackDepthFun("Matchers.scala", "noneOf"))
+    new ResultOfNoneOfApplication(xs)
+  }
 
   /**
    * This method enables the following syntax: 
@@ -2503,7 +2516,11 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  def only(xs: Any*) = new ResultOfOnlyApplication(xs)
+  def only(xs: Any*) = {
+    if (xs.isEmpty)
+      throw new NotAllowedException(FailureMessages("onlyEmpty"), getStackDepthFun("Matchers.scala", "only"))
+    new ResultOfOnlyApplication(xs)
+  }
   
   /**
    * This method enables the following syntax: 
@@ -2513,7 +2530,11 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  def inOrderOnly[T](xs: Any*) = new ResultOfInOrderOnlyApplication(xs)
+  def inOrderOnly[T](xs: Any*) = {
+    if (xs.isEmpty)
+      throw new NotAllowedException(FailureMessages("inOrderOnlyEmpty"), getStackDepthFun("Matchers.scala", "inOrderOnly"))
+    new ResultOfInOrderOnlyApplication(xs)
+  }
   
   /**
    * This method enables the following syntax: 
@@ -2523,7 +2544,11 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  def allOf(xs: Any*) = new ResultOfAllOfApplication(xs)
+  def allOf(xs: Any*) = {
+    if (xs.isEmpty)
+      throw new NotAllowedException(FailureMessages("allOfEmpty"), getStackDepthFun("Matchers.scala", "allOf"))
+    new ResultOfAllOfApplication(xs)
+  }
   
   /**
    * This method enables the following syntax: 
@@ -2533,7 +2558,11 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  def inOrder(xs: Any*) = new ResultOfInOrderApplication(xs)
+  def inOrder(xs: Any*) = { 
+    if (xs.isEmpty)
+      throw new NotAllowedException(FailureMessages("inOrderEmpty"), getStackDepthFun("Matchers.scala", "inOrder"))
+    new ResultOfInOrderApplication(xs)
+  }
   
   /**
    * This method enables the following syntax: 
@@ -3720,6 +3749,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def oneOf(right: Any*)(implicit containing: Containing[T]) {
+      if (right.isEmpty)
+        throw new NotAllowedException(FailureMessages("oneOfEmpty"), getStackDepthFun("Matchers.scala", "oneOf"))
       doCollected(collected, xs, "oneOf", 1) { e =>
         if (containing.containsOneOf(e, right) != shouldBeTrue)
           throw newTestFailedException(
@@ -3743,6 +3774,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def atLeastOneOf(right: Any*)(implicit aggregating: Aggregating[T]) {
+      if (right.isEmpty)
+        throw new NotAllowedException(FailureMessages("atLeastOneOfEmpty"), getStackDepthFun("Matchers.scala", "atLeastOneOf"))
       doCollected(collected, xs, "atLeastOneOf", 1) { e =>
         if (aggregating.containsAtLeastOneOf(e, right) != shouldBeTrue)
           throw newTestFailedException(
@@ -3766,6 +3799,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def noneOf(right: Any*)(implicit containing: Containing[T]) {
+      if (right.isEmpty)
+        throw new NotAllowedException(FailureMessages("noneOfEmpty"), getStackDepthFun("Matchers.scala", "noneOf"))
       doCollected(collected, xs, "noneOf", 1) { e =>
         if (containing.containsNoneOf(e, right) != shouldBeTrue)
           throw newTestFailedException(
@@ -3835,6 +3870,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def only(right: Any*)(implicit aggregating: Aggregating[T]) {
+      if (right.isEmpty)
+        throw new NotAllowedException(FailureMessages("onlyEmpty"), getStackDepthFun("Matchers.scala", "only"))
       doCollected(collected, xs, "only", 1) { e =>
         if (aggregating.containsOnly(e, right) != shouldBeTrue)
           throw newTestFailedException(
@@ -3858,6 +3895,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def inOrderOnly(right: Any*)(implicit sequencing: Sequencing[T]) {
+      if (right.isEmpty)
+        throw new NotAllowedException(FailureMessages("inOrderOnlyEmpty"), getStackDepthFun("Matchers.scala", "inOrderOnly"))
       doCollected(collected, xs, "inOrderOnly", 1) { e =>
         if (sequencing.containsInOrderOnly(e, right) != shouldBeTrue)
           throw newTestFailedException(
@@ -3881,6 +3920,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def allOf(right: Any*)(implicit aggregating: Aggregating[T]) {
+      if (right.isEmpty)
+        throw new NotAllowedException(FailureMessages("allOfEmpty"), getStackDepthFun("Matchers.scala", "allOf"))
       doCollected(collected, xs, "allOf", 1) { e =>
         if (aggregating.containsAllOf(e, right) != shouldBeTrue)
           throw newTestFailedException(
@@ -3904,6 +3945,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def inOrder(right: Any*)(implicit sequencing: Sequencing[T]) {
+      if (right.isEmpty)
+        throw new NotAllowedException(FailureMessages("inOrderEmpty"), getStackDepthFun("Matchers.scala", "inOrder"))
       doCollected(collected, xs, "inOrder", 1) { e =>
         if (sequencing.containsInOrder(e, right) != shouldBeTrue)
           throw newTestFailedException(

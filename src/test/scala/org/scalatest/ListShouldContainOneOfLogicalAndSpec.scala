@@ -106,6 +106,22 @@ class ListShouldContainOneOfLogicalAndSpec extends Spec with Matchers {
         checkMessageStackDepth(e2, Resources("containedOneOfElements", decorateToStringValue(fumList), "\"FEE\", \"FIE\", \"FOE\", \"FUM\"") + ", but " + Resources("didNotContainOneOfElements", decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fum\""), fileName, thisLineNumber - 2)
         (fumList should (contain oneOf (" FEE ", " FIE ", " FOE ", " FUM ") and contain oneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (contain oneOf () and contain oneOf("fie", "fee", "fum", "foe"))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("oneOfEmpty")))
+        
+        val e2 = intercept[exceptions.NotAllowedException] {
+          fumList should (contain oneOf ("fie", "fee", "fum", "foe") and contain oneOf())
+        }
+        e2.failedCodeFileName.get should be (fileName)
+        e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e2.message should be (Some(Resources("oneOfEmpty")))
+      }
     }
     
     object `when used with (equal (..) and contain oneOf (..))` {
@@ -146,6 +162,15 @@ class ListShouldContainOneOfLogicalAndSpec extends Spec with Matchers {
         }
         checkMessageStackDepth(e2, Resources("equaled", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", but " + Resources("didNotContainOneOfElements", decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fum\""), fileName, thisLineNumber - 2)
         (fumList should (equal (toList) and contain oneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (decided by invertedListOfStringEquality, after being lowerCased and trimmed)
+      }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (equal (fumList) and contain oneOf())
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("oneOfEmpty")))
       }
     }
     
@@ -188,6 +213,15 @@ class ListShouldContainOneOfLogicalAndSpec extends Spec with Matchers {
         checkMessageStackDepth(e2, Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
         (fumList should (legacyEqual (fumList) and contain oneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
       }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (legacyEqual (fumList) and contain oneOf())
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("oneOfEmpty")))
+      }
     }
 
     object `when used with (contain oneOf (..) and legacyEqual (..))` {
@@ -228,6 +262,15 @@ class ListShouldContainOneOfLogicalAndSpec extends Spec with Matchers {
         }
         checkMessageStackDepth(e2, Resources("containedOneOfElements", decorateToStringValue(fumList), "\"FEE\", \"FIE\", \"FOE\", \"FUM\"") + ", but " + Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
         (fumList should (contain oneOf (" FEE ", " FIE ", " FOE ", " FUM ") and legacyEqual (fumList))) (after being lowerCased and trimmed)
+      }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (contain oneOf() and legacyEqual (fumList))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("oneOfEmpty")))
       }
     }
     
@@ -270,6 +313,22 @@ class ListShouldContainOneOfLogicalAndSpec extends Spec with Matchers {
         checkMessageStackDepth(e2, Resources("didNotContainOneOfElements", decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fum\"") + ", but " + Resources("containedOneOfElements", decorateToStringValue(fumList), "\"FEE\", \"FIE\", \"FOE\", \"FUM\""), fileName, thisLineNumber - 2)
         (fumList should (contain oneOf (" FEE ", " FIE ", " FOE ", " FUM ") and contain oneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (not contain oneOf () and not contain oneOf("FEE", "FIE", "FOE", "FUM"))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("oneOfEmpty")))
+        
+        val e2 = intercept[exceptions.NotAllowedException] {
+          fumList should (not contain oneOf ("FEE", "FIE", "FOE", "FUM") and not contain oneOf())
+        }
+        e2.failedCodeFileName.get should be (fileName)
+        e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e2.message should be (Some(Resources("oneOfEmpty")))
+      }
     }
     
     object `when used with (not equal (..) and not contain oneOf (..))` {
@@ -311,6 +370,15 @@ class ListShouldContainOneOfLogicalAndSpec extends Spec with Matchers {
         checkMessageStackDepth(e2, Resources("equaled", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
         (fumList should (not contain oneOf (" FEE ", " FIE ", " FOE ", " FUU ") and not contain oneOf (" FEE ", " FIE ", " FOE ", " FUU "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (not equal (toList) and not contain oneOf())
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("oneOfEmpty")))
+      }
     }
     
     object `when used with (not be (..) and not contain oneOf (..))` {
@@ -351,6 +419,15 @@ class ListShouldContainOneOfLogicalAndSpec extends Spec with Matchers {
         }
         checkMessageStackDepth(e2, Resources("wasEqualTo", decorateToStringValue(fumList), decorateToStringValue(fumList)), fileName, thisLineNumber - 2)
         (fumList should (not contain oneOf (" FEE ", " FIE ", " FOE ", " FUU ") and not contain oneOf (" FEE ", " FIE ", " FOE ", " FUU "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
+      }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (not be (toList) and not contain oneOf())
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("oneOfEmpty")))
       }
     }
     
@@ -439,6 +516,22 @@ class ListShouldContainOneOfLogicalAndSpec extends Spec with Matchers {
         }
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List("hi")) + " contained one of (\"ho\"), but " + decorateToStringValue(List("hi")) + " did not contain one of (\"hi\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should (contain oneOf () and contain oneOf (1, 3, 4))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("oneOfEmpty")))
+        
+        val e2 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should (contain oneOf (1, 3, 4) and contain oneOf ())
+        }
+        e2.failedCodeFileName.get should be (fileName)
+        e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e2.message should be (Some(Resources("oneOfEmpty")))
+      }
     }
     
     object `when used with (be (..) and contain oneOf (..))` {
@@ -510,6 +603,15 @@ class ListShouldContainOneOfLogicalAndSpec extends Spec with Matchers {
         }
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List("hi")) + " was equal to " + decorateToStringValue(List("hi")) + ", but " + decorateToStringValue(List("hi")) + " did not contain one of (\"hi\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should (be (List(1)) and contain oneOf ())
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("oneOfEmpty")))
+      }
     }
     
     object `when used with (not contain oneOf (..) and not contain oneOf (..))` {
@@ -569,6 +671,22 @@ class ListShouldContainOneOfLogicalAndSpec extends Spec with Matchers {
         }
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List("hi")) + " did not contain one of (\"hi\"), but " + decorateToStringValue(List("hi")) + " contained one of (\"ho\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should (not contain oneOf () and not contain oneOf (8, 3, 4))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("oneOfEmpty")))
+        
+        val e2 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should (not contain oneOf (8, 3, 4) and not contain oneOf ())
+        }
+        e2.failedCodeFileName.get should be (fileName)
+        e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e2.message should be (Some(Resources("oneOfEmpty")))
+      }
     }
     
     object `when used with (not be (..) and not contain oneOf (..))` {
@@ -627,6 +745,15 @@ class ListShouldContainOneOfLogicalAndSpec extends Spec with Matchers {
           (all (hiLists) should (not be (List("ho")) and not contain oneOf ("ho"))) (decided by invertedStringEquality)
         }
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List("hi")) + " was not equal to " + decorateToStringValue(List("ho")) + ", but " + decorateToStringValue(List("hi")) + " contained one of (\"ho\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+      }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should (not be (List(2)) and not contain oneOf ())
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("oneOfEmpty")))
       }
     }
   }

@@ -77,6 +77,14 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
         }
         (fumList should contain only (" FEE ", " FIE ", " FOE ", " FUM ")) (after being lowerCased and trimmed)
       }
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should contain only ()
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("onlyEmpty")))
+      }
     }
 
     object `when used with (contain only (..))` {
@@ -108,6 +116,14 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
         }
         (fumList should (contain only (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
       }
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (contain only ())
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("onlyEmpty")))
+      }
     }
 
     object `when used with not contain only (..)` {
@@ -138,6 +154,14 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
           (toList should not contain only (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (after being lowerCased and trimmed)
         }
       }
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          toList should not contain only ()
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("onlyEmpty")))
+      }
     }
 
     object `when used with (not contain only (..))` {
@@ -167,6 +191,14 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
         intercept[TestFailedException] {
           (toList should (not contain only (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
         }
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          toList should (not contain only ())
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("onlyEmpty")))
       }
     }
   }
@@ -228,6 +260,14 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
           (all (hiLists) should contain only ("ho", "hi")) (decided by defaultEquality[String])
         }
       }
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should contain only ()
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("onlyEmpty")))
+      }
     }
 
     object `when used with (contain only (..))` {
@@ -279,6 +319,14 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
           (all (hiLists) should (contain only ("ho", "hi"))) (decided by defaultEquality[String])
         }
       }
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should (contain only ())
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("onlyEmpty")))
+      }
     }
 
     object `when used with not contain only (..)` {
@@ -311,6 +359,14 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
           (all (toLists) should not contain only (" YOU ", " TO ")) (after being lowerCased and trimmed)
         }
       }
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (toLists) should not contain only ()
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("onlyEmpty")))
+      }
     }
 
     object `when used with (not contain only (..))` {
@@ -342,6 +398,14 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
         intercept[TestFailedException] {
           (all (toLists) should (not contain only (" YOU ", " TO "))) (after being lowerCased and trimmed)
         }
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (toLists) should (not contain only ())
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("onlyEmpty")))
       }
     }
   }
