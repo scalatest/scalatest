@@ -67,11 +67,11 @@ trait LegacyTripleEquals extends TripleEqualsConstraints {
   implicit override def convertToLegacyEqualizer[T](left: T): LegacyEqualizer[T] = new LegacyEqualizer(left)
   override def convertToLegacyCheckingEqualizer[T](left: T): LegacyCheckingEqualizer[T] = new LegacyCheckingEqualizer(left)
 
-  override def lowPriorityTypeCheckedTripleEqualsConstraint[A, B](implicit equalityOfB: Equality[B], ev: A <:< B): TripleEqualsConstraint[A, B] = new AToBEqualityConstraint[A, B](equalityOfB, ev)
-  override def typeCheckedTripleEqualsConstraint[A, B](implicit equalityOfA: Equality[A], ev: B <:< A): TripleEqualsConstraint[A, B] = new BToAEqualityConstraint[A, B](equalityOfA, ev)
+  override def lowPriorityTypeCheckedTripleEqualsConstraint[A, B](implicit equivalenceOfB: Equivalence[B], ev: A <:< B): TripleEqualsConstraint[A, B] = new AToBEquivalenceConstraint[A, B](equivalenceOfB, ev)
+  override def typeCheckedTripleEqualsConstraint[A, B](implicit equivalenceOfA: Equivalence[A], ev: B <:< A): TripleEqualsConstraint[A, B] = new BToAEquivalenceConstraint[A, B](equivalenceOfA, ev)
 
-  override def lowPriorityConversionCheckedTripleEqualsConstraint[A, B](implicit equalityOfB: Equality[B], cnv: A => B): TripleEqualsConstraint[A, B] = new AToBEqualityConstraint[A, B](equalityOfB, cnv)
-  override def conversionCheckedTripleEqualsConstraint[A, B](implicit equalityOfA: Equality[A], cnv: B => A): TripleEqualsConstraint[A, B] = new BToAEqualityConstraint[A, B](equalityOfA, cnv)
+  override def lowPriorityConversionCheckedTripleEqualsConstraint[A, B](implicit equivalenceOfB: Equivalence[B], cnv: A => B): TripleEqualsConstraint[A, B] = new AToBEquivalenceConstraint[A, B](equivalenceOfB, cnv)
+  override def conversionCheckedTripleEqualsConstraint[A, B](implicit equivalenceOfA: Equivalence[A], cnv: B => A): TripleEqualsConstraint[A, B] = new BToAEquivalenceConstraint[A, B](equivalenceOfA, cnv)
 
   override def lowPriorityTypeRestrictedTripleEqualsConstraint[A, B](implicit equivalenceOfB: Equivalence[B], ev: A <:< B): TripleEqualsConstraint[A, B] = new AToBEquivalenceConstraint[A, B](equivalenceOfB, ev)
   override def typeRestrictedTripleEqualsConstraint[A, B](implicit equivalenceOfA: Equivalence[A], ev: B <:< A): TripleEqualsConstraint[A, B] = new BToAEquivalenceConstraint[A, B](equivalenceOfA, ev)
