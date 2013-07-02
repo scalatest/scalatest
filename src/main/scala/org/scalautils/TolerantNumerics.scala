@@ -85,7 +85,7 @@ package org.scalautils
  *
  * @tparam A the type whose equality is being customized
  */
-trait TolerantEquality {
+trait TolerantNumerics {
 
   /**
    * Indicates whether the objects passed as <code>a</code> and <code>b</code> are equal.
@@ -166,7 +166,19 @@ trait TolerantEquality {
       }
     } 
   } 
+  def tolerantEquivalence[N : Numeric](tolerance: N): Equivalence[N] = {
+    val numeric = implicitly[Numeric[N]]
+    if (numeric.lt(tolerance, numeric.zero))
+      throw new IllegalArgumentException(tolerance.toString + " passed to tolerantEquivalence was zero or negative. Must be a positive non-zero number.")
+    new Equivalence[N] {
+      def areEquivalent(a: N, b: N): Boolean = {
+        val bPlusTolerance = numeric.plus(b, tolerance)
+        val bMinusTolerance = numeric.minus(b, tolerance)
+        (numeric.lteq(a, bPlusTolerance)) && (numeric.gteq(a, bMinusTolerance))
+      }
+    } 
+  } 
 } 
 
-object TolerantEquality extends TolerantEquality
+object TolerantNumerics extends TolerantNumerics
 
