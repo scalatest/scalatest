@@ -17,20 +17,35 @@ package org.scalautils
 
 import org.scalatest._
 
-class TypeCheckedTripleEqualsExplicitlySpec extends Spec with Matchers with TypeCheckedTripleEquals {
-
-  val inequality = 
-    new Equality[Int] {
-      def areEqual(a: Int, b: Any): Boolean = a != b
-    }
+class TypeCheckedTripleEqualsExplicitlySpec extends Spec with Matchers with TypeCheckedTripleEquals with InequalityHelpers {
 
   object `The Explicitly DSL` {
-    object `when used with ===` {
+    object `when used with === on identical types` {
       def `should allow an Equality to specified explicitly` {
-        assert((1 === 2)(decided by inequality))
-        assert((1 !== 1)(decided by inequality))
+        assert(1 !== 2)
+        assert((1 === 2)(decided by intInequality))
+        assert(1 === 1)
+        assert((1 !== 1)(decided by intInequality))
       }
     }
+    object `when used with supertype === subtype` {
+      def `should allow an Equality to specified explicitly` {
+        assert(new Fruit("orange") !== new Apple)
+        assert((new Fruit("orange") === new Apple)(decided by fruitInequality))
+        assert(new Fruit("apple") === new Apple)
+        assert((new Fruit("apple") !== new Apple)(decided by fruitInequality))
+      }
+    }
+/*
+    object `when used with subtype === supertype` {
+      def `should allow an Equality to specified explicitly` {
+        assert(new Apple !== new Fruit("orange"))
+        assert((new Apple === new Fruit("orange"))(decided by fruitInequality))
+        assert(new Apple === new Fruit("apple"))
+        assert((new Apple !== new Fruit("apple"))(decided by fruitInequality))
+      }
+    }
+*/
   }
 }
 

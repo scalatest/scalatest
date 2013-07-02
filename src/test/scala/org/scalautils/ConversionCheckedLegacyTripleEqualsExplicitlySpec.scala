@@ -17,18 +17,23 @@ package org.scalautils
 
 import org.scalatest._
 
-class ConversionCheckedLegacyTripleEqualsExplicitlySpec extends Spec with Matchers with ConversionCheckedLegacyTripleEquals {
-
-  val inequality = 
-    new Equality[Int] {
-      def areEqual(a: Int, b: Any): Boolean = a != b
-    }
+class ConversionCheckedLegacyTripleEqualsExplicitlySpec extends Spec with Matchers with ConversionCheckedLegacyTripleEquals with InequalityHelpers {
 
   object `The Explicitly DSL` {
-    object `when used with ===` {
+    object `when used with === on identical types` {
       def `should allow an Equality to specified explicitly` {
-        assert((1 === 2)(decided by inequality))
-        assert((1 !== 1)(decided by inequality))
+        assert(1 !== 2)
+        assert((1 === 2)(decided by intInequality))
+        assert(1 === 1)
+        assert((1 !== 1)(decided by intInequality))
+      }
+    }
+    object `when used with toType === fromType` {
+      def `should allow an Equality to specified explicitly` {
+        assert(new Fruit("orange") !== new Pomme)
+        assert((new Fruit("orange") === new Pomme)(decided by fruitInequality))
+        assert(new Fruit("apple") === new Pomme)
+        assert((new Fruit("apple") !== new Pomme)(decided by fruitInequality))
       }
     }
   }
