@@ -18,9 +18,9 @@ package org.scalautils
 import org.scalatest.FunSpec
 import org.scalatest.Matchers
 
-class LegacyTripleEqualsAndShouldMatchersSpec extends FunSpec with Matchers {
+class LegacyTripleEqualsAndMatchersSpec extends FunSpec with Matchers {
 
-  describe("ShouldMatcher, which extends LegacyTripleEquals") {
+  describe("Matchers, which extends LegacyTripleEquals,") {
     it("should allow users to use should === out of the box") {
       1 + 1 should === (2)
     }
