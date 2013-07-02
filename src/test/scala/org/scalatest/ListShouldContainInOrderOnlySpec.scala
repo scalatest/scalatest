@@ -78,6 +78,22 @@ class ListShouldContainInOrderOnlySpec extends Spec with Matchers {
         }
         (fumList should contain inOrderOnly (" FUM ", " FOE ", " FIE ", " FEE ")) (after being lowerCased and trimmed)
       }
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should contain inOrderOnly ()
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("inOrderOnlyEmpty")))
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should contain inOrderOnly ("fee", "fie", "foe", "fie", "fum")
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("inOrderOnlyDuplicate")))
+      }
     }
 
     object `when used with (contain inOrderOnly (..))` {
@@ -106,6 +122,22 @@ class ListShouldContainInOrderOnlySpec extends Spec with Matchers {
           fumList should (contain inOrderOnly (" FUM ", " FOE ", " FIE ", " FEE "))
         }
         (fumList should (contain inOrderOnly (" FUM ", " FOE ", " FIE ", " FEE "))) (after being lowerCased and trimmed)
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (contain inOrderOnly ())
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("inOrderOnlyEmpty")))
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (contain inOrderOnly ("fee", "fie", "foe", "fie", "fum"))
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("inOrderOnlyDuplicate")))
       }
     }
 
@@ -137,6 +169,22 @@ class ListShouldContainInOrderOnlySpec extends Spec with Matchers {
           (toList should not contain inOrderOnly (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (after being lowerCased and trimmed)
         }
       }
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          toList should not contain inOrderOnly ()
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("inOrderOnlyEmpty")))
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          toList should not contain inOrderOnly ("fee", "fie", "foe", "fie", "fum")
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("inOrderOnlyDuplicate")))
+      }
     }
 
     object `when used with (not contain inOrderOnly (..))` {
@@ -166,6 +214,22 @@ class ListShouldContainInOrderOnlySpec extends Spec with Matchers {
         intercept[TestFailedException] {
           (toList should (not contain inOrderOnly (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
         }
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          toList should (not contain inOrderOnly ())
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("inOrderOnlyEmpty")))
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          toList should (not contain inOrderOnly ("fee", "fie", "foe", "fie", "fum"))
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("inOrderOnlyDuplicate")))
       }
     }
   }
@@ -227,6 +291,22 @@ class ListShouldContainInOrderOnlySpec extends Spec with Matchers {
           (all (hiLists) should contain inOrderOnly ("hi", "ho")) (decided by defaultEquality[String])
         }
       }
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should contain inOrderOnly ()
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("inOrderOnlyEmpty")))
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should contain inOrderOnly (1, 2, 2, 3)
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("inOrderOnlyDuplicate")))
+      }
     }
 
     object `when used with (contain inOrderOnly (..))` {
@@ -279,6 +359,22 @@ class ListShouldContainInOrderOnlySpec extends Spec with Matchers {
           (all (hiLists) should (contain inOrderOnly ("he", "hi"))) (decided by defaultEquality[String])
         }
       }
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should (contain inOrderOnly ())
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("inOrderOnlyEmpty")))
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should (contain inOrderOnly (1, 2, 2, 3))
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("inOrderOnlyDuplicate")))
+      }
     }
 
     object `when used with not contain inOrderOnly (..)` {
@@ -311,6 +407,22 @@ class ListShouldContainInOrderOnlySpec extends Spec with Matchers {
           (all (toLists) should not contain inOrderOnly (" TO ", " YOU ")) (after being lowerCased and trimmed)
         }
       }
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (toLists) should not contain inOrderOnly ()
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("inOrderOnlyEmpty")))
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (toLists) should not contain inOrderOnly ("fee", "fie", "foe", "fie", "fum")
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("inOrderOnlyDuplicate")))
+      }
     }
 
     object `when used with (not contain inOrderOnly (..))` {
@@ -342,6 +454,22 @@ class ListShouldContainInOrderOnlySpec extends Spec with Matchers {
         intercept[TestFailedException] {
           (all (toLists) should (not contain inOrderOnly (" TO ", " YOU "))) (after being lowerCased and trimmed)
         }
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (toLists) should (not contain inOrderOnly ())
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("inOrderOnlyEmpty")))
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (toLists) should (not contain inOrderOnly ("fee", "fie", "foe", "fie", "fum"))
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("inOrderOnlyDuplicate")))
       }
     }
   }

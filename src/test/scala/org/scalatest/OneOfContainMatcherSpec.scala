@@ -89,21 +89,21 @@ class OneOfContainMatcherSpec extends Spec with Matchers {
       javaMap(1 -> "one", 2 -> "two", 3 -> "three") should contain atLeastOneOf (Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
     }
     
-    def `should throw IllegalArgumentException when oneOf contains duplicate element` {
-      val e1 = intercept[IllegalArgumentException] {
+    def `should throw NotAllowedException when oneOf contains duplicate element` {
+      val e1 = intercept[exceptions.NotAllowedException] {
         List(1, 2, 3) should contain oneOf(6, 7, 6)
       }
-      e1.getMessage() should be ("oneOf must not contained duplicated value, but 6 is duplicated")
+      e1.getMessage() should be ("oneOf must not contain duplicated value")
       
-      val e2 = intercept[IllegalArgumentException] {
+      val e2 = intercept[exceptions.NotAllowedException] {
         Set(1, 2, 3) should contain oneOf(6, 7, 6)
       }
-      e2.getMessage() should be ("oneOf must not contained duplicated value, but 6 is duplicated")
+      e2.getMessage() should be ("oneOf must not contain duplicated value")
       
-      val e3 = intercept[IllegalArgumentException] {
+      val e3 = intercept[exceptions.NotAllowedException] {
         Array(1, 2, 3) should contain oneOf(6, 7, 6)
       }
-      e3.getMessage() should be ("oneOf must not contained duplicated value, but 6 is duplicated")
+      e3.getMessage() should be ("oneOf must not contain duplicated value")
     }
     
     def `should throw TestFailedException with correct stack depth and message when left and right List are same size but does not contain any same element` {
