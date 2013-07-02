@@ -221,6 +221,8 @@ trait TripleEqualsConstraints {
    */
   def typeCheckedTripleEqualsConstraint[A, B](implicit equivalenceOfA: Equivalence[A], ev: B <:< A): TripleEqualsConstraint[A, B]
 
+  def convertEquivalenceToBToATypeConstraint[A, B](equivalenceOfA: Equivalence[A])(implicit ev: B <:< A): TripleEqualsConstraint[A, B]
+
   /**
    * Provides an <code>TripleEqualsConstraint[A, B]</code> class for any two types <code>A</code> and <code>B</code>, enforcing the type constraint that <code>A</code> is implicitly convertible to <code>B</code>, given an implicit <code>Equality[A]</code>.
    *

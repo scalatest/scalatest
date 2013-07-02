@@ -219,6 +219,7 @@ trait ConversionCheckedTripleEquals extends LowPriorityConversionCheckedConstrai
 
   override def lowPriorityTypeCheckedTripleEqualsConstraint[A, B](implicit equivalenceOfB: Equivalence[B], ev: A <:< B): TripleEqualsConstraint[A, B] = new AToBEquivalenceConstraint[A, B](equivalenceOfB, ev)
   override def typeCheckedTripleEqualsConstraint[A, B](implicit equivalenceOfA: Equivalence[A], ev: B <:< A): TripleEqualsConstraint[A, B] = new BToAEquivalenceConstraint[A, B](equivalenceOfA, ev)
+  override def convertEquivalenceToBToATypeConstraint[A, B](equivalenceOfA: Equivalence[A])(implicit ev: B <:< A): TripleEqualsConstraint[A, B] = new BToAEquivalenceConstraint[A, B](equivalenceOfA, ev)
 
   implicit override def conversionCheckedTripleEqualsConstraint[A, B](implicit equivalenceOfA: Equivalence[A], cnv: B => A): TripleEqualsConstraint[A, B] = new BToAEquivalenceConstraint[A, B](equivalenceOfA, cnv)
 }

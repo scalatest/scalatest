@@ -17,7 +17,7 @@ package org.scalautils
 
 import org.scalatest._
 
-class ExplicitlySpec extends Spec with Matchers with TypeCheckedTripleEquals {
+class TypeCheckedLegacyTripleEqualsExplicitlySpec extends Spec with Matchers with TypeCheckedLegacyTripleEquals {
 
   val inequality = 
     new Equality[Int] {
