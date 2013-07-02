@@ -82,21 +82,21 @@ class InOrderContainMatcherSpec extends Spec with Matchers {
       checkStackDepth(e5, left5, Array(2, 1, 3).deep, thisLineNumber - 2)
     }
     
-    def `should throw IllegalArgumentException when inOrder contains duplicate element` {
-      val e1 = intercept[IllegalArgumentException] {
+    def `should throw NotAllowedException when inOrder contains duplicate element` {
+      val e1 = intercept[exceptions.NotAllowedException] {
         List(1, 2, 3) should contain inOrder (1, 2, 1)
       }
-      e1.getMessage() should be ("inOrder must not contained duplicated value, but 1 is duplicated")
+      e1.getMessage() should be ("inOrder must not contain duplicated value")
       
-      val e2 = intercept[IllegalArgumentException] {
+      val e2 = intercept[exceptions.NotAllowedException] {
         javaList(1, 2, 3) should contain inOrder (1, 2, 1)
       }
-      e2.getMessage() should be ("inOrder must not contained duplicated value, but 1 is duplicated")
+      e2.getMessage() should be ("inOrder must not contain duplicated value")
       
-      val e3 = intercept[IllegalArgumentException] {
+      val e3 = intercept[exceptions.NotAllowedException] {
         Array(1, 2, 3) should contain inOrder (1, 2, 1)
       }
-      e3.getMessage() should be ("inOrder must not contained duplicated value, but 1 is duplicated")
+      e3.getMessage() should be ("inOrder must not contain duplicated value")
     }
     
     def `should throw TestFailedException with correct stack depth and message when left and right List are same size but contain different elements` {

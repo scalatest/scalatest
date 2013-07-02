@@ -26,6 +26,8 @@ import org.scalatest.enablers.Aggregating
 import org.scalatest.enablers.Sequencing
 import org.scalatest.enablers.KeyMapping
 import org.scalatest.enablers.ValueMapping
+import org.scalatest.exceptions.NotAllowedException
+import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -184,6 +186,10 @@ final class ContainWord {
     }
 
   def oneOf(right: Any*): MatcherFactory1[Any, Containing] = {
+    if (right.isEmpty)
+      throw new NotAllowedException(FailureMessages("oneOfEmpty"), getStackDepthFun("ContainWord.scala", "oneOf"))
+    if (right.distinct.size != right.size)
+      throw new NotAllowedException(FailureMessages("oneOfDuplicate"), getStackDepthFun("ContainWord.scala", "oneOf"))
     new MatcherFactory1[Any, Containing] {
       def matcher[T](implicit containing: Containing[T]): Matcher[T] = {
         new Matcher[T] {
@@ -200,6 +206,10 @@ final class ContainWord {
   }
 
   def atLeastOneOf(right: Any*): MatcherFactory1[Any, Aggregating] = {
+    if (right.isEmpty)
+      throw new NotAllowedException(FailureMessages("atLeastOneOfEmpty"), getStackDepthFun("ContainWord.scala", "atLeastOneOf"))
+    if (right.distinct.size != right.size)
+      throw new NotAllowedException(FailureMessages("atLeastOneOfDuplicate"), getStackDepthFun("ContainWord.scala", "atLeastOneOf"))
     new MatcherFactory1[Any, Aggregating] {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
@@ -216,6 +226,10 @@ final class ContainWord {
   }
   
   def noneOf(right: Any*): MatcherFactory1[Any, Containing] = {
+    if (right.isEmpty)
+      throw new NotAllowedException(FailureMessages("noneOfEmpty"), getStackDepthFun("ContainWord.scala", "noneOf"))
+    if (right.distinct.size != right.size)
+      throw new NotAllowedException(FailureMessages("noneOfDuplicate"), getStackDepthFun("ContainWord.scala", "noneOf"))
     new MatcherFactory1[Any, Containing] {
       def matcher[T](implicit containing: Containing[T]): Matcher[T] = {
         new Matcher[T] {
@@ -264,6 +278,10 @@ final class ContainWord {
   }
   
   def only(right: Any*): MatcherFactory1[Any, Aggregating] = {
+    if (right.isEmpty)
+      throw new NotAllowedException(FailureMessages("onlyEmpty"), getStackDepthFun("ContainWord.scala", "only"))
+    if (right.distinct.size != right.size)
+      throw new NotAllowedException(FailureMessages("onlyDuplicate"), getStackDepthFun("ContainWord.scala", "only"))
     new MatcherFactory1[Any, Aggregating] {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
@@ -280,6 +298,10 @@ final class ContainWord {
   }
 
   def inOrderOnly(right: Any*): MatcherFactory1[Any, Sequencing] = {
+    if (right.isEmpty)
+      throw new NotAllowedException(FailureMessages("inOrderOnlyEmpty"), getStackDepthFun("ContainWord.scala", "inOrderOnly"))
+    if (right.distinct.size != right.size)
+      throw new NotAllowedException(FailureMessages("inOrderOnlyDuplicate"), getStackDepthFun("ContainWord.scala", "inOrderOnly"))
     new MatcherFactory1[Any, Sequencing] {
       def matcher[T](implicit sequencing: Sequencing[T]): Matcher[T] = {
         new Matcher[T] {
@@ -296,6 +318,10 @@ final class ContainWord {
   }
   
   def allOf(right: Any*): MatcherFactory1[Any, Aggregating] = {
+    if (right.isEmpty)
+      throw new NotAllowedException(FailureMessages("allOfEmpty"), getStackDepthFun("ContainWord.scala", "allOf"))
+    if (right.distinct.size != right.size)
+      throw new NotAllowedException(FailureMessages("allOfDuplicate"), getStackDepthFun("ContainWord.scala", "allOf"))
     new MatcherFactory1[Any, Aggregating] {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
@@ -312,6 +338,10 @@ final class ContainWord {
   }
   
   def inOrder(right: Any*): MatcherFactory1[Any, Sequencing] = {
+    if (right.isEmpty)
+      throw new NotAllowedException(FailureMessages("inOrderEmpty"), getStackDepthFun("ContainWord.scala", "inOrder"))
+    if (right.distinct.size != right.size)
+      throw new NotAllowedException(FailureMessages("inOrderDuplicate"), getStackDepthFun("ContainWord.scala", "inOrder"))
     new MatcherFactory1[Any, Sequencing] {
       def matcher[T](implicit sequencing: Sequencing[T]): Matcher[T] = {
         new Matcher[T] {

@@ -53,21 +53,21 @@ class NoneOfContainMatcherSpec extends Spec with Matchers {
       javaMap(1 -> "one", 2 -> "two", 3 -> "three") should contain noneOf (Entry(7, "seven"), Entry(8, "eight"))
     }
     
-    def `should throw IllegalArgumentException when noneOf contains duplicate element` {
-      val e1 = intercept[IllegalArgumentException] {
+    def `should throw NotAllowedException when noneOf contains duplicate element` {
+      val e1 = intercept[exceptions.NotAllowedException] {
         List(1, 2, 3) should contain noneOf (6, 8, 6)
       }
-      e1.getMessage() should be ("noneOf must not contained duplicated value, but 6 is duplicated")
+      e1.getMessage() should be ("noneOf must not contain duplicated value")
       
-      val e2 = intercept[IllegalArgumentException] {
+      val e2 = intercept[exceptions.NotAllowedException] {
         Set(1, 2, 3) should contain noneOf (6, 8, 6)
       }
-      e2.getMessage() should be ("noneOf must not contained duplicated value, but 6 is duplicated")
+      e2.getMessage() should be ("noneOf must not contain duplicated value")
       
-      val e3 = intercept[IllegalArgumentException] {
+      val e3 = intercept[exceptions.NotAllowedException] {
         Array(1, 2, 3) should contain noneOf (6, 8, 6)
       }
-      e3.getMessage() should be ("noneOf must not contained duplicated value, but 6 is duplicated")
+      e3.getMessage() should be ("noneOf must not contain duplicated value")
     }
     
     def `should throw TestFailedException with correct stack depth and message when left List contains element in right List` {

@@ -139,14 +139,12 @@ object Sequencing {
     }
   
     @tailrec
-    def checkEqual(left: GenTraversable[T], rightItr: Iterator[Any], processedSet: Set[Any]): Boolean = {
+    def checkEqual(left: GenTraversable[T], rightItr: Iterator[Any]): Boolean = {
       if (rightItr.hasNext) {
         val nextRight = rightItr.next
-        if (processedSet.find(tryEquality(_, nextRight, equality)).isDefined)
-          throw new IllegalArgumentException(FailureMessages("inOrderDuplicate", nextRight))
         lastIndexOf(left.toIterator, nextRight, None, 0) match {
           case Some(idx) => 
-            checkEqual(left.drop(idx).tail, rightItr, processedSet + nextRight)
+            checkEqual(left.drop(idx).tail, rightItr)
           case None => 
             false // Element not found, let's fail early
         }
@@ -154,7 +152,7 @@ object Sequencing {
       else // No more element in right, left contains all of right.
         true
     }
-    checkEqual(left, right.toIterator, Set.empty)
+    checkEqual(left, right.toIterator)
   }
 
   implicit def sequencingNatureOfGenSeq[E, SEQ[e] <: scala.collection.GenSeq[e]](implicit equality: Equality[E]): Sequencing[SEQ[E]] =

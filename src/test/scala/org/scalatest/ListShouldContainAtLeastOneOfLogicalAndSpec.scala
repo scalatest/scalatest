@@ -60,26 +60,58 @@ class ListShouldContainAtLeastOneOfLogicalAndSpec extends Spec with Matchers {
         implicit val ise = invertedStringEquality
         fumList should (contain atLeastOneOf ("happy", "birthday", "to", "you") and contain atLeastOneOf ("have", "a", "nice", "day"))
         val e1 = intercept[TestFailedException] {
-          fumList should (contain atLeastOneOf ("fum", "fum", "fum", "fum") and contain atLeastOneOf ("fum", "fum", "fum"))
+          fumList should (contain atLeastOneOf ("fum") and contain atLeastOneOf ("fum"))
         }
-        checkMessageStackDepth(e1, Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fum\", \"fum\", \"fum\", \"fum\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fum\""), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          fumList should (contain atLeastOneOf ("happy", "birthday", "to", "you") and (contain atLeastOneOf ("fum", "fum", "fum")))
+          fumList should (contain atLeastOneOf ("happy", "birthday", "to", "you") and (contain atLeastOneOf ("fum")))
         }
-        checkMessageStackDepth(e2, Resources("containedAtLeastOneOf", decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\"") + ", but " + Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fum\", \"fum\", \"fum\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, Resources("containedAtLeastOneOf", decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\"") + ", but " + Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fum\""), fileName, thisLineNumber - 2)
       }
       
       def `should use an explicitly provided Equality` {
         (fumList should (contain atLeastOneOf ("happy", "birthday", "to", "you") and contain atLeastOneOf ("have", "a", "nice", "day"))) (decided by invertedStringEquality, decided by invertedStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (contain atLeastOneOf ("happy", "birthday", "to", "you") and contain atLeastOneOf ("fum", "fum", "fum"))) (decided by invertedStringEquality, decided by invertedStringEquality)
+          (fumList should (contain atLeastOneOf ("happy", "birthday", "to", "you") and contain atLeastOneOf ("fum"))) (decided by invertedStringEquality, decided by invertedStringEquality)
         }
-        checkMessageStackDepth(e1, Resources("containedAtLeastOneOf", decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\"") + ", but " + Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fum\", \"fum\", \"fum\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("containedAtLeastOneOf", decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\"") + ", but " + Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fum\""), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          (fumList should (contain atLeastOneOf ("fum", "fum", "fum") and contain atLeastOneOf ("happy", "birthday", "to", "you"))) (decided by invertedStringEquality, decided by invertedStringEquality)
+          (fumList should (contain atLeastOneOf ("fum") and contain atLeastOneOf ("happy", "birthday", "to", "you"))) (decided by invertedStringEquality, decided by invertedStringEquality)
         }
-        checkMessageStackDepth(e2, Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fum\", \"fum\", \"fum\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fum\""), fileName, thisLineNumber - 2)
         (fumList should (contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM ") and contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
+      }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (contain atLeastOneOf () and contain atLeastOneOf("fie", "fee", "fum", "foe"))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("atLeastOneOfEmpty")))
+        
+        val e2 = intercept[exceptions.NotAllowedException] {
+          fumList should (contain atLeastOneOf ("fie", "fee", "fum", "foe") and contain atLeastOneOf())
+        }
+        e2.failedCodeFileName.get should be (fileName)
+        e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e2.message should be (Some(Resources("atLeastOneOfEmpty")))
+      }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (contain atLeastOneOf ("fee", "fie", "foe", "fie", "fum") and contain atLeastOneOf("fie", "fee", "fum", "foe"))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("atLeastOneOfDuplicate")))
+        
+        val e2 = intercept[exceptions.NotAllowedException] {
+          fumList should (contain atLeastOneOf ("fee", "fie", "foe", "fum") and contain atLeastOneOf("fee", "fie", "foe", "fie", "fum"))
+        }
+        e2.failedCodeFileName.get should be (fileName)
+        e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e2.message should be (Some(Resources("atLeastOneOfDuplicate")))
       }
     }
     
@@ -101,26 +133,44 @@ class ListShouldContainAtLeastOneOfLogicalAndSpec extends Spec with Matchers {
         implicit val ise = invertedStringEquality
         fumList should (equal (fumList) and contain atLeastOneOf ("have", "a", "nice", "day"))
         val e1 = intercept[TestFailedException] {
-          fumList should (equal (toList) and contain atLeastOneOf ("fum", "fum", "fum"))
+          fumList should (equal (toList) and contain atLeastOneOf ("fum"))
         }
         checkMessageStackDepth(e1, Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          fumList should (equal (fumList) and (contain atLeastOneOf ("fum", "fum", "fum")))
+          fumList should (equal (fumList) and (contain atLeastOneOf ("fum")))
         }
-        checkMessageStackDepth(e2, Resources("equaled", decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", but " + Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fum\", \"fum\", \"fum\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, Resources("equaled", decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", but " + Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fum\""), fileName, thisLineNumber - 2)
       }
       
       def `should use an explicitly provided Equality` {
         (fumList should (equal (toList) and contain atLeastOneOf ("have", "a", "nice", "day"))) (decided by invertedListOfStringEquality, decided by invertedStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (equal (toList) and contain atLeastOneOf ("fum", "fum", "fum"))) (decided by invertedListOfStringEquality, decided by invertedStringEquality)
+          (fumList should (equal (toList) and contain atLeastOneOf ("fum"))) (decided by invertedListOfStringEquality, decided by invertedStringEquality)
         }
-        checkMessageStackDepth(e1, Resources("equaled", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", but " + Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fum\", \"fum\", \"fum\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("equaled", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", but " + Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fum\""), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           (fumList should (equal (fumList) and contain atLeastOneOf ("happy", "birthday", "to", "you"))) (decided by invertedListOfStringEquality, decided by invertedStringEquality)
         }
         checkMessageStackDepth(e2, Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(fumList)), fileName, thisLineNumber - 2)
         (fumList should (equal (toList) and contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (decided by invertedListOfStringEquality, after being lowerCased and trimmed)
+      }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (equal (fumList) and contain atLeastOneOf())
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("atLeastOneOfEmpty")))
+      }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (equal (fumList) and contain atLeastOneOf("fee", "fie", "foe", "fie", "fum"))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("atLeastOneOfDuplicate")))
       }
     }
     
@@ -142,26 +192,44 @@ class ListShouldContainAtLeastOneOfLogicalAndSpec extends Spec with Matchers {
         implicit val ise = invertedStringEquality
         fumList should (legacyEqual (fumList) and contain atLeastOneOf ("have", "a", "nice", "day"))
         val e1 = intercept[TestFailedException] {
-          fumList should (legacyEqual (toList) and contain atLeastOneOf ("fum", "fum", "fum"))
+          fumList should (legacyEqual (toList) and contain atLeastOneOf ("fum"))
         }
         checkMessageStackDepth(e1, Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          fumList should (legacyEqual (fumList) and (contain atLeastOneOf ("fum", "fum", "fum")))
+          fumList should (legacyEqual (fumList) and (contain atLeastOneOf ("fum")))
         }
-        checkMessageStackDepth(e2, Resources("equaled", decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", but " + Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fum\", \"fum\", \"fum\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, Resources("equaled", decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", but " + Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fum\""), fileName, thisLineNumber - 2)
       }
       
       def `should use an explicitly provided Equality` {
         (fumList should (legacyEqual (fumList) and contain atLeastOneOf ("have", "a", "nice", "day"))) (decided by invertedStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (legacyEqual (fumList) and contain atLeastOneOf ("fum", "fum", "fum"))) (decided by invertedStringEquality)
+          (fumList should (legacyEqual (fumList) and contain atLeastOneOf ("fum"))) (decided by invertedStringEquality)
         }
-        checkMessageStackDepth(e1, Resources("equaled", decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", but " + Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fum\", \"fum\", \"fum\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("equaled", decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", but " + Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fum\""), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           (fumList should (legacyEqual (toList) and contain atLeastOneOf ("happy", "birthday", "to", "you"))) (decided by invertedStringEquality)
         }
         checkMessageStackDepth(e2, Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
         (fumList should (legacyEqual (fumList) and contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
+      }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (legacyEqual (fumList) and contain atLeastOneOf())
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("atLeastOneOfEmpty")))
+      }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (legacyEqual (fumList) and contain atLeastOneOf("fee", "fie", "foe", "fie", "fum"))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("atLeastOneOfDuplicate")))
       }
     }
 
@@ -183,26 +251,44 @@ class ListShouldContainAtLeastOneOfLogicalAndSpec extends Spec with Matchers {
         implicit val ise = invertedStringEquality
         fumList should (contain atLeastOneOf ("have", "a", "nice", "day") and legacyEqual (fumList))
         val e1 = intercept[TestFailedException] {
-          fumList should (contain atLeastOneOf ("fum", "fum", "fum") and legacyEqual (toList))
+          fumList should (contain atLeastOneOf ("fum") and legacyEqual (toList))
         }
-        checkMessageStackDepth(e1, Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fum\", \"fum\", \"fum\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fum\""), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          fumList should (contain atLeastOneOf ("fum", "fum", "fum") and (legacyEqual (fumList)))
+          fumList should (contain atLeastOneOf ("fum") and (legacyEqual (fumList)))
         }
-        checkMessageStackDepth(e2, Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fum\", \"fum\", \"fum\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fum\""), fileName, thisLineNumber - 2)
       }
       
       def `should use an explicitly provided Equality` {
         (fumList should (contain atLeastOneOf ("have", "a", "nice", "day") and legacyEqual (fumList))) (decided by invertedStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (contain atLeastOneOf ("fum", "fum", "fum") and legacyEqual (fumList))) (decided by invertedStringEquality)
+          (fumList should (contain atLeastOneOf ("fum") and legacyEqual (fumList))) (decided by invertedStringEquality)
         }
-        checkMessageStackDepth(e1, Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fum\", \"fum\", \"fum\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fum\""), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           (fumList should (contain atLeastOneOf ("happy", "birthday", "to", "you") and legacyEqual (toList))) (decided by invertedStringEquality)
         }
         checkMessageStackDepth(e2, Resources("containedAtLeastOneOf", decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\"") + ", but " + Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
         (fumList should (contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM ") and legacyEqual (fumList))) (after being lowerCased and trimmed)
+      }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (contain atLeastOneOf() and legacyEqual (fumList))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("atLeastOneOfEmpty")))
+      }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (contain atLeastOneOf("fee", "fie", "foe", "fie", "fum") and legacyEqual (fumList))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("atLeastOneOfDuplicate")))
       }
     }
     
@@ -222,28 +308,60 @@ class ListShouldContainAtLeastOneOfLogicalAndSpec extends Spec with Matchers {
       
       def `should use the implicit Equality in scope` {
         implicit val ise = invertedStringEquality
-        fumList should (not contain atLeastOneOf ("fum", "fum", "fum", "fum") and not contain atLeastOneOf ("fum", "fum", "fum"))
+        fumList should (not contain atLeastOneOf ("fum") and not contain atLeastOneOf ("fum"))
         val e1 = intercept[TestFailedException] {
-          fumList should (not contain atLeastOneOf ("happy", "birthday", "to", "you") and not contain atLeastOneOf ("fum", "fum", "fum"))
+          fumList should (not contain atLeastOneOf ("happy", "birthday", "to", "you") and not contain atLeastOneOf ("fum"))
         }
         checkMessageStackDepth(e1, Resources("containedAtLeastOneOf", decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          fumList should (not contain atLeastOneOf ("fum", "fum", "fum") and (not contain atLeastOneOf ("happy", "birthday", "to", "you")))
+          fumList should (not contain atLeastOneOf ("fum") and (not contain atLeastOneOf ("happy", "birthday", "to", "you")))
         }
-        checkMessageStackDepth(e2, Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fum\", \"fum\", \"fum\"") + ", but " + Resources("containedAtLeastOneOf", decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fum\"") + ", but " + Resources("containedAtLeastOneOf", decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
       }
       
       def `should use an explicitly provided Equality` {
-        (fumList should (not contain atLeastOneOf ("fum", "fum", "fum", "fum") and not contain atLeastOneOf ("fum", "fum", "fum"))) (decided by invertedStringEquality, decided by invertedStringEquality)
+        (fumList should (not contain atLeastOneOf ("fum") and not contain atLeastOneOf ("fum"))) (decided by invertedStringEquality, decided by invertedStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (not contain atLeastOneOf ("fum", "fum", "fum") and not contain atLeastOneOf ("happy", "birthday", "to", "you"))) (decided by invertedStringEquality, decided by invertedStringEquality)
+          (fumList should (not contain atLeastOneOf ("fum") and not contain atLeastOneOf ("happy", "birthday", "to", "you"))) (decided by invertedStringEquality, decided by invertedStringEquality)
         }
-        checkMessageStackDepth(e1, Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fum\", \"fum\", \"fum\"") + ", but " + Resources("containedAtLeastOneOf", decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"fum\"") + ", but " + Resources("containedAtLeastOneOf", decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          (fumList should (not contain atLeastOneOf ("happy", "birthday", "to", "you") and not contain atLeastOneOf ("fum", "fum", "fum"))) (decided by invertedStringEquality, decided by invertedStringEquality)
+          (fumList should (not contain atLeastOneOf ("happy", "birthday", "to", "you") and not contain atLeastOneOf ("fum"))) (decided by invertedStringEquality, decided by invertedStringEquality)
         }
         checkMessageStackDepth(e2, Resources("containedAtLeastOneOf", decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
         (fumList should (contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM ") and contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
+      }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (not contain atLeastOneOf () and not contain atLeastOneOf("fie", "fee", "fuu", "foe"))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("atLeastOneOfEmpty")))
+        
+        val e2 = intercept[exceptions.NotAllowedException] {
+          fumList should (not contain atLeastOneOf ("fie", "fee", "fuu", "foe") and not contain atLeastOneOf())
+        }
+        e2.failedCodeFileName.get should be (fileName)
+        e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e2.message should be (Some(Resources("atLeastOneOfEmpty")))
+      }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (not contain atLeastOneOf ("fee", "fie", "foe", "fie", "fum") and not contain atLeastOneOf("fie", "fee", "fuu", "foe"))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("atLeastOneOfDuplicate")))
+        
+        val e2 = intercept[exceptions.NotAllowedException] {
+          fumList should (not contain atLeastOneOf ("fie", "fee", "fuu", "foe") and not contain atLeastOneOf("fee", "fie", "foe", "fie", "fum"))
+        }
+        e2.failedCodeFileName.get should be (fileName)
+        e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e2.message should be (Some(Resources("atLeastOneOfDuplicate")))
       }
     }
     
@@ -263,9 +381,9 @@ class ListShouldContainAtLeastOneOfLogicalAndSpec extends Spec with Matchers {
       
       def `should use the implicit Equality in scope` {
         implicit val ise = invertedStringEquality
-        fumList should (not equal (toList) and not contain atLeastOneOf ("fum", "fum", "fum"))
+        fumList should (not equal (toList) and not contain atLeastOneOf ("fum"))
         val e1 = intercept[TestFailedException] {
-          fumList should (not equal (fumList) and not contain atLeastOneOf ("fum", "fum", "fum"))
+          fumList should (not equal (fumList) and not contain atLeastOneOf ("fum"))
         }
         checkMessageStackDepth(e1, Resources("equaled", decorateToStringValue(fumList), decorateToStringValue(fumList)), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
@@ -275,16 +393,34 @@ class ListShouldContainAtLeastOneOfLogicalAndSpec extends Spec with Matchers {
       }
       
       def `should use an explicitly provided Equality` {
-        (fumList should (not equal (fumList) and not contain atLeastOneOf ("fum", "fum", "fum"))) (decided by invertedListOfStringEquality, decided by invertedStringEquality)
+        (fumList should (not equal (fumList) and not contain atLeastOneOf ("fum"))) (decided by invertedListOfStringEquality, decided by invertedStringEquality)
         val e1 = intercept[TestFailedException] {
           (fumList should (not equal (fumList) and not contain atLeastOneOf ("happy", "birthday", "to", "you"))) (decided by invertedListOfStringEquality, decided by invertedStringEquality)
         }
         checkMessageStackDepth(e1, Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", but " + Resources("containedAtLeastOneOf", decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          (fumList should (not equal (toList) and not contain atLeastOneOf ("fum", "fum", "fum"))) (decided by invertedListOfStringEquality, decided by invertedStringEquality)
+          (fumList should (not equal (toList) and not contain atLeastOneOf ("fum"))) (decided by invertedListOfStringEquality, decided by invertedStringEquality)
         }
         checkMessageStackDepth(e2, Resources("equaled", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
         (fumList should (not contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUU ") and not contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUU "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
+      }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (not equal (toList) and not contain atLeastOneOf())
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("atLeastOneOfEmpty")))
+      }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (not equal (toList) and not contain atLeastOneOf("fee", "fie", "foe", "fie", "fum"))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("atLeastOneOfDuplicate")))
       }
     }
     
@@ -304,9 +440,9 @@ class ListShouldContainAtLeastOneOfLogicalAndSpec extends Spec with Matchers {
       
       def `should use the implicit Equality in scope` {
         implicit val ise = invertedStringEquality
-        fumList should (not be (toList) and not contain atLeastOneOf ("fum", "fum", "fum"))
+        fumList should (not be (toList) and not contain atLeastOneOf ("fum"))
         val e1 = intercept[TestFailedException] {
-          fumList should (not be (fumList) and not contain atLeastOneOf ("fum", "fum", "fum"))
+          fumList should (not be (fumList) and not contain atLeastOneOf ("fum"))
         }
         checkMessageStackDepth(e1, Resources("wasEqualTo", decorateToStringValue(fumList), decorateToStringValue(fumList)), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
@@ -316,16 +452,34 @@ class ListShouldContainAtLeastOneOfLogicalAndSpec extends Spec with Matchers {
       }
       
       def `should use an explicitly provided Equality` {
-        (fumList should (not be (toList) and not contain atLeastOneOf ("fum", "fum", "fum"))) (decided by invertedStringEquality)
+        (fumList should (not be (toList) and not contain atLeastOneOf ("fum"))) (decided by invertedStringEquality)
         val e1 = intercept[TestFailedException] {
           (fumList should (not be (toList) and not contain atLeastOneOf ("happy", "birthday", "to", "you"))) (decided by invertedStringEquality)
         }
         checkMessageStackDepth(e1, Resources("wasNotEqualTo", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", but " + Resources("containedAtLeastOneOf", decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          (fumList should (not be (fumList) and not contain atLeastOneOf ("fum", "fum", "fum"))) (decided by invertedStringEquality)
+          (fumList should (not be (fumList) and not contain atLeastOneOf ("fum"))) (decided by invertedStringEquality)
         }
         checkMessageStackDepth(e2, Resources("wasEqualTo", decorateToStringValue(fumList), decorateToStringValue(fumList)), fileName, thisLineNumber - 2)
         (fumList should (not contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUU ") and not contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUU "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
+      }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (not be (toList) and not contain atLeastOneOf())
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("atLeastOneOfEmpty")))
+      }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList should (not be (toList) and not contain atLeastOneOf("fee", "fie", "foe", "fie", "fum"))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("atLeastOneOfDuplicate")))
       }
     }
     
@@ -414,6 +568,38 @@ class ListShouldContainAtLeastOneOfLogicalAndSpec extends Spec with Matchers {
         }
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List("hi")) + " contained at least one of (\"ho\"), but " + decorateToStringValue(List("hi")) + " did not contain at least one of (\"hi\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should (contain atLeastOneOf () and contain atLeastOneOf (1, 3, 4))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("atLeastOneOfEmpty")))
+        
+        val e2 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should (contain atLeastOneOf (1, 3, 4) and contain atLeastOneOf ())
+        }
+        e2.failedCodeFileName.get should be (fileName)
+        e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e2.message should be (Some(Resources("atLeastOneOfEmpty")))
+      }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should (contain atLeastOneOf (3, 2, 2, 1) and contain atLeastOneOf (1, 3, 4))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("atLeastOneOfDuplicate")))
+        
+        val e2 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should (contain atLeastOneOf (1, 3, 4) and contain atLeastOneOf (3, 2, 2, 1))
+        }
+        e2.failedCodeFileName.get should be (fileName)
+        e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e2.message should be (Some(Resources("atLeastOneOfDuplicate")))
+      }
     }
     
     object `when used with (be (..) and contain oneOf (..))` {
@@ -485,6 +671,24 @@ class ListShouldContainAtLeastOneOfLogicalAndSpec extends Spec with Matchers {
         }
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List("hi")) + " was equal to " + decorateToStringValue(List("hi")) + ", but " + decorateToStringValue(List("hi")) + " did not contain at least one of (\"hi\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should (be (List(1)) and contain atLeastOneOf ())
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("atLeastOneOfEmpty")))
+      }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should (be (List(1)) and contain atLeastOneOf (3, 2, 2, 1))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("atLeastOneOfDuplicate")))
+      }
     }
     
     object `when used with (not contain oneOf (..) and not contain oneOf (..))` {
@@ -544,6 +748,38 @@ class ListShouldContainAtLeastOneOfLogicalAndSpec extends Spec with Matchers {
         }
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List("hi")) + " did not contain at least one of (\"hi\"), but " + decorateToStringValue(List("hi")) + " contained at least one of (\"ho\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should (not contain atLeastOneOf () and not contain atLeastOneOf (8, 3, 4))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("atLeastOneOfEmpty")))
+        
+        val e2 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should (not contain atLeastOneOf (8, 3, 4) and not contain atLeastOneOf ())
+        }
+        e2.failedCodeFileName.get should be (fileName)
+        e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e2.message should be (Some(Resources("atLeastOneOfEmpty")))
+      }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should (not contain atLeastOneOf (3, 2, 2, 1) and not contain atLeastOneOf (8, 3, 4))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("atLeastOneOfDuplicate")))
+        
+        val e2 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should (not contain atLeastOneOf (8, 3, 4) and not contain atLeastOneOf (3, 2, 2, 1))
+        }
+        e2.failedCodeFileName.get should be (fileName)
+        e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e2.message should be (Some(Resources("atLeastOneOfDuplicate")))
+      }
     }
     
     object `when used with (not be (..) and not contain oneOf (..))` {
@@ -602,6 +838,24 @@ class ListShouldContainAtLeastOneOfLogicalAndSpec extends Spec with Matchers {
           (all (hiLists) should (not be (List("ho")) and not contain atLeastOneOf ("ho"))) (decided by invertedStringEquality)
         }
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List("hi")) + " was not equal to " + decorateToStringValue(List("ho")) + ", but " + decorateToStringValue(List("hi")) + " contained at least one of (\"ho\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+      }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should (not be (List(2)) and not contain atLeastOneOf ())
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("atLeastOneOfEmpty")))
+      }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (list1s) should (not be (List(2)) and not contain atLeastOneOf (3, 2, 2, 1))
+        }
+        e1.failedCodeFileName.get should be (fileName)
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("atLeastOneOfDuplicate")))
       }
     }
   }
