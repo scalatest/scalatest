@@ -17,19 +17,22 @@ package org.scalatest
 
 import SharedHelpers.thisLineNumber
 import enablers.Sortable
+import FailureMessages.decorateToStringValue
 
 class ShouldBeSortedSpec extends Spec with Matchers {
   
+  //ADDITIONAL//
+  
   def wasNotSorted(left: Any): String = 
-    left + " was not sorted"
+    decorateToStringValue(left) + " was not sorted"
     
   def wasSorted(left: Any): String = 
-    left + " was sorted"
+    decorateToStringValue(left) + " was sorted"
     
   def allInspectionFailed(idx: Int, message: String, lineNumber:Int, left: Any) = 
     "'all' inspection failed, because: \n" + 
     "  at index " + idx + ", " + message + " (ShouldBeSortedSpec.scala:" + lineNumber + ") \n" + 
-    "in " + left
+    "in " + decorateToStringValue(left)
     
   case class Student(name: String, scores: Int)
   implicit val studentOrdering = new Ordering[Student] {
