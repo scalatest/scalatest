@@ -17,7 +17,7 @@ package org.scalautils
 
 import org.scalatest._
 
-class ConversionCheckedTripleEqualsExplicitlySpec extends Spec with Matchers with ConversionCheckedTripleEquals with InequalityHelpers {
+class ConversionCheckedTripleEqualsExplicitlySpec extends Spec with Matchers with ConversionCheckedTripleEquals with ExplicitlySpecHelpers {
 
   object `The Explicitly DSL` {
     object `when used with === on identical types` {

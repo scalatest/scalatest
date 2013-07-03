@@ -17,7 +17,7 @@ package org.scalautils
 
 import org.scalatest._
 
-trait InequalityHelpers {
+trait ExplicitlySpecHelpers {
 
   val intInequality = 
     new Equality[Int] {
