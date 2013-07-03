@@ -36,6 +36,14 @@ class TypeCheckedLegacyTripleEqualsExplicitlySpec extends Spec with Matchers wit
         assert((new Fruit("apple") !== new Apple)(decided by fruitInequality))
       }
     }
+    object `when used with subtype === supertype` {
+      def `should allow an Equality to specified explicitly` {
+        assert(new Apple !== new Fruit("orange"))
+        assert((new Apple === new Fruit("orange"))(decided by fruitInequality))
+        assert(new Apple === new Fruit("apple"))
+        assert((new Apple !== new Fruit("apple"))(decided by fruitInequality))
+      }
+    }
   }
 }
 
