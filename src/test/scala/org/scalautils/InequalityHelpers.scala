@@ -24,6 +24,11 @@ trait InequalityHelpers {
       def areEqual(a: Int, b: Any): Boolean = a != b
     }
 
+  val intInequivalence = 
+    new Equivalence[Int] {
+      def areEquivalent(a: Int, b: Int): Boolean = a != b
+    }
+
   case class Fruit(name: String)
   class Apple extends Fruit("apple")
   class Orange extends Fruit("orange")
@@ -31,6 +36,11 @@ trait InequalityHelpers {
   val fruitInequality = 
     new Equality[Fruit] {
       def areEqual(a: Fruit, b: Any): Boolean = a != b
+    }
+
+  val fruitInequivalence = 
+    new Equivalence[Fruit] {
+      def areEquivalent(a: Fruit, b: Fruit): Boolean = a != b
     }
 
   class Pomme

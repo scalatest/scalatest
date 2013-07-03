@@ -26,6 +26,7 @@ trait Explicitly {
 
   class DecidedWord {
     def by[A](equality: Equality[A]): DecidedByEquality[A] = new DecidedByEquality[A](equality)
+    def by[A](equivalence: Equivalence[A]): DecidedByEquivalence[A] = new DecidedByEquivalence[A](equivalence)
   }
 
   val decided = new DecidedWord
