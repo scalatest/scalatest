@@ -113,8 +113,8 @@ object GenInspectors {
     val xsName: String = "xs"
     val maxSucceed = max + 1
     def extractXsName =
-      if (xsName.startsWith("\"WrappedArray(")) {
-        val elements = xsName.substring(1, xsName.length - 2).substring(13)
+      if (xsName.startsWith("\"Array(")) {
+        val elements = xsName.substring(1, xsName.length - 2).substring(6)
         if (colType == "String")
           "Array(" + elements.split(", ").map(e => if (e != "null") "\"" + e + "\"" else e).mkString(", ") + ")"
         else
@@ -421,7 +421,7 @@ object GenInspectors {
       "val empty = new EmptyBePropertyMatcher()\n" + 
       "def plength(expectedValue: Int) = new StringLengthMatcher(expectedValue)\n" + 
       "val theInstance = \"2\"\n" + 
-      "def arrayToString(xs: GenTraversable[_]): String = xs.toString\n" +  // pass in array so that it is implicit converted
+      "def arrayToString(xs: GenTraversable[_]): String = FailureMessages.decorateToStringValue(xs)\n" + 
       "def checkErrorAndCause(e: exceptions.TestFailedException, assertLineNumber: Int, fileName: String, errorMessage: String, causeErrorMessage: String) {\n" +
       "  assert(e.failedCodeFileName == Some(fileName), e.failedCodeFileName + \" did not equal \" + Some(fileName))\n" + 
       "  assert(e.failedCodeLineNumber == Some(assertLineNumber), e.failedCodeLineNumber + \" did not equal \" + Some(assertLineNumber))\n" +
@@ -1042,7 +1042,7 @@ object GenInspectors {
     !(colText.startsWith("Array") && condition == "'traversable should not be symbol' failed")
   
   def genInspectorShorthandsForAllSpecFile(targetDir: File) {
-    val int123Col = genCol("1, 2, 3", "\"WrappedArray(1, 2, 3)\"")
+    val int123Col = genCol("1, 2, 3", "\"Array(1, 2, 3)\"")
               
     val succeedTests = 
     int123Col map { case (colText, xsText) =>
@@ -1058,7 +1058,7 @@ object GenInspectors {
         ("more than one element failed", " should be < 2", "getFirstLessThan", "getFirstMoreThanEqual", "2", (errorFun: String, errorValue: String) => new WasNotLessThanMessageTemplate(intDynaFirst(errorFun, errorValue), 2))
       ) ++ stdInt123Types(intDynaFirst, 2, "getFirst")
               
-      val nullStringCol = genNullableCol("\"1\", null, \"3\"", "\"WrappedArray(1, null, 3)\"")
+      val nullStringCol = genNullableCol("\"1\", null, \"3\"", "\"Array(1, null, 3)\"")
             
       def stringDynaFirst(errorFun: String, errorValue: String) = 
         new DynamicFirstElementTemplate("String", errorFun, errorValue)
@@ -1068,17 +1068,17 @@ object GenInspectors {
             
       val nullStringTypes = stdNullStringTypes(stringDynaFirst, "getFirst")
               
-      val propertyCheckCol = genCol("\"\", \"boom!\", \"\"", "\"WrappedArray(, boom!, )\"")
+      val propertyCheckCol = genCol("\"\", \"boom!\", \"\"", "\"Array(, boom!, )\"")
             
       val propertyCheckTypes = stdPropertyCheckTypes(0, stringDynaFirst, stringDynaFirst, stringDynaFirstLength, "getFirst")
       
       val lengthSizeCheckTypes = stdLengthSizeCheckTypes(0, stringDynaFirst, stringDynaFirstLength, "getFirst")
               
-      val instanceCheckCol = genCol("\"1\", theInstance, \"3\"", "\"WrappedArray(1, 2, 3)\"")
+      val instanceCheckCol = genCol("\"1\", theInstance, \"3\"", "\"Array(1, 2, 3)\"")
             
       val instanceCheckTypes = stdInstanceCheckTypes(stringDynaFirst, "2", "getFirst")
             
-      val stringCheckCol = genCol("\"hello A!\", \"hi B\", \"hello C!\"", "\"WrappedArray(hello A!, hi B, hello C!)\"")
+      val stringCheckCol = genCol("\"hello A!\", \"hi B\", \"hello C!\"", "\"Array(hello A!, hi B, hello C!)\"")
               
       val stringCheckTypes = stdStringCheckTypes(stringDynaFirst, "getFirst")
             
@@ -1094,13 +1094,13 @@ object GenInspectors {
       def trvStringDynaFirstSize(colType: String, errorFun: String, errorValue: String) = 
         new DynamicFirstElementSizeTemplate(colType, errorFun, errorValue)
               
-      val traversablePropertyCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", ""), "\"WrappedArray(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array())\"")
+      val traversablePropertyCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", ""), "\"Array(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array())\"")
             
       val traversablePropertyCheckTypes = stdTraversablePropertyCheckTypes(trvStringDynaFirst, "getFirst").filter { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
         condition != "'traversable should be symbol' failed"
       }
               
-      val traversableCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", "\"hello\""), "\"WrappedArray(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array(\\\"hello\\\"))\"")
+      val traversableCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", "\"hello\""), "\"Array(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array(\\\"hello\\\"))\"")
             
       val traversableCheckTypes = stdTraversableCheckTypes(trvStringDynaFirst, trvStringDynaFirstSize, 0, 1, "hi", "getFirst")
               
@@ -1249,7 +1249,7 @@ object GenInspectors {
   }
   
   def genInspectorShorthandsForAtLeastSpecFile(targetDir: File) {
-    val int123Col = genCol("1, 2, 3", "\"WrappedArray(1, 2, 3)\"")
+    val int123Col = genCol("1, 2, 3", "\"Array(1, 2, 3)\"")
               
     val succeedTests = 
     (int123Col map { case (colText, xsText) =>
@@ -1282,25 +1282,25 @@ object GenInspectors {
         ("at least one element failed", " should equal (2)", "indexElementEqual[Int]", "indexElementNotEqual[Int]", "2", (errorFun: String, errorValue: String) => new DidNotEqualMessageTemplate("{1}", 2, false))
       ) ++ stdInt123Types(simpleMessageFun, 2, "indexElement", false)
     
-    val nullStringCol = genNullableCol("\"1\", null, \"3\"", "\"WrappedArray(1, null, 3)\"")
+    val nullStringCol = genNullableCol("\"1\", null, \"3\"", "\"Array(1, null, 3)\"")
     val nullStringTypes = stdNullStringTypes(quotedSimpleMessageFun, "indexElement", false)
     
-    val propertyCheckCol = genCol("\"\", \"boom!\", \"hi\"", "\"WrappedArray(, boom!, hi)\"")
+    val propertyCheckCol = genCol("\"\", \"boom!\", \"hi\"", "\"Array(, boom!, hi)\"")
     val propertyCheckTypes = stdPropertyCheckTypes(0, quotedSimpleMessageFun, quotedSimpleMessageFun2, simpleMessageFun, "indexElement")
     val lengthSizeCheckTypes = stdLengthSizeCheckTypes(0, quotedSimpleMessageFun, lengthSimpleMessageFun, "indexElement")
     
-    val instanceCheckCol = genCol("\"1\", theInstance, \"3\"", "\"WrappedArray(1, 2, 3)\"")
+    val instanceCheckCol = genCol("\"1\", theInstance, \"3\"", "\"Array(1, 2, 3)\"")
     val instanceCheckTypes = stdInstanceCheckTypes(quotedSimpleMessageFun, "2", "indexElement")
     
-    val stringCheckCol = genCol("\"hello A!\", \"hi B\", \"hello C!\"", "\"WrappedArray(hello A!, hi B, hello C!)\"")
+    val stringCheckCol = genCol("\"hello A!\", \"hi B\", \"hello C!\"", "\"Array(hello A!, hi B, hello C!)\"")
     val stringCheckTypes = stdStringCheckTypes(quotedSimpleMessageFun, "indexElement", true)
     
-    val traversablePropertyCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", ""), "\"WrappedArray(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array())\"")
+    val traversablePropertyCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", ""), "\"Array(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array())\"")
     val traversablePropertyCheckTypes = stdTraversablePropertyCheckTypes(trvSimpleMessageFun, "indexElement", true).filter { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
       condition != "'traversable should be symbol' failed"
     }
     
-    val traversableCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", "\"hello\""), "\"WrappedArray(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array(\\\"hello\\\"))\"")
+    val traversableCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", "\"hello\""), "\"Array(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array(\\\"hello\\\"))\"")
     val traversableCheckTypes = stdTraversableCheckTypes(trvSimpleMessageFun, trvSizeSimpleMessageFun, 0, 1, "hi", "indexElement", true)
     
     val maps = genMap(Array("\"1\" -> \"one\", \"2\" -> \"two\", \"3\" -> \"three\"", 
@@ -1449,7 +1449,7 @@ object GenInspectors {
   }
   
   def genInspectorShorthandsForEverySpecFile(targetMatchersDir: File) {
-    val int123Col = genCol("1, 2, 3", "\"WrappedArray(1, 2, 3)\"")
+    val int123Col = genCol("1, 2, 3", "\"Array(1, 2, 3)\"")
               
     val succeedTests = 
     int123Col map { case (colText, xsText) =>
@@ -1483,25 +1483,25 @@ object GenInspectors {
         ("more than one element failed", " should be < 2", "indexElementLessThan", "indexElementMoreThanEqual", "2", (errorFun: String, errorValue: String) => new WasNotLessThanMessageTemplate("{1}", 2, false))
       ) ++ stdInt123Types(simpleMessageFun, 2, "indexElement", false)
       
-    val nullStringCol = genNullableCol("\"1\", null, \"3\"", "\"WrappedArray(1, null, 3)\"")
+    val nullStringCol = genNullableCol("\"1\", null, \"3\"", "\"Array(1, null, 3)\"")
     val nullStringTypes = stdNullStringTypes(quotedSimpleMessageFun, "indexElement", false)
     
-    val propertyCheckCol = genCol("\"\", \"boom!\", \"hi\"", "\"WrappedArray(, boom!, hi)\"")
+    val propertyCheckCol = genCol("\"\", \"boom!\", \"hi\"", "\"Array(, boom!, hi)\"")
     val propertyCheckTypes = stdPropertyCheckTypes(0, quotedSimpleMessageFun, quotedSimpleMessageFun2, simpleMessageFun, "indexElement")
     val lengthSizeCheckTypes = stdLengthSizeCheckTypes(0, quotedSimpleMessageFun, lengthSimpleMessageFun, "indexElement")
     
-    val instanceCheckCol = genCol("\"1\", theInstance, \"3\"", "\"WrappedArray(1, 2, 3)\"")
+    val instanceCheckCol = genCol("\"1\", theInstance, \"3\"", "\"Array(1, 2, 3)\"")
     val instanceCheckTypes = stdInstanceCheckTypes(quotedSimpleMessageFun, "2", "indexElement")
     
-    val stringCheckCol = genCol("\"hello A!\", \"hi B\", \"hello C!\"", "\"WrappedArray(hello A!, hi B, hello C!)\"")
+    val stringCheckCol = genCol("\"hello A!\", \"hi B\", \"hello C!\"", "\"Array(hello A!, hi B, hello C!)\"")
     val stringCheckTypes = stdStringCheckTypes(quotedSimpleMessageFun, "indexElement", true)
     
-    val traversablePropertyCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", ""), "\"WrappedArray(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array())\"")
+    val traversablePropertyCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", ""), "\"Array(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array())\"")
     val traversablePropertyCheckTypes = stdTraversablePropertyCheckTypes(trvSimpleMessageFun, "indexElement", true).filter { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
       condition != "'traversable should be symbol' failed"
     }
     
-    val traversableCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", "\"hello\""), "\"WrappedArray(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array(\\\"hello\\\"))\"")
+    val traversableCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", "\"hello\""), "\"Array(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array(\\\"hello\\\"))\"")
     val traversableCheckTypes = stdTraversableCheckTypes(trvSimpleMessageFun, trvSizeSimpleMessageFun, 0, 1, "hi", "indexElement", true)
     
     val maps = genMap(Array("\"1\" -> \"one\", \"2\" -> \"two\", \"3\" -> \"three\"", 
@@ -1650,7 +1650,7 @@ object GenInspectors {
   }
   
   def genInspectorShorthandsForExactlySpecFile(targetMatchersDir: File) {
-    val int123Col = genCol("1, 2, 3", "\"WrappedArray(1, 2, 3)\"")
+    val int123Col = genCol("1, 2, 3", "\"Array(1, 2, 3)\"")
               
     val succeedTests = 
     (int123Col map { case (colText, xsText) =>
@@ -1683,25 +1683,25 @@ object GenInspectors {
         ("less one element passed", " should equal (2)", "Equal[Int]", "indexElementNotEqual[Int]", "2", (errorFun: String, errorValue: String) => new DidNotEqualMessageTemplate("{1}", 2, false))
       ) ++ stdInt123Types(simpleMessageFun, 2, "indexElement", false)
     
-    val nullStringCol = genNullableCol("\"1\", null, \"3\"", "\"WrappedArray(1, null, 3)\"")
+    val nullStringCol = genNullableCol("\"1\", null, \"3\"", "\"Array(1, null, 3)\"")
     val nullStringTypes = stdNullStringTypes(quotedSimpleMessageFun, "indexElement", false)
     
-    val propertyCheckCol = genCol("\"\", \"boom!\", \"hi\"", "\"WrappedArray(, boom!, hi)\"")
+    val propertyCheckCol = genCol("\"\", \"boom!\", \"hi\"", "\"Array(, boom!, hi)\"")
     val propertyCheckTypes = stdPropertyCheckTypes(0, quotedSimpleMessageFun, quotedSimpleMessageFun2, simpleMessageFun, "indexElement")
     val lengthSizeCheckTypes = stdLengthSizeCheckTypes(0, quotedSimpleMessageFun, lengthSimpleMessageFun, "indexElement")
       
-    val instanceCheckCol = genCol("\"1\", theInstance, \"3\"", "\"WrappedArray(1, 2, 3)\"")
+    val instanceCheckCol = genCol("\"1\", theInstance, \"3\"", "\"Array(1, 2, 3)\"")
     val instanceCheckTypes = stdInstanceCheckTypes(quotedSimpleMessageFun, "2", "indexElement")
     
-    val stringCheckCol = genCol("\"hello A!\", \"hi B\", \"hello C!\"", "\"WrappedArray(hello A!, hi B, hello C!)\"")
+    val stringCheckCol = genCol("\"hello A!\", \"hi B\", \"hello C!\"", "\"Array(hello A!, hi B, hello C!)\"")
     val stringCheckTypes = stdStringCheckTypes(quotedSimpleMessageFun, "indexElement", true)
     
-    val traversablePropertyCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", ""), "\"WrappedArray(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array())\"")
+    val traversablePropertyCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", ""), "\"Array(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array())\"")
     val traversablePropertyCheckTypes = stdTraversablePropertyCheckTypes(trvSimpleMessageFun, "indexElement", true).filter { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
       condition != "'traversable should be symbol' failed"
     }
     
-    val traversableCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", "\"hello\""), "\"WrappedArray(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array(\\\"hello\\\"))\"")
+    val traversableCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", "\"hello\""), "\"Array(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array(\\\"hello\\\"))\"")
     val traversableCheckTypes = stdTraversableCheckTypes(trvSimpleMessageFun, trvSizeSimpleMessageFun, 0, 1, "hi", "indexElement", true)
     
     val maps = genMap(Array("\"1\" -> \"one\", \"2\" -> \"two\", \"3\" -> \"three\"", 
@@ -1851,7 +1851,7 @@ object GenInspectors {
   }
 
   def genInspectorShorthandsForNoSpecFile(targetMatchersDir: File) {
-    val int123Col = genCol("1, 2, 3", "\"WrappedArray(1, 2, 3)\"")
+    val int123Col = genCol("1, 2, 3", "\"Array(1, 2, 3)\"")
 
     val succeedTests =
       int123Col map { case (colText, xsText) =>
@@ -1884,25 +1884,25 @@ object GenInspectors {
         ("at least one element failed", " should equal (2)", "Equal[Int]", "indexElementNotEqual[Int]", "2", (errorFun: String, errorValue: String) => new DidNotEqualMessageTemplate("{1}", 2, false))
       ) ++ stdInt123Types(simpleMessageFun, 2, "indexElement", false)
 
-    val nullStringCol = genNullableCol("\"1\", null, \"3\"", "\"WrappedArray(1, null, 3)\"")
+    val nullStringCol = genNullableCol("\"1\", null, \"3\"", "\"Array(1, null, 3)\"")
     val nullStringTypes = stdNullStringTypes(quotedSimpleMessageFun, "indexElement", false)
 
-    val propertyCheckCol = genCol("\"\", \"boom!\", \"hi\"", "\"WrappedArray(, boom!, hi)\"")
+    val propertyCheckCol = genCol("\"\", \"boom!\", \"hi\"", "\"Array(, boom!, hi)\"")
     val propertyCheckTypes = stdPropertyCheckTypes(0, quotedSimpleMessageFun, quotedSimpleMessageFun2, simpleMessageFun, "indexElement")
     val lengthSizeCheckTypes = stdLengthSizeCheckTypes(0, quotedSimpleMessageFun, lengthSimpleMessageFun, "indexElement")
 
-    val instanceCheckCol = genCol("\"1\", theInstance, \"3\"", "\"WrappedArray(1, 2, 3)\"")
+    val instanceCheckCol = genCol("\"1\", theInstance, \"3\"", "\"Array(1, 2, 3)\"")
     val instanceCheckTypes = stdInstanceCheckTypes(quotedSimpleMessageFun, "2", "indexElement")
 
-    val stringCheckCol = genCol("\"hello A!\", \"hi B\", \"hello C!\"", "\"WrappedArray(hello A!, hi B, hello C!)\"")
+    val stringCheckCol = genCol("\"hello A!\", \"hi B\", \"hello C!\"", "\"Array(hello A!, hi B, hello C!)\"")
     val stringCheckTypes = stdStringCheckTypes(quotedSimpleMessageFun, "indexElement", true)
 
-    val traversablePropertyCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", ""), "\"WrappedArray(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array())\"")
+    val traversablePropertyCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", ""), "\"Array(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array())\"")
     val traversablePropertyCheckTypes = stdTraversablePropertyCheckTypes(trvSimpleMessageFun, "indexElement", true).filter { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
       condition != "'traversable should be symbol' failed"
     }
 
-    val traversableCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", "\"hello\""), "\"WrappedArray(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array(\\\"hello\\\"))\"")
+    val traversableCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", "\"hello\""), "\"Array(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array(\\\"hello\\\"))\"")
     val traversableCheckTypes = stdTraversableCheckTypes(trvSimpleMessageFun, trvSizeSimpleMessageFun, 1, 2, "hi", "indexElement", true)
 
     val maps = genMap(Array("\"1\" -> \"one\", \"2\" -> \"two\", \"3\" -> \"three\"",
@@ -2050,7 +2050,7 @@ object GenInspectors {
   }
 
   def genInspectorShorthandsForBetweenSpecFile(targetMatchersDir: File) {
-    val int123Col = genCol("1, 2, 3", "\"WrappedArray(1, 2, 3)\"")
+    val int123Col = genCol("1, 2, 3", "\"Array(1, 2, 3)\"")
 
     val succeedTests =
       int123Col map { case (colText, xsText) =>
@@ -2083,25 +2083,25 @@ object GenInspectors {
         ("less one element passed", " should equal (2)", "Equal[Int]", "indexElementNotEqual[Int]", "2", (errorFun: String, errorValue: String) => new DidNotEqualMessageTemplate("{1}", 2, false))
       ) ++ stdInt123Types(simpleMessageFun, 2, "indexElement", false)
 
-    val nullStringCol = genNullableCol("\"1\", null, \"3\"", "\"WrappedArray(1, null, 3)\"")
+    val nullStringCol = genNullableCol("\"1\", null, \"3\"", "\"Array(1, null, 3)\"")
     val nullStringTypes = stdNullStringTypes(quotedSimpleMessageFun, "indexElement", false)
 
-    val propertyCheckCol = genCol("\"\", \"boom!\", \"hi\"", "\"WrappedArray(, boom!, hi)\"")
+    val propertyCheckCol = genCol("\"\", \"boom!\", \"hi\"", "\"Array(, boom!, hi)\"")
     val propertyCheckTypes = stdPropertyCheckTypes(0, quotedSimpleMessageFun, quotedSimpleMessageFun2, simpleMessageFun, "indexElement")
     val lengthSizeCheckTypes = stdLengthSizeCheckTypes(0, quotedSimpleMessageFun, lengthSimpleMessageFun, "indexElement")
 
-    val instanceCheckCol = genCol("\"1\", theInstance, \"3\"", "\"WrappedArray(1, 2, 3)\"")
+    val instanceCheckCol = genCol("\"1\", theInstance, \"3\"", "\"Array(1, 2, 3)\"")
     val instanceCheckTypes = stdInstanceCheckTypes(quotedSimpleMessageFun, "2", "indexElement")
 
-    val stringCheckCol = genCol("\"hello A!\", \"hi B\", \"hello C!\"", "\"WrappedArray(hello A!, hi B, hello C!)\"")
+    val stringCheckCol = genCol("\"hello A!\", \"hi B\", \"hello C!\"", "\"Array(hello A!, hi B, hello C!)\"")
     val stringCheckTypes = stdStringCheckTypes(quotedSimpleMessageFun, "indexElement", true)
 
-    val traversablePropertyCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", ""), "\"WrappedArray(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array())\"")
+    val traversablePropertyCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", ""), "\"Array(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array())\"")
     val traversablePropertyCheckTypes = stdTraversablePropertyCheckTypes(trvSimpleMessageFun, "indexElement", true).filter { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
       condition != "'traversable should be symbol' failed"
     }
 
-    val traversableCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", "\"hello\""), "\"WrappedArray(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array(\\\"hello\\\"))\"")
+    val traversableCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", "\"hello\""), "\"Array(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array(\\\"hello\\\"))\"")
     // XXX
     val traversableCheckTypes = stdTraversableCheckTypes(trvSimpleMessageFun, trvSizeSimpleMessageFun, 0, 1, "hi", "indexElement", true)
 
@@ -2252,7 +2252,7 @@ object GenInspectors {
   }
 
   def genInspectorShorthandsForAtMostSpecFile(targetMatchersDir: File) {
-    val int123Col = genCol("1, 2, 3, 4, 5", "\"WrappedArray(1, 2, 3, 4, 5)\"")
+    val int123Col = genCol("1, 2, 3, 4, 5", "\"Array(1, 2, 3, 4, 5)\"")
 
     val succeedTests =
       (int123Col map { case (colText, xsText) =>
@@ -2290,12 +2290,12 @@ object GenInspectors {
         condition != "'should be ===' failed"// no way to get this two to fail with atMost(1).
       })
 
-    val nullStringCol = genNullableCol("\"1\", null, \"3\"", "\"WrappedArray(1, null, 3)\"")
+    val nullStringCol = genNullableCol("\"1\", null, \"3\"", "\"Array(1, null, 3)\"")
     val nullStringTypes = stdNullStringTypes(quotedSimpleMessageFun, "indexElement", false).filter { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
       condition != "'should be null' failed"
     }
 
-    val propertyCheckCol = genCol("\"\", \"boom!\", \"hi\", \"cool!\", \"great!\"", "\"WrappedArray(, boom!, hi, cool!, great!)\"")
+    val propertyCheckCol = genCol("\"\", \"boom!\", \"hi\", \"cool!\", \"great!\"", "\"Array(, boom!, hi, cool!, great!)\"")
     val propertyCheckTypes = stdPropertyCheckTypes(5, quotedSimpleMessageFun, quotedSimpleMessageFun2, simpleMessageFun, "indexElement").filter { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
       condition != "'should be symbol' failed" &&
       condition != "'should be property' failed" &&
@@ -2307,20 +2307,20 @@ object GenInspectors {
     }
     val lengthSizeCheckTypes = stdLengthSizeCheckTypes(5, quotedSimpleMessageFun, lengthSimpleMessageFun, "indexElement")
 
-    val instanceCheckCol = genCol("\"1\", theInstance, \"3\", \"4\", \"5\"", "\"WrappedArray(1, 2, 3, 4, 5)\"")
+    val instanceCheckCol = genCol("\"1\", theInstance, \"3\", \"4\", \"5\"", "\"Array(1, 2, 3, 4, 5)\"")
     val instanceCheckTypes = stdInstanceCheckTypes(quotedSimpleMessageFun, "2", "indexElement").filter { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
       condition != "'should be theSameInstanceAs' failed"
     }
 
-    val stringCheckCol = genCol("\"hello A!\", \"hi B\", \"hello C!\", \"hi D\", \"hello E!\"", "\"WrappedArray(hello A!, hi B, hello C!, hi D, hello E!)\"")
+    val stringCheckCol = genCol("\"hello A!\", \"hi B\", \"hello C!\", \"hi D\", \"hello E!\"", "\"Array(hello A!, hi B, hello C!, hi D, hello E!)\"")
     val stringCheckTypes = stdStringCheckTypes(quotedSimpleMessageFun, "indexElement", true)
 
-    val traversablePropertyCheckCol = genColCol("String", Array("\"\", \"boom!\", \"great!\"", "", "\"hi\", \"cool!\""), "\"WrappedArray(Array(), Array(\\\"boom!\\\"), Array(\\\"hi\\\"), Array(\\\"cool!\\\"), Array(\\\"great!\\\"))\"")
+    val traversablePropertyCheckCol = genColCol("String", Array("\"\", \"boom!\", \"great!\"", "", "\"hi\", \"cool!\""), "\"Array(Array(), Array(\\\"boom!\\\"), Array(\\\"hi\\\"), Array(\\\"cool!\\\"), Array(\\\"great!\\\"))\"")
     val traversablePropertyCheckTypes = stdTraversablePropertyCheckTypes(trvSimpleMessageFun, "indexElement", true).filter { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
       condition != "'traversable should be symbol' failed"
     }
 
-    val traversableCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", "\"hello\"", "\"boom!\", \"hi\""), "\"WrappedArray(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array(\\\"hello\\\"))\"")
+    val traversableCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", "\"hello\"", "\"boom!\", \"hi\""), "\"Array(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array(\\\"hello\\\"))\"")
     val traversableCheckTypes = stdTraversableCheckTypes(trvSimpleMessageFun, trvSizeSimpleMessageFun, 1, 2, "hi", "indexElement", true)
 
     val maps = genMap(Array("\"1\" -> \"one\", \"2\" -> \"two\", \"3\" -> \"three\"",

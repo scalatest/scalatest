@@ -5,6 +5,7 @@ import scala.annotation.tailrec
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import scala.collection.GenSeq
 import Suite.indentLines
+import FailureMessages.decorateToStringValue
 
 /**
  * Provides nestable <em>inspector methods</em> (or just <em>inspectors</em>) that enable assertions to be made about collections.
@@ -287,7 +288,7 @@ private[scalatest] object InspectorsHelper {
       runFor(xs.toIterator, resourceNamePrefix, 0, new ForResult[T], fun, _.failedElements.length > 0)
     if (result.failedElements.length > 0) 
       throw new exceptions.TestFailedException(
-        sde => Some(Resources(resourceName, indentErrorMessages(result.messageAcc).mkString(", \n"), xs.toString)),
+        sde => Some(Resources(resourceName, indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(xs))),
         Some(result.failedElements(0)._3),
         getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
       )
@@ -330,9 +331,9 @@ private[scalatest] object InspectorsHelper {
         sde => 
           Some(
             if (passedCount > 0)
-              Resources(resourceName, min.toString, elementLabel(passedCount), indentErrorMessages(messageAcc).mkString(", \n"), xs.toString)
+              Resources(resourceName, min.toString, elementLabel(passedCount), indentErrorMessages(messageAcc).mkString(", \n"), decorateToStringValue(xs))
             else
-              Resources(resourceName + "NoElement", min.toString, indentErrorMessages(messageAcc).mkString(", \n"), xs.toString)
+              Resources(resourceName + "NoElement", min.toString, indentErrorMessages(messageAcc).mkString(", \n"), decorateToStringValue(xs))
           ),
         None,
         getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
@@ -367,7 +368,7 @@ private[scalatest] object InspectorsHelper {
     val messageList = runAndCollectErrorMessage(xs.toIterator, IndexedSeq.empty, 0)(fun)
     if (messageList.size > 0)
       throw new exceptions.TestFailedException(
-          sde => Some(Resources(resourceName, indentErrorMessages(messageList).mkString(", \n"), xs)),
+          sde => Some(Resources(resourceName, indentErrorMessages(messageList).mkString(", \n"), decorateToStringValue(xs))),
           None,
           getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
         )
@@ -385,12 +386,12 @@ private[scalatest] object InspectorsHelper {
         sde => 
           Some(
             if (result.passedCount == 0)
-              Resources(resourceName + "NoElement", succeededCount.toString, indentErrorMessages(result.messageAcc).mkString(", \n"), xs.toString)
+              Resources(resourceName + "NoElement", succeededCount.toString, indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(xs))
             else {
               if (result.passedCount < succeededCount)
-                Resources(resourceName + "Less", succeededCount.toString, elementLabel(result.passedCount), keyOrIndexLabel(xs, result.passedElements), indentErrorMessages(result.messageAcc).mkString(", \n"), xs.toString)
+                Resources(resourceName + "Less", succeededCount.toString, elementLabel(result.passedCount), keyOrIndexLabel(xs, result.passedElements), indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(xs))
               else
-                Resources(resourceName + "More", succeededCount.toString, elementLabel(result.passedCount), keyOrIndexLabel(xs, result.passedElements), xs.toString)
+                Resources(resourceName + "More", succeededCount.toString, elementLabel(result.passedCount), keyOrIndexLabel(xs, result.passedElements), decorateToStringValue(xs))
             }
           ),
         None,
@@ -404,7 +405,7 @@ private[scalatest] object InspectorsHelper {
       runFor(xs.toIterator, resourceNamePrefix, 0, new ForResult[T], fun, _.passedCount != 0)
     if (result.passedCount != 0)
       throw new exceptions.TestFailedException(
-        sde => Some(Resources(resourceName, keyOrIndexLabel(xs, result.passedElements), xs)),
+        sde => Some(Resources(resourceName, keyOrIndexLabel(xs, result.passedElements), decorateToStringValue(xs))),
         None,
         getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
       )
@@ -426,12 +427,12 @@ private[scalatest] object InspectorsHelper {
         sde =>
           Some(
             if (result.passedCount == 0)
-              Resources(resourceName + "NoElement", from.toString, upTo.toString, indentErrorMessages(result.messageAcc).mkString(", \n"), xs)
+              Resources(resourceName + "NoElement", from.toString, upTo.toString, indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(xs))
             else {
               if (result.passedCount < from)
-                Resources(resourceName + "Less", from.toString, upTo.toString, elementLabel(result.passedCount), keyOrIndexLabel(xs, result.passedElements), indentErrorMessages(result.messageAcc).mkString(", \n"), xs)
+                Resources(resourceName + "Less", from.toString, upTo.toString, elementLabel(result.passedCount), keyOrIndexLabel(xs, result.passedElements), indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(xs))
               else
-                Resources(resourceName + "More", from.toString, upTo.toString, elementLabel(result.passedCount), keyOrIndexLabel(xs, result.passedElements), xs)
+                Resources(resourceName + "More", from.toString, upTo.toString, elementLabel(result.passedCount), keyOrIndexLabel(xs, result.passedElements), decorateToStringValue(xs))
             }
           ),
         None,
@@ -448,7 +449,7 @@ private[scalatest] object InspectorsHelper {
       runFor(xs.toIterator, resourceNamePrefix, 0, new ForResult[T], fun, _.passedCount > max)
     if (result.passedCount > max)
       throw new exceptions.TestFailedException(
-        sde => Some(Resources(resourceName, max.toString, result.passedCount.toString, keyOrIndexLabel(xs, result.passedElements), xs.toString)),
+        sde => Some(Resources(resourceName, max.toString, result.passedCount.toString, keyOrIndexLabel(xs, result.passedElements), decorateToStringValue(xs))),
         None,
         getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
       )

@@ -17,6 +17,7 @@ package org.scalatest
 
 import java.util.ResourceBundle
 import java.text.MessageFormat
+import scala.collection.mutable.WrappedArray
 
 /**
  * Grab a resource intended for use in a failure message. For each argument passed,
@@ -34,6 +35,7 @@ private[scalatest] object FailureMessages {
       case aString: String => "\"" + aString + "\""
       case aChar: Char =>  "\'" + aChar + "\'"
       case anArray: Array[_] =>  prettifyArrays(anArray)
+      case aWrappedArray: WrappedArray[_] => prettifyArrays(aWrappedArray)
       case anythingElse => anythingElse.toString
     }
 
@@ -44,6 +46,7 @@ private[scalatest] object FailureMessages {
   def prettifyArrays(o: Any): String = {
     o match {
       case arr: Array[_] => "Array(" + (arr map (a => prettifyArrays(a))).mkString(", ") + ")"
+      case wrappedArr: WrappedArray[_] => "Array(" + (wrappedArr map (a => prettifyArrays(a))).mkString(", ") + ")"
       case _ => if (o != null) o.toString else "null"
     }
   }
