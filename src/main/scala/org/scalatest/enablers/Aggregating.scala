@@ -222,35 +222,22 @@ object Aggregating {
   
   private def checkAtMostOneOf[T](left: GenTraversable[T], right: GenTraversable[Any], equality: Equality[T]): Boolean = {
     
-    def countElements: (IndexedSeq[Any], Int) = 
-      right.aggregate((IndexedSeq.empty[Any], 0))(
-        { case ((processedSet, count), nextRight) => 
-            if (processedSet.exists(tryEquality(_, nextRight, equality)))
-              throw new IllegalArgumentException(FailureMessages("atMostOneOfDuplicate", nextRight))
+    def countElements: Int = 
+      right.aggregate(0)(
+        { case (count, nextRight) => 
             if (left.exists(l => equality.areEqual(l, nextRight))) {
               val newCount = count + 1
               if (newCount > 1)
-                return (processedSet :+ nextRight, newCount)
+                return newCount
               else
-                (processedSet :+ nextRight, newCount)
+                newCount
             }
             else
-              (processedSet :+ nextRight, count)
+              count
         }, 
-        { case ((processedSet1, count1), (processedSet2, count2)) => 
-            processedSet1.find((e: Any) => processedSet2.exists((ele: Any) => tryEquality(e, ele, equality))) match {
-              case Some(e) => 
-                throw new IllegalArgumentException(FailureMessages("atMostOneOfDuplicate", e))
-              case None => 
-                val newCount = count1 + count2
-                if (newCount > 1)
-                  return (processedSet1 ++ processedSet2, newCount)
-                else
-                  (processedSet1 ++ processedSet2, newCount)
-            }
-        }
+        { case (count1, count2) => count1 + count2 }
       )
-    val (processedSet, count) = countElements
+    val count = countElements
     count <= 1      
   }
 

@@ -2586,7 +2586,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  def atMostOneOf(xs: Any*) = new ResultOfAtMostOneOfApplication(xs)
+  def atMostOneOf(xs: Any*) = {
+    if (xs.isEmpty)
+      throw new NotAllowedException(FailureMessages("atMostOneOfEmpty"), getStackDepthFun("Matchers.scala", "atMostOneOf"))
+    if (xs.distinct.size != xs.size)
+      throw new NotAllowedException(FailureMessages("atMostOneOfDuplicate"), getStackDepthFun("Matchers.scala", "atMostOneOf"))
+    new ResultOfAtMostOneOfApplication(xs)
+  }
   
   /**
    * This method enables the following syntax: 
@@ -3998,6 +4004,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def atMostOneOf(right: Any*)(implicit aggregating: Aggregating[T]) {
+      if (right.isEmpty)
+        throw new NotAllowedException(FailureMessages("atMostOneOfEmpty"), getStackDepthFun("Matchers.scala", "atMostOneOf"))
+      if (right.distinct.size != right.size)
+        throw new NotAllowedException(FailureMessages("atMostOneOfDuplicate"), getStackDepthFun("Matchers.scala", "atMostOneOf"))
       doCollected(collected, xs, "atMostOneOf", 1) { e =>
         if (aggregating.containsAtMostOneOf(e, right) != shouldBeTrue)
           throw newTestFailedException(
