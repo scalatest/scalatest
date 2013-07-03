@@ -36,6 +36,14 @@ class ConversionCheckedTripleEqualsExplicitlySpec extends Spec with Matchers wit
         assert((new Fruit("apple") !== new Pomme)(decided by fruitInequality))
       }
     }
+    object `when used with fromType === toType` {
+      def `should allow an Equality to specified explicitly` {
+        assert(new Pomme !== new Fruit("orange"))
+        assert((new Pomme === new Fruit("orange"))(decided by fruitInequality))
+        assert(new Pomme === new Fruit("apple"))
+        assert((new Pomme !== new Fruit("apple"))(decided by fruitInequality))
+      }
+    }
   }
 }
 
