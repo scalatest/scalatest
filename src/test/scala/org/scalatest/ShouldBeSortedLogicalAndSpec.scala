@@ -17,31 +17,34 @@ package org.scalatest
 
 import SharedHelpers.thisLineNumber
 import org.scalatest.enablers.Sortable
+import FailureMessages.decorateToStringValue
 
 class ShouldBeSortedLogicalAndSpec extends Spec with Matchers {
   
+  //ADDITIONAL//
+  
   def wasEqualTo(left: Any, right: Any): String = 
-    left + " was equal to " + right
+    decorateToStringValue(left) + " was equal to " + decorateToStringValue(right)
     
   def wasNotEqualTo(left: Any, right: Any): String = 
-    left + " was not equal to " + right
+    decorateToStringValue(left) + " was not equal to " + decorateToStringValue(right)
     
   def equaled(left: Any, right: Any): String = 
-    left + " equaled " + right
+    decorateToStringValue(left) + " equaled " + decorateToStringValue(right)
     
   def didNotEqual(left: Any, right: Any): String = 
-    left + " did not equal " + right
+    decorateToStringValue(left) + " did not equal " + decorateToStringValue(right)
   
   def wasNotSorted(left: Any): String = 
-    left + " was not sorted"
+    decorateToStringValue(left) + " was not sorted"
     
   def wasSorted(left: Any): String = 
-    left + " was sorted"
+    decorateToStringValue(left) + " was sorted"
     
   def allInspectionFailed(idx: Int, message: String, lineNumber:Int, left: Any) = 
     "'all' inspection failed, because: \n" + 
     "  at index " + idx + ", " + message + " (ShouldBeSortedLogicalAndSpec.scala:" + lineNumber + ") \n" + 
-    "in " + left
+    "in " + decorateToStringValue(left)
     
   case class Student(name: String, scores: Int)
   implicit val studentOrdering = new Ordering[Student] {

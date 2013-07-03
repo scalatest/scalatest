@@ -24,6 +24,7 @@ import scala.collection.GenTraversable
 import scala.annotation.tailrec
 import collection._
 import SharedHelpers._
+import FailureMessages.decorateToStringValue
 
 class InspectorsSpec extends Spec with Matchers with Inspectors with TableDrivenPropertyChecks {
   
@@ -71,7 +72,7 @@ class InspectorsSpec extends Spec with Matchers with Inspectors with TableDriven
         e.failedCodeLineNumber should be (Some(thisLineNumber - 5))
         e.message should be (Some("forAll failed, because: \n" +
                                    "  at index " + getIndex(col, 2) + ", 2 equaled 2 (InspectorsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
-                                   "in " + col))
+                                   "in " + decorateToStringValue(col)))
         e.getCause match {
           case tfe: exceptions.TestFailedException =>
             tfe.failedCodeFileName should be (Some("InspectorsSpec.scala"))
@@ -96,7 +97,7 @@ class InspectorsSpec extends Spec with Matchers with Inspectors with TableDriven
         val firstViolation = getFirst[Int](col, _ >= 2)
         e2.message should be (Some("forAll failed, because: \n" +
                                     "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " was not less than 2 (InspectorsSpec.scala:" + (thisLineNumber - 7) + ") \n" +
-                                    "in " + col))
+                                    "in " + decorateToStringValue(col)))
         e2.getCause match {
           case tfe: exceptions.TestFailedException =>
             tfe.failedCodeFileName should be (Some("InspectorsSpec.scala"))
@@ -237,7 +238,7 @@ class InspectorsSpec extends Spec with Matchers with Inspectors with TableDriven
         e.message should be (Some("forAtLeast(2) failed, because only 1 element satisfied the assertion block: \n" +
                                    "  at index " + firstIndex + ", " + first + " was not equal to 2 (InspectorsSpec.scala:" + (thisLineNumber - 11) + "), \n" +
                                    "  at index " + secondIndex + ", " + second + " was not equal to 2 (InspectorsSpec.scala:" + (thisLineNumber - 12) + ") \n" +
-                                   "in " + col))
+                                   "in " + decorateToStringValue(col)))
         e.getCause should be (null)
       }
     }
@@ -260,7 +261,7 @@ class InspectorsSpec extends Spec with Matchers with Inspectors with TableDriven
                                    "  at index 0, " + first + " was not equal to 5 (InspectorsSpec.scala:" + (thisLineNumber - 10) + "), \n" +
                                    "  at index 1, " + second + " was not equal to 5 (InspectorsSpec.scala:" + (thisLineNumber - 11) + "), \n" +
                                    "  at index 2, " + third + " was not equal to 5 (InspectorsSpec.scala:" + (thisLineNumber - 12) + ") \n" +
-                                   "in " + col))
+                                   "in " + decorateToStringValue(col)))
         e.getCause should be (null)
       }
     }
@@ -283,7 +284,7 @@ class InspectorsSpec extends Spec with Matchers with Inspectors with TableDriven
         e.message should be (Some("forAtLeast(2) failed, because only 1 element satisfied the assertion block: \n" +
                                    "  at index " + firstIndex + ", " + first + " was not equal to 2 (InspectorsSpec.scala:" + (thisLineNumber - 11) + "), \n" +
                                    "  at index " + secondIndex + ", " + second + " was not equal to 2 (InspectorsSpec.scala:" + (thisLineNumber - 12) + ") \n" +
-                                   "in " + col))
+                                   "in " + decorateToStringValue(col)))
         e.getCause should be (null)
       }
     }
@@ -301,7 +302,7 @@ class InspectorsSpec extends Spec with Matchers with Inspectors with TableDriven
         val index = getIndex(col, 3)
         e.message should be (Some("forAtLeast(3) failed, because only 2 elements satisfied the assertion block: \n" +
                                    "  at index " + index + ", 3 was not less than 3 (InspectorsSpec.scala:" + (thisLineNumber - 7) + ") \n" +
-                                   "in " + col))
+                                   "in " + decorateToStringValue(col)))
         e.getCause should be (null)
       }
     }
@@ -331,7 +332,7 @@ class InspectorsSpec extends Spec with Matchers with Inspectors with TableDriven
                                    "  at index 0, " + first + " was not greater than 5 (InspectorsSpec.scala:" + (thisLineNumber - 10) + "), \n" +
                                    "  at index 1, " + second + " was not greater than 5 (InspectorsSpec.scala:" + (thisLineNumber - 11) + "), \n" +
                                    "  at index 2, " + third + " was not greater than 5 (InspectorsSpec.scala:" + (thisLineNumber - 12) + ") \n" +
-                                   "in " + col))
+                                   "in " + decorateToStringValue(col)))
         e.getCause should be (null)
       }
     }
@@ -478,7 +479,7 @@ class InspectorsSpec extends Spec with Matchers with Inspectors with TableDriven
         val secondIndex = getIndex(col, second)
         val third = getNext[Int](itr, _ < 4)
         val thirdIndex = getIndex(col, third)
-        e.message should be (Some("forAtMost(2) failed, because 3 elements satisfied the assertion block at index " + firstIndex + ", " + secondIndex + " and " + thirdIndex + " in " + col))
+        e.message should be (Some("forAtMost(2) failed, because 3 elements satisfied the assertion block at index " + firstIndex + ", " + secondIndex + " and " + thirdIndex + " in " + decorateToStringValue(col)))
       }
     }
     
@@ -618,7 +619,7 @@ class InspectorsSpec extends Spec with Matchers with Inspectors with TableDriven
                                   "  at index 0, " + first + " was not equal to 5 (InspectorsSpec.scala:" + (thisLineNumber - 10) + "), \n" +
                                   "  at index 1, " + second + " was not equal to 5 (InspectorsSpec.scala:" + (thisLineNumber - 11) + "), \n" +
                                   "  at index 2, " + third + " was not equal to 5 (InspectorsSpec.scala:" + (thisLineNumber - 12) + ") \n" +
-                                  "in " + col))
+                                  "in " + decorateToStringValue(col)))
         e.getCause should be (null)
       }
     }
@@ -642,7 +643,7 @@ class InspectorsSpec extends Spec with Matchers with Inspectors with TableDriven
         e.message should be (Some("forExactly(2) failed, because only 1 element satisfied the assertion block at index " + succeededIndex + ": \n" +
                                   "  at index " + firstIndex + ", " + first + " was not equal to 2 (InspectorsSpec.scala:" + (thisLineNumber - 12) + "), \n" +
                                   "  at index " + secondIndex + ", " + second + " was not equal to 2 (InspectorsSpec.scala:" + (thisLineNumber - 13) + ") \n" +
-                                  "in " + col))
+                                  "in " + decorateToStringValue(col)))
         e.getCause should be (null)
       }
     }
@@ -657,7 +658,7 @@ class InspectorsSpec extends Spec with Matchers with Inspectors with TableDriven
         }
         e.failedCodeFileName should be (Some("InspectorsSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 5))
-        e.message should be (Some("forExactly(2) failed, because 3 elements satisfied the assertion block at index 0, 1 and 2 in " + col))
+        e.message should be (Some("forExactly(2) failed, because 3 elements satisfied the assertion block at index 0, 1 and 2 in " + decorateToStringValue(col)))
         e.getCause should be (null)
       }
     }
@@ -680,7 +681,7 @@ class InspectorsSpec extends Spec with Matchers with Inspectors with TableDriven
         val failedIndex = getIndex(col, 3)
         e.message should be (Some("forExactly(3) failed, because only 2 elements satisfied the assertion block at index " + passedFirstIndex + " and " + passedSecondIndex + ": \n" +
                                   "  at index " + failedIndex + ", 3 was not less than 3 (InspectorsSpec.scala:" + (thisLineNumber - 12) + ") \n" +
-                                  "in " + col))
+                                  "in " + decorateToStringValue(col)))
         e.getCause should be (null)
       }
     }
@@ -700,7 +701,7 @@ class InspectorsSpec extends Spec with Matchers with Inspectors with TableDriven
         val firstIndex = getIndex(col, first)
         val second = getNext[Int](itr, _ < 3)
         val secondIndex = getIndex(col, second)
-        e.message should be (Some("forExactly(1) failed, because 2 elements satisfied the assertion block at index " + firstIndex + " and " + secondIndex + " in " + col))
+        e.message should be (Some("forExactly(1) failed, because 2 elements satisfied the assertion block at index " + firstIndex + " and " + secondIndex + " in " + decorateToStringValue(col)))
         e.getCause should be (null)
       }
     }
@@ -724,7 +725,7 @@ class InspectorsSpec extends Spec with Matchers with Inspectors with TableDriven
         e.message should be (Some("forExactly(2) failed, because only 1 element satisfied the assertion block at index " + index + ": \n" +
                                   "  at index " + firstIndex + ", " + first + " did not equal 2 (InspectorsSpec.scala:" + (thisLineNumber - 12) + "), \n" +
                                   "  at index " + secondIndex + ", " + second + " did not equal 2 (InspectorsSpec.scala:" + (thisLineNumber - 13) + ") \n" +
-                                  "in " + col))
+                                  "in " + decorateToStringValue(col)))
       }
     }
     
@@ -736,7 +737,7 @@ class InspectorsSpec extends Spec with Matchers with Inspectors with TableDriven
         }
         e.failedCodeFileName should be (Some("InspectorsSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
-        e.message should be (Some("forExactly(2) failed, because 3 elements satisfied the assertion block at index 0, 1 and 2 in " + col))
+        e.message should be (Some("forExactly(2) failed, because 3 elements satisfied the assertion block at index 0, 1 and 2 in " + decorateToStringValue(col)))
       }
     }
     
@@ -840,7 +841,7 @@ class InspectorsSpec extends Spec with Matchers with Inspectors with TableDriven
         e.failedCodeFileName should be (Some("InspectorsSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
         val index = getIndex(col, 2)
-        e.message should be (Some("forNo failed, because 1 element satisfied the assertion block at index " + index + " in " + col))
+        e.message should be (Some("forNo failed, because 1 element satisfied the assertion block at index " + index + " in " + decorateToStringValue(col)))
       }
     }
     
@@ -853,7 +854,7 @@ class InspectorsSpec extends Spec with Matchers with Inspectors with TableDriven
         e.failedCodeFileName should be (Some("InspectorsSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
         val first = col.toIterator.next
-        e.message should be (Some("forNo failed, because 1 element satisfied the assertion block at index 0 in " + col))
+        e.message should be (Some("forNo failed, because 1 element satisfied the assertion block at index 0 in " + decorateToStringValue(col)))
       }
     }
     
@@ -865,7 +866,7 @@ class InspectorsSpec extends Spec with Matchers with Inspectors with TableDriven
         }
         e.failedCodeFileName should be (Some("InspectorsSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
-        e.message should be (Some("forNo failed, because 1 element satisfied the assertion block at index 0 in " + col))
+        e.message should be (Some("forNo failed, because 1 element satisfied the assertion block at index 0 in " + decorateToStringValue(col)))
       }
     }
     
@@ -1049,7 +1050,7 @@ class InspectorsSpec extends Spec with Matchers with Inspectors with TableDriven
                                   "  at index 0, " + first + " was not equal to 5 (InspectorsSpec.scala:" + (thisLineNumber - 10) + "), \n" +
                                   "  at index 1, " + second + " was not equal to 5 (InspectorsSpec.scala:" + (thisLineNumber - 11) + "), \n" +
                                   "  at index 2, " + third + " was not equal to 5 (InspectorsSpec.scala:" + (thisLineNumber - 12) + ") \n" +
-                                  "in " + col))
+                                  "in " + decorateToStringValue(col)))
         e.getCause should be (null)
       }
     }
@@ -1073,7 +1074,7 @@ class InspectorsSpec extends Spec with Matchers with Inspectors with TableDriven
         e.message should be (Some("forBetween(2, 3) failed, because only 1 element satisfied the assertion block at index " + passedIndex + ": \n" +
                                   "  at index " + firstIndex + ", " + first + " was not equal to 2 (InspectorsSpec.scala:" + (thisLineNumber - 12) + "), \n" +
                                   "  at index " + secondIndex + ", " + second + " was not equal to 2 (InspectorsSpec.scala:" + (thisLineNumber - 13) + ") \n" +
-                                  "in " + col))
+                                  "in " + decorateToStringValue(col)))
         e.getCause should be (null)
       }
     }
@@ -1094,7 +1095,7 @@ class InspectorsSpec extends Spec with Matchers with Inspectors with TableDriven
         val failedIndex = getIndex(col, 3)
         e.message should be (Some("forBetween(3, 4) failed, because only 2 elements satisfied the assertion block at index " + firstIndex + " and " + secondIndex + ": \n" +
                                   "  at index " + failedIndex + ", 3 was not less than 3 (InspectorsSpec.scala:" + (thisLineNumber - 10) + ") \n" +
-                                  "in " + col))
+                                  "in " + decorateToStringValue(col)))
         e.getCause should be (null)
       }
     }
@@ -1114,7 +1115,7 @@ class InspectorsSpec extends Spec with Matchers with Inspectors with TableDriven
         val secondIndex = getIndex(col, getNext[Int](itr, _ > 1))
         val thirdIndex = getIndex(col, getNext[Int](itr, _ > 1))
         val forthIndex = getIndex(col, getNext[Int](itr, _ > 1))
-        e.message should be (Some("forBetween(2, 3) failed, because 4 elements satisfied the assertion block at index " + firstIndex + ", " + secondIndex + ", " + thirdIndex + " and " + forthIndex + " in " + col))
+        e.message should be (Some("forBetween(2, 3) failed, because 4 elements satisfied the assertion block at index " + firstIndex + ", " + secondIndex + ", " + thirdIndex + " and " + forthIndex + " in " + decorateToStringValue(col)))
         e.getCause should be (null)
       }
     }
@@ -1144,7 +1145,7 @@ class InspectorsSpec extends Spec with Matchers with Inspectors with TableDriven
                                   "  at index " + secondIndex + ", " + second  + " was not greater than 4 (InspectorsSpec.scala:" + (thisLineNumber - 17) + "), \n" +
                                   "  at index " + thirdIndex + ", " + third  + " was not greater than 4 (InspectorsSpec.scala:" + (thisLineNumber - 18) + "), \n" +
                                   "  at index " + forthIndex + ", " + forth  + " was not greater than 4 (InspectorsSpec.scala:" + (thisLineNumber - 19) + ") \n" +
-                                  "in " + col))
+                                  "in " + decorateToStringValue(col)))
       }
     }
     
@@ -1156,7 +1157,7 @@ class InspectorsSpec extends Spec with Matchers with Inspectors with TableDriven
         }
         e.failedCodeFileName should be (Some("InspectorsSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
-        e.message should be (Some("forBetween(2, 4) failed, because 5 elements satisfied the assertion block at index 0, 1, 2, 3 and 4 in " + col))
+        e.message should be (Some("forBetween(2, 4) failed, because 5 elements satisfied the assertion block at index 0, 1, 2, 3 and 4 in " + decorateToStringValue(col)))
       }
     }
     
@@ -1262,7 +1263,7 @@ class InspectorsSpec extends Spec with Matchers with Inspectors with TableDriven
         val index = getIndex(col, 2)
         e.message should be (Some("forEvery failed, because: \n" +
                                   "  at index " + index + ", 2 equaled 2 (InspectorsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
-                                  "in " + col))
+                                  "in " + decorateToStringValue(col)))
       }
     }
     
@@ -1282,7 +1283,7 @@ class InspectorsSpec extends Spec with Matchers with Inspectors with TableDriven
         e.message should be (Some("forEvery failed, because: \n" +
                                   "  at index " + firstIndex + ", " + first + " was not less than 2 (InspectorsSpec.scala:" + (thisLineNumber - 10) + "), \n" +
                                   "  at index " + secondIndex + ", " + second + " was not less than 2 (InspectorsSpec.scala:" + (thisLineNumber - 11) + ") \n" +
-                                  "in " + col))
+                                  "in " + decorateToStringValue(col)))
       }
     }
     

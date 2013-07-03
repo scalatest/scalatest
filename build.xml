@@ -203,6 +203,7 @@
         	<include name="GenFactories.scala" />
         	<include name="GenTheyWord.scala" />
         	<include name="GenContain.scala" />
+        	<include name="GenSorted.scala" />
         	<include name="GenLoneElement.scala" />
         </scalac>
     </target>
@@ -281,6 +282,15 @@
 		<arg value="${build.generated.tests.src}" />
 		<arg value="${scala.version}" />
       </java>
+	</target>
+	
+	<target name="gensorted" depends="init, compile-codegenerators"
+	        unless="gensorted.uptodate">
+	  <java classname="GenSorted"
+	        classpathref="run.generators.class.path" fork="false">
+	    <arg value="${build.generated.tests.src}" />
+	    <arg value="${scala.version}" />
+	  </java>
 	</target>
 	
 	<target name="genloneelement" depends="init, compile-codegenerators"
@@ -387,7 +397,7 @@
 	  <delete dir="${build.generated.tests.bin}" />
 	</target>
 	
-    <target name="compile-gentests" depends="compile-tests, geninspectors, gencontain, genloneelement">
+    <target name="compile-gentests" depends="compile-tests, geninspectors, gencontain, gensorted, genloneelement">
       <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
 		<include name="org/scalatest/junit/*.scala"/>
 		<include name="org/scalatest/matchers/*.scala"/>
@@ -398,7 +408,7 @@
 		<include name="org/scalatest/inspectors/atLeast/*.scala"/>
 		<include name="org/scalatest/inspectors/atMost/*.scala"/>
       </scalac>
-	  <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
         <include name="org/scalatest/inspectors/between/*.scala"/>
         <include name="org/scalatest/inspectors/every/*.scala"/>
         <include name="org/scalatest/inspectors/exactly/*.scala"/>
@@ -412,6 +422,9 @@
       </scalac>
       <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
         <include name="org/scalatest/lone/*.scala"/>
+      </scalac>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+        <include name="org/scalatest/sorted/*.scala"/>
       </scalac>
 <!--
  <echo message="Compiling ArrayShouldContainAllOfLogicalAndSpec.scala"/>
