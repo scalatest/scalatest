@@ -39,6 +39,8 @@ trait Explicitly {
   class TheAfterWord {
     def being[N](normality: Normality[N])(implicit equality: Equality[N]): NormalizingEquality[N] =
       new ComposedNormalizingEquality[N](equality, normality)
+    def being[N](normalization: Normalization[N])(implicit equivalence: Equivalence[N]): NormalizingEquivalence[N] =
+      new ComposedNormalizingEquivalence[N](equivalence, normalization)
   }
 
   val after = new TheAfterWord

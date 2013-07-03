@@ -46,4 +46,19 @@ trait ExplicitlySpecHelpers {
   class Pomme
 
   implicit def convertPommeToFruit(pomme: Pomme): Fruit = new Fruit("apple")
+
+  val downCased: Normalization[String] =
+    new Normalization[String] {
+      def normalized(s: String): String = s.toLowerCase
+    }
+
+  val chopped: Normalization[String] =
+    new Normalization[String] {
+      def normalized(s: String): String = s.trim
+    }
+
+  val stringInequivalence = 
+    new Equivalence[String] {
+      def areEquivalent(a: String, b: String): Boolean = a != b
+    }
 }
