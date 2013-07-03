@@ -27,6 +27,8 @@ import java.net.MalformedURLException
 import java.io.IOException
 import java.util.regex.Pattern
 
+import scala.collection.mutable.ListBuffer
+
 // TODO: Make this an object. To do so need to figure out how
 // to invoke private method with reflection on an object, because
 // that's how I'm testing the private methods here.
@@ -36,6 +38,48 @@ import java.util.regex.Pattern
  * @author Bill Venners
  */
 private[scalatest] object SuiteDiscoveryHelper {
+
+  //
+  // Finds Suites containing specified tests.
+  //
+  // Tests are specified either by name or substring.  This method
+  // searches all the accessibleSuites for matching tests, and
+  // returns a SuiteParam for each matching Suite found.
+  //
+  def discoverTests(testSpecs:        List[TestSpec],
+                    accessibleSuites: Set[String],
+                    loader:           ClassLoader): List[SuiteParam] =
+  {
+    val buf = new ListBuffer[SuiteParam]
+
+    if (!testSpecs.isEmpty) {
+      val names: Set[String] =
+        testSpecs.filter(_.isSubstring == false).map(_.spec).toSet
+  
+      val substrings: Set[String] =
+        testSpecs.filter(_.isSubstring == true).map(_.spec).toSet
+  
+      for (suiteName <- accessibleSuites) {
+        val suiteInstance: Suite =
+          DiscoverySuite.getSuiteInstance(suiteName, loader)
+  
+        val nameMatches: Set[String] =
+          names.intersect(suiteInstance.testNames)
+  
+        val substringMatches: Set[String] =
+          substrings.filter(substring =>
+            suiteInstance.testNames.exists(_.contains(substring)))
+  
+        if ((nameMatches.size > 0) || (substringMatches.size > 0))
+          buf += SuiteParam(suiteName,
+                            nameMatches.toList.sortWith(_<_).toArray,
+                            substringMatches.toList.sortWith(_<_).toArray,
+                            Array.empty)
+      }
+    }
+
+    buf.toList.sortWith(_.className<_.className)
+  }
 
   def discoverSuiteNames(runpath: List[String], loader: ClassLoader,
                          suffixes: Option[Pattern]): Set[String] =
