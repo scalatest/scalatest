@@ -279,6 +279,10 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    * </pre>
    */
   def atMostOneOf(right: Any*)(implicit aggregating: Aggregating[L]) {
+    if (right.isEmpty)
+      throw new NotAllowedException(FailureMessages("atMostOneOfEmpty"), getStackDepthFun("ResultOfContainWord.scala", "atMostOneOf"))
+    if (right.distinct.size != right.size)
+      throw new NotAllowedException(FailureMessages("atMostOneOfDuplicate"), getStackDepthFun("ResultOfContainWord.scala", "atMostOneOf"))
     if (aggregating.containsAtMostOneOf(left, right) != shouldBeTrue)
       throw newTestFailedException(
         FailureMessages(

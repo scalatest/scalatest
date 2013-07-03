@@ -358,6 +358,10 @@ final class ContainWord {
   }
   
   def atMostOneOf(right: Any*): MatcherFactory1[Any, Aggregating] = {
+    if (right.isEmpty)
+      throw new NotAllowedException(FailureMessages("atMostOneOfEmpty"), getStackDepthFun("ContainWord.scala", "atMostOneOf"))
+    if (right.distinct.size != right.size)
+      throw new NotAllowedException(FailureMessages("atMostOneOfDuplicate"), getStackDepthFun("ContainWord.scala", "atMostOneOf"))
     new MatcherFactory1[Any, Aggregating] {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
