@@ -199,6 +199,8 @@ trait TripleEqualsConstraints {
    */
   def lowPriorityTypeCheckedTripleEqualsConstraint[A, B](implicit equivalenceOfB: Equivalence[B], ev: A <:< B): TripleEqualsConstraint[A, B]
 
+  def convertEquivalenceToAToBTypeConstraint[A, B](equivalenceOfB: Equivalence[B])(implicit ev: A <:< B): TripleEqualsConstraint[A, B]
+
   /**
    * Provides an <code>TripleEqualsConstraint[A, B]</code> class for any two types <code>A</code> and <code>B</code>, enforcing the type constraint that <code>B</code> must be a subtype of <code>A</code>, given an implicit <code>Equality[A]</code>.
    *
@@ -246,6 +248,8 @@ trait TripleEqualsConstraints {
    *     the passed <code>Equality[A]</code>.
    */
   def lowPriorityConversionCheckedTripleEqualsConstraint[A, B](implicit equivalenceOfB: Equivalence[B], cnv: A => B): TripleEqualsConstraint[A, B]
+
+  def convertEquivalenceToAToBConversionConstraint[A, B](equivalenceOfB: Equivalence[B])(implicit ev: A => B): TripleEqualsConstraint[A, B]
 
   /**
    * Provides an <code>TripleEqualsConstraint[A, B]</code> class for any two types <code>A</code> and <code>B</code>, enforcing the type constraint that <code>B</code> is implicitly convertible to <code>A</code>, given an implicit <code>Equality[A]</code>.
