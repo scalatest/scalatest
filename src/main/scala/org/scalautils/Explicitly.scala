@@ -26,10 +26,15 @@ trait Explicitly {
 
   class DecidedWord {
     def by[A](equality: Equality[A]): DecidedByEquality[A] = new DecidedByEquality[A](equality)
-    def by[A](equivalence: Equivalence[A]): DecidedByEquivalence[A] = new DecidedByEquivalence[A](equivalence)
   }
 
   val decided = new DecidedWord
+
+  class DeterminedWord {
+    def by[A](equivalence: Equivalence[A]): DeterminedByEquivalence[A] = new DeterminedByEquivalence[A](equivalence)
+  }
+
+  val determined = new DeterminedWord
 
   class TheAfterWord {
     def being[N](normality: Normality[N])(implicit equality: Equality[N]): NormalizingEquality[N] =

@@ -85,7 +85,7 @@ package org.scalautils
  *
  * @tparam A the type whose equality is being customized
  */
-class DecidedByEquivalence[T](equivalence: Equivalence[T]) extends Equivalence[T] {
+class DeterminedByEquivalence[T](equivalence: Equivalence[T]) extends Equivalence[T] {
 
   /**
    * Indicates whether the objects passed as <code>a</code> and <code>b</code> are equal.

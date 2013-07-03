@@ -47,8 +47,8 @@ class TypeCheckedLegacyTripleEqualsExplicitlySpec extends Spec with Matchers wit
   }
   object `The decided by syntax` {
     def `should produce an Equivalence if used with an Equivalence (that is not an Equality)` {
-      assert((1 === 2)(decided by intInequivalence))
-      assert((1 !== 1)(decided by intInequivalence))
+      assert((1 === 2)(determined by intInequivalence))
+      assert((1 !== 1)(determined by intInequivalence))
     }
   }
 }
