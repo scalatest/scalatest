@@ -50,6 +50,14 @@ class ConversionCheckedTripleEqualsExplicitlySpec extends Spec with Matchers wit
       assert((1 === 2)(determined by intInequivalence))
       assert((1 !== 1)(determined by intInequivalence))
     }
+    def `should produce an Equivalence from "after being" syntax` {
+      assert(("Hi" !== "hI"))
+      assert(("Hi" === "hI")(after being downCased))
+    }
+    def `should produce an Equivalence from "after being X and Y" syntax` {
+      assert((" Hi" !== "hI "))
+      assert((" Hi" === "hI ")(after being downCased and chopped))
+    }
   }
 }
 
