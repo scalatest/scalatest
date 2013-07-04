@@ -41,25 +41,12 @@ trait NormalizingEquivalence[A] extends Equivalence[A] { thisNormEq =>
 
   def normalized(a: A): A
 
-/*
-  final def and(other: Normality[A]): NormalizingEquivalence[A] =
-    new ComposedNormalizingEquivalence[A](afterNormalizationEquivalence, this.toNormalization and other)
-*/
-
-/*
   final def and(other: Normalization[A]): NormalizingEquivalence[A] =
     new ComposedNormalizingEquivalence[A](afterNormalizationEquivalence, this.toNormalization and other)
-*/
 
-/*
-  // I think I should have separate toNormalizer and toNormalization methods
-  final def toNormalization: Normality[A] =
-    new Normality[A] {
-      // Note in Scaladoc what order, and recommend people don't do side effects anyway.
+  final def toNormalization: Normalization[A] =
+    new Normalization[A] {
       def normalized(a: A): A = thisNormEq.normalized(a)
-      def canNormalize(b: Any): Boolean = thisNormEq.canNormalize(b)
-      def normalizedOrSame(b: Any): Any = thisNormEq.normalizedOrSame(b)
     }
-*/
 }
 

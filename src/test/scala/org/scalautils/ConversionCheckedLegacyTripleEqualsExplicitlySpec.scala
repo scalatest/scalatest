@@ -54,6 +54,10 @@ class ConversionCheckedLegacyTripleEqualsExplicitlySpec extends Spec with Matche
       assert(("Hi" !== "hI"))
       assert(("Hi" === "hI")(after being downCased))
     }
+    def `should produce an Equivalence from "after being X and Y" syntax` {
+      assert((" Hi" !== "hI "))
+      assert((" Hi" === "hI ")(after being downCased and chopped))
+    }
   }
 }
 
