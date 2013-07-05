@@ -35,30 +35,7 @@ private[scalatest] class DiscoverySuite(path: String, accessibleSuites: Set[Stri
     
   override val nestedSuites: collection.immutable.IndexedSeq[Suite] =
     for (suiteClassName <- DiscoverySuite.nestedSuiteNames(path, accessibleSuites, wildcard))
-      yield {
-        try {
-          val clazz = runpathClassLoader.loadClass(suiteClassName)
-          val wrapWithAnnotation = clazz.getAnnotation(classOf[WrapWith])
-          if (wrapWithAnnotation == null)
-            clazz.newInstance.asInstanceOf[Suite]
-          else {
-            val suiteClazz = wrapWithAnnotation.value
-            val constructorList = suiteClazz.getDeclaredConstructors()
-            val constructor = constructorList.find { c => 
-              val types = c.getParameterTypes
-              types.length == 1 && types(0) == classOf[java.lang.Class[_]]
-            }
-            constructor.get.newInstance(clazz).asInstanceOf[Suite]
-          }
-        }
-        catch {
-          case e: Exception => { // TODO: Maybe include the e.getClass.getName and the message for e in the message cannotLoadDiscoveredSuite, because Jess had the problem
-                                 // That gradle cut off the stack trace so she couldn't see the cause.
-            val msg = Resources("cannotLoadDiscoveredSuite", suiteClassName)
-            throw new RuntimeException(msg, e)
-          }
-        }
-      }
+      yield DiscoverySuite.getSuiteInstance(suiteClassName, runpathClassLoader)
      // TODO: probably override run to just call runNestedSuites
   override protected def runTests(testName: Option[String], args: Args): Status = {
     if (testName == null)
@@ -67,6 +44,7 @@ private[scalatest] class DiscoverySuite(path: String, accessibleSuites: Set[Stri
       throw new NullPointerException("args was null")
     SucceededStatus
   }
+
 }
 
 private[scalatest] object DiscoverySuite {
@@ -82,6 +60,31 @@ private[scalatest] object DiscoverySuite {
       Vector.empty ++ wildcardList(path, accessibleSuites)
     else
       Vector.empty ++ narrowList(path, accessibleSuites)
+
+  private[scalatest] def getSuiteInstance(suiteClassName: String, loader: ClassLoader): Suite = {
+    try {
+      val clazz = loader.loadClass(suiteClassName)
+      val wrapWithAnnotation = clazz.getAnnotation(classOf[WrapWith])
+      if (wrapWithAnnotation == null)
+        clazz.newInstance.asInstanceOf[Suite]
+      else {
+        val suiteClazz = wrapWithAnnotation.value
+        val constructorList = suiteClazz.getDeclaredConstructors()
+        val constructor = constructorList.find { c => 
+          val types = c.getParameterTypes
+          types.length == 1 && types(0) == classOf[java.lang.Class[_]]
+        }
+        constructor.get.newInstance(clazz).asInstanceOf[Suite]
+      }
+    }
+    catch {
+      case e: Exception => { // TODO: Maybe include the e.getClass.getName and the message for e in the message cannotLoadDiscoveredSuite, because Jess had the problem
+                             // That gradle cut off the stack trace so she couldn't see the cause.
+        val msg = Resources("cannotLoadDiscoveredSuite", suiteClassName)
+        throw new RuntimeException(msg, e)
+      }
+    }
+  }
 }
 
 

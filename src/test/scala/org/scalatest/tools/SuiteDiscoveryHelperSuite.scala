@@ -19,6 +19,7 @@ import org.scalatest._
 import scala.collection.mutable
 import java.io.File
 import java.util.regex.Pattern
+import SuiteDiscoveryHelper.discoverTests
 
 class SuiteDiscoveryHelperFriend(sdt: SuiteDiscoveryHelper.type) {
 
@@ -78,6 +79,152 @@ class SuiteDiscoveryHelperFriend(sdt: SuiteDiscoveryHelper.type) {
 class SuiteDiscoveryHelperSuite extends Suite {
 
   val sdtf = new SuiteDiscoveryHelperFriend(SuiteDiscoveryHelper)
+  val loader = getClass.getClassLoader
+  val accessibleSuites =
+    Set(
+      "org.scalatest.tools.RunnerSpec",
+      "org.scalatest.tools.SuiteDiscoveryHelperSuite",
+      "org.scalatest.tools.SuiteDiscoveryHelperSuite2")
+
+  //
+  // Given this Suite's name and one of its test names,
+  // discoverTests should return a SuiteParam object for this
+  // Suite and the specified test.
+  //
+  def testDiscoverTests1() {
+    val testSpecs = List(TestSpec("testDiscoverTests1", false))
+
+    val suiteParams = discoverTests(testSpecs, accessibleSuites, loader)
+
+    assert(suiteParams.length === 1)
+
+    val suiteParam = suiteParams(0)
+
+    assert(suiteParam.className === "org.scalatest.tools.SuiteDiscoveryHelperSuite")
+    assert(suiteParam.testNames.length === 1)
+    assert(suiteParam.testNames(0) === "testDiscoverTests1")
+    assert(suiteParam.wildcardTestNames.length === 0)
+    assert(suiteParam.nestedSuites.length === 0)
+  }
+
+  //
+  // Given two test names, where only one is found, discoverTests should
+  // return a SuiteParam with just the one test name.
+  //
+  def testDiscoverTests2() {
+    val testSpecs =
+      List(
+        TestSpec("testDiscoverTests2", false),
+        TestSpec("testDiscoverTestsX", false)
+      )
+
+    val suiteParams =
+      discoverTests(testSpecs, accessibleSuites, loader)
+
+    assert(suiteParams.length === 1)
+
+    val suiteParam = suiteParams(0)
+
+    assert(suiteParam.className === "org.scalatest.tools.SuiteDiscoveryHelperSuite")
+    assert(suiteParam.testNames.length === 1)
+    assert(suiteParam.testNames(0) === "testDiscoverTests2")
+    assert(suiteParam.wildcardTestNames.length === 0)
+    assert(suiteParam.nestedSuites.length === 0)
+  }
+
+  //
+  // Given two test names, where both are found, discoverTests should
+  // return a SuiteParam with both test names.
+  //
+  def testDiscoverTests3() {
+    val testSpecs =
+      List(
+        TestSpec("testDiscoverTests2", false),
+        TestSpec("testDiscoverTests1", false)
+      )
+
+    val suiteParams =
+      discoverTests(testSpecs, accessibleSuites, loader)
+
+    assert(suiteParams.length === 1)
+
+    val suiteParam = suiteParams(0)
+
+    assert(suiteParam.className === "org.scalatest.tools.SuiteDiscoveryHelperSuite")
+    assert(suiteParam.testNames.length === 2)
+    assert(suiteParam.testNames(0) === "testDiscoverTests1")
+    assert(suiteParam.testNames(1) === "testDiscoverTests2")
+    assert(suiteParam.wildcardTestNames.length === 0)
+    assert(suiteParam.nestedSuites.length === 0)
+  }
+
+  //
+  // Two test names, where both are in one Suite and one is in
+  // two Suites.
+  //
+  def testDiscoverTests4() {
+    val testSpecs =
+      List(
+        TestSpec("testDiscoverTests4", false),
+        TestSpec("testDiscoverTests1", false)
+      )
+
+    val suiteParams =
+      discoverTests(testSpecs, accessibleSuites, loader)
+
+    assert(suiteParams.length === 2)
+
+    val suiteParam0 = suiteParams(0)
+
+    assert(suiteParam0.className === "org.scalatest.tools.SuiteDiscoveryHelperSuite")
+    assert(suiteParam0.testNames.length === 2)
+    assert(suiteParam0.testNames(0) === "testDiscoverTests1")
+    assert(suiteParam0.testNames(1) === "testDiscoverTests4")
+    assert(suiteParam0.wildcardTestNames.length === 0)
+    assert(suiteParam0.nestedSuites.length === 0)
+
+    val suiteParam1 = suiteParams(1)
+
+    assert(suiteParam1.className === "org.scalatest.tools.SuiteDiscoveryHelperSuite2")
+    assert(suiteParam1.testNames.length === 1)
+    assert(suiteParam1.testNames(0) === "testDiscoverTests4")
+    assert(suiteParam1.wildcardTestNames.length === 0)
+    assert(suiteParam1.nestedSuites.length === 0)
+  }
+
+  //
+  // Discover tests using a substring.  This should discover tests in
+  // two Suites.
+  //
+  def testDiscoverTestsA1() {
+    val testSpecs =
+      List(
+        TestSpec("testDiscoverTestsA", true)
+      )
+
+    val suiteParams =
+      discoverTests(testSpecs, accessibleSuites, loader)
+
+    assert(suiteParams.length === 2)
+
+    val suiteParam0 = suiteParams(0)
+
+    assert(suiteParam0.className ===
+           "org.scalatest.tools.SuiteDiscoveryHelperSuite")
+    assert(suiteParam0.testNames.length === 0)
+    assert(suiteParam0.wildcardTestNames.length === 1)
+    assert(suiteParam0.wildcardTestNames(0) === "testDiscoverTestsA")
+    assert(suiteParam0.nestedSuites.length === 0)
+
+    val suiteParam1 = suiteParams(1)
+
+    assert(suiteParam1.className ===
+           "org.scalatest.tools.SuiteDiscoveryHelperSuite2")
+    assert(suiteParam1.testNames.length === 0)
+    assert(suiteParam1.wildcardTestNames.length === 1)
+    assert(suiteParam1.wildcardTestNames(0) === "testDiscoverTestsA")
+    assert(suiteParam1.nestedSuites.length === 0)
+  }
 
   def testTransformToClassName() {
     assert(sdtf.transformToClassName("bob.class", '/') === Some("bob"))
@@ -220,5 +367,21 @@ class SuiteDiscoveryHelperSuite extends Suite {
     assert(!sdtf.isRunnable(classOf[AnnotateWrongConstructor]))
     assert(sdtf.isRunnable(classOf[SomeApiClass]))
     assert(sdtf.isRunnable(classOf[SomeApiSubClass]))
+  }
+}
+
+//
+// This class is just used by tests in SuiteDiscoveryHelperSuite
+// for testing Suite discovery by test name.
+//
+class SuiteDiscoveryHelperSuite2 extends Suite {
+
+  def testDiscoverTests4() {
+  }
+
+  def testDiscoverTestsA2() {
+  }
+
+  def testDiscoverTestsA3() {
   }
 }

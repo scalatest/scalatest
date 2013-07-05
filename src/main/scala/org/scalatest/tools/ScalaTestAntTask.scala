@@ -157,6 +157,17 @@ import org.apache.tools.ant.taskdefs.Java
  * </pre>
  *
  * <p>
+ * To specify tests to run, use nested <code>&lt;test&gt;</code> elements with
+ * either a 'name' or 'substring' attribute:
+ * </p>
+ *
+ * <pre>
+ *   &lt;scalatest&gt;
+ *     &lt;test name="hello test"/&gt;
+ *     &lt;test substring="hello"/&gt;
+ * </pre>
+ *
+ * <p>
  * To specify suites using members-only or wildcard package names, use
  * either the <code>membersonly</code> or <code>wildcard</code> attributes, or nested
  * <code>&lt;membersonly&gt;</code> or <code>&lt;wildcard&gt;</code> elements:
@@ -255,6 +266,7 @@ class ScalaTestAntTask extends Task {
   private val runpath      = new ListBuffer[String]
   private val jvmArgs      = new ListBuffer[String]
   private val suites       = new ListBuffer[SuiteElement]
+  private val tests        = new ListBuffer[TestElement]
   private val membersonlys = new ListBuffer[String]
   private val wildcards    = new ListBuffer[String]
   private val testNGSuites = new ListBuffer[String]
@@ -267,9 +279,20 @@ class ScalaTestAntTask extends Task {
    * Executes the task.
    */
   override def execute {
+    val argsList = buildArgsList
+
+    val success = if (fork) javaTaskRunner(argsList)
+                  else      Runner.run(argsList.toArray)
+
+    if (!success && haltonfailure)
+      throw new BuildException("ScalaTest run failed.")
+  }
+
+  def buildArgsList: List[String] = {
     val args = new ListBuffer[String]
 
     addSuiteArgs(args)
+    addTestArgs(args)
     addReporterArgs(args)
     addPropertyArgs(args)
     addIncludesArgs(args)
@@ -281,13 +304,7 @@ class ScalaTestAntTask extends Task {
     addChosenStyles(args)
     addSpanScaleFactorArg(args)
 
-    val argsArray = args.toArray
-
-    val success = if (fork) javaTaskRunner(args.toList)
-                  else      Runner.run(argsArray)
-
-    if (!success && haltonfailure)
-      throw new BuildException("ScalaTest run failed.")
+    args.toList
   }
 
   private def javaTaskRunner(args: List[String]): Boolean = {
@@ -447,6 +464,26 @@ class ScalaTestAntTask extends Task {
           "missing package attribute for <wildcard> element")
       args += "-w"
       args += packageName
+    }
+  }
+
+  //
+  // Adds '-t testname' or '-z substring' argument to args list for
+  // each test specified for task.
+  //
+  private def addTestArgs(args: ListBuffer[String]) {
+    for (test <- tests) {
+      if (test.getName != null) {
+        args += "-t"
+        args += test.getName
+      }
+      else if (test.getSubstring != null) {
+        args += "-z"
+        args += test.getSubstring
+      }
+      else
+        throw new BuildException(
+          "missing name or substring attribute for <test> element")
     }
   }
 
@@ -787,6 +824,13 @@ class ScalaTestAntTask extends Task {
   }
 
   /**
+   * Sets value from nested element <code>test</code>.
+   */
+  def addConfiguredTest(test: TestElement) {
+    tests += test
+  }
+
+  /**
    * Sets value from nested element <code>membersonly</code>.
    */
   def addConfiguredMembersOnly(membersonly: PackageElement) {
@@ -923,14 +967,20 @@ class ScalaTestAntTask extends Task {
     def getNestedSuites = nestedSuitesBuffer.toArray
   }
   
-  private class TestElement {
+  private[tools] class TestElement {
     private var name: String = null
+    private var substring: String = null
     
     def setName(name: String) {
       this.name = name
     }
     
+    def setSubstring(substring: String) {
+      this.substring = substring
+    }
+    
     def getName = name
+    def getSubstring = substring
   }
   
   private class NestedSuiteElement {
