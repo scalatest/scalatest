@@ -574,4 +574,44 @@ final class BeWord {
           FailureMessages("wasDefinedAt", left, resultOfDefinedAt.right)
         )
     }
+  
+  /**
+   * This method enables the following syntax, where <code>open</code> refers to a <code>BePropertyMatcher</code>:
+   *
+   * <pre class="stHighlight">
+   * result should be (a [Book])
+   *               ^
+   * </pre>
+   */
+  def apply(aType: ResultOfATypeInvocation[_]): Matcher[Any] = 
+    new Matcher[Any] {
+      def apply(left: Any): MatchResult = {
+        val clazz = aType.clazz
+        MatchResult(
+          clazz.isAssignableFrom(left.getClass),
+          FailureMessages("wasNotAnInstanceOf", left, UnquotedString(clazz.getName)), 
+          FailureMessages("wasAnInstanceOf", left, UnquotedString(clazz.getName))
+        )
+      }
+    }
+  
+  /**
+   * This method enables the following syntax, where <code>open</code> refers to a <code>BePropertyMatcher</code>:
+   *
+   * <pre class="stHighlight">
+   * result should be (an [Book])
+   *               ^
+   * </pre>
+   */
+  def apply(anType: ResultOfAnTypeInvocation[_]): Matcher[Any] = 
+    new Matcher[Any] {
+      def apply(left: Any): MatchResult = {
+        val clazz = anType.clazz
+        MatchResult(
+          clazz.isAssignableFrom(left.getClass),
+          FailureMessages("wasNotAnInstanceOf", left, UnquotedString(clazz.getName)), 
+          FailureMessages("wasAnInstanceOf", left, UnquotedString(clazz.getName))
+        )
+      }
+    }
 }

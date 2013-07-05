@@ -24,7 +24,7 @@ import org.scalatest.Assertions.newAssertionFailedException
  *
  * @author Bill Venners
  */
-final class ResultOfAnTypeInvocation[T](clazz: Class[T]) {
+final class ResultOfAnTypeInvocation[T](val clazz: Class[T]) {
   
   /**
    * This method enables the following syntax: 

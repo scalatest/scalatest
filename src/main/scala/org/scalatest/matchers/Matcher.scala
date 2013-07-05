@@ -62,6 +62,8 @@ import org.scalatest.words.ResultOfKeyWordApplication
 import org.scalatest.words.ResultOfValueWordApplication
 import org.scalatest.words.ResultOfAtMostOneOfApplication
 import org.scalatest.words.SortedWord
+import org.scalatest.words.ResultOfATypeInvocation
+import org.scalatest.words.ResultOfAnTypeInvocation
 
 /**
  * Trait extended by objects that can match a value of the specified type. The value to match is
@@ -1326,6 +1328,28 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
+     * resutl should (not be (2) and not be a [Book])
+     *                                   ^
+     * </pre>
+     */
+    def be(aType: ResultOfATypeInvocation[_]): Matcher[T] =
+      outerInstance.and(MatcherWords.not.apply(MatcherWords.be(aType)))
+      
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * resutl should (not be (2) and not be an [Book])
+     *                                   ^
+     * </pre>
+     */
+    def be(anType: ResultOfAnTypeInvocation[_]): Matcher[T] =
+      outerInstance.and(MatcherWords.not.apply(MatcherWords.be(anType)))
+    
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
      * obj should (not be theSameInstanceAs (otherString) and not be theSameInstanceAs (otherString))
      *                                                            ^
      * </pre>
@@ -2340,6 +2364,26 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def be[U](resultOfAnWordApplication: ResultOfAnWordToAnMatcherApplication[U]): Matcher[T with U] = outerInstance.or(MatcherWords.not.be(resultOfAnWordApplication))
+    
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * resutl should (not be (2) or not be a [Book])
+     *                                  ^
+     * </pre>
+     */
+    def be(aType: ResultOfATypeInvocation[_]): Matcher[T] = outerInstance.or(MatcherWords.not.apply(MatcherWords.be(aType)))
+    
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * resutl should (not be (2) or not be an [Book])
+     *                                  ^
+     * </pre>
+     */
+    def be(anType: ResultOfAnTypeInvocation[_]): Matcher[T] = outerInstance.or(MatcherWords.not.apply(MatcherWords.be(anType)))
     
     /**
      * This method enables the following syntax:

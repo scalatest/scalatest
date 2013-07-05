@@ -1620,7 +1620,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         )
       }
     }
-     */
+    */
+     
 
     /**
      * This method enables the following syntax:
@@ -1716,6 +1717,27 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
           else
             FailureMessages("wasDefinedAt", left, right)
         )
+    }
+    
+    /**
+     * This method enables the following syntax (positiveNumber is a <code>AMatcher</code>):
+     *
+     * <pre class="stHighlight">
+     * result shouldNot be a [Book]
+     *                     ^
+     * </pre>
+     */
+    def a(aType: ResultOfATypeInvocation[_]) {
+      val clazz = aType.clazz
+      if (clazz.isAssignableFrom(left.getClass) != shouldBeTrue) {
+        throw newTestFailedException(
+          FailureMessages(
+            if (shouldBeTrue) "wasNotAnInstanceOf" else "wasAnInstanceOf", 
+            left, 
+            UnquotedString(clazz.getName)
+          )
+        )
+      }
     }
   }
 
@@ -5561,6 +5583,38 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def shouldBe(right: SortedWord)(implicit sortable: Sortable[T]) {
       if (!sortable.isSorted(left))
         throw newTestFailedException(FailureMessages("wasNotSorted", left))
+    }
+    
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * aDouble shouldBe a [Book]
+     *         ^
+     * </pre>
+     */
+    def shouldBe(aType: ResultOfATypeInvocation[_]) {
+      val clazz = aType.clazz
+      if (!clazz.isAssignableFrom(left.getClass)) {
+        val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, clazz.getName)
+        throw newTestFailedException(FailureMessages("wasNotAnInstanceOf", left, UnquotedString(clazz.getName)))
+      }
+    }
+    
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * aDouble shouldBe an [Book]
+     *         ^
+     * </pre>
+     */
+    def shouldBe(anType: ResultOfAnTypeInvocation[_]) {
+      val clazz = anType.clazz
+      if (!clazz.isAssignableFrom(left.getClass)) {
+        val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, clazz.getName)
+        throw newTestFailedException(FailureMessages("wasNotAnInstanceOf", left, UnquotedString(clazz.getName)))
+      }
     }
 
     /**
