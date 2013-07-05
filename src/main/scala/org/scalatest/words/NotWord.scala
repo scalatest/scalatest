@@ -637,6 +637,46 @@ final class NotWord {
      */
   def be[T <: Any](sortedWord: SortedWord): MatcherFactory1[Any, Sortable] =
     apply(MatcherWords.be(sortedWord))
+  
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * result should (not be a [Book] and not be sorted)
+   *                    ^
+   * </pre>
+   */
+  def be(aType: ResultOfATypeInvocation[_]) =
+    new Matcher[Any] {
+      def apply(left: Any): MatchResult = {
+        val clazz = aType.clazz
+        MatchResult(
+          !clazz.isAssignableFrom(left.getClass),
+          FailureMessages("wasAnInstanceOf", left, UnquotedString(clazz.getName)),
+          FailureMessages("wasNotAnInstanceOf", left, UnquotedString(clazz.getName))
+        )
+      }
+    }
+  
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * result should (not be an [Book] and not be sorted)
+   *                    ^
+   * </pre>
+   */
+  def be(anType: ResultOfAnTypeInvocation[_]) =
+    new Matcher[Any] {
+      def apply(left: Any): MatchResult = {
+        val clazz = anType.clazz
+        MatchResult(
+          !clazz.isAssignableFrom(left.getClass),
+          FailureMessages("wasAnInstanceOf", left, UnquotedString(clazz.getName)),
+          FailureMessages("wasNotAnInstanceOf", left, UnquotedString(clazz.getName))
+        )
+      }
+    }
 
   /**
    * This method enables the following syntax: 

@@ -263,6 +263,48 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
       )
     }
   }
+  
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * result should not be a [Book]
+   *                   ^
+   * </pre>
+   */
+  def be(aType: ResultOfATypeInvocation[_]) {
+    val clazz = aType.clazz
+    if (clazz.isAssignableFrom(left.getClass) != shouldBeTrue) {
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "wasNotAnInstanceOf" else "wasAnInstanceOf",
+          left,
+          UnquotedString(clazz.getName)
+        )
+      )
+    }
+  }
+  
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * result should not be a [Book]
+   *                   ^
+   * </pre>
+   */
+  def be(anType: ResultOfAnTypeInvocation[_]) {
+    val clazz = anType.clazz
+    if (clazz.isAssignableFrom(left.getClass) != shouldBeTrue) {
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "wasNotAnInstanceOf" else "wasAnInstanceOf",
+          left,
+          UnquotedString(clazz.getName)
+        )
+      )
+    }
+  }
 
   /**
    * This method enables the following syntax: 
