@@ -576,16 +576,21 @@ final class NotWord {
    *                      ^
    * </pre>
    */
-  def be[A, U <: PartialFunction[A, _]](resultOfDefinedAt: ResultOfDefinedAt[A]): Matcher[U] = {
-    new Matcher[U] {
-      def apply(left: U): MatchResult =
-        MatchResult(
-          !(left.isDefinedAt(resultOfDefinedAt.right)),
-          FailureMessages("wasDefinedAt", left, resultOfDefinedAt.right),
-          FailureMessages("wasNotDefinedAt", left, resultOfDefinedAt.right)
-        )
+  def be[R, L : Definition](resultOfDefinedAt: ResultOfDefinedAt[R]): MatcherFactory1[Any, Definition] = 
+    new MatcherFactory1[Any, Definition] {
+      def matcher[T <: Any : Definition]: Matcher[T] = 
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+            val definition = implicitly[Definition[T]]
+            val right = resultOfDefinedAt.right
+            MatchResult(
+              !definition.isDefinedAt(left, right),
+              FailureMessages("wasDefinedAt", left, right),
+              FailureMessages("wasNotDefinedAt", left, right)
+            )
+          }
+        }
     }
-  }
 
   /**
    * This method enables <code>be</code> to be used for inequality comparison. Here are some examples:

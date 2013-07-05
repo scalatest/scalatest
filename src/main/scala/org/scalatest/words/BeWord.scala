@@ -24,6 +24,7 @@ import org.scalatest.Assertions.areEqualComparingArraysStructurally
 import org.scalatest.MatchersHelper.matchSymbolToPredicateMethod
 import org.scalatest.enablers.Sequencing
 import org.scalatest.enablers.Sortable
+import org.scalatest.enablers.Definition
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="ShouldMatchers.html"><code>ShouldMatchers</code></a> or <a href="MustMatchers.html"><code>MustMatchers</code></a> for an overview of
@@ -547,14 +548,19 @@ final class BeWord {
    *                     ^
    * </pre>
    */
-  def definedAt[A, U <: PartialFunction[A, _]](right: A): Matcher[U] = 
-    new Matcher[U] {
-      def apply(left: U): MatchResult =
-        MatchResult(
-          left.isDefinedAt(right),
-          FailureMessages("wasNotDefinedAt", left, right),
-          FailureMessages("wasDefinedAt", left, right)
-        )
+  def definedAt[R](right: R): MatcherFactory1[Any, Definition] =
+    new MatcherFactory1[Any, Definition] {
+      def matcher[T <: Any : Definition]: Matcher[T] = 
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+            val definition = implicitly[Definition[T]]
+            MatchResult(
+              definition.isDefinedAt(left, right),
+              FailureMessages("wasNotDefinedAt", left, right),
+              FailureMessages("wasDefinedAt", left, right)
+            )
+          }
+        }
     }
   
   /**
@@ -562,17 +568,23 @@ final class BeWord {
    *
    * <pre class="stHighlight">
    * fraction should (be (definedAt (6)) and be (definedAt (8)))
-   *                  ^
+   *                                         ^
    * </pre>
    */
-  def apply[A, U <: PartialFunction[A, _]](resultOfDefinedAt: ResultOfDefinedAt[A]): Matcher[U] =
-    new Matcher[U] {
-      def apply(left: U): MatchResult =
-        MatchResult(
-          left.isDefinedAt(resultOfDefinedAt.right),
-          FailureMessages("wasNotDefinedAt", left, resultOfDefinedAt.right),
-          FailureMessages("wasDefinedAt", left, resultOfDefinedAt.right)
-        )
+  def apply[R](resultOfDefinedAt: ResultOfDefinedAt[R]): MatcherFactory1[Any, Definition] =
+    new MatcherFactory1[Any, Definition] {
+      def matcher[T <: Any : Definition]: Matcher[T] = 
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+            val definition = implicitly[Definition[T]]
+            val right = resultOfDefinedAt.right
+            MatchResult(
+              definition.isDefinedAt(left, right),
+              FailureMessages("wasNotDefinedAt", left, right),
+              FailureMessages("wasDefinedAt", left, right)
+            )
+          }
+        }
     }
   
   /**

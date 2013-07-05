@@ -335,8 +335,8 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
    *                       ^
    * </pre>
    */
-  def be[U](resultOfDefinedAt: ResultOfDefinedAt[U])(implicit ev: T <:< PartialFunction[U, _]) {
-    if (left.isDefinedAt(resultOfDefinedAt.right) != shouldBeTrue)
+  def be[R](resultOfDefinedAt: ResultOfDefinedAt[R])(implicit definition: Definition[T]) {
+    if (definition.isDefinedAt(left, resultOfDefinedAt.right) != shouldBeTrue)
       throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "wasNotDefinedAt" else "wasDefinedAt", 

@@ -1709,8 +1709,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
-    def definedAt[U](right: U)(implicit ev: T <:< PartialFunction[U, _]) {
-      if (left.isDefinedAt(right) != shouldBeTrue)
+    def definedAt[U](right: U)(implicit definition: Definition[T]) {
+      if (definition.isDefinedAt(left, right) != shouldBeTrue)
         throw newTestFailedException(
           if (shouldBeTrue)
             FailureMessages("wasNotDefinedAt", left, right)
@@ -3018,9 +3018,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
-    def be[U](resultOfDefinedAt: ResultOfDefinedAt[U])(implicit ev: T <:< PartialFunction[U, _]) {
+    def be[U](resultOfDefinedAt: ResultOfDefinedAt[U])(implicit definition: Definition[T]) {
       doCollected(collected, xs, "be", 1) { e => 
-        if (e.isDefinedAt(resultOfDefinedAt.right) != shouldBeTrue)
+        if (definition.isDefinedAt(e, resultOfDefinedAt.right) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
               if (shouldBeTrue) "wasNotDefinedAt" else "wasDefinedAt", 
@@ -4202,9 +4202,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                   ^
      * </pre>
      */
-    def definedAt[U](right: U)(implicit ev: T <:< PartialFunction[U, _]) {
+    def definedAt[U](right: U)(implicit definition: Definition[T]) {
       doCollected(collected, xs, "definedAt", 1) { e =>
-      if (e.isDefinedAt(right) != shouldBeTrue)
+      if (definition.isDefinedAt(e, right) != shouldBeTrue)
         throw newTestFailedException(
           if (shouldBeTrue)
             FailureMessages("wasNotDefinedAt", e, right)

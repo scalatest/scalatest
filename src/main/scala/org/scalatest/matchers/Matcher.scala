@@ -859,11 +859,11 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax, where <code>fraction</code> refers to a <code>PartialFunction</code>:
      *
      * <pre class="stHighlight">
-     * fraction should (be definedAt (6) and be definedAt (8))
-     *                                          ^
+     * fraction should (be (fraction) and be definedAt (8))
+     *                                       ^
      * </pre>
      */
-    def definedAt[A, U <: PartialFunction[A, _]](right: A): Matcher[T with U] = and(MatcherWords.be.definedAt(right))
+    def definedAt[R](right: R): MatcherFactory1[T with Any, Definition] = and(MatcherWords.be.definedAt(right))
   }
 
   /**
@@ -1367,14 +1367,14 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
     def be[U](interval: Interval[U]): Matcher[T with U] = outerInstance.and(MatcherWords.not.be(interval))
     
     /**
-     * This method enables the following syntax, where <code>fraction</code> is a <code>PartialFunction</code>:
+     * This method enables the following syntax, where <code>fraction</code> and <code>fraction2</code> is a <code>PartialFunction</code>:
      *
      * <pre class="stHighlight">
-     * fraction should (not be definedAt (0) and not be definedAt (8))
+     * fraction should (not be (fraction2) and not be definedAt (8))
      *                                               ^
      * </pre>
      */
-    def be[A, U <: PartialFunction[A, _]](resultOfDefinedAt: ResultOfDefinedAt[A]): Matcher[T with U] =
+    def be[R](resultOfDefinedAt: ResultOfDefinedAt[R]): MatcherFactory1[T with Any, Definition] =
       outerInstance.and(MatcherWords.not.be(resultOfDefinedAt))
       
     /**
@@ -1900,11 +1900,11 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax, where <code>fraction</code> refers to a <code>PartialFunction</code>:
      *
      * <pre class="stHighlight">
-     * fraction should (be definedAt (6) or be definedAt (8))
-     *                                         ^
+     * fraction should (be (fraction) or be definedAt (8))
+     *                                      ^
      * </pre>
      */
-    def definedAt[A, U <: PartialFunction[A, _]](right: A): Matcher[T with U] = or(MatcherWords.be.definedAt(right))
+    def definedAt[R](right: R): MatcherFactory1[T with Any, Definition] = or(MatcherWords.be.definedAt(right))
   }
 
   /**
@@ -2406,14 +2406,14 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
     def be[U](interval: Interval[U]): Matcher[T with U] = outerInstance.or(MatcherWords.not.be(interval))
     
     /**
-     * This method enables the following syntax, where <code>fraction</code> is a <code>PartialFunction</code>:
+     * This method enables the following syntax, where <code>fraction</code> and <code>fraction2</code> is a <code>PartialFunction</code>:
      *
      * <pre class="stHighlight">
-     * fraction should (not be definedAt (0) or not be definedAt (8))
+     * fraction should (not be (fraction2) or not be definedAt (8))
      *                                              ^
      * </pre>
      */
-    def be[A, U <: PartialFunction[A, _]](resultOfDefinedAt: ResultOfDefinedAt[A]): Matcher[T with U] =
+    def be[R](resultOfDefinedAt: ResultOfDefinedAt[R]): MatcherFactory1[T with Any, Definition] =
       outerInstance.or(MatcherWords.not.be(resultOfDefinedAt))
       
     /**
