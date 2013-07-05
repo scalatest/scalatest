@@ -52,12 +52,20 @@ class ConversionCheckedLegacyTripleEqualsExplicitlySpec extends Spec with Matche
     }
     def `should produce an Equivalence from "after being" syntax` {
       assert(("Hi" !== "hI"))
-      assert(("Hi" === "hI")(after being downCased))
+      assert { ("Hi" === "hI") (after being downCased) }
     }
     def `should produce an Equivalence from "after being X and Y" syntax` {
       assert((" Hi" !== "hI "))
-      assert((" Hi" === "hI ")(after being downCased and chopped))
+      assert { (" Hi" === "hI ") (after being downCased and chopped) }
     }
+/*
+    def `should produce an Equivalence from "determined by <equivalence> afterBeing" syntax` {
+      implicit val stringIneq = stringInequivalence
+      assert(" Hi" === "hI ")
+      assert { (" Hi" !== "hI ") (determined by defaultEquality[String]) }
+      // assert { (" Hi" === "hI ") (after being downCased and chopped) }
+    }
+*/
   }
 }
 
