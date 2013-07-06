@@ -141,7 +141,7 @@ object ScalatestBuild extends Build {
      "com.google.inject" % "guice" % "3.0", // TODO optional
      "junit" % "junit" % "4.10", // TODO optional
      "org.seleniumhq.selenium" % "selenium-java" % "2.25.0", // TODO optional 
-     "com.typesafe.akka" % "akka-actor" % "2.0.2", // TODO optional
+     "com.typesafe.akka" %% "akka-actor" % "2.1.4", // TODO optional
      "org.apache.ant" % "ant" % "1.7.1", // TODO optional
      "net.sourceforge.cobertura" % "cobertura" % "1.9.1" % "test",
      "commons-io" % "commons-io" % "1.3.2" % "test", 
