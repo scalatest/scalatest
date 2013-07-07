@@ -126,7 +126,7 @@ object Containing {
         case cce: ClassCastException => false
     }
   
-  private def checkOneOf[T](left: GenTraversableOnce[T], right: GenTraversable[Any], equality: Equality[T]): Set[Any] = {
+  private[scalatest] def checkOneOf[T](left: GenTraversableOnce[T], right: GenTraversable[Any], equality: Equality[T]): Set[Any] = {
     // aggregate version is more verbose, but it allows parallel execution.
     right.aggregate(Set.empty[Any])( 
       { case (fs, r) => 
@@ -150,7 +150,7 @@ object Containing {
     )
   }
   
-  private def checkNoneOf[T](left: GenTraversableOnce[T], right: GenTraversable[Any], equality: Equality[T]): Option[Any] = {
+  private[scalatest] def checkNoneOf[T](left: GenTraversableOnce[T], right: GenTraversable[Any], equality: Equality[T]): Option[Any] = {
     right.aggregate(None)( 
       { case (f, r) => 
           if (left.exists(t => equality.areEqual(t, r))) 
@@ -253,8 +253,7 @@ object Containing {
   // Because no type params exist in the actual type, I can't get Scala to infer them correctly, so 
   // the best we can do is use default Equality. I'm not sure if I should define this as the correct behavior,
   // or deprecate it and ask folks to write implicits for such types. Will ask some users.
-  // Also, need to make sure that despite this being here, I can define a different specific one that *does*
-  // use an Equality, such as for ConfigMap, because that needs to be possible.
+  @deprecated("Please define an implicit for this type of Map that produces a Containing")
   implicit def containingNatureOfGenMapNoParams[M <: scala.collection.GenMap[_, _]]: Containing[M] = 
     new Containing[M] {
       def contains(map: M, ele: Any): Boolean = {

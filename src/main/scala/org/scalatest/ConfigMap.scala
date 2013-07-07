@@ -18,6 +18,8 @@ package org.scalatest
 import exceptions.TestCanceledException
 import reflect.ClassManifest
 import collection.immutable.MapLike
+import org.scalautils.Equality
+import enablers.Containing
 
 // TODO: Oops. Need to pass ConfigMap not Map[String, Any] in TestStarting.
 /**
@@ -197,4 +199,20 @@ object ConfigMap {
    * Constructs an empty <code>ConfigMap</code>.
    */
   def empty: ConfigMap = new ConfigMap(Map.empty)
+
+  implicit def containingNatureOfConfigMap[CM <: ConfigMap](implicit equality: Equality[(String, Any)]): Containing[CM] =
+    new Containing[CM] {
+      def contains(map: CM, ele: Any): Boolean = {
+        map.exists((e: (String, Any)) => equality.areEqual(e, ele))
+      }
+      def containsOneOf(map: CM, elements: scala.collection.Seq[Any]): Boolean = {
+        val foundSet = Containing.checkOneOf[(String, Any)](map, elements, equality)
+        foundSet.size == 1
+      }
+      def containsNoneOf(map: CM, elements: scala.collection.Seq[Any]): Boolean = {
+        val found = Containing.checkNoneOf[(String, Any)](map, elements, equality)
+        !found.isDefined
+      }
+    }
 }
+

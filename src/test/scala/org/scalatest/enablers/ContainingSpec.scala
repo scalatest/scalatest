@@ -16,12 +16,20 @@
 package org.scalatest.enablers
 
 import org.scalatest._
+import org.scalautils.Equality
 
 class ContainingSpec extends Spec with Matchers {
 
   object `The contain syntax` {
-    def `should work with no-param collection types` {
+    def `should work with no-param collection types and default equality` {
       ConfigMap("hi" -> 1, "ho" -> "two") should contain ("hi" -> 1)
+    }
+    def `should be overridable with something that takes a specific equality` {
+      implicit val inverseEquality = 
+        new Equality[(String, Any)] {
+          def areEqual(a: (String, Any), b: Any): Boolean = a != b
+        }
+      ConfigMap("hi" -> 1) should not contain ("hi" -> 1)
     }
   }
 }
