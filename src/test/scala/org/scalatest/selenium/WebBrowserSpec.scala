@@ -39,7 +39,116 @@ import org.openqa.selenium.ie.InternetExplorerDriver
 import org.openqa.selenium.Cookie
 import org.openqa.selenium.WebElement
 
-class WebBrowserSpec extends JettySpec with ShouldMatchers with SpanSugar with WebBrowser with HtmlUnit {
+
+trait InputFieldBehaviour extends JettySpec with ShouldMatchers with SpanSugar with WebBrowser with HtmlUnit with LineNumbers {
+  def inputField[U, T <: ValueElement[U]](file: String, fn: (String) => T, typeDescription: String, description: String, value1: U, value2: U, lineNumber: Int) = {
+    it("should throw TFE with valid stack depth if specified item not found") {
+      go to (host + file)
+      val caught = intercept[TestFailedException] {
+        fn("unknown")
+      }
+      caught.failedCodeFileName should be (Some("WebBrowserSpec.scala"))
+      caught.failedCodeLineNumber should be (Some(lineNumber))
+    }
+
+    it("should throw TFE with valid stack depth if specified is found but is not a " + description + " field") {
+      go to (host + file)
+      val caught = intercept[TestFailedException] {
+        fn("area1")
+      }
+      caught.failedCodeLineNumber should be (Some(lineNumber))
+      caught.failedCodeFileName should be (Some("WebBrowserSpec.scala"))
+    }
+
+    it("should, when a valid " + description + " field is found, return a " + typeDescription + " instance") {
+      go to (host + file)
+      val secret1 = fn("secret1")
+      secret1.value should be (value1)
+    }
+
+    it("should, when multiple matching " + description + " fields exist, return the first one") {
+      go to (host + file)
+      val secret2 = fn("secret2")
+      secret2.value should be (value2)
+    }
+  }
+
+  def findField[U, T <: ValueElement[U]](file: String, typeDescription: String, description: String, value: U)(implicit m: Manifest[T]) = {
+    it("should return a defined Option[Element] containing an instance of " + typeDescription + " if specified item is found to be a " + description + " field") {
+      go to (host + file)
+      find("secret1") match {
+        case Some(x) if (m.runtimeClass.isAssignableFrom(x.getClass)) => x.asInstanceOf[T].value should be (value)
+        case other => fail("Expected Some(" + typeDescription + "), but got: " + other)
+      }
+    }
+  }
+
+  def iteratorField[U, T <: ValueElement[U]](file: String, typeDescription: String, description: String, value: U)(implicit m: Manifest[T]) = {
+    it("should return a defined Iterator[Element] containing an instance of " + typeDescription + " if specified item is found to be a " + description + " field") {
+      go to (host + file)
+      val secret1 = findAll("secret1")
+      secret1.hasNext should be (true)
+      val v = secret1.next
+      if (m.runtimeClass.isAssignableFrom(v.getClass)) {
+        v.asInstanceOf[T].value should be (value)
+      } else {
+        fail("Expected " + typeDescription + ", but got: " + v)
+      }
+    }
+  }
+
+  def valueField[U, T <: ValueElement[U]](file: String, fn: (String) => T, typeDescription: String, description: String, value1: U, value2: U) = {
+    it("should get and set " + description + " field value correctly.") {
+      go to (host + file)
+      pageTitle should be (typeDescription)
+
+      fn("secret1").value should be ("")                   
+
+      fn("secret1").attribute("value") should be (Some(""))
+      fn("secret1").value = value1
+      fn("secret1").value should be (value1)
+      fn("secret1").attribute("value") should be (Some(value1))
+
+      fn("secret2").value should be ("")
+      fn("secret2").attribute("value") should be (Some(""))
+      fn("secret2").value = value2
+      fn("secret2").value should be (value2)
+      fn("secret2").attribute("value") should be (Some(value2))
+    }
+  }
+
+  def clearField[U <: String, T <: ValueElement[U]](file: String, fn: (String) => T, typeDescription: String, description: String, value1: U) = {
+    it("should clear a " + description + " field.") {
+      go to (host + file)
+      pageTitle should be (typeDescription)
+                                                                
+      fn("secret1").value = value1                     
+      fn("secret1").value should be (value1)
+
+      fn("secret1").clear()
+      fn("secret1").value should be ("")                   
+
+      fn("secret1").value = value1                     
+      fn("secret1").value should be (value1)
+    }
+  }
+
+  private[this] def myLineNumber = {
+    val st = Thread.currentThread.getStackTrace
+
+    st.foreach(s => println("--" + s.toString()))
+
+    if (!st(2).getMethodName.contains("myLineNumber"))
+      st(3).getLineNumber
+    else if (!st(3).getMethodName.contains("myLineNumber"))
+      st(4).getLineNumber
+    else
+      st(5).getLineNumber
+  }
+
+}
+
+class WebBrowserSpec extends JettySpec with ShouldMatchers with SpanSugar with WebBrowser with HtmlUnit with LineNumbers with InputFieldBehaviour {
 
   describe("textField") {
     it("should throw TFE with valid stack depth if specified item not found") {
@@ -99,6 +208,14 @@ class WebBrowserSpec extends JettySpec with ShouldMatchers with SpanSugar with W
     }
   }
 
+  describe("emailField") {
+    it should behave like inputField[String, EmailField]("find-emailfield.html", emailField _, "EmailField", "email", "email1", "email2", thisLineNumber)
+  }
+
+  describe("colorField") {
+    it should behave like inputField[String, ColorField]("find-colorfield.html", colorField _, "ColorField", "color", "#060606", "#070707", thisLineNumber)
+  }
+
   describe("textArea") {
     it("should throw TFE with valid stack depth if specified item not found") {
       go to (host + "find-textarea.html")
@@ -116,7 +233,7 @@ class WebBrowserSpec extends JettySpec with ShouldMatchers with SpanSugar with W
       caught.failedCodeLineNumber should be (Some(thisLineNumber - 2))
       caught.failedCodeFileName should be (Some("WebBrowserSpec.scala"))
     }
-    it("should, when a valid text area is found, return a TestArea instance") {
+    it("should, when a valid text area is found, return a TextArea instance") {
       go to (host + "find-textarea.html")
       val textarea1 = textArea("textarea1")
       textarea1.text should be ("value1")
@@ -426,6 +543,11 @@ class WebBrowserSpec extends JettySpec with ShouldMatchers with SpanSugar with W
           fail("Expected Some(pwdField: PasswordField), but got: " + other)
       }
     }
+
+    it should behave like findField[String, EmailField]("find-emailfield.html", "EmailField", "email", "email1")
+
+    it should behave like findField[String, ColorField]("find-colorfield.html", "ColorField", "color", "#060606")
+
     it("should return a defined Option[Element] containing an instance of RadioButton if specified item is found to be a radio button") {
       go to (host + "find-radio.html")
       find("group2") match {
@@ -511,6 +633,11 @@ class WebBrowserSpec extends JettySpec with ShouldMatchers with SpanSugar with W
           fail("Expected PasswordField, but got: " + other)
       }
     }
+
+    it should behave like iteratorField[String, EmailField]("find-emailfield.html", "EmailField", "email", "email1")
+
+    it should behave like iteratorField[String, ColorField]("find-colorfield.html", "ColorField", "color", "#060606")
+
     it("should return a defined Iterator[Element] containing an instance of RadioButton if specified item is found to be a radio button") {
       go to (host + "find-radio.html")
       val group1 = findAll("group1")
@@ -643,6 +770,10 @@ class WebBrowserSpec extends JettySpec with ShouldMatchers with SpanSugar with W
       pwdField("secret2").attribute("value") should be (Some("value 2"))
     }
 
+    it should behave like valueField[String, EmailField]("emailfield.html", emailField _, "EmailField", "email", "value 1", "value 2")
+
+    it should behave like valueField[String, ColorField]("colorfield.html", colorField _, "ColorField", "color", "#676767", "#0f0f0f")
+
     it("should allow text to be entered in the active element if it is a text field.") {
 
       go to (host + "textfield.html")
@@ -689,7 +820,30 @@ class WebBrowserSpec extends JettySpec with ShouldMatchers with SpanSugar with W
       pwdField("secret1").value should be ("first secret! second secret! third secret!")                   
     }
     
-    it("should throw TestFailedException with correct stack depth when enter is called currently selected element is neither text field, text area or password field.") {
+    it("should allow text to be entered in the active element if it is a email field.") {
+
+      go to (host + "emailfield.html")
+      pageTitle should be ("EmailField")
+                                                                
+      emailField("secret1").value should be ("")                   
+
+      click on "secret1"
+      enter("secret 1A")
+      emailField("secret1").value should be ("secret 1A")                   
+      enter("secret 1B")
+      emailField("secret1").value should be ("secret 1B")                   
+      enter("")
+      emailField("secret1").value should be ("")                   
+
+      pressKeys("first secret!")
+      emailField("secret1").value should be ("first secret!")                   
+      pressKeys(" second secret!")
+      emailField("secret1").value should be ("first secret! second secret!")                   
+      pressKeys(" third secret!")
+      emailField("secret1").value should be ("first secret! second secret! third secret!")                   
+    }
+
+    it("should throw TestFailedException with correct stack depth when enter is called currently selected element is neither text field, text area, password field or email field.") {
       go to (host + "checkbox.html")
       click on ("opt1")
       val e = intercept[TestFailedException] {
@@ -755,6 +909,10 @@ class WebBrowserSpec extends JettySpec with ShouldMatchers with SpanSugar with W
       pwdField("secret1").value should be ("value 1")
     }
     
+
+    it should behave like clearField[String, EmailField]("emailfield.html", emailField _, "EmailField", "email", "value 1")
+    it should behave like clearField[String, ColorField]("colorfield.html", colorField _, "ColorField", "color", "#656565")
+
     it("should allow text to be entered in the active element if it is a text area.") {
       go to (host + "textarea.html")
       pageTitle should be ("Text Area")
@@ -1703,14 +1861,15 @@ class WebBrowserSpec extends JettySpec with ShouldMatchers with SpanSugar with W
     }
   }
   
-  def thisLineNumber = {
+  override def thisLineNumber = {
     val st = Thread.currentThread.getStackTrace
 
     if (!st(2).getMethodName.contains("thisLineNumber"))
       st(2).getLineNumber
-    else
+    else if (!st(3).getMethodName.contains("thisLineNumber"))
       st(3).getLineNumber
+    else
+      st(4).getLineNumber
   }
 }
-
 // class ParallelWebBrowserSpec extends WebBrowserSpec with ParallelTestExecution

@@ -1512,21 +1512,19 @@ trait WebBrowser {
       }
   }
   
-  private def isTextField(webElement: WebElement): Boolean = 
-    webElement.getTagName.toLowerCase == "input" && webElement.getAttribute("type").toLowerCase == "text"
+  private def isInputField(webElement: WebElement, name: String): Boolean = 
+    webElement.getTagName.toLowerCase == "input" && webElement.getAttribute("type").toLowerCase == name
       
-  private def isPasswordField(webElement: WebElement): Boolean = 
-    webElement.getTagName.toLowerCase == "input" && webElement.getAttribute("type").toLowerCase == "password"
-
+  private def isTextField(webElement: WebElement): Boolean = isInputField(webElement, "text")
+  private def isPasswordField(webElement: WebElement): Boolean = isInputField(webElement, "password")
+  private def isCheckBox(webElement: WebElement): Boolean = isInputField(webElement, "checkbox")
+  private def isRadioButton(webElement: WebElement): Boolean = isInputField(webElement, "radio")
+  private def isEmailField(webElement: WebElement): Boolean = isInputField(webElement, "email")
+  private def isColorField(webElement: WebElement): Boolean = isInputField(webElement, "color")
+      
   private def isTextArea(webElement: WebElement): Boolean = 
     webElement.getTagName.toLowerCase == "textarea"
   
-  private def isCheckBox(webElement: WebElement): Boolean = 
-    webElement.getTagName.toLowerCase == "input" && webElement.getAttribute("type").toLowerCase == "checkbox"
-      
-  private def isRadioButton(webElement: WebElement): Boolean = 
-    webElement.getTagName == "input" && webElement.getAttribute("type") == "radio"
-      
   /**
    * This class is part of ScalaTest's Selenium DSL. Please see the documentation for
    * <a href="WebBrowser.html"><code>WebBrowser</code></a> for an overview of the Selenium DSL.
@@ -1679,6 +1677,114 @@ trait WebBrowser {
     def clear() { underlying.clear() }
   }
   
+  trait ValueElement[T] extends Element {
+    def value: T
+    def value_=(value: T)
+    def clear()
+  }
+
+  /**
+   * This class is part of ScalaTest's Selenium DSL. Please see the documentation for
+   * <a href="WebBrowser.html"><code>WebBrowser</code></a> for an overview of the Selenium DSL.
+   *
+   * <p>
+   * This class enables syntax such as the following:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * emailField("q").value should be ("Cheese!")
+   * </pre>
+   *
+   * @param underlying the <code>WebElement</code> representing a email field
+   * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a email field
+   */
+  final class EmailField(val underlying: WebElement) extends Element with ValueElement[String] {
+    
+    if(!isEmailField(underlying))
+      throw new TestFailedException(
+                     sde => Some("Element " + underlying + " is not email field."),
+                     None,
+                     getStackDepthFun("WebBrowser.scala", "this", 1)
+                   )
+    
+    /**
+     * Gets this email field's value.
+     *
+     * <p>
+     * This method invokes <code>getAttribute("value")</code> on the underlying <code>WebElement</code>.
+     * </p>
+     *
+     * @return the email field's value
+     */
+    def value: String = underlying.getAttribute("value")  
+    
+    /**
+     * Sets this email field's value.
+     *
+     * @param value the new value
+     */
+    def value_=(value: String) {
+      underlying.clear()
+      underlying.sendKeys(value)
+    }
+
+    /**
+     * Clears this email field.
+     */
+    def clear() { underlying.clear() }
+  }
+
+  /**
+   * This class is part of ScalaTest's Selenium DSL. Please see the documentation for
+   * <a href="WebBrowser.html"><code>WebBrowser</code></a> for an overview of the Selenium DSL.
+   *
+   * <p>
+   * This class enables syntax such as the following:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * colorField("q").value should be ("Cheese!")
+   * </pre>
+   *
+   * @param underlying the <code>WebElement</code> representing a color field
+   * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a color field
+   */
+  final class ColorField(val underlying: WebElement) extends Element with ValueElement[String] {
+    
+    if(!isColorField(underlying))
+      throw new TestFailedException(
+                     sde => Some("Element " + underlying + " is not color field."),
+                     None,
+                     getStackDepthFun("WebBrowser.scala", "this", 1)
+                   )
+    
+    /**
+     * Gets this color field's value.
+     *
+     * <p>
+     * This method invokes <code>getAttribute("value")</code> on the underlying <code>WebElement</code>.
+     * </p>
+     *
+     * @return the color field's value
+     */
+    def value: String = underlying.getAttribute("value")  
+    
+    /**
+     * Sets this color field's value.
+     *
+     * @param value the new value
+     */
+    def value_=(value: String) {
+      underlying.clear()
+      underlying.sendKeys(value)
+    }
+
+    /**
+     * Clears this color field.
+     */
+    def clear() { underlying.clear() }
+  }
+
   /**
    * This class is part of ScalaTest's Selenium DSL. Please see the documentation for
    * <a href="WebBrowser.html"><code>WebBrowser</code></a> for an overview of the Selenium DSL.
@@ -2646,6 +2752,10 @@ trait WebBrowser {
       new TextArea(element)
     else if (isPasswordField(element))
       new PasswordField(element)
+    else if (isEmailField(element))
+      new EmailField(element)
+    else if (isColorField(element))
+      new ColorField(element)
     else if (isCheckBox(element))
       new Checkbox(element)
     else if (isRadioButton(element))
@@ -2831,6 +2941,52 @@ trait WebBrowser {
    */
   def pwdField(queryString: String)(implicit driver: WebDriver): PasswordField = 
     tryQueries(queryString)(q => new PasswordField(q.webElement))
+  
+  /**
+   * Finds and returns the first <code>EmailField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
+   * if element not found or the found element is not a <code>EmailField</code>.
+   *
+   * @param query the <code>Query</code> with which to search
+   * @param driver the <code>WebDriver</code> with which to drive the browser
+   * @throws TestFailedException if element not found or found element is not a <code>EmailField</code>
+   * @return the <code>EmailField</code> selected by this query
+   */
+  def emailField(query: Query)(implicit driver: WebDriver): EmailField = new EmailField(query.webElement)
+  
+  /**
+   * Finds and returns the first <code>EmailField</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
+   * if element not found or the found element is not a <code>EmailField</code>.
+   *
+   * @param queryString the string with which to search, first by ID then by name
+   * @param driver the <code>WebDriver</code> with which to drive the browser
+   * @throws TestFailedException if element not found or found element is not a <code>EmailField</code>
+   * @return the <code>EmailField</code> selected by this query
+   */
+  def emailField(queryString: String)(implicit driver: WebDriver): EmailField = 
+    tryQueries(queryString)(q => new EmailField(q.webElement))
+  
+  /**
+   * Finds and returns the first <code>ColorField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
+   * if element not found or the found element is not a <code>ColorField</code>.
+   *
+   * @param query the <code>Query</code> with which to search
+   * @param driver the <code>WebDriver</code> with which to drive the browser
+   * @throws TestFailedException if element not found or found element is not a <code>ColorField</code>
+   * @return the <code>ColorField</code> selected by this query
+   */
+  def colorField(query: Query)(implicit driver: WebDriver): ColorField = new ColorField(query.webElement)
+  
+  /**
+   * Finds and returns the first <code>ColorField</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
+   * if element not found or the found element is not a <code>ColorField</code>.
+   *
+   * @param queryString the string with which to search, first by ID then by name
+   * @param driver the <code>WebDriver</code> with which to drive the browser
+   * @throws TestFailedException if element not found or found element is not a <code>ColorField</code>
+   * @return the <code>ColorField</code> selected by this query
+   */
+  def colorField(queryString: String)(implicit driver: WebDriver): ColorField = 
+    tryQueries(queryString)(q => new ColorField(q.webElement))
   
   /**
    * Finds and returns <code>RadioButtonGroup</code> selected by the specified group name, throws <code>TestFailedException</code> if 
@@ -3678,9 +3834,10 @@ trait WebBrowser {
       case tf: TextField => tf.value = value
       case ta: TextArea => ta.value = value
       case pf: PasswordField => pf.value = value
+      case pf: EmailField => pf.value = value
       case _ => 
         throw new TestFailedException(
-                     sde => Some("Currently selected element is neither a text field, text area nor password field"),
+                     sde => Some("Currently selected element is neither a text field, text area, password field or email field"),
                      None,
                      getStackDepthFun("WebBrowser.scala", "switch", 1)
                    )
