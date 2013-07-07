@@ -249,6 +249,27 @@ object Containing {
   implicit def convertEqualityToGenMapContaining[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](equality: Equality[(K, V)]): Containing[MAP[K, V]] = 
     containingNatureOfGenMap(equality)
 
+  // This one works for subclasses of Map that have eaten the type parameters, such as ConfigMap.
+  // Because no type params exist in the actual type, I can't get Scala to infer them correctly, so 
+  // the best we can do is use default Equality. I'm not sure if I should define this as the correct behavior,
+  // or deprecate it and ask folks to write implicits for such types. Will ask some users.
+  // Also, need to make sure that despite this being here, I can define a different specific one that *does*
+  // use an Equality, such as for ConfigMap, because that needs to be possible.
+  implicit def containingNatureOfGenMapNoParams[M <: scala.collection.GenMap[_, _]]: Containing[M] = 
+    new Containing[M] {
+      def contains(map: M, ele: Any): Boolean = {
+        map.exists((e: Any) => Equality.default[Any].areEqual(e, ele))
+      }
+      def containsOneOf(map: M, elements: scala.collection.Seq[Any]): Boolean = {
+        val foundSet = checkOneOf[Any](map, elements, Equality.default[Any])
+        foundSet.size == 1
+      }
+      def containsNoneOf(map: M, elements: scala.collection.Seq[Any]): Boolean = {
+        val found = checkNoneOf[Any](map, elements, Equality.default[Any])
+        !found.isDefined
+      }
+    }
+
   implicit def containingNatureOfArray[E](implicit equality: Equality[E]): Containing[Array[E]] = 
     new Containing[Array[E]] {
       def contains(arr: Array[E], ele: Any): Boolean =
