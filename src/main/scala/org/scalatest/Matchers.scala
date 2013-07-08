@@ -1718,28 +1718,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             FailureMessages("wasDefinedAt", left, right)
         )
     }
-    
-    /**
-     * This method enables the following syntax (positiveNumber is a <code>AMatcher</code>):
-     *
-     * <pre class="stHighlight">
-     * result shouldNot be a [Book]
-     *                     ^
-     * </pre>
-     */
-    def a(aType: ResultOfATypeInvocation[_]) {
-      val clazz = aType.clazz
-      if (clazz.isAssignableFrom(left.getClass) != shouldBeTrue) {
-        throw newTestFailedException(
-          FailureMessages(
-            if (shouldBeTrue) "wasNotAnInstanceOf" else "wasAnInstanceOf", 
-            left, 
-            UnquotedString(clazz.getName)
-          )
-        )
-      }
-    }
-    // TODO: Chee Seng: Is def an(anType... missing here?
   }
 
   /**
