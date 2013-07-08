@@ -38,6 +38,7 @@ import org.scalatest.TagAnnotation;
  * package org.scalatest.examples.flatspec.cpuall
  * 
  * import org.scalatest._
+ * import tags.CPU
  * 
  * @CPU
  * class SetSpec extends FlatSpec {
@@ -69,6 +70,7 @@ import org.scalatest.TagAnnotation;
  * package org.scalatest.examples.spec.cpu
  *
  * import org.scalatest._
+ * import tags.CPU
  *
  * class SetSpec extends Spec {
  *

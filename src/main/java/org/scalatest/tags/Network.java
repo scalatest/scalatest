@@ -38,6 +38,7 @@ import org.scalatest.TagAnnotation;
  * package org.scalatest.examples.flatspec.networkall
  * 
  * import org.scalatest._
+ * import tags.Network
  * 
  * @Network
  * class SetSpec extends FlatSpec {
@@ -69,6 +70,7 @@ import org.scalatest.TagAnnotation;
  * package org.scalatest.examples.spec.network
  *
  * import org.scalatest._
+ * import tags.Network
  *
  * class SetSpec extends Spec {
  *

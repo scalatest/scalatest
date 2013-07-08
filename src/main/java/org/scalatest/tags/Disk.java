@@ -38,6 +38,7 @@ import org.scalatest.TagAnnotation;
  * package org.scalatest.examples.flatspec.diskall
  * 
  * import org.scalatest._
+ * import tags.Disk
  * 
  * @Disk
  * class SetSpec extends FlatSpec {
@@ -69,6 +70,7 @@ import org.scalatest.TagAnnotation;
  * package org.scalatest.examples.spec.disk
  *
  * import org.scalatest._
+ * import tags.Disk
  *
  * class SetSpec extends Spec {
  *
