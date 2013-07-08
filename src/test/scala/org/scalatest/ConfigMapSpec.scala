@@ -15,10 +15,9 @@
  */
 package org.scalatest
 
-import org.scalautils.LegacyTripleEquals
 import exceptions.TestCanceledException
 
-class ConfigMapSpec extends Spec with LegacyTripleEquals {
+class ConfigMapSpec extends Spec with Matchers {
 
     class Fruit {
       override def toString = "a Fruit"
@@ -54,12 +53,12 @@ class ConfigMapSpec extends Spec with LegacyTripleEquals {
 
   object `A ConfigMap` {
 
-    def `provides a nice syntax for getting a required entry` {
+    def `should provide a nice syntax for getting a required entry` {
       assert(cm.getRequired[String]("string") === "aStringValue")
       assert(cm.getRequired[Int]("int") === 1)
     }
 
-    def `throws a TestCanceledException if a required entry is missing` {
+    def `should throw a TestCanceledException if a required entry is missing` {
       val caught =
         intercept[TestCanceledException] {
           cm.getRequired[String]("t")
@@ -67,7 +66,7 @@ class ConfigMapSpec extends Spec with LegacyTripleEquals {
       assert(caught.getMessage === Resources("configMapEntryNotFound", "t"))
     }
 
-    def `throws a TestCanceledException if a required entry has an unexpected type` {
+    def `should throw a TestCanceledException if a required entry has an unexpected type` {
 
       // Ensure supertype and subype is done correctly
       assert(cm.getRequired[Apple]("apple") === apple)
@@ -154,16 +153,16 @@ class ConfigMapSpec extends Spec with LegacyTripleEquals {
       assert(caught9.getMessage === Resources("configMapEntryHadUnexpectedType", "string", "class java.lang.String", "double", "aStringValue"))
     }
 
-    def `provides a nice syntax for getting an optional entry` {
+    def `should provide a nice syntax for getting an optional entry` {
       assert(cm.getOptional[String]("string") === Some("aStringValue"))
       assert(cm.getOptional[Int]("int") === Some(1))
     }
 
-    def `returns None if an optional entry is missing` {
+    def `should return None if an optional entry is missing` {
       assert(cm.getOptional[String]("t") === None)
     }
 
-    def `throws a TestCanceledException if an optional entry has an unexpected type` {
+    def `should throw a TestCanceledException if an optional entry has an unexpected type` {
 
       // Ensure supertype and subype is done correctly
       assert(cm.getOptional[Apple]("apple") === Some(apple))
@@ -250,14 +249,14 @@ class ConfigMapSpec extends Spec with LegacyTripleEquals {
       assert(caught9.getMessage === Resources("configMapEntryHadUnexpectedType", "string", "class java.lang.String", "double", "aStringValue"))
     }
 
-    def `provides a nice syntax for getting an optional entry with a default value` {
+    def `should provide a nice syntax for getting an optional entry with a default value` {
       assert(cm.getWithDefault[String]("string", "theDefault") === "aStringValue")
       assert(cm.getWithDefault[Int]("int", 0) === 1)
       assert(cm.getWithDefault[Int]("t", 0) === 0)
       assert(cm.getWithDefault[String]("t", "theDefault") === "theDefault")
     }
 
-    def `throws a TestCanceledException if an optional entry requested with a default has an unexpected type` {
+    def `should throw a TestCanceledException if an optional entry requested with a default has an unexpected type` {
 
       // Ensure supertype and subype is done correctly
       assert(cm.getWithDefault[Apple]("apple", new Apple) === apple)
@@ -342,6 +341,66 @@ class ConfigMapSpec extends Spec with LegacyTripleEquals {
           cm.getWithDefault[Double]("string", 2.0)
         }
       assert(caught9.getMessage === Resources("configMapEntryHadUnexpectedType", "string", "class java.lang.String", "double", "aStringValue"))
+    }
+    def `should work with 'contain (...) syntax` {
+      ConfigMap("one" -> 1, "two" -> 2) should contain ("one" -> 1)
+      intercept[TestFailedException] {
+        ConfigMap("one" -> 1, "two" -> 2) should contain ("three" -> 3)
+      }
+    }
+    def `should work with 'contain oneOf (...) syntax` {
+      ConfigMap("one" -> 1, "two" -> 2) should contain oneOf ("one" -> 1, "three" -> 3)
+      intercept[TestFailedException] {
+        ConfigMap("one" -> 1, "two" -> 2) should contain oneOf ("three" -> 3, "four" -> 4)
+      }
+    }
+    def `should work with 'contain noneOf (...) syntax` {
+      ConfigMap("one" -> 1, "two" -> 2) should contain noneOf ("three" -> 3, "four" -> 4)
+      intercept[TestFailedException] {
+        ConfigMap("one" -> 1, "two" -> 2) should contain noneOf ("one" -> 1, "four" -> 4)
+      }
+    }
+    def `should work with 'contain allOf (...) syntax` {
+      ConfigMap("one" -> 1, "two" -> 2) should contain allOf ("one" -> 1, "two" -> 2)
+      intercept[TestFailedException] {
+        ConfigMap("one" -> 1, "two" -> 2) should contain allOf ("one" -> 1, "four" -> 4)
+      }
+    }
+    def `should work with 'contain atLeastOneOf (...) syntax` {
+      ConfigMap("one" -> 1, "two" -> 2) should contain atLeastOneOf ("one" -> 1, "two" -> 2)
+      intercept[TestFailedException] {
+        ConfigMap("one" -> 1, "two" -> 2) should contain atLeastOneOf ("three" -> 3, "four" -> 4)
+      }
+    }
+    def `should work with 'contain theSameElementsAs (...) syntax` {
+      ConfigMap("one" -> 1, "two" -> 2) should contain theSameElementsAs List("one" -> 1, "two" -> 2)
+      intercept[TestFailedException] {
+        ConfigMap("one" -> 1, "two" -> 2) should contain theSameElementsAs List("three" -> 3, "four" -> 4)
+      }
+    }
+    def `should work with 'contain atMostOneOf (...) syntax` {
+      ConfigMap("one" -> 1, "two" -> 2) should contain atMostOneOf ("three" -> 3, "four" -> 4)
+      intercept[TestFailedException] {
+        ConfigMap("one" -> 1, "two" -> 2) should contain atMostOneOf ("one" -> 1, "two" -> 2)
+      }
+    }
+    def `should work with 'contain only (...) syntax` {
+      ConfigMap("one" -> 1, "two" -> 2) should contain only ("one" -> 1, "two" -> 2)
+      intercept[TestFailedException] {
+        ConfigMap("one" -> 1, "two" -> 2) should contain only ("one" -> 2)
+      }
+    }
+    def `should work with 'contain key (...) syntax` {
+      ConfigMap("one" -> 1, "two" -> 2) should contain key ("one")
+      intercept[TestFailedException] {
+        ConfigMap("one" -> 1, "two" -> 2) should contain key ("three")
+      }
+    }
+    def `should work with 'contain value (...) syntax` {
+      ConfigMap("one" -> 1, "two" -> 2) should contain value (1)
+      intercept[TestFailedException] {
+        ConfigMap("one" -> 1, "two" -> 2) should contain value (3)
+      }
     }
   }
 

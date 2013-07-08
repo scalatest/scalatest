@@ -125,7 +125,7 @@ object Aggregating {
         case cce: ClassCastException => false
     }
   
-  private def checkTheSameElementsAs[T](left: GenTraversable[T], right: GenTraversable[Any], equality: Equality[T]): Boolean = {
+  private[scalatest] def checkTheSameElementsAs[T](left: GenTraversable[T], right: GenTraversable[Any], equality: Equality[T]): Boolean = {
     case class ElementCount(element: Any, leftCount: Int, rightCount: Int)
     object ZipNoMatch
     
@@ -171,7 +171,7 @@ object Aggregating {
     !counts.exists(e => e.leftCount != e.rightCount)
   }
   
-  private def checkOnly[T](left: GenTraversable[T], right: GenTraversable[Any], equality: Equality[T]): Boolean = {
+  private[scalatest] def checkOnly[T](left: GenTraversable[T], right: GenTraversable[Any], equality: Equality[T]): Boolean = {
     @tailrec
     def findNext(value: T, rightItr: Iterator[Any], processedSet: Set[Any]): Set[Any] = 
       if (rightItr.hasNext) {
@@ -204,7 +204,7 @@ object Aggregating {
     checkEqual(left.toIterator, right.toIterator, Set.empty)
   }
   
-  private def checkAllOf[T](left: GenTraversable[T], right: GenTraversable[Any], equality: Equality[T]): Boolean = {
+  private[scalatest] def checkAllOf[T](left: GenTraversable[T], right: GenTraversable[Any], equality: Equality[T]): Boolean = {
     @tailrec
     def checkEqual(left: GenTraversable[T], rightItr: Iterator[Any]): Boolean = {
       if (rightItr.hasNext) {
@@ -220,7 +220,7 @@ object Aggregating {
     checkEqual(left, right.toIterator)
   }
   
-  private def checkAtMostOneOf[T](left: GenTraversable[T], right: GenTraversable[Any], equality: Equality[T]): Boolean = {
+  private[scalatest] def checkAtMostOneOf[T](left: GenTraversable[T], right: GenTraversable[Any], equality: Equality[T]): Boolean = {
     
     def countElements: Int = 
       right.aggregate(0)(
