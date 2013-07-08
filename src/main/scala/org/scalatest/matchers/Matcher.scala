@@ -64,6 +64,8 @@ import org.scalatest.words.ResultOfAtMostOneOfApplication
 import org.scalatest.words.SortedWord
 import org.scalatest.words.ResultOfATypeInvocation
 import org.scalatest.words.ResultOfAnTypeInvocation
+import org.scalatest.words.ExistWord
+import org.scalatest.words.ResultOfNotExist
 
 /**
  * Trait extended by objects that can match a value of the specified type. The value to match is
@@ -1619,6 +1621,28 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
    * </pre>
    */
   def and(notWord: NotWord): AndNotWord = new AndNotWord
+  
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * file should (be (existFile) and exist)
+   *                             ^
+   * </pre>
+   */
+  def and(existWord: ExistWord): MatcherFactory1[T, Existence] = 
+    outerInstance.and(MatcherWords.exist.matcherFactory)
+    
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * file should (be (imaginaryFile) and not (exist))
+   *                                 ^
+   * </pre>
+   */
+  def and(notExist: ResultOfNotExist): MatcherFactory1[T, Existence] = 
+    outerInstance.and(MatcherWords.not.exist)
 
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -2684,6 +2708,28 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
    * </pre>
    */
   def or(notWord: NotWord): OrNotWord = new OrNotWord
+  
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * file should (be (existFile) or exist)
+   *                             ^
+   * </pre>
+   */
+  def or(existWord: ExistWord): MatcherFactory1[T, Existence] = 
+    outerInstance.or(MatcherWords.exist.matcherFactory)
+    
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * file should (be (imaginaryFile) or not (exist))
+   *                                 ^
+   * </pre>
+   */
+  def or(notExist: ResultOfNotExist): MatcherFactory1[T, Existence] = 
+    outerInstance.or(MatcherWords.not.exist)
 }
 
 /**

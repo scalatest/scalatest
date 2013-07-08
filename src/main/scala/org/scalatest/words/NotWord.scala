@@ -128,6 +128,32 @@ final class NotWord {
           case MatchResult(bool, s1, s2, s3, s4) => MatchResult(!bool, s2, s1, s4, s3)
         }
     }
+  
+  /**
+   * This method enables syntax such as the following:
+   *
+   * <pre class="stHighlight">
+   * file should not (exist)
+   *             ^
+   * </pre>
+   */
+  def apply(existWord: ExistWord): ResultOfNotExist = 
+    new ResultOfNotExist(this)
+
+  private[scalatest] val exist: MatcherFactory1[Any, Existence] = 
+    new MatcherFactory1[Any, Existence] {
+      def matcher[T <: Any : Existence]: Matcher[T] = 
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+            val existence = implicitly[Existence[T]]
+            MatchResult(
+              !existence.exists(left), 
+              FailureMessages("exists", left), 
+              FailureMessages("doesNotExist", left)
+            )
+          }
+        }
+    }
 
   /**
    * This method enables the following syntax:

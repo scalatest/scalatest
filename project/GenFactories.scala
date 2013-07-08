@@ -73,6 +73,8 @@ import org.scalatest.words.ResultOfAtMostOneOfApplication
 import org.scalatest.words.SortedWord
 import org.scalatest.words.ResultOfATypeInvocation
 import org.scalatest.words.ResultOfAnTypeInvocation
+import org.scalatest.words.ExistWord
+import org.scalatest.words.ResultOfNotExist
 
 /**
  * A matcher factory that can produce a matcher given $nTypeclassInstances$.
@@ -1276,6 +1278,28 @@ $endif$
    * </pre>
    */
   def and(notWord: NotWord): AndNotWord = new AndNotWord
+    
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * (aMatcherFactory and exist)
+   *                  ^
+   * </pre>
+   */
+  def and(existWord: ExistWord): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Existence] = 
+    thisMatcherFactory.and(MatcherWords.exist.matcherFactory)
+    
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * (aMatcherFactory and not (exist))
+   *                  ^
+   * </pre>
+   */
+  def and(notExist: ResultOfNotExist): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Existence] = 
+    thisMatcherFactory.and(MatcherWords.not.exist)
 
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -2314,6 +2338,28 @@ $endif$
    * </pre>
    */
   def or(notWord: NotWord): OrNotWord = new OrNotWord
+    
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * (aMatcherFactory or exist)
+   *                  ^
+   * </pre>
+   */
+  def or(existWord: ExistWord): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Existence] = 
+    thisMatcherFactory.or(MatcherWords.exist.matcherFactory)
+    
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * (aMatcherFactory or not (exist))
+   *                  ^
+   * </pre>
+   */
+  def or(notExist: ResultOfNotExist): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Existence] = 
+    thisMatcherFactory.or(MatcherWords.not.exist)
 }
 
 /**
