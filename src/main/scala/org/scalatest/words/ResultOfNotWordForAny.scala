@@ -697,6 +697,24 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
         )    
       )
   }
+  
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * xs should not be readable
+   *                  ^
+   * </pre>
+   */
+  def be[U](readableWord: ReadableWord)(implicit readability: Readability[T]) {
+    if (readability.isReadable(left) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "wasNotReadable" else "wasReadable", 
+          left
+        )    
+      )
+  }
 
   def contain(newOneOf: ResultOfOneOfApplication)(implicit containing: Containing[T]) {
 

@@ -73,6 +73,7 @@ import org.scalatest.words.ResultOfAtMostOneOfApplication
 import org.scalatest.words.SortedWord
 import org.scalatest.words.ResultOfATypeInvocation
 import org.scalatest.words.ResultOfAnTypeInvocation
+import org.scalatest.words.ReadableWord
 
 /**
  * A matcher factory that can produce a matcher given $nTypeclassInstances$.
@@ -1033,7 +1034,7 @@ $endif$
       thisMatcherFactory.and(MatcherWords.not.be(resultOfDefinedAt))
 
     /**
-     * This method enables the following syntax, where <code>fraction</code> is a <code>PartialFunction</code>:
+     * This method enables the following syntax:
      *
      * <pre class="stHighlight">
      * (aMatcherFactory and not be sorted)
@@ -1042,6 +1043,17 @@ $endif$
      */
     def be(sortedWord: SortedWord) = 
       thisMatcherFactory.and(MatcherWords.not.be(sortedWord))
+    
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * (aMatcherFactory and not be readable)
+     *                          ^
+     * </pre>
+     */
+    def be(readableWord: ReadableWord) = 
+      thisMatcherFactory.and(MatcherWords.not.be(readableWord))
     
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -2083,6 +2095,17 @@ $endif$
      */
     def be(sortedWord: SortedWord) = 
       thisMatcherFactory.or(MatcherWords.not.be(sortedWord))
+    
+    /**
+     * This method enables the following syntax, where <code>fraction</code> is a <code>PartialFunction</code>:
+     *
+     * <pre class="stHighlight">
+     * (aMatcherFactory or not be readable)
+     *                         ^
+     * </pre>
+     */
+    def be(readableWord: ReadableWord) = 
+      thisMatcherFactory.or(MatcherWords.not.be(readableWord))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:

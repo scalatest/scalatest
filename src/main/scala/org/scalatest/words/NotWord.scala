@@ -637,6 +637,17 @@ final class NotWord {
      */
   def be[T <: Any](sortedWord: SortedWord): MatcherFactory1[Any, Sortable] =
     apply(MatcherWords.be(sortedWord))
+    
+  /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * fraction should (not be readable and not be sorted)
+     *                                          ^
+     * </pre>
+     */
+  def be(readableWord: ReadableWord): MatcherFactory1[Any, Readability] =
+    apply(MatcherWords.be(readableWord))
   
   /**
    * This method enables the following syntax:

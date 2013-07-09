@@ -153,7 +153,7 @@ trait MatcherWords {
    * This field enables the following syntax: 
    *
    * <pre class="stHighlight">
-   * seq should be sorted
+   * seq should be (sorted)
    *               ^
    * </pre>
    */
@@ -168,6 +168,16 @@ trait MatcherWords {
    * </pre>
    */
   val noException = new NoExceptionWord
+  
+  /**
+   * This field enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * file should be (readable)
+   *                 ^
+   * </pre>
+   */
+  val readable = new ReadableWord
 
   /**
    * This method enables the following syntax: 

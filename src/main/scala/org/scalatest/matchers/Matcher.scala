@@ -64,6 +64,7 @@ import org.scalatest.words.ResultOfAtMostOneOfApplication
 import org.scalatest.words.SortedWord
 import org.scalatest.words.ResultOfATypeInvocation
 import org.scalatest.words.ResultOfAnTypeInvocation
+import org.scalatest.words.ReadableWord
 
 /**
  * Trait extended by objects that can match a value of the specified type. The value to match is
@@ -1387,6 +1388,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def be(sortedWord: SortedWord) = 
       outerInstance.and(MatcherWords.not.be(sortedWord))
+      
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * fraction should (not be sorted and not be readable)
+     *                                        ^
+     * </pre>
+     */
+    def be(readableWord: ReadableWord) = 
+      outerInstance.and(MatcherWords.not.be(readableWord))
 
     /**
      * This method enables the following syntax:
@@ -2426,6 +2438,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def be(sortedWord: SortedWord) = 
       outerInstance.or(MatcherWords.not.be(sortedWord))
+      
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * fraction should (not be sorted or not be sorted)
+     *                                        ^
+     * </pre>
+     */
+    def be(readableWord: ReadableWord) = 
+      outerInstance.or(MatcherWords.not.be(readableWord))
 
     /**
      * This method enables the following syntax:
