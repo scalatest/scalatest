@@ -42,6 +42,12 @@ class ShouldBeDefinedAtSpec extends Spec with Matchers {
       
     def didNotEqual(left: Any, right: Any): String = 
       left + " did not equal " + right
+      
+    def wasNotEqualTo(left: Any, right: Any): String = 
+      left + " was not equal to " + right
+      
+    def wasEqualTo(left: Any, right: Any): String = 
+      left + " was equal to " + right
     
     object `should be definedAt` {
       
@@ -70,6 +76,14 @@ class ShouldBeDefinedAtSpec extends Spec with Matchers {
         fraction should (be definedAt (6) and equal (fraction))
         fraction should (be definedAt (6) and (equal (fraction)))
         fraction should (be (definedAt (6)) and (equal (fraction)))
+        
+        fraction should (be (fraction) and be definedAt (8))
+        fraction should (be (fraction) and (be definedAt (8)))
+        fraction should ((be (fraction)) and be (definedAt (8)))
+        
+        fraction should (be definedAt (6) and be (fraction))
+        fraction should (be definedAt (6) and (be (fraction)))
+        fraction should (be (definedAt (6)) and (be (fraction)))
       }
       
       def `should throw TestFailedException with correct stack depth when first expression in logical-and expression failed` {
@@ -114,6 +128,27 @@ class ShouldBeDefinedAtSpec extends Spec with Matchers {
         assert(caught6.message === Some(didNotEqual(fraction, fraction2)))
         assert(caught6.failedCodeFileName === Some("ShouldBeDefinedAtSpec.scala"))
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
+        
+        val caught7 = intercept[TestFailedException] {
+          fraction should (be (fraction2) and be definedAt (8))
+        }
+        assert(caught7.message === Some(wasNotEqualTo(fraction, fraction2)))
+        assert(caught7.failedCodeFileName === Some("ShouldBeDefinedAtSpec.scala"))
+        assert(caught7.failedCodeLineNumber === Some(thisLineNumber - 4))
+        
+        val caught8 = intercept[TestFailedException] {
+          fraction should (be (fraction2) and (be definedAt (8)))
+        }
+        assert(caught8.message === Some(wasNotEqualTo(fraction, fraction2)))
+        assert(caught8.failedCodeFileName === Some("ShouldBeDefinedAtSpec.scala"))
+        assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
+        
+        val caught9 = intercept[TestFailedException] {
+          fraction should ((be (fraction2)) and be (definedAt (8)))
+        }
+        assert(caught9.message === Some(wasNotEqualTo(fraction, fraction2)))
+        assert(caught9.failedCodeFileName === Some("ShouldBeDefinedAtSpec.scala"))
+        assert(caught9.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
       def `should throw TestFailedException with correct stack depth when second expression in logical-and expression failed` {
@@ -158,6 +193,27 @@ class ShouldBeDefinedAtSpec extends Spec with Matchers {
         assert(caught6.message === Some(wasDefinedAt(fraction, 8) + ", but " + didNotEqual(fraction, fraction2)))
         assert(caught6.failedCodeFileName === Some("ShouldBeDefinedAtSpec.scala"))
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
+        
+        val caught7 = intercept[TestFailedException] {
+          fraction should (be definedAt (8) and be (fraction2))
+        }
+        assert(caught7.message === Some(wasDefinedAt(fraction, 8) + ", but " + wasNotEqualTo(fraction, fraction2)))
+        assert(caught7.failedCodeFileName === Some("ShouldBeDefinedAtSpec.scala"))
+        assert(caught7.failedCodeLineNumber === Some(thisLineNumber - 4))
+        
+        val caught8 = intercept[TestFailedException] {
+          fraction should (be definedAt (8) and (be (fraction2)))
+        }
+        assert(caught8.message === Some(wasDefinedAt(fraction, 8) + ", but " + wasNotEqualTo(fraction, fraction2)))
+        assert(caught8.failedCodeFileName === Some("ShouldBeDefinedAtSpec.scala"))
+        assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
+        
+        val caught9 = intercept[TestFailedException] {
+          fraction should (be (definedAt (8)) and (be (fraction2)))
+        }
+        assert(caught9.message === Some(wasDefinedAt(fraction, 8) + ", but " + wasNotEqualTo(fraction, fraction2)))
+        assert(caught9.failedCodeFileName === Some("ShouldBeDefinedAtSpec.scala"))
+        assert(caught9.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
       def `should throw TestFailedException with correct stack depth when both expression in logical-and expression failed` {
@@ -195,6 +251,14 @@ class ShouldBeDefinedAtSpec extends Spec with Matchers {
         fraction should (be definedAt (6) or equal (fraction))
         fraction should (be definedAt (6) or (equal (fraction)))
         fraction should (be (definedAt (6)) or (equal (fraction)))
+        
+        fraction should (be (fraction) or be definedAt (8))
+        fraction should (be (fraction) or (be definedAt (8)))
+        fraction should ((be (fraction)) or be (definedAt (8)))
+        
+        fraction should (be definedAt (6) or be (fraction))
+        fraction should (be definedAt (6) or (be (fraction)))
+        fraction should (be (definedAt (6)) or (be (fraction)))
       }
       
       def `should do nothing when first expression in logical-or expression failed` {
@@ -209,6 +273,14 @@ class ShouldBeDefinedAtSpec extends Spec with Matchers {
         fraction should (be definedAt (0) or equal (fraction))
         fraction should (be definedAt (0) or (equal (fraction)))
         fraction should (be (definedAt (0)) or (equal (fraction)))
+        
+        fraction should (be (fraction2) or be definedAt (8))
+        fraction should (be (fraction2) or (be definedAt (8)))
+        fraction should ((be (fraction2)) or be (definedAt (8)))
+        
+        fraction should (be definedAt (0) or be (fraction))
+        fraction should (be definedAt (0) or (be (fraction)))
+        fraction should (be (definedAt (0)) or (be (fraction)))
       }
       
       def `should do nothing when second expressions in logical-or expression failed` {
@@ -223,6 +295,14 @@ class ShouldBeDefinedAtSpec extends Spec with Matchers {
         fraction should (be definedAt (6) or equal (fraction2))
         fraction should (be definedAt (6) or (equal (fraction2)))
         fraction should (be (definedAt (6)) or (equal (fraction2)))
+        
+        fraction should (be (fraction) or be definedAt (0))
+        fraction should (be (fraction) or (be definedAt (0)))
+        fraction should ((be (fraction)) or be (definedAt (0)))
+        
+        fraction should (be definedAt (6) or be (fraction2))
+        fraction should (be definedAt (6) or (be (fraction2)))
+        fraction should (be (definedAt (6)) or (be (fraction2)))
       }
       
       def `should throw TestFailedException with correct stack depth when both expression in logical-or expression failed` {
@@ -260,6 +340,20 @@ class ShouldBeDefinedAtSpec extends Spec with Matchers {
         assert(caught5.message === Some(didNotEqual(fraction, fraction2) + ", and " + wasNotDefinedAt(fraction, 0)))
         assert(caught5.failedCodeFileName === Some("ShouldBeDefinedAtSpec.scala"))
         assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
+        
+        val caught6 = intercept[TestFailedException] {
+          fraction should (be definedAt (0) or be (fraction2))
+        }
+        assert(caught6.message === Some(wasNotDefinedAt(fraction, 0) + ", and " + wasNotEqualTo(fraction, fraction2)))
+        assert(caught6.failedCodeFileName === Some("ShouldBeDefinedAtSpec.scala"))
+        assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
+        
+        val caught7 = intercept[TestFailedException] {
+          fraction should (be (fraction2) or (be definedAt (0)))
+        }
+        assert(caught7.message === Some(wasNotEqualTo(fraction, fraction2) + ", and " + wasNotDefinedAt(fraction, 0)))
+        assert(caught7.failedCodeFileName === Some("ShouldBeDefinedAtSpec.scala"))
+        assert(caught7.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
     }
     
@@ -290,6 +384,14 @@ class ShouldBeDefinedAtSpec extends Spec with Matchers {
         fraction should (not be definedAt (0) and not equal (fraction2))
         fraction should (not be definedAt (0) and (not equal (fraction2)))
         fraction should (not be (definedAt (0)) and (not equal (fraction2)))
+        
+        fraction should (not be (fraction2) and not be definedAt (0))
+        fraction should (not be (fraction2) and (not be definedAt (0)))
+        fraction should ((not be (fraction2)) and not be (definedAt (0)))
+        
+        fraction should (not be definedAt (0) and not be (fraction2))
+        fraction should (not be definedAt (0) and (not be (fraction2)))
+        fraction should (not be (definedAt (0)) and (not be (fraction2)))
       }
       
       def `should throw TestFailedException with correct stack depth when first expression in logical-and expression failed` {
@@ -334,6 +436,27 @@ class ShouldBeDefinedAtSpec extends Spec with Matchers {
         assert(caught6.message === Some(equaled(fraction, fraction)))
         assert(caught6.failedCodeFileName === Some("ShouldBeDefinedAtSpec.scala"))
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
+        
+        val caught7 = intercept[TestFailedException] {
+          fraction should (not be (fraction) and not be definedAt (0))
+        }
+        assert(caught7.message === Some(wasEqualTo(fraction, fraction)))
+        assert(caught7.failedCodeFileName === Some("ShouldBeDefinedAtSpec.scala"))
+        assert(caught7.failedCodeLineNumber === Some(thisLineNumber - 4))
+        
+        val caught8 = intercept[TestFailedException] {
+          fraction should (not be (fraction) and (not be definedAt (8)))
+        }
+        assert(caught8.message === Some(wasEqualTo(fraction, fraction)))
+        assert(caught8.failedCodeFileName === Some("ShouldBeDefinedAtSpec.scala"))
+        assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
+        
+        val caught9 = intercept[TestFailedException] {
+          fraction should ((not be (fraction)) and not be (definedAt (8)))
+        }
+        assert(caught9.message === Some(wasEqualTo(fraction, fraction)))
+        assert(caught9.failedCodeFileName === Some("ShouldBeDefinedAtSpec.scala"))
+        assert(caught9.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
       def `should throw TestFailedException with correct stack depth when second expression in logical-and expression failed` {
@@ -378,6 +501,27 @@ class ShouldBeDefinedAtSpec extends Spec with Matchers {
         assert(caught6.message === Some(wasNotDefinedAt(fraction, 0) + ", but " + equaled(fraction, fraction)))
         assert(caught6.failedCodeFileName === Some("ShouldBeDefinedAtSpec.scala"))
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
+        
+        val caught7 = intercept[TestFailedException] {
+          fraction should (not be definedAt (0) and not be (fraction))
+        }
+        assert(caught7.message === Some(wasNotDefinedAt(fraction, 0) + ", but " + wasEqualTo(fraction, fraction)))
+        assert(caught7.failedCodeFileName === Some("ShouldBeDefinedAtSpec.scala"))
+        assert(caught7.failedCodeLineNumber === Some(thisLineNumber - 4))
+        
+        val caught8 = intercept[TestFailedException] {
+          fraction should (not be definedAt (0) and (not be (fraction)))
+        }
+        assert(caught8.message === Some(wasNotDefinedAt(fraction, 0) + ", but " + wasEqualTo(fraction, fraction)))
+        assert(caught8.failedCodeFileName === Some("ShouldBeDefinedAtSpec.scala"))
+        assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
+        
+        val caught9 = intercept[TestFailedException] {
+          fraction should (not be (definedAt (0)) and (not be (fraction)))
+        }
+        assert(caught9.message === Some(wasNotDefinedAt(fraction, 0) + ", but " + wasEqualTo(fraction, fraction)))
+        assert(caught9.failedCodeFileName === Some("ShouldBeDefinedAtSpec.scala"))
+        assert(caught9.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
       def `should throw TestFailedException with correct stack depth when both expression in logical-and expression failed` {
@@ -415,6 +559,14 @@ class ShouldBeDefinedAtSpec extends Spec with Matchers {
         fraction should (not be definedAt (0) or not equal (fraction2))
         fraction should (not be definedAt (0) or (not equal (fraction2)))
         fraction should (not be (definedAt (0)) or (not equal (fraction2)))
+        
+        fraction should (not be (fraction2) or not be definedAt (0))
+        fraction should (not be (fraction2) or (not be definedAt (0)))
+        fraction should ((not be (fraction2)) or not be (definedAt (0)))
+        
+        fraction should (not be definedAt (0) or not be (fraction2))
+        fraction should (not be definedAt (0) or (not be (fraction2)))
+        fraction should (not be (definedAt (0)) or (not be (fraction2)))
       }
       
       def `should do nothing when first expression in logical-or expression failed` {
@@ -429,6 +581,14 @@ class ShouldBeDefinedAtSpec extends Spec with Matchers {
         fraction should (not be definedAt (8) or not equal (fraction2))
         fraction should (not be definedAt (8) or (not equal (fraction2)))
         fraction should (not be (definedAt (8)) or (not equal (fraction2)))
+        
+        fraction should (not be (fraction) or not be definedAt (0))
+        fraction should (not be (fraction) or (not be definedAt (0)))
+        fraction should ((not be (fraction)) or not be (definedAt (0)))
+        
+        fraction should (not be definedAt (8) or not be (fraction2))
+        fraction should (not be definedAt (8) or (not be (fraction2)))
+        fraction should (not be (definedAt (8)) or (not be (fraction2)))
       }
       
       def `should do nothing when second expressions in logical-or expression failed` {
@@ -443,6 +603,14 @@ class ShouldBeDefinedAtSpec extends Spec with Matchers {
         fraction should (not be definedAt (0) or not equal (fraction))
         fraction should (not be definedAt (0) or (not equal (fraction)))
         fraction should (not be (definedAt (0)) or (not equal (fraction)))
+        
+        fraction should (not be (fraction2) or not be definedAt (8))
+        fraction should (not be (fraction2) or (not be definedAt (8)))
+        fraction should ((not be (fraction2)) or not be (definedAt (8)))
+        
+        fraction should (not be definedAt (0) or not be (fraction))
+        fraction should (not be definedAt (0) or (not be (fraction)))
+        fraction should (not be (definedAt (0)) or (not be (fraction)))
       }
       
       def `should throw TestFailedException with correct stack depth when both expression in logical-or expression failed` {
@@ -480,6 +648,20 @@ class ShouldBeDefinedAtSpec extends Spec with Matchers {
         assert(caught5.message === Some(equaled(fraction, fraction) + ", and " + wasDefinedAt(fraction, 8)))
         assert(caught5.failedCodeFileName === Some("ShouldBeDefinedAtSpec.scala"))
         assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
+        
+        val caught6 = intercept[TestFailedException] {
+          fraction should (not be definedAt (8) or not be (fraction))
+        }
+        assert(caught6.message === Some(wasDefinedAt(fraction, 8) + ", and " + wasEqualTo(fraction, fraction)))
+        assert(caught6.failedCodeFileName === Some("ShouldBeDefinedAtSpec.scala"))
+        assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
+        
+        val caught7 = intercept[TestFailedException] {
+          fraction should (not be (fraction) or (not be definedAt (8)))
+        }
+        assert(caught7.message === Some(wasEqualTo(fraction, fraction) + ", and " + wasDefinedAt(fraction, 8)))
+        assert(caught7.failedCodeFileName === Some("ShouldBeDefinedAtSpec.scala"))
+        assert(caught7.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
     }
