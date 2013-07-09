@@ -23,7 +23,7 @@ package org.scalatest.enablers
  * <code>Definition</code> companion object.
  * </p>
  */
-trait Definition[T] {
+trait Definition[-T] {
   
   def isDefinedAt(target: T, at: Any): Boolean
   

@@ -22,9 +22,9 @@ class ShouldBeDefinedAtImplicitSpec extends Spec with Matchers {
   
   object `PartialFunction ` {
     
-    val left: Array[Int] = Array(1, 2, 3)
+    val left = Array(1, 2, 3)
     
-    val left2: Array[Int] = Array(7, 8, 9)
+    val left2 = Array(7, 8, 9)
     
     def wasDefinedAt(left: Any, right: Any): String = 
       FailureMessages.decorateToStringValue(left) + " was defined at " + right

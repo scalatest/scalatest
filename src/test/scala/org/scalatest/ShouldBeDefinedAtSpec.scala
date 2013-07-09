@@ -21,12 +21,12 @@ class ShouldBeDefinedAtSpec extends Spec with Matchers {
   
   object `PartialFunction ` {
     
-    val fraction: PartialFunction[Int, Int] = new PartialFunction[Int, Int] {
+    val fraction = new PartialFunction[Int, Int] {
       def apply(d: Int) = 42 / d
       def isDefinedAt(d: Int) = d != 0
     }
     
-    val fraction2: PartialFunction[Int, Int] = new PartialFunction[Int, Int] {
+    val fraction2 = new PartialFunction[Int, Int] {
       def apply(d: Int) = 42 / d
       def isDefinedAt(d: Int) = d != 0
     }
