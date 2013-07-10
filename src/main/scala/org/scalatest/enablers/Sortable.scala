@@ -38,7 +38,7 @@ import Aggregating.tryEquality
  * in the <code>Sortable</code> companion object.
  * </p>
  */
-trait Sortable[S] {
+trait Sortable[-S] {
 
   /**
    * Determines whether the passed sequence is sorted, <em>i.e.</em>, the elements of the passed sequence are in sorted order.

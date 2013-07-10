@@ -19,7 +19,7 @@ import org.scalatest._
 import org.scalautils.Equality
 import scala.collection.immutable
 
-class NoParamSpec extends Spec with Matchers {
+class NoParamSpec extends Spec with Matchers with LoneElement {
 
   object `The implicit Containing providers` {
     def `should work with no-param collection types and default equality` {
@@ -75,7 +75,7 @@ class NoParamSpec extends Spec with Matchers {
     def apply(idx: Int): String = underlying(idx)
   }
   object MyStringSeq {
-    def apply(args: String*) = new MyStringSeq(immutable.Seq.empty[String] ++ args)
+    def apply(args: String*): MyStringSeq = new MyStringSeq(immutable.Seq.empty[String] ++ args)
   }
   object `The implicit Sequencing providers` {
     def `should work with no-param collection types and default equality` {
@@ -87,6 +87,24 @@ class NoParamSpec extends Spec with Matchers {
           def areEqual(a: String, b: Any): Boolean = a != b
         }
       MyStringSeq("hi", "ho") should not contain inOrder ("hi", "ho")
+    }
+  }
+  object `The implicit Collecting providers` { // I am not sure why this one already works without needing to make Collecting contravariant in C
+    def `should work with no-param collection types` {
+      MyStringSeq("hi").loneElement should be ("hi")
+      intercept[TestFailedException] {
+        MyStringSeq("hi", "ho").loneElement
+      }
+      ConfigMap("hi" -> 1).loneElement should be ("hi" -> 1)
+      intercept[TestFailedException] {
+        ConfigMap("hi" -> 1, "ho" -> 2).loneElement
+      }
+    }
+  }
+  object `The implicit Sortable providers` {
+    def `should work with no-param collection types` {
+      MyStringSeq("hey", "hi", "ho") should be (sorted)
+      MyStringSeq("hi", "di", "ho") should not be sorted
     }
   }
 }
