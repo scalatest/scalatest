@@ -168,6 +168,16 @@ trait MatcherWords {
    * </pre>
    */
   val noException = new NoExceptionWord
+  
+  /**
+   * This field enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * file should exist
+   *             ^
+   * </pre>
+   */
+  val exist = new ExistWord
 
   /**
    * This method enables the following syntax: 

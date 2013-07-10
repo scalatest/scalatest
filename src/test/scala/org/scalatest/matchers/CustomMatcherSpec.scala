@@ -43,7 +43,7 @@ trait CustomMatchers {
     }
   }
 
-  val exist = new FileExistsMatcher
+  val beFound = new FileExistsMatcher
 }
 
 class CustomMatcherSpec extends FunSpec with ShouldMatchers with CustomMatchers {
@@ -54,17 +54,17 @@ class CustomMatcherSpec extends FunSpec with ShouldMatchers with CustomMatchers 
 
       val imaginaryFile = new java.io.File("imaginary.txt")
 
-      imaginaryFile should not (exist)
+      imaginaryFile should not (beFound)
 
       val caught1 = intercept[TestFailedException] {
-        imaginaryFile should exist
+        imaginaryFile should beFound
       }
       assert(caught1.getMessage === "The directory named imaginary.txt did not exist")
 
-      imaginaryFile should (not be a ('file) and not (exist))
+      imaginaryFile should (not be a ('file) and not (beFound))
 
       val caught2 = intercept[TestFailedException] {
-        imaginaryFile should (not be a ('file) and exist)
+        imaginaryFile should (not be a ('file) and beFound)
       }
       assert(caught2.getMessage === "imaginary.txt was not a file, but the directory named imaginary.txt did not exist")
     }
@@ -74,19 +74,19 @@ class CustomMatcherSpec extends FunSpec with ShouldMatchers with CustomMatchers 
       val tempFile = java.io.File.createTempFile("delete", "me")
 
       try {
-        tempFile should exist
+        tempFile should beFound
 
         val caught1 = intercept[TestFailedException] {
-          tempFile should not (exist)
+          tempFile should not (beFound)
         }
         assert(caught1.getMessage === "The file named " + tempFile.getName + " existed")
         caught1.getMessage should startWith ("The file named delete")
         caught1.getMessage should endWith ("me existed")
 
-        tempFile should (be a ('file) and exist)
+        tempFile should (be a ('file) and beFound)
 
         val caught2 = intercept[TestFailedException] {
-          tempFile should (be a ('file) and not (exist))
+          tempFile should (be a ('file) and not (beFound))
         }
         caught2.getMessage should endWith (", but the file named " + tempFile.getName + " existed")
       }
