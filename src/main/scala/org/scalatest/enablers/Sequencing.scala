@@ -38,7 +38,7 @@ import Aggregating.tryEquality
  * in the <code>Aggregating</code> companion object.
  * </p>
  */
-trait Sequencing[S] {
+trait Sequencing[-S] {
 
   /**
    * Implements <code>contain</code> <code>inOrder</code> syntax for sequences of type <code>S</code>.
