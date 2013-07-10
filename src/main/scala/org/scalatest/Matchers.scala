@@ -3240,6 +3240,46 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         }
       }
     }
+    
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * all(xs) should not be readable
+     *                    ^
+     * </pre>
+     */
+    def be(readableWord: ReadableWord)(implicit readability: Readability[T]) {
+      doCollected(collected, xs, "be", 1) { e => 
+        if (readability.isReadable(e) != shouldBeTrue) {
+          throw newTestFailedException(
+            FailureMessages(if (shouldBeTrue) "wasNotReadable" else "wasReadable", e), 
+            None, 
+            6
+          )
+        }
+      }
+    }
+    
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * all(xs) should not be writable
+     *                    ^
+     * </pre>
+     */
+    def be(writableWord: WritableWord)(implicit writability: Writability[T]) {
+      doCollected(collected, xs, "be", 1) { e => 
+        if (writability.isWritable(e) != shouldBeTrue) {
+          throw newTestFailedException(
+            FailureMessages(if (shouldBeTrue) "wasNotWritable" else "wasWritable", e), 
+            None, 
+            6
+          )
+        }
+      }
+    }
 
     /**
      * This method enables the following syntax:
@@ -4335,6 +4375,36 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, "shouldBe", 1) { e =>
         if (!sortable.isSorted(e))
           throw newTestFailedException(FailureMessages("wasNotSorted", e), None, 6)
+      }
+    }
+    
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * all(xs) shouldBe readable
+     *         ^
+     * </pre>
+     */
+    def shouldBe(readableWord: ReadableWord)(implicit readability: Readability[T]) {
+      doCollected(collected, xs, "shouldBe", 1) { e =>
+        if (!readability.isReadable(e))
+          throw newTestFailedException(FailureMessages("wasNotReadable", e), None, 6)
+      }
+    }
+    
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * all(xs) shouldBe writable
+     *         ^
+     * </pre>
+     */
+    def shouldBe(writableWord: WritableWord)(implicit writability: Writability[T]) {
+      doCollected(collected, xs, "shouldBe", 1) { e =>
+        if (!writability.isWritable(e))
+          throw newTestFailedException(FailureMessages("wasNotWritable", e), None, 6)
       }
     }
 
@@ -5595,6 +5665,32 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
         throw newTestFailedException(FailureMessages("wasNotAnInstanceOf", left, UnquotedString(clazz.getName)))
       }
     }
+    
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * result shouldBe readable
+     *        ^
+     * </pre>
+     */
+    def shouldBe(right: ReadableWord)(implicit readability: Readability[T]) {
+      if (!readability.isReadable(left))
+        throw newTestFailedException(FailureMessages("wasNotReadable", left))
+    }
+    
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * result shouldBe writable
+     *        ^
+     * </pre>
+     */
+    def shouldBe(right: WritableWord)(implicit writability: Writability[T]) {
+      if (!writability.isWritable(left))
+        throw newTestFailedException(FailureMessages("wasNotWritable", left))
+    }
 
     /**
      * This method enables syntax such as the following:
@@ -5616,6 +5712,18 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def shouldNot(rightMatcherX1: Matcher[T]) {
       ShouldMethodHelper.shouldNotMatcher(left, rightMatcherX1)
+    }
+    
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * result shouldNot (be readable)
+     *        ^
+     * </pre>
+     */
+    def shouldNot[TYPECLASS1[_]](rightMatcherFactory1: MatcherFactory1[T, TYPECLASS1])(implicit typeClass1: TYPECLASS1[T]) {
+      ShouldMethodHelper.shouldNotMatcher(left, rightMatcherFactory1.matcher)
     }
     
     /**

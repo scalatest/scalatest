@@ -697,6 +697,42 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
         )    
       )
   }
+  
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * file should not be readable
+   *                    ^
+   * </pre>
+   */
+  def be[U](readableWord: ReadableWord)(implicit readability: Readability[T]) {
+    if (readability.isReadable(left) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "wasNotReadable" else "wasReadable", 
+          left
+        )    
+      )
+  }
+  
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * file should not be writable
+   *                    ^
+   * </pre>
+   */
+  def be[U](writableWord: WritableWord)(implicit writability: Writability[T]) {
+    if (writability.isWritable(left) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "wasNotWritable" else "wasWritable", 
+          left
+        )    
+      )
+  }
 
   def contain(newOneOf: ResultOfOneOfApplication)(implicit containing: Containing[T]) {
 
