@@ -50,19 +50,17 @@ object Sortable {
 
 // Sliding doesn't exist on GenSeq, and this is inherently sequential, so make them say .seq if they have a parallel Seq
 // Actually on second thought, I think just do a .seq on it.
-  implicit def sequencingNatureOfSeq[E, SEQ[e] <: scala.collection.GenSeq[e]](implicit ordering: Ordering[E]): Sortable[SEQ[E]] =
+  implicit def sortableNatureOfSeq[E, SEQ[e] <: scala.collection.GenSeq[e]](implicit ordering: Ordering[E]): Sortable[SEQ[E]] =
     new Sortable[SEQ[E]] {
       def isSorted(o: SEQ[E]): Boolean = o.seq.sliding(2).forall { duo => ordering.lteq(duo(0), duo(1)) }
     }
 
-// TODO: Tests!
-  implicit def sequencingNatureOfArray[E](implicit ordering: Ordering[E]): Sortable[Array[E]] = 
+  implicit def sortableNatureOfArray[E](implicit ordering: Ordering[E]): Sortable[Array[E]] = 
     new Sortable[Array[E]] {
       def isSorted(o: Array[E]): Boolean = o.sliding(2).forall { duo => ordering.lteq(duo(0), duo(1)) }
     }
 
-// TODO: Tests!
-  implicit def sequencingNatureOfJavaList[E, JLIST[e] <: java.util.List[e]](implicit ordering: Ordering[E]): Sortable[JLIST[E]] = 
+  implicit def sortableNatureOfJavaList[E, JLIST[e] <: java.util.List[e]](implicit ordering: Ordering[E]): Sortable[JLIST[E]] = 
     new Sortable[JLIST[E]] {
       def isSorted(o: JLIST[E]): Boolean = o.asScala.sliding(2).forall { duo => ordering.lteq(duo(0), duo(1)) }
     }
