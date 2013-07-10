@@ -4808,6 +4808,63 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def should(containWord: ContainWord): ResultOfContainWordForCollectedAny[T] = {
       new ResultOfContainWordForCollectedAny(collected, xs, true)
     }
+    
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * all(xs) should exist
+     *         ^
+     * </pre>
+     */
+    def should(existWord: ExistWord)(implicit existence: Existence[T]) {
+      doCollected(collected, xs, "should", 1) { e =>
+        if (!existence.exists(e))
+          throw newTestFailedException(
+            FailureMessages("doesNotExist", e), 
+            None, 
+            6
+          )
+      }
+    }
+    
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * all(xs) should not (exist)
+     *         ^
+     * </pre>
+     */
+    def should(notExist: ResultOfNotExist)(implicit existence: Existence[T]) {
+      doCollected(collected, xs, "should", 1) { e =>
+        if (existence.exists(e))
+          throw newTestFailedException(
+            FailureMessages("exists", e), 
+            None, 
+            6
+          )
+      }
+    }
+    
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * all(xs) shouldNot exist
+     *         ^
+     * </pre>
+     */
+    def shouldNot(existWord: ExistWord)(implicit existence: Existence[T]) {
+      doCollected(collected, xs, "shouldNot", 1) { e =>
+        if (existence.exists(e))
+          throw newTestFailedException(
+            FailureMessages("exists", e), 
+            None, 
+            6
+          )
+      }
+    }
   }
   
   /**
@@ -5791,6 +5848,45 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def should(containWord: ContainWord): ResultOfContainWord[T] = {
       new ResultOfContainWord(left, true)
+    }
+    
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * file should exist
+     *      ^
+     * </pre>
+     */
+    def should(existWord: ExistWord)(implicit existence: Existence[T]) {
+      if (!existence.exists(left))
+        throw newTestFailedException(FailureMessages("doesNotExist", left))
+    }
+    
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * file should not (exist)
+     *      ^
+     * </pre>
+     */
+    def should(notExist: ResultOfNotExist)(implicit existence: Existence[T]) {
+      if (existence.exists(left))
+        throw newTestFailedException(FailureMessages("exists", left))
+    }
+    
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * file shouldNot exist
+     *      ^
+     * </pre>
+     */
+    def shouldNot(existWord: ExistWord)(implicit existence: Existence[T]) {
+      if (existence.exists(left))
+        throw newTestFailedException(FailureMessages("exists", left))
     }
   }
 
