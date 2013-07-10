@@ -24,6 +24,8 @@ import org.scalatest.Assertions.areEqualComparingArraysStructurally
 import org.scalatest.MatchersHelper.matchSymbolToPredicateMethod
 import org.scalatest.enablers.Sequencing
 import org.scalatest.enablers.Sortable
+import org.scalatest.enablers.Readability
+import org.scalatest.enablers.Writability
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="ShouldMatchers.html"><code>ShouldMatchers</code></a> or <a href="MustMatchers.html"><code>MustMatchers</code></a> for an overview of
@@ -613,5 +615,51 @@ final class BeWord {
           FailureMessages("wasAnInstanceOf", left, UnquotedString(clazz.getName))
         )
       }
+    }
+  
+  /**
+   * This method enables the following syntax, where <code>open</code> refers to a <code>BePropertyMatcher</code>:
+   *
+   * <pre class="stHighlight">
+   * file should be (readable)
+   *                ^
+   * </pre>
+   */
+  def apply(readable: ReadableWord): MatcherFactory1[Any, Readability] = 
+    new MatcherFactory1[Any, Readability] {
+      def matcher[T <: Any : Readability]: Matcher[T] = 
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+            val readability = implicitly[Readability[T]]
+            MatchResult(
+              readability.isReadable(left), 
+              FailureMessages("wasNotReadable", left), 
+              FailureMessages("wasReadable", left)
+            )
+          }
+        }
+    }
+  
+  /**
+   * This method enables the following syntax, where <code>open</code> refers to a <code>BePropertyMatcher</code>:
+   *
+   * <pre class="stHighlight">
+   * file should be (writable)
+   *                 ^
+   * </pre>
+   */
+  def apply(writable: WritableWord): MatcherFactory1[Any, Writability] = 
+    new MatcherFactory1[Any, Writability] {
+      def matcher[T <: Any : Writability]: Matcher[T] = 
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+            val writability = implicitly[Writability[T]]
+            MatchResult(
+              writability.isWritable(left), 
+              FailureMessages("wasNotWritable", left), 
+              FailureMessages("wasWritable", left)
+            )
+          }
+        }
     }
 }

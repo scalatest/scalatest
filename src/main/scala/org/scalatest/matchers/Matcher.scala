@@ -66,6 +66,8 @@ import org.scalatest.words.ResultOfATypeInvocation
 import org.scalatest.words.ResultOfAnTypeInvocation
 import org.scalatest.words.ExistWord
 import org.scalatest.words.ResultOfNotExist
+import org.scalatest.words.ReadableWord
+import org.scalatest.words.WritableWord
 
 /**
  * Trait extended by objects that can match a value of the specified type. The value to match is
@@ -1389,7 +1391,29 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def be(sortedWord: SortedWord) = 
       outerInstance.and(MatcherWords.not.be(sortedWord))
+      
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * fraction should (not be readableFile and not be readable)
+     *                                              ^
+     * </pre>
+     */
+    def be(readableWord: ReadableWord) = 
+      outerInstance.and(MatcherWords.not.be(readableWord))
 
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * fraction should (not be writableFile and not be writable)
+     *                                              ^
+     * </pre>
+     */
+    def be(writableWord: WritableWord) = 
+      outerInstance.and(MatcherWords.not.be(writableWord))
+      
     /**
      * This method enables the following syntax:
      *
@@ -2450,6 +2474,28 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def be(sortedWord: SortedWord) = 
       outerInstance.or(MatcherWords.not.be(sortedWord))
+      
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * fraction should (not be readableFile or not be readable)
+     *                                             ^
+     * </pre>
+     */
+    def be(readableWord: ReadableWord) = 
+      outerInstance.or(MatcherWords.not.be(readableWord))
+      
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * fraction should (not be writableFile or not be writable)
+     *                                             ^
+     * </pre>
+     */
+    def be(writableWord: WritableWord) = 
+      outerInstance.or(MatcherWords.not.be(writableWord))
 
     /**
      * This method enables the following syntax:
