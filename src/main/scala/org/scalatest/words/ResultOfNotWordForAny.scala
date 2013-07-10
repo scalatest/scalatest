@@ -702,8 +702,8 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
    * This method enables the following syntax: 
    *
    * <pre class="stHighlight">
-   * xs should not be readable
-   *                  ^
+   * file should not be readable
+   *                    ^
    * </pre>
    */
   def be[U](readableWord: ReadableWord)(implicit readability: Readability[T]) {
@@ -711,6 +711,24 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
       throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "wasNotReadable" else "wasReadable", 
+          left
+        )    
+      )
+  }
+  
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * file should not be writable
+   *                    ^
+   * </pre>
+   */
+  def be[U](writableWord: WritableWord)(implicit writability: Writability[T]) {
+    if (writability.isWritable(left) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "wasNotWritable" else "wasWritable", 
           left
         )    
       )

@@ -642,13 +642,24 @@ final class NotWord {
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * fraction should (not be readable and not be sorted)
-     *                                          ^
+     * fraction should (not be readable and not equal readableFile)
+     *                      ^
      * </pre>
      */
   def be(readableWord: ReadableWord): MatcherFactory1[Any, Readability] =
     apply(MatcherWords.be(readableWord))
   
+  /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * fraction should (not be writable and not be writableFile)
+     *                      ^
+     * </pre>
+     */
+  def be(writableWord: WritableWord): MatcherFactory1[Any, Writability] =
+    apply(MatcherWords.be(writableWord))
+    
   /**
    * This method enables the following syntax:
    *

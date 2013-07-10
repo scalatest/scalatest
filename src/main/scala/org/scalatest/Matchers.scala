@@ -3260,6 +3260,26 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         }
       }
     }
+    
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * all(xs) should not be writable
+     *                    ^
+     * </pre>
+     */
+    def be(writableWord: WritableWord)(implicit writability: Writability[T]) {
+      doCollected(collected, xs, "be", 1) { e => 
+        if (writability.isWritable(e) != shouldBeTrue) {
+          throw newTestFailedException(
+            FailureMessages(if (shouldBeTrue) "wasNotWritable" else "wasWritable", e), 
+            None, 
+            6
+          )
+        }
+      }
+    }
 
     /**
      * This method enables the following syntax:
@@ -4370,6 +4390,21 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, "shouldBe", 1) { e =>
         if (!readability.isReadable(e))
           throw newTestFailedException(FailureMessages("wasNotReadable", e), None, 6)
+      }
+    }
+    
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * all(xs) shouldBe writable
+     *         ^
+     * </pre>
+     */
+    def shouldBe(writableWord: WritableWord)(implicit writability: Writability[T]) {
+      doCollected(collected, xs, "shouldBe", 1) { e =>
+        if (!writability.isWritable(e))
+          throw newTestFailedException(FailureMessages("wasNotWritable", e), None, 6)
       }
     }
 
@@ -5642,6 +5677,19 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def shouldBe(right: ReadableWord)(implicit readability: Readability[T]) {
       if (!readability.isReadable(left))
         throw newTestFailedException(FailureMessages("wasNotReadable", left))
+    }
+    
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * result shouldBe writable
+     *        ^
+     * </pre>
+     */
+    def shouldBe(right: WritableWord)(implicit writability: Writability[T]) {
+      if (!writability.isWritable(left))
+        throw newTestFailedException(FailureMessages("wasNotWritable", left))
     }
 
     /**
