@@ -66,7 +66,7 @@ import scala.collection.JavaConverters._
  * versus Aggregating</a> section of the main documentation for trait <code>Containing</code>.
  * </p>
  */
-trait Aggregating[A] {
+trait Aggregating[-A] {
 
 // TODO: Write tests that a NotAllowedException is thrown when no elements are passed, maybe if only one element is passed, and 
 // likely if an object is repeated in the list.
@@ -309,6 +309,7 @@ object Aggregating {
   implicit def convertEqualityToStringAggregating(equality: Equality[Char]): Aggregating[String] = 
     aggregatingNatureOfString(equality)
     
+/*
   implicit def aggregatingNatureOfGenMap[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](implicit equality: Equality[(K, V)]): Aggregating[MAP[K, V]] = 
     new Aggregating[MAP[K, V]] {
       def containsAtLeastOneOf(map: MAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
@@ -330,6 +331,7 @@ object Aggregating {
 
   implicit def convertEqualityToGenMapAggregating[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](equality: Equality[(K, V)]): Aggregating[MAP[K, V]] = 
     aggregatingNatureOfGenMap(equality)
+*/
     
   implicit def aggregatingNatureOfJavaCollection[E, JCOL[e] <: java.util.Collection[e]](implicit equality: Equality[E]): Aggregating[JCOL[E]] = 
     new Aggregating[JCOL[E]] {

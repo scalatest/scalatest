@@ -38,7 +38,7 @@ import scala.collection.JavaConverters._
  * <code>ValueMapping</code> companion object.
  * </p>
  */
-trait ValueMapping[M] {
+trait ValueMapping[-M] {
 
   /**
    * Implements <code>contain</code> <code>atLeastOneOf</code> syntax for aggregations of type <code>A</code>.

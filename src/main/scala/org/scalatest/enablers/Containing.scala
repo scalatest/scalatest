@@ -73,7 +73,7 @@ import org.scalatest.FailureMessages
  * for type <code>Option</code>.
  * </p>
  */
-trait Containing[C] {
+trait Containing[-C] {
 
   /**
    * Implements <code>contain</code> <code>&lt;value&gt;</code> syntax for containers of type <code>C</code>.
@@ -231,6 +231,7 @@ object Containing {
   implicit def convertEqualityToOptionContaining[E, OPT[e] <: Option[e]](equality: Equality[E]): Containing[OPT[E]] = 
     containingNatureOfOption(equality)
 
+/*
   implicit def containingNatureOfGenMap[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](implicit equality: Equality[(K, V)]): Containing[MAP[K, V]] = 
     new Containing[MAP[K, V]] {
       def contains(map: MAP[K, V], ele: Any): Boolean = {
@@ -248,7 +249,9 @@ object Containing {
 
   implicit def convertEqualityToGenMapContaining[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](equality: Equality[(K, V)]): Containing[MAP[K, V]] = 
     containingNatureOfGenMap(equality)
+*/
 
+/*
   // This one works for subclasses of Map that have eaten the type parameters, such as ConfigMap.
   // Because no type params exist in the actual type, I can't get Scala to infer them correctly, so 
   // the best we can do is use default Equality. I'm not sure if I should define this as the correct behavior,
@@ -268,6 +271,7 @@ object Containing {
         !found.isDefined
       }
     }
+*/
 
   implicit def containingNatureOfArray[E](implicit equality: Equality[E]): Containing[Array[E]] = 
     new Containing[Array[E]] {

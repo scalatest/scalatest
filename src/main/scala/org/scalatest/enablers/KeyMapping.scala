@@ -38,7 +38,7 @@ import scala.collection.JavaConverters._
  * <code>Mapping</code> companion object.
  * </p>
  */
-trait KeyMapping[M] {
+trait KeyMapping[-M] {
 
   /**
    * Implements <code>contain</code> <code>atLeastOneOf</code> syntax for aggregations of type <code>A</code>.

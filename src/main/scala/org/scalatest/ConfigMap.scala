@@ -204,6 +204,7 @@ object ConfigMap {
    */
   def empty: ConfigMap = new ConfigMap(Map.empty)
 
+/*
   implicit def containingAndAggregatingNaturesOfConfigMap[CM <: ConfigMap](implicit equality: Equality[(String, Any)]): Containing[CM] with Aggregating[CM] =
     new Containing[CM] with Aggregating[CM] {
       def contains(map: CM, ele: Any): Boolean = {
@@ -249,5 +250,6 @@ object ConfigMap {
         map.iterator.map(_._2).exists((v: Any) => equality.areEqual(v, value))
       }
     }
+*/
 }
 
