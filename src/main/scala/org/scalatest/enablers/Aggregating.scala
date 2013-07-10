@@ -309,30 +309,6 @@ object Aggregating {
   implicit def convertEqualityToStringAggregating(equality: Equality[Char]): Aggregating[String] = 
     aggregatingNatureOfString(equality)
     
-/*
-  implicit def aggregatingNatureOfGenMap[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](implicit equality: Equality[(K, V)]): Aggregating[MAP[K, V]] = 
-    new Aggregating[MAP[K, V]] {
-      def containsAtLeastOneOf(map: MAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
-        map.exists((e: (K, V)) => elements.exists((ele: Any) => equality.areEqual(e, ele)))
-      }
-      def containsTheSameElementsAs(map: MAP[K, V], elements: GenTraversable[Any]): Boolean = {
-        checkTheSameElementsAs(map, elements, equality)
-      }
-      def containsOnly(map: MAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
-        checkOnly(map, elements, equality)
-      }
-      def containsAllOf(map: MAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
-        checkAllOf(map, elements, equality)
-      }
-      def containsAtMostOneOf(map: MAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
-        checkAtMostOneOf(map, elements, equality)
-      }
-    }
-
-  implicit def convertEqualityToGenMapAggregating[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](equality: Equality[(K, V)]): Aggregating[MAP[K, V]] = 
-    aggregatingNatureOfGenMap(equality)
-*/
-    
   implicit def aggregatingNatureOfJavaCollection[E, JCOL[e] <: java.util.Collection[e]](implicit equality: Equality[E]): Aggregating[JCOL[E]] = 
     new Aggregating[JCOL[E]] {
       def containsAtLeastOneOf(col: JCOL[E], elements: scala.collection.Seq[Any]): Boolean = {

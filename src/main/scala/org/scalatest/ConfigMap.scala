@@ -203,53 +203,5 @@ object ConfigMap {
    * Constructs an empty <code>ConfigMap</code>.
    */
   def empty: ConfigMap = new ConfigMap(Map.empty)
-
-/*
-  implicit def containingAndAggregatingNaturesOfConfigMap[CM <: ConfigMap](implicit equality: Equality[(String, Any)]): Containing[CM] with Aggregating[CM] =
-    new Containing[CM] with Aggregating[CM] {
-      def contains(map: CM, ele: Any): Boolean = {
-        map.exists((e: (String, Any)) => equality.areEqual(e, ele))
-      }
-      def containsOneOf(map: CM, elements: scala.collection.Seq[Any]): Boolean = {
-        val foundSet = Containing.checkOneOf[(String, Any)](map, elements, equality)
-        foundSet.size == 1
-      }
-      def containsNoneOf(map: CM, elements: scala.collection.Seq[Any]): Boolean = {
-        val found = Containing.checkNoneOf[(String, Any)](map, elements, equality)
-        !found.isDefined
-      }
-      def containsAtLeastOneOf(map: CM, elements: scala.collection.Seq[Any]): Boolean = {
-        map.exists((e: (String, Any)) => elements.exists((ele: Any) => equality.areEqual(e, ele)))
-      }
-      def containsTheSameElementsAs(map: CM, elements: GenTraversable[Any]): Boolean = {
-        Aggregating.checkTheSameElementsAs(map, elements, equality)
-      }
-      def containsOnly(map: CM, elements: scala.collection.Seq[Any]): Boolean = {
-        Aggregating.checkOnly(map, elements, equality)
-      }
-      def containsAllOf(map: CM, elements: scala.collection.Seq[Any]): Boolean = {
-        Aggregating.checkAllOf(map, elements, equality)
-      }
-      def containsAtMostOneOf(map: CM, elements: scala.collection.Seq[Any]): Boolean = {
-        Aggregating.checkAtMostOneOf(map, elements, equality)
-      }
-    }
-
-  implicit def keyMappingNatureOfConfigMap[CM <: ConfigMap](implicit equality: Equality[String]): KeyMapping[CM] = 
-    new KeyMapping[CM] {
-      def containsKey(map: CM, key: Any): Boolean = {
-        // map.keySet.exists((k: String) => equality.areEqual(k, key)) go back to this once I'm off 2.9
-        map.iterator.map(_._1).exists((k: String) => equality.areEqual(k, key))
-      }
-    }
-
-  implicit def valueMappingNatureOfConfigMap[CM <: ConfigMap](implicit equality: Equality[Any]): ValueMapping[CM] = 
-    new ValueMapping[CM] {
-      def containsValue(map: CM, value: Any): Boolean = {
-        // map.values.exists((v: Any) => equality.areEqual(v, value)) go back to this once I'm off 2.9
-        map.iterator.map(_._2).exists((v: Any) => equality.areEqual(v, value))
-      }
-    }
-*/
 }
 
