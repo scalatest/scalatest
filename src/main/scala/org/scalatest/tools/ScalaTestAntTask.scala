@@ -10,7 +10,7 @@ import org.apache.tools.ant.taskdefs.Java
 /**
  * <p>
  * An ant task to run ScalaTest. Instructions on how to specify various
- * options are below.  See the scaladocs for the <code>Runner</code> class for a description
+ * options are below.  See the main documentation for object <a href="Runner$.html"><code>Runner</code></a> class for a description
  * of what each of the options does.
  * </p>
  *
@@ -23,6 +23,8 @@ import org.apache.tools.ant.taskdefs.Java
  *  &lt;path id="scalatest.classpath"&gt;
  *    &lt;pathelement location="${lib}/scalatest.jar"/&gt;
  *    &lt;pathelement location="${lib}/scala-library.jar"/&gt;
+ *    &lt;-- scala-actors.jar needed only for ScalaTest <= 1.9.1 on Scala >= 2.10.0 --&gt;
+ *    &lt;pathelement location="${lib}/scala-actors.jar"/&gt;
  *  &lt;/path&gt;
  *
  *  &lt;target name="main" depends="dist"&gt;
@@ -35,6 +37,8 @@ import org.apache.tools.ant.taskdefs.Java
  * </pre>
  *
  * <p>
+ * Note that you only need the <code>scala-actors.jar</code> if you are using ScalaTest version 1.9.1 or earlier
+ * with Scala 2.10 or later.
  * Once defined, you use the task by specifying information in a <code>scalatest</code> element:
  * </p>
  *
@@ -45,7 +49,7 @@ import org.apache.tools.ant.taskdefs.Java
  * </pre>
  *
  * <p>
- * You can place key value pairs into the <code>configMap</code> using nested <code>&lt;config&gt;</code> elements,
+ * You can place key value pairs into the <a href="Runner$.html#configMapSection">config map</a> using nested <code>&lt;config&gt;</code> elements,
  * like this:
  * </p>
  *
@@ -56,7 +60,7 @@ import org.apache.tools.ant.taskdefs.Java
  * </pre>
  *
  * <p>
- * You can specify a runpath using either a <code>runpath</code> attribute and/or nested
+ * You can specify a <a href="Runner$.html#specifyingARunpath">runpath</a> using either a <code>runpath</code> attribute and/or nested
  * <code>&lt;runpath&gt;</code> elements, using standard ant path notation:
  * </p>
  *
@@ -85,7 +89,7 @@ import org.apache.tools.ant.taskdefs.Java
  * </pre>
  *
  * <p>
- * You can specify reporters using nested <code>&lt;reporter&gt;</code> elements, where the <code>type</code>
+ * You can specify <a href="Runner$.html#specifyingReporters">reporters</a> using nested <code>&lt;reporter&gt;</code> elements, where the <code>type</code>
  * attribute must be one of the following:
  * </p>
  *
@@ -100,14 +104,14 @@ import org.apache.tools.ant.taskdefs.Java
  * </ul>
  *
  * <p>
- * Each may include a <code>config</code> attribute to specify the reporter configuration.
+ * Each may include a <code>config</code> attribute to specify the <a href="Runner$.html#configuringReporters">reporter configuration</a>.
  * Types <code>file</code>, <code>junitxml</code>, <code>html</code>, and <code>reporterclass</code> require additional attributes
  * (the css attribute is optional for the html reporter):
  * </p>
  *
  * <pre>
  *   &lt;scalatest&gt;
- *     &lt;reporter type="stdout" config="FAB"/&gt;
+ *     &lt;reporter type="stdout" config="FD"/&gt;
  *     &lt;reporter type="file" filename="test.out"/&gt;
  *     &lt;reporter type="junitxml" directory="target"/&gt;
  *     &lt;reporter type="html" directory="target" css="src/main/html/mystylesheet.css"/&gt;
@@ -115,7 +119,7 @@ import org.apache.tools.ant.taskdefs.Java
  * </pre>
  *
  * <p>
- * Specify tags to include and/or exclude using <code>&lt;tagsToInclude&gt;</code> and
+ * Specify <a href="Runner$.html#specifyingTagsToIncludeAndExclude">tags to include and/or exclude</a> using <code>&lt;tagsToInclude&gt;</code> and
  * <code>&lt;tagsToExclude&gt;</code> elements, like this:
  * </p>
  *
@@ -139,7 +143,7 @@ import org.apache.tools.ant.taskdefs.Java
  * </p>
  *
  * <p>
- * To specify suites to run, use either a <code>suite</code> attribute or nested
+ * To specify <a href="Runner$.html#selectingSuitesAndTests">suites to run</a>, use either a <code>suite</code> attribute or nested
  * <code>&lt;suite&gt;</code> elements:
  * </p>
  *
@@ -157,7 +161,7 @@ import org.apache.tools.ant.taskdefs.Java
  * </pre>
  *
  * <p>
- * To specify tests to run, use nested <code>&lt;test&gt;</code> elements with
+ * To specify <a href="Runner$.html#selectingSuitesAndTests">tests to run</a>, use nested <code>&lt;test&gt;</code> elements with
  * either a 'name' or 'substring' attribute:
  * </p>
  *
@@ -168,7 +172,7 @@ import org.apache.tools.ant.taskdefs.Java
  * </pre>
  *
  * <p>
- * To specify suites using members-only or wildcard package names, use
+ * To specify suites using <a href="Runner$.html#membersOnlyWildcard">members-only or wildcard</a> package names, use
  * either the <code>membersonly</code> or <code>wildcard</code> attributes, or nested
  * <code>&lt;membersonly&gt;</code> or <code>&lt;wildcard&gt;</code> elements:
  * </p>
@@ -197,7 +201,7 @@ import org.apache.tools.ant.taskdefs.Java
  *
  * <p>
  * Use attribute <code>suffixes="[pipe-delimited list of suffixes]"</code>
- * to specify that only classes whose names end in one of the specified suffixes
+ * to specify that only classes whose names end in one of the specified <a href="Runner$.html#specifyingSuffixesToDiscover">suffixes</a>
  * should be included in discovery searches for Suites to test.  This can
  * be used to improve discovery time or to limit the scope of a test. E.g.:
  * </p>
@@ -207,7 +211,7 @@ import org.apache.tools.ant.taskdefs.Java
  * </pre>
  *
  * <p>
- * Use attribute <code>parallel="true"</code> to specify parallel execution of suites.
+ * Use attribute <code>parallel="true"</code> to specify <a href="Runner$.html#executingSuitesInParallel">parallel execution</a> of suites.
  * (If the <code>parallel</code> attribute is left out or set to false, suites will be executed sequentially by one thread.)
  * When <code>parallel</code> is true, you can include an optional <code>sortSuites</code> attribute to request that events be sorted on-the-fly so that
  * events for the same suite are reported together, with a timeout, (<em>e.g.</em>, <code>sortSuites="true"</code>),
@@ -516,7 +520,7 @@ class ScalaTestAntTask extends Task {
 
   //
   // Adds specified option to args for reporter.  Appends reporter
-  // config string to option if specified, e.g. "-eFAB".
+  // config string to option if specified, e.g. "-eFD".
   //
   private def addReporterOption(args: ListBuffer[String],
                                 reporter: ReporterElement,
@@ -531,7 +535,7 @@ class ScalaTestAntTask extends Task {
   //
   // Adds '-f' file reporter option to args.  Appends reporter
   // config string to option if specified.  Adds reporter's
-  // filename as additional argument, e.g. "-fFAB", "filename".
+  // filename as additional argument, e.g. "-fFD", "filename".
   //
   private def addFileReporter(args: ListBuffer[String],
                               reporter: ReporterElement)
@@ -602,7 +606,7 @@ class ScalaTestAntTask extends Task {
   //
   // Adds '-h' html reporter option to args.  Appends reporter
   // config string to option if specified.  Adds reporter's
-  // filename as additional argument, e.g. "-hFAB", "filename".
+  // filename as additional argument, e.g. "-hFD", "filename".
   //
   private def addHtmlReporter(args: ListBuffer[String],
                               reporter: ReporterElement)
@@ -622,9 +626,9 @@ class ScalaTestAntTask extends Task {
   }
 
   //
-  // Adds '-R' reporter class option to args.  Appends
+  // Adds '-C' reporter class option to args.  Appends
   // reporter config string to option if specified.  Adds
-  // reporter's classname as additional argument, e.g. "-RFAB",
+  // reporter's classname as additional argument, e.g. "-C",
   // "my.ReporterClass".
   //
   private def addReporterClass(args: ListBuffer[String],
