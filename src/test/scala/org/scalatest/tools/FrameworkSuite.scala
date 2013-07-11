@@ -393,14 +393,20 @@ class FrameworkSuite extends FunSuite {
     assert(tasks.size === 0)
   }
   
-  test("When suite is neither subclass of org.scalatest.Suite or annotated with WrapWith, IllegalArgumentException will be thrown") {
+  test("When suite is neither subclass of org.scalatest.Suite or annotated with WrapWith and explicitlySpecified is true, IllegalArgumentException will be thrown when task executes") {
     intercept[IllegalArgumentException] {
       val runner = framework.runner(Array.empty, Array.empty, testClassLoader)
-      val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.NotASuite", subclassFingerprint, false, Array(new SuiteSelector))))
+      val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.NotASuite", subclassFingerprint, true, Array(new SuiteSelector))))
       assert(tasks.size === 1)
       val notASuiteTask = tasks(0)
       notASuiteTask.execute(new TestEventHandler, Array(new TestLogger))
     }
+  }
+  
+  test("When suite is neither subclass of org.scalatest.Suite or annotated with WrapWith and explicitlySpecified is false, no task will be returned") {
+    val runner = framework.runner(Array.empty, Array.empty, testClassLoader)
+    val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.NotASuite", subclassFingerprint, false, Array(new SuiteSelector))))
+    assert(tasks.size === 0)
   }
   
   test("When an invalid suite class name is passed into to task(fullyQualifiedName: String, fingerprint: Fingerprint), IllegalArgumentException " +

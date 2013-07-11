@@ -401,7 +401,8 @@ class Framework extends SbtFramework {
     }
     
     lazy val suiteClass = loadSuiteClass
-    lazy val doNotDiscover = !taskDefinition.explicitlySpecified && !isDiscoverableSuite(suiteClass)
+    lazy val shouldDiscover = 
+      taskDefinition.explicitlySpecified || ((isAccessibleSuite(suiteClass) || isRunnable(suiteClass)) && isDiscoverableSuite(suiteClass)) 
     
     def tags = 
       for { 
@@ -609,7 +610,7 @@ class Framework extends SbtFramework {
       for { 
         taskDef <- taskDefs 
         val task = createTask(taskDef)
-        if !task.doNotDiscover
+        if task.shouldDiscover
       } yield task
     
     def done = {
@@ -781,7 +782,18 @@ class Framework extends SbtFramework {
           (!remoteArgs.isEmpty || repoArgsList.isEmpty, false, true, false, false, false, false, false, false, false)
       }
     
-    val reporterConfigs = fullReporterConfigurations.copy(standardOutReporterConfiguration = None)
+    //val reporterConfigs = fullReporterConfigurations.copy(standardOutReporterConfiguration = None)
+    // If there's a graphic reporter, we need to leave it out of
+    // reporterSpecs, because we want to pass all reporterSpecs except
+    // the graphic reporter's to the RunnerJFrame (because RunnerJFrame *is*
+    // the graphic reporter).
+    val reporterConfigs: ReporterConfigurations =
+      fullReporterConfigurations.graphicReporterConfiguration match {
+        case None => fullReporterConfigurations.copy(standardOutReporterConfiguration = None)
+        case Some(grs) => {
+          throw new IllegalArgumentException("Graphic reporter is not supported when runs in SBT.")
+        }
+      }
     
     new ScalaTestRunner(
       args,
