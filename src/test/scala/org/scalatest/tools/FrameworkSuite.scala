@@ -901,4 +901,21 @@ class FrameworkSuite extends FunSuite {
     assert(task2Selectors.length === 1)
     assert(task2Selectors(0) === suiteSelector)
   }
+  
+  test("-l argument can be used to exclude test") {
+    val testEventHandler = new TestEventHandler
+    val runner = framework.runner(Array("-l", "org.scalatest.tools.scalasbt.SampleSuite.SlowTest"), Array.empty, testClassLoader)
+    
+    val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.SampleSuite", subclassFingerprint, false, Array(new SuiteSelector))))
+    assert(tasks.size === 1)
+    val task = tasks(0)
+    task.execute(testEventHandler, Array(new TestLogger))
+    val successEvents = testEventHandler.successEventsReceived
+    assert(successEvents.length === 2)
+    assertSuiteSuccessEvent(successEvents(0), "org.scalatest.tools.scalasbt.SampleSuite", "test 1", subclassFingerprint)
+    assertSuiteSuccessEvent(successEvents(1), "org.scalatest.tools.scalasbt.SampleSuite", "test 3", subclassFingerprint)
+    assert(testEventHandler.errorEventsReceived.length === 0)
+    assert(testEventHandler.failureEventsReceived.length === 0)
+    assert(testEventHandler.skippedEventsReceived.length === 0)
+  }
 }
