@@ -6,7 +6,9 @@ object ScalatestBuild extends Build {
 
   val scalaVersionToUse = "2.10.0"
     
-  val releaseVersion = "2.0.M6-SNAP15"
+  val releaseVersion = "2.0.M6-SNAP27"
+    
+  val sbtVersionToUse = "0.13.0-RC1"
   
   val includeTestPackageSet = Set("org.scalatest", 
                                   "org.scalatest.fixture", 
@@ -33,122 +35,91 @@ object ScalatestBuild extends Build {
         false
     }
   }
-   
-  def isRunnable(className: String, testLoader: ClassLoader): Boolean = {
-    val clazz = testLoader.loadClass(className)
-    clazz.getAnnotations.find(a => a.annotationType.getName == "org.scalatest.WrapWith") match {
-      case Some(wrapWithAnnotation) => 
-        val wrapperSuiteClazz = wrapWithAnnotation.getClass.getMethod("value").invoke(wrapWithAnnotation).asInstanceOf[Class[_]]
-        val constructorList = wrapperSuiteClazz.getDeclaredConstructors()
-        constructorList.exists { c => 
-          val types = c.getParameterTypes
-          types.length == 1 && types(0) == classOf[java.lang.Class[_]]
-        }
-      case None =>
-        false
-    }
-  }
-  
-  def isDiscoverableSuite(className: String, testLoader: ClassLoader): Boolean = {
-    val clazz = testLoader.loadClass(className)
-    !clazz.getAnnotations.exists(_.annotationType.getName == "org.scalatest.DoNotDiscover")
-  }
-  
-  val emptyClassArray = new Array[java.lang.Class[T] forSome { type T }](0)
-  
-  def isAccessibleSuite(className: String, testLoader: ClassLoader): Boolean = {
-    import java.lang.reflect.Modifier
-    try {
-      val clazz = testLoader.loadClass(className)
-      Modifier.isPublic(clazz.getModifiers) &&
-      !Modifier.isAbstract(clazz.getModifiers) &&
-      Modifier.isPublic(clazz.getConstructor(emptyClassArray: _*).getModifiers)
-    }
-    catch {
-      case nsme: NoSuchMethodException => false
-      case se: SecurityException => false
-    }
-  }
                               
-  def isScalaTestSuite(className: String, testLoader: ClassLoader): Boolean = {
-    isIncludedPackage(className) &&
-    isDiscoverableSuite(className, testLoader) && 
-    (isAccessibleSuite(className, testLoader) || isRunnable(className, testLoader))
-  }
-                              
-   lazy val scalatest = Project("scalatest", file("."))
+  lazy val scalatest = Project("scalatest", file("."))
    .settings(
      organization := "org.scalatest",
      version := releaseVersion,
      scalaVersion := scalaVersionToUse,
-     sbtVersion := "0.12.3", 
+     sbtVersion := sbtVersionToUse, 
+     ivyXML := 
+       <dependency org="org.eclipse.jetty.orbit" name="javax.servlet" rev="3.0.0.v201112011016">
+         <artifact name="javax.servlet" type="orbit" ext="jar"/>
+       </dependency>, 
      libraryDependencies ++= simpledependencies,
      resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
      genMustMatchersTask, 
      genGenTask, 
      genTablesTask, 
-     genTheyWordTask, 
      genCodeTask, 
-     genInspectorsTask, 
+     genFactoriesTask, 
      sourceGenerators in Compile <+= 
-         (baseDirectory, sourceManaged in Compile) map genFiles("gen", "GenGen.scala")(GenGen.genMain),
+         (baseDirectory, sourceManaged in Compile) map genFiles("gengen", "GenGen.scala")(GenGen.genMain),
      sourceGenerators in Compile <+= 
          (baseDirectory, sourceManaged in Compile) map genFiles("gentables", "GenTable.scala")(GenTable.genMain),
      sourceGenerators in Compile <+=
-         (baseDirectory, sourceManaged in Compile) map genFiles("matchers", "MustMatchers.scala")(GenMatchers.genMain),
+         (baseDirectory, sourceManaged in Compile) map genFiles("genmatchers", "MustMatchers.scala")(GenMatchers.genMain),
      sourceGenerators in Compile <+= 
          (baseDirectory, sourceManaged in Compile) map genFiles("genfactories", "GenFactories.scala")(GenFactories.genMain),
-     testOptions in Test <<= 
-         (fullClasspath in Test) map { classPathList =>
-           val urlList:Seq[URL] = classPathList map {attr => new File(attr.data.getAbsolutePath()).toURL }
-           val testLoader = new URLClassLoader(urlList.toArray)
-           Seq(Tests.Filter(className => isScalaTestSuite(className, testLoader)))
-         }
-   )/*.aggregate("gentests")*/
+     testOptions in Test := Seq(Tests.Filter(s => isIncludedPackage(s)), 
+                                Tests.Argument("-l", "org.scalatest.tags.Slow", 
+                                               "-oDI", 
+                                               "-h", "target/html", 
+                                               "-u", "target/junit"))
+   )
    
-   lazy val gentests = Project("gentests", file("gen"))
+  lazy val gentests = Project("gentests", file("gentests"))
    .settings(
      organization := "org.scalatest",
      version := releaseVersion,
      scalaVersion := scalaVersionToUse,
+     sbtVersion := sbtVersionToUse, 
      libraryDependencies ++= simpledependencies,
      resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
+     genInspectorsTask, 
+     genTheyWordTask, 
+     genContainTask, 
+     genSortedTask, 
+     genLoneElementTask, 
      sourceGenerators in Test <+= 
-         (baseDirectory, sourceManaged in Test) map genFiles("gen", "GenGen.scala")(GenGen.genTest),
+         (baseDirectory, sourceManaged in Test) map genFiles("gengen", "GenGen.scala")(GenGen.genTest),
      sourceGenerators in Test <+= 
          (baseDirectory, sourceManaged in Test) map genFiles("gentables", "GenTable.scala")(GenTable.genTest),
      sourceGenerators in Test <+=
-           (baseDirectory, sourceManaged in Test) map genFiles("matchers", "GenMatchers.scala")(GenMatchers.genTest),
+           (baseDirectory, sourceManaged in Test) map genFiles("genmatchers", "GenMatchers.scala")(GenMatchers.genTest),
      sourceGenerators in Test <+= 
          (baseDirectory, sourceManaged in Test) map genFiles("genthey", "GenTheyWord.scala")(GenTheyWord.genTest),
      sourceGenerators in Test <+= 
          (baseDirectory, sourceManaged in Test) map genFiles("geninspectors", "GenInspectors.scala")(GenInspectors.genTest),
-     testOptions in Test <<= 
-         (fullClasspath in Test) map { classPathList =>
-           val urlList:Seq[URL] = classPathList map {attr => new File(attr.data.getAbsolutePath()).toURL }
-           val testLoader = new URLClassLoader(urlList.toArray)
-           Seq(Tests.Filter(className => isScalaTestSuite(className, testLoader)))
-         }
+     sourceGenerators in Test <+= 
+         (baseDirectory, sourceManaged in Test) map genFiles("gencontain", "GenContain.scala")(GenContain.genTest), 
+     sourceGenerators in Test <+= 
+         (baseDirectory, sourceManaged in Test) map genFiles("gensorted", "GenSorted.scala")(GenSorted.genTest),
+     sourceGenerators in Test <+= 
+         (baseDirectory, sourceManaged in Test) map genFiles("genloneelement", "GenLoneElement.scala")(GenLoneElement.genTest),
+     testOptions in Test := Seq(Tests.Argument("-l", "org.scalatest.tags.Slow", 
+                                               "-oDI", 
+                                               "-h", "gentests/target/html", 
+                                               "-u", "gentests/target/junit"))
    ).dependsOn(scalatest  % "test->test")
 
    def simpledependencies = Seq(
-     "org.scalatest" % "test-interface" % "1.0-SNAP2",  // TODO optional
-     "org.scalacheck" % ("scalacheck_" + scalaVersionToUse) % "1.10.0",   // TODO optional
-     "org.easymock" % "easymockclassextension" % "3.1",   // TODO optional
-     "org.jmock" % "jmock-legacy" % "2.5.1", // TODO optional
-     "org.mockito" % "mockito-all" % "1.9.0", // TODO optional
-     "org.testng" % "testng" % "6.3.1",  // TODO optional
-     "com.google.inject" % "guice" % "3.0", // TODO optional
-     "junit" % "junit" % "4.10", // TODO optional
-     "org.seleniumhq.selenium" % "selenium-java" % "2.25.0", // TODO optional 
-     "com.typesafe.akka" % "akka-actor" % "2.0.2", // TODO optional
-     "org.apache.ant" % "ant" % "1.7.1", // TODO optional
+     "org.scala-sbt" % "test-interface" % "1.0" % "optional", 
+     "org.scalacheck" % ("scalacheck_" + scalaVersionToUse) % "1.10.0" % "optional", 
+     "org.easymock" % "easymockclassextension" % "3.1" % "optional", 
+     "org.jmock" % "jmock-legacy" % "2.5.1" % "optional", 
+     "org.mockito" % "mockito-all" % "1.9.0" % "optional", 
+     "org.testng" % "testng" % "6.3.1" % "optional", 
+     "com.google.inject" % "guice" % "3.0" % "optional", 
+     "junit" % "junit" % "4.10" % "optional", 
+     "org.seleniumhq.selenium" % "selenium-java" % "2.31.0" % "optional",  
+     "org.apache.ant" % "ant" % "1.7.1" % "optional", 
      "net.sourceforge.cobertura" % "cobertura" % "1.9.1" % "test",
      "commons-io" % "commons-io" % "1.3.2" % "test", 
-     "org.eclipse.jetty" % "jetty-server" % "8.0.1.v20110908" % "test", 
-     "org.eclipse.jetty" % "jetty-webapp" % "8.0.1.v20110908" % "test", 
-     "asm" % "asm" % "3.3.1", // TODO optional
-     "org.pegdown" % "pegdown" % "1.1.0" // TODO optional
+     "org.eclipse.jetty" % "jetty-server" % "8.1.8.v20121106" % "test", 
+     "org.eclipse.jetty" % "jetty-webapp" % "8.1.8.v20121106" % "test", 
+     "asm" % "asm" % "3.3.1" % "optional", 
+     "org.pegdown" % "pegdown" % "1.1.0" % "optional" 
   )
 
   def genFiles(name: String, generatorSource: String)(gen: (File, String) => Unit)(basedir: File, outDir: File): Seq[File] = {
@@ -162,45 +133,57 @@ object ScalatestBuild extends Build {
     results
   }
   
-  val genMustMatchers = TaskKey[Unit]("genmustmatchers", "Generate Must Matchers")
+  val genMustMatchers = TaskKey[Unit]("genmatchers", "Generate Must Matchers")
   val genMustMatchersTask = genMustMatchers <<= (sourceManaged in Compile, sourceManaged in Test) map { (mainTargetDir: File, testTargetDir: File) =>
-    GenMatchers.genMain(new File("gen/target/scala-" + scalaVersionToUse + "/src_managed/main/matchers"), scalaVersionToUse)
-    GenMatchers.genTest(new File("gen/target/scala-" + scalaVersionToUse + "/src_managed/test/matchers"), scalaVersionToUse)
+    GenMatchers.genMain(new File("target/scala-" + scalaVersionToUse + "/src_managed/main/genmatchers"), scalaVersionToUse)
+    GenMatchers.genTest(new File("gentests/target/scala-" + scalaVersionToUse + "/src_managed/test/genmatchers"), scalaVersionToUse)
   }
   
   val genGen = TaskKey[Unit]("gengen", "Generate Property Checks")
   val genGenTask = genGen <<= (sourceManaged in Compile, sourceManaged in Test) map { (mainTargetDir: File, testTargetDir: File) =>
-    GenGen.genMain(new File("gen/target/scala-" + scalaVersionToUse + "/src_managed/main/gen"), scalaVersionToUse)
-    GenGen.genTest(new File("gen/target/scala-" + scalaVersionToUse + "/src_managed/test/gen"), scalaVersionToUse)
+    GenGen.genMain(new File("target/scala-" + scalaVersionToUse + "/src_managed/main/gengen"), scalaVersionToUse)
+    GenGen.genTest(new File("gentests/target/scala-" + scalaVersionToUse + "/src_managed/test/gengen"), scalaVersionToUse)
   }
   
   val genTables = TaskKey[Unit]("gentables", "Generate Tables")
   val genTablesTask = genTables <<= (sourceManaged in Compile, sourceManaged in Test) map { (mainTargetDir: File, testTargetDir: File) =>
-    GenTable.genMain(new File("gen/target/scala-" + scalaVersionToUse + "/src_managed/main/gentables"), scalaVersionToUse)
-    GenTable.genTest(new File("gen/target/scala-" + scalaVersionToUse + "/src_managed/test/gentables"), scalaVersionToUse)
+    GenTable.genMain(new File("target/scala-" + scalaVersionToUse + "/src_managed/main/gentables"), scalaVersionToUse)
+    GenTable.genTest(new File("gentests/target/scala-" + scalaVersionToUse + "/src_managed/test/gentables"), scalaVersionToUse)
   }
   
   val genTheyWord = TaskKey[Unit]("genthey", "Generate They Word tests")
   val genTheyWordTask = genTheyWord <<= (sourceManaged in Compile, sourceManaged in Test) map { (mainTargetDir: File, testTargetDir: File) =>
-    GenTheyWord.genTest(new File("gen/target/scala-" + scalaVersionToUse + "/src_managed/test/genthey"), scalaVersionToUse)
+    GenTheyWord.genTest(new File("gentests/target/scala-" + scalaVersionToUse + "/src_managed/test/genthey"), scalaVersionToUse)
   }
   
   val genInspectors = TaskKey[Unit]("geninspectors", "Generate Inspectors tests")
   val genInspectorsTask = genInspectors <<= (sourceManaged in Compile, sourceManaged in Test) map { (mainTargetDir: File, testTargetDir: File) =>
-    GenInspectors.genTest(new File("gen/target/scala-" + scalaVersionToUse + "/src_managed/test/geninspectors"), scalaVersionToUse)
+    GenInspectors.genTest(new File("gentests/target/scala-" + scalaVersionToUse + "/src_managed/test/geninspectors"), scalaVersionToUse)
   }
   
   val genFactories = TaskKey[Unit]("genfactories", "Generate Matcher Factories")
   val genFactoriesTask = genFactories <<= (sourceManaged in Compile, sourceManaged in Test) map { (mainTargetDir: File, testTargetDir: File) =>
-    GenFactories.genMain(new File("gen/target/scala-" + scalaVersionToUse + "/src_managed/main/gen"), scalaVersionToUse)
+    GenFactories.genMain(new File("target/scala-" + scalaVersionToUse + "/src_managed/main/genfactories"), scalaVersionToUse)
+  }
+  
+  val genContain = TaskKey[Unit]("gencontain", "Generate contain matcher tests")
+  val genContainTask = genContain <<= (sourceManaged in Compile, sourceManaged in Test) map { (mainTargetDir: File, testTargetDir: File) =>
+    GenContain.genTest(new File("gentests/target/scala-" + scalaVersionToUse + "/src_managed/test/contain"), scalaVersionToUse)
+  }
+  
+  val genSorted = TaskKey[Unit]("gensorted", "Generate sorted matcher tests")
+  val genSortedTask = genSorted <<= (sourceManaged in Compile, sourceManaged in Test) map { (mainTargetDir: File, testTargetDir: File) =>
+    GenSorted.genTest(new File("gentests/target/scala-" + scalaVersionToUse + "/src_managed/test/gensorted"), scalaVersionToUse)
+  }
+  
+  val genLoneElement = TaskKey[Unit]("genloneelement", "Generate lone element matcher tests")
+  val genLoneElementTask = genLoneElement <<= (sourceManaged in Compile, sourceManaged in Test) map { (mainTargetDir: File, testTargetDir: File) =>
+    GenLoneElement.genTest(new File("gentests/target/scala-" + scalaVersionToUse + "/src_managed/test/genloneelement"), scalaVersionToUse)
   }
 
   val genCode = TaskKey[Unit]("gencode", "Generate Code, includes Must Matchers and They Word tests.")
   val genCodeTask = genCode <<= (sourceManaged in Compile, sourceManaged in Test) map { (mainTargetDir: File, testTargetDir: File) =>
-    GenMatchers.genMain(new File("target/scala-" + scalaVersionToUse + "/src_managed/main/matchers"), scalaVersionToUse)
-    GenFactories.genMain(new File("gen/target/scala-" + scalaVersionToUse + "/src_managed/main/gen"), scalaVersionToUse)
-    GenMatchers.genTest(new File("gen/target/scala-" + scalaVersionToUse + "/src_managed/test/matchers"), scalaVersionToUse)
-    GenTheyWord.genTest(new File("gen/target/scala-" + scalaVersionToUse + "/src_managed/test/genthey"), scalaVersionToUse)
-    GenInspectors.genTest(new File("gen/target/scala-" + scalaVersionToUse + "/src_managed/test/geninspectors"), scalaVersionToUse)
+    GenMatchers.genMain(new File("target/scala-" + scalaVersionToUse + "/src_managed/main/genmatchers"), scalaVersionToUse)
+    GenFactories.genMain(new File("target/scala-" + scalaVersionToUse + "/src_managed/main/genfactories"), scalaVersionToUse)
   }
 }
