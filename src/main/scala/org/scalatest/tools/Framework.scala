@@ -66,6 +66,7 @@ class Framework extends SbtFramework {
     tagsToInclude: Set[String],
     tagsToExclude: Set[String],
     selectors: Array[Selector],
+    explicitlySpecified: Boolean, 
     configMap: ConfigMap, 
     summaryCounter: SummaryCounter,
     useSbtLogInfoReporter: Boolean,
@@ -103,6 +104,7 @@ class Framework extends SbtFramework {
           tagsToInclude,
           tagsToExclude,
           selectors,
+          explicitlySpecified, 
           configMap,
           summaryCounter,
           status,
@@ -171,6 +173,7 @@ class Framework extends SbtFramework {
     tagsToInclude: Set[String],
     tagsToExclude: Set[String],
     selectors: Array[Selector],
+    explicitlySpecified: Boolean, 
     configMap: ConfigMap,
     summaryCounter: SummaryCounter,
     statefulStatus: Option[ScalaTestStatefulStatus], 
@@ -192,7 +195,7 @@ class Framework extends SbtFramework {
     val formatter = formatterForSuiteStarting(suite)
         
     val filter = 
-      if (selectors.length == 0)
+      if ((selectors.length == 1 && selectors(0).isInstanceOf[SuiteSelector] && !explicitlySpecified))  // selectors will always at least have one SuiteSelector, according to javadoc of TaskDef
         Filter(if (tagsToInclude.isEmpty) None else Some(tagsToInclude), tagsToExclude)
       else {
         var suiteTags = Map[String, Set[String]]()
@@ -237,6 +240,7 @@ class Framework extends SbtFramework {
         tagsToInclude,
         tagsToExclude,
         selectors,
+        explicitlySpecified, 
         configMap,
         summaryCounter,
         useSbtLogInfoReporter,
@@ -304,6 +308,7 @@ class Framework extends SbtFramework {
     tagsToInclude: Set[String],
     tagsToExclude: Set[String], 
     selectors: Array[Selector],
+    explicitlySpecified: Boolean, 
     configMap: ConfigMap,
     summaryCounter: SummaryCounter,
     statefulStatus: ScalaTestStatefulStatus,
@@ -348,6 +353,7 @@ class Framework extends SbtFramework {
         tagsToInclude,
         tagsToExclude,
         selectors,
+        explicitlySpecified, 
         configMap,
         summaryCounter,
         Some(statefulStatus), 
@@ -376,6 +382,7 @@ class Framework extends SbtFramework {
     tagsToInclude: Set[String], 
     tagsToExclude: Set[String],
     selectors: Array[Selector],
+    explicitlySpecified: Boolean, 
     configMap: ConfigMap, 
     summaryCounter: SummaryCounter,
     useSbtLogInfoReporter: Boolean,
@@ -465,6 +472,7 @@ class Framework extends SbtFramework {
           tagsToInclude,
           tagsToExclude,
           selectors,
+          explicitlySpecified, 
           configMap,
           summaryCounter,
           None, 
@@ -589,9 +597,10 @@ class Framework extends SbtFramework {
           loader,
           dispatchReporter,
           tracker,
-          if (td.selectors.isEmpty) tagsToInclude else tagsToInclude + SELECTED_TAG,
+          tagsToInclude,
           tagsToExclude,
           td.selectors,
+          td.explicitlySpecified, 
           configMap,
           summaryCounter, 
           useSbtLogInfoReporter,
