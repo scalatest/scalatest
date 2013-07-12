@@ -14,7 +14,8 @@ import org.scalatest.events.SeeStackDepthException
 import org.scalatest.events.TopOfClass
 import org.scalatest._
 import java.util.concurrent.atomic.AtomicReference
-import java.util.concurrent.CountDownLatch
+import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * Class that makes ScalaTest tests visible to sbt.
@@ -88,112 +89,102 @@ class ScalaTestFramework extends SbtFramework {
         def isModule = false
       }
     )
-
+    
   object RunConfig {
 
-    // TODO: Ack, cockroaches! I mean vars. Refactor to vals.
-    private var reporter: DispatchReporter = null
-    private var reporterConfigs: ReporterConfigurations = null
-    private var useStdout, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted = false
-    private var presentReminder, presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests = false
-    private var filter: Filter = null
-    private var configMap: ConfigMap = null
+    private val reporter: AtomicReference[Option[DispatchReporter]] = new AtomicReference(None)
+    private val reporterConfigs: AtomicReference[Option[ReporterConfigurations]] = new AtomicReference(None)
+    private val useStdout, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted = new AtomicBoolean(false)
+    private val presentReminder, presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests = new AtomicBoolean(false)
+    private val filter: AtomicReference[Option[Filter]] = new AtomicReference(None)
+    private val configMap: AtomicReference[Option[ConfigMap]] = new AtomicReference(None)
     private val resultHolder = new SuiteResultHolder()
     
     def getConfigurations(args: Array[String], loggers: Array[Logger], eventHandler: EventHandler, testLoader: ClassLoader) = 
       synchronized {
-        if (reporterConfigs == null) {
+        if (reporterConfigs.get.isEmpty) {
           // Why are we getting rid of empty strings? Were empty strings coming in from sbt? -bv 11/09/2011
           val translator = new FriendlyParamsTranslator()
           val (propertiesArgsList, includesArgsList, excludesArgsList, repoArgsList, concurrentList, memberOnlyList, wildcardList, 
                suiteList, junitList, testngList) = translator.parsePropsAndTags(args.filter(!_.equals("")))
-          configMap = parsePropertiesArgsIntoMap(propertiesArgsList)
+          configMap.getAndSet(Some(parsePropertiesArgsIntoMap(propertiesArgsList)))
           val tagsToInclude: Set[String] = parseCompoundArgIntoSet(includesArgsList, "-n")
           val tagsToExclude: Set[String] = parseCompoundArgIntoSet(excludesArgsList, "-l")
-          filter = org.scalatest.Filter(if (tagsToInclude.isEmpty) None else Some(tagsToInclude), tagsToExclude)
+          filter.getAndSet(Some(org.scalatest.Filter(if (tagsToInclude.isEmpty) None else Some(tagsToInclude), tagsToExclude)))
           
           val fullReporterConfigurations = Runner.parseReporterArgsIntoConfigurations(repoArgsList)
           
           fullReporterConfigurations.standardOutReporterConfiguration match {
             case Some(stdoutConfig) =>
               val configSet = stdoutConfig.configSet
-              useStdout = true
-              presentAllDurations = configSet.contains(PresentAllDurations)
-              presentInColor = !configSet.contains(PresentWithoutColor)
-              presentShortStackTraces = configSet.contains(PresentShortStackTraces) || configSet.contains(PresentFullStackTraces)
-              presentFullStackTraces = configSet.contains(PresentFullStackTraces)
-              presentUnformatted = configSet.contains(PresentUnformatted)
-              presentReminder =
+              useStdout.getAndSet(true)
+              presentAllDurations.getAndSet(configSet.contains(PresentAllDurations))
+              presentInColor.getAndSet(!configSet.contains(PresentWithoutColor))
+              presentShortStackTraces.getAndSet(configSet.contains(PresentShortStackTraces) || configSet.contains(PresentFullStackTraces))
+              presentFullStackTraces.getAndSet(configSet.contains(PresentFullStackTraces))
+              presentUnformatted.getAndSet(configSet.contains(PresentUnformatted))
+              presentReminder.getAndSet(
                 configSet.exists { ele =>
                   ele == PresentReminderWithoutStackTraces || ele == PresentReminderWithShortStackTraces || ele == PresentReminderWithFullStackTraces
                 }
-              presentReminderWithShortStackTraces = configSet.contains(PresentReminderWithShortStackTraces) && !configSet.contains(PresentReminderWithFullStackTraces)
-              presentReminderWithFullStackTraces = configSet.contains(PresentReminderWithFullStackTraces)
-              presentReminderWithoutCanceledTests = configSet.contains(PresentReminderWithoutCanceledTests)
+              )
+              presentReminderWithShortStackTraces.getAndSet(configSet.contains(PresentReminderWithShortStackTraces) && !configSet.contains(PresentReminderWithFullStackTraces))
+              presentReminderWithFullStackTraces.getAndSet(configSet.contains(PresentReminderWithFullStackTraces))
+              presentReminderWithoutCanceledTests.getAndSet(configSet.contains(PresentReminderWithoutCanceledTests))
             case None => 
-              useStdout = repoArgsList.isEmpty  // If no reporters specified, just give them a default stdout reporter
-              presentAllDurations = false
-              presentInColor = true
-              presentShortStackTraces = false
-              presentFullStackTraces = false
-              presentUnformatted = false
-              presentReminder = false
-              presentReminderWithShortStackTraces = false
-              presentReminderWithFullStackTraces = false
-              presentReminderWithoutCanceledTests = false
+              useStdout.getAndSet(repoArgsList.isEmpty)  // If no reporters specified, just give them a default stdout reporter
+              presentAllDurations.getAndSet(false)
+              presentInColor.getAndSet(true)
+              presentShortStackTraces.getAndSet(false)
+              presentFullStackTraces.getAndSet(false)
+              presentUnformatted.getAndSet(false)
+              presentReminder.getAndSet(false)
+              presentReminderWithShortStackTraces.getAndSet(false)
+              presentReminderWithFullStackTraces.getAndSet(false)
+              presentReminderWithoutCanceledTests.getAndSet(false)
           }
           
-          reporterConfigs = fullReporterConfigurations.copy(standardOutReporterConfiguration = None)
+          reporterConfigs.getAndSet(Some(fullReporterConfigurations.copy(standardOutReporterConfiguration = None)))
         }
         
-        if (reporter == null || reporter.isDisposed) {
-          reporter = ReporterFactory.getDispatchReporter(reporterConfigs, None, None, testLoader, Some(resultHolder))
-        }
+        if (reporter.get.isEmpty || reporter.get.get.isDisposed) 
+          reporter.getAndSet(Some(ReporterFactory.getDispatchReporter(reporterConfigs.get.get, None, None, testLoader, Some(resultHolder))))
           
         val dispatchReporter = 
-          if (useStdout)
-            ReporterFactory.getDispatchReporter(Seq(reporter, createSbtLogInfoReporter(loggers)), None, None, testLoader, Some(resultHolder))
+          if (useStdout.get)
+            ReporterFactory.getDispatchReporter(Seq(reporter.get.get, createSbtLogInfoReporter(loggers)), None, None, testLoader, Some(resultHolder))
           else
-            reporter
+            reporter.get.get
           
-        (dispatchReporter, filter, configMap)
+        (dispatchReporter, filter.get.get, configMap.get.get)
       }
     
-    private val atomicLatch = new AtomicReference(new CountDownLatch(0))
+    private val atomicCount = new AtomicInteger(0)
   
     def increaseLatch() {
-      synchronized {
-        val current = atomicLatch.get()
-        atomicLatch.set(new CountDownLatch((current.getCount() + 1).toInt))
-      }
+      atomicCount.incrementAndGet()
     }
   
     def decreaseLatch() {
-      synchronized {
-        val latch = atomicLatch.get
-        latch.countDown()
-        if (latch.getCount() == 0) {
-          reporter.dispatchDisposeAndWaitUntilDone()
-          reporter = null
-          reporterConfigs = null
-          filter = null
-          configMap = null
+      if (atomicCount.decrementAndGet() == 0) 
+        reporter.get match {
+          case Some(r) => r.dispatchDisposeAndWaitUntilDone()
+          case None =>
         }
-      }
     }
     
     def createSbtLogInfoReporter(loggers: Array[Logger]) = {
       new SbtLogInfoReporter(
           loggers, 
-          presentAllDurations,
-          presentInColor,
-          presentShortStackTraces,
-          presentFullStackTraces, // If they say both S and F, F overrules
-          presentUnformatted,
-          presentReminder,
-          presentReminderWithShortStackTraces,
-          presentReminderWithFullStackTraces,
-          presentReminderWithoutCanceledTests
+          presentAllDurations.get,
+          presentInColor.get,
+          presentShortStackTraces.get,
+          presentFullStackTraces.get, // If they say both S and F, F overrules
+          presentUnformatted.get,
+          presentReminder.get,
+          presentReminderWithShortStackTraces.get,
+          presentReminderWithFullStackTraces.get,
+          presentReminderWithoutCanceledTests.get
         )
     }
   }
