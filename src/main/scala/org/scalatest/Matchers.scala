@@ -95,15 +95,17 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * </p>
  *
  * <p>
- * All previously documented syntax for matchers should continue to work exactly the same in the current ScalaTest 2.0.M6-SNAP release, with two potential breakages, both of
+ * All previously documented syntax for matchers should continue to work exactly the same in ScalaTest 2.0, with two potential breakages, both of
  * which should be quite rare, and one deprecation. First, support for "<code>have</code> <code>length</code>" and "<code>have</code> <code>size</code>" based solely on
  * structural types has been removed. Any use of this syntax on types other than Scala or Java collections, arrays, or strings will no longer compile.
- * To migrate such code, you will need to implicitly provide either a <code>Length[T]</code> or </code>Size[T]</code> for your type <code>T</code>, as
+ * To migrate such code, you will need to implicitly provide either a <code>Length[T]</code> or <code>Size[T]</code> for your type <code>T</code>, as
  * <a href="#checkingSizeAndLength">described below</a>.
- * The other, even rarer (and likely temporary), potential breakage is that if <code>length</code> or </code>size</code> were used along with other custom have-property matchers,
- * <code>length</code> and <code>size</code> must now come first in the list, as <a href="#lengthSizeHavePropertyMatchers">described below</a>.
+ * The other, even rarer, potential breakage is that if <code>length</code> or <code>size</code> were used along with other custom have-property matchers,
+ * the <code>length</code> and <code>size</code> invocation must be followed by an <code>(of [&lt;type&gt;])</code> clause, as
+ * <a href="#lengthSizeHavePropertyMatchers">described below</a>.
  * The deprecation is <code>be</code> <code>===</code> <code>&lt;value&gt;</code> syntax. This will continue to work as before, but will generate a deprecation
- * warning and eventually be removed in a later version of ScalaTest. Please replace uses of this syntax with one of the other
+ * warning and eventually be removed in a later version of ScalaTest. It is being deprecated so that all uses of <code>===</code> in ScalaTest consistently provide the new
+ * features of tunable type checking, tolerance support, and customized equality.  Please replace uses of this syntax with one of the other
  * ways to check equality described in the next section.
  * </p>
  *
@@ -123,7 +125,8 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * </pre>
  *
  * <p>
- * The "<code>left</code> <code>should</code> <code>equal</code> <code>(right)</code>" syntax requires an <a href="../scalautils/Equality.html"><code>org.scalautils.Equality[L]</code></a> to be provided (either implicitly or explicitly), where
+ * The "<code>left</code> <code>should</code> <code>equal</code> <code>(right)</code>" syntax requires an
+ * <a href="../scalautils/Equality.html"><code>org.scalautils.Equality[L]</code></a> to be provided (either implicitly or explicitly), where
  * <code>L</code> is the left-hand type on which <code>should</code> is invoked. In the "<code>left</code> <code>should</code> <code>equal</code> <code>(right)</code>" case,
  * for example, <code>L</code> is the type of <code>left</code>. Thus if <code>left</code> is type <code>Int</code>, the "<code>left</code> <code>should</code>
  * <code>equal</code> <code>(right)</code>"
@@ -411,34 +414,65 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * ref1 should be theSameInstanceAs (ref2)
  * </pre>
  * 
+ * <h2>Checking an object's class</h2>
+ * 
+ * <p>
+ * If you need to check that an object is an instnce of a psrticular class or trait, you can supply the type to
+ * &ldquo;<code>be</code> <code>a</code>&rdquo; or &ldquo;<code>be</code> <code>an</code>&rdquo;:
+ * </p>
+ * 
+ * <pre class="stHighlight">
+ * result1 should be (a [Tiger])
+ * result1 should not be an [Orangutan]
+ * </pre>
+ * 
+ * <p>
+ * Because parentheses are required in the positive case, you may prefer to use <code>shouldBe</code> instead of &ldquo;<code>should</code> <code>be</code>&rdquo;, as in:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * result1 shouldBe a [Fruit]
+ * result2 shouldBe an [Apple]
+ * </pre>
+ * 
+ * <p>
+ * Because type parameters are erased on the JVM, we recommend you insert an underscore for any type parameters
+ * when using this syntax. Both of the following test only that the result is an instance of <code>List[_]</code>, because at
+ * runtime the type parameter has been erased:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * result shouldBe a [List[_]] // recommended
+ * result shouldBe a [List[Fruit]] // discouraged
+ * </pre>
+ * 
  * <h2>Checking numbers against a range</h2>
  * 
  * <p>
- * To check whether a floating point number has a value that exactly matches another, you
- * can use <code>should equal</code>:
+ * Often you may want to check whether a number is within a
+ * range. You can do that using the <code>+-</code> operator, like this:
  * </p>
  * 
  * <pre class="stHighlight">
- * sevenDotOh should equal (7.0)
- * </pre>
- * 
- * <p>
- * Often, however, you may want to check whether a floating point number is within a
- * range. You can do that using <code>be</code> and <code>+-</code>, like this:
- * </p>
- * 
- * <pre class="stHighlight">
+ * sevenDotOh should equal (6.9 +- 0.2)
+ * sevenDotOh should === (6.9 +- 0.2)
  * sevenDotOh should be (6.9 +- 0.2)
+ * sevenDotOh shouldEqual 6.9 +- 0.2
+ * sevenDotOh shouldBe 6.9 +- 0.2
  * </pre>
  * 
  * <p>
- * This expression will cause a <code>TestFailedException</code> to be thrown if the floating point
+ * Any of these expressions will cause a <code>TestFailedException</code> to be thrown if the floating point
  * value, <code>sevenDotOh</code> is outside the range <code>6.7</code> to <code>7.1</code>.
- * You can also use <code>+-</code> with integral types, for example:
+ * You can use <code>+-</code> with any type <code>T</code> for which an implicit <code>Numeric[T]</code> exists, such as integral types:
  * </p>
  * 
  * <pre class="stHighlight">
+ * seven should equal (6 +- 2)
+ * seven should === (6 +- 2)
  * seven should be (6 +- 2)
+ * seven shouldEqual 6 +- 2
+ * seven shouldBe 6 +- 2
  * </pre>
  * 
  * <h2>Working with collections</h2>
@@ -557,8 +591,8 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * an <code>org.scalatest.enablers.Containing[L]</code> instance that must be supplied as a curried parameter to <code>contain</code>, either implicitly or
  * explicitly, with <code>L</code> being the left-hand type on which <code>should</code> is invoked. In the <code>Containing</code>
  * companion object, implicits are provided for types <code>GenTraversable[E]</code>, <code>java.util.Collection[E]</code>, 
- * <code>java.util.Map[K, V]</code>, <code>String</code>, <code>Array[E]</code>, and <code>Option[E]</code>. (Note: in 2.0.M6, Scala and Java <code>Iterator</code>s
- * will be added to this list.) Here are some examples:
+ * <code>java.util.Map[K, V]</code>, <code>String</code>, <code>Array[E]</code>, and <code>Option[E]</code>. 
+ * Here are some examples:
  * </p>
  *
  * <pre class="stREPL">
@@ -669,7 +703,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  *
  * <p>
  * As mentioned, the "<code>contain</code>,"  "<code>contain</code> <code>oneOf</code>," and "<code>contain</code> <code>noneOf</code>" syntax requires a
- * <code>Containing[L]</code> be provided, where <code>L</code> is the left-hand type.  By contrast, the rest of the <code>contain</code> syntax, which
+ * <code>Containing[L]</code> be provided, where <code>L</code> is the left-hand type.  Other <code>contain</code> syntax, which
  * will be described in this section, requires an <code>Aggregating[L]</code> be provided, where again <code>L</code> is the left-hand type.
  * (An <code>Aggregating[L]</code> instance defines the "aggregating nature" of a type <code>L</code>.)
  * The reason, essentially, is that <code>contain</code> syntax that makes sense for <code>Option</code> is enabled by
@@ -683,8 +717,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * for types <code>GenTraversable[E]</code>, <code>java.util.Collection[E]</code>, 
  * <code>java.util.Map[K, V]</code>, <code>String</code>, <code>Array[E]</code>. Note that these are the same types as are supported with
  * <code>Containing</code>, but with <code>Option[E]</code> missing.
- * (And as with <code>Containing</code>, in 2.0.M6, Scala and Java <code>Iterator</code>s
- * will be added to this list.) Here are some examples:
+ * Here are some examples:
  * </p>
  * 
  * <p>
@@ -697,10 +730,6 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * Array(1, 2, 3) should contain atLeastOneOf (3, 4, 5)
  * "abc" should contain atLeastOneOf ('c', 'a', 't')
  * </pre>
- *
- * <p>
- * Note: The <code>contain</code> <code>atMostOneOf</code> syntax is currently unimplemented, but will be added for 2.0.M6.
- * </p>
  *
  * <p>
  * Similar to <code>Containing[L]</code>, the implicit methods that provide the <code>Aggregating[L]</code> instances require an <code>Equality[E]</code>, where
@@ -717,6 +746,14 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * </pre>
  * 
  * <p>
+ * The "<code>contain</code> <code>atMostOneOf</code>" syntax lets you specify a set of objects at most one of which should be contained in the containing object:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * List(1, 2, 3, 4, 5) should contain atMostOneOf (5, 6, 7)
+ * </pre>
+ *
+ * <p>
  * The "<code>contain</code> <code>allOf</code>" syntax lets you specify a set of objects that should all be contained in the containing object:
  * </p>
  *
@@ -732,35 +769,6 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * <pre class="stHighlight">
  * List(1, 2, 3, 2, 1) should contain only (1, 2, 3)
  * </pre>
- *
- * <p>
- * Note: In the current SNAP release, <code>contain</code> <code>only</code> currently allows a specified right-hand element to <em>not</em> appear in the left-hand aggregation.
- * This will be disallowed in 2.0.M6.
- * </p>
- *
- * <p>
- * The "<code>contain</code> <code>inOrderOnly</code>" syntax lets you assert that the containing object contains <em>only</em> the specified objects, in order. 
- * The specified objects may appear multiple times, but must appear in the order they appear in the right-hand list. Here's an example:
- * </p>
- *
- * <pre class="stHighlight">
- * List(1, 2, 2, 3, 3, 3) should contain inOrderOnly (1, 2, 3)
- * </pre>
- *
- * <p>
- * The "<code>contain</code> <code>inOrder</code>" syntax lets you assert that the containing object contains <em>only</em> the specified objects in order, like
- * <code>inOrderOnly</code>, but allows other objects to appear in the left-hand aggregation as well:
- * contain more than one of each:
- * </p>
- *
- * <pre class="stHighlight">
- * List(0, 1, 2, 2, 99, 3, 3, 3, 5) should contain inOrder (1, 2, 3)
- * </pre>
- *
- * <p>
- * Note that "order" in <code>inOrder</code>, <code>inOrderOnly</code>, and <code>theSameElementsInOrderAs</code> (described below)
- * in the <code>Aggregation[L]</code> instances built-in to ScalaTest is defined as "iteration order".
- * </p>
  *
  * <p>
  * The "<code>contain</code> <code>theSameElementsAs</code>" and "<code>contain</code> <code>theSameElementsInOrderAs</code> syntax differ from the others
@@ -789,6 +797,60 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  *         at ...
  * </pre>
  * 
+ * <a name="workingWithSequences"></a>
+ * <h3>Working with "sequences"</h3>
+ *
+ * <p>
+ * The rest of the <code>contain</code> syntax, which
+ * will be described in this section, requires a <code>Sequencing[L]</code> be provided, where again <code>L</code> is the left-hand type.
+ * (A <code>Sequencing[L]</code> instance defines the "sequencing nature" of a type <code>L</code>.)
+ * The reason, essentially, is that <code>contain</code> syntax that implies an "order" of elements makes sense only for types that place elements in a sequence.
+ * For example, it doesn't make sense to assert that an <code>Map[String, Int]</code> or <code>Set[Int]</code> contains all of a set of integers in a particular
+ * order, as these types don't necessarily define an order for their elements. But this does make sense for a type such as <code>Seq[Int]</code> that does define
+ * an order for its elements. 
+ * </p>
+ * 
+ * <p>
+ * The <code>Sequencing</code> companion object provides implicit instances of <code>Sequencing[L]</code> 
+ * for types <code>GenSeq[E]</code>, <code>java.util.List[E]</code>, 
+ * <code>String</code>, and <code>Array[E]</code>. 
+ * Here are some examples:
+ * </p>
+ * 
+ * <p>
+ * Similar to <code>Containing[L]</code>, the implicit methods that provide the <code>Aggregating[L]</code> instances require an <code>Equality[E]</code>, where
+ * <code>E</code> is an element type. For example, to obtain a <code>Aggregating[Vector[String]]</code> you must supply an <code>Equality[String]</code>,
+ * either implicitly or explicitly. The <code>contain</code> syntax uses this <code>Equality[E]</code> to determine containership.
+ * Thus if you want to change how containership is determined for an element type <code>E</code>, place an implicit <code>Equality[E]</code>
+ * in scope or use the explicitly DSL. Although the implicit parameter required for the <code>contain</code> syntax is of type <code>Aggregating[L]</code>,
+ * implicit conversions are provided in the <code>Aggregating</code> companion object from <code>Equality[E]</code> to the various
+ * types of aggregations of <code>E</code>. Here's an example:
+ * </p>
+ *
+ * <p>
+ * The "<code>contain</code> <code>inOrderOnly</code>" syntax lets you assert that the containing object contains <em>only</em> the specified objects, in order. 
+ * The specified objects may appear multiple times, but must appear in the order they appear in the right-hand list. Here's an example:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * List(1, 2, 2, 3, 3, 3) should contain inOrderOnly (1, 2, 3)
+ * </pre>
+ *
+ * <p>
+ * The "<code>contain</code> <code>inOrder</code>" syntax lets you assert that the containing object contains <em>only</em> the specified objects in order, like
+ * <code>inOrderOnly</code>, but allows other objects to appear in the left-hand aggregation as well:
+ * contain more than one of each:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * List(0, 1, 2, 2, 99, 3, 3, 3, 5) should contain inOrder (1, 2, 3)
+ * </pre>
+ *
+ * <p>
+ * Note that "order" in <code>inOrder</code>, <code>inOrderOnly</code>, and <code>theSameElementsInOrderAs</code> (described below)
+ * in the <code>Aggregation[L]</code> instances built-in to ScalaTest is defined as "iteration order".
+ * </p>
+ *
  * <p>
  * Lastly, the "<code>contain</code> <code>theSameElementsInOrderAs</code>" syntax lets you assert that two aggregations contain
  * the same exact elements in the same (iteration) order:
@@ -803,6 +865,11 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * ordering of its elements, which in this case is 1, 2, 3. An iterator obtained from the left-hand <code>List</code> will produce the same elements
  * in the same order.
  * </p>
+ *
+ * <a name="workingWithSequences"></a>
+ * <h3>Working with "iterators"</h3>
+ *
+ * <p>Convert them to streams...</p>
  *
  * <a name="inspectorShorthands"></a>
  * <h3>Inspector shorthands</h3>
@@ -911,8 +978,8 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * </pre>
  *
  * <p>
- * Note: in the current 2.0.M6-SNAP release, the type of object on which you can invoke <code>loneElement</code> must be <code>GenTraversable</code>, but this
- * will likely be widened to include Java collections, arrays, iterators, etc., for 2.0.M6.
+ * You can invoke <code>loneElement</code> on any type <code>T</code> for which an implicit <a href="enablers/Collecting.html"><code>Collecting[E, T]</code></a>
+ * is available, where <code>E</code> is the type returned by the <code>loneElement</code> invocation. 
  * </p>
  *
  * <h2>Be as an equality comparison</h2>
@@ -1241,35 +1308,23 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * <h3>Using <code>length</code> and <code>size</code> with <code>HavePropertyMatcher</code>s</h3>
  *
  * <p>
- * In the currenty 2.0.M6-SNAP release, if you want to use <code>length</code> or <code>size</code> syntax with your own custom <code>HavePropertyMatchers</code>, you 
- * can do so, but you must put the <code>length</code> or <code>size</code> statement first in the list. For example, you could write:
- * </p>
- *
- * <pre class="stHighlight">
- * book should have (
- *   length (220),
- *   title ("A Tale of Two Cities"),
- *   author ("Dickens")
- * )
- * </pre>
- *
- * <p>
- * By contrast, the following code would <em>not</em> compile, because <code>length</code> does not come first in the list:
+ * If you want to use <code>length</code> or <code>size</code> syntax with your own custom <code>HavePropertyMatchers</code>, you 
+ * can do so, but you must write <code>(of [&ldquo;the type&rdquo;])</code> afterwords. For example, you could write:
  * </p>
  *
  * <pre class="stHighlight">
  * book should have (
  *   title ("A Tale of Two Cities"),
- *   length (220),
+ *   length (220) (of [Book]),
  *   author ("Dickens")
  * )
  * </pre>
  *
  * <p>
- * Prior to ScalaTest 2.0, <code>length</code> <code>(22)</code> yielded a <code>HavePropertyMatcher[Any, Int]</code> that used reflection to dynamically look
- * for a <code>length</code> field or <code>getLength</code> method. In ScalaTest 2.0, <code>length</code> <code>(22)</code> yields a
- * <code>MatcherFactory1[Any, Length]</code>, so it is no longer a <code>HavePropertyMatcher</code>. In 2.0.M6 this restriction will likely be lifted via
- * an implicit conversions in the <code>HavePropertyMatcher</code> companion object, but for the current SNAP release the restriction exists.
+ * Prior to ScalaTest 2.0, &ldquo;<code>length</code> <code>(22)</code>&rdquo; yielded a <code>HavePropertyMatcher[Any, Int]</code> that used reflection to dynamically look
+ * for a <code>length</code> field or <code>getLength</code> method. In ScalaTest 2.0, &ldquo;<code>length</code> <code>(22)</code>&rdquo; yields a
+ * <code>MatcherFactory1[Any, Length]</code>, so it is no longer a <code>HavePropertyMatcher</code>. The <code>(of [&lt;type&gt;]}</code> syntax converts the
+ * the <code>MatcherFactory1[Any, Length]</code> to a <code>HavePropertyMatcher[&lt;type&gt;, Int]</code>.
  * </p>
  *
  * <h2>Using custom matchers</h2>
