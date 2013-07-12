@@ -122,11 +122,36 @@ W - without color
 X - drop TestIgnored events
 Z
 */
-private[tools] case class SuiteParam(className: String, testNames: Array[String], wildcardTestNames: Array[String], nestedSuites: Array[NestedSuiteParam])
+
 private[tools] case class SuiteConfig(suite: Suite, dynaTags: DynaTags, requireSelectedTag: Boolean, excludeNestedSuites: Boolean)
 private[tools] case class TestSpec(spec: String, isSubstring: Boolean)
 private[tools] case class NestedSuiteParam(suiteId: String, testNames: Array[String], wildcardTestNames: Array[String])
 private[scalatest] case class ConcurrentConfig(numThreads: Int, enableSuiteSortingReporter: Boolean)
+
+private[tools] case class SuiteParam(className: String, testNames: Array[String], wildcardTestNames: Array[String], nestedSuites: Array[NestedSuiteParam])
+{
+  private lazy val globRegex =
+    className.
+      replaceAll("""\.""", """\\.""").
+      replaceAll("""\?""", ".").
+      replaceAll("""\*""", ".*")
+
+  //
+  // A glob is a name that contains one of the following wildcard specs:
+  // - '*', which matches zero or more characters
+  // - '?', which matches exactly one character
+  // - square brackets, which specify a set of characters to match
+  //
+  def isGlob: Boolean = className.matches(""".*(\[|\*|\?).*""")
+
+  //
+  // Checks className against name to see if they match.
+  //
+  def matches(name: String) = {
+    if (!isGlob) name == className
+    else         name.matches(globRegex)
+  }
+}
 
 /**
  * Application that runs a suite of tests.
@@ -2179,7 +2204,7 @@ object Runner {
     if (chosenStyleSet == null)
       throw new NullPointerException
 
-    val (globSuites, nonGlobSuites) = suitesList.partition(isGlob(_))
+    val (globSuites, nonGlobSuites) = suitesList.partition(_.isGlob)
 
     //
     // Generates SuiteConfigs for Suites found via discovery.
@@ -2412,15 +2437,6 @@ object Runner {
   }
 
   //
-  // A glob is a name that contains one of the following wildcard specs:
-  // - '*', which matches zero or more characters
-  // - '?', which matches exactly one character
-  // - square brackets, which specify a set of characters to match
-  //
-  private def isGlob(sp: SuiteParam): Boolean =
-    sp.className.matches(""".*(\[|\*|\?).*""")
-
-  //
   // Creates a SuiteParam for each Suite found that matches one
   // of the patterns in a list of SuiteParams containing globs.
   //
@@ -2430,22 +2446,9 @@ object Runner {
     for {
       suiteParam <- globsList
       name <- accessibleSuites
-      if globMatchesName(suiteParam.className, name)
+      if suiteParam.matches(name)
     }
     yield suiteParam.copy(className = name)
-
-  //
-  // Checks a glob against a name to see if they match.
-  //
-  def globMatchesName(glob: String, name: String) = {
-    val globRegex =
-      glob.
-        replaceAll("""\.""", """\\.""").
-        replaceAll("""\?""", ".").
-        replaceAll("""\*""", ".*")
-
-    name.matches(globRegex)
-  }
 
   private[tools] def genSuiteConfig(suiteParam: SuiteParam, loader: ClassLoader): SuiteConfig = {
     val suiteClassName = suiteParam.className
