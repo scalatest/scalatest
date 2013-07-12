@@ -283,7 +283,7 @@ Tags to include and exclude: -n "CheckinTests FunctionalTests" -l "SlowTests Net
     def run(testClassName: String, fingerprint: Fingerprint, eventHandler: EventHandler, args: Array[String]) {
       val suiteClass = Class.forName(testClassName, true, testLoader)
        //println("sbt args: " + args.toList)
-      if (isAccessibleSuite(suiteClass) || isRunnable(suiteClass)) {
+      if ((isAccessibleSuite(suiteClass) || isRunnable(suiteClass)) && isDiscoverableSuite(suiteClass)) {
         val (reporter, filter, configMap) = RunConfig.getConfigurations(args, loggers, eventHandler, testLoader)
         val report = new SbtReporter(eventHandler, Some(reporter))
         val tracker = new Tracker
@@ -335,8 +335,8 @@ Tags to include and exclude: -n "CheckinTests FunctionalTests" -l "SlowTests Net
         finally {
           RunConfig.decreaseLatch()
         }
-      }
-      else throw new IllegalArgumentException("Class is not an accessible org.scalatest.Suite: " + testClassName)
+      } // I think we should do nothing for non accessible, non runnable or non discoverable suite. 
+      //else throw new IllegalArgumentException("Class is not an accessible org.scalatest.Suite: " + testClassName)
     }
 
     private val emptyClassArray = new Array[java.lang.Class[T] forSome {type T}](0)
