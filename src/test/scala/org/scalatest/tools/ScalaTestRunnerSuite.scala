@@ -133,6 +133,12 @@ import org.scalatools.testing.{Event, EventHandler, Result, Logger, Runner => Te
       assert(results(0).testName === "i am pending")
       assert(results(0).result === Result.Skipped)
     }
+    
+    test("throw IllegalArgumentException when -g is passed in as argument") {
+      intercept[IllegalArgumentException] {
+        run("org.scalatest.tools.test.PendingTest", Array("-g"))
+      }
+    }
 
     def runner: TestingRunner = {
       new ScalaTestFramework().testRunner(Thread.currentThread.getContextClassLoader, Array(new TestLogger))

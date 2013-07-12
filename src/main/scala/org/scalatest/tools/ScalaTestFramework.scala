@@ -144,6 +144,11 @@ class ScalaTestFramework extends SbtFramework {
               presentReminderWithoutCanceledTests.getAndSet(false)
           }
           
+          fullReporterConfigurations.graphicReporterConfiguration match {
+            case Some(g) => throw new IllegalArgumentException("Graphic reporter is not supported when runs in SBT.")
+            case None => 
+          }
+          
           reporterConfigs.getAndSet(Some(fullReporterConfigurations.copy(standardOutReporterConfiguration = None)))
         }
         
