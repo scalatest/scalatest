@@ -66,6 +66,7 @@ class Framework extends SbtFramework {
     tagsToInclude: Set[String],
     tagsToExclude: Set[String],
     selectors: Array[Selector],
+    explicitlySpecified: Boolean, 
     configMap: ConfigMap, 
     summaryCounter: SummaryCounter,
     useSbtLogInfoReporter: Boolean,
@@ -103,6 +104,7 @@ class Framework extends SbtFramework {
           tagsToInclude,
           tagsToExclude,
           selectors,
+          explicitlySpecified, 
           configMap,
           summaryCounter,
           status,
@@ -171,6 +173,7 @@ class Framework extends SbtFramework {
     tagsToInclude: Set[String],
     tagsToExclude: Set[String],
     selectors: Array[Selector],
+    explicitlySpecified: Boolean, 
     configMap: ConfigMap,
     summaryCounter: SummaryCounter,
     statefulStatus: Option[ScalaTestStatefulStatus], 
@@ -192,7 +195,7 @@ class Framework extends SbtFramework {
     val formatter = formatterForSuiteStarting(suite)
         
     val filter = 
-      if (selectors.length == 0)
+      if ((selectors.length == 1 && selectors(0).isInstanceOf[SuiteSelector] && !explicitlySpecified))  // selectors will always at least have one SuiteSelector, according to javadoc of TaskDef
         Filter(if (tagsToInclude.isEmpty) None else Some(tagsToInclude), tagsToExclude)
       else {
         var suiteTags = Map[String, Set[String]]()
@@ -237,6 +240,7 @@ class Framework extends SbtFramework {
         tagsToInclude,
         tagsToExclude,
         selectors,
+        explicitlySpecified, 
         configMap,
         summaryCounter,
         useSbtLogInfoReporter,
@@ -304,6 +308,7 @@ class Framework extends SbtFramework {
     tagsToInclude: Set[String],
     tagsToExclude: Set[String], 
     selectors: Array[Selector],
+    explicitlySpecified: Boolean, 
     configMap: ConfigMap,
     summaryCounter: SummaryCounter,
     statefulStatus: ScalaTestStatefulStatus,
@@ -348,6 +353,7 @@ class Framework extends SbtFramework {
         tagsToInclude,
         tagsToExclude,
         selectors,
+        explicitlySpecified, 
         configMap,
         summaryCounter,
         Some(statefulStatus), 
@@ -376,6 +382,7 @@ class Framework extends SbtFramework {
     tagsToInclude: Set[String], 
     tagsToExclude: Set[String],
     selectors: Array[Selector],
+    explicitlySpecified: Boolean, 
     configMap: ConfigMap, 
     summaryCounter: SummaryCounter,
     useSbtLogInfoReporter: Boolean,
@@ -401,7 +408,8 @@ class Framework extends SbtFramework {
     }
     
     lazy val suiteClass = loadSuiteClass
-    lazy val doNotDiscover = !taskDefinition.explicitlySpecified && !isDiscoverableSuite(suiteClass)
+    lazy val shouldDiscover = 
+      taskDefinition.explicitlySpecified || ((isAccessibleSuite(suiteClass) || isRunnable(suiteClass)) && isDiscoverableSuite(suiteClass)) 
     
     def tags = 
       for { 
@@ -464,6 +472,7 @@ class Framework extends SbtFramework {
           tagsToInclude,
           tagsToExclude,
           selectors,
+          explicitlySpecified, 
           configMap,
           summaryCounter,
           None, 
@@ -588,9 +597,10 @@ class Framework extends SbtFramework {
           loader,
           dispatchReporter,
           tracker,
-          if (td.selectors.isEmpty) Set.empty else Set(SELECTED_TAG),
-          Set.empty,
+          tagsToInclude,
+          tagsToExclude,
           td.selectors,
+          td.explicitlySpecified, 
           configMap,
           summaryCounter, 
           useSbtLogInfoReporter,
@@ -609,7 +619,7 @@ class Framework extends SbtFramework {
       for { 
         taskDef <- taskDefs 
         val task = createTask(taskDef)
-        if !task.doNotDiscover
+        if task.shouldDiscover
       } yield task
     
     def done = {
@@ -781,7 +791,18 @@ class Framework extends SbtFramework {
           (!remoteArgs.isEmpty || repoArgsList.isEmpty, false, true, false, false, false, false, false, false, false)
       }
     
-    val reporterConfigs = fullReporterConfigurations.copy(standardOutReporterConfiguration = None)
+    //val reporterConfigs = fullReporterConfigurations.copy(standardOutReporterConfiguration = None)
+    // If there's a graphic reporter, we need to leave it out of
+    // reporterSpecs, because we want to pass all reporterSpecs except
+    // the graphic reporter's to the RunnerJFrame (because RunnerJFrame *is*
+    // the graphic reporter).
+    val reporterConfigs: ReporterConfigurations =
+      fullReporterConfigurations.graphicReporterConfiguration match {
+        case None => fullReporterConfigurations.copy(standardOutReporterConfiguration = None)
+        case Some(grs) => {
+          throw new IllegalArgumentException("Graphic reporter is not supported when runs in SBT.")
+        }
+      }
     
     new ScalaTestRunner(
       args,

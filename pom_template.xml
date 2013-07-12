@@ -82,9 +82,9 @@
     </dependency>
 
     <dependency>
-      <groupId>org.scalatest</groupId>
+      <groupId>org.scala-sbt</groupId>
       <artifactId>test-interface</artifactId>
-      <version>1.0-SNAP7</version>
+      <version>1.0</version>
       <optional>true</optional>
     </dependency>
 

@@ -339,24 +339,6 @@ class FrameworkSuite extends FunSuite {
     }
   }
   
-  test("ScalaTestRunner.task should return task that run whole suite when fullyQualifiedName = valid class name, explicitlySpecified = false and selectors = empty array") {
-    val testEventHandler = new TestEventHandler
-    val runner = framework.runner(Array.empty, Array.empty, testClassLoader)
-    
-    val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.SampleSuite", subclassFingerprint, false, Array.empty)))
-    assert(tasks.size === 1)
-    val task = tasks(0)
-    task.execute(testEventHandler, Array(new TestLogger))
-    val successEvents = testEventHandler.successEventsReceived
-    assert(successEvents.length === 3)
-    assertSuiteSuccessEvent(successEvents(0), "org.scalatest.tools.scalasbt.SampleSuite", "test 1", subclassFingerprint)
-    assertSuiteSuccessEvent(successEvents(1), "org.scalatest.tools.scalasbt.SampleSuite", "test 2", subclassFingerprint)
-    assertSuiteSuccessEvent(successEvents(2), "org.scalatest.tools.scalasbt.SampleSuite", "test 3", subclassFingerprint)
-    assert(testEventHandler.errorEventsReceived.length === 0)
-    assert(testEventHandler.failureEventsReceived.length === 0)
-    assert(testEventHandler.skippedEventsReceived.length === 0)
-  }
-  
   test("ScalaTestRunner.task should return task that run whole suite when fullyQualifiedName = valid class name, explicitlySpecified = false and selectors = Array(SuiteSelector)") {
     val testEventHandler = new TestEventHandler
     val runner = framework.runner(Array.empty, Array.empty, testClassLoader)
@@ -375,15 +357,6 @@ class FrameworkSuite extends FunSuite {
     assert(testEventHandler.skippedEventsReceived.length === 0)
   }
   
-  test("ScalaTestRunner.task should return empty task array when fullyQualifiedName = valid class name, explicitlySpecified = false, selectors = empty array" +
-  	   "and the suite class is marked as @DoNotDiscover") {
-    val testEventHandler = new TestEventHandler
-    val runner = framework.runner(Array.empty, Array.empty, testClassLoader)
-    
-    val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.DoNotDiscoverSuite", subclassFingerprint, false, Array.empty)))
-    assert(tasks.size === 0)
-  }
-  
   test("ScalaTestRunner.task should return empty task array when fullyQualifiedName = valid class name, explicitlySpecified = false, selectors = Array(SuiteSelector)" +
   	   "and the suite class is marked as @DoNotDiscover") {
     val testEventHandler = new TestEventHandler
@@ -393,14 +366,20 @@ class FrameworkSuite extends FunSuite {
     assert(tasks.size === 0)
   }
   
-  test("When suite is neither subclass of org.scalatest.Suite or annotated with WrapWith, IllegalArgumentException will be thrown") {
+  test("When suite is neither subclass of org.scalatest.Suite or annotated with WrapWith and explicitlySpecified is true, IllegalArgumentException will be thrown when task executes") {
     intercept[IllegalArgumentException] {
       val runner = framework.runner(Array.empty, Array.empty, testClassLoader)
-      val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.NotASuite", subclassFingerprint, false, Array(new SuiteSelector))))
+      val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.NotASuite", subclassFingerprint, true, Array(new SuiteSelector))))
       assert(tasks.size === 1)
       val notASuiteTask = tasks(0)
       notASuiteTask.execute(new TestEventHandler, Array(new TestLogger))
     }
+  }
+  
+  test("When suite is neither subclass of org.scalatest.Suite or annotated with WrapWith and explicitlySpecified is false, no task will be returned") {
+    val runner = framework.runner(Array.empty, Array.empty, testClassLoader)
+    val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.NotASuite", subclassFingerprint, false, Array(new SuiteSelector))))
+    assert(tasks.size === 0)
   }
   
   test("When an invalid suite class name is passed into to task(fullyQualifiedName: String, fingerprint: Fingerprint), IllegalArgumentException " +
@@ -894,5 +873,38 @@ class FrameworkSuite extends FunSuite {
     val task2Selectors = taskDef2.selectors
     assert(task2Selectors.length === 1)
     assert(task2Selectors(0) === suiteSelector)
+  }
+  
+  test("-l argument can be used to exclude test") {
+    val testEventHandler = new TestEventHandler
+    val runner = framework.runner(Array("-l", "org.scalatest.tools.scalasbt.SampleSuite.SlowTest"), Array.empty, testClassLoader)
+    
+    val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.SampleSuite", subclassFingerprint, false, Array(new SuiteSelector))))
+    assert(tasks.size === 1)
+    val task = tasks(0)
+    task.execute(testEventHandler, Array(new TestLogger))
+    val successEvents = testEventHandler.successEventsReceived
+    assert(successEvents.length === 2)
+    assertSuiteSuccessEvent(successEvents(0), "org.scalatest.tools.scalasbt.SampleSuite", "test 1", subclassFingerprint)
+    assertSuiteSuccessEvent(successEvents(1), "org.scalatest.tools.scalasbt.SampleSuite", "test 3", subclassFingerprint)
+    assert(testEventHandler.errorEventsReceived.length === 0)
+    assert(testEventHandler.failureEventsReceived.length === 0)
+    assert(testEventHandler.skippedEventsReceived.length === 0)
+  }
+  
+  test("-n argument can be used to include test") {
+    val testEventHandler = new TestEventHandler
+    val runner = framework.runner(Array("-n", "org.scalatest.tools.scalasbt.SampleSuite.SlowTest"), Array.empty, testClassLoader)
+    
+    val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.SampleSuite", subclassFingerprint, false, Array(new SuiteSelector))))
+    assert(tasks.size === 1)
+    val task = tasks(0)
+    task.execute(testEventHandler, Array(new TestLogger))
+    val successEvents = testEventHandler.successEventsReceived
+    assert(successEvents.length === 1)
+    assertSuiteSuccessEvent(successEvents(0), "org.scalatest.tools.scalasbt.SampleSuite", "test 2", subclassFingerprint)
+    assert(testEventHandler.errorEventsReceived.length === 0)
+    assert(testEventHandler.failureEventsReceived.length === 0)
+    assert(testEventHandler.skippedEventsReceived.length === 0)
   }
 }

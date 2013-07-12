@@ -103,10 +103,14 @@ import org.scalatools.testing.{Event, EventHandler, Result, Logger, Runner => Te
       assert(results(0).result === Result.Success)
     }
 
-    test("illegal arg on private constructor"){
-      intercept[IllegalArgumentException] {
-        run("org.scalatest.tools.test.PrivateConstructor")
-      }
+    test("illegal arg on private constructor, inaccessible suite"){
+      val results = run("org.scalatest.tools.test.PrivateConstructor")
+      assert(results.size === 0)
+    }
+    
+    test("@DoNotDiscover suite"){
+      val results = run("org.scalatest.tools.test.DoNotDiscoverSuite")
+      assert(results.size === 0)
     }
 
     test("skipped test results in Result.Skipped") {
@@ -128,6 +132,12 @@ import org.scalatools.testing.{Event, EventHandler, Result, Logger, Runner => Te
 
       assert(results(0).testName === "i am pending")
       assert(results(0).result === Result.Skipped)
+    }
+    
+    test("throw IllegalArgumentException when -g is passed in as argument") {
+      intercept[IllegalArgumentException] {
+        run("org.scalatest.tools.test.PendingTest", Array("-g"))
+      }
     }
 
     def runner: TestingRunner = {
@@ -203,6 +213,12 @@ import org.scalatools.testing.{Event, EventHandler, Result, Logger, Runner => Te
     }
 
     private class PrivateConstructor private() extends FunSuite
+    
+    import org.scalatest.DoNotDiscover
+    @DoNotDiscover
+    private class DoNotDiscoverSuite extends FunSuite {
+      test("do not test me") {}
+    }
 
     private class PendingTest extends FunSuite {
       test("i am pending")(pending)
