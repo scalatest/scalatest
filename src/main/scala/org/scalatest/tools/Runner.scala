@@ -2147,66 +2147,6 @@ object Runner {
     chosenStyleSet: Set[String]
   ) = { // TODO, either put a type on here or do procedure style if Unit
 
-    //
-    // Generates lists of SuiteConfigs for Suites found via discovery.
-    //
-    def genDiscoSuites: (List[SuiteConfig], List[SuiteConfig], List[SuiteConfig]) =
-    {
-      val emptyDynaTags = DynaTags(Map.empty[String, Set[String]], Map.empty[String, Map[String, Set[String]]])
-
-      //
-      // If user specified any -t or -z arguments independent of
-      // a Suite name, or any members-only or wildcard args,
-      // then we need to do discovery to find the Suites
-      // associated with those args.
-      //
-      val discoArgsArePresent =
-        !membersOnlyList.isEmpty || !wildcardList.isEmpty ||
-        !testSpecs.isEmpty
-
-      //
-      // If user specified any specific Suites to run, then we don't
-      // have to do any discovery unless discoArgsArePresent.
-      //
-      val suiteArgsArePresent =
-        !suitesList.isEmpty || !junitsList.isEmpty || !testNGList.isEmpty
-
-      if (suiteArgsArePresent && !discoArgsArePresent) {
-        (Nil, Nil, Nil) // No DiscoverySuites in this case. Just run Suites
-                        // named with -s or -j or -b
-      }
-      else {
-        val accessibleSuites: Set[String] =
-          discoverSuiteNames(runpath, loader, suffixes)
-
-        if (!discoArgsArePresent && !suiteArgsArePresent) {
-          // In this case, they didn't specify any -w, -m, -s,
-          // -j or -b on the command line, so the default is to
-          // run any accessible Suites discovered on the runpath
-          (Nil, List(SuiteConfig(new DiscoverySuite("", accessibleSuites, true, loader), emptyDynaTags, false, false)), Nil)
-        }
-        else {
-          val membersOnlyInstances =
-            for (membersOnlyName <- membersOnlyList)
-              yield SuiteConfig(new DiscoverySuite(membersOnlyName, accessibleSuites, false, loader), emptyDynaTags, false, false)
-
-          val wildcardInstances =
-            for (wildcardName <- wildcardList)
-              yield SuiteConfig(new DiscoverySuite(wildcardName, accessibleSuites, true, loader), emptyDynaTags, false, false)
-
-          val testSpecSuiteParams =
-            SuiteDiscoveryHelper.discoverTests(
-              testSpecs, accessibleSuites, loader)
-
-          val testSpecInstances = 
-            for (suiteParam <- testSpecSuiteParams)
-              yield genSuiteConfig(suiteParam, loader)
-
-          (membersOnlyInstances, wildcardInstances, testSpecInstances)
-        }
-      }
-    }
-
     // TODO: add more, and to RunnerThread too
     if (dispatch == null)
       throw new NullPointerException
@@ -2239,6 +2179,75 @@ object Runner {
     if (chosenStyleSet == null)
       throw new NullPointerException
 
+    val (globSuites, nonGlobSuites) = suitesList.partition(isGlob(_))
+
+    //
+    // Generates SuiteConfigs for Suites found via discovery.
+    //
+    def genDiscoSuites: List[SuiteConfig] = {
+      val emptyDynaTags = DynaTags(Map.empty[String, Set[String]], Map.empty[String, Map[String, Set[String]]])
+
+      //
+      // If user specified any -t or -z arguments independent of
+      // a Suite name, or any members-only or wildcard args, or
+      // suite args with glob characters, then we need to do
+      // discovery to find the Suites associated with those
+      // args.
+      //
+      val discoArgsArePresent =
+        !membersOnlyList.isEmpty || !wildcardList.isEmpty ||
+        !testSpecs.isEmpty || !globSuites.isEmpty
+
+      //
+      // If user specified any specific Suites to run, then we don't
+      // have to do any discovery unless discoArgsArePresent.
+      //
+      val suiteArgsArePresent =
+        !nonGlobSuites.isEmpty || !junitsList.isEmpty || !testNGList.isEmpty
+
+      if (suiteArgsArePresent && !discoArgsArePresent) {
+        Nil // No DiscoverySuites in this case. Just run Suites
+            // named with -s or -j or -b
+      }
+      else {
+        val accessibleSuites: Set[String] =
+          discoverSuiteNames(runpath, loader, suffixes)
+
+        if (!discoArgsArePresent && !suiteArgsArePresent) {
+          // In this case, they didn't specify any -w, -m, -s,
+          // -j or -b on the command line, so the default is to
+          // run any accessible Suites discovered on the runpath
+          List(SuiteConfig(new DiscoverySuite("", accessibleSuites, true, loader), emptyDynaTags, false, false))
+        }
+        else {
+          val membersOnlyInstances =
+            for (membersOnlyName <- membersOnlyList)
+              yield SuiteConfig(new DiscoverySuite(membersOnlyName, accessibleSuites, false, loader), emptyDynaTags, false, false)
+
+          val wildcardInstances =
+            for (wildcardName <- wildcardList)
+              yield SuiteConfig(new DiscoverySuite(wildcardName, accessibleSuites, true, loader), emptyDynaTags, false, false)
+
+          val testSpecSuiteParams =
+            SuiteDiscoveryHelper.discoverTests(
+              testSpecs, accessibleSuites, loader)
+
+          val testSpecInstances = 
+            for (suiteParam <- testSpecSuiteParams)
+              yield genSuiteConfig(suiteParam, loader)
+
+          val deglobbedSuiteParams: List[SuiteParam] =
+            deglobSuiteParams(globSuites, accessibleSuites)
+
+          val globInstances = 
+            for (suiteParam <- deglobbedSuiteParams)
+              yield genSuiteConfig(suiteParam, loader)
+
+          membersOnlyInstances ::: wildcardInstances ::: testSpecInstances ::: globInstances
+        }
+      }
+    }
+
     var tracker = new Tracker(new Ordinal(runStamp))
 
     val runStartTime = System.currentTimeMillis
@@ -2246,7 +2255,7 @@ object Runner {
     try {
       val loadProblemsExist =
         try {
-          val unrunnableList = suitesList.filter{ suiteParam => 
+          val unrunnableList = nonGlobSuites.filter{ suiteParam => 
             val className = suiteParam.className
             loader.loadClass(className) // Check if the class exist, so if not we get the nice cannot load suite error message.
             !isAccessibleSuite(className, loader) && !isRunnable(className, loader)
@@ -2270,7 +2279,7 @@ object Runner {
       if (!loadProblemsExist) {
         try {
           val namedSuiteInstances: List[SuiteConfig] =
-            for (suiteParam <- suitesList)
+            for (suiteParam <- nonGlobSuites)
               yield genSuiteConfig(suiteParam, loader)
           
           val requireSelectedTag = suitesList.find(suiteParam => suiteParam.testNames.length > 0)
@@ -2290,11 +2299,9 @@ object Runner {
           val discoveryStartTime = System.currentTimeMillis
           dispatch(DiscoveryStarting(tracker.nextOrdinal(), configMap))
 
-          val (membersOnlySuiteInstances,
-               wildcardSuiteInstances,
-               testSpecSuiteInstances) = genDiscoSuites
+          val discoSuiteInstances = genDiscoSuites
 
-          val suiteInstances: List[SuiteConfig] = namedSuiteInstances ::: junitSuiteInstances ::: membersOnlySuiteInstances ::: wildcardSuiteInstances ::: testSpecSuiteInstances ::: testNGWrapperSuiteList
+          val suiteInstances: List[SuiteConfig] = namedSuiteInstances ::: junitSuiteInstances ::: discoSuiteInstances ::: testNGWrapperSuiteList
 
           val testCountList =
             for (suiteConfig <- suiteInstances)
@@ -2404,6 +2411,41 @@ object Runner {
     }
   }
 
+  //
+  // A glob is a name that contains one of the following wildcard specs:
+  // - '*', which matches zero or more characters
+  // - '?', which matches exactly one character
+  // - square brackets, which specify a set of characters to match
+  //
+  private def isGlob(sp: SuiteParam): Boolean =
+    sp.className.matches(""".*(\[|\*|\?).*""")
+
+  //
+  // Creates a SuiteParam for each Suite found that matches one
+  // of the patterns in a list of SuiteParams containing globs.
+  //
+  private[tools] def deglobSuiteParams(globsList: List[SuiteParam],
+                                       accessibleSuites: Set[String]):
+  List[SuiteParam] =
+    for {
+      suiteParam <- globsList
+      name <- accessibleSuites
+      if globMatchesName(suiteParam.className, name)
+    }
+    yield suiteParam.copy(className = name)
+
+  //
+  // Checks a glob against a name to see if they match.
+  //
+  def globMatchesName(glob: String, name: String) = {
+    val globRegex =
+      glob.
+        replaceAll("""\.""", """\\.""").
+        replaceAll("""\?""", ".").
+        replaceAll("""\*""", ".*")
+
+    name.matches(globRegex)
+  }
 
   private[tools] def genSuiteConfig(suiteParam: SuiteParam, loader: ClassLoader): SuiteConfig = {
     val suiteClassName = suiteParam.className

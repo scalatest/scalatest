@@ -19,6 +19,7 @@ import org.scalatest._
 import java.util.regex.Pattern
 import java.net.URL
 import java.io.File
+import org.scalatest.tools.Runner.deglobSuiteParams
 
 class RunnerSpec extends Spec with PrivateMethodTester {
 
@@ -1462,5 +1463,46 @@ class RunnerSpec extends Spec with PrivateMethodTester {
     val multipDashPSThreadNum = Runner.parseConcurrentConfig(List("-cS8", "-c10"))
     assert(multipDashPSThreadNum.numThreads === 8)
     assert(multipDashPSThreadNum.enableSuiteSortingReporter === true)
+  }
+
+  def `deglobSuiteParams should work correctly` {
+    val suiteParam =
+      SuiteParam("", Array.empty[String], Array.empty[String],
+                 Array.empty[NestedSuiteParam])
+
+    val classNames =
+      List(
+        "foo.FooSpec",
+        "foo.tools.FooToolsSpec",
+        "foo.tools.FooToolsSuite",
+        "foo.events.EventsFooSuite")
+
+    def runDeglob(globs: List[String], expecteds: List[String]) {
+      val globSuiteParams =
+        globs.map(glob => suiteParam.copy(className = glob))
+
+      val result = deglobSuiteParams(globSuiteParams, classNames.toSet)
+
+      assert(result.map(_.className).toSet === expecteds.toSet)
+    }
+
+    runDeglob(List("org.*"), Nil)
+    runDeglob(List("f?.*"),  Nil)
+    runDeglob(List("f??.*"), classNames)
+    runDeglob(List("foo.tools.*"),
+              List("foo.tools.FooToolsSpec",
+                   "foo.tools.FooToolsSuite"))
+    runDeglob(List("*.Foo*"),
+              List("foo.FooSpec",
+                   "foo.tools.FooToolsSpec",
+                   "foo.tools.FooToolsSuite"))
+    runDeglob(List("*.Foo*ls*"),
+              List("foo.tools.FooToolsSpec",
+                   "foo.tools.FooToolsSuite"))
+    runDeglob(List("*FooS[u]*"),
+              List("foo.events.EventsFooSuite"))
+    runDeglob(List("*FooS[up]*"),
+              List("foo.FooSpec",
+                   "foo.events.EventsFooSuite"))
   }
 }
