@@ -15,14 +15,17 @@
  */
 package org.scalatest.tools.scalasbt
 import org.scalatest.FunSuite
+import org.scalatest.Tag
 
 class SampleSuite extends FunSuite {
 
+  object SlowTest extends Tag("org.scalatest.tools.scalasbt.SampleSuite.SlowTest")
+  
   test("test 1") {
     
   }
   
-  test("test 2") {
+  test("test 2", SlowTest) {
     
   }
   
