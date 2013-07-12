@@ -35,7 +35,7 @@ class InOrderContainMatcherSpec extends Spec with Matchers {
       Array(1, 2, 3, 4, 5) should contain inOrder (1, 3, 5)
       javaList(1, 2, 3, 4, 5) should contain inOrder (1, 3, 5)
       
-      LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four", 5 -> "five").iterator should contain inOrder (1 -> "one", 3 -> "three", 5 -> "five")
+      LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four", 5 -> "five").iterator.toStream should contain inOrder (1 -> "one", 3 -> "three", 5 -> "five")
       // javaMap(1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four", 5 -> "five") should contain inOrder (1 -> "one", 3 -> "three", 5 -> "five")
     }
     
@@ -44,7 +44,7 @@ class InOrderContainMatcherSpec extends Spec with Matchers {
       Array(1, 2, 3) should contain inOrder (1, 2, 3)
       javaList(1, 2, 3) should contain inOrder (1, 2, 3)
       
-      LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator should contain inOrder (1 -> "one", 2 -> "two", 3 -> "three")
+      LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream should contain inOrder (1 -> "one", 2 -> "two", 3 -> "three")
       // javaMap(1 -> "one", 2 -> "two", 3 -> "three") should contain inOrder (1 -> "one", 2 -> "two", 3 -> "three")
     }
     
@@ -61,7 +61,7 @@ class InOrderContainMatcherSpec extends Spec with Matchers {
       }
       checkStackDepth(e2, left2, Array(2, 1, 3).deep, thisLineNumber - 2)
       
-      val left3 = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator
+      val left3 = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream
       val e3 = intercept[exceptions.TestFailedException] {
         left3 should contain inOrder (2 -> "two", 1 -> "one", 3 -> "three")
       }
@@ -112,7 +112,7 @@ class InOrderContainMatcherSpec extends Spec with Matchers {
       }
       checkStackDepth(e2, left2, Array(2, 5, 3).deep, thisLineNumber - 2)
       
-      val left3 = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator
+      val left3 = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream
       val e3 = intercept[exceptions.TestFailedException] {
         left3 should contain inOrder (2 -> "two", 5 -> "five", 3 -> "three")
       }
@@ -146,7 +146,7 @@ class InOrderContainMatcherSpec extends Spec with Matchers {
       }
       checkStackDepth(e2, left2, Array(2, 1, 3).deep, thisLineNumber - 2)
       
-      val left3 = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator
+      val left3 = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream
       val e3 = intercept[exceptions.TestFailedException] {
         left3 should contain inOrder (2 -> "two", 1 -> "one", 3 -> "three")
       }
@@ -180,7 +180,7 @@ class InOrderContainMatcherSpec extends Spec with Matchers {
       }
       checkStackDepth(e2, left2, Array(1, 2, 3, 4).deep, thisLineNumber - 2)
       
-      val left3 = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator
+      val left3 = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream
       val e3 = intercept[exceptions.TestFailedException] {
         left3 should contain inOrder (1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four")
       }
@@ -214,7 +214,7 @@ class InOrderContainMatcherSpec extends Spec with Matchers {
       }
       checkStackDepth(e2, left2, Array(1, 5).deep, thisLineNumber - 2)
       
-      val left3 = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator
+      val left3 = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream
       val e3 = intercept[exceptions.TestFailedException] {
         left3 should contain inOrder (1 -> "one", 5 -> "five")
       }
@@ -250,7 +250,7 @@ class InOrderContainMatcherSpec extends Spec with Matchers {
       Array(1, 2, 3) should not contain inOrder (1, 2, 8)
       javaList(1, 2, 3) should not contain inOrder (1, 2, 8)
       
-      LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator should not contain inOrder (1 -> "one", 2 -> "two", 8 -> "eight")
+      LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream should not contain inOrder (1 -> "one", 2 -> "two", 8 -> "eight")
       // javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain inOrder (1 -> "one", 2 -> "two", 8 -> "eight")
     }
     
@@ -259,7 +259,7 @@ class InOrderContainMatcherSpec extends Spec with Matchers {
       Array(1, 2, 3) should not contain inOrder (1, 3, 2)
       javaList(1, 2, 3) should not contain inOrder (1, 3, 2)
       
-      LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator should not contain inOrder (1 -> "one", 3 -> "three", 2 -> "two")
+      LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream should not contain inOrder (1 -> "one", 3 -> "three", 2 -> "two")
       // javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain inOrder (1 -> "one", 3 -> "three", 2 -> "two")
     }
     
@@ -276,7 +276,7 @@ class InOrderContainMatcherSpec extends Spec with Matchers {
       }
       checkStackDepth(e2, left2, Array(1, 2, 3).deep, thisLineNumber - 2)
       
-      val left3 = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator
+      val left3 = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream
       val e3 = intercept[exceptions.TestFailedException] {
         left3 should not contain inOrder (1 -> "one", 2 -> "two", 3 -> "three")
       }

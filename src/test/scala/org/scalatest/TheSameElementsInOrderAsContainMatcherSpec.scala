@@ -35,7 +35,7 @@ class TheSameElementsInOrderAsContainMatcherSpec extends Spec with Matchers  {
       Array(1, 2, 3) should contain theSameElementsInOrderAs List(1, 2, 3)
       javaList(1, 2, 3) should contain theSameElementsInOrderAs List(1, 2, 3)
       
-      LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator should contain theSameElementsInOrderAs LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three")
+      LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream should contain theSameElementsInOrderAs LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three")
       // javaMap(1 -> "one", 2 -> "two", 3 -> "three") should contain theSameElementsInOrderAs Map(1 -> "one", 2 -> "two", 3 -> "three")
     }
     
@@ -54,7 +54,7 @@ class TheSameElementsInOrderAsContainMatcherSpec extends Spec with Matchers  {
       }
       checkStackDepth(e2, left2, right2, thisLineNumber - 2)
       
-      val left3 = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator
+      val left3 = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream
       val right3 = LinkedHashMap(2 -> "two", 1 -> "one", 3 -> "three")
       val e3 = intercept[exceptions.TestFailedException] {
         left3 should contain theSameElementsInOrderAs right3
@@ -93,7 +93,7 @@ class TheSameElementsInOrderAsContainMatcherSpec extends Spec with Matchers  {
       }
       checkStackDepth(e2, left2, right2, thisLineNumber - 2)
       
-      val left3 = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator
+      val left3 = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream
       val right3 = LinkedHashMap(1 -> "one", 2 -> "two", 8 -> "eight")
       val e3 = intercept[exceptions.TestFailedException] {
         left3 should contain theSameElementsInOrderAs right3
@@ -132,7 +132,7 @@ class TheSameElementsInOrderAsContainMatcherSpec extends Spec with Matchers  {
       }
       checkStackDepth(e2, left2, right2, thisLineNumber - 2)
       
-      val left3 = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator
+      val left3 = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream
       val right3 = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four")
       val e3 = intercept[exceptions.TestFailedException] {
         left3 should contain theSameElementsInOrderAs right3
@@ -171,7 +171,7 @@ class TheSameElementsInOrderAsContainMatcherSpec extends Spec with Matchers  {
       }
       checkStackDepth(e2, left2, right2, thisLineNumber - 2)
       
-      val left3 = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator
+      val left3 = LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream
       val right3 = LinkedHashMap(1 -> "one", 2 -> "two")
       val e3 = intercept[exceptions.TestFailedException] {
         left3 should contain theSameElementsInOrderAs right3
@@ -211,7 +211,7 @@ class TheSameElementsInOrderAsContainMatcherSpec extends Spec with Matchers  {
       Array(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 2, 8))
       javaList(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 2, 8))
       
-      LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator should not contain theSameElementsInOrderAs (LinkedHashMap(1 -> "one", 2 -> "two", 8 -> "eight"))
+      LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream should not contain theSameElementsInOrderAs (LinkedHashMap(1 -> "one", 2 -> "two", 8 -> "eight"))
       // javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameElementsInOrderAs (LinkedHashMap(1 -> "one", 2 -> "two", 8 -> "eight"))
     }
     
@@ -220,7 +220,7 @@ class TheSameElementsInOrderAsContainMatcherSpec extends Spec with Matchers  {
       Array(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 2, 3, 4))
       javaList(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 2, 3, 4))
       
-      LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator should not contain theSameElementsInOrderAs (LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four"))
+      LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream should not contain theSameElementsInOrderAs (LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four"))
       // javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameElementsInOrderAs (LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four"))
     }
     
@@ -229,7 +229,7 @@ class TheSameElementsInOrderAsContainMatcherSpec extends Spec with Matchers  {
       Array(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 2))
       javaList(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 2))
       
-      LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator should not contain theSameElementsInOrderAs (LinkedHashMap(1 -> "one", 2 -> "two"))
+      LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream should not contain theSameElementsInOrderAs (LinkedHashMap(1 -> "one", 2 -> "two"))
       // javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameElementsInOrderAs (LinkedHashMap(1 -> "one", 2 -> "two"))
     }
     
@@ -238,7 +238,7 @@ class TheSameElementsInOrderAsContainMatcherSpec extends Spec with Matchers  {
       Array(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 3, 2))
       javaList(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 3, 2))
       
-      LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator should not contain theSameElementsInOrderAs (LinkedHashMap(1 -> "one", 3 -> "three", 2 -> "two"))
+      LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream should not contain theSameElementsInOrderAs (LinkedHashMap(1 -> "one", 3 -> "three", 2 -> "two"))
       // javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameElementsInOrderAs (LinkedHashMap(1 -> "one", 3 -> "three", 2 -> "two"))
     }
     
@@ -257,7 +257,7 @@ class TheSameElementsInOrderAsContainMatcherSpec extends Spec with Matchers  {
       }
       checkStackDepth(e2, left2, right2, thisLineNumber - 2)
       
-      val left3 = Map(1 -> "one", 2 -> "two", 3 -> "three").iterator
+      val left3 = Map(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream
       val right3 = Map(1 -> "one", 2 -> "two", 3 -> "three")
       val e3 = intercept[exceptions.TestFailedException] {
         left3 should not contain theSameElementsInOrderAs (right3)
