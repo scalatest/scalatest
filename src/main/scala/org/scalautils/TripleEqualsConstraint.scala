@@ -17,9 +17,6 @@ package org.scalautils
 
 import annotation.implicitNotFound
 
-// I'm unaware of any reason this needs to be sealed, but can start out that way and loosen it if someone
-// wants to create some other kind of constraint.
-
 /**
  * Abstract class used to enforce type constraints for equality checks.
  */
