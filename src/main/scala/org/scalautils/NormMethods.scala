@@ -85,7 +85,7 @@ package org.scalautils
  *
  * @tparam A the type whose equality is being customized
  */
-trait NormMethod {
+trait NormMethods {
 
   final class Normalizer[T](o: T)(implicit normalization: Normalization[T]) {
     def norm: T = normalization.normalized(o)
@@ -101,5 +101,5 @@ trait NormMethod {
   implicit def convertToNormalizer[T](o: T)(implicit normalization: Normalization[T]): Normalizer[T] = new Normalizer[T](o)
 } 
 
-object NormMethod extends NormMethod
+object NormMethods extends NormMethods
 

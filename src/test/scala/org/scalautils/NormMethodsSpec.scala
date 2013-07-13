@@ -17,9 +17,9 @@ package org.scalautils
 
 import org.scalatest._
 
-class NormMethodSpec extends Spec with StringNormalizations with NormMethod {
+class NormMethodsSpec extends Spec with StringNormalizations with NormMethods {
 
-  object `trait NormMethod` {
+  object `trait NormMethods` {
     def `should provide a .norm method for any type T for which an implicit Normalization[T] is available` { 
  
       { // Try with lowerCased
