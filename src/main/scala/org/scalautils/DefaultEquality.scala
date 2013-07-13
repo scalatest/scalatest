@@ -21,7 +21,7 @@ package org.scalautils
  * first on any passed object that is an array.
  * </p>
  */
-final class DefaultEquality[A] extends Equality[A] {
+private[scalautils] final class DefaultEquality[A] extends Equality[A] {
 
   /**
    * Indicates whether the objects passed as <code>a</code> and <code>b</code> are equal by invoking <code>==</code> on <code>a</code>
