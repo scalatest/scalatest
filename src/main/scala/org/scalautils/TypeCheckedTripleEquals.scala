@@ -233,7 +233,7 @@ trait TypeCheckedTripleEquals extends LowPriorityTypeCheckedConstraint {
   override def convertToLegacyEqualizer[T](left: T): LegacyEqualizer[T] = new LegacyEqualizer(left)
   override def convertToLegacyCheckingEqualizer[T](left: T): LegacyCheckingEqualizer[T] = new LegacyCheckingEqualizer(left)
 
-  override def unconstrainedEquality[A, B](implicit equalityOfA: Equality[A]): TripleEqualsConstraint[A, B] = new BasicEqualityConstraint[A, B](equalityOfA)
+  override def unconstrainedEquality[A, B](implicit equalityOfA: Equality[A]): TripleEqualsConstraint[A, B] = new EqualityConstraint[A, B](equalityOfA)
 
   implicit override def typeCheckedTripleEqualsConstraint[A, B](implicit equivalenceOfA: Equivalence[A], ev: B <:< A): TripleEqualsConstraint[A, B] = new BToAEquivalenceConstraint[A, B](equivalenceOfA, ev)
   implicit override def convertEquivalenceToBToATypeConstraint[A, B](equivalenceOfA: Equivalence[A])(implicit ev: B <:< A): TripleEqualsConstraint[A, B] = new BToAEquivalenceConstraint[A, B](equivalenceOfA, ev)
