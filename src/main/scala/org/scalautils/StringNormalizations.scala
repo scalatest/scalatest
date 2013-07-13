@@ -16,7 +16,7 @@
 package org.scalautils
 
 /**
- * Provides methods that produce <code>Normality[String]</code> instances for various
+ * Provides methods that produce <code>Uniformity[String]</code> instances for various
  * ways to normalize strings for equality comparisons.
  *
  * @author Bill Venners
@@ -24,13 +24,13 @@ package org.scalautils
 trait StringNormalizations {
 
   /**
-   * Produces a <code>Normality[String]</code> whose <code>normalized</code> method
+   * Produces a <code>Uniformity[String]</code> whose <code>normalized</code> method
    * returns the result of invoking <code>toLowerCase</code> on the passed string.
    *
-   * @return a <code>Normality[String]</code> that normalizes by transforming strings to lower case.
+   * @return a <code>Uniformity[String]</code> that normalizes by transforming strings to lower case.
    */
-  val lowerCased: Normality[String] =
-    new StringNormality {
+  val lowerCased: Uniformity[String] =
+    new AbstractStringUniformity {
 
       /**
        * Returns the result of invoking <code>toLowerCase</code> on the passed string.
@@ -41,13 +41,13 @@ trait StringNormalizations {
     }
 
   /**
-   * Produces a <code>Normality[String]</code> whose <code>normalized</code> method
+   * Produces a <code>Uniformity[String]</code> whose <code>normalized</code> method
    * returns the result of invoking <code>toUpperCase</code> on the passed string.
    *
-   * @return a <code>Normality[String]</code> that normalizes by transforming strings to upper case.
+   * @return a <code>Uniformity[String]</code> that normalizes by transforming strings to upper case.
    */
-  val upperCased: Normality[String] =
-    new StringNormality {
+  val upperCased: Uniformity[String] =
+    new AbstractStringUniformity {
 
       /**
        * Returns the result of invoking <code>toUpperCase</code> on the passed string.
@@ -58,13 +58,13 @@ trait StringNormalizations {
     }
 
   /**
-   * Produces a <code>Normality[String]</code> whose <code>normalized</code> method
+   * Produces a <code>Uniformity[String]</code> whose <code>normalized</code> method
    * returns the result of invoking <code>trim</code> on the passed string.
    *
-   * @return a <code>Normality[String]</code> that normalizes strings by trimming them.
+   * @return a <code>Uniformity[String]</code> that normalizes strings by trimming them.
    */
-  val trimmed: Normality[String] =
-    new StringNormality {
+  val trimmed: Uniformity[String] =
+    new AbstractStringUniformity {
 
       /**
        * Returns the result of invoking <code>trimmed</code> on the passed string.

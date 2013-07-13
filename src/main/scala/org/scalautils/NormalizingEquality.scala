@@ -45,14 +45,14 @@ trait NormalizingEquality[A] extends Equality[A] { thisNormEq =>
 
   def normalizedOrSame(b: Any): Any
 
-  final def and(other: Normality[A]): NormalizingEquality[A] =
-    new ComposedNormalizingEquality[A](afterNormalizationEquality, this.toNormality and other)
+  final def and(other: Uniformity[A]): NormalizingEquality[A] =
+    new ComposedNormalizingEquality[A](afterNormalizationEquality, this.toUniformity and other)
 
   // TODO: If someone passes a Normalization only to and, should I give them back a NormalizingEquivalence?
   // If so, the same thing should be one if Equality.afterBeing gets just a Normalization.
 
-  final def toNormality: Normality[A] =
-    new Normality[A] {
+  final def toUniformity: Uniformity[A] =
+    new Uniformity[A] {
       def normalized(a: A): A = thisNormEq.normalized(a)
       def canNormalize(b: Any): Boolean = thisNormEq.canNormalize(b)
       def normalizedOrSame(b: Any): Any = thisNormEq.normalizedOrSame(b)

@@ -17,7 +17,7 @@ package org.scalatest
 
 import org.scalautils.Equality
 import org.scalautils.NormalizingEquality
-import org.scalautils.Normality
+import org.scalautils.Uniformity
 import org.scalautils.StringNormalizations._
 import SharedHelpers._
 

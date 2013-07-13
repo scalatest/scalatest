@@ -19,11 +19,11 @@ import org.scalatest._
 
 class NormalizationSpec extends Spec with StringNormalizations {
 
-  object `A Normality` {
-    object `when anded with another Normality` {
-      def `should produce a Normality` { 
-        assert(lowerCased.isInstanceOf[Normality[_]])
-        assert((lowerCased and trimmed).isInstanceOf[Normality[_]])
+  object `A Uniformity` {
+    object `when anded with another Uniformity` {
+      def `should produce a Uniformity` { 
+        assert(lowerCased.isInstanceOf[Uniformity[_]])
+        assert((lowerCased and trimmed).isInstanceOf[Uniformity[_]])
       }
     }
     object `when anded with a regular Normalization (on left or right)` {
@@ -31,13 +31,13 @@ class NormalizationSpec extends Spec with StringNormalizations {
         new Normalization[String] {
           def normalized(s: String): String = s.toUpperCase
         }
-      def `should produce a Normalization that is not also a Normality` { 
-        assert(!shouted.isInstanceOf[Normality[_]])
-        assert(trimmed.isInstanceOf[Normality[_]])
+      def `should produce a Normalization that is not also a Uniformity` { 
+        assert(!shouted.isInstanceOf[Uniformity[_]])
+        assert(trimmed.isInstanceOf[Uniformity[_]])
         val tAndS: Normalization[String] = trimmed and shouted
-        assert(!tAndS.isInstanceOf[Normality[_]])
+        assert(!tAndS.isInstanceOf[Uniformity[_]])
         val sAndT: Normalization[String] = shouted and trimmed
-        assert(!sAndT.isInstanceOf[Normality[_]])
+        assert(!sAndT.isInstanceOf[Uniformity[_]])
       }
     }
   }

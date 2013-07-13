@@ -18,14 +18,14 @@ package org.scalatest
 import org.scalautils.Equality
 import org.scalautils.Explicitly
 import org.scalautils.StringNormalizations
-import org.scalautils.Normality
+import org.scalautils.Uniformity
 import collection.GenTraversable
 import SharedHelpers._
 
 class InOrderContainMatcherDeciderSpec extends Spec with Matchers with Explicitly with StringNormalizations {
 
-  val mapTrimmed: Normality[(Int, String)] =
-    new Normality[(Int, String)] {
+  val mapTrimmed: Uniformity[(Int, String)] =
+    new Uniformity[(Int, String)] {
       def normalized(s: (Int, String)): (Int, String) = (s._1, s._2.trim)
       def canNormalize(b: Any) = 
         b match {
@@ -39,8 +39,8 @@ class InOrderContainMatcherDeciderSpec extends Spec with Matchers with Explicitl
         }
     }
   
-  val incremented: Normality[Int] = 
-    new Normality[Int] {
+  val incremented: Uniformity[Int] = 
+    new Uniformity[Int] {
       var count = 0
       def normalized(s: Int): Int = {
         count += 1
@@ -54,8 +54,8 @@ class InOrderContainMatcherDeciderSpec extends Spec with Matchers with Explicitl
         }
     }
   
-  val mapIncremented: Normality[(Int, String)] = 
-    new Normality[(Int, String)] {
+  val mapIncremented: Uniformity[(Int, String)] = 
+    new Uniformity[(Int, String)] {
       var count = 0
       def normalized(s: (Int, String)): (Int, String) = {
         count += 1
@@ -73,8 +73,8 @@ class InOrderContainMatcherDeciderSpec extends Spec with Matchers with Explicitl
         }
     }
   
-  val appended: Normality[String] = 
-    new Normality[String] {
+  val appended: Uniformity[String] = 
+    new Uniformity[String] {
       var count = 0
       def normalized(s: String): String = {
         count += 1
@@ -92,7 +92,7 @@ class InOrderContainMatcherDeciderSpec extends Spec with Matchers with Explicitl
         }
     }
   
-  class Translated(map: Map[String, String]) extends Normality[String] {
+  class Translated(map: Map[String, String]) extends Uniformity[String] {
     def normalized(s: String): String = 
       map.get(s) match {
         case Some(translated) => translated

@@ -15,17 +15,17 @@
  */
 package org.scalautils
 
-trait StringNormality extends Normality[String] {
+trait AbstractStringUniformity extends Uniformity[String] {
 
   // TODO: Scaladoc
-  def canNormalize(b: Any): Boolean = b.isInstanceOf[String]
+  final def canNormalize(b: Any): Boolean = b.isInstanceOf[String]
 
   /**
    * Indicates whether the passed object is an instance of <code>String</code>.
    *
    * @return true if the passed object is a <code>String</code>.
    */
-  def normalizedOrSame(b: Any) =
+  final def normalizedOrSame(b: Any) =
     b match {
       case s: String => normalized(s)
       case _ => b

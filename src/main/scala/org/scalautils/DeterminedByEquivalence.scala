@@ -97,8 +97,8 @@ class DeterminedByEquivalence[T](equivalence: Equivalence[T]) extends Equivalenc
   def areEquivalent(a: T, b: T): Boolean = equivalence.areEquivalent(a, b)
 
 /*
-  def afterBeing(normality: Normality[A]): NormalizingEquality[A] =
-    new ComposedNormalizingEquality[A](equality, normality)
+  def afterBeing(uniformity: Uniformity[A]): NormalizingEquality[A] =
+    new ComposedNormalizingEquality[A](equality, uniformity)
 */
 } 
 

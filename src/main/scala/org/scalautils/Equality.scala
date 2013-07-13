@@ -100,11 +100,11 @@ trait Equality[A] extends Equivalence[A] {
 } 
 
 object Equality {
-  def apply[A](normality: Normality[A]): Equality[A] = {
+  def apply[A](uniformity: Uniformity[A]): Equality[A] = {
     new NormalizingEquality[A] {
-      def normalized(a: A): A = normality.normalized(a)
-      def canNormalize(b: Any): Boolean = normality.canNormalize(b)
-      def normalizedOrSame(b: Any): Any = normality.normalizedOrSame(b)
+      def normalized(a: A): A = uniformity.normalized(a)
+      def canNormalize(b: Any): Boolean = uniformity.canNormalize(b)
+      def normalizedOrSame(b: Any): Any = uniformity.normalizedOrSame(b)
     }
   }
   implicit def default[A]: Equality[A] = new DefaultEquality[A]

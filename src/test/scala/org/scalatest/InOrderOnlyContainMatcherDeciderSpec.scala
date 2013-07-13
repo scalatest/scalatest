@@ -18,14 +18,14 @@ package org.scalatest
 import org.scalautils.Equality
 import org.scalautils.Explicitly
 import org.scalautils.StringNormalizations
-import org.scalautils.Normality
+import org.scalautils.Uniformity
 import collection.GenTraversable
 import SharedHelpers._
 
 class InOrderOnlyContainMatcherDeciderSpec extends Spec with Matchers with Explicitly with StringNormalizations {
   
-  val incremented: Normality[Int] = 
-    new Normality[Int] {
+  val incremented: Uniformity[Int] = 
+    new Uniformity[Int] {
       var count = 0
       def normalized(s: Int): Int = {
         count += 1
@@ -39,8 +39,8 @@ class InOrderOnlyContainMatcherDeciderSpec extends Spec with Matchers with Expli
         }
     }
  
-  val appended: Normality[String] = 
-    new Normality[String] {
+  val appended: Uniformity[String] = 
+    new Uniformity[String] {
       var count = 0
       def normalized(s: String): String = {
         count += 1
