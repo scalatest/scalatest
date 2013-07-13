@@ -56,7 +56,7 @@ package org.scalautils
  * is not a subtype or supertype of <code>Long</code>):
  * </p>
  *
- * <pre class="stHighlight">
+ * <pre class="stREPL">
  * scala&gt; import org.scalautils._
  * import org.scalautils._
  * 
@@ -79,7 +79,7 @@ package org.scalautils
  * will allow it:
  * </p>
  * 
- * <pre class="stHighlight">
+ * <pre class="stREPL">
  * scala&gt; import ConversionCheckedLegacyTripleEquals._
  * import ConversionCheckedLegacyTripleEquals._
  * 
@@ -93,14 +93,14 @@ package org.scalautils
  * the other way:
  * </p>
  * 
- * <pre class="stHighlight">
+ * <pre class="stREPL">
  * scala&gt; 1L === 1
  * res2: Option[String] = None
  * </pre>
  * 
  * <p>
  * This trait will override or hide implicit methods defined by its sibling traits,
- * <a href="LegacyTripleEquals.html"><code>LegacyTripleEquals</code></a> or <a href="TypeCheckedLegacyTripleEquals.html"><code>TypeCheckedLegacyTripleEquals</code></a>,
+ * <a href="LegacyTripleEquals.html"><code>LegacyTripleEquals</code></a> or <a href="ConversionCheckedLegacyTripleEquals.html"><code>ConversionCheckedLegacyTripleEquals</code></a>,
  * and can therefore be used to temporarily turn on or off conversion checking in a limited scope.
  * Because the methods in <code>ConversionCheckedLegacyTripleEquals</code> (and its siblings)
  * <em>override</em> all the methods defined in supertype <a href="TripleEqualsConstraints.html"><code>TripleEqualsConstraints</code></a>, you can achieve the same
@@ -114,32 +114,49 @@ package org.scalautils
  * <p>
  *
  * <p>
- * An alternative way to solve an unwanted compiler error caused by an over-zealous equality type constraint is to convert one side or the other to type
- * <code>Any</code>. Because <code>Any</code> is a supertype of everything, any level of equality type constraint will be satisfied. The <code>AsAny</code>
- * trait offers a convenient syntax, the <code>asAny</code> method, for this purpose:
+ * An alternative way to solve an unwanted compiler error caused by an over-zealous type constraint is with a <em>widening type ascription</em>. Here
+ * are some examples:
  * </p>
  *
- * <pre class="stHighlight">
+ * <pre class="stREPL">
  * scala&gt; import org.scalautils._
  * import org.scalautils._
  *
  * scala&gt; import TypeCheckedLegacyTripleEquals._
  * import TypeCheckedLegacyTripleEquals._
  *
- * scala&gt; import AsAny._
- * import AsAny._
- *
  * scala&gt; 1 === 1L
- * &gt;console&gt;:17: error: types Int and Long do not adhere to the equality constraint selected for
- * the === and !== operators; they must either be in a subtype/supertype relationship, or, if
- * ConversionCheckedLegacyTripleEquals is in force, implicitly convertible in one direction or the other;
- * the missing implicit parameter is of type org.scalautils.TripleEqualsConstraint[Int,Long]
+ * &lt;console&gt;:14: error: types Int and Long do not adhere to the equality constraint selected for the === and !== operators; the missing implicit parameter is of type org.scalautils.TripleEqualsConstraint[Int,Long]
  *               1 === 1L
  *                 ^
+ * </pre>
  *
- * scala&gt; 1 === 1L.asAny
+ * <p>
+ * Although you could solve the above type error with <a href="ConversionCheckedLegacyTripleEquals.html"><code>ConversionCheckedLegacyTripleEquals</code></a>, you could also
+ * simply widen the type of one side or the other to <code>Any</code>. Because <code>Any</code> is a supertype of everything, the
+ * type constraint will be satisfied:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; 1 === (1L: Any)
  * res1: Option[String] = None
+ * 
+ * scala&gt; (1: Any) === 1L
+ * res2: Option[String] = None
+ * </pre>
  *
+ * <p>
+ * You could alternatively widen a type to a more specific common supertype than <code>Any</code>. For example, since <code>Int</code> and
+ * <code>Long</code> are both subtypes of <code>AnyVal</code>, you could widen either type to <code>AnyVal</code> to satisfy
+ * the type checker:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; 1 === (1L: AnyVal)
+ * res3: Option[String] = None
+ * 
+ * scala&gt; (1: AnyVal) === 1L
+ * res4: Option[String] = None
  * </pre>
  * 
  * @author Bill Venners

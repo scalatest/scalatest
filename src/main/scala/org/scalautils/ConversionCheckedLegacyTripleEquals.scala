@@ -114,10 +114,10 @@ package org.scalautils
  * <p>
  *
  * <p>
- * An alternative way to solve an unwanted compiler error caused by an over-zealous equality type constraint is to convert one side or the other to type
- * <code>Any</code>. Because <code>Any</code> is a supertype of everything, any level of equality type constraint will be satisfied. The <code>AsAny</code>
- * trait offers a convenient syntax, the <code>asAny</code> method, for this purpose:
+ * An alternative way to solve an unwanted compiler error caused by an over-zealous type constraint is with a <em>widening type ascription</em>. Here
+ * are some examples:
  * </p>
+ *
  *
  * <pre class="stREPL">
  * scala&gt; import org.scalautils._
@@ -127,18 +127,37 @@ package org.scalautils
  * import ConversionCheckedLegacyTripleEquals._
  *
  * scala&gt; List(1, 2, 3) === Vector(1, 2, 3)
-&lt;console&gt;:14: error: types List[Int] and scala.collection.immutable.Vector[Int] do not adhere to the equality constraint selected for
- * the === and !== operators; they must either be in a subtype/supertype relationship, or, if
- * ConversionCheckedLegacyTripleEquals is in force, implicitly convertible in one direction or the other;
- * the missing implicit parameter is of type org.scalautils.TripleEqualsConstraint[List[Int],scala.collection.immutable.Vector[Int]]
+ * &lt;console&gt;:14: error: types List[Int] and scala.collection.immutable.Vector[Int] do not adhere to the equality constraint selected for the === and !== operators; the missing implicit parameter is of type org.scalautils.TripleEqualsConstraint[List[Int],scala.collection.immutable.Vector[Int]]
  *               List(1, 2, 3) === Vector(1, 2, 3)
- *                          ^
+ *                             ^
+ * </pre>
  *
- * scala&gt; import AsAny._
- * import AsAny._
+ * <p>
+ * Although you could solve the above type error with <a href="TraversableEqualityConstraints.html"><code>TraversableEqualityConstraints</code></a>, you could also
+ * simply widen the type of one side or the other to <code>Any</code>. Because <code>Any</code> is a supertype of everything, the
+ * type constraint will be satisfied:
+ * </p>
  *
- * scala&gt; List(1, 2, 3) === Vector(1, 2, 3).asAny
+ * <pre class="stREPL">
+ * scala&gt; List(1, 2, 3) === (Vector(1, 2, 3): Any)
+ * res1: Option[String] = None
+ *
+ * scala&gt; (List(1, 2, 3): Any) === Vector(1, 2, 3)
  * res2: Option[String] = None
+ * </pre>
+ *
+ * <p>
+ * You could alternatively widen a type to a more specific common supertype than <code>Any</code>. For example, since <code>List[Int]</code> and
+ * <code>Vector[Int]</code> are both subtypes of <code>Seq[Int]</code>, so you could widen either type to <code>Seq[Int]</code> to satisfy
+ * the type checker:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; List(1, 2, 3) === (Vector(1, 2, 3): Seq[Int])
+ * res3: Option[String] = None
+ *
+ * scala&gt; (List(1, 2, 3): Seq[Int]) === Vector(1, 2, 3)
+ * res4: Option[String] = None
  * </pre>
  * 
  * @author Bill Venners

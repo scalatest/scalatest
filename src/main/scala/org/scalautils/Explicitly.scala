@@ -46,41 +46,5 @@ trait Explicitly {
   val after = new TheAfterWord
 }
 
-/**
- * Companion object to trait <code>AsAny</code> that facilitates the importing of <code>AsAny</code> members as 
- * an alternative to mixing it in. One use case is to import <code>AsAny</code> members so you can use
- * them in the Scala interpreter:
- *
- * <pre class="stREPL">
- * $ scala -classpath scalatest.jar
- * Welcome to Scala version 2.10.0
- * Type in expressions to have them evaluated.
- * Type :help for more information.
- *
- * scala&gt; import org.scalatest._
- * import org.scalatest._
- *
- * scala&gt; import Matchers._
- * import Matchers._
- *
- * scala&gt; Set(1, "2") should contain (1)
- * <console>:14: error: overloaded method value should with alternatives:
- * [R](inv: org.scalautils.TripleEqualsInvocation[R])(implicit constraint: org.scalautils.EqualityConstraint[scala.collection.immutable.Set[Any],R])Unit <and>
- * (notWord: org.scalatest.Matchers.NotWord)org.scalatest.Matchers.ResultOfNotWordForTraversable[Any,scala.collection.immutable.Set] <and>
- * (beWord: org.scalatest.Matchers.BeWord)org.scalatest.Matchers.ResultOfBeWordForAnyRef[scala.collection.GenTraversable[Any]] <and>
- * (containMatcher: org.scalatest.ContainMatcher[Any])Unit <and>
- * (containWord: org.scalatest.Matchers.ContainWord)org.scalatest.Matchers.ResultOfContainWordForTraversable[Any] <and>
- * (haveWord: org.scalatest.Matchers.HaveWord)org.scalatest.Matchers.ResultOfHaveWordForTraversable[Any] <and>
- * (rightMatcherGen1: org.scalatest.Matchers.MatcherGen1[scala.collection.immutable.Set[Any],org.scalautils.Equality])(implicit equality: org.scalautils.Equality[scala.collection.immutable.Set[Any]])Unit <and>
- * (rightMatcherX6: org.scalatest.matchers.Matcher[scala.collection.GenTraversable[Any]])Unit
- *cannot be applied to (org.scalatest.matchers.Matcher[scala.collection.GenTraversable[Int]])
- *             Set(1, "2") should contain (1)
- *                         ^
- *
- * scala&gt; Set(1, "2") should contain (1.asAny)
- *
- * scala&gt;
- * </pre>
- */
 object Explicitly extends Explicitly
 
