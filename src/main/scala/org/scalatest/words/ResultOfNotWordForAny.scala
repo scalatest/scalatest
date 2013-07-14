@@ -30,7 +30,7 @@ import scala.collection.GenSeq
 import scala.collection.GenMap
 import org.scalautils.Tolerance
 import org.scalautils.Explicitly
-import org.scalautils.Interval
+import org.scalautils.TripleEqualsSupport.Spread
 import org.scalautils.TripleEqualsSupport.TripleEqualsInvocation
 import scala.annotation.tailrec
 import org.scalautils.Equality
@@ -313,14 +313,14 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
    *                       ^
    * </pre>
    */
-  def be(interval: Interval[T]) {
-    if (interval.isWithin(left) != shouldBeTrue) {
+  def be(spread: Spread[T]) {
+    if (spread.isWithin(left) != shouldBeTrue) {
       throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "wasNotPlusOrMinus" else "wasPlusOrMinus",
           left,
-          interval.pivot,
-          interval.tolerance
+          spread.pivot,
+          spread.tolerance
         )
       )
     }
@@ -353,14 +353,14 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
    *                       ^
    * </pre>
    */
-  def equal(interval: Interval[T]) {
-    if (interval.isWithin(left) != shouldBeTrue) {
+  def equal(spread: Spread[T]) {
+    if (spread.isWithin(left) != shouldBeTrue) {
       throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "didNotEqualPlusOrMinus" else "equaledPlusOrMinus",
           left,
-          interval.pivot,
-          interval.tolerance
+          spread.pivot,
+          spread.tolerance
         )
       )
     }

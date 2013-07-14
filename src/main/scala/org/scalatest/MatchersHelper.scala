@@ -28,7 +28,6 @@ import scala.collection.GenTraversable
 import scala.collection.GenSeq
 import scala.collection.GenMap
 import org.scalautils.Tolerance
-import org.scalautils.Interval
 import scala.annotation.tailrec
 import org.scalautils.Equality
 import org.scalatest.words.ShouldVerb

@@ -30,7 +30,6 @@ import scala.collection.GenSeq
 import scala.collection.GenMap
 import org.scalautils.Tolerance
 import org.scalautils.Explicitly
-import org.scalautils.Interval
 import scala.annotation.tailrec
 import org.scalautils.Equality
 import org.scalatest.MatchersHelper.andMatchersAndApply

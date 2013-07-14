@@ -22,7 +22,7 @@ import org.scalatest.words.MatcherWords
 import scala.collection.GenTraversable
 import scala.util.matching.Regex
 import org.scalautils.Equality
-import org.scalautils.Interval
+import org.scalautils.TripleEqualsSupport.Spread
 import org.scalautils.TripleEqualsSupport.TripleEqualsInvocation
 import org.scalatest.FailureMessages
 import org.scalatest.words.FullyMatchWord
@@ -1103,7 +1103,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                                                    ^
      * </pre>
      */
-    def equal[U](interval: Interval[U]): Matcher[T with U] = outerInstance.and(MatcherWords.not.equal(interval))
+    def equal[U](spread: Spread[U]): Matcher[T with U] = outerInstance.and(MatcherWords.not.equal(spread))
 
     /**
      * This method enables the following syntax:
@@ -1368,7 +1368,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                                                 ^
      * </pre>
      */
-    def be[U](interval: Interval[U]): Matcher[T with U] = outerInstance.and(MatcherWords.not.be(interval))
+    def be[U](spread: Spread[U]): Matcher[T with U] = outerInstance.and(MatcherWords.not.be(spread))
     
     /**
      * This method enables the following syntax, where <code>fraction</code> is a <code>PartialFunction</code>:
@@ -2188,7 +2188,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                                                   ^
      * </pre>
      */
-    def equal[U](interval: Interval[U]): Matcher[T with U] = outerInstance.or(MatcherWords.not.equal(interval))
+    def equal[U](spread: Spread[U]): Matcher[T with U] = outerInstance.or(MatcherWords.not.equal(spread))
 
     /**
      * This method enables the following syntax:
@@ -2451,7 +2451,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                                                ^
      * </pre>
      */
-    def be[U](interval: Interval[U]): Matcher[T with U] = outerInstance.or(MatcherWords.not.be(interval))
+    def be[U](spread: Spread[U]): Matcher[T with U] = outerInstance.or(MatcherWords.not.be(spread))
     
     /**
      * This method enables the following syntax, where <code>fraction</code> is a <code>PartialFunction</code>:

@@ -16,14 +16,15 @@
 package org.scalautils
 
 import org.scalatest._
+import TripleEqualsSupport.Spread
 
-class IntervalSpec extends Spec {
+class SpreadSpec extends Spec {
 
-  object `An Interval` {
+  object `A Spread` {
     def `should throw IllegalArgumentException if a negative tolerance is passed` {
       val caught =
         intercept[IllegalArgumentException] {
-          new Interval(3, -1)
+          new Spread(3, -1)
         }
       assert(caught.getMessage.endsWith("tolerance must be zero or greater, but was -1"))
     }

@@ -141,20 +141,20 @@ trait TripleEqualsSupport {
     def !==(right: Any)(implicit equality: Equality[L]): Boolean = !equality.areEqual(left, right)
   
     /**
-     * Determine whether a numeric object is within the passed <code>Interval</code>, returning a <code>Boolean</code>.
+     * Determine whether a numeric object is within the passed <code>Spread</code>, returning a <code>Boolean</code>.
      *
-     * @param interval the <code>Interval</code> against which to compare the value passed to the constructor as <code>left</code> 
-     * @return true if the value passed to the constructor as <code>left</code> is within the <code>Interval</code> passed to this method.
+     * @param spread the <code>Spread</code> against which to compare the value passed to the constructor as <code>left</code> 
+     * @return true if the value passed to the constructor as <code>left</code> is within the <code>Spread</code> passed to this method.
      */
-    def ===(interval: Interval[L]): Boolean = if (interval != null) interval.isWithin(left) else left == interval
+    def ===(spread: Spread[L]): Boolean = if (spread != null) spread.isWithin(left) else left == spread
   
     /**
-     * Determine whether a numeric object is outside the passed <code>Interval</code>, returning a <code>Boolean</code>.
+     * Determine whether a numeric object is outside the passed <code>Spread</code>, returning a <code>Boolean</code>.
      *
-     * @param interval the <code>Interval</code> against which to compare the value passed to the constructor as <code>left</code> 
-     * @return true if the value passed to the constructor as <code>left</code> is <em>not</em> within the <code>Interval</code> passed to this method.
+     * @param spread the <code>Spread</code> against which to compare the value passed to the constructor as <code>left</code> 
+     * @return true if the value passed to the constructor as <code>left</code> is <em>not</em> within the <code>Spread</code> passed to this method.
      */
-    def !==(interval: Interval[L]): Boolean = if (interval != null) !interval.isWithin(left) else left != interval
+    def !==(spread: Spread[L]): Boolean = if (spread != null) !spread.isWithin(left) else left != spread
   
     /**
      * Determine whether an object reference is <code>null</code>.
@@ -304,49 +304,49 @@ trait TripleEqualsSupport {
       }
   
     /**
-     * Determine whether a numeric object is within the passed <code>Interval</code>, returning an <code>Option[String]</code>.
+     * Determine whether a numeric object is within the passed <code>Spread</code>, returning an <code>Option[String]</code>.
      *
-     * @param interval the <code>Interval</code> against which to compare the value passed to the constructor as <code>left</code> 
-     * @return None if the value passed to the constructor as <code>left</code> is <em>not</em> within the <code>Interval</code> passed to this method, 
+     * @param spread the <code>Spread</code> against which to compare the value passed to the constructor as <code>left</code> 
+     * @return None if the value passed to the constructor as <code>left</code> is <em>not</em> within the <code>Spread</code> passed to this method, 
      *    else returns an error message string wrapped in a <code>Some</code>.
      */
-    def ===(interval: Interval[L]): Option[String] =
-      if (interval == null) {
+    def ===(spread: Spread[L]): Option[String] =
+      if (spread == null) {
         if (left == null)
           None
         else {
-          val (leftee, rightee) = getObjectsForFailureMessage(left, interval)
+          val (leftee, rightee) = getObjectsForFailureMessage(left, spread)
           Some(FailureMessages("equaled", leftee, rightee))
         }
       }
       else {
-        if (interval.isWithin(left))
+        if (spread.isWithin(left))
           None
         else
-          Some(FailureMessages("wasNotPlusOrMinus", left, interval.pivot, interval.tolerance))
+          Some(FailureMessages("wasNotPlusOrMinus", left, spread.pivot, spread.tolerance))
       }
   
     /**
-     * Determine whether a numeric object is outside the passed <code>Interval</code>, returning an <code>Option[String]</code>.
+     * Determine whether a numeric object is outside the passed <code>Spread</code>, returning an <code>Option[String]</code>.
      *
-     * @param interval the <code>Interval</code> against which to compare the value passed to the constructor as <code>left</code> 
-     * @return true if the value passed to the constructor as <code>left</code> is <em>not</em> within the <code>Interval</code> passed to this method.
+     * @param spread the <code>Spread</code> against which to compare the value passed to the constructor as <code>left</code> 
+     * @return true if the value passed to the constructor as <code>left</code> is <em>not</em> within the <code>Spread</code> passed to this method.
      *    else returns an error message string wrapped in a <code>Some</code>.
      */
-    def !==(interval: Interval[L]): Option[String] =
-      if (interval == null) {
+    def !==(spread: Spread[L]): Option[String] =
+      if (spread == null) {
         if (left != null)
           None
         else {
-          val (leftee, rightee) = getObjectsForFailureMessage(left, interval)
+          val (leftee, rightee) = getObjectsForFailureMessage(left, spread)
           Some(FailureMessages("equaled", leftee, rightee))
         }
       }
       else {
-        if (if (interval != null) !interval.isWithin(left) else left != interval)
+        if (if (spread != null) !spread.isWithin(left) else left != spread)
           None
         else
-          Some(FailureMessages("wasPlusOrMinus", left, interval.pivot, interval.tolerance))
+          Some(FailureMessages("wasPlusOrMinus", left, spread.pivot, spread.tolerance))
       }
   }
   
@@ -397,20 +397,20 @@ trait TripleEqualsSupport {
     def !==[R](right: R)(implicit constraint: TypeConstraint[L, R]): Boolean = !constraint.areEqual(left, right)
   
     /**
-     * Determine whether a numeric object is within the passed <code>Interval</code>, returning a <code>Boolean</code>.
+     * Determine whether a numeric object is within the passed <code>Spread</code>, returning a <code>Boolean</code>.
      *
-     * @param interval the <code>Interval</code> against which to compare the value passed to the constructor as <code>left</code> 
-     * @return true if the value passed to the constructor as <code>left</code> is <em>not</em> within the <code>Interval</code> passed to this method.
+     * @param spread the <code>Spread</code> against which to compare the value passed to the constructor as <code>left</code> 
+     * @return true if the value passed to the constructor as <code>left</code> is <em>not</em> within the <code>Spread</code> passed to this method.
      */
-    def ===(interval: Interval[L]): Boolean = if (interval != null) interval.isWithin(left) else left == interval
+    def ===(spread: Spread[L]): Boolean = if (spread != null) spread.isWithin(left) else left == spread
   
     /**
-     * Determine whether a numeric object is outside the passed <code>Interval</code>, returning a <code>Boolean</code>.
+     * Determine whether a numeric object is outside the passed <code>Spread</code>, returning a <code>Boolean</code>.
      *
-     * @param interval the <code>Interval</code> against which to compare the value passed to the constructor as <code>left</code> 
-     * @return true if the value passed to the constructor as <code>left</code> is <em>not</em> within the <code>Interval</code> passed to this method.
+     * @param spread the <code>Spread</code> against which to compare the value passed to the constructor as <code>left</code> 
+     * @return true if the value passed to the constructor as <code>left</code> is <em>not</em> within the <code>Spread</code> passed to this method.
      */
-    def !==(interval: Interval[L]): Boolean = if (interval != null) !interval.isWithin(left) else left != interval
+    def !==(spread: Spread[L]): Boolean = if (spread != null) !spread.isWithin(left) else left != spread
   }
 
   /**
@@ -546,49 +546,49 @@ trait TripleEqualsSupport {
       }
   
     /**
-     * Determine whether a numeric object is within the passed <code>Interval</code>, returning an <code>Option[String]</code>.
+     * Determine whether a numeric object is within the passed <code>Spread</code>, returning an <code>Option[String]</code>.
      *
-     * @param interval the <code>Interval</code> against which to compare the value passed to the constructor as <code>left</code> 
-     * @return None if the value passed to the constructor as <code>left</code> is <em>not</em> within the <code>Interval</code> passed to this method, 
+     * @param spread the <code>Spread</code> against which to compare the value passed to the constructor as <code>left</code> 
+     * @return None if the value passed to the constructor as <code>left</code> is <em>not</em> within the <code>Spread</code> passed to this method, 
      *    else returns an error message string wrapped in a <code>Some</code>.
      */
-    def ===(interval: Interval[L]): Option[String] =
-      if (interval == null) {
+    def ===(spread: Spread[L]): Option[String] =
+      if (spread == null) {
         if (left == null)
           None
         else {
-          val (leftee, rightee) = getObjectsForFailureMessage(left, interval)
+          val (leftee, rightee) = getObjectsForFailureMessage(left, spread)
           Some(FailureMessages("equaled", leftee, rightee))
         }
       }
       else {
-        if (interval.isWithin(left))
+        if (spread.isWithin(left))
           None
         else
-          Some(FailureMessages("wasNotPlusOrMinus", left, interval.pivot, interval.tolerance))
+          Some(FailureMessages("wasNotPlusOrMinus", left, spread.pivot, spread.tolerance))
       }
   
     /**
-     * Determine whether a numeric object is outside the passed <code>Interval</code>, returning an <code>Option[String]</code>.
+     * Determine whether a numeric object is outside the passed <code>Spread</code>, returning an <code>Option[String]</code>.
      *
-     * @param interval the <code>Interval</code> against which to compare the value passed to the constructor as <code>left</code> 
-     * @return true if the value passed to the constructor as <code>left</code> is <em>not</em> within the <code>Interval</code> passed to this method.
+     * @param spread the <code>Spread</code> against which to compare the value passed to the constructor as <code>left</code> 
+     * @return true if the value passed to the constructor as <code>left</code> is <em>not</em> within the <code>Spread</code> passed to this method.
      *    else returns an error message string wrapped in a <code>Some</code>.
      */
-    def !==(interval: Interval[L]): Option[String] =
-      if (interval == null) {
+    def !==(spread: Spread[L]): Option[String] =
+      if (spread == null) {
         if (left != null)
           None
         else {
-          val (leftee, rightee) = getObjectsForFailureMessage(left, interval)
+          val (leftee, rightee) = getObjectsForFailureMessage(left, spread)
           Some(FailureMessages("equaled", leftee, rightee))
         }
       }
       else {
-        if (if (interval != null) !interval.isWithin(left) else left != interval)
+        if (if (spread != null) !spread.isWithin(left) else left != spread)
           None
         else
-          Some(FailureMessages("wasPlusOrMinus", left, interval.pivot, interval.tolerance))
+          Some(FailureMessages("wasPlusOrMinus", left, spread.pivot, spread.tolerance))
       }
   }
 
@@ -818,26 +818,26 @@ trait TripleEqualsSupport {
   def !==(right: Null): TripleEqualsInvocation[Null] = new TripleEqualsInvocation[Null](right, false)
 
   /**
-   * Returns a <code>TripleEqualsInvocationOnInterval[T]</code>, given an <code>Interval[T]</code>, to facilitate
+   * Returns a <code>TripleEqualsInvocationOnSpread[T]</code>, given an <code>Spread[T]</code>, to facilitate
    * the &ldquo;<code><em>&lt;left&gt;</em> should === (<em>&lt;pivot&gt;</em> +- <em>&lt;tolerance&gt;</em>)</code>&rdquo;
    * syntax of <a href="../scalatest/Matchers.html"><code>Matchers</code></a>.
    *
-   * @param right the <code>Interval[T]</code> against which to compare the left-hand value
-   * @return a <code>TripleEqualsInvocationOnInterval</code> wrapping the passed <code>Interval[T]</code> value, with
+   * @param right the <code>Spread[T]</code> against which to compare the left-hand value
+   * @return a <code>TripleEqualsInvocationOnSpread</code> wrapping the passed <code>Spread[T]</code> value, with
    * <code>expectingEqual</code> set to <code>true</code>.
    */
-  def ===[T](right: Interval[T]): TripleEqualsInvocationOnInterval[T] = new TripleEqualsInvocationOnInterval[T](right, true)
+  def ===[T](right: Spread[T]): TripleEqualsInvocationOnSpread[T] = new TripleEqualsInvocationOnSpread[T](right, true)
 
   /**
-   * Returns a <code>TripleEqualsInvocationOnInterval[T]</code>, given an <code>Interval[T]</code>, to facilitate
+   * Returns a <code>TripleEqualsInvocationOnSpread[T]</code>, given an <code>Spread[T]</code>, to facilitate
    * the &ldquo;<code><em>&lt;left&gt;</em> should !== (<em>&lt;pivot&gt;</em> +- <em>&lt;tolerance&gt;</em>)</code>&rdquo;
    * syntax of <a href="../scalatest/Matchers.html"><code>Matchers</code></a>.
    *
-   * @param right the <code>Interval[T]</code> against which to compare the left-hand value
-   * @return a <code>TripleEqualsInvocationOnInterval</code> wrapping the passed <code>Interval[T]</code> value, with
+   * @param right the <code>Spread[T]</code> against which to compare the left-hand value
+   * @return a <code>TripleEqualsInvocationOnSpread</code> wrapping the passed <code>Spread[T]</code> value, with
    * <code>expectingEqual</code> set to <code>false</code>.
    */
-  def !==[T](right: Interval[T]): TripleEqualsInvocationOnInterval[T] = new TripleEqualsInvocationOnInterval[T](right, false)
+  def !==[T](right: Spread[T]): TripleEqualsInvocationOnSpread[T] = new TripleEqualsInvocationOnSpread[T](right, false)
 }
 
 object TripleEqualsSupport {
@@ -849,7 +849,7 @@ object TripleEqualsSupport {
    * @param equalityofA an <code>Equality</code> type class for <code>A</code>
    */
   final class EqualityConstraint[A, B](equalityOfA: Equality[A]) extends TypeConstraint[A, B] {
-  
+
     /**
      * Indicates whether the objects passed as <code>a</code> and <code>b</code> are equal by returning the
      * result of invoking <code>areEqual(a, b)</code> on the passed <code>equalityOfA</code> object.
@@ -867,7 +867,7 @@ object TripleEqualsSupport {
    * @param equalityofB an <code>Equality</code> type class for <code>B</code>
    */
   final class AToBEquivalenceConstraint[A, B](equivalenceOfB: Equivalence[B], cnv: A => B) extends TypeConstraint[A, B] {
-  
+
     /**
      * Indicates whether the objects passed as <code>a</code> and <code>b</code> are equal by return the
      * result of invoking <code>areEqual(cnv(a), b)</code> on the passed <code>equalityOfB</code> object.
@@ -914,10 +914,10 @@ object TripleEqualsSupport {
    * trait <a href="EqualityConstraints.html"><code>EqualityConstraints</code></a>.
    * </p>
    *
-   * @param interval the <code>Interval[T]</code> against which to compare the left-hand value
+   * @param spread the <code>Spread[T]</code> against which to compare the left-hand value
    * @param expectingEqual <code>true</code> if the result of a <code>===</code> invocation; <code>false</code> if the result of a <code>!==</code> invocation.
    */
-  case class TripleEqualsInvocationOnInterval[T](interval: Interval[T], expectingEqual: Boolean)
+  final case class TripleEqualsInvocationOnSpread[T](spread: Spread[T], expectingEqual: Boolean)
   
   /**
    * Facilitates the &ldquo;<code>should ===</code>&rdquo; and  &ldquo;<code>should !==</code>&rdquo; syntax of ScalaTest's matchers DSL. 
@@ -930,5 +930,84 @@ object TripleEqualsSupport {
    * @param right the right-hand side value for an equality assertion
    * @param expectingEqual <code>true</code> if the result of a <code>===</code> invocation; <code>false</code> if the result of a <code>!==</code> invocation.
    */
-  case class TripleEqualsInvocation[T](right: T, expectingEqual: Boolean)
+  final case class TripleEqualsInvocation[T](right: T, expectingEqual: Boolean)
+
+  /**
+   * Class representing an spread (<em>i.e.</em>, range) between two numbers.
+   * 
+   * <p>
+   * The spread is expressed in terms of a <code>Numeric</code> <em>pivot</em> and <em>tolerance</em>.
+   * The spread extends from <code>pivot - tolerance</code> to <code>pivot + tolerance</code>, inclusive.
+   * </p>
+   * 
+   * @param pivot the pivot number at the center of the spread
+   * @param tolerance the tolerance that determines the high and low point of the spread
+   * 
+   * @author Bill Venners
+   */
+  final case class Spread[T : Numeric](pivot: T, tolerance: T) {
+  
+    private val numeric = implicitly[Numeric[T]]
+  
+    require(numeric.signum(tolerance) >= 0, "tolerance must be zero or greater, but was " + tolerance)
+  
+    private val max = numeric.plus(pivot, tolerance)
+    private val min = numeric.minus(pivot, tolerance)
+  
+    /**
+     * Determines whether the passed <code>Numeric</code> value <code>n</code> is within the spread represented
+     * by this <code>Spread</code> instance.
+     */
+    def isWithin(n: T): Boolean = {
+      numeric.gteq(n, min) && numeric.lteq(n, max)
+    }
+  
+    /**
+     * Returns <code>true</code> if the passed number, <code>n</code>, is within the spread represented by this <code>Spread</code> instance
+     *
+     * <p>
+     * The purpose of this method, which will likely be used only rarely, is to achieve symmetry around the <code>===</code> operator. The
+     * <code>TripleEquals</code> trait (and its type-checking siblings <code>TypeCheckedTripleEquals</code> and <code>ConversionCheckedTripleEquals</code>) enable you to write:
+     * </p>
+     *
+     * <pre>
+     * a === (1.0 +- 0.1)
+     * </pre>
+     *
+     * <p>
+     * This method ensures the following mirrored form means the same thing:
+     * </p>
+     *
+     * <pre>
+     * (1.0 +- 0.1) === a
+     * </pre>
+     *
+     * @param n a number that may or may not lie within this spread
+     */
+    def ===(n: T): Boolean = isWithin(n)
+  
+    /**
+     * Returns <code>false</code> if the passed number, <code>n</code>, is within the spread represented by this <code>Spread</code> instance
+     *
+     * <p>
+     * The purpose of this method, which will likely be used only rarely, is to achieve symmetry around the <code>!==</code> operator. The
+     * <code>TripleEquals</code> trait (and its type-checking siblings <code>TypeCheckedTripleEquals</code> and <code>ConversionCheckedTripleEquals</code>) enable you to write:
+     * </p>
+     *
+     * <pre>
+     * a !== (1.0 +- 0.1)
+     * </pre>
+     *
+     * <p>
+     * This method ensures the following mirrored form means the same thing:
+     * </p>
+     *
+     * <pre>
+     * (1.0 +- 0.1) !== a
+     * </pre>
+     *
+     * @param n a number that may or may not lie within this spread
+     */
+    def !==(n: T): Boolean = !isWithin(n)
+  }
 }

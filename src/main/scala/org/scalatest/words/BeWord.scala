@@ -17,6 +17,7 @@ package org.scalatest.words
 
 import org.scalatest.matchers._
 import org.scalautils._
+import org.scalautils.TripleEqualsSupport.Spread
 import org.scalatest.FailureMessages
 import org.scalatest.UnquotedString
 import org.scalatest.Suite
@@ -354,14 +355,14 @@ final class BeWord {
    *                      ^
    * </pre>
    */
-  def apply[U](interval: Interval[U]): Matcher[U] =
+  def apply[U](spread: Spread[U]): Matcher[U] =
     new Matcher[U] {
       def apply(left: U): MatchResult = {
         MatchResult(
-          interval.isWithin(left),
+          spread.isWithin(left),
           // left <= right + tolerance && left >= right - tolerance,
-          FailureMessages("wasNotPlusOrMinus", left, interval.pivot, interval.tolerance),
-          FailureMessages("wasPlusOrMinus", left, interval.pivot, interval.tolerance)
+          FailureMessages("wasNotPlusOrMinus", left, spread.pivot, spread.tolerance),
+          FailureMessages("wasPlusOrMinus", left, spread.pivot, spread.tolerance)
         )
       }
     }

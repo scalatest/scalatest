@@ -30,10 +30,10 @@ import scala.collection.GenSeq
 import scala.collection.GenMap
 import org.scalautils.Tolerance
 import org.scalautils.Explicitly
-import org.scalautils.Interval
+import org.scalautils.TripleEqualsSupport.Spread
 import org.scalautils.TripleEqualsSupport.TripleEqualsInvocation
 import org.scalautils.Equality
-import org.scalautils.TripleEqualsSupport.TripleEqualsInvocationOnInterval
+import org.scalautils.TripleEqualsSupport.TripleEqualsInvocationOnSpread
 import org.scalautils.TypeConstraint
 import MatchersHelper.andMatchersAndApply
 import MatchersHelper.orMatchersAndApply
@@ -2055,13 +2055,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *               ^
    * </pre>
    */
-  def equal[T](interval: Interval[T]): Matcher[T] = {
+  def equal[T](spread: Spread[T]): Matcher[T] = {
     new Matcher[T] {
       def apply(left: T): MatchResult = {
         MatchResult(
-          interval.isWithin(left),
-          FailureMessages("didNotEqualPlusOrMinus", left, interval.pivot, interval.tolerance),
-          FailureMessages("equaledPlusOrMinus", left, interval.pivot, interval.tolerance)
+          spread.isWithin(left),
+          FailureMessages("didNotEqualPlusOrMinus", left, spread.pivot, spread.tolerance),
+          FailureMessages("equaledPlusOrMinus", left, spread.pivot, spread.tolerance)
         )
       }
     }
@@ -4352,7 +4352,7 @@ ys: List[Any] = List(null, null, 1)
 
 scala> all (ys) shouldBe null
 <console>:15: error: ambiguous reference to overloaded definition,
-both method shouldBe in class ResultOfCollectedAny of type (interval: org.scalautils.Interval[Any])Unit
+both method shouldBe in class ResultOfCollectedAny of type (spread: org.scalautils.Spread[Any])Unit
 and  method shouldBe in class ResultOfCollectedAny of type (beMatcher: org.scalatest.matchers.BeMatcher[Any])Unit
 match argument types (Null)
               all (ys) shouldBe null
@@ -4410,10 +4410,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def shouldEqual(interval: Interval[T]) {
+    def shouldEqual(spread: Spread[T]) {
       doCollected(collected, xs, "shouldEqual", 1) { e =>
-        if (!interval.isWithin(e)) {
-          throw newTestFailedException(FailureMessages("didNotEqualPlusOrMinus", e, interval.pivot, interval.tolerance), None, 6)
+        if (!spread.isWithin(e)) {
+          throw newTestFailedException(FailureMessages("didNotEqualPlusOrMinus", e, spread.pivot, spread.tolerance), None, 6)
         }
       }
     }
@@ -4688,10 +4688,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def shouldBe(interval: Interval[T]) {
+    def shouldBe(spread: Spread[T]) {
       doCollected(collected, xs, "shouldBe", 1) { e =>
-        if (!interval.isWithin(e))
-          throw newTestFailedException(FailureMessages("wasNotPlusOrMinus", e, interval.pivot, interval.tolerance), None, 6)
+        if (!spread.isWithin(e))
+          throw newTestFailedException(FailureMessages("wasNotPlusOrMinus", e, spread.pivot, spread.tolerance), None, 6)
       }
     }
 
@@ -4895,15 +4895,15 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *          ^
      * </pre>
      */
-    def should(inv: TripleEqualsInvocationOnInterval[T])(implicit ev: Numeric[T]) {
+    def should(inv: TripleEqualsInvocationOnSpread[T])(implicit ev: Numeric[T]) {
       doCollected(collected, xs, "should", 1) { e =>
-        if ((inv.interval.isWithin(e)) != inv.expectingEqual)
+        if ((inv.spread.isWithin(e)) != inv.expectingEqual)
           throw newTestFailedException(
             FailureMessages(
               if (inv.expectingEqual) "didNotEqualPlusOrMinus" else "equaledPlusOrMinus",
               e,
-              inv.interval.pivot,
-              inv.interval.tolerance
+              inv.spread.pivot,
+              inv.spread.tolerance
             ),
             None,
             6
@@ -5528,9 +5528,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def shouldEqual(interval: Interval[T]) {
-      if (!interval.isWithin(left)) {
-        throw newTestFailedException(FailureMessages("didNotEqualPlusOrMinus", left, interval.pivot, interval.tolerance))
+    def shouldEqual(spread: Spread[T]) {
+      if (!spread.isWithin(left)) {
+        throw newTestFailedException(FailureMessages("didNotEqualPlusOrMinus", left, spread.pivot, spread.tolerance))
       }
     }
 
@@ -5586,14 +5586,14 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def should(inv: TripleEqualsInvocationOnInterval[T])(implicit ev: Numeric[T]) {
-      if ((inv.interval.isWithin(left)) != inv.expectingEqual)
+    def should(inv: TripleEqualsInvocationOnSpread[T])(implicit ev: Numeric[T]) {
+      if ((inv.spread.isWithin(left)) != inv.expectingEqual)
         throw newTestFailedException(
           FailureMessages(
             if (inv.expectingEqual) "didNotEqualPlusOrMinus" else "equaledPlusOrMinus",
             left,
-            inv.interval.pivot,
-            inv.interval.tolerance
+            inv.spread.pivot,
+            inv.spread.tolerance
           )
         )
     }
@@ -5727,9 +5727,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def shouldBe(interval: Interval[T]) {
-      if (!interval.isWithin(left)) {
-        throw newTestFailedException(FailureMessages("wasNotPlusOrMinus", left, interval.pivot, interval.tolerance))
+    def shouldBe(spread: Spread[T]) {
+      if (!spread.isWithin(left)) {
+        throw newTestFailedException(FailureMessages("wasNotPlusOrMinus", left, spread.pivot, spread.tolerance))
       }
     }
 

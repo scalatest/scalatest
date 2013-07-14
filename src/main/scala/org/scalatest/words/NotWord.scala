@@ -19,6 +19,7 @@ import org.scalatest.matchers._
 import org.scalatest.enablers._
 import scala.collection.GenTraversable
 import org.scalautils._
+import org.scalautils.TripleEqualsSupport.Spread
 import TripleEqualsSupport.TripleEqualsInvocation
 import org.scalatest.FailureMessages
 import org.scalatest.UnquotedString
@@ -174,13 +175,13 @@ final class NotWord {
    *                         ^
    * </pre>
    */
-  def equal[U](interval: Interval[U]): Matcher[U] = {
+  def equal[U](spread: Spread[U]): Matcher[U] = {
     new Matcher[U] {
       def apply(left: U): MatchResult = {
         MatchResult(
-          !(interval.isWithin(left)),
-          FailureMessages("equaledPlusOrMinus", left, interval.pivot, interval.tolerance),
-          FailureMessages("didNotEqualPlusOrMinus", left, interval.pivot, interval.tolerance)
+          !(spread.isWithin(left)),
+          FailureMessages("equaledPlusOrMinus", left, spread.pivot, spread.tolerance),
+          FailureMessages("didNotEqualPlusOrMinus", left, spread.pivot, spread.tolerance)
         )
       }
     }
@@ -582,14 +583,14 @@ final class NotWord {
    *                         ^
    * </pre>
    */
-  def be[U](interval: Interval[U]): Matcher[U] = {
+  def be[U](spread: Spread[U]): Matcher[U] = {
     new Matcher[U] {
       def apply(left: U): MatchResult = {
         MatchResult(
           // !(left <= right + tolerance && left >= right - tolerance),
-          !(interval.isWithin(left)),
-          FailureMessages("wasPlusOrMinus", left, interval.pivot, interval.tolerance),
-          FailureMessages("wasNotPlusOrMinus", left, interval.pivot, interval.tolerance)
+          !(spread.isWithin(left)),
+          FailureMessages("wasPlusOrMinus", left, spread.pivot, spread.tolerance),
+          FailureMessages("wasNotPlusOrMinus", left, spread.pivot, spread.tolerance)
         )
       }
     }

@@ -15,9 +15,11 @@
  */
 package org.scalautils
 
+import TripleEqualsSupport.Spread
+
 /**
  * Trait containing an implicit conversion that adds a <code>+-</code> method to <code>Numeric</code> types, which enables
- * intervals to be expressed in terms of a <em>pivot</em> and <em>tolerance</em>.
+ * spreads to be expressed in terms of a <em>pivot</em> and <em>tolerance</em>.
  *
  * <p>
  * For example, the <code>TripleEquals</code> trait (and its type-checking siblings <code>TypeCheckedTripleEquals</code> and
@@ -33,38 +35,38 @@ package org.scalautils
 trait Tolerance {
 
   /**
-   * Wrapper class with a <code>+-</code> method that, given a <code>Numeric</code> argument, returns an <code>Interval</code>.
+   * Wrapper class with a <code>+-</code> method that, given a <code>Numeric</code> argument, returns an <code>Spread</code>.
    * 
-   * @param tolerance the tolerance with which to create (and return) an <code>Interval</code>
+   * @param tolerance the tolerance with which to create (and return) an <code>Spread</code>
    *
    * @author Bill Venners
    */
   final class PlusOrMinusWrapper[T: Numeric](pivot: T) {
 
     /**
-     * Creates and returns an <code>Interval<code> from the <code>pivot</code> passed to the constructor and
+     * Creates and returns an <code>Spread<code> from the <code>pivot</code> passed to the constructor and
      * the <code>tolerance</code> passed to this method.
      *
-     * @param tolerance the tolerance with which to create (and return) the <code>Interval</code>
+     * @param tolerance the tolerance with which to create (and return) the <code>Spread</code>
      */
-    def +-(tolerance: T): Interval[T] = {
+    def +-(tolerance: T): Spread[T] = {
       val numeric = implicitly[Numeric[T]]
       if (numeric.lteq(tolerance, numeric.zero))
         throw new IllegalArgumentException(tolerance.toString + " passed to +- was zero or negative. Must be a positive non-zero number.")
         // throw newTestFailedException(Resources("negativeOrZeroRange", tolerance.toString))
-      Interval(pivot, tolerance)
+      Spread(pivot, tolerance)
     }
 
     /**
      * <strong>The plusOrMinus method has been deprecated and will be removed in a future version of ScalaUtils and ScalaTest. Please use +- instead.</strong>
      */
     @deprecated("The plusOrMinus method has been deprecated and will be removed in a future version of ScalaTest. Please use +- instead.")
-    def plusOrMinus(tolerance: T): Interval[T] = {
+    def plusOrMinus(tolerance: T): Spread[T] = {
       val numeric = implicitly[Numeric[T]]
       if (numeric.lteq(tolerance, numeric.zero))
         throw new IllegalArgumentException(tolerance.toString + " passed to +- was zero or negative. Must be a positive non-zero number.")
         // throw newTestFailedException(Resources("negativeOrZeroRange", tolerance.toString))
-      Interval(pivot, tolerance)
+      Spread(pivot, tolerance)
     }
   }
 
@@ -93,7 +95,7 @@ trait Tolerance {
  * import Tolerance._
  *
  * scala&gt; 1.0 +- 0.1
- * res0: org.scalautils.Interval[Double] = Interval(1.0,0.1)
+ * res0: org.scalautils.TripleEqualsSupport.Spread[Double] = Spread(1.0,0.1)
  * </pre>
  */
 object Tolerance extends Tolerance
