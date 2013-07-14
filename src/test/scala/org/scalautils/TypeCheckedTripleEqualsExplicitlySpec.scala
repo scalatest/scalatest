@@ -21,7 +21,7 @@ class TypeCheckedTripleEqualsExplicitlySpec extends Spec with Matchers with Type
 
   object `The Explicitly DSL` {
     object `when used with === on identical types` {
-      def `should allow an Equality to specified explicitly` {
+      def `should allow an Equality to be specified explicitly` {
         assert(1 !== 2)
         assert((1 === 2)(decided by intInequality))
         assert(1 === 1)
@@ -29,7 +29,7 @@ class TypeCheckedTripleEqualsExplicitlySpec extends Spec with Matchers with Type
       }
     }
     object `when used with supertype === subtype` {
-      def `should allow an Equality to specified explicitly` {
+      def `should allow an Equality to be specified explicitly` {
         assert(new Fruit("orange") !== new Apple)
         assert((new Fruit("orange") === new Apple)(decided by fruitInequality))
         assert(new Fruit("apple") === new Apple)
@@ -37,7 +37,7 @@ class TypeCheckedTripleEqualsExplicitlySpec extends Spec with Matchers with Type
       }
     }
     object `when used with subtype === supertype` {
-      def `should allow an Equality to specified explicitly` {
+      def `should allow an Equality to be specified explicitly` {
         assert(new Apple !== new Fruit("orange"))
         assert((new Apple === new Fruit("orange"))(decided by fruitInequality))
         assert(new Apple === new Fruit("apple"))
@@ -45,10 +45,19 @@ class TypeCheckedTripleEqualsExplicitlySpec extends Spec with Matchers with Type
       }
     }
   }
-  object `The decided by syntax` {
+  object `The determined by syntax` {
     def `should produce an Equivalence if used with an Equivalence (that is not an Equality)` {
+      assert(1 !== 2)
+      1 should !== (2)
+
       assert((1 === 2)(determined by intInequivalence))
+      (1 should === (2)) (determined by intInequivalence)
+
+      assert(1 === 1)
+      1 should === (1)
+
       assert((1 !== 1)(determined by intInequivalence))
+      (1 should !== (1)) (determined by intInequivalence)
     }
     def `should produce an Equivalence from "after being" syntax` {
       assert(("Hi" !== "hI"))
