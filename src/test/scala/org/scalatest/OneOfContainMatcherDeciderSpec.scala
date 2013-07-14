@@ -28,7 +28,7 @@ class OneOfContainMatcherDeciderSpec extends Spec with Matchers with Explicitly 
     new Uniformity[(Int, String)] {
 
       def normalized(s: (Int, String)): (Int, String) = (s._1, s._2.trim)
-      def canNormalize(b: Any) = 
+      def normalizedCanHandle(b: Any) = 
         b match {
           case (_: Int, _: String) => true
           case _ => false
@@ -44,7 +44,7 @@ class OneOfContainMatcherDeciderSpec extends Spec with Matchers with Explicitly 
     new Uniformity[java.util.Map.Entry[Int, String]] {
 
       def normalized(s: java.util.Map.Entry[Int, String]): java.util.Map.Entry[Int, String] = Entry(s.getKey, s.getValue.trim)
-      def canNormalize(b: Any) = 
+      def normalizedCanHandle(b: Any) = 
         b match {
           case entry: java.util.Map.Entry[_, _] => 
             (entry.getKey, entry.getValue) match {
@@ -71,7 +71,7 @@ class OneOfContainMatcherDeciderSpec extends Spec with Matchers with Explicitly 
         count += 1
         s + count
       }
-      def canNormalize(b: Any): Boolean = b.isInstanceOf[Int]
+      def normalizedCanHandle(b: Any): Boolean = b.isInstanceOf[Int]
       def normalizedOrSame(b: Any) =
         b match {
           case i: Int => normalized(i)
@@ -86,7 +86,7 @@ class OneOfContainMatcherDeciderSpec extends Spec with Matchers with Explicitly 
         count += 1
         (s._1 + count, s._2)
       }
-      def canNormalize(b: Any) = 
+      def normalizedCanHandle(b: Any) = 
         b match {
           case (_: Int, _: String) => true
           case _ => false
@@ -105,7 +105,7 @@ class OneOfContainMatcherDeciderSpec extends Spec with Matchers with Explicitly 
         count += 1
         s + count
       }
-      def canNormalize(b: Any): Boolean = b.isInstanceOf[String]
+      def normalizedCanHandle(b: Any): Boolean = b.isInstanceOf[String]
       def normalizedOrSame(b: Any) =
         b match {
           case s: String => normalized(s)
@@ -120,7 +120,7 @@ class OneOfContainMatcherDeciderSpec extends Spec with Matchers with Explicitly 
         count += 1
         (s._1, s._2 + count)
       }
-      def canNormalize(b: Any) = 
+      def normalizedCanHandle(b: Any) = 
         b match {
           case (_: Int, _: String) => true
           case _ => false
@@ -139,7 +139,7 @@ class OneOfContainMatcherDeciderSpec extends Spec with Matchers with Explicitly 
         count += 1
         Entry(s.getKey, s.getValue + count)
       }
-      def canNormalize(b: Any) = 
+      def normalizedCanHandle(b: Any) = 
         b match {
           case entry: java.util.Map.Entry[_, _] => 
             (entry.getKey, entry.getValue) match {

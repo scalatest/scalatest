@@ -16,11 +16,9 @@
 package org.scalautils
 
 /**
- * Defines a custom way to normalize instances of a type.
+ * Defines a custom way to normalize instances of a type that can also handle normalization of that type when passed as <code>Any</code>.
  *
  * <p>
- * This trait exists to enforce that <code>Normalization</code> instances can be
- * passed to <code>whenBothAre</code> and <code>whenAllAre</code>, but not <code>decidedBy</code>.
  * </p>
  * 
  * @tparam A the type whose normalization is being defined
@@ -57,14 +55,97 @@ trait Uniformity[A] extends Normalization[A] { thisUniformity =>
    */
   def normalizedOrSame(b: Any): Any
 
-  def canNormalize(b: Any): Boolean
+  /**
+   * Indicates whether this <code>Uniformity</code>'s <code>normalized</code> method can handle the passed object, if cast to the appropriate type.
+   *
+   * <p>
+   * If this method returns true for a particular passed object, it means that if the object is passed
+   * to <code>normalizedOrSame</code>, that method will return the result of passing it to <code>normalized</code>.
+   * It does not mean that the object will necessarily be <em>modified</em> when passed to <code>normalizedOrSame</code> or <code>normalized</code>.
+   * For example, the <code>lowerCased</code> field of <code>StringNormalizations</code> is a <code>Uniformity[String]</code>
+   * that normalizes strings by forcing all characters to lower case:
+   * </p>
+   *
+   * <pre class="stREPL">
+   * scala&gt; import org.scalautils._
+   * import org.scalautils._
+   *
+   * scala&gt; import StringNormalizations._
+   * import StringNormalizations._
+   *
+   * scala&gt; lowerCased
+   * res0: org.scalautils.Uniformity[String] = org.scalautils.StringNormalizations$$anon$1@236db810
+   *
+   * scala&gt; lowerCased.normalized("HALLOOO!")
+   * res1: String = hallooo!
+   * </pre>
+   *
+   * <p>
+   * Now consider two strings held from variables of type <code>AnyRef</code>:
+   * </p>
+   *
+   * <pre class="stREPL">
+   * scala&gt; val yell: AnyRef = "HOWDY"
+   * yell: AnyRef = HOWDY
+   *
+   * scala&gt; val whisper: AnyRef = "howdy"
+   * whisper: AnyRef = howdy
+   * </pre>
+   *
+   * <p>
+   * As you would expect, when <code>yell</code> is passed to <code>normalizedCanHandle</code>, it returns true, and when
+   * <code>yell</code> is passed to <code>normalizedOrSame</code>, it returns a lower-cased (normal) form:
+   * </p>
+   *
+   * <pre class="stREPL">
+   * scala&gt; lowerCased.normalizedCanHandle(yell)
+   * res2: Boolean = true
+   *
+   * scala&gt; lowerCased.normalizedOrSame(yell)
+   * res3: Any = howdy
+   * </pre>
+   *
+   * <p>
+   * A similar thing happens, however, when <code>whisper</code> is passed to <code>normalizedCanHandle</code> and <code>normalizedOrSame</code>,
+   * even though in this case the string is already in normal form according to the <code>lowerCased</code> <code>Uniformity</code>:
+   * </p>
+   *
+   * <pre class="stREPL">
+   * scala&gt; lowerCased.normalizedCanHandle(whisper)
+   * res4: Boolean = true
+   *
+   * scala&gt; lowerCased.normalizedOrSame(whisper)
+   * res5: Any = howdy
+   * </pre>
+   *
+   * <p>
+   * This illustrates that <code>normalizedCanHandle</code> does <em>not</em> indicate that the passed object is not in normalized form already, just that
+   * it can be be handled by the <code>normalized</code> method. This further means that the <code>normalized</code> method itself
+   * simply ensures that objects are returned in normal form. It need not necessarily change them: if a passed object is already in
+   * normal form, <code>normalized</code> can (and usually should) return the exact same object. That is in fact what happened when we normalized
+   * <code>whisper</code>. Since <code>whisper</code>'s value of <code>"hello"</code> was already in normal form (all lower-cased), <code>normalized</code> (
+   * invoked by the <code>normalizedOrSame</code> method) returned the exact same object passed:
+   * </p>
+   *
+   * <pre>
+   * scala&gt; val whisperNormed = res5.asInstanceOf[AnyRef]
+   * whisperNormed: AnyRef = howdy
+   *
+   * scala&gt; whisperNormed eq whisper
+   * res8: Boolean = true
+   * </pre>
+   */
+  def normalizedCanHandle(b: Any): Boolean
 
+  /**
+   * Returns a new <code>Uniformity</code> that combines this and the passed <code>Uniformity</code>.
+   */
   final def and(other: Uniformity[A]): Uniformity[A] =
     new Uniformity[A] {
       // Note in Scaladoc what order, and recommend people don't do side effects anyway.
       // By order, I mean left's normalized gets called first then right's normalized gets called on that result, for "left and right"
       def normalized(a: A): A = other.normalized(thisUniformity.normalized(a))
-      def canNormalize(b: Any): Boolean = other.canNormalize(b) || thisUniformity.canNormalize(b)
+      def normalizedCanHandle(b: Any): Boolean = other.normalizedCanHandle(b) || thisUniformity.normalizedCanHandle(b)
       def normalizedOrSame(b: Any): Any = other.normalizedOrSame(thisUniformity.normalizedOrSame(b))
     }
 }

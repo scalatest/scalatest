@@ -35,6 +35,9 @@ trait Normalization[A] { thisNormalization =>
    */
   def normalized(a: A): A
 
+  /**
+   * Returns a new <code>Normalization</code> that combines this and the passed <code>Normalization</code>.
+   */
   final def and(other: Normalization[A]): Normalization[A] =
     new Normalization[A] {
       // Note in Scaladoc what order, and recommend people don't do side effects anyway.

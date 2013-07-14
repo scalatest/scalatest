@@ -41,7 +41,7 @@ trait NormalizingEquality[A] extends Equality[A] { thisNormEq =>
 
   def normalized(a: A): A
 
-  def canNormalize(b: Any): Boolean
+  def normalizedCanHandle(b: Any): Boolean
 
   def normalizedOrSame(b: Any): Any
 
@@ -54,7 +54,7 @@ trait NormalizingEquality[A] extends Equality[A] { thisNormEq =>
   final def toUniformity: Uniformity[A] =
     new Uniformity[A] {
       def normalized(a: A): A = thisNormEq.normalized(a)
-      def canNormalize(b: Any): Boolean = thisNormEq.canNormalize(b)
+      def normalizedCanHandle(b: Any): Boolean = thisNormEq.normalizedCanHandle(b)
       def normalizedOrSame(b: Any): Any = thisNormEq.normalizedOrSame(b)
     }
 }

@@ -30,7 +30,7 @@ class TheSameElementsInOrderAsContainMatcherDeciderSpec extends Spec with Matche
         count += 1
         s + count
       }
-      def canNormalize(b: Any): Boolean = b.isInstanceOf[Int]
+      def normalizedCanHandle(b: Any): Boolean = b.isInstanceOf[Int]
       def normalizedOrSame(b: Any) =
         b match {
           case i: Int => normalized(i)

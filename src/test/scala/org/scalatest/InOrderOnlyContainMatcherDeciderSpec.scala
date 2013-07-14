@@ -31,7 +31,7 @@ class InOrderOnlyContainMatcherDeciderSpec extends Spec with Matchers with Expli
         count += 1
         s + count
       }
-      def canNormalize(b: Any): Boolean = b.isInstanceOf[Int]
+      def normalizedCanHandle(b: Any): Boolean = b.isInstanceOf[Int]
       def normalizedOrSame(b: Any) =
         b match {
           case i: Int => normalized(i)
@@ -46,7 +46,7 @@ class InOrderOnlyContainMatcherDeciderSpec extends Spec with Matchers with Expli
         count += 1
         s + count
       }
-      def canNormalize(b: Any): Boolean = b.isInstanceOf[String]
+      def normalizedCanHandle(b: Any): Boolean = b.isInstanceOf[String]
       def normalizedOrSame(b: Any) =
         b match {
           case s: String => normalized(s)

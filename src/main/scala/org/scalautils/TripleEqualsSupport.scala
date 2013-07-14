@@ -593,14 +593,14 @@ trait TripleEqualsSupport {
   }
 
   /**
-   * Return an <code>Equality[A]</code> for any type <code>A</code> that determines equality via the <code>==</code> operator on type <code>A</code>.
+   * Returns an <code>Equality[A]</code> for any type <code>A</code> that determines equality via the <code>==</code> operator on type <code>A</code>.
    *
    * @return a <code>DefaultEquality</code> for type <code>A</code>
    */
   def defaultEquality[A]: Equality[A] = Equality.default
 
   /**
-   * Convert to an <a href="Equalizer.html"><code>Equalizer</code></a> that provides <code>===</code> and <code>!==</code> operators that
+   * Converts to an <a href="Equalizer.html"><code>Equalizer</code></a> that provides <code>===</code> and <code>!==</code> operators that
    * result in <code>Boolean</code> and enforce no type constraint.
    *
    * <p>
@@ -613,7 +613,7 @@ trait TripleEqualsSupport {
   def convertToEqualizer[T](left: T): Equalizer[T]
 
   /**
-   * Convert to a <a href="LegacyEqualizer.html"><code>LegacyEqualizer</code></a> that provides <code>===</code> and <code>!==</code> operators that
+   * Converts to a <a href="LegacyEqualizer.html"><code>LegacyEqualizer</code></a> that provides <code>===</code> and <code>!==</code> operators that
    * result in <code>Option[String]</code> and enforce no type constraint.
    *
    * <p>
@@ -626,7 +626,7 @@ trait TripleEqualsSupport {
   def convertToLegacyEqualizer[T](left: T): LegacyEqualizer[T]
 
   /**
-   * Convert to an <a href="CheckingEqualizer.html"><code>CheckingEqualizer</code></a> that provides <code>===</code> and <code>!==</code> operators that result in <code>Boolean</code> and enforce a type constraint.
+   * Converts to an <a href="CheckingEqualizer.html"><code>CheckingEqualizer</code></a> that provides <code>===</code> and <code>!==</code> operators that result in <code>Boolean</code> and enforce a type constraint.
    *
    * <p>
    * This method is overridden and made implicit by subtraits <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a> and <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a>, and overriden as
@@ -639,7 +639,7 @@ trait TripleEqualsSupport {
   def convertToCheckingEqualizer[T](left: T): CheckingEqualizer[T]
 
   /**
-   * Convert to a <a href="LegacyCheckingEqualizer.html"><code>LegacyCheckingEqualizer</code></a> that provides <code>===</code> and <code>!==</code> operators that result in <code>Option[String]</code> and
+   * Converts to a <a href="LegacyCheckingEqualizer.html"><code>LegacyCheckingEqualizer</code></a> that provides <code>===</code> and <code>!==</code> operators that result in <code>Option[String]</code> and
    * enforce a type constraint.
    *
    * <p>

@@ -84,7 +84,7 @@ class ListShouldContainSpec extends Spec with Matchers {
             normalizedInvokedCount += 1
             s.toLowerCase
           }
-          def canNormalize(b: Any): Boolean = b.isInstanceOf[String]
+          def normalizedCanHandle(b: Any): Boolean = b.isInstanceOf[String]
           def normalizedOrSame(b: Any) =
             b match {
               case s: String => normalized(s)
@@ -143,7 +143,7 @@ class ListShouldContainSpec extends Spec with Matchers {
             normalizedInvokedCount += 1
             s.toLowerCase
           }
-          def canNormalize(b: Any): Boolean = b.isInstanceOf[String]
+          def normalizedCanHandle(b: Any): Boolean = b.isInstanceOf[String]
           def normalizedOrSame(b: Any) =
             b match {
               case s: String => normalized(s)
@@ -208,7 +208,7 @@ class ListShouldContainSpec extends Spec with Matchers {
             normalizedInvokedCount += 1
             s.toLowerCase
           }
-          def canNormalize(b: Any): Boolean = b.isInstanceOf[String]
+          def normalizedCanHandle(b: Any): Boolean = b.isInstanceOf[String]
           def normalizedOrSame(b: Any) =
             b match {
               case s: String => normalized(s)
@@ -272,7 +272,7 @@ class ListShouldContainSpec extends Spec with Matchers {
             normalizedInvokedCount += 1
             s.toLowerCase
           }
-          def canNormalize(b: Any): Boolean = b.isInstanceOf[String]
+          def normalizedCanHandle(b: Any): Boolean = b.isInstanceOf[String]
           def normalizedOrSame(b: Any) =
             b match {
               case s: String => normalized(s)
@@ -375,7 +375,7 @@ class ListShouldContainSpec extends Spec with Matchers {
             normalizedInvokedCount += 1
             s.toLowerCase
           }
-          def canNormalize(b: Any): Boolean = b.isInstanceOf[String]
+          def normalizedCanHandle(b: Any): Boolean = b.isInstanceOf[String]
           def normalizedOrSame(b: Any) =
             b match {
               case s: String => normalized(s)

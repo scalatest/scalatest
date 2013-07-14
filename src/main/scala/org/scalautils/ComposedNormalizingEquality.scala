@@ -43,7 +43,7 @@ private[scalautils] final class ComposedNormalizingEquality[A](
    */
   def normalized(a: A): A = uniformity.normalized(a)
 
-  def canNormalize(b: Any): Boolean = uniformity.canNormalize(b)
+  def normalizedCanHandle(b: Any): Boolean = uniformity.normalizedCanHandle(b)
 
   /* TODO: Fix scaladoc
    * Indicates whether the passed object is an instance of type <code>A</code>.

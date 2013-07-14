@@ -103,7 +103,7 @@ object Equality {
   def apply[A](uniformity: Uniformity[A]): Equality[A] = {
     new NormalizingEquality[A] {
       def normalized(a: A): A = uniformity.normalized(a)
-      def canNormalize(b: Any): Boolean = uniformity.canNormalize(b)
+      def normalizedCanHandle(b: Any): Boolean = uniformity.normalizedCanHandle(b)
       def normalizedOrSame(b: Any): Any = uniformity.normalizedOrSame(b)
     }
   }

@@ -41,7 +41,7 @@ class NormalizedEqualitySpec extends Spec with NonImplicitAssertions {
       sw.isNormalized = true
       sw
     }
-    def canNormalize(b: Any) =
+    def normalizedCanHandle(b: Any) =
       b match {
         case s: StringWrapper => true
         case _ => false
@@ -81,7 +81,7 @@ class NormalizedEqualitySpec extends Spec with NonImplicitAssertions {
 
       class NormalizedArrayOfStringEquality extends NormalizingEquality[Array[String]] {
         def normalized(arr: Array[String]): Array[String] = arr.map(_.trim.toLowerCase)
-        def canNormalize(b: Any) =
+        def normalizedCanHandle(b: Any) =
           b match {
             case arr: Array[_] =>
               if (arr.forall(_.isInstanceOf[String]))

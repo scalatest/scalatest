@@ -15,15 +15,38 @@
  */
 package org.scalautils
 
+/**
+ * Convenience base trait for string <a href="Uniformity.html"><code>Uniformity</code></a>s.
+ *
+ * <p>
+ * This trait defines a <code>normalizedCanHandle</code> method that returns true if the passed
+ * <code>Any</code> is a <code>String</code> and a <code>normalizedOrSame</code> method that
+ * normalizes any passed <code>String</code>s via the <code>normalized</code> method, which is
+ * left abstract for subclasses to fill in.
+ * </p>
+ */
 trait AbstractStringUniformity extends Uniformity[String] {
 
-  // TODO: Scaladoc
-  final def canNormalize(b: Any): Boolean = b.isInstanceOf[String]
+  /**
+   * Returns true if the passed <code>Any</code> is a <code>String</code>.
+   *
+   * @return true if the passed <code>Any</code> is a <code>String</code>.
+   */
+  final def normalizedCanHandle(b: Any): Boolean = b.isInstanceOf[String]
 
   /**
-   * Indicates whether the passed object is an instance of <code>String</code>.
+   * Normalizes the passed object if it is a <code>String</code>.
    *
-   * @return true if the passed object is a <code>String</code>.
+   * <p>
+   * This method returns either:
+   * </p>
+   *
+   * <ul>
+   * <li>if the passed object is a <code>String</code>, the result of passing that string to <code>normalized</code></li>
+   * <li>else, the same exact object that was passed
+   * </p>
+   *
+   * @return a normalized form of any passed <code>String</code>, or the same object if not a <code>String</code>.
    */
   final def normalizedOrSame(b: Any) =
     b match {
