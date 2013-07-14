@@ -15,6 +15,8 @@
  */
 package org.scalautils
 
+import TripleEqualsSupport._
+
 /**
  * Provides an implicit conversion that will be applied only if a higher-priority implicit conversion declared a subtrait
  * is not applicable.
@@ -38,10 +40,10 @@ package org.scalautils
  * </pre>
  *
  * <p>
- * The first expression above is enabled by the implicit conversion <code>typeCheckedTripleEqualsConstraint</code> in traits
+ * The first expression above is enabled by the implicit conversion <code>typeCheckedTypeConstraint</code> in traits
  * <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a> and
  * <a href="TypeCheckedLegacyTripleEquals.html"><code>TypeCheckedLegacyTripleEquals</code></a>. The second expression above is
- * enabled by the implicit conversion <code>lowPriorityTypeCheckedTripleEqualsConstraint</code> in this trait.
+ * enabled by the implicit conversion <code>lowPriorityTypeCheckedTypeConstraint</code> in this trait.
  * </p>
  *
  * <p>
@@ -51,9 +53,9 @@ package org.scalautils
  * priority conversion will be selected.
  * </p>
  */
-trait LowPriorityTypeCheckedConstraint extends TripleEqualsConstraints {
+trait LowPriorityTypeCheckedConstraint extends TripleEqualsSupport {
   // Inherit the scaladoc for this method
-  implicit override def lowPriorityTypeCheckedTripleEqualsConstraint[A, B](implicit equivalenceOfB: Equivalence[B], ev: A <:< B): TripleEqualsConstraint[A, B] = new AToBEquivalenceConstraint[A, B](equivalenceOfB, ev)
-  implicit override def convertEquivalenceToAToBTypeConstraint[A, B](equivalenceOfB: Equivalence[B])(implicit ev: A <:< B): TripleEqualsConstraint[A, B] = new AToBEquivalenceConstraint[A, B](equivalenceOfB, ev)
+  implicit override def lowPriorityTypeCheckedTypeConstraint[A, B](implicit equivalenceOfB: Equivalence[B], ev: A <:< B): TypeConstraint[A, B] = new AToBEquivalenceConstraint[A, B](equivalenceOfB, ev)
+  implicit override def convertEquivalenceToAToBTypeConstraint[A, B](equivalenceOfB: Equivalence[B])(implicit ev: A <:< B): TypeConstraint[A, B] = new AToBEquivalenceConstraint[A, B](equivalenceOfB, ev)
 }
 

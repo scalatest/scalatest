@@ -15,16 +15,3 @@
  */
 package org.scalautils
 
-/**
- * Facilitates the &ldquo;<code>should === (x += y)</code>&rdquo; and  &ldquo;<code>should !== (x += y)</code>&rdquo; syntax of ScalaTest's matchers DSL. 
- *  
- * <p>
- * Instances of this class are created and returned by the <code>===</code> and <code>!==</code> methods of
- * trait <a href="EqualityConstraints.html"><code>EqualityConstraints</code></a>.
- * </p>
- *
- * @param interval the <code>Interval[T]</code> against which to compare the left-hand value
- * @param expectingEqual <code>true</code> if the result of a <code>===</code> invocation; <code>false</code> if the result of a <code>!==</code> invocation.
- */
-case class TripleEqualsInvocationOnInterval[T](interval: Interval[T], expectingEqual: Boolean)
-

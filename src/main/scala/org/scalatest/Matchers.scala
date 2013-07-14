@@ -31,10 +31,10 @@ import scala.collection.GenMap
 import org.scalautils.Tolerance
 import org.scalautils.Explicitly
 import org.scalautils.Interval
-import org.scalautils.TripleEqualsInvocation
+import org.scalautils.TripleEqualsSupport.TripleEqualsInvocation
 import org.scalautils.Equality
-import org.scalautils.TripleEqualsInvocationOnInterval
-import org.scalautils.TripleEqualsConstraint
+import org.scalautils.TripleEqualsSupport.TripleEqualsInvocationOnInterval
+import org.scalautils.TypeConstraint
 import MatchersHelper.andMatchersAndApply
 import MatchersHelper.orMatchersAndApply
 import org.scalatest.words._
@@ -214,7 +214,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * scala&gt; Some(2) should === (2)
  * &lt;console&gt;:17: error: types Some[Int] and Int do not adhere to the equality constraint
  * selected for the === and !== operators; the missing implicit parameter is of
- * type org.scalautils.TripleEqualsConstraint[Some[Int],Int]
+ * type org.scalautils.TypeConstraint[Some[Int],Int]
  *               Some(2) should === (2)
  *                       ^
  * </pre>
@@ -4872,7 +4872,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *          ^
      * </pre>
      */
-    def should[U](inv: TripleEqualsInvocation[U])(implicit constraint: TripleEqualsConstraint[T, U]) {
+    def should[U](inv: TripleEqualsInvocation[U])(implicit constraint: TypeConstraint[T, U]) {
       doCollected(collected, xs, "should", 1) { e =>
         if ((constraint.areEqual(e, inv.right)) != inv.expectingEqual)
           throw newTestFailedException(
@@ -5567,7 +5567,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def should[U](inv: TripleEqualsInvocation[U])(implicit constraint: TripleEqualsConstraint[T, U]) {
+    def should[U](inv: TripleEqualsInvocation[U])(implicit constraint: TypeConstraint[T, U]) {
       if ((constraint.areEqual(left, inv.right)) != inv.expectingEqual)
         throw newTestFailedException(
           FailureMessages(

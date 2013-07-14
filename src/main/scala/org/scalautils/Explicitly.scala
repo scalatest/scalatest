@@ -36,6 +36,38 @@ trait Explicitly {
 
   val determined = new DeterminedWord
 
+  class DecidedByEquality[A](equality: Equality[A]) extends Equality[A] {
+  
+    /**
+     * Indicates whether the objects passed as <code>a</code> and <code>b</code> are equal.
+     *
+     * @param a a left-hand-side object being compared with another (right-hand-side one) for equality (<em>e.g.</em>, <code>a == b</code>)
+     * @param b a right-hand-side object being compared with another (left-hand-side one) for equality (<em>e.g.</em>, <code>a == b</code>)
+     * @return true if the passed objects are "equal," as defined by this <code>Equality</code> instance
+     */
+    def areEqual(a: A, b: Any): Boolean = equality.areEqual(a, b)
+  
+    def afterBeing(uniformity: Uniformity[A]): NormalizingEquality[A] =
+      new ComposedNormalizingEquality[A](equality, uniformity)
+  } 
+  
+  class DeterminedByEquivalence[T](equivalence: Equivalence[T]) extends Equivalence[T] {
+  
+    /**
+     * Indicates whether the objects passed as <code>a</code> and <code>b</code> are equal.
+     *
+     * @param a a left-hand-side object being compared with another (right-hand-side one) for equality (<em>e.g.</em>, <code>a == b</code>)
+     * @param b a right-hand-side object being compared with another (left-hand-side one) for equality (<em>e.g.</em>, <code>a == b</code>)
+     * @return true if the passed objects are "equal," as defined by this <code>Equality</code> instance
+     */
+    def areEquivalent(a: T, b: T): Boolean = equivalence.areEquivalent(a, b)
+  
+  /*
+    def afterBeing(uniformity: Uniformity[A]): NormalizingEquality[A] =
+      new ComposedNormalizingEquality[A](equality, uniformity)
+  */
+  } 
+
   class TheAfterWord {
     def being[N](uniformity: Uniformity[N])(implicit equality: Equality[N]): NormalizingEquality[N] =
       new ComposedNormalizingEquality[N](equality, uniformity)

@@ -15,6 +15,8 @@
  */
 package org.scalautils
 
+import TripleEqualsSupport._
+
 /**
  * Provides an implicit method that loosens the equality constraint defined by <code>TypeCheckedTripleEquals</code> or <code>ConversionCheckedTripleEquals</code>
  * for Scala <code>Seq</code>s to one that more closely matches Scala's approach to <code>Seq</code> equality.
@@ -98,7 +100,7 @@ trait SeqEqualityConstraints {
    * Provides an equality constraint that allows two subtypes of <code>scala.collection.GenSeq</code>s to be compared for equality with <code>===</code> so long
    * as an <code>EqualityConstraint</code> is available for the element types.
    */
-  implicit def seqEqualityConstraint[EA, CA[ea] <: collection.GenSeq[ea], EB, CB[eb] <: collection.GenSeq[eb]](implicit equalityOfA: Equality[CA[EA]], ev: TripleEqualsConstraint[EA, EB]): TripleEqualsConstraint[CA[EA], CB[EB]] = new EqualityConstraint[CA[EA], CB[EB]](equalityOfA)
+  implicit def seqEqualityConstraint[EA, CA[ea] <: collection.GenSeq[ea], EB, CB[eb] <: collection.GenSeq[eb]](implicit equalityOfA: Equality[CA[EA]], ev: TypeConstraint[EA, EB]): TypeConstraint[CA[EA], CB[EB]] = new EqualityConstraint[CA[EA], CB[EB]](equalityOfA)
 }
 
 /**

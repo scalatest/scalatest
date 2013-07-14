@@ -23,7 +23,7 @@ import scala.collection.GenTraversable
 import scala.util.matching.Regex
 import org.scalautils.Equality
 import org.scalautils.Interval
-import org.scalautils.TripleEqualsInvocation
+import org.scalautils.TripleEqualsSupport.TripleEqualsInvocation
 import org.scalatest.FailureMessages
 import org.scalatest.words.FullyMatchWord
 import org.scalatest.words.StartWithWord

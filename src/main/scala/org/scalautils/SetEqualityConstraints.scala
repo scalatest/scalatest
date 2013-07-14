@@ -15,6 +15,8 @@
  */
 package org.scalautils
 
+import TripleEqualsSupport._
+
 /**
  * Provides an implicit method that loosens the equality constraint defined by <code>TypeCheckedTripleEquals</code> or <code>ConversionCheckedTripleEquals</code>
  * for Scala <code>Set</code>s to one that more closely matches Scala's approach to <code>Set</code> equality.
@@ -100,7 +102,7 @@ trait SetEqualityConstraints {
    * Provides an equality constraint that allows two subtypes of <code>scala.collection.GenSet</code>s to be compared for equality with <code>===</code> so long
    * as an <code>EqualityConstraint</code> is available for the element types.
    */
-  implicit def setEqualityConstraint[EA, CA[ea] <: collection.GenSet[ea], EB, CB[eb] <: collection.GenSet[eb]](implicit equalityOfA: Equality[CA[EA]], ev: TripleEqualsConstraint[EA, EB]): TripleEqualsConstraint[CA[EA], CB[EB]] = new EqualityConstraint[CA[EA], CB[EB]](equalityOfA)
+  implicit def setEqualityConstraint[EA, CA[ea] <: collection.GenSet[ea], EB, CB[eb] <: collection.GenSet[eb]](implicit equalityOfA: Equality[CA[EA]], ev: TypeConstraint[EA, EB]): TypeConstraint[CA[EA], CB[EB]] = new EqualityConstraint[CA[EA], CB[EB]](equalityOfA)
 }
 
 /**

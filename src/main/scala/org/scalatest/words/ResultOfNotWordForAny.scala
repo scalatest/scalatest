@@ -31,10 +31,9 @@ import scala.collection.GenMap
 import org.scalautils.Tolerance
 import org.scalautils.Explicitly
 import org.scalautils.Interval
-import org.scalautils.TripleEqualsInvocation
+import org.scalautils.TripleEqualsSupport.TripleEqualsInvocation
 import scala.annotation.tailrec
 import org.scalautils.Equality
-import org.scalautils.TripleEqualsInvocationOnInterval
 import org.scalatest.MatchersHelper.andMatchersAndApply
 import org.scalatest.MatchersHelper.orMatchersAndApply
 import org.scalatest.MatchersHelper.matchSymbolToPredicateMethod

@@ -15,23 +15,3 @@
  */
 package org.scalautils
 
-import annotation.implicitNotFound
-
-/**
- * An implementation of <a href="TripleEqualsConstraint.html"><code>TripleEaualsConstraint</code></a> for two types <code>A</code> and <code>B</code> that requires an <code>Equality[A]</code> to
- * which its <code>areEqual</code> method can delegate an equality comparison.
- *
- * @param equalityofA an <code>Equality</code> type class for <code>A</code>
- */
-final class EqualityConstraint[A, B](equalityOfA: Equality[A]) extends TripleEqualsConstraint[A, B] {
-
-  /**
-   * Indicates whether the objects passed as <code>a</code> and <code>b</code> are equal by returning the
-   * result of invoking <code>areEqual(a, b)</code> on the passed <code>equalityOfA</code> object.
-   *
-   * @param a a left-hand-side object being compared with another (right-hand-side one) for equality (<em>e.g.</em>, <code>a == b</code>)
-   * @param b a right-hand-side object being compared with another (left-hand-side one) for equality (<em>e.g.</em>, <code>a == b</code>)
-   */
-  def areEqual(a: A, b: B): Boolean = equalityOfA.areEqual(a, b)
-}
-

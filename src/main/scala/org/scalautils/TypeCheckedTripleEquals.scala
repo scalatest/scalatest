@@ -15,6 +15,8 @@
  */
 package org.scalautils
 
+import TripleEqualsSupport._
+
 /**
  * Provides <code>===</code> and <code>!==</code> operators that return <code>Boolean</code>, delegate the equality determination
  * to an <code>Equality</code> type class, and require the types of the two values compared to be in a subtype/supertype
@@ -57,7 +59,7 @@ package org.scalautils
  * &lt;console&gt;:14: error: types Int and Long do not adhere to the equality constraint selected for
  * the === and !== operators; they must either be in a subtype/supertype relationship, or, if
  * ConversionCheckedTripleEquals is in force, implicitly convertible in one direction or the other;
- * the missing implicit parameter is of type org.scalautils.TripleEqualsConstraint[Int,Long]
+ * the missing implicit parameter is of type org.scalautils.TypeConstraint[Int,Long]
  *               1 === 1L
  *                 ^
  * </pre>
@@ -123,7 +125,7 @@ package org.scalautils
  * Example.scala:9: error: types Int and Long do not adhere to the equality constraint selected for
  * the === and !== operators; they must either be in a subtype/supertype relationship, or, if
  * ConversionCheckedTripleEquals is in force, implicitly convertible in one direction or the other;
- * the missing implicit parameter is of type org.scalautils.TripleEqualsConstraint[Int,Long]
+ * the missing implicit parameter is of type org.scalautils.TypeConstraint[Int,Long]
  *     if (a === b) 0      // This line won't compile
  *           ^
  * one error found
@@ -165,7 +167,7 @@ package org.scalautils
  * 
  * <p>
  * Because the methods in <code>ConversionCheckedTripleEquals</code> (and its siblings)
- * <em>override</em> all the methods defined in supertype <a href="TripleEqualsConstraints.html"><code>TripleEqualsConstraints</code></a>, you can achieve the same
+ * <em>override</em> all the methods defined in supertype <a href="TripleEqualsSupport.html"><code>TripleEqualsSupport</code></a>, you can achieve the same
  * kind of nested tuning of equality constraints whether you mix in traits, import from companion objects, or use some combination of both.
  * </p>
  *
@@ -188,7 +190,7 @@ package org.scalautils
  * import TypeCheckedLegacyTripleEquals._
  *
  * scala&gt; 1 === 1L
- * &lt;console&gt;:14: error: types Int and Long do not adhere to the equality constraint selected for the === and !== operators; the missing implicit parameter is of type org.scalautils.TripleEqualsConstraint[Int,Long]
+ * &lt;console&gt;:14: error: types Int and Long do not adhere to the equality constraint selected for the === and !== operators; the missing implicit parameter is of type org.scalautils.TypeConstraint[Int,Long]
  *               1 === 1L
  *                 ^
  * </pre>
@@ -233,15 +235,15 @@ trait TypeCheckedTripleEquals extends LowPriorityTypeCheckedConstraint {
   override def convertToLegacyEqualizer[T](left: T): LegacyEqualizer[T] = new LegacyEqualizer(left)
   override def convertToLegacyCheckingEqualizer[T](left: T): LegacyCheckingEqualizer[T] = new LegacyCheckingEqualizer(left)
 
-  override def unconstrainedEquality[A, B](implicit equalityOfA: Equality[A]): TripleEqualsConstraint[A, B] = new EqualityConstraint[A, B](equalityOfA)
+  override def unconstrainedEquality[A, B](implicit equalityOfA: Equality[A]): TypeConstraint[A, B] = new EqualityConstraint[A, B](equalityOfA)
 
-  implicit override def typeCheckedTripleEqualsConstraint[A, B](implicit equivalenceOfA: Equivalence[A], ev: B <:< A): TripleEqualsConstraint[A, B] = new BToAEquivalenceConstraint[A, B](equivalenceOfA, ev)
-  implicit override def convertEquivalenceToBToATypeConstraint[A, B](equivalenceOfA: Equivalence[A])(implicit ev: B <:< A): TripleEqualsConstraint[A, B] = new BToAEquivalenceConstraint[A, B](equivalenceOfA, ev)
+  implicit override def typeCheckedTypeConstraint[A, B](implicit equivalenceOfA: Equivalence[A], ev: B <:< A): TypeConstraint[A, B] = new BToAEquivalenceConstraint[A, B](equivalenceOfA, ev)
+  implicit override def convertEquivalenceToBToATypeConstraint[A, B](equivalenceOfA: Equivalence[A])(implicit ev: B <:< A): TypeConstraint[A, B] = new BToAEquivalenceConstraint[A, B](equivalenceOfA, ev)
 
-  override def lowPriorityConversionCheckedTripleEqualsConstraint[A, B](implicit equivalenceOfB: Equivalence[B], cnv: A => B): TripleEqualsConstraint[A, B] = new AToBEquivalenceConstraint[A, B](equivalenceOfB, cnv)
-  override def convertEquivalenceToAToBConversionConstraint[A, B](equivalenceOfB: Equivalence[B])(implicit ev: A => B): TripleEqualsConstraint[A, B] = new AToBEquivalenceConstraint[A, B](equivalenceOfB, ev)
-  override def conversionCheckedTripleEqualsConstraint[A, B](implicit equivalenceOfA: Equivalence[A], cnv: B => A): TripleEqualsConstraint[A, B] = new BToAEquivalenceConstraint[A, B](equivalenceOfA, cnv)
-  override def convertEquivalenceToBToAConversionConstraint[A, B](equivalenceOfA: Equivalence[A])(implicit ev: B => A): TripleEqualsConstraint[A, B] = new BToAEquivalenceConstraint[A, B](equivalenceOfA, ev)
+  override def lowPriorityConversionCheckedTypeConstraint[A, B](implicit equivalenceOfB: Equivalence[B], cnv: A => B): TypeConstraint[A, B] = new AToBEquivalenceConstraint[A, B](equivalenceOfB, cnv)
+  override def convertEquivalenceToAToBConversionConstraint[A, B](equivalenceOfB: Equivalence[B])(implicit ev: A => B): TypeConstraint[A, B] = new AToBEquivalenceConstraint[A, B](equivalenceOfB, ev)
+  override def conversionCheckedTypeConstraint[A, B](implicit equivalenceOfA: Equivalence[A], cnv: B => A): TypeConstraint[A, B] = new BToAEquivalenceConstraint[A, B](equivalenceOfA, cnv)
+  override def convertEquivalenceToBToAConversionConstraint[A, B](equivalenceOfA: Equivalence[A])(implicit ev: B => A): TypeConstraint[A, B] = new BToAEquivalenceConstraint[A, B](equivalenceOfA, ev)
 }
 
 /**

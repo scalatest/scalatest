@@ -19,6 +19,7 @@ import org.scalatest.matchers._
 import org.scalatest.enablers._
 import scala.collection.GenTraversable
 import org.scalautils._
+import TripleEqualsSupport.TripleEqualsInvocation
 import org.scalatest.FailureMessages
 import org.scalatest.UnquotedString
 import org.scalautils.Equality
