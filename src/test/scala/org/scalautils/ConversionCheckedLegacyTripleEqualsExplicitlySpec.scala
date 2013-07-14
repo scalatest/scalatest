@@ -26,6 +26,10 @@ class ConversionCheckedLegacyTripleEqualsExplicitlySpec extends Spec with Matche
         assert((1 === 2)(decided by intInequality))
         assert(1 === 1)
         assert((1 !== 1)(decided by intInequality))
+
+        implicit val strIneq = stringInequality
+        assert(" Hi" === "hI ")
+        assert { (" Hi" !== "hI ") (decided by defaultEquality[String]) }
       }
     }
     object `when used with toType === fromType` {
@@ -68,14 +72,12 @@ class ConversionCheckedLegacyTripleEqualsExplicitlySpec extends Spec with Matche
       assert((" Hi" !== "hI "))
       assert { (" Hi" === "hI ") (after being downCased and chopped) }
     }
-/*
     def `should produce an Equivalence from "determined by <equivalence> afterBeing" syntax` {
       implicit val stringIneq = stringInequivalence
-      assert(" Hi" === "hI ")
-      assert { (" Hi" !== "hI ") (determined by defaultEquality[String]) }
-      // assert { (" Hi" === "hI ") (after being downCased and chopped) }
+      assert(("Hi" === "hI"))
+      assert { ("Hi" !== "hI") (after being downCased) }
+      assert { ("Hi" === "hI") (determined by defaultEquality[String] afterBeing downCased) }
     }
-*/
   }
 }
 

@@ -62,10 +62,8 @@ trait Explicitly {
      */
     def areEquivalent(a: T, b: T): Boolean = equivalence.areEquivalent(a, b)
   
-  /*
-    def afterBeing(uniformity: Uniformity[A]): NormalizingEquality[A] =
-      new ComposedNormalizingEquality[A](equality, uniformity)
-  */
+    def afterBeing(normalization: Normalization[T]): NormalizingEquivalence[T] =
+      new ComposedNormalizingEquivalence[T](equivalence, normalization)
   } 
 
   class TheAfterWord {

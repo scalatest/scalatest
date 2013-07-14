@@ -57,6 +57,11 @@ trait ExplicitlySpecHelpers {
       def normalized(s: String): String = s.trim
     }
 
+  val stringInequality = 
+    new Equality[String] {
+      def areEqual(a: String, b: Any): Boolean = a != b
+    }
+
   val stringInequivalence = 
     new Equivalence[String] {
       def areEquivalent(a: String, b: String): Boolean = a != b
