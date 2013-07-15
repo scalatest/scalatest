@@ -20,14 +20,6 @@ import time.SpanSugar._
 
 private[scalatest] class SlowpokeDetector(timeout: Span = 5 minutes, interval: Span = 1 minute) {
 
-  def suiteStarting(suiteName: String, suiteId: String, timeStamp: Long): Unit = {
-    if (suiteName == null || suiteId == null) throw new NullPointerException
-    require(timeStamp >= 0, "timeStamp must be >= 0")
-  }
-  def suiteFinished(suiteName: String, suiteId: String, timeStamp: Long): Unit = {
-    if (suiteName == null || suiteId == null) throw new NullPointerException
-    require(timeStamp >= 0, "timeStamp must be >= 0")
-  }
   def testStarting(suiteName: String, suiteId: String, testName: String, timeStamp: Long): Unit = {
     if (suiteName == null || suiteId == null || testName == null) throw new NullPointerException
     require(timeStamp >= 0, "timeStamp must be >= 0")

@@ -27,64 +27,6 @@ class SlowpokeDetectorSpec extends Spec with Matchers {
       new SlowpokeDetector(timeout = 1 minute)
       new SlowpokeDetector(interval = 10 seconds)
     }
-    def `should offer a method to register a starting suite` {
-      val spd = new SlowpokeDetector
-      spd.suiteStarting(
-        suiteId = "the suite name",
-        suiteName = "the suite ID",
-        timeStamp = 10
-      )
-      a [NullPointerException] should be thrownBy {
-        spd.suiteStarting(
-          suiteId = null,
-          suiteName = "the suite ID",
-          timeStamp = 10
-        )
-      }
-      a [NullPointerException] should be thrownBy {
-        spd.suiteStarting(
-          suiteId = "the suite name",
-          suiteName = null,
-          timeStamp = 10
-        )
-      }
-      an [IllegalArgumentException] should be thrownBy {
-        spd.suiteStarting(
-          suiteId = "the suite name",
-          suiteName = "the suite ID",
-          timeStamp = -10
-        )
-      }
-    }
-    def `should offer a method to register a finished (completed or aborted) suite` {
-      val spd = new SlowpokeDetector
-      spd.suiteFinished(
-        suiteId = "the suite name",
-        suiteName = "the suite ID",
-        timeStamp = 10
-      )
-      a [NullPointerException] should be thrownBy {
-        spd.suiteFinished(
-          suiteId = null,
-          suiteName = "the suite ID",
-          timeStamp = 10
-        )
-      }
-      a [NullPointerException] should be thrownBy {
-        spd.suiteFinished(
-          suiteId = "the suite name",
-          suiteName = null,
-          timeStamp = 10
-        )
-      }
-      an [IllegalArgumentException] should be thrownBy {
-        spd.suiteFinished(
-          suiteId = "the suite name",
-          suiteName = "the suite ID",
-          timeStamp = -10
-        )
-      }
-    }
     def `should offer a method to register a starting test` {
       val spd = new SlowpokeDetector
       spd.testStarting(
