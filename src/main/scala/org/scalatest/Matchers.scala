@@ -3335,6 +3335,26 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         }
       }
     }
+    
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * all(xs) should not be empty
+     *                    ^
+     * </pre>
+     */
+    def be(emptyWord: EmptyWord)(implicit emptiness: Emptiness[T]) {
+      doCollected(collected, xs, "be", 1) { e => 
+        if (emptiness.isEmpty(e) != shouldBeTrue) {
+          throw newTestFailedException(
+            FailureMessages(if (shouldBeTrue) "wasNotEmpty" else "wasEmpty", e), 
+            None, 
+            6
+          )
+        }
+      }
+    }
 
     /**
      * This method enables the following syntax:
@@ -4460,6 +4480,21 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, "shouldBe", 1) { e =>
         if (!writability.isWritable(e))
           throw newTestFailedException(FailureMessages("wasNotWritable", e), None, 6)
+      }
+    }
+    
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * all(xs) shouldBe empty
+     *         ^
+     * </pre>
+     */
+    def shouldBe(emptyWord: EmptyWord)(implicit emptiness: Emptiness[T]) {
+      doCollected(collected, xs, "shouldBe", 1) { e =>
+        if (!emptiness.isEmpty(e))
+          throw newTestFailedException(FailureMessages("wasNotEmpty", e), None, 6)
       }
     }
 
@@ -5802,6 +5837,19 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def shouldBe(right: WritableWord)(implicit writability: Writability[T]) {
       if (!writability.isWritable(left))
         throw newTestFailedException(FailureMessages("wasNotWritable", left))
+    }
+    
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * result shouldBe empty
+     *        ^
+     * </pre>
+     */
+    def shouldBe(right: EmptyWord)(implicit emptiness: Emptiness[T]) {
+      if (!emptiness.isEmpty(left))
+        throw newTestFailedException(FailureMessages("wasNotEmpty", left))
     }
 
     /**

@@ -84,6 +84,7 @@ object ScalatestBuild extends Build {
      genContainTask, 
      genSortedTask, 
      genLoneElementTask, 
+     genEmptyTask, 
      sourceGenerators in Test <+= 
          (baseDirectory, sourceManaged in Test) map genFiles("gengen", "GenGen.scala")(GenGen.genTest),
      sourceGenerators in Test <+= 
@@ -100,6 +101,8 @@ object ScalatestBuild extends Build {
          (baseDirectory, sourceManaged in Test) map genFiles("gensorted", "GenSorted.scala")(GenSorted.genTest),
      sourceGenerators in Test <+= 
          (baseDirectory, sourceManaged in Test) map genFiles("genloneelement", "GenLoneElement.scala")(GenLoneElement.genTest),
+     sourceGenerators in Test <+= 
+         (baseDirectory, sourceManaged in Test) map genFiles("genempty", "GenEmpty.scala")(GenEmpty.genTest),
      testOptions in Test := Seq(Tests.Argument("-l", "org.scalatest.tags.Slow", 
                                                "-oDI", 
                                                "-h", "gentests/target/html", 
@@ -194,6 +197,11 @@ object ScalatestBuild extends Build {
   val genLoneElement = TaskKey[Unit]("genloneelement", "Generate lone element matcher tests")
   val genLoneElementTask = genLoneElement <<= (sourceManaged in Compile, sourceManaged in Test) map { (mainTargetDir: File, testTargetDir: File) =>
     GenLoneElement.genTest(new File(testTargetDir, "scala/genloneelement"), scalaVersionToUse)
+  }
+  
+  val genEmpty = TaskKey[Unit]("genempty", "Generate empty matcher tests")
+  val genEmptyTask = genEmpty <<= (sourceManaged in Compile, sourceManaged in Test) map { (mainTargetDir: File, testTargetDir: File) =>
+    GenEmpty.genTest(new File(testTargetDir, "scala/genempty"), scalaVersionToUse)
   }
 
   val genCode = TaskKey[Unit]("gencode", "Generate Code, includes Must Matchers and They Word tests.")

@@ -1,0 +1,100 @@
+/*
+ * Copyright 2001-2013 Artima, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.scalatest.enablers
+
+import org.scalautils.Equality
+import org.scalatest.words.ArrayWrapper
+import scala.collection.GenTraversable
+import org.scalatest.FailureMessages
+import scala.annotation.tailrec
+import scala.collection.JavaConverters._
+import Aggregating.tryEquality
+
+/**
+ * Supertrait for typeclasses that enable <code>empty</code> matcher syntax.
+ *
+ * <p>
+ * A <code>Emptiness[C]</code> provides access to the "emptiness" of type <code>C</code> in such
+ * a way that relevant <code>empty</code> matcher syntax can be used with type <code>C</code>. A <code>C</code>
+ * can be any type that in some way can be empty. ScalaTest provides implicit implementations for several types. 
+ * You can enable the <code>empty</code> matcher syntax on your own type <code>U</code> by defining an <code>Emptiness[U}</code> 
+ * for the type and making it available implicitly.
+ * 
+ * <p>
+ * ScalaTest provides implicit <code>Emptiness</code> instances for <code>scala.collection.GenTraversable</code>,
+ * <code>java.util.Collection</code>, <code>java.util.Map</code>, <code>String</code>, <code>Array</code>, 
+ * and <code>Option</code> in the <code>Emptiness</code> companion object.
+ * </p>
+ */
+trait Emptiness[-T] {
+
+  /**
+   * Determines whether the passed thing is readable, <em>i.e.</em>, the passed file is readable.
+   */
+  def isEmpty(thing: T): Boolean
+}
+
+object Emptiness {
+
+  /**
+   * Enable emptiness for <code>scala.collection.GenTraversable</code>
+   */
+  implicit def emptinessOfGenTraversable[E, TRAV[e] <: scala.collection.GenTraversable[e]]: Emptiness[TRAV[E]] =
+    new Emptiness[TRAV[E]] {
+      def isEmpty(trav: TRAV[E]): Boolean = trav.isEmpty
+    }
+  
+  /**
+   * Enable emptiness for <code>Array</code>
+   */
+  implicit def emptinessOfArray[E]: Emptiness[Array[E]] =
+    new Emptiness[Array[E]] {
+      def isEmpty(arr: Array[E]): Boolean = arr.length == 0
+    }
+  
+  /**
+   * Enable emptiness for <code>String</code>
+   */
+  implicit def emptinessOfString: Emptiness[String] =
+    new Emptiness[String] {
+      def isEmpty(str: String): Boolean = str.isEmpty
+    }
+  
+  /**
+   * Enable emptiness for <code>Option</code>
+   */
+  implicit def emptinessOfOption[E, OPT[e] <: Option[e]]: Emptiness[OPT[E]] =
+    new Emptiness[OPT[E]] {
+      def isEmpty(opt: OPT[E]): Boolean = opt.isEmpty
+    }
+  
+  /**
+   * Enable emptiness for <code>java.util.Collection</code>
+   */
+  implicit def emptinessOfJavaCollection[E, JCOL[e] <: java.util.Collection[e]]: Emptiness[JCOL[E]] =
+    new Emptiness[JCOL[E]] {
+      def isEmpty(jcol: JCOL[E]): Boolean = jcol.isEmpty
+    }
+
+  /**
+   * Enable emptiness for <code>java.util.Map</code>
+   */
+  implicit def emptinessOfJavaMap[K, V, JMAP[k, v] <: java.util.Map[k, v]]: Emptiness[JMAP[K, V]] =
+    new Emptiness[JMAP[K, V]] {
+      def isEmpty(jmap: JMAP[K, V]): Boolean = jmap.isEmpty
+    }
+}
+

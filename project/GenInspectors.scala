@@ -418,7 +418,7 @@ object GenInspectors {
       "    new HavePropertyMatchResult(value.length == expectedValue, \"length\", expectedValue, value.length)\n" + 
       "  }\n" + 
       "}\n" + 
-      "val empty = new EmptyBePropertyMatcher()\n" + 
+      "val emptyMatcher = new EmptyBePropertyMatcher()\n" + 
       "def plength(expectedValue: Int) = new StringLengthMatcher(expectedValue)\n" + 
       "val theInstance = \"2\"\n" + 
       "def arrayToString(xs: GenTraversable[_]): String = FailureMessages.decorateToStringValue(xs)\n" + 
@@ -904,16 +904,16 @@ object GenInspectors {
     List(
       ("'should be symbol' failed", " should be ('empty)", "IsEmpty", errorFunPrefix + "IsNotEmpty", "\"\"", (errorFun: String, errorValue: String) => new WasNotMessageTemplate(leftTemplateFun(errorFun, errorValue), empty, autoQuoteString)), 
       ("'should not be symbol' failed", " should not be 'empty", "IsNotEmpty", errorFunPrefix + "IsEmpty", "\"\"", (errorFun: String, errorValue: String) => new WasMessageTemplate(leftTemplateFun(errorFun, errorValue), empty, autoQuoteString)), 
-      ("'should be property' failed", " should be (empty)", "IsEmpty", errorFunPrefix + "IsNotEmpty", "\"\"", (errorFun: String, errorValue: String) => new WasNotMessageTemplate(leftTemplateFun(errorFun, errorValue), empty, autoQuoteString)),
-      ("'should not be property' failed", " should not be empty", "IsNotEmpty", errorFunPrefix + "IsEmpty", "\"\"", (errorFun: String, errorValue: String) => new WasMessageTemplate(leftTemplateFun(errorFun, errorValue), empty, autoQuoteString)), 
+      ("'should be property' failed", " should be (emptyMatcher)", "IsEmpty", errorFunPrefix + "IsNotEmpty", "\"\"", (errorFun: String, errorValue: String) => new WasNotMessageTemplate(leftTemplateFun(errorFun, errorValue), empty, autoQuoteString)),
+      ("'should not be property' failed", " should not be emptyMatcher", "IsNotEmpty", errorFunPrefix + "IsEmpty", "\"\"", (errorFun: String, errorValue: String) => new WasMessageTemplate(leftTemplateFun(errorFun, errorValue), empty, autoQuoteString)), 
       ("'should be a symbol' failed", " should be a 'empty", "IsEmpty", errorFunPrefix + "IsNotEmpty", "\"\"", (errorFun: String, errorValue: String) => new WasNotAMessageTemplate(leftTemplateFun(errorFun, errorValue), empty, autoQuoteString)), 
       ("'should not be a symbol' failed", " should not be a ('empty)", "IsNotEmpty", errorFunPrefix + "IsEmpty", "\"\"", (errorFun: String, errorValue: String) => new WasAMessageTemplate(leftTemplateFun(errorFun, errorValue), empty, autoQuoteString)), 
-      ("'should be a property' failed", " should be a empty", "IsEmpty", errorFunPrefix + "IsNotEmpty", "\"\"", (errorFun: String, errorValue: String) => new WasNotAMessageTemplate(leftTemplateFun(errorFun, errorValue), empty, autoQuoteString)), 
-      ("'should not be a property' failed", " should not be a (empty)", "IsNotEmpty", errorFunPrefix + "IsEmpty", "\"\"", (errorFun: String, errorValue: String) => new WasAMessageTemplate(leftTemplateFun(errorFun, errorValue), empty, autoQuoteString)), 
+      ("'should be a property' failed", " should be a emptyMatcher", "IsEmpty", errorFunPrefix + "IsNotEmpty", "\"\"", (errorFun: String, errorValue: String) => new WasNotAMessageTemplate(leftTemplateFun(errorFun, errorValue), empty, autoQuoteString)), 
+      ("'should not be a property' failed", " should not be a (emptyMatcher)", "IsNotEmpty", errorFunPrefix + "IsEmpty", "\"\"", (errorFun: String, errorValue: String) => new WasAMessageTemplate(leftTemplateFun(errorFun, errorValue), empty, autoQuoteString)), 
       ("'should be an symbol' failed", " should be an 'empty", "IsEmpty", errorFunPrefix + "IsNotEmpty", "\"\"", (errorFun: String, errorValue: String) => new WasNotAnMessageTemplate(leftTemplateFun(errorFun, errorValue), empty, autoQuoteString)),
       ("'should not be an symbol' failed", " should not be an ('empty)", "IsNotEmpty", errorFunPrefix + "IsEmpty", "\"\"", (errorFun: String, errorValue: String) => new WasAnMessageTemplate(leftTemplateFun(errorFun, errorValue), empty, autoQuoteString)), 
-      ("'should be an property' failed", " should be an empty", "IsEmpty", errorFunPrefix + "IsNotEmpty", "\"\"", (errorFun: String, errorValue: String) => new WasNotAnMessageTemplate(leftTemplateFun(errorFun, errorValue), empty, autoQuoteString)), 
-      ("'should not be an property' failed", " should not be an (empty)", "IsNotEmpty", errorFunPrefix + "IsEmpty", "\"\"", (errorFun: String, errorValue: String) => new WasAnMessageTemplate(leftTemplateFun(errorFun, errorValue), empty, autoQuoteString)), 
+      ("'should be an property' failed", " should be an emptyMatcher", "IsEmpty", errorFunPrefix + "IsNotEmpty", "\"\"", (errorFun: String, errorValue: String) => new WasNotAnMessageTemplate(leftTemplateFun(errorFun, errorValue), empty, autoQuoteString)), 
+      ("'should not be an property' failed", " should not be an (emptyMatcher)", "IsNotEmpty", errorFunPrefix + "IsEmpty", "\"\"", (errorFun: String, errorValue: String) => new WasAnMessageTemplate(leftTemplateFun(errorFun, errorValue), empty, autoQuoteString)), 
       ("'should have property' failed", " should have (plength(" + expectedLengthSize + "))", "LengthEqual", errorFunPrefix + "LengthNotEqualLength", "" + expectedLengthSize, (errorFun: String, errorValue: String) => new PropertyHadUnexpectedValueMessageTemplate("length", 0, leftLengthTemplateFun(errorFun, errorValue), targetTemplateFun(errorFun, errorValue), autoQuoteString)),
       ("'should not have property' failed", " should not have plength(" + expectedLengthSize + ")", "LengthNotEqual", errorFunPrefix + "LengthEqual", "" + expectedLengthSize, (errorFun: String, errorValue: String) => new PropertyHadExpectedValueMessageTemplate("length", 0, leftTemplateFun(errorFun, errorValue), autoQuoteString))
     )

@@ -27,6 +27,7 @@ import org.scalatest.enablers.Sequencing
 import org.scalatest.enablers.Sortable
 import org.scalatest.enablers.Readability
 import org.scalatest.enablers.Writability
+import org.scalatest.enablers.Emptiness
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="ShouldMatchers.html"><code>ShouldMatchers</code></a> or <a href="MustMatchers.html"><code>MustMatchers</code></a> for an overview of
@@ -659,6 +660,29 @@ final class BeWord {
               writability.isWritable(left), 
               FailureMessages("wasNotWritable", left), 
               FailureMessages("wasWritable", left)
+            )
+          }
+        }
+    }
+  
+  /**
+   * This method enables the following syntax, where <code>open</code> refers to a <code>BePropertyMatcher</code>:
+   *
+   * <pre class="stHighlight">
+   * file should be (empty)
+   *                ^
+   * </pre>
+   */
+  def apply(empty: EmptyWord): MatcherFactory1[Any, Emptiness] = 
+    new MatcherFactory1[Any, Emptiness] {
+      def matcher[T <: Any : Emptiness]: Matcher[T] = 
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+            val emptiness = implicitly[Emptiness[T]]
+            MatchResult(
+              emptiness.isEmpty(left), 
+              FailureMessages("wasNotEmpty", left), 
+              FailureMessages("wasEmpty", left)
             )
           }
         }
