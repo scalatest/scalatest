@@ -21,7 +21,7 @@ package org.scalautils
  * <p>
  * </p>
  * 
- * @tparam A the type whose normalization is being defined
+ * @tparam A the type whose uniformity is being defined
  */
 trait Uniformity[A] extends Normalization[A] { thisUniformity =>
 
@@ -52,6 +52,10 @@ trait Uniformity[A] extends Normalization[A] { thisUniformity =>
    *
    * @param b the object to inspect to determine whether it is an instance of <code>A<code>
    * @return true if the passed object is an instance of <code>A</code>
+   */
+
+  /**
+   * Returns either the result of passing this object to <code>normalized</code>, if appropriate, or the same object.
    */
   def normalizedOrSame(b: Any): Any
 

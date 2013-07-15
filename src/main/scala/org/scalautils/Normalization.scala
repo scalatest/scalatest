@@ -28,7 +28,11 @@ package org.scalautils
 trait Normalization[A] { thisNormalization =>
 
   /**
-   * Normalizes the passed object.
+   * Returns a normalized form of the passed object.
+   *
+   * <p>
+   * If the passed object is already in normal form, this method may return the same instance passed.
+   * </p>
    *
    * @param a the object to normalize
    * @return the normalized form of the passed object
@@ -36,12 +40,28 @@ trait Normalization[A] { thisNormalization =>
   def normalized(a: A): A
 
   /**
-   * Returns a new <code>Normalization</code> that combines this and the passed <code>Normalization</code>.
+   * Returns a new <code>Normalization</code> that composes this and the passed <code>Normalization</code>.
+   *
+   * <p>
+   * The <code>normalized</code> method of the <code>Normalization</code>'s returned by this method returns a normalized form of the passed
+   * object obtained by passing it first to this <code>Normalization</code>'s <code>normalized</code> method,
+   * then passing that result to the other (<em>i.e.</em>, passed to <code>and</code> as <code>other</code>) <code>Normalization</code>'s <code>normalized</code> method.
+   * Essentially, the body of the composed <code>normalized</code> method is:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * normalizationPassedToAnd.normalized(normalizationOnWhichAndWasInvoked.normalized(a))
+   * </pre>
+   *
+   * <p>
+   * If the passed object is already in normal form, this method may return the same instance passed.
+   * </p>
+   *
+   * @param a the object to normalize
+   * @return a <code>Normalization</code> representing the composition of this and the passed <code>Normalization</code>
    */
   final def and(other: Normalization[A]): Normalization[A] =
     new Normalization[A] {
-      // Note in Scaladoc what order, and recommend people don't do side effects anyway.
-      // By order, I mean left's normalized gets called first then right's normalized gets called on that result, for "left and right"
       def normalized(a: A): A = other.normalized(thisNormalization.normalized(a))
     }
 }
