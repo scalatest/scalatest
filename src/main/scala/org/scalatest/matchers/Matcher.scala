@@ -68,6 +68,7 @@ import org.scalatest.words.ExistWord
 import org.scalatest.words.ResultOfNotExist
 import org.scalatest.words.ReadableWord
 import org.scalatest.words.WritableWord
+import org.scalatest.words.EmptyWord
 
 /**
  * Trait extended by objects that can match a value of the specified type. The value to match is
@@ -1418,6 +1419,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
+     * list should (not be readableFile and not be empty)
+     *                                             ^
+     * </pre>
+     */
+    def be(emptyWord: EmptyWord) = 
+      outerInstance.and(MatcherWords.not.be(emptyWord))
+      
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
      * "fred" should (not fullyMatch regex ("bob") and not fullyMatch regex (decimal))
      *                                                     ^
      * </pre>
@@ -2485,6 +2497,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def be(readableWord: ReadableWord) = 
       outerInstance.or(MatcherWords.not.be(readableWord))
+      
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * list should (not be readableFile or not be empty)
+     *                                            ^
+     * </pre>
+     */
+    def be(emptyWord: EmptyWord) = 
+      outerInstance.or(MatcherWords.not.be(emptyWord))
       
     /**
      * This method enables the following syntax:

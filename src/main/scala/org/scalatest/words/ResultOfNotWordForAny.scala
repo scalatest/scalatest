@@ -732,6 +732,24 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
         )    
       )
   }
+  
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * list should not be empty
+   *                    ^
+   * </pre>
+   */
+  def be[U](emptyWord: EmptyWord)(implicit emptiness: Emptiness[T]) {
+    if (emptiness.isEmpty(left) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "wasNotEmpty" else "wasEmpty", 
+          left
+        )    
+      )
+  }
 
   def contain(newOneOf: ResultOfOneOfApplication)(implicit containing: Containing[T]) {
 

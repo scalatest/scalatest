@@ -689,6 +689,17 @@ final class NotWord {
     apply(MatcherWords.be(writableWord))
     
   /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * nonEmptyList should (not be empty and not equal emptyList)
+     *                          ^
+     * </pre>
+     */
+  def be(emptyWord: EmptyWord): MatcherFactory1[Any, Emptiness] =
+    apply(MatcherWords.be(emptyWord))
+    
+  /**
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">

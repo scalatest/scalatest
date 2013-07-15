@@ -180,6 +180,10 @@ trait MatcherWords {
   val exist = new ExistWord
 
   /**
+   * This field enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * 
    * file should be (readable)
    *                 ^
    * </pre>
@@ -195,6 +199,17 @@ trait MatcherWords {
    * </pre>
    */
   val writable = new WritableWord
+  
+  /**
+   * This field enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * 
+   * list should be (empty)
+   *                 ^
+   * </pre>
+   */
+  val empty = new EmptyWord
 
   /**
    * This method enables the following syntax: 
