@@ -49,8 +49,6 @@ trait Emptiness[-T] {
 
 object Emptiness {
 
-  // TODO: Don't need to capture the type parameter, more like length and size.
-  // And after that I think it need not be contravariant.
   /**
    * Enable emptiness for <code>scala.collection.GenTraversable</code>
    */
