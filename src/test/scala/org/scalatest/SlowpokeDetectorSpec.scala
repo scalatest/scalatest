@@ -15,17 +15,17 @@
  */
 package org.scalatest
 
-import time.SpanSugar._
+import time._
+import SpanSugar._
 
-class SlowpokeDetectorSpec extends Spec with Matchers {
+class SlowpokeDetectorSpec extends Spec with Matchers with Now {
 
   object `The Slowpoke detector` {
-    def `should allow a timeout and/or interval to be specified at construction` {
+    def `should allow a timeout to be specified at construction` {
       // Timeout is how long something needs to be running before we send an info provided complaining about it
-      // interval is how long we sleep between looking to see if anything has been there longer htan the timeout
-      new SlowpokeDetector(timeout = 1 minute, interval = 10 seconds)
-      new SlowpokeDetector(timeout = 1 minute)
-      new SlowpokeDetector(interval = 10 seconds)
+      // interval is how long we sleep between looking to see if anything has been there longer than the timeout, but
+      // That's something that will be set up by DispatchReporter, which will invoke detectSlowpokes periodically.
+      new SlowpokeDetector(timeout = 300000)
     }
     def `should offer a method to register a starting test` {
       val spd = new SlowpokeDetector
@@ -108,6 +108,31 @@ class SlowpokeDetectorSpec extends Spec with Matchers {
           timeStamp = -10
         )
       }
+    }
+    def `should return an empty Slowpoke seq if the SlowpokeDetector has received no events` {
+      val spd = new SlowpokeDetector
+      spd.detectSlowpokes(now()) shouldBe empty
+    }
+    def `should return an empty Slowpoke seq if less than the timeout has elapsed since receiving a test starting event` {
+      val spd = new SlowpokeDetector(timeout = 60000)
+      spd.testStarting(
+        suiteName = "the suite name",
+        suiteId = "the suite ID",
+        testName = "the test name",
+        timeStamp = 10
+      )
+      spd.detectSlowpokes(20) shouldBe empty
+    }
+    def `should return a Slowpoke if more than the timeout has elapsed since receiving a test starting event` {
+      val spd = new SlowpokeDetector(timeout = 60000)
+      spd.testStarting(
+        suiteName = "the suite name",
+        suiteId = "the suite ID",
+        testName = "the test name",
+        timeStamp = 10
+      )
+      val thisMagicMoment = now()
+      spd.detectSlowpokes(thisMagicMoment) shouldEqual Seq(Slowpoke("the suite name", "the suite ID", "the test name", Span(thisMagicMoment - 10, Millis)))
     }
   }
 }
