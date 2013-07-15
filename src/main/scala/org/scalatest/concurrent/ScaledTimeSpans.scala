@@ -118,11 +118,11 @@ class MySpec extends FunSpec with Eventually with AkkaSpanScaleFactor {
  * </p>
  *
  * <pre class="stHighlight">
- * import org.scalatest.concurrent.SpanScaleFactor
+ * import org.scalatest.concurrent.ScaledTimeSpans
  * import akka.actor.ActorSystem
  * import akka.testkit.TestKitExtension
  *
- * trait AkkaSpanScaleFactor extends SpanScaleFactor {
+ * trait AkkaSpanScaleFactor extends ScaledTimeSpans {
  *   override def spanScaleFactor: Double =
  *       TestKitExtension.get(ActorSystem()).TestTimeFactor
  * }
@@ -158,6 +158,9 @@ class MySpec extends FunSpec with Eventually with AkkaSpanScaleFactor {
  */
 trait ScaledTimeSpans {
 
+// TODO: Verify the example works. I just now changed concurrent.SpanScaleFactor into ScaledTimeSpans, because we
+// don't actually have a SpanScaleFactor. It was an intermediate trait that was never released final. I'd rather have
+// an example that may work than one I know does not work, but better yet is one I know actually does work!
   /**
    * Scales the passed <code>Span</code> by the <code>Double</code> factor returned
    * by <code>spanScaleFactor</code>.
