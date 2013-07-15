@@ -277,62 +277,67 @@ Tags to include and exclude: -n "CheckinTests FunctionalTests" -l "SlowTests Net
 
      */
     def run(testClassName: String, fingerprint: Fingerprint, eventHandler: EventHandler, args: Array[String]) {
-      val suiteClass = Class.forName(testClassName, true, testLoader)
-       //println("sbt args: " + args.toList)
-      if ((isAccessibleSuite(suiteClass) || isRunnable(suiteClass)) && isDiscoverableSuite(suiteClass)) {
-        val (reporter, filter, configMap) = RunConfig.getConfigurations(args, loggers, eventHandler, testLoader)
-        val report = new SbtReporter(eventHandler, Some(reporter))
-        val tracker = new Tracker
-        val suiteStartTime = System.currentTimeMillis
-
-        val wrapWithAnnotation = suiteClass.getAnnotation(classOf[WrapWith])
-        val suite = 
-        if (wrapWithAnnotation == null)
-          suiteClass.newInstance.asInstanceOf[Suite]
-        else {
-          val suiteClazz = wrapWithAnnotation.value
-          val constructorList = suiteClazz.getDeclaredConstructors()
-          val constructor = constructorList.find { c => 
-              val types = c.getParameterTypes
-              types.length == 1 && types(0) == classOf[java.lang.Class[_]]
-            }
-          constructor.get.newInstance(suiteClass).asInstanceOf[Suite]
-        }
-
-        val formatter = formatterForSuiteStarting(suite)
-
+      try {
         RunConfig.increaseLatch()
-        report(SuiteStarting(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), formatter, Some(TopOfClass(suiteClass.getName))))
+        val suiteClass = Class.forName(testClassName, true, testLoader)
+        //println("sbt args: " + args.toList)
+        if ((isAccessibleSuite(suiteClass) || isRunnable(suiteClass)) && isDiscoverableSuite(suiteClass)) {
+          val (reporter, filter, configMap) = RunConfig.getConfigurations(args, loggers, eventHandler, testLoader)
+          val report = new SbtReporter(eventHandler, Some(reporter))
+          val tracker = new Tracker
+          val suiteStartTime = System.currentTimeMillis
 
-        try {  // TODO: I had to pass Set.empty for chosen styles now. Fix this later.
-          suite.run(None, Args(report, Stopper.default, filter, configMap, None, tracker, Set.empty))
+          val wrapWithAnnotation = suiteClass.getAnnotation(classOf[WrapWith])
+          val suite = 
+          if (wrapWithAnnotation == null)
+            suiteClass.newInstance.asInstanceOf[Suite]
+          else {
+            val suiteClazz = wrapWithAnnotation.value
+            val constructorList = suiteClazz.getDeclaredConstructors()
+            val constructor = constructorList.find { c => 
+                val types = c.getParameterTypes
+                types.length == 1 && types(0) == classOf[java.lang.Class[_]]
+              }
+            constructor.get.newInstance(suiteClass).asInstanceOf[Suite]
+          }
 
-          val formatter = formatterForSuiteCompleted(suite)
+          val formatter = formatterForSuiteStarting(suite)
 
-          val duration = System.currentTimeMillis - suiteStartTime
+          report(SuiteStarting(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), formatter, Some(TopOfClass(suiteClass.getName))))
 
-          report(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(duration), formatter, Some(TopOfClass(suiteClass.getName))))
+          try {  // TODO: I had to pass Set.empty for chosen styles now. Fix this later.
+            suite.run(None, Args(report, Stopper.default, filter, configMap, None, tracker, Set.empty))
 
-        }
-        catch {       
-          case e: Exception => {
-
-            // TODO: Could not get this from Resources. Got:
-            // java.util.MissingResourceException: Can't find bundle for base name org.scalatest.ScalaTestBundle, locale en_US
-            // TODO Chee Seng, I wonder why we couldn't access resources, and if that's still true. I'd rather get this stuff
-            // from the resource file so we can later localize.
-            val rawString = "Exception encountered when attempting to run a suite with class name: " + suiteClass.getName
-            val formatter = formatterForSuiteAborted(suite, rawString)
+            val formatter = formatterForSuiteCompleted(suite)
 
             val duration = System.currentTimeMillis - suiteStartTime
-            report(SuiteAborted(tracker.nextOrdinal(), rawString, suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(e), Some(duration), formatter, Some(SeeStackDepthException)))
+
+            report(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(duration), formatter, Some(TopOfClass(suiteClass.getName))))
+
           }
-        }
-        finally {
-          RunConfig.decreaseLatch()
-        }
-      } // I think we should do nothing for non accessible, non runnable or non discoverable suite. 
-      //else throw new IllegalArgumentException("Class is not an accessible org.scalatest.Suite: " + testClassName)
+          catch {       
+            case e: Exception => {
+
+              // TODO: Could not get this from Resources. Got:
+              // java.util.MissingResourceException: Can't find bundle for base name org.scalatest.ScalaTestBundle, locale en_US
+              // TODO Chee Seng, I wonder why we couldn't access resources, and if that's still true. I'd rather get this stuff
+              // from the resource file so we can later localize.
+              val rawString = "Exception encountered when attempting to run a suite with class name: " + suiteClass.getName
+              val formatter = formatterForSuiteAborted(suite, rawString)
+
+              val duration = System.currentTimeMillis - suiteStartTime
+              report(SuiteAborted(tracker.nextOrdinal(), rawString, suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(e), Some(duration), formatter, Some(SeeStackDepthException)))
+            }
+          }
+        } // I think we should do nothing for non accessible, non runnable or non discoverable suite. 
+        //else throw new IllegalArgumentException("Class is not an accessible org.scalatest.Suite: " + testClassName)
+      }
+      catch {
+        case t: Throwable => throw t // just rethrow it
+      }
+      finally {
+        RunConfig.decreaseLatch()
+      }
     }
 
     private val emptyClassArray = new Array[java.lang.Class[T] forSome {type T}](0)
