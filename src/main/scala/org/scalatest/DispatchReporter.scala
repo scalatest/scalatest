@@ -36,21 +36,30 @@ import java.util.concurrent.LinkedBlockingQueue
  * @throws NullPointerException if <code>reporters</code> is <code>null</code>.
  * @author Bill Venners
  */
-private[scalatest] class DispatchReporter(val reporters: List[Reporter], val out: PrintStream) extends CatchReporter {
+private[scalatest] class DispatchReporter(
+  val reporters: List[Reporter],
+  val out: PrintStream = Console.err,
+  detectSlowpokes: Boolean = false,
+  slowpokeTimeout: Long = 60000,
+  slowpokeInterval: Long = 60000
+) extends CatchReporter {
 
   private case object Dispose
 
-  private val latch = new CountDownLatch(1)
+  private final val latch = new CountDownLatch(1)
 
   // Can be either Event or Dispose.type. Be nice to capture that in the type param.
-  private val queue = new LinkedBlockingQueue[AnyRef]
+  private final val queue = new LinkedBlockingQueue[AnyRef]
+
+  private final val slowpokeDetector: Option[SlowpokeDetector] =
+    if (detectSlowpokes) Some(new SlowpokeDetector(slowpokeTimeout, out)) else None
 
   class Propagator extends Runnable {
 
     def run() {
 
       var alive = true // local variable. Only used by the Propagator's thread, so no need for synchronization
-  
+
       class Counter {
         var testsSucceededCount = 0
         var testsFailedCount = 0
@@ -186,12 +195,9 @@ private[scalatest] class DispatchReporter(val reporters: List[Reporter], val out
   private val propagator = new Propagator
   (new Thread(propagator)).start()
 
-  def this(reporters: List[Reporter]) = this(reporters, System.out)
-  def this(reporter: Reporter) = this(List(reporter), System.out)
-
   // Invokes dispose on each Reporter in this DispatchReporter's reporters list.
   // This method puts an event in the queue that is being used to serialize
-  // events, and at some time later the propagator's thread will attempts to invoke
+  // events, and at some time later the propagator's thread will attempt to invoke
   // dispose on each contained Reporter, even if some Reporter's dispose methods throw
   // Exceptions. This method catches any Exception thrown by
   // a dispose method and handles it by printing an error message to the
@@ -207,13 +213,13 @@ private[scalatest] class DispatchReporter(val reporters: List[Reporter], val out
   override def apply(event: Event) {
     queue.put(event)
   }
-  
+
   def doApply(event: Event) {}
-  
+
   def doDispose() {
     dispatchDisposeAndWaitUntilDone()
   }
-  
+
   def isDisposed = latch.getCount == 0
 }
 
