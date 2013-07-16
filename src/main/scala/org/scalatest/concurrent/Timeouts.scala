@@ -186,19 +186,6 @@ import org.scalatest.exceptions.TestFailedDueToTimeoutException
  */
 trait Timeouts {
 
-  private class TimeoutTask(testThread: Thread, interrupt: Interruptor) extends TimerTask {
-    @volatile var timedOut = false
-    @volatile var needToResetInterruptedStatus = false
-    override def run() {
-      timedOut = true
-      val beforeIsInterrupted = testThread.isInterrupted()
-      interrupt(testThread)
-      val afterIsInterrupted = testThread.isInterrupted()
-      if(!beforeIsInterrupted && afterIsInterrupted)
-        needToResetInterruptedStatus = true
-    }
-  }
-
   /**
    * Implicit <code>Interruptor</code> value defining a default interruption strategy for the <code>failAfter</code> method.
    *
