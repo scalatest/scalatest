@@ -73,39 +73,27 @@ class SlowpokeDetectorSpec extends Spec with Matchers with Now {
       spd.testFinished(
         suiteId = "the suite name",
         suiteName = "the suite ID",
-        testName = "the test name",
-        timeStamp = 10
+        testName = "the test name"
       )
       a [NullPointerException] should be thrownBy {
         spd.testFinished(
           suiteId = null,
           suiteName = "the suite ID",
-          testName = "the test name",
-          timeStamp = 10
+          testName = "the test name"
         )
       }
       a [NullPointerException] should be thrownBy {
         spd.testFinished(
           suiteId = "the suite name",
           suiteName = null,
-          testName = "the test name",
-          timeStamp = 10
+          testName = "the test name"
         )
       }
       a [NullPointerException] should be thrownBy {
         spd.testFinished(
           suiteId = "the suite name",
           suiteName = "the suite ID",
-          testName = null,
-          timeStamp = 10
-        )
-      }
-      an [IllegalArgumentException] should be thrownBy {
-        spd.testFinished(
-          suiteId = "the suite name",
-          suiteName = "the suite ID",
-          testName = "the test name",
-          timeStamp = -10
+          testName = null
         )
       }
     }
@@ -133,6 +121,22 @@ class SlowpokeDetectorSpec extends Spec with Matchers with Now {
       )
       val thisMagicMoment = now()
       spd.detectSlowpokes(thisMagicMoment) shouldEqual Seq(Slowpoke("the suite name", "the suite ID", "the test name", Span(thisMagicMoment - 10, Millis)))
+    }
+    def `should return an empty Slowpoke seq if both a starting and ending event was received` {
+      val spd = new SlowpokeDetector(timeout = 60000)
+      spd.testStarting(
+        suiteName = "the suite name",
+        suiteId = "the suite ID",
+        testName = "the test name",
+        timeStamp = 10
+      )
+      spd.testFinished(
+        suiteName = "the suite name",
+        suiteId = "the suite ID",
+        testName = "the test name"
+      )
+      val thisMagicMoment = now()
+      spd.detectSlowpokes(thisMagicMoment) shouldBe empty
     }
   }
 }

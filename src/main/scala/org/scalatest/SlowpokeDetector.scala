@@ -36,9 +36,19 @@ private[scalatest] class SlowpokeDetector(timeout: Long = 60000) { // Default ti
       )
     )
   }
-  def testFinished(suiteName: String, suiteId: String, testName: String, timeStamp: Long): Unit = {
+  def testFinished(suiteName: String, suiteId: String, testName: String): Unit = {
     if (suiteName == null || suiteId == null || testName == null) throw new NullPointerException
-    require(timeStamp >= 0, "timeStamp must be >= 0")
+    val wasRemoved =
+      runningTests.remove( // removal uses equality, which is determined only by suite ID and test name
+        new RunningTest(
+          suiteName = suiteName,
+          suiteId = suiteId,
+          testName = testName,
+          startTimeStamp = 0
+        )
+      )
+    if (!wasRemoved)
+      Console.err.println(s"""The "Slowpoke" detector received a test finished event for which it had not seen a matching test starting event: suiteName = $suiteName, suiteId = $suiteId, testName = $testName""")
   }
 
   def detectSlowpokes(currentTimeStamp: Long): IndexedSeq[Slowpoke] = {

@@ -18,19 +18,20 @@ package org.scalatest
 import time._
 import SpanSugar._
 
-private[scalatest] final class RunningTest(
-  val suiteName: String,
-  val suiteId: String,
-  val testName: String,
-  val startTimeStamp: Long
+private[scalatest] final case class RunningTest(
+  suiteName: String,
+  suiteId: String,
+  testName: String,
+  startTimeStamp: Long
 ) extends Comparable[RunningTest] {
 
-  // Sorts them in start time order
+  // Orders them first by suiteId then by testName. When I initially made this depend on timestamp, the
+  // silly ConcurrentSkipListSet couldn't find it. 
   def compareTo(other: RunningTest): Int = {
-    val diff: Long = startTimeStamp - other.startTimeStamp
-    if (diff < 0) -1
-    else if (diff > 0) 1
-    else 0
+    val suiteIdComp: Int = suiteId.compareTo(other.suiteId)
+    if (suiteIdComp == 0) {
+      testName.compareTo(other.testName)
+    } else suiteIdComp
   }
 
   override def equals(other: Any): Boolean =
