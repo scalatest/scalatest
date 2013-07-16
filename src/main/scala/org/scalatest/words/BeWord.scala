@@ -666,11 +666,11 @@ final class BeWord {
     }
   
   /**
-   * This method enables the following syntax, where <code>open</code> refers to a <code>BePropertyMatcher</code>:
+   * This method enables syntax such as the following:
    *
    * <pre class="stHighlight">
-   * file should be (empty)
-   *                ^
+   * array should be (empty)
+   *                 ^
    * </pre>
    */
   def apply(empty: EmptyWord): MatcherFactory1[Any, Emptiness] = 
