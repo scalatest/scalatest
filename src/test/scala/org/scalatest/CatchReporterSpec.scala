@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2008 Artima, Inc.
+ * Copyright 2001-2013 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,9 @@ import java.io.PrintStream
 import java.io.ByteArrayOutputStream
 import org.scalatest.events._
 
-class CatchReporterSuite extends Suite {
+class CatchReporterSpec extends Spec {
 
-  def testCatching() {
+  def `the CatchReporter should catch exceptions` {
 
     val buggyReporter = new ResourcefulReporter {
       override def apply(event: Event) {

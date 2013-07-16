@@ -19,8 +19,9 @@ import time.Span
 import time.SpanSugar._
 import java.util.concurrent.ConcurrentSkipListSet
 import scala.collection.JavaConverters._
+import java.io.PrintStream
 
-private[scalatest] class SlowpokeDetector(timeout: Long = 60000) { // Default timeout is 1 minute
+private[scalatest] class SlowpokeDetector(timeout: Long = 60000, out: PrintStream = Console.err) { // Default timeout is 1 minute
 
   private final val runningTests = new ConcurrentSkipListSet[RunningTest]
 
@@ -47,8 +48,10 @@ private[scalatest] class SlowpokeDetector(timeout: Long = 60000) { // Default ti
           startTimeStamp = 0
         )
       )
-    if (!wasRemoved)
-      Console.err.println(s"""The "Slowpoke" detector received a test finished event for which it had not seen a matching test starting event: suiteName = $suiteName, suiteId = $suiteId, testName = $testName""")
+    if (!wasRemoved) {
+      val stringToPrint = Resources("slowpokeDetectorEventNotFound", suiteName, suiteId, testName)
+      out.println(stringToPrint)
+    }
   }
 
   def detectSlowpokes(currentTimeStamp: Long): IndexedSeq[Slowpoke] = {
