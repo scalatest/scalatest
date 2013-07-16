@@ -186,7 +186,7 @@ object ScalatestBuild extends Build {
   
   val genContain = TaskKey[Unit]("gencontain", "Generate contain matcher tests")
   val genContainTask = genContain <<= (sourceManaged in Compile, sourceManaged in Test) map { (mainTargetDir: File, testTargetDir: File) =>
-    GenContain.genTest(new File(testTargetDir, "scala/contain"), scalaVersionToUse)
+    GenContain.genTest(new File(testTargetDir, "scala/gencontain"), scalaVersionToUse)
   }
   
   val genSorted = TaskKey[Unit]("gensorted", "Generate sorted matcher tests")
