@@ -62,8 +62,8 @@ i - this one is used for the Suite ID        --suiteId
 I -
 j - currently JUnit directly (can drop and use WrapWith)   --junit
 J - 
-k - This could be chosenVerb must, should, or neither      --chosenStyles
-K -
+k - socket reporter XML
+K - socket reporter binary
 l - tags to exclude                          --exclude
 L -
 m - members only path                        --members
@@ -87,7 +87,7 @@ U -
 v - ScalaTest version number (also -version and --version)
 V -
 w - wildcard path
-W -
+W - slowpoke detector (with two optional integral args, for timeout and interval, in milliseconds)
 x - save for ScalaTest native XML
 X -
 y - sets org.scalatest.chosenstyle -y FunSpec or -y "FunSpec FunSuite"
@@ -927,7 +927,7 @@ object Runner {
       }
 
     val passFailReporter = if (runWithPassFailReporter) Some(new PassFailReporter) else None
-    
+
     if (propertiesMap.isDefinedAt("org.scalatest.ChosenStyles"))
       throw new IllegalArgumentException("Property name 'org.scalatest.ChosenStyles' is used by ScalaTest, please choose other property name.")
     val configMap: ConfigMap = 
