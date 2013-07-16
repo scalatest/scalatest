@@ -21,6 +21,7 @@ import java.io.File
 import scala.annotation.tailrec
 import scala.collection.GenTraversable
 import scala.collection.GenMap
+import scala.collection.SortedSet
 
 object SharedHelpers extends Assertions {
 
@@ -1104,6 +1105,46 @@ object SharedHelpers extends Assertions {
     val javaMap = new java.util.LinkedHashMap[K, V]()
     elements.foreach(t => javaMap.put(t._1, t._2))
     javaMap
+  }
+  
+  private def sortedSetComparator[T](orderMap: Map[T, Int]): java.util.Comparator[T] = 
+    new java.util.Comparator[T] {
+      def compare(x: T, y: T): Int = {
+          if (orderMap.get(x).isDefined && orderMap.get(y).isDefined)
+            orderMap(x) compare orderMap(y)
+          else {
+            x match {
+              case xInt: Int =>
+                y match {
+                  case yInt: Int => xInt compare yInt
+                  case _ => x.hashCode compare y.hashCode
+                }
+              case xStr: String =>
+                y match {
+                  case yStr: String => xStr compare yStr
+                  case _ => x.hashCode compare y.hashCode
+                }
+              case _ => x.hashCode compare y.hashCode
+            }
+          }
+        }
+    }
+  
+  def sortedSet[T](elements: T*): SortedSet[T] = {
+    val orderMap = Map.empty[T, Int] ++ elements.zipWithIndex
+    val comparator = sortedSetComparator(orderMap)
+    implicit val ordering = new Ordering[T] {
+      def compare(x: T, y: T): Int = comparator.compare(x, y)
+    }
+    SortedSet.empty[T] ++ elements
+  }
+  
+  def javaSortedSet[T](elements: T*): java.util.SortedSet[T] = {
+    val orderMap = Map.empty[T, Int] ++ elements.zipWithIndex
+    val comparator = sortedSetComparator(orderMap)
+    val sortedSet = new java.util.TreeSet[T](comparator)
+    elements.foreach(sortedSet.add(_))
+    sortedSet
   }
 
   def serializeRoundtrip[A](a: A): A = {

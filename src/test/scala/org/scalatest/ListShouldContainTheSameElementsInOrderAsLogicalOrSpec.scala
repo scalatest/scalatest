@@ -24,6 +24,8 @@ import scala.collection.mutable.LinkedList
 
 class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends FreeSpec with Matchers {
   
+  //ADDITIONAL//
+  
   val invertedStringEquality =
     new Equality[String] {
       def areEqual(a: String, b: Any): Boolean = a != b
@@ -52,8 +54,6 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends FreeSpec wi
     new Equality[String] {
       def areEqual(a: String, b: Any): Boolean = upperCase(a) == upperCase(b)
     }
-  
-  //ADDITIONAL//
   
   val fileName: String = "ListShouldContainTheSameElementsInOrderAsLogicalOrSpec.scala"
   

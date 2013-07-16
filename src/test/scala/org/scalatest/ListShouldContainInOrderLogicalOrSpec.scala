@@ -23,6 +23,8 @@ import FailureMessages.decorateToStringValue
 
 class ListShouldContainInOrderLogicalOrSpec extends Spec with Matchers {
   
+  //ADDITIONAL//
+  
   val invertedStringEquality =
     new Equality[String] {
       def areEqual(a: String, b: Any): Boolean = a != b
@@ -51,8 +53,6 @@ class ListShouldContainInOrderLogicalOrSpec extends Spec with Matchers {
     new Equality[String] {
       def areEqual(a: String, b: Any): Boolean = upperCase(a) == upperCase(b)
     }
-  
-  //ADDITIONAL//
   
   val fileName: String = "ListShouldContainInOrderLogicalOrSpec.scala"
   

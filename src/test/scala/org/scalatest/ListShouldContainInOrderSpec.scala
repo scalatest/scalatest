@@ -265,7 +265,7 @@ class ListShouldContainInOrderSpec extends Spec with Matchers {
         e3.failedCodeFileName.get should be ("ListShouldContainInOrderSpec.scala")
         e3.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e3.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 2, " + decorateToStringValue(Nil) + " did not contain all of " + "(1, 2, 3)" + " in order (ListShouldContainInOrderSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "  at index 2, " + decorateToStringValue(listsNil(2)) + " did not contain all of " + "(1, 2, 3)" + " in order (ListShouldContainInOrderSpec.scala:" + (thisLineNumber - 5) + ") \n" +
                                    "in " + decorateToStringValue(listsNil)))
       }
 
@@ -333,7 +333,7 @@ class ListShouldContainInOrderSpec extends Spec with Matchers {
         e4.failedCodeFileName.get should be ("ListShouldContainInOrderSpec.scala")
         e4.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e4.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 2, " + decorateToStringValue(Nil) + " did not contain all of " + "(1, 2, 3)" + " in order (ListShouldContainInOrderSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "  at index 2, " + decorateToStringValue(listsNil(2)) + " did not contain all of " + "(1, 2, 3)" + " in order (ListShouldContainInOrderSpec.scala:" + (thisLineNumber - 5) + ") \n" +
                                    "in " + decorateToStringValue(listsNil)))
       }
 
