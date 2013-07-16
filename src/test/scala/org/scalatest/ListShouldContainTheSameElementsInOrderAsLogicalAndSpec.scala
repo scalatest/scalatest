@@ -24,6 +24,8 @@ import scala.collection.mutable.LinkedList
 
 class ListShouldContainTheSameElementsInOrderAsLogicalAndSpec extends Spec with Matchers {
   
+  //ADDITIONAL//
+  
   val invertedListOfStringEquality = 
     new Equality[List[String]] {
       def areEqual(a: List[String], b: Any): Boolean = a != b
@@ -52,8 +54,6 @@ class ListShouldContainTheSameElementsInOrderAsLogicalAndSpec extends Spec with 
     new Equality[List[String]] {
       def areEqual(a: List[String], b: Any): Boolean = upperCase(a) == upperCase(b)
     }
-  
-  //ADDITIONAL//
   
   val fileName: String = "ListShouldContainTheSameElementsInOrderAsLogicalAndSpec.scala"
   
@@ -385,7 +385,7 @@ class ListShouldContainTheSameElementsInOrderAsLogicalAndSpec extends Spec with 
         val e3 = intercept[TestFailedException] {
           all (nils) should (contain theSameElementsInOrderAs LinkedList("hi", "hello") and contain theSameElementsInOrderAs LinkedList("ho", "hey", "howdy"))
         }
-        checkMessageStackDepth(e3, allErrMsg(0, decorateToStringValue(Nil) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList("hi", "hello")), thisLineNumber - 2, nils), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e3, allErrMsg(0, decorateToStringValue(nils(0)) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList("hi", "hello")), thisLineNumber - 2, nils), fileName, thisLineNumber - 2)
         
         val e4 = intercept[TestFailedException] {
           all (hiLists) should (contain theSameElementsInOrderAs LinkedList("hi", "hello") and contain theSameElementsInOrderAs LinkedList("hello", "hi"))
@@ -446,7 +446,7 @@ class ListShouldContainTheSameElementsInOrderAsLogicalAndSpec extends Spec with 
         val e3 = intercept[TestFailedException] {
           all (nils) should (be (List("hey")) and contain theSameElementsInOrderAs LinkedList("hi", "hello"))
         }
-        checkMessageStackDepth(e3, allErrMsg(0, decorateToStringValue(Nil) + " was not equal to " + decorateToStringValue(List("hey")), thisLineNumber - 2, nils), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e3, allErrMsg(0, decorateToStringValue(nils(0)) + " was not equal to " + decorateToStringValue(List("hey")), thisLineNumber - 2, nils), fileName, thisLineNumber - 2)
         
         val e4 = intercept[TestFailedException] {
           all (hiLists) should (be (List("hi", "hello")) and contain theSameElementsInOrderAs LinkedList("hello", "hi"))
@@ -456,7 +456,7 @@ class ListShouldContainTheSameElementsInOrderAsLogicalAndSpec extends Spec with 
         val e5 = intercept[TestFailedException] {
           all (listsNil) should (be (List(1, 2, 3)) and contain theSameElementsInOrderAs LinkedList(1, 2, 3))
         }
-        checkMessageStackDepth(e5, allErrMsg(2, decorateToStringValue(Nil) + " was not equal to " + decorateToStringValue(List(1, 2, 3)), thisLineNumber - 2, listsNil), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e5, allErrMsg(2, decorateToStringValue(listsNil(2)) + " was not equal to " + decorateToStringValue(List(1, 2, 3)), thisLineNumber - 2, listsNil), fileName, thisLineNumber - 2)
         
         val e6 = intercept[TestFailedException] {
           all (list1s) should (be (List(1, 2, 3)) and contain theSameElementsInOrderAs LinkedList(2, 3, 8))
@@ -564,22 +564,22 @@ class ListShouldContainTheSameElementsInOrderAsLogicalAndSpec extends Spec with 
         val e1 = intercept[TestFailedException] {
           all (lists) should (not be (List(2, 3, 4)) and not contain theSameElementsInOrderAs (LinkedList(8, 3, 4)))
         }
-        checkMessageStackDepth(e1, allErrMsg(2, decorateToStringValue(List(2, 3, 4)) + " was equal to " + decorateToStringValue(List(2, 3, 4)), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(2, decorateToStringValue(lists(2)) + " was equal to " + decorateToStringValue(List(2, 3, 4)), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
         
         val e2 = intercept[TestFailedException] {
           all (lists) should (not be (List(3)) and not contain theSameElementsInOrderAs (LinkedList(2, 3, 4)))
         }
-        checkMessageStackDepth(e2, allErrMsg(2, decorateToStringValue(List(2, 3, 4)) + " was not equal to " + decorateToStringValue(List(3)) + ", but " + decorateToStringValue(List(2, 3, 4)) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList(2, 3, 4)), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(2, decorateToStringValue(lists(2)) + " was not equal to " + decorateToStringValue(List(3)) + ", but " + decorateToStringValue(List(2, 3, 4)) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList(2, 3, 4)), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
         
         val e3 = intercept[TestFailedException] {
           all (hiLists) should (not be (List("hi", "hello")) and not contain theSameElementsInOrderAs (LinkedList("ho", "hey", "howdy")))
         }
-        checkMessageStackDepth(e3, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " was equal to " + decorateToStringValue(List("hi", "hello")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e3, allErrMsg(0, decorateToStringValue(hiLists(0)) + " was equal to " + decorateToStringValue(List("hi", "hello")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
         
         val e4 = intercept[TestFailedException] {
           all (hiLists) should (not be (List("ho")) and not contain theSameElementsInOrderAs (LinkedList("hi", "hello")))
         }
-        checkMessageStackDepth(e4, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " was not equal to " + decorateToStringValue(List("ho")) + ", but " + decorateToStringValue(List("hi", "hello")) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList("hi", "hello")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e4, allErrMsg(0, decorateToStringValue(hiLists(0)) + " was not equal to " + decorateToStringValue(List("ho")) + ", but " + decorateToStringValue(List("hi", "hello")) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(LinkedList("hi", "hello")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
       
       def `should use the implicit Equality in scope` {

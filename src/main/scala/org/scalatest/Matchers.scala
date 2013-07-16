@@ -119,13 +119,13 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * <pre class="stHighlight">
  * result should equal (3) // can customize equality
  * result should === (3)   // can customize equality and enforce type constraints
- * result should be (3)    // cannot customize equality
+ * result should be (3)    // cannot customize equality, so fastest to compile
  * result shouldEqual 3    // can customize equality, no parentheses required
- * result shouldBe 3       // cannot customize equality, no parentheses required
+ * result shouldBe 3       // cannot customize equality, so fastest to compile, no parentheses required
  * </pre>
  *
  * <p>
- * The "<code>left</code> <code>should</code> <code>equal</code> <code>(right)</code>" syntax requires an
+ * The &ldquo;<code>left</code> <code>should</code> <code>equal</code> <code>(right)</code>&rdquo; syntax requires an
  * <a href="../scalautils/Equality.html"><code>org.scalautils.Equality[L]</code></a> to be provided (either implicitly or explicitly), where
  * <code>L</code> is the left-hand type on which <code>should</code> is invoked. In the "<code>left</code> <code>should</code> <code>equal</code> <code>(right)</code>" case,
  * for example, <code>L</code> is the type of <code>left</code>. Thus if <code>left</code> is type <code>Int</code>, the "<code>left</code> <code>should</code>
@@ -156,7 +156,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  *
  * <p>
  * If you ever do want to verify that two arrays are actually the same object (have the same identity), you can use the
- * <code>be theSameInstanceAs</code> syntax, described below.
+ * <code>be theSameInstanceAs</code> syntax, <a href="#checkingObjectIdentity">described below</a>.
  * </p>
  *
  * <p>
@@ -404,6 +404,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  *
  * For more information, see the documentation for <a href="BeMatcher.html"><code>BeMatcher</code></a>.
  *
+ * <a name="checkingObjectIdentity"></a>
  * <h2>Checking object identity</h2>
  * 
  * <p>

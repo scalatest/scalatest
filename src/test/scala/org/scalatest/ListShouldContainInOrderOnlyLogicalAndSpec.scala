@@ -23,6 +23,8 @@ import FailureMessages.decorateToStringValue
 
 class ListShouldContainInOrderOnlyLogicalAndSpec extends Spec with Matchers {
 
+  //ADDITIONAL//
+  
   val invertedListOfStringEquality = 
     new Equality[List[String]] {
       def areEqual(a: List[String], b: Any): Boolean = a != b
@@ -51,8 +53,6 @@ class ListShouldContainInOrderOnlyLogicalAndSpec extends Spec with Matchers {
     new Equality[List[String]] {
       def areEqual(a: List[String], b: Any): Boolean = upperCase(a) == upperCase(b)
     }
-
-  //ADDITIONAL//
 
   val fileName: String = "ListShouldContainInOrderOnlyLogicalAndSpec.scala"
 
@@ -537,7 +537,7 @@ class ListShouldContainInOrderOnlyLogicalAndSpec extends Spec with Matchers {
         val e3 = intercept[TestFailedException] {
           all (nils) should (contain inOrderOnly ("hi", "hello") and contain inOrderOnly ("ho", "hey", "howdy"))
         }
-        checkMessageStackDepth(e3, allErrMsg(0, decorateToStringValue(Nil) + " did not contain only " + "(\"hi\", \"hello\")" + " in order", thisLineNumber - 2, nils), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e3, allErrMsg(0, decorateToStringValue(nils(0)) + " did not contain only " + "(\"hi\", \"hello\")" + " in order", thisLineNumber - 2, nils), fileName, thisLineNumber - 2)
         
         val e4 = intercept[TestFailedException] {
           all (hiLists) should (contain inOrderOnly ("hi", "hello") and contain inOrderOnly ("hello", "hi"))
@@ -630,7 +630,7 @@ class ListShouldContainInOrderOnlyLogicalAndSpec extends Spec with Matchers {
         val e3 = intercept[TestFailedException] {
           all (nils) should (be (List("hey")) and contain inOrderOnly ("hi", "hello"))
         }
-        checkMessageStackDepth(e3, allErrMsg(0, decorateToStringValue(Nil) + " was not equal to " + decorateToStringValue(List("hey")), thisLineNumber - 2, nils), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e3, allErrMsg(0, decorateToStringValue(nils(0)) + " was not equal to " + decorateToStringValue(List("hey")), thisLineNumber - 2, nils), fileName, thisLineNumber - 2)
         
         val e4 = intercept[TestFailedException] {
           all (hiLists) should (be (List("hi", "hello")) and contain inOrderOnly ("hello", "hi"))
@@ -640,7 +640,7 @@ class ListShouldContainInOrderOnlyLogicalAndSpec extends Spec with Matchers {
         val e5 = intercept[TestFailedException] {
           all (listsNil) should (be (List(1, 2, 3)) and contain inOrderOnly (1, 2, 3))
         }
-        checkMessageStackDepth(e5, allErrMsg(2, decorateToStringValue(Nil) + " was not equal to " + decorateToStringValue(List(1, 2, 3)), thisLineNumber - 2, listsNil), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e5, allErrMsg(2, decorateToStringValue(listsNil(2)) + " was not equal to " + decorateToStringValue(List(1, 2, 3)), thisLineNumber - 2, listsNil), fileName, thisLineNumber - 2)
         
         val e6 = intercept[TestFailedException] {
           all (list1s) should (be (List(1, 2, 2, 3)) and contain inOrderOnly (2, 3, 8))
