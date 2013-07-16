@@ -26,6 +26,7 @@ import java.net.Socket
 import org.scalatest.Exceptional
 import org.scalatest.time.Span
 import org.scalatest.exceptions.TestFailedDueToTimeoutException
+import org.scalatest.exceptions.TestCanceledException
 
 /**
  * Trait that provides a <code>failAfter</code> construct, which allows you to specify a time limit for an
@@ -241,11 +242,10 @@ trait Timeouts {
     )
   }
 
-/* Uncomment for 2.0
+  // TODO: Scaladoc and also, consider creating a TestCanceledDueToTimeoutException
   def cancelAfter[T](timeout: Span)(f: => T)(implicit interruptor: Interruptor): T = {
-    timeoutAfter(timeout, f, interruptor, t => new TestCanceledException(sde => Some(Resources("timeoutCanceledAfter", timeout.toString)), t, getStackDepthFun("Timeouts.scala", "cancelAfter")))
+    timeoutAfter(timeout, f, interruptor, t => new TestCanceledException(sde => Some(Resources("timeoutCanceledAfter", timeout.prettyString)), t, getStackDepthFun("Timeouts.scala", "cancelAfter")))
   }
-*/
 
   /*private def timeoutAfter[T](timeout: Span, f: => T, interruptor: Interruptor, exceptionFun: Option[Throwable] => StackDepthException): T = {
     val timer = new Timer()

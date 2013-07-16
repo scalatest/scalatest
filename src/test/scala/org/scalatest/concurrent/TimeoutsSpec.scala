@@ -31,6 +31,7 @@ import java.nio.channels.SocketChannel
 import org.scalatest.time._
 import org.scalatest.{SeveredStackTraces, FunSpec, Resources}
 import org.scalatest.exceptions.TestFailedException
+import org.scalatest.exceptions.TestCanceledException
 
 class TimeoutsSpec extends FunSpec with ShouldMatchers with SeveredStackTraces {
 
@@ -214,30 +215,29 @@ class TimeoutsSpec extends FunSpec with ShouldMatchers with SeveredStackTraces {
       drag = false
     }
   }
-  
-/*
+
   describe("The cancelAfter construct") {
-    
-    it("should blow up with TestCanceledException when timeout") {
+
+    it("should blow up with TestCanceledException when it times out") {
       val caught = evaluating {
-        cancelAfter(1000) {
+        cancelAfter(Span(1000, Millis)) {
           Thread.sleep(2000)
         }
       } should produce [TestCanceledException]
-      caught.message.value should be (Resources("timeoutCanceledAfter", "1000"))
+      caught.message.value should be (Resources("timeoutCanceledAfter", "1000 milliseconds"))
       caught.failedCodeLineNumber.value should equal (thisLineNumber - 5)
       caught.failedCodeFileName.value should be ("TimeoutsSpec.scala")
     }
     
     it("should pass normally when timeout is not reached") {
-      cancelAfter(2000) {
+      cancelAfter(Span(2000, Millis)) {
         Thread.sleep(1000)
       }
     }
     
     it("should blow up with TestCanceledException when the task does not response interrupt request and pass after the timeout") {
       val caught = evaluating {
-        cancelAfter(timeout = 1000) {
+        cancelAfter(timeout = Span(1000, Millis)) {
           for (i <- 1 to 10) {
             try {
               Thread.sleep(500)
@@ -253,7 +253,7 @@ class TimeoutsSpec extends FunSpec with ShouldMatchers with SeveredStackTraces {
     
     it("should not catch exception thrown from the test") {
       val caught = evaluating {
-        cancelAfter(1000) {
+        cancelAfter(Span(1000, Millis)) {
           throw new InterruptedException
         }
       } should produce [InterruptedException]
@@ -261,7 +261,7 @@ class TimeoutsSpec extends FunSpec with ShouldMatchers with SeveredStackTraces {
     
     it("should set exception thrown from the test after timeout as cause of TestCanceledException") {
       val caught = evaluating {
-        cancelAfter(1000) {
+        cancelAfter(Span(1000, Millis)) {
           for (i <- 1 to 10) {
             try {
               Thread.sleep(500)
@@ -300,7 +300,7 @@ class TimeoutsSpec extends FunSpec with ShouldMatchers with SeveredStackTraces {
       val inputStream = clientSocket.getInputStream()
       
       val caught = evaluating {
-        cancelAfter(1000) {
+        cancelAfter(Span(1000, Millis)) {
           inputStream.read()
         } (SocketInterruptor(clientSocket))
       } should produce [TestCanceledException]
@@ -331,9 +331,9 @@ class TimeoutsSpec extends FunSpec with ShouldMatchers with SeveredStackTraces {
       val inputStream = clientSocket.getInputStream()
       
       val caught = evaluating {
-        cancelAfter(1000) {
+        cancelAfter(Span(1000, Millis)) {
           inputStream.read()
-        } ( Interruptor { clientSocket.close() } )
+        } ( Interruptor { t => clientSocket.close() } )
       } should produce [TestCanceledException]
       clientSocket.close()
       drag = false
@@ -342,10 +342,10 @@ class TimeoutsSpec extends FunSpec with ShouldMatchers with SeveredStackTraces {
     it("should wait for the test to finish when DoNotInterrupt is used.") {
       var x = 0
       val caught = evaluating {
-        cancelAfter(1000) {
+        cancelAfter(Span(1000, Millis)) {
           Thread.sleep(2000)
           x = 1
-        } ( DoNotInterrupt() )
+        } (DoNotInterrupt)
       } should produce [TestCanceledException]
       x should be (1)
     }
@@ -388,7 +388,7 @@ class TimeoutsSpec extends FunSpec with ShouldMatchers with SeveredStackTraces {
       sChannel.register(selector, sChannel.validOps());
     
       val caught = evaluating {
-        cancelAfter(1000) {
+        cancelAfter(Span(1000, Millis)) {
           clientSelector.select()
         } (SelectorInterruptor(clientSelector))
       } should produce [TestCanceledException]
@@ -396,5 +396,4 @@ class TimeoutsSpec extends FunSpec with ShouldMatchers with SeveredStackTraces {
       drag = false
     }
   }
-*/
 }
