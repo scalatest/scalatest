@@ -175,6 +175,25 @@ object Sequencing {
   // Enables (xs should contain ("HI")) (after being lowerCased)
   implicit def convertEqualityToGenSeqSequencing[E, SEQ[e] <: scala.collection.GenSeq[e]](equality: Equality[E]): Sequencing[SEQ[E]] = 
     sequencingNatureOfGenSeq(equality)
+    
+  implicit def sequencingNatureOfSortedSet[E, SET[e] <: scala.collection.SortedSet[e]](implicit equality: Equality[E]): Sequencing[SET[E]] =
+    new Sequencing[SET[E]] {
+
+      def containsInOrder(set: SET[E], elements: scala.collection.Seq[Any]): Boolean = {
+        checkInOrder(set, elements, equality)
+      }
+
+      def containsInOrderOnly(set: SET[E], elements: scala.collection.Seq[Any]): Boolean = {
+        checkInOrderOnly[E](set, elements, equality)
+      }
+
+      def containsTheSameElementsInOrderAs(set: SET[E], elements: GenTraversable[Any]): Boolean = {
+        checkTheSameElementsInOrderAs[E](set, elements, equality)
+      }
+    }
+
+  implicit def convertEqualityToSortedSetSequencing[E, SET[e] <: scala.collection.SortedSet[e]](equality: Equality[E]): Sequencing[SET[E]] = 
+    sequencingNatureOfSortedSet(equality) 
 
   implicit def sequencingNatureOfArray[E](implicit equality: Equality[E]): Sequencing[Array[E]] = 
     new Sequencing[Array[E]] {
@@ -214,6 +233,25 @@ object Sequencing {
 
   implicit def convertEqualityToJavaListSequencing[E, JLIST[e] <: java.util.List[e]](equality: Equality[E]): Sequencing[JLIST[E]] = 
     sequencingNatureOfJavaList(equality)
+    
+  implicit def sequencingNatureOfJavaSortedSet[E, JSET[e] <: java.util.SortedSet[e]](implicit equality: Equality[E]): Sequencing[JSET[E]] =
+    new Sequencing[JSET[E]] {
+
+      def containsInOrder(set: JSET[E], elements: scala.collection.Seq[Any]): Boolean = {
+        checkInOrder(set.iterator.asScala.toVector, elements, equality)
+      }
+
+      def containsInOrderOnly(set: JSET[E], elements: scala.collection.Seq[Any]): Boolean = {
+        checkInOrderOnly[E](set.iterator.asScala.toVector, elements, equality)
+      }
+
+      def containsTheSameElementsInOrderAs(set: JSET[E], elements: GenTraversable[Any]): Boolean = {
+        checkTheSameElementsInOrderAs[E](set.iterator.asScala.toVector, elements, equality)
+      }
+    }
+
+  implicit def convertEqualityToJavaSortedSetSequencing[E, JSET[e] <: java.util.SortedSet[e]](equality: Equality[E]): Sequencing[JSET[E]] = 
+    sequencingNatureOfJavaSortedSet(equality)
 
   implicit def sequencingNatureOfString(implicit equality: Equality[Char]): Sequencing[String] = 
     new Sequencing[String] {
