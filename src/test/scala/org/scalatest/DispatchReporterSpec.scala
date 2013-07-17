@@ -25,7 +25,7 @@ import time.SpanSugar._
 class DispatchReporterSpec extends Spec with Matchers {
   object `the DispatchReporter` {
     object `when slowpoke detection is enabled` {
-      def `should send out InfoProvided events if a slowpoke is detected` {
+      def fireTestStarting(): (EventRecordingReporter, DispatchReporter) = {
         val erp = new EventRecordingReporter
         val dispatch = new DispatchReporter(List(erp, NoisyReporter), Console.err, true, 1, 1)
         dispatch(
@@ -38,28 +38,36 @@ class DispatchReporterSpec extends Spec with Matchers {
             testText = "test name"
           )
         )
+        (erp, dispatch)
+      }
+      def `should send out InfoProvided events if a slowpoke is detected` {
+        val (erp, dispatch) = fireTestStarting()
         eventually {
           erp.infoProvidedEventsReceived.size should be > 0
         }
         dispatch.doDispose()
       }
-      def `should stop sending out InfoProvided events after a detected slowpoke succeeds` {
-        val erp = new EventRecordingReporter
-        val dispatch = new DispatchReporter(List(erp, NoisyReporter), Console.err, true, 1, 1)
-        dispatch(
-          TestStarting(
-            ordinal = new Ordinal(223),
-            suiteName = "the suite name",
-            suiteId = "the suite ID",
-            suiteClassName = Some("suiteClassName"),
-            testName = "the test name",
-            testText = "test name"
-          )
-        )
+      def doTestStartingAndFinishedEvents(testFinishedEvent: Event): Unit = {
+        val (erp, dispatch) = fireTestStarting()
         eventually {
           erp.infoProvidedEventsReceived.size should be > 0
         }
-        dispatch(
+        dispatch(testFinishedEvent)
+        var sizeWasSameCount = 0
+        var previousSize = erp.infoProvidedEventsReceived.size
+        eventually {
+          val size = erp.infoProvidedEventsReceived.size 
+          if (size == previousSize)
+            sizeWasSameCount += 1
+          else
+            sizeWasSameCount = 0 
+          previousSize = size
+          sizeWasSameCount should be >= 5
+        }
+        dispatch.doDispose()
+      }
+      def `should stop sending out InfoProvided events after a detected slowpoke succeeds` {
+        doTestStartingAndFinishedEvents(
           TestSucceeded(
             ordinal = new Ordinal(223),
             suiteName = "the suite name",
@@ -70,18 +78,20 @@ class DispatchReporterSpec extends Spec with Matchers {
             recordedEvents = collection.immutable.IndexedSeq.empty
           )
         )
-        var sizeWasSameCount = 0
-        var previousSize = erp.infoProvidedEventsReceived.size
-        eventually(timeout(900 millis)) {
-          val size = erp.infoProvidedEventsReceived.size 
-          if (size == previousSize) {
-            sizeWasSameCount += 1
-            previousSize = size
-          }
-          else sizeWasSameCount = 0
-          sizeWasSameCount should be (5)
-        }
-        dispatch.doDispose()
+      }
+      def `should stop sending out InfoProvided events after a detected slowpoke fails` {
+        doTestStartingAndFinishedEvents(
+          TestFailed(
+            ordinal = new Ordinal(223),
+            message = "I meant to do that!",
+            suiteName = "the suite name",
+            suiteId = "the suite ID",
+            suiteClassName = Some("suiteClassName"),
+            testName = "the test name",
+            testText = "test name",
+            recordedEvents = collection.immutable.IndexedSeq.empty
+          )
+        )
       }
     }
   }

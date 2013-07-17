@@ -55,7 +55,38 @@ private[scalatest] class DispatchReporter(
   private final val queue = new LinkedBlockingQueue[AnyRef]
 
   private final val slowpokeItems: Option[(SlowpokeDetector, Timer)] =
-    if (detectSlowpokes) Some((new SlowpokeDetector(slowpokeDelay, out), new Timer)) else None
+    if (detectSlowpokes) {
+      val slowpokeDetector = new SlowpokeDetector(slowpokeDelay, out)
+      val timer =  new Timer
+      val task = new TimerTask {
+        override def run(): Unit = {
+          val slowpokes = slowpokeDetector.detectSlowpokes(now())
+          for (slowpoke <- slowpokes) {
+            val dispatch = thisDispatchReporter
+            thisDispatchReporter.apply(
+              new InfoProvided(
+               ordinal = new Ordinal(100),
+               message = "Dude!",
+               nameInfo = None,
+               throwable = None,
+               formatter = None
+              )
+            )
+          }
+        }
+      }
+      timer.schedule(task, slowpokePeriod, slowpokePeriod)
+
+      Some((slowpokeDetector, timer))
+    }
+    else None
+
+  private def fireTestFinishedIfNecessary(suiteName: String, suiteId: String, testName: String): Unit = {
+    slowpokeItems match {
+      case Some((slowpokeDetector, _)) => slowpokeDetector.testFinished(suiteName, suiteId, testName)
+      case None =>
+    }
+  }
 
   class Propagator extends Runnable {
 
@@ -127,21 +158,14 @@ private[scalatest] class DispatchReporter(
                 event match {
   
                   case _: RunStarting => counterMap(event.ordinal.runStamp) = new Counter; event
-  
+
                   case ts: TestSucceeded =>
                     incrementCount(event, _.testsSucceededCount += 1)
-                    slowpokeItems match {
-                      case Some((slowpokeDetector, _)) =>
-                        slowpokeDetector.testFinished(
-                          suiteName = ts.suiteName, 
-                          suiteId = ts.suiteId, 
-                          testName = ts.testName 
-                        )
-                      case None =>
-                    }
+                    fireTestFinishedIfNecessary(ts.suiteName, ts.suiteId, ts.testName)
                     event
                   case tf: TestFailed =>
                     incrementCount(event, _.testsFailedCount += 1)
+                    fireTestFinishedIfNecessary(tf.suiteName, tf.suiteId, tf.testName)
                     event
                   case _: TestIgnored => incrementCount(event, _.testsIgnoredCount += 1); event
                   case _: TestCanceled => incrementCount(event, _.testsCanceledCount += 1); event
@@ -149,7 +173,7 @@ private[scalatest] class DispatchReporter(
                   case _: SuiteCompleted => incrementCount(event, _.suitesCompletedCount += 1); event
                   case _: SuiteAborted => incrementCount(event, _.suitesAbortedCount += 1); event
                   case _: ScopePending => incrementCount(event, _.scopesPendingCount += 1); event
-  
+
                   case oldRunCompleted @ RunCompleted(ordinal, duration, summary, formatter, location, payload, threadName, timeStamp) =>
                     updatedSummary(summary, ordinal) match {
                       case None => oldRunCompleted
@@ -222,29 +246,6 @@ private[scalatest] class DispatchReporter(
 
   private val propagator = new Propagator
   (new Thread(propagator)).start()
-
-  slowpokeItems match {
-    case Some((slowpokeDetector, timer)) =>
-      val task = new TimerTask {
-        override def run(): Unit = {
-          val slowpokes = slowpokeDetector.detectSlowpokes(now())
-          for (slowpoke <- slowpokes) {
-            val dispatch = thisDispatchReporter
-            thisDispatchReporter.apply(
-              new InfoProvided(
-               ordinal = new Ordinal(100),
-               message = "Dude!",
-               nameInfo = None,
-               throwable = None,
-               formatter = None
-              )
-            )
-          }
-        }
-      }
-      timer.schedule(task, slowpokePeriod, slowpokePeriod)
-    case None =>
-  }
 
   // Invokes dispose on each Reporter in this DispatchReporter's reporters list.
   // This method puts an event in the queue that is being used to serialize

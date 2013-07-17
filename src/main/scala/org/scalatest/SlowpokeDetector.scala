@@ -26,6 +26,7 @@ private[scalatest] class SlowpokeDetector(timeout: Long = 60000, out: PrintStrea
   private final val runningTests = new ConcurrentSkipListSet[RunningTest]
 
   def testStarting(suiteName: String, suiteId: String, testName: String, timeStamp: Long): Unit = {
+    println(s"testStarting($suiteName, $suiteId, $testName, $timeStamp)")
     if (suiteName == null || suiteId == null || testName == null) throw new NullPointerException
     require(timeStamp >= 0, "timeStamp must be >= 0")
     runningTests.add(
@@ -38,6 +39,7 @@ private[scalatest] class SlowpokeDetector(timeout: Long = 60000, out: PrintStrea
     )
   }
   def testFinished(suiteName: String, suiteId: String, testName: String): Unit = {
+    println(s"testFinished($suiteName, $suiteId, $testName)")
     if (suiteName == null || suiteId == null || testName == null) throw new NullPointerException
     val wasRemoved =
       runningTests.remove( // removal uses equality, which is determined only by suite ID and test name
@@ -55,6 +57,7 @@ private[scalatest] class SlowpokeDetector(timeout: Long = 60000, out: PrintStrea
   }
 
   def detectSlowpokes(currentTimeStamp: Long): IndexedSeq[Slowpoke] = {
+    println(s"detectSlowpokes($currentTimeStamp), runnintTests is $runningTests" )
     val rts = runningTests.iterator.asScala.toVector
     val slowTests = rts.filter(currentTimeStamp - _.startTimeStamp > timeout)
     slowTests.map(_.toSlowpoke(currentTimeStamp))
