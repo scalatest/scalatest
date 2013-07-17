@@ -93,7 +93,10 @@ private[scalatest] class RunnerJFrame(
   passFailReporter: Option[Reporter],
   concurrentConfig: ConcurrentConfig,
   suffixes: Option[Pattern],
-  chosenStyleSet: Set[String]
+  chosenStyleSet: Set[String],
+  detectSlowpokes: Boolean,
+  slowpokeDetectionDelay: Long,
+  slowpokeDetectionPeriod: Long
 ) extends JFrame(Resources("ScalaTestTitle")) with RunDoneListener with RunnerGUI {
   
   // This should only be updated by the event handler thread.
@@ -1511,35 +1514,41 @@ private[scalatest] class RunnerJFrame(
 
     override def run() {
   
-      withClassLoaderAndDispatchReporter(runpathList, reporterConfigurations, Some(graphicRunReporter), passFailReporter) {
-        (loader, dispatchReporter) => {
-          try {
-            Runner.doRunRunRunDaDoRunRun(
-              dispatchReporter,
-              suitesList,
-              testSpecs,
-              junitsList,
-              stopper,
-              tagsToIncludeSet,
-              tagsToExcludeSet,
-              propertiesMap,
-              concurrent,
-              memberOfList,
-              beginsWithList,
-              testNGList,
-              runpathList,
-              loader,
-              RunnerJFrame.this,
-              nextRunStamp,
-              concurrentConfig,
-              suffixes,
-              chosenStyleSet
-            )
-          }
-          finally {
-            stopper.reset()
-            nextRunStamp += 1
-          }
+      withClassLoaderAndDispatchReporter(
+        runpathList,
+        reporterConfigurations,
+        Some(graphicRunReporter),
+        passFailReporter,
+        detectSlowpokes,
+        slowpokeDetectionDelay,
+        slowpokeDetectionPeriod
+      ) { (loader, dispatchReporter) =>
+        try {
+          Runner.doRunRunRunDaDoRunRun(
+            dispatchReporter,
+            suitesList,
+            testSpecs,
+            junitsList,
+            stopper,
+            tagsToIncludeSet,
+            tagsToExcludeSet,
+            propertiesMap,
+            concurrent,
+            memberOfList,
+            beginsWithList,
+            testNGList,
+            runpathList,
+            loader,
+            RunnerJFrame.this,
+            nextRunStamp,
+            concurrentConfig,
+            suffixes,
+            chosenStyleSet
+          )
+        }
+        finally {
+          stopper.reset()
+          nextRunStamp += 1
         }
       }
     }
@@ -1556,23 +1565,29 @@ private[scalatest] class RunnerJFrame(
 
       val tracker = new Tracker(new Ordinal(nextRunStamp))
 
-      withClassLoaderAndDispatchReporter(runpathList, reporterConfigurations, Some(graphicRerunReporter), None) {
-        (loader, dispatchReporter) => {
-          try {
-            val filter = Filter(if (tagsToIncludeSet.isEmpty) None else Some(tagsToIncludeSet), tagsToExcludeSet)
-            rerun(dispatchReporter, stopper, filter, propertiesMap,
-                distributor, tracker, loader)
+      withClassLoaderAndDispatchReporter(
+        runpathList,
+        reporterConfigurations,
+        Some(graphicRerunReporter),
+        None,
+        detectSlowpokes,
+        slowpokeDetectionDelay,
+        slowpokeDetectionPeriod
+      ) { (loader, dispatchReporter) =>
+        try {
+          val filter = Filter(if (tagsToIncludeSet.isEmpty) None else Some(tagsToIncludeSet), tagsToExcludeSet)
+          rerun(dispatchReporter, stopper, filter, propertiesMap,
+              distributor, tracker, loader)
+        }
+        catch {
+          case e: Throwable => {
+            dispatchReporter.apply(RunAborted(tracker.nextOrdinal(), Resources.bigProblems(e), Some(e)))
           }
-          catch {
-            case e: Throwable => {
-              dispatchReporter.apply(RunAborted(tracker.nextOrdinal(), Resources.bigProblems(e), Some(e)))
-            }
-          }
-          finally {
-            stopper.reset()
-            RunnerJFrame.this.done()
-            nextRunStamp += 1
-          }
+        }
+        finally {
+          stopper.reset()
+          RunnerJFrame.this.done()
+          nextRunStamp += 1
         }
       }
     }

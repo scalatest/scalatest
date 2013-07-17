@@ -153,11 +153,11 @@ class ScalaTestFramework extends SbtFramework {
         }
         
         if (reporter.get.isEmpty || reporter.get.get.isDisposed) 
-          reporter.getAndSet(Some(ReporterFactory.getDispatchReporter(reporterConfigs.get.get, None, None, testLoader, Some(resultHolder))))
+          reporter.getAndSet(Some(ReporterFactory.getDispatchReporter(reporterConfigs.get.get, None, None, testLoader, Some(resultHolder), false, 0, 0))) // TODO: Support slowpoke detector?
           
         val dispatchReporter = 
           if (useStdout.get)
-            ReporterFactory.getDispatchReporter(Seq(reporter.get.get, createSbtLogInfoReporter(loggers)), None, None, testLoader, Some(resultHolder))
+            ReporterFactory.getDispatchReporter(Seq(reporter.get.get, createSbtLogInfoReporter(loggers)), None, None, testLoader, Some(resultHolder), false, 0, 0) // TODO: Support slowpoke detector?
           else
             reporter.get.get
           

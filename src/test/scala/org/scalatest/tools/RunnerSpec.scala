@@ -43,7 +43,8 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       expectedSuffixes: Option[Pattern], 
       expectedChosenStyleList: List[String], 
       expectedScaleFactorList: List[String], 
-      expectedTestSortingReporterTimeoutList: List[String]
+      expectedTestSortingReporterTimeoutList: List[String],
+      expectedSlowpokeList: List[String]
     ) = {
 
       val ParsedArgs(
@@ -61,7 +62,8 @@ class RunnerSpec extends Spec with PrivateMethodTester {
         suffixes, 
         chosenStyleList, 
         spanScaleFactorList,
-        testSortingReporterTimeoutList
+        testSortingReporterTimeoutList,
+        slowpokeList
       ) = Runner.parseArgs(args)
 
       assert(runpathList === expectedRunpathList)
@@ -78,6 +80,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       assert(chosenStyleList === expectedChosenStyleList)
       assert(spanScaleFactorList == expectedScaleFactorList)
       assert(testSortingReporterTimeoutList == expectedTestSortingReporterTimeoutList)
+      assert(slowpokeList == expectedSlowpokeList)
       if (expectedSuffixes.isEmpty) {
         assert(suffixes.isEmpty)
       } else {
@@ -103,6 +106,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       None, 
       Nil, 
       Nil, 
+      Nil, 
       Nil
     )
 
@@ -124,6 +128,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       None, 
       Nil, 
       Nil, 
+      Nil, 
       Nil
     )
 
@@ -141,6 +146,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       Nil,
       Nil,
       None, 
+      Nil, 
       Nil, 
       Nil, 
       Nil
@@ -164,6 +170,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       None, 
       Nil, 
       Nil, 
+      Nil, 
       Nil
     )
 
@@ -185,6 +192,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       None, 
       Nil, 
       Nil, 
+      Nil, 
       Nil
     )
 
@@ -204,6 +212,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       Nil,
       Nil,
       None, 
+      Nil, 
       Nil, 
       Nil, 
       Nil
@@ -228,6 +237,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       None, 
       Nil, 
       Nil, 
+      Nil, 
       Nil
     )
     // Try a TestNGSuite
@@ -248,6 +258,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       List("-w", "com.example.root"),
       List("-b", "some/path/file.xml"),
       None, 
+      Nil, 
       Nil, 
       Nil, 
       Nil
@@ -272,6 +283,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       None, 
       Nil, 
       Nil, 
+      Nil, 
       Nil
     )
     // Test -u option
@@ -292,6 +304,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       List("-w", "com.example.root"),
       List("-b", "some/path/file.xml"),
       None, 
+      Nil, 
       Nil, 
       Nil, 
       Nil
@@ -316,6 +329,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       Some(Pattern.compile(".*(Spec|Suite)$")), 
       Nil, 
       Nil, 
+      Nil, 
       Nil
     )
     // Test -q option
@@ -336,6 +350,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       List("-w", "com.example.root"),
       List("-b", "some/path/file.xml"),
       Some(Pattern.compile(".*(Spec|Suite)$")), 
+      Nil, 
       Nil, 
       Nil, 
       Nil
@@ -360,8 +375,64 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       Some(Pattern.compile(".*(Spec|Suite|foo)$")), 
       Nil, 
       Nil, 
+      Nil, 
       Nil
     )
+    // Test -W option
+    verify(
+      Array("-c", "-g", "-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188", "-p",
+          "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\"", "-g", "-u", "directory/",
+          "-n", "One Two Three", "-W", "60", "60", "-l", "SlowTests", "-s", "SuiteOne", "-Q", "-q", "foo",
+          "-m", "com.example.webapp", "-w", "com.example.root", "-b", "some/path/file.xml"),
+      List("-p", "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\""),
+      List("-g", "-g", "-u", "directory/"),
+      List("-s", "SuiteOne"),
+      Nil,
+      List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
+      List("-n", "One Two Three"),
+      List("-l", "SlowTests"),
+      List("-c"),
+      List("-m", "com.example.webapp"),
+      List("-w", "com.example.root"),
+      List("-b", "some/path/file.xml"),
+      Some(Pattern.compile(".*(Spec|Suite|foo)$")), 
+      Nil, 
+      Nil, 
+      Nil,
+      List("-W", "60", "60")
+    )
+    intercept[IllegalArgumentException] {
+      Runner.parseArgs(
+        Array("-c", "-g", "-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188", "-p",
+          "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\"", "-g", "-u", "directory/",
+          "-n", "One Two Three", "-l", "SlowTests", "-s", "SuiteOne", "-Q", "-q", "foo",
+          "-m", "com.example.webapp", "-w", "com.example.root", "-b", "some/path/file.xml", "-W", "sixty", "60")
+      )
+    }
+    intercept[IllegalArgumentException] {
+      Runner.parseArgs(
+        Array("-c", "-g", "-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188", "-p",
+          "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\"", "-g", "-u", "directory/",
+          "-n", "One Two Three", "-l", "SlowTests", "-s", "SuiteOne", "-Q", "-q", "foo",
+          "-m", "com.example.webapp", "-w", "com.example.root", "-b", "some/path/file.xml", "-W", "60", "sixty")
+      )
+    }
+    intercept[IllegalArgumentException] {
+      Runner.parseArgs(
+        Array("-c", "-g", "-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188", "-p",
+          "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\"", "-g", "-u", "directory/",
+          "-n", "One Two Three", "-l", "SlowTests", "-s", "SuiteOne", "-Q", "-q", "foo",
+          "-m", "com.example.webapp", "-w", "com.example.root", "-b", "some/path/file.xml", "-W", "60")
+      )
+    }
+    intercept[IllegalArgumentException] {
+      Runner.parseArgs(
+        Array("-c", "-g", "-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188", "-p",
+          "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\"", "-g", "-u", "directory/",
+          "-n", "One Two Three", "-l", "SlowTests", "-s", "SuiteOne", "-Q", "-q", "foo",
+          "-m", "com.example.webapp", "-w", "com.example.root", "-b", "some/path/file.xml", "-W")
+      )
+    }
   }
   
   def `parseArgsIntoLists should work correctly using non-deprecated args` {
@@ -402,7 +473,8 @@ class RunnerSpec extends Spec with PrivateMethodTester {
         suffixes, 
         chosenStyleList, 
         spanScaleFactorList, 
-        testSortingReporterTimeoutList
+        testSortingReporterTimeoutList,
+        slowpokeList
       ) = Runner.parseArgs(args)
 
       assert(runpathList === expectedRunpathList)
@@ -1366,6 +1438,11 @@ class RunnerSpec extends Spec with PrivateMethodTester {
     }
     assertResult(None) {
       Runner.checkArgsForValidity(Array("-Ddbname=testdb", "-Dserver=192.168.1.188", "-R", "serviceuitest-1.1beta4.jar", "-g", "-eFBA", "-s", "MySuite", "-P"))
+    }
+  }
+  def `checkArgsForValidity should recognize -W (for slowpoke detector)` {
+    assertResult(None) {
+      Runner.checkArgsForValidity(Array("-W", "60", "60"))
     }
   }
   

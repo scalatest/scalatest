@@ -87,7 +87,7 @@ U -
 v - ScalaTest version number (also -version and --version)
 V -
 w - wildcard path
-W - slowpoke detector (with two optional integral args, for timeout and interval, in milliseconds)
+W - slowpoke detector (with two integral args, for timeout (delay) and interval (period), in seconds)
 x - save for ScalaTest native XML
 X -
 y - sets org.scalatest.chosenstyle -y FunSpec or -y "FunSpec FunSuite"
@@ -127,6 +127,7 @@ private[tools] case class SuiteConfig(suite: Suite, dynaTags: DynaTags, requireS
 private[tools] case class TestSpec(spec: String, isSubstring: Boolean)
 private[tools] case class NestedSuiteParam(suiteId: String, testNames: Array[String], wildcardTestNames: Array[String])
 private[scalatest] case class ConcurrentConfig(numThreads: Int, enableSuiteSortingReporter: Boolean)
+private[tools] case class SlowpokeConfig(delayInMillis: Long, periodInMillis: Long)
 
 private[tools] case class SuiteParam(className: String, testNames: Array[String], wildcardTestNames: Array[String], nestedSuites: Array[NestedSuiteParam])
 {
@@ -876,7 +877,8 @@ object Runner {
       suffixes, 
       chosenStyles, 
       spanScaleFactors, 
-      testSortingReporterTimeouts
+      testSortingReporterTimeouts,
+      slowpokeArgs
     ) = parseArgs(args)
 
     val fullReporterConfigurations: ReporterConfigurations =
@@ -899,6 +901,7 @@ object Runner {
     val wildcardList: List[String] = parseSuiteArgsIntoNameStrings(wildcardArgs, "-w")
     val testNGList: List[String] = parseSuiteArgsIntoNameStrings(testNGArgs, "-b")
     val chosenStyleSet: Set[String] = parseChosenStylesIntoChosenStyleSet(chosenStyles, "-y")
+    val slowpokeConfig: Option[SlowpokeConfig] = parseSlowpokeConfig(slowpokeArgs)
     spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
     testSortingReporterTimeout = Span(parseDoubleArgument(testSortingReporterTimeouts, "-T", 2.0), Seconds)
 
@@ -936,6 +939,11 @@ object Runner {
       else
         propertiesMap + ("org.scalatest.ChosenStyles" -> chosenStyleSet)
 
+    val (detectSlowpokes: Boolean, slowpokeDetectionDelay: Long, slowpokeDetectionPeriod: Long) =
+      slowpokeConfig match {
+        case Some(SlowpokeConfig(delayInMillis, periodInMillis)) => (true, delayInMillis, periodInMillis)
+        case _ => (false, 60000L, 60000L)
+      }
     fullReporterConfigurations.graphicReporterConfiguration match {
       case Some(GraphicReporterConfiguration(configSet)) => {
         val graphicEventsToPresent: Set[EventToPresent] = EventToPresent.allEventsToPresent filter
@@ -970,7 +978,10 @@ object Runner {
             passFailReporter,
             concurrentConfig,
             suffixes,
-            chosenStyleSet
+            chosenStyleSet,
+            detectSlowpokes,
+            slowpokeDetectionDelay,
+            slowpokeDetectionPeriod
           )
           rjf.setLocation(RUNNER_JFRAME_START_X, RUNNER_JFRAME_START_Y)
           rjf.setVisible(true)
@@ -984,30 +995,36 @@ object Runner {
         rjf.blockUntilWindowClosed()
       }
       case None => { // Run the test without a GUI
-        withClassLoaderAndDispatchReporter(runpathList, reporterConfigs, None, passFailReporter) {
-          (loader, dispatchReporter) => {
-            doRunRunRunDaDoRunRun(
-              dispatchReporter,
-              suitesList,
-              testSpecs,
-              junitsList,
-              Stopper.default,
-              tagsToInclude,
-              tagsToExclude,
-              configMap,
-              concurrent,
-              membersOnlyList,
-              wildcardList,
-              testNGList,
-              runpathList,
-              loader,
-              new RunDoneListener {},
-              1,
-              concurrentConfig,
-              suffixes,
-              chosenStyleSet
-            )
-          }
+        withClassLoaderAndDispatchReporter(
+          runpathList,
+          reporterConfigs,
+          None,
+          passFailReporter,
+          detectSlowpokes,
+          slowpokeDetectionDelay,
+          slowpokeDetectionPeriod
+       ) { (loader, dispatchReporter) =>
+          doRunRunRunDaDoRunRun(
+            dispatchReporter,
+            suitesList,
+            testSpecs,
+            junitsList,
+            Stopper.default,
+            tagsToInclude,
+            tagsToExclude,
+            configMap,
+            concurrent,
+            membersOnlyList,
+            wildcardList,
+            testNGList,
+            runpathList,
+            loader,
+            new RunDoneListener {},
+            1,
+            concurrentConfig,
+            suffixes,
+            chosenStyleSet
+          )
         }
       }
     }
@@ -1054,13 +1071,15 @@ object Runner {
         if (it.hasNext)
           it.next
       }
-      else if (s.startsWith("-k")) {
+      else if (s.startsWith("-W")) {
         if (it.hasNext)
           it.next
-        if (it.hasNext)
+        if (it.hasNext) // Need a delay value, so why are we not detecting that it is missing?
+          it.next
+        if (it.hasNext) // Need an period value too
           it.next
       }
-      else if (s.startsWith("-K")) {
+      else if (s.startsWith("-k") || s.startsWith("-K")) {
         if (it.hasNext)
           it.next
         if (it.hasNext)
@@ -1114,6 +1133,12 @@ object Runner {
     ConcurrentConfig(numThreads, enableSuiteSortingReporter)
   }
 
+  // Command line args are in seconds. Here I convert them already to millis, which is needed by DispatchReporter
+  private[scalatest] def parseSlowpokeConfig(slowpokeArgs: List[String]): Option[SlowpokeConfig] =
+    if (!slowpokeArgs.isEmpty)
+      Some(SlowpokeConfig(slowpokeArgs(1).toLong * 1000, slowpokeArgs(2).toLong * 1000))
+    else None
+
   //
   // Generates a Pattern based on suffixes passed in by user.  Pattern
   // matches class names that end with one of the specified suffixes.
@@ -1142,6 +1167,7 @@ object Runner {
     val chosenStyles = new ListBuffer[String]()
     val spanScaleFactor = new ListBuffer[String]()
     val testSortingReporterTimeout = new ListBuffer[String]()
+    val slowpoke = new ListBuffer[String]()
 
     val it = args.iterator.buffered
     while (it.hasNext) {
@@ -1323,8 +1349,23 @@ object Runner {
         if (it.hasNext)
           testSortingReporterTimeout += it.next
       }
+      else if (s.startsWith("-W")) {
+        def isParsableAsInt(s: String): Boolean = 
+          try { s.toInt; true } catch { case _: NumberFormatException => false }
+        slowpoke += s
+        if (it.hasNext) {
+          if (isParsableAsInt(it.head)) slowpoke += it.next()
+          else throw new IllegalArgumentException("-W must be followed by a valid integer specifying the delay, but got: " + it.head)
+        }
+        else throw new IllegalArgumentException("-W must be followed by a valid integer specifying the delay")
+        if (it.hasNext) {
+          if (isParsableAsInt(it.head)) slowpoke += it.next()
+          else throw new IllegalArgumentException("-W must be followed by two valid integers, the second specifying the period, but got: " + it.head)
+        }
+        else throw new IllegalArgumentException("-W must be followed by two valid integers, the second specifying the period")
+      }
       else {
-        throw new IllegalArgumentException("Unrecognized argument: " + s)
+        throw new IllegalArgumentException("Argument unrecognized by ScalaTest's Runner: " + s)
       }
     }
 
@@ -1343,7 +1384,8 @@ object Runner {
       genSuffixesPattern(suffixes.toList), 
       chosenStyles.toList, 
       spanScaleFactor.toList, 
-      testSortingReporterTimeout.toList
+      testSortingReporterTimeout.toList,
+      slowpoke.toList
     )
   }
 
@@ -2518,14 +2560,21 @@ object Runner {
 
   private[scalatest] def excludesWithIgnore(excludes: Set[String]) = excludes + "org.scalatest.Ignore"
 
-  private[scalatest] def withClassLoaderAndDispatchReporter(runpathList: List[String], reporterSpecs: ReporterConfigurations,
-      graphicReporter: Option[Reporter], passFailReporter: Option[Reporter])(f: (ClassLoader, DispatchReporter) => Unit): Unit = {
+  private[scalatest] def withClassLoaderAndDispatchReporter(
+    runpathList: List[String],
+    reporterSpecs: ReporterConfigurations,
+    graphicReporter: Option[Reporter],
+    passFailReporter: Option[Reporter],
+    detectSlowpokes: Boolean,
+    slowpokeDetectionDelay: Long,
+    slowpokeDetectionPeriod: Long
+  )(f: (ClassLoader, DispatchReporter) => Unit): Unit = {
 
     val loader: ClassLoader = getRunpathClassLoader(runpathList)
     try {
       Thread.currentThread.setContextClassLoader(loader)
       try {
-        val dispatchReporter = ReporterFactory.getDispatchReporter(reporterSpecs, graphicReporter, passFailReporter, loader, None)
+        val dispatchReporter = ReporterFactory.getDispatchReporter(reporterSpecs, graphicReporter, passFailReporter, loader, None, detectSlowpokes, slowpokeDetectionDelay, slowpokeDetectionPeriod)
         try {
           f(loader, dispatchReporter)
         }

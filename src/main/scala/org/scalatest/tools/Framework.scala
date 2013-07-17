@@ -156,7 +156,7 @@ class Framework extends SbtFramework {
           presentReminderWithFullStackTraces,
           presentReminderWithoutCanceledTests
         )
-      ReporterFactory.getDispatchReporter(Seq(reporter, sbtLogInfoReporter), None, None, loader, Some(resultHolder))
+      ReporterFactory.getDispatchReporter(Seq(reporter, sbtLogInfoReporter), None, None, loader, Some(resultHolder), false, 0, 0) // TODO: Support Slowpoke detection from sbt
     }
     else 
       reporter
@@ -587,7 +587,7 @@ class Framework extends SbtFramework {
     val summaryCounter = new SummaryCounter
     val runStartTime = System.currentTimeMillis
     
-    val dispatchReporter = ReporterFactory.getDispatchReporter(repConfig, None, None, loader, Some(resultHolder))
+    val dispatchReporter = ReporterFactory.getDispatchReporter(repConfig, None, None, loader, Some(resultHolder), false, 0, 0) // TODO: Support slowpoke detection from sbt
     
     dispatchReporter(RunStarting(tracker.nextOrdinal(), 0, configMap))
     

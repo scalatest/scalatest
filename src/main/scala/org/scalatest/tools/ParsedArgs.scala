@@ -32,5 +32,6 @@ private[scalatest] case class ParsedArgs(
   genSuffixesPattern: Option[Pattern], 
   chosenStyles: List[String], 
   spanScaleFactor: List[String], 
-  testSortingReporterTimeout: List[String]
+  testSortingReporterTimeout: List[String],
+  slowpokeParams: List[String]
 )

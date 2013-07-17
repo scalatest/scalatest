@@ -225,12 +225,12 @@ private[scalatest] class ReporterFactory {
     (for (spec <- reporterSpecs)
         yield getReporterFromConfiguration(spec, loader, resultHolder))
   
-  private[scalatest] def getDispatchReporter(reporterSpecs: ReporterConfigurations, graphicReporter: Option[Reporter], passFailReporter: Option[Reporter], loader: ClassLoader, resultHolder: Option[SuiteResultHolder]): DispatchReporter = {
+  private[scalatest] def getDispatchReporter(reporterSpecs: ReporterConfigurations, graphicReporter: Option[Reporter], passFailReporter: Option[Reporter], loader: ClassLoader, resultHolder: Option[SuiteResultHolder], detectSlowpokes: Boolean, slowpokeDetectionDelay: Long, slowpokeDetectionPeriod: Long): DispatchReporter = {
     val reporterSeq = createReportersFromConfigurations(reporterSpecs, loader, resultHolder)
-    getDispatchReporter(reporterSeq, graphicReporter, passFailReporter, loader, resultHolder)
+    getDispatchReporter(reporterSeq, graphicReporter, passFailReporter, loader, resultHolder, detectSlowpokes, slowpokeDetectionDelay, slowpokeDetectionPeriod)
   }
   
-  private[scalatest] def getDispatchReporter(reporterSeq: Seq[Reporter], graphicReporter: Option[Reporter], passFailReporter: Option[Reporter], loader: ClassLoader, resultHolder: Option[SuiteResultHolder]): DispatchReporter = {
+  private[scalatest] def getDispatchReporter(reporterSeq: Seq[Reporter], graphicReporter: Option[Reporter], passFailReporter: Option[Reporter], loader: ClassLoader, resultHolder: Option[SuiteResultHolder], detectSlowpokes: Boolean, slowpokeDetectionDelay: Long, slowpokeDetectionPeriod: Long): DispatchReporter = {
     val almostFullReporterList: List[Reporter] =
       graphicReporter match {
         case None => reporterSeq.toList
@@ -243,7 +243,13 @@ private[scalatest] class ReporterFactory {
         case None => almostFullReporterList
       }
 
-    new DispatchReporter(fullReporterList)
+    new DispatchReporter(
+      reporters = fullReporterList,
+      out = Console.err,
+      detectSlowpokes = detectSlowpokes,
+      slowpokeDetectionDelay = slowpokeDetectionDelay,
+      slowpokeDetectionPeriod = slowpokeDetectionPeriod
+    )
   }
 }
 

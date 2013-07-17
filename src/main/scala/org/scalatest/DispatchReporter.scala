@@ -44,8 +44,8 @@ private[scalatest] class DispatchReporter(
   val reporters: List[Reporter],
   val out: PrintStream = Console.err,
   detectSlowpokes: Boolean = false,
-  slowpokeDelay: Long = 60000,
-  slowpokePeriod: Long = 60000
+  slowpokeDetectionDelay: Long = 60000,
+  slowpokeDetectionPeriod: Long = 60000
 ) extends CatchReporter { thisDispatchReporter =>
 
   private case object Dispose
@@ -60,7 +60,7 @@ private[scalatest] class DispatchReporter(
 
   private final val slowpokeItems: Option[(SlowpokeDetector, Timer)] =
     if (detectSlowpokes) {
-      val slowpokeDetector = new SlowpokeDetector(slowpokeDelay, out)
+      val slowpokeDetector = new SlowpokeDetector(slowpokeDetectionDelay, out)
       val timer =  new Timer
       val task = new TimerTask {
         override def run(): Unit = {
@@ -80,7 +80,7 @@ private[scalatest] class DispatchReporter(
           }
         }
       }
-      timer.schedule(task, slowpokePeriod, slowpokePeriod)
+      timer.schedule(task, slowpokeDetectionPeriod, slowpokeDetectionPeriod)
 
       Some((slowpokeDetector, timer))
     }
