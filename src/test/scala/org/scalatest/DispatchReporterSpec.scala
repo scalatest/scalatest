@@ -21,8 +21,11 @@ import org.scalatest.events._
 import SharedHelpers._
 import concurrent.Eventually._
 import time.SpanSugar._
+import Matchers._
+import OptionValues._
+import Inside._
 
-class DispatchReporterSpec extends Spec with Matchers {
+class DispatchReporterSpec extends Spec {
   val TestStartingOrdinal = new Ordinal(223)
   val SecondTestStartingOrdinal = TestStartingOrdinal.next
   val TestFinishedOrdinal = SecondTestStartingOrdinal.next
@@ -44,12 +47,22 @@ class DispatchReporterSpec extends Spec with Matchers {
         )
         (erp, dispatch)
       }
-      def `should send out InfoProvided events if a slowpoke is detected` {
+      def `should send out InfoProvided events with useful message if a slowpoke is detected` {
         val (erp, dispatch) = fireTestStarting()
-        eventually {
-          erp.infoProvidedEventsReceived.size should be > 0
-        }
+        val infoProvidedEvent =
+          eventually {
+            val ips = erp.infoProvidedEventsReceived
+            ips.size should be > 0
+            ips(0)
+          }
         dispatch.doDispose()
+        val msg = infoProvidedEvent.message
+        msg should (include ("the suite name") and include ("the test name"))
+        inside (infoProvidedEvent.formatter.value) { case IndentedText(formattedText, rawText, indentationLevel) =>
+          formattedText should equal (msg)
+          rawText should equal (msg)
+          indentationLevel should equal (0)
+        }
       }
       def doTestStartingAndFinishedEvents(testFinishedEvent: Event): Unit = {
         val (erp, dispatch) = fireTestStarting()
