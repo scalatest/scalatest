@@ -20,6 +20,9 @@ import java.io.PrintStream
 import org.scalatest.events._
 import DispatchReporter.propagateDispose
 import java.util.concurrent.LinkedBlockingQueue
+import java.util.TimerTask
+import java.util.Timer
+import time.Now._
 
 /**
  * A <code>Reporter</code> that dispatches test results to other <code>Reporter</code>s.
@@ -40,9 +43,9 @@ private[scalatest] class DispatchReporter(
   val reporters: List[Reporter],
   val out: PrintStream = Console.err,
   detectSlowpokes: Boolean = false,
-  slowpokeTimeout: Long = 60000,
-  slowpokeInterval: Long = 60000
-) extends CatchReporter {
+  slowpokeDelay: Long = 60000,
+  slowpokePeriod: Long = 60000
+) extends CatchReporter { thisDispatchReporter =>
 
   private case object Dispose
 
@@ -51,8 +54,8 @@ private[scalatest] class DispatchReporter(
   // Can be either Event or Dispose.type. Be nice to capture that in the type param.
   private final val queue = new LinkedBlockingQueue[AnyRef]
 
-  private final val slowpokeDetector: Option[SlowpokeDetector] =
-    if (detectSlowpokes) Some(new SlowpokeDetector(slowpokeTimeout, out)) else None
+  private final val slowpokeItems: Option[(SlowpokeDetector, Timer)] =
+    if (detectSlowpokes) Some((new SlowpokeDetector(slowpokeDelay, out), new Timer)) else None
 
   class Propagator extends Runnable {
 
@@ -161,6 +164,18 @@ private[scalatest] class DispatchReporter(
                         RunAborted(ordinal, message, throwable, duration, newSummary, formatter, location, payload, threadName, timeStamp)
                     }
                   
+                  case ts: TestStarting =>
+                    slowpokeItems match {
+                      case Some((slowpokeDetector, _)) =>
+                        slowpokeDetector.testStarting(
+                          suiteName = ts.suiteName, 
+                          suiteId = ts.suiteId, 
+                          testName = ts.testName, 
+                          now()
+                        )
+                      case None =>
+                    }
+                    event
                   case _ => event
                 }
               for (report <- reporters)
@@ -195,6 +210,29 @@ private[scalatest] class DispatchReporter(
   private val propagator = new Propagator
   (new Thread(propagator)).start()
 
+  slowpokeItems match {
+    case Some((slowpokeDetector, timer)) =>
+      val task = new TimerTask {
+        override def run(): Unit = {
+          val slowpokes = slowpokeDetector.detectSlowpokes(now())
+          for (slowpoke <- slowpokes) {
+            val dispatch = thisDispatchReporter
+            thisDispatchReporter.apply(
+              new InfoProvided(
+               ordinal = new Ordinal(100),
+               message = "Dude!",
+               nameInfo = None,
+               throwable = None,
+               formatter = None
+              )
+            )
+          }
+        }
+      }
+      timer.schedule(task, slowpokePeriod, slowpokePeriod)
+    case None =>
+  }
+
   // Invokes dispose on each Reporter in this DispatchReporter's reporters list.
   // This method puts an event in the queue that is being used to serialize
   // events, and at some time later the propagator's thread will attempt to invoke
@@ -208,6 +246,10 @@ private[scalatest] class DispatchReporter(
   def dispatchDisposeAndWaitUntilDone() {
     queue.put(Dispose)
     latch.await()
+    slowpokeItems match {
+      case Some((_, timer)) => timer.cancel()
+      case None =>
+    }
   }
 
   override def apply(event: Event) {

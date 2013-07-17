@@ -275,7 +275,7 @@ trait Timeouts {
   }*/
   
   private def timeoutAfter[T](timeout: Span, f: => T, interruptor: Interruptor, exceptionFun: Option[Throwable] => StackDepthException): T = {
-    val timer = new Timer()
+    val timer = new Timer
     val task = new TimeoutTask(Thread.currentThread(), interruptor)
     timer.schedule(task, timeout.totalNanos / 1000 / 1000) // TODO: Probably use a sleep so I can use nanos
     try {

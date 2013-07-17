@@ -29,6 +29,10 @@ object SharedHelpers extends Assertions {
     def apply(event: Event) = ()  
   }
 
+  object NoisyReporter extends Reporter {
+    def apply(event: Event): Unit = { println(event) }
+  }
+
   class TestDurationReporter extends Reporter {
     var testSucceededWasFiredAndHadADuration = false
     var testFailedWasFiredAndHadADuration = false

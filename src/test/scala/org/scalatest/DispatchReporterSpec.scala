@@ -19,16 +19,14 @@ import java.io.PrintStream
 import java.io.ByteArrayOutputStream
 import org.scalatest.events._
 import SharedHelpers._
+import concurrent.Eventually._
 
 class DispatchReporterSpec extends Spec with Matchers {
   object `the DispatchReporter` {
-    def `should accept configuration info regarding slowpoke detection` {
-      new DispatchReporter(List.empty, Console.err, true, 60000, 60000)
-    }
     object `when slowpoke detection is enabled` {
-      def `should send out InfoProvided events if a slowpoke is detected` { pending
+      def `should send out InfoProvided events if a slowpoke is detected` {
         val erp = new EventRecordingReporter
-        val dispatch = new DispatchReporter(List(erp), Console.err, true, 1, 1)
+        val dispatch = new DispatchReporter(List(erp, NoisyReporter), Console.err, true, 1, 1)
         dispatch(
           TestStarting(
             ordinal = new Ordinal(223),
@@ -39,9 +37,10 @@ class DispatchReporterSpec extends Spec with Matchers {
             testText = "test name"
           )
         )
-        Thread.sleep(10)
+        eventually {
+          erp.infoProvidedEventsReceived.size should be > 0
+        }
         dispatch.doDispose()
-        erp.infoProvidedEventsReceived.size should be > 0
       }
     }
   }
