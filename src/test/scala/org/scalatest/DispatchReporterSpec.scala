@@ -20,6 +20,7 @@ import java.io.ByteArrayOutputStream
 import org.scalatest.events._
 import SharedHelpers._
 import concurrent.Eventually._
+import time.SpanSugar._
 
 class DispatchReporterSpec extends Spec with Matchers {
   object `the DispatchReporter` {
@@ -39,6 +40,46 @@ class DispatchReporterSpec extends Spec with Matchers {
         )
         eventually {
           erp.infoProvidedEventsReceived.size should be > 0
+        }
+        dispatch.doDispose()
+      }
+      def `should stop sending out InfoProvided events after a detected slowpoke succeeds` {
+        val erp = new EventRecordingReporter
+        val dispatch = new DispatchReporter(List(erp, NoisyReporter), Console.err, true, 1, 1)
+        dispatch(
+          TestStarting(
+            ordinal = new Ordinal(223),
+            suiteName = "the suite name",
+            suiteId = "the suite ID",
+            suiteClassName = Some("suiteClassName"),
+            testName = "the test name",
+            testText = "test name"
+          )
+        )
+        eventually {
+          erp.infoProvidedEventsReceived.size should be > 0
+        }
+        dispatch(
+          TestSucceeded(
+            ordinal = new Ordinal(223),
+            suiteName = "the suite name",
+            suiteId = "the suite ID",
+            suiteClassName = Some("suiteClassName"),
+            testName = "the test name",
+            testText = "test name",
+            recordedEvents = collection.immutable.IndexedSeq.empty
+          )
+        )
+        var sizeWasSameCount = 0
+        var previousSize = erp.infoProvidedEventsReceived.size
+        eventually(timeout(900 millis)) {
+          val size = erp.infoProvidedEventsReceived.size 
+          if (size == previousSize) {
+            sizeWasSameCount += 1
+            previousSize = size
+          }
+          else sizeWasSameCount = 0
+          sizeWasSameCount should be (5)
         }
         dispatch.doDispose()
       }

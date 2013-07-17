@@ -128,8 +128,21 @@ private[scalatest] class DispatchReporter(
   
                   case _: RunStarting => counterMap(event.ordinal.runStamp) = new Counter; event
   
-                  case _: TestSucceeded => incrementCount(event, _.testsSucceededCount += 1); event
-                  case _: TestFailed => incrementCount(event, _.testsFailedCount += 1); event
+                  case ts: TestSucceeded =>
+                    incrementCount(event, _.testsSucceededCount += 1)
+                    slowpokeItems match {
+                      case Some((slowpokeDetector, _)) =>
+                        slowpokeDetector.testFinished(
+                          suiteName = ts.suiteName, 
+                          suiteId = ts.suiteId, 
+                          testName = ts.testName 
+                        )
+                      case None =>
+                    }
+                    event
+                  case tf: TestFailed =>
+                    incrementCount(event, _.testsFailedCount += 1)
+                    event
                   case _: TestIgnored => incrementCount(event, _.testsIgnoredCount += 1); event
                   case _: TestCanceled => incrementCount(event, _.testsCanceledCount += 1); event
                   case _: TestPending => incrementCount(event, _.testsPendingCount += 1); event
