@@ -168,8 +168,14 @@ private[scalatest] class DispatchReporter(
                     fireTestFinishedIfNecessary(tf.suiteName, tf.suiteId, tf.testName)
                     event
                   case _: TestIgnored => incrementCount(event, _.testsIgnoredCount += 1); event
-                  case _: TestCanceled => incrementCount(event, _.testsCanceledCount += 1); event
-                  case _: TestPending => incrementCount(event, _.testsPendingCount += 1); event
+                  case tc: TestCanceled =>
+                    incrementCount(event, _.testsCanceledCount += 1)
+                    fireTestFinishedIfNecessary(tc.suiteName, tc.suiteId, tc.testName)
+                    event
+                  case tp: TestPending =>
+                    incrementCount(event, _.testsPendingCount += 1)
+                    fireTestFinishedIfNecessary(tp.suiteName, tp.suiteId, tp.testName)
+                    event
                   case _: SuiteCompleted => incrementCount(event, _.suitesCompletedCount += 1); event
                   case _: SuiteAborted => incrementCount(event, _.suitesAbortedCount += 1); event
                   case _: ScopePending => incrementCount(event, _.scopesPendingCount += 1); event

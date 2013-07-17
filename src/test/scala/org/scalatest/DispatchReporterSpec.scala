@@ -93,6 +93,48 @@ class DispatchReporterSpec extends Spec with Matchers {
           )
         )
       }
+      def `should stop sending out InfoProvided events after a detected slowpoke is canceled` {
+        doTestStartingAndFinishedEvents(
+          TestCanceled(
+            ordinal = new Ordinal(223),
+            message = "I meant to do that!",
+            suiteName = "the suite name",
+            suiteId = "the suite ID",
+            suiteClassName = Some("suiteClassName"),
+            testName = "the test name",
+            testText = "test name",
+            recordedEvents = collection.immutable.IndexedSeq.empty
+          )
+        )
+      }
+      def `should stop sending out InfoProvided events after a detected slowpoke is reported as pending` {
+        doTestStartingAndFinishedEvents(
+          TestPending(
+            ordinal = new Ordinal(223),
+            suiteName = "the suite name",
+            suiteId = "the suite ID",
+            suiteClassName = Some("suiteClassName"),
+            testName = "the test name",
+            testText = "test name",
+            recordedEvents = collection.immutable.IndexedSeq.empty
+          )
+        )
+      }
+/* There is no TestOmitted event as yet!
+      def `should stop sending out InfoProvided events after a detected slowpoke is reported as omitted` {
+        doTestStartingAndFinishedEvents(
+          TestOmitted(
+            ordinal = new Ordinal(223),
+            suiteName = "the suite name",
+            suiteId = "the suite ID",
+            suiteClassName = Some("suiteClassName"),
+            testName = "the test name",
+            testText = "test name",
+            recordedEvents = collection.immutable.IndexedSeq.empty
+          )
+        )
+      }
+*/
     }
   }
 }
