@@ -23,6 +23,10 @@ import concurrent.Eventually._
 import time.SpanSugar._
 
 class DispatchReporterSpec extends Spec with Matchers {
+  val TestStartingOrdinal = new Ordinal(223)
+  val SecondTestStartingOrdinal = TestStartingOrdinal.next
+  val TestFinishedOrdinal = SecondTestStartingOrdinal.next
+  val SecondTestFinishedOrdinal = TestFinishedOrdinal.next 
   object `the DispatchReporter` {
     object `when slowpoke detection is enabled` {
       def fireTestStarting(): (EventRecordingReporter, DispatchReporter) = {
@@ -30,7 +34,7 @@ class DispatchReporterSpec extends Spec with Matchers {
         val dispatch = new DispatchReporter(List(erp, NoisyReporter), Console.err, true, 1, 1)
         dispatch(
           TestStarting(
-            ordinal = new Ordinal(223),
+            ordinal = TestStartingOrdinal,
             suiteName = "the suite name",
             suiteId = "the suite ID",
             suiteClassName = Some("suiteClassName"),
@@ -69,7 +73,7 @@ class DispatchReporterSpec extends Spec with Matchers {
       def `should stop sending out InfoProvided events after a detected slowpoke succeeds` {
         doTestStartingAndFinishedEvents(
           TestSucceeded(
-            ordinal = new Ordinal(223),
+            ordinal = TestFinishedOrdinal,
             suiteName = "the suite name",
             suiteId = "the suite ID",
             suiteClassName = Some("suiteClassName"),
@@ -82,7 +86,7 @@ class DispatchReporterSpec extends Spec with Matchers {
       def `should stop sending out InfoProvided events after a detected slowpoke fails` {
         doTestStartingAndFinishedEvents(
           TestFailed(
-            ordinal = new Ordinal(223),
+            ordinal = TestFinishedOrdinal,
             message = "I meant to do that!",
             suiteName = "the suite name",
             suiteId = "the suite ID",
@@ -96,7 +100,7 @@ class DispatchReporterSpec extends Spec with Matchers {
       def `should stop sending out InfoProvided events after a detected slowpoke is canceled` {
         doTestStartingAndFinishedEvents(
           TestCanceled(
-            ordinal = new Ordinal(223),
+            ordinal = TestFinishedOrdinal,
             message = "I meant to do that!",
             suiteName = "the suite name",
             suiteId = "the suite ID",
@@ -110,7 +114,7 @@ class DispatchReporterSpec extends Spec with Matchers {
       def `should stop sending out InfoProvided events after a detected slowpoke is reported as pending` {
         doTestStartingAndFinishedEvents(
           TestPending(
-            ordinal = new Ordinal(223),
+            ordinal = TestFinishedOrdinal,
             suiteName = "the suite name",
             suiteId = "the suite ID",
             suiteClassName = Some("suiteClassName"),
@@ -124,7 +128,7 @@ class DispatchReporterSpec extends Spec with Matchers {
       def `should stop sending out InfoProvided events after a detected slowpoke is reported as omitted` {
         doTestStartingAndFinishedEvents(
           TestOmitted(
-            ordinal = new Ordinal(223),
+            ordinal = TestFinishedOrdinal,
             suiteName = "the suite name",
             suiteId = "the suite ID",
             suiteClassName = Some("suiteClassName"),
@@ -135,6 +139,37 @@ class DispatchReporterSpec extends Spec with Matchers {
         )
       }
 */
+      def `should send InfoProvided events if a slowpoke is detected with the only seen ordinal` {
+        val (erp, dispatch) = fireTestStarting()
+        val initialInfoProvided =
+          eventually {
+            val ips = erp.infoProvidedEventsReceived
+            ips.size should be > 0
+            ips(0)
+          }
+        dispatch.doDispose()
+        initialInfoProvided.ordinal should be (TestStartingOrdinal)
+      }
+      def `should send InfoProvided events if a slowpoke is detected with largest seen ordinal` {
+        val (erp, dispatch) = fireTestStarting()
+        dispatch(
+          TestStarting(
+            ordinal = SecondTestStartingOrdinal,
+            suiteName = "the second suite name",
+            suiteId = "the second suite ID",
+            suiteClassName = Some("suiteClassName"),
+            testName = "the second test name",
+            testText = "second test name"
+          )
+        )
+        try eventually {
+          val ips = erp.infoProvidedEventsReceived
+          val sz = ips.size
+          sz should be > 0
+          ips(sz - 1).ordinal should be (SecondTestStartingOrdinal)
+        }
+        finally dispatch.doDispose()
+      }
     }
   }
 }

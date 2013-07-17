@@ -23,6 +23,7 @@ import java.util.concurrent.LinkedBlockingQueue
 import java.util.TimerTask
 import java.util.Timer
 import time.Now._
+import java.util.concurrent.atomic.AtomicReference
 
 /**
  * A <code>Reporter</code> that dispatches test results to other <code>Reporter</code>s.
@@ -51,6 +52,9 @@ private[scalatest] class DispatchReporter(
 
   private final val latch = new CountDownLatch(1)
 
+  // We keep track of the highest ordinal seen, allowing some to be skipped. 
+  private final val highestOrdinalSeenSoFar: AtomicReference[Ordinal] = new AtomicReference[Ordinal](new Ordinal(0))
+
   // Can be either Event or Dispose.type. Be nice to capture that in the type param.
   private final val queue = new LinkedBlockingQueue[AnyRef]
 
@@ -65,7 +69,7 @@ private[scalatest] class DispatchReporter(
             val dispatch = thisDispatchReporter
             thisDispatchReporter.apply(
               new InfoProvided(
-               ordinal = new Ordinal(100),
+               ordinal = highestOrdinalSeenSoFar.get,
                message = "Dude!",
                nameInfo = None,
                throwable = None,
@@ -147,6 +151,12 @@ private[scalatest] class DispatchReporter(
       while (alive) {
         queue.take() match {
           case event: Event => 
+            val highestSoFar = highestOrdinalSeenSoFar.get
+            if (event.ordinal > highestSoFar)
+              highestOrdinalSeenSoFar.compareAndSet(highestSoFar, event.ordinal) // Ignore conflicts. Just let first one win and move on.
+              // The reason is that this is used to send InfoProvided events for slowpoke notifications, and these need not have the
+              // exactly the latest ordinal. So long as it is in the ballpark, that's is good enough.
+              
             try {
               // The event will only actually be updated if it it is a RunCompleted/Aborted/Stopped event with None
               // as its summary and its runstamp has a counter entry. In that case, it will be given a Summary taken
