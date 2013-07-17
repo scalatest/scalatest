@@ -20,7 +20,7 @@ import org.scalatest.FunSpec
 
 class TestCanceledExceptionSpec extends FunSpec with ShouldMatchers {
 
-  val baseLineNumber = 22
+  val baseLineNumber = 23
 
   describe("The TestCanceledException") {
 
