@@ -907,4 +907,22 @@ class FrameworkSuite extends FunSuite {
     assert(testEventHandler.failureEventsReceived.length === 0)
     assert(testEventHandler.skippedEventsReceived.length === 0)
   }
+  
+  test("-w should execute suites that match the specified package and its sub packages") {
+    val testEventHandler = new TestEventHandler
+    val runner = framework.runner(Array("-w", "org.scalatest.tools"), Array.empty, testClassLoader)
+    val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.SampleSuite", subclassFingerprint, false, Array(new SuiteSelector)), 
+                                   new TaskDef("org.scalatest.tools.FrameworkSuite", subclassFingerprint, false, Array(new SuiteSelector)), 
+                                   new TaskDef("org.scalatest.SuiteSuite", subclassFingerprint, false, Array(new SuiteSelector))))
+    assert(tasks.size === 2)
+  }
+  
+  test("-m should execute suites that match the specified package and not its sub packages") {
+    val testEventHandler = new TestEventHandler
+    val runner = framework.runner(Array("-m", "org.scalatest.tools"), Array.empty, testClassLoader)
+    val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.SampleSuite", subclassFingerprint, false, Array(new SuiteSelector)), 
+                                   new TaskDef("org.scalatest.tools.FrameworkSuite", subclassFingerprint, false, Array(new SuiteSelector)), 
+                                   new TaskDef("org.scalatest.SuiteSuite", subclassFingerprint, false, Array(new SuiteSelector))))
+    assert(tasks.size === 1)
+  }
 }
