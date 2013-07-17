@@ -103,7 +103,7 @@ class NoneOfContainMatcherEqualitySpec extends Spec with Matchers with Explicitl
       Map(1 -> "one", 2 -> " two", 3 -> "three") should contain noneOf (1 -> "one", 2 -> " two", 3 -> "three")
       
       implicit val javaMapEquality = new JavaMapSetEquality(Set(Entry(1, "one"), Entry(2, " two"), Entry(3, "three")), Set(Entry(1, "one"), Entry(2, " two"), Entry(3, "three")), false)
-      javaMap(1 -> "one", 2 -> " two", 3 -> "three") should contain noneOf (Entry(1, "one"), Entry(2, " two"), Entry(3, "three"))
+      javaMap(Entry(1, "one"), Entry(2, " two"), Entry(3, "three")) should contain noneOf (Entry(1, "one"), Entry(2, " two"), Entry(3, "three"))
     }
     
     def `should take custom implicit equality in scope when 'should not contain' is used` {
@@ -118,7 +118,7 @@ class NoneOfContainMatcherEqualitySpec extends Spec with Matchers with Explicitl
       Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain noneOf (7 -> "seven", 8 -> "eight", 9 -> "nine")
       
       implicit val javaMapEquality = new JavaMapSetEquality(Set(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")), Set(Entry(7, "seven"), Entry(8, "eight"), Entry(9, "nine")), true)
-      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain noneOf (Entry(7, "seven"), Entry(8, "eight"), Entry(9, "nine"))
+      javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain noneOf (Entry(7, "seven"), Entry(8, "eight"), Entry(9, "nine"))
     }
     
     def `should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with custom implicit equality in scope` {
@@ -158,7 +158,7 @@ class NoneOfContainMatcherEqualitySpec extends Spec with Matchers with Explicitl
       
       implicit val javaMapEquality = new JavaMapSetEquality(Set(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")), Set(Entry(6, "six"), Entry(7, "seven"), Entry(8, "eight")), true)
       
-      val left6 = javaMap(1 -> "one", 2 -> "two", 3 -> "three")
+      val left6 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val e6 = intercept[exceptions.TestFailedException] {
         left6 should contain noneOf (Entry(6, "six"), Entry(7, "seven"), Entry(8, "eight"))
       }
@@ -202,7 +202,7 @@ class NoneOfContainMatcherEqualitySpec extends Spec with Matchers with Explicitl
       
       implicit val javaMapEquality = new JavaMapSetEquality(Set(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")), Set(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")), false)
       
-      val left6 = javaMap(1 -> "one", 2 -> "two", 3 -> "three")
+      val left6 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val e6 = intercept[exceptions.TestFailedException] {
         left6 should not contain noneOf (Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       }
@@ -221,7 +221,7 @@ class NoneOfContainMatcherEqualitySpec extends Spec with Matchers with Explicitl
       (Map(1 -> "one", 2 -> " two", 3 -> "three") should contain noneOf (1 -> "one", 2 -> " two", 3 -> "three")) (mapEquality)
       
       val javaMapEquality = new JavaMapSetEquality(Set(Entry(1, "one"), Entry(2, " two"), Entry(3, "three")), Set(Entry(1, "one"), Entry(2, " two"), Entry(3, "three")), false)
-      (javaMap(1 -> "one", 2 -> " two", 3 -> "three") should contain noneOf (Entry(1, "one"), Entry(2, " two"), Entry(3, "three"))) (javaMapEquality)
+      (javaMap(Entry(1, "one"), Entry(2, " two"), Entry(3, "three")) should contain noneOf (Entry(1, "one"), Entry(2, " two"), Entry(3, "three"))) (javaMapEquality)
     }
     
     def `should take custom explicit equality in scope when 'should not contain' is used` {
@@ -236,7 +236,7 @@ class NoneOfContainMatcherEqualitySpec extends Spec with Matchers with Explicitl
       (Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain noneOf (7 -> "seven", 8 -> "eight", 9 -> "nine")) (mapEquality)
       
       val javaMapEquality = new JavaMapSetEquality(Set(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")), Set(Entry(7, "seven"), Entry(8, "eight"), Entry(9, "nine")), true)
-      (javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain noneOf (Entry(7, "seven"), Entry(8, "eight"), Entry(9, "nine"))) (javaMapEquality)
+      (javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain noneOf (Entry(7, "seven"), Entry(8, "eight"), Entry(9, "nine"))) (javaMapEquality)
     }
     
     def `should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with custom explicit equality in scope` {
@@ -275,7 +275,7 @@ class NoneOfContainMatcherEqualitySpec extends Spec with Matchers with Explicitl
       checkShouldContainStackDepth(e5, left5, Array(6 -> "six", 7 -> "seven", 8 -> "eight").deep, thisLineNumber - 2)
       
       val javaMapEquality = new JavaMapSetEquality(Set(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")), Set(Entry(6, "six"), Entry(7, "seven"), Entry(8, "eight")), true)
-      val left6 = javaMap(1 -> "one", 2 -> "two", 3 -> "three")
+      val left6 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val e6 = intercept[exceptions.TestFailedException] {
         (left6 should contain noneOf (Entry(6, "six"), Entry(7, "seven"), Entry(8, "eight"))) (javaMapEquality)
       }
@@ -319,7 +319,7 @@ class NoneOfContainMatcherEqualitySpec extends Spec with Matchers with Explicitl
       
       val javaMapEquality = new JavaMapSetEquality(Set(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")), Set(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")), false)
       
-      val left6 = javaMap(1 -> "one", 2 -> "two", 3 -> "three")
+      val left6 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val e6 = intercept[exceptions.TestFailedException] {
         (left6 should not contain noneOf (Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))) (javaMapEquality)
       }

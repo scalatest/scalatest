@@ -35,7 +35,7 @@ class AllOfContainMatcherSpec extends Spec with Matchers {
       javaList(5, 4, 3, 2, 1) should contain allOf(1, 3, 5)
       
       Map(5 -> "five", 4 -> "four", 3 -> "three", 2 -> "two", 1 -> "one") should contain allOf (1 -> "one", 3 -> "three", 5 -> "five")
-      javaMap(5 -> "five", 4 -> "four", 3 -> "three", 2 -> "two", 1 -> "one") should contain allOf (Entry(1, "one"), Entry(3, "three"), Entry(5, "five"))
+      javaMap(Entry(5, "five"), Entry(4, "four"), Entry(3, "three"), Entry(2, "two"), Entry(1, "one")) should contain allOf (Entry(1, "one"), Entry(3, "three"), Entry(5, "five"))
     }
     
     def `should succeeded when left List contains same elements in different order as right List` {
@@ -44,7 +44,7 @@ class AllOfContainMatcherSpec extends Spec with Matchers {
       javaList(1, 2, 3) should contain allOf(2, 1, 3)
       
       Map(1 -> "one", 2 -> "two", 3 -> "three") should contain allOf (2 -> "two", 1 -> "one", 3 -> "three")
-      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should contain allOf (Entry(2, "two"), Entry(1, "one"), Entry(3, "three"))
+      javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should contain allOf (Entry(2, "two"), Entry(1, "one"), Entry(3, "three"))
     }
     
     def `should succeeded when left List contains same elements in same order as right Set` {
@@ -53,7 +53,7 @@ class AllOfContainMatcherSpec extends Spec with Matchers {
       javaList(1, 2, 3) should contain allOf(1, 2, 3)
       
       Map(1 -> "one", 2 -> "two", 3 -> "three") should contain allOf (1 -> "one", 2 -> "two", 3 -> "three")
-      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should contain allOf (Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
+      javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should contain allOf (Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
     }
     
     def `should throw NotAllowedException when allOf contains duplicate element` {
@@ -92,7 +92,7 @@ class AllOfContainMatcherSpec extends Spec with Matchers {
       }
       checkStackDepth(e3, left3, Array(2 -> "two", 5 -> "five", 3 -> "three"), thisLineNumber - 2)
       
-      val left4 = javaMap(1 -> "one", 2 -> "two", 3 -> "three")
+      val left4 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val e4 = intercept[exceptions.TestFailedException] {
         left4 should contain allOf (Entry(2, "two"), Entry(5, "five"), Entry(3, "three"))
       }
@@ -124,7 +124,7 @@ class AllOfContainMatcherSpec extends Spec with Matchers {
       }
       checkStackDepth(e3, left3, Array(1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four"), thisLineNumber - 2)
       
-      val left4 = javaMap(1 -> "one", 2 -> "two", 3 -> "three")
+      val left4 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val e4 = intercept[exceptions.TestFailedException] {
         left4 should contain allOf (Entry(1, "one"), Entry(2, "two"), Entry(3, "three"), Entry(4, "four"))
       }
@@ -156,7 +156,7 @@ class AllOfContainMatcherSpec extends Spec with Matchers {
       }
       checkStackDepth(e3, left3, Array(1 -> "one", 5 -> "five"), thisLineNumber - 2)
       
-      val left4 = javaMap(1 -> "one", 2 -> "two", 3 -> "three")
+      val left4 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val e4 = intercept[exceptions.TestFailedException] {
         left4 should contain allOf (Entry(1, "one"), Entry(5, "five"))
       }
@@ -185,7 +185,7 @@ class AllOfContainMatcherSpec extends Spec with Matchers {
       javaList(1, 2, 3) should not contain allOf (1, 2, 8)
       
       Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain allOf (1 -> "one", 2 -> "two", 8 -> "eight")
-      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain allOf (Entry(1, "one"), Entry(2, "two"), Entry(8, "eight"))
+      javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain allOf (Entry(1, "one"), Entry(2, "two"), Entry(8, "eight"))
     }
     
     def `should throw TestFailedException with correct stack depth and message when left and right List contain same elements in different order` {
@@ -207,7 +207,7 @@ class AllOfContainMatcherSpec extends Spec with Matchers {
       }
       checkStackDepth(e3, left3, Array(2 -> "two", 1 -> "one", 3 -> "three"), thisLineNumber - 2)
       
-      val left4 = javaMap(1 -> "one", 2 -> "two", 3 -> "three")
+      val left4 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val e4 = intercept[exceptions.TestFailedException] {
         left4 should not contain allOf (Entry(2, "two"), Entry(1, "one"), Entry(3, "three"))
       }
@@ -239,7 +239,7 @@ class AllOfContainMatcherSpec extends Spec with Matchers {
       }
       checkStackDepth(e3, left3, Array(1 -> "one", 2 -> "two", 3 -> "three"), thisLineNumber - 2)
       
-      val left4 = javaMap(1 -> "one", 2 -> "two", 3 -> "three")
+      val left4 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val e4 = intercept[exceptions.TestFailedException] {
         left4 should not contain allOf (Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       }
