@@ -423,149 +423,6 @@ private[scalatest] object StringReporter {
     }
   }
 
-  // Called for TestFailed, InfoProvided (because it can have a throwable in it), SuiteAborted, and RunAborted
-  def stringsToPrintOnError(
-    noteResourceName: String,
-    errorResourceName: String,
-    message: String,
-    throwable: Option[Throwable],
-    formatter: Option[Formatter],
-    suiteName: Option[String],
-    testName: Option[String],
-    duration: Option[Long],
-    presentUnformatted: Boolean,
-    presentAllDurations: Boolean,
-    presentShortStackTraces: Boolean,
-    presentFullStackTraces: Boolean
-  ): Vector[String] = {
-
-    def genFormattedText = {
-      formatter match {
-        case Some(IndentedText(formattedText, _, _)) =>
-          Resources("specTextAndNote", formattedText, Resources(noteResourceName))
-        case _ =>
-          genUnformattedText
-      }
-    }
-
-    def genUnformattedText = {
-      // Deny MotionToSuppress directives in error events, because error info needs to be seen by users
-      suiteName match {
-        case Some(sn) =>
-          testName match {
-            case Some(tn) => Resources(errorResourceName, sn + ": " + tn + ": " + message)
-            case None => Resources(errorResourceName, sn + ": " + message)
-          }
-        // Should not get here with built-in ScalaTest stuff, but custom stuff could get here.
-        case None => Resources(errorResourceName, Resources("noNameSpecified"))
-      }
-    }
-
-    val stringToPrint =
-      if (presentUnformatted) genUnformattedText
-      else                    genFormattedText
-
-    val stringToPrintWithPossibleDuration =
-      duration match {
-        case Some(milliseconds) =>
-          if (presentAllDurations)
-            Resources("withDuration", stringToPrint, makeDurationString(milliseconds))
-          else
-            stringToPrint
-        case None => stringToPrint
-      }
-
-    // If there's a message, put it on the next line, indented two spaces
-    val possiblyEmptyMessage = Reporter.messageOrThrowablesDetailMessage(message, throwable)
-
-    val possiblyEmptyMessageWithPossibleLineNumber =
-      throwable match {
-        case Some(e: PropertyCheckFailedException) => possiblyEmptyMessage // PCFEs already include the line number
-        case Some(e: StackDepth) => withPossibleLineNumber(possiblyEmptyMessage, throwable) // Show it in the stack depth case
-        case _ => "" // Don't show it in the non-stack depth case. It will be shown after the exception class name and colon.
-      }
-
-    // The whiteSpace is just used for printing out stack traces, etc., things that go after a test name. The formatted
-    // text for test names actually goes over to the left once in a sense, to make room for the icon. So if the indentation
-    // level is 3 for example, the "- " for that test's formatted text is really indented 2 times (or four spaces: "    ")
-    // So that's why normally the indentation level times two spaces should be the white space. But at the top level (indentation
-    // level of 0), the icon also has to go at 0 (because subtracting one would put it at -1), so in that case the white space
-    // should be two spaces (or 1 level of indentation).
-    val whiteSpace =
-      formatter match {
-        case Some(IndentedText(_, _, indentationLevel)) if (indentationLevel != 0) => indentation(indentationLevel)
-        case _ => indentation(1)
-      }
-
-    def getStackTrace(throwable: Option[Throwable]): List[String] =
-      throwable match {
-        case Some(throwable) =>
-
-          def stackTrace(throwable: Throwable, isCause: Boolean): List[String] = {
-
-            val className = throwable.getClass.getName 
-            val labeledClassName = if (isCause) Resources("DetailsCause") + ": " + className else className
-            // Only show the : message if a cause, because first one will have its message printed out 
-            // Or if it is a non-StackDepth exception, because if they throw Exception with no message, the
-            // message was coming out as "java.lang.Exception" then on the next line it repeated it. In the
-            // case of no exception message, I think it looks best to just say the class name followed by a colon
-            // and nothing else.
-            val colonMessageOrJustColon =
-              if ((throwable.getMessage != null && !throwable.getMessage.trim.isEmpty) && (isCause || !(throwable.isInstanceOf[StackDepth])))
-                ": " + throwable.getMessage.trim
-              else
-                ":"
-
-            val labeledClassNameWithMessage =
-              whiteSpace + labeledClassName + colonMessageOrJustColon
-
-            if (presentShortStackTraces || presentFullStackTraces || !(throwable.isInstanceOf[StackDepth])) {
-
-              // Indent each stack trace item two spaces, and prepend that with an "at "
-              val stackTraceElements = throwable.getStackTrace.toList map { whiteSpace + "at " + _.toString }
-              val cause = throwable.getCause
-
-              val stackTraceThisThrowable = labeledClassNameWithMessage :: stackTraceElements
-
-              if (presentFullStackTraces) {
-                if (cause == null)
-                  stackTraceThisThrowable
-                else
-                  stackTraceThisThrowable ::: stackTrace(cause, true) // Not tail recursive, but shouldn't be too deep
-              }
-              else {
-
-                // The drop(1) or drop(stackDepth + 1) that extra one is the labeledClassNameWithMessage
-                val stackTraceThisThrowableTruncated = 
-                  throwable match {
-                    case e: Throwable with StackDepth =>
-                      val stackDepth = e.failedCodeStackDepth
-                      stackTraceThisThrowable.head :: (whiteSpace + "...") :: stackTraceThisThrowable.drop(stackDepth + 1).take(shortStackTraceSize - 3) ::: List(whiteSpace + "...")
-                    case _ => // In case of IAE or what not, show top 10 stack frames
-                      stackTraceThisThrowable.head :: stackTraceThisThrowable.drop(1).take(shortStackTraceSize) ::: List(whiteSpace + "...")
-                  }
-    
-                if (cause == null)
-                  stackTraceThisThrowableTruncated
-                else
-                  stackTraceThisThrowableTruncated ::: stackTrace(cause, true) // Not tail recursive, but shouldn't be too deep
-              }
-            }
-            else
-              Nil
-          }
-          stackTrace(throwable, false)
-        case None => List()
-      }
-
-    val resultAsList =
-      if (possiblyEmptyMessageWithPossibleLineNumber.isEmpty)
-        stringToPrintWithPossibleDuration :: getStackTrace(throwable)
-      else
-        stringToPrintWithPossibleDuration :: possiblyEmptyMessageWithPossibleLineNumber.split("\n").toList.map(whiteSpace + _) ::: getStackTrace(throwable)
-    Vector.empty ++ resultAsList
-  }
-
   def withPossibleLineNumber(stringToPrint: String, throwable: Option[Throwable]): String = {
     throwable match {
       case Some(stackDepth: StackDepth) =>
@@ -913,6 +770,149 @@ private[scalatest] object StringReporter {
 
      // case _ => throw new RuntimeException("Unhandled event")
     }
+  }
+
+  // Called for TestFailed, InfoProvided (because it can have a throwable in it), SuiteAborted, and RunAborted
+  def stringsToPrintOnError(
+    noteResourceName: String,
+    errorResourceName: String,
+    message: String,
+    throwable: Option[Throwable],
+    formatter: Option[Formatter],
+    suiteName: Option[String],
+    testName: Option[String],
+    duration: Option[Long],
+    presentUnformatted: Boolean,
+    presentAllDurations: Boolean,
+    presentShortStackTraces: Boolean,
+    presentFullStackTraces: Boolean
+  ): Vector[String] = {
+
+    def genFormattedText = {
+      formatter match {
+        case Some(IndentedText(formattedText, _, _)) =>
+          Resources("specTextAndNote", formattedText, Resources(noteResourceName))
+        case _ =>
+          genUnformattedText
+      }
+    }
+
+    def genUnformattedText = {
+      // Deny MotionToSuppress directives in error events, because error info needs to be seen by users
+      suiteName match {
+        case Some(sn) =>
+          testName match {
+            case Some(tn) => Resources(errorResourceName, sn + ": " + tn + ": " + message)
+            case None => Resources(errorResourceName, sn + ": " + message)
+          }
+        // Can get here for slowpoke notices sent by DispatchReporter, and custom stuff could get here also.
+        case None => Resources(errorResourceName, Resources("noNameSpecified") + ": " + message)
+      }
+    }
+
+    val stringToPrint =
+      if (presentUnformatted) genUnformattedText
+      else                    genFormattedText
+
+    val stringToPrintWithPossibleDuration =
+      duration match {
+        case Some(milliseconds) =>
+          if (presentAllDurations)
+            Resources("withDuration", stringToPrint, makeDurationString(milliseconds))
+          else
+            stringToPrint
+        case None => stringToPrint
+      }
+
+    // If there's a message, put it on the next line, indented two spaces
+    val possiblyEmptyMessage = Reporter.messageOrThrowablesDetailMessage(message, throwable)
+
+    val possiblyEmptyMessageWithPossibleLineNumber =
+      throwable match {
+        case Some(e: PropertyCheckFailedException) => possiblyEmptyMessage // PCFEs already include the line number
+        case Some(e: StackDepth) => withPossibleLineNumber(possiblyEmptyMessage, throwable) // Show it in the stack depth case
+        case _ => "" // Don't show it in the non-stack depth case. It will be shown after the exception class name and colon.
+      }
+
+    // The whiteSpace is just used for printing out stack traces, etc., things that go after a test name. The formatted
+    // text for test names actually goes over to the left once in a sense, to make room for the icon. So if the indentation
+    // level is 3 for example, the "- " for that test's formatted text is really indented 2 times (or four spaces: "    ")
+    // So that's why normally the indentation level times two spaces should be the white space. But at the top level (indentation
+    // level of 0), the icon also has to go at 0 (because subtracting one would put it at -1), so in that case the white space
+    // should be two spaces (or 1 level of indentation).
+    val whiteSpace =
+      formatter match {
+        case Some(IndentedText(_, _, indentationLevel)) if (indentationLevel != 0) => indentation(indentationLevel)
+        case _ => indentation(1)
+      }
+
+    def getStackTrace(throwable: Option[Throwable]): List[String] =
+      throwable match {
+        case Some(throwable) =>
+
+          def stackTrace(throwable: Throwable, isCause: Boolean): List[String] = {
+
+            val className = throwable.getClass.getName 
+            val labeledClassName = if (isCause) Resources("DetailsCause") + ": " + className else className
+            // Only show the : message if a cause, because first one will have its message printed out 
+            // Or if it is a non-StackDepth exception, because if they throw Exception with no message, the
+            // message was coming out as "java.lang.Exception" then on the next line it repeated it. In the
+            // case of no exception message, I think it looks best to just say the class name followed by a colon
+            // and nothing else.
+            val colonMessageOrJustColon =
+              if ((throwable.getMessage != null && !throwable.getMessage.trim.isEmpty) && (isCause || !(throwable.isInstanceOf[StackDepth])))
+                ": " + throwable.getMessage.trim
+              else
+                ":"
+
+            val labeledClassNameWithMessage =
+              whiteSpace + labeledClassName + colonMessageOrJustColon
+
+            if (presentShortStackTraces || presentFullStackTraces || !(throwable.isInstanceOf[StackDepth])) {
+
+              // Indent each stack trace item two spaces, and prepend that with an "at "
+              val stackTraceElements = throwable.getStackTrace.toList map { whiteSpace + "at " + _.toString }
+              val cause = throwable.getCause
+
+              val stackTraceThisThrowable = labeledClassNameWithMessage :: stackTraceElements
+
+              if (presentFullStackTraces) {
+                if (cause == null)
+                  stackTraceThisThrowable
+                else
+                  stackTraceThisThrowable ::: stackTrace(cause, true) // Not tail recursive, but shouldn't be too deep
+              }
+              else {
+
+                // The drop(1) or drop(stackDepth + 1) that extra one is the labeledClassNameWithMessage
+                val stackTraceThisThrowableTruncated = 
+                  throwable match {
+                    case e: Throwable with StackDepth =>
+                      val stackDepth = e.failedCodeStackDepth
+                      stackTraceThisThrowable.head :: (whiteSpace + "...") :: stackTraceThisThrowable.drop(stackDepth + 1).take(shortStackTraceSize - 3) ::: List(whiteSpace + "...")
+                    case _ => // In case of IAE or what not, show top 10 stack frames
+                      stackTraceThisThrowable.head :: stackTraceThisThrowable.drop(1).take(shortStackTraceSize) ::: List(whiteSpace + "...")
+                  }
+    
+                if (cause == null)
+                  stackTraceThisThrowableTruncated
+                else
+                  stackTraceThisThrowableTruncated ::: stackTrace(cause, true) // Not tail recursive, but shouldn't be too deep
+              }
+            }
+            else
+              Nil
+          }
+          stackTrace(throwable, false)
+        case None => List()
+      }
+
+    val resultAsList =
+      if (possiblyEmptyMessageWithPossibleLineNumber.isEmpty)
+        stringToPrintWithPossibleDuration :: getStackTrace(throwable)
+      else
+        stringToPrintWithPossibleDuration :: possiblyEmptyMessageWithPossibleLineNumber.split("\n").toList.map(whiteSpace + _) ::: getStackTrace(throwable)
+    Vector.empty ++ resultAsList
   }
 }
 

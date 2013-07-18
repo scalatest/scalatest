@@ -126,5 +126,27 @@ class StringReporterSuite extends FunSuite with ShouldMatchers {
       countReset(aResult) should equal (2)
     }
   }
+
+  test("stringsToPrintOnError should include the message in unformatted mode") {
+    
+    val msg = "A stitch in time saves nine."
+    val strings: Vector[String] =
+      StringReporter.stringsToPrintOnError(
+        noteResourceName = "infoProvidedNote",
+        errorResourceName = "infoProvided",
+        message = msg,
+        throwable = None,
+        formatter = None,
+        suiteName = None,
+        testName = None,
+        duration = None,
+        presentUnformatted = true,
+        presentAllDurations = false,
+        presentShortStackTraces = false,
+        presentFullStackTraces = false
+      )
+    strings should have size 1
+    strings(0) should include (msg)
+  }
 }
 
