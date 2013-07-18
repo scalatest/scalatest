@@ -19,6 +19,8 @@ import exceptions.TestCanceledException
 import scala.reflect.Manifest
 import Assertions.areEqualComparingArraysStructurally
 import org.scalautils.LegacyTripleEquals
+import exceptions.StackDepthExceptionHelper.getStackDepthFun
+import exceptions.StackDepthException.toExceptionFunction
 
 /**
  * Trait that contains ScalaTest's basic assertion methods.
@@ -388,6 +390,9 @@ trait Assertions extends LegacyTripleEquals {
     if (!condition)
       throw newAssertionFailedException(None, None, 4)
   }
+  
+  import language.experimental.macros
+  def newAssert(condition: Boolean): Unit = macro AssertionsMacro.apply
 
   private[scalatest] def newAssertionFailedException(optionalMessage: Option[Any], optionalCause: Option[Throwable], stackDepth: Int): Throwable =
     (optionalMessage, optionalCause) match {
@@ -396,6 +401,9 @@ trait Assertions extends LegacyTripleEquals {
       case (Some(message), None) => new TestFailedException(message.toString, stackDepth)
       case (Some(message), Some(cause)) => new TestFailedException(message.toString, cause, stackDepth)
     }
+  
+  private[scalatest] def newAssertionFailedException(optionalMessage: Option[String], optionalCause: Option[Throwable], fileName: String, methodName: String, stackDepthAdjustment: Int): Throwable =
+    new TestFailedException(toExceptionFunction(optionalMessage), optionalCause, getStackDepthFun(fileName, methodName, stackDepthAdjustment))
 
   private def newTestCanceledException(optionalMessage: Option[Any], optionalCause: Option[Throwable], stackDepth: Int): Throwable =
     (optionalMessage, optionalCause) match {
