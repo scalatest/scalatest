@@ -64,6 +64,29 @@ class DispatchReporterSpec extends Spec {
           indentationLevel should equal (0)
         }
       }
+      def `should send out InfoProvided events with a message that mentions all detected slowpokes` {
+        val (erp, dispatch) = fireTestStarting()
+        dispatch(
+          TestStarting(
+            ordinal = TestStartingOrdinal,
+            suiteName = "the other suite name",
+            suiteId = "the other suite ID",
+            suiteClassName = Some("otherSuiteClassName"),
+            testName = "the other test name",
+            testText = "other test name"
+          )
+        )
+        try eventually {
+          val ips = erp.infoProvidedEventsReceived
+          val size = ips.size
+          size should be > 0
+          ips(size - 1).message should (
+            include ("the suite name") and include ("the test name") and
+            include ("the other suite name") and include ("the other test name")
+          )
+        }
+        finally dispatch.doDispose()
+      }
       def doTestStartingAndFinishedEvents(testFinishedEvent: Event): Unit = {
         val (erp, dispatch) = fireTestStarting()
         eventually {

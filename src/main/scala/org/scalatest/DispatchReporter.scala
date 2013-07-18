@@ -66,16 +66,19 @@ private[scalatest] class DispatchReporter(
       val task = new TimerTask {
         override def run(): Unit = {
           val slowpokes = slowpokeDetector.detectSlowpokes(now())
-          for (slowpoke <- slowpokes) {
+          if (!slowpokes.isEmpty) {
+            val msgs =
+              for (slowpoke <- slowpokes)
+              yield Resources("slowpokeDetected", makeDurationString(slowpoke.duration.millisPart), slowpoke.suiteName, slowpoke.testName)
+            val fullMessage = msgs.mkString("\n")
             val dispatch = thisDispatchReporter
-            val msg = Resources("slowpokeDetected", makeDurationString(slowpoke.duration.millisPart), slowpoke.suiteName, slowpoke.testName)
             thisDispatchReporter.apply(
               new InfoProvided(
                ordinal = highestOrdinalSeenSoFar.get,
-               message = msg,
-               nameInfo = None, // Don't include name info. suiteName and testName are included in msg already.
+               message = fullMessage,
+               nameInfo = None, // Don't include name info. suiteName and testName for all slowpokes are included in fullMessage already.
                throwable = None,
-               formatter = Some(IndentedText(msg, msg, 0))
+               formatter = Some(IndentedText(fullMessage, fullMessage, 0))
               )
             )
           }
