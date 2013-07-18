@@ -3,6 +3,7 @@ package org.scalatest.tools
 import org.scalatools.testing.{Framework => SbtFramework, _}
 import org.scalatest.tools.Runner.parsePropertiesArgsIntoMap
 import org.scalatest.tools.Runner.parseCompoundArgIntoSet
+import org.scalatest.tools.Runner.parseSuiteArgsIntoNameStrings
 import SuiteDiscoveryHelper._
 import org.scalatest.Suite.formatterForSuiteStarting
 import org.scalatest.Suite.formatterForSuiteCompleted
@@ -98,6 +99,8 @@ class ScalaTestFramework extends SbtFramework {
     private val presentReminder, presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests = new AtomicBoolean(false)
     private val filter: AtomicReference[Option[Filter]] = new AtomicReference(None)
     private val configMap: AtomicReference[Option[ConfigMap]] = new AtomicReference(None)
+    private val membersOnly: AtomicReference[Option[List[String]]] = new AtomicReference(None)
+    private val wildcard: AtomicReference[Option[List[String]]] = new AtomicReference(None)
     private val resultHolder = new SuiteResultHolder()
     
     def getConfigurations(args: Array[String], loggers: Array[Logger], eventHandler: EventHandler, testLoader: ClassLoader) = 
@@ -105,12 +108,14 @@ class ScalaTestFramework extends SbtFramework {
         if (reporterConfigs.get.isEmpty) {
           // Why are we getting rid of empty strings? Were empty strings coming in from sbt? -bv 11/09/2011
           val translator = new FriendlyParamsTranslator()
-          val (propertiesArgsList, includesArgsList, excludesArgsList, repoArgsList, concurrentList, memberOnlyList, wildcardList, 
+          val (propertiesArgsList, includesArgsList, excludesArgsList, repoArgsList, concurrentList, memberOnlyArgList, wildcardArgList, 
                suiteList, junitList, testngList) = translator.parsePropsAndTags(args.filter(!_.equals("")))
           configMap.getAndSet(Some(parsePropertiesArgsIntoMap(propertiesArgsList)))
           val tagsToInclude: Set[String] = parseCompoundArgIntoSet(includesArgsList, "-n")
           val tagsToExclude: Set[String] = parseCompoundArgIntoSet(excludesArgsList, "-l")
           filter.getAndSet(Some(org.scalatest.Filter(if (tagsToInclude.isEmpty) None else Some(tagsToInclude), tagsToExclude)))
+          membersOnly.getAndSet(Some(parseSuiteArgsIntoNameStrings(memberOnlyArgList, "-m")))
+          wildcard.getAndSet(Some(parseSuiteArgsIntoNameStrings(wildcardArgList, "-w")))
           
           val fullReporterConfigurations = Runner.parseReporterArgsIntoConfigurations(repoArgsList)
           
@@ -161,7 +166,7 @@ class ScalaTestFramework extends SbtFramework {
           else
             reporter.get.get
           
-        (dispatchReporter, filter.get.get, configMap.get.get)
+        (dispatchReporter, filter.get.get, configMap.get.get, membersOnly.get.get, wildcard.get.get)
       }
     
     private val atomicCount = new AtomicInteger(0)
@@ -276,57 +281,74 @@ Tags to include and exclude: -n "CheckinTests FunctionalTests" -l "SlowTests Net
 
 
      */
+    
+    private def filterWildcard(paths: List[String], testClassName: String): Boolean = 
+      if (paths.size > 0)
+        paths.exists(testClassName.startsWith(_))
+      else
+        true
+      
+    private def filterMembersOnly(paths: List[String], testClassName: String): Boolean =
+      if (paths.size > 0)
+        paths.exists(path => testClassName.length > path.length && !testClassName.substring(path.length + 1).contains('.'))
+      else
+        true
+    
     def run(testClassName: String, fingerprint: Fingerprint, eventHandler: EventHandler, args: Array[String]) {
       try {
         RunConfig.increaseLatch()
         val suiteClass = Class.forName(testClassName, true, testLoader)
         //println("sbt args: " + args.toList)
         if ((isAccessibleSuite(suiteClass) || isRunnable(suiteClass)) && isDiscoverableSuite(suiteClass)) {
-          val (reporter, filter, configMap) = RunConfig.getConfigurations(args, loggers, eventHandler, testLoader)
-          val report = new SbtReporter(eventHandler, Some(reporter))
-          val tracker = new Tracker
-          val suiteStartTime = System.currentTimeMillis
+          val (reporter, filter, configMap, membersOnly, wildcard) = RunConfig.getConfigurations(args, loggers, eventHandler, testLoader)
+          
+          if (filterWildcard(wildcard, testClassName) && filterMembersOnly(membersOnly, testClassName)) {
+          
+            val report = new SbtReporter(eventHandler, Some(reporter))
+            val tracker = new Tracker
+            val suiteStartTime = System.currentTimeMillis
 
-          val wrapWithAnnotation = suiteClass.getAnnotation(classOf[WrapWith])
-          val suite = 
-          if (wrapWithAnnotation == null)
-            suiteClass.newInstance.asInstanceOf[Suite]
-          else {
-            val suiteClazz = wrapWithAnnotation.value
-            val constructorList = suiteClazz.getDeclaredConstructors()
-            val constructor = constructorList.find { c => 
-                val types = c.getParameterTypes
-                types.length == 1 && types(0) == classOf[java.lang.Class[_]]
-              }
-            constructor.get.newInstance(suiteClass).asInstanceOf[Suite]
-          }
+            val wrapWithAnnotation = suiteClass.getAnnotation(classOf[WrapWith])
+            val suite = 
+            if (wrapWithAnnotation == null)
+              suiteClass.newInstance.asInstanceOf[Suite]
+            else {
+              val suiteClazz = wrapWithAnnotation.value
+              val constructorList = suiteClazz.getDeclaredConstructors()
+              val constructor = constructorList.find { c => 
+                  val types = c.getParameterTypes
+                  types.length == 1 && types(0) == classOf[java.lang.Class[_]]
+                }
+              constructor.get.newInstance(suiteClass).asInstanceOf[Suite]
+            }
 
-          val formatter = formatterForSuiteStarting(suite)
+            val formatter = formatterForSuiteStarting(suite)
 
-          report(SuiteStarting(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), formatter, Some(TopOfClass(suiteClass.getName))))
+            report(SuiteStarting(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), formatter, Some(TopOfClass(suiteClass.getName))))
 
-          try {  // TODO: I had to pass Set.empty for chosen styles now. Fix this later.
-            suite.run(None, Args(report, Stopper.default, filter, configMap, None, tracker, Set.empty))
+            try {  // TODO: I had to pass Set.empty for chosen styles now. Fix this later.
+              suite.run(None, Args(report, Stopper.default, filter, configMap, None, tracker, Set.empty))
 
-            val formatter = formatterForSuiteCompleted(suite)
-
-            val duration = System.currentTimeMillis - suiteStartTime
-
-            report(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(duration), formatter, Some(TopOfClass(suiteClass.getName))))
-
-          }
-          catch {       
-            case e: Exception => {
-
-              // TODO: Could not get this from Resources. Got:
-              // java.util.MissingResourceException: Can't find bundle for base name org.scalatest.ScalaTestBundle, locale en_US
-              // TODO Chee Seng, I wonder why we couldn't access resources, and if that's still true. I'd rather get this stuff
-              // from the resource file so we can later localize.
-              val rawString = "Exception encountered when attempting to run a suite with class name: " + suiteClass.getName
-              val formatter = formatterForSuiteAborted(suite, rawString)
+              val formatter = formatterForSuiteCompleted(suite)
 
               val duration = System.currentTimeMillis - suiteStartTime
-              report(SuiteAborted(tracker.nextOrdinal(), rawString, suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(e), Some(duration), formatter, Some(SeeStackDepthException)))
+
+              report(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(duration), formatter, Some(TopOfClass(suiteClass.getName))))
+
+            }
+            catch {       
+              case e: Exception => {
+
+                // TODO: Could not get this from Resources. Got:
+                // java.util.MissingResourceException: Can't find bundle for base name org.scalatest.ScalaTestBundle, locale en_US
+                // TODO Chee Seng, I wonder why we couldn't access resources, and if that's still true. I'd rather get this stuff
+                // from the resource file so we can later localize.
+                val rawString = "Exception encountered when attempting to run a suite with class name: " + suiteClass.getName
+                val formatter = formatterForSuiteAborted(suite, rawString)
+
+                val duration = System.currentTimeMillis - suiteStartTime
+                report(SuiteAborted(tracker.nextOrdinal(), rawString, suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(e), Some(duration), formatter, Some(SeeStackDepthException)))
+              }
             }
           }
         } // I think we should do nothing for non accessible, non runnable or non discoverable suite. 
