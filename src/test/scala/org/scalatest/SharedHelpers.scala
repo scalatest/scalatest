@@ -22,6 +22,7 @@ import scala.annotation.tailrec
 import scala.collection.GenTraversable
 import scala.collection.GenMap
 import scala.collection.SortedSet
+import scala.collection.SortedMap
 
 object SharedHelpers extends Assertions {
 
@@ -1105,18 +1106,28 @@ object SharedHelpers extends Assertions {
     javaList
   }
   
-  def javaMap[K, V](elements: (K, V)*): java.util.Map[K, V] = {
-    val javaMap = new java.util.LinkedHashMap[K, V]()
-    elements.foreach(t => javaMap.put(t._1, t._2))
-    javaMap
+  def javaMap[K, V](elements: Entry[K, V]*): java.util.LinkedHashMap[K, V] = {
+    val m = new java.util.LinkedHashMap[K, V]
+    elements.foreach(e => m.put(e.getKey, e.getValue))
+    m
   }
   
-  private def sortedSetComparator[T](orderMap: Map[T, Int]): java.util.Comparator[T] = 
+  // This gives a comparator that compares based on the value in the passed in order map
+  private def orderMapComparator[T](orderMap: Map[T, Int]): java.util.Comparator[T] = 
     new java.util.Comparator[T] {
       def compare(x: T, y: T): Int = {
+          // When both x and y is defined in order map, use its corresponding value to compare (which in usage below, is the index of the insertion order)
           if (orderMap.get(x).isDefined && orderMap.get(y).isDefined)
             orderMap(x) compare orderMap(y)
           else {
+            // It can happens that the comparator is used by equal method to check if 2 element is equaled.
+            // In the use-case below, orderMap only contains elements within the TreeSet/TreeMap itself, 
+            // but in equal method elements from other instances of TreeSet/TreeMap can be passed in to check 
+            // for equality.  So the below handles element of type Int and String, which is enough for our tests.
+            // hashCode will be used for other types of objects, in future, special care for other types can be added 
+            // if necessary.
+            // The relationship and behavior of comparator/ordering/equals is quite well defined in JavaDoc of java.lang.Comparable here:
+            // http://docs.oracle.com/javase/6/docs/api/java/lang/Comparable.html
             x match {
               case xInt: Int =>
                 y match {
@@ -1136,19 +1147,36 @@ object SharedHelpers extends Assertions {
   
   def sortedSet[T](elements: T*): SortedSet[T] = {
     val orderMap = Map.empty[T, Int] ++ elements.zipWithIndex
-    val comparator = sortedSetComparator(orderMap)
+    val comparator = orderMapComparator(orderMap)
     implicit val ordering = new Ordering[T] {
       def compare(x: T, y: T): Int = comparator.compare(x, y)
     }
     SortedSet.empty[T] ++ elements
   }
   
+  def sortedMap[K, V](elements: (K, V)*): SortedMap[K, V] = {
+    val orderMap = Map.empty[K, Int] ++ elements.map(_._1).zipWithIndex
+    val comparator = orderMapComparator(orderMap)
+    implicit val ordering = new Ordering[K] {
+      def compare(x: K, y: K): Int = comparator.compare(x, y)
+    }
+    SortedMap.empty[K, V] ++ elements
+  }
+  
   def javaSortedSet[T](elements: T*): java.util.SortedSet[T] = {
     val orderMap = Map.empty[T, Int] ++ elements.zipWithIndex
-    val comparator = sortedSetComparator(orderMap)
+    val comparator = orderMapComparator(orderMap)
     val sortedSet = new java.util.TreeSet[T](comparator)
     elements.foreach(sortedSet.add(_))
     sortedSet
+  }
+  
+  def javaSortedMap[K, V](elements: Entry[K, V]*): java.util.SortedMap[K, V] = {
+    val orderMap = Map.empty[K, Int] ++ elements.map(_.getKey).zipWithIndex
+    val comparator = orderMapComparator(orderMap)
+    val sortedMap = new java.util.TreeMap[K, V](comparator)
+    elements.foreach(e => sortedMap.put(e.getKey, e.getValue))
+    sortedMap
   }
 
   def serializeRoundtrip[A](a: A): A = {

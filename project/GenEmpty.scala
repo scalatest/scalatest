@@ -112,7 +112,7 @@ object GenEmpty {
         "ListShouldBeEmptyLogicalOrSpec" -> "JavaMapShouldBeEmptyLogicalOrSpec",
         "List\\(emptyList\\)" -> "Vector(emptyList)", 
         "List\\(nonEmptyList\\)" -> "Vector(nonEmptyList)", 
-        "List\\(1, 2, 3\\)" -> "javaMap(1 -> 1, 2 -> 2, 3 -> 3)", 
+        "List\\(1, 2, 3\\)" -> "javaMap(Entry(1, 1), Entry(2, 2), Entry(3, 3))", 
         "List.empty\\[Int\\]" -> "javaMap[Int, Int]()", 
         "List" -> "javaMap", 
         "//ADDITIONAL//" -> "import SharedHelpers.javaMap"

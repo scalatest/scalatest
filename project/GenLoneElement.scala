@@ -85,9 +85,9 @@ object GenLoneElement {
       
     val javaMapMapping = 
       List(
-        "List\\(10\\).loneElement" -> "javaMap(10 -> 10).loneElement.getKey", 
-        "List\\(8\\).loneElement" -> "javaMap(8 -> 8).loneElement.getKey", 
-        "List\\(10, 12\\)" -> "javaMap(10 -> 10, 12 -> 12)", 
+        "List\\(10\\).loneElement" -> "javaMap(Entry(10, 10)).loneElement.getKey", 
+        "List\\(8\\).loneElement" -> "javaMap(Entry(8, 8)).loneElement.getKey", 
+        "List\\(10, 12\\)" -> "javaMap(Entry(10, 10), Entry(12, 12))", 
         "List.empty\\[Int\\]" -> "javaMap[Int, Int]()", 
         "xs.loneElement" -> "xs.loneElement.getKey", 
         "List" -> "JavaMap"
