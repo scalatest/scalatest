@@ -116,6 +116,18 @@ private[scalatest] class JUnitXmlReporter(directory: String) extends Reporter {
               nameInfo.suiteId == suiteId
             case None => false
           }
+        case e: AlertProvided   => 
+          e.nameInfo match {
+            case Some(nameInfo) => 
+              nameInfo.suiteId == suiteId
+            case None => false
+          }
+        case e: NoticeProvided   => 
+          e.nameInfo match {
+            case Some(nameInfo) => 
+              nameInfo.suiteId == suiteId
+            case None => false
+          }
         case e: MarkupProvided => 
           e.nameInfo match {
             case Some(nameInfo) => 
@@ -174,6 +186,8 @@ private[scalatest] class JUnitXmlReporter(directory: String) extends Reporter {
           idx += 1
 
         case e: InfoProvided   => idx += 1
+        case e: AlertProvided  => idx += 1
+        case e: NoticeProvided => idx += 1
         case e: MarkupProvided => idx += 1
         case e: ScopeOpened    => idx += 1
         case e: ScopeClosed    => idx += 1

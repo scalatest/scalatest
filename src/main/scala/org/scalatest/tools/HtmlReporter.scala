@@ -371,6 +371,7 @@ private[scalatest] class HtmlReporter(
                 processInfoMarkupProvided(markupProvided)
                 // TO CONTINUE: XML element must be last
             
+              // Allow AlertProvided and NoticeProvided to use this case, because we don't want that showing up in the HTML report.
               case _ => NodeSeq.Empty
             }
           }
@@ -978,6 +979,18 @@ private[scalatest] class HtmlReporter(
       case e: TestPending    => e.suiteId == suiteId
       case e: TestCanceled   => e.suiteId == suiteId
       case e: InfoProvided   => 
+        e.nameInfo match {
+          case Some(nameInfo) => 
+            nameInfo.suiteId == suiteId
+          case None => false
+        }
+      case e: AlertProvided   => 
+        e.nameInfo match {
+          case Some(nameInfo) => 
+            nameInfo.suiteId == suiteId
+          case None => false
+        }
+      case e: NoticeProvided   => 
         e.nameInfo match {
           case Some(nameInfo) => 
             nameInfo.suiteId == suiteId

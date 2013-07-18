@@ -391,6 +391,8 @@ private[scalatest] class RunnerJFrame(
                 case event: RunAborted => None
                 case event: RunCompleted => None
                 case event: InfoProvided => nameFromNameInfo(event.nameInfo)
+                case event: AlertProvided => nameFromNameInfo(event.nameInfo)
+                case event: NoticeProvided => nameFromNameInfo(event.nameInfo)
                 case event: ScopeOpened => nameFromNameInfo(Some(event.nameInfo))
                 case event: ScopeClosed => nameFromNameInfo(Some(event.nameInfo))
                 case event: ScopePending => nameFromNameInfo(Some(event.nameInfo))
@@ -422,6 +424,8 @@ private[scalatest] class RunnerJFrame(
                 case event: RunAborted => None
                 case event: RunCompleted => None
                 case event: InfoProvided => suiteIdFromNameInfo(event.nameInfo)
+                case event: AlertProvided => suiteIdFromNameInfo(event.nameInfo)
+                case event: NoticeProvided => suiteIdFromNameInfo(event.nameInfo)
                 case event: ScopeOpened => suiteIdFromNameInfo(Some(event.nameInfo))
                 case event: ScopeClosed => suiteIdFromNameInfo(Some(event.nameInfo))
                 case event: ScopePending => suiteIdFromNameInfo(Some(event.nameInfo))
@@ -446,6 +450,8 @@ private[scalatest] class RunnerJFrame(
                 case event: RunAborted => event.duration
                 case event: RunCompleted => event.duration
                 case event: InfoProvided => None
+                case event: AlertProvided => None
+                case event: NoticeProvided => None
                 case event: ScopeOpened => None
                 case event: ScopeClosed => None
                 case event: ScopePending => None
@@ -718,6 +724,8 @@ private[scalatest] class RunnerJFrame(
     viewMenu.add(optionsMap(PresentSuiteCompleted))
     viewMenu.add(optionsMap(PresentSuiteAborted))
     viewMenu.add(optionsMap(PresentInfoProvided))
+    viewMenu.add(optionsMap(PresentAlertProvided))
+    viewMenu.add(optionsMap(PresentNoticeProvided))
     viewMenu.add(optionsMap(PresentMarkupProvided))
     viewMenu.add(optionsMap(PresentRunStopped))
     viewMenu.add(optionsMap(PresentRunCompleted))
@@ -843,6 +851,8 @@ private[scalatest] class RunnerJFrame(
         case e: SuiteAborted => (Some(e.message), e.throwable)
         case e: RunAborted => (Some(e.message), e.throwable)
         case e: InfoProvided => (Some(e.message), e.throwable)
+        case e: AlertProvided => (Some(e.message), e.throwable)
+        case e: NoticeProvided => (Some(e.message), e.throwable)
         case _ => (None, None)
       }
 
@@ -1044,6 +1054,18 @@ private[scalatest] class RunnerJFrame(
           }
 
         case InfoProvided(ordinal, message, nameInfo, throwable, formatter, location, payload, threadName, timeStamp) =>
+
+          usingEventDispatchThread {
+            registerEvent(event)
+          }
+
+        case AlertProvided(ordinal, message, nameInfo, throwable, formatter, location, payload, threadName, timeStamp) =>
+
+          usingEventDispatchThread {
+            registerEvent(event)
+          }
+
+        case NoticeProvided(ordinal, message, nameInfo, throwable, formatter, location, payload, threadName, timeStamp) =>
 
           usingEventDispatchThread {
             registerEvent(event)
@@ -1475,6 +1497,18 @@ private[scalatest] class RunnerJFrame(
             registerRerunEvent(event)
           }
   
+        case AlertProvided(ordinal, message, nameInfo, throwable, formatter, location, payload, threadName, timeStamp) =>
+
+          usingEventDispatchThread {
+            registerRerunEvent(event)
+          }
+  
+        case NoticeProvided(ordinal, message, nameInfo, throwable, formatter, location, payload, threadName, timeStamp) =>
+
+          usingEventDispatchThread {
+            registerRerunEvent(event)
+          }
+  
         case ScopeOpened(ordinal, message, nameInfo, formatter, location, payload, threadName, timeStamp) =>
 
           usingEventDispatchThread {
@@ -1613,6 +1647,8 @@ private[tools] object RunnerJFrame {
       case PresentSuiteAborted => "SUITE_ABORTED"
       case PresentSuiteCompleted => "SUITE_COMPLETED"
       case PresentInfoProvided => "INFO_PROVIDED"
+      case PresentAlertProvided => "ALERT_PROVIDED"
+      case PresentNoticeProvided => "NOTICE_PROVIDED"
       case PresentScopeOpened => "SCOPE_OPENED"
       case PresentScopeClosed => "SCOPE_CLOSED"
       case PresentScopePending => "SCOPE_PENDING"

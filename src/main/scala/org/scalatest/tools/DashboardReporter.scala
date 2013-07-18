@@ -75,6 +75,8 @@ private[scalatest] class DashboardReporter(directory: String,
       case _: DiscoveryCompleted =>
       case _: RunStarting        => timestamp = formatCurrentTime
       case _: InfoProvided       =>
+      case _: AlertProvided      =>
+      case _: NoticeProvided     =>
       case _: ScopeOpened        =>
       case _: ScopeClosed        =>
       case _: ScopePending       =>
@@ -596,6 +598,8 @@ private[scalatest] class DashboardReporter(directory: String,
         case e: RunStopped         => unexpectedEvent(e)
         case e: RunAborted         => unexpectedEvent(e)
         case e: InfoProvided       => unexpectedEvent(e)
+        case e: AlertProvided      => unexpectedEvent(e)
+        case e: NoticeProvided     => unexpectedEvent(e)
         case e: ScopeOpened        => unexpectedEvent(e)
         case e: ScopeClosed        => unexpectedEvent(e)
         case e: ScopePending       => unexpectedEvent(e)

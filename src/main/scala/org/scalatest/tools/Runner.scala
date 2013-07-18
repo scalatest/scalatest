@@ -96,8 +96,8 @@ z - test name wildcard
 Z -
 
 StringReporter configuration params:
-A
-B
+A - drop AlertProvided events
+B - drop NoticeProvided events
 C - drop TestSucceeded events
 D - show all durations
 E - drop TestPending events

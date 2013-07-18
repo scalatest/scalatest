@@ -71,6 +71,20 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout
             case None => // Under what condition will reach here?
               dispatch(infoProvided)
           }
+        case alertProvided: AlertProvided => // TODO: Maybe these should just fly out the door immediately. I think they should.
+          alertProvided.nameInfo match {
+            case Some(nameInfo) =>
+              handleTestEvents(nameInfo.suiteId, alertProvided)
+            case None => 
+              dispatch(alertProvided)
+          }
+        case noticeProvided: NoticeProvided =>
+          noticeProvided.nameInfo match {
+            case Some(nameInfo) =>
+              handleTestEvents(nameInfo.suiteId, noticeProvided)
+            case None =>
+              dispatch(noticeProvided)
+          }
         case markupProvided: MarkupProvided =>
           markupProvided.nameInfo match {
             case Some(nameInfo) =>
@@ -103,7 +117,7 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout
       dispatch(event)  // could happens after timeout
   }
   // Handles SuiteStarting, TestStarting, TestIgnored, TestSucceeded, TestFailed, TestPending,
-  // TestCanceled, InfoProvided, MarkupProvided, ScopeOpened, ScopeClosed, ScopePending
+  // TestCanceled, InfoProvided, AlertProvided, NoticeProvided, MarkupProvided, ScopeOpened, ScopeClosed, ScopePending
   private def handleTestEvents(suiteId: String, event: Event) {
     val slot = slotMap(suiteId)
     val slotIdx = slotListBuf.indexOf(slot)
