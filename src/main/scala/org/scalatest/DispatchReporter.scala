@@ -24,6 +24,7 @@ import java.util.TimerTask
 import java.util.Timer
 import time.Now._
 import java.util.concurrent.atomic.AtomicReference
+import tools.PrintReporter.makeDurationString
 
 /**
  * A <code>Reporter</code> that dispatches test results to other <code>Reporter</code>s.
@@ -67,7 +68,7 @@ private[scalatest] class DispatchReporter(
           val slowpokes = slowpokeDetector.detectSlowpokes(now())
           for (slowpoke <- slowpokes) {
             val dispatch = thisDispatchReporter
-            val msg = Resources("slowpokeDetected", slowpoke.duration.prettyString, slowpoke.suiteName, slowpoke.testName)
+            val msg = Resources("slowpokeDetected", makeDurationString(slowpoke.duration.millisPart), slowpoke.suiteName, slowpoke.testName)
             thisDispatchReporter.apply(
               new InfoProvided(
                ordinal = highestOrdinalSeenSoFar.get,

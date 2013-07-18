@@ -1071,15 +1071,7 @@ object Runner {
         if (it.hasNext)
           it.next
       }
-      else if (s.startsWith("-W")) {
-        if (it.hasNext)
-          it.next
-        if (it.hasNext) // Need a delay value, so why are we not detecting that it is missing?
-          it.next
-        if (it.hasNext) // Need an period value too
-          it.next
-      }
-      else if (s.startsWith("-k") || s.startsWith("-K")) {
+      else if (s.startsWith("-k") || s.startsWith("-K") || s.startsWith("-W")) {
         if (it.hasNext)
           it.next
         if (it.hasNext)
@@ -1098,8 +1090,10 @@ object Runner {
       }
     }
     val argsList = lb.toList
-    if (argsList.length != 0)
-      Some("Unrecognized argument" + (if (argsList.isEmpty) ": " else "s: ") + argsList.mkString("", ", ", "."))
+    if (argsList.length != 0) {
+      val argWord = "Argument" + (if (argsList.size == 1) "" else "s")
+      Some(argWord + " unrecognized by ScalaTest's Runner: " + argsList.mkString("", ", ", "."))
+    }
     else
       None
   }

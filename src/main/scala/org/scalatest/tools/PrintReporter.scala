@@ -158,7 +158,7 @@ private[scalatest] abstract class PrintReporter(
   //  else Resources("indentOnce", indent(s, times - 1))
 }
 
-private[tools] object PrintReporter {
+private[scalatest] object PrintReporter {
 
   final val BufferSize = 4096
 

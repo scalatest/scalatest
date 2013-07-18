@@ -1444,6 +1444,9 @@ class RunnerSpec extends Spec with PrivateMethodTester {
     assertResult(None) {
       Runner.checkArgsForValidity(Array("-W", "60", "60"))
     }
+    assertResult(None) {
+      Runner.checkArgsForValidity(Array("-W", "60", "60", "-h", "htmldir"))
+    }
   }
   
   def `parseChosenStylesIntoChosenStyleSet should work correctly` {
