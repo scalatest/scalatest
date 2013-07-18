@@ -47,24 +47,24 @@ class DispatchReporterSpec extends Spec {
         )
         (erp, dispatch)
       }
-      def `should send out InfoProvided events with useful message if a slowpoke is detected` {
+      def `should send out AlertProvided events with useful message if a slowpoke is detected` {
         val (erp, dispatch) = fireTestStarting()
-        val infoProvidedEvent =
+        val alertProvidedEvent =
           eventually {
-            val ips = erp.infoProvidedEventsReceived
+            val ips = erp.alertProvidedEventsReceived
             ips.size should be > 0
             ips(0)
           }
         dispatch.doDispose()
-        val msg = infoProvidedEvent.message
+        val msg = alertProvidedEvent.message
         msg should (include ("the suite name") and include ("the test name"))
-        inside (infoProvidedEvent.formatter.value) { case IndentedText(formattedText, rawText, indentationLevel) =>
+        inside (alertProvidedEvent.formatter.value) { case IndentedText(formattedText, rawText, indentationLevel) =>
           formattedText should equal (Resources("alertFormattedText", msg))
           rawText should equal (msg)
           indentationLevel should equal (0)
         }
       }
-      def `should send out InfoProvided events with a message that mentions all detected slowpokes` {
+      def `should send out AlertProvided events with a message that mentions all detected slowpokes` {
         val (erp, dispatch) = fireTestStarting()
         dispatch(
           TestStarting(
@@ -77,7 +77,7 @@ class DispatchReporterSpec extends Spec {
           )
         )
         try eventually {
-          val ips = erp.infoProvidedEventsReceived
+          val ips = erp.alertProvidedEventsReceived
           val size = ips.size
           size should be > 0
           ips(size - 1).message should (
@@ -90,13 +90,13 @@ class DispatchReporterSpec extends Spec {
       def doTestStartingAndFinishedEvents(testFinishedEvent: Event): Unit = {
         val (erp, dispatch) = fireTestStarting()
         eventually {
-          erp.infoProvidedEventsReceived.size should be > 0
+          erp.alertProvidedEventsReceived.size should be > 0
         }
         dispatch(testFinishedEvent)
         var sizeWasSameCount = 0
-        var previousSize = erp.infoProvidedEventsReceived.size
+        var previousSize = erp.alertProvidedEventsReceived.size
         eventually {
-          val size = erp.infoProvidedEventsReceived.size 
+          val size = erp.alertProvidedEventsReceived.size 
           if (size == previousSize)
             sizeWasSameCount += 1
           else
@@ -106,7 +106,7 @@ class DispatchReporterSpec extends Spec {
         }
         dispatch.doDispose()
       }
-      def `should stop sending out InfoProvided events after a detected slowpoke succeeds` {
+      def `should stop sending out AlertProvided events after a detected slowpoke succeeds` {
         doTestStartingAndFinishedEvents(
           TestSucceeded(
             ordinal = TestFinishedOrdinal,
@@ -119,7 +119,7 @@ class DispatchReporterSpec extends Spec {
           )
         )
       }
-      def `should stop sending out InfoProvided events after a detected slowpoke fails` {
+      def `should stop sending out AlertProvided events after a detected slowpoke fails` {
         doTestStartingAndFinishedEvents(
           TestFailed(
             ordinal = TestFinishedOrdinal,
@@ -133,7 +133,7 @@ class DispatchReporterSpec extends Spec {
           )
         )
       }
-      def `should stop sending out InfoProvided events after a detected slowpoke is canceled` {
+      def `should stop sending out AlertProvided events after a detected slowpoke is canceled` {
         doTestStartingAndFinishedEvents(
           TestCanceled(
             ordinal = TestFinishedOrdinal,
@@ -147,7 +147,7 @@ class DispatchReporterSpec extends Spec {
           )
         )
       }
-      def `should stop sending out InfoProvided events after a detected slowpoke is reported as pending` {
+      def `should stop sending out AlertProvided events after a detected slowpoke is reported as pending` {
         doTestStartingAndFinishedEvents(
           TestPending(
             ordinal = TestFinishedOrdinal,
@@ -161,7 +161,7 @@ class DispatchReporterSpec extends Spec {
         )
       }
 /* There is no TestOmitted event as yet!
-      def `should stop sending out InfoProvided events after a detected slowpoke is reported as omitted` {
+      def `should stop sending out AlertProvided events after a detected slowpoke is reported as omitted` {
         doTestStartingAndFinishedEvents(
           TestOmitted(
             ordinal = TestFinishedOrdinal,
@@ -175,18 +175,18 @@ class DispatchReporterSpec extends Spec {
         )
       }
 */
-      def `should send InfoProvided events if a slowpoke is detected with the only seen ordinal` {
+      def `should send AlertProvided events if a slowpoke is detected with the only seen ordinal` {
         val (erp, dispatch) = fireTestStarting()
-        val initialInfoProvided =
+        val initialAlertProvided =
           eventually {
-            val ips = erp.infoProvidedEventsReceived
+            val ips = erp.alertProvidedEventsReceived
             ips.size should be > 0
             ips(0)
           }
         dispatch.doDispose()
-        initialInfoProvided.ordinal should be (TestStartingOrdinal)
+        initialAlertProvided.ordinal should be (TestStartingOrdinal)
       }
-      def `should send InfoProvided events if a slowpoke is detected with largest seen ordinal` {
+      def `should send AlertProvided events if a slowpoke is detected with largest seen ordinal` {
         val (erp, dispatch) = fireTestStarting()
         dispatch(
           TestStarting(
@@ -199,7 +199,7 @@ class DispatchReporterSpec extends Spec {
           )
         )
         try eventually {
-          val ips = erp.infoProvidedEventsReceived
+          val ips = erp.alertProvidedEventsReceived
           val sz = ips.size
           sz should be > 0
           ips(sz - 1).ordinal should be (SecondTestStartingOrdinal)

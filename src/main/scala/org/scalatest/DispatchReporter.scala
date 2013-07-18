@@ -73,7 +73,7 @@ private[scalatest] class DispatchReporter(
             val fullMessage = msgs.mkString("\n")
             val dispatch = thisDispatchReporter
             thisDispatchReporter.apply(
-              new InfoProvided(
+              new AlertProvided(
                ordinal = highestOrdinalSeenSoFar.get,
                message = fullMessage,
                nameInfo = None, // Don't include name info. suiteName and testName for all slowpokes are included in fullMessage already.
@@ -159,7 +159,7 @@ private[scalatest] class DispatchReporter(
             val highestSoFar = highestOrdinalSeenSoFar.get
             if (event.ordinal > highestSoFar)
               highestOrdinalSeenSoFar.compareAndSet(highestSoFar, event.ordinal) // Ignore conflicts. Just let first one win and move on.
-              // The reason is that this is used to send InfoProvided events for slowpoke notifications, and these need not have the
+              // The reason is that this is used to send AlertProvided events for slowpoke notifications, and these need not have the
               // exactly the latest ordinal. So long as it is in the ballpark, that's is good enough.
               
             try {

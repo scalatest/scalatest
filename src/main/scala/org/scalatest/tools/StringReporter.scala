@@ -487,6 +487,68 @@ private[scalatest] object StringReporter {
     // for (line <- lines) printPossiblyInColor(line, ansiColor)
   }
 
+  def alertProvidedFragments(
+    event: AlertProvided,
+    presentUnformatted: Boolean,
+    presentAllDurations: Boolean,
+    presentShortStackTraces: Boolean,
+    presentFullStackTraces: Boolean
+  ): Vector[Fragment] = {
+    val (suiteName, testName) =
+      event.nameInfo match {
+        case Some(NameInfo(suiteName, _, _, testName)) => (Some(suiteName), testName)
+        case None => (None, None)
+      }
+    val lines: Vector[String] =
+      stringsToPrintOnError(
+        "alertProvidedNote",
+        "alertProvided",
+        event.message,
+        event.throwable,
+        event.formatter,
+        suiteName,
+        testName,
+        None,
+        presentUnformatted,
+        presentAllDurations,
+        presentShortStackTraces,
+        presentFullStackTraces
+      )
+
+    lines map (new Fragment(_, AnsiYellow))
+  }
+
+  def noticeProvidedFragments(
+    event: NoticeProvided,
+    presentUnformatted: Boolean,
+    presentAllDurations: Boolean,
+    presentShortStackTraces: Boolean,
+    presentFullStackTraces: Boolean
+  ): Vector[Fragment] = {
+    val (suiteName, testName) =
+      event.nameInfo match {
+        case Some(NameInfo(suiteName, _, _, testName)) => (Some(suiteName), testName)
+        case None => (None, None)
+      }
+    val lines: Vector[String] =
+      stringsToPrintOnError(
+        "noticeProvidedNote",
+        "noticeProvided",
+        event.message,
+        event.throwable,
+        event.formatter,
+        suiteName,
+        testName,
+        None,
+        presentUnformatted,
+        presentAllDurations,
+        presentShortStackTraces,
+        presentFullStackTraces
+      )
+
+    lines map (new Fragment(_, AnsiGreen))
+  }
+
   // This will return either an empty Vector or a Vector with one element. Vector instead of Option because
   // that makes it easier to combine them with other Vector[Fragment]s coming back from other sibling methods.
   def markupProvidedOptionalFragment(event: MarkupProvided, ansiColor: AnsiColor, presentUnformatted: Boolean): Vector[Fragment] = {
@@ -722,6 +784,14 @@ private[scalatest] object StringReporter {
       case ipEvent: InfoProvided =>
 
         infoProvidedFragments(ipEvent, AnsiGreen, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
+
+      case apEvent: AlertProvided =>
+
+        alertProvidedFragments(apEvent, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
+
+      case npEvent: NoticeProvided =>
+
+        noticeProvidedFragments(npEvent, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
 
       case ScopeOpened(ordinal, message, nameInfo, formatter, location, payload, threadName, timeStamp) =>
 
