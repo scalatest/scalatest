@@ -9,36 +9,6 @@ object ScalatestBuild extends Build {
   val releaseVersion = "2.0.M6-SNAP27"
     
   val sbtVersionToUse = "0.13.0-RC1"
-  
-  val includeTestPackageSet = Set("org.scalatest", 
-                                  "org.scalatest.fixture", 
-                                  "org.scalatest.concurrent", 
-                                  "org.scalatest.testng", 
-                                  "org.scalatest.junit", 
-                                  "org.scalatest.events", 
-                                  "org.scalatest.prop", 
-                                  "org.scalatest.tools", 
-                                  "org.scalatest.matchers", 
-                                  "org.scalatest.suiteprop", 
-                                  "org.scalatest.mock", 
-                                  "org.scalatest.path", 
-                                  "org.scalatest.selenium", 
-                                  "org.scalatest.exceptions", 
-                                  "org.scalatest.time", 
-                                  "org.scalatest.words", 
-                                  "org.scalautils")
-                                                     
-  def isIncludedPackage(className: String) = {
-    try {
-      val packageName = className.substring(0, className.lastIndexOf("."))
-      includeTestPackageSet.contains(packageName)
-    }
-    catch {
-      case e: Exception => 
-        e.printStackTrace()
-        false
-    }
-  }
                               
   lazy val scalatest = Project("scalatest", file("."))
    .settings(
@@ -65,8 +35,24 @@ object ScalatestBuild extends Build {
          (baseDirectory, sourceManaged in Compile) map genFiles("genmatchers", "MustMatchers.scala")(GenMatchers.genMain),
      sourceGenerators in Compile <+= 
          (baseDirectory, sourceManaged in Compile) map genFiles("genfactories", "GenFactories.scala")(GenFactories.genMain),
-     testOptions in Test := Seq(Tests.Filter(s => isIncludedPackage(s)), 
-                                Tests.Argument("-l", "org.scalatest.tags.Slow", 
+     testOptions in Test := Seq(Tests.Argument("-l", "org.scalatest.tags.Slow", 
+                                               "-m", "org.scalatest", 
+                                               "-m", "org.scalautils",
+                                               "-m", "org.scalatest.fixture", 
+                                               "-m", "org.scalatest.concurrent", 
+                                               "-m", "org.scalatest.testng", 
+                                               "-m", "org.scalatest.junit", 
+                                               "-m", "org.scalatest.events", 
+                                               "-m", "org.scalatest.prop", 
+                                               "-m", "org.scalatest.tools", 
+                                               "-m", "org.scalatest.matchers", 
+                                               "-m", "org.scalatest.suiteprop", 
+                                               "-m", "org.scalatest.mock", 
+                                               "-m", "org.scalatest.path", 
+                                               "-m", "org.scalatest.selenium", 
+                                               "-m", "org.scalatest.exceptions", 
+                                               "-m", "org.scalatest.time", 
+                                               "-m", "org.scalatest.words", 
                                                "-oDI", 
                                                "-h", "target/html", 
                                                "-u", "target/junit"))
