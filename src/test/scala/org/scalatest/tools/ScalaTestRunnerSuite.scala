@@ -139,6 +139,28 @@ import org.scalatools.testing.{Event, EventHandler, Result, Logger, Runner => Te
         run("org.scalatest.tools.test.PendingTest", Array("-g"))
       }
     }
+    
+    test("-w should execute suites that match the specified package and its sub packages") {
+      val result1 = run("org.scalatest.tools.test.TagsTest", Array("-w", "org.scalatest.tools"))
+      assert(result1.size === 5)
+      
+      val result2 = run("org.scalatest.tools.test.TagsTest", Array("-w", "org.scalatest.tools.test"))
+      assert(result2.size === 5)
+      
+      val result3 = run("org.scalatest.SuiteSuite", Array("-w", "org.scalatest.tools.test"))
+      assert(result3.size === 0)
+    }
+    
+    test("-m should execute suites that match the specified package and not its sub packages") {
+      val result1 = run("org.scalatest.tools.test.TagsTest", Array("-m", "org.scalatest.tools"))
+      assert(result1.size === 0)
+      
+      val result2 = run("org.scalatest.tools.test.TagsTest", Array("-m", "org.scalatest.tools.test"))
+      assert(result2.size === 5)
+      
+      val result3 = run("org.scalatest.SuiteSuite", Array("-m", "org.scalatest.tools.test"))
+      assert(result3.size === 0)
+    }
 
     def runner: TestingRunner = {
       new ScalaTestFramework().testRunner(Thread.currentThread.getContextClassLoader, Array(new TestLogger))
