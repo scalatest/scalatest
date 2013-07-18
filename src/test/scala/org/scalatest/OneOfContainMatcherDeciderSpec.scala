@@ -259,7 +259,7 @@ class OneOfContainMatcherDeciderSpec extends Spec with Matchers with Explicitly 
         
       
       (Map(1 -> "one", 2 -> " two", 3 -> "three") should contain oneOf (2 -> "two", 6 -> "six", 8 -> "eight")) (after being mapTrimmed)
-      (javaMap(1 -> "one", 2 -> " two", 3 -> "three") should contain oneOf (Entry(2, "two"), Entry(6, "six"), Entry(8, "eight"))) (after being javaMapTrimmed)
+      (javaMap(Entry(1, "one"), Entry(2, " two"), Entry(3, "three")) should contain oneOf (Entry(2, "two"), Entry(6, "six"), Entry(8, "eight"))) (after being javaMapTrimmed)
     }
     
     def `should take specified normalization when 'should not contain' is used` {
@@ -272,7 +272,7 @@ class OneOfContainMatcherDeciderSpec extends Spec with Matchers with Explicitly 
       
       
       (Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain oneOf (1 -> "one", 2 -> "two", 3 -> "three")) (after being mapAppended)
-      (javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain oneOf (Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))) (after being javaMapAppended)
+      (javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain oneOf (Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))) (after being javaMapAppended)
     }
     
     def `should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with specified normalization` {
@@ -307,7 +307,7 @@ class OneOfContainMatcherDeciderSpec extends Spec with Matchers with Explicitly 
       }
       checkShouldContainStackDepth(e5, left5, Array(1 -> "one", 6 -> "six", 8 -> "eight").deep, thisLineNumber - 2)
       
-      val left6 = javaMap(1 -> "one", 2 -> "two", 3 -> "three")
+      val left6 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val e6 = intercept[exceptions.TestFailedException] {
         (left6 should contain oneOf (Entry(1, "one"), Entry(6, "six"), Entry(8, "eight"))) (after being javaMapAppended)
       }
@@ -346,7 +346,7 @@ class OneOfContainMatcherDeciderSpec extends Spec with Matchers with Explicitly 
       }
       checkShouldNotContainStackDepth(e5, left5, Array(2 -> "two ", 6 -> "six", 8 -> "eight").deep, thisLineNumber - 2)
         
-      val left6 = javaMap(1 -> "one", 2 -> " two", 3 -> "three")
+      val left6 = javaMap(Entry(1, "one"), Entry(2, " two"), Entry(3, "three"))
       val e6 = intercept[exceptions.TestFailedException] {
         (left6 should not contain oneOf (Entry(2, "two "), Entry(6, "six"), Entry(8, "eight"))) (after being javaMapTrimmed)
       }
@@ -361,7 +361,7 @@ class OneOfContainMatcherDeciderSpec extends Spec with Matchers with Explicitly 
       (javaList("ONE", " TWO", "THREE") should contain oneOf ("two ", "six", "eight")) (decided by lowerCaseEquality afterBeing trimmed)
       
       (Map(1 -> "ONE", 2 -> " TWO", 3 -> "THREE") should contain oneOf (2 -> "two ", 6 -> "six", 8 -> "eight")) (decided by mapLowerCaseEquality afterBeing mapTrimmed)
-      (javaMap(1 -> "ONE", 2 -> " TWO", 3 -> "THREE") should contain oneOf (Entry(2, "two "), Entry(6, "six"), Entry(8, "eight"))) (decided by javaMapLowerCaseEquality afterBeing javaMapTrimmed)
+      (javaMap(Entry(1, "ONE"), Entry(2, " TWO"), Entry(3, "THREE")) should contain oneOf (Entry(2, "two "), Entry(6, "six"), Entry(8, "eight"))) (decided by javaMapLowerCaseEquality afterBeing javaMapTrimmed)
     }
     
     def `should take specified equality and normalization when 'should not contain' is used` {
@@ -372,7 +372,7 @@ class OneOfContainMatcherDeciderSpec extends Spec with Matchers with Explicitly 
       (javaList("one ", " two", "three ") should not contain oneOf (" one", "two ", " three")) (decided by reverseEquality afterBeing trimmed)
       
       (Map(1 -> "one ", 2 -> " two", 3 -> "three ") should not contain oneOf (1 -> " one", 2 -> "two ", 3 -> " three")) (decided by mapReverseEquality afterBeing mapTrimmed)
-      (javaMap(1 -> "one ", 2 -> " two", 3 -> "three ") should not contain oneOf (Entry(1, " one"), Entry(2, "two "), Entry(3, " three"))) (decided by javaMapReverseEquality afterBeing javaMapTrimmed)
+      (javaMap(Entry(1, "one "), Entry(2, " two"), Entry(3, "three ")) should not contain oneOf (Entry(1, " one"), Entry(2, "two "), Entry(3, " three"))) (decided by javaMapReverseEquality afterBeing javaMapTrimmed)
     }
     
     def `should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with specified equality and normalizationy` {
@@ -407,7 +407,7 @@ class OneOfContainMatcherDeciderSpec extends Spec with Matchers with Explicitly 
       }
       checkShouldContainStackDepth(e5, left5, Array(1 -> " one", 2 -> "two ", 3 -> " three").deep, thisLineNumber - 2)
         
-      val left6 = javaMap(1 -> "one ", 2 -> " two", 3 -> "three ")
+      val left6 = javaMap(Entry(1, "one "), Entry(2, " two"), Entry(3, "three "))
       val e6 = intercept[exceptions.TestFailedException] {
         (left6 should contain oneOf (Entry(1, " one"), Entry(2, "two "), Entry(3, " three"))) (decided by javaMapReverseEquality afterBeing javaMapTrimmed)
       }
@@ -446,7 +446,7 @@ class OneOfContainMatcherDeciderSpec extends Spec with Matchers with Explicitly 
       }
       checkShouldNotContainStackDepth(e5, left5, Array(2 -> "two ", 6 -> " six", 8 -> "eight ").deep, thisLineNumber - 2)
         
-      val left6 = javaMap(1 -> "ONE ", 2 -> " TWO", 3 -> "THREE ")
+      val left6 = javaMap(Entry(1, "ONE "), Entry(2, " TWO"), Entry(3, "THREE "))
       val e6 = intercept[exceptions.TestFailedException] {
         (left6 should not contain oneOf (Entry(2, "two "), Entry(6, " six"), Entry(8, "eight "))) (decided by javaMapLowerCaseEquality afterBeing javaMapTrimmed)
       }

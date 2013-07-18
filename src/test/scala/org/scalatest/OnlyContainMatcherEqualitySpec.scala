@@ -96,7 +96,7 @@ class OnlyContainMatcherEqualitySpec extends Spec with Matchers with Explicitly 
       Map(1 -> "one", 2 -> " two", 3 -> "three") should contain only (1 -> " one", 2 -> "two ", 3 -> " three")
       
       implicit val javaMapEquality = new JavaMapTrimEquality
-      javaMap(1 -> "one", 2 -> " two", 3 -> "three") should contain only (Entry(1, " one"), Entry(2, "two "), Entry(3, " three"))
+      javaMap(Entry(1, "one"), Entry(2, " two"), Entry(3, "three")) should contain only (Entry(1, " one"), Entry(2, "two "), Entry(3, " three"))
     }
     
     def `should take custom implicit equality in scope when 'should not contain' is used` {
@@ -111,7 +111,7 @@ class OnlyContainMatcherEqualitySpec extends Spec with Matchers with Explicitly 
       Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain only (1 -> "one", 2 -> "two", 3 -> "three")
       
       implicit val javaMapEquality = new JavaMapFalseEquality
-      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain only (Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
+      javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain only (Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
     }
     
     def `should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with custom implicit equality in scope` {
@@ -151,7 +151,7 @@ class OnlyContainMatcherEqualitySpec extends Spec with Matchers with Explicitly 
       
       implicit val javaMapEquality = new JavaMapFalseEquality
       
-      val left6 = javaMap(1 -> "one", 2 -> "two", 3 -> "three")
+      val left6 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val e6 = intercept[exceptions.TestFailedException] {
         left6 should contain only (Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       }
@@ -195,7 +195,7 @@ class OnlyContainMatcherEqualitySpec extends Spec with Matchers with Explicitly 
         
       implicit val javaMapEquality = new JavaMapTrimEquality
       
-      val left6 = javaMap(1 -> "one", 2 -> " two", 3 -> "three")
+      val left6 = javaMap(Entry(1, "one"), Entry(2, " two"), Entry(3, "three"))
       val e6 = intercept[exceptions.TestFailedException] {
         left6 should not contain only (Entry(1, " one"), Entry(2, "two "), Entry(3, " three"))
       }
@@ -213,7 +213,7 @@ class OnlyContainMatcherEqualitySpec extends Spec with Matchers with Explicitly 
       (Map(1 -> "one ", 2 -> " two", 3 -> "three ") should contain only (1 -> " one", 2 -> "two ", 3 -> " three")) (mapEquality)
       
       implicit val javaMapEquality = new JavaMapTrimEquality
-      (javaMap(1 -> "one ", 2 -> " two", 3 -> "three ") should contain only (Entry(1, " one"), Entry(2, "two "), Entry(3, " three"))) (javaMapEquality)
+      (javaMap(Entry(1, "one "), Entry(2, " two"), Entry(3, "three ")) should contain only (Entry(1, " one"), Entry(2, "two "), Entry(3, " three"))) (javaMapEquality)
     }
     
     def `should take passed in custom explicit equality when 'should not contain' is used` {
@@ -227,7 +227,7 @@ class OnlyContainMatcherEqualitySpec extends Spec with Matchers with Explicitly 
       (Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain only (1 -> "one", 2 -> "two", 3 -> "three")) (mapEquality)
       
       implicit val javaMapEquality = new JavaMapFalseEquality
-      (javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain only (Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))) (javaMapEquality)
+      (javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain only (Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))) (javaMapEquality)
     }
     
     def `should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with custom explicit equality` {
@@ -267,7 +267,7 @@ class OnlyContainMatcherEqualitySpec extends Spec with Matchers with Explicitly 
         
       implicit val javaMapEquality = new JavaMapFalseEquality
       
-      val left6 = javaMap(1 -> "one", 2 -> "two", 3 -> "three")
+      val left6 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val e6 = intercept[exceptions.TestFailedException] {
         (left6 should contain only (Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))) (javaMapEquality)
       }
@@ -311,7 +311,7 @@ class OnlyContainMatcherEqualitySpec extends Spec with Matchers with Explicitly 
       
       implicit val javaMapEquality = new JavaMapTrimEquality
         
-      val left6 = javaMap(1 -> "one", 2 -> " two", 3 -> "three")
+      val left6 = javaMap(Entry(1, "one"), Entry(2, " two"), Entry(3, "three"))
       val e6 = intercept[exceptions.TestFailedException] {
         (left6 should not contain only (Entry(1, " one "), Entry(2, "two "), Entry(3, " three"))) (javaMapEquality)
       }

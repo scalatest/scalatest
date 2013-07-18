@@ -97,7 +97,7 @@ class TheSameElementsAsContainMatcherEqualitySpec extends Spec with Matchers wit
       Map(1 -> "one ", 2 -> "two", 3 -> "three ") should contain theSameElementsAs Map(1 -> "one", 2 -> "two ", 3 -> "three")
       
       implicit val javaMapEquality = new JavaMapTrimEquality
-      javaMap(1 -> "one ", 2 -> "two", 3 -> "three ") should contain theSameElementsAs List(Entry(1, "one"), Entry(2, "two "), Entry(3, "three"))
+      javaMap(Entry(1, "one "), Entry(2, "two"), Entry(3, "three ")) should contain theSameElementsAs List(Entry(1, "one"), Entry(2, "two "), Entry(3, "three"))
     }
     
     def `should take custom implicit equality in scope when 'should contain and should contain' is used` {
@@ -130,9 +130,9 @@ class TheSameElementsAsContainMatcherEqualitySpec extends Spec with Matchers wit
       
       implicit val javaMapEquality = new JavaMapTrimEquality
       
-      javaMap(1 -> "one ", 2 -> "two", 3 -> " three") should (contain theSameElementsAs List(Entry(1, " one"), Entry(2, " two"), Entry(3, "three ")) and contain theSameElementsAs List(Entry(1, "one "), Entry(2, "two "), Entry(3, " three")))
-      javaMap(1 -> "one ", 2 -> "two", 3 -> " three") should ((contain theSameElementsAs List(Entry(1, " one"), Entry(2, " two"), Entry(3, "three "))) and (contain theSameElementsAs List(Entry(1, "one "), Entry(2, "two "), Entry(3, " three"))))
-      javaMap(1 -> "one ", 2 -> "two", 3 -> " three") should (contain theSameElementsAs List(Entry(1, " one"), Entry(2, " two"), Entry(3, "three ")) and (contain theSameElementsAs List(Entry(1, "one "), Entry(2, "two "), Entry(3, " three"))))
+      javaMap(Entry(1, "one "), Entry(2, "two"), Entry(3, " three")) should (contain theSameElementsAs List(Entry(1, " one"), Entry(2, " two"), Entry(3, "three ")) and contain theSameElementsAs List(Entry(1, "one "), Entry(2, "two "), Entry(3, " three")))
+      javaMap(Entry(1, "one "), Entry(2, "two"), Entry(3, " three")) should ((contain theSameElementsAs List(Entry(1, " one"), Entry(2, " two"), Entry(3, "three "))) and (contain theSameElementsAs List(Entry(1, "one "), Entry(2, "two "), Entry(3, " three"))))
+      javaMap(Entry(1, "one "), Entry(2, "two"), Entry(3, " three")) should (contain theSameElementsAs List(Entry(1, " one"), Entry(2, " two"), Entry(3, "three ")) and (contain theSameElementsAs List(Entry(1, "one "), Entry(2, "two "), Entry(3, " three"))))
     }
     
     def `should take custom explicit equality in scope when 'should contain and should contain' is used` {
@@ -150,7 +150,7 @@ class TheSameElementsAsContainMatcherEqualitySpec extends Spec with Matchers wit
       
       val javaMapEquality = new JavaMapTrimEquality
       
-      (javaMap(1 -> "one ", 2 -> "two", 3 -> " three") should (contain theSameElementsAs List(Entry(1, " one"), Entry(2, " two"), Entry(3, "three ")) and contain theSameElementsAs List(Entry(1, "one "), Entry(2, "two "), Entry(3, " three")))) (javaMapEquality, javaMapEquality)
+      (javaMap(Entry(1, "one "), Entry(2, "two"), Entry(3, " three")) should (contain theSameElementsAs List(Entry(1, " one"), Entry(2, " two"), Entry(3, "three ")) and contain theSameElementsAs List(Entry(1, "one "), Entry(2, "two "), Entry(3, " three")))) (javaMapEquality, javaMapEquality)
     }
     
     def `should take custom implicit equality in scope when 'should contain or should contain' is used` {
@@ -183,9 +183,9 @@ class TheSameElementsAsContainMatcherEqualitySpec extends Spec with Matchers wit
       
       implicit val javaMapEquality = new JavaMapTrimEquality
       
-      javaMap(1 -> "one ", 2 -> "two", 3 -> " three") should (contain theSameElementsAs List(Entry(1, " one"), Entry(2, " two"), Entry(3, "three ")) or contain theSameElementsAs List(Entry(1, "one "), Entry(2, "two "), Entry(3, " three")))
-      javaMap(1 -> "one ", 2 -> "two", 3 -> " three") should ((contain theSameElementsAs List(Entry(1, " one"), Entry(2, " two"), Entry(3, "three "))) or (contain theSameElementsAs List(Entry(1, "one "), Entry(2, "two "), Entry(3, " three"))))
-      javaMap(1 -> "one ", 2 -> "two", 3 -> " three") should (contain theSameElementsAs List(Entry(1, " one"), Entry(2, " two"), Entry(3, "three ")) or (contain theSameElementsAs List(Entry(1, "one "), Entry(2, "two "), Entry(3, " three"))))
+      javaMap(Entry(1, "one "), Entry(2, "two"), Entry(3, " three")) should (contain theSameElementsAs List(Entry(1, " one"), Entry(2, " two"), Entry(3, "three ")) or contain theSameElementsAs List(Entry(1, "one "), Entry(2, "two "), Entry(3, " three")))
+      javaMap(Entry(1, "one "), Entry(2, "two"), Entry(3, " three")) should ((contain theSameElementsAs List(Entry(1, " one"), Entry(2, " two"), Entry(3, "three "))) or (contain theSameElementsAs List(Entry(1, "one "), Entry(2, "two "), Entry(3, " three"))))
+      javaMap(Entry(1, "one "), Entry(2, "two"), Entry(3, " three")) should (contain theSameElementsAs List(Entry(1, " one"), Entry(2, " two"), Entry(3, "three ")) or (contain theSameElementsAs List(Entry(1, "one "), Entry(2, "two "), Entry(3, " three"))))
     }
     
     def `should take custom explicit equality in scope when 'should contain or should contain' is used` {
@@ -203,7 +203,7 @@ class TheSameElementsAsContainMatcherEqualitySpec extends Spec with Matchers wit
       
       val javaMapEquality = new JavaMapTrimEquality
       
-      (javaMap(1 -> "one ", 2 -> "two", 3 -> " three") should (contain theSameElementsAs List(Entry(1, " one"), Entry(2, " two"), Entry(3, "three ")) or contain theSameElementsAs Map(1 -> "one ", 2 -> "two ", 3 -> " three"))) (javaMapEquality, javaMapEquality)
+      (javaMap(Entry(1, "one "), Entry(2, "two"), Entry(3, " three")) should (contain theSameElementsAs List(Entry(1, " one"), Entry(2, " two"), Entry(3, "three ")) or contain theSameElementsAs Map(1 -> "one ", 2 -> "two ", 3 -> " three"))) (javaMapEquality, javaMapEquality)
     }
       
     def `should take custom implicit equality in scope when 'should not contain' is used` {
@@ -218,7 +218,7 @@ class TheSameElementsAsContainMatcherEqualitySpec extends Spec with Matchers wit
       Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameElementsAs (Map(1 -> "one", 2 -> "two", 3 -> "three"))
       
       implicit val javaMapEquality = new JavaMapFalseEquality
-      javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameElementsAs (List(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")))
+      javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain theSameElementsAs (List(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")))
     }
       
     def `should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with custom implicit equality in scope` {
@@ -263,7 +263,7 @@ class TheSameElementsAsContainMatcherEqualitySpec extends Spec with Matchers wit
       
       implicit val javaMapEquality = new JavaMapFalseEquality
       
-      val left6 = javaMap(1 -> "one", 2 -> "two", 3 -> "three")
+      val left6 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val right6 = List(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val e6 = intercept[exceptions.TestFailedException] {
         left6 should contain theSameElementsAs right6
@@ -313,7 +313,7 @@ class TheSameElementsAsContainMatcherEqualitySpec extends Spec with Matchers wit
       
       implicit val javaMapEquality = new JavaMapTrimEquality
       
-      val left6 = javaMap(1 -> "one ", 2 -> "two", 3 -> " three")
+      val left6 = javaMap(Entry(1, "one "), Entry(2, "two"), Entry(3, " three"))
       val right6 = List(Entry(1, "one"), Entry(2, "two "), Entry(3, "three"))
       val e6 = intercept[exceptions.TestFailedException] {
         left6 should not contain theSameElementsAs (right6)
@@ -332,7 +332,7 @@ class TheSameElementsAsContainMatcherEqualitySpec extends Spec with Matchers wit
       (Map(1 -> "one ", 2 -> "two", 3 -> " three") should contain theSameElementsAs Map(1 -> "one", 2 -> " two", 3 -> "three")) (mapEquality)
       
       val javaMapEquality = new JavaMapTrimEquality
-      (javaMap(1 -> "one ", 2 -> "two", 3 -> " three") should contain theSameElementsAs List(Entry(1, "one"), Entry(2, " two"), Entry(3, "three"))) (javaMapEquality)
+      (javaMap(Entry(1, "one "), Entry(2, "two"), Entry(3, " three")) should contain theSameElementsAs List(Entry(1, "one"), Entry(2, " two"), Entry(3, "three"))) (javaMapEquality)
     }
       
     def `should take passed in custom explicit equality when 'should not contain' is used` {
@@ -346,7 +346,7 @@ class TheSameElementsAsContainMatcherEqualitySpec extends Spec with Matchers wit
       (Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameElementsAs (Map(1 -> "one", 2 -> "two", 3 -> "three"))) (mapEquality)
       
       val javaMapEquality = new JavaMapFalseEquality
-      (javaMap(1 -> "one", 2 -> "two", 3 -> "three") should not contain theSameElementsAs (List(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")))) (javaMapEquality)
+      (javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")) should not contain theSameElementsAs (List(Entry(1, "one"), Entry(2, "two"), Entry(3, "three")))) (javaMapEquality)
     }
       
     def `should throw TestFailedException with correct stack depth and message when 'should contain custom matcher' failed with custom explicit equality` {
@@ -391,7 +391,7 @@ class TheSameElementsAsContainMatcherEqualitySpec extends Spec with Matchers wit
       
       val javaMapEquality = new JavaMapFalseEquality
       
-      val left6 = javaMap(1 -> "one", 2 -> "two", 3 -> "three")
+      val left6 = javaMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val right6 = List(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))
       val e6 = intercept[exceptions.TestFailedException] {
         (left6 should contain theSameElementsAs right6) (javaMapEquality)
@@ -441,7 +441,7 @@ class TheSameElementsAsContainMatcherEqualitySpec extends Spec with Matchers wit
       
       val javaMapEquality = new JavaMapTrimEquality
       
-      val left6 = javaMap(1 -> "one ", 2 -> "two", 3 -> " three ")
+      val left6 = javaMap(Entry(1, "one "), Entry(2, "two"), Entry(3, " three "))
       val right6 = List(Entry(1, "one"), Entry(2, " two"), Entry(3, "three "))
       val e6 = intercept[exceptions.TestFailedException] {
         (left6 should not contain theSameElementsAs (right6)) (javaMapEquality)

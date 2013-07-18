@@ -194,6 +194,25 @@ object Sequencing {
 
   implicit def convertEqualityToSortedSetSequencing[E, SET[e] <: scala.collection.SortedSet[e]](equality: Equality[E]): Sequencing[SET[E]] = 
     sequencingNatureOfSortedSet(equality) 
+    
+  implicit def sequencingNatureOfSortedMap[K, V, MAP[k, v] <: scala.collection.SortedMap[k, v]](implicit equality: Equality[(K, V)]): Sequencing[MAP[K, V]] =
+    new Sequencing[MAP[K, V]] {
+
+      def containsInOrder(map: MAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
+        checkInOrder(map, elements, equality)
+      }
+
+      def containsInOrderOnly(map: MAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
+        checkInOrderOnly(map, elements, equality)
+      }
+
+      def containsTheSameElementsInOrderAs(map: MAP[K, V], elements: GenTraversable[Any]): Boolean = {
+        checkTheSameElementsInOrderAs(map, elements, equality)
+      }
+    }
+
+  implicit def convertEqualityToSortedMapSequencing[K, V, MAP[k, v] <: scala.collection.SortedMap[k, v]](equality: Equality[(K, V)]): Sequencing[MAP[K, V]] = 
+    sequencingNatureOfSortedMap(equality) 
 
   implicit def sequencingNatureOfArray[E](implicit equality: Equality[E]): Sequencing[Array[E]] = 
     new Sequencing[Array[E]] {
@@ -252,6 +271,25 @@ object Sequencing {
 
   implicit def convertEqualityToJavaSortedSetSequencing[E, JSET[e] <: java.util.SortedSet[e]](equality: Equality[E]): Sequencing[JSET[E]] = 
     sequencingNatureOfJavaSortedSet(equality)
+    
+  implicit def sequencingNatureOfJavaSortedMap[K, V, JMAP[k, v] <: java.util.SortedMap[k, v]](implicit equality: Equality[java.util.Map.Entry[K, V]]): Sequencing[JMAP[K, V]] =
+    new Sequencing[JMAP[K, V]] {
+
+      def containsInOrder(map: JMAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
+        checkInOrder(map.entrySet.iterator.asScala.toVector, elements, equality)
+      }
+
+      def containsInOrderOnly(map: JMAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
+        checkInOrderOnly(map.entrySet.iterator.asScala.toVector, elements, equality)
+      }
+
+      def containsTheSameElementsInOrderAs(map: JMAP[K, V], elements: GenTraversable[Any]): Boolean = {
+        checkTheSameElementsInOrderAs(map.entrySet.iterator.asScala.toVector, elements, equality)
+      }
+    }
+
+  implicit def convertEqualityToJavaSortedMapSequencing[K, V, JMAP[k, v] <: java.util.SortedMap[k, v]](equality: Equality[java.util.Map.Entry[K, V]]): Sequencing[JMAP[K, V]] = 
+    sequencingNatureOfJavaSortedMap(equality) 
 
   implicit def sequencingNatureOfString(implicit equality: Equality[Char]): Sequencing[String] = 
     new Sequencing[String] {
