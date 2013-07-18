@@ -78,7 +78,7 @@ private[scalatest] class DispatchReporter(
                message = fullMessage,
                nameInfo = None, // Don't include name info. suiteName and testName for all slowpokes are included in fullMessage already.
                throwable = None,
-               formatter = Some(IndentedText(fullMessage, fullMessage, 0))
+               formatter = Some(IndentedText(Resources("alertFormattedText", fullMessage), fullMessage, 0))
               )
             )
           }
