@@ -152,12 +152,6 @@ object GenContain {
     "      }\n" + 
     "    }"
     
-    val javaMap = "def javaMap[K, V](elements: Entry[K, V]*): java.util.LinkedHashMap[K, V] = {\n" +
-    "    val m = new java.util.LinkedHashMap[K, V]\n" +
-    "    elements.foreach(e => m.put(e.getKey, e.getValue))\n" +
-    "    m\n" +
-    "  }"
-    
     val optionMapping = 
       List(
         "List\\[String\\]" -> "Option[String]", 
@@ -317,6 +311,7 @@ object GenContain {
          "\\(\\\" FUM \\\", \\\" FOE \\\", \\\" FIE \\\", \\\" FEE \\\"\\)" -> "(\" FUM \" -> \" FUM \", \" FOE \" -> \" FOE \", \" FIE \" -> \" FIE \", \" FEE \" -> \" FEE \")",
          "\\(\\\"HAPPY\\\", \\\"BIRTHDAY\\\", \\\"TO\\\", \\\"YOU\\\"\\)" -> "(\"HAPPY\" -> \"HAPPY\", \"BIRTHDAY\" -> \"BIRTHDAY\", \"TO\" -> \"TO\", \"YOU\" -> \"YOU\")", 
          "\\(\\\" HAPPY \\\", \\\" BIRTHDAY \\\", \\\" TO \\\", \\\" YOU \\\"\\)" -> "(\" HAPPY \" -> \" HAPPY \", \" BIRTHDAY \" -> \" BIRTHDAY \", \" TO \" -> \" TO \", \" YOU \" -> \" YOU \")",
+         "\\(\\\"YOU\\\", \\\"TO\\\", \\\"BIRTHDAY\\\", \\\"HAPPY\\\"\\)" -> "(\"YOU\" -> \"YOU\", \"TO\" -> \"TO\", \"BIRTHDAY\" -> \"BIRTHDAY\", \"HAPPY\" -> \"HAPPY\")", 
          "\\(\\\"nice\\\", \\\"to\\\", \\\"you\\\"\\)" -> "(\"nice\" -> \"nice\", \"to\" -> \"to\", \"you\" -> \"you\")", 
          "\\(\\\"nice\\\", \\\"you\\\", \\\"to\\\"\\)" -> "(\"nice\" -> \"nice\", \"you\" -> \"you\", \"to\" -> \"to\")", 
          "\\(\\\"to\\\", \\\"you\\\"\\)" -> "(\"to\" -> \"to\", \"you\" -> \"you\")", 
@@ -435,11 +430,13 @@ object GenContain {
          "\\(2, 3, 4\\)" -> "(2 -> 2, 3 -> 3, 4 -> 4)", 
          "\\(2, 3, 5\\)" -> "(2 -> 2, 3 -> 3, 5 -> 5)", 
          "\\(2, 3, 8\\)" -> "(2 -> 2, 3 -> 3, 8 -> 8)", 
+         "\\(2, 4, 3\\)" -> "(2 -> 2, 4 -> 4, 3 -> 3)", 
          "\\(2, 6, 8\\)" -> "(2 -> 2, 6 -> 6, 8 -> 8)", 
          "\\(3, 1, 2\\)" -> "(3 -> 3, 1 -> 1, 2 -> 2)", 
          "\\(3, 1, 5\\)" -> "(3 -> 3, 1 -> 1, 5 -> 5)", 
          "\\(3, 2, 1\\)" -> "(3 -> 3, 2 -> 2, 1 -> 1)", 
          "\\(3, 2, 1, 0\\)" -> "(3 -> 3, 2 -> 2, 1 -> 1, 0 -> 0)", 
+         "\\(3, 2, 5\\)" -> "(3 -> 3, 2 -> 2, 5 -> 5)", 
          "\\(3, 2, 8\\)" -> "(3 -> 3, 2 -> 2, 8 -> 8)", 
          "\\(3, 4, 2\\)" -> "(3 -> 3, 4 -> 4, 2 -> 2)", 
          "\\(3, 4, 5\\)" -> "(3 -> 3, 4 -> 4, 5 -> 5)", 
@@ -466,12 +463,22 @@ object GenContain {
          "Nil" -> "scala.collection.mutable.LinkedHashMap()"
       )
       
+    val sortedMapMapping = 
+      (mapMapping map { case (key, value) =>
+        (key, 
+         value.replace("scala.collection.mutable.LinkedHashMap(", "sortedMap(")
+              .replace("scala.collection.mutable.LinkedHashMap[", "scala.collection.SortedMap["))
+      }) ++ 
+      List(
+        "LinkedsortedMap" -> "scala.collection.mutable.LinkedHashMap"
+      )
+      
     val javaMapMapping = 
       List(
         "ListShould" -> "JavaMapShould", 
         //"Entry\\(" -> "org.scalatest.Entry(", 
         "new Equality\\[String\\]" -> "new Equality[java.util.Map.Entry[String, String]]", 
-        "//ADDITIONAL//" -> (javaMapLowerCased + "\n" + javaMapTrimmed + "\n" + javaMap + "\n" + "import org.scalatest.Entry"), 
+        "//ADDITIONAL//" -> (javaMapLowerCased + "\n" + javaMapTrimmed + "\n" + "import org.scalatest.Entry"), 
         "def areEqual\\(a: String, b: Any\\): Boolean = a.toUpperCase == b" -> javaMapUpperCasedAreEqual,
         "def areEqual\\(a: List\\[String\\], b: Any\\): Boolean = a.map\\(\\_.toUpperCase\\) == b" -> "def areEqual(a: java.util.Map[String, String], b: Any): Boolean = a.asScala.map(e => upperCase(e)) == b",
         "def areEqual\\(a: String, b: Any\\)" -> "def areEqual(a: java.util.Map.Entry[String, String], b: Any)",
@@ -714,6 +721,16 @@ object GenContain {
         "listsNil" -> "listsMap", 
         "Nil" -> "javaMap()", 
         "LinkedjavaMap" -> "LinkedList"
+      )
+      
+    val sortedJavaMapMapping = 
+      (javaMapMapping map { case (key, value) =>
+        (key, 
+         value.replace("javaMap", "javaSortedMap")
+              .replace("java.util.Map[", "java.util.SortedMap["))
+      }) ++ 
+      List(
+        "LinkedjavaSortedMap" -> "LinkedList"
       )
       
     val stringMapping = 
@@ -1136,15 +1153,15 @@ object GenContain {
     generateFile("ListShouldContainTheSameElementsInOrderAsSpec.scala", "Set", sortedSetMapping: _*)
     generateFile("ListShouldContainTheSameElementsInOrderAsLogicalAndSpec.scala", "Set", sortedSetMapping: _*)
     generateFile("ListShouldContainTheSameElementsInOrderAsLogicalOrSpec.scala", "Set", sortedSetMapping: _*)
-    // generateFile("ListShouldContainTheSameElementsInOrderAsSpec.scala", "Map", mapMapping: _*)
-    // generateFile("ListShouldContainTheSameElementsInOrderAsLogicalAndSpec.scala", "Map", mapMapping: _*)
-    // generateFile("ListShouldContainTheSameElementsInOrderAsLogicalOrSpec.scala", "Map", mapMapping: _*)
+    generateFile("ListShouldContainTheSameElementsInOrderAsSpec.scala", "Map", sortedMapMapping: _*)
+    generateFile("ListShouldContainTheSameElementsInOrderAsLogicalAndSpec.scala", "Map", sortedMapMapping: _*)
+    generateFile("ListShouldContainTheSameElementsInOrderAsLogicalOrSpec.scala", "Map", sortedMapMapping: _*)
     generateFile("ListShouldContainTheSameElementsInOrderAsSpec.scala", "JavaCol", javaColMapping: _*)
     generateFile("ListShouldContainTheSameElementsInOrderAsLogicalAndSpec.scala", "JavaCol", javaColMapping: _*)
     generateFile("ListShouldContainTheSameElementsInOrderAsLogicalOrSpec.scala", "JavaCol", javaColMapping: _*)
-    // generateFile("ListShouldContainTheSameElementsInOrderAsSpec.scala", "JavaMap", javaMapMapping: _*)
-    // generateFile("ListShouldContainTheSameElementsInOrderAsLogicalAndSpec.scala", "JavaMap", javaMapMapping: _*)
-    // generateFile("ListShouldContainTheSameElementsInOrderAsLogicalOrSpec.scala", "JavaMap", javaMapMapping: _*)
+    generateFile("ListShouldContainTheSameElementsInOrderAsSpec.scala", "JavaMap", sortedJavaMapMapping: _*)
+    generateFile("ListShouldContainTheSameElementsInOrderAsLogicalAndSpec.scala", "JavaMap", sortedJavaMapMapping: _*)
+    generateFile("ListShouldContainTheSameElementsInOrderAsLogicalOrSpec.scala", "JavaMap", sortedJavaMapMapping: _*)
     generateFile("ListShouldContainTheSameElementsInOrderAsSpec.scala", "JavaSet", javaSortedSetMapping: _*)
     generateFile("ListShouldContainTheSameElementsInOrderAsLogicalAndSpec.scala", "JavaSet", javaSortedSetMapping: _*)
     generateFile("ListShouldContainTheSameElementsInOrderAsLogicalOrSpec.scala", "JavaSet", javaSortedSetMapping: _*)
@@ -1193,15 +1210,15 @@ object GenContain {
     generateFile("ListShouldContainInOrderOnlySpec.scala", "Set", sortedSetMapping: _*)
     generateFile("ListShouldContainInOrderOnlyLogicalAndSpec.scala", "Set", sortedSetMapping: _*)
     generateFile("ListShouldContainInOrderOnlyLogicalOrSpec.scala", "Set", sortedSetMapping: _*)
-    // generateFile("ListShouldContainInOrderOnlySpec.scala", "Map", mapMapping: _*)
-    // generateFile("ListShouldContainInOrderOnlyLogicalAndSpec.scala", "Map", mapMapping: _*)
-    // generateFile("ListShouldContainInOrderOnlyLogicalOrSpec.scala", "Map", mapMapping: _*)
+    generateFile("ListShouldContainInOrderOnlySpec.scala", "Map", sortedMapMapping: _*)
+    generateFile("ListShouldContainInOrderOnlyLogicalAndSpec.scala", "Map", sortedMapMapping: _*)
+    generateFile("ListShouldContainInOrderOnlyLogicalOrSpec.scala", "Map", sortedMapMapping: _*)
     generateFile("ListShouldContainInOrderOnlySpec.scala", "JavaCol", javaColMapping: _*)
     generateFile("ListShouldContainInOrderOnlyLogicalAndSpec.scala", "JavaCol", javaColMapping: _*)
     generateFile("ListShouldContainInOrderOnlyLogicalOrSpec.scala", "JavaCol", javaColMapping: _*)
-    // generateFile("ListShouldContainInOrderOnlySpec.scala", "JavaMap", javaMapMapping: _*)
-    // generateFile("ListShouldContainInOrderOnlyLogicalAndSpec.scala", "JavaMap", javaMapMapping: _*)
-    // generateFile("ListShouldContainInOrderOnlyLogicalOrSpec.scala", "JavaMap", javaMapMapping: _*)
+    generateFile("ListShouldContainInOrderOnlySpec.scala", "JavaMap", sortedJavaMapMapping: _*)
+    generateFile("ListShouldContainInOrderOnlyLogicalAndSpec.scala", "JavaMap", sortedJavaMapMapping: _*)
+    generateFile("ListShouldContainInOrderOnlyLogicalOrSpec.scala", "JavaMap", sortedJavaMapMapping: _*)
     generateFile("ListShouldContainInOrderOnlySpec.scala", "JavaSet", javaSortedSetMapping: _*)
     generateFile("ListShouldContainInOrderOnlyLogicalAndSpec.scala", "JavaSet", javaSortedSetMapping: _*)
     generateFile("ListShouldContainInOrderOnlyLogicalOrSpec.scala", "JavaSet", javaSortedSetMapping: _*)
@@ -1216,15 +1233,15 @@ object GenContain {
     generateFile("ListShouldContainInOrderSpec.scala", "Set", sortedSetMapping: _*)
     generateFile("ListShouldContainInOrderLogicalAndSpec.scala", "Set", sortedSetMapping: _*)
     generateFile("ListShouldContainInOrderLogicalOrSpec.scala", "Set", sortedSetMapping: _*)
-    // generateFile("ListShouldContainInOrderSpec.scala", "Map", mapMapping: _*)
-    // generateFile("ListShouldContainInOrderLogicalAndSpec.scala", "Map", mapMapping: _*)
-    // generateFile("ListShouldContainInOrderLogicalOrSpec.scala", "Map", mapMapping: _*)
+    generateFile("ListShouldContainInOrderSpec.scala", "Map", sortedMapMapping: _*)
+    generateFile("ListShouldContainInOrderLogicalAndSpec.scala", "Map", sortedMapMapping: _*)
+    generateFile("ListShouldContainInOrderLogicalOrSpec.scala", "Map", sortedMapMapping: _*)
     generateFile("ListShouldContainInOrderSpec.scala", "JavaCol", javaColMapping: _*)
     generateFile("ListShouldContainInOrderLogicalAndSpec.scala", "JavaCol", javaColMapping: _*)
     generateFile("ListShouldContainInOrderLogicalOrSpec.scala", "JavaCol", javaColMapping: _*)
-    // generateFile("ListShouldContainInOrderSpec.scala", "JavaMap", javaMapMapping: _*)
-    // generateFile("ListShouldContainInOrderLogicalAndSpec.scala", "JavaMap", javaMapMapping: _*)
-    // generateFile("ListShouldContainInOrderLogicalOrSpec.scala", "JavaMap", javaMapMapping: _*)
+    generateFile("ListShouldContainInOrderSpec.scala", "JavaMap", sortedJavaMapMapping: _*)
+    generateFile("ListShouldContainInOrderLogicalAndSpec.scala", "JavaMap", sortedJavaMapMapping: _*)
+    generateFile("ListShouldContainInOrderLogicalOrSpec.scala", "JavaMap", sortedJavaMapMapping: _*)
     generateFile("ListShouldContainInOrderSpec.scala", "JavaSet", javaSortedSetMapping: _*)
     generateFile("ListShouldContainInOrderLogicalAndSpec.scala", "JavaSet", javaSortedSetMapping: _*)
     generateFile("ListShouldContainInOrderLogicalOrSpec.scala", "JavaSet", javaSortedSetMapping: _*)

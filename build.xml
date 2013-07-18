@@ -1174,7 +1174,7 @@
             <reporter type="dashboard" directory="target/dash" numfiles="3" />
             <reporter type="junitxml" directory="target"/>
             <reporter type="stdout" config="DI"/>
-        	<reporter type="html" directory="target/html" config="D" />
+            <reporter type="html" directory="target/html" config="D" />
             <membersonly package="org.scalatest" />
             <membersonly package="org.scalautils" />
             <membersonly package="org.scalatest.fixture" />
@@ -1187,8 +1187,11 @@
             <membersonly package="org.scalatest.matchers" />
             <membersonly package="org.scalatest.suiteprop" />
             <membersonly package="org.scalatest.mock" />
-        	<membersonly package="org.scalatest.path" />
-        	<membersonly package="org.scalatest.selenium" />
+            <membersonly package="org.scalatest.path" />
+            <membersonly package="org.scalatest.selenium" />
+            <membersonly package="org.scalatest.exceptions" />
+            <!--<membersonly package="org.scalatest.time" />--> <!-- Enable this will hang the run, why? -->
+            <!--<membersonly package="org.scalatest.words" />--> <!-- Enable this will hang the run, why? -->
             <config name="dbname" value="testdb" />
         </scalatest>
     </target>

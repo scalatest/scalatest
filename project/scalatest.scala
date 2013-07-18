@@ -22,7 +22,11 @@ object ScalatestBuild extends Build {
                                   "org.scalatest.suiteprop", 
                                   "org.scalatest.mock", 
                                   "org.scalatest.path", 
-                                  "org.scalatest.selenium")
+                                  "org.scalatest.selenium", 
+                                  "org.scalatest.exceptions", 
+                                  "org.scalatest.time", 
+                                  "org.scalatest.words", 
+                                  "org.scalautils")
                                                      
   def isIncludedPackage(className: String) = {
     try {
