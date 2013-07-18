@@ -122,6 +122,26 @@ class SlowpokeDetectorSpec extends Spec with Matchers with Now {
       val thisMagicMoment = now()
       spd.detectSlowpokes(thisMagicMoment) shouldEqual Seq(Slowpoke("the suite name", "the suite ID", "the test name", Span(thisMagicMoment - 10, Millis)))
     }
+    def `should return multiple Slowpokes in oldest to youngest order` {
+      val spd = new SlowpokeDetector(timeout = 60000)
+      spd.testStarting(
+        suiteName = "the younger suite name",
+        suiteId = "AAA the younger suite ID", // Use AAA to get it first on ConcurrentSkipListSet iteration
+        testName = "the younger test name",
+        timeStamp = 20 // younger
+      )
+      spd.testStarting(
+        suiteName = "the older suite name",
+        suiteId = "BBB the older suite ID", // Use BBB to get it last on ConcurrentSkipListSet iteration
+        testName = "the older test name",
+        timeStamp = 10 // older
+      )
+      val thisMagicMoment = now()
+      spd.detectSlowpokes(thisMagicMoment) shouldEqual Seq(
+        Slowpoke("the older suite name", "BBB the older suite ID", "the older test name", Span(thisMagicMoment - 10, Millis)),
+        Slowpoke("the younger suite name", "AAA the younger suite ID", "the younger test name", Span(thisMagicMoment - 20, Millis))
+      )
+    }
     def `should return an empty Slowpoke seq if both a starting and ending event was received` {
       val spd = new SlowpokeDetector(timeout = 60000)
       spd.testStarting(

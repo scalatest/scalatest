@@ -57,6 +57,6 @@ private[scalatest] class SlowpokeDetector(timeout: Long = 60000, out: PrintStrea
   def detectSlowpokes(currentTimeStamp: Long): IndexedSeq[Slowpoke] = {
     val rts = runningTests.iterator.asScala.toVector
     val slowTests = rts.filter(currentTimeStamp - _.startTimeStamp > timeout)
-    slowTests.map(_.toSlowpoke(currentTimeStamp))
+    slowTests.sortBy(_.startTimeStamp).map(_.toSlowpoke(currentTimeStamp))
   }
 }
