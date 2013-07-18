@@ -26,6 +26,7 @@ import Runner.parsePropertiesArgsIntoMap
 import Runner.parseCompoundArgIntoSet
 import Runner.SELECTED_TAG
 import Runner.mergeMap
+import Runner.parseSuiteArgsIntoNameStrings
 import java.io.{StringWriter, PrintWriter}
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.atomic.AtomicInteger
@@ -569,6 +570,8 @@ class Framework extends SbtFramework {
     loader: ClassLoader,
     tagsToInclude: Set[String],
     tagsToExclude: Set[String],
+    membersOnly: List[String], 
+    wildcard: List[String], 
     configMap: ConfigMap, 
     repConfig: ReporterConfigurations,
     useSbtLogInfoReporter: Boolean,
@@ -614,10 +617,24 @@ class Framework extends SbtFramework {
           presentReminderWithFullStackTraces,
           presentReminderWithoutCanceledTests
         )
+    
+    private def filterWildcard(paths: List[String], taskDefs: Array[TaskDef]): Array[TaskDef] = 
+      if (paths.size > 0)
+        taskDefs.filter(td => paths.exists(td.fullyQualifiedName.startsWith(_)))
+      else
+        taskDefs
+      
+    private def filterMembersOnly(paths: List[String], taskDefs: Array[TaskDef]): Array[TaskDef] =
+      if (paths.size > 0)
+        filterWildcard(paths, taskDefs).filter { td => 
+          paths.exists(path => td.fullyQualifiedName.length > path.length && !td.fullyQualifiedName.substring(path.length + 1).contains('.'))
+        }
+      else
+        taskDefs
       
     def tasks(taskDefs: Array[TaskDef]): Array[Task] = 
       for { 
-        taskDef <- taskDefs 
+        taskDef <- filterMembersOnly(membersOnly, filterWildcard(wildcard, taskDefs))
         val task = createTask(taskDef)
         if task.shouldDiscover
       } yield task
@@ -746,6 +763,8 @@ class Framework extends SbtFramework {
     val configMap = parsePropertiesArgsIntoMap(propertiesArgsList)
     val tagsToInclude: Set[String] = parseCompoundArgIntoSet(includesArgsList, "-n")
     val tagsToExclude: Set[String] = parseCompoundArgIntoSet(excludesArgsList, "-l")
+    val membersOnly: List[String] = parseSuiteArgsIntoNameStrings(memberOnlyList, "-m")
+    val wildcard: List[String] = parseSuiteArgsIntoNameStrings(wildcardList, "-w")
     
     val fullReporterConfigurations: ReporterConfigurations = 
       if (remoteArgs.isEmpty) {
@@ -809,6 +828,8 @@ class Framework extends SbtFramework {
       testClassLoader,
       tagsToInclude,
       tagsToExclude,
+      membersOnly, 
+      wildcard, 
       configMap,
       reporterConfigs,
       useStdout, 
