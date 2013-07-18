@@ -53,28 +53,26 @@ private[scalatest] class SuiteRunner(suite: Suite, args: Args, status: ScalaTest
         
       try {
         val runStatus = suite.run(None, args)
-  
-        val rawString2 = Resources("suiteCompletedNormally")
-        val formatter = formatterForSuiteCompleted(suite)
-
-        val duration = System.currentTimeMillis - suiteStartTime
 
         // Must wait until runStatus completed before dispatching SuiteCompleted, because if parallel test execution is mixed in,
         // the main thread will return before the tests are done. And the HTMLReporter uses SuiteCompleted to
         // determine when to write the page for that suite.
-        runStatus.whenCompleted { succeed =>
-          if (!succeed)
+        runStatus.whenCompleted { succeeded =>
+          if (!succeeded)
             status.setFailed()
-          if (!suite.isInstanceOf[DistributedTestRunnerSuite])
-            dispatch(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), Some(duration), formatter, Some(TopOfClass(suite.getClass.getName)), suite.rerunner))
-          status.setCompleted()
+          val formatter = formatterForSuiteCompleted(suite)
+          val duration = System.currentTimeMillis - suiteStartTime
+          try {
+            if (!suite.isInstanceOf[DistributedTestRunnerSuite])
+              dispatch(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), Some(duration), formatter, Some(TopOfClass(suite.getClass.getName)), suite.rerunner))
+          }
+          finally status.setCompleted()
         }
       }
       catch {
         case e: NotAllowedException =>
           val formatter = Suite.formatterForSuiteAborted(suite, e.getMessage)
           val duration = System.currentTimeMillis - suiteStartTime
-          // dispatch(SuiteAborted(tracker.nextOrdinal(), e.getMessage, suite.suiteName, Some(suite.getClass.getName), None, None, formatter, rerunnable))
           dispatch(SuiteAborted(tracker.nextOrdinal(), e.getMessage, suite.suiteName, suite.suiteId, Some(suite.getClass.getName), Some(e), Some(duration), formatter, Some(SeeStackDepthException), suite.rerunner))
           status.setFailed()
           status.setCompleted()
@@ -91,6 +89,7 @@ private[scalatest] class SuiteRunner(suite: Suite, args: Args, status: ScalaTest
           dispatch(SuiteAborted(tracker.nextOrdinal(), rawString3, suite.suiteName, suite.suiteId, Some(suite.getClass.getName), Some(e), Some(duration), formatter3, Some(SeeStackDepthException), suite.rerunner))
           status.setFailed()
           status.setCompleted()
+          
         }
         case e: Throwable => 
           status.setFailed()
