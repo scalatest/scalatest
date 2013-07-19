@@ -23,16 +23,64 @@ import reflect.internal.util.{Position, OffsetPosition, RangePosition}
 class AssertionsMacro[C <: Context](val context: C) {
   import context.universe._
 
-  def apply(condition: Expr[Boolean]): Expr[Unit] = {
-    val text: Expr[String] = context.literal(getErrorMessage(condition.tree))
+  def apply(booleanExpr: Expr[Boolean]): Expr[Unit] = {
+    
+    val predicate = parsePredicate(booleanExpr.tree)
+    predicate match {
+      case Some(RecognizedPredicate(left, operator, right)) => 
+        val leftExpr = context.Expr(left)
+        val rightExpr = context.Expr(right)
+        operator match {
+          case "==" => reify { Assertions.macroAssertEqual(leftExpr.splice, rightExpr.splice) }
+          case "!=" => reify { Assertions.macroAssertNotEqual(leftExpr.splice, rightExpr.splice) }
+          case ">" => reify { Assertions.macroAssertTrue(leftExpr.splice, rightExpr.splice, booleanExpr.splice, "wasNotGreaterThan") }
+          case ">=" => reify { Assertions.macroAssertTrue(leftExpr.splice, rightExpr.splice, booleanExpr.splice, "wasNotGreaterThanOrEqualTo") }
+          case "<" => reify { Assertions.macroAssertTrue(leftExpr.splice, rightExpr.splice, booleanExpr.splice, "wasNotLessThan") }
+          case "<=" => reify { Assertions.macroAssertTrue(leftExpr.splice, rightExpr.splice, booleanExpr.splice, "wasNotLessThanOrEqualTo") }
+          case _ => 
+            val text: Expr[String] = context.literal(getText(booleanExpr.tree))
+            reify { Assertions.macroAssertTrue(booleanExpr.splice, text.splice)  }
+        }
+        // Would be interesting to see if using reify will make compile time longer
+        /*context.Expr(
+          Apply(
+            Select(
+              Select(
+                Select(Ident("org"), newTermName("scalatest")), newTermName("Assertions")
+              ), 
+              newTermName("macroEqual")
+            ), 
+            List(left, right)
+          )
+        )*/
+      case None => 
+        val text: Expr[String] = context.literal(getText(booleanExpr.tree))
+        reify { Assertions.macroAssertTrue(booleanExpr.splice, text.splice)  }
+    }
+    
+    /*val text: Expr[String] = context.literal(getErrorMessage(condition.tree))
     reify {
       if (!condition.splice) {
         throw Assertions.newAssertionFailedException(Some(text.splice), None, "Assertions.scala", "newAssert", 0)
       }
+    }*/
+  }
+  
+  case class RecognizedPredicate(left: Tree, operator: String, right: Tree)
+  
+  def parsePredicate(tree: Tree): Option[RecognizedPredicate] = {
+    tree match {
+      case apply: Apply if apply.args.size == 1 =>
+        apply.fun match {
+          case select: Select => 
+            Some(RecognizedPredicate(select.qualifier, select.name.decoded, apply.args(0)))
+          case _ => None
+        }
+      case _ => None
     }
   }
 
-  def getErrorMessage(tree: Tree): String = {
+  /*def getErrorMessage(tree: Tree): String = {
     tree match {
       case apply: Apply =>
         if (apply.args.size == 1) {
@@ -63,7 +111,7 @@ class AssertionsMacro[C <: Context](val context: C) {
       case _ =>
         FailureMessages("expressionFailed", UnquotedString(getText(tree)))
     }
-  }
+  }*/
   
   private[this] def getPosition(expr: Tree) = expr.pos.asInstanceOf[scala.reflect.internal.util.Position]
 
