@@ -40,28 +40,28 @@ class AssertionsMacro[C <: Context](val context: C) {
             case select: Select =>
               select.name.decoded match {
                 case "==" =>
-                  select.qualifier + " was not equal to " + apply.args(0)
+                  FailureMessages("wasNotEqualTo", select.qualifier, apply.args(0))
                 case "!=" =>
-                  select.qualifier + " was equal to " + apply.args(0)
+                  FailureMessages("wasEqualTo", select.qualifier, apply.args(0))
                 case ">" =>
-                  select.qualifier + " was not more than " + apply.args(0)
+                  FailureMessages("wasNotGreaterThan", select.qualifier, apply.args(0))
                 case ">=" =>
-                  select.qualifier + " was not more than or equal " + apply.args(0)
+                  FailureMessages("wasNotGreaterThanOrEqualTo", select.qualifier, apply.args(0))
                 case "<" =>
-                  select.qualifier + " was not less than " + apply.args(0)
+                  FailureMessages("wasNotLessThan", select.qualifier, apply.args(0))
                 case "<=" =>
-                  select.qualifier + " was not less than or equal " + apply.args(0)
+                  FailureMessages("wasNotLessThanOrEqualTo", select.qualifier, apply.args(0))
                 case _ =>
-                  getText(tree) + " fails."
+                  FailureMessages("expressionFailed", UnquotedString(getText(tree)))
               }
             case _ =>
-              getText(tree) + " fails."
+              FailureMessages("expressionFailed", UnquotedString(getText(tree)))
           }
         }
         else
-          getText(tree) + " fails."
+          FailureMessages("expressionFailed", UnquotedString(getText(tree)))
       case _ =>
-        getText(tree) + " fails."
+        FailureMessages("expressionFailed", UnquotedString(getText(tree)))
     }
   }
   
