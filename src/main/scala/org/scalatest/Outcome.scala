@@ -43,7 +43,7 @@ package org.scalatest
  *
  * <p>
  * Note: <code>Omitted</code> is currently not used in ScalaTest, but will eventually be used
- * to indicate everthing except specification-text provided by mechanisms such
+ * to indicate everything except specification-text provided by mechanisms such
  * as <code>GivenWhenThen</code> has been omitted or elided from the test body. This will enable
  * full specification output to be obtained without waiting for the actual test code
  * to execute.
@@ -378,7 +378,7 @@ case class Pending(message: Option[String] = None) extends Outcome {
  *
  * <p>
  * Note: This outcome is currently not used in ScalaTest, but will eventually be used
- * to indicate everthing except specification-text provided by mechanisms such
+ * to indicate everything except specification-text provided by mechanisms such
  * as <code>GivenWhenThen</code> has been omitted from the test body. This will enable
  * a the specification output to be obtained without waiting for the actual test code
  * to execute.
