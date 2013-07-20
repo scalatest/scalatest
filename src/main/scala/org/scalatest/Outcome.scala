@@ -138,6 +138,104 @@ sealed abstract class Outcome {
 }
 
 /**
+ * Companion object for trait <code>Outcome</code> that contains an implicit method that enables 
+ * collections of <code>Outcome</code>s to be flattened into a collections of contained exceptions.
+ */
+object Outcome {
+
+  /**
+   * Enables collections of <code>Outcome</code>s to be flattened into a collections of contained exceptions.
+   *
+   *
+   * <p>
+   * Here's an example:
+   * </p>
+   *
+   * <pre class="stREPL">
+   * scala&gt; import org.scalatest._
+   * import org.scalatest._
+   *
+   * scala&gt; import prop.TableDrivenPropertyChecks._
+   * import prop.TableDrivenPropertyChecks._
+   *
+   * scala&gt; val squares = // (includes errors)
+   *      |   Table(
+   *      |     ("x", "square"),
+   *      |     ( 0 ,     0   ),
+   *      |     ( 1 ,     1   ),
+   *      |     ( 2 ,     4   ),
+   *      |     ( 3 ,     8   ),
+   *      |     ( 4 ,    16   ),
+   *      |     ( 5 ,    26   ),
+   *      |     ( 6 ,    36   )
+   *      |   )
+   * squares: org.scalatest.prop.TableFor2[Int,Int] =
+   *   TableFor2((x,square), (0,0), (1,1), (2,4), (3,8), (4,16), (5,26), (6,36))
+   * </pre>
+   *
+   * <p>
+   * Given the above table, which includes some errors, you can obtain an <code>IndexedSeq</code> of the <code>Outcome</code>s
+   * of executing an assertion on each row of the table with <code>outcomeOf</code>, like this:
+   * </p>
+   * 
+   * <pre class="stREPL">
+   * scala&gt; import OutcomeOf._
+   * import OutcomeOf._
+   *
+   * scala&gt; import Matchers._
+   * import Matchers._
+   *
+   * scala&gt; val outcomes = for ((x, square) &lt;- squares) yield outcomeOf { square shouldEqual x * x }
+   * outcomes: IndexedSeq[org.scalatest.Outcome] =
+   *   Vector(Succeeded, Succeeded, Succeeded,
+   *   Failed(org.scalatest.exceptions.TestFailedException: 8 did not equal 9), Succeeded,
+   *   Failed(org.scalatest.exceptions.TestFailedException: 26 did not equal 25), Succeeded)
+   * </pre>
+   *
+   * <p>
+   * Now you have a collection of all the outcomes, including successful ones. If you just want the <code>Failed</code> and <code>Canceled</code> outcomes, which
+   * contain exceptions, you can filter out anything that isn't "exceptional," like this:
+   * </p>
+   * 
+   * <pre class="stREPL">
+   * scala&gt; outcomes.filter(_.isExceptional)
+   * res1: IndexedSeq[org.scalatest.Outcome] =
+   *   Vector(Failed(org.scalatest.exceptions.TestFailedException: 8 did not equal 9),
+   *   Failed(org.scalatest.exceptions.TestFailedException: 26 did not equal 25))
+   * </pre>
+   *
+   * <p>
+   * But if you just wanted the contained exceptions, you can (thanks to this implicit method) invoke <code>flatten</code> on your collection:
+   * </p>
+   * 
+   * <pre class="stREPL">
+   * scala&gt; outcomes.flatten
+   * res2: IndexedSeq[Throwable] =
+   *   Vector(org.scalatest.exceptions.TestFailedException: 8 did not equal 9,
+   *   org.scalatest.exceptions.TestFailedException: 26 did not equal 25)
+   * </pre>
+   */
+  implicit def convertOutcomeToIterator(outcome: Outcome): Iterator[Throwable] =
+    outcome match {
+      case Exceptional(ex) => // Return an iterator with one Throwable in it
+        new Iterator[Throwable] {
+          private var spent: Boolean = false
+          def hasNext: Boolean = !spent
+          def next: Throwable =
+            if (!spent) {
+              spent = true
+              ex
+           } else throw new NoSuchElementException
+        }
+      case _ => // Return an empty iterator
+        new Iterator[Throwable] {
+          def hasNext: Boolean = false
+          def next: Throwable = throw new NoSuchElementException
+        }
+    }
+}
+
+/**
  * Superclass for the two outcomes of running a test that contain an exception: <code>Failed</code> and <code>Canceled</code>.
  *
  * <p>

@@ -61,32 +61,6 @@ class OutcomeSpec extends Spec with OptionValues with OutcomeOf {
     val res3: Outcome = Canceled(ex3)
     val res4: Outcome = Pending()
     val res5: Outcome = Omitted
-/*
-    def `can be easily pattern matched on based on whether it is either Failed or Canceled` {
-      def isFailedOrCanceled(res: Outcome): Boolean =
-        res match {
-          case _: FailedOrCanceled => true
-          case _ => false
-        }
-      assert(!isFailedOrCanceled(res1))
-      assert(isFailedOrCanceled(res2))
-      assert(isFailedOrCanceled(res3))
-      assert(!isFailedOrCanceled(res4))
-      assert(!isFailedOrCanceled(res5))
-    }
-    def `can be easily pattern matched on, extracting the exception, based on whether it is either Failed or Canceled` {
-      def insideFailedOrCanceled(res: Outcome): Option[Throwable] =
-        res match {
-          case ExceptionalH(ex) => Some(ex)
-          case _ => None
-        }
-      assert(insideFailedOrCanceled(res1).isEmpty)
-      assert(insideFailedOrCanceled(res2).value eq ex2)
-      assert(insideFailedOrCanceled(res3).value eq ex3)
-      assert(insideFailedOrCanceled(res4).isEmpty)
-      assert(insideFailedOrCanceled(res5).isEmpty)
-    }
-*/
     def `can be easily pattern matched on based on whether it is Exceptional` {
       def matchesExceptional(res: Outcome): Boolean =
         res match {
@@ -125,16 +99,9 @@ class OutcomeSpec extends Spec with OptionValues with OutcomeOf {
       assert(res4.toOption.isEmpty)
       assert(res5.toOption.isEmpty)
     }
-/*
     def `can be implicitly converted to an Iterable so it can be flattened` {
-      assert(res1.iterator.size === 0)
-      assert(res2.iterator.size === 1)
-      assert(res3.iterator.size === 1)
-      assert(res4.iterator.size === 1)
-      assert(res5.iterator.size === 1)
       assert(Vector(res1, res2, res3, res4, res5).flatten === Vector(ex2, ex3))
     }
-*/
   }
 
   object `The outcomeOf method` {
