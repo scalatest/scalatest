@@ -101,6 +101,20 @@ class OutcomeSpec extends Spec with OptionValues with OutcomeOf {
     }
     def `can be implicitly converted to an Iterable so it can be flattened` {
       assert(Vector(res1, res2, res3, res4, res5).flatten === Vector(ex2, ex3))
+      val succeededs: Vector[Succeeded.type] = Vector(Succeeded, Succeeded, Succeeded)
+      assert(succeededs.flatten === Vector.empty)
+      val pendings: Vector[Pending] = Vector(Pending(), Pending(), Pending())
+      assert(pendings.flatten === Vector.empty)
+      val omitteds: Vector[Omitted.type] = Vector(Omitted, Omitted, Omitted)
+      assert(omitteds.flatten === Vector.empty)
+      val rtEx1 = new RuntimeException
+      val rtEx2 = new RuntimeException
+      val faileds: Vector[Failed] = Vector(Failed(rtEx1), Failed(ex2), Failed(rtEx2))
+      assert(faileds.flatten === Vector(rtEx1, ex2, rtEx2))
+      val tceEx1 = new exceptions.TestCanceledException(1)
+      val tceEx2 = new exceptions.TestCanceledException(2)
+      val canceleds: Vector[Canceled] = Vector(Canceled(tceEx1), Canceled(ex3), Canceled(tceEx2))
+      assert(canceleds.flatten === Vector(tceEx1, ex3, tceEx2))
     }
   }
 
