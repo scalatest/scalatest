@@ -119,7 +119,7 @@ class TestFailedException(
     this(
       {
         if (cause == null) throw new NullPointerException("cause was null")
-        Some(if (cause.getMessage == null) "" else cause.getMessage)
+        if (cause.getMessage == null) None else Some(cause.getMessage)
       },
       Some(cause),
       failedCodeStackDepth
