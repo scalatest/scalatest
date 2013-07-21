@@ -123,8 +123,18 @@ class OutcomeSpec extends Spec with OptionValues with OutcomeOf {
       assert(canceleds.flatten === Vector(tceEx1, ex3, tceEx2))
     }
   }
+  object `The Failed class` {
+    def `should offer a constructor that takes any exception and returns it unchanged from its exception field` {
+      val ex1 = new exceptions.TestCanceledException(0)
+      assert(new Failed(ex1).exception eq ex1)
+      val ex2 = new exceptions.TestFailedException(0)
+      assert(new Failed(ex2).exception eq ex2)
+      val ex3 = new RuntimeException
+      assert(new Failed(ex3).exception eq ex3)
+    }
+  }
   object `The Failed companion object` {
-    def `should offer a factory method that takes no parameters` {
+    def `should offer an apply factory method that takes no parameters` {
       val failed = Failed()
       failed.exception match {
         case tfe: exceptions.TestFailedException => 
@@ -135,12 +145,24 @@ class OutcomeSpec extends Spec with OptionValues with OutcomeOf {
         case _ => fail(failed.exception + " was not a TestFailedException")
       }
     } 
-    def `should offer a factory method that takes an exception` {
+    def `should offer an apply factory method that takes (and simply holds) an exception` {
       val ex = new RuntimeException
       val failed = Failed(ex)
       assert(failed.exception eq ex)
     }
-    def `should offer a factory method that takes a message` {
+    def `should offer a "here" factory method that takes an exception and wraps it in a TestFailedException` {
+      val ex = new RuntimeException("I meant to do that!")
+      val failed = Failed.here(ex)
+      failed.exception match {
+        case tfe: exceptions.TestFailedException => 
+          assert(tfe.message === Some("I meant to do that!"))
+          assert(tfe.getCause eq ex)
+          assert(tfe.failedCodeFileName === Some(fileName))
+          assert(tfe.failedCodeLineNumber === Some(thisLineNumber - 6))
+        case _ => fail(failed.exception + " was not a TestFailedException")
+      }
+    }
+    def `should offer an apply factory method that takes a message` {
       val failed = Failed("Oops!")
       failed.exception match {
         case tfe: exceptions.TestFailedException => 
@@ -151,7 +173,7 @@ class OutcomeSpec extends Spec with OptionValues with OutcomeOf {
         case _ => fail(failed.exception + " was not a TestFailedException")
       }
     }
-    def `should offer a factory method that takes a message and an exception` {
+    def `should offer an apply factory method that takes a message and an exception, simply holding the exception` {
       val ex = new RuntimeException
       val failed = Failed("Oops!", ex)
       failed.exception match {
@@ -164,8 +186,18 @@ class OutcomeSpec extends Spec with OptionValues with OutcomeOf {
       }
     }
   }
+  object `The Canceled class` {
+    def `should offer a constructor that takes any exception and returns it unchanged from its exception field` {
+      val ex1 = new exceptions.TestCanceledException(0)
+      assert(new Canceled(ex1).exception eq ex1)
+      val ex2 = new exceptions.TestFailedException(0)
+      assert(new Canceled(ex2).exception eq ex2)
+      val ex3 = new RuntimeException
+      assert(new Canceled(ex3).exception eq ex3)
+    }
+  }
   object `The Canceled companion object` {
-    def `should offer a factory method that takes no parameters` {
+    def `should offer an apply factory method that takes no parameters` {
       val canceled = Canceled()
       canceled.exception match {
         case tce: exceptions.TestCanceledException => 
@@ -176,27 +208,32 @@ class OutcomeSpec extends Spec with OptionValues with OutcomeOf {
         case _ => fail(canceled.exception + " was not a TestCanceledException")
       }
     }
-    def `should offer a factory method that takes a TestCanceledException` {
+    def `should offer an apply factory method that takes (and simply holds) an exception` {
       val tce = new exceptions.TestCanceledException(1)
       val canceled = Canceled(tce)
       assert(canceled.exception eq tce)
-      val e: Throwable = tce
-      val canceled2 = Canceled(e)
+
+      val tceAsThrowable: Throwable = tce
+      val canceled2 = Canceled(tceAsThrowable)
       assert(canceled2.exception eq tce)
+
+      val re = new RuntimeException
+      val canceled3 = Canceled(re)
+      assert(canceled3.exception eq re)
     }
-    def `should offer a factory method that takes a non-TestCanceledException and wraps it in a TestCanceledException` {
-      val ex = new RuntimeException
-      val canceled = Canceled(ex)
+    def `should offer a "here" factory method that takes an exception and wraps it in a TestCanceledException` {
+      val ex = new RuntimeException("I meant to do that!")
+      val canceled = Canceled.here(ex)
       canceled.exception match {
-        case tce: exceptions.TestCanceledException => 
-          assert(tce.message === None)
-          assert(tce.cause === Some(ex))
-          assert(tce.failedCodeFileName === Some(fileName))
-          assert(tce.failedCodeLineNumber === Some(thisLineNumber - 6))
+        case tfe: exceptions.TestCanceledException => 
+          assert(tfe.message === Some("I meant to do that!"))
+          assert(tfe.getCause eq ex)
+          assert(tfe.failedCodeFileName === Some(fileName))
+          assert(tfe.failedCodeLineNumber === Some(thisLineNumber - 6))
         case _ => fail(canceled.exception + " was not a TestCanceledException")
       }
     }
-    def `should offer a factory method that takes a message` {
+    def `should offer an apply factory method that takes a message` {
       val canceled = Canceled("Oops!")
       canceled.exception match {
         case tfe: exceptions.TestCanceledException => 
@@ -207,12 +244,7 @@ class OutcomeSpec extends Spec with OptionValues with OutcomeOf {
         case _ => fail(canceled.exception + " was not a TestCanceledException")
       }
     }
-    def `should offer a factory method that takes a message and a TestCanceledException` {
-      val tce = new exceptions.TestCanceledException(1)
-      val canceled = Canceled("Oops!", tce)
-      assert(canceled.exception eq tce)
-    }
-    def `should offer a factory method that takes a message and a non-TestCanceledException and wrap it in a TestCanceledException` {
+    def `should offer an apply factory method that takes a message and an exception (simply holding the exception)` {
       val ex = new RuntimeException
       val canceled = Canceled("Oops!", ex)
       canceled.exception match {

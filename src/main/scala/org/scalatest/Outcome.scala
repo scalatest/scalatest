@@ -393,18 +393,19 @@ case class Failed(exception: Throwable) extends Exceptional(exception) {
   override val isFailed: Boolean = true
 }
 
-// TODO: I think I should override def apply(cause: Throwable) so that it checks to see if this
-// is a TFE already, and if so, just uses it, else wraps it. But then it seems like I should do
-// the same thing in fail() itself. But then you'd lose the stack depth of the fail() call. 
-// Actually, maybe I should just always track it. And if you don't want that, say new Failed()?
-// I think that may be useful, because otherwise you can't see where an outcome was changed.
-// So Failed(ex), like fail(ex), always wraps in a TFE that grabs the same message of the cause.
-// If you really don't want that, you can say new Failed(...).
 object Failed {
   def apply(): Failed = new Failed(new TestFailedException(1))
   def apply(message: String): Failed = new Failed(new TestFailedException(message, 1))
   // I always wrap this in a TFE because I need to do that to get the message in there.
   def apply(message: String, cause: Throwable): Failed = new Failed(new TestFailedException(message, cause, 1))
+  def here(cause: Throwable): Failed = {
+    new Failed(
+      if (cause.getMessage != null)
+        new exceptions.TestFailedException(cause.getMessage, cause, 1)
+       else
+        new exceptions.TestFailedException(cause, 1)
+     )
+  }
 }
 
 /**
@@ -412,7 +413,7 @@ object Failed {
  *
  * @param ex the <code>TestCanceledException</code> contained in this <code>Exceptional</code>.
  */
-case class Canceled(exception: exceptions.TestCanceledException) extends Exceptional(exception) {
+case class Canceled(exception: Throwable) extends Exceptional(exception) {
 
   /**
    * Indicates that this <code>Outcome</code> represents a test that was canceled.
@@ -434,17 +435,8 @@ case class Canceled(exception: exceptions.TestCanceledException) extends Excepti
 object Canceled {
 
   def apply(): Canceled = new Canceled(new exceptions.TestCanceledException(1))
-  // If it is already a TCE, just uses that. Else wraps it.
-  def apply(cause: Throwable): Canceled =
-    cause match {
-      case tce: exceptions.TestCanceledException => new Canceled(tce)
-      case _ => new Canceled(new exceptions.TestCanceledException(cause, 1))
-    }
-  def apply(message: String, cause: Throwable): Canceled =
-    cause match {
-      case tce: exceptions.TestCanceledException => new Canceled(tce)
-      case _ => new Canceled(new exceptions.TestCanceledException(message, cause, 1))
-    }
+  def apply(message: String, cause: Throwable): Canceled = // TODO write tests for NPEs
+    new Canceled(new exceptions.TestCanceledException(message, cause, 1)) // Always wrap in a TCE so we can include the message
 
   /**
    * Creates a <code>Canceled</code> outcome given a string message.
@@ -475,6 +467,15 @@ object Canceled {
     val e = new exceptions.TestCanceledException(message, 1)
     e.fillInStackTrace()
     Canceled(e)
+  }
+
+  def here(cause: Throwable): Canceled = {
+    new Canceled(
+      if (cause.getMessage != null)
+        new exceptions.TestCanceledException(cause.getMessage, cause, 1)
+       else
+        new exceptions.TestCanceledException(cause, 1)
+     )
   }
 }
 
