@@ -28,42 +28,39 @@ class AssertionsMacro[C <: Context](val context: C) {
     val predicate = parsePredicate(booleanExpr.tree)
     predicate match {
       case Some(RecognizedPredicate(left, operator, right)) => 
-        val leftExpr = context.Expr(left)
-        val rightExpr = context.Expr(right)
-        operator match {
-          case "==" => reify { Assertions.macroAssertEqual(leftExpr.splice, rightExpr.splice) }
-          case "!=" => reify { Assertions.macroAssertNotEqual(leftExpr.splice, rightExpr.splice) }
-          case ">" => reify { Assertions.macroAssertTrue(leftExpr.splice, rightExpr.splice, booleanExpr.splice, "wasNotGreaterThan") }
-          case ">=" => reify { Assertions.macroAssertTrue(leftExpr.splice, rightExpr.splice, booleanExpr.splice, "wasNotGreaterThanOrEqualTo") }
-          case "<" => reify { Assertions.macroAssertTrue(leftExpr.splice, rightExpr.splice, booleanExpr.splice, "wasNotLessThan") }
-          case "<=" => reify { Assertions.macroAssertTrue(leftExpr.splice, rightExpr.splice, booleanExpr.splice, "wasNotLessThanOrEqualTo") }
-          case _ => 
-            val text: Expr[String] = context.literal(getText(booleanExpr.tree))
-            reify { Assertions.macroAssertTrue(booleanExpr.splice, text.splice)  }
-        }
-        // Would be interesting to see if using reify will make compile time longer
-        /*context.Expr(
+        val args = 
+          operator match {
+            case "==" => List(left, right, booleanExpr.tree, context.literal("wasNotEqualTo").tree)
+            case "!=" => List(left, right, booleanExpr.tree, context.literal("wasEqualTo").tree)
+            case ">" => List(left, right, booleanExpr.tree, context.literal("wasNotGreaterThan").tree)
+            case ">=" => List(left, right, booleanExpr.tree, context.literal("wasNotGreaterThanOrEqualTo").tree)
+            case "<" => List(left, right, booleanExpr.tree, context.literal("wasNotLessThan").tree)
+            case "<=" => List(left, right, booleanExpr.tree, context.literal("wasNotLessThanOrEqualTo").tree)
+            case _ => 
+              val text: Expr[String] = context.literal(getText(booleanExpr.tree))
+              List(booleanExpr.tree, text.tree)
+          }
+        context.Expr(
           Apply(
             Select(
-              Select(
-                Select(Ident("org"), newTermName("scalatest")), newTermName("Assertions")
-              ), 
-              newTermName("macroEqual")
-            ), 
-            List(left, right)
-          )
-        )*/
+              Ident("scalatestAssertionsHelper"), 
+              newTermName("macroAssertTrue")
+            ),
+            args
+          )  
+        )
       case None => 
         val text: Expr[String] = context.literal(getText(booleanExpr.tree))
-        reify { Assertions.macroAssertTrue(booleanExpr.splice, text.splice)  }
+        context.Expr(
+          Apply(
+            Select(
+              Ident("scalatestAssertionsHelper"), 
+              newTermName("macroAssertTrue")
+            ), 
+            List(booleanExpr.tree, text.tree)
+          )  
+        )
     }
-    
-    /*val text: Expr[String] = context.literal(getErrorMessage(condition.tree))
-    reify {
-      if (!condition.splice) {
-        throw Assertions.newAssertionFailedException(Some(text.splice), None, "Assertions.scala", "newAssert", 0)
-      }
-    }*/
   }
   
   case class RecognizedPredicate(left: Tree, operator: String, right: Tree)
@@ -73,45 +70,12 @@ class AssertionsMacro[C <: Context](val context: C) {
       case apply: Apply if apply.args.size == 1 =>
         apply.fun match {
           case select: Select => 
-            Some(RecognizedPredicate(select.qualifier, select.name.decoded, apply.args(0)))
+            Some(RecognizedPredicate(select.qualifier.duplicate, select.name.decoded, apply.args(0).duplicate))
           case _ => None
         }
       case _ => None
     }
   }
-
-  /*def getErrorMessage(tree: Tree): String = {
-    tree match {
-      case apply: Apply =>
-        if (apply.args.size == 1) {
-          apply.fun match {
-            case select: Select =>
-              select.name.decoded match {
-                case "==" =>
-                  FailureMessages("wasNotEqualTo", select.qualifier, apply.args(0))
-                case "!=" =>
-                  FailureMessages("wasEqualTo", select.qualifier, apply.args(0))
-                case ">" =>
-                  FailureMessages("wasNotGreaterThan", select.qualifier, apply.args(0))
-                case ">=" =>
-                  FailureMessages("wasNotGreaterThanOrEqualTo", select.qualifier, apply.args(0))
-                case "<" =>
-                  FailureMessages("wasNotLessThan", select.qualifier, apply.args(0))
-                case "<=" =>
-                  FailureMessages("wasNotLessThanOrEqualTo", select.qualifier, apply.args(0))
-                case _ =>
-                  FailureMessages("expressionFailed", UnquotedString(getText(tree)))
-              }
-            case _ =>
-              FailureMessages("expressionFailed", UnquotedString(getText(tree)))
-          }
-        }
-        else
-          FailureMessages("expressionFailed", UnquotedString(getText(tree)))
-      case _ =>
-        FailureMessages("expressionFailed", UnquotedString(getText(tree)))
-    }
-  }*/
   
   private[this] def getPosition(expr: Tree) = expr.pos.asInstanceOf[scala.reflect.internal.util.Position]
 
