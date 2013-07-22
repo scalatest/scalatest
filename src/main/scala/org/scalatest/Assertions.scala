@@ -378,6 +378,7 @@ trait Assertions extends LegacyTripleEquals {
   }
 */
 
+  import language.experimental.macros
   /**
    * Assert that a boolean condition is true.
    * If the condition is <code>true</code>, this method returns normally.
@@ -386,13 +387,23 @@ trait Assertions extends LegacyTripleEquals {
    * @param condition the boolean condition to assert
    * @throws TestFailedException if the condition is <code>false</code>.
    */
-  def assert(condition: Boolean) {
-    if (!condition)
-      throw newAssertionFailedException(None, None, 4)
+  def assert(condition: Boolean): Unit = macro AssertionsMacro.apply
+  
+  class AssertionsHelper {
+    def macroAssertTrue(condition: Boolean, expressionText: String) {
+      if (!condition) 
+        throw newAssertionFailedException(Some(FailureMessages("expressionFailed", UnquotedString(expressionText))), None, "Assertions.scala", "macroAssertTrue", 2)
+    }
+  
+    def macroAssertTrue(left: Any, right: Any, condition: Boolean, resourceName: String) {
+      if (!condition) {
+        val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)
+        throw newAssertionFailedException(Some(FailureMessages(resourceName, leftee, rightee)), None, "Assertions.scala", "macroAssertTrue", 2)
+      }
+    }
   }
   
-  import language.experimental.macros
-  def newAssert(condition: Boolean): Unit = macro AssertionsMacro.apply
+  val scalatestAssertionsHelper = new AssertionsHelper
 
   private[scalatest] def newAssertionFailedException(optionalMessage: Option[Any], optionalCause: Option[Throwable], stackDepth: Int): Throwable =
     (optionalMessage, optionalCause) match {
@@ -1216,26 +1227,5 @@ object Assertions extends Assertions {
         }
       }
     }
-  }
-  def macroAssertTrue(condition: Boolean, expressionText: String) {
-    if (!condition) 
-      throw newAssertionFailedException(Some(FailureMessages("expressionFailed", UnquotedString(expressionText))), None, "Assertions.scala", "newAssert", 1)
-  }
-  
-  def macroAssertTrue(left: Any, right: Any, condition: Boolean, resourceName: String) {
-    if (!condition) 
-      throw newAssertionFailedException(Some(FailureMessages(resourceName, left, right)), None, "Assertions.scala", "newAssert", 1)
-  }
-  
-  def macroAssertEqual(left: Any, right: Any) { // TODO: Pass in implicit Equality with of course, type T instead of Any
-    if (left != right) {
-      val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)
-      throw newAssertionFailedException(Some(FailureMessages("wasNotEqualTo", leftee, rightee)), None, "Assertions.scala", "newAssert", 1)
-    }
-  }
-  
-  def macroAssertNotEqual(left: Any, right: Any) { // TODO: Pass in implicit Equality with of course, type T instead of Any
-    if (left == right) 
-      throw newAssertionFailedException(Some(FailureMessages("wasEqualTo", left, right)), None, "Assertions.scala", "newAssert", 1)
   }
 }
