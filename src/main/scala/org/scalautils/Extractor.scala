@@ -52,10 +52,10 @@ val InternalServerError =
     e.getMessage == "500:Internal Server Error"
   }
 */
-final case class Detector(partial: PartialFunction[Throwable, Boolean]) {
+final case class Extractor[T](partial: PartialFunction[T, Boolean]) {
   if (partial == null) throw new NullPointerException("partial was null")
 
-  def unapply(exception: Throwable): Option[Throwable] = {
+  def unapply(exception: T): Option[T] = {
     if (partial.isDefinedAt(exception) && partial(exception)) Some(exception) else None
   }
 }

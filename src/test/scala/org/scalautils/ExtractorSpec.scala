@@ -15,22 +15,22 @@
  */
 package org.scalatest
 
-class DetectorSpec extends UnitSpec {
-  object `A Detector` {
+class ExtractorSpec extends UnitSpec {
+  object `An Extractor` {
     class DBAccessException(message: String) extends RuntimeException(message)
     class OtherException extends RuntimeException
     val msg500 = "500: Internal Server Error"
     val msg404 = "404: Page Not Found"
     def `should throw NPE if the given partial function is null` {
       a [NullPointerException] should be thrownBy {
-        Detector { null }
+        Extractor[Throwable] { null }
       }
       a [NullPointerException] should be thrownBy {
-        new Detector(null)
+        new Extractor[Throwable](null)
       }
     }
     def `should be usable as an extractor for catching exceptions` {
-      val InternalServerError = Detector { case dbae: DBAccessException => dbae.getMessage == "500: Internal Server Error" }
+      val InternalServerError = Extractor[Throwable] { case dbae: DBAccessException => dbae.getMessage == "500: Internal Server Error" }
       try throw new DBAccessException(msg500) 
       catch {
         case InternalServerError(e) =>
@@ -48,7 +48,7 @@ class DetectorSpec extends UnitSpec {
       }
     }
     def `should be usable as an extractor for detecting exceptions in Failed outcomes in withFixtures` {
-      val InternalServerError = Detector { case dbae: DBAccessException => dbae.getMessage == "500: Internal Server Error" }
+      val InternalServerError = Extractor[Throwable] { case dbae: DBAccessException => dbae.getMessage == "500: Internal Server Error" }
       val outcome1: Outcome = Failed(new DBAccessException(msg500))
       outcome1 match {
         case Failed(InternalServerError(e)) =>
