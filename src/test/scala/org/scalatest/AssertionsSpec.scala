@@ -137,13 +137,13 @@ class AssertionsSpec extends FunSpec with OptionValues {
     val bob = "bob"
     val alice = "alice"
     
-    def wasNotEqualTo(left: Any, right: Any): String = {
+    def didNotEqual(left: Any, right: Any): String = {
       val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)
-      FailureMessages("wasNotEqualTo", leftee, rightee)
+      FailureMessages("didNotEqual", leftee, rightee)
     }
       
-    def wasEqualTo(left: Any, right: Any): String = 
-      FailureMessages("wasEqualTo", left, right)
+    def equaled(left: Any, right: Any): String = 
+      FailureMessages("equaled", left, right)
       
     def expressionFailed(left: String): String = 
       FailureMessages("expressionFailed", UnquotedString(left))
@@ -180,7 +180,7 @@ class AssertionsSpec extends FunSpec with OptionValues {
       val e = intercept[TestFailedException] { 
         assert(a == 5) 
       }
-      assert(e.message === Some(wasNotEqualTo(3, 5)))
+      assert(e.message === Some(didNotEqual(3, 5)))
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
@@ -193,7 +193,7 @@ class AssertionsSpec extends FunSpec with OptionValues {
       val e = intercept[TestFailedException] { 
         assert(3 == b) 
       }
-      assert(e.message === Some(wasNotEqualTo(3, 5)))
+      assert(e.message === Some(didNotEqual(3, 5)))
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
@@ -206,7 +206,7 @@ class AssertionsSpec extends FunSpec with OptionValues {
       val e = intercept[TestFailedException] { 
         assert(a != 3) 
       }
-      assert(e.message === Some(wasEqualTo(3, 3)))
+      assert(e.message === Some(equaled(3, 3)))
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
@@ -219,7 +219,7 @@ class AssertionsSpec extends FunSpec with OptionValues {
       val e = intercept[TestFailedException] { 
         assert(5 != b) 
       }
-      assert(e.message === Some(wasEqualTo(5, 5)))
+      assert(e.message === Some(equaled(5, 5)))
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
@@ -243,7 +243,7 @@ class AssertionsSpec extends FunSpec with OptionValues {
       val e = intercept[TestFailedException] { 
         assert(a == b) 
       }
-      assert(e.message === Some(wasNotEqualTo(3, 5)))
+      assert(e.message === Some(didNotEqual(3, 5)))
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
@@ -252,7 +252,7 @@ class AssertionsSpec extends FunSpec with OptionValues {
       val e = intercept[TestFailedException] { 
         assert(a == null) 
       }
-      assert(e.message === Some(wasNotEqualTo(3, null)))
+      assert(e.message === Some(didNotEqual(3, null)))
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
@@ -261,7 +261,7 @@ class AssertionsSpec extends FunSpec with OptionValues {
       val e = intercept[TestFailedException] { 
         assert(null == a) 
       }
-      assert(e.message === Some(wasNotEqualTo(null, 3)))
+      assert(e.message === Some(didNotEqual(null, 3)))
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
@@ -270,7 +270,7 @@ class AssertionsSpec extends FunSpec with OptionValues {
       val e = intercept[TestFailedException] { 
         assert(3 != a) 
       }
-      assert(e.message === Some(wasEqualTo(3, 3)))
+      assert(e.message === Some(equaled(3, 3)))
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
@@ -403,7 +403,7 @@ class AssertionsSpec extends FunSpec with OptionValues {
       val e = intercept[TestFailedException] { 
         assert(bob == "alice") 
       }
-      assert(e.message === Some(wasNotEqualTo(bob, "alice")))
+      assert(e.message === Some(didNotEqual(bob, "alice")))
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
@@ -412,7 +412,7 @@ class AssertionsSpec extends FunSpec with OptionValues {
       val e = intercept[TestFailedException] { 
         assert(bob != "bob") 
       }
-      assert(e.message === Some(wasEqualTo(bob, "bob")))
+      assert(e.message === Some(equaled(bob, "bob")))
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
@@ -421,7 +421,7 @@ class AssertionsSpec extends FunSpec with OptionValues {
       val e = intercept[TestFailedException] { 
         assert(alice == "bob") 
       }
-      assert(e.message === Some(wasNotEqualTo(alice, "bob")))
+      assert(e.message === Some(didNotEqual(alice, "bob")))
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
@@ -430,7 +430,7 @@ class AssertionsSpec extends FunSpec with OptionValues {
       val e = intercept[TestFailedException] { 
         assert(alice != "alice") 
       }
-      assert(e.message === Some(wasEqualTo(alice, "alice")))
+      assert(e.message === Some(equaled(alice, "alice")))
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }

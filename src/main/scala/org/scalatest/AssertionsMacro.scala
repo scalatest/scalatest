@@ -30,8 +30,10 @@ class AssertionsMacro[C <: Context](val context: C) {
       case Some(RecognizedPredicate(left, operator, right)) => 
         val args = 
           operator match {
-            case "==" => List(left, right, booleanExpr.tree, context.literal("wasNotEqualTo").tree)
-            case "!=" => List(left, right, booleanExpr.tree, context.literal("wasEqualTo").tree)
+            case "==" => List(left, right, booleanExpr.tree, context.literal("didNotEqual").tree)
+            case "===" => List(left, right, booleanExpr.tree, context.literal("didNotEqual").tree)
+            case "!=" => List(left, right, booleanExpr.tree, context.literal("equaled").tree)
+            case "!==" => List(left, right, booleanExpr.tree, context.literal("equaled").tree)
             case ">" => List(left, right, booleanExpr.tree, context.literal("wasNotGreaterThan").tree)
             case ">=" => List(left, right, booleanExpr.tree, context.literal("wasNotGreaterThanOrEqualTo").tree)
             case "<" => List(left, right, booleanExpr.tree, context.literal("wasNotLessThan").tree)
