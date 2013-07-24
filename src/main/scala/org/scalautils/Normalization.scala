@@ -53,11 +53,7 @@ trait Normalization[A] { thisNormalization =>
    * normalizationPassedToAnd.normalized(normalizationOnWhichAndWasInvoked.normalized(a))
    * </pre>
    *
-   * <p>
-   * If the passed object is already in normal form, this method may return the same instance passed.
-   * </p>
-   *
-   * @param a the object to normalize
+   * @param other a <code>Normalization</code> to 'and' with this one
    * @return a <code>Normalization</code> representing the composition of this and the passed <code>Normalization</code>
    */
   final def and(other: Normalization[A]): Normalization[A] =

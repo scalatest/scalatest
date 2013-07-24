@@ -143,6 +143,41 @@ trait Uniformity[A] extends Normalization[A] { thisUniformity =>
 
   /**
    * Returns a new <code>Uniformity</code> that combines this and the passed <code>Uniformity</code>.
+   *
+   * <p>
+   * The <code>normalized</code>, <code>normalizeCanHandle</code>, and <code>normalizedOrSame</code> methods
+   * of the <code>Uniformity</code>'s returned by this method return a result 
+   * obtained by passing it first to this <code>Normalization</code>'s implementation of the method,
+   * then passing that result to the other <code>Normalization</code>'s <code>normalized</code> the method, respectively.
+   * Essentially, the body of the composed <code>normalized</code> method is:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * uniformityPassedToAnd.normalized(uniformityOnWhichAndWasInvoked.normalized(a))
+   * </pre>
+   *
+   * <p>
+   * The body of the composed <code>normalizeCanHandle</code> method is:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * uniformityPassedToAnd.normalizeCanHandle(uniformityOnWhichAndWasInvoked.normalizeCanHandle(a))
+   * </pre>
+   *
+   * <p>
+   * And the body of the composed <code>normalizedOrSame</code> method is:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * uniformityPassedToAnd.normalizedOrSame(uniformityOnWhichAndWasInvoked.normalizedOrSame(a))
+   * </pre>
+   *
+   * <p>
+   * If the passed object is already in normal form, this method may return the same instance passed.
+   * </p>
+   *
+   * @param other a <code>Uniformity</code> to 'and' with this one
+   * @return a <code>Uniformity</code> representing the composition of this and the passed <code>Uniformity</code>
    */
   final def and(other: Uniformity[A]): Uniformity[A] =
     new Uniformity[A] {
@@ -153,3 +188,4 @@ trait Uniformity[A] extends Normalization[A] { thisUniformity =>
       def normalizedOrSame(b: Any): Any = other.normalizedOrSame(thisUniformity.normalizedOrSame(b))
     }
 }
+

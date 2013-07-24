@@ -47,3 +47,4 @@ private[scalautils] final class DefaultEquality[A] extends Equality[A] {
     }
   }
 }
+
