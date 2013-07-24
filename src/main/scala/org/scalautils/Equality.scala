@@ -136,9 +136,6 @@ package org.scalautils
  *   }
  * </pre>
  *
- * <p>
- * </p>
- *
  * <em>Note: The <code>Equality</code> type class was inspired in part by the <code>Equal</code> type class of the 
  * <a href="http://code.google.com/p/scalaz/" target="_blank"><code>scalaz</code></a> project.</em>
  * </p>
@@ -147,6 +144,15 @@ package org.scalautils
  */
 trait Equality[A] extends Equivalence[A] {
 
+/*
+ * <p>
+ * The <code>equals</code> method of <code>java.lang.Object</code> and <code>areEqual</code> method of trait <code>Equality</code> have a similar
+ * signatures and behavior, and you write them in a similar way.
+ * When using <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a> or
+ * <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a>, however, 
+ * </p>
+ *
+*/
   /**
    * Indicates whether the objects passed as <code>a</code> and <code>b</code> are equal.
    *
