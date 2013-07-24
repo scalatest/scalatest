@@ -92,7 +92,7 @@ package org.scalautils
  * <p>
  * ScalaUtils defines a default <code>Equality[T]</code> for all types <code>T</code> whose <code>areEqual</code> method works by first
  * calling <code>.deep</code> on any passed array, then calling <code>==</code> on the left-hand object, passing in the right-hand object.
- * You can obtain a default equality via the <code>default</code> method of the <a href="Equality$.html">Equality</a> companion object,
+ * You can obtain a default equality via the <code>default</code> method of the <a href="Equality$.html">Equality companion object</a>,
  * or from the <code>defaultEquality</code> method defined in <a href="TripleEqualsSupport.html"</a><code>TripleEqualsSupport</code></a>.
  * </p>
  *
@@ -100,10 +100,18 @@ package org.scalautils
  * <h2>About equality and equivalence</h2>
  *
  * <p>
- * The <code>Equality</code> trait implements the Java Platform's notion of equality, as defined by the contract of the <code>equals</code>
- * method of <code>java.lang.Object</code>. Trait <code>Equality</code> essentially enables you to write an <code>equals</code> method for a type
- * outside its defining class. For example, here's a possible <code>equals</code> implementation for the <code>Person</code> case class
- * shown in the earlier example:
+ * The <code>Equality</code> trait represents the Java Platform's native notion of equality, as expressed in the signature and contract of
+ * the <code>equals</code> method of <code>java.lang.Object</code>. Essentially, trait <code>Equality</code> enables you to write alternate
+ * <code>equals</code> method implementations for a type outside its defining class.
+ * </p>
+ *
+ * <p>
+ * In an <code>equals</code> method, the left-hand type is known to be the type of <code>this</code>, but
+ * the right-hand type is <code>Any</code>.
+ * As a result, you would normally perform a runtime type test to determine whether the right-hand object is of an appropriate type for equality,
+ * and if so, compare it structurally for equality with the left-hand (<code>this</code>) object.
+ * An an illustration, here's a possible <code>equals</code>
+ * implementation for the <code>Person</code> case class shown in the earlier example:
  * </p>
  *
  * <pre class="stHighlight">
@@ -115,10 +123,7 @@ package org.scalautils
  * </pre>
  *
  * <p>
- * In an <code>equals</code> method, the left-hand type is known to be the type of <code>this</code> (in this case <code>Person</code>), but the right-hand type is <code>Any</code>.
- * As a result, you would normally perform a runtime type test to determine whether the right-hand object is of an appropriate type for equality,
- * and if so, compare it structurally for equality with the left-hand (<code>this</code>) object. The <code>areEquals</code> method
- * of an <code>Equality[T]</code> is similar. The left-hand type is known to be <code>T</code>, but the right-hand type is <code>Any</code>, so
+ * The <code>areEquals</code> method of <code>Equality[T]</code> is similar. The left-hand type is known to be <code>T</code>, but the right-hand type is <code>Any</code>, so
  * normally you'd need to do a runtime type test in your <code>areEqual</code> implementation.
  * Here's the <code>areEqual</code> method implementation from the earlier <code>Equality[Person]</code> example:
  * </p>
