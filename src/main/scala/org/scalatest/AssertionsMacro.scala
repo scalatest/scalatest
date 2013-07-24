@@ -42,7 +42,22 @@ class AssertionsMacro[C <: Context](val context: C) {
           }
         
         resourceName match {
-          case Some(resourceName) => 
+          case Some(resourceName) =>
+            /* 
+             * Translate the following:
+             * 
+             * assert(something.aMethod == 3)
+             * 
+             * to: 
+             * 
+             * {
+             *   val $org_scalatest_assert_macro_left = something.aMethod
+             *   val $org_scalatest_assert_macro_right = 3
+             *   val $org_scalatest_assert_macro_result = $org_scalatest_assert_macro_left ==  $org_scalatest_assert_macro_result
+             *   $org_scalatest_AssertionsHelper.macroAssertTrue($org_scalatest_assert_macro_left, $org_scalatest_assert_macro_right, $org_scalatest_assert_macro_result, "didNotEqual")
+             * }
+             * 
+             */
             context.Expr(
               Block(
                 ValDef(
@@ -74,6 +89,16 @@ class AssertionsMacro[C <: Context](val context: C) {
             )
           
           case None => 
+            /* 
+             * Translate the following:
+             * 
+             * assert(something.aMethod equals 3)
+             * 
+             * to: 
+             * 
+             * $org_scalatest_AssertionsHelper.macroAssertTrue(something.aMethod equals 3, "something.aMethod equals 3")
+             * 
+             */
             val text: Expr[String] = context.literal(getText(booleanExpr.tree))
             context.Expr(
               Apply(
@@ -86,6 +111,16 @@ class AssertionsMacro[C <: Context](val context: C) {
             )
         }
       case None => 
+        /* 
+         * Translate the following:
+         * 
+         * assert(validate(1, 2, 3))
+         * 
+         * to: 
+         * 
+         * $org_scalatest_AssertionsHelper.macroAssertTrue(validate(1, 2, 3), "validate(1, 2, 3)")
+         * 
+         */
         val text: Expr[String] = context.literal(getText(booleanExpr.tree))
         context.Expr(
           Apply(
