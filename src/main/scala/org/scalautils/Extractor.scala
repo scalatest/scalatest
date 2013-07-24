@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
+package org.scalautils
 
 /*
  Describe need to deal with flickers. Fix them so they pass 100% if you can, but if not, the problem

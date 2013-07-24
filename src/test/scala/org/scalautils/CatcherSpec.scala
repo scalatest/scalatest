@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
+package org.scalautils
+
+import org.scalatest._
 
 // TODO: Do tests for equal, hashcode, toString, etc., since no longer a case class
 class CatcherSpec extends UnitSpec {
