@@ -403,7 +403,7 @@ trait Assertions extends LegacyTripleEquals {
     }
   }
   
-  val scalatestAssertionsHelper = new AssertionsHelper
+  val $org_scalatest_AssertionsHelper = new AssertionsHelper
 
   private[scalatest] def newAssertionFailedException(optionalMessage: Option[Any], optionalCause: Option[Throwable], stackDepth: Int): Throwable =
     (optionalMessage, optionalCause) match {

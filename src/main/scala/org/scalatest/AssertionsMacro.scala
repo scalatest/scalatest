@@ -27,22 +27,7 @@ class AssertionsMacro[C <: Context](val context: C) {
     
     val predicate = parsePredicate(booleanExpr.tree)
     predicate match {
-      case Some(RecognizedPredicate(left, operator, encodedOperator, right, subsitutedExpr)) => 
-        /*val args = 
-          operator match {
-            case "==" => List(left, right, booleanExpr.tree, context.literal("didNotEqual").tree)
-            case "===" => List(left, right, booleanExpr.tree, context.literal("didNotEqual").tree)
-            case "!=" => List(left, right, booleanExpr.tree, context.literal("equaled").tree)
-            case "!==" => List(left, right, booleanExpr.tree, context.literal("equaled").tree)
-            case ">" => List(left, right, booleanExpr.tree, context.literal("wasNotGreaterThan").tree)
-            case ">=" => List(left, right, booleanExpr.tree, context.literal("wasNotGreaterThanOrEqualTo").tree)
-            case "<" => List(left, right, booleanExpr.tree, context.literal("wasNotLessThan").tree)
-            case "<=" => List(left, right, booleanExpr.tree, context.literal("wasNotLessThanOrEqualTo").tree)
-            case _ => 
-              val text: Expr[String] = context.literal(getText(booleanExpr.tree))
-              List(booleanExpr.tree, text.tree)
-          }*/
-        
+      case Some(RecognizedPredicate(left, operator, right, subsitutedExpr)) => 
         val resourceName: Option[String] = 
           operator match {
             case "==" => Some("didNotEqual")
@@ -80,7 +65,7 @@ class AssertionsMacro[C <: Context](val context: C) {
                 ), 
                 Apply(
                   Select(
-                    Ident("scalatestAssertionsHelper"), 
+                    Ident("$org_scalatest_AssertionsHelper"), 
                     newTermName("macroAssertTrue")
                   ),
                   List(Ident(newTermName("$org_scalatest_assert_macro_left")), Ident(newTermName("$org_scalatest_assert_macro_right")), Ident(newTermName("$org_scalatest_assert_macro_result")), context.literal(resourceName).tree)
@@ -93,7 +78,7 @@ class AssertionsMacro[C <: Context](val context: C) {
             context.Expr(
               Apply(
                 Select(
-                  Ident("scalatestAssertionsHelper"), 
+                  Ident("$org_scalatest_AssertionsHelper"), 
                   newTermName("macroAssertTrue")
                 ), 
                 List(booleanExpr.tree, text.tree)
@@ -105,7 +90,7 @@ class AssertionsMacro[C <: Context](val context: C) {
         context.Expr(
           Apply(
             Select(
-              Ident("scalatestAssertionsHelper"), 
+              Ident("$org_scalatest_AssertionsHelper"), 
               newTermName("macroAssertTrue")
             ), 
             List(booleanExpr.tree, text.tree)
@@ -114,7 +99,7 @@ class AssertionsMacro[C <: Context](val context: C) {
     }
   }
   
-  case class RecognizedPredicate(left: Tree, operator: String, encodedOperator: String, right: Tree, subsitutedExpr: Apply)
+  case class RecognizedPredicate(left: Tree, operator: String, right: Tree, subsitutedExpr: Apply)
   
   def parsePredicate(tree: Tree): Option[RecognizedPredicate] = {
     tree match {
@@ -129,7 +114,7 @@ class AssertionsMacro[C <: Context](val context: C) {
                 ), 
                 List(Ident("$org_scalatest_assert_macro_right"))
               )
-            Some(RecognizedPredicate(select.qualifier.duplicate, select.name.decoded, select.name + "", apply.args(0).duplicate, sExpr))
+            Some(RecognizedPredicate(select.qualifier.duplicate, select.name.decoded, apply.args(0).duplicate, sExpr))
           case funApply: Apply if funApply.args.size == 1 => // For === and !== that takes Equality
             funApply.fun match {
               case select: Select if select.name.decoded == "===" || select.name.decoded == "!==" => 
@@ -144,7 +129,7 @@ class AssertionsMacro[C <: Context](val context: C) {
                     ), 
                     List(apply.args(0).duplicate)
                   )
-                Some(RecognizedPredicate(select.qualifier.duplicate, select.name.decoded, select.name + "", funApply.args(0).duplicate, sExpr))
+                Some(RecognizedPredicate(select.qualifier.duplicate, select.name.decoded, funApply.args(0).duplicate, sExpr))
               case _ => None
             }
           case _ => None
