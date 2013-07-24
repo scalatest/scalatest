@@ -73,6 +73,12 @@ class AssertionsMacro[C <: Context](val context: C) {
         apply.fun match {
           case select: Select => 
             Some(RecognizedPredicate(select.qualifier.duplicate, select.name.decoded, apply.args(0).duplicate))
+          case funApply: Apply if funApply.args.size == 1 => // For === and !== that takes Equality
+            funApply.fun match {
+              case select: Select if select.name.decoded == "===" || select.name.decoded == "!==" => 
+                Some(RecognizedPredicate(select.qualifier.duplicate, select.name.decoded, funApply.args(0).duplicate))
+              case _ => None
+            }
           case _ => None
         }
       case _ => None
