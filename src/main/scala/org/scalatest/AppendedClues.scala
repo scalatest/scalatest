@@ -154,7 +154,22 @@ trait AppendedClues {
           case None => Some(clue.toString)
         }
       try {
-        fun
+        val outcome = fun
+        outcome match {
+          case exceptional: Exceptional => 
+            exceptional.toOption match {
+              case Some(e) => 
+                e match {
+                  case e: org.scalatest.exceptions.ModifiableMessage[_] =>
+                    if (clue.toString != "")
+                      Exceptional(e.modifyMessage(append)).asInstanceOf[T]
+                    else
+                      outcome
+                }
+              case None => outcome
+            }
+          case _ => outcome
+        }
       }
       catch {
         case e: ModifiableMessage[_] =>

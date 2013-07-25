@@ -21,6 +21,7 @@ import org.scalatest.junit.JUnitTestFailedError
 import prop.TableDrivenPropertyChecks
 import prop.TableFor1
 import time.{Second, Span}
+import SharedHelpers.EventRecordingReporter
 
 /* Uncomment after remove type aliases in org.scalatest package object
 import org.scalatest.exceptions.TestFailedException
@@ -167,6 +168,29 @@ class ClueSpec extends FlatSpec with ShouldMatchers with TableDrivenPropertyChec
           throw e
         }
       }
+    }
+  }
+  
+  it should "work when used in withFixture" in {
+    forAll(examples) { e => 
+      val a = 
+        new org.scalatest.fixture.FunSpec {
+          type FixtureParam = String
+        
+          override def withFixture(test: OneArgTest) = {
+            withClue("a clue") {
+              test("something")
+            }
+          }
+        
+          it("should do something") { p => 
+            throw e
+          }
+        }
+      val rep = new EventRecordingReporter()
+      a.run(None, Args(rep))
+      rep.testFailedEventsReceived.length should be (1)
+      rep.testFailedEventsReceived(0).message should be ("a clue message")
     }
   }
 }

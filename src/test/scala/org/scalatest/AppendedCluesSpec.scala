@@ -20,6 +20,7 @@ import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.junit.JUnitTestFailedError
 import prop.{TableDrivenPropertyChecks, TableFor1}
 import time.{Span, Second}
+import SharedHelpers.EventRecordingReporter
 
 // TODO: Test with imported AppendedClues
 class AppendedCluesSpec extends FlatSpec with ShouldMatchers with AppendedClues with TableDrivenPropertyChecks  with SeveredStackTraces {
@@ -200,6 +201,27 @@ class AppendedCluesSpec extends FlatSpec with ShouldMatchers with AppendedClues 
           failWith(e)
         } withClue (null)
       }
+    }
+  }
+  
+  it should "work when used in withFixture" in {
+    forAll(examples) { e => 
+      val a = 
+        new org.scalatest.fixture.FunSpec {
+          type FixtureParam = String
+        
+          override def withFixture(test: OneArgTest) = {
+            test("something") withClue("a clue")
+          }
+        
+          it("should do something") { p => 
+            throw e
+          }
+        }
+      val rep = new EventRecordingReporter()
+      a.run(None, Args(rep))
+      rep.testFailedEventsReceived.length should be (1)
+      rep.testFailedEventsReceived(0).message should be ("message a clue")
     }
   }
 }
