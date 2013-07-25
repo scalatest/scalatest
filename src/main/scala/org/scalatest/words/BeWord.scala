@@ -28,6 +28,7 @@ import org.scalatest.enablers.Sortable
 import org.scalatest.enablers.Readability
 import org.scalatest.enablers.Writability
 import org.scalatest.enablers.Emptiness
+import org.scalatest.enablers.Definition
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="ShouldMatchers.html"><code>ShouldMatchers</code></a> or <a href="MustMatchers.html"><code>MustMatchers</code></a> for an overview of
@@ -683,6 +684,29 @@ final class BeWord {
               emptiness.isEmpty(left), 
               FailureMessages("wasNotEmpty", left), 
               FailureMessages("wasEmpty", left)
+            )
+          }
+        }
+    }
+  
+  /**
+   * This method enables syntax such as the following:
+   *
+   * <pre class="stHighlight">
+   * array should be (defined)
+   *                 ^
+   * </pre>
+   */
+  def apply(defined: DefinedWord): MatcherFactory1[Any, Definition] = 
+    new MatcherFactory1[Any, Definition] {
+      def matcher[T <: Any : Definition]: Matcher[T] = 
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+            val definition = implicitly[Definition[T]]
+            MatchResult(
+              definition.isDefined(left), 
+              FailureMessages("wasNotDefined", left), 
+              FailureMessages("wasDefined", left)
             )
           }
         }

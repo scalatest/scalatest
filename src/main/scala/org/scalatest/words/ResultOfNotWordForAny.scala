@@ -750,6 +750,24 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
         )    
       )
   }
+  
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * option should not be defined
+   *                      ^
+   * </pre>
+   */
+  def be[U](definedWord: DefinedWord)(implicit definition: Definition[T]) {
+    if (definition.isDefined(left) != shouldBeTrue)
+      throw newTestFailedException(
+        FailureMessages(
+          if (shouldBeTrue) "wasNotDefined" else "wasDefined", 
+          left
+        )    
+      )
+  }
 
   def contain(newOneOf: ResultOfOneOfApplication)(implicit containing: Containing[T]) {
 

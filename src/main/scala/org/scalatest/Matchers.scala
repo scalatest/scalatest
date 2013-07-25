@@ -3356,6 +3356,26 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         }
       }
     }
+    
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * all(xs) should not be defined
+     *                    ^
+     * </pre>
+     */
+    def be(definedWord: DefinedWord)(implicit definition: Definition[T]) {
+      doCollected(collected, xs, "be", 1) { e => 
+        if (definition.isDefined(e) != shouldBeTrue) {
+          throw newTestFailedException(
+            FailureMessages(if (shouldBeTrue) "wasNotDefined" else "wasDefined", e), 
+            None, 
+            6
+          )
+        }
+      }
+    }
 
     /**
      * This method enables the following syntax:
@@ -4496,6 +4516,21 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, "shouldBe", 1) { e =>
         if (!emptiness.isEmpty(e))
           throw newTestFailedException(FailureMessages("wasNotEmpty", e), None, 6)
+      }
+    }
+    
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * all(xs) shouldBe defined
+     *         ^
+     * </pre>
+     */
+    def shouldBe(definedWord: DefinedWord)(implicit definition: Definition[T]) {
+      doCollected(collected, xs, "shouldBe", 1) { e =>
+        if (!definition.isDefined(e))
+          throw newTestFailedException(FailureMessages("wasNotDefined", e), None, 6)
       }
     }
 
@@ -5851,6 +5886,19 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def shouldBe(right: EmptyWord)(implicit emptiness: Emptiness[T]) {
       if (!emptiness.isEmpty(left))
         throw newTestFailedException(FailureMessages("wasNotEmpty", left))
+    }
+    
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * result shouldBe defined
+     *        ^
+     * </pre>
+     */
+    def shouldBe(right: DefinedWord)(implicit definition: Definition[T]) {
+      if (!definition.isDefined(left))
+        throw newTestFailedException(FailureMessages("wasNotDefined", left))
     }
 
     /**
