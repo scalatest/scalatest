@@ -700,6 +700,17 @@ final class NotWord {
     apply(MatcherWords.be(emptyWord))
     
   /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * result should (not be defined and not equal something)
+     *                    ^
+     * </pre>
+     */
+  def be(definedWord: DefinedWord): MatcherFactory1[Any, Definition] =
+    apply(MatcherWords.be(definedWord))
+    
+  /**
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">

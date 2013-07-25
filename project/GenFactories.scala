@@ -78,6 +78,7 @@ import org.scalatest.words.ResultOfNotExist
 import org.scalatest.words.ReadableWord
 import org.scalatest.words.WritableWord
 import org.scalatest.words.EmptyWord
+import org.scalatest.words.DefinedWord
 
 /**
  * A matcher factory that can produce a matcher given $nTypeclassInstances$.
@@ -1080,6 +1081,17 @@ $endif$
      */
     def be(emptyWord: EmptyWord) = 
       thisMatcherFactory.and(MatcherWords.not.be(emptyWord))
+    
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * (aMatcherFactory and not be defined)
+     *                          ^
+     * </pre>
+     */
+    def be(definedWord: DefinedWord) = 
+      thisMatcherFactory.and(MatcherWords.not.be(definedWord))
     
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -2177,6 +2189,17 @@ $endif$
     def be(emptyWord: EmptyWord) = 
       thisMatcherFactory.or(MatcherWords.not.be(emptyWord))
 
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * (aMatcherFactory or not be defined)
+     *                         ^
+     * </pre>
+     */
+    def be(definedWord: DefinedWord) = 
+      thisMatcherFactory.or(MatcherWords.not.be(definedWord))
+    
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *

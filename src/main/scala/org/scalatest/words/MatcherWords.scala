@@ -160,6 +160,16 @@ trait MatcherWords {
   val sorted = new SortedWord
 
   /**
+   * This field enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * seq should be (defined)
+   *               ^
+   * </pre>
+   */
+  val defined = new DefinedWord
+  
+  /**
    * This method enables the following syntax: 
    *
    * <pre class="stHighlight">
