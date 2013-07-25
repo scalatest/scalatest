@@ -553,8 +553,8 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
    *                  ^
    * </pre>
    */
-  def be(symbol: Symbol)(implicit ev: T <:< AnyRef) {
-    val matcherResult = matchSymbolToPredicateMethod(left, symbol, false, false)
+  def be(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef) {
+    val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), symbol, false, false)
     if (matcherResult.matches != shouldBeTrue) {
       throw newTestFailedException(
         if (shouldBeTrue) matcherResult.failureMessage else matcherResult.negatedFailureMessage
@@ -591,8 +591,8 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
    *                        ^
    * </pre>
    */
-  def be(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit ev: T <:< AnyRef) {
-    val matcherResult = matchSymbolToPredicateMethod(left, resultOfAWordApplication.symbol, true, true)
+  def be(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef) {
+    val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), resultOfAWordApplication.symbol, true, true)
     if (matcherResult.matches != shouldBeTrue) {
       throw newTestFailedException(
         if (shouldBeTrue) matcherResult.failureMessage else matcherResult.negatedFailureMessage
@@ -629,8 +629,8 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
    *                     ^
    * </pre>
    */
-  def be(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit ev: T <:< AnyRef) {
-    val matcherResult = matchSymbolToPredicateMethod(left, resultOfAnWordApplication.symbol, true, false)
+  def be(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef) {
+    val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), resultOfAnWordApplication.symbol, true, false)
     if (matcherResult.matches != shouldBeTrue) {
       throw newTestFailedException(
         if (shouldBeTrue) matcherResult.failureMessage else matcherResult.negatedFailureMessage
@@ -667,8 +667,8 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
    *                        ^
    * </pre>
    */
-  def be(resultOfSameInstanceAsApplication: ResultOfTheSameInstanceAsApplication)(implicit ev: T <:< AnyRef) {
-    if ((resultOfSameInstanceAsApplication.right eq left) != shouldBeTrue) {
+  def be(resultOfSameInstanceAsApplication: ResultOfTheSameInstanceAsApplication)(implicit toAnyRef: T <:< AnyRef) {
+    if ((resultOfSameInstanceAsApplication.right eq toAnyRef(left)) != shouldBeTrue) {
       throw newTestFailedException(
         FailureMessages(
           if (shouldBeTrue) "wasNotSameInstanceAs" else "wasSameInstanceAs",

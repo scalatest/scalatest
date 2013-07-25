@@ -1647,8 +1647,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                  ^
      * </pre>
      */
-    def theSameInstanceAs(right: AnyRef)(implicit ev: T <:< AnyRef) {
-      if ((left eq right) != shouldBeTrue)
+    def theSameInstanceAs(right: AnyRef)(implicit toAnyRef: T <:< AnyRef) {
+      if ((toAnyRef(left) eq right) != shouldBeTrue)
         throw newTestFailedException(
           FailureMessages(
             if (shouldBeTrue) "wasNotSameInstanceAs" else "wasSameInstanceAs",
@@ -1687,8 +1687,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
-    def a(symbol: Symbol)(implicit ev: T <:< AnyRef) {
-      val matcherResult = matchSymbolToPredicateMethod(left, symbol, true, true)
+    def a(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef) {
+      val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), symbol, true, true)
       if (matcherResult.matches != shouldBeTrue) {
         throw newTestFailedException(
           if (shouldBeTrue) matcherResult.failureMessage else matcherResult.negatedFailureMessage
@@ -1727,8 +1727,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                 ^
      * </pre>
      */
-    def an(symbol: Symbol)(implicit ev: T <:< AnyRef) {
-      val matcherResult = matchSymbolToPredicateMethod(left, symbol, true, false)
+    def an(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef) {
+      val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), symbol, true, false)
       if (matcherResult.matches != shouldBeTrue) {
         throw newTestFailedException(
           if (shouldBeTrue) matcherResult.failureMessage else matcherResult.negatedFailureMessage
@@ -3222,9 +3222,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
-    def be(symbol: Symbol)(implicit ev: T <:< AnyRef) {
+    def be(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef) {
       doCollected(collected, xs, "be", 1) { e => 
-        val matcherResult = matchSymbolToPredicateMethod(e, symbol, false, false)
+        val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), symbol, false, false)
         if (matcherResult.matches != shouldBeTrue) {
           throw newTestFailedException(
             if (shouldBeTrue) matcherResult.failureMessage else matcherResult.negatedFailureMessage, 
@@ -3243,9 +3243,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
-    def be(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit ev: T <:< AnyRef) {
+    def be(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef) {
       doCollected(collected, xs, "be", 1) { e => 
-        val matcherResult = matchSymbolToPredicateMethod(e, resultOfAWordApplication.symbol, true, true)
+        val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), resultOfAWordApplication.symbol, true, true)
         if (matcherResult.matches != shouldBeTrue) {
           throw newTestFailedException(
             if (shouldBeTrue) matcherResult.failureMessage else matcherResult.negatedFailureMessage, 
@@ -3264,9 +3264,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
-    def be(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit ev: T <:< AnyRef) {
+    def be(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef) {
       doCollected(collected, xs, "be", 1) { e => 
-        val matcherResult = matchSymbolToPredicateMethod(e, resultOfAnWordApplication.symbol, true, false)
+        val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), resultOfAnWordApplication.symbol, true, false)
         if (matcherResult.matches != shouldBeTrue) {
           throw newTestFailedException(
             if (shouldBeTrue) matcherResult.failureMessage else matcherResult.negatedFailureMessage, 
@@ -4203,9 +4203,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                   ^
      * </pre>
      */
-    def theSameInstanceAs(right: AnyRef)(implicit ev: T <:< AnyRef) {
+    def theSameInstanceAs(right: AnyRef)(implicit toAnyRef: T <:< AnyRef) {
       doCollected(collected, xs, "theSameInstanceAs", 1) { e =>
-        if ((e eq right) != shouldBeTrue)
+        if ((toAnyRef(e) eq right) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
               if (shouldBeTrue) "wasNotSameInstanceAs" else "wasSameInstanceAs",
@@ -4226,9 +4226,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                   ^
      * </pre>
      */
-    def a(symbol: Symbol)(implicit ev: T <:< AnyRef) {
+    def a(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef) {
       doCollected(collected, xs, "a", 1) { e =>
-        val matcherResult = matchSymbolToPredicateMethod(e, symbol, true, true)
+        val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), symbol, true, true)
         if (matcherResult.matches != shouldBeTrue) {
           throw newTestFailedException(
             if (shouldBeTrue) matcherResult.failureMessage else matcherResult.negatedFailureMessage, 
@@ -4247,9 +4247,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                   ^
      * </pre>
      */
-    def an(symbol: Symbol)(implicit ev: T <:< AnyRef) {
+    def an(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef) {
       doCollected(collected, xs, "an", 1) { e =>
-        val matcherResult = matchSymbolToPredicateMethod(e, symbol, true, false)
+        val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), symbol, true, false)
         if (matcherResult.matches != shouldBeTrue) {
           throw newTestFailedException(
             if (shouldBeTrue) matcherResult.failureMessage else matcherResult.negatedFailureMessage, 
@@ -4739,9 +4739,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def shouldBe(resultOfSameInstanceAsApplication: ResultOfTheSameInstanceAsApplication)(implicit ev: T <:< AnyRef) {
+    def shouldBe(resultOfSameInstanceAsApplication: ResultOfTheSameInstanceAsApplication)(implicit toAnyRef: T <:< AnyRef) {
       doCollected(collected, xs, "shouldBe", 1) { e =>
-        if (e ne resultOfSameInstanceAsApplication.right)
+        if (toAnyRef(e) ne resultOfSameInstanceAsApplication.right)
           throw newTestFailedException(
             FailureMessages(
               "wasNotSameInstanceAs",
@@ -4762,9 +4762,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def shouldBe(symbol: Symbol)(implicit ev: T <:< AnyRef) {
+    def shouldBe(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef) {
       doCollected(collected, xs, "shouldBe", 1) { e =>
-        val matcherResult = matchSymbolToPredicateMethod(e, symbol, false, true, 6)
+        val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), symbol, false, true, 6)
         if (!matcherResult.matches) 
           throw newTestFailedException(matcherResult.failureMessage, None, 6)
       }
@@ -4778,9 +4778,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *      ^
      * </pre>
      */
-    def shouldBe(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit ev: T <:< AnyRef) {
+    def shouldBe(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef) {
       doCollected(collected, xs, "shouldBe", 1) { e =>
-        val matcherResult = matchSymbolToPredicateMethod(e, resultOfAWordApplication.symbol, true, true, 6)
+        val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), resultOfAWordApplication.symbol, true, true, 6)
         if (!matcherResult.matches) {
           throw newTestFailedException(matcherResult.failureMessage, None, 6)
         }
@@ -4795,9 +4795,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *      ^
      * </pre>
      */
-    def shouldBe(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit ev: T <:< AnyRef) {
+    def shouldBe(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef) {
       doCollected(collected, xs, "shouldBe", 1) { e =>
-        val matcherResult = matchSymbolToPredicateMethod(e, resultOfAnWordApplication.symbol, true, false, 6)
+        val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), resultOfAnWordApplication.symbol, true, false, 6)
         if (!matcherResult.matches) {
           throw newTestFailedException(matcherResult.failureMessage, None, 6)
         }
@@ -5937,8 +5937,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def shouldBe(resultOfSameInstanceAsApplication: ResultOfTheSameInstanceAsApplication)(implicit ev: T <:< AnyRef) {
-      if (resultOfSameInstanceAsApplication.right ne left) {
+    def shouldBe(resultOfSameInstanceAsApplication: ResultOfTheSameInstanceAsApplication)(implicit toAnyRef: T <:< AnyRef) {
+      if (resultOfSameInstanceAsApplication.right ne toAnyRef(left)) {
         throw newTestFailedException(
           FailureMessages(
             "wasNotSameInstanceAs",
@@ -5958,8 +5958,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *      ^
      * </pre>
      */
-    def shouldBe(symbol: Symbol)(implicit ev: T <:< AnyRef) {
-      val matcherResult = matchSymbolToPredicateMethod(left, symbol, false, true)
+    def shouldBe(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef) {
+      val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), symbol, false, true)
       if (!matcherResult.matches) 
         throw newTestFailedException(matcherResult.failureMessage)
     }
@@ -5972,8 +5972,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *      ^
      * </pre>
      */
-    def shouldBe(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit ev: T <:< AnyRef) {
-      val matcherResult = matchSymbolToPredicateMethod(left, resultOfAWordApplication.symbol, true, true)
+    def shouldBe(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef) {
+      val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), resultOfAWordApplication.symbol, true, true)
       if (!matcherResult.matches) {
         throw newTestFailedException(
           matcherResult.failureMessage
@@ -5989,8 +5989,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *      ^
      * </pre>
      */
-    def shouldBe(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit ev: T <:< AnyRef) {
-      val matcherResult = matchSymbolToPredicateMethod(left, resultOfAnWordApplication.symbol, true, false)
+    def shouldBe(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef) {
+      val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), resultOfAnWordApplication.symbol, true, false)
       if (!matcherResult.matches) {
         throw newTestFailedException(
           matcherResult.failureMessage
