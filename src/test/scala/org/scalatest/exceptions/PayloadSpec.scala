@@ -100,4 +100,14 @@ class PayloadSpec extends FlatSpec with ShouldMatchers with TableDrivenPropertyC
       rep.testFailedEventsReceived(0).payload should be (Some("a payload"))
     }
   }
+  
+  it should "infer the type of the result of the passed in function" in {
+    val result: Int = withPayload("hi") { 22 }
+    assert(result === 22)
+  }
+  
+  it should "be able to accept by-name payload" in {
+    val result: String = withPayload(() => 128) { "hello" }
+    assert(result === "hello")
+  }
 }
