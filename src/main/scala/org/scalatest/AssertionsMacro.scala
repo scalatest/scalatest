@@ -26,90 +26,54 @@ class AssertionsMacro[C <: Context](val context: C) {
   def apply(booleanExpr: Expr[Boolean]): Expr[Unit] = {
     
     val predicate = parsePredicate(booleanExpr.tree)
+    val text: Expr[String] = context.literal(getText(booleanExpr.tree))
     predicate match {
       case Some(RecognizedPredicate(left, operator, right, subsitutedExpr)) => 
-        val resourceName: Option[String] = 
-          operator match {
-            case "==" => Some("didNotEqual")
-            case "===" => Some("didNotEqual")
-            case "!=" => Some("equaled")
-            case "!==" => Some("equaled")
-            case ">" => Some("wasNotGreaterThan")
-            case ">=" => Some("wasNotGreaterThanOrEqualTo")
-            case "<" => Some("wasNotLessThan")
-            case "<=" => Some("wasNotLessThanOrEqualTo")
-            case _ => None
-          }
+        /* 
+         * Translate the following:
+         * 
+         * assert(something.aMethod == 3)
+         * 
+         * to: 
+         * 
+         * {
+         *   val $org_scalatest_assert_macro_left = something.aMethod
+         *   val $org_scalatest_assert_macro_right = 3
+         *   val $org_scalatest_assert_macro_result = $org_scalatest_assert_macro_left ==  $org_scalatest_assert_macro_result
+         *   $org_scalatest_AssertionsHelper.macroAssertTrue($org_scalatest_assert_macro_left, "==", $org_scalatest_assert_macro_right, $org_scalatest_assert_macro_result, "something.aMethod == 3")
+         * }
+         * 
+         */
+        context.Expr(
+          Block(
+            ValDef(
+              Modifiers(), 
+              newTermName("$org_scalatest_assert_macro_left"), 
+              TypeTree(), 
+              left.duplicate
+            ), 
+            ValDef(
+              Modifiers(), 
+              newTermName("$org_scalatest_assert_macro_right"), 
+              TypeTree(), 
+              right.duplicate
+            ), 
+            ValDef(
+              Modifiers(), 
+              newTermName("$org_scalatest_assert_macro_result"), 
+              TypeTree(), 
+              subsitutedExpr
+            ), 
+            Apply(
+              Select(
+                Ident("$org_scalatest_AssertionsHelper"), 
+                newTermName("macroAssertTrue")
+              ),
+              List(Ident(newTermName("$org_scalatest_assert_macro_left")), context.literal(operator).tree, Ident(newTermName("$org_scalatest_assert_macro_right")), Ident(newTermName("$org_scalatest_assert_macro_result")), text.tree)
+            )
+          )
+        )
         
-        resourceName match {
-          case Some(resourceName) =>
-            /* 
-             * Translate the following:
-             * 
-             * assert(something.aMethod == 3)
-             * 
-             * to: 
-             * 
-             * {
-             *   val $org_scalatest_assert_macro_left = something.aMethod
-             *   val $org_scalatest_assert_macro_right = 3
-             *   val $org_scalatest_assert_macro_result = $org_scalatest_assert_macro_left ==  $org_scalatest_assert_macro_result
-             *   $org_scalatest_AssertionsHelper.macroAssertTrue($org_scalatest_assert_macro_left, $org_scalatest_assert_macro_right, $org_scalatest_assert_macro_result, "didNotEqual")
-             * }
-             * 
-             */
-            context.Expr(
-              Block(
-                ValDef(
-                  Modifiers(), 
-                  newTermName("$org_scalatest_assert_macro_left"), 
-                  TypeTree(), 
-                  left.duplicate
-                ), 
-                ValDef(
-                  Modifiers(), 
-                  newTermName("$org_scalatest_assert_macro_right"), 
-                  TypeTree(), 
-                  right.duplicate
-                ), 
-                ValDef(
-                  Modifiers(), 
-                  newTermName("$org_scalatest_assert_macro_result"), 
-                  TypeTree(), 
-                  subsitutedExpr
-                ), 
-                Apply(
-                  Select(
-                    Ident("$org_scalatest_AssertionsHelper"), 
-                    newTermName("macroAssertTrue")
-                  ),
-                  List(Ident(newTermName("$org_scalatest_assert_macro_left")), Ident(newTermName("$org_scalatest_assert_macro_right")), Ident(newTermName("$org_scalatest_assert_macro_result")), context.literal(resourceName).tree)
-                )
-              )
-            )
-          
-          case None => 
-            /* 
-             * Translate the following:
-             * 
-             * assert(something.aMethod equals 3)
-             * 
-             * to: 
-             * 
-             * $org_scalatest_AssertionsHelper.macroAssertTrue(something.aMethod equals 3, "something.aMethod equals 3")
-             * 
-             */
-            val text: Expr[String] = context.literal(getText(booleanExpr.tree))
-            context.Expr(
-              Apply(
-                Select(
-                  Ident("$org_scalatest_AssertionsHelper"), 
-                  newTermName("macroAssertTrue")
-                ), 
-                List(booleanExpr.tree, text.tree)
-              )  
-            )
-        }
       case None => 
         /* 
          * Translate the following:
@@ -121,7 +85,6 @@ class AssertionsMacro[C <: Context](val context: C) {
          * $org_scalatest_AssertionsHelper.macroAssertTrue(validate(1, 2, 3), "validate(1, 2, 3)")
          * 
          */
-        val text: Expr[String] = context.literal(getText(booleanExpr.tree))
         context.Expr(
           Apply(
             Select(
