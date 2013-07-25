@@ -925,4 +925,10 @@ class FrameworkSuite extends FunSuite {
                                    new TaskDef("org.scalatest.SuiteSuite", subclassFingerprint, false, Array(new SuiteSelector))))
     assert(tasks.size === 1)
   }
+  
+  test("a suite should be filtered out when fingerprint is subclassFingerprint and it is not accessible, even though it is annotated with @WrapWith") {
+    val runner = framework.runner(Array.empty, Array.empty, testClassLoader)
+    val tasks = runner.tasks(Array(new TaskDef("org.scalatest.SavesConfigMapSuite", subclassFingerprint, false, Array(new SuiteSelector))))
+    assert(tasks.size === 0)
+  }
 }

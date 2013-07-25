@@ -410,7 +410,7 @@ class Framework extends SbtFramework {
     
     lazy val suiteClass = loadSuiteClass
     lazy val shouldDiscover = 
-      taskDefinition.explicitlySpecified || ((isAccessibleSuite(suiteClass) || isRunnable(suiteClass)) && isDiscoverableSuite(suiteClass)) 
+      taskDefinition.explicitlySpecified || (((isAccessibleSuite(suiteClass) && taskDefinition.fingerprint.isInstanceOf[SubclassFingerprint]) || (isRunnable(suiteClass) && taskDefinition.fingerprint.isInstanceOf[AnnotatedFingerprint])) && isDiscoverableSuite(suiteClass))
     
     def tags = 
       for { 
