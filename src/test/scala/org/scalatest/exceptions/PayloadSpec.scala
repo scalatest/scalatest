@@ -110,4 +110,27 @@ class PayloadSpec extends FlatSpec with ShouldMatchers with TableDrivenPropertyC
     val result: String = withPayload(() => 128) { "hello" }
     assert(result === "hello")
   }
+  
+  it should "work with withFixture" in {
+    forAll(examples) { e => 
+      val a = 
+        new org.scalatest.fixture.FunSpec {
+          type FixtureParam = String
+        
+          override def withFixture(test: OneArgTest) = {
+            withPayload("a payload") {
+              test("something")
+            }
+          }
+        
+          it("should do something") { p => 
+            throw e
+          }
+        }
+      val rep = new EventRecordingReporter()
+      a.run(None, Args(rep))
+      rep.testFailedEventsReceived.length should be (1)
+      rep.testFailedEventsReceived(0).payload should be (Some("a payload"))
+    }
+  }
 }

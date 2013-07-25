@@ -65,7 +65,22 @@ trait Payloads {
   */
   def withPayload[T](payload: => Any)(fun: => T): T = {
     try {
-      fun
+      val outcome: T = fun
+      outcome match {
+        case exceptional: Exceptional => 
+          exceptional.toOption match {
+            case Some(e) => 
+              e match {
+                case e: org.scalatest.exceptions.ModifiablePayload[_] =>
+                  if (payload != null)
+                    Exceptional(e.modifyPayload((currentPayload: Option[Any]) => Some(payload))).asInstanceOf[T]
+                  else
+                    outcome
+              }
+            case None => outcome
+          }
+        case _ => outcome
+      }
     }
     catch {
       case e: org.scalatest.exceptions.ModifiablePayload[_] =>
