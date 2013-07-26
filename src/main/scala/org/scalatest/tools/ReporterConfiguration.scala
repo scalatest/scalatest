@@ -29,6 +29,7 @@ private[tools] case class GraphicReporterConfiguration(configSet: Set[ReporterCo
 private[tools] case class StandardOutReporterConfiguration(configSet: Set[ReporterConfigParam]) extends ReporterConfiguration
 private[tools] case class StandardErrReporterConfiguration(configSet: Set[ReporterConfigParam]) extends ReporterConfiguration
 private[tools] case class FileReporterConfiguration(configSet: Set[ReporterConfigParam], fileName: String) extends ReporterConfiguration
+private[tools] case class MemoryReporterConfiguration(fileName: String) extends ReporterConfiguration
 private[tools] case class JunitXmlReporterConfiguration(configSet: Set[ReporterConfigParam], fileName: String) extends ReporterConfiguration
 private[tools] case class DashboardReporterConfiguration(configSet: Set[ReporterConfigParam], fileName: String, numOldFilesToKeep: Int) extends ReporterConfiguration
 private[tools] case class XmlReporterConfiguration(configSet: Set[ReporterConfigParam], fileName: String) extends ReporterConfiguration
@@ -42,6 +43,7 @@ private[tools] case class SocketReporterConfiguration(host: String, port: Int) e
 private[tools] case class ReporterConfigurations(
   val graphicReporterConfiguration: Option[GraphicReporterConfiguration],
   val fileReporterConfigurationList: List[FileReporterConfiguration],
+  val memoryReporterConfigurationList: List[MemoryReporterConfiguration],
   val junitXmlReporterConfigurationList: List[JunitXmlReporterConfiguration],
   val dashboardReporterConfigurationList: List[DashboardReporterConfiguration],
   val xmlReporterConfigurationList: List[XmlReporterConfiguration],
@@ -57,6 +59,7 @@ private[tools] case class ReporterConfigurations(
     List.concat[ReporterConfiguration](
       graphicReporterConfiguration.toList,
       fileReporterConfigurationList,
+      memoryReporterConfigurationList,
       junitXmlReporterConfigurationList,
       dashboardReporterConfigurationList,
       xmlReporterConfigurationList,

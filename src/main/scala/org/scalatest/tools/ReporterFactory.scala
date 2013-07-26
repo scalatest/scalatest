@@ -211,6 +211,7 @@ private[scalatest] class ReporterFactory {
       case StandardOutReporterConfiguration(configSet) => createStandardOutReporter(configSet)
       case StandardErrReporterConfiguration(configSet) => createStandardErrReporter(configSet)
       case FileReporterConfiguration(configSet, filename) => createFileReporter(configSet, filename)
+      case MemoryReporterConfiguration(filename) => new MemoryReporter(filename)
       case JunitXmlReporterConfiguration(configSet, directory) => createJunitXmlReporter(configSet, directory)
       case DashboardReporterConfiguration(configSet, directory, numFilesToArchive) => createDashboardReporter(configSet, directory, numFilesToArchive)
       case XmlReporterConfiguration(configSet, directory) => createXmlReporter(configSet, directory)

@@ -96,6 +96,7 @@ import org.apache.tools.ant.taskdefs.Java
  * <ul>
  *   <li>  <code>graphic</code>          </li>
  *   <li>  <code>file</code>             </li>
+ *   <li>  <code>memory</code>           </li>
  *   <li>  <code>junitxml</code>         </li>
  *   <li>  <code>html</code>             </li>
  *   <li>  <code>stdout</code>           </li>
@@ -105,14 +106,15 @@ import org.apache.tools.ant.taskdefs.Java
  *
  * <p>
  * Each may include a <code>config</code> attribute to specify the <a href="Runner$.html#configuringReporters">reporter configuration</a>.
- * Types <code>file</code>, <code>junitxml</code>, <code>html</code>, and <code>reporterclass</code> require additional attributes
- * (the css attribute is optional for the html reporter):
+ * Types <code>file</code>, <code>memory</code>, <code>junitxml</code>, <code>html</code>, and <code>reporterclass</code>
+ * require additional attributes (the css attribute is optional for the html reporter):
  * </p>
  *
  * <pre>
  *   &lt;scalatest&gt;
  *     &lt;reporter type="stdout" config="FD"/&gt;
  *     &lt;reporter type="file" filename="test.out"/&gt;
+ *     &lt;reporter type="memory" filename="target/memory.out"/&gt;
  *     &lt;reporter type="junitxml" directory="target"/&gt;
  *     &lt;reporter type="html" directory="target" css="src/main/html/mystylesheet.css"/&gt;
  *     &lt;reporter type="reporterclass" classname="my.ReporterClass"/&gt;
@@ -211,6 +213,17 @@ import org.apache.tools.ant.taskdefs.Java
  * </pre>
  *
  * <p>
+ * Use attribute <code>testsfile="[file name]"</code> to specify
+ * a file containing a list of tests to be run.  This is used to
+ * rerun failed/canceled tests listed in a file written by the
+ * memory reporter.  E.g.:
+ * </p>
+ *
+ * <pre>
+ *   &lt;scalatest testsfile="target/memory.out"&gt;
+ * </pre>
+ *
+ * <p>
  * Use attribute <code>parallel="true"</code> to specify <a href="Runner$.html#executingSuitesInParallel">parallel execution</a> of suites.
  * (If the <code>parallel</code> attribute is left out or set to false, suites will be executed sequentially by one thread.)
  * When <code>parallel</code> is true, you can include an optional <code>sortSuites</code> attribute to request that events be sorted on-the-fly so that
@@ -258,6 +271,7 @@ class ScalaTestAntTask extends Task {
   private var excludes:  String = ""
   private var maxMemory: String = null
   private var suffixes:  String = null
+  private var testsfile: String = null
 
   private var parallel      = false
   private var sortSuites    = false
@@ -305,6 +319,7 @@ class ScalaTestAntTask extends Task {
     addTestNGSuiteArgs(args)
     addParallelArg(args)
     addSuffixesArg(args)
+    addTestsfileArg(args)
     addChosenStyles(args)
     addSpanScaleFactorArg(args)
 
@@ -387,6 +402,17 @@ class ScalaTestAntTask extends Task {
     if (suffixes != null) {
       args += "-q"
       args += suffixes
+    }
+  }
+
+  //
+  // Adds '-A' arg to args list if 'testsfile' attribute was
+  // specified for task.
+  //
+  private def addTestsfileArg(args: ListBuffer[String]) {
+    if (testsfile != null) {
+      args += "-A"
+      args += testsfile
     }
   }
 
@@ -506,6 +532,7 @@ class ScalaTestAntTask extends Task {
         case "stderr"        => addReporterOption(args, reporter, "-e")
         case "graphic"       => addReporterOption(args, reporter, "-g")
         case "file"          => addFileReporter(args, reporter)
+        case "memory"        => addMemoryReporter(args, reporter)
         case "xml"           => addXmlReporter(args, reporter)
         case "junitxml"      => addJunitXmlReporter(args, reporter)
         case "dashboard"     => addDashboardReporter(args, reporter)
@@ -545,6 +572,22 @@ class ScalaTestAntTask extends Task {
     if (reporter.getFilename == null)
       throw new BuildException(
         "reporter type 'file' requires 'filename' attribute")
+
+    args += reporter.getFilename
+  }
+
+  //
+  // Adds '-M' memory reporter option to args.  Adds reporter's
+  // filename as additional argument, e.g. "-M", "filename".
+  //
+  private def addMemoryReporter(args: ListBuffer[String],
+                                reporter: ReporterElement)
+  {
+    addReporterOption(args, reporter, "-M")
+
+    if (reporter.getFilename == null)
+      throw new BuildException(
+        "reporter type 'memory' requires 'filename' attribute")
 
     args += reporter.getFilename
   }
@@ -685,6 +728,13 @@ class ScalaTestAntTask extends Task {
    */
   def setSuffixes(suffixes: String) {
     this.suffixes = suffixes
+  }
+  
+  /**
+   * Sets value of the <code>testsfile</code> attribute.
+   */
+  def setTestsfile(testsfile: String) {
+    this.testsfile = testsfile
   }
   
   /**
@@ -1078,6 +1128,7 @@ class ScalaTestAntTask extends Task {
     def getNumfiles  = numfiles
     def getCss = css
   }
+
 /*
  *   <li>  <code>dashboard</code>             </li>
  * Types <code>file</code>, <code>junitxml</code>, <code>dashboard</code>, and <code>reporterclass</code> require additional attributes
