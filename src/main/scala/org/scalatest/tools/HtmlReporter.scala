@@ -356,7 +356,7 @@ private[scalatest] class HtmlReporter(
             
                 nodeSeq :: recordedEvents.map(processInfoMarkupProvided(_)).toList
             
-              case TestCanceled(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, throwable, duration, formatter, location, payload, threadName, timeStamp) =>
+              case TestCanceled(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, throwable, duration, formatter, location, rerunner, payload, threadName, timeStamp) =>
 
                 val stringToPrint = stringsToPrintOnError("canceledNote", "testCanceled", message, throwable, formatter, Some(suiteName), Some(testName), duration)
                 val elementId = generateElementId

@@ -866,6 +866,7 @@ object Runner {
       runpathArgs,
       reporterArgs,
       suiteArgs,
+      againArgs,
       junitArgs,
       propertiesArgs,
       tagsToIncludeArgs,
@@ -884,12 +885,13 @@ object Runner {
     val fullReporterConfigurations: ReporterConfigurations =
       if (reporterArgs.isEmpty)
         // If no reporters specified, just give them a graphic reporter
-        new ReporterConfigurations(Some(GraphicReporterConfiguration(Set())), Nil, Nil, Nil, Nil, None, None, Nil, Nil, Nil, Nil)
+        new ReporterConfigurations(Some(GraphicReporterConfiguration(Set())), Nil, Nil, Nil, Nil, Nil, None, None, Nil, Nil, Nil, Nil)
       else
         parseReporterArgsIntoConfigurations(reporterArgs)
 
     val (suitesList: List[SuiteParam], testSpecs: List[TestSpec]) =
       parseSuiteArgs(suiteArgs)
+    val agains: List[String] = parseAgainArgs(againArgs)
     val junitsList: List[String] = parseSuiteArgsIntoNameStrings(junitArgs, "-j")
     val runpathList: List[String] = parseRunpathArgIntoList(runpathArgs)
     val propertiesMap: ConfigMap = parsePropertiesArgsIntoMap(propertiesArgs)
@@ -916,6 +918,7 @@ object Runner {
           new ReporterConfigurations(
             None,
             fullReporterConfigurations.fileReporterConfigurationList,
+            fullReporterConfigurations.memoryReporterConfigurationList,
             fullReporterConfigurations.junitXmlReporterConfigurationList,
             fullReporterConfigurations.dashboardReporterConfigurationList,
             fullReporterConfigurations.xmlReporterConfigurationList,
@@ -965,6 +968,7 @@ object Runner {
             graphicEventsToPresent,
             reporterConfigs,
             suitesList,
+            agains,
             testSpecs,
             junitsList,
             runpathList,
@@ -1007,6 +1011,7 @@ object Runner {
           doRunRunRunDaDoRunRun(
             dispatchReporter,
             suitesList,
+            agains,
             testSpecs,
             junitsList,
             Stopper.default,
@@ -1046,6 +1051,8 @@ object Runner {
         s.startsWith("-p") ||
         s.startsWith("-R") ||
         s.startsWith("-f") ||
+        s.startsWith("-M") ||
+        s.startsWith("-A") ||
         s.startsWith("-u") ||
         s.startsWith("-d") ||
         s.startsWith("-a") ||
@@ -1149,6 +1156,7 @@ object Runner {
     val runpath = new ListBuffer[String]()
     val reporters = new ListBuffer[String]()
     val suites = new ListBuffer[String]()
+    val tryAgains = new ListBuffer[String]()
     val junits = new ListBuffer[String]()
     val props = new ListBuffer[String]()
     val includes = new ListBuffer[String]()
@@ -1192,6 +1200,11 @@ object Runner {
         reporters += s
       }
       else if (s.startsWith("-f")) {
+        reporters += s
+        if (it.hasNext)
+          reporters += it.next
+      }
+      else if (s.startsWith("-M")) {
         reporters += s
         if (it.hasNext)
           reporters += it.next
@@ -1253,6 +1266,12 @@ object Runner {
         suites += s
         if (it.hasNext)
           suites += it.next
+      }
+      else if (s.startsWith("-A")) {
+
+        tryAgains += s
+        if (it.hasNext)
+          tryAgains += it.next
       }
       else if (s.startsWith("-i")) {
         
@@ -1367,6 +1386,7 @@ object Runner {
       runpath.toList,
       reporters.toList,
       suites.toList,
+      tryAgains.toList,
       junits.toList,
       props.toList,
       includes.toList,
@@ -1497,6 +1517,11 @@ object Runner {
             it.next // scroll past the filename
           else
             throw new IllegalArgumentException("-f needs to be followed by a file name arg: ")
+        case "-M" =>
+          if (it.hasNext)
+            it.next // scroll past the filename
+          else
+            throw new IllegalArgumentException("-M needs to be followed by a file name arg: ")
         case "-u" =>
           if (it.hasNext) {
             val directoryName = it.next
@@ -1644,6 +1669,18 @@ object Runner {
       lb.toList
     }
     val fileReporterConfigurationList = buildFileReporterConfigurationList(args)
+
+    def buildMemoryReporterConfigurationList(args: List[String]) = {
+      val it = args.iterator
+      val lb = new ListBuffer[MemoryReporterConfiguration]
+      while (it.hasNext) {
+        val arg = it.next
+        if (arg.startsWith("-M"))
+          lb += MemoryReporterConfiguration(it.next)
+      }
+      lb.toList
+    }
+    val memoryReporterConfigurationList = buildMemoryReporterConfigurationList(args)
 
     def buildJunitXmlReporterConfigurationList(args: List[String]) = {
       val it = args.iterator
@@ -1830,6 +1867,7 @@ object Runner {
     new ReporterConfigurations(
       graphicReporterConfigurationOption,
       fileReporterConfigurationList,
+      memoryReporterConfigurationList,
       junitXmlReporterConfigurationList,
       dashboardReporterConfigurationList,
       xmlReporterConfigurationList,
@@ -1842,7 +1880,7 @@ object Runner {
     )
   }
 
-  // Used to parse -s, -j, -m, and -w args, one of which will be passed as a String as dashArg
+  // Used to parse -j, -m, and -w args, one of which will be passed as a String as dashArg
   private[scalatest] def parseSuiteArgsIntoNameStrings(args: List[String], dashArg: String) = {
 
     if (args == null)
@@ -1851,7 +1889,7 @@ object Runner {
     if (args.exists(_ == null))
       throw new NullPointerException("an arg String was null")
 
-    if (dashArg != "-j" && dashArg != "-s" && dashArg != "-w" && dashArg != "-m" && dashArg != "-b")
+    if (dashArg != "-j" && dashArg != "-w" && dashArg != "-m" && dashArg != "-b")
       throw new IllegalArgumentException("dashArg invalid: " + dashArg)
 /*
 <<<<<<< .working TODOCS: Is the above the correct way to merge these?
@@ -1894,7 +1932,7 @@ object Runner {
   // If the list starts with a -s, then the following -i, -t, and -z args
   // are associated with the preceding -s.
   //
-  // Unaffiliated -t and -z args are returned in a separate list, as tests
+  // Unaffiliated -t and -z args are returned in a separate list, as test
   // specs for which the corresponding Suites will have to be found during
   // discovery.
   //
@@ -1984,6 +2022,28 @@ object Runner {
       }
     }
     (lb.toList, tb.toList)
+  }
+
+  //
+  // Given a list of args consisting of pairs of strings "-A"
+  // followed by a file name, generates a list of just the
+  // file names.
+  //
+  private def parseAgainArgs(args: List[String]): List[String] = {
+    val buf = new ListBuffer[String]
+    val it = args.iterator
+
+    while (it.hasNext) {
+      if (it.next() != "-A")
+        throw new Exception("unexpected arg ["+ args +"]")
+
+      if (!it.hasNext)
+        throw new IllegalArgumentException(
+          "-A argument must be followed by a file name")
+
+      buf += it.next()
+    }
+    buf.toList
   }
 
   private[scalatest] def parseCompoundArgIntoSet(args: List[String], expectedDashArg: String): Set[String] = 
@@ -2189,6 +2249,7 @@ object Runner {
   private[scalatest] def doRunRunRunDaDoRunRun(
     dispatch: DispatchReporter,
     suitesList: List[SuiteParam],
+    agains: List[String],
     testSpecs: List[TestSpec],
     junitsList: List[String],
     stopRequested: Stopper,
@@ -2212,6 +2273,8 @@ object Runner {
     if (dispatch == null)
       throw new NullPointerException
     if (suitesList == null)
+      throw new NullPointerException
+    if (agains == null)
       throw new NullPointerException
     if (testSpecs == null)
       throw new NullPointerException
@@ -2264,7 +2327,8 @@ object Runner {
       // have to do any discovery unless discoArgsArePresent.
       //
       val suiteArgsArePresent =
-        !nonGlobSuites.isEmpty || !junitsList.isEmpty || !testNGList.isEmpty
+        !nonGlobSuites.isEmpty || !junitsList.isEmpty || !testNGList.isEmpty ||
+        !agains.isEmpty
 
       if (suiteArgsArePresent && !discoArgsArePresent) {
         Nil // No DiscoverySuites in this case. Just run Suites
@@ -2309,6 +2373,9 @@ object Runner {
       }
     }
 
+    // suites specified by name, either directly via -s or in a file via -A
+    val specificSuites = nonGlobSuites ::: againSuites(agains)
+
     var tracker = new Tracker(new Ordinal(runStamp))
 
     val runStartTime = System.currentTimeMillis
@@ -2316,7 +2383,7 @@ object Runner {
     try {
       val loadProblemsExist =
         try {
-          val unrunnableList = nonGlobSuites.filter{ suiteParam => 
+          val unrunnableList = specificSuites.filter{ suiteParam => 
             val className = suiteParam.className
             loader.loadClass(className) // Check if the class exist, so if not we get the nice cannot load suite error message.
             !isAccessibleSuite(className, loader) && !isRunnable(className, loader)
@@ -2340,10 +2407,8 @@ object Runner {
       if (!loadProblemsExist) {
         try {
           val namedSuiteInstances: List[SuiteConfig] =
-            for (suiteParam <- nonGlobSuites)
+            for (suiteParam <- specificSuites)
               yield genSuiteConfig(suiteParam, loader)
-          
-          val requireSelectedTag = suitesList.find(suiteParam => suiteParam.testNames.length > 0)
           
           val emptyDynaTags = DynaTags(Map.empty[String, Set[String]], Map.empty[String, Map[String, Set[String]]])
 
@@ -2485,6 +2550,19 @@ object Runner {
       if suiteParam.matches(name)
     }
     yield suiteParam.copy(className = name)
+
+  //
+  // Reads each specified file and generates a SuiteParam object
+  // for each entry in file.  Files are of the format created when
+  // -M option is specified to record failed/canceled/aborted
+  // tests so they can be run again later.
+  //
+  def againSuites(fileNames: List[String]): List[SuiteParam] =
+    for {
+      fileName <- fileNames
+      memento <- Memento.readFromFile(fileName)
+    }
+    yield memento.toSuiteParam
 
   private[tools] def genSuiteConfig(suiteParam: SuiteParam, loader: ClassLoader): SuiteConfig = {
     val suiteClassName = suiteParam.className

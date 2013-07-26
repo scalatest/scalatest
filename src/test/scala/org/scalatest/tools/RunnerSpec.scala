@@ -32,6 +32,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       expectedRunpathList: List[String],
       expectedReporterList: List[String],
       expectedSuitesList: List[String],
+      expectedRunAgainsList: List[String],
       expectedJunitsList: List[String],
       expectedPropsList: List[String],
       expectedIncludesList: List[String],
@@ -51,6 +52,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
         runpathList,
         reportersList,
         suitesList,
+        runAgainsList,
         junitsList,
         propsList,
         includesList,
@@ -69,6 +71,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       assert(runpathList === expectedRunpathList)
       assert(reportersList === expectedReporterList)
       assert(suitesList === expectedSuitesList)
+      assert(runAgainsList === expectedRunAgainsList)
       assert(junitsList === expectedJunitsList)
       assert(propsList === expectedPropsList)
       assert(includesList === expectedIncludesList)
@@ -96,6 +99,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       List("-g", "-g", "-f", "file.out"),
       Nil,
       Nil,
+      Nil,
       List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
       Nil,
       Nil,
@@ -117,6 +121,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       List("-p", "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\""),
       List("-g", "-g", "-f", "file.out"),
       List("-s", "SuiteOne", "-s", "SuiteTwo"),
+      Nil,
       Nil,
       List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
       Nil,
@@ -145,6 +150,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       Nil,
       Nil,
       Nil,
+      Nil,
       None, 
       Nil, 
       Nil, 
@@ -159,6 +165,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       List("-p", "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\""),
       List("-g", "-g", "-f", "file.out"),
       List("-s", "SuiteOne", "-s", "SuiteTwo"),
+      Nil,
       Nil,
       List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
       List("-n", "JustOne"),
@@ -182,6 +189,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       List("-g", "-g", "-f", "file.out"),
       List("-s", "SuiteOne", "-s", "SuiteTwo"),
       Nil,
+      Nil,
       List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
       List("-n", "One Two Three"),
       List("-l", "SlowTests"),
@@ -203,6 +211,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       List("-p", "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\""),
       List("-g", "-g", "-f", "file.out"),
       List("-s", "SuiteOne", "-s", "SuiteTwo"),
+      Nil,
       Nil,
       List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
       List("-n", "One Two Three"),
@@ -227,6 +236,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       List("-g", "-g", "-f", "file.out"),
       List("-s", "SuiteOne", "-s", "SuiteTwo"),
       Nil,
+      Nil,
       List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
       List("-n", "One Two Three"),
       List("-l", "SlowTests"),
@@ -250,6 +260,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       List("-g", "-g", "-f", "file.out"),
       List("-s", "SuiteOne", "-s", "SuiteTwo"),
       Nil,
+      Nil,
       List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
       List("-n", "One Two Three"),
       List("-l", "SlowTests"),
@@ -272,6 +283,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       List("-p", "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\""),
       List("-g", "-g", "-f", "file.out"),
       List("-s", "SuiteOne"),
+      Nil,
       List("-j", "junitTest", "-j", "junitTest2"),
       List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
       List("-n", "One Two Three"),
@@ -296,6 +308,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       List("-g", "-g", "-u", "directory/"),
       List("-s", "SuiteOne"),
       Nil,
+      Nil,
       List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
       List("-n", "One Two Three"),
       List("-l", "SlowTests"),
@@ -318,6 +331,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       List("-p", "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\""),
       List("-g", "-g", "-u", "directory/"),
       List("-s", "SuiteOne"),
+      Nil,
       Nil,
       List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
       List("-n", "One Two Three"),
@@ -342,6 +356,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       List("-g", "-g", "-u", "directory/"),
       List("-s", "SuiteOne"),
       Nil,
+      Nil,
       List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
       List("-n", "One Two Three"),
       List("-l", "SlowTests"),
@@ -365,6 +380,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       List("-g", "-g", "-u", "directory/"),
       List("-s", "SuiteOne"),
       Nil,
+      Nil,
       List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
       List("-n", "One Two Three"),
       List("-l", "SlowTests"),
@@ -387,6 +403,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       List("-p", "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\""),
       List("-g", "-g", "-u", "directory/"),
       List("-s", "SuiteOne"),
+      Nil,
       Nil,
       List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
       List("-n", "One Two Three"),
@@ -444,6 +461,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       expectedRunpathList: List[String],
       expectedReporterList: List[String],
       expectedSuitesList: List[String],
+      expectedRunAgainsList: List[String],
       expectedJunitsList: List[String],
       expectedPropsList: List[String],
       expectedIncludesList: List[String],
@@ -462,6 +480,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
         runpathList,
         reportersList,
         suitesList,
+        runAgainsList,
         junitsList,
         propsList,
         includesList,
@@ -480,6 +499,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       assert(runpathList === expectedRunpathList)
       assert(reportersList === expectedReporterList)
       assert(suitesList === expectedSuitesList)
+      assert(runAgainsList === expectedRunAgainsList)
       assert(junitsList === expectedJunitsList)
       assert(propsList === expectedPropsList)
       assert(includesList === expectedIncludesList)
@@ -506,6 +526,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       List("-g", "-g", "-f", "file.out"),
       Nil,
       Nil,
+      Nil,
       List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
       Nil,
       Nil,
@@ -526,6 +547,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       List("-p", "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\""),
       List("-g", "-g", "-f", "file.out"),
       List("-s", "SuiteOne", "-s", "SuiteTwo"),
+      Nil,
       Nil,
       List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
       Nil,
@@ -553,6 +575,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       Nil,
       Nil,
       Nil,
+      Nil,
       None, 
       Nil, 
       Nil, 
@@ -566,6 +589,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       List("-p", "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\""),
       List("-g", "-g", "-f", "file.out"),
       List("-s", "SuiteOne", "-s", "SuiteTwo"),
+      Nil,
       Nil,
       List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
       List("-n", "JustOne"),
@@ -588,6 +612,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       List("-g", "-g", "-f", "file.out"),
       List("-s", "SuiteOne", "-s", "SuiteTwo"),
       Nil,
+      Nil,
       List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
       List("-n", "One Two Three"),
       List("-l", "SlowTests"),
@@ -608,6 +633,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       List("-p", "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\""),
       List("-g", "-g", "-f", "file.out"),
       List("-s", "SuiteOne", "-s", "SuiteTwo"),
+      Nil,
       Nil,
       List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
       List("-n", "One Two Three"),
@@ -631,6 +657,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       List("-g", "-g", "-f", "file.out"),
       List("-s", "SuiteOne", "-s", "SuiteTwo"),
       Nil,
+      Nil,
       List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
       List("-n", "One Two Three"),
       List("-l", "SlowTests"),
@@ -653,6 +680,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       List("-g", "-g", "-f", "file.out"),
       List("-s", "SuiteOne", "-s", "SuiteTwo"),
       Nil,
+      Nil,
       List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
       List("-n", "One Two Three"),
       List("-l", "SlowTests"),
@@ -674,6 +702,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       List("-p", "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\""),
       List("-g", "-g", "-f", "file.out"),
       List("-s", "SuiteOne"),
+      Nil,
       List("-j", "junitTest", "-j", "junitTest2"),
       List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
       List("-n", "One Two Three"),
@@ -697,6 +726,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       List("-g", "-g", "-u", "directory/"),
       List("-s", "SuiteOne"),
       Nil,
+      Nil,
       List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
       List("-n", "One Two Three"),
       List("-l", "SlowTests"),
@@ -718,6 +748,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       List("-p", "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\""),
       List("-g", "-g", "-u", "directory/"),
       List("-s", "SuiteOne"),
+      Nil,
       Nil,
       List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
       List("-n", "One Two Three"),
@@ -741,6 +772,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       List("-g", "-g", "-u", "directory/"),
       List("-s", "SuiteOne"),
       Nil,
+      Nil,
       List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
       List("-n", "One Two Three"),
       List("-l", "SlowTests"),
@@ -762,6 +794,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       List("-p", "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\""),
       List("-g", "-g", "-u", "directory/"),
       List("-s", "SuiteOne"),
+      Nil,
       Nil,
       List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
       List("-n", "One Two Three"),
@@ -785,6 +818,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       List("-g", "-g", "-u", "directory/"),
       List("-s", "SuiteOne"),
       Nil,
+      Nil,
       List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
       List("-n", "One Two Three"),
       List("-l", "SlowTests"),
@@ -806,6 +840,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       List("-p", "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\""),
       List("-g", "-g", "-u", "directory/"),
       List("-s", "SuiteOne"),
+      Nil,
       Nil,
       List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
       List("-n", "One Two Three"),
@@ -829,6 +864,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       List("-g", "-g", "-h", "directory/"),
       List("-s", "SuiteOne"),
       Nil,
+      Nil,
       List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
       List("-n", "One Two Three"),
       List("-l", "SlowTests"),
@@ -850,6 +886,101 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       List("-p", "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\""),
       List("-g", "-g", "-h", "directory/", "-Y", "mystyles.css"),
       List("-s", "SuiteOne"),
+      Nil,
+      Nil,
+      List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
+      List("-n", "One Two Three"),
+      List("-l", "SlowTests"),
+      List("-c"),
+      List("-m", "com.example.webapp"),
+      List("-w", "com.example.root"),
+      List("-b", "some/path/file.xml"),
+      None, 
+      Nil, 
+      Nil, 
+      Nil
+    )
+
+    // Test -M
+    verify(
+      Array("-M", "target/doovers.txt"),
+      Nil,
+      List("-M", "target/doovers.txt"),
+      Nil,
+      Nil,
+      Nil,
+      Nil,
+      Nil,
+      Nil,
+      Nil,
+      Nil,
+      Nil,
+      Nil,
+      None, 
+      Nil, 
+      Nil, 
+      Nil
+    )
+
+    // Test -M some more
+    verify(
+      Array("-c", "-g", "-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188", "-p",
+          "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\"", "-g",
+          "-M", "target/doovers.txt",
+          "-h", "directory/", "-Y", "mystyles.css", "-n", "One Two Three", "-l", "SlowTests", "-s", "SuiteOne",
+          "-M", "target/doovers2.txt",
+          "-m", "com.example.webapp", "-w", "com.example.root", "-b", "some/path/file.xml"),
+      List("-p", "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\""),
+      List("-g", "-g", "-M", "target/doovers.txt", "-h", "directory/", "-Y", "mystyles.css", "-M", "target/doovers2.txt"),
+      List("-s", "SuiteOne"),
+      Nil,
+      Nil,
+      List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
+      List("-n", "One Two Three"),
+      List("-l", "SlowTests"),
+      List("-c"),
+      List("-m", "com.example.webapp"),
+      List("-w", "com.example.root"),
+      List("-b", "some/path/file.xml"),
+      None, 
+      Nil, 
+      Nil, 
+      Nil
+    )
+
+    // Test -A
+    verify(
+      Array("-A", "target/doovers.txt"),
+      Nil,
+      Nil,
+      Nil,
+      List("-A", "target/doovers.txt"),
+      Nil,
+      Nil,
+      Nil,
+      Nil,
+      Nil,
+      Nil,
+      Nil,
+      Nil,
+      None, 
+      Nil, 
+      Nil, 
+      Nil
+    )
+
+    // Test -A some more
+    verify(
+      Array("-c", "-g", "-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188", "-p",
+          "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\"", "-g",
+          "-A", "target/doovers.txt",
+          "-h", "directory/", "-Y", "mystyles.css", "-n", "One Two Three", "-l", "SlowTests", "-s", "SuiteOne",
+          "-A", "target/doovers2.txt",
+          "-m", "com.example.webapp", "-w", "com.example.root", "-b", "some/path/file.xml"),
+      List("-p", "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\""),
+      List("-g", "-g", "-h", "directory/", "-Y", "mystyles.css"),
+      List("-s", "SuiteOne"),
+      List("-A", "target/doovers.txt", "-A", "target/doovers2.txt"),
       Nil,
       List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
       List("-n", "One Two Three"),
@@ -1080,7 +1211,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
     intercept[IllegalArgumentException] {
       Runner.parseReporterArgsIntoConfigurations(List("-K", "localhost", "abc")) // -k port number must be integer.
     }
-    assertResult(new ReporterConfigurations(None, Nil, Nil, Nil, Nil, None, None, Nil, Nil, Nil, Nil)) {
+    assertResult(new ReporterConfigurations(None, Nil, Nil, Nil, Nil, Nil, None, None, Nil, Nil, Nil, Nil)) {
       Runner.parseReporterArgsIntoConfigurations(Nil)
     }
     intercept[IllegalArgumentException] {
@@ -1090,63 +1221,69 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       Runner.parseReporterArgsIntoConfigurations(List("-h"))
     }
     intercept[IllegalArgumentException] {
+      Runner.parseReporterArgsIntoConfigurations(List("-M")) // needs a file name argument
+    }
+    intercept[IllegalArgumentException] {
       Runner.parseReporterArgsIntoConfigurations(List("-h", "html", "-Y"))
     }
-    assertResult(new ReporterConfigurations(Some(new GraphicReporterConfiguration(Set())), Nil, Nil, Nil, Nil, None, None, Nil, Nil, Nil, Nil)) {
+    assertResult(new ReporterConfigurations(Some(new GraphicReporterConfiguration(Set())), Nil, Nil, Nil, Nil, Nil, None, None, Nil, Nil, Nil, Nil)) {
       Runner.parseReporterArgsIntoConfigurations(List("-g"))
     }
-    assertResult(new ReporterConfigurations(Some(new GraphicReporterConfiguration(Set(FilterSuiteCompleted))), Nil, Nil, Nil, Nil, None, None, Nil, Nil, Nil, Nil)) {
+    assertResult(new ReporterConfigurations(Some(new GraphicReporterConfiguration(Set(FilterSuiteCompleted))), Nil, Nil, Nil, Nil, Nil, None, None, Nil, Nil, Nil, Nil)) {
       Runner.parseReporterArgsIntoConfigurations(List("-gL"))
     }
-    assertResult(new ReporterConfigurations(None, Nil, Nil, Nil, Nil, Some(new StandardOutReporterConfiguration(Set())), None, Nil, Nil, Nil, Nil)) {
+    assertResult(new ReporterConfigurations(None, Nil, Nil, Nil, Nil, Nil, Some(new StandardOutReporterConfiguration(Set())), None, Nil, Nil, Nil, Nil)) {
       Runner.parseReporterArgsIntoConfigurations(List("-o"))
     }
-    assertResult(new ReporterConfigurations(None, Nil, Nil, Nil, Nil, Some(new StandardOutReporterConfiguration(Set(FilterTestSucceeded,FilterTestIgnored))), None, Nil, Nil, Nil, Nil)) {
+    assertResult(new ReporterConfigurations(None, Nil, Nil, Nil, Nil, Nil, Some(new StandardOutReporterConfiguration(Set(FilterTestSucceeded,FilterTestIgnored))), None, Nil, Nil, Nil, Nil)) {
       Runner.parseReporterArgsIntoConfigurations(List("-oCX"))
     }
-    assertResult(new ReporterConfigurations(None, Nil, Nil, Nil, Nil, None, Some(new StandardErrReporterConfiguration(Set())), Nil, Nil, Nil, Nil)) {
+    assertResult(new ReporterConfigurations(None, Nil, Nil, Nil, Nil, Nil, None, Some(new StandardErrReporterConfiguration(Set())), Nil, Nil, Nil, Nil)) {
       Runner.parseReporterArgsIntoConfigurations(List("-e"))
     }
-    assertResult(new ReporterConfigurations(None, Nil, Nil, Nil, Nil, None, Some(new StandardErrReporterConfiguration(Set(PresentFullStackTraces))), Nil, Nil, Nil, Nil)) {
+    assertResult(new ReporterConfigurations(None, Nil, Nil, Nil, Nil, Nil, None, Some(new StandardErrReporterConfiguration(Set(PresentFullStackTraces))), Nil, Nil, Nil, Nil)) {
       Runner.parseReporterArgsIntoConfigurations(List("-eF"))
     }
-    assertResult(new ReporterConfigurations(None, List(new FileReporterConfiguration(Set(), "theFilename")), Nil, Nil, Nil, None, None, Nil, Nil, Nil, Nil)) {
+    assertResult(new ReporterConfigurations(None, List(new FileReporterConfiguration(Set(), "theFilename")), Nil, Nil, Nil, Nil, None, None, Nil, Nil, Nil, Nil)) {
       Runner.parseReporterArgsIntoConfigurations(List("-f", "theFilename"))
     }
-    assertResult(new ReporterConfigurations(None, Nil, List(new JunitXmlReporterConfiguration(Set(), "target")), Nil, Nil, None, None, Nil, Nil, Nil, Nil)) {
+    assertResult(new ReporterConfigurations(None, Nil, List(new MemoryReporterConfiguration("theFilename")), Nil, Nil, Nil, None, None, Nil, Nil, Nil, Nil)) {
+      Runner.parseReporterArgsIntoConfigurations(List("-M", "theFilename"))
+    }
+    assertResult(new ReporterConfigurations(None, Nil, Nil, List(new JunitXmlReporterConfiguration(Set(), "target")), Nil, Nil, None, None, Nil, Nil, Nil, Nil)) {
       Runner.parseReporterArgsIntoConfigurations(List("-u", "target"))
     }
-    assertResult(new ReporterConfigurations(None, Nil, List(new JunitXmlReporterConfiguration(Set(), "target")), Nil, Nil, None, None, Nil, Nil, Nil, Nil)) {
+    assertResult(new ReporterConfigurations(None, Nil, Nil, List(new JunitXmlReporterConfiguration(Set(), "target")), Nil, Nil, None, None, Nil, Nil, Nil, Nil)) {
       Runner.parseReporterArgsIntoConfigurations(List("-uN", "target"))
     }
-    assertResult(new ReporterConfigurations(None, List(new FileReporterConfiguration(Set(FilterTestStarting), "theFilename")), Nil, Nil, Nil, None, None, Nil, Nil, Nil, Nil)) {
+    assertResult(new ReporterConfigurations(None, List(new FileReporterConfiguration(Set(FilterTestStarting), "theFilename")), Nil, Nil, Nil, Nil, None, None, Nil, Nil, Nil, Nil)) {
       Runner.parseReporterArgsIntoConfigurations(List("-fN", "theFilename"))
     }
-    assertResult(new ReporterConfigurations(None, Nil, Nil, Nil, Nil, None, None, Nil, List(new CustomReporterConfiguration(Set(), "the.reporter.Class")), Nil, Nil)) {
+    assertResult(new ReporterConfigurations(None, Nil, Nil, Nil, Nil, Nil, None, None, Nil, List(new CustomReporterConfiguration(Set(), "the.reporter.Class")), Nil, Nil)) {
       Runner.parseReporterArgsIntoConfigurations(List("-r", "the.reporter.Class"))
     }
-    assertResult(new ReporterConfigurations(None, Nil, Nil, Nil, Nil, None, None, Nil, List(new CustomReporterConfiguration(Set(FilterTestPending), "the.reporter.Class")), Nil, Nil)) {
+    assertResult(new ReporterConfigurations(None, Nil, Nil, Nil, Nil, Nil, None, None, Nil, List(new CustomReporterConfiguration(Set(FilterTestPending), "the.reporter.Class")), Nil, Nil)) {
       Runner.parseReporterArgsIntoConfigurations(List("-rE", "the.reporter.Class"))
     }
-    assertResult(new ReporterConfigurations(None, Nil, Nil, Nil, Nil, None, None, Nil, Nil, List(new XmlSocketReporterConfiguration("localhost", 8888)), Nil)) {
+    assertResult(new ReporterConfigurations(None, Nil, Nil, Nil, Nil, Nil, None, None, Nil, Nil, List(new XmlSocketReporterConfiguration("localhost", 8888)), Nil)) {
       Runner.parseReporterArgsIntoConfigurations(List("-k", "localhost", "8888"))
     }
-    assertResult(new ReporterConfigurations(None, Nil, Nil, Nil, Nil, None, None, Nil, Nil, List(new XmlSocketReporterConfiguration("localhost", 8888), new XmlSocketReporterConfiguration("another host", 1234)), Nil)) {
+    assertResult(new ReporterConfigurations(None, Nil, Nil, Nil, Nil, Nil, None, None, Nil, Nil, List(new XmlSocketReporterConfiguration("localhost", 8888), new XmlSocketReporterConfiguration("another host", 1234)), Nil)) {
       Runner.parseReporterArgsIntoConfigurations(List("-k", "localhost", "8888", "-k", "another host", "1234"))
     }
-    assertResult(new ReporterConfigurations(None, Nil, Nil, Nil, Nil, None, None, Nil, Nil, Nil, List(new SocketReporterConfiguration("localhost", 8888)))) {
+    assertResult(new ReporterConfigurations(None, Nil, Nil, Nil, Nil, Nil, None, None, Nil, Nil, Nil, List(new SocketReporterConfiguration("localhost", 8888)))) {
       Runner.parseReporterArgsIntoConfigurations(List("-K", "localhost", "8888"))
     }
-    assertResult(new ReporterConfigurations(None, Nil, Nil, Nil, Nil, None, None, Nil, Nil, Nil, List(new SocketReporterConfiguration("localhost", 8888), new SocketReporterConfiguration("another host", 1234)))) {
+    assertResult(new ReporterConfigurations(None, Nil, Nil, Nil, Nil, Nil, None, None, Nil, Nil, Nil, List(new SocketReporterConfiguration("localhost", 8888), new SocketReporterConfiguration("another host", 1234)))) {
       Runner.parseReporterArgsIntoConfigurations(List("-K", "localhost", "8888", "-K", "another host", "1234"))
     }
-    assertResult(new ReporterConfigurations(None, Nil, Nil, Nil, Nil, None, None, List(new HtmlReporterConfiguration(Set(), "html", None)), Nil, Nil, Nil)) {
+    assertResult(new ReporterConfigurations(None, Nil, Nil, Nil, Nil, Nil, None, None, List(new HtmlReporterConfiguration(Set(), "html", None)), Nil, Nil, Nil)) {
       Runner.parseReporterArgsIntoConfigurations(List("-h", "html"))
     }
-    assertResult(new ReporterConfigurations(None, Nil, Nil, Nil, Nil, None, None, List(new HtmlReporterConfiguration(Set(), "html", Some(new File("MyStyle.css").toURI.toURL))), Nil, Nil, Nil)) {
+    assertResult(new ReporterConfigurations(None, Nil, Nil, Nil, Nil, Nil, None, None, List(new HtmlReporterConfiguration(Set(), "html", Some(new File("MyStyle.css").toURI.toURL))), Nil, Nil, Nil)) {
       Runner.parseReporterArgsIntoConfigurations(List("-h", "html", "-Y", "MyStyle.css"))
     }
-    assertResult(new ReporterConfigurations(None, Nil, Nil, Nil, Nil, None, None, List(new HtmlReporterConfiguration(Set(), "htmldir", None), new HtmlReporterConfiguration(Set(), "html", Some(new File("MyStyle.css").toURI.toURL))), Nil, Nil, Nil)) {
+    assertResult(new ReporterConfigurations(None, Nil, Nil, Nil, Nil, Nil, None, None, List(new HtmlReporterConfiguration(Set(), "htmldir", None), new HtmlReporterConfiguration(Set(), "html", Some(new File("MyStyle.css").toURI.toURL))), Nil, Nil, Nil)) {
       Runner.parseReporterArgsIntoConfigurations(List("-h", "htmldir", "-h", "html", "-Y", "MyStyle.css"))
     }
   }

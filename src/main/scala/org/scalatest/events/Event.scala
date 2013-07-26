@@ -773,6 +773,8 @@ final case class TestPending (
  * @param formatter an optional formatter that provides extra information that can be used by reporters in determining
  *        how to present this event to the user
  * @param location An optional location that provides information indicating where in the source code an event originated.
+ * @param rerunner an optional <code>String</code> giving the fully qualified name of the class that can be used to rerun the test that has failed. (If <code>None</code>
+ *        is passed, the test cannot be rerun.)
  * @param payload an optional object that can be used to pass custom information to the reporter about the <code>TestCanceled</code> event
  * @param threadName a name for the <code>Thread</code> about whose activity this event was reported
  * @param timeStamp a <code>Long</code> indicating the time this event was reported, expressed in terms of the
@@ -780,7 +782,6 @@ final case class TestPending (
  *
  * @author Bill Venners
  */
-// TODO: Probably add a rerunnable to TestCanceled
 final case class TestCanceled (
   ordinal: Ordinal,
   message: String,
@@ -794,6 +795,7 @@ final case class TestCanceled (
   duration: Option[Long] = None,
   formatter: Option[Formatter] = None,
   location: Option[Location] = None,
+  rerunner: Option[String] = None,
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
@@ -823,6 +825,8 @@ final case class TestCanceled (
     throw new NullPointerException("formatter was null")
   if (location == null)
     throw new NullPointerException("location was null")
+  if (rerunner == null)
+    throw new NullPointerException("rerunner was null")
   if (payload == null)
     throw new NullPointerException("payload was null")
   if (threadName == null)
@@ -845,6 +849,7 @@ final case class TestCanceled (
       <throwable>{ throwableOption(throwable) }</throwable>
       <formatter>{ formatterOption(formatter) }</formatter>
       <location>{ locationOption(location) }</location>
+      <rerunner>{ stringOption(rerunner) }</rerunner>
       <threadName>{ threadName }</threadName>
       <timeStamp>{ timeStamp }</timeStamp>
     </TestCanceled>
