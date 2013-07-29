@@ -147,4 +147,60 @@ class PayloadSpec extends FlatSpec with ShouldMatchers with TableDrivenPropertyC
       }
     }
   }
+  
+  it should "return Failed that contains TestFailedException and added payload" in {
+    val failed = Failed(new TestFailedException("boom!", 3))
+    val result = withPayload("a payload") { failed }
+    result shouldBe a [Failed]
+    result.exception shouldBe a [TestFailedException]
+    result.exception.asInstanceOf[TestFailedException].payload shouldBe Some("a payload")
+  }
+  
+  it should "return original Failed that contains the RuntimeException and without payload" in {
+    val failed = Failed(new RuntimeException("boom!"))
+    val result = withPayload("a payload") { failed }
+    result should be theSameInstanceAs failed
+    result.exception.getMessage shouldBe "boom!"
+  }
+  
+  it should "return Canceled that contains TestCanceledException and added payload" in {
+    val canceled = Canceled(new TestCanceledException("rollback!", 3))
+    val result = withPayload("a payload") { canceled }
+    result shouldBe a [Canceled]
+    result.exception shouldBe a [TestCanceledException]
+    result.exception.asInstanceOf[TestCanceledException].payload shouldBe Some("a payload")
+  }
+  
+  it should "return original Canceled that contains the RuntimeException and without payload" in {
+    val canceled = Canceled(new RuntimeException("boom!"))
+    val result = withPayload("a payload") { canceled }
+    result should be theSameInstanceAs canceled
+    result.exception.getMessage shouldBe "boom!"
+  }
+  
+  it should "return Pending that contains the passed in message" in {
+    val pending = Pending(Some("boom!"))
+    val result = withPayload("a payload") { pending }
+    result should be theSameInstanceAs pending
+    result.message shouldBe Some("boom!")
+  }
+  
+  it should "return Pending that contains None message when no message is passed in" in {
+    val pending = Pending(None)
+    val result = withPayload("a payload") { pending }
+    result should be theSameInstanceAs pending
+    result.message shouldBe None
+  }
+  
+  it should "return original Omitted" in {
+    val omitted = Omitted
+    val result = withPayload("a payload") { omitted }
+    result should be theSameInstanceAs omitted
+  }
+  
+  it should "return original Succeeded" in {
+    val succeeded = Succeeded
+    val result = withPayload("a payload") { succeeded }
+    result should be theSameInstanceAs succeeded
+  }
 }
