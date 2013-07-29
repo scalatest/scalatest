@@ -381,6 +381,8 @@ case object Succeeded extends Outcome {
  */
 case class Failed(exception: Throwable) extends Exceptional(exception) {
 
+  require(!exception.isInstanceOf[exceptions.TestCanceledException], "a TestCanceledException was passed to Failed's constructor")
+
   /**
    * Indicates that this <code>Outcome</code> represents a test that failed.
    *
@@ -397,8 +399,12 @@ object Failed {
   def apply(): Failed = new Failed(new TestFailedException(1))
   def apply(message: String): Failed = new Failed(new TestFailedException(message, 1))
   // I always wrap this in a TFE because I need to do that to get the message in there.
-  def apply(message: String, cause: Throwable): Failed = new Failed(new TestFailedException(message, cause, 1))
+  def apply(message: String, cause: Throwable): Failed = {
+    require(!cause.isInstanceOf[exceptions.TestCanceledException], "a TestCanceledException was passed to a factory method in object Failed")
+    new Failed(new TestFailedException(message, cause, 1))
+  }
   def here(cause: Throwable): Failed = {
+    require(!cause.isInstanceOf[exceptions.TestCanceledException], "a TestCanceledException was passed to the \"here\" factory method in object Failed")
     new Failed(
       if (cause.getMessage != null)
         new exceptions.TestFailedException(cause.getMessage, cause, 1)

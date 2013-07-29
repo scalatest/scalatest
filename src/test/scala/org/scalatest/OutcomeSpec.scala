@@ -124,9 +124,7 @@ class OutcomeSpec extends Spec with OptionValues with OutcomeOf {
     }
   }
   object `The Failed class` {
-    def `should offer a constructor that takes any exception and returns it unchanged from its exception field` {
-      val ex1 = new exceptions.TestCanceledException(0)
-      assert(new Failed(ex1).exception eq ex1)
+    def `should offer a constructor that takes any exception except for TCE, TPE, and TOE and returns it unchanged from its exception field` {
       val ex2 = new exceptions.TestFailedException(0)
       assert(new Failed(ex2).exception eq ex2)
       val ex3 = new RuntimeException
@@ -183,6 +181,21 @@ class OutcomeSpec extends Spec with OptionValues with OutcomeOf {
           assert(tfe.failedCodeFileName === Some(fileName))
           assert(tfe.failedCodeLineNumber === Some(thisLineNumber - 6))
         case _ => fail(failed.exception + " was not a TestFailedException")
+      }
+    }
+    def `should throw IAE from its apply factory methods if TestCanceledException is passed` {
+      val tce = new exceptions.TestCanceledException(0)
+      intercept[IllegalArgumentException] {
+        Failed(tce)
+      }
+      intercept[IllegalArgumentException] {
+        Failed("Oops!", tce)
+      }
+      intercept[IllegalArgumentException] {
+        new Failed(tce)
+      }
+      intercept[IllegalArgumentException] {
+        Failed.here(tce)
       }
     }
   }
