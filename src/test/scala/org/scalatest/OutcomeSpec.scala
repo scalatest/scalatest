@@ -307,5 +307,67 @@ class OutcomeSpec extends Spec with OptionValues with OutcomeOf {
       }
     }
   }
+  
+  object `The Outcome's toSucceeded method` {
+    
+    def `should return itself when it is Succeeded` {
+      val outcome: Outcome = Succeeded
+      val result = outcome.toSucceeded
+      assert(result eq outcome)
+    }
+    
+    def `should throw the containing exception when it is Failed` {
+      val tfe = new exceptions.TestFailedException("boom!", 3)
+      val outcome1: Outcome = Failed(tfe)
+      val e1 = intercept[exceptions.TestFailedException] {
+        outcome1.toSucceeded
+      }
+      assert(e1 eq tfe)
+      
+      val re = new RuntimeException("boom!")
+      val outcome2: Outcome = Failed(re)
+      val e2 = intercept[RuntimeException] {
+        outcome2.toSucceeded
+      }
+      assert(e2 eq re)
+    }
+    
+    def `should throw the containing exception when it is Canceled` {
+      val tce = new exceptions.TestCanceledException("boom!", 3)
+      val outcome1: Outcome = Canceled(tce)
+      val e1 = intercept[exceptions.TestCanceledException] {
+        outcome1.toSucceeded
+      }
+      assert(e1 eq tce)
+      
+      val re = new RuntimeException("boom!")
+      val outcome2: Outcome = Canceled(re)
+      val e2 = intercept[RuntimeException] {
+        outcome2.toSucceeded
+      }
+      assert(e2 eq re)
+    }
+    
+    def `should throw TestPendingException when it is Pending` {
+      val outcome1: Outcome = Pending(Some("message"))
+      val e1 = intercept[exceptions.TestPendingException] {
+        outcome1.toSucceeded
+      }
+      assert(e1.reason === Some("message"))
+      
+      val outcome2: Outcome = Pending(None)
+      val e2 = intercept[exceptions.TestPendingException] {
+        outcome2.toSucceeded
+      }
+      assert(e2.reason === None)
+    }
+    
+    def `should throw TestOmittedException when it is Omitted` {
+      val outcome: Outcome = Omitted
+      intercept[exceptions.TestOmittedException] {
+        outcome.toSucceeded
+      }
+    }
+  }
 }
 
