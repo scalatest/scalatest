@@ -406,7 +406,7 @@ class JavaFuturesSpec extends FunSpec with ShouldMatchers with OptionValues with
       }
       
       it("should allow TestCanceledException, which does not normally cause a test to fail, through immediately when thrown") {
-        val task = new ThrowingTask(new TestCanceledException(sde => None, None, sde => 0))
+        val task = new ThrowingTask(new TestCanceledException(sde => None, None, sde => 0, None))
         intercept[TestCanceledException] {
           whenReady(task) { s =>
             s should be ("hi")

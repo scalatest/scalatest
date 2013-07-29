@@ -35,7 +35,8 @@ class PayloadSpec extends FlatSpec with ShouldMatchers with TableDrivenPropertyC
       new JUnitTestFailedError("message", 3),
       new TestFailedDueToTimeoutException(e => Some("message"), None, e => 3, None, Span(1, Second)),
       new TableDrivenPropertyCheckFailedException(e => "message", None, e => 3, None, "undecMsg", List.empty, List.empty, 3),
-      new GeneratorDrivenPropertyCheckFailedException(e => "message", None, e => 3, None, "undecMsg", List.empty, Option(List.empty), List.empty)
+      new GeneratorDrivenPropertyCheckFailedException(e => "message", None, e => 3, None, "undecMsg", List.empty, Option(List.empty), List.empty), 
+      new TestCanceledException("message", 3)
    )
 
   "The modifyPayload method on TFE" should "return the an exception with an equal message option if passed a function that returns the same option passed to it" in {
@@ -96,8 +97,14 @@ class PayloadSpec extends FlatSpec with ShouldMatchers with TableDrivenPropertyC
         }
       val rep = new EventRecordingReporter()
       a.run(None, Args(rep))
-      rep.testFailedEventsReceived.length should be (1)
-      rep.testFailedEventsReceived(0).payload should be (Some("a payload"))
+      e match {
+        case tce: TestCanceledException => 
+          rep.testCanceledEventsReceived.length should be (1)
+          rep.testCanceledEventsReceived(0).payload should be (Some("a payload"))
+        case _ => 
+          rep.testFailedEventsReceived.length should be (1)
+          rep.testFailedEventsReceived(0).payload should be (Some("a payload"))
+      }
     }
   }
   
@@ -129,8 +136,15 @@ class PayloadSpec extends FlatSpec with ShouldMatchers with TableDrivenPropertyC
         }
       val rep = new EventRecordingReporter()
       a.run(None, Args(rep))
-      rep.testFailedEventsReceived.length should be (1)
-      rep.testFailedEventsReceived(0).payload should be (Some("a payload"))
+      
+      e match {
+        case tce: TestCanceledException => 
+          rep.testCanceledEventsReceived.length should be (1)
+          rep.testCanceledEventsReceived(0).payload should be (Some("a payload"))
+        case _ => 
+          rep.testFailedEventsReceived.length should be (1)
+          rep.testFailedEventsReceived(0).payload should be (Some("a payload"))
+      }
     }
   }
 }
