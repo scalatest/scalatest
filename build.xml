@@ -7,7 +7,7 @@
              classpathref="maven-ant-tasks.classpath" />
 
     <!-- set global properties for this build -->
-    <property name="scala.version" value="2.10.0" />
+    <property name="scala.version" value="[2.10.0,2.11)" />
     <property name="deploy.scala.version" value="2.10" />
 	<property name="for.scala" value="2.10.0" />
 
