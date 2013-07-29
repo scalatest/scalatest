@@ -156,18 +156,10 @@ trait AppendedClues {
       try {
         val outcome = fun
         outcome match {
-          case exceptional: Exceptional => 
-            exceptional.toOption match {
-              case Some(e) => 
-                e match {
-                  case e: org.scalatest.exceptions.ModifiableMessage[_] =>
-                    if (clue.toString != "")
-                      Exceptional(e.modifyMessage(append)).asInstanceOf[T]
-                    else
-                      outcome
-                }
-              case None => outcome
-            }
+          case Failed(e: org.scalatest.exceptions.ModifiableMessage[_]) if clue.toString != "" =>
+            Failed(e.modifyMessage(append)).asInstanceOf[T]
+          case Canceled(e: org.scalatest.exceptions.ModifiableMessage[_]) if clue.toString != "" =>
+            Canceled(e.modifyMessage(append)).asInstanceOf[T]
           case _ => outcome
         }
       }

@@ -67,18 +67,10 @@ trait Payloads {
     try {
       val outcome: T = fun
       outcome match {
-        case exceptional: Exceptional => 
-          exceptional.toOption match {
-            case Some(e) => 
-              e match {
-                case e: org.scalatest.exceptions.ModifiablePayload[_] =>
-                  if (payload != null)
-                    Exceptional(e.modifyPayload((currentPayload: Option[Any]) => Some(payload))).asInstanceOf[T]
-                  else
-                    outcome
-              }
-            case None => outcome
-          }
+        case Failed(e: org.scalatest.exceptions.ModifiablePayload[_]) if payload != null =>
+          Failed(e.modifyPayload((currentPayload: Option[Any]) => Some(payload))).asInstanceOf[T]
+        case Canceled(e: org.scalatest.exceptions.ModifiablePayload[_]) if payload != null =>
+          Canceled(e.modifyPayload((currentPayload: Option[Any]) => Some(payload))).asInstanceOf[T]
         case _ => outcome
       }
     }

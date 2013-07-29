@@ -1083,18 +1083,10 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
     try {
       val outcome = fun
       outcome match {
-        case exceptional: Exceptional => 
-          exceptional.toOption match {
-            case Some(e) => 
-              e match {
-                case e: org.scalatest.exceptions.ModifiableMessage[_] =>
-                  if (clue != "")
-                    Exceptional(e.modifyMessage(prepend)).asInstanceOf[T]
-                  else
-                    outcome
-              }
-            case None => outcome
-          }
+        case Failed(e: org.scalatest.exceptions.ModifiableMessage[_]) if clue.toString != "" =>
+          Failed(e.modifyMessage(prepend)).asInstanceOf[T]
+        case Canceled(e: org.scalatest.exceptions.ModifiableMessage[_]) if clue.toString != "" =>
+          Canceled(e.modifyMessage(prepend)).asInstanceOf[T]
         case _ => outcome
       }
     }
