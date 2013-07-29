@@ -123,6 +123,24 @@ sealed abstract class Outcome {
    * @return a <code>Some</code> wrapping the contained exception if this <code>Outcome</code> is an instance of either <code>Failed</code> or <code>Canceled</code>.
    */
   def toOption: Option[Throwable] = None
+  
+  /**
+   * Converts this <code>Outcome</code> to a <code>Succeeded</code>.
+   *
+   * <p>
+   * When this <code>Outcome</code> instance is not Succeeded, it behaves as followed:
+   * </p>
+   * 
+   * <ul>
+   *   <li>Failed(ex) - throws ex</li> 
+   *   <li>Canceled(tce) - throws tce</li>
+   *   <li>Pending - throws TestPendingException</li> 
+   *   <li>Omitted - throws TestOmittedException</li> 
+   * </ul>
+   *
+   * @return Succeeded if this <code>Outcome</code> instance is a Succeeded.
+   */
+  def toSucceeded: Succeeded
 
   // Used internally to resuse the old code that was catching these exceptions when running tests. Eventually I would
   // like to rewrite that old code to use the result type, but it will still needs to catch and handle these exceptions
@@ -351,8 +369,7 @@ object Exceptional {
  * about something larger: multiple tests or an entire suite.
  * </p>
  */
-case object Succeeded extends Outcome {
-
+sealed abstract class Succeeded extends Outcome {
   /**
    * Indicates that this <code>Outcome</code> represents a test that succeeded.
    *
@@ -363,7 +380,19 @@ case object Succeeded extends Outcome {
    * @return true
    */
   override val isSucceeded: Boolean = true
+  
+  /**
+   * Converts this <code>Outcome</code> to a <code>Succeeded</code>.
+   *
+   * @return This Succeeded instance.
+   */
+  def toSucceeded: Succeeded = this
 }
+
+/**
+ * Companion object for Succeeded
+ */
+case object Succeeded extends Succeeded
 
 /**
  * Outcome for a test that failed, containing an exception describing the cause of the failure.
@@ -394,6 +423,15 @@ case class Failed(exception: Throwable) extends Exceptional(exception) {
    * @return true
    */
   override val isFailed: Boolean = true
+  
+  /**
+   * Converts this <code>Outcome</code> to a <code>Succeeded</code>.
+   * 
+   * <p>
+   * The implmentation of this class will re-throw the passed in exception. 
+   * </p>
+   */
+  def toSucceeded: Succeeded = throw exception
 }
 
 object Failed {
@@ -434,6 +472,15 @@ case class Canceled(exception: Throwable) extends Exceptional(exception) {
    * @return true
    */
   override val isCanceled: Boolean = true
+  
+  /**
+   * Converts this <code>Outcome</code> to a <code>Succeeded</code>.
+   * 
+   * <p>
+   * The implmentation of this class will re-throw the passed in exception. 
+   * </p>
+   */
+  def toSucceeded: Succeeded = throw exception
 }
 
 /**
@@ -506,6 +553,15 @@ case class Pending(message: Option[String] = None) extends Outcome {
    * @return true
    */
   override val isPending: Boolean = true
+  
+  /**
+   * Converts this <code>Outcome</code> to a <code>Succeeded</code>.
+   * 
+   * <p>
+   * The implmentation of this class will throw <code>TestPendingException</code> with the passed in message. 
+   * </p>
+   */
+  def toSucceeded: Succeeded = throw new exceptions.TestPendingException(message)
 }
 
 /**
@@ -531,5 +587,14 @@ case object Omitted extends Outcome {
    * @return true
    */
   override val isOmitted: Boolean = true
+  
+  /**
+   * Converts this <code>Outcome</code> to a <code>Succeeded</code>.
+   * 
+   * <p>
+   * The implmentation of this class will throw <code>TestOmittedException</code>. 
+   * </p>
+   */
+  def toSucceeded: Succeeded = throw new exceptions.TestOmittedException
 }
 
