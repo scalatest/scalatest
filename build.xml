@@ -8,6 +8,7 @@
 
     <!-- set global properties for this build -->
     <property name="scala.version" value="2.10.0" />
+    <property name="scala.version.range" value="[2.10.0, 2.10.99]" />
     <property name="deploy.scala.version" value="2.10" />
 	<property name="for.scala" value="2.10.0" />
 
@@ -16,7 +17,7 @@
     <property name="deploy.scala.version" value="2.11.0-M4" />
 	<property name="for.scala" value="2.11.0" />
 -->
-    <property name="release" value="2.0.M6-SNAP35" />
+    <property name="release" value="2.0.M6-SNAP36" />
 
     <property name="scalasrc" value="src/main/scala" />
     <property name="javasrc" value="src/main/java" />
@@ -73,6 +74,7 @@
           <filterset>
             <filter token="RELEASE" value="${release}" />
             <filter token="SCALA_VERSION" value="${scala.version}" />
+            <filter token="SCALA_VERSION_RANGE" value="${scala.version.range}" />
             <!--
               -  DEPLOY_SCALA_VERSION is used in the artifact name, e.g.
               -  it's "2.10" when scala version is "2.10.0"
@@ -1637,6 +1639,7 @@
         <filterset>
           <filter token="RELEASE" value="${release}" />
           <filter token="SCALA_VERSION" value="${scala.version}" />
+          <filter token="SCALA_VERSION_RANGE" value="${scala.version.range}" />
           <filter token="DEPLOY_SCALA_VERSION"
                   value="${deploy.scala.version}" />
         </filterset>
@@ -1761,6 +1764,7 @@
         <filterset>
           <filter token="RELEASE" value="${scalatest.version}" />
           <filter token="SCALA_VERSION" value="${new.scala.version}" />
+          <filter token="SCALA_VERSION_RANGE" value="${new.scala.version}" />
           <filter token="DEPLOY_SCALA_VERSION"
                   value="${new.deploy.scala.version}" />
         </filterset>
