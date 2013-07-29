@@ -198,6 +198,22 @@ class OutcomeSpec extends Spec with OptionValues with OutcomeOf {
         Failed.here(tce)
       }
     }
+    def `should throw IAE from its apply factory methods if TestPendingException is passed` {
+      val tpe = new exceptions.TestPendingException
+      intercept[IllegalArgumentException] {
+        Failed(tpe)
+      }
+      intercept[IllegalArgumentException] {
+        Failed("Oops!", tpe)
+      }
+      intercept[IllegalArgumentException] {
+        new Failed(tpe)
+      }
+      intercept[IllegalArgumentException] {
+        Failed.here(tpe)
+      }
+    }
+    def `should throw IAE from its apply factory methods if TestOmittedException is passed` { pending }
   }
   object `The Canceled class` {
     def `should offer a constructor that takes any exception and returns it unchanged from its exception field` {
