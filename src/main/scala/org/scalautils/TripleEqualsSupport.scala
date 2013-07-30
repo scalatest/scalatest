@@ -316,7 +316,7 @@ trait TripleEqualsSupport {
           None
         else {
           val (leftee, rightee) = getObjectsForFailureMessage(left, spread)
-          Some(FailureMessages("equaled", leftee, rightee))
+          Some(FailureMessages("didNotEqual", leftee, rightee))
         }
       }
       else {

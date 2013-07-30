@@ -76,6 +76,11 @@ class AssertionsSpec extends FunSpec with OptionValues {
       intercept[TestFailedException] {
         assert(a1 === n1)
       }
+      val a = "hi"
+      val e1 = intercept[TestFailedException] {
+        assert(a === null)
+      }
+      assert(e1.message === Some(FailureMessages("didNotEqual", a, null)))
     }
   }
   describe("The intercept method") {
