@@ -22,7 +22,7 @@ package org.scalatest
  * <code>Outcome</code> is the result type of the <code>withFixture</code> methods of traits
  * <a href="Suite.html#withFixture"><code>Suite</code></a> and <a href="fixture/Suite.html#withFixture"><code>fixture.Suite</code></a>, as well as their
  * <a href="Suite$NoArgTest.html"><code>NoArgTest</code></a> and <a href="fixture/Suite$OneArgTest.html"><code>OneArgTest</code></a> function types.
- * The five possible outcomes are:
+ * The four possible outcomes are:
  * </p>
  *
  * <ul>
@@ -30,7 +30,6 @@ package org.scalatest
  * <li><a href="Failed.html"><code>Failed</code></a> - indicates a test failed and contains an exception describing the failure</li>
  * <li><a href="Canceled.html"><code>Canceled</code></a> - indicates a test was canceled and contains an exception describing the cancelation</li>
  * <li><a href="Pending.html"><code>Pending</code></a> - indicates a test was pending</li>
- * <li><a href="Omitted$.html"><code>Omitted</code></a> - indicates a test was omitted</li>
  * </ul>
  *
  * <p>
@@ -39,14 +38,6 @@ package org.scalatest
  * never has an outcome. By contrast, a test is determined to be pending by running the test
  * and observing the actual outcome. If the test body completes abruptly with a <code>TestPendingException</code>,
  * then the outcome was that the test was pending.
- * </p>
- *
- * <p>
- * Note: <code>Omitted</code> is currently not used in ScalaTest, but will eventually be used
- * to indicate everything except specification-text provided by mechanisms such
- * as <code>GivenWhenThen</code> has been omitted or elided from the test body. This will enable
- * full specification output to be obtained without waiting for the actual test code
- * to execute.
  * </p>
  */
 sealed abstract class Outcome {
@@ -96,17 +87,6 @@ sealed abstract class Outcome {
   val isPending: Boolean = false
 
   /**
-   * Indicates whether this <code>Outcome</code> represents a test that was omitted.
-   *
-   * <p>
-   * This class's implementation of this method always returns <code>false</code>.
-   * </p>
-   *
-   * @return true if this <code>Outcome</code> is an instance of <code>Omitted</code>.
-   */
-  val isOmitted: Boolean = false
-
-  /**
    * Indicates whether this <code>Outcome</code> represents a test that either failed or was canceled, in which case this <code>Outcome</code> will contain an exception.
    *
    * @return true if this <code>Outcome</code> is an instance of either <code>Failed</code> or <code>Canceled</code>.
@@ -135,7 +115,6 @@ sealed abstract class Outcome {
    *   <li>Failed(ex) - throws ex</li> 
    *   <li>Canceled(tce) - throws tce</li>
    *   <li>Pending - throws TestPendingException</li> 
-   *   <li>Omitted - throws TestOmittedException</li> 
    * </ul>
    *
    * @return Succeeded if this <code>Outcome</code> instance is a Succeeded.
@@ -150,7 +129,6 @@ sealed abstract class Outcome {
       case Succeeded =>
       case Exceptional(e) => throw e
       case Pending(_) => throw new exceptions.TestPendingException
-      case Omitted => throw new exceptions.TestOmittedException
     }
   }
 }
@@ -558,39 +536,5 @@ case class Pending(message: Option[String] = None) extends Outcome {
    * </p>
    */
   def toSucceeded: Succeeded.type = throw new exceptions.TestPendingException(message)
-}
-
-/**
- * Outcome for a test that was omitted.
- *
- * <p>
- * Note: This outcome is currently not used in ScalaTest, but will eventually be used
- * to indicate everything except specification-text provided by mechanisms such
- * as <code>GivenWhenThen</code> has been omitted from the test body. This will enable
- * a the specification output to be obtained without waiting for the actual test code
- * to execute.
- * </p>
- */
-case object Omitted extends Outcome {
-
-  /**
-   * Indicates that this <code>Outcome</code> represents a test that was omitted.
-   *
-   * <p>
-   * This class's implementation of this method always returns <code>false</code>.
-   * </p>
-   *
-   * @return true
-   */
-  override val isOmitted: Boolean = true
-  
-  /**
-   * Converts this <code>Outcome</code> to a <code>Succeeded</code>.
-   * 
-   * <p>
-   * The implmentation of this class will throw <code>TestOmittedException</code>. 
-   * </p>
-   */
-  def toSucceeded: Succeeded.type = throw new exceptions.TestOmittedException
 }
 

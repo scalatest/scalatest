@@ -69,7 +69,6 @@ trait OutcomeOf {
    * <ul>
    * <li><a href="exceptions/TestPendingException.html"><code>TestPendingException</code></a></li>: <a href="Pending.html"><code>Pending</code></a>
    * <li><a href="exceptions/TestCanceledException.html"><code>TestCanceledException</code></a></li>: <a href="Canceled.html"><code>Canceled</code></a>
-   * <li><a href="exceptions/TestOmittedException.html"><code>TestOmittedException</code></a></li>: <a href="Omitted$.html"><code>Omitted</code></a>
    * <li>otherwise: <a href="Failed.html"><code>Failed</code></a>
    * </ul>
    * </p>
@@ -89,7 +88,6 @@ trait OutcomeOf {
     catch {                                       
       case ex: exceptions.TestCanceledException => Canceled(ex)                           
       case exceptions.TestPendingException(reason) => Pending(reason)                           
-      case ex: exceptions.TestOmittedException => Omitted                           
       case tfe: exceptions.TestFailedException => Failed(tfe)
       case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => Failed(ex)                           
     }

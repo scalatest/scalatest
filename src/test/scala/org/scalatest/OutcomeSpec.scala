@@ -28,7 +28,6 @@ class OutcomeSpec extends Spec with OptionValues with OutcomeOf {
       assert(!Succeeded.isFailed)
       assert(!Succeeded.isCanceled)
       assert(!Succeeded.isPending)
-      assert(!Succeeded.isOmitted)
     }
     def `can be Failed` {
       val ex = new Exception
@@ -36,7 +35,6 @@ class OutcomeSpec extends Spec with OptionValues with OutcomeOf {
       assert(Failed(ex).isFailed)
       assert(!Failed(ex).isCanceled)
       assert(!Failed(ex).isPending)
-      assert(!Failed(ex).isOmitted)
     }
     def `can be Canceled` {
       val ex = new exceptions.TestCanceledException(0)
@@ -44,21 +42,12 @@ class OutcomeSpec extends Spec with OptionValues with OutcomeOf {
       assert(!Canceled(ex).isFailed)
       assert(Canceled(ex).isCanceled)
       assert(!Canceled(ex).isPending)
-      assert(!Canceled(ex).isOmitted)
     }
     def `can be Pending` {
       assert(!Pending().isSucceeded)
       assert(!Pending().isFailed)
       assert(!Pending().isCanceled)
       assert(Pending().isPending)
-      assert(!Pending().isOmitted)
-    }
-    def `can be Omitted` {
-      assert(!Omitted.isSucceeded)
-      assert(!Omitted.isFailed)
-      assert(!Omitted.isCanceled)
-      assert(!Omitted.isPending)
-      assert(Omitted.isOmitted)
     }
     val res1: Outcome = Succeeded
     val ex2 = new Exception
@@ -66,7 +55,6 @@ class OutcomeSpec extends Spec with OptionValues with OutcomeOf {
     val ex3 = new exceptions.TestCanceledException(0)
     val res3: Outcome = Canceled(ex3)
     val res4: Outcome = Pending()
-    val res5: Outcome = Omitted
     def `can be easily pattern matched on based on whether it is Exceptional` {
       def matchesExceptional(res: Outcome): Boolean =
         res match {
@@ -77,7 +65,6 @@ class OutcomeSpec extends Spec with OptionValues with OutcomeOf {
       assert(matchesExceptional(res2))
       assert(matchesExceptional(res3))
       assert(!matchesExceptional(res4))
-      assert(!matchesExceptional(res5))
     }
     def `can be easily pattern matched on, extracting the exception, based on whether it is Exceptional` {
       def insideExceptional(res: Outcome): Option[Throwable] =
@@ -89,30 +76,25 @@ class OutcomeSpec extends Spec with OptionValues with OutcomeOf {
       assert(insideExceptional(res2).value eq ex2)
       assert(insideExceptional(res3).value eq ex3)
       assert(insideExceptional(res4).isEmpty)
-      assert(insideExceptional(res5).isEmpty)
     }
     def `can be queried to determine whether or not it is "exceptional"` {
       assert(!res1.isExceptional)
       assert(res2.isExceptional)
       assert(res3.isExceptional)
       assert(!res4.isExceptional)
-      assert(!res5.isExceptional)
     }
     def `can be transformed into an Option[Throwable]` {
       assert(res1.toOption.isEmpty)
       assert(res2.toOption.value eq ex2)
       assert(res3.toOption.value eq ex3)
       assert(res4.toOption.isEmpty)
-      assert(res5.toOption.isEmpty)
     }
     def `can be implicitly converted to an Iterable so it can be flattened` {
-      assert(Vector(res1, res2, res3, res4, res5).flatten === Vector(ex2, ex3))
+      assert(Vector(res1, res2, res3, res4).flatten === Vector(ex2, ex3))
       val succeededs: Vector[Succeeded.type] = Vector(Succeeded, Succeeded, Succeeded)
       assert(succeededs.flatten === Vector.empty)
       val pendings: Vector[Pending] = Vector(Pending(), Pending(), Pending())
       assert(pendings.flatten === Vector.empty)
-      val omitteds: Vector[Omitted.type] = Vector(Omitted, Omitted, Omitted)
-      assert(omitteds.flatten === Vector.empty)
       val rtEx1 = new RuntimeException
       val rtEx2 = new RuntimeException
       val faileds: Vector[Failed] = Vector(Failed(rtEx1), Failed(ex2), Failed(rtEx2))
@@ -213,7 +195,6 @@ class OutcomeSpec extends Spec with OptionValues with OutcomeOf {
         Failed.here(tpe)
       }
     }
-    def `should throw IAE from its apply factory methods if TestOmittedException is passed` { pending }
   }
   object `The Canceled class` {
     def `should offer a constructor that takes any exception and returns it unchanged from its exception field` {
@@ -298,8 +279,6 @@ class OutcomeSpec extends Spec with OptionValues with OutcomeOf {
       assert(outcomeOf { throw tce } === Canceled(tce))
       val tpe = new exceptions.TestPendingException
       assert(outcomeOf { throw tpe } === Pending(None))
-      val toe = new exceptions.TestOmittedException
-      assert(outcomeOf { throw toe } === Omitted)
     }
     def `if UnknownError is thrown, should complete abruptly with that exception` {
       intercept[UnknownError] {
@@ -360,13 +339,6 @@ class OutcomeSpec extends Spec with OptionValues with OutcomeOf {
         outcome2.toSucceeded
       }
       assert(e2.reason === None)
-    }
-    
-    def `should throw TestOmittedException when it is Omitted` {
-      val outcome: Outcome = Omitted
-      intercept[exceptions.TestOmittedException] {
-        outcome.toSucceeded
-      }
     }
   }
 }
