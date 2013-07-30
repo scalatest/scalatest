@@ -140,7 +140,7 @@ sealed abstract class Outcome {
    *
    * @return Succeeded if this <code>Outcome</code> instance is a Succeeded.
    */
-  def toSucceeded: Succeeded
+  def toSucceeded: Succeeded.type
 
   // Used internally to resuse the old code that was catching these exceptions when running tests. Eventually I would
   // like to rewrite that old code to use the result type, but it will still needs to catch and handle these exceptions
@@ -369,7 +369,8 @@ object Exceptional {
  * about something larger: multiple tests or an entire suite.
  * </p>
  */
-sealed abstract class Succeeded extends Outcome {
+case object Succeeded extends Outcome {
+
   /**
    * Indicates that this <code>Outcome</code> represents a test that succeeded.
    *
@@ -380,19 +381,14 @@ sealed abstract class Succeeded extends Outcome {
    * @return true
    */
   override val isSucceeded: Boolean = true
-  
+
   /**
    * Converts this <code>Outcome</code> to a <code>Succeeded</code>.
    *
    * @return This Succeeded instance.
    */
-  def toSucceeded: Succeeded = this
+  def toSucceeded: Succeeded.type = this
 }
-
-/**
- * Companion object for Succeeded
- */
-case object Succeeded extends Succeeded
 
 /**
  * Outcome for a test that failed, containing an exception describing the cause of the failure.
@@ -431,7 +427,7 @@ case class Failed(exception: Throwable) extends Exceptional(exception) {
    * The implmentation of this class will re-throw the passed in exception. 
    * </p>
    */
-  def toSucceeded: Succeeded = throw exception
+  def toSucceeded: Succeeded.type = throw exception
 }
 
 object Failed {
@@ -480,7 +476,7 @@ case class Canceled(exception: Throwable) extends Exceptional(exception) {
    * The implmentation of this class will re-throw the passed in exception. 
    * </p>
    */
-  def toSucceeded: Succeeded = throw exception
+  def toSucceeded: Succeeded.type = throw exception
 }
 
 /**
@@ -561,7 +557,7 @@ case class Pending(message: Option[String] = None) extends Outcome {
    * The implmentation of this class will throw <code>TestPendingException</code> with the passed in message. 
    * </p>
    */
-  def toSucceeded: Succeeded = throw new exceptions.TestPendingException(message)
+  def toSucceeded: Succeeded.type = throw new exceptions.TestPendingException(message)
 }
 
 /**
@@ -595,6 +591,6 @@ case object Omitted extends Outcome {
    * The implmentation of this class will throw <code>TestOmittedException</code>. 
    * </p>
    */
-  def toSucceeded: Succeeded = throw new exceptions.TestOmittedException
+  def toSucceeded: Succeeded.type = throw new exceptions.TestOmittedException
 }
 
