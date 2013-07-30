@@ -128,7 +128,7 @@ sealed abstract class Outcome {
     this match {
       case Succeeded =>
       case Exceptional(e) => throw e
-      case Pending(_) => throw new exceptions.TestPendingException
+      case Pending => throw new exceptions.TestPendingException
     }
   }
 }
@@ -515,7 +515,7 @@ object Canceled {
  *
  * @param message an optional message describing the reason the test is pending
  */
-case class Pending(message: Option[String] = None) extends Outcome {
+case object Pending extends Outcome {
 
   /**
    * Indicates that this <code>Outcome</code> represents a test that was pending.
@@ -535,6 +535,6 @@ case class Pending(message: Option[String] = None) extends Outcome {
    * The implmentation of this class will throw <code>TestPendingException</code> with the passed in message. 
    * </p>
    */
-  def toSucceeded: Succeeded.type = throw new exceptions.TestPendingException(message)
+  def toSucceeded: Succeeded.type = throw new exceptions.TestPendingException
 }
 

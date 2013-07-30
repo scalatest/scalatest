@@ -87,7 +87,7 @@ trait OutcomeOf {
     }                                             
     catch {                                       
       case ex: exceptions.TestCanceledException => Canceled(ex)                           
-      case exceptions.TestPendingException(reason) => Pending(reason)                           
+      case _: exceptions.TestPendingException => Pending
       case tfe: exceptions.TestFailedException => Failed(tfe)
       case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => Failed(ex)                           
     }

@@ -44,17 +44,17 @@ class OutcomeSpec extends Spec with OptionValues with OutcomeOf {
       assert(!Canceled(ex).isPending)
     }
     def `can be Pending` {
-      assert(!Pending().isSucceeded)
-      assert(!Pending().isFailed)
-      assert(!Pending().isCanceled)
-      assert(Pending().isPending)
+      assert(!Pending.isSucceeded)
+      assert(!Pending.isFailed)
+      assert(!Pending.isCanceled)
+      assert(Pending.isPending)
     }
     val res1: Outcome = Succeeded
     val ex2 = new Exception
     val res2: Outcome = Failed(ex2)
     val ex3 = new exceptions.TestCanceledException(0)
     val res3: Outcome = Canceled(ex3)
-    val res4: Outcome = Pending()
+    val res4: Outcome = Pending
     def `can be easily pattern matched on based on whether it is Exceptional` {
       def matchesExceptional(res: Outcome): Boolean =
         res match {
@@ -93,7 +93,7 @@ class OutcomeSpec extends Spec with OptionValues with OutcomeOf {
       assert(Vector(res1, res2, res3, res4).flatten === Vector(ex2, ex3))
       val succeededs: Vector[Succeeded.type] = Vector(Succeeded, Succeeded, Succeeded)
       assert(succeededs.flatten === Vector.empty)
-      val pendings: Vector[Pending] = Vector(Pending(), Pending(), Pending())
+      val pendings: Vector[Pending.type] = Vector(Pending, Pending, Pending)
       assert(pendings.flatten === Vector.empty)
       val rtEx1 = new RuntimeException
       val rtEx2 = new RuntimeException
@@ -278,7 +278,7 @@ class OutcomeSpec extends Spec with OptionValues with OutcomeOf {
       val tce = new exceptions.TestCanceledException(0)
       assert(outcomeOf { throw tce } === Canceled(tce))
       val tpe = new exceptions.TestPendingException
-      assert(outcomeOf { throw tpe } === Pending(None))
+      assert(outcomeOf { throw tpe } === Pending)
     }
     def `if UnknownError is thrown, should complete abruptly with that exception` {
       intercept[UnknownError] {
@@ -328,17 +328,10 @@ class OutcomeSpec extends Spec with OptionValues with OutcomeOf {
     }
     
     def `should throw TestPendingException when it is Pending` {
-      val outcome1: Outcome = Pending(Some("message"))
-      val e1 = intercept[exceptions.TestPendingException] {
-        outcome1.toSucceeded
-      }
-      assert(e1.reason === Some("message"))
-      
-      val outcome2: Outcome = Pending(None)
-      val e2 = intercept[exceptions.TestPendingException] {
+      val outcome2: Outcome = Pending
+      intercept[exceptions.TestPendingException] {
         outcome2.toSucceeded
       }
-      assert(e2.reason === None)
     }
   }
 }
