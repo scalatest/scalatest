@@ -15,12 +15,13 @@
  */
 package org.scalatest
 
-import exceptions.{GeneratorDrivenPropertyCheckFailedException, TableDrivenPropertyCheckFailedException, TestFailedDueToTimeoutException}
+import exceptions.{GeneratorDrivenPropertyCheckFailedException, TableDrivenPropertyCheckFailedException, TestFailedDueToTimeoutException, TestCanceledException}
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.junit.JUnitTestFailedError
 import prop.TableDrivenPropertyChecks
 import prop.TableFor1
 import time.{Second, Span}
+import SharedHelpers.EventRecordingReporter
 
 /* Uncomment after remove type aliases in org.scalatest package object
 import org.scalatest.exceptions.TestFailedException
@@ -168,6 +169,95 @@ class ClueSpec extends FlatSpec with ShouldMatchers with TableDrivenPropertyChec
         }
       }
     }
+  }
+  
+  it should "infer the type of the result of the passed in function" in {
+    val result: Int = withClue("hi") { 22 }
+    assert(result === 22)
+  }
+  
+  it should "be able to accept by-name payload" in {
+    val result: String = withClue(() => 128) { "hello" }
+    assert(result === "hello")
+  }
+  
+  it should "work when used in withFixture" in {
+    forAll(examples) { e => 
+      val a = 
+        new org.scalatest.fixture.FunSpec {
+          type FixtureParam = String
+        
+          override def withFixture(test: OneArgTest) = {
+            withClue("a clue") {
+              test("something")
+            }
+          }
+        
+          it("should do something") { p => 
+            throw e
+          }
+        }
+      val rep = new EventRecordingReporter()
+      a.run(None, Args(rep))
+      rep.testFailedEventsReceived.length should be (1)
+      rep.testFailedEventsReceived(0).message should be ("a clue message")
+    }
+  }
+  
+  it should "return Failed that contains TestFailedException and with prepended clue" in {
+    val failed = Failed(new TestFailedException("message", 3))
+    val result = withClue("a clue") { failed }
+    result shouldBe a [Failed]
+    result.exception shouldBe a [TestFailedException]
+    result.exception.getMessage shouldBe "a clue message"
+  }
+  
+  it should "return original Failed that contains the RuntimeException and without prepended clue" in {
+    val failed = Failed(new RuntimeException("message"))
+    val result = withClue("a clue") { failed }
+    result should be theSameInstanceAs failed
+    result.exception.getMessage shouldBe "message"
+  }
+  
+  it should "return Canceled that contains TestCanceledException and with prepended clue" in {
+    val canceled = Canceled(new TestCanceledException("message", 3))
+    val result = withClue("a clue") { canceled }
+    result shouldBe a [Canceled]
+    result.exception shouldBe a [TestCanceledException]
+    result.exception.getMessage shouldBe "a clue message"
+  }
+  
+  it should "return original Canceled that contains the RuntimeException and without prepended clue" in {
+    val canceled = Canceled(new RuntimeException("message"))
+    val result = withClue("a clue") { canceled }
+    result should be theSameInstanceAs canceled
+    result.exception.getMessage shouldBe "message"
+  }
+  
+  it should "return Pending that contains the passed in message" in {
+    val pending = Pending(Some("message"))
+    val result = withClue("a clue") { pending }
+    result should be theSameInstanceAs pending
+    result.message shouldBe Some("message")
+  }
+  
+  it should "return Pending that contains None message when no message is passed in" in {
+    val pending = Pending(None)
+    val result = withClue("a clue") { pending }
+    result should be theSameInstanceAs pending
+    result.message shouldBe None
+  }
+  
+  it should "return original Omitted" in {
+    val omitted = Omitted
+    val result = withClue("a clue") { omitted }
+    result should be theSameInstanceAs omitted
+  }
+  
+  it should "return original Succeeded" in {
+    val succeeded = Succeeded
+    val result = withClue("a clue") { succeeded }
+    result should be theSameInstanceAs succeeded
   }
 }
 

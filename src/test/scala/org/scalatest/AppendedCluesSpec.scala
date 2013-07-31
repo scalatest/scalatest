@@ -15,11 +15,12 @@
  */
 package org.scalatest
 
-import exceptions.{GeneratorDrivenPropertyCheckFailedException, TableDrivenPropertyCheckFailedException, TestFailedDueToTimeoutException, TestFailedException, StackDepth}
+import exceptions.{GeneratorDrivenPropertyCheckFailedException, TableDrivenPropertyCheckFailedException, TestFailedDueToTimeoutException, TestFailedException, StackDepth, TestCanceledException}
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.junit.JUnitTestFailedError
 import prop.{TableDrivenPropertyChecks, TableFor1}
 import time.{Span, Second}
+import SharedHelpers.EventRecordingReporter
 
 // TODO: Test with imported AppendedClues
 class AppendedCluesSpec extends FlatSpec with ShouldMatchers with AppendedClues with TableDrivenPropertyChecks  with SeveredStackTraces {
@@ -201,6 +202,93 @@ class AppendedCluesSpec extends FlatSpec with ShouldMatchers with AppendedClues 
         } withClue (null)
       }
     }
+  }
+  
+  it should "infer the type of the result of the passed in function" in {
+    val result: Int = { 22 } withClue ("hi")
+    assert(result === 22)
+  }
+  
+  it should "be able to accept by-name payload" in {
+    val result: String = { "hello" } withClue (() => 128)
+    assert(result === "hello")
+  }
+  
+  it should "work when used in withFixture" in {
+    forAll(examples) { e => 
+      val a = 
+        new org.scalatest.fixture.FunSpec {
+          type FixtureParam = String
+        
+          override def withFixture(test: OneArgTest) = {
+            test("something") withClue("a clue")
+          }
+        
+          it("should do something") { p => 
+            throw e
+          }
+        }
+      val rep = new EventRecordingReporter()
+      a.run(None, Args(rep))
+      rep.testFailedEventsReceived.length should be (1)
+      rep.testFailedEventsReceived(0).message should be ("message a clue")
+    }
+  }
+  
+  it should "return Failed that contains TestFailedException and with appended clue" in {
+    val failed = Failed(new TestFailedException("message", 3))
+    val result = { failed } withClue("a clue")
+    result shouldBe a [Failed]
+    result.exception shouldBe a [TestFailedException]
+    result.exception.getMessage shouldBe "message a clue"
+  }
+  
+  it should "return original Failed that contains the RuntimeException and without appended clue" in {
+    val failed = Failed(new RuntimeException("message"))
+    val result = { failed } withClue("a clue") 
+    result should be theSameInstanceAs failed
+    result.exception.getMessage shouldBe "message"
+  }
+  
+  it should "return Canceled that contains TestCanceledException and with appended clue" in {
+    val canceled = Canceled(new TestCanceledException("message", 3))
+    val result = { canceled } withClue("a clue")
+    result shouldBe a [Canceled]
+    result.exception shouldBe a [TestCanceledException]
+    result.exception.getMessage shouldBe "message a clue"
+  }
+  
+  it should "return original Canceled that contains the RuntimeException and without appended clue" in {
+    val canceled = Canceled(new RuntimeException("message"))
+    val result = { canceled } withClue("a clue")
+    result should be theSameInstanceAs canceled
+    result.exception.getMessage shouldBe "message"
+  }
+  
+  it should "return Pending that contains the passed in message" in {
+    val pending = Pending(Some("message"))
+    val result = { pending } withClue("a clue")
+    result should be theSameInstanceAs pending
+    result.message shouldBe Some("message")
+  }
+  
+  it should "return Pending that contains None message when no message is passed in" in {
+    val pending = Pending(None)
+    val result = { pending } withClue("a clue")
+    result should be theSameInstanceAs pending
+    result.message shouldBe None
+  }
+  
+  it should "return original Omitted" in {
+    val omitted = Omitted
+    val result = { omitted } withClue("a clue")
+    result should be theSameInstanceAs omitted
+  }
+  
+  it should "return original Succeeded" in {
+    val succeeded = Succeeded
+    val result = { succeeded } withClue("a clue")
+    result should be theSameInstanceAs succeeded
   }
 }
 
