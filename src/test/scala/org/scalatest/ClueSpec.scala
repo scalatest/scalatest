@@ -234,24 +234,10 @@ class ClueSpec extends FlatSpec with ShouldMatchers with TableDrivenPropertyChec
     result.exception.getMessage shouldBe "message"
   }
   
-  it should "return Pending that contains the passed in message" in {
-    val pending = Pending(Some("message"))
+  it should "return original Pending" in {
+    val pending = Pending
     val result = withClue("a clue") { pending }
     result should be theSameInstanceAs pending
-    result.message shouldBe Some("message")
-  }
-  
-  it should "return Pending that contains None message when no message is passed in" in {
-    val pending = Pending(None)
-    val result = withClue("a clue") { pending }
-    result should be theSameInstanceAs pending
-    result.message shouldBe None
-  }
-  
-  it should "return original Omitted" in {
-    val omitted = Omitted
-    val result = withClue("a clue") { omitted }
-    result should be theSameInstanceAs omitted
   }
   
   it should "return original Succeeded" in {

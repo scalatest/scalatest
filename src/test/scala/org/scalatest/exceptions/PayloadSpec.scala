@@ -178,24 +178,10 @@ class PayloadSpec extends FlatSpec with ShouldMatchers with TableDrivenPropertyC
     result.exception.getMessage shouldBe "boom!"
   }
   
-  it should "return Pending that contains the passed in message" in {
-    val pending = Pending(Some("boom!"))
+  it should "return original Pending" in {
+    val pending = Pending
     val result = withPayload("a payload") { pending }
     result should be theSameInstanceAs pending
-    result.message shouldBe Some("boom!")
-  }
-  
-  it should "return Pending that contains None message when no message is passed in" in {
-    val pending = Pending(None)
-    val result = withPayload("a payload") { pending }
-    result should be theSameInstanceAs pending
-    result.message shouldBe None
-  }
-  
-  it should "return original Omitted" in {
-    val omitted = Omitted
-    val result = withPayload("a payload") { omitted }
-    result should be theSameInstanceAs omitted
   }
   
   it should "return original Succeeded" in {
