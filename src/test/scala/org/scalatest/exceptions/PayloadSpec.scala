@@ -35,7 +35,8 @@ class PayloadSpec extends FlatSpec with ShouldMatchers with TableDrivenPropertyC
       new JUnitTestFailedError("message", 3),
       new TestFailedDueToTimeoutException(e => Some("message"), None, e => 3, None, Span(1, Second)),
       new TableDrivenPropertyCheckFailedException(e => "message", None, e => 3, None, "undecMsg", List.empty, List.empty, 3),
-      new GeneratorDrivenPropertyCheckFailedException(e => "message", None, e => 3, None, "undecMsg", List.empty, Option(List.empty), List.empty)
+      new GeneratorDrivenPropertyCheckFailedException(e => "message", None, e => 3, None, "undecMsg", List.empty, Option(List.empty), List.empty), 
+      new TestCanceledException("message", 3)
    )
 
   "The modifyPayload method on TFE" should "return the an exception with an equal message option if passed a function that returns the same option passed to it" in {
@@ -96,8 +97,110 @@ class PayloadSpec extends FlatSpec with ShouldMatchers with TableDrivenPropertyC
         }
       val rep = new EventRecordingReporter()
       a.run(None, Args(rep))
-      rep.testFailedEventsReceived.length should be (1)
-      rep.testFailedEventsReceived(0).payload should be (Some("a payload"))
+      e match {
+        case tce: TestCanceledException => 
+          rep.testCanceledEventsReceived.length should be (1)
+          rep.testCanceledEventsReceived(0).payload should be (Some("a payload"))
+        case _ => 
+          rep.testFailedEventsReceived.length should be (1)
+          rep.testFailedEventsReceived(0).payload should be (Some("a payload"))
+      }
     }
+  }
+  
+  it should "infer the type of the result of the passed in function" in {
+    val result: Int = withPayload("hi") { 22 }
+    assert(result === 22)
+  }
+  
+  it should "be able to accept by-name payload" in {
+    val result: String = withPayload(() => 128) { "hello" }
+    assert(result === "hello")
+  }
+  
+  it should "work with withFixture" in {
+    forAll(examples) { e => 
+      val a = 
+        new org.scalatest.fixture.FunSpec {
+          type FixtureParam = String
+        
+          override def withFixture(test: OneArgTest) = {
+            withPayload("a payload") {
+              test("something")
+            }
+          }
+        
+          it("should do something") { p => 
+            throw e
+          }
+        }
+      val rep = new EventRecordingReporter()
+      a.run(None, Args(rep))
+      
+      e match {
+        case tce: TestCanceledException => 
+          rep.testCanceledEventsReceived.length should be (1)
+          rep.testCanceledEventsReceived(0).payload should be (Some("a payload"))
+        case _ => 
+          rep.testFailedEventsReceived.length should be (1)
+          rep.testFailedEventsReceived(0).payload should be (Some("a payload"))
+      }
+    }
+  }
+  
+  it should "return Failed that contains TestFailedException and added payload" in {
+    val failed = Failed(new TestFailedException("boom!", 3))
+    val result = withPayload("a payload") { failed }
+    result shouldBe a [Failed]
+    result.exception shouldBe a [TestFailedException]
+    result.exception.asInstanceOf[TestFailedException].payload shouldBe Some("a payload")
+  }
+  
+  it should "return original Failed that contains the RuntimeException and without payload" in {
+    val failed = Failed(new RuntimeException("boom!"))
+    val result = withPayload("a payload") { failed }
+    result should be theSameInstanceAs failed
+    result.exception.getMessage shouldBe "boom!"
+  }
+  
+  it should "return Canceled that contains TestCanceledException and added payload" in {
+    val canceled = Canceled(new TestCanceledException("rollback!", 3))
+    val result = withPayload("a payload") { canceled }
+    result shouldBe a [Canceled]
+    result.exception shouldBe a [TestCanceledException]
+    result.exception.asInstanceOf[TestCanceledException].payload shouldBe Some("a payload")
+  }
+  
+  it should "return original Canceled that contains the RuntimeException and without payload" in {
+    val canceled = Canceled(new RuntimeException("boom!"))
+    val result = withPayload("a payload") { canceled }
+    result should be theSameInstanceAs canceled
+    result.exception.getMessage shouldBe "boom!"
+  }
+  
+  it should "return Pending that contains the passed in message" in {
+    val pending = Pending(Some("boom!"))
+    val result = withPayload("a payload") { pending }
+    result should be theSameInstanceAs pending
+    result.message shouldBe Some("boom!")
+  }
+  
+  it should "return Pending that contains None message when no message is passed in" in {
+    val pending = Pending(None)
+    val result = withPayload("a payload") { pending }
+    result should be theSameInstanceAs pending
+    result.message shouldBe None
+  }
+  
+  it should "return original Omitted" in {
+    val omitted = Omitted
+    val result = withPayload("a payload") { omitted }
+    result should be theSameInstanceAs omitted
+  }
+  
+  it should "return original Succeeded" in {
+    val succeeded = Succeeded
+    val result = withPayload("a payload") { succeeded }
+    result should be theSameInstanceAs succeeded
   }
 }

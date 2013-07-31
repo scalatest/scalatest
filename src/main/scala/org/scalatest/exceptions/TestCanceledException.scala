@@ -33,8 +33,9 @@ package org.scalatest.exceptions
 class TestCanceledException(
   messageFun: StackDepthException => Option[String],
   cause: Option[Throwable],
-  failedCodeStackDepthFun: StackDepthException => Int
-) extends StackDepthException(messageFun, cause, failedCodeStackDepthFun) with ModifiableMessage[TestCanceledException] {
+  failedCodeStackDepthFun: StackDepthException => Int, 
+  val payload: Option[Any]
+) extends StackDepthException(messageFun, cause, failedCodeStackDepthFun) with ModifiableMessage[TestCanceledException] with PayloadField with ModifiablePayload[TestCanceledException] {
 
 
   /**
@@ -51,7 +52,8 @@ class TestCanceledException(
     this(
       StackDepthException.toExceptionFunction(message),
       cause,
-      e => failedCodeStackDepth
+      e => failedCodeStackDepth, 
+      None
     )
 
   /**
@@ -148,6 +150,21 @@ class TestCanceledException(
    */
   def modifyMessage(fun: Option[String] => Option[String]): TestCanceledException = {
     val mod = new TestCanceledException(fun(message), cause, failedCodeStackDepth)
+    mod.setStackTrace(getStackTrace)
+    mod
+  }
+  
+  /**
+   * Returns an instance of this exception's class, identical to this exception,
+   * except with the payload option replaced with the result of passing
+   * the current payload option to the passed function, <code>fun</code>.
+   *
+   * @param fun A function that, given the current optional payload, will produce
+   * the modified optional payload for the result instance of <code>TestCanceledException</code>.
+   */
+  def modifyPayload(fun: Option[Any] => Option[Any]): TestCanceledException = {
+    val currentPayload = payload
+    val mod = new TestCanceledException(messageFun, cause, failedCodeStackDepthFun, fun(currentPayload)) // TODO: Should I be lazy about replacing the payload?
     mod.setStackTrace(getStackTrace)
     mod
   }

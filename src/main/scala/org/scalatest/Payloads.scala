@@ -63,9 +63,16 @@ trait Payloads {
    * </pre>
    *
   */
-  def withPayload(payload: Any)(fun: => Unit) {
+  def withPayload[T](payload: => Any)(fun: => T): T = {
     try {
-      fun
+      val outcome: T = fun
+      outcome match {
+        case Failed(e: org.scalatest.exceptions.ModifiablePayload[_]) if payload != null =>
+          Failed(e.modifyPayload((currentPayload: Option[Any]) => Some(payload))).asInstanceOf[T]
+        case Canceled(e: org.scalatest.exceptions.ModifiablePayload[_]) if payload != null =>
+          Canceled(e.modifyPayload((currentPayload: Option[Any]) => Some(payload))).asInstanceOf[T]
+        case _ => outcome
+      }
     }
     catch {
       case e: org.scalatest.exceptions.ModifiablePayload[_] =>
@@ -76,3 +83,10 @@ trait Payloads {
     }
   }
 }
+
+/**
+ * Companion object that facilitates the importing of <code>Payloads</code> members as 
+ * an alternative to mixing it in. One use case is to import <code>Payloads</code>
+ * members so you can use them in the Scala interpreter.
+ */
+object Payloads extends Payloads

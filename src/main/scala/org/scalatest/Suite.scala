@@ -53,6 +53,7 @@ import Suite.reportTestStarting
 import Suite.reportTestIgnored
 import Suite.reportTestSucceeded
 import Suite.reportTestPending
+import Suite.reportTestCanceled
 import Suite.reportInfoProvided
 import Suite.createInfoProvided
 import Suite.createMarkupProvided
@@ -1211,8 +1212,7 @@ trait Suite extends Assertions with AbstractSuite with Serializable { thisSuite 
             val message = getMessageForException(e)
             val formatter = getEscapedIndentedTextForTest(testName, 1, true)
             // testWasCanceled = true so info's printed out in the finally clause show up yellow
-            report(TestCanceled(tracker.nextOrdinal(), message, thisSuite.suiteName, thisSuite.suiteId, Some(thisSuite.getClass.getName), 
-                                testName, testName, messageRecorderForThisTest.recordedEvents(false, true), Some(e), Some(duration), Some(formatter), Some(TopOfMethod(thisSuite.getClass.getName, method.toGenericString())), rerunner))
+            reportTestCanceled(this, report, t, testName, testName, messageRecorderForThisTest.recordedEvents(false, true), rerunner, tracker, duration, formatter, Some(TopOfMethod(thisSuite.getClass.getName, method.toGenericString())))
             SucceededStatus                 
           case e if !anExceptionThatShouldCauseAnAbort(e) =>
             val duration = System.currentTimeMillis - testStartTime
@@ -2114,8 +2114,15 @@ used for test events like succeeded/failed, etc.
       recordedEvents: collection.immutable.IndexedSeq[RecordableEvent], rerunnable: Option[String], tracker: Tracker, duration: Long, formatter: Formatter, location: Option[Location]) {
 
     val message = getMessageForException(throwable)
+    val payload = 
+      throwable match {
+        case optPayload: PayloadField => 
+          optPayload.payload
+        case _ => 
+          None
+      }
     //val formatter = getEscapedIndentedTextForTest(testText, level, includeIcon)
-    report(TestCanceled(tracker.nextOrdinal(), message, theSuite.suiteName, theSuite.suiteId, Some(theSuite.getClass.getName), testName, testText, recordedEvents, Some(throwable), Some(duration), Some(formatter), location, rerunnable))
+    report(TestCanceled(tracker.nextOrdinal(), message, theSuite.suiteName, theSuite.suiteId, Some(theSuite.getClass.getName), testName, testText, recordedEvents, Some(throwable), Some(duration), Some(formatter), location, payload))
   }
 
   def reportTestSucceeded(theSuite: Suite, report: Reporter, tracker: Tracker, testName: String, testText: String, recordedEvents: collection.immutable.IndexedSeq[RecordableEvent], duration: Long, formatter: Formatter, rerunnable: Option[String], location: Option[Location]) {
