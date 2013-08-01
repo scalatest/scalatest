@@ -409,8 +409,11 @@ class Framework extends SbtFramework {
     }
     
     lazy val suiteClass = loadSuiteClass
+    lazy val accessible = isAccessibleSuite(suiteClass)
+    lazy val runnable = isRunnable(suiteClass)
+    lazy val isSubClass = taskDefinition.fingerprint.isInstanceOf[SubclassFingerprint]
     lazy val shouldDiscover = 
-      taskDefinition.explicitlySpecified || (((isAccessibleSuite(suiteClass) && taskDefinition.fingerprint.isInstanceOf[SubclassFingerprint]) || (isRunnable(suiteClass) && taskDefinition.fingerprint.isInstanceOf[AnnotatedFingerprint])) && isDiscoverableSuite(suiteClass))
+      taskDefinition.explicitlySpecified || (((accessible && isSubClass) || (runnable && !isSubClass)) && isDiscoverableSuite(suiteClass))
     
     def tags = 
       for { 
@@ -430,20 +433,20 @@ class Framework extends SbtFramework {
       }
     
     def execute(eventHandler: EventHandler, loggers: Array[Logger]) = {
-      if (isAccessibleSuite(suiteClass) || isRunnable(suiteClass)) {
-        val wrapWithAnnotation = suiteClass.getAnnotation(classOf[WrapWith])
+      if (accessible || runnable) {
         val suite = 
-        if (wrapWithAnnotation == null)
-          suiteClass.newInstance.asInstanceOf[Suite]
-        else {
-          val suiteClazz = wrapWithAnnotation.value
-          val constructorList = suiteClazz.getDeclaredConstructors()
-          val constructor = constructorList.find { c => 
+          if (isSubClass)
+            suiteClass.newInstance.asInstanceOf[Suite]
+          else {
+            val wrapWithAnnotation = suiteClass.getAnnotation(classOf[WrapWith])
+            val suiteClazz = wrapWithAnnotation.value
+            val constructorList = suiteClazz.getDeclaredConstructors()
+            val constructor = constructorList.find { c => 
               val types = c.getParameterTypes
               types.length == 1 && types(0) == classOf[java.lang.Class[_]]
             }
-          constructor.get.newInstance(suiteClass).asInstanceOf[Suite]
-        }
+            constructor.get.newInstance(suiteClass).asInstanceOf[Suite]
+          }
         
         val taskReporter =
           createTaskDispatchReporter(
