@@ -53,6 +53,7 @@ object ScalatestBuild extends Build {
                                                "-m", "org.scalatest.exceptions", 
                                                "-m", "org.scalatest.time", 
                                                "-m", "org.scalatest.words", 
+                                               "-m", "org.scalatest.enablers", 
                                                "-oDI", 
                                                "-h", "target/html", 
                                                "-u", "target/junit"))
