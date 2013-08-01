@@ -29,7 +29,7 @@ import Runner.mergeMap
 import Runner.parseSuiteArgsIntoNameStrings
 import java.io.{StringWriter, PrintWriter}
 import java.util.concurrent.LinkedBlockingQueue
-import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.atomic.{AtomicInteger, AtomicBoolean}
 import scala.collection.JavaConverters._
 
 /**
@@ -585,7 +585,7 @@ class Framework extends SbtFramework {
     presentReminderWithFullStackTraces: Boolean,
     presentReminderWithoutCanceledTests: Boolean
   ) extends sbt.testing.Runner {  
-    var isDone = false
+    val isDone = new AtomicBoolean(false)
     val tracker = new Tracker
     val summaryCounter = new SummaryCounter
     val runStartTime = System.currentTimeMillis
@@ -634,13 +634,12 @@ class Framework extends SbtFramework {
       } yield task
     
     def done = {
-      if (!isDone) {
+      if (!isDone.getAndSet(true)) {
         val duration = System.currentTimeMillis - runStartTime
         val summary = new Summary(summaryCounter.testsSucceededCount.get, summaryCounter.testsFailedCount.get, summaryCounter.testsIgnoredCount.get, summaryCounter.testsPendingCount.get, 
                                   summaryCounter.testsCanceledCount.get, summaryCounter.suitesCompletedCount.get, summaryCounter.suitesAbortedCount.get, summaryCounter.scopesPendingCount.get)
         dispatchReporter(RunCompleted(tracker.nextOrdinal(), Some(duration), Some(summary)))
         dispatchReporter.dispatchDisposeAndWaitUntilDone()
-        isDone = true
         val fragments: Vector[Fragment] =
           StringReporter.summaryFragments(
             true,
