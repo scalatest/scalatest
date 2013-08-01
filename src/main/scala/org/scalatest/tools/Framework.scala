@@ -619,22 +619,16 @@ class Framework extends SbtFramework {
         )
     
     private def filterWildcard(paths: List[String], taskDefs: Array[TaskDef]): Array[TaskDef] = 
-      if (paths.size > 0)
-        taskDefs.filter(td => paths.exists(td.fullyQualifiedName.startsWith(_)))
-      else
-        taskDefs
+      taskDefs.filter(td => paths.exists(td.fullyQualifiedName.startsWith(_)))
       
     private def filterMembersOnly(paths: List[String], taskDefs: Array[TaskDef]): Array[TaskDef] =
-      if (paths.size > 0)
-        filterWildcard(paths, taskDefs).filter { td => 
-          paths.exists(path => td.fullyQualifiedName.length > path.length && !td.fullyQualifiedName.substring(path.length + 1).contains('.'))
-        }
-      else
-        taskDefs
+      taskDefs.filter { td =>
+        paths.exists(path => td.fullyQualifiedName.startsWith(path) && td.fullyQualifiedName.substring(path.length).lastIndexOf('.') <= 0)
+      }
       
     def tasks(taskDefs: Array[TaskDef]): Array[Task] = 
       for { 
-        taskDef <- filterMembersOnly(membersOnly, filterWildcard(wildcard, taskDefs))
+        taskDef <- if (wildcard.isEmpty && membersOnly.isEmpty) taskDefs else (filterWildcard(wildcard, taskDefs) ++ filterMembersOnly(membersOnly, taskDefs)).distinct
         val task = createTask(taskDef)
         if task.shouldDiscover
       } yield task
