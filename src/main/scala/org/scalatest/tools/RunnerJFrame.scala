@@ -1014,7 +1014,7 @@ private[scalatest] class RunnerJFrame(
             recordedEvents.foreach(registerEvent(_))
           }
 
-        case TestCanceled(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, throwable, duration, formatter, location, payload, threadName, timeStamp) =>
+        case TestCanceled(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, throwable, duration, formatter, location, rerunner, payload, threadName, timeStamp) =>
 
           usingEventDispatchThread {
             testsCompletedCount += 1
@@ -1460,7 +1460,7 @@ private[scalatest] class RunnerJFrame(
             recordedEvents.foreach(registerRerunEvent(_))
           }
 
-        case TestCanceled(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, throwable, duration, formatter, location, payload, threadName, timeStamp) =>
+        case TestCanceled(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, throwable, duration, formatter, location, rerunner, payload, threadName, timeStamp) =>
 
           usingEventDispatchThread {
             rerunColorBox.setValue(rerunTestsCompletedCount)
