@@ -171,6 +171,11 @@ trait TripleEqualsSupport {
      * @return true if the value passed to the constructor as <code>left</code> is non-<code>null</code>.
      */
     def !==(literalNull: Null): Boolean = left != null
+    
+    /**
+     * toString that just use left's toString.
+     */
+    override def toString: String = "" + left
   }
 
   /**

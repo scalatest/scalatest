@@ -108,7 +108,7 @@ class SeveredStackTracesSpec extends FunSpec with ShouldMatchers with SeveredSta
               checkFileNameAndLineNumber(e, s)
             case None => fail("assert(false) didn't produce a file name and line number string", e)
           }
-          e.failedCodeStackDepth should equal (4)
+          e.failedCodeStackDepth should equal (3)
         case e: Throwable =>
           fail("assert(false) didn't produce a TestFailedException", e)
       }
