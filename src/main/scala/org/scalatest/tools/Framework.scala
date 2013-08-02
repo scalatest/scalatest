@@ -411,9 +411,8 @@ class Framework extends SbtFramework {
     lazy val suiteClass = loadSuiteClass
     lazy val accessible = isAccessibleSuite(suiteClass)
     lazy val runnable = isRunnable(suiteClass)
-    lazy val isSubClass = taskDefinition.fingerprint.isInstanceOf[SubclassFingerprint]
     lazy val shouldDiscover = 
-      taskDefinition.explicitlySpecified || (((accessible && isSubClass) || (runnable && !isSubClass)) && isDiscoverableSuite(suiteClass))
+      taskDefinition.explicitlySpecified || ((accessible || runnable) && isDiscoverableSuite(suiteClass))
     
     def tags = 
       for { 
@@ -435,7 +434,7 @@ class Framework extends SbtFramework {
     def execute(eventHandler: EventHandler, loggers: Array[Logger]) = {
       if (accessible || runnable) {
         val suite = 
-          if (isSubClass)
+          if (accessible)
             suiteClass.newInstance.asInstanceOf[Suite]
           else {
             val wrapWithAnnotation = suiteClass.getAnnotation(classOf[WrapWith])

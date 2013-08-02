@@ -928,9 +928,11 @@ class FrameworkSuite extends FunSuite {
     assert(tasks2.size === 0)
   }
   
-  test("a suite should be filtered out when fingerprint is subclassFingerprint and it is not accessible, even though it is annotated with @WrapWith") {
+  // Now in 0.13.0-RC4 when there are 2 TaskDef with same class name different fingerprint, only one of it will be passed in.
+  // We can't rely on fingerprint for this check anymore.
+  /*test("a suite should be filtered out when fingerprint is subclassFingerprint and it is not accessible, even though it is annotated with @WrapWith") {
     val runner = framework.runner(Array.empty, Array.empty, testClassLoader)
     val tasks = runner.tasks(Array(new TaskDef("org.scalatest.SavesConfigMapSuite", subclassFingerprint, false, Array(new SuiteSelector))))
     assert(tasks.size === 0)
-  }
+  }*/
 }
