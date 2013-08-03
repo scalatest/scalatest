@@ -186,9 +186,9 @@ final case class MatchResult(
   rawFailureMessage: String,
   rawNegatedFailureMessage: String,
   rawMidSentenceFailureMessage: String,
-  rawMidSentenceNegatedFailureMessage: String// ,
-  // failureMessageArgs: IndexedSeq[Any],
-  // negatedFailureMessageArgs: IndexedSeq[Any]
+  rawMidSentenceNegatedFailureMessage: String,
+  failureMessageArgs: IndexedSeq[Any],
+  negatedFailureMessageArgs: IndexedSeq[Any]
 ) {
 
   /**
@@ -207,9 +207,9 @@ final case class MatchResult(
       rawFailureMessage,
       rawNegatedFailureMessage,
       rawFailureMessage,
-      rawNegatedFailureMessage// ,
-      // Vector.empty,
-      // Vector.empty
+      rawNegatedFailureMessage,
+      Vector.empty,
+      Vector.empty
     )
 
   def failureMessage: String = rawFailureMessage
@@ -227,7 +227,6 @@ final case class MatchResult(
  */
 object MatchResult {
 
-/*
   /**
    * Factory method that constructs a new <code>MatchResult</code> with passed <code>matches</code>, <code>failureMessage</code>, 
    * <code>negativeFailureMessage</code>, <code>midSentenceFailureMessage</code>, and
@@ -242,7 +241,6 @@ object MatchResult {
   def apply(matches: Boolean, rawFailureMessage: String, rawNegatedFailureMessage: String, rawMidSentenceFailureMessage: String,
       rawMidSentenceNegatedFailureMessage: String): MatchResult =
     new MatchResult(matches, rawFailureMessage, rawNegatedFailureMessage, rawMidSentenceFailureMessage, rawMidSentenceNegatedFailureMessage, Vector.empty, Vector.empty)
-*/
 
   /**
    * Factory method that constructs a new <code>MatchResult</code> with passed <code>matches</code>, <code>failureMessage</code>, and
@@ -255,6 +253,6 @@ object MatchResult {
    * @param negatedFailureMessage a message with a meaning opposite to that of the failure message
    */
   def apply(matches: Boolean, rawFailureMessage: String, rawNegatedFailureMessage: String): MatchResult =
-    new MatchResult(matches, rawFailureMessage, rawNegatedFailureMessage, rawFailureMessage, rawNegatedFailureMessage/*, Vector.empty, Vector.empty*/)
+    new MatchResult(matches, rawFailureMessage, rawNegatedFailureMessage, rawFailureMessage, rawNegatedFailureMessage, Vector.empty, Vector.empty)
 }
 

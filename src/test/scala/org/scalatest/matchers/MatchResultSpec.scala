@@ -54,9 +54,9 @@ class MatchResultSpec extends FreeSpec with Matchers {
         'rawFailureMessage ("one"),
         'rawNegatedFailureMessage ("two"),
         'rawMidSentenceFailureMessage ("one"),
-        'rawMidSentenceNegatedFailureMessage ("two")// ,
-        // 'failureMessageArgs(Seq.empty),
-        // 'negatedFailureMessageArgs(Seq.empty)
+        'rawMidSentenceNegatedFailureMessage ("two"),
+        'failureMessageArgs(Seq.empty),
+        'negatedFailureMessageArgs(Seq.empty)
       )
       val ms = MatchResult(false, "aaa", "bbb")
       ms should have (
@@ -68,9 +68,9 @@ class MatchResultSpec extends FreeSpec with Matchers {
         'rawFailureMessage ("aaa"),
         'rawNegatedFailureMessage ("bbb"),
         'rawMidSentenceFailureMessage ("aaa"),
-        'rawMidSentenceNegatedFailureMessage ("bbb")// ,
-        // 'failureMessageArgs(Seq.empty),
-        // 'negatedFailureMessageArgs(Seq.empty)
+        'rawMidSentenceNegatedFailureMessage ("bbb"),
+        'failureMessageArgs(Seq.empty),
+        'negatedFailureMessageArgs(Seq.empty)
       )
     }
     "that takes four strings works correctly" in {
@@ -84,9 +84,9 @@ class MatchResultSpec extends FreeSpec with Matchers {
         'rawFailureMessage ("one"),
         'rawNegatedFailureMessage ("two"),
         'rawMidSentenceFailureMessage ("three"),
-        'rawMidSentenceNegatedFailureMessage ("four")// ,
-        // 'failureMessageArgs(Seq.empty),
-        // 'negatedFailureMessageArgs(Seq.empty)
+        'rawMidSentenceNegatedFailureMessage ("four"),
+        'failureMessageArgs(Seq.empty),
+        'negatedFailureMessageArgs(Seq.empty)
       )
       val ms = MatchResult(false, "aaa", "bbb", "ccc", "ddd")
       ms should have (
@@ -98,9 +98,9 @@ class MatchResultSpec extends FreeSpec with Matchers {
         'rawFailureMessage ("aaa"),
         'rawNegatedFailureMessage ("bbb"),
         'rawMidSentenceFailureMessage ("ccc"),
-        'rawMidSentenceNegatedFailureMessage ("ddd")// ,
-        // 'failureMessageArgs(Seq.empty),
-        // 'negatedFailureMessageArgs(Seq.empty)
+        'rawMidSentenceNegatedFailureMessage ("ddd"),
+        'failureMessageArgs(Seq.empty),
+        'negatedFailureMessageArgs(Seq.empty)
       )
     }
     "that takes six strings works correctly" in {
@@ -114,9 +114,9 @@ class MatchResultSpec extends FreeSpec with Matchers {
         'rawFailureMessage ("one"),
         'rawNegatedFailureMessage ("two"),
         'rawMidSentenceFailureMessage ("three"),
-        'rawMidSentenceNegatedFailureMessage ("four")// ,
-        // 'failureMessageArgs(Vector(42)),
-        // 'negatedFailureMessageArgs(Vector(42.0))
+        'rawMidSentenceNegatedFailureMessage ("four"),
+        'failureMessageArgs(Vector(42)),
+        'negatedFailureMessageArgs(Vector(42.0))
       )
       val ms = MatchResult(false, "aaa", "bbb", "ccc", "ddd"/*, Vector("ho", "he"), Vector("foo", "fie")*/)
       ms should have (
@@ -128,9 +128,9 @@ class MatchResultSpec extends FreeSpec with Matchers {
         'rawFailureMessage ("aaa"),
         'rawNegatedFailureMessage ("bbb"),
         'rawMidSentenceFailureMessage ("ccc"),
-        'rawMidSentenceNegatedFailureMessage ("ddd")// ,
-        // 'failureMessageArgs(Vector("ho", "he")),
-        // 'negatedFailureMessageArgs(Vector("foo", "fie"))
+        'rawMidSentenceNegatedFailureMessage ("ddd"),
+        'failureMessageArgs(Vector("ho", "he")),
+        'negatedFailureMessageArgs(Vector("foo", "fie"))
       )
     }
   }
