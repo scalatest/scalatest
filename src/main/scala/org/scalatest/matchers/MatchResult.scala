@@ -183,10 +183,12 @@ package org.scalatest.matchers
  */
 final case class MatchResult(
   matches: Boolean,
-  failureMessage: String,
-  negatedFailureMessage: String,
-  midSentenceFailureMessage: String,
-  midSentenceNegatedFailureMessage: String
+  rawFailureMessage: String,
+  rawNegatedFailureMessage: String,
+  rawMidSentenceFailureMessage: String,
+  rawMidSentenceNegatedFailureMessage: String// ,
+  // failureMessageArgs: IndexedSeq[Any],
+  // negatedFailureMessageArgs: IndexedSeq[Any]
 ) {
 
   /**
@@ -199,14 +201,23 @@ final case class MatchResult(
    * @param failureMessage a failure message to report if a match fails
    * @param negatedFailureMessage a message with a meaning opposite to that of the failure message
    */
-  def this(matches: Boolean, failureMessage: String, negatedFailureMessage: String) =
+  def this(matches: Boolean, rawFailureMessage: String, rawNegatedFailureMessage: String) =
     this(
       matches,
-      failureMessage,
-      negatedFailureMessage,
-      failureMessage,
-      negatedFailureMessage
+      rawFailureMessage,
+      rawNegatedFailureMessage,
+      rawFailureMessage,
+      rawNegatedFailureMessage// ,
+      // Vector.empty,
+      // Vector.empty
     )
+
+  def failureMessage: String = rawFailureMessage
+  def negatedFailureMessage: String = rawNegatedFailureMessage
+  def midSentenceFailureMessage: String = rawMidSentenceFailureMessage
+  def midSentenceNegatedFailureMessage: String = rawMidSentenceNegatedFailureMessage
+
+  def negated: MatchResult = MatchResult(!matches, rawNegatedFailureMessage, rawFailureMessage, rawMidSentenceNegatedFailureMessage, rawMidSentenceFailureMessage)
 }
 
 /**
@@ -216,7 +227,7 @@ final case class MatchResult(
  */
 object MatchResult {
 
-/* Can't seem to redefine this to get the Scaladoc.
+/*
   /**
    * Factory method that constructs a new <code>MatchResult</code> with passed <code>matches</code>, <code>failureMessage</code>, 
    * <code>negativeFailureMessage</code>, <code>midSentenceFailureMessage</code>, and
@@ -228,9 +239,9 @@ object MatchResult {
    * @param midSentenceFailureMessage a failure message to report if a match fails
    * @param midSentenceNegatedFailureMessage a message with a meaning opposite to that of the failure message
    */
-  def apply(matches: Boolean, failureMessage: String, negatedFailureMessage: String, midSentenceFailureMessage: String,
-      midSentenceNegatedFailureMessage: String): MatchResult =
-    new MatchResult(matches, failureMessage, negatedFailureMessage, midSentenceFailureMessage, midSentenceNegatedFailureMessage)
+  def apply(matches: Boolean, rawFailureMessage: String, rawNegatedFailureMessage: String, rawMidSentenceFailureMessage: String,
+      rawMidSentenceNegatedFailureMessage: String): MatchResult =
+    new MatchResult(matches, rawFailureMessage, rawNegatedFailureMessage, rawMidSentenceFailureMessage, rawMidSentenceNegatedFailureMessage, Vector.empty, Vector.empty)
 */
 
   /**
@@ -243,7 +254,7 @@ object MatchResult {
    * @param failureMessage a failure message to report if a match fails
    * @param negatedFailureMessage a message with a meaning opposite to that of the failure message
    */
-  def apply(matches: Boolean, failureMessage: String, negatedFailureMessage: String): MatchResult =
-    new MatchResult(matches, failureMessage, negatedFailureMessage, failureMessage, negatedFailureMessage)
+  def apply(matches: Boolean, rawFailureMessage: String, rawNegatedFailureMessage: String): MatchResult =
+    new MatchResult(matches, rawFailureMessage, rawNegatedFailureMessage, rawFailureMessage, rawNegatedFailureMessage/*, Vector.empty, Vector.empty*/)
 }
 

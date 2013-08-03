@@ -4419,7 +4419,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def should(rightMatcher: Matcher[T]) {
       doCollected(collected, xs, "should", 1) { e =>
         rightMatcher(e) match {
-          case MatchResult(false, failureMessage, _, _, _) => 
+          case MatchFailed(failureMessage) => 
             throw newTestFailedException(failureMessage, None, 6)
           case _ => ()
         }
@@ -4562,7 +4562,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       val rightMatcher = rightMatcherFactory1.matcher
       doCollected(collected, xs, "should", 1) { e =>
         rightMatcher(e) match {
-          case MatchResult(false, failureMessage, _, _, _) => 
+          case MatchFailed(failureMessage) => 
             throw newTestFailedException(failureMessage, None, 6)
           case _ => ()
         }
@@ -4581,7 +4581,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       val rightMatcher = rightMatcherFactory2.matcher
       doCollected(collected, xs, "should", 1) { e =>
         rightMatcher(e) match {
-          case MatchResult(false, failureMessage, _, _, _) => 
+          case MatchFailed(failureMessage) => 
             throw newTestFailedException(failureMessage, None, 6)
           case _ => ()
         }
@@ -4928,7 +4928,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       val rightMatcher = rightMatcherFactory1.matcher
       doCollected(collected, xs, "shouldNot", 1) { e =>
         rightMatcher(e) match {
-          case MatchResult(true, _, negatedFailureMessage, _, _) => 
+          case MatchSucceeded(negatedFailureMessage) => 
             throw newTestFailedException(negatedFailureMessage, None, 6)
           case _ => ()
         }
@@ -5515,13 +5515,13 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   private object ShouldMethodHelper {
     def shouldMatcher[T](left: T, rightMatcher: Matcher[T], stackDepthAdjustment: Int = 0) {
       rightMatcher(left) match {
-        case MatchResult(false, failureMessage, _, _, _) => throw newTestFailedException(failureMessage, None, stackDepthAdjustment)
+        case MatchFailed(failureMessage) => throw newTestFailedException(failureMessage, None, stackDepthAdjustment)
         case _ => ()
       }
     }
     def shouldNotMatcher[T](left: T, rightMatcher: Matcher[T], stackDepthAdjustment: Int = 0) {
       rightMatcher(left) match {
-        case MatchResult(true, _, negatedFailureMessage, _, _) => throw newTestFailedException(negatedFailureMessage, None, stackDepthAdjustment)
+        case MatchSucceeded(negatedFailureMessage) => throw newTestFailedException(negatedFailureMessage, None, stackDepthAdjustment)
         case _ => ()
       }
     }

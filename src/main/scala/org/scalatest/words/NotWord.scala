@@ -52,10 +52,7 @@ final class NotWord {
    */
   def apply[S <: Any](matcher: Matcher[S]): Matcher[S] =
     new Matcher[S] {
-      def apply(left: S): MatchResult =
-        matcher(left) match {
-          case MatchResult(bool, s1, s2, s3, s4) => MatchResult(!bool, s2, s1, s4, s3)
-        }
+      def apply(left: S): MatchResult = matcher(left).negated
     }
 
   /**
@@ -71,11 +68,7 @@ final class NotWord {
       def matcher[V <: S : TYPECLASS]: Matcher[V] = {
         val innerMatcher: Matcher[V] = matcherGen1.matcher
         new Matcher[V] {
-          def apply(left: V): MatchResult = {
-            innerMatcher(left) match {
-              case MatchResult(bool, s1, s2, s3, s4) => MatchResult(!bool, s2, s1, s4, s3)
-            }
-          }
+          def apply(left: V): MatchResult = innerMatcher(left).negated
         }
       }
     }
@@ -86,11 +79,7 @@ final class NotWord {
       def matcher[V <: S : TYPECLASS1 : TYPECLASS2]: Matcher[V] = {
         val innerMatcher: Matcher[V] = matcherGen2.matcher
         new Matcher[V] {
-          def apply(left: V): MatchResult = {
-            innerMatcher(left) match {
-              case MatchResult(bool, s1, s2, s3, s4) => MatchResult(!bool, s2, s1, s4, s3)
-            }
-          }
+          def apply(left: V): MatchResult = innerMatcher(left).negated
         }
       }
     }
@@ -125,10 +114,7 @@ final class NotWord {
    */
   def apply[S <: Any](beMatcher: BeMatcher[S]): BeMatcher[S] =
     new BeMatcher[S] {
-      def apply(left: S): MatchResult =
-        beMatcher(left) match {
-          case MatchResult(bool, s1, s2, s3, s4) => MatchResult(!bool, s2, s1, s4, s3)
-        }
+      def apply(left: S): MatchResult = beMatcher(left).negated
     }
   
   /**
@@ -248,16 +234,13 @@ final class NotWord {
    * of type <code>BeMatcher[Int]</code>:
    *
    * <pre class="stHighlight">
-   * num should (not be (odd) and be <= (8))
+   * num should (not be (odd) and be &lt;= (8))
    *                 ^
    * </pre>
    */
   def be[T](beMatcher: BeMatcher[T]): Matcher[T] = {
     new Matcher[T] {
-      def apply(left: T): MatchResult =
-        beMatcher(left) match {
-          case MatchResult(bool, s1, s2, s3, s4) => MatchResult(!bool, s2, s1, s4, s3)
-        }
+      def apply(left: T): MatchResult = beMatcher(left).negated
     }
   }
 
