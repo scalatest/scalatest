@@ -164,14 +164,7 @@ private[scalatest] object MatchersHelper {
   def andMatchersAndApply[T](left: T, leftMatcher: Matcher[T], rightMatcher: Matcher[T]): MatchResult = {
     val leftMatchResult = leftMatcher(left)
     val rightMatchResult = rightMatcher(left) // Not short circuiting anymore
-    if (!leftMatchResult.matches)
-      MatchResult(
-        false,
-        leftMatchResult.failureMessage,
-        leftMatchResult.negatedFailureMessage,
-        leftMatchResult.midSentenceFailureMessage,
-        leftMatchResult.midSentenceNegatedFailureMessage
-      )
+    if (!leftMatchResult.matches) leftMatchResult
     else {
       MatchResult(
         rightMatchResult.matches,
@@ -186,14 +179,7 @@ private[scalatest] object MatchersHelper {
   def orMatchersAndApply[T](left: T, leftMatcher: Matcher[T], rightMatcher: Matcher[T]): MatchResult = {
     val leftMatchResult = leftMatcher(left)
     val rightMatchResult = rightMatcher(left) // Not short circuiting anymore
-    if (leftMatchResult.matches)
-      MatchResult(
-        true,
-        leftMatchResult.negatedFailureMessage,
-        leftMatchResult.failureMessage,
-        leftMatchResult.midSentenceNegatedFailureMessage,
-        leftMatchResult.midSentenceFailureMessage
-      )
+    if (leftMatchResult.matches) leftMatchResult.negated.copy(matches = true)
     else {
       MatchResult(
         rightMatchResult.matches,
