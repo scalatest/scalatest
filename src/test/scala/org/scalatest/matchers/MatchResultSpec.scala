@@ -20,15 +20,40 @@ import Inside._
 
 class MatchResultSpec extends FreeSpec with Matchers {
 
-  /*
-  These are now actually the raw ones.
-  */
-
   "A MatchResult" - {
     val mr = MatchResult(false, "1 did not equal 2", "1 equaled 2", "1 did not equal 2", "1 equaled 2")
     "can be negated" in {
       mr should equal (MatchResult(false, "1 did not equal 2", "1 equaled 2", "1 did not equal 2", "1 equaled 2"))
       mr.negated should equal (MatchResult(true, "1 equaled 2", "1 did not equal 2", "1 equaled 2", "1 did not equal 2"))
+      val mr2 = MatchResult(false, "{0} did not equal null", "The reference equaled null", "{0} did not equal null", "the reference equaled null", Vector("howdy"), Vector.empty)
+      mr2 should have (
+        'matches (false),
+        'failureMessage ("howdy did not equal null"),
+        'negatedFailureMessage ("The reference equaled null"),
+        'midSentenceFailureMessage ("howdy did not equal null"),
+        'midSentenceNegatedFailureMessage ("the reference equaled null"),
+        'rawFailureMessage ("{0} did not equal null"),
+        'rawNegatedFailureMessage ("The reference equaled null"),
+        'rawMidSentenceFailureMessage ("{0} did not equal null"),
+        'rawMidSentenceNegatedFailureMessage ("the reference equaled null"),
+        'failureMessageArgs(Vector("howdy")),
+        'negatedFailureMessageArgs(Vector.empty)
+      )
+      val mr2Negated = mr2.negated
+       mr2Negated should equal (MatchResult(true, "The reference equaled null", "{0} did not equal null", "the reference equaled null", "{0} did not equal null", Vector.empty, Vector("howdy")))
+      mr2Negated should have (
+        'matches (true),
+        'failureMessage ("The reference equaled null"),
+        'negatedFailureMessage ("howdy did not equal null"),
+        'midSentenceFailureMessage ("the reference equaled null"),
+        'midSentenceNegatedFailureMessage ("howdy did not equal null"),
+        'rawFailureMessage ("The reference equaled null"),
+        'rawNegatedFailureMessage ("{0} did not equal null"),
+        'rawMidSentenceFailureMessage ("the reference equaled null"),
+        'rawMidSentenceNegatedFailureMessage ("{0} did not equal null"),
+        'failureMessageArgs(Vector.empty),
+        'negatedFailureMessageArgs(Vector("howdy"))
+      )
     }
     "can be pattern matched via an extractor for the failureMessage if it doesn't match" in {
       inside (mr) { case MatchFailed(failureMessage) => 

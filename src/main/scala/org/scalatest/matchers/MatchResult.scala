@@ -219,7 +219,7 @@ final case class MatchResult(
   def midSentenceFailureMessage: String = if (failureMessageArgs.isEmpty) rawMidSentenceFailureMessage else makeString(rawMidSentenceFailureMessage, failureMessageArgs)
   def midSentenceNegatedFailureMessage: String = if (negatedFailureMessageArgs.isEmpty) rawMidSentenceNegatedFailureMessage else makeString(rawMidSentenceNegatedFailureMessage, negatedFailureMessageArgs)
 
-  def negated: MatchResult = MatchResult(!matches, rawNegatedFailureMessage, rawFailureMessage, rawMidSentenceNegatedFailureMessage, rawMidSentenceFailureMessage)
+  def negated: MatchResult = MatchResult(!matches, rawNegatedFailureMessage, rawFailureMessage, rawMidSentenceNegatedFailureMessage, rawMidSentenceFailureMessage, negatedFailureMessageArgs, failureMessageArgs)
 
   private def makeString(rawString: String, args: IndexedSeq[Any]): String = {
     val msgFmt = new MessageFormat(rawString)
