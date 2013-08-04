@@ -32,13 +32,29 @@ class MatchResultSpec extends FreeSpec with Matchers {
     }
     "can be pattern matched via an extractor for the failureMessage if it doesn't match" in {
       inside (mr) { case MatchFailed(failureMessage) => 
-          failureMessage should be ("1 did not equal 2")
+        failureMessage should be ("1 did not equal 2")
       }
     }
     "can be pattern matched via an extractor for the negatedFailureMessage if it does match" in {
       inside (mr.negated) { case MatchSucceeded(negatedFailureMessage) => 
-          negatedFailureMessage should be ("1 did not equal 2")
+        negatedFailureMessage should be ("1 did not equal 2")
       }
+    }
+    "should construct localized strings from the raw strings and args" in {
+      val mr = MatchResult(false, "{0} did not equal {1}", "{0} equaled {1}", "{0} did not equal {1}", "{0} equaled {1}", Vector(1, 2), Vector(1, 2))
+      mr should have (
+        'matches (false),
+        'failureMessage ("1 did not equal 2"),
+        'negatedFailureMessage ("1 equaled 2"),
+        'midSentenceFailureMessage ("1 did not equal 2"),
+        'midSentenceNegatedFailureMessage ("1 equaled 2"),
+        'rawFailureMessage ("{0} did not equal {1}"),
+        'rawNegatedFailureMessage ("{0} equaled {1}"),
+        'rawMidSentenceFailureMessage ("{0} did not equal {1}"),
+        'rawMidSentenceNegatedFailureMessage ("{0} equaled {1}"),
+        'failureMessageArgs(Vector(1, 2)),
+        'negatedFailureMessageArgs(Vector(1, 2))
+      )
     }
   }
 
@@ -55,8 +71,8 @@ class MatchResultSpec extends FreeSpec with Matchers {
         'rawNegatedFailureMessage ("two"),
         'rawMidSentenceFailureMessage ("one"),
         'rawMidSentenceNegatedFailureMessage ("two"),
-        'failureMessageArgs(Seq.empty),
-        'negatedFailureMessageArgs(Seq.empty)
+        'failureMessageArgs(Vector.empty),
+        'negatedFailureMessageArgs(Vector.empty)
       )
       val ms = MatchResult(false, "aaa", "bbb")
       ms should have (
@@ -69,8 +85,8 @@ class MatchResultSpec extends FreeSpec with Matchers {
         'rawNegatedFailureMessage ("bbb"),
         'rawMidSentenceFailureMessage ("aaa"),
         'rawMidSentenceNegatedFailureMessage ("bbb"),
-        'failureMessageArgs(Seq.empty),
-        'negatedFailureMessageArgs(Seq.empty)
+        'failureMessageArgs(Vector.empty),
+        'negatedFailureMessageArgs(Vector.empty)
       )
     }
     "that takes four strings works correctly" in {
@@ -85,8 +101,8 @@ class MatchResultSpec extends FreeSpec with Matchers {
         'rawNegatedFailureMessage ("two"),
         'rawMidSentenceFailureMessage ("three"),
         'rawMidSentenceNegatedFailureMessage ("four"),
-        'failureMessageArgs(Seq.empty),
-        'negatedFailureMessageArgs(Seq.empty)
+        'failureMessageArgs(Vector.empty),
+        'negatedFailureMessageArgs(Vector.empty)
       )
       val ms = MatchResult(false, "aaa", "bbb", "ccc", "ddd")
       ms should have (
@@ -99,12 +115,12 @@ class MatchResultSpec extends FreeSpec with Matchers {
         'rawNegatedFailureMessage ("bbb"),
         'rawMidSentenceFailureMessage ("ccc"),
         'rawMidSentenceNegatedFailureMessage ("ddd"),
-        'failureMessageArgs(Seq.empty),
-        'negatedFailureMessageArgs(Seq.empty)
+        'failureMessageArgs(Vector.empty),
+        'negatedFailureMessageArgs(Vector.empty)
       )
     }
     "that takes six strings works correctly" in {
-      val mr = MatchResult(true, "one", "two", "three", "four"/*, Vector(42), Vector(42.0) */)
+      val mr = MatchResult(true, "one", "two", "three", "four", Vector(42), Vector(42.0))
       mr should have (
         'matches (true),
         'failureMessage ("one"),
@@ -118,7 +134,7 @@ class MatchResultSpec extends FreeSpec with Matchers {
         'failureMessageArgs(Vector(42)),
         'negatedFailureMessageArgs(Vector(42.0))
       )
-      val ms = MatchResult(false, "aaa", "bbb", "ccc", "ddd"/*, Vector("ho", "he"), Vector("foo", "fie")*/)
+      val ms = MatchResult(false, "aaa", "bbb", "ccc", "ddd", Vector("ho", "he"), Vector("foo", "fie"))
       ms should have (
         'matches (false),
         'failureMessage ("aaa"),

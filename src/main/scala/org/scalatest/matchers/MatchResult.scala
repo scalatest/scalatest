@@ -15,6 +15,8 @@
  */
 package org.scalatest.matchers
  
+import java.text.MessageFormat
+
 /**
  * The result of a match operation, such as one performed by a <a href="Matcher.html"><code>Matcher</code></a> or
  * <a href="BeMatcher.html"><code>BeMatcher</code></a>, which 
@@ -212,12 +214,17 @@ final case class MatchResult(
       Vector.empty
     )
 
-  def failureMessage: String = rawFailureMessage
-  def negatedFailureMessage: String = rawNegatedFailureMessage
-  def midSentenceFailureMessage: String = rawMidSentenceFailureMessage
-  def midSentenceNegatedFailureMessage: String = rawMidSentenceNegatedFailureMessage
+  def failureMessage: String = makeString(rawFailureMessage, failureMessageArgs) 
+  def negatedFailureMessage: String = makeString(rawNegatedFailureMessage, negatedFailureMessageArgs)
+  def midSentenceFailureMessage: String = makeString(rawMidSentenceFailureMessage, failureMessageArgs)
+  def midSentenceNegatedFailureMessage: String = makeString(rawMidSentenceNegatedFailureMessage, negatedFailureMessageArgs)
 
   def negated: MatchResult = MatchResult(!matches, rawNegatedFailureMessage, rawFailureMessage, rawMidSentenceNegatedFailureMessage, rawMidSentenceFailureMessage)
+
+  private def makeString(rawString: String, args: IndexedSeq[Any]): String = {
+    val msgFmt = new MessageFormat(rawString)
+    msgFmt.format(args.toArray)
+  }
 }
 
 /**
