@@ -84,7 +84,7 @@ class MatchResultSpec extends FreeSpec with Matchers {
   }
 
   "The MatchResult companion object factory method" - {
-    "that takes two strings works correctly" in {
+    "that takes two strings should work correctly" in {
       val mr = MatchResult(true, "one", "two")
       mr should have (
         'matches (true),
@@ -114,7 +114,7 @@ class MatchResultSpec extends FreeSpec with Matchers {
         'negatedFailureMessageArgs(Vector.empty)
       )
     }
-    "that takes four strings works correctly" in {
+    "that takes four strings should work correctly" in {
       val mr = MatchResult(true, "one", "two", "three", "four")
       mr should have (
         'matches (true),
@@ -144,7 +144,7 @@ class MatchResultSpec extends FreeSpec with Matchers {
         'negatedFailureMessageArgs(Vector.empty)
       )
     }
-    "that takes six strings works correctly" in {
+    "that takes six strings should work correctly" in {
       val mr = MatchResult(true, "one", "two", "three", "four", Vector(42), Vector(42.0))
       mr should have (
         'matches (true),
@@ -175,5 +175,98 @@ class MatchResultSpec extends FreeSpec with Matchers {
       )
     }
   }
+
+  "The MatchResult obtained from and-ing two Matchers" - {
+    "should be lazy about constructing strings" - {
+      "for false and false" is pending
+       // scala> be > 'c' and be > 'd'
+       // res4: org.scalatest.matchers.Matcher[Char] = <function1>
+
+       // scala> res4('a')
+       // res5: org.scalatest.matchers.MatchResult = MatchResult(false,'a' was not greater than 'c','a' was greater than 'c','a' was not greater than 'c','a' was greater than 'c',Vector(),Vector())
+
+      "for false and true" is pending
+      "for true and false" is pending
+      "for true and true" is pending
+    }
+  }
+  "The MatchResult obtained from or-ing two Matchers" - {
+    "should be lazy about constructing strings" - {
+      "for false and false" is pending
+      "for false and true" is pending
+      "for true and false" is pending
+      "for true and true" is pending
+    }
+  }
+/*
+I'll need to add Prettifier to MatchResult. Because need to do that lazily too. This means
+I can actually have a withPrettifier construct that replaces the Prettifier, which also means
+that the TestFailedException and TestCanceledException should have this lazy too. Else it will be too late.
+I think this is added to matchResult as two more IndexedSeqs:
+failureMessagePrettifiers(Vector[Prettifier])
+negatedFailureMessagePrettifiers(Vector[Prettifier])
+
+Or maybe make the args have a prettifer in the args itself:
+
+failureMessageArgs: IndexedSeq[(Any, Prettifier)]
+
+diffString is another one. This one requires two strings. So first you prettify, then you ... well that's not
+how I have been doing it. First I diffed, then I prettified. Wierd. Trouble is that it requires two strings. So
+maybe this is a Boolean flag. I'd need it for each of the four things:
+diffFailureMessageStrings
+diffNegatedFailureMessageStrings
+// Ah, I just need two flags. regular will hold for mid-sentence. By default these can be false. OK. Just put
+// them last.
+And I think what I'd do is look for two args. And if it is two and exactly two, we'd do the diffstrings thing
+at that point, then plug that result into the algo with the prettifiers of course. But I think that diffstrings
+should just not make any change if a [ or ] is found in the string. Else it is even more confusing.
+Also, the diffing could be something done by reporters. If there's color, it could be done in color instead
+of []'s. But if nocolor, then ... Yes. I quite like that.
+
+maybe it is a lazy val on TestFailedException, TestCanceledException
+
+So question is do I make Prettifier vectors or use a tuple, or a bundle?
+case class PrettyArg(arg: Any, prettifier: Prettifier)
+
+Oh, and the prettifier can be a scalautils thing, because it can be used in production code
+for debug messages. println(x.pretty)
+
+No, that doesn't make sense. There's one Prettifier for a MatchResult. Oops! But then how would
+I combine them? Yes, can't. 
+
+What if PrettyArg was more a wrapper:
+
+case class PrettyArg(val arg: Any, prettify: Prettifier) {
+  override def toString: String = prettify(arg)
+}
+
+OK. Then it can also compose another prettifier:
+
+case class PrettyArg(val arg: Any, prettify: Prettifier) {
+  override def toString: String = prettify(arg) 
+  def 
+}
+
+Almost want to say if this other guy has prettified, then ...?
+
+Maybe a prettifier has an isDefinedAt method. But that's wrong.
+
+Well, I think it is time to write a test.
+
+Then I hmm.
+
+Seems the ScalaUtils thing would simply be an implicit Prettifier:
+
+trait PrettyMethods {
+
+  implicit val defaultPrettifier = Prettifier.default
+
+  implicit class Prettyizer(o: Any)(implicit prettify: Prettifier) {
+    def pretty: String = prettify(o)
+  }
+}
+object PrettyMethods extends PrettyMethods
+
+*/
 }
  
