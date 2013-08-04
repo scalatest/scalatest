@@ -214,10 +214,10 @@ final case class MatchResult(
       Vector.empty
     )
 
-  def failureMessage: String = makeString(rawFailureMessage, failureMessageArgs) 
-  def negatedFailureMessage: String = makeString(rawNegatedFailureMessage, negatedFailureMessageArgs)
-  def midSentenceFailureMessage: String = makeString(rawMidSentenceFailureMessage, failureMessageArgs)
-  def midSentenceNegatedFailureMessage: String = makeString(rawMidSentenceNegatedFailureMessage, negatedFailureMessageArgs)
+  def failureMessage: String = if (failureMessageArgs.isEmpty) rawFailureMessage else makeString(rawFailureMessage, failureMessageArgs) 
+  def negatedFailureMessage: String = if (negatedFailureMessageArgs.isEmpty) rawNegatedFailureMessage else makeString(rawNegatedFailureMessage, negatedFailureMessageArgs)
+  def midSentenceFailureMessage: String = if (failureMessageArgs.isEmpty) rawMidSentenceFailureMessage else makeString(rawMidSentenceFailureMessage, failureMessageArgs)
+  def midSentenceNegatedFailureMessage: String = if (negatedFailureMessageArgs.isEmpty) rawMidSentenceNegatedFailureMessage else makeString(rawMidSentenceNegatedFailureMessage, negatedFailureMessageArgs)
 
   def negated: MatchResult = MatchResult(!matches, rawNegatedFailureMessage, rawFailureMessage, rawMidSentenceNegatedFailureMessage, rawMidSentenceFailureMessage)
 
