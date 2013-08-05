@@ -72,41 +72,7 @@ trait Size[T] {
 
 object Size {
 
-/*
-  implicit def sizeOfJavaList[E, JLIST[_] <: java.util.List[_]]: Size[JLIST[E]] = 
-    new Size[JLIST[E]] {
-      def sizeOf(javaList: JLIST[E]): Long = javaList.size
-    }
-
-  implicit def sizeOfGenSeq[E, SEQ[_] <: scala.collection.GenSeq[_]]: Size[SEQ[E]] = 
-    new Size[SEQ[E]] {
-      def sizeOf(seq: SEQ[E]): Long = seq.length
-    }
-*/
-
-/*
-  implicit def sizeOfJavaCollection[E, JCOL[_] <: java.util.Collection[_]]: Size[JCOL[E]] = 
-    new Size[JCOL[E]] {
-      def sizeOf(javaColl: JCOL[E]): Long = javaColl.size
-    }
-
-  implicit def sizeOfJavaMap[K, V, JMAP[_, _] <: java.util.Map[_, _]]: Size[JMAP[K, V]] = 
-    new Size[JMAP[K, V]] {
-      def sizeOf(javaMap: JMAP[K, V]): Long = javaMap.size
-    }
-
-  implicit def sizeOfGenTraversable[E, TRAV[_] <: scala.collection.GenTraversable[_]]: Size[TRAV[E]] = 
-    new Size[TRAV[E]] {
-      def sizeOf(trav: TRAV[E]): Long = trav.size
-    }
-
-  implicit def sizeOfMap[K, V, MAP[_, _] <: scala.collection.GenMap[_, _]]: Size[MAP[K, V]] =
-    new Size[MAP[K, V]] {
-      def sizeOf(map: MAP[K, V]): Long = map.size
-    }
-*/
-
-  implicit def sizeOfJavaCollection[JCOL <: java.util.Collection[_]]: Size[JCOL] = 
+  /*implicit def sizeOfJavaCollection[JCOL <: java.util.Collection[_]]: Size[JCOL] = 
     new Size[JCOL] {
       def sizeOf(javaColl: JCOL): Long = javaColl.size
     }
@@ -119,7 +85,7 @@ object Size {
   implicit def sizeOfGenTraversable[TRAV <: scala.collection.GenTraversable[_]]: Size[TRAV] = 
     new Size[TRAV] {
       def sizeOf(trav: TRAV): Long = trav.size
-    }
+    }*/
 
   implicit def sizeOfArray[E]: Size[Array[E]] = 
     new Size[Array[E]] {
@@ -129,5 +95,45 @@ object Size {
   implicit val sizeOfString: Size[String] = 
     new Size[String] {
       def sizeOf(str: String): Long = str.length
+    }
+  
+  implicit def sizeOfAnyRefWithSizeMethodForInt[T <: AnyRef { def size(): Int}]: Size[T] = 
+    new Size[T] {
+      def sizeOf(obj: T): Long = obj.size
+    }
+  
+  implicit def sizeOfAnyRefWithParameterlessSizeMethodForInt[T <: AnyRef { def size: Int}]: Size[T] = 
+    new Size[T] {
+      def sizeOf(obj: T): Long = obj.size
+    }
+  
+  implicit def sizeOfAnyRefWithGetSizeMethodForInt[T <: AnyRef { def getSize(): Int}]: Size[T] = 
+    new Size[T] {
+      def sizeOf(obj: T): Long = obj.getSize
+    }
+  
+  implicit def sizeOfAnyRefWithParameterlessGetSizeMethodForInt[T <: AnyRef { def getSize: Int}]: Size[T] = 
+    new Size[T] {
+      def sizeOf(obj: T): Long = obj.getSize
+    }
+  
+  implicit def sizeOfAnyRefWithSizeMethodForLong[T <: AnyRef { def size(): Long}]: Size[T] = 
+    new Size[T] {
+      def sizeOf(obj: T): Long = obj.size
+    }
+  
+  implicit def sizeOfAnyRefWithParameterlessSizeMethodForLong[T <: AnyRef { def size: Long}]: Size[T] = 
+    new Size[T] {
+      def sizeOf(obj: T): Long = obj.size
+    }
+  
+  implicit def sizeOfAnyRefWithGetSizeMethodForLong[T <: AnyRef { def getSize(): Long}]: Size[T] = 
+    new Size[T] {
+      def sizeOf(obj: T): Long = obj.getSize
+    }
+  
+  implicit def sizeOfAnyRefWithParameterlessGetSizeMethodForLong[T <: AnyRef { def getSize: Long}]: Size[T] = 
+    new Size[T] {
+      def sizeOf(obj: T): Long = obj.getSize
     }
 }
