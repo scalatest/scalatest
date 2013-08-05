@@ -32,7 +32,7 @@ object DiscoverySuiteCompanionFriend {
 }
 */
 
-private[scalatest] class DiscoverySuiteSuite extends Suite {
+class DiscoverySuiteSuite extends Suite {
   
   val loader = DiscoverySuite.getClass.getClassLoader
 

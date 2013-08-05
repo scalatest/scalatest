@@ -283,17 +283,11 @@ Tags to include and exclude: -n "CheckinTests FunctionalTests" -l "SlowTests Net
      */
     
     private def filterWildcard(paths: List[String], testClassName: String): Boolean = 
-      if (paths.size > 0)
-        paths.exists(testClassName.startsWith(_))
-      else
-        true
+      paths.exists(testClassName.startsWith(_))
       
     private def filterMembersOnly(paths: List[String], testClassName: String): Boolean =
-      if (paths.size > 0)
-        paths.exists(path => testClassName.length > path.length && !testClassName.substring(path.length + 1).contains('.'))
-      else
-        true
-    
+      paths.exists(path => testClassName.startsWith(path) && testClassName.substring(path.length ).lastIndexOf('.') <= 0)
+      
     def run(testClassName: String, fingerprint: Fingerprint, eventHandler: EventHandler, args: Array[String]) {
       try {
         RunConfig.increaseLatch()
@@ -302,7 +296,7 @@ Tags to include and exclude: -n "CheckinTests FunctionalTests" -l "SlowTests Net
         if ((isAccessibleSuite(suiteClass) || isRunnable(suiteClass)) && isDiscoverableSuite(suiteClass)) {
           val (reporter, filter, configMap, membersOnly, wildcard) = RunConfig.getConfigurations(args, loggers, eventHandler, testLoader)
           
-          if (filterWildcard(wildcard, testClassName) && filterMembersOnly(membersOnly, testClassName)) {
+          if ((wildcard.isEmpty && membersOnly.isEmpty) || filterWildcard(wildcard, testClassName) || filterMembersOnly(membersOnly, testClassName)) {
           
             val report = new SbtReporter(eventHandler, Some(reporter))
             val tracker = new Tracker
