@@ -104,42 +104,42 @@ object Length {
       def lengthOf(str: String): Long = str.length
     }
   
-  implicit def lengthForLengthMethodInt[T <: AnyRef { def length(): Int}]: Length[T] = 
+  implicit def lengthOfAnyRefWithLengthMethodForInt[T <: AnyRef { def length(): Int}]: Length[T] = 
     new Length[T] {
       def lengthOf(obj: T): Long = obj.length
     }
   
-  implicit def lengthForLengthParameterlessMethodInt[T <: AnyRef { def length: Int}]: Length[T] = 
+  implicit def lengthOfAnyRefWithParameterlessLengthMethodForInt[T <: AnyRef { def length: Int}]: Length[T] = 
     new Length[T] {
       def lengthOf(obj: T): Long = obj.length
     }
   
-  implicit def lengthForGetLengthMethodInt[T <: AnyRef { def getLength(): Int}]: Length[T] = 
+  implicit def lengthOfAnyRefWithGetLengthMethodForInt[T <: AnyRef { def getLength(): Int}]: Length[T] = 
     new Length[T] {
       def lengthOf(obj: T): Long = obj.getLength
     }
   
-  implicit def lengthForGetLengthParameterlessMethodInt[T <: AnyRef { def getLength: Int}]: Length[T] = 
+  implicit def lengthOfAnyRefWithParameterlessGetLengthMethodForInt[T <: AnyRef { def getLength: Int}]: Length[T] = 
     new Length[T] {
       def lengthOf(obj: T): Long = obj.getLength
     }
   
-  implicit def lengthForLengthMethodLong[T <: AnyRef { def length(): Long}]: Length[T] = 
+  implicit def lengthOfAnyRefWithLengthMethodForLong[T <: AnyRef { def length(): Long}]: Length[T] = 
     new Length[T] {
       def lengthOf(obj: T): Long = obj.length
     }
   
-  implicit def lengthForLengthParameterlessMethodLong[T <: AnyRef { def length: Long}]: Length[T] = 
+  implicit def lengthOfAnyRefWithParameterlessLengthMethodForLong[T <: AnyRef { def length: Long}]: Length[T] = 
     new Length[T] {
       def lengthOf(obj: T): Long = obj.length
     }
   
-  implicit def lengthForGetLengthMethodLong[T <: AnyRef { def getLength(): Long}]: Length[T] = 
+  implicit def lengthOfAnyRefWithGetLengthMethodForLong[T <: AnyRef { def getLength(): Long}]: Length[T] = 
     new Length[T] {
       def lengthOf(obj: T): Long = obj.getLength
     }
   
-  implicit def lengthForGetLengthParameterlessMethodLong[T <: AnyRef { def getLength: Long}]: Length[T] = 
+  implicit def lengthOfAnyRefWithParameterlessGetLengthMethodForLong[T <: AnyRef { def getLength: Long}]: Length[T] = 
     new Length[T] {
       def lengthOf(obj: T): Long = obj.getLength
     }
