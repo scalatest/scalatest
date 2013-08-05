@@ -130,4 +130,44 @@ object Size {
     new Size[String] {
       def sizeOf(str: String): Long = str.length
     }
+  
+  implicit def sizeOfAnyRefWithSizeMethodForInt[T <: AnyRef { def size(): Int}]: Size[T] = 
+    new Size[T] {
+      def sizeOf(obj: T): Long = obj.size
+    }
+  
+  implicit def sizeOfAnyRefWithParameterlessSizeMethodForInt[T <: AnyRef { def size: Int}]: Size[T] = 
+    new Size[T] {
+      def sizeOf(obj: T): Long = obj.size
+    }
+  
+  implicit def sizeOfAnyRefWithGetSizeMethodForInt[T <: AnyRef { def getSize(): Int}]: Size[T] = 
+    new Size[T] {
+      def sizeOf(obj: T): Long = obj.getSize
+    }
+  
+  implicit def sizeOfAnyRefWithParameterlessGetSizeMethodForInt[T <: AnyRef { def getSize: Int}]: Size[T] = 
+    new Size[T] {
+      def sizeOf(obj: T): Long = obj.getSize
+    }
+  
+  implicit def sizeOfAnyRefWithSizeMethodForLong[T <: AnyRef { def size(): Long}]: Size[T] = 
+    new Size[T] {
+      def sizeOf(obj: T): Long = obj.size
+    }
+  
+  implicit def sizeOfAnyRefWithParameterlessSizeMethodForLong[T <: AnyRef { def size: Long}]: Size[T] = 
+    new Size[T] {
+      def sizeOf(obj: T): Long = obj.size
+    }
+  
+  implicit def sizeOfAnyRefWithGetSizeMethodForLong[T <: AnyRef { def getSize(): Long}]: Size[T] = 
+    new Size[T] {
+      def sizeOf(obj: T): Long = obj.getSize
+    }
+  
+  implicit def sizeOfAnyRefWithParameterlessGetSizeMethodForLong[T <: AnyRef { def getSize: Long}]: Size[T] = 
+    new Size[T] {
+      def sizeOf(obj: T): Long = obj.getSize
+    }
 }
