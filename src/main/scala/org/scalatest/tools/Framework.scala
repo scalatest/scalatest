@@ -29,7 +29,7 @@ import Runner.mergeMap
 import Runner.parseSuiteArgsIntoNameStrings
 import java.io.{StringWriter, PrintWriter}
 import java.util.concurrent.LinkedBlockingQueue
-import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.atomic.{AtomicInteger, AtomicBoolean}
 import scala.collection.JavaConverters._
 
 /**
@@ -409,8 +409,10 @@ class Framework extends SbtFramework {
     }
     
     lazy val suiteClass = loadSuiteClass
+    lazy val accessible = isAccessibleSuite(suiteClass)
+    lazy val runnable = isRunnable(suiteClass)
     lazy val shouldDiscover = 
-      taskDefinition.explicitlySpecified || ((isAccessibleSuite(suiteClass) || isRunnable(suiteClass)) && isDiscoverableSuite(suiteClass)) 
+      taskDefinition.explicitlySpecified || ((accessible || runnable) && isDiscoverableSuite(suiteClass))
     
     def tags = 
       for { 
@@ -430,20 +432,20 @@ class Framework extends SbtFramework {
       }
     
     def execute(eventHandler: EventHandler, loggers: Array[Logger]) = {
-      if (isAccessibleSuite(suiteClass) || isRunnable(suiteClass)) {
-        val wrapWithAnnotation = suiteClass.getAnnotation(classOf[WrapWith])
+      if (accessible || runnable) {
         val suite = 
-        if (wrapWithAnnotation == null)
-          suiteClass.newInstance.asInstanceOf[Suite]
-        else {
-          val suiteClazz = wrapWithAnnotation.value
-          val constructorList = suiteClazz.getDeclaredConstructors()
-          val constructor = constructorList.find { c => 
+          if (accessible)
+            suiteClass.newInstance.asInstanceOf[Suite]
+          else {
+            val wrapWithAnnotation = suiteClass.getAnnotation(classOf[WrapWith])
+            val suiteClazz = wrapWithAnnotation.value
+            val constructorList = suiteClazz.getDeclaredConstructors()
+            val constructor = constructorList.find { c => 
               val types = c.getParameterTypes
               types.length == 1 && types(0) == classOf[java.lang.Class[_]]
             }
-          constructor.get.newInstance(suiteClass).asInstanceOf[Suite]
-        }
+            constructor.get.newInstance(suiteClass).asInstanceOf[Suite]
+          }
         
         val taskReporter =
           createTaskDispatchReporter(
@@ -585,7 +587,7 @@ class Framework extends SbtFramework {
     presentReminderWithFullStackTraces: Boolean,
     presentReminderWithoutCanceledTests: Boolean
   ) extends sbt.testing.Runner {  
-    var isDone = false
+    val isDone = new AtomicBoolean(false)
     val tracker = new Tracker
     val summaryCounter = new SummaryCounter
     val runStartTime = System.currentTimeMillis
@@ -619,34 +621,27 @@ class Framework extends SbtFramework {
         )
     
     private def filterWildcard(paths: List[String], taskDefs: Array[TaskDef]): Array[TaskDef] = 
-      if (paths.size > 0)
-        taskDefs.filter(td => paths.exists(td.fullyQualifiedName.startsWith(_)))
-      else
-        taskDefs
+      taskDefs.filter(td => paths.exists(td.fullyQualifiedName.startsWith(_)))
       
     private def filterMembersOnly(paths: List[String], taskDefs: Array[TaskDef]): Array[TaskDef] =
-      if (paths.size > 0)
-        filterWildcard(paths, taskDefs).filter { td => 
-          paths.exists(path => td.fullyQualifiedName.length > path.length && !td.fullyQualifiedName.substring(path.length + 1).contains('.'))
-        }
-      else
-        taskDefs
+      taskDefs.filter { td =>
+        paths.exists(path => td.fullyQualifiedName.startsWith(path) && td.fullyQualifiedName.substring(path.length).lastIndexOf('.') <= 0)
+      }
       
     def tasks(taskDefs: Array[TaskDef]): Array[Task] = 
       for { 
-        taskDef <- filterMembersOnly(membersOnly, filterWildcard(wildcard, taskDefs))
+        taskDef <- if (wildcard.isEmpty && membersOnly.isEmpty) taskDefs else (filterWildcard(wildcard, taskDefs) ++ filterMembersOnly(membersOnly, taskDefs)).distinct
         val task = createTask(taskDef)
         if task.shouldDiscover
       } yield task
     
     def done = {
-      if (!isDone) {
+      if (!isDone.getAndSet(true)) {
         val duration = System.currentTimeMillis - runStartTime
         val summary = new Summary(summaryCounter.testsSucceededCount.get, summaryCounter.testsFailedCount.get, summaryCounter.testsIgnoredCount.get, summaryCounter.testsPendingCount.get, 
                                   summaryCounter.testsCanceledCount.get, summaryCounter.suitesCompletedCount.get, summaryCounter.suitesAbortedCount.get, summaryCounter.scopesPendingCount.get)
         dispatchReporter(RunCompleted(tracker.nextOrdinal(), Some(duration), Some(summary)))
         dispatchReporter.dispatchDisposeAndWaitUntilDone()
-        isDone = true
         val fragments: Vector[Fragment] =
           StringReporter.summaryFragments(
             true,

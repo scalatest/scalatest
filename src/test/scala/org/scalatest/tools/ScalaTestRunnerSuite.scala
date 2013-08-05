@@ -160,6 +160,9 @@ import org.scalatools.testing.{Event, EventHandler, Result, Logger, Runner => Te
       
       val result3 = run("org.scalatest.SuiteSuite", Array("-m", "org.scalatest.tools.test"))
       assert(result3.size === 0)
+      
+      val result4 = run("org.scalatest.enablers.NoParamSpec", Array("-m", "org.scalatest.concurrent"))
+      assert(result4.size === 0)
     }
 
     def runner: TestingRunner = {

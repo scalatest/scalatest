@@ -1192,6 +1192,7 @@
             <membersonly package="org.scalatest.exceptions" />
             <membersonly package="org.scalatest.time" />
             <membersonly package="org.scalatest.words" />
+        	<membersonly package="org.scalatest.enablers" />
             <config name="dbname" value="testdb" />
         </scalatest>
     </target>
