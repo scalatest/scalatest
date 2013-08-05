@@ -110,10 +110,14 @@ private[tools] object Memento {
   // Generates a list of Mementos from a file containing
   // strings created using Memento.singleLine.
   //
-// TODO: Close file handle in finally here and in writeToFile
-  def readFromFile(fileName: String): List[Memento] = 
-    for (line <- Source.fromFile(fileName).getLines.toList)
+  def readFromFile(fileName: String): List[Memento] = {
+    val source = Source.fromFile(fileName)
+    try {
+      for (line <- source.getLines.toList)
       yield fromString(line)
+    }
+    finally source.close()
+  }
 
   //
   // Writes Mementos to a file as single-line strings, sorted
@@ -121,11 +125,11 @@ private[tools] object Memento {
   //
   def writeToFile(fileName: String, mementos: Set[Memento]) {
     val out = new PrintWriter(fileName, "UTF-8")
-
-    val lines = mementos.map(_.singleLine).toList.sortWith(_<_)
-
-    lines.foreach(out.println)
-    out.close()
+    try {
+      val lines = mementos.map(_.singleLine).toList.sortWith(_<_)
+      lines.foreach(out.println)
+    }
+    finally out.close()
   }
 
   //
@@ -145,6 +149,8 @@ private[tools] object Memento {
     Memento(eventName, className, suiteId, testName)
   }
 
+  // TODO: Could a test name start with Some or None, or a class name that starts with None confuse this?
+  // Needs to always work.
   //
   // Constructs an Option from a string formatted as "Some(...)" or
   // "None".
