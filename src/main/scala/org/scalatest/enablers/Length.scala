@@ -78,10 +78,10 @@ object Length {
       def lengthOf(javaList: JLIST): Long = javaList.size
     }
 
-  /*implicit def lengthOfGenSeq[SEQ <: scala.collection.GenSeq[_]]: Length[SEQ] = 
+  implicit def lengthOfGenSeq[SEQ <: scala.collection.GenSeq[_]]: Length[SEQ] = 
     new Length[SEQ] {
       def lengthOf(seq: SEQ): Long = seq.length
-    }*/
+    }
 
   implicit def lengthOfArray[E]: Length[Array[E]] = 
     new Length[Array[E]] {

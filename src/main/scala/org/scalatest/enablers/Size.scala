@@ -72,7 +72,7 @@ trait Size[T] {
 
 object Size {
 
-  /*implicit def sizeOfJavaCollection[JCOL <: java.util.Collection[_]]: Size[JCOL] = 
+  implicit def sizeOfJavaCollection[JCOL <: java.util.Collection[_]]: Size[JCOL] = 
     new Size[JCOL] {
       def sizeOf(javaColl: JCOL): Long = javaColl.size
     }
@@ -85,7 +85,7 @@ object Size {
   implicit def sizeOfGenTraversable[TRAV <: scala.collection.GenTraversable[_]]: Size[TRAV] = 
     new Size[TRAV] {
       def sizeOf(trav: TRAV): Long = trav.size
-    }*/
+    }
 
   implicit def sizeOfArray[E]: Size[Array[E]] = 
     new Size[Array[E]] {
