@@ -103,5 +103,45 @@ object Length {
     new Length[String] {
       def lengthOf(str: String): Long = str.length
     }
+  
+  implicit def lengthForLengthMethodInt[T <: AnyRef { def length(): Int}]: Length[T] = 
+    new Length[T] {
+      def lengthOf(obj: T): Long = obj.length
+    }
+  
+  implicit def lengthForLengthParameterlessMethodInt[T <: AnyRef { def length: Int}]: Length[T] = 
+    new Length[T] {
+      def lengthOf(obj: T): Long = obj.length
+    }
+  
+  implicit def lengthForGetLengthMethodInt[T <: AnyRef { def getLength(): Int}]: Length[T] = 
+    new Length[T] {
+      def lengthOf(obj: T): Long = obj.getLength
+    }
+  
+  implicit def lengthForGetLengthParameterlessMethodInt[T <: AnyRef { def getLength: Int}]: Length[T] = 
+    new Length[T] {
+      def lengthOf(obj: T): Long = obj.getLength
+    }
+  
+  implicit def lengthForLengthMethodLong[T <: AnyRef { def length(): Long}]: Length[T] = 
+    new Length[T] {
+      def lengthOf(obj: T): Long = obj.length
+    }
+  
+  implicit def lengthForLengthParameterlessMethodLong[T <: AnyRef { def length: Long}]: Length[T] = 
+    new Length[T] {
+      def lengthOf(obj: T): Long = obj.length
+    }
+  
+  implicit def lengthForGetLengthMethodLong[T <: AnyRef { def getLength(): Long}]: Length[T] = 
+    new Length[T] {
+      def lengthOf(obj: T): Long = obj.getLength
+    }
+  
+  implicit def lengthForGetLengthParameterlessMethodLong[T <: AnyRef { def getLength: Long}]: Length[T] = 
+    new Length[T] {
+      def lengthOf(obj: T): Long = obj.getLength
+    }
 }
 
