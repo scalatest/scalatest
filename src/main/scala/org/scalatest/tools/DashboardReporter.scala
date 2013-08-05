@@ -806,7 +806,7 @@ private[scalatest] class DashboardReporter(directory: String,
             => duration
           case TestPending(_, _, _, _, _, _, _, duration, _, _, _, _, _) 
             => duration
-          case TestCanceled(_, _, _, _, _, _, _, _, _, duration, _, _, _, _, _) 
+          case TestCanceled(_, _, _, _, _, _, _, _, _, duration, _, _, _, _, _, _) 
             => duration
           case _ => None
         }
