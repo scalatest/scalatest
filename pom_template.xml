@@ -71,13 +71,13 @@
     <dependency>
       <groupId>org.scala-lang</groupId>
       <artifactId>scala-library</artifactId>
-      <version>@SCALA_VERSION@</version>
+      <version>@SCALA_VERSION_RANGE@</version>
     </dependency>
 
     <dependency>
       <groupId>org.scala-lang</groupId>
       <artifactId>scala-compiler</artifactId>
-      <version>@SCALA_VERSION@</version>
+      <version>@SCALA_VERSION_RANGE@</version>
       <optional>true</optional>
     </dependency>
 
