@@ -717,6 +717,7 @@ private[scalatest] class RunnerJFrame(
     viewMenu.add(optionsMap(PresentTestFailed))
     viewMenu.add(optionsMap(PresentTestIgnored))
     viewMenu.add(optionsMap(PresentTestPending))
+    viewMenu.add(optionsMap(PresentTestCanceled))
     viewMenu.add(optionsMap(PresentScopeOpened))
     viewMenu.add(optionsMap(PresentScopeClosed))
     viewMenu.add(optionsMap(PresentScopePending))
@@ -861,6 +862,7 @@ private[scalatest] class RunnerJFrame(
         case e: TestStarting => e.rerunner
         case e: TestSucceeded => e.rerunner
         case e: TestFailed => e.rerunner
+        case e: TestCanceled => e.rerunner
         case e: SuiteStarting => e.rerunner
         case e: SuiteCompleted => e.rerunner
         case e: SuiteAborted => e.rerunner
@@ -1014,7 +1016,7 @@ private[scalatest] class RunnerJFrame(
             recordedEvents.foreach(registerEvent(_))
           }
 
-        case TestCanceled(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, throwable, duration, formatter, location, payload, threadName, timeStamp) =>
+        case TestCanceled(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, throwable, duration, formatter, location, rerunner, payload, threadName, timeStamp) =>
 
           usingEventDispatchThread {
             testsCompletedCount += 1
@@ -1342,6 +1344,7 @@ private[scalatest] class RunnerJFrame(
             case e: TestStarting => Some(new TestRerunner(rerunner, e.testName))
             case e: TestSucceeded => Some(new TestRerunner(rerunner, e.testName))
             case e: TestFailed => Some(new TestRerunner(rerunner, e.testName))
+            case e: TestCanceled => Some(new TestRerunner(rerunner, e.testName))
             case e: SuiteStarting => Some(new SuiteRerunner(rerunner))
             case e: SuiteCompleted => Some(new SuiteRerunner(rerunner))
             case e: SuiteAborted => Some(new SuiteRerunner(rerunner))
@@ -1460,7 +1463,7 @@ private[scalatest] class RunnerJFrame(
             recordedEvents.foreach(registerRerunEvent(_))
           }
 
-        case TestCanceled(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, throwable, duration, formatter, location, payload, threadName, timeStamp) =>
+        case TestCanceled(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, throwable, duration, formatter, location, rerunner, payload, threadName, timeStamp) =>
 
           usingEventDispatchThread {
             rerunColorBox.setValue(rerunTestsCompletedCount)

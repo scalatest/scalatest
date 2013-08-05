@@ -1,10 +1,12 @@
 package org.scalatest.events
 
 import org.scalatest._
+import SharedHelpers.EventRecordingReporter
 import org.scalatest.prop.Checkers
 import org.scalacheck._
 import Arbitrary._
 import Prop._
+import examples._
 
 class EventSpec extends FunSpec with Checkers {
 /*
@@ -83,4 +85,24 @@ class EventSpec extends FunSpec with Checkers {
     }
   }
 */
+  
+  describe("A TestCanceled event") {
+    it("should carry suite class name as its rerunner when it is fired from top level suite") {
+      val rep = new EventRecordingReporter
+      val suite = new ExampleCancelSpec
+      suite.run(None, Args(rep))
+      val canceledEvents = rep.testCanceledEventsReceived
+      assert(canceledEvents.length === 1)
+      assert(canceledEvents(0).rerunner === Some(suite.getClass.getName))
+    }
+    
+    it("should carry top level suite class name as its rerunner when it is fired from nested suites") {
+      val rep = new EventRecordingReporter
+      val suite = new ExampleCancelInNestedSuite
+      suite.run(None, Args(rep))
+      val canceledEvents = rep.testCanceledEventsReceived
+      assert(canceledEvents.length === 1)
+      assert(canceledEvents(0).rerunner === Some(classOf[ExampleCancelSpec].getName))
+    }
+  }
 }
