@@ -21,6 +21,7 @@ private[scalatest] case class ParsedArgs(
   runpath: List[String],
   reporters: List[String],
   suites: List[String],
+  tryAgains: List[String],
   junits: List[String],
   props: List[String],
   includes: List[String],

@@ -80,6 +80,7 @@ private[scalatest] class RunnerJFrame(
   val eventTypesToCollect: Set[EventToPresent],
   reporterConfigurations: ReporterConfigurations,
   suitesList: List[SuiteParam],
+  agains: List[String],
   testSpecs: List[TestSpec],
   junitsList: List[String],
   runpathList: List[String], 
@@ -1564,6 +1565,7 @@ private[scalatest] class RunnerJFrame(
           Runner.doRunRunRunDaDoRunRun(
             dispatchReporter,
             suitesList,
+            agains,
             testSpecs,
             junitsList,
             stopper,
