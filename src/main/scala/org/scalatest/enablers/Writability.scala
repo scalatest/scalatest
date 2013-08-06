@@ -49,25 +49,25 @@ trait Writability[-T] {
 object Writability {
 
   /**
-   * Enable readability nature for <code>java.io.File</code>
+   * Enable readability of <code>java.io.File</code>
    */
-  implicit def writabilityNatureOfFile[FILE <: java.io.File]: Writability[FILE] =
+  implicit def writabilityOfFile[FILE <: java.io.File]: Writability[FILE] =
     new Writability[FILE] {
       def isWritable(file: FILE): Boolean = file.canWrite
     }
 
   /**
-   * Enable writability nature for any arbitrary object with a <code>isWritable()</code> method that returns <code>Boolean</code>
+   * Enable writability of any arbitrary object with a <code>isWritable()</code> method that returns <code>Boolean</code>
    */
-  implicit def writabilityNatureOfAnyRefWithIsWritableMethod[T <: AnyRef { def isWritable(): Boolean}]: Writability[T] = 
+  implicit def writabilityOfAnyRefWithIsWritableMethod[T <: AnyRef { def isWritable(): Boolean}]: Writability[T] = 
     new Writability[T] {
       def isWritable(obj: T): Boolean = obj.isWritable
     }
   
   /**
-   * Enable writability nature for any arbitrary object with a <code>isWritable</code> method that returns <code>Boolean</code>
+   * Enable writability of any arbitrary object with a <code>isWritable</code> method that returns <code>Boolean</code>
    */
-  implicit def writabilityNatureOfAnyRefWithParameterlessIsWritableMethod[T <: AnyRef { def isWritable: Boolean}]: Writability[T] = 
+  implicit def writabilityOfAnyRefWithParameterlessIsWritableMethod[T <: AnyRef { def isWritable: Boolean}]: Writability[T] = 
     new Writability[T] {
       def isWritable(obj: T): Boolean = obj.isWritable
     }
