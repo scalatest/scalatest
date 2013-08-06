@@ -16,6 +16,7 @@
 package org.scalatest.matchers
  
 import java.text.MessageFormat
+import org.scalautils.Prettifier
 
 /**
  * The result of a match operation, such as one performed by a <a href="Matcher.html"><code>Matcher</code></a> or
@@ -190,7 +191,8 @@ final case class MatchResult(
   rawMidSentenceFailureMessage: String,
   rawMidSentenceNegatedFailureMessage: String,
   failureMessageArgs: IndexedSeq[Any],
-  negatedFailureMessageArgs: IndexedSeq[Any]
+  negatedFailureMessageArgs: IndexedSeq[Any],
+  prettifier: Prettifier
 ) {
 
   /**
@@ -211,7 +213,8 @@ final case class MatchResult(
       rawFailureMessage,
       rawNegatedFailureMessage,
       Vector.empty,
-      Vector.empty
+      Vector.empty,
+      Prettifier.default
     )
 
   def failureMessage: String = if (failureMessageArgs.isEmpty) rawFailureMessage else makeString(rawFailureMessage, failureMessageArgs) 
@@ -223,7 +226,7 @@ final case class MatchResult(
 
   private def makeString(rawString: String, args: IndexedSeq[Any]): String = {
     val msgFmt = new MessageFormat(rawString)
-    msgFmt.format(args.toArray)
+    msgFmt.format(args.map(prettifier).toArray)
   }
 }
 
@@ -233,6 +236,22 @@ final case class MatchResult(
  * @author Bill Venners
  */
 object MatchResult {
+
+// TODO: Add scaladoc for args 
+  /**
+   * Factory method that constructs a new <code>MatchResult</code> with passed <code>matches</code>, <code>failureMessage</code>, 
+   * <code>negativeFailureMessage</code>, <code>midSentenceFailureMessage</code>, 
+   * <code>midSentenceNegatedFailureMessage</code>, <code>failureMessageArgs</code>, and <code>negatedFailureMessageArgs</code> fields.
+   *
+   * @param matches indicates whether or not the matcher matched
+   * @param failureMessage a failure message to report if a match fails
+   * @param negatedFailureMessage a message with a meaning opposite to that of the failure message
+   * @param midSentenceFailureMessage a failure message to report if a match fails
+   * @param midSentenceNegatedFailureMessage a message with a meaning opposite to that of the failure message
+   */
+  def apply(matches: Boolean, rawFailureMessage: String, rawNegatedFailureMessage: String, rawMidSentenceFailureMessage: String,
+      rawMidSentenceNegatedFailureMessage: String, failureMessageArgs: IndexedSeq[Any], negatedFailureMessageArgs: IndexedSeq[Any]): MatchResult =
+    new MatchResult(matches, rawFailureMessage, rawNegatedFailureMessage, rawMidSentenceFailureMessage, rawMidSentenceNegatedFailureMessage, failureMessageArgs, negatedFailureMessageArgs, Prettifier.default)
 
   /**
    * Factory method that constructs a new <code>MatchResult</code> with passed <code>matches</code>, <code>failureMessage</code>, 
@@ -247,7 +266,7 @@ object MatchResult {
    */
   def apply(matches: Boolean, rawFailureMessage: String, rawNegatedFailureMessage: String, rawMidSentenceFailureMessage: String,
       rawMidSentenceNegatedFailureMessage: String): MatchResult =
-    new MatchResult(matches, rawFailureMessage, rawNegatedFailureMessage, rawMidSentenceFailureMessage, rawMidSentenceNegatedFailureMessage, Vector.empty, Vector.empty)
+    new MatchResult(matches, rawFailureMessage, rawNegatedFailureMessage, rawMidSentenceFailureMessage, rawMidSentenceNegatedFailureMessage, Vector.empty, Vector.empty, Prettifier.default)
 
   /**
    * Factory method that constructs a new <code>MatchResult</code> with passed <code>matches</code>, <code>failureMessage</code>, and
@@ -260,6 +279,6 @@ object MatchResult {
    * @param negatedFailureMessage a message with a meaning opposite to that of the failure message
    */
   def apply(matches: Boolean, rawFailureMessage: String, rawNegatedFailureMessage: String): MatchResult =
-    new MatchResult(matches, rawFailureMessage, rawNegatedFailureMessage, rawFailureMessage, rawNegatedFailureMessage, Vector.empty, Vector.empty)
+    new MatchResult(matches, rawFailureMessage, rawNegatedFailureMessage, rawFailureMessage, rawNegatedFailureMessage, Vector.empty, Vector.empty, Prettifier.default)
 }
 

@@ -29,9 +29,9 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
       val mr2 = MatchResult(false, "{0} did not equal null", "The reference equaled null", "{0} did not equal null", "the reference equaled null", Vector("howdy"), Vector.empty)
       mr2 should have (
         'matches (false),
-        'failureMessage ("howdy did not equal null"),
+        'failureMessage ("\"howdy\" did not equal null"),
         'negatedFailureMessage ("The reference equaled null"),
-        'midSentenceFailureMessage ("howdy did not equal null"),
+        'midSentenceFailureMessage ("\"howdy\" did not equal null"),
         'midSentenceNegatedFailureMessage ("the reference equaled null"),
         'rawFailureMessage ("{0} did not equal null"),
         'rawNegatedFailureMessage ("The reference equaled null"),
@@ -45,9 +45,9 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
       mr2Negated should have (
         'matches (true),
         'failureMessage ("The reference equaled null"),
-        'negatedFailureMessage ("howdy did not equal null"),
+        'negatedFailureMessage ("\"howdy\" did not equal null"),
         'midSentenceFailureMessage ("the reference equaled null"),
-        'midSentenceNegatedFailureMessage ("howdy did not equal null"),
+        'midSentenceNegatedFailureMessage ("\"howdy\" did not equal null"),
         'rawFailureMessage ("The reference equaled null"),
         'rawNegatedFailureMessage ("{0} did not equal null"),
         'rawMidSentenceFailureMessage ("the reference equaled null"),
@@ -173,6 +173,21 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
         'rawMidSentenceNegatedFailureMessage ("ddd"),
         'failureMessageArgs(Vector("ho", "he")),
         'negatedFailureMessageArgs(Vector("foo", "fie"))
+      )
+    }
+  }
+
+  "The MatchResult obtained from ScalaTest matchers should have localized raw strings and args" - {
+    "for be > 'b'" in {
+      val m = be > 'b'
+      m('a') should have (
+        'matches (false),
+        'rawFailureMessage (Resources("wasNotGreaterThan")),
+        'rawNegatedFailureMessage (Resources("wasGreaterThan")),
+        'rawMidSentenceFailureMessage (Resources("wasNotGreaterThan")),
+        'rawMidSentenceNegatedFailureMessage (Resources("wasGreaterThan")),
+        'failureMessageArgs(Vector('a', 'b')),
+        'negatedFailureMessageArgs(Vector('a', 'b'))
       )
     }
   }

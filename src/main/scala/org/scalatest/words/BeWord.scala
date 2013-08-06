@@ -19,6 +19,7 @@ import org.scalatest.matchers._
 import org.scalautils._
 import org.scalautils.TripleEqualsSupport.Spread
 import org.scalatest.FailureMessages
+import org.scalatest.Resources
 import org.scalatest.UnquotedString
 import org.scalatest.Suite
 import org.scalatest.Assertions.areEqualComparingArraysStructurally
@@ -129,10 +130,15 @@ final class BeWord {
         val ordering = implicitly[Ordering[T]]
         MatchResult(
           ordering.gt(left, right), // left > right
-          FailureMessages("wasNotGreaterThan", left, right),
-          FailureMessages("wasGreaterThan", left, right)
+          Resources("wasNotGreaterThan"),
+          Resources("wasGreaterThan"),
+          Resources("wasNotGreaterThan"),
+          Resources("wasGreaterThan"),
+          Vector(left, right),
+          Vector(left, right)
         )
       }
+      override def toString: String = "be > " + Prettifier.default(right)
     }
 
   /**
