@@ -58,6 +58,23 @@ class ScalaTestAntTaskSpec extends Spec {
     assert(argsList containsSlice List("-A", "target/testsfile.dat"))
   }
 
+  def `command line args should get generated for testsfile elements` {
+    val task = new ScalaTestAntTask
+
+    val elem = new TestsfileElement
+    elem.setFilename("target/testsfile.dat")
+    task.addConfiguredTestsfile(elem)
+
+    val elem2 = new TestsfileElement
+    elem2.setFilename("target/testsfile2.dat")
+    task.addConfiguredTestsfile(elem2)
+
+    val argsList = task.buildArgsList
+
+    assert(argsList containsSlice List("-A", "target/testsfile.dat"))
+    assert(argsList containsSlice List("-A", "target/testsfile2.dat"))
+  }
+
   def `command line arg should get generated for memory reporter` {
     val task = new ScalaTestAntTask
 
