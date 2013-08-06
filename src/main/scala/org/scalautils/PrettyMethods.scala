@@ -17,13 +17,13 @@ package org.scalautils
 
 import scala.collection.mutable.WrappedArray
 
-trait FormattedMethods {
+trait PrettyMethods {
 
-  implicit val defaultFormatter = Formatter.default
+  implicit val defaultPrettifier = Prettifier.default
 
-  implicit class Formattizer(o: Any)(implicit formatter: Formatter) {
-    def pretty: String = formatter(o)
+  implicit class Prettyizer(o: Any)(implicit prettifier: Prettifier) {
+    def pretty: String = prettifier(o)
   }
 }
 
-object FormattedMethods extends FormattedMethods
+object PrettyMethods extends PrettyMethods

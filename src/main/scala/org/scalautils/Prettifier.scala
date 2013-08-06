@@ -17,11 +17,11 @@ package org.scalautils
 
 import scala.collection.mutable.WrappedArray
 
-trait Formatter extends (Any => String)
+trait Prettifier extends (Any => String)
 
-object Formatter {
-  val default: Formatter =
-    new Formatter {
+object Prettifier {
+  val default: Prettifier =
+    new Prettifier {
       def apply(o: Any): String =
         o match {
           case null => "null"

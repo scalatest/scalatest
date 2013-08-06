@@ -18,10 +18,10 @@ package org.scalautils
 import org.scalatest._
 import scala.collection.mutable.WrappedArray
 
-class FormattedMethodsSpec extends Spec with Matchers {
-  object `Trait FormattedMethods` {
-    object `should by default allow you to call formatted on anything and get default formatter output,` {
-      import FormattedMethods._
+class PrettyMethodsSpec extends Spec with Matchers {
+  object `Trait PrettyMethods` {
+    object `should by default allow you to call pretty on anything and get default Prettifier output,` {
+      import PrettyMethods._
       def `putting double quotes around strings` {
         "hi".pretty should be ("\"hi\"")
       }

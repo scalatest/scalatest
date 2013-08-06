@@ -18,11 +18,11 @@ package org.scalautils
 import org.scalatest._
 import scala.collection.mutable.WrappedArray
 
-class FormatterSpec extends Spec with Matchers {
-  object `A Formatter` {
+class PrettifierSpec extends Spec with Matchers {
+  object `A Prettifier` {
     def `should convert an Any to a String` {
       val f =
-        new Formatter {
+        new Prettifier {
           def apply(o: Any) = o.toString
         }
 
@@ -30,27 +30,27 @@ class FormatterSpec extends Spec with Matchers {
       f(List("hi")) should be ("List(hi)")
     }
   }
-  object `the default Formatter` {
+  object `the default Prettifier` {
     def `should put double quotes around strings` {
-      Formatter.default("hi") should be ("\"hi\"")
+      Prettifier.default("hi") should be ("\"hi\"")
     }
     def `should put single quotes around chars` {
-      Formatter.default('h') should be ("'h'")
+      Prettifier.default('h') should be ("'h'")
     }
     def `should pretty print arrays` {
-      Formatter.default(Array(1, 2, 3)) should be ("Array(1, 2, 3)")
+      Prettifier.default(Array(1, 2, 3)) should be ("Array(1, 2, 3)")
     }
     def `should pretty print wrapped arrays` {
-      Formatter.default(WrappedArray.make(Array(1, 2, 3))) should be ("Array(1, 2, 3)")
+      Prettifier.default(WrappedArray.make(Array(1, 2, 3))) should be ("Array(1, 2, 3)")
     }
     def `should show null as "null"` {
-      Formatter.default(null) should be ("null")
+      Prettifier.default(null) should be ("null")
     }
     def `should clarify the Unit value` {
-      Formatter.default(()) should be ("<(), the Unit value>")
+      Prettifier.default(()) should be ("<(), the Unit value>")
     }
     def `should just call toString on anything not specially treated` {
-      Formatter.default(List("1", "2", "3")) should be ("List(1, 2, 3)")
+      Prettifier.default(List("1", "2", "3")) should be ("List(1, 2, 3)")
     }
   }
 }
