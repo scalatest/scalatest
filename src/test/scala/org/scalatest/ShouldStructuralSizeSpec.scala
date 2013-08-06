@@ -27,8 +27,8 @@ class ShouldStructuralSizeSpec extends FunSpec with Matchers with Checkers with 
   def hadSizeInsteadOfExpectedSize(left: Any, leftSize: Long, expectedSize: Long): String = 
     FailureMessages("hadSizeInsteadOfExpectedSize", left, leftSize, expectedSize)
     
-  def hadExpectedSize(left: Any, expectedSize: Int): String = 
-    FailureMessages("hadExpectedSize", left, expectedSize)
+  def hadSize(left: Any, expectedSize: Int): String = 
+    FailureMessages("hadSize", left, expectedSize)
     
   def commaAnd(left: String, right: String): String = 
     FailureMessages("commaAnd", UnquotedString(left), UnquotedString(right))
@@ -137,17 +137,17 @@ class ShouldStructuralSizeSpec extends FunSpec with Matchers with Checkers with 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (3) } and not { have size (2) }}
         }
-        assert(caught1.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.size, 3), hadExpectedSize(obj, 2)))
+        assert(caught1.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.size, 3), hadSize(obj, 2)))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((not have size (3)) and (not have size (2)))
         }
-        assert(caught2.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.size, 3), hadExpectedSize(obj, 2)))
+        assert(caught2.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.size, 3), hadSize(obj, 2)))
 
         val caught3 = intercept[TestFailedException] {
           obj should (not have size (3) and not have size (2))
         }
-        assert(caught3.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.size, 3), hadExpectedSize(obj, 2)))
+        assert(caught3.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.size, 3), hadSize(obj, 2)))
       }
   
       it("should throw an assertion error when object size matches and used in a logical-or expression with not") {
@@ -155,17 +155,17 @@ class ShouldStructuralSizeSpec extends FunSpec with Matchers with Checkers with 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (2) } or not { have size (2) }}
         }
-        assert(caught1.getMessage === commaAnd(hadExpectedSize(obj, 2), hadExpectedSize(obj, 2)))
+        assert(caught1.getMessage === commaAnd(hadSize(obj, 2), hadSize(obj, 2)))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((not have size (2)) or (not have size (2)))
         }
-        assert(caught2.getMessage === commaAnd(hadExpectedSize(obj, 2), hadExpectedSize(obj, 2)))
+        assert(caught2.getMessage === commaAnd(hadSize(obj, 2), hadSize(obj, 2)))
 
         val caught3 = intercept[TestFailedException] {
           obj should (not have size (2) or not have size (2))
         }
-        assert(caught3.getMessage === commaAnd(hadExpectedSize(obj, 2), hadExpectedSize(obj, 2)))
+        assert(caught3.getMessage === commaAnd(hadSize(obj, 2), hadSize(obj, 2)))
       }
     }
     
@@ -268,17 +268,17 @@ class ShouldStructuralSizeSpec extends FunSpec with Matchers with Checkers with 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (3) } and not { have size (2) }}
         }
-        assert(caught1.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.size, 3), hadExpectedSize(obj, 2)))
+        assert(caught1.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.size, 3), hadSize(obj, 2)))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((not have size (3)) and (not have size (2)))
         }
-        assert(caught2.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.size, 3), hadExpectedSize(obj, 2)))
+        assert(caught2.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.size, 3), hadSize(obj, 2)))
 
         val caught3 = intercept[TestFailedException] {
           obj should (not have size (3) and not have size (2))
         }
-        assert(caught3.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.size, 3), hadExpectedSize(obj, 2)))
+        assert(caught3.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.size, 3), hadSize(obj, 2)))
       }
 
       it("should throw an assertion error when object size matches and used in a logical-or expression with not") {
@@ -286,17 +286,17 @@ class ShouldStructuralSizeSpec extends FunSpec with Matchers with Checkers with 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (2) } or not { have size (2) }}
         }
-        assert(caught1.getMessage === commaAnd(hadExpectedSize(obj, 2), hadExpectedSize(obj, 2)))
+        assert(caught1.getMessage === commaAnd(hadSize(obj, 2), hadSize(obj, 2)))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((not have size (2)) or (not have size (2)))
         }
-        assert(caught2.getMessage === commaAnd(hadExpectedSize(obj, 2), hadExpectedSize(obj, 2)))
+        assert(caught2.getMessage === commaAnd(hadSize(obj, 2), hadSize(obj, 2)))
 
         val caught3 = intercept[TestFailedException] {
           obj should (not have size (2) or not have size (2))
         }
-        assert(caught3.getMessage === commaAnd(hadExpectedSize(obj, 2), hadExpectedSize(obj, 2)))
+        assert(caught3.getMessage === commaAnd(hadSize(obj, 2), hadSize(obj, 2)))
       }
     }
     
@@ -399,17 +399,17 @@ class ShouldStructuralSizeSpec extends FunSpec with Matchers with Checkers with 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (3) } and not { have size (2) }}
         }
-        assert(caught1.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.size, 3), hadExpectedSize(obj, 2)))
+        assert(caught1.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.size, 3), hadSize(obj, 2)))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((not have size (3)) and (not have size (2)))
         }
-        assert(caught2.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.size, 3), hadExpectedSize(obj, 2)))
+        assert(caught2.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.size, 3), hadSize(obj, 2)))
 
         val caught3 = intercept[TestFailedException] {
           obj should (not have size (3) and not have size (2))
         }
-        assert(caught3.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.size, 3), hadExpectedSize(obj, 2)))
+        assert(caught3.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.size, 3), hadSize(obj, 2)))
       }
 
       it("should throw an assertion error when object size matches and used in a logical-or expression with not") {
@@ -417,17 +417,17 @@ class ShouldStructuralSizeSpec extends FunSpec with Matchers with Checkers with 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (2) } or not { have size (2) }}
         }
-        assert(caught1.getMessage === commaAnd(hadExpectedSize(obj, 2), hadExpectedSize(obj, 2)))
+        assert(caught1.getMessage === commaAnd(hadSize(obj, 2), hadSize(obj, 2)))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((not have size (2)) or (not have size (2)))
         }
-        assert(caught2.getMessage === commaAnd(hadExpectedSize(obj, 2), hadExpectedSize(obj, 2)))
+        assert(caught2.getMessage === commaAnd(hadSize(obj, 2), hadSize(obj, 2)))
 
         val caught3 = intercept[TestFailedException] {
           obj should (not have size (2) or not have size (2))
         }
-        assert(caught3.getMessage === commaAnd(hadExpectedSize(obj, 2), hadExpectedSize(obj, 2)))
+        assert(caught3.getMessage === commaAnd(hadSize(obj, 2), hadSize(obj, 2)))
       }
     }
     
@@ -531,17 +531,17 @@ class ShouldStructuralSizeSpec extends FunSpec with Matchers with Checkers with 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (3) } and not { have size (2) }}
         }
-        assert(caught1.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.getSize, 3), hadExpectedSize(obj, 2)))
+        assert(caught1.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.getSize, 3), hadSize(obj, 2)))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((not have size (3)) and (not have size (2)))
         }
-        assert(caught2.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.getSize, 3), hadExpectedSize(obj, 2)))
+        assert(caught2.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.getSize, 3), hadSize(obj, 2)))
 
         val caught3 = intercept[TestFailedException] {
           obj should (not have size (3) and not have size (2))
         }
-        assert(caught3.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.getSize, 3), hadExpectedSize(obj, 2)))
+        assert(caught3.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.getSize, 3), hadSize(obj, 2)))
       }
 
       it("should throw an assertion error when object size matches and used in a logical-or expression with not") {
@@ -549,17 +549,17 @@ class ShouldStructuralSizeSpec extends FunSpec with Matchers with Checkers with 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (2) } or not { have size (2) }}
         }
-        assert(caught1.getMessage === commaAnd(hadExpectedSize(obj, 2), hadExpectedSize(obj, 2)))
+        assert(caught1.getMessage === commaAnd(hadSize(obj, 2), hadSize(obj, 2)))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((not have size (2)) or (not have size (2)))
         }
-        assert(caught2.getMessage === commaAnd(hadExpectedSize(obj, 2), hadExpectedSize(obj, 2)))
+        assert(caught2.getMessage === commaAnd(hadSize(obj, 2), hadSize(obj, 2)))
 
         val caught3 = intercept[TestFailedException] {
           obj should (not have size (2) or not have size (2))
         }
-        assert(caught3.getMessage === commaAnd(hadExpectedSize(obj, 2), hadExpectedSize(obj, 2)))
+        assert(caught3.getMessage === commaAnd(hadSize(obj, 2), hadSize(obj, 2)))
       }
     }
     
@@ -662,17 +662,17 @@ class ShouldStructuralSizeSpec extends FunSpec with Matchers with Checkers with 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (3) } and not { have size (2) }}
         }
-        assert(caught1.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.getSize, 3), hadExpectedSize(obj, 2)))
+        assert(caught1.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.getSize, 3), hadSize(obj, 2)))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((not have size (3)) and (not have size (2)))
         }
-        assert(caught2.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.getSize, 3), hadExpectedSize(obj, 2)))
+        assert(caught2.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.getSize, 3), hadSize(obj, 2)))
 
         val caught3 = intercept[TestFailedException] {
           obj should (not have size (3) and not have size (2))
         }
-        assert(caught3.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.getSize, 3), hadExpectedSize(obj, 2)))
+        assert(caught3.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.getSize, 3), hadSize(obj, 2)))
       }
 
       it("should throw an assertion error when object size matches and used in a logical-or expression with not") {
@@ -680,17 +680,17 @@ class ShouldStructuralSizeSpec extends FunSpec with Matchers with Checkers with 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (2) } or not { have size (2) }}
         }
-        assert(caught1.getMessage === commaAnd(hadExpectedSize(obj, 2), hadExpectedSize(obj, 2)))
+        assert(caught1.getMessage === commaAnd(hadSize(obj, 2), hadSize(obj, 2)))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((not have size (2)) or (not have size (2)))
         }
-        assert(caught2.getMessage === commaAnd(hadExpectedSize(obj, 2), hadExpectedSize(obj, 2)))
+        assert(caught2.getMessage === commaAnd(hadSize(obj, 2), hadSize(obj, 2)))
 
         val caught3 = intercept[TestFailedException] {
           obj should (not have size (2) or not have size (2))
         }
-        assert(caught3.getMessage === commaAnd(hadExpectedSize(obj, 2), hadExpectedSize(obj, 2)))
+        assert(caught3.getMessage === commaAnd(hadSize(obj, 2), hadSize(obj, 2)))
       }
     }
     
@@ -793,17 +793,17 @@ class ShouldStructuralSizeSpec extends FunSpec with Matchers with Checkers with 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (3) } and not { have size (2) }}
         }
-        assert(caught1.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.getSize, 3), hadExpectedSize(obj, 2)))
+        assert(caught1.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.getSize, 3), hadSize(obj, 2)))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((not have size (3)) and (not have size (2)))
         }
-        assert(caught2.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.getSize, 3), hadExpectedSize(obj, 2)))
+        assert(caught2.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.getSize, 3), hadSize(obj, 2)))
 
         val caught3 = intercept[TestFailedException] {
           obj should (not have size (3) and not have size (2))
         }
-        assert(caught3.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.getSize, 3), hadExpectedSize(obj, 2)))
+        assert(caught3.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.getSize, 3), hadSize(obj, 2)))
       }
 
       it("should throw an assertion error when object size matches and used in a logical-or expression with not") {
@@ -811,17 +811,17 @@ class ShouldStructuralSizeSpec extends FunSpec with Matchers with Checkers with 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (2) } or not { have size (2) }}
         }
-        assert(caught1.getMessage === commaAnd(hadExpectedSize(obj, 2), hadExpectedSize(obj, 2)))
+        assert(caught1.getMessage === commaAnd(hadSize(obj, 2), hadSize(obj, 2)))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((not have size (2)) or (not have size (2)))
         }
-        assert(caught2.getMessage === commaAnd(hadExpectedSize(obj, 2), hadExpectedSize(obj, 2)))
+        assert(caught2.getMessage === commaAnd(hadSize(obj, 2), hadSize(obj, 2)))
 
         val caught3 = intercept[TestFailedException] {
           obj should (not have size (2) or not have size (2))
         }
-        assert(caught3.getMessage === commaAnd(hadExpectedSize(obj, 2), hadExpectedSize(obj, 2)))
+        assert(caught3.getMessage === commaAnd(hadSize(obj, 2), hadSize(obj, 2)))
       }
     }
   }
@@ -932,17 +932,17 @@ class ShouldStructuralSizeSpec extends FunSpec with Matchers with Checkers with 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (3) } and not { have size (2) }}
         }
-        assert(caught1.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.size, 3), hadExpectedSize(obj, 2)))
+        assert(caught1.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.size, 3), hadSize(obj, 2)))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((not have size (3)) and (not have size (2)))
         }
-        assert(caught2.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.size, 3), hadExpectedSize(obj, 2)))
+        assert(caught2.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.size, 3), hadSize(obj, 2)))
 
         val caught3 = intercept[TestFailedException] {
           obj should (not have size (3) and not have size (2))
         }
-        assert(caught3.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.size, 3), hadExpectedSize(obj, 2)))
+        assert(caught3.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.size, 3), hadSize(obj, 2)))
       }
 
       it("should throw an assertion error when object size matches and used in a logical-or expression with not") {
@@ -950,17 +950,17 @@ class ShouldStructuralSizeSpec extends FunSpec with Matchers with Checkers with 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (2) } or not { have size (2) }}
         }
-        assert(caught1.getMessage === commaAnd(hadExpectedSize(obj, 2), hadExpectedSize(obj, 2)))
+        assert(caught1.getMessage === commaAnd(hadSize(obj, 2), hadSize(obj, 2)))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((not have size (2)) or (not have size (2)))
         }
-        assert(caught2.getMessage === commaAnd(hadExpectedSize(obj, 2), hadExpectedSize(obj, 2)))
+        assert(caught2.getMessage === commaAnd(hadSize(obj, 2), hadSize(obj, 2)))
 
         val caught3 = intercept[TestFailedException] {
           obj should (not have size (2) or not have size (2))
         }
-        assert(caught3.getMessage === commaAnd(hadExpectedSize(obj, 2), hadExpectedSize(obj, 2)))
+        assert(caught3.getMessage === commaAnd(hadSize(obj, 2), hadSize(obj, 2)))
       }
     }
     
@@ -1067,17 +1067,17 @@ class ShouldStructuralSizeSpec extends FunSpec with Matchers with Checkers with 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (3) } and not { have size (2) }}
         }
-        assert(caught1.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.size, 3), hadExpectedSize(obj, 2)))
+        assert(caught1.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.size, 3), hadSize(obj, 2)))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((not have size (3)) and (not have size (2)))
         }
-        assert(caught2.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.size, 3), hadExpectedSize(obj, 2)))
+        assert(caught2.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.size, 3), hadSize(obj, 2)))
 
         val caught3 = intercept[TestFailedException] {
           obj should (not have size (3) and not have size (2))
         }
-        assert(caught3.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.size, 3), hadExpectedSize(obj, 2)))
+        assert(caught3.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.size, 3), hadSize(obj, 2)))
       }
 
       it("should throw an assertion error when object size matches and used in a logical-or expression with not") {
@@ -1085,17 +1085,17 @@ class ShouldStructuralSizeSpec extends FunSpec with Matchers with Checkers with 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (2) } or not { have size (2) }}
         }
-        assert(caught1.getMessage === commaAnd(hadExpectedSize(obj, 2), hadExpectedSize(obj, 2)))
+        assert(caught1.getMessage === commaAnd(hadSize(obj, 2), hadSize(obj, 2)))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((not have size (2)) or (not have size (2)))
         }
-        assert(caught2.getMessage === commaAnd(hadExpectedSize(obj, 2), hadExpectedSize(obj, 2)))
+        assert(caught2.getMessage === commaAnd(hadSize(obj, 2), hadSize(obj, 2)))
 
         val caught3 = intercept[TestFailedException] {
           obj should (not have size (2) or not have size (2))
         }
-        assert(caught3.getMessage === commaAnd(hadExpectedSize(obj, 2), hadExpectedSize(obj, 2)))
+        assert(caught3.getMessage === commaAnd(hadSize(obj, 2), hadSize(obj, 2)))
       }
     }
     
@@ -1200,17 +1200,17 @@ class ShouldStructuralSizeSpec extends FunSpec with Matchers with Checkers with 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (3) } and not { have size (2) }}
         }
-        assert(caught1.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.size, 3), hadExpectedSize(obj, 2)))
+        assert(caught1.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.size, 3), hadSize(obj, 2)))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((not have size (3)) and (not have size (2)))
         }
-        assert(caught2.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.size, 3), hadExpectedSize(obj, 2)))
+        assert(caught2.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.size, 3), hadSize(obj, 2)))
 
         val caught3 = intercept[TestFailedException] {
           obj should (not have size (3) and not have size (2))
         }
-        assert(caught3.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.size, 3), hadExpectedSize(obj, 2)))
+        assert(caught3.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.size, 3), hadSize(obj, 2)))
       }
 
       it("should throw an assertion error when object size matches and used in a logical-or expression with not") {
@@ -1218,17 +1218,17 @@ class ShouldStructuralSizeSpec extends FunSpec with Matchers with Checkers with 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (2) } or not { have size (2) }}
         }
-        assert(caught1.getMessage === commaAnd(hadExpectedSize(obj, 2), hadExpectedSize(obj, 2)))
+        assert(caught1.getMessage === commaAnd(hadSize(obj, 2), hadSize(obj, 2)))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((not have size (2)) or (not have size (2)))
         }
-        assert(caught2.getMessage === commaAnd(hadExpectedSize(obj, 2), hadExpectedSize(obj, 2)))
+        assert(caught2.getMessage === commaAnd(hadSize(obj, 2), hadSize(obj, 2)))
 
         val caught3 = intercept[TestFailedException] {
           obj should (not have size (2) or not have size (2))
         }
-        assert(caught3.getMessage === commaAnd(hadExpectedSize(obj, 2), hadExpectedSize(obj, 2)))
+        assert(caught3.getMessage === commaAnd(hadSize(obj, 2), hadSize(obj, 2)))
       }
     }
     
@@ -1335,17 +1335,17 @@ class ShouldStructuralSizeSpec extends FunSpec with Matchers with Checkers with 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (3) } and not { have size (2) }}
         }
-        assert(caught1.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.getSize, 3), hadExpectedSize(obj, 2)))
+        assert(caught1.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.getSize, 3), hadSize(obj, 2)))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((not have size (3)) and (not have size (2)))
         }
-        assert(caught2.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.getSize, 3), hadExpectedSize(obj, 2)))
+        assert(caught2.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.getSize, 3), hadSize(obj, 2)))
 
         val caught3 = intercept[TestFailedException] {
           obj should (not have size (3) and not have size (2))
         }
-        assert(caught3.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.getSize, 3), hadExpectedSize(obj, 2)))
+        assert(caught3.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.getSize, 3), hadSize(obj, 2)))
       }
 
       it("should throw an assertion error when object size matches and used in a logical-or expression with not") {
@@ -1353,17 +1353,17 @@ class ShouldStructuralSizeSpec extends FunSpec with Matchers with Checkers with 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (2) } or not { have size (2) }}
         }
-        assert(caught1.getMessage === commaAnd(hadExpectedSize(obj, 2), hadExpectedSize(obj, 2)))
+        assert(caught1.getMessage === commaAnd(hadSize(obj, 2), hadSize(obj, 2)))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((not have size (2)) or (not have size (2)))
         }
-        assert(caught2.getMessage === commaAnd(hadExpectedSize(obj, 2), hadExpectedSize(obj, 2)))
+        assert(caught2.getMessage === commaAnd(hadSize(obj, 2), hadSize(obj, 2)))
 
         val caught3 = intercept[TestFailedException] {
           obj should (not have size (2) or not have size (2))
         }
-        assert(caught3.getMessage === commaAnd(hadExpectedSize(obj, 2), hadExpectedSize(obj, 2)))
+        assert(caught3.getMessage === commaAnd(hadSize(obj, 2), hadSize(obj, 2)))
       }
     }
     
@@ -1470,17 +1470,17 @@ class ShouldStructuralSizeSpec extends FunSpec with Matchers with Checkers with 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (3) } and not { have size (2) }}
         }
-        assert(caught1.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.getSize, 3), hadExpectedSize(obj, 2)))
+        assert(caught1.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.getSize, 3), hadSize(obj, 2)))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((not have size (3)) and (not have size (2)))
         }
-        assert(caught2.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.getSize, 3), hadExpectedSize(obj, 2)))
+        assert(caught2.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.getSize, 3), hadSize(obj, 2)))
 
         val caught3 = intercept[TestFailedException] {
           obj should (not have size (3) and not have size (2))
         }
-        assert(caught3.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.getSize, 3), hadExpectedSize(obj, 2)))
+        assert(caught3.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.getSize, 3), hadSize(obj, 2)))
       }
 
       it("should throw an assertion error when object size matches and used in a logical-or expression with not") {
@@ -1488,17 +1488,17 @@ class ShouldStructuralSizeSpec extends FunSpec with Matchers with Checkers with 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (2) } or not { have size (2) }}
         }
-        assert(caught1.getMessage === commaAnd(hadExpectedSize(obj, 2), hadExpectedSize(obj, 2)))
+        assert(caught1.getMessage === commaAnd(hadSize(obj, 2), hadSize(obj, 2)))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((not have size (2)) or (not have size (2)))
         }
-        assert(caught2.getMessage === commaAnd(hadExpectedSize(obj, 2), hadExpectedSize(obj, 2)))
+        assert(caught2.getMessage === commaAnd(hadSize(obj, 2), hadSize(obj, 2)))
 
         val caught3 = intercept[TestFailedException] {
           obj should (not have size (2) or not have size (2))
         }
-        assert(caught3.getMessage === commaAnd(hadExpectedSize(obj, 2), hadExpectedSize(obj, 2)))
+        assert(caught3.getMessage === commaAnd(hadSize(obj, 2), hadSize(obj, 2)))
       }
     }
     
@@ -1605,17 +1605,17 @@ class ShouldStructuralSizeSpec extends FunSpec with Matchers with Checkers with 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (3) } and not { have size (2) }}
         }
-        assert(caught1.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.getSize, 3), hadExpectedSize(obj, 2)))
+        assert(caught1.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.getSize, 3), hadSize(obj, 2)))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((not have size (3)) and (not have size (2)))
         }
-        assert(caught2.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.getSize, 3), hadExpectedSize(obj, 2)))
+        assert(caught2.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.getSize, 3), hadSize(obj, 2)))
 
         val caught3 = intercept[TestFailedException] {
           obj should (not have size (3) and not have size (2))
         }
-        assert(caught3.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.getSize, 3), hadExpectedSize(obj, 2)))
+        assert(caught3.getMessage === commaBut(hadSizeInsteadOfExpectedSize(obj, obj.getSize, 3), hadSize(obj, 2)))
       }
 
       it("should throw an assertion error when object size matches and used in a logical-or expression with not") {
@@ -1623,17 +1623,17 @@ class ShouldStructuralSizeSpec extends FunSpec with Matchers with Checkers with 
         val caught1 = intercept[TestFailedException] {
           obj should { not { have size (2) } or not { have size (2) }}
         }
-        assert(caught1.getMessage === commaAnd(hadExpectedSize(obj, 2), hadExpectedSize(obj, 2)))
+        assert(caught1.getMessage === commaAnd(hadSize(obj, 2), hadSize(obj, 2)))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((not have size (2)) or (not have size (2)))
         }
-        assert(caught2.getMessage === commaAnd(hadExpectedSize(obj, 2), hadExpectedSize(obj, 2)))
+        assert(caught2.getMessage === commaAnd(hadSize(obj, 2), hadSize(obj, 2)))
 
         val caught3 = intercept[TestFailedException] {
           obj should (not have size (2) or not have size (2))
         }
-        assert(caught3.getMessage === commaAnd(hadExpectedSize(obj, 2), hadExpectedSize(obj, 2)))
+        assert(caught3.getMessage === commaAnd(hadSize(obj, 2), hadSize(obj, 2)))
       }
     }
   }
