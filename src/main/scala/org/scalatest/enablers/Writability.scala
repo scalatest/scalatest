@@ -56,5 +56,20 @@ object Writability {
       def isWritable(file: FILE): Boolean = file.canWrite
     }
 
+  /**
+   * Enable writability nature for any arbitrary object with a <code>isWritable()</code> method that returns <code>Boolean</code>
+   */
+  implicit def writabilityNatureOfAnyRefWithIsWritableMethod[T <: AnyRef { def isWritable(): Boolean}]: Writability[T] = 
+    new Writability[T] {
+      def isWritable(obj: T): Boolean = obj.isWritable
+    }
+  
+  /**
+   * Enable writability nature for any arbitrary object with a <code>isWritable</code> method that returns <code>Boolean</code>
+   */
+  implicit def writabilityNatureOfAnyRefWithParameterlessIsWritableMethod[T <: AnyRef { def isWritable: Boolean}]: Writability[T] = 
+    new Writability[T] {
+      def isWritable(obj: T): Boolean = obj.isWritable
+    }
 }
 
