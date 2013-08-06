@@ -47,6 +47,21 @@ object Definition {
     new Definition[OPT[E]] {
       def isDefined(option: OPT[E]): Boolean = option.isDefined
     }
+  
+  /**
+   * Provides Definition implementation for any arbitrary object with a <code>isDefined()</code> method that returns <code>Boolean</code>
+   */
+  implicit def definitionOfAnyRefWithIsDefinedMethod[T <: AnyRef { def isDefined(): Boolean}]: Definition[T] = 
+    new Definition[T] {
+      def isDefined(obj: T): Boolean = obj.isDefined
+    }
 
+  /**
+   * Provides Definition implementation for any arbitrary object with a <code>isDefined</code> method that returns <code>Boolean</code>
+   */
+  implicit def definitionOfAnyRefWithParameterlessIsDefinedMethod[T <: AnyRef { def isDefined: Boolean}]: Definition[T] = 
+    new Definition[T] {
+      def isDefined(obj: T): Boolean = obj.isDefined
+    }
 }
 
