@@ -56,5 +56,20 @@ object Readability {
       def isReadable(file: FILE): Boolean = file.canRead
     }
 
+  /**
+   * Enable readability nature for any arbitrary object with a <code>isReadable()</code> method that returns <code>Boolean</code>
+   */
+  implicit def readabilityNatureOfAnyRefWithIsReadableMethod[T <: AnyRef { def isReadable(): Boolean}]: Readability[T] = 
+    new Readability[T] {
+      def isReadable(obj: T): Boolean = obj.isReadable
+    }
+  
+  /**
+   * Enable readability nature for any arbitrary object with a <code>isReadable()</code> method that returns <code>Boolean</code>
+   */
+  implicit def readabilityNatureOfAnyRefWithParameterlessIsReadableMethod[T <: AnyRef { def isReadable: Boolean}]: Readability[T] = 
+    new Readability[T] {
+      def isReadable(obj: T): Boolean = obj.isReadable
+    }
 }
 
