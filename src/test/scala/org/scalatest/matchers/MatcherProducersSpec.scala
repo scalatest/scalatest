@@ -21,10 +21,10 @@ import org.scalautils.PrettyMethods
 
 class MatcherProducersSpec extends Spec with Matchers {
 
+  val f = be > (_: Int)
+  val g = (_: String).toInt
   object `A Matcher (without MatcherProducers)` {
     def `can be composed via compose ... andThen ... compose` {
-      val f = be > (_: Int)
-      val g = (_: String).toInt
       // (f compose g)(x) === f(g(x))
       val beAsIntsGreaterThan = (f compose g) andThen (_ compose g)
       "8" should beAsIntsGreaterThan ("7")
@@ -36,9 +36,7 @@ class MatcherProducersSpec extends Spec with Matchers {
   }
   object `The MatcherProducers trait` {
     import MatcherProducers._
-    def `should enable compose ... andThen ... compose behavior  via composeTwice` {
-      val f = be > (_: Int)
-      val g = (_: String).toInt
+    def `should enable compose ... andThen ... compose behavior via composeTwice` {
       // (f compose g)(x) === f(g(x))
       val beAsIntsGreaterThan = f composeTwice g
       "8" should beAsIntsGreaterThan ("7")
@@ -46,6 +44,24 @@ class MatcherProducersSpec extends Spec with Matchers {
         "7" should beAsIntsGreaterThan ("8")
       }
       tfe.message should be (Some(Resources("wasNotGreaterThan", "7", "8")))
+    }
+    def `should enable failure messages to be modified via mapResult` {
+      val beAsIntsGreaterThan = f composeTwice g mapResult { mr => MatchResult(mr.matches, mr.failureMessage.toUpperCase, mr.negatedFailureMessage.toUpperCase) }
+      "8" should beAsIntsGreaterThan ("7")
+      val tfe = the [TestFailedException] thrownBy {
+        "7" should beAsIntsGreaterThan ("8")
+      }
+      tfe.message should be (Some(Resources("wasNotGreaterThan", "7", "8").toUpperCase))
+    }
+    def `should be able to modify failure message args via mapResult` { pending
+      val beAsIntsGreaterThan = f composeTwice g mapResult { mr =>
+        mr.copy(failureMessageArgs = mr.failureMessageArgs.map(_.toString + ".toInt"))
+      }
+      "8" should beAsIntsGreaterThan ("7")
+      val tfe = the [TestFailedException] thrownBy {
+        "7" should beAsIntsGreaterThan ("8")
+      }
+      tfe.message should be (Some(Resources("wasNotGreaterThan", "7", "8").toUpperCase))
     }
   }
 }

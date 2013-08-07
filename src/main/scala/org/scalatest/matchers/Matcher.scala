@@ -2822,12 +2822,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
    */
   def or(notExist: ResultOfNotExist): MatcherFactory1[T, Existence] = 
     outerInstance.or(MatcherWords.not.exist)
+
+  def mapResult(m2m: MatchResult => MatchResult): Matcher[T] =
+    new Matcher[T] {
+      def apply(o: T): MatchResult = m2m(outerInstance(o))
+    }
 }
 
 /**
  * Companion object for trait <code>Matcher</code> that provides a
  * factory method that creates a <code>Matcher[T]</code> from a
- * passed function of type <code>(T => MatchResult)</code>.
+ * passed function of type <code>(T =&gt; MatchResult)</code>.
  *
  * @author Bill Venners
  */
@@ -2835,7 +2840,7 @@ object Matcher {
 
   /**
    * Factory method that creates a <code>Matcher[T]</code> from a
-   * passed function of type <code>(T => MatchResult)</code>.
+   * passed function of type <code>(T =&gt; MatchResult)</code>.
    *
    * @author Bill Venners
    */
