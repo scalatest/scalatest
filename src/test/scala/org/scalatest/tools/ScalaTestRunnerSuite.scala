@@ -18,6 +18,8 @@ package org.scalatest.tools {
 import org.scalatest.FunSuite
 import org.scalatest.Outcome
 import org.scalatools.testing.{Event, EventHandler, Result, Logger, Runner => TestingRunner}
+import org.scalatest.SharedHelpers.EventRecordingReporter
+import org.scalatest.DispatchReporter
 
   // testing runner.run:
   // def run(testClassName: String, fingerprint: TestFingerprint, args: Array[String]): Array[Event]
@@ -205,6 +207,24 @@ import org.scalatools.testing.{Event, EventHandler, Result, Logger, Runner => Te
         run("org.scalatest.tools.test.SimpleTest", Array("-PS"))
       }
       assert(iae.getMessage === "-c, -P (concurrent) is not supported when runs in SBT.")
+    }
+    
+    test("ScalaTestRunner.run should be able to pass in custom reporter via -C") {
+      val framework = new ScalaTestFramework()
+      val runner: TestingRunner = framework.testRunner(Thread.currentThread.getContextClassLoader, Array(new TestLogger))
+      val listener = new EventHandler {
+        def handle(event: Event) {}
+      }
+      runner.run("org.scalatest.tools.scalasbt.SampleSuite", fingerprint, listener, Array("-C", classOf[EventRecordingReporter].getName))
+      framework.RunConfig.reporter.get match {
+        case Some(dispatchRep: DispatchReporter) => 
+          dispatchRep.reporters.find(_.isInstanceOf[EventRecordingReporter]) match {
+            case Some(recordingRep : EventRecordingReporter) => 
+              assert(recordingRep.testSucceededEventsReceived.size === 3)
+            case _ => fail("Expected to find EventRecordingReporter, but not found.")
+          }
+        case _ => fail("Expected to find DispatchReporter, but not found.")
+      }
     }
 
     def runner: TestingRunner = {

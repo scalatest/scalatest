@@ -269,7 +269,11 @@ private[scalatest] class FriendlyParamsTranslator {
           case None => 
         }
       }
-      else if (s.startsWith("-r")) 
+      else if (s.startsWith("-r")) {
+        println("WARNING: -r has been deprecated and will be reused for a different (but still very cool) purpose in ScalaTest 2.0. Please change all uses of -r to -C.")
+        repoArgs ++= parseDashAndArgument(s, "reporterclass(classname=\"xxx\")", it)
+      }
+      else if (s.startsWith("-C")) 
         repoArgs ++= parseDashAndArgument(s, "reporterclass(classname=\"xxx\")", it)
       else if (s.startsWith("reporterclass")) {
         val paramsMap:Map[String, String] = parseParams(s.substring("reporterclass".length()), it, Set("classname", "config"), "reporterclass(classname=\"xxx\")")

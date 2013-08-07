@@ -1804,7 +1804,7 @@ object Runner {
       val lb = new ListBuffer[CustomReporterConfiguration]
       while (it.hasNext) {
         val arg = it.next
-        if (arg.startsWith("-r")) {
+        if (arg.startsWith("-r") || arg.startsWith("-C")) {
           val dashRString = arg
           val customReporterClassName = it.next
           val configSet = parseConfigSet(dashRString)

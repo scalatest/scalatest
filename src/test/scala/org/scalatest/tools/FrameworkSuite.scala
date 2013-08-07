@@ -16,6 +16,7 @@
 package org.scalatest.tools
 import org.scalatest.FunSuite
 import sbt.testing._
+import org.scalatest.SharedHelpers.EventRecordingReporter
 
 class FrameworkSuite extends FunSuite {
   
@@ -976,5 +977,21 @@ class FrameworkSuite extends FunSuite {
       framework.runner(Array("-PS"), Array.empty, testClassLoader)
     }
     assert(iae.getMessage === "-c, -P (concurrent) is not supported when runs in SBT.")
+  }
+  
+  test("Framework.runner should be able to pass in custom reporter via -C") {
+    val testEventHandler = new TestEventHandler
+    val runner = framework.runner(Array("-C", classOf[EventRecordingReporter].getName), Array.empty, testClassLoader)
+    val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.SampleSuite", subclassFingerprint, false, Array(new SuiteSelector))))
+    assert(tasks.size === 1)
+    val task = tasks(0)
+    task.execute(testEventHandler, Array(new TestLogger))
+    assert(runner.isInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner])
+    val scalatestRunner = runner.asInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner]
+    scalatestRunner.dispatchReporter.reporters.find(_.isInstanceOf[EventRecordingReporter]) match {
+      case Some(recordingRep : EventRecordingReporter) => 
+        assert(recordingRep.testSucceededEventsReceived.size === 3)
+      case _ => fail("Expected to find EventRecordingReporter, but not found.")
+    }
   }
 }

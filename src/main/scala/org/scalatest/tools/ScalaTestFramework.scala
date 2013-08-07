@@ -93,7 +93,7 @@ class ScalaTestFramework extends SbtFramework {
     
   object RunConfig {
 
-    private val reporter: AtomicReference[Option[DispatchReporter]] = new AtomicReference(None)
+    private[scalatest] val reporter: AtomicReference[Option[DispatchReporter]] = new AtomicReference(None)
     private val reporterConfigs: AtomicReference[Option[ReporterConfigurations]] = new AtomicReference(None)
     private val useStdout, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted = new AtomicBoolean(false)
     private val presentReminder, presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests = new AtomicBoolean(false)
