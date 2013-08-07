@@ -187,10 +187,14 @@ private[scalatest] object MatchersHelper {
     else {
       MatchResult(
         rightMatchResult.matches,
-        Resources("commaAnd", leftMatchResult.failureMessage, rightMatchResult.midSentenceFailureMessage),
-        Resources("commaAnd", leftMatchResult.failureMessage, rightMatchResult.midSentenceNegatedFailureMessage),
-        Resources("commaAnd", leftMatchResult.midSentenceFailureMessage, rightMatchResult.midSentenceFailureMessage),
-        Resources("commaAnd", leftMatchResult.midSentenceFailureMessage, rightMatchResult.midSentenceNegatedFailureMessage)
+        Resources("commaAnd"),
+        Resources("commaAnd"),
+        Resources("commaAnd"),
+        Resources("commaAnd"),
+        Vector(FailureMessage(leftMatchResult), MidSentenceFailureMessage(rightMatchResult)),
+        Vector(FailureMessage(leftMatchResult), MidSentenceNegatedFailureMessage(rightMatchResult)),
+        Vector(MidSentenceFailureMessage(leftMatchResult), MidSentenceFailureMessage(rightMatchResult)),
+        Vector(MidSentenceFailureMessage(leftMatchResult), MidSentenceNegatedFailureMessage(rightMatchResult))
       )
     }
   }
