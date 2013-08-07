@@ -190,6 +190,18 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
         'negatedFailureMessageArgs(Vector('a', 'b'))
       )
     }
+    "for be < 'b'" in {
+      val m = be < 'b'
+      m('c') should have (
+        'matches (false),
+        'rawFailureMessage (Resources("wasNotLessThan")),
+        'rawNegatedFailureMessage (Resources("wasLessThan")),
+        'rawMidSentenceFailureMessage (Resources("wasNotLessThan")),
+        'rawMidSentenceNegatedFailureMessage (Resources("wasLessThan")),
+        'failureMessageArgs(Vector('c', 'b')),
+        'negatedFailureMessageArgs(Vector('c', 'b'))
+      )
+    }
   }
 
   "The MatchResult obtained from and-ing two Matchers" - {

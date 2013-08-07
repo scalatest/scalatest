@@ -93,10 +93,15 @@ final class BeWord {
         val ordering = implicitly[Ordering[T]]
         MatchResult(
           ordering.lt(left, right), // left < right
-          FailureMessages("wasNotLessThan", left, right),
-          FailureMessages("wasLessThan", left, right)
+          Resources("wasNotLessThan"),
+          Resources("wasLessThan"),
+          Resources("wasNotLessThan"),
+          Resources("wasLessThan"),
+          Vector(left, right),
+          Vector(left, right)
         )
       }
+      override def toString: String = "be < " + Prettifier.default(right)
     }
 
   /**

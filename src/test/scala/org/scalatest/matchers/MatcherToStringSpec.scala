@@ -24,6 +24,7 @@ class MatcherToStringSpec extends Spec with Matchers with PrettyMethods {
   object `The MatchResult obtained from ScalaTest matcher syntax` {
     def `should have pretty toStrings` {
       (be > 'b').toString should be ("be > 'b'")
+      (be < 'b').toString should be ("be < 'b'")
     }
   }
 }
