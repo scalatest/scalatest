@@ -170,6 +170,7 @@ private[scalatest] class FriendlyParamsTranslator {
     val suites = new ListBuffer[String]()
     val junits = new ListBuffer[String]()
     val testngs = new ListBuffer[String]()
+    val chosenStyles = new ListBuffer[String]()
 
     val it = args.iterator
     while (it.hasNext) {
@@ -316,11 +317,16 @@ private[scalatest] class FriendlyParamsTranslator {
         testngs ++= parseDashAndArgument(s, "testng(a, b, c)", it)
       else if(s.startsWith("testng")) 
         testngs ++= translateCompound(s, "testng", "-t", it)
+      else if (s.startsWith("-y")) {
+        chosenStyles += s
+        if (it.hasNext)
+          chosenStyles += it.next()
+      }
       else
           throw new IllegalArgumentException("Unrecognized argument: " + s)
     }
     (props.toList, includes.toList, excludes.toList, repoArgs.toList, concurrent.toList, memberOnlys.toList, wildcards.toList, 
-     suites.toList, junits.toList, testngs.toList)
+     suites.toList, junits.toList, testngs.toList, chosenStyles.toList)
   }
 
 }
