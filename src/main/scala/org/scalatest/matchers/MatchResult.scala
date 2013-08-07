@@ -280,5 +280,29 @@ object MatchResult {
    */
   def apply(matches: Boolean, rawFailureMessage: String, rawNegatedFailureMessage: String): MatchResult =
     new MatchResult(matches, rawFailureMessage, rawNegatedFailureMessage, rawFailureMessage, rawNegatedFailureMessage, Vector.empty, Vector.empty, Prettifier.default)
+
+  def apply(matches: Boolean, rawFailureMessage: String, rawNegatedFailureMessage: String, args: IndexedSeq[Any]) =
+    new MatchResult(
+      matches,
+      rawFailureMessage,
+      rawNegatedFailureMessage,
+      rawFailureMessage,
+      rawNegatedFailureMessage,
+      args,
+      args,
+      Prettifier.default
+    )
+
+  def apply(matches: Boolean, rawFailureMessage: String, rawNegatedFailureMessage: String, failureMessageArgs: IndexedSeq[Any], negatedFailureMessageArgs: IndexedSeq[Any]) =
+    new MatchResult(
+      matches,
+      rawFailureMessage,
+      rawNegatedFailureMessage,
+      rawFailureMessage,
+      rawNegatedFailureMessage,
+      failureMessageArgs,
+      negatedFailureMessageArgs,
+      Prettifier.default
+    )
 }
 

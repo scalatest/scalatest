@@ -95,9 +95,6 @@ final class BeWord {
           ordering.lt(left, right), // left < right
           Resources("wasNotLessThan"),
           Resources("wasLessThan"),
-          Resources("wasNotLessThan"),
-          Resources("wasLessThan"),
-          Vector(left, right),
           Vector(left, right)
         )
       }
@@ -137,9 +134,6 @@ final class BeWord {
           ordering.gt(left, right), // left > right
           Resources("wasNotGreaterThan"),
           Resources("wasGreaterThan"),
-          Resources("wasNotGreaterThan"),
-          Resources("wasGreaterThan"),
-          Vector(left, right),
           Vector(left, right)
         )
       }

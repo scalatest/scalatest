@@ -145,7 +145,7 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
         'negatedFailureMessageArgs(Vector.empty)
       )
     }
-    "that takes six strings should work correctly" in {
+    "that takes four strings and two IndexedSeqs should work correctly" in {
       val mr = MatchResult(true, "one", "two", "three", "four", Vector(42), Vector(42.0))
       mr should have (
         'matches (true),
@@ -171,6 +171,66 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
         'rawNegatedFailureMessage ("bbb"),
         'rawMidSentenceFailureMessage ("ccc"),
         'rawMidSentenceNegatedFailureMessage ("ddd"),
+        'failureMessageArgs(Vector("ho", "he")),
+        'negatedFailureMessageArgs(Vector("foo", "fie"))
+      )
+    }
+    "that takes two strings and one IndexedSeq should work correctly" in {
+      val mr = MatchResult(true, "one", "two", Vector(42))
+      mr should have (
+        'matches (true),
+        'failureMessage ("one"),
+        'negatedFailureMessage ("two"),
+        'midSentenceFailureMessage ("one"),
+        'midSentenceNegatedFailureMessage ("two"),
+        'rawFailureMessage ("one"),
+        'rawNegatedFailureMessage ("two"),
+        'rawMidSentenceFailureMessage ("one"),
+        'rawMidSentenceNegatedFailureMessage ("two"),
+        'failureMessageArgs(Vector(42)),
+        'negatedFailureMessageArgs(Vector(42))
+      )
+      val ms = MatchResult(false, "aaa", "bbb", Vector("ho", "he"))
+      ms should have (
+        'matches (false),
+        'failureMessage ("aaa"),
+        'negatedFailureMessage ("bbb"),
+        'midSentenceFailureMessage ("aaa"),
+        'midSentenceNegatedFailureMessage ("bbb"),
+        'rawFailureMessage ("aaa"),
+        'rawNegatedFailureMessage ("bbb"),
+        'rawMidSentenceFailureMessage ("aaa"),
+        'rawMidSentenceNegatedFailureMessage ("bbb"),
+        'failureMessageArgs(Vector("ho", "he")),
+        'negatedFailureMessageArgs(Vector("ho", "he"))
+      )
+    }
+    "that takes two strings and two IndexedSeqs should work correctly" in {
+      val mr = MatchResult(true, "one", "two", Vector(42), Vector(42.0))
+      mr should have (
+        'matches (true),
+        'failureMessage ("one"),
+        'negatedFailureMessage ("two"),
+        'midSentenceFailureMessage ("one"),
+        'midSentenceNegatedFailureMessage ("two"),
+        'rawFailureMessage ("one"),
+        'rawNegatedFailureMessage ("two"),
+        'rawMidSentenceFailureMessage ("one"),
+        'rawMidSentenceNegatedFailureMessage ("two"),
+        'failureMessageArgs(Vector(42)),
+        'negatedFailureMessageArgs(Vector(42.0))
+      )
+      val ms = MatchResult(false, "aaa", "bbb", Vector("ho", "he"), Vector("foo", "fie"))
+      ms should have (
+        'matches (false),
+        'failureMessage ("aaa"),
+        'negatedFailureMessage ("bbb"),
+        'midSentenceFailureMessage ("aaa"),
+        'midSentenceNegatedFailureMessage ("bbb"),
+        'rawFailureMessage ("aaa"),
+        'rawNegatedFailureMessage ("bbb"),
+        'rawMidSentenceFailureMessage ("aaa"),
+        'rawMidSentenceNegatedFailureMessage ("bbb"),
         'failureMessageArgs(Vector("ho", "he")),
         'negatedFailureMessageArgs(Vector("foo", "fie"))
       )
