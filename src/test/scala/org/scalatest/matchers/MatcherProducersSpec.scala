@@ -19,9 +19,9 @@ import org.scalatest._
 import Inside._
 import org.scalautils.PrettyMethods
 
-class MatcherCompositionSpec extends Spec with Matchers with MatcherProducers {
+class MatcherProducersSpec extends Spec with Matchers {
 
-  object `A Matcher` {
+  object `A Matcher (without MatcherProducers)` {
     def `can be composed via compose ... andThen ... compose` {
       val f = be > (_: Int)
       val g = (_: String).toInt
@@ -33,7 +33,10 @@ class MatcherCompositionSpec extends Spec with Matchers with MatcherProducers {
       }
       tfe.message should be (Some(Resources("wasNotGreaterThan", "7", "8")))
     }
-    def `can be composed via composeTwice` {
+  }
+  object `The MatcherProducers trait` {
+    import MatcherProducers._
+    def `should enable compose ... andThen ... compose behavior  via composeTwice` {
       val f = be > (_: Int)
       val g = (_: String).toInt
       // (f compose g)(x) === f(g(x))
