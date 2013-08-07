@@ -164,6 +164,13 @@ import org.scalatools.testing.{Event, EventHandler, Result, Logger, Runner => Te
       val result4 = run("org.scalatest.enablers.NoParamSpec", Array("-m", "org.scalatest.concurrent"))
       assert(result4.size === 0)
     }
+    
+    test("ScalaTestRunner.run should throw IllegalArgumentException when -s is passed in") {
+      val iae = intercept[IllegalArgumentException] {
+        run("org.scalatest.tools.test.SimpleTest", Array("-s", "org.scalatest.tools.test.SimpleTest"))
+      }
+      assert(iae.getMessage === "-s (suite) option is not supported when runs in SBT, please use SBT's test-only instead.")
+    }
 
     def runner: TestingRunner = {
       new ScalaTestFramework().testRunner(Thread.currentThread.getContextClassLoader, Array(new TestLogger))
