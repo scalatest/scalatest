@@ -935,4 +935,11 @@ class FrameworkSuite extends FunSuite {
     val tasks = runner.tasks(Array(new TaskDef("org.scalatest.SavesConfigMapSuite", subclassFingerprint, false, Array(new SuiteSelector))))
     assert(tasks.size === 0)
   }*/
+  
+  test("Framework.runner should throw IllegalArgumentException when -s is passed in") {
+    val iae = intercept[IllegalArgumentException] {
+      framework.runner(Array("-s", "org.scalatest.tools.scalasbt.SampleSuite"), Array.empty, testClassLoader)
+    }
+    assert(iae.getMessage === "-s (suite) option is not supported when runs in SBT, please use SBT's test-only instead.")
+  }
 }

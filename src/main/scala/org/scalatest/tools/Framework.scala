@@ -755,6 +755,10 @@ class Framework extends SbtFramework {
     val translator = new FriendlyParamsTranslator()
     val (propertiesArgsList, includesArgsList, excludesArgsList, repoArgsList, concurrentList, memberOnlyList, wildcardList, 
                suiteList, junitList, testngList) = translator.parsePropsAndTags(args.filter(!_.equals("")))
+               
+    if (!suiteList.isEmpty)
+      throw new IllegalArgumentException("-s (suite) option is not supported when runs in SBT, please use SBT's test-only instead.")
+               
     val configMap = parsePropertiesArgsIntoMap(propertiesArgsList)
     val tagsToInclude: Set[String] = parseCompoundArgIntoSet(includesArgsList, "-n")
     val tagsToExclude: Set[String] = parseCompoundArgIntoSet(excludesArgsList, "-l")
