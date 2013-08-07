@@ -169,7 +169,7 @@ import org.scalatools.testing.{Event, EventHandler, Result, Logger, Runner => Te
       val iae = intercept[IllegalArgumentException] {
         run("org.scalatest.tools.test.SimpleTest", Array("-s", "org.scalatest.tools.test.SimpleTest"))
       }
-      assert(iae.getMessage === "-s (suite) option is not supported when runs in SBT, please use SBT's test-only instead.")
+      assert(iae.getMessage === "-s (suite) is not supported when runs in SBT, please use SBT's test-only instead.")
     }
 
     def runner: TestingRunner = {

@@ -112,7 +112,7 @@ class ScalaTestFramework extends SbtFramework {
                suiteList, junitList, testngList) = translator.parsePropsAndTags(args.filter(!_.equals("")))
                
           if (!suiteList.isEmpty)
-            throw new IllegalArgumentException("-s (suite) option is not supported when runs in SBT, please use SBT's test-only instead.")
+            throw new IllegalArgumentException("-s (suite) is not supported when runs in SBT, please use SBT's test-only instead.")
                
           configMap.getAndSet(Some(parsePropertiesArgsIntoMap(propertiesArgsList)))
           val tagsToInclude: Set[String] = parseCompoundArgIntoSet(includesArgsList, "-n")
