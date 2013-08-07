@@ -942,4 +942,11 @@ class FrameworkSuite extends FunSuite {
     }
     assert(iae.getMessage === "-s (suite) is not supported when runs in SBT, please use SBT's test-only instead.")
   }
+  
+  test("Framework.runner should throw IllegalArgumentException when -j is passed in") {
+    val iae = intercept[IllegalArgumentException] {
+      framework.runner(Array("-j", "org.scalatest.tools.scalasbt.SampleJUnitSuite"), Array.empty, testClassLoader)
+    }
+    assert(iae.getMessage === "-j (junit) is not supported when runs in SBT.")
+  }
 }

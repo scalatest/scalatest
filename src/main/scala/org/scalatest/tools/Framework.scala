@@ -758,6 +758,9 @@ class Framework extends SbtFramework {
                
     if (!suiteList.isEmpty)
       throw new IllegalArgumentException("-s (suite) is not supported when runs in SBT, please use SBT's test-only instead.")
+    
+    if (!junitList.isEmpty)
+      throw new IllegalArgumentException("-j (junit) is not supported when runs in SBT.")
                
     val configMap = parsePropertiesArgsIntoMap(propertiesArgsList)
     val tagsToInclude: Set[String] = parseCompoundArgIntoSet(includesArgsList, "-n")
