@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2008 Artima, Inc.
+ * Copyright 2001-2013 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -218,10 +218,16 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
         val m = be > 'b' and be > 'd'
         val mr = m('a')
         mr.matches shouldBe false
+        mr.rawFailureMessage should be (Resources("wasNotGreaterThan"))
+        mr.rawNegatedFailureMessage should be (Resources("wasGreaterThan"))
+        mr.rawMidSentenceFailureMessage should be (Resources("wasNotGreaterThan"))
+        mr.rawMidSentenceNegatedFailureMessage should be (Resources("wasGreaterThan"))
         mr.failureMessage should be (Resources("wasNotGreaterThan", 'a'.pretty, 'b'.pretty))
         mr.negatedFailureMessage should be (Resources("wasGreaterThan", 'a'.pretty, 'b'.pretty))
         mr.midSentenceFailureMessage should be (Resources("wasNotGreaterThan", 'a'.pretty, 'b'.pretty))
         mr.midSentenceNegatedFailureMessage should be (Resources("wasGreaterThan", 'a'.pretty, 'b'.pretty))
+        mr.failureMessageArgs should be (Vector('a', 'b'))
+        mr.negatedFailureMessageArgs should be (Vector('a', 'b'))
       }
 
        /*
@@ -235,10 +241,16 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
         val m = be > 'b' and be < 'd'
         val mr = m('a')
         mr.matches shouldBe false
+        mr.rawFailureMessage should be (Resources("wasNotGreaterThan"))
+        mr.rawNegatedFailureMessage should be (Resources("wasGreaterThan"))
+        mr.rawMidSentenceFailureMessage should be (Resources("wasNotGreaterThan"))
+        mr.rawMidSentenceNegatedFailureMessage should be (Resources("wasGreaterThan"))
         mr.failureMessage should be (Resources("wasNotGreaterThan", 'a'.pretty, 'b'.pretty))
         mr.negatedFailureMessage should be (Resources("wasGreaterThan", 'a'.pretty, 'b'.pretty))
         mr.midSentenceFailureMessage should be (Resources("wasNotGreaterThan", 'a'.pretty, 'b'.pretty))
         mr.midSentenceNegatedFailureMessage should be (Resources("wasGreaterThan", 'a'.pretty, 'b'.pretty))
+        mr.failureMessageArgs should be (Vector('a', 'b'))
+        mr.negatedFailureMessageArgs should be (Vector('a', 'b'))
       }
 
         /*
@@ -246,7 +258,9 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
           res2: org.scalatest.matchers.MatchResult = MatchResult(false,'c' was greater than 'b', but 'c' was not greater than 'd','c' was greater than 'b', and 'c' was greater than 'd','c' was greater than 'b', but 'c' was not greater than 'd','c' was greater than 'b', and 'c' was greater than 'd',Vector(),Vector())
         */
       "for true and false" in {
-        val m = be > 'b' and be > 'd'
+        val left = be > 'b'
+        val right = be > 'd'
+        val m = left and right
         val mr = m('c')
         mr.matches shouldBe false
         mr.failureMessage should be (Resources("commaBut", Resources("wasGreaterThan", 'c'.pretty, 'b'.pretty), Resources("wasNotGreaterThan", 'c'.pretty, 'd'.pretty)))
@@ -260,7 +274,9 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
           res3: org.scalatest.matchers.MatchResult = MatchResult(true,'e' was greater than 'b', but 'e' was not greater than 'd','e' was greater than 'b', and 'e' was greater than 'd','e' was greater than 'b', but 'e' was not greater than 'd','e' was greater than 'b', and 'e' was greater than 'd',Vector(),Vector())
         */
       "for true and true" in {
-        val m = be > 'b' and be > 'd'
+        val left = be > 'b'
+        val right = be > 'd'
+        val m = left and right
         val mr = m('e')
         mr.matches shouldBe true
         mr.failureMessage should be (Resources("commaBut", Resources("wasGreaterThan", 'e'.pretty, 'b'.pretty), Resources("wasNotGreaterThan", 'e'.pretty, 'd'.pretty)))
@@ -282,7 +298,9 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
       res1: org.scalatest.matchers.MatchResult = MatchResult(false,'a' was not greater than 'b', and 'a' was not greater than 'd','a' was not greater than 'b', and 'a' was greater than 'd','a' was not greater than 'b', and 'a' was not greater than 'd','a' was not greater than 'b', and 'a' was greater than 'd',Vector(),Vector())
       */
       "for false or false" in {
-        val m = be > 'b' or be > 'd'
+        val left = be > 'b'
+        val right = be > 'd'
+        val m = left or right
         val mr = m('a')
         mr.matches shouldBe false
         mr.failureMessage should be (Resources("commaAnd", Resources("wasNotGreaterThan", 'a'.pretty, 'b'.pretty), Resources("wasNotGreaterThan", 'a'.pretty, 'd'.pretty)))
@@ -299,7 +317,9 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
         res5: org.scalatest.matchers.MatchResult = MatchResult(true,'a' was not greater than 'b', and 'a' was not less than 'd','a' was not greater than 'b', and 'a' was less than 'd','a' was not greater than 'b', and 'a' was not less than 'd','a' was not greater than 'b', and 'a' was less than 'd',Vector(),Vector())
       */
       "for false or true" in {
-        val m = be > 'b' or be < 'd'
+        val left = be > 'b'
+        val right = be < 'd'
+        val m = left or right
         val mr = m('a')
         mr.matches shouldBe true
         mr.failureMessage should be (Resources("commaAnd", Resources("wasNotGreaterThan", 'a'.pretty, 'b'.pretty), Resources("wasNotLessThan", 'a'.pretty, 'd'.pretty)))
@@ -316,10 +336,16 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
         val m = be > 'b' or be > 'd'
         val mr = m('c')
         mr.matches shouldBe true
+        mr.rawFailureMessage should be (Resources("wasGreaterThan"))
+        mr.rawNegatedFailureMessage should be (Resources("wasNotGreaterThan"))
+        mr.rawMidSentenceFailureMessage should be (Resources("wasGreaterThan"))
+        mr.rawMidSentenceNegatedFailureMessage should be (Resources("wasNotGreaterThan"))
         mr.failureMessage should be (Resources("wasGreaterThan", 'c'.pretty, 'b'.pretty))
         mr.negatedFailureMessage should be (Resources("wasNotGreaterThan", 'c'.pretty, 'b'.pretty))
         mr.midSentenceFailureMessage should be (Resources("wasGreaterThan", 'c'.pretty, 'b'.pretty))
         mr.midSentenceNegatedFailureMessage should be (Resources("wasNotGreaterThan", 'c'.pretty, 'b'.pretty))
+        mr.failureMessageArgs should be (Vector('c', 'b'))
+        mr.negatedFailureMessageArgs should be (Vector('c', 'b'))
       }
 
       /*
@@ -330,10 +356,16 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
         val m = be > 'b' or be > 'd'
         val mr = m('e')
         mr.matches shouldBe true
+        mr.rawFailureMessage should be (Resources("wasGreaterThan"))
+        mr.rawNegatedFailureMessage should be (Resources("wasNotGreaterThan"))
+        mr.rawMidSentenceFailureMessage should be (Resources("wasGreaterThan"))
+        mr.rawMidSentenceNegatedFailureMessage should be (Resources("wasNotGreaterThan"))
         mr.failureMessage should be (Resources("wasGreaterThan", 'e'.pretty, 'b'.pretty))
         mr.negatedFailureMessage should be (Resources("wasNotGreaterThan", 'e'.pretty, 'b'.pretty))
         mr.midSentenceFailureMessage should be (Resources("wasGreaterThan", 'e'.pretty, 'b'.pretty))
         mr.midSentenceNegatedFailureMessage should be (Resources("wasNotGreaterThan", 'e'.pretty, 'b'.pretty))
+        mr.failureMessageArgs should be (Vector('e', 'b'))
+        mr.negatedFailureMessageArgs should be (Vector('e', 'b'))
       }
     }
   }
