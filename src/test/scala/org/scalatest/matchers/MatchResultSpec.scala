@@ -383,10 +383,18 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
         val m = left and right
         val mr = m('c')
         mr.matches shouldBe false
+        mr.rawFailureMessage should be (Resources("commaBut"))
+        mr.rawNegatedFailureMessage should be (Resources("commaAnd"))
+        mr.rawMidSentenceFailureMessage should be (Resources("commaBut"))
+        mr.rawMidSentenceNegatedFailureMessage should be (Resources("commaAnd"))
         mr.failureMessage should be (Resources("commaBut", Resources("wasGreaterThan", 'c'.pretty, 'b'.pretty), Resources("wasNotGreaterThan", 'c'.pretty, 'd'.pretty)))
         mr.negatedFailureMessage should be (Resources("commaAnd", Resources("wasGreaterThan", 'c'.pretty, 'b'.pretty), Resources("wasGreaterThan", 'c'.pretty, 'd'.pretty)))
         mr.midSentenceFailureMessage should be (Resources("commaBut", Resources("wasGreaterThan", 'c'.pretty, 'b'.pretty), Resources("wasNotGreaterThan", 'c'.pretty, 'd'.pretty)))
         mr.midSentenceNegatedFailureMessage should be (Resources("commaAnd", Resources("wasGreaterThan", 'c'.pretty, 'b'.pretty), Resources("wasGreaterThan", 'c'.pretty, 'd'.pretty)))
+        mr.failureMessageArgs should be (Vector(NegatedFailureMessage(left('c')), MidSentenceFailureMessage(right('c'))))
+        mr.negatedFailureMessageArgs should be (Vector(NegatedFailureMessage(left('c')), MidSentenceNegatedFailureMessage(right('c'))))
+        mr.midSentenceFailureMessageArgs should be (Vector(MidSentenceNegatedFailureMessage(left('c')), MidSentenceFailureMessage(right('c'))))
+        mr.midSentenceNegatedFailureMessageArgs should be (Vector(MidSentenceNegatedFailureMessage(left('c')), MidSentenceNegatedFailureMessage(right('c'))))
       }
 
         /*
@@ -399,10 +407,18 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
         val m = left and right
         val mr = m('e')
         mr.matches shouldBe true
+        mr.rawFailureMessage should be (Resources("commaBut"))
+        mr.rawNegatedFailureMessage should be (Resources("commaAnd"))
+        mr.rawMidSentenceFailureMessage should be (Resources("commaBut"))
+        mr.rawMidSentenceNegatedFailureMessage should be (Resources("commaAnd"))
         mr.failureMessage should be (Resources("commaBut", Resources("wasGreaterThan", 'e'.pretty, 'b'.pretty), Resources("wasNotGreaterThan", 'e'.pretty, 'd'.pretty)))
         mr.negatedFailureMessage should be (Resources("commaAnd", Resources("wasGreaterThan", 'e'.pretty, 'b'.pretty), Resources("wasGreaterThan", 'e'.pretty, 'd'.pretty)))
         mr.midSentenceFailureMessage should be (Resources("commaBut", Resources("wasGreaterThan", 'e'.pretty, 'b'.pretty), Resources("wasNotGreaterThan", 'e'.pretty, 'd'.pretty))) 
         mr.midSentenceNegatedFailureMessage should be (Resources("commaAnd", Resources("wasGreaterThan", 'e'.pretty, 'b'.pretty), Resources("wasGreaterThan", 'e'.pretty, 'd'.pretty)))
+        mr.failureMessageArgs should be (Vector(NegatedFailureMessage(left('e')), MidSentenceFailureMessage(right('e'))))
+        mr.negatedFailureMessageArgs should be (Vector(NegatedFailureMessage(left('e')), MidSentenceNegatedFailureMessage(right('e'))))
+        mr.midSentenceFailureMessageArgs should be (Vector(MidSentenceNegatedFailureMessage(left('e')), MidSentenceFailureMessage(right('e'))))
+        mr.midSentenceNegatedFailureMessageArgs should be (Vector(MidSentenceNegatedFailureMessage(left('e')), MidSentenceNegatedFailureMessage(right('e'))))
       }
     }
   }
