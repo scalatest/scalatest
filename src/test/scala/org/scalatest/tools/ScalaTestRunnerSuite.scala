@@ -185,6 +185,27 @@ import org.scalatools.testing.{Event, EventHandler, Result, Logger, Runner => Te
       }
       assert(iae.getMessage === "-b (testng) is not supported when runs in SBT.")
     }
+    
+    test("ScalaTestRunner.run should throw IllegalArgumentException when -c is passed in") {
+      val iae = intercept[IllegalArgumentException] {
+        run("org.scalatest.tools.test.SimpleTest", Array("-c"))
+      }
+      assert(iae.getMessage === "-c, -P (concurrent) is not supported when runs in SBT.")
+    }
+    
+    test("ScalaTestRunner.run should throw IllegalArgumentException when -P is passed in") {
+      val iae = intercept[IllegalArgumentException] {
+        run("org.scalatest.tools.test.SimpleTest", Array("-P"))
+      }
+      assert(iae.getMessage === "-c, -P (concurrent) is not supported when runs in SBT.")
+    }
+    
+    test("ScalaTestRunner.run should throw IllegalArgumentException when -PS is passed in") {
+      val iae = intercept[IllegalArgumentException] {
+        run("org.scalatest.tools.test.SimpleTest", Array("-PS"))
+      }
+      assert(iae.getMessage === "-c, -P (concurrent) is not supported when runs in SBT.")
+    }
 
     def runner: TestingRunner = {
       new ScalaTestFramework().testRunner(Thread.currentThread.getContextClassLoader, Array(new TestLogger))

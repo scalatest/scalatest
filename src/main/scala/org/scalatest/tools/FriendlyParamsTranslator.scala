@@ -290,8 +290,8 @@ private[scalatest] class FriendlyParamsTranslator {
         repoArgs += dashR
         repoArgs += classname
       }
-      else if(s == "-c" || s == "concurrent") 
-        concurrent += "-c"
+      else if(s.startsWith("-c") || s.startsWith("-P") || s == "concurrent")  
+        concurrent += "-c" + s.substring(2)
       else if(s == "-m") 
         memberOnlys ++= parseDashAndArgument(s, "membersonly(a, b, c)", it)
       else if(s.startsWith("membersonly")) 

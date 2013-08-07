@@ -764,6 +764,9 @@ class Framework extends SbtFramework {
     
     if (!testngList.isEmpty)
       throw new IllegalArgumentException("-b (testng) is not supported when runs in SBT.")
+    
+    if (!concurrentList.isEmpty)
+      throw new IllegalArgumentException("-c, -P (concurrent) is not supported when runs in SBT.")
                
     val configMap = parsePropertiesArgsIntoMap(propertiesArgsList)
     val tagsToInclude: Set[String] = parseCompoundArgIntoSet(includesArgsList, "-n")

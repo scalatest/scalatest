@@ -956,4 +956,25 @@ class FrameworkSuite extends FunSuite {
     }
     assert(iae.getMessage === "-b (testng) is not supported when runs in SBT.")
   }
+  
+  test("Framework.runner should throw IllegalArgumentException when -c is passed in") {
+    val iae = intercept[IllegalArgumentException] {
+      framework.runner(Array("-c"), Array.empty, testClassLoader)
+    }
+    assert(iae.getMessage === "-c, -P (concurrent) is not supported when runs in SBT.")
+  }
+  
+  test("Framework.runner should throw IllegalArgumentException when -P is passed in") {
+    val iae = intercept[IllegalArgumentException] {
+      framework.runner(Array("-P"), Array.empty, testClassLoader)
+    }
+    assert(iae.getMessage === "-c, -P (concurrent) is not supported when runs in SBT.")
+  }
+  
+  test("Framework.runner should throw IllegalArgumentException when -PS is passed in") {
+    val iae = intercept[IllegalArgumentException] {
+      framework.runner(Array("-PS"), Array.empty, testClassLoader)
+    }
+    assert(iae.getMessage === "-c, -P (concurrent) is not supported when runs in SBT.")
+  }
 }
