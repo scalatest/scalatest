@@ -116,6 +116,9 @@ class ScalaTestFramework extends SbtFramework {
           
           if (!junitList.isEmpty)
             throw new IllegalArgumentException("-j (junit) is not supported when runs in SBT.")
+          
+          if (!testngList.isEmpty)
+            throw new IllegalArgumentException("-b (testng) is not supported when runs in SBT.")
                
           configMap.getAndSet(Some(parsePropertiesArgsIntoMap(propertiesArgsList)))
           val tagsToInclude: Set[String] = parseCompoundArgIntoSet(includesArgsList, "-n")

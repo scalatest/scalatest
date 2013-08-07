@@ -308,7 +308,7 @@ private[scalatest] class FriendlyParamsTranslator {
         junits ++= parseDashAndArgument(s, "junit(a, b, c)", it)
       else if(s.startsWith("junit")) 
         junits ++= translateCompound(s, "junit", "-j", it)
-      else if(s == "-t")
+      else if(s == "-b")
         testngs ++= parseDashAndArgument(s, "testng(a, b, c)", it)
       else if(s.startsWith("testng")) 
         testngs ++= translateCompound(s, "testng", "-t", it)
