@@ -192,6 +192,8 @@ final case class MatchResult(
   rawMidSentenceNegatedFailureMessage: String,
   failureMessageArgs: IndexedSeq[Any],
   negatedFailureMessageArgs: IndexedSeq[Any],
+  midSentenceFailureMessageArgs: IndexedSeq[Any],
+  midSentenceNegatedFailureMessageArgs: IndexedSeq[Any],
   prettifier: Prettifier
 ) {
 
@@ -212,6 +214,8 @@ final case class MatchResult(
       rawNegatedFailureMessage,
       rawFailureMessage,
       rawNegatedFailureMessage,
+      Vector.empty,
+      Vector.empty,
       Vector.empty,
       Vector.empty,
       Prettifier.default
@@ -251,7 +255,7 @@ object MatchResult {
    */
   def apply(matches: Boolean, rawFailureMessage: String, rawNegatedFailureMessage: String, rawMidSentenceFailureMessage: String,
       rawMidSentenceNegatedFailureMessage: String, failureMessageArgs: IndexedSeq[Any], negatedFailureMessageArgs: IndexedSeq[Any]): MatchResult =
-    new MatchResult(matches, rawFailureMessage, rawNegatedFailureMessage, rawMidSentenceFailureMessage, rawMidSentenceNegatedFailureMessage, failureMessageArgs, negatedFailureMessageArgs, Prettifier.default)
+    new MatchResult(matches, rawFailureMessage, rawNegatedFailureMessage, rawMidSentenceFailureMessage, rawMidSentenceNegatedFailureMessage, failureMessageArgs, negatedFailureMessageArgs, failureMessageArgs, negatedFailureMessageArgs, Prettifier.default)
 
   /**
    * Factory method that constructs a new <code>MatchResult</code> with passed <code>matches</code>, <code>failureMessage</code>, 
@@ -266,7 +270,7 @@ object MatchResult {
    */
   def apply(matches: Boolean, rawFailureMessage: String, rawNegatedFailureMessage: String, rawMidSentenceFailureMessage: String,
       rawMidSentenceNegatedFailureMessage: String): MatchResult =
-    new MatchResult(matches, rawFailureMessage, rawNegatedFailureMessage, rawMidSentenceFailureMessage, rawMidSentenceNegatedFailureMessage, Vector.empty, Vector.empty, Prettifier.default)
+    new MatchResult(matches, rawFailureMessage, rawNegatedFailureMessage, rawMidSentenceFailureMessage, rawMidSentenceNegatedFailureMessage, Vector.empty, Vector.empty, Vector.empty, Vector.empty, Prettifier.default)
 
   /**
    * Factory method that constructs a new <code>MatchResult</code> with passed <code>matches</code>, <code>failureMessage</code>, and
@@ -279,7 +283,7 @@ object MatchResult {
    * @param negatedFailureMessage a message with a meaning opposite to that of the failure message
    */
   def apply(matches: Boolean, rawFailureMessage: String, rawNegatedFailureMessage: String): MatchResult =
-    new MatchResult(matches, rawFailureMessage, rawNegatedFailureMessage, rawFailureMessage, rawNegatedFailureMessage, Vector.empty, Vector.empty, Prettifier.default)
+    new MatchResult(matches, rawFailureMessage, rawNegatedFailureMessage, rawFailureMessage, rawNegatedFailureMessage, Vector.empty, Vector.empty, Vector.empty, Vector.empty, Prettifier.default)
 
   def apply(matches: Boolean, rawFailureMessage: String, rawNegatedFailureMessage: String, args: IndexedSeq[Any]) =
     new MatchResult(
@@ -288,6 +292,8 @@ object MatchResult {
       rawNegatedFailureMessage,
       rawFailureMessage,
       rawNegatedFailureMessage,
+      args,
+      args,
       args,
       args,
       Prettifier.default
@@ -302,7 +308,14 @@ object MatchResult {
       rawNegatedFailureMessage,
       failureMessageArgs,
       negatedFailureMessageArgs,
+      failureMessageArgs,
+      negatedFailureMessageArgs,
       Prettifier.default
     )
+
+  def apply(matches: Boolean, rawFailureMessage: String, rawNegatedFailureMessage: String, rawMidSentenceFailureMessage: String,
+      rawMidSentenceNegatedFailureMessage: String, failureMessageArgs: IndexedSeq[Any], negatedFailureMessageArgs: IndexedSeq[Any],
+      midSentenceFailureMessageArgs: IndexedSeq[Any], midSentenceNegatedFailureMessageArgs: IndexedSeq[Any]): MatchResult =
+    new MatchResult(matches, rawFailureMessage, rawNegatedFailureMessage, rawMidSentenceFailureMessage, rawMidSentenceNegatedFailureMessage, failureMessageArgs, negatedFailureMessageArgs, midSentenceFailureMessageArgs, midSentenceNegatedFailureMessageArgs, Prettifier.default)
 }
 

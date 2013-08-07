@@ -38,7 +38,9 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
         'rawMidSentenceFailureMessage ("{0} did not equal null"),
         'rawMidSentenceNegatedFailureMessage ("the reference equaled null"),
         'failureMessageArgs(Vector("howdy")),
-        'negatedFailureMessageArgs(Vector.empty)
+        'negatedFailureMessageArgs(Vector.empty),
+        'midSentenceFailureMessageArgs(Vector("howdy")),
+        'midSentenceNegatedFailureMessageArgs(Vector.empty)
       )
       val mr2Negated = mr2.negated
        mr2Negated should equal (MatchResult(true, "The reference equaled null", "{0} did not equal null", "the reference equaled null", "{0} did not equal null", Vector.empty, Vector("howdy")))
@@ -53,7 +55,9 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
         'rawMidSentenceFailureMessage ("the reference equaled null"),
         'rawMidSentenceNegatedFailureMessage ("{0} did not equal null"),
         'failureMessageArgs(Vector.empty),
-        'negatedFailureMessageArgs(Vector("howdy"))
+        'negatedFailureMessageArgs(Vector("howdy")),
+        'midSentenceFailureMessageArgs(Vector.empty),
+        'midSentenceNegatedFailureMessageArgs(Vector("howdy"))
       )
     }
     "can be pattern matched via an extractor for the failureMessage if it doesn't match" in {
@@ -79,7 +83,9 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
         'rawMidSentenceFailureMessage ("{0} did not equal {1}"),
         'rawMidSentenceNegatedFailureMessage ("{0} equaled {1}"),
         'failureMessageArgs(Vector(1, 2)),
-        'negatedFailureMessageArgs(Vector(1, 2))
+        'negatedFailureMessageArgs(Vector(1, 2)),
+        'midSentenceFailureMessageArgs(Vector(1, 2)),
+        'midSentenceNegatedFailureMessageArgs(Vector(1, 2))
       )
     }
   }
@@ -98,7 +104,9 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
         'rawMidSentenceFailureMessage ("one"),
         'rawMidSentenceNegatedFailureMessage ("two"),
         'failureMessageArgs(Vector.empty),
-        'negatedFailureMessageArgs(Vector.empty)
+        'negatedFailureMessageArgs(Vector.empty),
+        'midSentenceFailureMessageArgs(Vector.empty),
+        'midSentenceNegatedFailureMessageArgs(Vector.empty)
       )
       val ms = MatchResult(false, "aaa", "bbb")
       ms should have (
@@ -112,7 +120,9 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
         'rawMidSentenceFailureMessage ("aaa"),
         'rawMidSentenceNegatedFailureMessage ("bbb"),
         'failureMessageArgs(Vector.empty),
-        'negatedFailureMessageArgs(Vector.empty)
+        'negatedFailureMessageArgs(Vector.empty),
+        'midSentenceFailureMessageArgs(Vector.empty),
+        'midSentenceNegatedFailureMessageArgs(Vector.empty)
       )
     }
     "that takes four strings should work correctly" in {
@@ -128,7 +138,9 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
         'rawMidSentenceFailureMessage ("three"),
         'rawMidSentenceNegatedFailureMessage ("four"),
         'failureMessageArgs(Vector.empty),
-        'negatedFailureMessageArgs(Vector.empty)
+        'negatedFailureMessageArgs(Vector.empty),
+        'midSentenceFailureMessageArgs(Vector.empty),
+        'midSentenceNegatedFailureMessageArgs(Vector.empty)
       )
       val ms = MatchResult(false, "aaa", "bbb", "ccc", "ddd")
       ms should have (
@@ -142,7 +154,9 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
         'rawMidSentenceFailureMessage ("ccc"),
         'rawMidSentenceNegatedFailureMessage ("ddd"),
         'failureMessageArgs(Vector.empty),
-        'negatedFailureMessageArgs(Vector.empty)
+        'negatedFailureMessageArgs(Vector.empty),
+        'midSentenceFailureMessageArgs(Vector.empty),
+        'midSentenceNegatedFailureMessageArgs(Vector.empty)
       )
     }
     "that takes four strings and two IndexedSeqs should work correctly" in {
@@ -158,7 +172,9 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
         'rawMidSentenceFailureMessage ("three"),
         'rawMidSentenceNegatedFailureMessage ("four"),
         'failureMessageArgs(Vector(42)),
-        'negatedFailureMessageArgs(Vector(42.0))
+        'negatedFailureMessageArgs(Vector(42.0)),
+        'midSentenceFailureMessageArgs(Vector(42)),
+        'midSentenceNegatedFailureMessageArgs(Vector(42.0))
       )
       val ms = MatchResult(false, "aaa", "bbb", "ccc", "ddd", Vector("ho", "he"), Vector("foo", "fie"))
       ms should have (
@@ -172,7 +188,9 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
         'rawMidSentenceFailureMessage ("ccc"),
         'rawMidSentenceNegatedFailureMessage ("ddd"),
         'failureMessageArgs(Vector("ho", "he")),
-        'negatedFailureMessageArgs(Vector("foo", "fie"))
+        'negatedFailureMessageArgs(Vector("foo", "fie")),
+        'midSentenceFailureMessageArgs(Vector("ho", "he")),
+        'midSentenceNegatedFailureMessageArgs(Vector("foo", "fie"))
       )
     }
     "that takes two strings and one IndexedSeq should work correctly" in {
@@ -188,7 +206,9 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
         'rawMidSentenceFailureMessage ("one"),
         'rawMidSentenceNegatedFailureMessage ("two"),
         'failureMessageArgs(Vector(42)),
-        'negatedFailureMessageArgs(Vector(42))
+        'negatedFailureMessageArgs(Vector(42)),
+        'midSentenceFailureMessageArgs(Vector(42)),
+        'midSentenceNegatedFailureMessageArgs(Vector(42))
       )
       val ms = MatchResult(false, "aaa", "bbb", Vector("ho", "he"))
       ms should have (
@@ -202,7 +222,9 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
         'rawMidSentenceFailureMessage ("aaa"),
         'rawMidSentenceNegatedFailureMessage ("bbb"),
         'failureMessageArgs(Vector("ho", "he")),
-        'negatedFailureMessageArgs(Vector("ho", "he"))
+        'negatedFailureMessageArgs(Vector("ho", "he")),
+        'midSentenceFailureMessageArgs(Vector("ho", "he")),
+        'midSentenceNegatedFailureMessageArgs(Vector("ho", "he"))
       )
     }
     "that takes two strings and two IndexedSeqs should work correctly" in {
@@ -218,7 +240,9 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
         'rawMidSentenceFailureMessage ("one"),
         'rawMidSentenceNegatedFailureMessage ("two"),
         'failureMessageArgs(Vector(42)),
-        'negatedFailureMessageArgs(Vector(42.0))
+        'negatedFailureMessageArgs(Vector(42.0)),
+        'midSentenceFailureMessageArgs(Vector(42)),
+        'midSentenceNegatedFailureMessageArgs(Vector(42.0))
       )
       val ms = MatchResult(false, "aaa", "bbb", Vector("ho", "he"), Vector("foo", "fie"))
       ms should have (
@@ -232,7 +256,43 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
         'rawMidSentenceFailureMessage ("aaa"),
         'rawMidSentenceNegatedFailureMessage ("bbb"),
         'failureMessageArgs(Vector("ho", "he")),
-        'negatedFailureMessageArgs(Vector("foo", "fie"))
+        'negatedFailureMessageArgs(Vector("foo", "fie")),
+        'midSentenceFailureMessageArgs(Vector("ho", "he")),
+        'midSentenceNegatedFailureMessageArgs(Vector("foo", "fie"))
+      )
+    }
+    "that takes four strings and four IndexedSeqs should work correctly" in {
+      val mr = MatchResult(true, "one", "two", "three", "four", Vector(1), Vector(2), Vector(3), Vector(4))
+      mr should have (
+        'matches (true),
+        'failureMessage ("one"),
+        'negatedFailureMessage ("two"),
+        'midSentenceFailureMessage ("three"),
+        'midSentenceNegatedFailureMessage ("four"),
+        'rawFailureMessage ("one"),
+        'rawNegatedFailureMessage ("two"),
+        'rawMidSentenceFailureMessage ("three"),
+        'rawMidSentenceNegatedFailureMessage ("four"),
+        'failureMessageArgs(Vector(1)),
+        'negatedFailureMessageArgs(Vector(2)),
+        'midSentenceFailureMessageArgs(Vector(3)),
+        'midSentenceNegatedFailureMessageArgs(Vector(4))
+      )
+      val ms = MatchResult(false, "aaa", "bbb", "ccc", "ddd", Vector('A'), Vector('B'), Vector('C'), Vector('D'))
+      ms should have (
+        'matches (false),
+        'failureMessage ("aaa"),
+        'negatedFailureMessage ("bbb"),
+        'midSentenceFailureMessage ("ccc"),
+        'midSentenceNegatedFailureMessage ("ddd"),
+        'rawFailureMessage ("aaa"),
+        'rawNegatedFailureMessage ("bbb"),
+        'rawMidSentenceFailureMessage ("ccc"),
+        'rawMidSentenceNegatedFailureMessage ("ddd"),
+        'failureMessageArgs(Vector('A')),
+        'negatedFailureMessageArgs(Vector('B')),
+        'midSentenceFailureMessageArgs(Vector('C')),
+        'midSentenceNegatedFailureMessageArgs(Vector('D'))
       )
     }
   }
