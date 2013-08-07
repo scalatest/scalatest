@@ -171,6 +171,13 @@ import org.scalatools.testing.{Event, EventHandler, Result, Logger, Runner => Te
       }
       assert(iae.getMessage === "-s (suite) is not supported when runs in SBT, please use SBT's test-only instead.")
     }
+    
+    test("ScalaTestRunner.run should throw IllegalArgumentException when -j is passed in") {
+      val iae = intercept[IllegalArgumentException] {
+        run("org.scalatest.tools.test.SimpleTest", Array("-j", "org.scalatest.tools.test.SimpleTest"))
+      }
+      assert(iae.getMessage === "-j (junit) is not supported when runs in SBT.")
+    }
 
     def runner: TestingRunner = {
       new ScalaTestFramework().testRunner(Thread.currentThread.getContextClassLoader, Array(new TestLogger))
