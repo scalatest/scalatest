@@ -53,15 +53,20 @@ class MatcherProducersSpec extends Spec with Matchers {
       }
       tfe.message should be (Some(Resources("wasNotGreaterThan", "7", "8").toUpperCase))
     }
-    def `should be able to modify failure message args via mapResult` { pending
+    def `should be able to modify failure message args via mapResult` {
       val beAsIntsGreaterThan = f composeTwice g mapResult { mr =>
-        mr.copy(failureMessageArgs = mr.failureMessageArgs.map(_.toString + ".toInt"))
+        mr.copy(
+          failureMessageArgs = mr.failureMessageArgs.map((LazyArg(_) { _.toString + ".toInt"})),
+          negatedFailureMessageArgs = mr.negatedFailureMessageArgs.map((LazyArg(_) { _.toString + ".toInt"})),
+          midSentenceFailureMessageArgs = mr.midSentenceFailureMessageArgs.map((LazyArg(_) { _.toString + ".toInt"})),
+          midSentenceNegatedFailureMessageArgs = mr.midSentenceNegatedFailureMessageArgs.map((LazyArg(_) { _.toString + ".toInt"}))
+        )
       }
       "8" should beAsIntsGreaterThan ("7")
       val tfe = the [TestFailedException] thrownBy {
         "7" should beAsIntsGreaterThan ("8")
       }
-      tfe.message should be (Some(Resources("wasNotGreaterThan", "7", "8").toUpperCase))
+      tfe.message should be (Some(Resources("wasNotGreaterThan", "7.toInt", "8.toInt")))
     }
   }
 }
