@@ -844,11 +844,11 @@ object Runner {
   }
 
   private[scalatest] def parseFriendlyParams(friendlyArgs:Array[String]): Array[String] = {
-    val (propsList, includesList, excludesList, repoArgsList, concurrentList, memberOnlyList, wildcardList, suiteList, junitList, testngList) = 
+    val (propsList, includesList, excludesList, repoArgsList, concurrentList, memberOnlyList, wildcardList, suiteList, junitList, testngList, chosenStyles) = 
       new FriendlyParamsTranslator().parsePropsAndTags(friendlyArgs)
     val arrayBuffer = new ArrayBuffer[String]()
     arrayBuffer ++= propsList ::: includesList ::: excludesList ::: repoArgsList ::: concurrentList ::: memberOnlyList ::: wildcardList :::
-                    suiteList ::: junitList ::: testngList
+                    suiteList ::: junitList ::: testngList ::: chosenStyles
     arrayBuffer.toArray
   }
 
@@ -1804,7 +1804,7 @@ object Runner {
       val lb = new ListBuffer[CustomReporterConfiguration]
       while (it.hasNext) {
         val arg = it.next
-        if (arg.startsWith("-r")) {
+        if (arg.startsWith("-r") || arg.startsWith("-C")) {
           val dashRString = arg
           val customReporterClassName = it.next
           val configSet = parseConfigSet(dashRString)

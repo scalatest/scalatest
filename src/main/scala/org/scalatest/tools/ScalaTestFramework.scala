@@ -4,6 +4,7 @@ import org.scalatools.testing.{Framework => SbtFramework, _}
 import org.scalatest.tools.Runner.parsePropertiesArgsIntoMap
 import org.scalatest.tools.Runner.parseCompoundArgIntoSet
 import org.scalatest.tools.Runner.parseSuiteArgsIntoNameStrings
+import org.scalatest.tools.Runner.parseChosenStylesIntoChosenStyleSet
 import SuiteDiscoveryHelper._
 import org.scalatest.Suite.formatterForSuiteStarting
 import org.scalatest.Suite.formatterForSuiteCompleted
@@ -93,7 +94,7 @@ class ScalaTestFramework extends SbtFramework {
     
   object RunConfig {
 
-    private val reporter: AtomicReference[Option[DispatchReporter]] = new AtomicReference(None)
+    private[scalatest] val reporter: AtomicReference[Option[DispatchReporter]] = new AtomicReference(None)
     private val reporterConfigs: AtomicReference[Option[ReporterConfigurations]] = new AtomicReference(None)
     private val useStdout, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted = new AtomicBoolean(false)
     private val presentReminder, presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests = new AtomicBoolean(false)
@@ -109,8 +110,25 @@ class ScalaTestFramework extends SbtFramework {
           // Why are we getting rid of empty strings? Were empty strings coming in from sbt? -bv 11/09/2011
           val translator = new FriendlyParamsTranslator()
           val (propertiesArgsList, includesArgsList, excludesArgsList, repoArgsList, concurrentList, memberOnlyArgList, wildcardArgList, 
-               suiteList, junitList, testngList) = translator.parsePropsAndTags(args.filter(!_.equals("")))
-          configMap.getAndSet(Some(parsePropertiesArgsIntoMap(propertiesArgsList)))
+               suiteList, junitList, testngList, chosenStyles) = translator.parsePropsAndTags(args.filter(!_.equals("")))
+               
+          if (!suiteList.isEmpty)
+            throw new IllegalArgumentException("-s (suite) is not supported when runs in SBT, please use SBT's test-only instead.")
+          
+          if (!junitList.isEmpty)
+            throw new IllegalArgumentException("-j (junit) is not supported when runs in SBT.")
+          
+          if (!testngList.isEmpty)
+            throw new IllegalArgumentException("-b (testng) is not supported when runs in SBT.")
+          
+          if (!concurrentList.isEmpty)
+            throw new IllegalArgumentException("-c, -P (concurrent) is not supported when runs in SBT.")
+          
+          val propertiesMap = parsePropertiesArgsIntoMap(propertiesArgsList)
+          val chosenStyleSet: Set[String] = parseChosenStylesIntoChosenStyleSet(chosenStyles, "-y")
+          if (propertiesMap.isDefinedAt("org.scalatest.ChosenStyles"))
+            throw new IllegalArgumentException("Property name 'org.scalatest.ChosenStyles' is used by ScalaTest, please choose other property name.")
+          configMap.getAndSet(Some(if (chosenStyleSet.isEmpty) propertiesMap else propertiesMap + ("org.scalatest.ChosenStyles" -> chosenStyleSet)))
           val tagsToInclude: Set[String] = parseCompoundArgIntoSet(includesArgsList, "-n")
           val tagsToExclude: Set[String] = parseCompoundArgIntoSet(excludesArgsList, "-l")
           filter.getAndSet(Some(org.scalatest.Filter(if (tagsToInclude.isEmpty) None else Some(tagsToInclude), tagsToExclude)))

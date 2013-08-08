@@ -2328,11 +2328,10 @@ used for test events like succeeded/failed, etc.
           configMap("org.scalatest.ChosenStyles").asInstanceOf[Set[String]]
         else
           Set.empty[String]
-    
     if (chosenStyleSet.size > 0 && !chosenStyleSet.contains(styleName)) {
       val e =
         if (chosenStyleSet.size == 1)
-          new NotAllowedException(Resources("notTheChosenStyle", styleName, chosenStyleSet.head), getStackDepthFun("Scala.scala", "checkChosenStyles"))
+          new NotAllowedException(Resources("notTheChosenStyle", styleName, chosenStyleSet.head), getStackDepthFun("Suite.scala", "checkChosenStyles"))
         else
           new NotAllowedException(Resources("notOneOfTheChosenStyles", styleName, Suite.makeListForHumans(Vector.empty ++ chosenStyleSet.iterator)), getStackDepthFun("Scala.scala", "checkChosenStyles"))
       throw e

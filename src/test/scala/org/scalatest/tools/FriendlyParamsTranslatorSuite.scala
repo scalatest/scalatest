@@ -29,55 +29,55 @@ class FriendlyParamsTranslatorSuite extends FunSuite {
   
   private def getRepoArgsList(rawargs:String):List[String] = {
     val (propertiesArgsList, includesArgsList, excludesArgsList, repoArgsList, concurrentList, memberOnlyList, wildcardList, 
-         suiteList, junitList, testngList) = parsePropsAndTags(rawargs)
+         suiteList, junitList, testngList, chosenStyles) = parsePropsAndTags(rawargs)
     repoArgsList
   }
   
   private def getIncludesArgsList(rawargs:String):List[String] = {
     val (propertiesArgsList, includesArgsList, excludesArgsList, repoArgsList, concurrentList, memberOnlyList, wildcardList, 
-         suiteList, junitList, testngList) = parsePropsAndTags(rawargs)
+         suiteList, junitList, testngList, chosenStyles) = parsePropsAndTags(rawargs)
     includesArgsList
   }
   
   private def getExcludesArgsList(rawargs:String):List[String] = {
     val (propertiesArgsList, includesArgsList, excludesArgsList, repoArgsList, concurrentList, memberOnlyList, wildcardList, 
-         suiteList, junitList, testngList) = parsePropsAndTags(rawargs)
+         suiteList, junitList, testngList, chosenStyles) = parsePropsAndTags(rawargs)
     excludesArgsList
   }
   
   private def getConcurrent(rawargs:String):Boolean = {
     val (propertiesArgsList, includesArgsList, excludesArgsList, repoArgsList, concurrentList, memberOnlyList, wildcardList, 
-         suiteList, junitList, testngList) = parsePropsAndTags(rawargs)
+         suiteList, junitList, testngList, chosenStyles) = parsePropsAndTags(rawargs)
     !concurrentList.isEmpty
   }
   
   private def getMemberOnlyList(rawargs:String):List[String] = {
     val (propertiesArgsList, includesArgsList, excludesArgsList, repoArgsList, concurrentList, memberOnlyList, wildcardList, 
-         suiteList, junitList, testngList) = parsePropsAndTags(rawargs)
+         suiteList, junitList, testngList, chosenStyles) = parsePropsAndTags(rawargs)
     memberOnlyList
   }
   
   private def getWildcardList(rawargs:String):List[String] = {
     val (propertiesArgsList, includesArgsList, excludesArgsList, repoArgsList, concurrentList, memberOnlyList, wildcardList, 
-         suiteList, junitList, testngList) = parsePropsAndTags(rawargs)
+         suiteList, junitList, testngList, chosenStyles) = parsePropsAndTags(rawargs)
     wildcardList
   }
   
   private def getSuiteList(rawargs:String):List[String] = {
     val (propertiesArgsList, includesArgsList, excludesArgsList, repoArgsList, concurrentList, memberOnlyList, wildcardList, 
-         suiteList, junitList, testngList) = parsePropsAndTags(rawargs)
+         suiteList, junitList, testngList, chosenStyles) = parsePropsAndTags(rawargs)
     suiteList
   }
   
   private def getJUnitList(rawargs:String):List[String] = {
     val (propertiesArgsList, includesArgsList, excludesArgsList, repoArgsList, concurrentList, memberOnlyList, wildcardList, 
-         suiteList, junitList, testngList) = parsePropsAndTags(rawargs)
+         suiteList, junitList, testngList, chosenStyles) = parsePropsAndTags(rawargs)
     junitList
   }
   
   private def getTestNgList(rawargs:String):List[String] = {
     val (propertiesArgsList, includesArgsList, excludesArgsList, repoArgsList, concurrentList, memberOnlyList, wildcardList, 
-         suiteList, junitList, testngList) = parsePropsAndTags(rawargs)
+         suiteList, junitList, testngList, chosenStyles) = parsePropsAndTags(rawargs)
     testngList
   }
   

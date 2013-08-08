@@ -27,6 +27,7 @@ import Runner.parseCompoundArgIntoSet
 import Runner.SELECTED_TAG
 import Runner.mergeMap
 import Runner.parseSuiteArgsIntoNameStrings
+import Runner.parseChosenStylesIntoChosenStyleSet
 import java.io.{StringWriter, PrintWriter}
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.atomic.{AtomicInteger, AtomicBoolean}
@@ -271,7 +272,7 @@ class Framework extends SbtFramework {
       }
     }
     catch {       
-      case e: Exception => {
+      case e: RuntimeException => {
 
         // TODO: Could not get this from Resources. Got:
         // java.util.MissingResourceException: Can't find bundle for base name org.scalatest.ScalaTestBundle, locale en_US
@@ -754,8 +755,30 @@ class Framework extends SbtFramework {
 
     val translator = new FriendlyParamsTranslator()
     val (propertiesArgsList, includesArgsList, excludesArgsList, repoArgsList, concurrentList, memberOnlyList, wildcardList, 
-               suiteList, junitList, testngList) = translator.parsePropsAndTags(args.filter(!_.equals("")))
-    val configMap = parsePropertiesArgsIntoMap(propertiesArgsList)
+         suiteList, junitList, testngList, chosenStyles) = translator.parsePropsAndTags(args.filter(!_.equals("")))
+               
+    if (!suiteList.isEmpty)
+      throw new IllegalArgumentException("-s (suite) is not supported when runs in SBT, please use SBT's test-only instead.")
+    
+    if (!junitList.isEmpty)
+      throw new IllegalArgumentException("-j (junit) is not supported when runs in SBT.")
+    
+    if (!testngList.isEmpty)
+      throw new IllegalArgumentException("-b (testng) is not supported when runs in SBT.")
+    
+    if (!concurrentList.isEmpty)
+      throw new IllegalArgumentException("-c, -P (concurrent) is not supported when runs in SBT.")
+               
+    val propertiesMap = parsePropertiesArgsIntoMap(propertiesArgsList)
+    val chosenStyleSet: Set[String] = parseChosenStylesIntoChosenStyleSet(chosenStyles, "-y")
+    if (propertiesMap.isDefinedAt("org.scalatest.ChosenStyles"))
+      throw new IllegalArgumentException("Property name 'org.scalatest.ChosenStyles' is used by ScalaTest, please choose other property name.")
+    val configMap: ConfigMap = 
+      if (chosenStyleSet.isEmpty)
+        propertiesMap
+      else
+        propertiesMap + ("org.scalatest.ChosenStyles" -> chosenStyleSet)
+      
     val tagsToInclude: Set[String] = parseCompoundArgIntoSet(includesArgsList, "-n")
     val tagsToExclude: Set[String] = parseCompoundArgIntoSet(excludesArgsList, "-l")
     val membersOnly: List[String] = parseSuiteArgsIntoNameStrings(memberOnlyList, "-m")

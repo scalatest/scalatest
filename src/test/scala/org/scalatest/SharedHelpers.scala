@@ -190,6 +190,24 @@ object SharedHelpers extends Assertions {
         case _ => throw new RuntimeException("should never happen")
       }
     }
+    def suiteCompletedEventsReceived: List[SuiteCompleted] = {
+      eventsReceived filter {
+        case event: SuiteCompleted => true
+        case _ => false
+      } map {
+        case event: SuiteCompleted => event
+        case _ => throw new RuntimeException("should never happen")
+      }
+    }
+    def suiteAbortedEventsReceived: List[SuiteAborted] = {
+      eventsReceived filter {
+        case event: SuiteAborted => true
+        case _ => false
+      } map {
+        case event: SuiteAborted => event
+        case _ => throw new RuntimeException("should never happen")
+      }
+    }
     def apply(event: Event) {
       eventList ::= event
     }

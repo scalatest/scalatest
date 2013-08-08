@@ -170,6 +170,7 @@ private[scalatest] class FriendlyParamsTranslator {
     val suites = new ListBuffer[String]()
     val junits = new ListBuffer[String]()
     val testngs = new ListBuffer[String]()
+    val chosenStyles = new ListBuffer[String]()
 
     val it = args.iterator
     while (it.hasNext) {
@@ -269,7 +270,11 @@ private[scalatest] class FriendlyParamsTranslator {
           case None => 
         }
       }
-      else if (s.startsWith("-r")) 
+      else if (s.startsWith("-r")) {
+        println("WARNING: -r has been deprecated and will be reused for a different (but still very cool) purpose in ScalaTest 2.0. Please change all uses of -r to -C.")
+        repoArgs ++= parseDashAndArgument(s, "reporterclass(classname=\"xxx\")", it)
+      }
+      else if (s.startsWith("-C")) 
         repoArgs ++= parseDashAndArgument(s, "reporterclass(classname=\"xxx\")", it)
       else if (s.startsWith("reporterclass")) {
         val paramsMap:Map[String, String] = parseParams(s.substring("reporterclass".length()), it, Set("classname", "config"), "reporterclass(classname=\"xxx\")")
@@ -290,8 +295,8 @@ private[scalatest] class FriendlyParamsTranslator {
         repoArgs += dashR
         repoArgs += classname
       }
-      else if(s == "-c" || s == "concurrent") 
-        concurrent += "-c"
+      else if(s.startsWith("-c") || s.startsWith("-P") || s == "concurrent")  
+        concurrent += "-c" + s.substring(2)
       else if(s == "-m") 
         memberOnlys ++= parseDashAndArgument(s, "membersonly(a, b, c)", it)
       else if(s.startsWith("membersonly")) 
@@ -308,15 +313,20 @@ private[scalatest] class FriendlyParamsTranslator {
         junits ++= parseDashAndArgument(s, "junit(a, b, c)", it)
       else if(s.startsWith("junit")) 
         junits ++= translateCompound(s, "junit", "-j", it)
-      else if(s == "-t")
+      else if(s == "-b")
         testngs ++= parseDashAndArgument(s, "testng(a, b, c)", it)
       else if(s.startsWith("testng")) 
         testngs ++= translateCompound(s, "testng", "-t", it)
+      else if (s.startsWith("-y")) {
+        chosenStyles += s
+        if (it.hasNext)
+          chosenStyles += it.next()
+      }
       else
           throw new IllegalArgumentException("Unrecognized argument: " + s)
     }
     (props.toList, includes.toList, excludes.toList, repoArgs.toList, concurrent.toList, memberOnlys.toList, wildcards.toList, 
-     suites.toList, junits.toList, testngs.toList)
+     suites.toList, junits.toList, testngs.toList, chosenStyles.toList)
   }
 
 }

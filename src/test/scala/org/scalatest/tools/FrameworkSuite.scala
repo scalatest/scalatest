@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 package org.scalatest.tools
-import org.scalatest.FunSuite
+import org.scalatest.{FunSuite, Resources}
 import sbt.testing._
+import org.scalatest.SharedHelpers.EventRecordingReporter
+import org.scalatest.exceptions.NotAllowedException
 
 class FrameworkSuite extends FunSuite {
   
@@ -935,4 +937,102 @@ class FrameworkSuite extends FunSuite {
     val tasks = runner.tasks(Array(new TaskDef("org.scalatest.SavesConfigMapSuite", subclassFingerprint, false, Array(new SuiteSelector))))
     assert(tasks.size === 0)
   }*/
+  
+  test("Framework.runner should throw IllegalArgumentException when -s is passed in") {
+    val iae = intercept[IllegalArgumentException] {
+      framework.runner(Array("-s", "org.scalatest.tools.scalasbt.SampleSuite"), Array.empty, testClassLoader)
+    }
+    assert(iae.getMessage === "-s (suite) is not supported when runs in SBT, please use SBT's test-only instead.")
+  }
+  
+  test("Framework.runner should throw IllegalArgumentException when -j is passed in") {
+    val iae = intercept[IllegalArgumentException] {
+      framework.runner(Array("-j", "org.scalatest.tools.scalasbt.SampleJUnitSuite"), Array.empty, testClassLoader)
+    }
+    assert(iae.getMessage === "-j (junit) is not supported when runs in SBT.")
+  }
+  
+  test("Framework.runner should throw IllegalArgumentException when -b is passed in") {
+    val iae = intercept[IllegalArgumentException] {
+      framework.runner(Array("-b", "org.scalatest.tools.scalasbt.SampleSuite"), Array.empty, testClassLoader)
+    }
+    assert(iae.getMessage === "-b (testng) is not supported when runs in SBT.")
+  }
+  
+  test("Framework.runner should throw IllegalArgumentException when -c is passed in") {
+    val iae = intercept[IllegalArgumentException] {
+      framework.runner(Array("-c"), Array.empty, testClassLoader)
+    }
+    assert(iae.getMessage === "-c, -P (concurrent) is not supported when runs in SBT.")
+  }
+  
+  test("Framework.runner should throw IllegalArgumentException when -P is passed in") {
+    val iae = intercept[IllegalArgumentException] {
+      framework.runner(Array("-P"), Array.empty, testClassLoader)
+    }
+    assert(iae.getMessage === "-c, -P (concurrent) is not supported when runs in SBT.")
+  }
+  
+  test("Framework.runner should throw IllegalArgumentException when -PS is passed in") {
+    val iae = intercept[IllegalArgumentException] {
+      framework.runner(Array("-PS"), Array.empty, testClassLoader)
+    }
+    assert(iae.getMessage === "-c, -P (concurrent) is not supported when runs in SBT.")
+  }
+  
+  test("Framework.runner should be able to pass in custom reporter via -C") {
+    val testEventHandler = new TestEventHandler
+    val runner = framework.runner(Array("-C", classOf[EventRecordingReporter].getName), Array.empty, testClassLoader)
+    val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.SampleSuite", subclassFingerprint, false, Array(new SuiteSelector))))
+    assert(tasks.size === 1)
+    val task = tasks(0)
+    task.execute(testEventHandler, Array(new TestLogger))
+    assert(runner.isInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner])
+    val scalatestRunner = runner.asInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner]
+    scalatestRunner.dispatchReporter.reporters.find(_.isInstanceOf[EventRecordingReporter]) match {
+      case Some(recordingRep : EventRecordingReporter) => 
+        assert(recordingRep.testSucceededEventsReceived.size === 3)
+      case _ => fail("Expected to find EventRecordingReporter, but not found.")
+    }
+  }
+  
+  test("-y should do nothing when the task to execute is a chosen style") {
+    val testEventHandler = new TestEventHandler
+    val runner = framework.runner(Array("-y", "org.scalatest.FunSuite", "-C", classOf[EventRecordingReporter].getName), Array.empty, testClassLoader)
+    val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.SampleSuite", subclassFingerprint, false, Array(new SuiteSelector))))
+    val task = tasks(0)
+    task.execute(testEventHandler, Array(new TestLogger))
+    assert(testEventHandler.successEventsReceived.size === 3)
+    assert(runner.isInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner])
+    val scalatestRunner = runner.asInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner]
+    scalatestRunner.dispatchReporter.reporters.find(_.isInstanceOf[EventRecordingReporter]) match {
+      case Some(recordingRep : EventRecordingReporter) => 
+        assert(recordingRep.testSucceededEventsReceived.size === 3)
+        assert(recordingRep.suiteCompletedEventsReceived.size === 1)
+      case _ => fail("Expected to find EventRecordingReporter, but not found.")
+    }    
+  }
+  
+  test("-y should get SuiteAborted event with NotAllowedException when the task to execute is not a chosen style") {
+    val testEventHandler = new TestEventHandler
+    val runner = framework.runner(Array("-y", "org.scalatest.FunSpec", "-C", classOf[EventRecordingReporter].getName), Array.empty, testClassLoader)
+    val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.SampleSuite", subclassFingerprint, false, Array(new SuiteSelector))))
+    val task = tasks(0)
+    task.execute(testEventHandler, Array(new TestLogger))
+    assert(testEventHandler.successEventsReceived.size === 0)
+    assert(runner.isInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner])
+    val scalatestRunner = runner.asInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner]
+    scalatestRunner.dispatchReporter.reporters.find(_.isInstanceOf[EventRecordingReporter]) match {
+      case Some(recordingRep : EventRecordingReporter) => 
+        assert(recordingRep.testSucceededEventsReceived.size === 0)
+        val suiteAbortedEvents = recordingRep.suiteAbortedEventsReceived
+        assert(suiteAbortedEvents.size === 1)
+        suiteAbortedEvents(0).throwable match {
+          case Some(e: NotAllowedException) => 
+            assert(e.getMessage === Resources("notTheChosenStyle", "org.scalatest.FunSuite", "org.scalatest.FunSpec"))
+          case _ => fail("Expected SuiteAborted to carry NotAllowedException, but it did not.")
+        }
+      case _ => fail("Expected to find EventRecordingReporter, but not found.")
+    }
+  }
 }
