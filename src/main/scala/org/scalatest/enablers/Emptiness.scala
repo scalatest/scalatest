@@ -52,9 +52,9 @@ object Emptiness {
   /**
    * Enable emptiness for <code>scala.collection.GenTraversable</code>
    */
-  implicit def emptinessOfGenTraversable[TRAV <: scala.collection.GenTraversable[_]]: Emptiness[TRAV] =
-    new Emptiness[TRAV] {
-      def isEmpty(trav: TRAV): Boolean = trav.isEmpty
+  implicit def emptinessOfGenTraversable[E, TRAV[e] <: scala.collection.GenTraversable[e]]: Emptiness[TRAV[E]] =
+    new Emptiness[TRAV[E]] {
+      def isEmpty(trav: TRAV[E]): Boolean = trav.isEmpty
     }
   
   /**
@@ -76,25 +76,41 @@ object Emptiness {
   /**
    * Enable emptiness for <code>Option</code>
    */
-  implicit def emptinessOfOption[OPT <: Option[_]]: Emptiness[OPT] =
-    new Emptiness[OPT] {
-      def isEmpty(opt: OPT): Boolean = opt.isEmpty
+  implicit def emptinessOfOption[E, OPT[e] <: Option[e]]: Emptiness[OPT[E]] =
+    new Emptiness[OPT[E]] {
+      def isEmpty(opt: OPT[E]): Boolean = opt.isEmpty
     }
   
   /**
    * Enable emptiness for <code>java.util.Collection</code>
    */
-  implicit def emptinessOfJavaCollection[JCOL <: java.util.Collection[_]]: Emptiness[JCOL] =
-    new Emptiness[JCOL] {
-      def isEmpty(jcol: JCOL): Boolean = jcol.isEmpty
+  implicit def emptinessOfJavaCollection[E, JCOL[e] <: java.util.Collection[e]]: Emptiness[JCOL[E]] =
+    new Emptiness[JCOL[E]] {
+      def isEmpty(jcol: JCOL[E]): Boolean = jcol.isEmpty
     }
 
   /**
    * Enable emptiness for <code>java.util.Map</code>
    */
-  implicit def emptinessOfJavaMap[JMAP <: java.util.Map[_, _]]: Emptiness[JMAP] =
-    new Emptiness[JMAP] {
-      def isEmpty(jmap: JMAP): Boolean = jmap.isEmpty
+  implicit def emptinessOfJavaMap[K, V, JMAP[k, v] <: java.util.Map[k, v]]: Emptiness[JMAP[K, V]] =
+    new Emptiness[JMAP[K, V]] {
+      def isEmpty(jmap: JMAP[K, V]): Boolean = jmap.isEmpty
+    }
+  
+  /**
+   * Enable emptiness for any arbitrary object with a <code>isEmpty()</code> method that returns <code>Boolean</code>
+   */
+  implicit def emptinessOfAnyRefWithIsEmptyMethod[T <: AnyRef { def isEmpty(): Boolean}]: Emptiness[T] = 
+    new Emptiness[T] {
+      def isEmpty(obj: T): Boolean = obj.isEmpty
+    }
+  
+  /**
+   * Enable emptiness for any arbitrary object with a <code>isEmpty</code> method that returns <code>Boolean</code>
+   */
+  implicit def emptinessOfAnyRefWithParameterlessIsEmptyMethod[T <: AnyRef { def isEmpty: Boolean}]: Emptiness[T] = 
+    new Emptiness[T] {
+      def isEmpty(obj: T): Boolean = obj.isEmpty
     }
 }
 
