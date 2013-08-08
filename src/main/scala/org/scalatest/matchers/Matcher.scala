@@ -2827,6 +2827,19 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
     new Matcher[T] {
       def apply(o: T): MatchResult = m2m(outerInstance(o))
     }
+
+  def mapArgs(a2s: Any => String): Matcher[T] =
+    new Matcher[T] {
+      def apply(o: T): MatchResult = {
+        val mr = outerInstance(o)
+        mr.copy(
+          failureMessageArgs = mr.failureMessageArgs.map((LazyArg(_) { a2s })),
+          negatedFailureMessageArgs = mr.negatedFailureMessageArgs.map((LazyArg(_) { a2s })),
+          midSentenceFailureMessageArgs = mr.midSentenceFailureMessageArgs.map((LazyArg(_) { a2s })),
+          midSentenceNegatedFailureMessageArgs = mr.midSentenceNegatedFailureMessageArgs.map((LazyArg(_) { a2s }))
+        )
+      }
+    }
 }
 
 /**
