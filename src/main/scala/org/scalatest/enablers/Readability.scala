@@ -49,12 +49,27 @@ trait Readability[-T] {
 object Readability {
 
   /**
-   * Enable readability nature for <code>java.io.File</code>
+   * Enable readability of <code>java.io.File</code>
    */
-  implicit def readabilityNatureOfFile[FILE <: java.io.File]: Readability[FILE] =
+  implicit def readabilityOfFile[FILE <: java.io.File]: Readability[FILE] =
     new Readability[FILE] {
       def isReadable(file: FILE): Boolean = file.canRead
     }
 
+  /**
+   * Enable readability of any arbitrary object with a <code>isReadable()</code> method that returns <code>Boolean</code>
+   */
+  implicit def readabilityOfAnyRefWithIsReadableMethod[T <: AnyRef { def isReadable(): Boolean}]: Readability[T] = 
+    new Readability[T] {
+      def isReadable(obj: T): Boolean = obj.isReadable
+    }
+  
+  /**
+   * Enable readability of any arbitrary object with a <code>isReadable()</code> method that returns <code>Boolean</code>
+   */
+  implicit def readabilityOfAnyRefWithParameterlessIsReadableMethod[T <: AnyRef { def isReadable: Boolean}]: Readability[T] = 
+    new Readability[T] {
+      def isReadable(obj: T): Boolean = obj.isReadable
+    }
 }
 
