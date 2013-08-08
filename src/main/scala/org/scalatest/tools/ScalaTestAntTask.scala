@@ -213,14 +213,23 @@ import org.apache.tools.ant.taskdefs.Java
  * </pre>
  *
  * <p>
- * Use attribute <code>testsfile="[file name]"</code> to specify
- * a file containing a list of tests to be run.  This is used to
- * rerun failed/canceled tests listed in a file written by the
- * memory reporter.  E.g.:
+ * Use attribute <code>testsfile="[file name]"</code> or nested
+ * <testsfile> elements to specify files containing a list of
+ * tests to be run.  This is used to rerun failed/canceled tests
+ * listed in files written by the memory reporter.  E.g.:
  * </p>
  *
  * <pre>
  *   &lt;scalatest testsfile="target/memory.out"&gt;
+ * </pre>
+ *
+ * <p>
+ * or
+ * </p>
+ *
+ * <pre>
+ *   &lt;scalatest&gt;
+ *     &lt;testsfile filename="target/memory.out"/&gt;
  * </pre>
  *
  * <p>
@@ -271,7 +280,6 @@ class ScalaTestAntTask extends Task {
   private var excludes:  String = ""
   private var maxMemory: String = null
   private var suffixes:  String = null
-  private var testsfile: String = null
 
   private var parallel      = false
   private var sortSuites    = false
@@ -289,6 +297,7 @@ class ScalaTestAntTask extends Task {
   private val wildcards    = new ListBuffer[String]
   private val testNGSuites = new ListBuffer[String]
   private val chosenStyles = new ListBuffer[String]
+  private val testsfiles   = new ListBuffer[String]
 
   private val reporters  = new ListBuffer[ReporterElement]
   private val properties = new ListBuffer[NameValuePair]
@@ -319,7 +328,7 @@ class ScalaTestAntTask extends Task {
     addTestNGSuiteArgs(args)
     addParallelArg(args)
     addSuffixesArg(args)
-    addTestsfileArg(args)
+    addTestsfileArgs(args)
     addChosenStyles(args)
     addSpanScaleFactorArg(args)
 
@@ -409,8 +418,8 @@ class ScalaTestAntTask extends Task {
   // Adds '-A' arg to args list if 'testsfile' attribute was
   // specified for task.
   //
-  private def addTestsfileArg(args: ListBuffer[String]) {
-    if (testsfile != null) {
+  private def addTestsfileArgs(args: ListBuffer[String]) {
+    for (testsfile <- testsfiles) {
       args += "-A"
       args += testsfile
     }
@@ -734,7 +743,7 @@ class ScalaTestAntTask extends Task {
    * Sets value of the <code>testsfile</code> attribute.
    */
   def setTestsfile(testsfile: String) {
-    this.testsfile = testsfile
+    this.testsfiles += testsfile
   }
   
   /**
@@ -917,6 +926,13 @@ class ScalaTestAntTask extends Task {
   }
 
   /**
+   * Sets value from nested element <code>testsfile</code>.
+   */
+  def addConfiguredTestsfile(testsfile: TestsfileElement) {
+    this.testsfiles += testsfile.getFilename
+  }
+
+  /**
    * Sets value from nested element <code>includes</code>.
    * <b>The <code>includes</code> attribute has been deprecated and will be removed in a future version of ScalaTest.
    * Please use the <code>tagsToInclude</code> attribute instead.</b>
@@ -981,6 +997,19 @@ class ScalaTestAntTask extends Task {
     }
     
     def getName = name
+  }
+
+  //
+  // Class to hold data from <testsfile> elements.
+  //
+  private class TestsfileElement {
+    private var filename: String = null
+    
+    def setFilename(filename: String) {
+      this.filename = filename
+    }
+    
+    def getFilename = filename
   }
 
   //
