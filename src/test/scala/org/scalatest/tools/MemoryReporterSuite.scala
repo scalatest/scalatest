@@ -41,13 +41,15 @@ class MemoryReporterSuite extends FunSuite {
       testCount = 3,
       configMap = new ConfigMap(Map[String, Any]()))
 
+  // testName is set to "Some(say one)" here to verify proper encoding/decoding
+  // by Memento when name might be confused for an Option
   val testStarting1 =
     TestStarting(
       new Ordinal(2),
       suiteName = "org.example.OneSuite",
       suiteId = "org.example.OneSuite",
       suiteClassName = Some("org.example.OneSuite"),
-      testName = "say one",
+      testName = "Some(say one)",
       testText = "say one")
 
   val testFailed =
@@ -57,7 +59,7 @@ class MemoryReporterSuite extends FunSuite {
       suiteName = "org.example.OneSuite",
       suiteId = "org.example.OneSuite",
       suiteClassName = Some("org.example.OneSuite"),
-      testName = "say one",
+      testName = "Some(say one)",
       testText = "say one",
       recordedEvents = Vector.empty[RecordableEvent],
       rerunner = Some("org.example.OneSuite"))
@@ -87,9 +89,11 @@ class MemoryReporterSuite extends FunSuite {
       suiteName = "org.example.NevermindSuite",
       suiteId = "org.example.NevermindSuite",
       suiteClassName = Some("org.example.NevermindSuite"),
-      testName = "say nevermind",
+      testName = "None",
       testText = "say nevermind")
 
+  // testName is set to "None" here to verify proper encoding/decoding
+  // by Memento when name might be confused for an Option
   val testCanceled =
     TestCanceled(
       new Ordinal(7),
@@ -97,7 +101,7 @@ class MemoryReporterSuite extends FunSuite {
       suiteName = "org.example.NevermindSuite",
       suiteId = "org.example.NevermindSuite",
       suiteClassName = Some("org.example.NevermindSuite"),
-      testName = "say nevermind",
+      testName = "None",
       testText = "say nevermind",
       recordedEvents = Vector.empty[RecordableEvent],
       rerunner = Some("org.example.NevermindSuite"))
