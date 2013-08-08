@@ -2324,7 +2324,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
           if (shouldBeTrue) 
             FailureMessages("hadLengthInsteadOfExpectedLength", left, leftLength, expectedLength)
           else
-            FailureMessages("hadExpectedLength", left, expectedLength)
+            FailureMessages("hadLength", left, expectedLength)
         )
     }
 
@@ -2350,7 +2350,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
           if (shouldBeTrue)
             FailureMessages("hadSizeInsteadOfExpectedSize", left, leftSize, expectedSize)
           else
-            FailureMessages("hadExpectedSize", left, expectedSize)
+            FailureMessages("hadSize", left, expectedSize)
         )
     }
 
@@ -3104,7 +3104,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             if (shouldBeTrue)
               FailureMessages("hadLengthInsteadOfExpectedLength", e, leftLength, right)
             else
-              FailureMessages("hadExpectedLength", e, right), 
+              FailureMessages("hadLength", e, right), 
             None, 
             6
           )
@@ -3122,7 +3122,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             if (shouldBeTrue)
               FailureMessages("hadSizeInsteadOfExpectedSize", e, leftSize, right)
             else
-              FailureMessages("hadExpectedSize", e, right),
+              FailureMessages("hadSize", e, right),
             None, 
             6
           )
@@ -5087,7 +5087,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
             if (shouldBeTrue)
               FailureMessages("hadLengthInsteadOfExpectedLength", e, eLength, expectedLength)
             else
-              FailureMessages("hadExpectedLength", e, expectedLength), 
+              FailureMessages("hadLength", e, expectedLength), 
             None, 
             6
           )
@@ -5110,7 +5110,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
             if (shouldBeTrue)
               FailureMessages("hadSizeInsteadOfExpectedSize", e, eSize, expectedSize)
             else
-              FailureMessages("hadExpectedSize", e, expectedSize), 
+              FailureMessages("hadSize", e, expectedSize), 
             None, 
             6
           )

@@ -52,7 +52,7 @@ final class HaveWord {
               lengthOfLeft == expectedLength,
               // FailureMessages("hadLengthInsteadOfExpectedLength", left, lengthOfLeft, expectedLength),
               FailureMessages("hadLengthInsteadOfExpectedLength", left, lengthOfLeft, expectedLength),
-              FailureMessages("hadExpectedLength", left, expectedLength)
+              FailureMessages("hadLength", left, expectedLength)
             )
           }
         }
@@ -85,7 +85,7 @@ final class HaveWord {
               sizeOfLeft == expectedSize,
               // FailureMessages("hadSizeInsteadOfExpectedSize", left, lengthOfLeft, expectedSize),
               FailureMessages("hadSizeInsteadOfExpectedSize", left, sizeOfLeft, expectedSize),
-              FailureMessages("hadExpectedSize", left, expectedSize)
+              FailureMessages("hadSize", left, expectedSize)
             )
           }
         }

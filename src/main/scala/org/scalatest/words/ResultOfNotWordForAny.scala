@@ -395,7 +395,7 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
           if (shouldBeTrue)
             FailureMessages("hadLengthInsteadOfExpectedLength", left, leftLength, right)
           else
-            FailureMessages("hadExpectedLength", left, right)
+            FailureMessages("hadLength", left, right)
         )
       )
     }
@@ -411,7 +411,7 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
           if (shouldBeTrue)
             FailureMessages("hadSizeInsteadOfExpectedSize", left, leftSize, right)
           else
-            FailureMessages("hadExpectedSize", left, right)
+            FailureMessages("hadSize", left, right)
         )
       )
     }
