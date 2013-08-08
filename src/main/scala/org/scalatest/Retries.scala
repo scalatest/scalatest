@@ -15,15 +15,54 @@
  */
 package org.scalatest
 
+import time.Span
+
 trait Retries {
   
   def withRetryOnFailure(blk: => Outcome): Outcome = {
     val firstOutcome = blk
     firstOutcome match {
       case Failed(ex) =>
-        // Thread.sleep(delayBeforeRetry.millisPart)
         blk match {
           case Succeeded => Canceled(Resources("testFlickered"), ex)
+          case other => firstOutcome
+        }
+      case other => other
+    }
+  }
+
+  def withRetryOnFailure(delay: Span)(blk: => Outcome): Outcome = {
+    val firstOutcome = blk
+    firstOutcome match {
+      case Failed(ex) =>
+        Thread.sleep(delay.millisPart)
+        blk match {
+          case Succeeded => Canceled(Resources("testFlickered"), ex)
+          case other => firstOutcome
+        }
+      case other => other
+    }
+  }
+  def withRetryOnCancel(blk: => Outcome): Outcome = {
+    val firstOutcome = blk
+    firstOutcome match {
+      case Canceled(ex) =>
+        blk match {
+          case Succeeded => Succeeded
+          case failed: Failed => failed // Never hide a failure.
+          case other => firstOutcome
+        }
+      case other => other
+    }
+  }
+  def withRetryOnCancel(delay: Span)(blk: => Outcome): Outcome = {
+    val firstOutcome = blk
+    firstOutcome match {
+      case Canceled(ex) =>
+        Thread.sleep(delay.millisPart)
+        blk match {
+          case Succeeded => Succeeded
+          case failed: Failed => failed // Never hide a failure.
           case other => firstOutcome
         }
       case other => other
