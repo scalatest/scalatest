@@ -15,9 +15,10 @@
  */
 package org.scalatest.tools {
 
-import org.scalatest.FunSuite
-import org.scalatest.Outcome
+import org.scalatest.{FunSuite, Outcome, DispatchReporter, Resources}
 import org.scalatools.testing.{Event, EventHandler, Result, Logger, Runner => TestingRunner}
+import org.scalatest.SharedHelpers.EventRecordingReporter
+import org.scalatest.exceptions.NotAllowedException
 
   // testing runner.run:
   // def run(testClassName: String, fingerprint: TestFingerprint, args: Array[String]): Array[Event]
@@ -163,6 +164,110 @@ import org.scalatools.testing.{Event, EventHandler, Result, Logger, Runner => Te
       
       val result4 = run("org.scalatest.enablers.NoParamSpec", Array("-m", "org.scalatest.concurrent"))
       assert(result4.size === 0)
+    }
+    
+    test("ScalaTestRunner.run should throw IllegalArgumentException when -s is passed in") {
+      val iae = intercept[IllegalArgumentException] {
+        run("org.scalatest.tools.test.SimpleTest", Array("-s", "org.scalatest.tools.test.SimpleTest"))
+      }
+      assert(iae.getMessage === "-s (suite) is not supported when runs in SBT, please use SBT's test-only instead.")
+    }
+    
+    test("ScalaTestRunner.run should throw IllegalArgumentException when -j is passed in") {
+      val iae = intercept[IllegalArgumentException] {
+        run("org.scalatest.tools.test.SimpleTest", Array("-j", "org.scalatest.tools.test.SimpleTest"))
+      }
+      assert(iae.getMessage === "-j (junit) is not supported when runs in SBT.")
+    }
+    
+    test("ScalaTestRunner.run should throw IllegalArgumentException when -b is passed in") {
+      val iae = intercept[IllegalArgumentException] {
+        run("org.scalatest.tools.test.SimpleTest", Array("-b", "org.scalatest.tools.test.SimpleTest"))
+      }
+      assert(iae.getMessage === "-b (testng) is not supported when runs in SBT.")
+    }
+    
+    test("ScalaTestRunner.run should throw IllegalArgumentException when -c is passed in") {
+      val iae = intercept[IllegalArgumentException] {
+        run("org.scalatest.tools.test.SimpleTest", Array("-c"))
+      }
+      assert(iae.getMessage === "-c, -P (concurrent) is not supported when runs in SBT.")
+    }
+    
+    test("ScalaTestRunner.run should throw IllegalArgumentException when -P is passed in") {
+      val iae = intercept[IllegalArgumentException] {
+        run("org.scalatest.tools.test.SimpleTest", Array("-P"))
+      }
+      assert(iae.getMessage === "-c, -P (concurrent) is not supported when runs in SBT.")
+    }
+    
+    test("ScalaTestRunner.run should throw IllegalArgumentException when -PS is passed in") {
+      val iae = intercept[IllegalArgumentException] {
+        run("org.scalatest.tools.test.SimpleTest", Array("-PS"))
+      }
+      assert(iae.getMessage === "-c, -P (concurrent) is not supported when runs in SBT.")
+    }
+    
+    test("ScalaTestRunner.run should be able to pass in custom reporter via -C") {
+      val framework = new ScalaTestFramework()
+      val runner: TestingRunner = framework.testRunner(Thread.currentThread.getContextClassLoader, Array(new TestLogger))
+      val listener = new EventHandler {
+        def handle(event: Event) {}
+      }
+      runner.run("org.scalatest.tools.scalasbt.SampleSuite", fingerprint, listener, Array("-C", classOf[EventRecordingReporter].getName))
+      framework.RunConfig.reporter.get match {
+        case Some(dispatchRep: DispatchReporter) => 
+          dispatchRep.reporters.find(_.isInstanceOf[EventRecordingReporter]) match {
+            case Some(recordingRep : EventRecordingReporter) => 
+              assert(recordingRep.testSucceededEventsReceived.size === 3)
+            case _ => fail("Expected to find EventRecordingReporter, but not found.")
+          }
+        case _ => fail("Expected to find DispatchReporter, but not found.")
+      }
+    }
+    
+    test("-y should do nothing when the task to execute is a chosen style") {
+      val framework = new ScalaTestFramework()
+      val runner: TestingRunner = framework.testRunner(Thread.currentThread.getContextClassLoader, Array(new TestLogger))
+      val listener = new EventHandler {
+        def handle(event: Event) {}
+      }
+      runner.run("org.scalatest.tools.scalasbt.SampleSuite", fingerprint, listener, Array("-y", "org.scalatest.FunSuite", "-C", classOf[EventRecordingReporter].getName))
+      framework.RunConfig.reporter.get match {
+        case Some(dispatchRep: DispatchReporter) => 
+          dispatchRep.reporters.find(_.isInstanceOf[EventRecordingReporter]) match {
+            case Some(recordingRep : EventRecordingReporter) => 
+              assert(recordingRep.testSucceededEventsReceived.size === 3)
+              assert(recordingRep.suiteCompletedEventsReceived.size === 1)
+            case _ => fail("Expected to find EventRecordingReporter, but not found.")
+          }
+        case _ => fail("Expected to find DispatchReporter, but not found.")
+      }
+    }
+    
+    test("-y should get SuiteAborted event with NotAllowedException when the task to execute is not a chosen style") {
+      val framework = new ScalaTestFramework()
+      val runner: TestingRunner = framework.testRunner(Thread.currentThread.getContextClassLoader, Array(new TestLogger))
+      val listener = new EventHandler {
+        def handle(event: Event) {}
+      }
+      runner.run("org.scalatest.tools.scalasbt.SampleSuite", fingerprint, listener, Array("-y", "org.scalatest.FunSpec", "-C", classOf[EventRecordingReporter].getName))
+      framework.RunConfig.reporter.get match {
+        case Some(dispatchRep: DispatchReporter) => 
+          dispatchRep.reporters.find(_.isInstanceOf[EventRecordingReporter]) match {
+            case Some(recordingRep : EventRecordingReporter) => 
+              assert(recordingRep.testSucceededEventsReceived.size === 0)
+              val suiteAbortedEvents = recordingRep.suiteAbortedEventsReceived
+              assert(suiteAbortedEvents.size === 1)
+              suiteAbortedEvents(0).throwable match {
+                case Some(e: NotAllowedException) => 
+                  assert(e.getMessage === Resources("notTheChosenStyle", "org.scalatest.FunSuite", "org.scalatest.FunSpec"))
+                case _ => fail("Expected SuiteAborted to carry NotAllowedException, but it did not.")
+              }
+            case _ => fail("Expected to find EventRecordingReporter, but not found.")
+          }
+        case _ => fail("Expected to find DispatchReporter, but not found.")
+      }
     }
 
     def runner: TestingRunner = {

@@ -56,7 +56,8 @@ object ScalatestBuild extends Build {
                                                "-m", "org.scalatest.enablers", 
                                                "-oDI", 
                                                "-h", "target/html", 
-                                               "-u", "target/junit"))
+                                               "-u", "target/junit", 
+                                               "-fW", "target/result.txt"))
    )
    
   lazy val gentests = Project("gentests", file("gentests"))
@@ -97,7 +98,8 @@ object ScalatestBuild extends Build {
      testOptions in Test := Seq(Tests.Argument("-l", "org.scalatest.tags.Slow", 
                                                "-oDI", 
                                                "-h", "gentests/target/html", 
-                                               "-u", "gentests/target/junit"))
+                                               "-u", "gentests/target/junit", 
+                                               "-fW", "target/result.txt"))
    ).dependsOn(scalatest  % "test->test")
 
    def simpledependencies = Seq(
