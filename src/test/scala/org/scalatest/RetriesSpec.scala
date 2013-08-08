@@ -32,7 +32,7 @@ class RetriesSpec extends Spec with Matchers with Retries {
             executionCount += 1
             Succeeded
           }
-        outcome should be theSameInstanceAs Succeeded
+        outcome shouldBe Succeeded
         executionCount shouldBe 1
       }
       def `should return Pending on Pending` {
@@ -42,7 +42,7 @@ class RetriesSpec extends Spec with Matchers with Retries {
             executionCount += 1
             Pending
           }
-        outcome should be theSameInstanceAs Pending
+        outcome shouldBe Pending
         executionCount shouldBe 1
       }
       def `should return Canceled on Canceled` {
@@ -117,7 +117,7 @@ class RetriesSpec extends Spec with Matchers with Retries {
             executionCount += 1
             Succeeded
           }
-        outcome should be theSameInstanceAs Succeeded
+        outcome shouldBe Succeeded
         executionCount shouldBe 1
       }
       def `should return Pending on Pending` {
@@ -127,7 +127,7 @@ class RetriesSpec extends Spec with Matchers with Retries {
             executionCount += 1
             Pending
           }
-        outcome should be theSameInstanceAs Pending
+        outcome shouldBe Pending
         executionCount shouldBe 1
       }
       def `should return Canceled on Canceled` {
@@ -202,7 +202,7 @@ class RetriesSpec extends Spec with Matchers with Retries {
             executionCount += 1
             Succeeded
           }
-        outcome should be theSameInstanceAs Succeeded
+        outcome shouldBe Succeeded
         executionCount shouldBe 1
       }
       def `should return Pending on Pending` {
@@ -212,7 +212,7 @@ class RetriesSpec extends Spec with Matchers with Retries {
             executionCount += 1
             Pending
           }
-        outcome should be theSameInstanceAs Pending
+        outcome shouldBe Pending
         executionCount shouldBe 1
       }
       def `should return Failed on Failed` {
@@ -238,7 +238,7 @@ class RetriesSpec extends Spec with Matchers with Retries {
         outcome should be theSameInstanceAs firstCanceled 
         executionCount shouldBe 2
       }
-      def `should return Canceled if fails first then gives Pending` { // unlikely case
+      def `should return Canceled if cancels first then gives Pending` { // unlikely case
         var executionCount = 0
         val canceled = Canceled()
         val outcome =
@@ -282,7 +282,7 @@ class RetriesSpec extends Spec with Matchers with Retries {
             executionCount += 1
             Succeeded
           }
-        outcome should be theSameInstanceAs Succeeded
+        outcome shouldBe Succeeded
         executionCount shouldBe 1
       }
       def `should return Pending on Pending` {
@@ -292,7 +292,7 @@ class RetriesSpec extends Spec with Matchers with Retries {
             executionCount += 1
             Pending
           }
-        outcome should be theSameInstanceAs Pending
+        outcome shouldBe Pending
         executionCount shouldBe 1
       }
       def `should return Failed on Failed` {
@@ -318,7 +318,7 @@ class RetriesSpec extends Spec with Matchers with Retries {
         outcome should be theSameInstanceAs firstCanceled 
         executionCount shouldBe 2
       }
-      def `should return Canceled if fails first then gives Pending` { // unlikely case
+      def `should return Canceled if cancels first then gives Pending` { // unlikely case
         var executionCount = 0
         val canceled = Canceled()
         val outcome =
@@ -346,6 +346,125 @@ class RetriesSpec extends Spec with Matchers with Retries {
         val canceled = Canceled()
         val outcome =
           withRetryOnCancel(delay = Span.ZeroLength) {
+            executionCount += 1
+            if (executionCount == 1) canceled else Succeeded
+          }
+        outcome shouldBe Succeeded
+        executionCount shouldBe 2
+      }
+    }
+    object `offers a withRetry method that` {
+      def `should return Succeeded on Succeeded` {
+        var executionCount = 0
+        val outcome =
+          withRetry {
+            executionCount += 1
+            Succeeded
+          }
+        outcome shouldBe Succeeded
+        executionCount shouldBe 1
+      }
+      def `should return Pending on Pending` {
+        var executionCount = 0
+        val outcome =
+          withRetry {
+            executionCount += 1
+            Pending
+          }
+        outcome shouldBe Pending
+        executionCount shouldBe 1
+      }
+      def `should return first Failed if fails twice` {
+        var executionCount = 0
+        val firstFailed = Failed()
+        val secondFailed = Failed()
+        val outcome =
+          withRetry {
+            executionCount += 1
+            if (executionCount == 1) firstFailed else secondFailed
+          }
+        outcome should be theSameInstanceAs firstFailed 
+        executionCount shouldBe 2
+      }
+      def `should return Failed if fails first then gives Pending` { // unlikely case
+        var executionCount = 0
+        val failed = Failed()
+        val outcome =
+          withRetry {
+            executionCount += 1
+            if (executionCount == 1) failed else Pending
+          }
+        outcome should be theSameInstanceAs failed
+        executionCount shouldBe 2
+      }
+      def `should return Failed if fails first then gives Canceled` {
+        var executionCount = 0
+        val failed = Failed()
+        val outcome =
+          withRetry {
+            executionCount += 1
+            if (executionCount == 1) failed else Canceled()
+          }
+        outcome should be theSameInstanceAs failed
+        executionCount shouldBe 2
+      }
+      def `should return Canceled if fails first then succeeds` {
+        var executionCount = 0
+        val failed = Failed()
+        val outcome =
+          withRetry {
+            executionCount += 1
+            if (executionCount == 1) failed else Succeeded
+          }
+        outcome shouldBe a [Canceled]
+        executionCount shouldBe 2
+        outcome match {
+          case Canceled(ex) =>
+            ex.getMessage should be (Resources("testFlickered"))
+            ex.getCause should be (failed.exception)
+          case _ => fail()
+        }
+      }
+      def `should return first Canceled if cancels twice` {
+        var executionCount = 0
+        val firstCanceled = Canceled()
+        val secondCanceled = Canceled()
+        val outcome =
+          withRetry {
+            executionCount += 1
+            if (executionCount == 1) firstCanceled else secondCanceled
+          }
+        outcome should be theSameInstanceAs firstCanceled 
+        executionCount shouldBe 2
+      }
+      def `should return Canceled if cancels first then gives Pending` { // unlikely case
+        var executionCount = 0
+        val canceled = Canceled()
+        val outcome =
+          withRetry {
+            executionCount += 1
+            if (executionCount == 1) canceled else Pending
+          }
+        outcome should be theSameInstanceAs canceled
+        executionCount shouldBe 2
+      }
+      def `should return Failed if cancels first then fails` {
+        var executionCount = 0
+        val canceled = Canceled()
+        val failed = Failed()
+        val outcome =
+          withRetry {
+            executionCount += 1
+            if (executionCount == 1) canceled else failed
+          }
+        outcome should be theSameInstanceAs failed
+        executionCount shouldBe 2
+      }
+      def `should return Succeeded if cancels first then succeeds` {
+        var executionCount = 0
+        val canceled = Canceled()
+        val outcome =
+          withRetry {
             executionCount += 1
             if (executionCount == 1) canceled else Succeeded
           }
