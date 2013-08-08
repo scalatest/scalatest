@@ -19,7 +19,9 @@ import time.Span
 
 trait Retries {
 
-  def withRetry(blk: => Outcome): Outcome = {
+  def withRetry(blk: => Outcome): Outcome = withRetry(Span.Zero)(blk)
+
+  def withRetry(delay: Span)(blk: => Outcome): Outcome = {
     val firstOutcome = blk
     firstOutcome match {
       case Failed(ex) =>
@@ -37,23 +39,14 @@ trait Retries {
     }
   }
 
-  def withRetryOnFailure(blk: => Outcome): Outcome = {
-    val firstOutcome = blk
-    firstOutcome match {
-      case Failed(ex) =>
-        blk match {
-          case Succeeded => Canceled(Resources("testFlickered"), ex)
-          case other => firstOutcome
-        }
-      case other => other
-    }
-  }
+  def withRetryOnFailure(blk: => Outcome): Outcome = withRetryOnFailure(Span.Zero)(blk)
 
   def withRetryOnFailure(delay: Span)(blk: => Outcome): Outcome = {
     val firstOutcome = blk
     firstOutcome match {
       case Failed(ex) =>
-        Thread.sleep(delay.millisPart)
+        if (delay != Span.Zero)
+          Thread.sleep(delay.millisPart)
         blk match {
           case Succeeded => Canceled(Resources("testFlickered"), ex)
           case other => firstOutcome
@@ -61,22 +54,14 @@ trait Retries {
       case other => other
     }
   }
-  def withRetryOnCancel(blk: => Outcome): Outcome = {
-    val firstOutcome = blk
-    firstOutcome match {
-      case Canceled(ex) =>
-        blk match {
-          case Succeeded => Succeeded
-          case failed: Failed => failed // Never hide a failure.
-          case other => firstOutcome
-        }
-      case other => other
-    }
-  }
+  def withRetryOnCancel(blk: => Outcome): Outcome = withRetryOnCancel(Span.Zero)(blk)
+
   def withRetryOnCancel(delay: Span)(blk: => Outcome): Outcome = {
     val firstOutcome = blk
     firstOutcome match {
       case Canceled(ex) =>
+        if (delay != Span.Zero)
+          Thread.sleep(delay.millisPart)
         Thread.sleep(delay.millisPart)
         blk match {
           case Succeeded => Succeeded

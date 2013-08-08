@@ -395,11 +395,11 @@ final class Span private (totNanos: Long, lengthString: String, unitsResource: S
    * The passed <code>factor</code> can be any positive number or zero, including fractional numbers. A number
    * greater than one will scale the <code>Span</code> up to a larger value. A fractional number will scale it
    * down to a smaller value. A factor of 1.0 will cause the exact same <code>Span</code> to be returned. A
-   * factor of zero will cause <code>Span.ZeroLength</code> to be returned.
+   * factor of zero will cause <code>Span.Zero</code> to be returned.
    * </p>
    *
    * <p>
-   * If overflow occurs, <code>Span.Max</code> will be returned. If underflow occurs, <code>Span.ZeroLength</code>
+   * If overflow occurs, <code>Span.Max</code> will be returned. If underflow occurs, <code>Span.Zero</code>
    * will be returned.
    * </p>
    *
@@ -408,7 +408,7 @@ final class Span private (totNanos: Long, lengthString: String, unitsResource: S
   def scaledBy(factor: Double) = {
     require(factor >= 0.0, "factor was less than zero")
     factor match {
-      case 0.0 => Span.ZeroLength
+      case 0.0 => Span.Zero
       case 1.0 => this
       case _ =>
         val newNanos: Double = totNanos * factor
@@ -579,12 +579,15 @@ object Span {
    */
   val Max: Span = new Span(Long.MaxValue.toDouble / 1000 / 1000 / 1000 / 60 / 60 / 24, Days)
 
+  @deprecated("Please use Span.Zero instead")
+  val ZeroLength: Span = new Span(0, Nanoseconds)
+
   /**
    * A <code>Span</code> with representing a zero-length span of time.
    *
    * @return a zero-length <code>Span</code>.
    */
-  val ZeroLength: Span = new Span(0, Nanoseconds)
+  val Zero: Span = new Span(0, Nanoseconds)
 
   private def totalNanosForLongLength(length: Long, units: Units): Long = {
 
