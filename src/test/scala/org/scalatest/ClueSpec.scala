@@ -180,7 +180,7 @@ class ClueSpec extends FlatSpec with ShouldMatchers with TableDrivenPropertyChec
     val result: String = withClue(() => 128) { "hello" }
     assert(result === "hello")
   }
-  
+
   it should "work when used in withFixture" in {
     forAll(examples) { e => 
       val a = 
@@ -203,7 +203,7 @@ class ClueSpec extends FlatSpec with ShouldMatchers with TableDrivenPropertyChec
       rep.testFailedEventsReceived(0).message should be ("a clue message")
     }
   }
-  
+
   it should "return Failed that contains TestFailedException and with prepended clue" in {
     val failed = Failed(new TestFailedException("message", 3))
     val result = withClue("a clue") { failed }
@@ -211,14 +211,14 @@ class ClueSpec extends FlatSpec with ShouldMatchers with TableDrivenPropertyChec
     result.exception shouldBe a [TestFailedException]
     result.exception.getMessage shouldBe "a clue message"
   }
-  
+
   it should "return original Failed that contains the RuntimeException and without prepended clue" in {
     val failed = Failed(new RuntimeException("message"))
     val result = withClue("a clue") { failed }
     result should be theSameInstanceAs failed
     result.exception.getMessage shouldBe "message"
   }
-  
+
   it should "return Canceled that contains TestCanceledException and with prepended clue" in {
     val canceled = Canceled(new TestCanceledException("message", 3))
     val result = withClue("a clue") { canceled }
@@ -226,7 +226,7 @@ class ClueSpec extends FlatSpec with ShouldMatchers with TableDrivenPropertyChec
     result.exception shouldBe a [TestCanceledException]
     result.exception.getMessage shouldBe "a clue message"
   }
-  
+
   it should "return original Canceled that contains the RuntimeException and without prepended clue" in {
     val re = new RuntimeException("message")
     val canceled = Canceled(re)
@@ -234,13 +234,13 @@ class ClueSpec extends FlatSpec with ShouldMatchers with TableDrivenPropertyChec
     result.exception.getCause should be theSameInstanceAs re
     result.exception.getMessage shouldBe "a clue message"
   }
-  
+
   it should "return original Pending" in {
     val pending = Pending
     val result = withClue("a clue") { pending }
     result should be theSameInstanceAs pending
   }
-  
+
   it should "return original Succeeded" in {
     val succeeded = Succeeded
     val result = withClue("a clue") { succeeded }

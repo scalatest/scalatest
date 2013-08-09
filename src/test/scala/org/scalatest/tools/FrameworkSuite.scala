@@ -31,7 +31,7 @@ class FrameworkSuite extends FunSuite with Retries {
   }
 
   class TestEventHandler extends EventHandler {
-    
+
     private var errorEvents = List[Event]()
     private var failureEvents = List[Event]()
     private var skippedEvents = List[Event]()

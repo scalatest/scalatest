@@ -40,10 +40,6 @@ package org.scalatest.exceptions
  *
  * @author Bill Venners
  */
-case class TestPendingException(reason: Option[String]) extends RuntimeException {
-  def this() = this(None)
-  def this(reason: String) = this(Some(reason))
-}
+case class TestPendingException extends RuntimeException
 
-// TODO: Add an optional reason to the TestPending event
 // This one isn't lazy, because, well, it could be lazy, but it is different than failed.
