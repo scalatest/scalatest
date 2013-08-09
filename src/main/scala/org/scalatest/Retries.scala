@@ -71,6 +71,8 @@ trait Retries {
       case other => other
     }
   }
+
+  def isRetryable(testData: TestData): Boolean = testData.tags.exists(_ == "org.scalatest.tags.Retryable")
 }
 
 object Retries extends Retries

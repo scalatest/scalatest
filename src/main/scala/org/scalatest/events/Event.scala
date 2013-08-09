@@ -70,7 +70,7 @@ sealed abstract class Event extends Ordered[Event] with java.io.Serializable {
 
   /**
    * Comparing <code>this</code> event with the event passed as <code>that</code>. Returns
-   * x, where x < 0 iff this < that, x == 0 iff this == that, x > 0 iff this > that.
+   * x, where x &lt; 0 iff this &lt; that, x == 0 iff this == that, x &gt; 0 iff this &gt; that.
    *
    * @param that the event to compare to this event
    * @param return an integer indicating whether this event is less than, equal to, or greater than

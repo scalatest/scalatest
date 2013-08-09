@@ -592,6 +592,27 @@ class RetriesSpec extends Spec with Matchers with Retries {
         executionCount shouldBe 2
       }
     }
+    object `offers an isRetryable method that` {
+      def `should indicate given a TestData whether a test is tagged with org.scalatest.tags.Retryable` {
+        val yes = new TestData {
+          val configMap: ConfigMap = ConfigMap.empty
+          val name: String = "i am retryable"
+          val scopes: collection.immutable.IndexedSeq[String] = Vector.empty
+          val text: String = name
+          val tags: Set[String] = Set("org.scalatest.tags.Retryable")
+        }
+        val no = new TestData {
+          val configMap: ConfigMap = ConfigMap.empty
+          val name: String = "i am retryable"
+          val scopes: collection.immutable.IndexedSeq[String] = Vector.empty
+          val text: String = name
+          val tags: Set[String] = Set("NotMe")
+        }
+
+        isRetryable(yes) shouldBe true
+        isRetryable(no) shouldBe false
+      }
+    }
   }
 }
 
