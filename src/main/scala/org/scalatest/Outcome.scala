@@ -434,7 +434,7 @@ object Failed {
  *
  * @param ex the <code>TestCanceledException</code> contained in this <code>Exceptional</code>.
  */
-case class Canceled(exception: Throwable) extends Exceptional(exception) {
+case class Canceled(exception: exceptions.TestCanceledException) extends Exceptional(exception) {
 
   /**
    * Indicates that this <code>Outcome</code> represents a test that was canceled.
@@ -466,7 +466,19 @@ object Canceled {
 
   def apply(): Canceled = new Canceled(new exceptions.TestCanceledException(1))
   def apply(message: String, cause: Throwable): Canceled = // TODO write tests for NPEs
-    new Canceled(new exceptions.TestCanceledException(message, cause, 1)) // Always wrap in a TCE so we can include the message
+    new Canceled(new exceptions.TestCanceledException(message, cause, 1))
+  def apply(ex: Throwable): Canceled = { // TODO write tests for NPEs
+    ex match {
+      case tce: exceptions.TestCanceledException => 
+        new Canceled(tce)
+      case _ =>
+        val msg = ex.getMessage
+        if (msg == null)
+          new Canceled(new exceptions.TestCanceledException(ex, 1))
+        else 
+          new Canceled(new exceptions.TestCanceledException(msg, ex, 1))
+    }
+  }
 
   /**
    * Creates a <code>Canceled</code> outcome given a string message.

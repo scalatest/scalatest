@@ -174,8 +174,10 @@ class PayloadSpec extends FlatSpec with ShouldMatchers with TableDrivenPropertyC
   it should "return original Canceled that contains the RuntimeException and without payload" in {
     val canceled = Canceled(new RuntimeException("boom!"))
     val result = withPayload("a payload") { canceled }
-    result should be theSameInstanceAs canceled
-    result.exception.getMessage shouldBe "boom!"
+    result shouldBe a [Canceled]
+    result.exception shouldBe a [TestCanceledException]
+    result.exception.asInstanceOf[TestCanceledException].payload shouldBe Some("a payload")
+    result.exception.asInstanceOf[TestCanceledException].getCause.getMessage shouldBe "boom!"
   }
   
   it should "return original Pending" in {

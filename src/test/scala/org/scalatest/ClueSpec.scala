@@ -228,10 +228,11 @@ class ClueSpec extends FlatSpec with ShouldMatchers with TableDrivenPropertyChec
   }
   
   it should "return original Canceled that contains the RuntimeException and without prepended clue" in {
-    val canceled = Canceled(new RuntimeException("message"))
+    val re = new RuntimeException("message")
+    val canceled = Canceled(re)
     val result = withClue("a clue") { canceled }
-    result should be theSameInstanceAs canceled
-    result.exception.getMessage shouldBe "message"
+    result.exception.getCause should be theSameInstanceAs re
+    result.exception.getMessage shouldBe "a clue message"
   }
   
   it should "return original Pending" in {

@@ -197,13 +197,9 @@ class OutcomeSpec extends Spec with OptionValues with OutcomeOf {
     }
   }
   object `The Canceled class` {
-    def `should offer a constructor that takes any exception and returns it unchanged from its exception field` {
+    def `should offer a constructor that takes a TestCanceledException and returns it unchanged from its exception field` {
       val ex1 = new exceptions.TestCanceledException(0)
       assert(new Canceled(ex1).exception eq ex1)
-      val ex2 = new exceptions.TestFailedException(0)
-      assert(new Canceled(ex2).exception eq ex2)
-      val ex3 = new RuntimeException
-      assert(new Canceled(ex3).exception eq ex3)
     }
   }
   object `The Canceled companion object` {
@@ -218,7 +214,7 @@ class OutcomeSpec extends Spec with OptionValues with OutcomeOf {
         case _ => fail(canceled.exception + " was not a TestCanceledException")
       }
     }
-    def `should offer an apply factory method that takes (and simply holds) an exception` {
+    def `should offer an apply factory method that takes and holds a TCE, but wraps any other exception in a new TCE` {
       val tce = new exceptions.TestCanceledException(1)
       val canceled = Canceled(tce)
       assert(canceled.exception eq tce)
@@ -229,7 +225,14 @@ class OutcomeSpec extends Spec with OptionValues with OutcomeOf {
 
       val re = new RuntimeException
       val canceled3 = Canceled(re)
-      assert(canceled3.exception eq re)
+      assert(canceled3.exception.isInstanceOf[exceptions.TestCanceledException])
+      assert(canceled3.exception.getCause eq re)
+      val ex1 = new exceptions.TestCanceledException(0)
+      assert(new Canceled(ex1).exception eq ex1)
+      val ex2 = new exceptions.TestFailedException(0)
+      assert(Canceled(ex2).exception.getCause eq ex2)
+      val ex3 = new RuntimeException
+      assert(Canceled(ex3).exception.getCause eq ex3)
     }
     def `should offer a "here" factory method that takes an exception and wraps it in a TestCanceledException` {
       val ex = new RuntimeException("I meant to do that!")
@@ -310,7 +313,7 @@ class OutcomeSpec extends Spec with OptionValues with OutcomeOf {
       }
       assert(e2 eq re)
     }
-    
+
     def `should throw the containing exception when it is Canceled` {
       val tce = new exceptions.TestCanceledException("boom!", 3)
       val outcome1: Outcome = Canceled(tce)
@@ -321,12 +324,12 @@ class OutcomeSpec extends Spec with OptionValues with OutcomeOf {
       
       val re = new RuntimeException("boom!")
       val outcome2: Outcome = Canceled(re)
-      val e2 = intercept[RuntimeException] {
+      val e2 = intercept[exceptions.TestCanceledException] {
         outcome2.toSucceeded
       }
-      assert(e2 eq re)
+      assert(e2.getCause eq re)
     }
-    
+
     def `should throw TestPendingException when it is Pending` {
       val outcome2: Outcome = Pending
       intercept[exceptions.TestPendingException] {
