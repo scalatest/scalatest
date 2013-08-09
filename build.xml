@@ -17,7 +17,7 @@
     <property name="deploy.scala.version" value="2.11.0-M4" />
 	<property name="for.scala" value="2.11.0" />
 -->
-    <property name="release" value="2.0.RC1-SNAP1" />
+    <property name="release" value="2.0.RC1-SNAP2" />
 
     <property name="scalasrc" value="src/main/scala" />
     <property name="javasrc" value="src/main/java" />
