@@ -1407,22 +1407,28 @@ trait Suite extends Assertions with AbstractSuite with Serializable { thisSuite 
 
     import args._
 
-    val stopRequested = stopper
-    val report = wrapReporterIfNecessary(thisSuite, reporter)
-    val newArgs = args.copy(reporter = report)
+    val originalThreadName = Thread.currentThread.getName
+    try {
+      Thread.currentThread.setName(originalThreadName + "-running-" + suiteName)
 
-    val nestedSuitesStatus = 
-      testName match {
-        case None => runNestedSuites(newArgs)
-        case Some(_) => SucceededStatus
+      val stopRequested = stopper
+      val report = wrapReporterIfNecessary(thisSuite, reporter)
+      val newArgs = args.copy(reporter = report)
+
+      val nestedSuitesStatus = 
+        testName match {
+          case None => runNestedSuites(newArgs)
+          case Some(_) => SucceededStatus
+        }
+      val testsStatus = runTests(testName, newArgs)
+
+      if (stopRequested()) {
+        val rawString = Resources("executeStopping")
+        report(InfoProvided(tracker.nextOrdinal(), rawString, Some(NameInfo(thisSuite.suiteName, thisSuite.suiteId, Some(thisSuite.getClass.getName), testName))))
       }
-    val testsStatus = runTests(testName, newArgs)
-
-    if (stopRequested()) {
-      val rawString = Resources("executeStopping")
-      report(InfoProvided(tracker.nextOrdinal(), rawString, Some(NameInfo(thisSuite.suiteName, thisSuite.suiteId, Some(thisSuite.getClass.getName), testName))))
+      new CompositeStatus(Set(nestedSuitesStatus, testsStatus))
     }
-    new CompositeStatus(Set(nestedSuitesStatus, testsStatus))
+    finally Thread.currentThread.setName(originalThreadName)
   }
 
   /**
