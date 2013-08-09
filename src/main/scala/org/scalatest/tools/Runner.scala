@@ -33,6 +33,7 @@ import org.scalatest.events._
 import org.scalatest.junit.JUnitWrapperSuite
 import java.util.concurrent.Executors
 import java.util.concurrent.ExecutorService
+import java.util.concurrent.ThreadFactory
 import scala.collection.mutable.ArrayBuffer
 import SuiteDiscoveryHelper._
 import org.scalatest.time.Span
@@ -2476,7 +2477,16 @@ object Runner {
                 case None => dispatch
               }
                 
-            val execSvc: ExecutorService = Executors.newFixedThreadPool(poolSize)
+            val threadFactory =
+              new ThreadFactory {
+                val defaultThreadFactory = Executors.defaultThreadFactory
+                def newThread(runnable: Runnable): Thread = {
+                  val thread = defaultThreadFactory.newThread(runnable)
+                  thread.setName(thread.getName.replaceAll(".*-", "ScalaTest-"))
+                  thread
+                }
+              }
+            val execSvc: ExecutorService = Executors.newFixedThreadPool(poolSize, threadFactory)
             try {
 
               val distributor = new ConcurrentDistributor(Args(dispatch, stopRequested, Filter(if (tagsToIncludeSet.isEmpty) None else Some(tagsToIncludeSet), tagsToExcludeSet), configMap, None, tracker, chosenStyleSet), execSvc)
