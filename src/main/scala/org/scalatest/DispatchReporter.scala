@@ -266,7 +266,7 @@ private[scalatest] class DispatchReporter(
   }
 
   private val propagator = new Propagator
-  (new Thread(propagator)).start()
+  (new Thread(propagator, "ScalaTest-dispatcher")).start()
 
   // Invokes dispose on each Reporter in this DispatchReporter's reporters list.
   // This method puts an event in the queue that is being used to serialize

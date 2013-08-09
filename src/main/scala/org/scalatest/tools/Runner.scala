@@ -808,6 +808,7 @@ object Runner {
    */
   def main(args: Array[String]) {
     // println("FOR DEBUGGING, THESE ARE THE ARGS PASSED TO main(): " + args.mkString(" "))
+    Thread.currentThread.setName("ScalaTest-main")
     val result = 
       if (args.contains("-v") || args.contains("--version")) {
         val version = Resources("AppVersion")
@@ -836,7 +837,12 @@ object Runner {
    */
   def run(args: Array[String]): Boolean = {
     // println("FOR DEBUGGING, THESE ARE THE ARGS PASSED TO run(): " + args.mkString(" "))
-    runOptionallyWithPassFailReporter(args, true)
+    val originalThreadName = Thread.currentThread.getName
+    try {
+      Thread.currentThread.setName("ScalaTest-run")
+      runOptionallyWithPassFailReporter(args, true)
+    }
+    finally Thread.currentThread.setName(originalThreadName)
   }
   
   private[scalatest] def parseFriendlyParams(friendlyArgs:String): Array[String] = {
