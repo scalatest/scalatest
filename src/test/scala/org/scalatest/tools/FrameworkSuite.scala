@@ -14,13 +14,22 @@
  * limitations under the License.
  */
 package org.scalatest.tools
-import org.scalatest.{FunSuite, Resources}
+import org.scalatest.{FunSuite, Resources, Retries}
 import sbt.testing._
 import org.scalatest.SharedHelpers.EventRecordingReporter
 import org.scalatest.exceptions.NotAllowedException
+import org.scalatest.tagobjects.Retryable
 
-class FrameworkSuite extends FunSuite {
+class FrameworkSuite extends FunSuite with Retries {
   
+  override def withFixture(test: NoArgTest) = {
+    if (isRetryable(test))
+      withRetryOnFailure {
+        super.withFixture(test)
+      }
+     else super.withFixture(test)
+  }
+
   class TestEventHandler extends EventHandler {
     
     private var errorEvents = List[Event]()
@@ -980,8 +989,7 @@ class FrameworkSuite extends FunSuite {
     assert(iae.getMessage === "-c, -P (concurrent) is not supported when runs in SBT.")
   }
 
-  // Intermittent, do retry
-  ignore("Framework.runner should be able to pass in custom reporter via -C") {
+  test("Framework.runner should be able to pass in custom reporter via -C", Retryable) {
     val testEventHandler = new TestEventHandler
     val runner = framework.runner(Array("-C", classOf[EventRecordingReporter].getName), Array.empty, testClassLoader)
     val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.SampleSuite", subclassFingerprint, false, Array(new SuiteSelector))))
@@ -997,8 +1005,7 @@ class FrameworkSuite extends FunSuite {
     }
   }
 
-  // Intermittent, do retry
-  ignore("-y should do nothing when the task to execute is a chosen style") {
+  test("-y should do nothing when the task to execute is a chosen style", Retryable) {
     val testEventHandler = new TestEventHandler
     val runner = framework.runner(Array("-y", "org.scalatest.FunSuite", "-C", classOf[EventRecordingReporter].getName), Array.empty, testClassLoader)
     val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.SampleSuite", subclassFingerprint, false, Array(new SuiteSelector))))
@@ -1015,8 +1022,7 @@ class FrameworkSuite extends FunSuite {
     }    
   }
   
-  // Intermittent, do retry
-  ignore("-y should get SuiteAborted event with NotAllowedException when the task to execute is not a chosen style") {
+  test("-y should get SuiteAborted event with NotAllowedException when the task to execute is not a chosen style", Retryable) {
     val testEventHandler = new TestEventHandler
     val runner = framework.runner(Array("-y", "org.scalatest.FunSpec", "-C", classOf[EventRecordingReporter].getName), Array.empty, testClassLoader)
     val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.SampleSuite", subclassFingerprint, false, Array(new SuiteSelector))))
