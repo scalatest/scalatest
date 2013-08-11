@@ -298,6 +298,7 @@ trait Eventually extends PatienceConfiguration {
    * <code>interval</code> parameter.
    * </p>
    *
+   * @tparam result type of the by-name parameter <code>fun</code>
    * @param timeout the <code>Timeout</code> configuration parameter
    * @param interval the <code>Interval</code> configuration parameter
    * @param fun the by-name parameter to repeatedly invoke

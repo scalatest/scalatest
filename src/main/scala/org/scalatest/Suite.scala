@@ -1409,7 +1409,7 @@ trait Suite extends Assertions with AbstractSuite with Serializable { thisSuite 
 
     val originalThreadName = Thread.currentThread.getName
     try {
-      Thread.currentThread.setName(originalThreadName + "-running-" + suiteName)
+      Thread.currentThread.setName(SuiteHelpers.augmentedThreadName(originalThreadName, suiteName))
 
       val stopRequested = stopper
       val report = wrapReporterIfNecessary(thisSuite, reporter)
@@ -1807,7 +1807,7 @@ private[scalatest] object Suite {
       }
     }
   }
-  
+
   def diffStrings(s: String, t: String): Tuple2[String, String] = {
     def findCommonPrefixLength(s: String, t: String): Int = {
       val max = s.length.min(t.length) // the maximum potential size of the prefix
@@ -2493,4 +2493,5 @@ used for test events like succeeded/failed, etc.
    else simpleName + theSuite.nestedSuites.mkString("(", ", ", ")")
   }
 }
+
 
