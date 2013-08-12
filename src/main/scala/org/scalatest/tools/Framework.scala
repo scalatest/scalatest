@@ -771,13 +771,13 @@ class Framework extends SbtFramework {
                
     val propertiesMap = parsePropertiesArgsIntoMap(propertiesArgsList)
     val chosenStyleSet: Set[String] = parseChosenStylesIntoChosenStyleSet(chosenStyles, "-y")
-    if (propertiesMap.isDefinedAt("org.scalatest.ChosenStyles"))
-      throw new IllegalArgumentException("Property name 'org.scalatest.ChosenStyles' is used by ScalaTest, please choose other property name.")
+    if (propertiesMap.isDefinedAt(Runner.CHOSEN_STYLES))
+      throw new IllegalArgumentException("Property name '" + Runner.CHOSEN_STYLES + "' is used by ScalaTest, please choose other property name.")
     val configMap: ConfigMap = 
       if (chosenStyleSet.isEmpty)
         propertiesMap
       else
-        propertiesMap + ("org.scalatest.ChosenStyles" -> chosenStyleSet)
+        propertiesMap + (Runner.CHOSEN_STYLES -> chosenStyleSet)
       
     val tagsToInclude: Set[String] = parseCompoundArgIntoSet(includesArgsList, "-n")
     val tagsToExclude: Set[String] = parseCompoundArgIntoSet(excludesArgsList, "-l")

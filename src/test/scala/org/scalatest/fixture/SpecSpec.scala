@@ -25,6 +25,7 @@ import org.scalatest.{ PrivateMethodTester, ShouldMatchers, BeforeAndAfterEach, 
                         Reporter, Distributor, OptionValues, NotAllowedException, Resources, DoNotDiscover, WrapWith, 
                         ConfigMapWrapperSuite, StringFixture, Status, SucceededStatus, ConfigMap, Outcome }
 import org.scalatest.SharedHelpers._
+import org.scalatest.tools.Runner.CHOSEN_STYLES
 
 class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
 
@@ -2382,21 +2383,21 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     
     val simpleSpec = new SimpleSpec()
     simpleSpec.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
-    simpleSpec.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("org.scalatest.ChosenStyles" -> Set("org.scalatest.fixture.Spec")), None, new Tracker, Set.empty))
+    simpleSpec.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.fixture.Spec")), None, new Tracker, Set.empty))
     val caught =
       intercept[NotAllowedException] {
-        simpleSpec.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("org.scalatest.ChosenStyles" -> Set("org.scalatest.fixture.FunSpec")), None, new Tracker, Set.empty))
+        simpleSpec.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.fixture.FunSpec")), None, new Tracker, Set.empty))
       }
     import OptionValues._
     assert(caught.message.value === Resources("notTheChosenStyle", "org.scalatest.fixture.Spec", "org.scalatest.fixture.FunSpec"))
     val caught2 =
       intercept[NotAllowedException] {
-        simpleSpec.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("org.scalatest.ChosenStyles" -> Set("org.scalatest.fixture.FunSpec", "org.scalatest.fixture.FreeSpec")), None, new Tracker, Set.empty))
+        simpleSpec.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.fixture.FunSpec", "org.scalatest.fixture.FreeSpec")), None, new Tracker, Set.empty))
       }
     assert(caught2.message.value === Resources("notOneOfTheChosenStyles", "org.scalatest.fixture.Spec", makeListForHumans(Vector("org.scalatest.fixture.FunSpec", "org.scalatest.fixture.FreeSpec"))))
     val caught3 =
       intercept[NotAllowedException] {
-        simpleSpec.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("org.scalatest.ChosenStyles" -> Set("org.scalatest.fixture.FunSpec", "org.scalatest.fixture.FreeSpec", "org.scalatest.fixture.FlatSpec")), None, new Tracker, Set.empty))
+        simpleSpec.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.fixture.FunSpec", "org.scalatest.fixture.FreeSpec", "org.scalatest.fixture.FlatSpec")), None, new Tracker, Set.empty))
       }
     assert(caught3.message.value === Resources("notOneOfTheChosenStyles", "org.scalatest.fixture.Spec", makeListForHumans(Vector("org.scalatest.fixture.FunSpec", "org.scalatest.fixture.FreeSpec", "org.scalatest.fixture.FlatSpec"))))
   }

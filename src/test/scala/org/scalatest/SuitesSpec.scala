@@ -16,6 +16,7 @@
 package org.scalatest
 
 import SharedHelpers._
+import tools.Runner.CHOSEN_STYLES
 
 /* Uncomment after remove type aliases in org.scalatest package object
 import org.scalatest.exceptions.NotAllowedException
@@ -46,7 +47,7 @@ class SuitesSpec extends FunSpec {
     it("should not care about chosenStyles if it contains no tests directly and only contains nested suites with no tests") {
       val f = new Suites(a, b, c, d, e)
       f.run(None, Args(SilentReporter))
-      f.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("org.scalatest.ChosenStyles" -> Set("FunSuite")), None, new Tracker, Set.empty))
+      f.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("FunSuite")), None, new Tracker, Set.empty))
     }
 
     it("should care about chosenStyles if it contains tests directly") {
@@ -60,10 +61,10 @@ class SuitesSpec extends FunSpec {
       // OK if no chosen styles specified
       g.run(None, Args(SilentReporter))
       // OK if chosen styles is Suite, because that's the style of *tests* written in this Suites
-      g.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("org.scalatest.ChosenStyles" -> Set("org.scalatest.Suite")), None, new Tracker, Set.empty))
+      g.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.Suite")), None, new Tracker, Set.empty))
       intercept[NotAllowedException] {
         // Should not allow if chosen styles is FunSuite, because Suite is the style of *tests* written in this Suites
-        g.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("org.scalatest.ChosenStyles" -> Set("org.scalatest.FunSuite")), None, new Tracker, Set.empty))
+        g.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.FunSuite")), None, new Tracker, Set.empty))
       }
     }
   }
@@ -85,7 +86,7 @@ class SuitesSpec extends FunSpec {
     it("should not care about chosenStyles if it contains no tests directly and only contains nested suites with no tests") {
       val f = new Specs(a, b, c, d, e)
       f.run(None, Args(SilentReporter))
-      f.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("org.scalatest.ChosenStyles" -> Set("org.scalatest.FunSuite")), None, new Tracker, Set.empty))
+      f.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.FunSuite")), None, new Tracker, Set.empty))
     }
 
     it("should care about chosenStyles if it contains tests directly") {
@@ -99,10 +100,10 @@ class SuitesSpec extends FunSpec {
       // OK if no chosen styles specified
       g.run(None, Args(SilentReporter))
       // OK if chosen styles is Suite, because that's the style of *tests* written in this Specs
-      g.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("org.scalatest.ChosenStyles" -> Set("org.scalatest.Suite")), None, new Tracker, Set.empty))
+      g.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.Suite")), None, new Tracker, Set.empty))
       intercept[NotAllowedException] {
         // Should not allow if chosen styles is FunSuite, because Suite is the style of *tests* written in this Specs
-        g.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("org.scalatest.ChosenStyles" -> Set("org.scalatest.FunSuite")), None, new Tracker, Set.empty))
+        g.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.FunSuite")), None, new Tracker, Set.empty))
       }
     }
   }

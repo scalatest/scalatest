@@ -126,9 +126,9 @@ class ScalaTestFramework extends SbtFramework {
           
           val propertiesMap = parsePropertiesArgsIntoMap(propertiesArgsList)
           val chosenStyleSet: Set[String] = parseChosenStylesIntoChosenStyleSet(chosenStyles, "-y")
-          if (propertiesMap.isDefinedAt("org.scalatest.ChosenStyles"))
-            throw new IllegalArgumentException("Property name 'org.scalatest.ChosenStyles' is used by ScalaTest, please choose other property name.")
-          configMap.getAndSet(Some(if (chosenStyleSet.isEmpty) propertiesMap else propertiesMap + ("org.scalatest.ChosenStyles" -> chosenStyleSet)))
+          if (propertiesMap.isDefinedAt(Runner.CHOSEN_STYLES))
+            throw new IllegalArgumentException("Property name '" + Runner.CHOSEN_STYLES + "' is used by ScalaTest, please choose other property name.")
+          configMap.getAndSet(Some(if (chosenStyleSet.isEmpty) propertiesMap else propertiesMap + (Runner.CHOSEN_STYLES -> chosenStyleSet)))
           val tagsToInclude: Set[String] = parseCompoundArgIntoSet(includesArgsList, "-n")
           val tagsToExclude: Set[String] = parseCompoundArgIntoSet(excludesArgsList, "-l")
           filter.getAndSet(Some(org.scalatest.Filter(if (tagsToInclude.isEmpty) None else Some(tagsToInclude), tagsToExclude)))
