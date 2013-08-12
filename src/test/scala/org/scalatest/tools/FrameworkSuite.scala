@@ -1079,4 +1079,21 @@ class FrameworkSuite extends FunSuite with Retries {
       case _ => fail("Expected to find EventRecordingReporter, but not found.")
     }
   }
+  
+  test("-W should cause AlertProvided to be fired", Retryable) {
+    val testEventHandler = new TestEventHandler
+    val runner = framework.runner(Array("-W", "1", "1", "-C", classOf[EventRecordingReporter].getName), Array.empty, testClassLoader)
+    val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.SlowSampleSuite", subclassFingerprint, false, Array(new SuiteSelector))))
+    val task = tasks(0)
+    task.execute(testEventHandler, Array(new TestLogger))
+    assert(testEventHandler.successEventsReceived.size === 1)
+    assert(runner.isInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner])
+    val scalatestRunner = runner.asInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner]
+    scalatestRunner.dispatchReporter.reporters.find(_.isInstanceOf[EventRecordingReporter]) match {
+      case Some(recordingRep : EventRecordingReporter) => 
+        assert(recordingRep.testSucceededEventsReceived.size === 1)
+        assert(recordingRep.alertProvidedEventsReceived.size > 0)
+      case _ => fail("Expected to find EventRecordingReporter, but not found.")
+    }
+  }
 }

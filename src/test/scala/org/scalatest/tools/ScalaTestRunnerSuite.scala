@@ -15,14 +15,24 @@
  */
 package org.scalatest.tools {
 
-import org.scalatest.{FunSuite, Outcome, DispatchReporter, Resources}
+import org.scalatest.{FunSuite, Outcome, DispatchReporter, Resources, Retries}
 import org.scalatools.testing.{Event, EventHandler, Result, Logger, Runner => TestingRunner}
 import org.scalatest.SharedHelpers.EventRecordingReporter
 import org.scalatest.exceptions.NotAllowedException
+import org.scalatest.tagobjects.Retryable
 
   // testing runner.run:
   // def run(testClassName: String, fingerprint: TestFingerprint, args: Array[String]): Array[Event]
-  class ScalaTestRunnerSuite extends FunSuite {
+  class ScalaTestRunnerSuite extends FunSuite with Retries {
+  
+    override def withFixture(test: NoArgTest) = {
+      if (isRetryable(test))
+        withRetryOnFailure {
+          super.withFixture(test)
+        }
+     else super.withFixture(test)
+    }
+  
     test("call with simple class") {
       val results = run("org.scalatest.tools.test.SimpleTest")
       assert(results(0).testName === "hello, world")
@@ -299,6 +309,25 @@ import org.scalatest.exceptions.NotAllowedException
                   assert(e.getMessage === Resources("notTheChosenStyle", "org.scalatest.FunSuite", "org.scalatest.FunSpec"))
                 case _ => fail("Expected SuiteAborted to carry NotAllowedException, but it did not.")
               }
+            case _ => fail("Expected to find EventRecordingReporter, but not found.")
+          }
+        case _ => fail("Expected to find DispatchReporter, but not found.")
+      }
+    }
+    
+    test("-W should cause AlertProvided to be fired", Retryable) {
+      val framework = new ScalaTestFramework()
+      val runner: TestingRunner = framework.testRunner(Thread.currentThread.getContextClassLoader, Array(new TestLogger))
+      val listener = new EventHandler {
+        def handle(event: Event) {}
+      }
+      runner.run("org.scalatest.tools.scalasbt.SlowSampleSuite", fingerprint, listener, Array("-W", "1", "1", "-C", classOf[EventRecordingReporter].getName))
+      framework.RunConfig.reporter.get match {
+        case Some(dispatchRep: DispatchReporter) => 
+          dispatchRep.reporters.find(_.isInstanceOf[EventRecordingReporter]) match {
+            case Some(recordingRep : EventRecordingReporter) => 
+              assert(recordingRep.testSucceededEventsReceived.size === 1)
+              assert(recordingRep.alertProvidedEventsReceived.size > 0)
             case _ => fail("Expected to find EventRecordingReporter, but not found.")
           }
         case _ => fail("Expected to find DispatchReporter, but not found.")

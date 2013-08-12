@@ -7,6 +7,7 @@ import org.scalatest.tools.Runner.parseSuiteArgsIntoNameStrings
 import org.scalatest.tools.Runner.parseChosenStylesIntoChosenStyleSet
 import org.scalatest.tools.Runner.parseArgs
 import org.scalatest.tools.Runner.parseDoubleArgument
+import org.scalatest.tools.Runner.parseSlowpokeConfig
 import SuiteDiscoveryHelper._
 import org.scalatest.Suite.formatterForSuiteStarting
 import org.scalatest.Suite.formatterForSuiteCompleted
@@ -20,6 +21,7 @@ import org.scalatest._
 import java.util.concurrent.atomic.AtomicReference
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.atomic.AtomicLong
 
 /**
  * Class that makes ScalaTest tests visible to sbt.
@@ -104,6 +106,9 @@ class ScalaTestFramework extends SbtFramework {
     private val configMap: AtomicReference[Option[ConfigMap]] = new AtomicReference(None)
     private val membersOnly: AtomicReference[Option[List[String]]] = new AtomicReference(None)
     private val wildcard: AtomicReference[Option[List[String]]] = new AtomicReference(None)
+    private val detectSlowpokes: AtomicBoolean = new AtomicBoolean(false) 
+    private val slowpokeDetectionDelay: AtomicLong = new AtomicLong(60000)
+    private val slowpokeDetectionPeriod: AtomicLong = new AtomicLong(60000)
     private val resultHolder = new SuiteResultHolder()
     
     def getConfigurations(args: Array[String], loggers: Array[Logger], eventHandler: EventHandler, testLoader: ClassLoader) = 
@@ -163,6 +168,19 @@ class ScalaTestFramework extends SbtFramework {
           filter.getAndSet(Some(org.scalatest.Filter(if (tagsToInclude.isEmpty) None else Some(tagsToInclude), tagsToExclude)))
           membersOnly.getAndSet(Some(parseSuiteArgsIntoNameStrings(membersOnlyArgs, "-m")))
           wildcard.getAndSet(Some(parseSuiteArgsIntoNameStrings(wildcardArgs, "-w")))
+          val slowpokeConfig: Option[SlowpokeConfig] = parseSlowpokeConfig(slowpokeArgs)
+          //val (detectSlowpokes: Boolean, slowpokeDetectionDelay: Long, slowpokeDetectionPeriod: Long) =
+          slowpokeConfig match {
+            case Some(SlowpokeConfig(delayInMillis, periodInMillis)) => 
+              detectSlowpokes.getAndSet(true)
+              slowpokeDetectionDelay.getAndSet(delayInMillis)
+              slowpokeDetectionPeriod.getAndSet(periodInMillis)
+            case _ => 
+              detectSlowpokes.getAndSet(false)
+              slowpokeDetectionDelay.getAndSet(60000L)
+              slowpokeDetectionPeriod.getAndSet(60000L)
+          }
+          
           Runner.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
           
           val fullReporterConfigurations = Runner.parseReporterArgsIntoConfigurations(reporterArgs)
@@ -206,11 +224,11 @@ class ScalaTestFramework extends SbtFramework {
         }
         
         if (reporter.get.isEmpty || reporter.get.get.isDisposed) 
-          reporter.getAndSet(Some(ReporterFactory.getDispatchReporter(reporterConfigs.get.get, None, None, testLoader, Some(resultHolder), false, 0, 0))) // TODO: Support slowpoke detector?
+          reporter.getAndSet(Some(ReporterFactory.getDispatchReporter(reporterConfigs.get.get, None, None, testLoader, Some(resultHolder), detectSlowpokes.get, slowpokeDetectionDelay.get, slowpokeDetectionPeriod.get))) 
           
         val dispatchReporter = 
           if (useStdout.get)
-            ReporterFactory.getDispatchReporter(Seq(reporter.get.get, createSbtLogInfoReporter(loggers)), None, None, testLoader, Some(resultHolder), false, 0, 0) // TODO: Support slowpoke detector?
+            ReporterFactory.getDispatchReporter(Seq(reporter.get.get, createSbtLogInfoReporter(loggers)), None, None, testLoader, Some(resultHolder), false, 0, 0) // Slowpoke detection included in wrapped DispatchReporter
           else
             reporter.get.get
           

@@ -30,6 +30,7 @@ import Runner.parseSuiteArgsIntoNameStrings
 import Runner.parseChosenStylesIntoChosenStyleSet
 import Runner.parseArgs
 import Runner.parseDoubleArgument
+import Runner.parseSlowpokeConfig
 import java.io.{StringWriter, PrintWriter}
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.atomic.{AtomicInteger, AtomicBoolean}
@@ -160,7 +161,7 @@ class Framework extends SbtFramework {
           presentReminderWithFullStackTraces,
           presentReminderWithoutCanceledTests
         )
-      ReporterFactory.getDispatchReporter(Seq(reporter, sbtLogInfoReporter), None, None, loader, Some(resultHolder), false, 0, 0) // TODO: Support Slowpoke detection from sbt
+      ReporterFactory.getDispatchReporter(Seq(reporter, sbtLogInfoReporter), None, None, loader, Some(resultHolder), false, 0, 0) // Slowpoke detection included in wrapped DispatchReporter
     }
     else 
       reporter
@@ -588,14 +589,17 @@ class Framework extends SbtFramework {
     presentReminder: Boolean,
     presentReminderWithShortStackTraces: Boolean,
     presentReminderWithFullStackTraces: Boolean,
-    presentReminderWithoutCanceledTests: Boolean
+    presentReminderWithoutCanceledTests: Boolean, 
+    detectSlowpokes: Boolean,
+    slowpokeDetectionDelay: Long,
+    slowpokeDetectionPeriod: Long
   ) extends sbt.testing.Runner {  
     val isDone = new AtomicBoolean(false)
     val tracker = new Tracker
     val summaryCounter = new SummaryCounter
     val runStartTime = System.currentTimeMillis
     
-    val dispatchReporter = ReporterFactory.getDispatchReporter(repConfig, None, None, loader, Some(resultHolder), false, 0, 0) // TODO: Support slowpoke detection from sbt
+    val dispatchReporter = ReporterFactory.getDispatchReporter(repConfig, None, None, loader, Some(resultHolder), detectSlowpokes, slowpokeDetectionDelay, slowpokeDetectionPeriod) 
     
     dispatchReporter(RunStarting(tracker.nextOrdinal(), 0, configMap))
     
@@ -813,6 +817,13 @@ class Framework extends SbtFramework {
     val tagsToExclude: Set[String] = parseCompoundArgIntoSet(tagsToExcludeArgs, "-l")
     val membersOnly: List[String] = parseSuiteArgsIntoNameStrings(membersOnlyArgs, "-m")
     val wildcard: List[String] = parseSuiteArgsIntoNameStrings(wildcardArgs, "-w")
+    val slowpokeConfig: Option[SlowpokeConfig] = parseSlowpokeConfig(slowpokeArgs)
+    val (detectSlowpokes: Boolean, slowpokeDetectionDelay: Long, slowpokeDetectionPeriod: Long) =
+      slowpokeConfig match {
+        case Some(SlowpokeConfig(delayInMillis, periodInMillis)) => (true, delayInMillis, periodInMillis)
+        case _ => (false, 60000L, 60000L)
+      }
+    
     Runner.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
     
     val fullReporterConfigurations: ReporterConfigurations = 
@@ -890,7 +901,10 @@ class Framework extends SbtFramework {
       presentReminder,
       presentReminderWithShortStackTraces,
       presentReminderWithFullStackTraces,
-      presentReminderWithoutCanceledTests
+      presentReminderWithoutCanceledTests, 
+      detectSlowpokes,
+      slowpokeDetectionDelay,
+      slowpokeDetectionPeriod
     )
   }
   
