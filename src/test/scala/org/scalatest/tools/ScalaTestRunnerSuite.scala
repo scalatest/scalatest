@@ -191,21 +191,21 @@ import org.scalatest.exceptions.NotAllowedException
       val iae = intercept[IllegalArgumentException] {
         run("org.scalatest.tools.test.SimpleTest", Array("-c"))
       }
-      assert(iae.getMessage === "-c, -P (concurrent) is not supported when runs in SBT.")
+      assert(iae.getMessage === "-c, -P (concurrent) is not supported when runs in SBT, please use SBT parallel configuration instead.")
     }
     
     test("ScalaTestRunner.run should throw IllegalArgumentException when -P is passed in") {
       val iae = intercept[IllegalArgumentException] {
         run("org.scalatest.tools.test.SimpleTest", Array("-P"))
       }
-      assert(iae.getMessage === "-c, -P (concurrent) is not supported when runs in SBT.")
+      assert(iae.getMessage === "-c, -P (concurrent) is not supported when runs in SBT, please use SBT parallel configuration instead.")
     }
     
     test("ScalaTestRunner.run should throw IllegalArgumentException when -PS is passed in") {
       val iae = intercept[IllegalArgumentException] {
         run("org.scalatest.tools.test.SimpleTest", Array("-PS"))
       }
-      assert(iae.getMessage === "-c, -P (concurrent) is not supported when runs in SBT.")
+      assert(iae.getMessage === "-c, -P (concurrent) is not supported when runs in SBT, please use SBT parallel configuration instead.")
     }
     
     test("ScalaTestRunner.run should throw IllegalArgumentException when -R is passed in") {

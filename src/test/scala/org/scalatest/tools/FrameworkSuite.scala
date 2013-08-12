@@ -972,21 +972,21 @@ class FrameworkSuite extends FunSuite with Retries {
     val iae = intercept[IllegalArgumentException] {
       framework.runner(Array("-c"), Array.empty, testClassLoader)
     }
-    assert(iae.getMessage === "-c, -P (concurrent) is not supported when runs in SBT.")
+    assert(iae.getMessage === "-c, -P (concurrent) is not supported when runs in SBT, please use SBT parallel configuration instead.")
   }
   
   test("Framework.runner should throw IllegalArgumentException when -P is passed in") {
     val iae = intercept[IllegalArgumentException] {
       framework.runner(Array("-P"), Array.empty, testClassLoader)
     }
-    assert(iae.getMessage === "-c, -P (concurrent) is not supported when runs in SBT.")
+    assert(iae.getMessage === "-c, -P (concurrent) is not supported when runs in SBT, please use SBT parallel configuration instead.")
   }
   
   test("Framework.runner should throw IllegalArgumentException when -PS is passed in") {
     val iae = intercept[IllegalArgumentException] {
       framework.runner(Array("-PS"), Array.empty, testClassLoader)
     }
-    assert(iae.getMessage === "-c, -P (concurrent) is not supported when runs in SBT.")
+    assert(iae.getMessage === "-c, -P (concurrent) is not supported when runs in SBT, please use SBT parallel configuration instead.")
   }
   
   test("Framework.runner should throw IllegalArgumentException when -R is passed in") {

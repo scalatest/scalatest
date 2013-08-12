@@ -144,7 +144,7 @@ class ScalaTestFramework extends SbtFramework {
             throw new IllegalArgumentException("-b (testng) is not supported when runs in SBT.")
           
           if (!concurrentArgs.isEmpty)
-            throw new IllegalArgumentException("-c, -P (concurrent) is not supported when runs in SBT.")
+            throw new IllegalArgumentException("-c, -P (concurrent) is not supported when runs in SBT, please use SBT parallel configuration instead.")
           
           val propertiesMap = parsePropertiesArgsIntoMap(propertiesArgs)
           val chosenStyleSet: Set[String] = parseChosenStylesIntoChosenStyleSet(chosenStyles, "-y")
