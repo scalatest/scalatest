@@ -1173,7 +1173,7 @@
                    haltonfailure="true" tagsToExclude="${tags.to.exclude}">
             <jvmarg value="-XX:MaxPermSize=512m"/>
             <reporter type="graphic"/>
-            <reporter type="dashboard" directory="target/dash" numfiles="3" />
+            <!--<reporter type="dashboard" directory="target/dash" numfiles="3" />-->
             <reporter type="junitxml" directory="target"/>
             <reporter type="stdout" config="DI"/>
             <reporter type="html" directory="target/html" config="D" />
