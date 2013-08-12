@@ -732,6 +732,7 @@ object Runner {
   private val RUNNER_JFRAME_START_Y: Int = 100
   
   private[scalatest] val SELECTED_TAG = "org.scalatest.Selected"
+  private[scalatest] val CHOSEN_STYLES = "org.scalatest.ChosenStyles"
   
   @volatile private[scalatest] var spanScaleFactor: Double = 1.0
 
@@ -941,13 +942,13 @@ object Runner {
 
     val passFailReporter = if (runWithPassFailReporter) Some(new PassFailReporter) else None
 
-    if (propertiesMap.isDefinedAt("org.scalatest.ChosenStyles"))
-      throw new IllegalArgumentException("Property name 'org.scalatest.ChosenStyles' is used by ScalaTest, please choose other property name.")
+    if (propertiesMap.isDefinedAt(CHOSEN_STYLES))
+      throw new IllegalArgumentException("Property name '" + CHOSEN_STYLES + "' is used by ScalaTest, please choose other property name.")
     val configMap: ConfigMap = 
       if (chosenStyleSet.isEmpty)
         propertiesMap
       else
-        propertiesMap + ("org.scalatest.ChosenStyles" -> chosenStyleSet)
+        propertiesMap + (CHOSEN_STYLES -> chosenStyleSet)
 
     val (detectSlowpokes: Boolean, slowpokeDetectionDelay: Long, slowpokeDetectionPeriod: Long) =
       slowpokeConfig match {

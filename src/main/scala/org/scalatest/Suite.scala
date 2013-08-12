@@ -2330,8 +2330,8 @@ used for test events like succeeded/failed, etc.
 
   def checkChosenStyles(configMap: ConfigMap, styleName: String) {
     val chosenStyleSet = 
-        if (configMap.isDefinedAt("org.scalatest.ChosenStyles"))
-          configMap("org.scalatest.ChosenStyles").asInstanceOf[Set[String]]
+        if (configMap.isDefinedAt(Runner.CHOSEN_STYLES))
+          configMap(Runner.CHOSEN_STYLES).asInstanceOf[Set[String]]
         else
           Set.empty[String]
     if (chosenStyleSet.size > 0 && !chosenStyleSet.contains(styleName)) {
