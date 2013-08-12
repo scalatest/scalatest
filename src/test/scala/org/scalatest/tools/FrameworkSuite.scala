@@ -1017,7 +1017,7 @@ class FrameworkSuite extends FunSuite with Retries {
     assert(iae.getMessage === "-q is not supported when runs in SBT, please use SBT's test-only or test filter instead.")
   }
 
-  test("Framework.runner should be able to pass in custom reporter via -C", Retryable) {
+  test("Framework.runner should be able to pass in custom reporter via -C") {
     val testEventHandler = new TestEventHandler
     val runner = framework.runner(Array("-C", classOf[EventRecordingReporter].getName), Array.empty, testClassLoader)
     val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.SampleSuite", subclassFingerprint, false, Array(new SuiteSelector))))
@@ -1033,7 +1033,7 @@ class FrameworkSuite extends FunSuite with Retries {
     }
   }
 
-  test("-y should do nothing when the task to execute is a chosen style", Retryable) {
+  test("-y should do nothing when the task to execute is a chosen style") {
     val testEventHandler = new TestEventHandler
     val runner = framework.runner(Array("-y", "org.scalatest.FunSuite", "-C", classOf[EventRecordingReporter].getName), Array.empty, testClassLoader)
     val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.SampleSuite", subclassFingerprint, false, Array(new SuiteSelector))))
@@ -1050,7 +1050,7 @@ class FrameworkSuite extends FunSuite with Retries {
     }    
   }
   
-  test("-y should get SuiteAborted event with NotAllowedException when the task to execute is not a chosen style", Retryable) {
+  test("-y should get SuiteAborted event with NotAllowedException when the task to execute is not a chosen style") {
     val testEventHandler = new TestEventHandler
     val runner = framework.runner(Array("-y", "org.scalatest.FunSpec", "-C", classOf[EventRecordingReporter].getName), Array.empty, testClassLoader)
     val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.SampleSuite", subclassFingerprint, false, Array(new SuiteSelector))))
