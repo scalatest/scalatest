@@ -208,6 +208,20 @@ import org.scalatest.exceptions.NotAllowedException
       assert(iae.getMessage === "-c, -P (concurrent) is not supported when runs in SBT.")
     }
     
+    test("ScalaTestRunner.run should throw IllegalArgumentException when -R is passed in") {
+      val iae = intercept[IllegalArgumentException] {
+        run("org.scalatest.tools.test.SimpleTest", Array("-R"))
+      }
+      assert(iae.getMessage === "-p, -R (runpath) is not supported when runs in SBT.")
+    }
+    
+    test("ScalaTestRunner.run should throw IllegalArgumentException when -p is passed in") {
+      val iae = intercept[IllegalArgumentException] {
+        run("org.scalatest.tools.test.SimpleTest", Array("-p"))
+      }
+      assert(iae.getMessage === "-p, -R (runpath) is not supported when runs in SBT.")
+    }
+    
     test("ScalaTestRunner.run should be able to pass in custom reporter via -C") {
       val framework = new ScalaTestFramework()
       val runner: TestingRunner = framework.testRunner(Thread.currentThread.getContextClassLoader, Array(new TestLogger))

@@ -773,6 +773,9 @@ class Framework extends SbtFramework {
       testSortingReporterTimeouts,
       slowpokeArgs
     ) = parseArgs(args)
+    
+    if (!runpathArgs.isEmpty)
+      throw new IllegalArgumentException("-p, -R (runpath) is not supported when runs in SBT.")
                
     if (!suiteArgs.isEmpty)
       throw new IllegalArgumentException("-s (suite) is not supported when runs in SBT, please use SBT's test-only instead.")
