@@ -222,6 +222,13 @@ import org.scalatest.exceptions.NotAllowedException
       assert(iae.getMessage === "-p, -R (runpath) is not supported when runs in SBT.")
     }
     
+    test("ScalaTestRunner.run should throw IllegalArgumentException when -A is passed in") {
+      val iae = intercept[IllegalArgumentException] {
+        run("org.scalatest.tools.test.SimpleTest", Array("-A", "again.txt"))
+      }
+      assert(iae.getMessage === "-A is not supported when runs in SBT, please use SBT's test-quick instead.")
+    }
+    
     test("ScalaTestRunner.run should be able to pass in custom reporter via -C") {
       val framework = new ScalaTestFramework()
       val runner: TestingRunner = framework.testRunner(Thread.currentThread.getContextClassLoader, Array(new TestLogger))

@@ -134,6 +134,9 @@ class ScalaTestFramework extends SbtFramework {
           if (!suiteArgs.isEmpty)
             throw new IllegalArgumentException("-s (suite) is not supported when runs in SBT, please use SBT's test-only instead.")
           
+          if (!againArgs.isEmpty)
+            throw new IllegalArgumentException("-A is not supported when runs in SBT, please use SBT's test-quick instead.")
+          
           if (!junitArgs.isEmpty)
             throw new IllegalArgumentException("-j (junit) is not supported when runs in SBT.")
           

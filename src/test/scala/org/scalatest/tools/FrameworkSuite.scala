@@ -1002,6 +1002,13 @@ class FrameworkSuite extends FunSuite with Retries {
     }
     assert(iae.getMessage === "-p, -R (runpath) is not supported when runs in SBT.")
   }
+  
+  test("Framework.runner should throw IllegalArgumentException when -A is passed in") {
+    val iae = intercept[IllegalArgumentException] {
+      framework.runner(Array("-A", "again.txt"), Array.empty, testClassLoader)
+    }
+    assert(iae.getMessage === "-A is not supported when runs in SBT, please use SBT's test-quick instead.")
+  }
 
   test("Framework.runner should be able to pass in custom reporter via -C", Retryable) {
     val testEventHandler = new TestEventHandler
