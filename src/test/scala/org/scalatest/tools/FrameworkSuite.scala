@@ -1016,6 +1016,13 @@ class FrameworkSuite extends FunSuite with Retries {
     }
     assert(iae.getMessage === "-q is not supported when runs in SBT, please use SBT's test-only or test filter instead.")
   }
+  
+  test("Framework.runner should throw IllegalArgumentException when -T is passed in") {
+    val iae = intercept[IllegalArgumentException] {
+      framework.runner(Array("-T", "100"), Array.empty, testClassLoader)
+    }
+    assert(iae.getMessage === "-T is not supported when runs in SBT.")
+  }
 
   test("Framework.runner should be able to pass in custom reporter via -C") {
     val testEventHandler = new TestEventHandler

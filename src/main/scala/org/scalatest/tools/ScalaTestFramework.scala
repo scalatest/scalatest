@@ -150,6 +150,9 @@ class ScalaTestFramework extends SbtFramework {
           if (!suffixes.isEmpty)
             throw new IllegalArgumentException("-q is not supported when runs in SBT, please use SBT's test-only or test filter instead.")
           
+          if (!testSortingReporterTimeouts.isEmpty)
+            throw new IllegalArgumentException("-T is not supported when runs in SBT.")
+          
           val propertiesMap = parsePropertiesArgsIntoMap(propertiesArgs)
           val chosenStyleSet: Set[String] = parseChosenStylesIntoChosenStyleSet(chosenStyles, "-y")
           if (propertiesMap.isDefinedAt(Runner.CHOSEN_STYLES))
