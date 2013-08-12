@@ -29,6 +29,7 @@ import Runner.mergeMap
 import Runner.parseSuiteArgsIntoNameStrings
 import Runner.parseChosenStylesIntoChosenStyleSet
 import Runner.parseArgs
+import Runner.parseDoubleArgument
 import java.io.{StringWriter, PrintWriter}
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.atomic.{AtomicInteger, AtomicBoolean}
@@ -794,7 +795,8 @@ class Framework extends SbtFramework {
     
     if (!suffixes.isEmpty)
       throw new IllegalArgumentException("-q is not supported when runs in SBT, please use SBT's test-only or test filter instead.")
-               
+    
+    
     val propertiesMap = parsePropertiesArgsIntoMap(propertiesArgs)
     val chosenStyleSet: Set[String] = parseChosenStylesIntoChosenStyleSet(chosenStyles, "-y")
     if (propertiesMap.isDefinedAt(Runner.CHOSEN_STYLES))
@@ -809,6 +811,7 @@ class Framework extends SbtFramework {
     val tagsToExclude: Set[String] = parseCompoundArgIntoSet(tagsToExcludeArgs, "-l")
     val membersOnly: List[String] = parseSuiteArgsIntoNameStrings(membersOnlyArgs, "-m")
     val wildcard: List[String] = parseSuiteArgsIntoNameStrings(wildcardArgs, "-w")
+    Runner.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
     
     val fullReporterConfigurations: ReporterConfigurations = 
       if (remoteArgs.isEmpty) {

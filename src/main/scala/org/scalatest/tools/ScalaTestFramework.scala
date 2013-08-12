@@ -6,6 +6,7 @@ import org.scalatest.tools.Runner.parseCompoundArgIntoSet
 import org.scalatest.tools.Runner.parseSuiteArgsIntoNameStrings
 import org.scalatest.tools.Runner.parseChosenStylesIntoChosenStyleSet
 import org.scalatest.tools.Runner.parseArgs
+import org.scalatest.tools.Runner.parseDoubleArgument
 import SuiteDiscoveryHelper._
 import org.scalatest.Suite.formatterForSuiteStarting
 import org.scalatest.Suite.formatterForSuiteCompleted
@@ -159,6 +160,7 @@ class ScalaTestFramework extends SbtFramework {
           filter.getAndSet(Some(org.scalatest.Filter(if (tagsToInclude.isEmpty) None else Some(tagsToInclude), tagsToExclude)))
           membersOnly.getAndSet(Some(parseSuiteArgsIntoNameStrings(membersOnlyArgs, "-m")))
           wildcard.getAndSet(Some(parseSuiteArgsIntoNameStrings(wildcardArgs, "-w")))
+          Runner.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
           
           val fullReporterConfigurations = Runner.parseReporterArgsIntoConfigurations(reporterArgs)
           
