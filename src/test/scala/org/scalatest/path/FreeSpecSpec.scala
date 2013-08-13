@@ -265,7 +265,7 @@ class FreeSpecSpec extends org.scalatest.FunSpec with GivenWhenThen {
         assert(testStartingIndex < testSucceededIndex)
         assert(testSucceededIndex < infoProvidedIndex)
       }
-      it("should throw an IllegalStateException when info is called by a method invoked after the suite has been executed") {
+      it("should print to stdout when info is called by a method invoked after the suite has been executed") {
         class MySpec extends PathFreeSpec {
           callInfo() // This should work fine
           def callInfo() {
@@ -279,9 +279,7 @@ class FreeSpecSpec extends org.scalatest.FunSpec with GivenWhenThen {
         val spec = new MySpec
         val myRep = new EventRecordingReporter
         spec.run(None, Args(myRep))
-        intercept[IllegalStateException] {
-          spec.callInfo()
-        }
+        spec.callInfo() // TODO: Actually test that This prints to stdout
       }
       it("should send an InfoProvided with an IndentedText formatter with level 1 when called outside a test") {
         val spec = new InfoBeforeTestSpec

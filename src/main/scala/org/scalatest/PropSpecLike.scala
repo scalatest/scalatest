@@ -39,7 +39,7 @@ import Suite.autoTagClassAnnotations
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.PropSpecFinder"))
-trait PropSpecLike extends Suite with Informing with Documenting { thisSuite =>
+trait PropSpecLike extends Suite with Informing with Updating with Alerting with Documenting { thisSuite =>
 
   private final val engine = new Engine("concurrentPropSpecMod", "PropSpec")
   import engine._
@@ -53,6 +53,9 @@ trait PropSpecLike extends Suite with Informing with Documenting { thisSuite =>
    * throw an exception. This method can be called safely by any thread.
    */
   protected def info: Informer = atomicInformer.get
+
+  protected def update: Updater = atomicUpdater.get
+  protected def alert: Alerter = atomicAlerter.get
 
   /**
    * Returns a <code>Documenter</code> that during test execution will forward strings passed to its

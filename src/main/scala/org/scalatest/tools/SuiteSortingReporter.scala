@@ -78,12 +78,12 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout
             case None => 
               dispatch(alertProvided)
           }
-        case noticeProvided: NoticeProvided =>
-          noticeProvided.nameInfo match {
+        case updateProvided: UpdateProvided =>
+          updateProvided.nameInfo match {
             case Some(nameInfo) =>
-              handleTestEvents(nameInfo.suiteId, noticeProvided)
+              handleTestEvents(nameInfo.suiteId, updateProvided)
             case None =>
-              dispatch(noticeProvided)
+              dispatch(updateProvided)
           }
         case markupProvided: MarkupProvided =>
           markupProvided.nameInfo match {
@@ -117,7 +117,7 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout
       dispatch(event)  // could happens after timeout
   }
   // Handles SuiteStarting, TestStarting, TestIgnored, TestSucceeded, TestFailed, TestPending,
-  // TestCanceled, InfoProvided, AlertProvided, NoticeProvided, MarkupProvided, ScopeOpened, ScopeClosed, ScopePending
+  // TestCanceled, InfoProvided, AlertProvided, UpdateProvided, MarkupProvided, ScopeOpened, ScopeClosed, ScopePending
   private def handleTestEvents(suiteId: String, event: Event) {
     val slot = slotMap(suiteId)
     val slotIdx = slotListBuf.indexOf(slot)

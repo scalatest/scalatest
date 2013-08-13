@@ -2166,6 +2166,54 @@ used for test events like succeeded/failed, etc.
       )
   }
 
+  def createUpdateProvided(theSuite: Suite,
+    report: Reporter,
+    tracker: Tracker,
+    testName: Option[String],
+    message: String,
+    payload: Option[Any], 
+    level: Int,
+    location: Option[Location],
+    includeNameInfo: Boolean,
+    includeIcon: Boolean = true) = {
+    UpdateProvided(
+        tracker.nextOrdinal(),
+        message,
+        if (includeNameInfo)
+          Some(NameInfo(theSuite.suiteName, theSuite.suiteId, Some(theSuite.getClass.getName), testName))
+        else
+          None,
+        None,
+        Some(getIndentedTextForInfo(message, level, includeIcon, testName.isDefined)),
+        location,
+        payload
+      )
+  }
+
+  def createAlertProvided(theSuite: Suite,
+    report: Reporter,
+    tracker: Tracker,
+    testName: Option[String],
+    message: String,
+    payload: Option[Any], 
+    level: Int,
+    location: Option[Location],
+    includeNameInfo: Boolean,
+    includeIcon: Boolean = true) = {
+    AlertProvided(
+        tracker.nextOrdinal(),
+        message,
+        if (includeNameInfo)
+          Some(NameInfo(theSuite.suiteName, theSuite.suiteId, Some(theSuite.getClass.getName), testName))
+        else
+          None,
+        None,
+        Some(getIndentedTextForInfo(message, level, includeIcon, testName.isDefined)),
+        location,
+        payload
+      )
+  }
+
   // If not fired in the context of a test, then testName will be None
   def reportInfoProvided(
     theSuite: Suite,
@@ -2181,6 +2229,62 @@ used for test events like succeeded/failed, etc.
   ) {
     report(
       createInfoProvided(
+        theSuite,
+        report,
+        tracker,
+        testName,
+        message,
+        payload, 
+        level,
+        location,
+        includeNameInfo,
+        includeIcon
+      )
+    )
+  }
+  
+  def reportUpdateProvided(
+    theSuite: Suite,
+    report: Reporter,
+    tracker: Tracker,
+    testName: Option[String],
+    message: String,
+    payload: Option[Any], 
+    level: Int,
+    location: Option[Location],
+    includeNameInfo: Boolean,
+    includeIcon: Boolean = true
+  ) {
+    report(
+      createUpdateProvided(
+        theSuite,
+        report,
+        tracker,
+        testName,
+        message,
+        payload, 
+        level,
+        location,
+        includeNameInfo,
+        includeIcon
+      )
+    )
+  }
+  
+  def reportAlertProvided(
+    theSuite: Suite,
+    report: Reporter,
+    tracker: Tracker,
+    testName: Option[String],
+    message: String,
+    payload: Option[Any], 
+    level: Int,
+    location: Option[Location],
+    includeNameInfo: Boolean,
+    includeIcon: Boolean = true
+  ) {
+    report(
+      createAlertProvided(
         theSuite,
         report,
         tracker,

@@ -22,6 +22,9 @@ import org.scalatest.events.Location
 import org.scalatest.Suite.getLineInFile
 import org.scalatest.events.Event
 import org.scalatest.events.RecordableEvent
+import org.scalatest.events.UpdateProvided
+import org.scalatest.events.AlertProvided
+import org.scalatest.events.NotificationEvent
 
 /*
  This is used by Suite and test informers created as tests run, which therefore have
@@ -90,6 +93,34 @@ private[scalatest] class ConcurrentInformer(fire: ConcurrentMessageFiringFun) ex
 
 private[scalatest] object ConcurrentInformer {
   def apply(fire: (String, Option[Any], Boolean, Option[Location]) => Unit) = new ConcurrentInformer(fire)
+}
+
+private[scalatest] class ConcurrentUpdater(fire: ConcurrentMessageFiringFun) extends ThreadAwareness with Updater {
+  def apply(message: String, payload: Option[Any] = None) = {
+    if (message == null)
+      throw new NullPointerException
+    if (payload == null)
+      throw new NullPointerException
+    fire(message, payload, isConstructingThread, getLineInFile(Thread.currentThread.getStackTrace, 2))
+  }
+}
+
+private[scalatest] object ConcurrentUpdater {
+  def apply(fire: (String, Option[Any], Boolean, Option[Location]) => Unit) = new ConcurrentUpdater(fire)
+}
+
+private[scalatest] class ConcurrentAlerter(fire: ConcurrentMessageFiringFun) extends ThreadAwareness with Alerter {
+  def apply(message: String, payload: Option[Any] = None) = {
+    if (message == null)
+      throw new NullPointerException
+    if (payload == null)
+      throw new NullPointerException
+    fire(message, payload, isConstructingThread, getLineInFile(Thread.currentThread.getStackTrace, 2))
+  }
+}
+
+private[scalatest] object ConcurrentAlerter {
+  def apply(fire: (String, Option[Any], Boolean, Option[Location]) => Unit) = new ConcurrentAlerter(fire)
 }
 
 private[scalatest] class ConcurrentDocumenter(fire: ConcurrentMessageFiringFun) extends ThreadAwareness with Documenter {
@@ -193,23 +224,12 @@ private[scalatest] class PathMessageRecordingInformer(eventFun: (String, Option[
     messages += ((message, payload, Thread.currentThread, isConstructingThread))
   }
 
-  // Returns them in order recorded
- // private def recordedMessages: List[String] = for ((msg, _) <- messages) yield toList
-
-/*
-  def apply(message: String) {
-    if (message == null)
-      throw new NullPointerException
-    record(message, None) // have to record all because of eager execution of tests in path traits
-  }
-*/
-  
   def apply(message: String, payload: Option[Any] = None) {
     if (message == null)
       throw new NullPointerException
     if (payload == null)
       throw new NullPointerException
-    record(message, payload)
+    record(message, payload) // have to record all because of eager execution of tests in path traits
   }
 
   def recordedEvents(testWasPending: Boolean, theSuite: Suite, report: Reporter, tracker: Tracker, testName: String, indentation: Int, includeIcon: Boolean): collection.immutable.IndexedSeq[RecordableEvent] = {
@@ -221,4 +241,104 @@ private[scalatest] class PathMessageRecordingInformer(eventFun: (String, Option[
 
 private[scalatest] object PathMessageRecordingInformer {
   def apply(eventFun: (String, Option[Any], Boolean, Boolean, Suite, Reporter, Tracker, String, Int, Boolean, Thread) => RecordableEvent) = new PathMessageRecordingInformer(eventFun)
+}
+
+private[scalatest] class PathMessageRecordingUpdater(eventFun: (String, Option[Any], Boolean, Boolean, Suite, Reporter, Tracker, String, Int, Boolean, Thread) => UpdateProvided) extends ThreadAwareness with Updater {
+
+  import scala.collection.mutable.SynchronizedBuffer
+  import scala.collection.mutable.ArrayBuffer
+  type Tup = (String, Option[Any], Thread, Boolean)
+  private val messages = new ArrayBuffer[Tup] with SynchronizedBuffer[Tup]
+
+  // Should only be called by the thread that constructed this
+  // ConcurrentUpdater, because don't want to worry about synchronization here. Just send stuff from
+  // other threads whenever they come in. So only call record after first checking isConstructingThread
+  // So now do have to worry about concurrency
+  private def record(message: String, payload: Option[Any]) {
+    messages += ((message, payload, Thread.currentThread, isConstructingThread))
+  }
+
+  def apply(message: String, payload: Option[Any] = None) {
+    if (message == null)
+      throw new NullPointerException
+    if (payload == null)
+      throw new NullPointerException
+    record(message, payload) // have to record all because of eager execution of tests in path traits
+  }
+
+  def recordedEvents(testWasPending: Boolean, theSuite: Suite, report: Reporter, tracker: Tracker, testName: String, indentation: Int, includeIcon: Boolean): collection.immutable.IndexedSeq[NotificationEvent] = {
+    Vector.empty ++ messages.map { case (message, payload, thread, wasConstructingThread) =>
+      eventFun(message, payload, wasConstructingThread, testWasPending, theSuite, report, tracker, testName, indentation, includeIcon, thread)
+    }
+  }
+}
+
+private[scalatest] object PathMessageRecordingUpdater {
+  def apply(eventFun: (String, Option[Any], Boolean, Boolean, Suite, Reporter, Tracker, String, Int, Boolean, Thread) => UpdateProvided) = new PathMessageRecordingUpdater(eventFun)
+}
+
+private[scalatest] class PathMessageRecordingAlerter(eventFun: (String, Option[Any], Boolean, Boolean, Suite, Reporter, Tracker, String, Int, Boolean, Thread) => AlertProvided) extends ThreadAwareness with Alerter {
+
+  import scala.collection.mutable.SynchronizedBuffer
+  import scala.collection.mutable.ArrayBuffer
+  type Tup = (String, Option[Any], Thread, Boolean)
+  private val messages = new ArrayBuffer[Tup] with SynchronizedBuffer[Tup]
+
+  // Should only be called by the thread that constructed this
+  // ConcurrentAlerter, because don't want to worry about synchronization here. Just send stuff from
+  // other threads whenever they come in. So only call record after first checking isConstructingThread
+  // So now do have to worry about concurrency
+  private def record(message: String, payload: Option[Any]) {
+    messages += ((message, payload, Thread.currentThread, isConstructingThread))
+  }
+
+  def apply(message: String, payload: Option[Any] = None) {
+    if (message == null)
+      throw new NullPointerException
+    if (payload == null)
+      throw new NullPointerException
+    record(message, payload) // have to record all because of eager execution of tests in path traits
+  }
+
+  def recordedEvents(testWasPending: Boolean, theSuite: Suite, report: Reporter, tracker: Tracker, testName: String, indentation: Int, includeIcon: Boolean): collection.immutable.IndexedSeq[NotificationEvent] = {
+    Vector.empty ++ messages.map { case (message, payload, thread, wasConstructingThread) =>
+      eventFun(message, payload, wasConstructingThread, testWasPending, theSuite, report, tracker, testName, indentation, includeIcon, thread)
+    }
+  }
+}
+
+private[scalatest] object PathMessageRecordingAlerter {
+  def apply(eventFun: (String, Option[Any], Boolean, Boolean, Suite, Reporter, Tracker, String, Int, Boolean, Thread) => AlertProvided) = new PathMessageRecordingAlerter(eventFun)
+}
+
+private[scalatest] class PathMessageRecordingDocumenter(eventFun: (String, Boolean, Boolean, Suite, Reporter, Tracker, String, Int, Boolean, Thread) => RecordableEvent) extends ThreadAwareness with Documenter {
+
+  import scala.collection.mutable.SynchronizedBuffer
+  import scala.collection.mutable.ArrayBuffer
+  type Tup = (String, Thread, Boolean)
+  private val messages = new ArrayBuffer[Tup] with SynchronizedBuffer[Tup]
+
+  // Should only be called by the thread that constructed this
+  // ConcurrentDocumenter, because don't want to worry about synchronization here. Just send stuff from
+  // other threads whenever they come in. So only call record after first checking isConstructingThread
+  // So now do have to worry about concurrency
+  private def record(message: String) {
+    messages += ((message, Thread.currentThread, isConstructingThread))
+  }
+
+  def apply(message: String) {
+    if (message == null)
+      throw new NullPointerException
+    record(message) // have to record all because of eager execution of tests in path traits
+  }
+
+  def recordedEvents(testWasPending: Boolean, theSuite: Suite, report: Reporter, tracker: Tracker, testName: String, indentation: Int, includeIcon: Boolean): collection.immutable.IndexedSeq[RecordableEvent] = {
+    Vector.empty ++ messages.map { case (message, thread, wasConstructingThread) =>
+      eventFun(message, wasConstructingThread, testWasPending, theSuite, report, tracker, testName, indentation, includeIcon, thread)
+    }
+  }
+}
+
+private[scalatest] object PathMessageRecordingDocumenter {
+  def apply(eventFun: (String, Boolean, Boolean, Suite, Reporter, Tracker, String, Int, Boolean, Thread) => RecordableEvent) = new PathMessageRecordingDocumenter(eventFun)
 }

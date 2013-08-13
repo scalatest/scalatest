@@ -47,7 +47,7 @@ import org.scalatest.exceptions.NotAllowedException
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FeatureSpecFinder"))
-trait FeatureSpecLike extends Suite with Informing with Documenting { thisSuite =>
+trait FeatureSpecLike extends Suite with Informing with Updating with Alerting with Documenting { thisSuite =>
 
   private final val engine = new FixtureEngine[FixtureParam]("concurrentFeatureSpecMod", "FixtureFeatureSpec")
   import engine._
@@ -63,6 +63,9 @@ trait FeatureSpecLike extends Suite with Informing with Documenting { thisSuite 
    * throw an exception. This method can be called safely by any thread.
    */
   protected def info: Informer = atomicInformer.get
+
+  protected def update: Updater = atomicUpdater.get
+  protected def alert: Alerter = atomicAlerter.get
   
   /**
    * Returns a <code>Documenter</code> that during test execution will forward strings passed to its

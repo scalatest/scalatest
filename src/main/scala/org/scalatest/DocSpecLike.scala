@@ -25,7 +25,7 @@ import collection.mutable.ListBuffer
 import Suite.reportMarkupProvided
 import scala.collection.mutable.ListBuffer
 
-private[scalatest] trait DocSpecLike extends Suite with Informing { thisSuite =>
+private[scalatest] trait DocSpecLike extends Suite with Informing with Updating with Alerting { thisSuite =>
 
   private final val engine = new Engine("concurrentFunSuiteMod", "FunSuite")
   import engine._
@@ -39,6 +39,9 @@ private[scalatest] trait DocSpecLike extends Suite with Informing { thisSuite =>
    * throw an exception. This method can be called safely by any thread.
    */
   protected def info: Informer = atomicInformer.get
+
+  protected def update: Updater = atomicUpdater.get
+  protected def alert: Alerter = atomicAlerter.get
 
   sealed abstract class Snippet
   case class MarkupSnippet(text: String) extends Snippet

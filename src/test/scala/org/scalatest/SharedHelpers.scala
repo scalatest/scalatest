@@ -100,6 +100,15 @@ object SharedHelpers extends Assertions {
         case _ => throw new RuntimeException("should never happen")
       }
     }
+    def updateProvidedEventsReceived: List[UpdateProvided] = {
+      eventsReceived filter {
+        case event: UpdateProvided => true
+        case _ => false
+      } map {
+        case event: UpdateProvided => event
+        case _ => throw new RuntimeException("should never happen")
+      }
+    }
     def alertProvidedEventsReceived: List[AlertProvided] = {
       eventsReceived filter {
         case event: AlertProvided => true

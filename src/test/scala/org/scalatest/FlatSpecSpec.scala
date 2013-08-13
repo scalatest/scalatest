@@ -196,7 +196,7 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen with ShouldMatchers {
         assert(testStartingIndex < testSucceededIndex)
         assert(testSucceededIndex < infoProvidedIndex)
       }
-      it("should throw an IllegalStateException when info is called by a method invoked after the suite has been executed") {
+      it("should print to stdout when info is called by a method invoked after the suite has been executed") {
         class MyFlatSpec extends FlatSpec {
           callInfo() // This should work fine
           def callInfo() {
@@ -209,9 +209,7 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen with ShouldMatchers {
         val spec = new MyFlatSpec
         val myRep = new EventRecordingReporter
         spec.run(None, Args(myRep))
-        intercept[IllegalStateException] {
-          spec.callInfo()
-        }
+        spec.callInfo() // TODO: Actually test that This prints to stdout
       }
       it("should send an InfoProvided with an IndentedText formatter with level 0 when called outside a test") {
         val spec = new InfoBeforeTestFlatSpec

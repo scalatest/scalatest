@@ -508,11 +508,11 @@ import org.scalatest.Resources
  * <h2>Switching</h2>
  * 
  * <p>
- * You can switch to a popup alert using the following code:
+ * You can switch to a popup alert bo using the following code:
  * </p>
  * 
  * <pre class="stHighlight">
- * switch to alert
+ * switch to alertBox
  * </pre>
  * 
  * <p>
@@ -1319,7 +1319,7 @@ trait WebBrowser {
    * </p>
    *
    * <pre>
-   * switch to alert
+   * switch to alertBox
    *           ^
    * </pre>
    */
@@ -3115,7 +3115,7 @@ trait WebBrowser {
    * </p>
    *
    * <pre class="stHighlight">
-   * switch to alert
+   * switch to alertBox
    * ^
    * </pre>
    */
@@ -3156,11 +3156,11 @@ trait WebBrowser {
    * </p>
    *
    * <pre>
-   * switch to alert
+   * switch to alertBox
    *           ^
    * </pre>
    */
-  val alert = new AlertTarget()
+  val alertBox = new AlertTarget()
   
   /**
    * This value supports switching to the default content in ScalaTest's Selenium DSL.

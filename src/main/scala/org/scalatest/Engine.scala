@@ -67,6 +67,8 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
   ) extends Node(Some(parent))
 
   case class InfoLeaf(parent: Branch, message: String, payload: Option[Any], location: Option[LineInFile]) extends Node(Some(parent))
+  case class UpdateLeaf(parent: Branch, message: String, payload: Option[Any], location: Option[LineInFile]) extends Node(Some(parent))
+  case class AlertLeaf(parent: Branch, message: String, payload: Option[Any], location: Option[LineInFile]) extends Node(Some(parent))
   case class MarkupLeaf(parent: Branch, message: String, location: Option[LineInFile]) extends Node(Some(parent))
 
   case class DescriptionBranch(
@@ -128,6 +130,34 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
     }
   }
 
+  class RegistrationUpdater extends Updater {
+
+    def apply(message: String, payload: Option[Any] = None) {
+      if (message == null)
+        throw new NullPointerException
+      if (payload == null)
+        throw new NullPointerException
+      val oldBundle = atomic.get
+      var (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
+      currentBranch.subNodes ::= UpdateLeaf(currentBranch, message, payload, getLineInFile(Thread.currentThread().getStackTrace, 2))
+      updateAtomic(oldBundle, Bundle(currentBranch, testNamesList, testsMap, tagsMap, registrationClosed))
+    }
+  }
+
+  class RegistrationAlerter extends Alerter {
+
+    def apply(message: String, payload: Option[Any] = None) {
+      if (message == null)
+        throw new NullPointerException
+      if (payload == null)
+        throw new NullPointerException
+      val oldBundle = atomic.get
+      var (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
+      currentBranch.subNodes ::= AlertLeaf(currentBranch, message, payload, getLineInFile(Thread.currentThread().getStackTrace, 2))
+      updateAtomic(oldBundle, Bundle(currentBranch, testNamesList, testsMap, tagsMap, registrationClosed))
+    }
+  }
+
   class RegistrationDocumenter extends Documenter {
     def apply(message: String) {
       if (message == null)
@@ -143,36 +173,64 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
   // is the registration phase of a style trait's lifecycle.)
   final val atomicInformer = new AtomicReference[Informer](new RegistrationInformer)
 
+  final val atomicUpdater = new AtomicReference[Updater](new RegistrationUpdater)
+  final val atomicAlerter = new AtomicReference[Alerter](new RegistrationAlerter)
+
   // The documenter will be a registration informer until run is called for the first time. (This
   // is the registration phase of a style trait's lifecycle.)
   final val atomicDocumenter = new AtomicReference[Documenter](new RegistrationDocumenter)
 
   final val zombieInformer =
     new Informer {
-      private val complaint = Resources("cantCallInfoNow", simpleClassName)
-/*
-      def apply(message: String) {
-        if (message == null)
-          throw new NullPointerException
-        throw new IllegalStateException(complaint)
-      }
-*/
       def apply(message: String, payload: Option[Any] = None) {
         if (message == null)
           throw new NullPointerException
         if (payload == null)
           throw new NullPointerException
-        throw new IllegalStateException(complaint)
+        println(Resources("infoProvided", message))
+        payload match {
+          case Some(p) => println(Resources("payloadToString", payload.get.toString))
+          case _ => 
+        }
+      }
+    }
+
+  final val zombieUpdater =
+    new Updater {
+      def apply(message: String, payload: Option[Any] = None) {
+        if (message == null)
+          throw new NullPointerException
+        if (payload == null)
+          throw new NullPointerException
+        println(Resources("updateProvided", message))
+        payload match {
+          case Some(p) => println(Resources("payloadToString", payload.get.toString))
+          case _ => 
+        }
+      }
+    }
+
+  final val zombieAlerter =
+    new Alerter {
+      def apply(message: String, payload: Option[Any] = None) {
+        if (message == null)
+          throw new NullPointerException
+        if (payload == null)
+          throw new NullPointerException
+        println(Resources("alertProvided", message))
+        payload match {
+          case Some(p) => println(Resources("payloadToString", payload.get.toString))
+          case _ => 
+        }
       }
     }
 
   final val zombieDocumenter =
     new Documenter {
-      private val complaint = Resources("cantCallMarkupNow", simpleClassName)
       def apply(message: String) {
         if (message == null)
           throw new NullPointerException
-        throw new IllegalStateException(complaint)
+        println(Resources("markupProvided", message))
       }
     }
 
@@ -218,6 +276,20 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
         (message, payload, isConstructingThread, testWasPending, testWasCanceled, location) => createInfoProvided(theSuite, report, tracker, Some(testName), message, payload, theTest.indentationLevel + 1, location, isConstructingThread, includeIcon)
       )
 
+    val updaterForThisTest =
+      ConcurrentUpdater(
+        (message, payload, isConstructingThread, location) => {
+          reportUpdateProvided(theSuite, report, tracker, Some(testName), message, payload, 1, location, isConstructingThread)
+        }
+      )
+      
+    val alerterForThisTest =
+      ConcurrentAlerter(
+        (message, payload, isConstructingThread, location) => {
+          reportAlertProvided(theSuite, report, tracker, Some(testName), message, payload, 1, location, isConstructingThread)
+        }
+      )
+
     val documenterForThisTest =
       MessageRecordingDocumenter(
         messageRecorderForThisTest,
@@ -225,9 +297,9 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
       )
 
     val oldInformer = atomicInformer.getAndSet(informerForThisTest)
+    val oldUpdater = atomicUpdater.getAndSet(updaterForThisTest)
+    val oldAlerter = atomicAlerter.getAndSet(alerterForThisTest)
     val oldDocumenter = atomicDocumenter.getAndSet(documenterForThisTest)
-    //var testWasPending = false
-    //var testWasCanceled = false
 
     try {
 
@@ -277,13 +349,21 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
       case e: Throwable => throw e
     }
     finally {
-      /*messageRecorderForThisTest.fireRecordedMessages(testWasPending, testWasCanceled)
-      if (theTest.recordedMessages.isDefined)
-        theTest.recordedMessages.get.fireRecordedMessages(testWasPending, theSuite, report, tracker, testName, theTest.indentationLevel + 1, includeIcon)*/
       val shouldBeInformerForThisTest = atomicInformer.getAndSet(oldInformer)
-      val swapAndCompareSucceeded = shouldBeInformerForThisTest eq informerForThisTest
-      if (!swapAndCompareSucceeded)
+      if (shouldBeInformerForThisTest ne informerForThisTest)
         throw new ConcurrentModificationException(Resources("concurrentInformerMod", theSuite.getClass.getName))
+
+      val shouldBeUpdaterForThisTest = atomicUpdater.getAndSet(oldUpdater)
+      if (shouldBeUpdaterForThisTest ne updaterForThisTest)
+        throw new ConcurrentModificationException(Resources("concurrentUpdaterMod", theSuite.getClass.getName))
+
+      val shouldBeAlerterForThisTest = atomicAlerter.getAndSet(oldAlerter)
+      if (shouldBeAlerterForThisTest ne alerterForThisTest)
+        throw new ConcurrentModificationException(Resources("concurrentAlerterMod", theSuite.getClass.getName))
+
+      val shouldBeDocumenterForThisTest = atomicDocumenter.getAndSet(oldDocumenter)
+      if (shouldBeDocumenterForThisTest ne documenterForThisTest)
+        throw new ConcurrentModificationException(Resources("concurrentDocumenterMod", theSuite.getClass.getName))
     }
   }
 
@@ -334,6 +414,12 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
 
             case infoLeaf @ InfoLeaf(_, message, payload, location) =>
               reportInfoProvided(theSuite, args.reporter, args.tracker, None, message, payload, infoLeaf.indentationLevel, location, true, includeIcon)
+
+            case updateLeaf @ UpdateLeaf(_, message, payload, location) =>
+              reportUpdateProvided(theSuite, args.reporter, args.tracker, None, message, payload, updateLeaf.indentationLevel, location, true, includeIcon)
+
+            case alertLeaf @ AlertLeaf(_, message, payload, location) =>
+              reportAlertProvided(theSuite, args.reporter, args.tracker, None, message, payload, alertLeaf.indentationLevel, location, true, includeIcon)
 
             case markupLeaf @ MarkupLeaf(_, message, location) =>
               reportMarkupProvided(theSuite, args.reporter, args.tracker, None, message, markupLeaf.indentationLevel, location, true, includeIcon)
@@ -428,18 +514,55 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
 
     atomicInformer.set(informerForThisSuite)
 
-    var swapAndCompareSucceeded = false
-    val status = try {
+    val updaterForThisSuite =
+      ConcurrentUpdater(
+        (message, payload, isConstructingThread, location) => {
+          reportUpdateProvided(theSuite, report, tracker, None, message, payload, 1, location, isConstructingThread)
+        }
+      )
+
+    atomicUpdater.set(updaterForThisSuite)
+
+    val alerterForThisSuite =
+      ConcurrentAlerter(
+        (message, payload, isConstructingThread, location) => {
+          reportAlertProvided(theSuite, report, tracker, None, message, payload, 1, location, isConstructingThread)
+        }
+      )
+
+    atomicAlerter.set(alerterForThisSuite)
+
+    val documenterForThisSuite =
+      ConcurrentDocumenter(
+        (message, payload, isConstructingThread, location) => {
+          reportMarkupProvided(theSuite, report, tracker, None, message, 1, location, isConstructingThread)
+        }
+      )
+
+    atomicDocumenter.set(documenterForThisSuite)
+
+    try {
       superRun(testName, args.copy(reporter = report))
     }
     finally {
       val shouldBeInformerForThisSuite = atomicInformer.getAndSet(zombieInformer)
-      swapAndCompareSucceeded = shouldBeInformerForThisSuite eq informerForThisSuite
+      if (shouldBeInformerForThisSuite ne informerForThisSuite)
+        throw new ConcurrentModificationException(Resources("concurrentInformerMod", theSuite.getClass.getName))
+
+      val shouldBeUpdaterForThisSuite = atomicUpdater.getAndSet(zombieUpdater)
+      if (shouldBeUpdaterForThisSuite ne updaterForThisSuite)
+        throw new ConcurrentModificationException(Resources("concurrentUpdaterMod", theSuite.getClass.getName))
+
+      val shouldBeAlerterForThisSuite = atomicAlerter.getAndSet(zombieAlerter)
+      if (shouldBeAlerterForThisSuite ne alerterForThisSuite)
+        throw new ConcurrentModificationException(Resources("concurrentAlerterMod", theSuite.getClass.getName))
+
+      val shouldBeDocumenterForThisSuite = atomicDocumenter.getAndSet(zombieDocumenter)
+      if (shouldBeDocumenterForThisSuite ne documenterForThisSuite)
+        throw new ConcurrentModificationException(Resources("concurrentDocumenterMod", theSuite.getClass.getName))
     }
-    if (!swapAndCompareSucceeded)  // Do outside finally to workaround Scala compiler bug
-      throw new ConcurrentModificationException(Resources("concurrentInformerMod", theSuite.getClass.getName))
-    status
   }
+
   /*
   def describeImpl(description: String, fun: => Unit, registrationClosedResource: String, sourceFile: String, methodName: String) {
 
@@ -784,6 +907,30 @@ private[scalatest] class PathEngine(concurrentBundleModResourceName: String, sim
 
         val oldInformer = atomicInformer.getAndSet(informerForThisTest)
 
+        val updaterForThisTest =
+          PathMessageRecordingUpdater( // TODO: Put locations into path traits!
+            (message, payload, wasConstructingThread, testWasPending, theSuite, report, tracker, testName, indentation, includeIcon, thread) =>
+              createUpdateProvided(theSuite, report, tracker, Some(testName), message, payload, indentation, None, wasConstructingThread, includeIcon)
+          )
+
+        val oldUpdater = atomicUpdater.getAndSet(updaterForThisTest)
+
+        val alerterForThisTest =
+          PathMessageRecordingAlerter( // TODO: Put locations into path traits!
+            (message, payload, wasConstructingThread, testWasPending, theSuite, report, tracker, testName, indentation, includeIcon, thread) =>
+              createAlertProvided(theSuite, report, tracker, Some(testName), message, payload, indentation, None, wasConstructingThread, includeIcon)
+          )
+
+        val oldAlerter = atomicAlerter.getAndSet(alerterForThisTest)
+
+        val documenterForThisTest =
+          PathMessageRecordingDocumenter( // TODO: Put locations into path traits!
+            (message, wasConstructingThread, testWasPending, theSuite, report, tracker, testName, indentation, includeIcon, thread) =>
+              createMarkupProvided(theSuite, report, tracker, Some(testName), message, indentation, None, wasConstructingThread, includeIcon)
+          )
+
+        val oldDocumenter = atomicDocumenter.getAndSet(documenterForThisTest)
+
         var durationOfRunningTest: Long = -1
         var startTime: Long = System.currentTimeMillis
         val outcome = 
@@ -796,9 +943,20 @@ private[scalatest] class PathEngine(concurrentBundleModResourceName: String, sim
           finally {
             durationOfRunningTest = System.currentTimeMillis - startTime
             val shouldBeInformerForThisTest = atomicInformer.getAndSet(oldInformer)
-            val swapAndCompareSucceeded = shouldBeInformerForThisTest eq informerForThisTest
-            if (!swapAndCompareSucceeded)
+            if (shouldBeInformerForThisTest ne informerForThisTest)
               throw new ConcurrentModificationException(Resources("concurrentInformerMod", handlingSuite.getClass.getName))
+
+            val shouldBeUpdaterForThisTest = atomicUpdater.getAndSet(oldUpdater)
+            if (shouldBeUpdaterForThisTest ne updaterForThisTest)
+              throw new ConcurrentModificationException(Resources("concurrentUpdaterMod", handlingSuite.getClass.getName))
+
+            val shouldBeAlerterForThisTest = atomicAlerter.getAndSet(oldAlerter)
+            if (shouldBeAlerterForThisTest ne alerterForThisTest)
+              throw new ConcurrentModificationException(Resources("concurrentAlerterMod", handlingSuite.getClass.getName))
+
+            val shouldBeDocumenterForThisTest = atomicDocumenter.getAndSet(oldDocumenter)
+            if (shouldBeDocumenterForThisTest ne documenterForThisTest)
+              throw new ConcurrentModificationException(Resources("concurrentDocumenterMod", handlingSuite.getClass.getName))
           }
 
         // Here in the test function, replay those info calls. But I can't do this from different threads is the issue. Unless
@@ -923,17 +1081,50 @@ private[scalatest] class PathEngine(concurrentBundleModResourceName: String, sim
 
     atomicInformer.set(informerForThisSuite)
 
-    var swapAndCompareSucceeded = false
-    val status = try {
+    val updaterForThisSuite =
+      ConcurrentUpdater(
+        (message, payload, isConstructingThread, location) =>
+          reportUpdateProvided(theSuite, report, tracker, None, message, payload, 1, location, isConstructingThread)
+      )
+
+    atomicUpdater.set(updaterForThisSuite)
+
+    val alerterForThisSuite =
+      ConcurrentAlerter(
+        (message, payload, isConstructingThread, location) =>
+          reportAlertProvided(theSuite, report, tracker, None, message, payload, 1, location, isConstructingThread)
+      )
+
+    atomicAlerter.set(alerterForThisSuite)
+
+    val documenterForThisSuite =
+      ConcurrentDocumenter(
+        (message, payload, isConstructingThread, location) =>
+          reportMarkupProvided(theSuite, report, tracker, None, message, 1, location, isConstructingThread)
+      )
+
+    atomicDocumenter.set(documenterForThisSuite)
+
+    try {
      runTestsImpl(theSuite, testName, newArgs, info, true, runTest)
     }
     finally {
       val shouldBeInformerForThisSuite = atomicInformer.getAndSet(zombieInformer)
-      swapAndCompareSucceeded = shouldBeInformerForThisSuite eq informerForThisSuite
+      if (shouldBeInformerForThisSuite ne informerForThisSuite)
+        throw new ConcurrentModificationException(Resources("concurrentInformerMod", theSuite.getClass.getName))
+
+      val shouldBeUpdaterForThisSuite = atomicUpdater.getAndSet(zombieUpdater)
+      if (shouldBeUpdaterForThisSuite ne updaterForThisSuite)
+        throw new ConcurrentModificationException(Resources("concurrentUpdaterMod", theSuite.getClass.getName))
+
+      val shouldBeAlerterForThisSuite = atomicAlerter.getAndSet(zombieAlerter)
+      if (shouldBeAlerterForThisSuite ne alerterForThisSuite)
+        throw new ConcurrentModificationException(Resources("concurrentAlerterMod", theSuite.getClass.getName))
+
+      val shouldBeDocumenterForThisSuite = atomicDocumenter.getAndSet(zombieDocumenter)
+      if (shouldBeDocumenterForThisSuite ne documenterForThisSuite)
+        throw new ConcurrentModificationException(Resources("concurrentDocumenterMod", theSuite.getClass.getName))
     }
-    if (!swapAndCompareSucceeded)  // Do outside finally to workaround Scala compiler bug
-      throw new ConcurrentModificationException(Resources("concurrentInformerMod", theSuite.getClass.getName))
-    status
   }
    
   def handleIgnoredTest(testText: String, f: () => Outcome, testRegistrationClosedResourceName: String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], testTags: Tag*) {

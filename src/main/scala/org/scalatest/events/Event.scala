@@ -202,6 +202,11 @@ sealed trait RecordableEvent extends Event
 sealed trait ExceptionalEvent extends Event
 
 /**
+ * Marker trait for the "notification" events <code>UpdateProvided</code> and <code>AlertProvided</code>.
+ */
+sealed trait NotificationEvent extends Event
+
+/**
  * Event that indicates a suite (or other entity) is about to start running a test.
  *
  * <p>
@@ -1620,9 +1625,9 @@ final case class InfoProvided (
  * a <code>RecordableEvent</code>. If fired becase of an <code>alert</code> call from a test, for example, the <code>AlertProvided</code> will immediately
  * be sent to the reporters rather than being stored and sent in the <code>recordedEvents</code> field of the test completion event. Thus,
  * <code>AlertProvided</code> enables "status updates" to be provided
- * while tests are happening. The difference between <code>AlertProvided</code> and <code>NoticeProvided</code>, which is also a "status update"
- * fired immediately during tests, is that <code>AlertProvided</code> is intended for warnings, where as <code>NoticeProvided</code> is just
- * for information. As an illustration, <code>AlertProvided</code> messages are displayed in yellow, <code>NoticeProvided</code> in green,
+ * while tests are happening. The difference between <code>AlertProvided</code> and <code>UpdateProvided</code>, which is also a "status update"
+ * fired immediately during tests, is that <code>AlertProvided</code> is intended for warnings, where as <code>UpdateProvided</code> is just
+ * for information. As an illustration, <code>AlertProvided</code> messages are displayed in yellow, <code>UpdateProvided</code> in green,
  * in the stdout, stderr, and file reporters.
  * </p>
  *
@@ -1661,7 +1666,7 @@ final case class AlertProvided (
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends Event {
+) extends NotificationEvent {
 
   if (ordinal == null)
     throw new NullPointerException("ordinal was null")
@@ -1701,32 +1706,32 @@ final case class AlertProvided (
  *
  * <p>
  * To create instances of this class you may
- * use the factory method provided in its <a href="NoticeProvided$.html">companion object</a>. For example, given a
- * report function named <code>report</code>, you could fire a <code>NoticeProvided</code> event like this:
+ * use the factory method provided in its <a href="UpdateProvided$.html">companion object</a>. For example, given a
+ * report function named <code>report</code>, you could fire a <code>UpdateProvided</code> event like this:
  * </p>
  *
  * <pre class="stHighlight">
- * report(NoticeProvided(ordinal, message, Some(NameInfo(suiteName, suiteId, Some(thisSuite.getClass.getName), Some(testName)))))
+ * report(UpdateProvided(ordinal, message, Some(NameInfo(suiteName, suiteId, Some(thisSuite.getClass.getName), Some(testName)))))
  * </pre>
  *
  * <p>
- * <code>NoticeProvided</code> differs from <code>InfoProvided</code> in that unlike <code>InfoProvided</code>, <code>NoticeProvided</code> isn't
- * a <code>RecordableEvent</code>. If fired becase of an <code>notice</code> call from a test, for example, the <code>NoticeProvided</code> will immediately
+ * <code>UpdateProvided</code> differs from <code>InfoProvided</code> in that unlike <code>InfoProvided</code>, <code>UpdateProvided</code> isn't
+ * a <code>RecordableEvent</code>. If fired becase of an <code>update</code> call from a test, for example, the <code>UpdateProvided</code> will immediately
  * be sent to the reporters rather than being stored and sent in the <code>recordedEvents</code> field of the test completion event. Thus,
- * <code>NoticeProvided</code> enables "status updates" to be provided
- * while tests are happening. The difference between <code>NoticeProvided</code> and <code>AlertProvided</code>, which is also a "status update"
- * fired immediately during tests, is that <code>AlertProvided</code> is intended for warnings, where as <code>NoticeProvided</code> is just
- * for information. As an illustration, <code>AlertProvided</code> messages are displayed in yellow, <code>NoticeProvided</code> in green,
+ * <code>UpdateProvided</code> enables "status updates" to be provided
+ * while tests are happening. The difference between <code>UpdateProvided</code> and <code>AlertProvided</code>, which is also a "status update"
+ * fired immediately during tests, is that <code>AlertProvided</code> is intended for warnings, where as <code>UpdateProvided</code> is just
+ * for information. As an illustration, <code>AlertProvided</code> messages are displayed in yellow, <code>UpdateProvided</code> in green,
  * in the stdout, stderr, and file reporters.
  * </p>
  *
  * <p>
- * An <code>NoticeProvided</code> event may be fired from anywhere. In this respect <code>NoticeProvided</code> is different
+ * An <code>UpdateProvided</code> event may be fired from anywhere. In this respect <code>UpdateProvided</code> is different
  * from events for which it is defined whether they are fired in the context of a suite or test.
- * If fired in the context of a test, the <code>NoticeProvided</code> event should include a <code>NameInfo</code> in which
- * <code>testName</code> is defined. If fired in the context of a suite, but not a test, the <code>NoticeProvided</code> event
+ * If fired in the context of a test, the <code>UpdateProvided</code> event should include a <code>NameInfo</code> in which
+ * <code>testName</code> is defined. If fired in the context of a suite, but not a test, the <code>UpdateProvided</code> event
  * should include a <code>NameInfo</code> in which <code>testName</code> is <em>not</em> defined. If fired within the context
- * of neither a suite nor a test, the <code>nameInfo</code> of the <code>NoticeProvided</code> event (an <code>Option[NameInfo]</code>) should be <code>None</code>.
+ * of neither a suite nor a test, the <code>nameInfo</code> of the <code>UpdateProvided</code> event (an <code>Option[NameInfo]</code>) should be <code>None</code>.
  * </p>
  *
  * @param ordinal an <code>Ordinal</code> that can be used to place this event in order in the context of
@@ -1738,14 +1743,14 @@ final case class AlertProvided (
  * @param formatter an optional formatter that provides extra information that can be used by reporters in determining
  *        how to present this event to the user
  * @param location An optional location that provides information indicating where in the source code an event originated.
- * @param payload an optional object that can be used to pass custom information to the reporter about the <code>NoticeProvided</code> event
+ * @param payload an optional object that can be used to pass custom information to the reporter about the <code>UpdateProvided</code> event
  * @param threadName a name for the <code>Thread</code> about whose activity this event was reported
  * @param timeStamp a <code>Long</code> indicating the time this event was reported, expressed in terms of the
  *        number of milliseconds since the standard base time known as "the epoch":  January 1, 1970, 00:00:00 GMT
  *
  * @author Bill Venners
  */
-final case class NoticeProvided (
+final case class UpdateProvided (
   ordinal: Ordinal,
   message: String,
   nameInfo: Option[NameInfo],
@@ -1755,7 +1760,7 @@ final case class NoticeProvided (
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends Event {
+) extends NotificationEvent {
 
   if (ordinal == null)
     throw new NullPointerException("ordinal was null")
@@ -1776,7 +1781,7 @@ final case class NoticeProvided (
   
   import EventXmlHelper._
   private [scalatest] def toXml = 
-    <NoticeProvided>
+    <UpdateProvided>
       <ordinal>
         <runStamp>{ ordinal.runStamp }</runStamp>
       </ordinal>
@@ -1787,7 +1792,7 @@ final case class NoticeProvided (
       <location>{ locationOption(location) }</location>
       <threadName>{ threadName }</threadName>
       <timeStamp>{ timeStamp }</timeStamp>
-    </NoticeProvided>
+    </UpdateProvided>
 }
 
 /**

@@ -1144,11 +1144,11 @@ class WebBrowserSpec extends JettySpec with ShouldMatchers with SpanSugar with W
       pageTitle should be ("Cheese! - Google Search")
     }
         
-    // Some operation not supported in HtmlUnit driver, e.g. switch to alert.
+    // Some operation not supported in HtmlUnit driver, e.g. switch to alertBox.
     // Should be good enough to test the following dsl compiles.
     ignore("should support switch to") {
       switch to activeElement
-      switch to alert
+      switch to alertBox
       switch to defaultContent
       switch to frame(0)
       switch to frame("name")
@@ -1159,7 +1159,7 @@ class WebBrowserSpec extends JettySpec with ShouldMatchers with SpanSugar with W
     
     ignore("should support switchTo") {
       switchTo(activeElement)
-      switchTo(alert)
+      switchTo(alertBox)
       switchTo(defaultContent)
       switchTo(frame(0))
       switchTo(frame("name"))

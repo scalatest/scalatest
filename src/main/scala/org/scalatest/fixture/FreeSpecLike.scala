@@ -48,7 +48,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FreeSpecFinder"))
-trait FreeSpecLike extends Suite with Informing with Documenting { thisSuite =>
+trait FreeSpecLike extends Suite with Informing with Updating with Alerting with Documenting { thisSuite =>
 
   private final val engine = new FixtureEngine[FixtureParam]("concurrentFixtureFreeSpecMod", "FixtureFreeSpec")
   import engine._
@@ -64,6 +64,9 @@ trait FreeSpecLike extends Suite with Informing with Documenting { thisSuite =>
    * throw an exception. This method can be called safely by any thread.
    */
   protected def info: Informer = atomicInformer.get
+
+  protected def update: Updater = atomicUpdater.get
+  protected def alert: Alerter = atomicAlerter.get
   
   /**
    * Returns a <code>Documenter</code> that during test execution will forward strings passed to its

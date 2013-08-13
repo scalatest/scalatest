@@ -1834,7 +1834,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
         assert(infoProvidedIndex < testStartingIndex)
         assert(testStartingIndex < testSucceededIndex)
       }
-      it("should throw an IllegalStateException when info is called by a method invoked after the suite has been executed") {
+      it("should print to stdout when info is called by a method invoked after the suite has been executed") {
         class MySpec extends Spec {
           callInfo() // This should work fine
           def callInfo() {
@@ -1847,9 +1847,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
         val spec = new MySpec
         val myRep = new EventRecordingReporter
         spec.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
-        intercept[IllegalStateException] {
-          spec.callInfo()
-        }
+        spec.callInfo() // TODO: Actually test that This prints to stdout
       }
       it("should send an InfoProvided with an IndentedText formatter with level 0 when called outside a test") {
         val spec = new InfoBeforeTestSpec

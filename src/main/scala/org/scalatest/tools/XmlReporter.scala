@@ -153,7 +153,7 @@ private[scalatest] class XmlReporter(directory: String) extends Reporter {
 
         case e: InfoProvided   => idx += 1
         case e: AlertProvided  => idx += 1
-        case e: NoticeProvided => idx += 1
+        case e: UpdateProvided => idx += 1
         case e: ScopeOpened    => idx += 1 // TODO: Ask George to verify
         case e: ScopeClosed    => idx += 1
         case e: ScopePending   => idx += 1
@@ -278,7 +278,7 @@ private[scalatest] class XmlReporter(directory: String) extends Reporter {
         case e: TestIgnored    => unexpected(e)
         case e: InfoProvided   => unexpected(e)
         case e: AlertProvided  => unexpected(e)
-        case e: NoticeProvided => unexpected(e)
+        case e: UpdateProvided => unexpected(e)
         case e: ScopeOpened    => unexpected(e) // TODO: Ask George to verify
         case e: ScopeClosed    => unexpected(e)
         case e: ScopePending   => unexpected(e)

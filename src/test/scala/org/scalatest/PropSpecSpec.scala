@@ -190,7 +190,7 @@ class PropSpecSpec extends FunSpec {
         assert(testStartingIndex < testSucceededIndex)
         assert(testSucceededIndex < infoProvidedIndex)
       }
-      it("should throw an NotAllowedException when info is called by a method invoked after the suite has been executed") {
+      it("should print to stdout when info is called by a method invoked after the suite has been executed") {
         class MySuite extends PropSpec {
           callInfo() // This should work fine
           def callInfo() {
@@ -203,9 +203,7 @@ class PropSpecSpec extends FunSpec {
         val suite = new MySuite
         val myRep = new EventRecordingReporter
         suite.run(None, Args(myRep))
-        intercept[IllegalStateException] {
-          suite.callInfo()
-        }
+        suite.callInfo() // TODO: Actually test that it prints to stdout
       }
     }
     it("should run tests registered via the propertiesFor syntax") {

@@ -42,7 +42,7 @@ import Suite.autoTagClassAnnotations
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.WordSpecFinder"))
-trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with Informing with Documenting { thisSuite =>
+trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with Informing with Updating with Alerting with Documenting { thisSuite =>
 
   private final val engine = new Engine("concurrentWordSpecMod", "WordSpecLike")
   import engine._
@@ -56,6 +56,9 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
    * throw an exception. This method can be called safely by any thread.
    */
   protected def info: Informer = atomicInformer.get
+
+  protected def update: Updater = atomicUpdater.get
+  protected def alert: Alerter = atomicAlerter.get
 
   /**
    * Returns a <code>Documenter</code> that during test execution will forward strings passed to its
