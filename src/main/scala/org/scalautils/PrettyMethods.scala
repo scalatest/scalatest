@@ -22,7 +22,7 @@ trait PrettyMethods {
   implicit val defaultPrettifier = Prettifier.default
 
   implicit class Prettyizer(o: Any)(implicit prettifier: Prettifier) {
-    def pretty: String = prettifier(o)
+    def pretty: String = prettifier(IndexedSeq(o))(0)
   }
 }
 

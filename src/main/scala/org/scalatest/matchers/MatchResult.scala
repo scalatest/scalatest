@@ -226,11 +226,12 @@ final case class MatchResult(
   def midSentenceFailureMessage: String = if (failureMessageArgs.isEmpty) rawMidSentenceFailureMessage else makeString(rawMidSentenceFailureMessage, failureMessageArgs)
   def midSentenceNegatedFailureMessage: String = if (negatedFailureMessageArgs.isEmpty) rawMidSentenceNegatedFailureMessage else makeString(rawMidSentenceNegatedFailureMessage, negatedFailureMessageArgs)
 
-  def negated: MatchResult = MatchResult(!matches, rawNegatedFailureMessage, rawFailureMessage, rawMidSentenceNegatedFailureMessage, rawMidSentenceFailureMessage, negatedFailureMessageArgs, failureMessageArgs)
+  def negated: MatchResult = MatchResult(!matches, rawNegatedFailureMessage, rawFailureMessage, rawMidSentenceNegatedFailureMessage, rawMidSentenceFailureMessage, negatedFailureMessageArgs, failureMessageArgs, midSentenceNegatedFailureMessageArgs,  midSentenceFailureMessageArgs, prettifier)
 
   private def makeString(rawString: String, args: IndexedSeq[Any]): String = {
     val msgFmt = new MessageFormat(rawString)
-    msgFmt.format(args.map(prettifier).toArray)
+    val msgArgs = prettifier(args).toArray
+    msgFmt.format(msgArgs)
   }
 }
 
@@ -298,6 +299,20 @@ object MatchResult {
       args,
       Prettifier.default
     )
+  
+  def apply(matches: Boolean, rawFailureMessage: String, rawNegatedFailureMessage: String, args: IndexedSeq[Any], prettifier: Prettifier) =
+    new MatchResult(
+      matches,
+      rawFailureMessage,
+      rawNegatedFailureMessage,
+      rawFailureMessage,
+      rawNegatedFailureMessage,
+      args,
+      args,
+      args,
+      args,
+      prettifier
+    )
 
   def apply(matches: Boolean, rawFailureMessage: String, rawNegatedFailureMessage: String, failureMessageArgs: IndexedSeq[Any], negatedFailureMessageArgs: IndexedSeq[Any]) =
     new MatchResult(
@@ -311,6 +326,20 @@ object MatchResult {
       failureMessageArgs,
       negatedFailureMessageArgs,
       Prettifier.default
+    )
+  
+  def apply(matches: Boolean, rawFailureMessage: String, rawNegatedFailureMessage: String, failureMessageArgs: IndexedSeq[Any], negatedFailureMessageArgs: IndexedSeq[Any], prettifier: Prettifier) =
+    new MatchResult(
+      matches,
+      rawFailureMessage,
+      rawNegatedFailureMessage,
+      rawFailureMessage,
+      rawNegatedFailureMessage,
+      failureMessageArgs,
+      negatedFailureMessageArgs,
+      failureMessageArgs,
+      negatedFailureMessageArgs,
+      prettifier
     )
 
   def apply(matches: Boolean, rawFailureMessage: String, rawNegatedFailureMessage: String, rawMidSentenceFailureMessage: String,

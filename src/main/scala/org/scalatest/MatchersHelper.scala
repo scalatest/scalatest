@@ -28,6 +28,7 @@ import scala.collection.GenTraversable
 import scala.collection.GenSeq
 import scala.collection.GenMap
 import org.scalautils.Tolerance
+import org.scalautils.Prettifier
 import scala.annotation.tailrec
 import org.scalautils.Equality
 import org.scalatest.words.ShouldVerb
@@ -240,10 +241,14 @@ private[scalatest] object MatchersHelper {
           }
           else ("wasNot", "was")
 
+        val prettifier = Prettifier(Vector(left, UnquotedString(propertyName)))
+          
         MatchResult(
           result == true, // Right now I just leave the return value of accessProperty as Any
-          FailureMessages(wasNot, left, UnquotedString(propertyName)),
-          FailureMessages(was, left, UnquotedString(propertyName))
+          Resources(wasNot),
+          Resources(was), 
+          Vector(left, right), 
+          prettifier
         )
     }
   }
