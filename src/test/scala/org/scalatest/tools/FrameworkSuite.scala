@@ -897,7 +897,12 @@ class FrameworkSuite extends FunSuite with Retries {
       }
     }
     finally {
-      runner.done()
+      try { // Just to make sure runner.done() has been called to avoid hanging thread
+        runner.done()
+      }
+      catch {
+        case _: IllegalStateException => // Do nothing
+      }
     }
   }
   
