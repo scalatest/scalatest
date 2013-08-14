@@ -694,5 +694,6 @@ object Span {
       case _ => Span.Max // Duration.Inf and Undefined
     }
   }
+  implicit def convertSpanToDuration(span: Span): Duration = Duration.fromNanos(span.totalNanos)
 }
 
