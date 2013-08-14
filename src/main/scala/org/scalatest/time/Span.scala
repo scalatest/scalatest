@@ -28,8 +28,7 @@ import org.scalatest.Resources
  * the <code>timeLimit</code> field of trait
  * <a href="../concurrent/TimeLimitedTests.html"><code>TimeLimitedTests</code></a>, and
  * the timeouts of traits <a href="../concurrent/Eventually.html"><code>Eventually</code></a>,
- * , and
- * <a href="../concurrent/AsyncAssertions.html"><code>AsyncAssertions</code></a>. Here's an example:
+ * and <a href="../concurrent/AsyncAssertions.html"><code>AsyncAssertions</code></a>. Here's an example:
  * </p>
  *
  * <pre class="stHighlight">
@@ -679,10 +678,21 @@ object Span {
     }
   }
 
+  // TODO: Put this in the bundle
   private def singularErrorMsg(unitsString: String) = {
     "Singular form of " + unitsString +
       " (i.e., without the trailing s) can only be used with the value 1. Use " +
       unitsString + "s (i.e., with an s) instead."
+  }
+
+  // TODO: Doc this implicit and also mention Durations can be used in the main doc for Span
+  import scala.concurrent.duration.Duration
+  implicit def convertDurationToSpan(duration: Duration): Span = {
+    duration match {
+      case _ if duration.isFinite => Span(duration.toNanos, Nanoseconds)
+      case Duration.MinusInf => Span.Zero
+      case _ => Span.Max // Duration.Inf and Undefined
+    }
   }
 }
 

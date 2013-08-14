@@ -749,8 +749,8 @@ class SpanSpec extends FunSpec with ShouldMatchers with SpanMatchers with Severe
         assert(span scaledBy 1.0 eq span)
       }
       it("should return an zero-length Span when 0 is passed") {
-        assert((Span(1, Second) scaledBy 0) === Span.ZeroLength)
-        assert((Span(1, Second) scaledBy 0.0) === Span.ZeroLength)
+        assert((Span(1, Second) scaledBy 0) === Span.Zero)
+        assert((Span(1, Second) scaledBy 0.0) === Span.Zero)
       }
       it("should give correct results when only operating in the nanosPart") {
         assert((Span(1, Nanosecond) scaledBy 100) === Span(100, Nanoseconds))
@@ -764,8 +764,8 @@ class SpanSpec extends FunSpec with ShouldMatchers with SpanMatchers with Severe
         assert((Span.Max scaledBy 2) === Span.Max)
         assert((Span.Max scaledBy 2.0) === Span.Max)
       }
-      it("should give Span.ZeroLength if less than 1 nanosecond") {
-        assert((Span(1, Nanosecond) scaledBy 0.1) === Span.ZeroLength)
+      it("should give Span.Zero if less than 1 nanosecond") {
+        assert((Span(1, Nanosecond) scaledBy 0.1) === Span.Zero)
       }
       it("should be 0 Nanoseconds if zero length span") {
         {
@@ -1008,9 +1008,10 @@ class SpanSpec extends FunSpec with ShouldMatchers with SpanMatchers with Severe
     }
   }
 
-  describe("The Span.ZeroLength value") {
+  describe("The Span.Zero value") {
     it("should return a Span with a 0 span length") {
-      Span.ZeroLength should equal (Span(0, Nanoseconds))
+      Span.Zero should equal (Span(0, Nanoseconds))
+      Span.ZeroLength should equal (Span(0, Nanoseconds)) // While still deprecated
     }
   }
 }
