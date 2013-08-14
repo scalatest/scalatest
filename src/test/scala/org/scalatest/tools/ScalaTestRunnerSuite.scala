@@ -15,14 +15,24 @@
  */
 package org.scalatest.tools {
 
-import org.scalatest.{FunSuite, Outcome, DispatchReporter, Resources}
+import org.scalatest.{FunSuite, Outcome, DispatchReporter, Resources, Retries}
 import org.scalatools.testing.{Event, EventHandler, Result, Logger, Runner => TestingRunner}
 import org.scalatest.SharedHelpers.EventRecordingReporter
 import org.scalatest.exceptions.NotAllowedException
+import org.scalatest.tagobjects.Retryable
 
   // testing runner.run:
   // def run(testClassName: String, fingerprint: TestFingerprint, args: Array[String]): Array[Event]
-  class ScalaTestRunnerSuite extends FunSuite {
+  class ScalaTestRunnerSuite extends FunSuite with Retries {
+  
+    override def withFixture(test: NoArgTest) = {
+      if (isRetryable(test))
+        withRetryOnFailure {
+          super.withFixture(test)
+        }
+     else super.withFixture(test)
+    }
+  
     test("call with simple class") {
       val results = run("org.scalatest.tools.test.SimpleTest")
       assert(results(0).testName === "hello, world")
@@ -191,21 +201,56 @@ import org.scalatest.exceptions.NotAllowedException
       val iae = intercept[IllegalArgumentException] {
         run("org.scalatest.tools.test.SimpleTest", Array("-c"))
       }
-      assert(iae.getMessage === "-c, -P (concurrent) is not supported when runs in SBT.")
+      assert(iae.getMessage === "-c, -P (concurrent) is not supported when runs in SBT, please use SBT parallel configuration instead.")
     }
     
     test("ScalaTestRunner.run should throw IllegalArgumentException when -P is passed in") {
       val iae = intercept[IllegalArgumentException] {
         run("org.scalatest.tools.test.SimpleTest", Array("-P"))
       }
-      assert(iae.getMessage === "-c, -P (concurrent) is not supported when runs in SBT.")
+      assert(iae.getMessage === "-c, -P (concurrent) is not supported when runs in SBT, please use SBT parallel configuration instead.")
     }
     
     test("ScalaTestRunner.run should throw IllegalArgumentException when -PS is passed in") {
       val iae = intercept[IllegalArgumentException] {
         run("org.scalatest.tools.test.SimpleTest", Array("-PS"))
       }
-      assert(iae.getMessage === "-c, -P (concurrent) is not supported when runs in SBT.")
+      assert(iae.getMessage === "-c, -P (concurrent) is not supported when runs in SBT, please use SBT parallel configuration instead.")
+    }
+    
+    test("ScalaTestRunner.run should throw IllegalArgumentException when -R is passed in") {
+      val iae = intercept[IllegalArgumentException] {
+        run("org.scalatest.tools.test.SimpleTest", Array("-R"))
+      }
+      assert(iae.getMessage === "-p, -R (runpath) is not supported when runs in SBT.")
+    }
+    
+    test("ScalaTestRunner.run should throw IllegalArgumentException when -p is passed in") {
+      val iae = intercept[IllegalArgumentException] {
+        run("org.scalatest.tools.test.SimpleTest", Array("-p"))
+      }
+      assert(iae.getMessage === "-p, -R (runpath) is not supported when runs in SBT.")
+    }
+    
+    test("ScalaTestRunner.run should throw IllegalArgumentException when -A is passed in") {
+      val iae = intercept[IllegalArgumentException] {
+        run("org.scalatest.tools.test.SimpleTest", Array("-A", "again.txt"))
+      }
+      assert(iae.getMessage === "-A is not supported when runs in SBT, please use SBT's test-quick instead.")
+    }
+    
+    test("ScalaTestRunner.run should throw IllegalArgumentException when -q is passed in") {
+      val iae = intercept[IllegalArgumentException] {
+        run("org.scalatest.tools.test.SimpleTest", Array("-q", "Spec"))
+      }
+      assert(iae.getMessage === "-q is not supported when runs in SBT, please use SBT's test-only or test filter instead.")
+    }
+    
+    test("ScalaTestRunner.run should throw IllegalArgumentException when -T is passed in") {
+      val iae = intercept[IllegalArgumentException] {
+        run("org.scalatest.tools.test.SimpleTest", Array("-T", "100"))
+      }
+      assert(iae.getMessage === "-T is not supported when runs in SBT.")
     }
     
     test("ScalaTestRunner.run should be able to pass in custom reporter via -C") {
@@ -217,6 +262,7 @@ import org.scalatest.exceptions.NotAllowedException
       runner.run("org.scalatest.tools.scalasbt.SampleSuite", fingerprint, listener, Array("-C", classOf[EventRecordingReporter].getName))
       framework.RunConfig.reporter.get match {
         case Some(dispatchRep: DispatchReporter) => 
+          dispatchRep.doDispose()
           dispatchRep.reporters.find(_.isInstanceOf[EventRecordingReporter]) match {
             case Some(recordingRep : EventRecordingReporter) => 
               assert(recordingRep.testSucceededEventsReceived.size === 3)
@@ -235,6 +281,7 @@ import org.scalatest.exceptions.NotAllowedException
       runner.run("org.scalatest.tools.scalasbt.SampleSuite", fingerprint, listener, Array("-y", "org.scalatest.FunSuite", "-C", classOf[EventRecordingReporter].getName))
       framework.RunConfig.reporter.get match {
         case Some(dispatchRep: DispatchReporter) => 
+          dispatchRep.doDispose()
           dispatchRep.reporters.find(_.isInstanceOf[EventRecordingReporter]) match {
             case Some(recordingRep : EventRecordingReporter) => 
               assert(recordingRep.testSucceededEventsReceived.size === 3)
@@ -254,6 +301,7 @@ import org.scalatest.exceptions.NotAllowedException
       runner.run("org.scalatest.tools.scalasbt.SampleSuite", fingerprint, listener, Array("-y", "org.scalatest.FunSpec", "-C", classOf[EventRecordingReporter].getName))
       framework.RunConfig.reporter.get match {
         case Some(dispatchRep: DispatchReporter) => 
+          dispatchRep.doDispose()
           dispatchRep.reporters.find(_.isInstanceOf[EventRecordingReporter]) match {
             case Some(recordingRep : EventRecordingReporter) => 
               assert(recordingRep.testSucceededEventsReceived.size === 0)
@@ -269,9 +317,25 @@ import org.scalatest.exceptions.NotAllowedException
         case _ => fail("Expected to find DispatchReporter, but not found.")
       }
     }
-
-    def runner: TestingRunner = {
-      new ScalaTestFramework().testRunner(Thread.currentThread.getContextClassLoader, Array(new TestLogger))
+    
+    test("-W should cause AlertProvided to be fired", Retryable) {
+      val framework = new ScalaTestFramework()
+      val runner: TestingRunner = framework.testRunner(Thread.currentThread.getContextClassLoader, Array(new TestLogger))
+      val listener = new EventHandler {
+        def handle(event: Event) {}
+      }
+      runner.run("org.scalatest.tools.scalasbt.SlowSampleSuite", fingerprint, listener, Array("-W", "1", "1", "-C", classOf[EventRecordingReporter].getName))
+      framework.RunConfig.reporter.get match {
+        case Some(dispatchRep: DispatchReporter) => 
+          dispatchRep.doDispose()
+          dispatchRep.reporters.find(_.isInstanceOf[EventRecordingReporter]) match {
+            case Some(recordingRep : EventRecordingReporter) => 
+              assert(recordingRep.testSucceededEventsReceived.size === 1)
+              assert(recordingRep.alertProvidedEventsReceived.size > 0)
+            case _ => fail("Expected to find EventRecordingReporter, but not found.")
+          }
+        case _ => fail("Expected to find DispatchReporter, but not found.")
+      }
     }
 
     val fingerprint = {
@@ -290,8 +354,19 @@ import org.scalatest.exceptions.NotAllowedException
           buf += event
         }
       }
+      val framework = new ScalaTestFramework()
+      val runner: TestingRunner = framework.testRunner(Thread.currentThread.getContextClassLoader, Array(new TestLogger))
       runner.run(classname, fingerprint, listener, args)
+      
+      dispose(framework)
       buf.toArray
+    }
+    private def dispose(framework: ScalaTestFramework) {
+      framework.RunConfig.reporter.get match {
+        case Some(dispatchRep: DispatchReporter) => 
+          dispatchRep.doDispose()
+        case _ => 
+      }
     }
 
     class TestLogger extends Logger {

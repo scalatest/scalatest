@@ -846,19 +846,6 @@ object Runner {
     }
     finally Thread.currentThread.setName(originalThreadName)
   }
-  
-  private[scalatest] def parseFriendlyParams(friendlyArgs:String): Array[String] = {
-    parseFriendlyParams(friendlyArgs.split(" "))
-  }
-
-  private[scalatest] def parseFriendlyParams(friendlyArgs:Array[String]): Array[String] = {
-    val (propsList, includesList, excludesList, repoArgsList, concurrentList, memberOnlyList, wildcardList, suiteList, junitList, testngList, chosenStyles) = 
-      new FriendlyParamsTranslator().parsePropsAndTags(friendlyArgs)
-    val arrayBuffer = new ArrayBuffer[String]()
-    arrayBuffer ++= propsList ::: includesList ::: excludesList ::: repoArgsList ::: concurrentList ::: memberOnlyList ::: wildcardList :::
-                    suiteList ::: junitList ::: testngList ::: chosenStyles
-    arrayBuffer.toArray
-  }
 
   private def runOptionallyWithPassFailReporter(args: Array[String], runWithPassFailReporter: Boolean): Boolean = {
 
@@ -893,7 +880,7 @@ object Runner {
     val fullReporterConfigurations: ReporterConfigurations =
       if (reporterArgs.isEmpty)
         // If no reporters specified, just give them a graphic reporter
-        new ReporterConfigurations(Some(GraphicReporterConfiguration(Set())), Nil, Nil, Nil, Nil, Nil, None, None, Nil, Nil, Nil, Nil)
+        new ReporterConfigurations(Some(GraphicReporterConfiguration(Set())), Nil, Nil, Nil, /*Nil, Nil, */None, None, Nil, Nil, Nil, Nil)
       else
         parseReporterArgsIntoConfigurations(reporterArgs)
 
@@ -928,8 +915,8 @@ object Runner {
             fullReporterConfigurations.fileReporterConfigurationList,
             fullReporterConfigurations.memoryReporterConfigurationList,
             fullReporterConfigurations.junitXmlReporterConfigurationList,
-            fullReporterConfigurations.dashboardReporterConfigurationList,
-            fullReporterConfigurations.xmlReporterConfigurationList,
+            //fullReporterConfigurations.dashboardReporterConfigurationList,
+            //fullReporterConfigurations.xmlReporterConfigurationList,
             fullReporterConfigurations.standardOutReporterConfiguration,
             fullReporterConfigurations.standardErrReporterConfiguration,
             fullReporterConfigurations.htmlReporterConfigurationList,
@@ -1062,8 +1049,8 @@ object Runner {
         s.startsWith("-M") ||
         s.startsWith("-A") ||
         s.startsWith("-u") ||
-        s.startsWith("-d") ||
-        s.startsWith("-a") ||
+        //s.startsWith("-d") ||
+        //s.startsWith("-a") ||
         s.startsWith("-r") ||
         s.startsWith("-C") ||
         s.startsWith("-n") ||
@@ -1222,7 +1209,7 @@ object Runner {
         if (it.hasNext)
           reporters += it.next
       }
-      else if (s.startsWith("-d")) {
+      /*else if (s.startsWith("-d")) {
         reporters += s
         if (it.hasNext)
           reporters += it.next
@@ -1236,7 +1223,7 @@ object Runner {
         reporters += s
         if (it.hasNext)
           reporters += it.next
-      }
+      }*/
       else if (s.startsWith("-h")) {
         reporters += s
         if (it.hasNext)
@@ -1488,9 +1475,9 @@ object Runner {
         case Nil => false
 
         case "-u" :: directory :: list => argTooShort(list)
-        case "-d" :: directory :: list => argTooShort(list)
-        case "-a" :: number    :: list => argTooShort(list)
-        case "-x" :: directory :: list => argTooShort(list)
+        //case "-d" :: directory :: list => argTooShort(list)
+        //case "-a" :: number    :: list => argTooShort(list)
+        //case "-x" :: directory :: list => argTooShort(list)
 
         case x :: list =>
           if (x.length < 2) true
@@ -1551,7 +1538,7 @@ object Runner {
           else {
             throw new IllegalArgumentException("-u needs to be followed by a directory name arg: ")
           }
-        case "-d" =>
+        /*case "-d" =>
           if (it.hasNext) {
             val directory = it.next
             if (!(new File(directory).isDirectory))
@@ -1586,7 +1573,7 @@ object Runner {
           }
           else {
             throw new IllegalArgumentException("-x needs to be followed by a directory name arg: ")
-          }
+          }*/
         case "-h" =>
           if (it.hasNext) {
             it.next // scroll past the filename
@@ -1704,7 +1691,7 @@ object Runner {
     val junitXmlReporterConfigurationList =
       buildJunitXmlReporterConfigurationList(args)
 
-    def buildDashboardReporterConfigurationList(args: List[String]) = {
+    /*def buildDashboardReporterConfigurationList(args: List[String]) = {
       def fetchNumFilesArg: Int = {
         var numFiles: Option[Int] = None
         val it = args.iterator
@@ -1742,7 +1729,7 @@ object Runner {
       }
       lb.toList
     }
-    val xmlReporterConfigurationList = buildXmlReporterConfigurationList(args)
+    val xmlReporterConfigurationList = buildXmlReporterConfigurationList(args)*/
 
     def buildHtmlReporterConfigurationList(args: List[String]):
       List[HtmlReporterConfiguration] =
@@ -1877,8 +1864,8 @@ object Runner {
       fileReporterConfigurationList,
       memoryReporterConfigurationList,
       junitXmlReporterConfigurationList,
-      dashboardReporterConfigurationList,
-      xmlReporterConfigurationList,
+      //dashboardReporterConfigurationList,
+      //xmlReporterConfigurationList,
       standardOutReporterConfigurationOption,
       standardErrReporterConfigurationOption,
       htmlReporterConfigurationList,

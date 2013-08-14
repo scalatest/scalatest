@@ -57,11 +57,6 @@ class ScalaTestFrameworkSuite extends FunSuite{
     assert(runner.loggers === loggers)
   }
 
-  private def parsePropsAndTags(rawargs:String) = {
-    val translator = new FriendlyParamsTranslator()
-    translator.parsePropsAndTags(Array(rawargs).filter(!_.equals("")))
-  }
-
   class TestLogger extends Logger{
     def trace(t:Throwable){}
     def error(msg:String){}

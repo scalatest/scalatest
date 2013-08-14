@@ -28,6 +28,9 @@ import Runner.SELECTED_TAG
 import Runner.mergeMap
 import Runner.parseSuiteArgsIntoNameStrings
 import Runner.parseChosenStylesIntoChosenStyleSet
+import Runner.parseArgs
+import Runner.parseDoubleArgument
+import Runner.parseSlowpokeConfig
 import java.io.{StringWriter, PrintWriter}
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.atomic.{AtomicInteger, AtomicBoolean}
@@ -144,24 +147,26 @@ class Framework extends SbtFramework {
     presentReminderWithFullStackTraces: Boolean,
     presentReminderWithoutCanceledTests: Boolean
   ) = {
-    if (useSbtLogInfoReporter) {
-      val sbtLogInfoReporter = 
-        new SbtLogInfoReporter(
-          loggers, 
-          presentAllDurations,
-          presentInColor,
-          presentShortStackTraces,
-          presentFullStackTraces, // If they say both S and F, F overrules
-          presentUnformatted,
-          presentReminder,
-          presentReminderWithShortStackTraces,
-          presentReminderWithFullStackTraces,
-          presentReminderWithoutCanceledTests
-        )
-      ReporterFactory.getDispatchReporter(Seq(reporter, sbtLogInfoReporter), None, None, loader, Some(resultHolder), false, 0, 0) // TODO: Support Slowpoke detection from sbt
-    }
-    else 
-      reporter
+    val reporters = 
+      if (useSbtLogInfoReporter) {
+        val sbtLogInfoReporter = 
+          new SbtLogInfoReporter(
+            loggers, 
+            presentAllDurations,
+            presentInColor,
+            presentShortStackTraces,
+            presentFullStackTraces, // If they say both S and F, F overrules
+            presentUnformatted,
+            presentReminder,
+            presentReminderWithShortStackTraces,
+            presentReminderWithFullStackTraces,
+            presentReminderWithoutCanceledTests
+          )
+        Vector(reporter, sbtLogInfoReporter)
+      }
+      else 
+        Vector(reporter)
+    new SbtDispatchReporter(reporters)
   }
       
   def runSuite(
@@ -586,14 +591,17 @@ class Framework extends SbtFramework {
     presentReminder: Boolean,
     presentReminderWithShortStackTraces: Boolean,
     presentReminderWithFullStackTraces: Boolean,
-    presentReminderWithoutCanceledTests: Boolean
+    presentReminderWithoutCanceledTests: Boolean, 
+    detectSlowpokes: Boolean,
+    slowpokeDetectionDelay: Long,
+    slowpokeDetectionPeriod: Long
   ) extends sbt.testing.Runner {  
     val isDone = new AtomicBoolean(false)
     val tracker = new Tracker
     val summaryCounter = new SummaryCounter
     val runStartTime = System.currentTimeMillis
     
-    val dispatchReporter = ReporterFactory.getDispatchReporter(repConfig, None, None, loader, Some(resultHolder), false, 0, 0) // TODO: Support slowpoke detection from sbt
+    val dispatchReporter = ReporterFactory.getDispatchReporter(repConfig, None, None, loader, Some(resultHolder), detectSlowpokes, slowpokeDetectionDelay, slowpokeDetectionPeriod) 
     
     dispatchReporter(RunStarting(tracker.nextOrdinal(), 0, configMap))
     
@@ -753,23 +761,51 @@ class Framework extends SbtFramework {
 
   def runner(args: Array[String], remoteArgs: Array[String], testClassLoader: ClassLoader) = {
 
-    val translator = new FriendlyParamsTranslator()
-    val (propertiesArgsList, includesArgsList, excludesArgsList, repoArgsList, concurrentList, memberOnlyList, wildcardList, 
-         suiteList, junitList, testngList, chosenStyles) = translator.parsePropsAndTags(args.filter(!_.equals("")))
+    val ParsedArgs(
+      runpathArgs,
+      reporterArgs,
+      suiteArgs,
+      againArgs,
+      junitArgs,
+      propertiesArgs,
+      tagsToIncludeArgs,
+      tagsToExcludeArgs,
+      concurrentArgs,
+      membersOnlyArgs,
+      wildcardArgs,
+      testNGArgs,
+      suffixes, 
+      chosenStyles, 
+      spanScaleFactors, 
+      testSortingReporterTimeouts,
+      slowpokeArgs
+    ) = parseArgs(args)
+    
+    if (!runpathArgs.isEmpty)
+      throw new IllegalArgumentException("-p, -R (runpath) is not supported when runs in SBT.")
                
-    if (!suiteList.isEmpty)
+    if (!suiteArgs.isEmpty)
       throw new IllegalArgumentException("-s (suite) is not supported when runs in SBT, please use SBT's test-only instead.")
     
-    if (!junitList.isEmpty)
+    if (!againArgs.isEmpty)
+      throw new IllegalArgumentException("-A is not supported when runs in SBT, please use SBT's test-quick instead.")
+    
+    if (!junitArgs.isEmpty)
       throw new IllegalArgumentException("-j (junit) is not supported when runs in SBT.")
     
-    if (!testngList.isEmpty)
+    if (!testNGArgs.isEmpty)
       throw new IllegalArgumentException("-b (testng) is not supported when runs in SBT.")
     
-    if (!concurrentList.isEmpty)
-      throw new IllegalArgumentException("-c, -P (concurrent) is not supported when runs in SBT.")
-               
-    val propertiesMap = parsePropertiesArgsIntoMap(propertiesArgsList)
+    if (!concurrentArgs.isEmpty)
+      throw new IllegalArgumentException("-c, -P (concurrent) is not supported when runs in SBT, please use SBT parallel configuration instead.")
+    
+    if (!suffixes.isEmpty)
+      throw new IllegalArgumentException("-q is not supported when runs in SBT, please use SBT's test-only or test filter instead.")
+    
+    if (!testSortingReporterTimeouts.isEmpty)
+      throw new IllegalArgumentException("-T is not supported when runs in SBT.")
+    
+    val propertiesMap = parsePropertiesArgsIntoMap(propertiesArgs)
     val chosenStyleSet: Set[String] = parseChosenStylesIntoChosenStyleSet(chosenStyles, "-y")
     if (propertiesMap.isDefinedAt(Runner.CHOSEN_STYLES))
       throw new IllegalArgumentException("Property name '" + Runner.CHOSEN_STYLES + "' is used by ScalaTest, please choose other property name.")
@@ -779,16 +815,24 @@ class Framework extends SbtFramework {
       else
         propertiesMap + (Runner.CHOSEN_STYLES -> chosenStyleSet)
       
-    val tagsToInclude: Set[String] = parseCompoundArgIntoSet(includesArgsList, "-n")
-    val tagsToExclude: Set[String] = parseCompoundArgIntoSet(excludesArgsList, "-l")
-    val membersOnly: List[String] = parseSuiteArgsIntoNameStrings(memberOnlyList, "-m")
-    val wildcard: List[String] = parseSuiteArgsIntoNameStrings(wildcardList, "-w")
+    val tagsToInclude: Set[String] = parseCompoundArgIntoSet(tagsToIncludeArgs, "-n")
+    val tagsToExclude: Set[String] = parseCompoundArgIntoSet(tagsToExcludeArgs, "-l")
+    val membersOnly: List[String] = parseSuiteArgsIntoNameStrings(membersOnlyArgs, "-m")
+    val wildcard: List[String] = parseSuiteArgsIntoNameStrings(wildcardArgs, "-w")
+    val slowpokeConfig: Option[SlowpokeConfig] = parseSlowpokeConfig(slowpokeArgs)
+    val (detectSlowpokes: Boolean, slowpokeDetectionDelay: Long, slowpokeDetectionPeriod: Long) =
+      slowpokeConfig match {
+        case Some(SlowpokeConfig(delayInMillis, periodInMillis)) => (true, delayInMillis, periodInMillis)
+        case _ => (false, 60000L, 60000L)
+      }
+    
+    Runner.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
     
     val fullReporterConfigurations: ReporterConfigurations = 
       if (remoteArgs.isEmpty) {
         // Creating the normal/main runner, should create reporters as specified by args.
         // If no reporters specified, just give them a default stdout reporter
-        Runner.parseReporterArgsIntoConfigurations(repoArgsList)
+        Runner.parseReporterArgsIntoConfigurations(reporterArgs)
       }
       else {
         // Creating a sub-process runner, should just create stdout reporter and socket reporter
@@ -825,7 +869,7 @@ class Framework extends SbtFramework {
             configSet.contains(PresentReminderWithoutCanceledTests)
           )
         case None => 
-          (!remoteArgs.isEmpty || repoArgsList.isEmpty, false, true, false, false, false, false, false, false, false)
+          (!remoteArgs.isEmpty || reporterArgs.isEmpty, false, true, false, false, false, false, false, false, false)
       }
     
     //val reporterConfigs = fullReporterConfigurations.copy(standardOutReporterConfiguration = None)
@@ -859,7 +903,10 @@ class Framework extends SbtFramework {
       presentReminder,
       presentReminderWithShortStackTraces,
       presentReminderWithFullStackTraces,
-      presentReminderWithoutCanceledTests
+      presentReminderWithoutCanceledTests, 
+      detectSlowpokes,
+      slowpokeDetectionDelay,
+      slowpokeDetectionPeriod
     )
   }
   

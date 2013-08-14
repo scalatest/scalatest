@@ -5,6 +5,9 @@ import org.scalatest.tools.Runner.parsePropertiesArgsIntoMap
 import org.scalatest.tools.Runner.parseCompoundArgIntoSet
 import org.scalatest.tools.Runner.parseSuiteArgsIntoNameStrings
 import org.scalatest.tools.Runner.parseChosenStylesIntoChosenStyleSet
+import org.scalatest.tools.Runner.parseArgs
+import org.scalatest.tools.Runner.parseDoubleArgument
+import org.scalatest.tools.Runner.parseSlowpokeConfig
 import SuiteDiscoveryHelper._
 import org.scalatest.Suite.formatterForSuiteStarting
 import org.scalatest.Suite.formatterForSuiteCompleted
@@ -18,6 +21,7 @@ import org.scalatest._
 import java.util.concurrent.atomic.AtomicReference
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.atomic.AtomicLong
 
 /**
  * Class that makes ScalaTest tests visible to sbt.
@@ -102,40 +106,84 @@ class ScalaTestFramework extends SbtFramework {
     private val configMap: AtomicReference[Option[ConfigMap]] = new AtomicReference(None)
     private val membersOnly: AtomicReference[Option[List[String]]] = new AtomicReference(None)
     private val wildcard: AtomicReference[Option[List[String]]] = new AtomicReference(None)
+    private val detectSlowpokes: AtomicBoolean = new AtomicBoolean(false) 
+    private val slowpokeDetectionDelay: AtomicLong = new AtomicLong(60000)
+    private val slowpokeDetectionPeriod: AtomicLong = new AtomicLong(60000)
     private val resultHolder = new SuiteResultHolder()
     
     def getConfigurations(args: Array[String], loggers: Array[Logger], eventHandler: EventHandler, testLoader: ClassLoader) = 
       synchronized {
         if (reporterConfigs.get.isEmpty) {
-          // Why are we getting rid of empty strings? Were empty strings coming in from sbt? -bv 11/09/2011
-          val translator = new FriendlyParamsTranslator()
-          val (propertiesArgsList, includesArgsList, excludesArgsList, repoArgsList, concurrentList, memberOnlyArgList, wildcardArgList, 
-               suiteList, junitList, testngList, chosenStyles) = translator.parsePropsAndTags(args.filter(!_.equals("")))
+          val ParsedArgs(
+            runpathArgs,
+            reporterArgs,
+            suiteArgs,
+            againArgs,
+            junitArgs,
+            propertiesArgs,
+            tagsToIncludeArgs,
+            tagsToExcludeArgs,
+            concurrentArgs,
+            membersOnlyArgs,
+            wildcardArgs,
+            testNGArgs,
+            suffixes, 
+            chosenStyles, 
+            spanScaleFactors, 
+            testSortingReporterTimeouts,
+            slowpokeArgs
+          ) = parseArgs(args)
+          
+          if (!runpathArgs.isEmpty)
+            throw new IllegalArgumentException("-p, -R (runpath) is not supported when runs in SBT.")
                
-          if (!suiteList.isEmpty)
+          if (!suiteArgs.isEmpty)
             throw new IllegalArgumentException("-s (suite) is not supported when runs in SBT, please use SBT's test-only instead.")
           
-          if (!junitList.isEmpty)
+          if (!againArgs.isEmpty)
+            throw new IllegalArgumentException("-A is not supported when runs in SBT, please use SBT's test-quick instead.")
+          
+          if (!junitArgs.isEmpty)
             throw new IllegalArgumentException("-j (junit) is not supported when runs in SBT.")
           
-          if (!testngList.isEmpty)
+          if (!testNGArgs.isEmpty)
             throw new IllegalArgumentException("-b (testng) is not supported when runs in SBT.")
           
-          if (!concurrentList.isEmpty)
-            throw new IllegalArgumentException("-c, -P (concurrent) is not supported when runs in SBT.")
+          if (!concurrentArgs.isEmpty)
+            throw new IllegalArgumentException("-c, -P (concurrent) is not supported when runs in SBT, please use SBT parallel configuration instead.")
           
-          val propertiesMap = parsePropertiesArgsIntoMap(propertiesArgsList)
+          if (!suffixes.isEmpty)
+            throw new IllegalArgumentException("-q is not supported when runs in SBT, please use SBT's test-only or test filter instead.")
+          
+          if (!testSortingReporterTimeouts.isEmpty)
+            throw new IllegalArgumentException("-T is not supported when runs in SBT.")
+          
+          val propertiesMap = parsePropertiesArgsIntoMap(propertiesArgs)
           val chosenStyleSet: Set[String] = parseChosenStylesIntoChosenStyleSet(chosenStyles, "-y")
           if (propertiesMap.isDefinedAt(Runner.CHOSEN_STYLES))
             throw new IllegalArgumentException("Property name '" + Runner.CHOSEN_STYLES + "' is used by ScalaTest, please choose other property name.")
           configMap.getAndSet(Some(if (chosenStyleSet.isEmpty) propertiesMap else propertiesMap + (Runner.CHOSEN_STYLES -> chosenStyleSet)))
-          val tagsToInclude: Set[String] = parseCompoundArgIntoSet(includesArgsList, "-n")
-          val tagsToExclude: Set[String] = parseCompoundArgIntoSet(excludesArgsList, "-l")
+          val tagsToInclude: Set[String] = parseCompoundArgIntoSet(tagsToIncludeArgs, "-n")
+          val tagsToExclude: Set[String] = parseCompoundArgIntoSet(tagsToExcludeArgs, "-l")
           filter.getAndSet(Some(org.scalatest.Filter(if (tagsToInclude.isEmpty) None else Some(tagsToInclude), tagsToExclude)))
-          membersOnly.getAndSet(Some(parseSuiteArgsIntoNameStrings(memberOnlyArgList, "-m")))
-          wildcard.getAndSet(Some(parseSuiteArgsIntoNameStrings(wildcardArgList, "-w")))
+          membersOnly.getAndSet(Some(parseSuiteArgsIntoNameStrings(membersOnlyArgs, "-m")))
+          wildcard.getAndSet(Some(parseSuiteArgsIntoNameStrings(wildcardArgs, "-w")))
+          val slowpokeConfig: Option[SlowpokeConfig] = parseSlowpokeConfig(slowpokeArgs)
+          //val (detectSlowpokes: Boolean, slowpokeDetectionDelay: Long, slowpokeDetectionPeriod: Long) =
+          slowpokeConfig match {
+            case Some(SlowpokeConfig(delayInMillis, periodInMillis)) => 
+              detectSlowpokes.getAndSet(true)
+              slowpokeDetectionDelay.getAndSet(delayInMillis)
+              slowpokeDetectionPeriod.getAndSet(periodInMillis)
+            case _ => 
+              detectSlowpokes.getAndSet(false)
+              slowpokeDetectionDelay.getAndSet(60000L)
+              slowpokeDetectionPeriod.getAndSet(60000L)
+          }
           
-          val fullReporterConfigurations = Runner.parseReporterArgsIntoConfigurations(repoArgsList)
+          Runner.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
+          
+          val fullReporterConfigurations = Runner.parseReporterArgsIntoConfigurations(reporterArgs)
           
           fullReporterConfigurations.standardOutReporterConfiguration match {
             case Some(stdoutConfig) =>
@@ -155,7 +203,7 @@ class ScalaTestFramework extends SbtFramework {
               presentReminderWithFullStackTraces.getAndSet(configSet.contains(PresentReminderWithFullStackTraces))
               presentReminderWithoutCanceledTests.getAndSet(configSet.contains(PresentReminderWithoutCanceledTests))
             case None => 
-              useStdout.getAndSet(repoArgsList.isEmpty)  // If no reporters specified, just give them a default stdout reporter
+              useStdout.getAndSet(reporterArgs.isEmpty)  // If no reporters specified, just give them a default stdout reporter
               presentAllDurations.getAndSet(false)
               presentInColor.getAndSet(true)
               presentShortStackTraces.getAndSet(false)
@@ -176,13 +224,15 @@ class ScalaTestFramework extends SbtFramework {
         }
         
         if (reporter.get.isEmpty || reporter.get.get.isDisposed) 
-          reporter.getAndSet(Some(ReporterFactory.getDispatchReporter(reporterConfigs.get.get, None, None, testLoader, Some(resultHolder), false, 0, 0))) // TODO: Support slowpoke detector?
-          
-        val dispatchReporter = 
+          reporter.getAndSet(Some(ReporterFactory.getDispatchReporter(reporterConfigs.get.get, None, None, testLoader, Some(resultHolder), detectSlowpokes.get, slowpokeDetectionDelay.get, slowpokeDetectionPeriod.get))) 
+        
+        val reporters =  
           if (useStdout.get)
-            ReporterFactory.getDispatchReporter(Seq(reporter.get.get, createSbtLogInfoReporter(loggers)), None, None, testLoader, Some(resultHolder), false, 0, 0) // TODO: Support slowpoke detector?
+            Vector(reporter.get.get, createSbtLogInfoReporter(loggers))
           else
-            reporter.get.get
+            Vector(reporter.get.get)
+            
+        val dispatchReporter = new SbtDispatchReporter(reporters)
           
         (dispatchReporter, filter.get.get, configMap.get.get, membersOnly.get.get, wildcard.get.get)
       }
@@ -376,7 +426,7 @@ Tags to include and exclude: -n "CheckinTests FunctionalTests" -l "SlowTests Net
 
     private val emptyClassArray = new Array[java.lang.Class[T] forSome {type T}](0)
     
-    private class SbtReporter(eventHandler: EventHandler, report: Option[DispatchReporter]) extends Reporter {
+    private class SbtReporter(eventHandler: EventHandler, report: Option[Reporter]) extends Reporter {
       
       import org.scalatest.events._
 
@@ -410,7 +460,7 @@ Tags to include and exclude: -n "CheckinTests FunctionalTests" -l "SlowTests Net
       
       def dispose() {
         report match {
-          case Some(report) => 
+          case Some(report: DispatchReporter) => 
             report.dispatchDisposeAndWaitUntilDone()
           case None =>
         }
