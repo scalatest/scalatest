@@ -262,6 +262,7 @@ import org.scalatest.tagobjects.Retryable
       runner.run("org.scalatest.tools.scalasbt.SampleSuite", fingerprint, listener, Array("-C", classOf[EventRecordingReporter].getName))
       framework.RunConfig.reporter.get match {
         case Some(dispatchRep: DispatchReporter) => 
+          dispatchRep.doDispose()
           dispatchRep.reporters.find(_.isInstanceOf[EventRecordingReporter]) match {
             case Some(recordingRep : EventRecordingReporter) => 
               assert(recordingRep.testSucceededEventsReceived.size === 3)
@@ -280,6 +281,7 @@ import org.scalatest.tagobjects.Retryable
       runner.run("org.scalatest.tools.scalasbt.SampleSuite", fingerprint, listener, Array("-y", "org.scalatest.FunSuite", "-C", classOf[EventRecordingReporter].getName))
       framework.RunConfig.reporter.get match {
         case Some(dispatchRep: DispatchReporter) => 
+          dispatchRep.doDispose()
           dispatchRep.reporters.find(_.isInstanceOf[EventRecordingReporter]) match {
             case Some(recordingRep : EventRecordingReporter) => 
               assert(recordingRep.testSucceededEventsReceived.size === 3)
@@ -299,6 +301,7 @@ import org.scalatest.tagobjects.Retryable
       runner.run("org.scalatest.tools.scalasbt.SampleSuite", fingerprint, listener, Array("-y", "org.scalatest.FunSpec", "-C", classOf[EventRecordingReporter].getName))
       framework.RunConfig.reporter.get match {
         case Some(dispatchRep: DispatchReporter) => 
+          dispatchRep.doDispose()
           dispatchRep.reporters.find(_.isInstanceOf[EventRecordingReporter]) match {
             case Some(recordingRep : EventRecordingReporter) => 
               assert(recordingRep.testSucceededEventsReceived.size === 0)
@@ -324,6 +327,7 @@ import org.scalatest.tagobjects.Retryable
       runner.run("org.scalatest.tools.scalasbt.SlowSampleSuite", fingerprint, listener, Array("-W", "1", "1", "-C", classOf[EventRecordingReporter].getName))
       framework.RunConfig.reporter.get match {
         case Some(dispatchRep: DispatchReporter) => 
+          dispatchRep.doDispose()
           dispatchRep.reporters.find(_.isInstanceOf[EventRecordingReporter]) match {
             case Some(recordingRep : EventRecordingReporter) => 
               assert(recordingRep.testSucceededEventsReceived.size === 1)
@@ -332,10 +336,6 @@ import org.scalatest.tagobjects.Retryable
           }
         case _ => fail("Expected to find DispatchReporter, but not found.")
       }
-    }
-
-    def runner: TestingRunner = {
-      new ScalaTestFramework().testRunner(Thread.currentThread.getContextClassLoader, Array(new TestLogger))
     }
 
     val fingerprint = {
@@ -354,8 +354,19 @@ import org.scalatest.tagobjects.Retryable
           buf += event
         }
       }
+      val framework = new ScalaTestFramework()
+      val runner: TestingRunner = framework.testRunner(Thread.currentThread.getContextClassLoader, Array(new TestLogger))
       runner.run(classname, fingerprint, listener, args)
+      
+      dispose(framework)
       buf.toArray
+    }
+    private def dispose(framework: ScalaTestFramework) {
+      framework.RunConfig.reporter.get match {
+        case Some(dispatchRep: DispatchReporter) => 
+          dispatchRep.doDispose()
+        case _ => 
+      }
     }
 
     class TestLogger extends Logger {

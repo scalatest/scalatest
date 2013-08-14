@@ -281,6 +281,7 @@ class CatchReporterProp extends AllSuiteProp {
       assert(rep.testStartingEventsReceived.length === 3)
       assert(rep.testSucceededEventsReceived.length === 3)
       assert(!wrapper.isWrapped, "rep should not be wrapped with CatchReporter, but it does.")
+      wrapper.doDispose()
     }
   }
   
@@ -293,6 +294,7 @@ class CatchReporterProp extends AllSuiteProp {
       assert(rep.testStartingEventsReceived.length === 2)
       assert(rep.testSucceededEventsReceived.length === 3)
       assert(!wrapper.isWrapped, "rep should not be wrapped with CatchReporter, but it does.")
+      wrapper.doDispose()
     }
   }
   
