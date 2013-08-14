@@ -225,12 +225,14 @@ class ScalaTestFramework extends SbtFramework {
         
         if (reporter.get.isEmpty || reporter.get.get.isDisposed) 
           reporter.getAndSet(Some(ReporterFactory.getDispatchReporter(reporterConfigs.get.get, None, None, testLoader, Some(resultHolder), detectSlowpokes.get, slowpokeDetectionDelay.get, slowpokeDetectionPeriod.get))) 
-          
-        val dispatchReporter = 
+        
+        val reporters =  
           if (useStdout.get)
-            ReporterFactory.getDispatchReporter(Seq(reporter.get.get, createSbtLogInfoReporter(loggers)), None, None, testLoader, Some(resultHolder), false, 0, 0) // Slowpoke detection included in wrapped DispatchReporter
+            Vector(reporter.get.get, createSbtLogInfoReporter(loggers))
           else
-            reporter.get.get
+            Vector(reporter.get.get)
+            
+        val dispatchReporter = new SbtDispatchReporter(reporters)
           
         (dispatchReporter, filter.get.get, configMap.get.get, membersOnly.get.get, wildcard.get.get)
       }
@@ -424,7 +426,7 @@ Tags to include and exclude: -n "CheckinTests FunctionalTests" -l "SlowTests Net
 
     private val emptyClassArray = new Array[java.lang.Class[T] forSome {type T}](0)
     
-    private class SbtReporter(eventHandler: EventHandler, report: Option[DispatchReporter]) extends Reporter {
+    private class SbtReporter(eventHandler: EventHandler, report: Option[Reporter]) extends Reporter {
       
       import org.scalatest.events._
 
@@ -458,7 +460,7 @@ Tags to include and exclude: -n "CheckinTests FunctionalTests" -l "SlowTests Net
       
       def dispose() {
         report match {
-          case Some(report) => 
+          case Some(report: DispatchReporter) => 
             report.dispatchDisposeAndWaitUntilDone()
           case None =>
         }

@@ -147,24 +147,26 @@ class Framework extends SbtFramework {
     presentReminderWithFullStackTraces: Boolean,
     presentReminderWithoutCanceledTests: Boolean
   ) = {
-    if (useSbtLogInfoReporter) {
-      val sbtLogInfoReporter = 
-        new SbtLogInfoReporter(
-          loggers, 
-          presentAllDurations,
-          presentInColor,
-          presentShortStackTraces,
-          presentFullStackTraces, // If they say both S and F, F overrules
-          presentUnformatted,
-          presentReminder,
-          presentReminderWithShortStackTraces,
-          presentReminderWithFullStackTraces,
-          presentReminderWithoutCanceledTests
-        )
-      ReporterFactory.getDispatchReporter(Seq(reporter, sbtLogInfoReporter), None, None, loader, Some(resultHolder), false, 0, 0) // Slowpoke detection included in wrapped DispatchReporter
-    }
-    else 
-      reporter
+    val reporters = 
+      if (useSbtLogInfoReporter) {
+        val sbtLogInfoReporter = 
+          new SbtLogInfoReporter(
+            loggers, 
+            presentAllDurations,
+            presentInColor,
+            presentShortStackTraces,
+            presentFullStackTraces, // If they say both S and F, F overrules
+            presentUnformatted,
+            presentReminder,
+            presentReminderWithShortStackTraces,
+            presentReminderWithFullStackTraces,
+            presentReminderWithoutCanceledTests
+          )
+        Vector(reporter, sbtLogInfoReporter)
+      }
+      else 
+        Vector(reporter)
+    new SbtDispatchReporter(reporters)
   }
       
   def runSuite(
