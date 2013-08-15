@@ -29,6 +29,25 @@ class PrettifierSpec extends Spec with Matchers {
       f("hi") should be ("hi")
       f(List("hi")) should be ("List(hi)")
     }
+    def `can be composed with another Prettifier` {
+      case class Yell(secret: String)
+      val myLittlePretty =
+        new Prettifier {
+          def apply(o: Any) =
+            o match {
+              case Yell(secret) => secret.toUpperCase + "!!!"
+              case _ => Prettifier.default(o)
+            }
+        }
+      myLittlePretty(Yell("I like fruit loops")) should be ("I LIKE FRUIT LOOPS!!!")
+      myLittlePretty("hi") should be ("\"hi\"")
+      myLittlePretty('h') should be ("'h'")
+      myLittlePretty(Array(1, 2, 3)) should be ("Array(1, 2, 3)")
+      myLittlePretty(WrappedArray.make(Array(1, 2, 3))) should be ("Array(1, 2, 3)")
+      myLittlePretty(null) should be ("null")
+      myLittlePretty(()) should be ("<(), the Unit value>")
+      myLittlePretty(List("1", "2", "3")) should be ("List(1, 2, 3)")
+    }
   }
   object `the default Prettifier` {
     def `should put double quotes around strings` {
