@@ -20,37 +20,37 @@ import scala.collection.mutable.WrappedArray
 
 class PrettifierSpec extends Spec with Matchers {
   object `A Prettifier` {
-    def `should convert an Any to a String` {
+    def `should convert an IndexedSeq[Any] to a IndexedSeq[String]` {
       val f =
         new Prettifier {
-          def apply(o: Any) = o.toString
+          def apply(raws: IndexedSeq[Any]) = raws map (_.toString)
         }
 
-      f("hi") should be ("hi")
-      f(List("hi")) should be ("List(hi)")
+      f(Vector("hi")) should be (Vector("hi"))
+      f(Vector(List("hi"))) should be (Vector("List(hi)"))
     }
   }
   object `the default Prettifier` {
     def `should put double quotes around strings` {
-      Prettifier.default("hi") should be ("\"hi\"")
+      Prettifier.defaultPrettify("hi") should be ("\"hi\"")
     }
     def `should put single quotes around chars` {
-      Prettifier.default('h') should be ("'h'")
+      Prettifier.defaultPrettify('h') should be ("'h'")
     }
     def `should pretty print arrays` {
-      Prettifier.default(Array(1, 2, 3)) should be ("Array(1, 2, 3)")
+      Prettifier.defaultPrettify(Array(1, 2, 3)) should be ("Array(1, 2, 3)")
     }
     def `should pretty print wrapped arrays` {
-      Prettifier.default(WrappedArray.make(Array(1, 2, 3))) should be ("Array(1, 2, 3)")
+      Prettifier.defaultPrettify(WrappedArray.make(Array(1, 2, 3))) should be ("Array(1, 2, 3)")
     }
     def `should show null as "null"` {
-      Prettifier.default(null) should be ("null")
+      Prettifier.defaultPrettify(null) should be ("null")
     }
     def `should clarify the Unit value` {
-      Prettifier.default(()) should be ("<(), the Unit value>")
+      Prettifier.defaultPrettify(()) should be ("<(), the Unit value>")
     }
     def `should just call toString on anything not specially treated` {
-      Prettifier.default(List("1", "2", "3")) should be ("List(1, 2, 3)")
+      Prettifier.defaultPrettify(List("1", "2", "3")) should be ("List(1, 2, 3)")
     }
   }
 }
