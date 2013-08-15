@@ -242,8 +242,9 @@ private[scalatest] object MatchersHelper {
 
         MatchResult(
           result == true, // Right now I just leave the return value of accessProperty as Any
-          FailureMessages(wasNot, left, UnquotedString(propertyName)),
-          FailureMessages(was, left, UnquotedString(propertyName))
+          Resources(wasNot),
+          Resources(was), 
+          Vector(left, UnquotedString(propertyName))
         )
     }
   }
