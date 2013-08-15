@@ -41,6 +41,15 @@ class PrettyMethodsSpec extends Spec with Matchers {
         List("1", "2", "3").pretty should be ("List(1, 2, 3)")
       }
     }
+/* This proved that I got rid of the Any => String conversion, but by not compiling. 
+    def `should not simply convert Any to String` {
+      new ConversionCheckedTripleEquals {
+        import PrettyMethods._
+        "2" should === (2)
+      }
+    }
+*/
   }
 }
+
 

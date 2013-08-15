@@ -19,11 +19,25 @@ import scala.collection.mutable.WrappedArray
 
 trait PrettyMethods {
 
-  implicit val defaultPrettifier = Prettifier.default
+  case class PrettyConfig(prettifier: Prettifier)
 
-  implicit class Prettyizer(o: Any)(implicit prettifier: Prettifier) {
-    def pretty: String = prettifier(o)
+  // Don't make an implicit from Any => String, so wrapping the
+  // implicit Prettifier in a PrettyConfig.
+  implicit val defaultPrettifier = PrettyConfig(Prettifier.default)
+
+  implicit class Prettyizer(o: Any)(implicit prettyConfig: PrettyConfig) {
+    def pretty: String = prettyConfig.prettifier(o)
   }
 }
 
 object PrettyMethods extends PrettyMethods
+
+/*
+isDefinedFor
+
+Want t
+
+AsIs
+
+Definitely want to be able to compose prettifiers.
+*/

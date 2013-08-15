@@ -95,18 +95,21 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * </p>
  *
  * <p>
- * All previously documented syntax for matchers should continue to work exactly the same in ScalaTest 2.0, with two potential breakages, both of
- * which should be quite rare, and one deprecation. First, support for "<code>have</code> <code>length</code>" and "<code>have</code> <code>size</code>" based solely on
- * structural types has been removed. Any use of this syntax on types other than Scala or Java collections, arrays, or strings will no longer compile.
- * To migrate such code, you will need to implicitly provide either a <code>Length[T]</code> or <code>Size[T]</code> for your type <code>T</code>, as
- * <a href="#checkingSizeAndLength">described below</a>.
- * The other, even rarer, potential breakage is that if <code>length</code> or <code>size</code> were used along with other custom have-property matchers,
- * the <code>length</code> and <code>size</code> invocation must be followed by an <code>(of [&lt;type&gt;])</code> clause, as
+ * Although ScalaTest's matchers have undergone a major refactor in 2.0, all previously documented syntax for matchers should continue to work exactly
+ * the same with one potential exception, which should be in practice be extremely rare. The potential breakage is that if you included <code>length</code> or <code>size</code>
+ * along with custom have-property matchers that you wrote, you'll get a compiler error. To fix such an error, add after
+ * your <code>length</code> or <code>size</code> invocation an <code>(of [&lt;type&gt;])</code> clause, as
  * <a href="#lengthSizeHavePropertyMatchers">described below</a>.
- * The deprecation is <code>be</code> <code>===</code> <code>&lt;value&gt;</code> syntax. This will continue to work as before, but will generate a deprecation
- * warning and eventually be removed in a later version of ScalaTest. It is being deprecated so that all uses of <code>===</code> in ScalaTest consistently provide the new
+ * </p>
+ *
+ * <p>
+ * Two other deprecations in ScalaTest 2.0 matchers are <code>be</code> <code>===</code> <code>&lt;value&gt;</code> and <code>evaluating</code> <code>...</code>
+ * <code>should</code> <code>produce</code> syntax. This will both continue to work as before, but will generate a deprecation
+ * warning and eventually be removed in a future version of ScalaTest. the <code>be</code> <code>===</code> syntax is being deprecated so that all uses
+ * of <code>===</code> in ScalaTest consistently provide the new
  * features of tunable type checking, tolerance support, and customized equality.  Please replace uses of this syntax with one of the other
- * ways to check equality described in the next section.
+ * ways to check equality described in the next section. The <code>eventually</code> syntax is being deprecated because it is replaced by <code>thrownBy</code>
+ * clauses, as <a href="#expectedExceptions">described below</a>.
  * </p>
  *
  * <a name="checkingEqualityWithMatchers"></a>
@@ -1364,6 +1367,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * For more information about how to create custom <code>Matcher</code>s, please see the documentation for the <a href="Matcher.html"><code>Matcher</code></a> trait.
  * </p>
  *
+ * <a name="expectedExceptions">
  * <h2>Checking for expected exceptions</h2>
  *
  * <p>
@@ -1373,22 +1377,56 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * </p>
  *
  * <pre class="stHighlight">
- * evaluating { s.charAt(-1) } should produce [IndexOutOfBoundsException]
+ * an [IndexOutOfBoundsException] should be thrownBy s.charAt(-1) 
  * </pre>
  *
  * <p>
  * If <code>charAt</code> throws an instance of <code>StringIndexOutOfBoundsException</code>,
  * this expression will result in that exception. But if <code>charAt</code> completes normally, or throws a different
  * exception, this expression will complete abruptly with a <code>TestFailedException</code>.
+ * 
+ * <p>
+ * If you need to further isnpect an expected exception, you can capture it using this syntax:
+ * </p>
+ * 
+ * <pre class="stHighlight">
+ * val thrown = the [IndexOutOfBoundsException] thrownBy s.charAt(-1) 
+ * </pre>
+ *
+ * <p>
  * This expression returns the caught exception so that you can inspect it further if you wish, for
  * example, to ensure that data contained inside the exception has the expected values. Here's an
  * example:
  * </p>
  *
  * <pre class="stHighlight">
- * val thrown = evaluating { s.charAt(-1) } should produce [IndexOutOfBoundsException]
  * thrown.getMessage should equal ("String index out of range: -1")
  * </pre>
+ *
+ * <p>
+ * If you prefer you can also capture and inspect an expected exception in one statement, like this:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * the [ArithmeticException] thrownBy 1 / 0 should have message "/ by zero"
+ * the [IndexOutOfBoundsException] thrownBy {
+ *   s.charAt(-1) 
+ * } should have message "String index out of range: -1"
+ * </pre>
+ *
+ * <p>
+ * Note: the following syntax from ScalaTest 1.x has been deprecated:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * evaluating { s.charAt(-1) } should produce [IndexOutOfBoundsException]
+ * </pre>
+ *
+ * <p>
+ * Such uses will continue to work during the deprecation cycle, but support for this syntax will
+ * eventually be removed in a future version of ScalaTest. Please change all uses to
+ * a corresponding use of the syntax described previously in this section.
+ * <p>
  *
  * <h2>Those pesky parens</h2>
  * 
