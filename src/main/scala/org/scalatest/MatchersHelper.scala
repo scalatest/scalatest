@@ -255,8 +255,9 @@ private[scalatest] object MatchersHelper {
     if (groups.size == 0 || !matches)
       MatchResult(
         matches, 
-        FailureMessages(didNotMatchResourceName, left, regex), 
-        FailureMessages(matchResourceName, left, regex)
+        Resources(didNotMatchResourceName), 
+        Resources(matchResourceName), 
+        Vector(left, UnquotedString(regex.toString))
       )
     else {
       val count = pMatcher.groupCount
@@ -269,18 +270,19 @@ private[scalatest] object MatchersHelper {
         case Some((group, idx)) =>
           MatchResult(
             false, 
-            if (groups.size > 1)
-              FailureMessages(notGroupAtIndexResourceName, left, regex, pMatcher.group(idx + 1), group, idx)
-            else
-              FailureMessages(notGroupResourceName, left, regex, pMatcher.group(1), group), // groups.size must be 1 to reach here
-            FailureMessages(andGroupResourceName, left, regex, groups.mkString(", "))
+            Resources(if (groups.size > 1) notGroupAtIndexResourceName else notGroupResourceName), 
+            Resources(andGroupResourceName), 
+            if (groups.size > 1) Vector(left, UnquotedString(regex.toString), pMatcher.group(idx + 1), UnquotedString(group), idx) else Vector(left, UnquotedString(regex.toString), pMatcher.group(1), UnquotedString(group)), 
+            Vector(left, UnquotedString(regex.toString), UnquotedString(groups.mkString(", ")))
           )
         case None => 
           // None of group failed
           MatchResult(
             true, 
-            FailureMessages(notGroupResourceName, left, regex, pMatcher.group(1),  UnquotedString(groups.map("\"" + _ + "\"").mkString(", "))), 
-            FailureMessages(andGroupResourceName, left, regex, UnquotedString(groups.map("\"" + _ + "\"").mkString(", ")))
+            Resources(notGroupResourceName), 
+            Resources(andGroupResourceName), 
+            Vector(left, UnquotedString(regex.toString), pMatcher.group(1),  UnquotedString(groups.mkString(", "))), 
+            Vector(left, UnquotedString(regex.toString), UnquotedString(groups.mkString(", ")))
           )
       }
     }

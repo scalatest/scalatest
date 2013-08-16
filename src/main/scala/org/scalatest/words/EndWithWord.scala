@@ -19,6 +19,8 @@ import org.scalatest.matchers._
 import org.scalautils._
 import scala.util.matching.Regex
 import org.scalatest.FailureMessages
+import org.scalatest.Resources
+import org.scalatest.UnquotedString
 import org.scalatest.MatchersHelper.endWithRegexWithGroups
 
 /**
@@ -42,9 +44,11 @@ final class EndWithWord {
       def apply(left: String): MatchResult =
         MatchResult(
           left endsWith right,
-          FailureMessages("didNotEndWith", left, right),
-          FailureMessages("endedWith", left, right)
+          Resources("didNotEndWith"),
+          Resources("endedWith"), 
+          Vector(left, right)
         )
+      override def toString: String = "endWith " + Prettifier.default(right)
     }
 
   /**
@@ -70,6 +74,7 @@ final class EndWithWord {
     new Matcher[String] {
       def apply(left: String): MatchResult = 
         endWithRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
+      override def toString: String = "endWith regex " + regexWithGroups.regex.toString + (if (regexWithGroups.groups.size > 1) " withGroups " else " withGroup ") + regexWithGroups.groups.mkString(", ")
     }
 
   /**
@@ -87,9 +92,11 @@ final class EndWithWord {
         val allMatches = rightRegex.findAllIn(left)
         MatchResult(
           allMatches.hasNext && (allMatches.end == left.length),
-          FailureMessages("didNotEndWithRegex", left, rightRegex),
-          FailureMessages("endedWithRegex", left, rightRegex)
+          Resources("didNotEndWithRegex"),
+          Resources("endedWithRegex"), 
+          Vector(left, UnquotedString(rightRegex.toString))
         )
       }
+      override def toString: String = "endWith regex " + rightRegex.toString
     }
 }
