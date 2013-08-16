@@ -81,6 +81,8 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * <a name="matchersMigration"></a>
  * <h2>Matchers migration in ScalaTest 2.0</h2>
  *
+ * <h3>Deprecations</h3>
+ *
  * <p>
  * In ScalaTest 2.0, traits <code>org.scalatest.matchers.ShouldMatchers</code> and <code>org.scalatest.matchers.MustMatchers</code> are deprecated, replaced
  * by trait <code>org.scalatest.Matchers</code>.
@@ -95,6 +97,18 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * </p>
  *
  * <p>
+ * Two other deprecations in ScalaTest 2.0 matchers are <code>be</code> <code>===</code> <code>&lt;value&gt;</code> and <code>evaluating</code> <code>...</code>
+ * <code>should</code> <code>produce</code> syntax. This will both continue to work as before, but will generate a deprecation
+ * warning and eventually be removed in a future version of ScalaTest. the <code>be</code> <code>===</code> syntax is being deprecated so that all uses
+ * of <code>===</code> in ScalaTest consistently provide the new
+ * features of tunable type checking, tolerance support, and customized equality.  Please replace uses of this syntax with one of the other
+ * ways to check equality described in the next section. The <code>eventually</code> syntax is being deprecated because it is replaced by <code>thrownBy</code>
+ * clauses, as <a href="#expectedExceptions">described below</a>.
+ * </p>
+ *
+ * <h3>Potential breakages</h3>
+ * 
+ * <p>
  * Although ScalaTest's matchers have undergone a major refactor in 2.0, all previously documented syntax for matchers should continue to work exactly
  * the same with one potential exception, which should be in practice be extremely rare. The potential breakage is that if you included <code>length</code> or <code>size</code>
  * along with custom have-property matchers that you wrote, you'll get a compiler error. To fix such an error, add after
@@ -103,13 +117,11 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * </p>
  *
  * <p>
- * Two other deprecations in ScalaTest 2.0 matchers are <code>be</code> <code>===</code> <code>&lt;value&gt;</code> and <code>evaluating</code> <code>...</code>
- * <code>should</code> <code>produce</code> syntax. This will both continue to work as before, but will generate a deprecation
- * warning and eventually be removed in a future version of ScalaTest. the <code>be</code> <code>===</code> syntax is being deprecated so that all uses
- * of <code>===</code> in ScalaTest consistently provide the new
- * features of tunable type checking, tolerance support, and customized equality.  Please replace uses of this syntax with one of the other
- * ways to check equality described in the next section. The <code>eventually</code> syntax is being deprecated because it is replaced by <code>thrownBy</code>
- * clauses, as <a href="#expectedExceptions">described below</a>.
+ * The only other source of potential breakage is the fragile base class problem. We have added fields and methods to <code>Matchers</code> in 2.0 that may
+ * conflict with fields and methods in your existing classes and cause a compiler error. Such issues can usually be easily fixed locally with simple renames or refactors,
+ * but if you prefer to subtract a token from <code>Matchers</code>, you can do so by mixing together your own <code>Matchers</code> trait
+ * from component traits, as <a>described below</a>. Note that you should not see any new implicit conflicts, because we managed to <em>reduce</em> the number
+ * of implicits brought into scope by 2.0 matchers compared to 1.x by about 75%.
  * </p>
  *
  * <a name="checkingEqualityWithMatchers"></a>
@@ -171,7 +183,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * </p>
  *
  * <p>
- * You can always supply implicit parameters explicitly, but in the case of implicit parameters of type <code>Equality[T]</code>, ScalaTest provides a
+ * You can always supply implicit parameters explicitly, but in the case of implicit parameters of type <code>Equality[T]</code>, ScalaUtils provides a
  * simple "explictly" DSL. For example, here's how you could explicitly supply an <code>Equality[String]</code> instance that normalizes both left and right
  * sides (which must be strings), by transforming them to lowercase:
  * </p>
@@ -236,7 +248,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * makes sense. Here's how checking for length looks:
  * </p>
  * <pre class="stHighlight">
- * result should have length (3)
+ * result should have length 3
  * </pre>
  * 
  * <p>
@@ -244,7 +256,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * </p>
  * 
  * <pre class="stHighlight">
- * result should have size (10)
+ * result should have size 10
  * </pre>
  * 
  * <p>
@@ -257,13 +269,22 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * by defining <a href="enablers/Length.html"><code>Length</code></a> or <a href="enables/Size.html"><code>Size</code></a> type
  * classes for those types.
  * </p>
- * 
+ *
+ * <p>
+ * In addition, the <code>length</code> syntax can be used with any object that has a field or method named <code>length</code>
+ * or a method named <code>getLength</code>.   Similarly, the <code>size</code> syntax can be used with any
+ * object that has a field or method named <code>size</code> or a method named <code>getSize</code>.
+ * The type of a <code>length</code> or <code>size</code> field, or return type of a method, must be either <code>Int</code>
+ * or <code>Long</code>. Any such method must take no parameters. (The Scala compiler will ensure at compile time that
+ * the object on which <code>should</code> is being invoked has the appropriate structure.)
+ * </p>
+ *
  * <h2>Checking strings</h2>
- * 
+ *
  * <p>
  * You can check for whether a string starts with, ends with, or includes a substring like this:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * string should startWith ("Hello")
  * string should endWith ("world")
@@ -275,9 +296,9 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * </p>
  * 
  * <pre class="stHighlight">
- * string should startWith regex ("Hel*o")
- * string should endWith regex ("wo.ld")
- * string should include regex ("wo.ld")
+ * string should startWith regex "Hel*o"
+ * string should endWith regex "wo.ld"
+ * string should include regex "wo.ld"
  * </pre>
  * 
  * <p>
@@ -325,12 +346,13 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * it by placing a <code>Symbol</code> (after <code>be</code>) that specifies the name
  * of the method (excluding an optional prefix of "<code>is</code>"). A symbol literal
  * in Scala begins with a tick mark and ends at the first non-identifier character. Thus,
- * <code>'empty</code> results in a <code>Symbol</code> object at runtime, as does
- * <code>'defined</code> and <code>'file</code>. Here's an example:
+ * <code>'traversableAgain</code> results in a <code>Symbol</code> object at runtime, as does
+ * <code>'completed</code> and <code>'file</code>. Here's an example:
  * </p>
  * 
  * <pre class="stHighlight">
- * emptySet should be ('empty)
+ * val travOnce: GenTraversableOnce = List(1, 2, 3)
+ * xs shouldBe 'traversableAgain
  * </pre>
  * 
  * Given this code, ScalaTest will use reflection to look on the object referenced from
@@ -870,10 +892,39 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * in the same order.
  * </p>
  *
- * <a name="workingWithSequences"></a>
- * <h3>Working with "iterators"</h3>
+ * <a name="workingWithIterators"></a>
+ * <h3>Working with iterators</h3>
  *
- * <p>Convert them to streams...</p>
+ * <p>
+ * Althought it seems desireable to provide similar matcher syntax for Scala and Java iterators to that provided for sequences like
+ * <code>Seq</code>s, <code>Array</code>, and <code>java.util.List</code>, the
+ * ephemeral nature of iterators makes this problematic. Some syntax (such as <code>should</code> <code>contain</code>) is relatively straightforward to
+ * support on iterators, but other syntax (such
+ * as, for example, <code>Inspector</code> expressions on nested iterators) is not. Rather
+ * than allowing inconsistencies between sequences and iterators in the API, we chose to not support any such syntax directly on iterators:
+ *
+ * <pre class="stHighlight">
+ * scala&gt; val it = List(1, 2, 3).iterator
+ * it: Iterator[Int] = non-empty iterator
+ *
+ * scala&gt; it should contain (2)
+ * &lt;console&gt;:15: error: could not find implicit value for parameter typeClass1: org.scalatest.enablers.Containing[Iterator[Int]]
+ *            it should contain (2)
+ *               ^
+ * </pre>
+ *
+ * <p>
+ * Instead, you will need to convert your iterators to a sequence explicitly before using them in matcher expressions:
+ * </p>
+ * 
+ * <pre class="stHighlight">
+ * scala&gt; it.toStream should contain (2)
+ * </pre>
+ * 
+ * <p>
+ * We recommend you convert (Scala or Java) iterators to <code>Stream</code>s, as shown in the previous example, so that you can 
+ * continue to reap any potential benefits provided by the laziness of the underlying iterator.
+ * </p>
  *
  * <a name="inspectorShorthands"></a>
  * <h3>Inspector shorthands</h3>

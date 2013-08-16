@@ -686,4 +686,13 @@ class ShouldBeSymbolSpec extends Spec with Matchers with EmptyMocks {
       // (new NonDefinedMock) shouldNot be ('defined)
     }
   }
+/*
+  object `The "be symbol" syntax` {
+    def `should be usable on Any` {
+      import scala.collection.GenTraversableOnce
+      val travOnce: GenTraversableOnce[Int] = List(1, 2, 3)
+      travOnce shouldBe 'traversableAgain
+    }
+  }
+*/
 }
