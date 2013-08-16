@@ -171,10 +171,12 @@ final class BeWord {
         val ordering = implicitly[Ordering[T]]
         MatchResult(
           ordering.lteq(left, right), // left <= right
-          FailureMessages("wasNotLessThanOrEqualTo", left, right),
-          FailureMessages("wasLessThanOrEqualTo", left, right)
+          Resources("wasNotLessThanOrEqualTo"),
+          Resources("wasLessThanOrEqualTo"), 
+          Vector(left, right)
         )
       }
+      override def toString: String = "be <= " + Prettifier.default(right)
     }
 
   /**
@@ -208,10 +210,12 @@ final class BeWord {
         val ordering = implicitly[Ordering[T]]
         MatchResult(
           ordering.gteq(left, right), // left >= right
-          FailureMessages("wasNotGreaterThanOrEqualTo", left, right),
-          FailureMessages("wasGreaterThanOrEqualTo", left, right)
+          Resources("wasNotGreaterThanOrEqualTo"),
+          Resources("wasGreaterThanOrEqualTo"), 
+          Vector(left, right)
         )
       }
+      override def toString: String = "be >= " + Prettifier.default(right)
     }
 
   /**
@@ -251,13 +255,16 @@ final class BeWord {
   def ===(right: Any): Matcher[Any] =
     new Matcher[Any] {
       def apply(left: Any): MatchResult = {
-        val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)
+        val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)  // TODO: Should move this part to reporter
         MatchResult(
           areEqualComparingArraysStructurally(left, right),
-          FailureMessages("wasNotEqualTo", leftee, rightee),
-          FailureMessages("wasEqualTo", left, right)
+          Resources("wasNotEqualTo"),
+          Resources("wasEqualTo"), 
+          Vector(leftee, rightee), 
+          Vector(left, right)
         )
       }
+      override def toString: String = "be === " + Prettifier.default(right)
     }
 
   /**
@@ -271,6 +278,7 @@ final class BeWord {
   def a(right: Symbol): Matcher[AnyRef] =
     new Matcher[AnyRef] {
       def apply(left: AnyRef): MatchResult = matchSymbolToPredicateMethod(left, right, true, true)
+      override def toString: String = "be a " + Prettifier.default(right)
     }
 
   /**
@@ -288,10 +296,12 @@ final class BeWord {
         val result = bePropertyMatcher(left)
         MatchResult(
           result.matches,
-          FailureMessages("wasNotA", left, UnquotedString(result.propertyName)), 
-          FailureMessages("wasA", left, UnquotedString(result.propertyName))
+          FailureMessages("wasNotA"), 
+          FailureMessages("wasA"), 
+          Vector(left, UnquotedString(result.propertyName))
         )
       }
+      override def toString: String = "be a " + Prettifier.default(bePropertyMatcher)
     }
   
   /**
@@ -305,6 +315,7 @@ final class BeWord {
   def a[S](aMatcher: AMatcher[S]): Matcher[S] = 
     new Matcher[S] {
       def apply(left: S): MatchResult = aMatcher(left)
+      override def toString: String = "be a " + Prettifier.default(UnquotedString(aMatcher.nounName))
     }
 
   /**
@@ -318,6 +329,7 @@ final class BeWord {
   def an(right: Symbol): Matcher[AnyRef] =
     new Matcher[AnyRef] {
       def apply(left: AnyRef): MatchResult = matchSymbolToPredicateMethod(left, right, true, false)
+      override def toString: String = "be an " + Prettifier.default(right)
     }
 
   /**
@@ -335,10 +347,12 @@ final class BeWord {
         val result = bePropertyMatcher(left)
         MatchResult(
           result.matches,
-          FailureMessages("wasNotAn", left, UnquotedString(result.propertyName)),
-          FailureMessages("wasAn", left, UnquotedString(result.propertyName))
+          Resources("wasNotAn"),
+          Resources("wasAn"), 
+          Vector(left, UnquotedString(result.propertyName))
         )
       }
+      override def toString: String = "be an " + Prettifier.default(bePropertyMatcher)
     }
   
   /**
@@ -352,6 +366,7 @@ final class BeWord {
   def an[S](anMatcher: AnMatcher[S]): Matcher[S] = 
     new Matcher[S] {
       def apply(left: S): MatchResult = anMatcher(left)
+      override def toString: String = "be an " + Prettifier.default(UnquotedString(anMatcher.nounName))
     }
 
   /**
@@ -367,11 +382,12 @@ final class BeWord {
       def apply(left: U): MatchResult = {
         MatchResult(
           spread.isWithin(left),
-          // left <= right + tolerance && left >= right - tolerance,
-          FailureMessages("wasNotPlusOrMinus", left, spread.pivot, spread.tolerance),
-          FailureMessages("wasPlusOrMinus", left, spread.pivot, spread.tolerance)
+          Resources("wasNotPlusOrMinus"),
+          Resources("wasPlusOrMinus"), 
+          Vector(left, spread.pivot, spread.tolerance)
         )
       }
+      override def toString: String = "be " + Prettifier.default(spread.pivot) + " plusOrMinus " + Prettifier.default(spread.tolerance)
     }
 
   /**
@@ -387,9 +403,11 @@ final class BeWord {
       def apply(left: AnyRef): MatchResult =
         MatchResult(
           left eq right,
-          FailureMessages("wasNotSameInstanceAs", left, right),
-          FailureMessages("wasSameInstanceAs", left, right)
+          Resources("wasNotSameInstanceAs"),
+          Resources("wasSameInstanceAs"), 
+          Vector(left, right)
         )
+      override def toString: String = "be theSameInstanceAs " + Prettifier.default(right)
     }
 
   /**
@@ -405,9 +423,11 @@ final class BeWord {
       def apply(left: Boolean): MatchResult =
         MatchResult(
           left == right,
-          FailureMessages("wasNot", left, right),
-          FailureMessages("was", left, right)
+          Resources("wasNot"),
+          Resources("was"), 
+          Vector(left, right)
         )
+      override def toString: String = "be " + Prettifier.default(right)
     }
 
   /**
@@ -423,12 +443,15 @@ final class BeWord {
       def apply(left: AnyRef): MatchResult = {
         MatchResult(
           left == null,
-          FailureMessages("wasNotNull", left),
-          FailureMessages("wasNull"),
-          FailureMessages("wasNotNull", left),
-          FailureMessages("midSentenceWasNull")
+          Resources("wasNotNull"),
+          Resources("wasNull"),
+          Resources("wasNotNull"),
+          Resources("midSentenceWasNull"), 
+          Vector(left), 
+          Vector.empty
         )
       }
+      override def toString: String = "be null"
     }
 
   /* *
@@ -462,6 +485,7 @@ final class BeWord {
   def apply(right: Symbol): Matcher[AnyRef] =
     new Matcher[AnyRef] {
       def apply(left: AnyRef): MatchResult = matchSymbolToPredicateMethod(left, right, false, false)
+      override def toString: String = "be " + Prettifier.default(right)
     }
 
   /**
@@ -476,6 +500,7 @@ final class BeWord {
   def apply[T](right: BeMatcher[T]): Matcher[T] =
     new Matcher[T] {
       def apply(left: T): MatchResult = right(left)
+      override def toString: String = "be " + Prettifier.default(right)
     }
 
   /**
@@ -492,10 +517,12 @@ final class BeWord {
         val result = bePropertyMatcher(left)
         MatchResult(
           result.matches,
-          FailureMessages("wasNot", left, UnquotedString(result.propertyName)), 
-          FailureMessages("was", left, UnquotedString(result.propertyName))
+          Resources("wasNot"), 
+          Resources("was"), 
+          Vector(left, UnquotedString(result.propertyName))
         )
       }
+      override def toString: String = "be " + Prettifier.default(bePropertyMatcher)
     }
 
   /**
@@ -517,13 +544,16 @@ final class BeWord {
   def apply(right: Any): Matcher[Any] =
     new Matcher[Any] {
       def apply(left: Any): MatchResult = {
-        val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)
+        val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right) // TODO: To move this to reporter
         MatchResult(
           areEqualComparingArraysStructurally(left, right),
-          FailureMessages("wasNotEqualTo", leftee, rightee),
-          FailureMessages("wasEqualTo", left, right)
+          Resources("wasNotEqualTo"),
+          Resources("wasEqualTo"), 
+          Vector(leftee, rightee), 
+          Vector(left, right)
         )
       }
+      override def toString: String = "be " + Prettifier.default(right)
     }
   
   /**
@@ -542,11 +572,14 @@ final class BeWord {
             val sortable = implicitly[Sortable[T]]
             MatchResult(
               sortable.isSorted(left), 
-              FailureMessages("wasNotSorted", left), 
-              FailureMessages("wasSorted", left)
+              Resources("wasNotSorted"), 
+              Resources("wasSorted"), 
+              Vector(left)
             )
           }
+          override def toString: String = "be sorted"
         }
+      override def toString: String = "be sorted"
     }
   
   /**
@@ -562,9 +595,11 @@ final class BeWord {
       def apply(left: U): MatchResult =
         MatchResult(
           left.isDefinedAt(right),
-          FailureMessages("wasNotDefinedAt", left, right),
-          FailureMessages("wasDefinedAt", left, right)
+          Resources("wasNotDefinedAt"),
+          Resources("wasDefinedAt"), 
+          Vector(left, right)
         )
+      override def toString: String = "be definedAt " + Prettifier.default(right)
     }
   
   /**
@@ -580,9 +615,11 @@ final class BeWord {
       def apply(left: U): MatchResult =
         MatchResult(
           left.isDefinedAt(resultOfDefinedAt.right),
-          FailureMessages("wasNotDefinedAt", left, resultOfDefinedAt.right),
-          FailureMessages("wasDefinedAt", left, resultOfDefinedAt.right)
+          Resources("wasNotDefinedAt"),
+          Resources("wasDefinedAt"), 
+          Vector(left, resultOfDefinedAt.right)
         )
+      override def toString: String = "be definedAt " + Prettifier.default(resultOfDefinedAt.right)
     }
   
   /**
@@ -599,10 +636,12 @@ final class BeWord {
         val clazz = aType.clazz
         MatchResult(
           clazz.isAssignableFrom(left.getClass),
-          FailureMessages("wasNotAnInstanceOf", left, UnquotedString(clazz.getName)), 
-          FailureMessages("wasAnInstanceOf", left, UnquotedString(clazz.getName))
+          Resources("wasNotAnInstanceOf"), 
+          Resources("wasAnInstanceOf"), 
+          Vector(left, UnquotedString(clazz.getName))
         )
       }
+      override def toString: String = "be a " + aType.clazz.getName
     }
   
   /**
@@ -619,10 +658,12 @@ final class BeWord {
         val clazz = anType.clazz
         MatchResult(
           clazz.isAssignableFrom(left.getClass),
-          FailureMessages("wasNotAnInstanceOf", left, UnquotedString(clazz.getName)), 
-          FailureMessages("wasAnInstanceOf", left, UnquotedString(clazz.getName))
+          Resources("wasNotAnInstanceOf"), 
+          Resources("wasAnInstanceOf"), 
+          Vector(left, UnquotedString(clazz.getName))
         )
       }
+      override def toString: String = "be an " + anType.clazz.getName
     }
   
   /**
@@ -641,11 +682,14 @@ final class BeWord {
             val readability = implicitly[Readability[T]]
             MatchResult(
               readability.isReadable(left), 
-              FailureMessages("wasNotReadable", left), 
-              FailureMessages("wasReadable", left)
+              Resources("wasNotReadable"), 
+              Resources("wasReadable"), 
+              Vector(left)
             )
           }
+          override def toString: String = "be readable"
         }
+      override def toString: String = "be readable"
     }
   
   /**
@@ -664,11 +708,14 @@ final class BeWord {
             val writability = implicitly[Writability[T]]
             MatchResult(
               writability.isWritable(left), 
-              FailureMessages("wasNotWritable", left), 
-              FailureMessages("wasWritable", left)
+              Resources("wasNotWritable"), 
+              Resources("wasWritable"), 
+              Vector(left)
             )
           }
+          override def toString: String = "be writable"
         }
+      override def toString: String = "be writable"
     }
   
   /**
@@ -687,11 +734,14 @@ final class BeWord {
             val emptiness = implicitly[Emptiness[T]]
             MatchResult(
               emptiness.isEmpty(left), 
-              FailureMessages("wasNotEmpty", left), 
-              FailureMessages("wasEmpty", left)
+              Resources("wasNotEmpty"), 
+              Resources("wasEmpty"), 
+              Vector(left)
             )
           }
+          override def toString: String = "be empty"
         }
+      override def toString: String = "be empty"
     }
   
   /**
@@ -710,10 +760,13 @@ final class BeWord {
             val definition = implicitly[Definition[T]]
             MatchResult(
               definition.isDefined(left), 
-              FailureMessages("wasNotDefined", left), 
-              FailureMessages("wasDefined", left)
+              Resources("wasNotDefined"), 
+              Resources("wasDefined"), 
+              Vector(left)
             )
           }
+          override def toString: String = "be defined"
         }
+      override def toString: String = "be defined"
     }
 }

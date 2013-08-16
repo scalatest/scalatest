@@ -30,8 +30,9 @@ object AnMatcher {
       def apply(left: T): MatchResult = 
         MatchResult(
           fun(left), 
-          FailureMessages("wasNotAn", left, UnquotedString(nounName)), 
-          FailureMessages("wasAn", left, UnquotedString(nounName))
+          Resources("wasNotAn"), 
+          Resources("wasAn"), 
+          Vector(left, UnquotedString(nounName))
         )
     }
   

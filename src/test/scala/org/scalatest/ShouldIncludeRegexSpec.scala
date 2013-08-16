@@ -370,7 +370,7 @@ s should fullyMatch regex t
         val caught1 = intercept[TestFailedException] {
           "abccde" should include regex ("b(c*)d" withGroup "c")
         }
-        assert(caught1.getMessage === "\"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\"")
+        assert(caught1.getMessage === "\"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group c")
         assert(caught1.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -380,7 +380,7 @@ s should fullyMatch regex t
         val caught1 = intercept[TestFailedException] {
           "abccdde" should include regex ("b(c*)(d*)" withGroups ("cc", "d"))
         }
-        assert(caught1.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1")
+        assert(caught1.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1")
         assert(caught1.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -459,14 +459,14 @@ s should fullyMatch regex t
         val caught1 = intercept[TestFailedException] {
           "abccde" should not { include regex ("b(c*)d" withGroup "cc") }
         }
-        assert(caught1.getMessage === "\"abccde\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught1.getMessage === "\"abccde\" included substring that matched regex b(c*)d and group cc")
         assert(caught1.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught2 = intercept[TestFailedException] {
           "abccde" should not include regex ("b(c*)d" withGroup "cc")
         }
-        assert(caught2.getMessage === "\"abccde\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught2.getMessage === "\"abccde\" included substring that matched regex b(c*)d and group cc")
         assert(caught2.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -476,14 +476,14 @@ s should fullyMatch regex t
         val caught1 = intercept[TestFailedException] {
           "abccdde" should not { include regex ("b(c*)(d*)" withGroups ("cc", "dd")) }
         }
-        assert(caught1.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught1.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught1.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught2 = intercept[TestFailedException] {
           "abccdde" should not include regex ("b(c*)(d*)" withGroups ("cc", "dd"))
         }
-        assert(caught2.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught2.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught2.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -527,21 +527,21 @@ s should fullyMatch regex t
         val caught1 = intercept[TestFailedException] {
           "abccde" should (include regex ("b(c*)d" withGroup "cc") and (include regex ("b(c*)d" withGroup "c")))
         }
-        assert(caught1.getMessage === "\"abccde\" included substring that matched regex b(c*)d and group \"cc\", but \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\"")
+        assert(caught1.getMessage === "\"abccde\" included substring that matched regex b(c*)d and group cc, but \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group c")
         assert(caught1.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught2 = intercept[TestFailedException] {
           "abccde" should ((include regex ("b(c*)d" withGroup "cc")) and (include regex ("b(c*)d" withGroup "c")))
         }
-        assert(caught2.getMessage === "\"abccde\" included substring that matched regex b(c*)d and group \"cc\", but \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\"")
+        assert(caught2.getMessage === "\"abccde\" included substring that matched regex b(c*)d and group cc, but \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group c")
         assert(caught2.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught3 = intercept[TestFailedException] {
           "abccde" should (include regex ("b(c*)d" withGroup "cc") and include regex ("b(c*)d" withGroup "c"))
         }
-        assert(caught3.getMessage === "\"abccde\" included substring that matched regex b(c*)d and group \"cc\", but \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\"")
+        assert(caught3.getMessage === "\"abccde\" included substring that matched regex b(c*)d and group cc, but \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group c")
         assert(caught3.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
   
@@ -549,42 +549,42 @@ s should fullyMatch regex t
         val caught4 = intercept[TestFailedException] {
           "abccde" should (include regex ("b(c*)d" withGroup "c") and (include regex ("b(c*)d" withGroup "cc")))
         }
-        assert(caught4.getMessage === "\"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\"")
+        assert(caught4.getMessage === "\"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group c")
         assert(caught4.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught5 = intercept[TestFailedException] {
           "abccde" should ((include regex ("b(c*)d" withGroup "c")) and (include regex ("b(c*)d" withGroup "cc")))
         }
-        assert(caught5.getMessage === "\"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\"")
+        assert(caught5.getMessage === "\"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group c")
         assert(caught5.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught6 = intercept[TestFailedException] {
           "abccde" should (include regex ("b(c*)d" withGroup "c") and include regex ("b(c*)d" withGroup "cc"))
         }
-        assert(caught6.getMessage === "\"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\"")
+        assert(caught6.getMessage === "\"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group c")
         assert(caught6.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught7 = intercept[TestFailedException] {
           "abccde" should (equal ("abccde") and (include regex ("b(c*)d" withGroup "c")))
         }
-        assert(caught7.getMessage === "\"abccde\" equaled \"abccde\", but \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\"")
+        assert(caught7.getMessage === "\"abccde\" equaled \"abccde\", but \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group c")
         assert(caught7.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught7.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught8 = intercept[TestFailedException] {
           "abccde" should ((equal ("abccde")) and (include regex ("b(c*)d" withGroup "c")))
         }
-        assert(caught8.getMessage === "\"abccde\" equaled \"abccde\", but \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\"")
+        assert(caught8.getMessage === "\"abccde\" equaled \"abccde\", but \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group c")
         assert(caught8.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught9 = intercept[TestFailedException] {
           "abccde" should (equal ("abccde") and include regex ("b(c*)d" withGroup "c"))
         }
-        assert(caught9.getMessage === "\"abccde\" equaled \"abccde\", but \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\"")
+        assert(caught9.getMessage === "\"abccde\" equaled \"abccde\", but \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group c")
         assert(caught9.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught9.failedCodeLineNumber === Some(thisLineNumber - 4))
   
@@ -616,21 +616,21 @@ s should fullyMatch regex t
         val caught1 = intercept[TestFailedException] {
           "abccdde" should (include regex ("b(c*)(d*)" withGroups ("cc", "dd")) and (include regex ("b(c*)(d*)" withGroups ("cc", "d"))))
         }
-        assert(caught1.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\", but \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1")
+        assert(caught1.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*) and group cc, dd, but \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1")
         assert(caught1.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught2 = intercept[TestFailedException] {
           "abccdde" should ((include regex ("b(c*)(d*)" withGroups ("cc", "dd"))) and (include regex ("b(c*)(d*)" withGroups ("cc", "d"))))
         }
-        assert(caught2.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\", but \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1")
+        assert(caught2.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*) and group cc, dd, but \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1")
         assert(caught2.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught3 = intercept[TestFailedException] {
           "abccdde" should (include regex ("b(c*)(d*)" withGroups ("cc", "dd")) and include regex ("b(c*)(d*)" withGroups ("cc", "d")))
         }
-        assert(caught3.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\", but \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1")
+        assert(caught3.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*) and group cc, dd, but \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1")
         assert(caught3.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
   
@@ -638,42 +638,42 @@ s should fullyMatch regex t
         val caught4 = intercept[TestFailedException] {
           "abccdde" should (include regex ("b(c*)(d*)" withGroups ("cc", "d")) and (include regex ("b(c*)(d*)" withGroups ("cc", "dd"))))
         }
-        assert(caught4.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1")
+        assert(caught4.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1")
         assert(caught4.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught5 = intercept[TestFailedException] {
           "abccdde" should ((include regex ("b(c*)(d*)" withGroups ("cc", "d"))) and (include regex ("b(c*)(d*)" withGroups ("cc", "dd"))))
         }
-        assert(caught5.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1")
+        assert(caught5.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1")
         assert(caught5.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught6 = intercept[TestFailedException] {
           "abccdde" should (include regex ("b(c*)(d*)" withGroups ("cc", "d")) and include regex ("b(c*)(d*)" withGroups ("cc", "dd")))
         }
-        assert(caught6.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1")
+        assert(caught6.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1")
         assert(caught6.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught7 = intercept[TestFailedException] {
           "abccdde" should (equal ("abccdde") and (include regex ("b(c*)(d*)" withGroups ("cc", "d"))))
         }
-        assert(caught7.getMessage === "\"abccdde\" equaled \"abccdde\", but \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1")
+        assert(caught7.getMessage === "\"abccdde\" equaled \"abccdde\", but \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1")
         assert(caught7.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught7.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught8 = intercept[TestFailedException] {
           "abccdde" should ((equal ("abccdde")) and (include regex ("b(c*)(d*)" withGroups ("cc", "d"))))
         }
-        assert(caught8.getMessage === "\"abccdde\" equaled \"abccdde\", but \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1")
+        assert(caught8.getMessage === "\"abccdde\" equaled \"abccdde\", but \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1")
         assert(caught8.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught9 = intercept[TestFailedException] {
           "abccdde" should (equal ("abccdde") and include regex ("b(c*)(d*)" withGroups ("cc", "d")))
         }
-        assert(caught9.getMessage === "\"abccdde\" equaled \"abccdde\", but \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1")
+        assert(caught9.getMessage === "\"abccdde\" equaled \"abccdde\", but \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1")
         assert(caught9.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught9.failedCodeLineNumber === Some(thisLineNumber - 4))
   
@@ -723,42 +723,42 @@ s should fullyMatch regex t
         val caught1 = intercept[TestFailedException] {
           "abccde" should (include regex ("b(c*)d" withGroup "c") or (include regex ("b(c*)d" withGroup "c")))
         }
-        assert(caught1.getMessage === "\"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\", and \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\"")
+        assert(caught1.getMessage === "\"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group c, and \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group c")
         assert(caught1.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught2 = intercept[TestFailedException] {
           "abccde" should ((include regex ("b(c*)d" withGroup "c")) or (include regex ("b(c*)d" withGroup "c")))
         }
-        assert(caught2.getMessage === "\"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\", and \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\"")
+        assert(caught2.getMessage === "\"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group c, and \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group c")
         assert(caught2.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught3 = intercept[TestFailedException] {
           "abccde" should (include regex ("b(c*)d" withGroup "c") or include regex ("b(c*)d" withGroup "c"))
         }
-        assert(caught3.getMessage === "\"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\", and \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\"")
+        assert(caught3.getMessage === "\"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group c, and \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group c")
         assert(caught3.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught4 = intercept[TestFailedException] {
           "abccde" should (equal ("abcde") or (include regex ("b(c*)d" withGroup "c")))
         }
-        assert(caught4.getMessage === "\"abc[c]de\" did not equal \"abc[]de\", and \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\"")
+        assert(caught4.getMessage === "\"abc[c]de\" did not equal \"abc[]de\", and \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group c")
         assert(caught4.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught5 = intercept[TestFailedException] {
           "abccde" should ((equal ("abcde")) or (include regex ("b(c*)d" withGroup "c")))
         }
-        assert(caught5.getMessage === "\"abc[c]de\" did not equal \"abc[]de\", and \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\"")
+        assert(caught5.getMessage === "\"abc[c]de\" did not equal \"abc[]de\", and \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group c")
         assert(caught5.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught6 = intercept[TestFailedException] {
           "abccde" should (equal ("abcde") or include regex ("b(c*)d" withGroup "c"))
         }
-        assert(caught6.getMessage === "\"abc[c]de\" did not equal \"abc[]de\", and \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\"")
+        assert(caught6.getMessage === "\"abc[c]de\" did not equal \"abc[]de\", and \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group c")
         assert(caught6.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -768,42 +768,42 @@ s should fullyMatch regex t
         val caught1 = intercept[TestFailedException] {
           "abccdde" should (include regex ("b(c*)(d*)" withGroups ("cc", "d")) or (include regex ("b(c*)(d*)" withGroups ("cc", "d"))))
         }
-        assert(caught1.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1, and \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1")
+        assert(caught1.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1, and \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1")
         assert(caught1.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught2 = intercept[TestFailedException] {
           "abccdde" should ((include regex ("b(c*)(d*)" withGroups ("cc", "d"))) or (include regex ("b(c*)(d*)" withGroups ("cc", "d"))))
         }
-        assert(caught2.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1, and \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1")
+        assert(caught2.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1, and \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1")
         assert(caught2.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught3 = intercept[TestFailedException] {
           "abccdde" should (include regex ("b(c*)(d*)" withGroups ("cc", "d")) or include regex ("b(c*)(d*)" withGroups ("cc", "d")))
         }
-        assert(caught3.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1, and \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1")
+        assert(caught3.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1, and \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1")
         assert(caught3.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught4 = intercept[TestFailedException] {
           "abccdde" should (equal ("abccde") or (include regex ("b(c*)(d*)" withGroups ("cc", "d"))))
         }
-        assert(caught4.getMessage === "\"abccd[d]e\" did not equal \"abccd[]e\", and \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1")
+        assert(caught4.getMessage === "\"abccd[d]e\" did not equal \"abccd[]e\", and \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1")
         assert(caught4.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught5 = intercept[TestFailedException] {
           "abccdde" should ((equal ("abccde")) or (include regex ("b(c*)(d*)" withGroups ("cc", "d"))))
         }
-        assert(caught5.getMessage === "\"abccd[d]e\" did not equal \"abccd[]e\", and \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1")
+        assert(caught5.getMessage === "\"abccd[d]e\" did not equal \"abccd[]e\", and \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1")
         assert(caught5.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught6 = intercept[TestFailedException] {
           "abccdde" should (equal ("abccde") or include regex ("b(c*)(d*)" withGroups ("cc", "d")))
         }
-        assert(caught6.getMessage === "\"abccd[d]e\" did not equal \"abccd[]e\", and \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1")
+        assert(caught6.getMessage === "\"abccd[d]e\" did not equal \"abccd[]e\", and \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1")
         assert(caught6.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -846,84 +846,84 @@ s should fullyMatch regex t
         val caught1 = intercept[TestFailedException] {
           "bccd" should (not include regex ("b(c*)d" withGroup "c") and (not include regex ("b(c*)d" withGroup "cc")))
         }
-        assert(caught1.getMessage === "\"bccd\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\", but \"bccd\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught1.getMessage === "\"bccd\" included substring that matched regex b(c*)d, but \"cc\" did not match group c, but \"bccd\" included substring that matched regex b(c*)d and group cc")
         assert(caught1.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
 
         val caught2 = intercept[TestFailedException] {
           "bccd" should ((not include regex ("b(c*)d" withGroup "c")) and (not include regex ("b(c*)d" withGroup "cc")))
         }
-        assert(caught2.getMessage === "\"bccd\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\", but \"bccd\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught2.getMessage === "\"bccd\" included substring that matched regex b(c*)d, but \"cc\" did not match group c, but \"bccd\" included substring that matched regex b(c*)d and group cc")
         assert(caught2.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
 
         val caught3 = intercept[TestFailedException] {
           "bccd" should (not include regex ("b(c*)d" withGroup "c") and not include regex ("b(c*)d" withGroup "cc"))
         }
-        assert(caught3.getMessage === "\"bccd\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\", but \"bccd\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught3.getMessage === "\"bccd\" included substring that matched regex b(c*)d, but \"cc\" did not match group c, but \"bccd\" included substring that matched regex b(c*)d and group cc")
         assert(caught3.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught4 = intercept[TestFailedException] {
           "abccd" should (not include regex ("b(c*)d" withGroup "c") and (not include regex ("b(c*)d" withGroup "cc")))
         }
-        assert(caught4.getMessage === "\"abccd\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\", but \"abccd\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught4.getMessage === "\"abccd\" included substring that matched regex b(c*)d, but \"cc\" did not match group c, but \"abccd\" included substring that matched regex b(c*)d and group cc")
         assert(caught4.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
 
         val caught5 = intercept[TestFailedException] {
           "bccde" should ((not include regex ("b(c*)d" withGroup "c")) and (not include regex ("b(c*)d" withGroup "cc")))
         }
-        assert(caught5.getMessage === "\"bccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\", but \"bccde\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught5.getMessage === "\"bccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group c, but \"bccde\" included substring that matched regex b(c*)d and group cc")
         assert(caught5.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
 
         val caught6 = intercept[TestFailedException] {
           "abccde" should (not include regex ("b(c*)d" withGroup "c") and not include regex ("b(c*)d" withGroup "cc"))
         }
-        assert(caught6.getMessage === "\"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\", but \"abccde\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught6.getMessage === "\"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group c, but \"abccde\" included substring that matched regex b(c*)d and group cc")
         assert(caught6.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught7 = intercept[TestFailedException] {
           "bccd" should (not equal ("bcd") and (not include regex ("b(c*)d" withGroup "cc")))
         }
-        assert(caught7.getMessage === "\"bc[c]d\" did not equal \"bc[]d\", but \"bccd\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught7.getMessage === "\"bc[c]d\" did not equal \"bc[]d\", but \"bccd\" included substring that matched regex b(c*)d and group cc")
         assert(caught7.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught7.failedCodeLineNumber === Some(thisLineNumber - 4))
 
         val caught8 = intercept[TestFailedException] {
           "bccd" should ((not equal ("bcd")) and (not include regex ("b(c*)d" withGroup "cc")))
         }
-        assert(caught8.getMessage === "\"bc[c]d\" did not equal \"bc[]d\", but \"bccd\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught8.getMessage === "\"bc[c]d\" did not equal \"bc[]d\", but \"bccd\" included substring that matched regex b(c*)d and group cc")
         assert(caught8.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
 
         val caught9 = intercept[TestFailedException] {
           "bccd" should (not equal ("bcd") and not include regex ("b(c*)d" withGroup "cc"))
         }
-        assert(caught9.getMessage === "\"bc[c]d\" did not equal \"bc[]d\", but \"bccd\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught9.getMessage === "\"bc[c]d\" did not equal \"bc[]d\", but \"bccd\" included substring that matched regex b(c*)d and group cc")
         assert(caught9.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught9.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught10 = intercept[TestFailedException] {
           "abccd" should (not equal ("abcd") and (not include regex ("b(c*)d" withGroup "cc")))
         }
-        assert(caught10.getMessage === "\"abc[c]d\" did not equal \"abc[]d\", but \"abccd\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught10.getMessage === "\"abc[c]d\" did not equal \"abc[]d\", but \"abccd\" included substring that matched regex b(c*)d and group cc")
         assert(caught10.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught10.failedCodeLineNumber === Some(thisLineNumber - 4))
 
         val caught11 = intercept[TestFailedException] {
           "bccde" should ((not equal ("bcde")) and (not include regex ("b(c*)d" withGroup "cc")))
         }
-        assert(caught11.getMessage === "\"bc[c]de\" did not equal \"bc[]de\", but \"bccde\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught11.getMessage === "\"bc[c]de\" did not equal \"bc[]de\", but \"bccde\" included substring that matched regex b(c*)d and group cc")
         assert(caught11.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught11.failedCodeLineNumber === Some(thisLineNumber - 4))
 
         val caught12 = intercept[TestFailedException] {
           "abccde" should (not equal ("abcde") and not include regex ("b(c*)d" withGroup "cc"))
         }
-        assert(caught12.getMessage === "\"abc[c]de\" did not equal \"abc[]de\", but \"abccde\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught12.getMessage === "\"abc[c]de\" did not equal \"abc[]de\", but \"abccde\" included substring that matched regex b(c*)d and group cc")
         assert(caught12.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught12.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -933,84 +933,84 @@ s should fullyMatch regex t
         val caught1 = intercept[TestFailedException] {
           "bccdd" should (not include regex ("b(c*)(d*)" withGroups ("cc", "d")) and (not include regex ("b(c*)(d*)" withGroups ("cc", "dd"))))
         }
-        assert(caught1.getMessage === "\"bccdd\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1, but \"bccdd\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught1.getMessage === "\"bccdd\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1, but \"bccdd\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught1.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
 
         val caught2 = intercept[TestFailedException] {
           "bccdd" should ((not include regex ("b(c*)(d*)" withGroups ("cc", "d"))) and (not include regex ("b(c*)(d*)" withGroups ("cc", "dd"))))
         }
-        assert(caught2.getMessage === "\"bccdd\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1, but \"bccdd\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught2.getMessage === "\"bccdd\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1, but \"bccdd\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught2.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
 
         val caught3 = intercept[TestFailedException] {
           "bccdd" should (not include regex ("b(c*)(d*)" withGroups ("cc", "d")) and not include regex ("b(c*)(d*)" withGroups ("cc", "dd")))
         }
-        assert(caught3.getMessage === "\"bccdd\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1, but \"bccdd\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught3.getMessage === "\"bccdd\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1, but \"bccdd\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught3.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught4 = intercept[TestFailedException] {
           "abccdd" should (not include regex ("b(c*)(d*)" withGroups ("cc", "d")) and (not include regex ("b(c*)(d*)" withGroups ("cc", "dd"))))
         }
-        assert(caught4.getMessage === "\"abccdd\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1, but \"abccdd\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught4.getMessage === "\"abccdd\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1, but \"abccdd\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught4.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
 
         val caught5 = intercept[TestFailedException] {
           "bccdde" should ((not include regex ("b(c*)(d*)" withGroups ("cc", "d"))) and (not include regex ("b(c*)(d*)" withGroups ("cc", "dd"))))
         }
-        assert(caught5.getMessage === "\"bccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1, but \"bccdde\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught5.getMessage === "\"bccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1, but \"bccdde\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught5.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
 
         val caught6 = intercept[TestFailedException] {
           "abccdde" should (not include regex ("b(c*)(d*)" withGroups ("cc", "d")) and not include regex ("b(c*)(d*)" withGroups ("cc", "dd")))
         }
-        assert(caught6.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1, but \"abccdde\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught6.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1, but \"abccdde\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught6.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught7 = intercept[TestFailedException] {
           "bccdd" should (not equal ("bccd") and (not include regex ("b(c*)(d*)" withGroups ("cc", "dd"))))
         }
-        assert(caught7.getMessage === "\"bccd[d]\" did not equal \"bccd[]\", but \"bccdd\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught7.getMessage === "\"bccd[d]\" did not equal \"bccd[]\", but \"bccdd\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught7.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught7.failedCodeLineNumber === Some(thisLineNumber - 4))
 
         val caught8 = intercept[TestFailedException] {
           "bccdd" should ((not equal ("bccd")) and (not include regex ("b(c*)(d*)" withGroups ("cc", "dd"))))
         }
-        assert(caught8.getMessage === "\"bccd[d]\" did not equal \"bccd[]\", but \"bccdd\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught8.getMessage === "\"bccd[d]\" did not equal \"bccd[]\", but \"bccdd\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught8.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
 
         val caught9 = intercept[TestFailedException] {
           "bccdd" should (not equal ("bccd") and not include regex ("b(c*)(d*)" withGroups ("cc", "dd")))
         }
-        assert(caught9.getMessage === "\"bccd[d]\" did not equal \"bccd[]\", but \"bccdd\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught9.getMessage === "\"bccd[d]\" did not equal \"bccd[]\", but \"bccdd\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught9.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught9.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught10 = intercept[TestFailedException] {
           "abccdd" should (not equal ("abccd") and (not include regex ("b(c*)(d*)" withGroups ("cc", "dd"))))
         }
-        assert(caught10.getMessage === "\"abccd[d]\" did not equal \"abccd[]\", but \"abccdd\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught10.getMessage === "\"abccd[d]\" did not equal \"abccd[]\", but \"abccdd\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught10.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught10.failedCodeLineNumber === Some(thisLineNumber - 4))
 
         val caught11 = intercept[TestFailedException] {
           "bccdde" should ((not equal ("bccde")) and (not include regex ("b(c*)(d*)" withGroups ("cc", "dd"))))
         }
-        assert(caught11.getMessage === "\"bccd[d]e\" did not equal \"bccd[]e\", but \"bccdde\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught11.getMessage === "\"bccd[d]e\" did not equal \"bccd[]e\", but \"bccdde\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught11.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught11.failedCodeLineNumber === Some(thisLineNumber - 4))
 
         val caught12 = intercept[TestFailedException] {
           "abccdde" should (not equal ("abccde") and not include regex ("b(c*)(d*)" withGroups ("cc", "dd")))
         }
-        assert(caught12.getMessage === "\"abccd[d]e\" did not equal \"abccd[]e\", but \"abccdde\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught12.getMessage === "\"abccd[d]e\" did not equal \"abccd[]e\", but \"abccdde\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught12.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught12.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -1079,112 +1079,112 @@ s should fullyMatch regex t
         val caught1 = intercept[TestFailedException] {
           "bccd" should (not include regex ("b(c*)d" withGroup "cc") or (not include regex ("b(c*)d" withGroup "cc")))
         }
-        assert(caught1.getMessage === "\"bccd\" included substring that matched regex b(c*)d and group \"cc\", and \"bccd\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught1.getMessage === "\"bccd\" included substring that matched regex b(c*)d and group cc, and \"bccd\" included substring that matched regex b(c*)d and group cc")
         assert(caught1.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught2 = intercept[TestFailedException] {
           "bccd" should ((not include regex ("b(c*)d" withGroup "cc")) or (not include regex ("b(c*)d" withGroup "cc")))
         }
-        assert(caught2.getMessage === "\"bccd\" included substring that matched regex b(c*)d and group \"cc\", and \"bccd\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught2.getMessage === "\"bccd\" included substring that matched regex b(c*)d and group cc, and \"bccd\" included substring that matched regex b(c*)d and group cc")
         assert(caught2.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught3 = intercept[TestFailedException] {
           "bccd" should (not include regex ("b(c*)d" withGroup "cc") or not include regex ("b(c*)d" withGroup "cc"))
         }
-        assert(caught3.getMessage === "\"bccd\" included substring that matched regex b(c*)d and group \"cc\", and \"bccd\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught3.getMessage === "\"bccd\" included substring that matched regex b(c*)d and group cc, and \"bccd\" included substring that matched regex b(c*)d and group cc")
         assert(caught3.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught4 = intercept[TestFailedException] {
           "bccd" should (not (include regex ("b(c*)d" withGroup "cc")) or not (include regex ("b(c*)d" withGroup "cc")))
         }
-        assert(caught4.getMessage === "\"bccd\" included substring that matched regex b(c*)d and group \"cc\", and \"bccd\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught4.getMessage === "\"bccd\" included substring that matched regex b(c*)d and group cc, and \"bccd\" included substring that matched regex b(c*)d and group cc")
         assert(caught4.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught5 = intercept[TestFailedException] {
           "abccd" should (not include regex ("b(c*)d" withGroup "cc") or (not include regex ("b(c*)d" withGroup "cc")))
         }
-        assert(caught5.getMessage === "\"abccd\" included substring that matched regex b(c*)d and group \"cc\", and \"abccd\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught5.getMessage === "\"abccd\" included substring that matched regex b(c*)d and group cc, and \"abccd\" included substring that matched regex b(c*)d and group cc")
         assert(caught5.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught6 = intercept[TestFailedException] {
           "bccde" should ((not include regex ("b(c*)d" withGroup "cc")) or (not include regex ("b(c*)d" withGroup "cc")))
         }
-        assert(caught6.getMessage === "\"bccde\" included substring that matched regex b(c*)d and group \"cc\", and \"bccde\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught6.getMessage === "\"bccde\" included substring that matched regex b(c*)d and group cc, and \"bccde\" included substring that matched regex b(c*)d and group cc")
         assert(caught6.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught7 = intercept[TestFailedException] {
           "abccde" should (not include regex ("b(c*)d" withGroup "cc") or not include regex ("b(c*)d" withGroup "cc"))
         }
-        assert(caught7.getMessage === "\"abccde\" included substring that matched regex b(c*)d and group \"cc\", and \"abccde\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught7.getMessage === "\"abccde\" included substring that matched regex b(c*)d and group cc, and \"abccde\" included substring that matched regex b(c*)d and group cc")
         assert(caught7.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught7.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught8 = intercept[TestFailedException] {
           "abccde" should (not (include regex ("b(c*)d" withGroup "cc")) or not (include regex ("b(c*)d" withGroup "cc")))
         }
-        assert(caught8.getMessage === "\"abccde\" included substring that matched regex b(c*)d and group \"cc\", and \"abccde\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught8.getMessage === "\"abccde\" included substring that matched regex b(c*)d and group cc, and \"abccde\" included substring that matched regex b(c*)d and group cc")
         assert(caught8.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught9 = intercept[TestFailedException] {
           "bccd" should (not equal ("bccd") or (not include regex ("b(c*)d" withGroup "cc")))
         }
-        assert(caught9.getMessage === "\"bccd\" equaled \"bccd\", and \"bccd\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught9.getMessage === "\"bccd\" equaled \"bccd\", and \"bccd\" included substring that matched regex b(c*)d and group cc")
         assert(caught9.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught9.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught10 = intercept[TestFailedException] {
           "bccd" should ((not equal ("bccd")) or (not include regex ("b(c*)d" withGroup "cc")))
         }
-        assert(caught10.getMessage === "\"bccd\" equaled \"bccd\", and \"bccd\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught10.getMessage === "\"bccd\" equaled \"bccd\", and \"bccd\" included substring that matched regex b(c*)d and group cc")
         assert(caught10.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught10.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught11 = intercept[TestFailedException] {
           "bccd" should (not equal ("bccd") or not include regex ("b(c*)d" withGroup "cc"))
         }
-        assert(caught11.getMessage === "\"bccd\" equaled \"bccd\", and \"bccd\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught11.getMessage === "\"bccd\" equaled \"bccd\", and \"bccd\" included substring that matched regex b(c*)d and group cc")
         assert(caught11.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught11.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught12 = intercept[TestFailedException] {
           "bccd" should (not (equal ("bccd")) or not (include regex ("b(c*)d" withGroup "cc")))
         }
-        assert(caught12.getMessage === "\"bccd\" equaled \"bccd\", and \"bccd\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught12.getMessage === "\"bccd\" equaled \"bccd\", and \"bccd\" included substring that matched regex b(c*)d and group cc")
         assert(caught12.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught12.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught13 = intercept[TestFailedException] {
           "abccd" should (not equal ("abccd") or (not include regex ("b(c*)d" withGroup "cc")))
         }
-        assert(caught13.getMessage === "\"abccd\" equaled \"abccd\", and \"abccd\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught13.getMessage === "\"abccd\" equaled \"abccd\", and \"abccd\" included substring that matched regex b(c*)d and group cc")
         assert(caught13.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught13.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught14 = intercept[TestFailedException] {
           "bccde" should ((not equal ("bccde")) or (not include regex ("b(c*)d" withGroup "cc")))
         }
-        assert(caught14.getMessage === "\"bccde\" equaled \"bccde\", and \"bccde\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught14.getMessage === "\"bccde\" equaled \"bccde\", and \"bccde\" included substring that matched regex b(c*)d and group cc")
         assert(caught14.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught14.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught15 = intercept[TestFailedException] {
           "abccde" should (not equal ("abccde") or not include regex ("b(c*)d" withGroup "cc"))
         }
-        assert(caught15.getMessage === "\"abccde\" equaled \"abccde\", and \"abccde\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught15.getMessage === "\"abccde\" equaled \"abccde\", and \"abccde\" included substring that matched regex b(c*)d and group cc")
         assert(caught15.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught15.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught16 = intercept[TestFailedException] {
           "abccde" should (not (equal ("abccde")) or not (include regex ("b(c*)d" withGroup "cc")))
         }
-        assert(caught16.getMessage === "\"abccde\" equaled \"abccde\", and \"abccde\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught16.getMessage === "\"abccde\" equaled \"abccde\", and \"abccde\" included substring that matched regex b(c*)d and group cc")
         assert(caught16.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught16.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -1194,112 +1194,112 @@ s should fullyMatch regex t
         val caught1 = intercept[TestFailedException] {
           "bccdd" should (not include regex ("b(c*)(d*)" withGroups ("cc", "dd")) or (not include regex ("b(c*)(d*)" withGroups ("cc", "dd"))))
         }
-        assert(caught1.getMessage === "\"bccdd\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\", and \"bccdd\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught1.getMessage === "\"bccdd\" included substring that matched regex b(c*)(d*) and group cc, dd, and \"bccdd\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught1.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught2 = intercept[TestFailedException] {
           "bccdd" should ((not include regex ("b(c*)(d*)" withGroups ("cc", "dd"))) or (not include regex ("b(c*)(d*)" withGroups ("cc", "dd"))))
         }
-        assert(caught2.getMessage === "\"bccdd\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\", and \"bccdd\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught2.getMessage === "\"bccdd\" included substring that matched regex b(c*)(d*) and group cc, dd, and \"bccdd\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught2.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught3 = intercept[TestFailedException] {
           "bccdd" should (not include regex ("b(c*)(d*)" withGroups ("cc", "dd")) or not include regex ("b(c*)(d*)" withGroups ("cc", "dd")))
         }
-        assert(caught3.getMessage === "\"bccdd\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\", and \"bccdd\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught3.getMessage === "\"bccdd\" included substring that matched regex b(c*)(d*) and group cc, dd, and \"bccdd\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught3.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught4 = intercept[TestFailedException] {
           "bccdd" should (not (include regex ("b(c*)(d*)" withGroups ("cc", "dd"))) or not (include regex ("b(c*)(d*)" withGroups ("cc", "dd"))))
         }
-        assert(caught4.getMessage === "\"bccdd\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\", and \"bccdd\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught4.getMessage === "\"bccdd\" included substring that matched regex b(c*)(d*) and group cc, dd, and \"bccdd\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught4.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught5 = intercept[TestFailedException] {
           "abccdd" should (not include regex ("b(c*)(d*)" withGroups ("cc", "dd")) or (not include regex ("b(c*)(d*)" withGroups ("cc", "dd"))))
         }
-        assert(caught5.getMessage === "\"abccdd\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\", and \"abccdd\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught5.getMessage === "\"abccdd\" included substring that matched regex b(c*)(d*) and group cc, dd, and \"abccdd\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught5.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught6 = intercept[TestFailedException] {
           "bccdde" should ((not include regex ("b(c*)(d*)" withGroups ("cc", "dd"))) or (not include regex ("b(c*)(d*)" withGroups ("cc", "dd"))))
         }
-        assert(caught6.getMessage === "\"bccdde\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\", and \"bccdde\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught6.getMessage === "\"bccdde\" included substring that matched regex b(c*)(d*) and group cc, dd, and \"bccdde\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught6.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught7 = intercept[TestFailedException] {
           "abccdde" should (not include regex ("b(c*)(d*)" withGroups ("cc", "dd")) or not include regex ("b(c*)(d*)" withGroups ("cc", "dd")))
         }
-        assert(caught7.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\", and \"abccdde\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught7.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*) and group cc, dd, and \"abccdde\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught7.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught7.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught8 = intercept[TestFailedException] {
           "abccdde" should (not (include regex ("b(c*)(d*)" withGroups ("cc", "dd"))) or not (include regex ("b(c*)(d*)" withGroups ("cc", "dd"))))
         }
-        assert(caught8.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\", and \"abccdde\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught8.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*) and group cc, dd, and \"abccdde\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught8.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught9 = intercept[TestFailedException] {
           "bccdd" should (not equal ("bccdd") or (not include regex ("b(c*)(d*)" withGroups ("cc", "dd"))))
         }
-        assert(caught9.getMessage === "\"bccdd\" equaled \"bccdd\", and \"bccdd\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught9.getMessage === "\"bccdd\" equaled \"bccdd\", and \"bccdd\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught9.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught9.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught10 = intercept[TestFailedException] {
           "bccdd" should ((not equal ("bccdd")) or (not include regex ("b(c*)(d*)" withGroups ("cc", "dd"))))
         }
-        assert(caught10.getMessage === "\"bccdd\" equaled \"bccdd\", and \"bccdd\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught10.getMessage === "\"bccdd\" equaled \"bccdd\", and \"bccdd\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught10.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught10.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught11 = intercept[TestFailedException] {
           "bccdd" should (not equal ("bccdd") or not include regex ("b(c*)(d*)" withGroups ("cc", "dd")))
         }
-        assert(caught11.getMessage === "\"bccdd\" equaled \"bccdd\", and \"bccdd\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught11.getMessage === "\"bccdd\" equaled \"bccdd\", and \"bccdd\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught11.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught11.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught12 = intercept[TestFailedException] {
           "bccdd" should (not (equal ("bccdd")) or not (include regex ("b(c*)(d*)" withGroups ("cc", "dd"))))
         }
-        assert(caught12.getMessage === "\"bccdd\" equaled \"bccdd\", and \"bccdd\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught12.getMessage === "\"bccdd\" equaled \"bccdd\", and \"bccdd\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught12.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught12.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught13 = intercept[TestFailedException] {
           "abccdd" should (not equal ("abccdd") or (not include regex ("b(c*)(d*)" withGroups ("cc", "dd"))))
         }
-        assert(caught13.getMessage === "\"abccdd\" equaled \"abccdd\", and \"abccdd\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught13.getMessage === "\"abccdd\" equaled \"abccdd\", and \"abccdd\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught13.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught13.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught14 = intercept[TestFailedException] {
           "bccdde" should ((not equal ("bccdde")) or (not include regex ("b(c*)(d*)" withGroups ("cc", "dd"))))
         }
-        assert(caught14.getMessage === "\"bccdde\" equaled \"bccdde\", and \"bccdde\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught14.getMessage === "\"bccdde\" equaled \"bccdde\", and \"bccdde\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught14.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught14.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught15 = intercept[TestFailedException] {
           "abccdde" should (not equal ("abccdde") or not include regex ("b(c*)(d*)" withGroups ("cc", "dd")))
         }
-        assert(caught15.getMessage === "\"abccdde\" equaled \"abccdde\", and \"abccdde\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught15.getMessage === "\"abccdde\" equaled \"abccdde\", and \"abccdde\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught15.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught15.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught16 = intercept[TestFailedException] {
           "abccdde" should (not (equal ("abccdde")) or not (include regex ("b(c*)(d*)" withGroups ("cc", "dd"))))
         }
-        assert(caught16.getMessage === "\"abccdde\" equaled \"abccdde\", and \"abccdde\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught16.getMessage === "\"abccdde\" equaled \"abccdde\", and \"abccdde\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught16.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught16.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -1586,7 +1586,7 @@ s should fullyMatch regex t
         val caught1 = intercept[TestFailedException] {
           "abccde" should include regex ("b(c*)d".r withGroup "c")
         }
-        assert(caught1.getMessage === "\"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\"")
+        assert(caught1.getMessage === "\"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group c")
         assert(caught1.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -1596,7 +1596,7 @@ s should fullyMatch regex t
         val caught1 = intercept[TestFailedException] {
           "abccdde" should include regex ("b(c*)(d*)".r withGroups ("cc", "d"))
         }
-        assert(caught1.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1")
+        assert(caught1.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1")
         assert(caught1.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -1675,14 +1675,14 @@ s should fullyMatch regex t
         val caught1 = intercept[TestFailedException] {
           "abccde" should not { include regex ("b(c*)d".r withGroup "cc") }
         }
-        assert(caught1.getMessage === "\"abccde\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught1.getMessage === "\"abccde\" included substring that matched regex b(c*)d and group cc")
         assert(caught1.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught2 = intercept[TestFailedException] {
           "abccde" should not include regex ("b(c*)d".r withGroup "cc")
         }
-        assert(caught2.getMessage === "\"abccde\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught2.getMessage === "\"abccde\" included substring that matched regex b(c*)d and group cc")
         assert(caught2.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -1692,14 +1692,14 @@ s should fullyMatch regex t
         val caught1 = intercept[TestFailedException] {
           "abccdde" should not { include regex ("b(c*)(d*)".r withGroups ("cc", "dd")) }
         }
-        assert(caught1.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught1.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught1.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught2 = intercept[TestFailedException] {
           "abccdde" should not include regex ("b(c*)(d*)".r withGroups ("cc", "dd"))
         }
-        assert(caught2.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught2.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught2.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -1743,21 +1743,21 @@ s should fullyMatch regex t
         val caught1 = intercept[TestFailedException] {
           "abccde" should (include regex ("b(c*)d".r withGroup "cc") and (include regex ("b(c*)d".r withGroup "c")))
         }
-        assert(caught1.getMessage === "\"abccde\" included substring that matched regex b(c*)d and group \"cc\", but \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\"")
+        assert(caught1.getMessage === "\"abccde\" included substring that matched regex b(c*)d and group cc, but \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group c")
         assert(caught1.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught2 = intercept[TestFailedException] {
           "abccde" should ((include regex ("b(c*)d".r withGroup "cc")) and (include regex ("b(c*)d".r withGroup "c")))
         }
-        assert(caught2.getMessage === "\"abccde\" included substring that matched regex b(c*)d and group \"cc\", but \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\"")
+        assert(caught2.getMessage === "\"abccde\" included substring that matched regex b(c*)d and group cc, but \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group c")
         assert(caught2.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught3 = intercept[TestFailedException] {
           "abccde" should (include regex ("b(c*)d".r withGroup "cc") and include regex ("b(c*)d".r withGroup "c"))
         }
-        assert(caught3.getMessage === "\"abccde\" included substring that matched regex b(c*)d and group \"cc\", but \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\"")
+        assert(caught3.getMessage === "\"abccde\" included substring that matched regex b(c*)d and group cc, but \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group c")
         assert(caught3.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
   
@@ -1765,42 +1765,42 @@ s should fullyMatch regex t
         val caught4 = intercept[TestFailedException] {
           "abccde" should (include regex ("b(c*)d".r withGroup "c") and (include regex ("b(c*)d".r withGroup "cc")))
         }
-        assert(caught4.getMessage === "\"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\"")
+        assert(caught4.getMessage === "\"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group c")
         assert(caught4.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught5 = intercept[TestFailedException] {
           "abccde" should ((include regex ("b(c*)d".r withGroup "c")) and (include regex ("b(c*)d".r withGroup "cc")))
         }
-        assert(caught5.getMessage === "\"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\"")
+        assert(caught5.getMessage === "\"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group c")
         assert(caught5.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught6 = intercept[TestFailedException] {
           "abccde" should (include regex ("b(c*)d".r withGroup "c") and include regex ("b(c*)d".r withGroup "cc"))
         }
-        assert(caught6.getMessage === "\"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\"")
+        assert(caught6.getMessage === "\"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group c")
         assert(caught6.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught7 = intercept[TestFailedException] {
           "abccde" should (equal ("abccde") and (include regex ("b(c*)d".r withGroup "c")))
         }
-        assert(caught7.getMessage === "\"abccde\" equaled \"abccde\", but \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\"")
+        assert(caught7.getMessage === "\"abccde\" equaled \"abccde\", but \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group c")
         assert(caught7.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught7.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught8 = intercept[TestFailedException] {
           "abccde" should ((equal ("abccde")) and (include regex ("b(c*)d".r withGroup "c")))
         }
-        assert(caught8.getMessage === "\"abccde\" equaled \"abccde\", but \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\"")
+        assert(caught8.getMessage === "\"abccde\" equaled \"abccde\", but \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group c")
         assert(caught8.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught9 = intercept[TestFailedException] {
           "abccde" should (equal ("abccde") and include regex ("b(c*)d".r withGroup "c"))
         }
-        assert(caught9.getMessage === "\"abccde\" equaled \"abccde\", but \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\"")
+        assert(caught9.getMessage === "\"abccde\" equaled \"abccde\", but \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group c")
         assert(caught9.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught9.failedCodeLineNumber === Some(thisLineNumber - 4))
   
@@ -1832,21 +1832,21 @@ s should fullyMatch regex t
         val caught1 = intercept[TestFailedException] {
           "abccdde" should (include regex ("b(c*)(d*)".r withGroups ("cc", "dd")) and (include regex ("b(c*)(d*)".r withGroups ("cc", "d"))))
         }
-        assert(caught1.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\", but \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1")
+        assert(caught1.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*) and group cc, dd, but \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1")
         assert(caught1.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught2 = intercept[TestFailedException] {
           "abccdde" should ((include regex ("b(c*)(d*)".r withGroups ("cc", "dd"))) and (include regex ("b(c*)(d*)".r withGroups ("cc", "d"))))
         }
-        assert(caught2.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\", but \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1")
+        assert(caught2.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*) and group cc, dd, but \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1")
         assert(caught2.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught3 = intercept[TestFailedException] {
           "abccdde" should (include regex ("b(c*)(d*)".r withGroups ("cc", "dd")) and include regex ("b(c*)(d*)".r withGroups ("cc", "d")))
         }
-        assert(caught3.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\", but \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1")
+        assert(caught3.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*) and group cc, dd, but \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1")
         assert(caught3.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
   
@@ -1854,42 +1854,42 @@ s should fullyMatch regex t
         val caught4 = intercept[TestFailedException] {
           "abccdde" should (include regex ("b(c*)(d*)".r withGroups ("cc", "d")) and (include regex ("b(c*)(d*)".r withGroups ("cc", "dd"))))
         }
-        assert(caught4.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1")
+        assert(caught4.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1")
         assert(caught4.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught5 = intercept[TestFailedException] {
           "abccdde" should ((include regex ("b(c*)(d*)".r withGroups ("cc", "d"))) and (include regex ("b(c*)(d*)".r withGroups ("cc", "dd"))))
         }
-        assert(caught5.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1")
+        assert(caught5.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1")
         assert(caught5.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught6 = intercept[TestFailedException] {
           "abccdde" should (include regex ("b(c*)(d*)".r withGroups ("cc", "d")) and include regex ("b(c*)(d*)".r withGroups ("cc", "dd")))
         }
-        assert(caught6.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1")
+        assert(caught6.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1")
         assert(caught6.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught7 = intercept[TestFailedException] {
           "abccdde" should (equal ("abccdde") and (include regex ("b(c*)(d*)".r withGroups ("cc", "d"))))
         }
-        assert(caught7.getMessage === "\"abccdde\" equaled \"abccdde\", but \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1")
+        assert(caught7.getMessage === "\"abccdde\" equaled \"abccdde\", but \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1")
         assert(caught7.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught7.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught8 = intercept[TestFailedException] {
           "abccdde" should ((equal ("abccdde")) and (include regex ("b(c*)(d*)".r withGroups ("cc", "d"))))
         }
-        assert(caught8.getMessage === "\"abccdde\" equaled \"abccdde\", but \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1")
+        assert(caught8.getMessage === "\"abccdde\" equaled \"abccdde\", but \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1")
         assert(caught8.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught9 = intercept[TestFailedException] {
           "abccdde" should (equal ("abccdde") and include regex ("b(c*)(d*)".r withGroups ("cc", "d")))
         }
-        assert(caught9.getMessage === "\"abccdde\" equaled \"abccdde\", but \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1")
+        assert(caught9.getMessage === "\"abccdde\" equaled \"abccdde\", but \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1")
         assert(caught9.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught9.failedCodeLineNumber === Some(thisLineNumber - 4))
   
@@ -1939,42 +1939,42 @@ s should fullyMatch regex t
         val caught1 = intercept[TestFailedException] {
           "abccde" should (include regex ("b(c*)d".r withGroup "c") or (include regex ("b(c*)d".r withGroup "c")))
         }
-        assert(caught1.getMessage === "\"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\", and \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\"")
+        assert(caught1.getMessage === "\"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group c, and \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group c")
         assert(caught1.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught2 = intercept[TestFailedException] {
           "abccde" should ((include regex ("b(c*)d".r withGroup "c")) or (include regex ("b(c*)d".r withGroup "c")))
         }
-        assert(caught2.getMessage === "\"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\", and \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\"")
+        assert(caught2.getMessage === "\"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group c, and \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group c")
         assert(caught2.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught3 = intercept[TestFailedException] {
           "abccde" should (include regex ("b(c*)d".r withGroup "c") or include regex ("b(c*)d".r withGroup "c"))
         }
-        assert(caught3.getMessage === "\"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\", and \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\"")
+        assert(caught3.getMessage === "\"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group c, and \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group c")
         assert(caught3.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught4 = intercept[TestFailedException] {
           "abccde" should (equal ("abcde") or (include regex ("b(c*)d".r withGroup "c")))
         }
-        assert(caught4.getMessage === "\"abc[c]de\" did not equal \"abc[]de\", and \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\"")
+        assert(caught4.getMessage === "\"abc[c]de\" did not equal \"abc[]de\", and \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group c")
         assert(caught4.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught5 = intercept[TestFailedException] {
           "abccde" should ((equal ("abcde")) or (include regex ("b(c*)d".r withGroup "c")))
         }
-        assert(caught5.getMessage === "\"abc[c]de\" did not equal \"abc[]de\", and \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\"")
+        assert(caught5.getMessage === "\"abc[c]de\" did not equal \"abc[]de\", and \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group c")
         assert(caught5.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught6 = intercept[TestFailedException] {
           "abccde" should (equal ("abcde") or include regex ("b(c*)d".r withGroup "c"))
         }
-        assert(caught6.getMessage === "\"abc[c]de\" did not equal \"abc[]de\", and \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\"")
+        assert(caught6.getMessage === "\"abc[c]de\" did not equal \"abc[]de\", and \"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group c")
         assert(caught6.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -1984,42 +1984,42 @@ s should fullyMatch regex t
         val caught1 = intercept[TestFailedException] {
           "abccdde" should (include regex ("b(c*)(d*)".r withGroups ("cc", "d")) or (include regex ("b(c*)(d*)".r withGroups ("cc", "d"))))
         }
-        assert(caught1.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1, and \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1")
+        assert(caught1.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1, and \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1")
         assert(caught1.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught2 = intercept[TestFailedException] {
           "abccdde" should ((include regex ("b(c*)(d*)".r withGroups ("cc", "d"))) or (include regex ("b(c*)(d*)".r withGroups ("cc", "d"))))
         }
-        assert(caught2.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1, and \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1")
+        assert(caught2.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1, and \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1")
         assert(caught2.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught3 = intercept[TestFailedException] {
           "abccdde" should (include regex ("b(c*)(d*)".r withGroups ("cc", "d")) or include regex ("b(c*)(d*)".r withGroups ("cc", "d")))
         }
-        assert(caught3.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1, and \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1")
+        assert(caught3.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1, and \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1")
         assert(caught3.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught4 = intercept[TestFailedException] {
           "abccdde" should (equal ("abccde") or (include regex ("b(c*)(d*)".r withGroups ("cc", "d"))))
         }
-        assert(caught4.getMessage === "\"abccd[d]e\" did not equal \"abccd[]e\", and \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1")
+        assert(caught4.getMessage === "\"abccd[d]e\" did not equal \"abccd[]e\", and \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1")
         assert(caught4.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught5 = intercept[TestFailedException] {
           "abccdde" should ((equal ("abccde")) or (include regex ("b(c*)(d*)".r withGroups ("cc", "d"))))
         }
-        assert(caught5.getMessage === "\"abccd[d]e\" did not equal \"abccd[]e\", and \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1")
+        assert(caught5.getMessage === "\"abccd[d]e\" did not equal \"abccd[]e\", and \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1")
         assert(caught5.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught6 = intercept[TestFailedException] {
           "abccdde" should (equal ("abccde") or include regex ("b(c*)(d*)".r withGroups ("cc", "d")))
         }
-        assert(caught6.getMessage === "\"abccd[d]e\" did not equal \"abccd[]e\", and \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1")
+        assert(caught6.getMessage === "\"abccd[d]e\" did not equal \"abccd[]e\", and \"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1")
         assert(caught6.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -2062,84 +2062,84 @@ s should fullyMatch regex t
         val caught1 = intercept[TestFailedException] {
           "bccd" should (not include regex ("b(c*)d".r withGroup "c") and (not include regex ("b(c*)d".r withGroup "cc")))
         }
-        assert(caught1.getMessage === "\"bccd\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\", but \"bccd\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught1.getMessage === "\"bccd\" included substring that matched regex b(c*)d, but \"cc\" did not match group c, but \"bccd\" included substring that matched regex b(c*)d and group cc")
         assert(caught1.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
 
         val caught2 = intercept[TestFailedException] {
           "bccd" should ((not include regex ("b(c*)d".r withGroup "c")) and (not include regex ("b(c*)d".r withGroup "cc")))
         }
-        assert(caught2.getMessage === "\"bccd\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\", but \"bccd\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught2.getMessage === "\"bccd\" included substring that matched regex b(c*)d, but \"cc\" did not match group c, but \"bccd\" included substring that matched regex b(c*)d and group cc")
         assert(caught2.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
 
         val caught3 = intercept[TestFailedException] {
           "bccd" should (not include regex ("b(c*)d".r withGroup "c") and not include regex ("b(c*)d".r withGroup "cc"))
         }
-        assert(caught3.getMessage === "\"bccd\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\", but \"bccd\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught3.getMessage === "\"bccd\" included substring that matched regex b(c*)d, but \"cc\" did not match group c, but \"bccd\" included substring that matched regex b(c*)d and group cc")
         assert(caught3.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught4 = intercept[TestFailedException] {
           "abccd" should (not include regex ("b(c*)d".r withGroup "c") and (not include regex ("b(c*)d".r withGroup "cc")))
         }
-        assert(caught4.getMessage === "\"abccd\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\", but \"abccd\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught4.getMessage === "\"abccd\" included substring that matched regex b(c*)d, but \"cc\" did not match group c, but \"abccd\" included substring that matched regex b(c*)d and group cc")
         assert(caught4.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
 
         val caught5 = intercept[TestFailedException] {
           "bccde" should ((not include regex ("b(c*)d".r withGroup "c")) and (not include regex ("b(c*)d".r withGroup "cc")))
         }
-        assert(caught5.getMessage === "\"bccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\", but \"bccde\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught5.getMessage === "\"bccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group c, but \"bccde\" included substring that matched regex b(c*)d and group cc")
         assert(caught5.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
 
         val caught6 = intercept[TestFailedException] {
           "abccde" should (not include regex ("b(c*)d".r withGroup "c") and not include regex ("b(c*)d".r withGroup "cc"))
         }
-        assert(caught6.getMessage === "\"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group \"c\", but \"abccde\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught6.getMessage === "\"abccde\" included substring that matched regex b(c*)d, but \"cc\" did not match group c, but \"abccde\" included substring that matched regex b(c*)d and group cc")
         assert(caught6.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught7 = intercept[TestFailedException] {
           "bccd" should (not equal ("bcd") and (not include regex ("b(c*)d".r withGroup "cc")))
         }
-        assert(caught7.getMessage === "\"bc[c]d\" did not equal \"bc[]d\", but \"bccd\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught7.getMessage === "\"bc[c]d\" did not equal \"bc[]d\", but \"bccd\" included substring that matched regex b(c*)d and group cc")
         assert(caught7.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught7.failedCodeLineNumber === Some(thisLineNumber - 4))
 
         val caught8 = intercept[TestFailedException] {
           "bccd" should ((not equal ("bcd")) and (not include regex ("b(c*)d".r withGroup "cc")))
         }
-        assert(caught8.getMessage === "\"bc[c]d\" did not equal \"bc[]d\", but \"bccd\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught8.getMessage === "\"bc[c]d\" did not equal \"bc[]d\", but \"bccd\" included substring that matched regex b(c*)d and group cc")
         assert(caught8.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
 
         val caught9 = intercept[TestFailedException] {
           "bccd" should (not equal ("bcd") and not include regex ("b(c*)d".r withGroup "cc"))
         }
-        assert(caught9.getMessage === "\"bc[c]d\" did not equal \"bc[]d\", but \"bccd\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught9.getMessage === "\"bc[c]d\" did not equal \"bc[]d\", but \"bccd\" included substring that matched regex b(c*)d and group cc")
         assert(caught9.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught9.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught10 = intercept[TestFailedException] {
           "abccd" should (not equal ("abcd") and (not include regex ("b(c*)d".r withGroup "cc")))
         }
-        assert(caught10.getMessage === "\"abc[c]d\" did not equal \"abc[]d\", but \"abccd\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught10.getMessage === "\"abc[c]d\" did not equal \"abc[]d\", but \"abccd\" included substring that matched regex b(c*)d and group cc")
         assert(caught10.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught10.failedCodeLineNumber === Some(thisLineNumber - 4))
 
         val caught11 = intercept[TestFailedException] {
           "bccde" should ((not equal ("bcde")) and (not include regex ("b(c*)d".r withGroup "cc")))
         }
-        assert(caught11.getMessage === "\"bc[c]de\" did not equal \"bc[]de\", but \"bccde\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught11.getMessage === "\"bc[c]de\" did not equal \"bc[]de\", but \"bccde\" included substring that matched regex b(c*)d and group cc")
         assert(caught11.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught11.failedCodeLineNumber === Some(thisLineNumber - 4))
 
         val caught12 = intercept[TestFailedException] {
           "abccde" should (not equal ("abcde") and not include regex ("b(c*)d".r withGroup "cc"))
         }
-        assert(caught12.getMessage === "\"abc[c]de\" did not equal \"abc[]de\", but \"abccde\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught12.getMessage === "\"abc[c]de\" did not equal \"abc[]de\", but \"abccde\" included substring that matched regex b(c*)d and group cc")
         assert(caught12.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught12.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -2149,84 +2149,84 @@ s should fullyMatch regex t
         val caught1 = intercept[TestFailedException] {
           "bccdd" should (not include regex ("b(c*)(d*)".r withGroups ("cc", "d")) and (not include regex ("b(c*)(d*)".r withGroups ("cc", "dd"))))
         }
-        assert(caught1.getMessage === "\"bccdd\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1, but \"bccdd\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught1.getMessage === "\"bccdd\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1, but \"bccdd\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught1.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
 
         val caught2 = intercept[TestFailedException] {
           "bccdd" should ((not include regex ("b(c*)(d*)".r withGroups ("cc", "d"))) and (not include regex ("b(c*)(d*)".r withGroups ("cc", "dd"))))
         }
-        assert(caught2.getMessage === "\"bccdd\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1, but \"bccdd\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught2.getMessage === "\"bccdd\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1, but \"bccdd\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught2.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
 
         val caught3 = intercept[TestFailedException] {
           "bccdd" should (not include regex ("b(c*)(d*)".r withGroups ("cc", "d")) and not include regex ("b(c*)(d*)".r withGroups ("cc", "dd")))
         }
-        assert(caught3.getMessage === "\"bccdd\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1, but \"bccdd\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught3.getMessage === "\"bccdd\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1, but \"bccdd\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught3.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught4 = intercept[TestFailedException] {
           "abccdd" should (not include regex ("b(c*)(d*)".r withGroups ("cc", "d")) and (not include regex ("b(c*)(d*)".r withGroups ("cc", "dd"))))
         }
-        assert(caught4.getMessage === "\"abccdd\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1, but \"abccdd\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught4.getMessage === "\"abccdd\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1, but \"abccdd\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught4.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
 
         val caught5 = intercept[TestFailedException] {
           "bccdde" should ((not include regex ("b(c*)(d*)".r withGroups ("cc", "d"))) and (not include regex ("b(c*)(d*)".r withGroups ("cc", "dd"))))
         }
-        assert(caught5.getMessage === "\"bccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1, but \"bccdde\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught5.getMessage === "\"bccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1, but \"bccdde\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught5.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
 
         val caught6 = intercept[TestFailedException] {
           "abccdde" should (not include regex ("b(c*)(d*)".r withGroups ("cc", "d")) and not include regex ("b(c*)(d*)".r withGroups ("cc", "dd")))
         }
-        assert(caught6.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group \"d\" at index 1, but \"abccdde\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught6.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*), but \"dd\" did not match group d at index 1, but \"abccdde\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught6.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught7 = intercept[TestFailedException] {
           "bccdd" should (not equal ("bccd") and (not include regex ("b(c*)(d*)".r withGroups ("cc", "dd"))))
         }
-        assert(caught7.getMessage === "\"bccd[d]\" did not equal \"bccd[]\", but \"bccdd\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught7.getMessage === "\"bccd[d]\" did not equal \"bccd[]\", but \"bccdd\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught7.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught7.failedCodeLineNumber === Some(thisLineNumber - 4))
 
         val caught8 = intercept[TestFailedException] {
           "bccdd" should ((not equal ("bccd")) and (not include regex ("b(c*)(d*)".r withGroups ("cc", "dd"))))
         }
-        assert(caught8.getMessage === "\"bccd[d]\" did not equal \"bccd[]\", but \"bccdd\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught8.getMessage === "\"bccd[d]\" did not equal \"bccd[]\", but \"bccdd\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught8.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
 
         val caught9 = intercept[TestFailedException] {
           "bccdd" should (not equal ("bccd") and not include regex ("b(c*)(d*)".r withGroups ("cc", "dd")))
         }
-        assert(caught9.getMessage === "\"bccd[d]\" did not equal \"bccd[]\", but \"bccdd\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught9.getMessage === "\"bccd[d]\" did not equal \"bccd[]\", but \"bccdd\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught9.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught9.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught10 = intercept[TestFailedException] {
           "abccdd" should (not equal ("abccd") and (not include regex ("b(c*)(d*)".r withGroups ("cc", "dd"))))
         }
-        assert(caught10.getMessage === "\"abccd[d]\" did not equal \"abccd[]\", but \"abccdd\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught10.getMessage === "\"abccd[d]\" did not equal \"abccd[]\", but \"abccdd\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught10.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught10.failedCodeLineNumber === Some(thisLineNumber - 4))
 
         val caught11 = intercept[TestFailedException] {
           "bccdde" should ((not equal ("bccde")) and (not include regex ("b(c*)(d*)".r withGroups ("cc", "dd"))))
         }
-        assert(caught11.getMessage === "\"bccd[d]e\" did not equal \"bccd[]e\", but \"bccdde\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught11.getMessage === "\"bccd[d]e\" did not equal \"bccd[]e\", but \"bccdde\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught11.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught11.failedCodeLineNumber === Some(thisLineNumber - 4))
 
         val caught12 = intercept[TestFailedException] {
           "abccdde" should (not equal ("abccde") and not include regex ("b(c*)(d*)".r withGroups ("cc", "dd")))
         }
-        assert(caught12.getMessage === "\"abccd[d]e\" did not equal \"abccd[]e\", but \"abccdde\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught12.getMessage === "\"abccd[d]e\" did not equal \"abccd[]e\", but \"abccdde\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught12.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught12.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -2279,112 +2279,112 @@ s should fullyMatch regex t
         val caught1 = intercept[TestFailedException] {
           "bccd" should (not include regex ("b(c*)d".r withGroup "cc") or (not include regex ("b(c*)d".r withGroup "cc")))
         }
-        assert(caught1.getMessage === "\"bccd\" included substring that matched regex b(c*)d and group \"cc\", and \"bccd\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught1.getMessage === "\"bccd\" included substring that matched regex b(c*)d and group cc, and \"bccd\" included substring that matched regex b(c*)d and group cc")
         assert(caught1.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught2 = intercept[TestFailedException] {
           "bccd" should ((not include regex ("b(c*)d".r withGroup "cc")) or (not include regex ("b(c*)d".r withGroup "cc")))
         }
-        assert(caught2.getMessage === "\"bccd\" included substring that matched regex b(c*)d and group \"cc\", and \"bccd\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught2.getMessage === "\"bccd\" included substring that matched regex b(c*)d and group cc, and \"bccd\" included substring that matched regex b(c*)d and group cc")
         assert(caught2.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught3 = intercept[TestFailedException] {
           "bccd" should (not include regex ("b(c*)d".r withGroup "cc") or not include regex ("b(c*)d".r withGroup "cc"))
         }
-        assert(caught3.getMessage === "\"bccd\" included substring that matched regex b(c*)d and group \"cc\", and \"bccd\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught3.getMessage === "\"bccd\" included substring that matched regex b(c*)d and group cc, and \"bccd\" included substring that matched regex b(c*)d and group cc")
         assert(caught3.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught4 = intercept[TestFailedException] {
           "bccd" should (not (include regex ("b(c*)d".r withGroup "cc")) or not (include regex ("b(c*)d".r withGroup "cc")))
         }
-        assert(caught4.getMessage === "\"bccd\" included substring that matched regex b(c*)d and group \"cc\", and \"bccd\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught4.getMessage === "\"bccd\" included substring that matched regex b(c*)d and group cc, and \"bccd\" included substring that matched regex b(c*)d and group cc")
         assert(caught4.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught5 = intercept[TestFailedException] {
           "abccd" should (not include regex ("b(c*)d".r withGroup "cc") or (not include regex ("b(c*)d".r withGroup "cc")))
         }
-        assert(caught5.getMessage === "\"abccd\" included substring that matched regex b(c*)d and group \"cc\", and \"abccd\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught5.getMessage === "\"abccd\" included substring that matched regex b(c*)d and group cc, and \"abccd\" included substring that matched regex b(c*)d and group cc")
         assert(caught5.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught6 = intercept[TestFailedException] {
           "bccde" should ((not include regex ("b(c*)d".r withGroup "cc")) or (not include regex ("b(c*)d".r withGroup "cc")))
         }
-        assert(caught6.getMessage === "\"bccde\" included substring that matched regex b(c*)d and group \"cc\", and \"bccde\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught6.getMessage === "\"bccde\" included substring that matched regex b(c*)d and group cc, and \"bccde\" included substring that matched regex b(c*)d and group cc")
         assert(caught6.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught7 = intercept[TestFailedException] {
           "abccde" should (not include regex ("b(c*)d".r withGroup "cc") or not include regex ("b(c*)d".r withGroup "cc"))
         }
-        assert(caught7.getMessage === "\"abccde\" included substring that matched regex b(c*)d and group \"cc\", and \"abccde\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught7.getMessage === "\"abccde\" included substring that matched regex b(c*)d and group cc, and \"abccde\" included substring that matched regex b(c*)d and group cc")
         assert(caught7.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught7.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught8 = intercept[TestFailedException] {
           "abccde" should (not (include regex ("b(c*)d".r withGroup "cc")) or not (include regex ("b(c*)d".r withGroup "cc")))
         }
-        assert(caught8.getMessage === "\"abccde\" included substring that matched regex b(c*)d and group \"cc\", and \"abccde\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught8.getMessage === "\"abccde\" included substring that matched regex b(c*)d and group cc, and \"abccde\" included substring that matched regex b(c*)d and group cc")
         assert(caught8.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught9 = intercept[TestFailedException] {
           "bccd" should (not equal ("bccd") or (not include regex ("b(c*)d".r withGroup "cc")))
         }
-        assert(caught9.getMessage === "\"bccd\" equaled \"bccd\", and \"bccd\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught9.getMessage === "\"bccd\" equaled \"bccd\", and \"bccd\" included substring that matched regex b(c*)d and group cc")
         assert(caught9.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught9.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught10 = intercept[TestFailedException] {
           "bccd" should ((not equal ("bccd")) or (not include regex ("b(c*)d".r withGroup "cc")))
         }
-        assert(caught10.getMessage === "\"bccd\" equaled \"bccd\", and \"bccd\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught10.getMessage === "\"bccd\" equaled \"bccd\", and \"bccd\" included substring that matched regex b(c*)d and group cc")
         assert(caught10.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught10.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught11 = intercept[TestFailedException] {
           "bccd" should (not equal ("bccd") or not include regex ("b(c*)d".r withGroup "cc"))
         }
-        assert(caught11.getMessage === "\"bccd\" equaled \"bccd\", and \"bccd\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught11.getMessage === "\"bccd\" equaled \"bccd\", and \"bccd\" included substring that matched regex b(c*)d and group cc")
         assert(caught11.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught11.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught12 = intercept[TestFailedException] {
           "bccd" should (not (equal ("bccd")) or not (include regex ("b(c*)d".r withGroup "cc")))
         }
-        assert(caught12.getMessage === "\"bccd\" equaled \"bccd\", and \"bccd\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught12.getMessage === "\"bccd\" equaled \"bccd\", and \"bccd\" included substring that matched regex b(c*)d and group cc")
         assert(caught12.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught12.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught13 = intercept[TestFailedException] {
           "abccd" should (not equal ("abccd") or (not include regex ("b(c*)d".r withGroup "cc")))
         }
-        assert(caught13.getMessage === "\"abccd\" equaled \"abccd\", and \"abccd\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught13.getMessage === "\"abccd\" equaled \"abccd\", and \"abccd\" included substring that matched regex b(c*)d and group cc")
         assert(caught13.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught13.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught14 = intercept[TestFailedException] {
           "bccde" should ((not equal ("bccde")) or (not include regex ("b(c*)d".r withGroup "cc")))
         }
-        assert(caught14.getMessage === "\"bccde\" equaled \"bccde\", and \"bccde\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught14.getMessage === "\"bccde\" equaled \"bccde\", and \"bccde\" included substring that matched regex b(c*)d and group cc")
         assert(caught14.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught14.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught15 = intercept[TestFailedException] {
           "abccde" should (not equal ("abccde") or not include regex ("b(c*)d".r withGroup "cc"))
         }
-        assert(caught15.getMessage === "\"abccde\" equaled \"abccde\", and \"abccde\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught15.getMessage === "\"abccde\" equaled \"abccde\", and \"abccde\" included substring that matched regex b(c*)d and group cc")
         assert(caught15.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught15.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught16 = intercept[TestFailedException] {
           "abccde" should (not (equal ("abccde")) or not (include regex ("b(c*)d".r withGroup "cc")))
         }
-        assert(caught16.getMessage === "\"abccde\" equaled \"abccde\", and \"abccde\" included substring that matched regex b(c*)d and group \"cc\"")
+        assert(caught16.getMessage === "\"abccde\" equaled \"abccde\", and \"abccde\" included substring that matched regex b(c*)d and group cc")
         assert(caught16.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught16.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
@@ -2394,112 +2394,112 @@ s should fullyMatch regex t
         val caught1 = intercept[TestFailedException] {
           "bccdd" should (not include regex ("b(c*)(d*)".r withGroups ("cc", "dd")) or (not include regex ("b(c*)(d*)".r withGroups ("cc", "dd"))))
         }
-        assert(caught1.getMessage === "\"bccdd\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\", and \"bccdd\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught1.getMessage === "\"bccdd\" included substring that matched regex b(c*)(d*) and group cc, dd, and \"bccdd\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught1.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught2 = intercept[TestFailedException] {
           "bccdd" should ((not include regex ("b(c*)(d*)".r withGroups ("cc", "dd"))) or (not include regex ("b(c*)(d*)".r withGroups ("cc", "dd"))))
         }
-        assert(caught2.getMessage === "\"bccdd\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\", and \"bccdd\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught2.getMessage === "\"bccdd\" included substring that matched regex b(c*)(d*) and group cc, dd, and \"bccdd\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught2.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught3 = intercept[TestFailedException] {
           "bccdd" should (not include regex ("b(c*)(d*)".r withGroups ("cc", "dd")) or not include regex ("b(c*)(d*)".r withGroups ("cc", "dd")))
         }
-        assert(caught3.getMessage === "\"bccdd\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\", and \"bccdd\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught3.getMessage === "\"bccdd\" included substring that matched regex b(c*)(d*) and group cc, dd, and \"bccdd\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught3.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught4 = intercept[TestFailedException] {
           "bccdd" should (not (include regex ("b(c*)(d*)".r withGroups ("cc", "dd"))) or not (include regex ("b(c*)(d*)".r withGroups ("cc", "dd"))))
         }
-        assert(caught4.getMessage === "\"bccdd\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\", and \"bccdd\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught4.getMessage === "\"bccdd\" included substring that matched regex b(c*)(d*) and group cc, dd, and \"bccdd\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught4.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught5 = intercept[TestFailedException] {
           "abccdd" should (not include regex ("b(c*)(d*)".r withGroups ("cc", "dd")) or (not include regex ("b(c*)(d*)".r withGroups ("cc", "dd"))))
         }
-        assert(caught5.getMessage === "\"abccdd\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\", and \"abccdd\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught5.getMessage === "\"abccdd\" included substring that matched regex b(c*)(d*) and group cc, dd, and \"abccdd\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught5.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught6 = intercept[TestFailedException] {
           "bccdde" should ((not include regex ("b(c*)(d*)".r withGroups ("cc", "dd"))) or (not include regex ("b(c*)(d*)".r withGroups ("cc", "dd"))))
         }
-        assert(caught6.getMessage === "\"bccdde\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\", and \"bccdde\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught6.getMessage === "\"bccdde\" included substring that matched regex b(c*)(d*) and group cc, dd, and \"bccdde\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught6.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught7 = intercept[TestFailedException] {
           "abccdde" should (not include regex ("b(c*)(d*)".r withGroups ("cc", "dd")) or not include regex ("b(c*)(d*)".r withGroups ("cc", "dd")))
         }
-        assert(caught7.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\", and \"abccdde\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught7.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*) and group cc, dd, and \"abccdde\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught7.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught7.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught8 = intercept[TestFailedException] {
           "abccdde" should (not (include regex ("b(c*)(d*)".r withGroups ("cc", "dd"))) or not (include regex ("b(c*)(d*)".r withGroups ("cc", "dd"))))
         }
-        assert(caught8.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\", and \"abccdde\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught8.getMessage === "\"abccdde\" included substring that matched regex b(c*)(d*) and group cc, dd, and \"abccdde\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught8.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught8.failedCodeLineNumber === Some(thisLineNumber - 4))
         
         val caught9 = intercept[TestFailedException] {
           "bccdd" should (not equal ("bccdd") or (not include regex ("b(c*)(d*)".r withGroups ("cc", "dd"))))
         }
-        assert(caught9.getMessage === "\"bccdd\" equaled \"bccdd\", and \"bccdd\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught9.getMessage === "\"bccdd\" equaled \"bccdd\", and \"bccdd\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught9.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught9.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught10 = intercept[TestFailedException] {
           "bccdd" should ((not equal ("bccdd")) or (not include regex ("b(c*)(d*)".r withGroups ("cc", "dd"))))
         }
-        assert(caught10.getMessage === "\"bccdd\" equaled \"bccdd\", and \"bccdd\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught10.getMessage === "\"bccdd\" equaled \"bccdd\", and \"bccdd\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught10.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught10.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught11 = intercept[TestFailedException] {
           "bccdd" should (not equal ("bccdd") or not include regex ("b(c*)(d*)".r withGroups ("cc", "dd")))
         }
-        assert(caught11.getMessage === "\"bccdd\" equaled \"bccdd\", and \"bccdd\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught11.getMessage === "\"bccdd\" equaled \"bccdd\", and \"bccdd\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught11.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught11.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught12 = intercept[TestFailedException] {
           "bccdd" should (not (equal ("bccdd")) or not (include regex ("b(c*)(d*)".r withGroups ("cc", "dd"))))
         }
-        assert(caught12.getMessage === "\"bccdd\" equaled \"bccdd\", and \"bccdd\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught12.getMessage === "\"bccdd\" equaled \"bccdd\", and \"bccdd\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught12.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught12.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught13 = intercept[TestFailedException] {
           "abccdd" should (not equal ("abccdd") or (not include regex ("b(c*)(d*)".r withGroups ("cc", "dd"))))
         }
-        assert(caught13.getMessage === "\"abccdd\" equaled \"abccdd\", and \"abccdd\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught13.getMessage === "\"abccdd\" equaled \"abccdd\", and \"abccdd\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught13.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught13.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught14 = intercept[TestFailedException] {
           "bccdde" should ((not equal ("bccdde")) or (not include regex ("b(c*)(d*)".r withGroups ("cc", "dd"))))
         }
-        assert(caught14.getMessage === "\"bccdde\" equaled \"bccdde\", and \"bccdde\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught14.getMessage === "\"bccdde\" equaled \"bccdde\", and \"bccdde\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught14.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught14.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught15 = intercept[TestFailedException] {
           "abccdde" should (not equal ("abccdde") or not include regex ("b(c*)(d*)".r withGroups ("cc", "dd")))
         }
-        assert(caught15.getMessage === "\"abccdde\" equaled \"abccdde\", and \"abccdde\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught15.getMessage === "\"abccdde\" equaled \"abccdde\", and \"abccdde\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught15.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught15.failedCodeLineNumber === Some(thisLineNumber - 4))
   
         val caught16 = intercept[TestFailedException] {
           "abccdde" should (not (equal ("abccdde")) or not (include regex ("b(c*)(d*)".r withGroups ("cc", "dd"))))
         }
-        assert(caught16.getMessage === "\"abccdde\" equaled \"abccdde\", and \"abccdde\" included substring that matched regex b(c*)(d*) and group \"cc\", \"dd\"")
+        assert(caught16.getMessage === "\"abccdde\" equaled \"abccdde\", and \"abccdde\" included substring that matched regex b(c*)(d*) and group cc, dd")
         assert(caught16.failedCodeFileName === Some("ShouldIncludeRegexSpec.scala"))
         assert(caught16.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
