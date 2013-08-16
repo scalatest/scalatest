@@ -18,21 +18,21 @@ package org.scalatest.words
 import org.scalatest._
 import Matchers._
 
-class EndWithWordSpec extends Spec with FileMocks {
+class EndWithWordSpec extends FreeSpec with FileMocks {
   
-  object `EndWithWord ` {
+  "EndWithWord " - {
     
-    object `apply(String) method returns Matcher` {
+    "apply(String) method returns Matcher" - {
       
       val mt = endWith ("er")
       
-      def `should have pretty toString` {
+      "should have pretty toString" in {
         mt.toString should be ("endWith \"er\"")
       }
       
       val mr = mt("Programmer")
       
-      def `should have correct MatcherResult` {
+      "should have correct MatcherResult" in {
         mr should have (
           'matches (true),
           'failureMessage ("\"Programmer\" did not end with substring \"er\""),
@@ -52,7 +52,7 @@ class EndWithWordSpec extends Spec with FileMocks {
       
       val nmr = mr.negated
       
-      def `should have correct negated MatcherResult` {
+      "should have correct negated MatcherResult" in {
         nmr should have (
           'matches (false),
           'failureMessage ("\"Programmer\" ended with substring \"er\""),
@@ -71,18 +71,18 @@ class EndWithWordSpec extends Spec with FileMocks {
       }
     }
     
-    object `regex(String) method returns Matcher` {
+    "regex(String) method returns Matcher" - {
       
       val decimal = """(-)?(\d+)(\.\d*)?"""
       val mt = endWith regex decimal
       
-      def `should have pretty toString` {
+      "should have pretty toString" in {
         mt.toString should be ("endWith regex " + decimal)
       }
       
       val mr = mt("b2.7")
       
-      def `should have correct MatcherResult` {
+      "should have correct MatcherResult" in {
         mr should have (
           'matches (true),
           'failureMessage ("\"b2.7\" did not end with a substring that matched the regular expression " + decimal),
@@ -102,7 +102,7 @@ class EndWithWordSpec extends Spec with FileMocks {
       
       val nmr = mr.negated
       
-      def `should have correct negated MatcherResult` {
+      "should have correct negated MatcherResult" in {
         nmr should have (
           'matches (false),
           'failureMessage ("\"b2.7\" ended with a substring that matched the regular expression " + decimal),
@@ -121,18 +121,18 @@ class EndWithWordSpec extends Spec with FileMocks {
       }
     }
     
-    object `regex(Regex) method returns Matcher` {
+    "regex(Regex) method returns Matcher" - {
       
       val decimal = """(-)?(\d+)(\.\d*)?"""
       val mt = endWith regex decimal.r
       
-      def `should have pretty toString` {
+      "should have pretty toString" in {
         mt.toString should be ("endWith regex " + decimal)
       }
       
       val mr = mt("b2.7")
       
-      def `should have correct MatcherResult` {
+      "should have correct MatcherResult" in {
         mr should have (
           'matches (true),
           'failureMessage ("\"b2.7\" did not end with a substring that matched the regular expression " + decimal),
@@ -152,7 +152,7 @@ class EndWithWordSpec extends Spec with FileMocks {
       
       val nmr = mr.negated
       
-      def `should have correct negated MatcherResult` {
+      "should have correct negated MatcherResult" in {
         nmr should have (
           'matches (false),
           'failureMessage ("\"b2.7\" ended with a substring that matched the regular expression " + decimal),
@@ -171,21 +171,21 @@ class EndWithWordSpec extends Spec with FileMocks {
       }
     }
     
-    object `regex(a(b*)c withGroup bb) method returns Matcher` {
+    "regex(a(b*)c withGroup bb) method returns Matcher" - {
       
       val bb = "bb"
       
       val mt = endWith regex ("""a(b*)c""" withGroup bb)
       
-      def `should have pretty toString` {
+      "should have pretty toString" in {
         mt.toString should be ("endWith regex a(b*)c withGroup " + bb)
       }
       
       val mr1 = mt("abbc")
       
-      object `when apply with "abbc"` {
+      "when apply with \"abbc\"" - {
       
-        def `should have correct MatcherResult` {
+        "should have correct MatcherResult" in {
           mr1 should have (
             'matches (true),
             'failureMessage ("\"abbc\" ended with a substring that matched the regular expression a(b*)c, but \"bb\" did not match group bb"),
@@ -205,7 +205,7 @@ class EndWithWordSpec extends Spec with FileMocks {
       
         val nmr = mr1.negated
       
-        def `should have correct negated MatcherResult` {
+        "should have correct negated MatcherResult" in {
           nmr should have (
             'matches (false),
             'failureMessage ("\"abbc\" ended with a substring that matched the regular expression a(b*)c and group bb"),
@@ -227,9 +227,9 @@ class EndWithWordSpec extends Spec with FileMocks {
       
       val mr2 = mt("abbbc")
         
-      object `when apply with "abbbc"` {
+      "when apply with \"abbbc\"" - {
           
-        def `should have correct MatcherResult` {
+        "should have correct MatcherResult" in {
             
           mr2 should have (
             'matches (false),
@@ -251,7 +251,7 @@ class EndWithWordSpec extends Spec with FileMocks {
           
         val nmr = mr2.negated
       
-        def `should have correct negated MatcherResult` {
+        "should have correct negated MatcherResult" in {
           nmr should have (
             'matches (true),
             'failureMessage ("\"abbbc\" ended with a substring that matched the regular expression a(b*)c and group bb"),
@@ -273,9 +273,9 @@ class EndWithWordSpec extends Spec with FileMocks {
       
       val mr3 = mt("ABBC")
       
-      object `when apply with "ABBC"` {
+      "when apply with \"ABBC\"" - {
         
-        def `should have correct MatcherResult` {
+        "should have correct MatcherResult" in {
           mr3 should have (
             'matches (false),
             'failureMessage ("\"ABBC\" did not end with a substring that matched the regular expression a(b*)c"),
@@ -295,7 +295,7 @@ class EndWithWordSpec extends Spec with FileMocks {
         
         val nmr = mr3.negated
       
-        def `should have correct negated MatcherResult` {
+        "should have correct negated MatcherResult" in {
           nmr should have (
             'matches (true),
             'failureMessage ("\"ABBC\" ended with a substring that matched the regular expression a(b*)c"),
@@ -315,19 +315,19 @@ class EndWithWordSpec extends Spec with FileMocks {
       }
     }
     
-    object `regex(a(b*)(c*) withGroup bb) method returns Matcher` {
+    "regex(a(b*)(c*) withGroup bb) method returns Matcher" - {
       val bb = "bb"
       val cc = "cc"
       
       val mt = endWith regex ("""a(b*)(c*)""" withGroups (bb, cc))
       
-      def `should have pretty toString` {
+      "should have pretty toString" in {
         mt.toString should be ("endWith regex a(b*)(c*) withGroups " + bb + ", " + cc)
       }
       
       val mr = mt("abbccc")
       
-      def `should have correct MatcherResult` {
+      "should have correct MatcherResult" in {
         mr should have (
           'matches (false),
           'failureMessage ("\"abbccc\" ended with a substring that matched the regular expression a(b*)(c*), but \"ccc\" did not match group cc at index 1"),
@@ -347,7 +347,7 @@ class EndWithWordSpec extends Spec with FileMocks {
       
       val nmr = mr.negated
       
-      def `should have correct negated MatcherResult` {
+      "should have correct negated MatcherResult" in {
         nmr should have (
           'matches (true),
           'failureMessage ("\"abbccc\" ended with a substring that matched the regular expression a(b*)(c*) and group bb, cc"),
