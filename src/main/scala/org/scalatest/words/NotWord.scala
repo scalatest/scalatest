@@ -216,6 +216,17 @@ final class NotWord {
    */
   def have(resultOfSizeWordApplication: ResultOfSizeWordApplication): MatcherFactory1[Any, Size] =
     apply(MatcherWords.have.size(resultOfSizeWordApplication.expectedSize))
+    
+  /**
+   * This method enables the following syntax: 
+   *
+   * <pre class="stHighlight">
+   * result should (not have message ("Message from Mars!") and not have message ("Message from Mars!"))
+   *                    ^
+   * </pre>
+   */
+  def have(resultOfMessageWordApplication: ResultOfMessageWordApplication): MatcherFactory1[Any, Messaging] =
+    apply(MatcherWords.have.message(resultOfMessageWordApplication.expectedMessage))
 
   /**
    * This method enables the following syntax, where, for example, <code>book</code> is of type <code>Book</code> and <code>title</code> and <code>author</code>
