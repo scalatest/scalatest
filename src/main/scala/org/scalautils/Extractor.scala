@@ -52,6 +52,68 @@ val InternalServerError =
     e.getMessage == "500:Internal Server Error"
   }
 */
+/**
+ * Convenience class for an extractors that match and return objects based on a type and <code>Boolean</code> condition.
+ *
+ * <p>
+ * Class <code>Extractor</code> (and its subclass <code>Catcher</code>) were motivated by the need to catch
+ * and handle exceptions based on more than just the exception's type as a strategy for dealing with
+ * "flickering" tests&#8212;tests that usually pass, but occasionally fail. The best strategy for dealing with
+ * flickers is to fix the test such that they stop flickering, but sometimes that is not practical. In
+ * such cases allowing the test to continue flickering can distract the team by requiring them to
+ * spend time inspecting failures to determine whether or not they are flickers or real failures that need
+ * attention. Worse, with enough flickers, team members can stop checking all failures and not notice real ones.
+ * </p>
+ *
+ * <p>
+ * One strategy for dealing with flickers you can't practically fix is to catch exceptions that are causing individual flickers
+ * and cancel the test when you detect them. Often this means you will need to insert a catch clause in a particular spot, or a pattern
+ * match if in a <code>withFixture</code>, looking for a particular exception with a particular message or other identifying attribute. If
+ * the same problem is causing flickers in many places,
+ * it is handy to create an extractor to detect the problem. The <a href="Catcher.html"><code>Catcher</code></a> class provides
+ * a factory method that takes a partial function from <code>Throwable</code> to <code>Boolean</code> and produces such an extractor.
+ * Here's an example:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * val InternalServerError =
+ *   Catcher { case e: DBAccessException =>
+ *     e.getMessage == "500:Internal Server Error"
+ *   }
+ * </pre>
+ * 
+ * <p>
+ * Using this <code>Catcher</code> in a ScalaTest <code>Suite<code> <code>withFixture</code> method would look like:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * override def withFixture(test: NoArgTest) = {
+ *   super.withFixture(test) match {
+ *      case Failed(InternalServerError(ex)) =>
+ *        Canceled("Canceled because likely a flicker caused by intermittently flaky DB", ex)
+ *      case other => other
+ *   }
+ * }
+ * </pre>
+ *
+ * <p>
+ * Use <code>Catcher</code> for extractors of <code>Throwables</code>, for any other type use an <code>Extractor</code>. Here's an
+ * example of an extractor that matches strings that are all uppercase:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * val Shout = Extractor[String] { case s: String => s.toUpperCase == s }
+ * </pre>
+ * 
+ * <p>
+ * Here are some examples of the <code>Shout</code> extractor in action:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * 
+ * </pre>
+ * 
+ */
 class Extractor[T](val partial: PartialFunction[T, Boolean]) {
   if (partial == null) throw new NullPointerException("partial was null")
 
@@ -63,5 +125,4 @@ class Extractor[T](val partial: PartialFunction[T, Boolean]) {
 object Extractor {
   def apply[T](partial: PartialFunction[T, Boolean]): Extractor[T] = new Extractor[T](partial)
 }
-
 
