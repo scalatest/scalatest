@@ -37,6 +37,26 @@ object Messaging {
     new Messaging[EX] {
       def messageOf(exception: EX): String = exception.getMessage
     }
+  
+  implicit def messagingNatureOfAnyRefWithMessageMethod[T <: AnyRef { def message(): String}]: Messaging[T] = 
+    new Messaging[T] {
+      def messageOf(obj: T): String = obj.message
+    }
+  
+  implicit def messagingNatureOfAnyRefWithParameterlessMessageMethod[T <: AnyRef { def message: String}]: Messaging[T] = 
+    new Messaging[T] {
+      def messageOf(obj: T): String = obj.message
+    }
+  
+  implicit def messagingNatureOfAnyRefWithGetMessageMethod[T <: AnyRef { def getMessage(): String}]: Messaging[T] = 
+    new Messaging[T] {
+      def messageOf(obj: T): String = obj.getMessage
+    }
+  
+  implicit def messagingNatureOfAnyRefWithParameterlessGetMessageMethod[T <: AnyRef { def getMessage: String}]: Messaging[T] = 
+    new Messaging[T] {
+      def messageOf(obj: T): String = obj.getMessage
+    }
 }
 
 
