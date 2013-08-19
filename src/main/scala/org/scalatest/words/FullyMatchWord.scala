@@ -18,7 +18,7 @@ package org.scalatest.words
 import org.scalatest.matchers._
 import org.scalautils._
 import scala.util.matching.Regex
-import org.scalatest.FailureMessages
+import org.scalatest.Resources
 import org.scalatest.UnquotedString
 import org.scalatest.MatchersHelper.fullyMatchRegexWithGroups
 
@@ -44,9 +44,11 @@ final class FullyMatchWord {
       def apply(left: String): MatchResult =
         MatchResult(
           java.util.regex.Pattern.matches(rightRegexString, left),
-          FailureMessages("didNotFullyMatchRegex", left, UnquotedString(rightRegexString)),
-          FailureMessages("fullyMatchedRegex", left, UnquotedString(rightRegexString))
+          Resources("didNotFullyMatchRegex"),
+          Resources("fullyMatchedRegex"), 
+          Vector(left, UnquotedString(rightRegexString))
         )
+      override def toString: String = "fullyMatch regex " + rightRegexString
     }
 
   /**
@@ -61,6 +63,7 @@ final class FullyMatchWord {
     new Matcher[String] {
       def apply(left: String): MatchResult = 
         fullyMatchRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
+      override def toString: String = "fullyMatch regex " + regexWithGroups.regex.toString + (if (regexWithGroups.groups.size > 1) " withGroups " else " withGroup ") + regexWithGroups.groups.mkString(", ")
     }
 
   /**
@@ -77,8 +80,10 @@ final class FullyMatchWord {
       def apply(left: String): MatchResult =
         MatchResult(
           rightRegex.pattern.matcher(left).matches,
-          FailureMessages("didNotFullyMatchRegex", left, rightRegex),
-          FailureMessages("fullyMatchedRegex", left, rightRegex)
+          Resources("didNotFullyMatchRegex"),
+          Resources("fullyMatchedRegex"), 
+          Vector(left, UnquotedString(rightRegex.toString))
         )
+      override def toString: String = "fullyMatch regex " + rightRegex.toString
     }
 }
