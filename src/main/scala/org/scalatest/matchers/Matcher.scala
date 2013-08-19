@@ -35,6 +35,7 @@ import org.scalatest.words.NotWord
 import org.scalatest.words.ContainWord
 import org.scalatest.words.ResultOfLengthWordApplication
 import org.scalatest.words.ResultOfSizeWordApplication
+import org.scalatest.words.ResultOfMessageWordApplication
 import org.scalatest.words.ResultOfLessThanComparison
 import org.scalatest.words.ResultOfGreaterThanComparison
 import org.scalatest.words.ResultOfLessThanOrEqualToComparison
@@ -612,6 +613,16 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def size(expectedSize: Long): MatcherFactory1[T, Size] = and(MatcherWords.have.size(expectedSize))
+    
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * result should (have message ("A message from Mars") and have message ("A message from Mars"))
+     *                                                              ^
+     * </pre>
+     */
+    def message(expectedMessage: String): MatcherFactory1[T, Messaging] = and(MatcherWords.have.message(expectedMessage))
   }
 
   /**
@@ -1163,6 +1174,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def have(resultOfSizeWordApplication: ResultOfSizeWordApplication): MatcherFactory1[T, Size] =
       outerInstance.and(MatcherWords.not.apply(MatcherWords.have.size(resultOfSizeWordApplication.expectedSize)))
+      
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * result should (not have message ("Message from Mars!") and not have message ("Message from Mars!"))
+     *                                             ^
+     * </pre>
+     */
+    def have(resultOfMessageWordApplication: ResultOfMessageWordApplication): MatcherFactory1[T, Messaging] =
+      outerInstance.and(MatcherWords.not.apply(MatcherWords.have.message(resultOfMessageWordApplication.expectedMessage)))
 
     /**
      * This method enables the following syntax:
@@ -1719,6 +1741,16 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def size(expectedSize: Long): MatcherFactory1[T, Size] = or(MatcherWords.have.size(expectedSize))
+    
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * result should (have message ("Message from Mars!") or have message ("Message from Mars!"))
+     *                                                            ^
+     * </pre>
+     */
+    def message(expectedMessage: String): MatcherFactory1[T, Messaging] = or(MatcherWords.have.message(expectedMessage))
   }
 
   /**
@@ -2270,6 +2302,17 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      */
     def have(resultOfSizeWordApplication: ResultOfSizeWordApplication): MatcherFactory1[T, Size] =
       outerInstance.or(MatcherWords.not.apply(MatcherWords.have.size(resultOfSizeWordApplication.expectedSize)))
+      
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * result should (not have message ("Message from Mars!") or not have message ("Message from Mars!"))
+     *                                                               ^
+     * </pre>
+     */
+    def have(resultOfMessageWordApplication: ResultOfMessageWordApplication): MatcherFactory1[T, Messaging] =
+      outerInstance.or(MatcherWords.not.apply(MatcherWords.have.message(resultOfMessageWordApplication.expectedMessage)))
 
     /**
      * This method enables the following syntax:
