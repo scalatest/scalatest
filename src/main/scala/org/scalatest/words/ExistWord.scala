@@ -15,7 +15,7 @@
  */
 package org.scalatest.words
 
-import org.scalatest.FailureMessages
+import org.scalatest.Resources
 import org.scalatest.matchers.Matcher
 import org.scalatest.matchers.MatcherFactory1
 import org.scalatest.matchers.MatcherFactory2
@@ -39,11 +39,14 @@ final class ExistWord {
             val existence = implicitly[Existence[T]]
             MatchResult(
               existence.exists(left), 
-              FailureMessages("doesNotExist", left), 
-              FailureMessages("exists", left)
+              Resources("doesNotExist"), 
+              Resources("exists"), 
+              Vector(left)
             )
           }
+          override def toString: String = "exist"
         }
+      override def toString: String = "exist"
     }
   
   /**
