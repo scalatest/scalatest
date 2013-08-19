@@ -306,7 +306,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * </p>
  * 
  * <pre class="stHighlight">
- * string should fullyMatch regex ("""(-)?(\d+)(\.\d*)?""")
+ * string should fullyMatch regex """(-)?(\d+)(\.\d*)?"""
  * </pre>
  * 
  * <p>
@@ -333,10 +333,10 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * than or equal to a value of type <code>T</code>. The syntax is:
  * </p>
  * <pre class="stHighlight">
- * one should be < (7)
- * one should be > (0)
- * one should be <= (7)
- * one should be >= (0)
+ * one should be &lt; 7
+ * one should be &gt; 0
+ * one should be &lt;= 7
+ * one should be &gt;= 0
  * </pre>
  *
  * <h2>Checking <code>Boolean</code> properties with <code>be</code></h2>
@@ -351,8 +351,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * </p>
  * 
  * <pre class="stHighlight">
- * val travOnce: GenTraversableOnce = List(1, 2, 3)
- * xs shouldBe 'traversableAgain
+ * iter shouldBe 'traversableAgain
  * </pre>
  * 
  * Given this code, ScalaTest will use reflection to look on the object referenced from
@@ -362,11 +361,11 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * <code>false</code>, a <code>TestFailedException</code> will be thrown that will contain a detail message, such as:
  * 
  * <pre class="stHighlight">
- * Set(1, 2, 3) was not empty
+ * non-empty iterator was not traversableAgain
  * </pre>
  * 
  * <p>
- * This <code>be</code> syntax can be used with any type.  If the object does
+ * This <code>be</code> syntax can be used with any reference (<code>AnyRef</code>) type.  If the object does
  * not have an appropriately named predicate method, you'll get a <code>TestFailedException</code>
  * at runtime with a detail message that explains the problem.
  * (For the details on how a field or method is selected during this
@@ -381,7 +380,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * </p>
  * 
  * <pre class="stHighlight">
- * temp should be a ('file)
+ * temp should be a 'file
  * </pre>
  * 
  * <p>
@@ -391,7 +390,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  *</p>
  *
  * <pre class="stHighlight">
- * keyEvent should be an ('actionKey)
+ * keyEvent should be an 'actionKey
  * </pre>
  * 
  * <p>
@@ -400,9 +399,9 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * </p>
  *
  * <pre class="stHighlight">
- * emptySet should be (empty)
- * temp should be a (file)
- * keyEvent should be an (actionKey)
+ * xs shouldBe traversableAgain
+ * temp should be a file
+ * keyEvent should be an actionKey
  * </pre>
  * 
  * <p>
@@ -423,8 +422,8 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * </p>
  *
  * <pre class="stHighlight">
- * num should be (odd)
- * num should not be (even)
+ * num shouldBe odd
+ * num should not be even
  * </pre>
  *
  * For more information, see the documentation for <a href="BeMatcher.html"><code>BeMatcher</code></a>.
@@ -437,7 +436,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * </p>
  * 
  * <pre class="stHighlight">
- * ref1 should be theSameInstanceAs (ref2)
+ * ref1 should be theSameInstanceAs ref2
  * </pre>
  * 
  * <h2>Checking an object's class</h2>
@@ -448,17 +447,8 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * </p>
  * 
  * <pre class="stHighlight">
- * result1 should be (a [Tiger])
+ * result1 shouldBe a [Tiger]
  * result1 should not be an [Orangutan]
- * </pre>
- * 
- * <p>
- * Because parentheses are required in the positive case, you may prefer to use <code>shouldBe</code> instead of &ldquo;<code>should</code> <code>be</code>&rdquo;, as in:
- * </p>
- *
- * <pre class="stHighlight">
- * result1 shouldBe a [Fruit]
- * result2 shouldBe an [Apple]
  * </pre>
  * 
  * <p>
@@ -501,121 +491,59 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * seven shouldBe 6 +- 2
  * </pre>
  * 
- * <h2>Working with collections</h2>
- * 
- * <p>
- * You can use some of the syntax shown previously with Scala collections, <em>i.e.</em>, <code>GenTraversable</code> and its
- * subtypes. For example, you can check whether a <code>GenTraversable</code> is <code>empty</code>,
- * like this:
- * </p>
- * 
- * <pre class="stHighlight">
- * traversable should be ('empty)
- * </pre>
- * 
- * <p>
- * You can check the length of a <code>GenSeq</code> (or an <code>Array</code>)
- * like this:
- * </p>
- * 
- * <pre class="stHighlight">
- * array should have length 3
- * list should have length 9
- * </pre>
- * 
- * <p>
- * You can check the size of any <code>GenTraversable</code>, like this:
- * </p>
- * 
- * <pre class="stHighlight">
- * map should have size 20
- * set should have size 90
- * </pre>
- * 
- * <p>
- * In addition, you can check whether an <code>GenTraversable</code> contains a particular
- * element, like this:
- * </p>
- * 
- * <pre class="stHighlight">
- * traversable should contain ("five")
- * </pre>
+ * <h2>Checking for emptiness</h2>
  *
  * <p>
- * You can also check whether a <code>GenMap</code> contains a particular key, or value, like this:
+ * You can check whether an object is "empty", like this:
  * </p>
  * 
  * <pre class="stHighlight">
- * map should contain key 1
- * map should contain value "Howdy"
- * </pre>
- * 
- * <h3>Java collections and maps</h3>
- * 
- * <p>
- * You can use similar syntax on Java collections (<code>java.util.Collection</code>) and maps (<code>java.util.Map</code>).
- * For example, you can check whether a Java <code>Collection</code> or <code>Map</code> is <code>empty</code>,
- * like this:
- * </p>
- * 
- * <pre class="stHighlight">
- * javaCollection should be ('empty)
- * javaMap should be ('empty)
+ * traversable shouldBe empty
+ * javaMap should not be empty
  * </pre>
  * 
  * <p>
- * Even though Java's <code>List</code> type doesn't actually have a <code>length</code> or <code>getLength</code> method,
- * you can nevertheless check the length of a Java <code>List</code> (<code>java.util.List</code>) like this:
- * </p>
- * 
- * <pre class="stHighlight">
- * javaList should have length 9
- * </pre>
- * 
- * <p>
- * You can check the size of any Java <code>Collection</code> or <code>Map</code>, like this:
- * </p>
- * 
- * <pre class="stHighlight">
- * javaMap should have size 20
- * javaSet should have size 90
- * </pre>
- * 
- * <p>
- * In addition, you can check whether a Java <code>Collection</code> contains a particular
- * element, like this:
- * </p>
- * 
- * <pre class="stHighlight">
- * javaCollection should contain ("five")
- * </pre>
- * 
- * <p>
- * One difference to note between the syntax supported on Java collections and that of Scala
- * <code>GenTraversable</code>s is that you can't use <code>contain (...)</code> syntax with a Java <code>Map</code>.
- * Java differs from Scala in that its <code>Map</code> is not a subtype of its <code>Collection</code> type.
- * If you want to check that a Java <code>Map</code> contains a specific key/value pair, the best approach is
- * to invoke <code>entrySet</code> on the Java <code>Map</code> and check that entry set for the appropriate
- * element (a <code>java.util.Map.Entry</code>) using <code>contain (...)</code>.
+ * The <code>empty</code> token can be used with any type <code>L</code> for which an implicit <code>Emptiness[L]</code> exists.
+ * The <code>Emptiness</code> companion object provides implicits for <code>GenTraversable[E]</code>, <code>java.util.Collection[E]</code>, 
+ * <code>java.util.Map[K, V]</code>, <code>String</code>, <code>Array[E]</code>, and <code>Option[E]</code>. In addition, the
+ * <code>Emptiness</code> companion object provides structural implicits for types that declare an <code>isEmpty</code> method that
+ * returns a <code>Boolean</code>. Here are some examples:
  * </p>
  *
- * <p>
- * Despite this difference, the other (more commonly used) map matcher syntax works just fine on Java <code>Map</code>s.
- * You can, for example, check whether a Java <code>Map</code> contains a particular key, or value, like this:
- * </p>
- * 
- * <pre class="stHighlight">
- * javaMap should contain key 1
- * javaMap should contain value "Howdy"
+ * <pre class="stREPL">
+ * scala&gt; import org.scalatest.Matchers._
+ * import org.scalatest.Matchers._
+ *
+ * scala&gt; List.empty shouldBe empty
+ *
+ * scala&gt; None shouldBe empty
+ *
+ * scala&gt; Some(1) should not be empty
+ *
+ * scala&gt; "" shouldBe empty
+ *
+ * scala&gt; new java.util.HashMap[Int, Int] shouldBe empty
+ *
+ * scala&gt; new { def isEmpty = true} shouldBe empty
+ *
+ * scala&gt; Array(1, 2, 3) should not be empty
  * </pre>
  * 
  * <a name="workingWithContainers"></a>
  * <h3>Working with "containers"</h3>
  *
  * <p>
- * The <code>contain</code> syntax shown above can be used with any type <code>C</code> that has a "containing" nature, as evidenced by
- * an <code>org.scalatest.enablers.Containing[L]</code> instance that must be supplied as a curried parameter to <code>contain</code>, either implicitly or
- * explicitly, with <code>L</code> being the left-hand type on which <code>should</code> is invoked. In the <code>Containing</code>
+ * You can check whether a collection contains a particular element like this:
+ * </p>
+ * 
+ * <pre class="stHighlight">
+ * traversable should contain ("five")
+ * </pre>
+ * 
+ * <p>
+ * The <code>contain</code> syntax shown above can be used with any type <code>C</code> that has a "containing" nature, evidenced by 
+ * an implicit <code>org.scalatest.enablers.Containing[L]</code>, where <code>L</code> is left-hand type on
+ * which <code>should</code> is invoked. In the <code>Containing</code>
  * companion object, implicits are provided for types <code>GenTraversable[E]</code>, <code>java.util.Collection[E]</code>, 
  * <code>java.util.Map[K, V]</code>, <code>String</code>, <code>Array[E]</code>, and <code>Option[E]</code>. 
  * Here are some examples:
@@ -1037,6 +965,70 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * is available, where <code>E</code> is the type returned by the <code>loneElement</code> invocation. 
  * </p>
  *
+ * <h3>Java collections and maps</h3>
+ * 
+ * <p>
+ * You can use similar syntax on Java collections (<code>java.util.Collection</code>) and maps (<code>java.util.Map</code>).
+ * For example, you can check whether a Java <code>Collection</code> or <code>Map</code> is <code>empty</code>,
+ * like this:
+ * </p>
+ * 
+ * <pre class="stHighlight">
+ * javaCollection should be ('empty)
+ * javaMap should be ('empty)
+ * </pre>
+ * 
+ * <p>
+ * Even though Java's <code>List</code> type doesn't actually have a <code>length</code> or <code>getLength</code> method,
+ * you can nevertheless check the length of a Java <code>List</code> (<code>java.util.List</code>) like this:
+ * </p>
+ * 
+ * <pre class="stHighlight">
+ * javaList should have length 9
+ * </pre>
+ * 
+ * <p>
+ * You can check the size of any Java <code>Collection</code> or <code>Map</code>, like this:
+ * </p>
+ * 
+ * <pre class="stHighlight">
+ * javaMap should have size 20
+ * javaSet should have size 90
+ * </pre>
+ * 
+ * <p>
+ * In addition, you can check whether a Java <code>Collection</code> contains a particular
+ * element, like this:
+ * </p>
+ * 
+ * <pre class="stHighlight">
+ * javaCollection should contain ("five")
+ * </pre>
+ * 
+ * <p>
+ * One difference to note between the syntax supported on Java and Scala collections is that
+ * in Java, <code>Map</code> is not a subtype of <code>Collection</code>, and does not
+ * actually define an element type. You can ask a Java <code>Map</code> for an "entry set"
+ * via the <code>entrySet</code> method, which will return the <code>Map</code>'s key/value pairs
+ * wrapped in a set of <code>java.util.Map.Entry</code>, but a <code>Map</code> is not actually
+ * a collection of <code>Entry</code>. To make Java <code>Map</code>s easier to work with, however,
+ * ScalaTest matchers allows you to treat a Java <code>Map</code> as a collection of <code>Entry</code>,
+ * and defines a convenience implementation of <code>java.util.Map.Entry</code> in
+ * <a href="Entry.html"><code>org.scalatest.Entry</code></a>. Here's how you use it:
+ * </p>
+ * 
+ * <pre class="stHighlight">
+ * javaMap should contain (Entry(2, 3))
+ * javaMap should contain oneOf (Entry(2, 3), Entry(3, 4))
+ * </pre>
+ * 
+ * You can you alse just check whether a Java <code>Map</code> contains a particular key, or value, like this:
+ * 
+ * <pre class="stHighlight">
+ * javaMap should contain key 1
+ * javaMap should contain value "Howdy"
+ * </pre>
+ * 
  * <h2>Be as an equality comparison</h2>
  * 
  * <p>
