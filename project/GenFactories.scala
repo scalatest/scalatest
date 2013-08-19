@@ -44,6 +44,7 @@ import org.scalatest.words.NotWord
 import org.scalatest.words.ContainWord
 import org.scalatest.words.ResultOfLengthWordApplication
 import org.scalatest.words.ResultOfSizeWordApplication
+import org.scalatest.words.ResultOfMessageWordApplication
 import org.scalatest.words.ResultOfLessThanComparison
 import org.scalatest.words.ResultOfGreaterThanComparison
 import org.scalatest.words.ResultOfLessThanOrEqualToComparison
@@ -265,6 +266,16 @@ $endif$
      * </pre>
      */
     def size(expectedSize: Long): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Size] = and(MatcherWords.have.size(expectedSize))
+    
+    /**
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     *
+     * <pre class="stHighlight">
+     * (aMatcherFactory and have message ("A message from Mars!"))
+     *                           ^
+     * </pre>
+     */
+    def message(expectedMessage: String): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Messaging] = and(MatcherWords.have.message(expectedMessage))
   }
 
   /**
@@ -820,6 +831,17 @@ $endif$
      */
     def have(resultOfSizeWordApplication: ResultOfSizeWordApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Size] =
       thisMatcherFactory.and(MatcherWords.not.apply(MatcherWords.have.size(resultOfSizeWordApplication.expectedSize)))
+    
+    /**
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     *
+     * <pre class="stHighlight">
+     * (aMatcherFactory and not have message ("Message from Mars!"))
+     *                          ^
+     * </pre>
+     */
+    def have(resultOfMessageWordApplication: ResultOfMessageWordApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Messaging] =
+      thisMatcherFactory.and(MatcherWords.not.apply(MatcherWords.have.message(resultOfMessageWordApplication.expectedMessage)))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1376,6 +1398,16 @@ $endif$
      * </pre>
      */
     def size(expectedSize: Long): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Size] = or(MatcherWords.have.size(expectedSize))
+    
+    /**
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     *
+     * <pre class="stHighlight">
+     * (aMatcherFactory or have message ("Message from Mars!"))
+     *                          ^
+     * </pre>
+     */
+    def message(expectedMessage: String): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Messaging] = or(MatcherWords.have.message(expectedMessage))
   }
 
   /**
@@ -1927,6 +1959,17 @@ $endif$
      */
     def have(resultOfSizeWordApplication: ResultOfSizeWordApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Size] =
       thisMatcherFactory.or(MatcherWords.not.apply(MatcherWords.have.size(resultOfSizeWordApplication.expectedSize)))
+    
+    /**
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     *
+     * <pre class="stHighlight">
+     * (aMatcherFactory or not have message ("Message from Mars!"))
+     *                         ^
+     * </pre>
+     */
+    def have(resultOfMessageWordApplication: ResultOfMessageWordApplication): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Messaging] =
+      thisMatcherFactory.or(MatcherWords.not.apply(MatcherWords.have.message(resultOfMessageWordApplication.expectedMessage)))
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:

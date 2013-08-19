@@ -91,6 +91,33 @@ final class HaveWord {
         }
       }
     }
+  
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * result should have message ("A message from Mars!")
+   *                    ^
+   * </pre>
+   */
+  def message(expectedMessage: String): MatcherFactory1[Any, Messaging] =
+    new MatcherFactory1[Any, Messaging] {
+      def matcher[T <: Any : Messaging]: Matcher[T] = {
+        val messaging = implicitly[Messaging[T]]
+        new Matcher[T] {
+          def apply(left: T): MatchResult = {
+            val messageOfLeft = messaging.messageOf(left)
+            MatchResult(
+              messageOfLeft == expectedMessage,
+              FailureMessages("hadMessageInsteadOfExpectedMessage"),
+              FailureMessages("hadExpectedMessage"), 
+              Vector(left, messageOfLeft, expectedMessage), 
+              Vector(left, expectedMessage)
+            )
+          }
+        }
+      }
+    }
 
     // TODO: Write tests and implement cases for:
     // have(length (9), title ("hi")) (this one we'll use this apply method but add a HavePropertyMatcher* arg)

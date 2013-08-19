@@ -111,7 +111,7 @@ import org.scalautils.LegacyTripleEquals
  * </pre>
  *
  * <p>
- * In this case, the expected value is <code>2</code>, and the code being tested is <code>a - b</code>. This expectation will fail, and
+ * In this case, the expected value is <code>2</code>, and the code being tested is <code>a - b</code>. This assertion will fail, and
  * the detail message in the <code>TestFailedException</code> will read, "Expected 2, but got 3."
  * </p>
  *
@@ -237,7 +237,7 @@ import org.scalautils.LegacyTripleEquals
  * you can supply a "clue" string in one of several ways.
  * The extra information (or "clues") you provide will
  * be included in the detail message of the thrown exception. Both
- * <code>assert</code> and <code>expect</code> provide a way for a clue to be
+ * <code>assert</code> and <code>assertResult</code> provide a way for a clue to be
  * included directly, <code>intercept</code> does not.
  * Here's an example of clues provided directly in <code>assert</code>:
  * </p>
@@ -247,11 +247,11 @@ import org.scalautils.LegacyTripleEquals
  * </pre>
  *
  * <p>
- * and in <code>expect</code>:
+ * and in <code>assertResult</code>:
  * </p>
  *
  * <pre class="stHighlight">
- * expect(3, "this is a clue") { 1 + 1 }
+ * assertResult(3, "this is a clue") { 1 + 1 }
  * </pre>
  *
  * <p>
@@ -1131,7 +1131,7 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
  * 	at RequestResult$result(<console>)
  * 	at sun.reflect.NativeMethodAccessorImpl.invoke...
  *&nbsp;
- * scala> expect(3) { 1 + 3 }
+ * scala&gt; assertResult(3) { 1 + 3 }
  * org.scalatest.TestFailedException: Expected 3, but got 4
  * 	at org.scalatest.Assertions$class.expect(Assertions.scala:447)
  * 	at org.scalatest.Assertions$.expect(Assertions.scala:511)
@@ -1142,7 +1142,7 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
  * 	at RequestResult$result(<console>)
  * 	at sun.reflect.NativeMethodAccessorImpl.in...
  *&nbsp;
- * scala> val caught = intercept[StringIndexOutOfBoundsException] { "hi".charAt(-1) }
+ * scala&gt; val caught = intercept[StringIndexOutOfBoundsException] { "hi".charAt(-1) }
  * caught: StringIndexOutOfBoundsException = java.lang.StringIndexOutOfBoundsException: String index out of range: -1
  * </pre>
  *
