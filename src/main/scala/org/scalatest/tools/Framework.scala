@@ -35,6 +35,7 @@ import java.io.{StringWriter, PrintWriter}
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.atomic.{AtomicInteger, AtomicBoolean}
 import scala.collection.JavaConverters._
+import StringReporter.fragmentsForEvent
 
 /**
  * This class is ScalaTest's implementation of the new Framework API that will be supported in sbt 0.13. Since 0.13 is
@@ -145,7 +146,8 @@ class Framework extends SbtFramework {
     presentReminder: Boolean,
     presentReminderWithShortStackTraces: Boolean,
     presentReminderWithFullStackTraces: Boolean,
-    presentReminderWithoutCanceledTests: Boolean
+    presentReminderWithoutCanceledTests: Boolean, 
+    summaryCounter: SummaryCounter
   ) = {
     val reporters = 
       if (useSbtLogInfoReporter) {
@@ -160,7 +162,8 @@ class Framework extends SbtFramework {
             presentReminder,
             presentReminderWithShortStackTraces,
             presentReminderWithFullStackTraces,
-            presentReminderWithoutCanceledTests
+            presentReminderWithoutCanceledTests, 
+            summaryCounter
           )
         Vector(reporter, sbtLogInfoReporter)
       }
@@ -467,7 +470,8 @@ class Framework extends SbtFramework {
             presentReminder,
             presentReminderWithShortStackTraces,
             presentReminderWithFullStackTraces,
-            presentReminderWithoutCanceledTests
+            presentReminderWithoutCanceledTests, 
+            summaryCounter
           )
 
         runSuite(
@@ -507,6 +511,7 @@ class Framework extends SbtFramework {
   
   private[tools] class SummaryCounter {
     val testsSucceededCount, testsFailedCount, testsIgnoredCount, testsPendingCount, testsCanceledCount, suitesCompletedCount, suitesAbortedCount, scopesPendingCount = new AtomicInteger
+    val reminderEventsQueue = new LinkedBlockingQueue[ExceptionalEvent]
     
     def incrementTestsSucceededCount() { 
       testsSucceededCount.incrementAndGet() 
@@ -539,6 +544,10 @@ class Framework extends SbtFramework {
     def incrementScopesPendingCount() {
       scopesPendingCount.incrementAndGet()
     }
+    
+    def recordReminderEvents(events: ExceptionalEvent) {
+      reminderEventsQueue.put(events)
+    }
   }
   
   class SbtLogInfoReporter(
@@ -551,7 +560,8 @@ class Framework extends SbtFramework {
     presentReminder: Boolean,
     presentReminderWithShortStackTraces: Boolean,
     presentReminderWithFullStackTraces: Boolean,
-    presentReminderWithoutCanceledTests: Boolean
+    presentReminderWithoutCanceledTests: Boolean, 
+    summaryCounter: SummaryCounter
   ) extends StringReporter(
     presentAllDurations,
     presentInColor,
@@ -568,6 +578,28 @@ class Framework extends SbtFramework {
       loggers.foreach { logger =>
         logger.info(fragment.toPossiblyColoredText(logger.ansiCodesSupported && presentInColor))
       }
+    }
+    
+    override def apply(event: Event) {
+      event match {
+        case ee: ExceptionalEvent if presentReminder =>
+          if (!presentReminderWithoutCanceledTests || event.isInstanceOf[TestFailed]) {
+            summaryCounter.recordReminderEvents(ee)
+          }
+        case _ =>
+      }
+      fragmentsForEvent(
+        event,
+        presentUnformatted,
+        presentAllDurations,
+        presentShortStackTraces,
+        presentFullStackTraces,
+        presentReminder,
+        presentReminderWithShortStackTraces,
+        presentReminderWithFullStackTraces,
+        presentReminderWithoutCanceledTests,
+        reminderEventsBuf
+      ) foreach printPossiblyInColor
     }
 
     def dispose() = ()
@@ -656,7 +688,7 @@ class Framework extends SbtFramework {
             true,
             Some(duration),
             Some(summary),
-            Vector.empty, // TODO: Need to get the failed / canceled events here
+            Vector.empty ++ summaryCounter.reminderEventsQueue.asScala,
             presentAllDurations,
             presentReminder,
             presentReminderWithShortStackTraces,

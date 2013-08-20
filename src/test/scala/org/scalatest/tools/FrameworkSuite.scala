@@ -906,6 +906,72 @@ class FrameworkSuite extends FunSuite with Retries {
     }
   }
   
+  test("ScalaTestRunner using -oWI should return summary that contains failed and canceled test reminder when 'done' is called") {
+    val runner = framework.runner(Array("-oWI"), Array.empty, testClassLoader)
+    
+    try {
+      val testLogger = new TestLogger
+      val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.SuiteWithFailedSkippedTests", subclassFingerprint, false, Array(new SuiteSelector()))))
+      assert(tasks.size === 1)
+      val task = tasks(0)
+      task.execute(new TestEventHandler, Array(testLogger))
+      val summaryText = runner.done.split("\n")
+      assert(summaryText.size === 13)
+      assert(summaryText(0).startsWith("Run completed in "))
+      assert(summaryText(1) === "Total number of tests run: 2")
+      assert(summaryText(2) === "Suites: completed 1, aborted 0")
+      assert(summaryText(3) === "Tests: succeeded 1, failed 1, canceled 1, ignored 1, pending 1")
+      assert(summaryText(4) === "*** 1 TEST FAILED ***")
+      assert(summaryText(5) === "SuiteWithFailedSkippedTests:")
+      assert(summaryText(6) === "")
+      assert(summaryText(7) === "- failed *** FAILED ***")
+      assert(summaryText(8) === "  org.scalatest.exceptions.TestFailedException was thrown. (SuiteWithFailedSkippedTests.scala:24)")
+      assert(summaryText(9) === "SuiteWithFailedSkippedTests:")
+      assert(summaryText(10) === "")
+      assert(summaryText(11) === "- canceled !!! CANCELED !!!")
+      assert(summaryText(12) === "  org.scalatest.exceptions.TestCanceledException was thrown. (SuiteWithFailedSkippedTests.scala:25)")
+    }
+    finally {
+      try { // Just to make sure runner.done() has been called to avoid hanging thread
+        runner.done()
+      }
+      catch {
+        case _: IllegalStateException => // Do nothing
+      }
+    }
+  }
+  
+  test("ScalaTestRunner using -oWIK should return summary that contains failed test reminder only (without canceled test) when 'done' is called") {
+    val runner = framework.runner(Array("-oWIK"), Array.empty, testClassLoader)
+    
+    try {
+      val testLogger = new TestLogger
+      val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.SuiteWithFailedSkippedTests", subclassFingerprint, false, Array(new SuiteSelector()))))
+      assert(tasks.size === 1)
+      val task = tasks(0)
+      task.execute(new TestEventHandler, Array(testLogger))
+      val summaryText = runner.done.split("\n")
+      assert(summaryText.size === 9)
+      assert(summaryText(0).startsWith("Run completed in "))
+      assert(summaryText(1) === "Total number of tests run: 2")
+      assert(summaryText(2) === "Suites: completed 1, aborted 0")
+      assert(summaryText(3) === "Tests: succeeded 1, failed 1, canceled 1, ignored 1, pending 1")
+      assert(summaryText(4) === "*** 1 TEST FAILED ***")
+      assert(summaryText(5) === "SuiteWithFailedSkippedTests:")
+      assert(summaryText(6) === "")
+      assert(summaryText(7) === "- failed *** FAILED ***")
+      assert(summaryText(8) === "  org.scalatest.exceptions.TestFailedException was thrown. (SuiteWithFailedSkippedTests.scala:24)")
+    }
+    finally {
+      try { // Just to make sure runner.done() has been called to avoid hanging thread
+        runner.done()
+      }
+      catch {
+        case _: IllegalStateException => // Do nothing
+      }
+    }
+  }
+  
   test("ScalaTest Task's tags method should return 'cpu' when suite class is annotated with @CPU") {
     val runner = framework.runner(Array("-oW"), Array.empty, testClassLoader)
     try {
