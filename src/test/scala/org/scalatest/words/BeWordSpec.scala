@@ -26,9 +26,11 @@ import matchers.{BePropertyMatcher,
 
 class BeWordSpec extends Spec with FileMocks {
   
-  val be = new BeWord
-  
   object `BeWord ` {
+    
+    def `should have pretty toString` {
+      be.toString should be ("be")
+    }
     
     object `< method returns Matcher` {
       

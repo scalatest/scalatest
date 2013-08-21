@@ -96,4 +96,9 @@ final class IncludeWord {
         )
       override def toString: String = "include regex " + expectedRegex
     }
+  
+  /**
+   * Overrides toString to return "include"
+   */
+  override def toString: String = "include"
 }

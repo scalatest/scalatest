@@ -82,4 +82,9 @@ final class BehaveWord {
    * </p>
    */
   def like(unit: Unit) = ()
+  
+  /**
+   * Overrides toString to return "behave"
+   */
+  override def toString: String = "behave"
 }

@@ -20,9 +20,11 @@ import Matchers._
 import matchers.{AMatcher, 
                  AnMatcher}
 
-class ContainWordSpec extends Spec with FileMocks {
+class ContainWordSpec extends Spec {
   
-  val contain = new ContainWord
+  def `should have pretty toString` {
+    contain.toString should be ("contain")
+  }
   
   object `ContainWord ` {
     

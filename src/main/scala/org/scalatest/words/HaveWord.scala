@@ -225,4 +225,9 @@ final class HaveWord {
       
       override def toString: String = "have " + Prettifier.default(firstPropertyMatcher)
     }
+  
+  /**
+   * Overrides toString to return "length"
+   */
+  override def toString: String = "have"
 }

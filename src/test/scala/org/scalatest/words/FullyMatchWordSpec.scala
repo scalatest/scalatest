@@ -22,6 +22,10 @@ class FullyMatchWordSpec extends FreeSpec with Matchers {
   
   "FullyMatchWord " - {
     
+    "should have pretty toString" in {
+      fullyMatch.toString should be ("fullyMatch")
+    }
+    
     "regex(String) method returns Matcher" - {
       
       val decimal = """(-)?(\d+)(\.\d*)?"""

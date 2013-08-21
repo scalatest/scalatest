@@ -22,6 +22,10 @@ class HaveWordSpec extends Spec with Matchers {
   
   object `HaveWord ` {
     
+    def `should have pretty toString` {
+      have.toString should be ("have")
+    }
+    
     object `length(Long) method returns MatcherFactory1` {
       
       val mtf = have length 3

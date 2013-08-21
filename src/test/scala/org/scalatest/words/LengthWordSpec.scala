@@ -15,26 +15,17 @@
  */
 package org.scalatest.words
 
-/**
- * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
- * the matchers DSL.
- *
- * @author Bill Venners
- */
-final class LengthWord {
+import org.scalatest._
+import Matchers._
 
-  /**
-   * This method enables the following syntax: 
-   *
-   * <pre class="stHighlight">
-   * "hi" should not have length (3)
-   *                             ^
-   * </pre>
-   */
-  def apply(expectedLength: Long): ResultOfLengthWordApplication = new ResultOfLengthWordApplication(expectedLength)
+class LengthWordSpec extends Spec with Matchers {
   
-  /**
-   * Overrides toString to return "length"
-   */
-  override def toString: String = "length"
+  object `LengthWord ` {
+    
+    def `should have pretty toString` {
+      length.toString should be ("length")
+    }
+    
+  }
+  
 }

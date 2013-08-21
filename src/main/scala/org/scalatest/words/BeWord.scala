@@ -769,4 +769,9 @@ final class BeWord {
         }
       override def toString: String = "be defined"
     }
+  
+  /**
+   * Overrides toString to return "be"
+   */
+  override def toString: String = "be"
 }

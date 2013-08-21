@@ -22,6 +22,10 @@ class IncludeWordSpec extends FreeSpec with Matchers {
   
   "IncludeWord " - {
     
+    "should have pretty toString" in {
+      include.toString should be ("include")
+    }
+    
     "apply(String) method returns Matcher" - {
       
       val mt = include ("er")
