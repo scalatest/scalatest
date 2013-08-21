@@ -50,13 +50,16 @@ final class HaveWord {
             val lengthOfLeft = length.lengthOf(left)
             MatchResult(
               lengthOfLeft == expectedLength,
-              // FailureMessages("hadLengthInsteadOfExpectedLength", left, lengthOfLeft, expectedLength),
-              FailureMessages("hadLengthInsteadOfExpectedLength", left, lengthOfLeft, expectedLength),
-              FailureMessages("hadLength", left, expectedLength)
+              Resources("hadLengthInsteadOfExpectedLength"),
+              Resources("hadLength"), 
+              Vector(left, lengthOfLeft, expectedLength), 
+              Vector(left, expectedLength)
             )
           }
+          override def toString: String = "have length " + expectedLength
         }
       }
+      override def toString: String = "have length " + expectedLength
     }
 
   /**
@@ -83,13 +86,16 @@ final class HaveWord {
             val sizeOfLeft = size.sizeOf(left)
             MatchResult(
               sizeOfLeft == expectedSize,
-              // FailureMessages("hadSizeInsteadOfExpectedSize", left, lengthOfLeft, expectedSize),
-              FailureMessages("hadSizeInsteadOfExpectedSize", left, sizeOfLeft, expectedSize),
-              FailureMessages("hadSize", left, expectedSize)
+              FailureMessages("hadSizeInsteadOfExpectedSize"),
+              FailureMessages("hadSize"), 
+              Vector(left, sizeOfLeft, expectedSize), 
+              Vector(left, expectedSize)
             )
           }
+          override def toString: String = "have size " + expectedSize
         }
       }
+      override def toString: String = "have size " + expectedSize
     }
   
   /**
@@ -115,8 +121,10 @@ final class HaveWord {
               Vector(left, expectedMessage)
             )
           }
+          override def toString: String = "have message " + Prettifier.default(expectedMessage)
         }
       }
+      override def toString: String = "have message " + Prettifier.default(expectedMessage)
     }
 
     // TODO: Write tests and implement cases for:
@@ -158,53 +166,63 @@ final class HaveWord {
           case Some(firstFailure) =>
 
             val failedVerification = firstFailure
-            val failureMessage =
-              FailureMessages(
-                "propertyDidNotHaveExpectedValue",
-                UnquotedString(failedVerification.propertyName),
-                failedVerification.expectedValue,
-                failedVerification.actualValue,
-                left
+            val (rawFailureMessage, failureMessageArgs) =
+              (
+                Resources("propertyDidNotHaveExpectedValue"), 
+                Vector(
+                  UnquotedString(failedVerification.propertyName),
+                  failedVerification.expectedValue,
+                  failedVerification.actualValue,
+                  left  
+                )
               )
-            val midSentenceFailureMessage =
-              FailureMessages(
-                "midSentencePropertyDidNotHaveExpectedValue",
-                UnquotedString(failedVerification.propertyName),
-                failedVerification.expectedValue,
-                failedVerification.actualValue,
-                left
+            val (rawMidSentenceFailureMessage, midSentenceFailureMessageArgs) =
+              (
+                Resources("midSentencePropertyDidNotHaveExpectedValue"), 
+                Vector(
+                  UnquotedString(failedVerification.propertyName),
+                  failedVerification.expectedValue,
+                  failedVerification.actualValue,
+                  left  
+                )
               )
 
-            MatchResult(false, failureMessage, failureMessage, midSentenceFailureMessage, midSentenceFailureMessage)
+            MatchResult(false, rawFailureMessage, rawFailureMessage, rawMidSentenceFailureMessage, rawMidSentenceFailureMessage, failureMessageArgs, midSentenceFailureMessageArgs)
 
           case None =>
 
-            val failureMessage =
+            val (rawFailureMessage, failureMessageArgs) =
               if (justOneProperty) {
                 val firstPropertyResult = results.head // know this will succeed, because firstPropertyMatcher was required
-                FailureMessages(
-                  "propertyHadExpectedValue",
-                  UnquotedString(firstPropertyResult.propertyName),
-                  firstPropertyResult.expectedValue,
-                  left
+                (
+                  Resources("propertyHadExpectedValue"), 
+                  Vector(
+                    UnquotedString(firstPropertyResult.propertyName),
+                    firstPropertyResult.expectedValue,
+                    left  
+                  )
                 )
               }
-              else FailureMessages("allPropertiesHadExpectedValues", left)
+              else (Resources("allPropertiesHadExpectedValues"), Vector(left))
 
-            val midSentenceFailureMessage =
+            val (rawMidSentenceFailureMessage, rawMidSentenceFailureMessageArgs) =
               if (justOneProperty) {
                 val firstPropertyResult = results.head // know this will succeed, because firstPropertyMatcher was required
-                FailureMessages(
-                  "midSentencePropertyHadExpectedValue",
-                  UnquotedString(firstPropertyResult.propertyName),
-                  firstPropertyResult.expectedValue,
-                  left
+                (
+                  Resources("midSentencePropertyHadExpectedValue"), 
+                  Vector(
+                    UnquotedString(firstPropertyResult.propertyName),
+                    firstPropertyResult.expectedValue,
+                    left    
+                  )
                 )
               }
-              else FailureMessages("midSentenceAllPropertiesHadExpectedValues", left)
+              else (Resources("midSentenceAllPropertiesHadExpectedValues"), Vector(left))
 
-            MatchResult(true, failureMessage, failureMessage, midSentenceFailureMessage, midSentenceFailureMessage)
+            MatchResult(true, rawFailureMessage, rawFailureMessage, rawMidSentenceFailureMessage, rawMidSentenceFailureMessage, failureMessageArgs, rawMidSentenceFailureMessageArgs)
         }
       }
+      
+      override def toString: String = "have " + Prettifier.default(firstPropertyMatcher)
     }
 }
