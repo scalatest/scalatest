@@ -16,8 +16,8 @@
 package org.scalatest.words
 
 import org.scalatest.matchers._
-import org.scalautils.Equality
-import org.scalatest.FailureMessages
+import org.scalautils.{Equality, Prettifier}
+import org.scalatest.Resources
 import org.scalatest.Suite
 import org.scalatest.Assertions.areEqualComparingArraysStructurally
 
@@ -261,15 +261,19 @@ trait MatcherWords {
         val equality = implicitly[Equality[T]]
         new Matcher[T] {
           def apply(left: T): MatchResult = {
-            val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)
+            val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right) // TODO: to move this code to reporters
             MatchResult(
               equality.areEqual(left, right),
-              FailureMessages("didNotEqual", leftee, rightee),
-              FailureMessages("equaled", left, right)
+              Resources("didNotEqual"),
+              Resources("equaled"), 
+              Vector(leftee, rightee), 
+              Vector(left, right)
             )
           }
+          override def toString: String = "equal " + Prettifier.default(right)
         }
       }
+      override def toString: String = "equal " + Prettifier.default(right)
     }
 
   def legacyEqual(right: Any): Matcher[Any] =
@@ -278,10 +282,13 @@ trait MatcherWords {
         val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)
         MatchResult(
           areEqualComparingArraysStructurally(left, right),
-          FailureMessages("didNotEqual", leftee, rightee),
-          FailureMessages("equaled", left, right)
+          Resources("didNotEqual"),
+          Resources("equaled"), 
+          Vector(leftee, rightee), 
+          Vector(left, right)
         )
       }
+      override def toString: String = "legacyEqual " + Prettifier.default(right)
     }
 }
 
