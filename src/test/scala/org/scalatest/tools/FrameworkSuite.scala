@@ -20,15 +20,7 @@ import org.scalatest.SharedHelpers.EventRecordingReporter
 import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.tagobjects.Retryable
 
-class FrameworkSuite extends FunSuite with Retries {
-  
-  override def withFixture(test: NoArgTest) = {
-    if (isRetryable(test))
-      withRetryOnFailure {
-        super.withFixture(test)
-      }
-     else super.withFixture(test)
-  }
+class FrameworkSuite extends FunSuite {
 
   class TestEventHandler extends EventHandler {
 
@@ -1161,10 +1153,26 @@ class FrameworkSuite extends FunSuite with Retries {
     }
     assert(iae.getMessage === "-T is not supported when runs in SBT.")
   }
+  
+  private def makeSureDone(runners: Runner*)(fun: => Unit) {
+    try {
+      fun
+    }
+    finally {
+      runners.foreach { r => 
+        try {
+          r.done()
+        }
+        catch {
+          case e: Throwable => // Just do nothing
+        }
+      }
+    }
+  }
 
   test("Framework.runner should be able to pass in custom reporter via -C") {
     val runner = framework.runner(Array("-C", classOf[EventRecordingReporter].getName), Array.empty, testClassLoader)
-    try {
+    makeSureDone(runner) {
       val testEventHandler = new TestEventHandler
       val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.SampleSuite", subclassFingerprint, false, Array(new SuiteSelector))))
       assert(tasks.size === 1)
@@ -1172,20 +1180,18 @@ class FrameworkSuite extends FunSuite with Retries {
       task.execute(testEventHandler, Array(new TestLogger))
       assert(runner.isInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner])
       val scalatestRunner = runner.asInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner]
+      scalatestRunner.done()
       scalatestRunner.dispatchReporter.reporters.find(_.isInstanceOf[EventRecordingReporter]) match {
         case Some(recordingRep : EventRecordingReporter) => 
           assert(recordingRep.testSucceededEventsReceived.size === 3)
         case _ => fail("Expected to find EventRecordingReporter, but not found.")
       }
     }
-    finally {
-      runner.done()
-    }
   }
 
   test("-y should do nothing when the task to execute is a chosen style") {
     val runner = framework.runner(Array("-y", "org.scalatest.FunSuite", "-C", classOf[EventRecordingReporter].getName), Array.empty, testClassLoader)
-    try {
+    makeSureDone(runner) {
       val testEventHandler = new TestEventHandler
       val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.SampleSuite", subclassFingerprint, false, Array(new SuiteSelector))))
       val task = tasks(0)
@@ -1193,6 +1199,7 @@ class FrameworkSuite extends FunSuite with Retries {
       assert(testEventHandler.successEventsReceived.size === 3)
       assert(runner.isInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner])
       val scalatestRunner = runner.asInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner]
+      scalatestRunner.done()
       scalatestRunner.dispatchReporter.reporters.find(_.isInstanceOf[EventRecordingReporter]) match {
         case Some(recordingRep : EventRecordingReporter) => 
           assert(recordingRep.testSucceededEventsReceived.size === 3)
@@ -1200,14 +1207,11 @@ class FrameworkSuite extends FunSuite with Retries {
         case _ => fail("Expected to find EventRecordingReporter, but not found.")
       }
     }
-    finally {
-      runner.done()
-    }
   }
   
   test("-y should get SuiteAborted event with NotAllowedException when the task to execute is not a chosen style") {
     val runner = framework.runner(Array("-y", "org.scalatest.FunSpec", "-C", classOf[EventRecordingReporter].getName), Array.empty, testClassLoader)
-    try {
+    makeSureDone(runner) {
       val testEventHandler = new TestEventHandler
       val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.SampleSuite", subclassFingerprint, false, Array(new SuiteSelector))))
       val task = tasks(0)
@@ -1215,6 +1219,7 @@ class FrameworkSuite extends FunSuite with Retries {
       assert(testEventHandler.successEventsReceived.size === 0)
       assert(runner.isInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner])
       val scalatestRunner = runner.asInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner]
+      scalatestRunner.done()
       scalatestRunner.dispatchReporter.reporters.find(_.isInstanceOf[EventRecordingReporter]) match {
         case Some(recordingRep : EventRecordingReporter) => 
           assert(recordingRep.testSucceededEventsReceived.size === 0)
@@ -1228,14 +1233,11 @@ class FrameworkSuite extends FunSuite with Retries {
         case _ => fail("Expected to find EventRecordingReporter, but not found.")
       }
     }
-    finally {
-      runner.done()
-    }
   }
   
-  test("-W should cause AlertProvided to be fired", Retryable) {
+  test("-W should cause AlertProvided to be fired") {
     val runner = framework.runner(Array("-W", "1", "1", "-C", classOf[EventRecordingReporter].getName), Array.empty, testClassLoader)
-    try {
+    makeSureDone(runner) {
       val testEventHandler = new TestEventHandler
       val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.SlowSampleSuite", subclassFingerprint, false, Array(new SuiteSelector))))
       val task = tasks(0)
@@ -1243,6 +1245,7 @@ class FrameworkSuite extends FunSuite with Retries {
       assert(testEventHandler.successEventsReceived.size === 1)
       assert(runner.isInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner])
       val scalatestRunner = runner.asInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner]
+      scalatestRunner.done()
       scalatestRunner.dispatchReporter.reporters.find(_.isInstanceOf[EventRecordingReporter]) match {
         case Some(recordingRep : EventRecordingReporter) => 
           assert(recordingRep.testSucceededEventsReceived.size === 1)
@@ -1250,8 +1253,40 @@ class FrameworkSuite extends FunSuite with Retries {
         case _ => fail("Expected to find EventRecordingReporter, but not found.")
       }
     }
-    finally {
-      runner.done()
+  }
+  
+  test("Framework should work correctly with fork mode", Retryable) {
+    val mainRunner = framework.runner(Array("-C", classOf[EventRecordingReporter].getName), Array.empty, testClassLoader)
+    val remoteArgs = mainRunner.remoteArgs()
+    val subRunner = framework.runner(Array("-C", classOf[EventRecordingReporter].getName), remoteArgs, testClassLoader)
+    makeSureDone(mainRunner, subRunner) {
+        val testEventHandler = new TestEventHandler
+    
+        val tasks = subRunner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.SampleSuite", subclassFingerprint, false, Array(new SuiteSelector))))
+        assert(tasks.size === 1)
+        val task = tasks(0)
+        task.execute(testEventHandler, Array(new TestLogger))
+        val successEvents = testEventHandler.successEventsReceived
+        assert(successEvents.length === 3)
+        assertSuiteSuccessEvent(successEvents(0), "org.scalatest.tools.scalasbt.SampleSuite", "test 1", subclassFingerprint)
+        assertSuiteSuccessEvent(successEvents(1), "org.scalatest.tools.scalasbt.SampleSuite", "test 2", subclassFingerprint)
+        assertSuiteSuccessEvent(successEvents(2), "org.scalatest.tools.scalasbt.SampleSuite", "test 3", subclassFingerprint)
+        assert(testEventHandler.errorEventsReceived.length === 0)
+        assert(testEventHandler.failureEventsReceived.length === 0)
+        assert(testEventHandler.skippedEventsReceived.length === 0)
+        assert(mainRunner.isInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner])
+        val mainScalatestRunner = mainRunner.asInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner]
+        assert(subRunner.isInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner])
+        val subScalatestRunner = subRunner.asInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner]
+        subScalatestRunner.done()
+        mainScalatestRunner.done()
+        mainScalatestRunner.dispatchReporter.reporters.find(_.isInstanceOf[EventRecordingReporter]) match {
+          case Some(recordingRep : EventRecordingReporter) => 
+            assert(recordingRep.testSucceededEventsReceived.size === 3)
+            assert(recordingRep.alertProvidedEventsReceived.size === 1)
+            assert(recordingRep.updateProvidedEventsReceived.size === 1)
+          case _ => fail("Expected to find EventRecordingReporter, but not found.")
+        }
     }
   }
 }
