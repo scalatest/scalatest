@@ -21,6 +21,8 @@ import scala.collection.GenTraversable
 import org.scalautils._
 import org.scalautils.TripleEqualsSupport.Spread
 import TripleEqualsSupport.TripleEqualsInvocation
+import org.scalatest.Suite
+import org.scalatest.Resources
 import org.scalatest.FailureMessages
 import org.scalatest.UnquotedString
 import org.scalautils.Equality
@@ -53,6 +55,7 @@ final class NotWord {
   def apply[S <: Any](matcher: Matcher[S]): Matcher[S] =
     new Matcher[S] {
       def apply(left: S): MatchResult = matcher(left).negated
+      override def toString: String = "not " + Prettifier.default(matcher)
     }
 
   /**
@@ -69,6 +72,7 @@ final class NotWord {
         val innerMatcher: Matcher[V] = matcherGen1.matcher
         new Matcher[V] {
           def apply(left: V): MatchResult = innerMatcher(left).negated
+          override def toString: String = "not " + Prettifier.default(matcherGen1)
         }
       }
     }
@@ -80,6 +84,7 @@ final class NotWord {
         val innerMatcher: Matcher[V] = matcherGen2.matcher
         new Matcher[V] {
           def apply(left: V): MatchResult = innerMatcher(left).negated
+          override def toString: String = "not " + Prettifier.default(matcherGen2)
         }
       }
     }
@@ -115,6 +120,7 @@ final class NotWord {
   def apply[S <: Any](beMatcher: BeMatcher[S]): BeMatcher[S] =
     new BeMatcher[S] {
       def apply(left: S): MatchResult = beMatcher(left).negated
+      override def toString: String = "not " + Prettifier.default(beMatcher)
     }
   
   /**
@@ -136,10 +142,12 @@ final class NotWord {
             val existence = implicitly[Existence[T]]
             MatchResult(
               !existence.exists(left), 
-              FailureMessages("exists", left), 
-              FailureMessages("doesNotExist", left)
+              Resources("exists"), 
+              Resources("doesNotExist"), 
+              Vector(left)
             )
-          }
+          } 
+          override def toString: String = "not exist"
         }
     }
 
@@ -166,10 +174,12 @@ final class NotWord {
       def apply(left: U): MatchResult = {
         MatchResult(
           !(spread.isWithin(left)),
-          FailureMessages("equaledPlusOrMinus", left, spread.pivot, spread.tolerance),
-          FailureMessages("didNotEqualPlusOrMinus", left, spread.pivot, spread.tolerance)
+          Resources("equaledPlusOrMinus"),
+          Resources("didNotEqualPlusOrMinus"), 
+          Vector(left, spread.pivot, spread.tolerance)
         )
       }
+      override def toString: String = "not equal " + Prettifier.default(spread.pivot) + " plusOrMinus " + Prettifier.default(spread.tolerance)
     }
   }
 
@@ -186,12 +196,17 @@ final class NotWord {
       def apply(left: AnyRef): MatchResult = {
         MatchResult(
           left != null,
-          FailureMessages("equaledNull"),
-          FailureMessages("didNotEqualNull", left),
-          FailureMessages("midSentenceEqualedNull"),
-          FailureMessages("didNotEqualNull", left)
+          Resources("equaledNull"),
+          Resources("didNotEqualNull"),
+          Resources("midSentenceEqualedNull"),
+          Resources("didNotEqualNull"), 
+          Vector.empty, 
+          Vector(left), 
+          Vector.empty, 
+          Vector(left)
         )
       }
+      override def toString: String = "not equal null"
     }
 
   /**
@@ -252,6 +267,7 @@ final class NotWord {
   def be[T](beMatcher: BeMatcher[T]): Matcher[T] = {
     new Matcher[T] {
       def apply(left: T): MatchResult = beMatcher(left).negated
+      override def toString: String = "not be " + Prettifier.default(beMatcher)
     }
   }
 
@@ -268,12 +284,17 @@ final class NotWord {
       def apply(left: AnyRef): MatchResult = {
         MatchResult(
           left != null,
-          FailureMessages("wasNull"),
-          FailureMessages("wasNotNull", left),
-          FailureMessages("midSentenceWasNull"),
-          FailureMessages("wasNotNull", left)
+          Resources("wasNull"),
+          Resources("wasNotNull"),
+          Resources("midSentenceWasNull"),
+          Resources("wasNotNull"), 
+          Vector.empty, 
+          Vector(left), 
+          Vector.empty, 
+          Vector(left)
         )
       }
+      override def toString: String = "not be null"
     }
 
   // These next four are for things like not be </>/<=/>=:
@@ -290,9 +311,11 @@ final class NotWord {
       def apply(left: T): MatchResult =
         MatchResult(
           !resultOfLessThanComparison(left),
-          FailureMessages("wasLessThan", left, resultOfLessThanComparison.right),
-          FailureMessages("wasNotLessThan", left, resultOfLessThanComparison.right)
+          Resources("wasLessThan"),
+          Resources("wasNotLessThan"), 
+          Vector(left, resultOfLessThanComparison.right)
         )
+      override def toString: String = "not be < " + Prettifier.default(resultOfLessThanComparison.right)
     }
   }
 
@@ -309,9 +332,11 @@ final class NotWord {
       def apply(left: T): MatchResult =
         MatchResult(
           !resultOfGreaterThanComparison(left),
-          FailureMessages("wasGreaterThan", left, resultOfGreaterThanComparison.right),
-          FailureMessages("wasNotGreaterThan", left, resultOfGreaterThanComparison.right)
+          Resources("wasGreaterThan"),
+          Resources("wasNotGreaterThan"), 
+          Vector(left, resultOfGreaterThanComparison.right)
         )
+      override def toString: String = "not be > " + Prettifier.default(resultOfGreaterThanComparison.right)
     }
   }
 
@@ -328,9 +353,11 @@ final class NotWord {
       def apply(left: T): MatchResult =
         MatchResult(
           !resultOfLessThanOrEqualToComparison(left),
-          FailureMessages("wasLessThanOrEqualTo", left, resultOfLessThanOrEqualToComparison.right),
-          FailureMessages("wasNotLessThanOrEqualTo", left, resultOfLessThanOrEqualToComparison.right)
+          Resources("wasLessThanOrEqualTo"),
+          Resources("wasNotLessThanOrEqualTo"), 
+          Vector(left, resultOfLessThanOrEqualToComparison.right)
         )
+      override def toString: String = "not be <= " + Prettifier.default(resultOfLessThanOrEqualToComparison.right)
     }
   }
 
@@ -347,9 +374,11 @@ final class NotWord {
       def apply(left: T): MatchResult =
         MatchResult(
           !resultOfGreaterThanOrEqualToComparison(left),
-          FailureMessages("wasGreaterThanOrEqualTo", left, resultOfGreaterThanOrEqualToComparison.right),
-          FailureMessages("wasNotGreaterThanOrEqualTo", left, resultOfGreaterThanOrEqualToComparison.right)
+          FailureMessages("wasGreaterThanOrEqualTo"),
+          FailureMessages("wasNotGreaterThanOrEqualTo"), 
+          Vector(left, resultOfGreaterThanOrEqualToComparison.right)
         )
+      override def toString: String = "not be >= " + Prettifier.default(resultOfGreaterThanOrEqualToComparison.right)
     }
   }
 
@@ -370,12 +399,17 @@ final class NotWord {
   @deprecated("The should be === syntax has been deprecated. Please use should equal, should ===, shouldEqual, should be, or shouldBe instead.")
   def be(tripleEqualsInvocation: TripleEqualsInvocation[_]): Matcher[Any] = {
     new Matcher[Any] {
-      def apply(left: Any): MatchResult =
+      def apply(left: Any): MatchResult = {
+        val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, tripleEqualsInvocation.right)  // TODO: Should move this part to reporter
         MatchResult(
           !(left == tripleEqualsInvocation.right),
-          FailureMessages("wasEqualTo", left, tripleEqualsInvocation.right),
-          FailureMessages("wasNotEqualTo", left, tripleEqualsInvocation.right)
+          FailureMessages("wasEqualTo"),
+          FailureMessages("wasNotEqualTo"), 
+          Vector(left, tripleEqualsInvocation.right), 
+          Vector(leftee, rightee)
         )
+      }
+      override def toString: String = "not be === " + Prettifier.default(tripleEqualsInvocation.right)
     }
   }
 
@@ -393,10 +427,13 @@ final class NotWord {
         val positiveMatchResult = matchSymbolToPredicateMethod(left, symbol, false, false)
         MatchResult(
           !positiveMatchResult.matches,
-          positiveMatchResult.negatedFailureMessage,
-          positiveMatchResult.failureMessage
+          positiveMatchResult.rawNegatedFailureMessage,
+          positiveMatchResult.rawFailureMessage, 
+          positiveMatchResult.negatedFailureMessageArgs, 
+          positiveMatchResult.failureMessageArgs
         )
       }
+      override def toString: String = "not be " + Prettifier.default(symbol)
     }
   }
 
@@ -415,10 +452,12 @@ final class NotWord {
         val result = bePropertyMatcher(left)
         MatchResult(
           !result.matches,
-          FailureMessages("was", left, UnquotedString(result.propertyName)),
-          FailureMessages("wasNot", left, UnquotedString(result.propertyName))
+          Resources("was"),
+          Resources("wasNot"), 
+          Vector(left, UnquotedString(result.propertyName))
         )
       }
+      override def toString: String = "not be " + Prettifier.default(bePropertyMatcher)
     }
   }
 
@@ -436,10 +475,13 @@ final class NotWord {
         val positiveMatchResult = matchSymbolToPredicateMethod(left, resultOfAWordApplication.symbol, true, true)
         MatchResult(
           !positiveMatchResult.matches,
-          positiveMatchResult.negatedFailureMessage,
-          positiveMatchResult.failureMessage
+          positiveMatchResult.rawNegatedFailureMessage,
+          positiveMatchResult.rawFailureMessage, 
+          positiveMatchResult.negatedFailureMessageArgs, 
+          positiveMatchResult.failureMessageArgs
         )
       }
+      override def toString: String = "not be a " + Prettifier.default(resultOfAWordApplication.symbol)
     }
   }
 
@@ -458,10 +500,12 @@ final class NotWord {
         val result = resultOfAWordApplication.bePropertyMatcher(left)
         MatchResult(
           !result.matches,
-          FailureMessages("wasA", left, UnquotedString(result.propertyName)),
-          FailureMessages("wasNotA", left, UnquotedString(result.propertyName))
+          Resources("wasA"),
+          Resources("wasNotA"), 
+          Vector(left, UnquotedString(result.propertyName))
         )
       }
+      override def toString: String = "not be a " + Prettifier.default(resultOfAWordApplication.bePropertyMatcher)
     }
   }
   
@@ -479,10 +523,13 @@ final class NotWord {
         val result = resultOfAWordApplication.aMatcher(left)
         MatchResult(
           !result.matches,
-          result.negatedFailureMessage,
-          result.failureMessage
+          result.rawNegatedFailureMessage,
+          result.rawFailureMessage, 
+          result.negatedFailureMessageArgs, 
+          result.failureMessageArgs
         )
       }
+      override def toString: String = "not be a " + Prettifier.default(UnquotedString(resultOfAWordApplication.aMatcher.nounName))
     }
   }
 
@@ -500,10 +547,13 @@ final class NotWord {
         val positiveMatchResult = matchSymbolToPredicateMethod(left, resultOfAnWordApplication.symbol, true, false)
         MatchResult(
           !positiveMatchResult.matches,
-          positiveMatchResult.negatedFailureMessage,
-          positiveMatchResult.failureMessage
+          positiveMatchResult.rawNegatedFailureMessage,
+          positiveMatchResult.rawFailureMessage, 
+          positiveMatchResult.negatedFailureMessageArgs, 
+          positiveMatchResult.failureMessageArgs
         )
       }
+      override def toString: String = "not be an " + Prettifier.default(resultOfAnWordApplication.symbol)
     }
   }
 
@@ -521,10 +571,12 @@ final class NotWord {
         val result = resultOfAnWordApplication.bePropertyMatcher(left)
         MatchResult(
           !result.matches,
-          FailureMessages("wasAn", left, UnquotedString(result.propertyName)),
-          FailureMessages("wasNotAn", left, UnquotedString(result.propertyName))
+          Resources("wasAn"),
+          Resources("wasNotAn"), 
+          Vector(left, UnquotedString(result.propertyName))
         )
       }
+      override def toString: String = "not be an " + Prettifier.default(resultOfAnWordApplication.bePropertyMatcher)
     }
   }
   
@@ -542,10 +594,13 @@ final class NotWord {
         val result = resultOfAnWordApplication.anMatcher(left)
         MatchResult(
           !result.matches,
-          result.negatedFailureMessage,
-          result.failureMessage
+          result.rawNegatedFailureMessage,
+          result.rawFailureMessage, 
+          result.negatedFailureMessageArgs, 
+          result.failureMessageArgs
         )
       }
+      override def toString: String = "not be an " + Prettifier.default(UnquotedString(resultOfAnWordApplication.anMatcher.nounName))
     }
   }
 
@@ -562,10 +617,12 @@ final class NotWord {
       def apply(left: T): MatchResult = {
         MatchResult(
           resultOfTheSameInstanceAsApplication.right ne left,
-          FailureMessages("wasSameInstanceAs", left, resultOfTheSameInstanceAsApplication.right),
-          FailureMessages("wasNotSameInstanceAs", left, resultOfTheSameInstanceAsApplication.right)
+          Resources("wasSameInstanceAs"),
+          Resources("wasNotSameInstanceAs"), 
+          Vector(left, resultOfTheSameInstanceAsApplication.right)
         )
       }
+      override def toString: String = "not be theSameInstanceAs " + Prettifier.default(resultOfTheSameInstanceAsApplication.right)
     }
   }
 
@@ -581,12 +638,13 @@ final class NotWord {
     new Matcher[U] {
       def apply(left: U): MatchResult = {
         MatchResult(
-          // !(left <= right + tolerance && left >= right - tolerance),
           !(spread.isWithin(left)),
-          FailureMessages("wasPlusOrMinus", left, spread.pivot, spread.tolerance),
-          FailureMessages("wasNotPlusOrMinus", left, spread.pivot, spread.tolerance)
+          Resources("wasPlusOrMinus"),
+          Resources("wasNotPlusOrMinus"), 
+          Vector(left, spread.pivot, spread.tolerance)
         )
       }
+      override def toString: String = "not be " + Prettifier.default(spread.pivot) + " plusOrMinus " + Prettifier.default(spread.tolerance)
     }
   }
   
@@ -603,9 +661,11 @@ final class NotWord {
       def apply(left: U): MatchResult =
         MatchResult(
           !(left.isDefinedAt(resultOfDefinedAt.right)),
-          FailureMessages("wasDefinedAt", left, resultOfDefinedAt.right),
-          FailureMessages("wasNotDefinedAt", left, resultOfDefinedAt.right)
+          Resources("wasDefinedAt"),
+          Resources("wasNotDefinedAt"), 
+          Vector(left, resultOfDefinedAt.right)
         )
+      override def toString: String = "not be definedAt " + Prettifier.default(resultOfDefinedAt.right)
     }
   }
 
@@ -632,20 +692,25 @@ final class NotWord {
           case null =>
             MatchResult(
               right != null, 
-              FailureMessages("wasNull"),
-              FailureMessages("wasNotNull", right),
-              FailureMessages("midSentenceWasNull"),
-              FailureMessages("wasNotNull", right)
+              Resources("wasNull"),
+              Resources("wasNotNull"),
+              Resources("midSentenceWasNull"),
+              Resources("wasNotNull"), 
+              Vector.empty, 
+              Vector(right)
             )
           case _ => 
-            val (leftee, rightee) = getObjectsForFailureMessage(left, right)
+            val (leftee, rightee) = getObjectsForFailureMessage(left, right) // TODO: To move this to reporter
             MatchResult(
               !areEqualComparingArraysStructurally(left, right),
-              FailureMessages("wasEqualTo", leftee, rightee),
-              FailureMessages("wasNotEqualTo", leftee, rightee)
+              Resources("wasEqualTo"),
+              Resources("wasNotEqualTo"), 
+              Vector(left, right), 
+              Vector(leftee, rightee)
             )
         }
       }
+      override def toString: String = "not be " + Prettifier.default(right)
     }
   }
   
@@ -1276,5 +1341,10 @@ final class NotWord {
       }
     }
   }
+  
+  /**
+   * Overrides toString to return "not"
+   */
+  override def toString: String = "not"
 }
 
