@@ -68,7 +68,9 @@ import org.apache.tools.ant.taskdefs.Java
  *   &lt;scalatest runpath="serviceuitest-1.1beta4.jar:myjini"&gt;
  * </pre>
  *
+ * <P>
  * or
+ * </p>
  *
  * <pre>
  *   &lt;scalatest&gt;
