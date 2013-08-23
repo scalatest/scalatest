@@ -22,7 +22,7 @@ class SampleSuite extends FunSuite {
   object SlowTest extends Tag("org.scalatest.tools.scalasbt.SampleSuite.SlowTest")
   
   test("test 1") {
-    
+    alert("This is an alert!")
   }
   
   test("test 2", SlowTest) {
@@ -30,6 +30,6 @@ class SampleSuite extends FunSuite {
   }
   
   test("test 3") {
-    
+    update("This is an update!")
   }
 }

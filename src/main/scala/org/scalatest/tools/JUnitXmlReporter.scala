@@ -319,6 +319,8 @@ private[scalatest] class JUnitXmlReporter(directory: String) extends Reporter {
         case e: ScopePending   => idx += 1
         case e: InfoProvided   => idx += 1
         case e: MarkupProvided => idx += 1
+        case e: AlertProvided  => idx += 1
+        case e: UpdateProvided => idx += 1
         case e: SuiteCompleted => unexpected(e)
         case e: TestStarting   => unexpected(e)
         case e: TestIgnored    => unexpected(e)
