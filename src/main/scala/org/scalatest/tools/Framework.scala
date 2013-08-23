@@ -779,7 +779,7 @@ class Framework extends SbtFramework {
       spanScaleFactors, 
       testSortingReporterTimeouts,
       slowpokeArgs
-    ) = parseArgs(args)
+    ) = parseArgs(FriendlyParamsTranslator.translateArguments(args))
     
     if (!runpathArgs.isEmpty)
       throw new IllegalArgumentException("-p, -R (runpath) is not supported when runs in SBT.")
