@@ -27,11 +27,18 @@ import org.scalatest.events.TestFailed
 import org.scalatest.events.TestPending
 import org.scalatest.events.TestCanceled
 import org.scalatest.events.RecordableEvent
+import org.scalatest.events.AlertProvided
+import org.scalatest.events.UpdateProvided
+import org.scalatest.events.NameInfo
 
 import java.io.File
 
 class JUnitXmlReporterSuite extends FunSuite {
 
+  val ord0 = new Ordinal(23)
+  val ord0a = ord0.next
+  val ord0b = ord0a.next
+  
   val ord1 = new Ordinal(123)
   val ord1a = ord1.next
   val ord1b = ord1a.next
@@ -51,6 +58,9 @@ class JUnitXmlReporterSuite extends FunSuite {
   val ord2j = ord2i.next
   val ord2k = ord2j.next
   val ord2l = ord2k.next
+  val ord2m = ord2l.next
+  val ord2n = ord2m.next
+  val ord2o = ord2n.next
 
   val start1 =
     SuiteStarting(
@@ -120,7 +130,7 @@ class JUnitXmlReporterSuite extends FunSuite {
 
   val startTest1 =
     TestStarting(
-      ordinal = ord2b,
+      ordinal = ord2d,
       suiteName = "suite3",
       suiteId = "suiteId3",
       suiteClassName = Some("Suite3Class"),
@@ -129,7 +139,7 @@ class JUnitXmlReporterSuite extends FunSuite {
       
   val endTest1 =
     TestSucceeded (
-      ordinal = ord2c,
+      ordinal = ord2g,
       suiteName = "suite3",
       suiteId = "suiteId3",
       suiteClassName = Some("Suite3Class"),
@@ -139,7 +149,7 @@ class JUnitXmlReporterSuite extends FunSuite {
       
   val ignoreTest1 =
     TestIgnored (
-      ordinal = ord2d,
+      ordinal = ord2h,
       suiteName = "suite3",
       suiteId = "suiteId3",
       suiteClassName = Some("Suite3Class"),
@@ -148,7 +158,7 @@ class JUnitXmlReporterSuite extends FunSuite {
 
   val startTest2 =
     TestStarting(
-      ordinal = ord2e,
+      ordinal = ord2i,
       suiteName = "suite3",
       suiteId = "suiteId3",
       suiteClassName = Some("Suite3Class"),
@@ -157,7 +167,7 @@ class JUnitXmlReporterSuite extends FunSuite {
 
   val failTest2 =
     TestFailed (
-      ordinal = ord2f,
+      ordinal = ord2j,
       message = "failTest2 message text",
       suiteName = "suite3",
       suiteId = "suiteId3",
@@ -168,7 +178,7 @@ class JUnitXmlReporterSuite extends FunSuite {
 
   val startTest3 =
     TestStarting(
-      ordinal = ord2g,
+      ordinal = ord2k,
       suiteName = "suite3",
       suiteId = "suiteId3",
       suiteClassName = Some("Suite3Class"),
@@ -177,7 +187,7 @@ class JUnitXmlReporterSuite extends FunSuite {
 
   val pendingTest3 =
     TestPending (
-      ordinal = ord2h,
+      ordinal = ord2l,
       suiteName = "suite3",
       suiteId = "suiteId3",
       suiteClassName = Some("Suite3Class"),
@@ -187,7 +197,7 @@ class JUnitXmlReporterSuite extends FunSuite {
 
   val startTest4 =
     TestStarting(
-      ordinal = ord2i,
+      ordinal = ord2m,
       suiteName = "suite3",
       suiteId = "suiteId3",
       suiteClassName = Some("Suite3Class"),
@@ -196,7 +206,7 @@ class JUnitXmlReporterSuite extends FunSuite {
 
   val canceledTest4 =
     TestCanceled (
-      ordinal = ord2j,
+      ordinal = ord2n,
       message = "bailed out",
       suiteName = "suite3",
       suiteId = "suiteId3",
@@ -207,7 +217,7 @@ class JUnitXmlReporterSuite extends FunSuite {
 
   val complete3 =
     SuiteCompleted(
-      ord2k,
+      ord2o,
       "suite3",
       "suiteId3",
       None,
@@ -218,10 +228,52 @@ class JUnitXmlReporterSuite extends FunSuite {
       None,
       "thread1",
       123456)
+  
+  val alertProvided1 = 
+    AlertProvided(
+      ord0a, 
+      "This is an alert!", 
+      None
+    )
+      
+  val alertProvided2 = 
+    AlertProvided(
+      ord2c, 
+      "This is an alert!", 
+      Some(NameInfo("suite3", "suiteId3", None, None))
+    )
+    
+  val alertProvided3 = 
+    AlertProvided(
+      ord2e, 
+      "This is an alert!", 
+      Some(NameInfo("suite3", "suiteId3", None, Some("a pass test")))
+    )
+  
+  val updateProvided1 = 
+    UpdateProvided(
+      ord0b, 
+      "This is an update!", 
+      None
+    )
+    
+  val updateProvided2 = 
+    UpdateProvided(
+      ord2d, 
+      "This is an update!", 
+      Some(NameInfo("suite3", "suiteId3", None, None))
+    )
+    
+  val updateProvided3 = 
+    UpdateProvided(
+      ord2f, 
+      "This is an update!", 
+      Some(NameInfo("suite3", "suiteId3", None, Some("a pass test")))
+    )
       
   val reporter = new JUnitXmlReporter("target")
 
-  test("SuiteAborted and SuiteCompleted are recognized as test terminators") {
+  /*test("SuiteAborted and SuiteCompleted are recognized as test terminators") {
     reporter(start1)
     reporter(start2)
     reporter(abort2)
@@ -269,9 +321,49 @@ class JUnitXmlReporterSuite extends FunSuite {
     assert(!(tcFailed \ "failure").isEmpty)
     assert(!(tcPending \ "skipped").isEmpty)
     assert(!(tcCanceled \ "skipped").isEmpty)
+  }*/
+  
+  test("AlertProvided and UpdateProvided should be ignored") {
+    reporter(alertProvided1)
+    reporter(updateProvided1)
+    reporter(start3)
+    reporter(alertProvided2)
+    reporter(updateProvided2)
+    reporter(startTest1)
+    reporter(alertProvided3)
+    reporter(updateProvided3)
+    reporter(endTest1)
+    reporter(ignoreTest1)
+    reporter(startTest2)
+    reporter(failTest2)
+    reporter(startTest3)
+    reporter(pendingTest3)
+    reporter(startTest4)
+    reporter(canceledTest4)
+    reporter(complete3)
+
+    val loadnode = xml.XML.loadFile("target/TEST-suiteId3.xml")
+    val testcases = loadnode \\ "testcase"
+
+    val tcIgnored =
+      testcases.find(tc => (tc \ "@name").toString == "an ignored test").get
+
+    val tcFailed = 
+      testcases.find(tc => (tc \ "@name").toString == "a fail test").get
+
+    val tcPending = 
+      testcases.find(tc => (tc \ "@name").toString == "a pending test").get
+
+    val tcCanceled = 
+      testcases.find(tc => (tc \ "@name").toString == "a canceled test").get
+
+    assert(!(tcIgnored \ "skipped").isEmpty)
+    assert(!(tcFailed \ "failure").isEmpty)
+    assert(!(tcPending \ "skipped").isEmpty)
+    assert(!(tcCanceled \ "skipped").isEmpty)
   }
 
-  test("testcase failure message xmlified properly"){
+  /*test("testcase failure message xmlified properly"){
     //"" - not used parameters
     val bigFail = TestFailed(new Ordinal(0),
         "Unusually formed message: \n less:'<', amp:'&', double-quote:\"",
@@ -294,5 +386,5 @@ class JUnitXmlReporterSuite extends FunSuite {
 
     val message = (res \\ "failure" \ "@message").toString
     assert(message==="""Unusually formed message: &amp;#010; less:'&lt;', amp:'&amp;', double-quote:&quot;""","failure/@message is not as expected")
-  }
+  }*/
 }
