@@ -72,4 +72,6 @@ final class ResultOfAnTypeInvocation[T](val clazz: Class[T]) {
       case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase iSAssignableFrom succeeded above
     }
   }
+  
+  override def toString: String = "an " + clazz.getName
 }

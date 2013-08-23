@@ -22,4 +22,11 @@ package org.scalatest.words
  * @author Bill Venners
  * @author Chee Seng
  */
-final class EmptyWord
+final class EmptyWord {
+  
+  /**
+   * Overrides toString to return "empty"
+   */
+  override def toString: String = "empty"
+  
+}

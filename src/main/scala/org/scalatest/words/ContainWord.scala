@@ -422,4 +422,9 @@ final class ContainWord {
       override def toString: String = "contain atMostOneOf (" + right.map(Prettifier.default(_)).mkString(", ") + ")"
     }
   }
+  
+  /**
+   * Overrides toString to return "contain"
+   */
+  override def toString: String = "contain"
 }

@@ -15,12 +15,7 @@
  */
 package org.scalatest.words
 
-import org.scalatest.matchers._
-import scala.collection.GenTraversable
-import org.scalatest.FailureMessages
-import org.scalatest.UnquotedString
-import org.scalautils.Equality
-import scala.annotation.tailrec
+import org.scalautils.Prettifier
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -28,4 +23,6 @@ import scala.annotation.tailrec
  *
  * @author Bill Venners
  */
-class ResultOfAllOfApplication(val right: scala.collection.Seq[Any])
+class ResultOfAllOfApplication(val right: scala.collection.Seq[Any]) {
+  override def toString: String = "allOf (" + right.map(Prettifier.default(_)).mkString(", ") + ")"
+}

@@ -56,5 +56,9 @@ final class NoExceptionWord {
       }
     }
   }
-    
+  
+  /**
+   * Overrides toString to return "noException"
+   */
+  override def toString: String = "noException"
 }

@@ -99,4 +99,9 @@ final class EndWithWord {
       }
       override def toString: String = "endWith regex " + rightRegex.toString
     }
+  
+  /**
+   * Overrides toString to return "endWith"
+   */
+  override def toString: String = "endWith"
 }
