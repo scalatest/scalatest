@@ -18,7 +18,8 @@ package org.scalatest.words
 import org.scalatest.matchers._
 import org.scalautils._
 import scala.util.matching.Regex
-import org.scalatest.FailureMessages
+import org.scalatest.UnquotedString
+import org.scalatest.Resources
 import org.scalatest.MatchersHelper.includeRegexWithGroups
 
 /**
@@ -42,9 +43,11 @@ final class IncludeWord {
       def apply(left: String): MatchResult =
         MatchResult(
           left.indexOf(expectedSubstring) >= 0, 
-          FailureMessages("didNotIncludeSubstring", left, expectedSubstring),
-          FailureMessages("includedSubstring", left, expectedSubstring)
+          Resources("didNotIncludeSubstring"),
+          Resources("includedSubstring"), 
+          Vector(left, expectedSubstring)
         )
+      override def toString: String = "include " + Prettifier.default(expectedSubstring)
     }
 
   /**
@@ -70,6 +73,7 @@ final class IncludeWord {
     new Matcher[String] {
       def apply(left: String): MatchResult = 
         includeRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
+      override def toString: String = "include regex " + regexWithGroups.regex.toString + (if (regexWithGroups.groups.size > 1) " withGroups " else " withGroup ") + regexWithGroups.groups.mkString(", ")
     }
 
   /**
@@ -86,8 +90,15 @@ final class IncludeWord {
       def apply(left: String): MatchResult =
         MatchResult(
           expectedRegex.findFirstIn(left).isDefined,
-          FailureMessages("didNotIncludeRegex", left, expectedRegex),
-          FailureMessages("includedRegex", left, expectedRegex)
+          Resources("didNotIncludeRegex"),
+          Resources("includedRegex"), 
+          Vector(left, UnquotedString(expectedRegex.toString))
         )
+      override def toString: String = "include regex " + expectedRegex
     }
+  
+  /**
+   * Overrides toString to return "include"
+   */
+  override def toString: String = "include"
 }

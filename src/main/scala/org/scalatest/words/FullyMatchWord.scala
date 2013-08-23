@@ -86,4 +86,9 @@ final class FullyMatchWord {
         )
       override def toString: String = "fullyMatch regex " + rightRegex.toString
     }
+  
+  /**
+   * Overrides toString to return "fullyMatch"
+   */
+  override def toString: String = "fullyMatch"
 }

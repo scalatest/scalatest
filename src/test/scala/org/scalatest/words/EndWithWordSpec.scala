@@ -22,6 +22,10 @@ class EndWithWordSpec extends FreeSpec with FileMocks {
   
   "EndWithWord " - {
     
+    "should have pretty toString" in {
+      endWith.toString should be ("endWith")
+    }
+    
     "apply(String) method returns Matcher" - {
       
       val mt = endWith ("er")

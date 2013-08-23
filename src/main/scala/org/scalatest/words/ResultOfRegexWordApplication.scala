@@ -43,5 +43,15 @@ final class ResultOfRegexWordApplication(val regex: Regex, val groups: IndexedSe
    * </pre>
    */
   def this(regexString: String, groups: IndexedSeq[String]) = this(new Regex(regexString), groups)
+  
+  /**
+   * Overrides toString to return regex and groups (if available)
+   */
+  override def toString: String = "regex " + regex.toString + (
+      if (groups.isEmpty)
+        ""
+      else 
+        (if (groups.size > 1) " withGroups " else " withGroup ") + groups.mkString(", ")
+    )
 }
 

@@ -15,11 +15,14 @@
  */
 package org.scalatest.words
 
+import org.scalautils.Prettifier
+
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
  * the matchers DSL.
  *
  * @author Bill Venners
  */
-final class ResultOfValueWordApplication(val expectedValue: Any)
-
+final class ResultOfValueWordApplication(val expectedValue: Any) {
+  override def toString: String = "value " + Prettifier.default(expectedValue)
+}
