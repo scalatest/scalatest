@@ -16,9 +16,10 @@
 package org.scalatest.tools
 import org.scalatest.{FunSuite, Resources, Retries}
 import sbt.testing._
-import org.scalatest.SharedHelpers.EventRecordingReporter
+import org.scalatest.SharedHelpers.{EventRecordingReporter, createTempDirectory}
 import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.tagobjects.Retryable
+import java.io.File
 
 class FrameworkSuite extends FunSuite with Retries {
   
@@ -1162,7 +1163,7 @@ class FrameworkSuite extends FunSuite with Retries {
     assert(iae.getMessage === "-T is not supported when runs in SBT.")
   }
 
-  test("Framework.runner should be able to pass in custom reporter via -C") {
+  test("Framework.runner should be able to pass in custom reporter via -C", Retryable) {
     val runner = framework.runner(Array("-C", classOf[EventRecordingReporter].getName), Array.empty, testClassLoader)
     try {
       val testEventHandler = new TestEventHandler
@@ -1183,7 +1184,7 @@ class FrameworkSuite extends FunSuite with Retries {
     }
   }
 
-  test("-y should do nothing when the task to execute is a chosen style") {
+  test("-y should do nothing when the task to execute is a chosen style", Retryable) {
     val runner = framework.runner(Array("-y", "org.scalatest.FunSuite", "-C", classOf[EventRecordingReporter].getName), Array.empty, testClassLoader)
     try {
       val testEventHandler = new TestEventHandler
@@ -1253,5 +1254,100 @@ class FrameworkSuite extends FunSuite with Retries {
     finally {
       runner.done()
     }
+  }
+  
+  test("Runner should support deprecated friendly argument dsl 'include'") {
+    framework.runner(Array("include(org.scala.a, org.scala.b, org.scala.c)"), Array.empty, testClassLoader).done()
+    framework.runner(Array("include(\"org.scala.a\", \"org.scala.b\", \"org.scala.c\")"), Array.empty, testClassLoader).done()
+    intercept[IllegalArgumentException] { framework.runner(Array("include"), Array.empty, testClassLoader).done() }
+    intercept[IllegalArgumentException] { framework.runner(Array("include (org.scala.a, org.scala.b, org.scala.c)"), Array.empty, testClassLoader).done() }
+    intercept[IllegalArgumentException] { framework.runner(Array("include (org.scala.a, org.scala.b, org.scala.c"), Array.empty, testClassLoader).done() }
+    intercept[IllegalArgumentException] { framework.runner(Array("includeorg.scala.a, org.scala.b, org.scala.c)"), Array.empty, testClassLoader).done() }
+    intercept[IllegalArgumentException] { framework.runner(Array("include org.scala.a, org.scala.b, org.scala.c"), Array.empty, testClassLoader).done() }
+  }
+  
+  test("Runner should support deprecated friendly argument dsl 'exclude'") {
+    framework.runner(Array("exclude(org.scala.a, org.scala.b, org.scala.c)"), Array.empty, testClassLoader).done()
+    framework.runner(Array("exclude(\"org.scala.a\", \"org.scala.b\", \"org.scala.c\")"), Array.empty, testClassLoader).done()
+    intercept[IllegalArgumentException] { framework.runner(Array("exclude"), Array.empty, testClassLoader).done() }
+    intercept[IllegalArgumentException] { framework.runner(Array("exclude (org.scala.a, org.scala.b, org.scala.c)"), Array.empty, testClassLoader).done() }
+    intercept[IllegalArgumentException] { framework.runner(Array("exclude (org.scala.a, org.scala.b, org.scala.c"), Array.empty, testClassLoader).done() }
+    intercept[IllegalArgumentException] { framework.runner(Array("excludeorg.scala.a, org.scala.b, org.scala.c)"), Array.empty, testClassLoader).done() }
+    intercept[IllegalArgumentException] { framework.runner(Array("exclude org.scala.a, org.scala.b, org.scala.c"), Array.empty, testClassLoader).done() }
+  }
+  
+  test("Runner should support deprecated friendly argument dsl 'stdout'") {
+    framework.runner(Array("stdout"), Array.empty, testClassLoader).done()
+    framework.runner(Array("stdout(config=\"nocolor fullstacks droptestsucceeded\")"), Array.empty, testClassLoader).done()
+    intercept[IllegalArgumentException] { framework.runner(Array("stdout (config=\"nocolor fullstacks doptestsucceeded\")"), Array.empty, testClassLoader).done() }
+    intercept[IllegalArgumentException] { framework.runner(Array("stdout config=\"nocolor fullstacks doptestsucceeded\""), Array.empty, testClassLoader).done() }
+    intercept[IllegalArgumentException] { framework.runner(Array("stdout(config=\"nocolor fullstacks doptestsucceeded\""), Array.empty, testClassLoader).done() }
+    intercept[IllegalArgumentException] { framework.runner(Array("stdoutconfig=\"nocolor fullstacks doptestsucceeded\")"), Array.empty, testClassLoader).done() }
+    intercept[IllegalArgumentException] { framework.runner(Array("stdout(confi=\"nocolor fullstacks doptestsucceeded\")"), Array.empty, testClassLoader).done() }
+  }
+  
+  test("Runner should support deprecated friendly argument dsl 'stderr'") {
+    framework.runner(Array("stderr"), Array.empty, testClassLoader).done()
+    framework.runner(Array("stderr(config=\"dropinfoprovided dropsuitestarting droptestignored\")"), Array.empty, testClassLoader).done()
+    intercept[IllegalArgumentException] { framework.runner(Array("stderr (config=\"dopinfoprovided dropsuitestarting droptestignored\")"), Array.empty, testClassLoader).done() }
+    intercept[IllegalArgumentException] { framework.runner(Array("stderr config=\"dopinfoprovided dropsuitestarting droptestignored\""), Array.empty, testClassLoader).done() }
+    intercept[IllegalArgumentException] { framework.runner(Array("stderr(config=\"dopinfoprovided dropsuitestarting droptestignored\""), Array.empty, testClassLoader).done() }
+    intercept[IllegalArgumentException] { framework.runner(Array("stderrconfig=\"dopinfoprovided dropsuitestarting droptestignored\")"), Array.empty, testClassLoader).done() }
+    intercept[IllegalArgumentException] { framework.runner(Array("stderr(confi=\"dopinfoprovided dropsuitestarting droptestignored\")"), Array.empty, testClassLoader).done() }
+  }
+  
+  test("Runner should support deprecated friendly argument dsl 'file'") {
+    framework.runner(Array("file(filename=\"" + cssFile.getAbsolutePath + "\")"), Array.empty, testClassLoader).done()
+    framework.runner(Array("file(filename=\"" + cssFile.getAbsolutePath + "\", config=\"durations shortstacks dropteststarting\")"), Array.empty, testClassLoader).done()
+    intercept[IllegalArgumentException] { framework.runner(Array("file"), Array.empty, testClassLoader).done() }
+    intercept[IllegalArgumentException] { framework.runner(Array("file(config=\"durations shortstacks dropteststarting\")"), Array.empty, testClassLoader).done() }
+    intercept[IllegalArgumentException] { framework.runner(Array("file (config=\"nocolor fullstacks doptestsucceeded\")"), Array.empty, testClassLoader).done() }
+    intercept[IllegalArgumentException] { framework.runner(Array("file config=\"nocolor fullstacks doptestsucceeded\""), Array.empty, testClassLoader).done() }
+    intercept[IllegalArgumentException] { framework.runner(Array("file(config=\"nocolor fullstacks doptestsucceeded\""), Array.empty, testClassLoader).done() }
+    intercept[IllegalArgumentException] { framework.runner(Array("file=\"nocolor fullstacks doptestsucceeded\")"), Array.empty, testClassLoader).done() }
+    intercept[IllegalArgumentException] { framework.runner(Array("file(confi=\"nocolor fullstacks doptestsucceeded\")"), Array.empty, testClassLoader).done() }
+  }
+  
+  val tempDir = createTempDirectory()
+  val cssFile = File.createTempFile("mystyles", "css", tempDir)
+  
+  test("Runner should support deprecated friendly argument dsl 'junitxml'") {
+    framework.runner(Array("junitxml(directory=\"" + tempDir.getAbsolutePath + "\")"), Array.empty, testClassLoader).done()
+    intercept[IllegalArgumentException] { framework.runner(Array("junitxml"), Array.empty, testClassLoader).done() }
+    intercept[IllegalArgumentException] { framework.runner(Array("junitxml (directory=\"" + tempDir.getAbsolutePath + "\")"), Array.empty, testClassLoader).done() }
+    intercept[IllegalArgumentException] { framework.runner(Array("junitxml directory=\"" + tempDir.getAbsolutePath + "\""), Array.empty, testClassLoader).done() }
+    intercept[IllegalArgumentException] { framework.runner(Array("junitxml(directory=\"" + tempDir.getAbsolutePath + "\""), Array.empty, testClassLoader).done() }
+    intercept[IllegalArgumentException] { framework.runner(Array("junitxmldirectory=\"" + tempDir.getAbsolutePath + "\")"), Array.empty, testClassLoader).done() }
+    intercept[IllegalArgumentException] { framework.runner(Array("junitxml(director=\"" + tempDir.getAbsolutePath + "\")"), Array.empty, testClassLoader).done() }
+  }
+  
+  test("Runner should support deprecated friendly argument dsl 'html'") {
+    framework.runner(Array("html(directory=\"" + tempDir.getAbsolutePath + "\")"), Array.empty, testClassLoader).done()
+    framework.runner(Array("html(directory=\"" + tempDir.getAbsolutePath + "\", css=\"" + cssFile.getAbsolutePath + "\")"), Array.empty, testClassLoader).done()
+    intercept[IllegalArgumentException] { framework.runner(Array("html()"), Array.empty, testClassLoader).done() }
+    intercept[IllegalArgumentException] { framework.runner(Array("html(directory=\"" + tempDir.getAbsolutePath + "\", css=\"\")"), Array.empty, testClassLoader).done() }
+  }
+  
+  test("Runner should support deprecated friendly argument dsl 'reporterclass'") {
+    val repClassName = classOf[EventRecordingReporter].getName
+    framework.runner(Array("reporterclass(classname=\"" + repClassName + "\")"), Array.empty, testClassLoader).done()
+    framework.runner(Array("reporterclass(classname=\"" + repClassName + "\", config=\"dropsuitestarting dropinfoprovided dropteststarting\")"), Array.empty, testClassLoader).done()
+    intercept[IllegalArgumentException] { framework.runner(Array("reporterclass"), Array.empty, testClassLoader).done() }
+    intercept[IllegalArgumentException] { framework.runner(Array("reporterclass(classname=\"a.b.c\", config=\"nocolor\")"), Array.empty, testClassLoader).done() }
+    intercept[IllegalArgumentException] { framework.runner(Array("reporterclass(classname=\"a.b.c\", config=\"shortstacks\")"), Array.empty, testClassLoader).done() }
+    intercept[IllegalArgumentException] { framework.runner(Array("reporterclass(classname=\"a.b.c\", config=\"fullstacks\")"), Array.empty, testClassLoader).done() }
+    intercept[IllegalArgumentException] { framework.runner(Array("reporterclass(classname=\"a.b.c\", config=\"durations\")"), Array.empty, testClassLoader).done() }
+  }
+  
+  test("Runner should support deprecated friendly argument dsl 'membersonly'") {
+    framework.runner(Array("membersonly(a.b.c)"), Array.empty, testClassLoader).done()
+    framework.runner(Array("membersonly(a.b.c, a.b.d, a.b.e)"), Array.empty, testClassLoader).done()
+    intercept[IllegalArgumentException] { framework.runner(Array("membersonly"), Array.empty, testClassLoader).done() }
+  }
+  
+  test("Runner should support deprecated friendly argument dsl 'wildcard'") {
+    framework.runner(Array("wildcard(a.b.c)"), Array.empty, testClassLoader).done()
+    framework.runner(Array("wildcard(a.b.c, a.b.d, a.b.e)"), Array.empty, testClassLoader).done()
+    intercept[IllegalArgumentException] { framework.runner(Array("wildcard"), Array.empty, testClassLoader).done() }
   }
 }
