@@ -240,7 +240,7 @@ class ContainWordSpec extends Spec {
       }
     }
     
-    object `an(AMatcher) method returns Matcher` {
+    object `an(AnMatcher) method returns Matcher` {
       case class MyFile(
         val name: String,
         val file: Boolean,

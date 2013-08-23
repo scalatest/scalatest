@@ -23,5 +23,6 @@ import org.scalatest.matchers._
  *
  * @author Bill Venners
  */
-final class ResultOfAWordToAMatcherApplication[T](val aMatcher: AMatcher[T])
-
+final class ResultOfAWordToAMatcherApplication[T](val aMatcher: AMatcher[T]) {
+  override def toString: String = "a " + aMatcher.nounName
+}

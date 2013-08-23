@@ -15,14 +15,19 @@
  */
 package org.scalatest.words
 
-import org.scalautils.Prettifier
+import org.scalatest._
+import Matchers._
+import matchers.AMatcher
+import java.io.File
 
-/**
- * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
- * the matchers DSL.
- *
- * @author Bill Venners
- */
-final class ResultOfValueWordApplication(val expectedValue: Any) {
-  override def toString: String = "value " + Prettifier.default(expectedValue)
+class ResultOfAWordToAMatcherApplicationSpec extends Spec {
+  
+  object `ResultOfAWordToAMatcherApplication ` {
+    
+    def `should have pretty toString` {
+      val result = new ResultOfAWordToAMatcherApplication(AMatcher[File]("file") { _.isFile  })
+      result.toString should be ("a file")
+    }
+  }
+  
 }
