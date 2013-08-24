@@ -1996,6 +1996,15 @@ class WebBrowserSpec extends JettySpec with ShouldMatchers with SpanSugar with W
       caught.failedCodeFileName should be (Some("WebBrowserSpec.scala"))
     }
   }
+  describe("The WebBrowser subclasses") {
+    they("should be a subclass of WebBrowser with Driver", Slow) {
+      import org.scalatest.prop.TableDrivenPropertyChecks._
+      import org.scalatest.prop.TableFor1
+      // Chrome requires a system property, InternetExplorer only works on Windows
+      val examples: TableFor1[WebBrowser with Driver] = Table("web browser", /*Chrome,*/ Firefox, HtmlUnit, /*InternetExplorer,*/ Safari)
+      forAll (examples) { _ shouldBe a [Driver] }
+    }
+  }
   
   def thisLineNumber = {
     val st = Thread.currentThread.getStackTrace

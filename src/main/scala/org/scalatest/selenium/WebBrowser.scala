@@ -4329,6 +4329,10 @@ trait WebBrowser {
  */
 object WebBrowser extends WebBrowser
 
+trait Driver { this: WebBrowser =>
+  val webDriver: WebDriver
+}
+
 /**
  * <code>WebBrowser</code> subtrait that defines an implicit <code>WebDriver</code> for HTMLUnit (an <code>org.openqa.selenium.htmlunit.HtmlUnitDriver</code>), with JavaScript
  * enabled by default.
@@ -4341,7 +4345,7 @@ object WebBrowser extends WebBrowser
  * webDriver.setJavascriptEnabled(false)
  * </pre>
  */
-trait HtmlUnit extends WebBrowser with ScreenshotCapturer {
+trait HtmlUnit extends WebBrowser with Driver with ScreenshotCapturer {
 
   /**
    * <code>WebBrowser</code> subtrait that defines an implicit <code>WebDriver</code> for HTMLUnit (an <code>org.openqa.selenium.htmlunit.HtmlUnitDriver</code>), with JavaScript
@@ -4382,7 +4386,7 @@ object HtmlUnit extends HtmlUnit
  * You can mutate this object to modify the profile, or override <code>firefoxProfile</code>.
  * </p>
  */
-trait Firefox extends WebBrowser with ScreenshotCapturer {
+trait Firefox extends WebBrowser with Driver with ScreenshotCapturer {
 
   /**
    * The <code>FirefoxProfile</code> passed to the constructor of the <code>FirefoxDriver</code> returned by <code>webDriver</code>.
@@ -4423,7 +4427,7 @@ object Firefox extends Firefox
 /**
  * <code>WebBrowser</code> subtrait that defines an implicit <code>WebDriver</code> for Safari (an <code>org.openqa.selenium.safari.SafariDriver</code>).
  */
-trait Safari extends WebBrowser with ScreenshotCapturer {
+trait Safari extends WebBrowser with Driver with ScreenshotCapturer {
   /**
    * <code>WebBrowser</code> subtrait that defines an implicit <code>WebDriver</code> for Safari (an <code>org.openqa.selenium.safari.SafariDriver</code>).
    */
@@ -4447,7 +4451,7 @@ object Safari extends Safari
 /**
  * <code>WebBrowser</code> subtrait that defines an implicit <code>WebDriver</code> for Chrome (an <code>org.openqa.selenium.chrome.ChromeDriver</code>).
  */
-trait Chrome extends WebBrowser with ScreenshotCapturer {
+trait Chrome extends WebBrowser with Driver with ScreenshotCapturer {
   /**
    * <code>WebBrowser</code> subtrait that defines an implicit <code>WebDriver</code> for Chrome (an <code>org.openqa.selenium.chrome.ChromeDriver</code>).
    */
@@ -4471,7 +4475,7 @@ object Chrome extends Chrome
 /**
  * <code>WebBrowser</code> subtrait that defines an implicit <code>WebDriver</code> for Internet Explorer (an <code>org.openqa.selenium.ie.InternetExplorerDriver</code>).
  */
-trait InternetExplorer extends WebBrowser with ScreenshotCapturer {
+trait InternetExplorer extends WebBrowser with Driver with ScreenshotCapturer {
   /**
    * <code>WebBrowser</code> subtrait that defines an implicit <code>WebDriver</code> for Internet Explorer (an <code>org.openqa.selenium.ie.InternetExplorerDriver</code>).
    */
