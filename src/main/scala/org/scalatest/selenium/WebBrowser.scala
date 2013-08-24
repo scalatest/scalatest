@@ -1512,21 +1512,30 @@ trait WebBrowser {
       }
   }
   
-  private def isTextField(webElement: WebElement): Boolean = 
-    webElement.getTagName.toLowerCase == "input" && webElement.getAttribute("type").toLowerCase == "text"
+  private def isInputField(webElement: WebElement, name: String): Boolean = 
+    webElement.getTagName.toLowerCase == "input" && webElement.getAttribute("type").toLowerCase == name
       
-  private def isPasswordField(webElement: WebElement): Boolean = 
-    webElement.getTagName.toLowerCase == "input" && webElement.getAttribute("type").toLowerCase == "password"
-
+  private def isTextField(webElement: WebElement): Boolean = isInputField(webElement, "text")
+  private def isPasswordField(webElement: WebElement): Boolean = isInputField(webElement, "password")
+  private def isCheckBox(webElement: WebElement): Boolean = isInputField(webElement, "checkbox")
+  private def isRadioButton(webElement: WebElement): Boolean = isInputField(webElement, "radio")
+  private def isEmailField(webElement: WebElement): Boolean = isInputField(webElement, "email")
+  private def isColorField(webElement: WebElement): Boolean = isInputField(webElement, "color")
+  private def isDateField(webElement: WebElement): Boolean = isInputField(webElement, "date")
+  private def isDateTimeField(webElement: WebElement): Boolean = isInputField(webElement, "datetime")
+  private def isDateTimeLocalField(webElement: WebElement): Boolean = isInputField(webElement, "datetime-local")
+  private def isMonthField(webElement: WebElement): Boolean = isInputField(webElement, "month")
+  private def isNumberField(webElement: WebElement): Boolean = isInputField(webElement, "number")
+  private def isRangeField(webElement: WebElement): Boolean = isInputField(webElement, "range")
+  private def isSearchField(webElement: WebElement): Boolean = isInputField(webElement, "search")
+  private def isTelField(webElement: WebElement): Boolean = isInputField(webElement, "tel")
+  private def isTimeField(webElement: WebElement): Boolean = isInputField(webElement, "time")
+  private def isUrlField(webElement: WebElement): Boolean = isInputField(webElement, "url")
+  private def isWeekField(webElement: WebElement): Boolean = isInputField(webElement, "week")
+      
   private def isTextArea(webElement: WebElement): Boolean = 
     webElement.getTagName.toLowerCase == "textarea"
   
-  private def isCheckBox(webElement: WebElement): Boolean = 
-    webElement.getTagName.toLowerCase == "input" && webElement.getAttribute("type").toLowerCase == "checkbox"
-      
-  private def isRadioButton(webElement: WebElement): Boolean = 
-    webElement.getTagName == "input" && webElement.getAttribute("type") == "radio"
-      
   /**
    * This class is part of ScalaTest's Selenium DSL. Please see the documentation for
    * <a href="WebBrowser.html"><code>WebBrowser</code></a> for an overview of the Selenium DSL.
@@ -1679,6 +1688,292 @@ trait WebBrowser {
     def clear() { underlying.clear() }
   }
   
+  trait ValueElement extends Element {
+    val underlying: WebElement
+
+    def checkCorrectType(isA: (WebElement) => Boolean, typeDescription: String) = {
+      if(!isA(underlying))
+        throw new TestFailedException(
+                     sde => Some("Element " + underlying + " is not " + typeDescription + " field."),
+                     None,
+                     getStackDepthFun("WebBrowser.scala", "this", 1)
+                   )
+    }
+
+    /**
+     * Gets this field's value.
+     *
+     * <p>
+     * This method invokes <code>getAttribute("value")</code> on the underlying <code>WebElement</code>.
+     * </p>
+     *
+     * @return the field's value
+     */
+    def value: String = underlying.getAttribute("value")  
+    
+    /**
+     * Sets this field's value.
+     *
+     * @param value the new value
+     */
+    def value_=(value: String) {
+      underlying.clear()
+      underlying.sendKeys(value)
+    }
+
+    /**
+     * Clears this field.
+     */
+    def clear() { underlying.clear() }
+  }
+
+  /**
+   * This class is part of ScalaTest's Selenium DSL. Please see the documentation for
+   * <a href="WebBrowser.html"><code>WebBrowser</code></a> for an overview of the Selenium DSL.
+   *
+   * <p>
+   * This class enables syntax such as the following:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * emailField("q").value should be ("foo@bar.com")
+   * </pre>
+   *
+   * @param underlying the <code>WebElement</code> representing a email field
+   * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a email field
+   */
+  final class EmailField(val underlying: WebElement) extends Element with ValueElement {
+    checkCorrectType(isEmailField, "email")
+  }
+
+  /**
+   * This class is part of ScalaTest's Selenium DSL. Please see the documentation for
+   * <a href="WebBrowser.html"><code>WebBrowser</code></a> for an overview of the Selenium DSL.
+   *
+   * <p>
+   * This class enables syntax such as the following:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * colorField("q").value should be ("Cheese!")
+   * </pre>
+   *
+   * @param underlying the <code>WebElement</code> representing a color field
+   * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a color field
+   */
+  final class ColorField(val underlying: WebElement) extends Element with ValueElement {
+    checkCorrectType(isColorField, "color")
+  }
+
+  /**
+   * This class is part of ScalaTest's Selenium DSL. Please see the documentation for
+   * <a href="WebBrowser.html"><code>WebBrowser</code></a> for an overview of the Selenium DSL.
+   *
+   * <p>
+   * This class enables syntax such as the following:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * dateField("q").value should be ("2003-03-01")
+   * </pre>
+   *
+   * @param underlying the <code>WebElement</code> representing a date field
+   * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a date field
+   */
+  final class DateField(val underlying: WebElement) extends Element with ValueElement {
+    checkCorrectType(isDateField, "date")
+  }
+
+  /**
+   * This class is part of ScalaTest's Selenium DSL. Please see the documentation for
+   * <a href="WebBrowser.html"><code>WebBrowser</code></a> for an overview of the Selenium DSL.
+   *
+   * <p>
+   * This class enables syntax such as the following:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * dateTimeField("q").value should be ("2003-03-01T12:13:14")
+   * </pre>
+   *
+   * @param underlying the <code>WebElement</code> representing a datetime field
+   * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a datetime field
+   */
+  final class DateTimeField(val underlying: WebElement) extends Element with ValueElement {
+    checkCorrectType(isDateTimeField, "datetime")
+  }
+
+  /**
+   * This class is part of ScalaTest's Selenium DSL. Please see the documentation for
+   * <a href="WebBrowser.html"><code>WebBrowser</code></a> for an overview of the Selenium DSL.
+   *
+   * <p>
+   * This class enables syntax such as the following:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * dateTimeLocalField("q").value should be ("2003-03-01T12:13:14")
+   * </pre>
+   *
+   * @param underlying the <code>WebElement</code> representing a datetime-local field
+   * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a datetime-local field
+   */
+  final class DateTimeLocalField(val underlying: WebElement) extends Element with ValueElement {
+    checkCorrectType(isDateTimeLocalField, "datetime-local")
+  }
+
+  /**
+   * This class is part of ScalaTest's Selenium DSL. Please see the documentation for
+   * <a href="WebBrowser.html"><code>WebBrowser</code></a> for an overview of the Selenium DSL.
+   *
+   * <p>
+   * This class enables syntax such as the following:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * monthField("q").value should be ("2003-04")
+   * </pre>
+   *
+   * @param underlying the <code>WebElement</code> representing a month field
+   * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a month field
+   */
+  final class MonthField(val underlying: WebElement) extends Element with ValueElement {
+    checkCorrectType(isMonthField, "month")
+  }
+
+  /**
+   * This class is part of ScalaTest's Selenium DSL. Please see the documentation for
+   * <a href="WebBrowser.html"><code>WebBrowser</code></a> for an overview of the Selenium DSL.
+   *
+   * <p>
+   * This class enables syntax such as the following:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * numberField("q").value should be ("1.3")
+   * </pre>
+   *
+   * @param underlying the <code>WebElement</code> representing a number field
+   * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a number field
+   */
+  final class NumberField(val underlying: WebElement) extends Element with ValueElement {
+    checkCorrectType(isNumberField, "number")
+  }
+
+  /**
+   * This class is part of ScalaTest's Selenium DSL. Please see the documentation for
+   * <a href="WebBrowser.html"><code>WebBrowser</code></a> for an overview of the Selenium DSL.
+   *
+   * <p>
+   * This class enables syntax such as the following:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * rangeField("q").value should be ("1.3")
+   * </pre>
+   *
+   * @param underlying the <code>WebElement</code> representing a range field
+   * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a range field
+   */
+  final class RangeField(val underlying: WebElement) extends Element with ValueElement {
+    checkCorrectType(isRangeField, "range")
+  }
+
+  /**
+   * This class is part of ScalaTest's Selenium DSL. Please see the documentation for
+   * <a href="WebBrowser.html"><code>WebBrowser</code></a> for an overview of the Selenium DSL.
+   *
+   * <p>
+   * This class enables syntax such as the following:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * searchField("q").value should be ("google")
+   * </pre>
+   *
+   * @param underlying the <code>WebElement</code> representing a search field
+   * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a search field
+   */
+  final class SearchField(val underlying: WebElement) extends Element with ValueElement {
+    checkCorrectType(isSearchField, "search")
+  }
+
+  /**
+   * This class is part of ScalaTest's Selenium DSL. Please see the documentation for
+   * <a href="WebBrowser.html"><code>WebBrowser</code></a> for an overview of the Selenium DSL.
+   *
+   * <p>
+   * This class enables syntax such as the following:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * telField("q").value should be ("911-911-9191")
+   * </pre>
+   *
+   * @param underlying the <code>WebElement</code> representing a tel field
+   * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a tel field
+   */
+  final class TelField(val underlying: WebElement) extends Element with ValueElement {
+    checkCorrectType(isTelField, "tel")
+  }
+
+  /**
+   * This class is part of ScalaTest's Selenium DSL. Please see the documentation for
+   * <a href="WebBrowser.html"><code>WebBrowser</code></a> for an overview of the Selenium DSL.
+   *
+   * <p>
+   * This class enables syntax such as the following:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * timeField("q").value should be ("12:13:14")
+   * </pre>
+   *
+   * @param underlying the <code>WebElement</code> representing a time field
+   * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a time field
+   */
+  final class TimeField(val underlying: WebElement) extends Element with ValueElement {
+    checkCorrectType(isTimeField, "time")
+  }
+
+  /**
+   * This class is part of ScalaTest's Selenium DSL. Please see the documentation for
+   * <a href="WebBrowser.html"><code>WebBrowser</code></a> for an overview of the Selenium DSL.
+   *
+   * <p>
+   * This class enables syntax such as the following:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * urlField("q").value should be ("http://google.com")
+   * </pre>
+   *
+   * @param underlying the <code>WebElement</code> representing a url field
+   * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a url field
+   */
+  final class UrlField(val underlying: WebElement) extends Element with ValueElement {
+    checkCorrectType(isUrlField, "url")
+  }
+
+  /**
+   * This class is part of ScalaTest's Selenium DSL. Please see the documentation for
+   * <a href="WebBrowser.html"><code>WebBrowser</code></a> for an overview of the Selenium DSL.
+   *
+   * <p>
+   * This class enables syntax such as the following:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * weekField("q").value should be ("1996-W16")
+   * </pre>
+   *
+   * @param underlying the <code>WebElement</code> representing a week field
+   * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a week field
+   */
+  final class WeekField(val underlying: WebElement) extends Element with ValueElement {
+    checkCorrectType(isWeekField, "week")
+  }
+
   /**
    * This class is part of ScalaTest's Selenium DSL. Please see the documentation for
    * <a href="WebBrowser.html"><code>WebBrowser</code></a> for an overview of the Selenium DSL.
@@ -2646,6 +2941,32 @@ trait WebBrowser {
       new TextArea(element)
     else if (isPasswordField(element))
       new PasswordField(element)
+    else if (isEmailField(element))
+      new EmailField(element)
+    else if (isColorField(element))
+      new ColorField(element)
+    else if (isDateField(element))
+      new DateField(element)
+    else if (isDateTimeField(element))
+      new DateTimeField(element)
+    else if (isDateTimeLocalField(element))
+      new DateTimeLocalField(element)
+    else if (isMonthField(element))
+      new MonthField(element)
+    else if (isNumberField(element))
+      new NumberField(element)
+    else if (isRangeField(element))
+      new RangeField(element)
+    else if (isSearchField(element))
+      new SearchField(element)
+    else if (isTelField(element))
+      new TelField(element)
+    else if (isTimeField(element))
+      new TimeField(element)
+    else if (isUrlField(element))
+      new UrlField(element)
+    else if (isWeekField(element))
+      new WeekField(element)
     else if (isCheckBox(element))
       new Checkbox(element)
     else if (isRadioButton(element))
@@ -2832,6 +3153,305 @@ trait WebBrowser {
   def pwdField(queryString: String)(implicit driver: WebDriver): PasswordField = 
     tryQueries(queryString)(q => new PasswordField(q.webElement))
   
+  /**
+   * Finds and returns the first <code>EmailField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
+   * if element not found or the found element is not a <code>EmailField</code>.
+   *
+   * @param query the <code>Query</code> with which to search
+   * @param driver the <code>WebDriver</code> with which to drive the browser
+   * @throws TestFailedException if element not found or found element is not a <code>EmailField</code>
+   * @return the <code>EmailField</code> selected by this query
+   */
+  def emailField(query: Query)(implicit driver: WebDriver): EmailField = new EmailField(query.webElement)
+  
+  /**
+   * Finds and returns the first <code>EmailField</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
+   * if element not found or the found element is not a <code>EmailField</code>.
+   *
+   * @param queryString the string with which to search, first by ID then by name
+   * @param driver the <code>WebDriver</code> with which to drive the browser
+   * @throws TestFailedException if element not found or found element is not a <code>EmailField</code>
+   * @return the <code>EmailField</code> selected by this query
+   */
+  def emailField(queryString: String)(implicit driver: WebDriver): EmailField = 
+    tryQueries(queryString)(q => new EmailField(q.webElement))
+  
+  /**
+   * Finds and returns the first <code>ColorField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
+   * if element not found or the found element is not a <code>ColorField</code>.
+   *
+   * @param query the <code>Query</code> with which to search
+   * @param driver the <code>WebDriver</code> with which to drive the browser
+   * @throws TestFailedException if element not found or found element is not a <code>ColorField</code>
+   * @return the <code>ColorField</code> selected by this query
+   */
+  def colorField(query: Query)(implicit driver: WebDriver): ColorField = new ColorField(query.webElement)
+  
+  /**
+   * Finds and returns the first <code>ColorField</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
+   * if element not found or the found element is not a <code>ColorField</code>.
+   *
+   * @param queryString the string with which to search, first by ID then by name
+   * @param driver the <code>WebDriver</code> with which to drive the browser
+   * @throws TestFailedException if element not found or found element is not a <code>ColorField</code>
+   * @return the <code>ColorField</code> selected by this query
+   */
+  def colorField(queryString: String)(implicit driver: WebDriver): ColorField = 
+    tryQueries(queryString)(q => new ColorField(q.webElement))
+  
+  /**
+   * Finds and returns the first <code>DateField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
+   * if element not found or the found element is not a <code>DateField</code>.
+   *
+   * @param query the <code>Query</code> with which to search
+   * @param driver the <code>WebDriver</code> with which to drive the browser
+   * @throws TestFailedException if element not found or found element is not a <code>DateField</code>
+   * @return the <code>DateField</code> selected by this query
+   */
+  def dateField(query: Query)(implicit driver: WebDriver): DateField = new DateField(query.webElement)
+  
+  /**
+   * Finds and returns the first <code>DateField</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
+   * if element not found or the found element is not a <code>DateField</code>.
+   *
+   * @param queryString the string with which to search, first by ID then by name
+   * @param driver the <code>WebDriver</code> with which to drive the browser
+   * @throws TestFailedException if element not found or found element is not a <code>DateField</code>
+   * @return the <code>DateField</code> selected by this query
+   */
+  def dateField(queryString: String)(implicit driver: WebDriver): DateField = 
+    tryQueries(queryString)(q => new DateField(q.webElement))
+  
+  /**
+   * Finds and returns the first <code>DateTimeField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
+   * if element not found or the found element is not a <code>DateTimeField</code>.
+   *
+   * @param query the <code>Query</code> with which to search
+   * @param driver the <code>WebDriver</code> with which to drive the browser
+   * @throws TestFailedException if element not found or found element is not a <code>DateTimeField</code>
+   * @return the <code>DateTimeField</code> selected by this query
+   */
+  def dateTimeField(query: Query)(implicit driver: WebDriver): DateTimeField = new DateTimeField(query.webElement)
+  
+  /**
+   * Finds and returns the first <code>DateTimeField</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
+   * if element not found or the found element is not a <code>DateTimeField</code>.
+   *
+   * @param queryString the string with which to search, first by ID then by name
+   * @param driver the <code>WebDriver</code> with which to drive the browser
+   * @throws TestFailedException if element not found or found element is not a <code>DateTimeField</code>
+   * @return the <code>DateTimeField</code> selected by this query
+   */
+  def dateTimeField(queryString: String)(implicit driver: WebDriver): DateTimeField = 
+    tryQueries(queryString)(q => new DateTimeField(q.webElement))
+
+  /**
+   * Finds and returns the first <code>DateTimeLocalField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
+   * if element not found or the found element is not a <code>DateTimeLocalField</code>.
+   *
+   * @param query the <code>Query</code> with which to search
+   * @param driver the <code>WebDriver</code> with which to drive the browser
+   * @throws TestFailedException if element not found or found element is not a <code>DateTimeLocalField</code>
+   * @return the <code>DateTimeLocalField</code> selected by this query
+   */
+  def dateTimeLocalField(query: Query)(implicit driver: WebDriver): DateTimeLocalField = new DateTimeLocalField(query.webElement)
+  
+  /**
+   * Finds and returns the first <code>DateTimeLocalField</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
+   * if element not found or the found element is not a <code>DateTimeLocalField</code>.
+   *
+   * @param queryString the string with which to search, first by ID then by name
+   * @param driver the <code>WebDriver</code> with which to drive the browser
+   * @throws TestFailedException if element not found or found element is not a <code>DateTimeLocalField</code>
+   * @return the <code>DateTimeLocalField</code> selected by this query
+   */
+  def dateTimeLocalField(queryString: String)(implicit driver: WebDriver): DateTimeLocalField = 
+    tryQueries(queryString)(q => new DateTimeLocalField(q.webElement))
+
+  /**
+   * Finds and returns the first <code>MonthField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
+   * if element not found or the found element is not a <code>MonthField</code>.
+   *
+   * @param query the <code>Query</code> with which to search
+   * @param driver the <code>WebDriver</code> with which to drive the browser
+   * @throws TestFailedException if element not found or found element is not a <code>MonthField</code>
+   * @return the <code>MonthField</code> selected by this query
+   */
+  def monthField(query: Query)(implicit driver: WebDriver): MonthField = new MonthField(query.webElement)
+  
+  /**
+   * Finds and returns the first <code>MonthField</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
+   * if element not found or the found element is not a <code>MonthField</code>.
+   *
+   * @param queryString the string with which to search, first by ID then by name
+   * @param driver the <code>WebDriver</code> with which to drive the browser
+   * @throws TestFailedException if element not found or found element is not a <code>MonthField</code>
+   * @return the <code>MonthField</code> selected by this query
+   */
+  def monthField(queryString: String)(implicit driver: WebDriver): MonthField = 
+    tryQueries(queryString)(q => new MonthField(q.webElement))
+  
+  /**
+   * Finds and returns the first <code>NumberField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
+   * if element not found or the found element is not a <code>NumberField</code>.
+   *
+   * @param query the <code>Query</code> with which to search
+   * @param driver the <code>WebDriver</code> with which to drive the browser
+   * @throws TestFailedException if element not found or found element is not a <code>NumberField</code>
+   * @return the <code>NumberField</code> selected by this query
+   */
+  def numberField(query: Query)(implicit driver: WebDriver): NumberField = new NumberField(query.webElement)
+  
+  /**
+   * Finds and returns the first <code>NumberField</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
+   * if element not found or the found element is not a <code>NumberField</code>.
+   *
+   * @param queryString the string with which to search, first by ID then by name
+   * @param driver the <code>WebDriver</code> with which to drive the browser
+   * @throws TestFailedException if element not found or found element is not a <code>NumberField</code>
+   * @return the <code>NumberField</code> selected by this query
+   */
+  def numberField(queryString: String)(implicit driver: WebDriver): NumberField = 
+    tryQueries(queryString)(q => new NumberField(q.webElement))
+  
+  /**
+   * Finds and returns the first <code>RangeField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
+   * if element not found or the found element is not a <code>RangeField</code>.
+   *
+   * @param query the <code>Query</code> with which to search
+   * @param driver the <code>WebDriver</code> with which to drive the browser
+   * @throws TestFailedException if element not found or found element is not a <code>RangeField</code>
+   * @return the <code>RangeField</code> selected by this query
+   */
+  def rangeField(query: Query)(implicit driver: WebDriver): RangeField = new RangeField(query.webElement)
+  
+  /**
+   * Finds and returns the first <code>RangeField</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
+   * if element not found or the found element is not a <code>RangeField</code>.
+   *
+   * @param queryString the string with which to search, first by ID then by name
+   * @param driver the <code>WebDriver</code> with which to drive the browser
+   * @throws TestFailedException if element not found or found element is not a <code>RangeField</code>
+   * @return the <code>RangeField</code> selected by this query
+   */
+  def rangeField(queryString: String)(implicit driver: WebDriver): RangeField = 
+    tryQueries(queryString)(q => new RangeField(q.webElement))
+  
+  /**
+   * Finds and returns the first <code>SearchField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
+   * if element not found or the found element is not a <code>SearchField</code>.
+   *
+   * @param query the <code>Query</code> with which to search
+   * @param driver the <code>WebDriver</code> with which to drive the browser
+   * @throws TestFailedException if element not found or found element is not a <code>SearchField</code>
+   * @return the <code>SearchField</code> selected by this query
+   */
+  def searchField(query: Query)(implicit driver: WebDriver): SearchField = new SearchField(query.webElement)
+  
+  /**
+   * Finds and returns the first <code>SearchField</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
+   * if element not found or the found element is not a <code>SearchField</code>.
+   *
+   * @param queryString the string with which to search, first by ID then by name
+   * @param driver the <code>WebDriver</code> with which to drive the browser
+   * @throws TestFailedException if element not found or found element is not a <code>SearchField</code>
+   * @return the <code>SearchField</code> selected by this query
+   */
+  def searchField(queryString: String)(implicit driver: WebDriver): SearchField = 
+    tryQueries(queryString)(q => new SearchField(q.webElement))
+  
+  /**
+   * Finds and returns the first <code>TelField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
+   * if element not found or the found element is not a <code>TelField</code>.
+   *
+   * @param query the <code>Query</code> with which to search
+   * @param driver the <code>WebDriver</code> with which to drive the browser
+   * @throws TestFailedException if element not found or found element is not a <code>TelField</code>
+   * @return the <code>TelField</code> selected by this query
+   */
+  def telField(query: Query)(implicit driver: WebDriver): TelField = new TelField(query.webElement)
+  
+  /**
+   * Finds and returns the first <code>TelField</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
+   * if element not found or the found element is not a <code>TelField</code>.
+   *
+   * @param queryString the string with which to search, first by ID then by name
+   * @param driver the <code>WebDriver</code> with which to drive the browser
+   * @throws TestFailedException if element not found or found element is not a <code>TelField</code>
+   * @return the <code>TelField</code> selected by this query
+   */
+  def telField(queryString: String)(implicit driver: WebDriver): TelField = 
+    tryQueries(queryString)(q => new TelField(q.webElement))
+  
+  /**
+   * Finds and returns the first <code>TimeField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
+   * if element not found or the found element is not a <code>TimeField</code>.
+   *
+   * @param query the <code>Query</code> with which to search
+   * @param driver the <code>WebDriver</code> with which to drive the browser
+   * @throws TestFailedException if element not found or found element is not a <code>TimeField</code>
+   * @return the <code>TimeField</code> selected by this query
+   */
+  def timeField(query: Query)(implicit driver: WebDriver): TimeField = new TimeField(query.webElement)
+  
+  /**
+   * Finds and returns the first <code>TimeField</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
+   * if element not found or the found element is not a <code>TimeField</code>.
+   *
+   * @param queryString the string with which to search, first by ID then by name
+   * @param driver the <code>WebDriver</code> with which to drive the browser
+   * @throws TestFailedException if element not found or found element is not a <code>TimeField</code>
+   * @return the <code>TimeField</code> selected by this query
+   */
+  def timeField(queryString: String)(implicit driver: WebDriver): TimeField = 
+    tryQueries(queryString)(q => new TimeField(q.webElement))
+
+  /**
+   * Finds and returns the first <code>UrlField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
+   * if element not found or the found element is not a <code>UrlField</code>.
+   *
+   * @param query the <code>Query</code> with which to search
+   * @param driver the <code>WebDriver</code> with which to drive the browser
+   * @throws TestFailedException if element not found or found element is not a <code>UrlField</code>
+   * @return the <code>UrlField</code> selected by this query
+   */
+  def urlField(query: Query)(implicit driver: WebDriver): UrlField = new UrlField(query.webElement)
+  
+  /**
+   * Finds and returns the first <code>UrlField</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
+   * if element not found or the found element is not a <code>UrlField</code>.
+   *
+   * @param queryString the string with which to search, first by ID then by name
+   * @param driver the <code>WebDriver</code> with which to drive the browser
+   * @throws TestFailedException if element not found or found element is not a <code>UrlField</code>
+   * @return the <code>UrlField</code> selected by this query
+   */
+  def urlField(queryString: String)(implicit driver: WebDriver): UrlField = 
+    tryQueries(queryString)(q => new UrlField(q.webElement))
+
+  /**
+   * Finds and returns the first <code>WeekField</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
+   * if element not found or the found element is not a <code>WeekField</code>.
+   *
+   * @param query the <code>Query</code> with which to search
+   * @param driver the <code>WebDriver</code> with which to drive the browser
+   * @throws TestFailedException if element not found or found element is not a <code>WeekField</code>
+   * @return the <code>WeekField</code> selected by this query
+   */
+  def weekField(query: Query)(implicit driver: WebDriver): WeekField = new WeekField(query.webElement)
+  
+  /**
+   * Finds and returns the first <code>WeekField</code> selected by the specified string ID or name, throws <code>TestFailedException</code> 
+   * if element not found or the found element is not a <code>WeekField</code>.
+   *
+   * @param queryString the string with which to search, first by ID then by name
+   * @param driver the <code>WebDriver</code> with which to drive the browser
+   * @throws TestFailedException if element not found or found element is not a <code>WeekField</code>
+   * @return the <code>WeekField</code> selected by this query
+   */
+  def weekField(queryString: String)(implicit driver: WebDriver): WeekField = 
+    tryQueries(queryString)(q => new WeekField(q.webElement))
+
   /**
    * Finds and returns <code>RadioButtonGroup</code> selected by the specified group name, throws <code>TestFailedException</code> if 
    * no element with the specified group name is found, or found any element with the specified group name but not a <code>RadioButton</code>
@@ -3678,9 +4298,13 @@ trait WebBrowser {
       case tf: TextField => tf.value = value
       case ta: TextArea => ta.value = value
       case pf: PasswordField => pf.value = value
+      case pf: EmailField => pf.value = value
+      case pf: SearchField => pf.value = value
+      case pf: TelField => pf.value = value
+      case pf: UrlField => pf.value = value
       case _ => 
         throw new TestFailedException(
-                     sde => Some("Currently selected element is neither a text field, text area nor password field"),
+                     sde => Some("Currently selected element is neither a text field, text area, password field, email field, search field, tel field or url field"),
                      None,
                      getStackDepthFun("WebBrowser.scala", "switch", 1)
                    )

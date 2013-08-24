@@ -39,7 +39,141 @@ import org.openqa.selenium.ie.InternetExplorerDriver
 import org.openqa.selenium.Cookie
 import org.openqa.selenium.WebElement
 
-class WebBrowserSpec extends JettySpec with ShouldMatchers with SpanSugar with WebBrowser with HtmlUnit {
+
+trait InputFieldBehaviour extends JettySpec with ShouldMatchers with SpanSugar with WebBrowser with HtmlUnit {
+  def inputField[T <: ValueElement](file: String, fn: (String) => T, typeDescription: String, description: String, value1: String, value2: String, lineNumber: Int) = {
+    it("should throw TFE with valid stack depth if specified item not found") {
+      go to (host + file)
+      val caught = intercept[TestFailedException] {
+        fn("unknown")
+      }
+      caught.failedCodeFileName should be (Some("WebBrowserSpec.scala"))
+      caught.failedCodeLineNumber should be (Some(lineNumber))
+    }
+
+    it("should throw TFE with valid stack depth if specified is found but is not a " + description + " field") {
+      go to (host + file)
+      val caught = intercept[TestFailedException] {
+        fn("area1")
+      }
+      caught.failedCodeLineNumber should be (Some(lineNumber))
+      caught.failedCodeFileName should be (Some("WebBrowserSpec.scala"))
+    }
+
+    it("should, when a valid " + description + " field is found, return a " + typeDescription + " instance") {
+      go to (host + file)
+      val secret1 = fn("secret1")
+      secret1.value should be (value1)
+    }
+
+    it("should, when multiple matching " + description + " fields exist, return the first one") {
+      go to (host + file)
+      val secret2 = fn("secret2")
+      secret2.value should be (value2)
+    }
+  }
+
+  def findField[T <: ValueElement](file: String, typeDescription: String, description: String, value: String)(implicit m: Manifest[T]) = {
+    it("should return a defined Option[Element] containing an instance of " + typeDescription + " if specified item is found to be a " + description + " field") {
+      go to (host + file)
+      find("secret1") match {
+        case Some(x) if (m.runtimeClass.isAssignableFrom(x.getClass)) => x.asInstanceOf[T].value should be (value)
+        case other => fail("Expected Some(" + typeDescription + "), but got: " + other)
+      }
+    }
+  }
+
+  def iteratorField[T <: ValueElement](file: String, typeDescription: String, description: String, value: String)(implicit m: Manifest[T]) = {
+    it("should return a defined Iterator[Element] containing an instance of " + typeDescription + " if specified item is found to be a " + description + " field") {
+      go to (host + file)
+      val secret1 = findAll("secret1")
+      secret1.hasNext should be (true)
+      val v = secret1.next
+      if (m.runtimeClass.isAssignableFrom(v.getClass)) {
+        v.asInstanceOf[T].value should be (value)
+      } else {
+        fail("Expected " + typeDescription + ", but got: " + v)
+      }
+    }
+  }
+
+  def valueField[T <: ValueElement](file: String, fn: (String) => T, typeDescription: String, description: String, value1: String, value2: String) = {
+    it("should get and set " + description + " field value correctly.") {
+      go to (host + file)
+      pageTitle should be (typeDescription)
+
+      fn("secret1").value should be ("")                   
+
+      fn("secret1").attribute("value") should be (Some(""))
+      fn("secret1").value = value1
+      fn("secret1").value should be (value1)
+      fn("secret1").attribute("value") should be (Some(value1))
+
+      fn("secret2").value should be ("")
+      fn("secret2").attribute("value") should be (Some(""))
+      fn("secret2").value = value2
+      fn("secret2").value should be (value2)
+      fn("secret2").attribute("value") should be (Some(value2))
+    }
+  }
+
+  def clearField[T <: ValueElement](file: String, fn: (String) => T, typeDescription: String, description: String, value1: String) = {
+    it("should clear a " + description + " field.") {
+      go to (host + file)
+      pageTitle should be (typeDescription)
+                                                                
+      fn("secret1").value = value1                     
+      fn("secret1").value should be (value1)
+
+      fn("secret1").clear()
+      fn("secret1").value should be ("")                   
+
+      fn("secret1").value = value1                     
+      fn("secret1").value should be (value1)
+    }
+  }
+
+  def enterField[T <: ValueElement](file: String, fn: (String) => T, typeDescription: String, description: String) = {
+    it("should allow text to be entered in the active element if it is a " + description + " field.") {
+      go to (host + file)
+      pageTitle should be (typeDescription)
+                                                                
+      fn("secret1").value should be ("")                   
+
+      click on "secret1"
+      enter("secret 1A")
+      fn("secret1").value should be ("secret 1A")                   
+      enter("secret 1B")
+      fn("secret1").value should be ("secret 1B")                   
+      enter("")
+      fn("secret1").value should be ("")                   
+
+      pressKeys("first secret!")
+      fn("secret1").value should be ("first secret!")                   
+      pressKeys(" second secret!")
+      fn("secret1").value should be ("first secret! second secret!")                   
+      pressKeys(" third secret!")
+      fn("secret1").value should be ("first secret! second secret! third secret!")                   
+    }
+
+  }
+
+  private[this] def myLineNumber = {
+    val st = Thread.currentThread.getStackTrace
+
+    st.foreach(s => println("--" + s.toString()))
+
+    if (!st(2).getMethodName.contains("myLineNumber"))
+      st(3).getLineNumber
+    else if (!st(3).getMethodName.contains("myLineNumber"))
+      st(4).getLineNumber
+    else
+      st(5).getLineNumber
+  }
+
+}
+
+class WebBrowserSpec extends JettySpec with ShouldMatchers with SpanSugar with WebBrowser with HtmlUnit with InputFieldBehaviour {
 
   describe("textField") {
     it("should throw TFE with valid stack depth if specified item not found") {
@@ -99,6 +233,58 @@ class WebBrowserSpec extends JettySpec with ShouldMatchers with SpanSugar with W
     }
   }
 
+  describe("emailField") {
+    it should behave like inputField[EmailField]("find-emailfield.html", emailField _, "EmailField", "email", "email1", "email2", thisLineNumber)
+  }
+
+  describe("colorField") {
+    it should behave like inputField[ColorField]("find-colorfield.html", colorField _, "ColorField", "color", "#060606", "#070707", thisLineNumber)
+  }
+
+  describe("dateField") {
+    it should behave like inputField[DateField]("find-datefield.html", dateField _, "DateField", "date", "2003-02-01", "2005-04-03", thisLineNumber)
+  }
+
+  describe("dateTimeField") {
+    it should behave like inputField[DateTimeField]("find-datetimefield.html", dateTimeField _, "DateTimeField", "datetime", "2003-12-31T23:59:60Z", "2004-12-31T23:59:60Z", thisLineNumber)
+  }
+
+  describe("dateTimeLocalField") {
+    it should behave like inputField[DateTimeLocalField]("find-datetimelocalfield.html", dateTimeLocalField _, "DateTimeLocalField", "datetime-local", "2003-12-31T23:59:60Z", "2004-12-31T23:59:60Z", thisLineNumber)
+  }
+
+  describe("monthField") {
+    it should behave like inputField[MonthField]("find-monthfield.html", monthField _, "MonthField", "month", "2001-02", "2003-04", thisLineNumber)
+  }
+
+  describe("numberField") {
+    it should behave like inputField[NumberField]("find-numberfield.html", numberField _, "NumberField", "number", "1.2", "3", thisLineNumber)
+  }
+
+  describe("rangeField") {
+    it should behave like inputField[RangeField]("find-rangefield.html", rangeField _, "RangeField", "range", "1.2", "3", thisLineNumber)
+  }
+
+  describe("searchField") {
+    it should behave like inputField[SearchField]("find-searchfield.html", searchField _, "SearchField", "search", "search1", "search2", thisLineNumber)
+  }
+
+  describe("telField") {
+    it should behave like inputField[TelField]("find-telfield.html", telField _, "TelField", "tel", "tel1", "tel2", thisLineNumber)
+  }
+
+  describe("timeField") {
+    it should behave like inputField[TimeField]("find-timefield.html", timeField _, "TimeField", "time", "20:20:20", "21:21:21", thisLineNumber)
+  }
+
+  describe("urlField") {
+    it should behave like inputField[UrlField]("find-urlfield.html", urlField _, "UrlField", "url", "http://1.bar.com", "http://2.bar.com", thisLineNumber)
+  }
+
+  describe("weekField") {
+    it should behave like inputField[WeekField]("find-weekfield.html", weekField _, "WeekField", "week", "1996-W16", "1997-W17", thisLineNumber)
+  }
+
   describe("textArea") {
     it("should throw TFE with valid stack depth if specified item not found") {
       go to (host + "find-textarea.html")
@@ -116,7 +302,7 @@ class WebBrowserSpec extends JettySpec with ShouldMatchers with SpanSugar with W
       caught.failedCodeLineNumber should be (Some(thisLineNumber - 2))
       caught.failedCodeFileName should be (Some("WebBrowserSpec.scala"))
     }
-    it("should, when a valid text area is found, return a TestArea instance") {
+    it("should, when a valid text area is found, return a TextArea instance") {
       go to (host + "find-textarea.html")
       val textarea1 = textArea("textarea1")
       textarea1.text should be ("value1")
@@ -426,6 +612,21 @@ class WebBrowserSpec extends JettySpec with ShouldMatchers with SpanSugar with W
           fail("Expected Some(pwdField: PasswordField), but got: " + other)
       }
     }
+
+    it should behave like findField[EmailField]("find-emailfield.html", "EmailField", "email", "email1")
+    it should behave like findField[ColorField]("find-colorfield.html", "ColorField", "color", "#060606")
+    it should behave like findField[DateField]("find-datefield.html", "DateField", "date", "2003-02-01")
+    it should behave like findField[DateTimeField]("find-datetimefield.html", "DateTimeField", "datetime", "2003-12-31T23:59:60Z")
+    it should behave like findField[DateTimeLocalField]("find-datetimelocalfield.html", "DateTimeLocalField", "datetime-local", "2003-12-31T23:59:60Z")
+    it should behave like findField[MonthField]("find-monthfield.html", "MonthField", "month", "2001-02")
+    it should behave like findField[NumberField]("find-numberfield.html", "NumberField", "number", "1.2")
+    it should behave like findField[RangeField]("find-rangefield.html", "RangeField", "range", "1.2")
+    it should behave like findField[SearchField]("find-searchfield.html", "SearchField", "search", "search1")
+    it should behave like findField[TelField]("find-telfield.html", "TelField", "tel", "tel1")
+    it should behave like findField[TimeField]("find-timefield.html", "TimeField", "time", "20:20:20")
+    it should behave like findField[UrlField]("find-urlfield.html", "UrlField", "url", "http://1.bar.com")
+    it should behave like findField[WeekField]("find-weekfield.html", "WeekField", "week", "1996-W16")
+
     it("should return a defined Option[Element] containing an instance of RadioButton if specified item is found to be a radio button") {
       go to (host + "find-radio.html")
       find("group2") match {
@@ -511,6 +712,21 @@ class WebBrowserSpec extends JettySpec with ShouldMatchers with SpanSugar with W
           fail("Expected PasswordField, but got: " + other)
       }
     }
+
+    it should behave like iteratorField[EmailField]("find-emailfield.html", "EmailField", "email", "email1")
+    it should behave like iteratorField[ColorField]("find-colorfield.html", "ColorField", "color", "#060606")
+    it should behave like iteratorField[DateField]("find-datefield.html", "DateField", "date", "2003-02-01")
+    it should behave like iteratorField[DateTimeField]("find-datetimefield.html", "DateTimeField", "datetime", "2003-12-31T23:59:60Z")
+    it should behave like iteratorField[DateTimeLocalField]("find-datetimelocalfield.html", "DateTimeLocalField", "datetime-local", "2003-12-31T23:59:60Z")
+    it should behave like iteratorField[MonthField]("find-monthfield.html", "MonthField", "month", "2001-02")
+    it should behave like iteratorField[NumberField]("find-numberfield.html", "NumberField", "number", "1.2")
+    it should behave like iteratorField[RangeField]("find-rangefield.html", "RangeField", "range", "1.2")
+    it should behave like iteratorField[SearchField]("find-searchfield.html", "SearchField", "search", "search1")
+    it should behave like iteratorField[TelField]("find-telfield.html", "TelField", "tel", "tel1")
+    it should behave like iteratorField[TimeField]("find-timefield.html", "TimeField", "time", "20:20:20")
+    it should behave like iteratorField[UrlField]("find-urlfield.html", "UrlField", "url", "http://1.bar.com")
+    it should behave like iteratorField[WeekField]("find-weekfield.html", "WeekField", "week", "1996-W16")
+
     it("should return a defined Iterator[Element] containing an instance of RadioButton if specified item is found to be a radio button") {
       go to (host + "find-radio.html")
       val group1 = findAll("group1")
@@ -643,6 +859,20 @@ class WebBrowserSpec extends JettySpec with ShouldMatchers with SpanSugar with W
       pwdField("secret2").attribute("value") should be (Some("value 2"))
     }
 
+    it should behave like valueField[EmailField]("emailfield.html", emailField _, "EmailField", "email", "value 1", "value 2")
+    it should behave like valueField[ColorField]("colorfield.html", colorField _, "ColorField", "color", "#676767", "#0f0f0f")
+    it should behave like valueField[DateField]("datefield.html", dateField _, "DateField", "date", "2003-02-01", "2005-04-03")
+    it should behave like valueField[DateTimeField]("datetimefield.html", dateTimeField _, "DateTimeField", "datetime", "1990-12-31T23:59:60Z", "1992-12-31T23:59:60Z")
+    it should behave like valueField[DateTimeLocalField]("datetimelocalfield.html", dateTimeLocalField _, "DateTimeLocalField", "datetime-local", "1990-12-31T23:59:60Z", "1992-12-31T23:59:60Z")
+    it should behave like valueField[MonthField]("monthfield.html", monthField _, "MonthField", "month", "2003-04", "2005-06")
+    it should behave like valueField[NumberField]("numberfield.html", numberField _, "NumberField", "number", "1.2", "3")
+    it should behave like valueField[RangeField]("rangefield.html", rangeField _, "RangeField", "range", "1.2", "3")
+    it should behave like valueField[SearchField]("searchfield.html", searchField _, "SearchField", "search", "value 1", "value 2")
+    it should behave like valueField[TelField]("telfield.html", telField _, "TelField", "tel", "value 1", "value 2")
+    it should behave like valueField[TimeField]("timefield.html", timeField _, "TimeField", "time", "20:20:20", "22:22:22")
+    it should behave like valueField[UrlField]("urlfield.html", urlField _, "UrlField", "url", "http://1.bar.com", "http://2.bar.com")
+    it should behave like valueField[WeekField]("weekfield.html", weekField _, "WeekField", "week", "1996-W16", "1997-W17")
+
     it("should allow text to be entered in the active element if it is a text field.") {
 
       go to (host + "textfield.html")
@@ -689,7 +919,56 @@ class WebBrowserSpec extends JettySpec with ShouldMatchers with SpanSugar with W
       pwdField("secret1").value should be ("first secret! second secret! third secret!")                   
     }
     
-    it("should throw TestFailedException with correct stack depth when enter is called currently selected element is neither text field, text area or password field.") {
+    it should behave like enterField[EmailField]("emailfield.html", emailField _, "EmailField", "email2")
+    it should behave like enterField[SearchField]("searchfield.html", searchField _, "SearchField", "search2")
+    it should behave like enterField[TelField]("telfield.html", telField _, "TelField", "tel2")
+    it should behave like enterField[UrlField]("urlfield.html", urlField _, "UrlField", "url2")
+
+    it("should allow text to be entered in the active element if it is a email field.") {
+      go to (host + "emailfield.html")
+      pageTitle should be ("EmailField")
+                                                                
+      emailField("secret1").value should be ("")                   
+
+      click on "secret1"
+      enter("secret 1A")
+      emailField("secret1").value should be ("secret 1A")                   
+      enter("secret 1B")
+      emailField("secret1").value should be ("secret 1B")                   
+      enter("")
+      emailField("secret1").value should be ("")                   
+
+      pressKeys("first secret!")
+      emailField("secret1").value should be ("first secret!")                   
+      pressKeys(" second secret!")
+      emailField("secret1").value should be ("first secret! second secret!")                   
+      pressKeys(" third secret!")
+      emailField("secret1").value should be ("first secret! second secret! third secret!")                   
+    }
+
+    it("should allow text to be entered in the active element if it is a search field.") {
+      go to (host + "searchfield.html")
+      pageTitle should be ("SearchField")
+                                                                
+      searchField("secret1").value should be ("")                   
+
+      click on "secret1"
+      enter("secret 1A")
+      searchField("secret1").value should be ("secret 1A")                   
+      enter("secret 1B")
+      searchField("secret1").value should be ("secret 1B")                   
+      enter("")
+      searchField("secret1").value should be ("")                   
+
+      pressKeys("first secret!")
+      searchField("secret1").value should be ("first secret!")                   
+      pressKeys(" second secret!")
+      searchField("secret1").value should be ("first secret! second secret!")                   
+      pressKeys(" third secret!")
+      searchField("secret1").value should be ("first secret! second secret! third secret!")                   
+    }
+
+    it("should throw TestFailedException with correct stack depth when enter is called currently selected element is neither text field, text area, password field, email field, search field, tel field, or url field.") {
       go to (host + "checkbox.html")
       click on ("opt1")
       val e = intercept[TestFailedException] {
@@ -755,6 +1034,21 @@ class WebBrowserSpec extends JettySpec with ShouldMatchers with SpanSugar with W
       pwdField("secret1").value should be ("value 1")
     }
     
+
+    it should behave like clearField[EmailField]("emailfield.html", emailField _, "EmailField", "email", "value 1")
+    it should behave like clearField[ColorField]("colorfield.html", colorField _, "ColorField", "color", "#656565")
+    it should behave like clearField[DateField]("datefield.html", dateField _, "DateField", "date", "2013-06-07")
+    it should behave like clearField[DateTimeField]("datetimefield.html", dateTimeField _, "DateTimeField", "datetime", "1990-12-31T23:59:60Z")
+    it should behave like clearField[DateTimeLocalField]("datetimelocalfield.html", dateTimeLocalField _, "DateTimeLocalField", "datetime-local", "1990-12-31T23:59:60Z")
+    it should behave like clearField[MonthField]("monthfield.html", monthField _, "MonthField", "month", "2003-04")
+    it should behave like clearField[NumberField]("numberfield.html", numberField _, "NumberField", "number", "3")
+    it should behave like clearField[RangeField]("rangefield.html", rangeField _, "RangeField", "range", "3")
+    it should behave like clearField[SearchField]("searchfield.html", searchField _, "SearchField", "search", "value 1")
+    it should behave like clearField[TelField]("telfield.html", telField _, "TelField", "tel", "value 1")
+    it should behave like clearField[TimeField]("timefield.html", timeField _, "TimeField", "time", "20:20:20")
+    it should behave like clearField[UrlField]("urlfield.html", urlField _, "UrlField", "url", "http://1.bar.com")
+    it should behave like clearField[WeekField]("weekfield.html", weekField _, "WeekField", "week", "1996-W16")
+
     it("should allow text to be entered in the active element if it is a text area.") {
       go to (host + "textarea.html")
       pageTitle should be ("Text Area")
@@ -1708,9 +2002,10 @@ class WebBrowserSpec extends JettySpec with ShouldMatchers with SpanSugar with W
 
     if (!st(2).getMethodName.contains("thisLineNumber"))
       st(2).getLineNumber
-    else
+    else if (!st(3).getMethodName.contains("thisLineNumber"))
       st(3).getLineNumber
+    else
+      st(4).getLineNumber
   }
 }
-
 // class ParallelWebBrowserSpec extends WebBrowserSpec with ParallelTestExecution
