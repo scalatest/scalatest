@@ -15,14 +15,24 @@
  */
 package org.scalatest.words
 
-import org.scalautils.Prettifier
+import org.scalatest._
+import Matchers._
+import java.io.File
 
-/**
- * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
- * the matchers DSL.
- *
- * @author Bill Venners
- */
-final class ResultOfAWordToSymbolApplication(val symbol: Symbol) {
-  override def toString: String = "a " + Prettifier.default(symbol)
+class ResultOfAnWordToSymbolApplicationSpec extends Spec {
+  
+  object `ResultOfAnWordToSymbolApplication ` {
+    
+    case class MyFile(
+      val name: String,
+      val file: Boolean,
+      val isDirectory: Boolean
+    )
+    
+    def `should have pretty toString` {
+      val result = new ResultOfAnWordToSymbolApplication('file)
+      result.toString should be ("an 'file")
+    }
+  }
+  
 }

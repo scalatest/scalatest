@@ -930,7 +930,9 @@ object TripleEqualsSupport {
    * @param right the right-hand side value for an equality assertion
    * @param expectingEqual <code>true</code> if the result of a <code>===</code> invocation; <code>false</code> if the result of a <code>!==</code> invocation.
    */
-  final case class TripleEqualsInvocation[T](right: T, expectingEqual: Boolean)
+  final case class TripleEqualsInvocation[T](right: T, expectingEqual: Boolean) {
+    override def toString: String = (if (expectingEqual) "===" else "!==") + " " + Prettifier.default(right)
+  }
 
   /**
    * Class representing an spread (<em>i.e.</em>, range) between two numbers.

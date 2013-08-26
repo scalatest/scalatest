@@ -317,7 +317,7 @@ final class NotWord {
           Resources("wasNotLessThan"), 
           Vector(left, resultOfLessThanComparison.right)
         )
-      override def toString: String = "not be < " + Prettifier.default(resultOfLessThanComparison.right)
+      override def toString: String = "not be " + Prettifier.default(resultOfLessThanComparison)
     }
   }
 
@@ -338,7 +338,7 @@ final class NotWord {
           Resources("wasNotGreaterThan"), 
           Vector(left, resultOfGreaterThanComparison.right)
         )
-      override def toString: String = "not be > " + Prettifier.default(resultOfGreaterThanComparison.right)
+      override def toString: String = "not be " + Prettifier.default(resultOfGreaterThanComparison)
     }
   }
 
@@ -359,7 +359,7 @@ final class NotWord {
           Resources("wasNotLessThanOrEqualTo"), 
           Vector(left, resultOfLessThanOrEqualToComparison.right)
         )
-      override def toString: String = "not be <= " + Prettifier.default(resultOfLessThanOrEqualToComparison.right)
+      override def toString: String = "not be " + Prettifier.default(resultOfLessThanOrEqualToComparison)
     }
   }
 
@@ -380,7 +380,7 @@ final class NotWord {
           FailureMessages("wasNotGreaterThanOrEqualTo"), 
           Vector(left, resultOfGreaterThanOrEqualToComparison.right)
         )
-      override def toString: String = "not be >= " + Prettifier.default(resultOfGreaterThanOrEqualToComparison.right)
+      override def toString: String = "not be " + Prettifier.default(resultOfGreaterThanOrEqualToComparison)
     }
   }
 
@@ -411,7 +411,7 @@ final class NotWord {
           Vector(leftee, rightee)
         )
       }
-      override def toString: String = "not be === " + Prettifier.default(tripleEqualsInvocation.right)
+      override def toString: String = "not be " + Prettifier.default(tripleEqualsInvocation)
     }
   }
 
@@ -483,7 +483,7 @@ final class NotWord {
           positiveMatchResult.failureMessageArgs
         )
       }
-      override def toString: String = "not be a " + Prettifier.default(resultOfAWordApplication.symbol)
+      override def toString: String = "not be " + Prettifier.default(resultOfAWordApplication)
     }
   }
 
@@ -507,7 +507,7 @@ final class NotWord {
           Vector(left, UnquotedString(result.propertyName))
         )
       }
-      override def toString: String = "not be a " + Prettifier.default(resultOfAWordApplication.bePropertyMatcher)
+      override def toString: String = "not be " + Prettifier.default(resultOfAWordApplication)
     }
   }
   
@@ -531,7 +531,7 @@ final class NotWord {
           result.failureMessageArgs
         )
       }
-      override def toString: String = "not be a " + Prettifier.default(UnquotedString(resultOfAWordApplication.aMatcher.nounName))
+      override def toString: String = "not be " + Prettifier.default(resultOfAWordApplication)
     }
   }
 
@@ -555,7 +555,7 @@ final class NotWord {
           positiveMatchResult.failureMessageArgs
         )
       }
-      override def toString: String = "not be an " + Prettifier.default(resultOfAnWordApplication.symbol)
+      override def toString: String = "not be " + Prettifier.default(resultOfAnWordApplication)
     }
   }
 
@@ -578,7 +578,7 @@ final class NotWord {
           Vector(left, UnquotedString(result.propertyName))
         )
       }
-      override def toString: String = "not be an " + Prettifier.default(resultOfAnWordApplication.bePropertyMatcher)
+      override def toString: String = "not be " + Prettifier.default(resultOfAnWordApplication)
     }
   }
   

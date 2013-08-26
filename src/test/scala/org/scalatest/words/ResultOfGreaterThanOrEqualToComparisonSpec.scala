@@ -15,14 +15,17 @@
  */
 package org.scalatest.words
 
-import org.scalautils.Prettifier
+import org.scalatest._
+import Matchers._
 
-/**
- * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
- * the matchers DSL.
- *
- * @author Bill Venners
- */
-final class ResultOfAWordToSymbolApplication(val symbol: Symbol) {
-  override def toString: String = "a " + Prettifier.default(symbol)
+class ResultOfGreaterThanOrEqualToComparisonSpec extends Spec {
+  
+  object `ResultOfGreaterThanOrEqualToComparison ` {
+    
+    def `should have pretty toString` {
+      val result = new ResultOfGreaterThanOrEqualToComparison(8)
+      result.toString should be (">= 8")
+    }
+  }
+  
 }
