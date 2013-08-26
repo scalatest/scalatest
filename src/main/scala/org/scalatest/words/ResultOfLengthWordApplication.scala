@@ -18,6 +18,7 @@ package org.scalatest.words
 import org.scalatest.enablers.Length
 import org.scalatest.matchers.HavePropertyMatcher
 import org.scalatest.matchers.HavePropertyMatchResult
+import org.scalautils.Prettifier
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -41,4 +42,9 @@ final class ResultOfLengthWordApplication(val expectedLength: Long) {
       }
     }
   }
+  
+  /**
+   * Overrides toString to return "length X", where X is the expectedLength
+   */
+  override def toString: String = "length " + Prettifier.default(expectedLength)
 }

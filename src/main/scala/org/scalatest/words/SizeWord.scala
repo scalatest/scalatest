@@ -32,4 +32,9 @@ final class SizeWord {
    * </pre>
    */
   def apply(expectedSize: Long): ResultOfSizeWordApplication = new ResultOfSizeWordApplication(expectedSize)
+  
+  /**
+   * Overrides toString to return "size"
+   */
+  override def toString: String = "size"
 }

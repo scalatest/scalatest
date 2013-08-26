@@ -15,19 +15,18 @@
  */
 package org.scalatest.words
 
-/**
- * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
- * the matchers DSL.
- *
- * @author Bill Venners
- * @author Chee Seng
- */
-final class ResultOfThrownByApplication(fun: => Unit) {
+import org.scalatest._
+import Matchers._
+
+class ResultOfContainWordSpec extends Spec {
   
-  /**
-   * Execute the passed-in body of code.
-   */
-  def execute() = fun
+  object `ResultOfContainWord ` {
+    
+    def `should have pretty toString` {
+      val result = List(1, 2, 3) should contain
+      result.toString should be ("List(1, 2, 3) should contain")
+    }
+    
+  }
   
-  override def toString: String = "thrownBy {...}"
 }

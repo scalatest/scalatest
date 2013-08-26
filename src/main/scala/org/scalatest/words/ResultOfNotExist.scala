@@ -72,5 +72,10 @@ final class ResultOfNotExist(notWord: NotWord) {
    */
   def or[TYPECLASS1[_]](anotherMatcherFactory: MatcherFactory1[Any, TYPECLASS1]): MatcherFactory2[Any, Existence, TYPECLASS1] = 
     notWord.exist.or(anotherMatcherFactory)  
+    
+  /**
+   * Overrides toString to return "not exist"
+   */
+  override def toString: String = "not exist"
   
 }

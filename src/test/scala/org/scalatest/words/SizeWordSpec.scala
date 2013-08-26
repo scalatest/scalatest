@@ -15,19 +15,17 @@
  */
 package org.scalatest.words
 
-/**
- * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
- * the matchers DSL.
- *
- * @author Bill Venners
- * @author Chee Seng
- */
-final class ResultOfThrownByApplication(fun: => Unit) {
+import org.scalatest._
+import Matchers._
+
+class SizeWordSpec extends Spec {
   
-  /**
-   * Execute the passed-in body of code.
-   */
-  def execute() = fun
+  object `SizeWord ` {
+    
+    def `should have pretty toString` {
+      val result = new SizeWord
+      result.toString should be ("size")
+    }
+  }
   
-  override def toString: String = "thrownBy {...}"
 }

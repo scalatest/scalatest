@@ -15,19 +15,18 @@
  */
 package org.scalatest.words
 
-/**
- * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
- * the matchers DSL.
- *
- * @author Bill Venners
- * @author Chee Seng
- */
-final class ResultOfThrownByApplication(fun: => Unit) {
+import org.scalatest._
+import Matchers._
+
+class ResultOfOfTypeInvocationSpec extends Spec {
   
-  /**
-   * Execute the passed-in body of code.
-   */
-  def execute() = fun
+  object `ResultOfOfTypeInvocation ` {
+    
+    def `should have pretty toString` {
+      val result = of[Exception]
+      result.toString should be ("of[java.lang.Exception]")
+    }
+    
+  }
   
-  override def toString: String = "thrownBy {...}"
 }

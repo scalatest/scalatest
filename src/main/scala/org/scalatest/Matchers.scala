@@ -5708,7 +5708,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def should(notWord: NotWord): ResultOfNotWordForAny[T] = new ResultOfNotWordForAny[T](left, false)
+    def should(notWord: NotWord): ResultOfNotWordForAny[T] = new ResultOfNotWordForAny[T](left, false, "should")
 
     // In 2.10, will work with AnyVals. TODO: Also, Need to ensure Char works
     /**
@@ -6188,7 +6188,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(containWord: ContainWord): ResultOfContainWord[T] = {
-      new ResultOfContainWord(left, true)
+      new ResultOfContainWord(left, true, "should")
     }
     
     /**
@@ -6301,7 +6301,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     override def should(notWord: NotWord): ResultOfNotWordForString = {
-      new ResultOfNotWordForString(leftSideValue, false)
+      new ResultOfNotWordForString(leftSideValue, false, "should")
     }
 
     /**
@@ -6425,7 +6425,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    */
   implicit def convertToRegexWrapper(o: Regex): RegexWrapper = new RegexWrapper(o)
 
-  def of[T]: ResultOfOfTypeInvocation[T] = new ResultOfOfTypeInvocation[T]
+  def of[T](implicit ev: Manifest[T]): ResultOfOfTypeInvocation[T] = new ResultOfOfTypeInvocation[T]
 }
 
 /**
