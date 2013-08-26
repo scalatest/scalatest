@@ -73,7 +73,7 @@ final class IncludeWord {
     new Matcher[String] {
       def apply(left: String): MatchResult = 
         includeRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
-      override def toString: String = "include regex " + regexWithGroups.regex.toString + (if (regexWithGroups.groups.size > 1) " withGroups " else " withGroup ") + regexWithGroups.groups.mkString(", ")
+      override def toString: String = "include " + Prettifier.default(regexWithGroups)
     }
 
   /**
@@ -94,7 +94,7 @@ final class IncludeWord {
           Resources("includedRegex"), 
           Vector(left, UnquotedString(expectedRegex.toString))
         )
-      override def toString: String = "include regex " + expectedRegex
+      override def toString: String = "include regex " + Prettifier.default(expectedRegex)
     }
   
   /**

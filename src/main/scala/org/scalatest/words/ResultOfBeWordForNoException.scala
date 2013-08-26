@@ -23,17 +23,22 @@ import org.scalatest.Assertions.checkNoException
  *
  * @author Bill Venners
  */
-final class ResultOfBeWordForNoException {
+final class ResultOfBeWordForNoException(methodName: String) {
   
   /**
    * This method enables the following syntax: 
    *
    * <pre class="stHighlight">
-   * the [FileNotFoundException] should be thrownBy { ... }
-   *                                       ^
+   * noException should be thrownBy { ... }
+   *                       ^
    * </pre>
    */
   def thrownBy(fun: => Unit) {
     checkNoException(fun)
   }
+  
+  /**
+   * Overrides toString to return pretty noException should/must be
+   */
+  override def toString: String = "noException " + methodName + " be"
 }

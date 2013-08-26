@@ -36,7 +36,7 @@ final class ResultOfATypeInvocation[T](val clazz: Class[T]) {
    * </pre>
    */
   def should(beWord: BeWord): ResultOfBeWordForAType[T] = 
-    new ResultOfBeWordForAType[T](clazz)
+    new ResultOfBeWordForAType[T](clazz, "should")
   
   def should(notWord: NotWord): PleaseUseNoExceptionShouldSyntaxInstead =
     new PleaseUseNoExceptionShouldSyntaxInstead

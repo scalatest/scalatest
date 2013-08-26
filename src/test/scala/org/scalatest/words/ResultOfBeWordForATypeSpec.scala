@@ -15,22 +15,18 @@
  */
 package org.scalatest.words
 
-import scala.util.matching.Regex
+import org.scalatest._
+import Matchers._
 
-/**
- * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
- * the matchers DSL.
- *
- * @author Bill Venners
- */
-final class RegexWithGroups(val regex: Regex, val groups: IndexedSeq[String]) {
-  /**
-   * Overrides toString to return regex and groups (if available)
-   */
-  override def toString: String = "regex " + regex.toString + (
-    if (groups.isEmpty)
-      ""
-    else 
-      (if (groups.size > 1) " withGroups " else " withGroup ") + groups.mkString(", ")
-  )
+class ResultOfBeWordForATypeSpec extends Spec {
+  
+  object `ResultOfBeWordForAType ` {
+    
+    def `should have pretty toString when used` {
+      val result = a[Exception] should be
+      result.toString should be ("a[java.lang.Exception] should be")
+    }
+    
+  }
+  
 }
