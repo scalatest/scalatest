@@ -18,7 +18,8 @@ package org.scalatest.words
 import org.scalatest.matchers._
 import org.scalautils._
 import scala.util.matching.Regex
-import org.scalatest.FailureMessages
+import org.scalatest.Resources
+import org.scalatest.UnquotedString
 import org.scalatest.MatchersHelper.startWithRegexWithGroups
 
 /**
@@ -42,9 +43,11 @@ final class StartWithWord {
       def apply(left: String): MatchResult =
         MatchResult(
           left startsWith right,
-          FailureMessages("didNotStartWith", left, right),
-          FailureMessages("startedWith", left, right)
+          Resources("didNotStartWith"),
+          Resources("startedWith"), 
+          Vector(left, right)
         )
+      override def toString: String = "startWith (" + Prettifier.default(right) + ")"
     }
 
   /**
@@ -70,6 +73,7 @@ final class StartWithWord {
     new Matcher[String] {
       def apply(left: String): MatchResult = 
         startWithRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
+      override def toString: String = "startWith regex " + regexWithGroups.regex.toString + (if (regexWithGroups.groups.size > 1) " withGroups " else " withGroup ") + regexWithGroups.groups.mkString(", ")
     }
 
   /**
@@ -86,8 +90,15 @@ final class StartWithWord {
       def apply(left: String): MatchResult =
         MatchResult(
           rightRegex.pattern.matcher(left).lookingAt,
-          FailureMessages("didNotStartWithRegex", left, rightRegex),
-          FailureMessages("startedWithRegex", left, rightRegex)
+          Resources("didNotStartWithRegex"),
+          Resources("startedWithRegex"), 
+          Vector(left, UnquotedString(rightRegex.toString))
         )
+      override def toString: String = "startWith regex " + rightRegex.toString
     }
+  
+  /**
+   * Overrides toString to return "startWith"
+   */
+  override def toString: String = "startWith"
 }

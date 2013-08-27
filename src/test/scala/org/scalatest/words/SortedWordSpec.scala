@@ -15,15 +15,17 @@
  */
 package org.scalatest.words
 
-/**
- * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
- * the matchers DSL.
- *
- * @author Bill Venners
- */
-final class SortedWord {
-  /**
-   * Overrides toString to return "sorted"
-   */
-  override def toString: String = "sorted"
+import org.scalatest._
+import Matchers._
+
+class SortedWordSpec extends Spec {
+  
+  object `SortedWord ` {
+    
+    def `should have pretty toString` {
+      val result = new SortedWord
+      result.toString should be ("sorted")
+    }
+  }
+  
 }
