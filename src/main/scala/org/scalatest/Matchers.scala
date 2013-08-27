@@ -5090,6 +5090,18 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * This method enables syntax such as the following:
      *
      * <pre class="stHighlight">
+     * all (xs) shouldNot contain (oneOf (1, 2, 3))
+     *    ^
+     * </pre>
+     */
+    def shouldNot(containWord: ContainWord): ResultOfContainWordForCollectedAny[T] = {
+      new ResultOfContainWordForCollectedAny(collected, xs, false)
+    }
+    
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
      * all(xs) should exist
      *         ^
      * </pre>
@@ -6190,6 +6202,17 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def should(containWord: ContainWord): ResultOfContainWord[T] = {
       new ResultOfContainWord(left, true, "should")
     }
+    
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * xs shouldNot contain (oneOf (1, 2, 3))
+     *    ^
+     * </pre>
+     */
+    def shouldNot(contain: ContainWord): ResultOfContainWord[T] = 
+      new ResultOfContainWord(left, false, "shouldNot")
     
     /**
      * This method enables syntax such as the following:

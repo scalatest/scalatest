@@ -285,6 +285,132 @@ class ListShouldContainSpec extends Spec with Matchers {
         normalizedInvokedCount should be (4)
       }
     }
+    
+    object `when used with shouldNot contain value syntax` {
+
+      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+        xs shouldNot contain ("ho")
+        nil shouldNot contain ("hi")
+
+        val e3 = intercept[TestFailedException] {
+          xs shouldNot contain ("hi")
+        }
+        e3.message.get should be (Resources("containedExpectedElement", xs, "\"hi\""))
+        e3.failedCodeFileName.get should be ("ListShouldContainSpec.scala")
+        e3.failedCodeLineNumber.get should be (thisLineNumber - 4)
+      }
+
+      def `should use the implicit Equality in scope` {
+        xs shouldNot contain ("ho")
+        intercept[TestFailedException] {
+          xs shouldNot contain ("hi")
+        }
+        implicit val e = new Equality[String] {
+          def areEqual(a: String, b: Any): Boolean = a != b
+        }
+        xs shouldNot contain ("hi")
+        intercept[TestFailedException] {
+          xs shouldNot contain ("ho")
+        }
+      }
+      def `should use an explicitly provided Equality` {
+        caseLists shouldNot contain ("HI")
+        caseLists shouldNot contain ("HI ")
+        (caseLists shouldNot contain ("HI ")) (decided by defaultEquality afterBeing lowerCased)
+        (caseLists shouldNot contain ("HI ")) (after being lowerCased)
+        intercept[TestFailedException] {
+          (caseLists shouldNot contain ("HI")) (decided by defaultEquality afterBeing lowerCased)
+        }
+        intercept[TestFailedException] {
+          (caseLists shouldNot contain ("HI ")) (after being lowerCased and trimmed)
+        }
+      }
+      def `should minimize normalization if an implicit NormalizingEquality is in scope` {
+        caseLists shouldNot contain ("HI")
+        var normalizedInvokedCount = 0
+        implicit val e = new NormalizingEquality[String] {
+          def normalized(s: String): String = {
+            normalizedInvokedCount += 1
+            s.toLowerCase
+          }
+          def normalizedCanHandle(b: Any): Boolean = b.isInstanceOf[String]
+          def normalizedOrSame(b: Any) =
+            b match {
+              case s: String => normalized(s)
+              case _ => b
+            }
+        }
+        intercept[TestFailedException] {
+          caseLists shouldNot contain ("HI")
+        }
+        normalizedInvokedCount should be (4)
+      }
+    }
+    
+    object `when used with shouldNot (contain (value)) syntax` {
+
+      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+
+        xs shouldNot (contain ("ho"))
+        nil shouldNot (contain ("hi"))
+
+        val e3 = intercept[TestFailedException] {
+          xs shouldNot (contain ("hi"))
+        }
+        e3.message.get should be (Resources("containedExpectedElement", xs, "\"hi\""))
+        e3.failedCodeFileName.get should be ("ListShouldContainSpec.scala")
+        e3.failedCodeLineNumber.get should be (thisLineNumber - 4)
+      }
+
+      def `should use the implicit Equality in scope` {
+        xs shouldNot (contain ("ho"))
+        intercept[TestFailedException] {
+          xs shouldNot (contain ("hi"))
+        }
+        implicit val e = new Equality[String] {
+          def areEqual(a: String, b: Any): Boolean = a != b
+        }
+        xs shouldNot (contain ("hi"))
+        intercept[TestFailedException] {
+          xs shouldNot (contain ("ho"))
+        }
+      }
+      def `should use an explicitly provided Equality` {
+        caseLists shouldNot (contain ("HI"))
+        caseLists shouldNot (contain ("HI "))
+        (caseLists shouldNot (contain ("HI "))) (decided by defaultEquality afterBeing lowerCased)
+        (caseLists shouldNot (contain ("HI "))) (after being lowerCased)
+        intercept[TestFailedException] {
+          (caseLists shouldNot (contain ("HI"))) (decided by defaultEquality afterBeing lowerCased)
+        }
+        intercept[TestFailedException] {
+          (caseLists shouldNot (contain ("HI"))) (after being lowerCased)
+        }
+        intercept[TestFailedException] {
+          (caseLists shouldNot (contain ("HI "))) (after being lowerCased and trimmed)
+        }
+      }
+      def `should minimize normalization if an implicit NormalizingEquality is in scope` {
+        caseLists shouldNot (contain ("HI"))
+        var normalizedInvokedCount = 0
+        implicit val e = new NormalizingEquality[String] {
+          def normalized(s: String): String = {
+            normalizedInvokedCount += 1
+            s.toLowerCase
+          }
+          def normalizedCanHandle(b: Any): Boolean = b.isInstanceOf[String]
+          def normalizedOrSame(b: Any) =
+            b match {
+              case s: String => normalized(s)
+              case _ => b
+            }
+        }
+        intercept[TestFailedException] {
+          caseLists shouldNot (contain ("HI"))
+        }
+        normalizedInvokedCount should be (4)
+      }
+    }
   }
 
   object `a collection of Lists` {
@@ -536,6 +662,109 @@ class ListShouldContainSpec extends Spec with Matchers {
         }
         intercept[TestFailedException] {
           (all (hiLists) should (not contain "HI ")) (after being trimmed and lowerCased)
+        }
+      }
+    }
+    
+    object `when used with shouldNot contain value syntax` {
+
+      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+
+        all (list123s) shouldNot contain (4)
+        atLeast (2, lists) shouldNot contain (4)
+        atMost (2, lists) shouldNot contain (4)
+        no (list123s) shouldNot contain (1) // I will recommend against double negatives, but we should test it
+        all (nils) shouldNot contain (1)
+        all (mixed) shouldNot contain (4)
+
+        val e1 = intercept[TestFailedException] {
+          all (lists) shouldNot contain (6)
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some("'all' inspection failed, because: \n" +
+                                   "  at index 2, List(4, 5, 6) contained element 6 (ListShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "in List(List(1, 2, 3), List(1, 2, 3), List(4, 5, 6))"))
+
+        val e2 = intercept[TestFailedException] {
+          atMost (2, nils) shouldNot contain ("ho")
+        }
+        e2.failedCodeFileName.get should be ("ListShouldContainSpec.scala")
+        e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e2.message should be (Some("'atMost(2)' inspection failed, because 3 elements satisfied the assertion block at index 0, 1 and 2 in List(List(), List(), List())"))
+      }
+      def `should use the implicit Equality in scope` {
+        all (hiLists) shouldNot contain ("ho")
+        intercept[TestFailedException] {
+          all (hiLists) shouldNot contain ("hi")
+        }
+        implicit val e = new Equality[String] {
+          def areEqual(a: String, b: Any): Boolean = a != b
+        }
+        all (hiLists) shouldNot contain ("hi")
+        intercept[TestFailedException] {
+          all (hiLists) shouldNot contain ("ho")
+        }
+      }
+      def `should use an explicitly provided Equality` {
+        all (hiLists) shouldNot contain ("HI")
+        all (hiLists) shouldNot contain ("HI ")
+        intercept[TestFailedException] {
+          (all (hiLists) shouldNot contain ("HI")) (decided by defaultEquality afterBeing lowerCased)
+        }
+        intercept[TestFailedException] {
+          (all (hiLists) shouldNot contain ("HI ")) (after being trimmed and lowerCased)
+        }
+      }
+    }
+    object `when used with shouldNot (contain (value)) syntax` {
+
+      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+
+        all (list123s) shouldNot (contain (4))
+        atLeast (2, lists) shouldNot (contain (4))
+        atMost (2, lists) shouldNot (contain (4))
+        no (list123s) shouldNot (contain (1)) // I will recommend against double negatives, but we should test it
+        all (nils) shouldNot (contain (1))
+        all (mixed) shouldNot (contain (4))
+
+        val e1 = intercept[TestFailedException] {
+          all (lists) shouldNot (contain (6))
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some("'all' inspection failed, because: \n" +
+                                   "  at index 2, List(4, 5, 6) contained element 6 (ListShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "in List(List(1, 2, 3), List(1, 2, 3), List(4, 5, 6))"))
+
+        val e2 = intercept[TestFailedException] {
+          atMost (2, nils) shouldNot (contain ("ho"))
+        }
+        e2.failedCodeFileName.get should be ("ListShouldContainSpec.scala")
+        e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e2.message should be (Some("'atMost(2)' inspection failed, because 3 elements satisfied the assertion block at index 0, 1 and 2 in List(List(), List(), List())"))
+      }
+      def `should use the implicit Equality in scope` {
+        all (hiLists) shouldNot (contain ("ho"))
+        intercept[TestFailedException] {
+          all (hiLists) shouldNot (contain ("hi"))
+        }
+        implicit val e = new Equality[String] {
+          def areEqual(a: String, b: Any): Boolean = a != b
+        }
+        all (hiLists) shouldNot (contain ("hi"))
+        intercept[TestFailedException] {
+          all (hiLists) shouldNot (contain ("ho"))
+        }
+      }
+      def `should use an explicitly provided Equality` {
+        all (hiLists) shouldNot (contain ("HI"))
+        all (hiLists) shouldNot (contain ("HI "))
+        intercept[TestFailedException] {
+          (all (hiLists) shouldNot (contain ("HI"))) (decided by defaultEquality afterBeing lowerCased)
+        }
+        intercept[TestFailedException] {
+          (all (hiLists) shouldNot (contain ("HI "))) (after being trimmed and lowerCased)
         }
       }
     }

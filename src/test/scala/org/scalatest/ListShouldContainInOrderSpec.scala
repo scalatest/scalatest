@@ -232,6 +232,98 @@ class ListShouldContainInOrderSpec extends Spec with Matchers {
         e1.message should be (Some(Resources("inOrderDuplicate")))
       }
     }
+    
+    object `when used with shouldNot contain inOrder (..)` {
+
+      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+        toList shouldNot contain inOrder ("you", "to", "birthday", "happy")
+        val e1 = intercept[TestFailedException] {
+          toList shouldNot contain inOrder ("happy", "birthday", "to", "you")
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainInOrderSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message.get should be (Resources("containedAllOfElementsInOrder", decorateToStringValue(toList), "\"happy\", \"birthday\", \"to\", \"you\""))
+      }
+      def `should use the implicit Equality in scope` {
+        implicit val ise = upperCaseStringEquality
+        toList shouldNot contain inOrder ("YOU", "TO", "BIRTHDAY", "HAPPY")
+        intercept[TestFailedException] {
+          toList shouldNot contain inOrder ("HAPPY", "BIRTHDAY", "TO", "YOU")
+        }
+      }
+      def `should use an explicitly provided Equality` {
+        (toList shouldNot contain inOrder ("YOU", "TO", "BIRTHDAY", "HAPPY")) (decided by upperCaseStringEquality)
+        intercept[TestFailedException] {
+          (toList shouldNot contain inOrder ("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseStringEquality)
+        }
+        toList shouldNot contain inOrder (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")
+        intercept[TestFailedException] {
+          (toList shouldNot contain inOrder (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (after being lowerCased and trimmed)
+        }
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          toList shouldNot contain inOrder ()
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainInOrderSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("inOrderEmpty")))
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          toList shouldNot contain inOrder ("fee", "fie", "foe", "fie", "fum")
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainInOrderSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("inOrderDuplicate")))
+      }
+    }
+
+    object `when used with shouldNot (contain inOrder (..))` {
+
+      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+        toList shouldNot (contain inOrder ("you", "to", "birthday", "happy"))
+        val e1 = intercept[TestFailedException] {
+          toList shouldNot (contain inOrder ("happy", "birthday", "to", "you"))
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainInOrderSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message.get should be (Resources("containedAllOfElementsInOrder", decorateToStringValue(toList), "\"happy\", \"birthday\", \"to\", \"you\""))
+      }
+      def `should use the implicit Equality in scope` {
+        implicit val ise = upperCaseStringEquality
+        toList shouldNot (contain inOrder ("YOU", "TO", "BIRTHDAY", "HAPPY"))
+        intercept[TestFailedException] {
+          toList shouldNot (contain inOrder ("HAPPY", "BIRTHDAY", "TO", "YOU"))
+        }
+      }
+      def `should use an explicitly provided Equality` {
+        (toList shouldNot (contain inOrder ("YOU", "TO", "BIRTHDAY", "HAPPY"))) (decided by upperCaseStringEquality)
+        intercept[TestFailedException] {
+          (toList shouldNot (contain inOrder ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseStringEquality)
+        }
+        toList shouldNot (contain inOrder (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
+        intercept[TestFailedException] {
+          (toList shouldNot (contain inOrder (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
+        }
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          toList shouldNot (contain inOrder ())
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainInOrderSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("inOrderEmpty")))
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          toList shouldNot (contain inOrder ("fee", "fie", "foe", "fie", "fum"))
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainInOrderSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("inOrderDuplicate")))
+      }
+    }
   }
 
   object `a col of Lists` {
@@ -466,6 +558,102 @@ class ListShouldContainInOrderSpec extends Spec with Matchers {
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
           all (toLists) should (not contain inOrder ("fee", "fie", "foe", "fie", "fum"))
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainInOrderSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("inOrderDuplicate")))
+      }
+    }
+    
+    object `when used with shouldNot contain inOrder (..)` {
+
+      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+        all (toLists) shouldNot contain inOrder ("you", "to")
+        val e1 = intercept[TestFailedException] {
+          all (toLists) shouldNot contain inOrder ("to", "you")
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainInOrderSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some("'all' inspection failed, because: \n" +
+                                   "  at index 0, " + decorateToStringValue(toLists(0)) + " contained all of " + "(\"to\", \"you\")" +  " in order (ListShouldContainInOrderSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "in " + decorateToStringValue(toLists)))
+      }
+      def `should use the implicit Equality in scope` {
+        implicit val ise = upperCaseStringEquality
+        all (toLists) shouldNot contain inOrder ("YOU", "TO")
+        intercept[TestFailedException] {
+          all (toLists) shouldNot contain inOrder ("TO", "YOU")
+        }
+      }
+      def `should use an explicitly provided Equality` {
+        (all (toLists) shouldNot contain inOrder ("YOU", "TO")) (decided by upperCaseStringEquality)
+        intercept[TestFailedException] {
+          (all (toLists) shouldNot contain inOrder ("TO", "YOU")) (decided by upperCaseStringEquality)
+        }
+        all (toLists) shouldNot contain inOrder (" TO ", " YOU ")
+        intercept[TestFailedException] {
+          (all (toLists) shouldNot contain inOrder (" TO ", " YOU ")) (after being lowerCased and trimmed)
+        }
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (toLists) shouldNot contain inOrder ()
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainInOrderSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("inOrderEmpty")))
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (toLists) shouldNot contain inOrder ("fee", "fie", "foe", "fie", "fum")
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainInOrderSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("inOrderDuplicate")))
+      }
+    }
+
+    object `when used with shouldNot (contain inOrder (..))` {
+
+      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+        all (toLists) shouldNot (contain inOrder ("you", "to"))
+        val e1 = intercept[TestFailedException] {
+          all (toLists) shouldNot (contain inOrder ("to", "you"))
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainInOrderSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some("'all' inspection failed, because: \n" +
+                                   "  at index 0, " + decorateToStringValue(toLists(0)) + " contained all of " + "(\"to\", \"you\")" + " in order (ListShouldContainInOrderSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "in " + decorateToStringValue(toLists)))
+      }
+      def `should use the implicit Equality in scope` {
+        implicit val ise = upperCaseStringEquality
+        all (toLists) shouldNot (contain inOrder ("YOU", "TO"))
+        intercept[TestFailedException] {
+          all (toLists) shouldNot (contain inOrder ("TO", "YOU"))
+        }
+      }
+      def `should use an explicitly provided Equality` {
+        (all (toLists) shouldNot (contain inOrder ("YOU", "TO"))) (decided by upperCaseStringEquality)
+        intercept[TestFailedException] {
+          (all (toLists) shouldNot (contain inOrder ("TO", "YOU"))) (decided by upperCaseStringEquality)
+        }
+        all (toLists) shouldNot (contain inOrder (" TO ", " YOU "))
+        intercept[TestFailedException] {
+          (all (toLists) shouldNot (contain inOrder (" TO ", " YOU "))) (after being lowerCased and trimmed)
+        }
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (toLists) shouldNot (contain inOrder ())
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainInOrderSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("inOrderEmpty")))
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (toLists) shouldNot (contain inOrder ("fee", "fie", "foe", "fie", "fum"))
         }
         e1.failedCodeFileName.get should be ("ListShouldContainInOrderSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)

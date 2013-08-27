@@ -238,6 +238,100 @@ The bottom two don't, but still I don't want to support that in general.
         e1.message should be (Some(Resources("atLeastOneOfDuplicate")))
       }
     }
+    
+    object `when used with shouldNot contain atLeastOneOf (...) syntax` {
+
+      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+        toList shouldNot contain atLeastOneOf ("fee", "fie", "foe", "fum")
+        val e1 = intercept[TestFailedException] {
+          toList shouldNot contain atLeastOneOf ("happy", "birthday", "to", "you")
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message.get should be (Resources("containedAtLeastOneOf", decorateToStringValue(toList), "\"happy\", \"birthday\", \"to\", \"you\""))
+      }
+      def `should use the implicit Equality in scope` {
+        implicit val ise = invertedStringEquality
+        toList shouldNot contain atLeastOneOf ("to")
+        intercept[TestFailedException] {
+          toList shouldNot contain atLeastOneOf ("fee", "fie", "foe", "fum")
+        }
+      }
+      def `should use an explicitly provided Equality` {
+        (toList shouldNot contain atLeastOneOf ("to")) (decided by invertedStringEquality)
+        intercept[TestFailedException] {
+          (toList shouldNot contain atLeastOneOf ("fee", "fie", "foe", "fum")) (decided by invertedStringEquality)
+        }
+        toList shouldNot contain atLeastOneOf (" TO ")
+        intercept[TestFailedException] {
+          (toList shouldNot contain atLeastOneOf (" TO ")) (after being lowerCased and trimmed)
+        }
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList shouldNot contain atLeastOneOf ()
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("atLeastOneOfEmpty")))
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          toList shouldNot contain atLeastOneOf ("fee", "fie", "foe", "fie", "fum")
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("atLeastOneOfDuplicate")))
+      }
+    }
+
+    object `when used with shouldNot (contain atLeastOneOf (...)) syntax` {
+
+      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+        toList shouldNot (contain atLeastOneOf ("fee", "fie", "foe", "fum"))
+        val e1 = intercept[TestFailedException] {
+          toList shouldNot (contain atLeastOneOf ("happy", "birthday", "to", "you"))
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message.get should be (Resources("containedAtLeastOneOf", decorateToStringValue(toList), "\"happy\", \"birthday\", \"to\", \"you\""))
+      }
+      def `should use the implicit Equality in scope` {
+        implicit val ise = invertedStringEquality
+        toList shouldNot (contain atLeastOneOf ("to"))
+        intercept[TestFailedException] {
+          toList shouldNot (contain atLeastOneOf ("fee", "fie", "foe", "fum"))
+        }
+      }
+      def `should use an explicitly provided Equality` {
+        (toList shouldNot (contain atLeastOneOf ("to"))) (decided by invertedStringEquality)
+        intercept[TestFailedException] {
+          (toList shouldNot (contain atLeastOneOf ("fee", "fie", "foe", "fum"))) (decided by invertedStringEquality)
+        }
+        toList shouldNot (contain atLeastOneOf (" TO "))
+        intercept[TestFailedException] {
+          (toList shouldNot (contain atLeastOneOf (" TO "))) (after being lowerCased and trimmed)
+        }
+      }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          fumList shouldNot (contain atLeastOneOf ())
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("atLeastOneOfEmpty")))
+      }
+      
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          toList shouldNot (contain atLeastOneOf ("fee", "fie", "foe", "fie", "fum"))
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("atLeastOneOfDuplicate")))
+      }
+    }
   }
 
   object `a collection of Lists` {
@@ -526,6 +620,102 @@ The top two don't, but still I don't want to support that in general.
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
           all (toLists) should (not contain atLeastOneOf ("fee", "fie", "foe", "fie", "fum"))
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("atLeastOneOfDuplicate")))
+      }
+    }
+    
+    object `when used with shouldNot contain atLeastOneOf (...) syntax` {
+
+      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+        all (toLists) shouldNot contain atLeastOneOf ("fee", "fie", "foe", "fum")
+        val e1 = intercept[TestFailedException] {
+          all (toLists) shouldNot contain atLeastOneOf ("happy", "birthday", "to", "you")
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some("'all' inspection failed, because: \n" +
+                                   "  at index 0, " + decorateToStringValue(List("to")) + " contained at least one of (\"happy\", \"birthday\", \"to\", \"you\") (ListShouldContainAtLeastOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "in " + decorateToStringValue(toLists)))
+      }
+      def `should use the implicit Equality in scope` {
+        implicit val ise = invertedStringEquality
+        all (toLists) shouldNot contain atLeastOneOf ("to")
+        intercept[TestFailedException] {
+          all (toLists) shouldNot contain atLeastOneOf ("fee", "fie", "foe", "fum")
+        }
+      }
+      def `should use an explicitly provided Equality` {
+        (all (toLists) shouldNot contain atLeastOneOf ("to")) (decided by invertedStringEquality)
+        intercept[TestFailedException] {
+          (all (toLists) shouldNot contain atLeastOneOf ("fee", "fie", "foe", "fum")) (decided by invertedStringEquality)
+        }
+        all (toLists) shouldNot contain atLeastOneOf (" TO ")
+        intercept[TestFailedException] {
+          (all (toLists) shouldNot contain atLeastOneOf (" TO ")) (after being lowerCased and trimmed)
+        }
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (hiLists) shouldNot contain atLeastOneOf ()
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("atLeastOneOfEmpty")))
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (toLists) shouldNot contain atLeastOneOf ("fee", "fie", "foe", "fie", "fum")
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("atLeastOneOfDuplicate")))
+      }
+    }
+
+    object `when used with shouldNot (contain atLeastOneOf (...)) syntax` {
+
+      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+        all (toLists) shouldNot (contain atLeastOneOf ("fee", "fie", "foe", "fum"))
+        val e1 = intercept[TestFailedException] {
+          all (toLists) shouldNot (contain atLeastOneOf ("happy", "birthday", "to", "you"))
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some("'all' inspection failed, because: \n" +
+                                   "  at index 0, " + decorateToStringValue(List("to")) + " contained at least one of (\"happy\", \"birthday\", \"to\", \"you\") (ListShouldContainAtLeastOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "in " + decorateToStringValue(toLists)))
+      }
+      def `should use the implicit Equality in scope` {
+        implicit val ise = invertedStringEquality
+        all (toLists) shouldNot (contain atLeastOneOf ("to"))
+        intercept[TestFailedException] {
+          all (toLists) shouldNot (contain atLeastOneOf ("fee", "fie", "foe", "fum"))
+        }
+      }
+      def `should use an explicitly provided Equality` {
+        (all (toLists) shouldNot (contain atLeastOneOf ("to"))) (decided by invertedStringEquality)
+        intercept[TestFailedException] {
+          (all (toLists) shouldNot (contain atLeastOneOf ("fee", "fie", "foe", "fum"))) (decided by invertedStringEquality)
+        }
+        all (toLists) shouldNot (contain atLeastOneOf (" TO "))
+        intercept[TestFailedException] {
+          (all (toLists) shouldNot (contain atLeastOneOf (" TO "))) (after being lowerCased and trimmed)
+        }
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (hiLists) shouldNot (contain atLeastOneOf ())
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("atLeastOneOfEmpty")))
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (toLists) shouldNot (contain atLeastOneOf ("fee", "fie", "foe", "fie", "fum"))
         }
         e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
