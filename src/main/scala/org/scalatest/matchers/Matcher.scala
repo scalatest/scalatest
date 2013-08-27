@@ -24,7 +24,9 @@ import scala.util.matching.Regex
 import org.scalautils.Equality
 import org.scalautils.TripleEqualsSupport.Spread
 import org.scalautils.TripleEqualsSupport.TripleEqualsInvocation
+import org.scalautils.Prettifier
 import org.scalatest.FailureMessages
+import org.scalatest.Resources
 import org.scalatest.words.FullyMatchWord
 import org.scalatest.words.StartWithWord
 import org.scalatest.words.EndWithWord
@@ -530,6 +532,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
       def apply(left: U): MatchResult = {
         andMatchersAndApply(left, outerInstance, rightMatcher)
       }
+      override def toString: String = "(" + Prettifier.default(outerInstance) + ") and (" + Prettifier.default(rightMatcher) + ")"
     }
 
   def and[U, TC1[_]](rightMatcherFactory1: MatcherFactory1[U, TC1]): MatcherFactory1[T with U, TC1] =
@@ -1122,8 +1125,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * aNullRef should (not equal ("hi") and not equal (null))
-     *                                   ^
+     * aNullRef should (not be ("hi") and not equal (null))
+     *                                        ^
      * </pre>
      */
     def equal(o: Null): Matcher[T] = {
@@ -1132,12 +1135,15 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
           def apply(left: T): MatchResult = {
             MatchResult(
               left != null,
-              FailureMessages("equaledNull"),
-              FailureMessages("didNotEqualNull", left),
-              FailureMessages("midSentenceEqualedNull"),
-              FailureMessages("didNotEqualNull", left)
+              Resources("equaledNull"),
+              Resources("didNotEqualNull"),
+              Resources("midSentenceEqualedNull"),
+              Resources("didNotEqualNull"), 
+              Vector.empty, 
+              Vector(left)
             )
           }
+          override def toString: String = "not equal null"
         }
       }
     }
