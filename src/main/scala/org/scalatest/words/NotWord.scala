@@ -136,6 +136,11 @@ final class NotWord {
   def apply(existWord: ExistWord): ResultOfNotExist = 
     new ResultOfNotExist(this)
 
+  /* 
+   * This is used in logical expression like: 
+   * outerInstance.and(MatcherWords.not.exist)
+   *                                    ^
+   */ 
   private[scalatest] val exist: MatcherFactory1[Any, Existence] = 
     new MatcherFactory1[Any, Existence] {
       def matcher[T <: Any : Existence]: Matcher[T] = 
