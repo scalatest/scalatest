@@ -28,5 +28,9 @@ class SpreadSpec extends Spec {
         }
       assert(caught.getMessage.endsWith("tolerance must be zero or greater, but was -1"))
     }
+    def `should have pretty toString` {
+      val spread = new Spread(8, 2)
+      assert(spread.toString == "8 plusOrMinus 2")
+    }
   }
 }

@@ -1011,5 +1011,10 @@ object TripleEqualsSupport {
      * @param n a number that may or may not lie within this spread
      */
     def !==(n: T): Boolean = !isWithin(n)
+    
+    /**
+     * Overrides toString to return "[pivot] plusOrMinus [tolerance]"
+     */
+    override def toString: String = Prettifier.default(pivot) + " plusOrMinus " + Prettifier.default(tolerance)
   }
 }

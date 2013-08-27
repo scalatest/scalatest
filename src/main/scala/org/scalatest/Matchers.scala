@@ -35,6 +35,7 @@ import org.scalautils.TripleEqualsSupport.TripleEqualsInvocation
 import org.scalautils.Equality
 import org.scalautils.TripleEqualsSupport.TripleEqualsInvocationOnSpread
 import org.scalautils.TypeConstraint
+import org.scalautils.Prettifier
 import MatchersHelper.andMatchersAndApply
 import MatchersHelper.orMatchersAndApply
 import org.scalatest.words._
@@ -2142,10 +2143,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       def apply(left: T): MatchResult = {
         MatchResult(
           spread.isWithin(left),
-          FailureMessages("didNotEqualPlusOrMinus", left, spread.pivot, spread.tolerance),
-          FailureMessages("equaledPlusOrMinus", left, spread.pivot, spread.tolerance)
+          Resources("didNotEqualPlusOrMinus"),
+          Resources("equaledPlusOrMinus"), 
+          Vector(left, spread.pivot, spread.tolerance)
         )
       }
+      override def toString: String = "equal (" + Prettifier.default(spread) + ")"
     }
   }
 
@@ -2162,12 +2165,15 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       def apply(left: AnyRef): MatchResult = {
         MatchResult(
           left == null,
-          FailureMessages("didNotEqualNull", left),
-          FailureMessages("equaledNull"),
-          FailureMessages("didNotEqualNull", left),
-          FailureMessages("midSentenceEqualedNull")
+          Resources("didNotEqualNull"),
+          Resources("equaledNull"),
+          Resources("didNotEqualNull"),
+          Resources("midSentenceEqualedNull"), 
+          Vector(left), 
+          Vector.empty
         )
       }
+      override def toString: String = "equal (" + Prettifier.default(o) + ")"
     }
 
   /**
