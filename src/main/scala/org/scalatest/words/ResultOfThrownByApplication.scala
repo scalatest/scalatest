@@ -29,5 +29,5 @@ final class ResultOfThrownByApplication(fun: => Unit) {
    */
   def execute() = fun
   
-  override def toString: String = "thrownBy {...}"
+  override def toString: String = "thrownBy { ... }"
 }

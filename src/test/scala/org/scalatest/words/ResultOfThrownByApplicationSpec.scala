@@ -25,7 +25,7 @@ class ResultOfThrownByApplicationSpec extends Spec {
     def `should have pretty toString` {
       def fun = {}
       val result = new ResultOfThrownByApplication(fun)
-      result.toString should be ("thrownBy {...}")
+      result.toString should be ("thrownBy { ... }")
     }
   }
   
