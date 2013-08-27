@@ -44,6 +44,7 @@ import org.scalatest.MatchersHelper.fullyMatchRegexWithGroups
 import org.scalatest.MatchersHelper.startWithRegexWithGroups
 import org.scalatest.MatchersHelper.endWithRegexWithGroups
 import org.scalatest.MatchersHelper.includeRegexWithGroups
+import org.scalautils.Prettifier
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
@@ -51,7 +52,7 @@ import org.scalatest.MatchersHelper.includeRegexWithGroups
  *
  * @author Bill Venners
  */
-sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
+sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean, methodName: String) {
 
   /**
    * This method enables the following syntax:
@@ -928,6 +929,11 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
         )
     }
   }
+  
+  /**
+   * Overrides toString to return pretty text.
+   */
+  override def toString: String = Prettifier.default(left) + " " + methodName  + " not"
 }
 
 /**
@@ -936,8 +942,8 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
  *
  * @author Bill Venners
  */
-final class ResultOfNotWordForString(left: String, shouldBeTrue: Boolean)
-    extends ResultOfNotWordForAny[String](left, shouldBeTrue) {
+final class ResultOfNotWordForString(left: String, shouldBeTrue: Boolean, methodName: String)
+    extends ResultOfNotWordForAny[String](left, shouldBeTrue, methodName) {
 
   /**
    * This method enables the following syntax: 
@@ -1074,5 +1080,7 @@ final class ResultOfNotWordForString(left: String, shouldBeTrue: Boolean)
         )
       )
   }
+  
+  override def toString: String = Prettifier.default(left) + " should not"
 }
 

@@ -22,4 +22,9 @@ package org.scalatest.words
  * @author Bill Venners
  * @author Chee Seng
  */
-final class WritableWord
+final class WritableWord {
+  /**
+   * Overrides toString to return "writable"
+   */
+  override def toString: String = "writable"
+}

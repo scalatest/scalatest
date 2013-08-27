@@ -249,6 +249,98 @@ The bottom two don't, but still I don't want to support that in general.
         e1.message should be (Some(Resources("oneOfDuplicate")))
       }
     }
+    
+    object `when used with shouldNot contain oneOf (...) syntax` {
+
+      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+        toList shouldNot contain oneOf ("fee", "fie", "foe", "fum")
+        val e1 = intercept[TestFailedException] {
+          toList shouldNot contain oneOf ("happy", "birthday", "to", "you")
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainOneOfSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message.get should be (Resources("containedOneOfElements", decorateToStringValue(toList), "\"happy\", \"birthday\", \"to\", \"you\""))
+      }
+      def `should use the implicit Equality in scope` {
+        implicit val ise = upperCaseEquality
+        toList shouldNot contain oneOf ("happy", "birthday", "to", "you")
+        intercept[TestFailedException] {
+          toList shouldNot contain oneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")
+        }
+      }
+      def `should use an explicitly provided Equality` {
+        (toList shouldNot contain oneOf ("happy", "birthday", "to", "you")) (decided by upperCaseEquality)
+        intercept[TestFailedException] {
+          (toList shouldNot contain oneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseEquality)
+        }
+        toList shouldNot contain oneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")
+        intercept[TestFailedException] {
+          (toList shouldNot contain oneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (after being lowerCased and trimmed)
+        }
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          toList shouldNot contain oneOf ()
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainOneOfSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("oneOfEmpty")))
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          toList shouldNot contain oneOf ("fee", "fie", "foe", "fie", "fum")
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainOneOfSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("oneOfDuplicate")))
+      }
+    }
+
+    object `when used with shouldNot (contain oneOf (...)) syntax` {
+
+      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+        toList shouldNot (contain oneOf ("fee", "fie", "foe", "fum"))
+        val e1 = intercept[TestFailedException] {
+          toList shouldNot (contain oneOf ("happy", "birthday", "to", "you"))
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainOneOfSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message.get should be (Resources("containedOneOfElements", decorateToStringValue(toList), "\"happy\", \"birthday\", \"to\", \"you\""))
+      }
+      def `should use the implicit Equality in scope` {
+        implicit val ise = upperCaseEquality
+        toList shouldNot (contain oneOf ("happy", "birthday", "to", "you"))
+        intercept[TestFailedException] {
+          toList shouldNot (contain oneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))
+        }
+      }
+      def `should use an explicitly provided Equality` {
+        (toList shouldNot (contain oneOf ("happy", "birthday", "to", "you"))) (decided by upperCaseEquality)
+        intercept[TestFailedException] {
+          (toList shouldNot (contain oneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseEquality)
+        }
+        toList shouldNot (contain oneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
+        intercept[TestFailedException] {
+          (toList shouldNot (contain oneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
+        }
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          toList shouldNot (contain oneOf ())
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainOneOfSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("oneOfEmpty")))
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          toList shouldNot (contain oneOf ("fee", "fie", "foe", "fie", "fum"))
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainOneOfSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("oneOfDuplicate")))
+      }
+    }
   }
 
   object `a collection of Lists` {
@@ -537,6 +629,102 @@ The top two don't, but still I don't want to support that in general.
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
           all (toLists) should (not contain oneOf ("fee", "fie", "foe", "fie", "fum"))
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainOneOfSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("oneOfDuplicate")))
+      }
+    }
+    
+    object `when used with shouldNot contain oneOf (...) syntax` {
+
+      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+        all (toLists) shouldNot contain oneOf ("fee", "fie", "foe", "fum")
+        val e1 = intercept[TestFailedException] {
+          all (toLists) shouldNot contain oneOf ("happy", "birthday", "to", "you")
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainOneOfSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some("'all' inspection failed, because: \n" +
+                                   "  at index 0, " + decorateToStringValue(List("to")) + " contained one of (\"happy\", \"birthday\", \"to\", \"you\") (ListShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "in " + decorateToStringValue(toLists)))
+      }
+      def `should use the implicit Equality in scope` {
+        implicit val ise = upperCaseEquality
+        all (toLists) shouldNot contain oneOf ("happy", "birthday", "to", "you")
+        intercept[TestFailedException] {
+          all (toLists) shouldNot contain oneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")
+        }
+      }
+      def `should use an explicitly provided Equality` {
+        (all (toLists) shouldNot contain oneOf ("happy", "birthday", "to", "you")) (decided by upperCaseEquality)
+        intercept[TestFailedException] {
+          (all (toLists) shouldNot contain oneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseEquality)
+        }
+        all (toLists) shouldNot contain oneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")
+        intercept[TestFailedException] {
+          (all (toLists) shouldNot contain oneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (after being lowerCased and trimmed)
+        }
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (toLists) shouldNot contain oneOf ()
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainOneOfSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("oneOfEmpty")))
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (toLists) shouldNot contain oneOf ("fee", "fie", "foe", "fie", "fum")
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainOneOfSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("oneOfDuplicate")))
+      }
+    }
+
+    object `when used with shouldNot (contain oneOf (...)) syntax` {
+
+      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+        all (toLists) shouldNot (contain oneOf ("fee", "fie", "foe", "fum"))
+        val e1 = intercept[TestFailedException] {
+          all (toLists) shouldNot (contain oneOf ("happy", "birthday", "to", "you"))
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainOneOfSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some("'all' inspection failed, because: \n" +
+                                   "  at index 0, " + decorateToStringValue(List("to")) + " contained one of (\"happy\", \"birthday\", \"to\", \"you\") (ListShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "in " + decorateToStringValue(toLists)))
+      }
+      def `should use the implicit Equality in scope` {
+        implicit val ise = upperCaseEquality
+        all (toLists) shouldNot (contain oneOf ("happy", "birthday", "to", "you"))
+        intercept[TestFailedException] {
+          all (toLists) shouldNot (contain oneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))
+        }
+      }
+      def `should use an explicitly provided Equality` {
+        (all (toLists) shouldNot (contain oneOf ("happy", "birthday", "to", "you"))) (decided by upperCaseEquality)
+        intercept[TestFailedException] {
+          (all (toLists) shouldNot (contain oneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseEquality)
+        }
+        all (toLists) shouldNot (contain oneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
+        intercept[TestFailedException] {
+          (all (toLists) shouldNot (contain oneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
+        }
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (toLists) shouldNot (contain oneOf ())
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainOneOfSpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("oneOfEmpty")))
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (toLists) shouldNot (contain oneOf ("fee", "fie", "foe", "fie", "fum"))
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)

@@ -18,6 +18,7 @@ package org.scalatest.words
 import org.scalatest.enablers.Messaging
 import org.scalatest.matchers.HavePropertyMatcher
 import org.scalatest.matchers.HavePropertyMatchResult
+import org.scalautils.Prettifier
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -42,4 +43,9 @@ final class ResultOfMessageWordApplication(val expectedMessage: String) {
       }
     }
   }
+  
+  /**
+   * Overrides toString to return "message \"XXX\"", where XXX is expectedMessage
+   */
+  override def toString: String = "message " + Prettifier.default(expectedMessage)
 }

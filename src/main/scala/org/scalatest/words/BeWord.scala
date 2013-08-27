@@ -687,9 +687,9 @@ final class BeWord {
               Vector(left)
             )
           }
-          override def toString: String = "be readable"
+          override def toString: String = "be " + Prettifier.default(readable)
         }
-      override def toString: String = "be readable"
+      override def toString: String = "be " + Prettifier.default(readable)
     }
   
   /**

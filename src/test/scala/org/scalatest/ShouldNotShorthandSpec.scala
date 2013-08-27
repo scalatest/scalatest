@@ -926,5 +926,35 @@ class ShouldNotShorthandSpec extends Spec with Matchers with EmptyMocks with Boo
       assert(caught16.message === Some("\"123abbccdef\" included substring that matched regex a(b*)(c*) and group bb, cc"))
       assert(caught16.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
     }
+    
+    def `should work with contain key` {
+      
+      val map = Map("1" -> "one", "2" -> "two", "3" -> "three")
+      
+      map shouldNot contain key "7"
+      
+      val caught1 = intercept[TestFailedException] {
+        map shouldNot contain key "1"
+      }
+      assert(caught1.message === Some(map + " contained key \"1\""))
+      assert(caught1.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
+      
+      
+      
+    }
+    
+    def `should work with contain value` {
+      val map = Map("1" -> "one", "2" -> "two", "3" -> "three")
+      
+      map shouldNot contain value "seven"
+      
+      val caught1 = intercept[TestFailedException] {
+        map shouldNot contain value "one"
+      }
+      assert(caught1.message === Some(map + " contained value \"one\""))
+      assert(caught1.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
+      assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
+    }
   }
 }

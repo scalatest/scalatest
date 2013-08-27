@@ -26,14 +26,15 @@ import org.scalatest.FailureMessages
 import org.scalatest.UnquotedString
 import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
+import org.scalautils.Prettifier
 
-/*
+/**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
  * the matchers DSL.
  *
  * @author Bill Venners
  */
-class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
+class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true, methodName: String) {
 
   /**
    * This method enables the following syntax: 
@@ -292,5 +293,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
         )
       )
   }
+  
+  override def toString: String = Prettifier.default(left) + " " + methodName + " contain"
 }
 

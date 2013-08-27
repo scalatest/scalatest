@@ -23,4 +23,14 @@ import scala.util.matching.Regex
  *
  * @author Bill Venners
  */
-final class RegexWithGroups(val regex: Regex, val groups: IndexedSeq[String])
+final class RegexWithGroups(val regex: Regex, val groups: IndexedSeq[String]) {
+  /**
+   * Overrides toString to return regex and groups (if available)
+   */
+  override def toString: String = "regex " + regex.toString + (
+    if (groups.isEmpty)
+      ""
+    else 
+      (if (groups.size > 1) " withGroups " else " withGroup ") + groups.mkString(", ")
+  )
+}

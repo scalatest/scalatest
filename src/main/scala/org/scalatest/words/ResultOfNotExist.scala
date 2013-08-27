@@ -33,7 +33,7 @@ final class ResultOfNotExist(notWord: NotWord) {
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">
-   * file should (not exist and be (existFile))
+   * file should (not (exist) and be (existFile))
    *                        ^
    * </pre>
    */
@@ -44,7 +44,7 @@ final class ResultOfNotExist(notWord: NotWord) {
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">
-   * file should (not exist and equal (existFile))
+   * file should (not (exist) and equal (existFile))
    *                        ^
    * </pre>
    */
@@ -55,7 +55,7 @@ final class ResultOfNotExist(notWord: NotWord) {
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">
-   * file should (not exist or be (existFile))
+   * file should (not (exist) or be (existFile))
    *                        ^
    * </pre>
    */
@@ -66,11 +66,16 @@ final class ResultOfNotExist(notWord: NotWord) {
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">
-   * file should (not exist or equal (existFile))
+   * file should (not (exist) or equal (existFile))
    *                        ^
    * </pre>
    */
   def or[TYPECLASS1[_]](anotherMatcherFactory: MatcherFactory1[Any, TYPECLASS1]): MatcherFactory2[Any, Existence, TYPECLASS1] = 
     notWord.exist.or(anotherMatcherFactory)  
+    
+  /**
+   * Overrides toString to return "not exist"
+   */
+  override def toString: String = "not exist"
   
 }

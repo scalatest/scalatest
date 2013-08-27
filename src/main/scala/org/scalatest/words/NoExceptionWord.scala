@@ -31,11 +31,11 @@ final class NoExceptionWord {
    *
    * <pre class="stHighlight">
    * noException should be thrownBy { ... }
-   *                    ^
+   *             ^
    * </pre>
    */
   def should(beWord: BeWord): ResultOfBeWordForNoException = 
-    new ResultOfBeWordForNoException
+    new ResultOfBeWordForNoException("should")
   
   /**
    * This method enables the following syntax: 

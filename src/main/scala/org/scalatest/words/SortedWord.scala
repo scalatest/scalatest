@@ -21,4 +21,9 @@ package org.scalatest.words
  *
  * @author Bill Venners
  */
-final class SortedWord
+final class SortedWord {
+  /**
+   * Overrides toString to return "sorted"
+   */
+  override def toString: String = "sorted"
+}

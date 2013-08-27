@@ -233,6 +233,98 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
         e1.message should be (Some(Resources("onlyDuplicate")))
       }
     }
+    
+    object `when used with shouldNot contain only (..)` {
+
+      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+        toList shouldNot contain only ("fee", "fie", "foe", "fum")
+        val e1 = intercept[TestFailedException] {
+          toList shouldNot contain only ("happy", "birthday", "to", "you")
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message.get should be (Resources("containedOnlyElements", decorateToStringValue(toList), "\"happy\", \"birthday\", \"to\", \"you\""))
+      }
+      def `should use the implicit Equality in scope` {
+        implicit val ise = upperCaseStringEquality
+        toList shouldNot contain only ("happy", "birthday", "to")
+        intercept[TestFailedException] {
+          toList shouldNot contain only ("HAPPY", "BIRTHDAY", "TO", "YOU")
+        }
+      }
+      def `should use an explicitly provided Equality` {
+        (toList shouldNot contain only ("happy", "birthday", "to")) (decided by upperCaseStringEquality)
+        intercept[TestFailedException] {
+          (toList shouldNot contain only ("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseStringEquality)
+        }
+        toList shouldNot contain only (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")
+        intercept[TestFailedException] {
+          (toList shouldNot contain only (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (after being lowerCased and trimmed)
+        }
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          toList shouldNot contain only ()
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("onlyEmpty")))
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          toList shouldNot contain only ("fee", "fie", "foe", "fie", "fum")
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("onlyDuplicate")))
+      }
+    }
+
+    object `when used with shouldNot (contain only (..))` {
+
+      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+        toList shouldNot (contain only ("HAPPY", "BIRTHDAY", "TO", "YOU"))
+        val e1 = intercept[TestFailedException] {
+          toList shouldNot (contain only ("happy", "birthday", "to", "you"))
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message.get should be (Resources("containedOnlyElements", decorateToStringValue(toList), "\"happy\", \"birthday\", \"to\", \"you\""))
+      }
+      def `should use the implicit Equality in scope` {
+        implicit val ise = upperCaseStringEquality
+        toList shouldNot (contain only ("NICE", "TO", "MEET", "YOU"))
+        intercept[TestFailedException] {
+          toList shouldNot (contain only ("HAPPY", "BIRTHDAY", "TO", "YOU"))
+        }
+      }
+      def `should use an explicitly provided Equality` {
+        (toList shouldNot (contain only ("NICE", "TO", "MEET", "YOU"))) (decided by upperCaseStringEquality)
+        intercept[TestFailedException] {
+          (toList shouldNot (contain only ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseStringEquality)
+        }
+        toList shouldNot (contain only (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
+        intercept[TestFailedException] {
+          (toList shouldNot (contain only (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
+        }
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          toList shouldNot (contain only ())
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("onlyEmpty")))
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          toList shouldNot (contain only ("fee", "fie", "foe", "fie", "fum"))
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("onlyDuplicate")))
+      }
+    }
   }
 
   object `a col of Lists` {
@@ -466,6 +558,102 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
           all (toLists) should (not contain only ("fee", "fie", "foe", "fie", "fum"))
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("onlyDuplicate")))
+      }
+    }
+    
+    object `when used with shouldNot contain only (..)` {
+
+      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+        all (toLists) shouldNot contain only ("fee", "fie", "foe", "fum")
+        val e1 = intercept[TestFailedException] {
+          all (toLists) shouldNot contain only ("you", "to")
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some("'all' inspection failed, because: \n" +
+                                   "  at index 0, " + decorateToStringValue(List("to", "you")) + " contained only " + "(\"you\", \"to\")" +  " (ListShouldContainOnlySpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "in " + decorateToStringValue(toLists)))
+      }
+      def `should use the implicit Equality in scope` {
+        implicit val ise = upperCaseStringEquality
+        all (toLists) shouldNot contain only ("NICE", "MEET", "YOU")
+        intercept[TestFailedException] {
+          all (toLists) shouldNot contain only ("YOU", "TO")
+        }
+      }
+      def `should use an explicitly provided Equality` {
+        (all (toLists) shouldNot contain only ("NICE", "MEET", "YOU")) (decided by upperCaseStringEquality)
+        intercept[TestFailedException] {
+          (all (toLists) shouldNot contain only ("YOU", "TO")) (decided by upperCaseStringEquality)
+        }
+        all (toLists) shouldNot contain only (" YOU ", " TO ")
+        intercept[TestFailedException] {
+          (all (toLists) shouldNot contain only (" YOU ", " TO ")) (after being lowerCased and trimmed)
+        }
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (toLists) shouldNot contain only ()
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("onlyEmpty")))
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (toLists) shouldNot contain only ("fee", "fie", "foe", "fie", "fum")
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("onlyDuplicate")))
+      }
+    }
+
+    object `when used with shouldNot (contain only (..))` {
+
+      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+        all (toLists) shouldNot (contain only ("fee", "fie", "foe", "fum"))
+        val e1 = intercept[TestFailedException] {
+          all (toLists) shouldNot (contain only ("you", "to"))
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some("'all' inspection failed, because: \n" +
+                                   "  at index 0, " + decorateToStringValue(List("to", "you")) + " contained only " + "(\"you\", \"to\")" + " (ListShouldContainOnlySpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "in " + decorateToStringValue(toLists)))
+      }
+      def `should use the implicit Equality in scope` {
+        implicit val ise = upperCaseStringEquality
+        all (toLists) shouldNot (contain only ("NICE", "MEET", "YOU"))
+        intercept[TestFailedException] {
+          all (toLists) shouldNot (contain only ("YOU", "TO"))
+        }
+      }
+      def `should use an explicitly provided Equality` {
+        (all (toLists) shouldNot (contain only ("NICE", "MEET", "YOU"))) (decided by upperCaseStringEquality)
+        intercept[TestFailedException] {
+          (all (toLists) shouldNot (contain only ("YOU", "TO"))) (decided by upperCaseStringEquality)
+        }
+        all (toLists) shouldNot (contain only (" YOU ", " TO "))
+        intercept[TestFailedException] {
+          (all (toLists) shouldNot (contain only (" YOU ", " TO "))) (after being lowerCased and trimmed)
+        }
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (toLists) shouldNot (contain only ())
+        }
+        e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
+        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e1.message should be (Some(Resources("onlyEmpty")))
+      }
+      def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
+        val e1 = intercept[exceptions.NotAllowedException] {
+          all (toLists) shouldNot (contain only ("fee", "fie", "foe", "fie", "fum"))
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)

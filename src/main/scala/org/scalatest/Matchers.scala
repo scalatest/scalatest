@@ -35,6 +35,7 @@ import org.scalautils.TripleEqualsSupport.TripleEqualsInvocation
 import org.scalautils.Equality
 import org.scalautils.TripleEqualsSupport.TripleEqualsInvocationOnSpread
 import org.scalautils.TypeConstraint
+import org.scalautils.Prettifier
 import MatchersHelper.andMatchersAndApply
 import MatchersHelper.orMatchersAndApply
 import org.scalatest.words._
@@ -2142,10 +2143,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       def apply(left: T): MatchResult = {
         MatchResult(
           spread.isWithin(left),
-          FailureMessages("didNotEqualPlusOrMinus", left, spread.pivot, spread.tolerance),
-          FailureMessages("equaledPlusOrMinus", left, spread.pivot, spread.tolerance)
+          Resources("didNotEqualPlusOrMinus"),
+          Resources("equaledPlusOrMinus"), 
+          Vector(left, spread.pivot, spread.tolerance)
         )
       }
+      override def toString: String = "equal (" + Prettifier.default(spread) + ")"
     }
   }
 
@@ -2162,12 +2165,15 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       def apply(left: AnyRef): MatchResult = {
         MatchResult(
           left == null,
-          FailureMessages("didNotEqualNull", left),
-          FailureMessages("equaledNull"),
-          FailureMessages("didNotEqualNull", left),
-          FailureMessages("midSentenceEqualedNull")
+          Resources("didNotEqualNull"),
+          Resources("equaledNull"),
+          Resources("didNotEqualNull"),
+          Resources("midSentenceEqualedNull"), 
+          Vector(left), 
+          Vector.empty
         )
       }
+      override def toString: String = "equal (" + Prettifier.default(o) + ")"
     }
 
   /**
@@ -5090,6 +5096,18 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * This method enables syntax such as the following:
      *
      * <pre class="stHighlight">
+     * all (xs) shouldNot contain (oneOf (1, 2, 3))
+     *    ^
+     * </pre>
+     */
+    def shouldNot(containWord: ContainWord): ResultOfContainWordForCollectedAny[T] = {
+      new ResultOfContainWordForCollectedAny(collected, xs, false)
+    }
+    
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
      * all(xs) should exist
      *         ^
      * </pre>
@@ -5708,7 +5726,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def should(notWord: NotWord): ResultOfNotWordForAny[T] = new ResultOfNotWordForAny[T](left, false)
+    def should(notWord: NotWord): ResultOfNotWordForAny[T] = new ResultOfNotWordForAny[T](left, false, "should")
 
     // In 2.10, will work with AnyVals. TODO: Also, Need to ensure Char works
     /**
@@ -6188,8 +6206,19 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(containWord: ContainWord): ResultOfContainWord[T] = {
-      new ResultOfContainWord(left, true)
+      new ResultOfContainWord(left, true, "should")
     }
+    
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * xs shouldNot contain (oneOf (1, 2, 3))
+     *    ^
+     * </pre>
+     */
+    def shouldNot(contain: ContainWord): ResultOfContainWord[T] = 
+      new ResultOfContainWord(left, false, "shouldNot")
     
     /**
      * This method enables syntax such as the following:
@@ -6301,7 +6330,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     override def should(notWord: NotWord): ResultOfNotWordForString = {
-      new ResultOfNotWordForString(leftSideValue, false)
+      new ResultOfNotWordForString(leftSideValue, false, "should")
     }
 
     /**
@@ -6425,7 +6454,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    */
   implicit def convertToRegexWrapper(o: Regex): RegexWrapper = new RegexWrapper(o)
 
-  def of[T]: ResultOfOfTypeInvocation[T] = new ResultOfOfTypeInvocation[T]
+  def of[T](implicit ev: Manifest[T]): ResultOfOfTypeInvocation[T] = new ResultOfOfTypeInvocation[T]
 }
 
 /**

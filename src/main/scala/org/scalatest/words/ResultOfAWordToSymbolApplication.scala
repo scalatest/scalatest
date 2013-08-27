@@ -15,7 +15,7 @@
  */
 package org.scalatest.words
 
-import org.scalatest.matchers._
+import org.scalautils.Prettifier
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -23,5 +23,6 @@ import org.scalatest.matchers._
  *
  * @author Bill Venners
  */
-final class ResultOfAWordToSymbolApplication(val symbol: Symbol)
-
+final class ResultOfAWordToSymbolApplication(val symbol: Symbol) {
+  override def toString: String = "a " + Prettifier.default(symbol)
+}

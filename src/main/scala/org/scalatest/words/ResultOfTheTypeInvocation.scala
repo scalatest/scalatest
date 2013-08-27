@@ -37,4 +37,6 @@ final class ResultOfTheTypeInvocation[T](clazz: Class[T]) {
   def thrownBy(fun: => Any): T = {
     checkExpectedException(fun, clazz, "wrongException", "exceptionExpected", 4)
   }
+  
+  override def toString: String = "the " + clazz.getName
 }

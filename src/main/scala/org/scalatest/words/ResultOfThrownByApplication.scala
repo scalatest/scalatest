@@ -28,4 +28,6 @@ final class ResultOfThrownByApplication(fun: => Unit) {
    * Execute the passed-in body of code.
    */
   def execute() = fun
+  
+  override def toString: String = "thrownBy { ... }"
 }
