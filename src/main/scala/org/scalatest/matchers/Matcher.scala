@@ -545,6 +545,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
           }
         }
       }
+      override def toString: String = "(" + Prettifier.default(outerInstance) + ") and (" + Prettifier.default(rightMatcherFactory1) + ")"
     }
 
   /**
@@ -586,8 +587,10 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
             val rightMatcher = rightMatcherFactory1.matcher
             orMatchersAndApply(left, outerInstance, rightMatcher)
           }
+          override def toString: String = "(" + Prettifier.default(outerInstance) + ") or (" + Prettifier.default(rightMatcherFactory1) + ")"
         }
       }
+      override def toString: String = "(" + Prettifier.default(outerInstance) + ") or (" + Prettifier.default(rightMatcherFactory1) + ")"
     }
 
   /**

@@ -177,6 +177,28 @@ class MatcherSpec extends Spec {
       
     }
     
+    object `and(MatcherFactory1) method returns MatcherFactory1` {
+      
+      val mt1 = be ("Bob")
+      val mtf = mt1 and (equal ("Alice"))
+      val mt = mtf.matcher[String]
+      
+      def `should have pretty toString` {
+        mtf.toString should be ("(be \"Bob\") and (equal \"Alice\")")
+      }
+    }
+    
+    object `or(MatcherFactory1) method returns MatcherFactory1` {
+      
+      val mt1 = be ("Bob")
+      val mtf = mt1 or (equal ("Alice"))
+      val mt = mtf.matcher[String]
+      
+      def `should have pretty toString` {
+        mtf.toString should be ("(be \"Bob\") or (equal \"Alice\")")
+      }
+    }
+    
   }
   
 }

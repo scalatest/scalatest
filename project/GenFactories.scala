@@ -169,8 +169,10 @@ $endif$
             val rightMatcher = rightMatcherFactory.matcher
             andMatchersAndApply(left, leftMatcher, rightMatcher)
           }
+          override def toString: String = "(" + Prettifier.default(thisMatcherFactory) + ") and (" + Prettifier.default(rightMatcherFactory) + ")"
         }
       }
+      override def toString: String = "(" + Prettifier.default(thisMatcherFactory) + ") and (" + Prettifier.default(rightMatcherFactory) + ")"
     }
 
   /**
@@ -185,8 +187,10 @@ $endif$
             val rightMatcher = rightMatcherFactory.matcher
             orMatchersAndApply(left, leftMatcher, rightMatcher)
           }
+          override def toString: String = "(" + Prettifier.default(thisMatcherFactory) + ") or (" + Prettifier.default(rightMatcherFactory) + ")"
         }
       }
+      override def toString: String = "(" + Prettifier.default(thisMatcherFactory) + ") or (" + Prettifier.default(rightMatcherFactory) + ")"
     }
 """
 
