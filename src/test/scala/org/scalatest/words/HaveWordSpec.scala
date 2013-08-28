@@ -305,7 +305,7 @@ class HaveWordSpec extends Spec with Matchers {
       case class Person(name: String)
       
       def `should have pretty toString` {
-        mt.toString should be ("have " + nameBob)
+        mt.toString should be ("have (" + nameBob + ")")
       }
       
       object `when evaluate to true` {

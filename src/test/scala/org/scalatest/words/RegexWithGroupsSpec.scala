@@ -24,17 +24,17 @@ class RegexWithGroupsSpec extends Spec {
     
     def `should have pretty toString when no group is specified` {
       val result = new RegexWithGroups("a(b*)c".r, Vector.empty)
-      result.toString should be ("regex a(b*)c")
+      result.toString should be ("\"a(b*)c\"")
     }
     
     def `should have pretty toString when 1 group is specified` {
       val result = new RegexWithGroups("a(b*)c".r, Vector("bb"))
-      result.toString should be ("regex a(b*)c withGroup bb")
+      result.toString should be ("\"a(b*)c\" withGroup (\"bb\")")
     }
     
     def `should have pretty toString when > 1 group is specified` {
       val result = new RegexWithGroups("a(b*)(c*)".r, Vector("bb", "cc"))
-      result.toString should be ("regex a(b*)(c*) withGroups bb, cc")
+      result.toString should be ("\"a(b*)(c*)\" withGroups (\"bb\", \"cc\")")
     }
   }
   

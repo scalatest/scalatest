@@ -48,7 +48,7 @@ final class EndWithWord {
           Resources("endedWith"), 
           Vector(left, right)
         )
-      override def toString: String = "endWith " + Prettifier.default(right)
+      override def toString: String = "endWith (" + Prettifier.default(right) + ")"
     }
 
   /**
@@ -74,7 +74,7 @@ final class EndWithWord {
     new Matcher[String] {
       def apply(left: String): MatchResult = 
         endWithRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
-      override def toString: String = "endWith regex " + regexWithGroups.regex.toString + (if (regexWithGroups.groups.size > 1) " withGroups " else " withGroup ") + regexWithGroups.groups.mkString(", ")
+      override def toString: String = "endWith regex " + Prettifier.default(regexWithGroups)
     }
 
   /**
@@ -97,7 +97,7 @@ final class EndWithWord {
           Vector(left, UnquotedString(rightRegex.toString))
         )
       }
-      override def toString: String = "endWith regex " + rightRegex.toString
+      override def toString: String = "endWith regex \"" + Prettifier.default(rightRegex) + "\""
     }
   
   /**

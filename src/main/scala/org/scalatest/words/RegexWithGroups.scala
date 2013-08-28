@@ -27,10 +27,10 @@ final class RegexWithGroups(val regex: Regex, val groups: IndexedSeq[String]) {
   /**
    * Overrides toString to return regex and groups (if available)
    */
-  override def toString: String = "regex " + regex.toString + (
+  override def toString: String = "\"" + regex.toString + "\"" + (
     if (groups.isEmpty)
       ""
     else 
-      (if (groups.size > 1) " withGroups " else " withGroup ") + groups.mkString(", ")
+      (if (groups.size > 1) " withGroups (" else " withGroup (") + groups.map("\"" + _ + "\"").mkString(", ") + ")"
   )
 }

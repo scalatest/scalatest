@@ -23,19 +23,20 @@ import matchers.{MatchResult,
                  MidSentenceNegatedFailureMessage, 
                  MidSentenceFailureMessage}
 
-class MatcherSpec extends Spec {
+class MatcherFactorySpec extends Spec {
   
-  object `Matcher ` {
+  object `MatcherFactory1 ` {
     
     object `AndNotWord ` {
       
       object `equal(Null) method returns Matcher` {
         
         val aNullRef: String = null
-        val mt = not be ("hi") and not equal (null)
+        val mtf = not equal ("hi") and not equal (null)
+        val mt = mtf.matcher[String]
       
         def `should have pretty toString` {
-          mt.toString should be ("(not be \"hi\") and (not equal null)")
+          mtf.toString should be ("(not (equal (\"hi\"))) and (not equal null)")
         }
         
         val mr = mt("Bob")
@@ -43,8 +44,8 @@ class MatcherSpec extends Spec {
         val leftResult = 
           MatchResult(
             true, 
-            "{0} was equal to {1}", 
-            "{0} was not equal to {1}",
+            "{0} equaled {1}", 
+            "{0} did not equal {1}",
             Vector("Bob", "hi"), 
             Vector("[Bob]", "[hi]")
           )
@@ -63,10 +64,10 @@ class MatcherSpec extends Spec {
         def `should have correct MatcherResult` {
           mr should have (
             'matches (true),
-            'failureMessage ("\"[Bob]\" was not equal to \"[hi]\", but the reference equaled null"),
-            'negatedFailureMessage ("\"[Bob]\" was not equal to \"[hi]\", and \"Bob\" did not equal null"),
-            'midSentenceFailureMessage ("\"[Bob]\" was not equal to \"[hi]\", but the reference equaled null"),
-            'midSentenceNegatedFailureMessage ("\"[Bob]\" was not equal to \"[hi]\", and \"Bob\" did not equal null"),
+            'failureMessage ("\"[Bob]\" did not equal \"[hi]\", but the reference equaled null"),
+            'negatedFailureMessage ("\"[Bob]\" did not equal \"[hi]\", and \"Bob\" did not equal null"),
+            'midSentenceFailureMessage ("\"[Bob]\" did not equal \"[hi]\", but the reference equaled null"),
+            'midSentenceNegatedFailureMessage ("\"[Bob]\" did not equal \"[hi]\", and \"Bob\" did not equal null"),
             'rawFailureMessage ("{0}, but {1}"),
             'rawNegatedFailureMessage ("{0}, and {1}"),
             'rawMidSentenceFailureMessage ("{0}, but {1}"),
@@ -83,10 +84,10 @@ class MatcherSpec extends Spec {
         def `should have correct negated MatcherResult` {
           nmr should have (
             'matches (false),
-            'failureMessage ("\"[Bob]\" was not equal to \"[hi]\", and \"Bob\" did not equal null"),
-            'negatedFailureMessage ("\"[Bob]\" was not equal to \"[hi]\", but the reference equaled null"),
-            'midSentenceFailureMessage ("\"[Bob]\" was not equal to \"[hi]\", and \"Bob\" did not equal null"),
-            'midSentenceNegatedFailureMessage ("\"[Bob]\" was not equal to \"[hi]\", but the reference equaled null"),
+            'failureMessage ("\"[Bob]\" did not equal \"[hi]\", and \"Bob\" did not equal null"),
+            'negatedFailureMessage ("\"[Bob]\" did not equal \"[hi]\", but the reference equaled null"),
+            'midSentenceFailureMessage ("\"[Bob]\" did not equal \"[hi]\", and \"Bob\" did not equal null"),
+            'midSentenceNegatedFailureMessage ("\"[Bob]\" did not equal \"[hi]\", but the reference equaled null"),
             'rawFailureMessage ("{0}, and {1}"),
             'rawNegatedFailureMessage ("{0}, but {1}"),
             'rawMidSentenceFailureMessage ("{0}, and {1}"),
@@ -107,10 +108,11 @@ class MatcherSpec extends Spec {
       object `equal(Null) method returns Matcher` {
         
         val aNullRef: String = null
-        val mt = not be ("Bob") or not equal (null)
+        val mtf = not equal ("Bob") or not equal (null)
+        val mt = mtf.matcher[String]
       
         def `should have pretty toString` {
-          mt.toString should be ("(not be \"Bob\") or (not equal null)")
+          mt.toString should be ("(not (equal (\"Bob\"))) or (not equal null)")
         }
         
         val mr = mt("Bob")
@@ -118,8 +120,8 @@ class MatcherSpec extends Spec {
         val leftResult = 
           MatchResult(
             false, 
-            "{0} was equal to {1}", 
-            "{0} was not equal to {1}",
+            "{0} equaled {1}", 
+            "{0} did not equal {1}",
             Vector("Bob", "Bob"), 
             Vector("Bob", "Bob")
           )
@@ -138,10 +140,10 @@ class MatcherSpec extends Spec {
         def `should have correct MatcherResult` {
           mr should have (
             'matches (true),
-            'failureMessage ("\"Bob\" was equal to \"Bob\", and the reference equaled null"),
-            'negatedFailureMessage ("\"Bob\" was equal to \"Bob\", and \"Bob\" did not equal null"),
-            'midSentenceFailureMessage ("\"Bob\" was equal to \"Bob\", and the reference equaled null"),
-            'midSentenceNegatedFailureMessage ("\"Bob\" was equal to \"Bob\", and \"Bob\" did not equal null"),
+            'failureMessage ("\"Bob\" equaled \"Bob\", and the reference equaled null"),
+            'negatedFailureMessage ("\"Bob\" equaled \"Bob\", and \"Bob\" did not equal null"),
+            'midSentenceFailureMessage ("\"Bob\" equaled \"Bob\", and the reference equaled null"),
+            'midSentenceNegatedFailureMessage ("\"Bob\" equaled \"Bob\", and \"Bob\" did not equal null"),
             'rawFailureMessage ("{0}, and {1}"),
             'rawNegatedFailureMessage ("{0}, and {1}"),
             'rawMidSentenceFailureMessage ("{0}, and {1}"),
@@ -158,10 +160,10 @@ class MatcherSpec extends Spec {
         def `should have correct negated MatcherResult` {
           nmr should have (
             'matches (false),
-            'failureMessage ("\"Bob\" was equal to \"Bob\", and \"Bob\" did not equal null"),
-            'negatedFailureMessage ("\"Bob\" was equal to \"Bob\", and the reference equaled null"),
-            'midSentenceFailureMessage ("\"Bob\" was equal to \"Bob\", and \"Bob\" did not equal null"),
-            'midSentenceNegatedFailureMessage ("\"Bob\" was equal to \"Bob\", and the reference equaled null"),
+            'failureMessage ("\"Bob\" equaled \"Bob\", and \"Bob\" did not equal null"),
+            'negatedFailureMessage ("\"Bob\" equaled \"Bob\", and the reference equaled null"),
+            'midSentenceFailureMessage ("\"Bob\" equaled \"Bob\", and \"Bob\" did not equal null"),
+            'midSentenceNegatedFailureMessage ("\"Bob\" equaled \"Bob\", and the reference equaled null"),
             'rawFailureMessage ("{0}, and {1}"),
             'rawNegatedFailureMessage ("{0}, and {1}"),
             'rawMidSentenceFailureMessage ("{0}, and {1}"),
@@ -179,23 +181,23 @@ class MatcherSpec extends Spec {
     
     object `and(MatcherFactory1) method returns MatcherFactory1` {
       
-      val mt1 = be ("Bob")
-      val mtf = mt1 and (equal ("Alice"))
+      val mtf1 = equal ("Bob")
+      val mtf = mtf1 and (equal ("Alice"))
       val mt = mtf.matcher[String]
       
       def `should have pretty toString` {
-        mtf.toString should be ("(be (\"Bob\")) and (equal (\"Alice\"))")
+        mtf.toString should be ("(equal (\"Bob\")) and (equal (\"Alice\"))")
       }
     }
     
     object `or(MatcherFactory1) method returns MatcherFactory1` {
       
-      val mt1 = be ("Bob")
-      val mtf = mt1 or (equal ("Alice"))
+      val mtf1 = equal ("Bob")
+      val mtf = mtf1 or (equal ("Alice"))
       val mt = mtf.matcher[String]
       
       def `should have pretty toString` {
-        mtf.toString should be ("(be (\"Bob\")) or (equal (\"Alice\"))")
+        mtf.toString should be ("(equal (\"Bob\")) or (equal (\"Alice\"))")
       }
     }
     

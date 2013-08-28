@@ -33,7 +33,9 @@ import scala.util.matching.Regex
 import org.scalautils.Equality
 import org.scalautils.TripleEqualsSupport.Spread
 import org.scalautils.TripleEqualsSupport.TripleEqualsInvocation
+import org.scalautils.Prettifier
 import org.scalatest.FailureMessages
+import org.scalatest.Resources
 import org.scalatest.words.FullyMatchWord
 import org.scalatest.words.StartWithWord
 import org.scalatest.words.EndWithWord
@@ -132,8 +134,10 @@ $endif$
             val leftMatcher = thisMatcherFactory.matcher
             andMatchersAndApply(left, leftMatcher, rightMatcher)
           }
+          override def toString: String = "(" + Prettifier.default(thisMatcherFactory) + ") and (" + Prettifier.default(rightMatcher) + ")"
         }
       }
+      override def toString: String = "(" + Prettifier.default(thisMatcherFactory) + ") and (" + Prettifier.default(rightMatcher) + ")"
     }
 
   /**
@@ -147,8 +151,10 @@ $endif$
             val leftMatcher = thisMatcherFactory.matcher
             orMatchersAndApply(left, leftMatcher, rightMatcher)
           }
+          override def toString: String = "(" + Prettifier.default(thisMatcherFactory) + ") or (" + Prettifier.default(rightMatcher) + ")"
         }
       }
+      override def toString: String = "(" + Prettifier.default(thisMatcherFactory) + ") or (" + Prettifier.default(rightMatcher) + ")"
     }
 
   /**
@@ -163,8 +169,10 @@ $endif$
             val rightMatcher = rightMatcherFactory.matcher
             andMatchersAndApply(left, leftMatcher, rightMatcher)
           }
+          override def toString: String = "(" + Prettifier.default(thisMatcherFactory) + ") and (" + Prettifier.default(rightMatcherFactory) + ")"
         }
       }
+      override def toString: String = "(" + Prettifier.default(thisMatcherFactory) + ") and (" + Prettifier.default(rightMatcherFactory) + ")"
     }
 
   /**
@@ -179,8 +187,10 @@ $endif$
             val rightMatcher = rightMatcherFactory.matcher
             orMatchersAndApply(left, leftMatcher, rightMatcher)
           }
+          override def toString: String = "(" + Prettifier.default(thisMatcherFactory) + ") or (" + Prettifier.default(rightMatcherFactory) + ")"
         }
       }
+      override def toString: String = "(" + Prettifier.default(thisMatcherFactory) + ") or (" + Prettifier.default(rightMatcherFactory) + ")"
     }
 """
 
@@ -789,12 +799,15 @@ $endif$
           def apply(left: SC): MatchResult = {
             MatchResult(
               left != null,
-              FailureMessages("equaledNull"),
-              FailureMessages("didNotEqualNull", left),
-              FailureMessages("midSentenceEqualedNull"),
-              FailureMessages("didNotEqualNull", left)
+              Resources("equaledNull"),
+              Resources("didNotEqualNull"),
+              Resources("midSentenceEqualedNull"),
+              Resources("didNotEqualNull"), 
+              Vector.empty, 
+              Vector(left)
             )
           }
+          override def toString: String = "not equal null"
         }
       }
     }
@@ -1917,12 +1930,15 @@ $endif$
           def apply(left: SC): MatchResult = {
             MatchResult(
               left != null,
-              FailureMessages("equaledNull"),
-              FailureMessages("didNotEqualNull", left),
-              FailureMessages("midSentenceEqualedNull"),
-              FailureMessages("didNotEqualNull", left)
+              Resources("equaledNull"),
+              Resources("didNotEqualNull"),
+              Resources("midSentenceEqualedNull"),
+              Resources("didNotEqualNull"), 
+              Vector.empty, 
+              Vector(left)
             )
           }
+          override def toString: String = "not equal null"
         }
       }
     }
