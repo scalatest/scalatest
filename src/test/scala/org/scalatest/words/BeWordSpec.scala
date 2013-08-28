@@ -620,7 +620,7 @@ class BeWordSpec extends Spec with FileMocks {
       val mt = be (spread)
       
       def `should have pretty toString` {
-        mt.toString should be ("be 7.1 plusOrMinus 0.2")
+        mt.toString should be ("be (7.1 plusOrMinus 0.2)")
       }
       
       val mr = mt(7.0)
@@ -725,7 +725,7 @@ class BeWordSpec extends Spec with FileMocks {
       val mt = be (true)
       
       def `should have pretty toString` {
-        mt.toString should be ("be true")
+        mt.toString should be ("be (true)")
       }
       
       val mr = mt(true)
@@ -773,7 +773,7 @@ class BeWordSpec extends Spec with FileMocks {
       val mt = be (null)
       
       def `should have pretty toString` {
-        mt.toString should be ("be null")
+        mt.toString should be ("be (null)")
       }
       
       val aString = "something"
@@ -823,7 +823,7 @@ class BeWordSpec extends Spec with FileMocks {
       val mt = be ('file)
       
       def `should have pretty toString` {
-        mt.toString should be ("be 'file")
+        mt.toString should be ("be ('file)")
       }
       
       val mr = mt(fileMock)
@@ -883,7 +883,7 @@ class BeWordSpec extends Spec with FileMocks {
       val mt = be (odd)
       
       def `should have pretty toString` {
-        mt.toString should be ("be " + odd)
+        mt.toString should be ("be (" + odd + ")")
       }
       
       val mr = mt(1)
@@ -947,7 +947,7 @@ class BeWordSpec extends Spec with FileMocks {
       val mt = be (file)
       
       def `should have pretty toString` {
-        mt.toString should be ("be " + file)
+        mt.toString should be ("be (" + file + ")")
       }
       
       val mr = mt(myFile)
@@ -1005,7 +1005,7 @@ class BeWordSpec extends Spec with FileMocks {
       val mt = be (myFileRight)
       
       def `should have pretty toString` {
-        mt.toString should be ("be " + myFileRight)
+        mt.toString should be ("be (" + myFileRight + ")")
       }
       
       val mr = mt(myFileLeft)
@@ -1055,8 +1055,8 @@ class BeWordSpec extends Spec with FileMocks {
       val mt = mtf.matcher[List[Int]]
       
       def `should have pretty toString` {
-        mtf.toString should be ("be sorted")
-        mt.toString should be ("be sorted")
+        mtf.toString should be ("be (sorted)")
+        mt.toString should be ("be (sorted)")
       }
       
       val leftList = List(1, 2, 3)
@@ -1341,8 +1341,8 @@ class BeWordSpec extends Spec with FileMocks {
       val mt = mtf.matcher[MyFile]
       
       def `should have pretty toString` {
-        mtf.toString should be ("be readable")
-        mt.toString should be ("be readable")
+        mtf.toString should be ("be (readable)")
+        mt.toString should be ("be (readable)")
       }
       
       val myFile = new MyFile
@@ -1397,8 +1397,8 @@ class BeWordSpec extends Spec with FileMocks {
       val mt = mtf.matcher[MyFile]
       
       def `should have pretty toString` {
-        mtf.toString should be ("be writable")
-        mt.toString should be ("be writable")
+        mtf.toString should be ("be (writable)")
+        mt.toString should be ("be (writable)")
       }
       
       val myFile = new MyFile
@@ -1449,8 +1449,8 @@ class BeWordSpec extends Spec with FileMocks {
       val mt = mtf.matcher[List[Int]]
       
       def `should have pretty toString` {
-        mtf.toString should be ("be empty")
-        mt.toString should be ("be empty")
+        mtf.toString should be ("be (empty)")
+        mt.toString should be ("be (empty)")
       }
       
       val leftList = List.empty[Int]
@@ -1501,8 +1501,8 @@ class BeWordSpec extends Spec with FileMocks {
       val mt = mtf.matcher[Option[Int]]
       
       def `should have pretty toString` {
-        mtf.toString should be ("be defined")
-        mt.toString should be ("be defined")
+        mtf.toString should be ("be (defined)")
+        mt.toString should be ("be (defined)")
       }
       
       val leftOption = Some(1)
