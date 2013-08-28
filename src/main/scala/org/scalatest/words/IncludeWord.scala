@@ -47,7 +47,7 @@ final class IncludeWord {
           Resources("includedSubstring"), 
           Vector(left, expectedSubstring)
         )
-      override def toString: String = "include " + Prettifier.default(expectedSubstring)
+      override def toString: String = "include (" + Prettifier.default(expectedSubstring) + ")"
     }
 
   /**
@@ -73,7 +73,7 @@ final class IncludeWord {
     new Matcher[String] {
       def apply(left: String): MatchResult = 
         includeRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
-      override def toString: String = "include " + Prettifier.default(regexWithGroups)
+      override def toString: String = "include regex " + Prettifier.default(regexWithGroups)
     }
 
   /**
@@ -94,7 +94,7 @@ final class IncludeWord {
           Resources("includedRegex"), 
           Vector(left, UnquotedString(expectedRegex.toString))
         )
-      override def toString: String = "include regex " + Prettifier.default(expectedRegex)
+      override def toString: String = "include regex \"" + Prettifier.default(expectedRegex) + "\""
     }
   
   /**

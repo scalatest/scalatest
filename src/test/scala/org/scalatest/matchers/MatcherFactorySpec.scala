@@ -36,7 +36,7 @@ class MatcherFactorySpec extends Spec {
         val mt = mtf.matcher[String]
       
         def `should have pretty toString` {
-          mtf.toString should be ("(not equal \"hi\") and (not equal null)")
+          mtf.toString should be ("(not (equal (\"hi\"))) and (not equal null)")
         }
         
         val mr = mt("Bob")
@@ -112,7 +112,7 @@ class MatcherFactorySpec extends Spec {
         val mt = mtf.matcher[String]
       
         def `should have pretty toString` {
-          mt.toString should be ("(not equal \"Bob\") or (not equal null)")
+          mt.toString should be ("(not (equal (\"Bob\"))) or (not equal null)")
         }
         
         val mr = mt("Bob")
@@ -186,7 +186,7 @@ class MatcherFactorySpec extends Spec {
       val mt = mtf.matcher[String]
       
       def `should have pretty toString` {
-        mtf.toString should be ("(equal \"Bob\") and (equal \"Alice\")")
+        mtf.toString should be ("(equal (\"Bob\")) and (equal (\"Alice\"))")
       }
     }
     
@@ -197,7 +197,7 @@ class MatcherFactorySpec extends Spec {
       val mt = mtf.matcher[String]
       
       def `should have pretty toString` {
-        mtf.toString should be ("(equal \"Bob\") or (equal \"Alice\")")
+        mtf.toString should be ("(equal (\"Bob\")) or (equal (\"Alice\"))")
       }
     }
     

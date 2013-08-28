@@ -223,7 +223,7 @@ final class HaveWord {
         }
       }
       
-      override def toString: String = "have " + Prettifier.default(firstPropertyMatcher)
+      override def toString: String = "have (" + Prettifier.default(firstPropertyMatcher) + ")"
     }
   
   /**

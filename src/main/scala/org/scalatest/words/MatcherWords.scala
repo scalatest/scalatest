@@ -270,10 +270,10 @@ trait MatcherWords {
               Vector(left, right)
             )
           }
-          override def toString: String = "equal " + Prettifier.default(right)
+          override def toString: String = "equal (" + Prettifier.default(right) + ")"
         }
       }
-      override def toString: String = "equal " + Prettifier.default(right)
+      override def toString: String = "equal (" + Prettifier.default(right) + ")"
     }
 
   def legacyEqual(right: Any): Matcher[Any] =
@@ -288,7 +288,7 @@ trait MatcherWords {
           Vector(left, right)
         )
       }
-      override def toString: String = "legacyEqual " + Prettifier.default(right)
+      override def toString: String = "legacyEqual (" + Prettifier.default(right) + ")"
     }
 }
 

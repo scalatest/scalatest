@@ -184,7 +184,7 @@ class MatcherSpec extends Spec {
       val mt = mtf.matcher[String]
       
       def `should have pretty toString` {
-        mtf.toString should be ("(be (\"Bob\")) and (equal \"Alice\")")
+        mtf.toString should be ("(be (\"Bob\")) and (equal (\"Alice\"))")
       }
     }
     
@@ -195,7 +195,7 @@ class MatcherSpec extends Spec {
       val mt = mtf.matcher[String]
       
       def `should have pretty toString` {
-        mtf.toString should be ("(be (\"Bob\")) or (equal \"Alice\")")
+        mtf.toString should be ("(be (\"Bob\")) or (equal (\"Alice\"))")
       }
     }
     

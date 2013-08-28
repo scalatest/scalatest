@@ -42,7 +42,7 @@ class NotWordSpec extends Spec with FileMocks {
       val mt = not (be < 3)
       
       def `should have pretty toString` {
-        mt.toString should be ("not be < 3")
+        mt.toString should be ("not (be < 3)")
       }
       
       val mr = mt(0)
@@ -92,7 +92,7 @@ class NotWordSpec extends Spec with FileMocks {
       val mt = mtf.matcher[Int]
       
       def `should have pretty toString` {
-        mt.toString should be ("not equal 3")
+        mt.toString should be ("not (equal (3))")
       }
       
       val mr = mt(3)
@@ -147,7 +147,7 @@ class NotWordSpec extends Spec with FileMocks {
       val mt = mtf.matcher[Int]
       
       def `should have pretty toString` {
-        mt.toString should be ("not " + matcherFactory2)
+        mt.toString should be ("not (" + matcherFactory2 + ")")
       }
       
       val mr = mt(3)
@@ -207,7 +207,7 @@ class NotWordSpec extends Spec with FileMocks {
       val mt = not (odd)
       
       def `should have pretty toString` {
-        mt.toString should be ("not " + odd)
+        mt.toString should be ("not (" + odd + ")")
       }
       
       val mr = mt(1)
@@ -257,7 +257,7 @@ class NotWordSpec extends Spec with FileMocks {
       val mt = mtf.matcher[Int]
       
       def `should have pretty toString` {
-        mt.toString should be ("not equal 3")
+        mt.toString should be ("not (equal (3))")
       }
       
       val mr = mt(3)
@@ -1527,8 +1527,8 @@ class NotWordSpec extends Spec with FileMocks {
       val mt = mtf.matcher[List[Int]]
       
       def `should have pretty toString` {
-        mtf.toString should be ("not be (sorted)")
-        mt.toString should be ("not be (sorted)")
+        mtf.toString should be ("not (be (sorted))")
+        mt.toString should be ("not (be (sorted))")
       }
       
       val leftList = List(1, 2, 3)
@@ -1583,8 +1583,8 @@ class NotWordSpec extends Spec with FileMocks {
       val mt = mtf.matcher[MyFile]
       
       def `should have pretty toString` {
-        mtf.toString should be ("not be (readable)")
-        mt.toString should be ("not be (readable)")
+        mtf.toString should be ("not (be (readable))")
+        mt.toString should be ("not (be (readable))")
       }
       
       val myFile = new MyFile
@@ -1639,8 +1639,8 @@ class NotWordSpec extends Spec with FileMocks {
       val mt = mtf.matcher[MyFile]
       
       def `should have pretty toString` {
-        mtf.toString should be ("not be (writable)")
-        mt.toString should be ("not be (writable)")
+        mtf.toString should be ("not (be (writable))")
+        mt.toString should be ("not (be (writable))")
       }
       
       val myFile = new MyFile
@@ -1691,8 +1691,8 @@ class NotWordSpec extends Spec with FileMocks {
       val mt = mtf.matcher[List[Int]]
       
       def `should have pretty toString` {
-        mtf.toString should be ("not be (empty)")
-        mt.toString should be ("not be (empty)")
+        mtf.toString should be ("not (be (empty))")
+        mt.toString should be ("not (be (empty))")
       }
       
       val leftList = List.empty[Int]
@@ -1743,8 +1743,8 @@ class NotWordSpec extends Spec with FileMocks {
       val mt = mtf.matcher[Option[Int]]
       
       def `should have pretty toString` {
-        mtf.toString should be ("not be (defined)")
-        mt.toString should be ("not be (defined)")
+        mtf.toString should be ("not (be (defined))")
+        mt.toString should be ("not (be (defined))")
       }
       
       val leftOption = Some(1)

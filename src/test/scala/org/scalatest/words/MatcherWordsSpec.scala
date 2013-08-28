@@ -28,8 +28,8 @@ class MatcherWordsSpec extends Spec with MatcherWords {
       val mt = mtf.matcher[String]
       
       def `should have pretty toString` {
-        mtf.toString should be ("equal \"tommy\"")
-        mt.toString should be ("equal \"tommy\"")
+        mtf.toString should be ("equal (\"tommy\")")
+        mt.toString should be ("equal (\"tommy\")")
       }
       
       val mr = mt("tomy")
@@ -79,7 +79,7 @@ class MatcherWordsSpec extends Spec with MatcherWords {
       val mt = legacyEqual ("tommy")
       
       def `should have pretty toString` {
-        mt.toString should be ("legacyEqual \"tommy\"")
+        mt.toString should be ("legacyEqual (\"tommy\")")
       }
       
       val mr = mt("tomy")

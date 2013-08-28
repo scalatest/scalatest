@@ -31,7 +31,7 @@ class IncludeWordSpec extends FreeSpec with Matchers {
       val mt = include ("er")
       
       "should have pretty toString" in {
-        mt.toString should be ("include \"er\"")
+        mt.toString should be ("include (\"er\")")
       }
       
       val mr = mt("Programmer")
@@ -81,7 +81,7 @@ class IncludeWordSpec extends FreeSpec with Matchers {
       val mt = include regex decimal
       
       "should have pretty toString" in {
-        mt.toString should be ("include regex " + decimal)
+        mt.toString should be ("include regex \"" + decimal + "\"")
       }
       
       val mr = mt("b2.7")
@@ -131,7 +131,7 @@ class IncludeWordSpec extends FreeSpec with Matchers {
       val mt = include regex decimal.r
       
       "should have pretty toString" in {
-        mt.toString should be ("include regex " + decimal)
+        mt.toString should be ("include regex \"" + decimal + "\"")
       }
       
       val mr = mt("b2.7")
@@ -182,7 +182,7 @@ class IncludeWordSpec extends FreeSpec with Matchers {
       val mt = include regex ("""a(b*)c""" withGroup bb)
       
       "should have pretty toString" in {
-        mt.toString should be ("include regex a(b*)c withGroup " + bb)
+        mt.toString should be ("include regex \"a(b*)c\" withGroup (\"" + bb + "\")")
       }
       
       val mr1 = mt("abbc")
@@ -326,7 +326,7 @@ class IncludeWordSpec extends FreeSpec with Matchers {
       val mt = include regex ("""a(b*)(c*)""" withGroups (bb, cc))
       
       "should have pretty toString" in {
-        mt.toString should be ("include regex a(b*)(c*) withGroups " + bb + ", " + cc)
+        mt.toString should be ("include regex \"a(b*)(c*)\" withGroups (\"" + bb + "\", \"" + cc + "\")")
       }
       
       val mr = mt("abbccc")

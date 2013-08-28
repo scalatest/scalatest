@@ -32,7 +32,7 @@ class FullyMatchWordSpec extends FreeSpec with Matchers {
       val mt = fullyMatch regex decimal
       
       "should have pretty toString" in {
-        mt.toString should be ("fullyMatch regex " + decimal)
+        mt.toString should be ("fullyMatch regex \"" + decimal + "\"")
       }
       
       val mr = mt("2.7")
@@ -84,7 +84,7 @@ class FullyMatchWordSpec extends FreeSpec with Matchers {
       val mt = fullyMatch regex ("""a(b*)c""" withGroup bb)
       
       "should have pretty toString" in {
-        mt.toString should be ("fullyMatch regex a(b*)c withGroup " + bb)
+        mt.toString should be ("fullyMatch regex \"a(b*)c\" withGroup (\"" + bb + "\")")
       }
       
       val mr1 = mt("abbc")
@@ -228,7 +228,7 @@ class FullyMatchWordSpec extends FreeSpec with Matchers {
       val mt = fullyMatch regex ("""a(b*)(c*)""" withGroups (bb, cc))
       
       "should have pretty toString" in {
-        mt.toString should be ("fullyMatch regex a(b*)(c*) withGroups " + bb + ", " + cc)
+        mt.toString should be ("fullyMatch regex \"a(b*)(c*)\" withGroups (\"" + bb + "\", \"" + cc + "\")")
       }
       
       val mr = mt("abbccc")
@@ -278,7 +278,7 @@ class FullyMatchWordSpec extends FreeSpec with Matchers {
       val mt = fullyMatch regex decimal.r
       
       "should have pretty toString" in {
-        mt.toString should be ("fullyMatch regex " + decimal)
+        mt.toString should be ("fullyMatch regex \"" + decimal + "\"")
       }
       
       val mr = mt("2.7")
