@@ -55,7 +55,7 @@ final class NotWord {
   def apply[S <: Any](matcher: Matcher[S]): Matcher[S] =
     new Matcher[S] {
       def apply(left: S): MatchResult = matcher(left).negated
-      override def toString: String = "not " + Prettifier.default(matcher)
+      override def toString: String = "not (" + Prettifier.default(matcher) + ")"
     }
 
   /**
@@ -72,10 +72,10 @@ final class NotWord {
         val innerMatcher: Matcher[V] = matcherGen1.matcher
         new Matcher[V] {
           def apply(left: V): MatchResult = innerMatcher(left).negated
-          override def toString: String = "not " + Prettifier.default(matcherGen1)
+          override def toString: String = "not (" + Prettifier.default(matcherGen1) + ")"
         }
       }
-      override def toString: String = "not " + Prettifier.default(matcherGen1)
+      override def toString: String = "not (" + Prettifier.default(matcherGen1) + ")"
     }
   }
 
@@ -85,10 +85,10 @@ final class NotWord {
         val innerMatcher: Matcher[V] = matcherGen2.matcher
         new Matcher[V] {
           def apply(left: V): MatchResult = innerMatcher(left).negated
-          override def toString: String = "not " + Prettifier.default(matcherGen2)
+          override def toString: String = "not (" + Prettifier.default(matcherGen2) + ")"
         }
       }
-      override def toString: String = "not " + Prettifier.default(matcherGen2)
+      override def toString: String = "not (" + Prettifier.default(matcherGen2) + ")"
     }
   }
 
@@ -122,7 +122,7 @@ final class NotWord {
   def apply[S <: Any](beMatcher: BeMatcher[S]): BeMatcher[S] =
     new BeMatcher[S] {
       def apply(left: S): MatchResult = beMatcher(left).negated
-      override def toString: String = "not " + Prettifier.default(beMatcher)
+      override def toString: String = "not (" + Prettifier.default(beMatcher) + ")"
     }
   
   /**
@@ -186,7 +186,7 @@ final class NotWord {
           Vector(left, spread.pivot, spread.tolerance)
         )
       }
-      override def toString: String = "not equal " + Prettifier.default(spread.pivot) + " plusOrMinus " + Prettifier.default(spread.tolerance)
+      override def toString: String = "not equal " + Prettifier.default(spread)
     }
   }
 
@@ -651,7 +651,7 @@ final class NotWord {
           Vector(left, spread.pivot, spread.tolerance)
         )
       }
-      override def toString: String = "not be " + Prettifier.default(spread.pivot) + " plusOrMinus " + Prettifier.default(spread.tolerance)
+      override def toString: String = "not be " + Prettifier.default(spread)
     }
   }
   

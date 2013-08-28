@@ -34,8 +34,8 @@ class ContainWordSpec extends Spec {
       val mt = mtf.matcher[Array[Int]]
       
       def `should have pretty toString` {
-        mtf.toString should be ("contain 2")
-        mt.toString should be ("contain 2")
+        mtf.toString should be ("contain (2)")
+        mt.toString should be ("contain (2)")
       }
       
       val lhs = Array(1, 2, 3)

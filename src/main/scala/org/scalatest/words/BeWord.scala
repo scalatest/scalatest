@@ -387,7 +387,7 @@ final class BeWord {
           Vector(left, spread.pivot, spread.tolerance)
         )
       }
-      override def toString: String = "be " + Prettifier.default(spread.pivot) + " plusOrMinus " + Prettifier.default(spread.tolerance)
+      override def toString: String = "be (" + Prettifier.default(spread) + ")"
     }
 
   /**
@@ -427,7 +427,7 @@ final class BeWord {
           Resources("was"), 
           Vector(left, right)
         )
-      override def toString: String = "be " + Prettifier.default(right)
+      override def toString: String = "be (" + Prettifier.default(right) + ")"
     }
 
   /**
@@ -451,7 +451,7 @@ final class BeWord {
           Vector.empty
         )
       }
-      override def toString: String = "be null"
+      override def toString: String = "be (null)"
     }
 
   /* *
@@ -485,7 +485,7 @@ final class BeWord {
   def apply(right: Symbol): Matcher[AnyRef] =
     new Matcher[AnyRef] {
       def apply(left: AnyRef): MatchResult = matchSymbolToPredicateMethod(left, right, false, false)
-      override def toString: String = "be " + Prettifier.default(right)
+      override def toString: String = "be (" + Prettifier.default(right) + ")"
     }
 
   /**
@@ -500,7 +500,7 @@ final class BeWord {
   def apply[T](right: BeMatcher[T]): Matcher[T] =
     new Matcher[T] {
       def apply(left: T): MatchResult = right(left)
-      override def toString: String = "be " + Prettifier.default(right)
+      override def toString: String = "be (" + Prettifier.default(right) + ")"
     }
 
   /**
@@ -522,7 +522,7 @@ final class BeWord {
           Vector(left, UnquotedString(result.propertyName))
         )
       }
-      override def toString: String = "be " + Prettifier.default(bePropertyMatcher)
+      override def toString: String = "be (" + Prettifier.default(bePropertyMatcher) + ")"
     }
 
   /**
@@ -553,7 +553,7 @@ final class BeWord {
           Vector(left, right)
         )
       }
-      override def toString: String = "be " + Prettifier.default(right)
+      override def toString: String = "be (" + Prettifier.default(right) + ")"
     }
   
   /**
@@ -577,9 +577,9 @@ final class BeWord {
               Vector(left)
             )
           }
-          override def toString: String = "be sorted"
+          override def toString: String = "be (sorted)"
         }
-      override def toString: String = "be sorted"
+      override def toString: String = "be (sorted)"
     }
   
   /**
@@ -687,9 +687,9 @@ final class BeWord {
               Vector(left)
             )
           }
-          override def toString: String = "be " + Prettifier.default(readable)
+          override def toString: String = "be (" + Prettifier.default(readable) + ")"
         }
-      override def toString: String = "be " + Prettifier.default(readable)
+      override def toString: String = "be (" + Prettifier.default(readable) + ")"
     }
   
   /**
@@ -713,9 +713,9 @@ final class BeWord {
               Vector(left)
             )
           }
-          override def toString: String = "be writable"
+          override def toString: String = "be (writable)"
         }
-      override def toString: String = "be writable"
+      override def toString: String = "be (writable)"
     }
   
   /**
@@ -739,9 +739,9 @@ final class BeWord {
               Vector(left)
             )
           }
-          override def toString: String = "be empty"
+          override def toString: String = "be (empty)"
         }
-      override def toString: String = "be empty"
+      override def toString: String = "be (empty)"
     }
   
   /**
@@ -765,9 +765,9 @@ final class BeWord {
               Vector(left)
             )
           }
-          override def toString: String = "be defined"
+          override def toString: String = "be (defined)"
         }
-      override def toString: String = "be defined"
+      override def toString: String = "be (defined)"
     }
   
   /**

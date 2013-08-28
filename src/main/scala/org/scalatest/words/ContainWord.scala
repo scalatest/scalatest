@@ -59,9 +59,9 @@ final class ContainWord {
               Vector(left, expectedElement)
             )
           }
-          override def toString: String = "contain " + Prettifier.default(expectedElement)
+          override def toString: String = "contain (" + Prettifier.default(expectedElement) + ")"
         }
-      override def toString: String = "contain " + Prettifier.default(expectedElement)
+      override def toString: String = "contain (" + Prettifier.default(expectedElement) + ")"
     }
   
   //

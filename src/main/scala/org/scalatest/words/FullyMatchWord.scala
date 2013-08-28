@@ -48,7 +48,7 @@ final class FullyMatchWord {
           Resources("fullyMatchedRegex"), 
           Vector(left, UnquotedString(rightRegexString))
         )
-      override def toString: String = "fullyMatch regex " + rightRegexString
+      override def toString: String = "fullyMatch regex " + Prettifier.default(rightRegexString)
     }
 
   /**
@@ -63,7 +63,7 @@ final class FullyMatchWord {
     new Matcher[String] {
       def apply(left: String): MatchResult = 
         fullyMatchRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
-      override def toString: String = "fullyMatch " + Prettifier.default(regexWithGroups)
+      override def toString: String = "fullyMatch regex " + Prettifier.default(regexWithGroups)
     }
 
   /**
@@ -84,7 +84,7 @@ final class FullyMatchWord {
           Resources("fullyMatchedRegex"), 
           Vector(left, UnquotedString(rightRegex.toString))
         )
-      override def toString: String = "fullyMatch regex " + Prettifier.default(rightRegex)
+      override def toString: String = "fullyMatch regex \"" + Prettifier.default(rightRegex) + "\""
     }
   
   /**
