@@ -575,6 +575,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
       def apply(left: U): MatchResult = {
         orMatchersAndApply(left, outerInstance, rightMatcher)
       }
+      override def toString: String = "(" + Prettifier.default(outerInstance) + ") or (" + Prettifier.default(rightMatcher) + ")"
     }
 
   def or[U, TC1[_]](rightMatcherFactory1: MatcherFactory1[U, TC1]): MatcherFactory1[T with U, TC1] =
@@ -2266,12 +2267,15 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
           def apply(left: T): MatchResult = {
             MatchResult(
               left != null,
-              FailureMessages("equaledNull"),
-              FailureMessages("didNotEqualNull", left),
-              FailureMessages("midSentenceEqualedNull"),
-              FailureMessages("didNotEqualNull", left)
+              Resources("equaledNull"),
+              Resources("didNotEqualNull"),
+              Resources("midSentenceEqualedNull"),
+              Resources("didNotEqualNull"), 
+              Vector.empty, 
+              Vector(left)
             )
           }
+          override def toString: String = "not equal null"
         }
       }
     }
