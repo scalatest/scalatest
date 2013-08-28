@@ -7,15 +7,12 @@ object ScalatestBuild extends Build {
   val scalaVersionToUse = "2.10.0"
     
   val releaseVersion = "2.0.M6-SNAP27"
-    
-  val sbtVersionToUse = "0.13.0-RC5"
                               
   lazy val scalatest = Project("scalatest", file("."))
    .settings(
      organization := "org.scalatest",
      version := releaseVersion,
      scalaVersion := scalaVersionToUse,
-     sbtVersion := sbtVersionToUse, 
      ivyXML := 
        <dependency org="org.eclipse.jetty.orbit" name="javax.servlet" rev="3.0.0.v201112011016">
          <artifact name="javax.servlet" type="orbit" ext="jar"/>
@@ -65,7 +62,6 @@ object ScalatestBuild extends Build {
      organization := "org.scalatest",
      version := releaseVersion,
      scalaVersion := scalaVersionToUse,
-     sbtVersion := sbtVersionToUse, 
      libraryDependencies ++= simpledependencies,
      resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
      genMustMatchersTask, 
