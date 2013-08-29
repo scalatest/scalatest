@@ -1670,6 +1670,11 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
               )
           }
         }
+        
+        /**
+         * Overrides to return pretty toString.
+         */
+        override def toString: String = "HavePropertyMatcher[AnyRef, Any](expectedValue = " + Prettifier.default(expectedValue) + ")"
       }
   }
 
@@ -1692,7 +1697,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *
      * <pre class="stHighlight">
      * 1 should be a positiveNumber
-     *               ^
+     *             ^
      * </pre>
      */
     def a(aMatcher: AMatcher[T]) {
@@ -1709,7 +1714,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *
      * <pre class="stHighlight">
      * 1 should be an oddNumber
-     *                ^
+     *             ^
      * </pre>
      */
     def an(anMatcher: AnMatcher[T]) {
@@ -1896,6 +1901,11 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
     def apply(regexWithGroups: RegexWithGroups) = 
       new ResultOfRegexWordApplication(regexWithGroups.regex, regexWithGroups.groups)
+    
+    /**
+     * Overrides to return "regex"
+     */
+    override def toString: String = "regex"
   }
 
   /**
