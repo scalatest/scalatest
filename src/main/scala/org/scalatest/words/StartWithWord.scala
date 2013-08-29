@@ -73,7 +73,7 @@ final class StartWithWord {
     new Matcher[String] {
       def apply(left: String): MatchResult = 
         startWithRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
-      override def toString: String = "startWith regex " + regexWithGroups.regex.toString + (if (regexWithGroups.groups.size > 1) " withGroups " else " withGroup ") + regexWithGroups.groups.mkString(", ")
+      override def toString: String = "startWith regex " + Prettifier.default(regexWithGroups)
     }
 
   /**
@@ -94,7 +94,7 @@ final class StartWithWord {
           Resources("startedWithRegex"), 
           Vector(left, UnquotedString(rightRegex.toString))
         )
-      override def toString: String = "startWith regex " + rightRegex.toString
+      override def toString: String = "startWith regex " + Prettifier.default(rightRegex)
     }
   
   /**

@@ -24,7 +24,7 @@ class ResultOfDefinedAtSpec extends Spec {
     
     def `should have pretty toString` {
       val result = new ResultOfDefinedAt("Bob")
-      result.toString should be ("definedAt \"Bob\"")
+      result.toString should be ("definedAt (\"Bob\")")
     }
   }
   

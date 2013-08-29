@@ -49,8 +49,8 @@ final class ResultOfLessThanComparison[T : Ordering](val right: T) {
   }
   
   /**
-   * Override toString to return "< [right]"
+   * Override toString to return "< ([right])"
    */
-  override def toString: String = "< " + Prettifier.default(right)
+  override def toString: String = "< (" + Prettifier.default(right) + ")"
 }
 

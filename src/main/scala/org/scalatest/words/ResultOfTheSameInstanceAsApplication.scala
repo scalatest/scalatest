@@ -24,5 +24,5 @@ import org.scalautils.Prettifier
  * @author Bill Venners
  */
 final class ResultOfTheSameInstanceAsApplication(val right: AnyRef) {
-  override def toString: String = "theSameInstanceAs " + Prettifier.default(right)
+  override def toString: String = "theSameInstanceAs (" + Prettifier.default(right) + ")"
 }

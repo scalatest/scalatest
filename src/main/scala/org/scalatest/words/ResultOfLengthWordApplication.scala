@@ -44,7 +44,7 @@ final class ResultOfLengthWordApplication(val expectedLength: Long) {
   }
   
   /**
-   * Overrides toString to return "length X", where X is the expectedLength
+   * Overrides toString to return "length (X)", where X is the expectedLength
    */
-  override def toString: String = "length " + Prettifier.default(expectedLength)
+  override def toString: String = "length (" + Prettifier.default(expectedLength) + ")"
 }

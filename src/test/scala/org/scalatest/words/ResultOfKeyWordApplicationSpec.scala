@@ -24,12 +24,12 @@ class ResultOfKeyWordApplicationSpec extends Spec {
     
     def `should have pretty toString when expectedKey is null` {
       val result = new ResultOfKeyWordApplication(null)
-      result.toString should be ("key null")
+      result.toString should be ("key (null)")
     }
     
     def `should have pretty toString when expectedKey is not null` {
       val result = new ResultOfKeyWordApplication("Bob")
-      result.toString should be ("key \"Bob\"")
+      result.toString should be ("key (\"Bob\")")
     }
     
   }

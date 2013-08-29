@@ -73,5 +73,5 @@ final class ResultOfATypeInvocation[T](val clazz: Class[T]) {
     }
   }
   
-  override def toString: String = "a " + clazz.getName
+  override def toString: String = "a [" + clazz.getName + "]"
 }

@@ -24,7 +24,7 @@ class ResultOfMessageWordApplicationSpec extends Spec {
     
     def `should have pretty toString` {
       val result = new ResultOfMessageWordApplication("Message from Mars!")
-      result.toString should be ("message \"Message from Mars!\"")
+      result.toString should be ("message (\"Message from Mars!\")")
     }
     
   }

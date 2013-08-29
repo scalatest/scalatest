@@ -44,7 +44,7 @@ final class ResultOfSizeWordApplication(val expectedSize: Long) {
   }
   
   /**
-   * Overrides toString to return "size X", where X is expectedSize
+   * Overrides toString to return "size (X)", where X is expectedSize
    */
-  override def toString: String = "size " + Prettifier.default(expectedSize)
+  override def toString: String = "size (" + Prettifier.default(expectedSize) + ")"
 }

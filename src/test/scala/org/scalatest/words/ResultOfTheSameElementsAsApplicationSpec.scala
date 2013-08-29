@@ -24,17 +24,17 @@ class ResultOfTheSameElementsAsApplicationSpec extends Spec {
     
     def `should have pretty toString when right is empty` {
       val result = new ResultOfTheSameElementsAsApplication(Vector.empty)
-      result.toString should be ("theSameElementsAs Vector()")
+      result.toString should be ("theSameElementsAs (Vector())")
     }
     
     def `should have pretty toString when right contains 1 element` {
       val result = new ResultOfTheSameElementsAsApplication(Vector("Bob"))
-      result.toString should be ("theSameElementsAs Vector(Bob)")
+      result.toString should be ("theSameElementsAs (Vector(Bob))")
     }
     
     def `should have pretty toString when right contains > 1 elements` {
       val result = new ResultOfTheSameElementsAsApplication(Vector("Bob", "Alice"))
-      result.toString should be ("theSameElementsAs Vector(Bob, Alice)")
+      result.toString should be ("theSameElementsAs (Vector(Bob, Alice))")
     }
   }
   

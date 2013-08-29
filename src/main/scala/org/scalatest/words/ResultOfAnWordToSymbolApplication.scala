@@ -24,5 +24,5 @@ import org.scalautils.Prettifier
  * @author Bill Venners
  */
 final class ResultOfAnWordToSymbolApplication(val symbol: Symbol) {
-  override def toString: String = "an " + Prettifier.default(symbol)
+  override def toString: String = "an (" + Prettifier.default(symbol) + ")"
 }

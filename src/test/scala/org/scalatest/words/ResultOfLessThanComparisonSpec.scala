@@ -24,7 +24,7 @@ class ResultOfLessThanComparisonSpec extends Spec {
     
     def `should have pretty toString` {
       val result = new ResultOfLessThanComparison(8)
-      result.toString should be ("< 8")
+      result.toString should be ("< (8)")
     }
   }
   

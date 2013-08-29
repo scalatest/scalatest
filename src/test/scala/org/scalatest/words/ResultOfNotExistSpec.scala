@@ -24,7 +24,7 @@ class ResultOfNotExistSpec extends Spec {
     
     def `should have pretty toString` {
       val result = new ResultOfNotExist(not)
-      result.toString should be ("not exist")
+      result.toString should be ("not (exist)")
     }
     
   }

@@ -24,6 +24,6 @@ import org.scalatest.matchers._
  * @author Bill Venners
  */
 final class ResultOfAnWordToAnMatcherApplication[T](val anMatcher: AnMatcher[T]) {
-  override def toString: String = "an " + anMatcher.nounName
+  override def toString: String = "an (" + anMatcher.nounName + ")"
 }
 

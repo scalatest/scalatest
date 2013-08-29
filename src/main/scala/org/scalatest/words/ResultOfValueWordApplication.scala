@@ -24,5 +24,5 @@ import org.scalautils.Prettifier
  * @author Bill Venners
  */
 final class ResultOfValueWordApplication(val expectedValue: Any) {
-  override def toString: String = "value " + Prettifier.default(expectedValue)
+  override def toString: String = "value (" + Prettifier.default(expectedValue) + ")"
 }

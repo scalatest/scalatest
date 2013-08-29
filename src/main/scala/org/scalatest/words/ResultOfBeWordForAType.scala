@@ -42,5 +42,5 @@ final class ResultOfBeWordForAType[T](clazz: Class[T], methodName: String) {
   /**
    * Overrides toString to return pretty a[...] should/must be
    */
-  override def toString: String = "a[" + clazz.getName + "] " + methodName + " be"
+  override def toString: String = "a [" + clazz.getName + "] " + methodName + " be"
 }

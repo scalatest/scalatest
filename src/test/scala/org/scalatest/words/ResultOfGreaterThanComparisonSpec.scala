@@ -24,7 +24,7 @@ class ResultOfGreaterThanComparisonSpec extends Spec {
     
     def `should have pretty toString` {
       val result = new ResultOfGreaterThanComparison(8)
-      result.toString should be ("> 8")
+      result.toString should be ("> (8)")
     }
   }
   

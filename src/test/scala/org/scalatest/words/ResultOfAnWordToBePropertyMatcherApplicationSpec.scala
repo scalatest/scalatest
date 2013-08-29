@@ -39,7 +39,7 @@ class ResultOfAnWordToBePropertyMatcherApplicationSpec extends Spec {
     
     def `should have pretty toString` {
       val result = new ResultOfAnWordToBePropertyMatcherApplication(new FileBePropertyMatcher)
-      result.toString should be ("an file")
+      result.toString should be ("an (file)")
     }
   }
   

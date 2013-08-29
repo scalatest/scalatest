@@ -24,5 +24,5 @@ import org.scalautils.Prettifier
  * @author Bill Venners
  */
 final class ResultOfKeyWordApplication(val expectedKey: Any) {
-  override def toString: String = "key " + Prettifier.default(expectedKey)
+  override def toString: String = "key (" + Prettifier.default(expectedKey) + ")"
 }

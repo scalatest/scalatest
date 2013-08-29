@@ -24,7 +24,7 @@ class ResultOfOfTypeInvocationSpec extends Spec {
     
     def `should have pretty toString` {
       val result = of[Exception]
-      result.toString should be ("of[java.lang.Exception]")
+      result.toString should be ("of [java.lang.Exception]")
     }
     
   }

@@ -24,5 +24,5 @@ import org.scalautils.Prettifier
  * @author Bill Venners
  */
 class ResultOfTheSameElementsAsApplication(val right: scala.collection.GenTraversable[_]) {
-  override def toString: String = "theSameElementsAs " + Prettifier.default(right) 
+  override def toString: String = "theSameElementsAs (" + Prettifier.default(right) + ")" 
 }
