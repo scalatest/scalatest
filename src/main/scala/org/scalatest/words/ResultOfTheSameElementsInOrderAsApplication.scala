@@ -24,5 +24,5 @@ import org.scalautils.Prettifier
  * @author Bill Venners
  */
 class ResultOfTheSameElementsInOrderAsApplication(val right: scala.collection.GenTraversable[_]) {
-  override def toString: String = "theSameElementsInOrderAs " + Prettifier.default(right) 
+  override def toString: String = "theSameElementsInOrderAs (" + Prettifier.default(right) + ")" 
 }

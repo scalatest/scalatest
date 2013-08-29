@@ -24,7 +24,7 @@ class ResultOfBeWordForAnTypeSpec extends Spec {
     
     def `should have pretty toString when used` {
       val result = an[Exception] should be
-      result.toString should be ("an[java.lang.Exception] should be")
+      result.toString should be ("an [java.lang.Exception] should be")
     }
     
   }

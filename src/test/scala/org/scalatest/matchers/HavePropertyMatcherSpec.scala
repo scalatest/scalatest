@@ -13,23 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.words
+package org.scalatest.matchers
 
 import org.scalatest._
 import Matchers._
+import java.io.File
 
-class ResultOfValueWordApplicationSpec extends Spec {
+class HavePropertyMatcherSpec extends Spec {
   
-  object `ResultOfValueWordApplication ` {
+  object `HavePropertyMatcher ` {
     
-    def `should have pretty toString when expectedKey is null` {
-      val result = new ResultOfValueWordApplication(null)
-      result.toString should be ("value (null)")
-    }
-    
-    def `should have pretty toString when expectedKey is not null` {
-      val result = new ResultOfValueWordApplication("Bob")
-      result.toString should be ("value (\"Bob\")")
+    object `instance created by HavePropertyMatcher apply method` {
+      
+      val havePropertyMatcher = HavePropertyMatcher[File, String] { file => 
+        HavePropertyMatchResult(true, "name", "test", "test")
+      }
+      
+      def `should have pretty toString` {
+        havePropertyMatcher.toString should be ("HavePropertyMatcher[java.io.File, java.lang.String](java.io.File => HavePropertyMatchResult[java.lang.String])")
+      }
+      
     }
     
   }

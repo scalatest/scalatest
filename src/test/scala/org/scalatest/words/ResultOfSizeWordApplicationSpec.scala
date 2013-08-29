@@ -24,7 +24,7 @@ class ResultOfSizeWordApplicationSpec extends Spec {
     
     def `should have pretty toString` {
       val result = new ResultOfSizeWordApplication(8)
-      result.toString should be ("size 8")
+      result.toString should be ("size (8)")
     }
     
   }

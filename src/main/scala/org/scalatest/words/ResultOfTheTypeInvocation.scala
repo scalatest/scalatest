@@ -38,5 +38,5 @@ final class ResultOfTheTypeInvocation[T](clazz: Class[T]) {
     checkExpectedException(fun, clazz, "wrongException", "exceptionExpected", 4)
   }
   
-  override def toString: String = "the " + clazz.getName
+  override def toString: String = "the [" + clazz.getName + "]"
 }

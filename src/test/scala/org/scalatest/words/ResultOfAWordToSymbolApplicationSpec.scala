@@ -31,7 +31,7 @@ class ResultOfAWordToSymbolApplicationSpec extends Spec {
     
     def `should have pretty toString` {
       val result = new ResultOfAWordToSymbolApplication('file)
-      result.toString should be ("a 'file")
+      result.toString should be ("a ('file)")
     }
   }
   

@@ -13,23 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.words
+package org.scalatest.matchers
 
 import org.scalatest._
 import Matchers._
+import java.io.File
 
-class ResultOfValueWordApplicationSpec extends Spec {
+class AMatcherSpec extends Spec {
   
-  object `ResultOfValueWordApplication ` {
+  object `AMatcher ` {
     
-    def `should have pretty toString when expectedKey is null` {
-      val result = new ResultOfValueWordApplication(null)
-      result.toString should be ("value (null)")
-    }
-    
-    def `should have pretty toString when expectedKey is not null` {
-      val result = new ResultOfValueWordApplication("Bob")
-      result.toString should be ("value (\"Bob\")")
+    object `instance created by AMatcher apply method` {
+      
+      val aMatcher = AMatcher[File]("file") { file => 
+        true 
+      }
+      
+      def `should have pretty toString` {
+        aMatcher.toString should be ("AMatcher[java.io.File](\"file\", java.io.File => Boolean)")
+      }
+      
     }
     
   }

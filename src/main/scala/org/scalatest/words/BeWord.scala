@@ -315,7 +315,7 @@ final class BeWord {
   def a[S](aMatcher: AMatcher[S]): Matcher[S] = 
     new Matcher[S] {
       def apply(left: S): MatchResult = aMatcher(left)
-      override def toString: String = "be a " + Prettifier.default(UnquotedString(aMatcher.nounName))
+      override def toString: String = "be a " + Prettifier.default(aMatcher)
     }
 
   /**
@@ -366,7 +366,7 @@ final class BeWord {
   def an[S](anMatcher: AnMatcher[S]): Matcher[S] = 
     new Matcher[S] {
       def apply(left: S): MatchResult = anMatcher(left)
-      override def toString: String = "be an " + Prettifier.default(UnquotedString(anMatcher.nounName))
+      override def toString: String = "be an " + Prettifier.default(anMatcher)
     }
 
   /**

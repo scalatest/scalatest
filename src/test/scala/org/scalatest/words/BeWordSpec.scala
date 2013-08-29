@@ -402,7 +402,7 @@ class BeWordSpec extends Spec with FileMocks {
       val mt = be a (file)
       
       def `should have pretty toString` {
-        mt.toString should be ("be a file")
+        mt.toString should be ("be a AMatcher[" + classOf[MyFile].getName + "](\"file\", " + classOf[MyFile].getName + " => Boolean)")
       }
       
       val mr = mt(myFile)
@@ -571,7 +571,7 @@ class BeWordSpec extends Spec with FileMocks {
       val mt = be an (file)
       
       def `should have pretty toString` {
-        mt.toString should be ("be an file")
+        mt.toString should be ("be an AnMatcher[" + classOf[MyFile].getName + "](\"file\", " + classOf[MyFile].getName + " => Boolean)")
       }
       
       val mr = mt(myFile)

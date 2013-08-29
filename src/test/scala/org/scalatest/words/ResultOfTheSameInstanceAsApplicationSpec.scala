@@ -25,7 +25,7 @@ class ResultOfTheSameInstanceAsApplicationSpec extends Spec {
     def `should have pretty toString` {
       val bob = "Bob"
       val result = new ResultOfTheSameInstanceAsApplication(bob)
-      result.toString should be ("theSameInstanceAs \"Bob\"")
+      result.toString should be ("theSameInstanceAs (\"Bob\")")
     }
   }
   

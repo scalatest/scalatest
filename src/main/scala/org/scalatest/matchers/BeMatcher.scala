@@ -208,9 +208,10 @@ object BeMatcher {
    *
    * @author Bill Venners
    */
-  def apply[T](fun: T => MatchResult): BeMatcher[T] =
+  def apply[T](fun: T => MatchResult)(implicit ev: Manifest[T]): BeMatcher[T] =
     new BeMatcher[T] {
       def apply(left: T) = fun(left)
+      override def toString: String = "BeMatcher[" + ev.erasure.getName + "](" + ev.erasure.getName + " => MatchResult)"
     }
 }
 

@@ -2913,9 +2913,10 @@ object Matcher {
    *
    * @author Bill Venners
    */
-  def apply[T](fun: T => MatchResult): Matcher[T] =
+  def apply[T](fun: T => MatchResult)(implicit ev: Manifest[T]): Matcher[T] =
     new Matcher[T] {
       def apply(left: T) = fun(left)
+      override def toString: String = "Matcher[" + ev.erasure.getName + "](" + ev.erasure.getName + " => MatchResult)"
     }
 }
 

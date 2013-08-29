@@ -16,6 +16,7 @@
 package org.scalatest.words
 
 import org.scalatest.matchers._
+import org.scalautils.Prettifier
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -24,6 +25,6 @@ import org.scalatest.matchers._
  * @author Bill Venners
  */
 final class ResultOfAnWordToAnMatcherApplication[T](val anMatcher: AnMatcher[T]) {
-  override def toString: String = "an " + anMatcher.nounName
+  override def toString: String = "an (" + Prettifier.default(anMatcher) + ")"
 }
 

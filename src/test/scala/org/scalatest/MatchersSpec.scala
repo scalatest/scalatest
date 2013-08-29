@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.words
+package org.scalatest
 
 import org.scalatest._
 import Matchers._
@@ -118,6 +118,29 @@ class MatchersSpec extends Spec {
           'midSentenceFailureMessageArgs(Vector.empty),
           'midSentenceNegatedFailureMessageArgs(Vector(null))    
         )
+      }
+      
+    }
+    
+    object `HavePropertyMatcherGenerator ` {
+      
+      object `apply(Any) returns HavePropertyMatcher` {
+        
+        val generator = new HavePropertyMatcherGenerator('name)
+        val havePropMatcher = generator("test")
+        
+        def `should have pretty toString` {
+          havePropMatcher.toString should be ("HavePropertyMatcher[AnyRef, Any](expectedValue = \"test\")")
+        }
+        
+      }
+      
+    }
+    
+    object `RegexWord ` {
+      
+      def `should have pretty toString` {
+        regex.toString should be ("regex")
       }
       
     }

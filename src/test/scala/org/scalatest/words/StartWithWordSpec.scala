@@ -182,7 +182,7 @@ class StartWithWordSpec extends FreeSpec with FileMocks {
       val mt = startWith regex ("""a(b*)c""" withGroup bb)
       
       "should have pretty toString" in {
-        mt.toString should be ("startWith regex a(b*)c withGroup " + bb)
+        mt.toString should be ("startWith regex \"a(b*)c\" withGroup (\"" + bb + "\")")
       }
       
       val mr1 = mt("abbc")
@@ -326,7 +326,7 @@ class StartWithWordSpec extends FreeSpec with FileMocks {
       val mt = startWith regex ("""a(b*)(c*)""" withGroups (bb, cc))
       
       "should have pretty toString" in {
-        mt.toString should be ("startWith regex a(b*)(c*) withGroups " + bb + ", " + cc)
+        mt.toString should be ("startWith regex \"a(b*)(c*)\" withGroups (\"" + bb + "\", \"" + cc + "\")")
       }
       
       val mr = mt("abbccc")

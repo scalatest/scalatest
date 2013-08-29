@@ -16,6 +16,7 @@
 package org.scalatest.matchers
 
 import org.scalatest._
+import org.scalautils.Prettifier
 
 trait AnMatcher[-T] extends Function1[T, MatchResult] { 
   val nounName: String
@@ -24,7 +25,7 @@ trait AnMatcher[-T] extends Function1[T, MatchResult] {
 
 object AnMatcher {
   
-  def apply[T](name: String)(fun: T => Boolean) = 
+  def apply[T](name: String)(fun: T => Boolean)(implicit ev: Manifest[T]) = 
     new AnMatcher[T] {
       val nounName = name
       def apply(left: T): MatchResult = 
@@ -34,6 +35,7 @@ object AnMatcher {
           Resources("wasAn"), 
           Vector(left, UnquotedString(nounName))
         )
+      override def toString: String = "AnMatcher[" + ev.erasure.getName + "](" + Prettifier.default(name) + ", " + ev.erasure.getName + " => Boolean)"
     }
   
 }

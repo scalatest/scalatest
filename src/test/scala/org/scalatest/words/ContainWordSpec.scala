@@ -195,7 +195,7 @@ class ContainWordSpec extends Spec {
       val mt = contain a (file)
       
       def `should have pretty toString` {
-        mt.toString should be ("contain a file")
+        mt.toString should be ("contain a AMatcher[" + classOf[MyFile].getName + "](\"file\", " + classOf[MyFile].getName + " => Boolean)")
       }
       
       val leftList = List(myFile)
@@ -253,7 +253,7 @@ class ContainWordSpec extends Spec {
       val mt = contain an (file)
       
       def `should have pretty toString` {
-        mt.toString should be ("contain an file")
+        mt.toString should be ("contain an AnMatcher[" + classOf[MyFile].getName + "](\"file\", " + classOf[MyFile].getName + " => Boolean)")
       }
       
       val leftList = List(myFile)

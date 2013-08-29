@@ -76,6 +76,6 @@ final class ResultOfNotExist(notWord: NotWord) {
   /**
    * Overrides toString to return "not exist"
    */
-  override def toString: String = "not exist"
+  override def toString: String = "not (exist)"
   
 }

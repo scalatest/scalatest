@@ -25,5 +25,5 @@ import org.scalautils.Prettifier
  * @author Bill Venners
  */
 final class ResultOfAnWordToBePropertyMatcherApplication[T](val bePropertyMatcher: BePropertyMatcher[T]) {
-  override def toString: String = "an " + Prettifier.default(bePropertyMatcher)
+  override def toString: String = "an (" + Prettifier.default(bePropertyMatcher) + ")"
 }

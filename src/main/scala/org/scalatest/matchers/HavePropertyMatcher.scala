@@ -195,8 +195,9 @@ object HavePropertyMatcher {
    *
    * @author Bill Venners
    */
-  def apply[T, P](fun: T => HavePropertyMatchResult[P]): HavePropertyMatcher[T, P] =
+  def apply[T, P](fun: T => HavePropertyMatchResult[P])(implicit evT: Manifest[T], evP: Manifest[P]): HavePropertyMatcher[T, P] =
     new HavePropertyMatcher[T, P] {
       def apply(left: T) = fun(left)
+      override def toString: String = "HavePropertyMatcher[" + evT.erasure.getName + ", " + evP.erasure.getName + "](" + evT.erasure.getName + " => HavePropertyMatchResult[" + evP.erasure.getName + "])"
     }
 }

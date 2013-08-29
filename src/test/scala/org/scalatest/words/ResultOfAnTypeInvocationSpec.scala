@@ -24,7 +24,7 @@ class ResultOfAnTypeInvocationSpec extends Spec {
     
     def `should have pretty toString` {
       val result = new ResultOfAnTypeInvocation(classOf[Inspectors])
-      result.toString should be ("an org.scalatest.Inspectors")
+      result.toString should be ("an [org.scalatest.Inspectors]")
     }
   }
   

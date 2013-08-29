@@ -24,5 +24,5 @@ import org.scalautils.Prettifier
  * @author Bill Venners
  */
 final class ResultOfDefinedAt[T](val right: T) {
-  override def toString: String = "definedAt " + Prettifier.default(right)
+  override def toString: String = "definedAt (" + Prettifier.default(right) + ")"
 }
