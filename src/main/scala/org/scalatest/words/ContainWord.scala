@@ -175,7 +175,7 @@ final class ContainWord {
           Vector(left, UnquotedString(aMatcher.nounName), UnquotedString(if (matched.isDefined) aMatcher(matched.get).negatedFailureMessage else "-"))
         )
       }
-      override def toString: String = "contain a " + Prettifier.default(UnquotedString(aMatcher.nounName))
+      override def toString: String = "contain a " + Prettifier.default(aMatcher)
     }
   
   /**
@@ -198,7 +198,7 @@ final class ContainWord {
           Vector(left, UnquotedString(anMatcher.nounName), UnquotedString(if (matched.isDefined) anMatcher(matched.get).negatedFailureMessage else "-"))
         )
       }
-      override def toString: String = "contain an " + Prettifier.default(UnquotedString(anMatcher.nounName))
+      override def toString: String = "contain an " + Prettifier.default(anMatcher)
     }
 
   def oneOf(right: Any*): MatcherFactory1[Any, Containing] = {

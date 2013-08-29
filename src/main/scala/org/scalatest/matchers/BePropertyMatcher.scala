@@ -162,8 +162,9 @@ object BePropertyMatcher {
    *
    * @author Bill Venners
    */
-  def apply[T](fun: T => BePropertyMatchResult): BePropertyMatcher[T] =
+  def apply[T](fun: T => BePropertyMatchResult)(implicit ev: Manifest[T]): BePropertyMatcher[T] =
     new BePropertyMatcher[T] {
       def apply(left: T) = fun(left)
+      override def toString: String = "BePropertyMatcher[" + ev.erasure.getName + "](" + ev.erasure.getName + " => BePropertyMatchResult)"
     }
 }

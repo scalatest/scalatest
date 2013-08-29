@@ -13,21 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.words
+package org.scalatest.matchers
 
 import org.scalatest._
 import Matchers._
-import matchers.AMatcher
 import java.io.File
 
-class ResultOfAWordToAMatcherApplicationSpec extends Spec {
+class HavePropertyMatcherSpec extends Spec {
   
-  object `ResultOfAWordToAMatcherApplication ` {
+  object `HavePropertyMatcher ` {
     
-    def `should have pretty toString` {
-      val result = new ResultOfAWordToAMatcherApplication(AMatcher[File]("file") { _.isFile  })
-      result.toString should be ("a (AMatcher[java.io.File](\"file\", java.io.File => Boolean))")
+    object `instance created by HavePropertyMatcher apply method` {
+      
+      val havePropertyMatcher = HavePropertyMatcher[File, String] { file => 
+        HavePropertyMatchResult(true, "name", "test", "test")
+      }
+      
+      def `should have pretty toString` {
+        havePropertyMatcher.toString should be ("HavePropertyMatcher[java.io.File, java.lang.String](java.io.File => HavePropertyMatchResult[java.lang.String])")
+      }
+      
     }
+    
   }
   
 }

@@ -13,21 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.words
+package org.scalatest.matchers
 
 import org.scalatest._
 import Matchers._
-import matchers.AMatcher
 import java.io.File
 
-class ResultOfAWordToAMatcherApplicationSpec extends Spec {
+class BeMatcherSpec extends Spec {
   
-  object `ResultOfAWordToAMatcherApplication ` {
+  object `BeMatcher ` {
     
-    def `should have pretty toString` {
-      val result = new ResultOfAWordToAMatcherApplication(AMatcher[File]("file") { _.isFile  })
-      result.toString should be ("a (AMatcher[java.io.File](\"file\", java.io.File => Boolean))")
+    object `instance created by BeMatcher apply method` {
+      
+      val beMatcher = BeMatcher[File] { file => 
+        MatchResult(true, "test", "test")
+      }
+      
+      def `should have pretty toString` {
+        beMatcher.toString should be ("BeMatcher[java.io.File](java.io.File => MatchResult)")
+      }
+      
     }
+    
   }
   
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.words
+package org.scalatest.matchers
 
 import org.scalatest._
 import Matchers._
@@ -197,6 +197,28 @@ class MatcherSpec extends Spec {
       def `should have pretty toString` {
         mtf.toString should be ("(be (\"Bob\")) or (equal (\"Alice\"))")
       }
+    }
+    
+    /*object `compose(U => T) returns Matcher` {
+      
+      val mt1 = be > 18
+      def fun(input: String): Int = 88
+      val mt = mt1 compose fun
+      
+      def `should have pretty toString` {
+        mt.toString should be ("(be > 18) compose (java.lang.String => Int)")
+      }
+      
+    }*/
+    
+    object `apply(T => MatchResult) method returns Matcher` {
+      
+      val mt = Matcher.apply((test: String) => MatchResult(true, "test", "test"))
+      
+      def `should have pretty toString` {
+        mt.toString should be ("Matcher[java.lang.String](java.lang.String => MatchResult)")
+      }
+      
     }
     
   }

@@ -26,7 +26,7 @@ class ResultOfAnWordToAnMatcherApplicationSpec extends Spec {
     
     def `should have pretty toString` {
       val result = new ResultOfAnWordToAnMatcherApplication(AnMatcher[File]("file") { _.isFile  })
-      result.toString should be ("an (file)")
+      result.toString should be ("an (AnMatcher[java.io.File](\"file\", java.io.File => Boolean))")
     }
   }
   

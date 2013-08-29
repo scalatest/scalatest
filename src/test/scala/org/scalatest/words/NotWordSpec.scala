@@ -1043,7 +1043,7 @@ class NotWordSpec extends Spec with FileMocks {
       val mt = not be a (file)
       
       def `should have pretty toString` {
-        mt.toString should be ("not be a (file)")
+        mt.toString should be ("not be a (AMatcher[" + classOf[MyFile].getName + "](\"file\", " + classOf[MyFile].getName + " => Boolean))")
       }
       
       val mr = mt(myFile)
@@ -1212,7 +1212,7 @@ class NotWordSpec extends Spec with FileMocks {
       val mt = not be an (file)
       
       def `should have pretty toString` {
-        mt.toString should be ("not be an (file)")
+        mt.toString should be ("not be an (AnMatcher[" + classOf[MyFile].getName + "](\"file\", " + classOf[MyFile].getName + " => Boolean))")
       }
       
       val mr = mt(myFile)
@@ -2947,7 +2947,7 @@ class NotWordSpec extends Spec with FileMocks {
       val mt = not contain a (file)
       
       def `should have pretty toString` {
-        mt.toString should be ("not contain a (file)")
+        mt.toString should be ("not contain a (AMatcher[" + classOf[MyFile].getName + "](\"file\", " + classOf[MyFile].getName + " => Boolean))")
       }
       
       val leftList = List(myFile)
@@ -3005,7 +3005,7 @@ class NotWordSpec extends Spec with FileMocks {
       val mt = not contain an (file)
       
       def `should have pretty toString` {
-        mt.toString should be ("not contain an (file)")
+        mt.toString should be ("not contain an (AnMatcher[" + classOf[MyFile].getName + "](\"file\", " + classOf[MyFile].getName + " => Boolean))")
       }
       
       val leftList = List(myFile)
