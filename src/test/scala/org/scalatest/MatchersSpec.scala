@@ -179,7 +179,146 @@ class MatchersSpec extends Spec {
       }
       
     }
-    
+
+    object `KeyWord ` {
+      def `should have pretty toString` {
+        key.toString should be ("key")
+      }
+    }
+
+    object `ValueWord ` {
+      def `should have pretty toString` {
+        value.toString should be ("value")
+      }
+    }
+
+    object `AWord ` {
+      def `should have pretty toString` {
+        val aWord = new AWord
+        aWord.toString should be ("a")
+      }
+    }
+
+    object `AnWord ` {
+      def `should have pretty toString` {
+        val anWord = new AnWord
+        anWord.toString should be ("an")
+      }
+    }
+
+    object `TheSameInstanceAsPhrase ` {
+      def `should have pretty toString` {
+        theSameInstanceAs.toString should be ("theSameInstanceAs")
+      }
+    }
+
+    object `ResultOfHaveWordForExtent ` {
+      def `should have pretty toString` {
+        val word = "Bob" should have
+        word.toString should be ("ResultOfHaveWordForExtent(\"Bob\", true)")
+      }
+    }
+
+    object `ResultOfEvaluatingApplication ` {
+      def `should have pretty toString` {
+        val word = evaluating { "hi".charAt(-1) }
+        word.toString should be ("evaluating { ... }")
+      }
+    }
+
+    object `ResultOfProduceInvocation ` {
+      def `should have pretty toString` {
+        val word = produce [StringIndexOutOfBoundsException]
+        word.toString should be ("ResultOfProduceInvocation(classOf[java.lang.StringIndexOutOfBoundsException])")
+      }
+    }
+
+    object `ResultOfNotWordForCollectedAny ` {
+      def `should have pretty toString` {
+        val word = all(List(1, 2, 3)) should not
+        word.toString should be ("ResultOfNotWordForCollectedAny(AllCollected, List(1, 2, 3), false)")
+      }
+    }
+
+    object `ResultOfNotWordForCollectedString ` {
+      def `should have pretty toString` {
+        val word = all(List("1", "2", "3")) should not
+        word.toString should be ("ResultOfNotWordForCollectedString(AllCollected, List(1, 2, 3), false)")
+      }
+    }
+
+    object `ResultOfContainWordForCollectedAny ` {
+      def `should have pretty toString` {
+        val word = all(List(List("1"), List("2"), List("3"))) should contain
+        word.toString should be ("ResultOfContainWordForCollectedAny(AllCollected, List(List(1), List(2), List(3)), true)")
+      }
+    }
+
+    object `ResultOfBeWordForCollectedAny ` {
+      def `should have pretty toString` {
+        val word = all(List("1", "2", "3")) should be
+        word.toString should be ("ResultOfBeWordForCollectedAny(AllCollected, List(1, 2, 3), true)")
+      }
+    }
+
+    object `ResultOfBeWordForCollectedArray ` {
+      def `should have pretty toString` {
+        val a1 = Array("1")
+        val a2 = Array("2")
+        val a3 = Array("3")
+        val word = all(List(a1, a2, a3)) should be
+          word.toString should be ("ResultOfBeWordForCollectedAny(AllCollected, List(" + a1 + ", " + a2 + ", " + a3 + "), true)")
+      }
+    }
+
+    object `ResultOfCollectedAny ` {
+      def `should have pretty toString` {
+        val word = all(List(1, 2, 3))
+        word.toString should be ("ResultOfCollectedAny(AllCollected, List(1, 2, 3))")
+      }
+    }
+
+    object `ResultOfHaveWordForCollectedExtent ` {
+      def `should have pretty toString` {
+        val word = all(List("1", "2", "3")) should have
+        word.toString should be ("ResultOfHaveWordForCollectedExtent(AllCollected, List(1, 2, 3), true)")
+      }
+    }
+
+    object `ResultOfCollectedString ` {
+      def `should have pretty toString` {
+        val word = all(List("1", "2", "3"))
+        word.toString should be ("ResultOfCollectedString(AllCollected, List(1, 2, 3))")
+      }
+    }
+
+    object `ResultOfStartWithWordForCollectedString ` {
+      def `should have pretty toString` {
+        val word = all(List("1", "2", "3")) should startWith
+        word.toString should be ("ResultOfStartWithWordForCollectedString(AllCollected, List(1, 2, 3), true)")
+      }
+    }
+
+    object `ResultOfIncludeWordForCollectedString ` {
+      def `should have pretty toString` {
+        val word = all(List("1", "2", "3")) should include
+        word.toString should be ("ResultOfIncludeWordForCollectedString(AllCollected, List(1, 2, 3), true)")
+      }
+    }
+
+    object `ResultOfEndWithWordForCollectedString ` {
+      def `should have pretty toString` {
+        val word = all(List("1", "2", "3")) should endWith
+        word.toString should be ("ResultOfEndWithWordForCollectedString(AllCollected, List(1, 2, 3), true)")
+      }
+    }
+
+    object `ResultOfFullyMatchWordForCollectedString ` {
+      def `should have pretty toString` {
+        val word = all(List("1", "2", "3")) should fullyMatch
+        word.toString should be ("ResultOfFullyMatchWordForCollectedString(AllCollected, List(1, 2, 3), true)")
+      }
+    }
   }
   
 }

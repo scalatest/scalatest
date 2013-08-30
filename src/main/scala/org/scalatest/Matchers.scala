@@ -2238,6 +2238,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def apply(expectedKey: Any): ResultOfKeyWordApplication = new ResultOfKeyWordApplication(expectedKey)
+
+    /**
+     * Overrides to return pretty toString.
+     *
+     * @return "key"
+     */
+    override def toString: String = "key"
   }
 
   /**
@@ -2267,6 +2274,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def apply(expectedValue: Any): ResultOfValueWordApplication = new ResultOfValueWordApplication(expectedValue)
+
+    /**
+     * Overrides to return pretty toString.
+     *
+     * @return "value"
+     */
+    override def toString: String = "value"
   }
 
   /**
@@ -2317,6 +2331,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def apply[T](aMatcher: AMatcher[T]): ResultOfAWordToAMatcherApplication[T] = new ResultOfAWordToAMatcherApplication(aMatcher)
+
+    /**
+     * Overrides to return pretty toString.
+     *
+     * @return "a"
+     */
+    override def toString: String = "a"
   }
 
   /**
@@ -2367,6 +2388,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def apply[T](anMatcher: AnMatcher[T]): ResultOfAnWordToAnMatcherApplication[T] = new ResultOfAnWordToAnMatcherApplication(anMatcher)
+
+    /**
+     * Overrides to return pretty toString.
+     *
+     * @return "an"
+     */
+    override def toString: String = "an"
   }
 
   /**
@@ -2396,6 +2424,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def apply(anyRef: AnyRef): ResultOfTheSameInstanceAsApplication = new ResultOfTheSameInstanceAsApplication(anyRef)
+
+    /**
+     * Overrides to return pretty toString.
+     *
+     * @return "theSameInstanceAs"
+     */
+    override def toString: String = "theSameInstanceAs"
   }
 
   /**
@@ -2431,7 +2466,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *
      * <pre class="stHighlight">
      * obj should have length (2L)
-     *                      ^
+     *                 ^
      * </pre>
      *
      * <p>
@@ -2496,6 +2531,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             FailureMessages("hadExpectedMessage", left, expectedMessage)
         )
     }
+
+    /**
+     * Overrides to return pretty toString.
+     *
+     * @return "ResultOfHaveWordForExtent([left], [shouldBeTrue])"
+     */
+    override def toString: String = "ResultOfHaveWordForExtent(" + Prettifier.default(left) + ", " + Prettifier.default(shouldBeTrue) + ")"
   }
 
   /**
@@ -2595,6 +2637,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
          case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase isAssignableFrom succeeded above
        }
      }
+
+    /**
+     * Overrides to return pretty toString.
+     *
+     * @return "evaluating { ... }"
+     */
+    override def toString: String = "evaluating { ... }"
   }
 
   /**
@@ -2614,14 +2663,21 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *
    * @author Bill Venners
    */
-  final class ResultOfProduceInvocation[T](val clazz: Class[T])
+  final class ResultOfProduceInvocation[T](val clazz: Class[T]) {
+    /**
+     * Overrides to return pretty toString.
+     *
+     * @return "ResultOfProduceInvocation(classOf([className]))"
+     */
+    override def toString: String = "ResultOfProduceInvocation(classOf[" + clazz.getName + "])"
+  }
 
   /**
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">
    * evaluating { "hi".charAt(-1) } should produce [StringIndexOutOfBoundsException]
-   * ^
+   *                                       ^
    * </pre>
    */
   def produce[T : Manifest]: ResultOfProduceInvocation[T] =
@@ -3835,6 +3891,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         }
       }
     }
+
+    /**
+     * Overrides to return pretty toString.
+     *
+     * @return "ResultOfNotWordForCollectedAny([collected], [xs], [shouldBeTrue])"
+     */
+    override def toString: String = "ResultOfNotWordForCollectedAny(" + Prettifier.default(collected) + ", " + Prettifier.default(xs) + ", " + Prettifier.default(shouldBeTrue) + ")"
   }
 
   /**
@@ -4010,6 +4073,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
           )
       }
     }
+
+    /**
+     * Overrides to return pretty toString.
+     *
+     * @return "ResultOfNotWordForCollectedString([collected], [xs], [shouldBeTrue])"
+     */
+    override def toString: String = "ResultOfNotWordForCollectedString(" + Prettifier.default(collected) + ", " + Prettifier.default(xs) + ", " + Prettifier.default(shouldBeTrue) + ")"
   }
   
   /**
@@ -4326,6 +4396,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
           )
       }
     }
+
+    /**
+     * Overrides to return pretty toString.
+     *
+     * @return "ResultOfContainWordForCollectedAny([collected], [xs], [shouldBeTrue])"
+     */
+    override def toString: String = "ResultOfContainWordForCollectedAny(" + Prettifier.default(collected) + ", " + Prettifier.default(xs) + ", " + Prettifier.default(shouldBeTrue) + ")"
   }
 
   /**
@@ -4475,6 +4552,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         )
       }
     }
+
+    /**
+     * Overrides to return pretty toString.
+     *
+     * @return "ResultOfBeWordForCollectedAny([collected], [xs], [shouldBeTrue])"
+     */
+    override def toString: String = "ResultOfBeWordForCollectedAny(" + Prettifier.default(collected) + ", " + Prettifier.default(xs) + ", " + Prettifier.default(shouldBeTrue) + ")"
   }
   
   /**
@@ -4499,6 +4583,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       new Matcher[Array[T]] {
         def apply(left: Array[T]): MatchResult = matchSymbolToPredicateMethod(left.deep, right, false, false)
       }
+
+    /**
+     * Overrides to return pretty toString.
+     *
+     * @return "ResultOfBeWordForCollectedArray([collected], [xs], [shouldBeTrue])"
+     */
+    override def toString: String = "ResultOfBeWordForCollectedArray(" + Prettifier.default(collected) + ", " + Prettifier.default(xs) + ", " + Prettifier.default(shouldBeTrue) + ")"
   }
   
   /**
@@ -5197,6 +5288,13 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
           )
       }
     }
+
+    /**
+     * Overrides to return pretty toString.
+     *
+     * @return "ResultOfCollectedAny([collected], [xs])"
+     */
+    override def toString: String = "ResultOfCollectedAny(" + Prettifier.default(collected) + ", " + Prettifier.default(xs) + ")"
   }
   
   /**
@@ -5252,6 +5350,13 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
           )
       }
     }
+
+    /**
+     * Overrides to return pretty toString.
+     *
+     * @return "ResultOfHaveWordForCollectedExtent([collected], [xs], [shouldBeTrue])"
+     */
+    override def toString: String = "ResultOfHaveWordForCollectedExtent(" + Prettifier.default(collected) + ", " + Prettifier.default(xs) + ", " + Prettifier.default(shouldBeTrue) + ")"
   }
 
   /**
@@ -5361,6 +5466,13 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def shouldNot(includeWord: IncludeWord): ResultOfIncludeWordForCollectedString = 
       new ResultOfIncludeWordForCollectedString(collected, xs, false)
+
+    /**
+     * Overrides to return pretty toString.
+     *
+     * @return "ResultOfCollectedString([collected], [xs])"
+     */
+    override def toString: String = "ResultOfCollectedString(" + Prettifier.default(collected) + ", " + Prettifier.default(xs) + ")"
   }
   
   /**
@@ -5413,6 +5525,13 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
           )
       }
     }
+
+    /**
+     * Overrides to return pretty toString.
+     *
+     * @return "ResultOfStartWithWordForCollectedString([collected], [xs], [shouldBeTrue])"
+     */
+    override def toString: String = "ResultOfStartWithWordForCollectedString(" + Prettifier.default(collected) + ", " + Prettifier.default(xs) + ", " + Prettifier.default(shouldBeTrue) + ")"
   }
   
   /**
@@ -5465,6 +5584,13 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
           )
       }
     }
+
+    /**
+     * Overrides to return pretty toString.
+     *
+     * @return "ResultOfIncludeWordForCollectedString([collected], [xs], [shouldBeTrue])"
+     */
+    override def toString: String = "ResultOfIncludeWordForCollectedString(" + Prettifier.default(collected) + ", " + Prettifier.default(xs) + ", " + Prettifier.default(shouldBeTrue) + ")"
   }
   
   /**
@@ -5517,6 +5643,13 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
           )
       }
     }
+
+    /**
+     * Overrides to return pretty toString.
+     *
+     * @return "ResultOfEndWithWordForCollectedString([collected], [xs], [shouldBeTrue])"
+     */
+    override def toString: String = "ResultOfEndWithWordForCollectedString(" + Prettifier.default(collected) + ", " + Prettifier.default(xs) + ", " + Prettifier.default(shouldBeTrue) + ")"
   }
   
   /**
@@ -5569,6 +5702,13 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
           )
       }
     }
+
+    /**
+     * Overrides to return pretty toString.
+     *
+     * @return "ResultOfFullyMatchWordForCollectedString([collected], [xs], [shouldBeTrue])"
+     */
+    override def toString: String = "ResultOfFullyMatchWordForCollectedString(" + Prettifier.default(collected) + ", " + Prettifier.default(xs) + ", " + Prettifier.default(shouldBeTrue) + ")"
   }
 
   def all[T](xs: scala.collection.GenTraversable[T]): ResultOfCollectedAny[T] = 
