@@ -5736,7 +5736,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def should(notWord: NotWord): ResultOfNotWordForAny[T] = new ResultOfNotWordForAny[T](left, false, "should")
+    def should(notWord: NotWord): ResultOfNotWordForAny[T] = new ResultOfNotWordForAny[T](left, false)
 
     // In 2.10, will work with AnyVals. TODO: Also, Need to ensure Char works
     /**
@@ -6216,7 +6216,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(containWord: ContainWord): ResultOfContainWord[T] = {
-      new ResultOfContainWord(left, true, "should")
+      new ResultOfContainWord(left, true)
     }
     
     /**
@@ -6228,7 +6228,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldNot(contain: ContainWord): ResultOfContainWord[T] = 
-      new ResultOfContainWord(left, false, "shouldNot")
+      new ResultOfContainWord(left, false)
     
     /**
      * This method enables syntax such as the following:
@@ -6340,7 +6340,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     override def should(notWord: NotWord): ResultOfNotWordForString = {
-      new ResultOfNotWordForString(leftSideValue, false, "should")
+      new ResultOfNotWordForString(leftSideValue, false)
     }
 
     /**
