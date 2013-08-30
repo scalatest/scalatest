@@ -1861,6 +1861,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
             FailureMessages("wasDefinedAt", left, right)
         )
     }
+
+    /**
+     * Overrides to return pretty toString.
+     *
+     * @return "ResultOfBeWordForAny([left], [shouldBeTrue])"
+     */
+    override def toString: String = "ResultOfBeWordForAny(" + Prettifier.default(left) + ", " + Prettifier.default(shouldBeTrue) + ")"
   }
 
   /**
@@ -1960,6 +1967,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
           )
         )
     }
+
+    /**
+     * Overrides to return pretty toString.
+     *
+     * @return "ResultOfIncludeWordForString([left], [shouldBeTrue])"
+     */
+    override def toString: String = "ResultOfIncludeWordForString(" + Prettifier.default(left) + ", " + Prettifier.default(shouldBeTrue) + ")"
   }
 
   /**
@@ -2014,6 +2028,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
           )
         )
     }
+
+    /**
+     * Overrides to return pretty toString.
+     *
+     * @return "ResultOfStartWithWordForString([left], [shouldBeTrue])"
+     */
+    override def toString: String = "ResultOfStartWithWordForString(" + Prettifier.default(left) + ", " + Prettifier.default(shouldBeTrue) + ")"
   }
 
   /**
@@ -2069,6 +2090,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
           )
         )
     }
+
+    /**
+     * Overrides to return pretty toString.
+     *
+     * @return "ResultOfEndWithWordForString([left], [shouldBeTrue])"
+     */
+    override def toString: String = "ResultOfEndWithWordForString(" + Prettifier.default(left) + ", " + Prettifier.default(shouldBeTrue) + ")"
   }
 
   /**
@@ -2123,6 +2151,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
           )
         )
     }
+
+    /**
+     * Overrides to return pretty toString.
+     *
+     * @return "ResultOfFullyMatchWordForString([left], [shouldBeTrue])"
+     */
+    override def toString: String = "ResultOfFullyMatchWordForString(" + Prettifier.default(left) + ", " + Prettifier.default(shouldBeTrue) + ")"
   }
   
   // Going back to original, legacy one to get to a good place to check in.

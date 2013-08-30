@@ -136,6 +136,41 @@ class MatchersSpec extends Spec {
       }
       
     }
+
+    object `ResultOfBeWordForAny ` {
+      val word = 1 should be
+      def `should have pretty toString` {
+        word.toString should be ("ResultOfBeWordForAny(1, true)")
+      }
+    }
+
+    object `ResultOfIncludeWordForString ` {
+      val word = "Bob" should include
+      def `should have pretty toString` {
+        word.toString should be ("ResultOfIncludeWordForString(\"Bob\", true)")
+      }
+    }
+
+    object `ResultOfStartWithWordForString ` {
+      val word = "Bob" should startWith
+      def `should have pretty toString` {
+        word.toString should be ("ResultOfStartWithWordForString(\"Bob\", true)")
+      }
+    }
+
+    object `ResultOfEndWithWordForString ` {
+      val word = "Bob" should endWith
+      def `should have pretty toString` {
+        word.toString should be ("ResultOfEndWithWordForString(\"Bob\", true)")
+      }
+    }
+
+    object `ResultOfFullyMatchWordForString ` {
+      val word = "Bob" should fullyMatch
+      def `should have pretty toString` {
+        word.toString should be ("ResultOfFullyMatchWordForString(\"Bob\", true)")
+      }
+    }
     
     object `RegexWord ` {
       
