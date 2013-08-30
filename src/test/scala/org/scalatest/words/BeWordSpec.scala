@@ -1225,7 +1225,7 @@ class BeWordSpec extends Spec with FileMocks {
       val mt = be (resultOfAType)
       
       def `should have pretty toString` {
-        mt.toString should be ("be a " + clazz.getName)
+        mt.toString should be ("be (a [" + clazz.getName + "])")
       }
       
       val myFile = new MyFile("test", true, false)
@@ -1285,7 +1285,7 @@ class BeWordSpec extends Spec with FileMocks {
       val mt = be (resultOfAnType)
       
       def `should have pretty toString` {
-        mt.toString should be ("be an " + clazz.getName)
+        mt.toString should be ("be (an [" + clazz.getName + "])")
       }
       
       val myFile = new MyFile("test", true, false)
