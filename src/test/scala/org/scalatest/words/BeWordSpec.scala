@@ -616,11 +616,11 @@ class BeWordSpec extends Spec with FileMocks {
     }
     
     object `apply(Spread) method returns Matcher` {
-      val spread = 7.1 plusOrMinus 0.2
+      val spread = 7.1 +- 0.2
       val mt = be (spread)
       
       def `should have pretty toString` {
-        mt.toString should be ("be (7.1 plusOrMinus 0.2)")
+        mt.toString should be ("be (7.1 +- 0.2)")
       }
       
       val mr = mt(7.0)

@@ -1015,6 +1015,6 @@ object TripleEqualsSupport {
     /**
      * Overrides toString to return "[pivot] plusOrMinus [tolerance]"
      */
-    override def toString: String = Prettifier.default(pivot) + " plusOrMinus " + Prettifier.default(tolerance)
+    override def toString: String = Prettifier.default(pivot) + " +- " + Prettifier.default(tolerance)
   }
 }

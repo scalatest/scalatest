@@ -24,10 +24,10 @@ class MatchersSpec extends Spec {
     
     object `equal(Spread) method returns Matcher` {
       
-      val mt = equal (8 plusOrMinus 1)
+      val mt = equal (8 +- 1)
       
       def `should have pretty toString` {
-        mt.toString should be ("equal (8 plusOrMinus 1)")
+        mt.toString should be ("equal (8 +- 1)")
       }
       
       val mr = mt(9)
