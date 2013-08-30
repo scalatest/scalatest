@@ -114,7 +114,13 @@ val InternalServerError =
  * </pre>
  * 
  */
-class Catcher(partial: PartialFunction[Throwable, Boolean]) extends Extractor[Throwable](partial)
+class Catcher(val partial: PartialFunction[Throwable, Boolean]) {
+  if (partial == null) throw new NullPointerException("partial was null")
+
+  def unapply(exception: Throwable): Option[Throwable] = {
+    if (partial.isDefinedAt(exception) && partial(exception)) Some(exception) else None
+  }
+}
 
 object Catcher {
   def apply(partial: PartialFunction[Throwable, Boolean]): Catcher = new Catcher(partial)

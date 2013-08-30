@@ -17,7 +17,6 @@ package org.scalautils
 
 import org.scalatest._
 
-// TODO: Do tests for equal, hashcode, toString, etc., since no longer a case class
 class CatcherSpec extends UnitSpec {
   object `A Catcher` {
     class DBAccessException(message: String) extends RuntimeException(message)
@@ -76,3 +75,4 @@ class CatcherSpec extends UnitSpec {
   }
 }
 
+// TODO: Do tests for equal, hashcode, toString, etc., since no longer a case class
