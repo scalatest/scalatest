@@ -24,7 +24,7 @@ class ResultOfBeWordForNoExceptionSpec extends Spec {
     
     def `should have pretty toString when used` {
       val result = noException should be
-      result.toString should be ("noException should be")
+      result.toString should be ("ResultOfBeWordForNoException")
     }
     
   }

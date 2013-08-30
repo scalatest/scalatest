@@ -641,7 +641,7 @@ final class BeWord {
           Vector(left, UnquotedString(clazz.getName))
         )
       }
-      override def toString: String = "be a " + aType.clazz.getName
+      override def toString: String = "be (" + Prettifier.default(aType) + ")"
     }
   
   /**
@@ -663,7 +663,7 @@ final class BeWord {
           Vector(left, UnquotedString(clazz.getName))
         )
       }
-      override def toString: String = "be an " + anType.clazz.getName
+      override def toString: String = "be (" + Prettifier.default(anType) + ")"
     }
   
   /**

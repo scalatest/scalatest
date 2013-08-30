@@ -35,7 +35,7 @@ final class NoExceptionWord {
    * </pre>
    */
   def should(beWord: BeWord): ResultOfBeWordForNoException = 
-    new ResultOfBeWordForNoException("should")
+    new ResultOfBeWordForNoException
   
   /**
    * This method enables the following syntax: 

@@ -30,7 +30,7 @@ class SpreadSpec extends Spec {
     }
     def `should have pretty toString` {
       val spread = new Spread(8, 2)
-      assert(spread.toString == "8 plusOrMinus 2")
+      assert(spread.toString == "8 +- 2")
     }
   }
 }

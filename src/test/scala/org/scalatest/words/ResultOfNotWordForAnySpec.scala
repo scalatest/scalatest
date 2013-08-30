@@ -24,9 +24,18 @@ class ResultOfNotWordForAnySpec extends Spec {
     
     def `should have pretty toString` {
       val result: ResultOfNotWordForAny[Int] = 1 should not
-      result.toString should be ("1 should not")
+      result.toString should be ("ResultOfNotWordForAny(1, false)")
     }
     
   }
-  
+
+  object `ResultOfNotWordForString ` {
+
+    def `should have pretty toString` {
+      val result: ResultOfNotWordForString = "hello" should not
+      result.toString should be ("ResultOfNotWordForString(\"hello\", false)")
+    }
+
+  }
+
 }
