@@ -24,7 +24,7 @@ import org.scalautils.LegacyTripleEquals
  * Trait that contains ScalaTest's basic assertion methods.
  *
  * <p>
- * You can use the assertions provided by this trait in any ScalaTest <code>Suite</code>, because <code>Suite</code>
+ * You can use the assertions provided by this trait in any ScalaTest <code>Suite</code>, because <a href="Suite.html"><code>Suite</code></a>
  * mixes in this trait. This trait is designed to be used independently of anything else in ScalaTest, though, so you
  * can mix it into anything. (You can alternatively import the methods defined in this trait. For details, see the documentation
  * for the <a href="Assertions$.html"><code>Assertions</code> companion object</a>.
@@ -45,10 +45,10 @@ import org.scalautils.LegacyTripleEquals
  * If the passed expression is <code>true</code>, <code>assert</code> will return normally. If <code>false</code>,
  * Scala's <code>assert</code> will complete abruptly with an <code>AssertionError</code>. This behavior is provided by
  * the <code>assert</code> method defined in object <code>Predef</code>, whose members are implicitly imported into every
- * Scala source file. This <code>Assertions</code> traits defines another <code>assert</code> method that hides the
+ * Scala source file. This <code>Assertions</code> trait defines another <code>assert</code> method that hides the
  * one in <code>Predef</code>. It behaves the same, except that if <code>false</code> is passed it throws
- * <code>TestFailedException</code> instead of <code>AssertionError</code>. The reason it throws <code>TestFailedException</code>
- * is because <code>TestFailedException</code> carries information about exactly which item in the stack trace represents
+ * <a href="exceptions/TestFailedException.html"><code>TestFailedException</code></a> instead of <code>AssertionError</code>. 
+ *<code>TestFailedException</code> carries information about exactly which item in the stack trace represents
  * the line of test code that failed, which can help users more quickly find an offending line of code in a failing test.
  * <p>
  *
@@ -196,7 +196,7 @@ import org.scalautils.LegacyTripleEquals
  * <p>
  * For each overloaded <code>assert</code> method, trait <code>Assertions</code> provides an
  * overloaded <code>assume</code> method with an identical signature and behavior, except the
- * <code>assume</code> methods throw <code>TestCanceledException</code> whereas the
+ * <code>assume</code> methods throw <a href="exceptions/TestCanceledException.html"><code>TestCanceledException</code></a> whereas the
  * <code>assert</code> methods throw <code>TestFailedException</code>. As with <code>assert</code>,
  * <code>assume</code> hides a Scala method in <code>Predef</code> that performs a similar
  * function, but throws <code>AssertionError</code>. And just as you can with <code>assert</code>,
