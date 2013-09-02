@@ -123,7 +123,7 @@ import Suite.autoTagClassAnnotations
  * Scenarios can only be registered with the <code>scenario</code> method while the <code>FeatureSpec</code> is
  * in its registration phase. Any attempt to register a scenario after the <code>FeatureSpec</code> has
  * entered its ready phase, <em>i.e.</em>, after <code>run</code> has been invoked on the <code>FeatureSpec</code>,
- * will be met with a thrown <code>TestRegistrationClosedException</code>. The recommended style
+ * will be met with a thrown <a href="exceptions/TestRegistrationClosedException.html"><code>TestRegistrationClosedException</code></a>. The recommended style
  * of using <code>FeatureSpec</code> is to register tests during object construction as is done in all
  * the examples shown here. If you keep to the recommended style, you should never see a
  * <code>TestRegistrationClosedException</code>.
@@ -136,10 +136,10 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <p>
- * When you run a <code>FeatureSpec</code>, it will send <code>Formatter</code>s in the events it sends to the
- * <code>Reporter</code>. ScalaTest's built-in reporters will report these events in such a way
+ * When you run a <code>FeatureSpec</code>, it will send <a href="events/Formatter.html"><code>Formatter</code></a>s in the events it sends to the
+ * <a href="Reporter.html"><code>Reporter</code></a>. ScalaTest's built-in reporters will report these events in such a way
  * that the output is easy to read as an informal specification of the <em>subject</em> being tested.
- * For example, were you to run<code>TVSetSpec</code> from within the Scala interpreter:
+ * For example, were you to run <code>TVSetSpec</code> from within the Scala interpreter:
  * </p>
  *
  * <pre class="stREPL">
@@ -187,7 +187,7 @@ import Suite.autoTagClassAnnotations
  * </pre>
  *
  * <p>
- * You can also pass to <code>execute</code> a <a href="#configMapSection"><em>config map</em></a> of key-value
+ * You can also pass to <code>execute</code> a <a href="ConfigMap.html"><em>config map</em></a> of key-value
  * pairs, which will be passed down into suites and tests, as well as other parameters that configure the run itself.
  * For more information on running in the Scala interpreter, see the documentation for <code>execute</code> (below) and the
  * <a href="Shell.html">ScalaTest shell</a>.
@@ -275,13 +275,13 @@ import Suite.autoTagClassAnnotations
  * One of the parameters to <code>FeatureSpec</code>'s <code>run</code> method is a <code>Reporter</code>, which
  * will collect and report information about the running suite of tests.
  * Information about suites and tests that were run, whether tests succeeded or failed, 
- * and tests that were ignored will be passed to the <code>Reporter</code> as the suite runs.
- * Most often the reporting done by default by <code>FeatureSpec</code>'s methods will be sufficient, but
+ * and tests that were ignored will be passed to the <a href="Reporter.html"><code>Reporter</code></a> as the suite runs.
+ * Most often the default reporting done by <code>FeatureSpec</code>'s methods will be sufficient, but
  * occasionally you may wish to provide custom information to the <code>Reporter</code> from a test.
- * For this purpose, an <code>Informer</code> that will forward information to the current <code>Reporter</code>
+ * For this purpose, an <a href="Informer.html"><code>Informer</code></a> that will forward information to the current <code>Reporter</code>
  * is provided via the <code>info</code> parameterless method.
  * You can pass the extra information to the <code>Informer</code> via its <code>apply</code> method.
- * The <code>Informer</code> will then pass the information to the <code>Reporter</code> via an <code>InfoProvided</code> event.
+ * The <code>Informer</code> will then pass the information to the <code>Reporter</code> via an <a href="events/InfoProvided.html"><code>InfoProvided</code></a> event.
  * </p>
  * 
  * <p>
@@ -304,7 +304,7 @@ import Suite.autoTagClassAnnotations
  * To support this style of testing, a test can be given a name that specifies one
  * bit of behavior required by the system being tested. The test can also include some code that
  * sends more information about the behavior to the reporter when the tests run. At the end of the test,
- * it can call method <code>pending</code>, which will cause it to complete abruptly with <code>TestPendingException</code>.
+ * it can call method <code>pending</code>, which will cause it to complete abruptly with <a href="exceptions/TestPendingException.html"><code>TestPendingException</code></a>.
  * </p>
  *
  * <p>
@@ -573,7 +573,7 @@ import Suite.autoTagClassAnnotations
  *
  * <p>
  * If you need to create the same mutable fixture objects in multiple tests, and don't need to clean them up after using them, the simplest approach is to write one or
- * more <em>get-fixture</em> methods. A get-fixture method returns a new instance of a needed fixture object (or an holder object containing
+ * more <em>get-fixture</em> methods. A get-fixture method returns a new instance of a needed fixture object (or a holder object containing
  * multiple fixture objects) each time it is called. You can call a get-fixture method at the beginning of each
  * test that needs the fixture, storing the returned object or objects in local variables. Here's an example:
  * </p>
@@ -617,7 +617,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <p>
- * If you need to configure fixture objects differently in different tests, you can pass configuration into the get-fixture method. For example, if you could pass
+ * If you need to configure fixture objects differently in different tests, you can pass configuration into the get-fixture method. For example, you could pass
  * in an initial value for a mutable fixture object as a parameter to the get-fixture method.
  * </p>
  *
@@ -690,7 +690,7 @@ import Suite.autoTagClassAnnotations
  * If every test method requires the same set of
  * mutable fixture objects, and none require cleanup, one other approach you can take is make them simply <code>val</code>s and mix in trait
  * <a href="OneInstancePerTest.html"><code>OneInstancePerTest</code></a>.  If you mix in <code>OneInstancePerTest</code>, each test
- * will be run in its own instance of the <code>Suite</code>, similar to the way JUnit tests are executed. Here's an example:
+ * will be run in its own instance of the <a href="Suite.html"><code>Suite</code></a>, similar to the way JUnit tests are executed. Here's an example:
  * </p>
  *
  * <pre class="stHighlight">
@@ -722,7 +722,7 @@ import Suite.autoTagClassAnnotations
  * </pre>
  *
  * <p>
- * One way to think of <a href="OneInstancePerTest.html"><code>OneInstancePerTest</code></a> is that the entire <code>Suite</code> instance is like a fixture-context object,
+ * One way to think of <code>OneInstancePerTest</code> is that the entire <code>Suite</code> instance is like a fixture-context object,
  * but with the difference that the test code doesn't run during construction as it does with the real fixture-context object technique. Because this trait emulates JUnit's manner
  * of running tests, this trait can be helpful when porting JUnit tests to ScalaTest. The primary intended use of <code>OneInstancePerTest</code> is to serve as a supertrait for
  * <a href="ParallelTestExecution.html"><code>ParallelTestExecution</code></a> and the <a href="path/package.html">path traits</a>, but you can also mix it in
@@ -761,7 +761,7 @@ import Suite.autoTagClassAnnotations
  *
  * <p>
  * The <code>withFixture</code> method is designed to be stacked, and to enable this, you should always call the <code>super</code> implementation
- * of <code>withFixture</code>, and let it invoke the test function rather than invoking the test function directly. In other words, instead of writing
+ * of <code>withFixture</code>, and let it invoke the test function rather than invoking the test function directly. That is to say, instead of writing
  * &ldquo;<code>test()</code>&rdquo;, you should write &ldquo;<code>super.withFixture(test)</code>&rdquo;, like this:
  * </p>
  *
@@ -778,7 +778,7 @@ import Suite.autoTagClassAnnotations
  *
  * <p>
  * Here's an example in which <code>withFixture(NoArgTest)</code> is used to take a snapshot of the working directory if a test fails, and 
- * and send that information to the reporter:
+ * send that information to the reporter:
  * </p>
  *
  * <pre class="stHighlight">
@@ -827,7 +827,7 @@ import Suite.autoTagClassAnnotations
  *
  * <p>
  * Note that the <a href="Suite$NoArgTest.html"><code>NoArgTest</code></a> passed to <code>withFixture</code>, in addition to
- * an <code>apply</code> method that executes the test, also includes the test name and the <a href="#configMapSection">config
+ * an <code>apply</code> method that executes the test, also includes the test name and the <a href="ConfigMap.html">config
  * map</a> passed to <code>runTest</code>. Thus you can also use the test name and configuration objects in your <code>withFixture</code>
  * implementation.
  * </p>
@@ -940,9 +940,9 @@ import Suite.autoTagClassAnnotations
  * <h4>Overriding <code>withFixture(OneArgTest)</code></h4>
  *
  * <p>
- * If all or most tests need the same fixture, you can avoid some of the boilerplate of the loan-fixture method approach by using a <code>fixture.Suite</code>
+ * If all or most tests need the same fixture, you can avoid some of the boilerplate of the loan-fixture method approach by using a <code>fixture.Spec</code>
  * and overriding <code>withFixture(OneArgTest)</code>.
- * Each test in a <code>fixture.Suite</code> takes a fixture as a parameter, allowing you to pass the fixture into
+ * Each test in a <code>fixture.Spec</code> takes a fixture as a parameter, allowing you to pass the fixture into
  * the test. You must indicate the type of the fixture parameter by specifying <code>FixtureParam</code>, and implement a
  * <code>withFixture</code> method that takes a <code>OneArgTest</code>. This <code>withFixture</code> method is responsible for
  * invoking the one-arg test function, so you can perform fixture set up before, and clean up after, invoking and passing
@@ -1009,7 +1009,7 @@ import Suite.autoTagClassAnnotations
  * <p>
  * In this example, the tests actually required two fixture objects, a <code>File</code> and a <code>FileWriter</code>. In such situations you can
  * simply define the <code>FixtureParam</code> type to be a tuple containing the objects, or as is done in this example, a case class containing
- * the objects.  For more information on the <code>withFixture(OneArgTest)</code> technique, see the <a href="fixture/Suite.html">documentation for <code>fixture.Suite</code></a>.
+ * the objects.  For more information on the <code>withFixture(OneArgTest)</code> technique, see the <a href="fixture/Spec.html">documentation for <code>fixture.Spec</code></a>.
  * </p>
  *
  * <a name="beforeAndAfter"></a>
