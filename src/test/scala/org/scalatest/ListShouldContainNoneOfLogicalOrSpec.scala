@@ -187,43 +187,43 @@ class ListShouldContainNoneOfLogicalOrSpec extends Spec with Matchers {
       }
     }
     
-    object `when used with (legacyEqual (..) and contain noneOf (..))` {
+    object `when used with (be (..) and contain noneOf (..))` {
       
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        fumList should (legacyEqual (fumList) or contain noneOf("fie", "fee", "fam", "foe"))
-        fumList should (legacyEqual (toList) or contain noneOf("fie", "fee", "fam", "foe"))
-        fumList should (legacyEqual (fumList) or contain noneOf("fie", "fee", "fum", "foe"))
+        fumList should (be (fumList) or contain noneOf("fie", "fee", "fam", "foe"))
+        fumList should (be (toList) or contain noneOf("fie", "fee", "fam", "foe"))
+        fumList should (be (fumList) or contain noneOf("fie", "fee", "fum", "foe"))
         val e1 = intercept[TestFailedException] {
-          fumList should (legacyEqual (toList) or contain noneOf ("fie", "fee", "fum", "foe"))
+          fumList should (be (toList) or contain noneOf ("fie", "fee", "fum", "foe"))
         }
-        checkMessageStackDepth(e1, Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", and " + Resources("containedOneOfElements", decorateToStringValue(fumList), "\"fie\", \"fee\", \"fum\", \"foe\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("wasNotEqualTo", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", and " + Resources("containedOneOfElements", decorateToStringValue(fumList), "\"fie\", \"fee\", \"fum\", \"foe\""), fileName, thisLineNumber - 2)
       }
       
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
-        fumList should (legacyEqual (fumList) or contain noneOf ("fee", "fie", "foe", "fum"))
-        fumList should (legacyEqual (toList) or contain noneOf ("fee", "fie", "foe", "fum"))
-        fumList should (legacyEqual (fumList) or contain noneOf ("FEE", "FIE", "FOE", "FUM"))
+        fumList should (be (fumList) or contain noneOf ("fee", "fie", "foe", "fum"))
+        fumList should (be (toList) or contain noneOf ("fee", "fie", "foe", "fum"))
+        fumList should (be (fumList) or contain noneOf ("FEE", "FIE", "FOE", "FUM"))
         val e1 = intercept[TestFailedException] {
-          fumList should (legacyEqual (toList) or (contain noneOf ("FEE", "FIE", "FOE", "FUM")))
+          fumList should (be (toList) or (contain noneOf ("FEE", "FIE", "FOE", "FUM")))
         }
-        checkMessageStackDepth(e1, Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", and " + Resources("containedOneOfElements", decorateToStringValue(fumList), "\"FEE\", \"FIE\", \"FOE\", \"FUM\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("wasNotEqualTo", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", and " + Resources("containedOneOfElements", decorateToStringValue(fumList), "\"FEE\", \"FIE\", \"FOE\", \"FUM\""), fileName, thisLineNumber - 2)
       }
       
       def `should use an explicitly provided Equality` {
-        (fumList should (legacyEqual (fumList) or contain noneOf ("fee", "fie", "foe", "fum"))) (decided by upperCaseStringEquality)
-        (fumList should (legacyEqual (toList) or contain noneOf ("fee", "fie", "foe", "fum"))) (decided by upperCaseStringEquality)
-        (fumList should (legacyEqual (fumList) or contain noneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
+        (fumList should (be (fumList) or contain noneOf ("fee", "fie", "foe", "fum"))) (decided by upperCaseStringEquality)
+        (fumList should (be (toList) or contain noneOf ("fee", "fie", "foe", "fum"))) (decided by upperCaseStringEquality)
+        (fumList should (be (fumList) or contain noneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (legacyEqual (toList) or contain noneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
+          (fumList should (be (toList) or contain noneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", and " + Resources("containedOneOfElements", decorateToStringValue(fumList), "\"FEE\", \"FIE\", \"FOE\", \"FUM\""), fileName, thisLineNumber - 2)
-        (fumList should (legacyEqual (fumList) or contain noneOf (" FEE ", " FIE ", " FOE ", " FAM "))) (after being lowerCased and trimmed)
+        checkMessageStackDepth(e1, Resources("wasNotEqualTo", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", and " + Resources("containedOneOfElements", decorateToStringValue(fumList), "\"FEE\", \"FIE\", \"FOE\", \"FUM\""), fileName, thisLineNumber - 2)
+        (fumList should (be (fumList) or contain noneOf (" FEE ", " FIE ", " FOE ", " FAM "))) (after being lowerCased and trimmed)
       }
       
       def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
         val e1 = intercept[exceptions.NotAllowedException] {
-          fumList should (legacyEqual (fumList) or contain noneOf())
+          fumList should (be (fumList) or contain noneOf())
         }
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -232,7 +232,7 @@ class ListShouldContainNoneOfLogicalOrSpec extends Spec with Matchers {
       
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
-          fumList should (legacyEqual (fumList) or contain noneOf("fee", "fie", "foe", "fie", "fum"))
+          fumList should (be (fumList) or contain noneOf("fee", "fie", "foe", "fie", "fum"))
         }
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -240,43 +240,43 @@ class ListShouldContainNoneOfLogicalOrSpec extends Spec with Matchers {
       }
     }
 
-    object `when used with (contain noneOf (..) and legacyEqual (..))` {
+    object `when used with (contain noneOf (..) and be (..))` {
       
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        fumList should (contain noneOf("fie", "fee", "fam", "foe") or legacyEqual (fumList))
-        fumList should (contain noneOf("fie", "fee", "fum", "foe") or legacyEqual (fumList))
-        fumList should (contain noneOf("fie", "fee", "fam", "foe") or legacyEqual (toList))
+        fumList should (contain noneOf("fie", "fee", "fam", "foe") or be (fumList))
+        fumList should (contain noneOf("fie", "fee", "fum", "foe") or be (fumList))
+        fumList should (contain noneOf("fie", "fee", "fam", "foe") or be (toList))
         val e1 = intercept[TestFailedException] {
-          fumList should (contain noneOf ("fie", "fee", "fum", "foe") or legacyEqual (toList))
+          fumList should (contain noneOf ("fie", "fee", "fum", "foe") or be (toList))
         }
-        checkMessageStackDepth(e1, Resources("containedOneOfElements", decorateToStringValue(fumList), "\"fie\", \"fee\", \"fum\", \"foe\"") + ", and " + Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("containedOneOfElements", decorateToStringValue(fumList), "\"fie\", \"fee\", \"fum\", \"foe\"") + ", and " + Resources("wasNotEqualTo", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
       }
       
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
-        fumList should (contain noneOf ("fee", "fie", "foe", "fum") or legacyEqual (fumList))
-        fumList should (contain noneOf ("FEE", "FIE", "FOE", "FUM") or legacyEqual (fumList))
-        fumList should (contain noneOf ("fee", "fie", "foe", "fum") or legacyEqual (toList))
+        fumList should (contain noneOf ("fee", "fie", "foe", "fum") or be (fumList))
+        fumList should (contain noneOf ("FEE", "FIE", "FOE", "FUM") or be (fumList))
+        fumList should (contain noneOf ("fee", "fie", "foe", "fum") or be (toList))
         val e1 = intercept[TestFailedException] {
-          fumList should (contain noneOf ("FEE", "FIE", "FOE", "FUM") or legacyEqual (toList))
+          fumList should (contain noneOf ("FEE", "FIE", "FOE", "FUM") or be (toList))
         }
-        checkMessageStackDepth(e1, Resources("containedOneOfElements", decorateToStringValue(fumList), "\"FEE\", \"FIE\", \"FOE\", \"FUM\"") + ", and " + Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("containedOneOfElements", decorateToStringValue(fumList), "\"FEE\", \"FIE\", \"FOE\", \"FUM\"") + ", and " + Resources("wasNotEqualTo", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
       }
       
       def `should use an explicitly provided Equality` {
-        (fumList should (contain noneOf ("fee", "fie", "foe", "fum") or legacyEqual (fumList))) (decided by upperCaseStringEquality)
-        (fumList should (contain noneOf ("FEE", "FIE", "FOE", "FUM") or legacyEqual (fumList))) (decided by upperCaseStringEquality)
-        (fumList should (contain noneOf ("fee", "fie", "foe", "fum") or legacyEqual (toList))) (decided by upperCaseStringEquality)
+        (fumList should (contain noneOf ("fee", "fie", "foe", "fum") or be (fumList))) (decided by upperCaseStringEquality)
+        (fumList should (contain noneOf ("FEE", "FIE", "FOE", "FUM") or be (fumList))) (decided by upperCaseStringEquality)
+        (fumList should (contain noneOf ("fee", "fie", "foe", "fum") or be (toList))) (decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (contain noneOf ("FEE", "FIE", "FOE", "FUM") or legacyEqual (toList))) (decided by upperCaseStringEquality)
+          (fumList should (contain noneOf ("FEE", "FIE", "FOE", "FUM") or be (toList))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, Resources("containedOneOfElements", decorateToStringValue(fumList), "\"FEE\", \"FIE\", \"FOE\", \"FUM\"") + ", and " + Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
-        (fumList should (contain noneOf (" FEE ", " FIE ", " FOE ", " FUM ") or legacyEqual (fumList))) (after being lowerCased and trimmed)
+        checkMessageStackDepth(e1, Resources("containedOneOfElements", decorateToStringValue(fumList), "\"FEE\", \"FIE\", \"FOE\", \"FUM\"") + ", and " + Resources("wasNotEqualTo", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
+        (fumList should (contain noneOf (" FEE ", " FIE ", " FOE ", " FUM ") or be (fumList))) (after being lowerCased and trimmed)
       }
       
       def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
         val e1 = intercept[exceptions.NotAllowedException] {
-          fumList should (contain noneOf() or legacyEqual (fumList))
+          fumList should (contain noneOf() or be (fumList))
         }
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -285,7 +285,7 @@ class ListShouldContainNoneOfLogicalOrSpec extends Spec with Matchers {
       
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
-          fumList should (contain noneOf("fee", "fie", "foe", "fie", "fum") or legacyEqual (fumList))
+          fumList should (contain noneOf("fee", "fie", "foe", "fie", "fum") or be (fumList))
         }
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)

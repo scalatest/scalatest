@@ -275,21 +275,6 @@ trait MatcherWords {
       }
       override def toString: String = "equal (" + Prettifier.default(right) + ")"
     }
-
-  def legacyEqual(right: Any): Matcher[Any] =
-    new Matcher[Any] {
-      def apply(left: Any): MatchResult = {
-        val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)
-        MatchResult(
-          areEqualComparingArraysStructurally(left, right),
-          Resources("didNotEqual"),
-          Resources("equaled"), 
-          Vector(leftee, rightee), 
-          Vector(left, right)
-        )
-      }
-      override def toString: String = "legacyEqual (" + Prettifier.default(right) + ")"
-    }
 }
 
 object MatcherWords extends MatcherWords

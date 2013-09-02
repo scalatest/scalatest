@@ -2243,8 +2243,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                                ^
      * </pre>
      */
-    def equal(any: Any): Matcher[T] =
-      outerInstance.or(MatcherWords.not.apply(MatcherWords.legacyEqual(any)))
+    def equal(any: Any): MatcherFactory1[T, Equality] =
+      outerInstance.or(MatcherWords.not.apply(MatcherWords.equal(any)))
 
     /**
      * This method enables the following syntax for the "primitive" numeric types:

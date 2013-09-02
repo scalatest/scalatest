@@ -176,43 +176,43 @@ class ListShouldContainAtMostOneOfLogicalOrSpec extends FreeSpec with Matchers {
       }
     }
     
-    "when used with (legacyEqual (...) and contain theMostOneOf (...)) syntax" - {
+    "when used with (be (...) and contain theMostOneOf (...)) syntax" - {
       
       "should do nothing if valid, else throw a TFE with an appropriate error message" in {
-        fumList should (legacyEqual (fumList) or contain atMostOneOf("fie", "fee", "fam", "foe"))
-        fumList should (legacyEqual (toList) or contain atMostOneOf("fie", "fee", "fam", "foe"))
-        fumList should (legacyEqual (fumList) or contain atMostOneOf("fie", "fee", "fum", "foe"))
+        fumList should (be (fumList) or contain atMostOneOf("fie", "fee", "fam", "foe"))
+        fumList should (be (toList) or contain atMostOneOf("fie", "fee", "fam", "foe"))
+        fumList should (be (fumList) or contain atMostOneOf("fie", "fee", "fum", "foe"))
         val e1 = intercept[TestFailedException] {
-          fumList should (legacyEqual (toList) or contain atMostOneOf ("fie", "fee", "fum", "foe"))
+          fumList should (be (toList) or contain atMostOneOf ("fie", "fee", "fum", "foe"))
         }
-        checkMessageStackDepth(e1, Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", and " + Resources("didNotContainAtMostOneOf", decorateToStringValue(fumList), "\"fie\", \"fee\", \"fum\", \"foe\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("wasNotEqualTo", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", and " + Resources("didNotContainAtMostOneOf", decorateToStringValue(fumList), "\"fie\", \"fee\", \"fum\", \"foe\""), fileName, thisLineNumber - 2)
       }
       
       "should use the implicit Equality in scope" in {
         implicit val ise = upperCaseStringEquality
-        fumList should (legacyEqual (fumList) or contain atMostOneOf ("FIE", "FEE", "FAM", "FOE"))
-        fumList should (legacyEqual (toList) or contain atMostOneOf ("FIE", "FEE", "FAM", "FOE"))
-        fumList should (legacyEqual (fumList) or contain atMostOneOf ("FIE", "FEE", "FUM", "FOE"))
+        fumList should (be (fumList) or contain atMostOneOf ("FIE", "FEE", "FAM", "FOE"))
+        fumList should (be (toList) or contain atMostOneOf ("FIE", "FEE", "FAM", "FOE"))
+        fumList should (be (fumList) or contain atMostOneOf ("FIE", "FEE", "FUM", "FOE"))
         val e1 = intercept[TestFailedException] {
-          fumList should (legacyEqual (toList) or (contain atMostOneOf ("FIE", "FEE", "FUM", "FOE")))
+          fumList should (be (toList) or (contain atMostOneOf ("FIE", "FEE", "FUM", "FOE")))
         }
-        checkMessageStackDepth(e1, Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", and " + Resources("didNotContainAtMostOneOf", decorateToStringValue(fumList), "\"FIE\", \"FEE\", \"FUM\", \"FOE\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("wasNotEqualTo", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", and " + Resources("didNotContainAtMostOneOf", decorateToStringValue(fumList), "\"FIE\", \"FEE\", \"FUM\", \"FOE\""), fileName, thisLineNumber - 2)
       }
       
       "should use an explicitly provided Equality" in {
-        (fumList should (legacyEqual (fumList) or contain atMostOneOf ("FIE", "FEE", "FAM", "FOE"))) (decided by upperCaseStringEquality)
-        (fumList should (legacyEqual (toList) or contain atMostOneOf ("FIE", "FEE", "FAM", "FOE"))) (decided by upperCaseStringEquality)
-        (fumList should (legacyEqual (fumList) or contain atMostOneOf ("FIE", "FEE", "FUM", "FOE"))) (decided by upperCaseStringEquality)
+        (fumList should (be (fumList) or contain atMostOneOf ("FIE", "FEE", "FAM", "FOE"))) (decided by upperCaseStringEquality)
+        (fumList should (be (toList) or contain atMostOneOf ("FIE", "FEE", "FAM", "FOE"))) (decided by upperCaseStringEquality)
+        (fumList should (be (fumList) or contain atMostOneOf ("FIE", "FEE", "FUM", "FOE"))) (decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (legacyEqual (toList) or contain atMostOneOf ("FIE", "FEE", "FUM", "FOE"))) (decided by upperCaseStringEquality)
+          (fumList should (be (toList) or contain atMostOneOf ("FIE", "FEE", "FUM", "FOE"))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", and " + Resources("didNotContainAtMostOneOf", decorateToStringValue(fumList), "\"FIE\", \"FEE\", \"FUM\", \"FOE\""), fileName, thisLineNumber - 2)
-        (fumList should (legacyEqual (fumList) or contain atMostOneOf (" FEE ", " FIE ", " FOE ", " FAM "))) (after being lowerCased and trimmed)
+        checkMessageStackDepth(e1, Resources("wasNotEqualTo", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", and " + Resources("didNotContainAtMostOneOf", decorateToStringValue(fumList), "\"FIE\", \"FEE\", \"FUM\", \"FOE\""), fileName, thisLineNumber - 2)
+        (fumList should (be (fumList) or contain atMostOneOf (" FEE ", " FIE ", " FOE ", " FAM "))) (after being lowerCased and trimmed)
       }
       
       "should throw NotAllowedException with correct stack depth and message when RHS is empty" in {
         val e1 = intercept[exceptions.NotAllowedException] {
-          fumList should (legacyEqual (fumList) or contain atMostOneOf())
+          fumList should (be (fumList) or contain atMostOneOf())
         }
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -221,7 +221,7 @@ class ListShouldContainAtMostOneOfLogicalOrSpec extends FreeSpec with Matchers {
       
       "should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value" in {
         val e1 = intercept[exceptions.NotAllowedException] {
-          fumList should (legacyEqual (fumList) or contain atMostOneOf("fee", "fie", "foe", "fie", "fum"))
+          fumList should (be (fumList) or contain atMostOneOf("fee", "fie", "foe", "fie", "fum"))
         }
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -229,43 +229,43 @@ class ListShouldContainAtMostOneOfLogicalOrSpec extends FreeSpec with Matchers {
       }
     }
 
-    "when used with (contain oneOf (...) and legacyEqual (...)) syntax" - {
+    "when used with (contain oneOf (...) and be (...)) syntax" - {
       
       "should do nothing if valid, else throw a TFE with an appropriate error message" in {
-        fumList should (contain atMostOneOf("fie", "fee", "fam", "foe") or legacyEqual (fumList))
-        fumList should (contain atMostOneOf("fie", "fee", "fum", "foe") or legacyEqual (fumList))
-        fumList should (contain atMostOneOf("fie", "fee", "fam", "foe") or legacyEqual (toList))
+        fumList should (contain atMostOneOf("fie", "fee", "fam", "foe") or be (fumList))
+        fumList should (contain atMostOneOf("fie", "fee", "fum", "foe") or be (fumList))
+        fumList should (contain atMostOneOf("fie", "fee", "fam", "foe") or be (toList))
         val e1 = intercept[TestFailedException] {
-          fumList should (contain atMostOneOf ("fee", "fie", "foe", "fum") or legacyEqual (toList))
+          fumList should (contain atMostOneOf ("fee", "fie", "foe", "fum") or be (toList))
         }
-        checkMessageStackDepth(e1, Resources("didNotContainAtMostOneOf", decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fum\"") + ", and " + Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("didNotContainAtMostOneOf", decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fum\"") + ", and " + Resources("wasNotEqualTo", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
       }
       
       "should use the implicit Equality in scope" in {
         implicit val ise = upperCaseStringEquality
-        fumList should (contain atMostOneOf ("FIE", "FEE", "FAM", "FOE") or legacyEqual (fumList))
-        fumList should (contain atMostOneOf ("FIE", "FEE", "FUM", "FOE") or legacyEqual (fumList))
-        fumList should (contain atMostOneOf ("FIE", "FEE", "FAM", "FOE") or legacyEqual (toList))
+        fumList should (contain atMostOneOf ("FIE", "FEE", "FAM", "FOE") or be (fumList))
+        fumList should (contain atMostOneOf ("FIE", "FEE", "FUM", "FOE") or be (fumList))
+        fumList should (contain atMostOneOf ("FIE", "FEE", "FAM", "FOE") or be (toList))
         val e1 = intercept[TestFailedException] {
-          fumList should (contain atMostOneOf ("FEE", "FIE", "FOE", "FUM") or legacyEqual (toList))
+          fumList should (contain atMostOneOf ("FEE", "FIE", "FOE", "FUM") or be (toList))
         }
-        checkMessageStackDepth(e1, Resources("didNotContainAtMostOneOf", decorateToStringValue(fumList), "\"FEE\", \"FIE\", \"FOE\", \"FUM\"") + ", and " + Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("didNotContainAtMostOneOf", decorateToStringValue(fumList), "\"FEE\", \"FIE\", \"FOE\", \"FUM\"") + ", and " + Resources("wasNotEqualTo", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
       }
       
       "should use an explicitly provided Equality" in {
-        (fumList should (contain atMostOneOf ("FIE", "FEE", "FAM", "FOE") or legacyEqual (fumList))) (decided by upperCaseStringEquality)
-        (fumList should (contain atMostOneOf ("FIE", "FEE", "FUM", "FOE") or legacyEqual (fumList))) (decided by upperCaseStringEquality)
-        (fumList should (contain atMostOneOf ("FIE", "FEE", "FAM", "FOE") or legacyEqual (toList))) (decided by upperCaseStringEquality)
+        (fumList should (contain atMostOneOf ("FIE", "FEE", "FAM", "FOE") or be (fumList))) (decided by upperCaseStringEquality)
+        (fumList should (contain atMostOneOf ("FIE", "FEE", "FUM", "FOE") or be (fumList))) (decided by upperCaseStringEquality)
+        (fumList should (contain atMostOneOf ("FIE", "FEE", "FAM", "FOE") or be (toList))) (decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (contain atMostOneOf ("FEE", "FIE", "FOE", "FUM") or legacyEqual (toList))) (decided by upperCaseStringEquality)
+          (fumList should (contain atMostOneOf ("FEE", "FIE", "FOE", "FUM") or be (toList))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, Resources("didNotContainAtMostOneOf", decorateToStringValue(fumList), "\"FEE\", \"FIE\", \"FOE\", \"FUM\"") + ", and " + Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
-        (fumList should (contain atMostOneOf (" FEE ", " FIE ", " FOE ", " FaM ") or legacyEqual (fumList))) (after being lowerCased and trimmed)
+        checkMessageStackDepth(e1, Resources("didNotContainAtMostOneOf", decorateToStringValue(fumList), "\"FEE\", \"FIE\", \"FOE\", \"FUM\"") + ", and " + Resources("wasNotEqualTo", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
+        (fumList should (contain atMostOneOf (" FEE ", " FIE ", " FOE ", " FaM ") or be (fumList))) (after being lowerCased and trimmed)
       }
       
       "should throw NotAllowedException with correct stack depth and message when RHS is empty" in {
         val e1 = intercept[exceptions.NotAllowedException] {
-          fumList should (contain atMostOneOf() or legacyEqual (fumList))
+          fumList should (contain atMostOneOf() or be (fumList))
         }
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
@@ -274,7 +274,7 @@ class ListShouldContainAtMostOneOfLogicalOrSpec extends FreeSpec with Matchers {
       
       "should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value" in {
         val e1 = intercept[exceptions.NotAllowedException] {
-          fumList should (contain atMostOneOf("fee", "fie", "foe", "fie", "fum") or legacyEqual (fumList))
+          fumList should (contain atMostOneOf("fee", "fie", "foe", "fie", "fum") or be (fumList))
         }
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
