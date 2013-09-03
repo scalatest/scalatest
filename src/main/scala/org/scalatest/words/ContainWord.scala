@@ -163,7 +163,7 @@ final class ContainWord {
    *                                ^
    * </pre>
    */
-  def a[T](aMatcher: AMatcher[T]): Matcher[GenTraversable[T]] = 
+  private[scalatest] def a[T](aMatcher: AMatcher[T]): Matcher[GenTraversable[T]] =
     new Matcher[GenTraversable[T]] {
       def apply(left: GenTraversable[T]): MatchResult = {
         val matched = left.find(aMatcher(_).matches)
@@ -186,7 +186,7 @@ final class ContainWord {
    *                                ^
    * </pre>
    */
-  def an[T](anMatcher: AnMatcher[T]): Matcher[GenTraversable[T]] = 
+  private[scalatest] def an[T](anMatcher: AnMatcher[T]): Matcher[GenTraversable[T]] =
     new Matcher[GenTraversable[T]] {
       def apply(left: GenTraversable[T]): MatchResult = {
         val matched = left.find(anMatcher(_).matches)
