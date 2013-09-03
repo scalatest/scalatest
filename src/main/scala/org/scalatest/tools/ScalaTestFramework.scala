@@ -199,12 +199,7 @@ class ScalaTestFramework extends SbtFramework {
           Runner.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
           
           val fullReporterConfigurations = Runner.parseReporterArgsIntoConfigurations(reporterArgs)
-          val sbtNoFormatValue = System.getProperty("sbt.log.noformat")
-          val sbtNoFormat =
-            if (sbtNoFormatValue == null)
-              false
-            else
-              sbtNoFormatValue.toLowerCase == "true"
+          val sbtNoFormat = java.lang.Boolean.getBoolean("sbt.log.noformat")
           
           fullReporterConfigurations.standardOutReporterConfiguration match {
             case Some(stdoutConfig) =>

@@ -873,12 +873,7 @@ class Framework extends SbtFramework {
         Runner.parseReporterArgsIntoConfigurations("-K" :: remoteArgs(0) :: remoteArgs(1) :: Nil)
       }
 
-    val sbtNoFormatValue = System.getProperty("sbt.log.noformat")
-    val sbtNoFormat =
-      if (sbtNoFormatValue == null)
-        false
-      else
-        sbtNoFormatValue.toLowerCase == "true"
+    val sbtNoFormat = java.lang.Boolean.getBoolean("sbt.log.noformat")
 
     val (
       useStdout,
