@@ -17,7 +17,7 @@ package org.scalatest.matchers
 
 import org.scalatest._
 import Inside._
-import org.scalautils.PrettyMethods
+import org.scalautils.{PrettyMethods, Prettifier}
 
 class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
 
@@ -87,6 +87,16 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
         'midSentenceFailureMessageArgs(Vector(1, 2)),
         'midSentenceNegatedFailureMessageArgs(Vector(1, 2))
       )
+    }
+
+    "should use midSentenceFailureMessageArgs to construct midSentenceFailureMessage" in {
+      val mr = MatchResult(false, "{0} did not equal {1}", "{0} equaled {1}", "{0} did not equal {1}", "{0} equaled {1}", Vector.empty, Vector.empty, Vector(1, 2), Vector.empty, Prettifier.default)
+      mr.midSentenceFailureMessage should be ("1 did not equal 2")
+    }
+
+    "should use midSentenceNegatedFailureMessageArgs to construct midSentenceNegatedFailureMessage" in {
+      val mr = MatchResult(false, "{0} did not equal {1}", "{0} equaled {1}", "{0} did not equal {1}", "{0} equaled {1}", Vector.empty, Vector.empty, Vector.empty, Vector(1, 2), Prettifier.default)
+      mr.midSentenceNegatedFailureMessage should be ("1 equaled 2")
     }
   }
 

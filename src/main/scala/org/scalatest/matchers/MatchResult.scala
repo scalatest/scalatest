@@ -252,14 +252,14 @@ final case class MatchResult(
    *
    * @return failure message suitable for appearing mid-sentence
    */
-  def midSentenceFailureMessage: String = if (failureMessageArgs.isEmpty) rawMidSentenceFailureMessage else makeString(rawMidSentenceFailureMessage, failureMessageArgs)
+  def midSentenceFailureMessage: String = if (midSentenceFailureMessageArgs.isEmpty) rawMidSentenceFailureMessage else makeString(rawMidSentenceFailureMessage, midSentenceFailureMessageArgs)
 
   /**
    * Construct negated failure message suitable for appearing mid-sentence, using <code>rawMidSentenceNegatedFailureMessage</code>, <code>midSentenceNegatedFailureMessageArgs</code> and <code>prettifier</code>
    *
    * @return negated failure message suitable for appearing mid-sentence
    */
-  def midSentenceNegatedFailureMessage: String = if (negatedFailureMessageArgs.isEmpty) rawMidSentenceNegatedFailureMessage else makeString(rawMidSentenceNegatedFailureMessage, negatedFailureMessageArgs)
+  def midSentenceNegatedFailureMessage: String = if (midSentenceNegatedFailureMessageArgs.isEmpty) rawMidSentenceNegatedFailureMessage else makeString(rawMidSentenceNegatedFailureMessage, midSentenceNegatedFailureMessageArgs)
 
   /**
    * Get a negated version of this MatchResult, matches field will be negated and all messages field will be substituted with its counter-part.
