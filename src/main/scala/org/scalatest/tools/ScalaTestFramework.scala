@@ -199,13 +199,19 @@ class ScalaTestFramework extends SbtFramework {
           Runner.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
           
           val fullReporterConfigurations = Runner.parseReporterArgsIntoConfigurations(reporterArgs)
+          val sbtNoFormatValue = System.getProperty("sbt.log.noformat")
+          val sbtNoFormat =
+            if (sbtNoFormatValue == null)
+              false
+            else
+              sbtNoFormatValue.toLowerCase == "true"
           
           fullReporterConfigurations.standardOutReporterConfiguration match {
             case Some(stdoutConfig) =>
               val configSet = stdoutConfig.configSet
               useStdout.getAndSet(true)
               presentAllDurations.getAndSet(configSet.contains(PresentAllDurations))
-              presentInColor.getAndSet(!configSet.contains(PresentWithoutColor))
+              presentInColor.getAndSet(!configSet.contains(PresentWithoutColor) && !sbtNoFormat)
               presentShortStackTraces.getAndSet(configSet.contains(PresentShortStackTraces) || configSet.contains(PresentFullStackTraces))
               presentFullStackTraces.getAndSet(configSet.contains(PresentFullStackTraces))
               presentUnformatted.getAndSet(configSet.contains(PresentUnformatted))
@@ -220,7 +226,7 @@ class ScalaTestFramework extends SbtFramework {
             case None => 
               useStdout.getAndSet(reporterArgs.isEmpty)  // If no reporters specified, just give them a default stdout reporter
               presentAllDurations.getAndSet(false)
-              presentInColor.getAndSet(true)
+              presentInColor.getAndSet(!sbtNoFormat)
               presentShortStackTraces.getAndSet(false)
               presentFullStackTraces.getAndSet(false)
               presentUnformatted.getAndSet(false)
