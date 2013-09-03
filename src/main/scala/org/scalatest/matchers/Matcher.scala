@@ -695,19 +695,19 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) and contain theSameElementsInOrderAs (1, 3, 3))
+     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) and contain theSameElementsInOrderAs List(1, 3, 3))
      *                                                                           ^
      * </pre>
      */
     def theSameElementsInOrderAs(right: GenTraversable[_]): MatcherFactory1[T, Sequencing] = 
       outerInstance.and(MatcherWords.contain.theSameElementsInOrderAs(right))
-    
+
     /**
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * aMatcher and contain inOrderOnly (1, 2, 3)
-     *                      ^
+     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) and contain inOrderOnly (1, 3, 3))
+     *                                                                           ^
      * </pre>
      */
     def inOrderOnly(right: Any*): MatcherFactory1[T, Sequencing] = 
