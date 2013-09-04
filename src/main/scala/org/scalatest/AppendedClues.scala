@@ -21,7 +21,7 @@ import exceptions.ModifiableMessage
  * Trait providing an implicit conversion that allows clues to be placed after a block of code.
  *
  * <p>
- * You can use the <code>withClue</code> construct provided by <code>Assertions</code>, which is
+ * You can use the <code>withClue</code> construct provided by <a href="Assertions.html"><code>Assertions</code></a>, which is
  * extended by every style trait in ScalaTest, to add extra information to reports of failed or canceled tests.
  * The <code>withClue</code> from <code>Assertions</code> places the "clue string" at the front, both
  * in the code and in the resulting message:
@@ -54,7 +54,7 @@ import exceptions.ModifiableMessage
  * </p>
  *
  * <p>
- * <code>2 did not equal 3 now the clue comes after</code>
+ * <code>2 did not equal 3 </code> &nbsp; <code>now the clue comes after</code>
  * </p>
  *
  * <p>
@@ -93,7 +93,7 @@ import exceptions.ModifiableMessage
  * prepended <code>withClue</code> construct, is because appended clues require an implicit conversion.
  * ScalaTest only gives you one implicit conversion by default in any test class to minimize the
  * potential for conflicts with other implicit conversions you may be using. All other implicit conversions,
- * including the one provided by this trait, you must explicitly invite into your code through inheritance
+ * including the one provided by this trait, you must explicitly add into your code through inheritance
  * or an import.
  * </p>
  *
@@ -103,7 +103,7 @@ trait AppendedClues {
 
   /**
    * Class that provides a <code>withClue</code> method that appends clue strings to any
-   * <a href="ModifiableMessage.html"><code>ModifiableMessage</code></a> exception
+   * <a href="exceptions/ModifiableMessage.html"><code>ModifiableMessage</code></a> exception
    * thrown by the passed by-name parameter.
    *
    * @author Bill Venners

@@ -109,8 +109,8 @@ package org.scalatest
  *
  * <p>
  * Besides enabling trait stacking, the other main advantage of <code>BeforeAndAfterEachTestData</code> over <code>BeforeAndAfter</code>
- * that <code>BeforeAndAfterEachTestData</code> allows you to make use of test data (such as the test name and config map) in your before
- * and/or after code, whereas <code>BeforeAndAfter</code> do not.
+ * is that <code>BeforeAndAfterEachTestData</code> allows you to make use of test data (such as the test name and config map) in your before
+ * and/or after code, whereas <code>BeforeAndAfter</code> does not.
  * </p>
  *
  * <p>
