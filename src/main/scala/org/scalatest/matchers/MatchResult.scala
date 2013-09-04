@@ -204,7 +204,7 @@ final case class MatchResult(
   negatedFailureMessageArgs: IndexedSeq[Any],
   midSentenceFailureMessageArgs: IndexedSeq[Any],
   midSentenceNegatedFailureMessageArgs: IndexedSeq[Any],
-  prettifier: Prettifier
+  prettifier: Prettifier = Prettifier.default
 ) {
 
   /**
@@ -281,50 +281,71 @@ final case class MatchResult(
  */
 object MatchResult {
 
-// TODO: Add scaladoc for args 
   /**
    * Factory method that constructs a new <code>MatchResult</code> with passed <code>matches</code>, <code>failureMessage</code>, 
    * <code>negativeFailureMessage</code>, <code>midSentenceFailureMessage</code>, 
    * <code>midSentenceNegatedFailureMessage</code>, <code>failureMessageArgs</code>, and <code>negatedFailureMessageArgs</code> fields.
+   * <code>failureMessageArgs</code>, and <code>negatedFailureMessageArgs</code> will be used in place of <code>midSentenceFailureMessageArgs</code>
+   * and <code>midSentenceNegatedFailureMessageArgs</code>.
    *
    * @param matches indicates whether or not the matcher matched
-   * @param failureMessage a failure message to report if a match fails
-   * @param negatedFailureMessage a message with a meaning opposite to that of the failure message
-   * @param midSentenceFailureMessage a failure message to report if a match fails
-   * @param midSentenceNegatedFailureMessage a message with a meaning opposite to that of the failure message
+   * @param rawFailureMessage raw failure message to report if a match fails
+   * @param rawNegatedFailureMessage raw message with a meaning opposite to that of the failure message
+   * @param rawMidSentenceFailureMessage raw failure message to report if a match fails
+   * @param rawMidSentenceNegatedFailureMessage raw message with a meaning opposite to that of the failure message
+   * @param failureMessageArgs arguments for constructing failure message to report if a match fails
+   * @param negatedFailureMessageArgs arguments for constructing message with a meaning opposite to that of the failure message
+   * @return a <code>MatchResult</code> instance
    */
   def apply(matches: Boolean, rawFailureMessage: String, rawNegatedFailureMessage: String, rawMidSentenceFailureMessage: String,
       rawMidSentenceNegatedFailureMessage: String, failureMessageArgs: IndexedSeq[Any], negatedFailureMessageArgs: IndexedSeq[Any]): MatchResult =
     new MatchResult(matches, rawFailureMessage, rawNegatedFailureMessage, rawMidSentenceFailureMessage, rawMidSentenceNegatedFailureMessage, failureMessageArgs, negatedFailureMessageArgs, failureMessageArgs, negatedFailureMessageArgs, Prettifier.default)
 
   /**
-   * Factory method that constructs a new <code>MatchResult</code> with passed <code>matches</code>, <code>failureMessage</code>, 
-   * <code>negativeFailureMessage</code>, <code>midSentenceFailureMessage</code>, and
-   * <code>midSentenceNegatedFailureMessage</code> fields.
+   * Factory method that constructs a new <code>MatchResult</code> with passed <code>matches</code>, <code>rawFailureMessage</code>,
+   * <code>rawNegativeFailureMessage</code>, <code>rawMidSentenceFailureMessage</code>, and
+   * <code>rawMidSentenceNegatedFailureMessage</code> fields.  All argument fields will have <code>Vector.empty</code> values.
+   * This is suitable to create MatchResult with eager error messages, and its mid-sentence messages need to be different.
    *
    * @param matches indicates whether or not the matcher matched
-   * @param failureMessage a failure message to report if a match fails
-   * @param negatedFailureMessage a message with a meaning opposite to that of the failure message
-   * @param midSentenceFailureMessage a failure message to report if a match fails
-   * @param midSentenceNegatedFailureMessage a message with a meaning opposite to that of the failure message
+   * @param rawFailureMessage raw failure message to report if a match fails
+   * @param rawNegatedFailureMessage raw message with a meaning opposite to that of the failure message
+   * @param rawMidSentenceFailureMessage raw failure message to report if a match fails
+   * @param rawMidSentenceNegatedFailureMessage raw message with a meaning opposite to that of the failure message
+   * @return a <code>MatchResult</code> instance
    */
   def apply(matches: Boolean, rawFailureMessage: String, rawNegatedFailureMessage: String, rawMidSentenceFailureMessage: String,
       rawMidSentenceNegatedFailureMessage: String): MatchResult =
     new MatchResult(matches, rawFailureMessage, rawNegatedFailureMessage, rawMidSentenceFailureMessage, rawMidSentenceNegatedFailureMessage, Vector.empty, Vector.empty, Vector.empty, Vector.empty, Prettifier.default)
 
   /**
-   * Factory method that constructs a new <code>MatchResult</code> with passed <code>matches</code>, <code>failureMessage</code>, and
-   * <code>negativeFailureMessage</code> fields. The <code>midSentenceFailureMessage</code> will return the same
-   * string as <code>failureMessage</code>, and the <code>midSentenceNegatedFailureMessage</code> will return the
-   * same string as <code>negatedFailureMessage</code>.
+   * Factory method that constructs a new <code>MatchResult</code> with passed <code>matches</code>, <code>rawFailureMessage</code>, and
+   * <code>rawNegativeFailureMessage</code> fields. The <code>rawMidSentenceFailureMessage</code> will return the same
+   * string as <code>rawFailureMessage</code>, and the <code>rawMidSentenceNegatedFailureMessage</code> will return the
+   * same string as <code>rawNegatedFailureMessage</code>.  All argument fields will have <code>Vector.empty</code> values.
+   * This is suitable to create MatchResult with eager error messages that have same mid-sentence messages.
    *
    * @param matches indicates whether or not the matcher matched
-   * @param failureMessage a failure message to report if a match fails
-   * @param negatedFailureMessage a message with a meaning opposite to that of the failure message
+   * @param rawFailureMessage raw failure message to report if a match fails
+   * @param rawNegatedFailureMessage raw message with a meaning opposite to that of the failure message
+   * @return a <code>MatchResult</code> instance
    */
   def apply(matches: Boolean, rawFailureMessage: String, rawNegatedFailureMessage: String): MatchResult =
     new MatchResult(matches, rawFailureMessage, rawNegatedFailureMessage, rawFailureMessage, rawNegatedFailureMessage, Vector.empty, Vector.empty, Vector.empty, Vector.empty, Prettifier.default)
 
+  /**
+   * Factory method that constructs a new <code>MatchResult</code> with passed <code>matches</code>, <code>rawFailureMessage</code>,
+   * <code>rawNegativeFailureMessage</code> and <code>args</code> fields.  The <code>rawMidSentenceFailureMessage</code> will return the same
+   * string as <code>rawFailureMessage</code>, and the <code>rawMidSentenceNegatedFailureMessage</code> will return the
+   * same string as <code>rawNegatedFailureMessage</code>.  All argument fields will use <code>args</code> as arguments.
+   * This is suitable to create MatchResult with lazy error messages that have same mid-sentence messages and arguments.
+   *
+   * @param matches indicates whether or not the matcher matched
+   * @param rawFailureMessage raw failure message to report if a match fails
+   * @param rawNegatedFailureMessage raw message with a meaning opposite to that of the failure message
+   * @param args arguments for error messages construction
+   * @return a <code>MatchResult</code> instance
+   */
   def apply(matches: Boolean, rawFailureMessage: String, rawNegatedFailureMessage: String, args: IndexedSeq[Any]) =
     new MatchResult(
       matches,
@@ -339,6 +360,23 @@ object MatchResult {
       Prettifier.default
     )
 
+  /**
+   * Factory method that constructs a new <code>MatchResult</code> with passed <code>matches</code>, <code>rawFailureMessage</code>,
+   * <code>rawNegativeFailureMessage</code>, <code>failureMessageArgs</code> and <code>negatedFailureMessageArgs</code> fields.
+   * The <code>rawMidSentenceFailureMessage</code> will return the same string as <code>rawFailureMessage</code>, and the
+   * <code>rawMidSentenceNegatedFailureMessage</code> will return the same string as <code>rawNegatedFailureMessage</code>.
+   * The <code>midSentenceFailureMessageArgs</code> will return the same as <code>failureMessageArgs</code>, and the
+   * <code>midSentenceNegatedFailureMessageArgs</code> will return the same as <code>negatedFailureMessageArgs</code>.
+   * This is suitable to create MatchResult with lazy error messages that have same mid-sentence and use different arguments for
+   * negated messages.
+   *
+   * @param matches indicates whether or not the matcher matched
+   * @param rawFailureMessage raw failure message to report if a match fails
+   * @param rawNegatedFailureMessage raw message with a meaning opposite to that of the failure message
+   * @param failureMessageArgs arguments for constructing failure message to report if a match fails
+   * @param negatedFailureMessageArgs arguments for constructing message with a meaning opposite to that of the failure message
+   * @return a <code>MatchResult</code> instance
+   */
   def apply(matches: Boolean, rawFailureMessage: String, rawNegatedFailureMessage: String, failureMessageArgs: IndexedSeq[Any], negatedFailureMessageArgs: IndexedSeq[Any]) =
     new MatchResult(
       matches,
@@ -352,10 +390,5 @@ object MatchResult {
       negatedFailureMessageArgs,
       Prettifier.default
     )
-
-  def apply(matches: Boolean, rawFailureMessage: String, rawNegatedFailureMessage: String, rawMidSentenceFailureMessage: String,
-      rawMidSentenceNegatedFailureMessage: String, failureMessageArgs: IndexedSeq[Any], negatedFailureMessageArgs: IndexedSeq[Any],
-      midSentenceFailureMessageArgs: IndexedSeq[Any], midSentenceNegatedFailureMessageArgs: IndexedSeq[Any]): MatchResult =
-    new MatchResult(matches, rawFailureMessage, rawNegatedFailureMessage, rawMidSentenceFailureMessage, rawMidSentenceNegatedFailureMessage, failureMessageArgs, negatedFailureMessageArgs, midSentenceFailureMessageArgs, midSentenceNegatedFailureMessageArgs, Prettifier.default)
 }
 
