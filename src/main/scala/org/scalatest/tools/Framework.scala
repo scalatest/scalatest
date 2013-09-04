@@ -872,7 +872,9 @@ class Framework extends SbtFramework {
         // Creating a sub-process runner, should just create stdout reporter and socket reporter
         Runner.parseReporterArgsIntoConfigurations("-K" :: remoteArgs(0) :: remoteArgs(1) :: Nil)
       }
-    
+
+    val sbtNoFormat = java.lang.Boolean.getBoolean("sbt.log.noformat")
+
     val (
       useStdout,
       presentAllDurations,
@@ -891,7 +893,7 @@ class Framework extends SbtFramework {
           (
             true, 
             configSet.contains(PresentAllDurations),
-            !configSet.contains(PresentWithoutColor),
+            !configSet.contains(PresentWithoutColor) && !sbtNoFormat,
             configSet.contains(PresentShortStackTraces) || configSet.contains(PresentFullStackTraces),
             configSet.contains(PresentFullStackTraces), 
             configSet.contains(PresentUnformatted),
@@ -903,7 +905,7 @@ class Framework extends SbtFramework {
             configSet.contains(PresentReminderWithoutCanceledTests)
           )
         case None => 
-          (!remoteArgs.isEmpty || reporterArgs.isEmpty, false, true, false, false, false, false, false, false, false)
+          (!remoteArgs.isEmpty || reporterArgs.isEmpty, false, !sbtNoFormat, false, false, false, false, false, false, false)
       }
     
     //val reporterConfigs = fullReporterConfigurations.copy(standardOutReporterConfiguration = None)
