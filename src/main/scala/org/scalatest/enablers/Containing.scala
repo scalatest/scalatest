@@ -22,19 +22,19 @@ import scala.collection.GenTraversableOnce
 import org.scalatest.FailureMessages
 
 /**
- * Supertrait for typeclasses that enable <code>contain</code> matcher syntax for containers.
+ * Supertrait for typeclasses that enable certain <code>contain</code> matcher syntax for containers.
  *
  * <p>
  * A <code>Containing[C]</code> provides access to the "containing nature" of type <code>C</code> in such
  * a way that relevant <code>contain</code> matcher syntax can be used with type <code>C</code>. A <code>C</code>
  * can be any type of "container," a type that in some way can contains one or more other objects. ScalaTest provides
  * implicit implementations for several types. You can enable the <code>contain</code> matcher syntax on your own
- * type <code>U</code> by defining an <code>Containing[U}</code> for the type and making it available implicitly.
+ * type <code>U</code> by defining an <code>Containing[U]</code> for the type and making it available implicitly.
  * 
  * <p>
- * ScalaTest provides implicit <code>Aggregating</code> instances for <code>scala.collection.GenTraversable</code>,
+ * ScalaTest provides implicit <code>Containing</code> instances for <code>scala.collection.GenTraversable</code>,
  * <code>java.util.Collection</code>, <code>java.util.Map</code>, <code>String</code>, <code>Array</code>, 
- * and <code>Option</code> in the <code>Aggregating</code> companion object.
+ * and <code>Option</code> in the <code>Containing</code> companion object.
  * </p>
  *
  * <a name="containingVersusAggregating"></a>
@@ -94,11 +94,11 @@ trait Containing[-C] {
   def containsOneOf(container: C, elements: scala.collection.Seq[Any]): Boolean
 
   /**
-   * Implements <code>contain</code> <code>atLeastOneOf</code> syntax for containers of type <code>C</code>.
+   * Implements <code>contain</code> <code>noneOf</code> syntax for containers of type <code>C</code>.
    *
    * @param container a container about which an assertion is being made
    * @param eles elements none of which should be contained in the passed container
-   * @return true if the passed container contains at least one of the passed elements
+   * @return true if the passed container contains none of the passed elements
    */
   def containsNoneOf(container: C, elements: scala.collection.Seq[Any]): Boolean
 }
@@ -118,6 +118,18 @@ trait Containing[-C] {
   }
 */
 
+/**
+ * Companion object for <code>Containing</code> that provides implicit implementations for the following types:
+ *
+ * <ul>
+ * <li><code>scala.collection.GenTraversable</code></li>
+ * <li><code>String</code></li>
+ * <li><code>Array</code></li>
+ * <li><code>Option</code></li>
+ * <li><code>java.util.Collection</code></li>
+ * <li><code>java.util.Map</code></li>
+ * </ul>
+ */
 object Containing {
   
   private def tryEquality[T](left: Any, right: Any, equality: Equality[T]): Boolean = 
@@ -162,6 +174,14 @@ object Containing {
     )
   }
 
+  /**
+   * Implicit to support <code>Containing</code> nature of <code>java.util.Collection</code>.
+   *
+   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>java.util.Collection</code>
+   * @tparam E the type of the element in the <code>java.util.Collection</code>
+   * @tparam JCOL any subtype of <code>java.util.Collection</code>
+   * @return <code>Containing[JCOL[E]]</code> that supports <code>java.util.Collection</code> in <code>Containing</code> syntax
+   */
   implicit def containingNatureOfJavaCollection[E, JCOL[e] <: java.util.Collection[e]](implicit equality: Equality[E]): Containing[JCOL[E]] = 
     new Containing[JCOL[E]] {
       def contains(javaColl: JCOL[E], ele: Any): Boolean = {
@@ -184,9 +204,36 @@ object Containing {
       }
     }
 
+  /**
+   * Implicit conversion that converts an <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   * into <code>Containing</code> of type <code>JCOL[E]</code>, where <code>JCOL</code> is a subtype of <code>java.util.Collection</code>.
+   * This is required to support the explicit <a href="../../scalautils/Equality.html"><code>Equality</code></a> syntax, for example:
+   *
+   * <pre class="stHighlight">
+   * val javaList = new java.util.ArrayList[String]()
+   * javaList.add("hi")
+   * (javaList should contain oneOf ("HI")) (after being lowerCased)
+   * </pre>
+   *
+   * <code>(after being lowerCased)</code> will returns an <a href="../../scalautils/Equality.html"><code>Equality[String]</code></a>
+   * and this implicit conversion will convert it into <code>Containing[java.util.ArrayList[String]]</code>.
+   *
+   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   * @tparam E type of elements in the <code>java.util.Collection</code>
+   * @tparam JCOL subtype of <code>java.util.Collection</code>
+   * @return <code>Containing</code> of type <code>JCOL[E]</code>
+   */
   implicit def convertEqualityToJavaCollectionContaining[E, JCOL[e] <: java.util.Collection[e]](equality: Equality[E]): Containing[JCOL[E]] = 
     containingNatureOfJavaCollection(equality)
 
+  /**
+   * Implicit to support <code>Containing</code> nature of <code>GenTraversable</code>.
+   *
+   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>GenTraversable</code>
+   * @tparam E the type of the element in the <code>GenTraversable</code>
+   * @tparam TRAV any subtype of <code>GenTraversable</code>
+   * @return <code>Containing[TRAV[E]]</code> that supports <code>GenTraversable</code> in <code>Containing</code> syntax
+   */
   implicit def containingNatureOfGenTraversable[E, TRAV[e] <: scala.collection.GenTraversable[e]](implicit equality: Equality[E]): Containing[TRAV[E]] = 
     new Containing[TRAV[E]] {
       def contains(trav: TRAV[E], ele: Any): Boolean = {
@@ -207,11 +254,35 @@ object Containing {
       }
     }
 
-  // Enables (xs should contain ("HI")) (after being lowerCased)
+  /**
+   * Implicit conversion that converts an <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   * into <code>Containing</code> of type <code>TRAV[E]</code>, where <code>TRAV</code> is a subtype of <code>GenTraversable</code>.
+   * This is required to support the explicit <a href="../../scalautils/Equality.html"><code>Equality</code></a> syntax, for example:
+   *
+   * <pre class="stHighlight">
+   * (List("hi") should contain oneOf ("HI")) (after being lowerCased)
+   * </pre>
+   *
+   * <code>(after being lowerCased)</code> will returns an <a href="../../scalautils/Equality.html"><code>Equality[String]</code></a>
+   * and this implicit conversion will convert it into <code>Containing[List[String]]</code>.
+   *
+   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   * @tparam E type of elements in the <code>GenTraversable</code>
+   * @tparam TRAV subtype of <code>GenTraversable</code>
+   * @return <code>Containing</code> of type <code>TRAV[E]</code>
+   */
   implicit def convertEqualityToGenTraversableContaining[E, TRAV[e] <: scala.collection.GenTraversable[e]](equality: Equality[E]): Containing[TRAV[E]] = 
     containingNatureOfGenTraversable(equality)
 
   // OPT so that it will work with Some also, but it doesn't work with None
+  /**
+   * Implicit to support <code>Containing</code> nature of <code>Option</code>.
+   *
+   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>Option</code>
+   * @tparam E the type of the element in the <code>Option</code>
+   * @tparam OPT any subtype of <code>Option</code>
+   * @return <code>Containing[OPT[E]]</code> that supports <code>Option</code> in <code>Containing</code> syntax
+   */
   implicit def containingNatureOfOption[E, OPT[e] <: Option[e]](implicit equality: Equality[E]): Containing[OPT[E]] = 
     new Containing[OPT[E]] {
       def contains(opt: OPT[E], ele: Any): Boolean = {
@@ -227,10 +298,33 @@ object Containing {
       }
     }
 
-  // supports (some should contain ("HI")) (after being lowerCased)
+  /**
+   * Implicit conversion that converts an <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   * into <code>Containing</code> of type <code>OPT[E]</code>, where <code>OPT</code> is a subtype of <code>Option</code>.
+   * This is required to support the explicit <a href="../../scalautils/Equality.html"><code>Equality</code></a> syntax, for example:
+   *
+   * <pre class="stHighlight">
+   * (Some("hi") should contain oneOf ("HI")) (after being lowerCased)
+   * </pre>
+   *
+   * <code>(after being lowerCased)</code> will returns an <a href="../../scalautils/Equality.html"><code>Equality[String]</code></a>
+   * and this implicit conversion will convert it into <code>Containing[Some[String]]</code>.
+   *
+   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   * @tparam E type of elements in the <code>Option</code>
+   * @tparam OPT subtype of <code>Option</code>
+   * @return <code>Containing</code> of type <code>OPT[E]</code>
+   */
   implicit def convertEqualityToOptionContaining[E, OPT[e] <: Option[e]](equality: Equality[E]): Containing[OPT[E]] = 
     containingNatureOfOption(equality)
 
+  /**
+   * Implicit to support <code>Containing</code> nature of <code>Array</code>.
+   *
+   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>Array</code>
+   * @tparam E the type of the element in the <code>Array</code>
+   * @return <code>Containing[Array[E]]</code> that supports <code>Array</code> in <code>Containing</code> syntax
+   */
   implicit def containingNatureOfArray[E](implicit equality: Equality[E]): Containing[Array[E]] = 
     new Containing[Array[E]] {
       def contains(arr: Array[E], ele: Any): Boolean =
@@ -245,9 +339,31 @@ object Containing {
       }
     }
 
+  /**
+   * Implicit conversion that converts an <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   * into <code>Containing</code> of type <code>Array[E]</code>.
+   * This is required to support the explicit <a href="../../scalautils/Equality.html"><code>Equality</code></a> syntax, for example:
+   *
+   * <pre class="stHighlight">
+   * (Array("hi") should contain oneOf ("HI")) (after being lowerCased)
+   * </pre>
+   *
+   * <code>(after being lowerCased)</code> will returns an <a href="../../scalautils/Equality.html"><code>Equality[String]</code></a>
+   * and this implicit conversion will convert it into <code>Containing[Array[String]]</code>.
+   *
+   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   * @tparam E type of elements in the <code>Array</code>
+   * @return <code>Containing</code> of type <code>Array[E]</code>
+   */
   implicit def convertEqualityToArrayContaining[E](equality: Equality[E]): Containing[Array[E]] = 
     containingNatureOfArray(equality)
 
+  /**
+   * Implicit to support <code>Containing</code> nature of <code>String</code>.
+   *
+   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of <code>Char</code> in the <code>String</code>
+   * @return <code>Containing[String]</code> that supports <code>String</code> in <code>Containing</code> syntax
+   */
   implicit def containingNatureOfString(implicit equality: Equality[Char]): Containing[String] = 
     new Containing[String] {
       def contains(str: String, ele: Any): Boolean =
@@ -262,9 +378,34 @@ object Containing {
       }
     }
 
+  /**
+   * Implicit conversion that converts an <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>Char</code>
+   * into <code>Containing</code> of type <code>String</code>.
+   * This is required to support the explicit <a href="../../scalautils/Equality.html"><code>Equality</code></a> syntax, for example:
+   *
+   * <pre class="stHighlight">
+   * // lowerCased needs to be implemented as Normalization[Char]
+   * ("hi hello" should contain oneOf ('E')) (after being lowerCased)
+   * </pre>
+   *
+   * <code>(after being lowerCased)</code> will returns an <a href="../../scalautils/Equality.html"><code>Equality[Char]</code></a>
+   * and this implicit conversion will convert it into <code>Containing[String]</code>.
+   *
+   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>Char</code>
+   * @return <code>Containing</code> of type <code>String</code>
+   */
   implicit def convertEqualityToStringContaining(equality: Equality[Char]): Containing[String] = 
     containingNatureOfString(equality)
-    
+
+  /**
+   * Implicit to support <code>Containing</code> nature of <code>java.util.Map</code>.
+   *
+   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of entry in the <code>java.util.Map</code>
+   * @tparam K the type of the key in the <code>java.util.Map</code>
+   * @tparam V the type of the value in the <code>java.util.Map</code>
+   * @tparam JMAP any subtype of <code>java.util.Map</code>
+   * @return <code>Containing[JMAP[K, V]]</code> that supports <code>java.util.Map</code> in <code>Containing</code> syntax
+   */
   implicit def containingNatureOfJavaMap[K, V, JMAP[k, v] <: java.util.Map[k, v]](implicit equality: Equality[java.util.Map.Entry[K, V]]): Containing[JMAP[K, V]] = 
     new Containing[JMAP[K, V]] {
       import scala.collection.JavaConverters._
@@ -281,6 +422,27 @@ object Containing {
       }
     }
 
+  /**
+   * Implicit conversion that converts an <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>java.util.Map.Entry[K, V]</code>
+   * into <code>Containing</code> of type <code>JMAP[K, V]</code>, where <code>JMAP</code> is a subtype of <code>java.util.Map</code>.
+   * This is required to support the explicit <a href="../../scalautils/Equality.html"><code>Equality</code></a> syntax, for example:
+   *
+   * <pre class="stHighlight">
+   * val javaMap = new java.util.HashMap[Int, String]()
+   * javaMap.put(1, "one")
+   * // lowerCased needs to be implemented as Normalization[java.util.Map.Entry[K, V]]
+   * (javaMap should contain (Entry(1, "ONE"))) (after being lowerCased)
+   * </pre>
+   *
+   * <code>(after being lowerCased)</code> will returns an <a href="../../scalautils/Equality.html"><code>java.util.Map.Entry[Int, String]</code></a>
+   * and this implicit conversion will convert it into <code>Containing[java.util.HashMap[Int, String]]</code>.
+   *
+   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>java.util.Map.Entry[K, V]</code>
+   * @tparam K the type of the key in the <code>java.util.Map</code>
+   * @tparam V the type of the value in the <code>java.util.Map</code>
+   * @tparam JMAP any subtype of <code>java.util.Map</code>
+   * @return <code>Containing</code> of type <code>JMAP[K, V]</code>
+   */
   implicit def convertEqualityToJavaMapContaining[K, V, JMAP[k, v] <: java.util.Map[k, v]](equality: Equality[java.util.Map.Entry[K, V]]): Containing[JMAP[K, V]] = 
     containingNatureOfJavaMap(equality)
 }
