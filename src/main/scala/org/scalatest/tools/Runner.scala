@@ -2300,6 +2300,8 @@ object Runner {
 
     val (globSuites, nonGlobSuites) = suitesList.partition(_.isGlob)
 
+    var tracker = new Tracker(new Ordinal(runStamp))
+
     //
     // Generates SuiteConfigs for Suites found via discovery.
     //
@@ -2330,48 +2332,56 @@ object Runner {
             // named with -s or -j or -b
       }
       else {
+        val discoveryStartTime = System.currentTimeMillis
+        dispatch(DiscoveryStarting(tracker.nextOrdinal(), configMap))
+
         val accessibleSuites: Set[String] =
           discoverSuiteNames(runpath, loader, suffixes)
 
-        if (!discoArgsArePresent && !suiteArgsArePresent) {
-          // In this case, they didn't specify any -w, -m, -s,
-          // -j or -b on the command line, so the default is to
-          // run any accessible Suites discovered on the runpath
-          List(SuiteConfig(new DiscoverySuite("", accessibleSuites, true, loader), emptyDynaTags, false, false))
-        }
-        else {
-          val membersOnlyInstances =
-            for (membersOnlyName <- membersOnlyList)
-              yield SuiteConfig(new DiscoverySuite(membersOnlyName, accessibleSuites, false, loader), emptyDynaTags, false, false)
+        val discoSuites =
+          if (!discoArgsArePresent && !suiteArgsArePresent) {
+            // In this case, they didn't specify any -w, -m, -s,
+            // -j or -b on the command line, so the default is to
+            // run any accessible Suites discovered on the runpath
+            List(SuiteConfig(new DiscoverySuite("", accessibleSuites, true, loader), emptyDynaTags, false, false))
+          }
+          else {
+            val membersOnlyInstances =
+              for (membersOnlyName <- membersOnlyList)
+                yield SuiteConfig(new DiscoverySuite(membersOnlyName, accessibleSuites, false, loader), emptyDynaTags, false, false)
+  
+            val wildcardInstances =
+              for (wildcardName <- wildcardList)
+                yield SuiteConfig(new DiscoverySuite(wildcardName, accessibleSuites, true, loader), emptyDynaTags, false, false)
+  
+            val testSpecSuiteParams =
+              SuiteDiscoveryHelper.discoverTests(
+                testSpecs, accessibleSuites, loader)
+  
+            val testSpecInstances = 
+              for (suiteParam <- testSpecSuiteParams)
+                yield genSuiteConfig(suiteParam, loader)
+  
+            val deglobbedSuiteParams: List[SuiteParam] =
+              deglobSuiteParams(globSuites, accessibleSuites)
+  
+            val globInstances = 
+              for (suiteParam <- deglobbedSuiteParams)
+                yield genSuiteConfig(suiteParam, loader)
+  
+            membersOnlyInstances ::: wildcardInstances ::: testSpecInstances ::: globInstances
+          }
 
-          val wildcardInstances =
-            for (wildcardName <- wildcardList)
-              yield SuiteConfig(new DiscoverySuite(wildcardName, accessibleSuites, true, loader), emptyDynaTags, false, false)
+        val discoveryDuration = System.currentTimeMillis - discoveryStartTime
+        dispatch(
+          DiscoveryCompleted(tracker.nextOrdinal(), Some(discoveryDuration)))
 
-          val testSpecSuiteParams =
-            SuiteDiscoveryHelper.discoverTests(
-              testSpecs, accessibleSuites, loader)
-
-          val testSpecInstances = 
-            for (suiteParam <- testSpecSuiteParams)
-              yield genSuiteConfig(suiteParam, loader)
-
-          val deglobbedSuiteParams: List[SuiteParam] =
-            deglobSuiteParams(globSuites, accessibleSuites)
-
-          val globInstances = 
-            for (suiteParam <- deglobbedSuiteParams)
-              yield genSuiteConfig(suiteParam, loader)
-
-          membersOnlyInstances ::: wildcardInstances ::: testSpecInstances ::: globInstances
-        }
+        discoSuites
       }
     }
 
     // suites specified by name, either directly via -s or in a file via -A
     val specificSuites = nonGlobSuites ::: againSuites(agains)
-
-    var tracker = new Tracker(new Ordinal(runStamp))
 
     val runStartTime = System.currentTimeMillis
     
@@ -2417,9 +2427,6 @@ object Runner {
             else
               Nil
 
-          val discoveryStartTime = System.currentTimeMillis
-          dispatch(DiscoveryStarting(tracker.nextOrdinal(), configMap))
-
           val discoSuiteInstances = genDiscoSuites
 
           val suiteInstances: List[SuiteConfig] = namedSuiteInstances ::: junitSuiteInstances ::: discoSuiteInstances ::: testNGWrapperSuiteList
@@ -2439,9 +2446,6 @@ object Runner {
             }
 
           val expectedTestCount = sumInts(testCountList)
-
-          val discoveryDuration = System.currentTimeMillis - discoveryStartTime
-          dispatch(DiscoveryCompleted(tracker.nextOrdinal(), Some(discoveryDuration)))
 
           dispatch(RunStarting(tracker.nextOrdinal(), expectedTestCount, configMap))
           
