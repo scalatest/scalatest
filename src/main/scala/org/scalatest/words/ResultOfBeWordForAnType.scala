@@ -25,7 +25,7 @@ import org.scalatest.Assertions.checkNotException
  *
  * @author Bill Venners
  */
-final class ResultOfBeWordForAnType[T](clazz: Class[T], methodName: String) {
+final class ResultOfBeWordForAnType[T](clazz: Class[T]) {
   
   /**
    * This method enables the following syntax: 
@@ -42,5 +42,5 @@ final class ResultOfBeWordForAnType[T](clazz: Class[T], methodName: String) {
   /**
    * Overrides toString to return pretty an[...] should/must be
    */
-  override def toString: String = "an [" + clazz.getName + "] " + methodName + " be"
+  override def toString: String = "ResultOfBeWordForAnType(classOf[" + clazz.getName + "])"
 }

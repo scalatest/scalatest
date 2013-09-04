@@ -52,7 +52,7 @@ import org.scalautils.Prettifier
  *
  * @author Bill Venners
  */
-sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean, methodName: String) {
+sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
 
   /**
    * This method enables the following syntax:
@@ -933,7 +933,7 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean, methodName
   /**
    * Overrides toString to return pretty text.
    */
-  override def toString: String = Prettifier.default(left) + " " + methodName  + " not"
+  override def toString: String = "ResultOfNotWordForAny(" + Prettifier.default(left) + ", " + Prettifier.default(shouldBeTrue) + ")"
 }
 
 /**
@@ -942,8 +942,8 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean, methodName
  *
  * @author Bill Venners
  */
-final class ResultOfNotWordForString(left: String, shouldBeTrue: Boolean, methodName: String)
-    extends ResultOfNotWordForAny[String](left, shouldBeTrue, methodName) {
+final class ResultOfNotWordForString(left: String, shouldBeTrue: Boolean)
+    extends ResultOfNotWordForAny[String](left, shouldBeTrue) {
 
   /**
    * This method enables the following syntax: 
@@ -1081,6 +1081,6 @@ final class ResultOfNotWordForString(left: String, shouldBeTrue: Boolean, method
       )
   }
   
-  override def toString: String = Prettifier.default(left) + " should not"
+  override def toString: String = "ResultOfNotWordForString(" + Prettifier.default(left) + ", " + Prettifier.default(shouldBeTrue) + ")"
 }
 

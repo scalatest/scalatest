@@ -616,11 +616,11 @@ class BeWordSpec extends Spec with FileMocks {
     }
     
     object `apply(Spread) method returns Matcher` {
-      val spread = 7.1 plusOrMinus 0.2
+      val spread = 7.1 +- 0.2
       val mt = be (spread)
       
       def `should have pretty toString` {
-        mt.toString should be ("be (7.1 plusOrMinus 0.2)")
+        mt.toString should be ("be (7.1 +- 0.2)")
       }
       
       val mr = mt(7.0)
@@ -1225,7 +1225,7 @@ class BeWordSpec extends Spec with FileMocks {
       val mt = be (resultOfAType)
       
       def `should have pretty toString` {
-        mt.toString should be ("be a " + clazz.getName)
+        mt.toString should be ("be (a [" + clazz.getName + "])")
       }
       
       val myFile = new MyFile("test", true, false)
@@ -1285,7 +1285,7 @@ class BeWordSpec extends Spec with FileMocks {
       val mt = be (resultOfAnType)
       
       def `should have pretty toString` {
-        mt.toString should be ("be an " + clazz.getName)
+        mt.toString should be ("be (an [" + clazz.getName + "])")
       }
       
       val myFile = new MyFile("test", true, false)

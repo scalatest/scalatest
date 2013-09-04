@@ -23,7 +23,7 @@ import org.scalatest.Assertions.checkNoException
  *
  * @author Bill Venners
  */
-final class ResultOfBeWordForNoException(methodName: String) {
+final class ResultOfBeWordForNoException {
   
   /**
    * This method enables the following syntax: 
@@ -40,5 +40,5 @@ final class ResultOfBeWordForNoException(methodName: String) {
   /**
    * Overrides toString to return pretty noException should/must be
    */
-  override def toString: String = "noException " + methodName + " be"
+  override def toString: String = "ResultOfBeWordForNoException"
 }

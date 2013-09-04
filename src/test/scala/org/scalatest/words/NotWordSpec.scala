@@ -303,10 +303,10 @@ class NotWordSpec extends Spec with FileMocks {
     
     object `equal(Spread) method returns MatcherFactory1` {
       
-      val mt = not equal (3 plusOrMinus 1)
+      val mt = not equal (3 +- 1)
       
       def `should have pretty toString` {
-        mt.toString should be ("not equal 3 plusOrMinus 1")
+        mt.toString should be ("not equal 3 +- 1")
       }
       
       val mr = mt(3)
@@ -1314,11 +1314,11 @@ class NotWordSpec extends Spec with FileMocks {
     }
     
     object `be(Spread) method returns Matcher` {
-      val spread = 7.1 plusOrMinus 0.2
+      val spread = 7.1 +- 0.2
       val mt = not be (spread)
       
       def `should have pretty toString` {
-        mt.toString should be ("not be 7.1 plusOrMinus 0.2")
+        mt.toString should be ("not be 7.1 +- 0.2")
       }
       
       val mr = mt(7.0)

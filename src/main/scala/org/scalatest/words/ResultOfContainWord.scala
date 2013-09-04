@@ -34,7 +34,7 @@ import org.scalautils.Prettifier
  *
  * @author Bill Venners
  */
-class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true, methodName: String) {
+class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
 
   /**
    * This method enables the following syntax: 
@@ -294,6 +294,6 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true, methodName: 
       )
   }
   
-  override def toString: String = Prettifier.default(left) + " " + methodName + " contain"
+  override def toString: String = "ResultOfContainWord(" + Prettifier.default(left) + ", " + Prettifier.default(shouldBeTrue) + ")"
 }
 
