@@ -73,57 +73,6 @@ class MatcherWordsSpec extends Spec with MatcherWords {
       }
       
     }
-    
-    object `legacyEqual(Any) method returns Matcher` {
-      
-      val mt = legacyEqual ("tommy")
-      
-      def `should have pretty toString` {
-        mt.toString should be ("legacyEqual (\"tommy\")")
-      }
-      
-      val mr = mt("tomy")
-      
-      def `should have correct MatcherResult` {
-        mr should have (
-          'matches (false),
-          'failureMessage ("\"tom[]y\" did not equal \"tom[m]y\""),
-          'negatedFailureMessage ("\"tomy\" equaled \"tommy\""),
-          'midSentenceFailureMessage ("\"tom[]y\" did not equal \"tom[m]y\""),
-          'midSentenceNegatedFailureMessage ("\"tomy\" equaled \"tommy\""),
-          'rawFailureMessage ("{0} did not equal {1}"),
-          'rawNegatedFailureMessage ("{0} equaled {1}"),
-          'rawMidSentenceFailureMessage ("{0} did not equal {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} equaled {1}"),
-          'failureMessageArgs(Vector("tom[]y", "tom[m]y")),
-          'negatedFailureMessageArgs(Vector("tomy", "tommy")),
-          'midSentenceFailureMessageArgs(Vector("tom[]y", "tom[m]y")),
-          'midSentenceNegatedFailureMessageArgs(Vector("tomy", "tommy"))    
-        )
-      }
-      
-      val nmr = mr.negated
-      
-      def `should have correct negated MatcherResult` {
-        nmr should have (
-          'matches (true),
-          'failureMessage ("\"tomy\" equaled \"tommy\""),
-          'negatedFailureMessage ("\"tom[]y\" did not equal \"tom[m]y\""),
-          'midSentenceFailureMessage ("\"tomy\" equaled \"tommy\""),
-          'midSentenceNegatedFailureMessage ("\"tom[]y\" did not equal \"tom[m]y\""),
-          'rawFailureMessage ("{0} equaled {1}"),
-          'rawNegatedFailureMessage ("{0} did not equal {1}"),
-          'rawMidSentenceFailureMessage ("{0} equaled {1}"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not equal {1}"),
-          'failureMessageArgs(Vector("tomy", "tommy")),
-          'negatedFailureMessageArgs(Vector("tom[]y", "tom[m]y")),
-          'midSentenceFailureMessageArgs(Vector("tomy", "tommy")),
-          'midSentenceNegatedFailureMessageArgs(Vector("tom[]y", "tom[m]y"))    
-        )
-      }
-      
-    }
-    
   }
   
 }

@@ -143,85 +143,85 @@ class ListShouldContainTheSameElementsAsLogicalAndSpec extends Spec with Matcher
       }
     }
     
-    object `when used with (legacyEqual (..) and contain theSameElementsAs (..))` {
+    object `when used with (be (..) and contain theSameElementsAs (..))` {
       
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        fumList should (legacyEqual (fumList) and contain theSameElementsAs Set("fie", "fee", "fum", "foe"))
+        fumList should (be (fumList) and contain theSameElementsAs Set("fie", "fee", "fum", "foe"))
         val e1 = intercept[TestFailedException] {
-          fumList should (legacyEqual (toList) and contain theSameElementsAs Set("fee", "fie", "foe", "fum"))
+          fumList should (be (toList) and contain theSameElementsAs Set("fee", "fie", "foe", "fum"))
         }
-        checkMessageStackDepth(e1, Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("wasNotEqualTo", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          fumList should (legacyEqual (fumList) and contain theSameElementsAs Set("happy", "birthday", "to", "you"))
+          fumList should (be (fumList) and contain theSameElementsAs Set("happy", "birthday", "to", "you"))
         }
-        checkMessageStackDepth(e2, Resources("equaled", decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", but " + Resources("didNotContainSameElements", decorateToStringValue(fumList), decorateToStringValue(Set("happy", "birthday", "to", "you"))), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, Resources("wasEqualTo", decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", but " + Resources("didNotContainSameElements", decorateToStringValue(fumList), decorateToStringValue(Set("happy", "birthday", "to", "you"))), fileName, thisLineNumber - 2)
       }
       
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
-        fumList should (legacyEqual (fumList) and contain theSameElementsAs Set("FEE", "FIE", "FOE", "FUM"))
+        fumList should (be (fumList) and contain theSameElementsAs Set("FEE", "FIE", "FOE", "FUM"))
         val e1 = intercept[TestFailedException] {
-          fumList should (legacyEqual (toList) and contain theSameElementsAs Set("FEE", "FIE", "FOE", "FUM"))
+          fumList should (be (toList) and contain theSameElementsAs Set("FEE", "FIE", "FOE", "FUM"))
         }
-        checkMessageStackDepth(e1, Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("wasNotEqualTo", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          fumList should (legacyEqual (fumList) and (contain theSameElementsAs Set("happy", "birthday", "to", "you")))
+          fumList should (be (fumList) and (contain theSameElementsAs Set("happy", "birthday", "to", "you")))
         }
-        checkMessageStackDepth(e2, Resources("equaled", decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", but " + Resources("didNotContainSameElements", decorateToStringValue(fumList), decorateToStringValue(Set("happy", "birthday", "to", "you"))), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, Resources("wasEqualTo", decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", but " + Resources("didNotContainSameElements", decorateToStringValue(fumList), decorateToStringValue(Set("happy", "birthday", "to", "you"))), fileName, thisLineNumber - 2)
       }
       
       def `should use an explicitly provided Equality` {
-        (fumList should (legacyEqual (fumList) and contain theSameElementsAs Set("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
+        (fumList should (be (fumList) and contain theSameElementsAs Set("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (legacyEqual (fumList) and contain theSameElementsAs Set("happy", "birthday", "to", "you"))) (decided by upperCaseStringEquality)
+          (fumList should (be (fumList) and contain theSameElementsAs Set("happy", "birthday", "to", "you"))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, Resources("equaled", decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", but " + Resources("didNotContainSameElements", decorateToStringValue(fumList), decorateToStringValue(Set("happy", "birthday", "to", "you"))), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("wasEqualTo", decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", but " + Resources("didNotContainSameElements", decorateToStringValue(fumList), decorateToStringValue(Set("happy", "birthday", "to", "you"))), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          (fumList should (legacyEqual (toList) and contain theSameElementsAs Set("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
+          (fumList should (be (toList) and contain theSameElementsAs Set("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e2, Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
-        (fumList should (legacyEqual (fumList) and contain theSameElementsAs Set(" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
+        checkMessageStackDepth(e2, Resources("wasNotEqualTo", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
+        (fumList should (be (fumList) and contain theSameElementsAs Set(" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
       }
     }
 
-    object `when used with (contain theSameElementsAs (..) and legacyEqual (..))` {
+    object `when used with (contain theSameElementsAs (..) and be (..))` {
       
       def `should do nothing if valid, else throw a TFE with an appropriate error message` {
-        fumList should (contain theSameElementsAs Set("fie", "fee", "fum", "foe") and legacyEqual (fumList))
+        fumList should (contain theSameElementsAs Set("fie", "fee", "fum", "foe") and be (fumList))
         val e1 = intercept[TestFailedException] {
-          fumList should (contain theSameElementsAs Set("fee", "fie", "foe", "fum") and legacyEqual (toList))
+          fumList should (contain theSameElementsAs Set("fee", "fie", "foe", "fum") and be (toList))
         }
-        checkMessageStackDepth(e1, Resources("containedSameElements", decorateToStringValue(fumList), decorateToStringValue(Set("fee", "fie", "foe", "fum"))) + ", but " + Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("containedSameElements", decorateToStringValue(fumList), decorateToStringValue(Set("fee", "fie", "foe", "fum"))) + ", but " + Resources("wasNotEqualTo", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          fumList should (contain theSameElementsAs Set("happy", "birthday", "to", "you") and legacyEqual (fumList))
+          fumList should (contain theSameElementsAs Set("happy", "birthday", "to", "you") and be (fumList))
         }
         checkMessageStackDepth(e2, Resources("didNotContainSameElements", decorateToStringValue(fumList), decorateToStringValue(Set("happy", "birthday", "to", "you"))), fileName, thisLineNumber - 2)
       }
       
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
-        fumList should (contain theSameElementsAs Set("FIE", "FEE", "FUM", "FOE") and legacyEqual (fumList))
+        fumList should (contain theSameElementsAs Set("FIE", "FEE", "FUM", "FOE") and be (fumList))
         val e1 = intercept[TestFailedException] {
-          fumList should (contain theSameElementsAs Set("FIE", "FEE", "FAM", "FOE") and legacyEqual (toList))
+          fumList should (contain theSameElementsAs Set("FIE", "FEE", "FAM", "FOE") and be (toList))
         }
         checkMessageStackDepth(e1, Resources("didNotContainSameElements", decorateToStringValue(fumList), decorateToStringValue(Set("FIE", "FEE", "FAM", "FOE"))), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          fumList should (contain theSameElementsAs Set("HAPPY", "BIRTHDAY", "TO", "YOU") and (legacyEqual (fumList)))
+          fumList should (contain theSameElementsAs Set("HAPPY", "BIRTHDAY", "TO", "YOU") and (be (fumList)))
         }
         checkMessageStackDepth(e2, Resources("didNotContainSameElements", decorateToStringValue(fumList), decorateToStringValue(Set("HAPPY", "BIRTHDAY", "TO", "YOU"))), fileName, thisLineNumber - 2)
       }
       
       def `should use an explicitly provided Equality` {
-        (fumList should (contain theSameElementsAs Set("FIE", "FEE", "FUM", "FOE") and legacyEqual (fumList))) (decided by upperCaseStringEquality)
+        (fumList should (contain theSameElementsAs Set("FIE", "FEE", "FUM", "FOE") and be (fumList))) (decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (contain theSameElementsAs Set("FIE", "FEE", "FAM", "FOE") and legacyEqual (fumList))) (decided by upperCaseStringEquality)
+          (fumList should (contain theSameElementsAs Set("FIE", "FEE", "FAM", "FOE") and be (fumList))) (decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources("didNotContainSameElements", decorateToStringValue(fumList), decorateToStringValue(Set("FIE", "FEE", "FAM", "FOE"))), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
-          (fumList should (contain theSameElementsAs Set("FIE", "FEE", "FUM", "FOE") and legacyEqual (toList))) (decided by upperCaseStringEquality)
+          (fumList should (contain theSameElementsAs Set("FIE", "FEE", "FUM", "FOE") and be (toList))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e2, Resources("containedSameElements", decorateToStringValue(fumList), decorateToStringValue(Set("FIE", "FEE", "FUM", "FOE"))) + ", but " + Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
-        (fumList should (contain theSameElementsAs Set(" FEE ", " FIE ", " FOE ", " FUM ") and legacyEqual (fumList))) (after being lowerCased and trimmed)
+        checkMessageStackDepth(e2, Resources("containedSameElements", decorateToStringValue(fumList), decorateToStringValue(Set("FIE", "FEE", "FUM", "FOE"))) + ", but " + Resources("wasNotEqualTo", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
+        (fumList should (contain theSameElementsAs Set(" FEE ", " FIE ", " FOE ", " FUM ") and be (fumList))) (after being lowerCased and trimmed)
       }
     }
     
