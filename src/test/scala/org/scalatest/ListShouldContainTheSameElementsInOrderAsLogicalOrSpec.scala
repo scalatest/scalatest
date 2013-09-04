@@ -132,73 +132,73 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends FreeSpec wi
       }
     }
     
-    "when used with (legacyEqual xx and contain theSameElementsInOrderAs xx)" - {
+    "when used with (be xx and contain theSameElementsInOrderAs xx)" - {
       
       "should do nothing if valid, else throw a TFE with an appropriate error message" in {
-        fumList should (legacyEqual (fumList) or contain theSameElementsInOrderAs LinkedList("fum", "foe", "fie", "fee"))
-        fumList should (legacyEqual (toList) or contain theSameElementsInOrderAs LinkedList("fum", "foe", "fie", "fee"))
-        fumList should (legacyEqual (fumList) or contain theSameElementsInOrderAs LinkedList("fee", "fie", "foe", "fum"))
+        fumList should (be (fumList) or contain theSameElementsInOrderAs LinkedList("fum", "foe", "fie", "fee"))
+        fumList should (be (toList) or contain theSameElementsInOrderAs LinkedList("fum", "foe", "fie", "fee"))
+        fumList should (be (fumList) or contain theSameElementsInOrderAs LinkedList("fee", "fie", "foe", "fum"))
         val e1 = intercept[TestFailedException] {
-          fumList should (legacyEqual (toList) or contain theSameElementsInOrderAs LinkedList("fee", "fie", "foe", "fum"))
+          fumList should (be (toList) or contain theSameElementsInOrderAs LinkedList("fee", "fie", "foe", "fum"))
         }
-        checkMessageStackDepth(e1, Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", and " + Resources("didNotContainSameElementsInOrder", decorateToStringValue(fumList), decorateToStringValue(LinkedList("fee", "fie", "foe", "fum"))), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("wasNotEqualTo", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", and " + Resources("didNotContainSameElementsInOrder", decorateToStringValue(fumList), decorateToStringValue(LinkedList("fee", "fie", "foe", "fum"))), fileName, thisLineNumber - 2)
       }
       
       "should use the implicit Equality in scope" in {
         implicit val ise = upperCaseStringEquality
-        fumList should (legacyEqual (fumList) or contain theSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE"))
-        fumList should (legacyEqual (toList) or contain theSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE"))
-        fumList should (legacyEqual (fumList) or contain theSameElementsInOrderAs LinkedList("FEE", "FIE", "FOE", "FUM"))
+        fumList should (be (fumList) or contain theSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE"))
+        fumList should (be (toList) or contain theSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE"))
+        fumList should (be (fumList) or contain theSameElementsInOrderAs LinkedList("FEE", "FIE", "FOE", "FUM"))
         val e1 = intercept[TestFailedException] {
-          fumList should (legacyEqual (toList) or (contain theSameElementsInOrderAs LinkedList("FEE", "FIE", "FOE", "FUM")))
+          fumList should (be (toList) or (contain theSameElementsInOrderAs LinkedList("FEE", "FIE", "FOE", "FUM")))
         }
-        checkMessageStackDepth(e1, Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", and " + Resources("didNotContainSameElementsInOrder", decorateToStringValue(fumList), decorateToStringValue(LinkedList("FEE", "FIE", "FOE", "FUM"))), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("wasNotEqualTo", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", and " + Resources("didNotContainSameElementsInOrder", decorateToStringValue(fumList), decorateToStringValue(LinkedList("FEE", "FIE", "FOE", "FUM"))), fileName, thisLineNumber - 2)
       }
       
       "should use an explicitly provided Equality" in {
-        (fumList should (legacyEqual (fumList) or contain theSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE"))) (decided by upperCaseStringEquality)
-        (fumList should (legacyEqual (toList) or contain theSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE"))) (decided by upperCaseStringEquality)
-        (fumList should (legacyEqual (fumList) or contain theSameElementsInOrderAs LinkedList("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
+        (fumList should (be (fumList) or contain theSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE"))) (decided by upperCaseStringEquality)
+        (fumList should (be (toList) or contain theSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE"))) (decided by upperCaseStringEquality)
+        (fumList should (be (fumList) or contain theSameElementsInOrderAs LinkedList("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (legacyEqual (toList) or contain theSameElementsInOrderAs LinkedList("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
+          (fumList should (be (toList) or contain theSameElementsInOrderAs LinkedList("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", and " + Resources("didNotContainSameElementsInOrder", decorateToStringValue(fumList), decorateToStringValue(LinkedList("FEE", "FIE", "FOE", "FUM"))), fileName, thisLineNumber - 2)
-        (fumList should (legacyEqual (fumList) or contain theSameElementsInOrderAs LinkedList(" FUM ", " FOE ", " FIE ", " FEE "))) (after being lowerCased and trimmed)
+        checkMessageStackDepth(e1, Resources("wasNotEqualTo", decorateToStringValue(fumList), decorateToStringValue(toList)) + ", and " + Resources("didNotContainSameElementsInOrder", decorateToStringValue(fumList), decorateToStringValue(LinkedList("FEE", "FIE", "FOE", "FUM"))), fileName, thisLineNumber - 2)
+        (fumList should (be (fumList) or contain theSameElementsInOrderAs LinkedList(" FUM ", " FOE ", " FIE ", " FEE "))) (after being lowerCased and trimmed)
       }
     }
 
-    "when used with (contain theSameElementsInOrderAs xx and legacyEqual xx)" - {
+    "when used with (contain theSameElementsInOrderAs xx and be xx)" - {
       
       "should do nothing if valid, else throw a TFE with an appropriate error message" in {
-        fumList should (contain theSameElementsInOrderAs LinkedList("fum", "foe", "fie", "fee") or legacyEqual (fumList))
-        fumList should (contain theSameElementsInOrderAs LinkedList("fee", "fie", "foe", "fum") or legacyEqual (fumList))
-        fumList should (contain theSameElementsInOrderAs LinkedList("fum", "foe", "fie", "fee") or legacyEqual (toList))
+        fumList should (contain theSameElementsInOrderAs LinkedList("fum", "foe", "fie", "fee") or be (fumList))
+        fumList should (contain theSameElementsInOrderAs LinkedList("fee", "fie", "foe", "fum") or be (fumList))
+        fumList should (contain theSameElementsInOrderAs LinkedList("fum", "foe", "fie", "fee") or be (toList))
         val e1 = intercept[TestFailedException] {
-          fumList should (contain theSameElementsInOrderAs LinkedList("fee", "fie", "foe", "fum") or legacyEqual (toList))
+          fumList should (contain theSameElementsInOrderAs LinkedList("fee", "fie", "foe", "fum") or be (toList))
         }
-        checkMessageStackDepth(e1, Resources("didNotContainSameElementsInOrder", decorateToStringValue(fumList), decorateToStringValue(LinkedList("fee", "fie", "foe", "fum"))) + ", and " + Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("didNotContainSameElementsInOrder", decorateToStringValue(fumList), decorateToStringValue(LinkedList("fee", "fie", "foe", "fum"))) + ", and " + Resources("wasNotEqualTo", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
       }
       
       "should use the implicit Equality in scope" in {
         implicit val ise = upperCaseStringEquality
-        fumList should (contain theSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE") or legacyEqual (fumList))
-        fumList should (contain theSameElementsInOrderAs LinkedList("FEE", "FIE", "FOE", "FUM") or legacyEqual (fumList))
-        fumList should (contain theSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE") or legacyEqual (toList))
+        fumList should (contain theSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE") or be (fumList))
+        fumList should (contain theSameElementsInOrderAs LinkedList("FEE", "FIE", "FOE", "FUM") or be (fumList))
+        fumList should (contain theSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE") or be (toList))
         val e1 = intercept[TestFailedException] {
-          fumList should (contain theSameElementsInOrderAs LinkedList("FEE", "FIE", "FOE", "FUM") or legacyEqual (toList))
+          fumList should (contain theSameElementsInOrderAs LinkedList("FEE", "FIE", "FOE", "FUM") or be (toList))
         }
-        checkMessageStackDepth(e1, Resources("didNotContainSameElementsInOrder", decorateToStringValue(fumList), decorateToStringValue(LinkedList("FEE", "FIE", "FOE", "FUM"))) + ", and " + Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("didNotContainSameElementsInOrder", decorateToStringValue(fumList), decorateToStringValue(LinkedList("FEE", "FIE", "FOE", "FUM"))) + ", and " + Resources("wasNotEqualTo", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
       }
       
       "should use an explicitly provided Equality" in {
-        (fumList should (contain theSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE") or legacyEqual (fumList))) (decided by upperCaseStringEquality)
-        (fumList should (contain theSameElementsInOrderAs LinkedList("FEE", "FIE", "FOE", "FUM") or legacyEqual (fumList))) (decided by upperCaseStringEquality)
-        (fumList should (contain theSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE") or legacyEqual (toList))) (decided by upperCaseStringEquality)
+        (fumList should (contain theSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE") or be (fumList))) (decided by upperCaseStringEquality)
+        (fumList should (contain theSameElementsInOrderAs LinkedList("FEE", "FIE", "FOE", "FUM") or be (fumList))) (decided by upperCaseStringEquality)
+        (fumList should (contain theSameElementsInOrderAs LinkedList("FUM", "FOE", "FIE", "FEE") or be (toList))) (decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (fumList should (contain theSameElementsInOrderAs LinkedList("FEE", "FIE", "FOE", "FUM") or legacyEqual (toList))) (decided by upperCaseStringEquality)
+          (fumList should (contain theSameElementsInOrderAs LinkedList("FEE", "FIE", "FOE", "FUM") or be (toList))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, Resources("didNotContainSameElementsInOrder", decorateToStringValue(fumList), decorateToStringValue(LinkedList("FEE", "FIE", "FOE", "FUM"))) + ", and " + Resources("didNotEqual", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
-        (fumList should (contain theSameElementsInOrderAs LinkedList(" FUM ", " FOE ", " FIE ", " FEE ") or legacyEqual (fumList))) (after being lowerCased and trimmed)
+        checkMessageStackDepth(e1, Resources("didNotContainSameElementsInOrder", decorateToStringValue(fumList), decorateToStringValue(LinkedList("FEE", "FIE", "FOE", "FUM"))) + ", and " + Resources("wasNotEqualTo", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
+        (fumList should (contain theSameElementsInOrderAs LinkedList(" FUM ", " FOE ", " FIE ", " FEE ") or be (fumList))) (after being lowerCased and trimmed)
       }
     }
     
