@@ -15,11 +15,31 @@
  * limitations under the License.
  */
 package org.scalatest.matchers
- 
-// Idea is to override toString each time it is used.
+
+/**
+ * Lazy argument used for lazy message construction.
+ *
+ * @param arg the argument
+ */
 sealed abstract class LazyArg(val arg: Any)
 
+/**
+ * Singleton object that provides factory <code>apply</code> method to create <code>LazyArg</code> with passed
+ * argument and a function that takes the argument's toString and return a result <code>String</code>.
+ *
+ * @author Bill Venners
+ * @author Chee Seng
+ */
 object LazyArg {
+
+  /**
+   * Factory method to create <code>LazyArg</code> with passed argument and a function that takes the argument's toString
+   * and return a result <code>String</code>.
+   *
+   * @param arg a argument
+   * @param f a function that takes <code>arg.toString</code> and return a result <code>String</code>
+   * @return an instance of <code>LazyArg</code>
+   */
   def apply(arg: Any)(f: Any => String) =
     new LazyArg(arg) {
       override def toString = f(arg.toString)
