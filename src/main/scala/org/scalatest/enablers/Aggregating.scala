@@ -35,12 +35,10 @@ import scala.collection.JavaConverters._
  * 
  * <ul>
  * <li><code>scala.collection.GenTraversable</code></li>
- * <li><code>scala.collection.Iterator</code> (coming soon)</li>
  * <li><code>String</code></li>
  * <li><code>Array</code></li>
  * <li><code>java.util.Collection</code></li>
  * <li><code>java.util.Map</code></li>
- * <li><code>java.util.Iterator</code> (coming soon)</li>
  * </ul>
  * 
  * <p>
@@ -49,7 +47,7 @@ import scala.collection.JavaConverters._
  * 
  * <ul>
  * <li><code>result</code> <code>should</code> <code>contain</code> <code>atLeastOneOf</code> <code>(1, 2, 3)</code></li>
- * <li><code>result</code> <code>should</code> <code>contain</code> <code>atMostOneOf</code> <code>(1, 2, 3)</code> (coming soon)</li>
+ * <li><code>result</code> <code>should</code> <code>contain</code> <code>atMostOneOf</code> <code>(1, 2, 3)</code></li>
  * <li><code>result</code> <code>should</code> <code>contain</code> <code>only</code> <code>(1, 2, 3)</code></li>
  * <li><code>result</code> <code>should</code> <code>contain</code> <code>allOf</code> <code>(1, 2, 3)</code></li>
  * <li><code>result</code> <code>should</code> <code>contain</code> <code>theSameElementsAs</code> <code>(List(1, 2, 3))</code></li>
@@ -116,6 +114,17 @@ trait Aggregating[-A] {
   def containsAtMostOneOf(aggregation: A, eles: Seq[Any]): Boolean
 }
 
+/**
+ * Companion object for <code>Aggregating</code> that provides implicit implementations for the following types:
+ *
+ * <ul>
+ * <li><code>scala.collection.GenTraversable</code></li>
+ * <li><code>String</code></li>
+ * <li><code>Array</code></li>
+ * <li><code>java.util.Collection</code></li>
+ * <li><code>java.util.Map</code></li>
+ * </ul>
+ */
 object Aggregating {
 
   // TODO: Throwing exceptions is slow. Just do a pattern match and test the type before trying to cast it.
@@ -241,6 +250,14 @@ object Aggregating {
     count <= 1      
   }
 
+  /**
+   * Implicit to support <code>Aggregating</code> nature of <code>GenTraversable</code>.
+   *
+   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of two elements in the <code>GenTraversable</code>
+   * @tparam E the type of the element in the <code>GenTraversable</code>
+   * @tparam TRAV any subtype of <code>GenTraversable</code>
+   * @return <code>Aggregating[TRAV[E]]</code> that support <code>GenTraversable</code> in <code>Aggregating</code> syntax
+   */
   implicit def aggregatingNatureOfGenTraversable[E, TRAV[e] <: scala.collection.GenTraversable[e]](implicit equality: Equality[E]): Aggregating[TRAV[E]] = 
     new Aggregating[TRAV[E]] {
       def containsAtLeastOneOf(trav: TRAV[E], elements: scala.collection.Seq[Any]): Boolean = {
@@ -260,10 +277,33 @@ object Aggregating {
       }
     }
 
-  // Enables (xs should contain ("HI")) (after being lowerCased)
-  implicit def convertEqualityToGenTraversableAggregating[E, TRAV[e] <: scala.collection.GenTraversable[e]](equality: Equality[E]): Aggregating[TRAV[E]] = 
+  /**
+   * Implicit conversion that converts an <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   * into <code>Aggregating</code> of type <code>TRAV[E]</code>, where <code>TRAV</code> is a subtype of <code>GenTraversable</code>.
+   * This is required to support the explicit <a href="../../scalautils/Equality.html"><code>Equality</code></a> syntax, for example:
+   *
+   * <pre class="stHighlight">
+   * (List("hi") should contain ("HI")) (after being lowerCased)
+   * </pre>
+   *
+   * <code>(after being lowerCased)</code> will returns an <a href="../../scalautils/Equality.html"><code>Equality[String]</code></a>
+   * and this implicit conversion will convert it into <code>Aggregating[List[String]]</code>.
+   *
+   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   * @tparam E type of elements in the <code>GenTraversable</code>
+   * @tparam TRAV subtype of <code>GenTraversable</code>
+   * @return <code>Aggregating</code> of type <code>TRAV[E]</code>
+   */
+  implicit def convertEqualityToGenTraversableAggregating[E, TRAV[e] <: scala.collection.GenTraversable[e]](equality: Equality[E]): Aggregating[TRAV[E]] =
     aggregatingNatureOfGenTraversable(equality)
-    
+
+  /**
+   * Implicit to support <code>Aggregating</code> nature of <code>Array</code>.
+   *
+   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of two elements in the <code>Array</code>
+   * @tparam E the type of the element in the <code>Array</code>
+   * @return <code>Aggregating[Array[E]]</code> that support <code>Array</code> in <code>Aggregating</code> syntax
+   */
   implicit def aggregatingNatureOfArray[E](implicit equality: Equality[E]): Aggregating[Array[E]] = 
     new Aggregating[Array[E]] {
       def containsAtLeastOneOf(array: Array[E], elements: scala.collection.Seq[Any]): Boolean = {
@@ -283,10 +323,31 @@ object Aggregating {
       }
     }
 
-  // Enables (xs should contain ("HI")) (after being lowerCased)
+  /**
+   * Implicit conversion that converts an <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   * into <code>Aggregating</code> of type <code>Array[E]</code>.
+   * This is required to support the explicit <a href="../../scalautils/Equality.html"><code>Equality</code></a> syntax, for example:
+   *
+   * <pre class="stHighlight">
+   * (Array("hi") should contain ("HI")) (after being lowerCased)
+   * </pre>
+   *
+   * <code>(after being lowerCased)</code> will returns an <a href="../../scalautils/Equality.html"><code>Equality[String]</code></a>
+   * and this implicit conversion will convert it into <code>Aggregating[Array[String]]</code>.
+   *
+   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   * @tparam E type of elements in the <code>Array</code>
+   * @return <code>Aggregating</code> of type <code>Array[E]</code>
+   */
   implicit def convertEqualityToArrayAggregating[E](equality: Equality[E]): Aggregating[Array[E]] = 
     aggregatingNatureOfArray(equality)
-  
+
+  /**
+   * Implicit to support <code>Aggregating</code> nature of <code>String</code>.
+   *
+   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of two <code>Char</code> in the <code>String</code>
+   * @return <code>Aggregating[String]</code> that support <code>String</code> in <code>Aggregating</code> syntax
+   */
   implicit def aggregatingNatureOfString(implicit equality: Equality[Char]): Aggregating[String] = 
     new Aggregating[String] {
       def containsAtLeastOneOf(s: String, elements: scala.collection.Seq[Any]): Boolean = {
@@ -306,9 +367,32 @@ object Aggregating {
       }
     }
 
-  implicit def convertEqualityToStringAggregating(equality: Equality[Char]): Aggregating[String] = 
+  /**
+   * Implicit conversion that converts an <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>Char</code>
+   * into <code>Aggregating</code> of type <code>String</code>.
+   * This is required to support the explicit <a href="../../scalautils/Equality.html"><code>Equality</code></a> syntax, for example:
+   *
+   * <pre class="stHighlight">
+   * ("hi hello" should contain ('E')) (after being lowerCased)
+   * </pre>
+   *
+   * <code>(after being lowerCased)</code> will returns an <a href="../../scalautils/Equality.html"><code>Equality[Char]</code></a>
+   * and this implicit conversion will convert it into <code>Aggregating[String]</code>.
+   *
+   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>Char</code>
+   * @return <code>Aggregating</code> of type <code>String</code>
+   */
+  implicit def convertEqualityToStringAggregating(equality: Equality[Char]): Aggregating[String] =
     aggregatingNatureOfString(equality)
-    
+
+  /**
+   * Implicit to support <code>Aggregating</code> nature of <code>java.util.Collection</code>.
+   *
+   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of two elements in the <code>java.util.Collection</code>
+   * @tparam E the type of the element in the <code>java.util.Collection</code>
+   * @tparam JCOL any subtype of <code>java.util.Collection</code>
+   * @return <code>Aggregating[JCOL[E]]</code> that support <code>java.util.Collection</code> in <code>Aggregating</code> syntax
+   */
   implicit def aggregatingNatureOfJavaCollection[E, JCOL[e] <: java.util.Collection[e]](implicit equality: Equality[E]): Aggregating[JCOL[E]] = 
     new Aggregating[JCOL[E]] {
       def containsAtLeastOneOf(col: JCOL[E], elements: scala.collection.Seq[Any]): Boolean = {
@@ -328,9 +412,37 @@ object Aggregating {
       }
     }
 
+  /**
+   * Implicit conversion that converts an <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   * into <code>Aggregating</code> of type <code>JCOL[E]</code>, where <code>JCOL</code> is a subtype of <code>java.util.Collection</code>.
+   * This is required to support the explicit <a href="../../scalautils/Equality.html"><code>Equality</code></a> syntax, for example:
+   *
+   * <pre class="stHighlight">
+   * val javaList = new java.util.ArrayList[String]()
+   * javaList.add("hi")
+   * (javaList should contain ("HI")) (after being lowerCased)
+   * </pre>
+   *
+   * <code>(after being lowerCased)</code> will returns an <a href="../../scalautils/Equality.html"><code>Equality[String]</code></a>
+   * and this implicit conversion will convert it into <code>Aggregating[java.util.ArrayList[String]]</code>.
+   *
+   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   * @tparam E type of elements in the <code>java.util.Collection</code>
+   * @tparam JCOL subtype of <code>java.util.Collection</code>
+   * @return <code>Aggregating</code> of type <code>JCOL[E]</code>
+   */
   implicit def convertEqualityToJavaCollectionAggregating[E, JCOL[e] <: java.util.Collection[e]](equality: Equality[E]): Aggregating[JCOL[E]] = 
     aggregatingNatureOfJavaCollection(equality)
-    
+
+  /**
+   * Implicit to support <code>Aggregating</code> nature of <code>java.util.Map</code>.
+   *
+   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of two entries in the <code>java.util.Map</code>
+   * @tparam K the type of the key in the <code>java.util.Map</code>
+   * @tparam V the type of the value in the <code>java.util.Map</code>
+   * @tparam JMAP any subtype of <code>java.util.Map</code>
+   * @return <code>Aggregating[ JMAP[K, V] ]</code> that support <code>java.util.Map</code> in <code>Aggregating</code> syntax
+   */
   implicit def aggregatingNatureOfJavaMap[K, V, JMAP[k, v] <: java.util.Map[k, v]](implicit equality: Equality[java.util.Map.Entry[K, V]]): Aggregating[JMAP[K, V]] = 
     new Aggregating[JMAP[K, V]] {
     
@@ -352,6 +464,26 @@ object Aggregating {
       }
     }
 
+  /**
+   * Implicit conversion that converts an <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>java.util.Map.Entry[K, V]</code>
+   * into <code>Aggregating</code> of type <code>JMAP[K, V]</code>, where <code>JMAP</code> is a subtype of <code>java.util.Map</code>.
+   * This is required to support the explicit <a href="../../scalautils/Equality.html"><code>Equality</code></a> syntax, for example:
+   *
+   * <pre class="stHighlight">
+   * val javaMap = new java.util.HashMap[Int, String]()
+   * javaMap.add(1 -> "one")
+   * (javaMap should contain key ("ONE")) (after being lowerCased)
+   * </pre>
+   *
+   * <code>(after being lowerCased)</code> will returns an <a href="../../scalautils/Equality.html"><code>java.util.Map.Entry[Int, String]</code></a>
+   * and this implicit conversion will convert it into <code>Aggregating[java.util.HashMap[Int, String]]</code>.
+   *
+   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>java.util.Map.Entry[K, V]</code>
+   * @tparam K the type of the key in the <code>java.util.Map</code>
+   * @tparam V the type of the value in the <code>java.util.Map</code>
+   * @tparam JMAP any subtype of <code>java.util.Map</code>
+   * @return <code>Aggregating</code> of type <code>JMAP[K, V]</code>
+   */
   implicit def convertEqualityToJavaMapAggregating[K, V, JMAP[k, v] <: java.util.Map[k, v]](equality: Equality[java.util.Map.Entry[K, V]]): Aggregating[JMAP[K, V]] = 
     aggregatingNatureOfJavaMap(equality)
 }
