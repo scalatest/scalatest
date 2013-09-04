@@ -17,7 +17,7 @@ package org.scalatest
 
 /**
  * Trait whose instances facilitate parallel execution of <code>Suite</code>s.
- * An optional <code>Distributor</code> is passed to the <code>run</code> method of <code>Suite</code>. If a
+ * An optional <code>Distributor</code> is passed to the <code>run</code> method of <a href="Suite.html"><code>Suite</code></a>. If a
  * <code>Distributor</code> is indeed passed, trait <code>Suite</code>'s implementation of <code>run</code> will
  * populate that <code>Distributor</code> with its nested <code>Suite</code>s (by passing them to the <code>Distributor</code>'s
  * <code>apply</code> method) rather than executing the nested <code>Suite</code>s directly. It is then up to another thread or process
@@ -25,7 +25,7 @@ package org.scalatest
  *
  * <p>
  * If you have a set of nested <code>Suite</code>s that must be executed sequentially, you can mix in trait
- * <code>SequentialNestedSuiteExecution</code>, which overrides <code>runNestedSuites</code> and
+ * <a href="SequentialNestedSuiteExecution.html"><code>SequentialNestedSuiteExecution</code></a>, which overrides <code>runNestedSuites</code> and
  * calls <code>super</code>'s <code>runNestedSuites</code> implementation, passing in <code>None</code> for the
  * <code>Distributor</code>.
  * </p>

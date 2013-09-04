@@ -1088,7 +1088,7 @@ final case class SuiteCompleted (
  * @param message a localized message suitable for presenting to the user
  * @param suiteName a localized name identifying the suite that has aborted, suitable for presenting to the user
  * @param suiteId a string ID for the suite that has aborted, intended to be unique across all suites in a run
- * @param suiteClassName an optional fully qualifed <code>Suite</code> class name containing the suite that has aborted
+ * @param suiteClassName &nbsp; an optional fully qualifed <code>Suite</code> class name containing the suite that has aborted
  * @param throwable an optional <code>Throwable</code> that, if a <code>Some</code>, indicates why the suite has aborted,
  *        or a <code>Throwable</code> created to capture stack trace information about the problem.
  * @param duration an optional amount of time, in milliseconds, that was required to execute the suite that has aborted
