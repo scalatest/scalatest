@@ -16,7 +16,7 @@
 package org.scalatest
 
 /**
- * Trait that when mixed into a <code>Suite</code> cancels any remaining tests in that
+ * Trait that when mixed into a <a href="Suite.html"><code>Suite</code></a> cancels any remaining tests in that
  * <code>Suite</code> instance after a test fails.
  *
  * <p>

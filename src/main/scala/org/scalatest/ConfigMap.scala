@@ -30,20 +30,20 @@ import scala.collection.GenTraversable
  * A map of configuration data.
  *
  * <p>
- * A <code>ConfigMap</code> can be populated from the <code>Runner</code> command line via <code>-D</code> 
+ * A <code>ConfigMap</code> can be populated from the <a href="tools/Runner$.html"><code>Runner</code></a> command line via <code>-D</code> 
  * arguments. <code>Runner</code> passes it to many methods where you can use it to configure your
  * test runs. For example, <code>Runner</code> passed the <code>ConfigMap</code> to:
  * </p>
  * 
  * <ul>
- * <li>the <code>apply</code> method of <code>Reporter</code>s via <code>RunStarting</code> events</li>
- * <li>the <code>run</code> method of <code>Suite</code>
+ * <li>the <code>apply</code> method of <a href="Reporter.html"><code>Reporter</code></a>s via <code>RunStarting</code> events</li>
+ * <li>the <code>run</code> method of <a href="Suite.html"><code>Suite</code></a>
  * <li>the <code>runNestedSuites</code> method of <code>Suite</code>
  * <li>the <code>runTests</code> method of <code>Suite</code>
  * <li>the <code>runTest</code> method of <code>Suite</code>
  * <li>the <code>withFixture(NoArgTest)</code> method of <code>Suite</code>
- * <li>the <code>withFixture(OneArgTest)</code> method of <code>fixture.Suite</code>
- * <li>the <code>beforeEach(TestData)</code> method of <code>BeforeAndAfterEachTestData</code>
+ * <li>the <code>withFixture(OneArgTest)</code> method of <a href="fixture/Suite.html"><code>fixture.Suite</code></a>
+ * <li>the <code>beforeEach(TestData)</code> method of <a href="BeforeAndAfterEachTestData.html"><code>BeforeAndAfterEachTestData</code></a>
  * <li>the <code>afterEach(TestData)</code> method of <code>BeforeAndAfterEachTestData</code>
  * </ul>
  *
@@ -62,7 +62,7 @@ import scala.collection.GenTraversable
  * </p>
  *
  * <p>
- * The <code>getRequired</code> method returns the value bound to a key cast to a specified type, or throws <code>TestCanceledException</code>
+ * The <code>getRequired</code> method returns the value bound to a key cast to a specified type, or throws <a href="exceptions/TestCanceledException.html"><code>TestCanceledException</code></a>
  * if either the key is not bound or is bound to an incompatible type. Here's an example:
  * </p>
  *
@@ -83,7 +83,7 @@ import scala.collection.GenTraversable
  * <p>
  * The <code>getWithDefault</code> method returns the value bound to a key cast to a specified type,
  * returns a specified default value if the key is not bound, or throws </code>TestCanceledException</code> if the key exists but is
- * if either the key is not bound or is bound to an incompatible type. Here's an example:
+ * either not bound or is bound to an incompatible type. Here's an example:
  * </p>
  *
  * <pre class="stHighlight">

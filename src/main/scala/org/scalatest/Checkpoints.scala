@@ -45,7 +45,7 @@ import exceptions.DuplicateTestNameException
  * </pre>
  *
  * <p>
- * Then give the <code>Checkpoint</code> assertions to execute by passing them (via a by-name)
+ * Then give the <code>Checkpoint</code> assertions to execute by passing them (via by-name)
  * to its <code>apply</code> method, like this:
  * </p>
  *
@@ -77,7 +77,7 @@ import exceptions.DuplicateTestNameException
  * </pre>
  *
  * <p>
- * Make sure you invoke <code>reportAll</code> before the test completes, else any failures that were detected by the
+ * Make sure you invoke <code>reportAll</code> before the test completes, otherwise any failures that were detected by the
  * <code>Checkpoint</code> will not be reported.
  * </p>
  *

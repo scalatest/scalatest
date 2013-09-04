@@ -27,12 +27,12 @@ package org.scalatest
  * def run(testName: Option[String], args: Args)
  * def runNestedSuites(args: Args)
  * def runTests(testName: Option[String], args: Args)
- * def runTess(testName: String, args: Args)
+ * def runTest(testName: String, args: Args)
  * </pre>
  *
  * <p>
  * The purpose of bundling these arguments into an <code>Args</code> object instead of passing them in individually is to make the signature
- * of these four lifecycle methods easier to read, and write, and remember, to make the methods more pleasant to override in user code.
+ * of these four lifecycle methods easier to read, and write, and remember, and to make the methods more pleasant to override in user code.
  * </p>
  * 
  * @param reporter the <code>Reporter</code> to which results will be reported
@@ -43,11 +43,11 @@ package org.scalatest
  *              by another entity, such as concurrently by a pool of threads. If <code>None</code>, nested <code>Suite</code>s will be executed sequentially.
  * @param tracker a <code>Tracker</code> tracking <code>Ordinal</code>s being fired by the current thread.
  * @param chosenStyles a (possibly empty) <code>Set</code> of <code>String</code>s specifying the run's <a href="tools/Runner$.html#specifyingChosenStyles"><em>chosen styles</em></a>
- * @param runTestInNewInstance a flag used to pass information between run methods
+ * @param runTestInNewInstance &nbsp; a flag used to pass information between run methods
  *           in <a href="OneInstancePerTest.html"><code>OneInstancePerTest</code></a> and <a href="ParallelTestExecution.html"><code>ParallelTestExecution</code></a>.
- * @param distributedTestSorter an optional <a href="DistributedTestSorter.html"><code>DistributedTestSorter</code></a> used by <a href="ParallelTestExecution.html"><code>ParallelTestExecution</code></a> to sort the events
+ * @param distributedTestSorter &nbsp; an optional <a href="DistributedTestSorter.html"><code>DistributedTestSorter</code></a> used by <code>ParallelTestExecution</code> to sort the events
  *                              for the parallel-executed tests of one suite back into sequential order on the fly, with a timeout in case a test takes too long to complete
- * @param distributedSuiteSorter an optional <a href="DistributedSuiteSorter.html"><code>DistributedSuiteSorter</code></a> used by <a href="ParallelTestExecution.html"><code>ParallelTestExecution</code></a> to ensure the events
+ * @param distributedSuiteSorter &nbsp; an optional <a href="DistributedSuiteSorter.html"><code>DistributedSuiteSorter</code></a> used by <code>ParallelTestExecution</code> to ensure the events
  *                              for the parallel-executed suites are sorted back into sequential order, with a timeout in case a suite takes to long to complete, even when tests are executed in parallel
  *
  * @throws NullPointerException if any passed parameter is <code>null</code>.
