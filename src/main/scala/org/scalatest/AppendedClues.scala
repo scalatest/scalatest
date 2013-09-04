@@ -54,7 +54,7 @@ import exceptions.ModifiableMessage
  * </p>
  *
  * <p>
- * <code>2 did not equal 3 </code> &nbsp; <code>now the clue comes after</code>
+ * <code>2 did not equal 3 now the clue comes after</code>
  * </p>
  *
  * <p>
@@ -93,7 +93,7 @@ import exceptions.ModifiableMessage
  * prepended <code>withClue</code> construct, is because appended clues require an implicit conversion.
  * ScalaTest only gives you one implicit conversion by default in any test class to minimize the
  * potential for conflicts with other implicit conversions you may be using. All other implicit conversions,
- * including the one provided by this trait, you must explicitly add into your code through inheritance
+ * including the one provided by this trait, you must explicitly invite into your code through inheritance
  * or an import.
  * </p>
  *

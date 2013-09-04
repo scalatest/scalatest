@@ -45,7 +45,7 @@ import exceptions.DuplicateTestNameException
  * </pre>
  *
  * <p>
- * Then give the <code>Checkpoint</code> assertions to execute by passing them (via by-name)
+ * Then give the <code>Checkpoint</code> assertions to execute by passing them (via a by-name parameter)
  * to its <code>apply</code> method, like this:
  * </p>
  *

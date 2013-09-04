@@ -48,7 +48,7 @@ import org.scalautils.LegacyTripleEquals
  * Scala source file. This <code>Assertions</code> trait defines another <code>assert</code> method that hides the
  * one in <code>Predef</code>. It behaves the same, except that if <code>false</code> is passed it throws
  * <a href="exceptions/TestFailedException.html"><code>TestFailedException</code></a> instead of <code>AssertionError</code>. 
- *<code>TestFailedException</code> carries information about exactly which item in the stack trace represents
+ * Why? Because unlike <code>AssertionError</code>, <code>TestFailedException</code> carries information about exactly which item in the stack trace represents
  * the line of test code that failed, which can help users more quickly find an offending line of code in a failing test.
  * <p>
  *
