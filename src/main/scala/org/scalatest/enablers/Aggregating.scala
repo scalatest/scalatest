@@ -253,10 +253,10 @@ object Aggregating {
   /**
    * Implicit to support <code>Aggregating</code> nature of <code>GenTraversable</code>.
    *
-   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of two elements in the <code>GenTraversable</code>
+   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>GenTraversable</code>
    * @tparam E the type of the element in the <code>GenTraversable</code>
    * @tparam TRAV any subtype of <code>GenTraversable</code>
-   * @return <code>Aggregating[TRAV[E]]</code> that support <code>GenTraversable</code> in <code>Aggregating</code> syntax
+   * @return <code>Aggregating[TRAV[E]]</code> that supports <code>GenTraversable</code> in <code>Aggregating</code> syntax
    */
   implicit def aggregatingNatureOfGenTraversable[E, TRAV[e] <: scala.collection.GenTraversable[e]](implicit equality: Equality[E]): Aggregating[TRAV[E]] = 
     new Aggregating[TRAV[E]] {
@@ -300,9 +300,9 @@ object Aggregating {
   /**
    * Implicit to support <code>Aggregating</code> nature of <code>Array</code>.
    *
-   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of two elements in the <code>Array</code>
+   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>Array</code>
    * @tparam E the type of the element in the <code>Array</code>
-   * @return <code>Aggregating[Array[E]]</code> that support <code>Array</code> in <code>Aggregating</code> syntax
+   * @return <code>Aggregating[Array[E]]</code> that supports <code>Array</code> in <code>Aggregating</code> syntax
    */
   implicit def aggregatingNatureOfArray[E](implicit equality: Equality[E]): Aggregating[Array[E]] = 
     new Aggregating[Array[E]] {
@@ -345,8 +345,8 @@ object Aggregating {
   /**
    * Implicit to support <code>Aggregating</code> nature of <code>String</code>.
    *
-   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of two <code>Char</code> in the <code>String</code>
-   * @return <code>Aggregating[String]</code> that support <code>String</code> in <code>Aggregating</code> syntax
+   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of <code>Char</code> in the <code>String</code>
+   * @return <code>Aggregating[String]</code> that supports <code>String</code> in <code>Aggregating</code> syntax
    */
   implicit def aggregatingNatureOfString(implicit equality: Equality[Char]): Aggregating[String] = 
     new Aggregating[String] {
@@ -373,6 +373,7 @@ object Aggregating {
    * This is required to support the explicit <a href="../../scalautils/Equality.html"><code>Equality</code></a> syntax, for example:
    *
    * <pre class="stHighlight">
+   * // lowerCased needs to be implemented as Normalization[Char]
    * ("hi hello" should contain ('E')) (after being lowerCased)
    * </pre>
    *
@@ -388,10 +389,10 @@ object Aggregating {
   /**
    * Implicit to support <code>Aggregating</code> nature of <code>java.util.Collection</code>.
    *
-   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of two elements in the <code>java.util.Collection</code>
+   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>java.util.Collection</code>
    * @tparam E the type of the element in the <code>java.util.Collection</code>
    * @tparam JCOL any subtype of <code>java.util.Collection</code>
-   * @return <code>Aggregating[JCOL[E]]</code> that support <code>java.util.Collection</code> in <code>Aggregating</code> syntax
+   * @return <code>Aggregating[JCOL[E]]</code> that supports <code>java.util.Collection</code> in <code>Aggregating</code> syntax
    */
   implicit def aggregatingNatureOfJavaCollection[E, JCOL[e] <: java.util.Collection[e]](implicit equality: Equality[E]): Aggregating[JCOL[E]] = 
     new Aggregating[JCOL[E]] {
@@ -437,11 +438,11 @@ object Aggregating {
   /**
    * Implicit to support <code>Aggregating</code> nature of <code>java.util.Map</code>.
    *
-   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of two entries in the <code>java.util.Map</code>
+   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of entry in the <code>java.util.Map</code>
    * @tparam K the type of the key in the <code>java.util.Map</code>
    * @tparam V the type of the value in the <code>java.util.Map</code>
    * @tparam JMAP any subtype of <code>java.util.Map</code>
-   * @return <code>Aggregating[ JMAP[K, V] ]</code> that support <code>java.util.Map</code> in <code>Aggregating</code> syntax
+   * @return <code>Aggregating[JMAP[K, V]]</code> that supports <code>java.util.Map</code> in <code>Aggregating</code> syntax
    */
   implicit def aggregatingNatureOfJavaMap[K, V, JMAP[k, v] <: java.util.Map[k, v]](implicit equality: Equality[java.util.Map.Entry[K, V]]): Aggregating[JMAP[K, V]] = 
     new Aggregating[JMAP[K, V]] {
@@ -471,8 +472,9 @@ object Aggregating {
    *
    * <pre class="stHighlight">
    * val javaMap = new java.util.HashMap[Int, String]()
-   * javaMap.add(1 -> "one")
-   * (javaMap should contain key ("ONE")) (after being lowerCased)
+   * javaMap.put(1, "one")
+   * // lowerCased needs to be implemented as Normalization[java.util.Map.Entry[K, V]]
+   * (javaMap should contain (Entry(1, "ONE"))) (after being lowerCased)
    * </pre>
    *
    * <code>(after being lowerCased)</code> will returns an <a href="../../scalautils/Equality.html"><code>java.util.Map.Entry[Int, String]</code></a>
