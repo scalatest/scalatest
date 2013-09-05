@@ -81,14 +81,6 @@ object Collecting {
       def sizeOf(array: Array[E]): Int = array.length
     }
 
-  implicit def collectingNatureOfGenMap[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]]: Collecting[(K, V), MAP[K, V]] = 
-    new Collecting[(K, V), MAP[K, V]] {
-      def loneElementOf(map: MAP[K, V]): Option[(K, V)] = {
-        if (map.size == 1) Some(map.head) else None
-      }
-      def sizeOf(map: MAP[K, V]): Int = map.size
-    }
-
   implicit def collectingNatureOfJavaCollection[E, JCOL[e] <: java.util.Collection[e]]: Collecting[E, JCOL[E]] = 
     new Collecting[E, JCOL[E]] {
       def loneElementOf(coll: JCOL[E]): Option[E] = {
