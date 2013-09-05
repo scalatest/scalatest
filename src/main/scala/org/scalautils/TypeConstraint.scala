@@ -21,7 +21,7 @@ import annotation.implicitNotFound
  * Abstract class used to enforce type constraints for equality checks.
  */
 @implicitNotFound(msg = "types ${A} and ${B} do not adhere to the type constraint selected for the === and !== operators; the missing implicit parameter is of type org.scalautils.Constraint[${A},${B}]")
-abstract class TypeConstraint[A, B] {
+abstract class Constraint[A, B] {
 
   /**
    * Indicates whether the objects passed as <code>a</code> and <code>b</code> are equal.

@@ -40,10 +40,10 @@ import TripleEqualsSupport._
  * </pre>
  *
  * <p>
- * The first expression above is enabled by the implicit conversion <code>typeCheckedTypeConstraint</code> in traits
+ * The first expression above is enabled by the implicit conversion <code>typeCheckedConstraint</code> in traits
  * <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a> and
  * <a href="TypeCheckedLegacyTripleEquals.html"><code>TypeCheckedLegacyTripleEquals</code></a>. The second expression above is
- * enabled by the implicit conversion <code>lowPriorityTypeCheckedTypeConstraint</code> in this trait.
+ * enabled by the implicit conversion <code>lowPriorityTypeCheckedConstraint</code> in this trait.
  * </p>
  *
  * <p>
@@ -55,7 +55,7 @@ import TripleEqualsSupport._
  */
 trait LowPriorityTypeCheckedConstraint extends TripleEqualsSupport {
   // Inherit the scaladoc for this method
-  implicit override def lowPriorityTypeCheckedTypeConstraint[A, B](implicit equivalenceOfB: Equivalence[B], ev: A <:< B): TypeConstraint[A, B] = new AToBEquivalenceConstraint[A, B](equivalenceOfB, ev)
-  implicit override def convertEquivalenceToAToBTypeConstraint[A, B](equivalenceOfB: Equivalence[B])(implicit ev: A <:< B): TypeConstraint[A, B] = new AToBEquivalenceConstraint[A, B](equivalenceOfB, ev)
+  implicit override def lowPriorityTypeCheckedConstraint[A, B](implicit equivalenceOfB: Equivalence[B], ev: A <:< B): Constraint[A, B] = new AToBEquivalenceConstraint[A, B](equivalenceOfB, ev)
+  implicit override def convertEquivalenceToAToBConstraint[A, B](equivalenceOfB: Equivalence[B])(implicit ev: A <:< B): Constraint[A, B] = new AToBEquivalenceConstraint[A, B](equivalenceOfB, ev)
 }
 

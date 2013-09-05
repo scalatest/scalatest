@@ -61,7 +61,7 @@ import TripleEqualsSupport._
  */
 trait LegacyTripleEquals extends TripleEqualsSupport {
 
-  implicit override def unconstrainedEquality[A, B](implicit equalityOfA: Equality[A]): TypeConstraint[A, B] = new EqualityConstraint[A, B](equalityOfA)
+  implicit override def unconstrainedEquality[A, B](implicit equalityOfA: Equality[A]): Constraint[A, B] = new EqualityConstraint[A, B](equalityOfA)
 
   override def convertToEqualizer[T](left: T): Equalizer[T] = new Equalizer(left)
   override def convertToCheckingEqualizer[T](left: T): CheckingEqualizer[T] = new CheckingEqualizer(left)
@@ -69,15 +69,15 @@ trait LegacyTripleEquals extends TripleEqualsSupport {
   implicit override def convertToLegacyEqualizer[T](left: T): LegacyEqualizer[T] = new LegacyEqualizer(left)
   override def convertToLegacyCheckingEqualizer[T](left: T): LegacyCheckingEqualizer[T] = new LegacyCheckingEqualizer(left)
 
-  override def lowPriorityTypeCheckedTypeConstraint[A, B](implicit equivalenceOfB: Equivalence[B], ev: A <:< B): TypeConstraint[A, B] = new AToBEquivalenceConstraint[A, B](equivalenceOfB, ev)
-  override def convertEquivalenceToAToBTypeConstraint[A, B](equivalenceOfB: Equivalence[B])(implicit ev: A <:< B): TypeConstraint[A, B] = new AToBEquivalenceConstraint[A, B](equivalenceOfB, ev)
-  override def typeCheckedTypeConstraint[A, B](implicit equivalenceOfA: Equivalence[A], ev: B <:< A): TypeConstraint[A, B] = new BToAEquivalenceConstraint[A, B](equivalenceOfA, ev)
-  override def convertEquivalenceToBToATypeConstraint[A, B](equivalenceOfA: Equivalence[A])(implicit ev: B <:< A): TypeConstraint[A, B] = new BToAEquivalenceConstraint[A, B](equivalenceOfA, ev)
+  override def lowPriorityTypeCheckedConstraint[A, B](implicit equivalenceOfB: Equivalence[B], ev: A <:< B): Constraint[A, B] = new AToBEquivalenceConstraint[A, B](equivalenceOfB, ev)
+  override def convertEquivalenceToAToBConstraint[A, B](equivalenceOfB: Equivalence[B])(implicit ev: A <:< B): Constraint[A, B] = new AToBEquivalenceConstraint[A, B](equivalenceOfB, ev)
+  override def typeCheckedConstraint[A, B](implicit equivalenceOfA: Equivalence[A], ev: B <:< A): Constraint[A, B] = new BToAEquivalenceConstraint[A, B](equivalenceOfA, ev)
+  override def convertEquivalenceToBToAConstraint[A, B](equivalenceOfA: Equivalence[A])(implicit ev: B <:< A): Constraint[A, B] = new BToAEquivalenceConstraint[A, B](equivalenceOfA, ev)
 
-  override def lowPriorityConversionCheckedTypeConstraint[A, B](implicit equivalenceOfB: Equivalence[B], cnv: A => B): TypeConstraint[A, B] = new AToBEquivalenceConstraint[A, B](equivalenceOfB, cnv)
-  override def convertEquivalenceToAToBConversionConstraint[A, B](equivalenceOfB: Equivalence[B])(implicit ev: A => B): TypeConstraint[A, B] = new AToBEquivalenceConstraint[A, B](equivalenceOfB, ev)
-  override def conversionCheckedTypeConstraint[A, B](implicit equivalenceOfA: Equivalence[A], cnv: B => A): TypeConstraint[A, B] = new BToAEquivalenceConstraint[A, B](equivalenceOfA, cnv)
-  override def convertEquivalenceToBToAConversionConstraint[A, B](equivalenceOfA: Equivalence[A])(implicit ev: B => A): TypeConstraint[A, B] = new BToAEquivalenceConstraint[A, B](equivalenceOfA, ev)
+  override def lowPriorityConversionCheckedConstraint[A, B](implicit equivalenceOfB: Equivalence[B], cnv: A => B): Constraint[A, B] = new AToBEquivalenceConstraint[A, B](equivalenceOfB, cnv)
+  override def convertEquivalenceToAToBConversionConstraint[A, B](equivalenceOfB: Equivalence[B])(implicit ev: A => B): Constraint[A, B] = new AToBEquivalenceConstraint[A, B](equivalenceOfB, ev)
+  override def conversionCheckedConstraint[A, B](implicit equivalenceOfA: Equivalence[A], cnv: B => A): Constraint[A, B] = new BToAEquivalenceConstraint[A, B](equivalenceOfA, cnv)
+  override def convertEquivalenceToBToAConversionConstraint[A, B](equivalenceOfA: Equivalence[A])(implicit ev: B => A): Constraint[A, B] = new BToAEquivalenceConstraint[A, B](equivalenceOfA, ev)
 
 
   /**
