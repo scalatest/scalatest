@@ -478,7 +478,7 @@ Tags to include and exclude: -n "CheckinTests FunctionalTests" -l "SlowTests Net
         report match {
           case Some(report: DispatchReporter) => 
             report.dispatchDisposeAndWaitUntilDone()
-          case None =>
+          case _ =>
         }
       }
     }
