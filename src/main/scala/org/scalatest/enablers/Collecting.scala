@@ -23,26 +23,21 @@ import scala.annotation.tailrec
 // import scala.collection.JavaConverters._
 
 /**
- * Supertrait for typeclasses that enable <code>contain</code> matcher syntax for aggregations.
+ * Supertrait for typeclasses that enable <code>loneElement</code> matcher syntax for collections.
  *
  * <p>
- * An <code>Collecting[A]</code> provides access to the "aggregating nature" of type <code>A</code> in such
- * a way that relevant <code>contain</code> matcher syntax can be used with type <code>A</code>. An <code>A</code>
- * can be any type of "aggregation," a type that in some way aggregates or brings together other types. ScalaTest provides
- * implicit implementations for several types. You can enable the <code>contain</code> matcher syntax on your own
- * type <code>U</code> by defining an <code>Collecting[U]</code> for the type and making it available implicitly.
+ * An <code>Collecting[E, C]</code> provides access to the "collecting nature" of type <code>C</code> in such
+ * a way that <code>loneElement</code> syntax can be used with type <code>C</code>. A <code>C</code>
+ * can be any type of "collecting", a type that in some way collects or brings together elements of type <code>E</code>.
+ * ScalaTest provides implicit implementations for several types. You can enable the <code>contain</code> matcher syntax
+ * on your own type <code>U</code> by defining an <code>Collecting[U, E]</code> for the type and making it available implicitly.
  * 
  * <p>
  * ScalaTest provides implicit <code>Collecting</code> instances for <code>scala.collection.GenTraversable</code>,
- * <code>java.util.Collection</code>, <code>java.util.Map</code>, <code>String</code>, and <code>Array</code> in the
+ * <code>Array</code>, <code>java.util.Collection</code> and <code>java.util.Map</code> in the
  * <code>Collecting</code> companion object.
  * </p>
  *
- * <p>
- * Note, for an explanation of the difference between <code>Containing</code> and <code>Collecting</code>, both of which
- * enable <code>contain</code> matcher syntax, see the <a href="Containing.html#containingVersusCollecting">Containing
- * versus Collecting</a> section of the main documentation for trait <code>Containing</code>.
- * </p>
  */
 trait Collecting[E, C] {
 
@@ -54,17 +49,39 @@ trait Collecting[E, C] {
    * if the collection contains either no elements or more than one element.
    * </p>
    *
-   * @param aggregation an aggregation about which an assertion is being made
-   * @param eles elements at least one of which should be contained in the passed aggregation
-   * @return true if the passed aggregation contains at least one of the passed elements
+   * @param collection a collection about which an assertion is being made
+   * @return <code>Some[E]</code> if the collection contains one and only one element, <code>None</code> otherwise.
    */
   def loneElementOf(collection: C): Option[E]
 
+  /**
+   * Returns the size of the passed <code>collection</code>.
+   *
+   * @param collection a <code>collection</code> to check the size of
+   * @return the size of the passed <code>collection</code>
+   */
   def sizeOf(collection: C): Int
 }
 
+/**
+ * Companion object for <code>Collecting</code> that provides implicit implementations for the following types:
+ *
+ * <ul>
+ * <li><code>scala.collection.GenTraversable</code></li>
+ * <li><code>Array</code></li>
+ * <li><code>java.util.Collection</code></li>
+ * <li><code>java.util.Map</code></li>
+ * </ul>
+ */
 object Collecting {
 
+  /**
+   * Implicit to support <code>Collecting</code> nature of <code>GenTraversable</code>.
+   *
+   * @tparam E the type of the element in the <code>GenTraversable</code>
+   * @tparam TRAV any subtype of <code>GenTraversable</code>
+   * @return <code>Collecting[TRAV[E]]</code> that supports <code>GenTraversable</code> in <code>loneElement</code> syntax
+   */
   implicit def collectingNatureOfGenTraversable[E, TRAV[e] <: scala.collection.GenTraversable[e]]: Collecting[E, TRAV[E]] = 
     new Collecting[E, TRAV[E]] {
       def loneElementOf(trav: TRAV[E]): Option[E] = {
@@ -73,6 +90,12 @@ object Collecting {
       def sizeOf(trav: TRAV[E]): Int = trav.size
     }
 
+  /**
+   * Implicit to support <code>Collecting</code> nature of <code>Array</code>.
+   *
+   * @tparam E the type of the element in the <code>Array</code>
+   * @return <code>Collecting[Array[E]]</code> that supports <code>Array</code> in <code>loneElement</code> syntax
+   */
   implicit def collectingNatureOfArray[E]: Collecting[E, Array[E]] = 
     new Collecting[E, Array[E]] {
       def loneElementOf(array: Array[E]): Option[E] = {
@@ -89,6 +112,13 @@ object Collecting {
       def sizeOf(map: MAP[K, V]): Int = map.size
     }
 
+  /**
+   * Implicit to support <code>Collecting</code> nature of <code>java.util.Collection</code>.
+   *
+   * @tparam E the type of the element in the <code>java.util.Collection</code>
+   * @tparam JCOL any subtype of <code>java.util.Collection</code>
+   * @return <code>Collecting[JCOL[E]]</code> that supports <code>java.util.Collection</code> in <code>loneElement</code> syntax
+   */
   implicit def collectingNatureOfJavaCollection[E, JCOL[e] <: java.util.Collection[e]]: Collecting[E, JCOL[E]] = 
     new Collecting[E, JCOL[E]] {
       def loneElementOf(coll: JCOL[E]): Option[E] = {
@@ -98,6 +128,14 @@ object Collecting {
     }
 
   // Wrap the extracted entry in an org.scalatest.Entry so people can call key and value methods instead of getKey and getValue
+  /**
+   * Implicit to support <code>Collecting</code> nature of <code>java.util.Map</code>.
+   *
+   * @tparam K the type of the key in the <code>java.util.Map</code>
+   * @tparam V the type of the value in the <code>java.util.Map</code>
+   * @tparam JMAP any subtype of <code>java.util.Map</code>
+   * @return <code>Collecting[JMAP[K, V]]</code> that supports <code>java.util.Map</code> in <code>loneElement</code> syntax
+   */
   implicit def collectingNatureOfJavaMap[K, V, JMAP[k, v] <: java.util.Map[k, v]]: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]] = 
     new Collecting[org.scalatest.Entry[K, V], JMAP[K, V]] {
       def loneElementOf(jmap: JMAP[K, V]): Option[org.scalatest.Entry[K, V]] = {

@@ -540,7 +540,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
    * which has <code>apply</code> method that returns a <code>MatchResult</code> that represents the logical-and
    * of the results of the wrapped and the passed <code>MatcherFactory</code> applied to the same value.
    *
-   * @param the <code>MatcherFactory</code> to logical-and with this <code>MatcherFactory</code>
+   * @param rightMatcherFactory1 the <code>MatcherFactory</code> to logical-and with this <code>MatcherFactory</code>
    * @return a <code>MatcherFactory</code> that performs the logical-and of this and the passed <code>MatcherFactory</code>
    */
   def and[U, TC1[_]](rightMatcherFactory1: MatcherFactory1[U, TC1]): MatcherFactory1[T with U, TC1] =
@@ -576,7 +576,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
    * match any old <code>Fruit</code>).
    * </p>
    *
-   * @param the matcher to logical-or with this matcher
+   * @param rightMatcher the matcher to logical-or with this matcher
    * @return a matcher that performs the logical-or of this and the passed matcher
    */
   def or[U <: T](rightMatcher: Matcher[U]): Matcher[U] =
@@ -592,7 +592,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
    * which has <code>apply</code> method that returns a <code>MatchResult</code> that represents the logical-or
    * of the results of the wrapped and the passed <code>MatcherFactory</code> applied to the same value.
    *
-   * @param the <code>MatcherFactory</code> to logical-or with this <code>MatcherFactory</code>
+   * @param rightMatcherFactory1 the <code>MatcherFactory</code> to logical-or with this <code>MatcherFactory</code>
    * @return a <code>MatcherFactory</code> that performs the logical-or of this and the passed <code>MatcherFactory</code>
    */
   def or[U, TC1[_]](rightMatcherFactory1: MatcherFactory1[U, TC1]): MatcherFactory1[T with U, TC1] =
@@ -621,8 +621,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * Array(1, 2) should (have length (2) and have length (3 - 1))
-     *                                              ^
+     * aMatcher and have length (3 - 1)
+     *                   ^
      * </pre>
      */
     def length(expectedLength: Long): MatcherFactory1[T, Length] = and(MatcherWords.have.length(expectedLength))
@@ -631,8 +631,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * Array(1, 2) should (have size (2) and have size (3 - 1))
-     *                                            ^ 
+     * aMatcher and have size (3 - 1)
+     *                                 ^
      * </pre>
      */
     def size(expectedSize: Long): MatcherFactory1[T, Size] = and(MatcherWords.have.size(expectedSize))
@@ -641,8 +641,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * result should (have message ("A message from Mars") and have message ("A message from Mars"))
-     *                                                              ^
+     * aMatcher and have message ("A message from Mars")
+     *                   ^
      * </pre>
      */
     def message(expectedMessage: String): MatcherFactory1[T, Messaging] = and(MatcherWords.have.message(expectedMessage))
@@ -652,8 +652,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">
-   * Array(1, 2) should (have size (2) and have size (3 - 1))
-   *                                   ^ 
+   * aMatcher and have size (3 - 1)
+   *          ^
    * </pre>
    */
   def and(haveWord: HaveWord): AndHaveWord = new AndHaveWord
@@ -670,8 +670,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * Array(1, 2) should (contain (2) and contain (3 - 1))
-     *                                             ^
+     * aMatcher and contain (3 - 1)
+     *                      ^
      * </pre>
      */
     def apply[U](expectedElement: Any): MatcherFactory1[T with U, Containing] = outerInstance.and(MatcherWords.contain(expectedElement))
@@ -680,8 +680,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * Map("one" -&gt; 1, "two" -&gt; 2) should (contain key ("two") and contain key ("one"))
-     *                                                                           ^
+     * aMatcher and contain key ("one")
+     *                      ^
      * </pre>
      */
     def key(expectedKey: Any): MatcherFactory1[T, KeyMapping] = outerInstance.and(MatcherWords.contain.key(expectedKey))
@@ -690,8 +690,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * Map("one" -&gt; 1, "two" -&gt; 2) should (contain value (2) and contain value (1))
-     *                                                                         ^
+     * aMatcher and contain value (1)
+     *                      ^
      * </pre>
      */
     def value(expectedValue: Any): MatcherFactory1[T, ValueMapping] = outerInstance.and(MatcherWords.contain.value(expectedValue))
@@ -700,8 +700,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) and contain theSameElementsAs List(1, 2, 3))
-     *                                                                           ^
+     * aMatcher and contain theSameElementsAs List(1, 2, 3)
+     *                      ^
      * </pre>
      */
     def theSameElementsAs(right: GenTraversable[_]): MatcherFactory1[T, Aggregating] = 
@@ -711,8 +711,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) and contain theSameElementsInOrderAs List(1, 2, 3))
-     *                                                                           ^
+     * aMatcher and contain theSameElementsInOrderAs List(1, 2, 3)
+     *                      ^
      * </pre>
      */
     def theSameElementsInOrderAs(right: GenTraversable[_]): MatcherFactory1[T, Sequencing] = 
@@ -722,8 +722,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) and contain inOrderOnly (1, 2, 3))
-     *                                                                           ^
+     * aMatcher and contain inOrderOnly (1, 2, 3)
+     *                      ^
      * </pre>
      */
     def inOrderOnly(right: Any*): MatcherFactory1[T, Sequencing] = 
@@ -733,8 +733,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) and contain allOf (1, 2, 3))
-     *                                                                           ^
+     * aMatcher and contain allOf (1, 2, 3)
+     *                      ^
      * </pre>
      */
     def allOf(right: Any*): MatcherFactory1[T, Aggregating] = 
@@ -744,8 +744,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) and contain inOrder (1, 2, 3))
-     *                                                                           ^
+     * aMatcher and contain inOrder (1, 2, 3)
+     *                      ^
      * </pre>
      */
     def inOrder(right: Any*): MatcherFactory1[T, Sequencing] = 
@@ -755,8 +755,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) and contain oneOf (1, 2, 3))
-     *                                                                           ^
+     * aMatcher and contain oneOf (1, 2, 3)
+     *                      ^
      * </pre>
      */
     def oneOf(right: Any*): MatcherFactory1[T, Containing] = 
@@ -766,8 +766,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) and contain atLeastOneOf (1, 2, 3))
-     *                                                                           ^
+     * aMatcher and contain atLeastOneOf (1, 2, 3)
+     *                      ^
      * </pre>
      */
     def atLeastOneOf(right: Any*): MatcherFactory1[T, Aggregating] = 
@@ -777,8 +777,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) and contain only (1, 2, 3))
-     *                                                                           ^
+     * aMatcher and contain only (1, 2, 3)
+     *                      ^
      * </pre>
      */
     def only(right: Any*): MatcherFactory1[T, Aggregating] = 
@@ -788,8 +788,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) and contain noneOf (1, 2, 3))
-     *                                                                           ^
+     * aMatcher and contain noneOf (1, 2, 3)
+     *                      ^
      * </pre>
      */
     def noneOf(right: Any*): MatcherFactory1[T, Containing] = 
@@ -799,8 +799,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) and contain atMostOneOf (1, 2, 3))
-     *                                                                           ^
+     * aMatcher and contain atMostOneOf (1, 2, 3)
+     *                      ^
      * </pre>
      */
     def atMostOneOf(right: Any*): MatcherFactory1[T, Aggregating] = 
@@ -811,8 +811,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">
-   * Map("one" -&gt; 1, "two" -&gt; 2) should (contain key ("two") and contain key ("one"))
-   *                                                               ^ 
+   * aMatcher and contain key ("one")
+   *          ^
    * </pre>
    */
   def and(containWord: ContainWord): AndContainWord = new AndContainWord
@@ -829,8 +829,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * isFileMock should (be a ('file) and be a ('file))
-     *                                        ^
+     * aMatcher and be a ('file)
+     *                 ^
      * </pre>
      */
     def a(symbol: Symbol): Matcher[T with AnyRef] = and(MatcherWords.be.a(symbol))
@@ -839,8 +839,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax, where <code>file</code> is a <a href="BePropertyMatcher.html"><code>BePropertyMatcher</code></a>:
      *
      * <pre class="stHighlight">
-     * myFile should (be a (file) and be a (file))
-     *                                   ^
+     * aMatcher and be a (file)
+     *                 ^
      * </pre>
      */
     def a[U](bePropertyMatcher: BePropertyMatcher[U]): Matcher[T with AnyRef with U] = and(MatcherWords.be.a(bePropertyMatcher))
@@ -849,8 +849,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax, where <code>positiveNumber</code> and <code>validNumber</code> are <a href="AMatcher.html"><code>AMatcher</code></a>:
      *
      * <pre class="stHighlight">
-     * result should (be a (positiveNumber) and be a (validNumber))
-     *                                             ^
+     * aMatcher and be a (validNumber)
+     *                 ^
      * </pre>
      */
     def a[U](aMatcher: AMatcher[U]): Matcher[T with U] = and(MatcherWords.be.a(aMatcher))
@@ -859,8 +859,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * isAppleMock should (be an ('apple) and be an ('apple))
-     *                                           ^
+     * aMatcher and be an ('apple)
+     *                 ^
      * </pre>
      */
     def an(symbol: Symbol): Matcher[T with AnyRef] = and(MatcherWords.be.an(symbol))
@@ -869,18 +869,18 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax, where <code>apple</code> is a <a href="BePropertyMatcher.html"><code>BePropertyMatcher</code></a>:
      *
      * <pre class="stHighlight">
-     * isAppleMock should (be an (apple) and be an (apple))
-     *                                          ^
+     * aMatcher and be an (apple)
+     *                 ^
      * </pre>
      */
     def an[U](bePropertyMatcher: BePropertyMatcher[U]): Matcher[T with AnyRef with U] = and(MatcherWords.be.an(bePropertyMatcher))
     
     /**
-     * This method enables the following syntax, where <code>oddNumber</code> and <code>integerNumber</code>  are <a href="AnMatcher.html"><code>AnMatcher</code></a>:
+     * This method enables the following syntax, where <code>integerNumber</code> is an <a href="AnMatcher.html"><code>AnMatcher</code></a>:
      *
      * <pre class="stHighlight">
-     * result should (be an (oddNumber) and be an (integerNumber))
-     *                                         ^
+     * aMatcher and be an (integerNumber)
+     *                 ^
      * </pre>
      */
     def an[U](anMatcher: AnMatcher[U]): Matcher[T with U] = and(MatcherWords.be.an(anMatcher))
@@ -889,8 +889,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * obj should (be theSameInstanceAs (string) and be theSameInstanceAs (string))
-     *                                                  ^
+     * aMatcher and be theSameInstanceAs (string)
+     *                 ^
      * </pre>
      */
     def theSameInstanceAs(anyRef: AnyRef): Matcher[T with AnyRef] = and(MatcherWords.be.theSameInstanceAs(anyRef))
@@ -899,8 +899,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax, where <code>fraction</code> refers to a <code>PartialFunction</code>:
      *
      * <pre class="stHighlight">
-     * fraction should (be definedAt (6) and be definedAt (8))
-     *                                          ^
+     * aMatcher and be definedAt (8)
+     *                 ^
      * </pre>
      */
     def definedAt[A, U <: PartialFunction[A, _]](right: A): Matcher[T with U] = and(MatcherWords.be.definedAt(right))
@@ -910,8 +910,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">
-   * isFileMock should (be a ('file) and be a ('file))
-   *                                 ^
+   * aMatcher and be a ('file)
+   *          ^
    * </pre>
    */
   def and(beWord: BeWord): AndBeWord = new AndBeWord
@@ -928,8 +928,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * "1.7" should (fullyMatch regex (decimal) and fullyMatch regex (decimal))
-     *                                                         ^
+     * aMatcher and fullyMatch regex (decimal)
+     *                         ^
      * </pre>
      */
     def regex(regexString: String): Matcher[T with String] = and(MatcherWords.fullyMatch.regex(regexString))
@@ -938,8 +938,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * "abbc" should (fullyMatch regex ("a(b*)c" withGroup "bb") and fullyMatch regex ("a(b*)c" withGroup "bb"))
-     *                                                                          ^
+     * aMatcher and fullyMatch regex ("a(b*)c" withGroup "bb")
+     *                         ^
      * </pre>
      */
     def regex(regexWithGroups: RegexWithGroups): Matcher[T with String] = and(MatcherWords.fullyMatch.regex(regexWithGroups))
@@ -948,8 +948,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * "1.7" should (fullyMatch regex (decimalRegex) and fullyMatch regex (decimalRegex))
-     *                                                              ^
+     * aMatcher and fullyMatch regex (decimalRegex)
+     *                         ^
      * </pre>
      */
     def regex(regex: Regex): Matcher[T with String] = and(MatcherWords.fullyMatch.regex(regex))
@@ -959,8 +959,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">
-   * "1.7" should (fullyMatch regex (decimalRegex) and fullyMatch regex (decimalRegex))
-   *                                               ^
+   * aMatcher and fullyMatch regex (decimalRegex)
+   *          ^
    * </pre>
    */
   def and(fullyMatchWord: FullyMatchWord): AndFullyMatchWord = new AndFullyMatchWord
@@ -977,8 +977,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * "1.7" should (include regex (decimal) and include regex (decimal))
-     *                                                   ^
+     * aMatcher and include regex (decimal)
+     *                      ^
      * </pre>
      */
     def regex(regexString: String): Matcher[T with String] = and(MatcherWords.include.regex(regexString))
@@ -987,8 +987,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * "abbc" should (include regex ("a(b*)c" withGroup "bb") and include regex ("a(b*)c" withGroup "bb"))
-     *                                                                    ^
+     * aMatcher and include regex ("a(b*)c" withGroup "bb")
+     *                      ^
      * </pre>
      */
     def regex(regexWithGroups: RegexWithGroups): Matcher[T with String] = and(MatcherWords.include.regex(regexWithGroups))
@@ -997,8 +997,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * "1.7" should (include regex (decimalRegex) and include regex (decimalRegex))
-     *                                                        ^
+     * aMatcher and include regex (decimalRegex)
+     *                      ^
      * </pre>
      */
     def regex(regex: Regex): Matcher[T with String] = and(MatcherWords.include.regex(regex))
@@ -1008,8 +1008,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">
-   * "hello, world" should (include regex ("hel*o") and include regex ("wor.d"))
-   *                                                ^
+   * aMatcher and include regex ("wor.d")
+   *          ^
    * </pre>
    */
   def and(includeWord: IncludeWord): AndIncludeWord = new AndIncludeWord
@@ -1026,8 +1026,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * "1.7" should (startWith regex (decimal) and startWith regex (decimal))
-     *                                                       ^
+     * aMatcher and startWith regex (decimal)
+     *                        ^
      * </pre>
      */
     def regex(regexString: String): Matcher[T with String] = and(MatcherWords.startWith.regex(regexString))
@@ -1036,8 +1036,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * "abbcdef" should (startWith regex ("a(b*)c" withGroup "bb") and startWith regex ("a(b*)c" withGroup "bb"))
-     *                                                                           ^
+     * aMatcher and startWith regex ("a(b*)c" withGroup "bb")
+     *                        ^
      * </pre>
      */
     def regex(regexWithGroups: RegexWithGroups): Matcher[T with String] = and(MatcherWords.startWith.regex(regexWithGroups))
@@ -1046,8 +1046,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * "1.7" should (startWith regex (decimalRegex) and startWith regex (decimalRegex))
-     *                                                            ^
+     * aMatcher and startWith regex (decimalRegex)
+     *                        ^
      * </pre>
      */
     def regex(regex: Regex): Matcher[T with String] = and(MatcherWords.startWith.regex(regex))
@@ -1057,8 +1057,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">
-   * "1.78" should (have length (4) and startWith regex ("1.7"))
-   *                                ^
+   * aMatcher and startWith regex ("1.7")
+   *          ^
    * </pre>
    */
   def and(startWithWord: StartWithWord): AndStartWithWord = new AndStartWithWord
@@ -1075,8 +1075,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * "1.7" should (endWith regex (decimal) and endWith regex (decimal))
-     *                                                   ^
+     * aMatcher and endWith regex (decimal)
+     *                      ^
      * </pre>
      */
     def regex(regexString: String): Matcher[T with String] = and(MatcherWords.endWith.regex(regexString))
@@ -1085,8 +1085,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * "abcdeef" should (endWith regex ("a(b*)c" withGroup "bb") and endWith regex ("a(b*)c" withGroup "bb"))
-     *                                                                       ^
+     * aMatcher and endWith regex ("a(b*)c" withGroup "bb")
+     *                      ^
      * </pre>
      */
     def regex(regexWithGroups: RegexWithGroups): Matcher[T with String] = and(MatcherWords.endWith.regex(regexWithGroups))
@@ -1095,8 +1095,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * "1.7" should (endWith regex (decimalRegex) and endWith regex (decimalRegex))
-     *                                                        ^
+     * aMatcher and endWith regex (decimalRegex)
+     *                      ^
      * </pre>
      */
     def regex(regex: Regex): Matcher[T with String] = and(MatcherWords.endWith.regex(regex))
@@ -1106,8 +1106,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">
-   * "1.7" should (endWith regex (decimalRegex) and endWith regex (decimalRegex))
-   *                                            ^
+   * aMatcher and endWith regex (decimalRegex)
+   *          ^
    * </pre>
    */
   def and(endWithWord: EndWithWord): AndEndWithWord = new AndEndWithWord
@@ -1124,8 +1124,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * 1 should (not equal (2) and not equal (3 - 1))
-     *                                 ^
+     * aMatcher and not equal (3 - 1)
+     *                  ^
      * </pre>
      */
     def equal(any: Any): MatcherFactory1[T, Equality] =
@@ -1135,8 +1135,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax, for the "primitive" numeric types:
      *
      * <pre class="stHighlight">
-     * sevenDotOh should (not equal (17.0 +- 0.2) and not equal (17.0 +- 0.2))
-     *                                                    ^
+     * aMatcher and not equal (17.0 +- 0.2)
+     *                  ^
      * </pre>
      */
     def equal[U](spread: Spread[U]): Matcher[T with U] = outerInstance.and(MatcherWords.not.equal(spread))
@@ -1145,8 +1145,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * aNullRef should (not be ("hi") and not equal (null))
-     *                                        ^
+     * aMatcher and not equal (null)
+     *                  ^
      * </pre>
      */
     def equal(o: Null): Matcher[T] = {
@@ -1172,8 +1172,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * 1 should (not be (2) and not be (3 - 1))
-     *                              ^
+     * aMatcher and not be (3 - 1)
+     *                  ^
      * </pre>
      */
     def be(any: Any): Matcher[T] =
@@ -1183,8 +1183,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * Array(1, 2) should (not have size (5) and not have length (3))
-     *                                               ^
+     * aMatcher and not have length (3)
+     *                  ^
      * </pre>
      */
     def have(resultOfLengthWordApplication: ResultOfLengthWordApplication): MatcherFactory1[T, Length] =
@@ -1194,8 +1194,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * Array(1, 2) should (not have size (5) and not have size (3))
-     *                                               ^
+     * aMatcher and not have size (3)
+     *                  ^
      * </pre>
      */
     def have(resultOfSizeWordApplication: ResultOfSizeWordApplication): MatcherFactory1[T, Size] =
@@ -1205,8 +1205,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * result should (not have message ("Message from Mars!") and not have message ("Message from Mars!"))
-     *                                                                ^
+     * aMatcher and not have message ("Message from Mars!")
+     *                  ^
      * </pre>
      */
     def have(resultOfMessageWordApplication: ResultOfMessageWordApplication): MatcherFactory1[T, Messaging] =
@@ -1216,8 +1216,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * book should (not have (title ("Moby Dick")) and not have (author ("Melville")))
-     *                                                     ^
+     * aMatcher and not have (author ("Melville"))
+     *                  ^
      * </pre>
      */
     def have[U](firstPropertyMatcher: HavePropertyMatcher[U, _], propertyMatchers: HavePropertyMatcher[U, _]*): Matcher[T with U] =
@@ -1227,8 +1227,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * 5 should (not be &lt; (2) and not be &lt; (6))
-     *                                   ^
+     * aMatcher and not be &lt; (6)
+     *                  ^
      * </pre>
      */
     def be[U](resultOfLessThanComparison: ResultOfLessThanComparison[U]): Matcher[T with U] =
@@ -1238,8 +1238,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * map should (contain key (7) and not be (null))
-     *                                     ^
+     * aMatcher and not be (null)
+     *                  ^
      * </pre>
      */
     def be(o: Null): Matcher[T with AnyRef] = outerInstance.and(MatcherWords.not.be(o))
@@ -1248,8 +1248,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * 7 should (not be &gt; (8) and not be &gt; (6))
-     *                                   ^
+     * aMatcher and not be &gt; (6)
+     *                  ^
      * </pre>
      */
     def be[U](resultOfGreaterThanComparison: ResultOfGreaterThanComparison[U]): Matcher[T with U] =
@@ -1259,8 +1259,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * 2 should (not be &lt;= (1) and not be &lt;= (2))
-     *                                    ^
+     * aMatcher and not be &lt;= (2)
+     *                  ^
      * </pre>
      */
     def be[U](resultOfLessThanOrEqualToComparison: ResultOfLessThanOrEqualToComparison[U]): Matcher[T with U] =
@@ -1270,8 +1270,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * 7 should (not be &gt;= (8) and not be &gt;= (6))
-     *                                    ^
+     * aMatcher and not be &gt;= (6)
+     *                  ^
      * </pre>
      */
     def be[U](resultOfGreaterThanOrEqualToComparison: ResultOfGreaterThanOrEqualToComparison[U]): Matcher[T with U] =
@@ -1281,8 +1281,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * 5 should (not be === (2) and not be === (6))
-     *                                  ^
+     * aMatcher and not be === (6)
+     *                  ^
      * </pre>
      */
     def be(tripleEqualsInvocation: TripleEqualsInvocation[_]): Matcher[T] =
@@ -1292,8 +1292,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * notEmptyMock should (not be ('empty) and not be ('empty))
-     *                                              ^
+     * aMatcher and not be ('empty)
+     *                  ^
      * </pre>
      */
     def be(symbol: Symbol): Matcher[T with AnyRef] = outerInstance.and(MatcherWords.not.be(symbol))
@@ -1302,8 +1302,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax, where <code>odd</code> is a <a href="BeMatcher.html"><code>BeMatcher</code></a>:
      *
      * <pre class="stHighlight">
-     * 2 should (not be (odd) and not be (odd))
-     *                                ^
+     * aMatcher and not be (odd)
+     *                  ^
      * </pre>
      */
     def be[U](beMatcher: BeMatcher[U]): Matcher[T with U] = outerInstance.and(MatcherWords.not.be(beMatcher))
@@ -1312,8 +1312,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax, where <code>directory</code> is a <a href="BePropertyMatcher.html"><code>BePropertyMatcher</code></a>:
      *
      * <pre class="stHighlight">
-     * myFile should (not be (directory) and not be (directory))
-     *                                           ^
+     * aMatcher and not be (directory)
+     *                  ^
      * </pre>
      */
     def be[U](bePropertyMatcher: BePropertyMatcher[U]): Matcher[T with AnyRef with U] = outerInstance.and(MatcherWords.not.be(bePropertyMatcher))
@@ -1322,18 +1322,18 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * isNotFileMock should (not be a ('file) and not be a ('file))
-     *                                                ^
+     * aMatcher and not be a ('file)
+     *                  ^
      * </pre>
      */
     def be(resultOfAWordApplication: ResultOfAWordToSymbolApplication): Matcher[T with AnyRef] = outerInstance.and(MatcherWords.not.be(resultOfAWordApplication))
 
     /**
-     * This method enables the following syntax, where <code>passedMarks</code> and <code>validMarks</code> is a <a href="AMatcher.html"><code>AMatcher</code></a>:
+     * This method enables the following syntax, where <code>validMarks</code> is an <a href="AMatcher.html"><code>AMatcher</code></a>:
      *
      * <pre class="stHighlight">
-     * result should (not be a (passedMarks) and not be a (validMarks))
-     *                                               ^
+     * aMatcher and not be a (validMarks)
+     *                  ^
      * </pre>
      */
     def be[U](resultOfAWordApplication: ResultOfAWordToAMatcherApplication[U]): Matcher[T with U] = outerInstance.and(MatcherWords.not.be(resultOfAWordApplication))
@@ -1342,8 +1342,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax, where <code>directory</code> is a <a href="BePropertyMatcher.html"><code>BePropertyMatcher</code></a>:
      *
      * <pre class="stHighlight">
-     * myFile should (not be a (directory) and not be a (directory))
-     *                                             ^
+     * aMatcher and not be a (directory)
+     *                  ^
      * </pre>
      */
     def be[U <: AnyRef](resultOfAWordApplication: ResultOfAWordToBePropertyMatcherApplication[U]): Matcher[T with U] = outerInstance.and(MatcherWords.not.be(resultOfAWordApplication))
@@ -1352,8 +1352,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * result should (not be a negativeNumber and not be a primeNumber)
-     *                                                ^
+     * aMatcher and not be an ('apple)
+     *                  ^
      * </pre>
      */
     def be(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication): Matcher[T with AnyRef] = outerInstance.and(MatcherWords.not.be(resultOfAnWordApplication))
@@ -1362,18 +1362,18 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax, where <code>directory</code> is a <a href="BePropertyMatcher.html"><code>BePropertyMatcher</code></a>:
      *
      * <pre class="stHighlight">
-     * myFile should (not be an (directory) and not be an (directory))
-     *                                              ^
+     * aMatcher and not be an (directory)
+     *                  ^
      * </pre>
      */
     def be[T <: AnyRef](resultOfAnWordApplication: ResultOfAnWordToBePropertyMatcherApplication[T]) = outerInstance.and(MatcherWords.not.be(resultOfAnWordApplication))
 
     /**
-     * This method enables the following syntax, where <code>oddMarks</code> and <code>invalidMarks</code> is a <a href="AnMatcher.html"><code>AnMatcher</code></a>:
+     * This method enables the following syntax, where <code>invalidMarks</code> is an <a href="AnMatcher.html"><code>AnMatcher</code></a>:
      *
      * <pre class="stHighlight">
-     * result should (not be an (oddMarks) and not be an (invalidMarks))
-     *                                             ^
+     * aMatcher and not be an (invalidMarks)
+     *                  ^
      * </pre>
      */
     def be[U](resultOfAnWordApplication: ResultOfAnWordToAnMatcherApplication[U]): Matcher[T with U] = outerInstance.and(MatcherWords.not.be(resultOfAnWordApplication))
@@ -1382,8 +1382,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * resutl should (not be (2) and not be a [Book])
-     *                                   ^
+     * aMatcher and not be a [Book]
+     *                  ^
      * </pre>
      */
     def be(aType: ResultOfATypeInvocation[_]): Matcher[T] =
@@ -1393,8 +1393,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * resutl should (not be (2) and not be an [Book])
-     *                                   ^
+     * aMatcher and not be an [Apple]
+     *                  ^
      * </pre>
      */
     def be(anType: ResultOfAnTypeInvocation[_]): Matcher[T] =
@@ -1404,8 +1404,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * obj should (not be theSameInstanceAs (otherString) and not be theSameInstanceAs (otherString))
-     *                                                            ^
+     * aMatcher and not be theSameInstanceAs (otherString)
+     *                  ^
      * </pre>
      */
     def be(resultOfTheSameInstanceAsApplication: ResultOfTheSameInstanceAsApplication): Matcher[T with AnyRef] = outerInstance.and(MatcherWords.not.be(resultOfTheSameInstanceAsApplication))
@@ -1414,18 +1414,18 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax, for the "primitive" numeric types:
      *
      * <pre class="stHighlight">
-     * sevenDotOh should (not be (17.0 +- 0.2) and not be (17.0 +- 0.2))
-     *                                                 ^
+     * aMatcher and not be (17.0 +- 0.2)
+     *                  ^
      * </pre>
      */
     def be[U](spread: Spread[U]): Matcher[T with U] = outerInstance.and(MatcherWords.not.be(spread))
     
     /**
-     * This method enables the following syntax, where <code>fraction</code> is a <code>PartialFunction</code>:
+     * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * fraction should (not be definedAt (0) and not be definedAt (8))
-     *                                               ^
+     * aMatcher and not be definedAt (8)
+     *                  ^
      * </pre>
      */
     def be[A, U <: PartialFunction[A, _]](resultOfDefinedAt: ResultOfDefinedAt[A]): Matcher[T with U] =
@@ -1435,8 +1435,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * List(3, 2, 1) should (not be sorted and not be sorted)
-     *                                             ^
+     * aMatcher and not be sorted
+     *                  ^
      * </pre>
      */
     def be(sortedWord: SortedWord) = 
@@ -1446,8 +1446,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * file should (not be writable and not be readable)
-     *                                      ^
+     * aMatcher and not be readable
+     *                  ^
      * </pre>
      */
     def be(readableWord: ReadableWord) = 
@@ -1457,8 +1457,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * file should (not be readable and not be writable)
-     *                                      ^
+     * aMatcher and not be writable
+     *                  ^
      * </pre>
      */
     def be(writableWord: WritableWord) = 
@@ -1468,8 +1468,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * list should (not be readableFile and not be empty)
-     *                                          ^
+     * aMatcher and not be empty
+     *                  ^
      * </pre>
      */
     def be(emptyWord: EmptyWord) = 
@@ -1479,8 +1479,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * result should (not be something and not be defined)
-     *                                         ^
+     * aMatcher and not be defined
+     *                  ^
      * </pre>
      */
     def be(definedWord: DefinedWord) = 
@@ -1490,8 +1490,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * "fred" should (not fullyMatch regex ("bob") and not fullyMatch regex (decimal))
-     *                                                     ^
+     * aMatcher and not fullyMatch regex (decimal)
+     *                  ^
      * </pre>
      */
     def fullyMatch(resultOfRegexWordApplication: ResultOfRegexWordApplication): Matcher[T with String] =
@@ -1501,8 +1501,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * "fred" should (not include regex ("bob") and not include regex (decimal))
-     *                                                  ^
+     * aMatcher and not include regex (decimal)
+     *                  ^
      * </pre>
      */
     def include(resultOfRegexWordApplication: ResultOfRegexWordApplication): Matcher[T with String] =
@@ -1512,8 +1512,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * "fred" should (not include ("bob") and not include ("1.7"))
-     *                                            ^
+     * aMatcher and not include ("1.7")
+     *                  ^
      * </pre>
      */
     def include(expectedSubstring: String): Matcher[T with String] =
@@ -1523,8 +1523,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * "fred" should (not startWith regex ("bob") and not startWith regex (decimal))
-     *                                                    ^
+     * aMatcher and not startWith regex (decimal)
+     *                  ^
      * </pre>
      */
     def startWith(resultOfRegexWordApplication: ResultOfRegexWordApplication): Matcher[T with String] =
@@ -1534,8 +1534,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * "fred" should (not startWith ("red") and not startWith ("1.7"))
-     *                                              ^
+     * aMatcher and not startWith ("1.7")
+     *                  ^
      * </pre>
      */
     def startWith(expectedSubstring: String): Matcher[T with String] =
@@ -1545,8 +1545,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * "fred" should (not endWith regex ("bob") and not endWith regex (decimal))
-     *                                                  ^
+     * aMatcher and not endWith regex (decimal)
+     *                  ^
      * </pre>
      */
     def endWith(resultOfRegexWordApplication: ResultOfRegexWordApplication): Matcher[T with String] =
@@ -1556,8 +1556,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * "fred" should (not endWith ("fre") and not endWith ("1.7"))
-     *                                            ^
+     * aMatcher and not endWith ("1.7")
+     *                  ^
      * </pre>
      */
     def endWith(expectedSubstring: String): Matcher[T with String] =
@@ -1567,8 +1567,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * Array(1, 2) should (not contain (5) and not contain (3))
-     *                                             ^
+     * aMatcher and not contain (3)
+     *                  ^
      * </pre>
      */
     def contain[U](expectedElement: U): MatcherFactory1[T, Containing] =
@@ -1578,8 +1578,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * collection should (contain theSameElementsAs (List(1, 2, 3)) and not contain oneOf (List(8, 1, 2))) 
-     *                                                                      ^
+     * aMatcher and not contain oneOf (List(8, 1, 2))
+     *                  ^
      * </pre>
      */
     def contain(right: ResultOfOneOfApplication): MatcherFactory1[T with Any, Containing] =
@@ -1589,8 +1589,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * collection should (contain theSameElementsAs (List(1, 2, 3)) and not contain atLeastOneOf (List(8, 1, 2))) 
-     *                                                                      ^
+     * aMatcher and not contain atLeastOneOf (List(8, 1, 2))
+     *                  ^
      * </pre>
      */
     def contain(right: ResultOfAtLeastOneOfApplication): MatcherFactory1[T with Any, Aggregating] =
@@ -1600,8 +1600,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * collection should (contain theSameElementsAs (List(1, 2, 3)) and not contain noneOf (List(8, 1, 2))) 
-     *                                                                      ^
+     * aMatcher and not contain noneOf (List(8, 1, 2))
+     *                  ^
      * </pre>
      */
     def contain(right: ResultOfNoneOfApplication): MatcherFactory1[T with Any, Containing] =
@@ -1611,8 +1611,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * collection should (contain theSameElementsAs (List(1, 2, 3)) and not contain theSameElementsAs (List(8, 1, 2))) 
-     *                                                                      ^
+     * aMatcher and not contain theSameElementsAs (List(8, 1, 2))
+     *                  ^
      * </pre>
      */
     def contain(right: ResultOfTheSameElementsAsApplication): MatcherFactory1[T with Any, Aggregating] =
@@ -1622,8 +1622,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * collection should (contain theSameElementsAs (List(1, 2, 3)) and not contain theSameElementsInOrderAs (List(8, 1, 2))) 
-     *                                                                      ^
+     * aMatcher and not contain theSameElementsInOrderAs (List(8, 1, 2))
+     *                  ^
      * </pre>
      */
     def contain(right: ResultOfTheSameElementsInOrderAsApplication): MatcherFactory1[T with Any, Sequencing] =
@@ -1633,8 +1633,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * collection should (contain theSameElementsAs (List(1, 2, 3)) and not contain only (List(8, 1, 2))) 
-     *                                                                      ^
+     * aMatcher and not contain only (List(8, 1, 2))
+     *                  ^
      * </pre>
      */
     def contain(right: ResultOfOnlyApplication): MatcherFactory1[T with Any, Aggregating] =
@@ -1655,8 +1655,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * collection should (contain theSameElementsAs (List(1, 2, 3)) and not contain allOf (8, 1, 2))
-     *                                                                      ^
+     * aMatcher and not contain allOf (8, 1, 2)
+     *                  ^
      * </pre>
      */
     def contain(right: ResultOfAllOfApplication): MatcherFactory1[T with Any, Aggregating] =
@@ -1666,8 +1666,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * collection should (contain theSameElementsAs (List(1, 2, 3)) and not contain inOrder (8, 1, 2))
-     *                                                                      ^
+     * aMatcher and not contain inOrder (8, 1, 2)
+     *                  ^
      * </pre>
      */
     def contain(right: ResultOfInOrderApplication): MatcherFactory1[T, Sequencing] =
@@ -1677,8 +1677,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * collection should (contain theSameElementsAs (List(1, 2, 3)) and not contain atMostOneOf (8, 1, 2))
-     *                                                                      ^
+     * aMatcher and not contain atMostOneOf (8, 1, 2)
+     *                          ^
      * </pre>
      */
     def contain(right: ResultOfAtMostOneOfApplication): MatcherFactory1[T with Any, Aggregating] =
@@ -1689,8 +1689,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax given a <code>Matcher</code>:
      *
      * <pre class="stHighlight">
-     * (aMatcher and not contain key ("three"))
-     *                   ^
+     * aMatcher and not contain key ("three")
+     *                  ^
      * </pre>
      */
     def contain(resultOfKeyWordApplication: ResultOfKeyWordApplication): MatcherFactory1[T, KeyMapping] =
@@ -1700,8 +1700,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax given a <code>Matcher</code>:
      *
      * <pre class="stHighlight">
-     * (aMatcher and not contain value (3))
-     *                   ^
+     * aMatcher and not contain value (3)
+     *                  ^
      * </pre>
      */
     def contain(resultOfValueWordApplication: ResultOfValueWordApplication): MatcherFactory1[T, ValueMapping] =
@@ -1712,8 +1712,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">
-   * Map("one" -&gt; 1, "two" -&gt; 2) should (not contain value (5) and not contain value (3))
-   *                                                                 ^
+   * aMatcher and not contain value (3)
+   *          ^
    * </pre>
    */
   def and(notWord: NotWord): AndNotWord = new AndNotWord
@@ -1722,8 +1722,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">
-   * file should (be (existFile) and exist)
-   *                             ^
+   * aMatcher and exist
+   *          ^
    * </pre>
    */
   def and(existWord: ExistWord): MatcherFactory1[T, Existence] = 
@@ -1733,8 +1733,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">
-   * file should (be (imaginaryFile) and not (exist))
-   *                                 ^
+   * aMatcher and not (exist)
+   *          ^
    * </pre>
    */
   def and(notExist: ResultOfNotExist): MatcherFactory1[T, Existence] = 
@@ -1752,8 +1752,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * Array(1, 2) should (have length (2) or have length (3 - 1))
-     *                                             ^
+     * aMatcher or have length (3 - 1)
+     *                  ^
      * </pre>
      */
     def length(expectedLength: Long): MatcherFactory1[T, Length] = or(MatcherWords.have.length(expectedLength))
@@ -1762,8 +1762,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * Array(1, 2) should (have size (2) or have size (3 - 1))
-     *                                           ^
+     * aMatcher or have size (3 - 1)
+     *                  ^
      * </pre>
      */
     def size(expectedSize: Long): MatcherFactory1[T, Size] = or(MatcherWords.have.size(expectedSize))
@@ -1772,8 +1772,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * result should (have message ("Message from Mars!") or have message ("Message from Mars!"))
-     *                                                            ^
+     * aMatcher or have message ("Message from Mars!")
+     *                  ^
      * </pre>
      */
     def message(expectedMessage: String): MatcherFactory1[T, Messaging] = or(MatcherWords.have.message(expectedMessage))
@@ -1783,8 +1783,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">
-   * Array(1, 2) should (have size (2) or have size (3 - 1))
-   *                                   ^
+   * aMatcher or have size (3 - 1)
+   *          ^
    * </pre>
    */
   def or(haveWord: HaveWord): OrHaveWord = new OrHaveWord
@@ -1801,8 +1801,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * Array(1, 2) should (contain (2) or contain (3 - 1))
-     *                                            ^
+     * aMatcher or contain (3 - 1)
+     *                     ^
      * </pre>
      */
     def apply[U](expectedElement: Any): MatcherFactory1[T with U, Containing] = outerInstance.or(MatcherWords.contain(expectedElement))
@@ -1811,8 +1811,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * Map("one" -&gt; 1, "two" -&gt; 2) should (contain key ("cat") or contain key ("one"))
-     *                                                                          ^
+     * aMatcher or contain key ("one")
+     *                     ^
      * </pre>
      */
     def key(expectedKey: Any): MatcherFactory1[T, KeyMapping] = outerInstance.or(MatcherWords.contain.key(expectedKey))
@@ -1821,8 +1821,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * Map("one" -&gt; 1, "two" -&gt; 2) should (contain value (7) or contain value (1))
-     *                                                                        ^
+     * aMatcher or contain value (1)
+     *                     ^
      * </pre>
      */
     def value(expectedValue: Any): MatcherFactory1[T, ValueMapping] = outerInstance.or(MatcherWords.contain.value(expectedValue))
@@ -1831,8 +1831,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) or contain theSameElementsAs List(1, 2, 3))
-     *                                                                          ^
+     * aMatcher or contain theSameElementsAs List(1, 2, 3)
+     *                     ^
      * </pre>
      */
     def theSameElementsAs(right: GenTraversable[_]): MatcherFactory1[T, Aggregating] = 
@@ -1842,8 +1842,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) or contain theSameElementsInOrderAs List(1, 2, 3))
-     *                                                                          ^
+     * aMatcher or contain theSameElementsInOrderAs List(1, 2, 3)
+     *                     ^
      * </pre>
      */
     def theSameElementsInOrderAs(right: GenTraversable[_]): MatcherFactory1[T, Sequencing] = 
@@ -1853,8 +1853,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) or contain allOf (1, 2, 3))
-     *                                                                          ^
+     * aMatcher or contain allOf (1, 2, 3)
+     *                     ^
      * </pre>
      */
     def allOf(right: Any*): MatcherFactory1[T, Aggregating] = 
@@ -1864,8 +1864,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) or contain inOrder (1, 2, 3))
-     *                                                                          ^
+     * aMatcher or contain inOrder (1, 2, 3)
+     *                     ^
      * </pre>
      */
     def inOrder(right: Any*): MatcherFactory1[T, Sequencing] = 
@@ -1875,8 +1875,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) or contain oneOf (1, 2, 3))
-     *                                                                          ^
+     * aMatcher or contain oneOf (1, 2, 3)
+     *                     ^
      * </pre>
      */
     def oneOf(right: Any*): MatcherFactory1[T, Containing] = 
@@ -1886,8 +1886,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) or contain atLeastOneOf (1, 2, 3))
-     *                                                                          ^
+     * aMatcher or contain atLeastOneOf (1, 2, 3)
+     *                     ^
      * </pre>
      */
     def atLeastOneOf(right: Any*): MatcherFactory1[T, Aggregating] = 
@@ -1897,8 +1897,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) or contain only (1, 2, 3))
-     *                                                                          ^
+     * aMatcher or contain only (1, 2, 3)
+     *                     ^
      * </pre>
      */
     def only(right: Any*): MatcherFactory1[T, Aggregating] = 
@@ -1919,8 +1919,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) or contain noneOf (1, 2, 3))
-     *                                                                          ^
+     * aMatcher or contain noneOf (1, 2, 3)
+     *                     ^
      * </pre>
      */
     def noneOf(right: Any*): MatcherFactory1[T, Containing] = 
@@ -1930,8 +1930,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * Array(1, 2, 3) should (contain theSameElementAs List(3, 2, 1) or contain atMostOneOf (1, 2, 3))
-     *                                                                          ^
+     * aMatcher or contain atMostOneOf (1, 2, 3)
+     *                     ^
      * </pre>
      */
     def atMostOneOf(right: Any*): MatcherFactory1[T, Aggregating] = 
@@ -1942,8 +1942,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">
-   * Map("one" -&gt; 1, "two" -&gt; 2) should (contain value (7) or contain value (1))
-   *                                                             ^
+   * aMatcher or contain value (1)
+   *          ^
    * </pre>
    */
   def or(containWord: ContainWord): OrContainWord = new OrContainWord
@@ -1960,8 +1960,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * isFileMock should (be a ('file) or be a ('directory))
-     *                                       ^
+     * aMatcher or be a ('directory)
+     *                ^
      * </pre>
      */
     def a(symbol: Symbol): Matcher[T with AnyRef] = or(MatcherWords.be.a(symbol))
@@ -1970,8 +1970,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax, where <code>directory</code> is a <a href="BePropertyMatcher.html"><code>BePropertyMatcher</code></a>:
      *
      * <pre class="stHighlight">
-     * isFileMock should (be a (file) or be a (directory))
-     *                                      ^
+     * aMatcher or be a (directory)
+     *                ^
      * </pre>
      */
     def a[U](bePropertyMatcher: BePropertyMatcher[U]): Matcher[T with AnyRef with U] = or(MatcherWords.be.a(bePropertyMatcher))
@@ -1980,8 +1980,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax, where <code>positiveNumber</code> and <code>validNumber</code> are <a href="AMatcher.html"><code>AMatcher</code></a>:
      *
      * <pre class="stHighlight">
-     * result should (be a (positiveNumber) or be a (validNumber))
-     *                                            ^
+     * aMatcher or be a (validNumber)
+     *                ^
      * </pre>
      */
     def a[U](aMatcher: AMatcher[U]): Matcher[T with U] = or(MatcherWords.be.a(aMatcher))
@@ -1990,8 +1990,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * appleMock should (be an ('orange) or be an ('apple))
-     *                                         ^
+     * aMatcher or be an ('apple)
+     *                ^
      * </pre>
      */
     def an(symbol: Symbol): Matcher[T with AnyRef] = or(MatcherWords.be.an(symbol))
@@ -2000,8 +2000,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax, where <code>orange</code> and <code>apple</code> are <a href="BePropertyMatcher.html"><code>BePropertyMatcher</code></a>:
      *
      * <pre class="stHighlight">
-     * appleMock should (be an (orange) or be an (apple))
-     *                                        ^
+     * aMatcher or be an (apple)
+     *                ^
      * </pre>
      */
     def an[U](bePropertyMatcher: BePropertyMatcher[U]): Matcher[T with AnyRef with U] = or(MatcherWords.be.an(bePropertyMatcher))
@@ -2010,8 +2010,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax, where <code>oddNumber</code> and <code>integerNumber</code> are <a href="AnMatcher.html"><code>AnMatcher</code></a>:
      *
      * <pre class="stHighlight">
-     * result should (be an (oddNumber) or be an (integerNumber))
-     *                                        ^
+     * aMatcher or be an (integerNumber)
+     *                ^
      * </pre>
      */
     def an[U](anMatcher: AnMatcher[U]): Matcher[T with U] = or(MatcherWords.be.an(anMatcher))
@@ -2020,8 +2020,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * obj should (be theSameInstanceAs (string) or be theSameInstanceAs (otherString))
-     *                                                 ^
+     * aMatcher or be theSameInstanceAs (otherString)
+     *                ^
      * </pre>
      */
     def theSameInstanceAs(anyRef: AnyRef): Matcher[T with AnyRef] = or(MatcherWords.be.theSameInstanceAs(anyRef))
@@ -2030,8 +2030,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax, where <code>fraction</code> refers to a <code>PartialFunction</code>:
      *
      * <pre class="stHighlight">
-     * fraction should (be definedAt (6) or be definedAt (8))
-     *                                         ^
+     * aMatcher or be definedAt (8)
+     *                ^
      * </pre>
      */
     def definedAt[A, U <: PartialFunction[A, _]](right: A): Matcher[T with U] = or(MatcherWords.be.definedAt(right))
@@ -2041,8 +2041,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">
-   * isFileMock should (be a ('file) or be a ('directory))
-   *                                 ^
+   * aMatcher or be a ('directory)
+   *          ^
    * </pre>
    */
   def or(beWord: BeWord): OrBeWord = new OrBeWord
@@ -2059,8 +2059,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * "1.7" should (fullyMatch regex ("hello") or fullyMatch regex (decimal))
-     *                                                        ^
+     * aMatcher or fullyMatch regex (decimal)
+     *                        ^
      * </pre>
      */
     def regex(regexString: String): Matcher[T with String] = or(MatcherWords.fullyMatch.regex(regexString))
@@ -2069,8 +2069,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * "abbc" should (fullyMatch regex ("a(b*)c" withGroup "bbb") or fullyMatch regex ("a(b*)c" withGroup "bb"))
-     *                                                                          ^
+     * aMatcher or fullyMatch regex ("a(b*)c" withGroup "bb")
+     *                        ^
      * </pre>
      */
     def regex(regexWithGroups: RegexWithGroups): Matcher[T with String] = or(MatcherWords.fullyMatch.regex(regexWithGroups))
@@ -2079,8 +2079,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * "1.7" should (fullyMatch regex ("hello") or fullyMatch regex (decimal))
-     *                                                        ^
+     * aMatcher or fullyMatch regex (decimal)
+     *                        ^
      * </pre>
      */
     def regex(regex: Regex): Matcher[T with String] = or(MatcherWords.fullyMatch.regex(regex))
@@ -2090,8 +2090,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">
-   * "1.7" should (fullyMatch regex ("hello") or fullyMatch regex (decimal))
-   *                                          ^
+   * aMatcher or fullyMatch regex (decimal)
+   *          ^
    * </pre>
    */
   def or(fullyMatchWord: FullyMatchWord): OrFullyMatchWord = new OrFullyMatchWord
@@ -2108,8 +2108,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * "1.7" should (include regex ("hello") or include regex (decimal))
-     *                                                  ^
+     * aMatcher or include regex (decimal)
+     *                     ^
      * </pre>
      */
     def regex(regexString: String): Matcher[T with String] = or(MatcherWords.include.regex(regexString))
@@ -2118,8 +2118,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * "abbc" should (include regex ("a(b*)c" withGroup "bbb") or include regex ("a(b*)c" withGroup "bb"))
-     *                                                                    ^
+     * aMatcher or include regex ("a(b*)c" withGroup "bb")
+     *                     ^
      * </pre>
      */
     def regex(regexWithGroups: RegexWithGroups): Matcher[T with String] = or(MatcherWords.include.regex(regexWithGroups))
@@ -2128,8 +2128,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * "1.7" should (include regex ("hello") or include regex (decimal))
-     *                                                  ^
+     * aMatcher or include regex (decimal)
+     *                     ^
      * </pre>
      */
     def regex(regex: Regex): Matcher[T with String] = or(MatcherWords.include.regex(regex))
@@ -2139,8 +2139,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">
-   * "a1.7b" should (include regex ("1.7") or include regex ("1.7"))
-   *                                       ^
+   * aMatcher or include regex ("1.7")
+   *          ^
    * </pre>
    */
   def or(includeWord: IncludeWord): OrIncludeWord = new OrIncludeWord
@@ -2157,8 +2157,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * "1.7" should (startWith regex ("hello") or startWith regex (decimal))
-     *                                                      ^
+     * aMatcher or startWith regex (decimal)
+     *                       ^
      * </pre>
      */
     def regex(regexString: String): Matcher[T with String] = or(MatcherWords.startWith.regex(regexString))
@@ -2167,8 +2167,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * "abbcdef" should (startWith regex ("a(b*)c" withGroup "bb") or startWith regex ("a(b*)c" withGroup "bb"))
-     *                                                                          ^
+     * aMatcher or startWith regex ("a(b*)c" withGroup "bb")
+     *                       ^
      * </pre>
      */
     def regex(regexWithGroups: RegexWithGroups): Matcher[T with String] = or(MatcherWords.startWith.regex(regexWithGroups))
@@ -2177,8 +2177,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * "1.7" should (startWith regex ("hello") or startWith regex (decimal))
-     *                                                      ^
+     * aMatcher or startWith regex (decimal)
+     *                       ^
      * </pre>
      */
     def regex(regex: Regex): Matcher[T with String] = or(MatcherWords.startWith.regex(regex))
@@ -2188,8 +2188,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">
-   * "1.7" should (startWith regex ("hello") or startWith regex ("1.7"))
-   *                                         ^
+   * aMatcher or startWith regex ("1.7")
+   *          ^
    * </pre>
    */
   def or(startWithWord: StartWithWord): OrStartWithWord = new OrStartWithWord
@@ -2206,8 +2206,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * "1.7" should (endWith regex ("hello") or endWith regex (decimal))
-     *                                                  ^
+     * aMatcher or endWith regex (decimal)
+     *                     ^
      * </pre>
      */
     def regex(regexString: String): Matcher[T with String] = or(MatcherWords.endWith.regex(regexString))
@@ -2216,8 +2216,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * "abcdeef" should (endWith regex ("d(e*)f" withGroup "ee") or endWith regex ("d(e*)f" withGroup "ee"))
-     *                                                                      ^
+     * aMatcher or endWith regex ("d(e*)f" withGroup "ee")
+     *                     ^
      * </pre>
      */
     def regex(regexWithGroups: RegexWithGroups): Matcher[T with String] = or(MatcherWords.endWith.regex(regexWithGroups))
@@ -2226,8 +2226,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * "1.7" should (endWith regex ("hello") or endWith regex (decimal))
-     *                                                  ^
+     * aMatcher or endWith regex (decimal)
+     *                     ^
      * </pre>
      */
     def regex(regex: Regex): Matcher[T with String] = or(MatcherWords.endWith.regex(regex))
@@ -2237,8 +2237,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">
-   * "1.7b" should (endWith regex ("hello") or endWith regex ("7b"))
-   *                                        ^
+   * aMatcher or endWith regex ("7b")
+   *          ^
    * </pre>
    */
   def or(endWithWord: EndWithWord): OrEndWithWord = new OrEndWithWord
@@ -2255,8 +2255,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * 1 should (not equal (1) or not equal (2))
-     *                                ^
+     * aMatcher or not equal (2)
+     *                 ^
      * </pre>
      */
     def equal(any: Any): MatcherFactory1[T, Equality] =
@@ -2266,8 +2266,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax for the "primitive" numeric types:
      *
      * <pre class="stHighlight">
-     * sevenDotOh should (not equal (17.0 +- 0.2) or not equal (17.0 +- 0.2))
-     *                                                   ^
+     * aMatcher or not equal (17.0 +- 0.2)
+     *                 ^
      * </pre>
      */
     def equal[U](spread: Spread[U]): Matcher[T with U] = outerInstance.or(MatcherWords.not.equal(spread))
@@ -2276,8 +2276,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * aNullRef should (not equal (null) or not equal (null))
-     *                                          ^
+     * aMatcher or not equal (null)
+     *                 ^
      * </pre>
      */
     def equal(o: Null): Matcher[T] = {
@@ -2303,8 +2303,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * 1 should (not be (1) or not be (2))
-     *                             ^
+     * aMatcher or not be (2)
+     *                 ^
      * </pre>
      */
     def be(any: Any): Matcher[T] =
@@ -2314,8 +2314,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * Array(1, 2) should (not have length (2) or not have length (3))
-     *                                                ^
+     * aMatcher or not have length (3)
+     *                 ^
      * </pre>
      */
     def have(resultOfLengthWordApplication: ResultOfLengthWordApplication): MatcherFactory1[T, Length] =
@@ -2325,8 +2325,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * Array(1, 2) should (not have size (2) or not have size (3))
-     *                                              ^
+     * aMatcher or not have size (3)
+     *                 ^
      * </pre>
      */
     def have(resultOfSizeWordApplication: ResultOfSizeWordApplication): MatcherFactory1[T, Size] =
@@ -2336,8 +2336,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * result should (not have message ("Message from Mars!") or not have message ("Message from Mars!"))
-     *                                                               ^
+     * aMatcher or not have message ("Message from Mars!")
+     *                 ^
      * </pre>
      */
     def have(resultOfMessageWordApplication: ResultOfMessageWordApplication): MatcherFactory1[T, Messaging] =
@@ -2347,8 +2347,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * book should (not have (title ("Moby Dick")) or not have (author ("Melville")))
-     *                                                    ^
+     * aMatcher or not have (author ("Melville"))
+     *                 ^
      * </pre>
      */
     def have[U](firstPropertyMatcher: HavePropertyMatcher[U, _], propertyMatchers: HavePropertyMatcher[U, _]*): Matcher[T with U] =
@@ -2358,8 +2358,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * map should (contain key (7) or not be (null))
-     *                                    ^
+     * aMatcher or not be (null)
+     *                 ^
      * </pre>
      */
     def be(o: Null): Matcher[T with AnyRef] = outerInstance.or(MatcherWords.not.be(o))
@@ -2368,8 +2368,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * 5 should (not be &lt; (7) or not be &lt; (8))
-     *                                  ^
+     * aMatcher or not be &lt; (8)
+     *                 ^
      * </pre>
      */
     def be[U](resultOfLessThanComparison: ResultOfLessThanComparison[U]): Matcher[T with U] =
@@ -2379,8 +2379,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * 7 should (not be &gt; (5) or not be &gt; (6))
-     *                                  ^
+     * aMatcher or not be &gt; (6)
+     *                 ^
      * </pre>
      */
     def be[U](resultOfGreaterThanComparison: ResultOfGreaterThanComparison[U]): Matcher[T with U] =
@@ -2390,8 +2390,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * 2 should (not be &lt;= (3) or not be &lt;= (2))
-     *                                   ^
+     * aMatcher or not be &lt;= (2)
+     *                 ^
      * </pre>
      */
     def be[U](resultOfLessThanOrEqualToComparison: ResultOfLessThanOrEqualToComparison[U]): Matcher[T with U] =
@@ -2401,8 +2401,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * 8 should (not be &gt;= (7) or not be &gt;= (6))
-     *                                   ^
+     * aMatcher or not be &gt;= (6)
+     *                 ^
      * </pre>
      */
     def be[U](resultOfGreaterThanOrEqualToComparison: ResultOfGreaterThanOrEqualToComparison[U]): Matcher[T with U] =
@@ -2412,8 +2412,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * 5 should (not be === (7) or not be === (8))
-     *                                 ^
+     * aMatcher or not be === (8)
+     *                 ^
      * </pre>
      */
     def be(tripleEqualsInvocation: TripleEqualsInvocation[_]): Matcher[T] =
@@ -2423,28 +2423,28 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * notEmptyMock should (not be ('full) or not be ('empty))
-     *                                            ^
+     * aMatcher or not be ('empty)
+     *                 ^
      * </pre>
      */
     def be(symbol: Symbol): Matcher[T with AnyRef] = outerInstance.or(MatcherWords.not.be(symbol))
 
     /**
-     * This method enables the following syntax, where <code>even</code> and <code>odd</code> are <a href="BeMatcher.html"><code>BeMatcher</code></a>:
+     * This method enables the following syntax, where <code>odd</code> is a <a href="BeMatcher.html"><code>BeMatcher</code></a>:
      *
      * <pre class="stHighlight">
-     * 2 should (not be (even) or not be (odd))
-     *                                ^
+     * aMatcher or not be (odd)
+     *                 ^
      * </pre>
      */
     def be[U](beMatcher: BeMatcher[U]): Matcher[T with U] = outerInstance.or(MatcherWords.not.be(beMatcher))
 
     /**
-     * This method enables the following syntax, where <code>directory</code> and <code>file</code> are <a href="BePropertyMatcher.html"><code>BePropertyMatcher</code></a>:
+     * This method enables the following syntax, where <code>file</code> is a <a href="BePropertyMatcher.html"><code>BePropertyMatcher</code></a>:
      *
      * <pre class="stHighlight">
-     * myFile should (not be (directory) or not be (file))
-     *                                          ^
+     * aMatcher or not be (file)
+     *                 ^
      * </pre>
      */
     def be[U](bePropertyMatcher: BePropertyMatcher[U]): Matcher[T with AnyRef with U] = outerInstance.or(MatcherWords.not.be(bePropertyMatcher))
@@ -2453,28 +2453,28 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * isNotFileMock should (not be a ('directory) or not be a ('file))
-     *                                                    ^
+     * aMatcher or not be a ('file)
+     *                 ^
      * </pre>
      */
     def be(resultOfAWordApplication: ResultOfAWordToSymbolApplication): Matcher[T with AnyRef] = outerInstance.or(MatcherWords.not.be(resultOfAWordApplication))
 
     /**
-     * This method enables the following syntax, where <code>passedMark</code> and <code>validMarks</code> are <a href="AMatcher.html"><code>AMatcher</code></a>:
+     * This method enables the following syntax, where <code>validMarks</code> is an <a href="AMatcher.html"><code>AMatcher</code></a>:
      *
      * <pre class="stHighlight">
-     * result should (not be a (passedMarks) or not be a (validMarks))
-     *                                              ^
+     * aMatcher or not be a (validMarks)
+     *                 ^
      * </pre>
      */
     def be[U](resultOfAWordApplication: ResultOfAWordToAMatcherApplication[U]): Matcher[T with U] = outerInstance.or(MatcherWords.not.be(resultOfAWordApplication))
     
     /**
-     * This method enables the following syntax, where <code>directory</code> and <code>file</code> are <a href="BePropertyMatcher.html"><code>BePropertyMatcher</code></a>:
+     * This method enables the following syntax, where <code>file</code> is a <a href="BePropertyMatcher.html"><code>BePropertyMatcher</code></a>:
      *
      * <pre class="stHighlight">
-     * myFile should (not be a (directory) or not be a (file))
-     *                                            ^
+     * aMatcher or not be a (file)
+     *                 ^
      * </pre>
      */
     def be[U <: AnyRef](resultOfAWordApplication: ResultOfAWordToBePropertyMatcherApplication[U]): Matcher[T with U] = outerInstance.or(MatcherWords.not.be(resultOfAWordApplication))
@@ -2483,28 +2483,28 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * notAppleMock should (not be an ('apple) or not be an ('apple))
-     *                                                ^
+     * aMatcher or not be an ('apple)
+     *                    ^
      * </pre>
      */
     def be(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication): Matcher[T with AnyRef] = outerInstance.or(MatcherWords.not.be(resultOfAnWordApplication))
 
     /**
-     * This method enables the following syntax, where <code>directory</code> and <code>file</code> are <a href="BePropertyMatcher.html"><code>BePropertyMatcher</code></a>:
+     * This method enables the following syntax, where <code>apple</code> is a <a href="BePropertyMatcher.html"><code>BePropertyMatcher</code></a>:
      *
      * <pre class="stHighlight">
-     * myFile should (not be an (directory) or not be an (file))
-     *                                             ^
+     * aMatcher or not be an (apple)
+     *                 ^
      * </pre>
      */
     def be[U <: AnyRef](resultOfAnWordApplication: ResultOfAnWordToBePropertyMatcherApplication[U]): Matcher[T with U] = outerInstance.or(MatcherWords.not.be(resultOfAnWordApplication))
 
     /**
-     * This method enables the following syntax, where <code>oddMarks</code> and <code>invalidMarks</code> are <a href="AnMatcher.html"><code>AnMatcher</code></a>:
+     * This method enables the following syntax, where <code>invalidMarks</code> is an <a href="AnMatcher.html"><code>AnMatcher</code></a>:
      *
      * <pre class="stHighlight">
-     * result should (not be an (oddMarks) and not be an (invalidMarks))
-     *                                             ^
+     * aMatcher and not be an (invalidMarks)
+     *                  ^
      * </pre>
      */
     def be[U](resultOfAnWordApplication: ResultOfAnWordToAnMatcherApplication[U]): Matcher[T with U] = outerInstance.or(MatcherWords.not.be(resultOfAnWordApplication))
@@ -2513,8 +2513,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * result should (not be (2) or not be a [Book])
-     *                                  ^
+     * aMatcher or not be a [Book]
+     *                 ^
      * </pre>
      */
     def be(aType: ResultOfATypeInvocation[_]): Matcher[T] = outerInstance.or(MatcherWords.not.apply(MatcherWords.be(aType)))
@@ -2523,8 +2523,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * result should (not be (2) or not be an [Book])
-     *                                  ^
+     * aMatcher or not be an [Book]
+     *                 ^
      * </pre>
      */
     def be(anType: ResultOfAnTypeInvocation[_]): Matcher[T] = outerInstance.or(MatcherWords.not.apply(MatcherWords.be(anType)))
@@ -2533,8 +2533,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * obj should (not be theSameInstanceAs (otherString) or not be theSameInstanceAs (string))
-     *                                                           ^
+     * aMatcher or not be theSameInstanceAs (string)
+     *                    ^
      * </pre>
      */
     def be(resultOfTheSameInstanceAsApplication: ResultOfTheSameInstanceAsApplication): Matcher[T with AnyRef] = outerInstance.or(MatcherWords.not.be(resultOfTheSameInstanceAsApplication))
@@ -2543,18 +2543,18 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax for the "primitive" numeric types:
      *
      * <pre class="stHighlight">
-     * sevenDotOh should (not be (17.0 +- 0.2) or not be (17.0 +- 0.2))
-     *                                                ^
+     * aMatcher or not be (17.0 +- 0.2)
+     *                 ^
      * </pre>
      */
     def be[U](spread: Spread[U]): Matcher[T with U] = outerInstance.or(MatcherWords.not.be(spread))
     
     /**
-     * This method enables the following syntax, where <code>fraction</code> is a <code>PartialFunction</code>:
+     * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * fraction should (not be definedAt (0) or not be definedAt (8))
-     *                                              ^
+     * aMatcher or not be definedAt (8)
+     *                 ^
      * </pre>
      */
     def be[A, U <: PartialFunction[A, _]](resultOfDefinedAt: ResultOfDefinedAt[A]): Matcher[T with U] =
@@ -2564,8 +2564,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * list should (not be definedAt (3) or not be sorted)
-     *                                          ^
+     * aMatcher or not be sorted
+     *                 ^
      * </pre>
      */
     def be(sortedWord: SortedWord) = 
@@ -2575,8 +2575,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * file should (not be writable or not be readable)
-     *                                     ^
+     * aMatcher or not be readable
+     *                 ^
      * </pre>
      */
     def be(readableWord: ReadableWord) = 
@@ -2586,8 +2586,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * list should (not be definedAt (3) or not be empty)
-     *                                          ^
+     * aMatcher or not be empty
+     *                 ^
      * </pre>
      */
     def be(emptyWord: EmptyWord) = 
@@ -2597,8 +2597,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * file should (not be readable or not be writable)
-     *                                     ^
+     * aMatcher or not be writable
+     *                 ^
      * </pre>
      */
     def be(writableWord: WritableWord) = 
@@ -2608,8 +2608,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * result should (not be something or not be defined)
-     *                                        ^
+     * aMatcher or not be defined
+     *                 ^
      * </pre>
      */
     def be(definedWord: DefinedWord) = 
@@ -2619,8 +2619,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * "fred" should (not fullyMatch regex ("fred") or not fullyMatch regex (decimal))
-     *                                                     ^
+     * aMatcher or not fullyMatch regex (decimal)
+     *                 ^
      * </pre>
      */
     def fullyMatch(resultOfRegexWordApplication: ResultOfRegexWordApplication): Matcher[T with String] =
@@ -2630,8 +2630,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * "fred" should (not include regex ("fred") or not include regex (decimal))
-     *                                                  ^
+     * aMatcher or not include regex (decimal)
+     *                 ^
      * </pre>
      */
     def include(resultOfRegexWordApplication: ResultOfRegexWordApplication): Matcher[T with String] =
@@ -2641,8 +2641,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * "fred" should (not include ("bob") or not include ("1.7"))
-     *                                           ^
+     * aMatcher or not include ("1.7")
+     *                 ^
      * </pre>
      */
     def include(expectedSubstring: String): Matcher[T with String] =
@@ -2652,8 +2652,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * "fred" should (not startWith regex ("bob") or not startWith regex (decimal))
-     *                                                   ^
+     * aMatcher or not startWith regex (decimal)
+     *                 ^
      * </pre>
      */
     def startWith(resultOfRegexWordApplication: ResultOfRegexWordApplication): Matcher[T with String] =
@@ -2663,8 +2663,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * "fred" should (not startWith ("fred") or not startWith ("1.7"))
-     *                                              ^
+     * aMatcher or not startWith ("1.7")
+     *                 ^
      * </pre>
      */
     def startWith(expectedSubstring: String): Matcher[T with String] =
@@ -2674,8 +2674,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * "fred" should (not endWith regex ("bob") or not endWith regex (decimal))
-     *                                                 ^
+     * aMatcher or not endWith regex (decimal)
+     *                 ^
      * </pre>
      */
     def endWith(resultOfRegexWordApplication: ResultOfRegexWordApplication): Matcher[T with String] =
@@ -2685,8 +2685,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * "fred" should (not endWith ("fred") or not endWith ("1.7"))
-     *                                            ^
+     * aMatcher or not endWith ("1.7")
+     *                 ^
      * </pre>
      */
     def endWith(expectedSubstring: String): Matcher[T with String] =
@@ -2696,8 +2696,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * Array(1, 2) should (not contain (1) or not contain (3))
-     *                                            ^
+     * aMatcher or not contain (3)
+     *                 ^
      * </pre>
      */
     def contain[U](expectedElement: U): MatcherFactory1[T, Containing] =
@@ -2734,8 +2734,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * collection should (contain theSameElementsAs (List(1, 2, 3)) or not contain oneOf (8, 1, 2))
-     *                                                                     ^
+     * aMatcher or not contain oneOf (8, 1, 2)
+     *                 ^
      * </pre>
      */
     def contain(right: ResultOfOneOfApplication): MatcherFactory1[T, Containing] =
@@ -2745,8 +2745,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * collection should (contain theSameElementsAs (List(1, 2, 3)) or not contain atLeastOneOf (8, 1, 2))
-     *                                                                     ^
+     * aMatcher or not contain atLeastOneOf (8, 1, 2)
+     *                 ^
      * </pre>
      */
     def contain(right: ResultOfAtLeastOneOfApplication): MatcherFactory1[T, Aggregating] =
@@ -2756,8 +2756,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * collection should (contain theSameElementsAs (List(1, 2, 3)) or not contain noneOf (8, 1, 2))
-     *                                                                     ^
+     * aMatcher or not contain noneOf (8, 1, 2)
+     *                 ^
      * </pre>
      */
     def contain(right: ResultOfNoneOfApplication): MatcherFactory1[T, Containing] =
@@ -2767,8 +2767,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * collection should (contain theSameElementsAs (List(1, 2, 3)) or not contain theSameElementsAs (8, 1, 2))
-     *                                                                     ^
+     * aMatcher or not contain theSameElementsAs (8, 1, 2)
+     *                 ^
      * </pre>
      */
     def contain(right: ResultOfTheSameElementsAsApplication): MatcherFactory1[T, Aggregating] =
@@ -2778,8 +2778,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * collection should (contain theSameElementsAs (List(1, 2, 3)) or not contain theSameElementsInOrderAs (8, 1, 2))
-     *                                                                     ^
+     * aMatcher or not contain theSameElementsInOrderAs (8, 1, 2)
+     *                 ^
      * </pre>
      */
     def contain(right: ResultOfTheSameElementsInOrderAsApplication): MatcherFactory1[T, Sequencing] =
@@ -2789,7 +2789,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * aMatcher or not contain inOrderOnly (8, 1, 2))
+     * aMatcher or not contain inOrderOnly (8, 1, 2)
      *                 ^
      * </pre>
      */
@@ -2800,8 +2800,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * collection should (contain theSameElementsAs (List(1, 2, 3)) or not contain only (8, 1, 2))
-     *                                                                     ^
+     * aMatcher or not contain only (8, 1, 2)
+     *                 ^
      * </pre>
      */
     def contain(right: ResultOfOnlyApplication): MatcherFactory1[T, Aggregating] =
@@ -2811,8 +2811,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * collection should (contain theSameElementsAs (List(1, 2, 3)) or not contain allOf (8, 1, 2))
-     *                                                                     ^
+     * aMatcher or not contain allOf (8, 1, 2)
+     *                 ^
      * </pre>
      */
     def contain(right: ResultOfAllOfApplication): MatcherFactory1[T, Aggregating] =
@@ -2822,8 +2822,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * collection should (contain theSameElementsAs (List(1, 2, 3)) or not contain inOrder (8, 1, 2))
-     *                                                                     ^
+     * aMatcher or not contain inOrder (8, 1, 2)
+     *                 ^
      * </pre>
      */
     def contain(right: ResultOfInOrderApplication): MatcherFactory1[T, Sequencing] =
@@ -2833,8 +2833,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * collection should (contain theSameElementsAs (List(1, 2, 3)) or not contain atMostOneOf (8, 1, 2))
-     *                                                                     ^
+     * aMatcher not contain atMostOneOf (8, 1, 2)
+     *              ^
      * </pre>
      */
     def contain(right: ResultOfAtMostOneOfApplication): MatcherFactory1[T, Aggregating] =
@@ -2844,8 +2844,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax given a <code>Matcher</code>:
      *
      * <pre class="stHighlight">
-     * (aMatcher or not contain key ("three"))
-     *                  ^
+     * aMatcher or not contain key ("three")
+     *                 ^
      * </pre>
      */
     def contain(resultOfKeyWordApplication: ResultOfKeyWordApplication): MatcherFactory1[T, KeyMapping] =
@@ -2855,8 +2855,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax given a <code>Matcher</code>:
      *
      * <pre class="stHighlight">
-     * (aMatcher or not contain value (3))
-     *                  ^
+     * aMatcher or not contain value (3)
+     *                 ^
      * </pre>
      */
     def contain(resultOfValueWordApplication: ResultOfValueWordApplication): MatcherFactory1[T, ValueMapping] =
@@ -2867,8 +2867,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">
-   * Map("one" -&gt; 1, "two" -&gt; 2) should (not contain value (2) or not contain value (3))
-   *                                                                 ^
+   * aMatcher or not contain value (3)
+   *          ^
    * </pre>
    */
   def or(notWord: NotWord): OrNotWord = new OrNotWord
@@ -2877,8 +2877,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">
-   * file should (be (existFile) or exist)
-   *                             ^
+   * aMatcher or exist
+   *          ^
    * </pre>
    */
   def or(existWord: ExistWord): MatcherFactory1[T, Existence] = 
@@ -2888,8 +2888,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">
-   * file should (be (imaginaryFile) or not (exist))
-   *                                 ^
+   * aMatcher or not (exist)
+   *          ^
    * </pre>
    */
   def or(notExist: ResultOfNotExist): MatcherFactory1[T, Existence] = 
