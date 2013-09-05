@@ -345,7 +345,7 @@ private[scalatest] class JUnitXmlReporter(directory: String) extends Reporter {
       <testsuite
         errors    = { "" + testsuite.errors         }
         failures  = { "" + testsuite.failures       }
-        hostname  = { "" + findHostname             }
+        hostname  = { "" + hostname             }
         name      = { "" + testsuite.name           }
         tests     = { "" + testsuite.testcases.size }
         time      = { "" + testsuite.time / 1000.0  }
@@ -442,14 +442,13 @@ private[scalatest] class JUnitXmlReporter(directory: String) extends Reporter {
   //
   // Determines hostname of local machine.
   //
-  private def findHostname: String = {
+  lazy val hostname: String =
     try {
       val localMachine = InetAddress.getLocalHost();
       localMachine.getHostName
     } catch {
       case e: UnknownHostException => "unknown"
     }
-  }
 
   //
   // Generates <properties> element of xml.
