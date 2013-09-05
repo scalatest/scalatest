@@ -14,8 +14,33 @@
  * limitations under the License.
  */
 package org.scalatest.matchers
- 
+
+/**
+ * Singleton object that provides <code>unapply</code> method to extract negated failure message from <code>MatchResult</code>
+ * having <code>matches</code> property value of <code>true</code>.
+ *
+ * @author Bill Venners
+ * @author Chee Seng
+ */
 object MatchSucceeded {
+  /**
+   * Extractor enabling patterns that match <code>MatchResult</code> having <code>matches</code> property value of <code>true</code>,
+   * extracting the contained negated failure message.
+   *
+   * <p>
+   * For example, you can use this extractor to get the negated failure message of a <code>MatchResult</code> like this:
+   * </p>
+   *
+   * <pre>
+   * matchResult match {
+   *   case MatchSucceeded(negatedFailureMessage) => // do something with negatedFailureMessage
+   *   case _ => // when matchResult.matches equal to <code>false</code>
+   * }
+   * </pre>
+   *
+   * @param matchResult the <code>MatchResult</code> to extract the negated failure message from.
+   * @return a <code>Some</code> wrapping the contained negated failure message if <code>matchResult.matches</code> is equal to <code>true</code>, else <code>None</code>.
+   */
   def unapply(matchResult: MatchResult): Option[String] =
     if (matchResult.matches) Some(matchResult.negatedFailureMessage) else None
 }

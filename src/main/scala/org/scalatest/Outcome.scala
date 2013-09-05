@@ -324,6 +324,7 @@ object Exceptional {
    * }
    * </pre>
    *
+   * @param res the <code>Outcome</code> to extract the throwable from.
    * @return a <code>Some</code> wrapping the contained throwable if <code>res</code> is an instance of
    *     either <code>Failed</code> or <code>Canceled</code>, else <code>None</code>.
    */

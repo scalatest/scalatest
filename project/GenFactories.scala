@@ -323,7 +323,7 @@ $endif$
      *
      * <pre class="stHighlight">
      * (aMatcherFactory and contain key ("one"))
-     *                               ^
+     *                              ^
      * </pre>
      */
     def key(expectedKey: Any): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, KeyMapping] = thisMatcherFactory.and(MatcherWords.contain.key(expectedKey))
@@ -344,7 +344,7 @@ $endif$
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
-     * (aMatcherFactory and contain theSameElementsAs (1, 3, 3))
+     * (aMatcherFactory and contain theSameElementsAs List(1, 2, 3))
      *                              ^
      * </pre>
      */
@@ -355,7 +355,7 @@ $endif$
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
-     * (aMatcherFactory and contain theSameElementsInOrderAs (1, 3, 3))
+     * (aMatcherFactory and contain theSameElementsInOrderAs List(1, 2, 3))
      *                              ^
      * </pre>
      */
@@ -377,7 +377,7 @@ $endif$
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
-     * (aMatcherFactory and contain allOf (1, 3, 3))
+     * (aMatcherFactory and contain allOf (1, 2, 3))
      *                              ^
      * </pre>
      */
@@ -388,7 +388,7 @@ $endif$
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
-     * (aMatcherFactory and contain allOf (1, 3, 3))
+     * (aMatcherFactory and contain inOrder (1, 2, 3))
      *                              ^
      * </pre>
      */
@@ -399,7 +399,7 @@ $endif$
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
-     * (aMatcherFactory and contain oneOf (1, 3, 3))
+     * (aMatcherFactory and contain oneOf (1, 2, 3))
      *                              ^
      * </pre>
      */
@@ -410,7 +410,7 @@ $endif$
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
-     * (aMatcherFactory and contain atLeastOneOf (1, 3, 3))
+     * (aMatcherFactory and contain atLeastOneOf (1, 2, 3))
      *                              ^
      * </pre>
      */
@@ -421,7 +421,7 @@ $endif$
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
-     * (aMatcherFactory and contain only (1, 3, 3))
+     * (aMatcherFactory and contain only (1, 2, 3))
      *                              ^
      * </pre>
      */
@@ -432,7 +432,7 @@ $endif$
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
-     * (aMatcherFactory and contain oneOf (1, 3, 3))
+     * (aMatcherFactory and contain noneOf (1, 2, 3))
      *                              ^
      * </pre>
      */
@@ -443,7 +443,7 @@ $endif$
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
-     * (aMatcherFactory and contain atMostOneOf (1, 3, 3))
+     * (aMatcherFactory and contain atMostOneOf (1, 2, 3))
      *                              ^
      * </pre>
      */
@@ -480,7 +480,7 @@ $endif$
     def a(symbol: Symbol): MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$] = and(MatcherWords.be.a(symbol))
 
     /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>, where <code>file</code> is a <a href="BePropertyMatcher.html"><code>BePropertyMatcher</code></a>:
      *
      * <pre class="stHighlight">
      * (aMatcherFactory and be a (file))
@@ -490,7 +490,7 @@ $endif$
     def a[U](bePropertyMatcher: BePropertyMatcher[U]): MatcherFactory$arity$[SC with AnyRef with U, $commaSeparatedTCNs$] = and(MatcherWords.be.a(bePropertyMatcher))
 
     /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>, where <code>validNumber</code> is an <a href="AMatcher.html"><code>AMatcher</code></a>:
      *
      * <pre class="stHighlight">
      * (aMatcherFactory and be a (validNumber))
@@ -510,7 +510,7 @@ $endif$
     def an(symbol: Symbol): MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$] = and(MatcherWords.be.an(symbol))
 
     /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>, where <code>apple</code> is a <a href="BePropertyMatcher.html"><code>BePropertyMatcher</code></a>:
      *
      * <pre class="stHighlight">
      * (aMatcherFactory and be an (apple))
@@ -520,7 +520,7 @@ $endif$
     def an[U](bePropertyMatcher: BePropertyMatcher[U]): MatcherFactory$arity$[SC with AnyRef with U, $commaSeparatedTCNs$] = and(MatcherWords.be.an(bePropertyMatcher))
     
     /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>, where <code>integerNumber</code> is an <a href="AnMatcher.html"><code>AnMatcher</code></a>:
      *
      * <pre class="stHighlight">
      * (aMatcherFactory and be an (integerNumber))
@@ -943,7 +943,7 @@ $endif$
     def be(symbol: Symbol): MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$] = thisMatcherFactory.and(MatcherWords.not.be(symbol))
 
     /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>, where <code>odd</code> is a <a href="BeMatcher.html"><code>BeMatcher</code></a>:
      *
      * <pre class="stHighlight">
      * (aMatcherFactory and not be (odd))
@@ -953,7 +953,7 @@ $endif$
     def be[U](beMatcher: BeMatcher[U]): MatcherFactory$arity$[SC with U, $commaSeparatedTCNs$] = thisMatcherFactory.and(MatcherWords.not.be(beMatcher))
 
     /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>, where <code>directory</code> is a <a href="BePropertyMatcher.html"><code>BePropertyMatcher</code></a>:
      *
      * <pre class="stHighlight">
      * (aMatcherFactory and not be (directory))
@@ -973,7 +973,7 @@ $endif$
     def be(resultOfAWordApplication: ResultOfAWordToSymbolApplication): MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$] = thisMatcherFactory.and(MatcherWords.not.be(resultOfAWordApplication))
 
     /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>, where <code>validMarks</code> is an <a href="AMatcher.html"><code>AMatcher</code></a>:
      *
      * <pre class="stHighlight">
      * (aMatcherFactory and not be a (validMarks))
@@ -983,7 +983,7 @@ $endif$
     def be[U](resultOfAWordApplication: ResultOfAWordToAMatcherApplication[U]): MatcherFactory$arity$[SC with U, $commaSeparatedTCNs$] = thisMatcherFactory.and(MatcherWords.not.be(resultOfAWordApplication))
     
     /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>, where <code>directory</code> is a <a href="BePropertyMatcher.html"><code>BePropertyMatcher</code></a>:
      *
      * <pre class="stHighlight">
      * (aMatcherFactory and not be a (directory))
@@ -1003,17 +1003,17 @@ $endif$
     def be(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication): MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$] = thisMatcherFactory.and(MatcherWords.not.be(resultOfAnWordApplication))
 
     /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>, where <code>apple</code> is a <a href="BePropertyMatcher.html"><code>BePropertyMatcher</code></a>:
      *
      * <pre class="stHighlight">
-     * (aMatcherFactory and not be an (directory))
+     * (aMatcherFactory and not be an (apple))
      *                          ^
      * </pre>
      */
     def be[SC <: AnyRef](resultOfAnWordApplication: ResultOfAnWordToBePropertyMatcherApplication[SC]) = thisMatcherFactory.and(MatcherWords.not.be(resultOfAnWordApplication))
 
     /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>, where <code>invalidMarks</code> is a <a href="AnMatcher.html"><code>AnMatcher</code></a>:
      *
      * <pre class="stHighlight">
      * (aMatcherFactory and not be an (invalidMarks))
@@ -1036,7 +1036,7 @@ $endif$
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
-     * (aMatcherFactory and not be an [Book])
+     * (aMatcherFactory and not be an [Apple])
      *                          ^
      * </pre>
      */
@@ -1242,7 +1242,7 @@ $endif$
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
-     * (aMatcherFactory and not contain oneOf (List(8, 1, 2))) 
+     * (aMatcherFactory and not contain oneOf (8, 1, 2))
      *                          ^
      * </pre>
      */
@@ -1264,7 +1264,7 @@ $endif$
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
-     * (aMatcherFactory and not contain noneOf (List(8, 1, 2))) 
+     * (aMatcherFactory and not contain noneOf (8, 1, 2))
      *                          ^
      * </pre>
      */
@@ -1475,7 +1475,7 @@ $endif$
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
-     * (aMatcherFactory or contain theSameElementsAs (1, 3, 3))
+     * (aMatcherFactory or contain theSameElementsAs List(1, 2, 3))
      *                             ^
      * </pre>
      */
@@ -1486,7 +1486,7 @@ $endif$
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
-     * (aMatcherFactory or contain theSameElementsAs (1, 3, 3))
+     * (aMatcherFactory or contain theSameElementsInOrderAs List(1, 2, 3))
      *                             ^
      * </pre>
      */
@@ -1508,7 +1508,7 @@ $endif$
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
-     * (aMatcherFactory or contain allOf (1, 3, 3))
+     * (aMatcherFactory or contain allOf (1, 2, 3))
      *                             ^
      * </pre>
      */
@@ -1519,7 +1519,7 @@ $endif$
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
-     * (aMatcherFactory or contain inOrder (1, 3, 3))
+     * (aMatcherFactory or contain inOrder (1, 2, 3))
      *                             ^
      * </pre>
      */
@@ -1530,7 +1530,7 @@ $endif$
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
-     * (aMatcherFactory or contain oneOf (1, 3, 3))
+     * (aMatcherFactory or contain oneOf (1, 2, 3))
      *                             ^
      * </pre>
      */
@@ -1541,7 +1541,7 @@ $endif$
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
-     * (aMatcherFactory or contain atLeastOneOf (1, 3, 3))
+     * (aMatcherFactory or contain atLeastOneOf (1, 2, 3))
      *                             ^
      * </pre>
      */
@@ -1552,7 +1552,7 @@ $endif$
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
-     * (aMatcherFactory or contain only (1, 3, 3))
+     * (aMatcherFactory or contain only (1, 2, 3))
      *                             ^
      * </pre>
      */
@@ -1563,7 +1563,7 @@ $endif$
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
-     * (aMatcherFactory or contain oneOf (1, 3, 3))
+     * (aMatcherFactory or contain noneOf (1, 2, 3))
      *                             ^
      * </pre>
      */
@@ -1574,7 +1574,7 @@ $endif$
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
-     * (aMatcherFactory or contain atMostOneOf (1, 3, 3))
+     * (aMatcherFactory or contain atMostOneOf (1, 2, 3))
      *                             ^
      * </pre>
      */
@@ -1641,7 +1641,7 @@ $endif$
     def an(symbol: Symbol): MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$] = or(MatcherWords.be.an(symbol))
 
     /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>, where <code>apple</code> is a <a href="BePropertyMatcher.html"><code>BePropertyMatcher</code></a>:
      *
      * <pre class="stHighlight">
      * (aMatcherFactory or be an (apple))
@@ -1651,7 +1651,7 @@ $endif$
     def an[U](bePropertyMatcher: BePropertyMatcher[U]): MatcherFactory$arity$[SC with AnyRef with U, $commaSeparatedTCNs$] = or(MatcherWords.be.an(bePropertyMatcher))
 
     /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>, where <code>integerNumber</code> is a <a href="AnMatcher.html"><code>AnMatcher</code></a>:
      *
      * <pre class="stHighlight">
      * (aMatcherFactory or be an (integerNumber))
@@ -2074,7 +2074,7 @@ $endif$
     def be(symbol: Symbol): MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$] = thisMatcherFactory.or(MatcherWords.not.be(symbol))
 
     /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>, where <code>odd</code> is a <a href="BeMatcher.html"><code>BeMatcher</code></a>:
      *
      * <pre class="stHighlight">
      * (aMatcherFactory or not be (odd))
@@ -2084,7 +2084,7 @@ $endif$
     def be[U](beMatcher: BeMatcher[U]): MatcherFactory$arity$[SC with U, $commaSeparatedTCNs$] = thisMatcherFactory.or(MatcherWords.not.be(beMatcher))
 
     /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>, where <code>file</code> is a <a href="BePropertyMatcher.html"><code>BePropertyMatcher</code></a>:
      *
      * <pre class="stHighlight">
      * (aMatcherFactory or not be (file))
@@ -2104,7 +2104,7 @@ $endif$
     def be(resultOfAWordApplication: ResultOfAWordToSymbolApplication): MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$] = thisMatcherFactory.or(MatcherWords.not.be(resultOfAWordApplication))
 
     /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>, where <code>validMarks</code> is an <a href="AMatcher.html"><code>AMatcher</code></a>:
      *
      * <pre class="stHighlight">
      * (aMatcherFactory or not be a (validMarks))
@@ -2114,7 +2114,7 @@ $endif$
     def be[U](resultOfAWordApplication: ResultOfAWordToAMatcherApplication[U]): MatcherFactory$arity$[SC with U, $commaSeparatedTCNs$] = thisMatcherFactory.or(MatcherWords.not.be(resultOfAWordApplication))
     
     /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>, where <code>file</code> is a <a href="BePropertyMatcher.html"><code>BePropertyMatcher</code></a>:
      *
      * <pre class="stHighlight">
      * (aMatcherFactory or not be a (file))
@@ -2134,17 +2134,17 @@ $endif$
     def be(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication): MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$] = thisMatcherFactory.or(MatcherWords.not.be(resultOfAnWordApplication))
 
     /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>, where <code>apple</code> is a <a href="BePropertyMatcher.html"><code>BePropertyMatcher</code></a>:
      *
      * <pre class="stHighlight">
-     * (aMatcherFactory or not be an (file))
+     * (aMatcherFactory or not be an (apple))
      *                         ^
      * </pre>
      */
     def be[U <: AnyRef](resultOfAnWordApplication: ResultOfAnWordToBePropertyMatcherApplication[U]): MatcherFactory$arity$[SC with U, $commaSeparatedTCNs$] = thisMatcherFactory.or(MatcherWords.not.be(resultOfAnWordApplication))
 
     /**
-     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
+     * This method enables the following syntax given a <code>MatcherFactory$arity$</code>, where <code>invalidMarks</code> is an <a href="AnMatcher.html"><code>AnMatcher</code></a>:
      *
      * <pre class="stHighlight">
      * (aMatcherFactory and not be an (invalidMarks))
@@ -2167,7 +2167,7 @@ $endif$
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
-     * (aMatcherFactory or not be an [Book])
+     * (aMatcherFactory or not be an [Apple])
      *                         ^
      * </pre>
      */
@@ -2373,7 +2373,7 @@ $endif$
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
-     * (aMatcherFactory or not contain oneOf (List(8, 1, 2))) 
+     * (aMatcherFactory or not contain oneOf (8, 1, 2))
      *                         ^
      * </pre>
      */
@@ -2395,7 +2395,7 @@ $endif$
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
      * <pre class="stHighlight">
-     * (aMatcherFactory or not contain noneOf (List(8, 1, 2))) 
+     * (aMatcherFactory or not contain noneOf (8, 1, 2))
      *                         ^
      * </pre>
      */
