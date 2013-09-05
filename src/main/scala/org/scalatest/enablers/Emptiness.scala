@@ -65,7 +65,7 @@ trait Emptiness[-T] {
 object Emptiness {
 
   /**
-   * Enable emptiness for <code>scala.collection.GenTraversable</code>
+   * Enable <code>Emptiness</code> implementation for <code>scala.collection.GenTraversable</code>
    *
    * @tparam E the type of the element in the <code>scala.collection.GenTraversable</code>
    * @tparam TRAV any subtype of <code>scala.collection.GenTraversable</code>
@@ -77,7 +77,7 @@ object Emptiness {
     }
   
   /**
-   * Enable emptiness for <code>Array</code>
+   * Enable <code>Emptiness</code> implementation for <code>Array</code>
    *
    * @tparam E the type of the element in the <code>Array</code>
    * @return <code>Emptiness[Array[E]]</code> that supports <code>Array</code> in <code>be empty</code> syntax
@@ -88,7 +88,7 @@ object Emptiness {
     }
   
   /**
-   * Enable emptiness for <code>String</code>
+   * Enable <code>Emptiness</code> implementation for <code>String</code>
    *
    * @return <code>Emptiness[String]</code> that supports <code>String</code> in <code>be empty</code> syntax
    */
@@ -98,7 +98,7 @@ object Emptiness {
     }
   
   /**
-   * Enable emptiness for <code>scala.Option</code>
+   * Enable <code>Emptiness</code> implementation for <code>scala.Option</code>
    *
    * @tparam E the type of the element in the <code>scala.Option</code>
    * @tparam OPT any subtype of <code>scala.Option</code>
@@ -110,7 +110,7 @@ object Emptiness {
     }
   
   /**
-   * Enable emptiness for <code>java.util.Collection</code>
+   * Enable <code>Emptiness</code> implementation for <code>java.util.Collection</code>
    *
    * @tparam E the type of the element in the <code>java.util.Collection</code>
    * @tparam JCOL any subtype of <code>java.util.Collection</code>
@@ -122,7 +122,7 @@ object Emptiness {
     }
 
   /**
-   * Enable emptiness for <code>java.util.Map</code>
+   * Enable <code>Emptiness</code> implementation for <code>java.util.Map</code>
    *
    * @tparam K the type of the key in the <code>java.util.Map</code>
    * @tparam V the type of the value in the <code>java.util.Map</code>
@@ -135,7 +135,7 @@ object Emptiness {
     }
   
   /**
-   * Enable emptiness for any arbitrary object with a <code>isEmpty()</code> method that returns <code>Boolean</code>
+   * Enable <code>Emptiness</code> implementation for any arbitrary object with a <code>isEmpty()</code> method that returns <code>Boolean</code>
    *
    * @tparam T any type that has a <code>isEmpty()</code> method that returns <code>Boolean</code>
    * @return <code>Emptiness[T]</code> that supports <code>T</code> in <code>be empty</code> syntax
@@ -146,7 +146,7 @@ object Emptiness {
     }
   
   /**
-   * Enable emptiness for any arbitrary object with a <code>isEmpty</code> method that returns <code>Boolean</code>
+   * Enable <code>Emptiness</code> implementation for any arbitrary object with a <code>isEmpty</code> method that returns <code>Boolean</code>
    *
    * @tparam T any type that has a parameterless <code>isEmpty</code> method that returns <code>Boolean</code>
    * @return <code>Emptiness[T]</code> that supports <code>T</code> in <code>be empty</code> syntax
