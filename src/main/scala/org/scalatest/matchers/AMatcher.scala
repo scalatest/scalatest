@@ -100,7 +100,7 @@ import org.scalautils.Prettifier
  * @author Bill Venners
  * @author Chee Seng
  */
-trait AMatcher[-T] extends Function1[T, MatchResult] {
+private[scalatest] trait AMatcher[-T] extends Function1[T, MatchResult] {
   /**
    * The name of the noun that this <code>AMatcher</code> represents.
    */
@@ -134,7 +134,7 @@ trait AMatcher[-T] extends Function1[T, MatchResult] {
  * @author Bill Venners
  * @author Chee Seng
  */
-object AMatcher {
+private[scalatest] object AMatcher {
 
   /**
    * Factory method that creates a <code>AMatcher[T]</code> from a
