@@ -1374,7 +1374,7 @@ final class NotWord {
    *                    ^
    * </pre>
    */
-  def contain[T](resultOfAWordApplication: ResultOfAWordToAMatcherApplication[T]): Matcher[GenTraversable[T]] = {
+  private[scalatest] def contain[T](resultOfAWordApplication: ResultOfAWordToAMatcherApplication[T]): Matcher[GenTraversable[T]] = {
     new Matcher[GenTraversable[T]] {
       def apply(left: GenTraversable[T]): MatchResult = {
         val aMatcher = resultOfAWordApplication.aMatcher
@@ -1399,7 +1399,7 @@ final class NotWord {
    *                    ^
    * </pre>
    */
-  def contain[T](resultOfAnWordApplication: ResultOfAnWordToAnMatcherApplication[T]): Matcher[GenTraversable[T]] = {
+  private[scalatest] def contain[T](resultOfAnWordApplication: ResultOfAnWordToAnMatcherApplication[T]): Matcher[GenTraversable[T]] = {
     new Matcher[GenTraversable[T]] {
       def apply(left: GenTraversable[T]): MatchResult = {
         val anMatcher = resultOfAnWordApplication.anMatcher
