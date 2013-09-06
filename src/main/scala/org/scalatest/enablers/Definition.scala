@@ -26,8 +26,8 @@ package org.scalatest.enablers
  * type <code>U</code> by defining a <code>Definition[U]</code> for the type and making it available implicitly.
  * 
  * <p>
- * ScalaTest provides an implicit <code>Definition</code> instance for <code>scala.Option</code>
- * in the <code>Definition</code> companion object.
+ * ScalaTest provides an implicit <code>Definition</code> instance for <code>scala.Option</code>,
+ * arbitary object with <code>isDefined()</code> or <code>isDefined</code> in the <code>Definition</code> companion object.
  * </p>
  */
 trait Definition[-T] {
