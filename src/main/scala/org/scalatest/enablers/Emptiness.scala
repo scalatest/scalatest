@@ -60,6 +60,8 @@ trait Emptiness[-T] {
  * <li><code>scala.Option</code></li>
  * <li><code>java.util.Collection</code></li>
  * <li><code>java.util.Map</code></li>
+ * <li>arbitary object with a <code>isEmpty()</code> method that returns <code>Boolean</code></li>
+ * <li>arbitary object with a parameterless <code>isEmpty</code> method that returns <code>Boolean</code></li>
  * </ul>
  */
 object Emptiness {

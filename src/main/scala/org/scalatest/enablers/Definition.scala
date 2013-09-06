@@ -42,7 +42,13 @@ trait Definition[-T] {
 }
 
 /**
- * Companion object for <code>Definition</code> that provides implicit implementations for <code>scala.Option</code>.
+ * Companion object for <code>Definition</code> that provides implicit implementations for the following types:
+ *
+ * <ul>
+ * <li><code>scala.Option</code></li>
+ * <li>arbitary object with a <code>isDefined()</code> method that returns <code>Boolean</code></li>
+ * <li>arbitary object with a parameterless <code>isDefined</code> method that returns <code>Boolean</code></li>
+ * </ul>
  */
 object Definition {
 
