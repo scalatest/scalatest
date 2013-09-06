@@ -65,10 +65,10 @@ trait Length[T] {
   /**
    * Returns the length of the passed object.
    *
-   * @param the object whose length to return
+   * @param obj the object whose length to return
    * @return the length of the passed object
    */
-  def lengthOf(o: T): Long
+  def lengthOf(obj: T): Long
 }
 
 /**
