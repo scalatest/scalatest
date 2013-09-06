@@ -24,18 +24,18 @@ import scala.collection.JavaConverters._
 import Aggregating.tryEquality
 
 /**
- * Supertrait for typeclasses that enable the <code>be</code> <code>readable</code> matcher syntax.
+ * Supertrait for typeclasses that enable the <code>be readable</code> matcher syntax.
  *
  * <p>
  * A <code>Readability[T]</code> provides access to the "readable nature" of type <code>T</code> in such
- * a way that <code>be</code> <code>readable</code> matcher syntax can be used with type <code>T</code>. An <code>T</code>
- * can be any type for which the concept of being readable makes sense, such as <code>java.io.File</code>. ScalaTest provides
- * implicit implementation for <code>java.io.File</code>. You can enable the <code>be</code> <code>readable</code> matcher syntax on your own
- * type <code>U</code> by defining a <code>Readability[U]</code> for the type and making it available implicitly.
+ * a way that <code>be readable</code> matcher syntax can be used with type <code>T</code>. A <code>T</code>
+ * can be any type for which the concept of being readable makes sense, such as <code>java.io.File</code>.
+ * You can enable the <code>be readable</code> matcher syntax on your own type <code>U</code> by defining a
+ * <code>Readability[U]</code> for the type and making it available implicitly.
  * 
  * <p>
- * ScalaTest provides an implicit <code>Readability</code> instance for <code>java.io.File</code>
- * in the <code>Readability</code> companion object.
+ * ScalaTest provides an implicit <code>Readability</code> instance for <code>java.io.File</code> and arbitary
+ * object with <code>isReadable()</code> or <code>isReadable</code> in the <code>Readability</code> companion object.
  * </p>
  */
 trait Readability[-T] {
@@ -46,10 +46,22 @@ trait Readability[-T] {
   def isReadable(thing: T): Boolean
 }
 
+/**
+ * Companion object for <code>Readability</code> that provides implicit implementations for the following types:
+ *
+ * <ul>
+ * <li><code>java.io.File</code></li>
+ * <li>arbitary object with a <code>isReadable()</code> method that returns <code>Boolean</code></li>
+ * <li>arbitary object with a parameterless <code>isReadable</code> method that returns <code>Boolean</code></li>
+ * </ul>
+ */
 object Readability {
 
   /**
-   * Enable readability of <code>java.io.File</code>
+   * Enable <code>Readability</code> implementation for <code>java.io.File</code>.
+   *
+   * @tparam FILE any subtype of <code>java.io.File</code>
+   * @return <code>Readability[FILE]</code> that supports <code>java.io.File</code> in <code>be readable</code> syntax
    */
   implicit def readabilityOfFile[FILE <: java.io.File]: Readability[FILE] =
     new Readability[FILE] {
@@ -57,15 +69,21 @@ object Readability {
     }
 
   /**
-   * Enable readability of any arbitrary object with a <code>isReadable()</code> method that returns <code>Boolean</code>
+   * Enable <code>Readability</code> implementation for any arbitrary object with a <code>isReadable()</code> method that returns <code>Boolean</code>
+   *
+   * @tparam T any type that has a <code>isReadable()</code> method that returns <code>Boolean</code>
+   * @return <code>Readability[T]</code> that supports <code>T</code> in <code>be readable</code> syntax
    */
   implicit def readabilityOfAnyRefWithIsReadableMethod[T <: AnyRef { def isReadable(): Boolean}]: Readability[T] = 
     new Readability[T] {
       def isReadable(obj: T): Boolean = obj.isReadable
     }
-  
+
   /**
-   * Enable readability of any arbitrary object with a <code>isReadable()</code> method that returns <code>Boolean</code>
+   * Enable <code>Readability</code> implementation for any arbitrary object with a parameterless <code>isReadable</code> method that returns <code>Boolean</code>
+   *
+   * @tparam T any type that has a parameterless <code>isReadable</code> method that returns <code>Boolean</code>
+   * @return <code>Readability[T]</code> that supports <code>T</code> in <code>be readable</code> syntax
    */
   implicit def readabilityOfAnyRefWithParameterlessIsReadableMethod[T <: AnyRef { def isReadable: Boolean}]: Readability[T] = 
     new Readability[T] {
