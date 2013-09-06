@@ -79,7 +79,6 @@ trait Length[T] {
  * <li><code>String</code></li>
  * <li><code>Array</code></li>
  * <li><code>java.util.Collection</code></li>
- * <li><code>java.util.Map</code></li>
  * <li>arbitary object with a <code>length()</code> method that returns <code>Int</code></li>
  * <li>arbitary object with a parameterless <code>length</code> method that returns <code>Int</code></li>
  * <li>arbitary object with a <code>getLength()</code> method that returns <code>Int</code></li>
