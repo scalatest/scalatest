@@ -20,7 +20,7 @@ import words.BehaveWord
 import Suite.autoTagClassAnnotations
 
 /**
- * Facilitates a &#8220;behavior-driven&#8221; style of development (BDD), in which tests
+ * Facilitates a &ldquo;behavior-driven&rdquo; style of development (BDD), in which tests
  * are combined with text that specifies the behavior the tests verify.
  * 
  * <table><tr><td class="usage">
@@ -159,7 +159,7 @@ import Suite.autoTagClassAnnotations
  * To support the common use case of temporarily disabling a test, with the
  * good intention of resurrecting the test at a later time, <code>FunSpec</code> provides registration
  * methods that start with <code>ignore</code> instead of <code>it</code> or <code>they</code>. For example, to temporarily
- * disable the test with the text <code>"should have size 0"</code>, just change &#8220;<code>it</code>&#8221; into &#8220;<code>ignore</code>,&#8221; like this:
+ * disable the test with the text <code>"should have size 0"</code>, just change &ldquo;<code>it</code>&rdquo; into &#8220;<code>ignore</code>,&#8221; like this:
  * </p>
  *
  * <pre class="stHighlight">

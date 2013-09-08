@@ -106,7 +106,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <p>
- * &#8220;<code>property</code>&#8221; is a method, defined in <code>PropSpec</code>, which will be invoked
+ * &ldquo;<code>property</code>&rdquo; is a method, defined in <code>PropSpec</code>, which will be invoked
  * by the primary constructor of <code>SetSpec</code>. You specify the name of the test as
  * a string between the parentheses, and the test code itself between curly braces.
  * The test code is a function passed as a by-name parameter to <code>property</code>, which registers

@@ -79,7 +79,7 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
 
   /**
    * Register a test with the given spec text, optional tags, and test function value that takes no arguments.
-   * An invocation of this method is called an &#8220;example.&#8221;
+   * An invocation of this method is called an &ldquo;example.&rdquo;
    *
    * This method will register the test for later execution via an invocation of one of the <code>execute</code>
    * methods. The name of the test will be a concatenation of the text of all surrounding describers,
@@ -103,7 +103,7 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
   }
 
   /**
-   * Class that supports the registration of a &#8220;subject&#8221; being specified and tested via the
+   * Class that supports the registration of a &ldquo;subject&rdquo; being specified and tested via the
    * instance referenced from <code>fixture.FlatSpec</code>'s <code>behavior</code> field.
    *
    * <p>
@@ -123,7 +123,7 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
   protected final class BehaviorWord {
 
     /**
-     * Supports the registration of a &#8220;subject&#8221; being specified and tested via the
+     * Supports the registration of a &ldquo;subject&rdquo; being specified and tested via the
      * instance referenced from <code>fixture.FlatSpec</code>'s <code>behavior</code> field.
      *
      * <p>
@@ -146,7 +146,7 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
   }
 
   /**
-   * Supports the registration of a &#8220;subject&#8221; being specified and tested.
+   * Supports the registration of a &ldquo;subject&rdquo; being specified and tested.
    *
    * <p>
    * This field enables syntax such as the following subject registration:

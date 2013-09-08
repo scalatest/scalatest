@@ -213,7 +213,7 @@ import Suite.autoTagClassAnnotations
  * To support the common use case of temporarily disabling a test, with the
  * good intention of resurrecting the test at a later time, <code>FeatureSpec</code> provides registration
  * methods that start with <code>ignore</code> instead of <code>scenario</code>. For example, to temporarily
- * disable the test named <code>addition</code>, just change &#8220;<code>scenario</code>&#8221; into &#8220;<code>ignore</code>,&#8221; like this:
+ * disable the test named <code>addition</code>, just change &ldquo;<code>scenario</code>&rdquo; into &#8220;<code>ignore</code>,&#8221; like this:
  * </p>
  *
  * <pre class="stHighlight">

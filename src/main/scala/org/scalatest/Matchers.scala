@@ -74,7 +74,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * <p>
  * Here <code>result</code> is a variable, and can be of any type. If the object is an
  * <code>Int</code> with the value 3, execution will continue (<em>i.e.</em>, the expression will result
- * in the unit value, <code>()</code>). Otherwise, a <code>TestFailedException</code>
+ * in the unit value, <code>()</code>). Otherwise, a <a href="exceptions/TestFailedException.html"><code>TestFailedException</code></a>
  * will be thrown with a detail message that explains the problem, such as <code>"7 did not equal 3"</code>.
  * This <code>TestFailedException</code> will cause the test to fail.
  * </p>
@@ -111,7 +111,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * 
  * <p>
  * Although ScalaTest's matchers have undergone a major refactor in 2.0, all previously documented syntax for matchers should continue to work exactly
- * the same with one potential exception, which should be in practice be extremely rare. The potential breakage is that if you included <code>length</code> or <code>size</code>
+ * the same with one potential exception, which should in practice be extremely rare. The potential breakage is that if you included <code>length</code> or <code>size</code>
  * along with custom have-property matchers that you wrote, you'll get a compiler error. To fix such an error, add after
  * your <code>length</code> or <code>size</code> invocation an <code>(of [&lt;type&gt;])</code> clause, as
  * <a href="#lengthSizeHavePropertyMatchers">described below</a>.
@@ -153,7 +153,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * By default, an implicit <code>Equality[T]</code> instance is available for any type <code>T</code>, in which equality is implemented
  * by simply invoking <code>==</code>  on the <code>left</code>
  * value, passing in the <code>right</code> value, with special treatment for arrays. If either <code>left</code> or <code>right</code> is an array, <code>deep</code>
- * will be invoked on it before comparing with <em>==</em>. Thus, even though the following expression
+ * will be invoked on it before comparing with <em>==</em>. Thus, the following expression
  * will yield false, because <code>Array</code>'s <code>equals</code> method compares object identity:
  * </p>
  * 
@@ -267,7 +267,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * Similarly, the <code>size</code> syntax can be used with <code>Array</code>, any <code>scala.collection.GenTraversable</code>,
  * any <code>java.util.Collection</code>, any <code>java.util.Map</code>, and any type <code>T</code> for which an implicit <code>Size[T]</code> type class is 
  * available in scope. You can enable the <code>length</code> or <code>size</code> syntax for your own arbitrary types, therefore,
- * by defining <a href="enablers/Length.html"><code>Length</code></a> or <a href="enables/Size.html"><code>Size</code></a> type
+ * by defining <a href="enablers/Length.html"><code>Length</code></a> or <a href="enablers/Size.html"><code>Size</code></a> type
  * classes for those types.
  * </p>
  *
@@ -368,9 +368,9 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * <p>
  * This <code>be</code> syntax can be used with any reference (<code>AnyRef</code>) type.  If the object does
  * not have an appropriately named predicate method, you'll get a <code>TestFailedException</code>
- * at runtime with a detail message that explains the problem.
+ * at runtime with a detailed message that explains the problem.
  * (For the details on how a field or method is selected during this
- * process, see the documentation for <a href="Matchers$BeWord.html"><code>BeWord</code></a>.)
+ * process, see the documentation for <a href="words/BeWord.html"><code>BeWord</code></a>.)
  * </p>
  * 
  * <p>
@@ -410,7 +410,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * by the type parameter of the <code>BePropertyMatcher</code> being used. (For example, <code>file</code> in this example
  * would likely be of type <code>BePropertyMatcher[java.io.File]</code>. If used with an appropriate type, such an expression will compile
  * and at run time the <code>Boolean</code> property method or field will be accessed directly; <em>i.e.</em>, no reflection will be used.
- * See the documentation for <a href="BePropertyMatcher.html"><code>BePropertyMatcher</code></a> for more information.
+ * See the documentation for <a href="matchers/BePropertyMatcher.html"><code>BePropertyMatcher</code></a> for more information.
  * </p>
  *
  * <h2>Using custom <code>BeMatchers</code></h2>
@@ -427,7 +427,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * num should not be even
  * </pre>
  *
- * For more information, see the documentation for <a href="BeMatcher.html"><code>BeMatcher</code></a>.
+ * For more information, see the documentation for <a href="matchers/BeMatcher.html"><code>BeMatcher</code></a>.
  *
  * <a name="checkingObjectIdentity"></a>
  * <h2>Checking object identity</h2>
@@ -443,7 +443,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * <h2>Checking an object's class</h2>
  * 
  * <p>
- * If you need to check that an object is an instnce of a psrticular class or trait, you can supply the type to
+ * If you need to check that an object is an instance of a particular class or trait, you can supply the type to
  * &ldquo;<code>be</code> <code>a</code>&rdquo; or &ldquo;<code>be</code> <code>an</code>&rdquo;:
  * </p>
  * 
@@ -568,7 +568,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * </pre>
  * 
  * <p>
- * ScalaTest's implicit methods that provide the <code>Containing[L]</code> typeclasses require an <code>Equality[E]</code>, where
+ * ScalaTest's implicit methods that provide the <code>Containing[L]</code> type classes require an <code>Equality[E]</code>, where
  * <code>E</code> is an element type. For example, to obtain a <code>Containing[Array[Int]]</code> you must supply an <code>Equality[Int]</code>,
  * either implicitly or explicitly. The <code>contain</code> syntax uses this <code>Equality[E]</code> to determine containership.
  * Thus if you want to change how containership is determined for an element type <code>E</code>, place an implicit <code>Equality[E]</code>
@@ -607,7 +607,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * <p>
  * In addition to determining whether an object contains another object, you can use <code>contain</code> to
  * make other determinations.
- * For exmple, the <code>contain</code> <code>oneOf</code> syntax ensures that one and only one of the specified elements are
+ * For example, the <code>contain</code> <code>oneOf</code> syntax ensures that one and only one of the specified elements are
  * contained in the containing object:
  * </p>
  *
@@ -629,7 +629,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  *
  * <p>
  * If you really want to ensure one or more of the specified elements are contained in the containing object, 
- * use <code>atLeastOneOf</code>, described below, instead of <code>oneOf</code>. In other words, <code>oneOf</code>
+ * use <code>atLeastOneOf</code>, described below, instead of <code>oneOf</code>. Keep in mind, <code>oneOf</code>
  * means "<em>exactly</em> one of."
  * </p>
  *
@@ -760,7 +760,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * will be described in this section, requires a <code>Sequencing[L]</code> be provided, where again <code>L</code> is the left-hand type.
  * (A <code>Sequencing[L]</code> instance defines the "sequencing nature" of a type <code>L</code>.)
  * The reason, essentially, is that <code>contain</code> syntax that implies an "order" of elements makes sense only for types that place elements in a sequence.
- * For example, it doesn't make sense to assert that an <code>Map[String, Int]</code> or <code>Set[Int]</code> contains all of a set of integers in a particular
+ * For example, it doesn't make sense to assert that a <code>Map[String, Int]</code> or <code>Set[Int]</code> contains all of a set of integers in a particular
  * order, as these types don't necessarily define an order for their elements. But this does make sense for a type such as <code>Seq[Int]</code> that does define
  * an order for its elements. 
  * </p>
@@ -859,7 +859,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * <h3>Inspector shorthands</h3>
  *
  * <p>
- * You can use the <a href="Inspectors.html"><code>Inspectors</code></a> syntax with matchers as well as assertions. If you have a multi-dimensional collection, such as an
+ * You can use the <a href="Inspectors.html"><code>Inspectors</code></a> syntax with matchers as well as assertions. If you have a multi-dimensional collection, such as a
  * list of lists, using <code>Inspectors</code> is your best option:
  * </p>
  * 
@@ -1030,10 +1030,10 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * javaMap should contain value "Howdy"
  * </pre>
  * 
- * <h2>Be as an equality comparison</h2>
+ * <h2><code>be</code> as an equality comparison</h2>
  * 
  * <p>
- * All uses of <code>be</code> other than those shown previously perform an equality comparison. In other words, they work
+ * All uses of <code>be</code> other than those shown previously perform an equality comparison. They work
  * the same as <code>equal</code> when it is used with default equality. This redundancy between <code>be</code> and <code>equals</code> exists in part
  * because it enables syntax that sometimes sounds more natural. For example, instead of writing: 
  * </p>
@@ -1068,7 +1068,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * <p>
  * As with <code>equal</code> used with default equality, using <code>be</code> on arrays results in <code>deep</code> being called on both arrays prior to
  * calling <code>equal</code>. As a result,
- * the following expression would <em>not</em> throw a <code>TestFailedException</code>:
+ * the following expression would <em>not</em> throw a <a href="exceptions/TestFailedException.html"><code>TestFailedException</code></a>:
  * </p>
  *
  * <pre class="stHighlight">
@@ -1256,7 +1256,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * </pre>
  * 
  * <p>
- * If you mix in (or import the members of) <a href="../OptionValues.html"><code>OptionValues</code></a>,
+ * If you mix in (or import the members of) <a href="OptionValues.html"><code>OptionValues</code></a>,
  * you can write one statement that indicates you believe an option should be defined and then say something else about its value. Here's an example:
  * </p>
  * 
@@ -1314,7 +1314,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * 
  * <p>
  * If a property has a value different from the specified expected value, a <code>TestFailedError</code> will be thrown
- * with a detail message that explains the problem. For example, if you assert the following on
+ * with a detailed message that explains the problem. For example, if you assert the following on
  * a <code>book</code> whose title is <code>Moby Dick</code>:
  * </p>
  *
@@ -1349,14 +1349,14 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * by the type parameter of the <code>HavePropertyMatcher</code> being used. (For example, <code>title</code> in this example
  * might be of type <code>HavePropertyMatcher[org.publiclibrary.Book]</code>. If used with an appropriate type, such an expression will compile
  * and at run time the property method or field will be accessed directly; <em>i.e.</em>, no reflection will be used.
- * See the documentation for <a href="HavePropertyMatcher.html"><code>HavePropertyMatcher</code></a> for more information.
+ * See the documentation for <a href="matchers/HavePropertyMatcher.html"><code>HavePropertyMatcher</code></a> for more information.
  * </p>
  *
  * <a name="lengthSizeHavePropertyMatchers"></a>
  * <h3>Using <code>length</code> and <code>size</code> with <code>HavePropertyMatcher</code>s</h3>
  *
  * <p>
- * If you want to use <code>length</code> or <code>size</code> syntax with your own custom <code>HavePropertyMatchers</code>, you 
+ * If you want to use <code>length</code> or <code>size</code> syntax with your own custom <code>HavePropertyMatcher</code>s, you 
  * can do so, but you must write <code>(of [&ldquo;the type&rdquo;])</code> afterwords. For example, you could write:
  * </p>
  *
@@ -1408,7 +1408,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * Note that when you use custom <code>Matcher</code>s, you will need to put parentheses around the custom matcher in more cases than with
  * the built-in syntax. For example you will often need the parentheses after <code>not</code>, as shown above. (There's no penalty for
  * always surrounding custom matchers with parentheses, and if you ever leave them off when they are needed, you'll get a compiler error.)
- * For more information about how to create custom <code>Matcher</code>s, please see the documentation for the <a href="Matcher.html"><code>Matcher</code></a> trait.
+ * For more information about how to create custom <code>Matcher</code>s, please see the documentation for the <a href="matchers/Matcher.html"><code>Matcher</code></a> trait.
  * </p>
  *
  * <a name="expectedExceptions">

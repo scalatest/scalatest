@@ -30,7 +30,7 @@ import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
 */
 
 /**
- * Trait that contains several &#8220;check&#8221; methods that perform ScalaCheck property checks.
+ * Trait that contains several &ldquo;check&rdquo; methods that perform ScalaCheck property checks.
  * If ScalaCheck finds a test case for which a property doesn't hold, the problem will be reported as a ScalaTest test failure.
  * 
  * <p>

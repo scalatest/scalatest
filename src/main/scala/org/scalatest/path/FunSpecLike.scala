@@ -322,7 +322,7 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
   }
   
   /**
-   * Describe a &#8220;subject&#8221; being specified and tested by the passed function value. The
+   * Describe a &ldquo;subject&rdquo; being specified and tested by the passed function value. The
    * passed function value may contain more describers (defined with <code>describe</code>) and/or tests
    * (defined with <code>it</code>).
    *

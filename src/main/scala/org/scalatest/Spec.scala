@@ -24,7 +24,7 @@ import scala.reflect.NameTransformer._
 import java.lang.reflect.{Method, Modifier, InvocationTargetException}
 
 /**
- * Facilitates a &#8220;behavior-driven&#8221; style of development (BDD), in which tests
+ * Facilitates a &ldquo;behavior-driven&rdquo; style of development (BDD), in which tests
  * are methods, optionally nested inside singleton objects defining textual scopes.
  *
  * <table><tr><td class="usage">
@@ -274,7 +274,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * <p>
  * Note that marking a test class as ignored won't prevent it from being discovered by ScalaTest. Ignored classes
  * will be discovered and run, and all their tests will be reported as ignored. This is intended to keep the ignored
- * class visible, to encourage the developers to eventually fix and &#8220;un-ignore&#8221; it. If you want to
+ * class visible, to encourage the developers to eventually fix and &ldquo;un-ignore&rdquo; it. If you want to
  * prevent a class from being discovered at all, use the <a href="DoNotDiscover.html"><code>DoNotDiscover</code></a> annotation instead.
  * </p>
  *
