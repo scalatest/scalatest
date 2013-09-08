@@ -80,7 +80,7 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
 
   /**
    * Register a test with the given spec text, optional tags, and test function value that takes no arguments.
-   * An invocation of this method is called an &#8220;example.&#8221;
+   * An invocation of this method is called an &ldquo;example.&rdquo;
    *
    * This method will register the test for later execution via an invocation of one of the <code>execute</code>
    * methods. The name of the test will be a concatenation of the text of all surrounding describers,

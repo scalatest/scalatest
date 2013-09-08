@@ -62,7 +62,7 @@ import org.scalatest.events.Event
  * Although the execution of a <code>Suite</code>'s test methods will likely be a common event
  * reported via the
  * <code>TestStarting</code>, <code>TestSucceeded</code>, and <code>TestFailed</code> methods, because
- * of the abstract definition of &#8220;test&#8221; used by the
+ * of the abstract definition of &ldquo;test&rdquo; used by the
  * the event classes, these events are not limited to this use. Information about any conceptual test
  * may be reported via the <code>TestStarting</code>, <code>TestSucceeded</code>, and
  * <code>TestFailed</code> events.

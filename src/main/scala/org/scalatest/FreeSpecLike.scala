@@ -27,7 +27,7 @@ import Suite.autoTagClassAnnotations
 
 /**
  * Implementation trait for class <code>FreeSpec</code>, which 
- * facilitates a &#8220;behavior-driven&#8221; style of development (BDD),
+ * facilitates a &ldquo;behavior-driven&rdquo; style of development (BDD),
  * in which tests are nested inside text clauses denoted with the dash
  * operator (<code>-</code>).
  * 
@@ -78,7 +78,7 @@ trait FreeSpecLike extends Suite with Informing with Updating with Alerting with
 
   /**
    * Register a test with the given spec text, optional tags, and test function value that takes no arguments.
-   * An invocation of this method is called an &#8220;example.&#8221;
+   * An invocation of this method is called an &ldquo;example.&rdquo;
    *
    * This method will register the test for later execution via an invocation of one of the <code>execute</code>
    * methods. The name of the test will be a concatenation of the text of all surrounding describers,

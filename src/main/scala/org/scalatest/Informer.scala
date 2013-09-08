@@ -25,8 +25,8 @@ package org.scalatest
  * <code>Informer</code> contains an <code>apply</code> method that takes a string and
  * an optional payload object of type <code>Any</code>.
  * The <code>Informer</code> will forward the passed <code>message</code> string to the
- * <code>Reporter</code> as the <code>message</code> parameter, and the optional
- * payload object as the <code>payload</code> parameter, of an <code>InfoProvided</code> event.
+ * <a href="Reporter.html"><code>Reporter</code></a> as the <code>message</code> parameter, and the optional
+ * payload object as the <code>payload</code> parameter, of an <a href="InfoProvided.html"><code>InfoProvided</code></a> event.
  * </p>
  *
  * <p>
@@ -62,7 +62,7 @@ package org.scalatest
  * </pre>
  *
  * <p>
- * If you run this <code>FlatSpec</code> from the interpreter, you will see the following output:
+ * If you run this <code>SetSpec</code> from the interpreter, you will see the following output:
  * </p>
  *
  * <pre class="stREPL">
