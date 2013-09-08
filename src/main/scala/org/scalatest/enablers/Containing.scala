@@ -34,7 +34,7 @@ import org.scalatest.FailureMessages
  * <p>
  * ScalaTest provides implicit <code>Containing</code> instances for <code>scala.collection.GenTraversable</code>,
  * <code>java.util.Collection</code>, <code>java.util.Map</code>, <code>String</code>, <code>Array</code>, 
- * and <code>Option</code> in the <code>Containing</code> companion object.
+ * and <code>scala.Option</code> in the <code>Containing</code> companion object.
  * </p>
  *
  * <a name="containingVersusAggregating"></a>
@@ -43,10 +43,10 @@ import org.scalatest.FailureMessages
  * <p>
  * The difference between <code>Containing</code> and <a href="Aggregating.html"><code>Aggregating</code></a> is that
  * <code>Containing</code> enables <code>contain</code> matcher syntax that makes sense for "box" types that can
- * contain at most one value (for example, <code>Option</code>),
+ * contain at most one value (for example, <code>scala.Option</code>),
  * whereas <code>Aggregating</code> enables <code>contain</code> matcher syntax for full-blown collections and other 
  * aggregations of potentially more than one object. For example, it makes sense to make assertions like these, which 
- * are enabled by <code>Containing</code>, for <code>Option</code>:
+ * are enabled by <code>Containing</code>, for <code>scala.Option</code>:
  * </p>
  * 
  * <pre class="stHighlight">
@@ -57,7 +57,7 @@ import org.scalatest.FailureMessages
  * </pre>
  *
  * <p>
- * However, given an <code>Option</code> can only ever contain at most one object, it doesn't make
+ * However, given an <code>scala.Option</code> can only ever contain at most one object, it doesn't make
  * sense to make assertions like the following, which are enabled via <code>Aggregation</code>:
  * </p>
  *
@@ -70,7 +70,7 @@ import org.scalatest.FailureMessages
  * The above assertion could never succceed, because an option cannot contain more than
  * one value. By default the above statement does not compile, because <code>contain</code> <code>allOf</code>
  * is enabled by <code>Aggregating</code>, and ScalaTest provides no implicit <code>Aggregating</code> instance
- * for type <code>Option</code>.
+ * for type <code>scala.Option</code>.
  * </p>
  */
 trait Containing[-C] {
@@ -125,7 +125,7 @@ trait Containing[-C] {
  * <li><code>scala.collection.GenTraversable</code></li>
  * <li><code>String</code></li>
  * <li><code>Array</code></li>
- * <li><code>Option</code></li>
+ * <li><code>scala.Option</code></li>
  * <li><code>java.util.Collection</code></li>
  * <li><code>java.util.Map</code></li>
  * </ul>
@@ -180,7 +180,7 @@ object Containing {
    * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>java.util.Collection</code>
    * @tparam E the type of the element in the <code>java.util.Collection</code>
    * @tparam JCOL any subtype of <code>java.util.Collection</code>
-   * @return <code>Containing[JCOL[E]]</code> that supports <code>java.util.Collection</code> in <code>Containing</code> syntax
+   * @return <code>Containing[JCOL[E]]</code> that supports <code>java.util.Collection</code> in relevant <code>contain</code> syntax
    */
   implicit def containingNatureOfJavaCollection[E, JCOL[e] <: java.util.Collection[e]](implicit equality: Equality[E]): Containing[JCOL[E]] = 
     new Containing[JCOL[E]] {
@@ -232,7 +232,7 @@ object Containing {
    * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>GenTraversable</code>
    * @tparam E the type of the element in the <code>GenTraversable</code>
    * @tparam TRAV any subtype of <code>GenTraversable</code>
-   * @return <code>Containing[TRAV[E]]</code> that supports <code>GenTraversable</code> in <code>Containing</code> syntax
+   * @return <code>Containing[TRAV[E]]</code> that supports <code>GenTraversable</code> in relevant <code>contain</code> syntax
    */
   implicit def containingNatureOfGenTraversable[E, TRAV[e] <: scala.collection.GenTraversable[e]](implicit equality: Equality[E]): Containing[TRAV[E]] = 
     new Containing[TRAV[E]] {
@@ -276,12 +276,12 @@ object Containing {
 
   // OPT so that it will work with Some also, but it doesn't work with None
   /**
-   * Implicit to support <code>Containing</code> nature of <code>Option</code>.
+   * Implicit to support <code>Containing</code> nature of <code>scala.Option</code>.
    *
    * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>Option</code>
-   * @tparam E the type of the element in the <code>Option</code>
-   * @tparam OPT any subtype of <code>Option</code>
-   * @return <code>Containing[OPT[E]]</code> that supports <code>Option</code> in <code>Containing</code> syntax
+   * @tparam E the type of the element in the <code>scala.Option</code>
+   * @tparam OPT any subtype of <code>scala.Option</code>
+   * @return <code>Containing[OPT[E]]</code> that supports <code>scala.Option</code> in relevant <code>contain</code> syntax
    */
   implicit def containingNatureOfOption[E, OPT[e] <: Option[e]](implicit equality: Equality[E]): Containing[OPT[E]] = 
     new Containing[OPT[E]] {
@@ -300,7 +300,7 @@ object Containing {
 
   /**
    * Implicit conversion that converts an <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>E</code>
-   * into <code>Containing</code> of type <code>OPT[E]</code>, where <code>OPT</code> is a subtype of <code>Option</code>.
+   * into <code>Containing</code> of type <code>OPT[E]</code>, where <code>OPT</code> is a subtype of <code>scala.Option</code>.
    * This is required to support the explicit <a href="../../scalautils/Equality.html"><code>Equality</code></a> syntax, for example:
    *
    * <pre class="stHighlight">
@@ -311,8 +311,8 @@ object Containing {
    * and this implicit conversion will convert it into <code>Containing[Some[String]]</code>.
    *
    * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>E</code>
-   * @tparam E type of elements in the <code>Option</code>
-   * @tparam OPT subtype of <code>Option</code>
+   * @tparam E type of elements in the <code>scala.Option</code>
+   * @tparam OPT subtype of <code>scala.Option</code>
    * @return <code>Containing</code> of type <code>OPT[E]</code>
    */
   implicit def convertEqualityToOptionContaining[E, OPT[e] <: Option[e]](equality: Equality[E]): Containing[OPT[E]] = 
@@ -323,7 +323,7 @@ object Containing {
    *
    * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>Array</code>
    * @tparam E the type of the element in the <code>Array</code>
-   * @return <code>Containing[Array[E]]</code> that supports <code>Array</code> in <code>Containing</code> syntax
+   * @return <code>Containing[Array[E]]</code> that supports <code>Array</code> in relevant <code>contain</code> syntax
    */
   implicit def containingNatureOfArray[E](implicit equality: Equality[E]): Containing[Array[E]] = 
     new Containing[Array[E]] {
@@ -362,7 +362,7 @@ object Containing {
    * Implicit to support <code>Containing</code> nature of <code>String</code>.
    *
    * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of <code>Char</code> in the <code>String</code>
-   * @return <code>Containing[String]</code> that supports <code>String</code> in <code>Containing</code> syntax
+   * @return <code>Containing[String]</code> that supports <code>String</code> in relevant <code>contain</code> syntax
    */
   implicit def containingNatureOfString(implicit equality: Equality[Char]): Containing[String] = 
     new Containing[String] {
@@ -404,7 +404,7 @@ object Containing {
    * @tparam K the type of the key in the <code>java.util.Map</code>
    * @tparam V the type of the value in the <code>java.util.Map</code>
    * @tparam JMAP any subtype of <code>java.util.Map</code>
-   * @return <code>Containing[JMAP[K, V]]</code> that supports <code>java.util.Map</code> in <code>Containing</code> syntax
+   * @return <code>Containing[JMAP[K, V]]</code> that supports <code>java.util.Map</code> in relevant <code>contain</code> syntax
    */
   implicit def containingNatureOfJavaMap[K, V, JMAP[k, v] <: java.util.Map[k, v]](implicit equality: Equality[java.util.Map.Entry[K, V]]): Containing[JMAP[K, V]] = 
     new Containing[JMAP[K, V]] {

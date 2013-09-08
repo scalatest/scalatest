@@ -65,69 +65,158 @@ trait Length[T] {
   /**
    * Returns the length of the passed object.
    *
-   * @param the object whose length to return
+   * @param obj the object whose length to return
    * @return the length of the passed object
    */
-  def lengthOf(o: T): Long
+  def lengthOf(obj: T): Long
 }
 
+/**
+ * Companion object for <code>Length</code> that provides implicit implementations for the following types:
+ *
+ * <ul>
+ * <li><code>scala.collection.GenSeq</code></li>
+ * <li><code>String</code></li>
+ * <li><code>Array</code></li>
+ * <li><code>java.util.Collection</code></li>
+ * <li>arbitary object with a <code>length()</code> method that returns <code>Int</code></li>
+ * <li>arbitary object with a parameterless <code>length</code> method that returns <code>Int</code></li>
+ * <li>arbitary object with a <code>getLength()</code> method that returns <code>Int</code></li>
+ * <li>arbitary object with a parameterless <code>getLength</code> method that returns <code>Int</code></li>
+ * <li>arbitary object with a <code>length()</code> method that returns <code>Long</code></li>
+ * <li>arbitary object with a parameterless <code>length</code> method that returns <code>Long</code></li>
+ * <li>arbitary object with a <code>getLength()</code> method that returns <code>Long</code></li>
+ * <li>arbitary object with a parameterless <code>getLength</code> method that returns <code>Long</code></li>
+ * </ul>
+ */
 object Length {
 
+  /**
+   * Enable <code>Length</code> implementation for <code>java.util.List</code>
+   *
+   * @tparam JLIST any subtype of <code>java.util.List</code>
+   * @return <code>Length[JLIST]</code> that supports <code>java.util.List</code> in <code>have length</code> syntax
+   */
   implicit def lengthOfJavaList[JLIST <: java.util.List[_]]: Length[JLIST] = 
     new Length[JLIST] {
       def lengthOf(javaList: JLIST): Long = javaList.size
     }
 
+  /**
+   * Enable <code>Length</code> implementation for <code>scala.collection.GenSeq</code>
+   *
+   * @tparam SEQ any subtype of <code>scala.collection.GenSeq</code>
+   * @return <code>Length[SEQ]</code> that supports <code>scala.collection.GenSeq</code> in <code>have length</code> syntax
+   */
   implicit def lengthOfGenSeq[SEQ <: scala.collection.GenSeq[_]]: Length[SEQ] = 
     new Length[SEQ] {
       def lengthOf(seq: SEQ): Long = seq.length
     }
 
+  /**
+   * Enable <code>Length</code> implementation for <code>Array</code>
+   *
+   * @tparam E the type of the element in the <code>Array</code>
+   * @return <code>Length[Array[E]]</code> that supports <code>Array</code> in <code>have length</code> syntax
+   */
   implicit def lengthOfArray[E]: Length[Array[E]] = 
     new Length[Array[E]] {
       def lengthOf(arr: Array[E]): Long = arr.length
     }
 
+  /**
+   * Enable <code>Length</code> implementation for <code>String</code>
+   *
+   * @return <code>Length[String]</code> that supports <code>String</code> in <code>have length</code> syntax
+   */
   implicit val lengthOfString: Length[String] = 
     new Length[String] {
       def lengthOf(str: String): Long = str.length
     }
-  
+
+  /**
+   * Enable <code>Length</code> implementation for arbitary object with <code>length()</code> method that returns <code>Int</code>.
+   *
+   * @tparam T any type with <code>length()</code> method that returns <code>Int</code>
+   * @return <code>Length[T]</code> that supports <code>T</code> in <code>have length</code> syntax
+   */
   implicit def lengthOfAnyRefWithLengthMethodForInt[T <: AnyRef { def length(): Int}]: Length[T] = 
     new Length[T] {
       def lengthOf(obj: T): Long = obj.length
     }
-  
+
+  /**
+   * Enable <code>Length</code> implementation for arbitary object with parameterless <code>length</code> method that returns <code>Int</code>.
+   *
+   * @tparam T any type with parameterless <code>length</code> method that returns <code>Int</code>
+   * @return <code>Length[T]</code> that supports <code>T</code> in <code>have length</code> syntax
+   */
   implicit def lengthOfAnyRefWithParameterlessLengthMethodForInt[T <: AnyRef { def length: Int}]: Length[T] = 
     new Length[T] {
       def lengthOf(obj: T): Long = obj.length
     }
-  
+
+  /**
+   * Enable <code>Length</code> implementation for arbitary object with <code>getLength()</code> method that returns <code>Int</code>.
+   *
+   * @tparam T any type with <code>getLength()</code> method that returns <code>Int</code>
+   * @return <code>Length[T]</code> that supports <code>T</code> in <code>have length</code> syntax
+   */
   implicit def lengthOfAnyRefWithGetLengthMethodForInt[T <: AnyRef { def getLength(): Int}]: Length[T] = 
     new Length[T] {
       def lengthOf(obj: T): Long = obj.getLength
     }
-  
+
+  /**
+   * Enable <code>Length</code> implementation for arbitary object with parameterless <code>getLength</code> method that returns <code>Int</code>.
+   *
+   * @tparam T any type with parameterless <code>getLength</code> method that returns <code>Int</code>
+   * @return <code>Length[T]</code> that supports <code>T</code> in <code>have length</code> syntax
+   */
   implicit def lengthOfAnyRefWithParameterlessGetLengthMethodForInt[T <: AnyRef { def getLength: Int}]: Length[T] = 
     new Length[T] {
       def lengthOf(obj: T): Long = obj.getLength
     }
-  
+
+  /**
+   * Enable <code>Length</code> implementation for arbitary object with <code>length()</code> method that returns <code>Long</code>.
+   *
+   * @tparam T any type with <code>length()</code> method that returns <code>Long</code>
+   * @return <code>Length[T]</code> that supports <code>T</code> in <code>have length</code> syntax
+   */
   implicit def lengthOfAnyRefWithLengthMethodForLong[T <: AnyRef { def length(): Long}]: Length[T] = 
     new Length[T] {
       def lengthOf(obj: T): Long = obj.length
     }
-  
+
+  /**
+   * Enable <code>Length</code> implementation for arbitary object with parameterless <code>length</code> method that returns <code>Long</code>.
+   *
+   * @tparam T any type with parameterless <code>length</code> method that returns <code>Long</code>
+   * @return <code>Length[T]</code> that supports <code>T</code> in <code>have length</code> syntax
+   */
   implicit def lengthOfAnyRefWithParameterlessLengthMethodForLong[T <: AnyRef { def length: Long}]: Length[T] = 
     new Length[T] {
       def lengthOf(obj: T): Long = obj.length
     }
-  
+
+  /**
+   * Enable <code>Length</code> implementation for arbitary object with <code>getLength()</code> method that returns <code>Long</code>.
+   *
+   * @tparam T any type with <code>getLength()</code> method that returns <code>Long</code>
+   * @return <code>Length[T]</code> that supports <code>T</code> in <code>have length</code> syntax
+   */
   implicit def lengthOfAnyRefWithGetLengthMethodForLong[T <: AnyRef { def getLength(): Long}]: Length[T] = 
     new Length[T] {
       def lengthOf(obj: T): Long = obj.getLength
     }
-  
+
+  /**
+   * Enable <code>Length</code> implementation for arbitary object with parameterless <code>getLength</code> method that returns <code>Long</code>.
+   *
+   * @tparam T any type with parameterless <code>getLength</code> method that returns <code>Long</code>
+   * @return <code>Length[T]</code> that supports <code>T</code> in <code>have length</code> syntax
+   */
   implicit def lengthOfAnyRefWithParameterlessGetLengthMethodForLong[T <: AnyRef { def getLength: Long}]: Length[T] = 
     new Length[T] {
       def lengthOf(obj: T): Long = obj.getLength
