@@ -87,7 +87,8 @@ def main() {
                       "tags/Slow.java",
                       "tags/CPU.java",
                       "tags/Disk.java",
-                      "tags/Network.java"
+                      "tags/Network.java",
+                      "tags/Retryable.java"
 )
 
   for (filename <- filenames) {
