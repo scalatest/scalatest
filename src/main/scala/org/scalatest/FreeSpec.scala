@@ -26,7 +26,7 @@ import Suite.anExceptionThatShouldCauseAnAbort
 import Suite.autoTagClassAnnotations
 
 /**
- * Facilitates a &#8220;behavior-driven&#8221; style of development (BDD), in which tests
+ * Facilitates a &ldquo;behavior-driven&rdquo; style of development (BDD), in which tests
  * are nested inside text clauses denoted with the dash operator (<code>-</code>).
  *
  * <p>
@@ -215,7 +215,7 @@ import Suite.autoTagClassAnnotations
  * Tests can only be registered while the <code>FreeSpec</code> is
  * in its registration phase. Any attempt to register a test after the <code>FreeSpec</code> has
  * entered its ready phase, <em>i.e.</em>, after <code>run</code> has been invoked on the <code>FreeSpec</code>,
- * will be met with a thrown <code>TestRegistrationClosedException</code>. The recommended style
+ * will be met with a thrown <a href="TestRegistrationClosedException.html"><code>TestRegistrationClosedException</code></a>. The recommended style
  * of using <code>FreeSpec</code> is to register tests during object construction as is done in all
  * the examples shown here. If you keep to the recommended style, you should never see a
  * <code>TestRegistrationClosedException</code>.
@@ -227,7 +227,7 @@ import Suite.autoTagClassAnnotations
  * good intention of resurrecting the test at a later time, <code>FreeSpec</code> adds a method
  * <code>ignore</code> to strings that can be used instead of <code>in</code> to register a test. For example, to temporarily
  * disable the test with the name <code>"A Stack should pop values in last-in-first-out order"</code>, just
- * change &#8220;<code>in</code>&#8221; into &#8220;<code>ignore</code>,&#8221; like this:
+ * change &ldquo;<code>in</code>&rdquo; into &#8220;<code>ignore</code>,&#8221; like this:
  * </p>
  *
  * <pre class="stHighlight">
@@ -327,21 +327,21 @@ import Suite.autoTagClassAnnotations
  * <a name="informers"></a><h2>Informers</h2></a>
  *
  * <p>
- * One of the parameters to <code>FreeSpec</code>'s <code>run</code> method is a <code>Reporter</code>, which
+ * One of the parameters to <code>FreeSpec</code>'s <code>run</code> method is a <a href="Reporter.html"><code>Reporter</code></a>, which
  * will collect and report information about the running suite of tests.
  * Information about suites and tests that were run, whether tests succeeded or failed, 
  * and tests that were ignored will be passed to the <code>Reporter</code> as the suite runs.
  * Most often the reporting done by default by <code>FreeSpec</code>'s methods will be sufficient, but
  * occasionally you may wish to provide custom information to the <code>Reporter</code> from a test.
- * For this purpose, an <code>Informer</code> that will forward information to the current <code>Reporter</code>
+ * For this purpose, an <a href="Informer.html"><code>Informer</code></a> that will forward information to the current <code>Reporter</code>
  * is provided via the <code>info</code> parameterless method.
  * You can pass the extra information to the <code>Informer</code> via its <code>apply</code> method.
- * The <code>Informer</code> will then pass the information to the <code>Reporter</code> via an <code>InfoProvided</code> event.
+ * The <code>Informer</code> will then pass the information to the <code>Reporter</code> via an <a href="events/InfoProvided.html"><code>InfoProvided</code></a> event.
  * </p>
  * 
  * <p>
  * One use case for the <code>Informer</code> is to pass more information about a specification to the reporter. For example,
- * the <code>GivenWhenThen</code> trait provides methods that use the implicit <code>info</code> provided by <code>FreeSpec</code>
+ * the <a href="GivenWhenThen.html"><code>GivenWhenThen</code></a> trait provides methods that use the implicit <code>info</code> provided by <code>FreeSpec</code>
  * to pass such information to the reporter. Here's an example:
  * </p>
  *
@@ -402,7 +402,7 @@ import Suite.autoTagClassAnnotations
  * To support this style of testing, a test can be given a name that specifies one
  * bit of behavior required by the system being tested. The test can also include some code that
  * sends more information about the behavior to the reporter when the tests run. At the end of the test,
- * it can call method <code>pending</code>, which will cause it to complete abruptly with <code>TestPendingException</code>.
+ * it can call method <code>pending</code>, which will cause it to complete abruptly with <a href="exceptions/TestPendingException.html"><code>TestPendingException</code></a>.
  * </p>
  *
  * <p>
@@ -560,7 +560,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <p>
- * The <code>run</code> method takes a <code>Filter</code>, whose constructor takes an optional
+ * The <code>run</code> method takes a <a href="Filter.html"><code>Filter</code></a>, whose constructor takes an optional
  * <code>Set[String]</code> called <code>tagsToInclude</code> and a <code>Set[String]</code> called
  * <code>tagsToExclude</code>. If <code>tagsToInclude</code> is <code>None</code>, all tests will be run
  * except those those belonging to tags listed in the
@@ -866,7 +866,7 @@ import Suite.autoTagClassAnnotations
  *
  * <p>
  * Note that the <a href="Suite$NoArgTest.html"><code>NoArgTest</code></a> passed to <code>withFixture</code>, in addition to
- * an <code>apply</code> method that executes the test, also includes the test name and the <a href="#configMapSection">config
+ * an <code>apply</code> method that executes the test, also includes the test name and the <a href="ConfigMap">config
  * map</a> passed to <code>runTest</code>. Thus you can also use the test name and configuration objects in your <code>withFixture</code>
  * implementation.
  * </p>
@@ -977,9 +977,9 @@ import Suite.autoTagClassAnnotations
  * <h4>Overriding <code>withFixture(OneArgTest)</code></h4>
  *
  * <p>
- * If all or most tests need the same fixture, you can avoid some of the boilerplate of the loan-fixture method approach by using a <code>fixture.Suite</code>
+ * If all or most tests need the same fixture, you can avoid some of the boilerplate of the loan-fixture method approach by using a <code>fixture.FreeSpec</code>
  * and overriding <code>withFixture(OneArgTest)</code>.
- * Each test in a <code>fixture.Suite</code> takes a fixture as a parameter, allowing you to pass the fixture into
+ * Each test in a <code>fixture.FreeSpec</code> takes a fixture as a parameter, allowing you to pass the fixture into
  * the test. You must indicate the type of the fixture parameter by specifying <code>FixtureParam</code>, and implement a
  * <code>withFixture</code> method that takes a <code>OneArgTest</code>. This <code>withFixture</code> method is responsible for
  * invoking the one-arg test function, so you can perform fixture set up before, and clean up after, invoking and passing
@@ -1046,7 +1046,7 @@ import Suite.autoTagClassAnnotations
  * <p>
  * In this example, the tests actually required two fixture objects, a <code>File</code> and a <code>FileWriter</code>. In such situations you can
  * simply define the <code>FixtureParam</code> type to be a tuple containing the objects, or as is done in this example, a case class containing
- * the objects.  For more information on the <code>withFixture(OneArgTest)</code> technique, see the <a href="fixture/Suite.html">documentation for <code>fixture.Suite</code></a>.
+ * the objects.  For more information on the <code>withFixture(OneArgTest)</code> technique, see the <a href="fixture/FreeSpec.html">documentation for <code>fixture.FreeSpec</code></a>.
  * </p>
  *
  * <a name="beforeAndAfter"></a>

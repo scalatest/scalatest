@@ -20,7 +20,7 @@ import enablers.Collecting
 /**
  * Trait that provides an implicit conversion that adds to collection types a <code>loneElement</code> method, which
  * will return the value of the lone element if the collection does
- * indeed contain one and only one element, or throw <code>TestFailedException</code> if not.
+ * indeed contain one and only one element, or throw <a href="TestFailedException.html"><code>TestFailedException</code></a> if not.
  *
  * <p>
  * This construct allows you to express in one statement that a collection should contain one and only one element

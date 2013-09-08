@@ -94,7 +94,7 @@ import java.lang.annotation.*;
  * </pre>
  *
  * <p>
- * If you run this version of <code>SetSuite</code> in the Scala interpreter, you'll see that it
+ * If you run this version of <code>SetSpec</code> in the Scala interpreter, you'll see that it
  * runs only the second test and reports that the first test was ignored:
  * </p>
  *

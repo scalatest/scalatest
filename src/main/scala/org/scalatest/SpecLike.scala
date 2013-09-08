@@ -24,7 +24,7 @@ import scala.reflect.NameTransformer._
 import java.lang.reflect.{Method, Modifier, InvocationTargetException}
 
 /**
- * Implementation trait for class <code>Spec</code>, which facilitates a &#8220;behavior-driven&#8221; style of development (BDD), in which tests
+ * Implementation trait for class <code>Spec</code>, which facilitates a &ldquo;behavior-driven&rdquo; style of development (BDD), in which tests
  * are methods, optionally nested inside singleton objects defining textual scopes.
  * 
  * <p>

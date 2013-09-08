@@ -105,7 +105,7 @@ trait FunSpecLike extends Suite with Informing with Updating with Alerting with 
 
     /**
      * Register a test with the given spec text, optional tags, and test function value that takes no arguments.
-     * An invocation of this method is called an &#8220;example.&#8221;
+     * An invocation of this method is called an &ldquo;example.&rdquo;
      *
      * This method will register the test for later execution via an invocation of one of the <code>execute</code>
      * methods. The name of the test will be a concatenation of the text of all surrounding describers,
@@ -214,7 +214,7 @@ trait FunSpecLike extends Suite with Informing with Updating with Alerting with 
 
     /**
      * Register a test with the given spec text, optional tags, and test function value that takes no arguments.
-     * An invocation of this method is called an &#8220;example.&#8221;
+     * An invocation of this method is called an &ldquo;example.&rdquo;
      *
      * This method will register the test for later execution via an invocation of one of the <code>execute</code>
      * methods. The name of the test will be a concatenation of the text of all surrounding describers,
@@ -343,7 +343,7 @@ trait FunSpecLike extends Suite with Informing with Updating with Alerting with 
   }
 
   /**
-   * Describe a &#8220;subject&#8221; being specified and tested by the passed function value. The
+   * Describe a &ldquo;subject&rdquo; being specified and tested by the passed function value. The
    * passed function value may contain more describers (defined with <code>describe</code>) and/or tests
    * (defined with <code>it</code>). This trait's implementation of this method will register the
    * description string and immediately invoke the passed function.

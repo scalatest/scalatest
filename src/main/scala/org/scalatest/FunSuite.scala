@@ -19,8 +19,8 @@ import scala.collection.immutable.ListSet
 import Suite.autoTagClassAnnotations
 
 /**
- * A suite of tests in which each test is represented as a function value. The &#8220;<code>Fun</code>&#8221; in <code>FunSuite</code> stands
- * for &#8220;function.&#8221; 
+ * A suite of tests in which each test is represented as a function value. The &ldquo;<code>Fun</code>&rdquo; in <code>FunSuite</code> stands
+ * for &ldquo;function.&rdquo; 
  * 
  * <table><tr><td class="usage">
  * <strong>Recommended Usage</strong>:
@@ -51,7 +51,7 @@ import Suite.autoTagClassAnnotations
  * </pre>
  *
  * <p>
- * &#8220;<code>test</code>&#8221; is a method, defined in <code>FunSuite</code>, which will be invoked
+ * &ldquo;<code>test</code>&rdquo; is a method, defined in <code>FunSuite</code>, which will be invoked
  * by the primary constructor of <code>SetSuite</code>. You specify the name of the test as
  * a string between the parentheses, and the test code itself between curly braces.
  * The test code is a function passed as a by-name parameter to <code>test</code>, which registers

@@ -17,7 +17,7 @@ package org.scalatest
 
 /**
  * Trait that contains methods named <code>given</code>, <code>when</code>, <code>then</code>, and <code>and</code>,
- * which take a string message and implicit <code>Informer</code>, and forward the message to the informer.
+ * which take a string message and implicit <a href="Informer.html"><code>Informer</code></a>, and forward the message to the informer.
  *
  * <p>
  * Here's an example:
@@ -50,7 +50,7 @@ package org.scalatest
  * </pre>
  *
  * <p>
- * If you run this <code>FlatSpec</code> from the interpreter, you will see the following output:
+ * If you run this <code>SetSpec</code> from the interpreter, you will see the following output:
  * </p>
  *
  * <pre class="stREPL">

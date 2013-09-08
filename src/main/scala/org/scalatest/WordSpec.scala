@@ -26,7 +26,7 @@ import Suite.anExceptionThatShouldCauseAnAbort
 import Suite.autoTagClassAnnotations
 
 /**
- * Facilitates a &#8220;behavior-driven&#8221; style of development (BDD), in which tests
+ * Facilitates a &ldquo;behavior-driven&rdquo; style of development (BDD), in which tests
  * are combined with text that specifies the behavior the tests verify.
  * 
  * <table><tr><td class="usage">
@@ -382,7 +382,7 @@ import Suite.autoTagClassAnnotations
  * good intention of resurrecting the test at a later time, <code>WordSpec</code> adds a method
  * <code>ignore</code> to strings that can be used instead of <code>in</code> to register a test. For example, to temporarily
  * disable the test with the name <code>"A Stack should pop values in last-in-first-out order"</code>, just
- * change &#8220;<code>in</code>&#8221; into &#8220;<code>ignore</code>,&#8221; like this:
+ * change &ldquo;<code>in</code>&rdquo; into &#8220;<code>ignore</code>,&#8221; like this:
  * </p>
  *
  * <pre class="stHighlight">
