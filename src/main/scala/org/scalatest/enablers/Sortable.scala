@@ -28,38 +28,80 @@ import Aggregating.tryEquality
  *
  * <p>
  * A <code>Sortable[S]</code> provides access to the "sortable nature" of type <code>S</code> in such
- * a way that <code>be</code> <code>sorted</code> matcher syntax can be used with type <code>S</code>. An <code>S</code>
+ * a way that <code>be</code> <code>sorted</code> matcher syntax can be used with type <code>S</code>. A <code>S</code>
  * can be any type for which the concept of being sorted makes sense, such as sequences. ScalaTest provides
  * implicit implementations for several types. You can enable the <code>be</code> <code>sorted</code> matcher syntax on your own
  * type <code>U</code> by defining a <code>Sortable[U]</code> for the type and making it available implicitly.
  * 
  * <p>
- * ScalaTest provides an implicit <code>Sortable</code> instance for <code>scala.collection.Seq</code>
- * in the <code>Sortable</code> companion object.
+ * ScalaTest provides an implicit <code>Sortable</code> instance for types out of the box
+ * in the <a href="Sortable$.html"><code>Sortable</code> companion object</a>:
  * </p>
+ *
+ * <ul>
+ * <li><code>scala.collection.GenSeq</code></li>
+ * <li><code>Array</code></li>
+ * <li><code>java.util.List</code></li>
+ * </ul>
+ *
  */
 trait Sortable[-S] {
 
   /**
    * Determines whether the passed sequence is sorted, <em>i.e.</em>, the elements of the passed sequence are in sorted order.
+   *
+   * @param sequence the sequence to check whether it is sorted
+   * @return <code>true</code> if passed <code>sequence</code> is sorted, <code>false</code> otherwise.
    */
   def isSorted(sequence: S): Boolean
 }
 
+/**
+ * Companion object for <code>Sortable</code> that provides implicit implementations for the following types:
+ *
+ * <ul>
+ * <li><code>scala.collection.GenSeq</code></li>
+ * <li><code>Array</code></li>
+ * <li><code>java.util.List</code></li>
+ * </ul>
+ */
 object Sortable {
 
 // Sliding doesn't exist on GenSeq, and this is inherently sequential, so make them say .seq if they have a parallel Seq
 // Actually on second thought, I think just do a .seq on it.
+  /**
+   * Enable <code>Sortable</code> implementation for <code>scala.collection.GenSeq</code>
+   *
+   * @param ordering <code>scala.math.Ordering</code></a> of type <code>E</code>
+   * @tparam E type of elements in the <code>scala.collection.GenSeq</code>
+   * @tparam SEQ any subtype of <code>scala.collection.GenSeq</code>
+   * @return <code>Sortable[SEQ[E]]</code> that supports <code>scala.collection.GenSeq</code> in <code>be</code> <code>sortable</code> syntax
+   */
   implicit def sortableNatureOfSeq[E, SEQ[e] <: scala.collection.GenSeq[e]](implicit ordering: Ordering[E]): Sortable[SEQ[E]] =
     new Sortable[SEQ[E]] {
       def isSorted(o: SEQ[E]): Boolean = o.seq.sliding(2).forall { duo => ordering.lteq(duo(0), duo(1)) }
     }
 
+  /**
+   * Enable <code>Sortable</code> implementation for <code>Array</code>
+   *
+   * @param ordering <code>scala.math.Ordering</code></a> of type <code>E</code>
+   * @tparam E type of elements in the <code>Array</code>
+   * @return <code>Sortable[Array[E]]</code> that supports <code>Array</code> in <code>be</code> <code>sortable</code> syntax
+   */
   implicit def sortableNatureOfArray[E](implicit ordering: Ordering[E]): Sortable[Array[E]] = 
     new Sortable[Array[E]] {
       def isSorted(o: Array[E]): Boolean = o.sliding(2).forall { duo => ordering.lteq(duo(0), duo(1)) }
     }
 
+  /**
+   * Enable <code>Sortable</code> implementation for <code>java.util.List</code>
+   *
+   * @param ordering <code>scala.math.Ordering</code></a> of type <code>E</code>
+   * @tparam E type of elements in the <code>java.util.List</code>
+   * @tparam JLIST any subtype of <code>java.util.List</code>
+   * @return <code>Sortable[JLIST[E]]</code> that supports <code>java.util.List</code> in <code>be</code> <code>sortable</code> syntax
+   */
   implicit def sortableNatureOfJavaList[E, JLIST[e] <: java.util.List[e]](implicit ordering: Ordering[E]): Sortable[JLIST[E]] = 
     new Sortable[JLIST[E]] {
       def isSorted(o: JLIST[E]): Boolean = o.asScala.sliding(2).forall { duo => ordering.lteq(duo(0), duo(1)) }
