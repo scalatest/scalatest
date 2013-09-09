@@ -58,7 +58,7 @@ object KeyMapping {
   /**
    * Enable <code>KeyMapping</code> implementation for <code>scala.collection.GenMap</code>.
    *
-   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of entry in the <code>scala.collection.GenMap</code>
+   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of key in the <code>scala.collection.GenMap</code>
    * @tparam K the type of the key in the <code>scala.collection.GenMap</code>
    * @tparam V the type of the value in the <code>scala.collection.GenMap</code>
    * @tparam MAP any subtype of <code>scala.collection.GenMap</code>
@@ -96,11 +96,11 @@ object KeyMapping {
   /**
    * Enable <code>KeyMapping</code> implementation for <code>java.util.Map</code>.
    *
-   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of entry in the <code>java.util.Map</code>
+   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of key in the <code>java.util.Map</code>
    * @tparam K the type of the key in the <code>java.util.Map</code>
    * @tparam V the type of the value in the <code>java.util.Map</code>
    * @tparam JMAP any subtype of <code>java.util.Map</code>
-   * @return <code>KeyMapping[JMAP[K, V]]</code> that supports <code>java.util.Map</code> in <code>contain key</code> syntax
+   * @return <code>KeyMapping[JMAP[K, V]]</code> that supports <code>java.util.Map</code> in <code>contain</code> <code>key</code> syntax
    */
   implicit def keyMappingNatureOfJavaMap[K, V, JMAP[k, v] <: java.util.Map[k, v]](implicit equality: Equality[K]): KeyMapping[JMAP[K, V]] = 
     new KeyMapping[JMAP[K, V]] {

@@ -42,6 +42,10 @@ trait Readability[-T] {
 
   /**
    * Determines whether the passed thing is readable, <em>i.e.</em>, the passed file is readable.
+   *
+   * @param thing the thing to check for readability
+   * @return <code>true</code> if the passed thing is readable, <code>false</code> otherwise
+   *
    */
   def isReadable(thing: T): Boolean
 }
