@@ -23,19 +23,19 @@ import scala.annotation.tailrec
 import scala.collection.JavaConverters._
 
 /**
- * Supertrait for typeclasses that enable <code>contain</code> matcher syntax for aggregations.
+ * Supertrait for typeclasses that enable <code>contain value</code> matcher syntax.
  *
  * <p>
- * An <code>ValueMapping[A]</code> provides access to the "aggregating nature" of type <code>A</code> in such
- * a way that relevant <code>contain</code> matcher syntax can be used with type <code>A</code>. An <code>A</code>
- * can be any type of "aggregation," a type that in some way aggregates or brings together other types. ScalaTest provides
- * implicit implementations for several types. You can enable the <code>contain</code> matcher syntax on your own
- * type <code>U</code> by defining an <code>ValueMapping[U}</code> for the type and making it available implicitly.
- * 
+ * A <code>ValueMapping[M]</code> provides access to the "value mapping nature" of type <code>M</code> in such
+ * a way that <code>contain</code> <code>value</code> matcher syntax can be used with type <code>M</code>. A <code>M</code>
+ * can be any type for which <code>contain</code> <code>value</code> syntax makes sense. ScalaTest provides implicit implementations
+ * for <code>scala.collection.GenMap</code> and <code>java.util.Map</code>. You can enable the <code>contain</code> <code>value</code>
+ * matcher syntax on your own type <code>U</code> by defining a <code>ValueMapping[U]</code> for the type and making it
+ * available implicitly.
+ *
  * <p>
- * ScalaTest provides implicit <code>ValueMapping</code> instances for <code>scala.collection.GenTraversable</code>,
- * <code>java.util.Collection</code>, <code>java.util.Map</code>, <code>String</code>, and <code>Array</code> in the
- * <code>ValueMapping</code> companion object.
+ * ScalaTest provides implicit <code>ValueMapping</code> instances for <code>scala.collection.GenMap</code>,
+ * and <code>java.util.Map</code> in the <a href="ValueMapping$.html"><code>ValueMapping</code> companion object</a>.
  * </p>
  */
 trait ValueMapping[-M] {
@@ -47,11 +47,31 @@ trait ValueMapping[-M] {
    * @param eles elements at least one of which should be contained in the passed aggregation
    * @return true if the passed aggregation contains at least one of the passed elements
    */
+
+  /**
+   * Check if the passed <code>map</code> contains the passed <code>value</code>.
+   *
+   * @param map a map about which an assertion is being made
+   * @param value value of which should be contained in the passed map
+   * @return true if the passed map contains the passed value
+   */
   def containsValue(map: M, value: Any): Boolean
 }
 
+/**
+ * Companion object for <code>ValueMapping</code> that provides implicit implementations for <code>scala.collection.GenMap</code> and <code>java.util.Map</code>.
+ */
 object ValueMapping {
 
+  /**
+   * Enable <code>ValueMapping</code> implementation for <code>scala.collection.GenMap</code>.
+   *
+   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of value in the <code>scala.collection.GenMap</code>
+   * @tparam K the type of the key in the <code>scala.collection.GenMap</code>
+   * @tparam V the type of the value in the <code>scala.collection.GenMap</code>
+   * @tparam MAP any subtype of <code>scala.collection.GenMap</code>
+   * @return <code>ValueMapping[MAP[K, V]]</code> that supports <code>scala.collection.GenMap</code> in <code>contain value</code> syntax
+   */
   implicit def valueMappingNatureOfGenMap[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](implicit equality: Equality[V]): ValueMapping[MAP[K, V]] = 
     new ValueMapping[MAP[K, V]] {
       def containsValue(map: MAP[K, V], value: Any): Boolean = {
@@ -60,9 +80,36 @@ object ValueMapping {
       }
     }
 
+  /**
+   * Implicit conversion that converts an <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>V</code>
+   * into <code>ValueMapping</code> of type <code>MAP[K, V]</code>, where <code>MAP</code> is a subtype of <code>scala.collection.GenMap</code>.
+   * This is required to support the explicit <a href="../../scalautils/Equality.html"><code>Equality</code></a> syntax, for example:
+   *
+   * <pre class="stHighlight">
+   * (Map(1 -> "one") should contain value "ONE") (after being lowerCased)
+   * </pre>
+   *
+   * <code>(after being lowerCased)</code> will returns an <a href="../../scalautils/Equality.html"><code>Equality[String]</code></a>
+   * and this implicit conversion will convert it into <code>ValueMapping[Map[Int, String]]</code>.
+   *
+   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>V</code>
+   * @tparam K the type of the key in the <code>scala.collection.GenMap</code>
+   * @tparam V the type of the value in the <code>scala.collection.GenMap</code>
+   * @tparam MAP any subtype of <code>scala.collection.GenMap</code>
+   * @return <code>ValueMapping</code> of type <code>MAP[K, V]</code>
+   */
   implicit def convertEqualityToGenMapValueMapping[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](equality: Equality[V]): ValueMapping[MAP[K, V]] = 
     valueMappingNatureOfGenMap(equality)
-    
+
+  /**
+   * Enable <code>ValueMapping</code> implementation for <code>java.util.Map</code>.
+   *
+   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of value in the <code>java.util.Map</code>
+   * @tparam K the type of the key in the <code>java.util.Map</code>
+   * @tparam V the type of the value in the <code>java.util.Map</code>
+   * @tparam JMAP any subtype of <code>java.util.Map</code>
+   * @return <code>ValueMapping[JMAP[K, V]]</code> that supports <code>java.util.Map</code> in <code>contain</code> <code>value</code> syntax
+   */
   implicit def valueMappingNatureOfJavaMap[K, V, JMAP[k, v] <: java.util.Map[k, v]](implicit equality: Equality[V]): ValueMapping[JMAP[K, V]] = 
     new ValueMapping[JMAP[K, V]] {
       def containsValue(jMap: JMAP[K, V], value: Any): Boolean = {
@@ -70,6 +117,26 @@ object ValueMapping {
       }
     }
 
+  /**
+   * Implicit conversion that converts an <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>V</code>
+   * into <code>ValueMapping</code> of type <code>JMAP[K, V]</code>, where <code>JMAP</code> is a subtype of <code>java.util.Map</code>.
+   * This is required to support the explicit <a href="../../scalautils/Equality.html"><code>Equality</code></a> syntax, for example:
+   *
+   * <pre class="stHighlight">
+   * val javaMap = new java.util.HashMap[Int, String]()
+   * javaMap.put(1, "one")
+   * (javaMap should contain value "ONE") (after being lowerCased)
+   * </pre>
+   *
+   * <code>(after being lowerCased)</code> will returns an <a href="../../scalautils/Equality.html"><code>Equality[String]</code></a>
+   * and this implicit conversion will convert it into <code>ValueMapping[java.util.HashMap[Int, String]]</code>.
+   *
+   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>V</code>
+   * @tparam K the type of the key in the <code>java.util.Map</code>
+   * @tparam V the type of the value in the <code>java.util.Map</code>
+   * @tparam JMAP any subtype of <code>java.util.Map</code>
+   * @return <code>ValueMapping</code> of type <code>JMAP[K, V]</code>
+   */
   implicit def convertEqualityToJavaMapValueMapping[K, V, JMAP[k, v] <: java.util.Map[k, v]](equality: Equality[V]): ValueMapping[JMAP[K, V]] = 
     valueMappingNatureOfJavaMap(equality)
 }
