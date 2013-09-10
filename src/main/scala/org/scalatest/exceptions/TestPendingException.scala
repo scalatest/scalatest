@@ -40,6 +40,6 @@ package org.scalatest.exceptions
  *
  * @author Bill Venners
  */
-case class TestPendingException extends RuntimeException
+class TestPendingException extends RuntimeException
 
 // This one isn't lazy, because, well, it could be lazy, but it is different than failed.

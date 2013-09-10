@@ -22,6 +22,15 @@ package org.scalatest.matchers
  * @author Chee Seng
  */
 trait MatcherProducers {
+
+  class Composifier[T](f: T => Matcher[T]) {
+    def composeTwice[U](g: U => T): U => Matcher[U] = (f compose g) andThen (_ compose g)
+    def mapResult(prettify: MatchResult => MatchResult): T => Matcher[T] =
+      (o: T) => f(o) mapResult prettify
+    def mapArgs(prettify: Any => String): T => Matcher[T] =
+      (o: T) => f(o) mapArgs prettify
+  }
+
   /**
    * Implicit conversion that converts a function of <code>T => Matcher[T]</code> to an object that has
    * <code>composeTwice</code>, <code>mapResult</code> and <code>mapArgs</code> methods.
@@ -33,7 +42,7 @@ trait MatcherProducers {
    * import matchers._
    * import MatcherProducers._
    *
-   * val f = be > (_: Int)
+   * val f = be &gt; (_: Int)
    * val g = (_: String).toInt
    *
    * // f composeTwice g means: (f compose g) andThen (_ compose g)
@@ -62,14 +71,7 @@ trait MatcherProducers {
    * @tparam T the type used by function <code>f</code>
    * @return an object that has <code>composeTwice</code>, <code>mapResult</code> and <code>mapArgs</code> methods.
    */
-  implicit def decorate[T](f: T => Matcher[T]) = 
-    new {
-      def composeTwice[U](g: U => T): U => Matcher[U] = (f compose g) andThen (_ compose g)
-      def mapResult(prettify: MatchResult => MatchResult): T => Matcher[T] =
-        (o: T) => f(o) mapResult prettify
-      def mapArgs(prettify: Any => String): T => Matcher[T] =
-        (o: T) => f(o) mapArgs prettify
-    }
+  implicit def convertToComposifier[T](f: T => Matcher[T]): Composifier[T] = new Composifier(f) 
 }
 
 /**
