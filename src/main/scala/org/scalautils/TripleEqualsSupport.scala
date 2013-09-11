@@ -122,7 +122,7 @@ trait TripleEqualsSupport {
    *
    * @author Bill Venners
    */
-  class Equalizer[L](left: L) {
+  class Equalizer[L](val left: L) {
   
     /**
      * Compare two objects for equality, returning a <code>Boolean</code>, using the <code>Equality</code> type class passed as <code>equality</code>.
@@ -177,7 +177,7 @@ trait TripleEqualsSupport {
     /**
      * toString that just use left's toString.
      */
-    override def toString: String = "" + left
+    override def toString: String = Prettifier.default(left)
   }
 
   /**

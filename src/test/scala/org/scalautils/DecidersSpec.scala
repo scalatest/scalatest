@@ -17,7 +17,7 @@ package org.scalautils
 
 import org.scalatest._
 
-class DecidersSpec extends Spec with NonImplicitAssertions with TripleEquals with Explicitly with StringNormalizations {
+class DecidersSpec extends Spec with Explicitly with StringNormalizations {
 
   object `The 'decided by' syntax` {
     def `should enable users to explicitly choose an Equality for a === use` { 

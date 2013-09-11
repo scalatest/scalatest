@@ -96,6 +96,80 @@ class AssertionsMacro[C <: Context](val context: C) {
         )
     }
   }
+
+  def apply(booleanExpr: Expr[Boolean], clueExpr: Expr[Any]): Expr[Unit] = {
+
+    val predicate = parsePredicate(booleanExpr.tree)
+    val text: Expr[String] = context.literal(getText(booleanExpr.tree))
+    predicate match {
+      case Some(RecognizedPredicate(left, operator, right, subsitutedExpr)) =>
+        /*
+         * Translate the following:
+         *
+         * assert(something.aMethod == 3)
+         *
+         * to:
+         *
+         * {
+         *   val $org_scalatest_assert_macro_left = something.aMethod
+         *   val $org_scalatest_assert_macro_right = 3
+         *   val $org_scalatest_assert_macro_result = $org_scalatest_assert_macro_left ==  $org_scalatest_assert_macro_result
+         *   $org_scalatest_AssertionsHelper.macroAssertTrue($org_scalatest_assert_macro_left, "==", $org_scalatest_assert_macro_right, $org_scalatest_assert_macro_result, "something.aMethod == 3", clue)
+         * }
+         *
+         */
+        context.Expr(
+          Block(
+            ValDef(
+              Modifiers(),
+              newTermName("$org_scalatest_assert_macro_left"),
+              TypeTree(),
+              left.duplicate
+            ),
+            ValDef(
+              Modifiers(),
+              newTermName("$org_scalatest_assert_macro_right"),
+              TypeTree(),
+              right.duplicate
+            ),
+            ValDef(
+              Modifiers(),
+              newTermName("$org_scalatest_assert_macro_result"),
+              TypeTree(),
+              subsitutedExpr
+            ),
+            Apply(
+              Select(
+                Ident("$org_scalatest_AssertionsHelper"),
+                newTermName("macroAssertTrue")
+              ),
+              List(Ident(newTermName("$org_scalatest_assert_macro_left")), context.literal(operator).tree, Ident(newTermName("$org_scalatest_assert_macro_right")), Ident(newTermName("$org_scalatest_assert_macro_result")), text.tree, clueExpr.tree)
+            )
+          )
+        )
+
+      case None =>
+        /*
+         * Translate the following:
+         *
+         * assert(validate(1, 2, 3))
+         *
+         * to:
+         *
+         * $org_scalatest_AssertionsHelper.macroAssertTrue(validate(1, 2, 3), "validate(1, 2, 3)")
+         *
+         */
+        context.Expr(
+          Apply(
+            Select(
+              Ident("$org_scalatest_AssertionsHelper"),
+              newTermName("macroAssertTrue")
+            ),
+            List(booleanExpr.tree, text.tree, clueExpr.tree)
+          )
+        )
+    }
+  }
   
   case class RecognizedPredicate(left: Tree, operator: String, right: Tree, subsitutedExpr: Apply)
   
@@ -115,7 +189,7 @@ class AssertionsMacro[C <: Context](val context: C) {
             Some(RecognizedPredicate(select.qualifier.duplicate, select.name.decoded, apply.args(0).duplicate, sExpr))
           case funApply: Apply if funApply.args.size == 1 => // For === and !== that takes Equality
             funApply.fun match {
-              case select: Select if select.name.decoded == "===" || select.name.decoded == "!==" => 
+              case select: Select =>
                 val sExpr: Apply = 
                   Apply(
                     Apply(
@@ -147,5 +221,9 @@ class AssertionsMacro[C <: Context](val context: C) {
 object AssertionsMacro {
   def apply(context: Context)(condition: context.Expr[Boolean]): context.Expr[Unit] = {
     new AssertionsMacro[context.type](context).apply(condition)
+  }
+
+  def applyWithClue(context: Context)(condition: context.Expr[Boolean], clue: context.Expr[Any]): context.Expr[Unit] = {
+    new AssertionsMacro[context.type](context).apply(condition, clue)
   }
 }

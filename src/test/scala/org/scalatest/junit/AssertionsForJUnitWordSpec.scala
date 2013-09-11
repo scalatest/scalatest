@@ -36,7 +36,7 @@ trait AssertionsForJUnit3SharedTests { this: WordSpec =>
       val caught1 = intercept[AssertionFailedError] {
         assert(false, "hi there")
       }
-      assert(caught1.getMessage === "hi there")
+      assert(caught1.getMessage === "hi there\nassert(false, \"hi there\") failed")
 
       val caught2 = intercept[AssertionFailedError] {
         assert(1 === 2, "hi there")
