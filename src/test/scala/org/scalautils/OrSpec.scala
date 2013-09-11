@@ -76,47 +76,47 @@ class OrSpec extends UnitSpec with Validations with TypeCheckedTripleEquals {
   }
   it can "be used with map" in {
     Good(8) map (_ + 1) should equal (Good(9))
-    Bad[Int, String]("eight") map (_ + 1) should equal (Bad("eight"))
+    Good[Int].orBad("eight") map (_ + 1) should equal (Bad("eight"))
   }
   it can "be used with foreach" in {
     var vCount = 0
     var eCount = 0
     Good(8) foreach { vCount += _ }
     vCount should equal (8)
-    Bad[Int, String]("eight") foreach { eCount += _ }
+    Good[Int].orBad("eight") foreach { eCount += _ }
     eCount should equal (0)
   }
   it can "be used with flatMap" in {
-    Good[Int, String](8) flatMap ((x: Int) => Good(x + 1)) should equal (Good(9))
-    Bad[Int, String]("eight") flatMap ((x: Int) => Good(x + 1)) should equal (Bad("eight"))
+    Good(8).orBad[String] flatMap ((x: Int) => Good(x + 1)) should equal (Good(9))
+    Good[Int].orBad("eight") flatMap ((x: Int) => Good(x + 1)) should equal (Bad("eight"))
   }
   it can "be used with filter" in {
     Good(12).filter(_ > 10) should be (Some(Good(12)))
     Good(7).filter(_ > 10) should be (None)
-    Bad[Int, Int](12).filter(_ > 10) should be (None)
+    Good[Int].orBad(12).filter(_ > 10) should be (None)
   }
   it can "be used with exists" in {
     Good(12).exists(_ == 12) shouldBe true
     Good(12).exists(_ == 13) shouldBe false
-    Bad[Int, Int](12).exists(_ == 12) shouldBe false
+    Good[Int].orBad(12).exists(_ == 12) shouldBe false
   }
   it can "be used with forall" in {
     Good(12).forall(_ > 10) shouldBe true
     Good(7).forall(_ > 10) shouldBe false
-    Bad[Int, Int](12).forall(_ > 10) shouldBe true
-    Bad[Int, Int](7).forall(_ > 10) shouldBe true
+    Good[Int].orBad(12).forall(_ > 10) shouldBe true
+    Good[Int].orBad(7).forall(_ > 10) shouldBe true
   }
   it can "be used with getOrElse" in {
     Good(12).getOrElse(17) shouldBe 12
-    Bad[Int, Int](12).getOrElse(17) shouldBe 17
+    Good[Int].orBad(12).getOrElse(17) shouldBe 17
   }
   it can "be used with toOption" in {
     Good(12).toOption shouldBe Some(12)
-    Bad[Int, Int](12).toOption shouldBe None
+    Good[Int].orBad(12).toOption shouldBe None
   }
   it can "be used with toSeq" in {
     Good(12).toSeq shouldEqual Seq(12)
-    Bad[Int, Int](12).toSeq shouldEqual Seq.empty
+    Good[Int].orBad(12).toSeq shouldEqual Seq.empty
   }
 // toArray, toBuffer, toIndexedSeq, toIterable, toIterator, toList, 
 // toSeq, toStream, toTraversable, toVector
@@ -125,25 +125,25 @@ class OrSpec extends UnitSpec with Validations with TypeCheckedTripleEquals {
     Bad(12).toEither shouldBe Left(12)
   }
   it can "be used with accumulating" in {
-    Good[Int, Int](12).accumulating shouldBe Good[Int, Every[Int]](12)
-    Bad[Int, Int](12).accumulating shouldBe Bad[Int, Every[Int]](One(12))
+    Good(12).orBad[Int].accumulating shouldBe Good(12).orBad[Every[Int]]
+    Good[Int].orBad(12).accumulating shouldBe Good[Int].orBad(One(12))
   }
   it can "be used with toTry, if the error type is a subtype of Throwable" in {
-    Good[Int, Throwable](12).toTry shouldBe Success(12)
-    Good[Int, RuntimeException](12).toTry shouldBe Success(12)
+    Good(12).orBad[Throwable].toTry shouldBe Success(12)
+    Good(12).orBad[RuntimeException].toTry shouldBe Success(12)
     val ex = new RuntimeException("oops")
-    Bad[Int, Throwable](ex).toTry shouldBe Failure(ex)
-    Bad[Int, RuntimeException](ex).toTry shouldBe Failure(ex)
+    Good[Int].orBad(ex).toTry shouldBe Failure(ex)
+    Good[Int].orBad(ex).toTry shouldBe Failure(ex)
     // Does not compile: Good[Int, Int](12).toTry shouldBe Success(12)
   }
   it can "be used with swap" in {
-    Good[Int, String](12).swap should === (Bad[String, Int](12))
-    Bad[Int, String]("hi").swap should === (Good[String, Int]("hi"))
+    Good(12).orBad[String].swap should === (Good[String].orBad(12))
+    Good[Int].orBad("hi").swap should === (Good("hi").orBad[Int])
   }
   it can "be used with zip" in {
-    Good[Int, Every[ErrorMessage]](12) zip Good[String, Every[ErrorMessage]]("hi") should === (Good[(Int, String), Every[ErrorMessage]]((12, "hi")))
-    Bad[Int, Every[ErrorMessage]](One("so")) zip Bad[String, Every[ErrorMessage]](One("ho")) should === (Bad(Many("so", "ho")))
-    Good[Int, Every[ErrorMessage]](12) zip Bad[String, Every[ErrorMessage]](One("ho")) should === (Bad(One("ho")))
+    Good(12).orBad[Every[ErrorMessage]] zip Good("hi").orBad[Every[ErrorMessage]] should === (Good((12, "hi")).orBad[Every[ErrorMessage]])
+    Good[Int].orBad(One("so")) zip Good[String].orBad(One("ho")) should === (Bad(Many("so", "ho")))
+    (Good(12): Int Or Every[ErrorMessage]) zip Bad[String, Every[ErrorMessage]](One("ho")) should === (Bad(One("ho")))
     Bad[Int, Every[ErrorMessage]](One("so")) zip Good[String, Every[ErrorMessage]]("hi") should === (Bad(One("so")))
 
     Good[Int, One[ErrorMessage]](12) zip Good[String, Every[ErrorMessage]]("hi") should === (Good[(Int, String), Every[ErrorMessage]]((12, "hi")))
@@ -155,6 +155,12 @@ class OrSpec extends UnitSpec with Validations with TypeCheckedTripleEquals {
     Bad[Int, Every[ErrorMessage]](One("so")) zip Bad[String, One[ErrorMessage]](One("ho")) should === (Bad(Many("so", "ho")))
     Good[Int, Every[ErrorMessage]](12) zip Bad[String, One[ErrorMessage]](One("ho")) should === (Bad(One("ho")))
     Bad[Int, Every[ErrorMessage]](One("so")) zip Good[String, One[ErrorMessage]]("hi") should === (Bad(One("so")))
+
+    // Works when right hand side ERR type is a supertype of left hand side ERR type, because that's what Every's ++ does.
+    Good[Int].orBad(One("oops")) zip Good[Int].orBad(One(-1: Any)) shouldBe Bad(Many("oops", -1))
+    // This one doesn't work on purpose, though could zip it hte other way:
+    // Good[Int].orBad(One("oops": Any)) zip Good[Int].orBad(One(-1)) shouldBe Bad(Many("oops", -1))
+    Good[Int].orBad(One(-1)) zip Good[Int].orBad(One("oops": Any)) shouldBe Bad(Many(-1, "oops"))
   }
   it can "be used with transform" in {
     Good[Int, Every[ErrorMessage]](2) transform Good[Int => String, Every[ErrorMessage]]("hi" * _) should === (Good[String, Every[ErrorMessage]]("hihi"))

@@ -85,6 +85,12 @@ trait Suite extends org.scalatest.Suite { thisSuite =>
      *   withFixture(test.toNoArgTest(new StringBuilder))
      * }
      * </pre>
+     *
+     * <p>
+     * Invoking this method has no side effect. It just returns a <code>NoArgTest</code> whose
+     * <code>apply</code> method invokes <code>apply</code> on this <code>OneArgTest</code>, passing
+     * in the <code>FixtureParam</code> passed to <code>toNoArgTest</code>.
+     * </p>
      */
     def toNoArgTest(fixture: FixtureParam) = 
       new NoArgTest {
