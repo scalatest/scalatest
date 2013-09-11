@@ -165,6 +165,8 @@ import java.util.Arrays
  * List(99, 5)
  * </pre>
  *
+ * @param runStamp A number that identifies a particular run
+ *
  * @author Bill Venners
  */
 final class Ordinal private (val runStamp: Int, private val stamps: Array[Int]) extends Ordered[Ordinal] with java.io.Serializable {

@@ -29,7 +29,7 @@ import org.scalatest.exceptions.TestFailedDueToTimeoutException
 import org.scalatest.exceptions.TestCanceledException
 
 /**
- * Trait that provides a <code>failAfter</code> construct, which allows you to specify a time limit for an
+ * Trait that provides a <code>failAfter</code> and <code>cancelAfter</code> construct, which allows you to specify a time limit for an
  * operation passed as a by-name parameter, as well as a way to interrupt it if the operation exceeds its time limit.
  *
  * <p>
@@ -45,12 +45,21 @@ import org.scalatest.exceptions.TestCanceledException
  * </pre>
  *
  * <p>
- * The above code, after 100 milliseconds, will produce a <a href="TestFailedDueToTimeoutException.html"><code>TestFailedDueToTimeoutException</code></a> with a message
+ * The above code, after 100 milliseconds, will produce a <a href="../exceptions/TestFailedDueToTimeoutException.html"><code>TestFailedDueToTimeoutException</code></a> with a message
  * that indicates a timeout expired:
  * </p>
  *
  * <p>
  * <code>The code passed to failAfter did not complete within 100 milliseconds.</code>
+ * </p>
+ *
+ * <p>
+ * If you use <code>cancelAfter</code> in place of <code>failAfter</code>, a <a href="../exceptions/TestCanceledException.html"><code>TestCanceledException</code></a> with a message
+ * that indicates a timeout expired:
+ * </p>
+ *
+ * <p>
+ * <code>The code passed to cancelAfter did not complete within 100 milliseconds.</code>
  * </p>
  *
  * <p>
@@ -71,8 +80,8 @@ import org.scalatest.exceptions.TestCanceledException
  * </pre>
  *
  * <p>
- * The code passed via the by-name parameter to <code>failAfter</code> will be executed by the thread that invoked
- * <code>failAfter</code>, so that no synchronization is necessary to access variables declared outside the by-name.
+ * The code passed via the by-name parameter to <code>failAfter</code> or <code>cancelAfter</code> will be executed by the thread that invoked
+ * <code>failAfter</code> or <code>cancelAfter</code>, so that no synchronization is necessary to access variables declared outside the by-name.
  * </p>
  *
  * <pre class="stHighlight">
@@ -84,14 +93,14 @@ import org.scalatest.exceptions.TestCanceledException
  * </pre>
  *
  * <p>
- * The <code>failAfter</code> method will create a timer that runs on a different thread than the thread that
- * invoked <code>failAfter</code>, so that it can detect when the timeout has expired and attempt to <em>interrupt</em>
- * the main thread. Because different operations can require different interruption strategies, the <code>failAfter</code>
+ * The <code>failAfter</code> or <code>cancelAfter</code> method will create a timer that runs on a different thread than the thread that
+ * invoked <code>failAfter</code> or <code>cancelAfter</code>, so that it can detect when the timeout has expired and attempt to <em>interrupt</em>
+ * the main thread. Because different operations can require different interruption strategies, the <code>failAfter</code> or <code>cancelAfter</code>
  * method accepts an implicit third parameter of type <code>Interruptor</code> that is responsible for interrupting
  * the main thread.
  * </p>
  *
- * <a name="interruptorConfig"></a><h2>Configuring <code>failAfter</code> with an <code>Interruptor</code></h2>
+ * <a name="interruptorConfig"></a><h2>Configuring <code>failAfter</code> or <code>cancelAfter</code> with an <code>Interruptor</code></h2>
  *
  * <p>
  * This trait declares an implicit <code>val</code> named <code>defaultInterruptor</code>,
@@ -116,7 +125,8 @@ import org.scalatest.exceptions.TestCanceledException
  * </p>
  *
  * <p>
- * This illustrates an important feature of <code>failAfter</code>: it will throw a <code>TestFailedDueToTimeoutException</code>
+ * This illustrates an important feature of <code>failAfter</code> and <code>cancelAfter</code>: it will throw a
+ * <code>TestFailedDueToTimeoutException</code> (or <code>TestCanceledException</code> in case of <code>cancelAfter</code>)
  * if the code passed as the by-name parameter takes longer than the specified timeout to execute, even if it
  * is allowed to run to completion beyond the specified timeout and returns normally.
  * </p>
@@ -188,7 +198,7 @@ import org.scalatest.exceptions.TestCanceledException
 trait Timeouts {
 
   /**
-   * Implicit <code>Interruptor</code> value defining a default interruption strategy for the <code>failAfter</code> method.
+   * Implicit <code>Interruptor</code> value defining a default interruption strategy for the <code>failAfter</code> and <code>cancelAfter</code> method.
    *
    * <p>
    * To change the default <code>Interruptor</code> configuration, override or hide this <code>val</code> with another implicit
@@ -242,7 +252,41 @@ trait Timeouts {
     )
   }
 
-  // TODO: Scaladoc and also, consider creating a TestCanceledDueToTimeoutException
+  // TODO: Consider creating a TestCanceledDueToTimeoutException
+  /**
+   * Executes the passed function, enforcing the passed time limit by attempting to interrupt the function if the
+   * time limit is exceeded, and throwing <code>TestCanceledException</code> if the time limit has been
+   * exceeded after the function completes.
+   *
+   * <p>
+   * If the function completes <em>before</em> the timeout expires:
+   * </p>
+   *
+   * <ul>
+   * <li>If the function returns normally, this method will return normally.</li>
+   * <li>If the function completes abruptly with an exception, this method will complete abruptly with that same exception.</li>
+   * </ul>
+   *
+   * <p>
+   * If the function completes <em>after</em> the timeout expires:
+   * </p>
+   *
+   * <ul>
+   * <li>If the function returns normally, this method will complete abruptly with a <code>TestCanceledException</code>.</li>
+   * <li>If the function completes abruptly with an exception, this method will complete abruptly with a <code>TestCanceledException</code> that includes the exception thrown by the function as its cause.</li>
+   * </ul>
+   *
+   * <p>
+   * If the interrupted status of the main test thread (the thread that invoked <code>cancelAfter</code>) was not invoked
+   * when <code>cancelAfter</code> was invoked, but is set after the operation times out, it is reset by this method before
+   * it completes abruptly with a <code>TestCanceledException</code>. The interrupted status will be set by
+   * <code>ThreadInterruptor</code>, the default <code>Interruptor</code> implementation.
+   * </p>
+   *
+   * @param timeout the maximimum amount of time allowed for the passed operation
+   * @param f the operation on which to enforce the passed timeout
+   * @param interruptor a strategy for interrupting the passed operation
+   */
   def cancelAfter[T](timeout: Span)(f: => T)(implicit interruptor: Interruptor): T = {
     timeoutAfter(timeout, f, interruptor, t => new TestCanceledException(sde => Some(Resources("timeoutCanceledAfter", timeout.prettyString)), t, getStackDepthFun("Timeouts.scala", "cancelAfter"), None))
   }
