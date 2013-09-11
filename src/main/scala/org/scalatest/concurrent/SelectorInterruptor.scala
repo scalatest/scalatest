@@ -17,7 +17,7 @@ package org.scalatest.concurrent
 import java.nio.channels.Selector
 
 /**
- * Strategy for interrupting an operation in which <code>wakeup</code> is called on the <code>Selector</code> passed to
+ * Strategy for interrupting an operation in which <code>wakeup</code> is called on the <code>java.nio.channels.Selector</code> passed to
  * the constructor.
  *
  * <p>
@@ -28,7 +28,7 @@ import java.nio.channels.Selector
 class SelectorInterruptor(selector: Selector) extends Interruptor {
   
   /**
-   * Invokes <code>wakeup</code> on the <code>Selector</code> passed to this class's constructor.
+   * Invokes <code>wakeup</code> on the <code>java.nio.channels.Selector</code> passed to this class's constructor.
    *
    * @param testThread unused by this strategy
    */
@@ -45,7 +45,7 @@ object SelectorInterruptor {
   /**
    * Factory method for a <code>SelectorInterruptor</code>.
    *
-   * @param socket the <code>Selector</code> to pass to the <code>SelectorInterruptor</code> constructor
+   * @param selector the <code>java.nio.channels.Selector</code> to pass to the <code>SelectorInterruptor</code> constructor
    */
   def apply(selector: Selector) = new SelectorInterruptor(selector)
 }

@@ -195,7 +195,7 @@ import exceptions.{TestCanceledException, TestFailedException, TestPendingExcept
  * In addition to taking a <code>PatienceConfig</code> object as an implicit parameter, the <code>whenReady</code> methods of trait
  * <code>Futures</code> include overloaded forms that take one or two <code>PatienceConfigParam</code>
  * objects that you can use to override the values provided by the implicit <code>PatienceConfig</code> for a single <code>whenReady</code>
- * invocation. For example, if you want to set <code>timeout</code> to 5000 for just one particular <code>whenReady</code> invocation,
+ * invocation. For example, if you want to set <code>timeout</code> to 6 seconds for just one particular <code>whenReady</code> invocation,
  * you can do so like this:
  * </p>
  *

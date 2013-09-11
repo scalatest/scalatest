@@ -22,8 +22,6 @@ import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
 import scala.annotation.tailrec
 import time.{Nanosecond, Span, Nanoseconds}
 
-// TODO describe backoff algo
-
 /**
  * Trait that provides the <code>eventually</code> construct, which periodically retries executing
  * a passed by-name parameter, until it either succeeds or the configured timeout has been surpassed.
@@ -101,7 +99,7 @@ import time.{Nanosecond, Span, Nanoseconds}
  * <code>scaled(150 milliseconds)</code>
  * </td>
  * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">
- * the maximum amount of time to allow unsuccessful attempts before giving up and throwing <code>TestFailedException</code>
+ * the maximum amount of time to allow unsuccessful attempts before giving up and throwing <code>TestFailedDueToTimeoutException</code>
  * </td>
  * </tr>
  * <tr>
@@ -161,7 +159,7 @@ import time.{Nanosecond, Span, Nanoseconds}
  * In addition to taking a <code>PatienceConfig</code> object as an implicit parameter, the <code>eventually</code> methods of trait
  * <code>Eventually</code> include overloaded forms that take one or two <code>PatienceConfigParam</code>
  * objects that you can use to override the values provided by the implicit <code>PatienceConfig</code> for a single <code>eventually</code>
- * invocation. For example, if you want to set <code>timeout</code> to 5000 for just one particular <code>eventually</code> invocation,
+ * invocation. For example, if you want to set <code>timeout</code> to 5 seconds for just one particular <code>eventually</code> invocation,
  * you can do so like this:
  * </p>
  *
