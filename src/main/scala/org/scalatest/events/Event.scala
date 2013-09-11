@@ -39,13 +39,13 @@ sealed abstract class Event extends Ordered[Event] with java.io.Serializable {
   val ordinal: Ordinal
 
   /**
-   * An optional formatter that provides extra information that can be used by reporters in determining
+   * An optional <code>Formatter</code> that provides extra information that can be used by reporters in determining
    * how to present this event to the user.
    */
   val formatter: Option[Formatter]
 
   /**
-   * An optional location that provides information indicating where in the source code an event originated.
+   * An optional <code>Location</code> that provides information indicating where in the source code an event originated.
    * IDEs can use this information, for example, to allow the user to hop from an event report to the relevant
    * line of source code.
    */
@@ -1177,8 +1177,7 @@ final case class SuiteAborted (
  *
  * <p>
  * To create instances of this class you may
- * use the factory method provided in its <a href="RunStarting$.html">companion object</a>. For example, given a
- * report function named <code>report</code>, you could fire a <code>RunStarting</code> event like this:
+ * use the factory method. For example, given a report function named <code>report</code>, you could fire a <code>RunStarting</code> event like this:
  * </p>
  *
  * <pre class="stHighlight">
@@ -1189,9 +1188,9 @@ final case class SuiteAborted (
  *        other events reported during the same run
  * @param testCount the number of tests expected during this run
  * @param configMap a <code>ConfigMap</code> of key-value pairs that can be used by custom <code>Reporter</code>s
- * @param formatter an optional formatter that provides extra information that can be used by reporters in determining
+ * @param formatter an optional <code>Formatter</code> that provides extra information that can be used by reporters in determining
  *        how to present this event to the user
- * @param location An optional location that provides information indicating where in the source code an event originated.
+ * @param location An optional <code>Location</code> that provides information indicating where in the source code an event originated.
  * @param payload an optional object that can be used to pass custom information to the reporter about the <code>RunStarting</code> event
  * @param threadName a name for the <code>Thread</code> about whose activity this event was reported
  * @param timeStamp a <code>Long</code> indicating the time this event was reported, expressed in terms of the
@@ -1271,15 +1270,14 @@ final case class RunStarting (
  *
  * <p>
  * ScalaTest's <code>Runner</code> fires a <code>RunCompleted</code> report with an empty <code>summary</code>, because
- * the reporter is responsible for keeping track of the total number of tests reported as succeeded, failed, ignored, and pending.
- * ScalaTest's internal reporter replaces the <code>RunCompleted</code> with a new one that is identical except that is
- * has a defined <code>summary</code>.
+ * the reporter is responsible for keeping track of the total number of tests reported as succeeded, failed, ignored, pending
+ * and canceled.  ScalaTest's internal reporter replaces the <code>RunCompleted</code> with a new one that is identical except
+ * that is has a defined <code>summary</code>.
  * </p>
  *
  * <p>
  * To create instances of this class you may
- * use the factory method provided in its <a href="RunCompleted$.html">companion object</a>. For example, given a
- * report function named <code>report</code>, you could fire a <code>RunCompleted</code> event like this:
+ * use the factory method. For example, given a report function named <code>report</code>, you could fire a <code>RunCompleted</code> event like this:
  * </p>
  *
  * <pre class="stHighlight">
@@ -1289,10 +1287,10 @@ final case class RunStarting (
  * @param ordinal an <code>Ordinal</code> that can be used to place this event in order in the context of
  *        other events reported during the same run
  * @param duration an optional amount of time, in milliseconds, that was required by the run that has completed
- * @param summary an optional summary of the number of tests that were reported as succeeded, failed, ignored, and pending
- * @param formatter an optional formatter that provides extra information that can be used by reporters in determining
+ * @param summary an optional <code>Summary</code> of the number of tests that were reported as succeeded, failed, ignored, pending and canceled
+ * @param formatter an optional <code>Formatter</code> that provides extra information that can be used by reporters in determining
  *        how to present this event to the user
- * @param location An optional location that provides information indicating where in the source code an event originated.
+ * @param location An optional <code>Location</code> that provides information indicating where in the source code an event originated.
  * @param payload an optional object that can be used to pass custom information to the reporter about the <code>RunCompleted</code> event
  * @param threadName a name for the <code>Thread</code> about whose activity this event was reported
  * @param timeStamp a <code>Long</code> indicating the time this event was reported, expressed in terms of the
@@ -1362,14 +1360,13 @@ final case class RunCompleted (
  *
  * <p>
  * ScalaTest's <code>Runner</code> fires a <code>RunStopped</code> report with an empty <code>summary</code>, because
- * the reporter is responsible for keeping track of the total number of tests reported as succeeded, failed, ignored, and pending.
- * ScalaTest's internal reporter replaces the <code>RunStopped</code> with a new one that is identical except that is
- * has a defined <code>summary</code>.
+ * the reporter is responsible for keeping track of the total number of tests reported as succeeded, failed, ignored,
+ * pending and canceled.  ScalaTest's internal reporter replaces the <code>RunStopped</code> with a new one that is
+ * identical except that is has a defined <code>summary</code>.
  * </p>
  *
  * <p>
- * To create instances of this class you may
- * use the factory method provided in its <a href="RunStopped$.html">companion object</a>. For example, given a
+ * To create instances of this class you may use the factory method. For example, given a
  * report function named <code>report</code>, you could fire a <code>RunStopped</code> event like this:
  * </p>
  *
@@ -1380,10 +1377,10 @@ final case class RunCompleted (
  * @param ordinal an <code>Ordinal</code> that can be used to place this event in order in the context of
  *        other events reported during the same run
  * @param duration an optional amount of time, in milliseconds, that was required by the run that has stopped
- * @param summary an optional summary of the number of tests that were reported as succeeded, failed, ignored, and pending
- * @param formatter an optional formatter that provides extra information that can be used by reporters in determining
+ * @param summary an optional summary of the number of tests that were reported as succeeded, failed, ignored pending and canceled
+ * @param formatter an optional <code>formatter</code> that provides extra information that can be used by reporters in determining
  *        how to present this event to the user
- * @param location An optional location that provides information indicating where in the source code an event originated.
+ * @param location An optional <code>Location</code> that provides information indicating where in the source code an event originated.
  * @param payload an optional object that can be used to pass custom information to the reporter about the <code>RunStopped</code> event
  * @param threadName a name for the <code>Thread</code> about whose activity this event was reported
  * @param timeStamp a <code>Long</code> indicating the time this event was reported, expressed in terms of the
@@ -1450,8 +1447,7 @@ final case class RunStopped (
  *
  * <p>
  * To create instances of this class you may
- * use the factory method provided in its <a href="RunAborted$.html">companion object</a>. For example, given a
- * report function named <code>report</code>, you could fire a <code>RunAborted</code> event like this:
+ * use the factory method. For example, given a report function named <code>report</code>, you could fire a <code>RunAborted</code> event like this:
  * </p>
  *
  * <pre class="stHighlight">
@@ -1461,13 +1457,13 @@ final case class RunStopped (
  * @param ordinal an <code>Ordinal</code> that can be used to place this event in order in the context of
  *        other events reported during the same run
  * @param message a localized message suitable for presenting to the user
- * @param throwable an optional <code>Throwable</code> that, if a <code>Some</code>, indicates why the suite has aborted,
+ * @param throwable an optional <code>Throwable</code> that, if a <code>Some</code>, indicates why the run has aborted,
  *        or a <code>Throwable</code> created to capture stack trace information about the problem.
  * @param duration an optional amount of time, in milliseconds, that was required by the run that has aborted
- * @param summary an optional summary of the number of tests that were reported as succeeded, failed, ignored, and pending
- * @param formatter an optional formatter that provides extra information that can be used by reporters in determining
+ * @param summary an optional <code>Summary</code> of the number of tests that were reported as succeeded, failed, ignored, and pending
+ * @param formatter an optional <code>Formatter</code> that provides extra information that can be used by reporters in determining
  *        how to present this event to the user
- * @param location An optional location that provides information indicating where in the source code an event originated.
+ * @param location An optional <code>Location</code> that provides information indicating where in the source code an event originated.
  * @param payload an optional object that can be used to pass custom information to the reporter about the <code>RunAborted</code> event
  * @param threadName a name for the <code>Thread</code> about whose activity this event was reported
  * @param timeStamp a <code>Long</code> indicating the time this event was reported, expressed in terms of the
@@ -1552,9 +1548,9 @@ final case class RunAborted (
  * @param nameInfo an optional <code>NameInfo</code> that if defined, provides names for the suite and optionally the test 
  *        in the context of which the information was provided
  * @param throwable an optional <code>Throwable</code>
- * @param formatter an optional formatter that provides extra information that can be used by reporters in determining
+ * @param formatter an optional <code>Formatter</code> that provides extra information that can be used by reporters in determining
  *        how to present this event to the user
- * @param location An optional location that provides information indicating where in the source code an event originated.
+ * @param location An optional <code>Location</code> that provides information indicating where in the source code an event originated.
  * @param payload an optional object that can be used to pass custom information to the reporter about the <code>InfoProvided</code> event
  * @param threadName a name for the <code>Thread</code> about whose activity this event was reported
  * @param timeStamp a <code>Long</code> indicating the time this event was reported, expressed in terms of the
@@ -1611,8 +1607,7 @@ final case class InfoProvided (
  * Event used to provide alert notifications.
  *
  * <p>
- * To create instances of this class you may
- * use the factory method provided in its <a href="AlertProvided$.html">companion object</a>. For example, given a
+ * To create instances of this class you may use the factory method. For example, given a
  * report function named <code>report</code>, you could fire a <code>AlertProvided</code> event like this:
  * </p>
  *
@@ -1646,9 +1641,9 @@ final case class InfoProvided (
  * @param nameInfo an optional <code>NameInfo</code> that if defined, provides names for the suite and optionally the test 
  *        in the context of which the information was provided
  * @param throwable an optional <code>Throwable</code>
- * @param formatter an optional formatter that provides extra information that can be used by reporters in determining
+ * @param formatter an optional <code>Formatter</code> that provides extra information that can be used by reporters in determining
  *        how to present this event to the user
- * @param location An optional location that provides information indicating where in the source code an event originated.
+ * @param location An optional <code>location</code> that provides information indicating where in the source code an event originated.
  * @param payload an optional object that can be used to pass custom information to the reporter about the <code>AlertProvided</code> event
  * @param threadName a name for the <code>Thread</code> about whose activity this event was reported
  * @param timeStamp a <code>Long</code> indicating the time this event was reported, expressed in terms of the
@@ -1800,8 +1795,7 @@ final case class UpdateProvided (
  *
  * <p>
  * To create instances of this class you may
- * use the factory method provided in its <a href="MarkupProvided$.html">companion object</a>. For example, given a
- * report function named <code>report</code>, you could fire a <code>MarkupProvided</code> event like this:
+ * use the factory method. For example, given a report function named <code>report</code>, you could fire a <code>MarkupProvided</code> event like this:
  * </p>
  *
  * <pre class="stHighlight">
@@ -1822,9 +1816,9 @@ final case class UpdateProvided (
  * @param text a snippet of markup text (in Markdown format)
  * @param nameInfo an optional <code>NameInfo</code> that if defined, provides names for the suite and optionally the test 
  *        in the context of which the information was provided
- * @param formatter an optional formatter that provides extra information that can be used by reporters in determining
+ * @param formatter an optional <code>Formatter</code> that provides extra information that can be used by reporters in determining
  *        how to present this event to the user
- * @param location An optional location that provides information indicating where in the source code an event originated.
+ * @param location An optional <code>Location</code> that provides information indicating where in the source code an event originated.
  * @param payload an optional object that can be used to pass custom information to the reporter about the <code>MarkupProvided</code> event
  * @param threadName a name for the <code>Thread</code> about whose activity this event was reported
  * @param timeStamp a <code>Long</code> indicating the time this event was reported, expressed in terms of the
@@ -2126,7 +2120,7 @@ final case class DiscoveryStarting (
     throw new NullPointerException("threadName was null")
 
   /**
-   * Location in a <code>DiscoveryStarting</code> is always set to <code>None</code>.
+   * <code>Location</code> in a <code>DiscoveryStarting</code> is always set to <code>None</code>.
    */
   val location: Option[Location] = None
 
@@ -2136,7 +2130,7 @@ final case class DiscoveryStarting (
   val payload: Option[Any] = None
 
   /**
-   * Formatter in a <code>DiscoveryStarting</code> is always set to <code>None</code>.
+   * <code>Formatter</code> in a <code>DiscoveryStarting</code> is always set to <code>None</code>.
    */
   val formatter: Option[Formatter] = None
 
@@ -2188,7 +2182,7 @@ final case class DiscoveryCompleted (
     throw new NullPointerException("threadName was null")
 
   /**
-   * Location in a <code>DiscoveryCompleted</code> is always set to <code>None</code>.
+   * <code>Location</code> in a <code>DiscoveryCompleted</code> is always set to <code>None</code>.
    */
   val location: Option[Location] = None
 
@@ -2198,7 +2192,7 @@ final case class DiscoveryCompleted (
   val payload: Option[Any] = None
 
   /**
-   * Formatter in a <code>DiscoveryCompleted</code> is always set to <code>None</code>.
+   * <code>Formatter</code> in a <code>DiscoveryCompleted</code> is always set to <code>None</code>.
    */
   val formatter: Option[Formatter] = None
   
