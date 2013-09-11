@@ -19,7 +19,7 @@ import org.scalatest._
 
 /**
  * Class that holds information about names for the <em>information events</em> <code>InfoProvided</code>, <code>MarkupProvided</code>,
- * <code>ScopeOpened</code>, and <code>ScopeClosed</code>.
+ * <code>ScopeOpened</code>, <code>ScopeClosed</code>, <code>ScopePending</code>, <code>AlertProvided</code> and <code>UpdateProvided</code>.
  *
  * <p>
  * An information event may be fired from anywhere. In this respect these events are different
@@ -34,7 +34,7 @@ import org.scalatest._
  * If either <code>suiteClassName</code> or <code>testName</code> is defined, then <code>suiteName</code> and <code>suiteId</code> must be defined.
  * The suite class name parameter is optional even if a suite name is provided by passing a <code>Some</code> as <code>suiteName</code>,
  * because suites in ScalaTest are an abstraction that
- * need not necessarily correspond to one class. Nevertheless, it most cases each suite will correspond
+ * need not necessarily correspond to one class. Nevertheless, in most cases each suite will correspond
  * to a class, and when it does, the fully qualified name of that class should be reported by passing a
  * <code>Some</code> for <code>suiteClassName</code>. One use for this bit of information is JUnit integration,
  * because the "name" provided to a JUnit <code>org.junit.runner.Description</code> appears to usually include

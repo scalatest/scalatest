@@ -23,6 +23,8 @@ sealed abstract class Location
 /**
  * The location in a source file where the class whose by the fully qualified name
  * is passed as <code>className</code> is declared.
+ *
+ * @param className the fully qualified class name
  */
 final case class TopOfClass(className: String) extends Location
 
@@ -31,11 +33,17 @@ final case class TopOfClass(className: String) extends Location
  * in the class whose fully qualified name is pased as <code>className</code> is declared.  
  * The methodId is obtained by calling <code>toGenericString</code> on the <code>java.lang.reflect.Method</code> 
  * object representing the method.
+ *
+ * @param className the fully qualified class name
+ * @param methodId the method ID, obtained by calling <code>toGenericString</code> on the <code>java.lang.reflect.Method</code> object representing the method
  */
 final case class TopOfMethod(className: String, methodId: String) extends Location
 
 /**
  * An arbitrary line number in a named source file.
+ *
+ * @param lineNumber the line number
+ * @param fileName the source's filename
  */
 final case class LineInFile(lineNumber: Int, fileName: String) extends Location
 
