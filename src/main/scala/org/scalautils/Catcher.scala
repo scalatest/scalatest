@@ -53,10 +53,10 @@ val InternalServerError =
   }
 */
 /**
- * Convenience class for an extractors that match and return objects based on a type and <code>Boolean</code> condition.
+ * Convenience class for extractors that match and return <code>Throwable</code>s based on a type and <code>Boolean</code> condition.
  *
  * <p>
- * Class <code>Extractor</code> (and its subclass <code>Catcher</code>) were motivated by the need to catch
+ * Class <code>Catcher</code> was motivated by the need to catch
  * and handle exceptions based on more than just the exception's type as a strategy for dealing with
  * "flickering" tests&#8212;tests that usually pass, but occasionally fail. The best strategy for dealing with
  * flickers is to fix the test such that they stop flickering, but sometimes that is not practical. In
@@ -70,7 +70,7 @@ val InternalServerError =
  * and cancel the test when you detect them. Often this means you will need to insert a catch clause in a particular spot, or a pattern
  * match if in a <code>withFixture</code>, looking for a particular exception with a particular message or other identifying attribute. If
  * the same problem is causing flickers in many places,
- * it is handy to create an extractor to detect the problem. The <a href="Catcher.html"><code>Catcher</code></a> class provides
+ * it is handy to create an extractor to detect the problem. This <code>Catcher</code> class provides
  * a factory method that takes a partial function from <code>Throwable</code> to <code>Boolean</code> and produces such an extractor.
  * Here's an example:
  * </p>
@@ -83,46 +83,45 @@ val InternalServerError =
  * </pre>
  * 
  * <p>
- * Using this <code>Catcher</code> in a ScalaTest <code>Suite</code> <code>withFixture</code> method would look like:
+ * Using this <code>Catcher</code> in a ScalaTest <code>withFixture</code> method would look like:
  * </p>
  *
  * <pre class="stHighlight">
  * override def withFixture(test: NoArgTest) = {
  *   super.withFixture(test) match {
- *      case Failed(InternalServerError(ex)) =>
+ *      case Failed(InternalServerError(ex)) =&gt;
  *        Canceled("Canceled because likely a flicker caused by intermittently flaky DB", ex)
- *      case other => other
+ *      case other =&gt; other
  *   }
  * }
  * </pre>
  *
- * <p>
- * Use <code>Catcher</code> for extractors of <code>Throwables</code>, for any other type use an <code>Extractor</code>. Here's an
- * example of an extractor that matches strings that are all uppercase:
- * </p>
- *
- * <pre class="stHighlight">
- * val Shout = Extractor[String] { case s: String => s.toUpperCase == s }
- * </pre>
- * 
- * <p>
- * Here are some examples of the <code>Shout</code> extractor in action:
- * </p>
- *
- * <pre class="stHighlight">
- * 
- * </pre>
- * 
+ * @param partial the partial function that is used by this extractor to determine matches
  */
-class Catcher(val partial: PartialFunction[Throwable, Boolean]) {
+class Catcher(partial: PartialFunction[Throwable, Boolean]) {
   if (partial == null) throw new NullPointerException("partial was null")
 
+  /**
+   * Extractor for <code>Throwable</code> that determines matches using on the partial function
+   * passed to the constructor.
+   *
+   * @param exception the exception on which to match
+   */
   def unapply(exception: Throwable): Option[Throwable] = {
     if (partial.isDefinedAt(exception) && partial(exception)) Some(exception) else None
   }
 }
 
+/**
+ * Companion object for <code>Catcher</code> that provides a factory method for creating <code>Throwable</code> extractors.
+ */
 object Catcher {
+
+  /**
+   * Creates and returns a new <code>Catcher</code> that uses the passed partial function to determine matches.
+   *
+   * @param partial the partial function that is used by returned extractor to determine matches
+   */
   def apply(partial: PartialFunction[Throwable, Boolean]): Catcher = new Catcher(partial)
 }
 
