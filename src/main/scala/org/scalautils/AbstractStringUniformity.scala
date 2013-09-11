@@ -24,6 +24,43 @@ package org.scalautils
  * normalizes any passed <code>String</code>s via the <code>normalized</code> method, which is
  * left abstract for subclasses to fill in.
  * </p>
+ *
+ * <p>
+ * Here's an example in which <code>AbstractStringUniformity</code> is used to normalize strings
+ * by ensuring the first character, if any, is capitalized:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * val capitalized: Uniformity[String] =
+ *   new AbstractStringUniformity {
+ *     def normalized(s: String): String =
+ *       if (s.isEmpty) "" else s.charAt(0).toUpper + s.substring(1)
+ *   }
+ * </pre>
+ *
+ * <p>
+ * Here's an example of using the <code>capitalized</code> <code>Uniformity</code> with a <code>Matcher</code> expression:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; import org.scalatest._
+ * import org.scalatest._
+ *
+ * scala&gt; import Matchers._
+ * import Matchers._
+ *
+ * scala&gt; import org.scalautils._
+ * import org.scalautils._
+ *
+ * scala&gt; val capitalized: Uniformity[String] =
+ *      |   new AbstractStringUniformity {
+ *      |     def normalized(s: String): String =
+ *      |       if (s.isEmpty) "" else s.charAt(0).toUpper + s.substring(1)
+ *      |   }
+ * capitalized: org.scalautils.Uniformity[String] = $anon$1@65601e00
+ *
+ * scala&gt; "Hello" should equal ("hello") (after being capitalized)
+ * </pre>
  */
 trait AbstractStringUniformity extends Uniformity[String] {
 

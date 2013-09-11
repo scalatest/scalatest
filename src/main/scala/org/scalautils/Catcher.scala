@@ -77,13 +77,13 @@ val InternalServerError =
  *
  * <pre class="stHighlight">
  * val InternalServerError =
- *   Catcher { case e: DBAccessException =>
+ *   Catcher { case e: DBAccessException =&gt;
  *     e.getMessage == "500:Internal Server Error"
  *   }
  * </pre>
  * 
  * <p>
- * Using this <code>Catcher</code> in a ScalaTest <code>Suite<code> <code>withFixture</code> method would look like:
+ * Using this <code>Catcher</code> in a ScalaTest <code>Suite</code> <code>withFixture</code> method would look like:
  * </p>
  *
  * <pre class="stHighlight">
