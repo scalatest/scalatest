@@ -56,8 +56,31 @@ class OrSpec extends UnitSpec with Validations with TypeCheckedTripleEquals {
                     Good[Int].orBad[String]
                                    ^
     */
+    // If the expected type is known, then you can just say Good or Bad:
+    Good(3) shouldBe Good(3)
+    Bad("oops") shouldBe Bad("oops")
+
+    // But if the expected type is not known, the inferred type of the other side will be Nothing:
+    // Good(3) will be a Good[Int, Nothing]
+    // Bad("oops") will be a Bad[Nothing, String]
+
+    // If you want to specify a more specific type than Nothing, you can use this syntax:
     Good(3).orBad[String] shouldBe Good(3)
     Good[Int].orBad("oops") shouldBe Bad("oops")
+
+    // You could also do it this way:
+    Good[Int, String](3) shouldBe Good(3)
+    Bad[Int, String]("oops") shouldBe Bad("oops")
+
+    // But that requires that you also give a type that would be inferred from the value. This
+    // would only be necessary if you wanted a more general type than that which
+    // would otherwise be inferred from the given value, such as:
+    Good[AnyVal, String](3) shouldBe Good(3)
+    Bad[Int, AnyRef]("oops") shouldBe Bad("oops")
+
+    // In that case, though, I recommend a type ascription, because I think it is easier to read:
+    (Good(3): AnyVal Or String) shouldBe Good(3)
+    (Bad("oops"): Int Or AnyRef) shouldBe Bad("oops")
   }
   it can "be used in infix notation" in {
     def div(a: Int, b: Int): Int Or ArithmeticException = {
