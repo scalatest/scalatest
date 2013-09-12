@@ -21,8 +21,7 @@ import annotation.implicitNotFound
  * Abstract class used to enforce type constraints for equality checks.
  *
  * <p>
- * For more information and examples on how this class is used, see the documentation of <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a>
- * and <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a>.
+ * For more information on how this class is used, see the documentation of <a href="TripleEqualsSupport.html"><code>TripleEqualsSupport</code></a>.
  * </p>
  */
 @implicitNotFound(msg = "types ${A} and ${B} do not adhere to the type constraint selected for the === and !== operators; the missing implicit parameter is of type org.scalautils.Constraint[${A},${B}]")
