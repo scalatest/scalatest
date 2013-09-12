@@ -215,9 +215,8 @@ sealed trait NotificationEvent extends Event
  * </p>
  *
  * <p>
- * To create instances of this class you may
- * use the factory method provided in its <a href="TestStarting$.html">companion object</a>. For example, given a
- * report function named <code>report</code>, you could fire a <code>TestStarting</code> event like this:
+ * To create instances of this class you may use the factory method. For example,
+ * given a report function named <code>report</code>, you could fire a <code>TestStarting</code> event like this:
  * </p>
  *
  * <pre class="stHighlight">
@@ -226,7 +225,7 @@ sealed trait NotificationEvent extends Event
  *
  * <p>
  * The suite class name parameter is optional, because suites in ScalaTest are an abstraction that
- * need not necessarily correspond to one class. Nevertheless, it most cases each suite will correspond
+ * need not necessarily correspond to one class. Nevertheless, in most cases each suite will correspond
  * to a class, and when it does, the fully qualified name of that class should be reported by passing a
  * <code>Some</code> for <code>suiteClassName</code>. One use for this bit of information is JUnit integration,
  * because the "name" provided to a JUnit <code>org.junit.runner.Description</code> appears to usually include
@@ -240,9 +239,9 @@ sealed trait NotificationEvent extends Event
  * @param suiteClassName an optional fully qualifed <code>Suite</code> class name containing the test that is starting
  * @param testName the name of the test that is starting
  * @param testText the text of the test that is starting (may be the test name, or a suffix of the test name)
- * @param formatter an optional formatter that provides extra information that can be used by reporters in determining
+ * @param formatter an optional <code>Formatter</code> that provides extra information that can be used by reporters in determining
  *        how to present this event to the user
- * @param location An optional location that provides information indicating where in the source code an event originated.
+ * @param location An optional <code>Location</code> that provides information indicating where in the source code an event originated.
  * @param rerunner an optional <code>String</code> giving the fully qualified name of the class that can be used to rerun the test that is starting. (If <code>None</code>
  *        is passed, the test cannot be rerun.)
  * @param payload an optional object that can be used to pass custom information to the reporter about the <code>TestStarting</code> event
@@ -319,8 +318,7 @@ final case class TestStarting (
  * </p>
  *
  * <p>
- * To create instances of this class you may
- * use the factory method provided in its <a href="TestSucceeded$.html">companion object</a>. For example, given a
+ * To create instances of this class you may use the factory method. For example, given a
  * report function named <code>report</code>, you could fire a <code>TestSucceeded</code> event like this:
  * </p>
  *
@@ -330,7 +328,7 @@ final case class TestStarting (
  *
  * <p>
  * The suite class name parameter is optional, because suites in ScalaTest are an abstraction that
- * need not necessarily correspond to one class. Nevertheless, it most cases each suite will correspond
+ * need not necessarily correspond to one class. Nevertheless, in most cases each suite will correspond
  * to a class, and when it does, the fully qualified name of that class should be reported by passing a
  * <code>Some</code> for <code>suiteClassName</code>. One use for this bit of information is JUnit integration,
  * because the "name" provided to a JUnit <code>org.junit.runner.Description</code> appears to usually include
@@ -340,15 +338,15 @@ final case class TestStarting (
  * @param ordinal an <code>Ordinal</code> that can be used to place this event in order in the context of
  *        other events reported during the same run
  * @param suiteName a localized name identifying the suite containing the test that has succeeded, suitable for presenting to the user
- * @param suiteId a string ID for the suite containing the test that is starting, intended to be unique across all suites in a run
+ * @param suiteId a string ID for the suite containing the test that has succeeded, intended to be unique across all suites in a run
  * @param suiteClassName an optional fully qualifed <code>Suite</code> class name containing the test that has succeeded
  * @param testName the name of the test that has succeeded
  * @param testText the text of the test that has succeeded (may be the test name, or a suffix of the test name)
  * @param recordedEvents recorded events in the test.
  * @param duration an optional amount of time, in milliseconds, that was required to run the test that has succeeded
- * @param formatter an optional formatter that provides extra information that can be used by reporters in determining
+ * @param formatter an optional <code>Formatter</code> that provides extra information that can be used by reporters in determining
  *        how to present this event to the user
- * @param location An optional location that provides information indicating where in the source code an event originated.
+ * @param location An optional <code>Location</code> that provides information indicating where in the source code an event originated.
  * @param rerunner an optional <code>String</code> giving the fully qualified name of the class that can be used to rerun the test that has succeeded. (If <code>None</code>
  *        is passed, the test cannot be rerun.)
  * @param payload an optional object that can be used to pass custom information to the reporter about the <code>TestSucceeded</code> event
@@ -431,8 +429,7 @@ final case class TestSucceeded (
  *
  * <p>
  * To create instances of this class you may
- * use the factory method provided in its <a href="TestFailed$.html">companion object</a>. For example, given a
- * report function named <code>report</code>, you could fire a <code>TestFailed</code> event like this:
+ * use the factory method. For example, given a report function named <code>report</code>, you could fire a <code>TestFailed</code> event like this:
  * </p>
  *
  * <pre class="stHighlight">
@@ -441,7 +438,7 @@ final case class TestSucceeded (
  *
  * <p>
  * The suite class name parameter is optional, because suites in ScalaTest are an abstraction that
- * need not necessarily correspond to one class. Nevertheless, it most cases each suite will correspond
+ * need not necessarily correspond to one class. Nevertheless, in most cases each suite will correspond
  * to a class, and when it does, the fully qualified name of that class should be reported by passing a
  * <code>Some</code> for <code>suiteClassName</code>. One use for this bit of information is JUnit integration,
  * because the "name" provided to a JUnit <code>org.junit.runner.Description</code> appears to usually include
@@ -452,7 +449,7 @@ final case class TestSucceeded (
  *        other events reported during the same run
  * @param message a localized message suitable for presenting to the user
  * @param suiteName a localized name identifying the suite containing the test that has failed, suitable for presenting to the user
- * @param suiteId a string ID for the suite containing the test that is starting, intended to be unique across all suites in a run
+ * @param suiteId a string ID for the suite containing the test that has failed, intended to be unique across all suites in a run
  * @param suiteClassName an optional fully qualifed <code>Suite</code> class name containing the test that has failed
  * @param testName the name of the test that has failed
  * @param testText the text of the test that has failed (may be the test name, or a suffix of the test name)
@@ -460,9 +457,9 @@ final case class TestSucceeded (
  * @param throwable an optional <code>Throwable</code> that, if a <code>Some</code>, indicates why the test has failed,
  *        or a <code>Throwable</code> created to capture stack trace information about the problem.
  * @param duration an optional amount of time, in milliseconds, that was required to run the test that has failed
- * @param formatter an optional formatter that provides extra information that can be used by reporters in determining
+ * @param formatter an optional <code>Formatter</code> that provides extra information that can be used by reporters in determining
  *        how to present this event to the user
- * @param location An optional location that provides information indicating where in the source code an event originated.
+ * @param location An optional <code>Location</code> that provides information indicating where in the source code an event originated.
  * @param rerunner an optional <code>String</code> giving the fully qualified name of the class that can be used to rerun the test that has failed. (If <code>None</code>
  *        is passed, the test cannot be rerun.)
  * @param payload an optional object that can be used to pass custom information to the reporter about the <code>TestFailed</code> event
@@ -553,8 +550,7 @@ final case class TestFailed (
  * </p>
  *
  * <p>
- * To create instances of this class you may
- * use the factory method provided in its <a href="TestIgnored$.html">companion object</a>. For example, given a
+ * To create instances of this class you may use the factory method. For example, given a
  * report function named <code>report</code>, you could fire a <code>TestIgnored</code> event like this:
  * </p>
  *
@@ -564,7 +560,7 @@ final case class TestFailed (
  *
  * <p>
  * The suite class name parameter is optional, because suites in ScalaTest are an abstraction that
- * need not necessarily correspond to one class. Nevertheless, it most cases each suite will correspond
+ * need not necessarily correspond to one class. Nevertheless, in most cases each suite will correspond
  * to a class, and when it does, the fully qualified name of that class should be reported by passing a
  * <code>Some</code> for <code>suiteClassName</code>. One use for this bit of information is JUnit integration,
  * because the "name" provided to a JUnit <code>org.junit.runner.Description</code> appears to usually include
@@ -574,13 +570,13 @@ final case class TestFailed (
  * @param ordinal an <code>Ordinal</code> that can be used to place this event in order in the context of
  *        other events reported during the same run
  * @param suiteName a localized name identifying the suite containing the test that was ignored, suitable for presenting to the user
- * @param suiteId a string ID for the suite containing the test that is starting, intended to be unique across all suites in a run
+ * @param suiteId a string ID for the suite containing the test that was ignored, intended to be unique across all suites in a run
  * @param suiteClassName an optional fully qualifed <code>Suite</code> class name containing the test that was ignored
  * @param testName the name of the test that was ignored
  * @param testText the text of the test that was ignored (may be the test name, or a suffix of the test name)
- * @param formatter an optional formatter that provides extra information that can be used by reporters in determining
+ * @param formatter an optional <code>Formatter</code> that provides extra information that can be used by reporters in determining
  *        how to present this event to the user
- * @param location An optional location that provides information indicating where in the source code an event originated.
+ * @param location An optional <code>Location</code> that provides information indicating where in the source code an event originated.
  * @param payload an optional object that can be used to pass custom information to the reporter about the <code>TestIgnored</code> event
  * @param threadName a name for the <code>Thread</code> about whose activity this event was reported
  * @param timeStamp a <code>Long</code> indicating the time this event was reported, expressed in terms of the
@@ -646,8 +642,7 @@ final case class TestIgnored (
  *
  * <p>
  * To create instances of this class you may
- * use the factory method provided in its <a href="TestPending$.html">companion object</a>. For example, given a
- * report function named <code>report</code>, you could fire a <code>TestPending</code> event like this:
+ * use the factory method. For example, given a report function named <code>report</code>, you could fire a <code>TestPending</code> event like this:
  * </p>
  *
  * <pre class="stHighlight">
@@ -656,7 +651,7 @@ final case class TestIgnored (
  *
  * <p>
  * The suite class name parameter is optional, because suites in ScalaTest are an abstraction that
- * need not necessarily correspond to one class. Nevertheless, it most cases each suite will correspond
+ * need not necessarily correspond to one class. Nevertheless, in most cases each suite will correspond
  * to a class, and when it does, the fully qualified name of that class should be reported by passing a
  * <code>Some</code> for <code>suiteClassName</code>. One use for this bit of information is JUnit integration,
  * because the "name" provided to a JUnit <code>org.junit.runner.Description</code> appears to usually include
@@ -666,15 +661,15 @@ final case class TestIgnored (
  * @param ordinal an <code>Ordinal</code> that can be used to place this event in order in the context of
  *        other events reported during the same run
  * @param suiteName a localized name identifying the suite containing the test that is pending, suitable for presenting to the user
- * @param suiteId a string ID for the suite containing the test that is starting, intended to be unique across all suites in a run
+ * @param suiteId a string ID for the suite containing the test that is pending, intended to be unique across all suites in a run
  * @param suiteClassName an optional fully qualifed <code>Suite</code> class name containing the test that is pending
  * @param testName the name of the test that is pending
  * @param testText the text of the test that is pending (may be the test name, or a suffix of the test name)
  * @param recordedEvents recorded events in the test.
  * @param duration an optional amount of time, in milliseconds, that was required to run the test that is pending
- * @param formatter an optional formatter that provides extra information that can be used by reporters in determining
+ * @param formatter an optional <code>Formatter</code> that provides extra information that can be used by reporters in determining
  *        how to present this event to the user
- * @param location An optional location that provides information indicating where in the source code an event originated.
+ * @param location An optional <code>Location</code> that provides information indicating where in the source code an event originated.
  * @param payload an optional object that can be used to pass custom information to the reporter about the <code>TestPending</code> event
  * @param threadName a name for the <code>Thread</code> about whose activity this event was reported
  * @param timeStamp a <code>Long</code> indicating the time this event was reported, expressed in terms of the
@@ -746,8 +741,7 @@ final case class TestPending (
  *
  * <p>
  * To create instances of this class you may
- * use the factory methods provided in its <a href="TestCanceled$.html">companion object</a>. For example, given a
- * report function named <code>report</code>, you could fire a <code>TestCanceled</code> event like this:
+ * use the factory methods. For example, given a report function named <code>report</code>, you could fire a <code>TestCanceled</code> event like this:
  * </p>
  *
  * <pre class="stHighlight">
@@ -756,7 +750,7 @@ final case class TestPending (
  *
  * <p>
  * The suite class name parameter is optional, because suites in ScalaTest are an abstraction that
- * need not necessarily correspond to one class. Nevertheless, it most cases each suite will correspond
+ * need not necessarily correspond to one class. Nevertheless, in most cases each suite will correspond
  * to a class, and when it does, the fully qualified name of that class should be reported by passing a
  * <code>Some</code> for <code>suiteClassName</code>. One use for this bit of information is JUnit integration,
  * because the "name" provided to a JUnit <code>org.junit.runner.Description</code> appears to usually include
@@ -767,7 +761,7 @@ final case class TestPending (
  *        other events reported during the same run
  * @param message a localized message suitable for presenting to the user
  * @param suiteName a localized name identifying the suite containing the test that was canceled, suitable for presenting to the user
- * @param suiteId a string ID for the suite containing the test that is starting, intended to be unique across all suites in a run
+ * @param suiteId a string ID for the suite containing the test that was canceled, intended to be unique across all suites in a run
  * @param suiteClassName an optional fully qualifed <code>Suite</code> class name containing the test that was canceled
  * @param testName the name of the test that was canceled
  * @param testText the text of the test that was canceled (may be the test name, or a suffix of the test name)
@@ -775,10 +769,10 @@ final case class TestPending (
  * @param throwable an optional <code>Throwable</code> that, if a <code>Some</code>, indicates why the test was canceled,
  *        or a <code>Throwable</code> created to capture stack trace information about the problem.
  * @param duration an optional amount of time, in milliseconds, that was required to run the test that was canceled
- * @param formatter an optional formatter that provides extra information that can be used by reporters in determining
+ * @param formatter an optional <code>Formatter</code> that provides extra information that can be used by reporters in determining
  *        how to present this event to the user
- * @param location An optional location that provides information indicating where in the source code an event originated.
- * @param rerunner an optional <code>String</code> giving the fully qualified name of the class that can be used to rerun the test that has failed. (If <code>None</code>
+ * @param location An optional <code>Location</code> that provides information indicating where in the source code an event originated.
+ * @param rerunner an optional <code>String</code> giving the fully qualified name of the class that can be used to rerun the test that has canceled. (If <code>None</code>
  *        is passed, the test cannot be rerun.)
  * @param payload an optional object that can be used to pass custom information to the reporter about the <code>TestCanceled</code> event
  * @param threadName a name for the <code>Thread</code> about whose activity this event was reported
@@ -869,8 +863,7 @@ final case class TestCanceled (
  * </p>
  *
  * <p>
- * To create instances of this class you may
- * use the factory method provided in its <a href="SuiteStarting$.html">companion object</a>. For example, given a
+ * To create instances of this class you may use the factory method. For example, given a
  * report function named <code>report</code>, you could fire a <code>SuiteStarting</code> event like this:
  * </p>
  *
@@ -880,7 +873,7 @@ final case class TestCanceled (
  *
  * <p>
  * The suite class name parameter is optional, because suites in ScalaTest are an abstraction that
- * need not necessarily correspond to one class. Nevertheless, it most cases each suite will correspond
+ * need not necessarily correspond to one class. Nevertheless, in most cases each suite will correspond
  * to a class, and when it does, the fully qualified name of that class should be reported by passing a
  * <code>Some</code> for <code>suiteClassName</code>. One use for this bit of information is JUnit integration,
  * because the "name" provided to a JUnit <code>org.junit.runner.Description</code> appears to usually include
@@ -892,9 +885,9 @@ final case class TestCanceled (
  * @param suiteName a localized name identifying the suite that is starting, suitable for presenting to the user
  * @param suiteId a string ID for the suite that is starting, intended to be unique across all suites in a run XXX 
  * @param suiteClassName an optional fully qualifed <code>Suite</code> class name of the suite that is starting
- * @param formatter an optional formatter that provides extra information that can be used by reporters in determining
+ * @param formatter an optional <code>Formatter</code> that provides extra information that can be used by reporters in determining
  *        how to present this event to the user
- * @param location An optional location that provides information indicating where in the source code an event originated.
+ * @param location An optional <code>Location</code> that provides information indicating where in the source code an event originated.
  * @param rerunner an optional <code>String</code> giving the fully qualified name of the class that can be used to rerun the suite that is starting. (If <code>None</code>
  *        is passed, the suite cannot be rerun.)
  * @param payload an optional object that can be used to pass custom information to the reporter about the <code>SuiteStarting</code> event
@@ -963,8 +956,7 @@ final case class SuiteStarting (
  * </p>
  *
  * <p>
- * To create instances of this class you may
- * use the factory method provided in its <a href="SuiteCompleted$.html">companion object</a>. For example, given a
+ * To create instances of this class you may use the factory method. For example, given a
  * report function named <code>report</code>, you could fire a <code>SuiteCompleted</code> event like this:
  * </p>
  *
@@ -974,7 +966,7 @@ final case class SuiteStarting (
  *
  * <p>
  * The suite class name parameter is optional, because suites in ScalaTest are an abstraction that
- * need not necessarily correspond to one class. Nevertheless, it most cases each suite will correspond
+ * need not necessarily correspond to one class. Nevertheless, in most cases each suite will correspond
  * to a class, and when it does, the fully qualified name of that class should be reported by passing a
  * <code>Some</code> for <code>suiteClassName</code>. One use for this bit of information is JUnit integration,
  * because the "name" provided to a JUnit <code>org.junit.runner.Description</code> appears to usually include
@@ -987,9 +979,9 @@ final case class SuiteStarting (
  * @param suiteId a string ID for the suite that has completed, intended to be unique across all suites in a run
  * @param suiteClassName an optional fully qualifed <code>Suite</code> class name containing the suite that has completed
  * @param duration an optional amount of time, in milliseconds, that was required to execute the suite that has completed
- * @param formatter an optional formatter that provides extra information that can be used by reporters in determining
+ * @param formatter an optional <code>Formatter</code> that provides extra information that can be used by reporters in determining
  *        how to present this event to the user
- * @param location An optional location that provides information indicating where in the source code an event originated.
+ * @param location An optional <code>Location</code> that provides information indicating where in the source code an event originated.
  * @param rerunner an optional <code>String</code> giving the fully qualified name of the class that can be used to rerun the suite that has completed. (If <code>None</code>
  *        is passed, the suite cannot be rerun.)
  * @param payload an optional object that can be used to pass custom information to the reporter about the <code>SuiteCompleted</code> event
@@ -1064,8 +1056,7 @@ final case class SuiteCompleted (
  *
  * <p>
  * To create instances of this class you may
- * use the factory method provided in its <a href="SuiteAborted$.html">companion object</a>. For example, given a
- * report function named <code>report</code>, you could fire a <code>SuiteAborted</code> event like this:
+ * use the factory method. For example, given a report function named <code>report</code>, you could fire a <code>SuiteAborted</code> event like this:
  * </p>
  *
  * <pre class="stHighlight">
@@ -1074,7 +1065,7 @@ final case class SuiteCompleted (
  *
  * <p>
  * The suite class name parameter is optional, because suites in ScalaTest are an abstraction that
- * need not necessarily correspond to one class. Nevertheless, it most cases each suite will correspond
+ * need not necessarily correspond to one class. Nevertheless, in most cases each suite will correspond
  * to a class, and when it does, the fully qualified name of that class should be reported by passing a
  * <code>Some</code> for <code>suiteClassName</code>. One use for this bit of information is JUnit integration,
  * because the "name" provided to a JUnit <code>org.junit.runner.Description</code> appears to usually include
@@ -1083,7 +1074,6 @@ final case class SuiteCompleted (
  *
  * @param ordinal an <code>Ordinal</code> that can be used to place this event in order in the context of
  *        other events reported during the same run
- * @param name a localized name identifying the suite that has aborted, which should include the
  *        suite name, suitable for presenting to the user
  * @param message a localized message suitable for presenting to the user
  * @param suiteName a localized name identifying the suite that has aborted, suitable for presenting to the user
@@ -1092,9 +1082,9 @@ final case class SuiteCompleted (
  * @param throwable an optional <code>Throwable</code> that, if a <code>Some</code>, indicates why the suite has aborted,
  *        or a <code>Throwable</code> created to capture stack trace information about the problem.
  * @param duration an optional amount of time, in milliseconds, that was required to execute the suite that has aborted
- * @param formatter an optional formatter that provides extra information that can be used by reporters in determining
+ * @param formatter an optional <code>Formatter</code> that provides extra information that can be used by reporters in determining
  *        how to present this event to the user
- * @param location An optional location that provides information indicating where in the source code an event originated.
+ * @param location an optional <code>Location</code> that provides information indicating where in the source code an event originated.
  * @param rerunner an optional <code>String</code> giving the fully qualified name of the class that can be used to rerun the suite that has aborted. (If <code>None</code>
  *        is passed, the suite cannot be rerun.)
  * @param payload an optional object that can be used to pass custom information to the reporter about the <code>SuiteAborted</code> event
@@ -1700,8 +1690,7 @@ final case class AlertProvided (
  * Event used to provide notifications.
  *
  * <p>
- * To create instances of this class you may
- * use the factory method provided in its <a href="UpdateProvided$.html">companion object</a>. For example, given a
+ * To create instances of this class you may use the factory method. For example, given a
  * report function named <code>report</code>, you could fire a <code>UpdateProvided</code> event like this:
  * </p>
  *
@@ -1735,9 +1724,9 @@ final case class AlertProvided (
  * @param nameInfo an optional <code>NameInfo</code> that if defined, provides names for the suite and optionally the test 
  *        in the context of which the information was provided
  * @param throwable an optional <code>Throwable</code>
- * @param formatter an optional formatter that provides extra information that can be used by reporters in determining
+ * @param formatter an optional <code>Formatter</code> that provides extra information that can be used by reporters in determining
  *        how to present this event to the user
- * @param location An optional location that provides information indicating where in the source code an event originated.
+ * @param location An optional <code>Location</code> that provides information indicating where in the source code an event originated.
  * @param payload an optional object that can be used to pass custom information to the reporter about the <code>UpdateProvided</code> event
  * @param threadName a name for the <code>Thread</code> about whose activity this event was reported
  * @param timeStamp a <code>Long</code> indicating the time this event was reported, expressed in terms of the
@@ -1872,8 +1861,7 @@ final case class MarkupProvided (
  *
  * <p>
  * To create instances of this class you may
- * use the factory method provided in its <a href="ScopeOpened$.html">companion object</a>. For example, given a
- * report function named <code>report</code>, you could fire a <code>ScopeOpened</code> event like this:
+ * use the factory method. For example, given a report function named <code>report</code>, you could fire a <code>ScopeOpened</code> event like this:
  * </p>
  *
  * <pre class="stHighlight">
@@ -1892,9 +1880,9 @@ final case class MarkupProvided (
  * @param message a localized message suitable for presenting to the user
  * @param nameInfo a <code>NameInfo</code> that provides names for the suite and optionally the test 
  *        in the context of which the scope was opened
- * @param formatter an optional formatter that provides extra information that can be used by reporters in determining
+ * @param formatter an optional <code>Formatter</code> that provides extra information that can be used by reporters in determining
  *        how to present this event to the user
- * @param location An optional location that provides information indicating where in the source code an event originated.
+ * @param location An optional <code>Location</code> that provides information indicating where in the source code an event originated.
  * @param payload an optional object that can be used to pass custom information to the reporter about the <code>ScopeOpened</code> event
  * @param threadName a name for the <code>Thread</code> about whose activity this event was reported
  * @param timeStamp a <code>Long</code> indicating the time this event was reported, expressed in terms of the
@@ -1948,8 +1936,7 @@ final case class ScopeOpened (
  *
  * <p>
  * To create instances of this class you may
- * use the factory method provided in its <a href="ScopeClosed$.html">companion object</a>. For example, given a
- * report function named <code>report</code>, you could fire a <code>ScopeClosed</code> event like this:
+ * use the factory method. For example, given a report function named <code>report</code>, you could fire a <code>ScopeClosed</code> event like this:
  * </p>
  *
  * <pre class="stHighlight">
@@ -1968,9 +1955,9 @@ final case class ScopeOpened (
  * @param message a localized message suitable for presenting to the user
  * @param nameInfo a <code>NameInfo</code> that provides names for the suite and optionally the test 
  *        in the context of which the scope was closed
- * @param formatter an optional formatter that provides extra information that can be used by reporters in determining
+ * @param formatter an optional <code>Formatter</code> that provides extra information that can be used by reporters in determining
  *        how to present this event to the user
- * @param location An optional location that provides information indicating where in the source code an event originated.
+ * @param location An optional <code>Location</code> that provides information indicating where in the source code an event originated.
  * @param payload an optional object that can be used to pass custom information to the reporter about the <code>ScopeClosed</code> event
  * @param threadName a name for the <code>Thread</code> about whose activity this event was reported
  * @param timeStamp a <code>Long</code> indicating the time this event was reported, expressed in terms of the
@@ -2024,8 +2011,7 @@ final case class ScopeClosed (
  *
  * <p>
  * To create instances of this class you may
- * use the factory method provided in its <a href="ScopePending$.html">companion object</a>. For example, given a
- * report function named <code>report</code>, you could fire a <code>ScopePending</code> event like this:
+ * use the factory method. For example, given a report function named <code>report</code>, you could fire a <code>ScopePending</code> event like this:
  * </p>
  *
  * <pre class="stHighlight">
@@ -2042,9 +2028,9 @@ final case class ScopeClosed (
  * @param message a localized message suitable for presenting to the user
  * @param nameInfo a <code>NameInfo</code> that provides names for the suite and optionally the test 
  *        in the context of which the scope was closed
- * @param formatter an optional formatter that provides extra information that can be used by reporters in determining
+ * @param formatter an optional <code>Formatter</code> that provides extra information that can be used by reporters in determining
  *        how to present this event to the user
- * @param location An optional location that provides information indicating where in the source code an event originated.
+ * @param location An optional <code>Location</code> that provides information indicating where in the source code an event originated.
  * @param payload an optional object that can be used to pass custom information to the reporter about the <code>ScopePending</code> event
  * @param threadName a name for the <code>Thread</code> about whose activity this event was reported
  * @param timeStamp a <code>Long</code> indicating the time this event was reported, expressed in terms of the
