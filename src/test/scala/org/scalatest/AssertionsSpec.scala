@@ -236,12 +236,19 @@ class AssertionsSpec extends FunSpec with OptionValues {
     it("should throw TestFailedException with message that contains the original code and correct stack depth when is used to check 3 == 5") {
       // This is because the compiler simply pass the false boolean literal
       // to the macro, can't find a way to get the 3 == 5 literal.
-      val e = intercept[TestFailedException] { 
+      val e1 = intercept[TestFailedException] {
         assert(3 == 5) 
       }
-      assert(e.message === Some(expressionFailed("assert(3 == 5)")))
-      assert(e.failedCodeFileName === (Some(fileName)))
-      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+      assert(e1.message === None)
+      assert(e1.failedCodeFileName === (Some(fileName)))
+      assert(e1.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestFailedException] {
+        assert(3 == 5, "3 did not equal 5")
+      }
+      assert(e2.message === Some("3 did not equal 5"))
+      assert(e2.failedCodeFileName === (Some(fileName)))
+      assert(e2.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
     
     it("should throw TestFailedException with correct message and stack depth when is used to check a == b") {

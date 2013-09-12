@@ -26,7 +26,6 @@ class AssertionsMacro[C <: Context](val context: C) {
   def apply(booleanExpr: Expr[Boolean]): Expr[Unit] = {
     
     val predicate = parsePredicate(booleanExpr.tree)
-    val text: Expr[String] = context.literal(getText(booleanExpr.tree))
     predicate match {
       case Some(RecognizedPredicate(left, operator, right, subsitutedExpr)) => 
         /* 
@@ -40,7 +39,7 @@ class AssertionsMacro[C <: Context](val context: C) {
          *   val $org_scalatest_assert_macro_left = something.aMethod
          *   val $org_scalatest_assert_macro_right = 3
          *   val $org_scalatest_assert_macro_result = $org_scalatest_assert_macro_left ==  $org_scalatest_assert_macro_result
-         *   $org_scalatest_AssertionsHelper.macroAssertTrue($org_scalatest_assert_macro_left, "==", $org_scalatest_assert_macro_right, $org_scalatest_assert_macro_result, "something.aMethod == 3")
+         *   $org_scalatest_AssertionsHelper.macroAssertTrue($org_scalatest_assert_macro_left, "==", $org_scalatest_assert_macro_right, $org_scalatest_assert_macro_result)
          * }
          * 
          */
@@ -69,7 +68,7 @@ class AssertionsMacro[C <: Context](val context: C) {
                 Ident("$org_scalatest_AssertionsHelper"), 
                 newTermName("macroAssertTrue")
               ),
-              List(Ident(newTermName("$org_scalatest_assert_macro_left")), context.literal(operator).tree, Ident(newTermName("$org_scalatest_assert_macro_right")), Ident(newTermName("$org_scalatest_assert_macro_result")), text.tree)
+              List(Ident(newTermName("$org_scalatest_assert_macro_left")), context.literal(operator).tree, Ident(newTermName("$org_scalatest_assert_macro_right")), Ident(newTermName("$org_scalatest_assert_macro_result")))
             )
           )
         )
@@ -91,7 +90,7 @@ class AssertionsMacro[C <: Context](val context: C) {
               Ident("$org_scalatest_AssertionsHelper"), 
               newTermName("macroAssertTrue")
             ), 
-            List(booleanExpr.tree, text.tree)
+            List(booleanExpr.tree)
           )  
         )
     }
@@ -100,7 +99,6 @@ class AssertionsMacro[C <: Context](val context: C) {
   def apply(booleanExpr: Expr[Boolean], clueExpr: Expr[Any]): Expr[Unit] = {
 
     val predicate = parsePredicate(booleanExpr.tree)
-    val text: Expr[String] = context.literal(getText(booleanExpr.tree))
     predicate match {
       case Some(RecognizedPredicate(left, operator, right, subsitutedExpr)) =>
         /*
@@ -143,7 +141,7 @@ class AssertionsMacro[C <: Context](val context: C) {
                 Ident("$org_scalatest_AssertionsHelper"),
                 newTermName("macroAssertTrue")
               ),
-              List(Ident(newTermName("$org_scalatest_assert_macro_left")), context.literal(operator).tree, Ident(newTermName("$org_scalatest_assert_macro_right")), Ident(newTermName("$org_scalatest_assert_macro_result")), text.tree, clueExpr.tree)
+              List(Ident(newTermName("$org_scalatest_assert_macro_left")), context.literal(operator).tree, Ident(newTermName("$org_scalatest_assert_macro_right")), Ident(newTermName("$org_scalatest_assert_macro_result")), clueExpr.tree)
             )
           )
         )
@@ -165,7 +163,7 @@ class AssertionsMacro[C <: Context](val context: C) {
               Ident("$org_scalatest_AssertionsHelper"),
               newTermName("macroAssertTrue")
             ),
-            List(booleanExpr.tree, text.tree, clueExpr.tree)
+            List(booleanExpr.tree, clueExpr.tree)
           )
         )
     }
@@ -210,12 +208,12 @@ class AssertionsMacro[C <: Context](val context: C) {
     }
   }
   
-  private[this] def getPosition(expr: Tree) = expr.pos.asInstanceOf[scala.reflect.internal.util.Position]
+  /*private[this] def getPosition(expr: Tree) = expr.pos.asInstanceOf[scala.reflect.internal.util.Position]
 
   def getText(expr: Tree): String = getPosition(expr) match {
     case p: RangePosition => context.echo(expr.pos, "RangePosition found!"); p.lineContent.slice(p.start, p.end).trim
     case p: reflect.internal.util.Position => p.lineContent.trim
-  }
+  }*/
 }
 
 object AssertionsMacro {
