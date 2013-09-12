@@ -377,22 +377,22 @@ trait TripleEqualsSupport {
   class CheckingEqualizer[L](left: L) {
   
     /**
-     * Compare two objects for equality, returning a <code>Boolean</code>, using the <code>EqualityConstraint</code> instance passed as <code>constraint</code>.
+     * Compare two objects for equality, returning a <code>Boolean</code>, using the <code>Constraint</code> instance passed as <code>constraint</code>.
      *
      * @param right the object to compare for equality with <code>left</code>, passed to the constructor
-     * @param constraint an implicit <code>EqualityConstraint</code> instance that enforces a relationship between types <code>L</code> and <code>R</code> and
+     * @param constraint an implicit <code>Constraint</code> instance that enforces a relationship between types <code>L</code> and <code>R</code> and
      *    defines a way of calculating equality for objects of type <code>L</code>
-     * @return true if the <code>left</code> and <code>right</code> objects are equal according to the passed <code>EqualityConstraint</code> instance.
+     * @return true if the <code>left</code> and <code>right</code> objects are equal according to the passed <code>Constraint</code> instance.
      */
     def ===[R](right: R)(implicit constraint: Constraint[L, R]): Boolean = constraint.areEqual(left, right)
   
     /**
-     * Compare two objects for inequality, returning a <code>Boolean</code>, using the <code>EqualityConstraint</code> instance passed as <code>constraint</code>.
+     * Compare two objects for inequality, returning a <code>Boolean</code>, using the <code>Constraint</code> instance passed as <code>constraint</code>.
      *
      * @param right the object to compare for inequality with <code>left</code>, passed to the constructor
-     * @param constraint an implicit <code>EqualityConstraint</code> instance that enforces a relationship between types <code>L</code> and <code>R</code> and
+     * @param constraint an implicit <code>Constraint</code> instance that enforces a relationship between types <code>L</code> and <code>R</code> and
      *    defines a way of calculating equality for objects of type <code>L</code>
-     * @return true if the <code>left</code> and <code>right</code> objects are <em>not</em> equal according to the passed <code>EqualityConstraint</code> instance.
+     * @return true if the <code>left</code> and <code>right</code> objects are <em>not</em> equal according to the passed <code>Constraint</code> instance.
      */
     def !==[R](right: R)(implicit constraint: Constraint[L, R]): Boolean = !constraint.areEqual(left, right)
   
@@ -512,10 +512,10 @@ trait TripleEqualsSupport {
       }
   
     /**
-     * Compare two objects for equality, returning an <code>Option[String]</code>, using the <code>EqualityConstraint</code> instance passed as <code>constraint</code>.
+     * Compare two objects for equality, returning an <code>Option[String]</code>, using the <code>Constraint</code> instance passed as <code>constraint</code>.
      *
      * @param right the object to compare for equality with <code>left</code>, passed to the constructor
-     * @param constraint an implicit <code>EqualityConstraint</code> instance that enforces a relationship between types <code>L</code> and <code>R</code> and
+     * @param constraint an implicit <code>Constraint</code> instance that enforces a relationship between types <code>L</code> and <code>R</code> and
      *    defines a way of calculating equality for objects of type <code>L</code>
      * @return None if the <code>left</code> and <code>right</code> objects are equal according to the passed <code>Equality</code> type class.
      *    else returns an error message string wrapped in a <code>Some</code>.
@@ -529,10 +529,10 @@ trait TripleEqualsSupport {
       }
   
     /**
-     * Compare two objects for inequality, returning an <code>Option[String]</code>, using the <code>EqualityConstraint</code> instance passed as <code>constraint</code>.
+     * Compare two objects for inequality, returning an <code>Option[String]</code>, using the <code>Constraint</code> instance passed as <code>constraint</code>.
      *
      * @param right the object to compare for inequality with <code>left</code>, passed to the constructor
-     * @param constraint an implicit <code>EqualityConstraint</code> instance that enforces a relationship between types <code>L</code> and <code>R</code> and
+     * @param constraint an implicit <code>Constraint</code> instance that enforces a relationship between types <code>L</code> and <code>R</code> and
      *    defines a way of calculating equality for objects of type <code>L</code>
      * @return None if the <code>left</code> and <code>right</code> objects are <em>not</em> equal according to the passed <code>Equality</code> type class.
      *    else returns an error message string wrapped in a <code>Some</code>.
@@ -843,7 +843,7 @@ trait TripleEqualsSupport {
 object TripleEqualsSupport {
 
   /**
-   * An implementation of <a href="Constraint.html"><code>TripleEaualsConstraint</code></a> for two types <code>A</code> and <code>B</code> that requires an <code>Equality[A]</code> to
+   * An implementation of <a href="Constraint.html"><code>Constraint</code></a> for two types <code>A</code> and <code>B</code> that requires an <code>Equality[A]</code> to
    * which its <code>areEqual</code> method can delegate an equality comparison.
    *
    * @param equalityofA an <code>Equality</code> type class for <code>A</code>
@@ -911,7 +911,7 @@ object TripleEqualsSupport {
    *  
    * <p>
    * Instances of this class are created and returned by the <code>===</code> and <code>!==</code> methods of
-   * trait <a href="EqualityConstraints.html"><code>EqualityConstraints</code></a>.
+   * trait <a href="TripleEqualsSupport.html"><code>TripleEqualsSupport</code></a>.
    * </p>
    *
    * @param spread the <code>Spread[T]</code> against which to compare the left-hand value
@@ -924,7 +924,7 @@ object TripleEqualsSupport {
    *  
    * <p>
    * Instances of this class are created and returned by the <code>===</code> and <code>!==</code> methods of
-   * trait <a href="EqualityConstraints.html"><code>EqualityConstraints</code></a>.
+   * trait <a href="TripleEqualsSupport.html"><code>TripleEqualsSupport</code></a>.
    * </p>
    *
    * @param right the right-hand side value for an equality assertion
