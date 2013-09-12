@@ -24,8 +24,13 @@ import org.scalatest._
  * @param testsFailedCount the number of tests that were reported as failed during the run
  * @param testsIgnoredCount the number of tests that were were reported as ignored during the run
  * @param testsPendingCount the number of tests that were reported as pending during the run
+ * @param testsCanceledCount the number of tests that were reported as canceled during the run
+ * @param suitesCompletedCount the number of suites that were reported as completed during the run
+ * @param suitesAbortedCount the number of suites that were reported as aborted during the run
+ * @param scopesPendingCount the number of scopes that were reported as pending during the run
  *
  * @author Bill Venners
+ * @author Chee Seng
  */
 final case class Summary(testsSucceededCount: Int, testsFailedCount: Int, testsIgnoredCount: Int, testsPendingCount: Int, testsCanceledCount: Int,
   suitesCompletedCount: Int, suitesAbortedCount: Int, scopesPendingCount: Int) {
@@ -42,8 +47,3 @@ final case class Summary(testsSucceededCount: Int, testsFailedCount: Int, testsI
    */
   val totalTestsCount = testsSucceededCount + testsFailedCount + testsIgnoredCount + testsPendingCount + testsCanceledCount
 }
-
-/**
- * Companion object for case class <a href="Summary.html"><code>Summary</code></a>.
- */
-object Summary
