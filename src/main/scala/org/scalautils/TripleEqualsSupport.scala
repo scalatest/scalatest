@@ -73,9 +73,11 @@ import TripleEqualsSupport._
  * </p>
  *
  * <ul>
- * <li><code>convertToCheckingEqualize</code></li>
+ * <li><code>convertToCheckingEqualizer</code></li>
  * <li><code>typeCheckedConstraint</code></li>
  * <li><code>lowPriorityTypeCheckedConstraint</code></li>
+ * <li><code>convertEquivalenceToAToBConstraint</code></li>
+ * <li><code>convertEquivalenceToBToAConstraint</code></li>
  * </ul>
  * 
  * <p>
@@ -593,9 +595,11 @@ trait TripleEqualsSupport {
   }
 
   /**
-   * Returns an <code>Equality[A]</code> for any type <code>A</code> that determines equality via the <code>==</code> operator on type <code>A</code>.
+   * Returns an <code>Equality[A]</code> for any type <code>A</code> that determines equality
+   * by first calling <code>.deep</code> on any <code>Array</code> (on either the left or right side),
+   * then comparing the resulting objects with <code>==</code>.
    *
-   * @return a <code>DefaultEquality</code> for type <code>A</code>
+   * @return a default <code>Equality</code> for type <code>A</code>
    */
   def defaultEquality[A]: Equality[A] = Equality.default
 
@@ -604,7 +608,8 @@ trait TripleEqualsSupport {
    * result in <code>Boolean</code> and enforce no type constraint.
    *
    * <p>
-   * This method is overridden and made implicit by subtrait <a href="TripleEquals.html"><code>TripleEquals</code></a> and overriden as non-implicit by the other subtraits in this package.
+   * This method is overridden and made implicit by subtrait <a href="TripleEquals.html"><code>TripleEquals</code></a> and overriden as non-implicit by the other
+   * subtraits in this package.
    * </p>
    *
    * @param left the object whose type to convert to <code>Equalizer</code>.
@@ -617,7 +622,8 @@ trait TripleEqualsSupport {
    * result in <code>Option[String]</code> and enforce no type constraint.
    *
    * <p>
-   * This method is overridden and made implicit by subtrait <a href="LegacyTripleEquals.html"><code>LegacyTripleEquals</code></a> and overriden as non-implicit by the other subtraits in this package.
+   * This method is overridden and made implicit by subtrait <a href="LegacyTripleEquals.html"><code>LegacyTripleEquals</code></a> and overriden as non-implicit
+   * by the other subtraits in this package.
    * </p>
    *
    * @param left the object whose type to convert to <code>LegacyEqualizer</code>.
@@ -626,10 +632,12 @@ trait TripleEqualsSupport {
   def convertToLegacyEqualizer[T](left: T): LegacyEqualizer[T]
 
   /**
-   * Converts to an <a href="CheckingEqualizer.html"><code>CheckingEqualizer</code></a> that provides <code>===</code> and <code>!==</code> operators that result in <code>Boolean</code> and enforce a type constraint.
+   * Converts to an <a href="CheckingEqualizer.html"><code>CheckingEqualizer</code></a> that provides <code>===</code> and <code>!==</code> operators
+   * that result in <code>Boolean</code> and enforce a type constraint.
    *
    * <p>
-   * This method is overridden and made implicit by subtraits <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a> and <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a>, and overriden as
+   * This method is overridden and made implicit by subtraits <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a> and
+   * <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a>, and overriden as
    * non-implicit by the other subtraits in this package.
    * </p>
    *
@@ -639,11 +647,12 @@ trait TripleEqualsSupport {
   def convertToCheckingEqualizer[T](left: T): CheckingEqualizer[T]
 
   /**
-   * Converts to a <a href="LegacyCheckingEqualizer.html"><code>LegacyCheckingEqualizer</code></a> that provides <code>===</code> and <code>!==</code> operators that result in <code>Option[String]</code> and
-   * enforce a type constraint.
+   * Converts to a <a href="LegacyCheckingEqualizer.html"><code>LegacyCheckingEqualizer</code></a> that provides <code>===</code> and <code>!==</code> operators
+   * that result in <code>Option[String]</code> and enforce a type constraint.
    *
    * <p>
-   * This method is overridden and made implicit by subtraits <a href="TypeCheckedLegacyTripleEquals.html"><code>TypeCheckedLegacyTripleEquals</code></a> and <a href="ConversionCheckedLegacyTripleEquals.html"><code>ConversionCheckedLegacyTripleEquals</code></a>, and
+   * This method is overridden and made implicit by subtraits <a href="TypeCheckedLegacyTripleEquals.html"><code>TypeCheckedLegacyTripleEquals</code></a>
+   * and <a href="ConversionCheckedLegacyTripleEquals.html"><code>ConversionCheckedLegacyTripleEquals</code></a>, and
    * overriden as non-implicit by the other subtraits in this package.
    * </p>
    *
@@ -657,12 +666,13 @@ trait TripleEqualsSupport {
    * implicit <code>Equality[A]</code>.
    *
    * <p>
-   * The implicitly passed <code>Equality[A]</code> must be used to determine equality by the returned <code>Constraint</code>'s
-   * <code>areEqual</code> method.
+   * The returned <code>Constraint</code>'s <code>areEqual</code> method uses the implicitly passed <code>Equality[A]</code>'s
+   * <code>areEqual</code> method to determine equality.
    * </p>
    *
    * <p>
-   * This method is overridden and made implicit by subtraits <a href="TripleEquals.html"><code>TripleEquals</code></a> and <a href="LegacyTripleEquals.html"><code>LegacyTripleEquals</code></a>, and
+   * This method is overridden and made implicit by subtraits <a href="TripleEquals.html"><code>TripleEquals</code></a> and
+   * <a href="LegacyTripleEquals.html"><code>LegacyTripleEquals</code></a>, and
    * overriden as non-implicit by the other subtraits in this package.
    * </p>
    *
@@ -673,11 +683,12 @@ trait TripleEqualsSupport {
   def unconstrainedEquality[A, B](implicit equalityOfA: Equality[A]): Constraint[A, B]
 
   /**
-   * Provides a <code>Constraint[A, B]</code> class for any two types <code>A</code> and <code>B</code>, enforcing the type constraint that <code>A</code> must be a subtype of <code>B</code>, given an implicit <code>Equivalence[B]</code>.
+   * Provides a <code>Constraint[A, B]</code> for any two types <code>A</code> and <code>B</code>, enforcing the type constraint
+   * that <code>A</code> must be a subtype of <code>B</code>, given an implicit <code>Equivalence[B]</code>.
    *
    * <p>
-   * The implicitly passed <code>Equivalence[B]</code> must be used to determine equality by the returned <code>Constraint</code>'s
-   * <code>areEqual</code> method.
+   * The returned <code>Constraint</code>'s <code>areEqual</code> method uses the implicitly passed <code>Equivalence[A]</code>'s
+   * <code>areEquivalent</code> method to determine equality.
    * </p>
    *
    * <p>
@@ -697,14 +708,45 @@ trait TripleEqualsSupport {
    */
   def lowPriorityTypeCheckedConstraint[A, B](implicit equivalenceOfB: Equivalence[B], ev: A <:< B): Constraint[A, B]
 
+  /**
+   * Provides a <code>Constraint[A, B]</code> for any two types <code>A</code> and <code>B</code>, enforcing the type constraint
+   * that <code>A</code> must be a subtype of <code>B</code>, given an <em>explicit</em> <code>Equivalence[B]</code>.
+   *
+   * <p>
+   * This method is used to enable the <a href="Explicitly.html"><code>Explicitly</code></a> DSL for
+   * <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a> by requiring an explicit <code>Equivalance[B]</code>, but
+   * taking an implicit function that provides evidence that <code>A</code> is a subtype of </code>B</code>.
+   * </p>
+   *
+   * <p>
+   * The returned <code>Constraint</code>'s <code>areEqual</code> method uses the implicitly passed <code>Equivalence[B]</code>'s
+   * <code>areEquivalent</code> method to determine equality.
+   * </p>
+   *
+   * <p>
+   * This method is overridden and made implicit by subtraits
+   * <a href="LowPriorityTypeCheckedConstraint.html"><code>LowPriorityTypeCheckedConstraint</code></a> (extended by
+   * <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a>), and
+   * <a href="LowPriorityTypeCheckedLegacyConstraint.html"><code>LowPriorityTypeCheckedLegacyConstraint</code></a> (extended by
+   * <a href="TypeCheckedLegacyTripleEquals.html"><code>TypeCheckedLegacyTripleEquals</code></a>), and
+   * overriden as non-implicit by the other subtraits in this package.
+   * </p>
+   *
+   * @param equivalenceOfB an <code>Equivalence[B]</code> type class to which the <code>Constraint.areEqual</code> method
+   *    will delegate to determine equality.
+   * @param ev evidence that <code>A</code> is a subype of </code>B</code>
+   * @return a <code>Constraint[A, B]</code> whose <code>areEqual</code> method delegates to the
+   * <code>areEquivalent</code> method of the passed <code>Equivalence[B]</code>.
+   */
   def convertEquivalenceToAToBConstraint[A, B](equivalenceOfB: Equivalence[B])(implicit ev: A <:< B): Constraint[A, B]
 
   /**
-   * Provides a <code>Constraint[A, B]</code> class for any two types <code>A</code> and <code>B</code>, enforcing the type constraint that <code>B</code> must be a subtype of <code>A</code>, given an implicit <code>Equivalence[A]</code>.
+   * Provides a <code>Constraint[A, B]</code> for any two types <code>A</code> and <code>B</code>, enforcing the type constraint
+   * that <code>B</code> must be a subtype of <code>A</code>, given an implicit <code>Equivalence[A]</code>.
    *
    * <p>
-   * The implicitly passed <code>Equivalence[A]</code> must be used to determine equality by the returned <code>Constraint</code>'s
-   * <code>areEqual</code> method.
+   * The returned <code>Constraint</code>'s <code>areEqual</code> method uses the implicitly passed <code>Equivalence[A]</code>'s
+   * <code>areEquivalent</code> method to determine equality.
    * </p>
    *
    * <p>
@@ -721,14 +763,48 @@ trait TripleEqualsSupport {
    */
   def typeCheckedConstraint[A, B](implicit equivalenceOfA: Equivalence[A], ev: B <:< A): Constraint[A, B]
 
+  /**
+   * Provides a <code>Constraint[A, B]</code> for any two types <code>A</code> and <code>B</code>, enforcing the type constraint
+   * that <code>B</code> must be a subtype of <code>A</code>, given an <em>explicit</em> <code>Equivalence[A]</code>.
+   *
+   * <p>
+   * This method is used to enable the <a href="Explicitly.html"><code>Explicitly</code></a> DSL for
+   * <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a> by requiring an explicit <code>Equivalance[B]</code>, but
+   * taking an implicit function that provides evidence that <code>A</code> is a subtype of </code>B</code>. For example, under <code>TypeCheckedTripleEquals</code>,
+   * this method (as an implicit method), would be used to compile this statement:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * def closeEnoughTo1(num: Double): Boolean =
+   *   (num === 1.0)(decided by forgivingEquality)
+   * </pre>
+   *
+   * <p>
+   * The returned <code>Constraint</code>'s <code>areEqual</code> method uses the implicitly passed <code>Equivalence[A]</code>'s
+   * <code>areEquivalent</code> method to determine equality.
+   * </p>
+   *
+   * <p>
+   * This method is overridden and made implicit by subtraits
+   * <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a>) and
+   * <a href="TypeCheckedLegacyTripleEquals.html"><code>TypeCheckedLegacyTripleEquals</code></a>, and
+   * overriden as non-implicit by the other subtraits in this package.
+   * </p>
+   *
+   * @param equalityOfA an <code>Equivalence[A]</code> type class to which the <code>Constraint.areEqual</code> method will delegate to determine equality.
+   * @param ev evidence that <code>B</code> is a subype of </code>A</code>
+   * @return a <code>Constraint[A, B]</code> whose <code>areEqual</code> method delegates to the <code>areEquivalent</code> method of
+   *     the passed <code>Equivalence[A]</code>.
+   */
   def convertEquivalenceToBToAConstraint[A, B](equivalenceOfA: Equivalence[A])(implicit ev: B <:< A): Constraint[A, B]
 
   /**
-   * Provides a <code>Constraint[A, B]</code> class for any two types <code>A</code> and <code>B</code>, enforcing the type constraint that <code>A</code> is implicitly convertible to <code>B</code>, given an implicit <code>Equivalence[B]</code>.
+   * Provides a <code>Constraint[A, B]</code> class for any two types <code>A</code> and <code>B</code>, enforcing the type constraint that <code>A</code> is
+   * implicitly convertible to <code>B</code>, given an implicit <code>Equivalence[B]</code>.
    *
    * <p>
-   * The implicitly passed <code>Equivalence[B]</code> must be used to determine equality by the returned <code>Constraint</code>'s
-   * <code>areEqual</code> method.
+   * The returned <code>Constraint</code>'s <code>areEqual</code> method uses the implicitly passed <code>Equivalence[B]</code>'s
+   * <code>areEquivalent</code> method to determine equality.
    * </p>
    *
    * <p>
@@ -747,14 +823,44 @@ trait TripleEqualsSupport {
    */
   def lowPriorityConversionCheckedConstraint[A, B](implicit equivalenceOfB: Equivalence[B], cnv: A => B): Constraint[A, B]
 
+  /**
+   * Provides a <code>Constraint[A, B]</code> class for any two types <code>A</code> and <code>B</code>, enforcing the type constraint that <code>A</code> is
+   * implicitly convertible to <code>B</code>, given an <em>explicit</em> <code>Equivalence[B]</code>.
+   *
+   * <p>
+   * This method is used to enable the <a href="Explicitly.html"><code>Explicitly</code></a> DSL for
+   * <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a> by requiring an explicit <code>Equivalance[B]</code>, but
+   * taking an implicit function that converts from <code>A</code> to </code>B</code>.
+   * </p>
+   *
+   * <p>
+   * The returned <code>Constraint</code>'s <code>areEqual</code> method uses the implicitly passed <code>Equivalence[B]</code>'s
+   * <code>areEquivalent</code> method to determine equality.
+   * </p>
+   *
+   * <p>
+   * This method is overridden and made implicit by subtraits
+   * <a href="LowPriorityConversionCheckedConstraint.html"><code>LowPriorityConversionCheckedConstraint</code></a> (extended by
+   * <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a>), and
+   * <a href="LowPriorityConversionCheckedLegacyConstraint.html"><code>LowPriorityConversionCheckedLegacyConstraint</code></a> (extended by
+   * <a href="ConversionCheckedLegacyTripleEquals.html"><code>ConversionCheckedLegacyTripleEquals</code></a>), and
+   * overriden as non-implicit by the other subtraits in this package.
+   * </p>
+   *
+   * @param equalityOfB an <code>Equivalence[B]</code> type class to which the <code>Constraint.areEqual</code> method will delegate to determine equality.
+   * @param cnv an implicit conversion from <code>A</code> to </code>B</code>
+   * @return a <code>Constraint[A, B]</code> whose <code>areEqual</code> method delegates to the <code>areEquivalent</code> method of
+   *     the passed <code>Equivalence[B]</code>.
+   */
   def convertEquivalenceToAToBConversionConstraint[A, B](equivalenceOfB: Equivalence[B])(implicit ev: A => B): Constraint[A, B]
 
   /**
-   * Provides a <code>Constraint[A, B]</code> class for any two types <code>A</code> and <code>B</code>, enforcing the type constraint that <code>B</code> is implicitly convertible to <code>A</code>, given an implicit <code>Equivalence[A]</code>.
+   * Provides a <code>Constraint[A, B]</code> class for any two types <code>A</code> and <code>B</code>, enforcing the type constraint that <code>B</code> is
+   * implicitly convertible to <code>A</code>, given an implicit <code>Equivalence[A]</code>.
    *
    * <p>
-   * The implicitly passed <code>Equivalence[A]</code> must be used to determine equality by the returned <code>Constraint</code>'s
-   * <code>areEqual</code> method.
+   * The returned <code>Constraint</code>'s <code>areEqual</code> method uses the implicitly passed <code>Equivalence[A]</code>'s
+   * <code>areEquivalent</code> method to determine equality.
    * </p>
    *
    * <p>
@@ -771,6 +877,39 @@ trait TripleEqualsSupport {
    */
   def conversionCheckedConstraint[A, B](implicit equivalenceOfA: Equivalence[A], cnv: B => A): Constraint[A, B]
 
+  /**
+   * Provides a <code>Constraint[A, B]</code> class for any two types <code>A</code> and <code>B</code>, enforcing the type constraint that <code>B</code> is
+   * implicitly convertible to <code>A</code>, given an <em>explicit</em> <code>Equivalence[A]</code>.
+   *
+   * <p>
+   * This method is used to enable the <a href="Explicitly.html"><code>Explicitly</code></a> DSL for
+   * <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a> by requiring an explicit <code>Equivalance[A]</code>, but
+   * taking an implicit function that converts from <code>B</code> to </code>A</code>. For example, under <code>ConversionCheckedTripleEquals</code>,
+   * this method (as an implicit method), would be used to compile this statement:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * def closeEnoughTo1(num: Double): Boolean =
+   *   (num === 1.0)(decided by forgivingEquality)
+   * </pre>
+   *
+   * <p>
+   * The returned <code>Constraint</code>'s <code>areEqual</code> method uses the implicitly passed <code>Equivalence[A]</code>'s
+   * <code>areEquivalent</code> method to determine equality.
+   * </p>
+   *
+   * <p>
+   * This method is overridden and made implicit by subtraits
+   * <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a>) and
+   * <a href="ConversionCheckedLegacyTripleEquals.html"><code>ConversionCheckedLegacyTripleEquals</code></a>, and
+   * overriden as non-implicit by the other subtraits in this package.
+   * </p>
+   *
+   * @param equivalenceOfA an <code>Equivalence[A]</code> type class to which the <code>Constraint.areEqual</code> method will delegate to determine equality.
+   * @param cnv an implicit conversion from <code>B</code> to </code>A</code>
+   * @return a <code>Constraint[A, B]</code> whose <code>areEqual</code> method delegates to the <code>areEquivalent</code> method of
+   *     the passed <code>Equivalence[A]</code>.
+   */
   def convertEquivalenceToBToAConversionConstraint[A, B](equivalenceOfA: Equivalence[A])(implicit ev: B => A): Constraint[A, B]
 
   /**
