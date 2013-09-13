@@ -146,7 +146,20 @@ package org.scalautils
  * <code>Equivalence</code> differs from <code>Equality</code> in that both the left and right values are of the same type. <code>Equivalence</code> works for
  * <code>TypeCheckedTripleEquals</code> because the type constraint enforces that the left type is a subtype or supertype of (or the same type as) the right
  * type, and it <em>widens</em> the subtype to the supertype. So ultimately, both left and right sides are of the supertype type. Similarly, <code>Equivalence</code>
- * works for <code>ConversionCheckedTripleEquals</code>.
+ * works for <code>ConversionCheckedTripleEquals</code> because the type constraint enforces that an implicit conversion
+ * exists from either the left type to the right type, or the right type to the left type, and it always converts one
+ * type to the other using the implicit conversion. (If both types are the same type, the identity implicit conversion
+ * from <code>Predef</code> is used.) Because of the conversion, both left and right sides are ultimately of the
+ * converted-to type.
+ * </p>
+ *
+ * <p>
+ * ScalaUtils provides both <code>Equality</code> and <code>Equivalence</code> because the <code>Any</code> in
+ * <code>Equality</code> can sometimes make things painful. For example, in trait
+ * <a href="TolerantNumerics.html"><code>TolerantNumerics</code></a>,
+ * a single generic factory method can produce <code>Equivalence</code>s for any <code>Numeric</code> type, 
+ * but because of the <code>Any</code>, a separate factory method must be define to produce <code>Equality</code>
+ * for <code>Numeric</code> types.
  * </p>
  *
  * <em>Note: The <code>Equality</code> type class was inspired in part by the <code>Equal</code> type class of the 
