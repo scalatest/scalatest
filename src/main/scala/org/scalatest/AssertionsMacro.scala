@@ -20,7 +20,7 @@ import collection.mutable.ListBuffer
 import collection.immutable.TreeMap
 import reflect.internal.util.{Position, OffsetPosition, RangePosition}
 
-class AssertionsMacro[C <: Context](val context: C) {
+private[scalatest] class AssertionsMacro[C <: Context](val context: C) {
 
   /*
    * Translate the following:
