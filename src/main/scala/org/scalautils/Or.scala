@@ -64,8 +64,6 @@ sealed abstract class Or[+G,+B] {
   def accumulating: G Or One[B]
   def toTry(implicit ev: B <:< Throwable): Try[G]
   def swap: B Or G
-  // def transform[H, ERR, EVERY[b] <: Every[b]](other: (G => H) Or EVERY[ERR])(implicit ev: B <:< Every[ERR]): H Or Every[ERR]
-  def validate[ERR](validations: (G => Option[ERR])*)(implicit ev: B <:< Every[ERR]): G Or Every[ERR]
 }
 
 object Or {
@@ -98,26 +96,6 @@ final case class Good[+G,+B](g: G) extends Or[G,B] {
   def accumulating: G Or One[B] = Good(g)
   def toTry(implicit ev: B <:< Throwable): Success[G] = Success(g)
   def swap: B Or G = Bad(g)
-/*
-  def transform[H, ERR, EVERY[b] <: Every[b]](other: (G => H) Or EVERY[ERR])(implicit ev: B <:< Every[ERR]): H Or Every[ERR] =
-    other match {
-      case Good(f) => Good(f(g))
-      case Bad(otherB) => Bad(otherB)
-    }
-*/
-  def validate[ERR](validations: (G => Option[ERR])*)(implicit ev: B <:< Every[ERR]): G Or Every[ERR] = {
-    val results = validations flatMap (_(g).toSeq)
-    results.length match {
-      case 0 => Good(g)
-      case 1 => Bad(One(results.head))
-      case _ =>
-        val first = results.head
-        val tail = results.tail
-        val second = tail.head
-        val rest = tail.tail
-        Bad(Many(first, second, rest: _*))
-    }
-  }
 }
 
 object Good {
@@ -144,13 +122,5 @@ final case class Bad[+G,+B](b: B) extends Or[G,B] {
   def accumulating: G Or One[B] = Bad(One(b))
   def toTry(implicit ev: B <:< Throwable): Failure[G] = Failure(b)
   def swap: B Or G = Good(b)
-/*
-  def transform[H, ERR, EVERY[b] <: Every[b]](other: (G => H) Or EVERY[ERR])(implicit ev: B <:< Every[ERR]): H Or Every[ERR] =
-    other match {
-      case Good(_) => Bad(ev(b))
-      case Bad(otherB) => Bad(ev(b) ++ otherB)
-    }
-*/
-  def validate[ERR](validations: (G => Option[ERR])*)(implicit ev: B <:< Every[ERR]): G Or Every[ERR] = Bad(b)
 }
 

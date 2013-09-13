@@ -234,6 +234,7 @@ class OrSpec extends UnitSpec with Validations with TypeCheckedTripleEquals {
       (i: Int) => if (i < 3) None else Some(i + " was not less than 3"),
       (i: Int) => if (i % 2 == 0) None else Some(i + " was not even")
     ) shouldBe Bad(Many("original error 1", "original error 2"))
+    Good("hi").orBad[Every[Int]].validate((i: String) => Some(2.0)) shouldBe Bad(One(2.0))
   }
   it can "be created with the attempt helper method" in {
     attempt { 2 / 1 } should === (Good(2))
