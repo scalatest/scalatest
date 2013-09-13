@@ -205,12 +205,30 @@ private[scalatest] class AssertionsMacro[C <: Context](val context: C) {
   }*/
 }
 
-object AssertionsMacro {
+/**
+ * Macro implementation that provides rich error message for boolean expression assertion.
+ */
+private[scalatest] object AssertionsMacro {
 
+  /**
+   * Provides assertion implementation for <code>Assertions.assert(booleanExpr: Boolean)</code>, with rich error message.
+   *
+   * @param context macro context
+   * @param condition original condition expression
+   * @return transformed expression that performs the assertion check and throw <code>TestFailedException</code> with rich error message if assertion failed
+   */
   def apply(context: Context)(condition: context.Expr[Boolean]): context.Expr[Unit] = {
     new AssertionsMacro[context.type](context).apply(condition)
   }
 
+  /**
+   * Provides assertion implementation for <code>Assertions.assert(booleanExpr: Boolean, clue: Any)</code>, with rich error message.
+   *
+   * @param context macro context
+   * @param condition original condition expression
+   * @param clue original clue expression
+   * @return transformed expression that performs the assertion check and throw <code>TestFailedException</code> with rich error message (clue included) if assertion failed
+   */
   def applyWithClue(context: Context)(condition: context.Expr[Boolean], clue: context.Expr[Any]): context.Expr[Unit] = {
     new AssertionsMacro[context.type](context).apply(condition, clue)
   }
