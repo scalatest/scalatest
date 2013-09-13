@@ -39,9 +39,6 @@ import scala.collection.mutable.Builder
  * alternative to be <code>Good</code> and the other <code>Bad</code>.
  * </p>
  * 
- * <pre class="stHighlight">
- * <pre>
- * 
  * <p>
  * Because of this, it is more convenient to work with <code>Or</code>s
  * when you prefer one alternative over the other. For example,  alternative represents a valid result and another represents an error.

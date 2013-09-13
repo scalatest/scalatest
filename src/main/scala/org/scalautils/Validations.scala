@@ -26,12 +26,12 @@ import scala.collection.GenSet
 import Validations.Combinable
 import Validations.Validatable
 import Validations.TravValidatable
-import Validations.Zippable
+import Validations.Accumulatable
 
 trait Validations {
 
-  implicit def convertOrToZippable[G, ERR, EVERY[b] <: Every[b]](zippable: G Or EVERY[ERR]): Zippable[G, ERR, EVERY] =
-    new Zippable[G, ERR, EVERY] {
+  implicit def convertOrToAccumulatable[G, ERR, EVERY[b] <: Every[b]](zippable: G Or EVERY[ERR]): Accumulatable[G, ERR, EVERY] =
+    new Accumulatable[G, ERR, EVERY] {
       def zip[H, OTHERERR >: ERR, OTHEREVERY[c] <: Every[c]](other: H Or OTHEREVERY[OTHERERR]): (G, H) Or Every[OTHERERR] = {
         zippable match {
           case Good(g) =>
@@ -1262,7 +1262,7 @@ object Validations extends Validations {
     def validatedBy[H, ERR, EVERY[e] <: Every[e]](fn: G => H Or EVERY[ERR])(implicit cbf: CanBuildFrom[TRAVONCE[G], H, TRAVONCE[H]]): TRAVONCE[H] Or Every[ERR]
   }
 
-  trait Zippable[G, ERR, EVERY[b] <: Every[b]] {
+  trait Accumulatable[G, ERR, EVERY[b] <: Every[b]] {
     def zip[H, OTHERERR >: ERR, OTHEREVERY[c] <: Every[c]](other: H Or OTHEREVERY[OTHERERR]): (G, H) Or Every[OTHERERR]
     def transform[H, OTHERERR >: ERR, OTHEREVERY[b] <: Every[b]](other: (G => H) Or OTHEREVERY[OTHERERR]): H Or Every[OTHERERR]
     def validate[OTHERERR >: ERR](validations: (G => Option[OTHERERR])*): G Or Every[OTHERERR]
