@@ -493,6 +493,7 @@ trait Assertions extends TripleEquals {
    * @throws TestFailedException if the <code>Option[String]</code> is <code>Some</code>.
    * @throws NullPointerException if <code>message</code> is <code>null</code>.
    */
+  @deprecated("This method has been deprecated in favor of macro assertion and will be removed in a future version of ScalaTest. If you need this, please copy the source code into your own trait instead.")
   def assert(o: Option[String], clue: Any) {
     o match {
       case Some(s) => throw newAssertionFailedException(Some(clue + "\n" + s), None, 4)
@@ -524,6 +525,7 @@ trait Assertions extends TripleEquals {
    * @param o the <code>Option[String]</code> to assert
    * @throws TestFailedException if the <code>Option[String]</code> is <code>Some</code>.
    */
+  @deprecated("This method has been deprecated in favor of macro assertion and will be removed in a future version of ScalaTest. If you need this, please copy the source code into your own trait instead.")
   def assert(o: Option[String]) {
     o match {
       case Some(s) => throw newAssertionFailedException(Some(s), None, 4)
