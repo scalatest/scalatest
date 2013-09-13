@@ -137,6 +137,13 @@ package org.scalatest
  * all the tests and nested suites are executed even if a <code>Distributor</code> is passed.</strong>
  * </p>
  *
+ * <p>
+ * Note that it is <em>not</em> guaranteed that <code>afterAll</code> is invoked from the same thread as <code>beforeAll</code>,
+ * so if there's any shared state between <code>beforeAll</code> and <code>afterAll</code> you'll need to make sure they are
+ * synchronized correctly.
+ * </p>
+ *
+ *
  * @author Bill Venners
  */
 trait BeforeAndAfterAll  extends SuiteMixin { this: Suite =>
@@ -242,36 +249,45 @@ trait BeforeAndAfterAll  extends SuiteMixin { this: Suite =>
    * @return a <code>Status</code> object that indicates when the test started by this method has completed, and whether or not it failed .
   */
   abstract override def run(testName: Option[String], args: Args): Status = {
-    var thrownException: Option[Throwable] = None
-
     if (!args.runTestInNewInstance && (expectedTestCount(args.filter) > 0 || invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected))
       beforeAll(args.configMap)
-    try {
-      val runStatus = super.run(testName, args)
-      runStatus.succeeds()
-      runStatus
-    }
-    catch {
-      case e: Exception => 
-        thrownException = Some(e)
-        FailedStatus
-    }
-    finally {
+
+    val (runStatus, thrownException) =
       try {
-        if (!args.runTestInNewInstance && (expectedTestCount(args.filter) > 0 || invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected))
-          afterAll(args.configMap) // Make sure that afterAll is called even if run completes abruptly.
-        thrownException match {
-          case Some(e) => throw e
-          case None =>
-        }
+        (super.run(testName, args), None)
       }
       catch {
-        case laterException: Exception =>
-          thrownException match { // If both run and afterAll throw an exception, report the test exception
-            case Some(earlierException) => throw earlierException
-            case None => throw laterException
-          }
+        case e: Exception => (FailedStatus, Some(e))
       }
+
+    thrownException match {
+      case Some(earlierException) =>
+        try {
+          if (!args.runTestInNewInstance && (expectedTestCount(args.filter) > 0 || invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected))
+            afterAll(args.configMap) // Make sure that afterAll is called even if run completes abruptly.
+        }
+        catch {
+          case laterException: Exception => // Do nothing, will need to throw the earlier exception
+        }
+        finally {
+          throw earlierException
+        }
+      case None =>
+        // runStatus may not be completed, call afterAll only after it is completed
+        runStatus.whenCompleted { succeeded =>
+          try {
+            if (!args.runTestInNewInstance && (expectedTestCount(args.filter) > 0 || invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected))
+              afterAll(args.configMap)
+          }
+          catch {
+            case laterException: Exception =>
+              thrownException match { // If both run and afterAll throw an exception, report the test exception
+                case Some(earlierException) => throw earlierException
+                case None => throw laterException
+              }
+          }
+        }
     }
+    runStatus
   }
 }
