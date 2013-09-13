@@ -64,8 +64,6 @@ sealed abstract class Or[+G,+B] {
   def accumulating: G Or One[B]
   def toTry(implicit ev: B <:< Throwable): Try[G]
   def swap: B Or G
-  // def zip[H, ERR, EVERY[b] <: Every[b]](other: H Or EVERY[ERR])(implicit ev: B <:< Every[ERR]): (G, H) Or Every[ERR]
-  // def zip2[H, OTHEREVERY <: Every[Any], EVERY[b] <: Every[b], ERR](other: H Or OTHEREVERY)(implicit ev: B <:< EVERY[ERR]): (G, H) Or (OTHEREVERY with B)
   // def transform[H, ERR, EVERY[b] <: Every[b]](other: (G => H) Or EVERY[ERR])(implicit ev: B <:< Every[ERR]): H Or Every[ERR]
   def validate[ERR](validations: (G => Option[ERR])*)(implicit ev: B <:< Every[ERR]): G Or Every[ERR]
 }
@@ -81,13 +79,6 @@ object Or {
       case Right(g) => Good(g)
       case Left(e) => Bad(e)
     }
-
-/*
-  def combine[G, ERR, COLL[_]](combinable: Combinable[G, ERR, COLL]): COLL[G] Or Every[ERR] = combinable.combined
-  def validateBy[G, ERR, EVERY[e] <: Every[e], COLL[_]](validatable: Validatable[G, COLL])(fn: G => G Or EVERY[ERR]): COLL[G] Or Every[ERR] = 
-    validatable match {
-      case basic: BasicValidatable => basic.validatedBy(fn)
-*/
 }
 
 final case class Good[+G,+B](g: G) extends Or[G,B] {
@@ -108,11 +99,6 @@ final case class Good[+G,+B](g: G) extends Or[G,B] {
   def toTry(implicit ev: B <:< Throwable): Success[G] = Success(g)
   def swap: B Or G = Bad(g)
 /*
-  def zip[H, ERR, EVERY[b] <: Every[b]](other: H Or EVERY[ERR])(implicit ev: B <:< Every[ERR]): (G, H) Or Every[ERR] =
-    other match {
-      case Good(h) => Good((g, h))
-      case Bad(otherB) => Bad(otherB)
-    }
   def transform[H, ERR, EVERY[b] <: Every[b]](other: (G => H) Or EVERY[ERR])(implicit ev: B <:< Every[ERR]): H Or Every[ERR] =
     other match {
       case Good(f) => Good(f(g))
@@ -159,11 +145,6 @@ final case class Bad[+G,+B](b: B) extends Or[G,B] {
   def toTry(implicit ev: B <:< Throwable): Failure[G] = Failure(b)
   def swap: B Or G = Good(b)
 /*
-  def zip[H, ERR, EVERY[b] <: Every[b]](other: H Or EVERY[ERR])(implicit ev: B <:< Every[ERR]): (G, H) Or Every[ERR] =
-    other match {
-      case Good(_) => Bad(ev(b))
-      case Bad(otherB) => Bad(ev(b) ++ otherB)
-    }
   def transform[H, ERR, EVERY[b] <: Every[b]](other: (G => H) Or EVERY[ERR])(implicit ev: B <:< Every[ERR]): H Or Every[ERR] =
     other match {
       case Good(_) => Bad(ev(b))

@@ -46,6 +46,20 @@ trait Validations {
             }
         }
       }
+      def transform[H, OTHERERR >: ERR, OTHEREVERY[c] <: Every[c]](other: (G => H) Or OTHEREVERY[OTHERERR]): H Or Every[OTHERERR] = {
+        zippable match {
+          case Good(g) =>
+            other match {
+              case Good(f) => Good(f(g))
+              case Bad(otherB) => Bad(otherB)
+            }
+          case Bad(myBad) =>
+            other match {
+              case Good(_) => Bad(myBad)
+              case Bad(otherB) => Bad(myBad ++ otherB)
+            }
+        }
+      }
     }
 
   implicit def convertGenTraversableOnceToCombinable[G, ERR, EVERY[b] <: Every[b], TRAVONCE[+e] <: GenTraversableOnce[e]](xs: TRAVONCE[G Or EVERY[ERR]])(implicit cbf: CanBuildFrom[TRAVONCE[G Or EVERY[ERR]], G, TRAVONCE[G]]): Combinable[G, ERR, TRAVONCE] = 
@@ -1233,6 +1247,7 @@ object Validations extends Validations {
 
   trait Zippable[G, ERR, EVERY[b] <: Every[b]] {
     def zip[H, OTHERERR >: ERR, OTHEREVERY[c] <: Every[c]](other: H Or OTHEREVERY[OTHERERR]): (G, H) Or Every[OTHERERR]
+    def transform[H, OTHERERR >: ERR, OTHEREVERY[b] <: Every[b]](other: (G => H) Or OTHEREVERY[OTHERERR]): H Or Every[OTHERERR]
   }
 }
 
