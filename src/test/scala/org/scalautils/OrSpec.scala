@@ -259,89 +259,8 @@ class OrSpec extends UnitSpec with Validations with TypeCheckedTripleEquals {
     Or.from(Left(ex)) shouldBe Bad(ex)
     Or.from(Left("oops")) shouldBe Bad("oops")
   }
-  it can "be validated with Or.validateBy" in {
 
-    def isOdd(i: Int): Int Or One[ErrorMessage] =
-      if (i % 2 == 1) Good(i) else Bad(One(s"$i was not odd"))
-
-    // List
-    Or.validateBy(List.empty[Int])(isOdd) shouldBe Good(List.empty[Int])
-
-    Or.validateBy(List(3))(isOdd) shouldBe Good(List(3))
-    Or.validateBy(List(4))(isOdd) shouldBe Bad(One("4 was not odd"))
-
-    Or.validateBy(List(3, 5))(isOdd) shouldBe Good(List(3, 5))
-    Or.validateBy(List(4, 6))(isOdd) shouldBe Bad(Every("4 was not odd", "6 was not odd"))
-    Or.validateBy(List(3, 4))(isOdd) shouldBe Bad(One("4 was not odd"))
-    Or.validateBy(List(4, 3))(isOdd) shouldBe Bad(One("4 was not odd"))
-
-    Or.validateBy(List(3, 5, 7))(isOdd) shouldBe Good(List(3, 5, 7))
-
-    // Vector
-    Or.validateBy(Vector.empty[Int])(isOdd) shouldBe Good(Vector.empty[Int])
-
-    Or.validateBy(Vector(3))(isOdd) shouldBe Good(Vector(3))
-    Or.validateBy(Vector(4))(isOdd) shouldBe Bad(One("4 was not odd"))
-
-    Or.validateBy(Vector(3, 5))(isOdd) shouldBe Good(Vector(3, 5))
-    Or.validateBy(Vector(4, 6))(isOdd) shouldBe Bad(Every("4 was not odd", "6 was not odd"))
-    Or.validateBy(Vector(3, 4))(isOdd) shouldBe Bad(One("4 was not odd"))
-    Or.validateBy(Vector(4, 3))(isOdd) shouldBe Bad(One("4 was not odd"))
-
-    Or.validateBy(Vector(3, 5, 7))(isOdd) shouldBe Good(Vector(3, 5, 7))
-
-    // Iterator
-    Or.validateBy(List.empty[Int].iterator)(isOdd).map(_.toStream) shouldBe Good(List.empty[Int].iterator).map(_.toStream)
-
-    Or.validateBy(List(3).iterator)(isOdd).map(_.toStream) shouldBe Good(List(3).iterator).map(_.toStream)
-    Or.validateBy(List(4).iterator)(isOdd) shouldBe Bad(One("4 was not odd"))
-
-    Or.validateBy(List(3, 5).iterator)(isOdd).map(_.toStream) shouldBe Good(List(3, 5).iterator).map(_.toStream)
-    Or.validateBy(List(4, 6).iterator)(isOdd) shouldBe Bad(Every("4 was not odd", "6 was not odd"))
-    Or.validateBy(List(3, 4).iterator)(isOdd) shouldBe Bad(One("4 was not odd"))
-    Or.validateBy(List(4, 3).iterator)(isOdd) shouldBe Bad(One("4 was not odd"))
-
-    Or.validateBy(List(3, 5, 7).iterator)(isOdd).map(_.toStream) shouldBe Good(List(3, 5, 7).iterator).map(_.toStream)
-
-    // Set
-    Or.validateBy(Set.empty[Int])(isOdd) shouldBe Good(Set.empty[Int])
-
-    Or.validateBy(Set(3))(isOdd) shouldBe Good(Set(3))
-    Or.validateBy(Set(4))(isOdd) shouldBe Bad(One("4 was not odd"))
-
-    Or.validateBy(Set(3, 5))(isOdd) shouldBe Good(Set(3, 5))
-    Or.validateBy(Set(4, 6))(isOdd) shouldBe Bad(Every("4 was not odd", "6 was not odd"))
-    Or.validateBy(Set(3, 4))(isOdd) shouldBe Bad(One("4 was not odd"))
-    Or.validateBy(Set(4, 3))(isOdd) shouldBe Bad(One("4 was not odd"))
-
-    Or.validateBy(Set(3, 5, 7))(isOdd) shouldBe Good(Set(3, 5, 7))
-
-    // Every
-    Or.validateBy(One(3))(isOdd) shouldBe Good(One(3))
-    Or.validateBy(Every(3))(isOdd) shouldBe Good(One(3))
-    Or.validateBy(One(4))(isOdd) shouldBe Bad(One("4 was not odd"))
-    Or.validateBy(Every(4))(isOdd) shouldBe Bad(One("4 was not odd"))
-
-    Or.validateBy(Many(3, 5))(isOdd) shouldBe Good(Many(3, 5))
-    Or.validateBy(Every(3, 5))(isOdd) shouldBe Good(Many(3, 5))
-    Or.validateBy(Many(4, 6))(isOdd) shouldBe Bad(Every("4 was not odd", "6 was not odd"))
-    Or.validateBy(Every(4, 6))(isOdd) shouldBe Bad(Every("4 was not odd", "6 was not odd"))
-    Or.validateBy(Many(3, 4))(isOdd) shouldBe Bad(One("4 was not odd"))
-    Or.validateBy(Every(3, 4))(isOdd) shouldBe Bad(One("4 was not odd"))
-    Or.validateBy(Many(4, 3))(isOdd) shouldBe Bad(One("4 was not odd"))
-    Or.validateBy(Every(4, 3))(isOdd) shouldBe Bad(One("4 was not odd"))
-
-    Or.validateBy(Many(3, 5, 7))(isOdd) shouldBe Good(Every(3, 5, 7))
-    Or.validateBy(Every(3, 5, 7))(isOdd) shouldBe Good(Many(3, 5, 7))
-
-    // Option
-    Or.validateBy(Some(3))(isOdd) shouldBe Good(Some(3))
-    Or.validateBy((None: Option[Int]))(isOdd) shouldBe Good(None)
-    Or.validateBy(Some(4))(isOdd) shouldBe Bad(One("4 was not odd"))
-  }
   it can "be validated with collection.validatedBy" in {
-
-    import Validatable._
 
     def isOdd(i: Int): Int Or One[ErrorMessage] =
       if (i % 2 == 1) Good(i) else Bad(One(s"$i was not odd"))
@@ -423,91 +342,31 @@ class OrSpec extends UnitSpec with Validations with TypeCheckedTripleEquals {
     (None: Option[Int]).validatedBy(isOdd) shouldBe Good(None)
     Some(4).validatedBy(isOdd) shouldBe Bad(One("4 was not odd"))
   }
-  it can "be combined with Or.combine" in {
 
-    // List
-    // Is this the right answer? Has to be, because couldn't come up with an error anyway.
-    Or.combine(List.empty[Int Or Every[String]]) shouldBe Good(List.empty[Int])
+  it can "be validated with collection.validatedBy when the map goes to a different type" in {
+    def parseAge(input: String): Int Or One[ErrorMessage] = {
+      try {
+        val age = input.trim.toInt
+        if (age >= 0) Good(age) else Bad(One(s""""${age}" is not a valid age"""))
+      }
+      catch {
+        case _: NumberFormatException => Bad(One(s""""${input}" is not a valid integer"""))
+      }
+    }
 
-    //  def combine[G, ELE, EVERY[b] <: Every[b], SEQ[s]](xs: SEQ[G Or EVERY[ELE]])(implicit seq: Sequenceable[SEQ]): SEQ[G] Or Every[ELE] = ...
-    // G = Int, ELE = Nothing, SEQ = List
-    Or.combine(List(Good(3))) shouldBe Good(List(3))
-    Or.combine(List(Bad(One("oops")))) shouldBe Bad(One("oops"))
+    Some("29").validatedBy(parseAge) shouldBe Good(Some(29))
+    Some("-30").validatedBy(parseAge) shouldBe Bad(One("\"-30\" is not a valid age"))
 
-    Or.combine(List(Good(3), Good(4))) shouldBe Good(List(3, 4))
-    Or.combine(List(Bad(One("darn")), Bad(One("oops")))) shouldBe Bad(Every("darn", "oops"))
-    Or.combine(List(Good(3), Bad(One("oops")))) shouldBe Bad(One("oops"))
-    Or.combine(List(Bad(One("oops")), Good(3))) shouldBe Bad(One("oops"))
+    Every("29", "30", "31").validatedBy(parseAge) shouldBe Good(Many(29, 30, 31))
+    Every("29", "-30", "31").validatedBy(parseAge) shouldBe Bad(One("\"-30\" is not a valid age"))
+    Every("29", "-30", "-31").validatedBy(parseAge) shouldBe Bad(Many("\"-30\" is not a valid age", "\"-31\" is not a valid age"))
 
-    Or.combine(List(Good(3), Good(4), Good(5))) shouldBe Good(List(3, 4, 5))
-
-    // Vector
-    Or.combine(Vector.empty[Int Or Every[String]]) shouldBe Good(Vector.empty[Int])
-
-    Or.combine(Vector(Good(3))) shouldBe Good(Vector(3))
-    Or.combine(Vector(Bad(One("oops")))) shouldBe Bad(One("oops"))
-
-    Or.combine(Vector(Good(3), Good(4))) shouldBe Good(Vector(3, 4))
-    Or.combine(Vector(Bad(One("darn")), Bad(One("oops")))) shouldBe Bad(Every("darn", "oops"))
-    Or.combine(Vector(Good(3), Bad(One("oops")))) shouldBe Bad(One("oops"))
-    Or.combine(Vector(Bad(One("oops")), Good(3))) shouldBe Bad(One("oops"))
-
-    Or.combine(Vector(Good(3), Good(4), Good(5))) shouldBe Good(Vector(3, 4, 5))
-
-    // Do the same thing with Iterator
-    Or.combine((List.empty[Int Or Every[String]]).iterator).map(_.toStream) shouldEqual (Good(List.empty[Int].iterator).map(_.toStream))
-
-    Or.combine(List(Good(3)).iterator).map(_.toStream) shouldEqual (Good(List(3).iterator).map(_.toStream))
-    Or.combine(List(Bad(One("oops"))).iterator) shouldEqual (Bad(One("oops")))
-
-    Or.combine(List(Good(3), Good(4)).iterator).map(_.toStream) shouldEqual (Good(List(3, 4).iterator).map(_.toStream))
-    Or.combine(List(Bad(One("darn")), Bad(One("oops"))).iterator) shouldEqual (Bad(Every("darn", "oops")))
-    Or.combine(List(Good(3), Bad(One("oops"))).iterator) shouldEqual (Bad(One("oops")))
-    Or.combine(List(Bad(One("oops")), Good(3)).iterator) shouldEqual (Bad(One("oops")))
-
-    Or.combine(List(Good(3), Good(4), Good(5)).iterator).map(_.toStream) shouldEqual (Good(List(3, 4, 5).iterator).map(_.toStream))
-
-    // Set
-    Or.combine(Set.empty[Int Or Every[String]]) shouldBe Good(Set.empty[Int])
-    Or.combine(Set(Good[Int, Every[String]](3), Bad[Int, Every[String]](Every("oops"))).asInstanceOf[Set[Int Or Every[String]]]) shouldBe Bad(One("oops"))
-    Or.combine(Set(Good[Int, Every[String]](3), Bad[Int, Every[String]](Every("oops")))) shouldBe Bad(One("oops"))
-
-    Or.combine(Set(Good(3))) shouldBe Good(Set(3))
-    Or.combine(Set(Bad(One("oops")))) shouldBe Bad(One("oops"))
-
-    Or.combine(Set(Good(3), Good(4))) shouldBe Good(Set(3, 4))
-    Or.combine(Set(Bad(One("darn")), Bad(One("oops")))) shouldBe Bad(Every("darn", "oops"))
-    Or.combine(Set(Good(3), Bad(One("oops")))) shouldBe Bad(One("oops"))
-    Or.combine(Set(Bad(One("oops")), Good(3))) shouldBe Bad(One("oops"))
-
-    Or.combine(Set(Good(3), Good(4), Good(5))) shouldBe Good(Set(3, 4, 5))
-
-    // Every
-    Or.combine(Every(Good(3).orBad[Every[String]], Good[Int].orBad(Every("oops")))) shouldBe Bad(One("oops"))
-
-    Or.combine(Every(Good(3))) shouldBe Good(Every(3))
-    Or.combine(One(Good(3))) shouldBe Good(Every(3))
-    Or.combine(Every(Bad(One("oops")))) shouldBe Bad(One("oops"))
-    Or.combine(One(Bad(One("oops")))) shouldBe Bad(One("oops"))
-
-    Or.combine(Every(Good(3), Good(4))) shouldBe Good(Every(3, 4))
-    Or.combine(Many(Good(3), Good(4))) shouldBe Good(Every(3, 4))
-    Or.combine(Every(Bad(One("darn")), Bad(One("oops")))) shouldBe Bad(Every("darn", "oops"))
-    Or.combine(Many(Bad(One("darn")), Bad(One("oops")))) shouldBe Bad(Every("darn", "oops"))
-    Or.combine(Every(Good(3), Bad(One("oops")))) shouldBe Bad(One("oops"))
-    Or.combine(Every(Bad(One("oops")), Good(3))) shouldBe Bad(One("oops"))
-
-    Or.combine(Every(Good(3), Good(4), Good(5))) shouldBe Good(Every(3, 4, 5))
-
-    // Option
-    Or.combine(Some(Good(3))) shouldBe Good(Some(3))
-    Or.combine((None: Option[Int Or Every[ErrorMessage]])) shouldBe Good(None)
-    Or.combine(Some(Bad(One("oops")))) shouldBe Bad(One("oops"))
-    Or.combine(Some(Bad(Many("oops", "idoops")))) shouldBe Bad(Many("oops", "idoops"))
+    List("29", "30", "31").validatedBy(parseAge) shouldBe Good(List(29, 30, 31))
+    List("29", "-30", "31").validatedBy(parseAge) shouldBe Bad(One("\"-30\" is not a valid age"))
+    List("29", "-30", "-31").validatedBy(parseAge) shouldBe Bad(Many("\"-30\" is not a valid age", "\"-31\" is not a valid age"))
   }
-  it can "be combined with collection.combined" in {
 
-    import Combinable._
+  it can "be combined with collection.combined" in {
 
     // List
     // Is this the right answer? Has to be, because couldn't come up with an error anyway.

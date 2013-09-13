@@ -23,6 +23,30 @@ import scala.collection.GenTraversableOnce
 import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable.Builder
 
+/**
+ * Represents an value of one of two possible types, with one type being &ldquo;good&rdquo; and the other &ldquo;bad.&rdquo;
+ *
+ * <p>
+ * An <code>Or</code> will either be a &ldquo;good&rdquo; value wrapped in an instance of <a href="Good.html"><code>Good</code></a>
+ * or a &ldquo;bad&rdquo; value wrapped in an instance of <a href="Bad.html"><code>Bad</code></a>.
+ * </p>
+ *
+ * <h2>An <code>Either</code> with &ldquo;attitude&rdquo;</h2>
+ *
+ * <p>
+ * <code>Or</code> differs from Scala's <code>Either</code> type in that
+ * <code>Either</code> treats its <code>Left</code> and <code>Right</code> alternatives equally, whereas <code>Or</code> declares one
+ * alternative to be <code>Good</code> and the other <code>Bad</code>.
+ * </p>
+ * 
+ * <pre class="stHighlight">
+ * <pre>
+ * 
+ * <p>
+ * Because of this, it is more convenient to work with <code>Or</code>s
+ * when you prefer one alternative over the other. For example,  alternative represents a valid result and another represents an error.
+ * </p>
+ */
 sealed abstract class Or[+G,+B] {
   val isGood: Boolean = false
   val isBad: Boolean = false
@@ -57,8 +81,12 @@ object Or {
       case Left(e) => Bad(e)
     }
 
+/*
   def combine[G, ERR, COLL[_]](combinable: Combinable[G, ERR, COLL]): COLL[G] Or Every[ERR] = combinable.combined
-  def validateBy[G, ERR, EVERY[e] <: Every[e], COLL[_]](validatable: Validatable[G, COLL])(fn: G => G Or EVERY[ERR]): COLL[G] Or Every[ERR] = validatable.validatedBy(fn)
+  def validateBy[G, ERR, EVERY[e] <: Every[e], COLL[_]](validatable: Validatable[G, COLL])(fn: G => G Or EVERY[ERR]): COLL[G] Or Every[ERR] = 
+    validatable match {
+      case basic: BasicValidatable => basic.validatedBy(fn)
+*/
 }
 
 final case class Good[+G,+B](g: G) extends Or[G,B] {
