@@ -273,18 +273,19 @@ trait BeforeAndAfterAll  extends SuiteMixin { this: Suite =>
           throw earlierException
         }
       case None =>
-        // runStatus may not be completed, call afterAll only after it is completed
-        runStatus.whenCompleted { succeeded =>
-          try {
-            if (!args.runTestInNewInstance && (expectedTestCount(args.filter) > 0 || invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected))
-              afterAll(args.configMap)
-          }
-          catch {
-            case laterException: Exception =>
-              thrownException match { // If both run and afterAll throw an exception, report the test exception
-                case Some(earlierException) => throw earlierException
-                case None => throw laterException
-              }
+        if (!args.runTestInNewInstance && (expectedTestCount(args.filter) > 0 || invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected)) {
+          // runStatus may not be completed, call afterAll only after it is completed
+          runStatus.whenCompleted { succeeded =>
+            try {
+                afterAll(args.configMap)
+            }
+            catch {
+              case laterException: Exception =>
+                thrownException match { // If both run and afterAll throw an exception, report the test exception
+                  case Some(earlierException) => throw earlierException
+                  case None => throw laterException
+                }
+            }
           }
         }
     }
