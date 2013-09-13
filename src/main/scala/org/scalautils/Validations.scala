@@ -26,8 +26,27 @@ import scala.collection.GenSet
 import Validations.Combinable
 import Validations.Validatable
 import Validations.TravValidatable
+import Validations.Zippable
 
 trait Validations {
+
+  implicit def convertOrToZippable[G, ERR, EVERY[b] <: Every[b]](zippable: G Or EVERY[ERR]): Zippable[G, ERR, EVERY] =
+    new Zippable[G, ERR, EVERY] {
+      def zip[H, OTHERERR >: ERR, OTHEREVERY[c] <: Every[c]](other: H Or OTHEREVERY[OTHERERR]): (G, H) Or Every[OTHERERR] = {
+        zippable match {
+          case Good(g) =>
+            other match {
+              case Good(h) => Good((g, h))
+              case Bad(otherB) => Bad(otherB)
+            }
+          case Bad(myBad) =>
+            other match {
+              case Good(_) => Bad(myBad)
+              case Bad(otherB) => Bad(myBad ++ otherB)
+            }
+        }
+      }
+    }
 
   implicit def convertGenTraversableOnceToCombinable[G, ERR, EVERY[b] <: Every[b], TRAVONCE[+e] <: GenTraversableOnce[e]](xs: TRAVONCE[G Or EVERY[ERR]])(implicit cbf: CanBuildFrom[TRAVONCE[G Or EVERY[ERR]], G, TRAVONCE[G]]): Combinable[G, ERR, TRAVONCE] = 
 
@@ -1210,6 +1229,10 @@ object Validations extends Validations {
 
   trait TravValidatable[G, TRAVONCE[e] <: GenTraversableOnce[e]] {
     def validatedBy[H, ERR, EVERY[e] <: Every[e]](fn: G => H Or EVERY[ERR])(implicit cbf: CanBuildFrom[TRAVONCE[G], H, TRAVONCE[H]]): TRAVONCE[H] Or Every[ERR]
+  }
+
+  trait Zippable[G, ERR, EVERY[b] <: Every[b]] {
+    def zip[H, OTHERERR >: ERR, OTHEREVERY[c] <: Every[c]](other: H Or OTHEREVERY[OTHERERR]): (G, H) Or Every[OTHERERR]
   }
 }
 
