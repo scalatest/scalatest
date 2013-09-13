@@ -136,6 +136,19 @@ package org.scalautils
  *   }
  * </pre>
  *
+ * <p>
+ * <code>Equality</code> is used by <a href="TripleEquals.html"><code>TripleEquals</code></a>, which enforces no type constraint between the left and right values, and the
+ * <code>equal</code>, <code>be</code>, and <code>contain</code> syntax of ScalaTest Matchers.
+ * 
+ * <p>
+ * By contrast, <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a>
+ * and <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a> use an <a href="Equivalence.html"><code>Equivalence</code></a>.
+ * <code>Equivalence</code> differs from <code>Equality</code> in that both the left and right values are of the same type. <code>Equivalence</code> works for
+ * <code>TypeCheckedTripleEquals</code> because the type constraint enforces that the left type is a subtype or supertype of (or the same type as) the right
+ * type, and it <em>widens</em> the subtype to the supertype. So ultimately, both left and right sides are of the supertype type. Similarly, <code>Equivalence</code>
+ * works for <code>ConversionCheckedTripleEquals</code>.
+ * </p>
+ *
  * <em>Note: The <code>Equality</code> type class was inspired in part by the <code>Equal</code> type class of the 
  * <a href="http://code.google.com/p/scalaz/" target="_blank"><code>scalaz</code></a> project.</em>
  * </p>
