@@ -1090,5 +1090,66 @@ class SuiteSpec extends org.scalatest.FunSpec with PrivateMethodTester {
       assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 8)
     }
   }
+  describe("OneArgTest") {
+    it("should offer a factory method that takes another OneArgTest and a function that implements apply") {
+      class PassedFixtureWasSpec extends Spec {
+        type FixtureParam = String
+        def withFixture(test: OneArgTest): Outcome = { 
+          // These will fail the test if the wrapped tests's TestData is not passed through
+          assert(test.name == "some test")
+          assert(test.configMap == ConfigMap.empty)
+          assert(test.scopes == Seq.empty)
+          assert(test.text == "some test")
+          assert(test.tags == Set.empty)
+          test("hi")
+        }
+        var passedFixtureWas = ""
+        def `some test`(s: String) { passedFixtureWas = s }
+      }
+
+      val a = new PassedFixtureWasSpec
+      a.run(None, Args(SilentReporter))
+      assert(a.passedFixtureWas === "hi")
+
+      class WrappedFixtureSpec extends PassedFixtureWasSpec {
+        var withFixtureWasCalled = false
+        override def withFixture(test: OneArgTest): Outcome = {
+          super.withFixture(
+            new OneArgTest {
+             def apply(s: String): Outcome = {
+               withFixtureWasCalled = true
+               test(s.toUpperCase)
+             }
+             val text: String = test.text
+             val configMap: ConfigMap = test.configMap
+             val scopes: collection.immutable.IndexedSeq[String] = test.scopes
+             val name: String = test.name
+             val tags: Set[String] = test.tags
+            }
+          )
+        }
+      }
+
+      val b = new WrappedFixtureSpec
+      b.run(None, Args(SilentReporter))
+      assert(b.passedFixtureWas === "HI")
+
+      class ShorthandWrappedFixtureSpec extends PassedFixtureWasSpec {
+        var withFixtureWasCalled = false
+        override def withFixture(test: OneArgTest): Outcome = {
+          super.withFixture(
+            OneArgTest(test) { s =>
+               withFixtureWasCalled = true
+               test(s.toUpperCase)
+             }
+          )
+        }
+      }
+
+      val c = new ShorthandWrappedFixtureSpec
+      c.run(None, Args(SilentReporter))
+      assert(c.passedFixtureWas === "HI")
+    }
+  }
 }
 

@@ -103,6 +103,19 @@ trait Suite extends org.scalatest.Suite { thisSuite =>
       }
   }
 
+  object OneArgTest {
+    def apply(test: OneArgTest)(f: FixtureParam => Outcome): OneArgTest = {
+      new OneArgTest {
+        def apply(fixture: FixtureParam): Outcome = { f(fixture) }
+        val text: String = test.text
+        val configMap: ConfigMap = test.configMap
+        val scopes: collection.immutable.IndexedSeq[String] = test.scopes
+        val name: String = test.name
+        val tags: Set[String] = test.tags
+      }
+    }
+  }
+
   /**
    *  Run the passed test function with a fixture created by this method.
    *
