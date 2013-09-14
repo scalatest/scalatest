@@ -127,19 +127,24 @@ object PatienceConfiguration {
    *
    * @param value the maximum amount of time to retry before giving up and throwing
    *   <code>TestFailedException</code>.
+   * @throws NullPointerException if passed <code>value</code> is <code>null</code>
    *
    * @author Bill Venners
    */
-  final case class Timeout(value: Span) extends PatienceConfigParam
- // TODO: Check for null
+  final case class Timeout(value: Span) extends PatienceConfigParam {
+    if (value == null) throw new NullPointerException("value was null")
+  }
+
   /**
    * A <code>PatienceConfigParam</code> that specifies the amount of time to sleep after
    * a retry.
    *
    * @param value the amount of time to sleep between each attempt
+   * @throws NullPointerException if passed <code>value</code> is <code>null</code>
    *
    * @author Bill Venners
    */
-  final case class Interval(value: Span) extends PatienceConfigParam
- // TODO: Check for null
+  final case class Interval(value: Span) extends PatienceConfigParam {
+    if (value == null) throw new NullPointerException("value was null")
+  }
 }
