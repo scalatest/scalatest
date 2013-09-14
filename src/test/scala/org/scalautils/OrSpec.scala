@@ -451,6 +451,11 @@ class OrSpec extends UnitSpec with Validations with TypeCheckedTripleEquals {
     Some(Bad(One("oops"))).combined shouldBe Bad(One("oops"))
     Some(Bad(Many("oops", "idoops"))).combined shouldBe Bad(Many("oops", "idoops"))
   }
+  "A Good" can "be widened to an Or type via .asOr" in {
+    Good(1).asOr shouldBe Good(1)
+  }
+  "A Bad" can "be widened to an Or type via .asOr" in {
+    Bad("oops").asOr shouldBe Bad("oops")
+  }
 }
-
 

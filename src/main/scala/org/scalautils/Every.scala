@@ -217,6 +217,7 @@ object Every {
 }
 
 final case class One[+T](loneElement: T) extends Every[T](Vector(loneElement)) {
+  def asEvery: Every[T] = this
   def ++[U >: T](other: Every[U]): Many[U] = Many(loneElement, other.toVector.head, other.toVector.tail: _*)
   def ++[U >: T](other: GenTraversableOnce[U]): Every[U] =
     if (other.isEmpty) this else Many(loneElement, other.toVector.head, other.toVector.tail: _*)
@@ -226,6 +227,7 @@ final case class One[+T](loneElement: T) extends Every[T](Vector(loneElement)) {
 }
 
 final case class Many[+T](firstElement: T, secondElement: T, otherElements: T*) extends Every[T](firstElement +: secondElement +: Vector(otherElements: _*)) {
+  def asEvery: Every[T] = this
   def ++[U >: T](other: Every[U]): Many[U] = Many(firstElement, secondElement, (otherElements.toVector ++ other.toVector): _*)
   def ++[U >: T](other: GenTraversableOnce[U]): Every[U] =
     if (other.isEmpty) this else Many(firstElement, secondElement, otherElements ++ other.toVector: _*)

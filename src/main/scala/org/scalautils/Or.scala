@@ -78,6 +78,7 @@ object Or {
 
 final case class Good[+G,+B](g: G) extends Or[G,B] {
   override val isGood: Boolean = true
+  def asOr: G Or B = this
   def orBad[C](implicit ev: B <:< C): Good[G, C] = this.asInstanceOf[Good[G, C]]
   def get: G = g
   def map[H](f: G => H): Or[H, B] = Good(f(g))
@@ -105,6 +106,7 @@ object Good {
 
 final case class Bad[+G,+B](b: B) extends Or[G,B] {
   override val isBad: Boolean = true
+  def asOr: G Or B = this
   def get: G = throw new NoSuchElementException("Bad(" + b + ").get")
   def map[H](f: G => H): H Or B = Bad(b)
   def foreach(f: G => Unit): Unit = ()
