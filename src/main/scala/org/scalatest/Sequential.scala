@@ -16,7 +16,7 @@
 package org.scalatest
 
 /**
- * A <code>Suite</code> class mixing in <a href="SequentialNestedSuitesExecution.html"><code>SequentialNestedSuitesExecution</code></a> that takes
+ * A <code>Suite</code> class mixing in <a href="SequentialNestedSuiteExecution.html"><code>SequentialNestedSuiteExecution</code></a> that takes
  * zero to many <code>Suite</code>s, which will be returned from its <code>nestedSuites</code> method.
  *
  * <p>

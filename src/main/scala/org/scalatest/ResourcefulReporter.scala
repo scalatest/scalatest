@@ -18,7 +18,7 @@ package org.scalatest
 /**
  * Subtrait of <code>Reporter</code> that contains a <code>dispose</code> method for
  * releasing any finite, non-memory resources, such as file handles, held by the
- * <code>Reporter</code>. <code>Runner</code> will invoke <code>dispose</code> on
+ * <code>Reporter</code>. <a href="tools/Runner$.html"><code>Runner</code></a> will invoke <code>dispose</code> on
  * any <code>ResourcefulReporter</code> when it no longer needs the <code>Reporter</code>.
  */
 trait ResourcefulReporter extends Reporter {

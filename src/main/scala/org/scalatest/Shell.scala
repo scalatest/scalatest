@@ -32,7 +32,7 @@ class ArithmeticSuite extends FunSuite with matchers.ShouldMatchers {
 */
 
 /**
- * Trait whose instances provide a <code>run</code> method and configuration fields that implement
+ * Trait whose instances provide a <a href="run$.html"><code>run</code></a> method and configuration fields that implement
  * the <em>ScalaTest shell</em>: its DSL for the Scala interpreter.
  *
  * <p>
@@ -67,9 +67,9 @@ class ArithmeticSuite extends FunSuite with matchers.ShouldMatchers {
  * <p>
  *
  * <p>
- * Two other useful "commands"
- * to know about, though not technically part of the shell, are the <code>apply</code> factory methods in the <a href="Suites$.html"><code>Suites</code></a> and <a href="Specs$.html"><code>Specs</code></a>
- * singleton objects. These allow you to easily create composite suites out of nested suites, which you can then pass to <code>run</code>. This
+ * The other useful "command"
+ * to know about, though not technically part of the shell, is the <code>apply</code> factory method in the <a href="Suites$.html"><code>Suites</code></a> 
+ * singleton object. This allows you to easily create composite suites out of nested suites, which you can then pass to <code>run</code>. This
  * will be demonstrated later in this documentation.
  * </p>
  *
@@ -257,9 +257,8 @@ class ArithmeticSuite extends FunSuite with matchers.ShouldMatchers {
  * <h2>Running multiple suites</h2>
  *
  * <p>
- * If you want to run multiple suites, you can use the factory methods in either the <a href="Suites$.html"><code>Suites</code></a> or
- * <a href="Specs$.html"><code>Specs</code></a>
- * singleton objects. If you wrap a comma-separated list of suite instances inside <code>Suites(...)</code>, for example,
+ * If you want to run multiple suites, you can use the factory method in the <a href="Suites$.html"><code>Suites</code></a> 
+ * singleton object. If you wrap a comma-separated list of suite instances inside <code>Suites(...)</code>, for example,
  * you'll get a suite instance that contains no tests, but whose nested suites includes the suite instances you placed between
  * the parentheses. You can place <code>Suites</code> inside <code>Suites</code> to any level of depth, creating a tree of
  * suites to pass to <code>run</code>. Here's a (contrived) example in which <code>ArithmeticSuite</code> is executed four times:

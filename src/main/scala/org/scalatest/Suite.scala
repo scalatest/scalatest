@@ -501,6 +501,7 @@ import OutcomeOf.outcomeOf
  * <code>Error</code>s as test failures, or indicate errors in some other way that has nothing to do with exceptions.
  * </p>
  *
+ * <a name="lifecyle-methods"></a>
  * <h2>Extensibility</h2>
  *
  * <p>

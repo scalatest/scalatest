@@ -26,9 +26,9 @@ import java.io.Serializable
  * The result status of running a test or a suite.
  *
  * <p>
- * This trait is the return type of the "run" lifecycle methods of trait <code>Suite</code>: <code>run</code>, <code>runNestedSuites</code>, 
+ * This trait is the return type of the "run" lifecycle methods of trait <a href="Suite.html#lifecycle-methods"><code>Suite</code></a>: <code>run</code>, <code>runNestedSuites</code>, 
  * <code>runTests</code>, and <code>runTest</code>. It can be used to determine whether a test or suite has completed, and if completed,
- * whether it succeeded or failed. The main use case for this trait in ScalaTest is to enable <code>BeforeAndAfterAll</code>'s <code>afterAll</code>
+ * whether it succeeded or failed. The main use case for this trait in ScalaTest is to enable <a href="BeforeAndAfterAll.html"><code>BeforeAndAfterAll</code></a>'s <code>afterAll</code>
  * method to wait until all relevant tests and nested suites have completed before performing the "after all" code, even if those tests are
  * nested suites are run in parallel.
  * </p>
@@ -86,7 +86,7 @@ trait Status {
  * <p>
  * Note: the difference between this <code>SucceededStatus</code> object and the similarly named <a href="Succeeded$.html"><code>Succeeded</code></a>
  * object is that the <code>Succeeded</code> object indicates one test succeeded, whereas this <code>SucceededStatus</code> object indicates the absence
- * of any failed tests or aborted suites during a run. Both are used as the result type of <code>Suite</code> lifecycle methods, but <code>Succeeded</code>
+ * of any failed tests or aborted suites during a run. Both are used as the result type of <a href="Suite.html#lifecycle-methods"><code>Suite</code></a> lifecycle methods, but <code>Succeeded</code>
  * is a possible result of <code>withFixture</code>, whereas <code>SucceededStatus</code> is a possible result of <code>run</code>, <code>runNestedSuites</code>,
  * <code>runTests</code>, or <code>runTest</code>. In short, <code>Succeeded</code> is always just about one test, whereas <code>SucceededStatus</code> could be
  * about something larger: multiple tests or an entire suite.
