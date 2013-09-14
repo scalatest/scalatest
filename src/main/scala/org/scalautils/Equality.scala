@@ -150,16 +150,30 @@ package org.scalautils
  * exists from either the left type to the right type, or the right type to the left type, and it always converts one
  * type to the other using the implicit conversion. (If both types are the same type, the identity implicit conversion
  * from <code>Predef</code> is used.) Because of the conversion, both left and right sides are ultimately of the
- * converted-to type.
+ * converted-to type. Here's an example of how writing an <code>Equivalence</code>'s <code>areEquivalent</code>
+ * method might look:
  * </p>
+ *
+ * <pre class="stHighlight">
+ * def areEquivalent(a: Person, b: Person): Boolean =
+     a.name == b.name &amp;&amp; a.age === b.age +- 0.0002
+ * </pre>
  *
  * <p>
  * ScalaUtils provides both <code>Equality</code> and <code>Equivalence</code> because the <code>Any</code> in
  * <code>Equality</code> can sometimes make things painful. For example, in trait
  * <a href="TolerantNumerics.html"><code>TolerantNumerics</code></a>,
  * a single generic factory method can produce <code>Equivalence</code>s for any <code>Numeric</code> type, 
- * but because of the <code>Any</code>, a separate factory method must be define to produce <code>Equality</code>
- * for <code>Numeric</code> types.
+ * but because of the <code>Any</code>, a separate factory method must be defined to produce an <code>Equality</code>
+ * for each <code>Numeric</code> type.
+ * </p>
+ *
+ * <p>
+ * If you just want to customize the notion of equality for <code>===</code>
+ * used in <code>Boolean</code> expressions, you can work with <code>Equivalence</code>s instead of <code>Equality</code>s.
+ * If you do chose to write the more general <code>Equality</code>s, they can be used wherever an <code>Equivalence</code>
+ * is required, because <code>Equality</code> extends <code>Equivalence</code>, defining a final implementation of
+ * <code>areEquivalent</code> that invokes <code>areEqual</code>.
  * </p>
  *
  * <em>Note: The <code>Equality</code> type class was inspired in part by the <code>Equal</code> type class of the 
@@ -188,12 +202,39 @@ trait Equality[A] extends Equivalence[A] {
    */
   def areEqual(a: A, b: Any): Boolean
 
+  /**
+   * A final implementation of the <code>areEquivalent</code> method of <code>Equivalence</code> that just passes
+   * <code>a</code> and <code>b</code> to <code>areEqual</code> and returns the result.
+   *
+   * <p>
+   * This method enables any <code>Equality</code> to be used where an <code>Equivalence</code> is needed, such 
+   * as the implicit enabling methods of <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a>
+   * and <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a>.
+   * </p>
+   *
+   * @param a a left-hand-side object being compared with another (right-hand-side one) for equality (<em>e.g.</em>, <code>a == b</code>)
+   * @param b a right-hand-side object being compared with another (left-hand-side one) for equality (<em>e.g.</em>, <code>a == b</code>)
+   * @return true if the passed objects are "equal," as defined by the <code>areEqual</code> method of this
+   * <code>Equality</code> instance
+   */
   final def areEquivalent(a: A, b: A): Boolean = areEqual(a, b)
 } 
 
+/**
+ * Companion object for trait <code>Equality</code> that provides two factory methods for <code>Equality</code>s.
+ */ 
 object Equality {
 
-  def apply[A](uniformity: Uniformity[A]): Equality[A] = {
+  /**
+   * Produces a <code>NormalizingEquality[A]</code> whose <code>normalized</code>,
+   * <code>normalizedCanHandle</code>, and <code>normalizedOrSame</code> methods delegate
+   * to the passed <code>Uniformity[A]</code>.
+   *
+   * @tparam A the type of passed <code>Uniformity</code> and returned <code>NormalizingEquality</code>.
+   * @param uniformity the <code>Uniformity</code> to which the returned <code>NormalizingEquality</code>
+   *          should delegate.
+   */
+  def apply[A](uniformity: Uniformity[A]): NormalizingEquality[A] = {
     new NormalizingEquality[A] {
       def normalized(a: A): A = uniformity.normalized(a)
       def normalizedCanHandle(b: Any): Boolean = uniformity.normalizedCanHandle(b)
@@ -202,8 +243,8 @@ object Equality {
   }
 
   /**
-   * A default <code>Equality</code> implementation (which can be used for any type) whose
-   * <code>areEqual</code> method first calls <code>.deep</code> on any array (on either the left or right side),
+   * Provides default <code>Equality</code> implementations for the specified type whose
+   * <code>areEqual</code> method first calls <code>.deep</code> on any <code>Array</code> (on either the left or right side),
    * then compares the resulting objects with <code>==</code>.
    */
   implicit def default[A]: Equality[A] = new DefaultEquality[A]
