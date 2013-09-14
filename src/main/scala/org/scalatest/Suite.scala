@@ -578,6 +578,19 @@ trait Suite extends Assertions with AbstractSuite with Serializable { thisSuite 
     def apply(): Outcome
   }
 
+  object NoArgTest {
+    def apply(test: NoArgTest)(f: => Outcome): NoArgTest = {
+      new NoArgTest {
+        def apply(): Outcome = { f }
+        val text: String = test.text
+        val configMap: ConfigMap = test.configMap
+        val scopes: collection.immutable.IndexedSeq[String] = test.scopes
+        val name: String = test.name
+        val tags: Set[String] = test.tags
+      }
+    }
+  }
+
   /**
   * An immutable <code>IndexedSeq</code> of this <code>Suite</code> object's nested <code>Suite</code>s. If this <code>Suite</code> contains no nested <code>Suite</code>s,
   * this method returns an empty <code>IndexedSeq</code>. This trait's implementation of this method returns an empty <code>List</code>.

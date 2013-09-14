@@ -999,5 +999,70 @@ class SuiteSpec extends FunSpec with PrivateMethodTester {
       }
     }
   }
+  describe("NoArgTest") {
+    it("should offer a factory method that takes another NoArgTest and a function that implements apply") {
+      class SideEffectedFixtureWasSpec extends Spec {
+        type FixtureParam = String
+        var theFixture = ""
+        var sideEffectedFixtureWas = ""
+        override def withFixture(test: NoArgTest): Outcome = { 
+          // These will fail the test if the wrapped tests's TestData is not passed through
+          assert(test.name == "some test")
+          assert(test.configMap == ConfigMap.empty)
+          assert(test.scopes == Seq.empty)
+          assert(test.text == "some test")
+          assert(test.tags == Set.empty)
+          theFixture = "hi"
+          test()
+        }
+        def `some test` = { sideEffectedFixtureWas = theFixture }
+      }
+
+      val a = new SideEffectedFixtureWasSpec
+      a.run(None, Args(SilentReporter))
+      assert(a.sideEffectedFixtureWas === "hi")
+
+      class WrappedFixtureSpec extends SideEffectedFixtureWasSpec {
+        var withFixtureWasCalled = false
+        override def withFixture(test: NoArgTest): Outcome = {
+          super.withFixture(
+            new NoArgTest {
+             def apply(): Outcome = {
+               withFixtureWasCalled = true
+               theFixture = theFixture.toUpperCase
+               test()
+             }
+             val text: String = test.text
+             val configMap: ConfigMap = test.configMap
+             val scopes: collection.immutable.IndexedSeq[String] = test.scopes
+             val name: String = test.name
+             val tags: Set[String] = test.tags
+            }
+          )
+        }
+      }
+
+      val b = new WrappedFixtureSpec
+      b.run(None, Args(SilentReporter))
+      assert(b.sideEffectedFixtureWas === "HI")
+
+      class ShorthandWrappedFixtureSpec extends SideEffectedFixtureWasSpec {
+        var withFixtureWasCalled = false
+        override def withFixture(test: NoArgTest): Outcome = {
+          super.withFixture(
+            NoArgTest(test) {
+               withFixtureWasCalled = true
+               theFixture = theFixture.toUpperCase
+               test()
+             }
+          )
+        }
+      }
+
+      val c = new ShorthandWrappedFixtureSpec
+      c.run(None, Args(SilentReporter))
+      assert(c.sideEffectedFixtureWas === "HI")
+    }
+  }
 }
 
