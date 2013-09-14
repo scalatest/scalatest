@@ -29,26 +29,26 @@ import org.scalatest.events.Event
  * </p>
  *
  * <ul>
- * <li><code>DiscoveryStarting</code>
- * <li><code>DiscoveryCompleted</code>
- * <li><code>RunStarting</code>
- * <li><code>TestStarting</code>
- * <li><code>TestSucceeded</code>
- * <li><code>TestFailed</code>
- * <li><code>TestIgnored</code>
- * <li><code>TestPending</code>
- * <li><code>SuiteStarting</code>
- * <li><code>SuiteCompleted</code>
- * <li><code>SuiteAborted</code>
- * <li><code>InfoProvided</code>
- * <li><code>RunStopped</code>
- * <li><code>RunAborted</code>
- * <li><code>RunCompleted</code>
+ * <li><a href="events/DiscoveryStarting.html"><code>DiscoveryStarting</code></a>
+ * <li><a href="events/DiscoveryCompleted.html"><code>DiscoveryCompleted</code>
+ * <li><a href="events/RunStarting.html"><code>RunStarting</code></a>
+ * <li><a href="events/TestStarting.html"><code>TestStarting</code></a>
+ * <li><a href="events/TestSucceeded.html"><code>TestSucceeded</code></a>
+ * <li><a href="events/TestFailed.html"><code>TestFailed</code></a>
+ * <li><a href="events/TestIgnored.html"><code>TestIgnored</code></a>
+ * <li><a href="events/TestPending.html"><code>TestPending</code></a>
+ * <li><a href="events/SuiteStarting.html"><code>SuiteStarting</code></a>
+ * <li><a href="events/SuiteCompleted.html"><code>SuiteCompleted</code></a>
+ * <li><a href="events/SuiteAborted.html"><code>SuiteAborted</code></a>
+ * <li><a href="events/InfoProvided.html"><code>InfoProvided</code></a>
+ * <li><a href="events/RunStopped.html"><code>RunStopped</code></a>
+ * <li><a href="events/RunAborted.html"><code>RunAborted</code></a>
+ * <li><a href="events/RunCompleted.html"><code>RunCompleted</code></a>
  * </ul>
  *
  * <p>
  * Reporters may be implemented such that they only present some of the reported events to the user. For example, you could
- * define a reporter class that doesn nothing in response to <code>SuiteStarting</code> events.
+ * define a reporter class that does nothing in response to <code>SuiteStarting</code> events.
  * Such a class would always ignore <code>SuiteStarting</code> events.
  * </p>
  *
@@ -56,12 +56,12 @@ import org.scalatest.events.Event
  * The term <em>test</em> as used in the <code>TestStarting</code>, <code>TestSucceeded</code>,
  * and <code>TestFailed</code> event names
  * is defined abstractly to enable a wide range of test implementations.
- * Trait <code>Suite</code> fires <code>TestStarting</code> to indicate it is about to invoke one
- * of its test methods, <code>TestSucceeded</code> to indicate a test method returned normally,
- * and <code>TestFailed</code> to indicate a test method completed abruptly with an exception.
- * Although the execution of a <code>Suite</code>'s test methods will likely be a common event
+ * Trait <a href="Spec.html"><code>Spec</code></a> fires <code>TestStarting</code> to indicate it is about to invoke one
+ * of its tests, <code>TestSucceeded</code> to indicate a test returned normally,
+ * and <code>TestFailed</code> to indicate a test completed abruptly with an exception.
+ * Although the execution of a <code>Spec</code>'s test methods will likely be a common event
  * reported via the
- * <code>TestStarting</code>, <code>TestSucceeded</code>, and <code>TestFailed</code> methods, because
+ * <code>TestStarting</code>, <code>TestSucceeded</code>, and <code>TestFailed</code> tests, because
  * of the abstract definition of &ldquo;test&rdquo; used by the
  * the event classes, these events are not limited to this use. Information about any conceptual test
  * may be reported via the <code>TestStarting</code>, <code>TestSucceeded</code>, and
@@ -71,19 +71,19 @@ import org.scalatest.events.Event
  * Likewise, the term <em>suite</em> as used in the <code>SuiteStarting</code>, <code>SuiteAborted</code>,
  * and <code>SuiteCompleted</code> event names
  * is defined abstractly to enable a wide range of suite implementations.
- * Object <code>Runner</code> fires <code>SuiteStarting</code> to indicate it is about to invoke
+ * Object <a href="tools/Runner$.html"><code>Runner</code></a> fires <code>SuiteStarting</code> to indicate it is about to invoke
  * <code>run</code> on a
- * <code>Suite</code>, <code>SuiteCompleted</code> to indicate a <code>Suite</code>'s
+ * <code>Spec</code>, <code>SuiteCompleted</code> to indicate a <code>Spec</code>'s
  * <code>run</code> method returned normally,
- * and <code>SuiteAborted</code> to indicate a <code>Suite</code>'s <code>run</code>
+ * and <code>SuiteAborted</code> to indicate a <code>Spec</code>'s <code>run</code>
  * method completed abruptly with an exception.
- * Similarly, class <code>Suite</code> fires <code>SuiteStarting</code> to indicate it is about to invoke
+ * Similarly, class <code>Spec</code> fires <code>SuiteStarting</code> to indicate it is about to invoke
  * <code>run</code> on a
- * nested <code>Suite</code>, <code>SuiteCompleted</code> to indicate a nested <code>Suite</code>'s
+ * nested <code>Spec</code>, <code>SuiteCompleted</code> to indicate a nested <code>Spec</code>'s
  * <code>run</code> method returned normally,
- * and <code>SuiteAborted</code> to indicate a nested <code>Suite</code>'s <code>run</code>
+ * and <code>SuiteAborted</code> to indicate a nested <code>Spec</code>'s <code>run</code>
  * method completed abruptly with an exception.
- * Although the execution of a <code>Suite</code>'s <code>run</code> method will likely be a
+ * Although the execution of a <code>Spec</code>'s <code>run</code> method will likely be a
  * common event reported via the
  * <code>SuiteStarting</code>, <code>SuiteAborted</code>, and <code>SuiteCompleted</code> events, because
  * of the abstract definition of "suite" used by the

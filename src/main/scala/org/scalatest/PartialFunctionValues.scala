@@ -42,7 +42,7 @@ import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
  * <p>
  * Were you to simply invoke <code>apply</code> on the <code>PartialFunction</code>, passing in an input value, 
  * if the partial function wasn't defined at that input, it would throw some exception, but likely not one
- * that provides a <a href="StackDepth.html">stack depth</a>:
+ * that provides a <a href="exceptions/StackDepth.html">stack depth</a>:
  * </p>
  *
  * <pre class="stHighlight">
@@ -54,7 +54,7 @@ import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
  *
  * <p>
  * The <code>NoSuchElementException</code> thrown in this situation would cause the test to fail, but without providing a stack depth pointing
- * to the failing line of test code. This stack depth, provided by <a href="TestFailedException.html"><code>TestFailedException</code></a> (and a
+ * to the failing line of test code. This stack depth, provided by <a href="exceptions/TestFailedException.html"><code>TestFailedException</code></a> (and a
  * few other ScalaTest exceptions), makes it quicker for
  * users to navigate to the cause of the failure. Without <code>PartialFunctionValues</code>, to get
  * a stack depth exception you would need to make two statements, like this:

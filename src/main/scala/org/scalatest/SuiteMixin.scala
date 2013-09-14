@@ -16,14 +16,14 @@
 package org.scalatest
 
 /**
- * Trait defining abstract "lifecycle" methods that are implemented in <code>Suite</code> and can
+ * Trait defining abstract "lifecycle" methods that are implemented in <a href="Suite.html#lifecycle-methods"><code>Suite</code></a> and can
  * be overridden in stackable modification traits.
  *
  * <p>
  * The main purpose of <code>SuiteMixin</code> is to differentiate core <code>Suite</code>
- * traits, such as <code>Suite</code>, <code>FunSuite</code>, and <code>FunSpec</code> from stackable
- * modification traits for <code>Suite</code>s such as <code>BeforeAndAfterEach</code>, <code>OneInstancePerTest</code>,
- * and <code>SequentialNestedSuiteExecution</code>. Because these stackable traits extend <code>SuiteMixin</code>
+ * traits, such as <code>Suite</code>, <a href="FunSuite.html"><code>FunSuite</code></a>, and <a href="FunSpec.html"><code>FunSpec</code></a> from stackable
+ * modification traits for <code>Suite</code>s such as <a href="BeforeAndAfterEach.html"><code>BeforeAndAfterEach</code></a>, <a href="OneInstancePerTest.html"><code>OneInstancePerTest</code></a>,
+ * and <a href="SequentialNestedSuiteExecution.html"><code>SequentialNestedSuiteExecution</code></a>. Because these stackable traits extend <code>SuiteMixin</code>
  * instead of <code>Suite</code>, you can't define a suite by simply extending one of the stackable traits:
  * </p>
  *

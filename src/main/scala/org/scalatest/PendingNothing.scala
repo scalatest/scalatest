@@ -17,14 +17,14 @@ package org.scalatest
 
 /**
  * Type that is used as the return type of the <code>pending</code> method in class
- * <code>Suite</code>, which always completes abruptly with a
- * <code>TestPendingException</code>.
+ * <a href="Suite.html"><code>Suite</code></a>, which always completes abruptly with a
+ * <a href="exceptions/TestPendingException.html"><code>TestPendingException</code></a>.
  *
  * <p>
  * This type is used primarily to facilitate the <code>is (pending)</code> syntax of
- * traits <code>FlatSpec</code> and <code>WordSpec</code>, as well the
+ * traits <a href="FlatSpec.html"><code>FlatSpec</code></a> and <a href="WordSpec.html"><code>WordSpec</code></a>, as well the
  * <code>is (pending)</code> or <code>(pending)</code> syntax of several traits
- * in the <code>org.scalatest.fixture</code>package. Because the <code>pending</code>
+ * in the <code>org.scalatest.fixture</code> package. Because the <code>pending</code>
  * method in <code>Suite</code> always completes abruptly with an exception, its
  * type would be inferred to be <code>Nothing</code>, which is a relatively common
  * type. To make sure syntax like <code>is (pending)</code> only works with

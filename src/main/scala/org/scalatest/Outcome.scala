@@ -29,7 +29,7 @@ package org.scalatest
  * <li><a href="Succeeded$.html"><code>Succeeded</code></a> - indicates a test succeeded</li>
  * <li><a href="Failed.html"><code>Failed</code></a> - indicates a test failed and contains an exception describing the failure</li>
  * <li><a href="Canceled.html"><code>Canceled</code></a> - indicates a test was canceled and contains an exception describing the cancelation</li>
- * <li><a href="Pending.html"><code>Pending</code></a> - indicates a test was pending</li>
+ * <li><a href="Pending$.html"><code>Pending</code></a> - indicates a test was pending</li>
  * </ul>
  *
  * <p>
@@ -342,7 +342,7 @@ object Exceptional {
  * <p>
  * Note: the difference between this <code>Succeeded</code> object and the similarly named <a href="SucceededStatus$.html"><code>SucceededStatus</code></a>
  * object is that this object indicates one test succeeded, whereas the <code>SucceededStatus</code> object indicates the absence of any failed tests or
- * aborted suites during a run. Both are used as the result type of <code>Suite</code> lifecycle methods, but <code>Succeeded</code>
+ * aborted suites during a run. Both are used as the result type of <a href="Suite.html#lifecycle-methods"><code>Suite</code></a> lifecycle methods, but <code>Succeeded</code>
  * is a possible result of <code>withFixture</code>, whereas <code>SucceededStatus</code> is a possible result of <code>run</code>, <code>runNestedSuites</code>,
  * <code>runTests</code>, or <code>runTest</code>. In short, <code>Succeeded</code> is always just about one test, whereas <code>SucceededStatus</code> could be
  * about something larger: multiple tests or an entire suite.

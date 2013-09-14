@@ -21,10 +21,10 @@ import TripleEqualsSupport._
 
 /**
  * Trait that can be mixed into a <code>Suite</code> to disable the lone implicit conversion provided by default in trait
- * <code>Assertions</code>, which trait <code>Suite</code> extends.
+ * <a href="Assertions.html"><code>Assertions</code></a>, which trait <code>Suite</code> extends.
  * 
  * <p>
- * Currently there is just one implicit conversion provided by default in <code>Suite</code>, the one that adds a <code>===</code> method to
+ * Currently there is just one implicit conversion provided by default in <a href="Suite.html"><code>Suite</code></a>, the one that adds a <code>===</code> method to
  * anything. If more default implicits are added to <code>Suite</code> in future versions of ScalaTest, they will be added here as well so that
  * this trait will disable all of them.
  * </p>

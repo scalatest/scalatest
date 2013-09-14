@@ -67,7 +67,7 @@ trait OutcomeOf {
    * type mentioned in the previous list will be caught by the <code>outcomeOf</code> and transformed as follows:
    *
    * <ul>
-   * <li><a href="exceptions/TestPendingException.html"><code>TestPendingException</code></a></li>: <a href="Pending.html"><code>Pending</code></a>
+   * <li><a href="exceptions/TestPendingException.html"><code>TestPendingException</code></a></li>: <a href="Pending$.html"><code>Pending</code></a>
    * <li><a href="exceptions/TestCanceledException.html"><code>TestCanceledException</code></a></li>: <a href="Canceled.html"><code>Canceled</code></a>
    * <li>otherwise: <a href="Failed.html"><code>Failed</code></a>
    * </ul>
