@@ -20,7 +20,7 @@ package org.scalatest
  *
  * <p>
  * This is passed in
- * to the <code>run</code> method of <code>Suite</code>, so that running suites of tests can be
+ * to the <code>run</code> method of <a href="Suite.html"><code>Suite</code></a>, so that running suites of tests can be
  * requested to stop early.
  * </p>
  *

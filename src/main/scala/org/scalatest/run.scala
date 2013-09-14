@@ -68,7 +68,7 @@ package org.scalatest
  *
  * <p>
  * The <code>run</code> singleton object also serves a different purpose. Its <code>main</code> method
- * allows users to "run" <code>run</code> as a Scala application. ScalaTest's <code>Runner</code> application is very
+ * allows users to "run" <code>run</code> as a Scala application. ScalaTest's <a href="tools/Runner$.html"><code>Runner</code></a> application is very
  * powerful, but doesn't provide the simplest out-of-box experience for people trying ScalaTest for the first time. For example,
  * to run an <code>ExampleSpec</code> in the unnamed package from the directory where it is compiled with
  * <code>Runner</code>'s standard out reporter requires this command:

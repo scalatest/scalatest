@@ -93,7 +93,7 @@ import Suite.autoTagClassAnnotations
  * </pre>
  *
  * <p>
- * You can also pass to <code>execute</code> a <a href="#configMapSection"><em>config map</em></a> of key-value
+ * You can also pass to <code>execute</code> a <a href="ConfigMap.html"><em>config map</em></a> of key-value
  * pairs, which will be passed down into suites and tests, as well as other parameters that configure the run itself.
  * For more information on running in the Scala interpreter, see the documentation for <code>execute</code> (below) and the
  * <a href="Shell.html">ScalaTest shell</a>.
@@ -123,7 +123,7 @@ import Suite.autoTagClassAnnotations
  * Tests can only be registered with the <code>property</code> method while the <code>PropSpec</code> is
  * in its registration phase. Any attempt to register a test after the <code>PropSpec</code> has
  * entered its ready phase, <em>i.e.</em>, after <code>run</code> has been invoked on the <code>PropSpec</code>,
- * will be met with a thrown <code>TestRegistrationClosedException</code>. The recommended style
+ * will be met with a thrown <a href="exceptions/TestRegistrationClosedException.html"><code>TestRegistrationClosedException</code></a>. The recommended style
  * of using <code>PropSpec</code> is to register tests during object construction as is done in all
  * the examples shown here. If you keep to the recommended style, you should never see a
  * <code>TestRegistrationClosedException</code>.
@@ -189,7 +189,7 @@ import Suite.autoTagClassAnnotations
  * <a name="informers"></a><h2>Informers</h2></a>
  *
  * <p>
- * One of the parameters to <code>PropSpec</code>'s <code>run</code> method is a <code>Reporter</code>, which
+ * One of the parameters to <code>PropSpec</code>'s <code>run</code> method is a <a href="Reporter.html"><code>Reporter</code></a>, which
  * will collect and report information about the running suite of tests.
  * Information about suites and tests that were run, whether tests succeeded or failed, 
  * and tests that were ignored will be passed to the <code>Reporter</code> as the suite runs.
@@ -198,7 +198,7 @@ import Suite.autoTagClassAnnotations
  * For this purpose, an <a href="Informer.html"><code>Informer</code></a> that will forward information
  * to the current <code>Reporter</code> is provided via the <code>info</code> parameterless method.
  * You can pass the extra information to the <code>Informer</code> via its <code>apply</code> method.
- * The <code>Informer</code> will then pass the information to the <code>Reporter</code> via an <code>InfoProvided</code> event.
+ * The <code>Informer</code> will then pass the information to the <code>Reporter</code> via an <a href="events/InfoProvided.html"><code>InfoProvided</code></a> event.
  * Here's an example that shows both a direct use as well as an indirect use through the methods
  * of <a href="GivenWhenThen.html"><code>GivenWhenThen</code></a>:
  * </p>
@@ -280,13 +280,13 @@ import Suite.autoTagClassAnnotations
  * To support this style of testing, a test can be given a name that specifies one
  * bit of behavior required by the system being tested. The test can also include some code that
  * sends more information about the behavior to the reporter when the tests run. At the end of the test,
- * it can call method <code>pending</code>, which will cause it to complete abruptly with <code>TestPendingException</code>.
+ * it can call method <code>pending</code>, which will cause it to complete abruptly with <a href="exceptions/TestPendingException.html"><code>TestPendingException</code></a>.
  * </p>
  *
  * <p>
  * Because tests in ScalaTest can be designated as pending with <code>TestPendingException</code>, both the test name and any information
- * sent to the reporter when running the test can appear in the report of a test run. (In other words,
- * the code of a pending test is executed just like any other test.) However, because the test completes abruptly
+ * sent to the reporter when running the test can appear in the report of a test run. 
+ * (The code of a pending test is executed just like any other test.) However, because the test completes abruptly
  * with <code>TestPendingException</code>, the test will be reported as pending, to indicate
  * the actual test, and possibly the functionality, has not yet been implemented.
  * </p>
@@ -593,9 +593,9 @@ import Suite.autoTagClassAnnotations
  * <a name="sharedTests"></a><h2>Shared tests</h2>
  *
  * <p>
- * Sometimes you may want to run the same test code on different fixture objects. In other words, you may want to write tests that are "shared"
+ * Sometimes you may want to run the same test code on different fixture objects. That is to say, you may want to write tests that are "shared"
  * by different fixture objects.
- * You accomplish this in a <code>PropSpec</code> in the same way you would do it in a <code>FunSuite</code>, exception instead of <code>test</code>
+ * You accomplish this in a <code>PropSpec</code> in the same way you would do it in a <code>FunSuite</code>, except instead of <code>test</code>
  * you say <code>property</code>, and instead of <code>testsFor</code> you say <code>propertiesFor</code>. 
  * For more information, see the <a href="FunSuite.html#sharedTests">Shared tests</a> section of <code>FunSuite</code>'s
  * documentation.

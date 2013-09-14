@@ -28,7 +28,7 @@ package org.scalatest
  * </td></tr></table>
  * 
  * <p>
- * If you mix this trait into a <code>Suite</code>, you can initialize shared reassignable
+ * If you mix this trait into a <a href="Suite.html"><code>Suite</code></a>, you can initialize shared reassignable
  * fixture variables as well as shared mutable fixture objects in the constructor of the
  * class. Because each test will run in its own instance of the class, each test will
  * get a fresh copy of the instance variables. This is the approach to test isolation taken,
@@ -69,7 +69,7 @@ package org.scalatest
  * <code>OneInstancePerTest</code> is supertrait to <a href="ParallelTestExecution.html"><code>ParallelTestExecution</code></a>, in which
  * running each test in its own instance is intended to make it easier to write suites of tests that run in parallel (by reducing the likelihood
  * of concurrency bugs in those suites.) <code>OneInstancePerTest</code> is also supertrait to the <em>path</em> traits,
- * <a href="path/FunSpec.html"><code>path.FunSpec</code></a> and <a href="path/FunSpec.html"><code>path.FreeSpec</code></a>, to make it obvious
+ * <a href="path/FunSpec.html"><code>path.FunSpec</code></a> and <a href="path/FreeSpec.html"><code>path.FreeSpec</code></a>, to make it obvious
  * these traits run each test in a new, isolated instance.
  * </p>
  * 

@@ -36,7 +36,7 @@ package org.scalatest
  * </pre>
  *
  * <p>
- * When <code>StepsSuite</code> is executed, regardless of whether a <code>Distributor</code>
+ * When <code>StepsSuite</code> is executed, regardless of whether a <a href="Distributor.html"><code>Distributor</code></a>
  * is passed, it will execute its
  * nested suites sequentially in the passed order: <code>Step1Suite</code>, <code>Step2Suite</code>,
  * <code>Step3Suite</code>, <code>Step4Suite</code>, and <code>Step5Suite</code>.

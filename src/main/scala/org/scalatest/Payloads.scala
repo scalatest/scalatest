@@ -29,7 +29,7 @@ package org.scalatest
  * by making it easy to insert a payload into a thrown exception, such as a <code>TestFailedException</code>.
  * The thrown exception must mix in <code>Payload</code>.
  * ScalaTest looks for trait <code>Payload</code> and fires any payloads it finds in the relevant ScalaTest event
- * stimulated by the exception, such as a <code>TestFailed</code> event stimulated by a <code>TestFailedException</code>.
+ * stimulated by the exception, such as a <a href="events/TestFailed.html"><code>TestFailed</code></a> event stimulated by a <a href="exceptions/TestFailedException.html"><code>TestFailedException</code></a>.
  * Here's an example in which a GUI snapshot is included as a payload when a test fails:
  * </p>
  *

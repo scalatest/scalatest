@@ -687,7 +687,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * Although the get-fixture method, fixture-context object, and <code>OneInstancePerTest</code> approaches take care of setting up a fixture at the beginning of each
  * test, they don't address the problem of cleaning up a fixture at the end of the test. If you just need to perform a side-effect at the beginning or end of
  * a test, and don't need to actually pass any fixture objects into the test, you can override <code>withFixture(NoArgTest)</code>, one of ScalaTest's
- * lifecycle methods defined in trait <a href="Suite.html#lifecycle-methods"><code>Suite</code></a>.
+ * lifecycle methods defined in trait <a href="FunSuiteLike.html"><code>Suite</code></a>.
  * </p>
  *
  * <p>
@@ -781,7 +781,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  *
  * <p>
  * Note that the <a href="Suite$NoArgTest.html"><code>NoArgTest</code></a> passed to <code>withFixture</code>, in addition to
- * an <code>apply</code> method that executes the test, also includes the test name and the <a href="ConfigMap.html">config
+ * an <code>apply</code> method that executes the test, also includes the test name and the <a href="#configMapSection">config
  * map</a> passed to <code>runTest</code>. Thus you can also use the test name and configuration objects in your <code>withFixture</code>
  * implementation.
  * </p>
@@ -898,9 +898,9 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * <h4>Overriding <code>withFixture(OneArgTest)</code></h4>
  *
  * <p>
- * If all or most tests need the same fixture, you can avoid some of the boilerplate of the loan-fixture method approach by using a <code>fixture.Spec</code>
+ * If all or most tests need the same fixture, you can avoid some of the boilerplate of the loan-fixture method approach by using a <code>fixture.Suite</code>
  * and overriding <code>withFixture(OneArgTest)</code>.
- * Each test in a <code>fixture.Spec</code> takes a fixture as a parameter, allowing you to pass the fixture into
+ * Each test in a <code>fixture.Suite</code> takes a fixture as a parameter, allowing you to pass the fixture into
  * the test. You must indicate the type of the fixture parameter by specifying <code>FixtureParam</code>, and implement a
  * <code>withFixture</code> method that takes a <code>OneArgTest</code>. This <code>withFixture</code> method is responsible for
  * invoking the one-arg test function, so you can perform fixture set up before, and clean up after, invoking and passing
@@ -967,7 +967,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * <p>
  * In this example, the tests actually required two fixture objects, a <code>File</code> and a <code>FileWriter</code>. In such situations you can
  * simply define the <code>FixtureParam</code> type to be a tuple containing the objects, or as is done in this example, a case class containing
- * the objects.  For more information on the <code>withFixture(OneArgTest)</code> technique, see the <a href="fixture/Spec.html">documentation for <code>fixture.Spec</code></a>.
+ * the objects.  For more information on the <code>withFixture(OneArgTest)</code> technique, see the <a href="fixture/Suite.html">documentation for <code>fixture.Suite</code></a>.
  * </p>
  *
  * <a name="beforeAndAfter"></a>
@@ -1040,7 +1040,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * <a name="composingFixtures"></a><h2>Composing fixtures by stacking traits</h2>
  *
  * <p>
- * In larger projects, teams often end up with several different fixtures that test classes needed in different combinations,
+ * In larger projects, teams often end up with several different fixtures that test classes need in different combinations,
  * and possibly initialized (and cleaned up) in different orders. A good way to accomplish this in ScalaTest is to factor the individual
  * fixtures into traits that can be composed using the <em>stackable trait</em> pattern. This can be done, for example, by placing
  * <code>withFixture</code> methods in several traits, each of which call <code>super.withFixture</code>. Here's an example in
