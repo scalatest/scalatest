@@ -20,6 +20,7 @@ import Assertions.fail
 import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.exceptions.TestFailedException
 import time.{Nanoseconds, Second, Span}
+import PatienceConfiguration._
 
 /**
  * Trait that facilitates performing assertions outside the main test thread, such as assertions in callback methods

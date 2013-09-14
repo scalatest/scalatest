@@ -21,6 +21,7 @@ import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
 import scala.annotation.tailrec
 import org.scalatest.time.Span
 import exceptions.{TestCanceledException, TestFailedException, TestPendingException, TimeoutField}
+import PatienceConfiguration._
 
 /**
  * Trait that facilitates testing with futures.

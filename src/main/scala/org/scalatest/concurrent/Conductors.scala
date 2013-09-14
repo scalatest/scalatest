@@ -22,6 +22,7 @@ import _root_.java.util.concurrent.atomic.AtomicReference
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import org.scalatest.exceptions.NotAllowedException
 import time.{Seconds, Millis, Span}
+import PatienceConfiguration._
 
 /**
  * Trait whose <code>Conductor</code> member facilitates the testing of classes, traits, and libraries designed

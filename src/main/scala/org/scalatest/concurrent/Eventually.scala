@@ -21,6 +21,7 @@ import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
 import scala.annotation.tailrec
 import time.{Nanosecond, Span, Nanoseconds}
+import PatienceConfiguration._
 
 /**
  * Trait that provides the <code>eventually</code> construct, which periodically retries executing

@@ -17,6 +17,7 @@ package org.scalatest.concurrent
 
 import org.scalatest._
 import time.Span
+import PatienceConfiguration._
 
 /**
  * Trait providing methods and classes used to configure timeouts and, where relevant, the interval
@@ -80,6 +81,33 @@ import time.Span
  */
 trait PatienceConfiguration extends AbstractPatienceConfiguration {
 
+  private val defaultPatienceConfig = PatienceConfig()
+
+  /**
+   * Implicit <code>PatienceConfig</code> value providing default configuration values.
+   *
+   * <p>
+   * To change the default configuration, override or hide this <code>def</code> with another implicit
+   * <code>PatienceConfig</code> containing your desired default configuration values.
+   * </p>
+   */
+  implicit def patienceConfig = defaultPatienceConfig
+
+  /**
+   * Returns a <code>Timeout</code> configuration parameter containing the passed value, which
+   * specifies the maximum amount to wait for an asynchronous operation to complete.
+   */
+  def timeout(value: Span) = Timeout(value)
+
+  /**
+   * Returns an <code>Interval</code> configuration parameter containing the passed value, which
+   * specifies the amount of time to sleep after a retry.
+   */
+  def interval(value: Span) = Interval(value)    // TODO: Throw NPE
+}
+
+object PatienceConfiguration {
+
   /**
    * Abstract class defining a family of configuration parameters for traits <code>Eventually</code> and <code>AsyncAssertions</code>.
    * 
@@ -114,28 +142,4 @@ trait PatienceConfiguration extends AbstractPatienceConfiguration {
    */
   final case class Interval(value: Span) extends PatienceConfigParam
  // TODO: Check for null
-
-  private val defaultPatienceConfig = PatienceConfig()
-
-  /**
-   * Implicit <code>PatienceConfig</code> value providing default configuration values.
-   *
-   * <p>
-   * To change the default configuration, override or hide this <code>def</code> with another implicit
-   * <code>PatienceConfig</code> containing your desired default configuration values.
-   * </p>
-   */
-  implicit def patienceConfig = defaultPatienceConfig
-
-  /**
-   * Returns a <code>Timeout</code> configuration parameter containing the passed value, which
-   * specifies the maximum amount to wait for an asynchronous operation to complete.
-   */
-  def timeout(value: Span) = Timeout(value)
-
-  /**
-   * Returns an <code>Interval</code> configuration parameter containing the passed value, which
-   * specifies the amount of time to sleep after a retry.
-   */
-  def interval(value: Span) = Interval(value)    // TODO: Throw NPE
 }
