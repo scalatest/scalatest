@@ -24,7 +24,8 @@ import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable.Builder
 
 /**
- * Represents an value of one of two possible types, with one type being &ldquo;good&rdquo; and the other &ldquo;bad.&rdquo;
+ * Represents a value that is one of two possible types, with one type being &ldquo;good&rdquo; and
+ * the other &ldquo;bad.&rdquo;
  *
  * <p>
  * An <code>Or</code> will either be a &ldquo;good&rdquo; value wrapped in an instance of <a href="Good.html"><code>Good</code></a>

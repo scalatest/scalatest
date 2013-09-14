@@ -16,7 +16,7 @@
 package org.scalautils
 
 /**
- * Defines a custom way to determine equality for a type.
+ * Defines a custom way to determine equality for a type when compared with another value of type <code>Any</code>.
  *
  * <p>
  * <code>Equality</code> enables you to define alternate notions of equality for types that can be used
@@ -221,7 +221,8 @@ trait Equality[A] extends Equivalence[A] {
 } 
 
 /**
- * Companion object for trait <code>Equality</code> that provides two factory methods for <code>Equality</code>s.
+ * Companion object for trait <code>Equality</code> that provides factory methods for producing <code>Equality</code>
+ * instances.
  */ 
 object Equality {
 
@@ -246,6 +247,8 @@ object Equality {
    * Provides default <code>Equality</code> implementations for the specified type whose
    * <code>areEqual</code> method first calls <code>.deep</code> on any <code>Array</code> (on either the left or right side),
    * then compares the resulting objects with <code>==</code>.
+   *
+   * @return a default <code>Equivalence[A]</code>
    */
   implicit def default[A]: Equality[A] = new DefaultEquality[A]
 }

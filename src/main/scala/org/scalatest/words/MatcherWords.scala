@@ -30,7 +30,7 @@ import org.scalatest.Assertions.areEqualComparingArraysStructurally
 trait MatcherWords {
 
   /**
-   * This method enables syntax such as the following:
+   * This field enables syntax such as the following:
    *
    * <pre class="stHighlight">
    * string should (fullyMatch regex ("Hel*o, wor.d") and not have length (99))
@@ -40,7 +40,7 @@ trait MatcherWords {
   val fullyMatch = new FullyMatchWord
 
   /**
-   * This method enables syntax such as the following:
+   * This field enables syntax such as the following:
    *
    * <pre class="stHighlight">
    * string should (startWith ("Four") and include ("year"))
@@ -50,7 +50,7 @@ trait MatcherWords {
   val startWith = new StartWithWord
 
   /**
-   * This method enables syntax such as the following:
+   * This field enables syntax such as the following:
    *
    * <pre class="stHighlight">
    * string should (endWith ("ago") and include ("score"))
@@ -60,7 +60,7 @@ trait MatcherWords {
   val endWith = new EndWithWord
 
   /**
-   * This method enables syntax such as the following:
+   * This field enables syntax such as the following:
    *
    * <pre class="stHighlight">
    * string should (include ("hope") and not startWith ("no"))
@@ -90,7 +90,7 @@ trait MatcherWords {
   */
 
   /**
-   * This method enables syntax such as the following:
+   * This field enables syntax such as the following:
    *
    * <pre class="stHighlight">
    * list should (have length (3) and not contain ('a'))
@@ -100,7 +100,7 @@ trait MatcherWords {
   val have = new HaveWord
 
   /**
-   * This method enables syntax such as the following:
+   * This field enables syntax such as the following:
    *
    * <pre class="stHighlight">
    * obj should (be theSameInstanceAs (string) and be theSameInstanceAs (string))
@@ -110,7 +110,7 @@ trait MatcherWords {
   val be = new BeWord
 
   /**
-   * This method enables syntax such as the following:
+   * This field enables syntax such as the following:
    *
    * <pre class="stHighlight">
    * list should (contain ('a') and have length (7))
@@ -170,7 +170,7 @@ trait MatcherWords {
   val defined = new DefinedWord
   
   /**
-   * This method enables the following syntax: 
+   * This field enables the following syntax: 
    *
    * <pre class="stHighlight">
    * noException should be thrownBy
