@@ -29,21 +29,28 @@ import org.scalatest.events.Event
  * </p>
  *
  * <ul>
- * <li><a href="events/DiscoveryStarting.html"><code>DiscoveryStarting</code></a>
- * <li><a href="events/DiscoveryCompleted.html"><code>DiscoveryCompleted</code>
- * <li><a href="events/RunStarting.html"><code>RunStarting</code></a>
- * <li><a href="events/TestStarting.html"><code>TestStarting</code></a>
- * <li><a href="events/TestSucceeded.html"><code>TestSucceeded</code></a>
- * <li><a href="events/TestFailed.html"><code>TestFailed</code></a>
- * <li><a href="events/TestIgnored.html"><code>TestIgnored</code></a>
- * <li><a href="events/TestPending.html"><code>TestPending</code></a>
- * <li><a href="events/SuiteStarting.html"><code>SuiteStarting</code></a>
- * <li><a href="events/SuiteCompleted.html"><code>SuiteCompleted</code></a>
- * <li><a href="events/SuiteAborted.html"><code>SuiteAborted</code></a>
- * <li><a href="events/InfoProvided.html"><code>InfoProvided</code></a>
- * <li><a href="events/RunStopped.html"><code>RunStopped</code></a>
- * <li><a href="events/RunAborted.html"><code>RunAborted</code></a>
- * <li><a href="events/RunCompleted.html"><code>RunCompleted</code></a>
+ * <li><a href="events/DiscoveryStarting.html"><code>DiscoveryStarting</code></a></li>
+ * <li><a href="events/DiscoveryCompleted.html"><code>DiscoveryCompleted</code></a></li>
+ * <li><a href="events/RunStarting.html"><code>RunStarting</code></a></li>
+ * <li><a href="events/RunStopped.html"><code>RunStopped</code></a></li>
+ * <li><a href="events/RunAborted.html"><code>RunAborted</code></a></li>
+ * <li><a href="events/RunCompleted.html"><code>RunCompleted</code></a></li>
+ * <li><a href="events/ScopeOpened.html"><code>ScopeOpened</code></a></li>
+ * <li><a href="events/ScopeClosed.html"><code>ScopeClosed</code></a></li>
+ * <li><a href="events/ScopePending.html"><code>ScopePending</code></a></li>
+ * <li><a href="events/TestStarting.html"><code>TestStarting</code></a></li>
+ * <li><a href="events/TestSucceeded.html"><code>TestSucceeded</code></a></li>
+ * <li><a href="events/TestFailed.html"><code>TestFailed</code></a></li>
+ * <li><a href="events/TestCanceled.html"><code>TestCanceled</code></a></li>
+ * <li><a href="events/TestIgnored.html"><code>TestIgnored</code></a></li>
+ * <li><a href="events/TestPending.html"><code>TestPending</code></a></li>
+ * <li><a href="events/SuiteStarting.html"><code>SuiteStarting</code></a></li>
+ * <li><a href="events/SuiteCompleted.html"><code>SuiteCompleted</code></a></li>
+ * <li><a href="events/SuiteAborted.html"><code>SuiteAborted</code></a></li>
+ * <li><a href="events/InfoProvided.html"><code>InfoProvided</code></a></li>
+ * <li><a href="events/MarkupProvided.html"><code>MarkupProvided</code></a></li>
+ * <li><a href="events/AlertProvided.html"><code>AlertProvided</code></a></li>
+ * <li><a href="events/UpdateProvided.html"><code>UpdateProvided</code></a></li>
  * </ul>
  *
  * <p>
@@ -56,12 +63,13 @@ import org.scalatest.events.Event
  * The term <em>test</em> as used in the <code>TestStarting</code>, <code>TestSucceeded</code>,
  * and <code>TestFailed</code> event names
  * is defined abstractly to enable a wide range of test implementations.
- * Trait <a href="Spec.html"><code>Spec</code></a> fires <code>TestStarting</code> to indicate it is about to invoke one
- * of its tests, <code>TestSucceeded</code> to indicate a test returned normally,
+ * ScalaTest's style traits (subclasse of trait <a href="Suite.html"><code>Suite</code></a>) fire
+ * <code>TestStarting</code> to indicate they are about to invoke one
+ * of their tests, <code>TestSucceeded</code> to indicate a test returned normally,
  * and <code>TestFailed</code> to indicate a test completed abruptly with an exception.
- * Although the execution of a <code>Spec</code>'s test methods will likely be a common event
+ * Although the execution of a <code>Suite</code> subclass's tests will likely be a common event
  * reported via the
- * <code>TestStarting</code>, <code>TestSucceeded</code>, and <code>TestFailed</code> tests, because
+ * <code>TestStarting</code>, <code>TestSucceeded</code>, and <code>TestFailed</code> events, because
  * of the abstract definition of &ldquo;test&rdquo; used by the
  * the event classes, these events are not limited to this use. Information about any conceptual test
  * may be reported via the <code>TestStarting</code>, <code>TestSucceeded</code>, and
@@ -73,17 +81,17 @@ import org.scalatest.events.Event
  * is defined abstractly to enable a wide range of suite implementations.
  * Object <a href="tools/Runner$.html"><code>Runner</code></a> fires <code>SuiteStarting</code> to indicate it is about to invoke
  * <code>run</code> on a
- * <code>Spec</code>, <code>SuiteCompleted</code> to indicate a <code>Spec</code>'s
+ * <code>Suite</code>, <code>SuiteCompleted</code> to indicate a <code>Suite</code>'s
  * <code>run</code> method returned normally,
- * and <code>SuiteAborted</code> to indicate a <code>Spec</code>'s <code>run</code>
+ * and <code>SuiteAborted</code> to indicate a <code>Suite</code>'s <code>run</code>
  * method completed abruptly with an exception.
- * Similarly, class <code>Spec</code> fires <code>SuiteStarting</code> to indicate it is about to invoke
+ * Similarly, class <code>Suite</code> fires <code>SuiteStarting</code> to indicate it is about to invoke
  * <code>run</code> on a
- * nested <code>Spec</code>, <code>SuiteCompleted</code> to indicate a nested <code>Spec</code>'s
+ * nested <code>Suite</code>, <code>SuiteCompleted</code> to indicate a nested <code>Suite</code>'s
  * <code>run</code> method returned normally,
- * and <code>SuiteAborted</code> to indicate a nested <code>Spec</code>'s <code>run</code>
+ * and <code>SuiteAborted</code> to indicate a nested <code>Suite</code>'s <code>run</code>
  * method completed abruptly with an exception.
- * Although the execution of a <code>Spec</code>'s <code>run</code> method will likely be a
+ * Although the execution of a <code>Suite</code>'s <code>run</code> method will likely be a
  * common event reported via the
  * <code>SuiteStarting</code>, <code>SuiteAborted</code>, and <code>SuiteCompleted</code> events, because
  * of the abstract definition of "suite" used by the
@@ -95,17 +103,13 @@ import org.scalatest.events.Event
  *
  * <p>
  * You can create classes that extend <code>Reporter</code> to report test results in custom ways, and to
- * report custom information passed as an event "payload." For more information on the latter
- * use case, see the <em>Extensibility</em> section of the <a href="events/Event.html"><code>Event</code> documentation</a>.
- * </p>
- *
- * <p>
+ * report custom information passed as an event "payload."
  * <code>Reporter</code> classes can handle events in any manner, including doing nothing.
  * </p>
  *
  * @author Bill Venners
  */
-trait Reporter /* extends (Event => Unit) */ {
+trait Reporter {
 
   /**
    * Invoked to report an event that subclasses may wish to report in some way to the user.
@@ -113,48 +117,9 @@ trait Reporter /* extends (Event => Unit) */ {
    * @param event the event being reported
    */
   def apply(event: Event)
-
-  /*
-   * Release any non-memory finite resources, such as file handles, held by this <code>Reporter</code>. Clients should
-   * call this method when they no longer need the <code>Reporter</code>, before releasing the last reference
-   * to the <code>Reporter</code>. After this method is invoked, the <code>Reporter</code> may be defunct,
-   * and therefore not usable anymore. If the <code>Reporter</code> holds no resources, it may do nothing when
-   * this method is invoked. This trait's implementation of this method does nothing, so that <code>Reporter</code>
-   * subclasses that hold no non-memory, finite resources can simply inherit this trait's implementation.
-  def dispose() = ()
-   */
 }
 
-/**
- * TODO: Document on the 2.0 release notes that I dropped this deprecated implicit.
- * Companion object to Reporter that holds a deprecated implicit conversion.
- */
 private[scalatest] object Reporter {
-
-  /*
-   * Converts a <code>Reporter</code> to a function type that prior to the ScalaTest 1.5 release the
-   * <code>Reporter</code> extended.
-   *
-   * <p>
-   * Prior to ScalaTest 1.5, <code>Reporter</code> extended function type <code>(Event) => Unit</code>.
-   * This inheritance relationship was severed in 1.5 to make it possible to implement <code>Reporter</code>s in Java, a request by an IDE
-   * vendor to isolate their ScalaTest integration from binary incompatibility between different Scala/ScalaTest releases.
-   * To make a trait easily implementable in Java, it needs to have no concrete methods. <code>Reporter</code> itself does not declare
-   * any concrete methods, but <code>Function1</code> does.
-   * </p>
-   *
-   * <p>
-   * This implicit conversion was added in ScalaTest 1.5 to avoid breaking any source code that was actually using
-   * <code>Reporter</code> as an <code>(Event) => Unit</code> function. It is unlikely anyone was actually doing that, but if you were
-   * and now get the deprecation warning, please email scalatest-users@googlegroups.com if you believe this implicit conversion should
-   * be retained. If no one steps forward with a compelling justification, it will be removed in a future version of ScalaTest.
-   * </p>
-   */
-/*
-  @deprecated("See the documentation for Reporter.convertReporterToFunction for information")
-  implicit def convertReporterToFunction(repo: Reporter): (Event) => Unit =
-    (e: Event) => repo(e)
-*/
 
   private[scalatest] def indentStackTrace(stackTrace: String, level: Int): String = {
     val indentation = if (level > 0) "  " * level else ""

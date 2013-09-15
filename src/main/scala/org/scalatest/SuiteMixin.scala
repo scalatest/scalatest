@@ -21,7 +21,7 @@ package org.scalatest
  *
  * <p>
  * The main purpose of <code>SuiteMixin</code> is to differentiate core <code>Suite</code>
- * traits, such as <code>Suite</code>, <a href="FunSuite.html"><code>FunSuite</code></a>, and <a href="FunSpec.html"><code>FunSpec</code></a> from stackable
+ * style traits, such as <a href="Spec"><code>Spec</code></a>., <a href="FunSuite.html"><code>FunSuite</code></a>, and <a href="FunSpec.html"><code>FunSpec</code></a> from stackable
  * modification traits for <code>Suite</code>s such as <a href="BeforeAndAfterEach.html"><code>BeforeAndAfterEach</code></a>, <a href="OneInstancePerTest.html"><code>OneInstancePerTest</code></a>,
  * and <a href="SequentialNestedSuiteExecution.html"><code>SequentialNestedSuiteExecution</code></a>. Because these stackable traits extend <code>SuiteMixin</code>
  * instead of <code>Suite</code>, you can't define a suite by simply extending one of the stackable traits:

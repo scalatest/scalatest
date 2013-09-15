@@ -1040,7 +1040,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * <a name="composingFixtures"></a><h2>Composing fixtures by stacking traits</h2>
  *
  * <p>
- * In larger projects, teams often end up with several different fixtures that test classes needed in different combinations,
+ * In larger projects, teams often end up with several different fixtures that test classes need in different combinations,
  * and possibly initialized (and cleaned up) in different orders. A good way to accomplish this in ScalaTest is to factor the individual
  * fixtures into traits that can be composed using the <em>stackable trait</em> pattern. This can be done, for example, by placing
  * <code>withFixture</code> methods in several traits, each of which call <code>super.withFixture</code>. Here's an example in
