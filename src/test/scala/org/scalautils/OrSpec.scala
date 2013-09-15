@@ -133,6 +133,12 @@ class OrSpec extends UnitSpec with Validations with TypeCheckedTripleEquals {
     Good(12).getOrElse(17) shouldBe 12
     Good[Int].orBad(12).getOrElse(17) shouldBe 17
   }
+  it can "be used with orElse" in {
+    Good(12).orElse(Good(13)) shouldBe Good(12)
+    Bad(12).orElse(Good(13)) shouldBe Good(13)
+    Good(12).orElse(Bad(13)) shouldBe Good(12)
+    Bad(12).orElse(Bad(13)) shouldBe Bad(13)
+  }
   it can "be used with toOption" in {
     Good(12).toOption shouldBe Some(12)
     Good[Int].orBad(12).toOption shouldBe None
@@ -453,9 +459,43 @@ class OrSpec extends UnitSpec with Validations with TypeCheckedTripleEquals {
   }
   "A Good" can "be widened to an Or type via .asOr" in {
     Good(1).asOr shouldBe Good(1)
+    /*
+      scala> xs.foldLeft(Good(6).orBad[ErrorMessage]) { (acc, x) => acc orElse (if (x % 2 == 0) Good(x) else acc) }
+      <console>:12: error: type mismatch;
+       found   : org.scalautils.Or[Int,org.scalautils.ErrorMessage]
+       required: org.scalautils.Good[Int,org.scalautils.ErrorMessage]
+                    xs.foldLeft(Good(6).orBad[ErrorMessage]) { (acc, x) => acc orElse (if (x % 2 == 0) Good(x) else acc) }
+                                                                         ^
+
+      scala> xs.foldLeft(Good(6).orBad[ErrorMessage].asOr) { (acc, x) => acc orElse (if (x % 2 == 0) Good(x) else acc) }
+      res2: org.scalautils.Or[Int,org.scalautils.ErrorMessage] = Good(6)
+*/
+    val xs = List(1, 2, 3)
+    xs.foldLeft(Good(6).orBad[ErrorMessage].asOr) {
+      (acc, x) => acc orElse (if (x % 2 == 0) Good(x) else acc)
+    } shouldBe Good(6)
   }
   "A Bad" can "be widened to an Or type via .asOr" in {
     Bad("oops").asOr shouldBe Bad("oops")
+    /*
+      scala> xs.foldLeft(Good[Int].orBad("no evens")) { (acc, x) => acc orElse (if (x % 2 == 0) Good(x) else acc) }
+      <console>:12: error: type mismatch;
+       found   : org.scalautils.Or[Int,String]
+       required: org.scalautils.Bad[Int,String]
+                    xs.foldLeft(Good[Int].orBad("no evens")) { (acc, x) => acc orElse (if (x % 2 == 0) Good(x) else acc) }
+                                                                               ^
+
+      scala> xs.foldLeft(Good[Int].orBad("no evens").asOr) { (acc, x) => acc orElse (if (x % 2 == 0) Good(x) else acc) }
+      res7: org.scalautils.Or[Int,String] = Good(2)
+*/
+    val xs = List(1, 2, 3)
+    xs.foldLeft(Good[Int].orBad("no evens").asOr) { (acc, x) =>
+      acc orElse (if (x % 2 == 0) Good(x) else acc)
+    } shouldBe Good(2)
+    val ys = List(1, 3, 5)
+    ys.foldLeft(Good[Int].orBad("no evens").asOr) { (acc, x) =>
+      acc orElse (if (x % 2 == 0) Good(x) else acc)
+    } shouldBe Bad("no evens")
   }
 }
 

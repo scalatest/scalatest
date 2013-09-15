@@ -18,11 +18,6 @@ package org.scalautils
 /**
  * Defines a custom way to normalize instances of a type.
  *
- * <p>
- * This trait exists to enforce that <code>Normalization</code> instances can be
- * passed to <code>whenBothAre</code> and <code>whenAllAre</code>, but not <code>decidedBy</code>.
- * </p>
- * 
  * @tparam A the type whose normalization is being defined
  */
 trait Normalization[A] { thisNormalization =>
