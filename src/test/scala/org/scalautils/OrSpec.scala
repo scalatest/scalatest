@@ -129,15 +129,36 @@ class OrSpec extends UnitSpec with Validations with TypeCheckedTripleEquals {
     Good[Int].orBad(12).forall(_ > 10) shouldBe true
     Good[Int].orBad(7).forall(_ > 10) shouldBe true
   }
-  it can "be used with getOrElse" in {
+  it can "be used with getOrElse, which takes a by-name" in {
+
     Good(12).getOrElse(17) shouldBe 12
     Good[Int].orBad(12).getOrElse(17) shouldBe 17
+
+    var x = 16 // should not increment if Good
+    Good(12) getOrElse { x += 1; x } shouldBe 12
+    x shouldBe 16
+    Good[Int].orBad(12) getOrElse { x += 1; x } shouldBe 17
+    x shouldBe 17
   }
-  it can "be used with orElse" in {
+  it can "be used with orElse, which takes a by-name" in {
+
     Good(12).orElse(Good(13)) shouldBe Good(12)
     Bad(12).orElse(Good(13)) shouldBe Good(13)
+
     Good(12).orElse(Bad(13)) shouldBe Good(12)
     Bad(12).orElse(Bad(13)) shouldBe Bad(13)
+
+    var x = 16 // should not increment if Good
+    Good(12) orElse { x += 1; Good(x) } shouldBe Good(12)
+    x shouldBe 16
+    Good[Int].orBad(12) orElse { x += 1; Good(x) } shouldBe Good(17)
+    x shouldBe 17
+
+    var y = 16 // should not increment if Good
+    Good(12) orElse { y += 1; Bad(y) } shouldBe Good(12)
+    y shouldBe 16
+    Good[Int].orBad(12) orElse { y += 1; Bad(y) } shouldBe Bad(17)
+    y shouldBe 17
   }
   it can "be used with toOption" in {
     Good(12).toOption shouldBe Some(12)

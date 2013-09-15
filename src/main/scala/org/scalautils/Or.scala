@@ -55,8 +55,8 @@ sealed abstract class Or[+G,+B] {
   def filter(f: G => Boolean): Option[G Or B]
   def exists(f: G => Boolean): Boolean
   def forall(f: G => Boolean): Boolean
-  def getOrElse[H >: G](default: H): H
-  def orElse[H >: G, C >: B](alternative: H Or C): H Or C
+  def getOrElse[H >: G](default: => H): H
+  def orElse[H >: G, C >: B](alternative: => H Or C): H Or C
   def toOption: Option[G]
   def toSeq: Seq[G]
   def toEither: Either[B, G]
@@ -89,8 +89,8 @@ final case class Good[+G,+B](g: G) extends Or[G,B] {
   def filter(f: G => Boolean): Option[G Or B] = if (f(g)) Some(this) else None
   def exists(f: G => Boolean): Boolean = f(g)
   def forall(f: G => Boolean): Boolean = f(g)
-  def getOrElse[H >: G](default: H): G = g
-  def orElse[H >: G, C >: B](alternative: H Or C): G Or B = this
+  def getOrElse[H >: G](default: => H): G = g
+  def orElse[H >: G, C >: B](alternative: => H Or C): G Or B = this
   def toOption: Some[G] = Some(g)
   def toSeq: Seq[G] = Seq(g)
   def toEither: Either[B, G] = Right(g)
@@ -117,8 +117,8 @@ final case class Bad[+G,+B](b: B) extends Or[G,B] {
   def filter(f: G => Boolean): None.type = None
   def exists(f: G => Boolean): Boolean = false
   def forall(f: G => Boolean): Boolean = true
-  def getOrElse[H >: G](default: H): H = default
-  def orElse[H >: G, C >: B](alternative: H Or C): H Or C = alternative
+  def getOrElse[H >: G](default: => H): H = default
+  def orElse[H >: G, C >: B](alternative: => H Or C): H Or C = alternative
   def toOption: None.type = None
   def toSeq: Seq[G] = Seq.empty
   def toEither: Either[B, G] = Left(b)
