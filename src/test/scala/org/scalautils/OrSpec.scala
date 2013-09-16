@@ -186,6 +186,12 @@ class OrSpec extends UnitSpec with Validations with TypeCheckedTripleEquals {
     Good[Int].orBad(ex).toTry shouldBe Failure(ex)
     // Does not compile: Good[Int, Int](12).toTry shouldBe Success(12)
   }
+  it can "be used with transform" in {
+    Good(12).orBad[String].transform((i: Int) => Good(i + 1), (s: String) => Bad(s.toUpperCase)) should === (Good(13))
+    Good[Int].orBad("hi").transform((i: Int) => Good(i + 1), (s: String) => Bad(s.toUpperCase)) should === (Bad("HI"))
+    Good(12).orBad[String].transform((i: Int) => Bad(i + 1), (s: String) => Good(s.toUpperCase)) should === (Bad(13))
+    Good[Int].orBad("hi").transform((i: Int) => Bad(i + 1), (s: String) => Good(s.toUpperCase)) should === (Good("HI"))
+  }
   it can "be used with swap" in {
     Good(12).orBad[String].swap should === (Good[String].orBad(12))
     Good[Int].orBad("hi").swap should === (Good("hi").orBad[Int])

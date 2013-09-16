@@ -222,8 +222,11 @@ import scala.collection.mutable.Builder
  *
  * <p>
  * You can think of the <code>String</code> <code>Or</code> <code>ErrorMessage</code> result
- * type like this: <code>parseName</code> will return an <code>Int</code> or, if the input string
+ * type like this: <code>parseName</code> will return a name <code>String</code> or, if the input string
  * is not a valid name, an <code>ErrorMessage</code>.
+ * </p>
+ *
+ * <p>
  * Here's how the <code>parseAge</code> method might be written:
  * </p>
  *
@@ -327,6 +330,8 @@ import scala.collection.mutable.Builder
  * </p>
  *
  * <pre class="stHighlight">
+ * import Validations._
+ * 
  * def parsePerson(inputName: String, inputAge: String): Person Or Every[ErrorMessage] = {
  *   val name = parseName(inputName)
  *   val age = parseAge(inputAge)
@@ -562,6 +567,7 @@ sealed abstract class Or[+G,+B] {
   def accumulating: G Or One[B]
   def toTry(implicit ev: B <:< Throwable): Try[G]
   def swap: B Or G
+  def transform[H, C](gf: G => H Or C, bf: B => H Or C): H Or C
 }
 
 object Or {
@@ -596,6 +602,7 @@ final case class Good[+G,+B](g: G) extends Or[G,B] {
   def accumulating: G Or One[B] = Good(g)
   def toTry(implicit ev: B <:< Throwable): Success[G] = Success(g)
   def swap: B Or G = Bad(g)
+  def transform[H, C](gf: G => H Or C, bf: B => H Or C): H Or C = gf(g)
 }
 
 object Good {
@@ -624,5 +631,6 @@ final case class Bad[+G,+B](b: B) extends Or[G,B] {
   def accumulating: G Or One[B] = Bad(One(b))
   def toTry(implicit ev: B <:< Throwable): Failure[G] = Failure(b)
   def swap: B Or G = Good(b)
+  def transform[H, C](gf: G => H Or C, bf: B => H Or C): H Or C = bf(b)
 }
 
