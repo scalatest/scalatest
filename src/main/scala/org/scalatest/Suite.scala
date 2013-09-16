@@ -579,7 +579,8 @@ trait Suite extends Assertions with AbstractSuite with Serializable { thisSuite 
     def apply(): Outcome
   }
 
-  object NoArgTest {
+  // Keep this out of the public until there's a use case demonstrating its need
+  private[scalatest] object NoArgTest {
     def apply(test: NoArgTest)(f: => Outcome): NoArgTest = {
       new NoArgTest {
         def apply(): Outcome = { f }
