@@ -46,20 +46,6 @@ trait Validations {
             }
         }
       }
-      def transform[H, OTHERERR >: ERR, OTHEREVERY[c] <: Every[c]](other: (G => H) Or OTHEREVERY[OTHERERR]): H Or Every[OTHERERR] = {
-        zippable match {
-          case Good(g) =>
-            other match {
-              case Good(f) => Good(f(g))
-              case Bad(otherB) => Bad(otherB)
-            }
-          case Bad(myBad) =>
-            other match {
-              case Good(_) => Bad(myBad)
-              case Bad(otherB) => Bad(myBad ++ otherB)
-            }
-        }
-      }
       def validate[OTHERERR >: ERR](validations: (G => Option[OTHERERR])*): G Or Every[OTHERERR] = {
         zippable match {
           case Good(g) =>
@@ -1264,7 +1250,9 @@ object Validations extends Validations {
 
   trait Accumulatable[G, ERR, EVERY[b] <: Every[b]] {
     def zip[H, OTHERERR >: ERR, OTHEREVERY[c] <: Every[c]](other: H Or OTHEREVERY[OTHERERR]): (G, H) Or Every[OTHERERR]
+/*
     def transform[H, OTHERERR >: ERR, OTHEREVERY[b] <: Every[b]](other: (G => H) Or OTHEREVERY[OTHERERR]): H Or Every[OTHERERR]
+*/
     def validate[OTHERERR >: ERR](validations: (G => Option[OTHERERR])*): G Or Every[OTHERERR]
   }
 }

@@ -277,10 +277,11 @@ import scala.collection.mutable.Builder
  * <p>
  * Another difference between <code>Or</code> and <code>Either</code> is that <code>Or</code> enables
  * you to accumulate errors if the <code>Bad</code> type is an <a href="Every.html"><code>Every</code></a>.
- * An <code>Every</code> is similar to a <code>Seq</code> in that it is contains ordered elements, but
- * different in that it cannot be empty. An <code>Every</code> is either a <a href="One.html"><code>One</code></a>,
+ * An <code>Every</code> is similar to a <code>Seq</code> in that it contains ordered elements, but
+ * different from <code>Seq</code> in that it cannot be empty. An <code>Every</code> is
+ * either a <a href="One.html"><code>One</code></a>,
  * which contains one and only one element, or a <a href="Many.html"><code>Many</code></a>, which contains two or
- * more elements. Thus an <code>Every</code> contains one or more elements.
+ * more elements.
  * </p>
  *
  * <p>
@@ -352,54 +353,195 @@ import scala.collection.mutable.Builder
  * this accumulating version of <code>parsePerson</code> in the Scala interpreter:
  * </p>
  *
- * <pre class="stHighlight">
+ * <pre class="stREPL">
  * scala&gt; parsePerson("Bridget Jones", "29")
- * res10: org.scalautils.Or[Person,org.scalautils.Every[org.scalautils.ErrorMessage]] = Good(Person(Bridget Jones,29))
+ * res10: org.scalautils.Or[Person,org.scalautils.Every[org.scalautils.ErrorMessage]] =
+ *     Good(Person(Bridget Jones,29))
  *
  * scala&gt; parsePerson("Bridget Jones", "")
- * res11: org.scalautils.Or[Person,org.scalautils.Every[org.scalautils.ErrorMessage]] = Bad(One("" is not a valid integer))
+ * res11: org.scalautils.Or[Person,org.scalautils.Every[org.scalautils.ErrorMessage]] =
+ *     Bad(One("" is not a valid integer))
  *
  * scala&gt; parsePerson("Bridget Jones", "-29")
- * res12: org.scalautils.Or[Person,org.scalautils.Every[org.scalautils.ErrorMessage]] = Bad(One("-29" is not a valid age))
+ * res12: org.scalautils.Or[Person,org.scalautils.Every[org.scalautils.ErrorMessage]] =
+ *     Bad(One("-29" is not a valid age))
  *
  * scala&gt; parsePerson("", "")
- * res13: org.scalautils.Or[Person,org.scalautils.Every[org.scalautils.ErrorMessage]] = Bad(Many("" is not a valid name, "" is not a valid integer))
+ * res13: org.scalautils.Or[Person,org.scalautils.Every[org.scalautils.ErrorMessage]] =
+ *     Bad(Many("" is not a valid name, "" is not a valid integer))
  * </pre>
  *
  * <p>
  * Note that in the last example, the <code>Bad</code> contains an error message for both name and age.
  * </p>
  *
+ * <h2>Other ways to accumulate errors</h2>
+
  * <p>
  * The <code>Validations</code> trait also enables other ways of accumulating errors. If you have a collection of
- * accumulating <code>Or</code>s, for example, you can <em>combine</em> them into one <code>Or</code>, like this:
+ * accumulating <code>Or</code>s, for example, you can <em>combine</em> them into one <code>Or</code> using <code>combined</code>, like this:
  * </p>
  *
- * <pre class="stHighlight">
+ * <pre class="stREPL">
  * scala&gt; List(parseAge("29"), parseAge("30"), parseAge("31")).combined
- * res14: org.scalautils.Or[List[Int],org.scalautils.Every[org.scalautils.ErrorMessage]] = Good(List(29, 30, 31))
+ * res14: org.scalautils.Or[List[Int],org.scalautils.Every[org.scalautils.ErrorMessage]] =
+ *     Good(List(29, 30, 31))
  *
  * scala&gt; List(parseAge("29"), parseAge("-30"), parseAge("31")).combined
- * res15: org.scalautils.Or[List[Int],org.scalautils.Every[org.scalautils.ErrorMessage]] = Bad(One("-30" is not a valid age))
+ * res15: org.scalautils.Or[List[Int],org.scalautils.Every[org.scalautils.ErrorMessage]] =
+ *     Bad(One("-30" is not a valid age))
  *
  * scala&gt; List(parseAge("29"), parseAge("-30"), parseAge("-31")).combined
- * res16: org.scalautils.Or[List[Int],org.scalautils.Every[org.scalautils.ErrorMessage]] = Bad(Many("-30" is not a valid age, "-31" is not a valid age))
+ * res16: org.scalautils.Or[List[Int],org.scalautils.Every[org.scalautils.ErrorMessage]] =
+ *     Bad(Many("-30" is not a valid age, "-31" is not a valid age))
  * </pre>
  *
  * <p>
  * Or if you have a collection of values and a function that transforms that type of value into an accumulating
- * <code>Or</code>s, you can <em>validate</em> the values using the function, like this:
+ * <code>Or</code>s, you can validate the values using the function using <code>validatedBy</code>, like this:
  * </p>
  *
- * <pre class="stHighlight">
+ * <pre class="stREPL">
  * scala&gt; List("29", "30", "31").validatedBy(parseAge)
- * res17: org.scalautils.Or[List[Int],org.scalautils.Every[org.scalautils.ErrorMessage]] = Good(List(29, 30, 31))
+ * res17: org.scalautils.Or[List[Int],org.scalautils.Every[org.scalautils.ErrorMessage]] =
+ *     Good(List(29, 30, 31))
  *
  * scala&gt; List("29", "-30", "31").validatedBy(parseAge)
- * res18: org.scalautils.Or[List[Int],org.scalautils.Every[org.scalautils.ErrorMessage]] = Bad(One("-30" is not a valid age))
+ * res18: org.scalautils.Or[List[Int],org.scalautils.Every[org.scalautils.ErrorMessage]] =
+ *     Bad(One("-30" is not a valid age))
  *
  * scala&gt; List("29", "-30", "-31").validatedBy(parseAge)
- * res19: org.scalautils.Or[List[Int],org.scalautils.Every[org.scalautils.ErrorMessage]] = Bad(Many("-30" is not a valid age, "-31" is not a valid age))
+ * res19: org.scalautils.Or[List[Int],org.scalautils.Every[org.scalautils.ErrorMessage]] =
+ *     Bad(Many("-30" is not a valid age, "-31" is not a valid age))
+ * </pre>
+ *
+ * <p>
+ * You can also zip two accumulating <code>Or</code>s together. If both are <code>Good</code>, you'll get a 
+ * <code>Good</code> tuple containin both original <code>Good</code> values. Otherwise, you'll get a <code>Bad</code>
+ * containing every error message. Here are some examples:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; parseName("Dude") zip parseAge("21")
+ * res10: org.scalautils.Or[(String, Int),org.scalautils.Every[org.scalautils.ErrorMessage]] =
+ *     Good((Dude,21))
+ *
+ * scala&gt; parseName("Dude") zip parseAge("-21")
+ * res11: org.scalautils.Or[(String, Int),org.scalautils.Every[org.scalautils.ErrorMessage]] =
+ *     Bad(One("-21" is not a valid age))
+ *
+ * scala&gt; parseName("") zip parseAge("-21")
+ * res12: org.scalautils.Or[(String, Int),org.scalautils.Every[org.scalautils.ErrorMessage]] =
+ *     Bad(Many("" is not a valid name, "-21" is not a valid age))
+ * </pre>
+ *
+ * <p>
+ * In addition, given an accumlating <code>Or</code>, you can pass one or more <em>validation functions</em> to <code>validate</code> on the <code>Or</code>
+ * to submit that <code>Or</code> to further scrutiny. A validation function accepts a <code>Good</code> type and returns an optional accumulated type
+ * (the type in the <code>Every</code> in the <code>Bad</code> type). For an <code>Int</code> <code>Or</code> <code>One[ErrorMessage]</code>, for example
+ * the validation function type would be <code>Int</code> <code>=&gt;</code> <code>Option[ErrorMessage]</code>. Here are a few examples:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; def isRound(i: Int): Option[ErrorMessage] =
+ *             if (i % 10 != 0) Some(i + " was not a round number") else None
+ * isRound: (i: Int)Option[org.scalautils.ErrorMessage]
+ *
+ * scala&gt; def isDivBy3(i: Int): Option[ErrorMessage] =
+ *             if (i % 3 != 0) Some(i + " was not divisible by 3") else None
+ * isDivBy3: (i: Int)Option[org.scalautils.ErrorMessage]
+ * </pre>
+ * 
+ * <p>
+ * If the <code>Or</code> on which you call <code>validate</code> is already <code>Bad</code>, you get the same (<code>Bad</code>) <code>Or</code> back, because
+ * no <code>Good</code> value exists to pass to the valiation functions:
+ * </p>
+ * 
+ * <pre class="stREPL">
+ * scala&gt; parseAge("-30").validate(isRound, isDivBy3)
+ * res10: org.scalautils.Or[Int,org.scalautils.Every[org.scalautils.ErrorMessage]] =
+ *     Bad(One("-30" is not a valid age))
+ * </pre>
+ *
+ * <p>
+ * If the <code>Or</code> on which you call <code>validate</code> is <code>Good</code>, and also passes all the validation functions (<em>i.e.</em>, the
+ * all return <code>None</code>), you again get the same <code>Or</code> back, but this time, a <code>Good</code> one:
+ * </p>
+ * 
+ * <pre class="stREPL">
+ * scala&gt; parseAge("30").validate(isRound, isDivBy3)
+ * res11: org.scalautils.Or[Int,org.scalautils.Every[org.scalautils.ErrorMessage]] =
+ *     Good(30)
+ * </pre>
+ *
+ * <p>
+ * If one or more of the validation functions fails, however, you'll get a <code>Bad</code> back contining every error. Here are some examples:
+ * </p>
+ * 
+ * <pre class="stREPL">
+ * scala&gt; parseAge("33").validate(isRound, isDivBy3)
+ * res12: org.scalautils.Or[Int,org.scalautils.Every[org.scalautils.ErrorMessage]] =
+ *     Bad(One(33 was not a round number))
+ *
+ * scala&gt; parseAge("20").validate(isRound, isDivBy3)
+ * res13: org.scalautils.Or[Int,org.scalautils.Every[org.scalautils.ErrorMessage]] =
+ *     Bad(One(20 was not divisible by 3))
+ *
+ * scala&gt; parseAge("31").validate(isRound, isDivBy3)
+ * res14: org.scalautils.Or[Int,org.scalautils.Every[org.scalautils.ErrorMessage]] =
+ *     Bad(Many(31 was not a round number, 31 was not divisible by 3))
+ * </pre>
+ *
+ * <h2>Much ado about <code>Nothing</code></h2>
+ *
+ * <p>
+ * Because <code>Or</code> has two types, but each of its two subtypes only takes a value of one or the other type, the Scala compiler will
+ * infer <code>Nothing</code> for the unspecified type:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; Good(3)
+ * res0: org.scalautils.Good[Int,Nothing] = Good(3)
+ *
+ * scala&gt; Bad("oops")
+ * res1: org.scalautils.Bad[Nothing,String] = Bad(oops)
+ * </pre>
+ *
+ * <p>
+ * Often <code>Nothing</code> will work fine, as it will be widened as soon as the compiler encounters a more specific type.
+ * Sometimes, however, you may need to specify it. In such situations you can use this syntax:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; Good(3).orBad[String]
+ * res2: org.scalautils.Good[Int,String] = Good(3)
+ *
+ * scala&gt; Good[Int].orBad("oops")
+ * res3: org.scalautils.Bad[Int,String] = Bad(oops)
+ * </pre>
+ *
+ * <p>
+ * If you want to specify both types, because you don't like the inferred type, you can do so like this:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; Good[AnyVal, String](3)
+ * res4: org.scalautils.Good[AnyVal,String] = Good(3)
+ *
+ * scala&gt; Bad[Int, ErrorMessage]("oops")
+ * res5: org.scalautils.Bad[Int,org.scalautils.ErrorMessage] = Bad(oops)
+ * </pre>
+ *
+ * <p>
+ * But you may find the code is clearer if you instead use a type ascription, like this:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; Good(3): AnyVal Or String
+ * res6: org.scalautils.Or[AnyVal,String] = Good(3)
+ *
+ * scala&gt; Bad("oops"): Int Or ErrorMessage
+ * res7: org.scalautils.Or[Int,org.scalautils.ErrorMessage] = Bad(oops)
  * </pre>
  */
 sealed abstract class Or[+G,+B] {
