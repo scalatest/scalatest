@@ -109,7 +109,7 @@ private[scalatest] class AssertionsMacro[C <: Context](val context: C) {
       List(Ident("$org_scalatest_assert_macro_right"))
     )
 
-  def nestedSubstitute(select: Select, apply: Apply): Apply =
+  def nestedSubstitute(select: Select, apply: GenericApply): Apply =
     Apply(
       Apply(
         Select(
@@ -118,7 +118,7 @@ private[scalatest] class AssertionsMacro[C <: Context](val context: C) {
         ),
         List(Ident("$org_scalatest_assert_macro_right"))
       ),
-      List(apply.args(0).duplicate)
+      apply.args
     )
 
   def genExpression(left: Tree, operator: String, right: Tree, subsitutedExpr: Apply, assertExpr: Apply): Expr[Unit] =
@@ -149,20 +149,29 @@ private[scalatest] class AssertionsMacro[C <: Context](val context: C) {
   def apply(booleanExpr: Expr[Boolean]): Expr[Unit] = {
     val booleanTree = booleanExpr.tree
     booleanTree match {
-      case apply: Apply if apply.args.size == 1 =>
+      case apply: Apply =>
         apply.fun match {
-          case select: Select =>
+          case select: Select if apply.args.size == 1 =>
             val sExpr: Apply = simpleSubstitute(select)
             val operator: String = select.name.decoded
             val assertExpr: Apply = assertMacro(operator)
             genExpression(select.qualifier.duplicate, operator, apply.args(0).duplicate, sExpr, assertExpr)
-          case funApply: Apply if funApply.args.size == 1 => // For === and !== that takes Equality
+          case funApply: Apply =>
             funApply.fun match {
               case select: Select =>
                 val sExpr: Apply = nestedSubstitute(select, apply)
                 val operator: String = select.name.decoded
                 val assertExpr: Apply = assertMacro(operator)
                 genExpression(select.qualifier.duplicate, operator, funApply.args(0).duplicate, sExpr, assertExpr)
+              case typeApply: TypeApply =>
+                typeApply.fun match {
+                  case select: Select =>
+                    val sExpr: Apply = nestedSubstitute(select, apply)
+                    val operator: String = select.name.decoded
+                    val assertExpr: Apply = assertMacro(operator)
+                    genExpression(select.qualifier.duplicate, operator, funApply.args(0).duplicate, sExpr, assertExpr)
+                  case _ => simpleAssertMacro(booleanTree)
+                }
               case _ => simpleAssertMacro(booleanTree)
             }
           case _ => simpleAssertMacro(booleanTree)
@@ -189,6 +198,15 @@ private[scalatest] class AssertionsMacro[C <: Context](val context: C) {
                 val operator: String = select.name.decoded
                 val assertExpr: Apply = assertMacroWithClue(operator, clueTree)
                 genExpression(select.qualifier.duplicate, operator, funApply.args(0).duplicate, sExpr, assertExpr)
+              case typeApply: TypeApply =>
+                typeApply.fun match {
+                  case select: Select =>
+                    val sExpr: Apply = nestedSubstitute(select, apply)
+                    val operator: String = select.name.decoded
+                    val assertExpr: Apply = assertMacroWithClue(operator, clueTree)
+                    genExpression(select.qualifier.duplicate, operator, funApply.args(0).duplicate, sExpr, assertExpr)
+                  case _ => simpleAssertMacro(booleanTree)
+                }
               case _ => simpleAssertMacroWithClue(booleanTree, clueTree)
             }
           case _ => simpleAssertMacroWithClue(booleanTree, clueTree)

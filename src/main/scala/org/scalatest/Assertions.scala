@@ -401,6 +401,8 @@ trait Assertions extends TripleEquals {
         a match {
           case aEqualizer: org.scalautils.TripleEqualsSupport#Equalizer[_] =>
             Suite.getObjectsForFailureMessage(aEqualizer.left, b)
+          case aEqualizer: org.scalautils.TripleEqualsSupport#CheckingEqualizer[_] =>
+            Suite.getObjectsForFailureMessage(aEqualizer.left, b)
           case _ => Suite.getObjectsForFailureMessage(left, right)
         }
       def prependClueIfRequired: String =

@@ -381,7 +381,7 @@ trait TripleEqualsSupport {
    *
    * @author Bill Venners
    */
-  class CheckingEqualizer[L](left: L) {
+  class CheckingEqualizer[L](val left: L) {
   
     /**
      * Compare two objects for equality, returning a <code>Boolean</code>, using the <code>Constraint</code> instance passed as <code>constraint</code>.
