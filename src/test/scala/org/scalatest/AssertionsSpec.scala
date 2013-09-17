@@ -291,7 +291,7 @@ class AssertionsSpec extends FunSpec with OptionValues {
       assert(5 != a)
     }
     
-    it("should do nothing when is used to check a > 2") {
+    /*it("should do nothing when is used to check a > 2") {
       assert(a > 2)
     }
     
@@ -393,7 +393,7 @@ class AssertionsSpec extends FunSpec with OptionValues {
       assert(e.message === Some(wasNotLessThanOrEqualTo(6, 5)))
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
-    }
+    }*/
     
     it("should do nothing when is used to check bob == \"bob\"") {
       assert(bob == "bob")
