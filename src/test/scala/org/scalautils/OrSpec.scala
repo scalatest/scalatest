@@ -230,38 +230,38 @@ class OrSpec extends UnitSpec with Validations with TypeCheckedTripleEquals {
     Good[Int].orBad(One(-1)) zip Good[Int].orBad(One("oops": Any)) shouldBe Bad(Many(-1, "oops"))
   }
 
-  it can "be used with validate" in {
-    Good[Int, Every[ErrorMessage]](12).validate(
-      (i: Int) => if (i > 0) None else Some(i + " was not greater than 0"),
-      (i: Int) => if (i < 100) None else Some(i + " was not less than 100"),
-      (i: Int) => if (i % 2 == 0) None else Some(i + " was not even")
+  it can "be used with validatedBy" in {
+    Good[Int, Every[ErrorMessage]](12).validatedBy(
+      (i: Int) => if (i > 0) Pass else Fail(i + " was not greater than 0"),
+      (i: Int) => if (i < 100) Pass else Fail(i + " was not less than 100"),
+      (i: Int) => if (i % 2 == 0) Pass else Fail(i + " was not even")
     ) shouldBe Good(12)
-    Good[Int, Every[ErrorMessage]](12).validate(
-      (i: Int) => if (i > 0) None else Some(i + " was not greater than 0"),
-      (i: Int) => if (i < 3) None else Some(i + " was not less than 3"),
-      (i: Int) => if (i % 2 == 0) None else Some(i + " was not even")
+    Good[Int, Every[ErrorMessage]](12).validatedBy(
+      (i: Int) => if (i > 0) Pass else Fail(i + " was not greater than 0"),
+      (i: Int) => if (i < 3) Pass else Fail(i + " was not less than 3"),
+      (i: Int) => if (i % 2 == 0) Pass else Fail(i + " was not even")
     ) shouldBe Bad(One("12 was not less than 3"))
-    Good[Int, Every[ErrorMessage]](12).validate(
-      (i: Int) => if (i > 0) None else Some(i + " was not greater than 0"),
-      (i: Int) => if (i < 3) None else Some(i + " was not less than 3"),
-      (i: Int) => if (i % 2 == 1) None else Some(i + " was not odd")
+    Good[Int, Every[ErrorMessage]](12).validatedBy(
+      (i: Int) => if (i > 0) Pass else Fail(i + " was not greater than 0"),
+      (i: Int) => if (i < 3) Pass else Fail(i + " was not less than 3"),
+      (i: Int) => if (i % 2 == 1) Pass else Fail(i + " was not odd")
     ) shouldBe Bad(Many("12 was not less than 3", "12 was not odd"))
-    Good[Int, Every[ErrorMessage]](12).validate(
-      (i: Int) => if (i > 99) None else Some(i + " was not greater than 99"),
-      (i: Int) => if (i < 3) None else Some(i + " was not less than 3"),
-      (i: Int) => if (i % 2 == 1) None else Some(i + " was not odd")
+    Good[Int, Every[ErrorMessage]](12).validatedBy(
+      (i: Int) => if (i > 99) Pass else Fail(i + " was not greater than 99"),
+      (i: Int) => if (i < 3) Pass else Fail(i + " was not less than 3"),
+      (i: Int) => if (i % 2 == 1) Pass else Fail(i + " was not odd")
     ) shouldBe Bad(Many("12 was not greater than 99", "12 was not less than 3", "12 was not odd"))
-    Bad[Int, Every[ErrorMessage]](One("original error")).validate(
-      (i: Int) => if (i > 0) None else Some(i + " was not greater than 0"),
-      (i: Int) => if (i < 3) None else Some(i + " was not less than 3"),
-      (i: Int) => if (i % 2 == 0) None else Some(i + " was not even")
+    Bad[Int, Every[ErrorMessage]](One("original error")).validatedBy(
+      (i: Int) => if (i > 0) Pass else Fail(i + " was not greater than 0"),
+      (i: Int) => if (i < 3) Pass else Fail(i + " was not less than 3"),
+      (i: Int) => if (i % 2 == 0) Pass else Fail(i + " was not even")
     ) shouldBe Bad(One("original error"))
-    Bad[Int, Every[ErrorMessage]](Many("original error 1", "original error 2")).validate(
-      (i: Int) => if (i > 0) None else Some(i + " was not greater than 0"),
-      (i: Int) => if (i < 3) None else Some(i + " was not less than 3"),
-      (i: Int) => if (i % 2 == 0) None else Some(i + " was not even")
+    Bad[Int, Every[ErrorMessage]](Many("original error 1", "original error 2")).validatedBy(
+      (i: Int) => if (i > 0) Pass else Fail(i + " was not greater than 0"),
+      (i: Int) => if (i < 3) Pass else Fail(i + " was not less than 3"),
+      (i: Int) => if (i % 2 == 0) Pass else Fail(i + " was not even")
     ) shouldBe Bad(Many("original error 1", "original error 2"))
-    Good("hi").orBad[Every[Int]].validate((i: String) => Some(2.0)) shouldBe Bad(One(2.0))
+    Good("hi").orBad[Every[Int]].validatedBy((i: String) => Fail(2.0)) shouldBe Bad(One(2.0))
   }
   it can "be created with the attempt helper method" in {
     attempt { 2 / 1 } should === (Good(2))

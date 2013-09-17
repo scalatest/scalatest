@@ -30,10 +30,10 @@ import Validations.Accumulatable
 
 trait Validations {
 
-  implicit def convertOrToAccumulatable[G, ERR, EVERY[b] <: Every[b]](zippable: G Or EVERY[ERR]): Accumulatable[G, ERR, EVERY] =
+  implicit def convertOrToAccumulatable[G, ERR, EVERY[b] <: Every[b]](accumulatable: G Or EVERY[ERR]): Accumulatable[G, ERR, EVERY] =
     new Accumulatable[G, ERR, EVERY] {
       def zip[H, OTHERERR >: ERR, OTHEREVERY[c] <: Every[c]](other: H Or OTHEREVERY[OTHERERR]): (G, H) Or Every[OTHERERR] = {
-        zippable match {
+        accumulatable match {
           case Good(g) =>
             other match {
               case Good(h) => Good((g, h))
@@ -46,10 +46,10 @@ trait Validations {
             }
         }
       }
-      def validate[OTHERERR >: ERR](validations: (G => Option[OTHERERR])*): G Or Every[OTHERERR] = {
-        zippable match {
+      def validatedBy[OTHERERR >: ERR](validations: (G => Validation[OTHERERR])*): G Or Every[OTHERERR] = {
+        accumulatable match {
           case Good(g) =>
-            val results = validations flatMap (_(g).toSeq)
+            val results = validations flatMap (_(g) match { case Fail(x) => Seq(x); case Pass => Seq.empty})
             results.length match {
               case 0 => Good(g)
               case 1 => Bad(One(results.head))
@@ -1253,7 +1253,7 @@ object Validations extends Validations {
 /*
     def transform[H, OTHERERR >: ERR, OTHEREVERY[b] <: Every[b]](other: (G => H) Or OTHEREVERY[OTHERERR]): H Or Every[OTHERERR]
 */
-    def validate[OTHERERR >: ERR](validations: (G => Option[OTHERERR])*): G Or Every[OTHERERR]
+    def validatedBy[OTHERERR >: ERR](validations: (G => Validation[OTHERERR])*): G Or Every[OTHERERR]
   }
 }
 
