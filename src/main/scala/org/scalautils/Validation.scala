@@ -19,17 +19,15 @@ sealed trait Validation[+B] {
   def &&[C >: B](other: => Validation[C]): Validation[C]
 }
 case object Pass extends Validation[Nothing] {
-  // Also probably a by-name? Hmm.
   def &&[C](other: => Validation[C]): Validation[C] = other
 }
 case class Fail[B](b: B) extends Validation[B] {
-  // Probably a by-name? Hmm.
   def &&[C >: B](other: => Validation[C]): Validation[C] = this
 }
 
 /*
 OK, I can keep Validation simple like this, and it will only support &&, which
 will short-circuit like && does, at least in the error message. And when I do Expectation, I
-an put it in ScalaUtils, and have an implicit coversion in the Expectation or Validation
+can put it in ScalaUtils, and have an implicit coversion in the Expectation or Validation
 companion object that goes from Expectation to Validation *if* the error type is String.
 */
