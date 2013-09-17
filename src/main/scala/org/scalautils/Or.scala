@@ -550,11 +550,54 @@ import scala.collection.mutable.Builder
  * </pre>
  */
 sealed abstract class Or[+G,+B] {
+
+  /**
+   * Indicates whether this <code>Or</code> is a <code>Good</code>
+   *
+   * @return true if this <code>Or</code> is a <code>Good</code>, <code>false</code> if it is a <code>Bad</code>.
+   */
   val isGood: Boolean = false
+
+  /**
+   * Indicates whether this <code>Or</code> is a <code>Bad</code>
+   *
+   * @return true if this <code>Or</code> is a <code>Bad</code>, <code>false</code> if it is a <code>Good</code>.
+   */
   val isBad: Boolean = false
+
+  /**
+   * Returns the <code>Or</code>'s value if it is a <code>Good</code> or throws <code>NoSuchElementException</code> if it is a <code>Bad</code>.
+   *
+   * @return the contained value if this is a <code>Good</code>
+   * @throws NoSuchElementException if this is a <code>Bad</code>
+   */
   def get: G
+
+  /**
+   * Maps the given function to this <code>Or</code>'s value if it is a <code>Good</code> or returns <code>this</code> if it is a <code>Bad</code>.
+   *
+   * @param f the function to apply
+   * @return if this is a <code>Good</code>, the result of applying the given function to the contained value wrapped in a <code>Good</code>,
+   *         else this <code>Bad<code> is returned
+   */
   def map[H](f: G => H): H Or B
+
+  /**
+   * Applies the given function f to the contained value if this <code>Or</code> is a <code>Good</code>; does nothing if this <code>Or</code>
+   * is a <code>Bad</code>.
+   *
+   * @param f the function to apply
+   */
   def foreach(f: G => Unit): Unit
+
+  /**
+   * Returns the given function applied to the value contained in this <code>Or</code> if it is a <code>Good</code>,
+   * or returns <code>this</code> if it is a <code>Bad</code>.
+   *
+   * @param f the function to apply
+   * @return if this is a <code>Good</code>, the result of applying the given function to the contained value wrapped in a <code>Good</code>,
+   *         else this <code>Bad<code> is returned
+   */
   def flatMap[H, C >: B](f: G => H Or C): H Or C
   def filter(f: G => Boolean): Option[G Or B]
   def exists(f: G => Boolean): Boolean
@@ -617,9 +660,9 @@ final case class Bad[+G,+B](b: B) extends Or[G,B] {
   override val isBad: Boolean = true
   def asOr: G Or B = this
   def get: G = throw new NoSuchElementException("Bad(" + b + ").get")
-  def map[H](f: G => H): H Or B = Bad(b)
+  def map[H](f: G => H): H Or B = this.asInstanceOf[H Or B]
   def foreach(f: G => Unit): Unit = ()
-  def flatMap[H, C >: B](f: G => H Or C): H Or C = Bad(b)
+  def flatMap[H, C >: B](f: G => H Or C): H Or C = this.asInstanceOf[H Or C]
   def filter(f: G => Boolean): None.type = None
   def exists(f: G => Boolean): Boolean = false
   def forall(f: G => Boolean): Boolean = true
