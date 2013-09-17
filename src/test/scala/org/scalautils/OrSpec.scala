@@ -233,46 +233,46 @@ class OrSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
     Good[Int].orBad(One(-1)) zip Good[Int].orBad(One("oops": Any)) shouldBe Bad(Many(-1, "oops"))
   }
 
-  it can "be used with validatedBy" in {
-    Good[Int, Every[ErrorMessage]](12).validatedBy(
+  it can "be used with when" in {
+    Good[Int, Every[ErrorMessage]](12).when(
       (i: Int) => if (i > 0) Pass else Fail(i + " was not greater than 0"),
       (i: Int) => if (i < 100) Pass else Fail(i + " was not less than 100"),
       (i: Int) => if (i % 2 == 0) Pass else Fail(i + " was not even")
     ) shouldBe Good(12)
-    Good[Int, Every[ErrorMessage]](12).validatedBy(
+    Good[Int, Every[ErrorMessage]](12).when(
       (i: Int) => if (i > 0) Pass else Fail(i + " was not greater than 0"),
       (i: Int) => if (i < 3) Pass else Fail(i + " was not less than 3"),
       (i: Int) => if (i % 2 == 0) Pass else Fail(i + " was not even")
     ) shouldBe Bad(One("12 was not less than 3"))
-    Good[Int, Every[ErrorMessage]](12).validatedBy(
+    Good[Int, Every[ErrorMessage]](12).when(
       (i: Int) => if (i > 0) Pass else Fail(i + " was not greater than 0"),
       (i: Int) => if (i < 3) Pass else Fail(i + " was not less than 3"),
       (i: Int) => if (i % 2 == 1) Pass else Fail(i + " was not odd")
     ) shouldBe Bad(Many("12 was not less than 3", "12 was not odd"))
-    Good[Int, Every[ErrorMessage]](12).validatedBy(
+    Good[Int, Every[ErrorMessage]](12).when(
       (i: Int) => if (i > 99) Pass else Fail(i + " was not greater than 99"),
       (i: Int) => if (i < 3) Pass else Fail(i + " was not less than 3"),
       (i: Int) => if (i % 2 == 1) Pass else Fail(i + " was not odd")
     ) shouldBe Bad(Many("12 was not greater than 99", "12 was not less than 3", "12 was not odd"))
-    Bad[Int, Every[ErrorMessage]](One("original error")).validatedBy(
+    Bad[Int, Every[ErrorMessage]](One("original error")).when(
       (i: Int) => if (i > 0) Pass else Fail(i + " was not greater than 0"),
       (i: Int) => if (i < 3) Pass else Fail(i + " was not less than 3"),
       (i: Int) => if (i % 2 == 0) Pass else Fail(i + " was not even")
     ) shouldBe Bad(One("original error"))
-    Bad[Int, Every[ErrorMessage]](Many("original error 1", "original error 2")).validatedBy(
+    Bad[Int, Every[ErrorMessage]](Many("original error 1", "original error 2")).when(
       (i: Int) => if (i > 0) Pass else Fail(i + " was not greater than 0"),
       (i: Int) => if (i < 3) Pass else Fail(i + " was not less than 3"),
       (i: Int) => if (i % 2 == 0) Pass else Fail(i + " was not even")
     ) shouldBe Bad(Many("original error 1", "original error 2"))
-    Good("hi").orBad[Every[Int]].validatedBy((i: String) => Fail(2.0)) shouldBe Bad(One(2.0))
+    Good("hi").orBad[Every[Int]].when((i: String) => Fail(2.0)) shouldBe Bad(One(2.0))
 
-    (for (i <- Good(10) validatedBy isRound) yield i) shouldBe Good(10)
-    (for (i <- Good(12) validatedBy isRound) yield i) shouldBe Bad(One("12 was not a round number"))
-    (for (i <- Good(12) validatedBy isRound) yield i) shouldBe Bad(One("12 was not a round number"))
-    (for (i <- Good(30) validatedBy (isRound, isDivBy3)) yield i) shouldBe Good(30)
-    (for (i <- Good(10) validatedBy (isRound, isDivBy3)) yield i) shouldBe Bad(One("10 was not divisible by 3"))
-    (for (i <- Good(3) validatedBy (isRound, isDivBy3)) yield i) shouldBe Bad(One("3 was not a round number"))
-    (for (i <- Good(2) validatedBy (isRound, isDivBy3)) yield i) shouldBe Bad(Many("2 was not a round number", "2 was not divisible by 3"))
+    (for (i <- Good(10) when isRound) yield i) shouldBe Good(10)
+    (for (i <- Good(12) when isRound) yield i) shouldBe Bad(One("12 was not a round number"))
+    (for (i <- Good(12) when isRound) yield i) shouldBe Bad(One("12 was not a round number"))
+    (for (i <- Good(30) when (isRound, isDivBy3)) yield i) shouldBe Good(30)
+    (for (i <- Good(10) when (isRound, isDivBy3)) yield i) shouldBe Bad(One("10 was not divisible by 3"))
+    (for (i <- Good(3) when (isRound, isDivBy3)) yield i) shouldBe Bad(One("3 was not a round number"))
+    (for (i <- Good(2) when (isRound, isDivBy3)) yield i) shouldBe Bad(Many("2 was not a round number", "2 was not divisible by 3"))
   }
   it can "be created with the attempt helper method" in {
     attempt { 2 / 1 } should === (Good(2))

@@ -46,7 +46,7 @@ trait Accumulation {
             }
         }
       }
-      def validatedBy[OTHERERR >: ERR](validations: (G => Validation[OTHERERR])*): G Or Every[OTHERERR] = {
+      def when[OTHERERR >: ERR](validations: (G => Validation[OTHERERR])*): G Or Every[OTHERERR] = {
         accumulatable match {
           case Good(g) =>
             val results = validations flatMap (_(g) match { case Fail(x) => Seq(x); case Pass => Seq.empty})
@@ -1253,7 +1253,7 @@ object Accumulation extends Accumulation {
 /*
     def transform[H, OTHERERR >: ERR, OTHEREVERY[b] <: Every[b]](other: (G => H) Or OTHEREVERY[OTHERERR]): H Or Every[OTHERERR]
 */
-    def validatedBy[OTHERERR >: ERR](validations: (G => Validation[OTHERERR])*): G Or Every[OTHERERR]
+    def when[OTHERERR >: ERR](validations: (G => Validation[OTHERERR])*): G Or Every[OTHERERR]
   }
 }
 
