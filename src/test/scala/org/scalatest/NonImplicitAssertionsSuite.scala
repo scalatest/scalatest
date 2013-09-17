@@ -40,7 +40,7 @@ class NonImplicitAssertionsSuite extends FunSuite with NonImplicitAssertions {
     }
   }
   test("TripleEquals should work still if mixed in after NonImplicitAssertions") {
-    class MySpec extends Spec with NonImplicitAssertions with TripleEquals {
+    class MySpec extends Spec with NonImplicitAssertions with LegacyTripleEquals {
       assert(1 === 1)
     }
   }
