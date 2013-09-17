@@ -218,6 +218,45 @@ class TypeCheckedAssertionsSpec extends FunSpec with TypeCheckedTripleEquals {
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
+
+    it("should do nothing when is used to check 3 === a") {
+      assert(3 === a)
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check 5 === a") {
+      val e = intercept[TestFailedException] {
+        assert(5 === a)
+      }
+      assert(e.message === Some(didNotEqual(5, 3)))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check a !== 5") {
+      assert(a !== 5)
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check a !== 3") {
+      val e = intercept[TestFailedException] {
+        assert(a !== 3)
+      }
+      assert(e.message === Some(equaled(3, 3)))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check 5 !== a") {
+      assert(5 !== a)
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check 3 !== a") {
+      val e = intercept[TestFailedException] {
+        assert(3 !== a)
+      }
+      assert(e.message === Some(equaled(3, 3)))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
   }
 
 }

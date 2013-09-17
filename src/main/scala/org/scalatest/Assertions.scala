@@ -418,8 +418,12 @@ trait Assertions extends TripleEquals {
           case "===" =>
             val (leftee, rightee) = getObjectsForFailureMessage(left, right)
             newAssertionFailedException(Some(prependClueIfRequired + FailureMessages("didNotEqual", leftee, rightee)), None, "Assertions.scala", "macroAssertTrue", 2)
-          case "!=" => newAssertionFailedException(Some(prependClueIfRequired + FailureMessages("equaled", left, right)), None, "Assertions.scala", "macroAssertTrue", 2)
-          case "!==" => newAssertionFailedException(Some(prependClueIfRequired + FailureMessages("equaled", left, right)), None, "Assertions.scala", "macroAssertTrue", 2)
+          case "!=" =>
+            val (leftee, rightee) = getObjectsForFailureMessage(left, right)
+            newAssertionFailedException(Some(prependClueIfRequired + FailureMessages("equaled", leftee, rightee)), None, "Assertions.scala", "macroAssertTrue", 2)
+          case "!==" =>
+            val (leftee, rightee) = getObjectsForFailureMessage(left, right)
+            newAssertionFailedException(Some(prependClueIfRequired + FailureMessages("equaled", leftee, rightee)), None, "Assertions.scala", "macroAssertTrue", 2)
           case ">" => newAssertionFailedException(Some(prependClueIfRequired + FailureMessages("wasNotGreaterThan", left, right)), None, "Assertions.scala", "macroAssertTrue", 2)
           case ">=" => newAssertionFailedException(Some(prependClueIfRequired + FailureMessages("wasNotGreaterThanOrEqualTo", left, right)), None, "Assertions.scala", "macroAssertTrue", 2)
           case "<" => newAssertionFailedException(Some(prependClueIfRequired + FailureMessages("wasNotLessThan", left, right)), None, "Assertions.scala", "macroAssertTrue", 2)
