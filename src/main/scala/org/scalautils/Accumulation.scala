@@ -23,12 +23,12 @@ import scala.collection.GenTraversableOnce
 import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable.Builder
 import scala.collection.GenSet
-import Validations.Combinable
-import Validations.Validatable
-import Validations.TravValidatable
-import Validations.Accumulatable
+import Accumulation.Combinable
+import Accumulation.Validatable
+import Accumulation.TravValidatable
+import Accumulation.Accumulatable
 
-trait Validations {
+trait Accumulation {
 
   implicit def convertOrToAccumulatable[G, ERR, EVERY[b] <: Every[b]](accumulatable: G Or EVERY[ERR]): Accumulatable[G, ERR, EVERY] =
     new Accumulatable[G, ERR, EVERY] {
@@ -1234,7 +1234,7 @@ trait Validations {
   }
 }
 
-object Validations extends Validations {
+object Accumulation extends Accumulation {
 
   trait Combinable[G, ERR, COLL[_]] {
     def combined: COLL[G] Or Every[ERR]

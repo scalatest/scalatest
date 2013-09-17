@@ -325,12 +325,12 @@ import scala.collection.mutable.Builder
  * <p>
  * Because a <code>for</code> expression short-circuits on the first <code>Bad</code> encountered, you'll
  * need to use a different approach to write the <code>parsePerson</code> method. In this example, the
- * <code>withGood</code> method from trait <a href="Validations.html"><code>Validations</code></a>
+ * <code>withGood</code> method from trait <a href="Accumulation.html"><code>Accumulation</code></a>
  * will do the trick:
  * </p>
  *
  * <pre class="stHighlight">
- * import Validations._
+ * import Accumulation._
  * 
  * def parsePerson(inputName: String, inputAge: String): Person Or Every[ErrorMessage] = {
  *   val name = parseName(inputName)
@@ -340,7 +340,7 @@ import scala.collection.mutable.Builder
  * </pre>
  *
  * <p>
- * Trait <code>Validations</code> offers overloaded <code>withGood</code> methods that take 1 to
+ * Trait <code>Accumulation</code> offers overloaded <code>withGood</code> methods that take 1 to
  * 22 accumulating <code>Or</code>s, plus a function taking the same number of corresponding
  * <code>Good</code> values.  In this example, if both <code>name</code> and <code>age</code> are
  * <code>Good</code>s, the <code>withGood</code> method will pass the good name <code>String</code>
@@ -383,7 +383,7 @@ import scala.collection.mutable.Builder
  * <h2>Other ways to accumulate errors</h2>
 
  * <p>
- * The <code>Validations</code> trait also enables other ways of accumulating errors. If you have a collection of
+ * The <code>Accumlation</code> trait also enables other ways of accumulating errors. If you have a collection of
  * accumulating <code>Or</code>s, for example, you can <em>combine</em> them into one <code>Or</code> using <code>combined</code>, like this:
  * </p>
  *

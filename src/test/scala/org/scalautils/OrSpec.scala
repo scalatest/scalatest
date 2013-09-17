@@ -21,7 +21,14 @@ import scala.util.Try
 import scala.util.Success
 import scala.util.Failure
 
-class OrSpec extends UnitSpec with Validations with TypeCheckedTripleEquals {
+class OrSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
+
+  def isRound(i: Int): Validation[ErrorMessage] =
+    if (i % 10 != 0) Fail(i + " was not a round number") else Pass
+
+  def isDivBy3(i: Int): Validation[ErrorMessage] =
+    if (i % 3 != 0) Fail(i + " was not divisible by 3") else Pass
+
   "An Or" can "be either Good or Bad" in {
     Good(7) shouldBe 'good
     Bad("oops") shouldBe 'bad
@@ -114,10 +121,6 @@ class OrSpec extends UnitSpec with Validations with TypeCheckedTripleEquals {
     Good[Int].orBad("eight") flatMap ((x: Int) => Good(x + 1)) should equal (Bad("eight"))
   }
   it can "be used with filter" in {
-    def isRound(i: Int): Validation[ErrorMessage] =
-      if (i % 10 != 0) Fail(i + " was not a round number") else Pass
-    def isDivBy3(i: Int): Validation[ErrorMessage] =
-      if (i % 3 != 0) Fail(i + " was not divisible by 3") else Pass
     Good(12).filter(isRound) shouldBe Bad("12 was not a round number")
     Good(10).filter(isRound) shouldBe Good(10)
     Good[Int].orBad(12).filter(isRound) shouldBe Bad(12)
@@ -262,6 +265,14 @@ class OrSpec extends UnitSpec with Validations with TypeCheckedTripleEquals {
       (i: Int) => if (i % 2 == 0) Pass else Fail(i + " was not even")
     ) shouldBe Bad(Many("original error 1", "original error 2"))
     Good("hi").orBad[Every[Int]].validatedBy((i: String) => Fail(2.0)) shouldBe Bad(One(2.0))
+
+    (for (i <- Good(10) validatedBy isRound) yield i) shouldBe Good(10)
+    (for (i <- Good(12) validatedBy isRound) yield i) shouldBe Bad(One("12 was not a round number"))
+    (for (i <- Good(12) validatedBy isRound) yield i) shouldBe Bad(One("12 was not a round number"))
+    (for (i <- Good(30) validatedBy (isRound, isDivBy3)) yield i) shouldBe Good(30)
+    (for (i <- Good(10) validatedBy (isRound, isDivBy3)) yield i) shouldBe Bad(One("10 was not divisible by 3"))
+    (for (i <- Good(3) validatedBy (isRound, isDivBy3)) yield i) shouldBe Bad(One("3 was not a round number"))
+    (for (i <- Good(2) validatedBy (isRound, isDivBy3)) yield i) shouldBe Bad(Many("2 was not a round number", "2 was not divisible by 3"))
   }
   it can "be created with the attempt helper method" in {
     attempt { 2 / 1 } should === (Good(2))

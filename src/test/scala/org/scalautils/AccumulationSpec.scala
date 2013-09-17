@@ -22,7 +22,7 @@ import scala.util.Success
 import scala.util.Failure
 import prop.TableDrivenPropertyChecks._
 
-class ValidationsSpec extends UnitSpec with Validations with TypeCheckedTripleEquals {
+class AccumulationSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
 
   import java.util.Date
   case class Person(name: String, birthday: Date, address: List[String])
@@ -67,7 +67,7 @@ class ValidationsSpec extends UnitSpec with Validations with TypeCheckedTripleEq
      case None => Bad(One("No address found"))
     }
 
-  "The Validations trait" can "insert one Or into a function" in {
+  "The Accumulation trait" can "insert one Or into a function" in {
     def parseAddressForPerson(name: String, date: Date, in: String): Person Or Every[ErrorMessage] = {
       val address: List[String] Or One[ErrorMessage] = parseOptionalAddress(if (in.isEmpty) None else Some(in))
       withGood(address) {
