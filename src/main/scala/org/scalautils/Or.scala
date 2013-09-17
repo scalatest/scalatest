@@ -599,7 +599,8 @@ sealed abstract class Or[+G,+B] {
    *         else this <code>Bad<code> is returned
    */
   def flatMap[H, C >: B](f: G => H Or C): H Or C
-  def filter(f: G => Boolean): Option[G Or B]
+  def filter[C >: B](f: G => Validation[C]): G Or C
+  def withFilter[C >: B](f: G => Validation[C]): G Or C
   def exists(f: G => Boolean): Boolean
   def forall(f: G => Boolean): Boolean
   def getOrElse[H >: G](default: => H): H
@@ -634,7 +635,12 @@ final case class Good[+G,+B](g: G) extends Or[G,B] {
   def map[H](f: G => H): Or[H, B] = Good(f(g))
   def foreach(f: G => Unit): Unit = f(g)
   def flatMap[H, C >: B](f: G => H Or C): H Or C = f(g)
-  def filter(f: G => Boolean): Option[G Or B] = if (f(g)) Some(this) else None
+  def filter[C >: B](f: G => Validation[C]): G Or C =
+    f(g) match {
+      case Fail(error) => Bad(error)
+      case Pass => this
+    }
+  def withFilter[C >: B](f: G => Validation[C]): G Or C = filter(f)
   def exists(f: G => Boolean): Boolean = f(g)
   def forall(f: G => Boolean): Boolean = f(g)
   def getOrElse[H >: G](default: => H): G = g
@@ -663,7 +669,8 @@ final case class Bad[+G,+B](b: B) extends Or[G,B] {
   def map[H](f: G => H): H Or B = this.asInstanceOf[H Or B]
   def foreach(f: G => Unit): Unit = ()
   def flatMap[H, C >: B](f: G => H Or C): H Or C = this.asInstanceOf[H Or C]
-  def filter(f: G => Boolean): None.type = None
+  def filter[C >: B](f: G => Validation[C]): G Or C = this
+  def withFilter[C >: B](f: G => Validation[C]): G Or C = filter(f)
   def exists(f: G => Boolean): Boolean = false
   def forall(f: G => Boolean): Boolean = true
   def getOrElse[H >: G](default: => H): H = default

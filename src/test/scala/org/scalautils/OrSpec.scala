@@ -114,9 +114,20 @@ class OrSpec extends UnitSpec with Validations with TypeCheckedTripleEquals {
     Good[Int].orBad("eight") flatMap ((x: Int) => Good(x + 1)) should equal (Bad("eight"))
   }
   it can "be used with filter" in {
-    Good(12).filter(_ > 10) should be (Some(Good(12)))
-    Good(7).filter(_ > 10) should be (None)
-    Good[Int].orBad(12).filter(_ > 10) should be (None)
+    def isRound(i: Int): Validation[ErrorMessage] =
+      if (i % 10 != 0) Fail(i + " was not a round number") else Pass
+    def isDivBy3(i: Int): Validation[ErrorMessage] =
+      if (i % 3 != 0) Fail(i + " was not divisible by 3") else Pass
+    Good(12).filter(isRound) shouldBe Bad("12 was not a round number")
+    Good(10).filter(isRound) shouldBe Good(10)
+    Good[Int].orBad(12).filter(isRound) shouldBe Bad(12)
+    (for (i <- Good(10) if isRound(i)) yield i) shouldBe Good(10)
+    (for (i <- Good(12) if isRound(i)) yield i) shouldBe Bad("12 was not a round number")
+    (for (i <- Good(12) if isRound(i)) yield i) shouldBe Bad("12 was not a round number")
+    (for (i <- Good(30) if isRound(i) && isDivBy3(i)) yield i) shouldBe Good(30)
+    (for (i <- Good(10) if isRound(i) && isDivBy3(i)) yield i) shouldBe Bad("10 was not divisible by 3")
+    (for (i <- Good(3) if isRound(i) && isDivBy3(i)) yield i) shouldBe Bad("3 was not a round number")
+    (for (i <- Good(2) if isRound(i) && isDivBy3(i)) yield i) shouldBe Bad("2 was not a round number")
   }
   it can "be used with exists" in {
     Good(12).exists(_ == 12) shouldBe true
