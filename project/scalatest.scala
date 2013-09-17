@@ -18,6 +18,7 @@ object ScalatestBuild extends Build {
          <artifact name="javax.servlet" type="orbit" ext="jar"/>
        </dependency>, 
      libraryDependencies ++= simpledependencies,
+     libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersionToUse, // this is needed to compile macro
      resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
      genMustMatchersTask, 
      genGenTask, 

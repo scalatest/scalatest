@@ -545,7 +545,7 @@ object GenInspectors {
   }
   
   def getNestedMessageTemplate(outerName: String, innerName: String, full: Boolean, xs: List[List[_]], fileName: String) = {
-    val errorMessage = new SimpleMessageTemplate("0 was not equal to 1")
+    val errorMessage = new SimpleMessageTemplate("0 did not equal 1")
     val assertLineNumber = "assertLineNumber"
     val innerLineNumber = "innerForLineNumber"
     val innerTemplates =
@@ -584,8 +584,8 @@ object GenInspectors {
           override val withList = List("Inspectors")
           override val children = {
             
-            val succeededAssertion = "assert(n % 2 == 0, n % 2 + \" was not equal to 0\")"
-            val failedAssertion = "assert(n % 2 == 1, n % 2 + \" was not equal to 1\")"
+            val succeededAssertion = "assert(n % 2 == 0)"
+            val failedAssertion = "assert(n % 2 == 1)"
             
             val succeededNestedList = List(("forAll", "forAll(l) { n =>\n"), 
                             ("forAtLeast", "forAtLeast(3, l) { n =>\n"), 

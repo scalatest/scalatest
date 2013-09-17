@@ -18,7 +18,9 @@ package org.scalatest
 import exceptions.TestCanceledException
 import scala.reflect.Manifest
 import Assertions.areEqualComparingArraysStructurally
-import org.scalautils.LegacyTripleEquals
+import org.scalautils.TripleEquals
+import exceptions.StackDepthExceptionHelper.getStackDepthFun
+import exceptions.StackDepthException.toExceptionFunction
 
 /**
  * Trait that contains ScalaTest's basic assertion methods.
@@ -279,7 +281,7 @@ import org.scalautils.LegacyTripleEquals
  *
  * @author Bill Venners
  */
-trait Assertions extends LegacyTripleEquals {
+trait Assertions extends TripleEquals {
 
   /* *
    * Class used via an implicit conversion to enable any two objects to be compared with
@@ -376,6 +378,7 @@ trait Assertions extends LegacyTripleEquals {
   }
 */
 
+  import language.experimental.macros
   /**
    * Assert that a boolean condition is true.
    * If the condition is <code>true</code>, this method returns normally.
@@ -384,10 +387,55 @@ trait Assertions extends LegacyTripleEquals {
    * @param condition the boolean condition to assert
    * @throws TestFailedException if the condition is <code>false</code>.
    */
-  def assert(condition: Boolean) {
-    if (!condition)
-      throw newAssertionFailedException(None, None, 4)
+  def assert(condition: Boolean): Unit = macro AssertionsMacro.apply
+  
+  class AssertionsHelper {
+
+    def macroAssertTrue(expression: Boolean, clue: Option[Any]) {
+      if (!expression)
+        throw newAssertionFailedException(if (clue.isDefined) Some(clue.get + "") else None, None, "Assertions.scala", "macroAssertTrue", 2)
+    }
+
+    def macroAssertTrue(left: Any, operator: String, right: Any, expression: Boolean, clue: Option[Any]) {
+      def getObjectsForFailureMessage(a: Any, b: Any) =
+        a match {
+          case aEqualizer: org.scalautils.TripleEqualsSupport#Equalizer[_] =>
+            Suite.getObjectsForFailureMessage(aEqualizer.left, b)
+          case aEqualizer: org.scalautils.TripleEqualsSupport#CheckingEqualizer[_] =>
+            Suite.getObjectsForFailureMessage(aEqualizer.left, b)
+          case _ => Suite.getObjectsForFailureMessage(left, right)
+        }
+      def prependClueIfRequired: String =
+        clue match {
+          case Some(clue) => clue + "\n"
+          case None => ""
+        }
+      if (!expression) {
+        throw operator match {
+          case "==" =>
+            val (leftee, rightee) = getObjectsForFailureMessage(left, right)
+            newAssertionFailedException(Some(prependClueIfRequired + FailureMessages("didNotEqual", leftee, rightee)), None, "Assertions.scala", "macroAssertTrue", 2)
+          case "===" =>
+            val (leftee, rightee) = getObjectsForFailureMessage(left, right)
+            newAssertionFailedException(Some(prependClueIfRequired + FailureMessages("didNotEqual", leftee, rightee)), None, "Assertions.scala", "macroAssertTrue", 2)
+          case "!=" =>
+            val (leftee, rightee) = getObjectsForFailureMessage(left, right)
+            newAssertionFailedException(Some(prependClueIfRequired + FailureMessages("equaled", leftee, rightee)), None, "Assertions.scala", "macroAssertTrue", 2)
+          case "!==" =>
+            val (leftee, rightee) = getObjectsForFailureMessage(left, right)
+            newAssertionFailedException(Some(prependClueIfRequired + FailureMessages("equaled", leftee, rightee)), None, "Assertions.scala", "macroAssertTrue", 2)
+          /*case ">" => newAssertionFailedException(Some(prependClueIfRequired + FailureMessages("wasNotGreaterThan", left, right)), None, "Assertions.scala", "macroAssertTrue", 2)
+          case ">=" => newAssertionFailedException(Some(prependClueIfRequired + FailureMessages("wasNotGreaterThanOrEqualTo", left, right)), None, "Assertions.scala", "macroAssertTrue", 2)
+          case "<" => newAssertionFailedException(Some(prependClueIfRequired + FailureMessages("wasNotLessThan", left, right)), None, "Assertions.scala", "macroAssertTrue", 2)
+          case "<=" => newAssertionFailedException(Some(prependClueIfRequired + FailureMessages("wasNotLessThanOrEqualTo", left, right)), None, "Assertions.scala", "macroAssertTrue", 2)*/
+          case _ =>
+            throw newAssertionFailedException(if (clue.isDefined) Some(clue.get + "") else None, None, "Assertions.scala", "macroAssertTrue", 2)
+        }
+      }
+    }
   }
+  
+  val $org_scalatest_AssertionsHelper = new AssertionsHelper
 
   private[scalatest] def newAssertionFailedException(optionalMessage: Option[Any], optionalCause: Option[Throwable], stackDepth: Int): Throwable =
     (optionalMessage, optionalCause) match {
@@ -396,6 +444,9 @@ trait Assertions extends LegacyTripleEquals {
       case (Some(message), None) => new TestFailedException(message.toString, stackDepth)
       case (Some(message), Some(cause)) => new TestFailedException(message.toString, cause, stackDepth)
     }
+  
+  private[scalatest] def newAssertionFailedException(optionalMessage: Option[String], optionalCause: Option[Throwable], fileName: String, methodName: String, stackDepthAdjustment: Int): Throwable =
+    new TestFailedException(toExceptionFunction(optionalMessage), optionalCause, getStackDepthFun(fileName, methodName, stackDepthAdjustment))
 
   private def newTestCanceledException(optionalMessage: Option[Any], optionalCause: Option[Throwable], stackDepth: Int): Throwable =
     (optionalMessage, optionalCause) match {
@@ -418,10 +469,7 @@ trait Assertions extends LegacyTripleEquals {
    * @throws TestFailedException if the condition is <code>false</code>.
    * @throws NullPointerException if <code>message</code> is <code>null</code>.
    */
-  def assert(condition: Boolean, clue: Any) {
-    if (!condition)
-      throw newAssertionFailedException(Some(clue), None, 4)
-  }
+  def assert(condition: Boolean, clue: Any): Unit = macro AssertionsMacro.applyWithClue
 
   /**
    * Assert that an <code>Option[String]</code> is <code>None</code>. 
@@ -451,6 +499,7 @@ trait Assertions extends LegacyTripleEquals {
    * @throws TestFailedException if the <code>Option[String]</code> is <code>Some</code>.
    * @throws NullPointerException if <code>message</code> is <code>null</code>.
    */
+  @deprecated("This method has been deprecated in favor of macro assertion and will be removed in a future version of ScalaTest. If you need this, please copy the source code into your own trait instead.")
   def assert(o: Option[String], clue: Any) {
     o match {
       case Some(s) => throw newAssertionFailedException(Some(clue + "\n" + s), None, 4)
@@ -482,6 +531,7 @@ trait Assertions extends LegacyTripleEquals {
    * @param o the <code>Option[String]</code> to assert
    * @throws TestFailedException if the <code>Option[String]</code> is <code>Some</code>.
    */
+  @deprecated("This method has been deprecated in favor of macro assertion and will be removed in a future version of ScalaTest. If you need this, please copy the source code into your own trait instead.")
   def assert(o: Option[String]) {
     o match {
       case Some(s) => throw newAssertionFailedException(Some(s), None, 4)
