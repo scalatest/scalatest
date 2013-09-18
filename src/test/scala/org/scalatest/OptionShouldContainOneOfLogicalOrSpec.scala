@@ -186,21 +186,6 @@ class OptionShouldContainOneOfLogicalOrSpec extends Spec with Matchers {
         }
         checkMessageStackDepth(e1, Resources("containedOneOfElements", toSome, "\"HAPPY\", \"BIRTHDAY\", \"TO\", \"YOU\"") + ", and " + Resources("containedOneOfElements", toSome, "\"NICE\", \"TO\", \"MEET\", \"YOU\""), fileName, thisLineNumber - 2)
       }
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          toSome should (not contain oneOf () or not contain oneOf ("fee", "fie", "fum", "foe"))
-        }
-        e1.failedCodeFileName.get should be (fileName)
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("oneOfEmpty")))
-        
-        val e2 = intercept[exceptions.NotAllowedException] {
-          toSome should (not contain oneOf ("fee", "fie", "fum", "foe") or not contain oneOf ())
-        }
-        e2.failedCodeFileName.get should be (fileName)
-        e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e2.message should be (Some(Resources("oneOfEmpty")))
-      }
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
           toSome should (not contain oneOf ("fee", "fie", "foe", "fie", "fum") or not contain oneOf ("fee", "fie", "fum", "foe"))
@@ -247,14 +232,6 @@ class OptionShouldContainOneOfLogicalOrSpec extends Spec with Matchers {
           (toSome should (not be (toSome) or not contain oneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, Resources("wasEqualTo", toSome, toSome) + ", and " + Resources("containedOneOfElements", toSome, "\"HAPPY\", \"BIRTHDAY\", \"TO\", \"YOU\""), fileName, thisLineNumber - 2)
-      }
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          toSome should (not be (fumSome) or not contain oneOf ())
-        }
-        e1.failedCodeFileName.get should be (fileName)
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("oneOfEmpty")))
       }
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
@@ -447,21 +424,6 @@ class OptionShouldContainOneOfLogicalOrSpec extends Spec with Matchers {
         }
         checkMessageStackDepth(e1, allErrMsg(0, "Some(to) contained one of (\"HAPPY\", \"BIRTHDAY\", \"TO\", \"YOU\"), and Some(to) contained one of (\"NICE\", \"TO\", \"MEET\", \"YOU\")", thisLineNumber - 2, toSomes), fileName, thisLineNumber - 2)
       }
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          all (toSomes) should (not contain oneOf () or not contain oneOf ("have", "a", "nice", "day"))
-        }
-        e1.failedCodeFileName.get should be (fileName)
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("oneOfEmpty")))
-        
-        val e2 = intercept[exceptions.NotAllowedException] {
-          all (toSomes) should (not contain oneOf ("have", "a", "nice", "day") or not contain oneOf ())
-        }
-        e2.failedCodeFileName.get should be (fileName)
-        e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e2.message should be (Some(Resources("oneOfEmpty")))
-      }
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
           all (toSomes) should (not contain oneOf ("fee", "fie", "foe", "fie", "fum") or not contain oneOf ("have", "a", "nice", "day"))
@@ -508,14 +470,6 @@ class OptionShouldContainOneOfLogicalOrSpec extends Spec with Matchers {
           (all (toSomes) should (not be (Some("to")) or not contain oneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, allErrMsg(0, "Some(to) was equal to Some(to), and Some(to) contained one of (\"HAPPY\", \"BIRTHDAY\", \"TO\", \"YOU\")", thisLineNumber - 2, toSomes), fileName, thisLineNumber - 2)
-      }
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          all (toSomes) should (not be (Some("fee")) or not contain oneOf ())
-        }
-        e1.failedCodeFileName.get should be (fileName)
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("oneOfEmpty")))
       }
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
