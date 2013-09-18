@@ -38,7 +38,7 @@ package prop
  *   require(d != Integer.MIN_VALUE)
  *   require(n != Integer.MIN_VALUE)
  *
- *   val numer = if (d < 0) -1 * n else n
+ *   val numer = if (d &lt; 0) -1 * n else n
  *   val denom = d.abs
  *
  *   override def toString = numer + " / " + denom
@@ -51,21 +51,21 @@ package prop
  * </p>
  *
  * <pre class="stHighlight">
- * forAll { (n: Int, d: Int) =>
+ * forAll { (n: Int, d: Int) =&gt;
  *
  *   whenever (d != 0 && d != Integer.MIN_VALUE
  *       && n != Integer.MIN_VALUE) {
  *
  *     val f = new Fraction(n, d)
  *
- *     if (n < 0 && d < 0 || n > 0 && d > 0)
- *       f.numer should be > 0
+ *     if (n &lt; 0 && d &lt; 0 || n &gt; 0 && d &gt; 0)
+ *       f.numer should be &gt; 0
  *     else if (n != 0)
- *       f.numer should be < 0
+ *       f.numer should be &lt; 0
  *     else
- *       f.numer should be === 0
+ *       f.numer shouldEqual 0
  *
- *     f.denom should be > 0
+ *     f.denom should be &gt; 0
  *   }
  * }
  * </pre>
@@ -86,7 +86,7 @@ package prop
  *     (1,                 0)
  *   )
  *
- * forAll (invalidCombos) { (n: Int, d: Int) =>
+ * forAll (invalidCombos) { (n: Int, d: Int) =&gt;
  *   evaluating {
  *     new Fraction(n, d)
  *   } should produce [IllegalArgumentException]
