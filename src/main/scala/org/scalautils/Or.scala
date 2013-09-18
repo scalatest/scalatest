@@ -673,9 +673,31 @@ sealed abstract class Or[+G,+B] {
    * @return the contained value, if this <code>Or</code> is a <code>Good</code>, else the result of evaluating the given <code>default</code>
    */
   def getOrElse[H >: G](default: => H): H
+
+  /**
+   * Returns this <code>Or</code> if it is a <code>Good</code>, otherwise returns the result of evaluating the passed <code>alternative</code>.
+   *
+   * @param alternative the alternative by-name to evaluate if this <code>Or</code> is a <code>Bad</code>
+   * @return this <code>Or<code>, if it is a <code>Good</code>, else the result of evaluating <code>alternative</code>
+   */
   def orElse[H >: G, C >: B](alternative: => H Or C): H Or C
+
+  /**
+   * Returns a <code>Some</code> containing the <code>Good</code> value, if this <code>Or</code> is a <code>Good</code>, else <code>None</code>.
+   *
+   * @return the contained &ldquo;good&rdquo; value wrapped in a <code>Some</code>, if this <code>Or</code> is a <code>Good</code>; <code>None</code>
+   *     if this <code>Or</code> is a <code>Bad</code>.
+   */
   def toOption: Option[G]
-  def toSeq: Seq[G]
+
+  /**
+   * Returns an immutable <code>IndexedSeq</code> containing the <code>Good</code> value, if this <code>Or</code> is a <code>Good</code>, else an empty
+   * immutable <code>IndexedSeq</code>.
+   *
+   * @return the contained &ldquo;good&rdquo; value in a lone-element <code>Seq</code> if this <code>Or</code> is a <code>Good</code>; an empty <code>Seq</code> if
+   *     this <code>Or</code> is a <code>Bad</code>.
+   */
+  def toSeq: scala.collection.immutable.IndexedSeq[G]
   def toEither: Either[B, G]
   def accumulating: G Or One[B]
   def toTry(implicit ev: B <:< Throwable): Try[G]
@@ -714,7 +736,7 @@ final case class Good[+G,+B](g: G) extends Or[G,B] {
   def getOrElse[H >: G](default: => H): G = g
   def orElse[H >: G, C >: B](alternative: => H Or C): G Or B = this
   def toOption: Some[G] = Some(g)
-  def toSeq: Seq[G] = Seq(g)
+  def toSeq: scala.collection.immutable.IndexedSeq[G] = Vector(g)
   def toEither: Either[B, G] = Right(g)
   def accumulating: G Or One[B] = Good(g)
   def toTry(implicit ev: B <:< Throwable): Success[G] = Success(g)
@@ -743,7 +765,7 @@ final case class Bad[+G,+B](b: B) extends Or[G,B] {
   def getOrElse[H >: G](default: => H): H = default
   def orElse[H >: G, C >: B](alternative: => H Or C): H Or C = alternative
   def toOption: None.type = None
-  def toSeq: Seq[G] = Seq.empty
+  def toSeq: scala.collection.immutable.IndexedSeq[G] = Vector.empty
   def toEither: Either[B, G] = Left(b)
   def accumulating: G Or One[B] = Bad(One(b))
   def toTry(implicit ev: B <:< Throwable): Failure[G] = Failure(b)
