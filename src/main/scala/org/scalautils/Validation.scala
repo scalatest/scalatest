@@ -28,10 +28,10 @@ package org.scalautils
  * import org.scalautils._
  *
  * def isRound(i: Int): Validation[ErrorMessage] =
- *   if (i % 10 != 0) Fail(i + " was not a round number") else Pass
+ *   if (i % 10 == 0) Pass else Fail(i + " was not a round number")
  *
  * def isDivBy3(i: Int): Validation[ErrorMessage] =
- *   if (i % 3 != 0) Fail(i + " was not divisible by 3") else Pass
+ *   if (i % 3 == 0) Pass else Fail(i + " was not divisible by 3")
  * </pre>
  *
  * <p>

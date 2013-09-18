@@ -99,21 +99,21 @@ import scala.collection.mutable.Builder
  * </pre>
  *
  * <p>
- * Here are some examples of invoking <code>parsePerson</code> in the Scala interpreter:
+ * Here are some examples of invoking <code>parsePerson</code>:
  * </p>
  *
- * <pre class="stREPL">
- * scala&gt; parsePerson("Bridget Jones", "29")
- * res4: Option[Person] = Some(Person(Bridget Jones,29))
+ * <pre class="stHighlight">
+ * parsePerson("Bridget Jones", "29")
+ * // Result: Some(Person(Bridget Jones,29))
  *
- * scala&gt; parsePerson("Bridget Jones", "")
- * res5: Option[Person] = None
+ * parsePerson("Bridget Jones", "")
+ * // Result: None
  *
- * scala&gt; parsePerson("Bridget Jones", "-29")
- * res6: Option[Person] = None
+ * parsePerson("Bridget Jones", "-29")
+ * // Result: None
  *
- * scala&gt; parsePerson("", "")
- * res7: Option[Person] = None
+ * parsePerson("", "")
+ * // Result: None
  * </pre>
  *
  * <p>
@@ -166,21 +166,21 @@ import scala.collection.mutable.Builder
  * the <code>Either</code> to a <code>RightProjection</code> by invoking <code>.right</code> at each step. 
  * Given this implementation, the <code>parsePerson</code> method will now short-circuit at the first sign
  * of trouble (as it did when we used an <code>Option</code>), but you now get the first error message returned
- * in a <code>Left</code>. Here are some examples in the Scala interpreter:
+ * in a <code>Left</code>. Here are some examples:
  * </p>
  *
- * <pre class="stREPL">
- * scala&gt; parsePerson("Bridget Jones", "29")
- * res4: Either[String,Person] = Right(Person(Bridget Jones,29))
+ * <pre class="stHighlight">
+ * parsePerson("Bridget Jones", "29")
+ * // Result: Right(Person(Bridget Jones,29))
  *
- * scala&gt; parsePerson("Bridget Jones", "")
- * res5: Either[String,Person] = Left("" is not a valid integer)
+ * parsePerson("Bridget Jones", "")
+ * // Result: Left("" is not a valid integer)
  *
- * scala&gt; parsePerson("Bridget Jones", "-29")
- * res6: Either[String,Person] = Left("-29" is not a valid age)
+ * parsePerson("Bridget Jones", "-29")
+ * // Result: Left("-29" is not a valid age)
  *
- * scala&gt; parsePerson("", "")
- * res7: Either[String,Person] = Left("" is not a valid name)
+ * parsePerson("", "")
+ * // Result: Left("" is not a valid name)
  * </pre>
  *
  * <h2>An <code>Either</code> with &ldquo;attitude&rdquo;</h2>
@@ -222,9 +222,13 @@ import scala.collection.mutable.Builder
  *
  * <p>
  * You can think of the <code>String</code> <code>Or</code> <code>ErrorMessage</code> result
- * type like this: <code>parseName</code> will return a name <code>String</code> or, if the input string
- * is not a valid name, an <code>ErrorMessage</code>.
+ * type like this:
  * </p>
+ *
+ * <blockquote>
+ * <em>The <code>parseName</code> method will return a name <code>String</code> or, if the input string
+ * is not a valid name, an <code>ErrorMessage</code>.</em>
+ * </blockquote>
  *
  * <p>
  * Here's how the <code>parseAge</code> method might be written:
@@ -258,21 +262,21 @@ import scala.collection.mutable.Builder
  * Because of <code>Or</code>'s attitude, you need not write <code>.good</code> at the end of
  * each generator. <code>Or</code> will keep going so long as each step produces a <code>Good</code>,
  * short circuiting at the first sign of a <code>Bad</code>. Here are a few invocations of this
- * <code>parsePerson</code> method in the Scala interpreter: 
+ * <code>parsePerson</code> method:
  * </p>
  *
- * <pre class="stREPL">
- * scala&gt; parsePerson("Bridget Jones", "29")
- * res8: org.scalautils.Or[Person,org.scalautils.ErrorMessage] = Good(Person(Bridget Jones,29))
+ * <pre class="stHighlight">
+ * parsePerson("Bridget Jones", "29")
+ * // Result: Good(Person(Bridget Jones,29))
  *
- * scala&gt; parsePerson("Bridget Jones", "")
- * res9: org.scalautils.Or[Person,org.scalautils.ErrorMessage] = Bad("" is not a valid integer)
+ * parsePerson("Bridget Jones", "")
+ * // Result: Bad("" is not a valid integer)
  *
- * scala&gt; parsePerson("Bridget Jones", "-29")
- * res10: org.scalautils.Or[Person,org.scalautils.ErrorMessage] = Bad("-29" is not a valid age)
+ * parsePerson("Bridget Jones", "-29")
+ * // Result: Bad("-29" is not a valid age)
  *
- * scala&gt; parsePerson("", "")
- * res11: org.scalautils.Or[Person,org.scalautils.ErrorMessage] = Bad("" is not a valid name)
+ * parsePerson("", "")
+ * // Result: Bad("" is not a valid name)
  * </pre>
  *
  * <h2>Accumulating errors with <code>Or</code></h2>
@@ -355,25 +359,21 @@ import scala.collection.mutable.Builder
  * As a result, the result type of <code>parsePerson</code> must be <code>Person</code> <code>Or</code>
  * <code>Every[ErrorMessage]</code>. Regardless of whether a <code>Bad</code> result contains one
  * or two error messages, it will contain <em>every</em> error message. Here's some invocations of
- * this accumulating version of <code>parsePerson</code> in the Scala interpreter:
+ * this accumulating version of <code>parsePerson</code>:
  * </p>
  *
- * <pre class="stREPL">
- * scala&gt; parsePerson("Bridget Jones", "29")
- * res10: org.scalautils.Or[Person,org.scalautils.Every[org.scalautils.ErrorMessage]] =
- *     Good(Person(Bridget Jones,29))
+ * <pre class="stHighlight">
+ * parsePerson("Bridget Jones", "29")
+ * // Result: Good(Person(Bridget Jones,29))
  *
- * scala&gt; parsePerson("Bridget Jones", "")
- * res11: org.scalautils.Or[Person,org.scalautils.Every[org.scalautils.ErrorMessage]] =
- *     Bad(One("" is not a valid integer))
+ * parsePerson("Bridget Jones", "")
+ * // Result: Bad(One("" is not a valid integer))
  *
- * scala&gt; parsePerson("Bridget Jones", "-29")
- * res12: org.scalautils.Or[Person,org.scalautils.Every[org.scalautils.ErrorMessage]] =
- *     Bad(One("-29" is not a valid age))
+ * parsePerson("Bridget Jones", "-29")
+ * // Result: Bad(One("-29" is not a valid age))
  *
- * scala&gt; parsePerson("", "")
- * res13: org.scalautils.Or[Person,org.scalautils.Every[org.scalautils.ErrorMessage]] =
- *     Bad(Many("" is not a valid name, "" is not a valid integer))
+ * parsePerson("", "")
+ * // Result: Bad(Many("" is not a valid name, "" is not a valid integer))
  * </pre>
  *
  * <p>
@@ -383,42 +383,46 @@ import scala.collection.mutable.Builder
  * <h2>Other ways to accumulate errors</h2>
 
  * <p>
- * The <code>Accumlation</code> trait also enables other ways of accumulating errors. If you have a collection of
+ * The <code>Accumlation</code> trait also enables other ways of accumulating errors.
+ * </p>
+ *
+ * <h3>Using <code>combined</code></h3>
+ *
+ * <p>
+ * If you have a collection of
  * accumulating <code>Or</code>s, for example, you can <em>combine</em> them into one <code>Or</code> using <code>combined</code>, like this:
  * </p>
  *
- * <pre class="stREPL">
- * scala&gt; List(parseAge("29"), parseAge("30"), parseAge("31")).combined
- * res14: org.scalautils.Or[List[Int],org.scalautils.Every[org.scalautils.ErrorMessage]] =
- *     Good(List(29, 30, 31))
+ * <pre class="stHighlight">
+ * List(parseAge("29"), parseAge("30"), parseAge("31")).combined
+ * // Result: Good(List(29, 30, 31))
  *
- * scala&gt; List(parseAge("29"), parseAge("-30"), parseAge("31")).combined
- * res15: org.scalautils.Or[List[Int],org.scalautils.Every[org.scalautils.ErrorMessage]] =
- *     Bad(One("-30" is not a valid age))
+ * List(parseAge("29"), parseAge("-30"), parseAge("31")).combined
+ * // Result: Bad(One("-30" is not a valid age))
  *
- * scala&gt; List(parseAge("29"), parseAge("-30"), parseAge("-31")).combined
- * res16: org.scalautils.Or[List[Int],org.scalautils.Every[org.scalautils.ErrorMessage]] =
- *     Bad(Many("-30" is not a valid age, "-31" is not a valid age))
+ * List(parseAge("29"), parseAge("-30"), parseAge("-31")).combined
+ * // Result: Bad(Many("-30" is not a valid age, "-31" is not a valid age))
  * </pre>
+ *
+ * <h3>Using <code>validatedBy</code></h3>
  *
  * <p>
  * Or if you have a collection of values and a function that transforms that type of value into an accumulating
  * <code>Or</code>s, you can validate the values using the function using <code>validatedBy</code>, like this:
  * </p>
  *
- * <pre class="stREPL">
- * scala&gt; List("29", "30", "31").validatedBy(parseAge)
- * res17: org.scalautils.Or[List[Int],org.scalautils.Every[org.scalautils.ErrorMessage]] =
- *     Good(List(29, 30, 31))
+ * <pre class="stHighlight">
+ * List("29", "30", "31").validatedBy(parseAge)
+ * // Result: Good(List(29, 30, 31))
  *
- * scala&gt; List("29", "-30", "31").validatedBy(parseAge)
- * res18: org.scalautils.Or[List[Int],org.scalautils.Every[org.scalautils.ErrorMessage]] =
- *     Bad(One("-30" is not a valid age))
+ * List("29", "-30", "31").validatedBy(parseAge)
+ * // Result: Bad(One("-30" is not a valid age))
  *
- * scala&gt; List("29", "-30", "-31").validatedBy(parseAge)
- * res19: org.scalautils.Or[List[Int],org.scalautils.Every[org.scalautils.ErrorMessage]] =
- *     Bad(Many("-30" is not a valid age, "-31" is not a valid age))
+ * List("29", "-30", "-31").validatedBy(parseAge)
+ * // Result: Bad(Many("-30" is not a valid age, "-31" is not a valid age))
  * </pre>
+ *
+ * <h3>Using <code>zip</code></h3>
  *
  * <p>
  * You can also zip two accumulating <code>Or</code>s together. If both are <code>Good</code>, you'll get a 
@@ -426,75 +430,88 @@ import scala.collection.mutable.Builder
  * containing every error message. Here are some examples:
  * </p>
  *
- * <pre class="stREPL">
- * scala&gt; parseName("Dude") zip parseAge("21")
- * res10: org.scalautils.Or[(String, Int),org.scalautils.Every[org.scalautils.ErrorMessage]] =
- *     Good((Dude,21))
+ * <pre class="stHighlight">
+ * parseName("Dude") zip parseAge("21")
+ * // Result: Good((Dude,21))
  *
- * scala&gt; parseName("Dude") zip parseAge("-21")
- * res11: org.scalautils.Or[(String, Int),org.scalautils.Every[org.scalautils.ErrorMessage]] =
- *     Bad(One("-21" is not a valid age))
+ * parseName("Dude") zip parseAge("-21")
+ * // Result: Bad(One("-21" is not a valid age))
  *
- * scala&gt; parseName("") zip parseAge("-21")
- * res12: org.scalautils.Or[(String, Int),org.scalautils.Every[org.scalautils.ErrorMessage]] =
- *     Bad(Many("" is not a valid name, "-21" is not a valid age))
+ * parseName("") zip parseAge("-21")
+ * // Result: Bad(Many("" is not a valid name, "-21" is not a valid age))
  * </pre>
  *
+ * <h3>Using <code>when</code></h3>
+ *
  * <p>
- * In addition, given an accumlating <code>Or</code>, you can pass one or more <em>validation functions</em> to <code>validate</code> on the <code>Or</code>
- * to submit that <code>Or</code> to further scrutiny. A validation function accepts a <code>Good</code> type and returns an optional accumulated type
- * (the type in the <code>Every</code> in the <code>Bad</code> type). For an <code>Int</code> <code>Or</code> <code>One[ErrorMessage]</code>, for example
- * the validation function type would be <code>Int</code> <code>=&gt;</code> <code>Option[ErrorMessage]</code>. Here are a few examples:
+ * In addition, given an accumlating <code>Or</code>, you can pass one or more <em>validation functions</em> to <code>when</code> on the <code>Or</code>
+ * to submit that <code>Or</code> to further scrutiny. A validation function accepts a <code>Good</code> type and returns a <code>Validation[E]</code>,
+ * where <code>E</code> is the type in the <code>Every</code> in the <code>Bad</code> type. For an <code>Int</code> <code>Or</code> <code>One[ErrorMessage]</code>, for example
+ * the validation function type would be <code>Int</code> <code>=&gt;</code> <code>Validation[ErrorMessage]</code>. Here are a few examples:
  * </p>
  *
- * <pre class="stREPL">
- * scala&gt; def isRound(i: Int): Option[ErrorMessage] =
- *             if (i % 10 != 0) Some(i + " was not a round number") else None
- * isRound: (i: Int)Option[org.scalautils.ErrorMessage]
+ * <pre class="stHighlight">
+ * def isRound(i: Int): Validation[ErrorMessage] =
+ *   if (i % 10 == 0) Pass else Fail(i + " was not a round number")
  *
- * scala&gt; def isDivBy3(i: Int): Option[ErrorMessage] =
- *             if (i % 3 != 0) Some(i + " was not divisible by 3") else None
- * isDivBy3: (i: Int)Option[org.scalautils.ErrorMessage]
+ * def isDivBy3(i: Int): Validation[ErrorMessage] =
+ *   if (i % 3 == 0) Pass else Fail(i + " was not divisible by 3")
  * </pre>
  * 
  * <p>
- * If the <code>Or</code> on which you call <code>validate</code> is already <code>Bad</code>, you get the same (<code>Bad</code>) <code>Or</code> back, because
+ * If the <code>Or</code> on which you call <code>when</code> is already <code>Bad</code>, you get the same (<code>Bad</code>) <code>Or</code> back, because
  * no <code>Good</code> value exists to pass to the valiation functions:
  * </p>
  * 
- * <pre class="stREPL">
- * scala&gt; parseAge("-30").validate(isRound, isDivBy3)
- * res10: org.scalautils.Or[Int,org.scalautils.Every[org.scalautils.ErrorMessage]] =
- *     Bad(One("-30" is not a valid age))
+ * <pre class="stHighlight">
+ * parseAge("-30").when(isRound, isDivBy3)
+ * // Result: Bad(One("-30" is not a valid age))
  * </pre>
  *
  * <p>
- * If the <code>Or</code> on which you call <code>validate</code> is <code>Good</code>, and also passes all the validation functions (<em>i.e.</em>, the
+ * If the <code>Or</code> on which you call <code>when</code> is <code>Good</code>, and also passes all the validation functions (<em>i.e.</em>, the
  * all return <code>None</code>), you again get the same <code>Or</code> back, but this time, a <code>Good</code> one:
  * </p>
  * 
- * <pre class="stREPL">
- * scala&gt; parseAge("30").validate(isRound, isDivBy3)
- * res11: org.scalautils.Or[Int,org.scalautils.Every[org.scalautils.ErrorMessage]] =
- *     Good(30)
+ * <pre class="stHighlight">
+ * parseAge("30").when(isRound, isDivBy3)
+ * // Result: Good(30)
  * </pre>
  *
  * <p>
  * If one or more of the validation functions fails, however, you'll get a <code>Bad</code> back contining every error. Here are some examples:
  * </p>
  * 
- * <pre class="stREPL">
- * scala&gt; parseAge("33").validate(isRound, isDivBy3)
- * res12: org.scalautils.Or[Int,org.scalautils.Every[org.scalautils.ErrorMessage]] =
- *     Bad(One(33 was not a round number))
+ * <pre class="stHighlight">
+ * parseAge("33").when(isRound, isDivBy3)
+ * // Result: Bad(One(33 was not a round number))
  *
- * scala&gt; parseAge("20").validate(isRound, isDivBy3)
- * res13: org.scalautils.Or[Int,org.scalautils.Every[org.scalautils.ErrorMessage]] =
- *     Bad(One(20 was not divisible by 3))
+ * parseAge("20").when(isRound, isDivBy3)
+ * // Result: Bad(One(20 was not divisible by 3))
  *
- * scala&gt; parseAge("31").validate(isRound, isDivBy3)
- * res14: org.scalautils.Or[Int,org.scalautils.Every[org.scalautils.ErrorMessage]] =
- *     Bad(Many(31 was not a round number, 31 was not divisible by 3))
+ * parseAge("31").when(isRound, isDivBy3)
+ * // Result: Bad(Many(31 was not a round number, 31 was not divisible by 3))
+ * </pre>
+ *
+ * <p>
+ * Note that you can use <code>when</code> to accumulate errors in a <code>for</code> expression involving an accumulating <code>Or</code>, like this:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * for (age &lt;- parseAge("-30") when (isRound, isDivBy3)) yield age
+ * // Result: Bad(One("-30" is not a valid age))
+ *
+ * for (age &lt;- parseAge("30") when (isRound, isDivBy3)) yield age
+ * // Result: Good(30)
+ *
+ * for (age &lt;- parseAge("33") when (isRound, isDivBy3)) yield age
+ * // Result: Bad(One(33 was not a round number))
+ *
+ * for (age &lt;- parseAge("20") when (isRound, isDivBy3)) yield age
+ * // Result: Bad(One(20 was not divisible by 3))
+ *
+ * for (age &lt;- parseAge("31") when (isRound, isDivBy3)) yield age
+ * // Result: Bad(Many(31 was not a round number, 31 was not divisible by 3))
  * </pre>
  *
  * <h2>Much ado about <code>Nothing</code></h2>
@@ -599,10 +616,62 @@ sealed abstract class Or[+G,+B] {
    *         else this <code>Bad<code> is returned
    */
   def flatMap[H, C >: B](f: G => H Or C): H Or C
+
+  /**
+   * Returns this <code>Or</code> if either 1) it is a <code>Bad</code> or 2) it is a <code>Good</code> and applying the validation function <code>f</code> to this
+   * <code>Good</code>'s value returns <code>Pass</code>; otherwise, 
+   * returns a new <code>Bad</code> containing the error value contained in the <code>Fail</code> resulting from applying the validation
+   * function <code>f</code> to this <code>Good</code>'s value.
+   *
+   * <p>
+   * For examples of <code>filter</code> used in <code>for</code> expressions, see the main documentation for trait
+   * <a href="Validation.html"><code>Validation</code></a>.
+   * </p>
+   *
+   * @param f the validation function to apply
+   * @return a <code>Good</code> if this <code>Or</code> is a <code>Good</code> that passes the validation function, else a <code>Bad</code>.
+   */
   def filter[C >: B](f: G => Validation[C]): G Or C
-  def withFilter[C >: B](f: G => Validation[C]): G Or C
-  def exists(f: G => Boolean): Boolean
+
+  // TODO: What should we do about withFilter. Good question for the hackathon.
+  /**
+   * Currently just forwards to </code>filter</code>, and therefore, returns the same result.
+   */
+  def withFilter[C >: B](f: G => Validation[C]): G Or C = filter(f)
+
+  /**
+   * Returns <code>true</code> if this <code>Or</code> is a <code>Good</code> and the predicate <code>p</code> returns true when applied to this <code>Good</code>'s value.
+   *
+   * <p>
+   * Note: The <code>exists</code> method will return the same result as <code>forall</code> if this <code>Or</code> is a <code>Good</code>, but the opposite
+   * result if this <code>Or</code> is a <code>Bad</code>.
+   * </p>
+   *
+   * @param p the predicate to apply to the <code>Good</code> value, if this is a <code>Good</code>
+   * @return the result of applying the passed predicate <code>p</code> to the <code>Good</code> value, if this is a <code>Good</code>, else <code>false</code>
+   */
+  def exists(p: G => Boolean): Boolean
+
+  /**
+   * Returns <code>true</code> if either this <code>Or</code> is a <code>Bad</code> or if the predicate <code>p</code> returns <code>true</code> when applied
+   * to this <code>Good</code>'s value.
+   *
+   * <p>
+   * Note: The <code>forall</code> method will return the same result as <code>exists</code> if this <code>Or</code> is a <code>Good</code>, but the opposite
+   * result if this <code>Or</code> is a <code>Bad</code>.
+   * </p>
+   *
+   * @param p the predicate to apply to the <code>Good</code> value, if this is a <code>Good</code>
+   * @return the result of applying the passed predicate <code>p</code> to the <code>Good</code> value, if this is a <code>Good</code>, else <code>true</code>
+   */
   def forall(f: G => Boolean): Boolean
+
+  /**
+   * Returns, if this <code>Or</code> is <code>Good</code>, this <code>Good</code>'s value; otherwise returns the result of evaluating <code>default</code>. 
+   *
+   * @param default the default expression to evaluate if this <code>Or</code> is a <code>Bad</code>
+   * @return the contained value, if this <code>Or</code> is a <code>Good</code>, else the result of evaluating the given <code>default</code>
+   */
   def getOrElse[H >: G](default: => H): H
   def orElse[H >: G, C >: B](alternative: => H Or C): H Or C
   def toOption: Option[G]
@@ -640,9 +709,8 @@ final case class Good[+G,+B](g: G) extends Or[G,B] {
       case Fail(error) => Bad(error)
       case Pass => this
     }
-  def withFilter[C >: B](f: G => Validation[C]): G Or C = filter(f)
-  def exists(f: G => Boolean): Boolean = f(g)
-  def forall(f: G => Boolean): Boolean = f(g)
+  def exists(p: G => Boolean): Boolean = p(g)
+  def forall(p: G => Boolean): Boolean = p(g)
   def getOrElse[H >: G](default: => H): G = g
   def orElse[H >: G, C >: B](alternative: => H Or C): G Or B = this
   def toOption: Some[G] = Some(g)
@@ -670,9 +738,8 @@ final case class Bad[+G,+B](b: B) extends Or[G,B] {
   def foreach(f: G => Unit): Unit = ()
   def flatMap[H, C >: B](f: G => H Or C): H Or C = this.asInstanceOf[H Or C]
   def filter[C >: B](f: G => Validation[C]): G Or C = this
-  def withFilter[C >: B](f: G => Validation[C]): G Or C = filter(f)
-  def exists(f: G => Boolean): Boolean = false
-  def forall(f: G => Boolean): Boolean = true
+  def exists(p: G => Boolean): Boolean = false
+  def forall(p: G => Boolean): Boolean = true
   def getOrElse[H >: G](default: => H): H = default
   def orElse[H >: G, C >: B](alternative: => H Or C): H Or C = alternative
   def toOption: None.type = None
