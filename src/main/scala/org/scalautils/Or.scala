@@ -698,19 +698,134 @@ sealed abstract class Or[+G,+B] {
    *     this <code>Or</code> is a <code>Bad</code>.
    */
   def toSeq: scala.collection.immutable.IndexedSeq[G]
+
+  /**
+   * Returns an <code>Either</code>: a <code>Right</code> containing the <code>Good</code> value, if this is a <code>Good</code>; a <code>Left</code>
+   * containing the <code>Bad</code> value, if this is a <code>Bad</code>.
+   *
+   * <p>
+   * Note that values effectively &ldquo;switch sides&rdquo; when convering an <code>Or</code> to an <code>Either</code>. If the type of the
+   * <code>Or</code> on which you invoke <code>toEither</code> is <code>Or[Int, ErrorMessage]</code> for example, the result will be an
+   * <code>Either[ErrorMessage, Int]</code>. The reason is that the convention for <code>Either</code> is that <code>Left</code> is used for &ldquo;bad&rdquo;
+   * values and <code>Right</code> is used for &ldquo;good&rdquo; ones.
+   * </p>
+   *
+   * @return this <code>Good</code> value, wrapped in a <code>Right</code>, or this <code>Bad</code> value, wrapped in a <code>Left</code>.
+   */
   def toEither: Either[B, G]
+
+  /**
+   * Converts this <code>Or</code> to an <code>Or</code> with the same <code>Good</code> type and a <code>Bad</code> type consisting of
+   * <a href="One.html"><code>One</code></a> parameterized by this <code>Or</code>'s <code>Bad</code> type.
+   *
+   * <p>
+   * For example, invoking the <code>accumulating</code> method on an <code>Int Or ErrorMessage</code> would convert it to an
+   * <code>Int Or One[ErrorMessage]</code>. This result type, because the <code>Bad</code> type is an <code>Every</code>, can be used
+   * with the mechanisms provided in trait <a href="Accumulation.html"><code>Accumulation</code></a> to accumulate errors.
+   * <p>
+   *
+   * <p>
+   * Note that if this <code>Or</code> is already an accumulating <code>Or</code>, the behavior of this <code>accumulating</code> method does not change.
+   * For example, if you invoke <code>accumulating</code> on an <code>Int Or One[ErrorMessage]</code> you will be rewarded with an
+   * <code>Int Or One[One[ErrorMessage]]</code>.
+   * </p>
+   *
+   * @return this <code>Good</value>, if this <code>Or</code> is a <code>Good</code>; or this <code>Bad</code> value wrapped in a <code>One</code> if
+   *     this <code>Or</code> is a <code>Bad</code>.
+   */
   def accumulating: G Or One[B]
+
+  /**
+   * Returns a <code>Try</code>: a <code>Success</code> containing the
+   * <code>Good</code> value, if this is a <code>Good</code>; a <code>Failure</code>
+   * containing the <code>Bad</code> value, if this is a <code>Bad</code>.
+   *
+   * <p>
+   * Note: This method can only be called if the <code>Bad</code> type of this <code>Or</code> is a subclass
+   * of <code>Throwable</code> (or <code>Throwable</code> itself).
+   * </p>
+   *
+   * <p>
+   * Note that values effectively &ldquo;switch sides&rdquo; when converting an <code>Or</code> to an <code>Either</code>. If the type of the
+   * <code>Or</code> on which you invoke <code>toEither</code> is <code>Or[Int, ErrorMessage]</code> for example, the result will be an
+   * <code>Either[ErrorMessage, Int]</code>. The reason is that the convention for <code>Either</code> is that <code>Left</code> is used for &ldquo;bad&rdquo;
+   * values and <code>Right</code> is used for &ldquo;good&rdquo; ones.
+   * </p>
+   *
+   * @return this <code>Good</code> value, wrapped in a <code>Right</code>, or this <code>Bad</code> value, wrapped in a <code>Left</code>.
+   */
   def toTry(implicit ev: B <:< Throwable): Try[G]
+
+  /**
+   * Returns an <code>Or</code> with the <code>Good</code> and <code>Bad</code> types swapped: <code>Bad</code> becomes <code>Good</code> and <code>Good</code>
+   * becomes <code>Bad</code>.
+   *
+   * <p>
+   * Here's an example:
+   * </p>
+   *
+   * <pre class="stREPL">
+   * scala&gt; val lyrics = Bad("Hey Jude, don't make it bad. Take a sad song and make it better.")
+   * lyrics: org.scalautils.Bad[Nothing,String] =
+   *     Bad(Hey Jude, don't make it bad. Take a sad song and make it better.)
+   *
+   * scala&gt; lyrics.swap
+   * res12: org.scalautils.Or[String,Nothing] =
+   *     Good(Hey Jude, don't make it bad. Take a sad song and make it better.)
+   * </pre>
+   *
+   * <p>
+   * Now that song will be rolling around in your head all afternoon. But at least it is a good song (thanks to <code>swap</code>).
+   * </p>
+   *
+   * @return if this <code>Or</code> is a <code>Good</code>, its <code>Good</code> value wrapped in a <code>Bad</code>; if this <code>Or</code> is
+   *     a <code>Bad</code>, its <code>Bad</code> value wrapped in a <code>Good</code>.
+   */
   def swap: B Or G
+
+  /**
+   * Transforms this <code>Or</code> by applying the function <code>gf</code> to this <code>Or</code>'s <code>Good</code> value if it is a <code>Good</code>,
+   * or by applying <code>bf</code> to this <code>Or</code>'s <code>Bad</code> value if it is a <code>Bad</code>.
+   *
+   * @param gf the function to apply to this <code>Or</code>'s <code>Good</code> value, if it is a <code>Good</code>
+   * @param bf the function to apply to this <code>Or</code>'s <code>Bad</code> value, if it is a <code>Bad</code>
+   * @return the result of applying the appropriate one of the two passed functions, <code>gf</code> or </code>bf</code>, to this <code>Or</code>'s value
+   */
   def transform[H, C](gf: G => H Or C, bf: B => H Or C): H Or C
 }
 
+/**
+ * The companion object for <code>Or</code> providing factory methods for creating <code>Or</code>s from <code>Either</code>s and <code>Try</code>s.
+ */
 object Or {
+
+  /**
+   * Constructs a new <code>Or</code> from the given <code>Try</code>.
+   *
+   * @param theTry the <code>Try</code> to convert to an <code>Or</code>
+   * @return a new <code>Or<code> whose <code>Good</code> type is the <code>Try</code>'s <code>Success</code> type and whose
+   *    <code>Bad</code> type is <code>Throwable</code>.
+   */
   def from[G](theTry: Try[G]): G Or Throwable =
     theTry match {
       case Success(g) => Good(g)
       case Failure(e) => Bad(e)
     }
+
+  /**
+   * Constructs a new <code>Or</code> from the given <code>Either</code>.
+   *
+   * <p>
+   * Note that values effectively &ldquo;switch sides&rdquo; when converting an <code>Either</code> to an <code>Or</code>. If the type of the
+   * <code>Either</code> which you pass to <code>Or.from</code> is <code>Either[ErrorMessage, Int]</code> for example, the result will be an
+   * <code>Or[Int, ErrorMessage]</code>. The reason is that the convention for <code>Either</code> is that <code>Left</code> is used for &ldquo;bad&rdquo;
+   * values and <code>Right</code> is used for &ldquo;good&rdquo; ones.
+   * </p>
+   *
+   * @param either the <code>Either</code> to convert to an <code>Or</code>
+   * @return a new <code>Or<code> whose <code>Good</code> type is the <code>Either</code>'s <code>Right</code> type and whose
+   *    <code>Bad</code> type is <code>Either</code>'s <code>Left</code> type.
+   */
   def from[B, G](either: Either[B, G]): G Or B =
     either match {
       case Right(g) => Good(g)
@@ -718,9 +833,109 @@ object Or {
     }
 }
 
+/**
+ * Contains a &ldquo;good&rdquo; value.
+ *
+ * <p>
+ * You can decide what &ldquo;good&rdquo; means, but it is expected <code>Good</code> will be commonly used
+ * to hold valid results for processes that may fail with an error instead of producing a valid result.
+ * </p>
+ *
+ * @param g the &ldquo;good&rdquo; value
+ */
 final case class Good[+G,+B](g: G) extends Or[G,B] {
   override val isGood: Boolean = true
+
+  /**
+   * Returns this <code>Good</code> with the type widened to <code>Or</code>.
+   *
+   * <p>
+   * This widening method can useful when the compiler infers the more specific <code>Good</code> type and
+   * you need the more general <code>Or</code> type. Here's an example that uses <code>foldLeft</code> on
+   * a <code>List[Int]</code> to calculate a sum, so long as only odd numbers exist in a passed <code>List</code>:
+   * </p>
+   *
+   * <pre class="stREPL">
+   * scala&gt; import org.scalautils._
+   * import org.scalautils._
+   *
+   * scala&gt; def oddSum(xs: List[Int]): Int Or ErrorMessage =
+   *      |   xs.foldLeft(Good(0).orBad[ErrorMessage]) { (acc, x) =&gt;
+   *      |     acc match {
+   *      |       case Bad(_) =&gt; acc
+   *      |       case Good(_) if (x % 2 == 0) =&gt; Bad(x + " is not odd")
+   *      |       case Good(sum) =&gt; Good(sum + x)
+   *      |     }
+   *      |   }
+   * &lt;console&gt;:13: error: constructor cannot be instantiated to expected type;
+   *  found   : org.scalautils.Bad[G,B]
+   *  required: org.scalautils.Good[Int,org.scalautils.ErrorMessage]
+   *              case Bad(_) =&gt; acc
+   *                   ^
+   * &lt;console&gt;:14: error: type mismatch;
+   *  found   : org.scalautils.Bad[Nothing,String]
+   *  required: org.scalautils.Good[Int,org.scalautils.ErrorMessage]
+   *              case Good(_) if (x % 2 == 0) =&gt; Bad(x + " is not odd")
+   *                                                 ^
+   * </pre>
+   *
+   * <p>
+   * Because the compiler infers the type of the first parameter to <code>foldLeft</code> to be <code>Good[Int, ErrorMessage]</code>,
+   * it expects the same type to appear as the result type of function passed as the second, curried parameter. What you really want is
+   * that both types be <code>Int Or ErrorMessage</code>, but the compiler thinks you want them to be the more specific
+   * <code>Good[Int, ErrorMessage]</code>. You can use the <code>asOr</code> method to indicate you want the type to be <code>Or</code>
+   * with minimal boilerplate:
+   * </p>
+   *
+   * <pre class="stREPL">
+   * scala&gt; def oddSum(xs: List[Int]): Int Or ErrorMessage =
+   *      |   xs.foldLeft(Good(0).orBad[ErrorMessage].asOr) { (acc, x) =&gt;
+   *      |     acc match {
+   *      |       case Bad(_) =&gt; acc
+   *      |       case Good(_) if (x % 2 == 0) =&gt; Bad(x + " is not odd")
+   *      |       case Good(sum) =&gt; Good(sum + x)
+   *      |     }
+   *      |   }
+   * oddSum: (xs: List[Int])org.scalautils.Or[Int,org.scalautils.ErrorMessage]
+   * </pre>
+   *
+   * <p>
+   * Now you can use the method to sum a <code>List</code> of odd numbers:
+   * </p>
+   *
+   * <pre class="stREPL">
+   * scala&gt; oddSum(List(1, 2, 3))
+   * res2: org.scalautils.Or[Int,org.scalautils.ErrorMessage] = Bad(2 is not odd)
+   *
+   * scala&gt; oddSum(List(1, 3, 5))
+   * res3: org.scalautils.Or[Int,org.scalautils.ErrorMessage] = Good(9)
+   * </pre>
+   */
   def asOr: G Or B = this
+
+  /**
+   * Narrows the <code>Bad</code> type of this <code>Good</code> to the given type.
+   *
+   * <p>
+   * Because <code>Or</code> has two types, but the <code>Good</code> factory method only takes a value of the &ldquo;good&rdquo; type, the Scala compiler will
+   * infer <code>Nothing</code> for the <code>Bad</code> type:
+   * </p>
+   *
+   * <pre class="stREPL">
+   * scala&gt; Good(3)
+   * res0: org.scalautils.Good[Int,Nothing] = Good(3)
+   * </pre>
+   *
+   * <p>
+   * Often <code>Nothing</code> will work fine, as it will be widened as soon as the compiler encounters a more specific <code>Bad</code> type.
+   * Sometimes, however, you may need to specify it. In such situations you can use this <code>orBad</code> method, like this:
+   * </p>
+   *
+   * <pre class="stREPL">
+   * scala&gt; Good(3).orBad[String]
+   * res1: org.scalautils.Good[Int,String] = Good(3)
+   * </pre>
+   */
   def orBad[C](implicit ev: B <:< C): Good[G, C] = this.asInstanceOf[Good[G, C]]
   def get: G = g
   def map[H](f: G => H): Or[H, B] = Good(f(g))
@@ -744,16 +959,134 @@ final case class Good[+G,+B](g: G) extends Or[G,B] {
   def transform[H, C](gf: G => H Or C, bf: B => H Or C): H Or C = gf(g)
 }
 
+/**
+ * Companion object for <code>Good</code> that offers, in addition to the standard factory method
+ * for <code>Good</code> that takes single &ldquo;good&rdquo; type, an parameterless <a code>apply</code> 
+ * used to narrow the <code>Good</code> type when creating a <code>Bad</code>.
+ */
 object Good {
-  class GoodieGoodieGumdrop[G] {
+
+  /**
+   * Supports the syntax that enables <code>Bad</code> instances to be created with a specific
+   * <code>Good</code> type.
+   */
+  class GoodType[G] {
+
+    /**
+     * Factory method for <code>Bad</code> instances whose <code>Good</code> type is specified
+     * by the type parameter of this <code>GoodType</code>.
+     *
+     * <p>
+     * This method enables this syntax:
+     * </p>
+     *
+     * <pre class="stHighlight">
+     * Good[Int].orBad("oops")
+     *           ^
+     * </pre>
+     *
+     * @param b the &ldquo;bad&rdquo; value
+     * @return a new <code>Bad</code> instance containing the passed <code>b</code> value
+     */
     def orBad[B](b: B): Bad[G, B] = Bad[G, B](b)
-    override def toString: String = "GoodieGoodieGumdrop"
+
+    override def toString: String = "GoodType"
   }
-  def apply[G]: GoodieGoodieGumdrop[G] = new GoodieGoodieGumdrop[G]
+
+  /**
+   * Captures a <code>Good</code> type to enable a <code>Bad</code> to be constructed with a specific
+   * <code>Good</code> type.
+   *
+   * <p>
+   * Because <code>Or</code> has two types, but the <code>Bad</code> factory method only takes a value of the &ldquo;bad&rdquo; type, the Scala compiler will
+   * infer <code>Nothing</code> for the <code>Good</code> type:
+   * </p>
+   *
+   * <pre class="stREPL">
+   * scala&gt; Bad("oops")
+   * res1: org.scalautils.Bad[Nothing,String] = Bad(oops)
+   * </pre>
+   *
+   * <p>
+   * Often <code>Nothing</code> will work fine, as it will be widened as soon as the compiler encounters a more specific <code>Good</code> type.
+   * Sometimes, however, you may need to specify it. In such situations you can use this factory method, like this:
+   * </p>
+   *
+   * <pre class="stREPL">
+   * scala&gt; Good[Int].orBad("oops")
+   * res3: org.scalautils.Bad[Int,String] = Bad(oops)
+   * </pre>
+   */
+  def apply[G]: GoodType[G] = new GoodType[G]
 }
 
+/**
+ * Contains a &ldquo;bad&rdquo; value.
+ *
+ * <p>
+ * You can decide what &ldquo;bad&rdquo; means, but it is expected <code>Bad</code> will be commonly used
+ * to hold descriptions of an error (or several, accumulated errors). Some examples of possible error descriptions
+ * are <code>String</code> error messages, <code>Int</code> error codes, <code>Throwable</code> exceptions,
+ * or instances of a case class hierarchy designed to describe errors.
+ * </p>
+ *
+ * @param b the &ldquo;bad&rdquo; value
+ */
 final case class Bad[+G,+B](b: B) extends Or[G,B] {
   override val isBad: Boolean = true
+
+  /**
+   * Returns this <code>Bad</code> with the type widened to <code>Or</code>.
+   *
+   * <p>
+   * This widening method can useful when the compiler infers the more specific <code>Bad</code> type and
+   * you need the more general <code>Or</code> type. Here's an example that uses <code>foldLeft</code> on
+   * a <code>List[Int]</code> to find the first even number in the <code>List</code>:
+   * </p>
+   *
+   * <pre class="stREPL">
+   * scala&gt; import org.scalautils._
+   * import org.scalautils._
+   *
+   * scala&gt; def findFirstEven(xs: List[Int]): Int Or ErrorMessage =
+   *      |   xs.foldLeft(Good[Int].orBad("No even nums")) { (acc, x) =&gt;
+   *      |     acc orElse (if (x % 2 == 0) Good(x) else acc)
+   *      |   }
+   * &lt;console&gt;:13: error: type mismatch;
+   *  found   : org.scalautils.Or[Int,String]
+   *  required: org.scalautils.Bad[Int,String]
+   *            acc orElse (if (x % 2 == 0) Good(x) else acc)
+   *                ^
+   * </pre>
+   *
+   * <p>
+   * Because the compiler infers the type of the first parameter to <code>foldLeft</code> to be <code>Bad[Int, String]</code>,
+   * it expects the same type to appear as the result type of function passed as the second, curried parameter. What you really want is
+   * that both types be <code>Int Or String</code>, but the compiler thinks you want them to be the more specific
+   * <code>Bad[Int, String]</code>. You can use the <code>asOr</code> method to indicate you want the type to be <code>Or</code>
+   * with minimal boilerplate:
+   * </p>
+   *
+   * <pre class="stREPL">
+   * scala&gt; def findFirstEven(xs: List[Int]): Int Or ErrorMessage =
+   *      |   xs.foldLeft(Good[Int].orBad("No even nums").asOr) { (acc, x) =&gt;
+   *      |     acc orElse (if (x % 2 == 0) Good(x) else acc)
+   *      |   }
+   * findFirstEven: (xs: List[Int])org.scalautils.Or[Int,String]
+   * </pre>
+   *
+   * <p>
+   * Now you can use the method to find the first even number in a <code>List</code>:
+   * </p>
+   *
+   * <pre class="stREPL">
+   * scala&gt; findFirstEven(List(1, 2, 3))
+   * res4: org.scalautils.Or[Int,ErrorMessage] = Good(2)
+   *
+   * scala&gt; findFirstEven(List(1, 3, 5))
+   * res5: org.scalautils.Or[Int,ErrorMessage] = Bad(No even nums)
+   * </pre>
+   */
   def asOr: G Or B = this
   def get: G = throw new NoSuchElementException("Bad(" + b + ").get")
   def map[H](f: G => H): H Or B = this.asInstanceOf[H Or B]
