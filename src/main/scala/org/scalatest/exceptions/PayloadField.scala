@@ -25,9 +25,10 @@ package org.scalatest.exceptions
  * ScalaTest looks for this trait and fires any payloads it finds in the relevant ScalaTest event
  * stimulated by the exception, such as a <code>TestFailed</code> event stimulated by a <code>TestFailedException</code>.
  * (Although in its initial
- * release there is only one subclass of <code>PayloadField</code> in ScalaTest,
- * <a href="TestFailedException.html"><code>TestFailedException</code></a>,
- * in a future version of ScalaTest, there will be another....)
+ * release there is only two subclasses of <code>PayloadField</code> in ScalaTest,
+ * <a href="TestFailedException.html"><code>TestFailedException</code></a> and
+ * <a href="TestCanceledException.html"><code>TestCanceledException</code></a>,
+ * in future version of ScalaTest, there could be more)
  * </p>
  *
  * <p>

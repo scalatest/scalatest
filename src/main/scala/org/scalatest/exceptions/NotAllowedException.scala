@@ -22,7 +22,7 @@ package org.scalatest.exceptions
  * of that suite will fail with a <code>NotAllowedException</code>.
  *
  * @param message a string that explains the problem
- * @param failedCodeStackDepth the depth in the stack trace of this exception at which the line of code that attempted
+ * @param failedCodeStackDepthFun a function that return the depth in the stack trace of this exception at which the line of code that attempted
  *    something not allowed resides.
  *
  * @throws NullPointerException if either <code>message</code> or <code>failedCodeStackDepthFun</code> is <code>null</code>

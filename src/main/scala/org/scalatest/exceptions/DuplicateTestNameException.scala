@@ -25,14 +25,14 @@ import org.scalatest.Resources
  * stack trace to find the correct filename and line number of the offending code.)
  *
  * @param testName the test name that was attempted to be registered twice
- * @param failedCodeStackDepthFun the depth in the stack trace of this exception at which the line of code that attempted
+ * @param failedCodeStackDepthFun a function that return the depth in the stack trace of this exception at which the line of code that attempted
  *   to register the test with the duplicate name resides.
  *
  * @throws NullPointerException if <code>testName</code> is <code>null</code>
  *
  * @author Bill Venners
  */
-class DuplicateTestNameException(testName: String, failedCodeStackDepthFun: StackDepthException => Int)
+class   DuplicateTestNameException(testName: String, failedCodeStackDepthFun: StackDepthException => Int)
     extends StackDepthException(
       Some(Resources("duplicateTestName", testName)),
       None,
