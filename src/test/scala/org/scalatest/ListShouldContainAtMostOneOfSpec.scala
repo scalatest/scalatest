@@ -362,15 +362,7 @@ class ListShouldContainAtMostOneOfSpec extends Spec with Matchers {
           (all (hiLists) should contain atMostOneOf ("hi", "he")) (decided by defaultEquality[String])
         }
       }
-      
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          all (list1s) should contain atMostOneOf ()
-        }
-        e1.failedCodeFileName.get should be ("ListShouldContainAtMostOneOfSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("atMostOneOfEmpty")))
-      }
+
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
           all (list1s) should contain atMostOneOf (1, 2, 2, 3)
@@ -554,15 +546,6 @@ class ListShouldContainAtMostOneOfSpec extends Spec with Matchers {
         intercept[TestFailedException] {
           all (toLists) shouldNot contain atMostOneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")
         }
-      }
-      
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          all (toLists) shouldNot contain atMostOneOf ()
-        }
-        e1.failedCodeFileName.get should be ("ListShouldContainAtMostOneOfSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("atMostOneOfEmpty")))
       }
       
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {

@@ -375,34 +375,26 @@ The bottom two don't, but still I don't want to support that in general.
       }
 
       def `should use the implicit Equality in scope` {
-        all (hiLists) should contain oneOf ("hi")
+        all (hiLists) should contain oneOf ("hi", "he")
         intercept[TestFailedException] {
-          all (hiLists) should contain oneOf ("ho")
+          all (hiLists) should contain oneOf ("ho", "he")
         }
         implicit val ise = upperCaseEquality
-        all (hiLists) should contain oneOf ("HI")
+        all (hiLists) should contain oneOf ("HI", "HE")
         intercept[TestFailedException] {
-          all (hiLists) should contain oneOf ("hi")
+          all (hiLists) should contain oneOf ("hi", "he")
         }
       }
       def `should use an explicitly provided Equality` {
-        (all (hiLists) should contain oneOf ("HI")) (decided by upperCaseEquality)
+        (all (hiLists) should contain oneOf ("HI", "HE")) (decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (all (hiLists) should contain oneOf ("hi")) (decided by upperCaseEquality)
+          (all (hiLists) should contain oneOf ("hi", "he")) (decided by upperCaseEquality)
         }
         implicit val ise = upperCaseEquality
-        (all (hiLists) should contain oneOf ("hi")) (decided by defaultEquality[String])
+        (all (hiLists) should contain oneOf ("hi", "he")) (decided by defaultEquality[String])
         intercept[TestFailedException] {
-          (all (hiLists) should contain oneOf ("ho")) (decided by defaultEquality[String])
+          (all (hiLists) should contain oneOf ("ho", "he")) (decided by defaultEquality[String])
         }
-      }
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          all (list1s) should contain oneOf ()
-        }
-        e1.failedCodeFileName.get should be ("ListShouldContainOneOfSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("oneOfEmpty")))
       }
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
@@ -633,14 +625,6 @@ The top two don't, but still I don't want to support that in general.
         intercept[TestFailedException] {
           (all (toLists) shouldNot contain oneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (after being lowerCased and trimmed)
         }
-      }
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          all (toLists) shouldNot contain oneOf ()
-        }
-        e1.failedCodeFileName.get should be ("ListShouldContainOneOfSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("oneOfEmpty")))
       }
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {

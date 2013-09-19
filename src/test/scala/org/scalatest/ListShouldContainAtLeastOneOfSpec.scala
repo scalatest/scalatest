@@ -365,9 +365,9 @@ The bottom two don't, but still I don't want to support that in general.
       }
 
       def `should use the implicit Equality in scope` {
-        all (hiLists) should contain atLeastOneOf ("hi")
+        all (hiLists) should contain atLeastOneOf ("hi", "he")
         intercept[TestFailedException] {
-          all (hiLists) should contain atLeastOneOf ("ho")
+          all (hiLists) should contain atLeastOneOf ("ho", "he")
         }
         implicit val ise = upperCaseStringEquality
         all (hiLists) should contain atLeastOneOf ("HI", "HE")
@@ -385,14 +385,6 @@ The bottom two don't, but still I don't want to support that in general.
         intercept[TestFailedException] {
           (all (hiLists) should contain atLeastOneOf ("HI", "HE")) (decided by defaultEquality[String])
         }
-      }
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          all (hiLists) should contain atLeastOneOf ()
-        }
-        e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("atLeastOneOfEmpty")))
       }
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
@@ -623,14 +615,6 @@ The top two don't, but still I don't want to support that in general.
         intercept[TestFailedException] {
           (all (toLists) shouldNot contain atLeastOneOf (" TO ", " YOU ")) (after being lowerCased and trimmed)
         }
-      }
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          all (hiLists) shouldNot contain atLeastOneOf ()
-        }
-        e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("atLeastOneOfEmpty")))
       }
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
