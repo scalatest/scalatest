@@ -61,7 +61,9 @@ package org.scalautils
  * </pre>
  *
  * <p>
- * Note: You can think of <code>Validation</code> as an <code>Option</code> with attitude&rdquo;
+ * Note: You can think of <code>Validation</code> as an &ldquo;<code>Option</code> with attitude,&rdquo; where <code>Pass</code> is 
+ * a <code>None</code> that indicates validation success and <code>Fail</code> is a <code>Some</code> whose value describes 
+ * the validation failure.
  * </p>
  * 
  * @tparam E the type of error value describing a validation failure for this <code>Validation</code>
