@@ -2772,9 +2772,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  def inOrderOnly[T](xs: Any*) = {
-    if (xs.isEmpty)
-      throw new NotAllowedException(FailureMessages("inOrderOnlyEmpty"), getStackDepthFun("Matchers.scala", "inOrderOnly"))
+  def inOrderOnly[T](firstEle: Any, secondEle: Any, remainingEles: Any*) = {
+    val xs = firstEle :: secondEle :: remainingEles.toList
     if (xs.distinct.size != xs.size)
       throw new NotAllowedException(FailureMessages("inOrderOnlyDuplicate"), getStackDepthFun("Matchers.scala", "inOrderOnly"))
     new ResultOfInOrderOnlyApplication(xs)
@@ -2788,9 +2787,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  def allOf(xs: Any*) = {
-    if (xs.isEmpty)
-      throw new NotAllowedException(FailureMessages("allOfEmpty"), getStackDepthFun("Matchers.scala", "allOf"))
+  def allOf(firstEle: Any, secondEle: Any, remainingEles: Any*) = {
+    val xs = firstEle :: secondEle :: remainingEles.toList
     if (xs.distinct.size != xs.size)
       throw new NotAllowedException(FailureMessages("allOfDuplicate"), getStackDepthFun("Matchers.scala", "allOf"))
     new ResultOfAllOfApplication(xs)
@@ -2804,9 +2802,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  def inOrder(xs: Any*) = { 
-    if (xs.isEmpty)
-      throw new NotAllowedException(FailureMessages("inOrderEmpty"), getStackDepthFun("Matchers.scala", "inOrder"))
+  def inOrder(firstEle: Any, secondEle: Any, remainingEles: Any*) = {
+    val xs = firstEle :: secondEle :: remainingEles.toList
     if (xs.distinct.size != xs.size)
       throw new NotAllowedException(FailureMessages("inOrderDuplicate"), getStackDepthFun("Matchers.scala", "inOrder"))
     new ResultOfInOrderApplication(xs)

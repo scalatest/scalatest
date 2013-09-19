@@ -350,22 +350,6 @@ class ListShouldContainInOrderOnlyLogicalAndSpec extends Spec with Matchers {
         checkMessageStackDepth(e2, Resources("containedInOrderOnlyElements", decorateToStringValue(fumList), "\"FUM\", \"FOE\", \"FIE\", \"FEE\""), fileName, thisLineNumber - 2)
       }
       
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          fumList should (not contain inOrderOnly () and not contain inOrderOnly ("fee", "fie", "foe", "fum"))
-        }
-        e1.failedCodeFileName.get should be (fileName)
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("inOrderOnlyEmpty")))
-        
-        val e2 = intercept[exceptions.NotAllowedException] {
-          fumList should (not contain inOrderOnly ("fee", "fie", "foe", "fum") and not contain inOrderOnly ())
-        }
-        e2.failedCodeFileName.get should be (fileName)
-        e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e2.message should be (Some(Resources("inOrderOnlyEmpty")))
-      }
-      
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
           fumList should (not contain inOrderOnly ("fee", "fie", "foe", "fie", "fum") and not contain inOrderOnly ("fee", "fie", "foe", "fum"))
@@ -422,15 +406,6 @@ class ListShouldContainInOrderOnlyLogicalAndSpec extends Spec with Matchers {
         checkMessageStackDepth(e2, Resources("equaled", decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
       }
       
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          fumList should (not equal (toList) and not contain inOrderOnly ())
-        }
-        e1.failedCodeFileName.get should be (fileName)
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("inOrderOnlyEmpty")))
-      }
-      
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
           fumList should (not equal (toList) and not contain inOrderOnly ("fee", "fie", "foe", "fie", "fum"))
@@ -479,15 +454,6 @@ class ListShouldContainInOrderOnlyLogicalAndSpec extends Spec with Matchers {
         }
         checkMessageStackDepth(e2, Resources("wasEqualTo", decorateToStringValue(fumList), decorateToStringValue(fumList)), fileName, thisLineNumber - 2)
         (fumList should (not contain inOrderOnly (" FEE ", " FIE ", " FOE ", " FUU ") and not contain inOrderOnly (" FEE ", " FIE ", " FOE ", " FUU "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
-      }
-      
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          fumList should (not be (toList) and not contain inOrderOnly ())
-        }
-        e1.failedCodeFileName.get should be (fileName)
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("inOrderOnlyEmpty")))
       }
       
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
@@ -731,7 +697,7 @@ class ListShouldContainInOrderOnlyLogicalAndSpec extends Spec with Matchers {
         all (hiLists) should (not contain inOrderOnly ("HELLO", "HI") and not contain inOrderOnly ("HELLO", "HO"))
         
         val e1 = intercept[TestFailedException] {
-          all (hiLists) should (not contain inOrderOnly ("HI", "HELLO") and not contain inOrderOnly ("HO"))
+          all (hiLists) should (not contain inOrderOnly ("HI", "HELLO") and not contain inOrderOnly ("HO", "HE"))
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " contained only " + "(\"HI\", \"HELLO\")" + " in order", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
         
@@ -744,7 +710,7 @@ class ListShouldContainInOrderOnlyLogicalAndSpec extends Spec with Matchers {
       def `should use an explicitly provided Equality` {
         (all (hiLists) should (not contain inOrderOnly ("HELLO", "HI") and not contain inOrderOnly ("HELLO", "HO"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         val e1 = intercept[TestFailedException] {
-          (all (hiLists) should (not contain inOrderOnly ("HI", "HELLO") and not contain inOrderOnly ("HO"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
+          (all (hiLists) should (not contain inOrderOnly ("HI", "HELLO") and not contain inOrderOnly ("HO", "HE"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " contained only " + "(\"HI\", \"HELLO\")" + " in order", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
         
@@ -752,22 +718,6 @@ class ListShouldContainInOrderOnlyLogicalAndSpec extends Spec with Matchers {
           (all (hiLists) should (not contain inOrderOnly ("HELLO", "HI") and not contain inOrderOnly ("HI", "HELLO"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " did not contain only " + "(\"HELLO\", \"HI\")" + " in order" + ", but " + decorateToStringValue(List("hi", "hello")) + " contained only " + "(\"HI\", \"HELLO\")" + " in order", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
-      }
-      
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          all (list1s) should (not contain inOrderOnly () and not contain inOrderOnly (8, 3, 4))
-        }
-        e1.failedCodeFileName.get should be (fileName)
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("inOrderOnlyEmpty")))
-        
-        val e2 = intercept[exceptions.NotAllowedException] {
-          all (list1s) should (not contain inOrderOnly (8, 3, 4) and not contain inOrderOnly ())
-        }
-        e2.failedCodeFileName.get should be (fileName)
-        e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e2.message should be (Some(Resources("inOrderOnlyEmpty")))
       }
       
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
@@ -843,15 +793,6 @@ class ListShouldContainInOrderOnlyLogicalAndSpec extends Spec with Matchers {
           (all (hiLists) should (not be (List("ho")) and not contain inOrderOnly ("HI", "HELLO"))) (decided by upperCaseStringEquality)
         }
         checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " was not equal to " + decorateToStringValue(List("ho")) + ", but " + decorateToStringValue(List("hi", "hello")) + " contained only " + "(\"HI\", \"HELLO\")" + " in order", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
-      }
-      
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          all (list1s) should (not be (List(2)) and not contain inOrderOnly ())
-        }
-        e1.failedCodeFileName.get should be (fileName)
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("inOrderOnlyEmpty")))
       }
       
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {

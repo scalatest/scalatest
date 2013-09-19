@@ -579,9 +579,9 @@ The top two don't, but still I don't want to support that in general.
         intercept[TestFailedException] {
           (all (toLists) should (not contain atLeastOneOf ("TO", "YOU"))) (decided by upperCaseStringEquality)
         }
-        all (toLists) should (not contain atLeastOneOf (" TO ", " YOU"))
+        all (toLists) should (not contain atLeastOneOf (" TO ", " YOU "))
         intercept[TestFailedException] {
-          (all (toLists) should (not contain atLeastOneOf (" TO ", " YOU"))) (after being lowerCased and trimmed)
+          (all (toLists) should (not contain atLeastOneOf (" TO ", " YOU "))) (after being lowerCased and trimmed)
         }
       }
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
