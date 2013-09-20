@@ -317,10 +317,15 @@ final class ContainWord {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
+            val postfix =
+              if (right.size == 1 && right(0).isInstanceOf[scala.collection.GenTraversable[_]])
+                "WithFriendlyReminder"
+              else
+                ""
             MatchResult(
               aggregating.containsOnly(left, right),
-              Resources("didNotContainOnlyElements"),
-              Resources("containedOnlyElements"), 
+              Resources("didNotContainOnlyElements" + postfix),
+              Resources("containedOnlyElements" + postfix),
               Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
             )
           }

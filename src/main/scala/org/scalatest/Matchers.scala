@@ -3718,16 +3718,22 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       val right = only.right
 
       doCollected(collected, xs, "contain", 1) { e =>
-        if (aggregating.containsOnly(e, right) != shouldBeTrue)
+        if (aggregating.containsOnly(e, right) != shouldBeTrue) {
+          val postfix =
+            if (right.size == 1 && right(0).isInstanceOf[scala.collection.GenTraversable[_]])
+              "WithFriendlyReminder"
+            else
+              ""
           throw newTestFailedException(
             FailureMessages(
-              if (shouldBeTrue) "didNotContainOnlyElements" else "containedOnlyElements",
+              (if (shouldBeTrue) "didNotContainOnlyElements" else "containedOnlyElements") + postfix,
               e,
               UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
             ),
             None,
             6
           )
+        }
       }
     }
 
@@ -4222,16 +4228,22 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       if (right.distinct.size != right.size)
         throw new NotAllowedException(FailureMessages("onlyDuplicate"), getStackDepthFun("Matchers.scala", "only"))
       doCollected(collected, xs, "only", 1) { e =>
-        if (aggregating.containsOnly(e, right) != shouldBeTrue)
+        if (aggregating.containsOnly(e, right) != shouldBeTrue) {
+          val postfix =
+            if (right.size == 1 && right(0).isInstanceOf[scala.collection.GenTraversable[_]])
+              "WithFriendlyReminder"
+            else
+              ""
           throw newTestFailedException(
             FailureMessages(
-              if (shouldBeTrue) "didNotContainOnlyElements" else "containedOnlyElements",
+              (if (shouldBeTrue) "didNotContainOnlyElements" else "containedOnlyElements") + postfix,
               e,
               UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
             ),
             None,
             6
           )
+        }
       }
     }
 

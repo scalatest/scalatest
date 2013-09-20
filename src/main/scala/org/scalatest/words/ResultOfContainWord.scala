@@ -156,14 +156,20 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
       throw new NotAllowedException(FailureMessages("onlyEmpty"), getStackDepthFun("ResultOfContainWord.scala", "only"))
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages("onlyDuplicate"), getStackDepthFun("ResultOfContainWord.scala", "only"))
-    if (aggregating.containsOnly(left, right) != shouldBeTrue)
+    if (aggregating.containsOnly(left, right) != shouldBeTrue) {
+      val postfix =
+        if (right.size == 1 && right(0).isInstanceOf[scala.collection.GenTraversable[_]])
+          "WithFriendlyReminder"
+        else
+          ""
       throw newTestFailedException(
         FailureMessages(
-          if (shouldBeTrue) "didNotContainOnlyElements" else "containedOnlyElements",
+          (if (shouldBeTrue) "didNotContainOnlyElements" else "containedOnlyElements") + postfix,
           left,
           UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
         )
       )
+    }
   }
 
   /**

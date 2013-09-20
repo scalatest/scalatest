@@ -132,6 +132,17 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec with Matchers {
         e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e2.message should be (Some(Resources("onlyDuplicate")))
       }
+
+      def `should throw TFE with friendly reminder when single GenTraversable argument is passed and failed` {
+        val e1 = intercept[TestFailedException] {
+          fumList should (contain only List("happy", "birthday", "to", "you") and contain only ("fee", "fie", "foe", "fum"))
+        }
+        checkMessageStackDepth(e1, Resources("didNotContainOnlyElementsWithFriendlyReminder", decorateToStringValue(fumList), List("happy", "birthday", "to", "you")), fileName, thisLineNumber - 2)
+        val e2 = intercept[TestFailedException] {
+          fumList should (contain only ("fee", "fie", "foe", "fum") and contain only List("happy", "birthday", "to", "you"))
+        }
+        checkMessageStackDepth(e2, Resources("containedOnlyElements", decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fum\"") + ", but " + Resources("didNotContainOnlyElementsWithFriendlyReminder", decorateToStringValue(fumList), List("happy", "birthday", "to", "you")), fileName, thisLineNumber - 2)
+      }
     }
     
     object `when used with (equal (..) and contain only (..))` {
@@ -190,6 +201,13 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec with Matchers {
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("onlyDuplicate")))
+      }
+
+      def `should throw TFE with friendly reminder when single GenTraversable argument is passed and failed` {
+        val e1 = intercept[TestFailedException] {
+          fumList should (equal (fumList) and contain only List("happy", "birthday", "to", "you"))
+        }
+        checkMessageStackDepth(e1, Resources("equaled", decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", but " + Resources("didNotContainOnlyElementsWithFriendlyReminder", decorateToStringValue(fumList), List("happy", "birthday", "to", "you")), fileName, thisLineNumber - 2)
       }
     }
     
@@ -250,6 +268,13 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec with Matchers {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("onlyDuplicate")))
       }
+
+      def `should throw TFE with friendly reminder when single GenTraversable argument is passed and failed` {
+        val e2 = intercept[TestFailedException] {
+          fumList should (be (fumList) and contain only List("happy", "birthday", "to", "you"))
+        }
+        checkMessageStackDepth(e2, Resources("wasEqualTo", decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", but " + Resources("didNotContainOnlyElementsWithFriendlyReminder", decorateToStringValue(fumList), List("happy", "birthday", "to", "you")), fileName, thisLineNumber - 2)
+      }
     }
 
     object `when used with (contain only (..) and be (..))` {
@@ -308,6 +333,13 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec with Matchers {
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("onlyDuplicate")))
+      }
+
+      def `should throw TFE with friendly reminder when single GenTraversable argument is passed and failed` {
+        val e1 = intercept[TestFailedException] {
+          fumList should (contain only List("happy", "birthday", "to", "you") and be (fumList))
+        }
+        checkMessageStackDepth(e1, Resources("didNotContainOnlyElementsWithFriendlyReminder", decorateToStringValue(fumList), List("happy", "birthday", "to", "you")), fileName, thisLineNumber - 2)
       }
     }
     
@@ -382,6 +414,17 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec with Matchers {
         e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e2.message should be (Some(Resources("onlyDuplicate")))
       }
+
+      def `should throw TFE with friendly reminder when single GenTraversable argument is passed and failed` {
+        val e1 = intercept[TestFailedException] {
+          List(List("fee", "fie", "foe", "fum")) should (not contain only (List("fee", "fie", "foe", "fum")) and not contain only ("happy", "birthday", "to", "you"))
+        }
+        checkMessageStackDepth(e1, Resources("containedOnlyElementsWithFriendlyReminder", decorateToStringValue(List(List("fee", "fie", "foe", "fum"))), List("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
+        val e2 = intercept[TestFailedException] {
+          List(List("fee", "fie", "foe", "fum")) should (not contain only (List("happy", "birthday", "to", "you")) and not contain only (List("fee", "fie", "foe", "fum")))
+        }
+        checkMessageStackDepth(e2, Resources("didNotContainOnlyElementsWithFriendlyReminder", decorateToStringValue(List(List("fee", "fie", "foe", "fum"))), List("happy", "birthday", "to", "you")) + ", but " + Resources("containedOnlyElementsWithFriendlyReminder", decorateToStringValue(List(List("fee", "fie", "foe", "fum"))), List("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
+      }
     }
     
     object `when used with (not equal (..) and not contain only (..))` {
@@ -441,6 +484,13 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec with Matchers {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("onlyDuplicate")))
       }
+
+      def `should throw TFE with friendly reminder when single GenTraversable argument is passed and failed` {
+        val e1 = intercept[TestFailedException] {
+          List(List("fee", "fie", "foe", "fum")) should (not equal (toList) and not contain only (List("fee", "fie", "foe", "fum")))
+        }
+        checkMessageStackDepth(e1, Resources("didNotEqual", decorateToStringValue(List(List("fee", "fie", "foe", "fum"))), decorateToStringValue(toList)) + ", but " + Resources("containedOnlyElementsWithFriendlyReminder", decorateToStringValue(List(List("fee", "fie", "foe", "fum"))), List("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
+      }
     }
     
     object `when used with (not be (..) and not contain only (..))` {
@@ -499,6 +549,13 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec with Matchers {
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("onlyDuplicate")))
+      }
+
+      def `should throw TFE with friendly reminder when single GenTraversable argument is passed and failed` {
+        val e1 = intercept[TestFailedException] {
+          List(List("fee", "fie", "foe", "fum")) should (not be (toList) and not contain only (List("fee", "fie", "foe", "fum")))
+        }
+        checkMessageStackDepth(e1, Resources("wasNotEqualTo", decorateToStringValue(List(List("fee", "fie", "foe", "fum"))), decorateToStringValue(toList)) + ", but " + Resources("containedOnlyElementsWithFriendlyReminder", decorateToStringValue(List(List("fee", "fie", "foe", "fum"))), List("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
       }
     }
     
@@ -601,6 +658,23 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec with Matchers {
         e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e2.message should be (Some(Resources("onlyDuplicate")))
       }
+
+      def `should throw TFE with friendly reminder when single GenTraversable argument is passed and failed` {
+        val e1 = intercept[TestFailedException] {
+          all (lists) should (contain only List(1, 2, 3) and contain only (1, 3, 2))
+        }
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(List(3, 2, 1)) + " did not contain only " + "(" + List(1, 2, 3) + "), did you forget to say : _*", thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
+
+        val e2 = intercept[TestFailedException] {
+          all (list1s) should (contain only (1, 2, 3) and contain only List(1, 3, 4))
+        }
+        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(List(3, 2, 1)) + " contained only " + "(1, 2, 3)" + ", but " + decorateToStringValue(List(3, 2, 1)) + " did not contain only " + "(" + List(1, 3, 4) + "), did you forget to say : _*", thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
+
+        val e4 = intercept[TestFailedException] {
+          all (hiLists) should (contain only ("hi", "hello") and contain only List("ho", "hey", "howdy"))
+        }
+        checkMessageStackDepth(e4, allErrMsg(0, decorateToStringValue(List("hi", "hello")) + " contained only " + "(\"hi\", \"hello\")" + ", but " + decorateToStringValue(List("hi", "hello")) + " did not contain only " + "(" + List("ho", "hey", "howdy") + "), did you forget to say : _*", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+      }
     }
     
     object `when used with (be (..) and contain only (..))` {
@@ -689,6 +763,23 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec with Matchers {
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("onlyDuplicate")))
+      }
+
+      def `should throw TFE with friendly reminder when single GenTraversable argument is passed and failed` {
+        val e1 = intercept[TestFailedException] {
+          all (List(list1s)) should (be (list1s) and contain only List(2, 3, 8))
+        }
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(list1s) + " was equal to " + decorateToStringValue(list1s) + ", but " + decorateToStringValue(list1s) + " did not contain only (" + List(2, 3, 8) + "), did you forget to say : _*", thisLineNumber - 2, List(list1s)), fileName, thisLineNumber - 2)
+
+        val e2 = intercept[TestFailedException] {
+          all (List(hiLists)) should (be (hiLists) and contain only List("ho", "hey", "howdy"))
+        }
+        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(hiLists) + " was equal to " + decorateToStringValue(hiLists) + ", but " + decorateToStringValue(hiLists) + " did not contain only (" + List("ho", "hey", "howdy") + "), did you forget to say : _*", thisLineNumber - 2, List(hiLists)), fileName, thisLineNumber - 2)
+
+        val e3 = intercept[TestFailedException] {
+          all (List(list1s)) should (be (list1s) and contain only List(2, 3, 8))
+        }
+        checkMessageStackDepth(e3, allErrMsg(0, decorateToStringValue(list1s) + " was equal to " + decorateToStringValue(list1s) + ", but " + decorateToStringValue(list1s) + " did not contain only (" + List(2, 3, 8) + "), did you forget to say : _*", thisLineNumber - 2, List(list1s)), fileName, thisLineNumber - 2)
       }
     }
     
@@ -781,6 +872,28 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec with Matchers {
         e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e2.message should be (Some(Resources("onlyDuplicate")))
       }
+
+      def `should throw TFE with friendly reminder when single GenTraversable argument is passed and failed` {
+        val e1 = intercept[TestFailedException] {
+          all (List(list1s)) should (not contain only (List(3, 2, 1)) and not contain only (8, 3, 4))
+        }
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(list1s) + " contained only (" + List(3, 2, 1) + "), did you forget to say : _*", thisLineNumber - 2, List(list1s)), fileName, thisLineNumber - 2)
+
+        val e2 = intercept[TestFailedException] {
+          all (List(list1s)) should (not contain only (List(3, 6, 8)) and not contain only (List(3, 2, 1)))
+        }
+        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(list1s) + " did not contain only (" + List(3, 6, 8) + "), did you forget to say : _*" + ", but " + decorateToStringValue(list1s) + " contained only (" + List(3, 2, 1) + "), did you forget to say : _*", thisLineNumber - 2, List(list1s)), fileName, thisLineNumber - 2)
+
+        val e3 = intercept[TestFailedException] {
+          all (List(hiLists)) should (not contain only (List("hi", "hello")) and not contain only ("ho", "hey", "howdy"))
+        }
+        checkMessageStackDepth(e3, allErrMsg(0, decorateToStringValue(hiLists) + " contained only (" + List("hi", "hello") + "), did you forget to say : _*", thisLineNumber - 2, List(hiLists)), fileName, thisLineNumber - 2)
+
+        val e4 = intercept[TestFailedException] {
+          all (List(hiLists)) should (not contain only (List("ho", "hey", "howdy")) and not contain only (List("hi", "hello")))
+        }
+        checkMessageStackDepth(e4, allErrMsg(0, decorateToStringValue(hiLists) + " did not contain only (" + List("ho", "hey", "howdy") + "), did you forget to say : _*, but " + decorateToStringValue(hiLists) + " contained only (" + List("hi", "hello") + "), did you forget to say : _*", thisLineNumber - 2, List(hiLists)), fileName, thisLineNumber - 2)
+      }
     }
     
     object `when used with (not be (..) and not contain only (..))` {
@@ -857,6 +970,18 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec with Matchers {
         e1.failedCodeFileName.get should be (fileName)
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources("onlyDuplicate")))
+      }
+
+      def `should throw TFE with friendly reminder when single GenTraversable argument is passed and failed` {
+        val e1 = intercept[TestFailedException] {
+          all (List(list1s)) should (not be (List(3)) and not contain only (List(3, 2, 1)))
+        }
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(list1s) + " was not equal to " + decorateToStringValue(List(3)) + ", but " + decorateToStringValue(list1s) + " contained only (" + List(3, 2, 1) + "), did you forget to say : _*", thisLineNumber - 2, List(list1s)), fileName, thisLineNumber - 2)
+
+        val e2 = intercept[TestFailedException] {
+          all (List(hiLists)) should (not be (List("ho")) and not contain only (List("hi", "hello")))
+        }
+        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(hiLists) + " was not equal to " + decorateToStringValue(List("ho")) + ", but " + decorateToStringValue(hiLists) + " contained only (" + List("hi", "hello") + "), did you forget to say : _*", thisLineNumber - 2, List(hiLists)), fileName, thisLineNumber - 2)
       }
     }
   }
