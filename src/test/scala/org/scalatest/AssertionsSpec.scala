@@ -134,6 +134,19 @@ class AssertionsSpec extends FunSpec with OptionValues {
       assert(result eq e)
     }
   }
+  describe("The trap method") {
+    it("should be a shorthand for intercept[Throwable]") {
+      val a = 12
+      val trapped = trap { assert(a == 13) }
+      assert(trapped.isInstanceOf[TestFailedException])
+      assert(trapped.getMessage == "12 did not equal 13")
+      val intercepted =
+        intercept[TestFailedException] {
+          trap { assert(a == 12) }
+        }
+      assert(intercepted.message == Some(Resources("exceptionExpected", "java.lang.Throwable")))
+    }
+  }
   
   describe("The assert(boolean) method") {
     val a = 3
