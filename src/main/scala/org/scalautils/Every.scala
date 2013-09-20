@@ -82,6 +82,10 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
   }
   final def hasDefiniteSize: Boolean = true
   final def head: T = underlying.head
+  // This headOption I can't take away because of the implicit conversion to GenTraversable.
+  // which in turn means you can call any of the methods I left out on an Every, and get whatever
+  // Vector would return for that method call. Probably need to implement Option[Every] variants
+  // for all of these things.
   final def headOption: Option[T] = underlying.headOption
   final def indexOf[U >: T](elem: U): Int = underlying.indexOf(elem)
   final def indexOf[U >: T](elem: U, from: Int): Int = underlying.indexOf(elem, from)

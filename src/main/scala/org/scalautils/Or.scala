@@ -279,6 +279,7 @@ import scala.collection.mutable.Builder
  * // Result: Bad("" is not a valid name)
  * </pre>
  *
+ * <a name="accumulatigErrors"></a>
  * <h2>Accumulating errors with <code>Or</code></h2>
  *
  * <p>
@@ -386,6 +387,7 @@ import scala.collection.mutable.Builder
  * The <code>Accumlation</code> trait also enables other ways of accumulating errors.
  * </p>
  *
+ * <a name="usingCombined"></a>
  * <h3>Using <code>combined</code></h3>
  *
  * <p>
@@ -404,6 +406,7 @@ import scala.collection.mutable.Builder
  * // Result: Bad(Many("-30" is not a valid age, "-31" is not a valid age))
  * </pre>
  *
+ * <a name="usingValidatedBy"></a>
  * <h3>Using <code>validatedBy</code></h3>
  *
  * <p>
@@ -422,6 +425,7 @@ import scala.collection.mutable.Builder
  * // Result: Bad(Many("-30" is not a valid age, "-31" is not a valid age))
  * </pre>
  *
+ * <a name="usingZip"></a>
  * <h3>Using <code>zip</code></h3>
  *
  * <p>
@@ -441,6 +445,7 @@ import scala.collection.mutable.Builder
  * // Result: Bad(Many("" is not a valid name, "-21" is not a valid age))
  * </pre>
  *
+ * <a name="usingWhen"></a>
  * <h3>Using <code>when</code></h3>
  *
  * <p>

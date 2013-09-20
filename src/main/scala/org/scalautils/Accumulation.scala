@@ -28,6 +28,22 @@ import Accumulation.Validatable
 import Accumulation.TravValidatable
 import Accumulation.Accumulatable
 
+/**
+ * Provides mechanisms that enable errors to be accumulated in &ldquo;accumulating <a href="Or.html"><code>Or</code></a>s,&rdquo; <code>Or</code>s whose
+ * <a href="Bad.html"><code>Bad</code></a> type is an <a href="Every.html"><code>Every</code></a>.
+ *
+ * <p>
+ * The mechanisms are:
+ * </p>
+ *
+ * <ul>
+ * <li>Passing accumulating <code>Or</code>s to <code>withGood</code> methods</li>
+ * <li>Invoking <code>combined</code> on a container of accumulating <code>Or</code>s</li>
+ * <li>Invoking <code>validatedBy</code> on a container of any type, passing in a function from that type to an accumulating <code>Or</code></li>
+ * <li>Invoking <code>zip</code> on an accumulating <code>Or</code></li>
+ * <li>Invoking <code>when</code> on an accumulating <code>Or</code></li>
+ * </ul>
+ */
 trait Accumulation {
 
   implicit def convertOrToAccumulatable[G, ERR, EVERY[b] <: Every[b]](accumulatable: G Or EVERY[ERR]): Accumulatable[G, ERR, EVERY] =
@@ -1234,25 +1250,73 @@ trait Accumulation {
   }
 }
 
+/**
+ * Companion object to trait <code>Accumulation</code> that allows <code>Accumulation</code>'s members to be imported
+ * rather than mixed in, and also contains nested traits used by implicit conversions declared in
+ * trait <code>Accumulations</code>.
+ */
 object Accumulation extends Accumulation {
 
+  /**
+   * Adds a <code>combined</code> method to &ldquo;collections&rdquo; of accumulating <code>Or</code>s via an implicit conversion provided by
+   * trait <a href="Accumulating.html"><code>Accumulating</code></a>.
+   */
   trait Combinable[G, ERR, COLL[_]] {
+
+    /**
+     * Combines a collection <code>COLL</code> of <code>Or</code>s of type <code>G</code> <code>Or</code> <code>EVERY[ERR]</code> (where <code>EVERY</code>
+     * is some subtype of <code>Every</code>) into a single <code>Or</code> of
+     * type <code>COLL[G]</code> <code>Or</code> <code>Every[ERR]</code>.
+     *
+     * <p>
+     * Note: this process implemented by this method is sometimes called a &ldquo;sequence.&rdquo;
+     * </p>
+     */
     def combined: COLL[G] Or Every[ERR]
   }
 
+  /**
+   * Adds a <code>validatedBy</code> method to (non-<code>GenTraversableOnce</code>) &ldquo;collections&rdquo; via an implicit conversion provided by
+   * trait <a href="Accumulating.html"><code>Accumulating</code></a>.
+   */
   trait Validatable[G, COLL[_]] {
+
+    /**
+     * Maps a collection <code>COLL</code> of <code>G</code>s into <code>Or</code>s of type <code>H</code> <code>Or</code> <code>EVERY[ERR]</code> (where <code>EVERY</code>
+     * is some subtype of <code>Every</code>) using the passed function <code>fn</code>, then combines the resulting <code>Or</code>s into a single <code>Or</code> of
+     * type <code>COLL[H]</code> <code>Or</code> <code>Every[ERR]</code>.
+     *
+     * <p>
+     * Note: this process implemented by this method is sometimes called a &ldquo;traverse.&rdquo;
+     * </p>
+     */
     def validatedBy[H, ERR, EVERY[e] <: Every[e]](fn: G => H Or EVERY[ERR]): COLL[H] Or Every[ERR]
   }
 
+  /**
+   * Adds a <code>validatedBy</code> method to <code>GenTraversableOnce</code> via an implicit conversion provided by
+   * trait <a href="Accumulating.html"><code>Accumulating</code></a>.
+   */
   trait TravValidatable[G, TRAVONCE[e] <: GenTraversableOnce[e]] {
+
+    /**
+     * Maps a <code>GenTraversableOnce</code> of <code>G</code>s into <code>Or</code>s of type <code>H</code> <code>Or</code> <code>EVERY[ERR]</code> (where <code>EVERY</code>
+     * is some subtype of <code>Every</code>) using the passed function <code>fn</code>, then combines the resulting <code>Or</code>s into a single <code>Or</code> of
+     * type <code>COLL[H]</code> <code>Or</code> <code>Every[ERR]</code>.
+     *
+     * <p>
+     * Note: this process implemented by this method is sometimes called a &ldquo;traverse.&rdquo;
+     * </p>
+     */
     def validatedBy[H, ERR, EVERY[e] <: Every[e]](fn: G => H Or EVERY[ERR])(implicit cbf: CanBuildFrom[TRAVONCE[G], H, TRAVONCE[H]]): TRAVONCE[H] Or Every[ERR]
   }
 
+  /**
+   * Adds <code>zip</code> and <code>when</code> methods to <a href="Or.html"><code>Or</code></a>s vai an implicit conversion provided by
+   * trait <a href="Accumulating.html"><code>Accumulating</code></a>.
+   */
   trait Accumulatable[G, ERR, EVERY[b] <: Every[b]] {
     def zip[H, OTHERERR >: ERR, OTHEREVERY[c] <: Every[c]](other: H Or OTHEREVERY[OTHERERR]): (G, H) Or Every[OTHERERR]
-/*
-    def transform[H, OTHERERR >: ERR, OTHEREVERY[b] <: Every[b]](other: (G => H) Or OTHEREVERY[OTHERERR]): H Or Every[OTHERERR]
-*/
     def when[OTHERERR >: ERR](validations: (G => Validation[OTHERERR])*): G Or Every[OTHERERR]
   }
 }
