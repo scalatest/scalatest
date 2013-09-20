@@ -110,14 +110,6 @@ class ListShouldContainAtLeastOneOfSpec extends Spec with Matchers {
         }
         (fumList should (contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
       }
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          fumList should (contain atLeastOneOf ())
-        }
-        e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("atLeastOneOfEmpty")))
-      }
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
           fumList should (contain atLeastOneOf ("fee", "fie", "foe", "fie", "fum"))
@@ -297,15 +289,6 @@ The bottom two don't, but still I don't want to support that in general.
         }
       }
       
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          fumList shouldNot (contain atLeastOneOf ())
-        }
-        e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("atLeastOneOfEmpty")))
-      }
-      
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
           toList shouldNot (contain atLeastOneOf ("fee", "fie", "foe", "fie", "fum"))
@@ -455,14 +438,6 @@ The bottom two don't, but still I don't want to support that in general.
         intercept[TestFailedException] {
           (all (hiLists) should (contain atLeastOneOf ("HI", "HE"))) (decided by defaultEquality[String])
         }
-      }
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          all (hiLists) should (contain atLeastOneOf ())
-        }
-        e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("atLeastOneOfEmpty")))
       }
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
@@ -655,14 +630,6 @@ The top two don't, but still I don't want to support that in general.
         intercept[TestFailedException] {
           (all (toLists) shouldNot (contain atLeastOneOf (" TO ", " YOU "))) (after being lowerCased and trimmed)
         }
-      }
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          all (hiLists) shouldNot (contain atLeastOneOf ())
-        }
-        e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("atLeastOneOfEmpty")))
       }
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {

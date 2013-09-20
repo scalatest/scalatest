@@ -111,14 +111,6 @@ class OptionShouldContainOneOfSpec extends Spec with Matchers {
         }
         (fumSome should (contain oneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
       }
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          fumSome should (contain oneOf ())
-        }
-        e1.failedCodeFileName.get should be ("OptionShouldContainOneOfSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("oneOfEmpty")))
-      }
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
           fumSome should (contain oneOf ("fee", "fie", "foe", "fie", "fum"))
@@ -341,34 +333,26 @@ The bottom two don't, but still I don't want to support that in general.
       }
 
       def `should use the implicit Equality in scope` {
-        all (hiSomes) should (contain oneOf ("hi"))
+        all (hiSomes) should (contain oneOf ("hi", "he"))
         intercept[TestFailedException] {
-          all (hiSomes) should (contain oneOf ("ho"))
+          all (hiSomes) should (contain oneOf ("HI", "HE"))
         }
-        implicit val ise = invertedStringEquality
-        all (hiSomes) should (contain oneOf ("ho"))
+        implicit val ise = upperCaseEquality
+        all (hiSomes) should (contain oneOf ("HI", "HE"))
         intercept[TestFailedException] {
-          all (hiSomes) should (contain oneOf ("hi"))
+          all (hiSomes) should (contain oneOf ("hi", "he"))
         }
       }
       def `should use an explicitly provided Equality` {
-        (all (hiSomes) should (contain oneOf ("ho"))) (decided by invertedStringEquality)
+        (all (hiSomes) should (contain oneOf ("HI", "HE"))) (decided by upperCaseEquality)
         intercept[TestFailedException] {
-          (all (hiSomes) should (contain oneOf ("hi"))) (decided by invertedStringEquality)
+          (all (hiSomes) should (contain oneOf ("hi", "he"))) (decided by upperCaseEquality)
         }
-        implicit val ise = invertedStringEquality
-        (all (hiSomes) should (contain oneOf ("hi"))) (decided by defaultEquality[String])
+        implicit val ise = upperCaseEquality
+        (all (hiSomes) should (contain oneOf ("hi", "he"))) (decided by defaultEquality[String])
         intercept[TestFailedException] {
-          (all (hiSomes) should (contain oneOf ("ho"))) (decided by defaultEquality[String])
+          (all (hiSomes) should (contain oneOf ("HI", "HE"))) (decided by defaultEquality[String])
         }
-      }
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          all (some1s) should (contain oneOf ())
-        }
-        e1.failedCodeFileName.get should be ("OptionShouldContainOneOfSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("oneOfEmpty")))
       }
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
