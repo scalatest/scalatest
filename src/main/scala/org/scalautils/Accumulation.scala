@@ -43,9 +43,23 @@ import Accumulation.Accumulatable
  * <li>Invoking <code>zip</code> on an accumulating <code>Or</code></li>
  * <li>Invoking <code>when</code> on an accumulating <code>Or</code></li>
  * </ul>
+ *
+ * <p>
+ * For more information and examples, see the <a href="Or.html#accumulatingErrors">Accumulating errors with <code>Or</code></a> section
+ * of the main documentation for class <code>Or</code>.
+ * </p>
  */
 trait Accumulation {
 
+  /**
+   * Implicitly converts an accumulating <code>Or</code> to an instance of <a href="Accumulation$$Acumulatable.html"><code>Accumulatable</code></a>, which
+   * enables <code>zip</code> and <code>when</code> methods to be invoked on it.
+   *
+   * <p>
+   * For more information and examples, see the <a href="Or.html#usingZip">Using <code>zip</code></a> and <a href="Or.html#usingWhen">Using <code>when</code></a>
+   * sections of the main documentation for class <code>Or</code>.
+   * </p>
+   */
   implicit def convertOrToAccumulatable[G, ERR, EVERY[b] <: Every[b]](accumulatable: G Or EVERY[ERR]): Accumulatable[G, ERR, EVERY] =
     new Accumulatable[G, ERR, EVERY] {
       def zip[H, OTHERERR >: ERR, OTHEREVERY[c] <: Every[c]](other: H Or OTHEREVERY[OTHERERR]): (G, H) Or Every[OTHERERR] = {
@@ -81,6 +95,15 @@ trait Accumulation {
       }
     }
 
+  /**
+   * Implicitly converts a <em>covariant</em> <code>GenTraversableOnce</code> containing accumulating <code>Or</code>s to an instance of
+   * <a href="Accumulation$$Combinable.html"><code>Combinable</code></a>, which
+   * enables the <code>combined</code> method to be invoked on it.
+   *
+   * <p>
+   * For more information and examples, see the <a href="Or.html#usingCombined">Using <code>combined</code></a> section of the main documentation for class <code>Or</code>.
+   * </p>
+   */
   implicit def convertGenTraversableOnceToCombinable[G, ERR, EVERY[b] <: Every[b], TRAVONCE[+e] <: GenTraversableOnce[e]](xs: TRAVONCE[G Or EVERY[ERR]])(implicit cbf: CanBuildFrom[TRAVONCE[G Or EVERY[ERR]], G, TRAVONCE[G]]): Combinable[G, ERR, TRAVONCE] = 
 
     new Combinable[G, ERR, TRAVONCE] {
@@ -104,7 +127,22 @@ trait Accumulation {
     }
 
   // Must have another one for Sets, because they are not covariant. Will need to handle Good/Nothing case specially therefore, and plan to do that
-  // with another implicit here.
+  // with another implicit here. Or just don't support Nothing.
+
+  /**
+   * Implicitly converts a <code>Set</code> containing accumulating <code>Or</code>s to an instance of <a href="Accumulation$$Combinable.html"><code>Combinable</code></a>, which
+   * enables the <code>combined</code> method to be invoked on it.
+   *
+   * <p>
+   * For more information and examples, see the <a href="Or.html#usingCombined">Using <code>combined</code></a> section of the main documentation for class <code>Or</code>.
+   * </p>
+   *
+   * <p>
+   * Note: This implicit is required for <code>Set</code>s because although <code>Set</code>s are <code>GenTraversableOnce</code>s, they aren't covariant, so 
+   * the implicit conversion provided by <code>convertGenTraversableOnceToCombinable</code> will not be applied, because it only works on <em>covariant</em>
+   * <code>GenTraversableOnce</code>s.
+   * </p>
+   */
   implicit def convertGenSetToCombinable[G, ERR, X, EVERY[b] <: Every[b], SET[e] <: GenSet[e]](xs: SET[X with (G Or EVERY[ERR])])(implicit cbf: CanBuildFrom[SET[X with (G Or EVERY[ERR])], G, SET[G]]): Combinable[G, ERR, SET] = 
 
     new Combinable[G, ERR, SET] {
@@ -127,6 +165,14 @@ trait Accumulation {
       }
     }
 
+  /**
+   * Implicitly converts an <code>Every</code> containing accumulating <code>Or</code>s to an instance of
+   * <a href="Accumulation$$Combinable.html"><code>Combinable</code></a>, which enables the <code>combined</code> method to be invoked on it.
+   *
+   * <p>
+   * For more information and examples, see the <a href="Or.html#usingCombined">Using <code>combined</code></a> section of the main documentation for class <code>Or</code>.
+   * </p>
+   */
   implicit def convertEveryToCombinable[G, ERR](oneToMany: Every[G Or Every[ERR]]): Combinable[G, ERR, Every] = 
 
     new Combinable[G, ERR, Every] {
@@ -149,6 +195,14 @@ trait Accumulation {
       }
     }
 
+  /**
+   * Implicitly converts an <code>Option</code> containing accumulating <code>Or</code>s to an instance of
+   * <a href="Accumulation$$Combinable.html"><code>Combinable</code></a>, which enables the <code>combined</code> method to be invoked on it.
+   *
+   * <p>
+   * For more information and examples, see the <a href="Or.html#usingCombined">Using <code>combined</code></a> section of the main documentation for class <code>Or</code>.
+   * </p>
+   */
   implicit def convertOptionToCombinable[G, ERR](option: Option[G Or Every[ERR]]): Combinable[G, ERR, Option] = 
     new Combinable[G, ERR, Option] {
       def combined: Option[G] Or Every[ERR] =
@@ -159,6 +213,15 @@ trait Accumulation {
         }
     }
 
+  /**
+   * Implicitly converts a <code>GenTraversableOnce</code> to an instance of <code>Validatable</code>, which
+   * enables the <code>validatedBy</code> method to be invoked on it.
+   *
+   * <p>
+   * For more information and examples, see the <a href="Or.html#usingValidatedBy">Using <code>validatedBy</code></a> section of
+   * the main documentation for class <code>Or</code>.
+   * </p>
+   */
   implicit def convertGenTraversableOnceToValidatable[G, TRAVONCE[e] <: GenTraversableOnce[e]](xs: TRAVONCE[G]): TravValidatable[G, TRAVONCE] = 
 
     new TravValidatable[G, TRAVONCE] {
@@ -182,6 +245,15 @@ trait Accumulation {
       }
     }
 
+  /**
+   * Implicitly converts an <code>Every</code> to an instance of <code>Validatable</code>, which
+   * enables the <code>validatedBy</code> method to be invoked on it.
+   *
+   * <p>
+   * For more information and examples, see the <a href="Or.html#usingValidatedBy">Using <code>validatedBy</code></a> section of
+   * the main documentation for class <code>Or</code>.
+   * </p>
+   */
   implicit def convertEveryToValidatable[G](oneToMany: Every[G]): Validatable[G, Every] = 
     new Validatable[G, Every] {
       def validatedBy[H, ERR, EVERY[e] <: Every[e]](fn: G => H Or EVERY[ERR]): Every[H] Or Every[ERR] = {
@@ -202,6 +274,15 @@ trait Accumulation {
       }
     }
 
+  /**
+   * Implicitly converts an <code>Option</code> to an instance of <code>Validatable</code>, which
+   * enables the <code>validatedBy</code> method to be invoked on it.
+   *
+   * <p>
+   * For more information and examples, see the <a href="Or.html#usingValidatedBy">Using <code>validatedBy</code></a> section of
+   * the main documentation for class <code>Or</code>.
+   * </p>
+   */
   implicit def convertOptionToValidatable[G](option: Option[G]): Validatable[G, Option] = 
     new Validatable[G, Option] {
       def validatedBy[H, ERR, EVERY[e] <: Every[e]](fn: G => H Or EVERY[ERR]): Option[H] Or Every[ERR] = {
@@ -213,6 +294,15 @@ trait Accumulation {
       }
     }
 
+  /**
+   * Given a <code>Good</code> accumulating <code>Or</code>, apply it to the given function and return the result, wrapped in a <code>Good</code>;
+   * else return the given <code>Bad</code>.
+   *
+   * <p>
+   * For more information and examples, see the <a href="Or.html#accumulatingErrors">Accumulating errors with <code>Or</code></a> section
+   * of the main documentation for class <code>Or</code>.
+   * </p>
+   */
   def withGood[A, ERR, RESULT](
     a: A Or Every[ERR]
   )(
@@ -224,6 +314,18 @@ trait Accumulation {
     }
   }
 
+  /**
+   * Given 2 <code>Good</code> accumulating <code>Or</code>s, apply them to the given function and return the result, wrapped in a <code>Good</code>;
+   * else return a <code>Bad</code> containing every error (<em>i.e.</em>, a <code>Bad</code> whose <code>Every</code> includes every value that
+   * appears in any <code>Bad</code>s passed to <code>withGood</code>).
+   *
+   * <p>
+   * For more information and examples, see the <a href="Or.html#accumulatingErrors">Accumulating errors with <code>Or</code></a> section
+   * of the main documentation for class <code>Or</code>.
+   * </p>
+   *
+   * @return a <code>Good</code> result, if all passed <code>Or</code>s were <code>Good</code>; else a <code>Bad</code> containing every error.
+   */
   def withGood[A, B, ERR, RESULT](
     a: A Or Every[ERR],
     b: B Or Every[ERR]
@@ -252,6 +354,18 @@ trait Accumulation {
     }
   }
 
+  /**
+   * Given 3 <code>Good</code> accumulating <code>Or</code>s, apply them to the given function and return the result, wrapped in a <code>Good</code>;
+   * else return a <code>Bad</code> containing every error (<em>i.e.</em>, a <code>Bad</code> whose <code>Every</code> includes every value that
+   * appears in any <code>Bad</code>s passed to <code>withGood</code>).
+   *
+   * <p>
+   * For more information and examples, see the <a href="Or.html#accumulatingErrors">Accumulating errors with <code>Or</code></a> section
+   * of the main documentation for class <code>Or</code>.
+   * </p>
+   *
+   * @return a <code>Good</code> result, if all passed <code>Or</code>s were <code>Good</code>; else a <code>Bad</code> containing every error.
+   */
   def withGood[A, B, C, ERR, RESULT](
     a: A Or Every[ERR],
     b: B Or Every[ERR],
@@ -282,6 +396,18 @@ trait Accumulation {
     }
   }
 
+  /**
+   * Given 4 <code>Good</code> accumulating <code>Or</code>s, apply them to the given function and return the result, wrapped in a <code>Good</code>;
+   * else return a <code>Bad</code> containing every error (<em>i.e.</em>, a <code>Bad</code> whose <code>Every</code> includes every value that
+   * appears in any <code>Bad</code>s passed to <code>withGood</code>).
+   *
+   * <p>
+   * For more information and examples, see the <a href="Or.html#accumulatingErrors">Accumulating errors with <code>Or</code></a> section
+   * of the main documentation for class <code>Or</code>.
+   * </p>
+   *
+   * @return a <code>Good</code> result, if all passed <code>Or</code>s were <code>Good</code>; else a <code>Bad</code> containing every error.
+   */
   def withGood[A, B, C, D, ERR, RESULT](
     a: A Or Every[ERR],
     b: B Or Every[ERR],
@@ -314,6 +440,18 @@ trait Accumulation {
     }
   }
 
+  /**
+   * Given 5 <code>Good</code> accumulating <code>Or</code>s, apply them to the given function and return the result, wrapped in a <code>Good</code>;
+   * else return a <code>Bad</code> containing every error (<em>i.e.</em>, a <code>Bad</code> whose <code>Every</code> includes every value that
+   * appears in any <code>Bad</code>s passed to <code>withGood</code>).
+   *
+   * <p>
+   * For more information and examples, see the <a href="Or.html#accumulatingErrors">Accumulating errors with <code>Or</code></a> section
+   * of the main documentation for class <code>Or</code>.
+   * </p>
+   *
+   * @return a <code>Good</code> result, if all passed <code>Or</code>s were <code>Good</code>; else a <code>Bad</code> containing every error.
+   */
   def withGood[A, B, C, D, E, ERR, RESULT](
     a: A Or Every[ERR],
     b: B Or Every[ERR],
@@ -349,6 +487,18 @@ trait Accumulation {
   }
 
 
+  /**
+   * Given 6 <code>Good</code> accumulating <code>Or</code>s, apply them to the given function and return the result, wrapped in a <code>Good</code>;
+   * else return a <code>Bad</code> containing every error (<em>i.e.</em>, a <code>Bad</code> whose <code>Every</code> includes every value that
+   * appears in any <code>Bad</code>s passed to <code>withGood</code>).
+   *
+   * <p>
+   * For more information and examples, see the <a href="Or.html#accumulatingErrors">Accumulating errors with <code>Or</code></a> section
+   * of the main documentation for class <code>Or</code>.
+   * </p>
+   *
+   * @return a <code>Good</code> result, if all passed <code>Or</code>s were <code>Good</code>; else a <code>Bad</code> containing every error.
+   */
   def withGood[A, B, C, D, E, F, ERR, RESULT](
     a: A Or Every[ERR],
     b: B Or Every[ERR],
@@ -386,6 +536,18 @@ trait Accumulation {
   }
 
 
+  /**
+   * Given 7 <code>Good</code> accumulating <code>Or</code>s, apply them to the given function and return the result, wrapped in a <code>Good</code>;
+   * else return a <code>Bad</code> containing every error (<em>i.e.</em>, a <code>Bad</code> whose <code>Every</code> includes every value that
+   * appears in any <code>Bad</code>s passed to <code>withGood</code>).
+   *
+   * <p>
+   * For more information and examples, see the <a href="Or.html#accumulatingErrors">Accumulating errors with <code>Or</code></a> section
+   * of the main documentation for class <code>Or</code>.
+   * </p>
+   *
+   * @return a <code>Good</code> result, if all passed <code>Or</code>s were <code>Good</code>; else a <code>Bad</code> containing every error.
+   */
   def withGood[A, B, C, D, E, F, G, ERR, RESULT](
     a: A Or Every[ERR],
     b: B Or Every[ERR],
@@ -425,6 +587,18 @@ trait Accumulation {
   }
 
 
+  /**
+   * Given 8 <code>Good</code> accumulating <code>Or</code>s, apply them to the given function and return the result, wrapped in a <code>Good</code>;
+   * else return a <code>Bad</code> containing every error (<em>i.e.</em>, a <code>Bad</code> whose <code>Every</code> includes every value that
+   * appears in any <code>Bad</code>s passed to <code>withGood</code>).
+   *
+   * <p>
+   * For more information and examples, see the <a href="Or.html#accumulatingErrors">Accumulating errors with <code>Or</code></a> section
+   * of the main documentation for class <code>Or</code>.
+   * </p>
+   *
+   * @return a <code>Good</code> result, if all passed <code>Or</code>s were <code>Good</code>; else a <code>Bad</code> containing every error.
+   */
   def withGood[A, B, C, D, E, F, G, H, ERR, RESULT](
     a: A Or Every[ERR],
     b: B Or Every[ERR],
@@ -466,6 +640,18 @@ trait Accumulation {
   }
 
 
+  /**
+   * Given 9 <code>Good</code> accumulating <code>Or</code>s, apply them to the given function and return the result, wrapped in a <code>Good</code>;
+   * else return a <code>Bad</code> containing every error (<em>i.e.</em>, a <code>Bad</code> whose <code>Every</code> includes every value that
+   * appears in any <code>Bad</code>s passed to <code>withGood</code>).
+   *
+   * <p>
+   * For more information and examples, see the <a href="Or.html#accumulatingErrors">Accumulating errors with <code>Or</code></a> section
+   * of the main documentation for class <code>Or</code>.
+   * </p>
+   *
+   * @return a <code>Good</code> result, if all passed <code>Or</code>s were <code>Good</code>; else a <code>Bad</code> containing every error.
+   */
   def withGood[A, B, C, D, E, F, G, H, I, ERR, RESULT](
     a: A Or Every[ERR],
     b: B Or Every[ERR],
@@ -509,6 +695,18 @@ trait Accumulation {
   }
 
 
+  /**
+   * Given 10 <code>Good</code> accumulating <code>Or</code>s, apply them to the given function and return the result, wrapped in a <code>Good</code>;
+   * else return a <code>Bad</code> containing every error (<em>i.e.</em>, a <code>Bad</code> whose <code>Every</code> includes every value that
+   * appears in any <code>Bad</code>s passed to <code>withGood</code>).
+   *
+   * <p>
+   * For more information and examples, see the <a href="Or.html#accumulatingErrors">Accumulating errors with <code>Or</code></a> section
+   * of the main documentation for class <code>Or</code>.
+   * </p>
+   *
+   * @return a <code>Good</code> result, if all passed <code>Or</code>s were <code>Good</code>; else a <code>Bad</code> containing every error.
+   */
   def withGood[A, B, C, D, E, F, G, H, I, J, ERR, RESULT](
     a: A Or Every[ERR],
     b: B Or Every[ERR],
@@ -554,6 +752,18 @@ trait Accumulation {
   }
 
 
+  /**
+   * Given 11 <code>Good</code> accumulating <code>Or</code>s, apply them to the given function and return the result, wrapped in a <code>Good</code>;
+   * else return a <code>Bad</code> containing every error (<em>i.e.</em>, a <code>Bad</code> whose <code>Every</code> includes every value that
+   * appears in any <code>Bad</code>s passed to <code>withGood</code>).
+   *
+   * <p>
+   * For more information and examples, see the <a href="Or.html#accumulatingErrors">Accumulating errors with <code>Or</code></a> section
+   * of the main documentation for class <code>Or</code>.
+   * </p>
+   *
+   * @return a <code>Good</code> result, if all passed <code>Or</code>s were <code>Good</code>; else a <code>Bad</code> containing every error.
+   */
   def withGood[A, B, C, D, E, F, G, H, I, J, K, ERR, RESULT](
     a: A Or Every[ERR],
     b: B Or Every[ERR],
@@ -601,6 +811,18 @@ trait Accumulation {
   }
 
 
+  /**
+   * Given 12 <code>Good</code> accumulating <code>Or</code>s, apply them to the given function and return the result, wrapped in a <code>Good</code>;
+   * else return a <code>Bad</code> containing every error (<em>i.e.</em>, a <code>Bad</code> whose <code>Every</code> includes every value that
+   * appears in any <code>Bad</code>s passed to <code>withGood</code>).
+   *
+   * <p>
+   * For more information and examples, see the <a href="Or.html#accumulatingErrors">Accumulating errors with <code>Or</code></a> section
+   * of the main documentation for class <code>Or</code>.
+   * </p>
+   *
+   * @return a <code>Good</code> result, if all passed <code>Or</code>s were <code>Good</code>; else a <code>Bad</code> containing every error.
+   */
   def withGood[A, B, C, D, E, F, G, H, I, J, K, L, ERR, RESULT](
     a: A Or Every[ERR],
     b: B Or Every[ERR],
@@ -650,6 +872,18 @@ trait Accumulation {
   }
 
 
+  /**
+   * Given 13 <code>Good</code> accumulating <code>Or</code>s, apply them to the given function and return the result, wrapped in a <code>Good</code>;
+   * else return a <code>Bad</code> containing every error (<em>i.e.</em>, a <code>Bad</code> whose <code>Every</code> includes every value that
+   * appears in any <code>Bad</code>s passed to <code>withGood</code>).
+   *
+   * <p>
+   * For more information and examples, see the <a href="Or.html#accumulatingErrors">Accumulating errors with <code>Or</code></a> section
+   * of the main documentation for class <code>Or</code>.
+   * </p>
+   *
+   * @return a <code>Good</code> result, if all passed <code>Or</code>s were <code>Good</code>; else a <code>Bad</code> containing every error.
+   */
   def withGood[A, B, C, D, E, F, G, H, I, J, K, L, M, ERR, RESULT](
     a: A Or Every[ERR],
     b: B Or Every[ERR],
@@ -701,6 +935,18 @@ trait Accumulation {
   }
 
 
+  /**
+   * Given 14 <code>Good</code> accumulating <code>Or</code>s, apply them to the given function and return the result, wrapped in a <code>Good</code>;
+   * else return a <code>Bad</code> containing every error (<em>i.e.</em>, a <code>Bad</code> whose <code>Every</code> includes every value that
+   * appears in any <code>Bad</code>s passed to <code>withGood</code>).
+   *
+   * <p>
+   * For more information and examples, see the <a href="Or.html#accumulatingErrors">Accumulating errors with <code>Or</code></a> section
+   * of the main documentation for class <code>Or</code>.
+   * </p>
+   *
+   * @return a <code>Good</code> result, if all passed <code>Or</code>s were <code>Good</code>; else a <code>Bad</code> containing every error.
+   */
   def withGood[A, B, C, D, E, F, G, H, I, J, K, L, M, N, ERR, RESULT](
     a: A Or Every[ERR],
     b: B Or Every[ERR],
@@ -754,6 +1000,18 @@ trait Accumulation {
   }
 
 
+  /**
+   * Given 15 <code>Good</code> accumulating <code>Or</code>s, apply them to the given function and return the result, wrapped in a <code>Good</code>;
+   * else return a <code>Bad</code> containing every error (<em>i.e.</em>, a <code>Bad</code> whose <code>Every</code> includes every value that
+   * appears in any <code>Bad</code>s passed to <code>withGood</code>).
+   *
+   * <p>
+   * For more information and examples, see the <a href="Or.html#accumulatingErrors">Accumulating errors with <code>Or</code></a> section
+   * of the main documentation for class <code>Or</code>.
+   * </p>
+   *
+   * @return a <code>Good</code> result, if all passed <code>Or</code>s were <code>Good</code>; else a <code>Bad</code> containing every error.
+   */
   def withGood[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, ERR, RESULT](
     a: A Or Every[ERR],
     b: B Or Every[ERR],
@@ -809,6 +1067,18 @@ trait Accumulation {
   }
 
 
+  /**
+   * Given 16 <code>Good</code> accumulating <code>Or</code>s, apply them to the given function and return the result, wrapped in a <code>Good</code>;
+   * else return a <code>Bad</code> containing every error (<em>i.e.</em>, a <code>Bad</code> whose <code>Every</code> includes every value that
+   * appears in any <code>Bad</code>s passed to <code>withGood</code>).
+   *
+   * <p>
+   * For more information and examples, see the <a href="Or.html#accumulatingErrors">Accumulating errors with <code>Or</code></a> section
+   * of the main documentation for class <code>Or</code>.
+   * </p>
+   *
+   * @return a <code>Good</code> result, if all passed <code>Or</code>s were <code>Good</code>; else a <code>Bad</code> containing every error.
+   */
   def withGood[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, ERR, RESULT](
     a: A Or Every[ERR],
     b: B Or Every[ERR],
@@ -866,6 +1136,18 @@ trait Accumulation {
   }
 
 
+  /**
+   * Given 17 <code>Good</code> accumulating <code>Or</code>s, apply them to the given function and return the result, wrapped in a <code>Good</code>;
+   * else return a <code>Bad</code> containing every error (<em>i.e.</em>, a <code>Bad</code> whose <code>Every</code> includes every value that
+   * appears in any <code>Bad</code>s passed to <code>withGood</code>).
+   *
+   * <p>
+   * For more information and examples, see the <a href="Or.html#accumulatingErrors">Accumulating errors with <code>Or</code></a> section
+   * of the main documentation for class <code>Or</code>.
+   * </p>
+   *
+   * @return a <code>Good</code> result, if all passed <code>Or</code>s were <code>Good</code>; else a <code>Bad</code> containing every error.
+   */
   def withGood[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, ERR, RESULT](
     a: A Or Every[ERR],
     b: B Or Every[ERR],
@@ -925,6 +1207,18 @@ trait Accumulation {
   }
 
 
+  /**
+   * Given 18 <code>Good</code> accumulating <code>Or</code>s, apply them to the given function and return the result, wrapped in a <code>Good</code>;
+   * else return a <code>Bad</code> containing every error (<em>i.e.</em>, a <code>Bad</code> whose <code>Every</code> includes every value that
+   * appears in any <code>Bad</code>s passed to <code>withGood</code>).
+   *
+   * <p>
+   * For more information and examples, see the <a href="Or.html#accumulatingErrors">Accumulating errors with <code>Or</code></a> section
+   * of the main documentation for class <code>Or</code>.
+   * </p>
+   *
+   * @return a <code>Good</code> result, if all passed <code>Or</code>s were <code>Good</code>; else a <code>Bad</code> containing every error.
+   */
   def withGood[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, ERR, RESULT](
     a: A Or Every[ERR],
     b: B Or Every[ERR],
@@ -986,6 +1280,18 @@ trait Accumulation {
   }
 
 
+  /**
+   * Given 19 <code>Good</code> accumulating <code>Or</code>s, apply them to the given function and return the result, wrapped in a <code>Good</code>;
+   * else return a <code>Bad</code> containing every error (<em>i.e.</em>, a <code>Bad</code> whose <code>Every</code> includes every value that
+   * appears in any <code>Bad</code>s passed to <code>withGood</code>).
+   *
+   * <p>
+   * For more information and examples, see the <a href="Or.html#accumulatingErrors">Accumulating errors with <code>Or</code></a> section
+   * of the main documentation for class <code>Or</code>.
+   * </p>
+   *
+   * @return a <code>Good</code> result, if all passed <code>Or</code>s were <code>Good</code>; else a <code>Bad</code> containing every error.
+   */
   def withGood[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, ERR, RESULT](
     a: A Or Every[ERR],
     b: B Or Every[ERR],
@@ -1049,6 +1355,18 @@ trait Accumulation {
   }
 
 
+  /**
+   * Given 20 <code>Good</code> accumulating <code>Or</code>s, apply them to the given function and return the result, wrapped in a <code>Good</code>;
+   * else return a <code>Bad</code> containing every error (<em>i.e.</em>, a <code>Bad</code> whose <code>Every</code> includes every value that
+   * appears in any <code>Bad</code>s passed to <code>withGood</code>).
+   *
+   * <p>
+   * For more information and examples, see the <a href="Or.html#accumulatingErrors">Accumulating errors with <code>Or</code></a> section
+   * of the main documentation for class <code>Or</code>.
+   * </p>
+   *
+   * @return a <code>Good</code> result, if all passed <code>Or</code>s were <code>Good</code>; else a <code>Bad</code> containing every error.
+   */
   def withGood[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, ERR, RESULT](
     a: A Or Every[ERR],
     b: B Or Every[ERR],
@@ -1114,6 +1432,18 @@ trait Accumulation {
   }
 
 
+  /**
+   * Given 21 <code>Good</code> accumulating <code>Or</code>s, apply them to the given function and return the result, wrapped in a <code>Good</code>;
+   * else return a <code>Bad</code> containing every error (<em>i.e.</em>, a <code>Bad</code> whose <code>Every</code> includes every value that
+   * appears in any <code>Bad</code>s passed to <code>withGood</code>).
+   *
+   * <p>
+   * For more information and examples, see the <a href="Or.html#accumulatingErrors">Accumulating errors with <code>Or</code></a> section
+   * of the main documentation for class <code>Or</code>.
+   * </p>
+   *
+   * @return a <code>Good</code> result, if all passed <code>Or</code>s were <code>Good</code>; else a <code>Bad</code> containing every error.
+   */
   def withGood[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, ERR, RESULT](
     a: A Or Every[ERR],
     b: B Or Every[ERR],
@@ -1181,6 +1511,18 @@ trait Accumulation {
   }
 
 
+  /**
+   * Given 22 <code>Good</code> accumulating <code>Or</code>s, apply them to the given function and return the result, wrapped in a <code>Good</code>;
+   * else return a <code>Bad</code> containing every error (<em>i.e.</em>, a <code>Bad</code> whose <code>Every</code> includes every value that
+   * appears in any <code>Bad</code>s passed to <code>withGood</code>).
+   *
+   * <p>
+   * For more information and examples, see the <a href="Or.html#accumulatingErrors">Accumulating errors with <code>Or</code></a> section
+   * of the main documentation for class <code>Or</code>.
+   * </p>
+   *
+   * @return a <code>Good</code> result, if all passed <code>Or</code>s were <code>Good</code>; else a <code>Bad</code> containing every error.
+   */
   def withGood[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, ERR, RESULT](
     a: A Or Every[ERR],
     b: B Or Every[ERR],
@@ -1254,12 +1596,22 @@ trait Accumulation {
  * Companion object to trait <code>Accumulation</code> that allows <code>Accumulation</code>'s members to be imported
  * rather than mixed in, and also contains nested traits used by implicit conversions declared in
  * trait <code>Accumulations</code>.
+ *
+ * <p>
+ * For more information and examples, see the <a href="Or.html#accumulatingErrors">Accumulating errors with <code>Or</code></a> section
+ * of the main documentation for class <code>Or</code>.
+ * </p>
  */
 object Accumulation extends Accumulation {
 
   /**
    * Adds a <code>combined</code> method to &ldquo;collections&rdquo; of accumulating <code>Or</code>s via an implicit conversion provided by
-   * trait <a href="Accumulating.html"><code>Accumulating</code></a>.
+   * trait <a href="Accumulation.html"><code>Accumulation</code></a>.
+   *
+   * <p>
+   * For more information and examples, see the <a href="Or.html#usingCombined">Using <code>combined</code></a> section
+   * of the main documentation for class <code>Or</code>.
+   * </p>
    */
   trait Combinable[G, ERR, COLL[_]] {
 
@@ -1271,13 +1623,23 @@ object Accumulation extends Accumulation {
      * <p>
      * Note: this process implemented by this method is sometimes called a &ldquo;sequence.&rdquo;
      * </p>
+     *
+     * <p>
+     * For more information and examples, see the <a href="Or.html#usingCombined">Using <code>combined</code></a> section
+     * of the main documentation for class <code>Or</code>.
+     * </p>
      */
     def combined: COLL[G] Or Every[ERR]
   }
 
   /**
    * Adds a <code>validatedBy</code> method to (non-<code>GenTraversableOnce</code>) &ldquo;collections&rdquo; via an implicit conversion provided by
-   * trait <a href="Accumulating.html"><code>Accumulating</code></a>.
+   * trait <a href="Accumulation.html"><code>Accumulation</code></a>.
+   *
+   * <p>
+   * For more information and examples, see the <a href="Or.html#usingValidatedBy">Using <code>validatedBy</code></a> section of
+   * the main documentation for class <code>Or</code>.
+   * </p>
    */
   trait Validatable[G, COLL[_]] {
 
@@ -1289,13 +1651,23 @@ object Accumulation extends Accumulation {
      * <p>
      * Note: this process implemented by this method is sometimes called a &ldquo;traverse.&rdquo;
      * </p>
+     *
+     * <p>
+     * For more information and examples, see the <a href="Or.html#usingValidatedBy">Using <code>validatedBy</code></a> section of
+     * the main documentation for class <code>Or</code>.
+     * </p>
      */
     def validatedBy[H, ERR, EVERY[e] <: Every[e]](fn: G => H Or EVERY[ERR]): COLL[H] Or Every[ERR]
   }
 
   /**
    * Adds a <code>validatedBy</code> method to <code>GenTraversableOnce</code> via an implicit conversion provided by
-   * trait <a href="Accumulating.html"><code>Accumulating</code></a>.
+   * trait <a href="Accumulation.html"><code>Accumulation</code></a>.
+   *
+   * <p>
+   * For more information and examples, see the <a href="Or.html#usingValidatedBy">Using <code>validatedBy</code></a> section of
+   * the main documentation for class <code>Or</code>.
+   * </p>
    */
   trait TravValidatable[G, TRAVONCE[e] <: GenTraversableOnce[e]] {
 
@@ -1307,16 +1679,47 @@ object Accumulation extends Accumulation {
      * <p>
      * Note: this process implemented by this method is sometimes called a &ldquo;traverse.&rdquo;
      * </p>
+     *
+     * <p>
+     * For more information and examples, see the <a href="Or.html#usingValidatedBy">Using <code>validatedBy</code></a> section of
+     * the main documentation for class <code>Or</code>.
+     * </p>
      */
     def validatedBy[H, ERR, EVERY[e] <: Every[e]](fn: G => H Or EVERY[ERR])(implicit cbf: CanBuildFrom[TRAVONCE[G], H, TRAVONCE[H]]): TRAVONCE[H] Or Every[ERR]
   }
 
   /**
    * Adds <code>zip</code> and <code>when</code> methods to <a href="Or.html"><code>Or</code></a>s vai an implicit conversion provided by
-   * trait <a href="Accumulating.html"><code>Accumulating</code></a>.
+   * trait <a href="Accumulation.html"><code>Accumulation</code></a>.
+   *
+   * <p>
+   * For more information and examples, see the <a href="Or.html#usingZip">Using <code>zip</code></a> and <a href="Or.html#usingWhen">Using <code>when</code></a>
+   * sections of the main documentation for class <code>Or</code>.
+   * </p>
    */
   trait Accumulatable[G, ERR, EVERY[b] <: Every[b]] {
+
+    /**
+     * Zips two accumulating <code>Or</code>s together into a <code>Good</code> pair (<code>Tuple2[G, H]</code>) if both <code>Or</code>s are
+     * <code>Good</code>, else a <code>Bad</code> containing every error.
+     *
+     * <p>
+     * For more information and examples, see the <a href="Or.html#usingZip">Using <code>zip</code></a> 
+     * section of the main documentation for class <code>Or</code>.
+     * </p>
+     */
     def zip[H, OTHERERR >: ERR, OTHEREVERY[c] <: Every[c]](other: H Or OTHEREVERY[OTHERERR]): (G, H) Or Every[OTHERERR]
+
+    /**
+     * Given a <code>Good</code> accumulating <code>Or</code>, applies the given validation functions to the <code>Good</code> value and returns
+     * either the same <code>Good</code>, if all validations resulted in <code>Pass</code>, else returns a <code>Bad</code> containing every
+     * error reported by validation <code>Fail</code> results; Given a <code>Bad</code> accumualting <code>Or</code>, returns the same <code>Bad</code>.
+     *
+     * <p>
+     * For more information and examples, see the <a href="Or.html#usingWhen">Using <code>when</code></a>
+     * section of the main documentation for class <code>Or</code>.
+     * </p>
+     */
     def when[OTHERERR >: ERR](validations: (G => Validation[OTHERERR])*): G Or Every[OTHERERR]
   }
 }

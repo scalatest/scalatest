@@ -279,7 +279,7 @@ import scala.collection.mutable.Builder
  * // Result: Bad("" is not a valid name)
  * </pre>
  *
- * <a name="accumulatigErrors"></a>
+ * <a name="accumulatingErrors"></a>
  * <h2>Accumulating errors with <code>Or</code></h2>
  *
  * <p>
