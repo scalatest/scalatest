@@ -822,20 +822,21 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
    *
    * <p>
    * This method is intended to be used in the Scala interpreter to eliminate large stack traces when trying out ScalaTest assertions and
-   * matcher expressions. Here's an example interpreter session without <code>trap</code>:
+   * matcher expressions. It is not intended to be used in regular test code. If you want to ensure that a bit of code throws an expected
+   * exception, use <code>intercept</code>, not <code>trap</code>. Here's an example interpreter session without <code>trap</code>:
    * </p>
    *
    * <pre class="stREPL">
    * scala&gt; import org.scalatest._
    * import org.scalatest._
    *
-   * scala&gt; import Assertions._
-   * import Assertions._
+   * scala&gt; import Matchers._
+   * import Matchers._
    *
-   * scala&gt; val a = 12
+   * scala&gt; val x = 12
    * a: Int = 12
    *
-   * scala&gt; assert(a == 13)
+   * scala&gt; x shouldEqual 13
    * org.scalatest.exceptions.TestFailedException: 12 did not equal 13
    *    at org.scalatest.Assertions$class.newAssertionFailedException(Assertions.scala:449)
    *    at org.scalatest.Assertions$.newAssertionFailedException(Assertions.scala:1203)
@@ -876,20 +877,25 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
    * </p>
    *
    * <pre class="stREPL">
-   * scala&gt; trap { assert(a == 13) }
+   * scala&gt; trap { x shouldEqual 13 }
    * res1: Throwable = org.scalatest.exceptions.TestFailedException: 12 did not equal 13
    * </pre>
    *
    * <p>
    * Much less clutter. Bear in mind, however, that if <em>no</em> exception is thrown by the
-   * passed by-name <code>f</code>, the <code>trap</code> method will create a new <a href="Assertions$$NormalResult.html"><code>NormalResult</code></a>
-   * (a subclass of <code>Throwable</code> made for this purpose only) and return that:
+   * passed block of code, the <code>trap</code> method will create a new <a href="Assertions$$NormalResult.html"><code>NormalResult</code></a>
+   * (a subclass of <code>Throwable</code> made for this purpose only) and return that. If the result was the <code>Unit</code> value, it
+   * will simply say that no exception was thrown:
    * </p>
    *
    * <pre class="stREPL">
-   * scala&gt; trap { assert(a == 12) }
+   * scala&gt; trap { x shouldEqual 12 }
    * res2: Throwable = No exception was thrown.
    * </pre>
+   *
+   * <p>
+   * If the passed block of code results in a value other than <code>Unit</code>, the <code>NormalResult</code>'s <code>toString</code> will print the value:
+   * </p>
    *
    * <pre class="stREPL">
    * scala&gt; trap { "Dude!" }
@@ -897,8 +903,8 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
    * </pre>
    *
    * <p>
-   * Although you can access the result value from the <code>NormalResult</code>, its type is <code>Any</code>.
-   * It is not recomended that <code>trap</code> be used in test code. The sole intended use case for <code>trap</code> is decluttering
+   * Although you can access the result value from the <code>NormalResult</code>, its type is <code>Any</code> and therefore not
+   * very convenient to use. It is not intended that <code>trap</code> be used in test code. The sole intended use case for <code>trap</code> is decluttering
    * Scala interpreter sessions by eliminating stack traces when executing assertion and matcher expressions.
    * </p>
    */
