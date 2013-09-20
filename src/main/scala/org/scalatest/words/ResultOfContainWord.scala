@@ -44,9 +44,8 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    *                   ^
    * </pre>
    */
-  def oneOf(right: Any*)(implicit containing: Containing[L]) {
-    if (right.isEmpty)
-      throw new NotAllowedException(FailureMessages("oneOfEmpty"), getStackDepthFun("ResultOfContainWord.scala", "oneOf"))
+  def oneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit containing: Containing[L]) {
+    val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages("oneOfDuplicate"), getStackDepthFun("ResultOfContainWord.scala", "oneOf"))
     if (containing.containsOneOf(left, right) != shouldBeTrue)
@@ -67,9 +66,8 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    *                   ^
    * </pre>
    */
-  def atLeastOneOf(right: Any*)(implicit aggregating: Aggregating[L]) {
-    if (right.isEmpty)
-      throw new NotAllowedException(FailureMessages("atLeastOneOfEmpty"), getStackDepthFun("ResultOfContainWord.scala", "atLeastOneOf"))
+  def atLeastOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit aggregating: Aggregating[L]) {
+    val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages("atLeastOneOfDuplicate"), getStackDepthFun("ResultOfContainWord.scala", "atLeastOneOf"))
     if (aggregating.containsAtLeastOneOf(left, right) != shouldBeTrue)
@@ -90,9 +88,8 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    *                   ^
    * </pre>
    */
-  def noneOf(right: Any*)(implicit containing: Containing[L]) {
-    if (right.isEmpty)
-      throw new NotAllowedException(FailureMessages("noneOfEmpty"), getStackDepthFun("ResultOfContainWord.scala", "noneOf"))
+  def noneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit containing: Containing[L]) {
+    val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages("noneOfDuplicate"), getStackDepthFun("ResultOfContainWord.scala", "noneOf"))
     if (containing.containsNoneOf(left, right) != shouldBeTrue)
@@ -180,9 +177,8 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    *                   ^
    * </pre>
    */
-  def inOrderOnly(right: Any*)(implicit sequencing: Sequencing[L]) {
-    if (right.isEmpty)
-      throw new NotAllowedException(FailureMessages("inOrderOnlyEmpty"), getStackDepthFun("ResultOfContainWord.scala", "inOrderOnly"))
+  def inOrderOnly(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit sequencing: Sequencing[L]) {
+    val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages("inOrderOnlyDuplicate"), getStackDepthFun("ResultOfContainWord.scala", "inOrderOnly"))
     if (sequencing.containsInOrderOnly(left, right) != shouldBeTrue)
@@ -203,9 +199,8 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    *                   ^
    * </pre>
    */
-  def allOf(right: Any*)(implicit aggregating: Aggregating[L]) {
-    if (right.isEmpty)
-      throw new NotAllowedException(FailureMessages("allOfEmpty"), getStackDepthFun("ResultOfContainWord.scala", "allOf"))
+  def allOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit aggregating: Aggregating[L]) {
+    val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages("allOfDuplicate"), getStackDepthFun("ResultOfContainWord.scala", "allOf"))
     if (aggregating.containsAllOf(left, right) != shouldBeTrue)
@@ -226,9 +221,8 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    *                   ^
    * </pre>
    */
-  def inOrder(right: Any*)(implicit sequencing: Sequencing[L]) {
-    if (right.isEmpty)
-      throw new NotAllowedException(FailureMessages("inOrderEmpty"), getStackDepthFun("ResultOfContainWord.scala", "inOrder"))
+  def inOrder(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit sequencing: Sequencing[L]) {
+    val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages("inOrderDuplicate"), getStackDepthFun("ResultOfContainWord.scala", "inOrder"))
     if (sequencing.containsInOrder(left, right) != shouldBeTrue)
@@ -285,9 +279,8 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
    *                   ^
    * </pre>
    */
-  def atMostOneOf(right: Any*)(implicit aggregating: Aggregating[L]) {
-    if (right.isEmpty)
-      throw new NotAllowedException(FailureMessages("atMostOneOfEmpty"), getStackDepthFun("ResultOfContainWord.scala", "atMostOneOf"))
+  def atMostOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit aggregating: Aggregating[L]) {
+    val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages("atMostOneOfDuplicate"), getStackDepthFun("ResultOfContainWord.scala", "atMostOneOf"))
     if (aggregating.containsAtMostOneOf(left, right) != shouldBeTrue)

@@ -68,14 +68,6 @@ class ListShouldContainNoneOfSpec extends Spec with Matchers {
         }
         (fumList should contain noneOf (" FEE ", " FIE ", " FOE ", " FAM ")) (after being lowerCased and trimmed)
       }
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          fumList should contain noneOf ()
-        }
-        e1.failedCodeFileName.get should be ("ListShouldContainNoneOfSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("noneOfEmpty")))
-      }
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
           fumList should contain noneOf ("fee", "fie", "foe", "fie", "fum")
@@ -228,14 +220,6 @@ class ListShouldContainNoneOfSpec extends Spec with Matchers {
         intercept[TestFailedException] {
           fumList shouldNot contain noneOf (" FEE ", " FIE ", " FOE ", " FUM ")
         }
-      }
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          fumList shouldNot contain noneOf ()
-        }
-        e1.failedCodeFileName.get should be ("ListShouldContainNoneOfSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("noneOfEmpty")))
       }
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {

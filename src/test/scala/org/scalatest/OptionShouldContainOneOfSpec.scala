@@ -64,14 +64,6 @@ class OptionShouldContainOneOfSpec extends Spec with Matchers {
         }
         (fumSome should contain oneOf (" FEE ", " FIE ", " FOE ", " FUM ")) (after being lowerCased and trimmed)
       }
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          fumSome should contain oneOf ()
-        }
-        e1.failedCodeFileName.get should be ("OptionShouldContainOneOfSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("oneOfEmpty")))
-      }
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
           fumSome should contain oneOf ("fee", "fie", "foe", "fie", "fum")
