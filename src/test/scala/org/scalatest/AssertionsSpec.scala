@@ -20,6 +20,9 @@ import org.scalatest.exceptions.TestFailedException
 */
 
 import SharedHelpers.thisLineNumber
+import scala.util.Failure
+import scala.util.Success
+import Assertions.NormalResult
 
 class AssertionsSpec extends FunSpec with OptionValues {
   
@@ -135,16 +138,21 @@ class AssertionsSpec extends FunSpec with OptionValues {
     }
   }
   describe("The trap method") {
-    it("should be a shorthand for intercept[Throwable]") {
+    it("should be a shorthand for catch and return any thrown exception that would cause a test to fail") {
       val a = 12
-      val trapped = trap { assert(a == 13) }
-      assert(trapped.isInstanceOf[TestFailedException])
-      assert(trapped.getMessage == "12 did not equal 13")
-      val intercepted =
-        intercept[TestFailedException] {
-          trap { assert(a == 12) }
-        }
-      assert(intercepted.message == Some(Resources("exceptionExpected", "java.lang.Throwable")))
+      val trappedEx = trap { assert(a == 13) }
+      assert(trappedEx.isInstanceOf[TestFailedException])
+      assert(trappedEx.getMessage == "12 did not equal 13")
+      val trappedUnit = trap { assert(a == 12) }
+      assert(trappedUnit == NormalResult(()))
+      val trappedInt = trap { 12 }
+      assert(trappedInt == NormalResult(12))
+      val trappedString = trap { "12" }
+      assert(trappedString == NormalResult("12"))
+      assert(trappedString.toString == Resources("resultWas", "\"12\""))
+      intercept[OutOfMemoryError] {
+        trap { throw new OutOfMemoryError }
+      }
     }
   }
   

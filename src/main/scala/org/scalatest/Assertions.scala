@@ -21,6 +21,8 @@ import Assertions.areEqualComparingArraysStructurally
 import org.scalautils.TripleEquals
 import exceptions.StackDepthExceptionHelper.getStackDepthFun
 import exceptions.StackDepthException.toExceptionFunction
+import Assertions.NormalResult
+import org.scalautils.Prettifier
 
 /**
  * Trait that contains ScalaTest's basic assertion methods.
@@ -775,7 +777,7 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
       case None =>
         val message = Resources("exceptionExpected", clazz.getName)
         throw newAssertionFailedException(Some(message), None, 4)
-      case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase iSAssignableFrom succeeded above
+      case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase isAssignableFrom succeeded above
     }
   }
 
@@ -815,13 +817,12 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
 */
 
   /**
-   * Trap and return any thrown exception that would normally cause a ScalaTest test to fail, or throw <code>TestFailedException</code>
-   * if no exception is thrown.
+   * Trap and return any thrown exception that would normally cause a ScalaTest test to fail, or create and return a new <code>RuntimeException</code>
+   * indicating no exception is thrown.
    *
    * <p>
-   * This method has a identical behavior to invoking <code>intercept[Throwable](f)</code>, and is intended to be used primarily in the
-   * Scala interpreter to eliminate large stack traces when trying out ScalaTest assertions and matcher expressions. Here's an example
-   * interpreter session without <code>trap</code>:
+   * This method is intended to be used in the Scala interpreter to eliminate large stack traces when trying out ScalaTest assertions and
+   * matcher expressions. Here's an example interpreter session without <code>trap</code>:
    * </p>
    *
    * <pre class="stREPL">
@@ -881,52 +882,32 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
    *
    * <p>
    * Much less clutter. Bear in mind, however, that if <em>no</em> exception is thrown by the
-   * passed by-name <code>f</code>, the <code>trap</code> method will itself complete abruptly
-   * with a <code>TestFailedException</code>:
+   * passed by-name <code>f</code>, the <code>trap</code> method will create a new <a href="Assertions$$NormalResult.html"><code>NormalResult</code></a>
+   * (a subclass of <code>Throwable</code> made for this purpose only) and return that:
    * </p>
    *
    * <pre class="stREPL">
    * scala&gt; trap { assert(a == 12) }
-   * org.scalatest.exceptions.TestFailedException: Expected exception java.lang.Throwable
-   *        to be thrown, but no exception was thrown.
-   *    at org.scalatest.Assertions$class.newAssertionFailedException(Assertions.scala:444)
-   *    at org.scalatest.Assertions$.newAssertionFailedException(Assertions.scala:1203)
-   *    at org.scalatest.Assertions$class.intercept(Assertions.scala:777)
-   *    at org.scalatest.Assertions$.intercept(Assertions.scala:1203)
-   *    at org.scalatest.Assertions$class.trap(Assertions.scala:817)
-   *    at org.scalatest.Assertions$.trap(Assertions.scala:1203)
-   *    at .&lt;init&gt;(&lt;console&gt;:15)
-   *    at .&lt;clinit&gt;(&lt;console&gt;)
-   *    at .&lt;init&gt;(&lt;console&gt;:7)
-   *    at .&lt;clinit&gt;(&lt;console&gt;)
-   *    at $print(&lt;console&gt;)
-   *    at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-   *    at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
-   *    at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
-   *    at java.lang.reflect.Method.invoke(Method.java:597)
-   *    at scala.tools.nsc.interpreter.IMain$ReadEvalPrint.call(IMain.scala:731)
-   *    at scala.tools.nsc.interpreter.IMain$Request.loadAndRun(IMain.scala:980)
-   *    at scala.tools.nsc.interpreter.IMain.loadAndRunReq$1(IMain.scala:570)
-   *    at scala.tools.nsc.interpreter.IMain.interpret(IMain.scala:601)
-   *    at scala.tools.nsc.interpreter.IMain.interpret(IMain.scala:565)
-   *    at scala.tools.nsc.interpreter.ILoop.reallyInterpret$1(ILoop.scala:745)
-   *    at scala.tools.nsc.interpreter.ILoop.interpretStartingWith(ILoop.scala:790)
-   *    at scala.tools.nsc.interpreter.ILoop.command(ILoop.scala:702)
-   *    at scala.tools.nsc.interpreter.ILoop.processLine$1(ILoop.scala:566)
-   *    at scala.tools.nsc.interpreter.ILoop.innerLoop$1(ILoop.scala:573)
-   *    at scala.tools.nsc.interpreter.ILoop.loop(ILoop.scala:576)
-   *    at scala.tools.nsc.interpreter.ILoop$$anonfun$process$1.apply$mcZ$sp(ILoop.scala:867)
-   *    at scala.tools.nsc.interpreter.ILoop$$anonfun$process$1.apply(ILoop.scala:822)
-   *    at scala.tools.nsc.interpreter.ILoop$$anonfun$process$1.apply(ILoop.scala:822)
-   *    at scala.tools.nsc.util.ScalaClassLoader$.savingContextLoader(ScalaClassLoader.scala:135)
-   *    at scala.tools.nsc.interpreter.ILoop.process(ILoop.scala:822)
-   *    at scala.tools.nsc.MainGenericRunner.runTarget$1(MainGenericRunner.scala:83)
-   *    at scala.tools.nsc.MainGenericRunner.process(MainGenericRunner.scala:96)
-   *    at scala.tools.nsc.MainGenericRunner$.main(MainGenericRunner.scala:105)
-   *    at scala.tools.nsc.MainGenericRunner.main(MainGenericRunner.scala)
+   * res2: Throwable = No exception was thrown.
    * </pre>
+   *
+   * <pre class="stREPL">
+   * scala&gt; trap { "Dude!" }
+   * res3: Throwable = No exception was thrown. Instead, result was: "Dude!"
+   * </pre>
+   *
+   * <p>
+   * Although you can access the result value from the <code>NormalResult</code>, its type is <code>Any</code>.
+   * It is not recomended that <code>trap</code> be used in test code. The sole intended use case for <code>trap</code> is decluttering
+   * Scala interpreter sessions by eliminating stack traces when executing assertion and matcher expressions.
+   * </p>
    */
-  def trap(f: => Any): Throwable = intercept[Throwable](f)
+  def trap[T](f: => T): Throwable = {
+    try { new NormalResult(f) }
+    catch {
+      case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => ex
+    }
+  }
 
   /**
    * Assert that the value passed as <code>expected</code> equals the value passed as <code>actual</code>.
@@ -1313,6 +1294,11 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
  * @author Bill Venners
  */
 object Assertions extends Assertions {
+
+  case class NormalResult(result: Any) extends Throwable {
+    override def toString = if (result == ()) Resources("noExceptionWasThrown") else Resources("resultWas", Prettifier.default(result))
+  }
+
   private[scalatest] def areEqualComparingArraysStructurally(left: Any, right: Any) = {
     // Prior to 2.0 this only called .deep if both sides were arrays. Loosened it
     // when nearing 2.0.M6 to call .deep if either left or right side is an array.
