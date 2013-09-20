@@ -216,7 +216,7 @@ object Every {
         }
     }
   // Can be flattened: Vector(Every(1, 2, 3), Every(1, 2, 3)).flatten shouldBe Vector(1, 2, 3, 1, 2, 3)
-  implicit def everyToGenTraversableOnce[E](every: Every[E]): Vector[E] = every.toVector
+  implicit def everyToGenTraversableOnce[E](every: Every[E]): scala.collection.immutable.IndexedSeq[E] = every.toVector
   private def fromNonEmptyVector[E](vec: Vector[E]): Every[E] = Every(vec.head, vec.tail: _*)
 }
 

@@ -389,13 +389,11 @@ class EverySpec extends UnitSpec {
     Every(Every(1)).flatten shouldBe Every(1)
   }
   it can "be flattened when in a GenTraversableOnce" in {
-    pending
-  /* need to keep this commented out until finish implementing all methods
+  // need to keep this commented out until finish implementing all methods
     Vector(Every(1, 2, 3), Every(1, 2, 3)).flatten shouldBe Vector(1, 2, 3, 1, 2, 3)
     List(Every(1, 2, 3), Every(1, 2, 3)).flatten shouldBe List(1, 2, 3, 1, 2, 3)
     List(Every(1, 2, 3), Every(1, 2, 3)).toIterator.flatten.toStream shouldBe List(1, 2, 3, 1, 2, 3).toIterator.toStream
     List(Every(1, 2, 3), Every(1, 2, 3)).par.flatten shouldBe List(1, 2, 3, 1, 2, 3).par
-  */
   }
   it should "have a fold method" in {
     One(1).fold(0)(_ + _) shouldBe 1
