@@ -926,23 +926,114 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
    * The product of multiplying all the elements of this <code>Every</code>.
    *
    * <p>
-   * This method can be invoked for any <code>Every</code> for which an implicit <code>Numeric[T]</code> exists.
+   * This method can be invoked for any <code>Every[T]</code> for which an implicit <code>Numeric[T]</code> exists.
    * </p>
    *
    * @return the product of all elements
    */
   final def product[U >: T](implicit num: Numeric[U]): U = underlying.product(num)
+
+  /**
+   * Reduces the elements of this <code>Every</code> using the specified associative binary operator.
+   *
+   * <p>
+   * The order in which operations are performed on elements is unspecified and may be nondeterministic. 
+   * </p>
+   *
+   * @tparam U a type parameter for the binary operator, a supertype of T.
+   * @param op a binary operator that must be associative.
+   * @return the result of applying reduce operator <code>op</code> between all the elements of this <code>Every</code>.
+   */
   final def reduce[U >: T](op: (U, U) => U): U = underlying.reduce(op)
+
+  /**
+   * Applies a binary operator to all elements of this vector, going left to right.
+   *
+   * @tparam U the result type of the binary operator.
+   * @param op the binary operator.
+   * @return the result of inserting <code>op</code> between consecutive elements of this <code>Every</code>, going left to right:
+   *
+   * <pre>
+   * op(...op(op(x_1, x_2), x_3), ..., x_n)
+   * </pre>
+   *
+   * <p>
+   * where x<sub>1</sub>, ..., x<sub>n</sub> are the elements of this <code>Every</code>. 
+   * </p>
+   */
   final def reduceLeft[U >: T](op: (U, T) => U): U = underlying.reduceLeft(op)
+
+  /**
+   * Applies a binary operator to all elements of this vector, going left to right, returning the result in a <code>Some</code>.
+   *
+   * @tparam U the result type of the binary operator.
+   * @param op the binary operator.
+   * @return a <code>Some</code> containing the result of <code>reduceLeft(op)</code>
+   * </p>
+   */
   final def reduceLeftOption[U >: T](op: (U, T) => U): Option[U] = underlying.reduceLeftOption(op)
+
   final def reduceOption[U >: T](op: (U, U) => U): Option[U] = underlying.reduceOption(op)
+
+  /**
+   * Applies a binary operator to all elements of this <code>Every</code>, going right to left.
+   *
+   * @tparam U the result of the binary operator
+   * @param op the binary operator
+   * @return the result of inserting <code>op</code> between consecutive elements of this <code>Every</code>, going right to left:
+   *
+   * <pre>
+   * op(x_1, op(x_2, ... op(x_{n-1}, x_n)...))
+   * </pre>
+   *
+   * <p>
+   * where x<sub>1</sub>, ..., x<sub>n</sub> are the elements of this <code>Every</code>. 
+   * </p>
+   */
   final def reduceRight[U >: T](op: (T, U) => U): U = underlying.reduceRight(op)
+
+  /**
+   * Applies a binary operator to all elements of this <code>Every</code>, going right to left, returning the result in a <code>Some</code>.
+   *
+   * @tparam U the result of the binary operator
+   * @param op the binary operator
+   * @return a <code>Some</code> containing the result of <code>reduceRight(op)</code>
+   */
   final def reduceRightOption[U >: T](op: (T, U) => U): Option[U] = underlying.reduceRightOption(op)
+
+  /**
+   * Returns new <code>Every</code> wih elements in reverse order.
+   *
+   * @return a new <code>Every</code> with all elements of this <code>Every</code> in reversed order. 
+   */
   final def reverse: Every[T] = {
     val vec = underlying.reverse
     Every(vec.head, vec.tail: _*)
   }
+
+  /**
+   * An iterator yielding elements in reverse order.
+   *
+   * <p>
+   * Note: <code>every.reverseIterator</code> is the same as <code>every.reverse.iterator</code>, but might be more efficient. 
+   * </p>
+   *
+   * @return an iterator yielding the elements of this <code>Every</code> in reversed order 
+   */
   final def reverseIterator: Iterator[T] = underlying.reverseIterator
+
+  /**
+   * Builds a new <code>Every</code> by applying a function to all elements of this <code>Every</code> and collecting the results in reverse order.
+   *
+   * <p>
+   * Note: <code>every.reverseMap(f)</code> is the same as <code>every.reverse.map(f)</code>, but might be more efficient. 
+   * </p>
+   *
+   * @tparam U the element type of the returned <code>Every</code>.
+   * @param f the function to apply to each element. 
+   * @return a new <code>Every</code> resulting from applying the given function <code>f</code> to each element of this <code>Every</code>
+   *     and collecting the results in reverse order. 
+   */
   final def reverseMap[U](f: T => U): Every[U] = {
     val vec = underlying.reverseMap(f)
     Every(vec.head, vec.tail: _*)
