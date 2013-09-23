@@ -42,6 +42,11 @@ class StringNormalizationsSpec extends Spec with StringNormalizations {
       assert(upperCased.normalized("") === "")
       assert(upperCased.normalized("HELLO") === "HELLO")
     }
+    def `should provide Uniformity's with pretty toStrings` {
+      assert(lowerCased.toString=== "lowerCased")
+      assert(trimmed.toString=== "trimmed")
+      assert(upperCased.toString=== "upperCased")
+    }
   }
 }
 

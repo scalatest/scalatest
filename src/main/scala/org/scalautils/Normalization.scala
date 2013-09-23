@@ -18,6 +18,48 @@ package org.scalautils
 /**
  * Defines a custom way to normalize instances of a type.
  *
+ * <p>
+ * For example, to normalize <code>Double</code>s by truncating off any decimal part,
+ * might write:
+ * </p>
+ *
+ *
+ * <pre class="stHighlight">
+ * import org.scalautils._
+ *
+ * val truncated = 
+ *   new Normalization[Double] {
+ *    def normalized(d: Double) = d.floor
+ *  }
+ * </pre>
+ *
+ * val truncated = new Normalization[Double] { def normalized(d: Double) = d.floor }
+ *
+ * <p>
+ * Given this definition you could use it with the <a href="Explicitly.html"><code>Explicitly</code></a> DSL like this:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * import org.scalatest._
+ * import Matchers._
+ * import TypeCheckedTripleEquals._
+ * 
+ * (2.1 should === (2.0)) (after being truncated)
+ * </pre>
+ *
+ * <p>
+ * If you make the <code>truncated</code> <code>val</code> implicit and import or mix in the members of <a href="NormMethods.html"><code>NormMethods</code></a>,
+ * you can access the behavior by invoking <code>.norm</code> on <code>Double</code>s.
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * implicit val doubleNormalization = truncated
+ * import NormMethods._
+ *
+ * val d = 2.1
+ * d.norm // returns 2.0
+ * </pre>
+ * 
  * @tparam A the type whose normalization is being defined
  */
 trait Normalization[A] { thisNormalization =>
@@ -29,6 +71,7 @@ trait Normalization[A] { thisNormalization =>
    * If the passed object is already in normal form, this method may return the same instance passed.
    * </p>
    *
+   * @tparam A the type of the object to normalize
    * @param a the object to normalize
    * @return the normalized form of the passed object
    */

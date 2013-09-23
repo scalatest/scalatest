@@ -197,8 +197,8 @@ trait Equality[A] extends Equivalence[A] {
   /**
    * Indicates whether the objects passed as <code>a</code> and <code>b</code> are equal.
    *
-   * @param a a left-hand-side object being compared with another (right-hand-side one) for equality (<em>e.g.</em>, <code>a == b</code>)
-   * @param b a right-hand-side object being compared with another (left-hand-side one) for equality (<em>e.g.</em>, <code>a == b</code>)
+   * @param a a left-hand value being compared with another (right-hand-side one) for equality (<em>e.g.</em>, <code>a == b</code>)
+   * @param b a right-hand value being compared with another (left-hand-side one) for equality (<em>e.g.</em>, <code>a == b</code>)
    * @return true if the passed objects are "equal," as defined by this <code>Equality</code> instance
    */
   def areEqual(a: A, b: Any): Boolean
@@ -213,10 +213,10 @@ trait Equality[A] extends Equivalence[A] {
    * and <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a>.
    * </p>
    *
-   * @param a a left-hand-side object being compared with another (right-hand-side one) for equality (<em>e.g.</em>, <code>a == b</code>)
-   * @param b a right-hand-side object being compared with another (left-hand-side one) for equality (<em>e.g.</em>, <code>a == b</code>)
+   * @param a a left-hand value being compared with another, right-hand, value for equality (<em>e.g.</em>, <code>a == b</code>)
+   * @param b a right-hand value being compared with another, left-hand, value for equality (<em>e.g.</em>, <code>a == b</code>)
    * @return true if the passed objects are "equal," as defined by the <code>areEqual</code> method of this
-   * <code>Equality</code> instance
+   *     <code>Equality</code> instance
    */
   final def areEquivalent(a: A, b: A): Boolean = areEqual(a, b)
 } 

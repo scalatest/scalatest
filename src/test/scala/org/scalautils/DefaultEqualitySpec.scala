@@ -25,7 +25,7 @@ import scala.collection.GenTraversableOnce
 
 class DefaultEqualitySpec extends Spec with NonImplicitAssertions {
 
-  object `the AnyEquality type class` {
+  object `the default Equality class` {
 
     def `should call .equals on the left hand object (and not on the right hand object)` {
 
@@ -53,6 +53,10 @@ class DefaultEqualitySpec extends Spec with NonImplicitAssertions {
       assert((new DefaultEquality[Array[Int]]).areEqual(a, v))
       assert((new DefaultEquality[Vector[Int]]).areEqual(v, a))
       assert((new DefaultEquality[Array[Int]]).areEqual(a, b))
+    }
+
+    def `should have a pretty toString` {
+      assert((new DefaultEquality).toString == "Equality.default")
     }
   }
 }

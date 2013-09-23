@@ -30,7 +30,7 @@ package org.scalautils
  * </pre>
  *
  */
-private[scalautils] final class ComposedNormalizingEquality[A](
+private[scalautils] final case class ComposedNormalizingEquality[A](
   override val afterNormalizationEquality: Equality[A],
   uniformity: Uniformity[A]
 ) extends NormalizingEquality[A] {

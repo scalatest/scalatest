@@ -25,37 +25,11 @@ package org.scalautils
  */
 trait Uniformity[A] extends Normalization[A] { thisUniformity =>
 
-  // TODO: Add an example of Array[String] isInstanceOfA here and in NormalizedEquality
-  /* TODO: Need to fix this scaladoc!
-   * Indicates whether the passed object is an instance of type <code>A</code>.
-   *
-   * <p>
-   * This method is invoked by the <code>areEqual</code> method of subclass <code>NormalizedEquality</code> to determine whether or not
-   * <code>b</code> can be cast to </code>A</code> so that it can be safely passed to <code>normalized</code>.
-   * To implement this method, simply call <code>b.isInstanceOf[A]</code> for the actual <code>A</code> type.
-   * For example, if you are defining a <code>NormalizedEquality[String]</code>, your <code>isInstanceOf</code>
-   * method should look like:
-   * </p>
-   *
-   * <pre class="stHighlight">
-   * def isInstanceOfA(b: Any) = b.isInstanceOf[String]
-   * </pre>
-   *
-   * <p>
-   * If you are defining a <code>NormalizedEquality[xml.Node]</code> your <code>isInstanceOf</code> method
-   * should look like:
-   * </p>
-   *
-   * <pre class="stHighlight">
-   * def isInstanceOfA(b: Any) = b.isInstanceOf[xml.Node]
-   * </pre>
-   *
-   * @param b the object to inspect to determine whether it is an instance of <code>A<code>
-   * @return true if the passed object is an instance of <code>A</code>
-   */
-
   /**
    * Returns either the result of passing this object to <code>normalized</code>, if appropriate, or the same object.
+   *
+   * @param b the object to normalize, if appropriate
+   * @return a normalized form of the passed object, if this <code>Uniformity</code> was able to normalize it, else the same object passed
    */
   def normalizedOrSame(b: Any): Any
 
@@ -171,10 +145,6 @@ trait Uniformity[A] extends Normalization[A] { thisUniformity =>
    * <pre class="stHighlight">
    * uniformityPassedToAnd.normalizedOrSame(uniformityOnWhichAndWasInvoked.normalizedOrSame(a))
    * </pre>
-   *
-   * <p>
-   * If the passed object is already in normal form, this method may return the same instance passed.
-   * </p>
    *
    * @param other a <code>Uniformity</code> to 'and' with this one
    * @return a <code>Uniformity</code> representing the composition of this and the passed <code>Uniformity</code>

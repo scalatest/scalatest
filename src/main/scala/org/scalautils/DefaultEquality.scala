@@ -46,5 +46,7 @@ private[scalautils] final class DefaultEquality[A] extends Equality[A] {
       }
     }
   }
+
+  override def toString: String = "Equality.default"
 }
 

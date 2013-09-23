@@ -38,6 +38,8 @@ trait StringNormalizations {
        * @return the passed string transformed to lower case.
        */
       def normalized(s: String): String = s.toLowerCase
+
+      override def toString: String = "lowerCased"
     }
 
   /**
@@ -55,6 +57,8 @@ trait StringNormalizations {
        * @return the passed string transformed to upper case.
        */
       def normalized(s: String): String = s.toUpperCase
+
+      override def toString: String = "upperCased"
     }
 
   /**
@@ -72,6 +76,8 @@ trait StringNormalizations {
        * @return the passed string with any white space trimmed off either end.
        */
       def normalized(s: String): String = s.trim
+
+      override def toString: String = "trimmed"
     }
 } 
 
