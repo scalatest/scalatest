@@ -22,7 +22,7 @@ package org.scalatest.exceptions
  * Having a stack depth is more useful in a testing environment in which test failures are implemented as
  * thrown exceptions, as is the case in ScalaTest's built-in suite traits.
  *
- * @param messageFun an function that produces an optional detail message for this <code>StackDepthException</code>.
+ * @param messageFun a function that produces an optional detail message for this <code>StackDepthException</code>.
  * @param cause an optional cause, the <code>Throwable</code> that caused this <code>StackDepthException</code> to be thrown.
  * @param failedCodeStackDepthFun a function that produces the depth in the stack trace of this exception at which the line of test code that failed resides.
  *
@@ -52,7 +52,7 @@ abstract class StackDepthException(
    *
    * @param message an optional detail message for this <code>StackDepthException</code>.
    * @param cause an optional cause, the <code>Throwable</code> that caused this <code>StackDepthException</code> to be thrown.
-   * @param failedCodeStackDepth the depth in the stack trace of this exception at which the line of test code that failed resides.
+   * @param failedCodeStackDepthFun a function that return the depth in the stack trace of this exception at which the line of test code that failed resides.
    *
    * @throws NullPointerException if either <code>message</code> or <code>cause</code> is <code>null</code> or <code>Some(null)</code>, or <code>failedCodeStackDepthFun</code> is <code>null</code>.
    */

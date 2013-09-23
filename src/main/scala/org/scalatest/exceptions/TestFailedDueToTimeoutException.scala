@@ -18,7 +18,7 @@ package org.scalatest.exceptions
 import org.scalatest.time.Span
 
 /**
- * Subclass of <a href="../TestFailedException.html"><code>TestFailedException</code></a> representing tests that faile because of a timeout.
+ * Subclass of <a href="TestFailedException.html"><code>TestFailedException</code></a> representing tests that failed because of a timeout.
  *
  * <p>
  * This exception is thrown by the <code>failAfter</code>

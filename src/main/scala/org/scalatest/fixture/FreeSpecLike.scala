@@ -138,7 +138,11 @@ trait FreeSpecLike extends Suite with Informing with Updating with Alerting with
    * class <code>FreeSpecStringWrapper</code>.
    * </p>
    *
+   * @param specText the specification text
+   * @param tags the list of tags
+   *
    * @author Bill Venners
+   * @author Chee Seng
    */
   protected final class ResultOfTaggedAsInvocationOnString(specText: String, tags: List[Tag]) {
 
@@ -157,6 +161,8 @@ trait FreeSpecLike extends Suite with Informing with Updating with Alerting with
      * <p>
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def in(testFun: FixtureParam => Any) {
       registerTestToRun(specText, tags, "in", testFun)
@@ -177,6 +183,8 @@ trait FreeSpecLike extends Suite with Informing with Updating with Alerting with
      * <p>
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def in(testFun: () => Any) {
       registerTestToRun(specText, tags, "in", new NoArgTestWrapper(testFun))
@@ -197,6 +205,8 @@ trait FreeSpecLike extends Suite with Informing with Updating with Alerting with
      * <p>
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def is(testFun: => PendingNothing) {
       registerTestToRun(specText, tags, "is", unusedFixtureParam => testFun)
@@ -217,6 +227,8 @@ trait FreeSpecLike extends Suite with Informing with Updating with Alerting with
      * <p>
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def ignore(testFun: FixtureParam => Any) {
       registerTestToIgnore(specText, tags, "ignore", testFun)
@@ -237,6 +249,8 @@ trait FreeSpecLike extends Suite with Informing with Updating with Alerting with
      * <p>
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def ignore(testFun: () => Any) {
       registerTestToIgnore(specText, tags, "ignore", new NoArgTestWrapper(testFun))
@@ -256,11 +270,18 @@ trait FreeSpecLike extends Suite with Informing with Updating with Alerting with
    * in <code>ShouldMatchers</code> and <code>MustMatchers</code>. 
    * </p>
    *
+   * @param string the string that is wrapped
+   *
    * @author Bill Venners
    */
   protected final class FreeSpecStringWrapper(string: String) {
 
-    // TODO: Fill in Scaladoc
+    /**
+     * Register some text that may surround one or more tests. Thepassed function value may contain surrounding text
+     * registrations (defined with dash (<code>-</code>)) and/or tests (defined with <code>in</code>). This trait's
+     * implementation of this method will register the text (passed to the contructor of <code>FreeSpecStringWrapper</code>
+     * and immediately invoke the passed function.
+     */
     def - (fun: => Unit) {
       registerNestedBranch(string, None, fun, "describeCannotAppearInsideAnIt", sourceFileName, "-", 3, -2, None)
     }
@@ -280,6 +301,8 @@ trait FreeSpecLike extends Suite with Informing with Updating with Alerting with
      * <p>
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def in(testFun: FixtureParam => Any) {
       registerTestToRun(string, List(), "in", testFun)
@@ -300,6 +323,8 @@ trait FreeSpecLike extends Suite with Informing with Updating with Alerting with
      * <p>
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def in(testFun: () => Any) {
       registerTestToRun(string, List(), "in", new NoArgTestWrapper(testFun))
@@ -320,6 +345,8 @@ trait FreeSpecLike extends Suite with Informing with Updating with Alerting with
      * <p>
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def is(testFun: => PendingNothing) {
       registerTestToRun(string, List(), "is", unusedFixtureParam => testFun)
@@ -340,6 +367,8 @@ trait FreeSpecLike extends Suite with Informing with Updating with Alerting with
      * <p>
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def ignore(testFun: FixtureParam => Any) {
       registerTestToIgnore(string, List(), "ignore", testFun)
@@ -360,6 +389,8 @@ trait FreeSpecLike extends Suite with Informing with Updating with Alerting with
      * <p>
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def ignore(testFun: () => Any) {
       registerTestToIgnore(string, List(), "ignore", new NoArgTestWrapper(testFun))
@@ -380,6 +411,9 @@ trait FreeSpecLike extends Suite with Informing with Updating with Alerting with
      * <p>
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
+     *
+     * @param firstTestTag the first mandatory test tag
+     * @param otherTestTags the others additional test tags
      */
     def taggedAs(firstTestTag: Tag, otherTestTags: Tag*) = {
       val tagList = firstTestTag :: otherTestTags.toList
@@ -418,9 +452,8 @@ trait FreeSpecLike extends Suite with Informing with Updating with Alerting with
    *
    * @param testName the name of one test to execute.
    * @param args the <code>Args</code> for this run
-   *
-   * @throws NullPointerException if any of <code>testName</code>, <code>reporter</code>, <code>stopper</code>, or <code>configMap</code>
-   *     is <code>null</code>.
+   * @return a <code>Status</code> object that indicates when the test started by this method has completed, and whether or not it failed .
+   * @throws NullPointerException if <code>testName</code> or <code><args/code> is <code>null</code>.
    */
   protected override def runTest(testName: String, args: Args): Status = {
 
@@ -482,22 +515,14 @@ trait FreeSpecLike extends Suite with Informing with Updating with Alerting with
    * For each test in the <code>testName</code> <code>Set</code>, in the order
    * they appear in the iterator obtained by invoking the <code>elements</code> method on the <code>Set</code>, this trait's implementation
    * of this method checks whether the test should be run based on the <code>tagsToInclude</code> and <code>tagsToExclude</code> <code>Set</code>s.
-   * If so, this implementation invokes <code>runTest</code>, passing in:
+   * If so, this implementation invokes <code>runTest</code> via passed in <code>args</code>.
    * </p>
    *
-   * <ul>
-   * <li><code>testName</code> - the <code>String</code> name of the test to run (which will be one of the names in the <code>testNames</code> <code>Set</code>)</li>
-   * <li><code>reporter</code> - the <code>Reporter</code> passed to this method, or one that wraps and delegates to it</li>
-   * <li><code>stopper</code> - the <code>Stopper</code> passed to this method, or one that wraps and delegates to it</li>
-   * <li><code>configMap</code> - the <code>configMap</code> passed to this method, or one that wraps and delegates to it</li>
-   * </ul>
-   *
    * @param testName an optional name of one test to execute. If <code>None</code>, all relevant tests should be executed.
-   *                 I.e., <code>None</code> acts like a wildcard that means execute all relevant tests in this <code>FreeSpec</code>.
+   *                 I.e., <code>None</code> acts like a wildcard that means execute all relevant tests in this <code>fixture.FreeSpec</code>.
    * @param args the <code>Args</code> for this run
-   *
-   * @throws NullPointerException if any of <code>testName</code>, <code>reporter</code>, <code>stopper</code>, <code>tagsToInclude</code>,
-   *     <code>tagsToExclude</code>, or <code>configMap</code> is <code>null</code>.
+   * @return a <code>Status</code> object that indicates when all tests started by this method have completed, and whether or not a failure occurred.
+   * @throws NullPointerException if <code>testName</code> or <code>args</code> is <code>null</code>.
    */
   protected override def runTests(testName: Option[String], args: Args): Status = {
     runTestsImpl(thisSuite, testName, args, info, true, runTest)
@@ -513,6 +538,8 @@ trait FreeSpecLike extends Suite with Informing with Updating with Alerting with
    * of the concatenation of the text of each surrounding describer, in order from outside in, and the text of the
    * example itself, with all components separated by a space.
    * </p>
+   *
+   * @return the <code>Set</code> of test names
    */
   override def testNames: Set[String] = {
     // I'm returning a ListSet here so that they tests will be run in registration order
@@ -544,6 +571,8 @@ trait FreeSpecLike extends Suite with Informing with Updating with Alerting with
   
   /**
    * Suite style name.
+   *
+   * @return <code>org.scalatest.fixture.FreeSpec</code>
    */
   final override val styleName: String = "org.scalatest.fixture.FreeSpec"
     

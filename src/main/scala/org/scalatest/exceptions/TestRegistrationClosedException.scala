@@ -43,7 +43,7 @@ package org.scalatest.exceptions
  * </p>
  *
  * @param message the exception's detail message
- * @param failedCodeStackDepth the depth in the stack trace of this exception at which the line of code that attempted
+ * @param failedCodeStackDepthFun a function that return the depth in the stack trace of this exception at which the line of code that attempted
  *   to register the test after registration had been closed.
  *
  * @throws NullPointerException if either <code>message</code> or <code>failedCodeStackDepthFun</code> is <code>null</code>
