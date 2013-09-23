@@ -126,6 +126,8 @@ trait FeatureSpecLike extends Suite with Informing with Updating with Alerting w
    * passed function value may contain more describers (defined with <code>describe</code>) and/or tests
    * (defined with <code>it</code>). This trait's implementation of this method will register the
    * description string and immediately invoke the passed function.
+   *
+   * @param description the description text
    */
   protected def feature(description: String)(fun: => Unit) {
 
@@ -159,8 +161,8 @@ trait FeatureSpecLike extends Suite with Informing with Updating with Alerting w
    *
    * @param testName the name of one test to execute.
    * @param args the <code>Args</code> for this run
-   *
-   * @throws NullPointerException if any of <code>testName</code>, <code>reporter</code>, <code>stopper</code>, or <code>configMap</code>
+   * @return a <code>Status</code> object that indicates when the test started by this method has completed, and whether or not it failed .
+   * @throws NullPointerException if <code>testName</code>, <code>reporter</code>, <code>stopper</code>, or <code>configMap</code>
    *     is <code>null</code>.
    */
   protected override def runTest(testName: String, args: Args): Status = {
@@ -225,20 +227,13 @@ trait FeatureSpecLike extends Suite with Informing with Updating with Alerting w
    * For each test in the <code>testName</code> <code>Set</code>, in the order
    * they appear in the iterator obtained by invoking the <code>elements</code> method on the <code>Set</code>, this trait's implementation
    * of this method checks whether the test should be run based on the <code>tagsToInclude</code> and <code>tagsToExclude</code> <code>Set</code>s.
-   * If so, this implementation invokes <code>runTest</code>, passing in:
+   * If so, this implementation invokes <code>runTest</code> with passed in <code>args</code>.
    * </p>
    *
-   * <ul>
-   * <li><code>testName</code> - the <code>String</code> name of the test to run (which will be one of the names in the <code>testNames</code> <code>Set</code>)</li>
-   * <li><code>reporter</code> - the <code>Reporter</code> passed to this method, or one that wraps and delegates to it</li>
-   * <li><code>stopper</code> - the <code>Stopper</code> passed to this method, or one that wraps and delegates to it</li>
-   * <li><code>configMap</code> - the <code>configMap</code> passed to this method, or one that wraps and delegates to it</li>
-   * </ul>
-   *
    * @param testName an optional name of one test to execute. If <code>None</code>, all relevant tests should be executed.
-   *                 I.e., <code>None</code> acts like a wildcard that means execute all relevant tests in this <code>FeatureSpec</code>.
+   *                 I.e., <code>None</code> acts like a wildcard that means execute all relevant tests in this <code>fixture.FeatureSpec</code>.
    * @param args the <code>Args</code> for this run
-   *
+   * @return a <code>Status</code> object that indicates when all tests started by this method have completed, and whether or not a failure occurred.
    * @throws NullPointerException if any of <code>testName</code> or <code>args</code> is <code>null</code>.
    */
   protected override def runTests(testName: Option[String], args: Args): Status = {
@@ -255,6 +250,8 @@ trait FeatureSpecLike extends Suite with Informing with Updating with Alerting w
    * of the concatenation of the text of each surrounding describer, in order from outside in, and the text of the
    * example itself, with all components separated by a space.
    * </p>
+   *
+   * @return the <code>Set</code> of test names
    */
   //override def testNames: Set[String] = ListSet(atomic.get.testsList.map(_.testName): _*)
   override def testNames: Set[String] = {
@@ -297,6 +294,8 @@ trait FeatureSpecLike extends Suite with Informing with Updating with Alerting w
    * This method makes it possible to write pending tests as simply <code>(pending)</code>, without needing
    * to write <code>(fixture => pending)</code>.
    * </p>
+   *
+   * @param f a function
    */
   protected implicit def convertPendingToFixtureFunction(f: => PendingNothing): FixtureParam => Any = {
     fixture => f
@@ -309,12 +308,16 @@ trait FeatureSpecLike extends Suite with Informing with Updating with Alerting w
    * Implicitly converts a function that takes no parameters and results in <code>Any</code> to
    * a function from <code>FixtureParam</code> to <code>Any</code>, to enable no-arg tests to registered
    * by methods that require a test function that takes a <code>FixtureParam</code>.
+   *
+   * @param fun a function
    */
   protected implicit def convertNoArgToFixtureFunction(fun: () => Any): (FixtureParam => Any) =
     new NoArgTestWrapper(fun)
   
   /**
    * Suite style name.
+   *
+   * @return <code>org.scalatest.fixture.FeatureSpec</code>
    */
   final override val styleName: String = "org.scalatest.fixture.FeatureSpec"
     

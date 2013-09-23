@@ -139,6 +139,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For more information and examples of the use of this method, see the <a href="../FlatSpec.html">main documentation</a>
      * for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param description the description text
      */
     def of(description: String) {
       registerFlatBranch(description, "describeCannotAppearInsideAnIt", sourceFileName, "of", 3, 0)
@@ -201,6 +203,10 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
    * For more information and examples of the use of the <code>it</code> field to register tagged tests, see
    * the <a href="../FlatSpec.html#TaggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
    * </p>
+   *
+   * @param verb the verb
+   * @param name the name
+   * @param tags the list of tags
    */
   protected final class ItVerbStringTaggedAs(verb: String, name: String, tags: List[Tag]) {
 
@@ -220,6 +226,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For examples of tagged test registration, see
      * the <a href="../FlatSpec.html#TaggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def in(testFun: () => Any) {
       registerTestToRun(verb.trim + " " + name.trim, tags, "in", new NoArgTestWrapper(testFun))
@@ -241,6 +249,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For examples of tagged test registration, see
      * the <a href="../FlatSpec.html#TaggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def in(testFun: FixtureParam => Any) {
       registerTestToRun(verb.trim + " " + name.trim, tags, "in", testFun)
@@ -263,6 +273,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * for trait <code>FlatSpec</code>.  And for examples of tagged test registration, see
      * the <a href="../FlatSpec.html#TaggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def is(testFun: => PendingNothing) {
       registerTestToRun(verb.trim + " " + name.trim, tags, "is", unusedFixtureParam => testFun)
@@ -285,6 +297,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * for trait <code>FlatSpec</code>.  And for examples of tagged test registration, see
      * the <a href="../FlatSpec.html#TaggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def ignore(testFun: () => Any) {
       registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", new NoArgTestWrapper(testFun))
@@ -308,6 +322,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * for trait <code>FlatSpec</code>.  And for examples of tagged test registration, see
      * the <a href="../FlatSpec.html#TaggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def ignore(testFun: FixtureParam => Any) {
       registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", testFun)
@@ -357,6 +373,9 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
    * For more information and examples of the use of the <code>it</code> field, see the <a href="FlatSpec.html">main documentation</a>
    * for trait <code>FlatSpec</code>.
    * </p>
+   *
+   * @param verb the verb
+   * @param name the name
    */
   protected final class ItVerbString(verb: String, name: String) {
 
@@ -376,6 +395,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For examples of no-arg test registration, see the <a href="FlatSpec.html">main documentation</a>
      * for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def in(testFun: () => Any) {
       registerTestToRun(verb.trim + " " + name.trim, List(), "in", new NoArgTestWrapper(testFun))
@@ -397,6 +418,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For examples of one-arg test registration, see the <a href="FlatSpec.html">main documentation</a>
      * for trait <code>fixture.FlatSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def in(testFun: FixtureParam => Any) {
       registerTestToRun(verb.trim + " " + name.trim, List(), "in", testFun)
@@ -418,6 +441,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For examples of pending test registration, see the <a href="../FlatSpec.html#PendingTests">Pending tests section</a> in the main documentation
      * for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def is(testFun: => PendingNothing) {
       registerTestToRun(verb.trim + " " + name.trim, List(), "is", unusedFixtureParam => testFun)
@@ -439,6 +464,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For examples of ignored test registration, see the <a href="../FlatSpec.html#IgnoredTests">Ignored tests section</a> in the main documentation
      * for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def ignore(testFun: () => Any) {
       registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", new NoArgTestWrapper(testFun))
@@ -460,6 +487,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For examples of ignored test registration, see the <a href="../FlatSpec.html#IgnoredTests">Ignored tests section</a> in the main documentation
      * for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def ignore(testFun: FixtureParam => Any) {
       registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", testFun)
@@ -481,6 +510,9 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For examples of tagged test registration, see the <a href="../FlatSpec.html#TaggingTests">Tagging tests section</a> in the main documentation
      * for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param firstTestTag the first mandatory test tag
+     * @param otherTestTags the others additional test tags
      */
     def taggedAs(firstTestTag: Tag, otherTestTags: Tag*) = {
       val tagList = firstTestTag :: otherTestTags.toList
@@ -532,6 +564,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For examples of test registration, see the <a href="../FlatSpec.html">main documentation</a>
      * for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param string the string description
      */
     def should(string: String) = new ItVerbString("should", string)
 
@@ -551,6 +585,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For examples of test registration, see the <a href="../FlatSpec.html">main documentation</a>
      * for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param string the string description
      */
     def must(string: String) = new ItVerbString("must", string)
 
@@ -570,6 +606,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For examples of test registration, see the <a href="../FlatSpec.html">main documentation</a>
      * for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param string the string description
      */
     def can(string: String) = new ItVerbString("can", string)
 
@@ -589,6 +627,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For examples of shared tests, see the <a href="../FlatSpec.html#SharedTests">Shared tests section</a>
      * in the main documentation for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param behaveWord the <code>BehaveWord</code>
      */
     def should(behaveWord: BehaveWord) = behaveWord
 
@@ -608,6 +648,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For examples of shared tests, see the <a href="../FlatSpec.html#SharedTests">Shared tests section</a>
      * in the main documentation for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param behaveWord the <code>BehaveWord</code>
      */
     def must(behaveWord: BehaveWord) = behaveWord
 
@@ -627,6 +669,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For examples of shared tests, see the <a href="../FlatSpec.html#SharedTests">Shared tests section</a>
      * in the main documentation for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param behaveWord the <code>BehaveWord</code>
      */
     def can(behaveWord: BehaveWord) = behaveWord
   }
@@ -694,6 +738,10 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
    * For more information and examples of the use of the <code>it</code> field to register tagged tests, see
    * the <a href="../FlatSpec.html#TaggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
    * </p>
+   *
+   * @param verb the verb
+   * @param name the name
+   * @param tags the list of tags
    */
   protected final class TheyVerbStringTaggedAs(verb: String, name: String, tags: List[Tag]) {
 
@@ -713,6 +761,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For examples of tagged test registration, see
      * the <a href="../FlatSpec.html#TaggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def in(testFun: () => Any) {
       registerTestToRun(verb.trim + " " + name.trim, tags, "in", new NoArgTestWrapper(testFun))
@@ -734,6 +784,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For examples of tagged test registration, see
      * the <a href="../FlatSpec.html#TaggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def in(testFun: FixtureParam => Any) {
       registerTestToRun(verb.trim + " " + name.trim, tags, "in", testFun)
@@ -756,6 +808,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * for trait <code>FlatSpec</code>.  And for examples of tagged test registration, see
      * the <a href="../FlatSpec.html#TaggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def is(testFun: => PendingNothing) {
       registerTestToRun(verb.trim + " " + name.trim, tags, "is", unusedFixtureParam => testFun)
@@ -778,6 +832,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * for trait <code>FlatSpec</code>.  And for examples of tagged test registration, see
      * the <a href="../FlatSpec.html#TaggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def ignore(testFun: () => Any) {
       registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", new NoArgTestWrapper(testFun))
@@ -801,6 +857,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * for trait <code>FlatSpec</code>.  And for examples of tagged test registration, see
      * the <a href="../FlatSpec.html#TaggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def ignore(testFun: FixtureParam => Any) {
       registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", testFun)
@@ -850,6 +908,9 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
    * For more information and examples of the use of the <code>it</code> field, see the <a href="FlatSpec.html">main documentation</a>
    * for trait <code>FlatSpec</code>.
    * </p>
+   *
+   * @param verb the verb
+   * @param name the name
    */
   protected final class TheyVerbString(verb: String, name: String) {
 
@@ -869,6 +930,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For examples of no-arg test registration, see the <a href="FlatSpec.html">main documentation</a>
      * for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def in(testFun: () => Any) {
       registerTestToRun(verb.trim + " " + name.trim, List(), "in", new NoArgTestWrapper(testFun))
@@ -890,6 +953,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For examples of one-arg test registration, see the <a href="FlatSpec.html">main documentation</a>
      * for trait <code>fixture.FlatSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def in(testFun: FixtureParam => Any) {
       registerTestToRun(verb.trim + " " + name.trim, List(), "in", testFun)
@@ -911,6 +976,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For examples of pending test registration, see the <a href="../FlatSpec.html#PendingTests">Pending tests section</a> in the main documentation
      * for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def is(testFun: => PendingNothing) {
       registerTestToRun(verb.trim + " " + name.trim, List(), "is", unusedFixtureParam => testFun)
@@ -932,6 +999,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For examples of ignored test registration, see the <a href="../FlatSpec.html#IgnoredTests">Ignored tests section</a> in the main documentation
      * for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def ignore(testFun: () => Any) {
       registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", new NoArgTestWrapper(testFun))
@@ -953,6 +1022,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For examples of ignored test registration, see the <a href="../FlatSpec.html#IgnoredTests">Ignored tests section</a> in the main documentation
      * for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def ignore(testFun: FixtureParam => Any) {
       registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", testFun)
@@ -974,6 +1045,9 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For examples of tagged test registration, see the <a href="../FlatSpec.html#TaggingTests">Tagging tests section</a> in the main documentation
      * for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param firstTestTag the first mandatory test tag
+     * @param otherTestTags the others additional test tags
      */
     def taggedAs(firstTestTag: Tag, otherTestTags: Tag*) = {
       val tagList = firstTestTag :: otherTestTags.toList
@@ -982,7 +1056,7 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
   }
 
   /**
-   * Class that supports test (and shared test) registration via the instance referenced from <code>fixture.FlatSpec</code>'s <code>it</code> field.
+   * Class that supports test (and shared test) registration via the instance referenced from <code>fixture.FlatSpec</code>'s <code>they</code> field.
    *
    * <p>
    * This class enables syntax such as the following test registration:
@@ -1025,6 +1099,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For examples of test registration, see the <a href="../FlatSpec.html">main documentation</a>
      * for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param string the string description
      */
     def should(string: String) = new ItVerbString("should", string)
 
@@ -1044,6 +1120,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For examples of test registration, see the <a href="../FlatSpec.html">main documentation</a>
      * for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param string the string description
      */
     def must(string: String) = new ItVerbString("must", string)
 
@@ -1063,6 +1141,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For examples of test registration, see the <a href="../FlatSpec.html">main documentation</a>
      * for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param string the string description
      */
     def can(string: String) = new ItVerbString("can", string)
 
@@ -1082,6 +1162,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For examples of shared tests, see the <a href="../FlatSpec.html#SharedTests">Shared tests section</a>
      * in the main documentation for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param behaveWord the <code>BehaveWord</code>
      */
     def should(behaveWord: BehaveWord) = behaveWord
 
@@ -1101,6 +1183,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For examples of shared tests, see the <a href="../FlatSpec.html#SharedTests">Shared tests section</a>
      * in the main documentation for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param behaveWord the <code>BehaveWord</code>
      */
     def must(behaveWord: BehaveWord) = behaveWord
 
@@ -1120,6 +1204,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For examples of shared tests, see the <a href="../FlatSpec.html#SharedTests">Shared tests section</a>
      * in the main documentation for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param behaveWord the <code>BehaveWord</code>
      */
     def can(behaveWord: BehaveWord) = behaveWord
   }
@@ -1186,6 +1272,10 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
    * in the main documentation for trait <code>FlatSpec</code>. For examples of tagged test registration, see
    * the <a href="../FlatSpec.html#TaggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
    * </p>
+   *
+   * @param verb the verb
+   * @param name the name
+   * @param tags the list of tags
    */
   protected final class IgnoreVerbStringTaggedAs(verb: String, name: String, tags: List[Tag]) {
 
@@ -1206,6 +1296,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * in the main documentation for trait <code>FlatSpec</code>. For examples of tagged test registration, see
      * the <a href="../FlatSpec.html#TaggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def in(testFun: () => Any) {
       registerTestToIgnore(verb.trim + " " + name.trim, tags, "in", new NoArgTestWrapper(testFun))
@@ -1229,6 +1321,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * in the main documentation for trait <code>FlatSpec</code>. For examples of tagged test registration, see
      * the <a href="../FlatSpec.html#TaggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def in(testFun: FixtureParam => Any) {
       registerTestToIgnore(verb.trim + " " + name.trim, tags, "in", testFun)
@@ -1259,6 +1353,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * in the main documentation for trait <code>FlatSpec</code>. For examples of tagged test registration, see
      * the <a href="../FlatSpec.html#TaggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def is(testFun: => PendingNothing) {
       registerTestToIgnore(verb.trim + " " + name.trim, tags, "is", unusedFixtureParam => testFun)
@@ -1306,6 +1402,9 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
    * For more information and examples of the use of the <code>ignore</code> field, see the <a href="../FlatSpec.html#IgnoredTests">Ignored tests section</a>
    * in the main documentation for trait <code>FlatSpec</code>.
    * </p>
+   *
+   * @param verb the verb
+   * @param name the name
    */
   protected final class IgnoreVerbString(verb: String, name: String) {
 
@@ -1325,6 +1424,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For examples of the registration of ignored tests, see the <a href="../FlatSpec.html#IgnoredTests">Ignored tests section</a>
      * in the main documentation for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def in(testFun: () => Any) {
       registerTestToIgnore(verb.trim + " " + name.trim, List(), "in", new NoArgTestWrapper(testFun))
@@ -1347,6 +1448,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For examples of the registration of ignored tests, see the <a href="../FlatSpec.html#IgnoredTests">Ignored tests section</a>
      * in the main documentation for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def in(testFun: FixtureParam => Any) {
       registerTestToIgnore(verb.trim + " " + name.trim, List(), "in", testFun)
@@ -1376,6 +1479,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * see the <a href="../FlatSpec.html#IgnoredTests">Ignored tests section</a>
      * in the main documentation for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def is(testFun: => PendingNothing) {
       registerTestToIgnore(verb.trim + " " + name.trim, List(), "is", unusedFixtureParam => testFun)
@@ -1399,6 +1504,9 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * see the <a href="../FlatSpec.html#IgnoredTests">Ignored tests section</a>
      * in the main documentation for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param firstTestTag the first mandatory test tag
+     * @param otherTestTags the others additional test tags
      */
     def taggedAs(firstTestTag: Tag, otherTestTags: Tag*) = {
       val tagList = firstTestTag :: otherTestTags.toList
@@ -1441,6 +1549,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For more information and examples of the use of the <code>ignore</code> field, see <a href="../FlatSpec.html#IgnoredTests">Ignored tests section</a>
      * in the main documentation for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param string the string description
      */
     def should(string: String) = new IgnoreVerbString("should", string)
 
@@ -1460,6 +1570,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For more information and examples of the use of the <code>ignore</code> field, see <a href="../FlatSpec.html#IgnoredTests">Ignored tests section</a>
      * in the main documentation for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param string the string description
      */
     def must(string: String) = new IgnoreVerbString("must", string)
 
@@ -1479,6 +1591,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For more information and examples of the use of the <code>ignore</code> field, see <a href="../FlatSpec.html#IgnoredTests">Ignored tests section</a>
      * in the main documentation for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param string the string description
      */
     def can(string: String) = new IgnoreVerbString("can", string)
   }
@@ -1562,6 +1676,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For examples of test registration, see the <a href="FlatSpec.html">main documentation</a>
      * for trait <code>fixture.FlatSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def in(testFun: () => Any) {
       registerTestToRun(verb.trim + " " + rest.trim, List(), "in", new NoArgTestWrapper(testFun))
@@ -1583,6 +1699,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For examples of ignored test registration, see the <a href="../FlatSpec.html#IgnoredTests">Ignored tests section</a>
      * in the main documentation for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def ignore(testFun: () => Any) {
       registerTestToIgnore(verb.trim + " " + rest.trim, List(), "ignore", new NoArgTestWrapper(testFun))
@@ -1604,6 +1722,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For examples of test registration, see the <a href="FlatSpec.html">main documentation</a>
      * for trait <code>fixture.FlatSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def in(testFun: FixtureParam => Any) {
       registerTestToRun(verb.trim + " " + rest.trim, List(), "in", testFun)
@@ -1625,6 +1745,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For examples of ignored test registration, see the <a href="../FlatSpec.html#IgnoredTests">Ignored tests section</a>
      * in the main documentation for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def ignore(testFun: FixtureParam => Any) {
       registerTestToIgnore(verb.trim + " " + rest.trim, List(), "ignore", testFun)
@@ -1635,6 +1757,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
    * Implicitly converts an object of type <code>ResultOfStringPassedToVerb</code> to an
    * <code>InAndIgnoreMethods</code>, to enable <code>in</code> and <code>ignore</code>
    * methods to be invokable on that object.
+   *
+   * @param resultOfStringPassedToVerb an <code>ResultOfStringPassedToVerb</code> instance
    */
   protected implicit def convertToInAndIgnoreMethods(resultOfStringPassedToVerb: ResultOfStringPassedToVerb) =
     new InAndIgnoreMethods(resultOfStringPassedToVerb)
@@ -1676,7 +1800,10 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
    * <code>in</code> methods.
    * </p>
    *
+   * @param resultOfTaggedAsInvocation an <code>ResultOfTaggedAsInvocation</code> instance
+   *
    * @author Bill Venners
+   * @author Chee Seng
    */
   protected final class InAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation: ResultOfTaggedAsInvocation) {
 
@@ -1700,6 +1827,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For examples of tagged test registration, see the <a href="../FlatSpec.html#TaggingTests">Tagging tests section</a>
      * in the main documentation for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def in(testFun: () => Any) {
       registerTestToRun(verb.trim + " " + rest.trim, tagsList, "in", new NoArgTestWrapper(testFun))
@@ -1723,6 +1852,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For examples of tagged test registration, see the <a href="../FlatSpec.html#TaggingTests">Tagging tests section</a>
      * in the main documentation for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def ignore(testFun: () => Any) {
       registerTestToIgnore(verb.trim + " " + rest.trim, tagsList, "ignore", new NoArgTestWrapper(testFun))
@@ -1744,6 +1875,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For examples of tagged test registration, see the <a href="../FlatSpec.html#TaggingTests">Tagging tests section</a>
      * in the main documentation for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def in(testFun: FixtureParam => Any) {
       registerTestToRun(verb.trim + " " + rest.trim, tagsList, "in", testFun)
@@ -1767,6 +1900,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For examples of tagged test registration, see the <a href="../FlatSpec.html#TaggingTests">Tagging tests section</a>
      * in the main documentation for trait <code>FlatSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def ignore(testFun: FixtureParam => Any) {
       registerTestToIgnore(verb.trim + " " + rest.trim, tagsList, "ignore", testFun)
@@ -1777,6 +1912,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
    * Implicitly converts an object of type <code>ResultOfTaggedAsInvocation</code> to an
    * <code>InAndIgnoreMethodsAfterTaggedAs</code>, to enable <code>in</code> and <code>ignore</code>
    * methods to be invokable on that object.
+   *
+   * @param resultOfTaggedAsInvocation an <code>ResultOfTaggedAsInvocation</code> instance
    */
   protected implicit def convertToInAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation: ResultOfTaggedAsInvocation) =
     new InAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation)
@@ -1899,11 +2036,9 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
    * for <code>testNames</code> for an example.)
    *
    * @param testName the name of one test to execute.
-   * @param reporter the <code>Reporter</code> to which results will be reported
-   * @param stopper the <code>Stopper</code> that will be consulted to determine whether to stop execution early.
-   * @param configMap a <code>Map</code> of properties that can be used by this <code>FlatSpec</code>'s executing tests.
-   * @throws NullPointerException if any of <code>testName</code>, <code>reporter</code>, <code>stopper</code>, or <code>configMap</code>
-   *     is <code>null</code>.
+   * @param args the <code>Args</code> for this test
+   * @return a <code>Status</code> object that indicates when the test started by this method has completed, and whether or not it failed .
+   * @throws NullPointerException if <code>testName</code> or <code>args</code> is <code>null</code>.
    */
   protected override def runTest(testName: String, args: Args): Status = {
 
@@ -1965,22 +2100,14 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
    * For each test in the <code>testName</code> <code>Set</code>, in the order
    * they appear in the iterator obtained by invoking the <code>elements</code> method on the <code>Set</code>, this trait's implementation
    * of this method checks whether the test should be run based on the <code>tagsToInclude</code> and <code>tagsToExclude</code> <code>Set</code>s.
-   * If so, this implementation invokes <code>runTest</code>, passing in:
+   * If so, this implementation invokes <code>runTest</code> with the passed <code>args</code>.
    * </p>
    *
-   * <ul>
-   * <li><code>testName</code> - the <code>String</code> name of the test to run (which will be one of the names in the <code>testNames</code> <code>Set</code>)</li>
-   * <li><code>reporter</code> - the <code>Reporter</code> passed to this method, or one that wraps and delegates to it</li>
-   * <li><code>stopper</code> - the <code>Stopper</code> passed to this method, or one that wraps and delegates to it</li>
-   * <li><code>configMap</code> - the <code>configMap</code> passed to this method, or one that wraps and delegates to it</li>
-   * </ul>
-   *
    * @param testName an optional name of one test to execute. If <code>None</code>, all relevant tests should be executed.
-   *                 I.e., <code>None</code> acts like a wildcard that means execute all relevant tests in this <code>FlatSpec</code>.
+   *                 I.e., <code>None</code> acts like a wildcard that means execute all relevant tests in this <code>fixture.FlatSpecLike</code>.
    * @param args the <code>Args</code> for this run
-   *
-   * @throws NullPointerException if any of <code>testName</code>, <code>reporter</code>, <code>stopper</code>, <code>tagsToInclude</code>,
-   *     <code>tagsToExclude</code>, or <code>configMap</code> is <code>null</code>.
+   * @return a <code>Status</code> object that indicates when all tests started by this method have completed, and whether or not a failure occurred.
+   * @throws NullPointerException if any of <code>testName</code> or <code>args</code> is <code>null</code>.
    */
   protected override def runTests(testName: Option[String], args: Args): Status = {
     runTestsImpl(thisSuite, testName, args, info, true, runTest)
@@ -1996,6 +2123,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
    * of the concatenation of the text of each surrounding describer, in order from outside in, and the text of the
    * example itself, with all components separated by a space.
    * </p>
+   *
+   * @return the <code>Set</code> of test names
    */
   override def testNames: Set[String] = {
     // I'm returning a ListSet here so that they tests will be run in registration order
@@ -2027,6 +2156,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
   
   /**
    * Suite style name.
+   *
+   * @return <code>org.scalatest.fixture.FlatSpec</code>
    */
   final override val styleName: String = "org.scalatest.fixture.FlatSpec"
     

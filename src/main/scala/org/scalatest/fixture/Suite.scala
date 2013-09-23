@@ -103,7 +103,18 @@ trait Suite extends org.scalatest.Suite { thisSuite =>
       }
   }
 
+  /**
+   * Companion object for <code>OneArgTest</code> that provides factory method to create new <code>OneArgTest</code>
+   * instance by passing in a <code>OneArgTest</code> and a <code>FixtureParam</code> => <code>Outcome</code> function.
+   */
   object OneArgTest {
+    /**
+     * Create new <code>OneArgTest</code> instance.
+     *
+     * @param test a <code>OneArgTest</code>
+     * @param f a <code>FixtureParam</code> => <code>Outcome</code> function
+     * @return a new instance of <code>OneArgTest</code>, which will call the passed <code>f</code> function in its <code>apply</code> method
+     */
     def apply(test: OneArgTest)(f: FixtureParam => Outcome): OneArgTest = {
       new OneArgTest {
         def apply(fixture: FixtureParam): Outcome = { f(fixture) }
@@ -126,7 +137,7 @@ trait Suite extends org.scalatest.Suite { thisSuite =>
    * For more detail and examples, see the <a href="Suite.html">main documentation for this trait</a>.
    * </p>
    *
-   * @param fun the <code>OneArgTest</code> to invoke, passing in a fixture
+   * @param test the <code>OneArgTest</code> to invoke, passing in a fixture
    */
   protected def withFixture(test: OneArgTest): Outcome
 
