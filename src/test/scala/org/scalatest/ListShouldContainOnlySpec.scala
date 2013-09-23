@@ -95,11 +95,11 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
       }
       def `should throw TestFailedException with friendly reminder when single GenTraversable argument is passed and failed` {
         val e1 = intercept[exceptions.TestFailedException] {
-          fumList should contain only (List("happy", "birthday", "to", "you"))
+          fumList should contain only (Vector("happy", "birthday", "to", "you"))
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("didNotContainOnlyElementsWithFriendlyReminder", decorateToStringValue(fumList), List("happy", "birthday", "to", "you")))
+        e1.message.get should be (Resources("didNotContainOnlyElementsWithFriendlyReminder", decorateToStringValue(fumList), Vector("happy", "birthday", "to", "you")))
       }
     }
 
@@ -150,11 +150,11 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
       }
       def `should throw TestFailedException with friendly reminder when single GenTraversable argument is passed and failed` {
         val e1 = intercept[exceptions.TestFailedException] {
-          fumList should (contain only (List("happy", "birthday", "to", "you")))
+          fumList should (contain only (Vector("happy", "birthday", "to", "you")))
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("didNotContainOnlyElementsWithFriendlyReminder", decorateToStringValue(fumList), List("happy", "birthday", "to", "you")))
+        e1.message.get should be (Resources("didNotContainOnlyElementsWithFriendlyReminder", decorateToStringValue(fumList), Vector("happy", "birthday", "to", "you")))
       }
     }
 
@@ -204,11 +204,11 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
       }
       def `should throw TestFailedException with friendly reminder when single GenTraversable argument is passed and failed` {
         val e1 = intercept[exceptions.TestFailedException] {
-          List(List("happy", "birthday", "to", "you")) should not contain only (List("happy", "birthday", "to", "you"))
+          Vector(Vector("happy", "birthday", "to", "you")) should not contain only (Vector("happy", "birthday", "to", "you"))
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("containedOnlyElementsWithFriendlyReminder", decorateToStringValue(List(List("happy", "birthday", "to", "you"))), List("happy", "birthday", "to", "you")))
+        e1.message.get should be (Resources("containedOnlyElementsWithFriendlyReminder", decorateToStringValue(Vector(Vector("happy", "birthday", "to", "you"))), Vector("happy", "birthday", "to", "you")))
       }
     }
 
@@ -258,11 +258,11 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
       }
       def `should throw TestFailedException with friendly reminder when single GenTraversable argument is passed and failed` {
         val e1 = intercept[exceptions.TestFailedException] {
-          List(List("happy", "birthday", "to", "you")) should (not contain only (List("happy", "birthday", "to", "you")))
+          Vector(Vector("happy", "birthday", "to", "you")) should (not contain only (Vector("happy", "birthday", "to", "you")))
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("containedOnlyElementsWithFriendlyReminder", decorateToStringValue(List(List("happy", "birthday", "to", "you"))), List("happy", "birthday", "to", "you")))
+        e1.message.get should be (Resources("containedOnlyElementsWithFriendlyReminder", decorateToStringValue(Vector(Vector("happy", "birthday", "to", "you"))), Vector("happy", "birthday", "to", "you")))
       }
     }
     
@@ -313,11 +313,11 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
 
       def `should throw TestFailedException with friendly reminder when single GenTraversable argument is passed and failed` {
         val e1 = intercept[TestFailedException] {
-          List(List("happy", "birthday", "to", "you")) shouldNot contain only (List("happy", "birthday", "to", "you"))
+          Vector(Vector("happy", "birthday", "to", "you")) shouldNot contain only (Vector("happy", "birthday", "to", "you"))
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("containedOnlyElementsWithFriendlyReminder", decorateToStringValue(List(List("happy", "birthday", "to", "you"))), List("happy", "birthday", "to", "you")))
+        e1.message.get should be (Resources("containedOnlyElementsWithFriendlyReminder", decorateToStringValue(Vector(Vector("happy", "birthday", "to", "you"))), Vector("happy", "birthday", "to", "you")))
       }
     }
 
@@ -367,11 +367,11 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
       }
       def `should throw TestFailedException with friendly reminder when single GenTraversable argument is passed and failed` {
         val e1 = intercept[TestFailedException] {
-          List(List("happy", "birthday", "to", "you")) shouldNot (contain only (List("happy", "birthday", "to", "you")))
+          Vector(Vector("happy", "birthday", "to", "you")) shouldNot (contain only (Vector("happy", "birthday", "to", "you")))
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("containedOnlyElementsWithFriendlyReminder", decorateToStringValue(List(List("happy", "birthday", "to", "you"))), List("happy", "birthday", "to", "you")))
+        e1.message.get should be (Resources("containedOnlyElementsWithFriendlyReminder", decorateToStringValue(Vector(Vector("happy", "birthday", "to", "you"))), Vector("happy", "birthday", "to", "you")))
       }
     }
   }
@@ -451,13 +451,13 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
       }
       def `should throw TFE with friendly reminder when single GenTraversable argument is passed and failed` {
         val e1 = intercept[TestFailedException] {
-          all (lists) should contain only List(1, 2, 3)
+          all (Vector(Vector(3, 2, 1), Vector(3, 2, 1), Vector(4, 3, 2))) should contain only Vector(1, 2, 3)
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 0, " + decorateToStringValue(List(3, 2, 1)) + " did not contain only (" + List(1, 2, 3) + "), did you forget to say : _*" + " (ListShouldContainOnlySpec.scala:" + (thisLineNumber - 5) + ") \n" +
-                                   "in " + decorateToStringValue(lists)))
+                                   "  at index 0, " + decorateToStringValue(Vector(3, 2, 1)) + " did not contain only (" + Vector(1, 2, 3) + "), did you forget to say : _*" + " (ListShouldContainOnlySpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "in " + decorateToStringValue(Vector(Vector(3, 2, 1), Vector(3, 2, 1), Vector(4, 3, 2)))))
       }
     }
 
@@ -528,13 +528,13 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
       }
       def `should throw TFE with friendly reminder when single GenTraversable argument is passed and failed` {
         val e1 = intercept[TestFailedException] {
-          all (lists) should (contain only List(1, 2, 3))
+          all (Vector(Vector(3, 2, 1), Vector(3, 2, 1), Vector(4, 3, 2))) should (contain only Vector(1, 2, 3))
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 0, " + decorateToStringValue(List(3, 2, 1)) + " did not contain only " + "(List(1, 2, 3)), did you forget to say : _*" + " (ListShouldContainOnlySpec.scala:" + (thisLineNumber - 5) + ") \n" +
-                                   "in " + decorateToStringValue(lists)))
+                                   "  at index 0, " + decorateToStringValue(Vector(3, 2, 1)) + " did not contain only (" + Vector(1, 2, 3) + "), did you forget to say : _*" + " (ListShouldContainOnlySpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "in " + decorateToStringValue(Vector(Vector(3, 2, 1), Vector(3, 2, 1), Vector(4, 3, 2)))))
       }
     }
 
@@ -586,13 +586,13 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
       }
       def `should throw TFE with friendly reminder when single GenTraversable argument is passed and failed` {
         val e1 = intercept[TestFailedException] {
-          all (List(List(List("you", "to")))) should not contain only (List("you", "to"))
+          all (Vector(Vector(Vector("you", "to")))) should not contain only (Vector("you", "to"))
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(List(List("you", "to"))) + " contained only (" + List("you", "to") + "), did you forget to say : _*" +  " (ListShouldContainOnlySpec.scala:" + (thisLineNumber - 5) + ") \n" +
-          "in " + decorateToStringValue(List(List(List("you", "to"))))))
+          "  at index 0, " + decorateToStringValue(Vector(Vector("you", "to"))) + " contained only (" + Vector("you", "to") + "), did you forget to say : _*" +  " (ListShouldContainOnlySpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "in " + decorateToStringValue(Vector(Vector(Vector("you", "to"))))))
       }
     }
 
@@ -644,13 +644,13 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
       }
       def `should throw TFE with friendly reminder when single GenTraversable argument is passed and failed` {
         val e1 = intercept[TestFailedException] {
-          all (List(List(List("you", "to")))) should (not contain only (List("you", "to")))
+          all (Vector(Vector(Vector("you", "to")))) should (not contain only (Vector("you", "to")))
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 0, " + decorateToStringValue(List(List("you", "to"))) + " contained only " + "(List(you, to)), did you forget to say : _*" + " (ListShouldContainOnlySpec.scala:" + (thisLineNumber - 5) + ") \n" +
-                                   "in " + decorateToStringValue(List(List(List("you", "to"))))))
+                                   "  at index 0, " + decorateToStringValue(Vector(Vector("you", "to"))) + " contained only (" + Vector("you", "to") + "), did you forget to say : _*" + " (ListShouldContainOnlySpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "in " + decorateToStringValue(Vector(Vector(Vector("you", "to"))))))
       }
     }
     
@@ -702,13 +702,13 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
       }
       def `should throw TFE with friendly reminder when single GenTraversable argument is passed and failed` {
         val e1 = intercept[TestFailedException] {
-          all (List(toLists)) shouldNot contain only (List("to", "you"))
+          all (Vector(Vector(Vector("to", "you")))) shouldNot contain only (Vector("to", "you"))
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(toLists) + " contained only (" + List("to", "you") + "), did you forget to say : _*" +  " (ListShouldContainOnlySpec.scala:" + (thisLineNumber - 5) + ") \n" +
-          "in " + decorateToStringValue(List(toLists))))
+          "  at index 0, " + decorateToStringValue(Vector(Vector("to", "you"))) + " contained only (" + Vector("to", "you") + "), did you forget to say : _*" +  " (ListShouldContainOnlySpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "in " + decorateToStringValue(Vector(Vector(Vector("to", "you"))))))
       }
     }
 
@@ -760,13 +760,13 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
       }
       def `should throw TFE with friendly reminder when single GenTraversable argument is passed and failed` {
         val e1 = intercept[TestFailedException] {
-          all (List(toLists)) shouldNot (contain only List("to", "you"))
+          all (Vector(Vector(Vector("to", "you")))) shouldNot (contain only Vector("to", "you"))
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(toLists) + " contained only (" + List("to", "you") + "), did you forget to say : _*" + " (ListShouldContainOnlySpec.scala:" + (thisLineNumber - 5) + ") \n" +
-          "in " + decorateToStringValue(List(toLists))))
+          "  at index 0, " + decorateToStringValue(Vector(Vector("to", "you"))) + " contained only (" + Vector("to", "you") + "), did you forget to say : _*" + " (ListShouldContainOnlySpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "in " + decorateToStringValue(Vector(Vector(Vector("to", "you"))))))
       }
     }
   }
