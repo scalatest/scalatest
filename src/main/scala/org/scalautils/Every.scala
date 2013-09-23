@@ -140,6 +140,10 @@ import scala.annotation.unchecked.{ uncheckedVariance => uV }
  */
 sealed abstract class Every[+T] protected (underlying: Vector[T]) extends PartialFunction[Int, T] {
 
+/*
+  private def this(firstElement: T, otherElements: T*) = this(Vector(firstElement) ++ otherElements)
+*/
+
   /**
    * Returns a new <code>Many</code> containing the elements of this <code>Every</code> followed by the elements of the passed <code>Every</code>.
    * The element type of the resulting <code>Many</code> is the most specific superclass encompassing the element types of this and the passed <code>Every</code>.
@@ -462,7 +466,7 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
   final def fold[U >: T](z: U)(op: (U, U) => U): U = underlying.fold(z)(op)
 
   /**
-   * Applies a binary operator to a start value and all elements of this vector, going left to right.
+   * Applies a binary operator to a start value and all elements of this <code>Every</code>, going left to right.
    *
    * @tparam B the result type of the binary operator.
    * @param z the start value.
@@ -582,7 +586,7 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
    *
    * @param elem the element value to search for. 
    * @param from the start index
-   * @return the index <code>&gt;=</code> <code>from</code> of the first element of this vector that is equal (as determined by <code>==</code>) to <code>elem</code>,
+   * @return the index <code>&gt;=</code> <code>from</code> of the first element of this <code>Every</code> that is equal (as determined by <code>==</code>) to <code>elem</code>,
    *     or <code>-1</code>, if none exists.
    */
   final def indexOf[U >: T](elem: U, from: Int): Int = underlying.indexOf(elem, from)
@@ -923,7 +927,7 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
   final def prefixLength(p: T => Boolean): Int = underlying.prefixLength(p)
 
   /**
-   * The product of multiplying all the elements of this <code>Every</code>.
+   * The result of multiplying all the elements of this <code>Every</code>.
    *
    * <p>
    * This method can be invoked for any <code>Every[T]</code> for which an implicit <code>Numeric[T]</code> exists.
@@ -947,7 +951,7 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
   final def reduce[U >: T](op: (U, U) => U): U = underlying.reduce(op)
 
   /**
-   * Applies a binary operator to all elements of this vector, going left to right.
+   * Applies a binary operator to all elements of this <code>Every</code>, going left to right.
    *
    * @tparam U the result type of the binary operator.
    * @param op the binary operator.
@@ -964,7 +968,7 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
   final def reduceLeft[U >: T](op: (U, T) => U): U = underlying.reduceLeft(op)
 
   /**
-   * Applies a binary operator to all elements of this vector, going left to right, returning the result in a <code>Some</code>.
+   * Applies a binary operator to all elements of this <code>Every</code>, going left to right, returning the result in a <code>Some</code>.
    *
    * @tparam U the result type of the binary operator.
    * @param op the binary operator.
@@ -1038,10 +1042,53 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
     val vec = underlying.reverseMap(f)
     Every(vec.head, vec.tail: _*)
   }
+
+  /**
+   * Checks if the given <code>GenIterable</code> contains the same elements in the same order as this <code>Every</code>.
+   *
+   * @param that the <code>GenIterable</code> with which to compare
+   * @return <code>true</code>, if both this <code>Every</code> and the given <code>GenIterable</code> contain the same elements
+   *     in the same order, <code>false</code> otherwise. 
+   */
   final def sameElements[U >: T](that: GenIterable[U]): Boolean = underlying.sameElements(that)
+
+  /**
+   * Checks if the given <code>Every</code> contains the same elements in the same order as this <code>Every</code>.
+   *
+   * @param that the <code>Every</code> with which to compare
+   * @return <code>true</code>, if both this and the given <code>Every</code> contain the same elements
+   *     in the same order, <code>false</code> otherwise. 
+   */
   final def sameElements[U >: T](that: Every[U]): Boolean = underlying.sameElements(that.toVector)
+
+  /**
+   * Computes length of longest segment whose elements all satisfy some predicate.
+   *
+   * @param p the predicate used to test elements.
+   * @param from the index where the search starts.
+   * @param the length of the longest segment of this <code>Every</code> starting from index <code>from</code> such that every element of the
+   *     segment satisfies the predicate <code>p</code>. 
+   */
   final def segmentLength(p: T => Boolean, from: Int): Int = underlying.segmentLength(p, from)
+
+  /**
+   * Groups elements in fixed size blocks by passing a &ldquo;sliding window&rdquo; over them (as opposed to partitioning them, as is done in grouped.)
+   *
+   * @param size the number of elements per group
+   * @return an iterator producing <code>Every</code>s of size <code>size</code>, except the last and the only element will be truncated
+   *     if there are fewer elements than <code>size</code>.
+   */
   final def sliding(size: Int): Iterator[Every[T]] = underlying.sliding(size).map(fromNonEmptyVector(_))
+
+  /**
+   * Groups elements in fixed size blocks by passing a &ldquo;sliding window&rdquo; over them (as opposed to partitioning them, as is done in grouped.),
+   * moving the sliding window by a given <code>step<code> each time.
+   *
+   * @param size the number of elements per group
+   * @param step the distance between the first elements of successive groups
+   * @return an iterator producing <code>Every</code>s of size <code>size</code>, except the last and the only element will be truncated
+   *     if there are fewer elements than <code>size</code>.
+   */
   final def sliding(size: Int, step: Int): Iterator[Every[T]] = underlying.sliding(size, step).map(fromNonEmptyVector(_))
 
   /**
@@ -1054,53 +1101,316 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
    * @return the number of elements in this <code>Every</code>. 
    */
   final def size: Int = underlying.size
+
+  /**
+   * Sorts this <code>Every</code> according to the <code>Ordering</code> of the result of applying the given function to every element.
+   *
+   * @tparam U the target type of the transformation <code>f</code>, and the type where the <code>Ordering</code> <code>ord</code> is defined.
+   * @param f the transformation function mapping elements to some other domain <code>U</code>.
+   * @param ord the ordering assumed on domain <code>U</code>.
+   * @return a <code>Every</code> consisting of the elements of this <code>Every</code> sorted according to the <code>Ordering</code> where
+   *    <code>x &lt; y if ord.lt(f(x), f(y))</code>. 
+   */
   final def sortBy[U](f: T => U)(implicit ord: math.Ordering[U]): Every[T] = fromNonEmptyVector(underlying.sortBy(f))
+
+  /**
+   * Sorts this <code>Every</code> according to a comparison function.
+   *
+   * <p>
+   * The sort is stable. That is, elements that are equal (as determined by <code>lt</code>) appear in the same order in the
+   * sorted <code>Every</code> as in the original. 
+   * </p>
+   *
+   * @param the comparison function that tests whether its first argument precedes its second argument in the desired ordering.
+   * @return an <code>Every</code> consisting of the elements of this <code>Every</code> sorted according to the comparison function <code>lt</code>.
+   */
   final def sortWith(lt: (T, T) => Boolean): Every[T] = fromNonEmptyVector(underlying.sortWith(lt))
+
+  /**
+   * Sorts this <code>Every</code> according to an <code>Ordering</code>.
+   *
+   * <p>
+   * The sort is stable. That is, elements that are equal (as determined by <code>lt</code>) appear in the same order in the
+   * sorted <code>Every</code> as in the original. 
+   * </p>
+   *
+   * @param ord the <code>Ordering</code> to be used to compare elements.
+   * @param the comparison function that tests whether its first argument precedes its second argument in the desired ordering.
+   * @return an <code>Every</code> consisting of the elements of this <code>Every</code> sorted according to the comparison function <code>lt</code>.
+   */
   final def sorted[U >: T](implicit ord: math.Ordering[U]): Every[U] = fromNonEmptyVector(underlying.sorted(ord))
+
+  /**
+   * Indicates whether this <code>Every</code> starts with the given <code>GenSeq</code>. 
+   *
+   * @param that the <code>GenSeq</code> slice to look for in this <code>Every</code>
+   * @return <code>true</code> if this <code>Every</code> has <code>that</code> as a prefix, <code>false</code> otherwise.
+   */
   final def startsWith[B](that: GenSeq[B]): Boolean = underlying.startsWith(that)
+
+  /**
+   * Indicates whether this <code>Every</code> starts with the given <code>GenSeq</code> at the given index. 
+   *
+   * @param that the <code>GenSeq</code> slice to look for in this <code>Every</code>
+   * @param offset the index at which this <code>Every</code> is searched.
+   * @return <code>true</code> if this <code>Every</code> has <code>that</code> as a slice at the index <code>offset</code>, <code>false</code> otherwise.
+   */
   final def startsWith[B](that: GenSeq[B], offset: Int): Boolean = underlying.startsWith(that, offset)
+
+  /**
+   * Indicates whether this <code>Every</code> starts with the given <code>Every</code>. 
+   *
+   * @param that the <code>Every</code> to test
+   * @return <code>true</code> if this collection has <code>that</code> as a prefix, <code>false</code> otherwise.
+   */
   final def startsWith[B](that: Every[B]): Boolean = underlying.startsWith(that.toVector)
+
+  /**
+   * Indicates whether this <code>Every</code> starts with the given <code>Every</code> at the given index. 
+   *
+   * @param that the <code>Every</code> slice to look for in this <code>Every</code>
+   * @param offset the index at which this <code>Every</code> is searched.
+   * @return <code>true</code> if this <code>Every</code> has <code>that</code> as a slice at the index <code>offset</code>, <code>false</code> otherwise.
+   */
   final def startsWith[B](that: Every[B], offset: Int): Boolean = underlying.startsWith(that.toVector, offset)
+
+  /**
+   * The prefix of this object's <code>toString</code> representation.
+   *
+   * @return a string representation which starts the result of <code>toString</code> applied to this <code>Every</code>, which will be <code>"One"</code>
+   * if this <code>Every</code> is a <code>One</code>, or <code>"Many"</code> if it is a <code>Many</code>.
+   */
   def stringPrefix: String
+
+  /**
+   * The result of summing all the elements of this <code>Every</code>.
+   *
+   * <p>
+   * This method can be invoked for any <code>Every[T]</code> for which an implicit <code>Numeric[T]</code> exists.
+   * </p>
+   *
+   * @return the sum of all elements
+   */
   final def sum[U >: T](implicit num: Numeric[U]): U = underlying.sum(num)
+
+  /**
+   * Converts this <code>Every</code> into a collection of type <code>Col</code> by copying all elements.
+   *
+   * @tparam Col the collection type to build.
+   * @return a new collection containing all elements of this <code>Every</code>. 
+   */
   final def to[Col[_]](implicit cbf: CanBuildFrom[Nothing, T, Col[T @uV]]): Col[T @uV] = underlying.to[Col](cbf)
+
+  /**
+   * Converts this <code>Every</code> to an array.
+   *
+   * @return an array containing all elements of this <code>Every</code>. A <code>ClassTag</code> must be available for the element type of this <code>Every</code>. 
+   */ 
   final def toArray[U >: T](implicit classTag: ClassTag[U]): Array[U] = underlying.toArray
+
+  /**
+   * Converts this <code>Every</code> to a <code>Vector</code>.
+   *
+   * @return a <code>Vector</code> containing all elements of this <code>Every</code>. 
+   */ 
   final def toVector: Vector[T] = underlying
+
+  /**
+   * Converts this <code>Every</code> to a mutable buffer.
+   *
+   * @return a buffer containing all elements of this <code>Every</code>. 
+   */ 
   final def toBuffer[U >: T]: Buffer[U] = underlying.toBuffer
-  final def toIndexedSeq: IndexedSeq[T] = underlying.toIndexedSeq
+
+  /**
+   * Converts this <code>Every</code> to an immutable <code>IndexedSeq</code>.
+   *
+   * @return an immutable <code>IndexedSeq</code> containing all elements of this <code>Every</code>. 
+   */ 
+  final def toIndexedSeq: collection.immutable.IndexedSeq[T] = underlying
+
+  /**
+   * Converts this <code>Every</code> to an iterable collection.
+   *
+   * @return an <code>Iterable</code> containing all elements of this <code>Every</code>. 
+   */ 
   final def toIterable: Iterable[T] = underlying.toIterable
+
+  /**
+   * Returns an <code>Iterator</code> over the elements in this <code>Every</code>.
+   *
+   * @return an <code>Iterator</code> containing all elements of this <code>Every</code>. 
+   */ 
   final def toIterator: Iterator[T] = underlying.toIterator
+
+  /**
+   * Converts this <code>Every</code> to a list.
+   *
+   * @return a list containing all elements of this <code>Every</code>. 
+   */ 
   final def toList: List[T] = underlying.toList
+
+  /**
+   * Converts this <code>Every</code> to a map.
+   *
+   * <p>
+   * This method is unavailable unless the elements are members of <code>Tuple2</code>, each <code>((K, V))</code> becoming a key-value pair
+   * in the map. Duplicate keys will be overwritten by later keys.
+   * </p>
+   *
+   * @return a map of type <code>immutable.Map[K, V]</code> containing all key/value pairs of type <code>(K, V)</code> of this <code>Every</code>. 
+   */ 
   final def toMap[K, V](implicit ev: T <:< (K, V)): Map[K, V] = underlying.toMap
-  final def toSeq: Seq[T] = underlying.toSeq
+
+  /**
+   * Converts this <code>Every</code> to an immutable <code>IndexedSeq</code>.
+   *
+   * @return an immutable <code>IndexedSeq</code> containing all elements of this <code>Every</code>.
+   */ 
+  final def toSeq: collection.immutable.Seq[T] = underlying
+
+  /**
+   * Converts this <code>Every</code> to a set.
+   *
+   * @return a set containing all elements of this <code>Every</code>. 
+   */ 
   final def toSet[U >: T]: Set[U] = underlying.toSet
+
+  /**
+   * Converts this <code>Every</code> to a stream.
+   *
+   * @return a stream containing all elements of this <code>Every</code>. 
+   */ 
   final def toStream: Stream[T] = underlying.toStream
+
+  /**
+   * Converts this <code>Every</code> to an unspecified Traversable.
+   *
+   * @return a <code>Traversable</code> containing all elements of this <code>Every</code>. 
+   */ 
   final def toTraversable: Traversable[T] = underlying.toTraversable
-  final def transpose[U](implicit asTraversable: T => GenTraversableOnce[U]): Every[Every[U]] = {
-    val asVecs = underlying.map(asTraversable)
+
+  final def transpose[U](implicit ev: T <:< Every[U]): Every[Every[U]] = {
+    val asVecs = underlying.map(ev)
     val vec = asVecs.transpose
     fromNonEmptyVector(vec map fromNonEmptyVector)
   }
+
+  /**
+   * Produces a new <code>Every</code> that contains all elements of this <code>Every</code> and also all elements of a given <code>Every</code>.
+   *
+   * <p>
+   * <code>everyX</code> <code>union</code> <code>everyY</code> is equivalent to <code>everyX</code> <code>++</code> <code>everyY</code>.
+   * </p>
+   *
+   * <p>
+   * Another way to express this is that <code>everyX</code> <code>union</code> <code>everyY</code> computes the order-presevring multi-set union
+   * of <code>everyX</code> and <code>everyY</code>. This <code>union</code> method is hence a counter-part of <code>diff</code> and <code>intersect</code> that
+   * also work on multi-sets.
+   * </p>
+   *
+   * @param that the <code>Every</code> to add.
+   * @return a new <code>Every</code> that contains all elements of this <code>Every</code> followed by all elements of <code>that</code>.
+   */
   final def union[U >: T](that: Every[U]): Every[U] = fromNonEmptyVector(underlying union that.toVector)
+
+  /**
+   * Produces a new <code>Every</code> that contains all elements of this <code>Every</code> and also all elements of a given <code>GenSeq</code>.
+   *
+   * <p>
+   * <code>everyX</code> <code>union</code> <code>ys</code> is equivalent to <code>everyX</code> <code>++</code> <code>ys</code>.
+   * </p>
+   *
+   * <p>
+   * Another way to express this is that <code>everyX</code> <code>union</code> <code>ys</code> computes the order-presevring multi-set union
+   * of <code>everyX</code> and <code>ys</code>. This <code>union</code> method is hence a counter-part of <code>diff</code> and <code>intersect</code> that
+   * also work on multi-sets.
+   * </p>
+   *
+   * @param that the <code>GenSeq</code> to add.
+   * @return a new <code>Every</code> that contains all elements of this <code>Every</code> followed by all elements of <code>that</code> <code>GenSeq</code>.
+   */
   final def union[U >: T](that: GenSeq[U])(implicit cbf: CanBuildFrom[Vector[T], U, Vector[U]]): Every[U] = fromNonEmptyVector(underlying.union(that)(cbf))
+
+  /**
+   * Converts this <code>Every</code> of pairs into two <code>Every</code>s of the first and second half of each pair. 
+   *
+   * @tparam L the type of the first half of the element pairs
+   * @tparam R the type of the second half of the element pairs
+   * @param asPair an implicit conversion that asserts that the element type of this <code>Every</code> is a pair.
+   * @return a pair of <code>Every</code>s, containing the first and second half, respectively, of each element pair of this <code>Every</code>. 
+   */
   final def unzip[L, R](implicit asPair: T => (L, R)): (Every[L], Every[R]) = {
     val unzipped = underlying.unzip
     (fromNonEmptyVector(unzipped._1), fromNonEmptyVector(unzipped._2))
   }
+
+  /**
+   * Converts this <code>Every</code> of triples into three <code>Every</code>s of the first, second, and and third element of each triple. 
+   *
+   * @tparam L the type of the first member of the element triples
+   * @tparam R the type of the second member of the element triples
+   * @tparam R the type of the third member of the element triples
+   * @param asTriple an implicit conversion that asserts that the element type of this <code>Every</code> is a triple.
+   * @return a triple of <code>Every</code>s, containing the first, second, and third member, respectively, of each element triple of this <code>Every</code>. 
+   */
   final def unzip3[L, M, R](implicit asTriple: T => (L, M, R)): (Every[L], Every[M], Every[R]) = {
     val unzipped = underlying.unzip3
     (fromNonEmptyVector(unzipped._1), fromNonEmptyVector(unzipped._2), fromNonEmptyVector(unzipped._3))
   }
-  final def updated[U >: T](index: Int, elem: U): Every[U] = fromNonEmptyVector(underlying.updated(index, elem))
+
+  /**
+   * A copy of this <code>Every</code> with one single replaced element.
+   *
+   * @param idx the position of the replacement
+   * @param elem the replacing element
+   * @return a copy of this <code>Every</code> with the element at position <code>idx</code> replaced by <code>elem</code>. 
+   */
+  final def updated[U >: T](idx: Int, elem: U): Every[U] = fromNonEmptyVector(underlying.updated(idx, elem))
+
+  /**
+   * Returns an <code>Every</code> formed from this <code>Every</code> and an iterable collection by combining corresponding
+   * elements in pairs. If one of the two collections is shorter than the other, placeholder elements will be used to extend the
+   * shorter collection to the length of the longer.
+   *
+   * @tparm O the type of the second half of the returned pairs
+   * @tparm U the type of the first half of the returned pairs
+   * @param other the <code>Iterable</code> providing the second half of each result pair
+   * @param thisElem the element to be used to fill up the result if this <code>Every</code> is shorter than <code>that</code> <code>Iterable</code>.
+   * @param thatElem the element to be used to fill up the result if <code>that</code> <code>Iterable</code> is shorter than this <code>Every</code>.
+   * @return a new <code>Every</code> containing pairs consisting of corresponding elements of this <code>Every</code> and <code>that</code>. The
+   *     length of the returned collection is the maximum of the lengths of this <code>Every</code> and <code>that</code>. If this <code>Every</code>
+   *     is shorter than <code>that</code>, <code>thisElem</code> values are used to pad the result. If <code>that</code> is shorter than this
+   *     <code>Every</code>, <code>thatElem</code> values are used to pad the result. 
+   */
   final def zipAll[O, U >: T](other: collection.Iterable[O], thisElem: U, otherElem: O): Every[(U, O)] =
     Every.from(underlying.zipAll(other, thisElem, otherElem)).get
+
+  /**
+   * Zips this <code>Every</code>  with its indices.
+   *
+   * @return A new <code>Every</code> containing pairs consisting of all elements of this <code>Every</code> paired with their index. Indices start at 0.
+   */
   final def zipWithIndex: Every[(T, Int)] = fromNonEmptyVector(underlying.zipWithIndex)
 }
 
 object Every {
+
+  /**
+   * Constructs a new <code>Every</code> given at least one element.
+   *
+   * @tparam T the type of the element contained in the new <code>Every</code>
+   * @param firstElement the first element (with index 0) contained in this <code>Every</code>
+   * @param otherElements a varargs of zero or more other elements (with index 1, 2, 3, ...) contained in this <code>Every</code>
+   */
   def apply[T](firstElement: T, otherElements: T*): Every[T] = 
     if (otherElements.isEmpty) One(firstElement) else Many(firstElement, otherElements.head, otherElements.tail: _*)
+
   def unapplySeq[T](every: Every[T]): Option[Seq[T]] = Some(every.toVector)
+/*
+  def unapplySeq[T](every: Every[T]): Option[(T, Seq[T])] = Some(every.head, every.tail)
+*/
+
   def from[T](seq: GenSeq[T]): Option[Every[T]] =
     seq.headOption match {
       case None => None
@@ -1110,8 +1420,10 @@ object Every {
           case Some(second) => Some(Many(first, second, seq.tail.tail.seq: _*)) 
         }
     }
+
   // Can be flattened: Vector(Every(1, 2, 3), Every(1, 2, 3)).flatten shouldBe Vector(1, 2, 3, 1, 2, 3)
   implicit def everyToGenTraversableOnce[E](every: Every[E]): scala.collection.immutable.IndexedSeq[E] = every.toVector
+
   private def fromNonEmptyVector[E](vec: Vector[E]): Every[E] = Every(vec.head, vec.tail: _*)
 }
 
@@ -1145,7 +1457,7 @@ final case class One[+T](loneElement: T) extends Every[T](Vector(loneElement)) {
  * @tparam T the type of the element contained in this <code>Many</code>
  * @param firstElement the first element (with index 0) contained in this <code>Many</code>
  * @param secondElement the second element (with index 1) contained in this <code>Many</code>
- * @param otherElement a varargs of zero or more other elements (with index 2, 3, ...) contained in this <code>Many</code>
+ * @param otherElements a varargs of zero or more other elements (with index 2, 3, ...) contained in this <code>Many</code>
  */
 final case class Many[+T](firstElement: T, secondElement: T, otherElements: T*) extends Every[T](firstElement +: secondElement +: Vector(otherElements: _*)) {
   def asEvery: Every[T] = this

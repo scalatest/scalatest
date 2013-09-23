@@ -1081,11 +1081,6 @@ class EverySpec extends UnitSpec {
     Every(Every(1, 2), Every(3, 4), Every(5, 6), Every(7, 8)).transpose shouldBe Every(Every(1, 3, 5, 7), Every(2, 4, 6, 8))
     Every(Every(1, 2), Every(3, 4), Every(5, 6), Every(7, 8)).transpose.transpose shouldBe Every(Every(1, 2), Every(3, 4), Every(5, 6), Every(7, 8))
     Every(Every(1, 2, 3), Every(4, 5, 6), Every(7, 8, 9)).transpose.transpose shouldBe Every(Every(1, 2, 3), Every(4, 5, 6), Every(7, 8, 9))
-
-    Every(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9)).transpose shouldBe Every(Every(1, 4, 7), Every(2, 5, 8), Every(3, 6, 9))
-    Every(List(1, 2), List(3, 4), List(5, 6), List(7, 8)).transpose shouldBe Every(Every(1, 3, 5, 7), Every(2, 4, 6, 8))
-    Every(List(1, 2), List(3, 4), List(5, 6), List(7, 8)).transpose.transpose shouldBe Every(Every(1, 2), Every(3, 4), Every(5, 6), Every(7, 8))
-    Every(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9)).transpose.transpose shouldBe Every(Every(1, 2, 3), Every(4, 5, 6), Every(7, 8, 9))
   }
   it should "have a union method that takes a GenSeq" in {
     Every(1) union List(1) shouldBe Every(1, 1)
@@ -1128,9 +1123,37 @@ class EverySpec extends UnitSpec {
     scala> List(1) zip Nil
     res0: List[(Int, Nothing)] = List()
 */
-  it should "have an zipAll method" in {
+  it should "have a zipAll method that takes an Iterable" in {
+
+    // Empty on right
     One(1).zipAll(Nil, -1, -2) shouldBe One((1, -2))
     Many(1, 2).zipAll(Nil, -1, -2) shouldBe Many((1, -2), (2, -2))
+
+    // Same length
+    One(1).zipAll(List(1), -1, -2) shouldBe One((1, 1))
+    Many(1, 2).zipAll(List(1, 2), -1, -2) shouldBe Many((1, 1), (2, 2))
+
+    // Non-empty, longer on right
+    One(1).zipAll(List(10, 20), -1, -2) shouldBe Many((1,10), (-1,20))
+    Many(1, 2).zipAll(List(10, 20, 30), -1, -2) shouldBe Many((1,10), (2,20), (-1,30))
+
+    // Non-empty, shorter on right
+    Many(1, 2, 3).zipAll(List(10, 20), -1, -2) shouldBe Many((1,10), (2,20), (3,-2))
+    Many(1, 2, 3, 4).zipAll(List(10, 20, 30), -1, -2) shouldBe Many((1,10), (2,20), (3,30), (4,-2))
+  }
+  it should "have a zipAll method that takes an Every" in {
+
+    // Same length
+    One(1).zipAll(Every(1), -1, -2) shouldBe One((1, 1))
+    Many(1, 2).zipAll(Every(1, 2), -1, -2) shouldBe Many((1, 1), (2, 2))
+
+    // Non-empty, longer on right
+    One(1).zipAll(Every(10, 20), -1, -2) shouldBe Many((1,10), (-1,20))
+    Many(1, 2).zipAll(Every(10, 20, 30), -1, -2) shouldBe Many((1,10), (2,20), (-1,30))
+
+    // Non-empty, shorter on right
+    Many(1, 2, 3).zipAll(Every(10, 20), -1, -2) shouldBe Many((1,10), (2,20), (3,-2))
+    Many(1, 2, 3, 4).zipAll(Every(10, 20, 30), -1, -2) shouldBe Many((1,10), (2,20), (3,30), (4,-2))
   }
   it should "have a zipWithIndex method" in {
     Every(99).zipWithIndex shouldBe Every((99,0))
