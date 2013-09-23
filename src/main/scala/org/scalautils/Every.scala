@@ -1394,6 +1394,9 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
   final def zipWithIndex: Every[(T, Int)] = fromNonEmptyVector(underlying.zipWithIndex)
 }
 
+/**
+ * Companion object for abstract class <code>Every</code>.
+ */
 object Every {
 
   /**
@@ -1406,11 +1409,26 @@ object Every {
   def apply[T](firstElement: T, otherElements: T*): Every[T] = 
     if (otherElements.isEmpty) One(firstElement) else Many(firstElement, otherElements.head, otherElements.tail: _*)
 
+  /**
+   * Variable argument extractor for <code>Every</code>s.
+   *
+   * @param every: the <code>Every</code> containing the elements to extract
+   * @return an <code>Seq</code> containing this <code>Every</code>s elements, wrapped in a <code>Some</code> 
+   */
   def unapplySeq[T](every: Every[T]): Option[Seq[T]] = Some(every.toVector)
+
 /*
+  // TODO: Figure out how to get case Every() to not compile
   def unapplySeq[T](every: Every[T]): Option[(T, Seq[T])] = Some(every.head, every.tail)
 */
 
+  /**
+   * Optionally construct an <code>Every</code> containing the elements, if any, of a given <code>GenSeq</code>.
+   *
+   * @param seq the <code>GenSeq</code> with which to construct an <code>Every</code>
+   * @return an <code>Every</code> containing the elements of the given <code>GenSeq</code>, if non-empty, wrapped in
+   *     a <code>Some</code>; else <code>None</code> if the <code>GenSeq</code> is empty
+   */
   def from[T](seq: GenSeq[T]): Option[Every[T]] =
     seq.headOption match {
       case None => None
@@ -1422,6 +1440,22 @@ object Every {
     }
 
   // Can be flattened: Vector(Every(1, 2, 3), Every(1, 2, 3)).flatten shouldBe Vector(1, 2, 3, 1, 2, 3)
+  /**
+   * Implicit conversion from <code>Every</code> to immutable <code>IndexedSeq</code>.
+   *
+   * <p>
+   * One use case for this implicit conversion is to enable <code>GenSeq[Every]</code>s to be flattened.
+   * Here's an example:
+   * </p>
+   *
+   * <pre class="stREPL">
+   * scala&gt; Vector(Every(1, 2, 3), Every(3, 4), Every(5, 6, 7, 8)).flatten
+   * res0: scala.collection.immutable.Vector[Int] = Vector(1, 2, 3, 3, 4, 5, 6, 7, 8)
+   * </pre>
+   *
+   * @param every the <code>Every</code> to convert to a <code>GenTraversableOnce</code>
+   * @return an immutable <code>IndexedSeq</code> containing the elements, in order, of this <code>Every</code>
+   */
   implicit def everyToGenTraversableOnce[E](every: Every[E]): scala.collection.immutable.IndexedSeq[E] = every.toVector
 
   private def fromNonEmptyVector[E](vec: Vector[E]): Every[E] = Every(vec.head, vec.tail: _*)
@@ -1438,12 +1472,31 @@ object Every {
  * @param loneElement the lone element contained in this <code>One</code>
  */
 final case class One[+T](loneElement: T) extends Every[T](Vector(loneElement)) {
+
+  /**
+   * Returns this <code>One</code> with the type widened to <code>Every</code>.
+   *
+   * @return this <code>One</code> as an <code>Every</code>
+   */
   def asEvery: Every[T] = this
   def ++[U >: T](other: Every[U]): Many[U] = Many(loneElement, other.toVector.head, other.toVector.tail: _*)
   def ++[U >: T](other: GenTraversableOnce[U]): Every[U] =
     if (other.isEmpty) this else Many(loneElement, other.toVector.head, other.toVector.tail: _*)
   def :+[U >: T](element: U): Many[U] = Many(loneElement, element)
+
+  /**
+   * Returns <code>"One"</code>, the prefix of this object's <code>toString</code> representation.
+   *
+   * @return the string <code>"One"</code>
+   */
   def stringPrefix: String = "One"
+
+  /**
+   * Returns a string representation of this <code>One</code>.
+   *
+   * @return the string <code>"One"</code> followed by the result of invoking <code>toString</code> on
+   *   this <code>One</code>'s lone element, surrounded by parentheses.
+   */
   override def toString: String = "One(" + loneElement + ")"
 }
 
@@ -1460,12 +1513,31 @@ final case class One[+T](loneElement: T) extends Every[T](Vector(loneElement)) {
  * @param otherElements a varargs of zero or more other elements (with index 2, 3, ...) contained in this <code>Many</code>
  */
 final case class Many[+T](firstElement: T, secondElement: T, otherElements: T*) extends Every[T](firstElement +: secondElement +: Vector(otherElements: _*)) {
+
+  /**
+   * Returns this <code>Many</code> with the type widened to <code>Every</code>.
+   *
+   * @return this <code>Many</code> as an <code>Every</code>
+   */
   def asEvery: Every[T] = this
   def ++[U >: T](other: Every[U]): Many[U] = Many(firstElement, secondElement, (otherElements.toVector ++ other.toVector): _*)
   def ++[U >: T](other: GenTraversableOnce[U]): Every[U] =
     if (other.isEmpty) this else Many(firstElement, secondElement, otherElements ++ other.toVector: _*)
   def :+[U >: T](element: U): Many[U] = Many(firstElement, secondElement, (otherElements :+ element): _*)
+
+  /**
+   * Returns <code>"Many"</code>, the prefix of this object's <code>toString</code> representation.
+   *
+   * @return the string <code>"Many"</code>
+   */
   def stringPrefix: String = "Many"
+
+  /**
+   * Returns a string representation of this <code>Many</code>.
+   *
+   * @return the string <code>"Many"</code> followed by the result of invoking <code>toString</code> on
+   *   this <code>Many</code>'s elements, surrounded by parentheses.
+   */
   override def toString: String = "Many(" + toVector.mkString(", ") + ")"
 }
 
