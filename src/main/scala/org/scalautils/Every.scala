@@ -79,8 +79,11 @@ import scala.annotation.unchecked.{ uncheckedVariance => uV }
  * </p>
  * 
  * <pre class="stHighlight">
- * Many(1, 2, 3).map(_ + 1) // Result: Many(2, 3, 4)
- * One(1).map(_ + 1)        // Result: One(2)
+ * Many(1, 2, 3).map(_ + 1)                  // Result: Many(2, 3, 4)
+ * One(1).map(_ + 1)                         // Result: One(2)
+ * Every(1, 2, 3).containsSlice(Every(2, 3)) // Result: true
+ * Every(1, 2, 3).containsSlice(Every(3, 4)) // Result: false
+ * Every(-1, -2, 3, 4, 5).minBy(_.abs)       // Result: -1
  * </pre>
  *
  * <p>

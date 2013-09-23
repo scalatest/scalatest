@@ -35,16 +35,16 @@ import TripleEqualsSupport.Spread
 trait Tolerance {
 
   /**
-   * Wrapper class with a <code>+-</code> method that, given a <code>Numeric</code> argument, returns an <code>Spread</code>.
+   * Wrapper class with a <code>+-</code> method that, given a <code>Numeric</code> argument, returns a <code>Spread</code>.
    * 
-   * @param tolerance the tolerance with which to create (and return) an <code>Spread</code>
+   * @param tolerance the tolerance with which to create (and return) a <code>Spread</code>
    *
    * @author Bill Venners
    */
   final class PlusOrMinusWrapper[T: Numeric](pivot: T) {
 
     /**
-     * Creates and returns an <code>Spread<code> from the <code>pivot</code> passed to the constructor and
+     * Creates and returns a <code>Spread<code> from the <code>pivot</code> passed to the constructor and
      * the <code>tolerance</code> passed to this method.
      *
      * @param tolerance the tolerance with which to create (and return) the <code>Spread</code>

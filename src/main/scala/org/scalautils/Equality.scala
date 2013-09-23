@@ -176,6 +176,7 @@ package org.scalautils
  * <code>areEquivalent</code> that invokes <code>areEqual</code>.
  * </p>
  *
+ * <p>
  * <em>Note: The <code>Equality</code> type class was inspired in part by the <code>Equal</code> type class of the 
  * <a href="http://code.google.com/p/scalaz/" target="_blank"><code>scalaz</code></a> project.</em>
  * </p>
