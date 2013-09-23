@@ -28,7 +28,13 @@ package org.scalatest.exceptions
  * starting.
  * </p>
  *
+ * @param messageFun a function that return an optional detail message for this <code>TestCanceledException</code>.
+ * @param cause an optional cause, the <code>Throwable</code> that caused this <code>TestCanceledException</code> to be thrown.
+ * @param failedCodeStackDepthFun a function that return the depth in the stack trace of this exception at which the line of test code that failed resides.
+ * @param payload an optional payload, which ScalaTest will include in a resulting <code>TestCanceled</code> event
+ *
  * @author Travis Stevens
+ * @author Chee Seng
  */
 class TestCanceledException(
   messageFun: StackDepthException => Option[String],
@@ -42,8 +48,8 @@ class TestCanceledException(
    * Constructs a <code>TestCanceledException</code> with pre-determined <code>message</code> and <code>failedCodeStackDepth</code>. (This was
    * the primary constructor form prior to ScalaTest 1.5.)
    *
-   * @param message an optional detail message for this <code>StackDepthException</code>.
-   * @param cause an optional cause, the <code>Throwable</code> that caused this <code>StackDepthException</code> to be thrown.
+   * @param message an optional detail message for this <code>TestCanceledException</code>.
+   * @param cause an optional cause, the <code>Throwable</code> that caused this <code>TestCanceledException</code> to be thrown.
    * @param failedCodeStackDepth the depth in the stack trace of this exception at which the line of test code that failed resides.
    *
    * @throws NullPointerException if either <code>message</code> of <code>cause</code> is <code>null</code>, or <code>Some(null)</code>.

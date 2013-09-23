@@ -1141,8 +1141,7 @@ trait Suite extends Assertions with AbstractSuite with Serializable { thisSuite 
    * @param args the <code>Args</code> for this run
    * @return a <code>Status</code> object that indicates when the test started by this method has completed, and whether or not it failed .
    *
-   * @throws NullPointerException if any of <code>testName</code>, <code>reporter</code>, <code>stopper</code>, <code>configMap</code>
-   *     or <code>tracker</code> is <code>null</code>.
+   * @throws NullPointerException if any of <code>testName</code> or <code>args</code> is <code>null</code>.
    * @throws IllegalArgumentException if <code>testName</code> is defined, but no test with the specified test name
    *     exists in this <code>Suite</code>
    */
@@ -1369,8 +1368,8 @@ trait Suite extends Assertions with AbstractSuite with Serializable { thisSuite 
    * calls these two methods on this object in this order:</p>
    *
    * <ol>
-   * <li><code>runNestedSuites(report, stopper, tagsToInclude, tagsToExclude, configMap, distributor)</code></li>
-   * <li><code>runTests(testName, report, stopper, tagsToInclude, tagsToExclude, configMap)</code></li>
+   * <li><code>runNestedSuites</code></li>
+   * <li><code>runTests</code></li>
    * </ol>
    *
    * <p>

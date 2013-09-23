@@ -205,10 +205,10 @@ trait FreeSpecLike extends Suite with Informing with Updating with Alerting with
   protected final class FreeSpecStringWrapper(string: String) {
 
     /**
-     * Register some text that may surround one or more tests. The passed
-     * passed function value may contain surrounding text registrations (defined with dash (<code>-</code>)) and/or tests
-     * (defined with <code>in</code>). This trait's implementation of this method will register the
-     * text (passed to the contructor of <code>FreeSpecStringWrapper</code> and immediately invoke the passed function.
+     * Register some text that may surround one or more tests. Thepassed function value may contain surrounding text
+     * registrations (defined with dash (<code>-</code>)) and/or tests (defined with <code>in</code>). This trait's
+     * implementation of this method will register the text (passed to the contructor of <code>FreeSpecStringWrapper</code>
+     * and immediately invoke the passed function.
      */
     def - (fun: => Unit) {
       registerNestedBranch(string, None, fun, "describeCannotAppearInsideAnIt", "FreeSpecLike.scala", "-", 3, -2, None)

@@ -21,7 +21,7 @@ package exceptions
  *
  * <p>
  * For an introduction to using tables, see the documentation for trait
- * <a href="TableDrivenPropertyChecks.html">TableDrivenPropertyChecks</a>.
+ * <a href="../prop/TableDrivenPropertyChecks.html">TableDrivenPropertyChecks</a>.
  * </p>
  *
  * @param messageFun a function that returns a detail message, not optional) for this <code>TableDrivenPropertyCheckFailedException</code>.
