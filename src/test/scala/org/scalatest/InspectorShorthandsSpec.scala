@@ -3184,7 +3184,7 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
       def `should work correctly with all(traversable) should contain succeeded` {
         forAll(seqExamples) { colFun => 
           val col = colFun(Set(List("1", "2", "3")))
-          all(col) should contain inOrderOnly (Set("1", "2", "3").toList: _*)
+          all(col) should contain inOrderOnly ("1", "2", "3")
         }
       }
     

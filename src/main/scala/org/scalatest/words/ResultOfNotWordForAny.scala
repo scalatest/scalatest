@@ -843,14 +843,20 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
   def contain(only: ResultOfOnlyApplication)(implicit aggregating: Aggregating[T]) {
 
     val right = only.right
-    if (aggregating.containsOnly(left, right) != shouldBeTrue)
+    if (aggregating.containsOnly(left, right) != shouldBeTrue) {
+      val postfix =
+        if (right.size == 1 && right(0).isInstanceOf[scala.collection.GenTraversable[_]])
+          "WithFriendlyReminder"
+        else
+          ""
       throw newTestFailedException(
         FailureMessages(
-          if (shouldBeTrue) "didNotContainOnlyElements" else "containedOnlyElements",
+          (if (shouldBeTrue) "didNotContainOnlyElements" else "containedOnlyElements") + postfix,
           left,
           UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
         )
       )
+    }
   }
 
   def contain(only: ResultOfInOrderOnlyApplication)(implicit sequencing: Sequencing[T]) {

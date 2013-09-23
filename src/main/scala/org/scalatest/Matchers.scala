@@ -2691,9 +2691,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  def oneOf(xs: Any*) = {
-    if (xs.isEmpty)
-      throw new NotAllowedException(FailureMessages("oneOfEmpty"), getStackDepthFun("Matchers.scala", "oneOf"))
+  def oneOf(firstEle: Any, secondEle: Any, remainingEles: Any*) = {
+    val xs = firstEle :: secondEle :: remainingEles.toList
     if (xs.distinct.size != xs.size)
       throw new NotAllowedException(FailureMessages("oneOfDuplicate"), getStackDepthFun("Matchers.scala", "oneOf"))
     new ResultOfOneOfApplication(xs)
@@ -2707,9 +2706,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  def atLeastOneOf(xs: Any*) = {
-    if (xs.isEmpty)
-      throw new NotAllowedException(FailureMessages("atLeastOneOfEmpty"), getStackDepthFun("Matchers.scala", "atLeastOneOf"))
+  def atLeastOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*) = {
+    val xs = firstEle :: secondEle :: remainingEles.toList
     if (xs.distinct.size != xs.size)
       throw new NotAllowedException(FailureMessages("atLeastOneOfDuplicate"), getStackDepthFun("Matchers.scala", "atLeastOneOf"))
     new ResultOfAtLeastOneOfApplication(xs)
@@ -2723,9 +2721,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  def noneOf(xs: Any*) = { 
-    if (xs.isEmpty)
-      throw new NotAllowedException(FailureMessages("noneOfEmpty"), getStackDepthFun("Matchers.scala", "noneOf"))
+  def noneOf(firstEle: Any, secondEle: Any, remainingEles: Any*) = {
+    val xs = firstEle :: secondEle :: remainingEles.toList
     if (xs.distinct.size != xs.size)
       throw new NotAllowedException(FailureMessages("noneOfDuplicate"), getStackDepthFun("Matchers.scala", "noneOf"))
     new ResultOfNoneOfApplication(xs)
@@ -2775,9 +2772,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  def inOrderOnly[T](xs: Any*) = {
-    if (xs.isEmpty)
-      throw new NotAllowedException(FailureMessages("inOrderOnlyEmpty"), getStackDepthFun("Matchers.scala", "inOrderOnly"))
+  def inOrderOnly[T](firstEle: Any, secondEle: Any, remainingEles: Any*) = {
+    val xs = firstEle :: secondEle :: remainingEles.toList
     if (xs.distinct.size != xs.size)
       throw new NotAllowedException(FailureMessages("inOrderOnlyDuplicate"), getStackDepthFun("Matchers.scala", "inOrderOnly"))
     new ResultOfInOrderOnlyApplication(xs)
@@ -2791,9 +2787,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  def allOf(xs: Any*) = {
-    if (xs.isEmpty)
-      throw new NotAllowedException(FailureMessages("allOfEmpty"), getStackDepthFun("Matchers.scala", "allOf"))
+  def allOf(firstEle: Any, secondEle: Any, remainingEles: Any*) = {
+    val xs = firstEle :: secondEle :: remainingEles.toList
     if (xs.distinct.size != xs.size)
       throw new NotAllowedException(FailureMessages("allOfDuplicate"), getStackDepthFun("Matchers.scala", "allOf"))
     new ResultOfAllOfApplication(xs)
@@ -2807,9 +2802,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  def inOrder(xs: Any*) = { 
-    if (xs.isEmpty)
-      throw new NotAllowedException(FailureMessages("inOrderEmpty"), getStackDepthFun("Matchers.scala", "inOrder"))
+  def inOrder(firstEle: Any, secondEle: Any, remainingEles: Any*) = {
+    val xs = firstEle :: secondEle :: remainingEles.toList
     if (xs.distinct.size != xs.size)
       throw new NotAllowedException(FailureMessages("inOrderDuplicate"), getStackDepthFun("Matchers.scala", "inOrder"))
     new ResultOfInOrderApplication(xs)
@@ -2823,9 +2817,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  def atMostOneOf(xs: Any*) = {
-    if (xs.isEmpty)
-      throw new NotAllowedException(FailureMessages("atMostOneOfEmpty"), getStackDepthFun("Matchers.scala", "atMostOneOf"))
+  def atMostOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*) = {
+    val xs = firstEle :: secondEle :: remainingEles.toList
     if (xs.distinct.size != xs.size)
       throw new NotAllowedException(FailureMessages("atMostOneOfDuplicate"), getStackDepthFun("Matchers.scala", "atMostOneOf"))
     new ResultOfAtMostOneOfApplication(xs)
@@ -3725,16 +3718,22 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       val right = only.right
 
       doCollected(collected, xs, "contain", 1) { e =>
-        if (aggregating.containsOnly(e, right) != shouldBeTrue)
+        if (aggregating.containsOnly(e, right) != shouldBeTrue) {
+          val postfix =
+            if (right.size == 1 && right(0).isInstanceOf[scala.collection.GenTraversable[_]])
+              "WithFriendlyReminder"
+            else
+              ""
           throw newTestFailedException(
             FailureMessages(
-              if (shouldBeTrue) "didNotContainOnlyElements" else "containedOnlyElements",
+              (if (shouldBeTrue) "didNotContainOnlyElements" else "containedOnlyElements") + postfix,
               e,
               UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
             ),
             None,
             6
           )
+        }
       }
     }
 
@@ -4099,9 +4098,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    def oneOf(right: Any*)(implicit containing: Containing[T]) {
-      if (right.isEmpty)
-        throw new NotAllowedException(FailureMessages("oneOfEmpty"), getStackDepthFun("Matchers.scala", "oneOf"))
+    def oneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit containing: Containing[T]) {
+      val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
         throw new NotAllowedException(FailureMessages("oneOfDuplicate"), getStackDepthFun("Matchers.scala", "oneOf"))
       doCollected(collected, xs, "oneOf", 1) { e =>
@@ -4126,9 +4124,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    def atLeastOneOf(right: Any*)(implicit aggregating: Aggregating[T]) {
-      if (right.isEmpty)
-        throw new NotAllowedException(FailureMessages("atLeastOneOfEmpty"), getStackDepthFun("Matchers.scala", "atLeastOneOf"))
+    def atLeastOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit aggregating: Aggregating[T]) {
+      val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
         throw new NotAllowedException(FailureMessages("atLeastOneOfDuplicate"), getStackDepthFun("Matchers.scala", "atLeastOneOf"))
       doCollected(collected, xs, "atLeastOneOf", 1) { e =>
@@ -4153,9 +4150,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    def noneOf(right: Any*)(implicit containing: Containing[T]) {
-      if (right.isEmpty)
-        throw new NotAllowedException(FailureMessages("noneOfEmpty"), getStackDepthFun("Matchers.scala", "noneOf"))
+    def noneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit containing: Containing[T]) {
+      val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
         throw new NotAllowedException(FailureMessages("noneOfDuplicate"), getStackDepthFun("Matchers.scala", "noneOf"))
       doCollected(collected, xs, "noneOf", 1) { e =>
@@ -4232,16 +4228,22 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       if (right.distinct.size != right.size)
         throw new NotAllowedException(FailureMessages("onlyDuplicate"), getStackDepthFun("Matchers.scala", "only"))
       doCollected(collected, xs, "only", 1) { e =>
-        if (aggregating.containsOnly(e, right) != shouldBeTrue)
+        if (aggregating.containsOnly(e, right) != shouldBeTrue) {
+          val postfix =
+            if (right.size == 1 && right(0).isInstanceOf[scala.collection.GenTraversable[_]])
+              "WithFriendlyReminder"
+            else
+              ""
           throw newTestFailedException(
             FailureMessages(
-              if (shouldBeTrue) "didNotContainOnlyElements" else "containedOnlyElements",
+              (if (shouldBeTrue) "didNotContainOnlyElements" else "containedOnlyElements") + postfix,
               e,
               UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))
             ),
             None,
             6
-        )
+          )
+        }
       }
     }
 
@@ -4253,9 +4255,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    def inOrderOnly(right: Any*)(implicit sequencing: Sequencing[T]) {
-      if (right.isEmpty)
-        throw new NotAllowedException(FailureMessages("inOrderOnlyEmpty"), getStackDepthFun("Matchers.scala", "inOrderOnly"))
+    def inOrderOnly(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit sequencing: Sequencing[T]) {
+      val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
         throw new NotAllowedException(FailureMessages("inOrderOnlyDuplicate"), getStackDepthFun("Matchers.scala", "inOrderOnly"))
       doCollected(collected, xs, "inOrderOnly", 1) { e =>
@@ -4280,9 +4281,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    def allOf(right: Any*)(implicit aggregating: Aggregating[T]) {
-      if (right.isEmpty)
-        throw new NotAllowedException(FailureMessages("allOfEmpty"), getStackDepthFun("Matchers.scala", "allOf"))
+    def allOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit aggregating: Aggregating[T]) {
+      val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
         throw new NotAllowedException(FailureMessages("allOfDuplicate"), getStackDepthFun("Matchers.scala", "allOf"))
       doCollected(collected, xs, "allOf", 1) { e =>
@@ -4307,9 +4307,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    def inOrder(right: Any*)(implicit sequencing: Sequencing[T]) {
-      if (right.isEmpty)
-        throw new NotAllowedException(FailureMessages("inOrderEmpty"), getStackDepthFun("Matchers.scala", "inOrder"))
+    def inOrder(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit sequencing: Sequencing[T]) {
+      val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
         throw new NotAllowedException(FailureMessages("inOrderDuplicate"), getStackDepthFun("Matchers.scala", "inOrder"))
       doCollected(collected, xs, "inOrder", 1) { e =>
@@ -4334,9 +4333,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                        ^
      * </pre>
      */
-    def atMostOneOf(right: Any*)(implicit aggregating: Aggregating[T]) {
-      if (right.isEmpty)
-        throw new NotAllowedException(FailureMessages("atMostOneOfEmpty"), getStackDepthFun("Matchers.scala", "atMostOneOf"))
+    def atMostOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit aggregating: Aggregating[T]) {
+      val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
         throw new NotAllowedException(FailureMessages("atMostOneOfDuplicate"), getStackDepthFun("Matchers.scala", "atMostOneOf"))
       doCollected(collected, xs, "atMostOneOf", 1) { e =>

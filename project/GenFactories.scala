@@ -370,8 +370,8 @@ $endif$
      *                             ^
      * </pre>
      */
-    def inOrderOnly(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Sequencing] = 
-      thisMatcherFactory.and(MatcherWords.contain.inOrderOnly(right.toList: _*))
+    def inOrderOnly(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Sequencing] =
+      thisMatcherFactory.and(MatcherWords.contain.inOrderOnly(firstEle, secondEle, remainingEles.toList: _*))
     
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -381,8 +381,8 @@ $endif$
      *                             ^
      * </pre>
      */
-    def allOf(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
-      thisMatcherFactory.and(MatcherWords.contain.allOf(right.toList: _*))
+    def allOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+      thisMatcherFactory.and(MatcherWords.contain.allOf(firstEle, secondEle, remainingEles  .toList: _*))
     
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -392,8 +392,8 @@ $endif$
      *                             ^
      * </pre>
      */
-    def inOrder(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Sequencing] = 
-      thisMatcherFactory.and(MatcherWords.contain.inOrder(right.toList: _*))
+    def inOrder(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Sequencing] =
+      thisMatcherFactory.and(MatcherWords.contain.inOrder(firstEle, secondEle, remainingEles.toList: _*))
     
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -403,8 +403,8 @@ $endif$
      *                             ^
      * </pre>
      */
-    def oneOf(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] = 
-      thisMatcherFactory.and(MatcherWords.contain.oneOf(right.toList: _*))
+    def oneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
+      thisMatcherFactory.and(MatcherWords.contain.oneOf(firstEle, secondEle, remainingEles.toList: _*))
     
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -414,8 +414,8 @@ $endif$
      *                             ^
      * </pre>
      */
-    def atLeastOneOf(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
-      thisMatcherFactory.and(MatcherWords.contain.atLeastOneOf(right.toList: _*))
+    def atLeastOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+      thisMatcherFactory.and(MatcherWords.contain.atLeastOneOf(firstEle, secondEle, remainingEles.toList: _*))
     
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -436,8 +436,8 @@ $endif$
      *                             ^
      * </pre>
      */
-    def noneOf(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] = 
-      thisMatcherFactory.and(MatcherWords.contain.noneOf(right.toList: _*))
+    def noneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
+      thisMatcherFactory.and(MatcherWords.contain.noneOf(firstEle, secondEle, remainingEles.toList: _*))
     
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -447,8 +447,8 @@ $endif$
      *                             ^
      * </pre>
      */
-    def atMostOneOf(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
-      thisMatcherFactory.and(MatcherWords.contain.atMostOneOf(right.toList: _*))
+    def atMostOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+      thisMatcherFactory.and(MatcherWords.contain.atMostOneOf(firstEle, secondEle, remainingEles.toList: _*))
   }
     
   /**
@@ -1501,8 +1501,8 @@ $endif$
      *                            ^
      * </pre>
      */
-    def inOrderOnly(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Sequencing] = 
-      thisMatcherFactory.or(MatcherWords.contain.inOrderOnly(right.toList: _*))
+    def inOrderOnly(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Sequencing] =
+      thisMatcherFactory.or(MatcherWords.contain.inOrderOnly(firstEle, secondEle, remainingEles.toList: _*))
     
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1512,8 +1512,8 @@ $endif$
      *                            ^
      * </pre>
      */
-    def allOf(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
-      thisMatcherFactory.or(MatcherWords.contain.allOf(right.toList: _*))
+    def allOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+      thisMatcherFactory.or(MatcherWords.contain.allOf(firstEle, secondEle, remainingEles.toList: _*))
     
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1523,8 +1523,8 @@ $endif$
      *                            ^
      * </pre>
      */
-    def inOrder(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Sequencing] = 
-      thisMatcherFactory.or(MatcherWords.contain.inOrder(right.toList: _*))
+    def inOrder(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Sequencing] =
+      thisMatcherFactory.or(MatcherWords.contain.inOrder(firstEle, secondEle, remainingEles.toList: _*))
     
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1534,8 +1534,8 @@ $endif$
      *                            ^
      * </pre>
      */
-    def oneOf(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] = 
-      thisMatcherFactory.or(MatcherWords.contain.oneOf(right.toList: _*))
+    def oneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
+      thisMatcherFactory.or(MatcherWords.contain.oneOf(firstEle, secondEle, remainingEles.toList: _*))
     
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1545,8 +1545,8 @@ $endif$
      *                            ^
      * </pre>
      */
-    def atLeastOneOf(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
-      thisMatcherFactory.or(MatcherWords.contain.atLeastOneOf(right.toList: _*))
+    def atLeastOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+      thisMatcherFactory.or(MatcherWords.contain.atLeastOneOf(firstEle, secondEle, remainingEles.toList: _*))
     
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1567,8 +1567,8 @@ $endif$
      *                            ^
      * </pre>
      */
-    def noneOf(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] = 
-      thisMatcherFactory.or(MatcherWords.contain.noneOf(right.toList: _*))
+    def noneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
+      thisMatcherFactory.or(MatcherWords.contain.noneOf(firstEle, secondEle, remainingEles.toList: _*))
     
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1578,8 +1578,8 @@ $endif$
      *                            ^
      * </pre>
      */
-    def atMostOneOf(right: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] = 
-      thisMatcherFactory.or(MatcherWords.contain.atMostOneOf(right.toList: _*))
+    def atMostOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+      thisMatcherFactory.or(MatcherWords.contain.atMostOneOf(firstEle, secondEle, remainingEles.toList: _*))
   }
 
   /**
