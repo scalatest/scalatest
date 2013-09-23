@@ -1176,10 +1176,16 @@ final class NotWord {
         
             val right = only.right
 
+            val postfix =
+              if (right.size == 1 && right(0).isInstanceOf[scala.collection.GenTraversable[_]])
+                "WithFriendlyReminder"
+              else
+                ""
+
             MatchResult(
               !aggregating.containsOnly(left, right),
-              Resources("containedOnlyElements"),
-              Resources("didNotContainOnlyElements"), 
+              Resources("containedOnlyElements" + postfix),
+              Resources("didNotContainOnlyElements" + postfix),
               Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
             )
           }

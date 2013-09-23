@@ -23,9 +23,9 @@ import FailureMessages.decorateToStringValue
 
 class ListShouldContainAtLeastOneOfSpec extends Spec with Matchers {
 
-  val invertedStringEquality =
+  val upperCaseStringEquality =
     new Equality[String] {
-      def areEqual(a: String, b: Any): Boolean = a != b
+      def areEqual(a: String, b: Any): Boolean = a.toUpperCase == b
     }
   
   //ADDITIONAL//
@@ -47,29 +47,21 @@ class ListShouldContainAtLeastOneOfSpec extends Spec with Matchers {
         e1.message.get should be (Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""))
       }
       def `should use the implicit Equality in scope` {
-        implicit val ise = invertedStringEquality
-        fumList should contain atLeastOneOf ("happy", "birthday", "to", "you")
+        implicit val ise = upperCaseStringEquality
+        fumList should contain atLeastOneOf ("FEE", "FIE", "FOE", "FUM")
         intercept[TestFailedException] {
-          fumList should contain atLeastOneOf ("fum")
+          fumList should contain atLeastOneOf ("fum", "foe")
         }
       }
       def `should use an explicitly provided Equality` {
-        (fumList should contain atLeastOneOf ("happy", "birthday", "to", "you")) (decided by invertedStringEquality)
+        (fumList should contain atLeastOneOf ("FEE", "FIE", "FOE", "FUM")) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (fumList should contain atLeastOneOf ("fum")) (decided by invertedStringEquality)
+          (fumList should contain atLeastOneOf ("fum", "foe")) (decided by upperCaseStringEquality)
         }
         intercept[TestFailedException] {
           fumList should contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM ")
         }
         (fumList should contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM ")) (after being lowerCased and trimmed)
-      }
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          fumList should contain atLeastOneOf ()
-        }
-        e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("atLeastOneOfEmpty")))
       }
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
@@ -94,29 +86,21 @@ class ListShouldContainAtLeastOneOfSpec extends Spec with Matchers {
         e1.message.get should be (Resources("didNotContainAtLeastOneOf", decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""))
       }
       def `should use the implicit Equality in scope` {
-        implicit val ise = invertedStringEquality
-        fumList should (contain atLeastOneOf ("happy", "birthday", "to", "you"))
+        implicit val ise = upperCaseStringEquality
+        fumList should (contain atLeastOneOf ("FEE", "FIE", "FOE", "FUM"))
         intercept[TestFailedException] {
-          fumList should (contain atLeastOneOf ("fum"))
+          fumList should (contain atLeastOneOf ("fum", "foe"))
         }
       }
       def `should use an explicitly provided Equality` {
-        (fumList should (contain atLeastOneOf ("happy", "birthday", "to", "you"))) (decided by invertedStringEquality)
+        (fumList should (contain atLeastOneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (fumList should (contain atLeastOneOf ("fum"))) (decided by invertedStringEquality)
+          (fumList should (contain atLeastOneOf ("fum", "foe"))) (decided by upperCaseStringEquality)
         }
         intercept[TestFailedException] {
           fumList should (contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM "))
         }
         (fumList should (contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
-      }
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          fumList should (contain atLeastOneOf ())
-        }
-        e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("atLeastOneOfEmpty")))
       }
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
@@ -148,29 +132,21 @@ class ListShouldContainAtLeastOneOfSpec extends Spec with Matchers {
         e1.message.get should be (Resources("containedAtLeastOneOf", decorateToStringValue(toList), "\"happy\", \"birthday\", \"to\", \"you\""))
       }
       def `should use the implicit Equality in scope` {
-        implicit val ise = invertedStringEquality
-        toList should not contain atLeastOneOf ("to")
+        implicit val ise = upperCaseStringEquality
+        toList should not contain atLeastOneOf ("to", "you")
         intercept[TestFailedException] {
-          toList should not contain atLeastOneOf ("fee", "fie", "foe", "fum")
+          toList should not contain atLeastOneOf ("TO", "YOU")
         }
       }
       def `should use an explicitly provided Equality` {
-        (toList should not contain atLeastOneOf ("to")) (decided by invertedStringEquality)
+        (toList should not contain atLeastOneOf ("to", "you")) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (toList should not contain atLeastOneOf ("fee", "fie", "foe", "fum")) (decided by invertedStringEquality)
+          (toList should not contain atLeastOneOf ("TO", "YOU")) (decided by upperCaseStringEquality)
         }
-        toList should not contain atLeastOneOf (" TO ")
+        toList should not contain atLeastOneOf (" TO ", " YOU ")
         intercept[TestFailedException] {
-          (toList should not contain atLeastOneOf (" TO ")) (after being lowerCased and trimmed)
+          (toList should not contain atLeastOneOf (" TO ", " YOU ")) (after being lowerCased and trimmed)
         }
-      }
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          fumList should not contain atLeastOneOf ()
-        }
-        e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("atLeastOneOfEmpty")))
       }
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
@@ -203,30 +179,21 @@ The bottom two don't, but still I don't want to support that in general.
         e1.message.get should be (Resources("containedAtLeastOneOf", decorateToStringValue(toList), "\"happy\", \"birthday\", \"to\", \"you\""))
       }
       def `should use the implicit Equality in scope` {
-        implicit val ise = invertedStringEquality
-        toList should (not contain atLeastOneOf ("to"))
+        implicit val ise = upperCaseStringEquality
+        toList should (not contain atLeastOneOf ("to", "you"))
         intercept[TestFailedException] {
-          toList should (not contain atLeastOneOf ("fee", "fie", "foe", "fum"))
+          toList should (not contain atLeastOneOf ("TO", "YOU"))
         }
       }
       def `should use an explicitly provided Equality` {
-        (toList should (not contain atLeastOneOf ("to"))) (decided by invertedStringEquality)
+        (toList should (not contain atLeastOneOf ("to", "you"))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (toList should (not contain atLeastOneOf ("fee", "fie", "foe", "fum"))) (decided by invertedStringEquality)
+          (toList should (not contain atLeastOneOf ("TO", "YOU"))) (decided by upperCaseStringEquality)
         }
-        toList should (not contain atLeastOneOf (" TO "))
+        toList should (not contain atLeastOneOf (" TO ", " YOU "))
         intercept[TestFailedException] {
-          (toList should (not contain atLeastOneOf (" TO "))) (after being lowerCased and trimmed)
+          (toList should (not contain atLeastOneOf (" TO ", " YOU "))) (after being lowerCased and trimmed)
         }
-      }
-      
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          fumList should (not contain atLeastOneOf ())
-        }
-        e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("atLeastOneOfEmpty")))
       }
       
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
@@ -251,29 +218,21 @@ The bottom two don't, but still I don't want to support that in general.
         e1.message.get should be (Resources("containedAtLeastOneOf", decorateToStringValue(toList), "\"happy\", \"birthday\", \"to\", \"you\""))
       }
       def `should use the implicit Equality in scope` {
-        implicit val ise = invertedStringEquality
-        toList shouldNot contain atLeastOneOf ("to")
+        implicit val ise = upperCaseStringEquality
+        toList shouldNot contain atLeastOneOf ("to", "you")
         intercept[TestFailedException] {
-          toList shouldNot contain atLeastOneOf ("fee", "fie", "foe", "fum")
+          toList shouldNot contain atLeastOneOf ("TO", "YOU")
         }
       }
       def `should use an explicitly provided Equality` {
-        (toList shouldNot contain atLeastOneOf ("to")) (decided by invertedStringEquality)
+        (toList shouldNot contain atLeastOneOf ("to", "you")) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (toList shouldNot contain atLeastOneOf ("fee", "fie", "foe", "fum")) (decided by invertedStringEquality)
+          (toList shouldNot contain atLeastOneOf ("TO", "YOU")) (decided by upperCaseStringEquality)
         }
-        toList shouldNot contain atLeastOneOf (" TO ")
+        toList shouldNot contain atLeastOneOf (" TO ", " YOU ")
         intercept[TestFailedException] {
-          (toList shouldNot contain atLeastOneOf (" TO ")) (after being lowerCased and trimmed)
+          (toList shouldNot contain atLeastOneOf (" TO ", " YOU ")) (after being lowerCased and trimmed)
         }
-      }
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          fumList shouldNot contain atLeastOneOf ()
-        }
-        e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("atLeastOneOfEmpty")))
       }
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
@@ -297,30 +256,21 @@ The bottom two don't, but still I don't want to support that in general.
         e1.message.get should be (Resources("containedAtLeastOneOf", decorateToStringValue(toList), "\"happy\", \"birthday\", \"to\", \"you\""))
       }
       def `should use the implicit Equality in scope` {
-        implicit val ise = invertedStringEquality
-        toList shouldNot (contain atLeastOneOf ("to"))
+        implicit val ise = upperCaseStringEquality
+        toList shouldNot (contain atLeastOneOf ("to", "you"))
         intercept[TestFailedException] {
-          toList shouldNot (contain atLeastOneOf ("fee", "fie", "foe", "fum"))
+          toList shouldNot (contain atLeastOneOf ("TO", "YOU"))
         }
       }
       def `should use an explicitly provided Equality` {
-        (toList shouldNot (contain atLeastOneOf ("to"))) (decided by invertedStringEquality)
+        (toList shouldNot (contain atLeastOneOf ("to", "you"))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (toList shouldNot (contain atLeastOneOf ("fee", "fie", "foe", "fum"))) (decided by invertedStringEquality)
+          (toList shouldNot (contain atLeastOneOf ("TO", "YOU"))) (decided by upperCaseStringEquality)
         }
-        toList shouldNot (contain atLeastOneOf (" TO "))
+        toList shouldNot (contain atLeastOneOf (" TO ", " YOU "))
         intercept[TestFailedException] {
-          (toList shouldNot (contain atLeastOneOf (" TO "))) (after being lowerCased and trimmed)
+          (toList shouldNot (contain atLeastOneOf (" TO ", " YOU "))) (after being lowerCased and trimmed)
         }
-      }
-      
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          fumList shouldNot (contain atLeastOneOf ())
-        }
-        e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("atLeastOneOfEmpty")))
       }
       
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
@@ -382,34 +332,26 @@ The bottom two don't, but still I don't want to support that in general.
       }
 
       def `should use the implicit Equality in scope` {
-        all (hiLists) should contain atLeastOneOf ("hi")
+        all (hiLists) should contain atLeastOneOf ("hi", "he")
         intercept[TestFailedException] {
-          all (hiLists) should contain atLeastOneOf ("ho")
+          all (hiLists) should contain atLeastOneOf ("ho", "he")
         }
-        implicit val ise = invertedStringEquality
-        all (hiLists) should contain atLeastOneOf ("ho")
+        implicit val ise = upperCaseStringEquality
+        all (hiLists) should contain atLeastOneOf ("HI", "HE")
         intercept[TestFailedException] {
-          all (hiLists) should contain atLeastOneOf ("hi")
+          all (hiLists) should contain atLeastOneOf ("hi", "he")
         }
       }
       def `should use an explicitly provided Equality` {
-        (all (hiLists) should contain atLeastOneOf ("ho")) (decided by invertedStringEquality)
+        (all (hiLists) should contain atLeastOneOf ("HI", "HE")) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (hiLists) should contain atLeastOneOf ("hi")) (decided by invertedStringEquality)
+          (all (hiLists) should contain atLeastOneOf ("hi", "he")) (decided by upperCaseStringEquality)
         }
-        implicit val ise = invertedStringEquality
-        (all (hiLists) should contain atLeastOneOf ("hi")) (decided by defaultEquality[String])
+        implicit val ise = upperCaseStringEquality
+        (all (hiLists) should contain atLeastOneOf ("hi", "he")) (decided by defaultEquality[String])
         intercept[TestFailedException] {
-          (all (hiLists) should contain atLeastOneOf ("ho")) (decided by defaultEquality[String])
+          (all (hiLists) should contain atLeastOneOf ("HI", "HE")) (decided by defaultEquality[String])
         }
-      }
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          all (hiLists) should contain atLeastOneOf ()
-        }
-        e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("atLeastOneOfEmpty")))
       }
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
@@ -460,34 +402,26 @@ The bottom two don't, but still I don't want to support that in general.
       }
 
       def `should use the implicit Equality in scope` {
-        all (hiLists) should (contain atLeastOneOf ("hi"))
+        all (hiLists) should (contain atLeastOneOf ("hi", "he"))
         intercept[TestFailedException] {
-          all (hiLists) should (contain atLeastOneOf ("ho"))
+          all (hiLists) should (contain atLeastOneOf ("HI", "HE"))
         }
-        implicit val ise = invertedStringEquality
-        all (hiLists) should (contain atLeastOneOf ("ho"))
+        implicit val ise = upperCaseStringEquality
+        all (hiLists) should (contain atLeastOneOf ("HI", "HE"))
         intercept[TestFailedException] {
-          all (hiLists) should (contain atLeastOneOf ("hi"))
+          all (hiLists) should (contain atLeastOneOf ("hi", "he"))
         }
       }
       def `should use an explicitly provided Equality` {
-        (all (hiLists) should (contain atLeastOneOf ("ho"))) (decided by invertedStringEquality)
+        (all (hiLists) should (contain atLeastOneOf ("HI", "HE"))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (hiLists) should (contain atLeastOneOf ("hi"))) (decided by invertedStringEquality)
+          (all (hiLists) should (contain atLeastOneOf ("hi", "he"))) (decided by upperCaseStringEquality)
         }
-        implicit val ise = invertedStringEquality
-        (all (hiLists) should (contain atLeastOneOf ("hi"))) (decided by defaultEquality[String])
+        implicit val ise = upperCaseStringEquality
+        (all (hiLists) should (contain atLeastOneOf ("hi", "he"))) (decided by defaultEquality[String])
         intercept[TestFailedException] {
-          (all (hiLists) should (contain atLeastOneOf ("ho"))) (decided by defaultEquality[String])
+          (all (hiLists) should (contain atLeastOneOf ("HI", "HE"))) (decided by defaultEquality[String])
         }
-      }
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          all (hiLists) should (contain atLeastOneOf ())
-        }
-        e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("atLeastOneOfEmpty")))
       }
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
@@ -528,29 +462,21 @@ scala> all (list1s) should (contain (atLeastOneOf (1, 3, 4)))
                                    "in " + decorateToStringValue(toLists)))
       }
       def `should use the implicit Equality in scope` {
-        implicit val ise = invertedStringEquality
-        all (toLists) should not contain atLeastOneOf ("to")
+        implicit val ise = upperCaseStringEquality
+        all (toLists) should not contain atLeastOneOf ("to", "you")
         intercept[TestFailedException] {
-          all (toLists) should not contain atLeastOneOf ("fee", "fie", "foe", "fum")
+          all (toLists) should not contain atLeastOneOf ("TO", "YOU")
         }
       }
       def `should use an explicitly provided Equality` {
-        (all (toLists) should not contain atLeastOneOf ("to")) (decided by invertedStringEquality)
+        (all (toLists) should not contain atLeastOneOf ("to", "you")) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) should not contain atLeastOneOf ("fee", "fie", "foe", "fum")) (decided by invertedStringEquality)
+          (all (toLists) should not contain atLeastOneOf ("TO", "YOU")) (decided by upperCaseStringEquality)
         }
-        all (toLists) should not contain atLeastOneOf (" TO ")
+        all (toLists) should not contain atLeastOneOf (" TO ", " YOU ")
         intercept[TestFailedException] {
-          (all (toLists) should not contain atLeastOneOf (" TO ")) (after being lowerCased and trimmed)
+          (all (toLists) should not contain atLeastOneOf (" TO ", " YOU ")) (after being lowerCased and trimmed)
         }
-      }
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          all (hiLists) should not contain atLeastOneOf ()
-        }
-        e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("atLeastOneOfEmpty")))
       }
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
@@ -593,29 +519,21 @@ The top two don't, but still I don't want to support that in general.
                                    "in " + decorateToStringValue(toLists)))
       }
       def `should use the implicit Equality in scope` {
-        implicit val ise = invertedStringEquality
-        all (toLists) should (not contain atLeastOneOf ("to"))
+        implicit val ise = upperCaseStringEquality
+        all (toLists) should (not contain atLeastOneOf ("to", "you"))
         intercept[TestFailedException] {
-          all (toLists) should (not contain atLeastOneOf ("fee", "fie", "foe", "fum"))
+          all (toLists) should (not contain atLeastOneOf ("TO", "YOU"))
         }
       }
       def `should use an explicitly provided Equality` {
-        (all (toLists) should (not contain atLeastOneOf ("to"))) (decided by invertedStringEquality)
+        (all (toLists) should (not contain atLeastOneOf ("to", "you"))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) should (not contain atLeastOneOf ("fee", "fie", "foe", "fum"))) (decided by invertedStringEquality)
+          (all (toLists) should (not contain atLeastOneOf ("TO", "YOU"))) (decided by upperCaseStringEquality)
         }
-        all (toLists) should (not contain atLeastOneOf (" TO "))
+        all (toLists) should (not contain atLeastOneOf (" TO ", " YOU "))
         intercept[TestFailedException] {
-          (all (toLists) should (not contain atLeastOneOf (" TO "))) (after being lowerCased and trimmed)
+          (all (toLists) should (not contain atLeastOneOf (" TO ", " YOU "))) (after being lowerCased and trimmed)
         }
-      }
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          all (hiLists) should (not contain atLeastOneOf ())
-        }
-        e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("atLeastOneOfEmpty")))
       }
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
@@ -641,29 +559,21 @@ The top two don't, but still I don't want to support that in general.
                                    "in " + decorateToStringValue(toLists)))
       }
       def `should use the implicit Equality in scope` {
-        implicit val ise = invertedStringEquality
-        all (toLists) shouldNot contain atLeastOneOf ("to")
+        implicit val ise = upperCaseStringEquality
+        all (toLists) shouldNot contain atLeastOneOf ("to", "you")
         intercept[TestFailedException] {
-          all (toLists) shouldNot contain atLeastOneOf ("fee", "fie", "foe", "fum")
+          all (toLists) shouldNot contain atLeastOneOf ("TO", "YOU")
         }
       }
       def `should use an explicitly provided Equality` {
-        (all (toLists) shouldNot contain atLeastOneOf ("to")) (decided by invertedStringEquality)
+        (all (toLists) shouldNot contain atLeastOneOf ("to", "you")) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) shouldNot contain atLeastOneOf ("fee", "fie", "foe", "fum")) (decided by invertedStringEquality)
+          (all (toLists) shouldNot contain atLeastOneOf ("TO", "YOU")) (decided by upperCaseStringEquality)
         }
-        all (toLists) shouldNot contain atLeastOneOf (" TO ")
+        all (toLists) shouldNot contain atLeastOneOf (" TO ", " YOU ")
         intercept[TestFailedException] {
-          (all (toLists) shouldNot contain atLeastOneOf (" TO ")) (after being lowerCased and trimmed)
+          (all (toLists) shouldNot contain atLeastOneOf (" TO ", " YOU ")) (after being lowerCased and trimmed)
         }
-      }
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          all (hiLists) shouldNot contain atLeastOneOf ()
-        }
-        e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("atLeastOneOfEmpty")))
       }
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
@@ -689,29 +599,21 @@ The top two don't, but still I don't want to support that in general.
                                    "in " + decorateToStringValue(toLists)))
       }
       def `should use the implicit Equality in scope` {
-        implicit val ise = invertedStringEquality
-        all (toLists) shouldNot (contain atLeastOneOf ("to"))
+        implicit val ise = upperCaseStringEquality
+        all (toLists) shouldNot (contain atLeastOneOf ("to", "you"))
         intercept[TestFailedException] {
-          all (toLists) shouldNot (contain atLeastOneOf ("fee", "fie", "foe", "fum"))
+          all (toLists) shouldNot (contain atLeastOneOf ("TO", "YOU"))
         }
       }
       def `should use an explicitly provided Equality` {
-        (all (toLists) shouldNot (contain atLeastOneOf ("to"))) (decided by invertedStringEquality)
+        (all (toLists) shouldNot (contain atLeastOneOf ("to", "you"))) (decided by upperCaseStringEquality)
         intercept[TestFailedException] {
-          (all (toLists) shouldNot (contain atLeastOneOf ("fee", "fie", "foe", "fum"))) (decided by invertedStringEquality)
+          (all (toLists) shouldNot (contain atLeastOneOf ("TO", "YOU"))) (decided by upperCaseStringEquality)
         }
-        all (toLists) shouldNot (contain atLeastOneOf (" TO "))
+        all (toLists) shouldNot (contain atLeastOneOf (" TO ", " YOU "))
         intercept[TestFailedException] {
-          (all (toLists) shouldNot (contain atLeastOneOf (" TO "))) (after being lowerCased and trimmed)
+          (all (toLists) shouldNot (contain atLeastOneOf (" TO ", " YOU "))) (after being lowerCased and trimmed)
         }
-      }
-      def `should throw NotAllowedException with correct stack depth and message when RHS is empty` {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          all (hiLists) shouldNot (contain atLeastOneOf ())
-        }
-        e1.failedCodeFileName.get should be ("ListShouldContainAtLeastOneOfSpec.scala")
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources("atLeastOneOfEmpty")))
       }
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
