@@ -19,6 +19,58 @@ package org.scalautils
  * Defines a custom way to normalize instances of a type that can also handle normalization of that type when passed as <code>Any</code>.
  *
  * <p>
+ * For example, to normalize <code>Double</code>s by truncating off any decimal part,
+ * you might write:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * import org.scalautils._
+ *
+ * val truncated = 
+ *   new Uniformity[Double] {
+ *    def normalized(d: Double) = d.floor
+ *    def normalizedCanHandle(o: Any) = o.isInstanceOf[Double]
+ *    def normalizedOrSame(o: Any): Any =
+ *      o match {
+ *        case d: Double =&gt; normalized(d)
+ *        case _ =&gt; o
+ *      }
+ *  }
+ * </pre>
+ *
+ * <p>
+ * Given this definition you could use it with the <a href="Explicitly.html"><code>Explicitly</code></a> DSL like this:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * import org.scalatest._
+ * import Matchers._
+ * 
+ * 2.1 should equal (2.0) (after being truncated)
+ * </pre>
+ *
+ * <p>
+ * If you make the <code>truncated</code> <code>val</code> implicit and import or mix in the members of <a href="NormMethods.html"><code>NormMethods</code></a>,
+ * you can access the behavior by invoking <code>.norm</code> on <code>Double</code>s.
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * implicit val doubleUniformity = truncated
+ * import NormMethods._
+ *
+ * val d = 2.1
+ * d.norm // returns 2.0
+ * </pre>
+ * 
+ * <p>
+ * Note that by creating a <code>Uniformity</code> rather than just an instance of its supertype, <a href="Normalization.html"><code>Normalization</code></a>,
+ * it can be used more generally. For example, <code>Uniformity</code>s allow you to the <code>Explicitly</code> DSL with
+ * <a href="TripleEquals.html"><code>TripleEquals</code></a>, whereas <code>Normalization</code>s require
+ * <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a> or
+ * <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a>.
+ * <code>Uniformity</code>s also enable you to use the <code>Explicitly</code> DSL with ScalaTest's <code>should</code> <code>===</code>, <code>equal</code>,
+ * and <code>contain</code> matcher syntax, whereas a plain <code>Normalization</code> can only be used with <code>should</code> <code>===</code>, and only
+ * under either <code>TypeCheckedTripleEquals</code> or <code>ConversionCheckedTripleEquals</code>.
  * </p>
  * 
  * @tparam A the type whose uniformity is being defined
@@ -27,6 +79,16 @@ trait Uniformity[A] extends Normalization[A] { thisUniformity =>
 
   /**
    * Returns either the result of passing this object to <code>normalized</code>, if appropriate, or the same object.
+   *
+   * <p>
+   * Implementations can decide what &ldquo;appropriate&rdquo; means, but the intent is that it will usually mean the
+   * value passed is of the type <code>A</code>.  For example, if this is a <code>Uniformity[String]</code>, appropriate means
+   * that the value (of type <code>Any</code>) passed is actually an instance of <code>String</code>. Because of erasure,
+   * however, a <code>Uniformity[List[String]]</code> will only be able to tell whether a value is a <code>List[_]</code>, 
+   * so it might declare any <code>List[_]</code> that contains only <code>String</code>s (determined by invoking
+   * <code>isInstanceOf[String]</code> on each element) to be appropriate. This means a <code>Uniformity[List[String]]</code> might normalize
+   * a <code>List[AnyRef]</code> that happens to contain only <code>Strings</code>.
+   * </p>
    *
    * @param b the object to normalize, if appropriate
    * @return a normalized form of the passed object, if this <code>Uniformity</code> was able to normalize it, else the same object passed
@@ -106,7 +168,7 @@ trait Uniformity[A] extends Normalization[A] { thisUniformity =>
    * invoked by the <code>normalizedOrSame</code> method) returned the exact same object passed:
    * </p>
    *
-   * <pre>
+   * <pre class="stREPL">
    * scala&gt; val whisperNormed = res5.asInstanceOf[AnyRef]
    * whisperNormed: AnyRef = howdy
    *
@@ -121,9 +183,9 @@ trait Uniformity[A] extends Normalization[A] { thisUniformity =>
    *
    * <p>
    * The <code>normalized</code> and <code>normalizedOrSame</code> methods
-   * of the <code>Uniformity</code>'s returned by this method return a result 
-   * obtained by passing it first to this <code>Normalization</code>'s implementation of the method,
-   * then passing that result to the other <code>Normalization</code>'s implementation of the method, respectively.
+   * of the <code>Uniformity</code> returned by this method return a result 
+   * obtained by forwarding the passed value first to this <code>Uniformity</code>'s implementation of the method,
+   * then passing that result to the other <code>Uniformity</code>'s implementation of the method, respectively.
    * Essentially, the body of the composed <code>normalized</code> method is:
    * </p>
    *
@@ -140,18 +202,14 @@ trait Uniformity[A] extends Normalization[A] { thisUniformity =>
    * </pre>
    *
    * <p>
-   * The <code>normalizeCanHandle</code> method of the <code>Uniformity</code>'s returned by this method returns a result 
-   * obtained by passing it first to this <code>Normalization</code>'s implementation of the method,
-   * then passing that result to the other <code>Normalization</code>'s <code>normalized</code> the method, respectively.
-   * Essentially, the body of the composed <code>normalized</code> method is:
-   * </p>
-   *
-   * <p>
-   * The body of the composed <code>normalizeCanHandle</code> method is:
+   * The <code>normalizeCanHandle</code> method of the <code>Uniformity</code> returned by this method returns a result 
+   * obtained by anding the result of forwarding the passed value to this <code>Uniformity</code>'s implementation of the method
+   * with the result of forwarding it to the passed <code>Uniformity</code>'s implementation.
+   * Essentially, the body of the composed <code>normalizeCanHandle</code> method is:
    * </p>
    *
    * <pre class="stHighlight">
-   * uniformityPassedToAnd.normalizeCanHandle(uniformityOnWhichAndWasInvoked.normalizeCanHandle(a))
+   * uniformityOnWhichAndWasInvoked.normalizeCanHandle(a) &amp;&amp; uniformityPassedToAnd.normalizeCanHandle(a)
    * </pre>
    *
    * @param other a <code>Uniformity</code> to 'and' with this one

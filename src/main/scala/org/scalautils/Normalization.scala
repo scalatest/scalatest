@@ -20,9 +20,8 @@ package org.scalautils
  *
  * <p>
  * For example, to normalize <code>Double</code>s by truncating off any decimal part,
- * might write:
+ * you might write:
  * </p>
- *
  *
  * <pre class="stHighlight">
  * import org.scalautils._
@@ -32,8 +31,6 @@ package org.scalautils
  *    def normalized(d: Double) = d.floor
  *  }
  * </pre>
- *
- * val truncated = new Normalization[Double] { def normalized(d: Double) = d.floor }
  *
  * <p>
  * Given this definition you could use it with the <a href="Explicitly.html"><code>Explicitly</code></a> DSL like this:
@@ -46,6 +43,13 @@ package org.scalautils
  * 
  * (2.1 should === (2.0)) (after being truncated)
  * </pre>
+ *
+ * <p>
+ * Note that to use a <code>Normalization</code> with the <code>Explicitly</code> DSL, you'll need to be using either
+ * <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a> or
+ * <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a>. If you're just using plain-old
+ * <a href="TripleEquals.html"><code>TripleEquals</code></a>, you'll need a <a href="Uniformity.html"><code>Uniformity</code></a>, a <code>Normalization</code> subclass.
+ * </p>
  *
  * <p>
  * If you make the <code>truncated</code> <code>val</code> implicit and import or mix in the members of <a href="NormMethods.html"><code>NormMethods</code></a>,
@@ -81,9 +85,9 @@ trait Normalization[A] { thisNormalization =>
    * Returns a new <code>Normalization</code> that composes this and the passed <code>Normalization</code>.
    *
    * <p>
-   * The <code>normalized</code> method of the <code>Normalization</code>'s returned by this method returns a normalized form of the passed
-   * object obtained by passing it first to this <code>Normalization</code>'s <code>normalized</code> method,
-   * then passing that result to the other (<em>i.e.</em>, passed to <code>and</code> as <code>other</code>) <code>Normalization</code>'s <code>normalized</code> method.
+   * The <code>normalized</code> method of the <code>Normalization</code> returned by this method returns a normalized form of the passed
+   * object obtained by forwarding the passed value first to this <code>Normalization</code>'s <code>normalized</code> method,
+   * then passing that result to the other <code>Normalization</code>'s <code>normalized</code> method.
    * Essentially, the body of the composed <code>normalized</code> method is:
    * </p>
    *

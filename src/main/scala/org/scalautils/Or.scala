@@ -42,7 +42,7 @@ import scala.collection.mutable.Builder
  * <code>Good</code> over <code>Bad</code>.
  * Because of this, it is more convenient to work with <code>Or</code>s
  * when you prefer one alternative over the other; for example, if one alternative represents a valid result
- * and another represents an error message.
+ * and another represents an error.
  * </p>
  *
  * <p>

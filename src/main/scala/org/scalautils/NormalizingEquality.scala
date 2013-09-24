@@ -46,7 +46,7 @@ trait NormalizingEquality[A] extends Equality[A] { thisNormEq =>
 
   /**
    * The <code>Equality</code> with which to determine equality after normalizing the left-hand and, if appropriate,
-   * the right-hand values passed to <code>areEqual</code>.
+   * the right-hand values.
    *
    * <p>
    * In this trait's implementation, this <code>val</code> is initialized with the result of invoking <code>Equality.default[A]</code>.
@@ -109,23 +109,15 @@ trait NormalizingEquality[A] extends Equality[A] { thisNormEq =>
    * Returns a new <code>NormalizingEquality</code> that combines this and the passed <code>Uniformity</code>.
    *
    * <p>
-   * The <code>normalized</code>, <code>normalizeCanHandle</code>, and <code>normalizedOrSame</code> methods
+   * The <code>normalized</code> and <code>normalizedOrSame</code> methods
    * of the <code>NormalizingEquality</code>'s returned by this method return a result 
-   * obtained by passing it first to this <code>NormalizingEquality</code>'s implementation of the method,
-   * then passing that result to the passed <code>Uniformity</code>'s <code>normalized</code> the method, respectively.
+   * obtained by forwarding the passed value first to this <code>NormalizingEquality</code>'s implementation of the method,
+   * then passing that result to the passed <code>Uniformity</code>'s implementation of the method, respectively.
    * Essentially, the body of the composed <code>normalized</code> method is:
    * </p>
    *
    * <pre class="stHighlight">
-   * uniformityPassedToAnd.normalized(normEqOnWhichAndWasInvoked.normalized(a))
-   * </pre>
-   *
-   * <p>
-   * The body of the composed <code>normalizeCanHandle</code> method is:
-   * </p>
-   *
-   * <pre class="stHighlight">
-   * uniformityPassedToAnd.normalizeCanHandle(normEqOnWhichAndWasInvoked.normalizeCanHandle(a))
+   * uniformityPassedToAnd.normalized(uniformityOnWhichAndWasInvoked.normalized(a))
    * </pre>
    *
    * <p>
@@ -133,7 +125,18 @@ trait NormalizingEquality[A] extends Equality[A] { thisNormEq =>
    * </p>
    *
    * <pre class="stHighlight">
-   * uniformityPassedToAnd.normalizedOrSame(normEqOnWhichAndWasInvoked.normalizedOrSame(a))
+   * uniformityPassedToAnd.normalizedOrSame(uniformityOnWhichAndWasInvoked.normalizedOrSame(a))
+   * </pre>
+   *
+   * <p>
+   * The <code>normalizeCanHandle</code> method of the <code>NormalizingEquality</code> returned by this method returns a result 
+   * obtained by anding the result of forwarding the passed value to this <code>NormalizingEquality</code>'s implementation of the method
+   * with the result of forwarding it to the passed <code>Uniformity</code>'s implementation.
+   * Essentially, the body of the composed <code>normalizeCanHandle</code> method is:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * normEqOnWhichAndWasInvoked.normalizeCanHandle(a) &amp;&amp; uniformityPassedToAnd.normalizeCanHandle(a)
    * </pre>
    *
    * @param other a <code>Uniformity</code> to 'and' with this one
