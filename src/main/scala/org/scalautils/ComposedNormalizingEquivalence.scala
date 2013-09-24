@@ -15,32 +15,11 @@
  */
 package org.scalautils
 
-/**
- * An <code>Equality</code> implementation that determines the equality of two objects by normalizing 
- * both objects, if possible, and then comparing the results using an equality (as defined by
- * the <code>areEqual</code> method of <a href="DefaultEquality.html"><code>DefaultEquality</code></a>).
- * </p>
- * <pre class="stHighlight">
- * import org.scalautils._
- *
- * class StringEquality extends NormalizedEquality[String] {
- *   def isInstanceOfA(b: Any) = b.isInstanceOf[String]
- *   def normalized(s: String): String = s.trim.toLowerCase
- * }
- * </pre>
- *
- */
-private[scalautils] final class ComposedNormalizingEquivalence[A](
+private[scalautils] final case class ComposedNormalizingEquivalence[A](
   override val afterNormalizationEquivalence: Equivalence[A],
   normalization: Normalization[A]
 ) extends NormalizingEquivalence[A] {
 
-  /**
-   * Normalizes the passed object.
-   *
-   * @param o the object to normalize
-   * @return the normalized form of the passed object
-   */
   def normalized(a: A): A = normalization.normalized(a)
 }
 

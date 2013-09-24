@@ -15,7 +15,7 @@
  */
 package org.scalautils
 
-/**
+/*
  * Defines a custom way to determine equality for a type.
  *
  * <p>
@@ -87,13 +87,6 @@ package org.scalautils
  */
 trait TolerantNumerics {
 
-  /**
-   * Indicates whether the objects passed as <code>a</code> and <code>b</code> are equal.
-   *
-   * @param a a left-hand-side object being compared with another (right-hand-side one) for equality (<em>e.g.</em>, <code>a == b</code>)
-   * @param b a right-hand-side object being compared with another (left-hand-side one) for equality (<em>e.g.</em>, <code>a == b</code>)
-   * @return true if the passed objects are "equal," as defined by this <code>Equality</code> instance
-   */
   def tolerantDoubleEquality(tolerance: Double): Equality[Double] = {
     if (tolerance <= 0.0)
       throw new IllegalArgumentException(tolerance.toString + " passed to tolerantDoubleEquality was zero or negative. Must be a positive non-zero number.")
@@ -180,5 +173,9 @@ trait TolerantNumerics {
   } 
 } 
 
+/**
+ * Companion object for <code>TolerantNumerics</code> that enables its members to be imported as an alternative to
+ * mixing them in.
+ */
 object TolerantNumerics extends TolerantNumerics
 

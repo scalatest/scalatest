@@ -54,7 +54,7 @@ trait NormalizingEquality[A] extends Equality[A] { thisNormEq =>
    * <code>afterNormalizationEquality</code> in subclasses.
    * </p>
    */
-  val afterNormalizationEquality: Equality[A] = new DefaultEquality[A]
+  val afterNormalizationEquality: Equality[A] = Equality.default[A]
 
   /**
    * Determines the equality of two objects by normalizing the left-hand value, <code>a</code>, and, if appropriate, the right-hand
