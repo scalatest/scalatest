@@ -303,11 +303,23 @@ trait AsyncAssertions extends PatienceConfiguration {
 
     private final val creatingThread = Thread.currentThread
 
-    @volatile private var dismissedCount = 0
-    @volatile private var thrown: Option[Throwable] = None
+    /*
+     * @volatile is not sufficient to ensure atomic compare and set, or increment.
+     * Given that the code which modifies these variables should be synchronized anyway
+     * (because these variables are used in the wait condition predicate), 
+     * the @volatile is superfluous. 
+     */
+    /* @volatile */ private var dismissedCount = 0
+    /* @volatile */ private var thrown: Option[Throwable] = None
 
     private def setThrownIfEmpty(t: Throwable) {
-      synchronized {      // Why is this synchronized?
+      /*
+       * synchronized to serialize access to `thrown` which is used in the wait condition, 
+       * and to ensure the compare and set is atomic.
+       * (Arguably, a race condition on setting `thrown` is harmless, but synchronization makes
+       * the class easier to reason about.)
+       */
+      synchronized {
         if (thrown.isEmpty) thrown = Some(t)
       }
     }
@@ -330,12 +342,12 @@ trait AsyncAssertions extends PatienceConfiguration {
     def apply(fun: => Unit) {
       try {
         fun
-      }
-      catch { // Exceptions after the first are swallowed (need to get to dismissals later)
-        case t: Throwable => setThrownIfEmpty(t)
-        synchronized {
-          notifyAll()
-        }
+      } catch { // Exceptions after the first are swallowed (need to get to dismissals later)
+        case t: Throwable =>
+          setThrownIfEmpty(t)
+          synchronized {
+            notifyAll()
+          }
       }
     }
 
@@ -362,25 +374,30 @@ trait AsyncAssertions extends PatienceConfiguration {
      */
     private def awaitImpl(timeout: Span, dismissals: Int = 1) {
       if (Thread.currentThread != creatingThread)
-        throw new NotAllowedException(Resources("awaitMustBeCalledOnCreatingThread"), 2)
+        throw new NotAllowedException(Resources("awaitMustBeCalledOnCreatingThread", 2)
 
       val startTime: Long = System.nanoTime
       val endTime: Long = startTime + timeout.totalNanos
       def timedOut: Boolean = endTime < System.nanoTime
-      while (dismissedCount < dismissals && !timedOut && thrown.isEmpty) {
-        val timeLeft: Span = {
-          val diff = endTime - System.nanoTime
-          if (diff > 0) Span(diff, Nanoseconds) else Span.ZeroLength
-        }
-        synchronized {
+      synchronized {
+        while (dismissedCount < dismissals && !timedOut && thrown.isEmpty) {
+          val timeLeft: Span = {
+            val diff = endTime - System.nanoTime
+            if (diff > 0) Span(diff, Nanoseconds) else Span.ZeroLength
+          }
           wait(timeLeft.millisPart, timeLeft.nanosPart)
         }
       }
-      dismissedCount = 0 // reset the dismissed count to support multiple await calls
+      // it should never be the case that we get all the expected dismissals and still throw 
+      // a timeout failure - clients trying to debug code would find that very surprising.
+      // Calls to timedOut subsequent to while loop exit constitute a kind of "double jepardy".
       if (thrown.isDefined)
         throw thrown.get
+      else if (dismissedCount == dismissals)
+        dismissedCount = 0 // reset the dismissed count to support multiple await calls        
       else if (timedOut)
-        throw new TestFailedException(Resources("awaitTimedOut"), 2)
+        throw new TestFailedException(Resources("awaitTimedOut" /*)*/ , 2)
+      else Predef.assert(false, "unreachable condition - maybe time went backwards?!")
     }
 
     /**
@@ -524,8 +541,12 @@ trait AsyncAssertions extends PatienceConfiguration {
      * </p>
      */
     def dismiss() {
-      dismissedCount += 1
+      /*
+       * Synchronized to serialize access to `dismissedCount` used in the wait condition,
+       * and to make the increment atomic. 
+       */
       synchronized {
+        dismissedCount += 1
         notifyAll()
       }
     }
