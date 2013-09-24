@@ -63,6 +63,8 @@ import org.scalatest.Resources
  * class BlogSpec extends FlatSpec with ShouldMatchers with WebBrowser {
  *
  *   implicit val webDriver: WebDriver = new HtmlUnitDriver
+ * 
+ *   val host = "http://localhost:9000/"
  *
  *   "The blog app home page" should "have the correct title" in {
  *     go to (host + "index.html")
@@ -83,6 +85,8 @@ import org.scalatest.Resources
  * import selenium._
  *
  * class BlogSpec extends FlatSpec with ShouldMatchers with HtmlUnit {
+ *
+ *   val host = "http://localhost:9000/"
  *
  *   "The blog app home page" should "have the correct title" in {
  *     go to (host + "index.html")

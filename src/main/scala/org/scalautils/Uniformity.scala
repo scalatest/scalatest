@@ -34,7 +34,8 @@ trait Uniformity[A] extends Normalization[A] { thisUniformity =>
   def normalizedOrSame(b: Any): Any
 
   /**
-   * Indicates whether this <code>Uniformity</code>'s <code>normalized</code> method can handle the passed object, if cast to the appropriate type.
+   * Indicates whether this <code>Uniformity</code>'s <code>normalized</code> method can &ldquo;handle&rdquo; the passed object, if cast to the
+   * appropriate type <code>A</code>.
    *
    * <p>
    * If this method returns true for a particular passed object, it means that if the object is passed
@@ -52,7 +53,7 @@ trait Uniformity[A] extends Normalization[A] { thisUniformity =>
    * import StringNormalizations._
    *
    * scala&gt; lowerCased
-   * res0: org.scalautils.Uniformity[String] = org.scalautils.StringNormalizations$$anon$1@236db810
+   * res0: org.scalautils.Uniformity[String] = lowerCased
    *
    * scala&gt; lowerCased.normalized("HALLOOO!")
    * res1: String = hallooo!
@@ -119,23 +120,15 @@ trait Uniformity[A] extends Normalization[A] { thisUniformity =>
    * Returns a new <code>Uniformity</code> that combines this and the passed <code>Uniformity</code>.
    *
    * <p>
-   * The <code>normalized</code>, <code>normalizeCanHandle</code>, and <code>normalizedOrSame</code> methods
+   * The <code>normalized</code> and <code>normalizedOrSame</code> methods
    * of the <code>Uniformity</code>'s returned by this method return a result 
    * obtained by passing it first to this <code>Normalization</code>'s implementation of the method,
-   * then passing that result to the other <code>Normalization</code>'s <code>normalized</code> the method, respectively.
+   * then passing that result to the other <code>Normalization</code>'s implementation of the method, respectively.
    * Essentially, the body of the composed <code>normalized</code> method is:
    * </p>
    *
    * <pre class="stHighlight">
    * uniformityPassedToAnd.normalized(uniformityOnWhichAndWasInvoked.normalized(a))
-   * </pre>
-   *
-   * <p>
-   * The body of the composed <code>normalizeCanHandle</code> method is:
-   * </p>
-   *
-   * <pre class="stHighlight">
-   * uniformityPassedToAnd.normalizeCanHandle(uniformityOnWhichAndWasInvoked.normalizeCanHandle(a))
    * </pre>
    *
    * <p>
@@ -146,6 +139,21 @@ trait Uniformity[A] extends Normalization[A] { thisUniformity =>
    * uniformityPassedToAnd.normalizedOrSame(uniformityOnWhichAndWasInvoked.normalizedOrSame(a))
    * </pre>
    *
+   * <p>
+   * The <code>normalizeCanHandle</code> method of the <code>Uniformity</code>'s returned by this method returns a result 
+   * obtained by passing it first to this <code>Normalization</code>'s implementation of the method,
+   * then passing that result to the other <code>Normalization</code>'s <code>normalized</code> the method, respectively.
+   * Essentially, the body of the composed <code>normalized</code> method is:
+   * </p>
+   *
+   * <p>
+   * The body of the composed <code>normalizeCanHandle</code> method is:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * uniformityPassedToAnd.normalizeCanHandle(uniformityOnWhichAndWasInvoked.normalizeCanHandle(a))
+   * </pre>
+   *
    * @param other a <code>Uniformity</code> to 'and' with this one
    * @return a <code>Uniformity</code> representing the composition of this and the passed <code>Uniformity</code>
    */
@@ -154,7 +162,7 @@ trait Uniformity[A] extends Normalization[A] { thisUniformity =>
       // Note in Scaladoc what order, and recommend people don't do side effects anyway.
       // By order, I mean left's normalized gets called first then right's normalized gets called on that result, for "left and right"
       def normalized(a: A): A = other.normalized(thisUniformity.normalized(a))
-      def normalizedCanHandle(b: Any): Boolean = other.normalizedCanHandle(b) || thisUniformity.normalizedCanHandle(b)
+      def normalizedCanHandle(b: Any): Boolean = other.normalizedCanHandle(b) && thisUniformity.normalizedCanHandle(b)
       def normalizedOrSame(b: Any): Any = other.normalizedOrSame(thisUniformity.normalizedOrSame(b))
     }
 }

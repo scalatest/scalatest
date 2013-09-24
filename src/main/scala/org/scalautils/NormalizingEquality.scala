@@ -16,10 +16,10 @@
 package org.scalautils
 
 /**
- * An <code>Equality</code> implementation that determines the equality of two objects by normalizing 
+ * An <code>Equality[A]</code> implementation that determines the equality of two objects by normalizing 
  * one or both objects, then comparing the results using an &ldquo;after normalization&rdquo; equality referenced from
  * the <code>afterNormalizationEquality</code>  member. By default, the <code>afterNormalizationEquality</code> is 
- * an instance of <a href="DefaultEquality.html"><code>DefaultEquality</code></a>.
+ * an instance of <a href="Equality$.html"><code>Equality.default[A]</code></a>.
  * </p>
  *
  * <p>
@@ -45,8 +45,14 @@ package org.scalautils
 trait NormalizingEquality[A] extends Equality[A] { thisNormEq =>
 
   /**
-   * The <code>Equality</code> with which to determing equality after normalizing the left-hand and, if appropriate,
+   * The <code>Equality</code> with which to determine equality after normalizing the left-hand and, if appropriate,
    * the right-hand values passed to <code>areEqual</code>.
+   *
+   * <p>
+   * In this trait's implementation, this <code>val</code> is initialized with the result of invoking <code>Equality.default[A]</code>.
+   * Thus default <code>Equality</code> is the default <code>afterNormalizationEquality</code>. This may be changed by overriding
+   * <code>afterNormalizationEquality</code> in subclasses.
+   * </p>
    */
   val afterNormalizationEquality: Equality[A] = new DefaultEquality[A]
 
@@ -78,7 +84,8 @@ trait NormalizingEquality[A] extends Equality[A] { thisNormEq =>
   def normalized(a: A): A
 
   /**
-   * Indicates whether this <code>NormalizingEquality</code>'s <code>normalized</code> method can handle the passed object, if cast to the appropriate type.
+   * Indicates whether this <code>NormalizingEquality</code>'s <code>normalized</code> method can &ldquo;handle&rdquo; the passed object, if cast to the
+   * appropriate type <code>A</code>.
    *
    * <p>
    * If this method returns true for a particular passed object, it means that if the object is passed
