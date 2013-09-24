@@ -63,6 +63,7 @@ trait TestDataFixture { this: fixture.Suite =>
    *
    * @param test the <code>OneArgTest</code> to invoke, passing in the
    *   <code>TestData</code> fixture
+   * @return an <code>Outcome</code> instance
    */
   def withFixture(test: OneArgTest): Outcome = {
     withFixture(test.toNoArgTest(test))

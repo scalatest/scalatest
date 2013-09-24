@@ -229,6 +229,8 @@ trait SpecLike extends Suite with Informing with Updating with Alerting with Doc
    * This trait's implementation of this method will first ensure that the discovery of scope objects and test methods
    * has been performed.
    * </p>
+   *
+   * @return the <code>Set</code> of test names
    */
   override def testNames: Set[String] = {
     ensureScopesAndTestsRegistered()
@@ -249,9 +251,8 @@ trait SpecLike extends Suite with Informing with Updating with Alerting with Doc
    *
    * @param testName the name of one test to execute.
    * @param args the <code>Args</code> for this run
-   *
-   * @throws NullPointerException if any of <code>testName</code>, <code>reporter</code>, <code>stopper</code>, or <code>configMap</code>
-   *     is <code>null</code>.
+   * @return a <code>Status</code> object that indicates when the test started by this method has completed, and whether or not it failed .
+   * @throws NullPointerException if <code>testName</code> or <code>args</code> is <code>null</code>.
    */
   protected override def runTest(testName: String, args: Args): Status = {
 
@@ -297,6 +298,7 @@ trait SpecLike extends Suite with Informing with Updating with Alerting with Doc
    * </p>
    *
    * @param filter a <code>Filter</code> with which to filter tests to count based on their tags
+   * @return the expected number test count
    */
   final override def expectedTestCount(filter: Filter): Int = {
     ensureScopesAndTestsRegistered()
@@ -333,7 +335,7 @@ trait SpecLike extends Suite with Informing with Updating with Alerting with Doc
    * @param testName an optional name of one test to run. If <code>None</code>, all relevant tests should be run.
    *                 I.e., <code>None</code> acts like a wildcard that means run all relevant tests in this <code>Spec</code>.
    * @param args the <code>Args</code> for this run
-   *
+   * @return a <code>Status</code> object that indicates when all tests started by this method have completed, and whether or not a failure occurred.
    * @throws NullPointerException if any of the passed parameters is <code>null</code>.
    * @throws IllegalArgumentException if <code>testName</code> is defined, but no test with the specified test name
    *     exists in this <code>Spec</code>
@@ -369,9 +371,9 @@ trait SpecLike extends Suite with Informing with Updating with Alerting with Doc
    *
    *
    * @param testName an optional name of one test to run. If <code>None</code>, all relevant tests should be run.
-   *                 I.e., <code>None</code> acts like a wildcard that means run all relevant tests in this <code>Suite</code>.
+   *                 I.e., <code>None</code> acts like a wildcard that means run all relevant tests in this <code>fixture.SpecLike</code>.
    * @param args the <code>Args</code> for this run
-   *         
+   * @return a <code>Status</code> object that indicates when all tests and nested suites started by this method have completed, and whether or not a failure occurred.
    * @throws NullPointerException if any passed parameter is <code>null</code>.
    * @throws IllegalArgumentException if <code>testName</code> is defined, but no test with the specified test name
    *     exists in this <code>Suite</code>
@@ -383,6 +385,8 @@ trait SpecLike extends Suite with Informing with Updating with Alerting with Doc
   
   /**
    * Suite style name.
+   *
+   * @return <code>org.scalatest.fixture.Spec</code>
    */
   final override val styleName: String = "org.scalatest.fixture.Spec"
 

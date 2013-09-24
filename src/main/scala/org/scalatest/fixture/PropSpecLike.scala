@@ -109,13 +109,15 @@ trait PropSpecLike extends Suite with Informing with Updating with Alerting with
   }
 
   /**
-  * An immutable <code>Set</code> of test names. If this <code>fixture.PropSpec</code> contains no tests, this method returns an empty <code>Set</code>.
-  *
-  * <p>
-  * This trait's implementation of this method will return a set that contains the names of all registered tests. The set's iterator will
-  * return those names in the order in which the tests were registered.
-  * </p>
-  */
+   * An immutable <code>Set</code> of test names. If this <code>fixture.PropSpec</code> contains no tests, this method returns an empty <code>Set</code>.
+   *
+   * <p>
+   * This trait's implementation of this method will return a set that contains the names of all registered tests. The set's iterator will
+   * return those names in the order in which the tests were registered.
+   * </p>
+   *
+   * @return the <code>Set</code> of test names
+   */
   override def testNames: Set[String] = {
     // I'm returning a ListSet here so that they tests will be run in registration order
     ListSet(atomic.get.testNamesList.toArray: _*)
@@ -125,12 +127,10 @@ trait PropSpecLike extends Suite with Informing with Updating with Alerting with
    * Run a test. This trait's implementation runs the test registered with the name specified by <code>testName</code>.
    *
    * @param testName the name of one test to run.
-   * @param reporter the <code>Reporter</code> to which results will be reported
-   * @param stopper the <code>Stopper</code> that will be consulted to determine whether to stop execution early.
-   * @param configMap a <code>Map</code> of properties that can be used by the executing <code>Suite</code> of tests.
+   * @param args the <code>Args</code> for this run
+   * @return a <code>Status</code> object that indicates when the test started by this method has completed, and whether or not it failed .
    * @throws IllegalArgumentException if <code>testName</code> is defined but a test with that name does not exist on this <code>fixture.PropSpec</code>
-   * @throws NullPointerException if any of <code>testName</code>, <code>reporter</code>, <code>stopper</code>, or <code>configMap</code>
-   *     is <code>null</code>.
+   * @throws NullPointerException if any of <code>testName</code> or <code>args</code> is <code>null</code>.
    */
   protected override def runTest(testName: String, args: Args): Status = {
 
@@ -171,6 +171,45 @@ trait PropSpecLike extends Suite with Informing with Updating with Alerting with
    */
   override def tags: Map[String, Set[String]] = autoTagClassAnnotations(atomic.get.tagsMap, this)
 
+  /**
+   * <p>
+   * Run zero to many of this <code>fixture.PropSpecLike</code>'s tests.
+   * </p>
+   *
+   * <p>
+   * This method takes a <code>testName</code> parameter that optionally specifies a test to invoke.
+   * If <code>testName</code> is <code>Some</code>, this trait's implementation of this method
+   * invokes <code>runTest</code> on this object with passed <code>args</code>.
+   * </p>
+   *
+   * <p>
+   * This method takes an <code>args</code> that contains a <code>Set</code> of tag names that should be included (<code>tagsToInclude</code>), and a <code>Set</code>
+   * that should be excluded (<code>tagsToExclude</code>), when deciding which of this <code>Suite</code>'s tests to execute.
+   * If <code>tagsToInclude</code> is empty, all tests will be executed
+   * except those those belonging to tags listed in the <code>tagsToExclude</code> <code>Set</code>. If <code>tagsToInclude</code> is non-empty, only tests
+   * belonging to tags mentioned in <code>tagsToInclude</code>, and not mentioned in <code>tagsToExclude</code>
+   * will be executed. However, if <code>testName</code> is <code>Some</code>, <code>tagsToInclude</code> and <code>tagsToExclude</code> are essentially ignored.
+   * Only if <code>testName</code> is <code>None</code> will <code>tagsToInclude</code> and <code>tagsToExclude</code> be consulted to
+   * determine which of the tests named in the <code>testNames</code> <code>Set</code> should be run. For more information on trait tags, see the main documentation for this trait.
+   * </p>
+   *
+   * <p>
+   * If <code>testName</code> is <code>None</code>, this trait's implementation of this method
+   * invokes <code>testNames</code> on this <code>Suite</code> to get a <code>Set</code> of names of tests to potentially execute.
+   * (A <code>testNames</code> value of <code>None</code> essentially acts as a wildcard that means all tests in
+   * this <code>Suite</code> that are selected by <code>tagsToInclude</code> and <code>tagsToExclude</code> should be executed.)
+   * For each test in the <code>testName</code> <code>Set</code>, in the order
+   * they appear in the iterator obtained by invoking the <code>elements</code> method on the <code>Set</code>, this trait's implementation
+   * of this method checks whether the test should be run based on the <code>tagsToInclude</code> and <code>tagsToExclude</code> <code>Set</code>s.
+   * If so, this implementation invokes <code>runTest</code> with passed <code>args</code>.
+   * </p>
+   *
+   * @param testName an optional name of one test to execute. If <code>None</code>, all relevant tests should be executed.
+   *                 I.e., <code>None</code> acts like a wildcard that means execute all relevant tests in this <code>FunSpec</code>.
+   * @param args the <code>Args</code> to which results will be reported
+   * @return a <code>Status</code> object that indicates when all tests started by this method have completed, and whether or not a failure occurred.
+   * @throws NullPointerException if any of <code>testName</code> or <code>args</code> is <code>null</code>.
+   */
   protected override def runTests(testName: Option[String], args: Args): Status = {
     runTestsImpl(thisSuite, testName, args, info, true, runTest)
   }
@@ -198,6 +237,8 @@ trait PropSpecLike extends Suite with Informing with Updating with Alerting with
    * <a href="../PropSpec.html#SharedTests">Shared tests section</a> in the main documentation for
    * trait <code>PropSpec</code>.
    * </p>
+   *
+   * @param unit a <code>Unit</code>
    */
   protected def propertiesFor(unit: Unit) {}
 
@@ -213,6 +254,9 @@ trait PropSpecLike extends Suite with Informing with Updating with Alerting with
    * This method makes it possible to write pending tests as simply <code>(pending)</code>, without needing
    * to write <code>(fixture => pending)</code>.
    * </p>
+   *
+   * @param f a function
+   * @return a function of <code>FixtureParam => Any</code>
    */
   protected implicit def convertPendingToFixtureFunction(f: => PendingNothing): (FixtureParam => Any) = {
     fixture => f
@@ -222,12 +266,17 @@ trait PropSpecLike extends Suite with Informing with Updating with Alerting with
    * Implicitly converts a function that takes no parameters and results in <code>Any</code> to
    * a function from <code>FixtureParam</code> to <code>Any</code>, to enable no-arg tests to registered
    * by methods that require a test function that takes a <code>FixtureParam</code>.
+   *
+   * @param fun a function
+   * @return a function of <code>FixtureParam => Any</code>
    */
   protected implicit def convertNoArgToFixtureFunction(fun: () => Any): (FixtureParam => Any) =
     new NoArgTestWrapper(fun)
   
   /**
    * Suite style name.
+   *
+   * @return <code>org.scalatest.fixture.PropSpec</code>
    */
   final override val styleName: String = "org.scalatest.fixture.PropSpec"
     

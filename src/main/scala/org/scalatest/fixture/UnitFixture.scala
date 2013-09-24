@@ -46,6 +46,7 @@ trait UnitFixture { this: fixture.Suite =>
    * </p>
    *
    * @param test the <code>OneArgTest</code> to invoke, passing in the unit value
+   * @return an <code>Outcome</code> instance
    */
   def withFixture(test: OneArgTest): Outcome = {
     withFixture(test.toNoArgTest(()))
