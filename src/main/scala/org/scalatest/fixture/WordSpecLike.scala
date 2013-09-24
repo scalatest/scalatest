@@ -176,6 +176,8 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * <p>
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>fixture.WordSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def in(testFun: FixtureParam => Any) {
       registerTestToRun(specText, tags, "in", testFun)
@@ -196,6 +198,8 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * <p>
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>fixture.WordSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def in(testFun: () => Any) {
       registerTestToRun(specText, tags, "in", new NoArgTestWrapper(testFun))
@@ -216,6 +220,8 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * <p>
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>fixture.WordSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def is(testFun: => PendingNothing) {
       registerTestToRun(specText, tags, "is", unusedFixtureParam => testFun)
@@ -236,6 +242,8 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * <p>
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>fixture.WordSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def ignore(testFun: FixtureParam => Any) {
       registerTestToIgnore(specText, tags, "ignore", testFun)
@@ -256,6 +264,8 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * <p>
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>fixture.WordSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def ignore(testFun: () => Any) {
       registerTestToIgnore(specText, tags, "ignore", new NoArgTestWrapper(testFun))
@@ -274,6 +284,8 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
    * traits, which <code>fixture.WordSpec</code> mixes in, to avoid a conflict with implicit conversions provided
    * in <code>ShouldMatchers</code> and <code>MustMatchers</code>. 
    * </p>
+   *
+   * @param string the string that is wrapped
    *
    * @author Bill Venners
    */
@@ -294,6 +306,8 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * <p>
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>fixture.WordSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def in(testFun: FixtureParam => Any) {
       registerTestToRun(string, List(), "in", testFun)
@@ -314,6 +328,8 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * <p>
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>fixture.WordSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def in(testFun: () => Any) {
       registerTestToRun(string, List(), "in", new NoArgTestWrapper(testFun))
@@ -334,6 +350,8 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * <p>
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>fixture.WordSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def is(testFun: => PendingNothing) {
       registerTestToRun(string, List(), "is", unusedFixtureParam => testFun)
@@ -354,6 +372,8 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * <p>
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>fixture.WordSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def ignore(testFun: FixtureParam => Any) {
       registerTestToIgnore(string, List(), "ignore", testFun)
@@ -374,6 +394,8 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * <p>
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>fixture.WordSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def ignore(testFun: () => Any) {
       registerTestToIgnore(string, List(), "ignore", new NoArgTestWrapper(testFun))
@@ -395,6 +417,10 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * <p>
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>fixture.WordSpec</code>.
      * </p>
+     *
+     * @param firstTestTag the first mandatory test tag
+     * @param otherTestTags the others additional test tags
+     * @return an new instance of <code>ResultOfTaggedAsInvocationOnString</code>
      */
     def taggedAs(firstTestTag: Tag, otherTestTags: Tag*) = {
       val tagList = firstTestTag :: otherTestTags.toList
@@ -416,6 +442,8 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * <p>
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>fixture.WordSpec</code>.
      * </p>
+     *
+     * @param f the function which is the body of the scope
      */
     def when(f: => Unit) {
       registerBranch(string, Some("when"), "when", 4, -2, f _)
@@ -438,6 +466,8 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * <p>
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>fixture.WordSpec</code>.
      * </p>
+     *
+     * @param resultOfAfterWordApplication a <code>ResultOfAfterWordApplication</code>
      */
     def when(resultOfAfterWordApplication: ResultOfAfterWordApplication) {
       registerBranch(string, Some("when " + resultOfAfterWordApplication.text), "when", 4, -2, resultOfAfterWordApplication.f)
@@ -467,6 +497,8 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * <p>
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>fixture.WordSpec</code>.
      * </p>
+     *
+     * @param f the function which is the body of the scope
      */
     def which(f: => Unit) {
       registerBranch(string.trim + " which", None, "which", 4, -2, f _)
@@ -496,6 +528,8 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * <p>
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>fixture.WordSpec</code>.
      * </p>
+     *
+     * @param resultOfAfterWordApplication a <code>ResultOfAfterWordApplication</code>
      */
     def which(resultOfAfterWordApplication: ResultOfAfterWordApplication) {
       registerBranch(string.trim + " which " + resultOfAfterWordApplication.text.trim, None, "which", 4, -2, resultOfAfterWordApplication.f)
@@ -551,6 +585,8 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
    * - should display a rerun button, which is enabled if the clicked-on event is rerunnable
    * - should display a rerun button, which is disabled if the clicked-on event is not rerunnable</span>
    * </pre>
+   *
+   * @param text the afterword text
    */
   protected final class AfterWord(text: String) {
 
@@ -562,6 +598,9 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * is accepted by <code>when</code>, <code>should</code>, <code>must</code>, <code>can</code>, and <code>which</code>
      * methods.  For more information, see the <a href="../WordSpec.html#AfterWords">main documentation</code></a> for trait <code>org.scalatest.WordSpec</code>.
      * </p>
+     *
+     * @param f the function to be transformed into <code>ResultOfAfterWordApplication</code>
+     * @return an new instance of <code>ResultOfAfterWordApplication</code>
      */
     def apply(f: => Unit) = new ResultOfAfterWordApplication(text, f _)
   }
@@ -615,6 +654,9 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
    * - should display a rerun button, which is enabled if the clicked-on event is rerunnable
    * - should display a rerun button, which is disabled if the clicked-on event is not rerunnable</span>
    * </pre>
+   *
+   * @param text the after word text
+   * @return an instance of <code>AfterWord</code>
    */
   protected def afterWord(text: String) = new AfterWord(text)
 
@@ -658,6 +700,8 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For examples of scope registration, see the <a href="WordSpec.html">main documentation</a>
      * for <code>WordSpec</code>.
      * </p>
+     *
+     * @param right the body function
      */
     def should(right: => Unit) {
       registerShorthandBranch(Some("should"), "itMustAppearAfterTopLevelSubject", "should", 3, -2, right _)
@@ -681,6 +725,8 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For examples of scope registration, see the <a href="WordSpec.html">main documentation</a>
      * for <code>WordSpec</code>.
      * </p>
+     *
+     * @param right the body function
      */
     def must(right: => Unit) {
       registerShorthandBranch(Some("must"), "itMustAppearAfterTopLevelSubject", "must", 3, -2, right _)
@@ -704,6 +750,8 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For examples of scope registration, see the <a href="WordSpec.html">main documentation</a>
      * for <code>WordSpec</code>.
      * </p>
+     *
+     * @param right the body function
      */
     def can(right: => Unit) {
       registerShorthandBranch(Some("can"), "itMustAppearAfterTopLevelSubject", "can", 3, -2, right _)
@@ -727,6 +775,8 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For examples of scope registration, see the <a href="WordSpec.html">main documentation</a>
      * for <code>WordSpec</code>.
      * </p>
+     *
+     * @param right the body function
      */
     def when(right: => Unit) {
       registerShorthandBranch(Some("when"), "itMustAppearAfterTopLevelSubject", "when", 3, -2, right _)
@@ -793,6 +843,8 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For examples of scope registration, see the <a href="WordSpec.html">main documentation</a>
      * for <code>WordSpec</code>.
      * </p>
+     *
+     * @param right the body function
      */
     def should(right: => Unit) {
       registerShorthandBranch(Some("should"), "theyMustAppearAfterTopLevelSubject", "should", 3, -2, right _)
@@ -816,6 +868,8 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For examples of scope registration, see the <a href="WordSpec.html">main documentation</a>
      * for <code>WordSpec</code>.
      * </p>
+     *
+     * @param right the body function
      */
     def must(right: => Unit) {
       registerShorthandBranch(Some("must"), "theyMustAppearAfterTopLevelSubject", "must", 3, -2, right _)
@@ -839,6 +893,8 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For examples of scope registration, see the <a href="WordSpec.html">main documentation</a>
      * for <code>WordSpec</code>.
      * </p>
+     *
+     * @param right the body function
      */
     def can(right: => Unit) {
       registerShorthandBranch(Some("can"), "theyMustAppearAfterTopLevelSubject", "can", 3, -2, right _)
@@ -862,6 +918,8 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * For examples of scope registration, see the <a href="WordSpec.html">main documentation</a>
      * for <code>WordSpec</code>.
      * </p>
+     *
+     * @param right the body function
      */
     def when(right: => Unit) {
       registerShorthandBranch(Some("when"), "theyMustAppearAfterTopLevelSubject", "when", 3, -2, right _)
@@ -893,6 +951,9 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
    * Implicitly converts <code>String</code>s to <code>WordSpecStringWrapper</code>, which enables
    * methods <code>when</code>, <code>which</code>, <code>in</code>, <code>is</code>, <code>taggedAs</code>
    * and <code>ignore</code> to be invoked on <code>String</code>s.
+   *
+   * @param s <code>String</code> to be wrapped
+   * @return an instance of <code>WordSpecStringWrapper</code>
    */
   protected implicit def convertToWordSpecStringWrapper(s: String) = new WordSpecStringWrapper(s)
 
@@ -977,9 +1038,8 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
    *
    * @param testName the name of one test to execute.
    * @param args the <code>Args</code> for this run
-   *
-   * @throws NullPointerException if any of <code>testName</code>, <code>reporter</code>, <code>stopper</code>, or <code>configMap</code>
-   *     is <code>null</code>.
+   * @return a <code>Status</code> object that indicates when the test started by this method has completed, and whether or not it failed .
+   * @throws NullPointerException if any of <code>testName</code> or <code>args</code> is <code>null</code>.
    */
   protected override def runTest(testName: String, args: Args): Status = {
 
@@ -1011,19 +1071,11 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
    * <p>
    * This method takes a <code>testName</code> parameter that optionally specifies a test to invoke.
    * If <code>testName</code> is <code>Some</code>, this trait's implementation of this method
-   * invokes <code>runTest</code> on this object, passing in:
+   * invokes <code>runTest</code> on this object with passed <code>args</code>.
    * </p>
    *
-   * <ul>
-   * <li><code>testName</code> - the <code>String</code> value of the <code>testName</code> <code>Option</code> passed
-   *   to this method</li>
-   * <li><code>reporter</code> - the <code>Reporter</code> passed to this method, or one that wraps and delegates to it</li>
-   * <li><code>stopper</code> - the <code>Stopper</code> passed to this method, or one that wraps and delegates to it</li>
-   * <li><code>configMap</code> - the <code>configMap</code> passed to this method, or one that wraps and delegates to it</li>
-   * </ul>
-   *
    * <p>
-   * This method takes a <code>Set</code> of tag names that should be included (<code>tagsToInclude</code>), and a <code>Set</code>
+   * This method takes an <code>args</code> that contains a <code>Set</code> of tag names that should be included (<code>tagsToInclude</code>), and a <code>Set</code>
    * that should be excluded (<code>tagsToExclude</code>), when deciding which of this <code>Suite</code>'s tests to execute.
    * If <code>tagsToInclude</code> is empty, all tests will be executed
    * except those those belonging to tags listed in the <code>tagsToExclude</code> <code>Set</code>. If <code>tagsToInclude</code> is non-empty, only tests
@@ -1041,20 +1093,13 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
    * For each test in the <code>testName</code> <code>Set</code>, in the order
    * they appear in the iterator obtained by invoking the <code>elements</code> method on the <code>Set</code>, this trait's implementation
    * of this method checks whether the test should be run based on the <code>tagsToInclude</code> and <code>tagsToExclude</code> <code>Set</code>s.
-   * If so, this implementation invokes <code>runTest</code>, passing in:
+   * If so, this implementation invokes <code>runTest</code> with passed <code>args</code>.
    * </p>
-   *
-   * <ul>
-   * <li><code>testName</code> - the <code>String</code> name of the test to run (which will be one of the names in the <code>testNames</code> <code>Set</code>)</li>
-   * <li><code>reporter</code> - the <code>Reporter</code> passed to this method, or one that wraps and delegates to it</li>
-   * <li><code>stopper</code> - the <code>Stopper</code> passed to this method, or one that wraps and delegates to it</li>
-   * <li><code>configMap</code> - the <code>configMap</code> passed to this method, or one that wraps and delegates to it</li>
-   * </ul>
    *
    * @param testName an optional name of one test to execute. If <code>None</code>, all relevant tests should be executed.
    *                 I.e., <code>None</code> acts like a wildcard that means execute all relevant tests in this <code>WordSpec</code>.
    * @param args the <code>Args</code> for this run
-   *
+   * @return a <code>Status</code> object that indicates when all tests started by this method have completed, and whether or not a failure occurred.
    * @throws NullPointerException if any of <code>testName</code> or <code>args</code> is <code>null</code>.
    */
   protected override def runTests(testName: Option[String], args: Args): Status = {
@@ -1071,6 +1116,8 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
    * of the concatenation of the text of each surrounding describer, in order from outside in, and the text of the
    * example itself, with all components separated by a space.
    * </p>
+   *
+   * @return the <code>Set</code> of test names
    */
   override def testNames: Set[String] = {
     // I'm returning a ListSet here so that they tests will be run in registration order
@@ -1102,6 +1149,8 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
   
   /**
    * Suite style name.
+   *
+   * @return <code>org.scalatest.fixture.WordSpec</code>
    */
   final override val styleName: String = "org.scalatest.fixture.WordSpec"
     

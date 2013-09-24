@@ -141,6 +141,8 @@ trait FunSpecLike extends Suite with Informing with Updating with Alerting with 
      * For examples of shared tests, see the <a href="../Spec.html#SharedTests">Shared tests section</a>
      * in the main documentation for trait <code>FunSpec</code>.
      * </p>
+     *
+     * @param behaveWord the <code>BehaveWord</code>
      */
     def should(behaveWord: BehaveWord) = behaveWord
 
@@ -160,6 +162,8 @@ trait FunSpecLike extends Suite with Informing with Updating with Alerting with 
      * For examples of shared tests, see the <a href="../Spec.html#SharedTests">Shared tests section</a>
      * in the main documentation for trait <code>FunSpec</code>.
      * </p>
+     *
+     * @param behaveWord the <code>BehaveWord</code>
      */
     def must(behaveWord: BehaveWord) = behaveWord
   }
@@ -250,6 +254,8 @@ trait FunSpecLike extends Suite with Informing with Updating with Alerting with 
      * For examples of shared tests, see the <a href="../Spec.html#SharedTests">Shared tests section</a>
      * in the main documentation for trait <code>FunSpec</code>.
      * </p>
+     *
+     * @param behaveWord the <code>BehaveWord</code>
      */
     def should(behaveWord: BehaveWord) = behaveWord
 
@@ -269,6 +275,8 @@ trait FunSpecLike extends Suite with Informing with Updating with Alerting with 
      * For examples of shared tests, see the <a href="../Spec.html#SharedTests">Shared tests section</a>
      * in the main documentation for trait <code>FunSpec</code>.
      * </p>
+     *
+     * @param behaveWord the <code>BehaveWord</code>
      */
     def must(behaveWord: BehaveWord) = behaveWord
   }
@@ -347,6 +355,9 @@ trait FunSpecLike extends Suite with Informing with Updating with Alerting with 
    * passed function value may contain more describers (defined with <code>describe</code>) and/or tests
    * (defined with <code>it</code>). This trait's implementation of this method will register the
    * description string and immediately invoke the passed function.
+   *
+   * @param description the description text
+   * @param fun the function which makes up the body for the description
    */
   protected def describe(description: String)(fun: => Unit) {
     registerNestedBranch(description, None, fun, "describeCannotAppearInsideAnIt", sourceFileName, "describe", 4, -2, None)
@@ -376,9 +387,8 @@ trait FunSpecLike extends Suite with Informing with Updating with Alerting with 
    *
    * @param testName the name of one test to execute.
    * @param args the <code>Args</code> for this run
-   *
-   * @throws NullPointerException if any of <code>testName</code>, <code>reporter</code>, <code>stopper</code>, or <code>configMap</code>
-   *     is <code>null</code>.
+   * @return a <code>Status</code> object that indicates when the test started by this method has completed, and whether or not it failed .
+   * @throws NullPointerException if <code>testName</code> or <code>args</code> is <code>null</code>.
    */
   protected override def runTest(testName: String, args: Args): Status = {
 
@@ -410,19 +420,11 @@ trait FunSpecLike extends Suite with Informing with Updating with Alerting with 
    * <p>
    * This method takes a <code>testName</code> parameter that optionally specifies a test to invoke.
    * If <code>testName</code> is <code>Some</code>, this trait's implementation of this method
-   * invokes <code>runTest</code> on this object, passing in:
+   * invokes <code>runTest</code> on this object with passed <code>args</code>.
    * </p>
    *
-   * <ul>
-   * <li><code>testName</code> - the <code>String</code> value of the <code>testName</code> <code>Option</code> passed
-   *   to this method</li>
-   * <li><code>reporter</code> - the <code>Reporter</code> passed to this method, or one that wraps and delegates to it</li>
-   * <li><code>stopper</code> - the <code>Stopper</code> passed to this method, or one that wraps and delegates to it</li>
-   * <li><code>configMap</code> - the <code>configMap</code> passed to this method, or one that wraps and delegates to it</li>
-   * </ul>
-   *
    * <p>
-   * This method takes a <code>Set</code> of tag names that should be included (<code>tagsToInclude</code>), and a <code>Set</code>
+   * This method takes an <code>args</code> that contains a <code>Set</code> of tag names that should be included (<code>tagsToInclude</code>), and a <code>Set</code>
    * that should be excluded (<code>tagsToExclude</code>), when deciding which of this <code>Suite</code>'s tests to execute.
    * If <code>tagsToInclude</code> is empty, all tests will be executed
    * except those those belonging to tags listed in the <code>tagsToExclude</code> <code>Set</code>. If <code>tagsToInclude</code> is non-empty, only tests
@@ -440,20 +442,13 @@ trait FunSpecLike extends Suite with Informing with Updating with Alerting with 
    * For each test in the <code>testName</code> <code>Set</code>, in the order
    * they appear in the iterator obtained by invoking the <code>elements</code> method on the <code>Set</code>, this trait's implementation
    * of this method checks whether the test should be run based on the <code>tagsToInclude</code> and <code>tagsToExclude</code> <code>Set</code>s.
-   * If so, this implementation invokes <code>runTest</code>, passing in:
+   * If so, this implementation invokes <code>runTest</code> with passed <code>args</code>.
    * </p>
-   *
-   * <ul>
-   * <li><code>testName</code> - the <code>String</code> name of the test to run (which will be one of the names in the <code>testNames</code> <code>Set</code>)</li>
-   * <li><code>reporter</code> - the <code>Reporter</code> passed to this method, or one that wraps and delegates to it</li>
-   * <li><code>stopper</code> - the <code>Stopper</code> passed to this method, or one that wraps and delegates to it</li>
-   * <li><code>configMap</code> - the <code>configMap</code> passed to this method, or one that wraps and delegates to it</li>
-   * </ul>
    *
    * @param testName an optional name of one test to execute. If <code>None</code>, all relevant tests should be executed.
    *                 I.e., <code>None</code> acts like a wildcard that means execute all relevant tests in this <code>FunSpec</code>.
    * @param args the <code>Args</code> to which results will be reported
-   *
+   * @return a <code>Status</code> object that indicates when all tests started by this method have completed, and whether or not a failure occurred.
    * @throws NullPointerException if any of <code>testName</code> or <code>args</code> is <code>null</code>.
    */
   protected override def runTests(testName: Option[String], args: Args): Status = {
@@ -471,6 +466,8 @@ trait FunSpecLike extends Suite with Informing with Updating with Alerting with 
    * of the concatenation of the text of each surrounding describer, in order from outside in, and the text of the
    * example itself, with all components separated by a space.
    * </p>
+   *
+   * @return the <code>Set</code> of test names
    */
   override def testNames: Set[String] = {
     // I'm returning a ListSet here so that they tests will be run in registration order
@@ -509,6 +506,9 @@ trait FunSpecLike extends Suite with Informing with Updating with Alerting with 
    * This method makes it possible to write pending tests as simply <code>(pending)</code>, without needing
    * to write <code>(fixture => pending)</code>.
    * </p>
+   *
+   * @param f a function
+   * @return a function of <code>FixtureParam => Any</code>
    */
   protected implicit def convertPendingToFixtureFunction(f: => PendingNothing): FixtureParam => Any = {
     fixture => f
@@ -518,12 +518,17 @@ trait FunSpecLike extends Suite with Informing with Updating with Alerting with 
    * Implicitly converts a function that takes no parameters and results in <code>Any</code> to
    * a function from <code>FixtureParam</code> to <code>Any</code>, to enable no-arg tests to registered
    * by methods that require a test function that takes a <code>FixtureParam</code>.
+   *
+   * @param fun a function
+   * @return a function of <code>FixtureParam => Any</code>
    */
   protected implicit def convertNoArgToFixtureFunction(fun: () => Any): (FixtureParam => Any) =
     new NoArgTestWrapper(fun)
   
   /**
    * Suite style name.
+   *
+   * @return <code>org.scalatest.fixture.FunSpec</code>
    */
   final override val styleName: String = "org.scalatest.fixture.FunSpec"
     

@@ -946,106 +946,106 @@ trait Suite extends Assertions with AbstractSuite with Serializable { thisSuite 
     } yield annotationClass.getName
 
   /**
-  * A <code>Set</code> of test names. If this <code>Suite</code> contains no tests, this method returns an empty <code>Set</code>.
-  *
-  * <p>
-  * <strong><code>Suite</code> has been deprecated as a style trait. During the deprecation period, the following behavior will continue
-  * to work as before, but will go away at the conclusion of the deprecation period:</strong>
-  * This trait's implementation of this method uses Java reflection to discover all public methods whose name starts with <code>"test"</code>,
-  * which take either nothing or a single <code>Informer</code> as parameters. For each discovered test method, it assigns a test name
-  * comprised of just the method name if the method takes no parameters, or the method name plus <code>(Informer)</code> if the
-  * method takes a <code>Informer</code>. Here are a few method signatures and the names that this trait's implementation assigns them:
-  * </p>
-  *
-  * <pre class="stHighlight">
-  * def testCat() {}         // test name: "testCat"
-  * def testCat(Informer) {} // test name: "testCat(Informer)"
-  * def testDog() {}         // test name: "testDog"
-  * def testDog(Informer) {} // test name: "testDog(Informer)"
-  * def test() {}            // test name: "test"
-  * def test(Informer) {}    // test name: "test(Informer)"
-  * </pre>
-  *
-  * <p>
-  * This trait's implementation of this method returns an immutable <code>Set</code> of all such names, excluding the name
-  * <code>testNames</code>. The iterator obtained by invoking <code>elements</code> on this
-  * returned <code>Set</code> will produce the test names in their <em>natural order</em>, as determined by <code>String</code>'s
-  * <code>compareTo</code> method.
-  * </p>
-  *
-  * <p>
-  * This trait's implementation of <code>runTests</code> invokes this method
-  * and calls <code>runTest</code> for each test name in the order they appear in the returned <code>Set</code>'s iterator.
-  * Although this trait's implementation of this method returns a <code>Set</code> whose iterator produces <code>String</code>
-  * test names in a well-defined order, the contract of this method does not required a defined order. Subclasses are free to
-  * override this method and return test names in an undefined order, or in a defined order that's different from <code>String</code>'s
-  * natural order.
-  * </p>
-  *
-  * <p>
-  * Subclasses may override this method to produce test names in a custom manner. One potential reason to override <code>testNames</code> is
-  * to run tests in a different order, for example, to ensure that tests that depend on other tests are run after those other tests.
-  * Another potential reason to override is allow tests to be defined in a different manner, such as methods annotated <code>@Test</code> annotations
-  * (as is done in <code>JUnitSuite</code> and <code>TestNGSuite</code>) or test functions registered during construction (as is
-  * done in <code>FunSuite</code> and <code>FunSpec</code>).
-  * </p>
-  *
-  * <p>
-  * In ScalaTest's event model, a test may be surrounded by &ldquo;scopes.&rdquo; Each test and scope is associated with string of text.
-  * A test's name is concatenation of the text of any surrounding scopes followed by the text provided with the test
-  * itself, after each text element has been trimmed and one space inserted between each component. Here's an example:
-  * </p>
-  *
-  * <pre class="stHighlight">
-  * package org.scalatest.examples.freespec
-  * 
-  * import org.scalatest.FreeSpec
-  * 
-  * class SetSpec extends FreeSpec {
-  * 
-  *   "A Set" - {
-  *     "when empty" - {
-  *       "should have size 0" in {
-  *         assert(Set.empty.size === 0)
-  *       }
-  *       
-  *       "should produce NoSuchElementException when head is invoked" in {
-  *         intercept[NoSuchElementException] {
-  *           Set.empty.head
-  *         }
-  *       }
-  *     }
-  *   }
-  * }
-  * </pre>
-  *
-  * <p>
-  * The above <code>FreeSpec</code> contains two tests, both nested inside the same two scopes. The outermost scope names
-  * the subject, <code>A Set</code>. The nested scope qualifies the subject with <code>when empty</code>. Inside that
-  * scope are the two tests. The text of the tests are:
-  * <p>
-  *
-  * <ul>
-  * <li><code>should have size 0</code></li>
-  * <li><code>should produce NoSuchElementException when head is invoked</code></li>
-  * </ul>
-  *
-  * <p>
-  * Therefore, the names of these two tests are:
-  * </p>
-  *
-  * <ul>
-  * <li><code>A Stack when empty should have size 0</code></li>
-  * <li><code>A Stack when empty should produce NoSuchElementException when head is invoked</code></li>
-  * </ul>
-  *
-  * <p>
-  * Note that because the component scope and test text strings are trimmed, any leading or trailing space will be dropped
-  * before they are strung together to form the test name, with each trimmed component separated by a space. If the scopes
-  * in the above example had text <code>" A Set "</code> and <code>" when empty "</code>, and the first test had text
-  * <code>" should have size 0 "</code>, its test name would still be the same, "A Set when empty should have size 0"</code>.
-  * </p>
-  */
+   * A <code>Set</code> of test names. If this <code>Suite</code> contains no tests, this method returns an empty <code>Set</code>.
+   *
+   * <p>
+   * <strong><code>Suite</code> has been deprecated as a style trait. During the deprecation period, the following behavior will continue
+   * to work as before, but will go away at the conclusion of the deprecation period:</strong>
+   * This trait's implementation of this method uses Java reflection to discover all public methods whose name starts with <code>"test"</code>,
+   * which take either nothing or a single <code>Informer</code> as parameters. For each discovered test method, it assigns a test name
+   * comprised of just the method name if the method takes no parameters, or the method name plus <code>(Informer)</code> if the
+   * method takes a <code>Informer</code>. Here are a few method signatures and the names that this trait's implementation assigns them:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * def testCat() {}         // test name: "testCat"
+   * def testCat(Informer) {} // test name: "testCat(Informer)"
+   * def testDog() {}         // test name: "testDog"
+   * def testDog(Informer) {} // test name: "testDog(Informer)"
+   * def test() {}            // test name: "test"
+   * def test(Informer) {}    // test name: "test(Informer)"
+   * </pre>
+   *
+   * <p>
+   * This trait's implementation of this method returns an immutable <code>Set</code> of all such names, excluding the name
+   * <code>testNames</code>. The iterator obtained by invoking <code>elements</code> on this
+   * returned <code>Set</code> will produce the test names in their <em>natural order</em>, as determined by <code>String</code>'s
+   * <code>compareTo</code> method.
+   * </p>
+   *
+   * <p>
+   * This trait's implementation of <code>runTests</code> invokes this method
+   * and calls <code>runTest</code> for each test name in the order they appear in the returned <code>Set</code>'s iterator.
+   * Although this trait's implementation of this method returns a <code>Set</code> whose iterator produces <code>String</code>
+   * test names in a well-defined order, the contract of this method does not required a defined order. Subclasses are free to
+   * override this method and return test names in an undefined order, or in a defined order that's different from <code>String</code>'s
+   * natural order.
+   * </p>
+   *
+   * <p>
+   * Subclasses may override this method to produce test names in a custom manner. One potential reason to override <code>testNames</code> is
+   * to run tests in a different order, for example, to ensure that tests that depend on other tests are run after those other tests.
+   * Another potential reason to override is allow tests to be defined in a different manner, such as methods annotated <code>@Test</code> annotations
+   * (as is done in <code>JUnitSuite</code> and <code>TestNGSuite</code>) or test functions registered during construction (as is
+   * done in <code>FunSuite</code> and <code>FunSpec</code>).
+   * </p>
+   *
+   * <p>
+   * In ScalaTest's event model, a test may be surrounded by &ldquo;scopes.&rdquo; Each test and scope is associated with string of text.
+   * A test's name is concatenation of the text of any surrounding scopes followed by the text provided with the test
+   * itself, after each text element has been trimmed and one space inserted between each component. Here's an example:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * package org.scalatest.examples.freespec
+   *
+   * import org.scalatest.FreeSpec
+   *
+   * class SetSpec extends FreeSpec {
+   *
+   *   "A Set" - {
+   *     "when empty" - {
+   *       "should have size 0" in {
+   *         assert(Set.empty.size === 0)
+   *       }
+   *
+   *       "should produce NoSuchElementException when head is invoked" in {
+   *         intercept[NoSuchElementException] {
+   *           Set.empty.head
+   *         }
+   *       }
+   *     }
+   *   }
+   * }
+   * </pre>
+   *
+   * <p>
+   * The above <code>FreeSpec</code> contains two tests, both nested inside the same two scopes. The outermost scope names
+   * the subject, <code>A Set</code>. The nested scope qualifies the subject with <code>when empty</code>. Inside that
+   * scope are the two tests. The text of the tests are:
+   * <p>
+   *
+   * <ul>
+   * <li><code>should have size 0</code></li>
+   * <li><code>should produce NoSuchElementException when head is invoked</code></li>
+   * </ul>
+   *
+   * <p>
+   * Therefore, the names of these two tests are:
+   * </p>
+   *
+   * <ul>
+   * <li><code>A Stack when empty should have size 0</code></li>
+   * <li><code>A Stack when empty should produce NoSuchElementException when head is invoked</code></li>
+   * </ul>
+   *
+   * <p>
+   * Note that because the component scope and test text strings are trimmed, any leading or trailing space will be dropped
+   * before they are strung together to form the test name, with each trimmed component separated by a space. If the scopes
+   * in the above example had text <code>" A Set "</code> and <code>" when empty "</code>, and the first test had text
+   * <code>" should have size 0 "</code>, its test name would still be the same, "A Set when empty should have size 0"</code>.
+   * </p>
+   */
   def testNames: Set[String] = {
 
     def isTestMethod(m: Method) = {
@@ -1131,7 +1131,7 @@ trait Suite extends Assertions with AbstractSuite with Serializable { thisSuite 
    * <p>
    * Implementations of this method are responsible for ensuring a <code>TestStarting</code> event
    * is fired to the <code>Reporter</code> before executing any test, and either <code>TestSucceeded</code>,
-   * <code>TestFailed</code>, or <code>TestPending</code> after executing any nested
+   * <code>TestFailed</code>, <code>TestPending</code> or <code>TestCanceled</code> after executing any nested
    * <code>Suite</code>. (If a test is marked with the <code>org.scalatest.Ignore</code> tag, the
    * <code>runTests</code> method is responsible for ensuring a <code>TestIgnored</code> event is fired and that
    * this <code>runTest</code> method is not invoked for that ignored test.)
