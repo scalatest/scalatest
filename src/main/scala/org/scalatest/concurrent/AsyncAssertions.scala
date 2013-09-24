@@ -396,7 +396,7 @@ trait AsyncAssertions extends PatienceConfiguration {
       else if (dismissedCount == dismissals)
         dismissedCount = 0 // reset the dismissed count to support multiple await calls        
       else if (timedOut)
-        throw new TestFailedException(Resources("awaitTimedOut" /*)*/ , 2)
+        throw new TestFailedException(Resources("awaitTimedOut"), 2)
       else Predef.assert(false, "unreachable condition - maybe time went backwards?!")
     }
 
