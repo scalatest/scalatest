@@ -283,7 +283,7 @@ trait FreeSpecLike extends Suite with Informing with Updating with Alerting with
      * and immediately invoke the passed function.
      */
     def - (fun: => Unit) {
-      registerNestedBranch(string, None, fun, "describeCannotAppearInsideAnIt", sourceFileName, "-", 3, -2, None)
+      registerNestedBranch(string, None, fun, "describeCannotAppearInsideAnIt", sourceFileName, "$minus", 3, -2, None)
     }
 
     /**
