@@ -1584,7 +1584,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * <tr><td class="stTableCell"><code>title</code></td><td class="stTableCell"><code>title()</code></td><td class="stTableCell">&nbsp;</td><td class="stTableCell">Invokes <code>title()</code></td></tr>
    * <tr><td class="stTableCell"><code>title</code></td><td class="stTableCell"><code>title()</code></td><td class="stTableCell"><code>getTitle()</code></td><td class="stTableCell">Invokes <code>title()</code> (this can occur when <code>BeanProperty</code> annotation is used)</td></tr>
    * </table>
-   * 
+   *
    *
    * @author Bill Venners
    */
@@ -2202,7 +2202,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *
    * <pre class="stHighlight">
    * result should equal (null)
-   *        ^
+   *               ^
    * </pre>
    */
   def equal(o: Null): Matcher[AnyRef] = 
@@ -2732,7 +2732,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * This method enables the following syntax: 
    *
    * <pre class="stHighlight">
-   * List(1, 2, 3) should contain (theSameElementsAs(1, 2))
+   * List(1, 2, 3) should contain (theSameElementsAs(List(1, 2, 3)))
    *                               ^
    * </pre>
    */
@@ -2742,7 +2742,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * This method enables the following syntax: 
    *
    * <pre class="stHighlight">
-   * List(1, 2, 3) should contain (theSameElementsInOrderAs(1, 2))
+   * List(1, 2, 3) should contain (theSameElementsInOrderAs(List(1, 2)))
    *                               ^
    * </pre>
    */
@@ -2893,7 +2893,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
   
   import InspectorsHelper._
   
-  def doCollected[T](collected: Collected, xs: scala.collection.GenTraversable[T], methodName: String, stackDepth: Int)(fun: T => Unit) {
+  private[scalatest] def doCollected[T](collected: Collected, xs: scala.collection.GenTraversable[T], methodName: String, stackDepth: Int)(fun: T => Unit) {
     collected match {
       case AllCollected =>
         doForAll(xs, "allShorthandFailed", "Matchers.scala", methodName, stackDepth) { e => 
@@ -3261,13 +3261,21 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
           )
       }
     }
-    
-    // Any for not TODO: Scaladoc
+
     // TODO: Write tests and implement cases for:
     // have(length (9), title ("hi")) (this one we'll use this have method but add a HavePropertyMatcher* arg)
     // have(size (9), title ("hi")) (this one we'll use the next have method but add a HavePropertyMatcher* arg)
     // have(length(9), size (9), title ("hi")) (for this one we'll need a new overloaded have(ROLWA, ROSWA, HPM*))
     // have(size(9), length (9), title ("hi")) (for this one we'll need a new overloaded have(ROSWA, ROLWA, HPM*))
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * all(xs) should not have length (0)
+     *                    ^
+     * </pre>
+     *
+     */
     def have(resultOfLengthWordApplication: ResultOfLengthWordApplication)(implicit len: Length[T]) {
       doCollected(collected, xs, "have", 1) { e => 
         val right = resultOfLengthWordApplication.expectedLength
@@ -3285,7 +3293,15 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       }
     }
 
-    // Any for not TODO: Scaladoc
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
+     * all(xs) should not have size (0)
+     *                    ^
+     * </pre>
+     *
+     */
     def have(resultOfSizeWordApplication: ResultOfSizeWordApplication)(implicit sz: Size[T]) {
       doCollected(collected, xs, "have", 1) { e => 
         val right = resultOfSizeWordApplication.expectedSize
@@ -3583,9 +3599,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    def contain(newOneOf: ResultOfOneOfApplication)(implicit containing: Containing[T]) {
+    def contain(oneOf: ResultOfOneOfApplication)(implicit containing: Containing[T]) {
 
-      val right = newOneOf.right
+      val right = oneOf.right
 
       doCollected(collected, xs, "contain", 1) { e =>
         if (containing.containsOneOf(e, right) != shouldBeTrue)
@@ -3635,9 +3651,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    def contain(newNoneOf: ResultOfNoneOfApplication)(implicit containing: Containing[T]) {
+    def contain(noneOf: ResultOfNoneOfApplication)(implicit containing: Containing[T]) {
 
-      val right = newNoneOf.right
+      val right = noneOf.right
 
       doCollected(collected, xs, "contain", 1) { e =>
         if (containing.containsNoneOf(e, right) != shouldBeTrue)
@@ -3797,9 +3813,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                     ^
      * </pre>
      */
-    def contain(only: ResultOfInOrderApplication)(implicit sequencing: Sequencing[T]) {
+    def contain(inOrder: ResultOfInOrderApplication)(implicit sequencing: Sequencing[T]) {
 
-      val right = only.right
+      val right = inOrder.right
 
       doCollected(collected, xs, "contain", 1) { e =>
         if (sequencing.containsInOrder(e, right) != shouldBeTrue)
@@ -5023,7 +5039,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *
      * <pre class="stHighlight">
      * all(xs) shouldBe a ('empty)
-     *      ^
+     *         ^
      * </pre>
      */
     def shouldBe(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef) {
@@ -5040,7 +5056,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *
      * <pre class="stHighlight">
      * all(xs) shouldBe an ('empty)
-     *      ^
+     *         ^
      * </pre>
      */
     def shouldBe(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef) {
@@ -5135,8 +5151,15 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
           throw newTestFailedException(result.negatedFailureMessage, None, 6)
       }
     }
-    
-    
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * all(xs) shouldNot (equal (3))
+     *         ^
+     * </pre>
+     */
     def shouldNot[TYPECLASS1[_]](rightMatcherFactory1: MatcherFactory1[T, TYPECLASS1])(implicit typeClass1: TYPECLASS1[T]) {
       val rightMatcher = rightMatcherFactory1.matcher
       doCollected(collected, xs, "shouldNot", 1) { e =>
@@ -5211,7 +5234,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *
      * <pre class="stHighlight">
      * all (xs) should contain oneOf (1, 2, 3)
-     *    ^
+     *          ^
      * </pre>
      */
     def should(containWord: ContainWord): ResultOfContainWordForCollectedAny[T] = {
@@ -5223,7 +5246,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *
      * <pre class="stHighlight">
      * all (xs) shouldNot contain (oneOf (1, 2, 3))
-     *    ^
+     *          ^
      * </pre>
      */
     def shouldNot(containWord: ContainWord): ResultOfContainWordForCollectedAny[T] = {
@@ -5512,7 +5535,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def regex(rightRegex: Regex) { checkRegex(rightRegex) }
     
-    def checkRegex(rightRegex: Regex, groups: IndexedSeq[String] = IndexedSeq.empty) {
+    private def checkRegex(rightRegex: Regex, groups: IndexedSeq[String] = IndexedSeq.empty) {
       doCollected(collected, xs, "regex", 2) { e =>
         val result = startWithRegexWithGroups(e, rightRegex, groups)
         if (result.matches != shouldBeTrue)
@@ -5709,45 +5732,157 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     override def toString: String = "ResultOfFullyMatchWordForCollectedString(" + Prettifier.default(collected) + ", " + Prettifier.default(xs) + ", " + Prettifier.default(shouldBeTrue) + ")"
   }
 
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * all(xs) should fullymatch regex ("Hel*o world".r)
+   * ^
+   * </pre>
+   */
   def all[T](xs: scala.collection.GenTraversable[T]): ResultOfCollectedAny[T] = 
     new ResultOfCollectedAny(AllCollected, xs)
-  
+
+  /**
+   * This method enables the following syntax, where <code>xs</code> is a <code>GenTraversable[String]</code>:
+   *
+   * <pre class="stHighlight">
+   * all(xs) should fullymatch regex ("Hel*o world".r)
+   * ^
+   * </pre>
+   */
   def all(xs: scala.collection.GenTraversable[String]): ResultOfCollectedString = 
     new ResultOfCollectedString(AllCollected, xs)
-  
+
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * atLeast(1, xs) should fullymatch regex ("Hel*o world".r)
+   * ^
+   * </pre>
+   */
   def atLeast[T](num: Int, xs: scala.collection.GenTraversable[T]): ResultOfCollectedAny[T] = 
     new ResultOfCollectedAny(AtLeastCollected(num), xs)
-  
+
+  /**
+   * This method enables the following syntax, where <code>xs</code> is a <code>GenTraversable[String]</code>:
+   *
+   * <pre class="stHighlight">
+   * atLeast(1, xs) should fullymatch regex ("Hel*o world".r)
+   * ^
+   * </pre>
+   */
   def atLeast(num: Int, xs: scala.collection.GenTraversable[String]): ResultOfCollectedString = 
     new ResultOfCollectedString(AtLeastCollected(num), xs)
-  
+
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * every(xs) should fullymatch regex ("Hel*o world".r)
+   * ^
+   * </pre>
+   */
   def every[T](xs: scala.collection.GenTraversable[T]): ResultOfCollectedAny[T] = 
     new ResultOfCollectedAny(EveryCollected, xs)
-  
+
+  /**
+   * This method enables the following syntax, where <code>xs</code> is a <code>GenTraversable[String]</code>:
+   *
+   * <pre class="stHighlight">
+   * every(xs) should fullymatch regex ("Hel*o world".r)
+   * ^
+   * </pre>
+   */
   def every(xs: scala.collection.GenTraversable[String]): ResultOfCollectedString = 
     new ResultOfCollectedString(EveryCollected, xs)
-  
+
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * exactly(xs) should fullymatch regex ("Hel*o world".r)
+   * ^
+   * </pre>
+   */
   def exactly[T](num: Int, xs: scala.collection.GenTraversable[T]): ResultOfCollectedAny[T] = 
     new ResultOfCollectedAny(ExactlyCollected(num), xs)
-  
+
+  /**
+   * This method enables the following syntax, where <code>xs</code> is a <code>GenTraversable[String]</code>:
+   *
+   * <pre class="stHighlight">
+   * exactly(xs) should fullymatch regex ("Hel*o world".r)
+   * ^
+   * </pre>
+   */
   def exactly(num: Int, xs: scala.collection.GenTraversable[String]): ResultOfCollectedString = 
     new ResultOfCollectedString(ExactlyCollected(num), xs)
-  
+
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * no(xs) should fullymatch regex ("Hel*o world".r)
+   * ^
+   * </pre>
+   */
   def no[T](xs: scala.collection.GenTraversable[T]): ResultOfCollectedAny[T] =
     new ResultOfCollectedAny(NoCollected, xs)
 
+  /**
+   * This method enables the following syntax, where <code>xs</code> is a <code>GenTraversable[String]</code>:
+   *
+   * <pre class="stHighlight">
+   * no(xs) should fullymatch regex ("Hel*o world".r)
+   * ^
+   * </pre>
+   */
   def no(xs: scala.collection.GenTraversable[String]): ResultOfCollectedString =
     new ResultOfCollectedString(NoCollected, xs)
 
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * between(1, 3, xs) should fullymatch regex ("Hel*o world".r)
+   * ^
+   * </pre>
+   */
   def between[T](from: Int, upTo:Int, xs: scala.collection.GenTraversable[T]): ResultOfCollectedAny[T] =
     new ResultOfCollectedAny(BetweenCollected(from, upTo), xs)
 
+  /**
+   * This method enables the following syntax, where <code>xs</code> is a <code>GenTraversable[String]</code>:
+   *
+   * <pre class="stHighlight">
+   * between(1, 3, xs) should fullymatch regex ("Hel*o world".r)
+   * ^
+   * </pre>
+   */
   def between(from: Int, upTo:Int, xs: scala.collection.GenTraversable[String]): ResultOfCollectedString =
     new ResultOfCollectedString(BetweenCollected(from, upTo), xs)
 
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * atMost(3, xs) should fullymatch regex ("Hel*o world".r)
+   * ^
+   * </pre>
+   */
   def atMost[T](num: Int, xs: scala.collection.GenTraversable[T]): ResultOfCollectedAny[T] =
     new ResultOfCollectedAny(AtMostCollected(num), xs)
 
+  /**
+   * This method enables the following syntax, where <code>xs</code> is a <code>GenTraversable[String]</code>:
+   *
+   * <pre class="stHighlight">
+   * atMost(3, xs) should fullymatch regex ("Hel*o world".r)
+   * ^
+   * </pre>
+   */
   def atMost(num: Int, xs: scala.collection.GenTraversable[String]): ResultOfCollectedString =
     new ResultOfCollectedString(AtMostCollected(num), xs)
 
@@ -6524,7 +6659,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *
      * <pre class="stHighlight">
      * string should fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "cc"))
-     *                                          ^
+     *                                             ^
      * </pre>
      */
     def withGroups(groups: String*) = 
@@ -6629,6 +6764,14 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    */
   implicit def convertToRegexWrapper(o: Regex): RegexWrapper = new RegexWrapper(o)
 
+  /**
+   * This method enables syntax such as the following:
+   *
+   * <pre class="stHighlight">
+   * book should have (message ("A TALE OF TWO CITIES") (of [Book]), title ("A Tale of Two Cities"))
+   *                                                     ^
+   * </pre>
+   */
   def of[T](implicit ev: Manifest[T]): ResultOfOfTypeInvocation[T] = new ResultOfOfTypeInvocation[T]
 }
 
