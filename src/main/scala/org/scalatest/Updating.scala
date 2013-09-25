@@ -26,11 +26,19 @@ package org.scalatest
  * progress of the long-running tests. By contrast, <code>info</code> messages will only be seen by the user after the
  * test has completed, and are more geared towards specification (such as Given/When/Then messages) than notification.
  * </p>
+ *
+ * <p>
+ * The difference between <code>update</code> and the <code>alert</code> method of <a href="Alerting.html"><code>Alerting</code></a> is
+ * that <code>alert</code> is intended to be used
+ * for warnings or notifications of potential problems, whereas <code>update</code> is just for status updates.
+ * In string reporters for which ANSI color is enabled, <code>update</code> notifications are shown in green and <code>alert</code> notifications
+ * in yellow.
+ * </p>
  */
 trait Updating {
 
   /**
-   * Send a status update via an <code>UpdateProvided</code> event to the reporter.
+   * Returns an <code>Updater</code> that can send a status update via an <code>UpdateProvided</code> event to the reporter.
    */
   protected def update: Updater
 }

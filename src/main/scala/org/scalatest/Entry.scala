@@ -57,7 +57,7 @@ case class Entry[K, V](key: K, value: V) extends java.util.Map.Entry[K, V] {
   /**
    * Throws <code>UnsupportedOperationException</code>.
    *
-   * @throw UnsupportedOperationException unconditionally
+   * @throws UnsupportedOperationException unconditionally
    */
   def setValue(v: V): V = throw new UnsupportedOperationException
 

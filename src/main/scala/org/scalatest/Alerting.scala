@@ -25,7 +25,11 @@ package org.scalatest
  * <code>alert</code> allows you to send "alert notifications" to the reporter right away, so users can be made aware
  * of potential problems being experienced by long-running tests. By contrast, <code>info</code> messages will only be seen by the user after the
  * test has completed, and are more geared towards specification (such as Given/When/Then messages) than notification.
- * The difference between <code>alert</code> and <code>update</code> is that <code>alert</code> is intended to be used
+ * </p>
+ *
+ * <p>
+ * The difference between <code>alert</code> and the <code>update</code> method of <a href="Updating.html"><code>Updating</code></a> is
+ * that <code>alert</code> is intended to be used
  * for warnings or notifications of potential problems, whereas <code>update</code> is just for status updates.
  * In string reporters for which ANSI color is enabled, <code>update</code> notifications are shown in green and <code>alert</code> notifications
  * in yellow.
@@ -34,7 +38,7 @@ package org.scalatest
 trait Alerting {
 
   /**
-   * Send a status update via an <code>AlertProvided</code> event to the reporter.
+   * Returns an <code>Alerter</code> that can send an alert message via an <code>AlertProvided</code> event to the reporter.
    */
   protected def alert: Alerter
 }
