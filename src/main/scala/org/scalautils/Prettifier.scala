@@ -84,9 +84,9 @@ import scala.collection.mutable.WrappedArray
  * <p>
  * Note: <code>Prettifier</code> is not parameterized (<em>i.e.</em>, <code>Prettifier[T]</code>, where <code>T</code> is the type
  * to prettify) because assertions (including matcher expressions) in ScalaTest would then need to look up <code>Prettifier</code>s implicitly by type. This would slow
- * compilation even though probably 99.9% of the time in practice assertions do not fail, and thus 99.9% of the time no error messages need to be generated.
- * Given no error messages are needed 99.9% of the time, no prettification is needed 99.9% of the time, so the slow down in compile time for the implicit
- * look ups is not deemed worth the benefit. Only a few types in practice usually need prettification for testing error message purposes, and those will be covered
+ * compilation even though most (let's guess 99.9%) of the time in practice assertions do not fail, and thus 99.9% of the time no error messages need to be generated.
+ * If no error messages are needed 99.9% of the time, no prettification is needed 99.9% of the time, so the slow down in compile time for the implicit
+ * look ups is unlikely to be worth the benefit. Only a few types in practice usually need prettification for testing error message purposes, and those will be covered
  * by the default <code>Prettifier</code>. A future version of ScalaTest will provide a simple mechanism to replace the default <code>Prettifier</code> with a
  * custom one when a test actually fails.
  * </p>

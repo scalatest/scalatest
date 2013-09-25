@@ -88,6 +88,25 @@ package org.scalautils
 /**
  * Provides <code>Equality</code> and <code>Equivalence</code> instances for <code>Numeric</code> types that 
  * compare for equality with a given tolerance.
+ *
+ * <p>Here's an example:</p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; import org.scalautils._
+ * import org.scalautils._
+ *
+ * scala&gt; import TripleEquals._
+ * import TripleEquals._
+ *
+ * scala&gt; 2.001 === 2.0
+ * res0: Boolean = false
+ *
+ * scala&gt; implicit val doubleEquality = TolerantNumerics.tolerantDoubleEquality(0.01)
+ * doubleEquality: org.scalautils.Equality[Double] = org.scalautils.TolerantNumerics$$anon$1@16c2bd13
+ *
+ * scala&gt; 2.001 === 2.0
+ * res1: Boolean = true
+ * </pre>
  */
 trait TolerantNumerics {
 

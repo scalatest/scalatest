@@ -17,7 +17,7 @@ package org.scalautils
 
 /**
  * Provides an implicit conversion that enables <code>pretty</code> to be invoked on any
- * object, to trasform that object into a <code>String</code> representation.
+ * object, to transform that object into a <code>String</code> representation.
  */
 trait PrettyMethods {
 
@@ -29,6 +29,8 @@ trait PrettyMethods {
    * of <code>Prettifer</code>. Because <code>Prettifier</code> is a <code>Any =&gt; String</code>, 
    * making it implicit could result in unintentional applications.
    * </p>
+   *
+   * @param prettifier the configured <code>Prettifier</code>
    */
   case class PrettifierConfig(prettifier: Prettifier)
 
@@ -46,12 +48,20 @@ trait PrettyMethods {
    * Implicit class that adds a <code>pretty</code> method to any object.
    *
    * <p>
-   * The constructor of this class, besides taking an object on which <code>pretty</code> is to be &ldquo;invoked,&rdquo;
+   * The constructor of this class, besides taking an object <code>o</code> to prettify,
    * also takes an implicit <code>PrettifierConfig</code> that the <code>pretty</code> method will use to prettify the
    * object.
    * </p>
+   *
+   * @param o the object to prettify
+   * @param prettifierConfig an implicit <code>PrettifierConfig</code> whose <code>Prettifier</code> will be used
+   *     to prettify the passed object <code>o</code>
    */
   implicit class Prettyizer(o: Any)(implicit prettifierConfig: PrettifierConfig) {
+
+    /**
+     * Returns a pretty <code>String</code> representation of the object <code>o</code>
+     */
     def pretty: String = prettifierConfig.prettifier(o)
   }
 }
