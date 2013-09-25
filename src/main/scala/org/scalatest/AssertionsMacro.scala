@@ -33,7 +33,7 @@ private[scalatest] class AssertionsMacro[C <: Context](val context: C) {
    *   val $org_scalatest_assert_macro_left = something.aMethod
    *   val $org_scalatest_assert_macro_right = 3
    *   val $org_scalatest_assert_macro_result = $org_scalatest_assert_macro_left ==  $org_scalatest_assert_macro_result
-   *   $org_scalatest_AssertionsHelper.macroAssertTrue($org_scalatest_assert_macro_left, "==", $org_scalatest_assert_macro_right, $org_scalatest_assert_macro_result, None)
+   *   assertionsHelper.macroAssertTrue($org_scalatest_assert_macro_left, "==", $org_scalatest_assert_macro_right, $org_scalatest_assert_macro_result, None)
    * }
    *
    */
@@ -45,19 +45,19 @@ private[scalatest] class AssertionsMacro[C <: Context](val context: C) {
    *
    * to:
    *
-   * $org_scalatest_AssertionsHelper.macroAssertTrue(validate(1, 2, 3), None)
+   * assertionsHelper.macroAssertTrue(validate(1, 2, 3), None)
    *
    */
 
   import context.universe._
 
   // Generate AST for:
-  // $org_scalatest_AssertionsHelper.macroAssertTrue(expression, None)
+  // assertionsHelper.macroAssertTrue(expression, None)
   def simpleAssertMacro(exprTree: Tree): Expr[Unit] =
     context.Expr(
       Apply(
         Select(
-          Ident("$org_scalatest_AssertionsHelper"),
+          Ident("assertionsHelper"),
           newTermName("macroAssertTrue")
         ),
         List(exprTree, Ident("None"))
@@ -65,11 +65,11 @@ private[scalatest] class AssertionsMacro[C <: Context](val context: C) {
     )
 
   // Generate AST for:
-  // $org_scalatest_AssertionsHelper.macroAssertTrue($org_scalatest_assert_macro_left, operator, $org_scalatest_assert_macro_right, $org_scalatest_assert_macro_result, None)
+  // assertionsHelper.macroAssertTrue($org_scalatest_assert_macro_left, operator, $org_scalatest_assert_macro_right, $org_scalatest_assert_macro_result, None)
   def assertMacro(operator: String): Apply =
     Apply(
       Select(
-        Ident("$org_scalatest_AssertionsHelper"),
+        Ident("assertionsHelper"),
         newTermName("macroAssertTrue")
       ),
       List(Ident(newTermName("$org_scalatest_assert_macro_left")), context.literal(operator).tree, Ident(newTermName("$org_scalatest_assert_macro_right")), Ident(newTermName("$org_scalatest_assert_macro_result")), Ident("None"))
@@ -87,12 +87,12 @@ private[scalatest] class AssertionsMacro[C <: Context](val context: C) {
     )
 
   // Generate AST for:
-  // $org_scalatest_AssertionsHelper.macroAssertTrue(expression, Some(clue))
+  // assertionsHelper.macroAssertTrue(expression, Some(clue))
   def simpleAssertMacroWithClue(exprTree: Tree, clueTree: Tree): Expr[Unit] =
     context.Expr(
       Apply(
         Select(
-          Ident("$org_scalatest_AssertionsHelper"),
+          Ident("assertionsHelper"),
           newTermName("macroAssertTrue")
         ),
         List(exprTree, genClue(clueTree))
@@ -100,11 +100,11 @@ private[scalatest] class AssertionsMacro[C <: Context](val context: C) {
     )
 
   // Generate AST for:
-  // $org_scalatest_AssertionsHelper.macroAssertTrue($org_scalatest_assert_macro_left, operator, $org_scalatest_assert_macro_right, $org_scalatest_assert_macro_result, Some(clue))
+  // assertionsHelper.macroAssertTrue($org_scalatest_assert_macro_left, operator, $org_scalatest_assert_macro_right, $org_scalatest_assert_macro_result, Some(clue))
   def assertMacroWithClue(operator: String, clueTree: Tree): Apply =
     Apply(
       Select(
-        Ident("$org_scalatest_AssertionsHelper"),
+        Ident("assertionsHelper"),
         newTermName("macroAssertTrue")
       ),
       List(Ident(newTermName("$org_scalatest_assert_macro_left")), context.literal(operator).tree, Ident(newTermName("$org_scalatest_assert_macro_right")), Ident(newTermName("$org_scalatest_assert_macro_result")), genClue(clueTree))
