@@ -59,6 +59,7 @@ import org.scalatest.exceptions.{PayloadField, ModifiablePayload, StackDepth, Mo
  * @param message an optional detail message for this <code>TestFailedException</code>.
  * @param cause an optional cause, the <code>Throwable</code> that caused this <code>TestFailedException</code> to be thrown.
  * @param failedCodeStackDepth the depth in the stack trace of this exception at which the line of test code that failed resides.
+ * @param payload an optional payload, which ScalaTest will include in a resulting <code>JUnitTestFailedError</code> event
  *
  * @throws NullPointerException if either <code>message</code> or <code>cause</code> is <code>null</code>, or <code>Some(null)</code>.
  *
@@ -194,7 +195,7 @@ class JUnitTestFailedError(val message: Option[String], val cause: Option[Throwa
    * the current detail message to the passed function, <code>fun</code>.
    *
    * @param fun A function that, given the current optional detail message, will produce
-   * the modified optional detail message for the result instance of <code>TestFailedException</code>.
+   * the modified optional detail message for the result instance of <code>JUnitTestFailedError</code>.
    */
   def modifyMessage(fun: Option[String] => Option[String]): JUnitTestFailedError = {
     val mod = new JUnitTestFailedError(fun(message), cause, failedCodeStackDepth, payload)
@@ -208,7 +209,7 @@ class JUnitTestFailedError(val message: Option[String], val cause: Option[Throwa
    * the current payload option to the passed function, <code>fun</code>.
    *
    * @param fun A function that, given the current optional payload, will produce
-   * the modified optional payload for the result instance of <code>TestFailedException</code>.
+   * the modified optional payload for the result instance of <code>JUnitTestFailedError</code>.
    */
   def modifyPayload(fun: Option[Any] => Option[Any]): JUnitTestFailedError = {
     val currentPayload = payload
