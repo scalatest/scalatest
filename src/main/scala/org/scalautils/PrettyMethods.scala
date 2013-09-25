@@ -15,29 +15,50 @@
  */
 package org.scalautils
 
-import scala.collection.mutable.WrappedArray
-
+/**
+ * Provides an implicit conversion that enables <code>pretty</code> to be invoked on any
+ * object, to trasform that object into a <code>String</code> representation.
+ */
 trait PrettyMethods {
 
-  case class PrettyConfig(prettifier: Prettifier)
+  /**
+   * Wraps a <code>Prettifier</code>.
+   *
+   * <p>
+   * This class exists so that instances of <code>PrettifierConfig</code> can be made implicit instead
+   * of <code>Prettifer</code>. Because <code>Prettifier</code> is a <code>Any =&gt; String</code>, 
+   * making it implicit could result in unintentional applications.
+   * </p>
+   */
+  case class PrettifierConfig(prettifier: Prettifier)
 
-  // Don't make an implicit from Any => String, so wrapping the
-  // implicit Prettifier in a PrettyConfig.
-  implicit val defaultPrettifier = PrettyConfig(Prettifier.default)
+  /**
+   * An implicit <code>PrettifierConfig</code> that contains a <code>Prettifier.default</code>.
+   *
+   * <p>
+   * Subclasses can override this method with a different implicit method to have <code>pretty</code>
+   * use a different <code>Prettifier</code>.
+   * </p>
+   */
+  implicit val prettifierConfig = PrettifierConfig(Prettifier.default)
 
-  implicit class Prettyizer(o: Any)(implicit prettyConfig: PrettyConfig) {
-    def pretty: String = prettyConfig.prettifier(o)
+  /**
+   * Implicit class that adds a <code>pretty</code> method to any object.
+   *
+   * <p>
+   * The constructor of this class, besides taking an object on which <code>pretty</code> is to be &ldquo;invoked,&rdquo;
+   * also takes an implicit <code>PrettifierConfig</code> that the <code>pretty</code> method will use to prettify the
+   * object.
+   * </p>
+   */
+  implicit class Prettyizer(o: Any)(implicit prettifierConfig: PrettifierConfig) {
+    def pretty: String = prettifierConfig.prettifier(o)
   }
 }
 
+/**
+ * Companion object for trait <code>PrettyMethods</code> enabling its members to be imported as an
+ * alternative to mixing them in.
+ */
 object PrettyMethods extends PrettyMethods
 
-/*
-isDefinedFor
-
-Want t
-
-AsIs
-
-Definitely want to be able to compose prettifiers.
-*/

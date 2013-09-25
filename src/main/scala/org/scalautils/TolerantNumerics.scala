@@ -85,8 +85,19 @@ package org.scalautils
  *
  * @tparam A the type whose equality is being customized
  */
+/**
+ * Provides <code>Equality</code> and <code>Equivalence</code> instances for <code>Numeric</code> types that 
+ * compare for equality with a given tolerance.
+ */
 trait TolerantNumerics {
 
+  /**
+   * Provides an <code>Equality</code> instance for <code>Double</code>s that 
+   * compares for equality with the passed tolerance.
+   *
+   * @param tolerance the tolerance with which the returned <code>Equality</code> will compare <code>Double</code>s.
+   * @return an <code>Equality</code> that compares <code>Double</code>s using the passed tolerance.
+   */
   def tolerantDoubleEquality(tolerance: Double): Equality[Double] = {
     if (tolerance <= 0.0)
       throw new IllegalArgumentException(tolerance.toString + " passed to tolerantDoubleEquality was zero or negative. Must be a positive non-zero number.")
@@ -99,6 +110,14 @@ trait TolerantNumerics {
       }
     } 
   } 
+
+  /**
+   * Provides an <code>Equality</code> instance for <code>Float</code>s that 
+   * compares for equality with the passed tolerance.
+   *
+   * @param tolerance the tolerance with which the returned <code>Equality</code> will compare <code>Float</code>s.
+   * @return an <code>Equality</code> that compares <code>Float</code>s using the passed tolerance.
+   */
   def tolerantFloatEquality(tolerance: Float): Equality[Float] = {
     if (tolerance <= 0.0f)
       throw new IllegalArgumentException(tolerance.toString + " passed to tolerantFloatEquality was zero or negative. Must be a positive non-zero number.")
@@ -111,6 +130,14 @@ trait TolerantNumerics {
       }
     } 
   } 
+
+  /**
+   * Provides an <code>Equality</code> instance for <code>Long</code>s that 
+   * compares for equality with the passed tolerance.
+   *
+   * @param tolerance the tolerance with which the returned <code>Equality</code> will compare <code>Long</code>s.
+   * @return an <code>Equality</code> that compares <code>Long</code>s using the passed tolerance.
+   */
   def tolerantLongEquality(tolerance: Long): Equality[Long] = {
     if (tolerance <= 0L)
       throw new IllegalArgumentException(tolerance.toString + " passed to tolerantLongEquality was zero or negative. Must be a positive non-zero number.")
@@ -123,6 +150,14 @@ trait TolerantNumerics {
       }
     } 
   } 
+
+  /**
+   * Provides an <code>Equality</code> instance for <code>Int</code>s that 
+   * compares for equality with the passed tolerance.
+   *
+   * @param tolerance the tolerance with which the returned <code>Equality</code> will compare <code>Int</code>s.
+   * @return an <code>Equality</code> that compares <code>Int</code>s using the passed tolerance.
+   */
   def tolerantIntEquality(tolerance: Int): Equality[Int] = {
     if (tolerance <= 0)
       throw new IllegalArgumentException(tolerance.toString + " passed to tolerantIntEquality was zero or negative. Must be a positive non-zero number.")
@@ -135,6 +170,14 @@ trait TolerantNumerics {
       }
     } 
   } 
+
+  /**
+   * Provides an <code>Equality</code> instance for <code>Short</code>s that 
+   * compares for equality with the passed tolerance.
+   *
+   * @param tolerance the tolerance with which the returned <code>Equality</code> will compare <code>Short</code>s.
+   * @return an <code>Equality</code> that compares <code>Short</code>s using the passed tolerance.
+   */
   def tolerantShortEquality(tolerance: Short): Equality[Short] = {
     if (tolerance <= 0)
       throw new IllegalArgumentException(tolerance.toString + " passed to tolerantShortEquality was zero or negative. Must be a positive non-zero number.")
@@ -147,6 +190,14 @@ trait TolerantNumerics {
       }
     } 
   } 
+
+  /**
+   * Provides an <code>Equality</code> instance for <code>Byte</code>s that 
+   * compares for equality with the passed tolerance.
+   *
+   * @param tolerance the tolerance with which the returned <code>Equality</code> will compare <code>Byte</code>s.
+   * @return an <code>Equality</code> that compares <code>Byte</code>s using the passed tolerance.
+   */
   def tolerantByteEquality(tolerance: Byte): Equality[Byte] = {
     if (tolerance <= 0)
       throw new IllegalArgumentException(tolerance.toString + " passed to tolerantByteEquality was zero or negative. Must be a positive non-zero number.")
@@ -159,6 +210,14 @@ trait TolerantNumerics {
       }
     } 
   } 
+
+  /**
+   * Provides an <code>Equivalence[N]</code> instance for any type for which a <code>Numeric[N]</code> is available that 
+   * compares <code>N</code>s for equality with the passed tolerance.
+   *
+   * @param tolerance the tolerance with which the returned <code>Equality</code> will compare <code>Numeric</code>s.
+   * @return an <code>Equivalence</code> that compares <code>Numeric</code>s using the passed tolerance.
+   */
   def tolerantEquivalence[N : Numeric](tolerance: N): Equivalence[N] = {
     val numeric = implicitly[Numeric[N]]
     if (numeric.lt(tolerance, numeric.zero))

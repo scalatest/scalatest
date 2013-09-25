@@ -719,4 +719,9 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
       assert(caught21.getMessage === "-2 passed to tolerantByteEquality was zero or negative. Must be a positive non-zero number.")
     }
   }
+
+  object `TolerantNumeric's methods` {
+    def `should return Equalitys with a pretty toString` { pending
+    }
+  }
 }
