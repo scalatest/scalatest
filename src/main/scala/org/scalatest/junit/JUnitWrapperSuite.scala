@@ -39,6 +39,9 @@ import java.lang.reflect
  * Instances of this trait are not thread safe.
  * </p>
  *
+ * @param junitClassName Fully qualified name of the JUnit suite
+ * @param loader Class loader to load the JUnit suite
+ *
  * @author Bill Venners
  * @author Daniel Watson
  * @author Joel Neely
@@ -51,6 +54,15 @@ class JUnitWrapperSuite(junitClassName: String, loader: ClassLoader) extends Sui
   private var theTracker = new Tracker
   private val junitClass = Class.forName(junitClassName, false, loader)
 
+  /**
+   * Overrides to use JUnit to run the tests.
+   *
+   * @param testName an optional name of one test to run. If <code>None</code>, all relevant tests should be run.
+   *                 I.e., <code>None</code> acts like a wildcard that means run all relevant tests in this <code>Suite</code>.
+   * @param args the <code>Args</code> for this run
+   * @return a <code>Status</code> object that indicates when all tests and nested suites started by this method have completed, and whether or not a failure occurred.
+   *
+   */
   override def run(testName: Option[String], args: Args): Status = {
 
     import args._
@@ -68,19 +80,27 @@ class JUnitWrapperSuite(junitClassName: String, loader: ClassLoader) extends Sui
     status
   }
 
+  /**
+   * Overrides to use JUnit's API to retrieve the expected text count.
+   *
+   * @param filter a <code>Filter</code> with which to filter tests to count based on their tags
+   * @return number of expected test count
+   */
   override def expectedTestCount(filter: Filter): Int = {
     getRequest.getRunner.getDescription.testCount
   }
 
-  //
-  // Retrieves a JUnit4 Request object for the junit test
-  // class.
-  //
-  // The JUnit Request.classes() method has different
-  // signatures in different versions of JUnit4, so reflection
-  // is used here to identify and use whichever version is
-  // available in the junit jar on the user's classpath.
-  //
+  /**
+   * Retrieves a JUnit4 Request object for the junit test
+   * class.
+   *
+   * The JUnit Request.classes() method has different
+   * signatures in different versions of JUnit4, so reflection
+   * is used here to identify and use whichever version is
+   * available in the junit jar on the user's classpath.
+   *
+   * @return JUnit4 Request object for the junit test class
+   */
   def getRequest(): Request = {
     var classArgs = new Array[Class[_]](1)
     classArgs(0) = junitClass

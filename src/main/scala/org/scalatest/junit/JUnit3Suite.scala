@@ -290,6 +290,15 @@ class JUnit3Suite extends TestCase with Suite with AssertionsForJUnit { thisSuit
         throw new UnsupportedOperationException
   }
 
+  /**
+   * Overrides to use JUnit 3 to run the test(s).
+   *
+   * @param testName an optional name of one test to run. If <code>None</code>, all relevant tests should be run.
+   *                 I.e., <code>None</code> acts like a wildcard that means run all relevant tests in this <code>Suite</code>.
+   * @param args the <code>Args</code> for this run
+   * @return a <code>Status</code> object that indicates when all tests and nested suites started by this method have completed, and whether or not a failure occurred.
+   *
+   */
   override def run(testName: Option[String], args: Args): Status = {
 
     import args._
@@ -316,6 +325,8 @@ class JUnit3Suite extends TestCase with Suite with AssertionsForJUnit { thisSuit
   
   /**
    * Suite style name.
+   *
+   * @return <code>JUnit3Suite</code>
    */
   final override val styleName: String = "JUnit3Suite"
     

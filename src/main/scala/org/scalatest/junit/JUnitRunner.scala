@@ -49,6 +49,8 @@ import org.junit.runner.Description
  * to be run by JUnit 4.
  * </p>
  *
+ * @param suiteClass suite class to be run
+ *
  * @author Bill Venners
  * @author Daniel Watson
  * @author Jon-Anders Teigen

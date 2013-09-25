@@ -179,12 +179,17 @@ trait JUnitSuiteLike extends Suite with AssertionsForJUnit { thisSuite =>
    * returns the size of the set returned by <code>testNames</code> on the current instance,
    * less the number of tests that were annotated with <code>org.junit.Ignore</code>.
    * </p>
+   *
+   * @param filter a <code>Filter</code> for test filtering
+   * @return number of expected test count
    */
   override def expectedTestCount(filter: Filter) =
     if (filter.tagsToInclude.isDefined) 0 else (testNames.size - tags.size)
 
-  // Returns just tests that have org.junit.Ignore on them, but calls it org.scalatest.Ignore!
-  // Also autotag suite level annotation.
+  /**
+   * Overrides to return just tests that have org.junit.Ignore on them, but calls it org.scalatest.Ignore.
+   * It also auto-tags suite level annotation.
+   */
   override def tags: Map[String, Set[String]] = {
 
     val elements =
@@ -198,7 +203,14 @@ trait JUnitSuiteLike extends Suite with AssertionsForJUnit { thisSuite =>
       getClass.getMethod(testName, new Array[Class[_]](0): _*)
 
   private def hasIgnoreTag(testName: String) = getMethodForJUnitTestName(testName).getAnnotation(classOf[org.junit.Ignore]) != null
-  
+
+  /**
+   * Overrides to retrieve suite and test tags from annotations.
+   *
+   * @param testName the name of the test for which to return a <code>TestData</code> instance
+   * @param theConfigMap the config map to include in the returned <code>TestData</code>
+   * @return a <code>TestData</code> instance for the specified test, which includes the specified config map
+   */
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = {
     val suiteTags = for { 
       a <- this.getClass.getDeclaredAnnotations
@@ -224,6 +236,15 @@ trait JUnitSuiteLike extends Suite with AssertionsForJUnit { thisSuite =>
     }
   }
 
+  /**
+   * Overrides to use JUnit 4 to run the test(s).
+   *
+   * @param testName an optional name of one test to run. If <code>None</code>, all relevant tests should be run.
+   *                 I.e., <code>None</code> acts like a wildcard that means run all relevant tests in this <code>Suite</code>.
+   * @param args the <code>Args</code> for this run
+   * @return a <code>Status</code> object that indicates when all tests and nested suites started by this method have completed, and whether or not a failure occurred.
+   *
+   */
   override def run(testName: Option[String], args: Args): Status = {
 
     import args._
@@ -250,6 +271,8 @@ trait JUnitSuiteLike extends Suite with AssertionsForJUnit { thisSuite =>
   
   /**
    * Suite style name.
+   *
+   * @return <code>JUnitSuite</code>
    */
   final override val styleName: String = "JUnitSuite"
 
