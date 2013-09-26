@@ -4359,7 +4359,6 @@ object WebBrowser extends WebBrowser
  */
 trait Driver { this: WebBrowser =>
 
-  // TODO: Does this work? What about implicits? Better double check it.
   /**
    * A <code>WebDriver</code>.
    *
@@ -4368,7 +4367,7 @@ trait Driver { this: WebBrowser =>
    * and <code>InternetExplorer</code>.
    * </p>
    */
-  val webDriver: WebDriver
+  implicit val webDriver: WebDriver
 }
 
 /**
