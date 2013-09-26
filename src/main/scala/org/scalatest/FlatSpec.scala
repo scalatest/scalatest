@@ -755,7 +755,7 @@ import Suite.autoTagClassAnnotations
  * You can, therefore, override <code>withFixture</code> to perform setup before and/or cleanup after invoking the test function. If
  * you have cleanup to perform, you should invoke the test function inside a <code>try</code> block and perform the cleanup in
  * a <code>finally</code> clause, in case an exception propagates back through withFixture. (If a test fails because of an exception,
- * the test function invoked by withFixture will result in a [[org.scalatest.Failed Failed]] wrapping the exception. Nevertheless,
+ * the test function invoked by withFixture will result in a [[org.scalatest.Failed <code>Failed</code>]] wrapping the exception. Nevertheless,
  * best practice is to perform cleanup in a finally clause just in case an exception occurs.)
  * </p>
  *
@@ -828,7 +828,7 @@ import Suite.autoTagClassAnnotations
  *
  * <p>
  * Note that the <a href="Suite$NoArgTest.html"><code>NoArgTest</code></a> passed to <code>withFixture</code>, in addition to
- * an <code>apply</code> method that executes the test, also includes the test name and the <a href="ConfigMap.html">config
+ * an <code>apply</code> method that executes the test, also includes [[org.scalatest.TestData <code>TestData</code>]] such as the test name and the <a href="ConfigMap.html">config
  * map</a> passed to <code>runTest</code>. Thus you can also use the test name and configuration objects in your <code>withFixture</code>
  * implementation.
  * </p>
