@@ -218,12 +218,12 @@ import org.scalatest.Resources
  * 
  * <p>
  * ScalaTest's Selenium DSL provides a clear, simple syntax for accessing and updating the values of input elements such as
- * text fields, radio buttons, checkboxes, selection lists and new HTML5 input types. If a requested element is not found, or if it is found but is
+ * text fields, radio buttons, checkboxes, selection lists, and the input types introduced in HTML5. If a requested element is not found, or if it is found but is
  * not of the requested type, an exception will immediately result causing the test to fail.
  * <p>
  *
  * <p>
- * The most common way to access field value is through <code>value</code> property, which is supported by the following
+ * The most common way to access field value is through the <code>value</code> property, which is supported by the following
  * input types:
  * </p>
  *
