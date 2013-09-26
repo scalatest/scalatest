@@ -2012,10 +2012,7 @@ class WebBrowserSpec extends JettySpec with ShouldMatchers with SpanSugar with W
         ).flatten
         Table("web browser", availableDrivers: _*)
       }
-      forAll (examples) { d =>
-        d shouldBe a [Driver]
-        d.close()
-      }
+      forAll (examples) { d => d shouldBe a [Driver] }
     }
   }
   
