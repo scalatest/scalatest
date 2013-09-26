@@ -218,14 +218,207 @@ import org.scalatest.Resources
  * 
  * <p>
  * ScalaTest's Selenium DSL provides a clear, simple syntax for accessing and updating the values of input elements such as
- * text fields, radio buttons, checkboxes, and selection lists. If a requested element is not found, or if it is found but is
+ * text fields, radio buttons, checkboxes, selection lists and new HTML5 input types. If a requested element is not found, or if it is found but is
  * not of the requested type, an exception will immediately result causing the test to fail.
  * <p>
  *
- * <h3>Text fields, text areas, and password fields</h3>
- * 
  * <p>
- * You can change a text field's value by assigning it via the <code>=</code> operator, like this:
+ * The most common way to access field value is through <code>value</code> property, which is supported by the following
+ * input types:
+ * </p>
+ *
+ * <table style="border-collapse: collapse; border: 1px solid black">
+ * <tr>
+ *   <th style="background-color: #CCCCCC; border-width: 1px; padding: 3px; text-align: center; border: 1px solid black">
+ *     <strong>Tag Name</strong>
+ *   </th>
+ *   <th style="background-color: #CCCCCC; border-width: 1px; padding: 3px; text-align: center; border: 1px solid black">
+ *     <strong>Input Type</strong>
+ *   </th>
+ *   <th style="background-color: #CCCCCC; border-width: 1px; padding: 3px; text-align: center; border: 1px solid black">
+ *     <strong>Lookup Method</strong>
+ *   </th>
+ * </tr>
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>input</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>text</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>textField</code>
+ *   </td>
+ * </tr>
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>textarea</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>-</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>textArea</code>
+ *   </td>
+ * </tr>
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>input</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>password</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>pwdField</code>
+ *   </td>
+ * </tr>
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>input</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>email</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>emailField</code>
+ *   </td>
+ * </tr>
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>input</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>color</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>colorField</code>
+ *   </td>
+ * </tr>
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>input</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>date</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>dateField</code>
+ *   </td>
+ * </tr>
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>input</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>datetime</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>dateTimeField</code>
+ *   </td>
+ * </tr>
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>input</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>datetime-local</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>dateTimeLocalField</code>
+ *   </td>
+ * </tr>
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>input</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>month</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>monthField</code>
+ *   </td>
+ * </tr>
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>input</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>number</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>numberField</code>
+ *   </td>
+ * </tr>
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>input</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>range</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>rangeField</code>
+ *   </td>
+ * </tr>
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>input</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>search</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>searchField</code>
+ *   </td>
+ * </tr>
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>input</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>tel</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>telField</code>
+ *   </td>
+ * </tr>
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>input</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>time</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>timeField</code>
+ *   </td>
+ * </tr>
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>input</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>url</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>urlField</code>
+ *   </td>
+ * </tr>
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>input</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>week</code>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+ *     <code>weekField</code>
+ *   </td>
+ * </tr>
+ * </table>
+ *
+ * <p>
+ * You can change a input field's value by assigning it via the <code>=</code> operator, like this:
  * </p>
  * 
  * <pre class="stHighlight">
@@ -233,7 +426,7 @@ import org.scalatest.Resources
  * </pre>
  * 
  * <p>
- * And you can access a text field's value by simply invoking <code>value</code> on it:
+ * And you can access a input field's value by simply invoking <code>value</code> on it:
  * </p>
  * 
  * <pre class="stHighlight">
@@ -245,7 +438,8 @@ import org.scalatest.Resources
  * </p>
  * 
  * <p>
- * You can use the same syntax with text areas and password fields by replacing <code>textField</code> with <code>textArea</code> or <code>pwdField</code>, as in:
+ * You can use the same syntax with other type of input fields by replacing <code>textField</code> with <code>Lookup Method</code> listed in table above,
+ * for example to use text area:
  * </p>
  * 
  * <pre class="stHighlight">
@@ -261,19 +455,34 @@ import org.scalatest.Resources
  * pwdField("secret").value = "Don't tell anybody!"
  * pwdField("secret").value should be ("Don't tell anybody!")
  * </pre>
+ *
+ * <h3>Alternate Way for Data Entry</h3>
  * 
  * <p>
- * An alternate way to enter data into a text field, text area, or password field is to use <code>enter</code> or <code>pressKeys</code>.
- * Although both of these send characters to the active element, <code>pressKeys</code> can be used on any kind of
- * element, whereas <code>enter</code> can only be used on text fields, text areas, and password fields. Another difference is that <code>enter</code>
- * will clear the text field or area before sending the characters, effectively replacing any currently existing text with the
- * new text passed to <code>enter</code>. By contrast, <code>pressKeys</code> does not do any clearing&#8212;it just appends
- * more characters to any existing text. You can backup with <code>pressKeys</code>, however, by sending explicit backspace
- * characters, <code>"&#92;u0008"</code>.
+ * An alternate way to enter data into a input fields is to use <code>enter</code> or <code>pressKeys</code>.
+ * Although both of <code>enter</code> and <code>pressKeys</code> send characters to the active element, <code>pressKeys</code> can be used on any kind of
+ * element, whereas <code>enter</code> can only be used on text entry fields, which include:
+ * </p>
+ *
+ * <ul>
+ *   <li><code>textField</code></li>
+ *   <li><code>textArea</code></li>
+ *   <li><code>pwdField</code></li>
+ *   <li><code>emailField</code></li>
+ *   <li><code>searchField</code></li>
+ *   <li><code>telField</code></li>
+ *   <li><code>urlField</code></li>
+ * </ul>
+ *
+ * <p>
+ * Another difference is that <code>enter</code> will clear the text field or area before sending the characters,
+ * effectively replacing any currently existing text with the new text passed to <code>enter</code>. By contrast,
+ * <code>pressKeys</code> does not do any clearing&#8212;it just appends more characters to any existing text.
+ * You can backup with <code>pressKeys</code>, however, by sending explicit backspace characters, <code>"&#92;u0008"</code>.
  * </p>
  * 
  * <p>
- * To use these commands, you must first click on the text field or area you are interested in
+ * To use these commands, you must first click on the input field you are interested in
  * to give it the focus. Here's an example:
  * </p>
  *
