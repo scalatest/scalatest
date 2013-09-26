@@ -4333,7 +4333,41 @@ trait WebBrowser {
  */
 object WebBrowser extends WebBrowser
 
+/**
+ * Trait declaring a <code>webDriver</code> field that enables tests to be abstracted across different kinds of <code>WebDriver</code>s.
+ *
+ * <p>
+ * This trait enables you to place tests that you want to run in multiple browsers in a trait with a self type of
+ * <code>WebBrowser with Driver</code>, like this:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * trait MyBrowserTests {
+ *   this =&gt; WebBrowser with Driver
+ *   // Your browser tests
+ * }
+ * </pre>
+ *
+ * Then you can create concrete subclasses for each actual browser you want to run those tests in:
+ *
+ * <pre class="stHighlight">
+ * class MyBrowserTestsWithChrome extends MyBrowserTests with Chrome
+ * class MyBrowserTestsWithSafari extends MyBrowserTests with Safari
+ * class MyBrowserTestsWithInternetExplorer extends MyBrowserTests with InternetExplorer
+ * class MyBrowserTestsWithFirefox extends MyBrowserTests with Firefox
+ * </pre>
+ */
 trait Driver { this: WebBrowser =>
+
+  // TODO: Does this work? What about implicits? Better double check it.
+  /**
+   * A <code>WebDriver</code>.
+   *
+   * <p>
+   * This is overridden and made implicit by subtraits <code>HtmlUnit</code>, <code>FireFox</code>, <code>Safari</code>, <code>Chrome</code>,
+   * and <code>InternetExplorer</code>.
+   * </p>
+   */
   val webDriver: WebDriver
 }
 
