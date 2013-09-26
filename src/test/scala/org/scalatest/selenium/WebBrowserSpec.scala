@@ -2001,8 +2001,18 @@ class WebBrowserSpec extends JettySpec with ShouldMatchers with SpanSugar with W
       import org.scalatest.prop.TableDrivenPropertyChecks._
       import org.scalatest.prop.TableFor1
       // Chrome requires a system property, InternetExplorer only works on Windows
-      val examples: TableFor1[WebBrowser with Driver] = Table("web browser", /*Chrome,*/ Firefox, HtmlUnit, /*InternetExplorer,*/ Safari)
-      forAll (examples) { _ shouldBe a [Driver] }
+      val examples: TableFor1[WebBrowser with Driver] = {
+        val availableDrivers: List[WebBrowser with Driver] =
+        List(
+          try List(Chrome) catch { case e: Throwable => List.empty[WebBrowser with Driver] },
+          try List(Firefox) catch { case e: Throwable => List.empty[WebBrowser with Driver] },
+          List(HtmlUnit),
+          try List(InternetExplorer) catch { case e: Throwable => List.empty[WebBrowser with Driver] },
+          try List(Safari) catch { case e: Throwable => List.empty[WebBrowser with Driver] }
+        ).flatten
+        Table("web browser", availableDrivers: _*)
+      }
+      forAll (examples) { d => d shouldBe a [Driver] }
     }
   }
   

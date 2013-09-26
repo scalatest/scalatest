@@ -108,7 +108,7 @@ object ScalatestBuild extends Build {
      "org.testng" % "testng" % "6.3.1" % "optional", 
      "com.google.inject" % "guice" % "3.0" % "optional", 
      "junit" % "junit" % "4.10" % "optional", 
-     "org.seleniumhq.selenium" % "selenium-java" % "2.31.0" % "optional",  
+     "org.seleniumhq.selenium" % "selenium-java" % "2.35.0" % "optional",
      "org.apache.ant" % "ant" % "1.7.1" % "optional", 
      "net.sourceforge.cobertura" % "cobertura" % "1.9.1" % "test",
      "commons-io" % "commons-io" % "1.3.2" % "test", 
