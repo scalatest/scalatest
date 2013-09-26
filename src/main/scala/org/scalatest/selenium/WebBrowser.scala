@@ -4572,7 +4572,7 @@ trait Driver { this: WebBrowser =>
    * An implicit <code>WebDriver</code>.
    *
    * <p>
-   * This is overridden and made available by subtraits <code>HtmlUnit</code>, <code>FireFox</code>, <code>Safari</code>, <code>Chrome</code>,
+   * This abstract field is implemented by subtraits <code>HtmlUnit</code>, <code>FireFox</code>, <code>Safari</code>, <code>Chrome</code>,
    * and <code>InternetExplorer</code>.
    * </p>
    */
