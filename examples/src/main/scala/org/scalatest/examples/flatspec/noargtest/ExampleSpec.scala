@@ -22,13 +22,13 @@ class ExampleSpec extends FlatSpec {
 
   override def withFixture(test: NoArgTest) = {
 
-    try super.withFixture(test)
-    catch {
-      case e: Exception =>
+    super.withFixture(test) match {
+      case failed: Failed =>
         val currDir = new File(".")
         val fileNames = currDir.list()
         info("Dir snapshot: " + fileNames.mkString(", "))
-        throw e
+        failed
+      case other => other
     }
   }
 
