@@ -15,8 +15,21 @@
  */
 package org.scalatest.time
 
+/**
+ * Trait providing a <code>now</code> method that returns the current time in milliseconds
+ * since January 1, 1970, 00:00:00 GMT.
+ */
 trait Now {
+  /**
+   * Returns the current time in milliseconds since January 1, 1970, 00:00:00 GMT.
+   *
+   * @return the current time in milliseconds since January 1, 1970, 00:00:00 GMT
+   */
   def now(): Long = (new java.util.Date).getTime
 }
 
+/**
+ * Companion object to trait <code>Now</code> that enables its members to be imported as
+ * an alternative to mixing them in.
+ */
 object Now extends Now

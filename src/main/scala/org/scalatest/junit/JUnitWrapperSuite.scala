@@ -81,7 +81,7 @@ class JUnitWrapperSuite(junitClassName: String, loader: ClassLoader) extends Sui
   }
 
   /**
-   * Overrides to use JUnit's API to retrieve the expected text count.
+   * Overrides to use JUnit's API to retrieve the expected test count.
    *
    * @param filter a <code>Filter</code> with which to filter tests to count based on their tags
    * @return number of expected test count
