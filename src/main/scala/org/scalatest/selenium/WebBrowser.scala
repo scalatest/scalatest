@@ -4343,7 +4343,7 @@ object WebBrowser extends WebBrowser
  *
  * <pre class="stHighlight">
  * trait MyBrowserTests {
- *   this =&gt; WebBrowser with Driver
+ *   this: WebBrowser with Driver =&gt;
  *   // Your browser tests
  * }
  * </pre>
@@ -4360,10 +4360,10 @@ object WebBrowser extends WebBrowser
 trait Driver { this: WebBrowser =>
 
   /**
-   * A <code>WebDriver</code>.
+   * An implicit <code>WebDriver</code>.
    *
    * <p>
-   * This is overridden and made implicit by subtraits <code>HtmlUnit</code>, <code>FireFox</code>, <code>Safari</code>, <code>Chrome</code>,
+   * This is overridden and made available by subtraits <code>HtmlUnit</code>, <code>FireFox</code>, <code>Safari</code>, <code>Chrome</code>,
    * and <code>InternetExplorer</code>.
    * </p>
    */
