@@ -83,76 +83,59 @@ import org.scalatest.words.DefinedWord
  * <h2>Creating custom matchers</h2>
  * 
  * <p>
- * <em>Note: We are planning on adding some new matchers to ScalaTest in a future release, and would like your feedback.
- * Please let us know if you have felt the need for a matcher ScalaTest doesn't yet provide, whether or
- * not you wrote a custom matcher for it. Please email your feedback to bill AT artima.com.</em>
- * </p>
- *
- * <p>
  * If none of the built-in matcher syntax satisfies a particular need you have, you can create
  * custom <code>Matcher</code>s that allow
- * you to place your own syntax directly after <code>should</code> or <code>must</code>. For example, class <code>java.io.File</code> has a method <code>exists</code>, which
- * indicates whether a file of a certain path and name exists. Because the <code>exists</code> method takes no parameters and returns <code>Boolean</code>,
- * you can call it using <code>be</code> with a symbol or <code>BePropertyMatcher</code>, yielding assertions like:
+ * you to place your own syntax directly after <code>should</code>. For example, although you can ensure that a <code>java.io.File</code> has a name
+ * that ends with a particular extension like this:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
- * file should be ('exists)  // using a symbol
- * file should be (inExistance)   // using a BePropertyMatcher
+ * file.getName should endWith (".txt")
  * </pre>
  * 
  * <p>
- * Although these expressions will achieve your goal of throwing a <code>TestFailedException</code> if the file does not exist, they don't produce
- * the most readable code because the English is either incorrect or awkward. In this case, you might want to create a
- * custom <code>Matcher[java.io.File]</code>
- * named <code>exist</code>, which you could then use to write expressions like:
+ * You might prefer 
+ * to create a * custom <code>Matcher[java.io.File]</code>
+ * named <code>endWithExtension</code>, so you could write expressions like:
  * </p>
  *
  * <pre class="stHighlight">
- * // using a plain-old Matcher
- * file should exist
- * file should not (exist)
- * file should (exist and have ('name ("temp.txt")))
+ * file should endWithExtension ("txt")
+ * file should not endWithExtension "txt"
+ * file should (exist and endWithExtension ("txt"))
  * </pre>
  * 
  * <p>
  * One good way to organize custom matchers is to place them inside one or more
- * traits that you can then mix into the suites or specs that need them. Here's an example:
+ * traits that you can then mix into the suites that need them. Here's an example:
  * </p>
  *
  * <pre class="stHighlight">
+ * import org.scalatest._
+ * import matchers._
+ *
  * trait CustomMatchers {
- * 
- *   class FileExistsMatcher extends Matcher[java.io.File] {
- * 
+ *
+ *   class FileEndsWithExtensionMatcher(expectedExtension: String) extends Matcher[java.io.File] {
+ *
  *     def apply(left: java.io.File) = {
- * 
- *       val fileOrDir = if (left.isFile) "file" else "directory"
- * 
- *       val failureMessageSuffix = 
- *         fileOrDir + " named " + left.getName + " did not exist"
- * 
- *       val negatedFailureMessageSuffix = 
- *         fileOrDir + " named " + left.getName + " existed"
- * 
+ *       val name = left.getName
  *       MatchResult(
- *         left.exists,
- *         "The " + failureMessageSuffix,
- *         "The " + negatedFailureMessageSuffix,
- *         "the " + failureMessageSuffix,
- *         "the " + negatedFailureMessageSuffix
+ *         name.endsWith(expectedExtension),
+ *         s"""File $name did not end with extension "$expectedExtension"""",
+ *         s"""File $name ended with extension "$expectedExtension""""
  *       )
  *     }
  *   }
- * 
- *   val exist = new FileExistsMatcher
+ *
+ *   def endWithExtension(expectedExtension: String) = new FileEndsWithExtensionMatcher(expectedExtension)
  * }
  *
  * // Make them easy to import with:
  * // import CustomMatchers._
  * object CustomMatchers extends CustomMatchers
  * </pre>
- * 
+ *
  * <p>
  * Note: the <code>CustomMatchers</code> companion object exists to make it easy to bring the
  * matchers defined in this trait into scope via importing, instead of mixing in the trait. The ability
@@ -160,8 +143,8 @@ import org.scalatest.words.DefinedWord
  * </p>
  *
  * <p>
- * This trait contains one matcher class, <code>FileExistsMatcher</code>, and a <code>val</code> named <code>exist</code> that refers to
- * an instance of <code>FileExistsMatcher</code>. Because the class extends <code>Matcher[java.io.File]</code>,
+ * This trait contains one matcher class, <code>FileEndsWithExtensionMatcher</code>, and a <code>def</code> named <code>endWithExtension</code> that returns a new
+ * instance of <code>FileEndsWithExtensionMatcher</code>. Because the class extends <code>Matcher[java.io.File]</code>,
  * the compiler will only allow it be used to match against instances of <code>java.io.File</code>. A matcher must declare an
  * <code>apply</code> method that takes the type decared in <code>Matcher</code>'s type parameter, in this case <code>java.io.File</code>.
  * The apply method will return a <code>MatchResult</code> whose <code>matches</code> field will indicate whether the match succeeded.
@@ -170,121 +153,93 @@ import org.scalatest.words.DefinedWord
  * </p>
  *
  * <p>
- * The <code>FileExistsMatcher</code> matcher in this example determines success by calling <code>exists</code> on the passed <code>java.io.File</code>. It
- * does this in the first argument passed to the <code>MatchResult</code> factory method:
+ * The <code>FileEndsWithExtensionMatcher</code> matcher in this example determines success by determining if the passed <code>java.io.File</code> ends with
+ * the desired extension. It does this in the first argument passed to the <code>MatchResult</code> factory method:
  * </p>
  *
  * <pre class="stHighlight">
- *         left.exists,
+ * name.endsWith(expectedExtension)
  * </pre>
  *
  * <p>
- * In other words, if the file exists, this matcher matches.
+ * In other words, if the file name has the expected extension, this matcher matches.
  * The next argument to <code>MatchResult</code>'s factory method produces the failure message string:
  * </p>
  *
  * <pre class="stHighlight">
- *         "The " + failureMessageSuffix,
+ * s"""File $name did not end with extension "$expectedExtension"""",
  * </pre>
  *
  * <p>
- * If the passed <code>java.io.File</code> is a file (not a directory) and has the name <code>temp.txt</code>, for example, the failure
+ * For example, consider this matcher expression:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * import org.scalatest._
+ * import Matchers._
+ * import java.io.File
+ * import CustomMatchers._
+ * 
+ * new File("essay.text") should endWithExtension ("txt")
+ * </pre>
+ *
+ * <p>
+ * Because the passed <code>java.io.File</code> has the name <code>essay.text</code>, but the expected extension is <code>"txt"</code>, the failure
  * message would be:
  * </p>
  *
  * <pre>
- * The file named temp.txt did not exist
+ * File essay.text did not have extension "txt"
  * </pre>
  *
  * <p>
- * For more information on the fields in a <code>MatchResult</code>, including the subsequent three fields that follow the failure message,
+ * For more information on the fields in a <code>MatchResult</code>, including the subsequent field (or fields) that follow the failure message,
  * please see the documentation for <a href="MatchResult.html"><code>MatchResult</code></a>.
  * </p>
  *
+ * <a name="otherways"></a>
+ * <h2>Creating dynamic matchers</h2>
+ *
  * <p>
- * Given the <code>CustomMatchers</code> trait as defined above, you can use the <code>exist</code> syntax in any suite or spec in
- * which you mix in the trait:
+ * There are other ways to create new matchers besides defining one as shown above. For example, you might check that a file is hidden like this:
  * </p>
  *
  * <pre class="stHighlight">
- * class ExampleSpec extends Spec with ShouldMatchers with CustomMatchers {
- * 
- *   describe("A temp file") {
- * 
- *     it("should be created and deleted") {
- * 
- *       val tempFile = java.io.File.createTempFile("delete", "me")
- * 
- *       try {
- *         // At this point the temp file should exist
- *         tempFile should exist
- *       }
- *       finally {
- *         tempFile.delete()
- *       }
- * 
- *       // At this point it should not exist
- *       tempFile should not (exist)
- *     }
- *   }
- * }
+ * new File("secret.txt") should be ('hidden)
  * </pre>
- *  
- * <p>
- * Note that when you use custom <code>Matcher</code>s, you will need to put parentheses around the custom matcher when if follows <code>not</code>,
- * as shown in the last assertion above: <code>tempFile should not (exist)</code>.
- * </p>
- *
- * <a name="otherways"></a><h2>Other ways to create matchers</h2>
  *
  * <p>
- * There are other ways to create new matchers besides defining one as shown above. For example, you would normally check to ensure
- * an option is defined like this:
+ * If you wanted to get rid of the tick mark, you could simply define <code>hidden</code> like this:
  * </p>
  *
  * <pre class="stHighlight">
- * Some("hi") should be ('defined)
+ * val hidden = 'hidden
  * </pre>
  *
  * <p>
- * If you wanted to get rid of the tick mark, you could simply define <code>defined</code> like this:
+ * Now you can check that an file is hidden without the tick mark:
  * </p>
  *
  * <pre class="stHighlight">
- * val defined = 'defined
+ * new File("secret.txt") should be (hidden)
  * </pre>
  *
  * <p>
- * Now you can check that an option is defined without the tick mark:
+ * You could get rid of the parens with by using <code>shouldBe</code>:
  * </p>
  *
  * <pre class="stHighlight">
- * Some("hi") should be (defined)
+ * new File("secret.txt") shouldBe hidden
  * </pre>
  *
- * <p>
- * Perhaps after using that for a while, you realize you're tired of typing the parentheses. You could
- * get rid of them with another one-liner:
- * </p>
- *
- * <pre class="stHighlight">
- * val beDefined = be (defined)
- * </pre>
- *
- * <p>
- * Now you can check that an option is defined without the tick mark or the parentheses:
- * </p>
- *
- * <pre class="stHighlight">
- * Some("hi") should beDefined
- * </pre>
+ * <h2>Creating matchers using logical operators</h2>
  *
  * <p>
  * You can also use ScalaTest matchers' logical operators to combine existing matchers into new ones, like this:
  * </p>
  *
  * <pre class="stHighlight">
- * val beWithinTolerance = be >= 0 and be <= 10
+ * val beWithinTolerance = be &gt;= 0 and be &lt;= 10
  * </pre>
  *
  * <p>
@@ -318,7 +273,7 @@ import org.scalatest.words.DefinedWord
  *
  * <pre class="stHighlight">
  * val beOdd =
- *   Matcher { (left: Int) =>
+ *   Matcher { (left: Int) =&gt;
  *     MatchResult(
  *       left % 2 == 1,
  *       left + " was not odd",
@@ -336,49 +291,38 @@ import org.scalatest.words.DefinedWord
  * 4 should not (beOdd)
  * </pre>
  *
- * <p>
- * You can also compose matchers. If for some odd reason, you wanted a <code>Matcher[String]</code> that 
- * checked whether a string, when converted to an <code>Int</code>,
- * was odd, you could make one by composing <code>beOdd</code> with
- * a function that converts a string to an <code>Int</code>, like this:
- * </p>
- *
- * <pre class="stHighlight">
- * val beOddAsInt = beOdd compose { (s: String) => s.toInt }
- * </pre>
+ * <h2>Composing matchers</h2>
  *
  * <p>
- * Now you have a <code>Matcher[String]</code> whose <code>apply</code> method first
- * invokes the converter function to convert the passed string to an <code>Int</code>,
- * then passes the resulting <code>Int</code> to <code>beOdd</code>. Thus, you could use
- * <code>beOddAsInt</code> like this:
+ * You can also compose matchers. For example, the <code>endWithExtension</code> matcher from the example above
+ * can be more easily created by composing a function with the existing <code>endWith</code> matcher:
  * </p>
  *
- * <pre class="stHighlight">
- * "3" should beOddAsInt
- * "4" should not (beOddAsInt)
- * </pre>
+ * <pre class="stREPL">
+ * scala&gt; import org.scalatest._
+ * import org.scalatest._
  *
- * <p>
- * You can also define a method that produces a matcher using matcher
- * composition and a passed parameter. For example, here's how you could create a <code>Matcher[File]</code> from a
- * <code>Matcher[String]</code>:
- * </p>
+ * scala&gt; import Matchers._
+ * import Matchers._
  *
- * <pre class="stHighlight">
+ * scala&gt; import java.io.File
  * import java.io.File
  *
- * def endWithExtension(ext: String) = endWith(ext) compose { (f: File) =&gt; f.getPath }
+ * scala&gt; def endWithExtension(ext: String) = endWith(ext) compose { (f: File) =&gt; f.getPath }
+ * endWithExtension: (ext: String)org.scalatest.matchers.Matcher[java.io.File]
  * </pre>
  *
  * <p>
- * Every time you call the above <code>endWithExtension</code> method, you'll get a new <code>Matcher[File]</code>. Here's an example:
+ * Now you have a <code>Matcher[File]</code> whose <code>apply</code> method first
+ * invokes the converter function to convert the passed <code>File</code> to a <code>String</code>,
+ * then passes the resulting <code>String</code> to <code>endWith</code>. Thus, you could use this version 
+ * <code>endWithExtension</code> like the previous one:
  * </p>
  *
- * <pre class="stHighlight">
- * new File("output.txt") should endWithExtension("txt")
+ * <pre class="stREPL">
+ * scala&gt; new File("output.txt") should endWithExtension("txt")
  * </pre>
- * 
+ *
  * <h2>Matcher's variance</h2>
  *
  * <p>

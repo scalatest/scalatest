@@ -1375,6 +1375,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * the <code>MatcherFactory1[Any, Length]</code> to a <code>HavePropertyMatcher[&lt;type&gt;, Int]</code>.
  * </p>
  *
+ * <a name="usingCustomMatchers"></a>
  * <h2>Using custom matchers</h2>
  * 
  * <p>
