@@ -604,8 +604,9 @@ import Suite.autoTagClassAnnotations
  * <p>
  * You can, therefore, override <code>withFixture</code> to perform setup before and/or cleanup after invoking the test function. If
  * you have cleanup to perform, you should invoke the test function inside a <code>try</code> block and perform the cleanup in
- * a <code>finally</code> clause, because the exception that causes a test to fail will propagate through <code>withFixture</code> back
- * to <code>runTest</code>. (In other words, if the test fails, the test function invoked by <code>withFixture</code> will throw an exception.)
+ * a <code>finally</code> clause, in case an exception propagates back through <code>withFixture</code>. (If a test fails because of an exception,
+ * the test function invoked by withFixture will result in a [[org.scalatest.Failed <code>Failed</code>]] wrapping the exception. Nevertheless,
+ * best practice is to perform cleanup in a finally clause just in case an exception occurs.)
  * </p>
  *
  * <p>
@@ -634,19 +635,19 @@ import Suite.autoTagClassAnnotations
  * package org.scalatest.examples.funsuite.noargtest
  *
  * import java.io.File
- * import org.scalatest.FunSuite
+ * import org.scalatest._
  *
  * class ExampleSuite extends FunSuite {
  *
  *   override def withFixture(test: NoArgTest) = {
  *
- *     try super.withFixture(test)
- *     catch {
- *       case e: Exception =&gt;
+ *     super.withFixture(test) match {
+ *       case failed: Failed =&gt;
  *         val currDir = new File(".")
  *         val fileNames = currDir.list()
  *         info("Dir snapshot: " + fileNames.mkString(", "))
- *         throw e
+ *         failed
+ *       case other =&gt; other
  *     }
  *   }
  * 
