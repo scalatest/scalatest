@@ -111,20 +111,20 @@ class ScalaTestFramework extends SbtFramework {
       }
     )
     
-  object RunConfig {
+  private[scalatest] object RunConfig {
 
-    private[scalatest] val reporter: AtomicReference[Option[DispatchReporter]] = new AtomicReference(None)
-    private val reporterConfigs: AtomicReference[Option[ReporterConfigurations]] = new AtomicReference(None)
-    private val useStdout, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted = new AtomicBoolean(false)
-    private val presentReminder, presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests = new AtomicBoolean(false)
-    private val filter: AtomicReference[Option[Filter]] = new AtomicReference(None)
-    private val configMap: AtomicReference[Option[ConfigMap]] = new AtomicReference(None)
-    private val membersOnly: AtomicReference[Option[List[String]]] = new AtomicReference(None)
-    private val wildcard: AtomicReference[Option[List[String]]] = new AtomicReference(None)
-    private val detectSlowpokes: AtomicBoolean = new AtomicBoolean(false) 
-    private val slowpokeDetectionDelay: AtomicLong = new AtomicLong(60000)
-    private val slowpokeDetectionPeriod: AtomicLong = new AtomicLong(60000)
-    private val resultHolder = new SuiteResultHolder()
+    val reporter: AtomicReference[Option[DispatchReporter]] = new AtomicReference(None)
+    val reporterConfigs: AtomicReference[Option[ReporterConfigurations]] = new AtomicReference(None)
+    val useStdout, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted = new AtomicBoolean(false)
+    val presentReminder, presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests = new AtomicBoolean(false)
+    val filter: AtomicReference[Option[Filter]] = new AtomicReference(None)
+    val configMap: AtomicReference[Option[ConfigMap]] = new AtomicReference(None)
+    val membersOnly: AtomicReference[Option[List[String]]] = new AtomicReference(None)
+    val wildcard: AtomicReference[Option[List[String]]] = new AtomicReference(None)
+    val detectSlowpokes: AtomicBoolean = new AtomicBoolean(false)
+    val slowpokeDetectionDelay: AtomicLong = new AtomicLong(60000)
+    val slowpokeDetectionPeriod: AtomicLong = new AtomicLong(60000)
+    val resultHolder = new SuiteResultHolder()
     
     def getConfigurations(args: Array[String], loggers: Array[Logger], eventHandler: EventHandler, testLoader: ClassLoader) = 
       synchronized {
