@@ -35,7 +35,8 @@ class OsgiSuite extends JUnitSuite with ShouldMatchersForJUnit {
     junitBundles,
     bundle("file:target/dist/lib/scalatest.jar"),
     bundle("file:target/dist/lib/scalautils.jar"),
-    scalaLibraryBundle
+    scalaLibraryBundle, 
+    scalaReflectBundle
   )
 
   private def scalaLibraryBundle = {
@@ -44,6 +45,23 @@ class OsgiSuite extends JUnitSuite with ShouldMatchersForJUnit {
     if (math.Ordering[(Int, Int)].gteq(majorMinor, (2, 10))) {
       // As of 2.10, official Scala JARs are OSGi bundles
       mavenBundle.groupId("org.scala-lang").artifactId("scala-library").version(compiledAgainstScalaVersionString)
+    } else {
+      // For pre-2.10 versions, fall back to the Apache Service Mix wrapped bundles
+      val servicemixVersion = version match {
+        case Version(2, 9, 0) => "2.9.0_1"
+        case Version(2, 9, 1) => "2.9.1_3"
+        case other => throw new IllegalStateException("No OSGi bundle known for Scala Library version %s".format(other))
+      }
+      mavenBundle.groupId("org.apache.servicemix.bundles").artifactId("org.apache.servicemix.bundles.scala-library").version(servicemixVersion)
+    }
+  }
+
+  private def scalaReflectBundle = {
+    val version = compiledAgainstScalaVersion
+    val majorMinor = (version.major, version.minor)
+    if (math.Ordering[(Int, Int)].gteq(majorMinor, (2, 10))) {
+      // As of 2.10, official Scala JARs are OSGi bundles
+      mavenBundle.groupId("org.scala-lang").artifactId("scala-reflect").version(compiledAgainstScalaVersionString)
     } else {
       // For pre-2.10 versions, fall back to the Apache Service Mix wrapped bundles
       val servicemixVersion = version match {
