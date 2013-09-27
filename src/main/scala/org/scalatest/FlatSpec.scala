@@ -754,7 +754,7 @@ import Suite.autoTagClassAnnotations
  * <p>
  * You can, therefore, override <code>withFixture</code> to perform setup before and/or cleanup after invoking the test function. If
  * you have cleanup to perform, you should invoke the test function inside a <code>try</code> block and perform the cleanup in
- * a <code>finally</code> clause, in case an exception propagates back through withFixture. (If a test fails because of an exception,
+ * a <code>finally</code> clause, in case an exception propagates back through <code>withFixture</code>. (If a test fails because of an exception,
  * the test function invoked by withFixture will result in a [[org.scalatest.Failed <code>Failed</code>]] wrapping the exception. Nevertheless,
  * best practice is to perform cleanup in a finally clause just in case an exception occurs.)
  * </p>

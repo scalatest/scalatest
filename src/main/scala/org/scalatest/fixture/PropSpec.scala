@@ -148,10 +148,11 @@ import org.scalatest.Suite.autoTagClassAnnotations
  * </p>
  *
  * <p>
- * The reason you must perform cleanup in a <code>finally</code> clause is that <code>withFixture</code> is called by
- * <code>runTest</code>, which expects an exception to be thrown to indicate a failed test. Thus when you invoke
- * the <code>test</code> function, it may complete abruptly with an exception. The <code>finally</code> clause will
- * ensure the fixture cleanup happens as that exception propagates back up the call stack to <code>runTest</code>.
+ * If a test fails, the <code>OneArgTest</code> function will result in a [[org.scalatest.Failed Failed]] wrapping the
+ * exception describing the failure.
+ * The reason you must perform cleanup in a <code>finally</code> clause is that in case an exception propagates back through
+ * <code>withFixture</code>, the <code>finally</code> clause will ensure the fixture cleanup happens as that exception
+ * propagates back up the call stack to <code>runTest</code>.
  * </p>
  *
  * <p>
