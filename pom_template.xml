@@ -82,6 +82,12 @@
     </dependency>
 
     <dependency>
+      <groupId>org.scala-lang</groupId>
+      <artifactId>scala-reflect</artifactId>
+      <version>@SCALA_VERSION@</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.scala-sbt</groupId>
       <artifactId>test-interface</artifactId>
       <version>1.0</version>
