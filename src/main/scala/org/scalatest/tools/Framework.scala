@@ -38,9 +38,7 @@ import scala.collection.JavaConverters._
 import StringReporter.fragmentsForEvent
 
 /**
- * This class is ScalaTest's implementation of the new Framework API that will be supported in sbt 0.13. Since 0.13 is
- * not yet released, this can only be used with an early access version of sbt 0.13. We will document this class for the
- * next milestone release of ScalaTest, but you can use it with sbt 0.13 releases now if you like living on the edge.
+ * This class is ScalaTest's implementation of the new Framework API that is supported in sbt 0.13.
  */
 class Framework extends SbtFramework {
 
