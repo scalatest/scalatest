@@ -120,7 +120,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
  * </pre>
  *
  * <p>
- * If a test fails, the <code>OneArgTest</code> function will complete abruptly with an exception describing the failure.
+ * If a test fails, the <code>OneArgTest</code> function will result in a [[org.scalatest.Failed Failed]] wrapping the exception describing the failure.
  * To ensure clean up happens even if a test fails, you should invoke the test function from inside a <code>try</code> block and do the cleanup in a
  * <code>finally</code> clause, as shown in the previous example.
  * </p>
