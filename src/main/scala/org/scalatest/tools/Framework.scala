@@ -172,7 +172,7 @@ class Framework extends SbtFramework {
     new SbtDispatchReporter(reporters)
   }
       
-  def runSuite(
+  private def runSuite(
     taskDefinition: TaskDef,
     rerunSuiteId: String,
     suite: Suite,
