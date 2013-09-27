@@ -15,7 +15,7 @@
  */
 package org.scalatest.tools
 
-import sbt.testing.{Event => SbtEvent, Framework => SbtFramework, Status => SbtStatus, _}
+import sbt.testing.{Event => SbtEvent, Framework => SbtFramework, Status => SbtStatus, Runner => SbtRunner, _}
 import org.scalatest._
 import SuiteDiscoveryHelper._
 import Suite.formatterForSuiteStarting
@@ -38,9 +38,7 @@ import scala.collection.JavaConverters._
 import StringReporter.fragmentsForEvent
 
 /**
- * This class is ScalaTest's implementation of the new Framework API that will be supported in sbt 0.13. Since 0.13 is
- * not yet released, this can only be used with an early access version of sbt 0.13. We will document this class for the
- * next milestone release of ScalaTest, but you can use it with sbt 0.13 releases now if you like living on the edge.
+ * This class is ScalaTest's implementation of the new Framework API that is supported in sbt 0.13.
  */
 class Framework extends SbtFramework {
 
@@ -63,7 +61,7 @@ class Framework extends SbtFramework {
         def isModule = false
       })
 
-  class RecordingDistributor(
+  private class RecordingDistributor(
     taskDefinition: TaskDef, 
     rerunSuiteId: String,
     originalReporter: Reporter,
@@ -172,7 +170,7 @@ class Framework extends SbtFramework {
     new SbtDispatchReporter(reporters)
   }
       
-  def runSuite(
+  private def runSuite(
     taskDefinition: TaskDef,
     rerunSuiteId: String,
     suite: Suite,
@@ -308,7 +306,7 @@ class Framework extends SbtFramework {
     distributor.nestedTasks
   }
   
-  class ScalaTestNestedTask(
+  private class ScalaTestNestedTask(
     taskDefinition: TaskDef, 
     rerunSuiteId: String,
     suite: Suite,
@@ -384,7 +382,7 @@ class Framework extends SbtFramework {
     def taskDef = taskDefinition
   }
       
-  class ScalaTestTask(
+  private class ScalaTestTask(
     taskDefinition: TaskDef, 
     loader: ClassLoader,
     reporter: Reporter,
@@ -550,7 +548,7 @@ class Framework extends SbtFramework {
     }
   }
   
-  class SbtLogInfoReporter(
+  private class SbtLogInfoReporter(
     loggers: Array[Logger],
     presentAllDurations: Boolean,
     presentInColor: Boolean,
@@ -605,7 +603,7 @@ class Framework extends SbtFramework {
     def dispose() = ()
   }
   
-  class ScalaTestRunner(
+  private[scalatest] class ScalaTestRunner(
     runArgs: Array[String],
     loader: ClassLoader,
     tagsToInclude: Set[String],
@@ -793,7 +791,7 @@ class Framework extends SbtFramework {
     }
   }
 
-  def runner(args: Array[String], remoteArgs: Array[String], testClassLoader: ClassLoader) = {
+  def runner(args: Array[String], remoteArgs: Array[String], testClassLoader: ClassLoader): SbtRunner = {
 
     val ParsedArgs(
       runpathArgs,
