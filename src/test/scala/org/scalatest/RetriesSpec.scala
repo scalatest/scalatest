@@ -25,7 +25,7 @@ class RetriesSpec extends Spec with Matchers with Retries {
   object `The Retries trait` {
     
     object `offers a withRetryOnFailure method that` {
-      
+
       def `should return Succeeded on Succeeded` {
         var executionCount = 0
         val outcome =
@@ -603,7 +603,7 @@ class RetriesSpec extends Spec with Matchers with Retries {
         }
         val no = new TestData {
           val configMap: ConfigMap = ConfigMap.empty
-          val name: String = "i am retryable"
+          val name: String = "i am not retryable"
           val scopes: collection.immutable.IndexedSeq[String] = Vector.empty
           val text: String = name
           val tags: Set[String] = Set("NotMe")
