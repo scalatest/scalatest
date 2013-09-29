@@ -326,6 +326,11 @@ import org.scalatest.Resources
  * </tr>
  * </table>
  *
+ * <p>
+ * Note that because of implicit conversions in the <code>Span</code> companion object, you can use a
+ * <code>scala.concurrent.duration.Duration</code> where a <code>Span</code> is needed, and vice versa.
+ * </p>
+ *
  * @author Bill Venners
  */
 final class Span private (totNanos: Long, lengthString: String, unitsResource: String, unitsName: String) {
@@ -353,7 +358,7 @@ final class Span private (totNanos: Long, lengthString: String, unitsResource: S
    *
    * This number will never be negative, but can be zero.
    */
-  val totalNanos: Long = totNanos // Didn't use a parametric field becuase don't know how to scaladoc that in a
+  val totalNanos: Long = totNanos // Didn't use a parametric field because don't know how to scaladoc that in a
                                   // private constructor
   /**
    * This time span converted to milliseconds, computed via <code>totalNanos / 1000000</code>, which
@@ -687,6 +692,17 @@ object Span {
 
   // TODO: Doc this implicit and also mention Durations can be used in the main doc for Span
   import scala.concurrent.duration.Duration
+
+  /**
+   * Implicitly converts a <code>scala.concurrent.duration.Duration</code> to a <code>Span</code>,
+   * so that a <code>Duration</code> can be used where a <code>Span</code> is needed.
+   *
+   * <p>
+   * This function transforms <code>Duration.MinusInf</code> to <code>Span.Zero</code>, <code>Duration.Inf</code>
+   * and <code>Undefined</code> to <code>Span.Max</code>, and all others to a <code>Span</code> containing a
+   * corresponing number of nanoseconds.
+   * </p>
+   */
   implicit def convertDurationToSpan(duration: Duration): Span = {
     duration match {
       case _ if duration.isFinite => Span(duration.toNanos, Nanoseconds)
@@ -694,6 +710,11 @@ object Span {
       case _ => Span.Max // Duration.Inf and Undefined
     }
   }
+
+  /**
+   * Implicitly converts a <code>Span</code> to a <code>scala.concurrent.duration.Duration</code>,
+   * so that a <code>Span</code> can be used where a <code>Duration</code> is needed.
+   */
   implicit def convertSpanToDuration(span: Span): Duration = Duration.fromNanos(span.totalNanos)
 }
 

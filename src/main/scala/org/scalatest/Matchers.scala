@@ -1381,35 +1381,31 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * <p>
  * If none of the built-in matcher syntax (or options shown so far for extending the syntax) satisfy a particular need you have, you can create
  * custom <code>Matcher</code>s that allow
- * you to place your own syntax directly after <code>should</code>. For example, class <code>java.io.File</code> has a method <code>exists</code>, which
- * indicates whether a file of a certain path and name exists. Because the <code>exists</code> method takes no parameters and returns <code>Boolean</code>,
+ * you to place your own syntax directly after <code>should</code>. For example, class <code>java.io.File</code> has a method <code>isHidden</code>, which
+ * indicates whether a file of a certain path and name is hidden. Because the <code>isHidden</code> method takes no parameters and returns <code>Boolean</code>,
  * you can call it using <code>be</code> with a symbol or <code>BePropertyMatcher</code>, yielding assertions like:
  * </p>
  * 
  * <pre class="stHighlight">
- * file should be ('exists)  // using a symbol
- * file should be (inExistance)   // using a BePropertyMatcher
+ * file should be ('hidden)  // using a symbol
+ * file should be (hidden)   // using a BePropertyMatcher
  * </pre>
  * 
  * <p>
- * Although these expressions will achieve your goal of throwing a <code>TestFailedException</code> if the file does not exist, they don't produce
- * the most readable code because the English is either incorrect or awkward. In this case, you might want to create a
- * custom <code>Matcher[java.io.File]</code>
- * named <code>exist</code>, which you could then use to write expressions like:
+ * If it doesn't make sense to have your custom syntax follow <code>be</code>, you might want to create a custom <code>Matcher</code>
+ * instead, so your syntax can follow <code>should</code> directly. For example, you might want to be able to check whether
+ * a <code>java.io.File</code>'s name ends with a particular extension, like this:
  * </p>
  *
  * <pre class="stHighlight">
  * // using a plain-old Matcher
- * file should exist
- * file should not (exist)
- * file should (exist and have ('name ("temp.txt")))
+ * file should endWithExtension ("txt")
  * </pre>
  * 
  * <p>
- * Note that when you use custom <code>Matcher</code>s, you will need to put parentheses around the custom matcher in more cases than with
- * the built-in syntax. For example you will often need the parentheses after <code>not</code>, as shown above. (There's no penalty for
- * always surrounding custom matchers with parentheses, and if you ever leave them off when they are needed, you'll get a compiler error.)
- * For more information about how to create custom <code>Matcher</code>s, please see the documentation for the <a href="matchers/Matcher.html"><code>Matcher</code></a> trait.
+ * ScalaTest provides several mechanism to make it easy to create custom matchers, including ways to compose new matchers
+ * out of existing ones complete with new error messages.  For more information about how to create custom
+ * <code>Matcher</code>s, please see the documentation for the <a href="matchers/Matcher.html"><code>Matcher</code></a> trait.
  * </p>
  *
  * <a name="expectedExceptions">

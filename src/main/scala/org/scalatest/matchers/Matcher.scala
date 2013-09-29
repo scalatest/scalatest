@@ -291,6 +291,7 @@ import org.scalatest.words.DefinedWord
  * 4 should not (beOdd)
  * </pre>
  *
+ * <a name="composingMatchers"></a>
  * <h2>Composing matchers</h2>
  *
  * <p>
@@ -321,6 +322,96 @@ import org.scalatest.words.DefinedWord
  *
  * <pre class="stREPL">
  * scala&gt; new File("output.txt") should endWithExtension("txt")
+ * </pre>
+ *
+ * <p>
+ * In addition, by composing twice, you can modify the type of both sides of a match statement
+ * with the same function, like this:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; val f = be &gt; (_: Int)
+ * f: Int =&gt; org.scalatest.matchers.Matcher[Int] = &lt;function1&gt;
+ *
+ * scala&gt; val g = (_: String).toInt
+ * g: String =&gt; Int = &lt;function1&gt;
+ *
+ * scala&gt; val beAsIntsGreaterThan = (f compose g) andThen (_ compose g)
+ * beAsIntsGreaterThan: String =&gt; org.scalatest.matchers.Matcher[String] = &lt;function1&gt;
+ *
+ * scala&gt; "8" should beAsIntsGreaterThan ("7")
+ * </pre>
+ *
+ * <p>
+ * At thsi point, however, the error message for the <code>beAsIntsGreaterThan</code>
+ * gives no hint that the <code>Int</code>s being compared were parsed from <code>String</code>s:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; "7" should beAsIntsGreaterThan ("8")
+ * org.scalatest.exceptions.TestFailedException: 7 was not greater than 8
+ * </pre>
+ *
+ * <p>
+ * To modify error message, you can use trait <a href="MatcherProducers.html"><code>MatcherProducers</code></a>, which
+ * also provides a <code>composeTwice</code> method that performs the <code>compose</code> ...
+ * <code>andThen</code> ... <code>compose</code> operation:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; import matchers._
+ * import matchers._
+ *
+ * scala&gt; import MatcherProducers._
+ * import MatcherProducers._
+ *
+ * scala&gt; val beAsIntsGreaterThan = f composeTwice g // means: (f compose g) andThen (_ compose g)
+ * beAsIntsGreaterThan: String =&gt; org.scalatest.matchers.Matcher[String] = &lt;function1&gt;
+ *
+ * scala&gt; "8" should beAsIntsGreaterThan ("7")
+ * </pre>
+ *
+ * <p>
+ * Of course, the error messages is still the same:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; "7" should beAsIntsGreaterThan ("8")
+ * org.scalatest.exceptions.TestFailedException: 7 was not greater than 8
+ * </pre>
+ *
+ * <p>
+ * To modify the error messages, you can use <code>mapResult</code> from <code>MatcherProducers</code>. Here's an example:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; val beAsIntsGreaterThan =
+ *   f composeTwice g mapResult { mr =&gt;
+ *     mr.copy(
+ *       failureMessageArgs =
+ *         mr.failureMessageArgs.map((LazyArg(_) { "\"" + _.toString + "\".toInt"})),
+ *       negatedFailureMessageArgs =
+ *         mr.negatedFailureMessageArgs.map((LazyArg(_) { "\"" + _.toString + "\".toInt"})),
+ *       midSentenceFailureMessageArgs =
+ *         mr.midSentenceFailureMessageArgs.map((LazyArg(_) { "\"" + _.toString + "\".toInt"})),
+ *       midSentenceNegatedFailureMessageArgs =
+ *         mr.midSentenceNegatedFailureMessageArgs.map((LazyArg(_) { "\"" + _.toString + "\".toInt"}))
+ *     )
+ *   }
+ * beAsIntsGreaterThan: String =&gt; org.scalatest.matchers.Matcher[String] = &lt;function1&gt;
+ * </pre>
+ *
+ * <p>
+ * The <code>mapResult</code> method takes a function that accepts a <code>MatchResult</code> and produces a new
+ * <code>MatchResult</code>, which can contain modified arguments and modified error messages. In this example,
+ * the error messages are being modified by wrapping the old arguments in <a href="LazyArg.html"><code>LazyArg</code></a>
+ * instances that lazily apply the given prettification functions to the <code>toString</code> result of the old args.
+ * Now the error message is clearer:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; "7" should beAsIntsGreaterThan ("8")
+ * org.scalatest.exceptions.TestFailedException: "7".toInt was not greater than "8".toInt
  * </pre>
  *
  * <h2>Matcher's variance</h2>
@@ -2840,38 +2931,38 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
     outerInstance.or(MatcherWords.not.exist)
 
   /**
-   * Create a new <code>Matcher</code> that will produce <code>MatchResult</code> by applying original <code>MatchResult</code>
-   * produced by this <code>Matcher</code> to the passed <code>m2m</code> function.  In other words, the <code>MatchResult</code>
-   * produced by this <code>Matcher</code> will be passed to <code>m2m</code> to produce the final <code>MatchResult</code>
+   * Creates a new <code>Matcher</code> that will produce <code>MatchResult</code>s by applying the original <code>MatchResult</code>
+   * produced by this <code>Matcher</code> to the passed <code>prettify</code> function.  In other words, the <code>MatchResult</code>
+   * produced by this <code>Matcher</code> will be passed to <code>prettify</code> to produce the final <code>MatchResult</code>
    *
-   * @param m2m a function to apply to the original <code>MatchResult</code> produced by this <code>Matcher</code>
-   * @return a new <code>Matcher</code> that will produce <code>MatchResult</code> by applying original <code>MatchResult</code>
-   *         produced by this <code>Matcher</code> to the passed <code>m2m</code> function
+   * @param prettify a function to apply to the original <code>MatchResult</code> produced by this <code>Matcher</code>
+   * @return a new <code>Matcher</code> that will produce <code>MatchResult</code>s by applying the original <code>MatchResult</code>
+   *         produced by this <code>Matcher</code> to the passed <code>prettify</code> function
    */
-  def mapResult(m2m: MatchResult => MatchResult): Matcher[T] =
+  def mapResult(prettify: MatchResult => MatchResult): Matcher[T] =
     new Matcher[T] {
-      def apply(o: T): MatchResult = m2m(outerInstance(o))
+      def apply(o: T): MatchResult = prettify(outerInstance(o))
     }
 
   /**
-   * Create a new <code>Matcher</code> that will produce <code>MatchResult</code> that contains error messages constructed
-   * using arguments that are transformed by the passed <code>a2s</code> function.  In other words, the <code>MatchResult</code>
-   * produced by this <code>Matcher</code> will use arguments transformed by <code>a2s</code> function to construct the final
+   * Creates a new <code>Matcher</code> that will produce <code>MatchResult</code>s that contain error messages constructed
+   * using arguments that are transformed by the passed <code>prettify</code> function.  In other words, the <code>MatchResult</code>
+   * produced by this <code>Matcher</code> will use arguments transformed by <code>prettify</code> function to construct the final
    * error messages.
    *
-   * @param a2s a function to transform arguments of error messages.
-   * @return a new <code>Matcher</code> that will produce <code>MatchResult</code> that contains error messages constructed
-   *         using arguments that are transformed by the passed <code>a2s</code> function.
+   * @param prettify a function with which to transform the arguments of error messages.
+   * @return a new <code>Matcher</code> that will produce <code>MatchResult</code>s that contain error messages constructed
+   *         using arguments transformed by the passed <code>prettify</code> function.
    */
-  def mapArgs(a2s: Any => String): Matcher[T] =
+  def mapArgs(prettify: Any => String): Matcher[T] =
     new Matcher[T] {
       def apply(o: T): MatchResult = {
         val mr = outerInstance(o)
         mr.copy(
-          failureMessageArgs = mr.failureMessageArgs.map((LazyArg(_) { a2s })),
-          negatedFailureMessageArgs = mr.negatedFailureMessageArgs.map((LazyArg(_) { a2s })),
-          midSentenceFailureMessageArgs = mr.midSentenceFailureMessageArgs.map((LazyArg(_) { a2s })),
-          midSentenceNegatedFailureMessageArgs = mr.midSentenceNegatedFailureMessageArgs.map((LazyArg(_) { a2s }))
+          failureMessageArgs = mr.failureMessageArgs.map((LazyArg(_) { prettify })),
+          negatedFailureMessageArgs = mr.negatedFailureMessageArgs.map((LazyArg(_) { prettify })),
+          midSentenceFailureMessageArgs = mr.midSentenceFailureMessageArgs.map((LazyArg(_) { prettify })),
+          midSentenceNegatedFailureMessageArgs = mr.midSentenceNegatedFailureMessageArgs.map((LazyArg(_) { prettify }))
         )
       }
     }
