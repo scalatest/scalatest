@@ -39,53 +39,63 @@ import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicLong
 
 /**
- * Class that makes ScalaTest tests visible to sbt.
+ * Class that makes ScalaTest tests visible to SBT (prior to version 0.13).
  *
  * <p>
- * To use ScalaTest from within sbt, simply add a line like this to your project file (for sbt 0.1.0 or higher):
+ * To use ScalaTest in SBT, you should add ScalaTest as dependency in your SBT build file, the following shows an example
+ * for using ScalaTest 2.0 with Scala 2.10.x project:
  * </p>
  *
- * <pre class="stExamples">
- * libraryDependencies += "org.scalatest" % "scalatest_2.9.0" % "1.6.1" % "test"
+ * <pre class="stHighlight">
+ * org.scalatest" % "scalatest_2.10" % "2.0" % "test"
  * </pre>
  *
  * <p>
- * The above line of code will work for any version of Scala 2.9 (for example, it works for Scala 2.9.0-1).
+ * To pass argument to ScalaTest from SBT, you can use <code>testOptions</code>:
  * </p>
  *
- * <pre class="stExamples">
- * libraryDependencies += "org.scalatest" % "scalatest_2.8.1" % "1.5.1" % "test"
+ * <pre class="stHighlight">
+ * testOptions in Test += Tests.Argument("-u", "target/junit")  // Use JUnitXmlReporter
  * </pre>
  *
  * <p>
- * You can configure the output shown when running with sbt in four ways: 1) turn off color, 2) show
- * short stack traces, 3) full stack traces, and 4) show durations for everything. To do that
- * you need to add test options, like this:
+ * If you are using multiple testing frameworks, you can pass arguments specific to ScalaTest only:
  * </p>
  *
- * <pre class="stExamples">
- * override def testOptions = super.testOptions ++
- *   Seq(TestArgument(TestFrameworks.ScalaTest, "-oD"))
+ * <pre class="stHighlight">
+ * testOptions in Test += Tests.Argument(TestFrameworks.ScalaTest, "-u", "target/junit") // Use JUnitXmlReporter
  * </pre>
  *
+ * <h3>Supported arguments</h3>
+ *
  * <p>
- * After the -o, place any combination of:
+ * Integration in SBT 0.13 supports same argument format as [[org.scalatest.tools.Runner <code>Runner</code>]],
+ * except the following arguments:
  * </p>
  *
  * <ul>
- * <li>D - show durations</li>
- * <li>S - show short stack traces</li>
- * <li>F - show full stack traces</li>
- * <li>W - without color</li>
+ *   <li><code>-p</code>, <code>-R</code> -- runpath is not supported because test path and discovery is handled by SBT</li>
+ *   <li><code>-s</code> -- suite is not supported because SBT's <code>test-only</code> serves the similar purpose</li>
+ *   <li><code>-A</code> -- again is not supported because SBT's <code>test-quick</code> serves the similar purpose</li>
+ *   <li><code>-j</code> -- junit is not supported because in SBT different test framework should be supported by its corresponding <code>Framework</code> implementation</li>
+ *   <li><code>-b</code> -- testng is not supported because in SBT different test framework should be supported by its corresponding <code>Framework</code> implementation</li>
+ *   <li><code>-c</code>, <code>-P</code> -- concurrent/parallel is not supported because parallel execution is controlled by SBT.</li>
+ *   <li><code>-q</code> is not supported because test discovery should be handled by SBT, and SBT's test-only or test filter serves the similar purpose</li>
+ *   <li><code>-T</code> is not supported because correct ordering of text output is handled by SBT</li>
  * </ul>
  *
- * <p>
- * For example, "-oDF" would show full stack traces and durations (the amount
- * of time spent in each test).
- * </p>
+ *
+ * <em>
+ * It is highly recommended to upgrade to SBT 0.13 to enjoy the best of ScalaTest 2.0 SBT integration.  Due to limitations
+ * in old Framework API (prior to SBT 0.13), it is hard to support ScalaTest features in the most efficient way.  One example is
+ * the nested suites, where in old Framework API they has to be executed sequentially, while new Framework API (included in SBT
+ * 0.13) the concept of nested <a href="https://github.com/sbt/test-interface/blob/master/src/main/java/sbt/testing/Task.java"><code>Task</code></a>
+ * has enabled parallel execution of ScalaTest's nested suites.
+ * </em>
  *
  * @author Bill Venners
  * @author Josh Cough
+ * @author Chee Seng
  */
 class ScalaTestFramework extends SbtFramework {
   
