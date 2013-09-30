@@ -19,6 +19,7 @@ import exceptions.TestCanceledException
 import java.util.concurrent.atomic.AtomicReference
 import java.util.ConcurrentModificationException
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
+import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepth
 import FunSuite.IgnoreTagName
 import org.scalatest.Suite._
 import org.scalatest.events.LineInFile
@@ -599,7 +600,9 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
     val branchLocation = 
       location match {
         case Some(loc) => Some(loc)
-        case None => getLineInFile(Thread.currentThread().getStackTrace, stackDepth)
+        case None =>
+          val stackTrace = Thread.currentThread().getStackTrace
+          getLineInFile(stackTrace, getStackDepth(stackTrace, sourceFile, methodName, stackDepth + adjustment))
       }
     
     val oldBranch = currentBranch

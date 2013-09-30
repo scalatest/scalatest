@@ -128,6 +128,17 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
     registerNestedBranch(description, childPrefix, fun(), "describeCannotAppearInsideAnIt", sourceFileName, methodName, stackDepth, adjustment, None)
   }
 
+  private[scalatest] def registerBranchWithVerb(description: String, childPrefix: Option[String], verb: String, fun: () => Unit) {
+    val (fileName, methodName, depth) =
+      verb match {
+        case "should" => ("ShouldVerb.scala", "should", 4)
+        case "can" => ("CanVerb.scala", "can", 4)
+        case "must" => ("MustVerb.scala", "must", 4)
+        case _ => ("WordSpecLike.scala", "registerBranchWithVerb", 12) // should not reach here, if it does, use depth that passes in ant since we deploy using ant currently
+      }
+    registerNestedBranch(description, childPrefix, fun(), "describeCannotAppearInsideAnIt", fileName, methodName, depth, -2, None)
+  }
+
   private def registerShorthandBranch(childPrefix: Option[String], notAllowResourceName: String, methodName:String, stackDepth: Int, adjustment: Int, fun: () => Unit) {
     // Shorthand syntax only allow at top level, and only after "..." when, "..." should/can/must, or it should/can/must
     if (engine.currentBranchIsTrunk) {
@@ -446,7 +457,7 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * @param f the function which is the body of the scope
      */
     def when(f: => Unit) {
-      registerBranch(string, Some("when"), "when", 4, -2, f _)
+      registerBranch(string, Some("when"), "when", 3, -2, f _)
     }
 
     /**
@@ -470,7 +481,7 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * @param resultOfAfterWordApplication a <code>ResultOfAfterWordApplication</code>
      */
     def when(resultOfAfterWordApplication: ResultOfAfterWordApplication) {
-      registerBranch(string, Some("when " + resultOfAfterWordApplication.text), "when", 4, -2, resultOfAfterWordApplication.f)
+      registerBranch(string, Some("when " + resultOfAfterWordApplication.text), "when", 3, -2, resultOfAfterWordApplication.f)
     }
 
     /**
@@ -479,7 +490,7 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      */
     @deprecated("Please use \"which\" instead of \"that\".")
     def that(f: => Unit) {
-      registerBranch(string.trim + " that", None, "that", 4, -2, f _)
+      registerBranch(string.trim + " that", None, "that", 3, -2, f _)
     }
     
     /**
@@ -501,7 +512,7 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * @param f the function which is the body of the scope
      */
     def which(f: => Unit) {
-      registerBranch(string.trim + " which", None, "which", 4, -2, f _)
+      registerBranch(string.trim + " which", None, "which", 3, -2, f _)
     }
 
     /**
@@ -510,7 +521,7 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      */
     @deprecated("Please use \"which\" instead of \"that\".")
     def that(resultOfAfterWordApplication: ResultOfAfterWordApplication) {
-      registerBranch(string.trim + " that " + resultOfAfterWordApplication.text.trim, None, "that", 4, -2, resultOfAfterWordApplication.f)
+      registerBranch(string.trim + " that " + resultOfAfterWordApplication.text.trim, None, "that", 3, -2, resultOfAfterWordApplication.f)
     }
     
     /**
@@ -532,7 +543,7 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * @param resultOfAfterWordApplication a <code>ResultOfAfterWordApplication</code>
      */
     def which(resultOfAfterWordApplication: ResultOfAfterWordApplication) {
-      registerBranch(string.trim + " which " + resultOfAfterWordApplication.text.trim, None, "which", 4, -2, resultOfAfterWordApplication.f)
+      registerBranch(string.trim + " which " + resultOfAfterWordApplication.text.trim, None, "which", 3, -2, resultOfAfterWordApplication.f)
     }
   }
 
@@ -1008,9 +1019,9 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
     (left, verb, resultOfAfterWordApplication) => {
       val afterWordFunction =
         () => {
-          registerBranch(resultOfAfterWordApplication.text, None, verb, 10, -2, resultOfAfterWordApplication.f)
+          registerBranchWithVerb(resultOfAfterWordApplication.text, None, verb, resultOfAfterWordApplication.f)
         }
-      registerBranch(left, Some(verb), verb, 7, -2, afterWordFunction)
+      registerBranch(left, Some(verb), "apply", 6, -2, afterWordFunction)
     }
   }
 

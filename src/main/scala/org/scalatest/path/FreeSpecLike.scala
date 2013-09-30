@@ -226,7 +226,7 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
      */
     def - (fun: => Unit) {
       // TODO: Fix the resource name
-      handleNestedBranch(string, None, fun, "describeCannotAppearInsideAnIt", "FreeSpecLike.scala", "-", 3, -2, None)
+      handleNestedBranch(string, None, fun, "describeCannotAppearInsideAnIt", "FreeSpecLike.scala", "$minus", 2, -2, None)
     }
 
     /**
