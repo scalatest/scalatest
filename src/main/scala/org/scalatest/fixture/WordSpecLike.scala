@@ -1008,9 +1008,9 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
     (left, verb, resultOfAfterWordApplication) => {
       val afterWordFunction =
         () => {
-          registerBranch(resultOfAfterWordApplication.text, None, verb, 10, -2, resultOfAfterWordApplication.f)
+          registerBranch(resultOfAfterWordApplication.text, None, "apply", 11, -2, resultOfAfterWordApplication.f)
         }
-      registerBranch(left, Some(verb), verb, 7, -2, afterWordFunction)
+      registerBranch(left, Some(verb), "apply", 7, -2, afterWordFunction)
     }
   }
 
