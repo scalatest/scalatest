@@ -28,7 +28,8 @@ import org.scalautils.Prettifier
  * Trait that contains ScalaTest's basic assertion methods.
  *
  * <p>
- * You can use the assertions provided by this trait in any ScalaTest <code>Suite</code>, because <a href="Suite.html"><code>Suite</code></a>
+ * You can use the assertions provided by this trait in any ScalaTest <code>Suite</code>,
+ * because <a href="Suite.html"><code>Suite</code></a>
  * mixes in this trait. This trait is designed to be used independently of anything else in ScalaTest, though, so you
  * can mix it into anything. (You can alternatively import the methods defined in this trait. For details, see the documentation
  * for the <a href="Assertions$.html"><code>Assertions</code> companion object</a>.
@@ -52,57 +53,59 @@ import org.scalautils.Prettifier
  * Scala source file. This <code>Assertions</code> trait defines another <code>assert</code> method that hides the
  * one in <code>Predef</code>. It behaves the same, except that if <code>false</code> is passed it throws
  * <a href="exceptions/TestFailedException.html"><code>TestFailedException</code></a> instead of <code>AssertionError</code>. 
- * Why? Because unlike <code>AssertionError</code>, <code>TestFailedException</code> carries information about exactly which item in the stack trace represents
+ * Why? Because unlike <code>AssertionError</code>, <code>TestFailedException</code> carries information about exactly
+ * which item in the stack trace represents
  * the line of test code that failed, which can help users more quickly find an offending line of code in a failing test.
  * <p>
  *
  * <p>
- * If you pass the previous <code>Boolean</code> expression, <code>left == right</code> to <code>assert</code> in a ScalaTest test, a failure
- * will be reported, but without reporting the left and right values. You can alternatively encode these values in a <code>String</code> passed as
- * a second argument to <code>assert</code>, like this:
- * </p>
- * 
+ * If you pass the previous <code>Boolean</code> expression, <code>left == right</code> to <code>assert</code> in a ScalaTest test,
+ * a failure will be reported that, because <code>assert</code> is implemented as a macro,
+ * includes reporting the left and right values.
+ *
+ * For example, given the same code as above but using ScalaTest assertions:
+ *
  * <pre class="stHighlight">
+ * import org.scalatest.Assertions._
  * val left = 2
  * val right = 1
- * assert(left == right, left + " did not equal " + right)
+ * assert(left == right)
  * </pre>
  *
  * <p>
- * Using this form of <code>assert</code>, the failure report will include the left and right values, thereby
- * helping you debug the problem. However, ScalaTest provides the <code>===</code> operator to make this easier.
- * You use it like this:
+ * The detail message in the thrown <code>TestFailedException</code> from this <code>assert</code>
+ * will be: "2 did not equal 1".
+ * </p>
+ *
+ * <p>
+ * You can provide an alternate error message by providing a <code>String</code> as a second argument
+ * to <code>assert</code>, like this:
  * </p>
  *
  * <pre class="stHighlight">
- * val left = 2
- * val right = 1
- * assert(left === right)
+ * val attempted = 2
+ * assert(attempted == 1, "Execution was attempted " + left + " times instead of 1 time")
  * </pre>
  *
  * <p>
- * Because you use <code>===</code> here instead of <code>==</code>, the failure report will include the left
- * and right values. For example, the detail message in the thrown <code>TestFailedException</code> from the <code>assert</code>
- * shown previously will include, "2 did not equal 1".
- * From this message you will know that the operand on the left had the value 2, and the operand on the right had the value 1.
- * </p>
- *
- * <p>
- * If you're familiar with JUnit, you would use <code>===</code>
- * in a ScalaTest <code>Suite</code> where you'd use <code>assertEquals</code> in a JUnit <code>TestCase</code>.
- * The <code>===</code> operator is made possible by an implicit conversion from <code>Any</code>
- * to <code>Equalizer</code>. If you're curious to understand the mechanics, see the <a href="Assertions$Equalizer.html">documentation for
- * <code>Equalizer</code></a> and the <code>convertToEqualizer</code> method.
+ * Using this form of <code>assert</code>, the failure report will be more specific to your problem domain, thereby
+ * helping you debug the problem. This <code>Assertions</code> trait also mixes in the
+ * <a href="../scalautils/TripleEquals.html"><code>TripleEquals</code></a>, which gives you a <code>===</code> operator
+ * that allows you to customize <a href="../scalautils/Equality.html"><code>Equality</code></a>, perform equality checks with numeric
+ * <a href="../scalautils/Tolerance.html"><code>Tolerance</code></a>, and enforce type constraints at compile time with
+ * sibling traits <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a> and
+ * <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a>.
  * </p>
  *
  * <h2>Expected results</h2>
  *
- * Although <code>===</code> provides a natural, readable extension to Scala's <code>assert</code> mechanism,
- * as the operands become lengthy, the code becomes less readable. In addition, the <code>===</code> comparison
- * doesn't distinguish between actual and expected values. The operands are just called <code>left</code> and <code>right</code>,
+ * Although the <code>assert</code> macro provides a natural, readable extension to Scala's <code>assert</code> mechanism that
+ * provides good error messages, as the operands become lengthy, the code becomes less readable. In addition, the error messages
+ * generated for <code>==</code> and <code>===</code> comparisons
+ * don't distinguish between actual and expected values. The operands are just called <code>left</code> and <code>right</code>,
  * because if one were named <code>expected</code> and the other <code>actual</code>, it would be difficult for people to
  * remember which was which. To help with these limitations of assertions, <code>Suite</code> includes a method called <code>assertResult</code> that
- * can be used as an alternative to <code>assert</code> with <code>===</code>. To use <code>assertResult</code>, you place
+ * can be used as an alternative to <code>assert</code>. To use <code>assertResult</code>, you place
  * the expected value in parentheses after <code>assertResult</code>, followed by curly braces containing code
  * that should result in the expected value. For example:
  *
@@ -151,7 +154,7 @@ import org.scalautils.Prettifier
  *   fail()
  * }
  * catch {
- *   case _: IndexOutOfBoundsException => // Expected, so continue
+ *   case _: IndexOutOfBoundsException =&gt; // Expected, so continue
  * }
  * </pre>
  *
@@ -285,106 +288,33 @@ import org.scalautils.Prettifier
  */
 trait Assertions extends TripleEquals {
 
-  /* *
-   * Class used via an implicit conversion to enable any two objects to be compared with
-   * <code>===</code> in assertions in tests. For example:
-   *
-   * <pre class="stHighlight">
-   * assert(a === b)
-   * </pre>
-   *
-   * <p>
-   * The benefit of using <code>assert(a === b)</code> rather than <code>assert(a == b)</code> is
-   * that a <code>TestFailedException</code> produced by the former will include the values of <code>a</code> and <code>b</code>
-   * in its detail message.
-   * The implicit method that performs the conversion from <code>Any</code> to <code>Equalizer</code> is
-   * <code>convertToEqualizer</code> in trait <code>Assertions</code>.
-   * </p>
-   *
-   * <p>
-   * In case you're not familiar with how implicit conversions work in Scala, here's a quick explanation.
-   * The <code>convertToEqualizer</code> method in <code>Assertions</code> is defined as an "implicit" method that takes an
-   * <code>Any</code>, which means you can pass in any object, and it will convert it to an <code>Equalizer</code>.
-   * The <code>Equalizer</code> has <code>===</code> defined. Most objects don't have <code>===</code> defined as a method
-   * on them. Take two Strings, for example:
-   * </p>
-   *
-   * <pre class="stHighlight">
-   * assert("hello" === "world")
-   * </pre>
-   *
-   * <p>
-   * Given this code, the Scala compiler looks for an <code>===</code> method on class <code>String</code>, because that's the class of
-   * <code>"hello"</code>. <code>String</code> doesn't define <code>===</code>, so the compiler looks for an implicit conversion from
-   * <code>String</code> to something that does have an <code>===</code> method, and it finds the <code>convertToEqualizer</code> method. It
-   * then rewrites the code to this:
-   * </p>
-   *
-   * <pre class="stHighlight">
-   * assert(convertToEqualizer("hello").===("world"))
-   * </pre>
-   *
-   * <p>
-   * So inside a <code>Suite</code> (which mixes in <code>Assertions</code>, <code>===</code> will work on anything. The only
-   * situation in which the implicit conversion wouldn't 
-   * happen is on types that have an <code>===</code> method already defined.
-   * </p>
-   * 
-   * <p>
-   * The primary constructor takes one object, <code>left</code>, whose type is being converted to <code>Equalizer</code>. The <code>left</code>
-   * value may be a <code>null</code> reference, because this is allowed by Scala's <code>==</code> operator.
-   * </p>
-   *
-   * @param left An object to convert to <code>Equalizer</code>, which represents the <code>left</code> value
-   *     of an assertion.
-   *
-   * @author Bill Venners
-   */
-/*
-  final class Equalizer(left: Any) {
-
-    /**
-     * The <code>===</code> operation compares this <code>Equalizer</code>'s <code>left</code> value (passed
-     * to the constructor, usually via an implicit conversion) with the passed <code>right</code> value 
-     * for equality as determined by the expression <code>left == right</code>.
-     * If <code>true</code>, <code>===</code> returns <code>None</code>. Else, <code>===</code> returns
-     * a <code>Some</code> whose <code>String</code> value indicates the <code>left</code> and <code>right</code> values.
-     *
-     * <p>
-     * In its typical usage, the <code>Option[String]</code> returned by <code>===</code> will be passed to one of two
-     * of trait <code>Assertion</code>' overloaded <code>assert</code> methods. If <code>None</code>,
-     * which indicates the assertion succeeded, <code>assert</code> will return normally. But if <code>Some</code> is passed,
-     * which indicates the assertion failed, <code>assert</code> will throw a <code>TestFailedException</code> whose detail
-     * message will include the <code>String</code> contained inside the <code>Some</code>, which in turn includes the
-     * <code>left</code> and <code>right</code> values. This <code>TestFailedException</code> is typically embedded in a 
-     * <code>Report</code> and passed to a <code>Reporter</code>, which can present the <code>left</code> and <code>right</code>
-     * values to the user.
-     * </p>
-     */
-    def ===(right: Any) =
-      if (areEqualComparingArraysStructurally(left, right))
-        None
-      else {
-        val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)
-        Some(FailureMessages("didNotEqual", leftee, rightee))
-      }
-/*
-    def !==(right: Any) =
-      if (left != right)
-        None
-      else {
-        val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)
-        Some(FailureMessages("equaled", leftee, rightee))
-      }
-*/
-  }
-*/
-
   import language.experimental.macros
+
   /**
    * Assert that a boolean condition is true.
    * If the condition is <code>true</code>, this method returns normally.
    * Else, it throws <code>TestFailedException</code>.
+   *
+   * <p>
+   * This method is implemented in terms of a Scala macro that will generate a more helpful error message
+   * for simple quality checks of this form:
+   * </p>
+   *
+   * <ul>
+   * <li>assert(a == b)</li>
+   * <li>assert(a != b)</li>
+   * <li>assert(a === b)</li>
+   * <li>assert(a !== b)</li>
+   * </ul>
+   *
+   * <p>
+   * Any other form of expression will just get a plain-old <code>TestFailedException</code> at this time. In the future,
+   * we will enhance this macro to give helpful error messages in more situations. In ScalaTest 2.0, however, this behavior
+   * was sufficient to allow the <code>===</code> that returns <code>Boolean</code>, not <code>Option[String]</code> to be
+   * the default in tests. This makes <code>===</code> consistent between tests and production code. If you have pre-existing
+   * code you wrote under ScalaTest 1.x, in which you are expecting<code>===</code> to return an <code>Option[String]</code>,
+   * use can get that behavior back by mixing in trait <a href="LegacyTripleEquals.html"><code>LegacyTripleEquals</code></a>.
+   * </p>
    *
    * @param condition the boolean condition to assert
    * @throws TestFailedException if the condition is <code>false</code>.
