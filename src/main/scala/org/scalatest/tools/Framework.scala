@@ -83,6 +83,7 @@ import StringReporter.fragmentsForEvent
  *   <li><code>-c</code>, <code>-P</code> -- concurrent/parallel is not supported because parallel execution is controlled by SBT.</li>
  *   <li><code>-q</code> is not supported because test discovery should be handled by SBT, and SBT's test-only or test filter serves the similar purpose</li>
  *   <li><code>-T</code> is not supported because correct ordering of text output is handled by SBT</li>
+ *   <li><code>-g</code> is not supported because current Graphic Reporter implementation works differently than standard reporter</li>
  * </ul>
  *
  * <h3>New Features of New Framework API</h3>
