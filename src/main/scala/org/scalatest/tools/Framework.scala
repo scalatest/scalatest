@@ -56,7 +56,7 @@ import StringReporter.fragmentsForEvent
  * </p>
  *
  * <pre class="stHighlight">
- * testOptions in Test += Tests.Argument("h", "target/html")  // Use HtmlReporter
+ * testOptions in Test += Tests.Argument("-h", "target/html")  // Use HtmlReporter
  * </pre>
  *
  * <p>
@@ -64,7 +64,7 @@ import StringReporter.fragmentsForEvent
  * </p>
  *
  * <pre class="stHighlight">
- * testOptions in Test += Tests.Argument(TestFrameworks.ScalaTest, "h", "target/html") // Use HtmlReporter
+ * testOptions in Test += Tests.Argument(TestFrameworks.ScalaTest, "-h", "target/html") // Use HtmlReporter
  * </pre>
  *
  * <h3>Supported arguments</h3>
@@ -120,8 +120,9 @@ import StringReporter.fragmentsForEvent
  *
  * <p>
  * In SBT version before 0.13, ScalaTest's nested suites are always executed sequentially regardless of <code>parallelExecution</code> value.
- * In new Framework API, a new concept of <code>Task</code> is introduced, which its <code>execute</code> method can return more (nested) <code>Task</code>s
- * for execution.  When <code>parallelExecution</code> is set to <code>true</code> (the default), SBT will execute the nested tasks in parallel.
+ * In new Framework API, a new concept of <a href="https://github.com/sbt/test-interface/blob/master/src/main/java/sbt/testing/Task.java"><code>Task</code></a>
+ * is introduced, which its <code>execute</code> method can return more (nested) <code>Task</code>s for execution.  When <code>parallelExecution</code>
+ * is set to <code>true</code> (the default), SBT will execute the nested tasks in parallel.
  * </p>
  *
  * <p>
