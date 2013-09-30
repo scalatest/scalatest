@@ -302,7 +302,7 @@ class ScalaTestFramework extends SbtFramework {
     new ScalaTestRunner(testLoader, loggers)
   }
   
-  class SbtLogInfoReporter(
+  private[scalatest] class SbtLogInfoReporter(
     loggers: Array[Logger],
     presentAllDurations: Boolean,
     presentInColor: Boolean,
