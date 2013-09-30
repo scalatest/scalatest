@@ -38,18 +38,185 @@ import scala.collection.JavaConverters._
 import StringReporter.fragmentsForEvent
 
 /**
+ * <p>
  * This class is ScalaTest's implementation of the new Framework API that is supported in sbt 0.13.
+ * </p>
+ *
+ * <p>
+ * To use ScalaTest in SBT, you should add ScalaTest as dependency in your SBT build file, the following shows an example
+ * for using ScalaTest 2.0 with Scala 2.10.x project:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * org.scalatest" % "scalatest_2.10" % "2.0" % "test"
+ * </pre>
+ *
+ * <p>
+ * To pass argument to ScalaTest from SBT, you can use <code>testOptions</code>:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * testOptions in Test += Tests.Argument("h", "target/html")  // Use HtmlReporter
+ * </pre>
+ *
+ * <p>
+ * If you are using multiple testing frameworks, you can pass arguments specific to ScalaTest only:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * testOptions in Test += Tests.Argument(TestFrameworks.ScalaTest, "h", "target/html") // Use HtmlReporter
+ * </pre>
+ *
+ * <h3>Supported arguments</h3>
+ *
+ * <p>
+ * Integration in SBT 0.13 supports same argument format as [[org.scalatest.tools.Runner <code>Runner</code>]],
+ * except the following arguments:
+ * </p>
+ *
+ * <ul>
+ *   <li><code>-p</code>, <code>-R</code> -- runpath is not supported because test path and discovery is handled by SBT</li>
+ *   <li><code>-s</code> -- suite is not supported because SBT's <code>test-only</code> serves the similar purpose</li>
+ *   <li><code>-A</code> -- again is not supported because SBT's <code>test-quick</code> serves the similar purpose</li>
+ *   <li><code>-j</code> -- junit is not supported because in SBT different test framework should be supported by its corresponding <code>Framework</code> implementation</li>
+ *   <li><code>-b</code> -- testng is not supported because in SBT different test framework should be supported by its corresponding <code>Framework</code> implementation</li>
+ *   <li><code>-c</code>, <code>-P</code> -- concurrent/parallel is not supported because parallel execution is controlled by SBT.</li>
+ *   <li><code>-q</code> is not supported because test discovery should be handled by SBT, and SBT's test-only or test filter serves the similar purpose</li>
+ *   <li><code>-T</code> is not supported because correct ordering of text output is handled by SBT</li>
+ * </ul>
+ *
+ * <h3>New Features of New Framework API</h3>
+ *
+ * <p>
+ * <a href="https://github.com/sbt/test-interface">New Framework API</a> supports a number of new features that ScalaTest has utilized to support a better testing
+ * experience in SBT.  The followings are summary of new features supported by the new Framework API:
+ * </p>
+ *
+ * <ul>
+ *   <li>Specified behavior of single instance of <code>Runner</code> per project run (non-fork), and a new <code>done</code> method</li>
+ *   <li>API to return nested tasks</li>
+ *   <li>API to support test execution in <code>fork</code> mode</li>
+ *   <li>Selector API to selectively run tests</li>
+ *   <li>Added new <code>Ignored</code>, <code>Canceled</code> and <code>Pending</code> status</li>
+ *   <li>Added SBT Tagging support</li>
+ * </ul>
+ *
+ * <h3>Specified behavior of single instance of <code>Runner</code> per project run (non-fork), and a new <code>done</code> method</h3>
+ *
+ * <p>
+ * In new Framework API, it is now a specified behavior that <code>Framework</code>'s <code>runner</code> method will be called
+ * to get a <code>Runner</code> instance once per project run.  Arguments will be passed when calling <code>Framework</code>'s <code>runner</code>
+ * and this gives ScalaTest a good place to perform setup tasks, such as initializing <code>Reporter</code>s.
+ * </p>
+ *
+ * <p>
+ * There's also a new <code>done</code> on <code>Runner</code> interface, which in turns provide a good spot for ScalaTest to perform
+ * cleanup tasks, such as disposing the <code>Reporter</code>s.  [[org.scalatest.tools.HtmlReporter <code>HtmlReporter</code>]] depends
+ * on this behavior to generate its <code>index.html</code>.  In addition, <code>done</code> can return framework-specific summary text
+ * for SBT to render at the end of the project run, which allows ScalaTest to return its own summary text.
+ * </p>
+ *
+ * <h3>API to return nested tasks</h3>
+ *
+ * <p>
+ * In SBT version before 0.13, ScalaTest's nested suites are always executed sequentially regardless of <code>parallelExecution</code> value.
+ * In new Framework API, a new concept of <code>Task</code> is introduced, which its <code>execute</code> method can return more (nested) <code>Task</code>s
+ * for execution.  When <code>parallelExecution</code> is set to <code>true</code> (the default), SBT will execute the nested tasks in parallel.
+ * </p>
+ *
+ * <p>
+ * Each <code>Suite</code> in ScalaTest now maps to a <code>Task</code> in SBT, and its nested suites are returned as nested <code>Task</code>s.
+ * This enables parallel execution of nested suites in SBT.
+ * </p>
+ *
+ * <h3>API to support test execution in <code>fork</code> mode</h3>
+ *
+ * <p>
+ * Forking was added to SBT since version 0.12, you can find documentation for forking support in SBT at <a href="http://www.scala-sbt.org/0.13.0/docs/Detailed-Topics/Forking.html">Forking in SBT</a>.
+ * </p>
+ *
+ * <p>
+ * Although forking is already available in SBT since 0.12, there's no support in old Framework API, until it is added in new Framework API that is supported in
+ * SBT 0.13.  With API provided with new Framework API, ScalaTest creates real <code>Reporter</code>s in the main process, and uses <code>SocketReporter</code>
+ * in forked process to send events back to the main process, and get processed by real <code>Reporter</code>s at the main process.  All of this is transparent
+ * to any custom <code>Reporter</code> implementation, as only one instance of the custom <code>Reporter</code> will be created to process the events, regardless
+ * of whether the tests run in same or forked process.
+ * </p>
+ *
+ * <h3>Selector API to selectively run tests</h3>
+ *
+ * <p>
+ * New Framework API includes a set of comprehensive API to select tests for execution.  Though new Framework API supports fine-grained test selection, current
+ * SBT's <code>test-only</code> and <code>test-quick</code> supports up to suite level selection only, or <code>SuiteSelector</code> as defined in new Framework API.
+ * This <code>Framework</code> implementation already supports <code>SuiteSelector</code>, <code>NestedSuiteSelector</code>, <code>TestSelector</code> and
+ * <code>NestedTestSelector</code>, which should work once future SBT version supports them.
+ * </p>
+ *
+ * <h3>Added new <code>Ignored</code>, <code>Canceled</code> and <code>Pending</code> status</h3>
+ *
+ * <p>
+ * Status <code>Ignored</code>, <code>Canceled</code> and <code>Pending</code> are added to new Framework API, and they match perfectly with ScalaTest's ignored
+ * tests (now reported as <code>Ignored</code> instead of <code>Skipped</code>), as well as canceled and pending tests newly added in ScalaTest 2.0.
+ * </p>
+ *
+ * <h3>Added SBT Tagging support</h3>
+ *
+ * <p>
+ * SBT supports <a href="http://www.scala-sbt.org/release/docs/Detailed-Topics/Parallel-Execution.html#tagging-tasks">task tagging</a>, but has no support in old
+ * Framework API for test frameworks to integrate it.  New Framework API supports it, and you can now use the following annotations to annotate your suite for SBT
+ * built-in resource tags:
+ * </p>
+ *
+ * <ul>
+ *   <li>[[org.scalatest.tags.CPU <code>CPU</code>]]</li>
+ *   <li>[[org.scalatest.tags.Disk <code>Disk</code>]]</li>
+ *   <li>[[org.scalatest.tags.Network <code>Network</code>]]</li>
+ * </ul>
+ *
+ * <p>
+ * They will be mapped to corresponding resource tag <code>CPU</code>, <code>Disk</code> and <code>Network</code> in SBT.
+ * </p>
+ *
+ * <p>
+ * You can also define custom tag, which you'll need to write it as Java annotation:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * import java.lang.annotation.Target;
+ * import java.lang.annotation.Retention;
+ * import org.scalatest.TagAnnotation;
+ *
+ * @TagAnnotation("custom")
+ * @Retention(RetentionPolicy.RUNTIME)
+ * @Target({ElementType.TYPE})
+ * public @interface Custom {}
+ * </pre>
+ *
+ * <p>
+ * which will be translated to <code>Tags.Tag("custom")</code> in SBT.
+ * </p>
+ *
+ * @author Chee Seng
  */
 class Framework extends SbtFramework {
 
   /**
    * Test framework name.
+   *
+   * @return <code>ScalaTest</code>
    */
   def name = "ScalaTest"
  
   private val resultHolder = new SuiteResultHolder()
 
-  def fingerprints = 
+  /**
+   * An array of <code>Fingerprint</code></a>s that specify how to identify ScalaTest's test classes during
+   * discovery.
+   *
+   * @return <code>SubclassFingerprint</code> for <code>org.scalatest.Suite</code> and <code>AnnotatedFingerprint</code> for <code>org.scalatest.WrapWith</code>
+   *
+   */
+  def fingerprints =
     Array(
       new SubclassFingerprint {
         def superclassName = "org.scalatest.Suite"
@@ -791,6 +958,16 @@ class Framework extends SbtFramework {
     }
   }
 
+  /**
+   *
+   * Initiates a ScalaTest run.
+   *
+   * @param args the ScalaTest arguments for the new run
+   * @param remoteArgs the ScalaTest remote arguments for the run in a forked JVM
+   * @param testClassLoader a class loader to use when loading test classes during the run
+   * @return a <code>Runner</code> implementation representing the newly started run to run ScalaTest's tests.
+   * @throws IllegalArgumentException when invalid or unsupported argument is passed
+   */
   def runner(args: Array[String], remoteArgs: Array[String], testClassLoader: ClassLoader): SbtRunner = {
 
     val ParsedArgs(
