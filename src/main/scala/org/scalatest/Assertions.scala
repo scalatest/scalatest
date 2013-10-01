@@ -512,12 +512,12 @@ trait Assertions extends TripleEquals {
    * </pre>
    *
    * <p>
-   * For more information on how this mechanism works, see the <a href="Assertions$Equalizer.html">documentation for
-   * <code>Equalizer</code></a>.
+   * For more information on how this mechanism works, see the [[org.scalautils.TripleEqualsSupport.Equalizer documentation for
+   * <code>Equalizer</code>]].
    * </p>
    *
    * @param o the <code>Option[String]</code> to assert
-   * @param clue An objects whose <code>toString</code> method returns a message to include in a failure report.
+   * @param clue An object whose <code>toString</code> method returns a message to include in a failure report.
    * @throws TestFailedException if the <code>Option[String]</code> is <code>Some</code>.
    * @throws NullPointerException if <code>message</code> is <code>null</code>.
    */
@@ -546,8 +546,8 @@ trait Assertions extends TripleEquals {
    * </pre>
    *
    * <p>
-   * For more information on how this mechanism works, see the <a href="Assertions$Equalizer.html">documentation for
-   * <code>Equalizer</code></a>.
+   * For more information on how this mechanism works, see the [[org.scalautils.TripleEqualsSupport.Equalizer documentation for
+   * <code>Equalizer</code>]].
    * </p>
    *
    * @param o the <code>Option[String]</code> to assert
@@ -626,12 +626,12 @@ trait Assertions extends TripleEquals {
    * </pre>
    *
    * <p>
-   * For more information on how this mechanism works, see the <a href="Assertions$Equalizer.html">documentation for
-   * <code>Equalizer</code></a>.
+   * For more information on how this mechanism works, see the [[org.scalautils.TripleEqualsSupport.Equalizer documentation for
+   * <code>Equalizer</code>]].
    * </p>
    *
    * @param o the <code>Option[String]</code> to assert
-   * @param clue An objects whose <code>toString</code> method returns a message to include in a failure report.
+   * @param clue An object whose <code>toString</code> method returns a message to include in a failure report.
    * @throws TestCanceledException if the <code>Option[String]</code> is <code>Some</code>.
    * @throws NullPointerException if <code>message</code> is <code>null</code>.
    */
@@ -656,16 +656,16 @@ trait Assertions extends TripleEquals {
    * </p>
    *
    * <pre class="stHighlight">
-   * assert(a === b)
+   * assume(a === b)
    * </pre>
    *
    * <p>
-   * For more information on how this mechanism works, see the <a href="Assertions$Equalizer.html">documentation for
-   * <code>Equalizer</code></a>.
+   * For more information on how this mechanism works, see the [[org.scalautils.TripleEqualsSupport.Equalizer documentation for
+   * <code>Equalizer</code>]].
    * </p>
    *
    * @param o the <code>Option[String]</code> to assert
-   * @throws TestFailedException if the <code>Option[String]</code> is <code>Some</code>.
+   * @throws TestCanceledException if the <code>Option[String]</code> is <code>Some</code>.
    */
   // def assume(o: Option[String]) = throwIfSome(o, (a: Any) => newTestCanceledException(Some(a.toString), None, 3))
   @deprecated("This method has been deprecated in favor of macro assumption and will be removed in a future version of ScalaTest. If you need this, please copy the source code into your own trait instead.")
