@@ -815,7 +815,7 @@ object Or {
    * Constructs a new <code>Or</code> from the given <code>Try</code>.
    *
    * @param theTry the <code>Try</code> to convert to an <code>Or</code>
-   * @return a new <code>Or<code> whose <code>Good</code> type is the <code>Try</code>'s <code>Success</code> type and whose
+   * @return a new <code>Or</code> whose <code>Good</code> type is the <code>Try</code>'s <code>Success</code> type and whose
    *    <code>Bad</code> type is <code>Throwable</code>.
    */
   def from[G](theTry: Try[G]): G Or Throwable =
@@ -835,7 +835,7 @@ object Or {
    * </p>
    *
    * @param either the <code>Either</code> to convert to an <code>Or</code>
-   * @return a new <code>Or<code> whose <code>Good</code> type is the <code>Either</code>'s <code>Right</code> type and whose
+   * @return a new <code>Or</code> whose <code>Good</code> type is the <code>Either</code>'s <code>Right</code> type and whose
    *    <code>Bad</code> type is <code>Either</code>'s <code>Left</code> type.
    */
   def from[B, G](either: Either[B, G]): G Or B =
