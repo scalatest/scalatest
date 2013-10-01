@@ -383,6 +383,64 @@ trait Assertions extends TripleEquals {
         }
       }
     }
+
+    /**
+     * Assume that the passed in expression is <code>true</code>, else throw <code>TestCanceledException</code>.
+     *
+     * @param expression <code>Boolean</code> expression to assume for
+     * @param clue optional clue to be included in <code>TestCanceledException</code>'s error message when assertion failed
+     */
+    def macroAssume(expression: Boolean, clue: Option[Any]) {
+      if (!expression)
+        throw newTestCanceledException(if (clue.isDefined) Some(clue.get + "") else None, None, "Assertions.scala", "macroAssume", 2)
+    }
+
+    /**
+     * Assume that the passed in expression is <code>true</code>, else throw <code>TestCanceledException</code>.
+     *
+     * @param left the LHS of the expression
+     * @param operator the operator of the expression
+     * @param right the RHS of the expression
+     * @param expression <code>Boolean</code> expression to assume for
+     * @param clue optional clue to be included in <code>TestCanceledException</code>'s error message when assertion failed
+     */
+    def macroAssume(left: Any, operator: String, right: Any, expression: Boolean, clue: Option[Any]) {
+      def getObjectsForFailureMessage(a: Any, b: Any) =
+        a match {
+          case aEqualizer: org.scalautils.TripleEqualsSupport#Equalizer[_] =>
+            Suite.getObjectsForFailureMessage(aEqualizer.left, b)
+          case aEqualizer: org.scalautils.TripleEqualsSupport#CheckingEqualizer[_] =>
+            Suite.getObjectsForFailureMessage(aEqualizer.left, b)
+          case _ => Suite.getObjectsForFailureMessage(left, right)
+        }
+      def prependClueIfRequired: String =
+        clue match {
+          case Some(clue) => clue + "\n"
+          case None => ""
+        }
+      if (!expression) {
+        throw operator match {
+          case "==" =>
+            val (leftee, rightee) = getObjectsForFailureMessage(left, right)
+            newTestCanceledException(Some(prependClueIfRequired + FailureMessages("didNotEqual", leftee, rightee)), None, "Assertions.scala", "macroAssume", 2)
+          case "===" =>
+            val (leftee, rightee) = getObjectsForFailureMessage(left, right)
+            newTestCanceledException(Some(prependClueIfRequired + FailureMessages("didNotEqual", leftee, rightee)), None, "Assertions.scala", "macroAssume", 2)
+          case "!=" =>
+            val (leftee, rightee) = getObjectsForFailureMessage(left, right)
+            newTestCanceledException(Some(prependClueIfRequired + FailureMessages("equaled", leftee, rightee)), None, "Assertions.scala", "macroAssume", 2)
+          case "!==" =>
+            val (leftee, rightee) = getObjectsForFailureMessage(left, right)
+            newTestCanceledException(Some(prependClueIfRequired + FailureMessages("equaled", leftee, rightee)), None, "Assertions.scala", "macroAssume", 2)
+          /*case ">" => newTestCanceledException(Some(prependClueIfRequired + FailureMessages("wasNotGreaterThan", left, right)), None, "Assertions.scala", "macroAssertTrue", 2)
+          case ">=" => newTestCanceledException(Some(prependClueIfRequired + FailureMessages("wasNotGreaterThanOrEqualTo", left, right)), None, "Assertions.scala", "macroAssertTrue", 2)
+          case "<" => newTestCanceledException(Some(prependClueIfRequired + FailureMessages("wasNotLessThan", left, right)), None, "Assertions.scala", "macroAssertTrue", 2)
+          case "<=" => newTestCanceledException(Some(prependClueIfRequired + FailureMessages("wasNotLessThanOrEqualTo", left, right)), None, "Assertions.scala", "macroAssertTrue", 2)*/
+          case _ =>
+            throw newTestCanceledException(if (clue.isDefined) Some(clue.get + "") else None, None, "Assertions.scala", "macroAssume", 2)
+        }
+      }
+    }
   }
 
   /**
@@ -399,7 +457,7 @@ trait Assertions extends TripleEquals {
     }
   
   private[scalatest] def newAssertionFailedException(optionalMessage: Option[String], optionalCause: Option[Throwable], fileName: String, methodName: String, stackDepthAdjustment: Int): Throwable =
-    new TestFailedException(toExceptionFunction(optionalMessage), optionalCause, getStackDepthFun(fileName, methodName, stackDepthAdjustment))
+    new exceptions.TestFailedException(toExceptionFunction(optionalMessage), optionalCause, getStackDepthFun(fileName, methodName, stackDepthAdjustment))
 
   private def newTestCanceledException(optionalMessage: Option[Any], optionalCause: Option[Throwable], stackDepth: Int): Throwable =
     (optionalMessage, optionalCause) match {
@@ -408,6 +466,9 @@ trait Assertions extends TripleEquals {
       case (Some(message), None) => new TestCanceledException(message.toString, stackDepth)
       case (Some(message), Some(cause)) => new TestCanceledException(message.toString, cause, stackDepth)
     }
+
+  private[scalatest] def newTestCanceledException(optionalMessage: Option[String], optionalCause: Option[Throwable], fileName: String, methodName: String, stackDepthAdjustment: Int): Throwable =
+    new TestCanceledException(toExceptionFunction(optionalMessage), optionalCause, getStackDepthFun(fileName, methodName, stackDepthAdjustment), None)
 
   /**
    * Assert that a boolean condition, described in <code>String</code>
@@ -497,15 +558,32 @@ trait Assertions extends TripleEquals {
    * If the condition is <code>true</code>, this method returns normally.
    * Else, it throws <code>TestCanceledException</code>.
    *
-   * @param condition the boolean condition to assert
+   * <p>
+   * This method is implemented in terms of a Scala macro that will generate a more helpful error message
+   * for simple quality checks of this form:
+   * </p>
+   *
+   * <ul>
+   * <li>assume(a == b)</li>
+   * <li>assume(a != b)</li>
+   * <li>assume(a === b)</li>
+   * <li>assume(a !== b)</li>
+   * </ul>
+   *
+   * <p>
+   * Any other form of expression will just get a plain-old <code>TestCanceledException</code> at this time. In the future,
+   * we will enhance this macro to give helpful error messages in more situations. In ScalaTest 2.0, however, this behavior
+   * was sufficient to allow the <code>===</code> that returns <code>Boolean</code>, not <code>Option[String]</code> to be
+   * the default in tests. This makes <code>===</code> consistent between tests and production code. If you have pre-existing
+   * code you wrote under ScalaTest 1.x, in which you are expecting<code>===</code> to return an <code>Option[String]</code>,
+   * use can get that behavior back by mixing in trait <a href="LegacyTripleEquals.html"><code>LegacyTripleEquals</code></a>.
+   * </p>
+   *
+   * @param condition the boolean condition to assume
    * @throws TestCanceledException if the condition is <code>false</code>.
    */
-  def assume(condition: Boolean) {
-    if (!condition)
-      throw newTestCanceledException(None, None, 3)
-  }
+  def assume(condition: Boolean): Unit = macro AssertionsMacro.assume
 
-  
   /**
    * Assume that a boolean condition, described in <code>String</code>
    * <code>message</code>, is true.
@@ -516,13 +594,10 @@ trait Assertions extends TripleEquals {
    *
    * @param condition the boolean condition to assume
    * @param clue An objects whose <code>toString</code> method returns a message to include in a failure report.
-   * @throws TestFailedException if the condition is <code>false</code>.
+   * @throws TestCanceledException if the condition is <code>false</code>.
    * @throws NullPointerException if <code>message</code> is <code>null</code>.
    */
-  def assume(condition: Boolean, clue: Any) {
-    if (!condition)
-      throw newTestCanceledException(Some(clue.toString), None, 3)
-  }
+  def assume(condition: Boolean, clue: Any): Unit = macro AssertionsMacro.assumeWithClue
 
   /**
    * Assume that an <code>Option[String]</code> is <code>None</code>. 
@@ -552,6 +627,7 @@ trait Assertions extends TripleEquals {
    * @throws TestCanceledException if the <code>Option[String]</code> is <code>Some</code>.
    * @throws NullPointerException if <code>message</code> is <code>null</code>.
    */
+  @deprecated("This method has been deprecated in favor of macro assumption and will be removed in a future version of ScalaTest. If you need this, please copy the source code into your own trait instead.")
   def assume(o: Option[String], clue: Any) {
     o match {
       case Some(s) => throw newTestCanceledException(Some(clue + "\n" + s), None, 3)
@@ -584,6 +660,7 @@ trait Assertions extends TripleEquals {
    * @throws TestFailedException if the <code>Option[String]</code> is <code>Some</code>.
    */
   // def assume(o: Option[String]) = throwIfSome(o, (a: Any) => newTestCanceledException(Some(a.toString), None, 3))
+  @deprecated("This method has been deprecated in favor of macro assumption and will be removed in a future version of ScalaTest. If you need this, please copy the source code into your own trait instead.")
   def assume(o: Option[String]) {
     o match {
       case Some(s) => throw newTestCanceledException(Some(s), None, 3)
