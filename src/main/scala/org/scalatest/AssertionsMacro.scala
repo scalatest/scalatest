@@ -213,7 +213,7 @@ private[scalatest] class AssertionsMacro[C <: Context](val context: C) {
       )
     )
 
-  def apply(booleanExpr: Expr[Boolean]): Expr[Unit] = {
+  def assert(booleanExpr: Expr[Boolean]): Expr[Unit] = {
     val booleanTree = booleanExpr.tree
     booleanTree match {
       case apply: Apply =>
@@ -247,7 +247,7 @@ private[scalatest] class AssertionsMacro[C <: Context](val context: C) {
     }
   }
 
-  def apply(booleanExpr: Expr[Boolean], clueExpr: Expr[Any]): Expr[Unit] = {
+  def assertWithClue(booleanExpr: Expr[Boolean], clueExpr: Expr[Any]): Expr[Unit] = {
     val booleanTree = booleanExpr.tree
     val clueTree = clueExpr.tree
     booleanTree match {
@@ -371,8 +371,8 @@ private[scalatest] object AssertionsMacro {
    * @param condition original condition expression
    * @return transformed expression that performs the assertion check and throw <code>TestFailedException</code> with rich error message if assertion failed
    */
-  def apply(context: Context)(condition: context.Expr[Boolean]): context.Expr[Unit] = {
-    new AssertionsMacro[context.type](context).apply(condition)
+  def assert(context: Context)(condition: context.Expr[Boolean]): context.Expr[Unit] = {
+    new AssertionsMacro[context.type](context).assert(condition)
   }
 
   /**
@@ -383,8 +383,8 @@ private[scalatest] object AssertionsMacro {
    * @param clue original clue expression
    * @return transformed expression that performs the assertion check and throw <code>TestFailedException</code> with rich error message (clue included) if assertion failed
    */
-  def applyWithClue(context: Context)(condition: context.Expr[Boolean], clue: context.Expr[Any]): context.Expr[Unit] = {
-    new AssertionsMacro[context.type](context).apply(condition, clue)
+  def assertWithClue(context: Context)(condition: context.Expr[Boolean], clue: context.Expr[Any]): context.Expr[Unit] = {
+    new AssertionsMacro[context.type](context).assertWithClue(condition, clue)
   }
 
   /**
