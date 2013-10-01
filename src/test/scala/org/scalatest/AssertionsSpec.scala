@@ -526,6 +526,340 @@ class AssertionsSpec extends FunSpec with OptionValues {
     }
   }
 
+  describe("The assert(boolean, clue) method") {
+    val a = 3
+    val b = 5
+
+    val bob = "bob"
+    val alice = "alice"
+
+    it("should do nothing when is used to check a == 3") {
+      assert(a == 3, "dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check a == 5") {
+      val e = intercept[TestFailedException] {
+        assert(a == 5, "dude")
+      }
+      assert(e.message === Some(didNotEqual(3, 5) + " dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check 5 == b") {
+      assert(5 == b, ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check 3 == b") {
+      val e = intercept[TestFailedException] {
+        assert(3 == b, ", dude")
+      }
+      assert(e.message === Some(didNotEqual(3, 5) + ", dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check a != 5") {
+      assert(a != 5, ". dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check a != 3") {
+      val e = intercept[TestFailedException] {
+        assert(a != 3, ". dude")
+      }
+      assert(e.message === Some(equaled(3, 3) + ". dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check 3 != b") {
+      assert(3 != b, "; dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check 5 != b") {
+      val e = intercept[TestFailedException] {
+        assert(5 != b, "; dude")
+      }
+      assert(e.message === Some(equaled(5, 5) + "; dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check 3 == 3") {
+      assert(3 == 3, "dude")
+    }
+
+    it("should throw TestFailedException with message that contains the original code and correct stack depth when is used to check 3 == 5") {
+      // This is because the compiler simply pass the false boolean literal
+      // to the macro, can't find a way to get the 3 == 5 literal.
+      val e1 = intercept[TestFailedException] {
+        assert(3 == 5, "dude")
+      }
+      assert(e1.message === Some("dude"))
+      assert(e1.failedCodeFileName === (Some(fileName)))
+      assert(e1.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestFailedException] {
+        assert(3 == 5, "3 did not equal 5")
+      }
+      assert(e2.message === Some("3 did not equal 5"))
+      assert(e2.failedCodeFileName === (Some(fileName)))
+      assert(e2.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check a == b") {
+      val e = intercept[TestFailedException] {
+        assert(a == b, ", dude")
+      }
+      assert(e.message === Some(didNotEqual(3, 5) + ", dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check a == null") {
+      val e = intercept[TestFailedException] {
+        assert(a == null, ". dude")
+      }
+      assert(e.message === Some(didNotEqual(3, null) + ". dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check null == a") {
+      val e = intercept[TestFailedException] {
+        assert(null == a, "; dude")
+      }
+      assert(e.message === Some(didNotEqual(null, 3) + "; dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check 3 != a") {
+      val e = intercept[TestFailedException] {
+        assert(3 != a, ", dude")
+      }
+      assert(e.message === Some(equaled(3, 3) + ", dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check 5 != a") {
+      assert(5 != a, ". dude")
+    }
+
+    /*it("should do nothing when is used to check a > 2") {
+      assert(a > 2, ". dude")
+    }
+
+    it("should do nothing when is used to check 5 > a") {
+      assert(5 > a, ". dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check a > 3") {
+      val e = intercept[TestFailedException] {
+        assert(a > 3, ". dude")
+      }
+      assert(e.message === Some(wasNotGreaterThan(3, 3) + ". dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check 3 > a") {
+      val e = intercept[TestFailedException] {
+        assert(3 > a, "; dude")
+      }
+      assert(e.message === Some(wasNotGreaterThan(3, 3) + "; dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check a >= 3") {
+      assert(a >= 3, ", dude")
+    }
+
+    it("should do nothing when is used to check 3 >= a") {
+      assert(3 >= a, ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check a >= 4") {
+      val e = intercept[TestFailedException] {
+        assert(a >= 4, ", dude")
+      }
+      assert(e.message === Some(wasNotGreaterThanOrEqualTo(3, 4) + ", dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check 2 >= a") {
+      val e = intercept[TestFailedException] {
+        assert(2 >= a, ". dude")
+      }
+      assert(e.message === Some(wasNotGreaterThanOrEqualTo(2, 3) + ". dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check b < 6") {
+      assert(b < 6, "; dude")
+    }
+
+    it("should do nothing when is used to check 3 < b") {
+      assert(3 < b, "; dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check b < 5") {
+      val e = intercept[TestFailedException] {
+        assert(b < 5, "; dude")
+      }
+      assert(e.message === Some(wasNotLessThan(5, 5) + "; dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check 5 < b") {
+      val e = intercept[TestFailedException] {
+        assert(5 < b, ", dude")
+      }
+      assert(e.message === Some(wasNotLessThan(5, 5) + ", dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check b <= 5") {
+      assert(b <= 5, ". dude")
+    }
+
+    it("should do nothing when is used to check 5 <= b") {
+      assert(5 <= b, ". dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check b <= 4") {
+      val e = intercept[TestFailedException] {
+        assert(b <= 4, ". dude")
+      }
+      assert(e.message === Some(wasNotLessThanOrEqualTo(5, 4) + ". dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check 6 <= b") {
+      val e = intercept[TestFailedException] {
+        assert(6 <= b, "; dude")
+      }
+      assert(e.message === Some(wasNotLessThanOrEqualTo(6, 5) + "; dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }*/
+
+    it("should do nothing when is used to check bob == \"bob\"") {
+      assert(bob == "bob", "dude")
+    }
+
+    it("should do nothing when is used to check bob != \"alice\"") {
+      assert(bob != "alice", "dude")
+    }
+
+    it("should do nothing when is used to check alice == \"alice\"") {
+      assert(alice == "alice", "dude")
+    }
+
+    it("should do nothing when is used to check alice != \"bob\"") {
+      assert(alice != "bob", "dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check bob == \"alice\"") {
+      val e = intercept[TestFailedException] {
+        assert(bob == "alice", "dude")
+      }
+      assert(e.message === Some(didNotEqual(bob, "alice") + " dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check bob != \"bob\"") {
+      val e = intercept[TestFailedException] {
+        assert(bob != "bob", ", dude")
+      }
+      assert(e.message === Some(equaled(bob, "bob") + ", dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check alice == \"bob\"") {
+      val e = intercept[TestFailedException] {
+        assert(alice == "bob", ". dude")
+      }
+      assert(e.message === Some(didNotEqual(alice, "bob") + ". dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check alice != \"alice\"") {
+      val e = intercept[TestFailedException] {
+        assert(alice != "alice", "; dude")
+      }
+      assert(e.message === Some(equaled(alice, "alice") + "; dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    // TripleEquals tests
+    // currently these tests are not calling TripleEquals's === and !== yet, import org.scalautils.TripleEquals does not seems to work
+    // Should make Assertions to extend TripleEquals instead of LegacyTripleEquals instead.
+
+    it("should do nothing when is used to check a === 3") {
+      assert(a === 3, "dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check a === 5") {
+      val e = intercept[TestFailedException] {
+        assert(a === 5, "dude")
+      }
+      assert(e.message === Some(didNotEqual(3, 5) + " dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check 3 === a") {
+      assert(3 === a, ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check 5 === a") {
+      val e = intercept[TestFailedException] {
+        assert(5 === a, ", dude")
+      }
+      assert(e.message === Some(didNotEqual(5, 3) + ", dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check a !== 5") {
+      assert(a !== 5, ". dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check a !== 3") {
+      val e = intercept[TestFailedException] {
+        assert(a !== 3, ". dude")
+      }
+      assert(e.message === Some(equaled(3, 3) + ". dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check 5 !== a") {
+      assert(5 !== a, "; dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check 3 !== a") {
+      val e = intercept[TestFailedException] {
+        assert(3 !== a, "; dude")
+      }
+      assert(e.message === Some(equaled(3, 3) + "; dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+  }
+
   describe("The assume(boolean) method") {
     val a = 3
     val b = 5
@@ -855,6 +1189,340 @@ class AssertionsSpec extends FunSpec with OptionValues {
         assume(3 !== a)
       }
       assert(e.message === Some(equaled(3, 3)))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+  }
+
+  describe("The assume(boolean, clue) method") {
+    val a = 3
+    val b = 5
+
+    val bob = "bob"
+    val alice = "alice"
+
+    it("should do nothing when is used to check a == 3") {
+      assume(a == 3, "dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check a == 5") {
+      val e = intercept[TestCanceledException] {
+        assume(a == 5, "dude")
+      }
+      assert(e.message === Some(didNotEqual(3, 5) + " dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check 5 == b") {
+      assume(5 == b, ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check 3 == b") {
+      val e = intercept[TestCanceledException] {
+        assume(3 == b, ", dude")
+      }
+      assert(e.message === Some(didNotEqual(3, 5) + ", dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check a != 5") {
+      assume(a != 5, ". dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check a != 3") {
+      val e = intercept[TestCanceledException] {
+        assume(a != 3, ". dude")
+      }
+      assert(e.message === Some(equaled(3, 3) + ". dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check 3 != b") {
+      assume(3 != b, "; dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check 5 != b") {
+      val e = intercept[TestCanceledException] {
+        assume(5 != b, "; dude")
+      }
+      assert(e.message === Some(equaled(5, 5) + "; dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check 3 == 3") {
+      assume(3 == 3, "dude")
+    }
+
+    it("should throw TestCanceledException with message that contains the original code and correct stack depth when is used to check 3 == 5") {
+      // This is because the compiler simply pass the false boolean literal
+      // to the macro, can't find a way to get the 3 == 5 literal.
+      val e1 = intercept[TestCanceledException] {
+        assume(3 == 5, "dude")
+      }
+      assert(e1.message === Some("dude"))
+      assert(e1.failedCodeFileName === (Some(fileName)))
+      assert(e1.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestCanceledException] {
+        assume(3 == 5, "3 did not equal 5")
+      }
+      assert(e2.message === Some("3 did not equal 5"))
+      assert(e2.failedCodeFileName === (Some(fileName)))
+      assert(e2.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check a == b") {
+      val e = intercept[TestCanceledException] {
+        assume(a == b, "dude")
+      }
+      assert(e.message === Some(didNotEqual(3, 5) + " dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check a == null") {
+      val e = intercept[TestCanceledException] {
+        assume(a == null, ", dude")
+      }
+      assert(e.message === Some(didNotEqual(3, null) + ", dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check null == a") {
+      val e = intercept[TestCanceledException] {
+        assume(null == a, ". dude")
+      }
+      assert(e.message === Some(didNotEqual(null, 3) + ". dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check 3 != a") {
+      val e = intercept[TestCanceledException] {
+        assume(3 != a, "; dude")
+      }
+      assert(e.message === Some(equaled(3, 3) + "; dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check 5 != a") {
+      assume(5 != a, "dude")
+    }
+
+    /*it("should do nothing when is used to check a > 2") {
+      assume(a > 2, "dude")
+    }
+
+    it("should do nothing when is used to check 5 > a") {
+      assume(5 > a, "dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check a > 3") {
+      val e = intercept[TestCanceledException] {
+        assume(a > 3, "dude")
+      }
+      assert(e.message === Some(wasNotGreaterThan(3, 3) + " dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check 3 > a") {
+      val e = intercept[TestCanceledException] {
+        assume(3 > a, ", dude")
+      }
+      assert(e.message === Some(wasNotGreaterThan(3, 3) + ", dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check a >= 3") {
+      assume(a >= 3, ". dude")
+    }
+
+    it("should do nothing when is used to check 3 >= a") {
+      assume(3 >= a, ". dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check a >= 4") {
+      val e = intercept[TestCanceledException] {
+        assume(a >= 4, ". dude")
+      }
+      assert(e.message === Some(wasNotGreaterThanOrEqualTo(3, 4) + ". dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check 2 >= a") {
+      val e = intercept[TestCanceledException] {
+        assume(2 >= a, "; dude")
+      }
+      assert(e.message === Some(wasNotGreaterThanOrEqualTo(2, 3) + "; dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check b < 6") {
+      assume(b < 6, "dude")
+    }
+
+    it("should do nothing when is used to check 3 < b") {
+      assume(3 < b, "dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check b < 5") {
+      val e = intercept[TestCanceledException] {
+        assume(b < 5, "dude")
+      }
+      assert(e.message === Some(wasNotLessThan(5, 5) + " dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check 5 < b") {
+      val e = intercept[TestCanceledException] {
+        assume(5 < b, ", dude")
+      }
+      assert(e.message === Some(wasNotLessThan(5, 5) + ", dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check b <= 5") {
+      assume(b <= 5, ". dude")
+    }
+
+    it("should do nothing when is used to check 5 <= b") {
+      assume(5 <= b, ". dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check b <= 4") {
+      val e = intercept[TestCanceledException] {
+        assume(b <= 4, ". dude")
+      }
+      assert(e.message === Some(wasNotLessThanOrEqualTo(5, 4) + ". dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check 6 <= b") {
+      val e = intercept[TestCanceledException] {
+        assume(6 <= b, "; dude")
+      }
+      assert(e.message === Some(wasNotLessThanOrEqualTo(6, 5) + "; dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }*/
+
+    it("should do nothing when is used to check bob == \"bob\"") {
+      assume(bob == "bob", "dude")
+    }
+
+    it("should do nothing when is used to check bob != \"alice\"") {
+      assume(bob != "alice", "dude")
+    }
+
+    it("should do nothing when is used to check alice == \"alice\"") {
+      assume(alice == "alice", "dude")
+    }
+
+    it("should do nothing when is used to check alice != \"bob\"") {
+      assume(alice != "bob", "dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check bob == \"alice\"") {
+      val e = intercept[TestCanceledException] {
+        assume(bob == "alice", "dude")
+      }
+      assert(e.message === Some(didNotEqual(bob, "alice") + " dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check bob != \"bob\"") {
+      val e = intercept[TestCanceledException] {
+        assume(bob != "bob", ", dude")
+      }
+      assert(e.message === Some(equaled(bob, "bob") + ", dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check alice == \"bob\"") {
+      val e = intercept[TestCanceledException] {
+        assume(alice == "bob", ". dude")
+      }
+      assert(e.message === Some(didNotEqual(alice, "bob") + ". dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check alice != \"alice\"") {
+      val e = intercept[TestCanceledException] {
+        assume(alice != "alice", "; dude")
+      }
+      assert(e.message === Some(equaled(alice, "alice") + "; dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    // TripleEquals tests
+    // currently these tests are not calling TripleEquals's === and !== yet, import org.scalautils.TripleEquals does not seems to work
+    // Should make Assertions to extend TripleEquals instead of LegacyTripleEquals instead.
+
+    it("should do nothing when is used to check a === 3") {
+      assume(a === 3, "dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check a === 5") {
+      val e = intercept[TestCanceledException] {
+        assume(a === 5, "dude")
+      }
+      assert(e.message === Some(didNotEqual(3, 5) + " dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check 3 === a") {
+      assume(3 === a, ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check 5 === a") {
+      val e = intercept[TestCanceledException] {
+        assume(5 === a, ", dude")
+      }
+      assert(e.message === Some(didNotEqual(5, 3) + ", dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check a !== 5") {
+      assume(a !== 5, ". dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check a !== 3") {
+      val e = intercept[TestCanceledException] {
+        assume(a !== 3, ". dude")
+      }
+      assert(e.message === Some(equaled(3, 3) + ". dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check 5 !== a") {
+      assume(5 !== a, "; dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check 3 !== a") {
+      val e = intercept[TestCanceledException] {
+        assume(3 !== a, "; dude")
+      }
+      assert(e.message === Some(equaled(3, 3) + "; dude"))
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
