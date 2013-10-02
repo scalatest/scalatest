@@ -203,6 +203,8 @@ private[tools] case class SuiteParam(className: String, testNames: Array[String]
  * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-o<em>[NCXEHLOPQMDWSFU]</em></code></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">select the standard output reporter</td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-o</code></td></tr>
  * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-e<em>[NCXEHLOPQMDWSFU]</em></code></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">select the standard error reporter</td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-e</code></td></tr>
  * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-C<em>[NCXEHLOPQMD] &lt;reporter class&gt;</em></code></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">select a custom reporter</td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-C com.company.project.BarReporter</code></td></tr>
+ * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-M <em>&lt;file name&gt;</em></code></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">memorize failed and canceled tests in a file, so they can be rerun with -A (again)</td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-M rerun.txt</code></td></tr>
+ * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-A <em>&lt;file name&gt;</em></code></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">used in conjunction with -M (momento) to select previously failed and canceled tests to rerun again</td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-A rerun.txt</code></td></tr>
  * </table>
  *
  * <p>
@@ -722,9 +724,26 @@ private[tools] case class SuiteParam(className: String, testNames: Array[String]
  * To use this option you must include a JUnit jar file on your classpath.
  * </p>
  *
+ * <h2>Memorizing and Rerunning Failed and Canceled tests</h2>
+ *
+ * <p>
+ * You can memorize failed and canceled tests using <code>-M</code>:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * -M failed-canceled.txt
+ * </pre>
+ *
+ * All failed and canceled tests will be memorized in <code>failed-canceled.txt</code>, to rerun them again, you use <code>-A</code>:
+ *
+ * <pre class="stHighlight">
+ * -A failed-canceled.txt
+ * </pre>
+ *
  * @author Bill Venners
  * @author George Berger
  * @author Josh Cough
+ * @author Chee Seng
  */
 object Runner {
 
