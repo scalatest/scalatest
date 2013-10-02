@@ -38,7 +38,7 @@ import org.scalatest.Tag
  * import org.scalatest._
  * import tagobjects.Retryable
  * 
- * class SetSpec extends FlatSpec {
+ * class SetSpec extends FlatSpec with Retries {
  * 
  *   override def withFixture(test: NoArgTest) = {
  *     if (isRetryable(test))

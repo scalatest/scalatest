@@ -47,8 +47,15 @@ import org.scalatest.TagAnnotation;
  * import tags.Retryable
  * 
  * @Retryable
- * class SetSpec extends FlatSpec {
+ * class SetSpec extends FlatSpec with Retries {
  * 
+ *   override def withFixture(test: NoArgTest) = {
+ *     if (isRetryable(test))
+ *       withRetry { super.withFixture(test) }
+ *     else
+ *       super.withFixture(test)
+ *   }
+ *
  *   "An empty Set" should "have size 0" in {
  *     assert(Set.empty.size === 0)
  *   }
@@ -78,7 +85,14 @@ import org.scalatest.TagAnnotation;
  * import org.scalatest._
  * import tags.Disk
  *
- * class SetSpec extends Spec {
+ * class SetSpec extends Spec with Retries {
+ *
+ *   override def withFixture(test: NoArgTest) = {
+ *     if (isRetryable(test))
+ *       withRetry { super.withFixture(test) }
+ *     else
+ *       super.withFixture(test)
+ *   }
  *
  *   @Retryable def &#96;an empty Set should have size 0&#96; {
  *     assert(Set.empty.size === 0)

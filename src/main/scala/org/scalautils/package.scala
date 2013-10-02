@@ -19,8 +19,34 @@ import scala.util.control.NonFatal
 
 package object scalautils {
 
+  /**
+   * Type alias for <code>String</code>.
+   */
   type ErrorMessage = String
 
+  /**
+   * Returns the result of evaluating the given block <code>f</code>, wrapped in a <code>Good</code>, or
+   * if an exception is thrown, the <code>Throwable</code>, wrapped in a <code>Bad</code>.
+   *
+   * <p>
+   * Here are some examples:
+   * </p>
+   *
+   * <pre class="stREPL">
+   * scala&gt; import org.scalautils._
+   * import org.scalautils._
+   *
+   * scala&gt; attempt { 2 / 1 }
+   * res0: org.scalautils.Or[Int,Throwable] = Good(2)
+   *
+   * scala&gt; attempt { 2 / 0 }
+   * res1: org.scalautils.Or[Int,Throwable] = Bad(java.lang.ArithmeticException: / by zero)
+   * </pre>
+   *
+   * @param f the block to attempt to evaluate
+   * @return the result of evaluating the block, wrapped in a <code>Good</code>, or the
+   *     thrown exception, wrapped in a <code>Bad</code>
+   */
   def attempt[R](f: => R): R Or Throwable =
     try Good(f)
     catch {
