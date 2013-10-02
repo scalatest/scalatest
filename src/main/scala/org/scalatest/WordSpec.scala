@@ -37,7 +37,7 @@ import Suite.autoTagClassAnnotations
  * </td></tr></table>
  * 
  * <p>
- * Class <code>WordSpec</code> is so named because you specification text is structured by placing words after strings.
+ * Class <code>WordSpec</code> is so named because your specification text is structured by placing words after strings.
  * Here's an example <code>WordSpec</code>:
  * </p>
  *
@@ -361,19 +361,15 @@ import Suite.autoTagClassAnnotations
  * Tests can only be registered while the <code>WordSpec</code> is
  * in its registration phase. Any attempt to register a test after the <code>WordSpec</code> has
  * entered its ready phase, <em>i.e.</em>, after <code>run</code> has been invoked on the <code>WordSpec</code>,
- * will be met with a thrown <code>TestRegistrationClosedException</code>. The recommended style
+ * will be met with a thrown <a href="exceptions/TestRegistrationClosedException.html"><code>TestRegistrationClosedException</code></a>. The recommended style
  * of using <code>WordSpec</code> is to register tests during object construction as is done in all
  * the examples shown here. If you keep to the recommended style, you should never see a
  * <code>TestRegistrationClosedException</code>.
  * </p>
  *
  * <p>
- * See also: <a href="http://www.scalatest.org/getting_started_with_word_spec" target="_blank">Getting started with <code>WordSpec</code>.</a>
- * </p>
- *
- * <p>
  * <em>Note: Class <code>WordSpec</code> is in part inspired by class <code>org.specs.Specification</code>, designed by
- * Eric Torreborre for the <a href="http://code.google.com/p/specs/" target="_blank">specs framework</a>.</em>
+ * Eric Torreborre for the <a href="http://etorreborre.github.io/specs2/" target="_blank">specs2 framework</a>.</em>
  * </p>
  *
  * <a name="ignoredTests"></a><h2>Ignored tests</h2></a>
@@ -482,21 +478,21 @@ import Suite.autoTagClassAnnotations
  * <a name="informers"></a><h2>Informers</h2></a>
  *
  * <p>
- * One of the parameters to <code>WordSpec</code>'s <code>run</code> method is a <code>Reporter</code>, which
+ * One of the parameters to <code>WordSpec</code>'s <code>run</code> method is a <a href="Reporter.html"><code>Reporter</code></a>, which
  * will collect and report information about the running suite of tests.
  * Information about suites and tests that were run, whether tests succeeded or failed, 
  * and tests that were ignored will be passed to the <code>Reporter</code> as the suite runs.
  * Most often the reporting done by default by <code>WordSpec</code>'s methods will be sufficient, but
  * occasionally you may wish to provide custom information to the <code>Reporter</code> from a test.
- * For this purpose, an <code>Informer</code> that will forward information to the current <code>Reporter</code>
+ * For this purpose, an <a href="Informer.html"><code>Informer</code></a> that will forward information to the current <code>Reporter</code>
  * is provided via the <code>info</code> parameterless method.
  * You can pass the extra information to the <code>Informer</code> via its <code>apply</code> method.
- * The <code>Informer</code> will then pass the information to the <code>Reporter</code> via an <code>InfoProvided</code> event.
+ * The <code>Informer</code> will then pass the information to the <code>Reporter</code> via an <a href="events/InfoProvided.html"><code>InfoProvided</code></a> event.
  * </p>
  * 
  * <p>
  * One use case for the <code>Informer</code> is to pass more information about a specification to the reporter. For example,
- * the <code>GivenWhenThen</code> trait provides methods that use the implicit <code>info</code> provided by <code>WordSpec</code>
+ * the <a href="GivenWhenThen.html"><code>GivenWhenThen</code></a> trait provides methods that use the implicit <code>info</code> provided by <code>WordSpec</code>
  * to pass such information to the reporter. Here's an example:
  * </p>
  *
@@ -557,7 +553,7 @@ import Suite.autoTagClassAnnotations
  * To support this style of testing, a test can be given a name that specifies one
  * bit of behavior required by the system being tested. The test can also include some code that
  * sends more information about the behavior to the reporter when the tests run. At the end of the test,
- * it can call method <code>pending</code>, which will cause it to complete abruptly with <code>TestPendingException</code>.
+ * it can call method <code>pending</code>, which will cause it to complete abruptly with <a href="exceptions/TestPendingException.html"><code>TestPendingException</code></a>.
  * </p>
  *
  * <p>
@@ -710,7 +706,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <p>
- * The <code>run</code> method takes a <code>Filter</code>, whose constructor takes an optional
+ * The <code>run</code> method takes a <a href="Filter.html"><code>Filter</code></a>, whose constructor takes an optional
  * <code>Set[String]</code> called <code>tagsToInclude</code> and a <code>Set[String]</code> called
  * <code>tagsToExclude</code>. If <code>tagsToInclude</code> is <code>None</code>, all tests will be run
  * except those those belonging to tags listed in the
@@ -808,7 +804,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <p>
- * If you need to configure fixture objects differently in different tests, you can pass configuration into the get-fixture method. For example, if you could pass
+ * If you need to configure fixture objects differently in different tests, you can pass configuration into the get-fixture method. For example, you could pass
  * in an initial value for a mutable fixture object as a parameter to the get-fixture method.
  * </p>
  *
@@ -876,7 +872,7 @@ import Suite.autoTagClassAnnotations
  * If every test method requires the same set of
  * mutable fixture objects, and none require cleanup, one other approach you can take is make them simply <code>val</code>s and mix in trait
  * <a href="OneInstancePerTest.html"><code>OneInstancePerTest</code></a>.  If you mix in <code>OneInstancePerTest</code>, each test
- * will be run in its own instance of the <code>Suite</code>, similar to the way JUnit tests are executed. Here's an example:
+ * will be run in its own instance of the <a href="Suite.html"><code>Suite</code></a>, similar to the way JUnit tests are executed. Here's an example:
  * </p>
  *
  * <pre class="stHighlight">
@@ -908,7 +904,7 @@ import Suite.autoTagClassAnnotations
  * </pre>
  *
  * <p>
- * One way to think of <a href="OneInstancePerTest.html"><code>OneInstancePerTest</code></a> is that the entire <code>Suite</code> instance is like a fixture-context object,
+ * One way to think of <code>OneInstancePerTest</code> is that the entire <code>Suite</code> instance is like a fixture-context object,
  * but with the difference that the test code doesn't run during construction as it does with the real fixture-context object technique. Because this trait emulates JUnit's manner
  * of running tests, this trait can be helpful when porting JUnit tests to ScalaTest. The primary intended use of <code>OneInstancePerTest</code> is to serve as a supertrait for
  * <a href="ParallelTestExecution.html"><code>ParallelTestExecution</code></a> and the <a href="path/package.html">path traits</a>, but you can also mix it in
@@ -922,7 +918,7 @@ import Suite.autoTagClassAnnotations
  * Although the get-fixture method, fixture-context object, and <code>OneInstancePerTest</code> approaches take care of setting up a fixture at the beginning of each
  * test, they don't address the problem of cleaning up a fixture at the end of the test. If you just need to perform a side-effect at the beginning or end of
  * a test, and don't need to actually pass any fixture objects into the test, you can override <code>withFixture(NoArgTest)</code>, one of ScalaTest's
- * lifecycle methods defined in trait <a href="Suite.html"><code>Suite</code></a>.
+ * lifecycle methods defined in trait <a href="Suite.html#lifecyle-methods"><code>Suite</code></a>.
  * </p>
  *
  * <p>
@@ -948,7 +944,7 @@ import Suite.autoTagClassAnnotations
  *
  * <p>
  * The <code>withFixture</code> method is designed to be stacked, and to enable this, you should always call the <code>super</code> implementation
- * of <code>withFixture</code>, and let it invoke the test function rather than invoking the test function directly. In other words, instead of writing
+ * of <code>withFixture</code>, and let it invoke the test function rather than invoking the test function directly. Instead of writing
  * &ldquo;<code>test()</code>&rdquo;, you should write &ldquo;<code>super.withFixture(test)</code>&rdquo;, like this:
  * </p>
  *
@@ -965,7 +961,7 @@ import Suite.autoTagClassAnnotations
  *
  * <p>
  * Here's an example in which <code>withFixture(NoArgTest)</code> is used to take a snapshot of the working directory if a test fails, and 
- * and send that information to the reporter:
+ * send that information to the reporter:
  * </p>
  *
  * <pre class="stHighlight">
@@ -1017,7 +1013,7 @@ import Suite.autoTagClassAnnotations
  *
  * <p>
  * Note that the <a href="Suite$NoArgTest.html"><code>NoArgTest</code></a> passed to <code>withFixture</code>, in addition to
- * an <code>apply</code> method that executes the test, also includes the test name and the <a href="#configMapSection">config
+ * an <code>apply</code> method that executes the test, also includes the test name and the <a href="ConfigMap.html">config
  * map</a> passed to <code>runTest</code>. Thus you can also use the test name and configuration objects in your <code>withFixture</code>
  * implementation.
  * </p>
@@ -1126,9 +1122,9 @@ import Suite.autoTagClassAnnotations
  * <h4>Overriding <code>withFixture(OneArgTest)</code></h4>
  *
  * <p>
- * If all or most tests need the same fixture, you can avoid some of the boilerplate of the loan-fixture method approach by using a <code>fixture.Suite</code>
+ * If all or most tests need the same fixture, you can avoid some of the boilerplate of the loan-fixture method approach by using a <code>fixture.Spec</code>
  * and overriding <code>withFixture(OneArgTest)</code>.
- * Each test in a <code>fixture.Suite</code> takes a fixture as a parameter, allowing you to pass the fixture into
+ * Each test in a <code>fixture.Spec</code> takes a fixture as a parameter, allowing you to pass the fixture into
  * the test. You must indicate the type of the fixture parameter by specifying <code>FixtureParam</code>, and implement a
  * <code>withFixture</code> method that takes a <code>OneArgTest</code>. This <code>withFixture</code> method is responsible for
  * invoking the one-arg test function, so you can perform fixture set up before, and clean up after, invoking and passing
@@ -1139,7 +1135,7 @@ import Suite.autoTagClassAnnotations
  * To enable the stacking of traits that define <code>withFixture(NoArgTest)</code>, it is a good idea to let
  * <code>withFixture(NoArgTest)</code> invoke the test function instead of invoking the test
  * function directly. To do so, you'll need to convert the <code>OneArgTest</code> to a <code>NoArgTest</code>. You can do that by passing
- * the fixture object to the <code>toNoArgTest</code> method of <code>OneArgTest</code>. In other words, instead of
+ * the fixture object to the <code>toNoArgTest</code> method of <code>OneArgTest</code>. Instead of
  * writing &ldquo;<code>test(theFixture)</code>&rdquo;, you'd delegate responsibility for
  * invoking the test function to the <code>withFixture(NoArgTest)</code> method of the same instance by writing:
  * </p>
@@ -1193,7 +1189,7 @@ import Suite.autoTagClassAnnotations
  * <p>
  * In this example, the tests actually required two fixture objects, a <code>File</code> and a <code>FileWriter</code>. In such situations you can
  * simply define the <code>FixtureParam</code> type to be a tuple containing the objects, or as is done in this example, a case class containing
- * the objects.  For more information on the <code>withFixture(OneArgTest)</code> technique, see the <a href="fixture/Suite.html">documentation for <code>fixture.Suite</code></a>.
+ * the objects.  For more information on the <code>withFixture(OneArgTest)</code> technique, see the <a href="fixture/Spec.html">documentation for <code>fixture.Spec</code></a>.
  * </p>
  *
  * <a name="beforeAndAfter"></a>

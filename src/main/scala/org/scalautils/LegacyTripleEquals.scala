@@ -23,7 +23,7 @@ import TripleEqualsSupport._
  * 
  * <table><tr><td class="usage">
  * <strong>Recommended Usage</strong>:
- * Trait <code>LegacyTripleEquals</code> is useful (in test, not production, code) when you need determine equality for a type of object differently than its
+ * Trait <code>LegacyTripleEquals</code> is useful (in test, not production, code) when you need to determine equality for a type of object differently than its
  * <code>equals</code> method: either you can't change the <code>equals</code> method, or the <code>equals</code> method is sensible generally, but
  * you are in a special situation where you need something else. If you also want a compile-time type check, however, you should use one
  * of <code>LegacyTripleEquals</code> sibling traits: 
@@ -45,8 +45,8 @@ import TripleEqualsSupport._
  * <p>
  * This trait will override or hide implicit methods defined by its sibling traits,
  * <a href="ConversionCheckedLegacyTripleEquals.html"><code>ConversionCheckedLegacyTripleEquals</code></a> or <a href="TypeCheckedLegacyTripleEquals.html"><code>TypeCheckedLegacyTripleEquals</code></a>,
- * and can therefore be used to temporarily turn of type checking in a limited scope.
- * Because the methods in <code>LegacyTripleEquals</code> (and its siblings)<em>override</em> all the methods defined in
+ * and can therefore be used to temporarily turn off type checking in a limited scope.
+ * Because the methods in <code>LegacyTripleEquals</code> (and its siblings) <em>override</em> all the methods defined in
  * supertype <a href="TripleEqualsSupport.html"><code>TripleEqualsSupport</code></a>, you can achieve the same
  * kind of nested tuning of equality constraints whether you mix in traits, import from companion objects, or use some combination of both.
  * </p>

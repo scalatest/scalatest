@@ -171,10 +171,6 @@ import Suite.autoTagClassAnnotations
  * <code>TestRegistrationClosedException</code>.
  * </p>
  *
- * <p>
- * See also: <a href="http://www.scalatest.org/getting_started_with_flat_spec" target="_blank">Getting started with <code>FlatSpec</code>.</a>
- * </p>
- *
  * <a name="ignoredTests"></a><h2>Ignored tests</h2></a>
  *
  * To support the common use case of temporarily disabling a test, with the

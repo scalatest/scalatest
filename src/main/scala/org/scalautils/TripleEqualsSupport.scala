@@ -22,7 +22,7 @@ import TripleEqualsSupport._
  * used by matchers.
  *
  * <p>
- * This abstract methods of this trait are selectively implemented as implicit by subclasses to enable a spectrum of type constraints for the
+ * The abstract methods of this trait are selectively implemented as implicit by subclasses to enable a spectrum of type constraints for the
  * <code>===</code> and <code>!==</code> operators. As an illustration, if in the expression, <code>a === b</code>, the type of <code>a</code>
  * is <code>A</code> and <code>b</code> is <code>B</code>, the following three levels of compile-time checking can be obtained from
  * <code>TripleEqualsSupport</code> subtraits:

@@ -19,12 +19,12 @@ package org.scalatest
  * Trait that contains the <code>update</code> method, which can be used to send a status update to the reporter.
  *
  * <p>
- * The difference between <code>update</code> and the <code>info</code> method of <code>Informer</code> is that
+ * The difference between <code>update</code> and the <code>info</code> method of <a href="Informer.html"><code>Informer</code></a> is that
  * <code>info</code> messages provided during a test are recorded and sent as part of test completion event, whereas
- * <code>update</code> messages are sent right away as <code>UpdateProvided</code> messages. For long-running tests,
+ * <code>update</code> messages are sent right away as <a href="events/UpdateProvided.html"><code>UpdateProvided</code></a> messages. For long-running tests,
  * <code>update</code> allows you to send "status updates" to the reporter right away, so users can track the
  * progress of the long-running tests. By contrast, <code>info</code> messages will only be seen by the user after the
- * test has completed, and are more geared towards specification (such as Given/When/Then messages) than notification.
+ * test has completed, and are more geared towards specification (such as <a href="GivenWhenThen.html">Given/When/Then</a> messages) than notification.
  * </p>
  *
  * <p>
