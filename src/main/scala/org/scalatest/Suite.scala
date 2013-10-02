@@ -428,7 +428,7 @@ import OutcomeOf.outcomeOf
  * In some cases you may need to pass information to a suite of tests.
  * For example, perhaps a suite of tests needs to grab information from a file, and you want
  * to be able to specify a different filename during different runs.  You can accomplish this in ScalaTest by passing
- * the filename in a <em>config map</em> of key-value pairs, which is passed to <code>run</code> as a <code>ConfigMap</code>.
+ * the filename in a <em>config map</em> of key-value pairs, which is passed to <code>run</code> as a <a href="ConfigMap.html"><code>ConfigMap</code></a>.
  * The values in the config map are called "config objects," because they can be used to <em>configure</em>
  * suites, reporters, and tests.
  * </p>
@@ -449,7 +449,7 @@ import OutcomeOf.outcomeOf
  * <h2>Executing suites in parallel</h2>
  *
  * <p>
- * The <code>run</code> method takes as one of its parameters an optional <code>Distributor</code>. If 
+ * The <code>run</code> method takes as one of its parameters an optional <a href="Distributor.html"><code>Distributor</code></a>. If 
  * a <code>Distributor</code> is passed in, this trait's implementation of <code>run</code> puts its nested
  * <code>Suite</code>s into the distributor rather than executing them directly. The caller of <code>run</code>
  * is responsible for ensuring that some entity runs the <code>Suite</code>s placed into the 

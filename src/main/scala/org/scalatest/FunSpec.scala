@@ -134,7 +134,7 @@ import Suite.autoTagClassAnnotations
  * </pre>
  *
  * <p>
- * You can also pass to <code>execute</code> a <a href="#configMapSection"><em>config map</em></a> of key-value
+ * You can also pass to <code>execute</code> a <a href="ConfigMap.html"><em>config map</em></a> of key-value
  * pairs, which will be passed down into suites and tests, as well as other parameters that configure the run itself.
  * For more information on running in the Scala interpreter, see the documentation for <code>execute</code> (below) and the
  * <a href="Shell.html">ScalaTest shell</a>.
@@ -148,10 +148,6 @@ import Suite.autoTagClassAnnotations
  * <p>
  * <em>Note: <code>FunSpec</code>'s syntax is in great part inspired by <a href="http://rspec.info/" target="_blank">RSpec</a>, a Ruby BDD framework.</em>
  *</p>
- *
- * <p>
- * See also: <a href="http://www.scalatest.org/getting_started_with_spec" target="_blank">Getting started with <code>FunSpec</code>.</a>
- * </p>
  *
  * <a name="ignoredTests"></a><h2>Ignored tests</h2></a>
  *
@@ -754,7 +750,7 @@ import Suite.autoTagClassAnnotations
  *
  * <p>
  * Note that the <a href="Suite$NoArgTest.html"><code>NoArgTest</code></a> passed to <code>withFixture</code>, in addition to
- * an <code>apply</code> method that executes the test, also includes the test name and the <a href="#configMapSection">config
+ * an <code>apply</code> method that executes the test, also includes the test name and the <a href="ConfigMap.html">config
  * map</a> passed to <code>runTest</code>. Thus you can also use the test name and configuration objects in your <code>withFixture</code>
  * implementation.
  * </p>

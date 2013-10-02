@@ -35,7 +35,7 @@ import org.scalatest.events.Ordinal
  * <code>infoProvided</code> reports concurrently. When using a <code>Dispatcher</code> to execute
  * suites in parallel, the intention is that each <code>Tracker</code> will only be used by one
  * thread. For example, if the optional <code>Dispatcher</code>  passed to <code>Suite</code>'s implementation
- * of <code>runNestedSuites</code> is defined, that method will obtain a new <code>Tracker</code> by invoking
+ * of <a href="Suite.html#lifecycle-methods"<code>runNestedSuites</code></a> is defined, that method will obtain a new <code>Tracker</code> by invoking
  * <code>nextTracker</code> for each nested suite it passes to the <code>Dispatcher</code>.
  * </p>
  *
