@@ -13,7 +13,7 @@ object ScalatestBuild extends Build {
      organization := "org.scalatest",
      version := releaseVersion,
      scalaVersion := scalaVersionToUse,
-     scalacOptions ++= Seq("-no-specialization", "-feature"),
+     scalacOptions ++= Seq("-no-specialization", "-feature", "-target:jvm-1.5"),
      ivyXML := 
        <dependency org="org.eclipse.jetty.orbit" name="javax.servlet" rev="3.0.0.v201112011016">
          <artifact name="javax.servlet" type="orbit" ext="jar"/>
@@ -25,7 +25,8 @@ object ScalatestBuild extends Build {
      genGenTask, 
      genTablesTask, 
      genCodeTask, 
-     genFactoriesTask, 
+     genFactoriesTask,
+     genCompatibleClassesTask,
      sourceGenerators in Compile <+= 
          (baseDirectory, sourceManaged in Compile) map genFiles("gengen", "GenGen.scala")(GenGen.genMain),
      sourceGenerators in Compile <+= 
@@ -34,6 +35,8 @@ object ScalatestBuild extends Build {
          (baseDirectory, sourceManaged in Compile) map genFiles("genmatchers", "MustMatchers.scala")(GenMatchers.genMain),
      sourceGenerators in Compile <+= 
          (baseDirectory, sourceManaged in Compile) map genFiles("genfactories", "GenFactories.scala")(GenFactories.genMain),
+     sourceGenerators in Compile <+=
+         (baseDirectory, sourceManaged in Compile) map genFiles("gencompcls", "GenCompatibleClasses.scala")(GenCompatibleClasses.genMain),
      testOptions in Test := Seq(Tests.Argument("-l", "org.scalatest.tags.Slow", 
                                                "-m", "org.scalatest", 
                                                "-m", "org.scalautils",
@@ -174,6 +177,11 @@ object ScalatestBuild extends Build {
   val genFactories = TaskKey[Unit]("genfactories", "Generate Matcher Factories")
   val genFactoriesTask = genFactories <<= (sourceManaged in Compile, sourceManaged in Test) map { (mainTargetDir: File, testTargetDir: File) =>
     GenFactories.genMain(new File(mainTargetDir, "scala/genfactories"), scalaVersionToUse)
+  }
+
+  val genCompatibleClasses = TaskKey[Unit]("gencompcls", "Generate Compatible Classes for Java 6 & 7")
+  val genCompatibleClassesTask = genCompatibleClasses <<= (sourceManaged in Compile, sourceManaged in Test) map { (mainTargetDir: File, testTargetDir: File) =>
+    GenCompatibleClasses.genMain(new File(mainTargetDir, "scala/gencompclass"), scalaVersionToUse)
   }
   
   val genContain = TaskKey[Unit]("gencontain", "Generate contain matcher tests")
