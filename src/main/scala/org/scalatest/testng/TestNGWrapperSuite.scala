@@ -106,6 +106,7 @@ class TestNGWrapperSuite(xmlSuiteFilenames: List[String]) extends TestNGSuite {
     run(testng, reporter, tracker, status)
   }
   
+  // TODO: We should probably do this checking in the constructor.    
   /**
    * TestNG allows users to programmatically tell it which xml suites to run via the setTestSuites method.
    * This method takes a java.util.List containing java.io.File objects, where each file is a TestNG xml suite. 
@@ -116,9 +117,8 @@ class TestNGWrapperSuite(xmlSuiteFilenames: List[String]) extends TestNGSuite {
    *
    * @param testng	the TestNG object to set the suites on 
    *
-   * @throws FileNotFoundexception if a file in xmlSuitesPropertyName does not exist.
+   * @throws FileNotFoundException if a file in xmlSuitesPropertyName does not exist.
    *
-   * TODO: We should probably do this checking in the constructor.    
    */
   private def addXmlSuitesToTestNG(testng: TestNG) {
     import java.io.File

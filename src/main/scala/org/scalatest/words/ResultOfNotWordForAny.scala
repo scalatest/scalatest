@@ -386,7 +386,10 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
     }
   }
 
-// For Any, TODO: Scaladoc
+  /**
+   * Enables parentheses to be placed around <code>length (N)</code> in expressions of the
+   * form: <code>should not have (length (N))</code>.
+   */
   def have(resultOfLengthWordApplication: ResultOfLengthWordApplication)(implicit len: Length[T]) {
     val right = resultOfLengthWordApplication.expectedLength
     val leftLength = len.lengthOf(left)
@@ -402,7 +405,10 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
     }
   }
 
-// For Any, TODO: Scaladoc
+  /**
+   * Enables parentheses to be placed around <code>size (N)</code> in expressions of the
+   * form: <code>should not have (size (N))</code>.
+   */
   def have(resultOfSizeWordApplication: ResultOfSizeWordApplication)(implicit sz: Size[T]) {
     val right = resultOfSizeWordApplication.expectedSize
     val leftSize = sz.sizeOf(left)

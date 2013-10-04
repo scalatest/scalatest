@@ -168,7 +168,7 @@ trait TestNGSuiteLike extends Suite { thisSuite =>
     }
   }
   
-  /**
+  /*
    * This class hooks TestNG's callback mechanism (TestListenerAdapter) to ScalaTest's
    * reporting mechanism. TestNG has many different callback points which are a near one-to-one
    * mapping with ScalaTest. At each callback point, this class simply creates ScalaTest 
@@ -275,11 +275,11 @@ trait TestNGSuiteLike extends Suite { thisSuite =>
     }
   }
   
-  /**
+  /*
      TODO
     (12:02:27 AM) bvenners: onTestFailedButWithinSuccessPercentage(ITestResult tr)
     (12:02:34 AM) bvenners: maybe a TestSucceeded with some extra info in the report
-  **/
+  */
 
   /**
    * Throws <code>UnsupportedOperationException</code>, because this method is unused by this

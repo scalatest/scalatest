@@ -17,8 +17,6 @@ package org.scalatest
 
 import java.lang.reflect.{InvocationTargetException, Method, Modifier}
 
-// TODO: Document that no-arg methods need parens, like FunSpec invokeTarget getPath() 
-// i.e, can't say without the ending parens: FunSpec invokeTarget getPath
 /**
  * Trait that facilitates the testing of private methods.
  *
@@ -62,6 +60,24 @@ import java.lang.reflect.{InvocationTargetException, Method, Modifier}
  * indirectly via a non-private trait method that calls the private method, or make the private method package access
  * and test it directly via regular static method invocations. 
  * </p>
+ *
+ *
+ * <p>
+ * Also, if you want to use <code>PrivateMethodTester</code> to invoke a parameterless private method, you'll need to use
+ * empty parens. Instead of:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * targetObject invokePrivate privateParameterlessMethod
+ * </pre>
+ *
+ * <p>
+ * You'll need to write:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * targetObject invokePrivate privateParameterlessMethod()
+ * </pre>
  *
  * @author Bill Venners
  */

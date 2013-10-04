@@ -681,60 +681,8 @@ trait Futures extends PatienceConfiguration {
    * @return the result of invoking the <code>fun</code> parameter
    */
   final def whenReady[T, U](future: FutureConcept[T])(fun: T => U)(implicit config: PatienceConfig): U = {
-
-      val result = future.futureValue(config)
-      fun(result)
-/*    val startNanos = System.nanoTime
-
-    @tailrec
-    def tryTryAgain(attempt: Int): U = {
-      val timeout = config.timeout
-      val interval = config.interval
-      if (future.isCanceled)
-        throw new TestFailedException(
-          sde => Some(Resources("futureWasCanceled")),
-          None,
-          getStackDepthFun("Futures.scala", "whenReady")
-        )
-      if (future.isExpired)
-        throw new TestFailedException(
-          sde => Some(Resources("futureExpired", attempt.toString, interval.prettyString)),
-          None,
-          getStackDepthFun("Futures.scala", "whenReady")
-        )
-      future.value match {
-        case Some(Right(v)) => fun(v)
-        case Some(Left(tpe: TestPendingException)) => throw tpe // TODO: In 2.0 add TestCanceledException here
-        case Some(Left(e)) if anExceptionThatShouldCauseAnAbort(e) => throw e
-        case Some(Left(e)) =>
-          val hasMessage = e.getMessage != null
-          throw new TestFailedException(
-            sde => Some {
-              if (e.getMessage == null)
-                Resources("futureReturnedAnException", e.getClass.getName)
-              else
-                Resources("futureReturnedAnExceptionWithMessage", e.getClass.getName, e.getMessage)
-            },
-            Some(e),
-            getStackDepthFun("Futures.scala", "whenReady")
-          )
-        case None => 
-          val duration = System.nanoTime - startNanos
-          if (duration < timeout.totalNanos)
-            Thread.sleep(interval.millisPart, interval.nanosPart)
-          else {
-            throw new TestFailedException(
-              sde => Some(Resources("wasNeverReady", attempt.toString, interval.prettyString)),
-              None,
-              getStackDepthFun("Futures.scala", "whenReady")
-            )
-          }
-
-          tryTryAgain(attempt + 1)
-      }
-    }
-    tryTryAgain(1)  */
+    val result = future.futureValue(config)
+    fun(result)
   }
-
 }
 

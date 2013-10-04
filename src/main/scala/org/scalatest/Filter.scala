@@ -299,8 +299,10 @@ object Filter {
     new Filter(tagsToInclude, tagsToExclude, excludeNestedSuites, dynaTags)
 
   /**
-   * TODO: Fill in
-   * @return
+   * Factory method for a default <code>Filter</code>, for which <code>tagsToInclude is <code>None</code>, 
+   * <code>tagsToExclude</code> is <code>Set("org.scalatest.Ignore")</code>, and <code>excludeNestedSuites</code> is false.
+   *
+   * @return a default <code>Filter</code>
    */
   def default: Filter = apply()
 }
