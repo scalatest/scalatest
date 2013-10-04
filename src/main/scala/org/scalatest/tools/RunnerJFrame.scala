@@ -132,8 +132,8 @@ private[scalatest] class RunnerJFrame(
 
   // The eventsListModel and eventsJList are used to display the current
   // collected events of types selected by the view menu
-  private val eventsListModel: DefaultListModel/*[EventHolder]ForJava17*/ = new DefaultListModel()
-  private val eventsJList: JList = new JList/*[EventHolder]ForJava17*/(eventsListModel)
+  private val eventsListModel: EventHolderDefaultListModel/*[EventHolder]ForJava17*/ = new EventHolderDefaultListModel()
+  private val eventsJList = new JList(eventsListModel)
 
   // The detailsJEditorPane displays the text details of a event.
   private val detailsJEditorPane: JEditorPane = new JEditorPane("text/html", null)

@@ -25,12 +25,12 @@ Building ScalaTest
 
 The followings are needed for building ScalaTest:
 
-*   [JDK 6](http://www.oracle.com/technetwork/java/javasebusiness/downloads/java-archive-downloads-javase6-419409.html) (JDK 7 won't work currently)
+*   JDK 6 or 7
 *   [SBT 0.13.0](http://www.scala-sbt.org/0.13.0/docs/Getting-Started/Setup.html)
 
 and use the following options in your SBT launch file:
 
-    SBT_OPTS="-server -Xms512M -Xmx2048M -Dfile.encoding=UTF8 -Xss1M -XX:MaxPermSize=512M -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:+DoEscapeAnalysis -XX:ReservedCodeCacheSize=64m"
+    SBT_OPTS="-server -Xms512M -Xmx3072M -Xss1M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M"
 
 ### Building and Running Tests
 

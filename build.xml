@@ -158,6 +158,13 @@
           </mapper>
         </uptodate>
 
+        <uptodate property="gencompcls.uptodate"
+                  srcfile="project/GenCompatibleClasses.scala">
+            <mapper type="merge" to=
+                    "${build}/scala-${scala.version}/src_managed/main/scala/org/scalatest/tools/EventHolderListCellRenderer.scala">
+            </mapper>
+        </uptodate>
+
         <uptodate property="genmatchers.uptodate"
                   srcfile="project/GenMatchers.scala">
           <mapper type="merge" to=
@@ -203,6 +210,7 @@
         	<include name="GenInspectors.scala" />
         	<include name="GenTable.scala" />
         	<include name="GenFactories.scala" />
+            <include name="GenCompatibleClasses.scala" />
         	<include name="GenTheyWord.scala" />
         	<include name="GenContain.scala" />
         	<include name="GenSorted.scala" />
@@ -267,6 +275,15 @@
         </java>
     </target>
 
+    <target name="gencompcls" depends="init, compile-codegenerators"
+            unless="gencompcls.uptodate">
+        <java classname="GenCompatibleClasses" classpathref="run.generators.class.path"
+              fork="false">
+            <arg value="${build}/scala-${scala.version}/src_managed" />
+            <arg value="${scala.version}" />
+        </java>
+    </target>
+
     <target name="gencode" depends="init, compile-codegenerators">
         <java classname="GenMatchers" classpathref="run.generators.class.path" fork="false">
         	<arg value="${build}/scala-${scala.version}/src_managed" />
@@ -317,7 +334,7 @@
     <target name="compile" depends="compile-main, compile-tests"/>
 
     <!--<target name="compile-main" depends="init">-->
-    <target name="compile-main" depends="init, gentables, genmatchers, gengen, genfactories, write-excludes-file">
+    <target name="compile-main" depends="init, gentables, genmatchers, gengen, genfactories, gencompcls, write-excludes-file">
         <!--<fail message="Wrong JVM [${ant.java.version}]. Include 'java6' target to use java 6."
               unless="jvm.ok"/>-->
 
