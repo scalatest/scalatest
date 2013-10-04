@@ -149,8 +149,6 @@ private[tools] object Memento {
     Memento(eventName, className, suiteId, testName)
   }
 
-  // TODO: Could a test name start with Some or None, or a class name that starts with None confuse this?
-  // Needs to always work.
   //
   // Constructs an Option from a string formatted as "Some(...)" or
   // "None".

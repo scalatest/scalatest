@@ -1175,24 +1175,10 @@ trait Suite extends Assertions with AbstractSuite with Serializable { thisSuite 
         (message, _, isConstructingThread, testWasPending, testWasCanceled, location) => createMarkupProvided(thisSuite, report, tracker, Some(testName), message, 2, location, isConstructingThread) // TODO: Need a test that fails because testWasCanceleed isn't being passed
       )
 
-/*
-    class RepImpl(val info: Informer, val markup: Documenter) extends Rep
-
-    def testMethodTakesARep(method: Method): Boolean = {
-      val paramTypes = method.getParameterTypes
-      (paramTypes.size == 1) && (paramTypes(0) eq classOf[Rep])
-    }
-*/
-
     val argsArray: Array[Object] =
       if (testMethodTakesAnInformer(testName)) {
         Array(informerForThisTest)  
       }
-/*
-      else if (testMethodTakesARep(method)) {
-        Array(new RepImpl(informerForThisTest, documenterForThisTest))
-      }
-*/
       else Array()
 
     try {
@@ -1919,13 +1905,6 @@ private[scalatest] object Suite {
     val paramTypes = m.getParameterTypes
     paramTypes.length == 1 && classOf[Informer].isAssignableFrom(paramTypes(0))
   }
-
-/* TODO: Delete me if not needed
-  def takesCommunicator(m: Method) = {
-    val paramTypes = m.getParameterTypes
-    paramTypes.length == 1 && classOf[Rep].isAssignableFrom(paramTypes(0))
-  }
-*/
 
   def isTestMethodGoodies(m: Method) = {
 

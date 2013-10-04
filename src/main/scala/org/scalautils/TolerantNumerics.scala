@@ -110,6 +110,7 @@ package org.scalautils
  */
 trait TolerantNumerics {
 
+// TODO: Pretty toStrings on the results
   /**
    * Provides an <code>Equality</code> instance for <code>Double</code>s that 
    * compares for equality with the passed tolerance.

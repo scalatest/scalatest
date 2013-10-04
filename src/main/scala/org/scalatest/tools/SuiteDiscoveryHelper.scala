@@ -29,9 +29,6 @@ import java.util.regex.Pattern
 
 import scala.collection.mutable.ListBuffer
 
-// TODO: Make this an object. To do so need to figure out how
-// to invoke private method with reflection on an object, because
-// that's how I'm testing the private methods here.
 /**
  * Discovers Suites on the runpath.
  *

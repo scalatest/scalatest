@@ -210,6 +210,6 @@ trait FunSuiteLike extends Suite with Informing with Updating with Alerting with
    */
   final override val styleName: String = "org.scalatest.FunSuite"
     
-  // TODO: add scaladoc
+  // Inherits scaladoc
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = createTestDataFor(testName, theConfigMap, this)
 }

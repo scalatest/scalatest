@@ -690,7 +690,6 @@ object Span {
       unitsString + "s (i.e., with an s) instead."
   }
 
-  // TODO: Doc this implicit and also mention Durations can be used in the main doc for Span
   import scala.concurrent.duration.Duration
 
   /**

@@ -1510,7 +1510,7 @@ object Runner {
     if (args.exists(_ == null))
       throw new NullPointerException("an arg String was null")
 
-    if (argTooShort(args)) // TODO: check and print out a user friendly message for this
+    if (argTooShort(args)) // TODO: check and print out a user friendly message for this; maybe use an accumulating Or?
       throw new IllegalArgumentException("an arg String was less than 2 in length: " + args)
 
     for (dashX <- List("-g", "-o", "-e")) {

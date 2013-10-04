@@ -1155,7 +1155,6 @@ final case class SuiteAborted (
     </SuiteAborted>
 }
 
-// TODO: Put location as a val set to None
 /**
  * Event that indicates a runner is about run a suite of tests.
  *

@@ -2742,33 +2742,6 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * Map("one" -&gt; 1, "two" -&gt; 2) should (not contain key ("two") or not contain key ("three"))
-     *                                                                    ^
-     * </pre>
-     */
-/*
-    def contain[U](resultOfKeyWordApplication: ResultOfKeyWordApplication): MatcherFactory1[T, KeyMapping] =
-      outerInstance.or(MatcherWords.not.contain(resultOfKeyWordApplication))
-*/
-// TODO: Tests and implementation
-
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
-     * Map("one" -&gt; 1, "two" -&gt; 2) should (not contain value (2) or not contain value (3))
-     *                                                                  ^
-     * </pre>
-     */
-/*
-    def contain[U](resultOfValueWordApplication: ResultOfValueWordApplication[U]): MatcherFactory1[T, ValueMapping] =
-      outerInstance.or(MatcherWords.not.contain(resultOfValueWordApplication))
-*/
-      
-    /**
-     * This method enables the following syntax:
-     *
-     * <pre class="stHighlight">
      * aMatcher or not contain oneOf (8, 1, 2)
      *                 ^
      * </pre>

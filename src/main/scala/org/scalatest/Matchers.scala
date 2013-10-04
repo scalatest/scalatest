@@ -52,7 +52,6 @@ import Assertions.checkNoException
 import exceptions.StackDepthExceptionHelper.getStackDepthFun
 
 // TODO: drop generic support for be as an equality comparison, in favor of specific ones.
-// TODO: mention on JUnit and TestNG docs that you can now mix in ShouldMatchers or MustMatchers
 // TODO: Put links from ShouldMatchers to wherever I reveal the matrix and algo of how properties are checked dynamically.
 // TODO: double check that I wrote tests for (length (7)) and (size (8)) in parens
 // TODO: document how to turn off the === implicit conversion
