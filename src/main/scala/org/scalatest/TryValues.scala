@@ -56,10 +56,10 @@ import scala.util.Success
  * </pre>
  *
  * <p>
- * The <code>NoSuchElementException</code> would cause the test to fail, but without providing a <a href="StackDepth.html">stack depth</a> pointing
- * to the failing line of test code. This stack depth, provided by <a href="TestFailedException.html"><code>TestFailedException</code></a> (and a
+ * The <code>NoSuchElementException</code> would cause the test to fail, but without providing a <a href="exceptions/StackDepth.html">stack depth</a> pointing
+ * to the failing line of test code. This stack depth, provided by <a href="exceptions/TestFailedException.html"><code>TestFailedException</code></a> (and a
  * few other ScalaTest exceptions), makes it quicker for
- * users to navigate to the cause of the failure. Without <code>OptionValues</code>, to get
+ * users to navigate to the cause of the failure. Without <a href="OptionValues.html"><code>OptionValues</code></a>, to get
  * a stack depth exception you would need to make two statements, like this:
  * </p>
  *
