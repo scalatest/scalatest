@@ -30,9 +30,7 @@ import org.scalatest.events._
  *
  * @author Bill Venners
  */
-private[tools] class IconEmbellishedListCellRenderer extends ListCellRenderer/*[EventHolder]ForJava17*/ {
-
-  private val defaultRenderer: ListCellRenderer/*[Object]ForJava17*/ = new DefaultListCellRenderer()
+private[tools] class IconEmbellishedListCellRenderer extends EventHolderListCellRenderer {
 
   private val DEEP_RED: Color = new Color(0xEE, 0x55, 0x66)
   private val UNCOMFORTABLE_GRAY: Color = new Color(0xaf, 0xaf, 0x9f)
@@ -125,11 +123,7 @@ private[tools] class IconEmbellishedListCellRenderer extends ListCellRenderer/*[
     renderer.setForeground(color)
   }
 
-  def getListCellRendererComponent(list: JList/*[_ <: EventHolder]ForJava17*/, value: Object/*EventHolder ReplaceForJava17*/, index: Int, isSelected: Boolean,
-      cellHasFocus: Boolean): Component = {
-
-    val renderer: JLabel =
-      defaultRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus).asInstanceOf[JLabel] 
+  protected def decorate(renderer: JLabel, value: Object, isSelected: Boolean): Component = {
 
     // Setting to a specific background color because that color was used to make icons that
     // look nice when the row is selected. 
