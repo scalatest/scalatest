@@ -809,9 +809,24 @@ class EverySpec extends UnitSpec {
     Every(3).sameElements(Every(1)) shouldBe false
     Every(3).sameElements(Every(3)) shouldBe true
   }
-  it should "have a scan method" is pending // I don't know what these scan methods even do
-  it should "have a scanLeft method" is pending
-  it should "have a scanRight method" is pending
+  it should "have a scan method" in {
+    Every(1).scan(0)(_ + _) shouldBe Every(0, 1)
+    Every(1, 2, 3).scan(0)(_ + _) shouldBe Every(0, 1, 3, 6)
+    Every(1, 2, 3).scan("z")(_ + _.toString) shouldBe Every("z", "z1", "z12", "z123")
+    Every(0).scan("z")(_ + _.toString) shouldBe Every("z", "z0")
+  }
+  it should "have a scanLeft method" in {
+    Every(1).scanLeft(0)(_ + _) shouldBe Every(0, 1)
+    Every(1, 2, 3).scanLeft(0)(_ + _) shouldBe Every(0, 1, 3, 6)
+    Every(1, 2, 3).scanLeft("z")(_ + _) shouldBe Every("z", "z1", "z12", "z123")
+    Every(0).scanLeft("z")(_ + _) shouldBe Every("z", "z0")
+  }
+  it should "have a scanRight method" in {
+    Every(1).scanRight(0)(_ + _) shouldBe Every(1, 0)
+    Every(1, 2, 3).scanRight(0)(_ + _) shouldBe Every(6, 5, 3, 0)
+    Every(1, 2, 3).scanRight("z")(_ + _) shouldBe Every("123z", "23z", "3z", "z")
+    Every(0).scanRight("z")(_ + _) shouldBe Every("0z", "z")
+  }
   it should "have a segmentLength method" in {
     Every(1, 2, 3, 4, 5, 6, 6, 7, 8, 10).segmentLength(_ > 7, 0) shouldBe 0
     Every(1, 2, 3, 4, 5, 6, 6, 7, 8, 10).segmentLength(_ == 7, 0) shouldBe 0

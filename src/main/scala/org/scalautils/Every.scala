@@ -1065,6 +1065,71 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
   final def sameElements[U >: T](that: Every[U]): Boolean = underlying.sameElements(that.toVector)
 
   /**
+   * Computes a prefix scan of the elements of this <code>Every</code>.
+   *
+   * <p>
+   * Note: The neutral element z may be applied more than once. 
+   * </p>
+   *
+   * <p>
+   * Here are some examples:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * Every(1, 2, 3).scan(0)(_ + _) == Every(0, 1, 3, 6)
+   * Every(1, 2, 3).scan("z")(_ + _.toString) == Every("z", "z1", "z12", "z123")
+   * </pre>
+   *
+   * @tparam U a type parameter for the binary operator, a supertype of T, and the type of the resulting <code>Every</code>.
+   * @param z a neutral element for the scan operation; may be added to the result an arbitrary number of
+   *     times, and must not change the result (<em>e.g.</em>, <code>Nil</code> for list concatenation,
+   *     0 for addition, or 1 for multiplication.)
+   * @param op a binary operator that must be associative
+   * @return a new <code>Every</code> containing the prefix scan of the elements in this <code>Every</code> 
+   */
+  final def scan[U >: T](z: U)(op: (U, U) => U): Every[U] = Every.from(underlying.scan(z)(op)).get
+
+  /**
+   * Produces an <code>Every</code> containing cumulative results of applying the operator going left to right.
+   *
+   * <p>
+   * Here are some examples:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * Every(1, 2, 3).scanLeft(0)(_ + _) == Every(0, 1, 3, 6)
+   * Every(1, 2, 3).scanLeft("z")(_ + _) == Every("z", "z1", "z12", "z123")
+   * </pre>
+   *
+   * @tparam B the result type of the binary operator and type of the resulting <code>Every</code>
+   * @param z the start value.
+   * @param op the binary operator.
+   * @return a new <code>Every</code> containing the intermediate results of inserting <code>op</code> between consecutive elements of this <code>Every</code>,
+   *     going left to right, with the start value, <code>z</code>, on the left.
+   */ 
+  final def scanLeft[B](z: B)(op: (B, T) => B): Every[B] = Every.from(underlying.scanLeft(z)(op)).get
+
+  /**
+   * Produces an <code>Every</code> containing cumulative results of applying the operator going right to left.
+   *
+   * <p>
+   * Here are some examples:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * Every(1, 2, 3).scanRight(0)(_ + _) == Every(6, 5, 3, 0)
+   * Every(1, 2, 3).scanRight("z")(_ + _) == Every("123z", "23z", "3z", "z")
+   * </pre>
+   *
+   * @tparam B the result of the binary operator and type of the resulting <code>Every</code>
+   * @param z the start value
+   * @param op the binary operator
+   * @return a new <code>Every</code> containing the intermediate results of inserting <code>op</code> between consecutive elements of this <code>Every</code>,
+   *     going right to left, with the start value, <code>z</code>, on the right.
+   */
+  final def scanRight[B](z: B)(op: (T, B) => B): Every[B] = Every.from(underlying.scanRight(z)(op)).get
+
+  /**
    * Computes length of longest segment whose elements all satisfy some predicate.
    *
    * @param p the predicate used to test elements.
