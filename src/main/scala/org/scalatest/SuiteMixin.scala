@@ -100,13 +100,55 @@ trait SuiteMixin { this: Suite =>
    * @param args the <code>Args</code> for this run
    * @return a <code>Status</code> object that indicates when the test started by this method has completed, and whether or not it failed .
    *
-   * @throws NullPointerException if any of <code>testName</code>, <code>reporter</code>, <code>stopper</code>, <code>configMap</code>,
-   *     or <code>tracker</code> is <code>null</code>.
+   * @throws NullPointerException if any of <code>testName</code> or <code>args</code> is <code>null</code>.
    */
   protected def runTest(
     testName: String,
     args: Args
   ): Status
+
+  /**
+   * A user-friendly suite name for this <code>Suite</code>.
+   *
+   * <p>
+   * This trait's
+   * implementation of this method returns the simple name of this object's class. This
+   * trait's implementation of <code>runNestedSuites</code> calls this method to obtain a
+   * name for <code>Report</code>s to pass to the <code>suiteStarting</code>, <code>suiteCompleted</code>,
+   * and <code>suiteAborted</code> methods of the <code>Reporter</code>.
+   * </p>
+   *
+   * @return this <code>Suite</code> object's suite name.
+   */
+  def suiteName: String
+
+  /**
+   * A string ID for this <code>Suite</code> that is intended to be unique among all suites reported during a run.
+   *
+   * <p>
+   * The suite ID is <em>intended</em> to be unique, because ScalaTest does not enforce that it is unique. If it is not
+   * unique, then you may not be able to uniquely identify a particular test of a particular suite. This ability is used,
+   * for example, to dynamically tag tests as having failed in the previous run when rerunning only failed tests.
+   * </p>
+   *
+   * @return this <code>Suite</code> object's ID.
+   */
+  def suiteId: String
+
+  /**
+   * Provides a <code>TestData</code> instance for the passed test name, given the passed config map.
+   *
+   * <p>
+   * This method is used to obtain a <code>TestData</code> instance to pass to <code>withFixture(NoArgTest)</code>
+   * and <code>withFixture(OneArgTest)</code> and the <code>beforeEach</code> and <code>afterEach</code> methods
+   * of trait <code>BeforeAndAfterEach</code>.
+   * </p>
+   *
+   * @param testName the name of the test for which to return a <code>TestData</code> instance
+   * @param theConfigMap the config map to include in the returned <code>TestData</code>
+   * @return a <code>TestData</code> instance for the specified test, which includes the specified config map
+   */
+  def testDataFor(testName: String, theConfigMap: ConfigMap): TestData
 
   /**
   * A <code>Set</code> of test names. If this <code>Suite</code> contains no tests, this method returns an empty <code>Set</code>.
