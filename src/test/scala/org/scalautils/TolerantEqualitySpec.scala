@@ -721,7 +721,25 @@ class TolerantEqualitySpec extends Spec with TripleEquals with TolerantNumerics 
   }
 
   object `TolerantNumeric's methods` {
-    def `should return Equalitys with a pretty toString` { pending
+    def `should return Equalitys with a pretty toString` {
+
+      assert(tolerantDoubleEquality(1.0).toString === "TolerantDoubleEquality(1.0)")
+      assert(tolerantDoubleEquality(2.2).toString === "TolerantDoubleEquality(2.2)")
+
+      assert(tolerantFloatEquality(1.0f).toString === "TolerantFloatEquality(1.0)")
+      assert(tolerantFloatEquality(2.2f).toString === "TolerantFloatEquality(2.2)")
+
+      assert(tolerantLongEquality(1L).toString === "TolerantLongEquality(1)")
+      assert(tolerantLongEquality(2L).toString === "TolerantLongEquality(2)")
+
+      assert(tolerantIntEquality(1).toString === "TolerantIntEquality(1)")
+      assert(tolerantIntEquality(2).toString === "TolerantIntEquality(2)")
+
+      assert(tolerantShortEquality(1.toShort).toString === "TolerantShortEquality(1)")
+      assert(tolerantShortEquality(2.toShort).toString === "TolerantShortEquality(2)")
+
+      assert(tolerantByteEquality(1.toByte).toString === "TolerantByteEquality(1)")
+      assert(tolerantByteEquality(2.toByte).toString === "TolerantByteEquality(2)")
     }
   }
 }

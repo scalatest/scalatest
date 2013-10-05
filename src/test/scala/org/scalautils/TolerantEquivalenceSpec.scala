@@ -719,4 +719,27 @@ class TolerantEquivalenceSpec extends Spec with TypeCheckedTripleEquals with Tol
       assert(caught21.getMessage === "-2 passed to tolerantEquivalence was zero or negative. Must be a positive non-zero number.")
     }
   }
+
+  object `TolerantNumeric's tolerantEquivalence method` {
+    def `should return Equivalences with a pretty toString` {
+
+      assert(tolerantEquivalence(1.0).toString === "TolerantEquivalence(1.0)")
+      assert(tolerantEquivalence(2.2).toString === "TolerantEquivalence(2.2)")
+
+      assert(tolerantEquivalence(1.0f).toString === "TolerantEquivalence(1.0)")
+      assert(tolerantEquivalence(2.2f).toString === "TolerantEquivalence(2.2)")
+
+      assert(tolerantEquivalence(1L).toString === "TolerantEquivalence(1)")
+      assert(tolerantEquivalence(2L).toString === "TolerantEquivalence(2)")
+
+      assert(tolerantEquivalence(1).toString === "TolerantEquivalence(1)")
+      assert(tolerantEquivalence(2).toString === "TolerantEquivalence(2)")
+
+      assert(tolerantEquivalence(1.toShort).toString === "TolerantEquivalence(1)")
+      assert(tolerantEquivalence(2.toShort).toString === "TolerantEquivalence(2)")
+
+      assert(tolerantEquivalence(1.toByte).toString === "TolerantEquivalence(1)")
+      assert(tolerantEquivalence(2.toByte).toString === "TolerantEquivalence(2)")
+    }
+  }
 }

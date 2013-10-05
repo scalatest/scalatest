@@ -128,6 +128,7 @@ trait TolerantNumerics {
           case _ => false
         }
       }
+      override def toString: String = s"TolerantDoubleEquality($tolerance)"
     } 
   } 
 
@@ -148,6 +149,7 @@ trait TolerantNumerics {
           case _ => false
         }
       }
+      override def toString: String = s"TolerantFloatEquality($tolerance)"
     } 
   } 
 
@@ -168,6 +170,7 @@ trait TolerantNumerics {
           case _ => false
         }
       }
+      override def toString: String = s"TolerantLongEquality($tolerance)"
     } 
   } 
 
@@ -188,6 +191,7 @@ trait TolerantNumerics {
           case _ => false
         }
       }
+      override def toString: String = s"TolerantIntEquality($tolerance)"
     } 
   } 
 
@@ -208,6 +212,7 @@ trait TolerantNumerics {
           case _ => false
         }
       }
+      override def toString: String = s"TolerantShortEquality($tolerance)"
     } 
   } 
 
@@ -228,6 +233,7 @@ trait TolerantNumerics {
           case _ => false
         }
       }
+      override def toString: String = s"TolerantByteEquality($tolerance)"
     } 
   } 
 
@@ -248,6 +254,7 @@ trait TolerantNumerics {
         val bMinusTolerance = numeric.minus(b, tolerance)
         (numeric.lteq(a, bPlusTolerance)) && (numeric.gteq(a, bMinusTolerance))
       }
+      override def toString: String = s"TolerantEquivalence($tolerance)"
     } 
   } 
 } 
