@@ -7,13 +7,16 @@ object ScalatestBuild extends Build {
   val scalaVersionToUse = "2.10.3"
     
   val releaseVersion = "2.0-SNAPSHOT"
-                              
+
   lazy val scalatest = Project("scalatest", file("."))
    .settings(
      organization := "org.scalatest",
      version := releaseVersion,
      scalaVersion := scalaVersionToUse,
      scalacOptions ++= Seq("-no-specialization", "-feature", "-target:jvm-1.5"),
+     initialCommands in console := """|import org.scalatest._
+                                      |import org.scalautils._
+                                      |import Matchers._""".stripMargin,
      ivyXML := 
        <dependency org="org.eclipse.jetty.orbit" name="javax.servlet" rev="3.0.0.v201112011016">
          <artifact name="javax.servlet" type="orbit" ext="jar"/>
