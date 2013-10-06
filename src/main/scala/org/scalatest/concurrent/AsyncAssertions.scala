@@ -374,7 +374,7 @@ trait AsyncAssertions extends PatienceConfiguration {
      */
     private def awaitImpl(timeout: Span, dismissals: Int = 1) {
       if (Thread.currentThread != creatingThread)
-        throw new NotAllowedException(Resources("awaitMustBeCalledOnCreatingThread", 2)
+        throw new NotAllowedException(Resources("awaitMustBeCalledOnCreatingThread"), 2)
 
       val startTime: Long = System.nanoTime
       val endTime: Long = startTime + timeout.totalNanos
