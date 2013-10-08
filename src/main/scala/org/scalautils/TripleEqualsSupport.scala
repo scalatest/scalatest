@@ -117,62 +117,62 @@ trait TripleEqualsSupport {
    * assert(c !== (2.0 +- 0.1))
    * </pre>
    *
-   * @param left An object to convert to <code>Equalizer</code>, which represents the value
+   * @param leftSide An object to convert to <code>Equalizer</code>, which represents the value
    *     on the left side of a <code>===</code> or <code>!==</code> invocation.
    *
    * @author Bill Venners
    */
-  class Equalizer[L](val left: L) {
+  class Equalizer[L](val leftSide: L) { // Note: This is called leftSide not left to avoid a conflict with scalaz's implicit that adds left
   
     /**
      * Compare two objects for equality, returning a <code>Boolean</code>, using the <code>Equality</code> type class passed as <code>equality</code>.
      *
-     * @param right the object to compare for equality with <code>left</code>, passed to the constructor
+     * @param rightSide the object to compare for equality with <code>leftSide</code>, passed to the constructor
      * @param equality an implicit <code>Equality</code> type class that defines a way of calculating equality for objects of type <code>L</code>
-     * @return true if the <code>left</code> and <code>right</code> objects are equal according to the passed <code>Equality</code> type class.
+     * @return true if the <code>leftSide</code> and <code>rightSide</code> objects are equal according to the passed <code>Equality</code> type class.
      */
-    def ===(right: Any)(implicit equality: Equality[L]): Boolean = equality.areEqual(left, right)
+    def ===(rightSide: Any)(implicit equality: Equality[L]): Boolean = equality.areEqual(leftSide, rightSide)
   
     /**
      * Compare two objects for inequality, returning a <code>Boolean</code>, using the <code>Equality</code> type class passed as <code>equality</code>.
      *
-     * @param right the object to compare for inequality with <code>left</code>, passed to the constructor
+     * @param rightSide the object to compare for inequality with <code>leftSide</code>, passed to the constructor
      * @param equality an implicit <code>Equality</code> type class that defines a way of calculating equality for objects of type <code>L</code>
-     * @return true if the <code>left</code> and <code>right</code> objects are <em>not</em> equal according to the passed <code>Equality</code> type class.
+     * @return true if the <code>leftSide</code> and <code>rightSide</code> objects are <em>not</em> equal according to the passed <code>Equality</code> type class.
      */
-    def !==(right: Any)(implicit equality: Equality[L]): Boolean = !equality.areEqual(left, right)
+    def !==(rightSide: Any)(implicit equality: Equality[L]): Boolean = !equality.areEqual(leftSide, rightSide)
   
     /**
      * Determine whether a numeric object is within the passed <code>Spread</code>, returning a <code>Boolean</code>.
      *
-     * @param spread the <code>Spread</code> against which to compare the value passed to the constructor as <code>left</code> 
-     * @return true if the value passed to the constructor as <code>left</code> is within the <code>Spread</code> passed to this method.
+     * @param spread the <code>Spread</code> against which to compare the value passed to the constructor as <code>leftSide</code> 
+     * @return true if the value passed to the constructor as <code>leftSide</code> is within the <code>Spread</code> passed to this method.
      */
-    def ===(spread: Spread[L]): Boolean = if (spread != null) spread.isWithin(left) else left == spread
+    def ===(spread: Spread[L]): Boolean = if (spread != null) spread.isWithin(leftSide) else leftSide == spread
   
     /**
      * Determine whether a numeric object is outside the passed <code>Spread</code>, returning a <code>Boolean</code>.
      *
-     * @param spread the <code>Spread</code> against which to compare the value passed to the constructor as <code>left</code> 
-     * @return true if the value passed to the constructor as <code>left</code> is <em>not</em> within the <code>Spread</code> passed to this method.
+     * @param spread the <code>Spread</code> against which to compare the value passed to the constructor as <code>leftSide</code> 
+     * @return true if the value passed to the constructor as <code>leftSide</code> is <em>not</em> within the <code>Spread</code> passed to this method.
      */
-    def !==(spread: Spread[L]): Boolean = if (spread != null) !spread.isWithin(left) else left != spread
+    def !==(spread: Spread[L]): Boolean = if (spread != null) !spread.isWithin(leftSide) else leftSide != spread
   
     /**
      * Determine whether an object reference is <code>null</code>.
      *
-     * @param literalNull a <code>null</code> value against which to compare the value passed to the constructor as <code>left</code> for equality
-     * @return true if the value passed to the constructor as <code>left</code> is <code>null</code>.
+     * @param literalNull a <code>null</code> value against which to compare the value passed to the constructor as <code>leftSide</code> for equality
+     * @return true if the value passed to the constructor as <code>leftSide</code> is <code>null</code>.
      */
-    def ===(literalNull: Null): Boolean = left == null
+    def ===(literalNull: Null): Boolean = leftSide == null
   
     /**
      * Determines whether an object reference is non-<code>null</code>.
      *
-     * @param literalNull a <code>null</code> value against which to compare the value passed to the constructor as <code>left</code> for inequality
-     * @return true if the value passed to the constructor as <code>left</code> is non-<code>null</code>.
+     * @param literalNull a <code>null</code> value against which to compare the value passed to the constructor as <code>leftSide</code> for inequality
+     * @return true if the value passed to the constructor as <code>leftSide</code> is non-<code>null</code>.
      */
-    def !==(literalNull: Null): Boolean = left != null
+    def !==(literalNull: Null): Boolean = leftSide != null
   }
 
   /**
@@ -371,48 +371,48 @@ trait TripleEqualsSupport {
    * assert(c !== (2.0 +- 0.1))
    * </pre>
    *
-   * @param left An object to convert to <code>Equalizer</code>, which represents the value
+   * @param leftSide An object to convert to <code>Equalizer</code>, which represents the value
    *     on the left side of a <code>===</code> or <code>!==</code> invocation.
    *
    * @author Bill Venners
    */
-  class CheckingEqualizer[L](val left: L) {
+  class CheckingEqualizer[L](val leftSide: L) { // Note: This is called leftSide not left to avoid a conflict with scalaz's implicit that adds left
   
     /**
      * Compare two objects for equality, returning a <code>Boolean</code>, using the <code>Constraint</code> instance passed as <code>constraint</code>.
      *
-     * @param right the object to compare for equality with <code>left</code>, passed to the constructor
+     * @param rightSide the object to compare for equality with <code>leftSide</code>, passed to the constructor
      * @param constraint an implicit <code>Constraint</code> instance that enforces a relationship between types <code>L</code> and <code>R</code> and
      *    defines a way of calculating equality for objects of type <code>L</code>
-     * @return true if the <code>left</code> and <code>right</code> objects are equal according to the passed <code>Constraint</code> instance.
+     * @return true if the <code>leftSide</code> and <code>rightSide</code> objects are equal according to the passed <code>Constraint</code> instance.
      */
-    def ===[R](right: R)(implicit constraint: Constraint[L, R]): Boolean = constraint.areEqual(left, right)
+    def ===[R](rightSide: R)(implicit constraint: Constraint[L, R]): Boolean = constraint.areEqual(leftSide, rightSide)
   
     /**
      * Compare two objects for inequality, returning a <code>Boolean</code>, using the <code>Constraint</code> instance passed as <code>constraint</code>.
      *
-     * @param right the object to compare for inequality with <code>left</code>, passed to the constructor
+     * @param rightSide the object to compare for inequality with <code>leftSide</code>, passed to the constructor
      * @param constraint an implicit <code>Constraint</code> instance that enforces a relationship between types <code>L</code> and <code>R</code> and
      *    defines a way of calculating equality for objects of type <code>L</code>
-     * @return true if the <code>left</code> and <code>right</code> objects are <em>not</em> equal according to the passed <code>Constraint</code> instance.
+     * @return true if the <code>leftSide</code> and <code>rightSide</code> objects are <em>not</em> equal according to the passed <code>Constraint</code> instance.
      */
-    def !==[R](right: R)(implicit constraint: Constraint[L, R]): Boolean = !constraint.areEqual(left, right)
+    def !==[R](rightSide: R)(implicit constraint: Constraint[L, R]): Boolean = !constraint.areEqual(leftSide, rightSide)
   
     /**
      * Determine whether a numeric object is within the passed <code>Spread</code>, returning a <code>Boolean</code>.
      *
-     * @param spread the <code>Spread</code> against which to compare the value passed to the constructor as <code>left</code> 
-     * @return true if the value passed to the constructor as <code>left</code> is <em>not</em> within the <code>Spread</code> passed to this method.
+     * @param spread the <code>Spread</code> against which to compare the value passed to the constructor as <code>leftSide</code> 
+     * @return true if the value passed to the constructor as <code>leftSide</code> is <em>not</em> within the <code>Spread</code> passed to this method.
      */
-    def ===(spread: Spread[L]): Boolean = if (spread != null) spread.isWithin(left) else left == spread
+    def ===(spread: Spread[L]): Boolean = if (spread != null) spread.isWithin(leftSide) else leftSide == spread
   
     /**
      * Determine whether a numeric object is outside the passed <code>Spread</code>, returning a <code>Boolean</code>.
      *
-     * @param spread the <code>Spread</code> against which to compare the value passed to the constructor as <code>left</code> 
-     * @return true if the value passed to the constructor as <code>left</code> is <em>not</em> within the <code>Spread</code> passed to this method.
+     * @param spread the <code>Spread</code> against which to compare the value passed to the constructor as <code>leftSide</code> 
+     * @return true if the value passed to the constructor as <code>leftSide</code> is <em>not</em> within the <code>Spread</code> passed to this method.
      */
-    def !==(spread: Spread[L]): Boolean = if (spread != null) !spread.isWithin(left) else left != spread
+    def !==(spread: Spread[L]): Boolean = if (spread != null) !spread.isWithin(leftSide) else leftSide != spread
   }
 
   /**
