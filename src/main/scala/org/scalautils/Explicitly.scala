@@ -48,7 +48,7 @@ package org.scalautils
  *
  * <p>
  * The explicitly DSL also provides support for specifying a one-off equality that is based on a normalization. For
- * example, ScalaUtils offers a <a href="StringNormalizations.htgml"><code>StringNormalizations</code></a> trait that
+ * example, ScalaUtils offers a <a href="StringNormalizations.html"><code>StringNormalizations</code></a> trait that
  * provides methods such as <code>trimmed</code> and <code>lowerCased</code> that return
  * <code>Normalization[String]</code> instances that normalize by trimming and lower-casing, respectively. If you bring
  * those into scope by mixing in or importing the members of <code>StringNormalizations</code>, you could use the

@@ -96,8 +96,7 @@ package org.scalautils
  * <p>
  * This trait simply mixes together <a href="SeqEqualityConstraints.html"><code>SeqEqualityConstraints</code></a>,
  * <a href="SetEqualityConstraints.html"><code>SetEqualityConstraints</code></a>,
- * and <a href="MapeqEqualityConstraints.html"><code>MapEqualityConstraints</code></a>. For more information and examples, therefore, see
- * the main documentation of those traits.
+ * and <a href="MapEqualityConstraints.html"><code>MapEqualityConstraints</code></a>.
  * </p>
  * 
  * @author Bill Venners

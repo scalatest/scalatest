@@ -37,7 +37,7 @@ import TripleEqualsSupport._
  * and still compile. If <code>TypeCheckedTripleEquals</code> is mixed in or imported, however, only types in 
  * a subtype or supertype relationship with each other (including when both types are exactly the same) will compile.
  * <code>ConversionCheckedTripleEquals</code> is slightly more accomodating, because in addition to compiling any
- * use of <code>===</code> that will compile under </code>TypeCheckedTripleEquals</code>, it will also compile
+ * use of <code>===</code> that will compile under <code>TypeCheckedTripleEquals</code>, it will also compile
  * type types that would be rejected by <code>TypeCheckedTripleEquals</code>, so long as an implicit
  * conversion (in either direction) from one type to another is available.
  * </p>
@@ -66,7 +66,7 @@ import TripleEqualsSupport._
  *
  * <p>
  * Trait <code>TypeCheckedTripleEquals</code> rejects types <code>Int</code> and <code>Long</code> because they are not directly related via
- * subtyping. However, an implicit widening conversion from <code>Int</code> to </code>Long</code> does exist (imported implicitly from
+ * subtyping. However, an implicit widening conversion from <code>Int</code> to <code>Long</code> does exist (imported implicitly from
  * <code>scala.Predef</code>), so <code>ConversionCheckedTripleEquals</code>
  * will allow it:
  * </p>
@@ -117,6 +117,7 @@ import TripleEqualsSupport._
  * }
  * </pre>
  *
+ * <p>
  * Because <code>Int</code> and <code>Long</code> are not in a subtype/supertype relationship, comparing <code>1</code> and <code>1L</code> in the context
  * of <code>TypeCheckedTripleEquals</code> will generate a compiler error:
  * </p>
@@ -175,7 +176,7 @@ import TripleEqualsSupport._
  * In short, you should be able to select a primary constraint level via either a mixin or import, then change that in nested scopes
  * however you want, again either through a mixin or import, without getting any implicit conversion ambiguity. The innermost constraint level in scope
  * will always be in force.
- * <p>
+ * </p>
  *
  * <p>
  * An alternative way to solve an unwanted compiler error caused by an over-zealous type constraint is with a <em>widening type ascription</em>. Here
