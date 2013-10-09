@@ -23,6 +23,11 @@ object ScalatestBuild extends Build {
        </dependency>, 
      libraryDependencies ++= simpledependencies,
      libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersionToUse, // this is needed to compile macro
+     libraryDependencies <++= scalaVersion apply { sv =>
+       if((sv startsWith "2.9") || (sv startsWith "2.10")) Seq.empty
+       else Seq("org.scala-lang.modules" %% "scala-xml" % "1.0-RC7",
+                "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0-RC5")      
+     },
      resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
      genMustMatchersTask, 
      genGenTask, 
