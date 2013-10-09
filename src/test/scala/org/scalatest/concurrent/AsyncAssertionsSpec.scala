@@ -244,5 +244,33 @@ class AsyncAssertionsSpec extends fixture.FunSpec with ShouldMatchers with Condu
 
       con.conduct()
     }
+    
+    it("should should handle many dismissals without races") { con => import con._
+
+      @volatile var w: Waiter = null
+      
+      val n = 10000
+      
+      thread {
+        waitForBeat(1)
+        var i = 0
+        while (i < n) { w.dismiss(); i += 1 }
+        waitForBeat(3)
+        w { fail("I meant to do that!") }
+      }
+
+      thread {
+        w = new Waiter
+        w.await(dismissals(n))
+        waitForBeat(2)
+        val caught =
+          intercept[TestFailedException] {
+            w.await()
+          }
+        caught.message.value should be ("I meant to do that!")
+      }
+
+      con.conduct()
+    }
   }
 }
