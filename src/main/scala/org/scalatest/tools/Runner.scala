@@ -341,8 +341,7 @@ private[tools] case class SuiteParam(className: String, testNames: Array[String]
  * </p>
  *
  * <a name="configuringReporters"></a>
- * <h2>Configuring Reporters</h2>
- * </a>
+ * <h2>Configuring reporters</h2>
  *
  * <p>
  * Each reporter option on the command line can include configuration characters. Configuration characters
@@ -461,7 +460,6 @@ private[tools] case class SuiteParam(className: String, testNames: Array[String]
  *
  * <a name="specifyingTagsToIncludeAndExclude"></a>
  * <h2>Specifying tags to include and exclude</h2>
- * </a>
  *
  * <p>
  * You can specify tag names of tests to include or exclude from a run. To specify tags to include,
@@ -487,7 +485,6 @@ private[tools] case class SuiteParam(className: String, testNames: Array[String]
  *
  * <a name="specifyingSuffixesToDiscover"></a>
  * <h2>Specifying suffixes to discover</h2>
- * </a>
  *
  * <p>
  * You can specify suffixes of <code>Suite</code> names to discover. To specify suffixes to discover,
@@ -520,7 +517,6 @@ private[tools] case class SuiteParam(className: String, testNames: Array[String]
  *
  * <a name="executingSuitesInParallel"></a>
  * <h2>Executing <code>Suite</code>s in parallel</h2>
- * </a>
  *
  * <p>
  * With the proliferation of multi-core architectures, and the often parallelizable nature of tests, it is useful to be able to run
@@ -541,7 +537,6 @@ private[tools] case class SuiteParam(className: String, testNames: Array[String]
  *
  * <a name="specifyingSuites"></a>
  * <h2>Specifying <code>Suite</code>s</h2>
- * </a>
  *
  * <p>
  * Suites are specified on the command line with a <b>-s</b> followed by the fully qualified
@@ -575,7 +570,6 @@ private[tools] case class SuiteParam(className: String, testNames: Array[String]
  *
  * <a name="membersOnlyWildcard"></a>
  * <h2>Specifying "members-only" and "wildcard" <code>Suite</code> paths</h2>
- * </a>
  *
  * <p>
  * If you specify <code>Suite</code> path names with <code>-m</code> or <code>-w</code>, <code>Runner</code> will automatically
@@ -610,7 +604,6 @@ private[tools] case class SuiteParam(className: String, testNames: Array[String]
  *
  * <a name="specifyingChosenStyles"></a>
  * <h2>Specifying chosen styles</h2>
- * </a>
  *
  * <p>
  * You can optionally specify chosen styles for a ScalaTest run. ScalaTest supports different styles of
@@ -724,7 +717,7 @@ private[tools] case class SuiteParam(className: String, testNames: Array[String]
  * To use this option you must include a JUnit jar file on your classpath.
  * </p>
  *
- * <h2>Memorizing and Rerunning Failed and Canceled tests</h2>
+ * <h2>Memorizing and rerunning failed and canceled tests</h2>
  *
  * <p>
  * You can memorize failed and canceled tests using <code>-M</code>:

@@ -345,9 +345,9 @@ trait Assertions extends TripleEquals {
     def getObjectsForFailureMessage(a: Any, b: Any) =
       a match {
         case aEqualizer: org.scalautils.TripleEqualsSupport#Equalizer[_] =>
-          Suite.getObjectsForFailureMessage(aEqualizer.left, b)
+          Suite.getObjectsForFailureMessage(aEqualizer.leftSide, b)
         case aEqualizer: org.scalautils.TripleEqualsSupport#CheckingEqualizer[_] =>
-          Suite.getObjectsForFailureMessage(aEqualizer.left, b)
+          Suite.getObjectsForFailureMessage(aEqualizer.leftSide, b)
         case _ => Suite.getObjectsForFailureMessage(a, b)
       }
 
