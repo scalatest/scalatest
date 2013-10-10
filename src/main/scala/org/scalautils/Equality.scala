@@ -93,7 +93,7 @@ package org.scalautils
  * ScalaUtils defines a default <code>Equality[T]</code> for all types <code>T</code> whose <code>areEqual</code> method works by first
  * calling <code>.deep</code> on any passed array, then calling <code>==</code> on the left-hand object, passing in the right-hand object.
  * You can obtain a default equality via the <code>default</code> method of the <a href="Equality$.html">Equality companion object</a>,
- * or from the <code>defaultEquality</code> method defined in <a href="TripleEqualsSupport.html"</a><code>TripleEqualsSupport</code></a>.
+ * or from the <code>defaultEquality</code> method defined in <a href="TripleEqualsSupport.html"><code>TripleEqualsSupport</code></a>.
  * </p>
  *
  * <a name="aboutEquality"></a>
@@ -139,6 +139,7 @@ package org.scalautils
  * <p>
  * <code>Equality</code> is used by <a href="TripleEquals.html"><code>TripleEquals</code></a>, which enforces no type constraint between the left and right values, and the
  * <code>equal</code>, <code>be</code>, and <code>contain</code> syntax of ScalaTest Matchers.
+ * </p>
  * 
  * <p>
  * By contrast, <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a>
@@ -178,7 +179,7 @@ package org.scalautils
  *
  * <p>
  * <em>Note: The <code>Equality</code> type class was inspired in part by the <code>Equal</code> type class of the 
- * <a href="http://code.google.com/p/scalaz/" target="_blank"><code>scalaz</code></a> project.</em>
+ * <a href="http://github.com/scalaz/scalaz" target="_blank"><code>scalaz</code></a> project.</em>
  * </p>
  *
  * @tparam A the type whose equality is being customized
