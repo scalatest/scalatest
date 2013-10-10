@@ -30,7 +30,7 @@ The followings are needed for building ScalaTest:
 
 and use the following options in your SBT launch file:
 
-    SBT_OPTS="-server -Xms512M -Xmx3072M -Xss1M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M"
+    SBT_OPTS="-server -Xms512M -Xmx2048M -Xss1M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M"
 
 ### Building and Running Tests
 
