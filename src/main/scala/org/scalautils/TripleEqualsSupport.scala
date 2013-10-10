@@ -985,7 +985,7 @@ object TripleEqualsSupport {
    * An implementation of <a href="Constraint.html"><code>Constraint</code></a> for two types <code>A</code> and <code>B</code> that requires an <code>Equality[A]</code> to
    * which its <code>areEqual</code> method can delegate an equality comparison.
    *
-   * @param equalityofA an <code>Equality</code> type class for <code>A</code>
+   * @param equalityOfA an <code>Equality</code> type class for <code>A</code>
    */
   final class EqualityConstraint[A, B](equalityOfA: Equality[A]) extends Constraint[A, B] {
 
@@ -1003,7 +1003,7 @@ object TripleEqualsSupport {
    * An implementation of <code>Constraint</code> for two types <code>A</code> and <code>B</code> that requires an <code>Equality[B]</code>
    * and a conversion function from <code>A</code> to <code>B</code>. 
    *
-   * @param equalityofB an <code>Equality</code> type class for <code>B</code>
+   * @param equivalenceOfB an <code>Equivalence</code> type class for <code>B</code>
    */
   final class AToBEquivalenceConstraint[A, B](equivalenceOfB: Equivalence[B], cnv: A => B) extends Constraint[A, B] {
 
@@ -1026,7 +1026,7 @@ object TripleEqualsSupport {
    * An implementation of <code>Constraint</code> for two types <code>A</code> and <code>B</code> that requires an <code>Equality[A]</code>
    * and a conversion function from <code>B</code> to <code>A</code>. 
    *
-   * @param equalityofA an <code>Equality</code> type class for <code>A</code>
+   * @param equivalenceOfA an <code>Equivalence</code> type class for <code>A</code>
    */
   final class BToAEquivalenceConstraint[A, B](equivalenceOfA: Equivalence[A], cnv: B => A) extends Constraint[A, B] {
   
