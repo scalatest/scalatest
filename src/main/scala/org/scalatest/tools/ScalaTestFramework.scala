@@ -47,7 +47,7 @@ import java.util.concurrent.atomic.AtomicLong
  * </p>
  *
  * <pre class="stHighlight">
- * org.scalatest" % "scalatest_2.10" % "2.0" % "test"
+ * "org.scalatest" % "scalatest_2.10" % "2.0" % "test"
  * </pre>
  *
  * <p>
