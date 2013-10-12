@@ -389,6 +389,13 @@ class Framework extends SbtFramework {
                 mergeMap[String, Set[String]](List(testMap1, testMap2)) { _ ++ _}
               }
               hasTest = true
+            case testWildcardSelector: TestWildcardSelector =>
+              val filteredTestNames = suite.testNames.filter(_.contains(testWildcardSelector.testWildcard))
+              val selectorTestTags = Map.empty ++ filteredTestNames.map(_ -> Set(SELECTED_TAG))
+              testTags = mergeMap[String, Map[String, Set[String]]](List(testTags, Map(suite.suiteId -> selectorTestTags))) { (testMap1, testMap2) =>
+                mergeMap[String, Set[String]](List(testMap1, testMap2)) { _ ++ _}
+              }
+              hasTest = true
             case nestedSuiteSelector: NestedSuiteSelector => 
               suiteTags = mergeMap[String, Set[String]](List(suiteTags, Map(nestedSuiteSelector.suiteId -> Set(SELECTED_TAG)))) { _ ++ _ }
               hasNested = true
