@@ -697,6 +697,71 @@ class FrameworkSuite extends FunSuite {
       runner.done()
     }
   }
+
+  test("TestWildcardSelector should select and run selected test(s) using wildcard in suite, excluding nested suites") {
+    val runner = framework.runner(Array.empty, Array.empty, testClassLoader)
+    try {
+      val testEventHandler = new TestEventHandler
+      val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.SampleSuite", subclassFingerprint, false, Array(new TestWildcardSelector("est 1"), new TestWildcardSelector("st 3"))),
+        new TaskDef("org.scalatest.tools.scalasbt.SuiteWithNestedSuites", subclassFingerprint, false, Array(new TestWildcardSelector("t 2")))))
+      assert(tasks.size === 2)
+      val task = tasks(0)
+      task.execute(testEventHandler, Array(new TestLogger))
+      val successEvents = testEventHandler.successEventsReceived
+      assert(successEvents.length === 2)
+      assertSuiteSuccessEvent(successEvents(0), "org.scalatest.tools.scalasbt.SampleSuite", "test 1", subclassFingerprint)
+      assertSuiteSuccessEvent(successEvents(1), "org.scalatest.tools.scalasbt.SampleSuite", "test 3", subclassFingerprint)
+      assert(testEventHandler.errorEventsReceived.length === 0)
+      assert(testEventHandler.failureEventsReceived.length === 0)
+      assert(testEventHandler.skippedEventsReceived.length === 0)
+
+      val testEventHandler2 = new TestEventHandler
+      val task2 = tasks(1)
+      task2.execute(testEventHandler2, Array(new TestLogger))
+      val successEvents2 = testEventHandler2.successEventsReceived
+      assert(successEvents2.length === 1)
+      assertSuiteSuccessEvent(successEvents2(0), "org.scalatest.tools.scalasbt.SuiteWithNestedSuites", "test 2", subclassFingerprint)
+      assert(testEventHandler2.errorEventsReceived.length === 0)
+      assert(testEventHandler2.failureEventsReceived.length === 0)
+      assert(testEventHandler2.skippedEventsReceived.length === 0)
+    }
+    finally {
+      runner.done()
+    }
+  }
+
+  test("TestWildcardSelector should select and run selected test(s) in suite when it is explicitly specified, even when the suite is annotated with @DoNotDiscover") {
+    val runner = framework.runner(Array.empty, Array.empty, testClassLoader)
+    try {
+      val testEventHandler = new TestEventHandler
+      val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.DoNotDiscoverSuite", subclassFingerprint, true, Array(new TestWildcardSelector("st 1"), new TestWildcardSelector("est 3")))))
+      assert(tasks.size === 1)
+      val task = tasks(0)
+      task.execute(testEventHandler, Array(new TestLogger))
+      val successEvents = testEventHandler.successEventsReceived
+      assert(successEvents.length === 2)
+      assertSuiteSuccessEvent(successEvents(0), "org.scalatest.tools.scalasbt.DoNotDiscoverSuite", "test 1", subclassFingerprint)
+      assertSuiteSuccessEvent(successEvents(1), "org.scalatest.tools.scalasbt.DoNotDiscoverSuite", "test 3", subclassFingerprint)
+      assert(testEventHandler.errorEventsReceived.length === 0)
+      assert(testEventHandler.failureEventsReceived.length === 0)
+      assert(testEventHandler.skippedEventsReceived.length === 0)
+    }
+    finally {
+      runner.done()
+    }
+  }
+
+  test("TestWildcardSelector should not select and run selected test(s) in suite when it is not explicitly specified and the suite is annotated with @DoNotDiscover") {
+    val runner = framework.runner(Array.empty, Array.empty, testClassLoader)
+    try {
+      val testEventHandler = new TestEventHandler
+      val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.DoNotDiscoverSuite", subclassFingerprint, false, Array(new TestWildcardSelector("est 1"), new TestWildcardSelector("t 3")))))
+      assert(tasks.size === 0)
+    }
+    finally {
+      runner.done()
+    }
+  }
   
   test("NestedSuiteSelector should select and run test(s) in selected nested suite when it is explicitly specified, even if the selected nested suite is annotated with @DoNotDiscover") {
     val runner = framework.runner(Array.empty, Array.empty, testClassLoader)
