@@ -151,7 +151,7 @@ import org.scalatest.exceptions.TestCanceledException
  * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">
  * The default interruptor, invokes <code>interrupt</code> on the main test thread. This will
  * set the interrupted status for the main test thread and,
- * if the main thread is blocked, will in some cases cause the main thread complete abruptly with
+ * if the main thread is blocked, will in some cases cause the main thread to complete abruptly with
  * an <code>InterruptedException</code>.
  * </td>
  * </tr>

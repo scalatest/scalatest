@@ -47,14 +47,14 @@ import org.scalatest.time.{Millis, Seconds, Span}
  *
  * <p>
  * The default values of both timeout and interval are passed to the <code>scaled</code> method, inherited
- * from <a href="ScaledTimeSpans.html"><code>ScaledTimeSpans</code></a>, so that the defaults can be scaled up
+ * from <code>ScaledTimeSpans</code>, so that the defaults can be scaled up
  * or down together with other scaled time spans. See the documentation for trait <a href="ScaledTimeSpans.html"><code>ScaledTimeSpans</code></a>
  * for more information.
  * </p>
  *
  * <p>
- * Mix this trait into any class that uses <code>PatienceConfiguration</code> (such as classes that mix in <code>Eventually</code>
- * or <code>AsyncAssertions</code>) to get timeouts tuned towards integration testing, like this:
+ * Mix this trait into any class that uses <code>PatienceConfiguration</code> (such as classes that mix in <a href="Eventually.html"><code>Eventually</code></a>
+ * or <a href="AsyncAssertions.html"><code>AsyncAssertions</code></a>) to get timeouts tuned towards integration testing, like this:
  * </p>
  *
  * <pre class="stHighlight">

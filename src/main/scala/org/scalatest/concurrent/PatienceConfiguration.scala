@@ -64,7 +64,7 @@ import PatienceConfiguration._
  *
  * <p>
  * The default values of both timeout and interval are passed to the <code>scaled</code> method, inherited
- * from <a href="ScaledTimeSpans.html"><code>ScaledTimeSpans</code></a>, so that the defaults can be scaled up
+ * from <code>ScaledTimeSpans</code>, so that the defaults can be scaled up
  * or down together with other scaled time spans. See the documentation for trait <a href="ScaledTimeSpans.html"><code>ScaledTimeSpans</code></a>
  * for more information.
  * </p>
@@ -72,7 +72,7 @@ import PatienceConfiguration._
  * <p>
  * Timeouts are used by the <code>eventually</code> methods of trait
  * <a href="Eventually.html"><code>Eventually</code></a> and the <code>await</code> method of class
- * <a href="AsyncAssertions/Waiter.html"><code>Waiter</code></a>, a member of trait
+ * <code>Waiter</code>, a member of trait
  * <a href="AsyncAssertions.html"><code>AsyncAssertions</code></a>. Intervals are used by 
  * the <code>eventually</code> methods.
  * </p>
