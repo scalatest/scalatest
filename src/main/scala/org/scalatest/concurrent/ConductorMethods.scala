@@ -83,7 +83,7 @@ import org.scalatest.OutcomeOf.outcomeOf
  * </pre>
  *
  * <p>
- * For an explanation of how these tests work, see the documentation for <a href="Conductor.html"><code>Conductor</code></a>.
+ * For an explanation of how these tests work, see the documentation for <a href="Conductors.html"><code>Conductors</code></a>.
  * </p>
  *
  * @author Josh Cough

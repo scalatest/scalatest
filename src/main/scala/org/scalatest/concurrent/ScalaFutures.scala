@@ -30,7 +30,7 @@ import scala.util.Failure
  *
  * <p>
  * This trait enables you to invoke the methods defined on <code>FutureConcept</code> on a Scala <code>Future</code>, as well as to pass a Scala future
- * to the <code>whenReady</code> methods of supertrait <a href="Futures.html"><code>Futures</code></a>.
+ * to the <code>whenReady</code> methods of supertrait <code>Futures</code>.
  * See the documentation for supertrait <a href="Futures.html"><code>Futures</code></a> for the details on the syntax this trait provides
  * for testing with Scala futures.
  * </p>

@@ -161,13 +161,13 @@ import PatienceConfiguration._
  *
  * <p>
  * The default values of both timeout and interval are passed to the <code>scaled</code> method, inherited
- * from <a href="ScaledTimeSpans.html"><code>ScaledTimeSpans</code></a>, so that the defaults can be scaled up
+ * from <code>ScaledTimeSpans</code>, so that the defaults can be scaled up
  * or down together with other scaled time spans. See the documentation for trait <a href="ScaledTimeSpans.html"><code>ScaledTimeSpans</code></a>
  * for more information.
  * </p>
  *
  * <p>
- * The <code>whenReady</code> methods of trait <code>Futures</code> each take an <code>PatienceConfig</code>
+ * The <code>whenReady</code> methods of trait <code>Futures</code> each take a <code>PatienceConfig</code>
  * object as an implicit parameter. This object provides values for the two configuration parameters. Trait
  * <code>Futures</code> provides an implicit <code>val</code> named <code>defaultPatience</code> with each
  * configuration parameter set to its default value. 
