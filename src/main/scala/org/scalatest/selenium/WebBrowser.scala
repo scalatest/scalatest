@@ -59,7 +59,8 @@ import org.scalatest.Resources
  * <pre class="stHighlight">
  * import org.scalatest._
  * import selenium._
- * import org.openqa.selenium.htmlunit.HtmlUnitDriver
+ * import org.openqa.selenium._
+ * import htmlunit._
  *
  * class BlogSpec extends FlatSpec with Matchers with WebBrowser {
  *
