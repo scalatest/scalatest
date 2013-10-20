@@ -128,7 +128,7 @@ import org.scalautils.Prettifier
  * If you just need the test to fail, you can write:
  * </p>
  *
- * <pre class="stHiglight">
+ * <pre class="stHighlight">
  * fail()
  * </pre>
  *
@@ -136,7 +136,7 @@ import org.scalautils.Prettifier
  * Or, if you want the test to fail with a message, write:
  * </p>
  *
- * <pre class="stHiglight">
+ * <pre class="stHighlight">
  * fail("I've got a bad feeling about this")
  * </pre>
  *
@@ -225,7 +225,7 @@ import org.scalautils.Prettifier
  * <code>TestFailedException</code>. Thus if you just need to cancel a test, you can write:
  * </p>
  *
- * <pre class="stHiglight">
+ * <pre class="stHighlight">
  * cancel()
  * </pre>
  *
@@ -233,7 +233,7 @@ import org.scalautils.Prettifier
  * If you want to cancel the test with a message, just place the message in the parentheses:
  * </p>
  *
- * <pre class="stHiglight">
+ * <pre class="stHighlight">
  * cancel("Can't run the test because no internet connection was found")
  * </pre>
  *
