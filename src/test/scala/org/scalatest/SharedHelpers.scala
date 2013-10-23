@@ -351,6 +351,15 @@ object SharedHelpers extends Assertions {
     assert(testFailedEvent.isDefined)
     assert(testFailedEvent.get.asInstanceOf[TestFailed].testName === testName)
   }
+
+  def ensureTestFailedEventReceivedWithCorrectMessage(suite: Suite, testName: String, expectedMessage: String) {
+    val reporter = new EventRecordingReporter
+    suite.run(None, Args(reporter))
+    val testFailedEvent = reporter.eventsReceived.find(_.isInstanceOf[TestFailed])
+    assert(testFailedEvent.isDefined)
+    assert(testFailedEvent.get.asInstanceOf[TestFailed].testName == testName)
+    assert(testFailedEvent.get.asInstanceOf[TestFailed].message == expectedMessage)
+  }
   
   def thisLineNumber = {
     val st = Thread.currentThread.getStackTrace
