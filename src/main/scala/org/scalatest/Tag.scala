@@ -139,6 +139,7 @@ package org.scalatest
  * <li><a href="FunSpec.html#taggingTests">Tagging <code>FunSpec</code> tests</a></li>
  * <li><a href="FunSuite.html#taggingTests">Tagging <code>FunSuite</code> tests</a></li>
  * <li><a href="PropSpec.html#taggingTests">Tagging <code>PropSpec</code> tests</a></li>
+ * <li><a href="Spec.html#taggingTests">Tagging <code>Spec</code> tests</a></li>
  * <li><a href="WordSpec.html#taggingTests">Tagging <code>WordSpec</code> tests</a></li>
  * </ul>
  *

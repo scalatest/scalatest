@@ -24,10 +24,10 @@ import org.scalatest.time.{Span, Millis}
  *
  * <p>
  * The main purpose of <code>AbstractPatienceConfiguration</code> is to differentiate core <code>PatienceConfiguration</code>
- * traits, such as <code>Eventually</code> and <code>AsyncAssertions</code>, from stackable
+ * traits, such as <a href="Eventually.html"><code>Eventually</code></a> and <a href="AsyncAssertions.html"><code>AsyncAssertions</code></a>, from stackable
  * modification traits for <code>PatienceConfiguration</code>s such as <code>IntegrationPatience</code>.
  * Because these stackable traits extend <code>AbstractPatienceConfiguration</code> 
- * instead of <code>Suite</code>, you can't simply mix in a stackable trait:
+ * instead of <a href="../Suite.html"><code>Suite</code></a>, you can't simply mix in a stackable trait:
  * </p>
  *
  * <pre class="stHighlight">

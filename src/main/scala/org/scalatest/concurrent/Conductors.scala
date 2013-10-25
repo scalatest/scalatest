@@ -119,7 +119,7 @@ import PatienceConfiguration._
  * </pre>
  *
  * <p>
- * The <code>thread</code> calls create the threads and starts them, but they will not immediately
+ * The <code>thread</code> creates the threads and starts them, but they will not immediately
  * execute the by-name parameter passed to them. They will first block, waiting for the <code>Conductor</code>
  * to give them a green light to proceed.
  * </p>
