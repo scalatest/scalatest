@@ -136,7 +136,7 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * </p>
      */
     def of(description: String) {
-      registerFlatBranch(description, "describeCannotAppearInsideAnIt", "FlatSpecLike.scala", "of", 3, 0)
+      registerFlatBranch(description, "behaviorOfCannotAppearInsideAnIn", "FlatSpecLike.scala", "of", 3, 0)
     }
   }
 
@@ -1500,7 +1500,7 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
    */
   protected implicit val shorthandTestRegistrationFunction: (String, String, String) => ResultOfStringPassedToVerb = {
     (subject, verb, rest) => {
-      registerFlatBranch(subject, "describeCannotAppearInsideAnIt", "FlatSpecLike.scala", "apply", 6, 0)
+      registerFlatBranch(subject, "shouldCannotAppearInsideAnIn", "FlatSpecLike.scala", "apply", 6, 0)
       new ResultOfStringPassedToVerb(verb, rest) {
 
         def is(testFun: => PendingNothing) {
@@ -1544,7 +1544,7 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
    */
   protected implicit val shorthandSharedTestRegistrationFunction: (String) => BehaveWord = {
     (left) => {
-      registerFlatBranch(left, "describeCannotAppearInsideAnIt", "FlatSpecLike.scala", "apply", 5, 0)
+      registerFlatBranch(left, "shouldCannotAppearInsideAnIn", "FlatSpecLike.scala", "apply", 5, 0)
       new BehaveWord
     }
   }

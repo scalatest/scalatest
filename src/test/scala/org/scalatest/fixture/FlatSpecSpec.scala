@@ -1048,7 +1048,34 @@ class FlatSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         }
 
         val spec = new MySpec
-        ensureTestFailedEventReceived(spec, "should blow up")
+        ensureTestFailedEventReceivedWithCorrectMessage(spec, "should blow up", "a \"behavior of\" clause may not appear inside an \"in\" clause")
+      }
+      it("should, if they call a should from within an it clause, result in a TestFailedException when running the test") {
+
+        class MySpec extends FlatSpec {
+          type FixtureParam = String
+          def withFixture(test: OneArgTest): Outcome = { test("hi") }
+          it should "blow up" in { fixture =>
+            "in the wrong place, at the wrong time" should "definitely blow up" in { fixture => }
+          }
+        }
+
+        val spec = new MySpec
+        ensureTestFailedEventReceivedWithCorrectMessage(spec, "should blow up", "a \"should\" clause may not appear inside an \"in\" clause")
+      }
+      it("should, if they call a should behave from within an it clause, result in a TestFailedException when running the test") {
+
+        class MySpec extends FlatSpec {
+          type FixtureParam = String
+          def withFixture(test: OneArgTest): Outcome = { test("hi") }
+          def aTest {}
+          it should "blow up" in { fixture =>
+            "in the wrong place, at the wrong time" should behave like aTest
+          }
+        }
+
+        val spec = new MySpec
+        ensureTestFailedEventReceivedWithCorrectMessage(spec, "should blow up", "a \"should\" clause may not appear inside an \"in\" clause")
       }
       it("should, if they call a behavior-of with a nested it from within an it clause, result in a TestFailedException when running the test") {
 
@@ -1064,7 +1091,24 @@ class FlatSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         }
 
         val spec = new MySpec
-        ensureTestFailedEventReceived(spec, "should blow up")
+        ensureTestFailedEventReceivedWithCorrectMessage(spec, "should blow up", "a \"behavior of\" clause may not appear inside an \"in\" clause")
+      }
+      it("should, if they call a should with a nested it from within an it clause, result in a TestFailedException when running the test") {
+
+        class MySpec extends FlatSpec {
+          type FixtureParam = String
+          def withFixture(test: OneArgTest): Outcome = { test("hi") }
+          it should "blow up" in { fixture =>
+            "in the wrong place, at the wrong time" should "definitely blow up" in { fixture =>
+              it should "never run" in { fixture =>
+                assert(1 === 1)
+              }
+            }
+          }
+        }
+
+        val spec = new MySpec
+        ensureTestFailedEventReceivedWithCorrectMessage(spec, "should blow up", "a \"should\" clause may not appear inside an \"in\" clause")
       }
       it("should, if they call a nested it from within an it clause, result in a TestFailedException when running the test") {
 

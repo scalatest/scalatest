@@ -124,8 +124,8 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
     registerIgnoredTest(specText, Transformer(testFun), "ignoreCannotAppearInsideAnIt", sourceFileName, methodName, 4, -3, None, testTags: _*)
   }
 
-  private def registerBranch(description: String, childPrefix: Option[String], methodName: String, stackDepth: Int, adjustment: Int, fun: () => Unit) {
-    registerNestedBranch(description, childPrefix, fun(), "describeCannotAppearInsideAnIt", sourceFileName, methodName, stackDepth, adjustment, None)
+  private def registerBranch(description: String, childPrefix: Option[String], verb: String, methodName: String, stackDepth: Int, adjustment: Int, fun: () => Unit) {
+    registerNestedBranch(description, childPrefix, fun(), verb + "CannotAppearInsideAnIn", sourceFileName, methodName, stackDepth, adjustment, None)
   }
 
   private def registerShorthandBranch(childPrefix: Option[String], notAllowResourceName: String, methodName:String, stackDepth: Int, adjustment: Int, fun: () => Unit) {
@@ -137,7 +137,7 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
         case Some(last) =>
           last match {
             case DescriptionBranch(_, descriptionText, _, _) =>
-              registerNestedBranch(descriptionText, childPrefix, fun(), "describeCannotAppearInsideAnIt", "WordSpecLike.scala", methodName, stackDepth, adjustment, None)
+              registerNestedBranch(descriptionText, childPrefix, fun(), methodName + "CannotAppearInsideAnIn", "WordSpecLike.scala", methodName, stackDepth, adjustment, None)
             case _ =>
               throw new exceptions.NotAllowedException(Resources(notAllowResourceName), 2)
           }
@@ -446,7 +446,7 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * @param f the function which is the body of the scope
      */
     def when(f: => Unit) {
-      registerBranch(string, Some("when"), "when", 4, -2, f _)
+      registerBranch(string, Some("when"), "when", "when", 4, -2, f _)
     }
 
     /**
@@ -470,7 +470,7 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * @param resultOfAfterWordApplication a <code>ResultOfAfterWordApplication</code>
      */
     def when(resultOfAfterWordApplication: ResultOfAfterWordApplication) {
-      registerBranch(string, Some("when " + resultOfAfterWordApplication.text), "when", 4, -2, resultOfAfterWordApplication.f)
+      registerBranch(string, Some("when " + resultOfAfterWordApplication.text), "when", "when", 4, -2, resultOfAfterWordApplication.f)
     }
 
     /**
@@ -479,7 +479,7 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      */
     @deprecated("Please use \"which\" instead of \"that\".")
     def that(f: => Unit) {
-      registerBranch(string.trim + " that", None, "that", 4, -2, f _)
+      registerBranch(string.trim + " that", None, "that", "that", 4, -2, f _)
     }
     
     /**
@@ -501,7 +501,7 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * @param f the function which is the body of the scope
      */
     def which(f: => Unit) {
-      registerBranch(string.trim + " which", None, "which", 4, -2, f _)
+      registerBranch(string.trim + " which", None, "which", "which", 4, -2, f _)
     }
 
     /**
@@ -510,7 +510,7 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      */
     @deprecated("Please use \"which\" instead of \"that\".")
     def that(resultOfAfterWordApplication: ResultOfAfterWordApplication) {
-      registerBranch(string.trim + " that " + resultOfAfterWordApplication.text.trim, None, "that", 4, -2, resultOfAfterWordApplication.f)
+      registerBranch(string.trim + " that " + resultOfAfterWordApplication.text.trim, None, "that", "that", 4, -2, resultOfAfterWordApplication.f)
     }
     
     /**
@@ -532,7 +532,7 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
      * @param resultOfAfterWordApplication a <code>ResultOfAfterWordApplication</code>
      */
     def which(resultOfAfterWordApplication: ResultOfAfterWordApplication) {
-      registerBranch(string.trim + " which " + resultOfAfterWordApplication.text.trim, None, "which", 4, -2, resultOfAfterWordApplication.f)
+      registerBranch(string.trim + " which " + resultOfAfterWordApplication.text.trim, None, "which", "which", 4, -2, resultOfAfterWordApplication.f)
     }
   }
 
@@ -979,7 +979,7 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
    */
   protected implicit val subjectRegistrationFunction: StringVerbBlockRegistration =
     new StringVerbBlockRegistration {
-      def apply(left: String, verb: String, f: () => Unit) = registerBranch(left, Some(verb), "apply", 6, -2, f)
+      def apply(left: String, verb: String, f: () => Unit) = registerBranch(left, Some(verb), verb, "apply", 6, -2, f)
     }
 
   /**
@@ -1008,9 +1008,9 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
     (left, verb, resultOfAfterWordApplication) => {
       val afterWordFunction =
         () => {
-          registerBranch(resultOfAfterWordApplication.text, None, "apply", 11, -2, resultOfAfterWordApplication.f)
+          registerBranch(resultOfAfterWordApplication.text, None, verb, "apply", 11, -2, resultOfAfterWordApplication.f)
         }
-      registerBranch(left, Some(verb), "apply", 7, -2, afterWordFunction)
+      registerBranch(left, Some(verb), verb, "apply", 7, -2, afterWordFunction)
     }
   }
 

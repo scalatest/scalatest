@@ -901,7 +901,7 @@ class WordSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     }
     describe("(when a nesting rule has been violated)") {
 
-      it("should, if they call a describe from within an it clause, result in a TestFailedException when running the test") {
+      it("should, if they call a should from within an in clause, result in a TestFailedException when running the test") {
 
         class MySpec extends WordSpec {
           type FixtureParam = String
@@ -913,9 +913,9 @@ class WordSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         }
 
         val spec = new MySpec
-        ensureTestFailedEventReceived(spec, "should blow up")
+        ensureTestFailedEventReceivedWithCorrectMessage(spec, "should blow up", "a \"should\" clause may not appear inside an \"in\" clause")
       }
-      it("should, if they call a describe with a nested it from within an it clause, result in a TestFailedException when running the test") {
+      it("should, if they call a should with a nested in from within an in clause, result in a TestFailedException when running the test") {
 
         class MySpec extends WordSpec {
           type FixtureParam = String
@@ -930,8 +930,137 @@ class WordSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         }
 
         val spec = new MySpec
-        ensureTestFailedEventReceived(spec, "should blow up")
+        ensureTestFailedEventReceivedWithCorrectMessage(spec, "should blow up", "a \"should\" clause may not appear inside an \"in\" clause")
       }
+
+      it("should, if they call a when from within an in clause, result in a TestFailedException when running the test") {
+
+        class MySpec extends WordSpec {
+          type FixtureParam = String
+          def withFixture(test: OneArgTest): Outcome = { test("hi") }
+          "should blow up" in { fixture =>
+            "in the wrong place, at the wrong time" when {
+            }
+          }
+        }
+
+        val spec = new MySpec
+        ensureTestFailedEventReceivedWithCorrectMessage(spec, "should blow up", "a \"when\" clause may not appear inside an \"in\" clause")
+      }
+      it("should, if they call a when with a nested in from within an in clause, result in a TestFailedException when running the test") {
+
+        class MySpec extends WordSpec {
+          type FixtureParam = String
+          def withFixture(test: OneArgTest): Outcome = { test("hi") }
+          "should blow up" in { fixture =>
+            "in the wrong place, at the wrong time" when {
+              "should never run" in { fixture =>
+                assert(1 === 1)
+              }
+            }
+          }
+        }
+
+        val spec = new MySpec
+        ensureTestFailedEventReceivedWithCorrectMessage(spec, "should blow up", "a \"when\" clause may not appear inside an \"in\" clause")
+      }
+
+      it("should, if they call a that from within an in clause, result in a TestFailedException when running the test") {
+
+        class MySpec extends WordSpec {
+          type FixtureParam = String
+          def withFixture(test: OneArgTest): Outcome = { test("hi") }
+          "should blow up" in { fixture =>
+            "in the wrong place, at the wrong time" that {
+            }
+          }
+        }
+
+        val spec = new MySpec
+        ensureTestFailedEventReceivedWithCorrectMessage(spec, "should blow up", "a \"that\" clause may not appear inside an \"in\" clause")
+      }
+      it("should, if they call a that with a nested in from within an in clause, result in a TestFailedException when running the test") {
+
+        class MySpec extends WordSpec {
+          type FixtureParam = String
+          def withFixture(test: OneArgTest): Outcome = { test("hi") }
+          "should blow up" in { fixture =>
+            "in the wrong place, at the wrong time" that {
+              "should never run" in { fixture =>
+                assert(1 === 1)
+              }
+            }
+          }
+        }
+
+        val spec = new MySpec
+        ensureTestFailedEventReceivedWithCorrectMessage(spec, "should blow up", "a \"that\" clause may not appear inside an \"in\" clause")
+      }
+
+      it("should, if they call a which from within an in clause, result in a TestFailedException when running the test") {
+
+        class MySpec extends WordSpec {
+          type FixtureParam = String
+          def withFixture(test: OneArgTest): Outcome = { test("hi") }
+          "should blow up" in { fixture =>
+            "in the wrong place, at the wrong time" which {
+            }
+          }
+        }
+
+        val spec = new MySpec
+        ensureTestFailedEventReceivedWithCorrectMessage(spec, "should blow up", "a \"which\" clause may not appear inside an \"in\" clause")
+      }
+      it("should, if they call a which with a nested in from within an in clause, result in a TestFailedException when running the test") {
+
+        class MySpec extends WordSpec {
+          type FixtureParam = String
+          def withFixture(test: OneArgTest): Outcome = { test("hi") }
+          "should blow up" in { fixture =>
+            "in the wrong place, at the wrong time" which {
+              "should never run" in { fixture =>
+                assert(1 === 1)
+              }
+            }
+          }
+        }
+
+        val spec = new MySpec
+        ensureTestFailedEventReceivedWithCorrectMessage(spec, "should blow up", "a \"which\" clause may not appear inside an \"in\" clause")
+      }
+
+      it("should, if they call a can from within an in clause, result in a TestFailedException when running the test") {
+
+        class MySpec extends WordSpec {
+          type FixtureParam = String
+          def withFixture(test: OneArgTest): Outcome = { test("hi") }
+          "should blow up" in { fixture =>
+            "in the wrong place, at the wrong time" can {
+            }
+          }
+        }
+
+        val spec = new MySpec
+        ensureTestFailedEventReceivedWithCorrectMessage(spec, "should blow up", "a \"can\" clause may not appear inside an \"in\" clause")
+      }
+      it("should, if they call a can with a nested in from within an in clause, result in a TestFailedException when running the test") {
+
+        class MySpec extends WordSpec {
+          type FixtureParam = String
+          def withFixture(test: OneArgTest): Outcome = { test("hi") }
+          "should blow up" in { fixture =>
+            "in the wrong place, at the wrong time" can {
+              "should never run" in { fixture =>
+                assert(1 === 1)
+              }
+            }
+          }
+        }
+
+        val spec = new MySpec
+        ensureTestFailedEventReceivedWithCorrectMessage(spec, "should blow up", "a \"can\" clause may not appear inside an \"in\" clause")
+      }
+
       it("should, if they call a nested it from within an it clause, result in a TestFailedException when running the test") {
 
         class MySpec extends WordSpec {
