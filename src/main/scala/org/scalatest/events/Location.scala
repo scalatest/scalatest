@@ -16,7 +16,7 @@
 package org.scalatest.events
 
 /**
- * Location in source code about which an event concerns.
+ * Location in source code indicating where in the source code an event originated.
  */
 sealed abstract class Location
 
