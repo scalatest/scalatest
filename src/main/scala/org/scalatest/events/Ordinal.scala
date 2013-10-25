@@ -29,7 +29,7 @@ import java.util.Arrays
  * of <em>stamps</em>.
  * The run stamp is an integer that identifies a particular run. All events
  * reported during the same run should share the same run stamp. By contrast, each
- * event reported during a particular run should have a different stamps sequence.
+ * event reported during a particular run should have a different stamp sequence.
  * One use case for the run stamp is that the initial run from ScalaTest's GUI
  * will have run stamp 0. Subsequent reruns will have run stamps 1,
  * 2, 3, <em>etc.</em>, so that reports in the GUI can simply be sorted in "ordinal" order. Another
@@ -38,12 +38,12 @@ import java.util.Arrays
  * </p>
  *
  * <p>
- * The stamps sequence is designed to allow a sequential order of events to be specified during
+ * The stamp sequence is designed to allow a sequential order of events to be specified during
  * concurrent execution of ScalaTest suites. ScalaTest's model for concurrent execution is that
  * the suites that make up a run may be executed concurrently, but the tests within a single suite
  * will be executed sequentially. In addition to tests, suites may contain nested suites. The default implementation
- * of <code>execute</code> in class <code>Suite</code> will first invoke <code>runNestedSuites</code> and
- * then <code>runTests</code>. If no <code>Distributor</code> is passed to <code>execute</code>, the
+ * of <code>execute</code> in class <a href="../Suite.html"><code>Suite</code></a> will first invoke <code>runNestedSuites</code> and
+ * then <code>runTests</code>. If no <a href="../Distributor.html"><code>Distributor</code></a> is passed to <code>execute</code>, the
  * <code>runNestedSuites</code> method will execute the nested suites sequentially via the same thread
  * that invoked <code>runNestedSuites</code>. As a result, suites will by default executed in depth first order
  * when executed sequentially. If a <code>Distributor</code> is passed to <code>execute</code>, the
@@ -56,7 +56,7 @@ import java.util.Arrays
  *
  * <p>
  * Each event reported during a run should be given a unique <code>Ordinal</code>. An <code>Ordinal</code> is required
- * by all <code>Event</code> subclasses, instances of which are used to send information to the <code>report</code>
+ * by all <a href="Event.html"><code>Event</code></a> subclasses, instances of which are used to send information to the <code>report</code>
  * function passed to a <code>Suite</code>'s <code>execute</code> method. The first <code>Ordinal</code> for a run
  * can be produced by passing a run stamp to <code>Ordinal</code>'s lone public constructor:
  * </p>
@@ -67,7 +67,7 @@ import java.util.Arrays
  *
  * <p>
  * The run stamp can be any integer. The <code>Ordinal</code> created in this way can be passed along with the first
- * reported event of the run, such as a <code>RunStarting</code> event. Thereafter, new <code>Ordinal</code>s for the same run
+ * reported event of the run, such as a <a href="RunStarting.html"><code>RunStarting</code></a> event. Thereafter, new <code>Ordinal</code>s for the same run
  * can be obtained by calling either <code>next</code> or <code>nextNewOldPair</code> on the previously obtained <code>Ordinal</code>.
  * In other words, given an <code>Ordinal</code>, you can obtain the next <code>Ordinal</code> by invoking one of these two
  * "next" methods on the <code>Ordinal</code> you have in hand. Before executing a new <code>Suite</code>, the <code>nextNewOldPair</code>

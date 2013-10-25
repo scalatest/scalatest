@@ -27,7 +27,7 @@ import scala.collection.JavaConverters._
  *
  * <p>
  * A <code>ValueMapping[M]</code> provides access to the "value mapping nature" of type <code>M</code> in such
- * a way that <code>contain</code> <code>value</code> matcher syntax can be used with type <code>M</code>. A <code>M</code>
+ * a way that <code>contain</code> <code>value</code> matcher syntax can be used with type <code>M</code>. An <code>M</code>
  * can be any type for which <code>contain</code> <code>value</code> syntax makes sense. ScalaTest provides implicit implementations
  * for <code>scala.collection.GenMap</code> and <code>java.util.Map</code>. You can enable the <code>contain</code> <code>value</code>
  * matcher syntax on your own type <code>U</code> by defining a <code>ValueMapping[U]</code> for the type and making it
