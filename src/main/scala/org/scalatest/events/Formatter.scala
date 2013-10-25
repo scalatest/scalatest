@@ -40,11 +40,11 @@ sealed abstract class Formatter
  * </pre>
  *
  * <p>
- * ScalaTest suites should generate two events per test, a <code>TestStarting</code> event and either
- * a <code>TestSucceeded</code> or a <code>TestFailed</code> event. The <code>FunSpec</code> trait does report both events,
+ * ScalaTest suites should generate two events per test, a <a href="TestStarting.html"><code>TestStarting</code></a> event and either
+ * a <a href="TestSucceeded.html"><code>TestSucceeded</code></a> or a <a href="TestFailed.html"><code>TestFailed</code></a> event. The <a href="../FunSpec.html"><code>FunSpec</code></a> trait does report both events,
  * but passes a <code>MotionToSuppress</code> along with the <code>TestStarting</code> event. As a result,
  * The <code>TestStarting</code> events have no effect on the output. Each <code>TestSucceeded</code> or
- * <code>TestFailed</code> event, which is sent with an <code>IndentedText</code> formatter instead of
+ * <code>TestFailed</code> event, which is sent with an <a href="IndentedText.html"><code>IndentedText</code></a> formatter instead of
  * a <code>MotionToSuppress</code>, will generate output, such as "<code>- should be empty</code>".
  * </p>
  *
@@ -61,10 +61,10 @@ sealed abstract class Formatter
 final case object MotionToSuppress extends Formatter
 
 /**
- * A <code>Formatter</code> providing information that enables reporters to create more stylized output.
+ * A <a href="Formatter.html"><code>Formatter</code></a> providing information that enables reporters to create more stylized output.
  *
  * <p>
- * An example is that specification-style suites, such as <code>FunSpec</code>, generate output that reads
+ * An example is that specification-style suites, such as <a href="../FunSpec.html"><code>FunSpec</code></a>, generate output that reads
  * more like a specification, for instance:
  * </p>
  *
@@ -82,7 +82,7 @@ final case object MotionToSuppress extends Formatter
  * </p>
  *
  * <ul>
- * <li><code>InfoProvided</code> reported with an:
+ * <li><a href="InfoProvided.html"><code>InfoProvided</code></a> reported with an:
  * <pre class="stHighlight">
  *   IndentedText(
  *     formattedText = "A Stack (when newly created)",
@@ -91,7 +91,7 @@ final case object MotionToSuppress extends Formatter
  *   )
  * </pre>
  * </li>
- * <li><code>TestSucceeded</code> reported with an:
+ * <li><a href="TestSucceeded.html"><code>TestSucceeded</code></a> reported with an:
  * <pre class="stHighlight">
  *   IndentedText(
  *     formattedText = "- should be empty",

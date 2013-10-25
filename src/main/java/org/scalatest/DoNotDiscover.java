@@ -26,7 +26,7 @@ import java.lang.annotation.*;
  * </p>
  *
  * <p>
- * ScalaTest will discover any class that either extends <a href="Suite.html"><code>Suite</code></a> and has a public, no-arg constructor, or is annotated with
+ * ScalaTest will discover any class that either extends <a href="Spec.html"><code>Spec</code></a> and has a public, no-arg constructor, or is annotated with
  * a valid <a href="WrapWith.html"><code>WrapWith</code></a> annotation. If you wish to prevent a class from being discovered, simply annotate it
  * with <code>DoNotDiscover</code>, like this:
  * </p>

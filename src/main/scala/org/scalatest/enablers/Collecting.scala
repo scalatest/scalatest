@@ -26,7 +26,7 @@ import scala.annotation.tailrec
  * Supertrait for typeclasses that enable <code>loneElement</code> matcher syntax for collections.
  *
  * <p>
- * An <code>Collecting[E, C]</code> provides access to the "collecting nature" of type <code>C</code> in such
+ * A <code>Collecting[E, C]</code> provides access to the "collecting nature" of type <code>C</code> in such
  * a way that <code>loneElement</code> syntax can be used with type <code>C</code>. A <code>C</code>
  * can be any type of "collecting", a type that in some way collects or brings together elements of type <code>E</code>.
  * ScalaTest provides implicit implementations for several types. You can enable the <code>contain</code> matcher syntax

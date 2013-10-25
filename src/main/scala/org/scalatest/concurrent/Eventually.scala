@@ -29,9 +29,9 @@ import PatienceConfiguration._
  *
  * <p>
  * The by-name parameter "succeeds" if it returns a result. It "fails" if it throws any exception that
- * would normally cause a test to fail. (These are any exceptions except <a href="TestPendingException"><code>TestPendingException</code></a> and
+ * would normally cause a test to fail. (These are any exceptions except <a href="../exceptions/TestPendingException.html"><code>TestPendingException</code></a> and
  * <code>Error</code>s listed in the
- * <a href="Suite.html#errorHandling">Treatment of <code>java.lang.Error</code>s</a> section of the
+ * <a href="../Suite.html#errorHandling">Treatment of <code>java.lang.Error</code>s</a> section of the
  * documentation of trait <code>Suite</code>.)
  * </p>
  *
@@ -118,13 +118,13 @@ import PatienceConfiguration._
  *
  * <p>
  * The default values of both timeout and interval are passed to the <code>scaled</code> method, inherited
- * from <a href="ScaledTimeSpans.html"><code>ScaledTimeSpans</code></a>, so that the defaults can be scaled up
+ * from <code>ScaledTimeSpans</code>, so that the defaults can be scaled up
  * or down together with other scaled time spans. See the documentation for trait <a href="ScaledTimeSpans.html"><code>ScaledTimeSpans</code></a>
  * for more information.
  * </p>
  *
  * <p>
- * The <code>eventually</code> methods of trait <code>Eventually</code> each take an <code>PatienceConfig</code>
+ * The <code>eventually</code> methods of trait <code>Eventually</code> each take a <code>PatienceConfig</code>
  * object as an implicit parameter. This object provides values for the two configuration parameters. (These configuration parameters
  * are called "patience" because they determine how <em>patient</em> tests will be with asynchronous operations: how long
  * they will tolerate failures before giving up and how long they will wait before checking again after a failure.) Trait
@@ -191,7 +191,7 @@ import PatienceConfiguration._
  * Note that ScalaTest will not scale any time span that is not explicitly passed to <code>scaled</code> to make
  * the meaning of the code as obvious as possible. Thus
  * if you ask for "<code>timeout(5 seconds)</code>" you will get exactly that: a timeout of five seconds. If you want such explicitly
- * given values to be scaled, you must say pass them to <code>scale</code> explicitly like this:
+ * given values to be scaled, you must pass them to <code>scale</code> explicitly like this:
  * </p>
  *
  * <pre class="stHighlight">
@@ -268,7 +268,7 @@ import PatienceConfiguration._
  * <p>
  * Trait <code>IntegrationPatience</code> increases the default timeout from 150 milliseconds to 15 seconds, the default
  * interval from 15 milliseconds to 150 milliseconds. If need be, you can do fine tuning of the timeout and interval by
- * specifying a <a href="../tools/Runner$#timeSpanScaleFactor">time span scale factor</a> when you
+ * specifying a <a href="../tools/Runner$.html#scalingTimeSpans">time span scale factor</a> when you
  * run your tests.
  * </p>
  *
