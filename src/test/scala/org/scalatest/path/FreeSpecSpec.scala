@@ -31,7 +31,7 @@ class FreeSpecSpec extends org.scalatest.FunSpec with GivenWhenThen {
 
     describe("(when a nesting rule has been violated)") {
 
-      it("should, if they call a describe from within an it clause, result in a TestFailedException when running the test") {
+      it("should, if they call a - from within an in clause, result in a TestFailedException when running the test") {
 
         class MySpec extends PathFreeSpec {
           "should blow up" in {
@@ -41,9 +41,9 @@ class FreeSpecSpec extends org.scalatest.FunSpec with GivenWhenThen {
         }
 
         val spec = new MySpec
-        ensureTestFailedEventReceived(spec, "should blow up")
+        ensureTestFailedEventReceivedWithCorrectMessage(spec, "should blow up", "a \"-\" clause may not appear inside an \"in\" clause")
       }
-      it("should, if they call a describe with a nested it from within an it clause, result in a TestFailedException when running the test") {
+      it("should, if they call a - with a nested in from within an in clause, result in a TestFailedException when running the test") {
         class MySpec extends PathFreeSpec {
           "should blow up" in {
             "in the wrong place, at the wrong time" - {
@@ -55,7 +55,7 @@ class FreeSpecSpec extends org.scalatest.FunSpec with GivenWhenThen {
         }
 
         val spec = new MySpec
-        ensureTestFailedEventReceived(spec, "should blow up")
+        ensureTestFailedEventReceivedWithCorrectMessage(spec, "should blow up", "a \"-\" clause may not appear inside an \"in\" clause")
       }
 
       it("should, if they call a nested it from within an it clause, result in a TestFailedException when running the test") {
