@@ -202,7 +202,7 @@ sealed trait RecordableEvent extends Event
 sealed trait ExceptionalEvent extends Event
 
 /**
- * Marker trait for the "notification" events <code>UpdateProvided</code> and <code>AlertProvided</code>.
+ * Marker trait for the "notification" events <a href="UpdateProvided.html"><code>UpdateProvided</code></a> and <a href="AlertProvided.html"><code>AlertProvided</code></a>.
  */
 sealed trait NotificationEvent extends Event
 
@@ -210,7 +210,7 @@ sealed trait NotificationEvent extends Event
  * Event that indicates a suite (or other entity) is about to start running a test.
  *
  * <p>
- * For example, trait <code>Suite</code> uses <code>TestStarting</code> to report
+ * For example, trait <a href="../Suite.html"><code>Suite</code></a> uses <code>TestStarting</code> to report
  * that a test method of a <code>Suite</code> is about to be invoked.
  * </p>
  *
@@ -232,16 +232,16 @@ sealed trait NotificationEvent extends Event
  * a fully qualified class name by convention.
  * </p>
  *
- * @param ordinal an <code>Ordinal</code> that can be used to place this event in order in the context of
+ * @param ordinal an <a href="Ordinal.html"><code>Ordinal</code></a> that can be used to place this event in order in the context of
  *        other events reported during the same run
  * @param suiteName a localized name identifying the suite containing the test that is starting, suitable for presenting to the user
  * @param suiteId a string ID for the suite containing the test that is starting, intended to be unique across all suites in a run
  * @param suiteClassName an optional fully qualifed <code>Suite</code> class name containing the test that is starting
  * @param testName the name of the test that is starting
  * @param testText the text of the test that is starting (may be the test name, or a suffix of the test name)
- * @param formatter an optional <code>Formatter</code> that provides extra information that can be used by reporters in determining
+ * @param formatter an optional <a href="Formatter.html"><code>Formatter</code></a> that provides extra information that can be used by reporters in determining
  *        how to present this event to the user
- * @param location An optional <code>Location</code> that provides information indicating where in the source code an event originated.
+ * @param location An optional <a href="Location.html"><code>Location</code></a> that provides information indicating where in the source code an event originated.
  * @param rerunner an optional <code>String</code> giving the fully qualified name of the class that can be used to rerun the test that is starting. (If <code>None</code>
  *        is passed, the test cannot be rerun.)
  * @param payload an optional object that can be used to pass custom information to the reporter about the <code>TestStarting</code> event
@@ -312,7 +312,7 @@ final case class TestStarting (
  * Event that indicates a suite (or other entity) has completed running a test that succeeded.
  *
  * <p>
- * For example, trait <code>Suite</code> uses <code>TestSucceeded</code> to report
+ * For example, trait <a href="../Suite.html"><code>Suite</code></a> uses <code>TestSucceeded</code> to report
  * that a test method of a <code>Suite</code> returned normally
  * (without throwing an <code>Exception</code>).
  * </p>
@@ -335,7 +335,7 @@ final case class TestStarting (
  * a fully qualified class name by convention.
  * </p>
  *
- * @param ordinal an <code>Ordinal</code> that can be used to place this event in order in the context of
+ * @param ordinal an <a href="Ordinal.html"><code>Ordinal</code></a> that can be used to place this event in order in the context of
  *        other events reported during the same run
  * @param suiteName a localized name identifying the suite containing the test that has succeeded, suitable for presenting to the user
  * @param suiteId a string ID for the suite containing the test that has succeeded, intended to be unique across all suites in a run
@@ -344,9 +344,9 @@ final case class TestStarting (
  * @param testText the text of the test that has succeeded (may be the test name, or a suffix of the test name)
  * @param recordedEvents recorded events in the test.
  * @param duration an optional amount of time, in milliseconds, that was required to run the test that has succeeded
- * @param formatter an optional <code>Formatter</code> that provides extra information that can be used by reporters in determining
+ * @param formatter an optional <a href="Formatter.html"><code>Formatter</code></a> that provides extra information that can be used by reporters in determining
  *        how to present this event to the user
- * @param location An optional <code>Location</code> that provides information indicating where in the source code an event originated.
+ * @param location An optional <a href="Location.html"><code>Location</code></a> that provides information indicating where in the source code an event originated.
  * @param rerunner an optional <code>String</code> giving the fully qualified name of the class that can be used to rerun the test that has succeeded. (If <code>None</code>
  *        is passed, the test cannot be rerun.)
  * @param payload an optional object that can be used to pass custom information to the reporter about the <code>TestSucceeded</code> event
@@ -423,7 +423,7 @@ final case class TestSucceeded (
  * Event that indicates a suite (or other entity) has completed running a test that failed.
  *
  * <p>
- * For example, trait <code>Suite</code> uses <code>TestFailed</code> to report
+ * For example, trait <a href="../Suite.html"><code>Suite</code></a> uses <code>TestFailed</code> to report
  * that a test method of a <code>Suite</code> completed abruptly with an <code>Exception</code>.
  * </p>
  *
@@ -445,7 +445,7 @@ final case class TestSucceeded (
  * a fully qualified class name by convention.
  * </p>
  *
- * @param ordinal an <code>Ordinal</code> that can be used to place this event in order in the context of
+ * @param ordinal an <a href="Ordinal.html"><code>Ordinal</code></a> that can be used to place this event in order in the context of
  *        other events reported during the same run
  * @param message a localized message suitable for presenting to the user
  * @param suiteName a localized name identifying the suite containing the test that has failed, suitable for presenting to the user
@@ -457,9 +457,9 @@ final case class TestSucceeded (
  * @param throwable an optional <code>Throwable</code> that, if a <code>Some</code>, indicates why the test has failed,
  *        or a <code>Throwable</code> created to capture stack trace information about the problem.
  * @param duration an optional amount of time, in milliseconds, that was required to run the test that has failed
- * @param formatter an optional <code>Formatter</code> that provides extra information that can be used by reporters in determining
+ * @param formatter an optional <a href="Formatter.html"><code>Formatter</code></a> that provides extra information that can be used by reporters in determining
  *        how to present this event to the user
- * @param location An optional <code>Location</code> that provides information indicating where in the source code an event originated.
+ * @param location An optional <a href="Location.html"><code>Location</code></a> that provides information indicating where in the source code an event originated.
  * @param rerunner an optional <code>String</code> giving the fully qualified name of the class that can be used to rerun the test that has failed. (If <code>None</code>
  *        is passed, the test cannot be rerun.)
  * @param payload an optional object that can be used to pass custom information to the reporter about the <code>TestFailed</code> event
@@ -544,7 +544,7 @@ final case class TestFailed (
  * Event that indicates a suite (or other entity) has ignored a test.
  *
  * <p>
- * For example, trait <code>Suite</code> uses <code>TestIgnored</code> to report
+ * For example, trait <a href="../Suite.html"><code>Suite</code></a> uses <code>TestIgnored</code> to report
  * that a test method of a <code>Suite</code> was ignored because it was annotated with <code>@Ignore</code>. 
  * Ignored tests will not be run, but will usually be reported as reminder to fix the broken test.
  * </p>
@@ -567,16 +567,16 @@ final case class TestFailed (
  * a fully qualified class name by convention.
  * </p>
  *
- * @param ordinal an <code>Ordinal</code> that can be used to place this event in order in the context of
+ * @param ordinal an <a href="Ordinal.html"><code>Ordinal</code></a> that can be used to place this event in order in the context of
  *        other events reported during the same run
  * @param suiteName a localized name identifying the suite containing the test that was ignored, suitable for presenting to the user
  * @param suiteId a string ID for the suite containing the test that was ignored, intended to be unique across all suites in a run
  * @param suiteClassName an optional fully qualifed <code>Suite</code> class name containing the test that was ignored
  * @param testName the name of the test that was ignored
  * @param testText the text of the test that was ignored (may be the test name, or a suffix of the test name)
- * @param formatter an optional <code>Formatter</code> that provides extra information that can be used by reporters in determining
+ * @param formatter an optional <a href="Formatter.html"><code>Formatter</code></a> that provides extra information that can be used by reporters in determining
  *        how to present this event to the user
- * @param location An optional <code>Location</code> that provides information indicating where in the source code an event originated.
+ * @param location An optional <a href="Location.html"><code>Location</code></a> that provides information indicating where in the source code an event originated.
  * @param payload an optional object that can be used to pass custom information to the reporter about the <code>TestIgnored</code> event
  * @param threadName a name for the <code>Thread</code> about whose activity this event was reported
  * @param timeStamp a <code>Long</code> indicating the time this event was reported, expressed in terms of the
@@ -658,7 +658,7 @@ final case class TestIgnored (
  * a fully qualified class name by convention.
  * </p>
  *
- * @param ordinal an <code>Ordinal</code> that can be used to place this event in order in the context of
+ * @param ordinal an <a href="Ordinal.html"><code>Ordinal</code></a> that can be used to place this event in order in the context of
  *        other events reported during the same run
  * @param suiteName a localized name identifying the suite containing the test that is pending, suitable for presenting to the user
  * @param suiteId a string ID for the suite containing the test that is pending, intended to be unique across all suites in a run
@@ -667,9 +667,9 @@ final case class TestIgnored (
  * @param testText the text of the test that is pending (may be the test name, or a suffix of the test name)
  * @param recordedEvents recorded events in the test.
  * @param duration an optional amount of time, in milliseconds, that was required to run the test that is pending
- * @param formatter an optional <code>Formatter</code> that provides extra information that can be used by reporters in determining
+ * @param formatter an optional <a href="Formatter.html"><code>Formatter</code></a> that provides extra information that can be used by reporters in determining
  *        how to present this event to the user
- * @param location An optional <code>Location</code> that provides information indicating where in the source code an event originated.
+ * @param location An optional <a href="Location.html"><code>Location</code></a> that provides information indicating where in the source code an event originated.
  * @param payload an optional object that can be used to pass custom information to the reporter about the <code>TestPending</code> event
  * @param threadName a name for the <code>Thread</code> about whose activity this event was reported
  * @param timeStamp a <code>Long</code> indicating the time this event was reported, expressed in terms of the
@@ -757,7 +757,7 @@ final case class TestPending (
  * a fully qualified class name by convention.
  * </p>
  *
- * @param ordinal an <code>Ordinal</code> that can be used to place this event in order in the context of
+ * @param ordinal an <a href="Ordinal.html"><code>Ordinal</code></a> that can be used to place this event in order in the context of
  *        other events reported during the same run
  * @param message a localized message suitable for presenting to the user
  * @param suiteName a localized name identifying the suite containing the test that was canceled, suitable for presenting to the user
@@ -769,9 +769,9 @@ final case class TestPending (
  * @param throwable an optional <code>Throwable</code> that, if a <code>Some</code>, indicates why the test was canceled,
  *        or a <code>Throwable</code> created to capture stack trace information about the problem.
  * @param duration an optional amount of time, in milliseconds, that was required to run the test that was canceled
- * @param formatter an optional <code>Formatter</code> that provides extra information that can be used by reporters in determining
+ * @param formatter an optional <a href="Formatter.html"><code>Formatter</code></a> that provides extra information that can be used by reporters in determining
  *        how to present this event to the user
- * @param location An optional <code>Location</code> that provides information indicating where in the source code an event originated.
+ * @param location An optional <a href="Location.html"><code>Location</code></a> that provides information indicating where in the source code an event originated.
  * @param rerunner an optional <code>String</code> giving the fully qualified name of the class that can be used to rerun the test that has canceled. (If <code>None</code>
  *        is passed, the test cannot be rerun.)
  * @param payload an optional object that can be used to pass custom information to the reporter about the <code>TestCanceled</code> event
@@ -858,7 +858,7 @@ final case class TestCanceled (
  * Event that indicates a suite of tests is about to start executing.
  *
  * <p>
- * For example, trait <code>Suite</code> and object <code>Runner</code> use <code>SuiteStarting</code> to report
+ * For example, trait <a href="../Suite.html"><code>Suite</code></a> and object <a href="../tools/Runner$.html"><code>Runner</code></a> use <code>SuiteStarting</code> to report
  * that the <code>execute</code> method of a <code>Suite</code> is about to be invoked.
  * </p>
  *
@@ -880,14 +880,14 @@ final case class TestCanceled (
  * a fully qualified class name by convention.
  * </p>
  *
- * @param ordinal an <code>Ordinal</code> that can be used to place this event in order in the context of
+ * @param ordinal an <a href="Ordinal.html"><code>Ordinal</code></a> that can be used to place this event in order in the context of
  *        other events reported during the same run
  * @param suiteName a localized name identifying the suite that is starting, suitable for presenting to the user
  * @param suiteId a string ID for the suite that is starting, intended to be unique across all suites in a run XXX 
  * @param suiteClassName an optional fully qualifed <code>Suite</code> class name of the suite that is starting
- * @param formatter an optional <code>Formatter</code> that provides extra information that can be used by reporters in determining
+ * @param formatter an optional <a href="Formatter.html"><code>Formatter</code></a> that provides extra information that can be used by reporters in determining
  *        how to present this event to the user
- * @param location An optional <code>Location</code> that provides information indicating where in the source code an event originated.
+ * @param location An optional <a href="Location.html"><code>Location</code></a> that provides information indicating where in the source code an event originated.
  * @param rerunner an optional <code>String</code> giving the fully qualified name of the class that can be used to rerun the suite that is starting. (If <code>None</code>
  *        is passed, the suite cannot be rerun.)
  * @param payload an optional object that can be used to pass custom information to the reporter about the <code>SuiteStarting</code> event
@@ -950,7 +950,7 @@ final case class SuiteStarting (
  * Event that indicates a suite of tests has completed executing.
  *
  * <p>
- * For example, trait <code>Suite</code> and object <code>Runner</code> use <code>SuiteCompleted</code> to report
+ * For example, trait <a href="../Suite.html"><code>Suite</code></a> and object <a href="../tools/Runner$.html"><code>Runner</code></a> use <code>SuiteCompleted</code> to report
  * that the <code>execute</code> method of a <code>Suite</code>
  * has returned normally (without throwing a <code>RuntimeException</code>).
  * </p>
@@ -973,15 +973,15 @@ final case class SuiteStarting (
  * a fully qualified class name by convention.
  * </p>
  *
- * @param ordinal an <code>Ordinal</code> that can be used to place this event in order in the context of
+ * @param ordinal an <a href="Ordinal.html"><code>Ordinal</code></a> that can be used to place this event in order in the context of
  *        other events reported during the same run
  * @param suiteName a localized name identifying the suite that has completed, suitable for presenting to the user
  * @param suiteId a string ID for the suite that has completed, intended to be unique across all suites in a run
  * @param suiteClassName an optional fully qualifed <code>Suite</code> class name containing the suite that has completed
  * @param duration an optional amount of time, in milliseconds, that was required to execute the suite that has completed
- * @param formatter an optional <code>Formatter</code> that provides extra information that can be used by reporters in determining
+ * @param formatter an optional <a href="Formatter.html"><code>Formatter</code></a> that provides extra information that can be used by reporters in determining
  *        how to present this event to the user
- * @param location An optional <code>Location</code> that provides information indicating where in the source code an event originated.
+ * @param location An optional <a href="Location.html"><code>Location</code></a> that provides information indicating where in the source code an event originated.
  * @param rerunner an optional <code>String</code> giving the fully qualified name of the class that can be used to rerun the suite that has completed. (If <code>None</code>
  *        is passed, the suite cannot be rerun.)
  * @param payload an optional object that can be used to pass custom information to the reporter about the <code>SuiteCompleted</code> event
@@ -1049,7 +1049,7 @@ final case class SuiteCompleted (
  * to completion.
  *
  * <p>
- * For example, trait <code>Suite</code> and object <code>Runner</code> use <code>SuiteAborted</code> to report
+ * For example, trait <a href="../Suite.html"><code>Suite</code></a> and object <a href="../tools/Runner$.html"><code>Runner</code></a> use <code>SuiteAborted</code> to report
  * that the <code>execute</code> method of a <code>Suite</code>
  * has completed abruptly with a <code>RuntimeException</code>.
  * </p>
@@ -1072,7 +1072,7 @@ final case class SuiteCompleted (
  * a fully qualified class name by convention.
  * </p>
  *
- * @param ordinal an <code>Ordinal</code> that can be used to place this event in order in the context of
+ * @param ordinal an <a href="Ordinal.html"><code>Ordinal</code></a> that can be used to place this event in order in the context of
  *        other events reported during the same run
  *        suite name, suitable for presenting to the user
  * @param message a localized message suitable for presenting to the user
@@ -1082,9 +1082,9 @@ final case class SuiteCompleted (
  * @param throwable an optional <code>Throwable</code> that, if a <code>Some</code>, indicates why the suite has aborted,
  *        or a <code>Throwable</code> created to capture stack trace information about the problem.
  * @param duration an optional amount of time, in milliseconds, that was required to execute the suite that has aborted
- * @param formatter an optional <code>Formatter</code> that provides extra information that can be used by reporters in determining
+ * @param formatter an optional <a href="Formatter.html"><code>Formatter</code></a> that provides extra information that can be used by reporters in determining
  *        how to present this event to the user
- * @param location an optional <code>Location</code> that provides information indicating where in the source code an event originated.
+ * @param location an optional <a href="Location.html"><code>Location</code></a> that provides information indicating where in the source code an event originated.
  * @param rerunner an optional <code>String</code> giving the fully qualified name of the class that can be used to rerun the suite that has aborted. (If <code>None</code>
  *        is passed, the suite cannot be rerun.)
  * @param payload an optional object that can be used to pass custom information to the reporter about the <code>SuiteAborted</code> event
@@ -1159,8 +1159,8 @@ final case class SuiteAborted (
  * Event that indicates a runner is about run a suite of tests.
  *
  * <p>
- * For example, object <code>Runner</code> reports <code>RunStarting</code> to indicate
- * that the first <code>execute</code> method of a run's initial <code>Suite</code>
+ * For example, object <a href="../tools/Runner$.html"><code>Runner</code></a> reports <code>RunStarting</code> to indicate
+ * that the first <code>execute</code> method of a run's initial <a href="../Suite.html"><code>Suite</code></a>
  * is about to be invoked.
  * </p>
  *
@@ -1173,13 +1173,13 @@ final case class SuiteAborted (
  * report(RunStarting(ordinal, testCount))
  * </pre>
  *
- * @param ordinal an <code>Ordinal</code> that can be used to place this event in order in the context of
+ * @param ordinal an <a href="Ordinal.html"><code>Ordinal</code></a> that can be used to place this event in order in the context of
  *        other events reported during the same run
  * @param testCount the number of tests expected during this run
- * @param configMap a <code>ConfigMap</code> of key-value pairs that can be used by custom <code>Reporter</code>s
- * @param formatter an optional <code>Formatter</code> that provides extra information that can be used by reporters in determining
+ * @param configMap a <a href="../ConfigMap.html"><code>ConfigMap</code></a> of key-value pairs that can be used by custom <a href="Reporter.html"><code>Reporter</code></a>s
+ * @param formatter an optional <a href="Formatter.html"><code>Formatter</code></a> that provides extra information that can be used by reporters in determining
  *        how to present this event to the user
- * @param location An optional <code>Location</code> that provides information indicating where in the source code an event originated.
+ * @param location An optional <a href="Location.html"><code>Location</code></a> that provides information indicating where in the source code an event originated.
  * @param payload an optional object that can be used to pass custom information to the reporter about the <code>RunStarting</code> event
  * @param threadName a name for the <code>Thread</code> about whose activity this event was reported
  * @param timeStamp a <code>Long</code> indicating the time this event was reported, expressed in terms of the
@@ -1243,7 +1243,7 @@ final case class RunStarting (
  * Event that indicates a runner has completed running a suite of tests.
  *
  * <p>
- * <code>Suite</code>'s <code>execute</code> method takes a <code>Stopper</code>, whose <code>stopRequested</code>
+ * <code>Suite</code>'s <code>execute</code> method takes a <a href="../Stopper.html"><code>Stopper</code></a>, whose <code>stopRequested</code>
  * method indicates a stop was requested. If <code>true</code> is returned by
  * <code>stopRequested</code> while a suite of tests is running, the
  * <code>execute</code> method should promptly
@@ -1251,8 +1251,8 @@ final case class RunStarting (
  * </p>
  *
  * <p>If a stop was requested via the <code>Stopper</code>.
- * <code>Runner</code> will report <code>RunStopped</code>
- * when the <code>execute</code> method of the run's starting <code>Suite</code> returns.
+ * <a href="../tools/Runner$.html"><code>Runner</code></a> will report <code>RunStopped</code>
+ * when the <code>execute</code> method of the run's starting <a href="../Suite.html"><code>Suite</code></a> returns.
  * If a stop is not requested, <code>Runner</code> will report <code>RunCompleted</code>
  * when the last <code>execute</code> method of the run's starting <code>Suite</code>s returns.
  * </p>
@@ -1273,13 +1273,13 @@ final case class RunStarting (
  * report(RunCompleted(ordinal))
  * </pre>
  *
- * @param ordinal an <code>Ordinal</code> that can be used to place this event in order in the context of
+ * @param ordinal an <a href="Ordinal.html"><code>Ordinal</code></a> that can be used to place this event in order in the context of
  *        other events reported during the same run
  * @param duration an optional amount of time, in milliseconds, that was required by the run that has completed
- * @param summary an optional <code>Summary</code> of the number of tests that were reported as succeeded, failed, ignored, pending and canceled
- * @param formatter an optional <code>Formatter</code> that provides extra information that can be used by reporters in determining
+ * @param summary an optional <a href="Summary.html"><code>Summary</code></a> of the number of tests that were reported as succeeded, failed, ignored, pending and canceled
+ * @param formatter an optional <a href="Formatter.html"><code>Formatter</code></a> that provides extra information that can be used by reporters in determining
  *        how to present this event to the user
- * @param location An optional <code>Location</code> that provides information indicating where in the source code an event originated.
+ * @param location An optional <a href="Location.html"><code>Location</code></a> that provides information indicating where in the source code an event originated.
  * @param payload an optional object that can be used to pass custom information to the reporter about the <code>RunCompleted</code> event
  * @param threadName a name for the <code>Thread</code> about whose activity this event was reported
  * @param timeStamp a <code>Long</code> indicating the time this event was reported, expressed in terms of the
@@ -1340,9 +1340,9 @@ final case class RunCompleted (
  * return even if that suite hasn't finished running all of its tests.
  * </p>
  *
- * <p>If a stop was requested via the <code>Stopper</code>.
- * <code>Runner</code> will report <code>RunStopped</code>
- * when the <code>execute</code> method of the run's starting <code>Suite</code> returns.
+ * <p>If a stop was requested via the <a href="../Stopper.html"><code>Stopper</code></a>.
+ * <a href="../tools/Runner$.html"><code>Runner</code></a> will report <code>RunStopped</code>
+ * when the <code>execute</code> method of the run's starting <a href="../Suite.html"><code>Suite</code></a> returns.
  * If a stop is not requested, <code>Runner</code> will report <code>RunCompleted</code>
  * when the last <code>execute</code> method of the run's starting <code>Suite</code>s returns.
  * </p>
@@ -1363,13 +1363,13 @@ final case class RunCompleted (
  * report(RunStopped(ordinal))
  * </pre>
  *
- * @param ordinal an <code>Ordinal</code> that can be used to place this event in order in the context of
+ * @param ordinal an <a href="Ordinal.html"><code>Ordinal</code></a> that can be used to place this event in order in the context of
  *        other events reported during the same run
  * @param duration an optional amount of time, in milliseconds, that was required by the run that has stopped
  * @param summary an optional summary of the number of tests that were reported as succeeded, failed, ignored pending and canceled
- * @param formatter an optional <code>formatter</code> that provides extra information that can be used by reporters in determining
+ * @param formatter an optional <a href="Formatter.html"><code>Formatter</code></a> that provides extra information that can be used by reporters in determining
  *        how to present this event to the user
- * @param location An optional <code>Location</code> that provides information indicating where in the source code an event originated.
+ * @param location An optional <a href="Location.html"><code>Location</code></a> that provides information indicating where in the source code an event originated.
  * @param payload an optional object that can be used to pass custom information to the reporter about the <code>RunStopped</code> event
  * @param threadName a name for the <code>Thread</code> about whose activity this event was reported
  * @param timeStamp a <code>Long</code> indicating the time this event was reported, expressed in terms of the
@@ -1422,7 +1422,7 @@ final case class RunStopped (
  * Event that indicates a runner encountered an error while attempting to run a suite of tests.
  *
  * <p>
- * For example, object <code>Runner</code> reports <code>RunAborted</code> if the
+ * For example, object <a href="../tools/Runner$.html"><code>Runner</code></a> reports <code>RunAborted</code> if the
  * <code>execute</code> method of any of the run's starting <code>Suite</code>s completes
  * abruptly with a <code>Throwable</code>.
  * </p>
@@ -1443,16 +1443,16 @@ final case class RunStopped (
  * report(RunAborted(ordinal, message, Some(exception)))
  * </pre>
  *
- * @param ordinal an <code>Ordinal</code> that can be used to place this event in order in the context of
+ * @param ordinal an <a href="Ordinal.html"><code>Ordinal</code></a> that can be used to place this event in order in the context of
  *        other events reported during the same run
  * @param message a localized message suitable for presenting to the user
  * @param throwable an optional <code>Throwable</code> that, if a <code>Some</code>, indicates why the run has aborted,
  *        or a <code>Throwable</code> created to capture stack trace information about the problem.
  * @param duration an optional amount of time, in milliseconds, that was required by the run that has aborted
- * @param summary an optional <code>Summary</code> of the number of tests that were reported as succeeded, failed, ignored, and pending
- * @param formatter an optional <code>Formatter</code> that provides extra information that can be used by reporters in determining
+ * @param summary an optional <a href="Summary.html"><code>Summary</code></a> of the number of tests that were reported as succeeded, failed, ignored, and pending
+ * @param formatter an optional <a href="Formatter.html"><code>Formatter</code></a> that provides extra information that can be used by reporters in determining
  *        how to present this event to the user
- * @param location An optional <code>Location</code> that provides information indicating where in the source code an event originated.
+ * @param location An optional <a href="Location.html"><code>Location</code></a> that provides information indicating where in the source code an event originated.
  * @param payload an optional object that can be used to pass custom information to the reporter about the <code>RunAborted</code> event
  * @param threadName a name for the <code>Thread</code> about whose activity this event was reported
  * @param timeStamp a <code>Long</code> indicating the time this event was reported, expressed in terms of the
@@ -1514,7 +1514,7 @@ final case class RunAborted (
  *
  * <p>
  * To create instances of this class you may
- * use the factory method provided in its <a href="InfoProvided$.html">companion object</a>. For example, given a
+ * use the factory method provided in its companion object. For example, given a
  * report function named <code>report</code>, you could fire a <code>InfoProvided</code> event like this:
  * </p>
  *
@@ -1531,15 +1531,15 @@ final case class RunAborted (
  * of neither a suite nor a test, the <code>nameInfo</code> of the <code>InfoProvided</code> event (an <code>Option[NameInfo]</code>) should be <code>None</code>.
  * </p>
  *
- * @param ordinal an <code>Ordinal</code> that can be used to place this event in order in the context of
+ * @param ordinal an <a href="Ordinal.html"><code>Ordinal</code></a> that can be used to place this event in order in the context of
  *        other events reported during the same run
  * @param message a localized message suitable for presenting to the user
- * @param nameInfo an optional <code>NameInfo</code> that if defined, provides names for the suite and optionally the test 
+ * @param nameInfo an optional <a href="NameInfo.html"><code>NameInfo</code></a> that if defined, provides names for the suite and optionally the test 
  *        in the context of which the information was provided
  * @param throwable an optional <code>Throwable</code>
- * @param formatter an optional <code>Formatter</code> that provides extra information that can be used by reporters in determining
+ * @param formatter an optional <a href="Formatter.html"><code>Formatter</code></a> that provides extra information that can be used by reporters in determining
  *        how to present this event to the user
- * @param location An optional <code>Location</code> that provides information indicating where in the source code an event originated.
+ * @param location An optional <a href="Location.html"><code>Location</code></a> that provides information indicating where in the source code an event originated.
  * @param payload an optional object that can be used to pass custom information to the reporter about the <code>InfoProvided</code> event
  * @param threadName a name for the <code>Thread</code> about whose activity this event was reported
  * @param timeStamp a <code>Long</code> indicating the time this event was reported, expressed in terms of the
@@ -1597,7 +1597,7 @@ final case class InfoProvided (
  *
  * <p>
  * To create instances of this class you may use the factory method. For example, given a
- * report function named <code>report</code>, you could fire a <code>AlertProvided</code> event like this:
+ * report function named <code>report</code>, you could fire an <code>AlertProvided</code> event like this:
  * </p>
  *
  * <pre class="stHighlight">
@@ -1605,11 +1605,11 @@ final case class InfoProvided (
  * </pre>
  *
  * <p>
- * <code>AlertProvided</code> differs from <code>InfoProvided</code> in that unlike <code>InfoProvided</code>, <code>AlertProvided</code> isn't
- * a <code>RecordableEvent</code>. If fired becase of an <code>alert</code> call from a test, for example, the <code>AlertProvided</code> will immediately
+ * <code>AlertProvided</code> differs from <a href="InfoProvided.html"><code>InfoProvided</code></a> in that unlike <code>InfoProvided</code>, <code>AlertProvided</code> isn't
+ * a <a href="RecordableEvent.html"><code>RecordableEvent</code></a>. If fired becase of an <code>alert</code> call from a test, for example, the <code>AlertProvided</code> will immediately
  * be sent to the reporters rather than being stored and sent in the <code>recordedEvents</code> field of the test completion event. Thus,
  * <code>AlertProvided</code> enables "status updates" to be provided
- * while tests are happening. The difference between <code>AlertProvided</code> and <code>UpdateProvided</code>, which is also a "status update"
+ * while tests are happening. The difference between <code>AlertProvided</code> and <a href="UpdateProvided.html"><code>UpdateProvided</code></a>, which is also a "status update"
  * fired immediately during tests, is that <code>AlertProvided</code> is intended for warnings, where as <code>UpdateProvided</code> is just
  * for information. As an illustration, <code>AlertProvided</code> messages are displayed in yellow, <code>UpdateProvided</code> in green,
  * in the stdout, stderr, and file reporters.
@@ -1624,15 +1624,15 @@ final case class InfoProvided (
  * of neither a suite nor a test, the <code>nameInfo</code> of the <code>AlertProvided</code> event (an <code>Option[NameInfo]</code>) should be <code>None</code>.
  * </p>
  *
- * @param ordinal an <code>Ordinal</code> that can be used to place this event in order in the context of
+ * @param ordinal an <a href="Ordinal.html"><code>Ordinal</code></a> that can be used to place this event in order in the context of
  *        other events reported during the same run
  * @param message a localized message suitable for presenting to the user
- * @param nameInfo an optional <code>NameInfo</code> that if defined, provides names for the suite and optionally the test 
+ * @param nameInfo an optional <a href="NameInfo.html"><code>NameInfo</code></a> that if defined, provides names for the suite and optionally the test 
  *        in the context of which the information was provided
  * @param throwable an optional <code>Throwable</code>
- * @param formatter an optional <code>Formatter</code> that provides extra information that can be used by reporters in determining
+ * @param formatter an optional <a href="Formatter.html"><code>Formatter</code></a> that provides extra information that can be used by reporters in determining
  *        how to present this event to the user
- * @param location An optional <code>location</code> that provides information indicating where in the source code an event originated.
+ * @param location An optional <a href="Location.html"><code>Location</code></a> that provides information indicating where in the source code an event originated.
  * @param payload an optional object that can be used to pass custom information to the reporter about the <code>AlertProvided</code> event
  * @param threadName a name for the <code>Thread</code> about whose activity this event was reported
  * @param timeStamp a <code>Long</code> indicating the time this event was reported, expressed in terms of the
@@ -1698,11 +1698,11 @@ final case class AlertProvided (
  * </pre>
  *
  * <p>
- * <code>UpdateProvided</code> differs from <code>InfoProvided</code> in that unlike <code>InfoProvided</code>, <code>UpdateProvided</code> isn't
- * a <code>RecordableEvent</code>. If fired becase of an <code>update</code> call from a test, for example, the <code>UpdateProvided</code> will immediately
+ * <code>UpdateProvided</code> differs from <a href="InfoProvided.html"><code>InfoProvided</code></a> in that unlike <code>InfoProvided</code>, <code>UpdateProvided</code> isn't
+ * a <a href="RecordableEvent.html"><code>RecordableEvent</code></a>. If fired becase of an <code>update</code> call from a test, for example, the <code>UpdateProvided</code> will immediately
  * be sent to the reporters rather than being stored and sent in the <code>recordedEvents</code> field of the test completion event. Thus,
  * <code>UpdateProvided</code> enables "status updates" to be provided
- * while tests are happening. The difference between <code>UpdateProvided</code> and <code>AlertProvided</code>, which is also a "status update"
+ * while tests are happening. The difference between <code>UpdateProvided</code> and <a href="AlertProvided.html"><code>AlertProvided</code></a>, which is also a "status update"
  * fired immediately during tests, is that <code>AlertProvided</code> is intended for warnings, where as <code>UpdateProvided</code> is just
  * for information. As an illustration, <code>AlertProvided</code> messages are displayed in yellow, <code>UpdateProvided</code> in green,
  * in the stdout, stderr, and file reporters.
@@ -1717,15 +1717,15 @@ final case class AlertProvided (
  * of neither a suite nor a test, the <code>nameInfo</code> of the <code>UpdateProvided</code> event (an <code>Option[NameInfo]</code>) should be <code>None</code>.
  * </p>
  *
- * @param ordinal an <code>Ordinal</code> that can be used to place this event in order in the context of
+ * @param ordinal an <a href="Ordinal.html"><code>Ordinal</code></a> that can be used to place this event in order in the context of
  *        other events reported during the same run
  * @param message a localized message suitable for presenting to the user
- * @param nameInfo an optional <code>NameInfo</code> that if defined, provides names for the suite and optionally the test 
+ * @param nameInfo an optional <a href="NameInfo.html"><code>NameInfo</code></a> that if defined, provides names for the suite and optionally the test 
  *        in the context of which the information was provided
  * @param throwable an optional <code>Throwable</code>
- * @param formatter an optional <code>Formatter</code> that provides extra information that can be used by reporters in determining
+ * @param formatter an optional <a href="Formatter.html"><code>Formatter</code></a> that provides extra information that can be used by reporters in determining
  *        how to present this event to the user
- * @param location An optional <code>Location</code> that provides information indicating where in the source code an event originated.
+ * @param location An optional <a href="Location.html"><code>Location</code></a> that provides information indicating where in the source code an event originated.
  * @param payload an optional object that can be used to pass custom information to the reporter about the <code>UpdateProvided</code> event
  * @param threadName a name for the <code>Thread</code> about whose activity this event was reported
  * @param timeStamp a <code>Long</code> indicating the time this event was reported, expressed in terms of the
@@ -1799,14 +1799,14 @@ final case class UpdateProvided (
  * of neither a suite nor a test, the <code>nameInfo</code> of the <code>MarkupProvided</code> event (an <code>Option[NameInfo]</code>) should be <code>None</code>.
  * </p>
  *
- * @param ordinal an <code>Ordinal</code> that can be used to place this event in order in the context of
+ * @param ordinal an <a href="Ordinal.html"><code>Ordinal</code></a> that can be used to place this event in order in the context of
  *        other events reported during the same run
  * @param text a snippet of markup text (in Markdown format)
- * @param nameInfo an optional <code>NameInfo</code> that if defined, provides names for the suite and optionally the test 
+ * @param nameInfo an optional <a href="NameInfo.html"><code>NameInfo</code></a> that if defined, provides names for the suite and optionally the test 
  *        in the context of which the information was provided
- * @param formatter an optional <code>Formatter</code> that provides extra information that can be used by reporters in determining
+ * @param formatter an optional <a href="Formatter.html"><code>Formatter</code></a> that provides extra information that can be used by reporters in determining
  *        how to present this event to the user
- * @param location An optional <code>Location</code> that provides information indicating where in the source code an event originated.
+ * @param location An optional <a href="Location.html"><code>Location</code></a> that provides information indicating where in the source code an event originated.
  * @param payload an optional object that can be used to pass custom information to the reporter about the <code>MarkupProvided</code> event
  * @param threadName a name for the <code>Thread</code> about whose activity this event was reported
  * @param timeStamp a <code>Long</code> indicating the time this event was reported, expressed in terms of the
@@ -1874,14 +1874,14 @@ final case class MarkupProvided (
  * should include a <code>NameInfo</code> in which <code>testName</code> is <em>not</em> defined.
  * </p>
  *
- * @param ordinal an <code>Ordinal</code> that can be used to place this event in order in the context of
+ * @param ordinal an <a href="Ordinal.html"><code>Ordinal</code></a> that can be used to place this event in order in the context of
  *        other events reported during the same run
  * @param message a localized message suitable for presenting to the user
- * @param nameInfo a <code>NameInfo</code> that provides names for the suite and optionally the test 
+ * @param nameInfo a <a href="NameInfo.html"><code>NameInfo</code></a> that provides names for the suite and optionally the test 
  *        in the context of which the scope was opened
- * @param formatter an optional <code>Formatter</code> that provides extra information that can be used by reporters in determining
+ * @param formatter an optional <a href="Formatter.html"><code>Formatter</code></a> that provides extra information that can be used by reporters in determining
  *        how to present this event to the user
- * @param location An optional <code>Location</code> that provides information indicating where in the source code an event originated.
+ * @param location An optional <a href="Location.html"><code>Location</code></a> that provides information indicating where in the source code an event originated.
  * @param payload an optional object that can be used to pass custom information to the reporter about the <code>ScopeOpened</code> event
  * @param threadName a name for the <code>Thread</code> about whose activity this event was reported
  * @param timeStamp a <code>Long</code> indicating the time this event was reported, expressed in terms of the
@@ -1949,14 +1949,14 @@ final case class ScopeOpened (
  * should include a <code>NameInfo</code> in which <code>testName</code> is <em>not</em> defined.
  * </p>
  *
- * @param ordinal an <code>Ordinal</code> that can be used to place this event in order in the context of
+ * @param ordinal an <a href="Ordinal.html"><code>Ordinal</code></a> that can be used to place this event in order in the context of
  *        other events reported during the same run
  * @param message a localized message suitable for presenting to the user
- * @param nameInfo a <code>NameInfo</code> that provides names for the suite and optionally the test 
+ * @param nameInfo a <a href="NameInfo.html"><code>NameInfo</code></a> that provides names for the suite and optionally the test 
  *        in the context of which the scope was closed
- * @param formatter an optional <code>Formatter</code> that provides extra information that can be used by reporters in determining
+ * @param formatter an optional <a href="Formatter.html"><code>Formatter</code></a> that provides extra information that can be used by reporters in determining
  *        how to present this event to the user
- * @param location An optional <code>Location</code> that provides information indicating where in the source code an event originated.
+ * @param location An optional <a href="Location.html"><code>Location</code></a> that provides information indicating where in the source code an event originated.
  * @param payload an optional object that can be used to pass custom information to the reporter about the <code>ScopeClosed</code> event
  * @param threadName a name for the <code>Thread</code> about whose activity this event was reported
  * @param timeStamp a <code>Long</code> indicating the time this event was reported, expressed in terms of the
@@ -2022,14 +2022,14 @@ final case class ScopeClosed (
  * The <code>ScopePending</code> event should include a <code>NameInfo</code> in which <code>testName</code> is <em>not</em> defined.
  * </p>
  *
- * @param ordinal an <code>Ordinal</code> that can be used to place this event in order in the context of
+ * @param ordinal an <a href="Ordinal.html"><code>Ordinal</code></a> that can be used to place this event in order in the context of
  *        other events reported during the same run
  * @param message a localized message suitable for presenting to the user
- * @param nameInfo a <code>NameInfo</code> that provides names for the suite and optionally the test 
+ * @param nameInfo a <a href="NameInfo.html"><code>NameInfo</code></a> that provides names for the suite and optionally the test 
  *        in the context of which the scope was closed
- * @param formatter an optional <code>Formatter</code> that provides extra information that can be used by reporters in determining
+ * @param formatter an optional <a href="Formatter.html"><code>Formatter</code></a> that provides extra information that can be used by reporters in determining
  *        how to present this event to the user
- * @param location An optional <code>Location</code> that provides information indicating where in the source code an event originated.
+ * @param location An optional <a href="Location.html"><code>Location</code></a> that provides information indicating where in the source code an event originated.
  * @param payload an optional object that can be used to pass custom information to the reporter about the <code>ScopePending</code> event
  * @param threadName a name for the <code>Thread</code> about whose activity this event was reported
  * @param timeStamp a <code>Long</code> indicating the time this event was reported, expressed in terms of the
@@ -2143,7 +2143,7 @@ final case class DiscoveryStarting (
 /**
  * Event that indicates a runner has completed searching for suites.
  *
- * @param ordinal an <code>Ordinal</code> that can be used to place this event in order in the context of
+ * @param ordinal an <a href="Ordinal.html"><code>Ordinal</code></a> that can be used to place this event in order in the context of
  *        other events reported during the same run
  * @param duration an optional amount of time, in milliseconds, that was required by the run that has completed
  * @param threadName a name for the <code>Thread</code> about whose activity this event was reported

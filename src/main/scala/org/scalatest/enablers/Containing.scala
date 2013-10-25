@@ -57,7 +57,7 @@ import org.scalatest.FailureMessages
  * </pre>
  *
  * <p>
- * However, given an <code>scala.Option</code> can only ever contain at most one object, it doesn't make
+ * However, given a <code>scala.Option</code> can only ever contain at most one object, it doesn't make
  * sense to make assertions like the following, which are enabled via <code>Aggregation</code>:
  * </p>
  *
