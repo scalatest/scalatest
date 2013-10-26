@@ -19,25 +19,25 @@ package org.scalatest
  * Trait providing an <code>apply</code> method to which status updates about a running suite of tests can be reported.
  * 
  * <p>
- * An <code>Updater</code> is essentially
+ * An <code>Notifier</code> is essentially
  * used to wrap a <code>Reporter</code> and provide easy ways to send status updates
- * to that <code>Reporter</code> via an <code>UpdateProvided</code> event.
- * <code>Updater</code> contains an <code>apply</code> method that takes a string and
+ * to that <code>Reporter</code> via an <code>NoteProvided</code> event.
+ * <code>Notifier</code> contains an <code>apply</code> method that takes a string and
  * an optional payload object of type <code>Any</code>.
- * The <code>Updater</code> will forward the passed alert <code>message</code> string to the
+ * The <code>Notifier</code> will forward the passed alert <code>message</code> string to the
  * <a href="Reporter.html"><code>Reporter</code></a> as the <code>message</code> parameter, and the optional
- * payload object as the <code>payload</code> parameter, of an <a href="UpdateProvided.html"><code>UpdateProvided</code></a> event.
+ * payload object as the <code>payload</code> parameter, of an <a href="NoteProvided.html"><code>NoteProvided</code></a> event.
  * </p>
  *
  * <p>
- * For insight into the differences between <code>Updater</code>, <code>Alerter</code>, and <code>Informer</code>, see the
- * main documentation for trait <a href="Updating.html"><code>Updating</code></a>.
+ * For insight into the differences between <code>Notifier</code>, <code>Alerter</code>, and <code>Informer</code>, see the
+ * main documentation for trait <a href="Notifying.html"><code>Notifying</code></a>.
  * </p>
  */
-trait Updater {
+trait Notifier {
 
   /**
-   * Send a status update via an <code>UpdateProvided</code> event to the reporter.
+   * Send a status update via an <code>NoteProvided</code> event to the reporter.
    */
   def apply(message: String, payload: Option[Any] = None): Unit
 }

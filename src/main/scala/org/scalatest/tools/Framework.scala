@@ -947,7 +947,7 @@ class Framework extends SbtFramework {
               case e: InfoProvided => dispatchReporter(e); react()
               case e: MarkupProvided => dispatchReporter(e); react()
               case e: AlertProvided => dispatchReporter(e); react()
-              case e: UpdateProvided => dispatchReporter(e); react()
+              case e: NoteProvided => dispatchReporter(e); react()
               case e: RunStarting => react() // just ignore test starting and continue
               case e: RunCompleted => // Sub-process completed, just let the thread terminate
               case e: RunStopped => dispatchReporter(e)

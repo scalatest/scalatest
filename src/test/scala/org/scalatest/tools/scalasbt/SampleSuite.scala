@@ -30,6 +30,6 @@ class SampleSuite extends FunSuite {
   }
   
   test("test 3") {
-    update("This is an update!")
+    note("This is an update!")
   }
 }

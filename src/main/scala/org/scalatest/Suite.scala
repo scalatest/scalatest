@@ -2159,7 +2159,7 @@ used for test events like succeeded/failed, etc.
       )
   }
 
-  def createUpdateProvided(theSuite: Suite,
+  def createNoteProvided(theSuite: Suite,
     report: Reporter,
     tracker: Tracker,
     testName: Option[String],
@@ -2169,7 +2169,7 @@ used for test events like succeeded/failed, etc.
     location: Option[Location],
     includeNameInfo: Boolean,
     includeIcon: Boolean = true) = {
-    UpdateProvided(
+    NoteProvided(
         tracker.nextOrdinal(),
         message,
         if (includeNameInfo)
@@ -2236,7 +2236,7 @@ used for test events like succeeded/failed, etc.
     )
   }
   
-  def reportUpdateProvided(
+  def reportNoteProvided(
     theSuite: Suite,
     report: Reporter,
     tracker: Tracker,
@@ -2249,7 +2249,7 @@ used for test events like succeeded/failed, etc.
     includeIcon: Boolean = true
   ) {
     report(
-      createUpdateProvided(
+      createNoteProvided(
         theSuite,
         report,
         tracker,

@@ -98,7 +98,7 @@ Z -
 
 StringReporter configuration params:
 A - drop AlertProvided events
-B - drop UpdateProvided events
+B - drop NoteProvided events
 C - drop TestSucceeded events
 D - show all durations
 E - drop TestPending events

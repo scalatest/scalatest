@@ -518,8 +518,8 @@ private[scalatest] object StringReporter {
     lines map (new Fragment(_, AnsiYellow))
   }
 
-  def updateProvidedFragments(
-    event: UpdateProvided,
+  def noteProvidedFragments(
+    event: NoteProvided,
     presentUnformatted: Boolean,
     presentAllDurations: Boolean,
     presentShortStackTraces: Boolean,
@@ -532,8 +532,8 @@ private[scalatest] object StringReporter {
       }
     val lines: Vector[String] =
       stringsToPrintOnError(
-        "updateProvidedNote",
-        "updateProvided",
+        "noteProvidedNote",
+        "noteProvided",
         event.message,
         event.throwable,
         event.formatter,
@@ -789,9 +789,9 @@ private[scalatest] object StringReporter {
 
         alertProvidedFragments(apEvent, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
 
-      case npEvent: UpdateProvided =>
+      case npEvent: NoteProvided =>
 
-        updateProvidedFragments(npEvent, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
+        noteProvidedFragments(npEvent, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
 
       case ScopeOpened(ordinal, message, nameInfo, formatter, location, payload, threadName, timeStamp) =>
 

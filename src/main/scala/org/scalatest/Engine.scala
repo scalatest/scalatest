@@ -67,7 +67,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
   ) extends Node(Some(parent))
 
   case class InfoLeaf(parent: Branch, message: String, payload: Option[Any], location: Option[LineInFile]) extends Node(Some(parent))
-  case class UpdateLeaf(parent: Branch, message: String, payload: Option[Any], location: Option[LineInFile]) extends Node(Some(parent))
+  case class NoteLeaf(parent: Branch, message: String, payload: Option[Any], location: Option[LineInFile]) extends Node(Some(parent))
   case class AlertLeaf(parent: Branch, message: String, payload: Option[Any], location: Option[LineInFile]) extends Node(Some(parent))
   case class MarkupLeaf(parent: Branch, message: String, location: Option[LineInFile]) extends Node(Some(parent))
 
@@ -130,7 +130,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
     }
   }
 
-  class RegistrationUpdater extends Updater {
+  class RegistrationNotifier extends Notifier {
 
     def apply(message: String, payload: Option[Any] = None) {
       if (message == null)
@@ -139,7 +139,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
         throw new NullPointerException
       val oldBundle = atomic.get
       var (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
-      currentBranch.subNodes ::= UpdateLeaf(currentBranch, message, payload, getLineInFile(Thread.currentThread().getStackTrace, 2))
+      currentBranch.subNodes ::= NoteLeaf(currentBranch, message, payload, getLineInFile(Thread.currentThread().getStackTrace, 2))
       updateAtomic(oldBundle, Bundle(currentBranch, testNamesList, testsMap, tagsMap, registrationClosed))
     }
   }
@@ -173,7 +173,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
   // is the registration phase of a style trait's lifecycle.)
   final val atomicInformer = new AtomicReference[Informer](new RegistrationInformer)
 
-  final val atomicUpdater = new AtomicReference[Updater](new RegistrationUpdater)
+  final val atomicNotifier = new AtomicReference[Notifier](new RegistrationNotifier)
   final val atomicAlerter = new AtomicReference[Alerter](new RegistrationAlerter)
 
   // The documenter will be a registration informer until run is called for the first time. (This
@@ -195,8 +195,8 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
       }
     }
 
-  final val zombieUpdater =
-    new Updater {
+  final val zombieNotifier =
+    new Notifier {
       def apply(message: String, payload: Option[Any] = None) {
         if (message == null)
           throw new NullPointerException
@@ -277,9 +277,9 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
       )
 
     val updaterForThisTest =
-      ConcurrentUpdater(
+      ConcurrentNotifier(
         (message, payload, isConstructingThread, location) => {
-          reportUpdateProvided(theSuite, report, tracker, Some(testName), message, payload, 1, location, isConstructingThread)
+          reportNoteProvided(theSuite, report, tracker, Some(testName), message, payload, 1, location, isConstructingThread)
         }
       )
       
@@ -297,7 +297,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
       )
 
     val oldInformer = atomicInformer.getAndSet(informerForThisTest)
-    val oldUpdater = atomicUpdater.getAndSet(updaterForThisTest)
+    val oldNotifier = atomicNotifier.getAndSet(updaterForThisTest)
     val oldAlerter = atomicAlerter.getAndSet(alerterForThisTest)
     val oldDocumenter = atomicDocumenter.getAndSet(documenterForThisTest)
 
@@ -353,9 +353,9 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
       if (shouldBeInformerForThisTest ne informerForThisTest)
         throw new ConcurrentModificationException(Resources("concurrentInformerMod", theSuite.getClass.getName))
 
-      val shouldBeUpdaterForThisTest = atomicUpdater.getAndSet(oldUpdater)
-      if (shouldBeUpdaterForThisTest ne updaterForThisTest)
-        throw new ConcurrentModificationException(Resources("concurrentUpdaterMod", theSuite.getClass.getName))
+      val shouldBeNotifierForThisTest = atomicNotifier.getAndSet(oldNotifier)
+      if (shouldBeNotifierForThisTest ne updaterForThisTest)
+        throw new ConcurrentModificationException(Resources("concurrentNotifierMod", theSuite.getClass.getName))
 
       val shouldBeAlerterForThisTest = atomicAlerter.getAndSet(oldAlerter)
       if (shouldBeAlerterForThisTest ne alerterForThisTest)
@@ -415,8 +415,8 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
             case infoLeaf @ InfoLeaf(_, message, payload, location) =>
               reportInfoProvided(theSuite, args.reporter, args.tracker, None, message, payload, infoLeaf.indentationLevel, location, true, includeIcon)
 
-            case updateLeaf @ UpdateLeaf(_, message, payload, location) =>
-              reportUpdateProvided(theSuite, args.reporter, args.tracker, None, message, payload, updateLeaf.indentationLevel, location, true, includeIcon)
+            case noteLeaf @ NoteLeaf(_, message, payload, location) =>
+              reportNoteProvided(theSuite, args.reporter, args.tracker, None, message, payload, noteLeaf.indentationLevel, location, true, includeIcon)
 
             case alertLeaf @ AlertLeaf(_, message, payload, location) =>
               reportAlertProvided(theSuite, args.reporter, args.tracker, None, message, payload, alertLeaf.indentationLevel, location, true, includeIcon)
@@ -515,13 +515,13 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
     atomicInformer.set(informerForThisSuite)
 
     val updaterForThisSuite =
-      ConcurrentUpdater(
+      ConcurrentNotifier(
         (message, payload, isConstructingThread, location) => {
-          reportUpdateProvided(theSuite, report, tracker, None, message, payload, 1, location, isConstructingThread)
+          reportNoteProvided(theSuite, report, tracker, None, message, payload, 1, location, isConstructingThread)
         }
       )
 
-    atomicUpdater.set(updaterForThisSuite)
+    atomicNotifier.set(updaterForThisSuite)
 
     val alerterForThisSuite =
       ConcurrentAlerter(
@@ -549,9 +549,9 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
       if (shouldBeInformerForThisSuite ne informerForThisSuite)
         throw new ConcurrentModificationException(Resources("concurrentInformerMod", theSuite.getClass.getName))
 
-      val shouldBeUpdaterForThisSuite = atomicUpdater.getAndSet(zombieUpdater)
-      if (shouldBeUpdaterForThisSuite ne updaterForThisSuite)
-        throw new ConcurrentModificationException(Resources("concurrentUpdaterMod", theSuite.getClass.getName))
+      val shouldBeNotifierForThisSuite = atomicNotifier.getAndSet(zombieNotifier)
+      if (shouldBeNotifierForThisSuite ne updaterForThisSuite)
+        throw new ConcurrentModificationException(Resources("concurrentNotifierMod", theSuite.getClass.getName))
 
       val shouldBeAlerterForThisSuite = atomicAlerter.getAndSet(zombieAlerter)
       if (shouldBeAlerterForThisSuite ne alerterForThisSuite)
@@ -908,12 +908,12 @@ private[scalatest] class PathEngine(concurrentBundleModResourceName: String, sim
         val oldInformer = atomicInformer.getAndSet(informerForThisTest)
 
         val updaterForThisTest =
-          PathMessageRecordingUpdater( // TODO: Put locations into path traits!
+          PathMessageRecordingNotifier( // TODO: Put locations into path traits!
             (message, payload, wasConstructingThread, testWasPending, theSuite, report, tracker, testName, indentation, includeIcon, thread) =>
-              createUpdateProvided(theSuite, report, tracker, Some(testName), message, payload, indentation, None, wasConstructingThread, includeIcon)
+              createNoteProvided(theSuite, report, tracker, Some(testName), message, payload, indentation, None, wasConstructingThread, includeIcon)
           )
 
-        val oldUpdater = atomicUpdater.getAndSet(updaterForThisTest)
+        val oldNotifier = atomicNotifier.getAndSet(updaterForThisTest)
 
         val alerterForThisTest =
           PathMessageRecordingAlerter( // TODO: Put locations into path traits!
@@ -946,9 +946,9 @@ private[scalatest] class PathEngine(concurrentBundleModResourceName: String, sim
             if (shouldBeInformerForThisTest ne informerForThisTest)
               throw new ConcurrentModificationException(Resources("concurrentInformerMod", handlingSuite.getClass.getName))
 
-            val shouldBeUpdaterForThisTest = atomicUpdater.getAndSet(oldUpdater)
-            if (shouldBeUpdaterForThisTest ne updaterForThisTest)
-              throw new ConcurrentModificationException(Resources("concurrentUpdaterMod", handlingSuite.getClass.getName))
+            val shouldBeNotifierForThisTest = atomicNotifier.getAndSet(oldNotifier)
+            if (shouldBeNotifierForThisTest ne updaterForThisTest)
+              throw new ConcurrentModificationException(Resources("concurrentNotifierMod", handlingSuite.getClass.getName))
 
             val shouldBeAlerterForThisTest = atomicAlerter.getAndSet(oldAlerter)
             if (shouldBeAlerterForThisTest ne alerterForThisTest)
@@ -1082,12 +1082,12 @@ private[scalatest] class PathEngine(concurrentBundleModResourceName: String, sim
     atomicInformer.set(informerForThisSuite)
 
     val updaterForThisSuite =
-      ConcurrentUpdater(
+      ConcurrentNotifier(
         (message, payload, isConstructingThread, location) =>
-          reportUpdateProvided(theSuite, report, tracker, None, message, payload, 1, location, isConstructingThread)
+          reportNoteProvided(theSuite, report, tracker, None, message, payload, 1, location, isConstructingThread)
       )
 
-    atomicUpdater.set(updaterForThisSuite)
+    atomicNotifier.set(updaterForThisSuite)
 
     val alerterForThisSuite =
       ConcurrentAlerter(
@@ -1113,9 +1113,9 @@ private[scalatest] class PathEngine(concurrentBundleModResourceName: String, sim
       if (shouldBeInformerForThisSuite ne informerForThisSuite)
         throw new ConcurrentModificationException(Resources("concurrentInformerMod", theSuite.getClass.getName))
 
-      val shouldBeUpdaterForThisSuite = atomicUpdater.getAndSet(zombieUpdater)
-      if (shouldBeUpdaterForThisSuite ne updaterForThisSuite)
-        throw new ConcurrentModificationException(Resources("concurrentUpdaterMod", theSuite.getClass.getName))
+      val shouldBeNotifierForThisSuite = atomicNotifier.getAndSet(zombieNotifier)
+      if (shouldBeNotifierForThisSuite ne updaterForThisSuite)
+        throw new ConcurrentModificationException(Resources("concurrentNotifierMod", theSuite.getClass.getName))
 
       val shouldBeAlerterForThisSuite = atomicAlerter.getAndSet(zombieAlerter)
       if (shouldBeAlerterForThisSuite ne alerterForThisSuite)

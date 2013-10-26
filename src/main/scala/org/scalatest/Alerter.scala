@@ -30,7 +30,7 @@ package org.scalatest
  * </p>
  *
  * <p>
- * For insight into the differences between <code>Alerter</code>, <code>Updater</code>, and <code>Informer</code>, see the
+ * For insight into the differences between <code>Alerter</code>, <code>Notifier</code>, and <code>Informer</code>, see the
  * main documentation for trait <a href="Alerting.html"><code>Alerting</code></a>.
  * </p>
  */

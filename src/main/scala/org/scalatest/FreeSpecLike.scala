@@ -48,7 +48,7 @@ import Suite.autoTagClassAnnotations
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FreeSpecFinder"))
-trait FreeSpecLike extends Suite with Informing with Updating with Alerting with Documenting { thisSuite =>
+trait FreeSpecLike extends Suite with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new Engine("concurrentFreeSpecMod", "FreeSpec")
   import engine._
@@ -63,7 +63,8 @@ trait FreeSpecLike extends Suite with Informing with Updating with Alerting with
    */
   protected def info: Informer = atomicInformer.get
 
-  protected def update: Updater = atomicUpdater.get
+  // TODO: Scaladoc
+  protected def note: Notifier = atomicNotifier.get
   protected def alert: Alerter = atomicAlerter.get
 
   /**

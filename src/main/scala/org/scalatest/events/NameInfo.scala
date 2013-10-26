@@ -19,7 +19,7 @@ import org.scalatest._
 
 /**
  * Class that holds information about names for the <em>information events</em> <a href="InfoProvided.html"><code>InfoProvided</code></a>, <a href="MarkupProvided.html"><code>MarkupProvided</code></a>,
- * <a href="ScopeOpened.html"><code>ScopeOpened</code></a>, <a href="ScopeClosed.html"><code>ScopeClosed</code></a>, <a href="ScopePending.html"><code>ScopePending</code></a>, <a href="AlertProvided.html"><code>AlertProvided</code></a> and <a href="UpdateProvided.html"><code>UpdateProvided</code></a>.
+ * <a href="ScopeOpened.html"><code>ScopeOpened</code></a>, <a href="ScopeClosed.html"><code>ScopeClosed</code></a>, <a href="ScopePending.html"><code>ScopePending</code></a>, <a href="AlertProvided.html"><code>AlertProvided</code></a> and <a href="NoteProvided.html"><code>NoteProvided</code></a>.
  *
  * <p>
  * An information event may be fired from anywhere. In this respect these events are different

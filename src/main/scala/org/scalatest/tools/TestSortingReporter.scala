@@ -82,8 +82,8 @@ private[scalatest] class TestSortingReporter(suiteId: String, dispatch: Reporter
     if (event == null)
       throw new NullPointerException("event was null")
     synchronized {
-      event match { // TODO: Maybe it doesn't make sense to have AlertProvided and UpdateProvided here, after enhancing to let them through immediately
-        case _: InfoProvided | _: MarkupProvided | _: AlertProvided | _: UpdateProvided =>  // This can happen if there's an info in before or after. Inside the test these will be recorded. Oh, it will also happen if multi-threaded info's going out from the test.
+      event match { // TODO: Maybe it doesn't make sense to have AlertProvided and NoteProvided here, after enhancing to let them through immediately
+        case _: InfoProvided | _: MarkupProvided | _: AlertProvided | _: NoteProvided =>  // This can happen if there's an info in before or after. Inside the test these will be recorded. Oh, it will also happen if multi-threaded info's going out from the test.
           val slot = slotMap(testName)  // How do you know that a slot exists?
           slot.eventList += event // Need to handle the error case better. Deal with no slot found.
           fireReadyEvents()
@@ -176,8 +176,8 @@ private[scalatest] class TestSortingReporter(suiteId: String, dispatch: Reporter
           handleSuiteEvent(infoProvided)
         case alertProvided: AlertProvided => // TODO: I think these alerts and updates should just fly out the door
           handleSuiteEvent(alertProvided)
-        case updateProvided: UpdateProvided =>
-          handleSuiteEvent(updateProvided)
+        case noteProvided: NoteProvided =>
+          handleSuiteEvent(noteProvided)
         case markupProvided: MarkupProvided =>
           handleSuiteEvent(markupProvided)
 

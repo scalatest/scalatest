@@ -46,7 +46,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.SpecFinder"))
-trait SpecLike extends Suite with Informing with Updating with Alerting with Documenting  { thisSuite => 
+trait SpecLike extends Suite with Informing with Notifying with Alerting with Documenting  { thisSuite => 
 
   private final val engine = new FixtureEngine[FixtureParam]("concurrentSpecMod", "Spec")
   import engine._
@@ -176,7 +176,8 @@ trait SpecLike extends Suite with Informing with Updating with Alerting with Doc
    */
   protected def info: Informer = atomicInformer.get
 
-  protected def update: Updater = atomicUpdater.get
+  // TOOD: Scaladoc
+  protected def note: Notifier = atomicNotifier.get
   protected def alert: Alerter = atomicAlerter.get
   
   /**

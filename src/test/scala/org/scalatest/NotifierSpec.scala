@@ -18,39 +18,32 @@ package org.scalatest
 import matchers._
 import SharedHelpers._
 
-class UpdaterSpec extends Spec with Matchers {
-  object `An Updater` {
-    def `should fire UpdateProvided event with correct message and None in payload when using apply(message)` {
+class NotifierSpec extends Spec with Matchers {
+  object `A Notifier` {
+    def `should fire NoteProvided event with correct message and None in payload when using apply(message)` {
       class MySuite extends FunSuite {
-        update("update message")
+        note("update message")
       }
       val suite = new MySuite()
       val rep = new EventRecordingReporter()
       suite.run(None, Args(rep))
-      val updateProvidedEvents = rep.updateProvidedEventsReceived
-      assert(updateProvidedEvents.length === 1)
-      assert(updateProvidedEvents(0).message === "update message")
-      assert(updateProvidedEvents(0).payload === None)
+      val noteProvidedEvents = rep.noteProvidedEventsReceived
+      assert(noteProvidedEvents.length === 1)
+      assert(noteProvidedEvents(0).message === "update message")
+      assert(noteProvidedEvents(0).payload === None)
     }
-    def `should fire UpdateProvided event with correct message and payload when using apply(message, payload)` {
+    def `should fire NoteProvided event with correct message and payload when using apply(message, payload)` {
       class MySuite extends FunSuite {
-        update("update message", Some("a payload"))
+        note("update message", Some("a payload"))
       }
       val suite = new MySuite()
       val rep = new EventRecordingReporter()
       suite.run(None, Args(rep))
-      val updateProvidedEvents = rep.updateProvidedEventsReceived
-      assert(updateProvidedEvents.length === 1)
-      assert(updateProvidedEvents(0).message === "update message")
-      assert(updateProvidedEvents(0).payload === Some("a payload"))
+      val noteProvidedEvents = rep.noteProvidedEventsReceived
+      assert(noteProvidedEvents.length === 1)
+      assert(noteProvidedEvents(0).message === "update message")
+      assert(noteProvidedEvents(0).payload === Some("a payload"))
     }
   }
 }
-
-/*
-Updating update Updater
-Alerting alert Alerter
-Informing info Informer
-Documenting markup Documenter
-*/
 

@@ -55,7 +55,7 @@ private[tools] class FilterReporter(reporter: Reporter, configSet: Set[ReporterC
           report(event.copy(recordedEvents = event.recordedEvents.filter(filterInfoMarkupProvided(_))))
       case event: InfoProvided => if (!configSet.contains(FilterInfoProvided)) report(event)
       case event: AlertProvided => if (!configSet.contains(FilterAlertProvided)) report(event)
-      case event: UpdateProvided => if (!configSet.contains(FilterUpdateProvided)) report(event)
+      case event: NoteProvided => if (!configSet.contains(FilterNoteProvided)) report(event)
       case event: ScopeOpened => if (!configSet.contains(FilterScopeOpened)) report(event)
       case event: ScopeClosed => if (!configSet.contains(FilterScopeClosed)) report(event)
       case event: ScopePending => if (!configSet.contains(FilterScopePending)) report(event)

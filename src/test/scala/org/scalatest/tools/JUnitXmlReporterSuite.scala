@@ -28,7 +28,7 @@ import org.scalatest.events.TestPending
 import org.scalatest.events.TestCanceled
 import org.scalatest.events.RecordableEvent
 import org.scalatest.events.AlertProvided
-import org.scalatest.events.UpdateProvided
+import org.scalatest.events.NoteProvided
 import org.scalatest.events.NameInfo
 
 import java.io.File
@@ -250,22 +250,22 @@ class JUnitXmlReporterSuite extends FunSuite {
       Some(NameInfo("suite3", "suiteId3", None, Some("a pass test")))
     )
   
-  val updateProvided1 = 
-    UpdateProvided(
+  val noteProvided1 = 
+    NoteProvided(
       ord0b, 
       "This is an update!", 
       None
     )
     
-  val updateProvided2 = 
-    UpdateProvided(
+  val noteProvided2 = 
+    NoteProvided(
       ord2d, 
       "This is an update!", 
       Some(NameInfo("suite3", "suiteId3", None, None))
     )
     
-  val updateProvided3 = 
-    UpdateProvided(
+  val noteProvided3 = 
+    NoteProvided(
       ord2f, 
       "This is an update!", 
       Some(NameInfo("suite3", "suiteId3", None, Some("a pass test")))
@@ -323,15 +323,15 @@ class JUnitXmlReporterSuite extends FunSuite {
     assert(!(tcCanceled \ "skipped").isEmpty)
   }*/
   
-  test("AlertProvided and UpdateProvided should be ignored") {
+  test("AlertProvided and NoteProvided should be ignored") {
     reporter(alertProvided1)
-    reporter(updateProvided1)
+    reporter(noteProvided1)
     reporter(start3)
     reporter(alertProvided2)
-    reporter(updateProvided2)
+    reporter(noteProvided2)
     reporter(startTest1)
     reporter(alertProvided3)
-    reporter(updateProvided3)
+    reporter(noteProvided3)
     reporter(endTest1)
     reporter(ignoreTest1)
     reporter(startTest2)

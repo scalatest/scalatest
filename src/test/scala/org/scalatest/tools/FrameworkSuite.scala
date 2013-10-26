@@ -1416,7 +1416,7 @@ class FrameworkSuite extends FunSuite {
           case Some(recordingRep : EventRecordingReporter) => 
             assert(recordingRep.testSucceededEventsReceived.size === 3)
             assert(recordingRep.alertProvidedEventsReceived.size === 1)
-            assert(recordingRep.updateProvidedEventsReceived.size === 1)
+            assert(recordingRep.noteProvidedEventsReceived.size === 1)
           case _ => fail("Expected to find EventRecordingReporter, but not found.")
         }
     }

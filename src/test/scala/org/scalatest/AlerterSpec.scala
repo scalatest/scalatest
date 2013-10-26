@@ -47,10 +47,3 @@ class AlerterSpec extends Spec with Matchers {
   }
 }
 
-/*
-Updating update Updater
-Alerting alert Alerter
-Informing info Informer
-Documenting markup Documenter
-*/
-

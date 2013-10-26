@@ -40,7 +40,7 @@ private[tools] case object PresentSuiteAborted extends EventToPresent
 private[tools] case object PresentSuiteCompleted extends EventToPresent
 private[tools] case object PresentInfoProvided extends EventToPresent
 private[tools] case object PresentAlertProvided extends EventToPresent
-private[tools] case object PresentUpdateProvided extends EventToPresent
+private[tools] case object PresentNoteProvided extends EventToPresent
 private[tools] case object PresentScopeOpened extends EventToPresent
 private[tools] case object PresentScopeClosed extends EventToPresent
 private[tools] case object PresentScopePending extends EventToPresent
@@ -67,7 +67,7 @@ private[tools] object EventToPresent {
       PresentSuiteAborted,
       PresentInfoProvided,
       PresentAlertProvided,
-      PresentUpdateProvided,
+      PresentNoteProvided,
       PresentScopeOpened,
       PresentScopeClosed,
       PresentScopePending, 
@@ -93,7 +93,7 @@ private[tools] object EventToPresent {
       case _: SuiteAborted => PresentSuiteAborted
       case _: InfoProvided => PresentInfoProvided
       case _: AlertProvided => PresentAlertProvided
-      case _: UpdateProvided => PresentUpdateProvided
+      case _: NoteProvided => PresentNoteProvided
       case _: ScopeOpened => PresentScopeOpened
       case _: ScopeClosed => PresentScopeClosed
       case _: ScopePending => PresentScopePending

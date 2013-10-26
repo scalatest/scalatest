@@ -25,7 +25,7 @@ import collection.mutable.ListBuffer
 import Suite.reportMarkupProvided
 import scala.collection.mutable.ListBuffer
 
-private[scalatest] trait DocSpecLike extends Suite with Informing with Updating with Alerting { thisSuite =>
+private[scalatest] trait DocSpecLike extends Suite with Informing with Notifying with Alerting { thisSuite =>
 
   private final val engine = new Engine("concurrentFunSuiteMod", "FunSuite")
   import engine._
@@ -40,7 +40,7 @@ private[scalatest] trait DocSpecLike extends Suite with Informing with Updating 
    */
   protected def info: Informer = atomicInformer.get
 
-  protected def update: Updater = atomicUpdater.get
+  protected def note: Notifier = atomicNotifier.get
   protected def alert: Alerter = atomicAlerter.get
 
   sealed abstract class Snippet

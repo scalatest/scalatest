@@ -254,7 +254,7 @@ private[tools] class IconEmbellishedListCellRenderer extends EventHolderListCell
         else
           renderer.setIcon(Icons.alertProvidedIcon)
       }
-      case _: UpdateProvided => { // Shouldn't get here because not registering markup events
+      case _: NoteProvided => { // Shouldn't get here because not registering markup events
         if (isSelected)
           renderer.setIcon(Icons.updateProvidedSelIcon)
         else

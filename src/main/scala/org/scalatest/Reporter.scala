@@ -50,7 +50,7 @@ import org.scalatest.events.Event
  * <li><a href="events/InfoProvided.html"><code>InfoProvided</code></a></li>
  * <li><a href="events/MarkupProvided.html"><code>MarkupProvided</code></a></li>
  * <li><a href="events/AlertProvided.html"><code>AlertProvided</code></a></li>
- * <li><a href="events/UpdateProvided.html"><code>UpdateProvided</code></a></li>
+ * <li><a href="events/NoteProvided.html"><code>NoteProvided</code></a></li>
  * </ul>
  *
  * <p>

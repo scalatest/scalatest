@@ -16,29 +16,29 @@
 package org.scalatest
 
 /**
- * Trait that contains the <code>update</code> method, which can be used to send a status update to the reporter.
+ * Trait that contains the <code>note</code> method, which can be used to send a status notification to the reporter.
  *
  * <p>
- * The difference between <code>update</code> and the <code>info</code> method of <a href="Informer.html"><code>Informer</code></a> is that
+ * The difference between <code>note</code> and the <code>info</code> method of <a href="Informer.html"><code>Informer</code></a> is that
  * <code>info</code> messages provided during a test are recorded and sent as part of test completion event, whereas
- * <code>update</code> messages are sent right away as <a href="events/UpdateProvided.html"><code>UpdateProvided</code></a> messages. For long-running tests,
- * <code>update</code> allows you to send "status updates" to the reporter right away, so users can track the
+ * <code>note</code> messages are sent right away as <a href="events/NoteProvided.html"><code>NoteProvided</code></a> messages. For long-running tests,
+ * <code>note</code> allows you to send "status notifications" to the reporter right away, so users can track the
  * progress of the long-running tests. By contrast, <code>info</code> messages will only be seen by the user after the
  * test has completed, and are more geared towards specification (such as <a href="GivenWhenThen.html">Given/When/Then</a> messages) than notification.
  * </p>
  *
  * <p>
- * The difference between <code>update</code> and the <code>alert</code> method of <a href="Alerting.html"><code>Alerting</code></a> is
+ * The difference between <code>note</code> and the <code>alert</code> method of <a href="Alerting.html"><code>Alerting</code></a> is
  * that <code>alert</code> is intended to be used
- * for warnings or notifications of potential problems, whereas <code>update</code> is just for status updates.
- * In string reporters for which ANSI color is enabled, <code>update</code> notifications are shown in green and <code>alert</code> notifications
+ * for warnings or notifications of potential problems, whereas <code>note</code> is just for status notifications.
+ * In string reporters for which ANSI color is enabled, <code>note</code> notifications are shown in green and <code>alert</code> notifications
  * in yellow.
  * </p>
  */
-trait Updating {
+trait Notifying {
 
   /**
-   * Returns an <code>Updater</code> that can send a status update via an <code>UpdateProvided</code> event to the reporter.
+   * Returns an <code>Notifier</code> that can send a status notification via an <code>NoteProvided</code> event to the reporter.
    */
-  protected def update: Updater
+  protected def note: Notifier
 }

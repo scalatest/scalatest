@@ -77,7 +77,7 @@ private[tools] class EventHolder(val event: Event, val message: Option[String], 
           case event: TestFailed => firstAndSecondString(firstString, suiteAndTestName(event.suiteName, event.testName))
           case event: TestCanceled => firstAndSecondString(firstString, suiteAndTestName(event.suiteName, event.testName))
           case event: AlertProvided => firstString + " - " + event.message
-          case event: UpdateProvided => firstString + " - " + event.message
+          case event: NoteProvided => firstString + " - " + event.message
         }
     }
   }
