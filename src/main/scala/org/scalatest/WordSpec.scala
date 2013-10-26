@@ -722,7 +722,8 @@ import Suite.autoTagClassAnnotations
  * <a href="Tag.html">documentation for class <code>Tag</code></a>.
  * </p>
  *
- * <a name="sharedFixtures"></a><h2>Shared fixtures</h2>
+ * <a name="sharedFixtures"></a>
+ * <h2>Shared fixtures</h2>
  *
  * <p>
  * A test <em>fixture</em> is composed of the objects and other artifacts (files, sockets, database
@@ -730,29 +731,124 @@ import Suite.autoTagClassAnnotations
  * When multiple tests need to work with the same fixtures, it is important to try and avoid
  * duplicating the fixture code across those tests. The more code duplication you have in your
  * tests, the greater drag the tests will have on refactoring the actual production code.
- * ScalaTest recommends several techniques to eliminate such code duplication, and provides several
- * traits to help. Each technique is geared towards helping you reduce code duplication without introducing
- * instance <code>var</code>s, shared mutable objects, or other dependencies between tests. Eliminating shared
- * mutable state across tests will make your test code easier to reason about and more amenable for parallel
- * test execution.
  * </p>
  *
  * <p>
- * The following sections
- * describe these techniques, including explaining the recommended usage
- * for each. But first, here's a table summarizing the options:
+ * ScalaTest recommends three techniques to eliminate such code duplication:
  * </p>
  *
+ * <ul>
+ * <li>Refactor using Scala</li>
+ * <li>Override <code>withFixture</code></li>
+ * <li>Mix in a <em>before-and-after</em> trait</li>
+ * </ul>
+ *
+ * <p>Each technique is geared towards helping you reduce code duplication without introducing
+ * instance <code>var</code>s, shared mutable objects, or other dependencies between tests. Eliminating shared
+ * mutable state across tests will make your test code easier to reason about and more amenable for parallel
+ * test execution.</p><p>The following sections
+ * describe these techniques, including explaining the recommended usage
+ * for each. But first, here's a table summarizing the options:</p>
+ *
  * <table style="border-collapse: collapse; border: 1px solid black">
- * <tr><th style="background-color: #CCCCCC; border-width: 1px; padding: 3px; text-align: center; border: 1px solid black">Technique</th><th style="background-color: #CCCCCC; border-width: 1px; padding: 3px; text-align: center; border: 1px solid black">Recommended uses</th></tr>
- * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: right"><a href="#getFixtureMethods">get-fixture methods</a></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">Use when you need the same mutable fixture objects in multiple tests, and don't need to clean up after.</td></td></tr>
- * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: right"><a href="#fixtureContextObjects">fixture-context objects</a></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">Use when you need different combinations of mutable fixture objects in different tests, and don't need to clean up after. </td></td></tr>
- * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: right"><a href="#oneInstancePerTest"><code>OneInstancePerTest</code></a></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">Use when porting JUnit tests to ScalaTest, or if you prefer JUnit's approach to test isolation: running each test in its own instance of the test class.</td></td></tr>
- * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: right"><a href="#withFixtureNoArgTest"><code>withFixture(NoArgTest)</code></a></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">Use when you need to perform side effects at the beginning and end of all or most tests, or want to stack traits that perform such side-effects.</td></td></tr>
- * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: right"><a href="#loanFixtureMethods">loan-fixture methods</a></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">Use when different tests need different fixtures that must be cleaned up afterwards.</td></td></tr>
- * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: right"><a href="#withFixtureOneArgTest"><code>withFixture(OneArgTest)</code></a></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">Use when all or most tests need the same fixtures that must be cleaned up afterwards.</td></td></tr>
- * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: right"><a href="#beforeAndAfter"><code>BeforeAndAfter</code></a></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">Use when you need to perform the same side-effects before and/or after tests, rather than at the beginning or end of tests.</td></td></tr>
- * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: right"><a href="#composingFixtures"><code>BeforeAndAfterEach</code></a></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">Use when you want to stack traits that perform the same side-effects before and/or after tests, rather than at the beginning or end of tests.</td></td></tr>
+ *
+ * <tr>
+ *   <td colspan="2" style="background-color: #CCCCCC; border-width: 1px; padding: 3px; padding-top: 7px; border: 1px solid black; text-align: left">
+ *     <strong>Refactor using Scala when different tests need different fixtures.</strong>
+ *   </td>
+ * </tr>
+ *
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: right">
+ *     <a href="#getFixtureMethods">get-fixture methods</a>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">
+ *     The <em>extract method</em> refactor helps you create a fresh instances of mutable fixture objects in each test
+ *     that needs them, but doesn't help you clean them up when you're done.
+ *   </td>
+ * </tr>
+ *
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: right">
+ *     <a href="#fixtureContextObjects">fixture-context objects</a>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">
+ *     By placing fixture methods and fields into traits, you can easily give each test just the newly created
+ *     fixtures it needs by mixing together traits.  Use this technique when you need <em>different combinations
+ *     of mutable fixture objects in different tests</em>, and don't need to clean up after.
+ *   </td>
+ * </tr>
+ *
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: right">
+ *     <a href="#loanFixtureMethods">loan-fixture methods</a>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">
+ *     Factor out dupicate code with the <em>loan pattern</em> when different tests need different fixtures <em>that must be cleaned up afterwards</em>.
+ *   </td>
+ * </tr>
+ *
+ * <tr>
+ *   <td colspan="2" style="background-color: #CCCCCC; border-width: 1px; padding: 3px; padding-top: 7px; border: 1px solid black; text-align: left">
+ *     <strong>Override <code>withFixture</code> when most or all tests need the same fixture.</strong>
+ *   </td>
+ * </tr>
+ *
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: right">
+ *     <a href="#withFixtureNoArgTest">
+ *       <code>withFixture(NoArgTest)</code></a>
+ *     </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">
+ *     <p>
+ *     The recommended default approach when most or all tests need the same fixture treatment. This general technique
+ *     allows you, for example, to perform side effects at the beginning and end of all or most tests, 
+ *     transform the outcome of tests, retry tests, make decisions based on test names, tags, or other test data.
+ *     Use this technique unless:
+ *     </p>
+ *  <ul>
+ *  <li>Different tests need different fixtures (refactor using Scala instead)</li>
+ *  <li>An exception in fixture code should abort the suite, not fail the test (use a <em>before-and-after</em> trait instead)</li>
+ *  <li>You have objects to pass into tests (override <code>withFixture(<em>One</em>ArgTest)</code> instead)</li>
+ *  </ul>
+ *  </td>
+ * </tr>
+ *
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: right">
+ *     <a href="#withFixtureOneArgTest">
+ *       <code>withFixture(OneArgTest)</code>
+ *     </a>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">
+ *     Use when you want to pass the same fixture object or objects as a parameter into all or most tests.
+ *   </td>
+ * </tr>
+ *
+ * <tr>
+ *   <td colspan="2" style="background-color: #CCCCCC; border-width: 1px; padding: 3px; padding-top: 7px; border: 1px solid black; text-align: left">
+ *     <strong>Mix in a before-and-after trait when you want an aborted suite, not a failed test, if the fixture code fails.</strong>
+ *   </td>
+ * </tr>
+ *
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: right">
+ *     <a href="#beforeAndAfter"><code>BeforeAndAfter</code></a>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">
+ *     Use this boilerplate-buster when you need to perform the same side-effects before and/or after tests, rather than at the beginning or end of tests.
+ *   </td>
+ * </tr>
+ *
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: right">
+ *     <a href="#composingFixtures"><code>BeforeAndAfterEach</code></a>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">
+ *     Use when you want to <em>stack traits</em> that perform the same side-effects before and/or after tests, rather than at the beginning or end of tests.
+ *   </td>
+ * </tr>
+ *
  * </table>
  *
  * <a name="getFixtureMethods"></a>
@@ -865,57 +961,11 @@ import Suite.autoTagClassAnnotations
  * }
  * </pre>
  *
- * <a name="oneInstancePerTest"></a>
- * <h4>Mixing in <code>OneInstancePerTest</code></h4>
- *
- * <p>
- * If every test method requires the same set of
- * mutable fixture objects, and none require cleanup, one other approach you can take is make them simply <code>val</code>s and mix in trait
- * <a href="OneInstancePerTest.html"><code>OneInstancePerTest</code></a>.  If you mix in <code>OneInstancePerTest</code>, each test
- * will be run in its own instance of the <a href="Suite.html"><code>Suite</code></a>, similar to the way JUnit tests are executed. Here's an example:
- * </p>
- *
- * <pre class="stHighlight">
- * package org.scalatest.examples.wordspec.oneinstancepertest
- * 
- * import org.scalatest._
- * import collection.mutable.ListBuffer
- * 
- * class ExampleSuite extends WordSpec with OneInstancePerTest {
- * 
- *   val builder = new StringBuilder("ScalaTest is ")
- *   val buffer = new ListBuffer[String]
- * 
- *   "Testing" should {
- *     "be easy" in {
- *       builder.append("easy!")
- *       assert(builder.toString === "ScalaTest is easy!")
- *       assert(buffer.isEmpty)
- *       buffer += "sweet"
- *     }
- * 
- *     "be fun" in {
- *       builder.append("fun!")
- *       assert(builder.toString === "ScalaTest is fun!")
- *       assert(buffer.isEmpty)
- *     } 
- *   }
- * }
- * </pre>
- *
- * <p>
- * One way to think of <code>OneInstancePerTest</code> is that the entire <code>Suite</code> instance is like a fixture-context object,
- * but with the difference that the test code doesn't run during construction as it does with the real fixture-context object technique. Because this trait emulates JUnit's manner
- * of running tests, this trait can be helpful when porting JUnit tests to ScalaTest. The primary intended use of <code>OneInstancePerTest</code> is to serve as a supertrait for
- * <a href="ParallelTestExecution.html"><code>ParallelTestExecution</code></a> and the <a href="path/package.html">path traits</a>, but you can also mix it in
- * directly to help you port JUnit tests to ScalaTest or if you prefer JUnit's approach to test isolation.
- * </p>
- *
  * <a name="withFixtureNoArgTest"></a>
  * <h4>Overriding <code>withFixture(NoArgTest)</code></h4>
  *
  * <p>
- * Although the get-fixture method, fixture-context object, and <code>OneInstancePerTest</code> approaches take care of setting up a fixture at the beginning of each
+ * Although the get-fixture method and fixture-context object approaches take care of setting up a fixture at the beginning of each
  * test, they don't address the problem of cleaning up a fixture at the end of the test. If you just need to perform a side-effect at the beginning or end of
  * a test, and don't need to actually pass any fixture objects into the test, you can override <code>withFixture(NoArgTest)</code>, one of ScalaTest's
  * lifecycle methods defined in trait <a href="Suite.html#lifecyle-methods"><code>Suite</code></a>.
@@ -1248,7 +1298,7 @@ import Suite.autoTagClassAnnotations
  * reassigning instance <code>var</code>s or by changing the state of mutable objects held from instance <code>val</code>s (as in this example). If using
  * instance <code>var</code>s or mutable objects held from instance <code>val</code>s you wouldn't be able to run tests in parallel in the same instance
  * of the test class unless you synchronized access to the shared, mutable state. This is why ScalaTest's <code>ParallelTestExecution</code> trait extends
- * <code>OneInstancePerTest</code>. By running each test in its own instance of the class, each test has its own copy of the instance variables, so you
+ * <a href="OneInstancePerTest.html"><code>OneInstancePerTest</code></a>. By running each test in its own instance of the class, each test has its own copy of the instance variables, so you
  * don't need to synchronize. If you mixed <code>ParallelTestExecution</code> into the <code>ExampleSuite</code> above, the tests would run in parallel just fine
  * without any synchronization needed on the mutable <code>StringBuilder</code> and <code>ListBuffer[String]</code> objects.
  * </p>
