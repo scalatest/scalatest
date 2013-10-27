@@ -359,7 +359,8 @@ import Suite.autoTagClassAnnotations
  *
  * <pre class="stREPL">
  * scala&gt; new SetSpec execute
- * <span class="stGreen">A mutable Set
+ * <span class="stGreen">SetSpec:
+ * A mutable Set
  * - should allow an element to be added
  *   + Given an empty mutable Set 
  *   + When an element is added 
@@ -436,10 +437,73 @@ import Suite.autoTagClassAnnotations
  * <p>
  * Although all of ScalaTest's built-in reporters will display the markup text in some form,
  * the HTML reporter will format the markup information into HTML. Thus, the main purpose of <code>markup</code> is to
- * add descriptive text to HTML reports. Here's what the above <code>SetSpec</code> would look like in the HTML reporter:
+ * add nicely formatted text to HTML reports. Here's what the above <code>SetSpec</code> would look like in the HTML reporter:
  * </p>
  *
  * <img class="stScreenShot" src="../../lib/flatspec.gif">
+ *
+ * <a name="notifiersAlerters"></a><h2>Notifiers and alerters</h2></a>
+ *
+ * <p>
+ * ScalaTest records text passed to <code>info</code> and <code>markup</code> during tests, and sends the recorded text in the <code>recordedEvents</code> field of 
+ * test completion events like <code>TestSucceeded</code> and <code>TestFailed</code>. This allows string reporters (like the standard out reporter) to show
+ * <code>info</code> and <code>markup</code> text after the test name in a color determined by the outcome of the test. For example, if the test fails, string
+ * reporters will show the <code>info</code> and <code>markup</code> text will be shown in red. If a test succeeds, string reporters will show the <code>info</code>
+ * and <code>markup</code> text in green. While this approach helps the readability of reports, it means that you can't use <code>info</code> to get status
+ * updates from long running tests.
+ * </p>
+ *
+ * <p>
+ * To get immediate (<em>i.e.</em>, non-recorded) notifications from tests, you can use <code>note</code> (a <a href="Notifier.html"><code>Notifier</code></a>) and <code>alert</code>
+ * (an <a href="Alerter.html"><code>Alerter</code></a>). Here's an example showing the differences:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * package org.scalatest.examples.flatspec.note
+ *
+ * import collection.mutable
+ * import org.scalatest._
+ *
+ * class SetSpec extends FlatSpec {
+ *
+ *   "A mutable Set" should "allow an element to be added" in {
+ *
+ *     info("info is recorded")
+ *     markup("markup is recorded *also*")
+ *     note("notes are sent immediately")
+ *     alert("alerts are also sent immediately")
+ *
+ *     val set = mutable.Set.empty[String]
+ *     set += "clarity"
+ *     assert(set.size === 1)
+ *     assert(set.contains("clarity"))
+ *   }
+ * }
+ * </pre>
+ *
+ * <p>
+ * Because <code>note</code> and <code>alert</code> information is sent immediately, it will appear <em>before</em> the test name in string reporters, and its color will
+ * be unrelated to the ultimate outcome of the test: <code>note</code> text will always appear in green, <code>alert</code> text will always appear in yellow.
+ * Here's an example:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; new SetSpec execute
+ * <span class="stGreen">SetSpec:
+ * A mutable Set
+ *   + notes are sent immediately</span>
+ *   <span class="stYellow">+ alerts are also sent immediately</span>
+ * <span class="stGreen">- should allow an element to be added
+ *   + info is recorded 
+ *   + markup is recorded *also*</span>
+ * </pre>
+ *
+ * <p>
+ * In summary, use <code>info</code> and <code>markup</code> for text that should form part of the specification output. Use
+ * <code>note</code> and <code>alert</code> to send status notifications. (Because the HTML reporter is intended to produce a
+ * readable, printable specification, <code>info</code> and <code>markup</code> text will appear in the HTML report, but
+ * <code>note</code> and <code>alert</code> text will not.)
+ * </p>
  *
  * <a name="pendingTests"></a><h2>Pending tests</h2></a>
  *
