@@ -309,7 +309,7 @@ private[scalatest] class HtmlReporter(
                       NodeSeq.Empty
                   }
             
-                nodeSeq :: recordedEvents.map(processInfoMarkupProvided(_)).toList
+                nodeSeq :: recordedEvents.map(processInfoMarkupProvided(_, "test_passed")).toList
             
               case TestFailed(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, throwable, duration, formatter, location, rerunnable, payload, threadName, timeStamp) => 
 
@@ -317,7 +317,7 @@ private[scalatest] class HtmlReporter(
                 val elementId = generateElementId
                 val nodeSeq = testWithDetails(elementId, List(stringToPrint), message, throwable, getIndentLevel(formatter) + 1, "test_failed")            
             
-                nodeSeq :: recordedEvents.map(processInfoMarkupProvided(_)).toList
+                nodeSeq :: recordedEvents.map(processInfoMarkupProvided(_, "test_failed")).toList
             
               case TestIgnored(ordinal, suiteName, suiteId, suiteClassName, testName, testText, formatter, location, payload, threadName, timeStamp) => 
 
@@ -354,7 +354,7 @@ private[scalatest] class HtmlReporter(
                       NodeSeq.Empty
                   }
             
-                nodeSeq :: recordedEvents.map(processInfoMarkupProvided(_)).toList
+                nodeSeq :: recordedEvents.map(processInfoMarkupProvided(_, "test_pending")).toList
             
               case TestCanceled(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, throwable, duration, formatter, location, rerunner, payload, threadName, timeStamp) =>
 
@@ -362,13 +362,13 @@ private[scalatest] class HtmlReporter(
                 val elementId = generateElementId
                 val nodeSeq = testWithDetails(elementId, List(stringToPrint), message, throwable, getIndentLevel(formatter) + 1, "test_canceled")
             
-                nodeSeq :: recordedEvents.map(processInfoMarkupProvided(_)).toList
+                nodeSeq :: recordedEvents.map(processInfoMarkupProvided(_, "test_canceled")).toList
             
               case infoProvided: InfoProvided =>
-                processInfoMarkupProvided(infoProvided)
+                processInfoMarkupProvided(infoProvided, "info")
         
               case markupProvided: MarkupProvided => 
-                processInfoMarkupProvided(markupProvided)
+                processInfoMarkupProvided(markupProvided, "markup")
                 // TO CONTINUE: XML element must be last
             
               // Allow AlertProvided and NoteProvided to use this case, because we don't want that showing up in the HTML report.
@@ -403,8 +403,8 @@ private[scalatest] class HtmlReporter(
         { unparsedXml("hideOpenInNewTabIfRequired();") }
       </script>
     </html>
-        
-  private def processInfoMarkupProvided(event: Event) = {
+
+  private def processInfoMarkupProvided(event: Event, theClass: String) = {
     event match {
       case InfoProvided(ordinal, message, nameInfo, throwable, formatter, location, payload, threadName, timeStamp) =>
         val (suiteName, testName) =
@@ -415,7 +415,7 @@ private[scalatest] class HtmlReporter(
         val infoContent = stringsToPrintOnError("infoProvidedNote", "infoProvided", message, throwable, formatter, suiteName, testName, None)
             
         val elementId = generateElementId
-        test(elementId, List(infoContent), getIndentLevel(formatter) + 1, "info")
+        test(elementId, List(infoContent), getIndentLevel(formatter) + 1, theClass)
         
       case MarkupProvided(ordinal, text, nameInfo, formatter, location, payload, threadName, timeStamp) => 
         val (suiteName, testName) =
@@ -425,7 +425,7 @@ private[scalatest] class HtmlReporter(
           }
         
         val elementId = generateElementId
-        markup(elementId, text, getIndentLevel(formatter) + 1, "markup")
+        markup(elementId, text, getIndentLevel(formatter) + 1, theClass)
         
       case _ => NodeSeq.Empty
     }
@@ -885,10 +885,21 @@ private[scalatest] class HtmlReporter(
     </div>
   }
         
-  private def markup(elementId: String, text: String, indentLevel: Int, styleName: String) = 
+  private def markup(elementId: String, text: String, indentLevel: Int, styleName: String) = {
+    val htmlString = pegDown.markdownToHtml(text)
     <div id={ elementId } class={ styleName } style={ "margin-left: " + (specIndent * oneLess(indentLevel)) + "px;" }>
-       { XML.loadString(pegDown.markdownToHtml(text)) }
+       {
+         try XML.loadString(htmlString)
+         catch {
+           // I really want to catch a org.xml.sax.SAXParseException, but don't want to depend on the implementation of XML.loadString,
+           // which may change. If the exception isn't exactly actually a the parse exception, then retrying will likely fail with
+           // the same exception.
+           case e: Exception =>
+             XML.loadString("<div>" + htmlString + "</div>")
+         }
+       }
     </div>
+  }
        
   private def tagMapScript = 
     "tagMap = { \n" + 

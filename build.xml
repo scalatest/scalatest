@@ -1960,5 +1960,19 @@
       <src path="examples/src/main/java:examples/src/main/scala"/>
     </scalac>
   </target>
+    <target name="runexample" depends="compile,copyprops,taskdefscalatest,compile-examples"
+            description="run a specified example suite (use -Dclass=classname)">
+
+        <fail message="class not defined (use -Dclass=classname)"
+              unless="class" />
+
+        <scalatest runpath="${build}/examples;${classes}" haltonfailure="true">
+            <reporter type="graphic"/>
+            <!--<reporter type="file" filename="test.out" config="ND"/>-->
+            <reporter type="stdout" config="NI"/>
+            <reporter type="html" directory="target/html" config="D" />
+            <suite classname="${class}"/>
+        </scalatest>
+    </target>
 </project>
 
