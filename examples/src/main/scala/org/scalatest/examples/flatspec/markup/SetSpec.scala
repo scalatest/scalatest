@@ -22,26 +22,27 @@ class SetSpec extends FlatSpec with GivenWhenThen {
   
   markup { """
 
-A First Level Header
-====================
+Mutable Set
+-----------
 
-A Second Level Header
----------------------
+A set is a collection that contains no duplicate elements.
 
-Now is the time for all good men to come to
-the aid of their country. This is just a
-regular paragraph.
+To implement a concrete mutable set, you need to provide implementations
+of the following methods:
 
-The quick brown fox jumped over the lazy
-dog's back.
+    def contains(elem: A): Boolean
+    def iterator: Iterator[A]
+    def += (elem: A): this.type
+    def -= (elem: A): this.type
 
-### Header 3
+If you wish that methods like `take`,
+`drop`, `filter` return the same kind of set,
+you should also override:
 
-> This is a blockquote.
-> 
-> This is the second paragraph in the blockquote.
->
-> ## This is an H2 in a blockquote
+    def empty: This
+
+It is also good idea to override methods `foreach` and
+`size` for efficiency.
 
   """ }
 
@@ -58,65 +59,6 @@ dog's back.
     And("the Set should contain the added element")
     assert(set.contains("clarity"))
 
-    info("That's all folks!")
-
-    markup("except for this **bold** markup")
-  }
-  "A pending Set" should "allow an element to be added" in {
-    Given("an empty mutable Set")
-    val set = mutable.Set.empty[String]
-
-    When("an element is added")
-    set += "clarity"
-
-    Then("the Set should have size 1")
-    assert(set.size === 1)
-
-    And("the Set should contain the added element")
-    assert(set.contains("clarity"))
-
-    info("That's all folks!")
-
-    markup("except for this **bold** markup")
-
-    pending
-  }
-  "A canceled Set" should "allow an element to be added" in {
-    Given("an empty mutable Set")
-    val set = mutable.Set.empty[String]
-
-    When("an element is added")
-    set += "clarity"
-
-    Then("the Set should have size 1")
-    assert(set.size === 1)
-
-    And("the Set should contain the added element")
-    assert(set.contains("clarity"))
-
-    info("That's all folks!")
-
-    markup("except for this **bold** markup")
-
-    cancel("changed my mind")
-  }
-  "A failed Set" should "allow an element to be added" in {
-    Given("an empty mutable Set")
-    val set = mutable.Set.empty[String]
-
-    When("an element is added")
-    set += "clarity"
-
-    Then("the Set should have size 1")
-    assert(set.size === 1)
-
-    And("the Set should contain the added element")
-    assert(set.contains("clarity"))
-
-    info("That's all folks!")
-
-    markup("except for this **bold** markup")
-
-    fail("I meant to do that")
+    markup("This test finished with a **bold** statement!")
   }
 }

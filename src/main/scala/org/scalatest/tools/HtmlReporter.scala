@@ -885,9 +885,13 @@ private[scalatest] class HtmlReporter(
     </div>
   }
         
+  // Chee Seng, I changed oneLess to twoLess here, because markup should indent the same as info.
+  // I added the call to convertSingleParaToDefinition, so simple one-liner markup looks the same as an info.
+  // TODO: probably actually show the exception in the HTML report rather than blowing up the reporter, because that means
+  // the whole suite doesn't get recorded. May want to do this more generally though.
   private def markup(elementId: String, text: String, indentLevel: Int, styleName: String) = {
-    val htmlString = pegDown.markdownToHtml(text)
-    <div id={ elementId } class={ styleName } style={ "margin-left: " + (specIndent * oneLess(indentLevel)) + "px;" }>
+    val htmlString = HtmlReporter.convertSingleParaToDefinition(pegDown.markdownToHtml(text))
+    <div id={ elementId } class={ styleName } style={ "margin-left: " + (specIndent * twoLess(indentLevel)) + "px;" }>
        {
          try XML.loadString(htmlString)
          catch {
@@ -900,7 +904,7 @@ private[scalatest] class HtmlReporter(
        }
     </div>
   }
-       
+ 
   private def tagMapScript = 
     "tagMap = { \n" + 
       tagMap.map { case (elementId, bitSet) => "\"" + elementId + "\": " + bitSet }.mkString(", \n") + 
@@ -1081,4 +1085,11 @@ private[tools] object HtmlReporter {
   final val IGNORED_BIT = 4
   final val PENDING_BIT = 8
   final val CANCELED_BIT = 16
+
+  def convertSingleParaToDefinition(html: String): String = {
+    val firstOpenPara = html.indexOf("<p>")
+    if (firstOpenPara == 0 && html.indexOf("<p>", 1) == -1 && html.indexOf("</p>") == html.length - 4)
+      html.replace("<p>", "<dl>\n<dt>").replace("</p>", "</dt>\n</dl>")
+    else html
+  }
 }
