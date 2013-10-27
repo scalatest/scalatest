@@ -368,6 +368,79 @@ import Suite.autoTagClassAnnotations
  *   + That's all folks! </span>
  * </pre>
  *
+ * <a name="documenters"></a><h2>Documenters</h2></a>
+ *
+ * <p>
+ * <code>FlatSpec</code> also provides a <code>markup</code> method that returns a <a href="Documenter.html"><code>Documenter</code></a>, which allows you to send
+ * to the <code>Reporter</code> text formatted in <a href="http://daringfireball.net/projects/markdown/" target="_blank">Markdown syntax</a>.
+ * You can pass the extra information to the <code>Documenter</code> via its <code>apply</code> method.
+ * The <code>Documenter</code> will then pass the information to the <code>Reporter</code> via an <a href="events/MarkupProvided.html"><code>MarkupProvided</code></a> event.
+ * </p>
+ *
+ * <p>
+ * Here's an example <code>Suite</code> that uses <code>markup</code>:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * package org.scalatest.examples.flatspec.markup
+ *
+ * import collection.mutable
+ * import org.scalatest._
+ *
+ * class SetSpec extends FlatSpec with GivenWhenThen {
+ * 
+ *   markup { """
+ *
+ * Mutable Set
+ * -----------
+ *
+ * A set is a collection that contains no duplicate elements.
+ *
+ * To implement a concrete mutable set, you need to provide implementations
+ * of the following methods:
+ *
+ *     def contains(elem: A): Boolean
+ *     def iterator: Iterator[A]
+ *     def += (elem: A): this.type
+ *     def -= (elem: A): this.type
+ *
+ * If you wish that methods like `take`,
+ * `drop`, `filter` return the same kind of set,
+ * you should also override:
+ *
+ *     def empty: This
+ *
+ * It is also good idea to override methods `foreach` and
+ * `size` for efficiency.
+ *
+ *   """ }
+ *
+ *   "A mutable Set" should "allow an element to be added" in {
+ *     Given("an empty mutable Set")
+ *     val set = mutable.Set.empty[String]
+ *
+ *     When("an element is added")
+ *     set += "clarity"
+ *
+ *     Then("the Set should have size 1")
+ *     assert(set.size === 1)
+ *
+ *     And("the Set should contain the added element")
+ *     assert(set.contains("clarity"))
+ *
+ *     markup("This test finished with a **bold** statement!")
+ *   }
+ * }
+ * </pre>
+ *
+ * <p>
+ * Although all of ScalaTest's built-in reporters will display the markup text in some form,
+ * the HTML reporter will format the markup information into HTML. Thus, the main purpose of <code>markup</code> is to
+ * add descriptive text to HTML reports. Here's what the above <code>SetSpec</code> would look like in the HTML reporter:
+ * </p>
+ *
+ * <img class="stScreenShot" src="../../lib/flatspec.gif">
+ *
  * <a name="pendingTests"></a><h2>Pending tests</h2></a>
  *
  * <p>

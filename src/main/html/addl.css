@@ -84,3 +84,7 @@ td.usage {
   padding: 0.5em;
   border: 1px solid black;
 }
+
+img.stScreenShot {
+  border:1px solid #333; 
+}

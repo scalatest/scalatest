@@ -369,7 +369,7 @@ import Suite.autoTagClassAnnotations
  *
  * <p>
  * <em>Note: Class <code>WordSpec</code> is in part inspired by class <code>org.specs.Specification</code>, designed by
- * Eric Torreborre for the <a href="http://code.google.com/p/specs/" target="_blank"" target="_blank">specs framework</a>.</em>
+ * Eric Torreborre for the <a href="http://code.google.com/p/specs/" target="_blank">specs framework</a>.</em>
  * </p>
  *
  * <a name="ignoredTests"></a><h2>Ignored tests</h2></a>

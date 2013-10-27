@@ -1050,6 +1050,11 @@
       <antcall target="append-addl-css">
         <param name="docdir" value="${doc}"/>
       </antcall>
+
+      <!--
+       - Copies additional images used by style trait Scaladoc.
+       -->
+      <copy file="${html}/flatspec.gif" todir="${doc}/lib" />
     </target>
 
     <!--
@@ -1068,6 +1073,7 @@
       <delete file="${build}/template.css" />
       <delete file="${build}/addl.css" />
     </target>
+
 
     <target name="docutils" depends="compile-main">
       <delete dir="${build}/utilsdoc" />
