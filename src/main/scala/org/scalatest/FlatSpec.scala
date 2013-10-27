@@ -447,8 +447,8 @@ import Suite.autoTagClassAnnotations
  * <p>
  * ScalaTest records text passed to <code>info</code> and <code>markup</code> during tests, and sends the recorded text in the <code>recordedEvents</code> field of 
  * test completion events like <code>TestSucceeded</code> and <code>TestFailed</code>. This allows string reporters (like the standard out reporter) to show
- * <code>info</code> and <code>markup</code> text after the test name in a color determined by the outcome of the test. For example, if the test fails, string
- * reporters will show the <code>info</code> and <code>markup</code> text will be shown in red. If a test succeeds, string reporters will show the <code>info</code>
+ * <code>info</code> and <code>markup</code> text <em>after</em> the test name in a color determined by the outcome of the test. For example, if the test fails, string
+ * reporters will show the <code>info</code> and <code>markup</code> text in red. If a test succeeds, string reporters will show the <code>info</code>
  * and <code>markup</code> text in green. While this approach helps the readability of reports, it means that you can't use <code>info</code> to get status
  * updates from long running tests.
  * </p>
