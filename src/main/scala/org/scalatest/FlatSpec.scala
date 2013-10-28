@@ -379,7 +379,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <p>
- * Here's an example <code>Suite</code> that uses <code>markup</code>:
+ * Here's an example <code>FlatSpec</code> that uses <code>markup</code>:
  * </p>
  *
  * <pre class="stHighlight">
