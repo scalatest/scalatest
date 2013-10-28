@@ -1057,6 +1057,7 @@
       <copy file="${html}/flatSpec.gif" todir="${doc}/lib" />
       <copy file="${html}/featureSpec.gif" todir="${doc}/lib" />
       <copy file="${html}/freeSpec.gif" todir="${doc}/lib" />
+      <copy file="${html}/funSpec.gif" todir="${doc}/lib" />
     </target>
 
     <!--
