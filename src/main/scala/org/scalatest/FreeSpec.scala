@@ -479,6 +479,31 @@ import Suite.autoTagClassAnnotations
  * (an <a href="Alerter.html"><code>Alerter</code></a>). Here's an example showing the differences:
  * </p>
  *
+ * <pre class="stHighlight">
+ * package org.scalatest.examples.freespec.note
+ *
+ * import collection.mutable
+ * import org.scalatest._
+ *
+ * class SetSpec extends FreeSpec {
+ *
+ *   "A mutable Set" - {
+ *     "should allow an element to be added" in {
+ *
+ *       info("info is recorded")
+ *       markup("markup is *also* recorded")
+ *       note("notes are sent immediately")
+ *       alert("alerts are also sent immediately")
+ *
+ *       val set = mutable.Set.empty[String]
+ *       set += "clarity"
+ *       assert(set.size === 1)
+ *       assert(set.contains("clarity"))
+ *     }
+ *   }
+ * }
+ * </pre>
+ *
  * <pre class="stREPL">
  * scala&gt; new SetSpec execute
  * <span class="stGreen">SetSpec:
@@ -487,12 +512,7 @@ import Suite.autoTagClassAnnotations
  *    <span class="stYellow">+ alerts are also sent immediately</span>
  *  <span class="stGreen">- should allow an element to be added
  *    + info is recorded
- *    + markup is recorded *also*
- *    + Given an empty mutable Set
- *    + When an element is added
- *    + Then the Set should have size 1
- *    + And the Set should contain the added element
- *    + That's all folks!</span>
+ *    + markup is *also* recorded</span>
  * </pre>
  *
  * <p>

@@ -469,7 +469,7 @@ import Suite.autoTagClassAnnotations
  *   "A mutable Set" should "allow an element to be added" in {
  *
  *     info("info is recorded")
- *     markup("markup is recorded *also*")
+ *     markup("markup is *also* recorded")
  *     note("notes are sent immediately")
  *     alert("alerts are also sent immediately")
  *
@@ -495,7 +495,7 @@ import Suite.autoTagClassAnnotations
  *   <span class="stYellow">+ alerts are also sent immediately</span>
  * <span class="stGreen">- should allow an element to be added
  *   + info is recorded 
- *   + markup is recorded *also*</span>
+ *   + markup is *also* recorded</span>
  * </pre>
  *
  * <p>

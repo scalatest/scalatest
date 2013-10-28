@@ -23,7 +23,7 @@ class SetSpec extends FlatSpec {
   "A mutable Set" should "allow an element to be added" in {
 
     info("info is recorded")
-    markup("markup is recorded *also*")
+    markup("markup is *also* recorded")
     note("notes are sent immediately")
     alert("alerts are also sent immediately")
 

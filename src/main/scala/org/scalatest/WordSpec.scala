@@ -636,29 +636,20 @@ import Suite.autoTagClassAnnotations
  * import collection.mutable
  * import org.scalatest._
  *
- * class SetSpec extends WordSpec with GivenWhenThen {
+ * class SetSpec extends WordSpec {
  *
  *   "A mutable Set" should {
  *     "allow an element to be added" in {
  *
  *       info("info is recorded")
- *       markup("markup is recorded *also*")
+ *       markup("markup is *also* recorded")
  *       note("notes are sent immediately")
  *       alert("alerts are also sent immediately")
  *
- *       Given("an empty mutable Set")
  *       val set = mutable.Set.empty[String]
- *
- *       When("an element is added")
  *       set += "clarity"
- *
- *       Then("the Set should have size 1")
  *       assert(set.size === 1)
- *
- *       And("the Set should contain the added element")
  *       assert(set.contains("clarity"))
- *
- *       info("That's all folks!")
  *     }
  *   }
  * }
@@ -678,12 +669,7 @@ import Suite.autoTagClassAnnotations
  *   <span class="stYellow">+ alerts are also sent immediately</span>
  * <span class="stGreen">- should allow an element to be added
  *   + info is recorded
- *   + markup is recorded *also*
- *   + Given an empty mutable Set
- *   + When an element is added
- *   + Then the Set should have size 1
- *   + And the Set should contain the added element
- *   + That's all folks!</span>
+ *   + markup is *also* recorded</span>
  * </pre>
  *
  * <p>

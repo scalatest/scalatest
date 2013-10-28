@@ -377,7 +377,7 @@ import Suite.autoTagClassAnnotations
  * import prop._
  * import collection.mutable
  *
- * class SetSpec extends PropSpec with TableDrivenPropertyChecks with GivenWhenThen {
+ * class SetSpec extends PropSpec with TableDrivenPropertyChecks {
  *
  *   val examples =
  *     Table(
@@ -390,24 +390,15 @@ import Suite.autoTagClassAnnotations
  *   property("an element can be added to an empty mutable Set") {
  *
  *     info("info is recorded")
- *     markup("markup is recorded *also*")
+ *     markup("markup is *also* recorded")
  *     note("notes are sent immediately")
  *     alert("alerts are also sent immediately")
  *
  *     forAll(examples) { set =>
  *
- *       info("----------------")
- *
- *       Given("an empty mutable " + set.getClass.getSimpleName)
  *       assert(set.isEmpty)
- *
- *       When("an element is added")
  *       set += 99
- *
- *       Then("the Set should have size 1")
  *       assert(set.size === 1)
- *
- *       And("the Set should contain the added element")
  *       assert(set.contains(99))
  *     }
  *   }
@@ -427,22 +418,7 @@ import Suite.autoTagClassAnnotations
  *   <span class="stYellow">+ alerts are also sent immediately</span>
  * <span class="stGreen">- an element can be added to an empty mutable Set
  *   + info is recorded
- *   + markup is recorded *also*
- *   + ----------------
- *   + Given an empty mutable BitSet
- *   + When an element is added
- *   + Then the Set should have size 1
- *   + And the Set should contain the added element
- *   + ----------------
- *   + Given an empty mutable HashSet
- *   + When an element is added
- *   + Then the Set should have size 1
- *   + And the Set should contain the added element
- *   + ----------------
- *   + Given an empty mutable LinkedHashSet
- *   + When an element is added
- *   + Then the Set should have size 1
- *   + And the Set should contain the added element</span>
+ *   + markup is *also* recorded</span>
  * </pre>
  *
  * <p>

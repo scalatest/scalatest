@@ -1,5 +1,4 @@
-/*
- * Copyright 2001-2013 Artima, Inc.
+/* * Copyright 2001-2013 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,29 +17,20 @@ package org.scalatest.examples.funspec.note
 import collection.mutable
 import org.scalatest._
 
-class SetSpec extends FunSpec with GivenWhenThen {
+class SetSpec extends FunSpec {
   
   describe("A mutable Set") {
     it("should allow an element to be added") {
 
       info("info is recorded")
-      markup("markup is recorded *also*")
+      markup("markup is *also* recorded")
       note("notes are sent immediately")
       alert("alerts are also sent immediately")
 
-      Given("an empty mutable Set")
       val set = mutable.Set.empty[String]
-
-      When("an element is added")
       set += "clarity"
-
-      Then("the Set should have size 1")
       assert(set.size === 1)
-
-      And("the Set should contain the added element")
       assert(set.contains("clarity"))
-
-      info("That's all folks!")
     }
   }
 }
