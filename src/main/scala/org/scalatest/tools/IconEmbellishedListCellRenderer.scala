@@ -94,7 +94,7 @@ private[tools] class IconEmbellishedListCellRenderer extends EventHolderListCell
     val runAbortedIcon = redImageIcon
     val runCompletedIcon = grayImageIcon
     val alertProvidedIcon = yellowImageIcon
-    val updateProvidedIcon = greenImageIcon
+    val noteProvidedIcon = greenImageIcon
 
     val runStartingSelIcon = graySelImageIcon
     val testStartingSelIcon = purpleSelImageIcon
@@ -114,7 +114,7 @@ private[tools] class IconEmbellishedListCellRenderer extends EventHolderListCell
     val runAbortedSelIcon = redSelImageIcon
     val runCompletedSelIcon = graySelImageIcon
     val alertProvidedSelIcon = yellowSelImageIcon
-    val updateProvidedSelIcon = greenSelImageIcon
+    val noteProvidedSelIcon = greenSelImageIcon
   }
 
   private def setRendererFont(renderer: JLabel, color: Color) {
@@ -256,9 +256,9 @@ private[tools] class IconEmbellishedListCellRenderer extends EventHolderListCell
       }
       case _: NoteProvided => { // Shouldn't get here because not registering markup events
         if (isSelected)
-          renderer.setIcon(Icons.updateProvidedSelIcon)
+          renderer.setIcon(Icons.noteProvidedSelIcon)
         else
-          renderer.setIcon(Icons.updateProvidedIcon)
+          renderer.setIcon(Icons.noteProvidedIcon)
       }
     }
 

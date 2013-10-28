@@ -202,7 +202,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModResou
           throw new NullPointerException
         if (payload == null)
           throw new NullPointerException
-        println(Resources("updateProvided", message))
+        println(Resources("noteProvided", message))
         payload match {
           case Some(p) => println(Resources("payloadToString", payload.get.toString))
           case _ => 
