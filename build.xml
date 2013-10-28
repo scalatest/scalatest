@@ -1060,6 +1060,7 @@
       <copy file="${html}/funSpec.gif" todir="${doc}/lib" />
       <copy file="${html}/funSuite.gif" todir="${doc}/lib" />
       <copy file="${html}/propSpec.gif" todir="${doc}/lib" />
+      <copy file="${html}/spec.gif" todir="${doc}/lib" />
     </target>
 
     <!--
