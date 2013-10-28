@@ -379,7 +379,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <p>
- * Here's an example <code>Suite</code> that uses <code>markup</code>:
+ * Here's an example <code>FlatSpec</code> that uses <code>markup</code>:
  * </p>
  *
  * <pre class="stHighlight">
@@ -440,7 +440,7 @@ import Suite.autoTagClassAnnotations
  * add nicely formatted text to HTML reports. Here's what the above <code>SetSpec</code> would look like in the HTML reporter:
  * </p>
  *
- * <img class="stScreenShot" src="../../lib/flatspec.gif">
+ * <img class="stScreenShot" src="../../lib/flatSpec.gif">
  *
  * <a name="notifiersAlerters"></a><h2>Notifiers and alerters</h2></a>
  *

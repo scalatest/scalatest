@@ -13,39 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.examples.propspec.info
+package org.scalatest.examples.funspec.note
 
-import org.scalatest._
-import prop._
 import collection.mutable
+import org.scalatest._
 
-class SetSpec extends PropSpec with TableDrivenPropertyChecks with GivenWhenThen {
+class SetSpec extends FunSpec with GivenWhenThen {
+  
+  describe("A mutable Set") {
+    it("should allow an element to be added") {
 
-  val examples =
-    Table(
-      "set",
-      mutable.BitSet.empty,
-      mutable.HashSet.empty[Int],
-      mutable.LinkedHashSet.empty[Int]
-    )
+      info("info is recorded")
+      markup("markup is recorded *also*")
+      note("notes are sent immediately")
+      alert("alerts are also sent immediately")
 
-  property("an element can be added to an empty mutable Set") {
-
-    forAll(examples) { set =>
-
-      info("----------------")
-
-      Given("an empty mutable " + set.getClass.getSimpleName)
-      assert(set.isEmpty)
+      Given("an empty mutable Set")
+      val set = mutable.Set.empty[String]
 
       When("an element is added")
-      set += 99
+      set += "clarity"
 
       Then("the Set should have size 1")
       assert(set.size === 1)
 
       And("the Set should contain the added element")
-      assert(set.contains(99))
+      assert(set.contains("clarity"))
+
+      info("That's all folks!")
     }
   }
 }

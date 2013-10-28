@@ -13,13 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.examples.propspec.info
+package org.scalatest.examples.propspec.markup
 
 import org.scalatest._
 import prop._
 import collection.mutable
 
 class SetSpec extends PropSpec with TableDrivenPropertyChecks with GivenWhenThen {
+
+  markup { """
+
+Mutable Set
+-----------
+
+A set is a collection that contains no duplicate elements.
+
+To implement a concrete mutable set, you need to provide implementations
+of the following methods:
+
+    def contains(elem: A): Boolean
+    def iterator: Iterator[A]
+    def += (elem: A): this.type
+    def -= (elem: A): this.type
+
+If you wish that methods like `take`,
+`drop`, `filter` return the same kind of set,
+you should also override:
+
+    def empty: This
+
+It is also good idea to override methods `foreach` and
+`size` for efficiency.
+
+  """ }
 
   val examples =
     Table(
@@ -47,5 +73,7 @@ class SetSpec extends PropSpec with TableDrivenPropertyChecks with GivenWhenThen
       And("the Set should contain the added element")
       assert(set.contains(99))
     }
+
+    markup("This test finished with a **bold** statement!")
   }
 }

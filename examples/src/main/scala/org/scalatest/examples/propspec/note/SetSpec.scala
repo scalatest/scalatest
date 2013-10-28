@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.examples.propspec.info
+package org.scalatest.examples.propspec.note
 
 import org.scalatest._
 import prop._
@@ -30,6 +30,11 @@ class SetSpec extends PropSpec with TableDrivenPropertyChecks with GivenWhenThen
     )
 
   property("an element can be added to an empty mutable Set") {
+
+    info("info is recorded")
+    markup("markup is recorded *also*")
+    note("notes are sent immediately")
+    alert("alerts are also sent immediately")
 
     forAll(examples) { set =>
 
