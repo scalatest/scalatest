@@ -1054,7 +1054,7 @@
       <!--
        - Copies additional images used by style trait Scaladoc.
        -->
-      <copy file="${html}/flatspec.gif" todir="${doc}/lib" />
+      <copy file="${html}/flatSpec.gif" todir="${doc}/lib" />
     </target>
 
     <!--
