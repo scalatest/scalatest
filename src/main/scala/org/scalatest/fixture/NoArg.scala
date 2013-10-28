@@ -142,14 +142,14 @@ trait NoArg extends DelayedInit with (() => Unit) {
   /**
    * Saves the body of the constructor, passed as <code>body</code>, for later execution by <code>apply</code>.
    */
-  final def delayedInit(body: => Unit) {
+  final def delayedInit(body: => Unit): Unit = {
     theBody = (() => body)
   }
 
   /**
    * Executes the body of the constructor that was passed to <code>delayedInit</code>.
    */
-  def apply() { theBody() }
+  def apply(): Unit = { if (theBody != null) theBody() }
 
   /**
    * This method exists to cause a compile-time type error if someone accidentally 

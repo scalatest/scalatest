@@ -19,7 +19,7 @@ import org.scalatest._
 import SharedHelpers._
 import NoArgSpec.invokedCount
 
-class NoArgSpec extends org.scalatest.Spec {
+class NoArgSpec extends org.scalatest.Spec with Matchers {
   object `A NoArg` {
     def `should use the init function as the implementation of its apply method` {
       invokedCount = 0
@@ -27,13 +27,18 @@ class NoArgSpec extends org.scalatest.Spec {
         invokedCount += 1
       }
       val noArg = new ActorSys
-      assert(invokedCount === 0)
+      invokedCount should === (0)
       noArg()
-      assert(invokedCount === 1)
+      invokedCount should === (1)
       noArg()
-      assert(invokedCount === 2)
+      invokedCount should === (2)
       noArg()
-      assert(invokedCount === 3)
+      invokedCount should === (3)
+    }
+    def `should gracefully handle an empty constructor` {
+      class EmptyOne extends NoArg
+      val emptyOne = new EmptyOne
+      noException should be thrownBy emptyOne()
     }
   }
 }
