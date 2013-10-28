@@ -210,7 +210,7 @@ import Suite.autoTagClassAnnotations
  * import prop._
  * import collection.mutable
  * 
- * class SetSuite extends PropSpec with TableDrivenPropertyChecks with GivenWhenThen {
+ * class SetSpec extends PropSpec with TableDrivenPropertyChecks with GivenWhenThen {
  * 
  *   val examples =
  *     Table(
@@ -246,8 +246,8 @@ import Suite.autoTagClassAnnotations
  * If you run this <code>PropSpec</code> from the interpreter, you will see the following output:
  *
  * <pre class="stREPL">
- * scala&gt; new SetSuite execute
- * <span class="stGreen">SetSuite:
+ * scala&gt; new SetSpec execute
+ * <span class="stGreen">SetSpec:
  * - an element can be added to an empty mutable Set
  *   + ---------------- 
  *   + Given an empty mutable BitSet 

@@ -19,7 +19,7 @@ import org.scalatest._
 import prop._
 import collection.mutable
 
-class SetSuite extends PropSpec with TableDrivenPropertyChecks with GivenWhenThen {
+class SetSpec extends PropSpec with TableDrivenPropertyChecks with GivenWhenThen {
 
   val examples =
     Table(
