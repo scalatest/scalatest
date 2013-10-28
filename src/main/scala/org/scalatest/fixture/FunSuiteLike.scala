@@ -54,7 +54,7 @@ trait FunSuiteLike extends Suite with Informing with Notifying with Alerting wit
    * will register the passed string for forwarding later during test execution. If invoked from inside a scope,
    * it will forward the information to the current reporter immediately.  If invoked from inside a test function,
    * it will record the information and forward it to the current reporter only after the test completed, as <code>recordedEvents</code>
-   * of the test completed event, such as <code>TestSucceeded</code>. If invoked at any other time, it will throw an exception.
+   * of the test completed event, such as <code>TestSucceeded</code>. If invoked at any other time, it will print to the standard output.
    * This method can be called safely by any thread.
    */
   protected def info: Informer = atomicInformer.get
@@ -65,7 +65,7 @@ trait FunSuiteLike extends Suite with Informing with Notifying with Alerting wit
    * will register the passed string for forwarding later during test execution. If invoked while this
    * <code>fixture.FunSuite</code> is being executed, such as from inside a test function, it will forward the information to
    * the current reporter immediately. If invoked at any other time, it will
-   * throw an exception. This method can be called safely by any thread.
+   * print to the standard output. This method can be called safely by any thread.
    */
   protected def note: Notifier = atomicNotifier.get
 
@@ -75,7 +75,7 @@ trait FunSuiteLike extends Suite with Informing with Notifying with Alerting wit
    * will register the passed string for forwarding later during test execution. If invoked while this
    * <code>fixture.FunSuite</code> is being executed, such as from inside a test function, it will forward the information to
    * the current reporter immediately. If invoked at any other time, it will
-   * throw an exception. This method can be called safely by any thread.
+   * print to the standard output. This method can be called safely by any thread.
    */
   protected def alert: Alerter = atomicAlerter.get
 
@@ -85,7 +85,7 @@ trait FunSuiteLike extends Suite with Informing with Notifying with Alerting wit
    * will register the passed string for forwarding later during test execution. If invoked from inside a scope,
    * it will forward the information to the current reporter immediately.  If invoked from inside a test function,
    * it will record the information and forward it to the current reporter only after the test completed, as <code>recordedEvents</code>
-   * of the test completed event, such as <code>TestSucceeded</code>. If invoked at any other time, it will throw an exception.
+   * of the test completed event, such as <code>TestSucceeded</code>. If invoked at any other time, it will print to the standard output.
    * This method can be called safely by any thread.
    */
   protected def markup: Documenter = atomicDocumenter.get
