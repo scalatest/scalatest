@@ -95,7 +95,7 @@ import org.scalatest.words.DefinedWord
  * 
  * <p>
  * You might prefer 
- * to create a * custom <code>Matcher[java.io.File]</code>
+ * to create a custom <code>Matcher[java.io.File]</code>
  * named <code>endWithExtension</code>, so you could write expressions like:
  * </p>
  *

@@ -78,6 +78,41 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * This <code>TestFailedException</code> will cause the test to fail.
  * </p>
  * 
+ * <p>
+ * Here is a table of contents for this documentation:
+ * </p>
+ *
+ * <ul>
+ * <li><a href="#matchersMigration">Matchers migration in ScalaTest 2.0</a></li>
+ * <li><a href="#checkingEqualityWithMatchers">Checking equality with matchers</a></li>
+ * <li><a href="#checkingSizeAndLength">Checking size and length</a></li>
+ * <li><a href="#checkingStrings">Checking strings</a></li>
+ * <li><a href="#greaterAndLessThan">Greater and less than</a></li>
+ * <li><a href="#checkingBooleanPropertiesWithBe">Checking <code>Boolean</code> properties with <code>be</code></a></li>
+ * <li><a href="#usingCustomBeMatchers">Using custom <code>BeMatchers</code></a></li>
+ * <li><a href="#checkingObjectIdentity">Checking object identity</a></li>
+ * <li><a href="#checkingAnObjectsClass">Checking an object's class</a></li>
+ * <li><a href="#checkingNumbersAgainstARange">Checking numbers against a range</a></li>
+ * <li><a href="#checkingForEmptiness">Checking for emptiness</a></li>
+ * <li><a href="#workingWithContainers">Working with "containers"</a></li>
+ * <li><a href="#workingWithAggregations">Working with "aggregations"</a></li>
+ * <li><a href="#workingWithSequences">Working with "sequences"</a></li>
+ * <li><a href="#workingWithIterators">Working with iterators</a></li>
+ * <li><a href="#inspectorShorthands">Inspector shorthands</a></li>
+ * <li><a href="#singleElementCollections">Single-element collections</a></li>
+ * <li><a href="#javaCollectionsAndMaps">Java collections and maps</a></li>
+ * <li><a href="#beAsAnEqualityComparison">Be as an equality comparison</a></li>
+ * <li><a href="#beingNegative">Being negative</a></li>
+ * <li><a href="#logicalExpressions">Logical expressions with <code>and</code> and <code>or</code></a></li>
+ * <li><a href="#workingWithOptions">Working with <code>Option</code>s</a></li>
+ * <li><a href="#checkingArbitraryProperties">Checking arbitrary properties with <code>have</code></a></li>
+ * <li><a href="#lengthSizeHavePropertyMatchers">Using <code>length</code> and <code>size</code> with <code>HavePropertyMatcher</code>s</a></li>
+ * <li><a href="#usingCustomMatchers">Using custom matchers</a></li>
+ * <li><a href="#otherWays">Other ways to create matchers</a></li>
+ * <li><a href="#checkingForExpectedExceptions">Checking for expected exceptions</a></li>
+ * <li><a href="#thosePeskyParens">Those pesky parens</a></li>
+ * </ul>
+ * 
  * <a name="matchersMigration"></a>
  * <h2>Matchers migration in ScalaTest 2.0</h2>
  *
@@ -279,6 +314,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * the object on which <code>should</code> is being invoked has the appropriate structure.)
  * </p>
  *
+ * <a name="checkingStrings"></a>
  * <h2>Checking strings</h2>
  *
  * <p>
@@ -326,6 +362,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * "abbcc" should fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "cc"))
  * </pre>
  * 
+ * <a name="greaterAndLessThan"></a>
  * <h2>Greater and less than</h2>
  * <p>
  * You can check whether any type for which an implicit <code>Ordering[T]</code> is available
@@ -339,6 +376,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * one should be &gt;= 0
  * </pre>
  *
+ * <a name="checkingBooleanPropertiesWithBe"></a>
  * <h2>Checking <code>Boolean</code> properties with <code>be</code></h2>
  * 
  * <p>
@@ -412,6 +450,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * See the documentation for <a href="matchers/BePropertyMatcher.html"><code>BePropertyMatcher</code></a> for more information.
  * </p>
  *
+ * <a name="usingCustomBeMatchers"></a>
  * <h2>Using custom <code>BeMatchers</code></h2>
  *
  * If you want to create a new way of using <code>be</code>, which doesn't map to an actual property on the
@@ -439,6 +478,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * ref1 should be theSameInstanceAs ref2
  * </pre>
  * 
+ * <a name="checkingAnObjectsClass"></a>
  * <h2>Checking an object's class</h2>
  * 
  * <p>
@@ -462,6 +502,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * result shouldBe a [List[Fruit]] // discouraged
  * </pre>
  * 
+ * <a name="checkingNumbersAgainstARange"></a>
  * <h2>Checking numbers against a range</h2>
  * 
  * <p>
@@ -491,6 +532,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * seven shouldBe 6 +- 2
  * </pre>
  * 
+ * <a name="checkingForEmptiness"></a>
  * <h2>Checking for emptiness</h2>
  *
  * <p>
@@ -530,7 +572,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * </pre>
  * 
  * <a name="workingWithContainers"></a>
- * <h3>Working with "containers"</h3>
+ * <h2>Working with "containers"</h2>
  *
  * <p>
  * You can check whether a collection contains a particular element like this:
@@ -653,7 +695,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * </pre>
  *
  * <a name="workingWithAggregations"></a>
- * <h3>Working with "aggregations"</h3>
+ * <h2>Working with "aggregations"</h2>
  *
  * <p>
  * As mentioned, the "<code>contain</code>,"  "<code>contain</code> <code>oneOf</code>," and "<code>contain</code> <code>noneOf</code>" syntax requires a
@@ -752,7 +794,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * </pre>
  * 
  * <a name="workingWithSequences"></a>
- * <h3>Working with "sequences"</h3>
+ * <h2>Working with "sequences"</h2>
  *
  * <p>
  * The rest of the <code>contain</code> syntax, which
@@ -821,7 +863,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * </p>
  *
  * <a name="workingWithIterators"></a>
- * <h3>Working with iterators</h3>
+ * <h2>Working with iterators</h2>
  *
  * <p>
  * Althought it seems desireable to provide similar matcher syntax for Scala and Java iterators to that provided for sequences like
@@ -855,7 +897,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * </p>
  *
  * <a name="inspectorShorthands"></a>
- * <h3>Inspector shorthands</h3>
+ * <h2>Inspector shorthands</h2>
  *
  * <p>
  * You can use the <a href="Inspectors.html"><code>Inspectors</code></a> syntax with matchers as well as assertions. If you have a multi-dimensional collection, such as a
@@ -948,7 +990,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * </p>
  *
  * <a name="singleElementCollections"></a>
- * <h3>Single-element collections</h3>
+ * <h2>Single-element collections</h2>
  *
  * <p>
  * To assert both that a collection contains just one "lone" element as well as something else about that element, you can use
@@ -965,7 +1007,8 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * is available, where <code>E</code> is the type returned by the <code>loneElement</code> invocation. 
  * </p>
  *
- * <h3>Java collections and maps</h3>
+ * <a name="javaCollectionsAndMaps"></a>
+ * <h2>Java collections and maps</h2>
  * 
  * <p>
  * You can use similar syntax on Java collections (<code>java.util.Collection</code>) and maps (<code>java.util.Map</code>).
@@ -1029,6 +1072,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * javaMap should contain value "Howdy"
  * </pre>
  * 
+ * <a name="beAsAnEqualityComparison"></a>
  * <h2><code>be</code> as an equality comparison</h2>
  * 
  * <p>
@@ -1095,6 +1139,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * Some(2) was not equal to Some(1)
  * </pre>
  *
+ * <a name="beingNegative"></a>
  * <h2>Being negative</h2>
  * 
  * <p>
@@ -1109,6 +1154,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * string should not startWith ("Hello")
  * </pre>
  * 
+ * <a name="logicalExpressions"></a>
  * <h2>Logical expressions with <code>and</code> and <code>or</code></h2>
  * 
  * <p>
@@ -1222,6 +1268,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * traversable should (contain (7) or (contain (8) and have size (9)))
  * </pre>
  * 
+ * <a name="workingWithOptions"></a>
  * <h2>Working with <code>Option</code>s</h2>
  * 
  * <p>
@@ -1264,6 +1311,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * option.value should be &lt; (7)
  * </pre>
  * 
+ * <a name="checkingArbitraryProperties"></a>
  * <h2>Checking arbitrary properties with <code>have</code></h2>
  * 
  * <p>
@@ -1352,7 +1400,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * </p>
  *
  * <a name="lengthSizeHavePropertyMatchers"></a>
- * <h3>Using <code>length</code> and <code>size</code> with <code>HavePropertyMatcher</code>s</h3>
+ * <h2>Using <code>length</code> and <code>size</code> with <code>HavePropertyMatcher</code>s</h2>
  *
  * <p>
  * If you want to use <code>length</code> or <code>size</code> syntax with your own custom <code>HavePropertyMatcher</code>s, you 
@@ -1370,7 +1418,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * <p>
  * Prior to ScalaTest 2.0, &ldquo;<code>length</code> <code>(22)</code>&rdquo; yielded a <code>HavePropertyMatcher[Any, Int]</code> that used reflection to dynamically look
  * for a <code>length</code> field or <code>getLength</code> method. In ScalaTest 2.0, &ldquo;<code>length</code> <code>(22)</code>&rdquo; yields a
- * <code>MatcherFactory1[Any, Length]</code>, so it is no longer a <code>HavePropertyMatcher</code>. The <code>(of [&lt;type&gt;]}</code> syntax converts the
+ * <code>MatcherFactory1[Any, Length]</code>, so it is no longer a <code>HavePropertyMatcher</code>. The <code>(of [&lt;type&gt;])</code> syntax converts the
  * the <code>MatcherFactory1[Any, Length]</code> to a <code>HavePropertyMatcher[&lt;type&gt;, Int]</code>.
  * </p>
  *
@@ -1407,7 +1455,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * <code>Matcher</code>s, please see the documentation for the <a href="matchers/Matcher.html"><code>Matcher</code></a> trait.
  * </p>
  *
- * <a name="expectedExceptions">
+ * <a name="expectedExceptions"></a>
  * <h2>Checking for expected exceptions</h2>
  *
  * <p>
@@ -1455,6 +1503,14 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * </pre>
  *
  * <p>
+ * You can also state that no exception should be thrown by some code, like this:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * noException should be thrownBy 0 / 1
+ * </pre>
+ * 
+ * <p>
  * Note: the following syntax from ScalaTest 1.x has been deprecated:
  * </p>
  *
@@ -1468,6 +1524,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * a corresponding use of the syntax described previously in this section.
  * <p>
  *
+ * <a name="thosePeskyParens"></a>
  * <h2>Those pesky parens</h2>
  * 
  * <p>
