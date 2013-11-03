@@ -3,6 +3,6 @@ many enhancements, we kept a close eye on compatibility with existing ScalaTest 
 to preserve what people liked about ScalaTest 1.x: that it is simple, the code is clean and clear, it's fully
 documented, and because of very thorough testing, it "just works."
 
-For the whole story, see the release notes here: http://scalatest.org/release_notes/2.0
+For the whole story, see the release notes here: [http://scalatest.org/release_notes/2.0](http://scalatest.org/release_notes/2.0)
 
 
