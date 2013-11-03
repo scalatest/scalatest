@@ -204,7 +204,8 @@ private[tools] case class SuiteParam(className: String, testNames: Array[String]
  * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-e<em>[NCXEHLOPQMDWSFU]</em></code></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">select the standard error reporter</td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-e</code></td></tr>
  * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-C<em>[NCXEHLOPQMD] &lt;reporter class&gt;</em></code></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">select a custom reporter</td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-C com.company.project.BarReporter</code></td></tr>
  * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-M <em>&lt;file name&gt;</em></code></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">memorize failed and canceled tests in a file, so they can be rerun with -A (again)</td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-M rerun.txt</code></td></tr>
- * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-A <em>&lt;file name&gt;</em></code></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">used in conjunction with -M (momento) to select previously failed and canceled tests to rerun again</td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-A rerun.txt</code></td></tr>
+ * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-A <em>&lt;file name&gt;</em></code></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">used in conjunction with -M (momento) to select previously failed<br/>and canceled tests to rerun again</td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-A rerun.txt</code></td></tr>
+ * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-W <em>&lt;delay&gt;</em> <em>&lt;period&gt;</em></code></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">requests <a href="#slowpokeNotifications">notifications of <em>slowpoke</em> tests</a>, tests that have been running<br/>longer than <em>delay</em> seconds, every <em>period</em> seconds.</td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-W 60 60</code></td></tr>
  * </table>
  *
  * <p>
@@ -734,6 +735,29 @@ private[tools] case class SuiteParam(className: String, testNames: Array[String]
  * -A failed-canceled.txt
  * </pre>
  *
+ * <a name="slowpokeNotifications"> </a>
+ * <h2>Slowpoke notifications</h2>
+ *
+ * <p>
+ * You can request to recieve periodic notifications of <em>slowpokes</em>, tests that have been running longer than a given amount of time, specified in
+ * seconds by the first integer after <code>-W</code>, the <em>delay</em>.
+ * You specify the period between slowpoke notifications in seconds with the second integer after <code>-W</code>, the <em>period</em>. Thus to receive
+ * notifications very minute of tests that have been running longer than two minutes, you'd use:
+ * </p>
+ * 
+ * <pre class="stGray">
+ * <code>-W 120 60</code>
+ * </pre>
+ *
+ * <p>
+ * Slowpoke notifications will be sent via <a href="../events/AlertProvided.html"><code>AlertProvided</code></a> events. The standard out reporter, for example, 
+ * will report such notifications like:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * <span class="stYellow">*** Test still running after 2 minutes, 13 seconds: suite name: ExampleSpec, test name: An egg timer should take 10 minutes.</span>
+ * </pre>
+ *
  * @author Bill Venners
  * @author George Berger
  * @author Josh Cough
@@ -743,7 +767,7 @@ object Runner {
 
   private val RUNNER_JFRAME_START_X: Int = 150
   private val RUNNER_JFRAME_START_Y: Int = 100
-  
+
   private[scalatest] val SELECTED_TAG = "org.scalatest.Selected"
   private[scalatest] val CHOSEN_STYLES = "org.scalatest.ChosenStyles"
   
@@ -2578,7 +2602,7 @@ object Runner {
   // -M option is specified to record failed/canceled/aborted
   // tests so they can be run again later.
   //
-  def againSuites(fileNames: List[String]): List[SuiteParam] =
+  private[tools] def againSuites(fileNames: List[String]): List[SuiteParam] =
     for {
       fileName <- fileNames
       memento <- Memento.readFromFile(fileName)

@@ -33,7 +33,6 @@ import java.lang.annotation.Target;
  * <p>
  * This annotation is used to enable different styles of testing, including both native ScalaTest styles and custom user-created styles, to
  * have rich IDE support. The "Finder API" is released separately from ScalaTest proper, because it is only used by tools such as IDEs.
- * Documentation on the finder API itself will appear later, as we get closer to the 2.0 final release.
  * </p>
  */
 @Retention(RetentionPolicy.RUNTIME)

@@ -37,6 +37,16 @@ pre.stHighlighted {
   text-align: left;
 }
 
+pre.stGray {
+  font-family: "Lucida Console", Monaco, monospace;
+  font-size: 95%;
+  line-height: 110%;
+  padding: 10px;
+  background-color: #ecedec;
+  color: black;
+  text-align: left;
+}
+
 .stType {
   color: #418da7;
 }
