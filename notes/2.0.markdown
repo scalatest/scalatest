@@ -1,8 +1,6 @@
-ScalaTest 2.0 is a major upgrade to ScalaTest, the culmination of over two years of effort. Although it includes
-many enhancements, we kept a close eye on compatibility with existing ScalaTest 1.x code. We also tried hard
-to preserve what people liked about ScalaTest 1.x: that it is simple, the code is clean and clear, it's fully
-documented, and because of very thorough testing, it "just works."
+***ScalaTest 2.0*** is a major upgrade to ScalaTest, the culmination of over two years of effort focused on
+better tools support, DSL enhancements, and more.
+***ScalaUtils 2.0*** is a related library of utilities that you can use in your production code.
 
-For the whole story, see the release notes here: [http://scalatest.org/release_notes/2.0](http://scalatest.org/release_notes/2.0)
-
+For the full story on ScalaTest and ScalaUtils 2.0, see the release notes here: [http://scalatest.org/release_notes/2.0](http://scalatest.org/release_notes/2.0)
 
