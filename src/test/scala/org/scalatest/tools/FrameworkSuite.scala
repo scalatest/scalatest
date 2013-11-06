@@ -1213,77 +1213,77 @@ class FrameworkSuite extends FunSuite {
     val iae = intercept[IllegalArgumentException] {
       framework.runner(Array("-s", "org.scalatest.tools.scalasbt.SampleSuite"), Array.empty, testClassLoader)
     }
-    assert(iae.getMessage === "-s (suite) is not supported when runs in SBT, please use SBT's test-only instead.")
+    assert(iae.getMessage === "Specifying a suite (-s <suite>) is not supported when running ScalaTest from sbt; Please use sbt's test-only instead.")
   }
   
   test("Framework.runner should throw IllegalArgumentException when -j is passed in") {
     val iae = intercept[IllegalArgumentException] {
       framework.runner(Array("-j", "org.scalatest.tools.scalasbt.SampleJUnitSuite"), Array.empty, testClassLoader)
     }
-    assert(iae.getMessage === "-j (junit) is not supported when runs in SBT.")
+    assert(iae.getMessage === "Running JUnit tests (-j <junit>) is not supported when running ScalaTest from sbt.")
   }
   
   test("Framework.runner should throw IllegalArgumentException when -b is passed in") {
     val iae = intercept[IllegalArgumentException] {
       framework.runner(Array("-b", "org.scalatest.tools.scalasbt.SampleSuite"), Array.empty, testClassLoader)
     }
-    assert(iae.getMessage === "-b (testng) is not supported when runs in SBT.")
+    assert(iae.getMessage === "Running TestNG tests (-b <testng>) is not supported when running ScalaTest from sbt.")
   }
   
   test("Framework.runner should throw IllegalArgumentException when -c is passed in") {
     val iae = intercept[IllegalArgumentException] {
       framework.runner(Array("-c"), Array.empty, testClassLoader)
     }
-    assert(iae.getMessage === "-c, -P (concurrent) is not supported when runs in SBT, please use SBT parallel configuration instead.")
+    assert(iae.getMessage === "-c, -P <numthreads> is not supported when running ScalaTest from sbt, please use sbt parallel configuration instead.")
   }
   
   test("Framework.runner should throw IllegalArgumentException when -P is passed in") {
     val iae = intercept[IllegalArgumentException] {
       framework.runner(Array("-P"), Array.empty, testClassLoader)
     }
-    assert(iae.getMessage === "-c, -P (concurrent) is not supported when runs in SBT, please use SBT parallel configuration instead.")
+    assert(iae.getMessage === "-c, -P <numthreads> is not supported when running ScalaTest from sbt, please use sbt parallel configuration instead.")
   }
   
   test("Framework.runner should throw IllegalArgumentException when -PS is passed in") {
     val iae = intercept[IllegalArgumentException] {
       framework.runner(Array("-PS"), Array.empty, testClassLoader)
     }
-    assert(iae.getMessage === "-c, -P (concurrent) is not supported when runs in SBT, please use SBT parallel configuration instead.")
+    assert(iae.getMessage === "-c, -P <numthreads> is not supported when running ScalaTest from sbt, please use sbt parallel configuration instead.")
   }
   
   test("Framework.runner should throw IllegalArgumentException when -R is passed in") {
     val iae = intercept[IllegalArgumentException] {
       framework.runner(Array("-R"), Array.empty, testClassLoader)
     }
-    assert(iae.getMessage === "-p, -R (runpath) is not supported when runs in SBT.")
+    assert(iae.getMessage === "Specifying a runpath (-p, -R <runpath>) is not supported when running ScalaTest from sbt.")
   }
   
   test("Framework.runner should throw IllegalArgumentException when -p is passed in") {
     val iae = intercept[IllegalArgumentException] {
       framework.runner(Array("-p"), Array.empty, testClassLoader)
     }
-    assert(iae.getMessage === "-p, -R (runpath) is not supported when runs in SBT.")
+    assert(iae.getMessage === "Specifying a runpath (-p, -R <runpath>) is not supported when running ScalaTest from sbt.")
   }
   
   test("Framework.runner should throw IllegalArgumentException when -A is passed in") {
     val iae = intercept[IllegalArgumentException] {
       framework.runner(Array("-A", "again.txt"), Array.empty, testClassLoader)
     }
-    assert(iae.getMessage === "-A is not supported when runs in SBT, please use SBT's test-quick instead.")
+    assert(iae.getMessage === "Run again (-A) is not supported when running ScalaTest from sbt; Please use sbt's test-quick instead.")
   }
   
   test("Framework.runner should throw IllegalArgumentException when -q is passed in") {
     val iae = intercept[IllegalArgumentException] {
       framework.runner(Array("-q", "Spec"), Array.empty, testClassLoader)
     }
-    assert(iae.getMessage === "-q is not supported when runs in SBT, please use SBT's test-only or test filter instead.")
+    assert(iae.getMessage === "Discovery suffixes (-q) is not supported when running ScalaTest from sbt; Please use sbt's test-only or test filter instead.")
   }
   
   test("Framework.runner should throw IllegalArgumentException when -T is passed in") {
     val iae = intercept[IllegalArgumentException] {
       framework.runner(Array("-T", "100"), Array.empty, testClassLoader)
     }
-    assert(iae.getMessage === "-T is not supported when runs in SBT.")
+    assert(iae.getMessage === "Sorting timeouts (-T) is not supported when running ScalaTest from sbt.")
   }
   
   private def makeSureDone(runners: Runner*)(fun: => Unit) {
