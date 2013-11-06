@@ -961,11 +961,11 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  *
  * scala&gt; all (xs) should be &gt; 0
  *
- * scala&gt; atMost(2, xs) should be &gt;= 4
+ * scala&gt; atMost (2, xs) should be &gt;= 4
  *
- * scala&gt; atLeast(3, xs) should be &lt; 5
+ * scala&gt; atLeast (3, xs) should be &lt; 5
  *
- * scala&gt; between(2, 3, xs) should (be &gt; 1 and be &lt; 5)
+ * scala&gt; between (2, 3, xs) should (be &gt; 1 and be &lt; 5)
  *
  * scala&gt; exactly (2, xs) should be &lt;= 2
  *
