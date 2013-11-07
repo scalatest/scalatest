@@ -16,6 +16,10 @@
 package org.scalatest.tools
 
 import org.scalatest._
+import org.scalatest.events.Event
+import org.scalatest.events.Ordinal
+import org.scalatest.events.AlertProvided
+import scala.collection.mutable
 import java.util.regex.Pattern
 import java.net.URL
 import java.io.File
@@ -1721,5 +1725,23 @@ class RunnerSpec extends Spec with PrivateMethodTester {
     runDeglob(List("*FooS[up]*"),
               List("foo.FooSpec",
                    "foo.events.EventsFooSuite"))
+  }
+
+  def `readMemoryFiles should issue alert if a Memento isn't runnable` {
+    val events = mutable.Set.empty[Event]
+
+    var tracker = new Tracker(new Ordinal(12))
+
+    val reporter = new Reporter {
+      def apply(event: Event) {
+        events += event
+      }
+    }
+
+    Runner.readMemoryFiles(
+      List("src/test/scala/org/scalatest/tools/memoryfile.eg"),
+      reporter, tracker)
+
+    assert(1 === events.filter(_.isInstanceOf[AlertProvided]).size)
   }
 }

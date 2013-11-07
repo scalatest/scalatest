@@ -2418,7 +2418,8 @@ object Runner {
     }
 
     // suites specified by name, either directly via -s or in a file via -A
-    val specificSuites = nonGlobSuites ::: againSuites(agains)
+    val againSuites = readMemoryFiles(agains, dispatch, tracker)
+    val specificSuites = nonGlobSuites ::: againSuites
 
     val runStartTime = System.currentTimeMillis
     
@@ -2602,12 +2603,30 @@ object Runner {
   // -M option is specified to record failed/canceled/aborted
   // tests so they can be run again later.
   //
-  private[tools] def againSuites(fileNames: List[String]): List[SuiteParam] =
-    for {
-      fileName <- fileNames
-      memento <- Memento.readFromFile(fileName)
-    }
-    yield memento.toSuiteParam
+  private[tools] def readMemoryFiles(fileNames: List[String],
+                                     reporter: Reporter,
+                                     tracker: Tracker):
+  List[SuiteParam] =
+  {
+    val mementos =
+      for {
+        fileName <- fileNames
+        memento <- Memento.readFromFile(fileName)
+      }
+      yield memento
+
+    val (unrerunnables, rerunnables) = mementos.partition(_.className == None)
+
+    for (memento <- unrerunnables)
+      reporter.apply(
+        AlertProvided(
+          tracker.nextOrdinal,
+          Resources("cannotRerun", memento.eventName, memento.suiteId,
+                    memento.testName),
+          None))
+
+    rerunnables.map(_.toSuiteParam)
+  }
 
   private[tools] def genSuiteConfig(suiteParam: SuiteParam, loader: ClassLoader): SuiteConfig = {
     val suiteClassName = suiteParam.className
