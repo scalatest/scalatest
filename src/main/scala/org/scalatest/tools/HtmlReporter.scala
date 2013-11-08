@@ -695,9 +695,18 @@ private[scalatest] class HtmlReporter(
       sortedSuiteList map { r =>
         val elementId = generateElementId
         import r._
+
+        val suiteAborted = endEvent.isInstanceOf[SuiteAborted]
+
+        val totalTestsCount =
+          testsSucceededCount + testsFailedCount + testsIgnoredCount +
+          testsPendingCount + testsCanceledCount
+
         val bits = 
-          (if (testsSucceededCount > 0) SUCCEEDED_BIT else 0) +
-          (if (testsFailedCount > 0) FAILED_BIT else 0) +
+          (if ((testsSucceededCount > 0) ||
+               ((totalTestsCount == 0) && !suiteAborted))
+            SUCCEEDED_BIT else 0) +
+          (if ((testsFailedCount > 0) || (suiteAborted)) FAILED_BIT else 0) +
           (if (testsIgnoredCount > 0) IGNORED_BIT else 0) + 
           (if (testsPendingCount > 0) PENDING_BIT else 0) + 
           (if (testsCanceledCount > 0) CANCELED_BIT else 0)
