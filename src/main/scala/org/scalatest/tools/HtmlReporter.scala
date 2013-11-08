@@ -212,16 +212,23 @@ private[scalatest] class HtmlReporter(
     }
   }
   
-  private def appendCombinedStatus(name: String, r: SuiteResult) = 
-    if (r.testsFailedCount > 0)
+  private def appendCombinedStatus(name: String, r: SuiteResult) = {
+    val suiteAborted = r.endEvent.isInstanceOf[SuiteAborted]
+
+    if ((r.testsFailedCount > 0) || suiteAborted)
       name + "_with_failed"
     else if (r.testsIgnoredCount > 0 || r.testsPendingCount > 0 || r.testsCanceledCount > 0)
       name + "_passed"
     else
       name + "_passed_all"
+  }
   
-  private def transformStringForResult(s: String, suiteResult: SuiteResult): String =
-    s + (if (suiteResult.testsFailedCount > 0) "_failed" else "_passed")
+  private def transformStringForResult(s: String, suiteResult: SuiteResult): String = {
+    val suiteAborted = suiteResult.endEvent.isInstanceOf[SuiteAborted]
+
+    s + (if ((suiteResult.testsFailedCount > 0) || suiteAborted) "_failed"
+         else "_passed")
+  }
 
   private def getSuiteHtml(name: String, suiteResult: SuiteResult) = 
     <html>
@@ -704,7 +711,8 @@ private[scalatest] class HtmlReporter(
 
         val bits = 
           (if ((testsSucceededCount > 0) ||
-               ((totalTestsCount == 0) && !suiteAborted))
+               ((totalTestsCount == 0) && !suiteAborted &&
+                ("DiscoverySuite" != suiteName)))
             SUCCEEDED_BIT else 0) +
           (if ((testsFailedCount > 0) || (suiteAborted)) FAILED_BIT else 0) +
           (if (testsIgnoredCount > 0) IGNORED_BIT else 0) + 
