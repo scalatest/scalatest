@@ -15,9 +15,7 @@
  */
 package org.scalatest.prop
 
-import org.scalacheck.Test.Parameters
-import org.scalacheck.Test.TestCallback
-import org.scalacheck.Gen
+import org.scalacheck.Test.Params
 
 /**
  * Trait providing methods and classes used to configure property checks provided by the
@@ -281,13 +279,13 @@ trait Configuration {
   private[prop] def getParams(
     configParams: Seq[PropertyCheckConfigParam],
     config: PropertyCheckConfig
-  ): Parameters = {
+  ): Params = {
 
     var minSuccessful = -1
     var maxDiscarded = -1
-    var pminSize = -1
-    var pmaxSize = -1
-    var pworkers = -1
+    var minSize = -1
+    var maxSize = -1
+    var workers = -1
 
     var minSuccessfulTotalFound = 0
     var maxDiscardedTotalFound = 0
@@ -304,13 +302,13 @@ trait Configuration {
           maxDiscarded = param.value
           maxDiscardedTotalFound += 1
         case param: MinSize =>
-          pminSize = param.value
+          minSize = param.value
           minSizeTotalFound += 1
         case param: MaxSize =>
-          pmaxSize = param.value
+          maxSize = param.value
           maxSizeTotalFound += 1
         case param: Workers =>
-          pworkers = param.value
+          workers = param.value
           workersTotalFound += 1
       }
     }
@@ -329,32 +327,15 @@ trait Configuration {
     // Adding one to maxDiscarded, because I think it is easier to understand that maxDiscarded means the maximum number of times
     // allowed that discarding will occur and the property can still pass. One more discarded evaluation than this number and the property will fail
     // because of it. ScalaCheck fails at exactly maxDiscardedTests.
-    new Parameters {
-      val minSuccessfulTests: Int = 
-        if (minSuccessful != -1) minSuccessful else config.minSuccessful
-
-      val minSize: Int = 
-        if (pminSize != -1) pminSize else config.minSize
-
-      val maxSize: Int = 
-        if (pmaxSize != -1) pmaxSize else config.maxSize
-
-      val rng: scala.util.Random = Gen.Parameters.default.rng
-
-      val workers: Int = 
-        if (pworkers != -1) pworkers else config.workers
-
-      val testCallback: TestCallback = new TestCallback {}
-
-      val maxDiscardRatio: Float = {
-        val maxDiscardedTests = (if (maxDiscarded != -1) maxDiscarded else config.maxDiscarded) + 1
-
-        if (maxDiscardedTests < 0) Parameters.default.maxDiscardRatio
-        else (maxDiscardedTests: Float)/(minSuccessfulTests: Float)
-      }
-
-      val customClassLoader: Option[ClassLoader] = None
-    }
+    Params(
+      if (minSuccessful != -1) minSuccessful else config.minSuccessful,
+      (if (maxDiscarded != -1) maxDiscarded else config.maxDiscarded) + 1,
+      if (minSize != -1) minSize else config.minSize,
+      if (maxSize != -1) maxSize else config.maxSize,
+      Params().rng,
+      if (workers != -1) workers else config.workers,
+      Params().testCallback
+    )
   }
 
   /**
