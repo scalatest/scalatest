@@ -40,6 +40,7 @@ class ShouldBeSortedSpec extends Spec with Matchers {
   }
   
   val emptyInts = List.empty[Int]
+  val loneInts = List(0)
   val orderedInts = List(1, 2, 3)
   val outOfOrderInts = List(3, 2, 1)
   
@@ -64,6 +65,10 @@ class ShouldBeSortedSpec extends Spec with Matchers {
       def `should do nothing when xs is empty` {
         emptyInts should be (sorted)
         emptyStudents should be (sorted)
+      }
+
+      def `should do nothing when xs contains single element` {
+        loneInts should be (sorted)
       }
       
       def `should do nothing when xs is sorted` {
@@ -122,6 +127,15 @@ class ShouldBeSortedSpec extends Spec with Matchers {
         assert(caught2.failedCodeFileName === Some("ShouldBeSortedSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
+
+      def `should throw TestFailedException wht correct stack depth when xs contains single element` {
+        val caught1 = intercept[TestFailedException] {
+          loneInts should not be sorted
+        }
+        assert(caught1.message === Some(wasSorted(loneInts)))
+        assert(caught1.failedCodeFileName === Some("ShouldBeSortedSpec.scala"))
+        assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
+      }
       
       def `should do nothing when xs is not sorted` {
         outOfOrderInts should not be sorted
@@ -165,6 +179,10 @@ class ShouldBeSortedSpec extends Spec with Matchers {
       def `should do nothing when xs is empty` {
         emptyInts shouldBe sorted
         emptyStudents shouldBe (sorted)
+      }
+
+      def `should do nothing when xs contains single element` {
+        loneInts shouldBe sorted
       }
       
       def `should do nothing when xs is sorted` {
@@ -223,6 +241,15 @@ class ShouldBeSortedSpec extends Spec with Matchers {
         assert(caught2.failedCodeFileName === Some("ShouldBeSortedSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
+
+      def `should throw TestFailedException wht correct stack depth when xs contains single element` {
+        val caught1 = intercept[TestFailedException] {
+          loneInts shouldNot be (sorted)
+        }
+        assert(caught1.message === Some(wasSorted(loneInts)))
+        assert(caught1.failedCodeFileName === Some("ShouldBeSortedSpec.scala"))
+        assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
+      }
       
       def `should do nothing when xs is not sorted` {
         outOfOrderInts shouldNot be (sorted)
@@ -266,6 +293,10 @@ class ShouldBeSortedSpec extends Spec with Matchers {
       def `should do nothing when xs is empty` {
         all(List(emptyInts)) should be (sorted)
         all(List(emptyStudents)) should be (sorted)
+      }
+
+      def `should do nothing when xs contains single element` {
+        all(List(loneInts)) should be (sorted)
       }
       
       def `should do nothing when xs is sorted` {
@@ -327,6 +358,16 @@ class ShouldBeSortedSpec extends Spec with Matchers {
         assert(caught2.failedCodeFileName === Some("ShouldBeSortedSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
+
+      def `should throw TestFailedException wht correct stack depth when xs contains single element` {
+        val left1 = List(loneInts)
+        val caught1 = intercept[TestFailedException] {
+          all(left1) should not be sorted
+        }
+        assert(caught1.message === Some(allInspectionFailed(0, wasSorted(loneInts), thisLineNumber - 2, left1)))
+        assert(caught1.failedCodeFileName === Some("ShouldBeSortedSpec.scala"))
+        assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
+      }
       
       def `should do nothing when xs is not sorted` {
         all(List(outOfOrderInts)) should not be sorted
@@ -372,6 +413,10 @@ class ShouldBeSortedSpec extends Spec with Matchers {
       def `should do nothing when xs is empty` {
         all(List(emptyInts)) shouldBe sorted
         all(List(emptyStudents)) shouldBe (sorted)
+      }
+
+      def `should do nothing when xs contains single element` {
+        all(List(loneInts)) shouldBe sorted
       }
       
       def `should do nothing when xs is sorted` {
@@ -433,6 +478,16 @@ class ShouldBeSortedSpec extends Spec with Matchers {
         assert(caught2.message === Some(allInspectionFailed(0, wasSorted(emptyStudents), thisLineNumber - 2, left2)))
         assert(caught2.failedCodeFileName === Some("ShouldBeSortedSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
+      }
+
+      def `should throw TestFailedException wht correct stack depth when xs contains single element` {
+        val left1 = List(loneInts)
+        val caught1 = intercept[TestFailedException] {
+          all(left1) shouldNot be (sorted)
+        }
+        assert(caught1.message === Some(allInspectionFailed(0, wasSorted(loneInts), thisLineNumber - 2, left1)))
+        assert(caught1.failedCodeFileName === Some("ShouldBeSortedSpec.scala"))
+        assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
       def `should do nothing when xs is not sorted` {
