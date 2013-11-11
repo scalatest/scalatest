@@ -79,7 +79,11 @@ object Sortable {
    */
   implicit def sortableNatureOfSeq[E, SEQ[e] <: scala.collection.GenSeq[e]](implicit ordering: Ordering[E]): Sortable[SEQ[E]] =
     new Sortable[SEQ[E]] {
-      def isSorted(o: SEQ[E]): Boolean = o.seq.sliding(2).forall { duo => ordering.lteq(duo(0), duo(1)) }
+      def isSorted(o: SEQ[E]): Boolean =
+        if (o.size > 1)
+          o.seq.sliding(2).forall { duo => ordering.lteq(duo(0), duo(1)) }
+        else
+          true
     }
 
   /**
@@ -91,7 +95,11 @@ object Sortable {
    */
   implicit def sortableNatureOfArray[E](implicit ordering: Ordering[E]): Sortable[Array[E]] = 
     new Sortable[Array[E]] {
-      def isSorted(o: Array[E]): Boolean = o.sliding(2).forall { duo => ordering.lteq(duo(0), duo(1)) }
+      def isSorted(o: Array[E]): Boolean =
+        if (o.length > 1)
+          o.sliding(2).forall { duo => ordering.lteq(duo(0), duo(1)) }
+        else
+          true
     }
 
   /**
@@ -104,7 +112,11 @@ object Sortable {
    */
   implicit def sortableNatureOfJavaList[E, JLIST[e] <: java.util.List[e]](implicit ordering: Ordering[E]): Sortable[JLIST[E]] = 
     new Sortable[JLIST[E]] {
-      def isSorted(o: JLIST[E]): Boolean = o.asScala.sliding(2).forall { duo => ordering.lteq(duo(0), duo(1)) }
+      def isSorted(o: JLIST[E]): Boolean =
+        if (o.size > 1)
+          o.asScala.sliding(2).forall { duo => ordering.lteq(duo(0), duo(1)) }
+        else
+          true
     }
 }
 
