@@ -283,8 +283,6 @@ private[scalatest] class HtmlReporter(
                   "abortedNote", "suiteAborted", message, throwable, formatter,
                   Some(suiteName), None, duration)
 
-              <div id="suite_header_name">Suite Aborted</div>
-
               testWithDetails(
                 generateElementId, List(stringToPrint), message, throwable,
                 getIndentLevel(formatter) + 1, "suite_aborted")            
