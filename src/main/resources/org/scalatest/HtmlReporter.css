@@ -444,6 +444,19 @@ dl {
   font-size: 1.1em;
 }
 
+.suite_aborted {
+  background-color: #FFF;
+  width: auto; 
+  height: auto; 
+  margin: 0;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+  color: #874747;
+  font-size: 1.1em;
+}
+
 .test_ignored {
   background-color: #FFF;
   background-image: url("../images/testignored.gif");
