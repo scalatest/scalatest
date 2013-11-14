@@ -64,7 +64,7 @@ private[scalatest] class SuiteRunner(suite: Suite, args: Args, status: ScalaTest
           val duration = System.currentTimeMillis - suiteStartTime
           try {
             if (!suite.isInstanceOf[DistributedTestRunnerSuite])
-              dispatch(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), Some(duration), formatter, Some(TopOfClass(suite.getClass.getName)), suite.rerunner))
+              dispatch(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), Some(duration), formatter, Some(TopOfClass(suite.getClass.getName)), suite.rerunner, nestedSuitesCount = suite.nestedSuites.size))
           }
           finally status.setCompleted()
         }

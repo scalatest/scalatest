@@ -975,7 +975,7 @@ private[scalatest] class RunnerJFrame(
             registerEvent(event)
           }
   
-        case SuiteCompleted(ordinal, suiteName, suiteId, suiteClassName, duration, formatter, location, rerunner, payload, threadName, timeStamp) => 
+        case SuiteCompleted(ordinal, suiteName, suiteId, suiteClassName, duration, formatter, location, rerunner, payload, threadName, timeStamp, nestedSuitesCount) => 
   
           usingEventDispatchThread {
             registerEvent(event)
@@ -1426,7 +1426,7 @@ private[scalatest] class RunnerJFrame(
             registerRerunEvent(event)
           }
   
-        case SuiteCompleted(ordinal, suiteName, suiteId, suiteClassName, duration, formatter, location, rerunner, payload, threadName, timeStamp) => 
+        case SuiteCompleted(ordinal, suiteName, suiteId, suiteClassName, duration, formatter, location, rerunner, payload, threadName, timeStamp, nestedSuitesCount) => 
   
           usingEventDispatchThread {
             registerRerunEvent(event)

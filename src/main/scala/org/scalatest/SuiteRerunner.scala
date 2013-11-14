@@ -72,7 +72,7 @@ private[scalatest] class SuiteRerunner(suiteClassName: String) extends Rerunner 
         val formatter2 = formatterForSuiteCompleted(suite)
         val duration = System.currentTimeMillis - suiteStartTime
 
-        report(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), Some(duration), formatter2, Some(TopOfClass(suite.getClass.getName)), suite.rerunner))
+        report(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), Some(duration), formatter2, Some(TopOfClass(suite.getClass.getName)), suite.rerunner, nestedSuitesCount = suite.nestedSuites.size))
       }
       catch {
         case e: RuntimeException => {
