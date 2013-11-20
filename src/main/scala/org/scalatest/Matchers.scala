@@ -125,8 +125,9 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
  * a future version of ScalaTest. You can migrate existing uses of <code>ShouldMatchers</code> 
  * by simply importing or mixing in <code>org.scalatest.Matchers</code> instead of <code>org.scalatest.matchers.ShouldMatchers</code>. You can migrate existing
  * uses of <code>org.scalatest.matchers.MustMatchers</code> in the same manner, by importing or mixing in <code>org.scalatest.Matchers</code> instead of
- * <code>org.scalatest.matchers.MustMatchers</code>, but with one extra step: replacing "<code>must</code>" with "<code>should</code>". <code>org.scalatest.Matchers</code>
- * only supports the verb "<code>should</code>"; We apologize for imposing such a large search-and-replace job on users, but we want to
+ * <code>org.scalatest.matchers.MustMatchers</code>, but with one extra step: replacing "<code><!-- PRESERVE -->must</code>"
+ * with "<code><!-- PRESERVE -->should</code>". <code>org.scalatest.Matchers</code>
+ * only supports the verb "<code><!-- PRESERVE -->should</code>"; We apologize for imposing such a large search-and-replace job on users, but we want to
  * make the verb <code>"must"</code> available to be used for a different purpose in ScalaTest after the deprecation cycle for <code>MustMatchers</code>
  * is completed.
  * </p>
