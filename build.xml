@@ -1592,22 +1592,24 @@
       -   </servers>
       - 
       -->
-    <target name="deploy" depends="jar,jartests,jarsrc,jartestsrc,jardoc">
+    <target name="deploy.init" depends="jar,jartests,jarsrc,jartestsrc,jardoc">
       <property name="deploy.main"
                 value="${dist}/lib/scalatest.jar"/>
-      <property name="deploy.tests" 
+      <property name="deploy.tests"
                 value="${build.tests.jar}"/>
-      <property name="deploy.sources" 
+      <property name="deploy.sources"
                 value="${build}/scalatest-sources.jar"/>
-      <property name="deploy.test-sources" 
+      <property name="deploy.test-sources"
                 value="${build}/scalatest-test-sources.jar"/>
-      <property name="deploy.scaladoc" 
+      <property name="deploy.scaladoc"
                 value="${build}/scalatest-scaladoc.jar"/>
-      <property name="deploy.javadoc" 
+      <property name="deploy.javadoc"
                 value="${build}/scalatest-javadoc.jar"/>
       <property name="deploy.release"
                 value="${release}"/>
+    </target>
 
+    <target name="deploy" depends="deploy.init">
       <antcall target="deploy-jars"/>
       <antcall target="deploy-utils"/>
     </target>
@@ -1944,6 +1946,19 @@
         <param name="deploy.classifier" value="javadoc"/>
         <param name="deploy.file"       value="${deploy.javadoc}"/>
       </antcall>
+    </target>
+
+    <target name="deploy-local" depends="deploy.init">
+      <artifact:pom id="pom" file="${build}/pom.xml" />
+
+      <artifact:install file="${deploy.main}">
+        <artifact:localRepository path="${user.home}/.m2/repository"/>
+        <artifact:pom refid="pom" />
+        <artifact:attach type="jar" file="${deploy.javadoc}" classifier="javadoc" />
+        <artifact:attach type="jar" file="${deploy.scaladoc}" classifier="scaladoc" />
+        <artifact:attach type="jar" file="${deploy.test-sources}" classifier="test-sources" />
+        <artifact:attach type="jar" file="${deploy.sources}" classifier="sources" />
+      </artifact:install>
     </target>
 
     <!--
