@@ -86,6 +86,22 @@
         <artifact:dependencies pathId="lib.path" useScope="test">
           <pom file="${build}/pom.xml"/>
         </artifact:dependencies>
+
+        <macrodef name="readProperty">
+          <attribute name="name" />
+          <attribute name="property" />
+          <sequential>
+            <property name="@{name}" value="${@{property}}" />
+          </sequential>
+        </macrodef>
+        <readProperty name="scala-xml" property="org.scala-lang.modules:scala-xml_${deploy.scala.version}:jar" />
+        <readProperty name="scala-parser-combinators" property="org.scala-lang.modules:scala-parser-combinators_${deploy.scala.version}:jar" />
+
+        <path id="scaladoc.class.path">
+            <path refid="lib.path"></path>
+            <pathelement location="${scala-xml}" />
+            <pathelement location="${scala-parser-combinators}" />
+        </path>
 	
         <path id="build.class.path">
             <pathelement location="${classes}" />
@@ -127,6 +143,8 @@
             	<pathelement location="${org.scala-lang:scala-library:jar}" />
             	<pathelement location="${org.scala-lang:scala-compiler:jar}" />
             	<pathelement location="${org.scala-lang:scala-reflect:jar}" /> <!-- needed for 2.10 build -->
+		<pathelement location="${scala-xml}" />
+		<pathelement location="${scala-parser-combinators}" />
             </classpath>
         </taskdef>
 
