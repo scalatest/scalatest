@@ -88,6 +88,18 @@
     </dependency>
 
     <dependency>
+      <groupId>org.scala-lang.modules</groupId>
+      <artifactId>scala-parser-combinators_@DEPLOY_SCALA_VERSION@</artifactId>
+      <version>@SCALA_PARSER_COMBINATORS_VERSION@</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.scala-lang.modules</groupId>
+      <artifactId>scala-xml_@DEPLOY_SCALA_VERSION@</artifactId>
+      <version>@SCALA_XML_VERSION@</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.scala-sbt</groupId>
       <artifactId>test-interface</artifactId>
       <version>1.0</version>

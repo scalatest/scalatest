@@ -7,16 +7,13 @@
              classpathref="maven-ant-tasks.classpath" />
 
     <!-- set global properties for this build -->
-    <property name="scala.version" value="2.10.0" />
-    <property name="scala.version.range" value="[2.10.0, 2.10.99]" /> <!-- not using this currently because of what it does to sbt -->
-    <property name="deploy.scala.version" value="2.10" />
-	<property name="for.scala" value="2.10.0" />
+    <property name="scala.version" value="2.11.0-M7" />
+    <property name="deploy.scala.version" value="2.11.0-M7" />
+    <property name="for.scala" value="2.11.0" />
 
-<!--
-    <property name="scala.version" value="2.11.0-M4" />
-    <property name="deploy.scala.version" value="2.11.0-M4" />
-	<property name="for.scala" value="2.11.0" />
--->
+    <property name="scala-xml.version.number"                value="1.0.0-RC7" />
+    <property name="scala-parser-combinators.version.number" value="1.0.0-RC5" />
+
     <property name="release" value="2.0.1-SNAP4" />
 
     <property name="scalasrc" value="src/main/scala" />
@@ -75,6 +72,8 @@
             <filter token="RELEASE" value="${release}" />
             <filter token="SCALA_VERSION" value="${scala.version}" />
             <filter token="SCALA_VERSION_RANGE" value="${scala.version.range}" />
+            <filter token="SCALA_PARSER_COMBINATORS_VERSION" value="${scala-parser-combinators.version.number}" />
+            <filter token="SCALA_XML_VERSION"                value="${scala-xml.version.number}" />
             <!--
               -  DEPLOY_SCALA_VERSION is used in the artifact name, e.g.
               -  it's "2.10" when scala version is "2.10.0"
