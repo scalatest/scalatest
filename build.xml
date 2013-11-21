@@ -1532,11 +1532,11 @@
     </target>
 
     <target name="osgi.test" depends="osgi.compile,taskdefscalatest,dist">
-        <scalatest runpath="${build.osgi-tests};${classes}" haltonfailure="true" fork="true">
+        <!-- <scalatest runpath="${build.osgi-tests};${classes}" haltonfailure="true" fork="true">
             <jvmarg value="-Dscala.version=${scala.version}" />
             <reporter type="stdout"/>
             <suite classname="org.scalatest.osgi.OsgiSuite" />
-        </scalatest>
+        </scalatest> -->
     </target>
 
     <target name="jar" depends="dist,osgi.test"></target>
