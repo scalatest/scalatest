@@ -319,7 +319,7 @@ class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends FreeSpec wi
     def allErrMsg(index: Int, message: String, lineNumber: Int, left: Any): String = 
       "'all' inspection failed, because: \n" +
       "  at index " + index + ", " + message + " (" + fileName + ":" + (lineNumber) + ") \n" +
-      "in " + left
+      "in " + decorateToStringValue(left)
     
     "when used with (contain theSameElementsInOrderAs xx and contain theSameElementsInOrderAs xx)" - {
       

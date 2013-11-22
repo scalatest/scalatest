@@ -17,6 +17,7 @@ package org.scalatest
 
 import matchers.{BeMatcher, MatchResult, BePropertyMatcher, BePropertyMatchResult}
 import SharedHelpers._
+import FailureMessages.decorateToStringValue
 
 class ShouldNotShorthandSpec extends Spec with Matchers with EmptyMocks with BookPropertyMatchers {
 
@@ -936,7 +937,7 @@ class ShouldNotShorthandSpec extends Spec with Matchers with EmptyMocks with Boo
       val caught1 = intercept[TestFailedException] {
         map shouldNot contain key "1"
       }
-      assert(caught1.message === Some(map + " contained key \"1\""))
+      assert(caught1.message === Some(decorateToStringValue(map) + " contained key \"1\""))
       assert(caught1.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -952,7 +953,7 @@ class ShouldNotShorthandSpec extends Spec with Matchers with EmptyMocks with Boo
       val caught1 = intercept[TestFailedException] {
         map shouldNot contain value "one"
       }
-      assert(caught1.message === Some(map + " contained value \"one\""))
+      assert(caught1.message === Some(decorateToStringValue(map) + " contained value \"one\""))
       assert(caught1.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
     }

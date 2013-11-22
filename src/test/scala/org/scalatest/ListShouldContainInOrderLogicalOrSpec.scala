@@ -394,7 +394,7 @@ class ListShouldContainInOrderLogicalOrSpec extends Spec with Matchers {
     def allErrMsg(index: Int, message: String, lineNumber: Int, left: Any): String = 
       "'all' inspection failed, because: \n" +
       "  at index " + index + ", " + message + " (" + fileName + ":" + (lineNumber) + ") \n" +
-      "in " + left
+      "in " + decorateToStringValue(left)
     
     object `when used with (contain inOrder xx and contain inOrder xx)` {
       

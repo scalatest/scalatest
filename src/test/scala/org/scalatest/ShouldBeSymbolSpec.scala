@@ -427,15 +427,15 @@ class ShouldBeSymbolSpec extends Spec with Matchers with EmptyMocks {
         val caught1 = intercept[TestFailedException] {
           nonEmptyMap should be ('empty)
         }
-        assert(caught1.getMessage === "Map(one -> 1, two -> 2, three -> 3) was not empty")
+        assert(caught1.getMessage === "Map(\"one\" -> 1, \"two\" -> 2, \"three\" -> 3) was not empty")
         val caught2 = intercept[TestFailedException] {
           nonEmptyMap should not { be ('hasDefiniteSize) }
         }
-        assert(caught2.getMessage === "Map(one -> 1, two -> 2, three -> 3) was hasDefiniteSize")
+        assert(caught2.getMessage === "Map(\"one\" -> 1, \"two\" -> 2, \"three\" -> 3) was hasDefiniteSize")
         val caught3 = intercept[TestFailedException] {
           nonEmptyMap should not { be ('happy) }
         }
-        assert(caught3.getMessage === "Map(one -> 1, two -> 2, three -> 3) has neither a happy nor an isHappy method")
+        assert(caught3.getMessage === "Map(\"one\" -> 1, \"two\" -> 2, \"three\" -> 3) has neither a happy nor an isHappy method")
       }
 
       // implicit def convertToStringShouldWrapper[K, V](o: String): StringShouldWrapper = new StringShouldWrapper(o)

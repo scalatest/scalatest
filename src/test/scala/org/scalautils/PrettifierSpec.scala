@@ -46,9 +46,52 @@ class PrettifierSpec extends Spec with Matchers {
       myLittlePretty(WrappedArray.make(Array(1, 2, 3))) should be ("Array(1, 2, 3)")
       myLittlePretty(null) should be ("null")
       myLittlePretty(()) should be ("<(), the Unit value>")
-      myLittlePretty(List("1", "2", "3")) should be ("List(1, 2, 3)")
+      myLittlePretty(List("1", "2", "3")) should be ("List(\"1\", \"2\", \"3\")")
     }
   }
+
+  object `the basic Prettifier` {
+    def `should put double quotes around strings` {
+      Prettifier.basic("hi") should be ("\"hi\"")
+    }
+    def `should put single quotes around chars` {
+      Prettifier.basic('h') should be ("'h'")
+    }
+    def `should pretty print arrays` {
+      Prettifier.basic(Array(1, 2, 3)) should be ("Array(1, 2, 3)")
+    }
+    def `should pretty print wrapped arrays` {
+      Prettifier.basic(WrappedArray.make(Array(1, 2, 3))) should be ("Array(1, 2, 3)")
+    }
+    def `should pretty print string arrays` {
+      Prettifier.basic(Array("1", "2", "3")) should be ("Array(1, 2, 3)")
+    }
+    def `should pretty print nested string arrays` {
+      Prettifier.basic(Array(Array("1", "2", "3"))) should be ("Array(Array(1, 2, 3))")
+    }
+    def `should pretty print wrapped string arrays` {
+      Prettifier.basic(WrappedArray.make(Array("1", "2", "3"))) should be ("Array(1, 2, 3)")
+    }
+    def `should show null as "null"` {
+      Prettifier.basic(null) should be ("null")
+    }
+    def `should clarify the Unit value` {
+      Prettifier.basic(()) should be ("<(), the Unit value>")
+    }
+    def `should just call toString on anything not specially treated` {
+      Prettifier.basic(List("1", "2", "3")) should be ("List(1, 2, 3)")
+    }
+    def `should pretty print GenTraversable` {
+      Prettifier.basic(List(1, 2, 3)) should be ("List(1, 2, 3)")
+    }
+    def `should pretty print string GenTraversable` {
+      Prettifier.basic(List("1", "2", "3")) should be ("List(1, 2, 3)")
+    }
+    def `should pretty print nested string GenTraversable` {
+      Prettifier.basic(List(List("1", "2", "3"))) should be ("List(List(1, 2, 3))")
+    }
+  }
+
   object `the default Prettifier` {
     def `should put double quotes around strings` {
       Prettifier.default("hi") should be ("\"hi\"")
@@ -62,6 +105,15 @@ class PrettifierSpec extends Spec with Matchers {
     def `should pretty print wrapped arrays` {
       Prettifier.default(WrappedArray.make(Array(1, 2, 3))) should be ("Array(1, 2, 3)")
     }
+    def `should pretty print string arrays` {
+      Prettifier.default(Array("1", "2", "3")) should be ("Array(\"1\", \"2\", \"3\")")
+    }
+    def `should pretty print nested string arrays` {
+      Prettifier.default(Array(Array("1", "2", "3"))) should be ("Array(Array(\"1\", \"2\", \"3\"))")
+    }
+    def `should pretty print wrapped string arrays` {
+      Prettifier.default(WrappedArray.make(Array("1", "2", "3"))) should be ("Array(\"1\", \"2\", \"3\")")
+    }
     def `should show null as "null"` {
       Prettifier.default(null) should be ("null")
     }
@@ -69,7 +121,16 @@ class PrettifierSpec extends Spec with Matchers {
       Prettifier.default(()) should be ("<(), the Unit value>")
     }
     def `should just call toString on anything not specially treated` {
-      Prettifier.default(List("1", "2", "3")) should be ("List(1, 2, 3)")
+      Prettifier.default(List("1", "2", "3")) should be ("List(\"1\", \"2\", \"3\")")
+    }
+    def `should pretty print GenTraversable` {
+      Prettifier.default(List(1, 2, 3)) should be ("List(1, 2, 3)")
+    }
+    def `should pretty print string GenTraversable` {
+      Prettifier.default(List("1", "2", "3")) should be ("List(\"1\", \"2\", \"3\")")
+    }
+    def `should pretty print nested string GenTraversable` {
+      Prettifier.default(List(List("1", "2", "3"))) should be ("List(List(\"1\", \"2\", \"3\"))")
     }
   }
 }

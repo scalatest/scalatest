@@ -15,7 +15,8 @@
  */
 package org.scalautils
 
-import scala.collection.mutable.WrappedArray
+import scala.collection._
+import mutable.WrappedArray
 
 /**
  * A function that given any object will produce a &ldquo;pretty&rdquo; string representation of that object,
@@ -129,17 +130,43 @@ object Prettifier {
           case aUnit: Unit => "<(), the Unit value>"
           case aString: String => "\"" + aString + "\""
           case aChar: Char =>  "\'" + aChar + "\'"
-          case anArray: Array[_] =>  prettifyArrays(anArray)
-          case aWrappedArray: WrappedArray[_] => prettifyArrays(aWrappedArray)
+          case anArray: Array[_] =>  "Array(" + (anArray map apply).mkString(", ") + ")"
+          case aWrappedArray: WrappedArray[_] => "Array(" + (aWrappedArray map apply).mkString(", ") + ")"
+          case aGenMap: GenMap[_, _] =>
+            val defaultToString = aGenMap.toString
+            val typeName = defaultToString.takeWhile(_ != '(')
+            typeName + "(" +
+            (aGenMap.toIterator.map { case (key, value) => // toIterator is needed for consistent ordering
+              apply(key) + " -> " + apply(value)
+            }).mkString(", ") + ")"
+          case aGenTraversable: GenTraversable[_] =>
+            val defaultToString = aGenTraversable.toString
+            val typeName = defaultToString.takeWhile(_ != '(')
+            typeName + "(" + aGenTraversable.toIterator.map(apply(_)).mkString(", ") + ")"  // toIterator is needed for consistent ordering
           case anythingElse => anythingElse.toString
         }
     }
 
-  private def prettifyArrays(o: Any): String = {
+  val basic = new BasicPrettifier
+}
+
+private[scalautils] class BasicPrettifier extends Prettifier {
+
+  def apply(o: Any): String =
+    o match {
+      case null => "null"
+      case aUnit: Unit => "<(), the Unit value>"
+      case aString: String => "\"" + aString + "\""
+      case aChar: Char =>  "\'" + aChar + "\'"
+      case anArray: Array[_] =>  prettifyArrays(anArray)
+      case aWrappedArray: WrappedArray[_] => prettifyArrays(aWrappedArray)
+      case anythingElse => anythingElse.toString
+    }
+
+  private def prettifyArrays(o: Any): String =
     o match {
       case arr: Array[_] => "Array(" + (arr map (a => prettifyArrays(a))).mkString(", ") + ")"
       case wrappedArr: WrappedArray[_] => "Array(" + (wrappedArr map (a => prettifyArrays(a))).mkString(", ") + ")"
       case _ => if (o != null) o.toString else "null"
     }
-  }
 }

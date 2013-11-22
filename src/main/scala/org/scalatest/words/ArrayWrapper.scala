@@ -15,26 +15,6 @@
  */
 package org.scalatest.words
 
-import org.scalatest.matchers._
-import org.scalatest.enablers._
-import java.lang.reflect.Method
-import java.lang.reflect.Modifier
-import scala.util.matching.Regex
-import java.lang.reflect.Field
-import scala.reflect.Manifest
-import org.scalatest.MatchersHelper.transformOperatorChars
-import scala.collection.Traversable
-import org.scalatest.Assertions.areEqualComparingArraysStructurally
-import scala.collection.GenTraversable
-import scala.collection.GenSeq
-import scala.collection.GenMap
-import org.scalautils.Tolerance
-import org.scalautils.Explicitly
-import scala.annotation.tailrec
-import org.scalautils.Equality
-import org.scalatest.MatchersHelper.andMatchersAndApply
-import org.scalatest.MatchersHelper.orMatchersAndApply
-import org.scalatest.MatchersHelper.matchSymbolToPredicateMethod
 import org.scalatest.FailureMessages
 
 /**
@@ -50,6 +30,6 @@ private[scalatest] class ArrayWrapper[T](underlying: Array[T]) extends Traversab
   }
   // Need to prettify the array's toString, because by the time it gets to decorateToStringValue, the array
   // has been wrapped in this Traversable and so it won't get prettified anymore by FailureMessages.decorateToStringValue.
-  override def toString: String = FailureMessages.prettifyArrays(underlying).toString
+  override def toString: String = FailureMessages.decorateToStringValue(underlying)
 }
 

@@ -70,16 +70,16 @@ class TheSameElementsAsContainMatcherEqualitySpec extends Spec with Matchers wit
   object `theSameElementsAs ` {
       
     def checkShouldContainStackDepth(e: exceptions.StackDepthException, left: Any, right: Any, lineNumber: Int) {
-      val leftText = FailureMessages.prettifyArrays(left)
-      val rightText = FailureMessages.prettifyArrays(right)
+      val leftText = FailureMessages.decorateToStringValue(left)
+      val rightText = FailureMessages.decorateToStringValue(right)
       e.message should be (Some(leftText + " did not contain the same elements as " + rightText))
       e.failedCodeFileName should be (Some("TheSameElementsAsContainMatcherEqualitySpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
       
     def checkShouldNotContainStackDepth(e: exceptions.StackDepthException, left: Any, right: Any, lineNumber: Int) {
-      val leftText = FailureMessages.prettifyArrays(left)
-      val rightText = FailureMessages.prettifyArrays(right)
+      val leftText = FailureMessages.decorateToStringValue(left)
+      val rightText = FailureMessages.decorateToStringValue(right)
       e.message should be (Some(leftText + " contained the same elements as " + rightText))
       e.failedCodeFileName should be (Some("TheSameElementsAsContainMatcherEqualitySpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))

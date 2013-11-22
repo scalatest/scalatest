@@ -24,7 +24,7 @@ class InOrderOnlyContainMatcherSpec extends Spec with Matchers {
   object `inOrderOnly ` {
     
     def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
-      val leftText = FailureMessages.prettifyArrays(left)
+      val leftText = FailureMessages.decorateToStringValue(left)
       e.message should be (Some(leftText + " did not contain only (" + right.mkString(", ") + ") in order"))
       e.failedCodeFileName should be (Some("InOrderOnlyContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
@@ -145,7 +145,7 @@ class InOrderOnlyContainMatcherSpec extends Spec with Matchers {
   object `not inOrderOnly ` {
     
     def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
-      val leftText = FailureMessages.prettifyArrays(left)
+      val leftText = FailureMessages.decorateToStringValue(left)
       e.message should be (Some(leftText + " contained only (" + right.mkString(", ") + ") in order"))
       e.failedCodeFileName should be (Some("InOrderOnlyContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))

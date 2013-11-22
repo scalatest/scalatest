@@ -23,7 +23,7 @@ class OnlyContainMatcherSpec extends Spec with Matchers {
   object `only ` {
     
     def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
-      val leftText = FailureMessages.prettifyArrays(left)
+      val leftText = FailureMessages.decorateToStringValue(left)
       e.message should be (Some(leftText + " did not contain only (" + right.mkString(", ") + ")"))
       e.failedCodeFileName should be (Some("OnlyContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
@@ -138,7 +138,7 @@ class OnlyContainMatcherSpec extends Spec with Matchers {
   object `not only ` {
     
     def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
-      val leftText = FailureMessages.prettifyArrays(left)
+      val leftText = FailureMessages.decorateToStringValue(left)
       e.message should be (Some(leftText + " contained only (" + right.mkString(", ") + ")"))
       e.failedCodeFileName should be (Some("OnlyContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))

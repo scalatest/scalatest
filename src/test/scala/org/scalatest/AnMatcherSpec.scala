@@ -17,6 +17,7 @@ package org.scalatest
 
 import SharedHelpers._
 import matchers._
+import FailureMessages.decorateToStringValue
 
 class AnMatcherSpec extends Spec with Matchers {
 
@@ -204,7 +205,7 @@ class AnMatcherSpec extends Spec with Matchers {
         val e = intercept[exceptions.TestFailedException] {
           Map(1 -> "one", 2 -> "two", 3 -> "three") should not be an (oddSizeMap)
         }
-        e.message should be (Some(Map(1 -> "one", 2 -> "two", 3 -> "three") + " was an odd size map"))
+        e.message should be (Some(decorateToStringValue(Map(1 -> "one", 2 -> "two", 3 -> "three")) + " was an odd size map"))
         e.failedCodeFileName should be (Some("AnMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }

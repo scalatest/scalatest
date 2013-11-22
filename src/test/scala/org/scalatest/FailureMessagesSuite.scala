@@ -23,11 +23,11 @@ class FailureMessagesSuite extends Suite with ShouldMatchers {
 
   def `test: prettify arrays should handle null array element values` {
     assertResult("Array(1, null, 3)") {
-      FailureMessages.prettifyArrays(Array(1, null, 3)) 
+      FailureMessages.decorateToStringValue(Array(1, null, 3))
     }
     Array(1, null, 3) should be (Array(1, null, 3))
-    assertResult("Array(1, Array(hi, null), null, 3)") {
-      FailureMessages.prettifyArrays(Array(1, Array("hi", null), null, 3)) 
+    assertResult("Array(1, Array(\"hi\", null), null, 3)") {
+      FailureMessages.decorateToStringValue(Array(1, Array("hi", null), null, 3))
     }
   }
 }

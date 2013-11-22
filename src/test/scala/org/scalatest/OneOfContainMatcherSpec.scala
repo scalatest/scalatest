@@ -23,7 +23,7 @@ class OneOfContainMatcherSpec extends Spec with Matchers {
   object `oneOf ` {
     
     def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
-      val leftText = FailureMessages.prettifyArrays(left)
+      val leftText = FailureMessages.decorateToStringValue(left)
       e.message should be (Some(leftText + " did not contain one of (" + right.mkString(", ") + ")"))
       e.failedCodeFileName should be (Some("OneOfContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
@@ -302,7 +302,7 @@ class OneOfContainMatcherSpec extends Spec with Matchers {
   object `not oneOf ` {
     
     def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
-      val leftText = FailureMessages.prettifyArrays(left)
+      val leftText = FailureMessages.decorateToStringValue(left)
       e.message should be (Some(leftText + " contained one of (" + right.mkString(", ") + ")"))
       e.failedCodeFileName should be (Some("OneOfContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))

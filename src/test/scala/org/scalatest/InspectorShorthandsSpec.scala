@@ -1565,13 +1565,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 3))
         val firstViolation = getFirstNot[GenTraversable[String]](col, _.isEmpty)
         e2.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " was not empty (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " was not empty (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
         e2.getCause match {
           case tfe: exceptions.TestFailedException =>
             tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
             tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-            tfe.message should be (Some(firstViolation + " was not empty"))
+            tfe.message should be (Some(decorateToStringValue(firstViolation) + " was not empty"))
             tfe.getCause should be (null)
           case other => fail("Expected cause to be TestFailedException, but got: " + other)
         }
@@ -1703,13 +1703,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 3))
         val firstViolation = getFirstNot[GenTraversable[String]](col, _.exists(_ == "2"))
         e2.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " did not contain element \"2\" (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " did not contain element \"2\" (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
         e2.getCause match {
           case tfe: exceptions.TestFailedException =>
             tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
             tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-            tfe.message should be (Some(firstViolation + " did not contain element \"2\""))
+            tfe.message should be (Some(decorateToStringValue(firstViolation) + " did not contain element \"2\""))
             tfe.getCause should be (null)
           case other => fail("Expected cause to be TestFailedException, but got: " + other)
         }
@@ -1726,13 +1726,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 3))
         val firstViolation = getFirst[GenTraversable[String]](col, _.exists(_ == "2"))
         e2.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " contained element \"2\" (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " contained element \"2\" (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
         e2.getCause match {
           case tfe: exceptions.TestFailedException =>
             tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
             tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-            tfe.message should be (Some(firstViolation + " contained element \"2\""))
+            tfe.message should be (Some(decorateToStringValue(firstViolation) + " contained element \"2\""))
             tfe.getCause should be (null)
           case other => fail("Expected cause to be TestFailedException, but got: " + other)
         }
@@ -1749,13 +1749,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 3))
         val firstViolation = getFirstNot[GenMap[String, String]](col, _.exists(_._1 == "2"))
         e2.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " did not contain key \"2\" (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " did not contain key \"2\" (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
         e2.getCause match {
           case tfe: exceptions.TestFailedException =>
             tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
             tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-            tfe.message should be (Some(firstViolation.toString + " did not contain key \"2\""))
+            tfe.message should be (Some(decorateToStringValue(firstViolation) + " did not contain key \"2\""))
             tfe.getCause should be (null)
           case other => fail("Expected cause to be TestFailedException, but got: " + other)
         }
@@ -1772,13 +1772,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 3))
         val firstViolation = getFirst[GenMap[String, String]](col, _.exists(_._1 == "2"))
         e2.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " contained key \"2\" (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " contained key \"2\" (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
         e2.getCause match {
           case tfe: exceptions.TestFailedException =>
             tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
             tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-            tfe.message should be (Some(firstViolation.toString + " contained key \"2\""))
+            tfe.message should be (Some(decorateToStringValue(firstViolation) + " contained key \"2\""))
             tfe.getCause should be (null)
           case other => fail("Expected cause to be TestFailedException, but got: " + other)
         }
@@ -1795,13 +1795,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 3))
         val firstViolation = getFirstNot[GenMap[String, String]](col, _.exists(_._2 == "two"))
         e2.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " did not contain value \"two\" (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " did not contain value \"two\" (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
         e2.getCause match {
           case tfe: exceptions.TestFailedException =>
             tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
             tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-            tfe.message should be (Some(firstViolation.toString + " did not contain value \"two\""))
+            tfe.message should be (Some(decorateToStringValue(firstViolation) + " did not contain value \"two\""))
             tfe.getCause should be (null)
           case other => fail("Expected cause to be TestFailedException, but got: " + other)
         }
@@ -1818,13 +1818,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 3))
         val firstViolation = getFirst[GenMap[String, String]](col, _.exists(_._2 == "two"))
         e2.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " contained value \"two\" (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " contained value \"two\" (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
         e2.getCause match {
           case tfe: exceptions.TestFailedException =>
             tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
             tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-            tfe.message should be (Some(firstViolation.toString + " contained value \"two\""))
+            tfe.message should be (Some(decorateToStringValue(firstViolation) + " contained value \"two\""))
             tfe.getCause should be (null)
           case other => fail("Expected cause to be TestFailedException, but got: " + other)
         }
@@ -1865,13 +1865,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirstNot[GenTraversable[String]](col, e => e.size == 3 && e.exists(_ == "1") && e.exists(_ == "2") && e.exists(_ == "8") )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " did not contain the same elements as " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " did not contain the same elements as " + decorateToStringValue(right) + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(firstViolation + " did not contain the same elements as " + right))
+              tfe.message should be (Some(decorateToStringValue(firstViolation) + " did not contain the same elements as " + decorateToStringValue(right)))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }
@@ -1893,13 +1893,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
         val firstViolationArray = getFirstNot[Array[String]](col, e => e.size == 3 && e.contains("1") && e.contains("2") && e.contains("8") )
         val firstViolation = decorateToStringValue(firstViolationArray)
         e.message should be (Some("'all' inspection failed, because: \n" +
-                                  "  at index " + getIndex(col, firstViolationArray) + ", " + firstViolation + " did not contain the same elements as " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 7) + ") \n" +
+                                  "  at index " + getIndex(col, firstViolationArray) + ", " + firstViolation + " did not contain the same elements as " + decorateToStringValue(right) + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 7) + ") \n" +
                                   "in " + decorateToStringValue(col)))
         e.getCause match {
           case tfe: exceptions.TestFailedException =>
             tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
             tfe.failedCodeLineNumber should be (Some(thisLineNumber - 12))
-            tfe.message should be (Some(firstViolation + " did not contain the same elements as " + right))
+            tfe.message should be (Some(firstViolation + " did not contain the same elements as " + decorateToStringValue(right)))
             tfe.getCause should be (null)
           case other => fail("Expected cause to be TestFailedException, but got: " + other)
         }
@@ -1923,13 +1923,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirstNot[GenTraversable[String]](col, e => e.size == 3 && e.exists(_ == "1") && e.exists(_ == "2") && e.exists(_ == "8") )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " did not contain the same elements as " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " did not contain the same elements as " + decorateToStringValue(right) + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(firstViolation + " did not contain the same elements as " + right))
+              tfe.message should be (Some(decorateToStringValue(firstViolation) + " did not contain the same elements as " + decorateToStringValue(right)))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }
@@ -1954,13 +1954,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirstNot[GenMap[String, String]](col, map => map.size == 3 && map.exists(e => e._1 == "1" && e._2 == "one") && map.exists(e => e._1 == "2" && e._2 == "two") && map.exists(e => e._1 == "8" && e._2 == "eight") )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " did not contain the same elements as " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " did not contain the same elements as " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(firstViolation.toString + " did not contain the same elements as " + right.toString))
+              tfe.message should be (Some(decorateToStringValue(firstViolation) + " did not contain the same elements as " + right.toString))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }
@@ -1985,13 +1985,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirst[GenTraversable[String]](col, e => e.size == 3 && e.exists(_ == "1") && e.exists(_ == "2") && e.exists(_ == "8") )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " contained the same elements as " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " contained the same elements as " + decorateToStringValue(right) + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(firstViolation + " contained the same elements as " + right))
+              tfe.message should be (Some(decorateToStringValue(firstViolation) + " contained the same elements as " + decorateToStringValue(right)))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }
@@ -2013,13 +2013,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
         val firstViolationArray = getFirst[Array[String]](col, e => e.size == 3 && e.contains("1") && e.contains("2") && e.contains("8") )
         val firstViolation = decorateToStringValue(firstViolationArray)
         e.message should be (Some("'all' inspection failed, because: \n" +
-                                  "  at index " + getIndex(col, firstViolationArray) + ", " + firstViolation + " contained the same elements as " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 7) + ") \n" +
+                                  "  at index " + getIndex(col, firstViolationArray) + ", " + firstViolation + " contained the same elements as " + decorateToStringValue(right) + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 7) + ") \n" +
                                   "in " + decorateToStringValue(col)))
         e.getCause match {
           case tfe: exceptions.TestFailedException =>
             tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
             tfe.failedCodeLineNumber should be (Some(thisLineNumber - 12))
-            tfe.message should be (Some(firstViolation + " contained the same elements as " + right))
+            tfe.message should be (Some(firstViolation + " contained the same elements as " + decorateToStringValue(right)))
             tfe.getCause should be (null)
           case other => fail("Expected cause to be TestFailedException, but got: " + other)
         }
@@ -2043,13 +2043,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirst[GenSeq[String]](col, e => e.size == 3 && e.exists(_ == "1") && e.exists(_ == "2") && e.exists(_ == "8") )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " contained the same elements as " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " contained the same elements as " + decorateToStringValue(right) + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(firstViolation + " contained the same elements as " + right))
+              tfe.message should be (Some(decorateToStringValue(firstViolation) + " contained the same elements as " + decorateToStringValue(right)))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }
@@ -2074,13 +2074,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirst[GenMap[String, String]](col, map => map.size == 3 && map.exists(e => e._1 == "1" && e._2 == "one") && map.exists(e => e._1 == "2" && e._2 == "two") && map.exists(e => e._1 == "8" && e._2 == "eight") )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " contained the same elements as " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " contained the same elements as " + decorateToStringValue(right) + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(firstViolation.toString + " contained the same elements as " + right.toString))
+              tfe.message should be (Some(decorateToStringValue(firstViolation) + " contained the same elements as " + decorateToStringValue(right)))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }
@@ -2108,13 +2108,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirstNot[GenTraversable[String]](col, e => e.size == 3 && e.toList(0) == "1" && e.toList(1) == "2" && e.toList(2) == "8" )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " did not contain the same elements in the same (iterated) order as " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(right) + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(firstViolation + " did not contain the same elements in the same (iterated) order as " + right))
+              tfe.message should be (Some(decorateToStringValue(firstViolation) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(right)))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }
@@ -2136,13 +2136,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
         val firstViolationArray = getFirstNot[Array[String]](col, e => e.size == 3 && e(0) == "1" && e(1) == "2" && e(2) == "8" )
         val firstViolation = decorateToStringValue(firstViolationArray)
         e.message should be (Some("'all' inspection failed, because: \n" +
-                                  "  at index " + getIndex(col, firstViolationArray) + ", " + firstViolation + " did not contain the same elements in the same (iterated) order as " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 7) + ") \n" +
+                                  "  at index " + getIndex(col, firstViolationArray) + ", " + firstViolation + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(right) + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 7) + ") \n" +
                                   "in " + decorateToStringValue(col)))
         e.getCause match {
           case tfe: exceptions.TestFailedException =>
             tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
             tfe.failedCodeLineNumber should be (Some(thisLineNumber - 12))
-            tfe.message should be (Some(firstViolation + " did not contain the same elements in the same (iterated) order as " + right))
+            tfe.message should be (Some(firstViolation + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(right)))
             tfe.getCause should be (null)
           case other => fail("Expected cause to be TestFailedException, but got: " + other)
         }
@@ -2166,13 +2166,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirstNot[GenSeq[String]](col, e => e.size == 3 && e(0) == "1" && e(1) == "2" && e(2) == "8" )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " did not contain the same elements in the same (iterated) order as " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(right) + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(firstViolation + " did not contain the same elements in the same (iterated) order as " + right))
+              tfe.message should be (Some(decorateToStringValue(firstViolation) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(right)))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }
@@ -2197,13 +2197,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirst[GenTraversable[String]](col, e => e.size == 3 && e.toList(0) == "1" && e.toList(1) == "2" && e.toList(2) == "8" )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " contained the same elements in the same (iterated) order as " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(right) + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(firstViolation + " contained the same elements in the same (iterated) order as " + right))
+              tfe.message should be (Some(decorateToStringValue(firstViolation) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(right)))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }
@@ -2225,13 +2225,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
         val firstViolationArray = getFirst[Array[String]](col, e => e.size == 3 && e(0) == "1" && e(1) == "2" && e(2) == "8" )
         val firstViolation = decorateToStringValue(firstViolationArray)
         e.message should be (Some("'all' inspection failed, because: \n" +
-                                  "  at index " + getIndex(col, firstViolationArray) + ", " + firstViolation + " contained the same elements in the same (iterated) order as " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 7) + ") \n" +
+                                  "  at index " + getIndex(col, firstViolationArray) + ", " + firstViolation + " contained the same elements in the same (iterated) order as " + decorateToStringValue(right) + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 7) + ") \n" +
                                   "in " + decorateToStringValue(col)))
         e.getCause match {
           case tfe: exceptions.TestFailedException =>
             tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
             tfe.failedCodeLineNumber should be (Some(thisLineNumber - 12))
-            tfe.message should be (Some(firstViolation + " contained the same elements in the same (iterated) order as " + right))
+            tfe.message should be (Some(firstViolation + " contained the same elements in the same (iterated) order as " + decorateToStringValue(right)))
             tfe.getCause should be (null)
           case other => fail("Expected cause to be TestFailedException, but got: " + other)
         }
@@ -2255,13 +2255,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirst[GenSeq[String]](col, e => e.size == 3 && e(0) == "1" && e(1) == "2" && e(2) == "8" )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " contained the same elements in the same (iterated) order as " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(right) + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(firstViolation + " contained the same elements in the same (iterated) order as " + right))
+              tfe.message should be (Some(decorateToStringValue(firstViolation) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(right)))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }
@@ -2289,13 +2289,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirstNot[GenTraversable[String]](col, e => e.size == 3 && e.exists(_ == "1") && e.exists(_ == "2") && e.exists(_ == "8") )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " did not contain all of " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " did not contain all of " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(firstViolation + " did not contain all of " + right))
+              tfe.message should be (Some(decorateToStringValue(firstViolation) + " did not contain all of " + right))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }
@@ -2347,13 +2347,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirstNot[GenSeq[String]](col, e => e.size == 3 && e.exists(_ == "1") && e.exists(_ == "2") && e.exists(_ == "8") )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " did not contain all of " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " did not contain all of " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(firstViolation + " did not contain all of " + right))
+              tfe.message should be (Some(decorateToStringValue(firstViolation) + " did not contain all of " + right))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }
@@ -2378,13 +2378,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirstNot[GenMap[String, String]](col, map => map.size == 3 && map.exists(e => e._1 == "1" && e._2 == "one") && map.exists(e => e._1 == "2" && e._2 == "two") && map.exists(e => e._1 == "8" && e._2 == "eight") )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " did not contain all of " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " did not contain all of " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(firstViolation.toString + " did not contain all of " + right))
+              tfe.message should be (Some(decorateToStringValue(firstViolation) + " did not contain all of " + right))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }
@@ -2409,13 +2409,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirst[GenTraversable[String]](col, e => e.size == 3 && e.exists(_ == "1") && e.exists(_ == "2") && e.exists(_ == "8") )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " contained all of " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " contained all of " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(firstViolation + " contained all of " + right))
+              tfe.message should be (Some(decorateToStringValue(firstViolation) + " contained all of " + right))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }
@@ -2467,13 +2467,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirst[GenSeq[String]](col, e => e.size == 3 && e.exists(_ == "1") && e.exists(_ == "2") && e.exists(_ == "8") )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " contained all of " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " contained all of " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(firstViolation + " contained all of " + right))
+              tfe.message should be (Some(decorateToStringValue(firstViolation) + " contained all of " + right))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }
@@ -2498,13 +2498,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirst[GenMap[String, String]](col, map => map.size == 3 && map.toList(0)._1 == "1" && map.toList(0)._2 == "one" && map.toList(1)._1 == "2" && map.toList(1)._2 == "two" && map.toList(2)._1 == "8" && map.toList(2)._2 == "eight" )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " contained all of (" + right.mkString(", ") + ") (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " contained all of (" + right.mkString(", ") + ") (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(firstViolation.toString + " contained all of (" + right.mkString(", ") + ")"))
+              tfe.message should be (Some(decorateToStringValue(firstViolation) + " contained all of (" + right.mkString(", ") + ")"))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }
@@ -2532,13 +2532,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirstNot[GenTraversable[String]](col, e => e.size == 3 && e.toList(0) == "1" && e.toList(1) == "2" && e.toList(2) == "8" )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " did not contain all of " + right + " in order (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " did not contain all of " + right + " in order (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(firstViolation + " did not contain all of " + right + " in order"))
+              tfe.message should be (Some(decorateToStringValue(firstViolation) + " did not contain all of " + right + " in order"))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }
@@ -2590,13 +2590,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirstNot[GenSeq[String]](col, e => e.size == 3 && e(0) == "1" && e(1) == "2" && e(2) == "8" )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " did not contain all of " + right + " in order (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " did not contain all of " + right + " in order (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(firstViolation + " did not contain all of " + right + " in order"))
+              tfe.message should be (Some(decorateToStringValue(firstViolation) + " did not contain all of " + right + " in order"))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }
@@ -2621,13 +2621,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirst[GenTraversable[String]](col, e => e.size == 3 && e.toList(0) == "1" && e.toList(1) == "2" && e.toList(2) == "8" )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " contained all of " + right + " in order (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " contained all of " + right + " in order (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(firstViolation + " contained all of " + right + " in order"))
+              tfe.message should be (Some(decorateToStringValue(firstViolation) + " contained all of " + right + " in order"))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }
@@ -2679,13 +2679,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirst[GenSeq[String]](col, e => e.size == 3 && e(0) == "1" && e(1) == "2" && e(2) == "8" )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " contained all of " + right + " in order (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " contained all of " + right + " in order (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(firstViolation + " contained all of " + right + " in order"))
+              tfe.message should be (Some(decorateToStringValue(firstViolation) + " contained all of " + right + " in order"))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }
@@ -2713,13 +2713,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirstNot[GenTraversable[String]](col, e => e.exists(_ == "3") || e.exists(_ == "5") || e.exists(_ == "7") )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " did not contain at least one of " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " did not contain at least one of " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(firstViolation + " did not contain at least one of " + right))
+              tfe.message should be (Some(decorateToStringValue(firstViolation) + " did not contain at least one of " + right))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }
@@ -2771,13 +2771,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirstNot[GenSeq[String]](col, e => e.exists(_ == "3") || e.exists(_ == "5") || e.exists(_ == "9") )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " did not contain at least one of " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " did not contain at least one of " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(firstViolation + " did not contain at least one of " + right))
+              tfe.message should be (Some(decorateToStringValue(firstViolation) + " did not contain at least one of " + right))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }
@@ -2802,13 +2802,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirstNot[GenMap[String, String]](col, map => map.exists(e => e._1 == "3" && e._2 == "three") || map.exists(e => e._1 == "5" && e._2 == "five") || map.exists(e => e._1 == "7" && e._2 == "seven") )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " did not contain at least one of " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " did not contain at least one of " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(firstViolation.toString + " did not contain at least one of " + right))
+              tfe.message should be (Some(decorateToStringValue(firstViolation) + " did not contain at least one of " + right))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }
@@ -2833,13 +2833,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirst[GenTraversable[String]](col, e => e.exists(_ == "6") || e.exists(_ == "7") || e.exists(_ == "8") )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " contained at least one of " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " contained at least one of " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(firstViolation + " contained at least one of " + right))
+              tfe.message should be (Some(decorateToStringValue(firstViolation) + " contained at least one of " + right))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }
@@ -2891,13 +2891,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirst[GenSeq[String]](col, e => e.exists(_ == "6") || e.exists(_ == "7") || e.exists(_ == "8") )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " contained at least one of " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " contained at least one of " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(firstViolation + " contained at least one of " + right))
+              tfe.message should be (Some(decorateToStringValue(firstViolation) + " contained at least one of " + right))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }
@@ -2922,13 +2922,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirst[GenMap[String, String]](col, map => map.exists(t => t._1 == "6" && t._2 == "six") || map.exists(t => t._1 == "7" && t._2 == "seven") || map.exists(t => t._1 == "8" && t._2 == "eight") )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " contained at least one of (" + right.mkString(", ") + ") (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " contained at least one of (" + right.mkString(", ") + ") (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(firstViolation.toString + " contained at least one of (" + right.mkString(", ") + ")"))
+              tfe.message should be (Some(decorateToStringValue(firstViolation) + " contained at least one of (" + right.mkString(", ") + ")"))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }
@@ -2956,13 +2956,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirstNot[GenTraversable[String]](col, e => e.size == 3 && e.exists(_ == "1") && e.exists(_ == "2") && e.exists(_ == "8") )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " did not contain only " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " did not contain only " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(firstViolation + " did not contain only " + right))
+              tfe.message should be (Some(decorateToStringValue(firstViolation) + " did not contain only " + right))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }
@@ -3014,13 +3014,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirstNot[GenSeq[String]](col, e => e.size == 3 && e.exists(_ == "1") && e.exists(_ == "2") && e.exists(_ == "8") )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " did not contain only " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " did not contain only " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(firstViolation + " did not contain only " + right))
+              tfe.message should be (Some(decorateToStringValue(firstViolation) + " did not contain only " + right))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }
@@ -3045,13 +3045,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirstNot[GenMap[String, String]](col, map => map.size == 3 && map.exists(e => e._1 == "1" && e._2 == "one") && map.exists(e => e._1 == "2" && e._2 == "two") && map.exists(e => e._1 == "8" && e._2 == "eight") )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " did not contain only " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " did not contain only " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(firstViolation.toString + " did not contain only " + right))
+              tfe.message should be (Some(decorateToStringValue(firstViolation) + " did not contain only " + right))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }
@@ -3076,13 +3076,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirst[GenTraversable[String]](col, e => e.size == 3 && e.exists(_ == "1") && e.exists(_ == "2") && e.exists(_ == "8") )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " contained only " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " contained only " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(firstViolation + " contained only " + right))
+              tfe.message should be (Some(decorateToStringValue(firstViolation) + " contained only " + right))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }
@@ -3134,13 +3134,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirst[GenSeq[String]](col, e => e.size == 3 && e.exists(_ == "1") && e.exists(_ == "2") && e.exists(_ == "8") )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " contained only " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " contained only " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(firstViolation + " contained only " + right))
+              tfe.message should be (Some(decorateToStringValue(firstViolation) + " contained only " + right))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }
@@ -3165,13 +3165,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirst[GenMap[String, String]](col, map => map.size == 3 && map.exists(t => t._1 == "1" && t._2 == "one") && map.exists(t => t._1 == "2" && t._2 == "two") && map.exists(t => t._1 == "8" && t._2 == "eight") )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " contained only (" + right.mkString(", ") + ") (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " contained only (" + right.mkString(", ") + ") (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(firstViolation.toString + " contained only (" + right.mkString(", ") + ")"))
+              tfe.message should be (Some(decorateToStringValue(firstViolation) + " contained only (" + right.mkString(", ") + ")"))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }
@@ -3199,13 +3199,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirstNot[GenTraversable[String]](col, e => e.size == 3 && e.toList(0) == "1" && e.toList(1) == "2" && e.toList(2) == "8" )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " did not contain only " + right + " in order (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " did not contain only " + right + " in order (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(firstViolation + " did not contain only " + right + " in order"))
+              tfe.message should be (Some(decorateToStringValue(firstViolation) + " did not contain only " + right + " in order"))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }
@@ -3257,13 +3257,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirstNot[GenSeq[String]](col, e => e.size == 3 && e(0) == "1" && e(1) == "2" && e(2) == "8" )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " did not contain only " + right + " in order (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " did not contain only " + right + " in order (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(firstViolation + " did not contain only " + right + " in order"))
+              tfe.message should be (Some(decorateToStringValue(firstViolation) + " did not contain only " + right + " in order"))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }
@@ -3288,13 +3288,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirst[GenTraversable[String]](col, e => e.size == 3 && e.toList(0) == "1" && e.toList(1) == "2" && e.toList(2) == "8" )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " contained only " + right + " in order (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " contained only " + right + " in order (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(firstViolation + " contained only " + right + " in order"))
+              tfe.message should be (Some(decorateToStringValue(firstViolation) + " contained only " + right + " in order"))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }
@@ -3346,13 +3346,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirst[GenSeq[String]](col, e => e.size == 3 && e(0) == "1" && e(1) == "2" && e(2) == "8" )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " contained only " + right + " in order (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " contained only " + right + " in order (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(firstViolation + " contained only " + right + " in order"))
+              tfe.message should be (Some(decorateToStringValue(firstViolation) + " contained only " + right + " in order"))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }
@@ -3380,13 +3380,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirst[GenTraversable[String]](col, e => e.exists(_ == "1") || e.exists(_ == "2") || e.exists(_ == "8") )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " contained one of " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " contained one of " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(firstViolation + " contained one of " + right))
+              tfe.message should be (Some(decorateToStringValue(firstViolation) + " contained one of " + right))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }
@@ -3438,13 +3438,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirst[GenSeq[String]](col, e => e.exists(_ == "1") || e.exists(_ == "2") || e.exists(_ == "8") )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " contained one of " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " contained one of " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(firstViolation + " contained one of " + right))
+              tfe.message should be (Some(decorateToStringValue(firstViolation) + " contained one of " + right))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }
@@ -3469,13 +3469,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirst[GenMap[String, String]](col, map => map.exists(e => e._1 == "1" && e._2 == "one") || map.exists(e => e._1 == "2" && e._2 == "two") || map.exists(e => e._1 == "8" && e._2 == "eight") )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " contained one of " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " contained one of " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(firstViolation.toString + " contained one of " + right))
+              tfe.message should be (Some(decorateToStringValue(firstViolation) + " contained one of " + right))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }
@@ -3500,13 +3500,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirst[GenTraversable[String]](col, e => e.exists(_ != "6") && e.exists(_ != "7") && e.exists(_ != "9") )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " did not contain one of " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " did not contain one of " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(firstViolation + " did not contain one of " + right))
+              tfe.message should be (Some(decorateToStringValue(firstViolation) + " did not contain one of " + right))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }
@@ -3558,13 +3558,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirst[GenSeq[String]](col, e => e.exists(_ != "6") && e.exists(_ != "7") && e.exists(_ != "9") )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " did not contain one of " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " did not contain one of " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(firstViolation + " did not contain one of " + right))
+              tfe.message should be (Some(decorateToStringValue(firstViolation) + " did not contain one of " + right))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }
@@ -3589,13 +3589,13 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirst[GenMap[String, String]](col, map => map.exists(t => t._1 != "6" && t._2 != "six") && map.exists(t => t._1 != "7" && t._2 != "seven") && map.exists(t => t._1 != "9" && t._2 != "nine") )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " did not contain one of (" + right.mkString(", ") + ") (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(firstViolation) + " did not contain one of (" + right.mkString(", ") + ") (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(firstViolation.toString + " did not contain one of (" + right.mkString(", ") + ")"))
+              tfe.message should be (Some(decorateToStringValue(firstViolation) + " did not contain one of (" + right.mkString(", ") + ")"))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }

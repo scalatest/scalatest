@@ -17,6 +17,7 @@ package org.scalatest
 
 import org.scalautils.Equality
 import SharedHelpers._
+import FailureMessages.decorateToStringValue
 
 class ContainMatcherAndOrEqualitySpec extends Spec with Matchers {
   
@@ -112,21 +113,21 @@ class ContainMatcherAndOrEqualitySpec extends Spec with Matchers {
         val e1 = intercept[exceptions.TestFailedException] {
           left should (contain theSameElementsInOrderAs right and contain theSameElementsAs right) 
         }
-        e1.message should be (Some(left + " did not contain the same elements in the same (iterated) order as " + right))
+        e1.message should be (Some(decorateToStringValue(left) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(right)))
         e1.failedCodeFileName should be (Some("ContainMatcherAndOrEqualitySpec.scala"))
         e1.failedCodeLineNumber should be (Some(thisLineNumber - 4))
         
         val e2 = intercept[exceptions.TestFailedException] {
           left should ((contain theSameElementsInOrderAs right) and (contain theSameElementsAs right)) 
         }
-        e2.message should be (Some(left + " did not contain the same elements in the same (iterated) order as " + right))
+        e2.message should be (Some(decorateToStringValue(left) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(right)))
         e2.failedCodeFileName should be (Some("ContainMatcherAndOrEqualitySpec.scala"))
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 4))
         
         val e3 = intercept[exceptions.TestFailedException] {
           left should (contain theSameElementsInOrderAs right and (contain theSameElementsAs right)) 
         }
-        e3.message should be (Some(left + " did not contain the same elements in the same (iterated) order as " + right))
+        e3.message should be (Some(decorateToStringValue(left) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(right)))
         e3.failedCodeFileName should be (Some("ContainMatcherAndOrEqualitySpec.scala"))
         e3.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
@@ -137,21 +138,21 @@ class ContainMatcherAndOrEqualitySpec extends Spec with Matchers {
         val e1 = intercept[exceptions.TestFailedException] {
           left should (contain theSameElementsAs right and contain theSameElementsInOrderAs right) 
         }
-        e1.message should be (Some(left + " contained the same elements as " + right + ", but " + left + " did not contain the same elements in the same (iterated) order as " + right))
+        e1.message should be (Some(decorateToStringValue(left) + " contained the same elements as " + decorateToStringValue(right) + ", but " + decorateToStringValue(left) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(right)))
         e1.failedCodeFileName should be (Some("ContainMatcherAndOrEqualitySpec.scala"))
         e1.failedCodeLineNumber should be (Some(thisLineNumber - 4))
         
         val e2 = intercept[exceptions.TestFailedException] {
           left should ((contain theSameElementsAs right) and (contain theSameElementsInOrderAs right)) 
         }
-        e2.message should be (Some(left + " contained the same elements as " + right + ", but " + left + " did not contain the same elements in the same (iterated) order as " + right))
+        e2.message should be (Some(decorateToStringValue(left) + " contained the same elements as " + decorateToStringValue(right) + ", but " + decorateToStringValue(left) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(right)))
         e2.failedCodeFileName should be (Some("ContainMatcherAndOrEqualitySpec.scala"))
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 4))
         
         val e3 = intercept[exceptions.TestFailedException] {
           left should (contain theSameElementsAs right and (contain theSameElementsInOrderAs right)) 
         }
-        e3.message should be (Some(left + " contained the same elements as " + right + ", but " + left + " did not contain the same elements in the same (iterated) order as " + right))
+        e3.message should be (Some(decorateToStringValue(left) + " contained the same elements as " + decorateToStringValue(right) + ", but " + decorateToStringValue(left) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(right)))
         e3.failedCodeFileName should be (Some("ContainMatcherAndOrEqualitySpec.scala"))
         e3.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
@@ -282,21 +283,21 @@ class ContainMatcherAndOrEqualitySpec extends Spec with Matchers {
         val e1 = intercept[exceptions.TestFailedException] {
           left should (not contain theSameElementsInOrderAs (right1) and contain theSameElementsAs right2) 
         }
-        e1.message should be (Some(left + " contained the same elements in the same (iterated) order as " + right1))
+        e1.message should be (Some(decorateToStringValue(left) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(right1)))
         e1.failedCodeFileName should be (Some("ContainMatcherAndOrEqualitySpec.scala"))
         e1.failedCodeLineNumber should be (Some(thisLineNumber - 4))
         
         val e2 = intercept[exceptions.TestFailedException] {
           left should ((not contain theSameElementsInOrderAs (right1)) and (contain theSameElementsAs right2)) 
         }
-        e2.message should be (Some(left + " contained the same elements in the same (iterated) order as " + right1))
+        e2.message should be (Some(decorateToStringValue(left) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(right1)))
         e2.failedCodeFileName should be (Some("ContainMatcherAndOrEqualitySpec.scala"))
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 4))
         
         val e3 = intercept[exceptions.TestFailedException] {
           left should (not { contain theSameElementsInOrderAs (right1) } and contain theSameElementsAs right2) 
         }
-        e3.message should be (Some(left + " contained the same elements in the same (iterated) order as " + right1))
+        e3.message should be (Some(decorateToStringValue(left) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(right1)))
         e3.failedCodeFileName should be (Some("ContainMatcherAndOrEqualitySpec.scala"))
         e3.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
@@ -310,21 +311,21 @@ class ContainMatcherAndOrEqualitySpec extends Spec with Matchers {
         val e1 = intercept[exceptions.TestFailedException] {
           left should (contain theSameElementsAs right1 and not contain theSameElementsInOrderAs (right2)) 
         }
-        e1.message should be (Some(left + " contained the same elements as " + right1 + ", but " + left + " contained the same elements in the same (iterated) order as " + right2))
+        e1.message should be (Some(decorateToStringValue(left) + " contained the same elements as " + decorateToStringValue(right1) + ", but " + decorateToStringValue(left) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(right2)))
         e1.failedCodeFileName should be (Some("ContainMatcherAndOrEqualitySpec.scala"))
         e1.failedCodeLineNumber should be (Some(thisLineNumber - 4))
         
         val e2 = intercept[exceptions.TestFailedException] {
           left should ((contain theSameElementsAs right1) and (not contain theSameElementsInOrderAs (right2))) 
         }
-        e2.message should be (Some(left + " contained the same elements as " + right1 + ", but " + left + " contained the same elements in the same (iterated) order as " + right2))
+        e2.message should be (Some(decorateToStringValue(left) + " contained the same elements as " + decorateToStringValue(right1) + ", but " + decorateToStringValue(left) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(right2)))
         e2.failedCodeFileName should be (Some("ContainMatcherAndOrEqualitySpec.scala"))
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 4))
         
         val e3 = intercept[exceptions.TestFailedException] {
           left should (contain theSameElementsAs right1 and not { contain theSameElementsInOrderAs (right2) }) 
         }
-        e3.message should be (Some(left + " contained the same elements as " + right1 + ", but " + left + " contained the same elements in the same (iterated) order as " + right2))
+        e3.message should be (Some(decorateToStringValue(left) + " contained the same elements as " + decorateToStringValue(right1) + ", but " + decorateToStringValue(left) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(right2)))
         e3.failedCodeFileName should be (Some("ContainMatcherAndOrEqualitySpec.scala"))
         e3.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
@@ -338,21 +339,21 @@ class ContainMatcherAndOrEqualitySpec extends Spec with Matchers {
         val e1 = intercept[exceptions.TestFailedException] {
           left should (not contain theSameElementsInOrderAs (right1) and not contain theSameElementsAs (right2)) 
         }
-        e1.message should be (Some(left + " contained the same elements in the same (iterated) order as " + right1))
+        e1.message should be (Some(decorateToStringValue(left) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(right1)))
         e1.failedCodeFileName should be (Some("ContainMatcherAndOrEqualitySpec.scala"))
         e1.failedCodeLineNumber should be (Some(thisLineNumber - 4))
         
         val e2 = intercept[exceptions.TestFailedException] {
           left should ((not contain theSameElementsInOrderAs (right1)) and (not contain theSameElementsAs (right2))) 
         }
-        e2.message should be (Some(left + " contained the same elements in the same (iterated) order as " + right1))
+        e2.message should be (Some(decorateToStringValue(left) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(right1)))
         e2.failedCodeFileName should be (Some("ContainMatcherAndOrEqualitySpec.scala"))
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 4))
         
         val e3 = intercept[exceptions.TestFailedException] {
           left should (not { contain theSameElementsInOrderAs (right1) } and not { contain theSameElementsAs (right2) }) 
         }
-        e3.message should be (Some(left + " contained the same elements in the same (iterated) order as " + right1))
+        e3.message should be (Some(decorateToStringValue(left) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(right1)))
         e3.failedCodeFileName should be (Some("ContainMatcherAndOrEqualitySpec.scala"))
         e3.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
@@ -443,21 +444,21 @@ class ContainMatcherAndOrEqualitySpec extends Spec with Matchers {
         val e1 = intercept[exceptions.TestFailedException] {
           left should (contain theSameElementsAs right1 or contain theSameElementsInOrderAs right2) 
         }
-        e1.message should be (Some(left + " did not contain the same elements as " + right1 + ", and " + left + " did not contain the same elements in the same (iterated) order as " + right2))
+        e1.message should be (Some(decorateToStringValue(left) + " did not contain the same elements as " + decorateToStringValue(right1) + ", and " + decorateToStringValue(left) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(right2)))
         e1.failedCodeFileName should be (Some("ContainMatcherAndOrEqualitySpec.scala"))
         e1.failedCodeLineNumber should be (Some(thisLineNumber - 4))
         
         val e2 = intercept[exceptions.TestFailedException] {
           left should ((contain theSameElementsAs right1) or (contain theSameElementsInOrderAs right2))
         }
-        e2.message should be (Some(left + " did not contain the same elements as " + right1 + ", and " + left + " did not contain the same elements in the same (iterated) order as " + right2))
+        e2.message should be (Some(decorateToStringValue(left) + " did not contain the same elements as " + decorateToStringValue(right1) + ", and " + decorateToStringValue(left) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(right2)))
         e2.failedCodeFileName should be (Some("ContainMatcherAndOrEqualitySpec.scala"))
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 4))
         
         val e3 = intercept[exceptions.TestFailedException] {
           left should (contain theSameElementsAs right1 or (contain theSameElementsInOrderAs right2))
         }
-        e3.message should be (Some(left + " did not contain the same elements as " + right1 + ", and " + left + " did not contain the same elements in the same (iterated) order as " + right2))
+        e3.message should be (Some(decorateToStringValue(left) + " did not contain the same elements as " + decorateToStringValue(right1) + ", and " + decorateToStringValue(left) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(right2)))
         e3.failedCodeFileName should be (Some("ContainMatcherAndOrEqualitySpec.scala"))
         e3.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
@@ -588,21 +589,21 @@ class ContainMatcherAndOrEqualitySpec extends Spec with Matchers {
         val e1 = intercept[exceptions.TestFailedException] {
           left should (not contain theSameElementsInOrderAs (right1) or contain theSameElementsAs right2) 
         }
-        e1.message should be (Some(left + " contained the same elements in the same (iterated) order as " + right1 + ", and " + left + " did not contain the same elements as " + right2))
+        e1.message should be (Some(decorateToStringValue(left) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(right1) + ", and " + decorateToStringValue(left) + " did not contain the same elements as " + decorateToStringValue(right2)))
         e1.failedCodeFileName should be (Some("ContainMatcherAndOrEqualitySpec.scala"))
         e1.failedCodeLineNumber should be (Some(thisLineNumber - 4))
         
         val e2 = intercept[exceptions.TestFailedException] {
           left should ((not contain theSameElementsInOrderAs (right1)) or (contain theSameElementsAs right2)) 
         }
-        e2.message should be (Some(left + " contained the same elements in the same (iterated) order as "+ right1 + ", and " + left + " did not contain the same elements as " + right2))
+        e2.message should be (Some(decorateToStringValue(left) + " contained the same elements in the same (iterated) order as "+ decorateToStringValue(right1) + ", and " + decorateToStringValue(left) + " did not contain the same elements as " + decorateToStringValue(right2)))
         e2.failedCodeFileName should be (Some("ContainMatcherAndOrEqualitySpec.scala"))
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 4))
         
         val e3 = intercept[exceptions.TestFailedException] {
           left should (not { contain theSameElementsInOrderAs (right1) } or contain theSameElementsAs right2) 
         }
-        e3.message should be (Some(left + " contained the same elements in the same (iterated) order as "+ right1 + ", and " + left + " did not contain the same elements as " + right2))
+        e3.message should be (Some(decorateToStringValue(left) + " contained the same elements in the same (iterated) order as "+ decorateToStringValue(right1) + ", and " + decorateToStringValue(left) + " did not contain the same elements as " + decorateToStringValue(right2)))
         e3.failedCodeFileName should be (Some("ContainMatcherAndOrEqualitySpec.scala"))
         e3.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
@@ -615,21 +616,21 @@ class ContainMatcherAndOrEqualitySpec extends Spec with Matchers {
         val e1 = intercept[exceptions.TestFailedException] {
           left should (contain theSameElementsInOrderAs (right) or not contain theSameElementsAs (right)) 
         }
-        e1.message should be (Some(left + " did not contain the same elements in the same (iterated) order as " + right + ", and " + left + " contained the same elements as " + right))
+        e1.message should be (Some(decorateToStringValue(left) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(right) + ", and " + decorateToStringValue(left) + " contained the same elements as " + decorateToStringValue(right)))
         e1.failedCodeFileName should be (Some("ContainMatcherAndOrEqualitySpec.scala"))
         e1.failedCodeLineNumber should be (Some(thisLineNumber - 4))
         
         val e2 = intercept[exceptions.TestFailedException] {
           left should ((contain theSameElementsInOrderAs (right)) or (not contain theSameElementsAs (right))) 
         }
-        e2.message should be (Some(left + " did not contain the same elements in the same (iterated) order as " + right + ", and " + left + " contained the same elements as " + right))
+        e2.message should be (Some(decorateToStringValue(left) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(right) + ", and " + decorateToStringValue(left) + " contained the same elements as " + decorateToStringValue(right)))
         e2.failedCodeFileName should be (Some("ContainMatcherAndOrEqualitySpec.scala"))
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 4))
         
         val e3 = intercept[exceptions.TestFailedException] {
           left should (contain theSameElementsInOrderAs (right) or not { contain theSameElementsAs (right) }) 
         }
-        e3.message should be (Some(left + " did not contain the same elements in the same (iterated) order as " + right + ", and " + left + " contained the same elements as " + right))
+        e3.message should be (Some(decorateToStringValue(left) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(right) + ", and " + decorateToStringValue(left) + " contained the same elements as " + decorateToStringValue(right)))
         e3.failedCodeFileName should be (Some("ContainMatcherAndOrEqualitySpec.scala"))
         e3.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
@@ -643,21 +644,21 @@ class ContainMatcherAndOrEqualitySpec extends Spec with Matchers {
         val e1 = intercept[exceptions.TestFailedException] {
           left should (not contain theSameElementsInOrderAs (right1) or not contain theSameElementsAs (right2)) 
         }
-        e1.message should be (Some(left + " contained the same elements in the same (iterated) order as " + right1 + ", and " + left + " contained the same elements as " + right2))
+        e1.message should be (Some(decorateToStringValue(left) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(right1) + ", and " + decorateToStringValue(left) + " contained the same elements as " + decorateToStringValue(right2)))
         e1.failedCodeFileName should be (Some("ContainMatcherAndOrEqualitySpec.scala"))
         e1.failedCodeLineNumber should be (Some(thisLineNumber - 4))
         
         val e2 = intercept[exceptions.TestFailedException] {
           left should ((not contain theSameElementsInOrderAs (right1)) or (not contain theSameElementsAs (right2))) 
         }
-        e2.message should be (Some(left + " contained the same elements in the same (iterated) order as " + right1 + ", and " + left + " contained the same elements as " + right2))
+        e2.message should be (Some(decorateToStringValue(left) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(right1) + ", and " + decorateToStringValue(left) + " contained the same elements as " + decorateToStringValue(right2)))
         e2.failedCodeFileName should be (Some("ContainMatcherAndOrEqualitySpec.scala"))
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 4))
         
         val e3 = intercept[exceptions.TestFailedException] {
           left should (not contain theSameElementsInOrderAs (right1) or not { contain theSameElementsAs (right2) }) 
         }
-        e3.message should be (Some(left + " contained the same elements in the same (iterated) order as " + right1 + ", and " + left + " contained the same elements as " + right2))
+        e3.message should be (Some(decorateToStringValue(left) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(right1) + ", and " + decorateToStringValue(left) + " contained the same elements as " + decorateToStringValue(right2)))
         e3.failedCodeFileName should be (Some("ContainMatcherAndOrEqualitySpec.scala"))
         e3.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }

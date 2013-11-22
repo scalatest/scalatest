@@ -17,6 +17,7 @@ package org.scalatest
 
 import matchers._
 import SharedHelpers._
+import FailureMessages.decorateToStringValue
 
 class AMatcherSpec extends Spec with Matchers {
 
@@ -203,7 +204,7 @@ class AMatcherSpec extends Spec with Matchers {
         val e = intercept[exceptions.TestFailedException] {
           Map(1 -> "one", 2 -> "two", 3 -> "three") should not be a (positiveSizeMap)
         }
-        e.message should be (Some(Map(1 -> "one", 2 -> "two", 3 -> "three") + " was a positive size map"))
+        e.message should be (Some(decorateToStringValue(Map(1 -> "one", 2 -> "two", 3 -> "three")) + " was a positive size map"))
         e.failedCodeFileName should be (Some("AMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
