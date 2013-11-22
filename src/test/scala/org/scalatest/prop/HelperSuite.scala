@@ -63,10 +63,13 @@ class HelperSuite extends FunSuite with ShouldMatchers {
     params.minSuccessfulTests should equal (DefaultMinSuccessful)
   }
 
+  def maxDiscardRatio(maxDiscardedTests: Int, minSuccessfulTests: Int): Float =
+    (maxDiscardedTests: Float)/(minSuccessfulTests: Float)
+
   // maxDiscarded
   test("getParams returns passed maxDiscarded config param") {
     val params = getParams(Seq(MaxDiscarded(PassedMaxDiscarded)), defaultConfig)
-    params.maxDiscardedTests should equal (PassedMaxDiscarded + 1)
+    params.maxDiscardRatio should equal (maxDiscardRatio(PassedMaxDiscarded + 1, params.minSuccessfulTests))
   }
 
   test("getParams throws IAE if passed multiple maxDiscarded config params") {
@@ -77,7 +80,7 @@ class HelperSuite extends FunSuite with ShouldMatchers {
 
   test("getParams returns default maxDiscarded config param if none passed") {
     val params = getParams(Seq(MinSuccessful(PassedMinSuccessful)), defaultConfig)
-    params.maxDiscardedTests should equal (DefaultMaxDiscarded + 1)
+    params.maxDiscardRatio should equal (maxDiscardRatio(DefaultMaxDiscarded + 1, params.minSuccessfulTests))
   }
 
   // minSize
@@ -134,7 +137,7 @@ class HelperSuite extends FunSuite with ShouldMatchers {
   test("getParams returns all default if no config params passed") {
     val params = getParams(Seq(), defaultConfig)
     params.minSuccessfulTests should equal (DefaultMinSuccessful)
-    params.maxDiscardedTests should equal (DefaultMaxDiscarded + 1)
+    params.maxDiscardRatio should equal (maxDiscardRatio(DefaultMaxDiscarded + 1, params.minSuccessfulTests))
     params.minSize should equal (DefaultMinSize)
     params.maxSize should equal (DefaultMaxSize)
     params.workers should equal (DefaultWorkers)
@@ -143,7 +146,7 @@ class HelperSuite extends FunSuite with ShouldMatchers {
   test("getParams returns all passed if all config params passed") {
     val params = getParams(Seq(MinSuccessful(PassedMinSuccessful), MaxDiscarded(PassedMaxDiscarded), MinSize(PassedMinSize), MaxSize(PassedMaxSize), Workers(PassedWorkers)), defaultConfig)
     params.minSuccessfulTests should equal (PassedMinSuccessful)
-    params.maxDiscardedTests should equal (PassedMaxDiscarded + 1)
+    params.maxDiscardRatio should equal (maxDiscardRatio(PassedMaxDiscarded + 1, params.minSuccessfulTests))
     params.minSize should equal (PassedMinSize)
     params.maxSize should equal (PassedMaxSize)
     params.workers should equal (PassedWorkers)

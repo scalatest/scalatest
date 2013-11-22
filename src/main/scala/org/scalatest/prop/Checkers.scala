@@ -19,8 +19,8 @@ import org.scalatest._
 import org.scalatest.Suite
 import org.scalacheck.Arbitrary
 import org.scalacheck.Shrink
-import org.scalacheck.Pretty
-import org.scalacheck.Arg
+import org.scalacheck.util.Pretty
+import org.scalacheck.Prop.Arg
 import org.scalacheck.Prop
 import org.scalacheck.Test
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
@@ -208,16 +208,16 @@ repeatedly pass generated data to the function. In this case, the test data is c
  *
  * <p>
  * The previous configuration approach works the same in <code>Checkers</code> as it does in <code>GeneratorDrivenPropertyChecks</code>.
- * Trait <code>Checkers</code> also provides one <code>check</code> method that takes an <code>org.scalacheck.Test.Params</code> object,
+ * Trait <code>Checkers</code> also provides one <code>check</code> method that takes an <code>org.scalacheck.Test.Parameters</code> object,
  * in case you want to configure ScalaCheck that way.
  * </p>
  *
  * <pre class="stHighlight">
  * import org.scalacheck.Prop
- * import org.scalacheck.Test.Params
+ * import org.scalacheck.Test.Parameters
  * import org.scalatest.prop.Checkers._
  *
- * check(Prop.forAll((n: Int) => n + 0 == n), Params(minSuccessfulTests = 5))
+ * check(Prop.forAll((n: Int) => n + 0 == n), Parameters.Default { override val minSuccessfulTests = 5 })
  * </pre>
  *
  * <p>
@@ -342,7 +342,7 @@ trait Checkers extends Configuration {
    * @param prms the test parameters
    * @throws TestFailedException if a test case is discovered for which the property doesn't hold.
    */
-  def check(p: Prop, prms: Test.Params) {
+  def check(p: Prop, prms: Test.Parameters) {
     Checkers.doCheck(p, prms, "Checkers.scala", "check")
   }
 
@@ -367,7 +367,7 @@ trait Checkers extends Configuration {
  */
 object Checkers extends Checkers {
 
-  private[prop] def doCheck(p: Prop, prms: Test.Params, stackDepthFileName: String, stackDepthMethodName: String, argNames: Option[List[String]] = None) {
+  private[prop] def doCheck(p: Prop, prms: Test.Parameters, stackDepthFileName: String, stackDepthMethodName: String, argNames: Option[List[String]] = None) {
 
     val result = Test.check(prms, p)
     if (!result.passed) {
@@ -464,7 +464,7 @@ object Checkers extends Checkers {
     }
   }
   
-  private def getArgsWithSpecifiedNames(argNames: Option[List[String]], scalaCheckArgs: Prop.Args) = {
+  private def getArgsWithSpecifiedNames(argNames: Option[List[String]], scalaCheckArgs: List[Arg[Any]]) = {
     if (argNames.isDefined) {
       // length of scalaCheckArgs should equal length of argNames
       val zipped = argNames.get zip scalaCheckArgs

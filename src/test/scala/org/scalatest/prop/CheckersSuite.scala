@@ -229,7 +229,7 @@ class CheckersSuite extends Suite with Checkers {
     
     val ex7 = intercept[GeneratorDrivenPropertyCheckFailedException] { check(Prop.forAll((n: Int) => n + 0 == n + 1)) }
     expectFileNameLineNumber(ex7, "CheckersSuite.scala", thisLineNumber - 1)
-    val ex8 = intercept[GeneratorDrivenPropertyCheckFailedException] { check(Prop.forAll((n: Int) => n + 0 == n + 1), Test.Params(minSuccessfulTests = 5)) }
+    val ex8 = intercept[GeneratorDrivenPropertyCheckFailedException] { check(Prop.forAll((n: Int) => n + 0 == n + 1), new Test.Parameters.Default { override val minSuccessfulTests = 5 }) }
     expectFileNameLineNumber(ex8, "CheckersSuite.scala", thisLineNumber - 1)
   }
 }
