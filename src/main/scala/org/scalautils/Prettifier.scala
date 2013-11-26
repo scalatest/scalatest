@@ -152,6 +152,15 @@ object Prettifier {
             val defaultToString = aGenTraversable.toString
             val typeName = defaultToString.takeWhile(_ != '(')
             typeName + "(" + aGenTraversable.toIterator.map(apply(_)).mkString(", ") + ")"  // toIterator is needed for consistent ordering
+          case javaCol: java.util.Collection[_] =>
+            // By default java collection follows http://download.java.net/jdk7/archive/b123/docs/api/java/util/AbstractCollection.html#toString()
+            // let's do our best to prettify its element when it is not overriden
+            import scala.collection.JavaConverters._
+            val theToString = javaCol.toString
+            if (theToString.startsWith("[") && theToString.endsWith("]"))
+              "[" + javaCol.iterator().asScala.map(apply(_)).mkString(", ") + "]"
+            else
+              theToString
           case anythingElse => anythingElse.toString
         }
     }

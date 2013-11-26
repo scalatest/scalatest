@@ -18,6 +18,7 @@ package org.scalautils
 import org.scalatest._
 import scala.collection.mutable.WrappedArray
 import scala.util.Success
+import SharedHelpers.{javaList, javaSortedMap}
 
 class PrettifierSpec extends Spec with Matchers {
   object `A Prettifier` {
@@ -163,6 +164,15 @@ class PrettifierSpec extends Spec with Matchers {
     def `should pretty print nested Many(String)` {
       Prettifier.basic(Many(Many("1", "2", "3"), Many("7", "8", "9"))) should be ("Many(Many(1, 2, 3), Many(7, 8, 9))")
     }
+    def `should pretty print Java List` {
+      Prettifier.basic(javaList(1, 2, 3)) should be ("[1, 2, 3]")
+    }
+    def `should pretty print string Java List` {
+      Prettifier.basic(javaList("1", "2", "3")) should be ("[1, 2, 3]")
+    }
+    def `should pretty print nested string Java List` {
+      Prettifier.basic(javaList(javaList("1", "2", "3"))) should be ("[[1, 2, 3]]")
+    }
   }
 
   object `the default Prettifier` {
@@ -276,6 +286,15 @@ class PrettifierSpec extends Spec with Matchers {
     }
     def `should pretty print nested Many(String)` {
       Prettifier.default(Many(Many("1", "2", "3"), Many("7", "8", "9"))) should be ("Many(Many(\"1\", \"2\", \"3\"), Many(\"7\", \"8\", \"9\"))")
+    }
+    def `should pretty print Java List` {
+      Prettifier.default(javaList(1, 2, 3)) should be ("[1, 2, 3]")
+    }
+    def `should pretty print string Java List` {
+      Prettifier.default(javaList("1", "2", "3")) should be ("[\"1\", \"2\", \"3\"]")
+    }
+    def `should pretty print nested string Java List` {
+      Prettifier.default(javaList(javaList("1", "2", "3"))) should be ("[[\"1\", \"2\", \"3\"]]")
     }
   }
 }
