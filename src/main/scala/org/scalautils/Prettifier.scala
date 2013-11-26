@@ -17,6 +17,7 @@ package org.scalautils
 
 import scala.collection._
 import mutable.WrappedArray
+import scala.util.Success
 
 /**
  * A function that given any object will produce a &ldquo;pretty&rdquo; string representation of that object,
@@ -131,6 +132,7 @@ object Prettifier {
           case aString: String => "\"" + aString + "\""
           case aChar: Char =>  "\'" + aChar + "\'"
           case Some(e) => "Some(" + apply(e) + ")"
+          case Success(e) => "Success(" + apply(e) + ")"
           case anArray: Array[_] =>  "Array(" + (anArray map apply).mkString(", ") + ")"
           case aWrappedArray: WrappedArray[_] => "Array(" + (aWrappedArray map apply).mkString(", ") + ")"
           case aGenMap: GenMap[_, _] =>

@@ -17,6 +17,7 @@ package org.scalautils
 
 import org.scalatest._
 import scala.collection.mutable.WrappedArray
+import scala.util.Success
 
 class PrettifierSpec extends Spec with Matchers {
   object `A Prettifier` {
@@ -99,6 +100,15 @@ class PrettifierSpec extends Spec with Matchers {
     def `should pretty print nested Some(String)` {
       Prettifier.basic(Some(Some("8"))) should be ("Some(Some(8))")
     }
+    def `should pretty print Success(Int)` {
+      Prettifier.basic(Success(8)) should be ("Success(8)")
+    }
+    def `should pretty print Success(String)` {
+      Prettifier.basic(Success("8")) should be ("Success(8)")
+    }
+    def `should pretty print nested Success(String)` {
+      Prettifier.basic(Success(Success("8"))) should be ("Success(Success(8))")
+    }
   }
 
   object `the default Prettifier` {
@@ -149,6 +159,15 @@ class PrettifierSpec extends Spec with Matchers {
     }
     def `should pretty print nested Some(String)` {
       Prettifier.default(Some(Some("8"))) should be ("Some(Some(\"8\"))")
+    }
+    def `should pretty print Success(Int)` {
+      Prettifier.default(Success(8)) should be ("Success(8)")
+    }
+    def `should pretty print Success(String)` {
+      Prettifier.default(Success("8")) should be ("Success(\"8\")")
+    }
+    def `should pretty print nested Success(String)` {
+      Prettifier.default(Success(Success("8"))) should be ("Success(Success(\"8\"))")
     }
   }
 }
