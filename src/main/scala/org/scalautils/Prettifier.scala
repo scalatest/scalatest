@@ -137,6 +137,8 @@ object Prettifier {
           case Right(e) => "Right(" + apply(e) + ")"
           case Good(e) => "Good(" + apply(e) + ")"
           case Bad(e) => "Bad(" + apply(e) + ")"
+          case One(e) => "One(" + apply(e) + ")"
+          case many: Many[_] => "Many(" + many.toIterator.map(apply(_)).mkString(", ") + ")"
           case anArray: Array[_] =>  "Array(" + (anArray map apply).mkString(", ") + ")"
           case aWrappedArray: WrappedArray[_] => "Array(" + (aWrappedArray map apply).mkString(", ") + ")"
           case aGenMap: GenMap[_, _] =>

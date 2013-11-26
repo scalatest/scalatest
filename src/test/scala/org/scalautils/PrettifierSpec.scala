@@ -145,6 +145,24 @@ class PrettifierSpec extends Spec with Matchers {
     def `should pretty print nested Bad(String)` {
       Prettifier.basic(Bad(Bad("8"))) should be ("Bad(Bad(8))")
     }
+    def `should pretty print One(Int)` {
+      Prettifier.basic(One(8)) should be ("One(8)")
+    }
+    def `should pretty print One(String)` {
+      Prettifier.basic(One("8")) should be ("One(8)")
+    }
+    def `should pretty print nested One(String)` {
+      Prettifier.basic(One(One("8"))) should be ("One(One(8))")
+    }
+    def `should pretty print Many(Int)` {
+      Prettifier.basic(Many(1, 2, 3)) should be ("Many(1, 2, 3)")
+    }
+    def `should pretty print Many(String)` {
+      Prettifier.basic(Many("1", "2", "3")) should be ("Many(1, 2, 3)")
+    }
+    def `should pretty print nested Many(String)` {
+      Prettifier.basic(Many(Many("1", "2", "3"), Many("7", "8", "9"))) should be ("Many(Many(1, 2, 3), Many(7, 8, 9))")
+    }
   }
 
   object `the default Prettifier` {
@@ -240,6 +258,24 @@ class PrettifierSpec extends Spec with Matchers {
     }
     def `should pretty print nested Bad(String)` {
       Prettifier.default(Bad(Bad("8"))) should be ("Bad(Bad(\"8\"))")
+    }
+    def `should pretty print One(Int)` {
+      Prettifier.default(One(8)) should be ("One(8)")
+    }
+    def `should pretty print One(String)` {
+      Prettifier.default(One("8")) should be ("One(\"8\")")
+    }
+    def `should pretty print nested One(String)` {
+      Prettifier.default(One(One("8"))) should be ("One(One(\"8\"))")
+    }
+    def `should pretty print Many(Int)` {
+      Prettifier.default(Many(1, 2, 3)) should be ("Many(1, 2, 3)")
+    }
+    def `should pretty print Many(String)` {
+      Prettifier.default(Many("1", "2", "3")) should be ("Many(\"1\", \"2\", \"3\")")
+    }
+    def `should pretty print nested Many(String)` {
+      Prettifier.default(Many(Many("1", "2", "3"), Many("7", "8", "9"))) should be ("Many(Many(\"1\", \"2\", \"3\"), Many(\"7\", \"8\", \"9\"))")
     }
   }
 }
