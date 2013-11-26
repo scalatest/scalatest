@@ -127,6 +127,24 @@ class PrettifierSpec extends Spec with Matchers {
     def `should pretty print nested Right(String)` {
       Prettifier.basic(Right(Right("8"))) should be ("Right(Right(8))")
     }
+    def `should pretty print Good(Int)` {
+      Prettifier.basic(Good(8)) should be ("Good(8)")
+    }
+    def `should pretty print Good(String)` {
+      Prettifier.basic(Good("8")) should be ("Good(8)")
+    }
+    def `should pretty print nested Good(String)` {
+      Prettifier.basic(Good(Good("8"))) should be ("Good(Good(8))")
+    }
+    def `should pretty print Bad(Int)` {
+      Prettifier.basic(Bad(8)) should be ("Bad(8)")
+    }
+    def `should pretty print Bad(String)` {
+      Prettifier.basic(Bad("8")) should be ("Bad(8)")
+    }
+    def `should pretty print nested Bad(String)` {
+      Prettifier.basic(Bad(Bad("8"))) should be ("Bad(Bad(8))")
+    }
   }
 
   object `the default Prettifier` {
@@ -204,6 +222,24 @@ class PrettifierSpec extends Spec with Matchers {
     }
     def `should pretty print nested Right(String)` {
       Prettifier.default(Right(Right("8"))) should be ("Right(Right(\"8\"))")
+    }
+    def `should pretty print Good(Int)` {
+      Prettifier.default(Good(8)) should be ("Good(8)")
+    }
+    def `should pretty print Good(String)` {
+      Prettifier.default(Good("8")) should be ("Good(\"8\")")
+    }
+    def `should pretty print nested Good(String)` {
+      Prettifier.default(Good(Good("8"))) should be ("Good(Good(\"8\"))")
+    }
+    def `should pretty print Bad(Int)` {
+      Prettifier.default(Bad(8)) should be ("Bad(8)")
+    }
+    def `should pretty print Bad(String)` {
+      Prettifier.default(Bad("8")) should be ("Bad(\"8\")")
+    }
+    def `should pretty print nested Bad(String)` {
+      Prettifier.default(Bad(Bad("8"))) should be ("Bad(Bad(\"8\"))")
     }
   }
 }
