@@ -133,6 +133,8 @@ object Prettifier {
           case aChar: Char =>  "\'" + aChar + "\'"
           case Some(e) => "Some(" + apply(e) + ")"
           case Success(e) => "Success(" + apply(e) + ")"
+          case Left(e) => "Left(" + apply(e) + ")"
+          case Right(e) => "Right(" + apply(e) + ")"
           case anArray: Array[_] =>  "Array(" + (anArray map apply).mkString(", ") + ")"
           case aWrappedArray: WrappedArray[_] => "Array(" + (aWrappedArray map apply).mkString(", ") + ")"
           case aGenMap: GenMap[_, _] =>

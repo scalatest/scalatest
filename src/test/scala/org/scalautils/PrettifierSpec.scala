@@ -109,6 +109,24 @@ class PrettifierSpec extends Spec with Matchers {
     def `should pretty print nested Success(String)` {
       Prettifier.basic(Success(Success("8"))) should be ("Success(Success(8))")
     }
+    def `should pretty print Left(Int)` {
+      Prettifier.basic(Left(8)) should be ("Left(8)")
+    }
+    def `should pretty print Left(String)` {
+      Prettifier.basic(Left("8")) should be ("Left(8)")
+    }
+    def `should pretty print nested Left(String)` {
+      Prettifier.basic(Left(Left("8"))) should be ("Left(Left(8))")
+    }
+    def `should pretty print Right(Int)` {
+      Prettifier.basic(Right(8)) should be ("Right(8)")
+    }
+    def `should pretty print Right(String)` {
+      Prettifier.basic(Right("8")) should be ("Right(8)")
+    }
+    def `should pretty print nested Right(String)` {
+      Prettifier.basic(Right(Right("8"))) should be ("Right(Right(8))")
+    }
   }
 
   object `the default Prettifier` {
@@ -168,6 +186,24 @@ class PrettifierSpec extends Spec with Matchers {
     }
     def `should pretty print nested Success(String)` {
       Prettifier.default(Success(Success("8"))) should be ("Success(Success(\"8\"))")
+    }
+    def `should pretty print Left(Int)` {
+      Prettifier.default(Left(8)) should be ("Left(8)")
+    }
+    def `should pretty print Left(String)` {
+      Prettifier.default(Left("8")) should be ("Left(\"8\")")
+    }
+    def `should pretty print nested Left(String)` {
+      Prettifier.default(Left(Left("8"))) should be ("Left(Left(\"8\"))")
+    }
+    def `should pretty print Right(Int)` {
+      Prettifier.default(Right(8)) should be ("Right(8)")
+    }
+    def `should pretty print Right(String)` {
+      Prettifier.default(Right("8")) should be ("Right(\"8\")")
+    }
+    def `should pretty print nested Right(String)` {
+      Prettifier.default(Right(Right("8"))) should be ("Right(Right(\"8\"))")
     }
   }
 }
