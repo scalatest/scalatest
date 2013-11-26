@@ -90,6 +90,15 @@ class PrettifierSpec extends Spec with Matchers {
     def `should pretty print nested string GenTraversable` {
       Prettifier.basic(List(List("1", "2", "3"))) should be ("List(List(1, 2, 3))")
     }
+    def `should pretty print Some(Int)` {
+      Prettifier.basic(Some(8)) should be ("Some(8)")
+    }
+    def `should pretty print Some(String)` {
+      Prettifier.basic(Some("8")) should be ("Some(8)")
+    }
+    def `should pretty print nested Some(String)` {
+      Prettifier.basic(Some(Some("8"))) should be ("Some(Some(8))")
+    }
   }
 
   object `the default Prettifier` {
@@ -131,6 +140,15 @@ class PrettifierSpec extends Spec with Matchers {
     }
     def `should pretty print nested string GenTraversable` {
       Prettifier.default(List(List("1", "2", "3"))) should be ("List(List(\"1\", \"2\", \"3\"))")
+    }
+    def `should pretty print Some(Int)` {
+      Prettifier.default(Some(8)) should be ("Some(8)")
+    }
+    def `should pretty print Some(String)` {
+      Prettifier.default(Some("8")) should be ("Some(\"8\")")
+    }
+    def `should pretty print nested Some(String)` {
+      Prettifier.default(Some(Some("8"))) should be ("Some(Some(\"8\"))")
     }
   }
 }

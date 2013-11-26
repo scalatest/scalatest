@@ -147,11 +147,11 @@ class ShouldMatcherSpec extends Spec with ShouldMatchers {
         val caught1 = intercept[TestFailedException] {
           someString should be (None)
         }
-        assert(caught1.getMessage === "Some(Helloooooo) was not equal to None")
+        assert(caught1.getMessage === "Some(\"Helloooooo\") was not equal to None")
         val caught2 = intercept[TestFailedException] {
           someString should equal (None)
         }
-        assert(caught2.getMessage === "Some(Helloooooo) did not equal None")
+        assert(caught2.getMessage === "Some(\"Helloooooo\") did not equal None")
       }
 
       def `should do nothing when Some is compared to not None` {

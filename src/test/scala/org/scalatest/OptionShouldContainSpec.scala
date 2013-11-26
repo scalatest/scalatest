@@ -19,6 +19,7 @@ import org.scalautils.Equality
 import org.scalautils.NormalizingEquality
 import org.scalautils.StringNormalizations._
 import SharedHelpers._
+import FailureMessages.decorateToStringValue
 
 class OptionShouldContainSpec extends Spec with Matchers {
 
@@ -35,21 +36,21 @@ class OptionShouldContainSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           some should contain ("ho")
         }
-        e1.message.get should be (Resources("didNotContainExpectedElement", some, "\"ho\""))
+        e1.message.get should be (Resources("didNotContainExpectedElement", decorateToStringValue(some), "\"ho\""))
         e1.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 4)
 
         val e2 = intercept[TestFailedException] {
           none should contain ("ho")
         }
-        e2.message.get should be (Resources("didNotContainExpectedElement", none, "\"ho\""))
+        e2.message.get should be (Resources("didNotContainExpectedElement", decorateToStringValue(none), "\"ho\""))
         e2.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
         e2.failedCodeLineNumber.get should be (thisLineNumber - 4)
 
         val e4 = intercept[TestFailedException] {
           Some("hi") should contain ("ho")
         }
-        e4.message.get should be (Resources("didNotContainExpectedElement", some, "\"ho\""))
+        e4.message.get should be (Resources("didNotContainExpectedElement", decorateToStringValue(some), "\"ho\""))
         e4.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
         e4.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
@@ -95,14 +96,14 @@ class OptionShouldContainSpec extends Spec with Matchers {
         val e3 = intercept[TestFailedException] {
           some should not contain "hi"
         }
-        e3.message.get should be (Resources("containedExpectedElement", some, "\"hi\""))
+        e3.message.get should be (Resources("containedExpectedElement", decorateToStringValue(some), "\"hi\""))
         e3.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
         e3.failedCodeLineNumber.get should be (thisLineNumber - 4)
 
         val e5 = intercept[TestFailedException] {
           Some("hi") should not contain "hi"
         }
-        e5.message.get should be (Resources("containedExpectedElement", some, "\"hi\""))
+        e5.message.get should be (Resources("containedExpectedElement", decorateToStringValue(some), "\"hi\""))
         e5.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
         e5.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
@@ -144,14 +145,14 @@ class OptionShouldContainSpec extends Spec with Matchers {
         val e3 = intercept[TestFailedException] {
           some should not (contain ("hi"))
         }
-        e3.message.get should be (Resources("containedExpectedElement", some, "\"hi\""))
+        e3.message.get should be (Resources("containedExpectedElement", decorateToStringValue(some), "\"hi\""))
         e3.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
         e3.failedCodeLineNumber.get should be (thisLineNumber - 4)
 
         val e5 = intercept[TestFailedException] {
           Some("hi") should not (contain ("hi"))
         }
-        e5.message.get should be (Resources("containedExpectedElement", some, "\"hi\""))
+        e5.message.get should be (Resources("containedExpectedElement", decorateToStringValue(some), "\"hi\""))
         e5.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
         e5.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
@@ -193,14 +194,14 @@ class OptionShouldContainSpec extends Spec with Matchers {
         val e3 = intercept[TestFailedException] {
           some should (not contain "hi")
         }
-        e3.message.get should be (Resources("containedExpectedElement", some, "\"hi\""))
+        e3.message.get should be (Resources("containedExpectedElement", decorateToStringValue(some), "\"hi\""))
         e3.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
         e3.failedCodeLineNumber.get should be (thisLineNumber - 4)
 
         val e5 = intercept[TestFailedException] {
           Some("hi") should (not contain "hi")
         }
-        e5.message.get should be (Resources("containedExpectedElement", some, "\"hi\""))
+        e5.message.get should be (Resources("containedExpectedElement", decorateToStringValue(some), "\"hi\""))
         e5.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
         e5.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
