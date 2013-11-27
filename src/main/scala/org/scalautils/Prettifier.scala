@@ -161,6 +161,17 @@ object Prettifier {
               "[" + javaCol.iterator().asScala.map(apply(_)).mkString(", ") + "]"
             else
               theToString
+          case javaMap: java.util.Map[_, _] =>
+            // By default java map follows http://download.java.net/jdk7/archive/b123/docs/api/java/util/AbstractMap.html#toString()
+            // let's do our best to prettify its element when it is not overriden
+            import scala.collection.JavaConverters._
+            val theToString = javaMap.toString
+            if (theToString.startsWith("{") && theToString.endsWith("}"))
+              "{" + javaMap.entrySet.iterator.asScala.map { entry =>
+                apply(entry.getKey) + "=" + apply(entry.getValue)
+              }.mkString(", ") + "}"
+            else
+              theToString
           case anythingElse => anythingElse.toString
         }
     }

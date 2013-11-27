@@ -173,6 +173,15 @@ class PrettifierSpec extends Spec with Matchers {
     def `should pretty print nested string Java List` {
       Prettifier.basic(javaList(javaList("1", "2", "3"))) should be ("[[1, 2, 3]]")
     }
+    def `should pretty print Java Map` {
+      Prettifier.basic(javaSortedMap(Entry(1, 2), Entry(2, 3), Entry(3, 8))) should be ("{1=2, 2=3, 3=8}")
+    }
+    def `should pretty print string Java Map` {
+      Prettifier.basic(javaSortedMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))) should be ("{1=one, 2=two, 3=three}")
+    }
+    def `should pretty print nested string Java Map` {
+      Prettifier.basic(javaSortedMap(Entry("akey", javaSortedMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))))) should be ("{akey={1=one, 2=two, 3=three}}")
+    }
   }
 
   object `the default Prettifier` {
@@ -295,6 +304,15 @@ class PrettifierSpec extends Spec with Matchers {
     }
     def `should pretty print nested string Java List` {
       Prettifier.default(javaList(javaList("1", "2", "3"))) should be ("[[\"1\", \"2\", \"3\"]]")
+    }
+    def `should pretty print Java Map` {
+      Prettifier.default(javaSortedMap(Entry(1, 2), Entry(2, 3), Entry(3, 8))) should be ("{1=2, 2=3, 3=8}")
+    }
+    def `should pretty print string Java Map` {
+      Prettifier.default(javaSortedMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))) should be ("{1=\"one\", 2=\"two\", 3=\"three\"}")
+    }
+    def `should pretty print nested string Java Map` {
+      Prettifier.default(javaSortedMap(Entry("akey", javaSortedMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))))) should be ("{\"akey\"={1=\"one\", 2=\"two\", 3=\"three\"}}")
     }
   }
 }

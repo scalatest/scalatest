@@ -321,7 +321,7 @@ class AMatcherSpec extends Spec with Matchers {
         val e = intercept[exceptions.TestFailedException] {
           left should not be a (positiveSizeMap)
         }
-        e.message should be (Some(left + " was a positive size map"))
+        e.message should be (Some(decorateToStringValue(left) + " was a positive size map"))
         e.failedCodeFileName should be (Some("AMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }

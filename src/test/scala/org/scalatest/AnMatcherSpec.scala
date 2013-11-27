@@ -322,7 +322,7 @@ class AnMatcherSpec extends Spec with Matchers {
         val e = intercept[exceptions.TestFailedException] {
           left should not be an (oddSizeMap)
         }
-        e.message should be (Some(left + " was an odd size map"))
+        e.message should be (Some(decorateToStringValue(left) + " was an odd size map"))
         e.failedCodeFileName should be (Some("AnMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
