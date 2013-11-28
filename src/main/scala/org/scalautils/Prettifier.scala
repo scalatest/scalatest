@@ -116,7 +116,18 @@ object Prettifier {
    * <li><code>Unit</code> to: <code>&lt;() the Unit value&gt;</code></li>
    * <li><code>String</code> to: <code>"string"</code> (the <code>toString</code> result surrounded by double quotes)</li>
    * <li><code>Char</code> to: <code>'c'</code> (the <code>toString</code> result surrounded by single quotes)</li>
-   * <li><code>Array</code> to: <code>Array(1, 2, 3)</code></li>
+   * <li><code>Array</code> to: <code>Array("1", "2", "3")</code></li>
+   * <li><code>Some</code> to: <code>Some("3")</code></li>
+   * <li><code>Left</code> to: <code>Left("3")</code></li>
+   * <li><code>Right</code> to: <code>Right("3")</code></li>
+   * <li><code>Good</code> to: <code>Good("3")</code></li>
+   * <li><code>Bad</code> to: <code>Bad("3")</code></li>
+   * <li><code>One</code> to: <code>One("3")</code></li>
+   * <li><code>Many</code> to: <code>Many("1", "2", "3")</code></li>
+   * <li><code>List</code> to: <code>List("1", "2", "3")</code></li>
+   * <li><code>Map</code> to: <code>Map(1 -> "one", 2 -> "two", 3 -> "three")</code></li>
+   * <li><code>java.util.Collection</code> to: <code>["1", "2", "3"]</code></li>
+   * <li><code>java.util.Map</code> to: <code>{1="one", 2="two", 3="three"}</code></li>
    * </ul>
    *
    * <p>
@@ -176,6 +187,30 @@ object Prettifier {
         }
     }
 
+  /**
+   * A basic <code>Prettifier</code>.
+   *
+   * <p>
+   * This was the default <code>Prettifier</code> in used in ScalaTest 2.0 release.
+   * </p>
+   *
+   * <p>
+   * It transforms:
+   * </p>
+   *
+   * <ul>
+   * <li><code>Null</code> to: <code>null</code></li>
+   * <li><code>Unit</code> to: <code>&lt;() the Unit value&gt;</code></li>
+   * <li><code>String</code> to: <code>"string"</code> (the <code>toString</code> result surrounded by double quotes)</li>
+   * <li><code>Char</code> to: <code>'c'</code> (the <code>toString</code> result surrounded by single quotes)</li>
+   * <li><code>Array</code> to: <code>Array("1", "2", "3")</code></li>
+   * <li><code>Some</code> to: <code>Some("3")</code></li>
+   * </ul>
+   *
+   * <p>
+   * For anything else, it returns the result of invoking <code>toString</code>.
+   * </p>
+   */
   val basic = new BasicPrettifier
 }
 
