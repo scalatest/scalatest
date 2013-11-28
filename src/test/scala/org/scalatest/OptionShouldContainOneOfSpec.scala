@@ -18,6 +18,7 @@ package org.scalatest
 import org.scalautils.Equality
 import org.scalautils.StringNormalizations._
 import SharedHelpers._
+import FailureMessages.decorateToStringValue
 
 class OptionShouldContainOneOfSpec extends Spec with Matchers {
 
@@ -45,7 +46,7 @@ class OptionShouldContainOneOfSpec extends Spec with Matchers {
         }
         e1.failedCodeFileName.get should be ("OptionShouldContainOneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("didNotContainOneOfElements", fumSome, "\"happy\", \"birthday\", \"to\", \"you\""))
+        e1.message.get should be (Resources("didNotContainOneOfElements", decorateToStringValue(fumSome), "\"happy\", \"birthday\", \"to\", \"you\""))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseEquality
@@ -84,7 +85,7 @@ class OptionShouldContainOneOfSpec extends Spec with Matchers {
         }
         e1.failedCodeFileName.get should be ("OptionShouldContainOneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("didNotContainOneOfElements", fumSome, "\"happy\", \"birthday\", \"to\", \"you\""))
+        e1.message.get should be (Resources("didNotContainOneOfElements", decorateToStringValue(fumSome), "\"happy\", \"birthday\", \"to\", \"you\""))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseEquality
@@ -130,7 +131,7 @@ class OptionShouldContainOneOfSpec extends Spec with Matchers {
         }
         e1.failedCodeFileName.get should be ("OptionShouldContainOneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("containedOneOfElements", toSome, "\"happy\", \"birthday\", \"to\", \"you\""))
+        e1.message.get should be (Resources("containedOneOfElements", decorateToStringValue(toSome), "\"happy\", \"birthday\", \"to\", \"you\""))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseEquality
@@ -177,7 +178,7 @@ The bottom two don't, but still I don't want to support that in general.
         }
         e1.failedCodeFileName.get should be ("OptionShouldContainOneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("containedOneOfElements", toSome, "\"happy\", \"birthday\", \"to\", \"you\""))
+        e1.message.get should be (Resources("containedOneOfElements", decorateToStringValue(toSome), "\"happy\", \"birthday\", \"to\", \"you\""))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseEquality
@@ -381,8 +382,8 @@ scala> all (some1s) should (contain (oneOf (1, 3, 4)))
         e1.failedCodeFileName.get should be ("OptionShouldContainOneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 0, Some(to) contained one of (\"happy\", \"birthday\", \"to\", \"you\") (OptionShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
-                                   "in Vector(Some(to), Some(to), Some(to))"))
+                                   "  at index 0, Some(\"to\") contained one of (\"happy\", \"birthday\", \"to\", \"you\") (OptionShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "in Vector(Some(\"to\"), Some(\"to\"), Some(\"to\"))"))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseEquality
@@ -438,8 +439,8 @@ The top two don't, but still I don't want to support that in general.
         e1.failedCodeFileName.get should be ("OptionShouldContainOneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 0, Some(to) contained one of (\"happy\", \"birthday\", \"to\", \"you\") (OptionShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
-                                   "in Vector(Some(to), Some(to), Some(to))"))
+                                   "  at index 0, Some(\"to\") contained one of (\"happy\", \"birthday\", \"to\", \"you\") (OptionShouldContainOneOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "in Vector(Some(\"to\"), Some(\"to\"), Some(\"to\"))"))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseEquality

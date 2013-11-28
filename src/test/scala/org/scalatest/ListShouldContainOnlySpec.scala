@@ -22,7 +22,7 @@ import SharedHelpers._
 import FailureMessages.decorateToStringValue
 
 class ListShouldContainOnlySpec extends Spec with Matchers {
-  
+
   private def upperCase(value: Any): Any = 
     value match {
       case l: List[_] => l.map(upperCase(_))
@@ -99,7 +99,7 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("didNotContainOnlyElementsWithFriendlyReminder", decorateToStringValue(fumList), Vector("happy", "birthday", "to", "you")))
+        e1.message.get should be (Resources("didNotContainOnlyElementsWithFriendlyReminder", decorateToStringValue(fumList), decorateToStringValue(Vector("happy", "birthday", "to", "you"))))
       }
     }
 
@@ -154,7 +154,7 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("didNotContainOnlyElementsWithFriendlyReminder", decorateToStringValue(fumList), Vector("happy", "birthday", "to", "you")))
+        e1.message.get should be (Resources("didNotContainOnlyElementsWithFriendlyReminder", decorateToStringValue(fumList), decorateToStringValue(Vector("happy", "birthday", "to", "you"))))
       }
     }
 
@@ -208,7 +208,7 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("containedOnlyElementsWithFriendlyReminder", decorateToStringValue(Vector(Vector("happy", "birthday", "to", "you"))), Vector("happy", "birthday", "to", "you")))
+        e1.message.get should be (Resources("containedOnlyElementsWithFriendlyReminder", decorateToStringValue(Vector(Vector("happy", "birthday", "to", "you"))), decorateToStringValue(Vector("happy", "birthday", "to", "you"))))
       }
     }
 
@@ -262,7 +262,7 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("containedOnlyElementsWithFriendlyReminder", decorateToStringValue(Vector(Vector("happy", "birthday", "to", "you"))), Vector("happy", "birthday", "to", "you")))
+        e1.message.get should be (Resources("containedOnlyElementsWithFriendlyReminder", decorateToStringValue(Vector(Vector("happy", "birthday", "to", "you"))), decorateToStringValue(Vector("happy", "birthday", "to", "you"))))
       }
     }
     
@@ -317,7 +317,7 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("containedOnlyElementsWithFriendlyReminder", decorateToStringValue(Vector(Vector("happy", "birthday", "to", "you"))), Vector("happy", "birthday", "to", "you")))
+        e1.message.get should be (Resources("containedOnlyElementsWithFriendlyReminder", decorateToStringValue(Vector(Vector("happy", "birthday", "to", "you"))), decorateToStringValue(Vector("happy", "birthday", "to", "you"))))
       }
     }
 
@@ -371,7 +371,7 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("containedOnlyElementsWithFriendlyReminder", decorateToStringValue(Vector(Vector("happy", "birthday", "to", "you"))), Vector("happy", "birthday", "to", "you")))
+        e1.message.get should be (Resources("containedOnlyElementsWithFriendlyReminder", decorateToStringValue(Vector(Vector("happy", "birthday", "to", "you"))), decorateToStringValue(Vector("happy", "birthday", "to", "you"))))
       }
     }
   }
@@ -456,7 +456,7 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 0, " + decorateToStringValue(Vector(3, 2, 1)) + " did not contain only (" + Vector(1, 2, 3) + "), did you forget to say : _*" + " (ListShouldContainOnlySpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "  at index 0, " + decorateToStringValue(Vector(3, 2, 1)) + " did not contain only (" + decorateToStringValue(Vector(1, 2, 3)) + "), did you forget to say : _*" + " (ListShouldContainOnlySpec.scala:" + (thisLineNumber - 5) + ") \n" +
                                    "in " + decorateToStringValue(Vector(Vector(3, 2, 1), Vector(3, 2, 1), Vector(4, 3, 2)))))
       }
     }
@@ -533,7 +533,7 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 0, " + decorateToStringValue(Vector(3, 2, 1)) + " did not contain only (" + Vector(1, 2, 3) + "), did you forget to say : _*" + " (ListShouldContainOnlySpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "  at index 0, " + decorateToStringValue(Vector(3, 2, 1)) + " did not contain only (" + decorateToStringValue(Vector(1, 2, 3)) + "), did you forget to say : _*" + " (ListShouldContainOnlySpec.scala:" + (thisLineNumber - 5) + ") \n" +
                                    "in " + decorateToStringValue(Vector(Vector(3, 2, 1), Vector(3, 2, 1), Vector(4, 3, 2)))))
       }
     }
@@ -591,7 +591,7 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(Vector(Vector("you", "to"))) + " contained only (" + Vector("you", "to") + "), did you forget to say : _*" +  " (ListShouldContainOnlySpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 0, " + decorateToStringValue(Vector(Vector("you", "to"))) + " contained only (" + decorateToStringValue(Vector("you", "to")) + "), did you forget to say : _*" +  " (ListShouldContainOnlySpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(Vector(Vector(Vector("you", "to"))))))
       }
     }
@@ -649,7 +649,7 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 0, " + decorateToStringValue(Vector(Vector("you", "to"))) + " contained only (" + Vector("you", "to") + "), did you forget to say : _*" + " (ListShouldContainOnlySpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "  at index 0, " + decorateToStringValue(Vector(Vector("you", "to"))) + " contained only (" + decorateToStringValue(Vector("you", "to")) + "), did you forget to say : _*" + " (ListShouldContainOnlySpec.scala:" + (thisLineNumber - 5) + ") \n" +
                                    "in " + decorateToStringValue(Vector(Vector(Vector("you", "to"))))))
       }
     }
@@ -707,7 +707,7 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(Vector(Vector("to", "you"))) + " contained only (" + Vector("to", "you") + "), did you forget to say : _*" +  " (ListShouldContainOnlySpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 0, " + decorateToStringValue(Vector(Vector("to", "you"))) + " contained only (" + decorateToStringValue(Vector("to", "you")) + "), did you forget to say : _*" +  " (ListShouldContainOnlySpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(Vector(Vector(Vector("to", "you"))))))
       }
     }
@@ -765,7 +765,7 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(Vector(Vector("to", "you"))) + " contained only (" + Vector("to", "you") + "), did you forget to say : _*" + " (ListShouldContainOnlySpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 0, " + decorateToStringValue(Vector(Vector("to", "you"))) + " contained only (" + decorateToStringValue(Vector("to", "you")) + "), did you forget to say : _*" + " (ListShouldContainOnlySpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(Vector(Vector(Vector("to", "you"))))))
       }
     }

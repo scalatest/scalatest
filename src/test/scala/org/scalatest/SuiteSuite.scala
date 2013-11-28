@@ -281,19 +281,17 @@ class SuiteSuite extends Suite with PrivateMethodTester with SeveredStackTraces 
 
   def testPrettifyArray() {
 
-    import FailureMessages.prettifyArrays
-
     // non arrays print just a toString
-    assert(prettifyArrays(1) === "1")
-    assert(prettifyArrays("hi") === "hi")
-    assert(prettifyArrays(List(1, 2, 3)) === "List(1, 2, 3)")
-    assert(prettifyArrays(Map("one" -> 1)) === "Map(one -> 1)")
+    assert(FailureMessages.decorateToStringValue(1) === "1")
+    assert(FailureMessages.decorateToStringValue("hi") === "\"hi\"")
+    assert(FailureMessages.decorateToStringValue(List(1, 2, 3)) === "List(1, 2, 3)")
+    assert(FailureMessages.decorateToStringValue(Map("one" -> 1)) === "Map(\"one\" -> 1)")
 
     // arrays print pretty
-    assert(prettifyArrays(Array(1, 2)) === "Array(1, 2)")
+    assert(FailureMessages.decorateToStringValue(Array(1, 2)) === "Array(1, 2)")
 
     // arrays of arrays print pretty
-    assert(prettifyArrays(Array(Array(1, 2), Array(3, 4))) === "Array(Array(1, 2), Array(3, 4))")
+    assert(FailureMessages.decorateToStringValue(Array(Array(1, 2), Array(3, 4))) === "Array(Array(1, 2), Array(3, 4))")
   }
 
   class TestWasCalledSuite extends Suite {

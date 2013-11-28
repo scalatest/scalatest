@@ -47,14 +47,14 @@ object GenInspectors {
   class DynamicFirstElementTemplate(colType: String, errorFun: String, errorValue: String) extends Template {
     override def toString = 
       if (colType == "String")
-        "\\\"\" + " + getErrorMessageValuesFunName(colType, errorFun) + "(xs, " + errorValue + ") + \"\\\""
+        "\" + decorateToStringValue(" + getErrorMessageValuesFunName(colType, errorFun) + "(xs, " + errorValue + ")) + \""
       else
-        "\" + " + errorFun + "(xs, " + errorValue + ") + \""
+        "\" + decorateToStringValue(" + errorFun + "(xs, " + errorValue + ")) + \""
   }
   
   class DynamicFirstArrayElementTemplate(colType: String, errorFun: String, errorValue: String) extends Template {
     override def toString = 
-      "\" + " + getErrorMessageValuesFunName(colType, errorFun) + "(xs, " + errorValue + ").deep + \""
+      "\" + decorateToStringValue(" + getErrorMessageValuesFunName(colType, errorFun) + "(xs, " + errorValue + ").deep) + \""
   }
   
   class DynamicFirstElementLengthTemplate(colType: String, errorFun: String, errorValue: String) extends Template {
@@ -68,7 +68,7 @@ object GenInspectors {
   }
   
   class DynamicNextIndexErrorDetailTemplate(errorValue: String, fileName: String, lineNumber: String, messageTemplate: Template, messageValuesFunName: String) extends 
-    DynamicErrorDetailTemplate(fileName, lineNumber, messageTemplate, messageValuesFunName + "(itr, xs, " + errorValue + ")")  
+    DynamicErrorDetailTemplate(fileName, lineNumber, messageTemplate, messageValuesFunName + "(itr, xs, " + errorValue + ")")
   
   class DynamicNextElementTemplate(colType: String, errorFun: String, errorValue: String) extends Template {
     override def toString = 
@@ -96,7 +96,7 @@ object GenInspectors {
     override def toString = 
       header + 
       childrenContent + 
-      "in \" + " + xsName + ""
+      "in \" + decorateToStringValue(" + xsName + ")"
   }
   
   class ForAllErrMsgTemplate(headerFailedPrefix: String, detail: ErrorDetailTemplate) extends ErrorMessageTemplate {
@@ -130,7 +130,7 @@ object GenInspectors {
       else
         xsName
     override def toString = 
-      headerFailedPrefix + " failed, because " + elementText + " satisfied the assertion block at \" + failEarlySucceededIndexes" + getErrorMessageValuesFunName(colType, okFun) + "(" + extractXsName + ", " + errorValue + ", " + maxSucceed + ") + \" in \" + " + xsName
+      headerFailedPrefix + " failed, because " + elementText + " satisfied the assertion block at \" + failEarlySucceededIndexes" + getErrorMessageValuesFunName(colType, okFun) + "(" + extractXsName + ", " + errorValue + ", " + maxSucceed + ") + \" in \" + decorateToStringValue(" + xsName + ")"
   }
   
   class ForExactlyErrMsgTemplate(headerFailedPrefix: String, elementText: String, okFun: String, errorFun: String, errorValue: String, colType: String, details: List[Template]) extends ErrorMessageTemplate {
@@ -141,7 +141,7 @@ object GenInspectors {
   class ForNoErrMsgTemplate(headerFailedPrefix: String, index: String) extends Template {
     val xsName: String = "xs"
     override def toString = 
-      headerFailedPrefix + " failed, because 1 element satisfied the assertion block at index " + index + " in \" + " + xsName
+      headerFailedPrefix + " failed, because 1 element satisfied the assertion block at index " + index + " in \" + decorateToStringValue(" + xsName + ")"
   }
   
   class ForBetweenLessErrMsgTemplate(headerFailedPrefix: String, elementText: String, okFun: String, errorFun: String, errorValue: String, colType: String, details: List[Template]) extends ErrorMessageTemplate {
@@ -204,9 +204,7 @@ object GenInspectors {
           errorValue: String, causeErrMsg: String, xsText: String) extends Template {
     
     val causeErrorMessage = new SimpleMessageTemplate(causeErrMsg)
-    val errorMessage = new ForAllErrMsgTemplate("'all' inspection", new DynamicFirstIndexErrorDetailTemplate(colType, getErrorMessageValuesFunName(colType, errorFun), errorValue, fileName, "assertLineNumber", causeErrorMessage)) {
-      override val xsName: String = xsText
-    }
+    val errorMessage = new ForAllErrMsgTemplate("'all' inspection", new DynamicFirstIndexErrorDetailTemplate(colType, getErrorMessageValuesFunName(colType, errorFun), errorValue, fileName, "assertLineNumber", causeErrorMessage))
     val testName = colText + " should throw TestFailedException with correct stack depth and message when " + condition
     
     override def toString = 
@@ -237,9 +235,7 @@ object GenInspectors {
           xsText: String) extends Template {
     
     val details = buildList(totalCount - passedCount, detailErrorMessage) map { errMsg => new DynamicNextIndexErrorDetailTemplate(errorValue, fileName, "assertLineNumber", new SimpleMessageTemplate(errMsg.toString), getErrorMessageValuesFunName(colType, errorFun)) }
-    val errorMessage = new ForAtLeastErrMsgTemplate("'atLeast(" + min + ")' inspection", (if (passedCount > 0) "only " else "") + new ElementTemplate(passedCount).toString, details)  {
-      override val xsName: String = xsText
-    }
+    val errorMessage = new ForAtLeastErrMsgTemplate("'atLeast(" + min + ")' inspection", (if (passedCount > 0) "only " else "") + new ElementTemplate(passedCount).toString, details)
     
     override def toString = 
       "def `" + colText + " should throw TestFailedException with correct stack depth and message when " + condition + "` {\n" +
@@ -261,9 +257,7 @@ object GenInspectors {
           xsText: String) extends Template {
     
     val details = buildList(totalCount - passedCount, detailErrorMessage) map { errMsg => new DynamicNextIndexErrorDetailTemplate(errorValue, fileName, "assertLineNumber", new SimpleMessageTemplate(errMsg.toString), getErrorMessageValuesFunName(colType, errorFun)) }
-    val errorMessage = new ForEveryErrMsgTemplate("'every' inspection", details)  {
-      override val xsName: String = xsText
-    }
+    val errorMessage = new ForEveryErrMsgTemplate("'every' inspection", details)
     
     override def toString = 
       "def `" + colText + " should throw TestFailedException with correct stack depth and message when " + condition + "` {\n" +
@@ -285,9 +279,7 @@ object GenInspectors {
           xsText: String) extends Template {
     
     val details = buildList(totalCount - passedCount, detailErrorMessage) map { errMsg => new DynamicNextIndexErrorDetailTemplate(errorValue, fileName, "assertLineNumber", new SimpleMessageTemplate(errMsg.toString), getErrorMessageValuesFunName(colType, errorFun)) }
-    val errorMessage = new ForExactlyErrMsgTemplate("'exactly(" + count + ")' inspection", (if (passedCount > 0) "only " else "") + new ElementTemplate(passedCount).toString, okFun, errorFun, errorValue, colType, details)  {
-      override val xsName: String = xsText
-    }
+    val errorMessage = new ForExactlyErrMsgTemplate("'exactly(" + count + ")' inspection", (if (passedCount > 0) "only " else "") + new ElementTemplate(passedCount).toString, okFun, errorFun, errorValue, colType, details)
     
     override def toString = 
       "def `" + colText + " should throw TestFailedException with correct stack depth and message when " + condition + "` {\n" +
@@ -306,9 +298,7 @@ object GenInspectors {
                                              fileName: String, colType: String, okFun: String, errorFun: String, errorValue: String, 
                                              xsText: String) extends Template {
 
-    val errorMessage = new ForNoErrMsgTemplate("'no' inspection", "\" + getIndex(xs, getFirst" + getErrorMessageValuesFunName(colType, okFun) + "(xs, " + errorValue + ")) + \"")  {
-      override val xsName: String = xsText
-    }
+    val errorMessage = new ForNoErrMsgTemplate("'no' inspection", "\" + getIndex(xs, getFirst" + getErrorMessageValuesFunName(colType, okFun) + "(xs, " + errorValue + ")) + \"")
 
     override def toString =
       "def `" + colText + " should throw TestFailedException with correct stack depth and message when " + condition + "` {\n" +
@@ -329,9 +319,7 @@ object GenInspectors {
                                              xsText: String) extends Template {
 
     val details = buildList(totalCount - passedCount, detailErrorMessage) map { errMsg => new DynamicNextIndexErrorDetailTemplate(errorValue, fileName, "assertLineNumber", new SimpleMessageTemplate(errMsg.toString), getErrorMessageValuesFunName(colType, errorFun)) }
-    val errorMessage = new ForBetweenLessErrMsgTemplate("'between(" + from + ", " + upTo + ")' inspection", (if (passedCount > 0) "only " else "") + new ElementTemplate(passedCount).toString, okFun, errorFun, errorValue, colType, details)  {
-      override val xsName: String = xsText
-    }
+    val errorMessage = new ForBetweenLessErrMsgTemplate("'between(" + from + ", " + upTo + ")' inspection", (if (passedCount > 0) "only " else "") + new ElementTemplate(passedCount).toString, okFun, errorFun, errorValue, colType, details)
 
     override def toString =
       "def `" + colText + " should throw TestFailedException with correct stack depth and message when " + condition + "` {\n" +
@@ -351,9 +339,7 @@ object GenInspectors {
                                                  max: Int, passedCount: Int, detailErrorMessage: String,
                                                  xsText: String) extends Template {
 
-    val errorMessage = new ForAtMostErrMsgTemplate("'atMost(" + max + ")' inspection", max, new ElementTemplate(passedCount).toString, okFun, errorFun, errorValue, colType)  {
-      override val xsName: String = xsText
-    }
+    val errorMessage = new ForAtMostErrMsgTemplate("'atMost(" + max + ")' inspection", max, new ElementTemplate(passedCount).toString, okFun, errorFun, errorValue, colType)
 
     override def toString =
       "def `" + colText + " should throw TestFailedException with correct stack depth and message when " + condition + "` {\n" +
@@ -576,8 +562,9 @@ object GenInspectors {
       new SingleClassFile(
         packageName = Some("org.scalatest.inspectors.nested"), 
         importList = List("org.scalatest._", 
-                          "SharedHelpers._", 
-                          "collection.GenTraversable"), 
+                          "SharedHelpers._",
+                          "FailureMessages.decorateToStringValue",
+                          "collection.GenTraversable"),
         classTemplate = new ClassTemplate {
           val name = "NestedInspectorsSpec"
           override val extendName = Some("Spec")
@@ -1025,7 +1012,7 @@ object GenInspectors {
   def trvSimpleMessageFun(colType: String, errorFun: String, errorValue: String): Template = new SimpleMessageTemplate("{1}")
   def trvLengthSimpleMessageFun(colType: String, errorFun: String, errorValue: String): Template = new SimpleMessageTemplate("{2}")
   def trvSizeSimpleMessageFun(colType: String, errorFun: String, errorValue: String): Template = new SimpleMessageTemplate("{2}")
-  def quotedSimpleMessageFun(errorFun: String, errorValue: String): Template = new SimpleMessageTemplate("\\\"{1}\\\"")
+  def quotedSimpleMessageFun(errorFun: String, errorValue: String): Template = new SimpleMessageTemplate("{1}")
   def quotedSimpleMessageFun2(errorFun: String, errorValue: String): Template = new SimpleMessageTemplate("\\\"{2}\\\"")
 
   def filterSetLength(colText: String, condition: String): Boolean = 
@@ -1205,7 +1192,8 @@ object GenInspectors {
         packageName = Some("org.scalatest.inspectors.all"), 
         importList = List(
                        "org.scalatest._", 
-                       "SharedHelpers._", 
+                       "SharedHelpers._",
+                       "FailureMessages.decorateToStringValue",
                        "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}", 
                        "collection.GenTraversable", 
                        "collection.GenMap"
@@ -1232,7 +1220,8 @@ object GenInspectors {
           packageName = Some("org.scalatest.inspectors.all"), 
           importList = List(
                          "org.scalatest._", 
-                         "SharedHelpers._", 
+                         "SharedHelpers._",
+                         "FailureMessages.decorateToStringValue",
                          "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}", 
                          "collection.GenTraversable", 
                          "collection.GenMap"
@@ -1263,7 +1252,8 @@ object GenInspectors {
           packageName = Some("org.scalatest.inspectors.atLeast"), 
           importList = List(
                          "org.scalatest._", 
-                         "SharedHelpers._", 
+                         "SharedHelpers._",
+                         "FailureMessages.decorateToStringValue",
                          "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}", 
                          "collection.GenTraversable", 
                          "collection.GenMap"
@@ -1432,7 +1422,8 @@ object GenInspectors {
           packageName = Some("org.scalatest.inspectors.atLeast"), 
           importList = List(
                          "org.scalatest._", 
-                         "SharedHelpers._", 
+                         "SharedHelpers._",
+                         "FailureMessages.decorateToStringValue",
                          "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}", 
                          "collection.GenTraversable", 
                          "collection.GenMap"
@@ -1463,7 +1454,8 @@ object GenInspectors {
           packageName = Some("org.scalatest.inspectors.every"), 
           importList = List(
                          "org.scalatest._", 
-                         "SharedHelpers._", 
+                         "SharedHelpers._",
+                         "FailureMessages.decorateToStringValue",
                          "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}", 
                          "collection.GenTraversable", 
                          "collection.GenMap"
@@ -1633,7 +1625,8 @@ object GenInspectors {
           packageName = Some("org.scalatest.inspectors.every"), 
           importList = List(
                          "org.scalatest._", 
-                         "SharedHelpers._", 
+                         "SharedHelpers._",
+                         "FailureMessages.decorateToStringValue",
                          "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}", 
                          "collection.GenTraversable", 
                          "collection.GenMap"
@@ -1664,7 +1657,8 @@ object GenInspectors {
           packageName = Some("org.scalatest.inspectors.exactly"), 
           importList = List(
                          "org.scalatest._", 
-                         "SharedHelpers._", 
+                         "SharedHelpers._",
+                         "FailureMessages.decorateToStringValue",
                          "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}", 
                          "collection.GenTraversable", 
                          "collection.GenMap"
@@ -1834,7 +1828,8 @@ object GenInspectors {
           packageName = Some("org.scalatest.inspectors.exactly"), 
           importList = List(
                          "org.scalatest._", 
-                         "SharedHelpers._", 
+                         "SharedHelpers._",
+                         "FailureMessages.decorateToStringValue",
                          "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}", 
                          "collection.GenTraversable", 
                          "collection.GenMap"
@@ -1865,7 +1860,8 @@ object GenInspectors {
         packageName = Some("org.scalatest.inspectors.no"),
         importList = List(
           "org.scalatest._", 
-          "SharedHelpers._", 
+          "SharedHelpers._",
+          "FailureMessages.decorateToStringValue",
           "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}", 
           "collection.GenTraversable",
           "collection.GenMap"
@@ -2033,7 +2029,8 @@ object GenInspectors {
           packageName = Some("org.scalatest.inspectors.no"),
           importList = List(
             "org.scalatest._", 
-            "SharedHelpers._", 
+            "SharedHelpers._",
+            "FailureMessages.decorateToStringValue",
             "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}", 
             "collection.GenTraversable",
             "collection.GenMap"
@@ -2064,7 +2061,8 @@ object GenInspectors {
         packageName = Some("org.scalatest.inspectors.between"),
         importList = List(
           "org.scalatest._", 
-          "SharedHelpers._", 
+          "SharedHelpers._",
+          "FailureMessages.decorateToStringValue",
           "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}", 
           "collection.GenTraversable",
           "collection.GenMap"
@@ -2235,7 +2233,8 @@ object GenInspectors {
           packageName = Some("org.scalatest.inspectors.between"),
           importList = List(
             "org.scalatest._", 
-            "SharedHelpers._", 
+            "SharedHelpers._",
+            "FailureMessages.decorateToStringValue",
             "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}", 
             "collection.GenTraversable",
             "collection.GenMap"
@@ -2266,7 +2265,8 @@ object GenInspectors {
         packageName = Some("org.scalatest.inspectors.atMost"),
         importList = List(
           "org.scalatest._", 
-          "SharedHelpers._", 
+          "SharedHelpers._",
+          "FailureMessages.decorateToStringValue",
           "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}", 
           "collection.GenTraversable",
           "collection.GenMap"
@@ -2442,7 +2442,8 @@ object GenInspectors {
           packageName = Some("org.scalatest.inspectors.atMost"),
           importList = List(
             "org.scalatest._", 
-            "SharedHelpers._", 
+            "SharedHelpers._",
+            "FailureMessages.decorateToStringValue",
             "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}", 
             "collection.GenTraversable",
             "collection.GenMap"

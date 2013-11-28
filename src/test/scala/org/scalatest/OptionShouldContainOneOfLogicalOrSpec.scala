@@ -18,6 +18,7 @@ package org.scalatest
 import org.scalautils.Equality
 import org.scalautils.StringNormalizations._
 import SharedHelpers._
+import FailureMessages.decorateToStringValue
 
 class OptionShouldContainOneOfLogicalOrSpec extends Spec with Matchers {
 
@@ -48,7 +49,7 @@ class OptionShouldContainOneOfLogicalOrSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           fumSome should (contain oneOf ("have", "a", "nice", "day") or contain oneOf ("happy", "birthday", "to", "you"))
         }
-        checkMessageStackDepth(e1, Resources("didNotContainOneOfElements", fumSome, "\"have\", \"a\", \"nice\", \"day\"") + ", and " + Resources("didNotContainOneOfElements", fumSome, "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("didNotContainOneOfElements", decorateToStringValue(fumSome), "\"have\", \"a\", \"nice\", \"day\"") + ", and " + Resources("didNotContainOneOfElements", decorateToStringValue(fumSome), "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
@@ -60,7 +61,7 @@ class OptionShouldContainOneOfLogicalOrSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           fumSome should (contain oneOf ("fee", "fie", "foe", "fum") or contain oneOf ("fee", "fie", "fum", "foe"))
         }
-        checkMessageStackDepth(e1, Resources("didNotContainOneOfElements", fumSome, "\"fee\", \"fie\", \"foe\", \"fum\"") + ", and " + Resources("didNotContainOneOfElements", fumSome, "\"fee\", \"fie\", \"fum\", \"foe\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("didNotContainOneOfElements", decorateToStringValue(fumSome), "\"fee\", \"fie\", \"foe\", \"fum\"") + ", and " + Resources("didNotContainOneOfElements", decorateToStringValue(fumSome), "\"fee\", \"fie\", \"fum\", \"foe\""), fileName, thisLineNumber - 2)
       }
       def `should use an explicitly provided Equality` {
         (fumSome should (contain oneOf ("FEE", "FIE", "FOE", "FUM") or contain oneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
@@ -70,7 +71,7 @@ class OptionShouldContainOneOfLogicalOrSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           (fumSome should (contain oneOf ("fee", "fie", "foe", "fum") or contain oneOf ("fee", "fie", "fum", "foe"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, Resources("didNotContainOneOfElements", fumSome, "\"fee\", \"fie\", \"foe\", \"fum\"") + ", and " + Resources("didNotContainOneOfElements", fumSome, "\"fee\", \"fie\", \"fum\", \"foe\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("didNotContainOneOfElements", decorateToStringValue(fumSome), "\"fee\", \"fie\", \"foe\", \"fum\"") + ", and " + Resources("didNotContainOneOfElements", decorateToStringValue(fumSome), "\"fee\", \"fie\", \"fum\", \"foe\""), fileName, thisLineNumber - 2)
       }
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
@@ -99,7 +100,7 @@ class OptionShouldContainOneOfLogicalOrSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           fumSome should (be (toSome) or contain oneOf ("happy", "birthday", "to", "you"))
         }
-        checkMessageStackDepth(e1, Resources("wasNotEqualTo", fumSome, toSome) + ", and " + Resources("didNotContainOneOfElements", fumSome, "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("wasNotEqualTo", decorateToStringValue(fumSome), decorateToStringValue(toSome)) + ", and " + Resources("didNotContainOneOfElements", decorateToStringValue(fumSome), "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
@@ -111,7 +112,7 @@ class OptionShouldContainOneOfLogicalOrSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           fumSome should (be (toSome) or contain oneOf ("fee", "fie", "fum", "foe"))
         }
-        checkMessageStackDepth(e1, Resources("wasNotEqualTo", fumSome, toSome) + ", and " + Resources("didNotContainOneOfElements", fumSome, "\"fee\", \"fie\", \"fum\", \"foe\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("wasNotEqualTo", decorateToStringValue(fumSome), decorateToStringValue(toSome)) + ", and " + Resources("didNotContainOneOfElements", decorateToStringValue(fumSome), "\"fee\", \"fie\", \"fum\", \"foe\""), fileName, thisLineNumber - 2)
       }
       def `should use an explicitly provided Equality` {
         (fumSome should (be (fumSome) or contain oneOf ("FEE", "FIE", "FUM", "FOE"))) (decided by upperCaseStringEquality)
@@ -121,7 +122,7 @@ class OptionShouldContainOneOfLogicalOrSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           (fumSome should (be (toSome) or contain oneOf ("fee", "fie", "fum", "foe"))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, Resources("wasNotEqualTo", fumSome, toSome) + ", and " + Resources("didNotContainOneOfElements", fumSome, "\"fee\", \"fie\", \"fum\", \"foe\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("wasNotEqualTo", decorateToStringValue(fumSome), decorateToStringValue(toSome)) + ", and " + Resources("didNotContainOneOfElements", decorateToStringValue(fumSome), "\"fee\", \"fie\", \"fum\", \"foe\""), fileName, thisLineNumber - 2)
       }
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
@@ -142,7 +143,7 @@ class OptionShouldContainOneOfLogicalOrSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           toSome should (not contain oneOf ("nice", "to", "meet", "you") or not contain oneOf ("happy", "birthday", "to", "you"))
         }
-        checkMessageStackDepth(e1, Resources("containedOneOfElements", toSome, "\"nice\", \"to\", \"meet\", \"you\"") + ", and " + Resources("containedOneOfElements", toSome, "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("containedOneOfElements", decorateToStringValue(toSome), "\"nice\", \"to\", \"meet\", \"you\"") + ", and " + Resources("containedOneOfElements", decorateToStringValue(toSome), "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
@@ -152,7 +153,7 @@ class OptionShouldContainOneOfLogicalOrSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           toSome should (not contain oneOf ("HAPPY", "BIRTHDAY", "TO", "YOU") or not contain oneOf ("NICE", "TO", "MEET", "YOU"))
         }
-        checkMessageStackDepth(e1, Resources("containedOneOfElements", toSome, "\"HAPPY\", \"BIRTHDAY\", \"TO\", \"YOU\"") + ", and " + Resources("containedOneOfElements", toSome, "\"NICE\", \"TO\", \"MEET\", \"YOU\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("containedOneOfElements", decorateToStringValue(toSome), "\"HAPPY\", \"BIRTHDAY\", \"TO\", \"YOU\"") + ", and " + Resources("containedOneOfElements", decorateToStringValue(toSome), "\"NICE\", \"TO\", \"MEET\", \"YOU\""), fileName, thisLineNumber - 2)
       }
       def `should use an explicitly provided Equality` {
         (toSome should (not contain oneOf ("happy", "birthday", "to", "you") or not contain oneOf ("nice", "to", "meet", "you"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
@@ -161,7 +162,7 @@ class OptionShouldContainOneOfLogicalOrSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           (toSome should (not contain oneOf ("HAPPY", "BIRTHDAY", "TO", "YOU") or not contain oneOf ("NICE", "TO", "MEET", "YOU"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, Resources("containedOneOfElements", toSome, "\"HAPPY\", \"BIRTHDAY\", \"TO\", \"YOU\"") + ", and " + Resources("containedOneOfElements", toSome, "\"NICE\", \"TO\", \"MEET\", \"YOU\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("containedOneOfElements", decorateToStringValue(toSome), "\"HAPPY\", \"BIRTHDAY\", \"TO\", \"YOU\"") + ", and " + Resources("containedOneOfElements", decorateToStringValue(toSome), "\"NICE\", \"TO\", \"MEET\", \"YOU\""), fileName, thisLineNumber - 2)
       }
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
@@ -189,7 +190,7 @@ class OptionShouldContainOneOfLogicalOrSpec extends Spec with Matchers {
         val e2 = intercept[TestFailedException] {
           toSome should (not be (toSome) or not contain oneOf ("happy", "birthday", "to", "you"))
         }
-        checkMessageStackDepth(e2, Resources("wasEqualTo", toSome, toSome) + ", and " + Resources("containedOneOfElements", toSome, "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, Resources("wasEqualTo", decorateToStringValue(toSome), decorateToStringValue(toSome)) + ", and " + Resources("containedOneOfElements", decorateToStringValue(toSome), "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
@@ -199,7 +200,7 @@ class OptionShouldContainOneOfLogicalOrSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           toSome should (not be (toSome) or not contain oneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))
         }
-        checkMessageStackDepth(e1, Resources("wasEqualTo", toSome, toSome) + ", and " + Resources("containedOneOfElements", toSome, "\"HAPPY\", \"BIRTHDAY\", \"TO\", \"YOU\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("wasEqualTo", decorateToStringValue(toSome), decorateToStringValue(toSome)) + ", and " + Resources("containedOneOfElements", decorateToStringValue(toSome), "\"HAPPY\", \"BIRTHDAY\", \"TO\", \"YOU\""), fileName, thisLineNumber - 2)
       }
       def `should use an explicitly provided Equality` {
         (toSome should (not be (fumSome) or not contain oneOf ("happy", "birthday", "to", "you"))) (decided by upperCaseStringEquality)
@@ -208,7 +209,7 @@ class OptionShouldContainOneOfLogicalOrSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           (toSome should (not be (toSome) or not contain oneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, Resources("wasEqualTo", toSome, toSome) + ", and " + Resources("containedOneOfElements", toSome, "\"HAPPY\", \"BIRTHDAY\", \"TO\", \"YOU\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources("wasEqualTo", decorateToStringValue(toSome), decorateToStringValue(toSome)) + ", and " + Resources("containedOneOfElements", decorateToStringValue(toSome), "\"HAPPY\", \"BIRTHDAY\", \"TO\", \"YOU\""), fileName, thisLineNumber - 2)
       }
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
@@ -233,7 +234,7 @@ class OptionShouldContainOneOfLogicalOrSpec extends Spec with Matchers {
     def allErrMsg(index: Int, message: String, lineNumber: Int, left: Any): String = 
       "'all' inspection failed, because: \n" +
       "  at index " + index + ", " + message + " (" + fileName + ":" + (lineNumber) + ") \n" +
-      "in " + left
+      "in " + decorateToStringValue(left)
 
     object `when used with (contain oneOf (...) or contain oneOf (...))` {
 
@@ -250,7 +251,7 @@ class OptionShouldContainOneOfLogicalOrSpec extends Spec with Matchers {
         val e2 = intercept[TestFailedException] {
           all (hiSomes) should (contain oneOf ("ho", "he", "howdy") or contain oneOf ("ho", "hey", "howdy"))
         }
-        checkMessageStackDepth(e2, allErrMsg(0, "Some(hi) did not contain one of (\"ho\", \"he\", \"howdy\"), and Some(hi) did not contain one of (\"ho\", \"hey\", \"howdy\")", thisLineNumber - 2, hiSomes), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(0, "Some(\"hi\") did not contain one of (\"ho\", \"he\", \"howdy\"), and Some(\"hi\") did not contain one of (\"ho\", \"hey\", \"howdy\")", thisLineNumber - 2, hiSomes), fileName, thisLineNumber - 2)
       }
 
       def `should use the implicit Equality in scope` {
@@ -267,7 +268,7 @@ class OptionShouldContainOneOfLogicalOrSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           all (hiSomes) should (contain oneOf ("hi", "he") or contain oneOf ("hi", "he"))
         }
-        checkMessageStackDepth(e1, allErrMsg(0, "Some(hi) did not contain one of (\"hi\", \"he\"), and Some(hi) did not contain one of (\"hi\", \"he\")", thisLineNumber - 2, hiSomes), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, "Some(\"hi\") did not contain one of (\"hi\", \"he\"), and Some(\"hi\") did not contain one of (\"hi\", \"he\")", thisLineNumber - 2, hiSomes), fileName, thisLineNumber - 2)
       }
       def `should use an explicitly provided Equality` {
         (all (hiSomes) should (contain oneOf ("HI", "HE") or contain oneOf ("HI", "HE"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
@@ -276,7 +277,7 @@ class OptionShouldContainOneOfLogicalOrSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           (all (hiSomes) should (contain oneOf ("hi", "he") or contain oneOf ("hi", "he"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, allErrMsg(0, "Some(hi) did not contain one of (\"hi\", \"he\"), and Some(hi) did not contain one of (\"hi\", \"he\")", thisLineNumber - 2, hiSomes), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, "Some(\"hi\") did not contain one of (\"hi\", \"he\"), and Some(\"hi\") did not contain one of (\"hi\", \"he\")", thisLineNumber - 2, hiSomes), fileName, thisLineNumber - 2)
       }
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
@@ -310,7 +311,7 @@ class OptionShouldContainOneOfLogicalOrSpec extends Spec with Matchers {
         val e2 = intercept[TestFailedException] {
           all (hiSomes) should (be (Some("to")) or contain oneOf ("ho", "hey", "howdy"))
         }
-        checkMessageStackDepth(e2, allErrMsg(0, "Some(hi) was not equal to Some(to), and Some(hi) did not contain one of (\"ho\", \"hey\", \"howdy\")", thisLineNumber - 2, hiSomes), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(0, "Some(\"hi\") was not equal to Some(\"to\"), and Some(\"hi\") did not contain one of (\"ho\", \"hey\", \"howdy\")", thisLineNumber - 2, hiSomes), fileName, thisLineNumber - 2)
       }
 
       def `should use the implicit Equality in scope` {
@@ -327,7 +328,7 @@ class OptionShouldContainOneOfLogicalOrSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           all (hiSomes) should (be (Some("he")) or contain oneOf ("hi", "he"))
         }
-        checkMessageStackDepth(e1, allErrMsg(0, "Some(hi) was not equal to Some(he), and Some(hi) did not contain one of (\"hi\", \"he\")", thisLineNumber - 2, hiSomes), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, "Some(\"hi\") was not equal to Some(\"he\"), and Some(\"hi\") did not contain one of (\"hi\", \"he\")", thisLineNumber - 2, hiSomes), fileName, thisLineNumber - 2)
       }
       def `should use an explicitly provided Equality` {
         (all (hiSomes) should (be (Some("hi")) or contain oneOf ("HI", "HE"))) (decided by upperCaseStringEquality)
@@ -336,7 +337,7 @@ class OptionShouldContainOneOfLogicalOrSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           (all (hiSomes) should (be (Some("he")) or contain oneOf ("hi", "he"))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, allErrMsg(0, "Some(hi) was not equal to Some(he), and Some(hi) did not contain one of (\"hi\", \"he\")", thisLineNumber - 2, hiSomes), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, "Some(\"hi\") was not equal to Some(\"he\"), and Some(\"hi\") did not contain one of (\"hi\", \"he\")", thisLineNumber - 2, hiSomes), fileName, thisLineNumber - 2)
       }
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
@@ -357,7 +358,7 @@ class OptionShouldContainOneOfLogicalOrSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           all (toSomes) should (not contain oneOf ("nice", "to", "meet", "you") or not contain oneOf ("happy", "birthday", "to", "you"))
         }
-        checkMessageStackDepth(e1, allErrMsg(0, "Some(to) contained one of (\"nice\", \"to\", \"meet\", \"you\"), and Some(to) contained one of (\"happy\", \"birthday\", \"to\", \"you\")", thisLineNumber - 2, toSomes), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, "Some(\"to\") contained one of (\"nice\", \"to\", \"meet\", \"you\"), and Some(\"to\") contained one of (\"happy\", \"birthday\", \"to\", \"you\")", thisLineNumber - 2, toSomes), fileName, thisLineNumber - 2)
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
@@ -367,7 +368,7 @@ class OptionShouldContainOneOfLogicalOrSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           all (toSomes) should (not contain oneOf ("HAPPY", "BIRTHDAY", "TO", "YOU") or not contain oneOf ("NICE", "TO", "MEET", "YOU"))
         }
-        checkMessageStackDepth(e1, allErrMsg(0, "Some(to) contained one of (\"HAPPY\", \"BIRTHDAY\", \"TO\", \"YOU\"), and Some(to) contained one of (\"NICE\", \"TO\", \"MEET\", \"YOU\")", thisLineNumber - 2, toSomes), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, "Some(\"to\") contained one of (\"HAPPY\", \"BIRTHDAY\", \"TO\", \"YOU\"), and Some(\"to\") contained one of (\"NICE\", \"TO\", \"MEET\", \"YOU\")", thisLineNumber - 2, toSomes), fileName, thisLineNumber - 2)
       }
       def `should use an explicitly provided Equality` {
         (all (toSomes) should (not contain oneOf ("happy", "birthday", "to", "you") or not contain oneOf ("nice", "to", "meet", "you"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
@@ -376,7 +377,7 @@ class OptionShouldContainOneOfLogicalOrSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           (all (toSomes) should (not contain oneOf ("HAPPY", "BIRTHDAY", "TO", "YOU") or not contain oneOf ("NICE", "TO", "MEET", "YOU"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, allErrMsg(0, "Some(to) contained one of (\"HAPPY\", \"BIRTHDAY\", \"TO\", \"YOU\"), and Some(to) contained one of (\"NICE\", \"TO\", \"MEET\", \"YOU\")", thisLineNumber - 2, toSomes), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, "Some(\"to\") contained one of (\"HAPPY\", \"BIRTHDAY\", \"TO\", \"YOU\"), and Some(\"to\") contained one of (\"NICE\", \"TO\", \"MEET\", \"YOU\")", thisLineNumber - 2, toSomes), fileName, thisLineNumber - 2)
       }
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {
@@ -404,7 +405,7 @@ class OptionShouldContainOneOfLogicalOrSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           all (toSomes) should (not be (Some("to")) or not contain oneOf ("happy", "birthday", "to", "you"))
         }
-        checkMessageStackDepth(e1, allErrMsg(0, "Some(to) was equal to Some(to), and Some(to) contained one of (\"happy\", \"birthday\", \"to\", \"you\")", thisLineNumber - 2, toSomes), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, "Some(\"to\") was equal to Some(\"to\"), and Some(\"to\") contained one of (\"happy\", \"birthday\", \"to\", \"you\")", thisLineNumber - 2, toSomes), fileName, thisLineNumber - 2)
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
@@ -414,7 +415,7 @@ class OptionShouldContainOneOfLogicalOrSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           all (toSomes) should (not be (Some("to")) or not contain oneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))
         }
-        checkMessageStackDepth(e1, allErrMsg(0, "Some(to) was equal to Some(to), and Some(to) contained one of (\"HAPPY\", \"BIRTHDAY\", \"TO\", \"YOU\")", thisLineNumber - 2, toSomes), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, "Some(\"to\") was equal to Some(\"to\"), and Some(\"to\") contained one of (\"HAPPY\", \"BIRTHDAY\", \"TO\", \"YOU\")", thisLineNumber - 2, toSomes), fileName, thisLineNumber - 2)
       }
       def `should use an explicitly provided Equality` {
         (all (toSomes) should (not be (Some("hi")) or not contain oneOf ("happy", "birthday", "to", "you"))) (decided by upperCaseStringEquality)
@@ -423,7 +424,7 @@ class OptionShouldContainOneOfLogicalOrSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           (all (toSomes) should (not be (Some("to")) or not contain oneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, allErrMsg(0, "Some(to) was equal to Some(to), and Some(to) contained one of (\"HAPPY\", \"BIRTHDAY\", \"TO\", \"YOU\")", thisLineNumber - 2, toSomes), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, "Some(\"to\") was equal to Some(\"to\"), and Some(\"to\") contained one of (\"HAPPY\", \"BIRTHDAY\", \"TO\", \"YOU\")", thisLineNumber - 2, toSomes), fileName, thisLineNumber - 2)
       }
       def `should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value` {
         val e1 = intercept[exceptions.NotAllowedException] {

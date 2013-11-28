@@ -28,6 +28,7 @@ import matchers.{NegatedFailureMessage,
                  MidSentenceFailureMessage, 
                  MidSentenceNegatedFailureMessage}
 import java.io.File
+import FailureMessages.decorateToStringValue
 
 class NotWordSpec extends Spec with FileMocks {
   
@@ -2847,10 +2848,10 @@ class NotWordSpec extends Spec with FileMocks {
       def `should have correct MatcherResult` {
         mr should have (
           'matches (false),
-          'failureMessage (lhs + " contained key \"2\""),
-          'negatedFailureMessage (lhs + " did not contain key \"2\""),
-          'midSentenceFailureMessage (lhs + " contained key \"2\""),
-          'midSentenceNegatedFailureMessage (lhs + " did not contain key \"2\""),
+          'failureMessage (decorateToStringValue(lhs) + " contained key \"2\""),
+          'negatedFailureMessage (decorateToStringValue(lhs) + " did not contain key \"2\""),
+          'midSentenceFailureMessage (decorateToStringValue(lhs) + " contained key \"2\""),
+          'midSentenceNegatedFailureMessage (decorateToStringValue(lhs) + " did not contain key \"2\""),
           'rawFailureMessage ("{0} contained key {1}"),
           'rawNegatedFailureMessage ("{0} did not contain key {1}"),
           'rawMidSentenceFailureMessage ("{0} contained key {1}"),
@@ -2867,10 +2868,10 @@ class NotWordSpec extends Spec with FileMocks {
       def `should have correct negated MatcherResult` {
         nmr should have (
           'matches (true),
-          'failureMessage (lhs + " did not contain key \"2\""),
-          'negatedFailureMessage (lhs + " contained key \"2\""),
-          'midSentenceFailureMessage (lhs + " did not contain key \"2\""),
-          'midSentenceNegatedFailureMessage (lhs + " contained key \"2\""),
+          'failureMessage (decorateToStringValue(lhs) + " did not contain key \"2\""),
+          'negatedFailureMessage (decorateToStringValue(lhs) + " contained key \"2\""),
+          'midSentenceFailureMessage (decorateToStringValue(lhs) + " did not contain key \"2\""),
+          'midSentenceNegatedFailureMessage (decorateToStringValue(lhs) + " contained key \"2\""),
           'rawFailureMessage ("{0} did not contain key {1}"),
           'rawNegatedFailureMessage ("{0} contained key {1}"),
           'rawMidSentenceFailureMessage ("{0} did not contain key {1}"),
@@ -2898,10 +2899,10 @@ class NotWordSpec extends Spec with FileMocks {
       def `should have correct MatcherResult` {
         mr should have (
           'matches (false),
-          'failureMessage (lhs + " contained value \"two\""),
-          'negatedFailureMessage (lhs + " did not contain value \"two\""),
-          'midSentenceFailureMessage (lhs + " contained value \"two\""),
-          'midSentenceNegatedFailureMessage (lhs + " did not contain value \"two\""),
+          'failureMessage (decorateToStringValue(lhs) + " contained value \"two\""),
+          'negatedFailureMessage (decorateToStringValue(lhs) + " did not contain value \"two\""),
+          'midSentenceFailureMessage (decorateToStringValue(lhs) + " contained value \"two\""),
+          'midSentenceNegatedFailureMessage (decorateToStringValue(lhs) + " did not contain value \"two\""),
           'rawFailureMessage ("{0} contained value {1}"),
           'rawNegatedFailureMessage ("{0} did not contain value {1}"),
           'rawMidSentenceFailureMessage ("{0} contained value {1}"),
@@ -2918,10 +2919,10 @@ class NotWordSpec extends Spec with FileMocks {
       def `should have correct negated MatcherResult` {
         nmr should have (
           'matches (true),
-          'failureMessage (lhs + " did not contain value \"two\""),
-          'negatedFailureMessage (lhs + " contained value \"two\""),
-          'midSentenceFailureMessage (lhs + " did not contain value \"two\""),
-          'midSentenceNegatedFailureMessage (lhs + " contained value \"two\""),
+          'failureMessage (decorateToStringValue(lhs) + " did not contain value \"two\""),
+          'negatedFailureMessage (decorateToStringValue(lhs) + " contained value \"two\""),
+          'midSentenceFailureMessage (decorateToStringValue(lhs) + " did not contain value \"two\""),
+          'midSentenceNegatedFailureMessage (decorateToStringValue(lhs) + " contained value \"two\""),
           'rawFailureMessage ("{0} did not contain value {1}"),
           'rawNegatedFailureMessage ("{0} contained value {1}"),
           'rawMidSentenceFailureMessage ("{0} did not contain value {1}"),

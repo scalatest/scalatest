@@ -23,8 +23,8 @@ class TheSameElementsAsContainMatcherSpec extends Spec with Matchers {
   object `theSameElementsAs ` {
     
     def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: Any, lineNumber: Int) {
-      val leftText = FailureMessages.prettifyArrays(left)
-      val rightText = FailureMessages.prettifyArrays(right)
+      val leftText = FailureMessages.decorateToStringValue(left)
+      val rightText = FailureMessages.decorateToStringValue(right)
       e.message should be (Some(leftText + " did not contain the same elements as " + rightText))
       e.failedCodeFileName should be (Some("TheSameElementsAsContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
@@ -351,8 +351,8 @@ class TheSameElementsAsContainMatcherSpec extends Spec with Matchers {
   object `not theSameElementsAs ` {
     
     def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: Any, lineNumber: Int) {
-      val leftText = FailureMessages.prettifyArrays(left)
-      val rightText = FailureMessages.prettifyArrays(right)
+      val leftText = FailureMessages.decorateToStringValue(left)
+      val rightText = FailureMessages.decorateToStringValue(right)
       e.message should be (Some(leftText + " contained the same elements as " + rightText))
       e.failedCodeFileName should be (Some("TheSameElementsAsContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))

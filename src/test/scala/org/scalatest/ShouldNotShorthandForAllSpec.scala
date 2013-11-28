@@ -17,13 +17,14 @@ package org.scalatest
 
 import matchers.{BeMatcher, MatchResult, BePropertyMatcher, BePropertyMatchResult}
 import SharedHelpers._
+import FailureMessages.decorateToStringValue
 
 class ShouldNotShorthandForAllSpec extends Spec with Matchers with EmptyMocks with BookPropertyMatchers {
   
   def errorMessage(index: Int, message: String, lineNumber: Int, left: Any): String = 
     "'all' inspection failed, because: \n" +
     "  at index " + index + ", " + message + " (ShouldNotShorthandForAllSpec.scala:" + lineNumber + ") \n" +
-    "in " + left
+    "in " + decorateToStringValue(left)
   
   object `The shouldNot syntax` {
     

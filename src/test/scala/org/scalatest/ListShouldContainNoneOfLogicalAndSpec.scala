@@ -19,7 +19,7 @@ import org.scalautils.Equality
 import org.scalautils.Uniformity
 import org.scalautils.StringNormalizations._
 import SharedHelpers._
-import FailureMessages.decorateToStringValue
+import FailureMessages._
 import scala.collection.JavaConverters._
 
 class ListShouldContainNoneOfLogicalAndSpec extends Spec with Matchers {
@@ -446,7 +446,7 @@ class ListShouldContainNoneOfLogicalAndSpec extends Spec with Matchers {
     def allErrMsg(index: Int, message: String, lineNumber: Int, left: Any): String = 
       "'all' inspection failed, because: \n" +
       "  at index " + index + ", " + message + " (" + fileName + ":" + (lineNumber) + ") \n" +
-      "in " + left
+      "in " + decorateToStringValue(left)
     
     object `when used with (contain noneOf (..) and contain noneOf (..))` {
       

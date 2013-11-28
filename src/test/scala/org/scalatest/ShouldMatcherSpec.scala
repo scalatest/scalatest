@@ -93,11 +93,11 @@ class ShouldMatcherSpec extends Spec with Matchers {
         val caught1 = intercept[TestFailedException] {
           nonEmptyList should be (Nil)
         }
-        assert(caught1.getMessage === "List(Helloooooo) was not equal to List()")
+        assert(caught1.getMessage === "List(\"Helloooooo\") was not equal to List()")
         val caught2 = intercept[TestFailedException] {
           nonEmptyList should equal (Nil)
         }
-        assert(caught2.getMessage === "List(Helloooooo) did not equal List()")
+        assert(caught2.getMessage === "List(\"Helloooooo\") did not equal List()")
       }
 
       def `should do nothing when non-null is compared to not null` {
@@ -146,11 +146,11 @@ class ShouldMatcherSpec extends Spec with Matchers {
         val caught1 = intercept[TestFailedException] {
           someString should be (None)
         }
-        assert(caught1.getMessage === "Some(Helloooooo) was not equal to None")
+        assert(caught1.getMessage === "Some(\"Helloooooo\") was not equal to None")
         val caught2 = intercept[TestFailedException] {
           someString should equal (None)
         }
-        assert(caught2.getMessage === "Some(Helloooooo) did not equal None")
+        assert(caught2.getMessage === "Some(\"Helloooooo\") did not equal None")
       }
 
       def `should do nothing when Some is compared to not None` {

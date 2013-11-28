@@ -74,13 +74,13 @@ class SimpleMessageTemplate(message: String, autoQuoteString: Boolean = true) ex
 abstract class LeftMessageTemplate(left: Any, autoQuoteString: Boolean = true) extends MessageTemplate(autoQuoteString) {
   val message: String
   override def toString = 
-    wrapStringIfNecessary(left) + message
+    left + message
 }
             
 abstract class LeftRightMessageTemplate(left: Any, right: Any, autoQuoteString: Boolean = true) extends LeftMessageTemplate(left, autoQuoteString) {
   val message: String
-  override def toString = 
-    wrapStringIfNecessary(left) + message + wrapStringIfNecessary(right)
+  override def toString =
+    left + message + wrapStringIfNecessary(right)
 }
             
 class EqualedMessageTemplate(left: Any, right: Any, autoQuoteString: Boolean = true) extends LeftRightMessageTemplate(left, right, autoQuoteString) {
