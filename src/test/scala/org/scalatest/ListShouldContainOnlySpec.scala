@@ -22,7 +22,7 @@ import SharedHelpers._
 import FailureMessages.decorateToStringValue
 
 class ListShouldContainOnlySpec extends Spec with Matchers {
-  
+
   private def upperCase(value: Any): Any = 
     value match {
       case l: List[_] => l.map(upperCase(_))
@@ -456,7 +456,7 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 0, " + decorateToStringValue(Vector(3, 2, 1)) + " did not contain only (" + Vector(1, 2, 3) + "), did you forget to say : _*" + " (ListShouldContainOnlySpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "  at index 0, " + decorateToStringValue(Vector(3, 2, 1)) + " did not contain only (" + decorateToStringValue(Vector(1, 2, 3)) + "), did you forget to say : _*" + " (ListShouldContainOnlySpec.scala:" + (thisLineNumber - 5) + ") \n" +
                                    "in " + decorateToStringValue(Vector(Vector(3, 2, 1), Vector(3, 2, 1), Vector(4, 3, 2)))))
       }
     }
@@ -533,7 +533,7 @@ class ListShouldContainOnlySpec extends Spec with Matchers {
         e1.failedCodeFileName.get should be ("ListShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-                                   "  at index 0, " + decorateToStringValue(Vector(3, 2, 1)) + " did not contain only (" + Vector(1, 2, 3) + "), did you forget to say : _*" + " (ListShouldContainOnlySpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "  at index 0, " + decorateToStringValue(Vector(3, 2, 1)) + " did not contain only (" + decorateToStringValue(Vector(1, 2, 3)) + "), did you forget to say : _*" + " (ListShouldContainOnlySpec.scala:" + (thisLineNumber - 5) + ") \n" +
                                    "in " + decorateToStringValue(Vector(Vector(3, 2, 1), Vector(3, 2, 1), Vector(4, 3, 2)))))
       }
     }

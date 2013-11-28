@@ -54,7 +54,7 @@ object GenInspectors {
   
   class DynamicFirstArrayElementTemplate(colType: String, errorFun: String, errorValue: String) extends Template {
     override def toString = 
-      "\" + " + getErrorMessageValuesFunName(colType, errorFun) + "(xs, " + errorValue + ").deep + \""
+      "\" + decorateToStringValue(" + getErrorMessageValuesFunName(colType, errorFun) + "(xs, " + errorValue + ").deep) + \""
   }
   
   class DynamicFirstElementLengthTemplate(colType: String, errorFun: String, errorValue: String) extends Template {

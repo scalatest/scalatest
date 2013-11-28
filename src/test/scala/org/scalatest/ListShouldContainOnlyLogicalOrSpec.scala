@@ -665,7 +665,7 @@ class ListShouldContainOnlyLogicalOrSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           all (Vector(Vector(Vector(3, 2, 1)))) should (be (List(2, 3, 4)) or contain only Vector(2, 3, 4))
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(Vector(Vector(3, 2, 1))) + " was not equal to " + decorateToStringValue(List(2, 3, 4)) + ", and " + decorateToStringValue(Vector(Vector(3, 2, 1))) + " did not contain only (" + Vector(2, 3, 4) + "), did you forget to say : _*", thisLineNumber - 2, Vector(Vector(Vector(3, 2, 1)))), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(Vector(Vector(3, 2, 1))) + " was not equal to " + decorateToStringValue(List(2, 3, 4)) + ", and " + decorateToStringValue(Vector(Vector(3, 2, 1))) + " did not contain only (" + decorateToStringValue(Vector(2, 3, 4)) + "), did you forget to say : _*", thisLineNumber - 2, Vector(Vector(Vector(3, 2, 1)))), fileName, thisLineNumber - 2)
       }
     }
     
@@ -742,7 +742,7 @@ class ListShouldContainOnlyLogicalOrSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           all (Vector(Vector(Vector(3, 2, 1)))) should (not contain only (Vector(3, 2, 1)) or not contain only (Vector(3, 2, 1)))
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(Vector(Vector(3, 2, 1))) + " contained only (" + Vector(3, 2, 1) + "), did you forget to say : _*" + ", and " + decorateToStringValue(Vector(Vector(3, 2, 1))) + " contained only (" + Vector(3, 2, 1) + "), did you forget to say : _*", thisLineNumber - 2, Vector(Vector(Vector(3, 2, 1)))), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(Vector(Vector(3, 2, 1))) + " contained only (" + decorateToStringValue(Vector(3, 2, 1)) + "), did you forget to say : _*" + ", and " + decorateToStringValue(Vector(Vector(3, 2, 1))) + " contained only (" + decorateToStringValue(Vector(3, 2, 1)) + "), did you forget to say : _*", thisLineNumber - 2, Vector(Vector(Vector(3, 2, 1)))), fileName, thisLineNumber - 2)
       }
     }
     
@@ -812,7 +812,7 @@ class ListShouldContainOnlyLogicalOrSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           all (Vector(Vector(Vector(3, 2, 1)))) should (not be (Vector(Vector(3, 2, 1))) or not contain only (Vector(3, 2, 1)))
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(Vector(Vector(3, 2, 1))) + " was equal to " + decorateToStringValue(Vector(Vector(3, 2, 1))) + ", and " + decorateToStringValue(Vector(Vector(3, 2, 1))) + " contained only (" + Vector(3, 2, 1) + "), did you forget to say : _*", thisLineNumber - 2, Vector(Vector(Vector(3, 2, 1)))), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(Vector(Vector(3, 2, 1))) + " was equal to " + decorateToStringValue(Vector(Vector(3, 2, 1))) + ", and " + decorateToStringValue(Vector(Vector(3, 2, 1))) + " contained only (" + decorateToStringValue(Vector(3, 2, 1)) + "), did you forget to say : _*", thisLineNumber - 2, Vector(Vector(Vector(3, 2, 1)))), fileName, thisLineNumber - 2)
       }
     }
   }

@@ -663,12 +663,12 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           all (Vector(Vector(Vector(3, 2, 1), Vector(3, 2, 1), Vector(4, 3, 2)))) should (contain only Vector(1, 2, 3) and contain only (1, 3, 2))
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(Vector(Vector(3, 2, 1), Vector(3, 2, 1), Vector(4, 3, 2))) + " did not contain only " + "(" + Vector(1, 2, 3) + "), did you forget to say : _*", thisLineNumber - 2, Vector(Vector(Vector(3, 2, 1), Vector(3, 2, 1), Vector(4, 3, 2)))), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(Vector(Vector(3, 2, 1), Vector(3, 2, 1), Vector(4, 3, 2))) + " did not contain only " + "(" + decorateToStringValue(Vector(1, 2, 3)) + "), did you forget to say : _*", thisLineNumber - 2, Vector(Vector(Vector(3, 2, 1), Vector(3, 2, 1), Vector(4, 3, 2)))), fileName, thisLineNumber - 2)
 
         val e2 = intercept[TestFailedException] {
           all (Vector(Vector(Vector(1, 2, 3)))) should (contain only Vector(1, 2, 3) and contain only Vector(1, 3, 4))
         }
-        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(Vector(Vector(1, 2, 3))) + " contained only (" + Vector(1, 2, 3) + "), did you forget to say : _*, but " + decorateToStringValue(Vector(Vector(1, 2, 3))) + " did not contain only " + "(" + Vector(1, 3, 4) + "), did you forget to say : _*", thisLineNumber - 2, Vector(Vector(Vector(1, 2, 3)))), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(Vector(Vector(1, 2, 3))) + " contained only (" + decorateToStringValue(Vector(1, 2, 3)) + "), did you forget to say : _*, but " + decorateToStringValue(Vector(Vector(1, 2, 3))) + " did not contain only " + "(" + decorateToStringValue(Vector(1, 3, 4)) + "), did you forget to say : _*", thisLineNumber - 2, Vector(Vector(Vector(1, 2, 3)))), fileName, thisLineNumber - 2)
 
         val e3 = intercept[TestFailedException] {
           all (Vector(Vector(Vector("hi", "hello")))) should (contain only Vector("hi", "hello") and contain only Vector("ho", "hey", "howdy"))
@@ -769,7 +769,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           all (Vector(Vector(Vector(3, 2, 1)))) should (be (Vector(Vector(3, 2, 1))) and contain only Vector(2, 3, 8))
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(Vector(Vector(3, 2, 1))) + " was equal to " + decorateToStringValue(Vector(Vector(3, 2, 1))) + ", but " + decorateToStringValue(Vector(Vector(3, 2, 1))) + " did not contain only (" + Vector(2, 3, 8) + "), did you forget to say : _*", thisLineNumber - 2, Vector(Vector(Vector(3, 2, 1)))), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(Vector(Vector(3, 2, 1))) + " was equal to " + decorateToStringValue(Vector(Vector(3, 2, 1))) + ", but " + decorateToStringValue(Vector(Vector(3, 2, 1))) + " did not contain only (" + decorateToStringValue(Vector(2, 3, 8)) + "), did you forget to say : _*", thisLineNumber - 2, Vector(Vector(Vector(3, 2, 1)))), fileName, thisLineNumber - 2)
 
         val e2 = intercept[TestFailedException] {
           all (Vector(Vector(Vector("hi", "hello")))) should (be (Vector(Vector("hi", "hello"))) and contain only Vector("ho", "hey", "howdy"))
@@ -877,12 +877,12 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           all (Vector(Vector(Vector(3, 2, 1)))) should (not contain only (Vector(3, 2, 1)) and not contain only (8, 3, 4))
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(Vector(Vector(3, 2, 1))) + " contained only (" + Vector(3, 2, 1) + "), did you forget to say : _*", thisLineNumber - 2, Vector(Vector(Vector(3, 2, 1)))), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(Vector(Vector(3, 2, 1))) + " contained only (" + decorateToStringValue(Vector(3, 2, 1)) + "), did you forget to say : _*", thisLineNumber - 2, Vector(Vector(Vector(3, 2, 1)))), fileName, thisLineNumber - 2)
 
         val e2 = intercept[TestFailedException] {
           all (Vector(Vector(Vector(3, 2, 1)))) should (not contain only (Vector(3, 6, 8)) and not contain only (Vector(3, 2, 1)))
         }
-        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(Vector(Vector(3, 2, 1))) + " did not contain only (" + Vector(3, 6, 8) + "), did you forget to say : _*" + ", but " + decorateToStringValue(Vector(Vector(3, 2, 1))) + " contained only (" + Vector(3, 2, 1) + "), did you forget to say : _*", thisLineNumber - 2, Vector(Vector(Vector(3, 2, 1)))), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(Vector(Vector(3, 2, 1))) + " did not contain only (" + decorateToStringValue(Vector(3, 6, 8)) + "), did you forget to say : _*" + ", but " + decorateToStringValue(Vector(Vector(3, 2, 1))) + " contained only (" + decorateToStringValue(Vector(3, 2, 1)) + "), did you forget to say : _*", thisLineNumber - 2, Vector(Vector(Vector(3, 2, 1)))), fileName, thisLineNumber - 2)
 
         val e3 = intercept[TestFailedException] {
           all (Vector(Vector(Vector("hi", "hello")))) should (not contain only (Vector("hi", "hello")) and not contain only ("ho", "hey", "howdy"))
@@ -976,7 +976,7 @@ class ListShouldContainOnlyLogicalAndSpec extends Spec with Matchers {
         val e1 = intercept[TestFailedException] {
           all (Vector(Vector(Vector(3, 2, 1)))) should (not be (List(3)) and not contain only (Vector(3, 2, 1)))
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(Vector(Vector(3, 2, 1))) + " was not equal to " + decorateToStringValue(List(3)) + ", but " + decorateToStringValue(Vector(Vector(3, 2, 1))) + " contained only (" + Vector(3, 2, 1) + "), did you forget to say : _*", thisLineNumber - 2, Vector(Vector(Vector(3, 2, 1)))), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(Vector(Vector(3, 2, 1))) + " was not equal to " + decorateToStringValue(List(3)) + ", but " + decorateToStringValue(Vector(Vector(3, 2, 1))) + " contained only (" + decorateToStringValue(Vector(3, 2, 1)) + "), did you forget to say : _*", thisLineNumber - 2, Vector(Vector(Vector(3, 2, 1)))), fileName, thisLineNumber - 2)
 
         val e2 = intercept[TestFailedException] {
           all (Vector(Vector(Vector("hi", "hello")))) should (not be (List("ho")) and not contain only (Vector("hi", "hello")))

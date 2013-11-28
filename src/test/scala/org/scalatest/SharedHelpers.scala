@@ -615,14 +615,13 @@ object SharedHelpers extends Assertions {
   def indexElementLengthString[T](itr: Iterator[String], xs: GenTraversable[String], errorFun: String => Boolean): Array[String] = { 
     val element = getNext[String](itr, errorFun)
     val index = getIndex(xs, element)
-    //Array(index.toString, (if (element != null && element.isInstanceOf[Array[_]]) element.asInstanceOf[Array[T]].deep.toString else element.toString), element.length.toString)
     Array(index.toString, decorateToStringValue(element), element.length.toString)
   }
   
   def indexElementLengthGenTraversable[T](itr: Iterator[GenTraversable[T]], xs: GenTraversable[GenTraversable[T]], errorFun: GenTraversable[T] => Boolean): Array[String] = { 
     val element = getNext[GenTraversable[T]](itr, errorFun)
     val index = getIndex(xs, element)
-    Array(index.toString, (if (element != null && element.isInstanceOf[Array[_]]) element.asInstanceOf[Array[T]].deep.toString else element.toString), element.size.toString) 
+    Array(index.toString, decorateToStringValue(element), element.size.toString)
   }
   
   def indexElementLengthArray[T](itr: Iterator[Array[T]], xs: GenTraversable[Array[T]], errorFun: Array[T] => Boolean): Array[String] = { 
