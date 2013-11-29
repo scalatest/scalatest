@@ -42,13 +42,27 @@ class RandomTestOrderSpec extends Spec {
     }
 
     def `execute tests in random order` {
-      eventually {
-        val buffer = new ListBuffer[Int]
-        val spec = new ExampleSpec(buffer)
-        val rep = new EventRecordingReporter
-        spec.run(None, Args(reporter = rep))
-        assert(buffer(0) != 0 || buffer(1) != 1 || buffer(2) != 2)
-      }
+      val rep =
+        eventually {
+          val buffer = new ListBuffer[Int]
+          val spec = new ExampleSpec(buffer)
+          val rep = new EventRecordingReporter
+          spec.run(None, Args(reporter = rep))
+          assert(buffer(0) != 0 || buffer(1) != 1 || buffer(2) != 2)
+          rep
+        }
+
+      val testStartingList = rep.testStartingEventsReceived
+      assert(testStartingList.size == 3)
+      assert(testStartingList(0).testName == "test 1")
+      assert(testStartingList(1).testName == "test 2")
+      assert(testStartingList(2).testName == "test 3")
+
+      val testSucceededList = rep.testSucceededEventsReceived
+      assert(testSucceededList.size == 3)
+      assert(testSucceededList(0).testName == "test 1")
+      assert(testSucceededList(1).testName == "test 2")
+      assert(testSucceededList(2).testName == "test 3")
     }
 
   }
