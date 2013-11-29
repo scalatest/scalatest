@@ -41,7 +41,7 @@ class RandomTestOrderSpec extends Spec {
 
     }
 
-    def `execute tests in random order` {
+    def `execute tests in random order, but fire events in original order` {
       val rep =
         eventually {
           val buffer = new ListBuffer[Int]
