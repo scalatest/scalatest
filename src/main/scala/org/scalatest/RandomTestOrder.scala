@@ -16,15 +16,17 @@
 package org.scalatest
 
 import scala.util.Random
-import collection.mutable.ListBuffer
+import java.util.concurrent.LinkedBlockingQueue
+import collection.JavaConverters._
 
 trait RandomTestOrder extends SuiteMixin {
 
   this: Suite =>
 
-  case class DeferredSuiteRun(suite: Suite with RandomTestOrder, testName: String, status: ScalaTestStatefulStatus)
+  private[scalatest] case class DeferredSuiteRun(suite: Suite with RandomTestOrder, testName: String, status: ScalaTestStatefulStatus)
 
-  private val suiteList = new ListBuffer[DeferredSuiteRun]
+  //private val suiteList = new ListBuffer[DeferredSuiteRun]
+  private val suiteRunQueue = new LinkedBlockingQueue[DeferredSuiteRun]
 
   protected abstract override def runTest(testName: String, args: Args): Status = {
 
@@ -33,7 +35,7 @@ trait RandomTestOrder extends SuiteMixin {
       val oneInstance = newInstance
       // defer the suite execution
       val status = new ScalaTestStatefulStatus
-      suiteList += DeferredSuiteRun(oneInstance, testName, status)
+      suiteRunQueue.put(DeferredSuiteRun(oneInstance, testName, status))
       status
     }
     else {// Therefore, in test-specific instance, so run the test.
@@ -54,7 +56,7 @@ trait RandomTestOrder extends SuiteMixin {
       super.runTests(testName, args.copy(runTestInNewInstance = true))
       // Random shuffle the deferred suite list, before executing them.
       val statusList: List[Status] =
-        Random.shuffle(suiteList.toList).map { case DeferredSuiteRun(suite, testName, statefulStatus) =>
+        Random.shuffle(suiteRunQueue.asScala.toList).map { case DeferredSuiteRun(suite, testName, statefulStatus) =>
           val status = suite.run(Some(testName), args.copy(runTestInNewInstance = true))
           status.whenCompleted { result =>
             if (!result)
