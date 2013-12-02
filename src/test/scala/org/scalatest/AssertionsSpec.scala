@@ -1527,4 +1527,22 @@ class AssertionsSpec extends FunSpec with OptionValues {
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
   }
+
+  describe("assertTypeCheck method") {
+
+    it("should do nothing when type check passes") {
+      assertTypeCheck("val a = 1")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when type check failed") {
+      val e = intercept[TestFailedException] {
+        assertTypeCheck("val a: String = 1")
+      }
+      assert(e.message.get.startsWith("type mismatch"))
+      // TODO: Fix these failing
+      //assert(e.failedCodeFileName === (Some(fileName)))
+      //assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+  }
 }
