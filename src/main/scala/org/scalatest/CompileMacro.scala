@@ -16,7 +16,7 @@
 package org.scalatest
 
 import scala.language.experimental.macros
-import scala.reflect.macros.{ Context, TypecheckException }
+import scala.reflect.macros.{ Context, TypecheckException, ParseException }
 import org.scalatest.exceptions.StackDepthException._
 import org.scalatest.exceptions.StackDepthExceptionHelper._
 
@@ -24,30 +24,28 @@ object CompileMacro {
 
   //def compile(code: String): Unit = macro compileImpl
 
-  def assertTypeCheckImpl(c: Context)(code: c.Expr[String]): c.Expr[Unit] = {
+  def assertTypeErrorImpl(c: Context)(code: c.Expr[String]): c.Expr[Unit] = {
     import c.universe._
 
     val Expr(Literal(Constant(codeStr: String))) = code
 
-    val (result, message) =
-      try {
-        c.typeCheck(c.parse("{ "+codeStr+" }"))
-        (true, "")
-      } catch {
-        case e: Throwable =>
-          (false, e.getMessage)
+    try {
+      c.typeCheck(c.parse("{ "+codeStr+" }"))
+      val messageExpr = c.literal("Expected type error, but type check passed.")
+      reify {
+        throw new exceptions.TestFailedException(messageExpr.splice, 0)
       }
-
-    val resultExpr = c.literal(result)
-    val messageExpr = c.literal(message)
-    val fileNameExpr = c.literal("CompileMacro.scala")
-    val methodNameExpr = c.literal("newAssertionFailedException")
-    reify {
-      if (!resultExpr.splice)
-        //throw newAssertionFailedException(Some(messageExpr.splice), fileNameExpr.splice, methodNameExpr.splice)
-        throw new exceptions.TestFailedException(messageExpr.splice, 4)
+    } catch {
+      case e: TypecheckException =>
+        reify {
+          // Do nothing
+        }
+      case e: ParseException =>
+        val messageExpr = c.literal("Expected type error, but get parse error: " + e.getMessage)
+        reify {
+          throw new TestFailedException(messageExpr.splice, 0)
+        }
     }
-
   }
 
   def newAssertionFailedException(optionalMessage: Option[String], fileName: String, methodName: String): Throwable =

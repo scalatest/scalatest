@@ -1528,20 +1528,28 @@ class AssertionsSpec extends FunSpec with OptionValues {
     }
   }
 
-  describe("assertTypeCheck method") {
+  describe("assertTypeError method") {
 
-    it("should do nothing when type check passes") {
-      assertTypeCheck("val a = 1")
+    it("should do nothing when type check failed") {
+      assertTypeError("val a: String = 1")
     }
 
-    it("should throw TestFailedException with correct message and stack depth when type check failed") {
+    it("should throw TestFailedException with correct message and stack depth when type check passed") {
       val e = intercept[TestFailedException] {
-        assertTypeCheck("val a: String = 1")
+        assertTypeError("val a = 1")
       }
-      assert(e.message.get.startsWith("type mismatch"))
-      // TODO: Fix these failing
-      //assert(e.failedCodeFileName === (Some(fileName)))
-      //assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+      assert(e.message == Some("Expected type error, but type check passed."))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when parse failed") {
+      val e = intercept[TestFailedException] {
+        assertTypeError("println(\"test)")
+      }
+      assert(e.message.get.startsWith("Expected type error, but get parse error: "))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
 
   }
