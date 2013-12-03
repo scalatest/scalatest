@@ -48,7 +48,4 @@ object CompileMacro {
     }
   }
 
-  def newAssertionFailedException(optionalMessage: Option[String], fileName: String, methodName: String): Throwable =
-    new exceptions.TestFailedException(toExceptionFunction(optionalMessage), None, getStackDepthFun(fileName, methodName, 0))
-
 }
