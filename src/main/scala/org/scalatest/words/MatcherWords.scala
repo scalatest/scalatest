@@ -222,6 +222,17 @@ trait MatcherWords {
   val empty = new EmptyWord
 
   /**
+   * This field enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   *
+   * "val a: String = 1" shouldNot compile
+   *                               ^
+   * </pre>
+   */
+  val compile = new CompileWord
+
+  /**
    * This method enables the following syntax: 
    *
    * <pre class="stHighlight">
