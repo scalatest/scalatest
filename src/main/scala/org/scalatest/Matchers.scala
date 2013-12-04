@@ -6902,10 +6902,6 @@ object Matchers extends Matchers {
           throw new TestFailedException(messageExpr.splice, 0)
         }
     }
-
-    /*reify {
-      println("###macroApplicationClass: " + macroApplicationClass.splice)
-    }*/
   }
 
 }
