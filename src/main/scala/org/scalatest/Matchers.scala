@@ -51,7 +51,6 @@ import Assertions.checkExpectedException
 import Assertions.checkNoException
 import exceptions.StackDepthExceptionHelper.getStackDepthFun
 import scala.language.experimental.macros
-import scala.reflect.macros.{ Context, TypecheckException, ParseException }
 
 // TODO: drop generic support for be as an equality comparison, in favor of specific ones.
 // TODO: Put links from ShouldMatchers to wherever I reveal the matrix and algo of how properties are checked dynamically.

@@ -21,9 +21,7 @@ import org.scalatest.exceptions.StackDepthException._
 import org.scalatest.exceptions.StackDepthExceptionHelper._
 import org.scalatest.words.CompileWord
 
-object CompileMacro {
-
-  //def compile(code: String): Unit = macro compileImpl
+private[scalatest] object CompileMacro {
 
   def assertTypeErrorImpl(c: Context)(code: c.Expr[String]): c.Expr[Unit] = {
     import c.universe._
