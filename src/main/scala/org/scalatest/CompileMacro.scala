@@ -19,6 +19,7 @@ import scala.language.experimental.macros
 import scala.reflect.macros.{ Context, TypecheckException, ParseException }
 import org.scalatest.exceptions.StackDepthException._
 import org.scalatest.exceptions.StackDepthExceptionHelper._
+import org.scalatest.words.CompileWord
 
 object CompileMacro {
 
@@ -45,6 +46,64 @@ object CompileMacro {
         reify {
           throw new TestFailedException(messageExpr.splice, 0)
         }
+    }
+  }
+
+  def shouldNotCompileImpl(c: Context)(compileWord: c.Expr[CompileWord]): c.Expr[Unit] = {
+    import c.universe._
+
+    c.macroApplication match {
+      case Apply(Select(Apply(_, List(Literal(Constant(codeStr)))), _), _) =>
+        //val codeStr = c.macroApplication.asInstanceOf[Apply].fun.asInstanceOf[Select].qualifier.asInstanceOf[Apply].args(0).toString
+        val code = codeStr.toString
+
+        try {
+          c.typeCheck(c.parse("{ " + code + " }"))
+          val messageExpr = c.literal("Expected type error, but type check passed.")
+          reify {
+            throw new exceptions.TestFailedException(messageExpr.splice, 0)
+          }
+        } catch {
+          case e: TypecheckException =>
+            reify {
+              // Do nothing
+            }
+          case e: ParseException =>
+            val messageExpr = c.literal("Expected type error, but get parse error: " + e.getMessage)
+            reify {
+              throw new TestFailedException(messageExpr.splice, 0)
+            }
+        }
+      case _ => c.abort(c.enclosingPosition, "The 'shouldNot compile' syntax only works with String literal only.")
+    }
+  }
+
+  def mustNotCompileImpl(c: Context)(compileWord: c.Expr[CompileWord]): c.Expr[Unit] = {
+    import c.universe._
+
+    c.macroApplication match {
+      case Apply(Select(Apply(_, List(Literal(Constant(codeStr)))), _), _) =>
+        //val codeStr = c.macroApplication.asInstanceOf[Apply].fun.asInstanceOf[Select].qualifier.asInstanceOf[Apply].args(0).toString
+        val code = codeStr.toString
+
+        try {
+          c.typeCheck(c.parse("{ " + code + " }"))
+          val messageExpr = c.literal("Expected type error, but type check passed.")
+          reify {
+            throw new exceptions.TestFailedException(messageExpr.splice, 0)
+          }
+        } catch {
+          case e: TypecheckException =>
+            reify {
+              // Do nothing
+            }
+          case e: ParseException =>
+            val messageExpr = c.literal("Expected type error, but get parse error: " + e.getMessage)
+            reify {
+              throw new TestFailedException(messageExpr.splice, 0)
+            }
+        }
+      case _ => c.abort(c.enclosingPosition, "The 'mustNot compile' syntax only works with String literal only.")
     }
   }
 

@@ -6773,7 +6773,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def shouldNot(compileWord: CompileWord): Unit = macro Matchers.shouldNotCompileImpl
+    def shouldNot(compileWord: CompileWord): Unit = macro CompileMacro.shouldNotCompileImpl
   }
 
   /**
@@ -6876,33 +6876,5 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
  *
  * @author Bill Venners
  */
-object Matchers extends Matchers {
-
-  def shouldNotCompileImpl(c: Context)(compileWord: c.Expr[CompileWord]): c.Expr[Unit] = {
-    import c.universe._
-
-    val codeStr = c.macroApplication.asInstanceOf[Apply].fun.asInstanceOf[Select].qualifier.asInstanceOf[Apply].args(0).toString
-    val code = codeStr.substring(1, codeStr.length - 1)
-
-    try {
-      c.typeCheck(c.parse("{ " + code + " }"))
-      val messageExpr = c.literal("Expected type error, but type check passed.")
-      val codeStrExpr = c.literal(codeStr)
-      reify {
-        throw new exceptions.TestFailedException(messageExpr.splice, 0)
-      }
-    } catch {
-      case e: TypecheckException =>
-        reify {
-          // Do nothing
-        }
-      case e: ParseException =>
-        val messageExpr = c.literal("Expected type error, but get parse error: " + e.getMessage)
-        reify {
-          throw new TestFailedException(messageExpr.splice, 0)
-        }
-    }
-  }
-
-}
+object Matchers extends Matchers
 
