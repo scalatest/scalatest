@@ -454,7 +454,7 @@ class Framework extends SbtFramework {
       }
     }
     catch {       
-      case e: RuntimeException => {
+      case e: Throwable => {
 
         // TODO: Could not get this from Resources. Got:
         // java.util.MissingResourceException: Can't find bundle for base name org.scalatest.ScalaTestBundle, locale en_US
