@@ -78,69 +78,6 @@ private[scalatest] object SuiteDiscoveryHelper {
     buf.toList.sortWith(_.className<_.className)
   }
 
-  def discoverSuiteNames(runpath: List[String], loader: ClassLoader,
-                         suffixes: Option[Pattern]): Set[String] =
-  {
-    val fileSeparatorString = System.getProperty("path.separator")
-    val fileSeparator = if (!fileSeparatorString.isEmpty) fileSeparatorString(0) else ':'
-
-    def getJarFileFromURL(url: URL): Option[JarFile] = {
-      val o = url.openConnection().getContent()
-      if (o != null) {
-        try {
-          Some(o.asInstanceOf[JarFile])
-        }
-        catch {
-          case e: ClassCastException => None
-        }
-      }
-      else {
-        None
-      }
-    }
-
-    def getJarFileFromFileSystem(path: String): Option[JarFile] = {
-      try {
-        Some(new JarFile(path))
-      }
-      catch {
-        case e: IOException => None
-      }
-    }
-
-    val listOfSets: List[Set[String]] = 
-      for (path <- runpath)
-        yield {
-          val urlOption =
-            try {
-              Some(new URL(path))
-            }
-            catch {
-              case e: MalformedURLException => None
-            }
-    
-          val endsWithDotJar = path.endsWith(".jar")
-    
-          if (endsWithDotJar) {
-            val jarFileOption =
-              urlOption match {
-                case Some(url) => getJarFileFromURL(url)
-                case None => getJarFileFromFileSystem(path)
-              }
-    
-            jarFileOption match {
-              case Some(jf) => processFileNames(getFileNamesIteratorFromJar(jf), '/', loader, suffixes)
-              case None => Set[String]()
-            }
-          }
-          else {
-            processFileNames(getFileNamesSetFromFile(new File(path), fileSeparator).iterator, fileSeparator, loader, suffixes)
-          }
-        }
-
-    Set() ++ listOfSets.flatMap(_.iterator.toList)
-  }
-
   //
   // Given a file name composed using specified separator, converts name to
   // corresponding class name.  E.g., for separator '/':
@@ -234,21 +171,6 @@ private[scalatest] object SuiteDiscoveryHelper {
   }
 
   //
-  // Determines whether specified class is to be included in
-  // test run.
-  //
-  // Returns Some(<class name>) if processed, else None
-  private def processClassName(className: String, loader: ClassLoader, suffixes: Option[Pattern]): Option[String] = {
-
-    if (classNameSuffixOkay(className, suffixes) && isDiscoverableSuite(className, loader)
-        && 
-        (isAccessibleSuite(className, loader) || isRunnable(className, loader))) 
-      Some(className)
-    else 
-      None 
-  }
-
-  //
   // Determines whether class should be included in test based
   // on whether its class name matches one of the suffixes
   // specified by user.
@@ -261,28 +183,6 @@ private[scalatest] object SuiteDiscoveryHelper {
   {
     (suffixes == None) ||
     suffixes.get.matcher(className).matches
-  }
-
-  //
-  // Scans specified files and returns names of classes to
-  // be included in test run.
-  //
-  // Extracts class names from the file names of .class files
-  // specified by the passed-in iterator, and returns those
-  // classes found that are to be included in run.
-  //
-  private def processFileNames(fileNames: Iterator[String], fileSeparator: Char, loader: ClassLoader,
-                               suffixes: Option[Pattern]): Set[String] =
-  {
-    val classNameOptions = // elements are Some(<class name>) if processed, else None
-      for (className <- extractClassNames(fileNames, fileSeparator))
-        yield processClassName(className, loader, suffixes)
-
-    val classNames = 
-      for (Some(className) <- classNameOptions)
-        yield className
-
-    Set[String]() ++ classNames
   }
 
   private def getFileNamesSetFromFile(file: File, fileSeparator: Char): Set[String] = {
@@ -335,5 +235,144 @@ private[scalatest] object SuiteDiscoveryHelper {
 
     for (Some(className) <- options) yield
       className
+  }
+
+  def discoverSuiteNames(runpath: List[String], loader: ClassLoader,
+                         suffixes: Option[Pattern]):
+  Set[String] =
+  {
+    val classNames = getRunpathClassNames(runpath)
+
+    classNames.filter(isIncludeableSuite(_, loader, suffixes)).toSet
+  }
+
+  //
+  // Finds the names of all classes in the runpath.
+  //
+  private def getRunpathClassNames(runpath: List[String]): List[String] =
+  {
+    val (jarIterators, fileIterators) = getFileNameIterators(runpath)
+
+    val classNamesFromJars =
+      jarIterators.map(
+        (f: Iterator[String]) => extractClassNames(f, '/')).flatten
+
+    val classNamesFromFileSystem =
+      fileIterators.map(extractClassNames(_, getFileSeparator)).flatten
+
+    classNamesFromJars ::: classNamesFromFileSystem
+  }
+
+  private def isIncludeableSuite(className: String, loader: ClassLoader,
+                                 suffixes: Option[Pattern]): Boolean =
+  {
+    classNameSuffixOkay(className, suffixes) &&
+    isDiscoverableSuite(className, loader) &&
+    (isAccessibleSuite(className, loader) || isRunnable(className, loader))
+  }
+
+  //
+  // Returns two lists of iterators for extracting file names
+  // from runpath elements:
+  //  1) iterators for files within jars
+  //  2) iterators for files within the file system
+  //
+  private def getFileNameIterators(runpath: List[String]):
+  (List[Iterator[String]], List[Iterator[String]]) =
+  {
+    val (runpathJars, runpathFiles) = runpath.partition(_.endsWith(".jar"))
+
+    (getJarIterators(runpathJars), getFileIterators(runpathFiles))
+  }
+
+  //
+  // Returns a list of iterators for retrieving file names from
+  // directory elements in the runpath, one iterator for each
+  // element.
+  //
+  private def getFileIterators(runpathFiles: List[String]):
+  List[Iterator[String]] =
+    for (path <- runpathFiles) yield
+      getFileNamesSetFromFile(new File(path), getFileSeparator).iterator
+
+  //
+  // Returns a list of iterators for retrieving file names from
+  // jar elements in the runpath, one iterator for each jar.
+  //
+  private def getJarIterators(runpathJars: List[String]):
+  List[Iterator[String]] =
+    for (path <- runpathJars)
+      yield {
+        getJarFile(path) match {
+          case Some(jf) => getFileNamesIteratorFromJar(jf)
+          case None => Set[String]().iterator
+        }
+      }
+
+  private def getJarFile(path: String): Option[JarFile] = {
+    def getJarFileFromURL(url: URL): Option[JarFile] = {
+      val o = url.openConnection().getContent()
+      if (o != null) {
+        try {
+          Some(o.asInstanceOf[JarFile])
+        }
+        catch {
+          case e: ClassCastException => None
+        }
+      }
+      else {
+        None
+      }
+    }
+
+    def getJarFileFromFileSystem(path: String): Option[JarFile] = {
+      try {
+        Some(new JarFile(path))
+      }
+      catch {
+        case e: IOException => None
+      }
+    }
+
+    try {
+      getJarFileFromURL(new URL(path))
+    }
+    catch {
+      case e: MalformedURLException => getJarFileFromFileSystem(path)
+    }
+  }
+
+  //
+  // Returns the names of all classes in the runpath that
+  // contain JUnit tests (as marked by JUnit @Test annotation).
+  //
+  def discoverJUnitClassNames(runpath: List[String],
+                              loader: ClassLoader): List[String] =
+  {
+    val classNames = getRunpathClassNames(runpath)
+
+    classNames.filter(hasJUnitTests(_, loader))
+  }
+
+  //
+  // Returns a list of iterators for retrieving file names from
+  // jar elements in the runpath.
+  //
+  private def hasJUnitTests(className: String, loader: ClassLoader): Boolean = {
+    try {
+      val clazz = loader.loadClass(className)
+      clazz.getMethods.exists(_.isAnnotationPresent(classOf[org.junit.Test]))
+    }
+    catch {
+      case e: ClassNotFoundException => false
+      case e: NoClassDefFoundError => false
+    }
+  }
+
+  private def getFileSeparator: Char = {
+    val fileSeparatorString = System.getProperty("path.separator")
+
+    if (!fileSeparatorString.isEmpty) fileSeparatorString(0)
+    else ':'
   }
 }

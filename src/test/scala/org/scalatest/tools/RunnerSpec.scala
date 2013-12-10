@@ -58,6 +58,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
         suitesList,
         runAgainsList,
         junitsList,
+        doJUnitDiscovery,
         propsList,
         includesList,
         excludesList,
@@ -477,7 +478,8 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       expectedSuffixes: Option[Pattern], 
       expectedChosenStyleList: List[String], 
       expectedSpanScaleFactorList: List[String], 
-      expectedTestSortingReporterTimeoutList: List[String]
+      expectedTestSortingReporterTimeoutList: List[String],
+      expectedDoJUnitDiscovery: Boolean = false
     ) = {
 
       val ParsedArgs(
@@ -486,6 +488,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
         suitesList,
         runAgainsList,
         junitsList,
+        doJUnitDiscovery,
         propsList,
         includesList,
         excludesList,
@@ -515,6 +518,7 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       assert(chosenStyleList === expectedChosenStyleList)
       assert(spanScaleFactorList == expectedSpanScaleFactorList)
       assert(testSortingReporterTimeoutList == expectedTestSortingReporterTimeoutList)
+      assert(doJUnitDiscovery == expectedDoJUnitDiscovery)
       if (expectedSuffixes.isEmpty) {
         assert(suffixes.isEmpty)
       } else {
@@ -997,6 +1001,33 @@ class RunnerSpec extends Spec with PrivateMethodTester {
       Nil, 
       Nil, 
       Nil
+    )
+
+    // Test -J
+    verify(
+      Array("-c", "-g", "-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188", "-p",
+          "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\"", "-g",
+          "-A", "target/doovers.txt",
+          "-h", "directory/", "-Y", "mystyles.css", "-n", "One Two Three", "-l", "SlowTests", "-s", "SuiteOne",
+          "-J",
+          "-m", "com.example.webapp", "-w", "com.example.root", "-b", "some/path/file.xml"),
+      List("-p", "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\""),
+      List("-g", "-g", "-h", "directory/", "-Y", "mystyles.css"),
+      List("-s", "SuiteOne"),
+      List("-A", "target/doovers.txt"),
+      Nil,
+      List("-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188"),
+      List("-n", "One Two Three"),
+      List("-l", "SlowTests"),
+      List("-c"),
+      List("-m", "com.example.webapp"),
+      List("-w", "com.example.root"),
+      List("-b", "some/path/file.xml"),
+      None, 
+      Nil, 
+      Nil, 
+      Nil,
+      true
     )
   }
 

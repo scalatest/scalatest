@@ -62,7 +62,7 @@ H -
 i - this one is used for the Suite ID        --suiteId
 I -
 j - currently JUnit directly (can drop and use WrapWith)   --junit
-J - 
+J - do discovery of JUnit 4 tests annotated with @Test
 k - socket reporter XML
 K - socket reporter binary
 l - tags to exclude                          --exclude
@@ -717,6 +717,11 @@ private[tools] case class SuiteParam(className: String, testNames: Array[String]
  * <p>
  * To use this option you must include a JUnit jar file on your classpath.
  * </p>
+ *<a name="doJUnitDiscovery"></a>
+ * <p>
+ * Use -J to have discovery done for JUnit tests.  Tests marked with JUnit's
+ * @Test annotation will be run.
+ * </p>
  *
  * <a name="memorizingAndRerunning"> </a>
  * <h2>Memorizing and rerunning failed and canceled tests</h2>
@@ -900,6 +905,7 @@ object Runner {
       suiteArgs,
       againArgs,
       junitArgs,
+      doJUnitDiscovery,
       propertiesArgs,
       tagsToIncludeArgs,
       tagsToExcludeArgs,
@@ -1003,6 +1009,7 @@ object Runner {
             agains,
             testSpecs,
             junitsList,
+            doJUnitDiscovery,
             runpathList,
             tagsToInclude,
             tagsToExclude,
@@ -1046,6 +1053,7 @@ object Runner {
             agains,
             testSpecs,
             junitsList,
+            doJUnitDiscovery,
             Stopper.default,
             tagsToInclude,
             tagsToExclude,
@@ -1124,7 +1132,7 @@ object Runner {
           it.next
         }
       }
-      else if (!s.startsWith("-D") && !s.startsWith("-g") && !s.startsWith("-o") && !s.startsWith("-e") && !s.startsWith("-c") && !s.startsWith("-P")) {
+      else if (!s.startsWith("-D") && !s.startsWith("-g") && !s.startsWith("-o") && !s.startsWith("-e") && !s.startsWith("-c") && !s.startsWith("-P") && !s.startsWith("-J")) {
         lb += s
       }
     }
@@ -1202,6 +1210,7 @@ object Runner {
     val spanScaleFactor = new ListBuffer[String]()
     val testSortingReporterTimeout = new ListBuffer[String]()
     val slowpoke = new ListBuffer[String]()
+    val doJUnitDiscovery = args.contains("-J")
 
     val it = args.iterator.buffered
     while (it.hasNext) {
@@ -1409,6 +1418,9 @@ object Runner {
         }
         else throw new IllegalArgumentException("-W must be followed by two valid integers, the second specifying the period")
       }
+      else if (s.startsWith("-J")) {
+        ;  // doJUnitDiscovery (processed above)
+      }
       else {
         throw new IllegalArgumentException("Argument unrecognized by ScalaTest's Runner: " + s)
       }
@@ -1420,6 +1432,7 @@ object Runner {
       suites.toList,
       tryAgains.toList,
       junits.toList,
+      doJUnitDiscovery,
       props.toList,
       includes.toList,
       excludes.toList,
@@ -2284,6 +2297,7 @@ object Runner {
     agains: List[String],
     testSpecs: List[TestSpec],
     junitsList: List[String],
+    doJUnitDiscovery: Boolean,
     stopRequested: Stopper,
     tagsToIncludeSet: Set[String], 
     tagsToExcludeSet: Set[String], 
@@ -2364,13 +2378,22 @@ object Runner {
         !nonGlobSuites.isEmpty || !junitsList.isEmpty || !testNGList.isEmpty ||
         !agains.isEmpty
 
-      if (suiteArgsArePresent && !discoArgsArePresent) {
+      if (suiteArgsArePresent && !discoArgsArePresent && !doJUnitDiscovery) {
         Nil // No DiscoverySuites in this case. Just run Suites
             // named with -s or -j or -b
       }
       else {
         val discoveryStartTime = System.currentTimeMillis
         dispatch(DiscoveryStarting(tracker.nextOrdinal(), configMap))
+
+        val junitDiscoSuites =
+          if (doJUnitDiscovery) {
+            for (junitClassName <- discoverJUnitClassNames(runpath, loader))
+              yield SuiteConfig(
+                new JUnitWrapperSuite(
+                  junitClassName, loader), emptyDynaTags, false, true)
+          }
+          else Nil
 
         val accessibleSuites: Set[String] =
           discoverSuiteNames(runpath, loader, suffixes)
@@ -2413,7 +2436,7 @@ object Runner {
         dispatch(
           DiscoveryCompleted(tracker.nextOrdinal(), Some(discoveryDuration)))
 
-        discoSuites
+        discoSuites ::: junitDiscoSuites
       }
     }
 

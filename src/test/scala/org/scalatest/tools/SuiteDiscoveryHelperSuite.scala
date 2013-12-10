@@ -17,9 +17,14 @@ package org.scalatest.tools
 
 import org.scalatest._
 import scala.collection.mutable
+import scala.sys.process._
 import java.io.File
 import java.util.regex.Pattern
+import java.util.regex.Matcher.quoteReplacement
 import SuiteDiscoveryHelper.discoverTests
+import SuiteDiscoveryHelper.discoverSuiteNames
+import SuiteDiscoveryHelper.discoverJUnitClassNames
+import org.apache.commons.io.FileUtils
 
 class SuiteDiscoveryHelperFriend(sdt: SuiteDiscoveryHelper.type) {
 
@@ -31,7 +36,7 @@ class SuiteDiscoveryHelperFriend(sdt: SuiteDiscoveryHelper.type) {
   }
 
   def extractClassNames(fileNames: Iterator[String], fileSeparator: Char): Iterator[String] = {
-    val m = Class.forName("org.scalatest.tools.SuiteDiscoveryHelper$").getDeclaredMethod("extractClassNames",
+    val m = Class.forName("org.scalatest.tools.SuiteDiscoveryHelper$").getDeclaredMethod("org$scalatest$tools$SuiteDiscoveryHelper$$extractClassNames",
       Array(classOf[Iterator[String]], classOf[Char]): _*)
     m.setAccessible(true)
     m.invoke(sdt, Array[Object](fileNames, new java.lang.Character(fileSeparator)): _*).asInstanceOf[Iterator[String]]
@@ -50,15 +55,6 @@ class SuiteDiscoveryHelperFriend(sdt: SuiteDiscoveryHelper.type) {
       Array(classOf[Class[_]]): _*) // This one works in 2.7
     m.setAccessible(true)
     m.invoke(sdt, Array[Object](clazz): _*).asInstanceOf[Boolean]
-  }
-
-  def processFileNames(fileNames: Iterator[String], fileSeparator: Char, loader: ClassLoader, suffixes: Option[Pattern]):
-  Set[String] =
-  {
-    val m = Class.forName("org.scalatest.tools.SuiteDiscoveryHelper$").getDeclaredMethod("org$scalatest$tools$SuiteDiscoveryHelper$$processFileNames",
-      Array(classOf[Iterator[String]], classOf[Char], classOf[ClassLoader], classOf[Option[Pattern]]): _*)
-    m.setAccessible(true)
-    m.invoke(sdt, Array[Object](fileNames, new java.lang.Character(fileSeparator), loader, suffixes): _*).asInstanceOf[Set[String]]
   }
 
   def getFileNamesSetFromFile(file: File, fileSeparator: Char): Set[String] = {
@@ -257,85 +253,6 @@ class SuiteDiscoveryHelperSuite extends Suite {
     assert(sdtf.extractClassNames(List("bob.class", "manifest.txt", "/a/b/c/bob.class").iterator, '/').toList === List("bob", "a.b.c.bob"))
   }
 
-  def testProcessFileNames() {
-
-    val loader = getClass.getClassLoader
-    val discoveredSet1 = sdtf.processFileNames(List("doesNotExist.txt", "noSuchfile.class").iterator, '/', loader, None)
-    assert(discoveredSet1.isEmpty)
-
-    val discoveredSet2 = sdtf.processFileNames(List("org/scalatest/EasySuite.class", "noSuchfile.class", "org/scalatest/FastAsLight.class").iterator, '/', loader, None)
-    assert(discoveredSet2 === Set("org.scalatest.EasySuite"))
-
-    val fileNames3 =
-      List(
-        "org/scalatest/EasySuite.class",
-        "org/scalatest/RunnerSuite.class",
-        "org/scalatest/SlowAsMolasses.class",
-        "org/scalatest/SuiteSuite.class",
-        "noSuchfile.class",
-        "org/scalatest/FastAsLight.class"
-      )
-    val classNames3 =
-      Set(
-        "org.scalatest.EasySuite",
-        // "org.scalatest.RunnerSuite", dropped this when moved RunnerSuite to tools
-        "org.scalatest.SuiteSuite"
-      )
-    val discoveredSet3 = sdtf.processFileNames(fileNames3.iterator, '/', loader, None)
-    assert(discoveredSet3 === classNames3)
-
-    // Test with backslashes
-    val fileNames4 =
-      List(
-        "org\\scalatest\\EasySuite.class",
-        "org\\scalatest\\RunnerSuite.class",
-        "org\\scalatest\\SlowAsMolasses.class",
-        "org\\scalatest\\SuiteSuite.class",
-        "noSuchfile.class",
-        "org\\scalatest\\FastAsLight.class"
-      )
-    val discoveredSet4 = sdtf.processFileNames(fileNames4.iterator, '\\', loader, None)
-    assert(discoveredSet4 === classNames3)
-
-    // Test with leading slashes
-    val fileNames5 =
-      List(
-        "/org/scalatest/EasySuite.class",
-        "/org/scalatest/RunnerSuite.class",
-        "/org/scalatest/SlowAsMolasses.class",
-        "/org/scalatest/SuiteSuite.class",
-        "/noSuchfile.class",
-        "/org/scalatest/FastAsLight.class"
-      )
-    val discoveredSet5 = sdtf.processFileNames(fileNames5.iterator, '/', loader, None)
-    assert(discoveredSet5 === classNames3)
-
-    // Test for specified suffixes only
-    val fileNames6 =
-      List(
-        "/org/scalatest/EasySuite.class",
-        "/org/scalatest/RunnerSuite.class",
-        "/org/scalatest/SlowAsMolasses.class",
-        "/org/scalatest/SuiteSuite.class",
-        "/org/scalatest/FilterSpec.class",
-        "/noSuchfile.class",
-        "/org/scalatest/FastAsLight.class"
-      )
-
-    val classNames4 =
-      Set(
-        "org.scalatest.EasySuite",
-        "org.scalatest.SuiteSuite",
-        "org.scalatest.FilterSpec"
-      )
-
-    val discoveredSet6 = sdtf.processFileNames(fileNames6.iterator, '/', loader, Some(Pattern.compile(".*(Suite)$")))
-    assert(discoveredSet6 === classNames3)
-
-    val discoveredSet7 = sdtf.processFileNames(fileNames6.iterator, '/', loader, Some(Pattern.compile(".*(Spec|Suite)$")))
-    assert(discoveredSet7 === classNames4)
-  }
-
   def testGetFileNamesSetFromFile() {
     
     assert(sdtf.getFileNamesSetFromFile(new File("harness/fnIteratorTest/empty.txt"), '/') === Set("empty.txt"))
@@ -367,6 +284,150 @@ class SuiteDiscoveryHelperSuite extends Suite {
     assert(!sdtf.isRunnable(classOf[AnnotateWrongConstructor]))
     assert(sdtf.isRunnable(classOf[SomeApiClass]))
     assert(sdtf.isRunnable(classOf[SomeApiSubClass]))
+  }
+
+  private def copyClassFilesIntoDirTree(classFiles: Set[String], dirTop: String)
+  {
+    val testsDir = "target/tests/"
+
+    FileUtils.deleteDirectory(new File(dirTop))
+  
+    classFiles.foreach { classFile =>
+      FileUtils.copyFile(new File(testsDir + classFile),
+                         new File(dirTop + classFile))
+    }
+  }
+
+  def testDiscoverSuiteNames() {
+    val loader      = getClass.getClassLoader
+    val sep         = System.getProperty("file.separator")
+    val runpath1Dir = "target/runpath1/"
+    val runpath2Dir = "target/runpath2/"
+    val runpath1Jar = "target"+ sep +"runpath1.jar"
+
+    //
+    // No files in runpath.
+    //
+    FileUtils.deleteDirectory(new File(runpath1Dir))
+    new File(runpath1Dir).mkdir
+
+    val discoveredSet0 = discoverSuiteNames(List(runpath1Dir), loader, None)
+    assert(discoveredSet0.size === 0)
+
+    //
+    // Discover one Suite. (FastAsLight isn't a Suite.)
+    //
+    val fileSet1 = Set("org/scalatest/EasySuite.class",
+                       "org/scalatest/FastAsLight.class")
+
+    val expectedSet1 = Set("org.scalatest.EasySuite")
+
+    copyClassFilesIntoDirTree(fileSet1, runpath1Dir)
+
+    val discoveredSet1 =
+      discoverSuiteNames(List(runpath1Dir, "noSuchDir"), loader, None)
+
+    assert(discoveredSet1 === expectedSet1)
+
+    //
+    // Discover multiple Suites in multiple directory trees.
+    //
+    val fileSet2 = Set("org/scalatest/tools/RunnerSpec.class",
+                       "org/scalatest/SlowAsMolasses.class",
+                       "org/scalatest/SuiteSuite.class");
+
+    val expectedSet2 = Set("org.scalatest.EasySuite",
+                           "org.scalatest.tools.RunnerSpec",
+                           "org.scalatest.SuiteSuite")
+
+    copyClassFilesIntoDirTree(fileSet2, runpath2Dir)
+
+    val discoveredSet2 =
+      discoverSuiteNames(List(runpath1Dir, runpath2Dir, "noSuch.jar"),
+                         loader, None)
+
+    assert(discoveredSet2 === expectedSet2)
+
+    //
+    // Discover Suites in a jar.
+    //
+    ("jar cf "+ runpath1Jar +" -C "+ runpath1Dir +" .").!
+
+    val discoveredSet2j =
+      discoverSuiteNames(List(runpath1Jar, runpath2Dir), loader, None)
+
+    assert(discoveredSet2j === expectedSet2)
+
+    //
+    // Filter by suffix.
+    //
+    val expectedSet2s = Set("org.scalatest.tools.RunnerSpec")
+    
+    val discoveredSet2s =
+      discoverSuiteNames(List(runpath1Dir, runpath2Dir), loader,
+                         Some(Pattern.compile(".*(Spec)$")))
+
+    assert(discoveredSet2s === expectedSet2s)
+
+    //
+    // Filter by suffixes.
+    //
+    val discoveredSet2ss =
+      discoverSuiteNames(List(runpath1Dir, runpath2Dir), loader,
+                         Some(Pattern.compile(".*(Spec|Suite)$")))
+
+    assert(discoveredSet2ss === expectedSet2)
+  }
+
+  def testDiscoverJUnitClassNames() {
+    val loader      = getClass.getClassLoader
+    val sep         = System.getProperty("file.separator")
+    val runpath1Dir = "target/jrunpath1/"
+    val runpath2Dir = "target/jrunpath2/"
+    val runpath1Jar = "target"+ sep +"jrunpath1.jar"
+
+    //
+    // Discover one class.
+    //
+    val fileSet1 = Set("org/scalatest/junit/JHappySuite.class",
+                       "org/scalatest/FastAsLight.class")
+
+    val expectedSet1 = Set("org.scalatest.junit.JHappySuite")
+
+    copyClassFilesIntoDirTree(fileSet1, runpath1Dir)
+
+    val discoveredSet1 =
+      discoverJUnitClassNames(List(runpath1Dir, "noSuchDir"), loader).toSet
+
+    assert(discoveredSet1 === expectedSet1)
+
+    //
+    // Discover multiple classes in multiple directory trees.
+    //
+    val fileSet2 = Set("org/scalatest/junit/JBitterSuite.class",
+                       "org/scalatest/SlowAsMolasses.class",
+                       "org/scalatest/SuiteSuite.class");
+
+    val expectedSet2 = Set("org.scalatest.junit.JHappySuite",
+                           "org.scalatest.junit.JBitterSuite")
+
+    copyClassFilesIntoDirTree(fileSet2, runpath2Dir)
+
+    val discoveredSet2 =
+      discoverJUnitClassNames(
+        List(runpath1Dir, runpath2Dir, "noSuch.jar"), loader).toSet
+
+    assert(discoveredSet2 === expectedSet2)
+
+    //
+    // Discover classes in a jar.
+    //
+    ("jar cf "+ runpath1Jar +" -C "+ runpath1Dir +" .").!
+
+    val discoveredSet2j =
+      discoverJUnitClassNames(List(runpath1Jar, runpath2Dir), loader).toSet
+
+    assert(discoveredSet2j === expectedSet2)
   }
 }
 

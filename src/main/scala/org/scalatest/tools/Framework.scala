@@ -78,7 +78,7 @@ import StringReporter.fragmentsForEvent
  *   <li><code>-p</code>, <code>-R</code> -- runpath is not supported because test path and discovery is handled by sbt</li>
  *   <li><code>-s</code> -- suite is not supported because sbt's <code>test-only</code> serves the similar purpose</li>
  *   <li><code>-A</code> -- again is not supported because sbt's <code>test-quick</code> serves the similar purpose</li>
- *   <li><code>-j</code> -- junit is not supported because in sbt different test framework should be supported by its corresponding <code>Framework</code> implementation</li>
+ *   <li><code>-j</code>, <code>-J</code> -- junit is not supported because in sbt different test framework should be supported by its corresponding <code>Framework</code> implementation</li>
  *   <li><code>-b</code> -- testng is not supported because in sbt different test framework should be supported by its corresponding <code>Framework</code> implementation</li>
  *   <li><code>-c</code>, <code>-P</code> -- concurrent/parallel is not supported because parallel execution is controlled by sbt.</li>
  *   <li><code>-q</code> is not supported because test discovery should be handled by sbt, and sbt's test-only or test filter serves the similar purpose</li>
@@ -985,6 +985,7 @@ class Framework extends SbtFramework {
       suiteArgs,
       againArgs,
       junitArgs,
+      doJUnitDiscovery,
       propertiesArgs,
       tagsToIncludeArgs,
       tagsToExcludeArgs,
@@ -1011,6 +1012,9 @@ class Framework extends SbtFramework {
     if (!junitArgs.isEmpty)
       throw new IllegalArgumentException("Running JUnit tests (-j <junit>) is not supported when running ScalaTest from sbt.")
 
+    if (doJUnitDiscovery)
+      throw new IllegalArgumentException("Running JUnit tests (-J <junit>) is not supported when running ScalaTest from sbt.")
+    
     if (!testNGArgs.isEmpty)
       throw new IllegalArgumentException("Running TestNG tests (-b <testng>) is not supported when running ScalaTest from sbt.")
 

@@ -259,6 +259,11 @@ import org.apache.tools.ant.taskdefs.Java
  * </p>
  *
  * <p>
+ * Use attribute <code>doJUnitDiscovery="true"</code> to perform
+ * <a href="Runner$.html#doJUnitDiscovery">discovery of JUnit tests</a>.
+ * </p>
+ *
+ * <p>
  * Use attribute <code>haltonfailure="true"</code> to cause ant to fail the
  * build if there's a test failure.
  * </p>
@@ -298,12 +303,13 @@ class ScalaTestAntTask extends Task {
   private var maxMemory: String = null
   private var suffixes:  String = null
 
-  private var parallel      = false
-  private var sortSuites    = false
-  private var haltonfailure = false
-  private var fork          = false
-  private var spanScaleFactor = 1.0
+  private var doJUnitDiscovery = false
+  private var parallel         = false
+  private var sortSuites       = false
+  private var haltonfailure    = false
+  private var fork             = false
 
+  private var spanScaleFactor = 1.0
   private var numthreads = 0
 
   private val runpath      = new ListBuffer[String]
@@ -348,6 +354,7 @@ class ScalaTestAntTask extends Task {
     addTestsfileArgs(args)
     addChosenStyles(args)
     addSpanScaleFactorArg(args)
+    addDoJUnitDiscoveryArg(args)
 
     args.toList
   }
@@ -418,6 +425,15 @@ class ScalaTestAntTask extends Task {
   private def addSpanScaleFactorArg(args: ListBuffer[String]) {
     args += "-F"
     args += spanScaleFactor.toString
+  }
+
+  //
+  // Add -J arg to args list if doJUnitDiscovery attribute was 
+  // specified for task
+  //
+  private def addDoJUnitDiscoveryArg(args: ListBuffer[String]) {
+    if (doJUnitDiscovery)
+      args += "-J"
   }
 
   //
@@ -768,6 +784,13 @@ class ScalaTestAntTask extends Task {
    */
   def setMaxmemory(max: String) {
     this.maxMemory = max
+  }
+  
+  /**
+   * Sets value of the <code>doJUnitDiscovery</code> attribute.
+   */
+  def setDoJUnitDiscovery(doit: Boolean) {
+    this.doJUnitDiscovery = doit
   }
   
   /**

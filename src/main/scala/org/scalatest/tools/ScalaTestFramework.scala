@@ -77,7 +77,7 @@ import java.util.concurrent.atomic.AtomicLong
  *   <li><code>-p</code>, <code>-R</code> -- runpath is not supported because test path and discovery is handled by SBT</li>
  *   <li><code>-s</code> -- suite is not supported because SBT's <code>test-only</code> serves the similar purpose</li>
  *   <li><code>-A</code> -- again is not supported because SBT's <code>test-quick</code> serves the similar purpose</li>
- *   <li><code>-j</code> -- junit is not supported because in SBT different test framework should be supported by its corresponding <code>Framework</code> implementation</li>
+ *   <li><code>-j</code>, <code>-J</code> -- junit is not supported because in SBT different test framework should be supported by its corresponding <code>Framework</code> implementation</li>
  *   <li><code>-b</code> -- testng is not supported because in SBT different test framework should be supported by its corresponding <code>Framework</code> implementation</li>
  *   <li><code>-c</code>, <code>-P</code> -- concurrent/parallel is not supported because parallel execution is controlled by SBT.</li>
  *   <li><code>-q</code> is not supported because test discovery should be handled by SBT, and SBT's test-only or test filter serves the similar purpose</li>
@@ -146,6 +146,7 @@ class ScalaTestFramework extends SbtFramework {
             suiteArgs,
             againArgs,
             junitArgs,
+            doJUnitDiscovery,
             propertiesArgs,
             tagsToIncludeArgs,
             tagsToExcludeArgs,
@@ -171,6 +172,9 @@ class ScalaTestFramework extends SbtFramework {
           
           if (!junitArgs.isEmpty)
             throw new IllegalArgumentException("-j (junit) is not supported when runs in SBT.")
+          
+          if (doJUnitDiscovery)
+            throw new IllegalArgumentException("-J (doJUnitDiscovery) is not supported when runs in SBT.")
           
           if (!testNGArgs.isEmpty)
             throw new IllegalArgumentException("-b (testng) is not supported when runs in SBT.")
