@@ -44,17 +44,17 @@ class ShouldBeNullSpec extends Spec with Matchers with Checkers with ReturnsNorm
       val caught1 = intercept[TestFailedException] {
         map should be (null)
       }
-      assert(caught1.getMessage === "Map(1 -> one, 2 -> two) was not null")
+      assert(caught1.getMessage === "Map(1 -> \"one\", 2 -> \"two\") was not null")
 
       val caught1b = intercept[TestFailedException] {
         map shouldBe null
       }
-      assert(caught1b.getMessage === "Map(1 -> one, 2 -> two) was not null")
+      assert(caught1b.getMessage === "Map(1 -> \"one\", 2 -> \"two\") was not null")
 
       val caught2 = intercept[TestFailedException] {
         map should (be (null))
       }
-      assert(caught2.getMessage === "Map(1 -> one, 2 -> two) was not null")
+      assert(caught2.getMessage === "Map(1 -> \"one\", 2 -> \"two\") was not null")
 
       val caught3 = intercept[TestFailedException] {
         nullMap should not be (null)
@@ -74,7 +74,7 @@ class ShouldBeNullSpec extends Spec with Matchers with Checkers with ReturnsNorm
       val caught6 = intercept[TestFailedException] {
         nullMap should be (map)
       }
-      assert(caught6.getMessage === "null was not equal to Map(1 -> one, 2 -> two)")
+      assert(caught6.getMessage === "null was not equal to Map(1 -> \"one\", 2 -> \"two\")")
     }
 
     def `should throw a NullPointerException if they try to short circuit with a null check first` {
@@ -92,17 +92,17 @@ class ShouldBeNullSpec extends Spec with Matchers with Checkers with ReturnsNorm
       val caught1 = intercept[TestFailedException] {
         Map(1 -> "one") should (contain key (7) and not be (null))
       }
-      assert(caught1.getMessage === "Map(1 -> one) did not contain key 7")
+      assert(caught1.getMessage === "Map(1 -> \"one\") did not contain key 7")
 
       val caught2 = intercept[TestFailedException] {
         Map(1 -> "one") should (contain key (7) and not (be (null)))
       }
-      assert(caught2.getMessage === "Map(1 -> one) did not contain key 7")
+      assert(caught2.getMessage === "Map(1 -> \"one\") did not contain key 7")
 
       val caught3 = intercept[TestFailedException] {
         Map(1 -> "one") should (contain key (7) and (not (be (null))))
       }
-      assert(caught3.getMessage === "Map(1 -> one) did not contain key 7")
+      assert(caught3.getMessage === "Map(1 -> \"one\") did not contain key 7")
 
       Map(1 -> "one") should (contain key (1) and not be (null))
       Map(1 -> "one") should (contain key (1) and not (be (null)))
@@ -111,27 +111,27 @@ class ShouldBeNullSpec extends Spec with Matchers with Checkers with ReturnsNorm
       val caught4 = intercept[TestFailedException] {
         Map(1 -> "one") should (contain key (1) and be (null))
       }
-      assert(caught4.getMessage === "Map(1 -> one) contained key 1, but Map(1 -> one) was not null")
+      assert(caught4.getMessage === "Map(1 -> \"one\") contained key 1, but Map(1 -> \"one\") was not null")
 
       val caught5 = intercept[TestFailedException] {
         Map(1 -> "one") should (contain key (1) and (be (null)))
       }
-      assert(caught5.getMessage === "Map(1 -> one) contained key 1, but Map(1 -> one) was not null")
+      assert(caught5.getMessage === "Map(1 -> \"one\") contained key 1, but Map(1 -> \"one\") was not null")
 
       val caught6 = intercept[TestFailedException] {
         Map(1 -> "one") should (be (null) and not be (null))
       }
-      assert(caught6.getMessage === "Map(1 -> one) was not null")
+      assert(caught6.getMessage === "Map(1 -> \"one\") was not null")
 
       val caught7 = intercept[TestFailedException] {
         Map(1 -> "one") should (be (null) and not (be (null)))
       }
-      assert(caught7.getMessage === "Map(1 -> one) was not null")
+      assert(caught7.getMessage === "Map(1 -> \"one\") was not null")
 
       val caught8 = intercept[TestFailedException] {
         Map(1 -> "one") should (be (null) and (not (be (null))))
       }
-      assert(caught8.getMessage === "Map(1 -> one) was not null")
+      assert(caught8.getMessage === "Map(1 -> \"one\") was not null")
 
       nullMap should (be (null) and be (null))
       nullMap should (be (null) and (be (null)))
@@ -165,22 +165,22 @@ class ShouldBeNullSpec extends Spec with Matchers with Checkers with ReturnsNorm
       val caught4 = intercept[TestFailedException] {
         Map(1 -> "one") should (contain key (7) or be (null))
       }
-      assert(caught4.getMessage === "Map(1 -> one) did not contain key 7, and Map(1 -> one) was not null")
+      assert(caught4.getMessage === "Map(1 -> \"one\") did not contain key 7, and Map(1 -> \"one\") was not null")
 
       val caught5 = intercept[TestFailedException] {
         Map(1 -> "one") should (contain key (7) or (be (null)))
       }
-      assert(caught5.getMessage === "Map(1 -> one) did not contain key 7, and Map(1 -> one) was not null")
+      assert(caught5.getMessage === "Map(1 -> \"one\") did not contain key 7, and Map(1 -> \"one\") was not null")
 
       val caught6 = intercept[TestFailedException] {
         Map(1 -> "one") should (be (null) or be (null))
       }
-      assert(caught6.getMessage === "Map(1 -> one) was not null, and Map(1 -> one) was not null")
+      assert(caught6.getMessage === "Map(1 -> \"one\") was not null, and Map(1 -> \"one\") was not null")
 
       val caught7 = intercept[TestFailedException] {
         Map(1 -> "one") should (be (null) or (be (null)))
       }
-      assert(caught7.getMessage === "Map(1 -> one) was not null, and Map(1 -> one) was not null")
+      assert(caught7.getMessage === "Map(1 -> \"one\") was not null, and Map(1 -> \"one\") was not null")
 
       nullMap should (be (null) or be (null))
       nullMap should (be (null) or (be (null)))

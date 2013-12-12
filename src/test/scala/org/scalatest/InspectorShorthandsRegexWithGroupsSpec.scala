@@ -16,13 +16,14 @@
 package org.scalatest
 
 import SharedHelpers._
+import FailureMessages._
 
 class InspectorShorthandsRegexWithGroupsSpec extends Spec with Matchers {
   
   def errorMessage(index: Int, message: String, lineNumber: Int, left: Any): String = 
     "'all' inspection failed, because: \n" +
     "  at index " + index + ", " + message + " (InspectorShorthandsRegexWithGroupsSpec.scala:" + lineNumber + ") \n" +
-    "in " + left
+    "in " + decorateToStringValue(left)
   
   object `Inspector shorthands` {
     

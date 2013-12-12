@@ -16,20 +16,21 @@
 package org.scalatest
 
 import SharedHelpers.thisLineNumber
+import FailureMessages.decorateToStringValue
 
 class MapShouldBeDefinedAtSpec extends Spec with Matchers {
   
-  def wasDefinedAt(left: Any, right: Any): String = 
-    left + " was defined at " + right
+  def wasDefinedAt(left: Any, right: Any): String =
+    decorateToStringValue(left) + " was defined at " + decorateToStringValue(right)
     
-  def wasNotDefinedAt(left: Any, right: Any): String = 
-    left + " was not defined at " + right
+  def wasNotDefinedAt(left: Any, right: Any): String =
+    decorateToStringValue(left) + " was not defined at " + decorateToStringValue(right)
       
-  def equaled(left: Any, right: Any): String = 
-    left + " equaled " + right
+  def equaled(left: Any, right: Any): String =
+    decorateToStringValue(left) + " equaled " + decorateToStringValue(right)
       
-  def didNotEqual(left: Any, right: Any): String = 
-    left + " did not equal " + right
+  def didNotEqual(left: Any, right: Any): String =
+    decorateToStringValue(left) + " did not equal " + decorateToStringValue(right)
   
   object `PartialFunction ` {
     

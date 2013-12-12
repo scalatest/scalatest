@@ -15,7 +15,9 @@
  */
 package org.scalautils
 
-import scala.collection.mutable.WrappedArray
+import scala.collection._
+import mutable.WrappedArray
+import scala.util.Success
 
 /**
  * A function that given any object will produce a &ldquo;pretty&rdquo; string representation of that object,
@@ -114,7 +116,18 @@ object Prettifier {
    * <li><code>Unit</code> to: <code>&lt;() the Unit value&gt;</code></li>
    * <li><code>String</code> to: <code>"string"</code> (the <code>toString</code> result surrounded by double quotes)</li>
    * <li><code>Char</code> to: <code>'c'</code> (the <code>toString</code> result surrounded by single quotes)</li>
-   * <li><code>Array</code> to: <code>Array(1, 2, 3)</code></li>
+   * <li><code>Array</code> to: <code>Array("1", "2", "3")</code></li>
+   * <li><code>Some</code> to: <code>Some("3")</code></li>
+   * <li><code>Left</code> to: <code>Left("3")</code></li>
+   * <li><code>Right</code> to: <code>Right("3")</code></li>
+   * <li><code>Good</code> to: <code>Good("3")</code></li>
+   * <li><code>Bad</code> to: <code>Bad("3")</code></li>
+   * <li><code>One</code> to: <code>One("3")</code></li>
+   * <li><code>Many</code> to: <code>Many("1", "2", "3")</code></li>
+   * <li><code>List</code> to: <code>List("1", "2", "3")</code></li>
+   * <li><code>Map</code> to: <code>Map(1 -> "one", 2 -> "two", 3 -> "three")</code></li>
+   * <li><code>java.util.Collection</code> to: <code>["1", "2", "3"]</code></li>
+   * <li><code>java.util.Map</code> to: <code>{1="one", 2="two", 3="three"}</code></li>
    * </ul>
    *
    * <p>
@@ -129,17 +142,95 @@ object Prettifier {
           case aUnit: Unit => "<(), the Unit value>"
           case aString: String => "\"" + aString + "\""
           case aChar: Char =>  "\'" + aChar + "\'"
-          case anArray: Array[_] =>  prettifyArrays(anArray)
-          case aWrappedArray: WrappedArray[_] => prettifyArrays(aWrappedArray)
+          case Some(e) => "Some(" + apply(e) + ")"
+          case Success(e) => "Success(" + apply(e) + ")"
+          case Left(e) => "Left(" + apply(e) + ")"
+          case Right(e) => "Right(" + apply(e) + ")"
+          case Good(e) => "Good(" + apply(e) + ")"
+          case Bad(e) => "Bad(" + apply(e) + ")"
+          case One(e) => "One(" + apply(e) + ")"
+          case many: Many[_] => "Many(" + many.toIterator.map(apply(_)).mkString(", ") + ")"
+          case anArray: Array[_] =>  "Array(" + (anArray map apply).mkString(", ") + ")"
+          case aWrappedArray: WrappedArray[_] => "Array(" + (aWrappedArray map apply).mkString(", ") + ")"
+          case aGenMap: GenMap[_, _] =>
+            val defaultToString = aGenMap.toString
+            val typeName = defaultToString.takeWhile(_ != '(')
+            typeName + "(" +
+            (aGenMap.toIterator.map { case (key, value) => // toIterator is needed for consistent ordering
+              apply(key) + " -> " + apply(value)
+            }).mkString(", ") + ")"
+          case aGenTraversable: GenTraversable[_] =>
+            val defaultToString = aGenTraversable.toString
+            val typeName = defaultToString.takeWhile(_ != '(')
+            typeName + "(" + aGenTraversable.toIterator.map(apply(_)).mkString(", ") + ")"  // toIterator is needed for consistent ordering
+          case javaCol: java.util.Collection[_] =>
+            // By default java collection follows http://download.java.net/jdk7/archive/b123/docs/api/java/util/AbstractCollection.html#toString()
+            // let's do our best to prettify its element when it is not overriden
+            import scala.collection.JavaConverters._
+            val theToString = javaCol.toString
+            if (theToString.startsWith("[") && theToString.endsWith("]"))
+              "[" + javaCol.iterator().asScala.map(apply(_)).mkString(", ") + "]"
+            else
+              theToString
+          case javaMap: java.util.Map[_, _] =>
+            // By default java map follows http://download.java.net/jdk7/archive/b123/docs/api/java/util/AbstractMap.html#toString()
+            // let's do our best to prettify its element when it is not overriden
+            import scala.collection.JavaConverters._
+            val theToString = javaMap.toString
+            if (theToString.startsWith("{") && theToString.endsWith("}"))
+              "{" + javaMap.entrySet.iterator.asScala.map { entry =>
+                apply(entry.getKey) + "=" + apply(entry.getValue)
+              }.mkString(", ") + "}"
+            else
+              theToString
           case anythingElse => anythingElse.toString
         }
     }
 
-  private def prettifyArrays(o: Any): String = {
+  /**
+   * A basic <code>Prettifier</code>.
+   *
+   * <p>
+   * This was the default <code>Prettifier</code> in used in ScalaTest 2.0 release.
+   * </p>
+   *
+   * <p>
+   * It transforms:
+   * </p>
+   *
+   * <ul>
+   * <li><code>Null</code> to: <code>null</code></li>
+   * <li><code>Unit</code> to: <code>&lt;() the Unit value&gt;</code></li>
+   * <li><code>String</code> to: <code>"string"</code> (the <code>toString</code> result surrounded by double quotes)</li>
+   * <li><code>Char</code> to: <code>'c'</code> (the <code>toString</code> result surrounded by single quotes)</li>
+   * <li><code>Array</code> to: <code>Array("1", "2", "3")</code></li>
+   * <li><code>Some</code> to: <code>Some("3")</code></li>
+   * </ul>
+   *
+   * <p>
+   * For anything else, it returns the result of invoking <code>toString</code>.
+   * </p>
+   */
+  val basic = new BasicPrettifier
+}
+
+private[scalautils] class BasicPrettifier extends Prettifier {
+
+  def apply(o: Any): String =
+    o match {
+      case null => "null"
+      case aUnit: Unit => "<(), the Unit value>"
+      case aString: String => "\"" + aString + "\""
+      case aChar: Char =>  "\'" + aChar + "\'"
+      case anArray: Array[_] =>  prettifyArrays(anArray)
+      case aWrappedArray: WrappedArray[_] => prettifyArrays(aWrappedArray)
+      case anythingElse => anythingElse.toString
+    }
+
+  private def prettifyArrays(o: Any): String =
     o match {
       case arr: Array[_] => "Array(" + (arr map (a => prettifyArrays(a))).mkString(", ") + ")"
       case wrappedArr: WrappedArray[_] => "Array(" + (wrappedArr map (a => prettifyArrays(a))).mkString(", ") + ")"
       case _ => if (o != null) o.toString else "null"
     }
-  }
 }

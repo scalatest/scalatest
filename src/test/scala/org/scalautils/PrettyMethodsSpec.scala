@@ -38,7 +38,7 @@ class PrettyMethodsSpec extends Spec with Matchers {
         ().pretty should be ("<(), the Unit value>")
       }
       def `putting call toString on anything not specially treated` {
-        List("1", "2", "3").pretty should be ("List(1, 2, 3)")
+        List("1", "2", "3").pretty should be ("List(\"1\", \"2\", \"3\")")
       }
     }
 /* This proved that I got rid of the Any => String conversion, but by not compiling. 

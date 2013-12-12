@@ -53,16 +53,16 @@ class TheSameElementsInOrderAsContainMatcherEqualitySpec extends Spec with Match
   object `theSameElementsInOrderAs ` {
     
     def checkShouldContainStackDepth(e: exceptions.StackDepthException, left: Any, right: Any, lineNumber: Int) {
-      val leftText = FailureMessages.prettifyArrays(left)
-      val rightText = FailureMessages.prettifyArrays(right)
+      val leftText = FailureMessages.decorateToStringValue(left)
+      val rightText = FailureMessages.decorateToStringValue(right)
       e.message should be (Some(leftText + " did not contain the same elements in the same (iterated) order as " + rightText))
       e.failedCodeFileName should be (Some("TheSameElementsInOrderAsContainMatcherEqualitySpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
       
     def checkShouldNotContainStackDepth(e: exceptions.StackDepthException, left: Any, right: Any, lineNumber: Int) {
-      val leftText = FailureMessages.prettifyArrays(left)
-      val rightText = FailureMessages.prettifyArrays(right)
+      val leftText = FailureMessages.decorateToStringValue(left)
+      val rightText = FailureMessages.decorateToStringValue(right)
       e.message should be (Some(leftText + " contained the same elements in the same (iterated) order as " + rightText))
       e.failedCodeFileName should be (Some("TheSameElementsInOrderAsContainMatcherEqualitySpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))

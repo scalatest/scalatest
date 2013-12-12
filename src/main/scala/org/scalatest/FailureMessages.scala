@@ -17,7 +17,7 @@ package org.scalatest
 
 import java.util.ResourceBundle
 import java.text.MessageFormat
-import scala.collection.mutable.WrappedArray
+import org.scalautils.Prettifier
 
 /**
  * Grab a resource intended for use in a failure message. For each argument passed,
@@ -28,28 +28,12 @@ import scala.collection.mutable.WrappedArray
  */
 private[scalatest] object FailureMessages {
   
-  def decorateToStringValue(o: Any): String =
-    o match {
-      case null => "null"
-      case aUnit: Unit => "<(), the Unit value>"
-      case aString: String => "\"" + aString + "\""
-      case aChar: Char =>  "\'" + aChar + "\'"
-      case anArray: Array[_] =>  prettifyArrays(anArray)
-      case aWrappedArray: WrappedArray[_] => prettifyArrays(aWrappedArray)
-      case anythingElse => anythingElse.toString
-    }
+  def decorateToStringValue(o: Any): String = Prettifier.default(o)
 
   def apply(resourceName: String): String = Resources(resourceName)
   def apply(resourceName: String, args: Any*): String =
     Resources(resourceName, args.map((arg: Any) => decorateToStringValue(arg)): _*)
 
-  def prettifyArrays(o: Any): String = {
-    o match {
-      case arr: Array[_] => "Array(" + (arr map (a => prettifyArrays(a))).mkString(", ") + ")"
-      case wrappedArr: WrappedArray[_] => "Array(" + (wrappedArr map (a => prettifyArrays(a))).mkString(", ") + ")"
-      case _ => if (o != null) o.toString else "null"
-    }
-  }
 }
 
 // This is used to pass a string to the FailureMessages apply method

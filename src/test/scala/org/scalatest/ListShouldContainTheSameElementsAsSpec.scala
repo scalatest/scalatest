@@ -58,7 +58,7 @@ class ListShouldContainTheSameElementsAsSpec extends Spec with Matchers {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainTheSameElementsAsSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("didNotContainSameElements", decorateToStringValue(fumList), Set("happy", "birthday", "to", "you")))
+        e1.message.get should be (Resources("didNotContainSameElements", decorateToStringValue(fumList), decorateToStringValue(Set("happy", "birthday", "to", "you"))))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
@@ -89,7 +89,7 @@ class ListShouldContainTheSameElementsAsSpec extends Spec with Matchers {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainTheSameElementsAsSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("didNotContainSameElements", decorateToStringValue(fumList), Set("happy", "birthday", "to", "you")))
+        e1.message.get should be (Resources("didNotContainSameElements", decorateToStringValue(fumList), decorateToStringValue(Set("happy", "birthday", "to", "you"))))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
@@ -119,7 +119,7 @@ class ListShouldContainTheSameElementsAsSpec extends Spec with Matchers {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainTheSameElementsAsSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("containedSameElements", decorateToStringValue(toList), Set("happy", "birthday", "to", "you")))
+        e1.message.get should be (Resources("containedSameElements", decorateToStringValue(toList), decorateToStringValue(Set("happy", "birthday", "to", "you"))))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
@@ -149,7 +149,7 @@ class ListShouldContainTheSameElementsAsSpec extends Spec with Matchers {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainTheSameElementsAsSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("containedSameElements", decorateToStringValue(toList), Set("happy", "birthday", "to", "you")))
+        e1.message.get should be (Resources("containedSameElements", decorateToStringValue(toList), decorateToStringValue(Set("happy", "birthday", "to", "you"))))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
@@ -179,7 +179,7 @@ class ListShouldContainTheSameElementsAsSpec extends Spec with Matchers {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainTheSameElementsAsSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("containedSameElements", decorateToStringValue(toList), Set("happy", "birthday", "to", "you")))
+        e1.message.get should be (Resources("containedSameElements", decorateToStringValue(toList), decorateToStringValue(Set("happy", "birthday", "to", "you"))))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality
@@ -209,7 +209,7 @@ class ListShouldContainTheSameElementsAsSpec extends Spec with Matchers {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainTheSameElementsAsSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (Resources("containedSameElements", decorateToStringValue(toList), Set("happy", "birthday", "to", "you")))
+        e1.message.get should be (Resources("containedSameElements", decorateToStringValue(toList), decorateToStringValue(Set("happy", "birthday", "to", "you"))))
       }
       def `should use the implicit Equality in scope` {
         implicit val ise = upperCaseStringEquality

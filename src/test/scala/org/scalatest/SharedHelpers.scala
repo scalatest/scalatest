@@ -23,6 +23,7 @@ import scala.collection.GenTraversable
 import scala.collection.GenMap
 import scala.collection.SortedSet
 import scala.collection.SortedMap
+import FailureMessages.decorateToStringValue
 
 object SharedHelpers extends Assertions {
 
@@ -601,32 +602,32 @@ object SharedHelpers extends Assertions {
     
   def indexElement[T](itr: Iterator[T], xs: GenTraversable[T], errorFun: T => Boolean): Array[String] = { 
     val element = getNext[T](itr, errorFun) 
-    val index = getIndex(xs, element) 
-    Array(index.toString, (if (element != null && element.isInstanceOf[Array[_]]) element.asInstanceOf[Array[T]].deep.toString else element + "")) 
+    val index = getIndex(xs, element)
+    Array(index.toString, decorateToStringValue(element))
   } 
   
   def indexLengthElement[T](itr: Iterator[String], xs: GenTraversable[String], errorFun: String => Boolean): Array[String] = { 
     val element = getNext[String](itr, errorFun)
     val index = getIndex(xs, element)
-    Array(index.toString, element.length.toString, (if (element != null && element.isInstanceOf[Array[_]]) element.asInstanceOf[Array[T]].deep.toString else element.toString)) 
+    Array(index.toString, element.length.toString, (if (element != null && element.isInstanceOf[Array[_]]) element.asInstanceOf[Array[T]].deep.toString else element.toString))
   }
   
   def indexElementLengthString[T](itr: Iterator[String], xs: GenTraversable[String], errorFun: String => Boolean): Array[String] = { 
     val element = getNext[String](itr, errorFun)
     val index = getIndex(xs, element)
-    Array(index.toString, (if (element != null && element.isInstanceOf[Array[_]]) element.asInstanceOf[Array[T]].deep.toString else element.toString), element.length.toString) 
+    Array(index.toString, decorateToStringValue(element), element.length.toString)
   }
   
   def indexElementLengthGenTraversable[T](itr: Iterator[GenTraversable[T]], xs: GenTraversable[GenTraversable[T]], errorFun: GenTraversable[T] => Boolean): Array[String] = { 
     val element = getNext[GenTraversable[T]](itr, errorFun)
     val index = getIndex(xs, element)
-    Array(index.toString, (if (element != null && element.isInstanceOf[Array[_]]) element.asInstanceOf[Array[T]].deep.toString else element.toString), element.size.toString) 
+    Array(index.toString, decorateToStringValue(element), element.size.toString)
   }
   
   def indexElementLengthArray[T](itr: Iterator[Array[T]], xs: GenTraversable[Array[T]], errorFun: Array[T] => Boolean): Array[String] = { 
     val element = getNext[Array[T]](itr, errorFun)
     val index = getIndex(xs, element)
-    Array(index.toString, (if (element != null && element.isInstanceOf[Array[_]]) element.asInstanceOf[Array[T]].deep.toString else element.toString), element.size.toString) 
+    Array(index.toString, decorateToStringValue(element), element.size.toString)
   }
   
   def indexElementLengthJavaCol[T](itr: Iterator[java.util.Collection[T]], xs: GenTraversable[java.util.Collection[T]], errorFun: java.util.Collection[T] => Boolean): Array[String] = { 
