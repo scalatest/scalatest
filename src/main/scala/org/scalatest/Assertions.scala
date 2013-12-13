@@ -676,6 +676,8 @@ trait Assertions extends TripleEquals {
     }
   }
 
+  def assertTypeError(code: String): Unit = macro CompileMacro.assertTypeErrorImpl
+
 /*
   def throwIfSome(o: Option[String], exception: (Any) => Throwable) {
     o match {

@@ -1527,4 +1527,31 @@ class AssertionsSpec extends FunSpec with OptionValues {
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
   }
+
+  describe("assertTypeError method") {
+
+    it("should do nothing when type check failed") {
+      assertTypeError("val a: String = 1")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when type check passed") {
+      val e = intercept[TestFailedException] {
+        assertTypeError("val a = 1")
+      }
+      assert(e.message == Some("Expected a type error, but got none for: val a = 1"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when parse failed") {
+      val e = intercept[TestFailedException] {
+        assertTypeError("println(\"test)")
+      }
+      assert(e.message.get.startsWith("Expected type error, but get parse error: "))
+      assert(e.message.get.endsWith("\nfor: println(\"test)"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 5)))
+    }
+
+  }
 }
