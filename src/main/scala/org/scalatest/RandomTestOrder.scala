@@ -39,13 +39,6 @@ trait RandomTestOrder extends OneInstancePerTest { this: Suite =>
    * Modifies the behavior of <code>super.runTest</code> to facilitate random order test execution.
    *
    * <p>
-   * This trait's implementation of this method only changes the supertrait implementation if
-   * <code>args.distributor</code> is defined. If <code>args.distributor</code> is empty, it
-   * simply invokes <code>super.runTests</code>, passing along the same <code>testName</code>
-   * and <code>args</code> object.
-   * </p>
-   *
-   * <p>
    * If <code>runTestInNewInstance</code> is <code>false</code>, this is the test-specific (distributed)
    * instance, so this trait's implementation of this method simply invokes <code>super.runTest</code>,
    * passing along the same <code>testName</code> and <code>args</code> object, delegating responsibility
@@ -65,10 +58,10 @@ trait RandomTestOrder extends OneInstancePerTest { this: Suite =>
    * Note: this trait's implementation of this method is <code>final</code> to ensure that
    * any other desired <code>runTest</code> behavior is executed by the same thread that executes
    * the test. For example, if you were to mix in <code>BeforeAndAfter</code> after
-   * <code>ParallelTestExecution</code>, the <code>before</code> and <code>after</code> code would
+   * <code>RandomTestOrder</code>, the <code>before</code> and <code>after</code> code would
    * be executed by the general instance on the main test thread, rather than by the test-specific
    * instance on the distributed thread. Marking this method <code>final</code> ensures that
-   * traits like <code>BeforeAndAfter</code> can only be "super" to <code>ParallelTestExecution</code>
+   * traits like <code>BeforeAndAfter</code> can only be "super" to <code>RandomTestOrder</code>
    * and, therefore, that its <code>before</code> and <code>after</code> code will be run
    * by the same distributed thread that runs the test itself.
    * </p>
@@ -90,7 +83,8 @@ trait RandomTestOrder extends OneInstancePerTest { this: Suite =>
       status
     }
     else {
-      // In test-specific (distributed) instance, so just run the test.
+      // In test-specific (distributed) instance, so just run the test. (RTINI was
+      // removed by OIPT's implementation of runTests.)
       try {
         super.runTest(testName, args)
       }
@@ -99,59 +93,6 @@ trait RandomTestOrder extends OneInstancePerTest { this: Suite =>
         for (sorter <- args.distributedTestSorter)
           sorter.completedTest(testName)
       }
-    }
-  }
-
-  /**
-   * Modifies the behavior of <code>super.runTests</code> to facilitate random order test execution.
-   *
-   * <p>
-   * If <code>runTestInNewInstance</code> is <code>false</code>, this trait's implementation of this method will
-   * wrap the reporter into a <code>TestSortingReporter</code> and set it as <code>distributedTestSorter</code>
-   * of the passed in <code>Args</code>, before passing it to <code>super.runTests</code>.  After <code>super.runTests</code>
-   * call, it will execute the deferred test execution in random order.
-   * </p>
-   *
-   * <p>
-   * If <code>runTestInNewInstance</code> is <code>true</code>, it will just call <code>runTest</code> by passing
-   * <code>runTestInNewInstance</code> as <code>false</code>.
-   * </p>
-   *
-   * @param testName an optional name of one test to run. If <code>None</code>, all relevant tests should be run.
-   *                 I.e., <code>None</code> acts like a wildcard that means run all relevant tests in this <code>Suite</code>.
-   * @param args the <code>Args</code> for this run
-   * @return a <code>Status</code> object that indicates when all tests started by this method have completed, and whether or not a failure occurred.
-   */
-  protected abstract override def runTests(testName: Option[String], args: Args): Status = {
-    val newArgs =
-      if (args.runTestInNewInstance)
-        args // This is the test-specific instance
-      else {
-        val testSortingReporter = new TestSortingReporter(suiteId, args.reporter, sortingTimeout, testNames.size, args.distributedSuiteSorter, System.err)
-        args.copy(reporter = testSortingReporter, distributedTestSorter = Some(testSortingReporter))
-      }
-
-    if (newArgs.runTestInNewInstance) {
-      if (testName.isEmpty)
-        throw new IllegalArgumentException("args.runTestInNewInstance was true, but testName was not defined")
-      // In test-specific instance, so run the test. (We are removing RTINI
-      // so that runTest will realize it is in the test-specific instance.)
-      runTest(testName.get, newArgs.copy(runTestInNewInstance = false))
-    }
-    else {
-      super.runTests(testName, newArgs.copy(runTestInNewInstance = true))
-      // Random shuffle the deferred suite list, before executing them.
-      val statusList: List[Status] =
-        Random.shuffle(suiteRunQueue.asScala.toList).map { case DeferredSuiteRun(suite, testName, statefulStatus) =>
-          val status = suite.run(Some(testName), newArgs.copy(runTestInNewInstance = true))
-          status.whenCompleted { result =>
-            if (!result)
-              statefulStatus.setFailed()
-            statefulStatus.setCompleted()
-          }
-          statefulStatus
-        }
-      new CompositeStatus(statusList.toSet)
     }
   }
 
@@ -210,20 +151,19 @@ trait RandomTestOrder extends OneInstancePerTest { this: Suite =>
    * Modifies the behavior of <code>super.run</code> to facilitate random order test execution.
    *
    * <p>
-   * This trait's implementation of this method only changes the supertrait implementation if both
-   * <code>testName</code> and <code>args.distributedTestSorter</code> are defined. If either
-   * <code>testName</code> or <code>args.distributedTestSorter</code> is empty, it
-   * simply invokes <code>super.run</code>, passing along the same <code>testName</code>
-   * and <code>args</code> object.
-   * </p>
-   *
-   * <p>
-   * If both <code>testName</code> and <code>args.distributedTestSorter</code> are defined, however,
+   * If both <code>testName</code> and <code>args.distributedTestSorter</code> are defined,
    * this trait's implementation of this method will create a "test-specific reporter" whose <code>apply</code>
    * method will invoke the <code>apply</code> method of the <code>DistributedTestSorter</code>, which takes
    * a test name as well as the event. It will then invoke <code>super.run</code> passing along
    * the same <code>testName</code> and an <code>Args</code> object that is the same except with the
    * original reporter replaced by the test-specific reporter.
+   * </p>
+   *
+   * <p>
+   * If either <code>testName</code> or <code>args.distributedTestSorter</code> is empty, it will create <code>TestSortingReporter</code>
+   * and override <code>args</code>'s <code>reporter</code> and <code>distributedTestSorter</code> with it.  It then call <code>super.run</code>
+   * to delegate the run to super's implementation, and to collect all children suites in <code>suiteRunQueue</code>.  After <code>super.run</code>
+   * completed, it then shuffle the order of the suites collected in <code>suiteRunQueue</code> and run them.
    * </p>
    *
    * @param testName an optional name of one test to execute. If <code>None</code>, all relevant tests should be executed.
@@ -236,7 +176,19 @@ trait RandomTestOrder extends OneInstancePerTest { this: Suite =>
       case (Some(name), Some(sorter)) =>
         super.run(testName, args.copy(reporter = createTestSpecificReporter(sorter, name)))
       case _ =>
-        super.run(testName, args)
+        val testSortingReporter = new TestSortingReporter(suiteId, args.reporter, sortingTimeout, testNames.size, args.distributedSuiteSorter, System.err)
+        val newArgs = args.copy(reporter = testSortingReporter, distributedTestSorter = Some(testSortingReporter))
+        val status = super.run(testName, newArgs)
+        // Random shuffle the deferred suite list, before executing them.
+        Random.shuffle(suiteRunQueue.asScala.toList).map { case DeferredSuiteRun(suite, testName, statefulStatus) =>
+          val status = suite.run(Some(testName), newArgs.copy(runTestInNewInstance = true))
+          status.whenCompleted { result =>
+            if (!result)
+              statefulStatus.setFailed()
+            statefulStatus.setCompleted()
+          }
+        }
+        status
     }
   }
 
