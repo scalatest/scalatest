@@ -109,7 +109,7 @@ object ScalatestBuild extends Build {
 
    def simpledependencies = Seq(
      "org.scala-sbt" % "test-interface" % "1.0" % "optional",
-     "org.scalacheck" %% "scalacheck" % "1.10.0" % "optional",
+     "org.scalacheck" %% "scalacheck" % "1.11.0" % "optional",
      "org.easymock" % "easymockclassextension" % "3.1" % "optional", 
      "org.jmock" % "jmock-legacy" % "2.5.1" % "optional", 
      "org.mockito" % "mockito-all" % "1.9.0" % "optional", 
