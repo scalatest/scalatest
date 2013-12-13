@@ -1538,7 +1538,7 @@ class AssertionsSpec extends FunSpec with OptionValues {
       val e = intercept[TestFailedException] {
         assertTypeError("val a = 1")
       }
-      assert(e.message == Some("Expected type error, but type check passed."))
+      assert(e.message == Some("Expected a type error, but got none for: val a = 1"))
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
@@ -1548,8 +1548,9 @@ class AssertionsSpec extends FunSpec with OptionValues {
         assertTypeError("println(\"test)")
       }
       assert(e.message.get.startsWith("Expected type error, but get parse error: "))
+      assert(e.message.get.endsWith("\nfor: println(\"test)"))
       assert(e.failedCodeFileName === (Some(fileName)))
-      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 5)))
     }
 
   }

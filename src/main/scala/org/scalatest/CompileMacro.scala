@@ -30,7 +30,7 @@ private[scalatest] object CompileMacro {
 
     try {
       c.typeCheck(c.parse("{ "+codeStr+" }"))
-      val messageExpr = c.literal("Expected type error, but type check passed.")
+      val messageExpr = c.literal("Expected a type error, but got none for: " + codeStr)
       reify {
         throw new exceptions.TestFailedException(messageExpr.splice, 0)
       }
@@ -40,7 +40,7 @@ private[scalatest] object CompileMacro {
           // Do nothing
         }
       case e: ParseException =>
-        val messageExpr = c.literal("Expected type error, but get parse error: " + e.getMessage)
+        val messageExpr = c.literal("Expected type error, but get parse error: " + e.getMessage + "\nfor: " + codeStr)
         reify {
           throw new TestFailedException(messageExpr.splice, 0)
         }
@@ -52,12 +52,11 @@ private[scalatest] object CompileMacro {
 
     c.macroApplication match {
       case Apply(Select(Apply(_, List(Literal(Constant(codeStr)))), _), _) =>
-        //val codeStr = c.macroApplication.asInstanceOf[Apply].fun.asInstanceOf[Select].qualifier.asInstanceOf[Apply].args(0).toString
         val code = codeStr.toString
 
         try {
           c.typeCheck(c.parse("{ " + code + " }"))
-          val messageExpr = c.literal("Expected type error, but type check passed.")
+          val messageExpr = c.literal("Expected a type error, but got none for: " + code)
           reify {
             throw new exceptions.TestFailedException(messageExpr.splice, 0)
           }
@@ -67,7 +66,7 @@ private[scalatest] object CompileMacro {
               // Do nothing
             }
           case e: ParseException =>
-            val messageExpr = c.literal("Expected type error, but get parse error: " + e.getMessage)
+            val messageExpr = c.literal("Expected type error, but get parse error: " + e.getMessage + "\nfor: " + code)
             reify {
               throw new TestFailedException(messageExpr.splice, 0)
             }
@@ -86,7 +85,7 @@ private[scalatest] object CompileMacro {
 
         try {
           c.typeCheck(c.parse("{ " + code + " }"))
-          val messageExpr = c.literal("Expected type error, but type check passed.")
+          val messageExpr = c.literal("Expected a type error, but got none for: " + code)
           reify {
             throw new exceptions.TestFailedException(messageExpr.splice, 0)
           }
@@ -96,7 +95,7 @@ private[scalatest] object CompileMacro {
               // Do nothing
             }
           case e: ParseException =>
-            val messageExpr = c.literal("Expected type error, but get parse error: " + e.getMessage)
+            val messageExpr = c.literal("Expected type error, but get parse error: " + e.getMessage + "\nfor: " + code)
             reify {
               throw new TestFailedException(messageExpr.splice, 0)
             }
