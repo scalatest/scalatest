@@ -50,6 +50,7 @@ import org.scalautils.NormalizingEquality
 import Assertions.checkExpectedException
 import Assertions.checkNoException
 import exceptions.StackDepthExceptionHelper.getStackDepthFun
+import scala.language.experimental.macros
 
 // TODO: drop generic support for be as an equality comparison, in favor of specific ones.
 // TODO: Put links from ShouldMatchers to wherever I reveal the matrix and algo of how properties are checked dynamically.
@@ -6762,6 +6763,16 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def shouldNot(includeWord: IncludeWord): ResultOfIncludeWordForString = 
       new ResultOfIncludeWordForString(leftSideValue, false)
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * string shouldNot compile
+     *        ^
+     * </pre>
+     */
+    def shouldNot(compileWord: CompileWord): Unit = macro CompileMacro.shouldNotCompileImpl
   }
 
   /**
