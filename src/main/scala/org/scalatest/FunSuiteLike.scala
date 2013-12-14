@@ -168,8 +168,8 @@ trait FunSuiteLike extends Suite with Informing with Notifying with Alerting wit
   }
 
   /**
-   * A <code>Map</code> whose keys are <code>String</code> tag names to which tests in this <code>FunSuite</code> belong, and values
-   * the <code>Set</code> of test names that belong to each tag. If this <code>FunSuite</code> contains no tags, this method returns an empty <code>Map</code>.
+   * A <code>Map</code> whose keys are <code>String</code> names of tagged tests and whose associated values are
+   * the <code>Set</code> of tags for the test. If this <code>FunSuite</code> contains no tags, this method returns an empty <code>Map</code>.
    *
    * <p>
    * This trait's implementation returns tags that were passed as strings contained in <code>Tag</code> objects passed to 
@@ -178,7 +178,8 @@ trait FunSuiteLike extends Suite with Informing with Notifying with Alerting wit
    * 
    * <p>
    * In addition, this trait's implementation will also auto-tag tests with class level annotations.  
-   * For example, if you annotate @Ignore at the class level, all test methods in the class will be auto-annotated with @Ignore.
+   * For example, if you annotate <code>@Ignore</code> at the class level, all test methods in the class will be auto-annotated with
+   * <code>org.scalatest.Ignore</code>.
    * </p>
    */
   override def tags: Map[String, Set[String]] = autoTagClassAnnotations(atomic.get.tagsMap, this)

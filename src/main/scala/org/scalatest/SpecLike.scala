@@ -276,17 +276,20 @@ trait SpecLike extends Suite with Informing with Notifying with Alerting with Do
 
 
   /**
-   * A <code>Map</code> whose keys are <code>String</code> tag names to which tests in this <code>Spec</code> belong, and values
-   * the <code>Set</code> of test names that belong to each tag. If this <code>Spec</code> contains no tags, this method returns an empty <code>Map</code>.
+   * A <code>Map</code> whose keys are <code>String</code> names of tagged tests and whose associated values are
+   * the <code>Set</code> of tags for the test. If this <code>Spec</code> contains no tags, this method returns an empty <code>Map</code>.
    *
    * <p>
-   * This trait's implementation returns tags that were passed as strings contained in <code>Tag</code> objects passed to 
-   * methods <code>test</code> and <code>ignore</code>. 
+   * This trait's implementation of this method uses Java reflection to discover any Java annotations attached to its test methods. The
+   * fully qualified name of each unique annotation that extends <code>TagAnnotation</code> is considered a tag. This trait's
+   * implementation of this method, therefore, places one key/value pair into to the
+   * <code>Map</code> for each test for which a tag annotation is discovered through reflection.
    * </p>
    * 
    * <p>
    * In addition, this trait's implementation will also auto-tag tests with class level annotations.  
-   * For example, if you annotate @Ignore at the class level, all test methods in the class will be auto-annotated with @Ignore.
+   * For example, if you annotate <code>@Ignore</code> at the class level, all test methods in the class will be auto-annotated with
+   * <code>org.scalatest.Ignore</code>.
    * </p>
    */
   override def tags: Map[String, Set[String]] = {

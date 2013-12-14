@@ -168,13 +168,14 @@ trait SuiteMixin { this: Suite =>
   def nestedSuites: collection.immutable.IndexedSeq[Suite]
 
   /**
-   * A <code>Map</code> whose keys are <code>String</code> tag names with which tests in this <code>Suite</code> are marked, and
-   * whose values are the <code>Set</code> of test names marked with each tag.  If this <code>Suite</code> contains no tags, this
+   * A <code>Map</code> whose keys are <code>String</code> names of tagged tests and
+   * whose associated values are the <code>Set</code> of tag names for the test. If a test has no associated tags, its name
+   * does not appear as a key in the returned <code>Map</code>. If this <code>Suite</code> contains no tests with tags, this
    * method returns an empty <code>Map</code>.
    *
    * <p>
-   * Subclasses may implement this method to define and/or discover tags in a custom manner, but overriding method implementations
-   * should never return an empty <code>Set</code> as a value. If a tag has no tests, its name should not appear as a key in the
+   * Subclasses may override this method to define and/or discover tags in a custom manner, but overriding method implementations
+   * should never return an empty <code>Set</code> as a value. If a test has no tags, its name should not appear as a key in the
    * returned <code>Map</code>.
    * </p>
    */
