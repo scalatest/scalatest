@@ -239,8 +239,7 @@ class Framework extends SbtFramework {
     tagsToInclude: Set[String],
     tagsToExclude: Set[String],
     selectors: Array[Selector],
-    explicitlySpecified: Boolean, 
-    configMap: ConfigMap, 
+    explicitlySpecified: Boolean,
     summaryCounter: SummaryCounter,
     useSbtLogInfoReporter: Boolean,
     presentAllDurations: Boolean,
@@ -278,7 +277,7 @@ class Framework extends SbtFramework {
           tagsToExclude,
           selectors,
           explicitlySpecified, 
-          configMap,
+          args.configMap,
           summaryCounter,
           status,
           useSbtLogInfoReporter, 
@@ -424,8 +423,7 @@ class Framework extends SbtFramework {
         tagsToInclude,
         tagsToExclude,
         selectors,
-        explicitlySpecified, 
-        configMap,
+        explicitlySpecified,
         summaryCounter,
         useSbtLogInfoReporter,
         presentAllDurations,
@@ -454,7 +452,7 @@ class Framework extends SbtFramework {
       }
     }
     catch {       
-      case e: RuntimeException => {
+      case e: Throwable => {
 
         // TODO: Could not get this from Resources. Got:
         // java.util.MissingResourceException: Can't find bundle for base name org.scalatest.ScalaTestBundle, locale en_US

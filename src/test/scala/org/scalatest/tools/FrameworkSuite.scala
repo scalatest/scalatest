@@ -1516,4 +1516,128 @@ class FrameworkSuite extends FunSuite {
     framework.runner(Array("wildcard(a.b.c, a.b.d, a.b.e)"), Array.empty, testClassLoader).done()
     intercept[IllegalArgumentException] { framework.runner(Array("wildcard"), Array.empty, testClassLoader).done() }
   }
+
+  test("SuitedAbored fired from nested suite should be reported as error correctly") {
+    val runner = framework.runner(Array.empty, Array.empty, testClassLoader)
+    try {
+      val testEventHandler = new TestEventHandler
+
+      val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.AbortedSuite", subclassFingerprint, false, Array(new SuiteSelector))))
+      assert(tasks.size === 1)
+      val task = tasks(0)
+      val nestedTasks = task.execute(testEventHandler, Array(new TestLogger))
+      assert(nestedTasks.size == 1)
+
+      val successEvents = testEventHandler.successEventsReceived
+      assert(successEvents.length === 0)
+
+      val failureEvents = testEventHandler.failureEventsReceived
+      assert(failureEvents.length === 0)
+
+      val errorEvents = testEventHandler.errorEventsReceived
+      assert(errorEvents.length === 0)
+
+      val skippedEvents = testEventHandler.skippedEventsReceived
+      assert(skippedEvents.length === 0)
+
+      val ignoredEvents = testEventHandler.ignoredEventsReceived
+      assert(ignoredEvents.length === 0)
+
+      val pendingEvents = testEventHandler.pendingEventsReceived
+      assert(pendingEvents.length === 0)
+
+      val canceledEvents = testEventHandler.canceledEventsReceived
+      assert(canceledEvents.length === 0)
+
+      val nestedTask1TestEventHandler = new TestEventHandler
+      val nestedTask1 = nestedTasks(0)
+      val nestedTask1NestedTask = nestedTask1.execute(nestedTask1TestEventHandler, Array(new TestLogger))
+
+      val nestedTask1SuccessEvents = nestedTask1TestEventHandler.successEventsReceived
+      assert(nestedTask1SuccessEvents.length === 0)
+
+      val nestedTask1FailureEvents = nestedTask1TestEventHandler.failureEventsReceived
+      assert(nestedTask1FailureEvents.length === 0)
+
+      val nestedTask1ErrorEvents = nestedTask1TestEventHandler.errorEventsReceived
+      assert(nestedTask1ErrorEvents.length === 1)
+
+      val nestedTask1SkippedEvents = nestedTask1TestEventHandler.skippedEventsReceived
+      assert(nestedTask1SkippedEvents.length === 0)
+
+      val nestedTask1IgnoredEvents = nestedTask1TestEventHandler.ignoredEventsReceived
+      assert(nestedTask1IgnoredEvents.length === 0)
+
+      val nestedTask1PendingEvents = nestedTask1TestEventHandler.pendingEventsReceived
+      assert(nestedTask1PendingEvents.length === 0)
+
+      val nestedTask1CanceledEvents = nestedTask1TestEventHandler.canceledEventsReceived
+      assert(nestedTask1CanceledEvents.length === 0)
+    }
+    finally {
+      runner.done()
+    }
+  }
+
+  test("Nested suite should use passed-in args.configMap") {
+    val runner = framework.runner(Array.empty, Array.empty, testClassLoader)
+    try {
+      val testEventHandler = new TestEventHandler
+
+      val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.NestedConfigMapSuite", subclassFingerprint, false, Array(new SuiteSelector))))
+      assert(tasks.size === 1)
+      val task = tasks(0)
+      val nestedTasks = task.execute(testEventHandler, Array(new TestLogger))
+      assert(nestedTasks.size == 1)
+
+      val successEvents = testEventHandler.successEventsReceived
+      assert(successEvents.length === 0)
+
+      val failureEvents = testEventHandler.failureEventsReceived
+      assert(failureEvents.length === 0)
+
+      val errorEvents = testEventHandler.errorEventsReceived
+      assert(errorEvents.length === 0)
+
+      val skippedEvents = testEventHandler.skippedEventsReceived
+      assert(skippedEvents.length === 0)
+
+      val ignoredEvents = testEventHandler.ignoredEventsReceived
+      assert(ignoredEvents.length === 0)
+
+      val pendingEvents = testEventHandler.pendingEventsReceived
+      assert(pendingEvents.length === 0)
+
+      val canceledEvents = testEventHandler.canceledEventsReceived
+      assert(canceledEvents.length === 0)
+
+      val nestedTask1TestEventHandler = new TestEventHandler
+      val nestedTask1 = nestedTasks(0)
+      val nestedTask1NestedTask = nestedTask1.execute(nestedTask1TestEventHandler, Array(new TestLogger))
+
+      val nestedTask1SuccessEvents = nestedTask1TestEventHandler.successEventsReceived
+      assert(nestedTask1SuccessEvents.length === 1)
+
+      val nestedTask1FailureEvents = nestedTask1TestEventHandler.failureEventsReceived
+      assert(nestedTask1FailureEvents.length === 0)
+
+      val nestedTask1ErrorEvents = nestedTask1TestEventHandler.errorEventsReceived
+      assert(nestedTask1ErrorEvents.length === 0)
+
+      val nestedTask1SkippedEvents = nestedTask1TestEventHandler.skippedEventsReceived
+      assert(nestedTask1SkippedEvents.length === 0)
+
+      val nestedTask1IgnoredEvents = nestedTask1TestEventHandler.ignoredEventsReceived
+      assert(nestedTask1IgnoredEvents.length === 0)
+
+      val nestedTask1PendingEvents = nestedTask1TestEventHandler.pendingEventsReceived
+      assert(nestedTask1PendingEvents.length === 0)
+
+      val nestedTask1CanceledEvents = nestedTask1TestEventHandler.canceledEventsReceived
+      assert(nestedTask1CanceledEvents.length === 0)
+    }
+    finally {
+      runner.done()
+    }
+  }
 }
