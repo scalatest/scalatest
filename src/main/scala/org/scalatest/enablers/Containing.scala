@@ -15,11 +15,8 @@
  */
 package org.scalatest.enablers
 
-import org.scalautils.Equality
-import org.scalautils.NormalizingEquality
-import scala.collection.GenTraversable
-import scala.collection.GenTraversableOnce
-import org.scalatest.FailureMessages
+import org.scalautils.{Equality, NormalizingEquality, Every}
+import scala.collection.{GenTraversableOnce, GenTraversable}
 
 /**
  * Supertrait for typeclasses that enable certain <code>contain</code> matcher syntax for containers.
@@ -445,5 +442,50 @@ object Containing {
    */
   implicit def convertEqualityToJavaMapContaining[K, V, JMAP[k, v] <: java.util.Map[k, v]](equality: Equality[java.util.Map.Entry[K, V]]): Containing[JMAP[K, V]] = 
     containingNatureOfJavaMap(equality)
+
+  /**
+   * Implicit to support <code>Containing</code> nature of <code>Every</code>.
+   *
+   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>Every</code>
+   * @tparam E the type of the element in the <code>Every</code>
+   * @return <code>Containing[Every[E]]</code> that supports <code>Every</code> in relevant <code>contain</code> syntax
+   */
+  implicit def containingNatureOfEvery[E](implicit equality: Equality[E]): Containing[Every[E]] =
+    new Containing[Every[E]] {
+      def contains(every: Every[E], ele: Any): Boolean =
+        equality match {
+          case normEq: NormalizingEquality[_] =>
+            val normRight = normEq.normalizedOrSame(ele)
+            every.exists((e: E) => normEq.afterNormalizationEquality.areEqual(normEq.normalized(e), normRight))
+          case _ => every.exists((e: E) => equality.areEqual(e, ele))
+        }
+      def containsOneOf(every: Every[E], elements: scala.collection.Seq[Any]): Boolean = {
+        val foundSet = checkOneOf[E](every, elements, equality)
+        foundSet.size == 1
+      }
+      def containsNoneOf(every: Every[E], elements: scala.collection.Seq[Any]): Boolean = {
+        val found = checkNoneOf[E](every, elements, equality)
+        !found.isDefined
+      }
+    }
+
+  /**
+   * Implicit conversion that converts an <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   * into <code>Containing</code> of type <code>Every[E]</code>.
+   * This is required to support the explicit <a href="../../scalautils/Equality.html"><code>Equality</code></a> syntax, for example:
+   *
+   * <pre class="stHighlight">
+   * (Every("hi", "he", "ho") should contain oneOf ("HI")) (after being lowerCased)
+   * </pre>
+   *
+   * <code>(after being lowerCased)</code> will returns an <a href="../../scalautils/Equality.html"><code>Equality[String]</code></a>
+   * and this implicit conversion will convert it into <code>Containing[Every[String]]</code>.
+   *
+   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   * @tparam E type of elements in the <code>Every</code>
+   * @return <code>Containing</code> of type <code>Every[E]</code>
+   */
+  implicit def convertEqualityToEveryContaining[E](equality: Equality[E]): Containing[Every[E]] =
+    containingNatureOfEvery(equality)
 }
 
