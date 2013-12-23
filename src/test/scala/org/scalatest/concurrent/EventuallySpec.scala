@@ -23,6 +23,7 @@ import time.{Millisecond, Span, Millis}
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestPendingException
 import org.scalatest.exceptions.TestFailedDueToTimeoutException
+import SharedHelpers.serializeRoundtrip
 
 class EventuallySpec extends FunSpec with ShouldMatchers with OptionValues with SeveredStackTraces {
 
@@ -219,6 +220,15 @@ class EventuallySpec extends FunSpec with ShouldMatchers with OptionValues with 
         }
       } should produce [TestFailedException]
       count should be > (1)
+    }
+
+    it ("should blow up with a TFE that is serializable") {
+      val e = intercept[TestFailedException] {
+        eventually {
+          1 should equal (2)
+        }
+      }
+      serializeRoundtrip(e)
     }
   }
 }

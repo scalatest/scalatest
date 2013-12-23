@@ -18,6 +18,7 @@ package org.scalatest.time
 import Span.totalNanosForLongLength
 import Span.totalNanosForDoubleLength
 import org.scalatest.Resources
+import java.io.Serializable
 
 /**
  * A time span.
@@ -333,7 +334,7 @@ import org.scalatest.Resources
  *
  * @author Bill Venners
  */
-final class Span private (totNanos: Long, lengthString: String, unitsResource: String, unitsName: String) {
+final class Span private (totNanos: Long, lengthString: String, unitsResource: String, unitsName: String) extends Serializable {
 
   private[time] def this(length: Long, units: Units) {
     this(
