@@ -52,7 +52,7 @@ final class NotWord {
    *                     ^
    * </pre>
    */
-  def apply[S <: Any](matcher: Matcher[S]): Matcher[S] =
+  def apply[S](matcher: Matcher[S]): Matcher[S] =
     new Matcher[S] {
       def apply(left: S): MatchResult = matcher(left).negated
       override def toString: String = "not (" + Prettifier.default(matcher) + ")"
@@ -66,7 +66,7 @@ final class NotWord {
    *                      ^
    * </pre>
    */
-  def apply[S <: Any, TYPECLASS[_]](matcherGen1: MatcherFactory1[S, TYPECLASS]): MatcherFactory1[S, TYPECLASS] = {
+  def apply[S, TYPECLASS[_]](matcherGen1: MatcherFactory1[S, TYPECLASS]): MatcherFactory1[S, TYPECLASS] = {
     new MatcherFactory1[S, TYPECLASS] {
       def matcher[V <: S : TYPECLASS]: Matcher[V] = {
         val innerMatcher: Matcher[V] = matcherGen1.matcher
@@ -79,7 +79,7 @@ final class NotWord {
     }
   }
 
-  def apply[S <: Any, TYPECLASS1[_], TYPECLASS2[_]](matcherGen2: MatcherFactory2[S, TYPECLASS1, TYPECLASS2]): MatcherFactory2[S, TYPECLASS1, TYPECLASS2] = {
+  def apply[S, TYPECLASS1[_], TYPECLASS2[_]](matcherGen2: MatcherFactory2[S, TYPECLASS1, TYPECLASS2]): MatcherFactory2[S, TYPECLASS1, TYPECLASS2] = {
     new MatcherFactory2[S, TYPECLASS1, TYPECLASS2] {
       def matcher[V <: S : TYPECLASS1 : TYPECLASS2]: Matcher[V] = {
         val innerMatcher: Matcher[V] = matcherGen2.matcher
@@ -119,7 +119,7 @@ final class NotWord {
    * num should not be (odd)
    * </pre>
    */
-  def apply[S <: Any](beMatcher: BeMatcher[S]): BeMatcher[S] =
+  def apply[S](beMatcher: BeMatcher[S]): BeMatcher[S] =
     new BeMatcher[S] {
       def apply(left: S): MatchResult = beMatcher(left).negated
       override def toString: String = "not (" + Prettifier.default(beMatcher) + ")"
@@ -143,7 +143,7 @@ final class NotWord {
    */ 
   private[scalatest] val exist: MatcherFactory1[Any, Existence] = 
     new MatcherFactory1[Any, Existence] {
-      def matcher[T <: Any : Existence]: Matcher[T] = 
+      def matcher[T : Existence]: Matcher[T] = 
         new Matcher[T] {
           def apply(left: T): MatchResult = {
             val existence = implicitly[Existence[T]]
@@ -729,7 +729,7 @@ final class NotWord {
      *                      ^
      * </pre>
      */
-  def be[T <: Any](sortedWord: SortedWord): MatcherFactory1[Any, Sortable] =
+  def be[T](sortedWord: SortedWord): MatcherFactory1[Any, Sortable] =
     apply(MatcherWords.be(sortedWord))
     
   /**
@@ -993,7 +993,7 @@ final class NotWord {
    */
   def contain[T](expectedElement: T): MatcherFactory1[Any, Containing] = {
     new MatcherFactory1[Any, Containing] {
-      def matcher[U <: Any : Containing]: Matcher[U] = 
+      def matcher[U : Containing]: Matcher[U] = 
         new Matcher[U] {
           def apply(left: U): MatchResult = {
             val containing = implicitly[Containing[U]]

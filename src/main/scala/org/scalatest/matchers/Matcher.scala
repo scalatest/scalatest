@@ -1617,7 +1617,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                  ^
      * </pre>
      */
-    def contain(right: ResultOfOneOfApplication): MatcherFactory1[T with Any, Containing] =
+    def contain(right: ResultOfOneOfApplication): MatcherFactory1[T, Containing] =
       outerInstance.and(MatcherWords.not.contain(right))
       
     /**
@@ -1628,7 +1628,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                  ^
      * </pre>
      */
-    def contain(right: ResultOfAtLeastOneOfApplication): MatcherFactory1[T with Any, Aggregating] =
+    def contain(right: ResultOfAtLeastOneOfApplication): MatcherFactory1[T, Aggregating] =
       outerInstance.and(MatcherWords.not.contain(right))
       
     /**
@@ -1639,7 +1639,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                  ^
      * </pre>
      */
-    def contain(right: ResultOfNoneOfApplication): MatcherFactory1[T with Any, Containing] =
+    def contain(right: ResultOfNoneOfApplication): MatcherFactory1[T, Containing] =
       outerInstance.and(MatcherWords.not.contain(right))
       
     /**
@@ -1650,7 +1650,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                  ^
      * </pre>
      */
-    def contain(right: ResultOfTheSameElementsAsApplication): MatcherFactory1[T with Any, Aggregating] =
+    def contain(right: ResultOfTheSameElementsAsApplication): MatcherFactory1[T, Aggregating] =
       outerInstance.and(MatcherWords.not.contain(right))
       
     /**
@@ -1661,7 +1661,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                  ^
      * </pre>
      */
-    def contain(right: ResultOfTheSameElementsInOrderAsApplication): MatcherFactory1[T with Any, Sequencing] =
+    def contain(right: ResultOfTheSameElementsInOrderAsApplication): MatcherFactory1[T, Sequencing] =
       outerInstance.and(MatcherWords.not.contain(right))
       
     /**
@@ -1672,7 +1672,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                  ^
      * </pre>
      */
-    def contain(right: ResultOfOnlyApplication): MatcherFactory1[T with Any, Aggregating] =
+    def contain(right: ResultOfOnlyApplication): MatcherFactory1[T, Aggregating] =
       outerInstance.and(MatcherWords.not.contain(right))
       
     /**
@@ -1683,7 +1683,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                  ^
      * </pre>
      */
-    def contain(right: ResultOfInOrderOnlyApplication): MatcherFactory1[T with Any, Sequencing] =
+    def contain(right: ResultOfInOrderOnlyApplication): MatcherFactory1[T, Sequencing] =
       outerInstance.and(MatcherWords.not.contain(right))
       
     /**
@@ -1694,7 +1694,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                  ^
      * </pre>
      */
-    def contain(right: ResultOfAllOfApplication): MatcherFactory1[T with Any, Aggregating] =
+    def contain(right: ResultOfAllOfApplication): MatcherFactory1[T, Aggregating] =
       outerInstance.and(MatcherWords.not.contain(right))
       
     /**
@@ -1716,7 +1716,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                          ^
      * </pre>
      */
-    def contain(right: ResultOfAtMostOneOfApplication): MatcherFactory1[T with Any, Aggregating] =
+    def contain(right: ResultOfAtMostOneOfApplication): MatcherFactory1[T, Aggregating] =
       outerInstance.and(MatcherWords.not.contain(right))
 
 // TODO: Write tests and impl for contain ResultOfKey/ValueWordApplication
