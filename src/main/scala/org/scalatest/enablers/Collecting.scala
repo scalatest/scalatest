@@ -15,12 +15,7 @@
  */
 package org.scalatest.enablers
 
-import org.scalautils.Equality
-import org.scalatest.words.ArrayWrapper
-import scala.collection.GenTraversable
-import org.scalatest.FailureMessages
-import scala.annotation.tailrec
-// import scala.collection.JavaConverters._
+import org.scalautils.Every
 
 /**
  * Supertrait for typeclasses that enable <code>loneElement</code> matcher syntax for collections.
@@ -137,5 +132,20 @@ object Collecting {
         } else None
       }
       def sizeOf(jmap: JMAP[K, V]): Int = jmap.size
+    }
+
+  /**
+   * Implicit to support <code>Collecting</code> nature of <code>Every</code>.
+   *
+   * @tparam E the type of the element in the <code>Every</code>
+   * @tparam EVERY any subtype of <code>Every</code>
+   * @return <code>Collecting[EVERY[E]]</code> that supports <code>Every</code> in <code>loneElement</code> syntax
+   */
+  implicit def collectingNatureOfEvery[E, EVERY[e] <: Every[e]]: Collecting[E, EVERY[E]] =
+    new Collecting[E, EVERY[E]] {
+      def loneElementOf(every: EVERY[E]): Option[E] = {
+        if (every.size == 1) Some(every.head) else None
+      }
+      def sizeOf(every: EVERY[E]): Int = every.size
     }
 }
