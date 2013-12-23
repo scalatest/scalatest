@@ -417,13 +417,14 @@ trait Eventually extends PatienceConfiguration {
           }
           else {
             val durationSpan = Span(1, Nanosecond) scaledBy duration // Use scaledBy to get pretty units
-            def msg =
-              if (e.getMessage == null)
-                Resources("didNotEventuallySucceed", attempt.toString, durationSpan.prettyString)
-              else
-                Resources("didNotEventuallySucceedBecause", attempt.toString, durationSpan.prettyString, e.getMessage)
             throw new TestFailedDueToTimeoutException(
-              sde => Some(msg),
+              sde =>
+                Some(
+                  if (e.getMessage == null)
+                    Resources("didNotEventuallySucceed", attempt.toString, durationSpan.prettyString)
+                  else
+                    Resources("didNotEventuallySucceedBecause", attempt.toString, durationSpan.prettyString, e.getMessage)
+                ),
               Some(e),
               getStackDepthFun("Eventually.scala", "eventually"),
               None,
