@@ -21,7 +21,7 @@ import org.scalautils._
 import org.scalatest.FailureMessages
 import org.scalatest.Resources
 import org.scalatest.UnquotedString
-import org.scalautils.Equality
+import org.scalautils.{Equality, Every}
 import org.scalatest.enablers.Containing
 import org.scalatest.enablers.Aggregating
 import org.scalatest.enablers.Sequencing
@@ -315,7 +315,7 @@ final class ContainWord {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
             val postfix =
-              if (right.size == 1 && right(0).isInstanceOf[scala.collection.GenTraversable[_]])
+              if (right.size == 1 && (right(0).isInstanceOf[scala.collection.GenTraversable[_]] || right(0).isInstanceOf[Every[_]]))
                 "WithFriendlyReminder"
               else
                 ""

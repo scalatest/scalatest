@@ -36,6 +36,7 @@ import org.scalautils.Equality
 import org.scalautils.TripleEqualsSupport.TripleEqualsInvocationOnSpread
 import org.scalautils.Constraint
 import org.scalautils.Prettifier
+import org.scalautils.Every
 import MatchersHelper.andMatchersAndApply
 import MatchersHelper.orMatchersAndApply
 import org.scalatest.words._
@@ -3791,7 +3792,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       doCollected(collected, xs, "contain", 1) { e =>
         if (aggregating.containsOnly(e, right) != shouldBeTrue) {
           val postfix =
-            if (right.size == 1 && right(0).isInstanceOf[scala.collection.GenTraversable[_]])
+            if (right.size == 1 && (right(0).isInstanceOf[scala.collection.GenTraversable[_]] || right(0).isInstanceOf[Every[_]]))
               "WithFriendlyReminder"
             else
               ""
@@ -4301,7 +4302,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       doCollected(collected, xs, "only", 1) { e =>
         if (aggregating.containsOnly(e, right) != shouldBeTrue) {
           val postfix =
-            if (right.size == 1 && right(0).isInstanceOf[scala.collection.GenTraversable[_]])
+            if (right.size == 1 && (right(0).isInstanceOf[scala.collection.GenTraversable[_]] || right(0).isInstanceOf[Every[_]]))
               "WithFriendlyReminder"
             else
               ""
