@@ -109,7 +109,6 @@ import scala.language.experimental.macros
  * <li><a href="#checkingArbitraryProperties">Checking arbitrary properties with <code>have</code></a></li>
  * <li><a href="#lengthSizeHavePropertyMatchers">Using <code>length</code> and <code>size</code> with <code>HavePropertyMatcher</code>s</a></li>
  * <li><a href="#usingCustomMatchers">Using custom matchers</a></li>
- * <li><a href="#otherWays">Other ways to create matchers</a></li>
  * <li><a href="#checkingForExpectedExceptions">Checking for expected exceptions</a></li>
  * <li><a href="#thosePeskyParens">Those pesky parens</a></li>
  * </ul>
@@ -1457,7 +1456,7 @@ import scala.language.experimental.macros
  * <code>Matcher</code>s, please see the documentation for the <a href="matchers/Matcher.html"><code>Matcher</code></a> trait.
  * </p>
  *
- * <a name="expectedExceptions"></a>
+ * <a name="checkingForExpectedExceptions"></a>
  * <h2>Checking for expected exceptions</h2>
  *
  * <p>
@@ -2702,6 +2701,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
   }
 
   /**
+   * <strong>The <code>evaluating { ... } should produce [...Exception]</code> syntax has been deprecated and
+   * will be removed in a future version of ScalaTest. Please use <code>a/an [...Exception] should be
+   * thrownBy { ... }</code> instead.</strong>
+   *
    * This method enables syntax such as the following:
    *
    * <pre class="stHighlight">
@@ -2709,6 +2712,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * ^
    * </pre>
    */
+  @deprecated("Please use 'an [Exception] should be thrownBy { ... }' syntax instead")
   def evaluating(fun: => Any): ResultOfEvaluatingApplication =
     new ResultOfEvaluatingApplication(fun _)
 
