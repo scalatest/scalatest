@@ -20,8 +20,9 @@ import org.scalautils.Uniformity
 import org.scalautils.StringNormalizations._
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
+import Matchers._
 
-class EveryShouldContainTheSameElementsAsLogicalAndSpec extends Spec with Matchers {
+class EveryShouldContainTheSameElementsAsLogicalAndSpec extends Spec {
 
   val invertedListOfStringEquality =
     new Equality[Every[String]] {

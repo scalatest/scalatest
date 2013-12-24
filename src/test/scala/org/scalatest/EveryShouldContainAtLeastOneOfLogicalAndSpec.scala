@@ -20,8 +20,9 @@ import org.scalautils.Uniformity
 import org.scalautils.StringNormalizations._
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
+import Matchers._
 
-class EveryShouldContainAtLeastOneOfLogicalAndSpec extends Spec with Matchers {
+class EveryShouldContainAtLeastOneOfLogicalAndSpec extends Spec {
 
   val upperCaseStringEquality =
     new Equality[String] {

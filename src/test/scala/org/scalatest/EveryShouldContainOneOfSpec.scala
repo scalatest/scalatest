@@ -19,8 +19,9 @@ import org.scalautils.{Equality, Every, One, Many}
 import org.scalautils.StringNormalizations._
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
+import Matchers._
 
-class EveryShouldContainOneOfSpec extends Spec with Matchers {
+class EveryShouldContainOneOfSpec extends Spec {
 
   val upperCaseEquality =
     new Equality[String] {

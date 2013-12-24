@@ -19,8 +19,9 @@ import org.scalautils.{Equality, NormalizingEquality, Every}
 import org.scalautils.StringNormalizations._
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
+import Matchers._
 
-class EveryShouldContainSpec extends Spec with Matchers {
+class EveryShouldContainSpec extends Spec {
 
   object `a List` {
 

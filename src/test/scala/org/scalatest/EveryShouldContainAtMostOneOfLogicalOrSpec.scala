@@ -20,8 +20,9 @@ import org.scalautils.Uniformity
 import org.scalautils.StringNormalizations._
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
+import Matchers._
 
-class EveryShouldContainAtMostOneOfLogicalOrSpec extends FreeSpec with Matchers {
+class EveryShouldContainAtMostOneOfLogicalOrSpec extends FreeSpec {
 
   val upperCaseStringEquality =
     new Equality[String] {

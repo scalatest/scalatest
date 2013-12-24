@@ -19,8 +19,9 @@ import org.scalautils.{Equality, Every, One, Many}
 import org.scalautils.StringNormalizations._
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
+import Matchers._
 
-class EveryShouldContainOnlyLogicalOrSpec extends Spec with Matchers {
+class EveryShouldContainOnlyLogicalOrSpec extends Spec {
 
   val invertedStringEquality =
     new Equality[String] {

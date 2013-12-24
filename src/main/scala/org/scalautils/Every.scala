@@ -1525,7 +1525,7 @@ object Every {
    * @return an immutable <code>IndexedSeq</code> containing the elements, in order, of this <code>Every</code>
    */
   implicit def everyToGenTraversableOnce[E](every: Every[E]): scala.collection.immutable.IndexedSeq[E] = //every.toVector
-    new IndexedSeqWrapper(every.toVector) {
+    new IndexedSeqWrapper(every.toVector) { // TODO: Should remove this after Inspectors type class refactoring
       override def toString: String = every.toString
     }
 
