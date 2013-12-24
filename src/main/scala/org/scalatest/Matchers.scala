@@ -98,12 +98,14 @@ import scala.language.experimental.macros
  * <li><a href="#workingWithContainers">Working with "containers"</a></li>
  * <li><a href="#workingWithAggregations">Working with "aggregations"</a></li>
  * <li><a href="#workingWithSequences">Working with "sequences"</a></li>
+ * <li><a href="#workingWithSortables">Working with "sortables"</a></li>
  * <li><a href="#workingWithIterators">Working with iterators</a></li>
  * <li><a href="#inspectorShorthands">Inspector shorthands</a></li>
  * <li><a href="#singleElementCollections">Single-element collections</a></li>
  * <li><a href="#javaCollectionsAndMaps">Java collections and maps</a></li>
  * <li><a href="#beAsAnEqualityComparison">Be as an equality comparison</a></li>
  * <li><a href="#beingNegative">Being negative</a></li>
+ * <li><a href="#checkingThatCodeDoesNotCompile">Checking that a snippet of code does not compile</a></li>
  * <li><a href="#logicalExpressions">Logical expressions with <code>and</code> and <code>or</code></a></li>
  * <li><a href="#workingWithOptions">Working with <code>Option</code>s</a></li>
  * <li><a href="#checkingArbitraryProperties">Checking arbitrary properties with <code>have</code></a></li>
@@ -863,6 +865,18 @@ import scala.language.experimental.macros
  * in the same order.
  * </p>
  *
+ * <a name="workingWithSortables"></a>
+ * <h2>Working with "sortables"</h2>
+ *
+ * <p>
+ * You can also ask whether the elements of "sortable" objects (such as <code>Array</code>, Java <code>List</code>s, and <code>GenSeq</code>s)
+ * are in sorted order, like this:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * List(1, 2, 3) shouldBe sorted
+ * </pre>
+ *
  * <a name="workingWithIterators"></a>
  * <h2>Working with iterators</h2>
  *
@@ -1097,6 +1111,9 @@ import scala.language.experimental.macros
  * <p>
  * (Hopefully you won't write that too much given <code>null</code> is error prone, and <code>Option</code>
  * is usually a better, well, option.) 
+ * As mentioned <a href="#checkingEqualityWithMatchers">previously</a>, the other difference between <code>equal</code>
+ * and <code>be</code> is that <code>equal</code> delegates the equality check to an <code>Equality</code> typeclass, whereas
+ * <code>be</code> always uses default equality.
  * Here are some other examples of <code>be</code> used for equality comparison:
  * </p>
  * 
@@ -1155,6 +1172,25 @@ import scala.language.experimental.macros
  * string should not startWith ("Hello")
  * </pre>
  * 
+ * <a name="checkingThatCodeDoesNotCompile"></a>
+ * <h2>Checking that a snippet of code does not compile</h2>
+ * 
+ * <p>
+ * Often when creating libraries you may wish to ensure that certain arrangements of code that
+ * represent potential &ldquo;user errors&rdquo; do not compile, so that your library is more error resistant.
+ * ScalaTest <code>Matchers</code> trait includes the following syntax for that purpose:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * "val a: String = 1" shouldNot compile
+ * </pre>
+ *
+ * <p>
+ * Although this syntax is implemented with a macro that determines at compile time whether
+ * the snippet of code represented by the string type checks, errors (<em>i.e.</em>, 
+ * snippets of code that <em>do</em> type check) are reported as test failures at runtime.
+ * </p>
+ *
  * <a name="logicalExpressions"></a>
  * <h2>Logical expressions with <code>and</code> and <code>or</code></h2>
  * 
@@ -1279,10 +1315,10 @@ import scala.language.experimental.macros
  * </p>
  * 
  * <pre class="stHighlight">
- * option should equal (None)
- * option should be (None)
- * option should not be ('defined)
- * option should be ('empty)
+ * option shouldEqual None
+ * option shouldBe None
+ * option should not be defined
+ * option shouldBe empty
  * </pre>
  * 
  * <p>
@@ -1290,8 +1326,8 @@ import scala.language.experimental.macros
  * </p>
  * 
  * <pre class="stHighlight">
- * option should equal (Some("hi"))
- * option should be (Some("hi"))
+ * option shouldEqual Some("hi")
+ * option shouldBe Some("hi")
  * </pre>
  * 
  * <p>
@@ -1299,7 +1335,7 @@ import scala.language.experimental.macros
  * </p>
  * 
  * <pre class="stHighlight">
- * option should be ('defined)
+ * option shouldBe defined
  * </pre>
  * 
  * <p>
@@ -1309,7 +1345,7 @@ import scala.language.experimental.macros
  * 
  * <pre class="stHighlight">
  * import org.scalatest.OptionValues._
- * option.value should be &lt; (7)
+ * option.value should be &lt; 7
  * </pre>
  * 
  * <a name="checkingArbitraryProperties"></a>
@@ -1537,7 +1573,7 @@ import scala.language.experimental.macros
  * </p>
  *
  * <p>
- * 1. Although you don't always need them, it is recommended style to always put parentheses
+ * 1. Although you don't always need them, you may choose to always put parentheses
  * around right-hand values, such as the <code>7</code> in <code>num should equal (7)</code>:
  * </p>
  *
@@ -1556,7 +1592,7 @@ import scala.language.experimental.macros
  * </pre>
  *
  * <p>
- * 2. Except for <code>length</code> and <code>size</code>, you must always put parentheses around
+ * 2. Except for <code>length</code>, <code>size</code> and <code>message</code>, you must always put parentheses around
  * the list of one or more property values following a <code>have</code>:
  * </p>
  *
@@ -1580,7 +1616,7 @@ import scala.language.experimental.macros
  * </pre>
  * 
  * <p>
- * 4. Although you don't always need them, it is recommended style to always put parentheses
+ * 4. Although you don't always need them, you may choose to always put parentheses
  * around custom <code>Matcher</code>s when they appear directly after <code>not</code>:
  * </p>
  * 
@@ -1597,6 +1633,16 @@ import scala.language.experimental.macros
  * That's it. With a bit of practice it <!-- PRESERVE -->should become natural to you, and the compiler will always be there to tell you if you
  * forget a set of needed parentheses.
  * </p>
+ *
+ * <p>
+ * <em>Note: ScalaTest's matchers are in part inspired by the matchers of <a href="http://rspec.info" target="_blank">RSpec</a>,
+ * <a href="https://github.com/hamcrest/JavaHamcrest" target="_blank">Hamcrest</a>, and
+ * <a href="http://etorreborre.github.io/specs2/" target="_blank">specs2</a>, and its &ldquo;<code>shouldNot compile</code>&rdquo; syntax
+ * by the <code>illTyped</code> macro of <a href="https://github.com/milessabin/shapeless" target="_blank">shapeless</a>.</em>
+ * </p>
+ *
+ * @author Bill Venners
+ * @author Chua Chee Seng
  */
 trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWords with Explicitly { matchers =>
 
@@ -1638,7 +1684,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * <tr><td class="stTableCell"><code>title</code></td><td class="stTableCell"><code>title()</code></td><td class="stTableCell">&nbsp;</td><td class="stTableCell">Invokes <code>title()</code></td></tr>
    * <tr><td class="stTableCell"><code>title</code></td><td class="stTableCell"><code>title()</code></td><td class="stTableCell"><code>getTitle()</code></td><td class="stTableCell">Invokes <code>title()</code> (this can occur when <code>BeanProperty</code> annotation is used)</td></tr>
    * </table>
-   *
    *
    * @author Bill Venners
    */
@@ -1745,7 +1790,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * @author Bill Venners
    */
   class ResultOfBeWordForAny[T](left: T, shouldBeTrue: Boolean) {
-    
+
     /**
      * This method enables the following syntax (positiveNumber is a <code>AMatcher</code>):
      *

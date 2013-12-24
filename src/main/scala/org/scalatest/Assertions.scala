@@ -97,6 +97,7 @@ import org.scalautils.Prettifier
  * <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a>.
  * </p>
  *
+ * <a name="expectedResults"></a>
  * <h2>Expected results</h2>
  *
  * Although the <code>assert</code> macro provides a natural, readable extension to Scala's <code>assert</code> mechanism that
@@ -122,6 +123,7 @@ import org.scalautils.Prettifier
  * the detail message in the <code>TestFailedException</code> will read, "Expected 2, but got 3."
  * </p>
  *
+ * <a name="forcingFailures"></a>
  * <h2>Forcing failures</h2>
  *
  * <p>
@@ -140,6 +142,7 @@ import org.scalautils.Prettifier
  * fail("I've got a bad feeling about this")
  * </pre>
  *
+ * <a name="interceptedExceptions"></a>
  * <h2>Intercepted exceptions</h2>
  *
  * <p>
@@ -185,6 +188,26 @@ import org.scalautils.Prettifier
  * the exception has the expected values.
  * </p>
  *
+ * <a name="checkingThatCodeDoesNotCompile"></a>
+ * <h2>Checking that a snippet of code does not compile</h2>
+ * 
+ * <p>
+ * Often when creating libraries you may wish to ensure that certain arrangements of code that
+ * represent potential &ldquo;user errors&rdquo; do not compile, so that your library is more error resistant.
+ * ScalaTest's <code>Assertions</code> trait includes the following syntax for that purpose:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * assertTypeError("val a: String = 1")
+ * </pre>
+ *
+ * <p>
+ * Although <code>assertTypeError</code> is implemented with a macro that determines at compile time whether
+ * the snippet of code represented by the passed string type checks, errors (<em>i.e.</em>, 
+ * snippets of code that <em>do</em> type check) are reported as test failures at runtime.
+ * </p>
+ *
+ * <a name="assumptions"></a>
  * <h2>Assumptions</h2>
  *
  * <p>
@@ -216,6 +239,7 @@ import org.scalautils.Prettifier
  * assume(database.getAllUsers.count === 9)
  * </pre>
  *
+ * <a name="forcingCancelations"></a>
  * <h2>Forcing cancelations</h2>
  *
  * <p>
@@ -237,6 +261,7 @@ import org.scalautils.Prettifier
  * cancel("Can't run the test because no internet connection was found")
  * </pre>
  *
+ * <a name="gettingAClue"></a>
  * <h2>Getting a clue</h2>
  *
  * <p>
@@ -282,6 +307,11 @@ import org.scalautils.Prettifier
  * See the documentation for <a href="ModifiableMessage.html"><code>ModifiableMessage</code></a> for more information.
  * If you wish to place a clue string after a block of code, see the documentation for
  * <a href="AppendedClues.html"><code>AppendedClues</code></a>.
+ * </p>
+ *
+ * <p>
+ * <em>Note: ScalaTest's <code>assertTypeError</code> construct is in part inspired by the <code>illTyped</code> macro
+ * of <a href="https://github.com/milessabin/shapeless" target="_blank">shapeless</a>.</em>
  * </p>
  *
  * @author Bill Venners
@@ -676,17 +706,28 @@ trait Assertions extends TripleEquals {
     }
   }
 
+  /**
+   * Asserts that a given string snippet of code does not pass the Scala type checker.
+   *
+   * <p>
+   * Often when creating libraries you may wish to ensure that certain arrangements of code that
+   * represent potential &ldquo;user errors&rdquo; do not compile, so that your library is more error resistant.
+   * ScalaTest's <code>Assertions</code> trait includes the following syntax for that purpose:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * assertTypeError("val a: String = 1")
+   * </pre>
+   *
+   * <p>
+   * Although <code>assertTypeError</code> is implemented with a macro that determines at compile time whether
+   * the snippet of code represented by the passed string type checks, errors (<em>i.e.</em>, 
+   * snippets of code that <em>do</em> type check) are reported as test failures at runtime.
+   * </p>
+   *
+   * @param code the snippet of code that should not type check
+   */
   def assertTypeError(code: String): Unit = macro CompileMacro.assertTypeErrorImpl
-
-/*
-  def throwIfSome(o: Option[String], exception: (Any) => Throwable) {
-    o match {
-      case Some(s) => throw exception(s)
-      case None =>
-    }
-  }
-*/
-  
 
   /* *
    * Implicit conversion from <code>Any</code> to <code>Equalizer</code>, used to enable
