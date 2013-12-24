@@ -45,6 +45,7 @@ import org.scalatest.MatchersHelper.startWithRegexWithGroups
 import org.scalatest.MatchersHelper.endWithRegexWithGroups
 import org.scalatest.MatchersHelper.includeRegexWithGroups
 import org.scalautils.Prettifier
+import org.scalautils.Every
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
@@ -851,7 +852,7 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
     val right = only.right
     if (aggregating.containsOnly(left, right) != shouldBeTrue) {
       val postfix =
-        if (right.size == 1 && right(0).isInstanceOf[scala.collection.GenTraversable[_]])
+        if (right.size == 1 && (right(0).isInstanceOf[scala.collection.GenTraversable[_]] || right(0).isInstanceOf[Every[_]]))
           "WithFriendlyReminder"
         else
           ""

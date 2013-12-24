@@ -26,7 +26,7 @@ import org.scalatest.FailureMessages
 import org.scalatest.UnquotedString
 import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
-import org.scalautils.Prettifier
+import org.scalautils.{Prettifier, Every}
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
@@ -155,7 +155,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
       throw new NotAllowedException(FailureMessages("onlyDuplicate"), getStackDepthFun("ResultOfContainWord.scala", "only"))
     if (aggregating.containsOnly(left, right) != shouldBeTrue) {
       val postfix =
-        if (right.size == 1 && right(0).isInstanceOf[scala.collection.GenTraversable[_]])
+        if (right.size == 1 && (right(0).isInstanceOf[scala.collection.GenTraversable[_]] || right(0).isInstanceOf[Every[_]]))
           "WithFriendlyReminder"
         else
           ""
