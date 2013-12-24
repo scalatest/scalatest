@@ -18,6 +18,8 @@ package org.scalatest.enablers
 import org.scalautils.Every
 import scala.collection.GenTraversable
 import scala.language.higherKinds
+import org.scalatest.FailureMessages
+import scala.annotation.tailrec
 
 /**
  * Supertrait for typeclasses that enable <code>loneElement</code> matcher syntax for collections.
@@ -195,4 +197,5 @@ object Collecting {
       def sizeOf(every: EVERY[E]): Int = every.size
       def genTraversableFrom(collection: EVERY[E]): GenTraversable[E] = collection.toVector
     }
+
 }

@@ -77,7 +77,7 @@ trait LoneElement {
 
   /**
    * Wrapper class that adds a <code>loneElement</code> method to any collection type <code>C</code> for which 
-   * an implicit <code>Collection[C]</code> is available.
+   * an implicit <code>Collecting[C]</code> is available.
    *
    * <p>
    * Through the implicit conversion provided by trait <code>LoneElement</code>, this class allows you to make statements like:
@@ -125,7 +125,7 @@ trait LoneElement {
   
   /**
    * Implicit conversion that adds a <code>loneElement</code> method to any collection type <code>C</code> for which an
-   * implicit <code>Collection[C]</code> is available.
+   * implicit <code>Collecting[C]</code> is available.
    *
    * @tparam E the element type of the collection on which to add the <code>loneElement</code> method
    * @tparam CTC the "collection type constructor" for the collection on which to add the <code>loneElement</code> method
@@ -134,6 +134,23 @@ trait LoneElement {
    */
   implicit def convertToCollectionLoneElementWrapper[E, CTC[_]](collection: CTC[E])(implicit collecting: Collecting[E, CTC[E]]): LoneElementCollectionWrapper[E, CTC] = new LoneElementCollectionWrapper[E, CTC](collection)
 
+  /**
+   * Wrapper class that adds a <code>loneElement</code> method to Java Map for which
+   * an implicit <code>Collecting[org.scalatest.Entry, java.util.Map]</code> is available.
+   *
+   * <p>
+   * Through the implicit conversion provided by trait <code>LoneElement</code>, this class allows you to make statements like:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * jmap.loneElement.getKey should be &gt; 9
+   * </pre>
+   *
+   * @tparam K the element type of the Java Map key on which to add the <code>loneElement</code> method
+   * @tparam V the element type of the Java Map value on which to add the <code>loneElement</code> method
+   * @tparam JMAP the "Java Map type constructor" for the collection on which to add the <code>loneElement</code> method
+   * @param collecting a typeclass that enables the <code>loneElement</code> syntax
+   */
   final class LoneElementJavaMapWrapper[K, V, JMAP[_, _] <: java.util.Map[_, _]](jmap: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]) {
 
     def loneElement: org.scalatest.Entry[K, V] = {
@@ -156,6 +173,49 @@ trait LoneElement {
   implicit def convertJavaMapToCollectionLoneElementWrapper[K, V, JMAP[_, _] <: java.util.Map[_, _]](jmap: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]): LoneElementJavaMapWrapper[K, V, JMAP]  = {
     new LoneElementJavaMapWrapper[K, V, JMAP](jmap)(collecting)
   }
+
+  /**
+   * Wrapper class that adds a <code>loneElement</code> method to <code>String</code> for which an
+   * implicit <code>Collecting[C]</code> is available.
+   *
+   * <p>
+   * Through the implicit conversion provided by trait <code>LoneElement</code>, this class allows you to make statements like:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * "9".loneElement should be ('9')
+   * </pre>
+   *
+   * @param s the <code>String</code> to wrap
+   * @param collecting a typeclass that enables the <code>loneElement</code> syntax
+   */
+  final class LoneElementStringWrapper(s: String)(implicit collecting: Collecting[Char, String]) {
+
+    def loneElement: Char = {
+      if (s.length == 1)
+        s.charAt(0)
+      else
+        throw new exceptions.TestFailedException(
+          Some(FailureMessages(
+            "notLoneElement",
+            s,
+            collecting.sizeOf(s))),
+          None,
+          1
+        )
+    }
+
+  }
+
+  /**
+   * Implicit conversion that adds a <code>loneElement</code> method to String for which an
+   * implicit <code>Collecting[C]</code> is available.
+   *
+   * @param s the <code>String</code> to wrap
+   * @param collecting a typeclass that enables the <code>loneElement</code> syntax
+   */
+  implicit def convertToStringLoneElementWrapper(s: String)(implicit collecting: Collecting[Char, String]): LoneElementStringWrapper =
+    new LoneElementStringWrapper(s)(collecting)
 }
 
 /**
