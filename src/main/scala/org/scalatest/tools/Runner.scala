@@ -39,6 +39,7 @@ import SuiteDiscoveryHelper._
 import org.scalatest.time.Span
 import org.scalatest.time.Seconds
 import org.scalatest.time.Millis
+import java.util.concurrent.atomic.AtomicInteger
 
 /*
 Command line args:
@@ -2278,6 +2279,12 @@ object Runner {
     a + (if (a.contains(kv._1)) kv._1 -> f(a(kv._1), kv._2) else kv)
   }
   
+  // We number our named threads so that people can keep track
+  // of it as it goes through different suites. But in case the
+  // multiple doRunRunRunDaDoRunRun's get called, we want to
+  // use different numbers. So this is a "global" count in Runner.
+  private val atomicThreadCounter = new AtomicInteger
+
   private[scalatest] def doRunRunRunDaDoRunRun(
     dispatch: DispatchReporter,
     suitesList: List[SuiteParam],
@@ -2512,7 +2519,7 @@ object Runner {
                 val defaultThreadFactory = Executors.defaultThreadFactory
                 def newThread(runnable: Runnable): Thread = {
                   val thread = defaultThreadFactory.newThread(runnable)
-                  thread.setName(thread.getName.replaceAll(".*-", "ScalaTest-"))
+                  thread.setName("ScalaTest-" + atomicThreadCounter.incrementAndGet())
                   thread
                 }
               }
