@@ -1177,7 +1177,7 @@ final class NotWord {
             val right = only.right
 
             val postfix =
-              if (right.size == 1 && right(0).isInstanceOf[scala.collection.GenTraversable[_]])
+              if (right.size == 1 && (right(0).isInstanceOf[scala.collection.GenTraversable[_]] || right(0).isInstanceOf[Every[_]]))
                 "WithFriendlyReminder"
               else
                 ""

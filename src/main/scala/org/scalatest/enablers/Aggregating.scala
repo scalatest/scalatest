@@ -15,7 +15,7 @@
  */
 package org.scalatest.enablers
 
-import org.scalautils.Equality
+import org.scalautils.{Equality, Every}
 import org.scalatest.words.ArrayWrapper
 import scala.collection.GenTraversable
 import org.scalatest.FailureMessages
@@ -488,4 +488,49 @@ object Aggregating {
    */
   implicit def convertEqualityToJavaMapAggregating[K, V, JMAP[k, v] <: java.util.Map[k, v]](equality: Equality[java.util.Map.Entry[K, V]]): Aggregating[JMAP[K, V]] = 
     aggregatingNatureOfJavaMap(equality)
+
+  /**
+   * Implicit to support <code>Aggregating</code> nature of <code>Every</code>.
+   *
+   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>Every</code>
+   * @tparam E the type of the element in the <code>Every</code>
+   * @return <code>Aggregating[Every[E]]</code> that supports <code>Every</code> in relevant <code>contain</code> syntax
+   */
+  implicit def aggregatingNatureOfEvery[E](implicit equality: Equality[E]): Aggregating[Every[E]] =
+    new Aggregating[Every[E]] {
+      def containsAtLeastOneOf(every: Every[E], elements: scala.collection.Seq[Any]): Boolean = {
+        every.exists((e: E) => elements.exists((ele: Any) => equality.areEqual(e, ele)))
+      }
+      def containsTheSameElementsAs(every: Every[E], elements: GenTraversable[Any]): Boolean = {
+        checkTheSameElementsAs[E](every, elements, equality)
+      }
+      def containsOnly(every: Every[E], elements: scala.collection.Seq[Any]): Boolean = {
+        checkOnly(every, elements, equality)
+      }
+      def containsAllOf(every: Every[E], elements: scala.collection.Seq[Any]): Boolean = {
+        checkAllOf(every, elements, equality)
+      }
+      def containsAtMostOneOf(every: Every[E], elements: scala.collection.Seq[Any]): Boolean = {
+        checkAtMostOneOf(every, elements, equality)
+      }
+    }
+
+  /**
+   * Implicit conversion that converts an <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   * into <code>Aggregating</code> of type <code>Every[E]</code>.
+   * This is required to support the explicit <a href="../../scalautils/Equality.html"><code>Equality</code></a> syntax, for example:
+   *
+   * <pre class="stHighlight">
+   * (Every("hi") should contain ("HI")) (after being lowerCased)
+   * </pre>
+   *
+   * <code>(after being lowerCased)</code> will returns an <a href="../../scalautils/Equality.html"><code>Equality[String]</code></a>
+   * and this implicit conversion will convert it into <code>Aggregating[Every[String]]</code>.
+   *
+   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   * @tparam E type of elements in the <code>Every</code>
+   * @return <code>Aggregating</code> of type <code>Every[E]</code>
+   */
+  implicit def convertEqualityToEveryAggregating[E](equality: Equality[E]): Aggregating[Every[E]] =
+    aggregatingNatureOfEvery(equality)
 }
