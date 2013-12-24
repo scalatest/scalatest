@@ -189,6 +189,63 @@ class InspectorsSpec extends Spec with Matchers with Inspectors with TableDriven
         }
       }
     }
+
+    object `when used with Arrays` {
+      def `should do nothing if succeeds` {
+        forAll(Array(1, 2, 3)) { e => e should be < 4 }
+      }
+      def `should throw a TFE with a good error message if fails` {
+        val e = intercept[exceptions.TestFailedException] {
+          forAll(Array(1, 2, 3, 4, 5)) { e =>
+            e should be < 4
+          }
+        }
+        e.failedCodeFileName should be (Some("InspectorsSpec.scala"))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 5))
+        e.message should be (Some("forAll failed, because: \n" +
+                                   "  at index 3, 4 was not less than 4 (InspectorsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                   "in Array(1, 2, 3, 4, 5)"))
+        e.getCause match {
+          case tfe: exceptions.TestFailedException =>
+            tfe.failedCodeFileName should be (Some("InspectorsSpec.scala"))
+            tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
+            tfe.message should be (Some("4 was not less than 4"))
+            tfe.getCause should be (null)
+          case other => fail("Expected cause to be TestFailedException, but got: " + other)
+        }
+      }
+    }
+
+/*
+    object `when used with java.util.Collection` {
+      import collection.JavaConverters._
+      def `should do nothing if succeeds` {
+        val jList123: java.util.List[Int] = List(1, 2, 3).asJava
+        forAll(jList123) { e => e should be < 4 }
+      }
+      def `should throw a TFE with a good error message if fails` {
+        val jList12345: java.util.List[Int] = List(1, 2, 3, 4, 5).asJava
+        val e = intercept[exceptions.TestFailedException] {
+          forAll(jList12345) { e =>
+            e should be < 4
+          }
+        }
+        e.failedCodeFileName should be (Some("InspectorsSpec.scala"))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 5))
+        e.message should be (Some("forAll failed, because: \n" +
+                                   "  at index 3, 4 was not less than 4 (InspectorsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                   "in [1, 2, 3, 4, 5]"))
+        e.getCause match {
+          case tfe: exceptions.TestFailedException =>
+            tfe.failedCodeFileName should be (Some("InspectorsSpec.scala"))
+            tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
+            tfe.message should be (Some("4 was not less than 4"))
+            tfe.getCause should be (null)
+          case other => fail("Expected cause to be TestFailedException, but got: " + other)
+        }
+      }
+    }
+*/
   }
   
   object `forAtLeast ` {

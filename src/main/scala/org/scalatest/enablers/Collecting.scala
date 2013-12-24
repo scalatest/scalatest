@@ -20,7 +20,7 @@ import org.scalatest.words.ArrayWrapper
 import scala.collection.GenTraversable
 import org.scalatest.FailureMessages
 import scala.annotation.tailrec
-// import scala.collection.JavaConverters._
+import scala.language.higherKinds
 
 /**
  * Supertrait for typeclasses that enable <code>loneElement</code> matcher syntax for collections.
@@ -61,6 +61,15 @@ trait Collecting[E, C] {
    * @return the size of the passed <code>collection</code>
    */
   def sizeOf(collection: C): Int
+
+  /**
+   * Returns a <code>GenTraversable[E]</code> containing the same elements (in the same
+   * order, if the original collection had a defined order), as the passed <code>collection</code> .
+   *
+   * @param collection a <code>collection</code> to check the size of
+   * @return a <code>GenTraversable[E]</code> containing the same elements as the passed <code>collection</code>
+   */
+  def genTraversableFrom(collection: C): GenTraversable[E]
 }
 
 /**
@@ -88,6 +97,7 @@ object Collecting {
         if (trav.size == 1) Some(trav.head) else None
       }
       def sizeOf(trav: TRAV[E]): Int = trav.size
+      def genTraversableFrom(collection: TRAV[E]): GenTraversable[E] = collection
     }
 
   /**
@@ -102,6 +112,7 @@ object Collecting {
         if (array.size == 1) Some(array.head) else None
       }
       def sizeOf(array: Array[E]): Int = array.length
+      def genTraversableFrom(collection: Array[E]): GenTraversable[E] = collection
     }
 
   /**
@@ -117,6 +128,19 @@ object Collecting {
         if (coll.size == 1) Some(coll.iterator.next) else None
       }
       def sizeOf(coll: JCOL[E]): Int = coll.size
+      def genTraversableFrom(collection: JCOL[E]): GenTraversable[E] = {
+        import scala.collection.JavaConverters._
+        /*
+        This is what asScala does, to make sure it keeps the order of Lists
+        scala.collection.mutable.Buffer <=> java.util.List
+        scala.collection.mutable.Set <=> java.util.Set
+        */
+        collection match {
+          case jList: java.util.List[E @unchecked] => jList.asScala
+          case jSet: java.util.Set[E @unchecked] => jSet.asScala
+          case _ => collection.asScala
+        }
+      }
     }
 
   // Wrap the extracted entry in an org.scalatest.Entry so people can call key and value methods instead of getKey and getValue
@@ -137,5 +161,13 @@ object Collecting {
         } else None
       }
       def sizeOf(jmap: JMAP[K, V]): Int = jmap.size
+        /*
+        This is what .asScala does on a Set
+        scala.collection.mutable.Set <=> java.util.Set
+        */
+      def genTraversableFrom(collection: JMAP[K, V]): scala.collection.Set[org.scalatest.Entry[K, V]] = {
+        import scala.collection.JavaConverters._
+        collection.keySet.asScala.map(k => org.scalatest.Entry(k, collection.get(k)))
+      }
     }
 }
