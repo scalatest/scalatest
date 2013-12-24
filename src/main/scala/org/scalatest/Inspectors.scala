@@ -21,6 +21,8 @@ import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import scala.collection.GenSeq
 import Suite.indentLines
 import FailureMessages.decorateToStringValue
+import enablers.Collecting
+import scala.language.higherKinds
 
 /**
  * Provides nestable <em>inspector methods</em> (or just <em>inspectors</em>) that enable assertions to be made about collections.
@@ -168,8 +170,8 @@ trait Inspectors {
 
   import InspectorsHelper._
 
-  def forAll[T](xs: GenTraversable[T])(fun: T => Unit) {
-    doForAll(xs, "forAllFailed", "Inspectors.scala", "forAll", 0)(fun)
+  def forAll[E, C[_]](xs: C[E])(fun: E => Unit)(implicit collecting: Collecting[E, C[E]]) {
+    doForAll(collecting.genTraversableFrom(xs), xs, "forAllFailed", "Inspectors.scala", "forAll", 0)(fun)
   }
 
   def forAtLeast[T](min: Int, xs: GenTraversable[T])(fun: T => Unit) {
@@ -297,13 +299,13 @@ private[scalatest] object InspectorsHelper {
       Resources(prefixResourceName + "Label", elements.mkString(", "))
   }
   
-  def doForAll[T](xs: GenTraversable[T], resourceName: String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit) {
+  def doForAll[E](xs: GenTraversable[E], original: Any, resourceName: String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => Unit) {
     val resourceNamePrefix = getResourceNamePrefix(xs)
     val result = 
-      runFor(xs.toIterator, resourceNamePrefix, 0, new ForResult[T], fun, _.failedElements.length > 0)
+      runFor(xs.toIterator, resourceNamePrefix, 0, new ForResult[E], fun, _.failedElements.length > 0)
     if (result.failedElements.length > 0) 
       throw new exceptions.TestFailedException(
-        sde => Some(Resources(resourceName, indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(xs))),
+        sde => Some(Resources(resourceName, indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))),
         Some(result.failedElements(0)._3),
         getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
       )

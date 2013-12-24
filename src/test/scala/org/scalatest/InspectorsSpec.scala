@@ -216,7 +216,6 @@ class InspectorsSpec extends Spec with Matchers with Inspectors with TableDriven
       }
     }
 
-/*
     object `when used with java.util.Collection` {
       import collection.JavaConverters._
       def `should do nothing if succeeds` {
@@ -245,7 +244,6 @@ class InspectorsSpec extends Spec with Matchers with Inspectors with TableDriven
         }
       }
     }
-*/
   }
   
   object `forAtLeast ` {

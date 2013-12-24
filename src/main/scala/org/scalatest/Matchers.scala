@@ -51,6 +51,7 @@ import Assertions.checkExpectedException
 import Assertions.checkNoException
 import exceptions.StackDepthExceptionHelper.getStackDepthFun
 import scala.language.experimental.macros
+import scala.language.higherKinds
 
 // TODO: drop generic support for be as an equality comparison, in favor of specific ones.
 // TODO: Put links from ShouldMatchers to wherever I reveal the matrix and algo of how properties are checked dynamically.
@@ -3000,7 +3001,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
   private[scalatest] def doCollected[T](collected: Collected, xs: scala.collection.GenTraversable[T], methodName: String, stackDepth: Int)(fun: T => Unit) {
     collected match {
       case AllCollected =>
-        doForAll(xs, "allShorthandFailed", "Matchers.scala", methodName, stackDepth) { e => 
+        doForAll(xs, xs, "allShorthandFailed", "Matchers.scala", methodName, stackDepth) { e => 
           fun(e)
         }
       case AtLeastCollected(num) => 
