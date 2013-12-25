@@ -3005,27 +3005,27 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
           fun(e)
         }
       case AtLeastCollected(num) => 
-        doForAtLeast(num, xs, "atLeastShorthandFailed", "Matchers.scala", methodName, stackDepth) { e =>
+        doForAtLeast(num, xs, xs, "atLeastShorthandFailed", "Matchers.scala", methodName, stackDepth) { e =>
           fun(e)
         }
       case EveryCollected => 
-        doForEvery(xs, "everyShorthandFailed", "Matchers.scala", methodName, stackDepth) { e =>
+        doForEvery(xs, xs, "everyShorthandFailed", "Matchers.scala", methodName, stackDepth) { e =>
           fun(e)
         }
       case ExactlyCollected(num) => 
-        doForExactly(num, xs, "exactlyShorthandFailed", "Matchers.scala", methodName, stackDepth) { e =>
+        doForExactly(num, xs, xs, "exactlyShorthandFailed", "Matchers.scala", methodName, stackDepth) { e =>
           fun(e)
         }
       case NoCollected =>
-        doForNo(xs, "noShorthandFailed", "Matchers.scala", methodName, stackDepth) { e =>
+        doForNo(xs, xs, "noShorthandFailed", "Matchers.scala", methodName, stackDepth) { e =>
           fun(e)
         }
       case BetweenCollected(from, to) =>
-        doForBetween(from, to, xs, "betweenShorthandFailed", "Matchers.scala", methodName, stackDepth) { e =>
+        doForBetween(from, to, xs, xs, "betweenShorthandFailed", "Matchers.scala", methodName, stackDepth) { e =>
           fun(e)
         }
       case AtMostCollected(num) =>
-        doForAtMost(num, xs, "atMostShorthandFailed", "Matchers.scala", methodName, stackDepth) { e =>
+        doForAtMost(num, xs, xs, "atMostShorthandFailed", "Matchers.scala", methodName, stackDepth) { e =>
           fun(e)
         }
     }
