@@ -27,7 +27,7 @@ import org.scalatest.exceptions.NotAllowedException
 
 /**
  * Implementation trait for class <code>fixture.FeatureSpec</code>, which is
- * a sister class to <code>org.scalatest.FeatureSpec</code> that can pass a
+ * a sister class to <a href="../FeatureSpec.html"><code>org.scalatest.FeatureSpec</code></a> that can pass a
  * fixture object into its tests.
  * 
  * <p>

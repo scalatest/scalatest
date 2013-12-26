@@ -232,7 +232,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
  * Both examples shown above demonstrate the technique of giving each test its own "fixture sandbox" to play in. When your fixtures
  * involve external side-effects, like creating files or databases, it is a good idea to give each file or database a unique name as is
  * done in these examples. This keeps tests completely isolated, allowing you to run them in parallel if desired. You could mix
- * <code>ParallelTestExecution</code> into either of these <code>ExampleSpec</code> classes, and the tests would run in parallel just fine.
+ * <a href="../ParallelTestExecution.html"><code>ParallelTestExecution</code></a> into either of these <code>ExampleSpec</code> classes, and the tests would run in parallel just fine.
  * </p>
  *
  * @author Bill Venners

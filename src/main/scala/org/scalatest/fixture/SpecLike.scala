@@ -26,7 +26,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
 
 /**
  * Implementation trait for class <code>fixture.Spec</code>, which is
- * a sister class to <code>org.scalatest.Spec</code> that can pass a
+ * a sister class to <a href="../Spec.html"><code>org.scalatest.Spec</code></a> that can pass a
  * fixture object into its tests.
  * 
  * <p>
