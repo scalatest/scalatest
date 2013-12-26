@@ -21,7 +21,7 @@ import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import scala.collection.GenSeq
 import Suite.indentLines
 import FailureMessages.decorateToStringValue
-import enablers.Collecting
+import enablers.Inspectable
 import scala.language.higherKinds
 
 /**
@@ -170,7 +170,7 @@ trait Inspectors {
 
   import InspectorsHelper._
 
-  def forAll[E, C[_]](xs: C[E])(fun: E => Unit)(implicit collecting: Collecting[E, C[E]]) {
+  def forAll[E, C](xs: C)(fun: E => Unit)(implicit collecting: Inspectable[C] { type Element = E }) {
     doForAll(collecting.genTraversableFrom(xs), xs, "forAllFailed", "Inspectors.scala", "forAll", 0)(fun)
   }
 
