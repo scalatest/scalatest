@@ -190,6 +190,10 @@ trait Inspectors {
     doForAll(collecting.genTraversableFrom(xs), xs, "forAllFailed", "Inspectors.scala", "forAll", 0)(fun)
   }
 
+  def forAll(xs: String)(fun: Char => Unit)(implicit collecting: Collecting[Char, String]) {
+    doForAll(collecting.genTraversableFrom(xs), xs, "forAllFailed", "Inspectors.scala", "forAll", 0)(fun)
+  }
+
   /**
    * Check that at least <code>min</code> number of elements pass the inspection function.
    *

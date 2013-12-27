@@ -89,7 +89,7 @@ object Collecting {
    *
    * @tparam E the type of the element in the <code>GenTraversable</code>
    * @tparam TRAV any subtype of <code>GenTraversable</code>
-   * @return <code>Collecting[TRAV[E]]</code> that supports <code>GenTraversable</code> in <code>loneElement</code> syntax
+   * @return <code>Collecting[E, TRAV[E]]</code> that supports <code>GenTraversable</code> in <code>loneElement</code> syntax
    */
   implicit def collectingNatureOfGenTraversable[E, TRAV[e] <: scala.collection.GenTraversable[e]]: Collecting[E, TRAV[E]] = 
     new Collecting[E, TRAV[E]] {
@@ -104,7 +104,7 @@ object Collecting {
    * Implicit to support <code>Collecting</code> nature of <code>Array</code>.
    *
    * @tparam E the type of the element in the <code>Array</code>
-   * @return <code>Collecting[Array[E]]</code> that supports <code>Array</code> in <code>loneElement</code> syntax
+   * @return <code>Collecting[E, Array[E]]</code> that supports <code>Array</code> in <code>loneElement</code> syntax
    */
   implicit def collectingNatureOfArray[E]: Collecting[E, Array[E]] = 
     new Collecting[E, Array[E]] {
@@ -116,11 +116,25 @@ object Collecting {
     }
 
   /**
+   * Implicit to support <code>Collecting</code> nature of <code>String</code>.
+   *
+   * @return <code>Collecting[Char, String]</code> that supports <code>String</code> in <code>loneElement</code> syntax
+   */
+  implicit def collectingNatureOfString: Collecting[Char, String] = 
+    new Collecting[Char, String] {
+      def loneElementOf(string: String): Option[Char] = {
+        if (string.size == 1) Some(string.head) else None
+      }
+      def sizeOf(string: String): Int = string.length
+      def genTraversableFrom(collection: String): GenTraversable[Char] = collection.toVector
+    }
+
+  /**
    * Implicit to support <code>Collecting</code> nature of <code>java.util.Collection</code>.
    *
    * @tparam E the type of the element in the <code>java.util.Collection</code>
    * @tparam JCOL any subtype of <code>java.util.Collection</code>
-   * @return <code>Collecting[JCOL[E]]</code> that supports <code>java.util.Collection</code> in <code>loneElement</code> syntax
+   * @return <code>Collecting[E, JCOL[E]]</code> that supports <code>java.util.Collection</code> in <code>loneElement</code> syntax
    */
   implicit def collectingNatureOfJavaCollection[E, JCOL[e] <: java.util.Collection[e]]: Collecting[E, JCOL[E]] = 
     new Collecting[E, JCOL[E]] {
@@ -150,7 +164,7 @@ object Collecting {
    * @tparam K the type of the key in the <code>java.util.Map</code>
    * @tparam V the type of the value in the <code>java.util.Map</code>
    * @tparam JMAP any subtype of <code>java.util.Map</code>
-   * @return <code>Collecting[JMAP[K, V]]</code> that supports <code>java.util.Map</code> in <code>loneElement</code> syntax
+   * @return <code>Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]</code> that supports <code>java.util.Map</code> in <code>loneElement</code> syntax
    */
   implicit def collectingNatureOfJavaMap[K, V, JMAP[k, v] <: java.util.Map[k, v]]: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]] = 
     new Collecting[org.scalatest.Entry[K, V], JMAP[K, V]] {
