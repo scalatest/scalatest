@@ -112,9 +112,9 @@ trait MustVerb {
    *
    * @author Bill Venners
    */
-  trait StringMustWrapperForVerb {
+  trait StringMustWrapperForVerb[T] {
 
-    val leftSideValue: String
+    val leftSideString: String
 
     /**
      * Supports test registration in <code>FlatSpec</code> and <code>fixture.FlatSpec</code>.
@@ -132,12 +132,12 @@ trait MustVerb {
      * <p>
      * <code>FlatSpec</code> passes in a function via the implicit parameter that takes
      * three strings and results in a <code>ResultOfStringPassedToVerb</code>. This method
-     * simply invokes this function, passing in leftSideValue, the verb string
+     * simply invokes this function, passing in leftSideString, the verb string
      * <code>"must"</code>, and right, and returns the result.
      * </p>
      */
-    def must(right: String)(implicit fun: (String, String, String) => ResultOfStringPassedToVerb): ResultOfStringPassedToVerb = {
-      fun(leftSideValue, "must", right)
+    def must(right: String)(implicit fun: (String, String, String) => ResultOfStringPassedToVerb, ev: T <:< String): ResultOfStringPassedToVerb = {
+      fun(leftSideString, "must", right)
     }
 
     /**
@@ -156,11 +156,11 @@ trait MustVerb {
      * <p>
      * <code>FlatSpec</code> and <code>fixture.FlatSpec</code> passes in a function via the implicit parameter that takes
      * a string and results in a <code>BehaveWord</code>. This method
-     * simply invokes this function, passing in leftSideValue, and returns the result.
+     * simply invokes this function, passing in leftSideString, and returns the result.
      * </p>
      */
-    def must(right: BehaveWord)(implicit fun: (String) => BehaveWord): BehaveWord = {
-      fun(leftSideValue)
+    def must(right: BehaveWord)(implicit fun: (String) => BehaveWord, ev: T <:< String): BehaveWord = {
+      fun(leftSideString)
     }
 
     /**
@@ -180,13 +180,13 @@ trait MustVerb {
      * <p>
      * <code>WordSpec</code> passes in a function via the implicit parameter of type <code>StringVerbBlockRegistration</code>,
      * a function that takes two strings and a no-arg function and results in <code>Unit</code>. This method
-     * simply invokes this function, passing in leftSideValue, the verb string
+     * simply invokes this function, passing in leftSideString, the verb string
      * <code>"must"</code>, and the right by-name parameter transformed into a
      * no-arg function.
      * </p>
      */
     def must(right: => Unit)(implicit fun: StringVerbBlockRegistration) {
-      fun(leftSideValue, "must", right _)
+      fun(leftSideString, "must", right _)
     }
 
     /**
@@ -208,12 +208,12 @@ trait MustVerb {
      * <p>
      * <code>WordSpec</code> passes in a function via the implicit parameter that takes
      * two strings and a <code>ResultOfAfterWordApplication</code> and results in <code>Unit</code>. This method
-     * simply invokes this function, passing in leftSideValue, the verb string
+     * simply invokes this function, passing in leftSideString, the verb string
      * <code>"must"</code>, and the <code>ResultOfAfterWordApplication</code> passed to <code>must</code>.
      * </p>
      */
-    def must(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit fun: (String, String, ResultOfAfterWordApplication) => Unit) {
-      fun(leftSideValue, "must", resultOfAfterWordApplication)
+    def must(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit fun: (String, String, ResultOfAfterWordApplication) => Unit, ev: T <:< String) {
+      fun(leftSideString, "must", resultOfAfterWordApplication)
     }
   }
 
@@ -221,8 +221,8 @@ trait MustVerb {
    * Implicitly converts an object of type <code>String</code> to a <code>StringMustWrapper</code>,
    * to enable <code>must</code> methods to be invokable on that object.
    */
-  implicit def convertToStringMustWrapper(o: String): StringMustWrapperForVerb =
-    new StringMustWrapperForVerb {
-      val leftSideValue = o.trim
+  implicit def convertToAnyMustWrapper[T <: String](o: T): StringMustWrapperForVerb[T] =
+    new StringMustWrapperForVerb[T] {
+      val leftSideString = o.trim
     }
 }

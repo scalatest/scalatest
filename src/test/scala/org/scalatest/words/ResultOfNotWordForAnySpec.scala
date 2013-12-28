@@ -28,14 +28,4 @@ class ResultOfNotWordForAnySpec extends Spec {
     }
     
   }
-
-  object `ResultOfNotWordForString ` {
-
-    def `should have pretty toString` {
-      val result: ResultOfNotWordForString = "hello" should not
-      result.toString should be ("ResultOfNotWordForString(\"hello\", false)")
-    }
-
-  }
-
 }

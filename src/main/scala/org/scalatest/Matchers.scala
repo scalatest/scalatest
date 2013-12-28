@@ -6052,7 +6052,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    *
    * @author Bill Venners
    */
-  class AnyShouldWrapper[T](left: T) {
+  final class AnyShouldWrapper[T](leftSideValue: T) extends StringShouldWrapperForVerb[T] {
+
+    // Now here's a kludge. Will succeed for anything, but is only used if it T is a String.
+    // Aaaand, it got me one of those rarely seen NPEs. Will not succeed for null.
+    lazy val leftSideString: String = if (leftSideValue != null) leftSideValue.toString else null
 
     /**
      * This method enables syntax such as the following:
@@ -6063,7 +6067,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(rightMatcherX1: Matcher[T]) {
-      ShouldMethodHelper.shouldMatcher(left, rightMatcherX1)
+      ShouldMethodHelper.shouldMatcher(leftSideValue, rightMatcherX1)
     }
 
     /**
@@ -6075,7 +6079,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should[TYPECLASS1[_]](rightMatcherFactory1: MatcherFactory1[T, TYPECLASS1])(implicit typeClass1: TYPECLASS1[T]) {
-      ShouldMethodHelper.shouldMatcher(left, rightMatcherFactory1.matcher)
+      ShouldMethodHelper.shouldMatcher(leftSideValue, rightMatcherFactory1.matcher)
     }
 
     /**
@@ -6087,7 +6091,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should[TYPECLASS1[_], TYPECLASS2[_]](rightMatcherFactory2: MatcherFactory2[T, TYPECLASS1, TYPECLASS2])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T]) {
-      ShouldMethodHelper.shouldMatcher(left, rightMatcherFactory2.matcher)
+      ShouldMethodHelper.shouldMatcher(leftSideValue, rightMatcherFactory2.matcher)
     }
 
     /**
@@ -6099,8 +6103,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldEqual(right: Any)(implicit equality: Equality[T]) {
-      if (!equality.areEqual(left, right)) {
-        val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)
+      if (!equality.areEqual(leftSideValue, right)) {
+        val (leftee, rightee) = Suite.getObjectsForFailureMessage(leftSideValue, right)
         throw newTestFailedException(FailureMessages("didNotEqual", leftee, rightee))
       }
     }
@@ -6114,8 +6118,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldEqual(spread: Spread[T]) {
-      if (!spread.isWithin(left)) {
-        throw newTestFailedException(FailureMessages("didNotEqualPlusOrMinus", left, spread.pivot, spread.tolerance))
+      if (!spread.isWithin(leftSideValue)) {
+        throw newTestFailedException(FailureMessages("didNotEqualPlusOrMinus", leftSideValue, spread.pivot, spread.tolerance))
       }
     }
 
@@ -6128,8 +6132,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldEqual(right: Null)(implicit ev: T <:< AnyRef) { 
-      if (left != null) {
-        throw newTestFailedException(FailureMessages("didNotEqualNull", left))
+      if (leftSideValue != null) {
+        throw newTestFailedException(FailureMessages("didNotEqualNull", leftSideValue))
       }
     }
 
@@ -6141,7 +6145,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def should(notWord: NotWord): ResultOfNotWordForAny[T] = new ResultOfNotWordForAny[T](left, false)
+    def should(notWord: NotWord): ResultOfNotWordForAny[T] = new ResultOfNotWordForAny[T](leftSideValue, false)
 
     // In 2.10, will work with AnyVals. TODO: Also, Need to ensure Char works
     /**
@@ -6153,11 +6157,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should[U](inv: TripleEqualsInvocation[U])(implicit constraint: Constraint[T, U]) {
-      if ((constraint.areEqual(left, inv.right)) != inv.expectingEqual)
+      if ((constraint.areEqual(leftSideValue, inv.right)) != inv.expectingEqual)
         throw newTestFailedException(
           FailureMessages(
            if (inv.expectingEqual) "didNotEqual" else "equaled",
-            left,
+            leftSideValue,
             inv.right
           )
         )
@@ -6172,11 +6176,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(inv: TripleEqualsInvocationOnSpread[T])(implicit ev: Numeric[T]) {
-      if ((inv.spread.isWithin(left)) != inv.expectingEqual)
+      if ((inv.spread.isWithin(leftSideValue)) != inv.expectingEqual)
         throw newTestFailedException(
           FailureMessages(
             if (inv.expectingEqual) "didNotEqualPlusOrMinus" else "equaledPlusOrMinus",
-            left,
+            leftSideValue,
             inv.spread.pivot,
             inv.spread.tolerance
           )
@@ -6193,7 +6197,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def should(beWord: BeWord): ResultOfBeWordForAny[T] = new ResultOfBeWordForAny(left, true)
+    def should(beWord: BeWord): ResultOfBeWordForAny[T] = new ResultOfBeWordForAny(leftSideValue, true)
   
     /**
      * This method enables syntax such as the following:
@@ -6204,8 +6208,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldBe(right: Any) {
-      if (!areEqualComparingArraysStructurally(left, right)) {
-        val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)
+      if (!areEqualComparingArraysStructurally(leftSideValue, right)) {
+        val (leftee, rightee) = Suite.getObjectsForFailureMessage(leftSideValue, right)
         throw newTestFailedException(FailureMessages("wasNotEqualTo", leftee, rightee))
       }
     }
@@ -6219,11 +6223,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldBe(comparison: ResultOfLessThanComparison[T]) {
-      if (!comparison(left)) {
+      if (!comparison(leftSideValue)) {
         throw newTestFailedException(
           FailureMessages(
             "wasNotLessThan",
-            left,
+            leftSideValue,
             comparison.right
           )
         ) 
@@ -6239,11 +6243,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre> 
      */
     def shouldBe(comparison: ResultOfGreaterThanComparison[T]) {
-      if (!comparison(left)) {
+      if (!comparison(leftSideValue)) {
         throw newTestFailedException(
           FailureMessages(
             "wasNotGreaterThan",
-            left,
+            leftSideValue,
             comparison.right
           )
         ) 
@@ -6259,11 +6263,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre> 
      */
     def shouldBe(comparison: ResultOfLessThanOrEqualToComparison[T]) {
-      if (!comparison(left)) {
+      if (!comparison(leftSideValue)) {
         throw newTestFailedException(
           FailureMessages(
             "wasNotLessThanOrEqualTo",
-            left,
+            leftSideValue,
             comparison.right
           )
         ) 
@@ -6279,11 +6283,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre> 
      */
     def shouldBe(comparison: ResultOfGreaterThanOrEqualToComparison[T]) {
-      if (!comparison(left)) {
+      if (!comparison(leftSideValue)) {
         throw newTestFailedException(
           FailureMessages(
             "wasNotGreaterThanOrEqualTo",
-            left,
+            leftSideValue,
             comparison.right
           )
         ) 
@@ -6299,7 +6303,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldBe(beMatcher: BeMatcher[T]) {
-      val result = beMatcher.apply(left)
+      val result = beMatcher.apply(leftSideValue)
       if (!result.matches)
         throw newTestFailedException(result.failureMessage)
     }
@@ -6313,8 +6317,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldBe(spread: Spread[T]) {
-      if (!spread.isWithin(left)) {
-        throw newTestFailedException(FailureMessages("wasNotPlusOrMinus", left, spread.pivot, spread.tolerance))
+      if (!spread.isWithin(leftSideValue)) {
+        throw newTestFailedException(FailureMessages("wasNotPlusOrMinus", leftSideValue, spread.pivot, spread.tolerance))
       }
     }
 
@@ -6327,8 +6331,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldBe(right: SortedWord)(implicit sortable: Sortable[T]) {
-      if (!sortable.isSorted(left))
-        throw newTestFailedException(FailureMessages("wasNotSorted", left))
+      if (!sortable.isSorted(leftSideValue))
+        throw newTestFailedException(FailureMessages("wasNotSorted", leftSideValue))
     }
     
     /**
@@ -6341,9 +6345,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def shouldBe(aType: ResultOfATypeInvocation[_]) {
       val clazz = aType.clazz
-      if (!clazz.isAssignableFrom(left.getClass)) {
-        val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, clazz.getName)
-        throw newTestFailedException(FailureMessages("wasNotAnInstanceOf", left, UnquotedString(clazz.getName)))
+      if (!clazz.isAssignableFrom(leftSideValue.getClass)) {
+        val (leftee, rightee) = Suite.getObjectsForFailureMessage(leftSideValue, clazz.getName)
+        throw newTestFailedException(FailureMessages("wasNotAnInstanceOf", leftSideValue, UnquotedString(clazz.getName)))
       }
     }
     
@@ -6357,9 +6361,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def shouldBe(anType: ResultOfAnTypeInvocation[_]) {
       val clazz = anType.clazz
-      if (!clazz.isAssignableFrom(left.getClass)) {
-        val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, clazz.getName)
-        throw newTestFailedException(FailureMessages("wasNotAnInstanceOf", left, UnquotedString(clazz.getName)))
+      if (!clazz.isAssignableFrom(leftSideValue.getClass)) {
+        val (leftee, rightee) = Suite.getObjectsForFailureMessage(leftSideValue, clazz.getName)
+        throw newTestFailedException(FailureMessages("wasNotAnInstanceOf", leftSideValue, UnquotedString(clazz.getName)))
       }
     }
     
@@ -6372,8 +6376,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldBe(right: ReadableWord)(implicit readability: Readability[T]) {
-      if (!readability.isReadable(left))
-        throw newTestFailedException(FailureMessages("wasNotReadable", left))
+      if (!readability.isReadable(leftSideValue))
+        throw newTestFailedException(FailureMessages("wasNotReadable", leftSideValue))
     }
     
     /**
@@ -6385,8 +6389,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldBe(right: WritableWord)(implicit writability: Writability[T]) {
-      if (!writability.isWritable(left))
-        throw newTestFailedException(FailureMessages("wasNotWritable", left))
+      if (!writability.isWritable(leftSideValue))
+        throw newTestFailedException(FailureMessages("wasNotWritable", leftSideValue))
     }
     
     /**
@@ -6398,8 +6402,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldBe(right: EmptyWord)(implicit emptiness: Emptiness[T]) {
-      if (!emptiness.isEmpty(left))
-        throw newTestFailedException(FailureMessages("wasNotEmpty", left))
+      if (!emptiness.isEmpty(leftSideValue))
+        throw newTestFailedException(FailureMessages("wasNotEmpty", leftSideValue))
     }
     
     /**
@@ -6411,8 +6415,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldBe(right: DefinedWord)(implicit definition: Definition[T]) {
-      if (!definition.isDefined(left))
-        throw newTestFailedException(FailureMessages("wasNotDefined", left))
+      if (!definition.isDefined(leftSideValue))
+        throw newTestFailedException(FailureMessages("wasNotDefined", leftSideValue))
     }
 
     /**
@@ -6423,7 +6427,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def shouldNot(beWord: BeWord): ResultOfBeWordForAny[T] = new ResultOfBeWordForAny(left, false)
+    def shouldNot(beWord: BeWord): ResultOfBeWordForAny[T] = new ResultOfBeWordForAny(leftSideValue, false)
 
     /**
      * This method enables syntax such as the following:
@@ -6434,7 +6438,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldNot(rightMatcherX1: Matcher[T]) {
-      ShouldMethodHelper.shouldNotMatcher(left, rightMatcherX1)
+      ShouldMethodHelper.shouldNotMatcher(leftSideValue, rightMatcherX1)
     }
     
     /**
@@ -6446,7 +6450,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldNot[TYPECLASS1[_]](rightMatcherFactory1: MatcherFactory1[T, TYPECLASS1])(implicit typeClass1: TYPECLASS1[T]) {
-      ShouldMethodHelper.shouldNotMatcher(left, rightMatcherFactory1.matcher)
+      ShouldMethodHelper.shouldNotMatcher(leftSideValue, rightMatcherFactory1.matcher)
     }
     
     /**
@@ -6462,7 +6466,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldNot(haveWord: HaveWord): ResultOfHaveWordForExtent[T] =
-      new ResultOfHaveWordForExtent(left, false)
+      new ResultOfHaveWordForExtent(leftSideValue, false)
 
     /**
      * This method enables syntax such as the following:
@@ -6475,7 +6479,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(haveWord: HaveWord): ResultOfHaveWordForExtent[T] =
-      new ResultOfHaveWordForExtent(left, true)
+      new ResultOfHaveWordForExtent(leftSideValue, true)
 
     /**
      * This method enables syntax such as the following:
@@ -6486,8 +6490,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldBe(right: Null)(implicit ev: T <:< AnyRef) {
-      if (left != null) {
-        throw newTestFailedException(FailureMessages("wasNotNull", left))
+      if (leftSideValue != null) {
+        throw newTestFailedException(FailureMessages("wasNotNull", leftSideValue))
       }
     }
 
@@ -6500,11 +6504,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldBe(resultOfSameInstanceAsApplication: ResultOfTheSameInstanceAsApplication)(implicit toAnyRef: T <:< AnyRef) {
-      if (resultOfSameInstanceAsApplication.right ne toAnyRef(left)) {
+      if (resultOfSameInstanceAsApplication.right ne toAnyRef(leftSideValue)) {
         throw newTestFailedException(
           FailureMessages(
             "wasNotSameInstanceAs",
-            left,
+            leftSideValue,
             resultOfSameInstanceAsApplication.right
           )
         )
@@ -6521,7 +6525,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldBe(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef) {
-      val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), symbol, false, true)
+      val matcherResult = matchSymbolToPredicateMethod(toAnyRef(leftSideValue), symbol, false, true)
       if (!matcherResult.matches) 
         throw newTestFailedException(matcherResult.failureMessage)
     }
@@ -6535,7 +6539,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldBe(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef) {
-      val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), resultOfAWordApplication.symbol, true, true)
+      val matcherResult = matchSymbolToPredicateMethod(toAnyRef(leftSideValue), resultOfAWordApplication.symbol, true, true)
       if (!matcherResult.matches) {
         throw newTestFailedException(
           matcherResult.failureMessage
@@ -6552,7 +6556,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldBe(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef) {
-      val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), resultOfAnWordApplication.symbol, true, false)
+      val matcherResult = matchSymbolToPredicateMethod(toAnyRef(leftSideValue), resultOfAnWordApplication.symbol, true, false)
       if (!matcherResult.matches) {
         throw newTestFailedException(
           matcherResult.failureMessage
@@ -6569,9 +6573,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldBe(bePropertyMatcher: BePropertyMatcher[T])(implicit ev: T <:< AnyRef) { // TODO: Try expanding this to 2.10 AnyVal
-      val result = bePropertyMatcher(left)
+      val result = bePropertyMatcher(leftSideValue)
       if (!result.matches) 
-        throw newTestFailedException(FailureMessages("wasNot", left, UnquotedString(result.propertyName)))
+        throw newTestFailedException(FailureMessages("wasNot", leftSideValue, UnquotedString(result.propertyName)))
     }
     
     /**
@@ -6583,9 +6587,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldBe[U >: T](resultOfAWordApplication: ResultOfAWordToBePropertyMatcherApplication[U])(implicit ev: T <:< AnyRef) {// TODO: Try expanding this to 2.10 AnyVal
-      val result = resultOfAWordApplication.bePropertyMatcher(left)
+      val result = resultOfAWordApplication.bePropertyMatcher(leftSideValue)
         if (!result.matches) {
-          throw newTestFailedException(FailureMessages("wasNotA", left, UnquotedString(result.propertyName)))
+          throw newTestFailedException(FailureMessages("wasNotA", leftSideValue, UnquotedString(result.propertyName)))
         }
     }
     
@@ -6598,16 +6602,16 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldBe[U >: T](resultOfAnWordApplication: ResultOfAnWordToBePropertyMatcherApplication[U])(implicit ev: T <:< AnyRef) {// TODO: Try expanding this to 2.10 AnyVal
-      val result = resultOfAnWordApplication.bePropertyMatcher(left)
+      val result = resultOfAnWordApplication.bePropertyMatcher(leftSideValue)
         if (!result.matches) {
-          throw newTestFailedException(FailureMessages("wasNotAn", left, UnquotedString(result.propertyName)))
+          throw newTestFailedException(FailureMessages("wasNotAn", leftSideValue, UnquotedString(result.propertyName)))
         }
     }
 
 /*
     def shouldBe[U](right: AType[U]) {
-      if (!right.isAssignableFromClassOf(left)) {
-        throw newTestFailedException(FailureMessages("wasNotAnInstanceOf", left, UnquotedString(right.className)))
+      if (!right.isAssignableFromClassOf(leftSideValue)) {
+        throw newTestFailedException(FailureMessages("wasNotAnInstanceOf", leftSideValue, UnquotedString(right.className)))
       }
     }
 */
@@ -6621,7 +6625,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(containWord: ContainWord): ResultOfContainWord[T] = {
-      new ResultOfContainWord(left, true)
+      new ResultOfContainWord(leftSideValue, true)
     }
     
     /**
@@ -6633,7 +6637,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldNot(contain: ContainWord): ResultOfContainWord[T] = 
-      new ResultOfContainWord(left, false)
+      new ResultOfContainWord(leftSideValue, false)
     
     /**
      * This method enables syntax such as the following:
@@ -6644,8 +6648,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(existWord: ExistWord)(implicit existence: Existence[T]) {
-      if (!existence.exists(left))
-        throw newTestFailedException(FailureMessages("doesNotExist", left))
+      if (!existence.exists(leftSideValue))
+        throw newTestFailedException(FailureMessages("doesNotExist", leftSideValue))
     }
     
     /**
@@ -6657,8 +6661,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(notExist: ResultOfNotExist)(implicit existence: Existence[T]) {
-      if (existence.exists(left))
-        throw newTestFailedException(FailureMessages("exists", left))
+      if (existence.exists(leftSideValue))
+        throw newTestFailedException(FailureMessages("exists", leftSideValue))
     }
     
     /**
@@ -6670,24 +6674,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldNot(existWord: ExistWord)(implicit existence: Existence[T]) {
-      if (existence.exists(left))
-        throw newTestFailedException(FailureMessages("exists", left))
+      if (existence.exists(leftSideValue))
+        throw newTestFailedException(FailureMessages("exists", leftSideValue))
     }
-  }
 
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * <p>
-   * This class is used in conjunction with an implicit conversion to enable <code>should</code> methods to
-   * be invoked on <code>String</code>s.
-   * </p>
-   *
-   * @author Bill Venners
-   */
-  final class StringShouldWrapper(val leftSideValue: String) extends AnyShouldWrapper(leftSideValue) with StringShouldWrapperForVerb {
-
+    // From StringShouldWrapper
     /**
      * This method enables syntax such as the following:
      *
@@ -6696,7 +6687,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def should(includeWord: IncludeWord): ResultOfIncludeWordForString = {
+    def should(includeWord: IncludeWord)(implicit ev: T <:< String): ResultOfIncludeWordForString = {
       new ResultOfIncludeWordForString(leftSideValue, true)
     }
 
@@ -6708,7 +6699,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def should(startWithWord: StartWithWord): ResultOfStartWithWordForString = {
+    def should(startWithWord: StartWithWord)(implicit ev: T <:< String): ResultOfStartWithWordForString = {
       new ResultOfStartWithWordForString(leftSideValue, true)
     }
 
@@ -6720,7 +6711,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def should(endWithWord: EndWithWord): ResultOfEndWithWordForString = {
+    def should(endWithWord: EndWithWord)(implicit ev: T <:< String): ResultOfEndWithWordForString = {
       new ResultOfEndWithWordForString(leftSideValue, true)
     }
 
@@ -6732,20 +6723,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def should(fullyMatchWord: FullyMatchWord): ResultOfFullyMatchWordForString = {
+    def should(fullyMatchWord: FullyMatchWord)(implicit ev: T <:< String): ResultOfFullyMatchWordForString = {
       new ResultOfFullyMatchWordForString(leftSideValue, true)
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * string should not have length (3)
-     *        ^
-     * </pre>
-     */
-    override def should(notWord: NotWord): ResultOfNotWordForString = {
-      new ResultOfNotWordForString(leftSideValue, false)
     }
 
     /**
@@ -6756,8 +6735,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                                          ^
      * </pre>
      */
-    def withGroup(group: String) = 
-      new RegexWithGroups(leftSideValue.r, IndexedSeq(group))
+    def withGroup(group: String)(implicit ev: T <:< String) = 
+      new RegexWithGroups(leftSideString.r, IndexedSeq(group))
 
     /**
      * This method enables syntax such as the following:
@@ -6767,8 +6746,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                                             ^
      * </pre>
      */
-    def withGroups(groups: String*) = 
-      new RegexWithGroups(leftSideValue.r, IndexedSeq(groups: _*))
+    def withGroups(groups: String*)(implicit ev: T <:< String) = 
+      new RegexWithGroups(leftSideString.r, IndexedSeq(groups: _*))
 
     /**
      * This method enables syntax such as the following:
@@ -6778,7 +6757,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def shouldNot(fullyMatchWord: FullyMatchWord): ResultOfFullyMatchWordForString = 
+    def shouldNot(fullyMatchWord: FullyMatchWord)(implicit ev: T <:< String): ResultOfFullyMatchWordForString = 
       new ResultOfFullyMatchWordForString(leftSideValue, false)
 
     /**
@@ -6789,7 +6768,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def shouldNot(startWithWord: StartWithWord): ResultOfStartWithWordForString = 
+    def shouldNot(startWithWord: StartWithWord)(implicit ev: T <:< String): ResultOfStartWithWordForString = 
       new ResultOfStartWithWordForString(leftSideValue, false)
 
     /**
@@ -6800,7 +6779,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def shouldNot(endWithWord: EndWithWord): ResultOfEndWithWordForString = 
+    def shouldNot(endWithWord: EndWithWord)(implicit ev: T <:< String): ResultOfEndWithWordForString = 
       new ResultOfEndWithWordForString(leftSideValue, false)
 
     /**
@@ -6811,7 +6790,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def shouldNot(includeWord: IncludeWord): ResultOfIncludeWordForString = 
+    def shouldNot(includeWord: IncludeWord)(implicit ev: T <:< String): ResultOfIncludeWordForString = 
       new ResultOfIncludeWordForString(leftSideValue, false)
 
     /**
@@ -6865,13 +6844,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * Implicitly converts an object of type <code>T</code> to a <code>AnyShouldWrapper[T]</code>,
    * to enable <code>should</code> methods to be invokable on that object.
    */
-  implicit def convertToAnyShouldWrapper[T](o: T): AnyShouldWrapper[T] = new AnyShouldWrapper(o)
-
-  /**
-   * Implicitly converts an object of type <code>java.lang.String</code> to a <code>StringShouldWrapper</code>,
-   * to enable <code>should</code> methods to be invokable on that object.
-   */
-  implicit override def convertToStringShouldWrapper(o: String): StringShouldWrapper = new StringShouldWrapper(o)
+  implicit override def convertToAnyShouldWrapper[T](o: T): AnyShouldWrapper[T] = new AnyShouldWrapper(o)
 
   /**
    * Implicitly converts an object of type <code>scala.util.matching.Regex</code> to a <code>RegexWrapper</code>,

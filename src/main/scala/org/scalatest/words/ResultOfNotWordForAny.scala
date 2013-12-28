@@ -944,21 +944,6 @@ sealed class ResultOfNotWordForAny[T](left: T, shouldBeTrue: Boolean) {
   }
   
   /**
-   * Overrides toString to return pretty text.
-   */
-  override def toString: String = "ResultOfNotWordForAny(" + Prettifier.default(left) + ", " + Prettifier.default(shouldBeTrue) + ")"
-}
-
-/**
- * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
- * the matchers DSL.
- *
- * @author Bill Venners
- */
-final class ResultOfNotWordForString(left: String, shouldBeTrue: Boolean)
-    extends ResultOfNotWordForAny[String](left, shouldBeTrue) {
-
-  /**
    * This method enables the following syntax: 
    *
    * <pre class="stHighlight">
@@ -971,7 +956,7 @@ final class ResultOfNotWordForString(left: String, shouldBeTrue: Boolean)
    * or a <code>scala.util.matching.Regex</code>.
    * </p>
    */
-  def fullyMatch(resultOfRegexWordApplication: ResultOfRegexWordApplication) {
+  def fullyMatch(resultOfRegexWordApplication: ResultOfRegexWordApplication)(implicit ev: T <:< String) {
     val result = fullyMatchRegexWithGroups(left, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
     if (result.matches != shouldBeTrue)
       throw newTestFailedException(
@@ -992,7 +977,7 @@ final class ResultOfNotWordForString(left: String, shouldBeTrue: Boolean)
    * or a <code>scala.util.matching.Regex</code>.
    * </p>
    */
-  def include(resultOfRegexWordApplication: ResultOfRegexWordApplication) {
+  def include(resultOfRegexWordApplication: ResultOfRegexWordApplication)(implicit ev: T <:< String) {
     val result = includeRegexWithGroups(left, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
     if (result.matches != shouldBeTrue)
       throw newTestFailedException(
@@ -1008,7 +993,7 @@ final class ResultOfNotWordForString(left: String, shouldBeTrue: Boolean)
    *                   ^
    * </pre>
    */
-  def include(expectedSubstring: String) {
+  def include(expectedSubstring: String)(implicit ev: T <:< String) {
     if ((left.indexOf(expectedSubstring) >= 0) != shouldBeTrue)
       throw newTestFailedException(
         FailureMessages(
@@ -1032,7 +1017,7 @@ final class ResultOfNotWordForString(left: String, shouldBeTrue: Boolean)
    * or a <code>scala.util.matching.Regex</code>.
    * </p>
    */
-  def startWith(resultOfRegexWordApplication: ResultOfRegexWordApplication) {
+  def startWith(resultOfRegexWordApplication: ResultOfRegexWordApplication)(implicit ev: T <:< String) {
     val result = startWithRegexWithGroups(left, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
     if (result.matches != shouldBeTrue)
       throw newTestFailedException(
@@ -1048,7 +1033,7 @@ final class ResultOfNotWordForString(left: String, shouldBeTrue: Boolean)
    *                    ^
    * </pre>
    */
-  def startWith(expectedSubstring: String) {
+  def startWith(expectedSubstring: String)(implicit ev: T <:< String) {
     if ((left.indexOf(expectedSubstring) == 0) != shouldBeTrue)
       throw newTestFailedException(
         FailureMessages(
@@ -1067,7 +1052,7 @@ final class ResultOfNotWordForString(left: String, shouldBeTrue: Boolean)
    *                     ^
    * </pre>
    */
-  def endWith(resultOfRegexWordApplication: ResultOfRegexWordApplication) {
+  def endWith(resultOfRegexWordApplication: ResultOfRegexWordApplication)(implicit ev: T <:< String) {
     val result = endWithRegexWithGroups(left, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
     if (result.matches != shouldBeTrue)
       throw newTestFailedException(
@@ -1083,7 +1068,7 @@ final class ResultOfNotWordForString(left: String, shouldBeTrue: Boolean)
    *                    ^
    * </pre>
    */
-  def endWith(expectedSubstring: String) {
+  def endWith(expectedSubstring: String)(implicit ev: T <:< String) {
     if ((left endsWith expectedSubstring) != shouldBeTrue)
       throw newTestFailedException(
         FailureMessages(
@@ -1094,6 +1079,9 @@ final class ResultOfNotWordForString(left: String, shouldBeTrue: Boolean)
       )
   }
   
-  override def toString: String = "ResultOfNotWordForString(" + Prettifier.default(left) + ", " + Prettifier.default(shouldBeTrue) + ")"
+  /**
+   * Overrides toString to return pretty text.
+   */
+  override def toString: String = "ResultOfNotWordForAny(" + Prettifier.default(left) + ", " + Prettifier.default(shouldBeTrue) + ")"
 }
 
