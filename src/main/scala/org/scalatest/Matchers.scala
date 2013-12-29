@@ -4013,24 +4013,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     }
 
     /**
-     * Overrides to return pretty toString.
-     *
-     * @return "ResultOfNotWordForCollectedAny([collected], [xs], [shouldBeTrue])"
-     */
-    override def toString: String = "ResultOfNotWordForCollectedAny(" + Prettifier.default(collected) + ", " + Prettifier.default(xs) + ", " + Prettifier.default(shouldBeTrue) + ")"
-  }
-
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="InspectorsMatchers.html"><code>InspectorsMatchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * @author Bill Venners
-   * @author Chee Seng
-   */
-  final class ResultOfNotWordForCollectedString(collected: Collected, xs: scala.collection.GenTraversable[String], shouldBeTrue: Boolean) extends 
-    ResultOfNotWordForCollectedAny[String](collected, xs, shouldBeTrue) {
-    
-    /**
      * This method enables the following syntax: 
      *
      * <pre class="stHighlight">
@@ -4038,7 +4020,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                        ^
      * </pre>
      */
-    def startWith(right: String) {
+    def startWith(right: String)(implicit ev: T <:< String) {
       doCollected(collected, xs, "startWith", 1) { e =>
         if ((e.indexOf(right) == 0) != shouldBeTrue)
           throw newTestFailedException(
@@ -4066,7 +4048,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * or a <code>scala.util.matching.Regex</code>.
      * </p>
      */
-    def startWith(resultOfRegexWordApplication: ResultOfRegexWordApplication) {
+    def startWith(resultOfRegexWordApplication: ResultOfRegexWordApplication)(implicit ev: T <:< String) {
       doCollected(collected, xs, "startWith", 1) { e =>
         val result = startWithRegexWithGroups(e, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
         if (result.matches != shouldBeTrue)
@@ -4086,7 +4068,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                        ^
      * </pre>
      */
-    def endWith(expectedSubstring: String) {
+    def endWith(expectedSubstring: String)(implicit ev: T <:< String) {
       doCollected(collected, xs, "endWith", 1) { e =>
         if ((e endsWith expectedSubstring) != shouldBeTrue)
           throw newTestFailedException(
@@ -4109,7 +4091,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                        ^
      * </pre>
      */
-    def endWith(resultOfRegexWordApplication: ResultOfRegexWordApplication) {
+    def endWith(resultOfRegexWordApplication: ResultOfRegexWordApplication)(implicit ev: T <:< String) {
       doCollected(collected, xs, "endWith", 1) { e =>
         val result = endWithRegexWithGroups(e, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
         if (result.matches != shouldBeTrue)
@@ -4134,7 +4116,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * or a <code>scala.util.matching.Regex</code>.
      * </p>
      */
-    def include(resultOfRegexWordApplication: ResultOfRegexWordApplication) {
+    def include(resultOfRegexWordApplication: ResultOfRegexWordApplication)(implicit ev: T <:< String) {
       doCollected(collected, xs, "include", 1) { e =>
         val result = includeRegexWithGroups(e, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
         if (result.matches != shouldBeTrue)
@@ -4154,7 +4136,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                        ^
      * </pre>
      */
-    def include(expectedSubstring: String) {
+    def include(expectedSubstring: String)(implicit ev: T <:< String) {
       doCollected(collected, xs, "include", 1) { e =>
         if ((e.indexOf(expectedSubstring) >= 0) != shouldBeTrue)
           throw newTestFailedException(
@@ -4182,7 +4164,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * or a <code>scala.util.matching.Regex</code>.
      * </p>
      */
-    def fullyMatch(resultOfRegexWordApplication: ResultOfRegexWordApplication) {
+    def fullyMatch(resultOfRegexWordApplication: ResultOfRegexWordApplication)(implicit ev: T <:< String) {
       doCollected(collected, xs, "fullyMatch", 1) { e =>
         val result = fullyMatchRegexWithGroups(e, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
         if (result.matches != shouldBeTrue)
@@ -4197,11 +4179,11 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     /**
      * Overrides to return pretty toString.
      *
-     * @return "ResultOfNotWordForCollectedString([collected], [xs], [shouldBeTrue])"
+     * @return "ResultOfNotWordForCollectedAny([collected], [xs], [shouldBeTrue])"
      */
-    override def toString: String = "ResultOfNotWordForCollectedString(" + Prettifier.default(collected) + ", " + Prettifier.default(xs) + ", " + Prettifier.default(shouldBeTrue) + ")"
+    override def toString: String = "ResultOfNotWordForCollectedAny(" + Prettifier.default(collected) + ", " + Prettifier.default(xs) + ", " + Prettifier.default(shouldBeTrue) + ")"
   }
-  
+
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="InspectorsMatchers.html"><code>InspectorsMatchers</code></a> for an overview of
    * the matchers DSL.
@@ -5416,6 +5398,94 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     }
 
     /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * all(string) should startWith regex ("Hel*o")
+     *             ^
+     * </pre>
+     */
+    def should(startWithWord: StartWithWord)(implicit ev: T <:< String): ResultOfStartWithWordForCollectedString = 
+      new ResultOfStartWithWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], true)
+    
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * all(string) should endWith regex ("wo.ld")
+     *             ^
+     * </pre>
+     */
+    def should(endWithWord: EndWithWord)(implicit ev: T <:< String): ResultOfEndWithWordForCollectedString = 
+      new ResultOfEndWithWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], true)
+    
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * all(string) should include regex ("wo.ld")
+     *             ^
+     * </pre>
+     */
+    def should(includeWord: IncludeWord)(implicit ev: T <:< String): ResultOfIncludeWordForCollectedString = 
+      new ResultOfIncludeWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], true)
+    
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * all(string) should fullyMatch regex ("""(-)?(\d+)(\.\d*)?""")
+     *             ^
+     * </pre>
+     */
+    def should(fullyMatchWord: FullyMatchWord)(implicit ev: T <:< String): ResultOfFullyMatchWordForCollectedString = 
+      new ResultOfFullyMatchWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], true)
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * all(string) shouldNot fullyMatch regex ("""(-)?(\d+)(\.\d*)?""")
+     *             ^
+     * </pre>
+     */
+    def shouldNot(fullyMatchWord: FullyMatchWord)(implicit ev: T <:< String): ResultOfFullyMatchWordForCollectedString = 
+      new ResultOfFullyMatchWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], false)
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * all(string) shouldNot startWith regex ("Hel*o")
+     *             ^
+     * </pre>
+     */
+    def shouldNot(startWithWord: StartWithWord)(implicit ev: T <:< String): ResultOfStartWithWordForCollectedString = 
+      new ResultOfStartWithWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], false)
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * all(string) shouldNot endWith regex ("wo.ld")
+     *             ^
+     * </pre>
+     */
+    def shouldNot(endWithWord: EndWithWord)(implicit ev: T <:< String): ResultOfEndWithWordForCollectedString = 
+      new ResultOfEndWithWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], false)
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * all(string) shouldNot include regex ("wo.ld")
+     *             ^
+     * </pre>
+     */
+    def shouldNot(includeWord: IncludeWord)(implicit ev: T <:< String): ResultOfIncludeWordForCollectedString = 
+      new ResultOfIncludeWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], false)
+
+    /**
      * Overrides to return pretty toString.
      *
      * @return "ResultOfCollectedAny([collected], [xs])"
@@ -5476,7 +5546,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
           )
       }
     }
-
     /**
      * Overrides to return pretty toString.
      *
@@ -5485,122 +5554,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     override def toString: String = "ResultOfHaveWordForCollectedExtent(" + Prettifier.default(collected) + ", " + Prettifier.default(xs) + ", " + Prettifier.default(shouldBeTrue) + ")"
   }
 
-  /**
-   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="InspectorsMatchers.html"><code>InspectorsMatchers</code></a> for an overview of
-   * the matchers DSL.
-   *
-   * @author Bill Venners
-   * @author Chee Seng
-   */
-  final class ResultOfCollectedString(collected: Collected, xs: scala.collection.GenTraversable[String]) extends ResultOfCollectedAny(collected, xs) {
-    
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * all(string) should not have length (3)
-     *             ^
-     * </pre>
-     */
-    override def should(notWord: NotWord): ResultOfNotWordForCollectedString = 
-      new ResultOfNotWordForCollectedString(collected, xs, false)
-    
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * all(string) should startWith regex ("Hel*o")
-     *             ^
-     * </pre>
-     */
-    def should(startWithWord: StartWithWord): ResultOfStartWithWordForCollectedString = 
-      new ResultOfStartWithWordForCollectedString(collected, xs, true)
-    
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * all(string) should endWith regex ("wo.ld")
-     *             ^
-     * </pre>
-     */
-    def should(endWithWord: EndWithWord): ResultOfEndWithWordForCollectedString = 
-      new ResultOfEndWithWordForCollectedString(collected, xs, true)
-    
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * all(string) should include regex ("wo.ld")
-     *             ^
-     * </pre>
-     */
-    def should(includeWord: IncludeWord): ResultOfIncludeWordForCollectedString = 
-      new ResultOfIncludeWordForCollectedString(collected, xs, true)
-    
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * all(string) should fullyMatch regex ("""(-)?(\d+)(\.\d*)?""")
-     *             ^
-     * </pre>
-     */
-    def should(fullyMatchWord: FullyMatchWord): ResultOfFullyMatchWordForCollectedString = 
-      new ResultOfFullyMatchWordForCollectedString(collected, xs, true)
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * all(string) shouldNot fullyMatch regex ("""(-)?(\d+)(\.\d*)?""")
-     *             ^
-     * </pre>
-     */
-    def shouldNot(fullyMatchWord: FullyMatchWord): ResultOfFullyMatchWordForCollectedString = 
-      new ResultOfFullyMatchWordForCollectedString(collected, xs, false)
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * all(string) shouldNot startWith regex ("Hel*o")
-     *             ^
-     * </pre>
-     */
-    def shouldNot(startWithWord: StartWithWord): ResultOfStartWithWordForCollectedString = 
-      new ResultOfStartWithWordForCollectedString(collected, xs, false)
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * all(string) shouldNot endWith regex ("wo.ld")
-     *             ^
-     * </pre>
-     */
-    def shouldNot(endWithWord: EndWithWord): ResultOfEndWithWordForCollectedString = 
-      new ResultOfEndWithWordForCollectedString(collected, xs, false)
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * all(string) shouldNot include regex ("wo.ld")
-     *             ^
-     * </pre>
-     */
-    def shouldNot(includeWord: IncludeWord): ResultOfIncludeWordForCollectedString = 
-      new ResultOfIncludeWordForCollectedString(collected, xs, false)
-
-    /**
-     * Overrides to return pretty toString.
-     *
-     * @return "ResultOfCollectedString([collected], [xs])"
-     */
-    override def toString: String = "ResultOfCollectedString(" + Prettifier.default(collected) + ", " + Prettifier.default(xs) + ")"
-  }
-  
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="InspectorsMatchers.html"><code>InspectorsMatchers</code></a> for an overview of
    * the matchers DSL.
@@ -5849,17 +5802,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     new ResultOfCollectedAny(AllCollected, xs)
 
   /**
-   * This method enables the following syntax, where <code>xs</code> is a <code>GenTraversable[String]</code>:
-   *
-   * <pre class="stHighlight">
-   * all(xs) should fullymatch regex ("Hel*o world".r)
-   * ^
-   * </pre>
-   */
-  def all(xs: scala.collection.GenTraversable[String]): ResultOfCollectedString = 
-    new ResultOfCollectedString(AllCollected, xs)
-
-  /**
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">
@@ -5869,17 +5811,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    */
   def atLeast[T](num: Int, xs: scala.collection.GenTraversable[T]): ResultOfCollectedAny[T] = 
     new ResultOfCollectedAny(AtLeastCollected(num), xs)
-
-  /**
-   * This method enables the following syntax, where <code>xs</code> is a <code>GenTraversable[String]</code>:
-   *
-   * <pre class="stHighlight">
-   * atLeast(1, xs) should fullymatch regex ("Hel*o world".r)
-   * ^
-   * </pre>
-   */
-  def atLeast(num: Int, xs: scala.collection.GenTraversable[String]): ResultOfCollectedString = 
-    new ResultOfCollectedString(AtLeastCollected(num), xs)
 
   /**
    * This method enables the following syntax:
@@ -5893,17 +5824,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     new ResultOfCollectedAny(EveryCollected, xs)
 
   /**
-   * This method enables the following syntax, where <code>xs</code> is a <code>GenTraversable[String]</code>:
-   *
-   * <pre class="stHighlight">
-   * every(xs) should fullymatch regex ("Hel*o world".r)
-   * ^
-   * </pre>
-   */
-  def every(xs: scala.collection.GenTraversable[String]): ResultOfCollectedString = 
-    new ResultOfCollectedString(EveryCollected, xs)
-
-  /**
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">
@@ -5913,17 +5833,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    */
   def exactly[T](num: Int, xs: scala.collection.GenTraversable[T]): ResultOfCollectedAny[T] = 
     new ResultOfCollectedAny(ExactlyCollected(num), xs)
-
-  /**
-   * This method enables the following syntax, where <code>xs</code> is a <code>GenTraversable[String]</code>:
-   *
-   * <pre class="stHighlight">
-   * exactly(xs) should fullymatch regex ("Hel*o world".r)
-   * ^
-   * </pre>
-   */
-  def exactly(num: Int, xs: scala.collection.GenTraversable[String]): ResultOfCollectedString = 
-    new ResultOfCollectedString(ExactlyCollected(num), xs)
 
   /**
    * This method enables the following syntax:
@@ -5937,17 +5846,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     new ResultOfCollectedAny(NoCollected, xs)
 
   /**
-   * This method enables the following syntax, where <code>xs</code> is a <code>GenTraversable[String]</code>:
-   *
-   * <pre class="stHighlight">
-   * no(xs) should fullymatch regex ("Hel*o world".r)
-   * ^
-   * </pre>
-   */
-  def no(xs: scala.collection.GenTraversable[String]): ResultOfCollectedString =
-    new ResultOfCollectedString(NoCollected, xs)
-
-  /**
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">
@@ -5959,17 +5857,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     new ResultOfCollectedAny(BetweenCollected(from, upTo), xs)
 
   /**
-   * This method enables the following syntax, where <code>xs</code> is a <code>GenTraversable[String]</code>:
-   *
-   * <pre class="stHighlight">
-   * between(1, 3, xs) should fullymatch regex ("Hel*o world".r)
-   * ^
-   * </pre>
-   */
-  def between(from: Int, upTo:Int, xs: scala.collection.GenTraversable[String]): ResultOfCollectedString =
-    new ResultOfCollectedString(BetweenCollected(from, upTo), xs)
-
-  /**
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">
@@ -5979,17 +5866,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    */
   def atMost[T](num: Int, xs: scala.collection.GenTraversable[T]): ResultOfCollectedAny[T] =
     new ResultOfCollectedAny(AtMostCollected(num), xs)
-
-  /**
-   * This method enables the following syntax, where <code>xs</code> is a <code>GenTraversable[String]</code>:
-   *
-   * <pre class="stHighlight">
-   * atMost(3, xs) should fullymatch regex ("Hel*o world".r)
-   * ^
-   * </pre>
-   */
-  def atMost(num: Int, xs: scala.collection.GenTraversable[String]): ResultOfCollectedString =
-    new ResultOfCollectedString(AtMostCollected(num), xs)
 
   /**
    * This method enables the following syntax: 
