@@ -100,53 +100,26 @@ trait Inside {
    */
   def inside[T](value: T)(pf: PartialFunction[T, Unit]) {
 
-    def isTopLevelInside: Boolean = {
+    def appendInsideMessage(currentMessage: Option[String]) = {
       val st = Thread.currentThread.getStackTrace
-      st.foreach { elem =>
-        println(elem.getClassName + ":" + elem.getMethodName)
-      }
       val levelCount =
         st.count { elem =>
           elem.getClassName == "org.scalatest.Inside$class" && elem.getMethodName == "inside"
         }
-      levelCount == 1
+      val indentation = "  " * (levelCount - 1)
+      currentMessage match {
+        case Some(msg) => Some(Resources("insidePartialFunctionAppendSomeMsg", msg.trim, indentation, value.toString()))
+        case None => Some(Resources("insidePartialFunctionAppendNone", indentation, value.toString()))
+      }
     }
 
-    def appendInsideMessage(currentMessage: Option[String]) =
-      currentMessage match {
-        case Some(msg) => Some(Resources("insidePartialFunctionAppendSomeMsg", msg.trim, "#ScalaTestIndent#", value.toString()))
-        case None => Some(Resources("insidePartialFunctionAppendNone", "#ScalaTestIndent#", value.toString()))
-      }
-
-    @tailrec
-    def processScalaTestIndent(acc: String, remainings: List[String], indentLevel: Int): String =
-      remainings match {
-        case Nil => acc
-        case (head :: tail) => processScalaTestIndent(acc + ("  " * indentLevel) + head, tail, indentLevel + 1)
-      }
-
-    def replaceScalaTestIndent(currentMessage: Option[String]) =
-      currentMessage match {
-        case Some(msg) =>
-          val lines = msg.split("#ScalaTestIndent#")
-          Some(processScalaTestIndent("", lines.toList, 0))
-        case None => None
-      }
     if (pf.isDefinedAt(value)) {
       try {
         pf(value)
       }
       catch {
         case e: org.scalatest.exceptions.ModifiableMessage[_] =>
-          val newThrowable = e.modifyMessage(appendInsideMessage)
-          if (isTopLevelInside)
-            newThrowable match {
-              case e2: org.scalatest.exceptions.ModifiableMessage[_] =>
-                throw e2.modifyMessage(replaceScalaTestIndent)
-              case _ => throw newThrowable
-            }
-          else
-            throw newThrowable
+          throw e.modifyMessage(appendInsideMessage)
       }
     }
     else

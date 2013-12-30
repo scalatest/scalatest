@@ -65,7 +65,7 @@ class InsideMixinSpec extends FunSpec with Matchers with Inside with OptionValue
           age should be <= 21
         }
       } should produce [TestFailedException]
-      caught.message.value should be (Resources("insidePartialFunctionAppendSomeMsg", Resources("wasNotLessThanOrEqualTo", "29", "21"), "  ", rec.toString))
+      caught.message.value should be (Resources("insidePartialFunctionAppendSomeMsg", Resources("wasNotLessThanOrEqualTo", "29", "21"), "", rec.toString))
       caught.failedCodeLineNumber.value should equal (thisLineNumber - 4)
       caught.failedCodeFileName.value should be ("InsideMixinSpec.scala")
     }
@@ -78,7 +78,7 @@ class InsideMixinSpec extends FunSpec with Matchers with Inside with OptionValue
           }
         }
       } should produce [TestFailedException]
-      caught.message.value should be (Resources("insidePartialFunctionAppendSomeMsg", Resources("insidePartialFunctionAppendSomeMsg", Resources("wasNotEqualTo", "\"[Sall]y\"", "\"[Harr]y\""), "  ", rec.name.toString), "    ", rec.toString))
+      caught.message.value should be (Resources("insidePartialFunctionAppendSomeMsg", Resources("insidePartialFunctionAppendSomeMsg", Resources("wasNotEqualTo", "\"[Sall]y\"", "\"[Harr]y\""), "  ", rec.name.toString), "", rec.toString))
       caught.failedCodeLineNumber.value should equal (thisLineNumber - 5)
       caught.failedCodeFileName.value should be ("InsideMixinSpec.scala")
     }
@@ -89,7 +89,7 @@ class InsideMixinSpec extends FunSpec with Matchers with Inside with OptionValue
           throw new TestFailedException(None, None, 0)
         }
       } should produce [TestFailedException]
-      caught.message.value should be (Resources("insidePartialFunctionAppendNone", "  ", rec))
+      caught.message.value should be (Resources("insidePartialFunctionAppendNone", "", rec))
       caught.failedCodeLineNumber.value should equal (thisLineNumber - 4)
       caught.failedCodeFileName.value should be ("InsideMixinSpec.scala")
     }
@@ -102,7 +102,7 @@ class InsideMixinSpec extends FunSpec with Matchers with Inside with OptionValue
           }
         }
       } should produce [TestFailedException]
-      caught.message.value should be (Resources("insidePartialFunctionAppendSomeMsg", Resources("insidePartialFunctionAppendNone", "  ", rec.name), "    ", rec.toString))
+      caught.message.value should be (Resources("insidePartialFunctionAppendSomeMsg", Resources("insidePartialFunctionAppendNone", "  ", rec.name), "", rec.toString))
       caught.failedCodeLineNumber.value should equal (thisLineNumber - 5)
       caught.failedCodeFileName.value should be ("InsideMixinSpec.scala")
     }
