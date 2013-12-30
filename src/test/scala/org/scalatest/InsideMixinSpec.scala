@@ -15,13 +15,9 @@
  */
 package org.scalatest
 
-import org.scalatest.Inside._
 import org.scalatest.SharedHelpers.thisLineNumber
-/* Uncomment after remove type aliases in org.scalatest package object
-import org.scalatest.exceptions.TestFailedException
-*/
 
-class InsideSpec extends FunSpec with Matchers with OptionValues {
+class InsideMixinSpec extends FunSpec with Matchers with Inside with OptionValues {
 
   case class Address(street: String, city: String, state: String, zip: String)
   case class Name(first: String, middle: String, last: String)
@@ -60,7 +56,7 @@ class InsideSpec extends FunSpec with Matchers with OptionValues {
       } should produce [TestFailedException]
       caught.message.value should be (Resources("insidePartialFunctionNotDefined", rec.toString))
       caught.failedCodeLineNumber.value should equal (thisLineNumber - 5)
-      caught.failedCodeFileName.value should be ("InsideSpec.scala")
+      caught.failedCodeFileName.value should be ("InsideMixinSpec.scala")
     }
 
     it("should include an inside clause when a matcher fails inside") {
@@ -71,7 +67,7 @@ class InsideSpec extends FunSpec with Matchers with OptionValues {
       } should produce [TestFailedException]
       caught.message.value should be (Resources("insidePartialFunctionAppendSomeMsg", Resources("wasNotLessThanOrEqualTo", "29", "21"), "", rec.toString))
       caught.failedCodeLineNumber.value should equal (thisLineNumber - 4)
-      caught.failedCodeFileName.value should be ("InsideSpec.scala")
+      caught.failedCodeFileName.value should be ("InsideMixinSpec.scala")
     }
 
     it("should include a nested inside clause when a matcher fails inside a nested inside") {
@@ -84,9 +80,9 @@ class InsideSpec extends FunSpec with Matchers with OptionValues {
       } should produce [TestFailedException]
       caught.message.value should be (Resources("insidePartialFunctionAppendSomeMsg", Resources("insidePartialFunctionAppendSomeMsg", Resources("wasNotEqualTo", "\"[Sall]y\"", "\"[Harr]y\""), "  ", rec.name.toString), "", rec.toString))
       caught.failedCodeLineNumber.value should equal (thisLineNumber - 5)
-      caught.failedCodeFileName.value should be ("InsideSpec.scala")
+      caught.failedCodeFileName.value should be ("InsideMixinSpec.scala")
     }
-    
+
     it("should throw a TFE when matcher fails inside due to exception") {
       val caught = evaluating {
         inside (rec) { case Record(name, address, age) =>
@@ -95,7 +91,7 @@ class InsideSpec extends FunSpec with Matchers with OptionValues {
       } should produce [TestFailedException]
       caught.message.value should be (Resources("insidePartialFunctionAppendNone", "", rec))
       caught.failedCodeLineNumber.value should equal (thisLineNumber - 4)
-      caught.failedCodeFileName.value should be ("InsideSpec.scala")
+      caught.failedCodeFileName.value should be ("InsideMixinSpec.scala")
     }
 
     it("should include a nested inside clause when a matcher fails inside due to exception") {
@@ -108,8 +104,7 @@ class InsideSpec extends FunSpec with Matchers with OptionValues {
       } should produce [TestFailedException]
       caught.message.value should be (Resources("insidePartialFunctionAppendSomeMsg", Resources("insidePartialFunctionAppendNone", "  ", rec.name), "", rec.toString))
       caught.failedCodeLineNumber.value should equal (thisLineNumber - 5)
-      caught.failedCodeFileName.value should be ("InsideSpec.scala")
+      caught.failedCodeFileName.value should be ("InsideMixinSpec.scala")
     }
   }
 }
-
