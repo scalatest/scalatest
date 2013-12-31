@@ -13,19 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.words
+package org.scalautils
 
-import org.scalatest._
-import Matchers._
+import scala.collection._
 
-class ResultOfNotWordForAnySpec extends Spec {
-  
-  object `ResultOfNotWordForAny ` {
-    
-    def `should have pretty toString` {
-      val result: ResultOfNotWordForAny[Int] = 1 should not
-      result.toString should be ("ResultOfNotWordForAny(1, false)")
-    }
-    
-  }
+private[scalautils] class IndexedSeqWrapper[+A](underlying: immutable.IndexedSeq[A]) extends immutable.IndexedSeq[A] {
+
+  def apply(idx: Int): A = underlying(idx)
+
+  def length: Int = underlying.length
+
 }

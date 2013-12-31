@@ -406,6 +406,54 @@ object SharedHelpers extends Assertions {
     getIndexAcc(xs.toIterator, 0)
   }
 
+  def getKeyIndex[K, V](xs: GenMap[K, V], value: K): Int = {
+    @tailrec
+    def getIndexAcc[K, V](itr: Iterator[(K, V)], count: Int): Int = {
+      if (itr.hasNext) {
+        val next = itr.next
+        if (next._1 == value)
+          count
+        else
+          getIndexAcc(itr, count + 1)
+      }
+      else
+        -1
+    }
+    getIndexAcc(xs.toIterator, 0)
+  }
+
+  def getIndex[T](xs: java.util.Collection[T], value: T): Int = {
+    @tailrec
+    def getIndexAcc[T](itr: java.util.Iterator[T], count: Int): Int = {
+      if (itr.hasNext) {
+        val next = itr.next
+        if (next == value)
+          count
+        else
+          getIndexAcc(itr, count + 1)
+      }
+      else
+        -1
+    }
+    getIndexAcc(xs.iterator, 0)
+  }
+
+  def getKeyIndex[K, V](xs: java.util.Map[K, V], value: K): Int = {
+    @tailrec
+    def getIndexAcc[K, V](itr: java.util.Iterator[java.util.Map.Entry[K, V]], count: Int): Int = {
+      if (itr.hasNext) {
+        val next = itr.next
+        if (next.getKey == value)
+          count
+        else
+          getIndexAcc(itr, count + 1)
+      }
+      else
+        -1
+    }
+    getIndexAcc(xs.entrySet.iterator, 0)
+  }
+
   def getIndexes[T](xs: GenTraversable[T], values: GenTraversable[T]): GenTraversable[Int] = {
     @tailrec
     def getIndexesAcc[T](itr: Iterator[T], indexes: IndexedSeq[Int], count: Int): IndexedSeq[Int] = {

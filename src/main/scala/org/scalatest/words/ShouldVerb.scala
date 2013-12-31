@@ -114,10 +114,10 @@ trait ShouldVerb {
    *
    * @author Bill Venners
    */
-  trait StringShouldWrapperForVerb {
+  trait StringShouldWrapperForVerb[T] {
 
     // Don't use "left" because that conflicts with Scalaz's left method on strings
-    val leftSideValue: String
+    val leftSideString: String
 
     /**
      * Supports test registration in <code>FlatSpec</code> and <code>fixture.FlatSpec</code>.
@@ -135,12 +135,12 @@ trait ShouldVerb {
      * <p>
      * <code>FlatSpec</code> passes in a function via the implicit parameter that takes
      * three strings and results in a <code>ResultOfStringPassedToVerb</code>. This method
-     * simply invokes this function, passing in leftSideValue, the verb string
+     * simply invokes this function, passing in leftSideString, the verb string
      * <code>"should"</code>, and right, and returns the result.
      * </p>
      */
-    def should(right: String)(implicit fun: (String, String, String) => ResultOfStringPassedToVerb): ResultOfStringPassedToVerb = {
-      fun(leftSideValue, "should", right)
+    def should(right: String)(implicit fun: (String, String, String) => ResultOfStringPassedToVerb, ev: T <:< String): ResultOfStringPassedToVerb = {
+      fun(leftSideString, "should", right)
     }
 
     /**
@@ -159,11 +159,11 @@ trait ShouldVerb {
      * <p>
      * <code>FlatSpec</code> and <code>fixture.FlatSpec</code> passes in a function via the implicit parameter that takes
      * a string and results in a <code>BehaveWord</code>. This method
-     * simply invokes this function, passing in leftSideValue, and returns the result.
+     * simply invokes this function, passing in leftSideString, and returns the result.
      * </p>
      */
-    def should(right: BehaveWord)(implicit fun: (String) => BehaveWord): BehaveWord = {
-      fun(leftSideValue)
+    def should(right: BehaveWord)(implicit fun: (String) => BehaveWord, ev: T <:< String): BehaveWord = {
+      fun(leftSideString)
     }
 
     /**
@@ -183,13 +183,13 @@ trait ShouldVerb {
      * <p>
      * <code>WordSpec</code> passes in a function via the implicit parameter of type <code>StringVerbBlockRegistration</code>,
      * a function that takes two strings and a no-arg function and results in <code>Unit</code>. This method
-     * simply invokes this function, passing in leftSideValue, the verb string
+     * simply invokes this function, passing in leftSideString, the verb string
      * <code>"should"</code>, and the right by-name parameter transformed into a
      * no-arg function.
      * </p>
      */
     def should(right: => Unit)(implicit fun: StringVerbBlockRegistration) {
-      fun(leftSideValue, "should", right _)
+      fun(leftSideString, "should", right _)
     }
 
     /**
@@ -211,12 +211,12 @@ trait ShouldVerb {
      * <p>
      * <code>WordSpec</code> passes in a function via the implicit parameter that takes
      * two strings and a <code>ResultOfAfterWordApplication</code> and results in <code>Unit</code>. This method
-     * simply invokes this function, passing in leftSideValue, the verb string
+     * simply invokes this function, passing in leftSideString, the verb string
      * <code>"should"</code>, and the <code>ResultOfAfterWordApplication</code> passed to <code>should</code>.
      * </p>
      */
-    def should(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit fun: (String, String, ResultOfAfterWordApplication) => Unit) {
-      fun(leftSideValue, "should", resultOfAfterWordApplication)
+    def should(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit fun: (String, String, ResultOfAfterWordApplication) => Unit, ev: T <:< String) {
+      fun(leftSideString, "should", resultOfAfterWordApplication)
     }
   }
 
@@ -224,8 +224,9 @@ trait ShouldVerb {
    * Implicitly converts an object of type <code>String</code> to a <code>StringShouldWrapperForVerb</code>,
    * to enable <code>should</code> methods to be invokable on that object.
    */
-  implicit def convertToStringShouldWrapper(o: String): StringShouldWrapperForVerb =
-    new StringShouldWrapperForVerb {
-      val leftSideValue = o.trim
+  implicit def convertToAnyShouldWrapper[T <: String](o: T): StringShouldWrapperForVerb[T] =
+    new StringShouldWrapperForVerb[T] {
+      val leftSideString = o.trim
     }
 }
+

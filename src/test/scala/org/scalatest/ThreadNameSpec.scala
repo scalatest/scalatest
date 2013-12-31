@@ -36,12 +36,12 @@ class ThreadNameSpec extends Spec with Matchers {
       SuiteHelpers.augmentedThreadName("ScalaTest-run-running-Some-running-Spec", "OtherSpec") shouldBe "ScalaTest-run-running-OtherSpec"
       SuiteHelpers.augmentedThreadName("ScalaTest-3-running-Some-running-Spec", "BunnySpec") shouldBe "ScalaTest-3-running-BunnySpec"
     }
-    // This could happen if calling run directly.
-    def `should replace a string that does not start with "ScalaTest-" with "ScalaTest-running-Z"` {
-      SuiteHelpers.augmentedThreadName("pool-3-thread-5", "OtherSpec") shouldBe "ScalaTest-running-OtherSpec"
-      SuiteHelpers.augmentedThreadName("", "AntherSpec") shouldBe "ScalaTest-running-AntherSpec"
-      SuiteHelpers.augmentedThreadName("something else", "Elephant") shouldBe "ScalaTest-running-Elephant"
-      SuiteHelpers.augmentedThreadName("something-else-running-something", "Elephant") shouldBe "ScalaTest-running-Elephant"
+    // This could happen if calling run directly, such as from sbt.
+    def `should replace a string that does not include "ScalaTest-" with "<exising thread name>-ScalaTest-running-Z"` {
+      SuiteHelpers.augmentedThreadName("pool-3-thread-5", "OtherSpec") shouldBe "pool-3-thread-5-ScalaTest-running-OtherSpec"
+      SuiteHelpers.augmentedThreadName("", "AntherSpec") shouldBe "-ScalaTest-running-AntherSpec"
+      SuiteHelpers.augmentedThreadName("something else", "Elephant") shouldBe "something else-ScalaTest-running-Elephant"
+      SuiteHelpers.augmentedThreadName("something-else-running-something", "Elephant") shouldBe "something-else-running-something-ScalaTest-running-Elephant"
     }
   }
 }

@@ -16,6 +16,7 @@
 package org.scalatest
 
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
+import scala.annotation.tailrec
 
 /**
  * Trait containing the <code>inside</code> construct, which allows you to make statements about nested object graphs using pattern matching.
@@ -98,11 +99,20 @@ trait Inside {
    * @throws TestFailedException if the passed partial function is not defined at the passed value
    */
   def inside[T](value: T)(pf: PartialFunction[T, Unit]) {
-    def appendInsideMessage(currentMessage: Option[String]) =
+
+    def appendInsideMessage(currentMessage: Option[String]) = {
+      val st = Thread.currentThread.getStackTrace
+      val levelCount =
+        st.count { elem =>
+          elem.getClassName == "org.scalatest.Inside$class" && elem.getMethodName == "inside"
+        }
+      val indentation = "  " * (levelCount - 1)
       currentMessage match {
-        case Some(msg) => Some(Resources("insidePartialFunctionAppendSomeMsg", msg.trim, value.toString()))
-        case None => Some(Resources("insidePartialFunctionAppendNone", value.toString()))
+        case Some(msg) => Some(Resources("insidePartialFunctionAppendSomeMsg", msg.trim, indentation, value.toString()))
+        case None => Some(Resources("insidePartialFunctionAppendNone", indentation, value.toString()))
       }
+    }
+
     if (pf.isDefinedAt(value)) {
       try {
         pf(value)

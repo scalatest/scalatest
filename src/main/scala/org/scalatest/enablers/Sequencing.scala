@@ -15,13 +15,11 @@
  */
 package org.scalatest.enablers
 
-import org.scalautils.Equality
+import org.scalautils.{Equality, Every}
 import org.scalatest.words.ArrayWrapper
 import scala.collection.GenTraversable
-import org.scalatest.FailureMessages
 import scala.annotation.tailrec
 import scala.collection.JavaConverters._
-import Aggregating.tryEquality
 
 /**
  * Typeclass that enables for sequencing certain <code>contain</code> syntax in the ScalaTest matchers DSL.
@@ -550,5 +548,44 @@ object Sequencing {
    */
   implicit def convertEqualityToStringSequencing(equality: Equality[Char]): Sequencing[String] = 
     sequencingNatureOfString(equality)
+
+  /**
+   * Implicit to support <code>Sequencing</code> nature of <code>Every</code>.
+   *
+   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>Every</code>
+   * @tparam E the type of the element in the <code>Every</code>
+   * @return <code>Sequencing[Every[E]]</code> that supports <code>Every</code> in relevant <code>contain</code> syntax
+   */
+  implicit def sequencingNatureOfEvery[E](implicit equality: Equality[E]): Sequencing[Every[E]] =
+    new Sequencing[Every[E]] {
+
+      def containsInOrder(every: Every[E], elements: scala.collection.Seq[Any]): Boolean =
+        checkInOrder(every, elements, equality)
+
+      def containsInOrderOnly(every: Every[E], elements: scala.collection.Seq[Any]): Boolean =
+        checkInOrderOnly(every, elements, equality)
+
+      def containsTheSameElementsInOrderAs(every: Every[E], elements: GenTraversable[Any]): Boolean =
+        checkTheSameElementsInOrderAs[E](every, elements, equality)
+    }
+
+  /**
+   * Implicit conversion that converts an <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   * into <code>Sequencing</code> of type <code>Every[E]</code>.
+   * This is required to support the explicit <a href="../../scalautils/Equality.html"><code>Equality</code></a> syntax, for example:
+   *
+   * <pre class="stHighlight">
+   * (Every("hi", "he") should contain inOrderOnly ("HI", "HE")) (after being lowerCased)
+   * </pre>
+   *
+   * <code>(after being lowerCased)</code> will returns an <a href="../../scalautils/Equality.html"><code>Equality[String]</code></a>
+   * and this implicit conversion will convert it into <code>Sequencing[Every[String]]</code>.
+   *
+   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   * @tparam E type of elements in the <code>Every</code>
+   * @return <code>Sequencing</code> of type <code>Every[E]</code>
+   */
+  implicit def convertEqualityToEverySequencing[E](equality: Equality[E]): Sequencing[Every[E]] =
+    sequencingNatureOfEvery(equality)
     
 }

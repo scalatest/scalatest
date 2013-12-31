@@ -241,13 +241,6 @@ class MatchersSpec extends Spec {
       }
     }
 
-    object `ResultOfNotWordForCollectedString ` {
-      def `should have pretty toString` {
-        val word = all(List("1", "2", "3")) should not
-        word.toString should be ("ResultOfNotWordForCollectedString(AllCollected, List(\"1\", \"2\", \"3\"), false)")
-      }
-    }
-
     object `ResultOfContainWordForCollectedAny ` {
       def `should have pretty toString` {
         val word = all(List(List("1"), List("2"), List("3"))) should contain
@@ -283,13 +276,6 @@ class MatchersSpec extends Spec {
       def `should have pretty toString` {
         val word = all(List("1", "2", "3")) should have
         word.toString should be ("ResultOfHaveWordForCollectedExtent(AllCollected, List(\"1\", \"2\", \"3\"), true)")
-      }
-    }
-
-    object `ResultOfCollectedString ` {
-      def `should have pretty toString` {
-        val word = all(List("1", "2", "3"))
-        word.toString should be ("ResultOfCollectedString(AllCollected, List(\"1\", \"2\", \"3\"))")
       }
     }
 

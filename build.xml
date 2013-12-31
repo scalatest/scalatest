@@ -179,6 +179,13 @@
     	  </mapper>
     	</uptodate>
 
+        <uptodate property="geninspectorsshorthands.uptodate"
+                  srcfile="project/GenInspectorsShorthands.scala">
+            <mapper type="merge" to=
+                    "${build.generated.tests.src}/org/scalatest/inspectors-shorthands/all/InspectorShorthandsForAllSucceededSpec.scala">
+            </mapper>
+        </uptodate>
+
         <uptodate property="gengen.uptodate"
                   srcfile="project/GenGen.scala">
           <mapper type="merge" to=
@@ -208,6 +215,7 @@
         	<!--<include name="GenMustMatchers.scala" />-->
             <include name="GenMatchers.scala" />
         	<include name="GenInspectors.scala" />
+            <include name="GenInspectorsShorthands.scala" />
         	<include name="GenTable.scala" />
         	<include name="GenFactories.scala" />
             <include name="GenCompatibleClasses.scala" />
@@ -249,6 +257,15 @@
         <arg value="${scala.version}" />
 	  </java>
 	</target>
+
+    <target name="geninspectorsshorthands" depends="init, compile-codegenerators"
+            unless="geninspectorsshorthands.uptodate">
+        <java classname="GenInspectorsShorthands"
+              classpathref="run.generators.class.path" fork="false">
+            <arg value="${build.generated.tests.src}" />
+            <arg value="${scala.version}" />
+        </java>
+    </target>
 
     <target name="gengen" depends="init, compile-codegenerators"
             unless="gengen.uptodate">
@@ -427,25 +444,27 @@
 	  <delete dir="${build.generated.tests.bin}" />
 	</target>
 	
-    <target name="compile-gentests" depends="compile-tests, geninspectors, gencontain, gensorted, genloneelement, genempty">
+    <target name="compile-gentests" depends="compile-tests, geninspectors, geninspectorsshorthands, gencontain, gensorted, genloneelement, genempty">
       <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization -feature" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
 		<include name="org/scalatest/junit/*.scala"/>
 		<include name="org/scalatest/matchers/*.scala"/>
 		<include name="org/scalatest/prop/*.scala"/>
       </scalac>
-	  <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization -feature" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
-		<include name="org/scalatest/inspectors/all/*.scala"/>
-		<include name="org/scalatest/inspectors/atLeast/*.scala"/>
-		<include name="org/scalatest/inspectors/atMost/*.scala"/>
-      </scalac>
-      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization -feature" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
-        <include name="org/scalatest/inspectors/between/*.scala"/>
-        <include name="org/scalatest/inspectors/every/*.scala"/>
-        <include name="org/scalatest/inspectors/exactly/*.scala"/>
-      </scalac>
       <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization -feature" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
         <include name="org/scalatest/inspectors/nested/*.scala"/>
-        <include name="org/scalatest/inspectors/no/*.scala"/>
+      </scalac>
+	  <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization -feature" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+		<include name="org/scalatest/inspectors-shorthands/all/*.scala"/>
+		<include name="org/scalatest/inspectors-shorthands/atLeast/*.scala"/>
+		<include name="org/scalatest/inspectors-shorthands/atMost/*.scala"/>
+      </scalac>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization -feature" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+        <include name="org/scalatest/inspectors-shorthands/between/*.scala"/>
+        <include name="org/scalatest/inspectors-shorthands/every/*.scala"/>
+        <include name="org/scalatest/inspectors-shorthands/exactly/*.scala"/>
+      </scalac>
+      <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization -feature" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+        <include name="org/scalatest/inspectors-shorthands/no/*.scala"/>
       </scalac>
       <scalac srcdir="${build.generated.tests.src}" destdir="${build.generated.tests.bin}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" addparams="-no-specialization -feature" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
     	<include name="org/scalatest/contain/*.scala"/>

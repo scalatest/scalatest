@@ -76,8 +76,9 @@ object ScalatestBuild extends Build {
      genMustMatchersTask, 
      genGenTask, 
      genTablesTask, 
-     genInspectorsTask, 
-     genTheyWordTask, 
+     genInspectorsTask,
+     genInspectorsShorthandsTask,
+    genTheyWordTask,
      genContainTask, 
      genSortedTask, 
      genLoneElementTask, 
@@ -92,6 +93,8 @@ object ScalatestBuild extends Build {
          (baseDirectory, sourceManaged in Test) map genFiles("genthey", "GenTheyWord.scala")(GenTheyWord.genTest),
      sourceGenerators in Test <+= 
          (baseDirectory, sourceManaged in Test) map genFiles("geninspectors", "GenInspectors.scala")(GenInspectors.genTest),
+     sourceGenerators in Test <+=
+         (baseDirectory, sourceManaged in Test) map genFiles("geninspectorsshorthands", "GenInspectorsShorthands.scala")(GenInspectorsShorthands.genTest),
      sourceGenerators in Test <+= 
          (baseDirectory, sourceManaged in Test) map genFiles("gencontain", "GenContain.scala")(GenContain.genTest), 
      sourceGenerators in Test <+= 
@@ -175,6 +178,11 @@ object ScalatestBuild extends Build {
   val genInspectors = TaskKey[Unit]("geninspectors", "Generate Inspectors tests")
   val genInspectorsTask = genInspectors <<= (sourceManaged in Compile, sourceManaged in Test) map { (mainTargetDir: File, testTargetDir: File) =>
     GenInspectors.genTest(new File(testTargetDir, "scala/geninspectors"), scalaVersionToUse)
+  }
+
+  val genInspectorsShorthands = TaskKey[Unit]("geninspectorsshorthands", "Generate Inspectors Shorthands tests")
+  val genInspectorsShorthandsTask = genInspectorsShorthands <<= (sourceManaged in Compile, sourceManaged in Test) map { (mainTargetDir: File, testTargetDir: File) =>
+    GenInspectorsShorthands.genTest(new File(testTargetDir, "scala/geninspectorsshorthands"), scalaVersionToUse)
   }
   
   val genFactories = TaskKey[Unit]("genfactories", "Generate Matcher Factories")
