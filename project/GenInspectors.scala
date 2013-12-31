@@ -126,7 +126,7 @@ object GenInspectors {
       "  val e = intercept[exceptions.TestFailedException] {\n" + 
       "    " + forText + " { l =>\n" + 
       "      " + text + 
-      "        " + assertText + "\n" + 
+      "        " + assertText + "\n" +
       "      }\n" + 
       "    }\n" + 
       "  }\n" + 
@@ -217,6 +217,84 @@ object GenInspectors {
       case "forBetween" => new ForBetweenLessErrMsgTemplate("forBetween(2, 4)", "no element", "NotEqualBoolean", "EqualBoolean", "false", "List[Int]", innerDetails.toList)
       case "forEvery" => new ForEveryErrMsgTemplate("forEvery", innerDetails.toList)
     }
+  }
+
+  val collectionTypes =
+    List(
+      ("List", "List(1, 2, 3)", "e"),
+      ("Set", "Set(1, 2, 3)", "e"),
+      ("String", "\"123\"", "e.toString.toInt"),
+      ("Map", "Map(1 -> \"one\", 2 -> \"two\", 3 -> \"three\")", "e._1"),
+      ("Java List", "javaList(1, 2, 3)", "e"),
+      ("Java Set", "javaSet(1, 2, 3)", "e"),
+      ("Java Map", "javaMap(Entry(1, \"one\"), Entry(2, \"two\"), Entry(3, \"three\"))", "e.getKey")
+    )
+
+  class DefTemplate(name: String, body: Template) extends Template {
+    override def toString: String =
+      "def `" + name + "` {\n" +
+      body.toString.split("\n").map("  " + _).mkString("\n") + "\n" +
+      "}"
+  }
+
+  def isMap(colName: String): Boolean = colName.contains("Map")
+
+  def getIndexForType(colName: String, e: Any): String =
+    colName match {
+      case "Map" => "\"key " + e.toString + "\""
+      case "Java Map" => "\"index " + e.toString + "\"" // TODO: to change to key instead
+      case "String" => "\"index \" + getIndex(col, '" + e.toString + "')"
+      case _ => "\"index \" + getIndex(col, " + e.toString + ")"
+    }
+
+  class ForAllTemplate(colName: String, col: String, lhs: String) extends Template {
+    override val children =
+      List(
+        new DefTemplate("should pass when all elements passed for " + colName, new SimpleTemplate("forAll(" + col + ") { e => assert(" + lhs + " < 4) }")),
+        new DefTemplate("should throw TestFailedException with correct stack depth and message when at least one element failed for " + colName,
+                        new InterceptWithCauseTemplate(
+                          "val col = " + col,
+                          "forAll(col) { e => \n" +
+                          "  assert(" + lhs + " != 2) \n" +
+                          "}",
+                          "ForAllInspectorsSpec.scala",
+                          "\"forAll failed, because: \\n\" + \n" +
+                          "\"  at \" + " + getIndexForType(colName, 2) + " + \", 2 equaled 2 (ForAllInspectorsSpec.scala:\" + (thisLineNumber - 6) + \") \\n\" + \n" +
+                          "\"in \" + decorateToStringValue(col)",
+                          5,
+                          "ForAllInspectorsSpec.scala",
+                          "2 equaled 2",
+                          11)
+                        )
+      )
+
+    override protected def childrenContent =
+      children.map(_.toString).mkString("\n") + "\n"
+
+    override def toString = childrenContent
+  }
+
+  def genForAllSpecFile(targetDir: File) {
+    val forAllSpecFile = new File(targetDir, "ForAllInspectorsSpec.scala")
+    genFile(
+      forAllSpecFile,
+      new SingleClassFile(
+        packageName = Some("org.scalatest.inspectors.forall"),
+        importList = List("org.scalatest._",
+          "SharedHelpers._",
+          "FailureMessages.decorateToStringValue",
+          "collection.GenTraversable",
+          "Inspectors._"),
+        classTemplate = new ClassTemplate {
+          val name = "ForAllInspectorsSpec"
+          override val extendName = Some("Spec")
+          override val withList = List.empty
+          override val children = collectionTypes.map {
+            case (name, col, lhs) => new ForAllTemplate(name, col, lhs)
+          }
+        }
+      )
+    )
   }
   
   def genNestedInspectorsSpecFile(targetDir: File) {
@@ -332,6 +410,7 @@ object GenInspectors {
   }
 
   def genTest(targetBaseDir: File, scalaVersion: String) {
+    genForAllSpecFile(targetDir(targetBaseDir, "forall"))
     genNestedInspectorsSpecFile(targetDir(targetBaseDir, "nested"))
   }
   
