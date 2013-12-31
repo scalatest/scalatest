@@ -21,6 +21,8 @@ import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import scala.collection.GenSeq
 import Suite.indentLines
 import FailureMessages.decorateToStringValue
+import enablers.Collecting
+import scala.language.higherKinds
 
 /**
  * Provides nestable <em>inspector methods</em> (or just <em>inspectors</em>) that enable assertions to be made about collections.
@@ -168,12 +170,43 @@ trait Inspectors {
 
   import InspectorsHelper._
 
-  def forAll[T](xs: GenTraversable[T])(fun: T => Unit) {
-    doForAll(xs, "forAllFailed", "Inspectors.scala", "forAll", 0)(fun)
+  /**
+   * Check all elements pass the inspection function.  The difference between <code>forAll</code> and <code>forEvery</code> is that
+   * <code>forAll</code> will stop on the first failure, while <code>forEvery</code> will continue to check all elements after the
+   * first failure.
+   *
+   * @param xs the collection of elements
+   * @param fun the inspection function
+   * @param collecting the implicit <code>Collecting</code> that transform <code>xs</code> into <code>scala.collection.GenTraversable</code>
+   * @tparam E the type of element in the collection
+   * @tparam C the type of collection
+   *
+   */
+  def forAll[E, C[_]](xs: C[E])(fun: E => Unit)(implicit collecting: Collecting[E, C[E]]) {
+    doForAll(collecting.genTraversableFrom(xs), xs, "forAllFailed", "Inspectors.scala", "forAll", 0)(fun)
   }
 
-  def forAtLeast[T](min: Int, xs: GenTraversable[T])(fun: T => Unit) {
-    doForAtLeast(min, xs, "forAtLeastFailed", "Inspectors.scala", "forAtLeast", 0)(fun)
+  def forAll[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => Unit)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]) {
+    doForAll(collecting.genTraversableFrom(xs), xs, "forAllFailed", "Inspectors.scala", "forAll", 0)(fun)
+  }
+
+  def forAll(xs: String)(fun: Char => Unit)(implicit collecting: Collecting[Char, String]) {
+    doForAll(collecting.genTraversableFrom(xs), xs, "forAllFailed", "Inspectors.scala", "forAll", 0)(fun)
+  }
+
+  /**
+   * Check that at least <code>min</code> number of elements pass the inspection function.
+   *
+   * @param min the minimum number of elements that must pass the inspection function
+   * @param xs the collection of elements
+   * @param fun the inspection function
+   * @param collecting the implicit <code>Collecting</code> that transform <code>xs</code> into <code>scala.collection.GenTraversable</code>
+   * @tparam E the type of element in the collection
+   * @tparam C the type of collection
+   *
+   */
+  def forAtLeast[E, C[_]](min: Int, xs: C[E])(fun: E => Unit)(implicit collecting: Collecting[E, C[E]]) {
+    doForAtLeast(min, collecting.genTraversableFrom(xs), xs, "forAtLeastFailed", "Inspectors.scala", "forAtLeast", 0)(fun)
   }
 
   private def shouldIncludeIndex[T, R](xs: GenTraversable[T]) = xs.isInstanceOf[GenSeq[T]]
@@ -185,27 +218,77 @@ trait Inspectors {
       Resources("forAssertionsMessageWithoutIndex", element.toString) 
   }.mkString(", ")
 
-  def forAtMost[T](max: Int, xs: GenTraversable[T])(fun: T => Unit) {
-    doForAtMost(max, xs, "forAtMostFailed", "Inspectors.scala", "forAtMost", 0)(fun)
+  /**
+   * Check that at most <code>max</code> number of elements pass the inspection function.
+   *
+   * @param max the maximum number of elements that must pass the inspection function
+   * @param xs the collection of elements
+   * @param fun the inspection function
+   * @param collecting the implicit <code>Collecting</code> that transform <code>xs</code> into <code>scala.collection.GenTraversable</code>
+   * @tparam E the type of element in the collection
+   * @tparam C the type of collection
+   *
+   */
+  def forAtMost[E, C[_]](max: Int, xs: C[E])(fun: E => Unit)(implicit collecting: Collecting[E, C[E]]) {
+    doForAtMost(max, collecting.genTraversableFrom(xs), xs, "forAtMostFailed", "Inspectors.scala", "forAtMost", 0)(fun)
   }
 
-  def forExactly[T](succeededCount: Int, xs: GenTraversable[T])(fun: T => Unit) {
-    doForExactly(succeededCount, xs, "forExactlyFailed", "Inspectors.scala", "forExactly", 0)(fun)
+  /**
+   * Check that exactly <code>succeededCount</code> number of elements pass the inspection function.
+   *
+   * @param succeededCount the number of elements that must pass the inspection function
+   * @param xs the collection of elements
+   * @param fun the inspection function
+   * @param collecting the implicit <code>Collecting</code> that transform <code>xs</code> into <code>scala.collection.GenTraversable</code>
+   * @tparam E the type of element in the collection
+   * @tparam C the type of collection
+   *
+   */
+  def forExactly[E, C[_]](succeededCount: Int, xs: C[E])(fun: E => Unit)(implicit collecting: Collecting[E, C[E]]) {
+    doForExactly(succeededCount, collecting.genTraversableFrom(xs), xs, "forExactlyFailed", "Inspectors.scala", "forExactly", 0)(fun)
   }
   
-  private[scalatest] def forNo[T](xs: GenTraversable[T])(fun: T => Unit) {
-    doForNo(xs, "forNoFailed", "Inspectors.scala", "forNo", 0)(fun)
+  private[scalatest] def forNo[E, C[_]](xs: C[E])(fun: E => Unit)(implicit collecting: Collecting[E, C[E]]) {
+    doForNo(collecting.genTraversableFrom(xs), xs, "forNoFailed", "Inspectors.scala", "forNo", 0)(fun)
   }
-  
-  def forBetween[T](from: Int, upTo: Int, xs: GenTraversable[T])(fun: T => Unit) {
-    doForBetween(from, upTo, xs, "forBetweenFailed", "Inspectors.scala", "forBetween", 0)(fun)
+
+  /**
+   * Check that the number of elements pass the inspection function is between <code>from</code> and <code>upTo</code>.
+   *
+   * @param from the minimum number of elements that must pass the inspection number
+   * @param upTo the maximum number of elements that must pass the inspection number
+   * @param xs the collection of elements
+   * @param fun the inspection function
+   * @param collecting the implicit <code>Collecting</code> that transform <code>xs</code> into <code>scala.collection.GenTraversable</code>
+   * @tparam E the type of element in the collection
+   * @tparam C the type of collection
+   *
+   */
+  def forBetween[E, C[_]](from: Int, upTo: Int, xs: C[E])(fun: E => Unit)(implicit collecting: Collecting[E, C[E]]) {
+    doForBetween(from, upTo, collecting.genTraversableFrom(xs), xs, "forBetweenFailed", "Inspectors.scala", "forBetween", 0)(fun)
   }
-  
-  def forEvery[T](xs: GenTraversable[T])(fun: T => Unit) {
-    doForEvery(xs, "forEveryFailed", "Inspectors.scala", "forEvery", 0)(fun)
+
+  /**
+   * Check that every elements pass the inspection function.  The difference between <code>forEvery</code> and <code>forAll</code> is that
+   * <code>forEvery</code> will continue to check all elements after first failure, while <code>forAll</code> will stop on the first failure.
+   *
+   * @param xs the collection of elements
+   * @param fun the inspection function
+   * @param collecting the implicit <code>Collecting</code> that transform <code>xs</code> into <code>scala.collection.GenTraversable</code>
+   * @tparam E the type of element in the collection
+   * @tparam C the type of collection
+   *
+   */
+  def forEvery[E, C[_]](xs: C[E])(fun: E => Unit)(implicit collecting: Collecting[E, C[E]]) {
+    doForEvery(collecting.genTraversableFrom(xs), xs, "forEveryFailed", "Inspectors.scala", "forEvery", 0)(fun)
   }
 }
 
+/**
+ * Companion object that facilitates the importing of <code>Inspectors</code> members as
+ * an alternative to mixing it in. One use case is to import <code>Inspectors</code>'s members so you can use
+ * them in the Scala interpreter.
+ */
 object Inspectors extends Inspectors
 
 private[scalatest] object InspectorsHelper {
@@ -297,19 +380,19 @@ private[scalatest] object InspectorsHelper {
       Resources(prefixResourceName + "Label", elements.mkString(", "))
   }
   
-  def doForAll[T](xs: GenTraversable[T], resourceName: String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit) {
+  def doForAll[E](xs: GenTraversable[E], original: Any, resourceName: String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => Unit) {
     val resourceNamePrefix = getResourceNamePrefix(xs)
     val result = 
-      runFor(xs.toIterator, resourceNamePrefix, 0, new ForResult[T], fun, _.failedElements.length > 0)
+      runFor(xs.toIterator, resourceNamePrefix, 0, new ForResult[E], fun, _.failedElements.length > 0)
     if (result.failedElements.length > 0) 
       throw new exceptions.TestFailedException(
-        sde => Some(Resources(resourceName, indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(xs))),
+        sde => Some(Resources(resourceName, indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))),
         Some(result.failedElements(0)._3),
         getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
       )
   }
   
-  def doForAtLeast[T](min: Int, xs: GenTraversable[T], resourceName: String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit) {
+  def doForAtLeast[T](min: Int, xs: GenTraversable[T], original: Any, resourceName: String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit) {
     @tailrec
     def forAtLeastAcc(itr: Iterator[T], includeIndex: Boolean, index: Int, passedCount: Int, messageAcc: IndexedSeq[String]): (Int, IndexedSeq[String]) = {
       if (itr.hasNext) {
@@ -346,16 +429,16 @@ private[scalatest] object InspectorsHelper {
         sde => 
           Some(
             if (passedCount > 0)
-              Resources(resourceName, min.toString, elementLabel(passedCount), indentErrorMessages(messageAcc).mkString(", \n"), decorateToStringValue(xs))
+              Resources(resourceName, min.toString, elementLabel(passedCount), indentErrorMessages(messageAcc).mkString(", \n"), decorateToStringValue(original))
             else
-              Resources(resourceName + "NoElement", min.toString, indentErrorMessages(messageAcc).mkString(", \n"), decorateToStringValue(xs))
+              Resources(resourceName + "NoElement", min.toString, indentErrorMessages(messageAcc).mkString(", \n"), decorateToStringValue(original))
           ),
         None,
         getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
       )
   }
   
-  def doForEvery[T](xs: GenTraversable[T], resourceName: String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit) {
+  def doForEvery[T](xs: GenTraversable[T], original: Any, resourceName: String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit) {
     @tailrec
     def runAndCollectErrorMessage[T](itr: Iterator[T], messageList: IndexedSeq[String], index: Int)(fun: T => Unit): IndexedSeq[String] = {
       if (itr.hasNext) {
@@ -383,13 +466,13 @@ private[scalatest] object InspectorsHelper {
     val messageList = runAndCollectErrorMessage(xs.toIterator, IndexedSeq.empty, 0)(fun)
     if (messageList.size > 0)
       throw new exceptions.TestFailedException(
-          sde => Some(Resources(resourceName, indentErrorMessages(messageList).mkString(", \n"), decorateToStringValue(xs))),
+          sde => Some(Resources(resourceName, indentErrorMessages(messageList).mkString(", \n"), decorateToStringValue(original))),
           None,
           getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
         )
   }
   
-  def doForExactly[T](succeededCount: Int, xs: GenTraversable[T], resourceName: String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit) {
+  def doForExactly[T](succeededCount: Int, xs: GenTraversable[T], original: Any, resourceName: String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit) {
     if (succeededCount <= 0)
       throw new IllegalArgumentException(Resources("forAssertionsMoreThanZero", "'succeededCount'"))
     
@@ -401,12 +484,12 @@ private[scalatest] object InspectorsHelper {
         sde => 
           Some(
             if (result.passedCount == 0)
-              Resources(resourceName + "NoElement", succeededCount.toString, indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(xs))
+              Resources(resourceName + "NoElement", succeededCount.toString, indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
             else {
               if (result.passedCount < succeededCount)
-                Resources(resourceName + "Less", succeededCount.toString, elementLabel(result.passedCount), keyOrIndexLabel(xs, result.passedElements), indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(xs))
+                Resources(resourceName + "Less", succeededCount.toString, elementLabel(result.passedCount), keyOrIndexLabel(xs, result.passedElements), indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
               else
-                Resources(resourceName + "More", succeededCount.toString, elementLabel(result.passedCount), keyOrIndexLabel(xs, result.passedElements), decorateToStringValue(xs))
+                Resources(resourceName + "More", succeededCount.toString, elementLabel(result.passedCount), keyOrIndexLabel(xs, result.passedElements), decorateToStringValue(original))
             }
           ),
         None,
@@ -414,19 +497,19 @@ private[scalatest] object InspectorsHelper {
       )
   }
 
-  def doForNo[T](xs: GenTraversable[T], resourceName: String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit) {
+  def doForNo[T](xs: GenTraversable[T], original: Any, resourceName: String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit) {
     val resourceNamePrefix = getResourceNamePrefix(xs)
     val result =
       runFor(xs.toIterator, resourceNamePrefix, 0, new ForResult[T], fun, _.passedCount != 0)
     if (result.passedCount != 0)
       throw new exceptions.TestFailedException(
-        sde => Some(Resources(resourceName, keyOrIndexLabel(xs, result.passedElements), decorateToStringValue(xs))),
+        sde => Some(Resources(resourceName, keyOrIndexLabel(xs, result.passedElements), decorateToStringValue(original))),
         None,
         getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
       )
   }
 
-  def doForBetween[T](from: Int, upTo: Int, xs: GenTraversable[T], resourceName: String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit) {
+  def doForBetween[T](from: Int, upTo: Int, xs: GenTraversable[T], original: Any, resourceName: String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit) {
     if (from < 0)
       throw new IllegalArgumentException(Resources("forAssertionsMoreThanEqualZero", "'from'"))
     if (upTo <= 0)
@@ -442,12 +525,12 @@ private[scalatest] object InspectorsHelper {
         sde =>
           Some(
             if (result.passedCount == 0)
-              Resources(resourceName + "NoElement", from.toString, upTo.toString, indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(xs))
+              Resources(resourceName + "NoElement", from.toString, upTo.toString, indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
             else {
               if (result.passedCount < from)
-                Resources(resourceName + "Less", from.toString, upTo.toString, elementLabel(result.passedCount), keyOrIndexLabel(xs, result.passedElements), indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(xs))
+                Resources(resourceName + "Less", from.toString, upTo.toString, elementLabel(result.passedCount), keyOrIndexLabel(xs, result.passedElements), indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
               else
-                Resources(resourceName + "More", from.toString, upTo.toString, elementLabel(result.passedCount), keyOrIndexLabel(xs, result.passedElements), decorateToStringValue(xs))
+                Resources(resourceName + "More", from.toString, upTo.toString, elementLabel(result.passedCount), keyOrIndexLabel(xs, result.passedElements), decorateToStringValue(original))
             }
           ),
         None,
@@ -455,7 +538,7 @@ private[scalatest] object InspectorsHelper {
       )
   }
 
-  def doForAtMost[T](max: Int, xs: GenTraversable[T], resourceName: String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit) {
+  def doForAtMost[T](max: Int, xs: GenTraversable[T], original: Any, resourceName: String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit) {
     if (max <= 0)
       throw new IllegalArgumentException(Resources("forAssertionsMoreThanZero", "'max'"))
 
@@ -464,7 +547,7 @@ private[scalatest] object InspectorsHelper {
       runFor(xs.toIterator, resourceNamePrefix, 0, new ForResult[T], fun, _.passedCount > max)
     if (result.passedCount > max)
       throw new exceptions.TestFailedException(
-        sde => Some(Resources(resourceName, max.toString, result.passedCount.toString, keyOrIndexLabel(xs, result.passedElements), decorateToStringValue(xs))),
+        sde => Some(Resources(resourceName, max.toString, result.passedCount.toString, keyOrIndexLabel(xs, result.passedElements), decorateToStringValue(original))),
         None,
         getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
       )
