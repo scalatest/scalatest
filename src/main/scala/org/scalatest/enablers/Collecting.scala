@@ -173,12 +173,11 @@ object Collecting {
       }
       def sizeOf(jmap: JMAP[K, V]): Int = jmap.size
         /*
-        This is what .asScala does on a Set
-        scala.collection.mutable.Set <=> java.util.Set
+        Original order needs to be preserved
         */
-      def genTraversableFrom(collection: JMAP[K, V]): scala.collection.Set[org.scalatest.Entry[K, V]] = {
+      def genTraversableFrom(collection: JMAP[K, V]): scala.collection.GenTraversable[org.scalatest.Entry[K, V]] = {
         import scala.collection.JavaConverters._
-        collection.keySet.asScala.map(k => org.scalatest.Entry(k, collection.get(k)))
+        collection.entrySet.iterator.asScala.map(entry => org.scalatest.Entry(entry.getKey, entry.getValue)).toList
       }
     }
 

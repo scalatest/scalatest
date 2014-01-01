@@ -77,7 +77,7 @@ class InterceptWithCauseTemplate(declaration: String, assertion: String, fileNam
     "  case tfe: exceptions.TestFailedException =>\n" +
     "    assert(tfe.failedCodeFileName == Some(\"" + causeFileName + "\"))\n" +
     "    assert(tfe.failedCodeLineNumber == Some(thisLineNumber - " + causeLineAdj + "))\n" +
-    "    assert(tfe.message == Some(\"" + causeErrMessage + "\"))\n" +
+    "    assert(tfe.message == Some(" + causeErrMessage + "))\n" +
     "    assert(tfe.getCause == null)\n" +
     "  case other => fail(\"Expected cause to be TestFailedException, but got: \" + other)\n" +
     "}\n"

@@ -247,6 +247,39 @@ object GenInspectors {
       case _ => "\"index \" + getIndex(col, " + e.toString + ")"
     }
 
+  def getVariableIndexForType(colName: String, variable: String): String =
+    colName match {
+      case "Map" => "\"key \" + " + variable + "._1"
+      case "Java Map" => "\"key \" + " + variable + ".getKey"
+      case "String" => "\"index \" + getIndex(col, " + variable + ")"
+      case _ => "\"index \" + getIndex(col, " + variable + ")"
+    }
+
+  def getLhs(colName: String, variableName: String): String =
+    colName match {
+      case "Map" => variableName + "._1"
+      case "Java Map" => variableName + ".getKey"
+      case "String" => variableName + ".toString.toInt"
+      case _ => variableName
+    }
+
+  def getElementType(colName: String): String =
+    colName match {
+      case "Map" => "[(Int, String)]"
+      case "Java Map" => "[Int, String]"
+      case "String" => ""
+      case _ => "[Int]"
+    }
+
+  def getFirst(colName: String): String =
+    colName match {
+      case "Java List" => "getFirstInJavaCol"
+      case "Java Set" => "getFirstInJavaCol"
+      case "Java Map" => "getFirstInJavaMap"
+      case "String" => "getFirstInString"
+      case _ => "getFirst"
+    }
+
   class ForAllTemplate(colName: String, col: String, lhs: String) extends Template {
     override val children =
       List(
@@ -263,9 +296,97 @@ object GenInspectors {
                           "\"in \" + decorateToStringValue(col)",
                           5,
                           "ForAllInspectorsSpec.scala",
-                          "2 equaled 2",
+                          "\"2 equaled 2\"",
                           11)
-                        )
+                        ),
+        new DefTemplate("should throw TestFailedException with correct stack depth and message when more than one element failed for " + colName,
+          new InterceptWithCauseTemplate(
+            "val col = " + col + "\n" +
+            "val firstViolation = " + getFirst(colName) + getElementType(colName) + "(col, " + getLhs(colName, "_") + " >= 2)",
+            "forAll(col) { e => \n" +
+              "  assert(" + lhs + " < 2, " + lhs + " + \" was not less than 2\") \n" +
+              "}",
+            "ForAllInspectorsSpec.scala",
+            "\"forAll failed, because: \\n\" + \n" +
+              "\"  at \" + " + getVariableIndexForType(colName, "firstViolation") + " + \", \" + " + getLhs(colName, "firstViolation") + " + \" was not less than 2 (ForAllInspectorsSpec.scala:\" + (thisLineNumber - 6) + \") \\n\" + \n" +
+              "\"in \" + decorateToStringValue(col)",
+            5,
+            "ForAllInspectorsSpec.scala",
+            getLhs(colName, "firstViolation") + " + \" was not less than 2\"",
+            11)
+        ),
+        new DefTemplate("should propagate TestPendingException thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "intercept[exceptions.TestPendingException] {\n" +
+            "  forAll(col) { e => pending }\n" +
+            "}"
+          )
+        ),
+        new DefTemplate("should propagate TestCanceledException thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "intercept[exceptions.TestCanceledException] {\n" +
+            "  forAll(col) { e => cancel }\n" +
+            "}"
+          )
+        ),
+        new DefTemplate("should propagate java.lang.annotation.AnnotationFormatError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "intercept[AnnotationFormatError] {\n" +
+            "  forAll(col) { e => throw new AnnotationFormatError(\"test\") }\n" +
+            "}"
+          )
+        ),
+        new DefTemplate("should propagate java.nio.charset.CoderMalfunctionError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "intercept[CoderMalfunctionError] {\n" +
+            "  forAll(col) { e => throw new CoderMalfunctionError(new RuntimeException(\"test\")) }\n" +
+            "}"
+          )
+        ),
+        new DefTemplate("should propagate javax.xml.parsers.FactoryConfigurationError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "intercept[FactoryConfigurationError] {\n" +
+            "  forAll(col) { e => throw new FactoryConfigurationError() }\n" +
+            "}"
+          )
+        ),
+        new DefTemplate("should propagate java.lang.LinkageError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "intercept[LinkageError] {\n" +
+            "  forAll(col) { e => throw new LinkageError() }\n" +
+            "}"
+          )
+        ),
+        new DefTemplate("should propagate java.lang.ThreadDeath thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "intercept[ThreadDeath] {\n" +
+            "  forAll(col) { e => throw new ThreadDeath() }\n" +
+            "}"
+          )
+        ),
+        new DefTemplate("should propagate javax.xml.transform.TransformerFactoryConfigurationError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "intercept[TransformerFactoryConfigurationError] {\n" +
+            "  forAll(col) { e => throw new TransformerFactoryConfigurationError() }\n" +
+            "}"
+          )
+        ),
+        new DefTemplate("should propagate java.lang.VirtualMachineError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "intercept[VirtualMachineError] {\n" +
+            "  forAll(col) { e => throw new VirtualMachineError() {} }\n" +
+            "}"
+          )
+        )
       )
 
     override protected def childrenContent =
@@ -284,7 +405,12 @@ object GenInspectors {
           "SharedHelpers._",
           "FailureMessages.decorateToStringValue",
           "collection.GenTraversable",
-          "Inspectors._"),
+          "Inspectors._",
+          "java.lang.annotation.AnnotationFormatError",
+          "java.nio.charset.CoderMalfunctionError",
+          "javax.xml.parsers.FactoryConfigurationError",
+          "javax.xml.transform.TransformerFactoryConfigurationError"
+        ),
         classTemplate = new ClassTemplate {
           val name = "ForAllInspectorsSpec"
           override val extendName = Some("Spec")
