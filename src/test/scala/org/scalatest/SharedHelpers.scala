@@ -479,9 +479,27 @@ object SharedHelpers extends Assertions {
     else
       getNext(itr, predicate)
   }
+
+  @tailrec
+  final def getNextInJavaIterator[T](itr: java.util.Iterator[T], predicate: T => Boolean): T = {
+    val next = itr.next
+    if (predicate(next))
+      next
+    else
+      getNextInJavaIterator(itr, predicate)
+  }
   
   def getFirst[T](col: GenTraversable[T], predicate: T => Boolean): T = 
     getNext(col.toIterator, predicate)
+
+  def getFirstInJavaCol[T](col: java.util.Collection[T], predicate: T => Boolean): T =
+    getNextInJavaIterator(col.iterator, predicate)
+
+  def getFirstInJavaMap[K, V](map: java.util.Map[K, V], predicate: java.util.Map.Entry[K, V] => Boolean): java.util.Map.Entry[K, V] =
+    getNextInJavaIterator(map.entrySet.iterator, predicate)
+
+  def getFirstInString(str: String, predicate: Char => Boolean): Char =
+    getNext(str.toCharArray.iterator, predicate)
   
   @tailrec
   final def getNextNot[T](itr: Iterator[T], predicate: T => Boolean): T = {

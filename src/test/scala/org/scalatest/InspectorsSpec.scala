@@ -278,7 +278,7 @@ class InspectorsSpec extends Spec with Matchers with Inspectors with TableDriven
         forAll(jMap123) { e => e.key should be < 4 }
       }
       def `should throw a TFE with a good error message if fails` {
-        val jMap12345: java.util.Map[Int, Int] = Map(1 -> 2, 2 -> 3, 3 -> 4, 4 -> 5, 5 -> 6).asJava
+        val jMap12345: java.util.Map[Int, Int] = javaMap(Entry(1, 2), Entry(2, 3), Entry(3, 4), Entry(4, 5), Entry(5, 6))
         val e = intercept[exceptions.TestFailedException] {
           forAll(jMap12345) { e =>
             e.key should be < 4
@@ -287,8 +287,8 @@ class InspectorsSpec extends Spec with Matchers with Inspectors with TableDriven
         e.failedCodeFileName should be (Some("InspectorsSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 5))
         e.message should be (Some("forAll failed, because: \n" +
-                                   "  at index 1, 4 was not less than 4 (InspectorsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
-                                   "in {5=6, 1=2, 2=3, 3=4, 4=5}"))
+                                   "  at key 4, 4 was not less than 4 (InspectorsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                   "in {1=2, 2=3, 3=4, 4=5, 5=6}"))
         e.getCause match {
           case tfe: exceptions.TestFailedException =>
             tfe.failedCodeFileName should be (Some("InspectorsSpec.scala"))
@@ -1752,5 +1752,5 @@ class InspectorsSpec extends Spec with Matchers with Inspectors with TableDriven
     }
     
   }
-  
+
 }

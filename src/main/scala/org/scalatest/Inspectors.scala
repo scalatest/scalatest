@@ -295,9 +295,10 @@ private[scalatest] object InspectorsHelper {
   
   def indentErrorMessages(messages: IndexedSeq[String]) = indentLines(1, messages)
   
-  def getResourceNamePrefix(xs: GenTraversable[_]): String = 
+  def getResourceNamePrefix(xs: Any): String =
     xs match {
       case _: collection.GenMap[_, _] => "forAssertionsGenMapMessage"
+      case _: java.util.Map[_, _] => "forAssertionsGenMapMessage"
       case _ => "forAssertionsGenTraversableMessage"
     }
   
@@ -341,6 +342,7 @@ private[scalatest] object InspectorsHelper {
           case e if !shouldPropagate(e) => 
             val messageKey = head match {
               case tuple: Tuple2[_, _] if resourceNamePrefix == "forAssertionsGenMapMessage" => tuple._1.toString
+              case entry: Entry[_, _] if resourceNamePrefix == "forAssertionsGenMapMessage" => entry.getKey.toString
               case _ => index.toString
             }
             result.copy(messageAcc = result.messageAcc :+ createMessage(messageKey, e, resourceNamePrefix), failedElements = result.failedElements :+ (index, head, e))
@@ -381,7 +383,7 @@ private[scalatest] object InspectorsHelper {
   }
   
   def doForAll[E](xs: GenTraversable[E], original: Any, resourceName: String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => Unit) {
-    val resourceNamePrefix = getResourceNamePrefix(xs)
+    val resourceNamePrefix = getResourceNamePrefix(original)
     val result = 
       runFor(xs.toIterator, resourceNamePrefix, 0, new ForResult[E], fun, _.failedElements.length > 0)
     if (result.failedElements.length > 0) 
@@ -404,7 +406,7 @@ private[scalatest] object InspectorsHelper {
           }
           catch {
             case e if !shouldPropagate(e) => 
-              val resourceNamePrefix = getResourceNamePrefix(xs)
+              val resourceNamePrefix = getResourceNamePrefix(original)
               val messageKey = head match {
                 case tuple: Tuple2[_, _] if resourceNamePrefix == "forAssertionsGenMapMessage" => tuple._1.toString
                 case _ => index.toString
@@ -450,7 +452,7 @@ private[scalatest] object InspectorsHelper {
           }
           catch {
             case e if !shouldPropagate(e) => 
-              val resourceNamePrefix = getResourceNamePrefix(xs)
+              val resourceNamePrefix = getResourceNamePrefix(original)
               val messageKey = head match {
                 case tuple: Tuple2[_, _] if resourceNamePrefix == "forAssertionsGenMapMessage" => tuple._1.toString
                 case _ => index.toString
@@ -476,7 +478,7 @@ private[scalatest] object InspectorsHelper {
     if (succeededCount <= 0)
       throw new IllegalArgumentException(Resources("forAssertionsMoreThanZero", "'succeededCount'"))
     
-    val resourceNamePrefix = getResourceNamePrefix(xs)
+    val resourceNamePrefix = getResourceNamePrefix(original)
     val result = 
       runFor(xs.toIterator, resourceNamePrefix, 0, new ForResult[T], fun, _.passedCount > succeededCount)
     if (result.passedCount != succeededCount)
@@ -498,7 +500,7 @@ private[scalatest] object InspectorsHelper {
   }
 
   def doForNo[T](xs: GenTraversable[T], original: Any, resourceName: String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit) {
-    val resourceNamePrefix = getResourceNamePrefix(xs)
+    val resourceNamePrefix = getResourceNamePrefix(original)
     val result =
       runFor(xs.toIterator, resourceNamePrefix, 0, new ForResult[T], fun, _.passedCount != 0)
     if (result.passedCount != 0)
@@ -517,7 +519,7 @@ private[scalatest] object InspectorsHelper {
     if (upTo <= from)
       throw new IllegalArgumentException(Resources("forAssertionsMoreThan", "'upTo'", "'from'"))
 
-    val resourceNamePrefix = getResourceNamePrefix(xs)
+    val resourceNamePrefix = getResourceNamePrefix(original)
     val result =
       runFor(xs.toIterator, resourceNamePrefix, 0, new ForResult[T], fun, _.passedCount > upTo)
     if (result.passedCount < from || result.passedCount > upTo)
@@ -542,7 +544,7 @@ private[scalatest] object InspectorsHelper {
     if (max <= 0)
       throw new IllegalArgumentException(Resources("forAssertionsMoreThanZero", "'max'"))
 
-    val resourceNamePrefix = getResourceNamePrefix(xs)
+    val resourceNamePrefix = getResourceNamePrefix(original)
     val result =
       runFor(xs.toIterator, resourceNamePrefix, 0, new ForResult[T], fun, _.passedCount > max)
     if (result.passedCount > max)
