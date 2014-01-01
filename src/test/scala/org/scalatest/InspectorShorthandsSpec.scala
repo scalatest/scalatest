@@ -3677,5 +3677,28 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
         }
       }
     }
+    object `when used with Strings` {
+      def `should do nothing if succeeds` {
+        all ("123") should be < '4'
+      }
+      def `should throw a TFE with a good error message if fails` {
+        val e = intercept[exceptions.TestFailedException] {
+          all ("12345") should be < '4'
+        }
+        e.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+        e.message should be (Some("'all' inspection failed, because: \n" +
+                                   "  at index 3, '4' was not less than '4' (InspectorShorthandsSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "in \"12345\""))
+        e.getCause match {
+          case tfe: exceptions.TestFailedException =>
+            tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
+            tfe.failedCodeLineNumber should be (Some(thisLineNumber - 10))
+            tfe.message should be (Some("'4' was not less than '4'"))
+            tfe.getCause should be (null)
+          case other => fail("Expected cause to be TestFailedException, but got: " + other)
+        }
+      }
+    }
   }
 }
