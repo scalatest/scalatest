@@ -287,7 +287,7 @@ class InspectorsSpec extends Spec with Matchers with Inspectors with TableDriven
         e.failedCodeFileName should be (Some("InspectorsSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 5))
         e.message should be (Some("forAll failed, because: \n" +
-                                   "  at index 1, 4 was not less than 4 (InspectorsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                   "  at key 4, 4 was not less than 4 (InspectorsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                    "in {5=6, 1=2, 2=3, 3=4, 4=5}"))
         e.getCause match {
           case tfe: exceptions.TestFailedException =>

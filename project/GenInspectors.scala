@@ -242,7 +242,7 @@ object GenInspectors {
   def getIndexForType(colName: String, e: Any): String =
     colName match {
       case "Map" => "\"key " + e.toString + "\""
-      case "Java Map" => "\"index " + e.toString + "\"" // TODO: to change to key instead
+      case "Java Map" => "\"key " + e.toString + "\""
       case "String" => "\"index \" + getIndex(col, '" + e.toString + "')"
       case _ => "\"index \" + getIndex(col, " + e.toString + ")"
     }
