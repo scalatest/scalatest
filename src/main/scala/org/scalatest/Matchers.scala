@@ -5802,6 +5802,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   def all[E, C[_]](xs: C[E])(implicit collecting: Collecting[E, C[E]]): ResultOfCollectedAny[E] =
     new ResultOfCollectedAny(AllCollected, collecting.genTraversableFrom(xs), xs)
 
+  def all[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
+    new ResultOfCollectedAny(AllCollected, collecting.genTraversableFrom(xs), xs)
+
   def all(xs: String)(implicit collecting: Collecting[Char, String]): ResultOfCollectedAny[Char] =
     new ResultOfCollectedAny(AllCollected, collecting.genTraversableFrom(xs), xs)
 

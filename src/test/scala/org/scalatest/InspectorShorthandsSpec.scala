@@ -1838,12 +1838,14 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
       javaCol
     }
     
+/*
     private def javaMap(valueMap: GenMap[String, String]): java.util.Map[String, String] = {
       val javaMap = new java.util.LinkedHashMap[String, String]()
       for ((key, value) <- valueMap)
         javaMap.put(key, value)
       javaMap
     }
+*/
     
     object `when work with theSameElementsAs contain matcher` {
       
@@ -3695,6 +3697,32 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
             tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
             tfe.failedCodeLineNumber should be (Some(thisLineNumber - 10))
             tfe.message should be (Some("'4' was not less than '4'"))
+            tfe.getCause should be (null)
+          case other => fail("Expected cause to be TestFailedException, but got: " + other)
+        }
+      }
+    }
+    object `when used with java.util.Map` {
+      import collection.JavaConverters._
+      def `should do nothing if succeeds` {
+        val jMap123: java.util.Map[Int, Int] = Map(1 -> 5, 2 -> 5, 3 -> 5).asJava
+        all (jMap123) should have ('value(5))
+      }
+      def `should throw a TFE with a good error message if fails` {
+        val jMap12345: java.util.Map[Int, Int] = javaMap(Entry(1, 5), Entry(2, 5), Entry(3, 5), Entry(4, 6), Entry(5, 5))
+        val e = intercept[exceptions.TestFailedException] {
+          all(jMap12345) should have ('value(5))
+        }
+        e.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+        e.message should be (Some("'all' inspection failed, because: \n" +
+                                   "  at key 4, The value property had value 6, instead of its expected value 5, on object 4=6 (InspectorShorthandsSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+                                   "in {1=5, 2=5, 3=5, 4=6, 5=5}"))
+        e.getCause match {
+          case tfe: exceptions.TestFailedException =>
+            tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
+            tfe.failedCodeLineNumber should be (Some(thisLineNumber - 10))
+            tfe.message should be (Some("The value property had value 6, instead of its expected value 5, on object 4=6"))
             tfe.getCause should be (null)
           case other => fail("Expected cause to be TestFailedException, but got: " + other)
         }
