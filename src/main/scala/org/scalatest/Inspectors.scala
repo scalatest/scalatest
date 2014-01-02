@@ -241,6 +241,14 @@ trait Inspectors {
     doForAtMost(max, collecting.genTraversableFrom(xs), xs, "forAtMostFailed", "Inspectors.scala", "forAtMost", 0)(fun)
   }
 
+  def forAtMost[K, V, JMAP[k, v] <: java.util.Map[k, v]](max: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => Unit)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]) {
+    doForAtMost(max, collecting.genTraversableFrom(xs), xs, "forAtMostFailed", "Inspectors.scala", "forAtMost", 0)(fun)
+  }
+
+  def forAtMost(max: Int, xs: String)(fun: Char => Unit)(implicit collecting: Collecting[Char, String]) {
+    doForAtMost(max, collecting.genTraversableFrom(xs), xs, "forAtMostFailed", "Inspectors.scala", "forAtMost", 0)(fun)
+  }
+
   /**
    * Check that exactly <code>succeededCount</code> number of elements pass the inspection function.
    *
@@ -364,7 +372,7 @@ private[scalatest] object InspectorsHelper {
       result
   }
   
-  def keyOrIndexLabel(xs: GenTraversable[_], passedElements: IndexedSeq[(Int, _)]): String = {
+  def keyOrIndexLabel(xs: Any, passedElements: IndexedSeq[(Int, _)]): String = {
     def makeAndLabel(indexes: IndexedSeq[Int]): String = 
       if (indexes.length > 1)
         indexes.dropRight(1).mkString(", ") + " and " + indexes.last
@@ -372,10 +380,11 @@ private[scalatest] object InspectorsHelper {
         indexes.mkString(", ")
       
     val (prefixResourceName, elements) = xs match {
-      case map: collection.GenMap[_, _] => 
-        val elements = passedElements.map{ case (index, e) => 
+      case _: collection.GenMap[_, _] | _: java.util.Map[_, _] =>
+        val elements = passedElements.map{ case (index, e) =>
           e match {
             case tuple2: Tuple2[_, _] => tuple2._1
+            case entry: java.util.Map.Entry[_, _] => entry.getKey
             case _ => index
           }
         }
@@ -383,7 +392,6 @@ private[scalatest] object InspectorsHelper {
       case _ => 
         ("forAssertionsIndex", passedElements.map(_._1))
     }
-    
     if (elements.length > 1)
       Resources(prefixResourceName + "AndLabel", elements.dropRight(1).mkString(", "), elements.last.toString) 
     else
@@ -558,7 +566,7 @@ private[scalatest] object InspectorsHelper {
       runFor(xs.toIterator, resourceNamePrefix, 0, new ForResult[T], fun, _.passedCount > max)
     if (result.passedCount > max)
       throw new exceptions.TestFailedException(
-        sde => Some(Resources(resourceName, max.toString, result.passedCount.toString, keyOrIndexLabel(xs, result.passedElements), decorateToStringValue(original))),
+        sde => Some(Resources(resourceName, max.toString, result.passedCount.toString, keyOrIndexLabel(original, result.passedElements), decorateToStringValue(original))),
         None,
         getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
       )

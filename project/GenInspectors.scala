@@ -255,6 +255,22 @@ object GenInspectors {
       case _ => "\"index \" + getIndex(col, " + variable + ")"
     }
 
+  def getIndexOrKeyWord(colName: String): String =
+    colName match {
+      case "Map" => "key"
+      case "Java Map" => "key"
+      case "String" => "index"
+      case _ => "index"
+    }
+
+  def getIndexOrKey(colName: String, variable: String): String =
+    colName match {
+      case "Map" => variable + "._1"
+      case "Java Map" => variable + ".getKey"
+      case "String" => "getIndex(col, " + variable + ")"
+      case _ => "getIndex(col, " + variable + ")"
+    }
+
   def getLhs(colName: String, variableName: String): String =
     colName match {
       case "Map" => variableName + "._1"
@@ -615,6 +631,131 @@ object GenInspectors {
     override def toString = childrenContent
   }
 
+  class ForAtMostTemplate(colName: String, col: String, lhs: String) extends Template {
+    override val children =
+      List(
+        new DefTemplate("should throw IllegalArgumentException when 0 is passed in as max for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "val e = intercept[IllegalArgumentException] {\n" +
+            "  forAtMost(0, col) { e => assert(" + lhs + " == 2) }\n" +
+            "}\n" +
+            "assert(e.getMessage == \"'max' argument must be more than 0\")"
+          )
+        ),
+        new DefTemplate("should throw IllegalArgumentException when -1 is passed in as max for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "val e = intercept[IllegalArgumentException] {\n" +
+            "  forAtMost(-1, col) { e => assert(" + lhs + " == 2) }\n" +
+            "}\n" +
+            "assert(e.getMessage == \"'max' argument must be more than 0\")"
+          )
+        ),
+        new DefTemplate("should pass when number of elements passed is less than maximum allowed for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "forAtMost(2, col) { e => assert(" + lhs + " == 2) }"
+          )
+        ),
+        new DefTemplate("should pass when number of elements passed equal to maximum allowed for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "forAtMost(2, col) { e => assert(" + lhs + " < 3) }"
+          )
+        ),
+        new DefTemplate("should throw TestFailedException with correct stack depth and message when less than minimum count of elements passed for " + colName,
+          new InterceptTemplate(
+            "val col = " + col + "\n" +
+            "val itr = col." + iterator(colName) + "\n" +
+            "val first = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " < 4)\n" +
+            "val second = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " < 4)\n" +
+            "val third = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " < 4)\n",
+            "forAtMost(2, col) { e => \n" +
+            "  assert(" + lhs + " < 4) \n" +
+            "}",
+            "ForAtMostInspectorsSpec.scala",
+            "\"forAtMost(2) failed, because 3 elements satisfied the assertion block at " + getIndexOrKeyWord(colName) + " \" + " + getIndexOrKey(colName, "first") + " + \", \" + " + getIndexOrKey(colName, "second") + " + \" and \" + " + getIndexOrKey(colName, "third") + " + \" in \" + decorateToStringValue(col)",
+            5)
+        ),
+        new DefTemplate("should pass when none of the elements passed for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "forAtMost(2, col) { e => assert(" + lhs + " > 5) }"
+          )
+        ),
+        new DefTemplate("should propagate TestPendingException thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "intercept[exceptions.TestPendingException] {\n" +
+            "  forAtMost(1, col) { e => pending }\n" +
+            "}"
+          )
+        ),
+        new DefTemplate("should propagate TestCanceledException thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "intercept[exceptions.TestCanceledException] {\n" +
+            "  forAtMost(1, col) { e => cancel }\n" +
+            "}"
+          )
+        ),
+        new DefTemplate("should propagate java.lang.annotation.AnnotationFormatError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "intercept[AnnotationFormatError] {\n" +
+            "  forAtMost(1, col) { e => throw new AnnotationFormatError(\"test\") }\n" +
+            "}"
+          )
+        ),
+        new DefTemplate("should propagate java.nio.charset.CoderMalfunctionError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "intercept[CoderMalfunctionError] {\n" +
+            "  forAtMost(1, col) { e => throw new CoderMalfunctionError(new RuntimeException(\"test\")) }\n" +
+            "}"
+          )
+        ),
+        new DefTemplate("should propagate javax.xml.parsers.FactoryConfigurationError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "intercept[FactoryConfigurationError] {\n" +
+            "  forAtMost(1, col) { e => throw new FactoryConfigurationError() }\n" +
+            "}"
+          )
+        ),
+        new DefTemplate("should propagate java.lang.LinkageError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "intercept[LinkageError] {\n" +
+            "  forAtMost(1, col) { e => throw new LinkageError() }\n" +
+            "}"
+          )
+        ),
+        new DefTemplate("should propagate java.lang.ThreadDeath thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "intercept[ThreadDeath] {\n" +
+            "  forAtMost(1, col) { e => throw new ThreadDeath() }\n" +
+            "}"
+          )
+        ),
+        new DefTemplate("should propagate javax.xml.transform.TransformerFactoryConfigurationError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "intercept[VirtualMachineError] {\n" +
+            "  forAtMost(1, col) { e => throw new VirtualMachineError() {} }\n" +
+            "}"
+          )
+        )
+      )
+
+    override protected def childrenContent =
+      children.map(_.toString).mkString("\n") + "\n"
+
+    override def toString = childrenContent
+  }
+
   def genForAllSpecFile(targetDir: File) {
     val forAllSpecFile = new File(targetDir, "ForAllInspectorsSpec.scala")
     genFile(
@@ -665,6 +806,34 @@ object GenInspectors {
           override val withList = List.empty
           override val children = collectionTypes.map {
             case (name, col, lhs) => new ForAtLeastTemplate(name, col, lhs)
+          }
+        }
+      )
+    )
+  }
+
+  def genForAtMostSpecFile(targetDir: File) {
+    val forAtMostSpecFile = new File(targetDir, "ForAtMostInspectorsSpec.scala")
+    genFile(
+      forAtMostSpecFile,
+      new SingleClassFile(
+        packageName = Some("org.scalatest.inspectors.foratmost"),
+        importList = List("org.scalatest._",
+          "SharedHelpers._",
+          "FailureMessages.decorateToStringValue",
+          "collection.GenTraversable",
+          "Inspectors._",
+          "java.lang.annotation.AnnotationFormatError",
+          "java.nio.charset.CoderMalfunctionError",
+          "javax.xml.parsers.FactoryConfigurationError",
+          "javax.xml.transform.TransformerFactoryConfigurationError"
+        ),
+        classTemplate = new ClassTemplate {
+          val name = "ForAtMostInspectorsSpec"
+          override val extendName = Some("Spec")
+          override val withList = List.empty
+          override val children = collectionTypes.map {
+            case (name, col, lhs) => new ForAtMostTemplate(name, col, lhs)
           }
         }
       )
@@ -786,6 +955,7 @@ object GenInspectors {
   def genTest(targetBaseDir: File, scalaVersion: String) {
     genForAllSpecFile(targetDir(targetBaseDir, "forall"))
     genForAtLeastSpecFile(targetDir(targetBaseDir, "foratleast"))
+    genForAtMostSpecFile(targetDir(targetBaseDir, "foratmost"))
     genNestedInspectorsSpecFile(targetDir(targetBaseDir, "nested"))
   }
   
