@@ -84,6 +84,19 @@ class InterceptWithCauseTemplate(declaration: String, assertion: String, fileNam
 
 }
 
+class InterceptWithNullCauseTemplate(declaration: String, assertion: String, fileName: String, errMessage: String, lineAdj:Int) extends Template {
+
+  override def toString: String =
+    declaration + "\n" +
+      "val e = intercept[exceptions.TestFailedException] {\n" +
+      assertion.split("\n").map("  " + _).mkString("\n") + "\n" +
+      "}\n" +
+      "assert(e.failedCodeFileName == Some(\"" + fileName + "\"))\n" +
+      "assert(e.failedCodeLineNumber == Some(thisLineNumber - " + lineAdj + "))\n" +
+      "assert(e.message == Some(" + errMessage + "))\n" +
+      "assert(e.getCause == null)\n"
+}
+
 class MessageTemplate(autoQuoteString: Boolean) extends Template {
   def wrapStringIfNecessary(value: Any): String = 
     value match {

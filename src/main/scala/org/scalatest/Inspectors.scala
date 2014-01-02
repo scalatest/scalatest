@@ -209,6 +209,14 @@ trait Inspectors {
     doForAtLeast(min, collecting.genTraversableFrom(xs), xs, "forAtLeastFailed", "Inspectors.scala", "forAtLeast", 0)(fun)
   }
 
+  def forAtLeast[K, V, JMAP[k, v] <: java.util.Map[k, v]](min: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => Unit)(implicit collecting: Collecting[org.scalatest.Entry[K, V],JMAP[K, V]]) {
+    doForAtLeast(min, collecting.genTraversableFrom(xs), xs, "forAtLeastFailed", "Inspectors.scala", "forAtLeast", 0)(fun)
+  }
+
+  def forAtLeast(min: Int, xs: String)(fun: Char => Unit)(implicit collecting: Collecting[Char, String]) {
+    doForAtLeast(min, collecting.genTraversableFrom(xs), xs, "forAtLeastFailed", "Inspectors.scala", "forAtLeast", 0)(fun)
+  }
+
   private def shouldIncludeIndex[T, R](xs: GenTraversable[T]) = xs.isInstanceOf[GenSeq[T]]
 
   private def createElementsMessage[T](elements: IndexedSeq[(Int, T)], includeIndex: Boolean): String = elements.map { case (index, element) => 
@@ -409,6 +417,7 @@ private[scalatest] object InspectorsHelper {
               val resourceNamePrefix = getResourceNamePrefix(original)
               val messageKey = head match {
                 case tuple: Tuple2[_, _] if resourceNamePrefix == "forAssertionsGenMapMessage" => tuple._1.toString
+                case entry: Entry[_, _] if resourceNamePrefix == "forAssertionsGenMapMessage" => entry.getKey.toString
                 case _ => index.toString
               }
               (passedCount, messageAcc :+ createMessage(messageKey, e, resourceNamePrefix))

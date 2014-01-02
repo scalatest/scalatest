@@ -438,6 +438,22 @@ object SharedHelpers extends Assertions {
     getIndexAcc(xs.iterator, 0)
   }
 
+  def getIndex[K, V](xs: java.util.Map[K, V], value: java.util.Map.Entry[K, V]): Int = {
+    @tailrec
+    def getIndexAcc(itr: java.util.Iterator[java.util.Map.Entry[K, V]], count: Int): Int = {
+      if (itr.hasNext) {
+        val next = itr.next
+        if (next == value)
+          count
+        else
+          getIndexAcc(itr, count + 1)
+      }
+      else
+        -1
+    }
+    getIndexAcc(xs.entrySet.iterator, 0)
+  }
+
   def getKeyIndex[K, V](xs: java.util.Map[K, V], value: K): Int = {
     @tailrec
     def getIndexAcc[K, V](itr: java.util.Iterator[java.util.Map.Entry[K, V]], count: Int): Int = {
@@ -470,7 +486,7 @@ object SharedHelpers extends Assertions {
     val itr = xs.toIterator
     getIndexesAcc(itr, IndexedSeq.empty, 0)
   }
-  
+
   @tailrec
   final def getNext[T](itr: Iterator[T], predicate: T => Boolean): T = {
     val next = itr.next
@@ -480,6 +496,9 @@ object SharedHelpers extends Assertions {
       getNext(itr, predicate)
   }
 
+  final def getNextInString(itr: Iterator[Char], predicate: Char => Boolean) =
+    getNext[Char](itr, predicate)
+
   @tailrec
   final def getNextInJavaIterator[T](itr: java.util.Iterator[T], predicate: T => Boolean): T = {
     val next = itr.next
@@ -488,6 +507,12 @@ object SharedHelpers extends Assertions {
     else
       getNextInJavaIterator(itr, predicate)
   }
+
+  //final def getNextInJavaMap[K, V](map: java.util.Map[K, V], predicate: java.util.Map.Entry[K, V] => Boolean): java.util.Map.Entry[K, V] =
+    //getNextInJavaIterator(map.entrySet.iterator, predicate)
+
+  final def getNextInJavaMap[K, V](itr: java.util.Iterator[java.util.Map.Entry[K, V]], predicate: java.util.Map.Entry[K, V] => Boolean): java.util.Map.Entry[K, V] =
+    getNextInJavaIterator(itr, predicate)
   
   def getFirst[T](col: GenTraversable[T], predicate: T => Boolean): T = 
     getNext(col.toIterator, predicate)
