@@ -959,8 +959,13 @@ private[scalatest] class HtmlReporter(
                 case _ => r
               }
             }
-            results += suiteResult
-            makeSuiteFile(suiteResult)
+
+            val suiteStartingEvent = sortedSuiteEvents.head.asInstanceOf[SuiteStarting]
+
+            if (suiteStartingEvent.formatter != Some(MotionToSuppress)) {
+              results += suiteResult
+              makeSuiteFile(suiteResult)
+            }
           case other => 
             throw new IllegalStateException("Expected SuiteStarting for completion event: " + event +  " in the head of suite events, but we got: " + other)
         }
