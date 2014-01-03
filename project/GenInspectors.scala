@@ -221,13 +221,13 @@ object GenInspectors {
 
   val collectionTypes =
     List(
-      ("List", "List(1, 2, 3)", "List.empty[Int]", "e"),
-      ("Set", "Set(1, 2, 3)", "Set.empty[Int]", "e"),
-      ("String", "\"123\"", "\"\"", "e.toString.toInt"),
-      ("Map", "Map(1 -> \"one\", 2 -> \"two\", 3 -> \"three\")", "Map.empty[Int, String]", "e._1"),
-      ("Java List", "javaList(1, 2, 3)", "javaList[Int]()", "e"),
-      ("Java Set", "javaSet(1, 2, 3)", "javaSet[Int]()", "e"),
-      ("Java Map", "javaMap(Entry(1, \"one\"), Entry(2, \"two\"), Entry(3, \"three\"))", "javaMap[Int, String]()", "e.getKey")
+      ("List", "List(1, 2, 3)", "List(1, 2, 3, 4, 5)", "List.empty[Int]", "e"),
+      ("Set", "Set(1, 2, 3)", "Set(1, 2, 3, 4, 5)", "Set.empty[Int]", "e"),
+      ("String", "\"123\"", "\"12345\"", "\"\"", "e.toString.toInt"),
+      ("Map", "Map(1 -> \"one\", 2 -> \"two\", 3 -> \"three\")", "Map(1 -> \"one\", 2 -> \"two\", 3 -> \"three\", 4 -> \"four\", 5 -> \"five\")", "Map.empty[Int, String]", "e._1"),
+      ("Java List", "javaList(1, 2, 3)", "javaList(1, 2, 3, 4, 5)", "javaList[Int]()", "e"),
+      ("Java Set", "javaSet(1, 2, 3)", "javaSet(1, 2, 3, 4, 5)", "javaSet[Int]()", "e"),
+      ("Java Map", "javaMap(Entry(1, \"one\"), Entry(2, \"two\"), Entry(3, \"three\"))", "javaMap(Entry(1, \"one\"), Entry(2, \"two\"), Entry(3, \"three\"), Entry(4, \"four\"), Entry(5, \"five\"))", "javaMap[Int, String]()", "e.getKey")
     )
 
   class DefTemplate(name: String, body: Template) extends Template {
@@ -1085,6 +1085,253 @@ object GenInspectors {
     override def toString = childrenContent
   }
 
+  class ForBetweenTemplate(colName: String, col: String, bigCol: String, emptyCol: String, lhs: String) extends Template {
+    override val children =
+      List(
+        new DefTemplate("should throw IllegalArgumentException when -1 is passed in as from for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "val e = intercept[IllegalArgumentException] {\n" +
+            "  forBetween(-1, 2, col) { e => assert(" + lhs + " == 2) }\n" +
+            "}\n" +
+            "assert(e.getMessage == \"'from' argument must be more than or equal 0\")"
+          )
+        ),
+        new DefTemplate("should throw IllegalArgumentException when 0 is passed in as upTo for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "val e = intercept[IllegalArgumentException] {\n" +
+            "  forBetween(0, 0, col) { e => assert(" + lhs + " == 2) }\n" +
+            "}\n" +
+            "assert(e.getMessage == \"'upTo' argument must be more than 0\")"
+          )
+        ),
+        new DefTemplate("should throw IllegalArgumentException when -1 is passed in as upTo for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "val e = intercept[IllegalArgumentException] {\n" +
+            "  forBetween(0, -1, col) { e => assert(" + lhs + " == 2) }\n" +
+            "}\n" +
+            "assert(e.getMessage == \"'upTo' argument must be more than 0\")"
+          )
+        ),
+        new DefTemplate("should throw IllegalArgumentException when from and upTo is the same for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "val e = intercept[IllegalArgumentException] {\n" +
+            "  forBetween(1, 1, col) { e => assert(" + lhs + " == 2) }\n" +
+            "}\n" +
+            "assert(e.getMessage == \"'upTo' argument must be more than 'from' argument\")"
+          )
+        ),
+        new DefTemplate("should throw IllegalArgumentException when from is greater than upTo for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "val e = intercept[IllegalArgumentException] {\n" +
+            "  forBetween(3, 2, col) { e => assert(" + lhs + " == 2) }\n" +
+            "}\n" +
+            "assert(e.getMessage == \"'upTo' argument must be more than 'from' argument\")"
+          )
+        ),
+        new DefTemplate("should pass when number of element passed is within the specified range for " + colName,
+          new SimpleTemplate(
+            "val col = " + bigCol + "\n" +
+            "forBetween(2, 4, col) { e => assert(" + lhs + " > 2) }"
+          )
+        ),
+        new DefTemplate("should pass when number of element passed is same as lower bound of the specified range for " + colName,
+          new SimpleTemplate(
+            "val col = " + bigCol + "\n" +
+            "forBetween(2, 4, col) { e => assert(" + lhs + " > 3) }"
+          )
+        ),
+        new DefTemplate("should pass when number of element passed is same as upper bound of the specified range for " + colName,
+          new SimpleTemplate(
+            "val col = " + bigCol + "\n" +
+            "forBetween(2, 4, col) { e => assert(" + lhs + " > 1) }"
+          )
+        ),
+        new DefTemplate("should use 'no element' in error message when no element satisfied the assertion block and 'from' is > 0 for " + colName,
+          new InterceptWithNullCauseTemplate(
+            "val col = " + col + "\n" +
+            "val itr = col." + iterator(colName) + "\n" +
+            "val first = itr.next\n" +
+            "val second = itr.next\n" +
+            "val third = itr.next\n",
+            "forBetween(1, 2, col) { e => \n" +
+            "  assert(" + lhs + " == 5) \n" +
+            "}",
+            "ForBetweenInspectorsSpec.scala",
+            "\"forBetween(1, 2) failed, because no element satisfied the assertion block: \\n\" + \n" +
+              "\"  at \" + " + getVariableIndexForType(colName, "first") + " + \", \" + " + getLhs(colName, "first") + " + \" did not equal 5 (ForBetweenInspectorsSpec.scala:\" + (thisLineNumber - 6) + \"), \\n\" + \n" +
+              "\"  at \" + " + getVariableIndexForType(colName, "second") + " + \", \" + " + getLhs(colName, "second") + " + \" did not equal 5 (ForBetweenInspectorsSpec.scala:\" + (thisLineNumber - 7) + \"), \\n\" + \n" +
+              "\"  at \" + " + getVariableIndexForType(colName, "third") + " + \", \" + " + getLhs(colName, "third") + " + \" did not equal 5 (ForBetweenInspectorsSpec.scala:\" + (thisLineNumber - 8) + \") \\n\" + \n" +
+              "\"in \" + decorateToStringValue(col)",
+            5)
+        ),
+        new DefTemplate("should use 'element' in error message when exactly 1 element satisfied the assertion block, when total passed is less than 'from' for " + colName,
+          new InterceptWithNullCauseTemplate(
+            "val col = " + col + "\n" +
+            "val itr = col." + iterator(colName) + "\n" +
+            "val first = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " != 2)\n" +
+            "val second = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " != 2)\n" +
+            "val succeeded = " + getFirst(colName) + getElementType(colName) + "(col, " + getLhs(colName, "_") + " == 2)",
+            "forBetween(2, 3, col) { e => \n" +
+            "  assert(" + lhs + " == 2)\n" +
+            "}",
+            "ForBetweenInspectorsSpec.scala",
+            "\"forBetween(2, 3) failed, because only 1 element satisfied the assertion block at " + getIndexOrKeyWord(colName) + " \" + " + getIndexOrKey(colName, "succeeded") + " + \": \\n\" + \n" +
+              "\"  at \" + " + getVariableIndexForType(colName, "first") + " + \", \" + " + getLhs(colName, "first") + " + \" did not equal 2 (ForBetweenInspectorsSpec.scala:\" + (thisLineNumber - 6) + \"), \\n\" + \n" +
+              "\"  at \" + " + getVariableIndexForType(colName, "second") + " + \", \" + " + getLhs(colName, "second") + " + \" did not equal 2 (ForBetweenInspectorsSpec.scala:\" + (thisLineNumber - 7) + \") \\n\" + \n" +
+              "\"in \" + decorateToStringValue(col)",
+            5)
+        ),
+        new DefTemplate("should use 'elements' in error message when > 1 element satisfied the assertion block, when total passed is less than 'from' for " + colName,
+          new InterceptWithNullCauseTemplate(
+            "val col = " + col + "\n" +
+            "val itr = col." + iterator(colName) + "\n" +
+            "val first = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " < 3)\n" +
+            "val second = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " < 3)\n" +
+            "val failed = " + getFirst(colName) + getElementType(colName) + "(col, " + getLhs(colName, "_") + " >= 3)",
+            "forBetween(3, 4, col) { e => \n" +
+            "  assert(" + lhs + " < 3, " + lhs + " + \" was not lesser than 3\") \n" +
+            "}",
+            "ForBetweenInspectorsSpec.scala",
+            "\"forBetween(3, 4) failed, because only 2 elements satisfied the assertion block at " + getIndexOrKeyWord(colName) + " \" + " + getIndexOrKey(colName, "first") + " + \" and \" + " + getIndexOrKey(colName, "second") + " + \": \\n\" + \n" +
+              "\"  at \" + " + getVariableIndexForType(colName, "failed") + " + \", \" + " + getLhs(colName, "failed") + " + \" was not lesser than 3 (ForBetweenInspectorsSpec.scala:\" + (thisLineNumber - 6) + \") \\n\" + \n" +
+              "\"in \" + decorateToStringValue(col)",
+            5)
+        ),
+        new DefTemplate("should use 'elements' in error message when > 1 element satisfied the assertion block, when total passed is more than 'upTo' for " + colName,
+          new InterceptWithNullCauseTemplate(
+            "val col = " + bigCol + "\n" +
+            "val itr = col." + iterator(colName) + "\n" +
+            "val first = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " > 1)\n" +
+            "val second = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " > 1)\n" +
+            "val third = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " > 1)\n" +
+            "val forth = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " > 1)\n",
+            "forBetween(2, 3, col) { e => \n" +
+            "  assert(" + lhs + " > 1) \n" +
+            "}",
+            "ForBetweenInspectorsSpec.scala",
+            "\"forBetween(2, 3) failed, because 4 elements satisfied the assertion block at " + getIndexOrKeyWord(colName) + " \" + " + getIndexOrKey(colName, "first") + " + \", \" + " + getIndexOrKey(colName, "second") + " + \", \" + " + getIndexOrKey(colName, "third") + " + \" and \" + " + getIndexOrKey(colName, "forth") + " + \" in \" + decorateToStringValue(col)",
+            5)
+        ),
+        new DefTemplate("should throw TestFailedException with correct stack depth and message when number of element passed is less than lower bound of the specified range for " + colName,
+          new InterceptWithNullCauseTemplate(
+            "val col = " + bigCol + "\n" +
+            "val itr = col." + iterator(colName) + "\n" +
+            "val first = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " <= 4)\n" +
+            "val second = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " <= 4)\n" +
+            "val third = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " <= 4)\n" +
+            "val forth = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " <= 4)\n" +
+            "val succeeded = " + getFirst(colName) + getElementType(colName) + "(col, " + getLhs(colName, "_") + " > 4)",
+            "forBetween(2, 4, col) { e => \n" +
+            "  assert(" + lhs + " > 4, " + lhs + " + \" was not greater than 4\") \n" +
+            "}",
+            "ForBetweenInspectorsSpec.scala",
+            "\"forBetween(2, 4) failed, because only 1 element satisfied the assertion block at " + getIndexOrKeyWord(colName) + " \" + " + getIndexOrKey(colName, "succeeded") + " + \": \\n\" + \n" +
+              "\"  at \" + " + getVariableIndexForType(colName, "first") + " + \", \" + " + getLhs(colName, "first") + " + \" was not greater than 4 (ForBetweenInspectorsSpec.scala:\" + (thisLineNumber - 6) + \"), \\n\" + \n" +
+              "\"  at \" + " + getVariableIndexForType(colName, "second") + " + \", \" + " + getLhs(colName, "second") + " + \" was not greater than 4 (ForBetweenInspectorsSpec.scala:\" + (thisLineNumber - 7) + \"), \\n\" + \n" +
+              "\"  at \" + " + getVariableIndexForType(colName, "third") + " + \", \" + " + getLhs(colName, "third") + " + \" was not greater than 4 (ForBetweenInspectorsSpec.scala:\" + (thisLineNumber - 8) + \"), \\n\" + \n" +
+              "\"  at \" + " + getVariableIndexForType(colName, "forth") + " + \", \" + " + getLhs(colName, "forth") + " + \" was not greater than 4 (ForBetweenInspectorsSpec.scala:\" + (thisLineNumber - 9) + \") \\n\" + \n" +
+              "\"in \" + decorateToStringValue(col)",
+            5)
+        ),
+        new DefTemplate("should throw TestFailedException with correct stack depth and message when number of element passed is more than upper bound of the specified range for " + colName,
+          new InterceptTemplate(
+            "val col = " + bigCol + "\n" +
+            "val itr = col." + iterator(colName) + "\n" +
+            "val first = itr.next\n" +
+            "val second = itr.next\n" +
+            "val third = itr.next\n" +
+            "val forth = itr.next\n" +
+            "val fifth = itr.next\n",
+            "forBetween(2, 4, col) { e => assert(" + lhs + " > 0) }",
+            "ForBetweenInspectorsSpec.scala",
+            "\"forBetween(2, 4) failed, because 5 elements satisfied the assertion block at " + getIndexOrKeyWord(colName) + " \" + " + getIndexOrKey(colName, "first") + " + \", \" + " + getIndexOrKey(colName, "second") + " + \", \" + " + getIndexOrKey(colName, "third") + " + \", \" + " + getIndexOrKey(colName, "forth") + " + \" and \" + " + getIndexOrKey(colName, "fifth") + " + \" in \" + decorateToStringValue(col)",
+            3)
+        ),
+        new DefTemplate("should propagate TestPendingException thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + bigCol + "\n" +
+            "intercept[exceptions.TestPendingException] {\n" +
+            "  forBetween(2, 4, col) { e => pending }\n" +
+            "}"
+          )
+        ),
+        new DefTemplate("should propagate TestCanceledException thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + bigCol + "\n" +
+            "intercept[exceptions.TestCanceledException] {\n" +
+            "  forBetween(2, 4, col) { e => cancel }\n" +
+            "}"
+          )
+        ),
+        new DefTemplate("should propagate java.lang.annotation.AnnotationFormatError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + bigCol + "\n" +
+            "intercept[AnnotationFormatError] {\n" +
+            "  forBetween(2, 4, col) { e => throw new AnnotationFormatError(\"test\") }\n" +
+            "}"
+          )
+        ),
+        new DefTemplate("should propagate java.nio.charset.CoderMalfunctionError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + bigCol + "\n" +
+            "intercept[CoderMalfunctionError] {\n" +
+            "  forBetween(2, 4, col) { e => throw new CoderMalfunctionError(new RuntimeException(\"test\")) }\n" +
+            "}"
+          )
+        ),
+        new DefTemplate("should propagate javax.xml.parsers.FactoryConfigurationError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + bigCol + "\n" +
+            "intercept[FactoryConfigurationError] {\n" +
+            "  forBetween(2, 4, col) { e => throw new FactoryConfigurationError() }\n" +
+            "}"
+          )
+        ),
+        new DefTemplate("should propagate java.lang.LinkageError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + bigCol + "\n" +
+            "intercept[LinkageError] {\n" +
+            "  forBetween(2, 4, col) { e => throw new LinkageError() }\n" +
+            "}"
+          )
+        ),
+        new DefTemplate("should propagate java.lang.ThreadDeath thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + bigCol + "\n" +
+            "intercept[ThreadDeath] {\n" +
+            "  forBetween(2, 4, col) { e => throw new ThreadDeath() }\n" +
+            "}"
+          )
+        ),
+        new DefTemplate("should propagate javax.xml.transform.TransformerFactoryConfigurationError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + bigCol + "\n" +
+            "intercept[TransformerFactoryConfigurationError] {\n" +
+            "  forBetween(2, 4, col) { e => throw new TransformerFactoryConfigurationError() }\n" +
+            "}"
+          )
+        ),
+        new DefTemplate("should propagate java.lang.VirtualMachineError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + bigCol + "\n" +
+            "intercept[VirtualMachineError] {\n" +
+            "  forBetween(2, 4, col) { e => throw new VirtualMachineError() {} }\n" +
+            "}"
+          )
+        )
+      )
+
+    override protected def childrenContent =
+      children.map(_.toString).mkString("\n") + "\n"
+
+    override def toString = childrenContent
+  }
+
   def genForAllSpecFile(targetDir: File) {
     val forAllSpecFile = new File(targetDir, "ForAllInspectorsSpec.scala")
     genFile(
@@ -1106,7 +1353,7 @@ object GenInspectors {
           override val extendName = Some("Spec")
           override val withList = List.empty
           override val children = collectionTypes.map {
-            case (name, col, emptyCol, lhs) => new ForAllTemplate(name, col, emptyCol, lhs)
+            case (name, col, bigCol, emptyCol, lhs) => new ForAllTemplate(name, col, emptyCol, lhs)
           }
         }
       )
@@ -1134,7 +1381,7 @@ object GenInspectors {
           override val extendName = Some("Spec")
           override val withList = List.empty
           override val children = collectionTypes.map {
-            case (name, col, emptyCol, lhs) => new ForAtLeastTemplate(name, col, emptyCol, lhs)
+            case (name, col, bigCol, emptyCol, lhs) => new ForAtLeastTemplate(name, col, emptyCol, lhs)
           }
         }
       )
@@ -1162,7 +1409,7 @@ object GenInspectors {
           override val extendName = Some("Spec")
           override val withList = List.empty
           override val children = collectionTypes.map {
-            case (name, col, emptyCol, lhs) => new ForAtMostTemplate(name, col, emptyCol, lhs)
+            case (name, col, bigCol, emptyCol, lhs) => new ForAtMostTemplate(name, col, emptyCol, lhs)
           }
         }
       )
@@ -1190,7 +1437,7 @@ object GenInspectors {
           override val extendName = Some("Spec")
           override val withList = List.empty
           override val children = collectionTypes.map {
-            case (name, col, emptyCol, lhs) => new ForExactlyTemplate(name, col, emptyCol, lhs)
+            case (name, col, bigCol, emptyCol, lhs) => new ForExactlyTemplate(name, col, emptyCol, lhs)
           }
         }
       )
@@ -1218,7 +1465,35 @@ object GenInspectors {
           override val extendName = Some("Spec")
           override val withList = List.empty
           override val children = collectionTypes.map {
-            case (name, col, emptyCol, lhs) => new ForNoTemplate(name, col, emptyCol, lhs)
+            case (name, col, bigCol, emptyCol, lhs) => new ForNoTemplate(name, col, emptyCol, lhs)
+          }
+        }
+      )
+    )
+  }
+
+  def genForBetweenSpecFile(targetDir: File) {
+    val forBetweenSpecFile = new File(targetDir, "ForBetweenInspectorsSpec.scala")
+    genFile(
+      forBetweenSpecFile,
+      new SingleClassFile(
+        packageName = Some("org.scalatest.inspectors.forbetween"),
+        importList = List("org.scalatest._",
+          "SharedHelpers._",
+          "FailureMessages.decorateToStringValue",
+          "collection.GenTraversable",
+          "Inspectors._",
+          "java.lang.annotation.AnnotationFormatError",
+          "java.nio.charset.CoderMalfunctionError",
+          "javax.xml.parsers.FactoryConfigurationError",
+          "javax.xml.transform.TransformerFactoryConfigurationError"
+        ),
+        classTemplate = new ClassTemplate {
+          val name = "ForBetweenInspectorsSpec"
+          override val extendName = Some("Spec")
+          override val withList = List.empty
+          override val children = collectionTypes.map {
+            case (name, col, bigCol, emptyCol, lhs) => new ForBetweenTemplate(name, col, bigCol, emptyCol, lhs)
           }
         }
       )
@@ -1343,6 +1618,7 @@ object GenInspectors {
     genForAtMostSpecFile(targetDir(targetBaseDir, "foratmost"))
     genForExactlySpecFile(targetDir(targetBaseDir, "forexactly"))
     genForNoSpecFile(targetDir(targetBaseDir, "forno"))
+    genForBetweenSpecFile(targetDir(targetBaseDir, "forbetween"))
     genNestedInspectorsSpecFile(targetDir(targetBaseDir, "nested"))
   }
   

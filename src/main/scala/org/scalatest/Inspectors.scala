@@ -300,6 +300,14 @@ trait Inspectors {
     doForBetween(from, upTo, collecting.genTraversableFrom(xs), xs, "forBetweenFailed", "Inspectors.scala", "forBetween", 0)(fun)
   }
 
+  def forBetween[K, V, JMAP[k, v] <: java.util.Map[k, v]](from: Int, upTo: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => Unit)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]) {
+    doForBetween(from, upTo, collecting.genTraversableFrom(xs), xs, "forBetweenFailed", "Inspectors.scala", "forBetween", 0)(fun)
+  }
+
+  def forBetween(from: Int, upTo: Int, xs: String)(fun: Char => Unit)(implicit collecting: Collecting[Char, String]) {
+    doForBetween(from, upTo, collecting.genTraversableFrom(xs), xs, "forBetweenFailed", "Inspectors.scala", "forBetween", 0)(fun)
+  }
+
   /**
    * Check that every elements pass the inspection function.  The difference between <code>forEvery</code> and <code>forAll</code> is that
    * <code>forEvery</code> will continue to check all elements after first failure, while <code>forAll</code> will stop on the first failure.
@@ -563,9 +571,9 @@ private[scalatest] object InspectorsHelper {
               Resources(resourceName + "NoElement", from.toString, upTo.toString, indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
             else {
               if (result.passedCount < from)
-                Resources(resourceName + "Less", from.toString, upTo.toString, elementLabel(result.passedCount), keyOrIndexLabel(xs, result.passedElements), indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
+                Resources(resourceName + "Less", from.toString, upTo.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
               else
-                Resources(resourceName + "More", from.toString, upTo.toString, elementLabel(result.passedCount), keyOrIndexLabel(xs, result.passedElements), decorateToStringValue(original))
+                Resources(resourceName + "More", from.toString, upTo.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), decorateToStringValue(original))
             }
           ),
         None,
