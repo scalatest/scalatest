@@ -276,6 +276,14 @@ trait Inspectors {
     doForNo(collecting.genTraversableFrom(xs), xs, "forNoFailed", "Inspectors.scala", "forNo", 0)(fun)
   }
 
+  private[scalatest] def forNo[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => Unit)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]) {
+    doForNo(collecting.genTraversableFrom(xs), xs, "forNoFailed", "Inspectors.scala", "forNo", 0)(fun)
+  }
+
+  private[scalatest] def forNo(xs: String)(fun: Char => Unit)(implicit collecting: Collecting[Char, String]) {
+    doForNo(collecting.genTraversableFrom(xs), xs, "forNoFailed", "Inspectors.scala", "forNo", 0)(fun)
+  }
+
   /**
    * Check that the number of elements pass the inspection function is between <code>from</code> and <code>upTo</code>.
    *
@@ -530,7 +538,7 @@ private[scalatest] object InspectorsHelper {
       runFor(xs.toIterator, resourceNamePrefix, 0, new ForResult[T], fun, _.passedCount != 0)
     if (result.passedCount != 0)
       throw new exceptions.TestFailedException(
-        sde => Some(Resources(resourceName, keyOrIndexLabel(xs, result.passedElements), decorateToStringValue(original))),
+        sde => Some(Resources(resourceName, keyOrIndexLabel(original, result.passedElements), decorateToStringValue(original))),
         None,
         getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
       )
