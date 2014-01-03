@@ -186,10 +186,33 @@ trait Inspectors {
     doForAll(collecting.genTraversableFrom(xs), xs, "forAllFailed", "Inspectors.scala", "forAll", 0)(fun)
   }
 
+  /**
+   * Check all elements in the <code>java.util.Map</code> pass the inspection function.  The difference between <code>forAll</code> and <code>forEvery</code> is that
+   * <code>forAll</code> will stop on the first failure, while <code>forEvery</code> will continue to check all <code>java.util.Map</code> elements after the
+   * first failure.
+   *
+   * @param xs the <code>java.util.Map</code>
+   * @param fun the inspection function
+   * @param collecting the implicit <code>Collecting</code> that transform <code>xs</code> into <code>scala.collection.GenTraversable</code>
+   * @tparam K the type of key in the Java Map
+   * @tparam V the type of value in the Java Map
+   * @tparam JMAP subtype of <code>java.util.Map</code>
+   *
+   */
   def forAll[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => Unit)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]) {
     doForAll(collecting.genTraversableFrom(xs), xs, "forAllFailed", "Inspectors.scala", "forAll", 0)(fun)
   }
 
+  /**
+   * Check all characters in <code>String</code> pass the inspection function.  The difference between <code>forAll</code> and <code>forEvery</code> is that
+   * <code>forAll</code> will stop on the first failure, while <code>forEvery</code> will continue to check all characters in the <code>String</code> after the
+   * first failure.
+   *
+   * @param xs the <code>String</code>
+   * @param fun the inspection function
+   * @param collecting the implicit <code>Collecting</code> that transform <code>xs</code> into <code>scala.collection.GenTraversable</code>
+   *
+   */
   def forAll(xs: String)(fun: Char => Unit)(implicit collecting: Collecting[Char, String]) {
     doForAll(collecting.genTraversableFrom(xs), xs, "forAllFailed", "Inspectors.scala", "forAll", 0)(fun)
   }
@@ -206,6 +229,35 @@ trait Inspectors {
    *
    */
   def forAtLeast[E, C[_]](min: Int, xs: C[E])(fun: E => Unit)(implicit collecting: Collecting[E, C[E]]) {
+    doForAtLeast(min, collecting.genTraversableFrom(xs), xs, "forAtLeastFailed", "Inspectors.scala", "forAtLeast", 0)(fun)
+  }
+
+  /**
+   * Check that at least <code>min</code> number of elements in the <code>java.util.Map</code> pass the inspection function.
+   *
+   * @param min the minimum number of elements that must pass the inspection function
+   * @param xs the <code>java.util.Map</code>
+   * @param fun the inspection function
+   * @param collecting the implicit <code>Collecting</code> that transform <code>xs</code> into <code>scala.collection.GenTraversable</code>
+   * @tparam K the type of key in the <code>java.util.Map</code>
+   * @tparam V the type of value in the <code>java.util.Map</code>
+   * @tparam JMAP subtype of <code>java.util.Map</code>
+   *
+   */
+  def forAtLeast[K, V, JMAP[k, v] <: java.util.Map[k, v]](min: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => Unit)(implicit collecting: Collecting[org.scalatest.Entry[K, V],JMAP[K, V]]) {
+    doForAtLeast(min, collecting.genTraversableFrom(xs), xs, "forAtLeastFailed", "Inspectors.scala", "forAtLeast", 0)(fun)
+  }
+
+  /**
+   * Check that at least <code>min</code> number of characters in the <code>String</code> pass the inspection function.
+   *
+   * @param min the minimum number of characters in <code>String</code> that must pass the inspection function
+   * @param xs the <code>String</code>
+   * @param fun the inspection function
+   * @param collecting the implicit <code>Collecting</code> that transform <code>xs</code> into <code>scala.collection.GenTraversable</code>
+   *
+   */
+  def forAtLeast(min: Int, xs: String)(fun: Char => Unit)(implicit collecting: Collecting[Char, String]) {
     doForAtLeast(min, collecting.genTraversableFrom(xs), xs, "forAtLeastFailed", "Inspectors.scala", "forAtLeast", 0)(fun)
   }
 
@@ -234,6 +286,35 @@ trait Inspectors {
   }
 
   /**
+   * Check that at most <code>max</code> number of elements in the <code>java.util.Map</code> pass the inspection function.
+   *
+   * @param max the maximum number of elements in the <code>java.util.Map</code> that must pass the inspection function
+   * @param xs the <code>java.util.Map</code>
+   * @param fun the inspection function
+   * @param collecting the implicit <code>Collecting</code> that transform <code>xs</code> into <code>scala.collection.GenTraversable</code>
+   * @tparam K the type of key in the <code>java.util.Map</code>
+   * @tparam V the type of value in the <code>java.util.Map</code>
+   * @tparam JMAP subtype of <code>java.util.Map</code>
+   *
+   */
+  def forAtMost[K, V, JMAP[k, v] <: java.util.Map[k, v]](max: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => Unit)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]) {
+    doForAtMost(max, collecting.genTraversableFrom(xs), xs, "forAtMostFailed", "Inspectors.scala", "forAtMost", 0)(fun)
+  }
+
+  /**
+   * Check that at most <code>max</code> number of characters in the <code>String</code> pass the inspection function.
+   *
+   * @param max the maximum number of characters in <code>String</code> that must pass the inspection function
+   * @param xs the <code>String</code>
+   * @param fun the inspection function
+   * @param collecting the implicit <code>Collecting</code> that transform <code>xs</code> into <code>scala.collection.GenTraversable</code>
+   *
+   */
+  def forAtMost(max: Int, xs: String)(fun: Char => Unit)(implicit collecting: Collecting[Char, String]) {
+    doForAtMost(max, collecting.genTraversableFrom(xs), xs, "forAtMostFailed", "Inspectors.scala", "forAtMost", 0)(fun)
+  }
+
+  /**
    * Check that exactly <code>succeededCount</code> number of elements pass the inspection function.
    *
    * @param succeededCount the number of elements that must pass the inspection function
@@ -247,8 +328,45 @@ trait Inspectors {
   def forExactly[E, C[_]](succeededCount: Int, xs: C[E])(fun: E => Unit)(implicit collecting: Collecting[E, C[E]]) {
     doForExactly(succeededCount, collecting.genTraversableFrom(xs), xs, "forExactlyFailed", "Inspectors.scala", "forExactly", 0)(fun)
   }
+
+  /**
+   * Check that exactly <code>succeededCount</code> number of elements in the <code>java.util.Map</code> pass the inspection function.
+   *
+   * @param succeededCount the number of elements in the <code>java.util.Map</code> that must pass the inspection function
+   * @param xs the <code>java.util.Map</code>
+   * @param fun the inspection function
+   * @param collecting the implicit <code>Collecting</code> that transform <code>xs</code> into <code>scala.collection.GenTraversable</code>
+   * @tparam K the type of key in the <code>java.util.Map</code>
+   * @tparam V the type of value in the <code>java.util.Map</code>
+   * @tparam JMAP subtype of <code>java.util.Map</code>
+   *
+   */
+  def forExactly[K, V, JMAP[k, v] <: java.util.Map[k, v]](succeededCount: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => Unit)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]) {
+    doForExactly(succeededCount, collecting.genTraversableFrom(xs), xs, "forExactlyFailed", "Inspectors.scala", "forExactly", 0)(fun)
+  }
+
+  /**
+   * Check that exactly <code>succeededCount</code> number of characters in the <code>String</code> pass the inspection function.
+   *
+   * @param succeededCount the number of characters in the <code>String</code> that must pass the inspection function
+   * @param xs the <code>String</code>
+   * @param fun the inspection function
+   * @param collecting the implicit <code>Collecting</code> that transform <code>xs</code> into <code>scala.collection.GenTraversable</code>
+   *
+   */
+  def forExactly(succeededCount: Int, xs: String)(fun: Char => Unit)(implicit collecting: Collecting[Char, String]) {
+    doForExactly(succeededCount, collecting.genTraversableFrom(xs), xs, "forExactlyFailed", "Inspectors.scala", "forExactly", 0)(fun)
+  }
   
   private[scalatest] def forNo[E, C[_]](xs: C[E])(fun: E => Unit)(implicit collecting: Collecting[E, C[E]]) {
+    doForNo(collecting.genTraversableFrom(xs), xs, "forNoFailed", "Inspectors.scala", "forNo", 0)(fun)
+  }
+
+  private[scalatest] def forNo[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => Unit)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]) {
+    doForNo(collecting.genTraversableFrom(xs), xs, "forNoFailed", "Inspectors.scala", "forNo", 0)(fun)
+  }
+
+  private[scalatest] def forNo(xs: String)(fun: Char => Unit)(implicit collecting: Collecting[Char, String]) {
     doForNo(collecting.genTraversableFrom(xs), xs, "forNoFailed", "Inspectors.scala", "forNo", 0)(fun)
   }
 
@@ -269,6 +387,37 @@ trait Inspectors {
   }
 
   /**
+   * Check that the number of elements in the <code>java.util.Map</code> pass the inspection function is between <code>from</code> and <code>upTo</code>.
+   *
+   * @param from the minimum number of elements in the <code>java.util.Map</code> that must pass the inspection number
+   * @param upTo the maximum number of elements in the <code>java.util.Map</code> that must pass the inspection number
+   * @param xs the <code>java.util.Map</code>
+   * @param fun the inspection function
+   * @param collecting the implicit <code>Collecting</code> that transform <code>xs</code> into <code>scala.collection.GenTraversable</code>
+   * @tparam K the type of key in the <code>java.util.Map</code>
+   * @tparam V the type of value in the <code>java.util.Map</code>
+   * @tparam JMAP subtype of <code>java.util.Map</code>
+   *
+   */
+  def forBetween[K, V, JMAP[k, v] <: java.util.Map[k, v]](from: Int, upTo: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => Unit)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]) {
+    doForBetween(from, upTo, collecting.genTraversableFrom(xs), xs, "forBetweenFailed", "Inspectors.scala", "forBetween", 0)(fun)
+  }
+
+  /**
+   * Check that the number of characters of the <code>String</code> pass the inspection function is between <code>from</code> and <code>upTo</code>.
+   *
+   * @param from the minimum number of characters in the <code>String</code> that must pass the inspection number
+   * @param upTo the maximum number of characters in the <code>String</code> that must pass the inspection number
+   * @param xs the <code>String</code>
+   * @param fun the inspection function
+   * @param collecting the implicit <code>Collecting</code> that transform <code>xs</code> into <code>scala.collection.GenTraversable</code>
+   *
+   */
+  def forBetween(from: Int, upTo: Int, xs: String)(fun: Char => Unit)(implicit collecting: Collecting[Char, String]) {
+    doForBetween(from, upTo, collecting.genTraversableFrom(xs), xs, "forBetweenFailed", "Inspectors.scala", "forBetween", 0)(fun)
+  }
+
+  /**
    * Check that every elements pass the inspection function.  The difference between <code>forEvery</code> and <code>forAll</code> is that
    * <code>forEvery</code> will continue to check all elements after first failure, while <code>forAll</code> will stop on the first failure.
    *
@@ -280,6 +429,35 @@ trait Inspectors {
    *
    */
   def forEvery[E, C[_]](xs: C[E])(fun: E => Unit)(implicit collecting: Collecting[E, C[E]]) {
+    doForEvery(collecting.genTraversableFrom(xs), xs, "forEveryFailed", "Inspectors.scala", "forEvery", 0)(fun)
+  }
+
+  /**
+   * Check that every elements in the <code>java.util.Map</code> pass the inspection function.  The difference between <code>forEvery</code> and <code>forAll</code> is that
+   * <code>forEvery</code> will continue to check all elements in the <code>java.util.Map</code> after first failure, while <code>forAll</code> will stop on the first failure.
+   *
+   * @param xs the <code>java.util.Map</code>
+   * @param fun the inspection function
+   * @param collecting the implicit <code>Collecting</code> that transform <code>xs</code> into <code>scala.collection.GenTraversable</code>
+   * @tparam K the type of key in the <code>java.util.Map</code>
+   * @tparam V the type of value in the <code>java.util.Map</code>
+   * @tparam JMAP subtype of <code>java.util.Map</code>
+   *
+   */
+  def forEvery[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => Unit)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]) {
+    doForEvery(collecting.genTraversableFrom(xs), xs, "forEveryFailed", "Inspectors.scala", "forEvery", 0)(fun)
+  }
+
+  /**
+   * Check that every characters in the <code>String</code> pass the inspection function.  The difference between <code>forEvery</code> and <code>forAll</code> is that
+   * <code>forEvery</code> will continue to check all characters in the <code>String</code> after first failure, while <code>forAll</code> will stop on the first failure.
+   *
+   * @param xs the <code>String</code>
+   * @param fun the inspection function
+   * @param collecting the implicit <code>Collecting</code> that transform <code>xs</code> into <code>scala.collection.GenTraversable</code>
+   *
+   */
+  def forEvery(xs: String)(fun: Char => Unit)(implicit collecting: Collecting[Char, String]) {
     doForEvery(collecting.genTraversableFrom(xs), xs, "forEveryFailed", "Inspectors.scala", "forEvery", 0)(fun)
   }
 }
@@ -356,7 +534,7 @@ private[scalatest] object InspectorsHelper {
       result
   }
   
-  def keyOrIndexLabel(xs: GenTraversable[_], passedElements: IndexedSeq[(Int, _)]): String = {
+  def keyOrIndexLabel(xs: Any, passedElements: IndexedSeq[(Int, _)]): String = {
     def makeAndLabel(indexes: IndexedSeq[Int]): String = 
       if (indexes.length > 1)
         indexes.dropRight(1).mkString(", ") + " and " + indexes.last
@@ -364,10 +542,11 @@ private[scalatest] object InspectorsHelper {
         indexes.mkString(", ")
       
     val (prefixResourceName, elements) = xs match {
-      case map: collection.GenMap[_, _] => 
-        val elements = passedElements.map{ case (index, e) => 
+      case _: collection.GenMap[_, _] | _: java.util.Map[_, _] =>
+        val elements = passedElements.map{ case (index, e) =>
           e match {
             case tuple2: Tuple2[_, _] => tuple2._1
+            case entry: java.util.Map.Entry[_, _] => entry.getKey
             case _ => index
           }
         }
@@ -375,7 +554,6 @@ private[scalatest] object InspectorsHelper {
       case _ => 
         ("forAssertionsIndex", passedElements.map(_._1))
     }
-    
     if (elements.length > 1)
       Resources(prefixResourceName + "AndLabel", elements.dropRight(1).mkString(", "), elements.last.toString) 
     else
@@ -409,6 +587,7 @@ private[scalatest] object InspectorsHelper {
               val resourceNamePrefix = getResourceNamePrefix(original)
               val messageKey = head match {
                 case tuple: Tuple2[_, _] if resourceNamePrefix == "forAssertionsGenMapMessage" => tuple._1.toString
+                case entry: Entry[_, _] if resourceNamePrefix == "forAssertionsGenMapMessage" => entry.getKey.toString
                 case _ => index.toString
               }
               (passedCount, messageAcc :+ createMessage(messageKey, e, resourceNamePrefix))
@@ -455,6 +634,7 @@ private[scalatest] object InspectorsHelper {
               val resourceNamePrefix = getResourceNamePrefix(original)
               val messageKey = head match {
                 case tuple: Tuple2[_, _] if resourceNamePrefix == "forAssertionsGenMapMessage" => tuple._1.toString
+                case entry: Entry[_, _] if resourceNamePrefix == "forAssertionsGenMapMessage" => entry.getKey.toString
                 case _ => index.toString
               }
               messageList :+ createMessage(messageKey, e, resourceNamePrefix)
@@ -489,9 +669,9 @@ private[scalatest] object InspectorsHelper {
               Resources(resourceName + "NoElement", succeededCount.toString, indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
             else {
               if (result.passedCount < succeededCount)
-                Resources(resourceName + "Less", succeededCount.toString, elementLabel(result.passedCount), keyOrIndexLabel(xs, result.passedElements), indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
+                Resources(resourceName + "Less", succeededCount.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
               else
-                Resources(resourceName + "More", succeededCount.toString, elementLabel(result.passedCount), keyOrIndexLabel(xs, result.passedElements), decorateToStringValue(original))
+                Resources(resourceName + "More", succeededCount.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), decorateToStringValue(original))
             }
           ),
         None,
@@ -505,7 +685,7 @@ private[scalatest] object InspectorsHelper {
       runFor(xs.toIterator, resourceNamePrefix, 0, new ForResult[T], fun, _.passedCount != 0)
     if (result.passedCount != 0)
       throw new exceptions.TestFailedException(
-        sde => Some(Resources(resourceName, keyOrIndexLabel(xs, result.passedElements), decorateToStringValue(original))),
+        sde => Some(Resources(resourceName, keyOrIndexLabel(original, result.passedElements), decorateToStringValue(original))),
         None,
         getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
       )
@@ -530,9 +710,9 @@ private[scalatest] object InspectorsHelper {
               Resources(resourceName + "NoElement", from.toString, upTo.toString, indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
             else {
               if (result.passedCount < from)
-                Resources(resourceName + "Less", from.toString, upTo.toString, elementLabel(result.passedCount), keyOrIndexLabel(xs, result.passedElements), indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
+                Resources(resourceName + "Less", from.toString, upTo.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
               else
-                Resources(resourceName + "More", from.toString, upTo.toString, elementLabel(result.passedCount), keyOrIndexLabel(xs, result.passedElements), decorateToStringValue(original))
+                Resources(resourceName + "More", from.toString, upTo.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), decorateToStringValue(original))
             }
           ),
         None,
@@ -549,7 +729,7 @@ private[scalatest] object InspectorsHelper {
       runFor(xs.toIterator, resourceNamePrefix, 0, new ForResult[T], fun, _.passedCount > max)
     if (result.passedCount > max)
       throw new exceptions.TestFailedException(
-        sde => Some(Resources(resourceName, max.toString, result.passedCount.toString, keyOrIndexLabel(xs, result.passedElements), decorateToStringValue(original))),
+        sde => Some(Resources(resourceName, max.toString, result.passedCount.toString, keyOrIndexLabel(original, result.passedElements), decorateToStringValue(original))),
         None,
         getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
       )
