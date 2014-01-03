@@ -263,6 +263,14 @@ trait Inspectors {
   def forExactly[E, C[_]](succeededCount: Int, xs: C[E])(fun: E => Unit)(implicit collecting: Collecting[E, C[E]]) {
     doForExactly(succeededCount, collecting.genTraversableFrom(xs), xs, "forExactlyFailed", "Inspectors.scala", "forExactly", 0)(fun)
   }
+
+  def forExactly[K, V, JMAP[k, v] <: java.util.Map[k, v]](succeededCount: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => Unit)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]) {
+    doForExactly(succeededCount, collecting.genTraversableFrom(xs), xs, "forExactlyFailed", "Inspectors.scala", "forExactly", 0)(fun)
+  }
+
+  def forExactly(succeededCount: Int, xs: String)(fun: Char => Unit)(implicit collecting: Collecting[Char, String]) {
+    doForExactly(succeededCount, collecting.genTraversableFrom(xs), xs, "forExactlyFailed", "Inspectors.scala", "forExactly", 0)(fun)
+  }
   
   private[scalatest] def forNo[E, C[_]](xs: C[E])(fun: E => Unit)(implicit collecting: Collecting[E, C[E]]) {
     doForNo(collecting.genTraversableFrom(xs), xs, "forNoFailed", "Inspectors.scala", "forNo", 0)(fun)
@@ -506,9 +514,9 @@ private[scalatest] object InspectorsHelper {
               Resources(resourceName + "NoElement", succeededCount.toString, indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
             else {
               if (result.passedCount < succeededCount)
-                Resources(resourceName + "Less", succeededCount.toString, elementLabel(result.passedCount), keyOrIndexLabel(xs, result.passedElements), indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
+                Resources(resourceName + "Less", succeededCount.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
               else
-                Resources(resourceName + "More", succeededCount.toString, elementLabel(result.passedCount), keyOrIndexLabel(xs, result.passedElements), decorateToStringValue(original))
+                Resources(resourceName + "More", succeededCount.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), decorateToStringValue(original))
             }
           ),
         None,
