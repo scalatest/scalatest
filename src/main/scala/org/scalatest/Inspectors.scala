@@ -322,6 +322,14 @@ trait Inspectors {
   def forEvery[E, C[_]](xs: C[E])(fun: E => Unit)(implicit collecting: Collecting[E, C[E]]) {
     doForEvery(collecting.genTraversableFrom(xs), xs, "forEveryFailed", "Inspectors.scala", "forEvery", 0)(fun)
   }
+
+  def forEvery[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => Unit)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]) {
+    doForEvery(collecting.genTraversableFrom(xs), xs, "forEveryFailed", "Inspectors.scala", "forEvery", 0)(fun)
+  }
+
+  def forEvery(xs: String)(fun: Char => Unit)(implicit collecting: Collecting[Char, String]) {
+    doForEvery(collecting.genTraversableFrom(xs), xs, "forEveryFailed", "Inspectors.scala", "forEvery", 0)(fun)
+  }
 }
 
 /**
@@ -496,6 +504,7 @@ private[scalatest] object InspectorsHelper {
               val resourceNamePrefix = getResourceNamePrefix(original)
               val messageKey = head match {
                 case tuple: Tuple2[_, _] if resourceNamePrefix == "forAssertionsGenMapMessage" => tuple._1.toString
+                case entry: Entry[_, _] if resourceNamePrefix == "forAssertionsGenMapMessage" => entry.getKey.toString
                 case _ => index.toString
               }
               messageList :+ createMessage(messageKey, e, resourceNamePrefix)

@@ -1332,6 +1332,119 @@ object GenInspectors {
     override def toString = childrenContent
   }
 
+  class ForEveryTemplate(colName: String, col: String, lhs: String) extends Template {
+    override val children =
+      List(
+        new DefTemplate("should pass when all elements passed for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "forEvery(col) { e => assert(" + lhs + " < 4) }"
+          )
+        ),
+        new DefTemplate("should throw TestFailedException with correct stack depth and message when at least one element failed for " + colName,
+          new InterceptTemplate(
+            "val col = " + col,
+            "forEvery(col) { e => assert(" + lhs + " != 2) }",
+            "ForEveryInspectorsSpec.scala",
+            "\"forEvery failed, because: \\n\" + \n" +
+            "\"  at \" + " + getIndexForType(colName, 2) + " + \", 2 equaled 2 (ForEveryInspectorsSpec.scala:\" + (thisLineNumber - 5) + \") \\n\" + \n" +
+            "\"in \" + decorateToStringValue(col)",
+            3)
+        ),
+        new DefTemplate("should throw TestFailedException with correct stack depth and message when more than one element failed for " + colName,
+          new InterceptTemplate(
+            "val col = " + col + "\n" +
+            "val itr = col." + iterator(colName) + "\n" +
+            "val first = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " >= 2)\n" +
+            "val second = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " >= 2)\n",
+            "forEvery(col) { e => assert(" + lhs + " < 2, " + lhs + " + \" was not lesser than 2\") }",
+            "ForEveryInspectorsSpec.scala",
+            "\"forEvery failed, because: \\n\" + \n" +
+            "\"  at \" + " + getVariableIndexForType(colName, "first") + " + \", \" + " + getLhs(colName, "first") + " + \" was not lesser than 2 (ForEveryInspectorsSpec.scala:\" + (thisLineNumber - 5) + \"), \\n\" + \n" +
+            "\"  at \" + " + getVariableIndexForType(colName, "second") + " + \", \" + " + getLhs(colName, "second") + " + \" was not lesser than 2 (ForEveryInspectorsSpec.scala:\" + (thisLineNumber - 6) + \") \\n\" + \n" +
+            "\"in \" + decorateToStringValue(col)",
+            3)
+        ),
+        new DefTemplate("should propagate TestPendingException thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "intercept[exceptions.TestPendingException] {\n" +
+            "  forEvery(col) { e => pending }\n" +
+            "}"
+          )
+        ),
+        new DefTemplate("should propagate TestCanceledException thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "intercept[exceptions.TestCanceledException] {\n" +
+            "  forEvery(col) { e => cancel }\n" +
+            "}"
+          )
+        ),
+        new DefTemplate("should propagate java.lang.annotation.AnnotationFormatError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "intercept[AnnotationFormatError] {\n" +
+            "  forEvery(col) { e => throw new AnnotationFormatError(\"test\") }\n" +
+            "}"
+          )
+        ),
+        new DefTemplate("should propagate java.nio.charset.CoderMalfunctionError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "intercept[CoderMalfunctionError] {\n" +
+            "  forEvery(col) { e => throw new CoderMalfunctionError(new RuntimeException(\"test\")) }\n" +
+            "}"
+          )
+        ),
+        new DefTemplate("should propagate javax.xml.parsers.FactoryConfigurationError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "intercept[FactoryConfigurationError] {\n" +
+            "  forEvery(col) { e => throw new FactoryConfigurationError() }\n" +
+            "}"
+          )
+        ),
+        new DefTemplate("should propagate java.lang.LinkageError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "intercept[LinkageError] {\n" +
+            "  forEvery(col) { e => throw new LinkageError() }\n" +
+            "}"
+          )
+        ),
+        new DefTemplate("should propagate java.lang.ThreadDeath thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "intercept[ThreadDeath] {\n" +
+            "  forEvery(col) { e => throw new ThreadDeath() }\n" +
+            "}"
+          )
+        ),
+        new DefTemplate("should propagate javax.xml.transform.TransformerFactoryConfigurationError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "intercept[TransformerFactoryConfigurationError] {\n" +
+            "  forEvery(col) { e => throw new TransformerFactoryConfigurationError() }\n" +
+            "}"
+          )
+        ),
+        new DefTemplate("should propagate java.lang.VirtualMachineError thrown from assertion for " + colName,
+          new SimpleTemplate(
+            "val col = " + col + "\n" +
+            "intercept[VirtualMachineError] {\n" +
+            "  forEvery(col) { e => throw new VirtualMachineError() {} }\n" +
+            "}"
+          )
+        )
+      )
+
+    override protected def childrenContent =
+      children.map(_.toString).mkString("\n") + "\n"
+
+    override def toString = childrenContent
+  }
+
   def genForAllSpecFile(targetDir: File) {
     val forAllSpecFile = new File(targetDir, "ForAllInspectorsSpec.scala")
     genFile(
@@ -1499,6 +1612,34 @@ object GenInspectors {
       )
     )
   }
+
+  def genForEverySpecFile(targetDir: File) {
+    val forEverySpecFile = new File(targetDir, "ForEveryInspectorsSpec.scala")
+    genFile(
+      forEverySpecFile,
+      new SingleClassFile(
+        packageName = Some("org.scalatest.inspectors.forevery"),
+        importList = List("org.scalatest._",
+          "SharedHelpers._",
+          "FailureMessages.decorateToStringValue",
+          "collection.GenTraversable",
+          "Inspectors._",
+          "java.lang.annotation.AnnotationFormatError",
+          "java.nio.charset.CoderMalfunctionError",
+          "javax.xml.parsers.FactoryConfigurationError",
+          "javax.xml.transform.TransformerFactoryConfigurationError"
+        ),
+        classTemplate = new ClassTemplate {
+          val name = "ForEveryInspectorsSpec"
+          override val extendName = Some("Spec")
+          override val withList = List.empty
+          override val children = collectionTypes.map {
+            case (name, col, bigCol, emptyCol, lhs) => new ForEveryTemplate(name, col, lhs)
+          }
+        }
+      )
+    )
+  }
   
   def genNestedInspectorsSpecFile(targetDir: File) {
     val nestedInspectorsSpecFile = new File(targetDir, "NestedInspectorsSpec.scala")
@@ -1619,6 +1760,7 @@ object GenInspectors {
     genForExactlySpecFile(targetDir(targetBaseDir, "forexactly"))
     genForNoSpecFile(targetDir(targetBaseDir, "forno"))
     genForBetweenSpecFile(targetDir(targetBaseDir, "forbetween"))
+    genForEverySpecFile(targetDir(targetBaseDir, "forevery"))
     genNestedInspectorsSpecFile(targetDir(targetBaseDir, "nested"))
   }
   
