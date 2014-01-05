@@ -31,7 +31,7 @@ import org.scalatest.TagAnnotation;
  * </p>
  *
  * <p>
- * If you wish to mark an entire suite of tests as being network-intensive, you can annotate the test class with <code>@CPU</code>, like this:
+ * If you wish to mark an entire suite of tests as being CPU-intensive, you can annotate the test class with <code>@CPU</code>, like this:
  * </p>
  *
  * <pre class="stHighlight">
