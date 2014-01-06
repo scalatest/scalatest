@@ -723,6 +723,48 @@ object GenInspectorsShorthands {
       !(colText.startsWith("collection.mutable.Set") && condition == "'traversable should have length' failed") &&
       !(colText.startsWith("collection.mutable.Set") && condition == "'traversable should not have length' failed")
 
+  def filterJavaColLength(colText: String, condition: String): Boolean =
+    !(colText.contains("javaHashSet") && condition == "'java collection should have length' failed") &&
+    !(colText.contains("javaHashSet") && condition == "'java collection should not have length' failed") &&
+    !(colText.contains("javaTreeSet") && condition == "'java collection should have length' failed") &&
+    !(colText.contains("javaTreeSet") && condition == "'java collection should not have length' failed") &&
+    !(colText.contains("javaLinkedHashSet") && condition == "'java collection should have length' failed") &&
+    !(colText.contains("javaLinkedHashSet") && condition == "'java collection should not have length' failed") &&
+    !(colText.contains("javaArrayBlockingQueue") && condition == "'java collection should have length' failed") &&
+    !(colText.contains("javaArrayBlockingQueue") && condition == "'java collection should not have length' failed") &&
+    !(colText.contains("javaArrayDeque") && condition == "'java collection should have length' failed") &&
+    !(colText.contains("javaArrayDeque") && condition == "'java collection should not have length' failed") &&
+    !(colText.contains("javaConcurrentSkipListSet") && condition == "'java collection should have length' failed") &&
+    !(colText.contains("javaConcurrentSkipListSet") && condition == "'java collection should not have length' failed") &&
+    !(colText.contains("javaCopyOnWriteArraySet") && condition == "'java collection should have length' failed") &&
+    !(colText.contains("javaCopyOnWriteArraySet") && condition == "'java collection should not have length' failed") &&
+    !(colText.contains("javaLinkedBlockingDeque") && condition == "'java collection should have length' failed") &&
+    !(colText.contains("javaLinkedBlockingDeque") && condition == "'java collection should not have length' failed") &&
+    !(colText.contains("javaLinkedBlockingQueue") && condition == "'java collection should have length' failed") &&
+    !(colText.contains("javaLinkedBlockingQueue") && condition == "'java collection should not have length' failed") &&
+    !(colText.contains("javaPriorityBlockingQueue") && condition == "'java collection should have length' failed") &&
+    !(colText.contains("javaPriorityBlockingQueue") && condition == "'java collection should not have length' failed") &&
+    !(colText.contains("javaPriorityQueue") && condition == "'java collection should have length' failed") &&
+    !(colText.contains("javaPriorityQueue") && condition == "'java collection should not have length' failed") &&
+    !(colText.contains("javaConcurrentLinkedQueue") && condition == "'java collection should have length' failed") &&
+    !(colText.contains("javaConcurrentLinkedQueue") && condition == "'java collection should not have length' failed")
+
+  def filterJavaMapLength(colText: String, condition: String): Boolean =
+    !(colText.contains("javaHashMap") && condition == "'java map should have length' failed") &&
+    !(colText.contains("javaHashMap") && condition == "'java map should not have length' failed") &&
+    !(colText.contains("javaTreeMap") && condition == "'java map should have length' failed") &&
+    !(colText.contains("javaTreeMap") && condition == "'java map should not have length' failed") &&
+    !(colText.contains("javaHashtable") && condition == "'java map should have length' failed") &&
+    !(colText.contains("javaHashtable") && condition == "'java map should not have length' failed") &&
+    !(colText.contains("javaConcurrentHashMap") && condition == "'java map should have length' failed") &&
+    !(colText.contains("javaConcurrentHashMap") && condition == "'java map should not have length' failed") &&
+    !(colText.contains("javaConcurrentSkipListMap") && condition == "'java map should have length' failed") &&
+    !(colText.contains("javaConcurrentSkipListMap") && condition == "'java map should not have length' failed") &&
+    !(colText.contains("javaLinkedHashMap") && condition == "'java map should have length' failed") &&
+    !(colText.contains("javaLinkedHashMap") && condition == "'java map should not have length' failed") &&
+    !(colText.contains("javaWeakHashMap") && condition == "'java map should have length' failed") &&
+    !(colText.contains("javaWeakHashMap") && condition == "'java map should not have length' failed")
+
   def filterArraySymbol(colText: String, condition: String): Boolean =
     !(colText.startsWith("Array") && condition == "'traversable should not be symbol' failed")
 
@@ -869,20 +911,18 @@ object GenInspectorsShorthands {
             val colType = "GenMap[String, String]"
             (colText, condition, allColText + assertText, colType, okFun, errorFun, errorValue, messageFun(colType, errorFun, errorValue).toString, xsText)
           }
-        })
-    // Commented java collection/map generation as Bill has removed them from Matchers.scala
-    /*++
-    (javaColCheckCol flatMap { case (colText, xsText) =>
-      javaColCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
-        val colType = "java.util.Collection[String]"
-        (colText, condition, allColText + assertText, colType, okFun, errorFun, errorValue, messageFun(colType, errorFun, errorValue).toString, xsText)
-      }
-    }) ++
-    (javaMapCheckCol flatMap { case (colText, xsText, colType) =>
-      javaMapCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
-        (colText, condition, allColText + assertText, colType, okFun, errorFun, errorValue, messageFun(colType, errorFun, errorValue).toString, xsText)
-      }
-    })*/
+        }) ++
+        (javaColCheckCol flatMap { case (colText, xsText) =>
+          javaColCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
+            val colType = "java.util.Collection[String]"
+            (colText, condition, allColText + assertText, colType, okFun, errorFun, errorValue, messageFun(colType, errorFun, errorValue).toString, xsText)
+          }
+        }).filter { case (colText, condition, _, _, _, _, _, _, _) => filterJavaColLength(colText, condition) } ++
+        (javaMapCheckCol flatMap { case (colText, xsText, colType) =>
+          javaMapCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
+            (colText, condition, allColText + assertText, colType, okFun, errorFun, errorValue, messageFun(colType, errorFun, errorValue).toString, xsText)
+          }
+        }).filter { case (colText, condition, _, _, _, _, _, _, _) => filterJavaMapLength(colText, condition) }
 
     genFile(
       new File(targetDir, "InspectorShorthandsForAllSucceededSpec.scala"),
@@ -1085,27 +1125,25 @@ object GenInspectorsShorthands {
               Map("2" -> "two", "6" -> "six", "8" -> "eight")).filter(errorAssertFun).length
             (colText, condition, atLeast2ColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
           }
-        })
-    // Commented java collection/map generation as Bill has removed them from Matchers.scala
-    /*++
-    (javaColCheckCol flatMap { case (colText, xsText) =>
-      javaColCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
-        val colType = "java.util.Collection[String]"
-        val errorAssertFun = getJavaColFun(errorFun, right)
-        val passedCount = 3 - List(List("hi"), List("boom!"), List.empty[String]).filter(errorAssertFun).length
-        (colText, condition, atLeast2ColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
-      }
-    }) ++
-    (javaMapCheckCol flatMap { case (colText, xsText, colType) =>
-      javaMapCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
-        val errorAssertFun = getJavaMapFun(errorFun, right)
-        import collection.JavaConversions._
-        val passedCount = 3 - List[java.util.Map[String, String]](Map.empty[String, String],
-                                   Map("b" -> "boom!"),
-                                   Map("h" -> "hello!")).filter(errorAssertFun).length
-        (colText, condition, atLeast2ColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
-      }
-    })*/
+        }) ++
+        (javaColCheckCol flatMap { case (colText, xsText) =>
+          javaColCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
+            val colType = "java.util.Collection[String]"
+            val errorAssertFun = getJavaColFun(errorFun, right)
+            val passedCount = 3 - List(List("hi"), List("boom!"), List.empty[String]).filter(errorAssertFun).length
+            (colText, condition, atLeast2ColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
+          }
+        }).filter { case (colText, condition, _, _, _, _, _, _, _, _) => filterJavaColLength(colText, condition) } ++
+        (javaMapCheckCol flatMap { case (colText, xsText, colType) =>
+          javaMapCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
+            val errorAssertFun = getJavaMapFun(errorFun, right)
+            import collection.JavaConversions._
+            val passedCount = 3 - List[java.util.Map[String, String]](Map.empty[String, String],
+                                       Map("b" -> "boom!"),
+                                       Map("h" -> "hello!")).filter(errorAssertFun).length
+            (colText, condition, atLeast2ColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
+          }
+        }).filter { case (colText, condition, _, _, _, _, _, _, _, _) => filterJavaMapLength(colText, condition) }
 
     failedTestConfigs.grouped(500).toList.zipWithIndex foreach { case (configs, i) =>
       val className = "InspectorShorthandsForAtLeastFailedSpec" + i
@@ -1288,27 +1326,25 @@ object GenInspectorsShorthands {
               Map("2" -> "two", "6" -> "six", "8" -> "eight")).filter(errorAssertFun).length
             (colText, condition, everyColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
           }
-        })
-    // Commented java collection/map generation as Bill has removed them from Matchers.scala
-    /*++
-    (javaColCheckCol flatMap { case (colText, xsText) =>
-      javaColCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
-        val colType = "java.util.Collection[String]"
-        val errorAssertFun = getJavaColFun(errorFun, right)
-        val passedCount = 3 - List(List("hi"), List("boom!"), List.empty[String]).filter(errorAssertFun).length
-        (colText, condition, everyColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
-      }
-    }) ++
-    (javaMapCheckCol flatMap { case (colText, xsText, colType) =>
-      javaMapCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
-        val errorAssertFun = getJavaMapFun(errorFun, right)
-        import collection.JavaConversions._
-        val passedCount = 3 - List[java.util.Map[String, String]](Map.empty[String, String],
-                                   Map("b" -> "boom!"),
-                                   Map("h" -> "hello!")).filter(errorAssertFun).length
-        (colText, condition, everyColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
-      }
-    })*/
+        }) ++
+        (javaColCheckCol flatMap { case (colText, xsText) =>
+          javaColCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
+            val colType = "java.util.Collection[String]"
+            val errorAssertFun = getJavaColFun(errorFun, right)
+            val passedCount = 3 - List(List("hi"), List("boom!"), List.empty[String]).filter(errorAssertFun).length
+            (colText, condition, everyColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
+          }
+        }).filter { case (colText, condition, _, _, _, _, _, _, _, _) => filterJavaColLength(colText, condition) } ++
+        (javaMapCheckCol flatMap { case (colText, xsText, colType) =>
+          javaMapCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
+            val errorAssertFun = getJavaMapFun(errorFun, right)
+            import collection.JavaConversions._
+            val passedCount = 3 - List[java.util.Map[String, String]](Map.empty[String, String],
+                                       Map("b" -> "boom!"),
+                                       Map("h" -> "hello!")).filter(errorAssertFun).length
+            (colText, condition, everyColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
+          }
+        }).filter { case (colText, condition, _, _, _, _, _, _, _, _) => filterJavaMapLength(colText, condition) }
 
     failedTestConfigs.grouped(500).toList.zipWithIndex foreach { case (configs, i) =>
       val className = "InspectorShorthandsForEveryFailedSpec" + i
@@ -1491,27 +1527,25 @@ object GenInspectorsShorthands {
               Map("2" -> "two", "6" -> "six", "8" -> "eight")).filter(errorAssertFun).length
             (colText, condition, exactly3ColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
           }
-        })
-    // Commented java collection/map generation as Bill has removed them from Matchers.scala
-    /*++
-    (javaColCheckCol flatMap { case (colText, xsText) =>
-      javaColCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
-        val colType = "java.util.Collection[String]"
-        val errorAssertFun = getJavaColFun(errorFun, right)
-        val passedCount = 3 - List(List("hi"), List("boom!"), List.empty[String]).filter(errorAssertFun).length
-        (colText, condition, exactly3ColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
-      }
-    }) ++
-    (javaMapCheckCol flatMap { case (colText, xsText, colType) =>
-      javaMapCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
-        val errorAssertFun = getJavaMapFun(errorFun, right)
-        import collection.JavaConversions._
-        val passedCount = 3 - List[java.util.Map[String, String]](Map.empty[String, String],
-                                   Map("b" -> "boom!"),
-                                   Map("h" -> "hello!")).filter(errorAssertFun).length
-        (colText, condition, exactly3ColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
-      }
-    })*/
+        }) ++
+        (javaColCheckCol flatMap { case (colText, xsText) =>
+          javaColCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
+            val colType = "java.util.Collection[String]"
+            val errorAssertFun = getJavaColFun(errorFun, right)
+            val passedCount = 3 - List(List("hi"), List("boom!"), List.empty[String]).filter(errorAssertFun).length
+            (colText, condition, exactly3ColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
+          }
+        }).filter { case (colText, condition, _, _, _, _, _, _, _, _) => filterJavaColLength(colText, condition) } ++
+        (javaMapCheckCol flatMap { case (colText, xsText, colType) =>
+          javaMapCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
+            val errorAssertFun = getJavaMapFun(errorFun, right)
+            import collection.JavaConversions._
+            val passedCount = 3 - List[java.util.Map[String, String]](Map.empty[String, String],
+                                       Map("b" -> "boom!"),
+                                       Map("h" -> "hello!")).filter(errorAssertFun).length
+            (colText, condition, exactly3ColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
+          }
+        }).filter { case (colText, condition, _, _, _, _, _, _, _, _) => filterJavaMapLength(colText, condition) }
 
     failedTestConfigs.grouped(500).toList.zipWithIndex foreach { case (configs, i) =>
       val className = "InspectorShorthandsForExactlyFailedSpec" + i
@@ -1693,26 +1727,25 @@ object GenInspectorsShorthands {
               Map("2" -> "two", "6" -> "six", "8" -> "eight")).filter(errorAssertFun).length
             (colText, condition, noColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
           }
-        })
-    /*++
-    (javaColCheckCol flatMap { case (colText, xsText) =>
-      javaColCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
-        val colType = "java.util.Collection[String]"
-        val errorAssertFun = getJavaColFun(errorFun, right)
-        val passedCount = 3 - List(List("hi"), List("boom!"), List.empty[String]).filter(errorAssertFun).length
-        (colText, condition, noColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
-      }
-    }) ++
-    (javaMapCheckCol flatMap { case (colText, xsText, colType) =>
-      javaMapCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
-        val errorAssertFun = getJavaMapFun(errorFun, right)
-        import collection.JavaConversions._
-        val passedCount = 3 - List[java.util.Map[String, String]](Map.empty[String, String],
-          Map("b" -> "boom!"),
-          Map("h" -> "hello!")).filter(errorAssertFun).length
-        (colText, condition, noColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
-      }
-    })*/
+        }) ++
+        (javaColCheckCol flatMap { case (colText, xsText) =>
+          javaColCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
+            val colType = "java.util.Collection[String]"
+            val errorAssertFun = getJavaColFun(errorFun, right)
+            val passedCount = 3 - List(List("hi"), List("boom!"), List.empty[String]).filter(errorAssertFun).length
+            (colText, condition, noColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
+          }
+        }).filter { case (colText, condition, _, _, _, _, _, _, _, _) => filterJavaColLength(colText, condition) } ++
+        (javaMapCheckCol flatMap { case (colText, xsText, colType) =>
+          javaMapCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
+            val errorAssertFun = getJavaMapFun(errorFun, right)
+            import collection.JavaConversions._
+            val passedCount = 3 - List[java.util.Map[String, String]](Map.empty[String, String],
+              Map("b" -> "boom!"),
+              Map("h" -> "hello!")).filter(errorAssertFun).length
+            (colText, condition, noColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
+          }
+        }).filter { case (colText, condition, _, _, _, _, _, _, _, _) => filterJavaMapLength(colText, condition) }
 
     failedTestConfigs.grouped(500).toList.zipWithIndex foreach { case (configs, i) =>
       val className = "InspectorShorthandsForNoFailedSpec" + i
@@ -1896,27 +1929,25 @@ object GenInspectorsShorthands {
               Map("2" -> "two", "6" -> "six", "8" -> "eight")).filter(errorAssertFun).length
             (colText, condition, betweenColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
           }
-        })
-    // Commented java collection/map generation as Bill has removed them from Matchers.scala
-    /*++
-    (javaColCheckCol flatMap { case (colText, xsText) =>
-      javaColCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
-        val colType = "java.util.Collection[String]"
-        val errorAssertFun = getJavaColFun(errorFun, right)
-        val passedCount = 3 - List(List("hi"), List("boom!"), List.empty[String]).filter(errorAssertFun).length
-        (colText, condition, betweenColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
-      }
-    }) ++
-    (javaMapCheckCol flatMap { case (colText, xsText, colType) =>
-      javaMapCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
-        val errorAssertFun = getJavaMapFun(errorFun, right)
-        import collection.JavaConversions._
-        val passedCount = 3 - List[java.util.Map[String, String]](Map.empty[String, String],
-          Map("b" -> "boom!"),
-          Map("h" -> "hello!")).filter(errorAssertFun).length
-        (colText, condition, betweenColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
-      }
-    })*/
+        }) ++
+        (javaColCheckCol flatMap { case (colText, xsText) =>
+          javaColCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
+            val colType = "java.util.Collection[String]"
+            val errorAssertFun = getJavaColFun(errorFun, right)
+            val passedCount = 3 - List(List("hi"), List("boom!"), List.empty[String]).filter(errorAssertFun).length
+            (colText, condition, betweenColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
+          }
+        }).filter { case (colText, condition, _, _, _, _, _, _, _, _) => filterJavaColLength(colText, condition) } ++
+        (javaMapCheckCol flatMap { case (colText, xsText, colType) =>
+          javaMapCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
+            val errorAssertFun = getJavaMapFun(errorFun, right)
+            import collection.JavaConversions._
+            val passedCount = 3 - List[java.util.Map[String, String]](Map.empty[String, String],
+              Map("b" -> "boom!"),
+              Map("h" -> "hello!")).filter(errorAssertFun).length
+            (colText, condition, betweenColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
+          }
+        }).filter { case (colText, condition, _, _, _, _, _, _, _, _) => filterJavaMapLength(colText, condition) }
 
     failedTestConfigs.grouped(500).toList.zipWithIndex foreach { case (configs, i) =>
       val className = "InspectorShorthandsForBetweenFailedSpec" + i
@@ -2109,22 +2140,20 @@ object GenInspectorsShorthands {
             val passedCount = 2
             (colText, condition, atMostColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
           }
-        })
-    // Commented java collection/map generation as Bill has removed them from Matchers.scala
-    /*++
-    (javaColCheckCol flatMap { case (colText, xsText) =>
-      javaColCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
-        val colType = "java.util.Collection[String]"
-        val passedCount = 2
-        (colText, condition, atMostColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
-      }
-    }) ++
-    (javaMapCheckCol flatMap { case (colText, xsText, colType) =>
-      javaMapCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
-        val passedCount = 2
-        (colText, condition, atMostColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
-      }
-    })*/
+        }) ++
+        (javaColCheckCol flatMap { case (colText, xsText) =>
+          javaColCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
+            val colType = "java.util.Collection[String]"
+            val passedCount = 2
+            (colText, condition, atMostColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
+          }
+        }).filter { case (colText, condition, _, _, _, _, _, _, _, _) => filterJavaColLength(colText, condition) } ++
+        (javaMapCheckCol flatMap { case (colText, xsText, colType) =>
+          javaMapCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
+            val passedCount = 2
+            (colText, condition, atMostColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText)
+          }
+        }).filter { case (colText, condition, _, _, _, _, _, _, _, _) => filterJavaMapLength(colText, condition) }
 
 
     failedTestConfigs.grouped(500).toList.zipWithIndex foreach { case (configs, i) =>

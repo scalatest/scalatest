@@ -724,13 +724,13 @@ object SharedHelpers extends Assertions {
   def indexElementLengthJavaCol[T](itr: Iterator[java.util.Collection[T]], xs: GenTraversable[java.util.Collection[T]], errorFun: java.util.Collection[T] => Boolean): Array[String] = { 
     val element = getNext[java.util.Collection[T]](itr, errorFun)
     val index = getIndex(xs, element)
-    Array(index.toString, (if (element != null && element.isInstanceOf[Array[_]]) element.asInstanceOf[Array[T]].deep.toString else element.toString), element.size.toString) 
+    Array(index.toString, decorateToStringValue(element), element.size.toString)
   }
   
   def indexElementLengthJavaMap[K, V](itr: Iterator[java.util.Map[K, V]], xs: GenTraversable[java.util.Map[K, V]], errorFun: java.util.Map[K, V] => Boolean): Array[String] = { 
     val element = getNext[java.util.Map[K, V]](itr, errorFun)
     val index = getIndex(xs, element)
-    Array(index.toString, element.toString, element.size.toString) 
+    Array(index.toString, decorateToStringValue(element), element.size.toString)
   }
   
   def indexElementEqual[T](itr: Iterator[T], xs: GenTraversable[T], right: T): Array[String] = 
