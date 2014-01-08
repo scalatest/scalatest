@@ -123,7 +123,7 @@ object GenInspectorsShorthands {
     override def toString =
       "def `" + colText + " should throw TestFailedException with correct stack depth and message when " + condition + "` {\n" +
         "  val xs = " + colText + "\n" +
-        "  val itr = xs." + (if (colType.contains("java")) "iterator" else "toIterator") + "\n" +
+        "  val itr = xs." + (if (colText.contains("java")) "iterator" else "toIterator") + "\n" +
         "  val e = intercept[exceptions.TestFailedException] {\n" +
         "    " + assertText + "\n" +
         "  }\n" +
@@ -377,7 +377,9 @@ object GenInspectorsShorthands {
       ("collection.mutable.Set(" + colText + ").par", "xs"),
       ("(new collection.mutable.ListBuffer() ++ List(" + colText + ")).par", "xs"),
       ("collection.mutable.Seq(" + colText + ").par", "xs"),
-      ("collection.mutable.IndexedSeq(" + colText + ").par", "xs")
+      ("collection.mutable.IndexedSeq(" + colText + ").par", "xs"),
+      ("javaList(" + colText + ")", "xs"),
+      ("javaSet(" + colText + ")", "xs")
     )
 
   def genNullableCol[T](colText: String, arrayXsText: String) =
@@ -397,7 +399,9 @@ object GenInspectorsShorthands {
       ("collection.mutable.IndexedSeq(" + colText + ")", "xs"),
       ("(new collection.mutable.ListBuffer() ++ List(" + colText + ")).par", "xs"),
       ("collection.mutable.Seq(" + colText + ").par", "xs"),
-      ("collection.mutable.IndexedSeq(" + colText + ").par", "xs")
+      ("collection.mutable.IndexedSeq(" + colText + ").par", "xs"),
+      ("javaList(" + colText + ")", "xs"),
+      ("javaSet(" + colText + ")", "xs")
     )
 
   def genColCol[T](colType: String, colTexts: Array[String], arrayXsText: String) =
@@ -2211,11 +2215,11 @@ object GenInspectorsShorthands {
   def genTest(targetBaseDir: File, scalaVersion: String) {
     genInspectorShorthandsForAllSpecFile(targetDir(targetBaseDir, "all"))
     genInspectorShorthandsForAtLeastSpecFile(targetDir(targetBaseDir, "atLeast"))
-    genInspectorShorthandsForEverySpecFile(targetDir(targetBaseDir, "every"))
-    genInspectorShorthandsForExactlySpecFile(targetDir(targetBaseDir, "exactly"))
-    genInspectorShorthandsForNoSpecFile(targetDir(targetBaseDir, "no"))
-    genInspectorShorthandsForBetweenSpecFile(targetDir(targetBaseDir, "between"))
-    genInspectorShorthandsForAtMostSpecFile(targetDir(targetBaseDir, "atMost"))
+    //genInspectorShorthandsForEverySpecFile(targetDir(targetBaseDir, "every"))
+    //genInspectorShorthandsForExactlySpecFile(targetDir(targetBaseDir, "exactly"))
+    //genInspectorShorthandsForNoSpecFile(targetDir(targetBaseDir, "no"))
+    //genInspectorShorthandsForBetweenSpecFile(targetDir(targetBaseDir, "between"))
+    //genInspectorShorthandsForAtMostSpecFile(targetDir(targetBaseDir, "atMost"))
   }
 
   def main(args: Array[String]) {

@@ -554,6 +554,15 @@ object SharedHelpers extends Assertions {
       getNextNot(itr, predicate)
   }
 
+  @tailrec
+  final def getNextNotInJavaCol[T](itr: java.util.Iterator[T], predicate: T => Boolean): T = {
+    val next = itr.next
+    if (!predicate(next))
+      next
+    else
+      getNextNotInJavaCol(itr, predicate)
+  }
+
   def getFirstNot[T](col: GenTraversable[T], predicate: T => Boolean): T =
     getNextNot(col.toIterator, predicate)
 
@@ -575,10 +584,10 @@ object SharedHelpers extends Assertions {
   def getFirstLessThan(col: GenTraversable[Int], right: Int): Int =
     getFirst[Int](col, _ < right)
 
-  def getFirstIsEmpty(col: GenTraversable[String], right: String = ""): String = // right is not used, but to be consistent to other so that easier for code generation
+  def getFirstIsEmpty(col: GenTraversable[String], right: String): String = // right is not used, but to be consistent to other so that easier for code generation
     getFirst[String](col, _.isEmpty)
 
-  def getFirstIsNotEmpty(col: GenTraversable[String], right: String = ""): String = // right is not used, but to be consistent to other so that easier for code generation
+  def getFirstIsNotEmpty(col: GenTraversable[String], right: String): String = // right is not used, but to be consistent to other so that easier for code generation
     getFirst[String](col, !_.isEmpty)
 
   def getFirstLengthEqual(col: GenTraversable[String], right: Int): String =
@@ -625,6 +634,78 @@ object SharedHelpers extends Assertions {
 
   def getFirstNotMatches(col: GenTraversable[String], right: String): String =
     getFirst[String](col, !_.matches(right))
+
+  def getFirstNot[T](col: java.util.Collection[T], predicate: T => Boolean): T =
+    getNextNotInJavaCol(col.iterator, predicate)
+
+  def getFirstEqual[T](col: java.util.Collection[T], right: T): T =
+    getFirstInJavaCol[T](col, _ == right)
+
+  def getFirstNotEqual[T](col: java.util.Collection[T], right: T): T =
+    getFirstInJavaCol[T](col, _ != right)
+
+  def getFirstMoreThanEqual(col: java.util.Collection[Int], right: Int): Int =
+    getFirstInJavaCol[Int](col, _ >= right)
+
+  def getFirstLessThanEqual(col: java.util.Collection[Int], right: Int): Int =
+    getFirstInJavaCol[Int](col, _ <= right)
+
+  def getFirstMoreThan(col: java.util.Collection[Int], right: Int): Int =
+    getFirstInJavaCol[Int](col, _ > right)
+
+  def getFirstLessThan(col: java.util.Collection[Int], right: Int): Int =
+    getFirstInJavaCol[Int](col, _ < right)
+
+  def getFirstIsEmpty(col: java.util.Collection[String], right: String): String = // right is not used, but to be consistent to other so that easier for code generation
+    getFirstInJavaCol[String](col, _.isEmpty)
+
+  def getFirstIsNotEmpty(col: java.util.Collection[String], right: String): String = // right is not used, but to be consistent to other so that easier for code generation
+    getFirstInJavaCol[String](col, !_.isEmpty)
+
+  def getFirstLengthEqual(col: java.util.Collection[String], right: Int): String =
+    getFirstInJavaCol[String](col, _.length == right)
+
+  def getFirstLengthNotEqual(col: java.util.Collection[String], right: Int): String =
+    getFirstInJavaCol[String](col, _.length != right)
+
+  def getFirstLengthNotEqualLength(col: java.util.Collection[String], right: Int): String =
+    getFirstInJavaCol[String](col, _.length != right)
+
+  def getFirstSizeEqual(col: java.util.Collection[String], right: Int): String =
+    getFirstInJavaCol[String](col, _.size == right)
+
+  def getFirstSizeNotEqual(col: java.util.Collection[String], right: Int): String =
+    getFirstInJavaCol[String](col, _.size != right)
+
+  def getFirstRefEqual[T <: AnyRef](col: java.util.Collection[T], right: T): T =
+    getFirstInJavaCol[T](col, _ eq right)
+
+  def getFirstNotRefEqual[T <: AnyRef](col: java.util.Collection[T], right: T): T =
+    getFirstInJavaCol[T](col, _ ne right)
+
+  def getFirstStartsWith(col: java.util.Collection[String], right: String): String =
+    getFirstInJavaCol[String](col, _.startsWith(right))
+
+  def getFirstNotStartsWith(col: java.util.Collection[String], right: String): String =
+    getFirstInJavaCol[String](col, !_.startsWith(right))
+
+  def getFirstEndsWith(col: java.util.Collection[String], right: String): String =
+    getFirstInJavaCol[String](col, _.endsWith(right))
+
+  def getFirstNotEndsWith(col: java.util.Collection[String], right: String): String =
+    getFirstInJavaCol[String](col, !_.endsWith(right))
+
+  def getFirstInclude(col: java.util.Collection[String], right: String): String =
+    getFirstInJavaCol[String](col, _.indexOf(right) >= 0)
+
+  def getFirstNotInclude(col: java.util.Collection[String], right: String): String =
+    getFirstInJavaCol[String](col, _.indexOf(right) < 0)
+
+  def getFirstMatches(col: java.util.Collection[String], right: String): String =
+    getFirstInJavaCol[String](col, _.matches(right))
+
+  def getFirstNotMatches(col: java.util.Collection[String], right: String): String =
+    getFirstInJavaCol[String](col, !_.matches(right))
 
   def getFirstSizeEqualGenTraversable[T](col: GenTraversable[GenTraversable[T]], right: Int): GenTraversable[T] =
     getFirst[GenTraversable[T]](col, _.size == right)
@@ -728,8 +809,20 @@ object SharedHelpers extends Assertions {
     Array(index.toString, element.length.toString, (if (element != null && element.isInstanceOf[Array[_]]) element.asInstanceOf[Array[T]].deep.toString else element.toString))
   }
 
+  def indexLengthElement[T](itr: java.util.Iterator[String], xs: java.util.Collection[String], errorFun: String => Boolean): Array[String] = {
+    val element = getNextInJavaIterator[String](itr, errorFun)
+    val index = getIndex(xs, element)
+    Array(index.toString, element.length.toString, (if (element != null && element.isInstanceOf[Array[_]]) element.asInstanceOf[Array[T]].deep.toString else element.toString))
+  }
+
   def indexElementLengthString[T](itr: Iterator[String], xs: GenTraversable[String], errorFun: String => Boolean): Array[String] = {
     val element = getNext[String](itr, errorFun)
+    val index = getIndex(xs, element)
+    Array(index.toString, decorateToStringValue(element), element.length.toString)
+  }
+
+  def indexElementLengthString[T](itr: java.util.Iterator[String], xs: java.util.Collection[String], errorFun: String => Boolean): Array[String] = {
+    val element = getNextInJavaIterator[String](itr, errorFun)
     val index = getIndex(xs, element)
     Array(index.toString, decorateToStringValue(element), element.length.toString)
   }
@@ -776,26 +869,26 @@ object SharedHelpers extends Assertions {
   def indexElementLessThanEqual(itr: Iterator[Int], xs: GenTraversable[Int], right: Int): Array[String] =
     indexElement[Int](itr, xs, _ <= right)
 
-  def indexElementIsEmpty(itr: Iterator[String], xs: GenTraversable[String], right: String = ""): Array[String] = // right is not used, but to be consistent to other so that easier for code generation
+  def indexElementIsEmpty(itr: Iterator[String], xs: GenTraversable[String], right: String): Array[String] = // right is not used, but to be consistent to other so that easier for code generation
     indexElement[String](itr, xs, _.isEmpty)
 
-  def indexElementIsNotEmpty(itr: Iterator[String], xs: GenTraversable[String], right: String = ""): Array[String] = // right is not used, but to be consistent to other so that easier for code generation
+  def indexElementIsNotEmpty(itr: Iterator[String], xs: GenTraversable[String], right: String): Array[String] = // right is not used, but to be consistent to other so that easier for code generation
     indexElement[String](itr, xs, !_.isEmpty)
 
   def indexElementLengthEqual(itr: Iterator[String], xs: GenTraversable[String], right: Int): Array[String] =
     indexElement[String](itr, xs, _.length == right)
 
   def indexElementLengthNotEqual(itr: Iterator[String], xs: GenTraversable[String], right: Int): Array[String] =
-    indexElementLengthString[String](itr, xs, _.length != right)
+    indexElementLengthString[String](itr, xs, (e: String) =>  e.length != right)
 
   def indexElementSizeEqual(itr: Iterator[String], xs: GenTraversable[String], right: Int): Array[String] =
     indexElement[String](itr, xs, _.size == right)
 
   def indexElementSizeNotEqual(itr: Iterator[String], xs: GenTraversable[String], right: Int): Array[String] =
-    indexElementLengthString[String](itr, xs, _.size != right)
+    indexElementLengthString[String](itr, xs, (e: String) => e.size != right)
 
   def indexElementLengthNotEqualLength(itr: Iterator[String], xs: GenTraversable[String], right: Int): Array[String] =
-    indexLengthElement[String](itr, xs, _.length != right)
+    indexLengthElement[String](itr, xs, (e: String) => e.length != right)
 
   def indexElementStartsWith(itr: Iterator[String], xs: GenTraversable[String], right: String): Array[String] =
     indexElement[String](itr, xs, _.startsWith(right))
@@ -820,6 +913,73 @@ object SharedHelpers extends Assertions {
 
   def indexElementNotMatches(itr: Iterator[String], xs: GenTraversable[String], right: String): Array[String] =
     indexElement[String](itr, xs, !_.matches(right))
+
+  //##################################
+
+  def indexElementEqual[T](itr: java.util.Iterator[T], xs: java.util.Collection[T], right: T): Array[String] =
+    indexElementForJavaIterator[T](itr, xs, _ == right)
+
+  def indexElementNotEqual[T](itr: java.util.Iterator[T], xs: java.util.Collection[T], right: T): Array[String] =
+    indexElementForJavaIterator[T](itr, xs, _ != right)
+
+  def indexElementMoreThan(itr: java.util.Iterator[Int], xs: java.util.Collection[Int], right: Int): Array[String] =
+    indexElementForJavaIterator[Int](itr, xs, _ > right)
+
+  def indexElementMoreThanEqual(itr: java.util.Iterator[Int], xs: java.util.Collection[Int], right: Int): Array[String] =
+    indexElementForJavaIterator[Int](itr, xs, _ >= right)
+
+  def indexElementLessThan(itr: java.util.Iterator[Int], xs: java.util.Collection[Int], right: Int): Array[String] =
+    indexElementForJavaIterator[Int](itr, xs, _ < right)
+
+  def indexElementLessThanEqual(itr: java.util.Iterator[Int], xs: java.util.Collection[Int], right: Int): Array[String] =
+    indexElementForJavaIterator[Int](itr, xs, _ <= right)
+
+  def indexElementIsEmpty(itr: java.util.Iterator[String], xs: java.util.Collection[String], right: String): Array[String] = // right is not used, but to be consistent to other so that easier for code generation
+    indexElementForJavaIterator[String](itr, xs, _.isEmpty)
+
+  def indexElementIsNotEmpty(itr: java.util.Iterator[String], xs: java.util.Collection[String], right: String): Array[String] = // right is not used, but to be consistent to other so that easier for code generation
+    indexElementForJavaIterator[String](itr, xs, !_.isEmpty)
+
+  def indexElementLengthEqual(itr: java.util.Iterator[String], xs: java.util.Collection[String], right: Int): Array[String] =
+    indexElementForJavaIterator[String](itr, xs, _.length == right)
+
+  def indexElementLengthNotEqual(itr: java.util.Iterator[String], xs: java.util.Collection[String], right: Int): Array[String] =
+    indexElementLengthString[String](itr, xs, (e: String) => e.length != right)
+
+  def indexElementSizeEqual(itr: java.util.Iterator[String], xs: java.util.Collection[String], right: Int): Array[String] =
+    indexElementForJavaIterator[String](itr, xs, _.size == right)
+
+  def indexElementSizeNotEqual(itr: java.util.Iterator[String], xs: java.util.Collection[String], right: Int): Array[String] =
+    indexElementLengthString[String](itr, xs, (e: String) => e.size != right)
+
+  def indexElementLengthNotEqualLength(itr: java.util.Iterator[String], xs: java.util.Collection[String], right: Int): Array[String] =
+    indexLengthElement[String](itr, xs, (e: String) => e.length != right)
+
+  def indexElementStartsWith(itr: java.util.Iterator[String], xs: java.util.Collection[String], right: String): Array[String] =
+    indexElementForJavaIterator[String](itr, xs, _.startsWith(right))
+
+  def indexElementNotStartsWith(itr: java.util.Iterator[String], xs: java.util.Collection[String], right: String): Array[String] =
+    indexElementForJavaIterator[String](itr, xs, !_.startsWith(right))
+
+  def indexElementEndsWith(itr: java.util.Iterator[String], xs: java.util.Collection[String], right: String): Array[String] =
+    indexElementForJavaIterator[String](itr, xs, _.endsWith(right))
+
+  def indexElementNotEndsWith(itr: java.util.Iterator[String], xs: java.util.Collection[String], right: String): Array[String] =
+    indexElementForJavaIterator[String](itr, xs, !_.endsWith(right))
+
+  def indexElementInclude(itr: java.util.Iterator[String], xs: java.util.Collection[String], right: String): Array[String] =
+    indexElementForJavaIterator[String](itr, xs, _.indexOf(right) >= 0)
+
+  def indexElementNotInclude(itr: java.util.Iterator[String], xs: java.util.Collection[String], right: String): Array[String] =
+    indexElementForJavaIterator[String](itr, xs, _.indexOf(right) < 0)
+
+  def indexElementMatches(itr: java.util.Iterator[String], xs: java.util.Collection[String], right: String): Array[String] =
+    indexElementForJavaIterator[String](itr, xs, _.matches(right))
+
+  def indexElementNotMatches(itr: java.util.Iterator[String], xs: java.util.Collection[String], right: String): Array[String] =
+    indexElementForJavaIterator[String](itr, xs, !_.matches(right))
+
+  //##################################
 
   def indexElementSizeEqualGenTraversable[T](itr: Iterator[GenTraversable[T]], xs: GenTraversable[GenTraversable[T]], right: Int): Array[String] =
     indexElement[GenTraversable[T]](itr, xs, _.size == right)
@@ -850,6 +1010,16 @@ object SharedHelpers extends Assertions {
 
   def indexElementNotRefEqual[T <: AnyRef](itr: Iterator[T], xs: GenTraversable[T], right: T): Array[String] =
     indexElement[T](itr, xs, _ ne right)
+
+  //###########################################
+
+  def indexElementRefEqual[T <: AnyRef](itr: java.util.Iterator[T], xs: java.util.Collection[T], right: T): Array[String] =
+    indexElementForJavaIterator[T](itr, xs, _ eq right)
+
+  def indexElementNotRefEqual[T <: AnyRef](itr: java.util.Iterator[T], xs: java.util.Collection[T], right: T): Array[String] =
+    indexElementForJavaIterator[T](itr, xs, _ ne right)
+
+  //###########################################
 
   def indexElementContainKey[K, V](itr: Iterator[GenMap[K, V]], xs: GenTraversable[GenMap[K, V]], right: K): Array[String] =
     indexElement[GenMap[K, V]](itr, xs, _.exists(_._1 == right))
