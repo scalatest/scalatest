@@ -123,7 +123,7 @@ object GenInspectorsShorthands {
     override def toString =
       "def `" + colText + " should throw TestFailedException with correct stack depth and message when " + condition + "` {\n" +
         "  val xs = " + colText + "\n" +
-        "  val itr = xs.toIterator\n" +
+        "  val itr = xs." + (if (colType.contains("java")) "iterator" else "toIterator") + "\n" +
         "  val e = intercept[exceptions.TestFailedException] {\n" +
         "    " + assertText + "\n" +
         "  }\n" +
@@ -145,7 +145,7 @@ object GenInspectorsShorthands {
     override def toString =
       "def `" + colText + " should throw TestFailedException with correct stack depth and message when " + condition + "` {\n" +
         "  val xs = " + colText + "\n" +
-        "  val itr = xs.toIterator\n" +
+        "  val itr = xs." + (if (colType.contains("java")) "iterator" else "toIterator") + "\n" +
         "  val e = intercept[exceptions.TestFailedException] {\n" +
         "    " + assertText + "\n" +
         "  }\n" +
@@ -167,7 +167,7 @@ object GenInspectorsShorthands {
     override def toString =
       "def `" + colText + " should throw TestFailedException with correct stack depth and message when " + condition + "` {\n" +
         "  val xs = " + colText + "\n" +
-        "  val itr = xs.toIterator\n" +
+        "  val itr = xs." + (if (colType.contains("java")) "iterator" else "toIterator") + "\n" +
         "  val e = intercept[exceptions.TestFailedException] {\n" +
         "    " + assertText + "\n" +
         "  }\n" +
@@ -186,7 +186,7 @@ object GenInspectorsShorthands {
     override def toString =
       "def `" + colText + " should throw TestFailedException with correct stack depth and message when " + condition + "` {\n" +
         "  val xs = " + colText + "\n" +
-        "  val itr = xs.toIterator\n" +
+        "  val itr = xs." + (if (colType.contains("java")) "iterator" else "toIterator") + "\n" +
         "  val e = intercept[exceptions.TestFailedException] {\n" +
         "    " + assertText + "\n" +
         "  }\n" +
@@ -207,7 +207,7 @@ object GenInspectorsShorthands {
     override def toString =
       "def `" + colText + " should throw TestFailedException with correct stack depth and message when " + condition + "` {\n" +
         "  val xs = " + colText + "\n" +
-        "  val itr = xs.toIterator\n" +
+        "  val itr = xs." + (if (colType.contains("java")) "iterator" else "toIterator") + "\n" +
         "  val e = intercept[exceptions.TestFailedException] {\n" +
         "    " + assertText + "\n" +
         "  }\n" +
@@ -227,7 +227,7 @@ object GenInspectorsShorthands {
     override def toString =
       "def `" + colText + " should throw TestFailedException with correct stack depth and message when " + condition + "` {\n" +
         "  val xs = " + colText + "\n" +
-        "  val itr = xs.toIterator\n" +
+        "  val itr = xs." + (if (colType.contains("java")) "iterator" else "toIterator") + "\n" +
         "  val e = intercept[exceptions.TestFailedException] {\n" +
         "    " + assertText + "\n" +
         "  }\n" +
@@ -479,6 +479,21 @@ object GenInspectorsShorthands {
       (colTexts.map("javaPriorityQueue(" + _ + ")").mkString(", ") , "xs")
     )
 
+  def genJavaColMap[T](mapText: String, arrayXsText: String) =
+    List[(String, String)](
+      ("javaArrayList(List(" + mapText + "))", "xs"),
+      ("javaHashSet(List(" + mapText + "))", "xs"),
+      ("javaLinkedList(List(" + mapText + "))", "xs"),
+      ("javaVector(List(" + mapText + "))", "xs"),
+      ("javaArrayDeque(List(" + mapText + "))", "xs"),
+      ("javaConcurrentLinkedQueue(List(" + mapText + "))", "xs"),
+      ("javaCopyOnWriteArrayList(List(" + mapText + "))", "xs"),
+      ("javaCopyOnWriteArraySet(List(" + mapText + "))", "xs"),
+      ("javaLinkedBlockingDeque(List(" + mapText + "))", "xs"),
+      ("javaLinkedBlockingQueue(List(" + mapText + "))", "xs"),
+      ("javaLinkedHashSet(List(" + mapText + "))", "xs")
+    )
+
   def genJavaMap[T](colTexts: Array[String], keyType: String, valueType: String) =
     List[(String, String, String)](
       (colTexts.map("javaHashMap(" + _ + ")").mkString(", ") , "xs", "java.util.HashMap[" + keyType + ", " + valueType + "]"),
@@ -559,25 +574,25 @@ object GenInspectorsShorthands {
 
   def getJavaColFun(funString: String, right: Any): List[String] => Boolean = {
     funString match {
-      case "indexElementJavaColSizeEqual[String]" => _.size == right
-      case "indexElementJavaColSizeNotEqual[String]" => _.size != right
-      case "indexElementJavaColIsEmpty[String]" => _.isEmpty
-      case "indexElementJavaColNotIsEmpty[String]" => !_.isEmpty
-      case "indexElementJavaColContain[String]" => _.contains(right)
-      case "indexElementJavaColNotContain[String]" => !_.contains(right)
+      case "indexElementJavaColSizeEqual" => _.size == right
+      case "indexElementJavaColSizeNotEqual" => _.size != right
+      case "indexElementJavaColIsEmpty" => _.isEmpty
+      case "indexElementJavaColNotIsEmpty" => !_.isEmpty
+      case "indexElementJavaColContain" => _.contains(right)
+      case "indexElementJavaColNotContain" => !_.contains(right)
     }
   }
 
   def getJavaMapFun(funString: String, right: Any): java.util.Map[String, String] => Boolean = {
     funString match {
-      case "indexElementJavaMapIsEmpty[String, String]" => _.isEmpty
-      case "indexElementJavaMapNotIsEmpty[String, String]" => !_.isEmpty
-      case "indexElementJavaMapSizeEqual[String, String]" => _.size == right
-      case "indexElementJavaMapSizeNotEqual[String, String]" => _.size != right
-      case "indexElementJavaMapContainKey[String, String]" => _.containsKey(right)
-      case "indexElementJavaMapNotContainKey[String, String]" => !_.containsKey(right)
-      case "indexElementJavaMapContainValue[String, String]" => _.containsValue(right)
-      case "indexElementJavaMapNotContainValue[String, String]" => !_.containsValue(right)
+      case "indexElementJavaMapIsEmpty" => _.isEmpty
+      case "indexElementJavaMapNotIsEmpty" => !_.isEmpty
+      case "indexElementJavaMapSizeEqual" => _.size == right
+      case "indexElementJavaMapSizeNotEqual" => _.size != right
+      case "indexElementJavaMapContainKey" => _.containsKey(right)
+      case "indexElementJavaMapNotContainKey" => !_.containsKey(right)
+      case "indexElementJavaMapContainValue" => _.containsValue(right)
+      case "indexElementJavaMapNotContainValue" => !_.containsValue(right)
     }
   }
 
@@ -681,28 +696,28 @@ object GenInspectorsShorthands {
 
   def stdJavaColCheckTypes(size: Int, notSize: Int, leftTemplateFun: (String, String, String) => Template, leftSizeTemplateFun: (String, String, String) => Template, errorFunPrefix: String, autoQuoteString: Boolean = true) =
     List(
-      ("'java collection should be symbol' failed", " should be ('empty)", "JavaColIsEmpty[String]", errorFunPrefix + "JavaColNotIsEmpty[String]", "0", None, (colType: String, errorFun: String, errorValue: String) => new WasNotMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), empty, autoQuoteString)),
-      ("'java collection should not be symbol' failed", " should not be 'empty", "JavaColNotIsEmpty[String]", errorFunPrefix + "JavaColIsEmpty[String]", "0", None, (colType: String, errorFun: String, errorValue: String) => new WasMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), empty, autoQuoteString)),
-      ("'java collection should have size' failed", " should have size " + size, "JavaColSizeEqual[String]", errorFunPrefix + "JavaColSizeNotEqual[String]", "" + size, size, (colType: String, errorFun: String, errorValue: String) => new HadSizeInsteadOfExpectedSizeMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), leftSizeTemplateFun(colType, errorFun, errorValue), 0, autoQuoteString)),
-      ("'java collection should not have size' failed", " should not have size (" + notSize + ")", "JavaColSizeNotEqual[String]", errorFunPrefix + "JavaColSizeEqual[String]", "" + notSize, notSize, (colType: String, errorFun: String, errorValue: String) => new HadSizeMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), 1, autoQuoteString)),
-      ("'java collection should have length' failed", " should have length " + size, "JavaColSizeEqual[String]", errorFunPrefix + "JavaColSizeNotEqual[String]", "" + size, size, (colType: String, errorFun: String, errorValue: String) => new HadLengthInsteadOfExpectedLengthMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), leftSizeTemplateFun(colType, errorFun, errorValue), 0, autoQuoteString)),
-      ("'java collection should not have length' failed", " should not have length (" + notSize + ")", "JavaColSizeNotEqual[String]", errorFunPrefix + "JavaColSizeEqual[String]", "" + notSize, notSize, (colType: String, errorFun: String, errorValue: String) => new HadLengthMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), 1, autoQuoteString)),
-      ("'java collection should contain' failed", " should contain (\"hi\")", "JavaColContain[String]", errorFunPrefix + "JavaColNotContain[String]", "\"hi\"", "hi", (colType: String, errorFun: String, errorValue: String) => new DidNotContainElementMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), "hi", autoQuoteString)),
-      ("'java collection should not contain' failed", " should not contain \"hi\"", "JavaColNotContain[String]", errorFunPrefix + "JavaColContain[String]", "\"hi\"", "hi", (colType: String, errorFun: String, errorValue: String) => new ContainedElementMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), "hi", autoQuoteString))
+      ("'java collection should be symbol' failed", " should be ('empty)", "JavaColIsEmpty", errorFunPrefix + "JavaColNotIsEmpty", "0", None, (colType: String, errorFun: String, errorValue: String) => new WasNotMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), empty, autoQuoteString)),
+      ("'java collection should not be symbol' failed", " should not be 'empty", "JavaColNotIsEmpty", errorFunPrefix + "JavaColIsEmpty", "0", None, (colType: String, errorFun: String, errorValue: String) => new WasMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), empty, autoQuoteString)),
+      ("'java collection should have size' failed", " should have size " + size, "JavaColSizeEqual", errorFunPrefix + "JavaColSizeNotEqual", "" + size, size, (colType: String, errorFun: String, errorValue: String) => new HadSizeInsteadOfExpectedSizeMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), leftSizeTemplateFun(colType, errorFun, errorValue), 0, autoQuoteString)),
+      ("'java collection should not have size' failed", " should not have size (" + notSize + ")", "JavaColSizeNotEqual", errorFunPrefix + "JavaColSizeEqual", "" + notSize, notSize, (colType: String, errorFun: String, errorValue: String) => new HadSizeMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), 1, autoQuoteString)),
+      ("'java collection should have length' failed", " should have length " + size, "JavaColSizeEqual", errorFunPrefix + "JavaColSizeNotEqual", "" + size, size, (colType: String, errorFun: String, errorValue: String) => new HadLengthInsteadOfExpectedLengthMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), leftSizeTemplateFun(colType, errorFun, errorValue), 0, autoQuoteString)),
+      ("'java collection should not have length' failed", " should not have length (" + notSize + ")", "JavaColSizeNotEqual", errorFunPrefix + "JavaColSizeEqual", "" + notSize, notSize, (colType: String, errorFun: String, errorValue: String) => new HadLengthMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), 1, autoQuoteString)),
+      ("'java collection should contain' failed", " should contain (\"hi\")", "JavaColContain", errorFunPrefix + "JavaColNotContain", "\"hi\"", "hi", (colType: String, errorFun: String, errorValue: String) => new DidNotContainElementMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), "hi", autoQuoteString)),
+      ("'java collection should not contain' failed", " should not contain \"hi\"", "JavaColNotContain", errorFunPrefix + "JavaColContain", "\"hi\"", "hi", (colType: String, errorFun: String, errorValue: String) => new ContainedElementMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), "hi", autoQuoteString))
     )
 
   def stdJavaMapCheckTypes(size: Int, notSize: Int, leftTemplateFun: (String, String, String) => Template, leftSizeTemplateFun: (String, String, String) => Template, errorFunPrefix: String, autoQuoteString: Boolean = true) =
     List(
-      ("'java map should be symbol' failed", " should be ('empty)", "JavaMapIsEmpty[String, String]", errorFunPrefix + "JavaMapNotIsEmpty[String, String]", "0",  None, (colType: String, errorFun: String, errorValue: String) => new WasNotMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), empty, autoQuoteString)),
-      ("'java map should not be symbol' failed", " should not be 'empty", "JavaMapNotIsEmpty[String, String]", errorFunPrefix + "JavaMapIsEmpty[String, String]", "0", None, (colType: String, errorFun: String, errorValue: String) => new WasMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), empty, autoQuoteString)),
-      ("'java map should have size' failed", " should have size " + size, "JavaMapSizeEqual[String, String]", errorFunPrefix + "JavaMapSizeNotEqual[String, String]", "" + size, size, (colType: String, errorFun: String, errorValue: String) => new HadSizeInsteadOfExpectedSizeMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), leftSizeTemplateFun(colType, errorFun, errorValue), 0, autoQuoteString)),
-      ("'java map should not have size' failed", " should not have size (" + notSize + ")", "JavaMapSizeNotEqual[String, String]", errorFunPrefix + "JavaMapSizeEqual[String, String]", "" + notSize, notSize, (colType: String, errorFun: String, errorValue: String) => new HadSizeMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), 1, autoQuoteString)),
-      ("'java map should have length' failed", " should have length " + size, "JavaMapSizeEqual[String, String]", errorFunPrefix + "JavaMapSizeNotEqual[String, String]", "" + size, size, (colType: String, errorFun: String, errorValue: String) => new HadLengthInsteadOfExpectedLengthMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), leftSizeTemplateFun(colType, errorFun, errorValue), 0, autoQuoteString)),
-      ("'java map should not have length' failed", " should not have length (" + notSize + ")", "JavaMapSizeNotEqual[String, String]", errorFunPrefix + "JavaMapSizeEqual[String, String]", "" + notSize, notSize, (colType: String, errorFun: String, errorValue: String) => new HadLengthMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), 1, autoQuoteString)),
-      ("'java map should contain key' failed", " should contain key \"b\"", "JavaMapContainKey[String, String]", errorFunPrefix + "JavaMapNotContainKey[String, String]", "\"b\"", "b", (colType: String, errorFun: String, errorValue: String) => new DidNotContainKeyMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), "b", autoQuoteString)),
-      ("'java map should not contain key' failed", " should not contain key (\"b\")", "JavaMapNotContainKey[String, String]", errorFunPrefix + "JavaMapContainKey[String, String]", "\"b\"", "b", (colType: String, errorFun: String, errorValue: String) => new ContainedKeyMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), "b", autoQuoteString)),
-      ("'java map should contain value' failed", " should contain value \"boom!\"", "JavaMapContainValue[String, String]", errorFunPrefix + "JavaMapNotContainValue[String, String]", "\"boom!\"", "boom!", (colType: String, errorFun: String, errorValue: String) => new DidNotContainValueMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), "boom!", autoQuoteString)),
-      ("'java map should not contain value' failed", " should not contain value (\"boom!\")", "JavaMapNotContainValue[String, String]", errorFunPrefix + "JavaMapContainValue[String, String]", "\"boom!\"", "boom!", (colType: String, errorFun: String, errorValue: String) => new ContainedValueMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), "boom!", autoQuoteString))
+      ("'java map should be symbol' failed", " should be ('empty)", "JavaMapIsEmpty", errorFunPrefix + "JavaMapNotIsEmpty", "0",  None, (colType: String, errorFun: String, errorValue: String) => new WasNotMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), empty, autoQuoteString)),
+      ("'java map should not be symbol' failed", " should not be 'empty", "JavaMapNotIsEmpty", errorFunPrefix + "JavaMapIsEmpty", "0", None, (colType: String, errorFun: String, errorValue: String) => new WasMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), empty, autoQuoteString)),
+      ("'java map should have size' failed", " should have size " + size, "JavaMapSizeEqual", errorFunPrefix + "JavaMapSizeNotEqual", "" + size, size, (colType: String, errorFun: String, errorValue: String) => new HadSizeInsteadOfExpectedSizeMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), leftSizeTemplateFun(colType, errorFun, errorValue), 0, autoQuoteString)),
+      ("'java map should not have size' failed", " should not have size (" + notSize + ")", "JavaMapSizeNotEqual", errorFunPrefix + "JavaMapSizeEqual", "" + notSize, notSize, (colType: String, errorFun: String, errorValue: String) => new HadSizeMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), 1, autoQuoteString)),
+      ("'java map should have length' failed", " should have length " + size, "JavaMapSizeEqual", errorFunPrefix + "JavaMapSizeNotEqual", "" + size, size, (colType: String, errorFun: String, errorValue: String) => new HadLengthInsteadOfExpectedLengthMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), leftSizeTemplateFun(colType, errorFun, errorValue), 0, autoQuoteString)),
+      ("'java map should not have length' failed", " should not have length (" + notSize + ")", "JavaMapSizeNotEqual", errorFunPrefix + "JavaMapSizeEqual", "" + notSize, notSize, (colType: String, errorFun: String, errorValue: String) => new HadLengthMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), 1, autoQuoteString)),
+      ("'java map should contain key' failed", " should contain key \"b\"", "JavaMapContainKey", errorFunPrefix + "JavaMapNotContainKey", "\"b\"", "b", (colType: String, errorFun: String, errorValue: String) => new DidNotContainKeyMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), "b", autoQuoteString)),
+      ("'java map should not contain key' failed", " should not contain key (\"b\")", "JavaMapNotContainKey", errorFunPrefix + "JavaMapContainKey", "\"b\"", "b", (colType: String, errorFun: String, errorValue: String) => new ContainedKeyMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), "b", autoQuoteString)),
+      ("'java map should contain value' failed", " should contain value \"boom!\"", "JavaMapContainValue", errorFunPrefix + "JavaMapNotContainValue", "\"boom!\"", "boom!", (colType: String, errorFun: String, errorValue: String) => new DidNotContainValueMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), "boom!", autoQuoteString)),
+      ("'java map should not contain value' failed", " should not contain value (\"boom!\")", "JavaMapNotContainValue", errorFunPrefix + "JavaMapContainValue", "\"boom!\"", "boom!", (colType: String, errorFun: String, errorValue: String) => new ContainedValueMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), "boom!", autoQuoteString))
     )
 
   def simpleMessageFun(errorFun: String, errorValue: String): Template = new SimpleMessageTemplate("{1}")
@@ -846,7 +861,7 @@ object GenInspectorsShorthands {
 
     val javaColCheckCol =
       javaCols flatMap { case (mapText, xsText) =>
-        genColMap(mapText, xsText)
+        genJavaColMap(mapText, xsText)
       }
 
     val javaColCheckTypes = stdJavaColCheckTypes(0, 1, trvStringDynaFirst, trvStringDynaFirstSize, "getFirst")
@@ -855,7 +870,7 @@ object GenInspectorsShorthands {
 
     val javaMapCheckCol =
       javaMaps flatMap { case (mapText, xsText, colType) =>
-        genColMap(mapText, xsText).map { case (colText, xsText) =>
+        genJavaColMap(mapText, xsText).map { case (colText, xsText) =>
           (colText, xsText, colType)
         }
       }
@@ -1043,14 +1058,14 @@ object GenInspectorsShorthands {
     val javaCols = genJavaCol(Array("List(\"hi\")", "List(\"boom!\")", "List.empty[String]"))
     val javaColCheckCol =
       javaCols flatMap { case (mapText, xsText) =>
-        genColMap(mapText, xsText)
+        genJavaColMap(mapText, xsText)
       }
     val javaColCheckTypes = stdJavaColCheckTypes(0, 1, trvSimpleMessageFun, trvSizeSimpleMessageFun, "indexElement", true)
 
     val javaMaps = genJavaMap(Array("Map.empty[String, String]", "Map(\"b\" -> \"boom!\")", "Map(\"h\" -> \"hello!\")"), "String", "String")
     val javaMapCheckCol =
       javaMaps flatMap { case (mapText, xsText, colType) =>
-        genColMap(mapText, xsText).map { case (colText, xsText) =>
+        genJavaColMap(mapText, xsText).map { case (colText, xsText) =>
           (colText, xsText, colType)
         }
       }
@@ -1244,14 +1259,14 @@ object GenInspectorsShorthands {
     val javaCols = genJavaCol(Array("List(\"hi\")", "List(\"boom!\")", "List.empty[String]"))
     val javaColCheckCol =
       javaCols flatMap { case (mapText, xsText) =>
-        genColMap(mapText, xsText)
+        genJavaColMap(mapText, xsText)
       }
     val javaColCheckTypes = stdJavaColCheckTypes(0, 1, trvSimpleMessageFun, trvSizeSimpleMessageFun, "indexElement", true)
 
     val javaMaps = genJavaMap(Array("Map.empty[String, String]", "Map(\"b\" -> \"boom!\")", "Map(\"h\" -> \"hello!\")"), "String", "String")
     val javaMapCheckCol =
       javaMaps flatMap { case (mapText, xsText, colType) =>
-        genColMap(mapText, xsText).map { case (colText, xsText) =>
+        genJavaColMap(mapText, xsText).map { case (colText, xsText) =>
           (colText, xsText, colType)
         }
       }
@@ -1444,14 +1459,14 @@ object GenInspectorsShorthands {
     val javaCols = genJavaCol(Array("List(\"hi\")", "List(\"boom!\")", "List.empty[String]"))
     val javaColCheckCol =
       javaCols flatMap { case (mapText, xsText) =>
-        genColMap(mapText, xsText)
+        genJavaColMap(mapText, xsText)
       }
     val javaColCheckTypes = stdJavaColCheckTypes(0, 1, trvSimpleMessageFun, trvSizeSimpleMessageFun, "indexElement", true)
 
     val javaMaps = genJavaMap(Array("Map.empty[String, String]", "Map(\"b\" -> \"boom!\")", "Map(\"h\" -> \"hello!\")"), "String", "String")
     val javaMapCheckCol =
       javaMaps flatMap { case (mapText, xsText, colType) =>
-        genColMap(mapText, xsText).map { case (colText, xsText) =>
+        genJavaColMap(mapText, xsText).map { case (colText, xsText) =>
           (colText, xsText, colType)
         }
       }
@@ -1645,14 +1660,14 @@ object GenInspectorsShorthands {
     val javaCols = genJavaCol(Array("List(\"hi\")", "List(\"boom!\")", "List.empty[String]"))
     val javaColCheckCol =
       javaCols flatMap { case (mapText, xsText) =>
-        genColMap(mapText, xsText)
+        genJavaColMap(mapText, xsText)
       }
     val javaColCheckTypes = stdJavaColCheckTypes(0, 1, trvSimpleMessageFun, trvSizeSimpleMessageFun, "indexElement", true)
 
     val javaMaps = genJavaMap(Array("Map.empty[String, String]", "Map(\"b\" -> \"boom!\")", "Map(\"h\" -> \"hello!\")"), "String", "String")
     val javaMapCheckCol =
       javaMaps flatMap { case (mapText, xsText, colType) =>
-        genColMap(mapText, xsText).map { case (colText, xsText) =>
+        genJavaColMap(mapText, xsText).map { case (colText, xsText) =>
           (colText, xsText, colType)
         }
       }
@@ -1846,14 +1861,14 @@ object GenInspectorsShorthands {
     val javaCols = genJavaCol(Array("List(\"hi\")", "List(\"boom!\")", "List.empty[String]"))
     val javaColCheckCol =
       javaCols flatMap { case (mapText, xsText) =>
-        genColMap(mapText, xsText)
+        genJavaColMap(mapText, xsText)
       }
     val javaColCheckTypes = stdJavaColCheckTypes(0, 1, trvSimpleMessageFun, trvSizeSimpleMessageFun, "indexElement", true)
 
     val javaMaps = genJavaMap(Array("Map.empty[String, String]", "Map(\"b\" -> \"boom!\")", "Map(\"h\" -> \"hello!\")"), "String", "String")
     val javaMapCheckCol =
       javaMaps flatMap { case (mapText, xsText, colType) =>
-        genColMap(mapText, xsText).map { case (colText, xsText) =>
+        genJavaColMap(mapText, xsText).map { case (colText, xsText) =>
           (colText, xsText, colType)
         }
       }
@@ -2065,7 +2080,7 @@ object GenInspectorsShorthands {
     val javaCols = genJavaCol(Array("List(\"hi\")", "List(\"boom!\")", "List.empty[String]", "List(\"great!\")", "List(\"hi\", \"cool!\")"))
     val javaColCheckCol =
       javaCols flatMap { case (mapText, xsText) =>
-        genColMap(mapText, xsText)
+        genJavaColMap(mapText, xsText)
       }
     val javaColCheckTypes = stdJavaColCheckTypes(1, 0, trvSimpleMessageFun, trvSizeSimpleMessageFun, "indexElement", true).filter { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
       condition != "'java collection should be symbol' failed"
@@ -2074,7 +2089,7 @@ object GenInspectorsShorthands {
     val javaMaps = genJavaMap(Array("Map.empty[String, String]", "Map(\"b\" -> \"boom!\")", "Map(\"h\" -> \"hello!\")", "Map.empty[String, String]", "Map(\"b\" -> \"hello!\")", "Map(\"h\" -> \"boom!\")"), "String", "String")
     val javaMapCheckCol =
       javaMaps flatMap { case (mapText, xsText, colType) =>
-        genColMap(mapText, xsText).map { case (colText, xsText) =>
+        genJavaColMap(mapText, xsText).map { case (colText, xsText) =>
           (colText, xsText, colType)
         }
       }

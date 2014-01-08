@@ -28,7 +28,7 @@ import FailureMessages.decorateToStringValue
 object SharedHelpers extends Assertions {
 
   object SilentReporter extends Reporter {
-    def apply(event: Event) = ()  
+    def apply(event: Event) = ()
   }
 
   object NoisyReporter extends Reporter {
@@ -222,7 +222,7 @@ object SharedHelpers extends Assertions {
       eventList ::= event
     }
   }
-  
+
   def getIndexesForTestInformerEventOrderTests(suite: Suite, testName: String, infoMsg: String): (Int, Int) = {
     val myRep = new EventRecordingReporter
     suite.run(None, Args(myRep))
@@ -231,24 +231,24 @@ object SharedHelpers extends Assertions {
 
     val testStartingOption = indexedList.find(_._1.isInstanceOf[TestStarting])
     val testSucceededOption = indexedList.find(_._1.isInstanceOf[TestSucceeded])
-    
+
     assert(testStartingOption.isDefined, "TestStarting for Suite='" + suite.suiteId + "', testName='" + testName + "' not defined.")
     assert(testSucceededOption.isDefined, "TestSucceeded for Suite='" + suite.suiteId + "', testName='" + testName + "' not defined.")
-    
+
     val testStartingIndex = testStartingOption.get._2
     val testSucceededIndex = testSucceededOption.get._2
-    
+
     val testStarting = testStartingOption.get._1.asInstanceOf[TestStarting]
     val testSucceeded = testSucceededOption.get._1.asInstanceOf[TestSucceeded]
-    
+
     val recordedEvents = testSucceeded.recordedEvents
-    
+
     val infoProvidedOption = recordedEvents.find {
       case event: InfoProvided => event.message == infoMsg
       case _ => false
     }
     assert(infoProvidedOption.isDefined, "InfoProvided for Suite='" + suite.suiteId + "', testName='" + testName + "' not defined.")
-    
+
     (testStartingIndex, testSucceededIndex)
   }
 
@@ -301,42 +301,42 @@ object SharedHelpers extends Assertions {
       case _ => fail("No InfoProvided was received by the Reporter during the run.")
     }
   }
-  
+
   def getIndentedTextFromTestInfoProvided(suite: Suite): IndentedText = {
     val myRep = new EventRecordingReporter
     suite.run(None, Args(myRep))
-    val recordedEvents: Seq[Event] = myRep.eventsReceived.find { e => 
+    val recordedEvents: Seq[Event] = myRep.eventsReceived.find { e =>
       e match {
-        case testSucceeded: TestSucceeded => 
+        case testSucceeded: TestSucceeded =>
           true
-        case testFailed: TestFailed => 
+        case testFailed: TestFailed =>
           true
-        case testPending: TestPending => 
+        case testPending: TestPending =>
           true
         case testCanceled: TestCanceled =>
           true
-        case _ => 
+        case _ =>
           false
       }
     } match {
       case Some(testCompleted) =>
         testCompleted match {
-          case testSucceeded: TestSucceeded => 
+          case testSucceeded: TestSucceeded =>
             testSucceeded.recordedEvents
-          case testFailed: TestFailed => 
+          case testFailed: TestFailed =>
             testFailed.recordedEvents
-          case testPending: TestPending => 
+          case testPending: TestPending =>
             testPending.recordedEvents
           case testCanceled: TestCanceled =>
             testCanceled.recordedEvents
           case _ => throw new RuntimeException("should never get here")
         }
-      case None => 
+      case None =>
         fail("Test completed event is expected but not found.")
     }
     assert(recordedEvents.size === 1)
     recordedEvents(0) match {
-      case ip: InfoProvided => 
+      case ip: InfoProvided =>
         ip.formatter match {
           case Some(indentedText: IndentedText) => indentedText
           case _ => fail("An InfoProvided was received that didn't include an IndentedText formatter: " + ip.formatter)
@@ -361,7 +361,7 @@ object SharedHelpers extends Assertions {
     assert(testFailedEvent.get.asInstanceOf[TestFailed].testName == testName)
     assert(testFailedEvent.get.asInstanceOf[TestFailed].message == expectedMessage)
   }
-  
+
   def thisLineNumber = {
     val st = Thread.currentThread.getStackTrace
 
@@ -383,13 +383,13 @@ object SharedHelpers extends Assertions {
       }
     }
   }
-  
+
   class TestConcurrentDistributor(poolSize: Int) extends tools.ConcurrentDistributor(Args(reporter = SilentReporter), Executors.newFixedThreadPool(poolSize)) {
      override def apply(suite: Suite, tracker: Tracker) {
        throw new UnsupportedOperationException("Please use apply with args.")
      }
   }
-  
+
   def getIndex[T](xs: GenTraversable[T], value: T): Int = {
     @tailrec
     def getIndexAcc[T](itr: Iterator[T], count: Int): Int = {
@@ -422,9 +422,9 @@ object SharedHelpers extends Assertions {
     getIndexAcc(xs.toIterator, 0)
   }
 
-  def getIndex[T](xs: java.util.Collection[T], value: T): Int = {
+  def getIndex(xs: java.util.Collection[_], value: Any): Int = {
     @tailrec
-    def getIndexAcc[T](itr: java.util.Iterator[T], count: Int): Int = {
+    def getIndexAcc(itr: java.util.Iterator[_], count: Int): Int = {
       if (itr.hasNext) {
         val next = itr.next
         if (next == value)
@@ -487,6 +487,25 @@ object SharedHelpers extends Assertions {
     getIndexesAcc(itr, IndexedSeq.empty, 0)
   }
 
+  def getIndexesInJavaCol[T](xs: java.util.Collection[T], values: java.util.Collection[T]): GenTraversable[Int] = {
+    import collection.JavaConverters._
+    val javaValues = values.asScala
+    @tailrec
+    def getIndexesAcc[T](itr: java.util.Iterator[T], indexes: IndexedSeq[Int], count: Int): IndexedSeq[Int] = {
+      if (itr.hasNext) {
+        val next = itr.next
+        if (javaValues.exists(_ == next))
+          getIndexesAcc(itr, indexes :+ count, count + 1)
+        else
+          getIndexesAcc(itr, indexes, count + 1)
+      }
+      else
+        indexes
+    }
+    val itr = xs.iterator
+    getIndexesAcc(itr, IndexedSeq.empty, 0)
+  }
+
   @tailrec
   final def getNext[T](itr: Iterator[T], predicate: T => Boolean): T = {
     val next = itr.next
@@ -513,8 +532,8 @@ object SharedHelpers extends Assertions {
 
   final def getNextInJavaMap[K, V](itr: java.util.Iterator[java.util.Map.Entry[K, V]], predicate: java.util.Map.Entry[K, V] => Boolean): java.util.Map.Entry[K, V] =
     getNextInJavaIterator(itr, predicate)
-  
-  def getFirst[T](col: GenTraversable[T], predicate: T => Boolean): T = 
+
+  def getFirst[T](col: GenTraversable[T], predicate: T => Boolean): T =
     getNext(col.toIterator, predicate)
 
   def getFirstInJavaCol[T](col: java.util.Collection[T], predicate: T => Boolean): T =
@@ -525,7 +544,7 @@ object SharedHelpers extends Assertions {
 
   def getFirstInString(str: String, predicate: Char => Boolean): Char =
     getNext(str.toCharArray.iterator, predicate)
-  
+
   @tailrec
   final def getNextNot[T](itr: Iterator[T], predicate: T => Boolean): T = {
     val next = itr.next
@@ -534,362 +553,379 @@ object SharedHelpers extends Assertions {
     else
       getNextNot(itr, predicate)
   }
-  
-  def getFirstNot[T](col: GenTraversable[T], predicate: T => Boolean): T = 
+
+  def getFirstNot[T](col: GenTraversable[T], predicate: T => Boolean): T =
     getNextNot(col.toIterator, predicate)
-    
-  def getFirstEqual[T](col: GenTraversable[T], right: T): T = 
+
+  def getFirstEqual[T](col: GenTraversable[T], right: T): T =
     getFirst[T](col, _ == right)
-    
-  def getFirstNotEqual[T](col: GenTraversable[T], right: T): T = 
+
+  def getFirstNotEqual[T](col: GenTraversable[T], right: T): T =
     getFirst[T](col, _ != right)
-    
-  def getFirstMoreThanEqual(col: GenTraversable[Int], right: Int): Int = 
+
+  def getFirstMoreThanEqual(col: GenTraversable[Int], right: Int): Int =
     getFirst[Int](col, _ >= right)
-    
-  def getFirstLessThanEqual(col: GenTraversable[Int], right: Int): Int = 
+
+  def getFirstLessThanEqual(col: GenTraversable[Int], right: Int): Int =
     getFirst[Int](col, _ <= right)
-    
-  def getFirstMoreThan(col: GenTraversable[Int], right: Int): Int = 
+
+  def getFirstMoreThan(col: GenTraversable[Int], right: Int): Int =
     getFirst[Int](col, _ > right)
-    
-  def getFirstLessThan(col: GenTraversable[Int], right: Int): Int = 
+
+  def getFirstLessThan(col: GenTraversable[Int], right: Int): Int =
     getFirst[Int](col, _ < right)
-    
+
   def getFirstIsEmpty(col: GenTraversable[String], right: String = ""): String = // right is not used, but to be consistent to other so that easier for code generation
     getFirst[String](col, _.isEmpty)
-    
+
   def getFirstIsNotEmpty(col: GenTraversable[String], right: String = ""): String = // right is not used, but to be consistent to other so that easier for code generation
     getFirst[String](col, !_.isEmpty)
-    
-  def getFirstLengthEqual(col: GenTraversable[String], right: Int): String = 
+
+  def getFirstLengthEqual(col: GenTraversable[String], right: Int): String =
     getFirst[String](col, _.length == right)
-    
-  def getFirstLengthNotEqual(col: GenTraversable[String], right: Int): String = 
+
+  def getFirstLengthNotEqual(col: GenTraversable[String], right: Int): String =
     getFirst[String](col, _.length != right)
-    
-  def getFirstLengthNotEqualLength(col: GenTraversable[String], right: Int): String = 
+
+  def getFirstLengthNotEqualLength(col: GenTraversable[String], right: Int): String =
     getFirst[String](col, _.length != right)
-    
-  def getFirstSizeEqual(col: GenTraversable[String], right: Int): String = 
+
+  def getFirstSizeEqual(col: GenTraversable[String], right: Int): String =
     getFirst[String](col, _.size == right)
-    
-  def getFirstSizeNotEqual(col: GenTraversable[String], right: Int): String = 
+
+  def getFirstSizeNotEqual(col: GenTraversable[String], right: Int): String =
     getFirst[String](col, _.size != right)
-    
-  def getFirstRefEqual[T <: AnyRef](col: GenTraversable[T], right: T): T = 
+
+  def getFirstRefEqual[T <: AnyRef](col: GenTraversable[T], right: T): T =
     getFirst[T](col, _ eq right)
-    
-  def getFirstNotRefEqual[T <: AnyRef](col: GenTraversable[T], right: T): T = 
+
+  def getFirstNotRefEqual[T <: AnyRef](col: GenTraversable[T], right: T): T =
     getFirst[T](col, _ ne right)
-    
-  def getFirstStartsWith(col: GenTraversable[String], right: String): String = 
+
+  def getFirstStartsWith(col: GenTraversable[String], right: String): String =
     getFirst[String](col, _.startsWith(right))
-    
-  def getFirstNotStartsWith(col: GenTraversable[String], right: String): String = 
+
+  def getFirstNotStartsWith(col: GenTraversable[String], right: String): String =
     getFirst[String](col, !_.startsWith(right))
-    
-  def getFirstEndsWith(col: GenTraversable[String], right: String): String = 
+
+  def getFirstEndsWith(col: GenTraversable[String], right: String): String =
     getFirst[String](col, _.endsWith(right))
-    
-  def getFirstNotEndsWith(col: GenTraversable[String], right: String): String = 
+
+  def getFirstNotEndsWith(col: GenTraversable[String], right: String): String =
     getFirst[String](col, !_.endsWith(right))
-    
-  def getFirstInclude(col: GenTraversable[String], right: String): String = 
+
+  def getFirstInclude(col: GenTraversable[String], right: String): String =
     getFirst[String](col, _.indexOf(right) >= 0)
-    
-  def getFirstNotInclude(col: GenTraversable[String], right: String): String = 
+
+  def getFirstNotInclude(col: GenTraversable[String], right: String): String =
     getFirst[String](col, _.indexOf(right) < 0)
-  
-  def getFirstMatches(col: GenTraversable[String], right: String): String = 
+
+  def getFirstMatches(col: GenTraversable[String], right: String): String =
     getFirst[String](col, _.matches(right))
-    
-  def getFirstNotMatches(col: GenTraversable[String], right: String): String = 
+
+  def getFirstNotMatches(col: GenTraversable[String], right: String): String =
     getFirst[String](col, !_.matches(right))
-    
-  def getFirstSizeEqualGenTraversable[T](col: GenTraversable[GenTraversable[T]], right: Int): GenTraversable[T] = 
+
+  def getFirstSizeEqualGenTraversable[T](col: GenTraversable[GenTraversable[T]], right: Int): GenTraversable[T] =
     getFirst[GenTraversable[T]](col, _.size == right)
-    
-  def getFirstSizeNotEqualGenTraversable[T](col: GenTraversable[GenTraversable[T]], right: Int): GenTraversable[T] = 
+
+  def getFirstSizeNotEqualGenTraversable[T](col: GenTraversable[GenTraversable[T]], right: Int): GenTraversable[T] =
     getFirst[GenTraversable[T]](col, _.size != right)
-    
-  def getFirstSizeEqualGenTraversableArray[T](col: GenTraversable[Array[T]], right: Int): Array[T] = 
+
+  def getFirstSizeEqualGenTraversableArray[T](col: GenTraversable[Array[T]], right: Int): Array[T] =
     getFirst[Array[T]](col, _.size == right)
-    
-  def getFirstSizeNotEqualGenTraversableArray[T](col: GenTraversable[Array[T]], right: Int): Array[T] = 
+
+  def getFirstSizeNotEqualGenTraversableArray[T](col: GenTraversable[Array[T]], right: Int): Array[T] =
     getFirst[Array[T]](col, _.size != right)
-    
-  def getFirstIsEmpty[T](col: GenTraversable[GenTraversable[T]], right: T): GenTraversable[T] = 
+
+  def getFirstIsEmpty[T](col: GenTraversable[GenTraversable[T]], right: T): GenTraversable[T] =
     getFirst[GenTraversable[T]](col, _.isEmpty)
-    
-  def getFirstNotIsEmpty[T](col: GenTraversable[GenTraversable[T]], right: T): GenTraversable[T] = 
+
+  def getFirstNotIsEmpty[T](col: GenTraversable[GenTraversable[T]], right: T): GenTraversable[T] =
     getFirst[GenTraversable[T]](col, !_.isEmpty)
-    
-  def getFirstContainGenTraversable[T](col: GenTraversable[GenTraversable[T]], right: T): GenTraversable[T] = 
+
+  def getFirstContainGenTraversable[T](col: GenTraversable[GenTraversable[T]], right: T): GenTraversable[T] =
     getFirst[GenTraversable[T]](col, _.exists(_ == right))
-    
-  def getFirstNotContainGenTraversable[T](col: GenTraversable[GenTraversable[T]], right: T): GenTraversable[T] = 
+
+  def getFirstNotContainGenTraversable[T](col: GenTraversable[GenTraversable[T]], right: T): GenTraversable[T] =
     getFirst[GenTraversable[T]](col, !_.exists(_ == right))
-    
-  def getFirstContainGenTraversableArray[T](col: GenTraversable[Array[T]], right: T): Array[T] = 
+
+  def getFirstContainGenTraversableArray[T](col: GenTraversable[Array[T]], right: T): Array[T] =
     getFirst[Array[T]](col, _.exists(_ == right))
-    
-  def getFirstNotContainGenTraversableArray[T](col: GenTraversable[Array[T]], right: T): Array[T] = 
+
+  def getFirstNotContainGenTraversableArray[T](col: GenTraversable[Array[T]], right: T): Array[T] =
     getFirst[Array[T]](col, !_.exists(_ == right))
-    
-  def getFirstContainKey[K, V](col: GenTraversable[GenMap[K, V]], right: K): GenMap[K, V] = 
+
+  def getFirstContainKey[K, V](col: GenTraversable[GenMap[K, V]], right: K): GenMap[K, V] =
     getFirst[GenMap[K, V]](col, _.exists(_._1 == right))
-    
-  def getFirstNotContainKey[K, V](col: GenTraversable[GenMap[K, V]], right: K): GenMap[K, V] = 
+
+  def getFirstNotContainKey[K, V](col: GenTraversable[GenMap[K, V]], right: K): GenMap[K, V] =
     getFirst[GenMap[K, V]](col, !_.exists(_._1 == right))
-    
-  def getFirstContainValue[K, V](col: GenTraversable[GenMap[K, V]], right: V): GenMap[K, V] = 
+
+  def getFirstContainValue[K, V](col: GenTraversable[GenMap[K, V]], right: V): GenMap[K, V] =
     getFirst[GenMap[K, V]](col, _.exists(_._2 == right))
-    
-  def getFirstNotContainValue[K, V](col: GenTraversable[GenMap[K, V]], right: V): GenMap[K, V] = 
+
+  def getFirstNotContainValue[K, V](col: GenTraversable[GenMap[K, V]], right: V): GenMap[K, V] =
     getFirst[GenMap[K, V]](col, !_.exists(_._2 == right))
-    
-  def getFirstJavaMapIsEmpty[K, V](col: GenTraversable[java.util.Map[K, V]], right: Int = 0): java.util.Map[K, V] = // right is not used, but to be consistent to other so that easier for code generation
-    getFirst[java.util.Map[K, V]](col, _.isEmpty)
-    
-  def getFirstJavaMapNotIsEmpty[K, V](col: GenTraversable[java.util.Map[K, V]], right: Int = 0): java.util.Map[K, V] = // right is not used, but to be consistent to other so that easier for code generation
-    getFirst[java.util.Map[K, V]](col, !_.isEmpty)
-    
-  def getFirstJavaMapContainKey[K, V](col: GenTraversable[java.util.Map[K, V]], right: K): java.util.Map[K, V] = 
-    getFirst[java.util.Map[K, V]](col, _.containsKey(right))
-    
-  def getFirstJavaMapNotContainKey[K, V](col: GenTraversable[java.util.Map[K, V]], right: K): java.util.Map[K, V] = 
-    getFirst[java.util.Map[K, V]](col,  !_.containsKey(right))
-    
-  def getFirstJavaMapContainValue[K, V](col: GenTraversable[java.util.Map[K, V]], right: V): java.util.Map[K, V] = 
-    getFirst[java.util.Map[K, V]](col, _.containsValue(right))
-    
-  def getFirstJavaMapNotContainValue[K, V](col: GenTraversable[java.util.Map[K, V]], right: V): java.util.Map[K, V] = 
-    getFirst[java.util.Map[K, V]](col, !_.containsValue(right))
-    
-  def getFirstJavaMapSizeEqual[K, V](col: GenTraversable[java.util.Map[K, V]], right: Int): java.util.Map[K, V] = 
-    getFirst[java.util.Map[K, V]](col, _.size == right)
-    
-  def getFirstJavaMapSizeNotEqual[K, V](col: GenTraversable[java.util.Map[K, V]], right: Int): java.util.Map[K, V] = 
-    getFirst[java.util.Map[K, V]](col, _.size != right)
-    
-  def getFirstJavaColSizeEqual[T](col: GenTraversable[java.util.Collection[T]], right: Int): java.util.Collection[T] = 
-    getFirst[java.util.Collection[T]](col, _.size == right)
-    
-  def getFirstJavaColSizeNotEqual[T](col: GenTraversable[java.util.Collection[T]], right: Int): java.util.Collection[T] = 
-    getFirst[java.util.Collection[T]](col, _.size != right)
-    
-  def getFirstJavaColContain[T](col: GenTraversable[java.util.Collection[T]], right: T): java.util.Collection[T] = 
-    getFirst[java.util.Collection[T]](col, _.contains(right))
-    
-  def getFirstJavaColNotContain[T](col: GenTraversable[java.util.Collection[T]], right: T): java.util.Collection[T] = 
-    getFirst[java.util.Collection[T]](col, !_.contains(right))
-    
-  def getFirstJavaColIsEmpty[T](col: GenTraversable[java.util.Collection[T]], right: Int = 0): java.util.Collection[T] = // right is not used, but to be consistent to other so that easier for code generation
-    getFirst[java.util.Collection[T]](col, _.isEmpty)
-    
-  def getFirstJavaColNotIsEmpty[T](col: GenTraversable[java.util.Collection[T]], right: Int = 0): java.util.Collection[T] = // right is not used, but to be consistent to other so that easier for code generation
-    getFirst[java.util.Collection[T]](col, !_.isEmpty)
-    
-  def indexElement[T](itr: Iterator[T], xs: GenTraversable[T], errorFun: T => Boolean): Array[String] = { 
-    val element = getNext[T](itr, errorFun) 
+
+  def getFirstJavaMapIsEmpty[K, V, JMAP[k, v] <: java.util.Map[_, _]](col: java.util.Collection[JMAP[K, V]], right: Int = 0): java.util.Map[K, V] = // right is not used, but to be consistent to other so that easier for code generation
+    getFirstInJavaCol[java.util.Map[K, V]](col.asInstanceOf[java.util.Collection[java.util.Map[K, V]]], _.isEmpty)
+
+  def getFirstJavaMapNotIsEmpty[K, V, JMAP[k, v] <: java.util.Map[_, _]](col: java.util.Collection[JMAP[K, V]], right: Int = 0): java.util.Map[K, V] = // right is not used, but to be consistent to other so that easier for code generation
+    getFirstInJavaCol[java.util.Map[K, V]](col.asInstanceOf[java.util.Collection[java.util.Map[K, V]]], !_.isEmpty)
+
+  def getFirstJavaMapContainKey[K, V, JMAP[k, v] <: java.util.Map[_, _]](col: java.util.Collection[JMAP[K, V]], right: K): java.util.Map[K, V] =
+    getFirstInJavaCol[java.util.Map[K, V]](col.asInstanceOf[java.util.Collection[java.util.Map[K, V]]], _.containsKey(right))
+
+  def getFirstJavaMapNotContainKey[K, V, JMAP[k, v] <: java.util.Map[_, _]](col: java.util.Collection[JMAP[K, V]], right: K): java.util.Map[K, V] =
+    getFirstInJavaCol[java.util.Map[K, V]](col.asInstanceOf[java.util.Collection[java.util.Map[K, V]]],  !_.containsKey(right))
+
+  def getFirstJavaMapContainValue[K, V, JMAP[k, v] <: java.util.Map[_, _]](col: java.util.Collection[JMAP[K, V]], right: V): java.util.Map[K, V] =
+    getFirstInJavaCol[java.util.Map[K, V]](col.asInstanceOf[java.util.Collection[java.util.Map[K, V]]], _.containsValue(right))
+
+  def getFirstJavaMapNotContainValue[K, V, JMAP[k, v] <: java.util.Map[_, _]](col: java.util.Collection[JMAP[K, V]], right: V): java.util.Map[K, V] =
+    getFirstInJavaCol[java.util.Map[K, V]](col.asInstanceOf[java.util.Collection[java.util.Map[K, V]]], !_.containsValue(right))
+
+  def getFirstJavaMapSizeEqual[K, V, JMAP[k, v] <: java.util.Map[_, _]](col: java.util.Collection[JMAP[K, V]], right: Int): java.util.Map[K, V] =
+    getFirstInJavaCol[java.util.Map[K, V]](col.asInstanceOf[java.util.Collection[java.util.Map[K, V]]], _.size == right)
+
+  def getFirstJavaMapSizeNotEqual[K, V, JMAP[k, v] <: java.util.Map[_, _]](col: java.util.Collection[JMAP[K, V]], right: Int): java.util.Map[K, V] =
+    getFirstInJavaCol[java.util.Map[K, V]](col.asInstanceOf[java.util.Collection[java.util.Map[K, V]]], _.size != right)
+
+  def getFirstJavaColSizeEqual[T, C[t] <: java.util.Collection[_]](col: java.util.Collection[C[T]], right: Int): java.util.Collection[T] =
+    getFirstInJavaCol[java.util.Collection[T]](col.asInstanceOf[java.util.Collection[java.util.Collection[T]]], _.size == right) // Safe cast, but ugly, can we do without it?
+
+  def getFirstJavaColSizeNotEqual[T, C[t] <: java.util.Collection[_]](col: java.util.Collection[C[T]], right: Int): java.util.Collection[T] =
+    getFirstInJavaCol[java.util.Collection[T]](col.asInstanceOf[java.util.Collection[java.util.Collection[T]]], _.size != right) // Safe cast, but ugly, can we do without it?
+
+  def getFirstJavaColContain[T, C[t] <: java.util.Collection[_]](col: java.util.Collection[C[T]], right: T): java.util.Collection[T] =
+    getFirstInJavaCol[java.util.Collection[T]](col.asInstanceOf[java.util.Collection[java.util.Collection[T]]], _.contains(right)) // Safe cast, but ugly, can we do without it?
+
+  def getFirstJavaColNotContain[T, C[t] <: java.util.Collection[_]](col: java.util.Collection[C[T]], right: T): java.util.Collection[T] =
+    getFirstInJavaCol[java.util.Collection[T]](col.asInstanceOf[java.util.Collection[java.util.Collection[T]]], !_.contains(right)) // Safe cast, but ugly, can we do without it?
+
+  def getFirstJavaColIsEmpty[T, C[t] <: java.util.Collection[_]](col: java.util.Collection[C[T]], right: Int = 0): java.util.Collection[T] = // right is not used, but to be consistent to other so that easier for code generation
+    getFirstInJavaCol[java.util.Collection[T]](col.asInstanceOf[java.util.Collection[java.util.Collection[T]]], _.isEmpty) // Safe cast, but ugly, can we do without it?
+
+  def getFirstJavaColNotIsEmpty[T, C[t] <: java.util.Collection[_]](col: java.util.Collection[C[T]], right: Int = 0): java.util.Collection[T] = // right is not used, but to be consistent to other so that easier for code generation
+    getFirstInJavaCol[java.util.Collection[T]](col.asInstanceOf[java.util.Collection[java.util.Collection[T]]], !_.isEmpty) // Safe cast, but ugly, can we do without it?
+
+  def indexElement[T](itr: Iterator[T], xs: GenTraversable[T], errorFun: T => Boolean): Array[String] = {
+    val element = getNext[T](itr, errorFun)
     val index = getIndex(xs, element)
     Array(index.toString, decorateToStringValue(element))
-  } 
-  
-  def indexLengthElement[T](itr: Iterator[String], xs: GenTraversable[String], errorFun: String => Boolean): Array[String] = { 
+  }
+
+  def indexElementForJavaIterator[T](itr: java.util.Iterator[T], xs: java.util.Collection[T], errorFun: T => Boolean): Array[String] = {
+    val element = getNextInJavaIterator[T](itr, errorFun)
+    val index = getIndex(xs, element)
+    Array(index.toString, decorateToStringValue(element))
+  }
+
+  def indexLengthElement[T](itr: Iterator[String], xs: GenTraversable[String], errorFun: String => Boolean): Array[String] = {
     val element = getNext[String](itr, errorFun)
     val index = getIndex(xs, element)
     Array(index.toString, element.length.toString, (if (element != null && element.isInstanceOf[Array[_]]) element.asInstanceOf[Array[T]].deep.toString else element.toString))
   }
-  
-  def indexElementLengthString[T](itr: Iterator[String], xs: GenTraversable[String], errorFun: String => Boolean): Array[String] = { 
+
+  def indexElementLengthString[T](itr: Iterator[String], xs: GenTraversable[String], errorFun: String => Boolean): Array[String] = {
     val element = getNext[String](itr, errorFun)
     val index = getIndex(xs, element)
     Array(index.toString, decorateToStringValue(element), element.length.toString)
   }
-  
-  def indexElementLengthGenTraversable[T](itr: Iterator[GenTraversable[T]], xs: GenTraversable[GenTraversable[T]], errorFun: GenTraversable[T] => Boolean): Array[String] = { 
+
+  def indexElementLengthGenTraversable[T](itr: Iterator[GenTraversable[T]], xs: GenTraversable[GenTraversable[T]], errorFun: GenTraversable[T] => Boolean): Array[String] = {
     val element = getNext[GenTraversable[T]](itr, errorFun)
     val index = getIndex(xs, element)
     Array(index.toString, decorateToStringValue(element), element.size.toString)
   }
-  
-  def indexElementLengthArray[T](itr: Iterator[Array[T]], xs: GenTraversable[Array[T]], errorFun: Array[T] => Boolean): Array[String] = { 
+
+  def indexElementLengthArray[T](itr: Iterator[Array[T]], xs: GenTraversable[Array[T]], errorFun: Array[T] => Boolean): Array[String] = {
     val element = getNext[Array[T]](itr, errorFun)
     val index = getIndex(xs, element)
     Array(index.toString, decorateToStringValue(element), element.size.toString)
   }
-  
-  def indexElementLengthJavaCol[T](itr: Iterator[java.util.Collection[T]], xs: GenTraversable[java.util.Collection[T]], errorFun: java.util.Collection[T] => Boolean): Array[String] = { 
-    val element = getNext[java.util.Collection[T]](itr, errorFun)
+
+  def indexElementLengthJavaCol[T, C[t] <: java.util.Collection[_]](itr: java.util.Iterator[C[T]], xs: java.util.Collection[C[T]], errorFun: java.util.Collection[T] => Boolean): Array[String] = {
+    val element = getNextInJavaIterator[java.util.Collection[T]](itr.asInstanceOf[java.util.Iterator[java.util.Collection[T]]], errorFun)
     val index = getIndex(xs, element)
     Array(index.toString, decorateToStringValue(element), element.size.toString)
   }
-  
-  def indexElementLengthJavaMap[K, V](itr: Iterator[java.util.Map[K, V]], xs: GenTraversable[java.util.Map[K, V]], errorFun: java.util.Map[K, V] => Boolean): Array[String] = { 
-    val element = getNext[java.util.Map[K, V]](itr, errorFun)
+
+  def indexElementLengthJavaMap[K, V, JMAP[k, v] <: java.util.Map[_, _]](itr: java.util.Iterator[JMAP[K, V]], xs: java.util.Collection[java.util.Map[K, V]], errorFun: java.util.Map[K, V] => Boolean): Array[String] = {
+    val element = getNextInJavaIterator[java.util.Map[K, V]](itr.asInstanceOf[java.util.Iterator[java.util.Map[K, V]]], errorFun)
     val index = getIndex(xs, element)
     Array(index.toString, decorateToStringValue(element), element.size.toString)
   }
-  
-  def indexElementEqual[T](itr: Iterator[T], xs: GenTraversable[T], right: T): Array[String] = 
+
+  def indexElementEqual[T](itr: Iterator[T], xs: GenTraversable[T], right: T): Array[String] =
     indexElement[T](itr, xs, _ == right)
-    
-  def indexElementNotEqual[T](itr: Iterator[T], xs: GenTraversable[T], right: T): Array[String] = 
+
+  def indexElementNotEqual[T](itr: Iterator[T], xs: GenTraversable[T], right: T): Array[String] =
     indexElement[T](itr, xs, _ != right)
-    
-  def indexElementMoreThan(itr: Iterator[Int], xs: GenTraversable[Int], right: Int): Array[String] = 
+
+  def indexElementMoreThan(itr: Iterator[Int], xs: GenTraversable[Int], right: Int): Array[String] =
     indexElement[Int](itr, xs, _ > right)
-  
-  def indexElementMoreThanEqual(itr: Iterator[Int], xs: GenTraversable[Int], right: Int): Array[String] = 
+
+  def indexElementMoreThanEqual(itr: Iterator[Int], xs: GenTraversable[Int], right: Int): Array[String] =
     indexElement[Int](itr, xs, _ >= right)
-    
-  def indexElementLessThan(itr: Iterator[Int], xs: GenTraversable[Int], right: Int): Array[String] = 
+
+  def indexElementLessThan(itr: Iterator[Int], xs: GenTraversable[Int], right: Int): Array[String] =
     indexElement[Int](itr, xs, _ < right)
-    
-  def indexElementLessThanEqual(itr: Iterator[Int], xs: GenTraversable[Int], right: Int): Array[String] = 
+
+  def indexElementLessThanEqual(itr: Iterator[Int], xs: GenTraversable[Int], right: Int): Array[String] =
     indexElement[Int](itr, xs, _ <= right)
-     
+
   def indexElementIsEmpty(itr: Iterator[String], xs: GenTraversable[String], right: String = ""): Array[String] = // right is not used, but to be consistent to other so that easier for code generation
     indexElement[String](itr, xs, _.isEmpty)
-    
+
   def indexElementIsNotEmpty(itr: Iterator[String], xs: GenTraversable[String], right: String = ""): Array[String] = // right is not used, but to be consistent to other so that easier for code generation
     indexElement[String](itr, xs, !_.isEmpty)
-    
-  def indexElementLengthEqual(itr: Iterator[String], xs: GenTraversable[String], right: Int): Array[String] = 
+
+  def indexElementLengthEqual(itr: Iterator[String], xs: GenTraversable[String], right: Int): Array[String] =
     indexElement[String](itr, xs, _.length == right)
-    
-  def indexElementLengthNotEqual(itr: Iterator[String], xs: GenTraversable[String], right: Int): Array[String] = 
+
+  def indexElementLengthNotEqual(itr: Iterator[String], xs: GenTraversable[String], right: Int): Array[String] =
     indexElementLengthString[String](itr, xs, _.length != right)
-    
-  def indexElementSizeEqual(itr: Iterator[String], xs: GenTraversable[String], right: Int): Array[String] = 
+
+  def indexElementSizeEqual(itr: Iterator[String], xs: GenTraversable[String], right: Int): Array[String] =
     indexElement[String](itr, xs, _.size == right)
-    
-  def indexElementSizeNotEqual(itr: Iterator[String], xs: GenTraversable[String], right: Int): Array[String] = 
+
+  def indexElementSizeNotEqual(itr: Iterator[String], xs: GenTraversable[String], right: Int): Array[String] =
     indexElementLengthString[String](itr, xs, _.size != right)
-    
-  def indexElementLengthNotEqualLength(itr: Iterator[String], xs: GenTraversable[String], right: Int): Array[String] = 
+
+  def indexElementLengthNotEqualLength(itr: Iterator[String], xs: GenTraversable[String], right: Int): Array[String] =
     indexLengthElement[String](itr, xs, _.length != right)
-    
-  def indexElementStartsWith(itr: Iterator[String], xs: GenTraversable[String], right: String): Array[String] = 
+
+  def indexElementStartsWith(itr: Iterator[String], xs: GenTraversable[String], right: String): Array[String] =
     indexElement[String](itr, xs, _.startsWith(right))
-    
-  def indexElementNotStartsWith(itr: Iterator[String], xs: GenTraversable[String], right: String): Array[String] = 
+
+  def indexElementNotStartsWith(itr: Iterator[String], xs: GenTraversable[String], right: String): Array[String] =
     indexElement[String](itr, xs, !_.startsWith(right))
-    
-  def indexElementEndsWith(itr: Iterator[String], xs: GenTraversable[String], right: String): Array[String] = 
+
+  def indexElementEndsWith(itr: Iterator[String], xs: GenTraversable[String], right: String): Array[String] =
     indexElement[String](itr, xs, _.endsWith(right))
-    
-  def indexElementNotEndsWith(itr: Iterator[String], xs: GenTraversable[String], right: String): Array[String] = 
+
+  def indexElementNotEndsWith(itr: Iterator[String], xs: GenTraversable[String], right: String): Array[String] =
     indexElement[String](itr, xs, !_.endsWith(right))
-    
-  def indexElementInclude(itr: Iterator[String], xs: GenTraversable[String], right: String): Array[String] = 
+
+  def indexElementInclude(itr: Iterator[String], xs: GenTraversable[String], right: String): Array[String] =
     indexElement[String](itr, xs, _.indexOf(right) >= 0)
-    
-  def indexElementNotInclude(itr: Iterator[String], xs: GenTraversable[String], right: String): Array[String] = 
+
+  def indexElementNotInclude(itr: Iterator[String], xs: GenTraversable[String], right: String): Array[String] =
     indexElement[String](itr, xs, _.indexOf(right) < 0)
-    
-  def indexElementMatches(itr: Iterator[String], xs: GenTraversable[String], right: String): Array[String] = 
+
+  def indexElementMatches(itr: Iterator[String], xs: GenTraversable[String], right: String): Array[String] =
     indexElement[String](itr, xs, _.matches(right))
-    
-  def indexElementNotMatches(itr: Iterator[String], xs: GenTraversable[String], right: String): Array[String] = 
+
+  def indexElementNotMatches(itr: Iterator[String], xs: GenTraversable[String], right: String): Array[String] =
     indexElement[String](itr, xs, !_.matches(right))
-    
-  def indexElementSizeEqualGenTraversable[T](itr: Iterator[GenTraversable[T]], xs: GenTraversable[GenTraversable[T]], right: Int): Array[String] = 
+
+  def indexElementSizeEqualGenTraversable[T](itr: Iterator[GenTraversable[T]], xs: GenTraversable[GenTraversable[T]], right: Int): Array[String] =
     indexElement[GenTraversable[T]](itr, xs, _.size == right)
-    
-  def indexElementSizeNotEqualGenTraversable[T](itr: Iterator[GenTraversable[T]], xs: GenTraversable[GenTraversable[T]], right: Int): Array[String] = 
+
+  def indexElementSizeNotEqualGenTraversable[T](itr: Iterator[GenTraversable[T]], xs: GenTraversable[GenTraversable[T]], right: Int): Array[String] =
     indexElementLengthGenTraversable[T](itr, xs, _.size != right)
-    
-  def indexElementSizeEqualGenTraversableArray[T](itr: Iterator[Array[T]], xs: GenTraversable[Array[T]], right: Int): Array[T] = 
+
+  def indexElementSizeEqualGenTraversableArray[T](itr: Iterator[Array[T]], xs: GenTraversable[Array[T]], right: Int): Array[T] =
     indexElement[Array[T]](itr, xs, _.size == right).asInstanceOf[Array[T]]
-    
-  def indexElementSizeNotEqualGenTraversableArray[T](itr: Iterator[Array[T]], xs: GenTraversable[Array[T]], right: Int): Array[T] = 
+
+  def indexElementSizeNotEqualGenTraversableArray[T](itr: Iterator[Array[T]], xs: GenTraversable[Array[T]], right: Int): Array[T] =
     indexElementLengthArray[T](itr, xs, _.size != right).asInstanceOf[Array[T]]
-  
-  def indexElementContainGenTraversable[T](itr: Iterator[GenTraversable[T]], xs: GenTraversable[GenTraversable[T]], right: T): Array[String] = 
+
+  def indexElementContainGenTraversable[T](itr: Iterator[GenTraversable[T]], xs: GenTraversable[GenTraversable[T]], right: T): Array[String] =
     indexElement[GenTraversable[T]](itr, xs, _.exists(_ == right))
-    
-  def indexElementNotContainGenTraversable[T](itr: Iterator[GenTraversable[T]], xs: GenTraversable[GenTraversable[T]], right: T): Array[String] = 
+
+  def indexElementNotContainGenTraversable[T](itr: Iterator[GenTraversable[T]], xs: GenTraversable[GenTraversable[T]], right: T): Array[String] =
     indexElement[GenTraversable[T]](itr, xs, !_.exists(_ == right))
-    
-  def indexElementContainGenTraversableArray[T](itr: Iterator[Array[T]], xs: GenTraversable[Array[T]], right: T): Array[T] = 
+
+  def indexElementContainGenTraversableArray[T](itr: Iterator[Array[T]], xs: GenTraversable[Array[T]], right: T): Array[T] =
     indexElement[Array[T]](itr, xs, _.exists(_ == right)).asInstanceOf[Array[T]]
-    
-  def indexElementNotContainGenTraversableArray[T](itr: Iterator[Array[T]], xs: GenTraversable[Array[T]], right: T): Array[T] = 
+
+  def indexElementNotContainGenTraversableArray[T](itr: Iterator[Array[T]], xs: GenTraversable[Array[T]], right: T): Array[T] =
     indexElement[Array[T]](itr, xs, !_.exists(_ == right)).asInstanceOf[Array[T]]
-  
-  def indexElementRefEqual[T <: AnyRef](itr: Iterator[T], xs: GenTraversable[T], right: T): Array[String] = 
+
+  def indexElementRefEqual[T <: AnyRef](itr: Iterator[T], xs: GenTraversable[T], right: T): Array[String] =
     indexElement[T](itr, xs, _ eq right)
-    
-  def indexElementNotRefEqual[T <: AnyRef](itr: Iterator[T], xs: GenTraversable[T], right: T): Array[String] = 
+
+  def indexElementNotRefEqual[T <: AnyRef](itr: Iterator[T], xs: GenTraversable[T], right: T): Array[String] =
     indexElement[T](itr, xs, _ ne right)
-    
-  def indexElementContainKey[K, V](itr: Iterator[GenMap[K, V]], xs: GenTraversable[GenMap[K, V]], right: K): Array[String] = 
+
+  def indexElementContainKey[K, V](itr: Iterator[GenMap[K, V]], xs: GenTraversable[GenMap[K, V]], right: K): Array[String] =
     indexElement[GenMap[K, V]](itr, xs, _.exists(_._1 == right))
-    
-  def indexElementNotContainKey[K, V](itr: Iterator[GenMap[K, V]], xs: GenTraversable[GenMap[K, V]], right: K): Array[String] = 
+
+  def indexElementNotContainKey[K, V](itr: Iterator[GenMap[K, V]], xs: GenTraversable[GenMap[K, V]], right: K): Array[String] =
     indexElement[GenMap[K, V]](itr, xs, !_.exists(_._1 == right))
-    
-  def indexElementContainValue[K, V](itr: Iterator[GenMap[K, V]], xs: GenTraversable[GenMap[K, V]], right: V): Array[String] = 
+
+  def indexElementContainValue[K, V](itr: Iterator[GenMap[K, V]], xs: GenTraversable[GenMap[K, V]], right: V): Array[String] =
     indexElement[GenMap[K, V]](itr, xs, _.exists(_._2 == right))
-    
-  def indexElementNotContainValue[K, V](itr: Iterator[GenMap[K, V]], xs: GenTraversable[GenMap[K, V]], right: V): Array[String] = 
+
+  def indexElementNotContainValue[K, V](itr: Iterator[GenMap[K, V]], xs: GenTraversable[GenMap[K, V]], right: V): Array[String] =
     indexElement[GenMap[K, V]](itr, xs, !_.exists(_._2 == right))
-    
-  def indexElementJavaMapIsEmpty[K, V](itr: Iterator[java.util.Map[K, V]], xs: GenTraversable[java.util.Map[K, V]], right: Int = 0): Array[String] = // right is not used, but to be consistent to other so that easier for code generation
-    indexElement[java.util.Map[K, V]](itr, xs, _.isEmpty)
-    
-  def indexElementJavaMapNotIsEmpty[K, V](itr: Iterator[java.util.Map[K, V]], xs: GenTraversable[java.util.Map[K, V]], right: Int = 0): Array[String] = // right is not used, but to be consistent to other so that easier for code generation
-    indexElement[java.util.Map[K, V]](itr, xs, !_.isEmpty)
-    
-  def indexElementJavaMapContainKey[K, V](itr: Iterator[java.util.Map[K, V]], xs: GenTraversable[java.util.Map[K, V]], right: K): Array[String] = 
-    indexElement[java.util.Map[K, V]](itr, xs, _.containsKey(right))
-    
-  def indexElementJavaMapNotContainKey[K, V](itr: Iterator[java.util.Map[K, V]], xs: GenTraversable[java.util.Map[K, V]], right: K): Array[String] = 
-    indexElement[java.util.Map[K, V]](itr, xs,  !_.containsKey(right))
-    
-  def indexElementJavaMapContainValue[K, V](itr: Iterator[java.util.Map[K, V]], xs: GenTraversable[java.util.Map[K, V]], right: V): Array[String] = 
-    indexElement[java.util.Map[K, V]](itr, xs, _.containsValue(right))
-    
-  def indexElementJavaMapNotContainValue[K, V](itr: Iterator[java.util.Map[K, V]], xs: GenTraversable[java.util.Map[K, V]], right: V): Array[String] = 
-    indexElement[java.util.Map[K, V]](itr, xs, !_.containsValue(right))
-    
-  def indexElementJavaMapSizeEqual[K, V](itr: Iterator[java.util.Map[K, V]], xs: GenTraversable[java.util.Map[K, V]], right: Int): Array[String] = 
-    indexElement[java.util.Map[K, V]](itr, xs, _.size == right)
-    
-  def indexElementJavaMapSizeNotEqual[K, V](itr: Iterator[java.util.Map[K, V]], xs: GenTraversable[java.util.Map[K, V]], right: Int): Array[String] = 
-    indexElementLengthJavaMap[K, V](itr, xs, _.size != right)
-    
-  def indexElementJavaColSizeEqual[T](itr: Iterator[java.util.Collection[T]], xs: GenTraversable[java.util.Collection[T]], right: Int): Array[String] = 
-    indexElement[java.util.Collection[T]](itr, xs, _.size == right)
-    
-  def indexElementJavaColSizeNotEqual[T](itr: Iterator[java.util.Collection[T]], xs: GenTraversable[java.util.Collection[T]], right: Int): Array[String] = 
-    indexElementLengthJavaCol[T](itr, xs, _.size != right)
-    
-  def indexElementJavaColContain[T](itr: Iterator[java.util.Collection[T]], xs: GenTraversable[java.util.Collection[T]], right: T): Array[String] = 
-    indexElement[java.util.Collection[T]](itr, xs, _.contains(right))
-    
-  def indexElementJavaColNotContain[T](itr: Iterator[java.util.Collection[T]], xs: GenTraversable[java.util.Collection[T]], right: T): Array[String] = 
-    indexElement[java.util.Collection[T]](itr, xs, !_.contains(right))
-    
-  def indexElementJavaColIsEmpty[T](itr: Iterator[java.util.Collection[T]], xs: GenTraversable[java.util.Collection[T]], right: Int = 0): Array[String] = // right is not used, but to be consistent to other so that easier for code generation
-    indexElement[java.util.Collection[T]](itr, xs, _.isEmpty)
-    
-  def indexElementJavaColNotIsEmpty[T](itr: Iterator[java.util.Collection[T]], xs: GenTraversable[java.util.Collection[T]], right: Int = 0): Array[String] = // right is not used, but to be consistent to other so that easier for code generation
-    indexElement[java.util.Collection[T]](itr, xs, !_.isEmpty)
-  
+
+  def indexElementJavaMapIsEmpty[K, V, JMAP[k, v] <: java.util.Map[_, _]](itr: java.util.Iterator[JMAP[K, V]], xs: java.util.Collection[JMAP[K, V]], right: Int = 0): Array[String] = // right is not used, but to be consistent to other so that easier for code generation
+    indexElementForJavaIterator[java.util.Map[K, V]](itr.asInstanceOf[java.util.Iterator[java.util.Map[K, V]]], xs.asInstanceOf[java.util.Collection[java.util.Map[K, V]]], _.isEmpty)
+
+  def indexElementJavaMapNotIsEmpty[K, V, JMAP[k, v] <: java.util.Map[_, _]](itr: java.util.Iterator[JMAP[K, V]], xs: java.util.Collection[JMAP[K, V]], right: Int = 0): Array[String] = // right is not used, but to be consistent to other so that easier for code generation
+    indexElementForJavaIterator[java.util.Map[K, V]](itr.asInstanceOf[java.util.Iterator[java.util.Map[K, V]]], xs.asInstanceOf[java.util.Collection[java.util.Map[K, V]]], !_.isEmpty)
+
+  def indexElementJavaMapContainKey[K, V, JMAP[k, v] <: java.util.Map[_, _]](itr: java.util.Iterator[JMAP[K, V]], xs: java.util.Collection[JMAP[K, V]], right: K): Array[String] =
+    indexElementForJavaIterator[java.util.Map[K, V]](itr.asInstanceOf[java.util.Iterator[java.util.Map[K, V]]], xs.asInstanceOf[java.util.Collection[java.util.Map[K, V]]], _.containsKey(right))
+
+  def indexElementJavaMapNotContainKey[K, V, JMAP[k, v] <: java.util.Map[_, _]](itr: java.util.Iterator[JMAP[K, V]], xs: java.util.Collection[JMAP[K, V]], right: K): Array[String] =
+    indexElementForJavaIterator[java.util.Map[K, V]](itr.asInstanceOf[java.util.Iterator[java.util.Map[K, V]]], xs.asInstanceOf[java.util.Collection[java.util.Map[K, V]]],  !_.containsKey(right))
+
+  def indexElementJavaMapContainValue[K, V, JMAP[k, v] <: java.util.Map[_, _]](itr: java.util.Iterator[JMAP[K, V]], xs: java.util.Collection[JMAP[K, V]], right: V): Array[String] =
+    indexElementForJavaIterator[java.util.Map[K, V]](itr.asInstanceOf[java.util.Iterator[java.util.Map[K, V]]], xs.asInstanceOf[java.util.Collection[java.util.Map[K, V]]], _.containsValue(right))
+
+  def indexElementJavaMapNotContainValue[K, V, JMAP[k, v] <: java.util.Map[_, _]](itr: java.util.Iterator[JMAP[K, V]], xs: java.util.Collection[JMAP[K, V]], right: V): Array[String] =
+    indexElementForJavaIterator[java.util.Map[K, V]](itr.asInstanceOf[java.util.Iterator[java.util.Map[K, V]]], xs.asInstanceOf[java.util.Collection[java.util.Map[K, V]]], !_.containsValue(right))
+
+  def indexElementJavaMapSizeEqual[K, V, JMAP[k, v] <: java.util.Map[_, _]](itr: java.util.Iterator[JMAP[K, V]], xs: java.util.Collection[JMAP[K, V]], right: Int): Array[String] =
+    indexElementForJavaIterator[java.util.Map[K, V]](itr.asInstanceOf[java.util.Iterator[java.util.Map[K, V]]], xs.asInstanceOf[java.util.Collection[java.util.Map[K, V]]], _.size == right)
+
+  def indexElementJavaMapSizeNotEqual[K, V, JMAP[k, v] <: java.util.Map[_, _]](itr: java.util.Iterator[JMAP[K, V]], xs: java.util.Collection[JMAP[K, V]], right: Int): Array[String] =
+    indexElementLengthJavaMap[K, V, java.util.Map](itr.asInstanceOf[java.util.Iterator[java.util.Map[K, V]]], xs.asInstanceOf[java.util.Collection[java.util.Map[K, V]]], _.size != right)
+
+  def indexElementJavaColSizeEqual[T, C[t] <: java.util.Collection[_]](itr: java.util.Iterator[C[T]], xs: java.util.Collection[C[T]], right: Int): Array[String] =
+    indexElementForJavaIterator[java.util.Collection[T]](itr.asInstanceOf[java.util.Iterator[java.util.Collection[T]]], xs.asInstanceOf[java.util.Collection[java.util.Collection[T]]], _.size == right)
+
+  def indexElementJavaColSizeNotEqual[T, C[t] <: java.util.Collection[_]](itr: java.util.Iterator[C[T]], xs: java.util.Collection[C[T]], right: Int): Array[String] =
+    indexElementLengthJavaCol[T, java.util.Collection](itr.asInstanceOf[java.util.Iterator[java.util.Collection[T]]], xs.asInstanceOf[java.util.Collection[java.util.Collection[T]]], _.size != right)
+
+  def indexElementJavaColContain[T, C[t] <: java.util.Collection[_]](itr: java.util.Iterator[C[T]], xs: java.util.Collection[C[T]], right: T): Array[String] =
+    indexElementForJavaIterator[java.util.Collection[T]](itr.asInstanceOf[java.util.Iterator[java.util.Collection[T]]], xs.asInstanceOf[java.util.Collection[java.util.Collection[T]]], _.contains(right))
+
+  def indexElementJavaColNotContain[T, C[t] <: java.util.Collection[_]](itr: java.util.Iterator[C[T]], xs: java.util.Collection[C[T]], right: T): Array[String] =
+    indexElementForJavaIterator[java.util.Collection[T]](itr.asInstanceOf[java.util.Iterator[java.util.Collection[T]]], xs.asInstanceOf[java.util.Collection[java.util.Collection[T]]], !_.contains(right))
+
+  def indexElementJavaColIsEmpty[T, C[t] <: java.util.Collection[_]](itr: java.util.Iterator[C[T]], xs: java.util.Collection[C[T]], right: Int = 0): Array[String] = // right is not used, but to be consistent to other so that easier for code generation
+    indexElementForJavaIterator[java.util.Collection[T]](itr.asInstanceOf[java.util.Iterator[java.util.Collection[T]]], xs.asInstanceOf[java.util.Collection[java.util.Collection[T]]], _.isEmpty)
+
+  def indexElementJavaColNotIsEmpty[T, C[t] <: java.util.Collection[_]](itr: java.util.Iterator[C[T]], xs: java.util.Collection[C[T]], right: Int = 0): Array[String] = // right is not used, but to be consistent to other so that easier for code generation
+    indexElementForJavaIterator[java.util.Collection[T]](itr.asInstanceOf[java.util.Iterator[java.util.Collection[T]]], xs.asInstanceOf[java.util.Collection[java.util.Collection[T]]], !_.isEmpty)
+
   private def succeededIndexes[T](xs: GenTraversable[T], filterFun: T => Boolean): String = {
     val passedList = getIndexes(xs, xs.toList.filter(e => filterFun(e))).toList
-    if (passedList.size > 1) 
+    if (passedList.size > 1)
       "index " + passedList.dropRight(1).mkString(", ") + " and " + passedList.last
     else if (passedList.size == 1)
       "index " + passedList.last.toString
-    else 
+    else
       ""
   }
-  
+
+  private def succeededIndexesInJavaCol[T](xs: java.util.Collection[T], filterFun: T => Boolean): String = {
+    import collection.JavaConverters._
+    val passedList = getIndexes(xs.asScala, xs.asScala.toList.filter(e => filterFun(e))).toList
+    if (passedList.size > 1)
+      "index " + passedList.dropRight(1).mkString(", ") + " and " + passedList.last
+    else if (passedList.size == 1)
+      "index " + passedList.last.toString
+    else
+      ""
+  }
+
   private def failEarlySucceededIndexes[T](xs: GenTraversable[T], filterFun: T => Boolean, maxSucceed: Int): String = {
     val itr = xs.toIterator
     val passedList = getIndexes(xs, xs.toList.filter(e => filterFun(e))).take(maxSucceed).toList
@@ -900,315 +936,326 @@ object SharedHelpers extends Assertions {
     else
       ""
   }
-  
-  def succeededIndexesEqualBoolean[T](xs: GenTraversable[T], value: Boolean): String = 
+
+  private def failEarlySucceededIndexesInJavaCol[T](xs: java.util.Collection[T], filterFun: T => Boolean, maxSucceed: Int): String = {
+    import collection.JavaConverters._
+    val passedList = getIndexes(xs.asScala, xs.asScala.toList.filter(e => filterFun(e))).take(maxSucceed).toList
+    if (passedList.size > 1)
+      "index " + passedList.dropRight(1).mkString(", ") + " and " + passedList.last
+    else if (passedList.size == 1)
+      "index " + passedList.last.toString
+    else
+      ""
+  }
+
+  def succeededIndexesEqualBoolean[T](xs: GenTraversable[T], value: Boolean): String =
     succeededIndexes(xs, (e: T) => value)
-  
-  def succeededIndexesNotEqualBoolean[T](xs: GenTraversable[T], value: Boolean): String = 
+
+  def succeededIndexesNotEqualBoolean[T](xs: GenTraversable[T], value: Boolean): String =
     succeededIndexes(xs, (e: T) => !value)
-    
-  def succeededIndexesEqual[T](xs: GenTraversable[T], value: T): String = 
+
+  def succeededIndexesEqual[T](xs: GenTraversable[T], value: T): String =
     succeededIndexes(xs, (e: T) => e == value)
-    
-  def succeededIndexesNotEqual[T](xs: GenTraversable[T], value: T): String = 
+
+  def succeededIndexesNotEqual[T](xs: GenTraversable[T], value: T): String =
     succeededIndexes(xs, (e: T) => e != value)
-    
-  def succeededIndexesLessThanEqual(xs: GenTraversable[Int], value: Int): String = 
+
+  def succeededIndexesLessThanEqual(xs: GenTraversable[Int], value: Int): String =
     succeededIndexes(xs, (e: Int) => e <= value)
-    
-  def succeededIndexesLessThan(xs: GenTraversable[Int], value: Int): String = 
+
+  def succeededIndexesLessThan(xs: GenTraversable[Int], value: Int): String =
     succeededIndexes(xs, (e: Int) => e < value)
-    
-  def succeededIndexesMoreThanEqual(xs: GenTraversable[Int], value: Int): String = 
+
+  def succeededIndexesMoreThanEqual(xs: GenTraversable[Int], value: Int): String =
     succeededIndexes(xs, (e: Int) => e >= value)
-    
-  def succeededIndexesMoreThan(xs: GenTraversable[Int], value: Int): String = 
+
+  def succeededIndexesMoreThan(xs: GenTraversable[Int], value: Int): String =
     succeededIndexes(xs, (e: Int) => e > value)
-    
-  def succeededIndexesIsEmpty(xs: GenTraversable[String], value: String): String = 
+
+  def succeededIndexesIsEmpty(xs: GenTraversable[String], value: String): String =
     succeededIndexes(xs, (e: String) => e.isEmpty)
-  
-  def succeededIndexesIsNotEmpty(xs: GenTraversable[String], value: String): String = 
+
+  def succeededIndexesIsNotEmpty(xs: GenTraversable[String], value: String): String =
     succeededIndexes(xs, (e: String) => !e.isEmpty)
-    
-  def succeededIndexesSizeEqual(xs: GenTraversable[String], value: Int): String = 
+
+  def succeededIndexesSizeEqual(xs: GenTraversable[String], value: Int): String =
     succeededIndexes(xs, (e: String) => e.size == value)
-    
-  def succeededIndexesSizeNotEqual(xs: GenTraversable[String], value: Int): String = 
+
+  def succeededIndexesSizeNotEqual(xs: GenTraversable[String], value: Int): String =
     succeededIndexes(xs, (e: String) => e.size != value)
-    
-  def succeededIndexesLengthEqual(xs: GenTraversable[String], value: Int): String = 
+
+  def succeededIndexesLengthEqual(xs: GenTraversable[String], value: Int): String =
     succeededIndexes(xs, (e: String) => e.length == value)
-    
-  def succeededIndexesLengthNotEqual(xs: GenTraversable[String], value: Int): String = 
+
+  def succeededIndexesLengthNotEqual(xs: GenTraversable[String], value: Int): String =
     succeededIndexes(xs, (e: String) => e.length != value)
-    
-  def succeededIndexesStartsWith(xs: GenTraversable[String], value: String): String = 
+
+  def succeededIndexesStartsWith(xs: GenTraversable[String], value: String): String =
     succeededIndexes(xs, (e: String) => e.startsWith(value))
-  
-  def succeededIndexesNotStartsWith(xs: GenTraversable[String], value: String): String = 
+
+  def succeededIndexesNotStartsWith(xs: GenTraversable[String], value: String): String =
     succeededIndexes(xs, (e: String) => !e.startsWith(value))
-    
-  def succeededIndexesEndsWith(xs: GenTraversable[String], value: String): String = 
+
+  def succeededIndexesEndsWith(xs: GenTraversable[String], value: String): String =
     succeededIndexes(xs, (e: String) => e.endsWith(value))
-  
-  def succeededIndexesNotEndsWith(xs: GenTraversable[String], value: String): String = 
+
+  def succeededIndexesNotEndsWith(xs: GenTraversable[String], value: String): String =
     succeededIndexes(xs, (e: String) => !e.endsWith(value))
-    
-  def succeededIndexesInclude(xs: GenTraversable[String], value: String): String = 
+
+  def succeededIndexesInclude(xs: GenTraversable[String], value: String): String =
     succeededIndexes(xs, (e: String) => e.indexOf(value) >= 0)
-  
-  def succeededIndexesNotInclude(xs: GenTraversable[String], value: String): String = 
+
+  def succeededIndexesNotInclude(xs: GenTraversable[String], value: String): String =
     succeededIndexes(xs, (e: String) => e.indexOf(value) < 0)
-    
-  def succeededIndexesSizeEqualGenTraversable[T](xs: GenTraversable[GenTraversable[T]], value: Int): String = 
+
+  def succeededIndexesSizeEqualGenTraversable[T](xs: GenTraversable[GenTraversable[T]], value: Int): String =
     succeededIndexes(xs, (e: GenTraversable[T]) => e.size == value)
-  
-  def succeededIndexesSizeNotEqualGenTraversable[T](xs: GenTraversable[GenTraversable[T]], value: Int): String = 
+
+  def succeededIndexesSizeNotEqualGenTraversable[T](xs: GenTraversable[GenTraversable[T]], value: Int): String =
     succeededIndexes(xs, (e: GenTraversable[T]) => e.size != value)
-    
-  def succeededIndexesSizeEqualGenTraversableArray[T](xs: GenTraversable[Array[T]], value: Int): String = 
+
+  def succeededIndexesSizeEqualGenTraversableArray[T](xs: GenTraversable[Array[T]], value: Int): String =
     succeededIndexes(xs, (e: Array[T]) => e.size == value)
-  
-  def succeededIndexesSizeNotEqualGenTraversableArray[T](xs: GenTraversable[Array[T]], value: Int): String = 
+
+  def succeededIndexesSizeNotEqualGenTraversableArray[T](xs: GenTraversable[Array[T]], value: Int): String =
     succeededIndexes(xs, (e: Array[T]) => e.size != value)
-    
-  def succeededIndexesMatches(xs: GenTraversable[String], value: String): String = 
+
+  def succeededIndexesMatches(xs: GenTraversable[String], value: String): String =
     succeededIndexes(xs, (e: String) => e.matches(value))
-  
-  def succeededIndexesNotMatches(xs: GenTraversable[String], value: String): String = 
+
+  def succeededIndexesNotMatches(xs: GenTraversable[String], value: String): String =
     succeededIndexes(xs, (e: String) => !e.matches(value))
-    
-  def succeededIndexesContainGenTraversable[T](xs: GenTraversable[GenTraversable[T]], right: T): String = 
+
+  def succeededIndexesContainGenTraversable[T](xs: GenTraversable[GenTraversable[T]], right: T): String =
     succeededIndexes[GenTraversable[T]](xs, _.exists(_ == right))
-    
-  def succeededIndexesNotContainGenTraversable[T](xs: GenTraversable[GenTraversable[T]], right: T): String = 
+
+  def succeededIndexesNotContainGenTraversable[T](xs: GenTraversable[GenTraversable[T]], right: T): String =
     succeededIndexes[GenTraversable[T]](xs, !_.exists(_ == right))
-    
-  def succeededIndexesContainGenTraversableArray[T](xs: GenTraversable[Array[T]], right: T): String = 
+
+  def succeededIndexesContainGenTraversableArray[T](xs: GenTraversable[Array[T]], right: T): String =
     succeededIndexes[Array[T]](xs, _.exists(_ == right))
-    
-  def succeededIndexesNotContainGenTraversableArray[T](xs: GenTraversable[Array[T]], right: T): String = 
+
+  def succeededIndexesNotContainGenTraversableArray[T](xs: GenTraversable[Array[T]], right: T): String =
     succeededIndexes[Array[T]](xs, !_.exists(_ == right))
-    
-  def succeededIndexesRefEqual[T <: AnyRef](xs: GenTraversable[T], value: T): String = 
+
+  def succeededIndexesRefEqual[T <: AnyRef](xs: GenTraversable[T], value: T): String =
     succeededIndexes[T](xs, _ eq value)
-    
-  def succeededIndexesNotRefEqual[T <: AnyRef](xs: GenTraversable[T], value: T): String = 
+
+  def succeededIndexesNotRefEqual[T <: AnyRef](xs: GenTraversable[T], value: T): String =
     succeededIndexes[T](xs, _ ne value)
-    
-  def succeededIndexesContainKey[K, V](xs: GenTraversable[GenMap[K, V]], right: K): String = 
+
+  def succeededIndexesContainKey[K, V](xs: GenTraversable[GenMap[K, V]], right: K): String =
     succeededIndexes[GenMap[K, V]](xs, _.exists(_._1 == right))
-    
-  def succeededIndexesNotContainKey[K, V](xs: GenTraversable[GenMap[K, V]], right: K): String = 
+
+  def succeededIndexesNotContainKey[K, V](xs: GenTraversable[GenMap[K, V]], right: K): String =
     succeededIndexes[GenMap[K, V]](xs, !_.exists(_._1 == right))
-    
-  def succeededIndexesContainValue[K, V](xs: GenTraversable[GenMap[K, V]], right: V): String = 
+
+  def succeededIndexesContainValue[K, V](xs: GenTraversable[GenMap[K, V]], right: V): String =
     succeededIndexes[GenMap[K, V]](xs, _.exists(_._2 == right))
-    
-  def succeededIndexesNotContainValue[K, V](xs: GenTraversable[GenMap[K, V]], right: V): String = 
+
+  def succeededIndexesNotContainValue[K, V](xs: GenTraversable[GenMap[K, V]], right: V): String =
     succeededIndexes[GenMap[K, V]](xs, !_.exists(_._2 == right))
-    
-  def succeededIndexesJavaMapIsEmpty[K, V](xs: GenTraversable[java.util.Map[K, V]], right: Int = 0): String = // right is not used, but to be consistent to other so that easier for code generation
-    succeededIndexes[java.util.Map[K, V]](xs, _.isEmpty)
-    
-  def succeededIndexesJavaMapNotIsEmpty[K, V](xs: GenTraversable[java.util.Map[K, V]], right: Int = 0): String = // right is not used, but to be consistent to other so that easier for code generation
-    succeededIndexes[java.util.Map[K, V]](xs, !_.isEmpty)
-    
-  def succeededIndexesJavaMapContainKey[K, V](xs: GenTraversable[java.util.Map[K, V]], right: K): String = 
-    succeededIndexes[java.util.Map[K, V]](xs, _.containsKey(right))
-    
-  def succeededIndexesJavaMapNotContainKey[K, V](xs: GenTraversable[java.util.Map[K, V]], right: K): String = 
-    succeededIndexes[java.util.Map[K, V]](xs,  !_.containsKey(right))
-    
-  def succeededIndexesJavaMapContainValue[K, V](xs: GenTraversable[java.util.Map[K, V]], right: V): String = 
-    succeededIndexes[java.util.Map[K, V]](xs, _.containsValue(right))
-    
-  def succeededIndexesJavaMapNotContainValue[K, V](xs: GenTraversable[java.util.Map[K, V]], right: V): String = 
-    succeededIndexes[java.util.Map[K, V]](xs, !_.containsValue(right))
-    
-  def succeededIndexesJavaMapSizeEqual[K, V](xs: GenTraversable[java.util.Map[K, V]], right: Int): String = 
-    succeededIndexes[java.util.Map[K, V]](xs, _.size == right)
-    
-  def succeededIndexesJavaMapSizeNotEqual[K, V](xs: GenTraversable[java.util.Map[K, V]], right: Int): String = 
-    succeededIndexes[java.util.Map[K, V]](xs, _.size != right)
-    
-  def succeededIndexesJavaColSizeEqual[T](xs: GenTraversable[java.util.Collection[T]], right: Int): String = 
-    succeededIndexes[java.util.Collection[T]](xs, _.size == right)
-    
-  def succeededIndexesJavaColSizeNotEqual[T](xs: GenTraversable[java.util.Collection[T]], right: Int): String = 
-    succeededIndexes[java.util.Collection[T]](xs, _.size != right)
-    
-  def succeededIndexesJavaColContain[T](xs: GenTraversable[java.util.Collection[T]], right: T): String = 
-    succeededIndexes[java.util.Collection[T]](xs, _.contains(right))
-    
-  def succeededIndexesJavaColNotContain[T](xs: GenTraversable[java.util.Collection[T]], right: T): String = 
-    succeededIndexes[java.util.Collection[T]](xs, !_.contains(right))
-    
-  def succeededIndexesJavaColIsEmpty[T](xs: GenTraversable[java.util.Collection[T]], right: Int = 0): String = // right is not used, but to be consistent to other so that easier for code generation
-    succeededIndexes[java.util.Collection[T]](xs, _.isEmpty)
-    
-  def succeededIndexesJavaColNotIsEmpty[T](xs: GenTraversable[java.util.Collection[T]], right: Int = 0): String = // right is not used, but to be consistent to other so that easier for code generation
-    succeededIndexes[java.util.Collection[T]](xs, !_.isEmpty)
-    
-  def failEarlySucceededIndexesEqualBoolean[T](xs: GenTraversable[T], value: Boolean, maxSucceed: Int): String = 
+
+  def succeededIndexesJavaMapIsEmpty[K, V, JMAP[k, v] <: java.util.Map[_, _]](xs: java.util.Collection[JMAP[K, V]], right: Int = 0): String = // right is not used, but to be consistent to other so that easier for code generation
+    succeededIndexesInJavaCol[java.util.Map[K, V]](xs.asInstanceOf[java.util.Collection[java.util.Map[K, V]]], _.isEmpty)
+
+  def succeededIndexesJavaMapNotIsEmpty[K, V, JMAP[k, v] <: java.util.Map[_, _]](xs: java.util.Collection[JMAP[K, V]], right: Int = 0): String = // right is not used, but to be consistent to other so that easier for code generation
+    succeededIndexesInJavaCol[java.util.Map[K, V]](xs.asInstanceOf[java.util.Collection[java.util.Map[K, V]]], !_.isEmpty)
+
+  def succeededIndexesJavaMapContainKey[K, V, JMAP[k, v] <: java.util.Map[_, _]](xs: java.util.Collection[JMAP[K, V]], right: K): String =
+    succeededIndexesInJavaCol[java.util.Map[K, V]](xs.asInstanceOf[java.util.Collection[java.util.Map[K, V]]], _.containsKey(right))
+
+  def succeededIndexesJavaMapNotContainKey[K, V, JMAP[k, v] <: java.util.Map[_, _]](xs: java.util.Collection[JMAP[K, V]], right: K): String =
+    succeededIndexesInJavaCol[java.util.Map[K, V]](xs.asInstanceOf[java.util.Collection[java.util.Map[K, V]]],  !_.containsKey(right))
+
+  def succeededIndexesJavaMapContainValue[K, V, JMAP[k, v] <: java.util.Map[_, _]](xs: java.util.Collection[JMAP[K, V]], right: V): String =
+    succeededIndexesInJavaCol[java.util.Map[K, V]](xs.asInstanceOf[java.util.Collection[java.util.Map[K, V]]], _.containsValue(right))
+
+  def succeededIndexesJavaMapNotContainValue[K, V, JMAP[k, v] <: java.util.Map[_, _]](xs: java.util.Collection[JMAP[K, V]], right: V): String =
+    succeededIndexesInJavaCol[java.util.Map[K, V]](xs.asInstanceOf[java.util.Collection[java.util.Map[K, V]]], !_.containsValue(right))
+
+  def succeededIndexesJavaMapSizeEqual[K, V, JMAP[k, v] <: java.util.Map[_, _]](xs: java.util.Collection[JMAP[K, V]], right: Int): String =
+    succeededIndexesInJavaCol[java.util.Map[K, V]](xs.asInstanceOf[java.util.Collection[java.util.Map[K, V]]], _.size == right)
+
+  def succeededIndexesJavaMapSizeNotEqual[K, V, JMAP[k, v] <: java.util.Map[_, _]](xs: java.util.Collection[JMAP[K, V]], right: Int): String =
+    succeededIndexesInJavaCol[java.util.Map[K, V]](xs.asInstanceOf[java.util.Collection[java.util.Map[K, V]]], _.size != right)
+
+  def succeededIndexesJavaColSizeEqual[E, C[e] <: java.util.Collection[_]](xs: java.util.Collection[C[E]], right: Int): String =
+    succeededIndexesInJavaCol[java.util.Collection[E]](xs.asInstanceOf[java.util.Collection[java.util.Collection[E]]], _.size == right)
+
+  def succeededIndexesJavaColSizeNotEqual[E, C[e] <: java.util.Collection[_]](xs: java.util.Collection[C[E]], right: Int): String =
+    succeededIndexesInJavaCol[java.util.Collection[E]](xs.asInstanceOf[java.util.Collection[java.util.Collection[E]]], _.size != right)
+
+  def succeededIndexesJavaColContain[E, C[e] <: java.util.Collection[_]](xs: java.util.Collection[C[E]], right: E): String =
+    succeededIndexesInJavaCol[java.util.Collection[E]](xs.asInstanceOf[java.util.Collection[java.util.Collection[E]]], _.contains(right))
+
+  def succeededIndexesJavaColNotContain[E, C[e] <: java.util.Collection[_]](xs: java.util.Collection[C[E]], right: E): String =
+    succeededIndexesInJavaCol[java.util.Collection[E]](xs.asInstanceOf[java.util.Collection[java.util.Collection[E]]], !_.contains(right))
+
+  def succeededIndexesJavaColIsEmpty[E, C[e] <: java.util.Collection[_]](xs: java.util.Collection[C[E]], right: Int = 0): String = // right is not used, but to be consistent to other so that easier for code generation
+    succeededIndexesInJavaCol[java.util.Collection[E]](xs.asInstanceOf[java.util.Collection[java.util.Collection[E]]], _.isEmpty)
+
+  def succeededIndexesJavaColNotIsEmpty[E, C[e] <: java.util.Collection[_]](xs: java.util.Collection[C[E]], right: Int = 0): String = // right is not used, but to be consistent to other so that easier for code generation
+    succeededIndexesInJavaCol[java.util.Collection[E]](xs.asInstanceOf[java.util.Collection[java.util.Collection[E]]], !_.isEmpty)
+
+  def failEarlySucceededIndexesEqualBoolean[T](xs: GenTraversable[T], value: Boolean, maxSucceed: Int): String =
     failEarlySucceededIndexes(xs, (e: T) => value, maxSucceed)
-  
-  def failEarlySucceededIndexesNotEqualBoolean[T](xs: GenTraversable[T], value: Boolean, maxSucceed: Int): String = 
+
+  def failEarlySucceededIndexesNotEqualBoolean[T](xs: GenTraversable[T], value: Boolean, maxSucceed: Int): String =
     failEarlySucceededIndexes(xs, (e: T) => !value, maxSucceed)
-    
-  def failEarlySucceededIndexesEqual[T](xs: GenTraversable[T], value: T, maxSucceed: Int): String = 
+
+  def failEarlySucceededIndexesEqual[T](xs: GenTraversable[T], value: T, maxSucceed: Int): String =
     failEarlySucceededIndexes(xs, (e: T) => e == value, maxSucceed)
-    
-  def failEarlySucceededIndexesNotEqual[T](xs: GenTraversable[T], value: T, maxSucceed: Int): String = 
+
+  def failEarlySucceededIndexesNotEqual[T](xs: GenTraversable[T], value: T, maxSucceed: Int): String =
     failEarlySucceededIndexes(xs, (e: T) => e != value, maxSucceed)
-    
-  def failEarlySucceededIndexesLessThanEqual(xs: GenTraversable[Int], value: Int, maxSucceed: Int): String = 
+
+  def failEarlySucceededIndexesLessThanEqual(xs: GenTraversable[Int], value: Int, maxSucceed: Int): String =
     failEarlySucceededIndexes(xs, (e: Int) => e <= value, maxSucceed)
-    
-  def failEarlySucceededIndexesLessThan(xs: GenTraversable[Int], value: Int, maxSucceed: Int): String = 
+
+  def failEarlySucceededIndexesLessThan(xs: GenTraversable[Int], value: Int, maxSucceed: Int): String =
     failEarlySucceededIndexes(xs, (e: Int) => e < value, maxSucceed)
-    
-  def failEarlySucceededIndexesMoreThanEqual(xs: GenTraversable[Int], value: Int, maxSucceed: Int): String = 
+
+  def failEarlySucceededIndexesMoreThanEqual(xs: GenTraversable[Int], value: Int, maxSucceed: Int): String =
     failEarlySucceededIndexes(xs, (e: Int) => e >= value, maxSucceed)
-    
-  def failEarlySucceededIndexesMoreThan(xs: GenTraversable[Int], value: Int, maxSucceed: Int): String = 
+
+  def failEarlySucceededIndexesMoreThan(xs: GenTraversable[Int], value: Int, maxSucceed: Int): String =
     failEarlySucceededIndexes(xs, (e: Int) => e > value, maxSucceed)
-    
-  def failEarlySucceededIndexesIsEmpty(xs: GenTraversable[String], value: String, maxSucceed: Int): String = 
+
+  def failEarlySucceededIndexesIsEmpty(xs: GenTraversable[String], value: String, maxSucceed: Int): String =
     failEarlySucceededIndexes(xs, (e: String) => e.isEmpty, maxSucceed)
-  
-  def failEarlySucceededIndexesIsNotEmpty(xs: GenTraversable[String], value: String, maxSucceed: Int): String = 
+
+  def failEarlySucceededIndexesIsNotEmpty(xs: GenTraversable[String], value: String, maxSucceed: Int): String =
     failEarlySucceededIndexes(xs, (e: String) => !e.isEmpty, maxSucceed)
-    
-  def failEarlySucceededIndexesSizeEqual(xs: GenTraversable[String], value: Int, maxSucceed: Int): String = 
+
+  def failEarlySucceededIndexesSizeEqual(xs: GenTraversable[String], value: Int, maxSucceed: Int): String =
     failEarlySucceededIndexes(xs, (e: String) => e.size == value, maxSucceed)
-    
-  def failEarlySucceededIndexesSizeNotEqual(xs: GenTraversable[String], value: Int, maxSucceed: Int): String = 
+
+  def failEarlySucceededIndexesSizeNotEqual(xs: GenTraversable[String], value: Int, maxSucceed: Int): String =
     failEarlySucceededIndexes(xs, (e: String) => e.size != value, maxSucceed)
-    
-  def failEarlySucceededIndexesLengthEqual(xs: GenTraversable[String], value: Int, maxSucceed: Int): String = 
+
+  def failEarlySucceededIndexesLengthEqual(xs: GenTraversable[String], value: Int, maxSucceed: Int): String =
     failEarlySucceededIndexes(xs, (e: String) => e.length == value, maxSucceed)
-    
-  def failEarlySucceededIndexesLengthNotEqual(xs: GenTraversable[String], value: Int, maxSucceed: Int): String = 
+
+  def failEarlySucceededIndexesLengthNotEqual(xs: GenTraversable[String], value: Int, maxSucceed: Int): String =
     failEarlySucceededIndexes(xs, (e: String) => e.length != value, maxSucceed)
-    
-  def failEarlySucceededIndexesStartsWith(xs: GenTraversable[String], value: String, maxSucceed: Int): String = 
+
+  def failEarlySucceededIndexesStartsWith(xs: GenTraversable[String], value: String, maxSucceed: Int): String =
     failEarlySucceededIndexes(xs, (e: String) => e.startsWith(value), maxSucceed)
-  
-  def failEarlySucceededIndexesNotStartsWith(xs: GenTraversable[String], value: String, maxSucceed: Int): String = 
+
+  def failEarlySucceededIndexesNotStartsWith(xs: GenTraversable[String], value: String, maxSucceed: Int): String =
     failEarlySucceededIndexes(xs, (e: String) => !e.startsWith(value), maxSucceed)
-    
-  def failEarlySucceededIndexesEndsWith(xs: GenTraversable[String], value: String, maxSucceed: Int): String = 
+
+  def failEarlySucceededIndexesEndsWith(xs: GenTraversable[String], value: String, maxSucceed: Int): String =
     failEarlySucceededIndexes(xs, (e: String) => e.endsWith(value), maxSucceed)
-  
-  def failEarlySucceededIndexesNotEndsWith(xs: GenTraversable[String], value: String, maxSucceed: Int): String = 
+
+  def failEarlySucceededIndexesNotEndsWith(xs: GenTraversable[String], value: String, maxSucceed: Int): String =
     failEarlySucceededIndexes(xs, (e: String) => !e.endsWith(value), maxSucceed)
-    
-  def failEarlySucceededIndexesInclude(xs: GenTraversable[String], value: String, maxSucceed: Int): String = 
+
+  def failEarlySucceededIndexesInclude(xs: GenTraversable[String], value: String, maxSucceed: Int): String =
     failEarlySucceededIndexes(xs, (e: String) => e.indexOf(value) >= 0, maxSucceed)
-  
-  def failEarlySucceededIndexesNotInclude(xs: GenTraversable[String], value: String, maxSucceed: Int): String = 
+
+  def failEarlySucceededIndexesNotInclude(xs: GenTraversable[String], value: String, maxSucceed: Int): String =
     failEarlySucceededIndexes(xs, (e: String) => e.indexOf(value) < 0, maxSucceed)
-    
-  def failEarlySucceededIndexesSizeEqualGenTraversable[T](xs: GenTraversable[GenTraversable[T]], value: Int, maxSucceed: Int): String = 
+
+  def failEarlySucceededIndexesSizeEqualGenTraversable[T](xs: GenTraversable[GenTraversable[T]], value: Int, maxSucceed: Int): String =
     failEarlySucceededIndexes[GenTraversable[T]](xs, _.size == value, maxSucceed)
-  
-  def failEarlySucceededIndexesSizeNotEqualGenTraversable[T](xs: GenTraversable[GenTraversable[T]], value: Int, maxSucceed: Int): String = 
+
+  def failEarlySucceededIndexesSizeNotEqualGenTraversable[T](xs: GenTraversable[GenTraversable[T]], value: Int, maxSucceed: Int): String =
     failEarlySucceededIndexes[GenTraversable[T]](xs, _.size != value, maxSucceed)
-    
-  def failEarlySucceededIndexesSizeEqualGenTraversableArray[T](xs: GenTraversable[Array[T]], value: Int, maxSucceed: Int): String = 
+
+  def failEarlySucceededIndexesSizeEqualGenTraversableArray[T](xs: GenTraversable[Array[T]], value: Int, maxSucceed: Int): String =
     failEarlySucceededIndexes(xs, (e: Array[T]) => e.size == value, maxSucceed)
-  
-  def failEarlySucceededIndexesSizeNotEqualGenTraversableArray[T](xs: GenTraversable[Array[T]], value: Int, maxSucceed: Int): String = 
+
+  def failEarlySucceededIndexesSizeNotEqualGenTraversableArray[T](xs: GenTraversable[Array[T]], value: Int, maxSucceed: Int): String =
     failEarlySucceededIndexes(xs, (e: Array[T]) => e.size != value, maxSucceed)
-    
-  def failEarlySucceededIndexesMatches(xs: GenTraversable[String], value: String, maxSucceed: Int): String = 
+
+  def failEarlySucceededIndexesMatches(xs: GenTraversable[String], value: String, maxSucceed: Int): String =
     failEarlySucceededIndexes(xs, (e: String) => e.matches(value), maxSucceed)
-  
-  def failEarlySucceededIndexesNotMatches(xs: GenTraversable[String], value: String, maxSucceed: Int): String = 
+
+  def failEarlySucceededIndexesNotMatches(xs: GenTraversable[String], value: String, maxSucceed: Int): String =
     failEarlySucceededIndexes(xs, (e: String) => !e.matches(value), maxSucceed)
-    
-  def failEarlySucceededIndexesContainGenTraversable[T](xs: GenTraversable[GenTraversable[T]], right: T, maxSucceed: Int): String = 
+
+  def failEarlySucceededIndexesContainGenTraversable[T](xs: GenTraversable[GenTraversable[T]], right: T, maxSucceed: Int): String =
     failEarlySucceededIndexes[GenTraversable[T]](xs, _.exists(_ == right), maxSucceed)
-    
-  def failEarlySucceededIndexesNotContainGenTraversable[T](xs: GenTraversable[GenTraversable[T]], right: T, maxSucceed: Int): String = 
+
+  def failEarlySucceededIndexesNotContainGenTraversable[T](xs: GenTraversable[GenTraversable[T]], right: T, maxSucceed: Int): String =
     failEarlySucceededIndexes[GenTraversable[T]](xs, !_.exists(_ == right), maxSucceed)
-    
-  def failEarlySucceededIndexesContainGenTraversableArray[T](xs: GenTraversable[Array[T]], right: T, maxSucceed: Int): String = 
+
+  def failEarlySucceededIndexesContainGenTraversableArray[T](xs: GenTraversable[Array[T]], right: T, maxSucceed: Int): String =
     failEarlySucceededIndexes[Array[T]](xs, _.exists(_ == right), maxSucceed)
-    
-  def failEarlySucceededIndexesNotContainGenTraversableArray[T](xs: GenTraversable[Array[T]], right: T, maxSucceed: Int): String = 
+
+  def failEarlySucceededIndexesNotContainGenTraversableArray[T](xs: GenTraversable[Array[T]], right: T, maxSucceed: Int): String =
     failEarlySucceededIndexes[Array[T]](xs, !_.exists(_ == right), maxSucceed)
-    
-  def failEarlySucceededIndexesRefEqual[T <: AnyRef](xs: GenTraversable[T], value: T, maxSucceed: Int): String = 
+
+  def failEarlySucceededIndexesRefEqual[T <: AnyRef](xs: GenTraversable[T], value: T, maxSucceed: Int): String =
     failEarlySucceededIndexes[T](xs, _ eq value, maxSucceed)
-    
-  def failEarlySucceededIndexesNotRefEqual[T <: AnyRef](xs: GenTraversable[T], value: T, maxSucceed: Int): String = 
+
+  def failEarlySucceededIndexesNotRefEqual[T <: AnyRef](xs: GenTraversable[T], value: T, maxSucceed: Int): String =
     failEarlySucceededIndexes[T](xs, _ ne value, maxSucceed)
-    
-  def failEarlySucceededIndexesContainKey[K, V](xs: GenTraversable[GenMap[K, V]], right: K, maxSucceed: Int): String = 
+
+  def failEarlySucceededIndexesContainKey[K, V](xs: GenTraversable[GenMap[K, V]], right: K, maxSucceed: Int): String =
     failEarlySucceededIndexes[GenMap[K, V]](xs, _.exists(_._1 == right), maxSucceed)
-    
-  def failEarlySucceededIndexesNotContainKey[K, V](xs: GenTraversable[GenMap[K, V]], right: K, maxSucceed: Int): String = 
+
+  def failEarlySucceededIndexesNotContainKey[K, V](xs: GenTraversable[GenMap[K, V]], right: K, maxSucceed: Int): String =
     failEarlySucceededIndexes[GenMap[K, V]](xs, !_.exists(_._1 == right), maxSucceed)
-    
-  def failEarlySucceededIndexesContainValue[K, V](xs: GenTraversable[GenMap[K, V]], right: V, maxSucceed: Int): String = 
+
+  def failEarlySucceededIndexesContainValue[K, V](xs: GenTraversable[GenMap[K, V]], right: V, maxSucceed: Int): String =
     failEarlySucceededIndexes[GenMap[K, V]](xs, _.exists(_._2 == right), maxSucceed)
-    
-  def failEarlySucceededIndexesNotContainValue[K, V](xs: GenTraversable[GenMap[K, V]], right: V, maxSucceed: Int): String = 
+
+  def failEarlySucceededIndexesNotContainValue[K, V](xs: GenTraversable[GenMap[K, V]], right: V, maxSucceed: Int): String =
     failEarlySucceededIndexes[GenMap[K, V]](xs, !_.exists(_._2 == right), maxSucceed)
-    
-  def failEarlySucceededIndexesJavaMapIsEmpty[K, V](xs: GenTraversable[java.util.Map[K, V]], right: Int = 0, maxSucceed: Int): String = // right is not used, but to be consistent to other so that easier for code generation
-    failEarlySucceededIndexes[java.util.Map[K, V]](xs, _.isEmpty, maxSucceed)
-    
-  def failEarlySucceededIndexesJavaMapNotIsEmpty[K, V](xs: GenTraversable[java.util.Map[K, V]], right: Int = 0, maxSucceed: Int): String = // right is not used, but to be consistent to other so that easier for code generation
-    failEarlySucceededIndexes[java.util.Map[K, V]](xs, !_.isEmpty, maxSucceed)
-    
-  def failEarlySucceededIndexesJavaMapContainKey[K, V](xs: GenTraversable[java.util.Map[K, V]], right: K, maxSucceed: Int): String = 
-    failEarlySucceededIndexes[java.util.Map[K, V]](xs, _.containsKey(right), maxSucceed)
-    
-  def failEarlySucceededIndexesJavaMapNotContainKey[K, V](xs: GenTraversable[java.util.Map[K, V]], right: K, maxSucceed: Int): String = 
-    failEarlySucceededIndexes[java.util.Map[K, V]](xs,  !_.containsKey(right), maxSucceed)
-    
-  def failEarlySucceededIndexesJavaMapContainValue[K, V](xs: GenTraversable[java.util.Map[K, V]], right: V, maxSucceed: Int): String = 
-    failEarlySucceededIndexes[java.util.Map[K, V]](xs, _.containsValue(right), maxSucceed)
-    
-  def failEarlySucceededIndexesJavaMapNotContainValue[K, V](xs: GenTraversable[java.util.Map[K, V]], right: V, maxSucceed: Int): String = 
-    failEarlySucceededIndexes[java.util.Map[K, V]](xs, !_.containsValue(right), maxSucceed)
-    
-  def failEarlySucceededIndexesJavaMapSizeEqual[K, V](xs: GenTraversable[java.util.Map[K, V]], right: Int, maxSucceed: Int): String = 
-    failEarlySucceededIndexes[java.util.Map[K, V]](xs, _.size == right, maxSucceed)
-    
-  def failEarlySucceededIndexesJavaMapSizeNotEqual[K, V](xs: GenTraversable[java.util.Map[K, V]], right: Int, maxSucceed: Int): String = 
-    failEarlySucceededIndexes[java.util.Map[K, V]](xs, _.size != right, maxSucceed)
-    
-  def failEarlySucceededIndexesJavaColSizeEqual[T](xs: GenTraversable[java.util.Collection[T]], right: Int, maxSucceed: Int): String = 
-    failEarlySucceededIndexes[java.util.Collection[T]](xs, _.size == right, maxSucceed)
-    
-  def failEarlySucceededIndexesJavaColSizeNotEqual[T](xs: GenTraversable[java.util.Collection[T]], right: Int, maxSucceed: Int): String = 
-    failEarlySucceededIndexes[java.util.Collection[T]](xs, _.size != right, maxSucceed)
-    
-  def failEarlySucceededIndexesJavaColContain[T](xs: GenTraversable[java.util.Collection[T]], right: T, maxSucceed: Int): String = 
-    failEarlySucceededIndexes[java.util.Collection[T]](xs, _.contains(right), maxSucceed)
-    
-  def failEarlySucceededIndexesJavaColNotContain[T](xs: GenTraversable[java.util.Collection[T]], right: T, maxSucceed: Int): String = 
-    failEarlySucceededIndexes[java.util.Collection[T]](xs, !_.contains(right), maxSucceed)
-    
-  def failEarlySucceededIndexesJavaColIsEmpty[T](xs: GenTraversable[java.util.Collection[T]], right: Int = 0, maxSucceed: Int): String = // right is not used, but to be consistent to other so that easier for code generation
-    failEarlySucceededIndexes[java.util.Collection[T]](xs, _.isEmpty, maxSucceed)
-    
-  def failEarlySucceededIndexesJavaColNotIsEmpty[T](xs: GenTraversable[java.util.Collection[T]], right: Int = 0, maxSucceed: Int): String = // right is not used, but to be consistent to other so that easier for code generation
-    failEarlySucceededIndexes[java.util.Collection[T]](xs, !_.isEmpty, maxSucceed)
-  
+
+  def failEarlySucceededIndexesJavaMapIsEmpty[K, V, JMAP[k, v] <: java.util.Map[_, _]](xs: java.util.Collection[JMAP[K, V]], right: Int = 0, maxSucceed: Int): String = // right is not used, but to be consistent to other so that easier for code generation
+    failEarlySucceededIndexesInJavaCol[java.util.Map[K, V]](xs.asInstanceOf[java.util.Collection[java.util.Map[K, V]]], _.isEmpty, maxSucceed)
+
+  def failEarlySucceededIndexesJavaMapNotIsEmpty[K, V, JMAP[k, v] <: java.util.Map[_, _]](xs: java.util.Collection[JMAP[K, V]], right: Int = 0, maxSucceed: Int): String = // right is not used, but to be consistent to other so that easier for code generation
+    failEarlySucceededIndexesInJavaCol[java.util.Map[K, V]](xs.asInstanceOf[java.util.Collection[java.util.Map[K, V]]], !_.isEmpty, maxSucceed)
+
+  def failEarlySucceededIndexesJavaMapContainKey[K, V, JMAP[k, v] <: java.util.Map[_, _]](xs: java.util.Collection[JMAP[K, V]], right: K, maxSucceed: Int): String =
+    failEarlySucceededIndexesInJavaCol[java.util.Map[K, V]](xs.asInstanceOf[java.util.Collection[java.util.Map[K, V]]], _.containsKey(right), maxSucceed)
+
+  def failEarlySucceededIndexesJavaMapNotContainKey[K, V, JMAP[k, v] <: java.util.Map[_, _]](xs: java.util.Collection[JMAP[K, V]], right: K, maxSucceed: Int): String =
+    failEarlySucceededIndexesInJavaCol[java.util.Map[K, V]](xs.asInstanceOf[java.util.Collection[java.util.Map[K, V]]],  !_.containsKey(right), maxSucceed)
+
+  def failEarlySucceededIndexesJavaMapContainValue[K, V, JMAP[k, v] <: java.util.Map[_, _]](xs: java.util.Collection[JMAP[K, V]], right: V, maxSucceed: Int): String =
+    failEarlySucceededIndexesInJavaCol[java.util.Map[K, V]](xs.asInstanceOf[java.util.Collection[java.util.Map[K, V]]], _.containsValue(right), maxSucceed)
+
+  def failEarlySucceededIndexesJavaMapNotContainValue[K, V, JMAP[k, v] <: java.util.Map[_, _]](xs: java.util.Collection[JMAP[K, V]], right: V, maxSucceed: Int): String =
+    failEarlySucceededIndexesInJavaCol[java.util.Map[K, V]](xs.asInstanceOf[java.util.Collection[java.util.Map[K, V]]], !_.containsValue(right), maxSucceed)
+
+  def failEarlySucceededIndexesJavaMapSizeEqual[K, V, JMAP[k, v] <: java.util.Map[_, _]](xs: java.util.Collection[JMAP[K, V]], right: Int, maxSucceed: Int): String =
+    failEarlySucceededIndexesInJavaCol[java.util.Map[K, V]](xs.asInstanceOf[java.util.Collection[java.util.Map[K, V]]], _.size == right, maxSucceed)
+
+  def failEarlySucceededIndexesJavaMapSizeNotEqual[K, V, JMAP[k, v] <: java.util.Map[_, _]](xs: java.util.Collection[JMAP[K, V]], right: Int, maxSucceed: Int): String =
+    failEarlySucceededIndexesInJavaCol[java.util.Map[K, V]](xs.asInstanceOf[java.util.Collection[java.util.Map[K, V]]], _.size != right, maxSucceed)
+
+  def failEarlySucceededIndexesJavaColSizeEqual[E, C[e] <: java.util.Collection[_]](xs: java.util.Collection[C[E]], right: Int, maxSucceed: Int): String =
+    failEarlySucceededIndexesInJavaCol[java.util.Collection[E]](xs.asInstanceOf[java.util.Collection[java.util.Collection[E]]], _.size == right, maxSucceed)
+
+  def failEarlySucceededIndexesJavaColSizeNotEqual[E, C[e] <: java.util.Collection[_]](xs: java.util.Collection[C[E]], right: Int, maxSucceed: Int): String =
+    failEarlySucceededIndexesInJavaCol[java.util.Collection[E]](xs.asInstanceOf[java.util.Collection[java.util.Collection[E]]], _.size != right, maxSucceed)
+
+  def failEarlySucceededIndexesJavaColContain[E, C[e] <: java.util.Collection[_]](xs: java.util.Collection[C[E]], right: E, maxSucceed: Int): String =
+    failEarlySucceededIndexesInJavaCol[java.util.Collection[E]](xs.asInstanceOf[java.util.Collection[java.util.Collection[E]]], _.contains(right), maxSucceed)
+
+  def failEarlySucceededIndexesJavaColNotContain[E, C[e] <: java.util.Collection[_]](xs: java.util.Collection[C[E]], right: E, maxSucceed: Int): String =
+    failEarlySucceededIndexesInJavaCol[java.util.Collection[E]](xs.asInstanceOf[java.util.Collection[java.util.Collection[E]]], !_.contains(right), maxSucceed)
+
+  def failEarlySucceededIndexesJavaColIsEmpty[E, C[e] <: java.util.Collection[_]](xs: java.util.Collection[C[E]], right: Int = 0, maxSucceed: Int): String = // right is not used, but to be consistent to other so that easier for code generation
+    failEarlySucceededIndexesInJavaCol[java.util.Collection[E]](xs.asInstanceOf[java.util.Collection[java.util.Collection[E]]], _.isEmpty, maxSucceed)
+
+  def failEarlySucceededIndexesJavaColNotIsEmpty[E, C[e] <: java.util.Collection[_]](xs: java.util.Collection[C[E]], right: Int = 0, maxSucceed: Int): String = // right is not used, but to be consistent to other so that easier for code generation
+    failEarlySucceededIndexesInJavaCol[java.util.Collection[E]](xs.asInstanceOf[java.util.Collection[java.util.Collection[E]]], !_.isEmpty, maxSucceed)
+
   private val TEMP_DIR_ATTEMPTS = 10000
-  
+
   // This is based on createTempDir here (Apache License): http://code.google.com/p/guava-libraries/source/browse/guava/src/com/google/common/io/Files.java
   // java.nio.file.Files#createTempDirectory() exists in Java 7 should be preferred when we no longer support Java 5/6.
   def createTempDirectory(): File = {
     val baseDir = new File(System.getProperty("java.io.tmpdir"))
     val baseName = System.currentTimeMillis + "-"
-    
+
     @tailrec
     def tryCreateTempDirectory(counter: Int): Option[File] = {
       val tempDir = new File(baseDir, baseName + counter)
@@ -1219,38 +1266,38 @@ object SharedHelpers extends Assertions {
       else
         None
     }
-    
+
     tryCreateTempDirectory(0) match {
       case Some(tempDir) => tempDir
-      case None => 
+      case None =>
         throw new IllegalStateException(
-            "Failed to create directory within " + 
-            TEMP_DIR_ATTEMPTS + " attempts (tried " + 
+            "Failed to create directory within " +
+            TEMP_DIR_ATTEMPTS + " attempts (tried " +
             baseName + "0 to " + baseName +
             (TEMP_DIR_ATTEMPTS - 1) + ')');
     }
   }
-  
+
   def javaSet[T](elements: T*): java.util.Set[T] = {
     val javaSet = new java.util.HashSet[T]()
     elements.foreach(javaSet.add(_))
     javaSet
   }
-    
+
   def javaList[T](elements: T*): java.util.List[T] = {
     val javaList = new java.util.ArrayList[T]()
     elements.foreach(javaList.add(_))
     javaList
   }
-  
+
   def javaMap[K, V](elements: Entry[K, V]*): java.util.LinkedHashMap[K, V] = {
     val m = new java.util.LinkedHashMap[K, V]
     elements.foreach(e => m.put(e.getKey, e.getValue))
     m
   }
-  
+
   // This gives a comparator that compares based on the value in the passed in order map
-  private def orderMapComparator[T](orderMap: Map[T, Int]): java.util.Comparator[T] = 
+  private def orderMapComparator[T](orderMap: Map[T, Int]): java.util.Comparator[T] =
     new java.util.Comparator[T] {
       def compare(x: T, y: T): Int = {
           // When both x and y is defined in order map, use its corresponding value to compare (which in usage below, is the index of the insertion order)
@@ -1258,10 +1305,10 @@ object SharedHelpers extends Assertions {
             orderMap(x) compare orderMap(y)
           else {
             // It can happens that the comparator is used by equal method to check if 2 element is equaled.
-            // In the use-case below, orderMap only contains elements within the TreeSet/TreeMap itself, 
-            // but in equal method elements from other instances of TreeSet/TreeMap can be passed in to check 
+            // In the use-case below, orderMap only contains elements within the TreeSet/TreeMap itself,
+            // but in equal method elements from other instances of TreeSet/TreeMap can be passed in to check
             // for equality.  So the below handles element of type Int and String, which is enough for our tests.
-            // hashCode will be used for other types of objects, in future, special care for other types can be added 
+            // hashCode will be used for other types of objects, in future, special care for other types can be added
             // if necessary.
             // The relationship and behavior of comparator/ordering/equals is quite well defined in JavaDoc of java.lang.Comparable here:
             // http://docs.oracle.com/javase/6/docs/api/java/lang/Comparable.html
@@ -1281,7 +1328,7 @@ object SharedHelpers extends Assertions {
           }
         }
     }
-  
+
   def sortedSet[T](elements: T*): SortedSet[T] = {
     val orderMap = Map.empty[T, Int] ++ elements.zipWithIndex
     val comparator = orderMapComparator(orderMap)
@@ -1290,7 +1337,7 @@ object SharedHelpers extends Assertions {
     }
     SortedSet.empty[T] ++ elements
   }
-  
+
   def sortedMap[K, V](elements: (K, V)*): SortedMap[K, V] = {
     val orderMap = Map.empty[K, Int] ++ elements.map(_._1).zipWithIndex
     val comparator = orderMapComparator(orderMap)
@@ -1299,7 +1346,7 @@ object SharedHelpers extends Assertions {
     }
     SortedMap.empty[K, V] ++ elements
   }
-  
+
   def javaSortedSet[T](elements: T*): java.util.SortedSet[T] = {
     val orderMap = Map.empty[T, Int] ++ elements.zipWithIndex
     val comparator = orderMapComparator(orderMap)
@@ -1307,7 +1354,7 @@ object SharedHelpers extends Assertions {
     elements.foreach(sortedSet.add(_))
     sortedSet
   }
-  
+
   def javaSortedMap[K, V](elements: Entry[K, V]*): java.util.SortedMap[K, V] = {
     val orderMap = Map.empty[K, Int] ++ elements.map(_.getKey).zipWithIndex
     val comparator = orderMapComparator(orderMap)
@@ -1324,7 +1371,7 @@ object SharedHelpers extends Assertions {
     val ois = new java.io.ObjectInputStream(new java.io.ByteArrayInputStream(baos.toByteArray))
     ois.readObject.asInstanceOf[A]
   }
-  
+
   def checkMessageStackDepth(exception: StackDepthException, message: String, fileName: String, lineNumber: Int) {
     assert(exception.message === Some(message))
     assert(exception.failedCodeFileName === Some(fileName))

@@ -4937,7 +4937,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(haveWord: HaveWord): ResultOfHaveWordForCollectedExtent[T] =
-      new ResultOfHaveWordForCollectedExtent(collected, xs, true)
+      new ResultOfHaveWordForCollectedExtent(collected, xs, original, true)
 
     /**
      * This method enables syntax such as the following:
@@ -5500,7 +5500,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    *
    * @author Bill Venners
    */
-  final class ResultOfHaveWordForCollectedExtent[A](collected: Collected, xs: scala.collection.GenTraversable[A], shouldBeTrue: Boolean) {
+  final class ResultOfHaveWordForCollectedExtent[A](collected: Collected, xs: scala.collection.GenTraversable[A], original: Any, shouldBeTrue: Boolean) {
 
     /**
      * This method enables the following syntax: 
@@ -5511,7 +5511,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def length(expectedLength: Long)(implicit len: Length[A]) {
-      doCollected(collected, xs, xs, "length", 1) { e =>
+      doCollected(collected, xs, original, "length", 1) { e =>
         val eLength = len.lengthOf(e)
         if ((eLength == expectedLength) != shouldBeTrue)
           throw newTestFailedException(
@@ -5534,7 +5534,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def size(expectedSize: Long)(implicit sz: Size[A]) {
-      doCollected(collected, xs, xs, "size", 1) { e =>
+      doCollected(collected, xs, original, "size", 1) { e =>
         val eSize = sz.sizeOf(e)
         if ((eSize == expectedSize) != shouldBeTrue)
           throw newTestFailedException(
@@ -5816,8 +5816,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def atLeast[T](num: Int, xs: scala.collection.GenTraversable[T]): ResultOfCollectedAny[T] = 
-    new ResultOfCollectedAny(AtLeastCollected(num), xs, xs)
+  def atLeast[E, C[_]](num: Int, xs: C[E])(implicit collecting: Collecting[E, C[E]]): ResultOfCollectedAny[E] =
+    new ResultOfCollectedAny(AtLeastCollected(num), collecting.genTraversableFrom(xs), xs)
 
   /**
    * This method enables the following syntax:
@@ -5827,8 +5827,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def every[T](xs: scala.collection.GenTraversable[T]): ResultOfCollectedAny[T] = 
-    new ResultOfCollectedAny(EveryCollected, xs, xs)
+  def every[E, C[_]](xs: C[E])(implicit collecting: Collecting[E, C[E]]): ResultOfCollectedAny[E] =
+    new ResultOfCollectedAny(EveryCollected, collecting.genTraversableFrom(xs), xs)
 
   /**
    * This method enables the following syntax:
@@ -5838,8 +5838,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def exactly[T](num: Int, xs: scala.collection.GenTraversable[T]): ResultOfCollectedAny[T] = 
-    new ResultOfCollectedAny(ExactlyCollected(num), xs, xs)
+  def exactly[E, C[_]](num: Int, xs: C[E])(implicit collecting: Collecting[E, C[E]]): ResultOfCollectedAny[E] =
+    new ResultOfCollectedAny(ExactlyCollected(num), collecting.genTraversableFrom(xs), xs)
 
   /**
    * This method enables the following syntax:
@@ -5849,8 +5849,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def no[T](xs: scala.collection.GenTraversable[T]): ResultOfCollectedAny[T] =
-    new ResultOfCollectedAny(NoCollected, xs, xs)
+  def no[E, C[_]](xs: C[E])(implicit collecting: Collecting[E, C[E]]): ResultOfCollectedAny[E] =
+    new ResultOfCollectedAny(NoCollected, collecting.genTraversableFrom(xs), xs)
 
   /**
    * This method enables the following syntax:
@@ -5860,8 +5860,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def between[T](from: Int, upTo:Int, xs: scala.collection.GenTraversable[T]): ResultOfCollectedAny[T] =
-    new ResultOfCollectedAny(BetweenCollected(from, upTo), xs, xs)
+  def between[E, C[_]](from: Int, upTo:Int, xs: C[E])(implicit collecting: Collecting[E, C[E]]): ResultOfCollectedAny[E] =
+    new ResultOfCollectedAny(BetweenCollected(from, upTo), collecting.genTraversableFrom(xs), xs)
 
   /**
    * This method enables the following syntax:
@@ -5871,8 +5871,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def atMost[T](num: Int, xs: scala.collection.GenTraversable[T]): ResultOfCollectedAny[T] =
-    new ResultOfCollectedAny(AtMostCollected(num), xs, xs)
+  def atMost[E, C[_]](num: Int, xs: C[E])(implicit collecting: Collecting[E, C[E]]): ResultOfCollectedAny[E] =
+    new ResultOfCollectedAny(AtMostCollected(num), collecting.genTraversableFrom(xs), xs)
 
   /**
    * This method enables the following syntax: 
