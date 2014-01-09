@@ -1011,15 +1011,11 @@ object SharedHelpers extends Assertions {
   def indexElementNotRefEqual[T <: AnyRef](itr: Iterator[T], xs: GenTraversable[T], right: T): Array[String] =
     indexElement[T](itr, xs, _ ne right)
 
-  //###########################################
-
   def indexElementRefEqual[T <: AnyRef](itr: java.util.Iterator[T], xs: java.util.Collection[T], right: T): Array[String] =
     indexElementForJavaIterator[T](itr, xs, _ eq right)
 
   def indexElementNotRefEqual[T <: AnyRef](itr: java.util.Iterator[T], xs: java.util.Collection[T], right: T): Array[String] =
     indexElementForJavaIterator[T](itr, xs, _ ne right)
-
-  //###########################################
 
   def indexElementContainKey[K, V](itr: Iterator[GenMap[K, V]], xs: GenTraversable[GenMap[K, V]], right: K): Array[String] =
     indexElement[GenMap[K, V]](itr, xs, _.exists(_._1 == right))
@@ -1196,6 +1192,72 @@ object SharedHelpers extends Assertions {
   def succeededIndexesNotMatches(xs: GenTraversable[String], value: String): String =
     succeededIndexes(xs, (e: String) => !e.matches(value))
 
+  def succeededIndexesEqualBoolean[T](xs: java.util.Collection[T], value: Boolean): String =
+    succeededIndexesInJavaCol(xs, (e: T) => value)
+
+  def succeededIndexesNotEqualBoolean[T](xs: java.util.Collection[T], value: Boolean): String =
+    succeededIndexesInJavaCol(xs, (e: T) => !value)
+
+  def succeededIndexesEqual[T](xs: java.util.Collection[T], value: T): String =
+    succeededIndexesInJavaCol(xs, (e: T) => e == value)
+
+  def succeededIndexesNotEqual[T](xs: java.util.Collection[T], value: T): String =
+    succeededIndexesInJavaCol(xs, (e: T) => e != value)
+
+  def succeededIndexesLessThanEqual(xs: java.util.Collection[Int], value: Int): String =
+    succeededIndexesInJavaCol(xs, (e: Int) => e <= value)
+
+  def succeededIndexesLessThan(xs: java.util.Collection[Int], value: Int): String =
+    succeededIndexesInJavaCol(xs, (e: Int) => e < value)
+
+  def succeededIndexesMoreThanEqual(xs: java.util.Collection[Int], value: Int): String =
+    succeededIndexesInJavaCol(xs, (e: Int) => e >= value)
+
+  def succeededIndexesMoreThan(xs: java.util.Collection[Int], value: Int): String =
+    succeededIndexesInJavaCol(xs, (e: Int) => e > value)
+
+  def succeededIndexesIsEmpty(xs: java.util.Collection[String], value: String): String =
+    succeededIndexesInJavaCol(xs, (e: String) => e.isEmpty)
+
+  def succeededIndexesIsNotEmpty(xs: java.util.Collection[String], value: String): String =
+    succeededIndexesInJavaCol(xs, (e: String) => !e.isEmpty)
+
+  def succeededIndexesSizeEqual(xs: java.util.Collection[String], value: Int): String =
+    succeededIndexesInJavaCol(xs, (e: String) => e.size == value)
+
+  def succeededIndexesSizeNotEqual(xs: java.util.Collection[String], value: Int): String =
+    succeededIndexesInJavaCol(xs, (e: String) => e.size != value)
+
+  def succeededIndexesLengthEqual(xs: java.util.Collection[String], value: Int): String =
+    succeededIndexesInJavaCol(xs, (e: String) => e.length == value)
+
+  def succeededIndexesLengthNotEqual(xs: java.util.Collection[String], value: Int): String =
+    succeededIndexesInJavaCol(xs, (e: String) => e.length != value)
+
+  def succeededIndexesStartsWith(xs: java.util.Collection[String], value: String): String =
+    succeededIndexesInJavaCol(xs, (e: String) => e.startsWith(value))
+
+  def succeededIndexesNotStartsWith(xs: java.util.Collection[String], value: String): String =
+    succeededIndexesInJavaCol(xs, (e: String) => !e.startsWith(value))
+
+  def succeededIndexesEndsWith(xs: java.util.Collection[String], value: String): String =
+    succeededIndexesInJavaCol(xs, (e: String) => e.endsWith(value))
+
+  def succeededIndexesNotEndsWith(xs: java.util.Collection[String], value: String): String =
+    succeededIndexesInJavaCol(xs, (e: String) => !e.endsWith(value))
+
+  def succeededIndexesInclude(xs: java.util.Collection[String], value: String): String =
+    succeededIndexesInJavaCol(xs, (e: String) => e.indexOf(value) >= 0)
+
+  def succeededIndexesNotInclude(xs: java.util.Collection[String], value: String): String =
+    succeededIndexesInJavaCol(xs, (e: String) => e.indexOf(value) < 0)
+
+  def succeededIndexesMatches(xs: java.util.Collection[String], value: String): String =
+    succeededIndexesInJavaCol(xs, (e: String) => e.matches(value))
+
+  def succeededIndexesNotMatches(xs: java.util.Collection[String], value: String): String =
+    succeededIndexesInJavaCol(xs, (e: String) => !e.matches(value))
+
   def succeededIndexesContainGenTraversable[T](xs: GenTraversable[GenTraversable[T]], right: T): String =
     succeededIndexes[GenTraversable[T]](xs, _.exists(_ == right))
 
@@ -1213,6 +1275,16 @@ object SharedHelpers extends Assertions {
 
   def succeededIndexesNotRefEqual[T <: AnyRef](xs: GenTraversable[T], value: T): String =
     succeededIndexes[T](xs, _ ne value)
+
+  //#################################
+
+  def succeededIndexesRefEqual[T <: AnyRef](xs: java.util.Collection[T], value: T): String =
+    succeededIndexesInJavaCol[T](xs, _ eq value)
+
+  def succeededIndexesNotRefEqual[T <: AnyRef](xs: java.util.Collection[T], value: T): String =
+    succeededIndexesInJavaCol[T](xs, _ ne value)
+
+  //#################################
 
   def succeededIndexesContainKey[K, V](xs: GenTraversable[GenMap[K, V]], right: K): String =
     succeededIndexes[GenMap[K, V]](xs, _.exists(_._1 == right))
@@ -1328,6 +1400,70 @@ object SharedHelpers extends Assertions {
   def failEarlySucceededIndexesNotInclude(xs: GenTraversable[String], value: String, maxSucceed: Int): String =
     failEarlySucceededIndexes(xs, (e: String) => e.indexOf(value) < 0, maxSucceed)
 
+  //################################################
+
+  def failEarlySucceededIndexesEqualBoolean[T](xs: java.util.Collection[T], value: Boolean, maxSucceed: Int): String =
+    failEarlySucceededIndexesInJavaCol(xs, (e: T) => value, maxSucceed)
+
+  def failEarlySucceededIndexesNotEqualBoolean[T](xs: java.util.Collection[T], value: Boolean, maxSucceed: Int): String =
+    failEarlySucceededIndexesInJavaCol(xs, (e: T) => !value, maxSucceed)
+
+  def failEarlySucceededIndexesEqual[T](xs: java.util.Collection[T], value: T, maxSucceed: Int): String =
+    failEarlySucceededIndexesInJavaCol(xs, (e: T) => e == value, maxSucceed)
+
+  def failEarlySucceededIndexesNotEqual[T](xs: java.util.Collection[T], value: T, maxSucceed: Int): String =
+    failEarlySucceededIndexesInJavaCol(xs, (e: T) => e != value, maxSucceed)
+
+  def failEarlySucceededIndexesLessThanEqual(xs: java.util.Collection[Int], value: Int, maxSucceed: Int): String =
+    failEarlySucceededIndexesInJavaCol(xs, (e: Int) => e <= value, maxSucceed)
+
+  def failEarlySucceededIndexesLessThan(xs: java.util.Collection[Int], value: Int, maxSucceed: Int): String =
+    failEarlySucceededIndexesInJavaCol(xs, (e: Int) => e < value, maxSucceed)
+
+  def failEarlySucceededIndexesMoreThanEqual(xs: java.util.Collection[Int], value: Int, maxSucceed: Int): String =
+    failEarlySucceededIndexesInJavaCol(xs, (e: Int) => e >= value, maxSucceed)
+
+  def failEarlySucceededIndexesMoreThan(xs: java.util.Collection[Int], value: Int, maxSucceed: Int): String =
+    failEarlySucceededIndexesInJavaCol(xs, (e: Int) => e > value, maxSucceed)
+
+  def failEarlySucceededIndexesIsEmpty(xs: java.util.Collection[String], value: String, maxSucceed: Int): String =
+    failEarlySucceededIndexesInJavaCol(xs, (e: String) => e.isEmpty, maxSucceed)
+
+  def failEarlySucceededIndexesIsNotEmpty(xs: java.util.Collection[String], value: String, maxSucceed: Int): String =
+    failEarlySucceededIndexesInJavaCol(xs, (e: String) => !e.isEmpty, maxSucceed)
+
+  def failEarlySucceededIndexesSizeEqual(xs: java.util.Collection[String], value: Int, maxSucceed: Int): String =
+    failEarlySucceededIndexesInJavaCol(xs, (e: String) => e.size == value, maxSucceed)
+
+  def failEarlySucceededIndexesSizeNotEqual(xs: java.util.Collection[String], value: Int, maxSucceed: Int): String =
+    failEarlySucceededIndexesInJavaCol(xs, (e: String) => e.size != value, maxSucceed)
+
+  def failEarlySucceededIndexesLengthEqual(xs: java.util.Collection[String], value: Int, maxSucceed: Int): String =
+    failEarlySucceededIndexesInJavaCol(xs, (e: String) => e.length == value, maxSucceed)
+
+  def failEarlySucceededIndexesLengthNotEqual(xs: java.util.Collection[String], value: Int, maxSucceed: Int): String =
+    failEarlySucceededIndexesInJavaCol(xs, (e: String) => e.length != value, maxSucceed)
+
+  def failEarlySucceededIndexesStartsWith(xs: java.util.Collection[String], value: String, maxSucceed: Int): String =
+    failEarlySucceededIndexesInJavaCol(xs, (e: String) => e.startsWith(value), maxSucceed)
+
+  def failEarlySucceededIndexesNotStartsWith(xs: java.util.Collection[String], value: String, maxSucceed: Int): String =
+    failEarlySucceededIndexesInJavaCol(xs, (e: String) => !e.startsWith(value), maxSucceed)
+
+  def failEarlySucceededIndexesEndsWith(xs: java.util.Collection[String], value: String, maxSucceed: Int): String =
+    failEarlySucceededIndexesInJavaCol(xs, (e: String) => e.endsWith(value), maxSucceed)
+
+  def failEarlySucceededIndexesNotEndsWith(xs: java.util.Collection[String], value: String, maxSucceed: Int): String =
+    failEarlySucceededIndexesInJavaCol(xs, (e: String) => !e.endsWith(value), maxSucceed)
+
+  def failEarlySucceededIndexesInclude(xs: java.util.Collection[String], value: String, maxSucceed: Int): String =
+    failEarlySucceededIndexesInJavaCol(xs, (e: String) => e.indexOf(value) >= 0, maxSucceed)
+
+  def failEarlySucceededIndexesNotInclude(xs: java.util.Collection[String], value: String, maxSucceed: Int): String =
+    failEarlySucceededIndexesInJavaCol(xs, (e: String) => e.indexOf(value) < 0, maxSucceed)
+
+  //################################################
+
   def failEarlySucceededIndexesSizeEqualGenTraversable[T](xs: GenTraversable[GenTraversable[T]], value: Int, maxSucceed: Int): String =
     failEarlySucceededIndexes[GenTraversable[T]](xs, _.size == value, maxSucceed)
 
@@ -1346,6 +1482,12 @@ object SharedHelpers extends Assertions {
   def failEarlySucceededIndexesNotMatches(xs: GenTraversable[String], value: String, maxSucceed: Int): String =
     failEarlySucceededIndexes(xs, (e: String) => !e.matches(value), maxSucceed)
 
+  def failEarlySucceededIndexesMatches(xs: java.util.Collection[String], value: String, maxSucceed: Int): String =
+    failEarlySucceededIndexesInJavaCol(xs, (e: String) => e.matches(value), maxSucceed)
+
+  def failEarlySucceededIndexesNotMatches(xs: java.util.Collection[String], value: String, maxSucceed: Int): String =
+    failEarlySucceededIndexesInJavaCol(xs, (e: String) => !e.matches(value), maxSucceed)
+
   def failEarlySucceededIndexesContainGenTraversable[T](xs: GenTraversable[GenTraversable[T]], right: T, maxSucceed: Int): String =
     failEarlySucceededIndexes[GenTraversable[T]](xs, _.exists(_ == right), maxSucceed)
 
@@ -1363,6 +1505,12 @@ object SharedHelpers extends Assertions {
 
   def failEarlySucceededIndexesNotRefEqual[T <: AnyRef](xs: GenTraversable[T], value: T, maxSucceed: Int): String =
     failEarlySucceededIndexes[T](xs, _ ne value, maxSucceed)
+
+  def failEarlySucceededIndexesRefEqual[T <: AnyRef](xs: java.util.Collection[T], value: T, maxSucceed: Int): String =
+    failEarlySucceededIndexesInJavaCol[T](xs, _ eq value, maxSucceed)
+
+  def failEarlySucceededIndexesNotRefEqual[T <: AnyRef](xs: java.util.Collection[T], value: T, maxSucceed: Int): String =
+    failEarlySucceededIndexesInJavaCol[T](xs, _ ne value, maxSucceed)
 
   def failEarlySucceededIndexesContainKey[K, V](xs: GenTraversable[GenMap[K, V]], right: K, maxSucceed: Int): String =
     failEarlySucceededIndexes[GenMap[K, V]](xs, _.exists(_._1 == right), maxSucceed)
