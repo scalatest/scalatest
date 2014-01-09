@@ -5819,6 +5819,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   def atLeast[E, C[_]](num: Int, xs: C[E])(implicit collecting: Collecting[E, C[E]]): ResultOfCollectedAny[E] =
     new ResultOfCollectedAny(AtLeastCollected(num), collecting.genTraversableFrom(xs), xs)
 
+  def atLeast[K, V, JMAP[k, v] <: java.util.Map[k, v]](num: Int, xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
+    new ResultOfCollectedAny(AtLeastCollected(num), collecting.genTraversableFrom(xs), xs)
+
   /**
    * This method enables the following syntax:
    *

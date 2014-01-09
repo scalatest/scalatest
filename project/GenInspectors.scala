@@ -33,9 +33,10 @@ object GenInspectors {
         "in \" + decorateToStringValue(" + xsName + ")"
   }
 
-  class ErrorDetailTemplate(index: String, fileName: String, lineNumber: String, messageTemplate: Template) extends Template {
+  class ErrorDetailTemplate(indexOrKey: String, fileName: String, lineNumber: String, messageTemplate: Template) extends Template {
+    val at: String = "index"
     override def toString =
-      "at index " + index + ", " + messageTemplate + " (" + fileName + ":\" + " + lineNumber + " + \")"
+      "at " + at + " " + indexOrKey + ", " + messageTemplate + " (" + fileName + ":\" + " + lineNumber + " + \")"
   }
 
   // Templates
@@ -47,7 +48,7 @@ object GenInspectors {
         indexes.mkString(", ")
   }
 
-  class ForAllErrMsgTemplate(headerFailedPrefix: String, detail: ErrorDetailTemplate) extends ErrorMessageTemplate {
+  class ForAllErrMsgTemplate(headerFailedPrefix: String, detail: Template) extends ErrorMessageTemplate {
     val header = headerFailedPrefix + " failed, because: \\n\" + " + "\n"
     override val children = List(detail)
   }

@@ -325,6 +325,20 @@ class ContainedValueMessageTemplate(left: Any, right: Any, autoQuoteString: Bool
   val message = " contained value "
 }
 
+class UnquotedString(s: String) {
+  override def toString = s
+  override def equals(other: Any): Boolean =
+    other match {
+      case that: UnquotedString => s == that.toString
+      case _ => false
+    }
+  override def hashCode: Int = s.hashCode
+}
+
+object UnquotedString {
+  def apply(s: String) = new UnquotedString(s)
+}
+
 object Generator {
   
   import java.io.{File, FileWriter, BufferedWriter}
