@@ -540,6 +540,8 @@ object GenInspectorsShorthands {
       case "indexElementEqual[(Int, Int)]" => _ == right
       case "indexElementNotEqual[Int, Int]" => _ != right
       case "indexElementEqual[Int, Int]" => _ == right
+      case "indexElementNotEqual" => _ != right
+      case "indexElementEqual" => _ == right
       case "indexElementLessThanEqual" => _ <= right
       case "indexElementLessThan" => _ < right
       case "indexElementMoreThanEqual" => _ >= right
@@ -730,6 +732,18 @@ object GenInspectorsShorthands {
       ("'map should not contain value' failed", " should not contain value (\"two\")", "NotContainValue[String, String]", errorFunPrefix + "ContainValue[String, String]", "\"two\"", "two",  (colType: String, errorFun: String, errorValue: String) => new ContainedValueMessageTemplate(leftTemplateFun(colType, errorFun, errorValue), "two", autoQuoteString))
     )
 
+  def stdStringTypes(leftTemplateFun: (String, String) => Template, right: Char, errorFunPrefix: String, autoQuoteString: Boolean, useMessageFormat: Boolean) = {
+    val quote = if (useMessageFormat) "''" else "'"
+    List(
+      ("'should equal' failed", " should equal ('" + right + "')", "Equal", errorFunPrefix + "NotEqual", "'" + right + "'", (errorFun: String, errorValue: String) => new DidNotEqualMessageTemplate(leftTemplateFun(errorFun, errorValue), UnquotedString(quote + right + quote), autoQuoteString)),
+      ("'should not equal' failed", " should not equal '" + right + "'", "NotEqual", errorFunPrefix + "Equal", "'" + right + "'", (errorFun: String, errorValue: String) => new EqualedMessageTemplate(leftTemplateFun(errorFun, errorValue), UnquotedString(quote + right + quote), autoQuoteString)),
+      ("'should be' failed", " should be ('" + right + "')", "Equal", errorFunPrefix + "NotEqual", "'" + right + "'", (errorFun: String, errorValue: String) => new WasNotEqualToMessageTemplate(leftTemplateFun(errorFun, errorValue), UnquotedString(quote + right + quote), autoQuoteString)),
+      ("'should not be' failed", " should not be '" + right + "'", "NotEqual", errorFunPrefix + "Equal", "'" + right + "'", (errorFun: String, errorValue: String) => new WasEqualToMessageTemplate(leftTemplateFun(errorFun, errorValue), UnquotedString(quote + right + quote), autoQuoteString)),
+      ("'should be ===' failed", " should be === '" + right + "'", "Equal", errorFunPrefix + "NotEqual", "'" + right + "'", (errorFun: String, errorValue: String) => new WasNotEqualToMessageTemplate(leftTemplateFun(errorFun, errorValue), UnquotedString(quote + right + quote), autoQuoteString)),
+      ("'should not be ===' failed", " should not be === ('" + right + "')", "NotEqual", errorFunPrefix + "Equal", "'" + right + "'", (errorFun: String, errorValue: String) => new WasEqualToMessageTemplate(leftTemplateFun(errorFun, errorValue), UnquotedString(quote + right + quote), autoQuoteString))
+    )
+  }
+
   def stdNumberMapTypes(leftTemplateFun: (String, String) => Template, right: Tuple2[_, _], errorFunPrefix: String, autoQuoteString: Boolean = true) =
     List(
       ("'should equal' failed", " should equal (" + right + ")", "Equal[(Int, Int)]", errorFunPrefix + "NotEqual[(Int, Int)]", "" + right, (errorFun: String, errorValue: String) => new DidNotEqualMessageTemplate(leftTemplateFun(errorFun, errorValue), right, autoQuoteString)),
@@ -902,6 +916,10 @@ object GenInspectorsShorthands {
 
     val traversableCheckTypes = stdTraversableCheckTypes(trvStringDynaFirst, trvStringDynaFirstSize, 0, 1, "hi", "getFirst")
 
+    val stringCol = ("\"123\"", "xs")
+
+    val stringTypes = stdStringTypes(intDynaFirst, '2', "getFirst", true, false)
+
     val numberMap = genMap(Array("1 -> 1, 2 -> 2, 3 -> 3"))
 
     val numberMapTypes =
@@ -991,6 +1009,12 @@ object GenInspectorsShorthands {
           mapCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
             val colType = "GenMap[String, String]"
             (colText, condition, allColText + assertText, colType, okFun, errorFun, errorValue, messageFun(colType, errorFun, errorValue).toString, xsText, true)
+          }
+        }) ++
+        ({
+          val (colText, xsText) = stringCol
+          stringTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
+            (colText, condition, allColText + assertText, "Char", okFun, errorFun, errorValue, messageFun(errorFun, errorValue).toString, xsText, true)
           }
         }) ++
         (numberMap flatMap { case (colText, xsText) =>
@@ -1122,6 +1146,10 @@ object GenInspectorsShorthands {
     val traversableCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", "\"hello\""), "\"Array(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array(\\\"hello\\\"))\"")
     val traversableCheckTypes = stdTraversableCheckTypes(trvSimpleMessageFun, trvSizeSimpleMessageFun, 0, 1, "hi", "indexElement", true)
 
+    val stringCol = ("\"123\"", "xs")
+
+    val stringTypes = stdStringTypes(simpleMessageFun, '2', "indexElement", true, true)
+
     val numberMap = genMap(Array("1 -> 1, 2 -> 2, 3 -> 3"))
 
     val numberMapTypes =
@@ -1225,6 +1253,14 @@ object GenInspectorsShorthands {
               Map("4" -> "four", "5" -> "five", "6" -> "six"),
               Map("2" -> "two", "6" -> "six", "8" -> "eight")).filter(errorAssertFun).length
             (colText, condition, atLeast2ColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText, true)
+          }
+        }) ++
+        ({
+          val (colText, xsText) = stringCol
+          stringTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
+            val errorAssertFun = getFun(errorFun, 2)
+            val passedCount = 3 - List(1, 2, 3).filter(errorAssertFun).length
+            (colText, condition, atLeast2ColText + assertText, "Char", okFun, errorFun, errorValue, passedCount, messageFun(errorFun, errorValue).toString, xsText, true)
           }
         }) ++
         (numberMap flatMap { case (colText, xsText) =>
@@ -1347,6 +1383,10 @@ object GenInspectorsShorthands {
     val traversableCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", "\"hello\""), "\"Array(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array(\\\"hello\\\"))\"")
     val traversableCheckTypes = stdTraversableCheckTypes(trvSimpleMessageFun, trvSizeSimpleMessageFun, 0, 1, "hi", "indexElement", true)
 
+    val stringCol = ("\"123\"", "xs")
+
+    val stringTypes = stdStringTypes(simpleMessageFun, '2', "indexElement", true, true)
+
     val numberMap = genMap(Array("1 -> 1, 2 -> 2, 3 -> 3"))
 
     val numberMapTypes =
@@ -1442,6 +1482,14 @@ object GenInspectorsShorthands {
             (colText, condition, everyColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText, true)
           }
         }).filter { case (colText, condition, _, _, _, _, _, _, _, _, _) => filterSetLength(colText, condition) } ++
+        ({
+          val (colText, xsText) = stringCol
+          stringTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
+            val errorAssertFun = getFun(errorFun, 2)
+            val passedCount = 3 - List(1, 2, 3).filter(errorAssertFun).length
+            (colText, condition, everyColText + assertText, "Char", okFun, errorFun, errorValue, passedCount, messageFun(errorFun, errorValue).toString, xsText, true)
+          }
+        }) ++
         (numberMap flatMap { case (colText, xsText) =>
           numberMapTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
             val errorAssertFun = getFun(errorFun, 2)
@@ -1571,6 +1619,10 @@ object GenInspectorsShorthands {
     val traversableCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", "\"hello\""), "\"Array(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array(\\\"hello\\\"))\"")
     val traversableCheckTypes = stdTraversableCheckTypes(trvSimpleMessageFun, trvSizeSimpleMessageFun, 0, 1, "hi", "indexElement", true)
 
+    val stringCol = ("\"123\"", "xs")
+
+    val stringTypes = stdStringTypes(simpleMessageFun, '2', "indexElement", true, true)
+
     val numberMap = genMap(Array("1 -> 1, 2 -> 2, 3 -> 3"))
 
     val numberMapTypes =
@@ -1667,6 +1719,14 @@ object GenInspectorsShorthands {
             (colText, condition, exactly3ColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText, true)
           }
         }).filter { case (colText, condition, _, _, _, _, _, _, _, _, _) => filterSetLength(colText, condition) } ++
+        ({
+          val (colText, xsText) = stringCol
+          stringTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
+            val errorAssertFun = getFun(errorFun, 2)
+            val passedCount = 3 - List(1, 2, 3).filter(errorAssertFun).length
+            (colText, condition, exactly3ColText + assertText, "Char", okFun, errorFun, errorValue, passedCount, messageFun(errorFun, errorValue).toString, xsText, true)
+          }
+        }) ++
         (numberMap flatMap { case (colText, xsText) =>
           numberMapTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
             val errorAssertFun = getFun(errorFun, 2)
@@ -1796,6 +1856,10 @@ object GenInspectorsShorthands {
     val traversableCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", "\"hello\""), "\"Array(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array(\\\"hello\\\"))\"")
     val traversableCheckTypes = stdTraversableCheckTypes(trvSimpleMessageFun, trvSizeSimpleMessageFun, 1, 2, "hi", "indexElement", true)
 
+    val stringCol = ("\"123\"", "xs")
+
+    val stringTypes = stdStringTypes(simpleMessageFun, '2', "indexElement", true, true)
+
     val numberMap = genMap(Array("1 -> 1, 2 -> 2, 3 -> 3"))
 
     val numberMapTypes =
@@ -1891,6 +1955,14 @@ object GenInspectorsShorthands {
             (colText, condition, noColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText, true)
           }
         }).filter { case (colText, condition, _, _, _, _, _, _, _, _, _) => filterSetLength(colText, condition) } ++
+        ({
+          val (colText, xsText) = stringCol
+          stringTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
+            val errorAssertFun = getFun(errorFun, 2)
+            val passedCount = 3 - List(1, 2, 3).filter(errorAssertFun).length
+            (colText, condition, noColText + assertText, "Char", okFun, errorFun, errorValue, passedCount, messageFun(errorFun, errorValue).toString, xsText, true)
+          }
+        }) ++
         (numberMap flatMap { case (colText, xsText) =>
           numberMapTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
             val errorAssertFun = getFun(errorFun, 2)
@@ -2021,6 +2093,10 @@ object GenInspectorsShorthands {
     // XXX
     val traversableCheckTypes = stdTraversableCheckTypes(trvSimpleMessageFun, trvSizeSimpleMessageFun, 0, 1, "hi", "indexElement", true)
 
+    val stringCol = ("\"123\"", "xs")
+
+    val stringTypes = stdStringTypes(simpleMessageFun, '2', "indexElement", true, true)
+
     val numberMap = genMap(Array("1 -> 1, 2 -> 2, 3 -> 3"))
 
     val numberMapTypes =
@@ -2117,6 +2193,14 @@ object GenInspectorsShorthands {
             (colText, condition, betweenColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText, true)
           }
         }).filter { case (colText, condition, _, _, _, _, _, _, _, _, _) => filterSetLength(colText, condition) } ++
+        ({
+          val (colText, xsText) = stringCol
+          stringTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
+            val errorAssertFun = getFun(errorFun, 2)
+            val passedCount = 3 - List(1, 2, 3).filter(errorAssertFun).length
+            (colText, condition, betweenColText + assertText, "Char", okFun, errorFun, errorValue, passedCount, messageFun(errorFun, errorValue).toString, xsText, true)
+          }
+        }) ++
         (numberMap flatMap { case (colText, xsText) =>
           numberMapTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
             val errorAssertFun = getFun(errorFun, 2)
@@ -2263,6 +2347,15 @@ object GenInspectorsShorthands {
     val traversableCheckCol = genColCol("String", Array("\"hi\"", "\"boom!\"", "\"hello\"", "\"boom!\", \"hi\""), "\"Array(Array(\\\"hi\\\"), Array(\\\"boom!\\\"), Array(\\\"hello\\\"))\"")
     val traversableCheckTypes = stdTraversableCheckTypes(trvSimpleMessageFun, trvSizeSimpleMessageFun, 1, 2, "hi", "indexElement", true)
 
+    val stringCol = ("\"12345\"", "xs")
+
+    val stringTypes =
+      stdStringTypes(simpleMessageFun, '3', "indexElement", true, true).filter { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
+        condition != "'should equal' failed" &&
+        condition != "'should be' failed" &&
+        condition != "'should be ===' failed"// no way to get this two to fail with atMost(1).
+      }
+
     val numberMap = genMap(Array("1 -> 1, 2 -> 2, 3 -> 3, 4 -> 4, 5 -> 5"))
 
     val numberMapTypes =
@@ -2363,6 +2456,13 @@ object GenInspectorsShorthands {
             (colText, condition, atMostColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText, true)
           }
         }).filter { case (colText, condition, _, _, _, _, _, _, _, _, _) => filterSetLength(colText, condition) } ++
+        ({
+          val (colText, xsText) = stringCol
+          stringTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
+            val passedCount = 2
+            (colText, condition, atMostColText + assertText, "Char", okFun, errorFun, errorValue, passedCount, messageFun(errorFun, errorValue).toString, xsText, true)
+          }
+        }) ++
         (numberMap flatMap { case (colText, xsText) =>
           numberMapTypes map { case (condition, assertText, okFun, errorFun, errorValue, messageFun) =>
             val passedCount = 2
