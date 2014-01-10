@@ -572,6 +572,12 @@ object SharedHelpers extends Assertions {
   def getFirstNotEqual[T](col: GenTraversable[T], right: T): T =
     getFirst[T](col, _ != right)
 
+  def getFirstEqual[K, V](col: java.util.Map[K, V], right: java.util.Map.Entry[K, V]): java.util.Map.Entry[K, V] =
+    getFirstInJavaMap[K, V](col, (e: java.util.Map.Entry[K, V]) => e.getKey == right.getKey && e.getValue == right.getValue)
+
+  def getFirstNotEqual[K, V](col: java.util.Map[K, V], right: java.util.Map.Entry[K, V]): java.util.Map.Entry[K, V] =
+    getFirstInJavaMap[K, V](col, (e: java.util.Map.Entry[K, V]) =>  e.getKey != right.getKey || e.getValue != right.getValue)
+
   def getFirstMoreThanEqual(col: GenTraversable[Int], right: Int): Int =
     getFirst[Int](col, _ >= right)
 
@@ -1130,13 +1136,24 @@ object SharedHelpers extends Assertions {
     indexElementForJavaIterator[java.util.Collection[T]](itr.asInstanceOf[java.util.Iterator[java.util.Collection[T]]], xs.asInstanceOf[java.util.Collection[java.util.Collection[T]]], !_.isEmpty)
 
   private def succeededIndexes[T](xs: GenTraversable[T], filterFun: T => Boolean): String = {
-    val passedList = getIndexes(xs, xs.toList.filter(e => filterFun(e))).toList
-    if (passedList.size > 1)
-      "index " + passedList.dropRight(1).mkString(", ") + " and " + passedList.last
-    else if (passedList.size == 1)
-      "index " + passedList.last.toString
-    else
-      ""
+    xs match {
+      case map: GenMap[_, _] =>
+        val passedList = map.toList.filter(e => filterFun(e)).map(_._1).toList
+        if (passedList.size > 1)
+          "key " + passedList.dropRight(1).mkString(", ") + " and " + passedList.last
+        else if (passedList.size == 1)
+          "key " + passedList.last.toString
+        else
+          ""
+      case _ =>
+        val passedList = getIndexes(xs, xs.toList.filter(e => filterFun(e))).toList
+        if (passedList.size > 1)
+          "index " + passedList.dropRight(1).mkString(", ") + " and " + passedList.last
+        else if (passedList.size == 1)
+          "index " + passedList.last.toString
+        else
+          ""
+    }
   }
 
   private def succeededIndexesInJavaCol[T](xs: java.util.Collection[T], filterFun: T => Boolean): String = {
@@ -1150,15 +1167,36 @@ object SharedHelpers extends Assertions {
       ""
   }
 
-  private def failEarlySucceededIndexes[T](xs: GenTraversable[T], filterFun: T => Boolean, maxSucceed: Int): String = {
-    val itr = xs.toIterator
-    val passedList = getIndexes(xs, xs.toList.filter(e => filterFun(e))).take(maxSucceed).toList
+  private def succeededIndexesInJavaMap[K, V](xs: java.util.Map[K, V], filterFun: java.util.Map.Entry[K, V] => Boolean): String = {
+    import collection.JavaConverters._
+    val passedList = xs.asScala.toList.filter(e => filterFun(org.scalatest.Entry(e._1, e._2))).toList.map(_._1)
     if (passedList.size > 1)
-      "index " + passedList.dropRight(1).mkString(", ") + " and " + passedList.last
+      "key " + passedList.dropRight(1).mkString(", ") + " and " + passedList.last
     else if (passedList.size == 1)
-      "index " + passedList.last.toString
+      "key " + passedList.last.toString
     else
       ""
+  }
+
+  private def failEarlySucceededIndexes[T](xs: GenTraversable[T], filterFun: T => Boolean, maxSucceed: Int): String = {
+    xs match {
+      case map: GenMap[_, _] =>
+        val passedList = map.toList.filter(e => filterFun(e)).take(maxSucceed).toList.map(_._1)
+        if (passedList.size > 1)
+          "key " + passedList.dropRight(1).mkString(", ") + " and " + passedList.last
+        else if (passedList.size == 1)
+          "key " + passedList.last.toString
+        else
+          ""
+      case _ =>
+        val passedList = getIndexes(xs, xs.toList.filter(e => filterFun(e))).take(maxSucceed).toList
+        if (passedList.size > 1)
+          "index " + passedList.dropRight(1).mkString(", ") + " and " + passedList.last
+        else if (passedList.size == 1)
+          "index " + passedList.last.toString
+        else
+          ""
+    }
   }
 
   private def failEarlySucceededIndexesInJavaCol[T](xs: java.util.Collection[T], filterFun: T => Boolean, maxSucceed: Int): String = {
@@ -1168,6 +1206,17 @@ object SharedHelpers extends Assertions {
       "index " + passedList.dropRight(1).mkString(", ") + " and " + passedList.last
     else if (passedList.size == 1)
       "index " + passedList.last.toString
+    else
+      ""
+  }
+
+  private def failEarlySucceededIndexesInJavaMap[K, V](xs: java.util.Map[K, V], filterFun: java.util.Map.Entry[K, V] => Boolean, maxSucceed: Int): String = {
+    import collection.JavaConverters._
+    val passedList = xs.asScala.toList.filter(e => filterFun(org.scalatest.Entry(e._1, e._2))).take(maxSucceed).toList.map(_._1)
+    if (passedList.size > 1)
+      "key " + passedList.dropRight(1).mkString(", ") + " and " + passedList.last
+    else if (passedList.size == 1)
+      "key " + passedList.last.toString
     else
       ""
   }
@@ -1183,6 +1232,12 @@ object SharedHelpers extends Assertions {
 
   def succeededIndexesNotEqual[T](xs: GenTraversable[T], value: T): String =
     succeededIndexes(xs, (e: T) => e != value)
+
+  def succeededIndexesEqual[K, V](xs: java.util.Map[K, V], value: java.util.Map.Entry[K, V]): String =
+    succeededIndexesInJavaMap(xs, (e: java.util.Map.Entry[K, V]) => e.getKey == value.getKey && e.getValue == value.getValue)
+
+  def succeededIndexesNotEqual[K, V](xs: java.util.Map[K, V], value: java.util.Map.Entry[K, V]): String =
+    succeededIndexesInJavaMap(xs, (e: java.util.Map.Entry[K, V]) => e.getKey != value.getKey || e.getValue != value.getValue)
 
   def succeededIndexesLessThanEqual(xs: GenTraversable[Int], value: Int): String =
     succeededIndexes(xs, (e: Int) => e <= value)
@@ -1471,6 +1526,12 @@ object SharedHelpers extends Assertions {
 
   def failEarlySucceededIndexesNotEqual[T](xs: java.util.Collection[T], value: T, maxSucceed: Int): String =
     failEarlySucceededIndexesInJavaCol(xs, (e: T) => e != value, maxSucceed)
+
+  def failEarlySucceededIndexesEqual[K, V](xs: java.util.Map[K, V], value: java.util.Map.Entry[K, V], maxSucceed: Int): String =
+    failEarlySucceededIndexesInJavaMap(xs, (e: java.util.Map.Entry[K, V]) => e.getKey == value.getKey && e.getValue == value.getValue, maxSucceed)
+
+  def failEarlySucceededIndexesNotEqual[K, V](xs: java.util.Map[K, V], value: java.util.Map.Entry[K, V], maxSucceed: Int): String =
+    failEarlySucceededIndexesInJavaMap(xs, (e: java.util.Map.Entry[K, V]) => e.getKey != value.getKey || e.getValue != value.getValue, maxSucceed)
 
   def failEarlySucceededIndexesLessThanEqual(xs: java.util.Collection[Int], value: Int, maxSucceed: Int): String =
     failEarlySucceededIndexesInJavaCol(xs, (e: Int) => e <= value, maxSucceed)

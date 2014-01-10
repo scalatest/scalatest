@@ -5833,6 +5833,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   def every[E, C[_]](xs: C[E])(implicit collecting: Collecting[E, C[E]]): ResultOfCollectedAny[E] =
     new ResultOfCollectedAny(EveryCollected, collecting.genTraversableFrom(xs), xs)
 
+  def every[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
+    new ResultOfCollectedAny(EveryCollected, collecting.genTraversableFrom(xs), xs)
+
   /**
    * This method enables the following syntax:
    *
@@ -5842,6 +5845,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * </pre>
    */
   def exactly[E, C[_]](num: Int, xs: C[E])(implicit collecting: Collecting[E, C[E]]): ResultOfCollectedAny[E] =
+    new ResultOfCollectedAny(ExactlyCollected(num), collecting.genTraversableFrom(xs), xs)
+
+  def exactly[K, V, JMAP[k, v] <: java.util.Map[k, v]](num: Int, xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
     new ResultOfCollectedAny(ExactlyCollected(num), collecting.genTraversableFrom(xs), xs)
 
   /**
@@ -5855,6 +5861,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   def no[E, C[_]](xs: C[E])(implicit collecting: Collecting[E, C[E]]): ResultOfCollectedAny[E] =
     new ResultOfCollectedAny(NoCollected, collecting.genTraversableFrom(xs), xs)
 
+  def no[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
+    new ResultOfCollectedAny(NoCollected, collecting.genTraversableFrom(xs), xs)
+
   /**
    * This method enables the following syntax:
    *
@@ -5866,6 +5875,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   def between[E, C[_]](from: Int, upTo:Int, xs: C[E])(implicit collecting: Collecting[E, C[E]]): ResultOfCollectedAny[E] =
     new ResultOfCollectedAny(BetweenCollected(from, upTo), collecting.genTraversableFrom(xs), xs)
 
+  def between[K, V, JMAP[k, v] <: java.util.Map[k, v]](from: Int, upTo:Int, xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
+    new ResultOfCollectedAny(BetweenCollected(from, upTo), collecting.genTraversableFrom(xs), xs)
+
   /**
    * This method enables the following syntax:
    *
@@ -5875,6 +5887,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * </pre>
    */
   def atMost[E, C[_]](num: Int, xs: C[E])(implicit collecting: Collecting[E, C[E]]): ResultOfCollectedAny[E] =
+    new ResultOfCollectedAny(AtMostCollected(num), collecting.genTraversableFrom(xs), xs)
+
+  def atMost[K, V, JMAP[k, v] <: java.util.Map[k, v]](num: Int, xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
     new ResultOfCollectedAny(AtMostCollected(num), collecting.genTraversableFrom(xs), xs)
 
   /**

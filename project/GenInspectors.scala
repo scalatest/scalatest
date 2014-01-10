@@ -87,10 +87,10 @@ object GenInspectors {
     override val children = details
   }
 
-  class ForNoErrMsgTemplate(headerFailedPrefix: String, index: String) extends Template {
+  class ForNoErrMsgTemplate(headerFailedPrefix: String, indexOrKey: String, useIndex: Boolean) extends Template {
     val xsName: String = "xs"
     override def toString =
-      headerFailedPrefix + " failed, because 1 element satisfied the assertion block at index " + index + " in \" + decorateToStringValue(" + xsName + ")"
+      headerFailedPrefix + " failed, because 1 element satisfied the assertion block at " + (if (useIndex) "index" else "key") + " " + indexOrKey + " in \" + decorateToStringValue(" + xsName + ")"
   }
 
   class ForBetweenLessErrMsgTemplate(headerFailedPrefix: String, elementText: String, okFun: String, errorFun: String, errorValue: String, colType: String, details: List[Template]) extends ErrorMessageTemplate {
@@ -171,7 +171,7 @@ object GenInspectors {
         }
 
       case "forNo" =>
-        new ForNoErrMsgTemplate("forNo", "0") {
+        new ForNoErrMsgTemplate("forNo", "0", true) {
           override val xsName: String = "xs(" + index + ")"
         }
 
@@ -214,7 +214,7 @@ object GenInspectors {
       case "forAtLeast" => new ForAtLeastErrMsgTemplate("forAtLeast(3)", "no element", innerDetails.toList)
       case "forAtMost" => new ForAtMostErrMsgTemplate("forAtMost(1)", 1, "2 elements", "NotEqualBoolean", "EqualBoolean", "false", "List[Int]")
       case "forExactly" => new ForExactlyErrMsgTemplate("forExactly(1)", "no element", "NotEqualBoolean", "EqualBoolean", "false", "List[Int]", innerDetails.toList)
-      case "forNo" => new ForNoErrMsgTemplate("forNo", "0")
+      case "forNo" => new ForNoErrMsgTemplate("forNo", "0", true)
       case "forBetween" => new ForBetweenLessErrMsgTemplate("forBetween(2, 4)", "no element", "NotEqualBoolean", "EqualBoolean", "false", "List[Int]", innerDetails.toList)
       case "forEvery" => new ForEveryErrMsgTemplate("forEvery", innerDetails.toList)
     }
