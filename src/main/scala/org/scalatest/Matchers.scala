@@ -4514,7 +4514,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * @author Bill Venners
    * @author Chee Seng
    */
-  sealed class ResultOfBeWordForCollectedAny[T](collected: Collected, xs: scala.collection.GenTraversable[T], shouldBeTrue: Boolean) {
+  sealed class ResultOfBeWordForCollectedAny[T](collected: Collected, xs: scala.collection.GenTraversable[T], original: Any, shouldBeTrue: Boolean) {
 
     // TODO: Missing should(AMatcher) and should(AnMatcher)
 
@@ -4527,7 +4527,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def theSameInstanceAs(right: AnyRef)(implicit toAnyRef: T <:< AnyRef) {
-      doCollected(collected, xs, xs, "theSameInstanceAs", 1) { e =>
+      doCollected(collected, xs, original, "theSameInstanceAs", 1) { e =>
         if ((toAnyRef(e) eq right) != shouldBeTrue)
           throw newTestFailedException(
             FailureMessages(
@@ -4550,7 +4550,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def a(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef) {
-      doCollected(collected, xs, xs, "a", 1) { e =>
+      doCollected(collected, xs, original, "a", 1) { e =>
         val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), symbol, true, true)
         if (matcherResult.matches != shouldBeTrue) {
           throw newTestFailedException(
@@ -4571,7 +4571,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def an(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef) {
-      doCollected(collected, xs, xs, "an", 1) { e =>
+      doCollected(collected, xs, original, "an", 1) { e =>
         val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), symbol, true, false)
         if (matcherResult.matches != shouldBeTrue) {
           throw newTestFailedException(
@@ -4593,7 +4593,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def a[U <: T](bePropertyMatcher: BePropertyMatcher[U])(implicit ev: T <:< AnyRef) { // TODO: Try supporting 2.10 AnyVals
-      doCollected(collected, xs, xs, "a", 1) { e =>
+      doCollected(collected, xs, original, "a", 1) { e =>
         val result = bePropertyMatcher(e.asInstanceOf[U])
         if (result.matches != shouldBeTrue) {
           throw newTestFailedException(
@@ -4618,7 +4618,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def an[U <: T](beTrueMatcher: BePropertyMatcher[U])(implicit ev: T <:< AnyRef) { // TODO: Try supporting 2.10 AnyVals
-      doCollected(collected, xs, xs, "an", 1) { e =>
+      doCollected(collected, xs, original, "an", 1) { e =>
         val beTrueMatchResult = beTrueMatcher(e.asInstanceOf[U])
         if (beTrueMatchResult.matches != shouldBeTrue) {
           throw newTestFailedException(
@@ -4670,8 +4670,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfBeWordForCollectedArray[T](collected: Collected, xs: scala.collection.GenTraversable[Array[T]], shouldBeTrue: Boolean) 
-    extends ResultOfBeWordForCollectedAny(collected, xs, shouldBeTrue) {
+  final class ResultOfBeWordForCollectedArray[T](collected: Collected, xs: scala.collection.GenTraversable[Array[T]], original: Any, shouldBeTrue: Boolean)
+    extends ResultOfBeWordForCollectedAny(collected, xs, original, shouldBeTrue) {
   
     /**
      * This method enables the following syntax:
@@ -4913,7 +4913,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def should(beWord: BeWord) = new ResultOfBeWordForCollectedAny[T](collected, xs, true)
+    def should(beWord: BeWord) = new ResultOfBeWordForCollectedAny[T](collected, xs, original, true)
 
     /**
      * This method enables syntax such as the following:
@@ -4937,7 +4937,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(haveWord: HaveWord): ResultOfHaveWordForCollectedExtent[T] =
-      new ResultOfHaveWordForCollectedExtent(collected, xs, true)
+      new ResultOfHaveWordForCollectedExtent(collected, xs, original, true)
 
     /**
      * This method enables syntax such as the following:
@@ -5315,7 +5315,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldNot(beWord: BeWord): ResultOfBeWordForCollectedAny[T] =
-      new ResultOfBeWordForCollectedAny[T](collected, xs, false)
+      new ResultOfBeWordForCollectedAny[T](collected, xs, original, false)
 
    /**
      * This method enables syntax such as the following:
@@ -5407,7 +5407,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(startWithWord: StartWithWord)(implicit ev: T <:< String): ResultOfStartWithWordForCollectedString = 
-      new ResultOfStartWithWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], true)
+      new ResultOfStartWithWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], original, true)
     
     /**
      * This method enables syntax such as the following:
@@ -5418,7 +5418,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(endWithWord: EndWithWord)(implicit ev: T <:< String): ResultOfEndWithWordForCollectedString = 
-      new ResultOfEndWithWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], true)
+      new ResultOfEndWithWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], original, true)
     
     /**
      * This method enables syntax such as the following:
@@ -5429,7 +5429,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(includeWord: IncludeWord)(implicit ev: T <:< String): ResultOfIncludeWordForCollectedString = 
-      new ResultOfIncludeWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], true)
+      new ResultOfIncludeWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], original, true)
     
     /**
      * This method enables syntax such as the following:
@@ -5440,7 +5440,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(fullyMatchWord: FullyMatchWord)(implicit ev: T <:< String): ResultOfFullyMatchWordForCollectedString = 
-      new ResultOfFullyMatchWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], true)
+      new ResultOfFullyMatchWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], original, true)
 
     /**
      * This method enables syntax such as the following:
@@ -5451,7 +5451,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldNot(fullyMatchWord: FullyMatchWord)(implicit ev: T <:< String): ResultOfFullyMatchWordForCollectedString = 
-      new ResultOfFullyMatchWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], false)
+      new ResultOfFullyMatchWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], original, false)
 
     /**
      * This method enables syntax such as the following:
@@ -5462,7 +5462,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldNot(startWithWord: StartWithWord)(implicit ev: T <:< String): ResultOfStartWithWordForCollectedString = 
-      new ResultOfStartWithWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], false)
+      new ResultOfStartWithWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], original, false)
 
     /**
      * This method enables syntax such as the following:
@@ -5473,7 +5473,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldNot(endWithWord: EndWithWord)(implicit ev: T <:< String): ResultOfEndWithWordForCollectedString = 
-      new ResultOfEndWithWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], false)
+      new ResultOfEndWithWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], original, false)
 
     /**
      * This method enables syntax such as the following:
@@ -5484,7 +5484,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldNot(includeWord: IncludeWord)(implicit ev: T <:< String): ResultOfIncludeWordForCollectedString = 
-      new ResultOfIncludeWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], false)
+      new ResultOfIncludeWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], original, false)
 
     /**
      * Overrides to return pretty toString.
@@ -5500,7 +5500,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    *
    * @author Bill Venners
    */
-  final class ResultOfHaveWordForCollectedExtent[A](collected: Collected, xs: scala.collection.GenTraversable[A], shouldBeTrue: Boolean) {
+  final class ResultOfHaveWordForCollectedExtent[A](collected: Collected, xs: scala.collection.GenTraversable[A], original: Any, shouldBeTrue: Boolean) {
 
     /**
      * This method enables the following syntax: 
@@ -5511,7 +5511,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def length(expectedLength: Long)(implicit len: Length[A]) {
-      doCollected(collected, xs, xs, "length", 1) { e =>
+      doCollected(collected, xs, original, "length", 1) { e =>
         val eLength = len.lengthOf(e)
         if ((eLength == expectedLength) != shouldBeTrue)
           throw newTestFailedException(
@@ -5534,7 +5534,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def size(expectedSize: Long)(implicit sz: Size[A]) {
-      doCollected(collected, xs, xs, "size", 1) { e =>
+      doCollected(collected, xs, original, "size", 1) { e =>
         val eSize = sz.sizeOf(e)
         if ((eSize == expectedSize) != shouldBeTrue)
           throw newTestFailedException(
@@ -5562,7 +5562,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfStartWithWordForCollectedString(collected: Collected, xs: scala.collection.GenTraversable[String], shouldBeTrue: Boolean) {
+  final class ResultOfStartWithWordForCollectedString(collected: Collected, xs: scala.collection.GenTraversable[String], original: Any, shouldBeTrue: Boolean) {
 
     /**
      * This method enables the following syntax: 
@@ -5595,7 +5595,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def regex(rightRegex: Regex) { checkRegex(rightRegex) }
     
     private def checkRegex(rightRegex: Regex, groups: IndexedSeq[String] = IndexedSeq.empty) {
-      doCollected(collected, xs, xs, "regex", 2) { e =>
+      doCollected(collected, xs, original, "regex", 2) { e =>
         val result = startWithRegexWithGroups(e, rightRegex, groups)
         if (result.matches != shouldBeTrue)
           throw newTestFailedException(
@@ -5621,7 +5621,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfIncludeWordForCollectedString(collected: Collected, xs: scala.collection.GenTraversable[String], shouldBeTrue: Boolean) {
+  final class ResultOfIncludeWordForCollectedString(collected: Collected, xs: scala.collection.GenTraversable[String], original: Any, shouldBeTrue: Boolean) {
 
     /**
      * This method enables the following syntax: 
@@ -5654,7 +5654,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def regex(rightRegex: Regex) { checkRegex(rightRegex) }
     
     private def checkRegex(rightRegex: Regex, groups: IndexedSeq[String] = IndexedSeq.empty) {
-      doCollected(collected, xs, xs, "regex", 2) { e =>
+      doCollected(collected, xs, original, "regex", 2) { e =>
         val result = includeRegexWithGroups(e, rightRegex, groups)
         if (result.matches != shouldBeTrue)
           throw newTestFailedException(
@@ -5680,7 +5680,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfEndWithWordForCollectedString(collected: Collected, xs: scala.collection.GenTraversable[String], shouldBeTrue: Boolean) {
+  final class ResultOfEndWithWordForCollectedString(collected: Collected, xs: scala.collection.GenTraversable[String], original: Any, shouldBeTrue: Boolean) {
 
     /**
      * This method enables the following syntax: 
@@ -5713,7 +5713,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def regex(rightRegex: Regex) { checkRegex(rightRegex) }
     
     private def checkRegex(rightRegex: Regex, groups: IndexedSeq[String] = IndexedSeq.empty) {
-      doCollected(collected, xs, xs, "regex", 2) { e =>
+      doCollected(collected, xs, original, "regex", 2) { e =>
         val result = endWithRegexWithGroups(e, rightRegex, groups)
         if (result.matches != shouldBeTrue)
           throw newTestFailedException(
@@ -5739,7 +5739,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfFullyMatchWordForCollectedString(collected: Collected, xs: scala.collection.GenTraversable[String], shouldBeTrue: Boolean) {
+  final class ResultOfFullyMatchWordForCollectedString(collected: Collected, xs: scala.collection.GenTraversable[String], original: Any, shouldBeTrue: Boolean) {
 
     /**
      * This method enables the following syntax: 
@@ -5772,7 +5772,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def regex(rightRegex: Regex) { checkRegex(rightRegex) }
     
     private def checkRegex(rightRegex: Regex, groups: IndexedSeq[String] = IndexedSeq.empty) {
-      doCollected(collected, xs, xs, "regex", 2) { e =>
+      doCollected(collected, xs, original, "regex", 2) { e =>
         val result = fullyMatchRegexWithGroups(e, rightRegex, groups)
         if (result.matches != shouldBeTrue)
           throw newTestFailedException(
@@ -5816,8 +5816,14 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def atLeast[T](num: Int, xs: scala.collection.GenTraversable[T]): ResultOfCollectedAny[T] = 
-    new ResultOfCollectedAny(AtLeastCollected(num), xs, xs)
+  def atLeast[E, C[_]](num: Int, xs: C[E])(implicit collecting: Collecting[E, C[E]]): ResultOfCollectedAny[E] =
+    new ResultOfCollectedAny(AtLeastCollected(num), collecting.genTraversableFrom(xs), xs)
+
+  def atLeast[K, V, JMAP[k, v] <: java.util.Map[k, v]](num: Int, xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
+    new ResultOfCollectedAny(AtLeastCollected(num), collecting.genTraversableFrom(xs), xs)
+
+  def atLeast(num: Int, xs: String)(implicit collecting: Collecting[Char, String]): ResultOfCollectedAny[Char] =
+    new ResultOfCollectedAny(AtLeastCollected(num), collecting.genTraversableFrom(xs), xs)
 
   /**
    * This method enables the following syntax:
@@ -5827,8 +5833,14 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def every[T](xs: scala.collection.GenTraversable[T]): ResultOfCollectedAny[T] = 
-    new ResultOfCollectedAny(EveryCollected, xs, xs)
+  def every[E, C[_]](xs: C[E])(implicit collecting: Collecting[E, C[E]]): ResultOfCollectedAny[E] =
+    new ResultOfCollectedAny(EveryCollected, collecting.genTraversableFrom(xs), xs)
+
+  def every[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
+    new ResultOfCollectedAny(EveryCollected, collecting.genTraversableFrom(xs), xs)
+
+  def every(xs: String)(implicit collecting: Collecting[Char, String]): ResultOfCollectedAny[Char] =
+    new ResultOfCollectedAny(EveryCollected, collecting.genTraversableFrom(xs), xs)
 
   /**
    * This method enables the following syntax:
@@ -5838,8 +5850,14 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def exactly[T](num: Int, xs: scala.collection.GenTraversable[T]): ResultOfCollectedAny[T] = 
-    new ResultOfCollectedAny(ExactlyCollected(num), xs, xs)
+  def exactly[E, C[_]](num: Int, xs: C[E])(implicit collecting: Collecting[E, C[E]]): ResultOfCollectedAny[E] =
+    new ResultOfCollectedAny(ExactlyCollected(num), collecting.genTraversableFrom(xs), xs)
+
+  def exactly[K, V, JMAP[k, v] <: java.util.Map[k, v]](num: Int, xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
+    new ResultOfCollectedAny(ExactlyCollected(num), collecting.genTraversableFrom(xs), xs)
+
+  def exactly(num: Int, xs: String)(implicit collecting: Collecting[Char, String]): ResultOfCollectedAny[Char] =
+    new ResultOfCollectedAny(ExactlyCollected(num), collecting.genTraversableFrom(xs), xs)
 
   /**
    * This method enables the following syntax:
@@ -5849,8 +5867,14 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def no[T](xs: scala.collection.GenTraversable[T]): ResultOfCollectedAny[T] =
-    new ResultOfCollectedAny(NoCollected, xs, xs)
+  def no[E, C[_]](xs: C[E])(implicit collecting: Collecting[E, C[E]]): ResultOfCollectedAny[E] =
+    new ResultOfCollectedAny(NoCollected, collecting.genTraversableFrom(xs), xs)
+
+  def no[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
+    new ResultOfCollectedAny(NoCollected, collecting.genTraversableFrom(xs), xs)
+
+  def no(xs: String)(implicit collecting: Collecting[Char, String]): ResultOfCollectedAny[Char] =
+    new ResultOfCollectedAny(NoCollected, collecting.genTraversableFrom(xs), xs)
 
   /**
    * This method enables the following syntax:
@@ -5860,8 +5884,14 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def between[T](from: Int, upTo:Int, xs: scala.collection.GenTraversable[T]): ResultOfCollectedAny[T] =
-    new ResultOfCollectedAny(BetweenCollected(from, upTo), xs, xs)
+  def between[E, C[_]](from: Int, upTo:Int, xs: C[E])(implicit collecting: Collecting[E, C[E]]): ResultOfCollectedAny[E] =
+    new ResultOfCollectedAny(BetweenCollected(from, upTo), collecting.genTraversableFrom(xs), xs)
+
+  def between[K, V, JMAP[k, v] <: java.util.Map[k, v]](from: Int, upTo:Int, xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
+    new ResultOfCollectedAny(BetweenCollected(from, upTo), collecting.genTraversableFrom(xs), xs)
+
+  def between(from: Int, upTo:Int, xs: String)(implicit collecting: Collecting[Char, String]): ResultOfCollectedAny[Char] =
+    new ResultOfCollectedAny(BetweenCollected(from, upTo), collecting.genTraversableFrom(xs), xs)
 
   /**
    * This method enables the following syntax:
@@ -5871,8 +5901,14 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def atMost[T](num: Int, xs: scala.collection.GenTraversable[T]): ResultOfCollectedAny[T] =
-    new ResultOfCollectedAny(AtMostCollected(num), xs, xs)
+  def atMost[E, C[_]](num: Int, xs: C[E])(implicit collecting: Collecting[E, C[E]]): ResultOfCollectedAny[E] =
+    new ResultOfCollectedAny(AtMostCollected(num), collecting.genTraversableFrom(xs), xs)
+
+  def atMost[K, V, JMAP[k, v] <: java.util.Map[k, v]](num: Int, xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
+    new ResultOfCollectedAny(AtMostCollected(num), collecting.genTraversableFrom(xs), xs)
+
+  def atMost(num: Int, xs: String)(implicit collecting: Collecting[Char, String]): ResultOfCollectedAny[Char] =
+    new ResultOfCollectedAny(AtMostCollected(num), collecting.genTraversableFrom(xs), xs)
 
   /**
    * This method enables the following syntax: 
