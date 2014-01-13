@@ -5802,9 +5802,25 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   def all[E, C[_]](xs: C[E])(implicit collecting: Collecting[E, C[E]]): ResultOfCollectedAny[E] =
     new ResultOfCollectedAny(AllCollected, collecting.genTraversableFrom(xs), xs)
 
+  /**
+   * This method enables the following syntax for <code>java.util.Map</code>:
+   *
+   * <pre class="stHighlight">
+   * all(jmap) should fullymatch regex ("Hel*o world".r)
+   * ^
+   * </pre>
+   */
   def all[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
     new ResultOfCollectedAny(AllCollected, collecting.genTraversableFrom(xs), xs)
 
+  /**
+   * This method enables the following syntax for <code>String</code>:
+   *
+   * <pre class="stHighlight">
+   * all(str) should fullymatch regex ("Hel*o world".r)
+   * ^
+   * </pre>
+   */
   def all(xs: String)(implicit collecting: Collecting[Char, String]): ResultOfCollectedAny[Char] =
     new ResultOfCollectedAny(AllCollected, collecting.genTraversableFrom(xs), xs)
 
@@ -5819,9 +5835,25 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   def atLeast[E, C[_]](num: Int, xs: C[E])(implicit collecting: Collecting[E, C[E]]): ResultOfCollectedAny[E] =
     new ResultOfCollectedAny(AtLeastCollected(num), collecting.genTraversableFrom(xs), xs)
 
+  /**
+   * This method enables the following syntax for <code>java.util.Map</code>:
+   *
+   * <pre class="stHighlight">
+   * atLeast(1, jmap) should fullymatch regex ("Hel*o world".r)
+   * ^
+   * </pre>
+   */
   def atLeast[K, V, JMAP[k, v] <: java.util.Map[k, v]](num: Int, xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
     new ResultOfCollectedAny(AtLeastCollected(num), collecting.genTraversableFrom(xs), xs)
 
+  /**
+   * This method enables the following syntax for <code>String</code>:
+   *
+   * <pre class="stHighlight">
+   * atLeast(1, str) should fullymatch regex ("Hel*o world".r)
+   * ^
+   * </pre>
+   */
   def atLeast(num: Int, xs: String)(implicit collecting: Collecting[Char, String]): ResultOfCollectedAny[Char] =
     new ResultOfCollectedAny(AtLeastCollected(num), collecting.genTraversableFrom(xs), xs)
 
@@ -5836,9 +5868,25 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   def every[E, C[_]](xs: C[E])(implicit collecting: Collecting[E, C[E]]): ResultOfCollectedAny[E] =
     new ResultOfCollectedAny(EveryCollected, collecting.genTraversableFrom(xs), xs)
 
+  /**
+   * This method enables the following syntax for <code>java.util.Map</code>:
+   *
+   * <pre class="stHighlight">
+   * every(jmap) should fullymatch regex ("Hel*o world".r)
+   * ^
+   * </pre>
+   */
   def every[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
     new ResultOfCollectedAny(EveryCollected, collecting.genTraversableFrom(xs), xs)
 
+  /**
+   * This method enables the following syntax for <code>String</code>:
+   *
+   * <pre class="stHighlight">
+   * every(str) should fullymatch regex ("Hel*o world".r)
+   * ^
+   * </pre>
+   */
   def every(xs: String)(implicit collecting: Collecting[Char, String]): ResultOfCollectedAny[Char] =
     new ResultOfCollectedAny(EveryCollected, collecting.genTraversableFrom(xs), xs)
 
@@ -5853,9 +5901,25 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   def exactly[E, C[_]](num: Int, xs: C[E])(implicit collecting: Collecting[E, C[E]]): ResultOfCollectedAny[E] =
     new ResultOfCollectedAny(ExactlyCollected(num), collecting.genTraversableFrom(xs), xs)
 
+  /**
+   * This method enables the following syntax for <code>java.util.Map</code>:
+   *
+   * <pre class="stHighlight">
+   * exactly(jmap) should fullymatch regex ("Hel*o world".r)
+   * ^
+   * </pre>
+   */
   def exactly[K, V, JMAP[k, v] <: java.util.Map[k, v]](num: Int, xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
     new ResultOfCollectedAny(ExactlyCollected(num), collecting.genTraversableFrom(xs), xs)
 
+  /**
+   * This method enables the following syntax for <code>String</code>:
+   *
+   * <pre class="stHighlight">
+   * exactly(str) should fullymatch regex ("Hel*o world".r)
+   * ^
+   * </pre>
+   */
   def exactly(num: Int, xs: String)(implicit collecting: Collecting[Char, String]): ResultOfCollectedAny[Char] =
     new ResultOfCollectedAny(ExactlyCollected(num), collecting.genTraversableFrom(xs), xs)
 
@@ -5870,9 +5934,25 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   def no[E, C[_]](xs: C[E])(implicit collecting: Collecting[E, C[E]]): ResultOfCollectedAny[E] =
     new ResultOfCollectedAny(NoCollected, collecting.genTraversableFrom(xs), xs)
 
+  /**
+   * This method enables the following syntax for <code>java.util.Map</code>:
+   *
+   * <pre class="stHighlight">
+   * no(jmap) should fullymatch regex ("Hel*o world".r)
+   * ^
+   * </pre>
+   */
   def no[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
     new ResultOfCollectedAny(NoCollected, collecting.genTraversableFrom(xs), xs)
 
+  /**
+   * This method enables the following syntax for <code>String</code>:
+   *
+   * <pre class="stHighlight">
+   * no(str) should fullymatch regex ("Hel*o world".r)
+   * ^
+   * </pre>
+   */
   def no(xs: String)(implicit collecting: Collecting[Char, String]): ResultOfCollectedAny[Char] =
     new ResultOfCollectedAny(NoCollected, collecting.genTraversableFrom(xs), xs)
 
@@ -5887,9 +5967,25 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   def between[E, C[_]](from: Int, upTo:Int, xs: C[E])(implicit collecting: Collecting[E, C[E]]): ResultOfCollectedAny[E] =
     new ResultOfCollectedAny(BetweenCollected(from, upTo), collecting.genTraversableFrom(xs), xs)
 
+  /**
+   * This method enables the following syntax for <code>java.util.Map</code>:
+   *
+   * <pre class="stHighlight">
+   * between(1, 3, jmap) should fullymatch regex ("Hel*o world".r)
+   * ^
+   * </pre>
+   */
   def between[K, V, JMAP[k, v] <: java.util.Map[k, v]](from: Int, upTo:Int, xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
     new ResultOfCollectedAny(BetweenCollected(from, upTo), collecting.genTraversableFrom(xs), xs)
 
+  /**
+   * This method enables the following syntax for <code>String</code>:
+   *
+   * <pre class="stHighlight">
+   * between(1, 3, str) should fullymatch regex ("Hel*o world".r)
+   * ^
+   * </pre>
+   */
   def between(from: Int, upTo:Int, xs: String)(implicit collecting: Collecting[Char, String]): ResultOfCollectedAny[Char] =
     new ResultOfCollectedAny(BetweenCollected(from, upTo), collecting.genTraversableFrom(xs), xs)
 
@@ -5904,9 +6000,25 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   def atMost[E, C[_]](num: Int, xs: C[E])(implicit collecting: Collecting[E, C[E]]): ResultOfCollectedAny[E] =
     new ResultOfCollectedAny(AtMostCollected(num), collecting.genTraversableFrom(xs), xs)
 
+  /**
+   * This method enables the following syntax for <code>java.util.Map</code>:
+   *
+   * <pre class="stHighlight">
+   * atMost(3, jmap) should fullymatch regex ("Hel*o world".r)
+   * ^
+   * </pre>
+   */
   def atMost[K, V, JMAP[k, v] <: java.util.Map[k, v]](num: Int, xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
     new ResultOfCollectedAny(AtMostCollected(num), collecting.genTraversableFrom(xs), xs)
 
+  /**
+   * This method enables the following syntax for <code>String</code>:
+   *
+   * <pre class="stHighlight">
+   * atMost(3, str) should fullymatch regex ("Hel*o world".r)
+   * ^
+   * </pre>
+   */
   def atMost(num: Int, xs: String)(implicit collecting: Collecting[Char, String]): ResultOfCollectedAny[Char] =
     new ResultOfCollectedAny(AtMostCollected(num), collecting.genTraversableFrom(xs), xs)
 
