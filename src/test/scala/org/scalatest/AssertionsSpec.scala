@@ -191,6 +191,10 @@ class AssertionsSpec extends FunSpec with OptionValues {
 
   def wasLessThanOrEqualTo(left: Any, right: Any): String =
     FailureMessages("wasLessThanOrEqualTo", left, right)
+
+  private def neverRuns1(f: => Unit): Boolean = true
+  private def neverRuns2(f: => Unit)(a: Int): Boolean = true
+  private def neverRuns3[T](f: => Unit)(a: T): Boolean = true
   
   describe("The assert(boolean) method") {
     val a = 3
@@ -523,6 +527,18 @@ class AssertionsSpec extends FunSpec with OptionValues {
       assert(e.message === Some(equaled(3, 3)))
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should preserve side effects when Apply with single argument is passed in") {
+      assert(neverRuns1(sys.error("Sad times 1")))
+    }
+
+    it("should preserve side effects when Apply with 2 argument list is passed in") {
+      assert(neverRuns2(sys.error("Sad times 2"))(0))
+    }
+
+    it("should preserve side effects when typed Apply with 2 argument list is passed in") {
+      assert(neverRuns3(sys.error("Sad times 3"))(0))
     }
   }
 
@@ -858,6 +874,18 @@ class AssertionsSpec extends FunSpec with OptionValues {
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
+
+    it("should preserve side effects when Apply with single argument is passed in") {
+      assert(neverRuns1(sys.error("Sad times 1")), "should not fail!")
+    }
+
+    it("should preserve side effects when Apply with 2 argument list is passed in") {
+      assert(neverRuns2(sys.error("Sad times 2"))(0), "should not fail!")
+    }
+
+    it("should preserve side effects when typed Apply with 2 argument list is passed in") {
+      assert(neverRuns3(sys.error("Sad times 3"))(0), "should not fail!")
+    }
   }
 
   describe("The assume(boolean) method") {
@@ -1192,6 +1220,18 @@ class AssertionsSpec extends FunSpec with OptionValues {
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
+
+    it("should preserve side effects when Apply with single argument is passed in") {
+      assume(neverRuns1(sys.error("Sad times 1")))
+    }
+
+    it("should preserve side effects when Apply with 2 argument list is passed in") {
+      assume(neverRuns2(sys.error("Sad times 2"))(0))
+    }
+
+    it("should preserve side effects when typed Apply with 2 argument list is passed in") {
+      assume(neverRuns3(sys.error("Sad times 3"))(0))
+    }
   }
 
   describe("The assume(boolean, clue) method") {
@@ -1525,6 +1565,18 @@ class AssertionsSpec extends FunSpec with OptionValues {
       assert(e.message === Some(equaled(3, 3) + "; dude"))
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should preserve side effects when Apply with single argument is passed in") {
+      assume(neverRuns1(sys.error("Sad times 1")), "should not fail!")
+    }
+
+    it("should preserve side effects when Apply with 2 argument list is passed in") {
+      assume(neverRuns2(sys.error("Sad times 2"))(0), "should not fail!")
+    }
+
+    it("should preserve side effects when typed Apply with 2 argument list is passed in") {
+      assume(neverRuns3(sys.error("Sad times 3"))(0), "should not fail!")
     }
   }
 
