@@ -18,6 +18,7 @@
 	<property name="for.scala" value="2.11.0" />
 -->
     <property name="release" value="2.0.1-SNAP4" />
+    <property name="github.tag" value="release-2.0-for-scala-2.10" /> <!-- for scaladoc source urls -->
 
     <property name="scalasrc" value="src/main/scala" />
     <property name="javasrc" value="src/main/java" />
@@ -130,11 +131,6 @@
             	<pathelement location="${org.scala-lang:scala-reflect:jar}" /> <!-- needed for 2.10 build -->
             </classpath>
         </taskdef>
-
-        <path id="scaladoc.source.path">
-            <pathelement location="${build}/docsrc" />
-            <pathelement location="${build.generated.src}" />
-        </path>
 
         <path id="cobertura.class.path">
           <pathelement location="${net.sourceforge.cobertura:cobertura:jar}" />
@@ -1029,6 +1025,7 @@
 
       <copy todir="${build}/docsrc">
         <fileset dir="src/main/scala" />
+        <fileset dir="${build.generated.src}" />
       </copy>
 
       <replaceregexp match="@Finders(.*)" replace="">
@@ -1040,7 +1037,9 @@
       <exec executable="support/docjavatags.scala"/>
 
       <scaladoc addparams="-no-specialization"
-                srcref="scaladoc.source.path"
+                srcdir="${build}/docsrc"
+                sourcepath="${build}/docsrc"
+                docsourceurl="https://github.com/scalatest/scalatest/tree/${github.tag}/src/main/scala€{FILE_PATH}.scala"
                 destdir="${doc}"
                 classpathref="lib.path"
                 doctitle="ScalaTest ${release}">
@@ -1100,7 +1099,9 @@
       </replaceregexp>
 
       <scaladoc addparams="-no-specialization"
-                srcdir="target/docsrc"
+                srcdir="${build}/docsrc"
+                sourcepath="${build}/docsrc"
+                docsourceurl="https://github.com/scalatest/scalatest/tree/${github.tag}/src/main/scala€{FILE_PATH}.scala"
                 destdir="${build}/utilsdoc"
                 classpathref="lib.path"
                 doctitle="ScalaUtils ${release}">
