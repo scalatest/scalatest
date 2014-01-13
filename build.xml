@@ -1099,7 +1099,9 @@
       </replaceregexp>
 
       <scaladoc addparams="-no-specialization"
-                srcdir="target/docsrc"
+                srcdir="${build}/docsrc"
+                sourcepath="${build}/docsrc"
+                docsourceurl="https://github.com/scalatest/scalatest/tree/${github.tag}/src/main/scala€{FILE_PATH}.scala"
                 destdir="${build}/utilsdoc"
                 classpathref="lib.path"
                 doctitle="ScalaUtils ${release}">
