@@ -38,7 +38,7 @@ This command will build and run the regular tests:
 
   `$ sbt test`
 
-To run generated tests, you'll need to increase maximum heap size to -Xmx3072M, and use this command instead:
+To run generated tests, you'll need to increase maximum heap size to -Xmx5120M, and use this command instead:
 
   `$ sbt "project gentests" "test"`
 
