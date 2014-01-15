@@ -315,5 +315,90 @@ class PrettifierSpec extends Spec with Matchers {
       Prettifier.default(javaSortedMap(Entry("akey", javaSortedMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))))) should be ("{\"akey\"={1=\"one\", 2=\"two\", 3=\"three\"}}")
     }
   }
+
+  object `prettifyAst method should print pretty AST ` {
+
+    def `should print pretty AST` {
+      val original =
+        "Expr(Apply(Select(Select(This(newTypeName(\"TryIt\")), newTermName(\"a\")), newTermName(\"$eq$eq\")), " +
+        "List(Select(This(newTypeName(\"TryIt\")), newTermName(\"b\"))))) " +
+        "Expr(Apply(Select(Apply(Select(Select(This(newTypeName(\"TryIt\")), newTermName(\"a\")), newTermName(\"$eq$eq\")), " +
+        "List(Select(This(newTypeName(\"TryIt\")), newTermName(\"b\")))), newTermName(\"$amp$amp\")), " +
+        "List(Apply(Select(Select(This(newTypeName(\"TryIt\")), newTermName(\"b\")), newTermName(\"$eq$eq\")), " +
+        "List(Select(This(newTypeName(\"TryIt\")), newTermName(\"c\")))))))"
+
+      Prettifier.prettifyAst(original) should be (
+        "Expr(\n" +
+        "  Apply(\n" +
+        "    Select(\n" +
+        "      Select(\n" +
+        "        This(\n" +
+        "          newTypeName(\"TryIt\")\n" +
+        "        ),\n" +
+        "        newTermName(\"a\")\n" +
+        "      ),\n" +
+        "      newTermName(\"$eq$eq\")\n" +
+        "    ),\n" +
+        "    List(\n" +
+        "      Select(\n" +
+        "        This(\n" +
+        "          newTypeName(\"TryIt\")\n" +
+        "        ),\n" +
+        "        newTermName(\"b\")\n" +
+        "      )\n" +
+        "    )\n" +
+        "  )\n" +
+        ")\n" +
+        "Expr(\n" +
+        "  Apply(\n" +
+        "    Select(\n" +
+        "      Apply(\n" +
+        "        Select(\n" +
+        "          Select(\n" +
+        "            This(\n" +
+        "              newTypeName(\"TryIt\")\n" +
+        "            ),\n" +
+        "            newTermName(\"a\")\n" +
+        "          ),\n" +
+        "          newTermName(\"$eq$eq\")\n" +
+        "        ),\n" +
+        "        List(\n" +
+        "          Select(\n" +
+        "            This(\n" +
+        "              newTypeName(\"TryIt\")\n" +
+        "            ),\n" +
+        "            newTermName(\"b\")\n" +
+        "          )\n" +
+        "        )\n" +
+        "      ),\n" +
+        "      newTermName(\"$amp$amp\")\n" +
+        "    ),\n" +
+        "    List(\n" +
+        "      Apply(\n" +
+        "        Select(\n" +
+        "          Select(\n" +
+        "            This(\n" +
+        "              newTypeName(\"TryIt\")\n" +
+        "            ),\n" +
+        "            newTermName(\"b\")\n" +
+        "          ),\n" +
+        "          newTermName(\"$eq$eq\")\n" +
+        "        ),\n" +
+        "        List(\n" +
+        "          Select(\n" +
+        "            This(\n" +
+        "              newTypeName(\"TryIt\")\n" +
+        "            ),\n" +
+        "            newTermName(\"c\")\n" +
+        "          )\n" +
+        "        )\n" +
+        "      )\n" +
+        "    )\n" +
+        "  )\n" +
+        ")\n"
+      )
+    }
+
+  }
 }
 
