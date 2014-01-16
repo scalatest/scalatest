@@ -17,7 +17,7 @@ package org.scalautils
 
 import reflect.macros.Context
 
-private[org] class BooleanMacro[C <: Context](val context: C) {
+private[org] class BooleanMacro[C <: Context](val context: C, helperName: String) {
 
   /*
    * Translate the following:
@@ -27,10 +27,10 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
    * to:
    *
    * {
-   *   val $org_scalatest_assert_macro_left = something.aMethod
-   *   val $org_scalatest_assert_macro_right = 3
-   *   val $org_scalatest_assert_macro_result = $org_scalatest_assert_macro_left ==  $org_scalatest_assert_macro_result
-   *   assertionsHelper.macroAssert($org_scalatest_assert_macro_left, "==", $org_scalatest_assert_macro_right, $org_scalatest_assert_macro_result, None)
+   *   val $org_scalautils_assert_macro_left = something.aMethod
+   *   val $org_scalautils_assert_macro_right = 3
+   *   val $org_scalautils_assert_macro_result = $org_scalautils_assert_macro_left ==  $org_scalautils_assert_macro_result
+   *   assertionsHelper.macroAssert($org_scalautils_assert_macro_left, "==", $org_scalautils_assert_macro_right, $org_scalautils_assert_macro_result, None)
    * }
    *
    */
@@ -54,7 +54,7 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
     context.Expr(
       Apply(
         Select(
-          Ident("assertionsHelper"),
+          Ident(helperName),
           newTermName(methodName)
         ),
         List(exprTree, clueTree)
@@ -62,14 +62,14 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
     )
 
   // Generate AST for:
-  // assertionsHelper.methodName($org_scalatest_assert_macro_left, operator, $org_scalatest_assert_macro_right, $org_scalatest_assert_macro_result, clue)
+  // assertionsHelper.methodName($org_scalautils_assert_macro_left, operator, $org_scalautils_assert_macro_right, $org_scalautils_assert_macro_result, clue)
   def genCallAssertionsHelper(methodName: String, operator: String, clueTree: Tree): Apply =
     Apply(
       Select(
-        Ident("assertionsHelper"),
+        Ident(helperName),
         newTermName(methodName)
       ),
-      List(Ident(newTermName("$org_scalatest_assert_macro_left")), context.literal(operator).tree, Ident(newTermName("$org_scalatest_assert_macro_right")), Ident(newTermName("$org_scalatest_assert_macro_result")), clueTree)
+      List(Ident(newTermName("$org_scalautils_assert_macro_left")), context.literal(operator).tree, Ident(newTermName("$org_scalautils_assert_macro_right")), Ident(newTermName("$org_scalautils_assert_macro_result")), clueTree)
     )
 
   // Generate AST for:
@@ -84,53 +84,53 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
     )
 
   // Generate AST for:
-  // $org_scalatest_assert_macro_left operator $org_scalatest_assert_macro_right
+  // $org_scalautils_assert_macro_left operator $org_scalautils_assert_macro_right
   def simpleSubstitute(select: Select): Apply =
     Apply(
       Select(
-        Ident("$org_scalatest_assert_macro_left"),
+        Ident("$org_scalautils_assert_macro_left"),
         select.name
       ),
-      List(Ident("$org_scalatest_assert_macro_right"))
+      List(Ident("$org_scalautils_assert_macro_right"))
     )
 
   // Generate AST for:
-  // $org_scalatest_assert_macro_left.operator($org_scalatest_assert_macro_right)(arguments)
+  // $org_scalautils_assert_macro_left.operator($org_scalautils_assert_macro_right)(arguments)
   def nestedSubstitute(select: Select, apply: GenericApply): Apply =
     Apply(
       Apply(
         Select(
-          Ident("$org_scalatest_assert_macro_left"),
+          Ident("$org_scalautils_assert_macro_left"),
           select.name
         ),
-        List(Ident("$org_scalatest_assert_macro_right"))
+        List(Ident("$org_scalautils_assert_macro_right"))
       ),
       apply.args
     )
 
   // Generate AST for:
-  // val $org_scalatest_assert_macro_left = left
-  // val $org_scalatest_assert_macro_right = right
-  // val $org_scalatest_assert_macro_result = subsitutedExpr
+  // val $org_scalautils_assert_macro_left = left
+  // val $org_scalautils_assert_macro_right = right
+  // val $org_scalautils_assert_macro_result = subsitutedExpr
   // assertExpr
   def genExpression(left: Tree, operator: String, right: Tree, subsitutedExpr: Apply, assertExpr: Apply): Expr[Unit] =
     context.Expr(
       Block(
         ValDef(
           Modifiers(),
-          newTermName("$org_scalatest_assert_macro_left"),
+          newTermName("$org_scalautils_assert_macro_left"),
           TypeTree(),
           left.duplicate
         ),
         ValDef(
           Modifiers(),
-          newTermName("$org_scalatest_assert_macro_right"),
+          newTermName("$org_scalautils_assert_macro_right"),
           TypeTree(),
           right.duplicate
         ),
         ValDef(
           Modifiers(),
-          newTermName("$org_scalatest_assert_macro_result"),
+          newTermName("$org_scalautils_assert_macro_result"),
           TypeTree(),
           subsitutedExpr
         ),
