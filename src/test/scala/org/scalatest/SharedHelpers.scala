@@ -1814,5 +1814,90 @@ object SharedHelpers extends Assertions {
     assert(exception.failedCodeFileName === Some(fileName))
     assert(exception.failedCodeLineNumber === Some(lineNumber))
   }
+
+  def prettifyAst(str: String): String = {
+    import scala.annotation.tailrec
+    val brackets = Set('(', ')')
+    @tailrec
+    def getNextBracket(itr: BufferedIterator[Char], buf: StringBuilder = new StringBuilder): (Char, String) = {
+      if (itr.hasNext) {
+        if (brackets.contains(itr.head))
+          (itr.head, buf.toString)
+        else {
+          val next = itr.next
+          buf.append(next)
+          getNextBracket(itr, buf)
+        }
+      }
+      else
+        throw new IllegalStateException("Expecting '(' or ')', but none of them found")
+    }
+
+    @tailrec
+    def transform(itr: BufferedIterator[Char], openBracket: Int, builder: StringBuilder, multilineBracket: Boolean = false) {
+      if (itr.hasNext) {
+        val next = itr.next
+        val (newOpenBracket, newMultilineBracket) =
+          next match {
+            case '(' =>
+              val (nextBracket, textWithin) = getNextBracket(itr)
+              if (nextBracket == '(') {
+                builder.append("(\n")
+                val newOpenBracket = openBracket + 1
+                builder.append("  " * newOpenBracket)
+                builder.append(textWithin)
+                (newOpenBracket, true)
+              }
+              else {
+                builder.append("(")
+                builder.append(textWithin)
+                (openBracket, false)
+              }
+
+            case ')' =>
+              val newOpenBracket =
+                if (multilineBracket) {
+                  builder.append("\n")
+                  val newOpenBracket =
+                    if (openBracket > 0)
+                      openBracket - 1
+                    else
+                      openBracket
+                  builder.append("  " * newOpenBracket)
+                  newOpenBracket
+                }
+                else
+                  openBracket
+
+              if (itr.hasNext && itr.head == ',') {
+                itr.next
+                builder.append("),\n")
+                builder.append("  " * newOpenBracket)
+              }
+              else
+                builder.append(")")
+
+              if (itr.hasNext && itr.head == ' ')
+                itr.next
+
+              if (newOpenBracket == 0)
+                builder.append("\n")
+
+              (newOpenBracket, true)
+            case '\n' =>
+              builder.append("\n")
+              builder.append("  " * openBracket)
+              (openBracket, multilineBracket)
+            case other => builder.append(other)
+              (openBracket, multilineBracket)
+          }
+        transform(itr, newOpenBracket, builder, newMultilineBracket)
+      }
+    }
+    val itr = str.toCharArray.iterator.buffered
+    val builder = new StringBuilder
+    transform(itr, 0, builder)
+    builder.toString
+  }
 }
 
