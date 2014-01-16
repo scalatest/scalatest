@@ -1817,6 +1817,20 @@ object SharedHelpers extends Assertions {
 
   def prettifyAst(str: String): String = {
     import scala.annotation.tailrec
+
+    def getUntilNextDoubleQuote(itr: BufferedIterator[Char], buf: StringBuilder = new StringBuilder): String = {
+      if (itr.hasNext) {
+        val next = itr.next
+        buf.append(next)
+        if (next != '\"')
+          getUntilNextDoubleQuote(itr, buf)
+        else
+          buf.toString
+      }
+      else
+        throw new IllegalStateException("Expecting closing \", but none of them found")
+    }
+
     val brackets = Set('(', ')')
     @tailrec
     def getNextBracket(itr: BufferedIterator[Char], buf: StringBuilder = new StringBuilder): (Char, String) = {
@@ -1826,6 +1840,8 @@ object SharedHelpers extends Assertions {
         else {
           val next = itr.next
           buf.append(next)
+          if (next == '\"')
+            buf.append(getUntilNextDoubleQuote(itr))
           getNextBracket(itr, buf)
         }
       }

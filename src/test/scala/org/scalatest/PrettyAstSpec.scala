@@ -19,7 +19,9 @@ import Matchers._
 
 class PrettyAstSpec extends Spec {
 
-  def `SharedHelpers.prettifyAst should print pretty AST` {
+  object `SharedHelpers.prettifyAst `
+
+  def `should print pretty AST` {
     val original =
       "Expr(Apply(Select(Select(This(newTypeName(\"TryIt\")), newTermName(\"a\")), newTermName(\"$eq$eq\")), " +
         "List(Select(This(newTypeName(\"TryIt\")), newTermName(\"b\"))))) " +
@@ -97,6 +99,26 @@ class PrettyAstSpec extends Spec {
         "    )\n" +
         "  )\n" +
         ")\n"
+    )
+  }
+
+  def `should print pretty AST correctly also when '(' or ')' is in strings` {
+    val original =
+      "Expr(Apply(Select(Ident(scala.Predef), newTermName(\"println\")), List(Literal(Constant(\"Hello (chua\")))))"
+    SharedHelpers.prettifyAst(original) should be (
+      "Expr(\n" +
+      "  Apply(\n" +
+      "    Select(\n" +
+      "      Ident(scala.Predef),\n" +
+      "      newTermName(\"println\")\n" +
+      "    ),\n" +
+      "    List(\n" +
+      "      Literal(\n" +
+      "        Constant(\"Hello (chua\")\n" +
+      "      )\n" +
+      "    )\n" +
+      "  )\n" +
+      ")\n"
     )
   }
 
