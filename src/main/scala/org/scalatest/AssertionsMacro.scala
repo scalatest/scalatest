@@ -52,51 +52,27 @@ private[scalatest] class AssertionsMacro[C <: Context](val context: C) {
   import context.universe._
 
   // Generate AST for:
-  // assertionsHelper.macroAssert(expression, None)
-  def simpleAssertMacro(exprTree: Tree): Expr[Unit] =
+  // assertionsHelper.methodName(expression, clue)
+  def genCallAssertionsHelperSimple(methodName: String, exprTree: Tree, clueTree: Tree): Expr[Unit] =
     context.Expr(
       Apply(
         Select(
           Ident("assertionsHelper"),
-          newTermName("macroAssert")
+          newTermName(methodName)
         ),
-        List(exprTree, Ident("None"))
+        List(exprTree, clueTree)
       )
     )
 
   // Generate AST for:
-  // assertionsHelper.macroAssert($org_scalatest_assert_macro_left, operator, $org_scalatest_assert_macro_right, $org_scalatest_assert_macro_result, None)
-  def assertMacro(operator: String): Apply =
+  // assertionsHelper.methodName($org_scalatest_assert_macro_left, operator, $org_scalatest_assert_macro_right, $org_scalatest_assert_macro_result, clue)
+  def genCallAssertionsHelper(methodName: String, operator: String, clueTree: Tree): Apply =
     Apply(
       Select(
         Ident("assertionsHelper"),
-        newTermName("macroAssert")
+        newTermName(methodName)
       ),
-      List(Ident(newTermName("$org_scalatest_assert_macro_left")), context.literal(operator).tree, Ident(newTermName("$org_scalatest_assert_macro_right")), Ident(newTermName("$org_scalatest_assert_macro_result")), Ident("None"))
-    )
-
-  // Generate AST for:
-  // assertionsHelper.macroAssume(expression, None)
-  def simpleAssumeMacro(exprTree: Tree): Expr[Unit] =
-    context.Expr(
-      Apply(
-        Select(
-          Ident("assertionsHelper"),
-          newTermName("macroAssume")
-        ),
-        List(exprTree, Ident("None"))
-      )
-    )
-
-  // Generate AST for:
-  // assertionsHelper.macroAssume($org_scalatest_assert_macro_left, operator, $org_scalatest_assert_macro_right, $org_scalatest_assert_macro_result, None)
-  def assumeMacro(operator: String): Apply =
-    Apply(
-      Select(
-        Ident("assertionsHelper"),
-        newTermName("macroAssume")
-      ),
-      List(Ident(newTermName("$org_scalatest_assert_macro_left")), context.literal(operator).tree, Ident(newTermName("$org_scalatest_assert_macro_right")), Ident(newTermName("$org_scalatest_assert_macro_result")), Ident("None"))
+      List(Ident(newTermName("$org_scalatest_assert_macro_left")), context.literal(operator).tree, Ident(newTermName("$org_scalatest_assert_macro_right")), Ident(newTermName("$org_scalatest_assert_macro_result")), clueTree)
     )
 
   // Generate AST for:
@@ -108,54 +84,6 @@ private[scalatest] class AssertionsMacro[C <: Context](val context: C) {
         newTermName("apply")
       ),
       List(clueTree)
-    )
-
-  // Generate AST for:
-  // assertionsHelper.macroAssert(expression, Some(clue))
-  def simpleAssertMacroWithClue(exprTree: Tree, clueTree: Tree): Expr[Unit] =
-    context.Expr(
-      Apply(
-        Select(
-          Ident("assertionsHelper"),
-          newTermName("macroAssert")
-        ),
-        List(exprTree, genClue(clueTree))
-      )
-    )
-
-  // Generate AST for:
-  // assertionsHelper.macroAssert($org_scalatest_assert_macro_left, operator, $org_scalatest_assert_macro_right, $org_scalatest_assert_macro_result, Some(clue))
-  def assertMacroWithClue(operator: String, clueTree: Tree): Apply =
-    Apply(
-      Select(
-        Ident("assertionsHelper"),
-        newTermName("macroAssert")
-      ),
-      List(Ident(newTermName("$org_scalatest_assert_macro_left")), context.literal(operator).tree, Ident(newTermName("$org_scalatest_assert_macro_right")), Ident(newTermName("$org_scalatest_assert_macro_result")), genClue(clueTree))
-    )
-
-  // Generate AST for:
-  // assertionsHelper.macroAssume(expression, Some(clue))
-  def simpleAssumeMacroWithClue(exprTree: Tree, clueTree: Tree): Expr[Unit] =
-    context.Expr(
-      Apply(
-        Select(
-          Ident("assertionsHelper"),
-          newTermName("macroAssume")
-        ),
-        List(exprTree, genClue(clueTree))
-      )
-    )
-
-  // Generate AST for:
-  // assertionsHelper.macroAssume($org_scalatest_assert_macro_left, operator, $org_scalatest_assert_macro_right, $org_scalatest_assert_macro_result, Some(clue))
-  def assumeMacroWithClue(operator: String, clueTree: Tree): Apply =
-    Apply(
-      Select(
-        Ident("assertionsHelper"),
-        newTermName("macroAssume")
-      ),
-      List(Ident(newTermName("$org_scalatest_assert_macro_left")), context.literal(operator).tree, Ident(newTermName("$org_scalatest_assert_macro_right")), Ident(newTermName("$org_scalatest_assert_macro_result")), genClue(clueTree))
     )
 
   // Generate AST for:
@@ -217,8 +145,14 @@ private[scalatest] class AssertionsMacro[C <: Context](val context: C) {
 
   def isSupported(operator: String) = supportedOperations.contains(operator)
 
-  def assert(booleanExpr: Expr[Boolean]): Expr[Unit] = {
+  def genMacroCode(booleanExpr: Expr[Boolean], methodName: String, clueTree: Option[Tree]): Expr[Unit] = {
     val booleanTree = booleanExpr.tree
+    val clueOption =
+      clueTree match {
+        case Some(clue) => genClue(clue)
+        case _ => Ident("None")
+      }
+
     booleanTree match {
       case apply: Apply =>
         apply.fun match {
@@ -226,180 +160,40 @@ private[scalatest] class AssertionsMacro[C <: Context](val context: C) {
             val operator: String = select.name.decoded
             if (isSupported(operator)) {
               val sExpr: Apply = simpleSubstitute(select)
-              val assertExpr: Apply = assertMacro(operator)
+              val assertExpr: Apply = genCallAssertionsHelper(methodName, operator, clueOption)
               genExpression(select.qualifier.duplicate, operator, apply.args(0).duplicate, sExpr, assertExpr)
             }
             else
-              simpleAssertMacro(booleanTree)
+              genCallAssertionsHelperSimple(methodName, booleanTree, clueOption)
           case funApply: Apply =>
             funApply.fun match {
               case select: Select if funApply.args.size == 1 => // For === that takes Equality
                 val operator: String = select.name.decoded
                 if (isSupported(operator)) {
                   val sExpr: Apply = nestedSubstitute(select, apply)
-                  val assertExpr: Apply = assertMacro(operator)
+                  val assertExpr: Apply = genCallAssertionsHelper(methodName, operator, clueOption)
                   genExpression(select.qualifier.duplicate, operator, funApply.args(0).duplicate, sExpr, assertExpr)
                 }
                 else
-                  simpleAssertMacro(booleanTree)
+                  genCallAssertionsHelperSimple(methodName, booleanTree, clueOption)
               case typeApply: TypeApply =>
                 typeApply.fun match {
                   case select: Select if funApply.args.size == 1 => // For TypeCheckedTripleEquals
                     val operator: String = select.name.decoded
                     if (isSupported(operator)) {
                       val sExpr: Apply = nestedSubstitute(select, apply)
-                      val assertExpr: Apply = assertMacro(operator)
+                      val assertExpr: Apply = genCallAssertionsHelper(methodName, operator, clueOption)
                       genExpression(select.qualifier.duplicate, operator, funApply.args(0).duplicate, sExpr, assertExpr)
                     }
                     else
-                      simpleAssertMacro(booleanTree)
-                  case _ => simpleAssertMacro(booleanTree)
+                      genCallAssertionsHelperSimple(methodName, booleanTree, clueOption)
+                  case _ => genCallAssertionsHelperSimple(methodName, booleanTree, clueOption)
                 }
-              case _ => simpleAssertMacro(booleanTree)
+              case _ => genCallAssertionsHelperSimple(methodName, booleanTree, clueOption)
             }
-          case _ => simpleAssertMacro(booleanTree)
+          case _ => genCallAssertionsHelperSimple(methodName, booleanTree, clueOption)
         }
-      case _ => simpleAssertMacro(booleanTree)
-    }
-  }
-
-  def assertWithClue(booleanExpr: Expr[Boolean], clueExpr: Expr[Any]): Expr[Unit] = {
-    val booleanTree = booleanExpr.tree
-    val clueTree = clueExpr.tree
-    booleanTree match {
-      case apply: Apply =>
-        apply.fun match {
-          case select: Select if apply.args.size == 1 => // For simple assert(a == b)
-            val operator: String = select.name.decoded
-            if (isSupported(operator)) {
-              val sExpr: Apply = simpleSubstitute(select)
-              val assertExpr: Apply = assertMacroWithClue(operator, clueTree)
-              genExpression(select.qualifier.duplicate, operator, apply.args(0).duplicate, sExpr, assertExpr)
-            }
-            else
-              simpleAssertMacroWithClue(booleanTree, clueTree)
-          case funApply: Apply =>
-            funApply.fun match {
-              case select: Select if funApply.args.size == 1 => // For === that takes Equality
-                val operator: String = select.name.decoded
-                if (isSupported(operator)) {
-                  val sExpr: Apply = nestedSubstitute(select, apply)
-                  val assertExpr: Apply = assertMacroWithClue(operator, clueTree)
-                  genExpression(select.qualifier.duplicate, operator, funApply.args(0).duplicate, sExpr, assertExpr)
-                }
-                else
-                  simpleAssertMacroWithClue(booleanTree, clueTree)
-              case typeApply: TypeApply =>
-                typeApply.fun match {
-                  case select: Select if funApply.args.size == 1 => // For TypeCheckedTripleEquals
-                    val operator: String = select.name.decoded
-                    if (isSupported(operator)) {
-                      val sExpr: Apply = nestedSubstitute(select, apply)
-                      val assertExpr: Apply = assertMacroWithClue(operator, clueTree)
-                      genExpression(select.qualifier.duplicate, operator, funApply.args(0).duplicate, sExpr, assertExpr)
-                    }
-                    else
-                      simpleAssertMacroWithClue(booleanTree, clueTree)
-                  case _ => simpleAssertMacro(booleanTree)
-                }
-              case _ => simpleAssertMacroWithClue(booleanTree, clueTree)
-            }
-          case _ => simpleAssertMacroWithClue(booleanTree, clueTree)
-        }
-      case _ => simpleAssertMacroWithClue(booleanTree, clueTree)
-    }
-  }
-
-  def assume(booleanExpr: Expr[Boolean]): Expr[Unit] = {
-    val booleanTree = booleanExpr.tree
-    booleanTree match {
-      case apply: Apply =>
-        apply.fun match {
-          case select: Select if apply.args.size == 1 => // For simple assert(a == b)
-            val operator: String = select.name.decoded
-            if (isSupported(operator)) {
-              val sExpr: Apply = simpleSubstitute(select)
-              val assumeExpr: Apply = assumeMacro(operator)
-              genExpression(select.qualifier.duplicate, operator, apply.args(0).duplicate, sExpr, assumeExpr)
-            }
-            else
-              simpleAssumeMacro(booleanTree)
-          case funApply: Apply =>
-            funApply.fun match {
-              case select: Select if funApply.args.size == 1 => // For === that takes Equality
-                val operator: String = select.name.decoded
-                if (isSupported(operator)) {
-                  val sExpr: Apply = nestedSubstitute(select, apply)
-                  val assumeExpr: Apply = assumeMacro(operator)
-                  genExpression(select.qualifier.duplicate, operator, funApply.args(0).duplicate, sExpr, assumeExpr)
-                }
-                else
-                  simpleAssumeMacro(booleanTree)
-              case typeApply: TypeApply =>
-                typeApply.fun match {
-                  case select: Select if funApply.args.size == 1 => // For TypeCheckedTripleEquals
-                    val operator: String = select.name.decoded
-                    if (isSupported(operator)) {
-                      val sExpr: Apply = nestedSubstitute(select, apply)
-                      val assumeExpr: Apply = assumeMacro(operator)
-                      genExpression(select.qualifier.duplicate, operator, funApply.args(0).duplicate, sExpr, assumeExpr)
-                    }
-                    else
-                      simpleAssumeMacro(booleanTree)
-                  case _ => simpleAssumeMacro(booleanTree)
-                }
-              case _ => simpleAssumeMacro(booleanTree)
-            }
-          case _ => simpleAssumeMacro(booleanTree)
-        }
-      case _ => simpleAssumeMacro(booleanTree)
-    }
-  }
-
-  def assumeWithClue(booleanExpr: Expr[Boolean], clueExpr: Expr[Any]): Expr[Unit] = {
-    val booleanTree = booleanExpr.tree
-    val clueTree = clueExpr.tree
-    booleanTree match {
-      case apply: Apply =>
-        apply.fun match {
-          case select: Select if apply.args.size == 1 => // For simple assert(a == b)
-            val operator: String = select.name.decoded
-            if (isSupported(operator)) {
-              val sExpr: Apply = simpleSubstitute(select)
-              val assumeExpr: Apply = assumeMacroWithClue(operator, clueTree)
-              genExpression(select.qualifier.duplicate, operator, apply.args(0).duplicate, sExpr, assumeExpr)
-            }
-            else
-              simpleAssumeMacroWithClue(booleanTree, clueTree)
-          case funApply: Apply =>
-            funApply.fun match {
-              case select: Select if funApply.args.size == 1 => // For === that takes Equality
-                val operator: String = select.name.decoded
-                if (isSupported(operator)) {
-                  val sExpr: Apply = nestedSubstitute(select, apply)
-                  val assumeExpr: Apply = assumeMacroWithClue(operator, clueTree)
-                  genExpression(select.qualifier.duplicate, operator, funApply.args(0).duplicate, sExpr, assumeExpr)
-                }
-                else
-                  simpleAssumeMacroWithClue(booleanTree, clueTree)
-              case typeApply: TypeApply =>
-                typeApply.fun match {
-                  case select: Select if funApply.args.size == 1 => // For TypeCheckedTripleEquals
-                    val operator: String = select.name.decoded
-                    if (isSupported(operator)) {
-                      val sExpr: Apply = nestedSubstitute(select, apply)
-                      val assumeExpr: Apply = assumeMacroWithClue(operator, clueTree)
-                      genExpression(select.qualifier.duplicate, operator, funApply.args(0).duplicate, sExpr, assumeExpr)
-                    }
-                    else
-                      simpleAssumeMacroWithClue(booleanTree, clueTree)
-                  case _ => simpleAssumeMacroWithClue(booleanTree, clueTree)
-                }
-              case _ => simpleAssumeMacroWithClue(booleanTree, clueTree)
-            }
-          case _ => simpleAssumeMacroWithClue(booleanTree, clueTree)
-        }
-      case _ => simpleAssumeMacroWithClue(booleanTree, clueTree)
+      case _ => genCallAssertionsHelperSimple(methodName, booleanTree, clueOption)
     }
   }
   
@@ -423,9 +217,8 @@ private[scalatest] object AssertionsMacro {
    * @param condition original condition expression
    * @return transformed expression that performs the assertion check and throw <code>TestFailedException</code> with rich error message if assertion failed
    */
-  def assert(context: Context)(condition: context.Expr[Boolean]): context.Expr[Unit] = {
-    new AssertionsMacro[context.type](context).assert(condition)
-  }
+  def assert(context: Context)(condition: context.Expr[Boolean]): context.Expr[Unit] =
+    new AssertionsMacro[context.type](context).genMacroCode(condition, "macroAssert", None)
 
   /**
    * Provides assertion implementation for <code>Assertions.assert(booleanExpr: Boolean, clue: Any)</code>, with rich error message.
@@ -435,9 +228,9 @@ private[scalatest] object AssertionsMacro {
    * @param clue original clue expression
    * @return transformed expression that performs the assertion check and throw <code>TestFailedException</code> with rich error message (clue included) if assertion failed
    */
-  def assertWithClue(context: Context)(condition: context.Expr[Boolean], clue: context.Expr[Any]): context.Expr[Unit] = {
-    new AssertionsMacro[context.type](context).assertWithClue(condition, clue)
-  }
+  def assertWithClue(context: Context)(condition: context.Expr[Boolean], clue: context.Expr[Any]): context.Expr[Unit] =
+    //new AssertionsMacro[context.type](context).genMacroCode(condition, "macroAssert", genClue(context, clueExpr))
+    new AssertionsMacro[context.type](context).genMacroCode(condition, "macroAssert", Some(clue.tree))
 
   /**
    * Provides implementation for <code>Assertions.assume(booleanExpr: Boolean)</code>, with rich error message.
@@ -446,9 +239,8 @@ private[scalatest] object AssertionsMacro {
    * @param condition original condition expression
    * @return transformed expression that performs the assumption check and throw <code>TestCanceledException</code> with rich error message if assumption failed
    */
-  def assume(context: Context)(condition: context.Expr[Boolean]): context.Expr[Unit] = {
-    new AssertionsMacro[context.type](context).assume(condition)
-  }
+  def assume(context: Context)(condition: context.Expr[Boolean]): context.Expr[Unit] =
+    new AssertionsMacro[context.type](context).genMacroCode(condition, "macroAssume", None)
 
   /**
    * Provides implementation for <code>Assertions.assume(booleanExpr: Boolean, clue: Any)</code>, with rich error message.
@@ -458,7 +250,6 @@ private[scalatest] object AssertionsMacro {
    * @param clue original clue expression
    * @return transformed expression that performs the assumption check and throw <code>TestCanceledException</code> with rich error message (clue included) if assumption failed
    */
-  def assumeWithClue(context: Context)(condition: context.Expr[Boolean], clue: context.Expr[Any]): context.Expr[Unit] = {
-    new AssertionsMacro[context.type](context).assumeWithClue(condition, clue)
-  }
+  def assumeWithClue(context: Context)(condition: context.Expr[Boolean], clue: context.Expr[Any]): context.Expr[Unit] =
+    new AssertionsMacro[context.type](context).genMacroCode(condition, "macroAssume", Some(clue.tree))
 }
