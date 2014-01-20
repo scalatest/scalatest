@@ -7,17 +7,17 @@
              classpathref="maven-ant-tasks.classpath" />
 
     <!-- set global properties for this build -->
-    <property name="scala.version" value="2.10.0" />
+    <property name="scala.version" value="2.10.3" />
     <property name="scala.version.range" value="[2.10.0, 2.10.99]" /> <!-- not using this currently because of what it does to sbt -->
     <property name="deploy.scala.version" value="2.10" />
-	<property name="for.scala" value="2.10.0" />
+	<property name="for.scala" value="2.10.3" />
 
 <!--
     <property name="scala.version" value="2.11.0-M4" />
     <property name="deploy.scala.version" value="2.11.0-M4" />
 	<property name="for.scala" value="2.11.0" />
 -->
-    <property name="release" value="2.0.1-SNAP5" />
+    <property name="release" value="2.0.1-SNAP6" />
 
     <property name="scalasrc" value="src/main/scala" />
     <property name="javasrc" value="src/main/java" />
@@ -48,7 +48,7 @@
     <property name="zipper" value="zipper" />
     <property name="project.name" value="ScalaTest" />
 
-    <property name="jvmargs" value="-Xmx6000M -Xss10M"/>
+    <property name="jvmargs" value="-Xmx4000M -Xss10M"/>
     <property name="mvn.deploy.plugin"
               value="org.apache.maven.plugins:maven-gpg-plugin:1.1:sign-and-deploy-file" />
 
@@ -1252,7 +1252,7 @@
 	<target name="run-gentests" depends="compile-gentests,taskdefscalatest">
       <scalatest fork="true" runpath="${build.generated.tests.bin}" parallel="true" haltonfailure="true">
         <jvmarg value="-XX:MaxPermSize=512m"/>
-        <jvmarg value="-Xmx6000M"/>
+        <jvmarg value="-Xmx4000M"/>
         <jvmarg value="-Xss10M"/>
 	<reporter type="graphic"/>
         <reporter type="stdout" config="DF"/>
