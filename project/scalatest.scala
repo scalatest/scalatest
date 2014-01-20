@@ -116,17 +116,16 @@ object ScalatestBuild extends Build {
      "org.easymock" % "easymockclassextension" % "3.1" % "optional", 
      "org.jmock" % "jmock-legacy" % "2.5.1" % "optional", 
      "org.mockito" % "mockito-all" % "1.9.0" % "optional", 
-     "org.testng" % "testng" % "6.3.1" % "optional", 
-     "com.google.inject" % "guice" % "3.0" % "optional", 
+     "org.testng" % "testng" % "6.8.7" % "optional",
+     "com.google.inject" % "guice" % "2.0" % "optional",
      "junit" % "junit" % "4.10" % "optional", 
      "org.seleniumhq.selenium" % "selenium-java" % "2.35.0" % "optional",
-     "org.apache.ant" % "ant" % "1.7.1" % "optional", 
-     "net.sourceforge.cobertura" % "cobertura" % "1.9.1" % "test",
+     "org.apache.ant" % "ant" % "1.7.1" % "optional",
      "commons-io" % "commons-io" % "1.3.2" % "test", 
      "org.eclipse.jetty" % "jetty-server" % "8.1.8.v20121106" % "test", 
-     "org.eclipse.jetty" % "jetty-webapp" % "8.1.8.v20121106" % "test", 
-     "asm" % "asm" % "3.3.1" % "optional", 
-     "org.pegdown" % "pegdown" % "1.1.0" % "optional" 
+     "org.eclipse.jetty" % "jetty-webapp" % "8.1.8.v20121106" % "test",
+     "org.ow2.asm" % "asm-all" % "4.1" % "optional",
+     "org.pegdown" % "pegdown" % "1.4.2" % "optional"
   )
 
   def genFiles(name: String, generatorSource: String)(gen: (File, String) => Unit)(basedir: File, outDir: File): Seq[File] = {
