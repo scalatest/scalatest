@@ -20,7 +20,6 @@ import org.scalatest.prop.Checkers
 import org.scalacheck._
 import Arbitrary._
 import Prop._
-import scala.reflect.BeanProperty
 import org.scalatest.exceptions.TestFailedException
 import enablers.Length
 import enablers.Size
