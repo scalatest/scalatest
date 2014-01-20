@@ -648,19 +648,25 @@ class InspectorShorthandsSpec extends Spec with Matchers with TableDrivenPropert
     }
     
     def `should throw TestFailedException with correct stack depth and message when 'not be null' failed` {
-      forAll(nullableExamples) { colFun => 
+      forAll(nullableExamples) { colFun =>
         val col = 
           try {
-            Some(colFun(Set("1", null, "3")))
+            val theCol = colFun(Set("1", null, "3"))
+            // Let's double check if the collection handle null correctly, in 2.11-M8, this cause
+            // java.lang.ClassCastException: scala.collection.mutable.FlatHashTable$NullSentinel$ cannot be cast to java.lang.String
+            // for scala.collection.parallel.mutable.ParFlatHashTable (index 14 in nullableExamples)
+            theCol.exists(_ == null)
+            Some(theCol)
           }
           catch {
-            case iae: IllegalArgumentException =>
+            //case iae: IllegalArgumentException =>
+            case t: Throwable =>
               // Some collection cannot contains null value, e.g. mutable.Set
               None
           }
         
         col match {
-          case Some(col) => 
+          case Some(col) if col.exists(_ == null) =>
             val e2 = intercept[exceptions.TestFailedException] {
               all(col) should not be (null)
             }
