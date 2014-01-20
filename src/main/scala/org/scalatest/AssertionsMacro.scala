@@ -20,7 +20,7 @@ import collection.mutable.ListBuffer
 import collection.immutable.TreeMap
 import reflect.internal.util.{Position, OffsetPosition, RangePosition}
 
-private[scalatest] class AssertionsMacro[C <: Context](val context: C) {
+private[scalatest] class AssertionsMacroImpl[C <: Context](val context: C) {
 
   /*
    * Translate the following:
@@ -218,7 +218,7 @@ private[scalatest] object AssertionsMacro {
    * @return transformed expression that performs the assertion check and throw <code>TestFailedException</code> with rich error message if assertion failed
    */
   def assert(context: Context)(condition: context.Expr[Boolean]): context.Expr[Unit] =
-    new AssertionsMacro[context.type](context).genMacroCode(condition, "macroAssert", None)
+    new AssertionsMacroImpl[context.type](context).genMacroCode(condition, "macroAssert", None)
 
   /**
    * Provides assertion implementation for <code>Assertions.assert(booleanExpr: Boolean, clue: Any)</code>, with rich error message.
@@ -230,7 +230,7 @@ private[scalatest] object AssertionsMacro {
    */
   def assertWithClue(context: Context)(condition: context.Expr[Boolean], clue: context.Expr[Any]): context.Expr[Unit] =
     //new AssertionsMacro[context.type](context).genMacroCode(condition, "macroAssert", genClue(context, clueExpr))
-    new AssertionsMacro[context.type](context).genMacroCode(condition, "macroAssert", Some(clue.tree))
+    new AssertionsMacroImpl[context.type](context).genMacroCode(condition, "macroAssert", Some(clue.tree))
 
   /**
    * Provides implementation for <code>Assertions.assume(booleanExpr: Boolean)</code>, with rich error message.
@@ -240,7 +240,7 @@ private[scalatest] object AssertionsMacro {
    * @return transformed expression that performs the assumption check and throw <code>TestCanceledException</code> with rich error message if assumption failed
    */
   def assume(context: Context)(condition: context.Expr[Boolean]): context.Expr[Unit] =
-    new AssertionsMacro[context.type](context).genMacroCode(condition, "macroAssume", None)
+    new AssertionsMacroImpl[context.type](context).genMacroCode(condition, "macroAssume", None)
 
   /**
    * Provides implementation for <code>Assertions.assume(booleanExpr: Boolean, clue: Any)</code>, with rich error message.
@@ -251,5 +251,5 @@ private[scalatest] object AssertionsMacro {
    * @return transformed expression that performs the assumption check and throw <code>TestCanceledException</code> with rich error message (clue included) if assumption failed
    */
   def assumeWithClue(context: Context)(condition: context.Expr[Boolean], clue: context.Expr[Any]): context.Expr[Unit] =
-    new AssertionsMacro[context.type](context).genMacroCode(condition, "macroAssume", Some(clue.tree))
+    new AssertionsMacroImpl[context.type](context).genMacroCode(condition, "macroAssume", Some(clue.tree))
 }

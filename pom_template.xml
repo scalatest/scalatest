@@ -60,6 +60,11 @@
       <url>http://repo.typesafe.com/typesafe/releases/</url>
     </repository>
     <repository>
+      <id>typesafe-private</id>
+      <name>Typesafe Private Repository</name>
+      <url>http://private-repo.typesafe.com/typesafe/scala-release-temp/</url>
+    </repository>
+    <repository>
       <id>artima.com</id>
       <name>Artima.com Repository</name>
       <url>http://www.artima.com/maven2/</url>
