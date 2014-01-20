@@ -285,9 +285,9 @@ class OrSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
       case _ => fail()
     }
     divByZero should be a 'bad
-    intercept[NotImplementedError] {
+    /*intercept[NotImplementedError] {  NotImplementedError is not fatal in 2.11, but fatal in 2.10 (determined by scala.util.control.NonFatal)
       attempt { ??? }
-    }
+    }*/
   }
   it can "be created from a Try via the from factory method" in {
     Or.from(Success(12)) shouldBe Good(12)
