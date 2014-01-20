@@ -528,11 +528,30 @@ object Checkers extends Checkers {
   }
 
   import FailureMessages.decorateToStringValue
+
+  //
+  // If scalacheck arg contains a type that
+  // decorateToStringValue processes, then let
+  // decorateToStringValue handle it.  Otherwise use its
+  // prettyArg method to generate the display string.
+  //
+  // Passes 0 as verbosity value to prettyArg function.
+  //
+  def decorateArgToStringValue(arg: Arg[_]): String =
+    arg.arg match {
+      case null         => decorateToStringValue(arg.arg)
+      case _: Unit      => decorateToStringValue(arg.arg)
+      case _: String    => decorateToStringValue(arg.arg)
+      case _: Char      => decorateToStringValue(arg.arg)
+      case _: Array[_]  => decorateToStringValue(arg.arg)
+      case _            => arg.prettyArg(new Pretty.Params(0))
+    }
+
   private def prettyArgs(args: List[Arg[_]]) = {
     val strs = for((a, i) <- args.zipWithIndex) yield (
       "    " +
       (if (a.label == "") "arg" + i else a.label) +
-      " = " + decorateToStringValue(a.arg) + (if (i < args.length - 1) "," else "") +
+      " = " + decorateArgToStringValue(a) + (if (i < args.length - 1) "," else "") +
       (if (a.shrinks > 0) " // " + a.shrinks + (if (a.shrinks == 1) " shrink" else " shrinks") else "")
     )
     strs.mkString("\n")
