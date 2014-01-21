@@ -1108,7 +1108,7 @@ final case class SuiteAborted (
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends Event {
+) extends Event with ExceptionalEvent {
 
   if (ordinal == null)
     throw new NullPointerException("ordinal was null")

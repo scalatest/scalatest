@@ -22,6 +22,7 @@ import StringReporter.summaryFragments
 import org.scalatest.Resources
 import org.scalatest.events.TestFailed
 import org.scalatest.events.TestCanceled
+import org.scalatest.events.SuiteAborted
 import org.scalatest.events.InfoProvided
 import org.scalatest.events.NameInfo
 import org.scalatest.events.LineInFile
@@ -466,6 +467,212 @@ class StringReporterSummarySpec extends UnitSpec {
 
         fragments.take(initialFragmentsForOneFailedAndOneCanceledTest.size) should be (initialFragmentsForOneFailedAndOneCanceledTest)
         fragments.length should be > (initialFragmentsForJustOneFailedTest.size + initialFragmentsTheOneCanceledTestReminder.size + (2 * StringReporter.shortStackTraceSize))
+      }
+    }
+
+    object `when one Suite aborted` {
+      val summaryWithOneAbortedSuite =
+        new Summary(
+          testsSucceededCount = 0,
+          testsFailedCount = 0,
+          testsIgnoredCount = 0,
+          testsPendingCount = 0,
+          testsCanceledCount = 0,
+          suitesCompletedCount = 0,
+          suitesAbortedCount = 1,
+          scopesPendingCount = 0
+        )
+
+      val oneSuiteAborted: Vector[ExceptionalEvent] = 
+        Vector(
+          SuiteAborted(
+            ordinal = firstOrdinal,
+            message = "I meant to do that!",
+            suiteName = "StringReporterSummarySpec",
+            suiteId = "org.scalatest.tools.StringReporterSummarySpec",
+            suiteClassName =
+              Some("org.scalatest.tools.StringReporterSummarySpec"),
+            throwable = Some(testFailedException),
+            duration = Some(16),
+            formatter =
+              Some(IndentedText(
+                "THIS SHOULD NOT BE USED", "SHOULD NOT BE USED", 1)),
+            location = Some(SeeStackDepthException),
+            rerunner = Some("org.scalatest.tools.StringReporterSummarySpec"),
+            payload = None,
+            threadName = "Thread-10",
+            timeStamp = 1369965123278L
+          )
+        )
+
+      val fragmentsWhenNoReminderForOneSuiteAborted: Vector[Fragment] =
+        Vector(
+          Fragment(
+            Resources(
+              "runCompletedIn",
+              makeDurationString(213L)),
+            AnsiCyan),
+          Fragment(
+            Resources(
+              "totalNumberOfTestsRun",
+              summaryWithOneAbortedSuite.testsCompletedCount.toString),
+            AnsiCyan),
+          Fragment(
+            Resources(
+              "suiteSummary",
+              summaryWithOneAbortedSuite.suitesCompletedCount.toString,
+              summaryWithOneAbortedSuite.suitesAbortedCount.toString),
+            AnsiCyan),
+          Fragment(
+            Resources(
+              "testSummary",
+              summaryWithOneAbortedSuite.testsSucceededCount.toString,
+              summaryWithOneAbortedSuite.testsFailedCount.toString,
+              summaryWithOneAbortedSuite.testsCanceledCount.toString,
+              summaryWithOneAbortedSuite.testsIgnoredCount.toString,
+              summaryWithOneAbortedSuite.testsPendingCount.toString),
+            AnsiCyan),
+          Fragment(
+            Resources(
+              "oneSuiteAborted"),
+            AnsiRed)
+        )
+
+      val initialFragmentsForJustOneAbortedSuite: Vector[Fragment] =
+        Vector(
+          Fragment(
+            Resources(
+              "runCompletedIn",
+              makeDurationString(213L)),
+            AnsiCyan),
+          Fragment(
+            Resources(
+              "totalNumberOfTestsRun",
+              summaryWithOneAbortedSuite.testsCompletedCount.toString), 
+            AnsiCyan),
+          Fragment(
+            Resources(
+              "suiteSummary",
+              summaryWithOneAbortedSuite.suitesCompletedCount.toString,
+              summaryWithOneAbortedSuite.suitesAbortedCount.toString), 
+            AnsiCyan),
+          Fragment(
+            Resources(
+              "testSummary",
+              summaryWithOneAbortedSuite.testsSucceededCount.toString,
+              summaryWithOneAbortedSuite.testsFailedCount.toString,
+              summaryWithOneAbortedSuite.testsCanceledCount.toString,
+              summaryWithOneAbortedSuite.testsIgnoredCount.toString,
+              summaryWithOneAbortedSuite.testsPendingCount.toString), 
+            AnsiCyan),
+          Fragment(
+            Resources(
+              "oneSuiteAborted"), 
+            AnsiRed),
+          Fragment(
+            "StringReporterSummarySpec:", 
+            AnsiRed),
+          Fragment(
+            Resources("specTextAndNote", "", Resources("abortedNote")),
+            AnsiRed),
+          Fragment(
+            "  I meant to do that! (StringReporterSummarySpec.scala:" +
+              tfeLineNumber + ")", 
+            AnsiRed)
+        )
+
+
+      def `should produce a good summary when reminders are disabled` {
+        val fragments =
+          summaryFragments(
+            true,
+            Some(213L),
+            Some(summaryWithOneAbortedSuite),
+            oneSuiteAborted,
+            presentAllDurations = false,
+            presentReminder = false,
+            presentReminderWithShortStackTraces = false,
+            presentReminderWithFullStackTraces = false,
+            presentReminderWithoutCanceledTests = false
+          )
+        fragments should be (fragmentsWhenNoReminderForOneSuiteAborted)
+      }
+
+      def `should produce a good summary when reminders are enabled but the exceptional events vector is empty` {
+        val fragments =
+          summaryFragments(
+            true,
+            Some(213L),
+            Some(summaryWithOneAbortedSuite),
+            Vector.empty,
+            presentAllDurations = false,
+            presentReminder = true,
+            presentReminderWithShortStackTraces = false,
+            presentReminderWithFullStackTraces = false,
+            presentReminderWithoutCanceledTests = false
+          )
+        fragments should be (fragmentsWhenNoReminderForOneSuiteAborted)
+      }
+
+      def `should produce a good summary when reminders are enabled without stack traces` {
+        val fragments =
+          summaryFragments(
+            true,
+            Some(213L),
+            Some(summaryWithOneAbortedSuite),
+            oneSuiteAborted,
+            presentAllDurations = false,
+            presentReminder = true,
+            presentReminderWithShortStackTraces = false,
+            presentReminderWithFullStackTraces = false,
+            presentReminderWithoutCanceledTests = false
+          )
+
+        fragments should be (initialFragmentsForJustOneAbortedSuite)
+      }
+
+      def `should produce a good summary when reminders are enabled with short stack traces` {
+        val fragments =
+          summaryFragments(
+            true,
+            Some(213L),
+            Some(summaryWithOneAbortedSuite),
+            oneSuiteAborted,
+            presentAllDurations = false,
+            presentReminder = true,
+            presentReminderWithShortStackTraces = true,
+            presentReminderWithFullStackTraces = false,
+            presentReminderWithoutCanceledTests = false
+          )
+
+        fragments.take(initialFragmentsForJustOneAbortedSuite.size) should be (
+          initialFragmentsForJustOneAbortedSuite)
+
+        fragments.length should equal (
+          initialFragmentsForJustOneAbortedSuite.size +
+          StringReporter.shortStackTraceSize) 
+      }
+
+      def `should produce a good summary when reminders are enabled with full stack traces` {
+        val fragments =
+          summaryFragments(
+            true,
+            Some(213L),
+            Some(summaryWithOneAbortedSuite),
+            oneSuiteAborted,
+            presentAllDurations = false,
+            presentReminder = true,
+            presentReminderWithShortStackTraces = false,
+            presentReminderWithFullStackTraces = true,
+            presentReminderWithoutCanceledTests = false
+          )
+
+        fragments.take(initialFragmentsForJustOneAbortedSuite.size) should be (
+          initialFragmentsForJustOneAbortedSuite)
+
+        fragments.length should be > (
+          initialFragmentsForJustOneAbortedSuite.size +
+          StringReporter.shortStackTraceSize) 
       }
     }
 
