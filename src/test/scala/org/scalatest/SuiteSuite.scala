@@ -24,6 +24,7 @@ import javax.xml.transform.TransformerFactoryConfigurationError
 import java.awt.AWTError
 import SharedHelpers._
 import tools.Runner.CHOSEN_STYLES
+import org.scalatest.Suite.formatterForSuiteStarting
 
 /* Uncomment after remove type aliases in org.scalatest package object
 import org.scalatest.exceptions.NotAllowedException
@@ -725,6 +726,42 @@ class SuiteSuite extends Suite with PrivateMethodTester with SeveredStackTraces 
     assertResult(true) { Suite.anExceptionThatShouldCauseAnAbort(new OutOfMemoryError) }
     assertResult(false) { Suite.anExceptionThatShouldCauseAnAbort(new AssertionError) }
     assertResult(false) { Suite.anExceptionThatShouldCauseAnAbort(new RuntimeException) }
+  }
+
+  //
+  // Verify that Suites that don't contain any tests but do
+  // contain nested Suites get a MotionToSuppress formatter for
+  // SuiteStarting events.
+  //
+  def testFormatterForSuiteStarting() {
+    val emptySuite = new Suite {}
+
+    val emptySuiteContainingNestedSuites =
+      new Suites(emptySuite, new NormalSuite)
+
+    val nonEmptySuite = new Suite { def testFoo {} }
+
+    val nonEmptySuiteContainingNestedSuites =
+      new Suites(emptySuite, new NormalSuite)
+      {
+        def testFoo {}
+      }
+
+    assert(
+      formatterForSuiteStarting(emptySuite) !== 
+        Some(MotionToSuppress))
+
+    assert(
+      formatterForSuiteStarting(emptySuiteContainingNestedSuites) ===
+        Some(MotionToSuppress))
+
+    assert(
+      formatterForSuiteStarting(nonEmptySuite) !== 
+        Some(MotionToSuppress))
+
+    assert(
+      formatterForSuiteStarting(nonEmptySuiteContainingNestedSuites) !==
+        Some(MotionToSuppress))
   }
 }
 
