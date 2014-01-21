@@ -337,8 +337,8 @@ private[scalatest] object StringReporter {
   ): Vector[Fragment] = {
 
     def theFragments(
-      testName: String,
-      testText: String,
+      testNameOpt: Option[String],
+      testTextOpt: Option[String],
       suiteName: String,
       noteResourceName: String,
       errorResourceName: String,
@@ -347,35 +347,46 @@ private[scalatest] object StringReporter {
       duration: Option[Long],
       ansiColor: AnsiColor
     ): Vector[Fragment] = {
-        val prefixLength = testName.length - testText.length
-        val prefix: Option[String] = 
-          if (testName.drop(prefixLength) == testText)
-            Some(testName.take(prefixLength))
-          else
-            None
-        val suiteNameFrag = Fragment(suiteName + ":", ansiColor)
+      val prefix: Option[String] = {
+        (testNameOpt, testTextOpt) match {
+          case (Some(testName), Some(testText)) =>
+            val prefixLength = testName.length - testText.length
+            if (testName.drop(prefixLength) == testText)
+              Some(testName.take(prefixLength))
+            else None
+          case _ => None
+        }
+      }
+      val suiteNameFrag = Fragment(suiteName + ":", ansiColor)
+      val formatter = testTextOpt match {
+        case Some(testText) =>
+          Some(IndentedText("- " + testText, testText, 0))
+        case None =>
+          Some(IndentedText("", "", 0))
+      }
+      val otherFrags: Vector[Fragment] =
+        fragmentsOnError(
+          noteResourceName,
+          errorResourceName,
+          message,
+          throwable,
+          formatter,
+          Some(suiteName),
+          testNameOpt,
+          duration,
+          false,
+          presentAllDurations,
+          presentReminderWithShortStackTraces,
+          presentReminderWithFullStackTraces,
+          ansiColor
+        )
         val testNameFrags: Vector[Fragment] =
           prefix match {
             case Some(pre) =>
               val preFrag = Fragment(pre, ansiColor)
-              val otherFrags =
-                fragmentsOnError(
-                  noteResourceName,
-                  errorResourceName,
-                  message,
-                  throwable,
-                  Some(IndentedText("- " + testText, testText, 0)),
-                  Some(suiteName),
-                  Some(testName),
-                  duration,
-                  false,
-                  presentAllDurations,
-                  presentReminderWithShortStackTraces,
-                  presentReminderWithFullStackTraces,
-                  ansiColor
-                )
               preFrag +: otherFrags
-            case None => Vector.empty
+            case None =>
+              otherFrags
           }
         suiteNameFrag +: testNameFrags
     }
@@ -398,8 +409,8 @@ private[scalatest] object StringReporter {
         //   - should be empty
         //
         theFragments(
-          tf.testName,
-          tf.testText,
+          Some(tf.testName),
+          Some(tf.testText),
           tf.suiteName,
           "failedNote",
           "testFailed",
@@ -410,8 +421,8 @@ private[scalatest] object StringReporter {
         )
       case tc: TestCanceled =>
         theFragments(
-          tc.testName,
-          tc.testText,
+          Some(tc.testName),
+          Some(tc.testText),
           tc.suiteName,
           "canceledNote",
           "testCanceled",
@@ -419,6 +430,18 @@ private[scalatest] object StringReporter {
           tc.throwable,
           tc.duration,
           AnsiYellow
+        )
+      case sa: SuiteAborted =>
+        theFragments(
+          None,
+          None,
+          sa.suiteName,
+          "abortedNote",
+          "suiteAborted",
+          sa.message,
+          sa.throwable,
+          sa.duration,
+          AnsiRed
         )
     }
   }
