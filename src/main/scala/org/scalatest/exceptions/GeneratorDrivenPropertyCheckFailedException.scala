@@ -19,7 +19,7 @@ import org.scalatest._
 
 // TODO: A test and code for null labels throwing an NPE
 /**
- * Exception that indicates a ScalaCheck property check failed.
+ * Exception that indicates a <a href="http://www.artima.com/shop/scalacheck">ScalaCheck</a> property check failed.
  *
  * @param messageFun a function that returns a detail message (not optional) for this <code>GeneratorDrivenPropertyCheckFailedException</code>.
  * @param cause an optional cause, the <code>Throwable</code> that caused this <code>GeneratorDrivenPropertyCheckFailedException</code> to be thrown.

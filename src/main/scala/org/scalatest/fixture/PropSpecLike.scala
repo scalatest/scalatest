@@ -21,7 +21,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
 
 /**
  * Implementation trait for class <code>fixture.PropSpec</code>, which is
- * a sister class to <code>org.scalatest.PropSpec</code> that can pass a
+ * a sister class to <a href="../PropSpec.html"><code>org.scalatest.PropSpec</code></a> that can pass a
  * fixture object into its tests.
  * 
  * <p>
