@@ -1864,7 +1864,15 @@ private[scalatest] object Suite {
       case _ => (a, b)
     }
 
+  //
+  // Use MotionToSuppress on aggregator Suites, i.e. Suites that
+  // contain other Suites but don't contain any tests themselves
+  // (e.g. DiscoverySuite).
+  //
   def formatterForSuiteStarting(suite: Suite): Option[Formatter] =
+    if ((suite.testNames.size == 0) && (suite.nestedSuites.size > 0))
+      Some(MotionToSuppress)
+    else
       Some(IndentedText(suite.suiteName + ":", suite.suiteName, 0))
 
   def formatterForSuiteCompleted(suite: Suite): Option[Formatter] =

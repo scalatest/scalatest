@@ -17,6 +17,7 @@ package org.scalatest.prop
 
 import org.scalatest._
 import org.scalacheck._
+import org.scalacheck.util.Pretty
 import Arbitrary._
 import Prop._
 import org.scalatest.matchers.ShouldMatchers._
@@ -231,5 +232,29 @@ class CheckersSuite extends Suite with Checkers {
     expectFileNameLineNumber(ex7, "CheckersSuite.scala", thisLineNumber - 1)
     val ex8 = intercept[GeneratorDrivenPropertyCheckFailedException] { check(Prop.forAll((n: Int) => n + 0 == n + 1), new Test.Parameters.Default { override val minSuccessfulTests = 5 }) }
     expectFileNameLineNumber(ex8, "CheckersSuite.scala", thisLineNumber - 1)
+  }
+
+  //
+  // Verify that if a Pretty function is provided for a class used as an
+  // argument that the Pretty function is used to display the argument
+  // when a failure occurs.
+  //
+  def testArgBPretty() {
+    class Thingie(val whatzit: Int)
+
+    val g = new Thingie(23)
+
+    val p: Thingie => Pretty = { t =>
+      Pretty { _ => "Thingie "+ t.whatzit }
+    }
+
+    val tfe = intercept[TestFailedException] {
+      check(
+        Prop.forAll(g) { _ => false }(implicitly[Boolean => Prop],
+                                      implicitly[Shrink[Thingie]],
+                                      p)
+      )
+    }
+    assert(tfe.toString.contains("arg0 = Thingie 23"))
   }
 }

@@ -19,7 +19,8 @@
     <property name="deploy.scala.version" value="2.11.0-M4" />
 	<property name="for.scala" value="2.11.0" />
 -->
-    <property name="release" value="2.0.1-SNAP7" />
+    <property name="release" value="2.1.RC1" />
+    <property name="github.tag" value="release-2.0-for-scala-2.10" /> <!-- for scaladoc source urls -->
 
     <property name="scalasrc" value="src/main/scala" />
     <property name="javasrc" value="src/main/java" />
@@ -152,11 +153,6 @@
                 <pathelement location="${scala-parser-combinators}" />
             </classpath>
         </taskdef>
-
-        <path id="scaladoc.source.path">
-            <pathelement location="${build}/docsrc" />
-            <pathelement location="${build.generated.src}" />
-        </path>
 
         <path id="cobertura.class.path">
           <pathelement location="${net.sourceforge.cobertura:cobertura:jar}" />
@@ -1070,6 +1066,7 @@
 
       <copy todir="${build}/docsrc">
         <fileset dir="src/main/scala" />
+        <fileset dir="${build.generated.src}" />
       </copy>
 
       <replaceregexp match="@Finders(.*)" replace="">
@@ -1081,7 +1078,9 @@
       <exec executable="support/docjavatags.scala"/>
 
       <scaladoc addparams="-no-specialization"
-                srcref="scaladoc.source.path"
+                srcdir="${build}/docsrc"
+                sourcepath="${build}/docsrc"
+                docsourceurl="https://github.com/scalatest/scalatest/tree/${github.tag}/src/main/scala€{FILE_PATH}.scala"
                 destdir="${doc}"
                 classpathref="lib.path"
                 doctitle="ScalaTest ${release}">
@@ -1141,7 +1140,9 @@
       </replaceregexp>
 
       <scaladoc addparams="-no-specialization"
-                srcdir="target/docsrc"
+                srcdir="${build}/docsrc"
+                sourcepath="${build}/docsrc"
+                docsourceurl="https://github.com/scalatest/scalatest/tree/${github.tag}/src/main/scala€{FILE_PATH}.scala"
                 destdir="${build}/utilsdoc"
                 classpathref="lib.path"
                 doctitle="ScalaUtils ${release}">
@@ -1274,7 +1275,7 @@
 	<target name="run-gentests" depends="compile-gentests,taskdefscalatest">
       <scalatest fork="true" runpath="${build.generated.tests.bin}" parallel="true" haltonfailure="true">
         <jvmarg value="-XX:MaxPermSize=512m"/>
-        <jvmarg value="-Xmx4000M"/>
+        <jvmarg value="-Xmx5000M"/>
         <jvmarg value="-Xss10M"/>
 	<reporter type="graphic"/>
         <reporter type="stdout" config="DF"/>
