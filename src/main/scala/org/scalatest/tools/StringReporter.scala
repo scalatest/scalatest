@@ -297,7 +297,10 @@ private[scalatest] object StringReporter {
               Some(Fragment(Resources("multipleTestsFailed", testsFailedCount.toString), AnsiRed))
             }
             else if (suitesAbortedCount == 0) { // Maybe don't want to say this if the run aborted or stopped because "all"
-              Some(Fragment(Resources("allTestsPassed"), AnsiGreen))
+              if (testsCompletedCount > 0)
+                Some(Fragment(Resources("allTestsPassed"), AnsiGreen))
+              else
+                Some(Fragment(Resources("noTestsWereExecuted"), AnsiYellow))
             }
             else None
           ).flatten
