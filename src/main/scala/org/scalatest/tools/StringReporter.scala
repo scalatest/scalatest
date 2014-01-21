@@ -748,7 +748,7 @@ private[scalatest] object StringReporter {
 
         fragmentsWhenNoError("suiteStarting", formatter, suiteName, None, None, presentUnformatted, presentAllDurations)
 
-      case SuiteCompleted(ordinal, suiteName, suiteId, suiteClassName, duration, formatter, location, rerunnable, payload, threadName, timeStamp) => 
+      case SuiteCompleted(ordinal, suiteName, suiteId, suiteClassName, duration, formatter, location, rerunnable, payload, threadName, timeStamp, nestedSuitesCount) => 
 
         fragmentsWhenNoError("suiteCompleted", formatter, suiteName, None, None, presentUnformatted, presentAllDurations, AnsiGreen, duration)
 

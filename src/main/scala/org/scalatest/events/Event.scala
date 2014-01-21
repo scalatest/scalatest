@@ -1002,7 +1002,8 @@ final case class SuiteCompleted (
   rerunner: Option[String] = None,
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
-  timeStamp: Long = (new Date).getTime
+  timeStamp: Long = (new Date).getTime,
+  nestedSuitesCount: Int = 0
 ) extends Event {
 
   if (ordinal == null)

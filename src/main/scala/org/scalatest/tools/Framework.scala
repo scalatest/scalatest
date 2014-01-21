@@ -443,7 +443,7 @@ class Framework extends SbtFramework {
       val formatter = formatterForSuiteCompleted(suite)
       val duration = System.currentTimeMillis - suiteStartTime
 
-      report(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(duration), formatter, Some(TopOfClass(suiteClass.getName))))
+      report(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(duration), formatter, Some(TopOfClass(suiteClass.getName)), nestedSuitesCount = suite.nestedSuites.size))
       
       statefulStatus match {
         case Some(s) => 
