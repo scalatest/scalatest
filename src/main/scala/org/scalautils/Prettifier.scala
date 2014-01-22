@@ -213,7 +213,7 @@ object Prettifier {
    */
   val basic = new BasicPrettifier
 
-  private[scalautils] def diffStrings(s: String, t: String): Tuple2[String, String] = {
+  private[org] def diffStrings(s: String, t: String): Tuple2[String, String] = {
     def findCommonPrefixLength(s: String, t: String): Int = {
       val max = s.length.min(t.length) // the maximum potential size of the prefix
       var i = 0
@@ -254,7 +254,7 @@ object Prettifier {
       (s, t)
   }
 
-  private[scalautils] def getObjectsForFailureMessage(a: Any, b: Any) =
+  private[org] def getObjectsForFailureMessage(a: Any, b: Any) =
     a match {
       case aStr: String => {
         b match {
