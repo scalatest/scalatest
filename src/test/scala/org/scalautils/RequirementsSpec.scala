@@ -571,4 +571,71 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
   }
 
+  describe("The requireNonNull(...) method") {
+
+    val prefix = "prefix text"
+    val string = "some text"
+    val suffix = "suffix tex"
+
+    val nullPrefix = null
+    val nullString = null
+    val nullSuffix = null
+
+    it("should do nothing when passed in parameters are non-null") {
+      requireNonNull(prefix, string, suffix)
+    }
+
+    it("should throw NullPointerException with correct message when one of passed parameters is null") {
+      val e = intercept[NullPointerException] {
+        requireNonNull(prefix, nullString, suffix)
+      }
+      assert(e.getMessage == "nullString was null")
+    }
+
+    it("should throw NullPointerException with correct message when two of passed parameters is null") {
+      val e = intercept[NullPointerException] {
+        requireNonNull(nullPrefix, nullString, suffix)
+      }
+      assert(e.getMessage == "nullPrefix and nullString were null")
+    }
+
+    it("should throw NullPointerException with correct message when three of passed parameters is null") {
+      val e = intercept[NullPointerException] {
+        requireNonNull(nullPrefix, nullString, nullSuffix)
+      }
+      assert(e.getMessage == "nullPrefix, nullString and nullSuffix were null")
+    }
+
+    it("should throw NullPointerException with correct message when one of passed parameters through object property is null") {
+      class AClass {
+        val aNull: String = null
+      }
+      val aClass = new AClass
+      val e = intercept[NullPointerException] {
+        requireNonNull(prefix, aClass.aNull, suffix)
+      }
+      assert(e.getMessage == "aClass.aNull was null")
+    }
+
+    it("should throw NullPointerException with correct message when one of passed parameters through object method call is null") {
+      class AClass {
+        def returnNull: String = null
+      }
+      val aClass = new AClass
+      val e = intercept[NullPointerException] {
+        requireNonNull(prefix, aClass.returnNull, suffix)
+      }
+      assert(e.getMessage == "aClass.returnNull was null")
+    }
+
+    it("should throw NullPointerException with correct message when one of passed parameters through method call is null") {
+      def returnNull: String = null
+      val e = intercept[NullPointerException] {
+        requireNonNull(prefix, returnNull, suffix)
+      }
+      assert(e.getMessage == "returnNull was null")
+    }
+
+  }
+
 }
