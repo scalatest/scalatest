@@ -212,6 +212,60 @@ object Prettifier {
    * </p>
    */
   val basic = new BasicPrettifier
+
+  private[scalautils] def diffStrings(s: String, t: String): Tuple2[String, String] = {
+    def findCommonPrefixLength(s: String, t: String): Int = {
+      val max = s.length.min(t.length) // the maximum potential size of the prefix
+      var i = 0
+      var found = false
+      while (i < max & !found) {
+        found = (s.charAt(i) != t.charAt(i))
+        if (!found)
+          i = i + 1
+      }
+      i
+    }
+    def findCommonSuffixLength(s: String, t: String): Int = {
+      val max = s.length.min(t.length) // the maximum potential size of the suffix
+      var i = 0
+      var found = false
+      while (i < max & !found) {
+        found = (s.charAt(s.length - 1 - i) != t.charAt(t.length - 1 - i))
+        if (!found)
+          i = i + 1
+      }
+      i
+    }
+    if (s != t) {
+      val commonPrefixLength = findCommonPrefixLength(s, t)
+      val commonSuffixLength = findCommonSuffixLength(s.substring(commonPrefixLength), t.substring(commonPrefixLength))
+      val prefix = s.substring(0, commonPrefixLength)
+      val suffix = if (s.length - commonSuffixLength < 0) "" else s.substring(s.length - commonSuffixLength)
+      val sMiddleEnd = s.length - commonSuffixLength
+      val tMiddleEnd = t.length - commonSuffixLength
+      val sMiddle = s.substring(commonPrefixLength, sMiddleEnd)
+      val tMiddle = t.substring(commonPrefixLength, tMiddleEnd)
+      val MaxContext = 20
+      val shortPrefix = if (commonPrefixLength > MaxContext) "..." + prefix.substring(prefix.length - MaxContext) else prefix
+      val shortSuffix = if (commonSuffixLength > MaxContext) suffix.substring(0, MaxContext) + "..." else suffix
+      (shortPrefix + "[" + sMiddle + "]" + shortSuffix, shortPrefix + "[" + tMiddle + "]" + shortSuffix)
+    }
+    else
+      (s, t)
+  }
+
+  private[scalautils] def getObjectsForFailureMessage(a: Any, b: Any) =
+    a match {
+      case aStr: String => {
+        b match {
+          case bStr: String => {
+            diffStrings(aStr, bStr)
+          }
+          case _ => (a, b)
+        }
+      }
+      case _ => (a, b)
+    }
 }
 
 private[scalautils] class BasicPrettifier extends Prettifier {
