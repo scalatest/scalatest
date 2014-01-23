@@ -105,6 +105,8 @@ trait TimesOnInt {
     }
   }
 
+  import scala.language.implicitConversions
+
   /**
    * Implicit conversion that adds a <code>times</code> method to <code>Int</code>s that
    * will repeat a given side-effecting operation multiple times.

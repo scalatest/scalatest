@@ -58,6 +58,8 @@ final class NotWord {
       override def toString: String = "not (" + Prettifier.default(matcher) + ")"
     }
 
+  import scala.language.higherKinds
+
   /**
    * This method enables the following syntax:
    *

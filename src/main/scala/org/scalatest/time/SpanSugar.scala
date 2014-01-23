@@ -509,6 +509,8 @@ trait SpanSugar {
     def days: Span = Span(value, Days)
   }
 
+  import scala.language.implicitConversions
+
   /**
    * Implicit conversion that adds time units methods to <code>Int</code>s.
    * 

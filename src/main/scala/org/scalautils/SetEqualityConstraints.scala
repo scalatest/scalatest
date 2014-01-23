@@ -98,6 +98,9 @@ import TripleEqualsSupport._
  * @author Bill Venners
  */
 trait SetEqualityConstraints {
+
+  import scala.language.higherKinds
+
   /**
    * Provides an equality constraint that allows two subtypes of <code>scala.collection.GenSet</code>s to be compared for equality with <code>===</code> so long
    * as an <code>EqualityConstraint</code> is available for the element types.

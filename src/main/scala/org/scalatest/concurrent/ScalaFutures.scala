@@ -39,6 +39,8 @@ import scala.util.Failure
  */
 trait ScalaFutures extends Futures {
 
+  import scala.language.implicitConversions
+
   /**
    * Implicitly converts a <code>scala.concurrent.Future[T]</code> to
    * <code>FutureConcept[T]</code>, allowing you to invoke the methods

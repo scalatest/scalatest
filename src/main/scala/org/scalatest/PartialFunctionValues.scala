@@ -79,6 +79,8 @@ import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
  */
 trait PartialFunctionValues {
 
+  import scala.language.implicitConversions
+
   /**
    * Implicit conversion that adds a <code>valueAt</code> method to <code>PartialFunction</code>.
    *

@@ -217,6 +217,8 @@ trait MustVerb {
     }
   }
 
+  import scala.language.implicitConversions
+
   /**
    * Implicitly converts an object of type <code>String</code> to a <code>StringMustWrapper</code>,
    * to enable <code>must</code> methods to be invokable on that object.

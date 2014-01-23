@@ -72,6 +72,8 @@ object Readability {
       def isReadable(file: FILE): Boolean = file.canRead
     }
 
+  import scala.language.reflectiveCalls
+
   /**
    * Enable <code>Readability</code> implementation for any arbitrary object with a <code>isReadable()</code> method that returns <code>Boolean</code>
    *

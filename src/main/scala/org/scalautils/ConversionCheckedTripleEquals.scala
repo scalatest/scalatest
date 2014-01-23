@@ -228,6 +228,8 @@ import TripleEqualsSupport._
  */
 trait ConversionCheckedTripleEquals extends LowPriorityConversionCheckedConstraint {
 
+  import scala.language.implicitConversions
+
   // Inherit the Scaladoc for these methods
 
   override def convertToEqualizer[T](left: T): Equalizer[T] = new Equalizer(left)

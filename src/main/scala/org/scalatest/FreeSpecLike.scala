@@ -315,6 +315,8 @@ trait FreeSpecLike extends Suite with Informing with Notifying with Alerting wit
     }
   }
 
+  import scala.language.implicitConversions
+
   /**
    * Implicitly converts <code>String</code>s to <code>FreeSpecStringWrapper</code>, which enables
    * methods <code>in</code>, <code>is</code>, <code>taggedAs</code> and <code>ignore</code>,

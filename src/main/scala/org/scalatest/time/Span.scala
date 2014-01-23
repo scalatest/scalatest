@@ -691,6 +691,7 @@ object Span {
       unitsString + "s (i.e., with an s) instead."
   }
 
+  import scala.language.implicitConversions
   import scala.concurrent.duration.Duration
 
   /**

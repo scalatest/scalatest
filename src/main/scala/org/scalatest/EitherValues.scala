@@ -80,6 +80,8 @@ import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
  */
 trait EitherValues {
 
+  import scala.language.implicitConversions
+
   /**
    * Implicit conversion that adds a <code>value</code> method to <code>LeftProjection</code>.
    *

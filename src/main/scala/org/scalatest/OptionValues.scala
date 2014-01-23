@@ -78,6 +78,8 @@ import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
  */
 trait OptionValues {
 
+  import scala.language.implicitConversions
+
   /**
    * Implicit conversion that adds a <code>value</code> method to <code>Option</code>.
    *
