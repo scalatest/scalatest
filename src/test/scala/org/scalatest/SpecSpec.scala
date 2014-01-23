@@ -267,6 +267,8 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
         def `test: that` { theTestThatCalled = true }
       }
 
+      import scala.language.reflectiveCalls
+
       val repA = new TestIgnoredTrackingReporter
       a.run(None, Args(repA, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
       assert(!repA.testIgnoredReceived)
@@ -333,6 +335,8 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
         def `test: that` { theTestThatCalled = true }
       }
 
+      import scala.language.reflectiveCalls
+
       val repE = new TestIgnoredTrackingReporter
       e.run(Some("test: this"), Args(repE, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
       assert(repE.testIgnoredReceived)
@@ -349,6 +353,8 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
         def `test: this`() { theTestThisCalled = true }
         def `test: that` { theTestThatCalled = true }
       }
+
+      import scala.language.reflectiveCalls
 
       val repE = new TestIgnoredTrackingReporter
       e.run(Some("test: this"), Args(repE, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -367,6 +373,9 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
         def `test this` { theTestThisCalled = true }
         def `test that` { theTestThatCalled = true }
       }
+
+      import scala.language.reflectiveCalls
+
       val repA = new TestIgnoredTrackingReporter
       a.run(None, Args(repA, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
       assert(!repA.testIgnoredReceived)
@@ -827,6 +836,9 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
           theTestWasInvoked = true
         }
       }
+
+      import scala.language.reflectiveCalls
+
       a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(), Set.empty))
       assert(a.withFixtureWasInvoked)
       assert(a.theTestWasInvoked)
@@ -841,6 +853,9 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
         }
         def `test: something` {}
       }
+
+      import scala.language.reflectiveCalls
+
       a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(), Set.empty))
       assert(a.correctTestNameWasPassed)
     }
@@ -854,6 +869,9 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
         }
         def `test: something` {}
       }
+
+      import scala.language.reflectiveCalls
+
       a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> 7), None, new Tracker(), Set.empty))
       assert(a.correctConfigMapWasPassed)
     }

@@ -68,7 +68,7 @@ class CatchReporterProp extends AllSuiteProp {
             classOf[Reporter].isAssignableFrom(clazz) && element.getMethodName == "apply"
           }
           catch {
-            case _ => false
+            case _: Throwable => false
           }
         }.isDefined
       }
@@ -95,7 +95,7 @@ class CatchReporterProp extends AllSuiteProp {
             classOf[Reporter].isAssignableFrom(clazz) && element.getMethodName == "apply"
           }
           catch {
-            case _ => false
+            case _: Throwable => false
           }
         }.isDefined
       }
@@ -115,7 +115,7 @@ class CatchReporterProp extends AllSuiteProp {
             classOf[Reporter].isAssignableFrom(clazz) && element.getMethodName == "apply"
           }
           catch {
-            case _ => false
+            case _: Throwable => false
           }
         }
       }
@@ -146,7 +146,7 @@ class CatchReporterProp extends AllSuiteProp {
             classOf[Reporter].isAssignableFrom(clazz) && element.getMethodName == "apply"
           }
           catch {
-            case _ => false
+            case _: Throwable => false
           }
         }.isDefined
       }
@@ -167,7 +167,7 @@ class CatchReporterProp extends AllSuiteProp {
             classOf[Reporter].isAssignableFrom(clazz) && element.getMethodName == "apply"
           }
           catch {
-            case _ => false
+            case _: Throwable => false
           }
         }.isDefined
       }
@@ -188,7 +188,7 @@ class CatchReporterProp extends AllSuiteProp {
             classOf[Reporter].isAssignableFrom(clazz) && element.getMethodName == "apply"
           }
           catch {
-            case _ => false
+            case _: Throwable => false
           }
         }.isDefined
       }
@@ -209,7 +209,7 @@ class CatchReporterProp extends AllSuiteProp {
             classOf[Reporter].isAssignableFrom(clazz) && element.getMethodName == "apply"
           }
           catch {
-            case _ => false
+            case _: Throwable => false
           }
         }.isDefined
       }

@@ -210,6 +210,8 @@ class PropSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         property("test that") { fixture => theTestThatCalled = true }
       }
 
+      import scala.language.reflectiveCalls
+
       val repA = new TestIgnoredTrackingReporter
       a.run(None, Args(repA))
       assert(!repA.testIgnoredReceived)
@@ -282,6 +284,8 @@ class PropSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         property("test that") { fixture => theTestThatCalled = true }
       }
 
+      import scala.language.reflectiveCalls
+
       val repE = new TestIgnoredTrackingReporter
       e.run(Some("test this"), Args(repE))
       assert(repE.testIgnoredReceived)
@@ -300,6 +304,9 @@ class PropSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         property("test this", mytags.SlowAsMolasses) { fixture => theTestThisCalled = true }
         property("test that") { fixture => theTestThatCalled = true }
       }
+
+      import scala.language.reflectiveCalls
+
       val repA = new TestIgnoredTrackingReporter
       a.run(None, Args(repA))
       assert(!repA.testIgnoredReceived)
@@ -590,6 +597,9 @@ class PropSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
           theTestWithoutFixtureWasRun = true
         }
       }
+
+      import scala.language.reflectiveCalls
+
       val rep = new EventRecordingReporter
       a.run(None, Args(rep))
       val tp = rep.testPendingEventsReceived
@@ -643,6 +653,8 @@ class PropSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         property("takes a fixture") { s => takesAFixtureInvoked = true }
       }
 
+      import scala.language.reflectiveCalls
+
       a.run(None, Args(SilentReporter))
       assert(a.testNames.size === 2, a.testNames)
       assert(a.takesNoArgsInvoked)
@@ -664,6 +676,8 @@ class PropSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         property("takes a fixture") { s => takesAFixtureInvoked = true; true }
       }
 
+      import scala.language.reflectiveCalls
+
       assert(!a.takesNoArgsInvoked)
       assert(!a.takesAFixtureInvoked)
       a.run(None, Args(SilentReporter))
@@ -681,6 +695,8 @@ class PropSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         ignore("test this") { () => theTestThisCalled = true; "hi" }
         ignore("test that") { fixture => theTestThatCalled = true; 42 }
       }
+
+      import scala.language.reflectiveCalls
 
       assert(!a.theTestThisCalled)
       assert(!a.theTestThatCalled)
@@ -766,6 +782,9 @@ class PropSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         }
         property("something") { fixture => }
       }
+
+      import scala.language.reflectiveCalls
+
       a.run(None, Args(SilentReporter))
       assert(a.correctTestNameWasPassed)
     }
@@ -779,6 +798,9 @@ class PropSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         }
         property("something") { fixture => }
       }
+
+      import scala.language.reflectiveCalls
+
       a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> 7), None, new Tracker(), Set.empty))
       assert(a.correctConfigMapWasPassed)
     }
