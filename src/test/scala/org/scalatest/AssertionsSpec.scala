@@ -24,8 +24,9 @@ import scala.util.Failure
 import scala.util.Success
 import Assertions.NormalResult
 import org.scalatest.exceptions.TestCanceledException
+import OptionValues._
 
-class AssertionsSpec extends FunSpec with OptionValues {
+class AssertionsSpec extends FunSpec {
   
   val fileName: String = "AssertionsSpec.scala"
 

@@ -18,13 +18,14 @@ package org.scalatest
 import collection.immutable.TreeSet
 import SharedHelpers._
 import org.scalatest.events._
+import PrivateMethodTester._
 
 /* Uncomment after remove type aliases in org.scalatest package object
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestPendingException
 */
 
-class DeprecatedMethodFormSuiteSpec extends FunSpec with PrivateMethodTester {
+class DeprecatedMethodFormSuiteSpec extends FunSpec {
 
   describe("The simpleNameForTest method") {
     it("should return the correct test simple name with or without Informer") {

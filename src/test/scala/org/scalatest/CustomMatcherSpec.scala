@@ -48,7 +48,9 @@ trait CustomMatchers {
   val beFound = new FileExistsMatcher
 }
 
-class CustomMatcherSpec extends FunSpec with Matchers with CustomMatchers {
+import Matchers._
+
+class CustomMatcherSpec extends FunSpec with CustomMatchers {
 
   describe("A customer matcher") {
 
