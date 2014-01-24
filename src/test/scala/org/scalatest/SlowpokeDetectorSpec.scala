@@ -17,8 +17,10 @@ package org.scalatest
 
 import time._
 import SpanSugar._
+import Matchers._
+import Now._
 
-class SlowpokeDetectorSpec extends Spec with Matchers with Now {
+class SlowpokeDetectorSpec extends Spec with Now {
 
   object `The Slowpoke detector` {
     def `should allow a timeout to be specified at construction` {

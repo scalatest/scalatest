@@ -16,8 +16,9 @@
 package org.scalatest
 
 import org.scalautils._
+import Matchers._
 
-class ShouldEqualNullSpec extends Spec with Matchers {
+class ShouldEqualNullSpec extends Spec {
 
   case class Super(size: Int)
   class Sub(sz: Int) extends Super(sz)

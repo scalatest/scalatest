@@ -30,7 +30,7 @@ trait TestTimeoutExpectedResults extends EventHelpers { s: ParallelTestExecution
   var holdingReporter: TestHoldingReporter = null
 }
 
-trait ParallelTestExecutionTestTimeoutExamples extends Tables {
+object ParallelTestExecutionTestTimeoutExamples extends Tables {
 
   def testTimeoutSuite = new ExampleParallelTestExecutionTestTimeoutSuite()
   def testTimeoutFixtureSuite = new ExampleParallelTestExecutionTestTimeoutFixtureSuite()

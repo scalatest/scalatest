@@ -20,8 +20,9 @@ import org.scalautils.Uniformity
 import org.scalautils.StringNormalizations._
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
+import Matchers._
 
-class ListShouldContainOnlyLogicalOrSpec extends Spec with Matchers {
+class ListShouldContainOnlyLogicalOrSpec extends Spec {
   
   val invertedStringEquality =
     new Equality[String] {

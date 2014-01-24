@@ -16,8 +16,9 @@
 package org.scalatest
 
 import SharedHelpers.thisLineNumber
+import Matchers._
 
-class ShouldBeDefinedStructuralLogicalAndSpec extends FunSpec with Matchers {
+class ShouldBeDefinedStructuralLogicalAndSpec extends FunSpec {
   
   val fileName: String = "ShouldBeDefinedStructuralLogicalAndSpec.scala"
   

@@ -20,8 +20,9 @@ import org.scalautils.Uniformity
 import org.scalautils.StringNormalizations._
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
+import Matchers._
 
-class ListShouldContainTheSameElementsAsSpec extends Spec with Matchers {
+class ListShouldContainTheSameElementsAsSpec extends Spec {
   
   private def upperCase(value: Any): Any = 
     value match {

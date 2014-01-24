@@ -25,8 +25,10 @@ import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 import org.scalautils.Equality
 import org.scalautils.ConversionCheckedTripleEquals
+import Matchers._
+import ConversionCheckedTripleEquals._
 
-class ShouldConversionCheckedTripleEqualsEqualitySpec extends Spec with NonImplicitAssertions with Matchers with ConversionCheckedTripleEquals {
+class ShouldConversionCheckedTripleEqualsEqualitySpec extends Spec with NonImplicitAssertions {
 
   object `the === operator should use the appropriate Equality type class` {
     def `for Any` {

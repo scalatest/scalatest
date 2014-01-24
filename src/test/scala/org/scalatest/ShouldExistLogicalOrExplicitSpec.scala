@@ -18,8 +18,9 @@ package org.scalatest
 import java.io.File
 import SharedHelpers.{createTempDirectory, thisLineNumber}
 import enablers.Existence
+import Matchers._
 
-class ShouldExistLogicalOrExplicitSpec extends Spec with Matchers {
+class ShouldExistLogicalOrExplicitSpec extends Spec {
   
   trait Thing {
     def exist: Boolean

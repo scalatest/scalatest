@@ -15,10 +15,10 @@
  */
 package org.scalatest
 
-import matchers._
 import SharedHelpers._
+import Matchers._
 
-class NotifierSpec extends Spec with Matchers {
+class NotifierSpec extends Spec {
   object `A Notifier` {
     def `should fire NoteProvided event with correct message and None in payload when using apply(message)` {
       class MySuite extends FunSuite {

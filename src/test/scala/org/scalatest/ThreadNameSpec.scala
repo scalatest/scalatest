@@ -15,10 +15,9 @@
  */
 package org.scalatest
 
-import matchers._
-import SharedHelpers._
+import Matchers._
 
-class ThreadNameSpec extends Spec with Matchers {
+class ThreadNameSpec extends Spec {
 
   object `The Thread name augmenter` {
     def `should add "running X" onto bare thread names` {

@@ -23,8 +23,9 @@ import Integer.MIN_VALUE
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.enablers.Size
 import FailureMessages._
+import Matchers._
 
-class ShouldSizeSpec extends Spec with Matchers with Checkers with ReturnsNormallyThrowsAssertion {
+class ShouldSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssertion {
 
   // Checking for a specific size
   object `The 'have size (Int)' syntax` {

@@ -16,8 +16,9 @@
 package org.scalatest
 
 import SharedHelpers.thisLineNumber
+import Matchers._
 
-class ShouldBeDefinedAtForAllSpec extends Spec with Matchers {
+class ShouldBeDefinedAtForAllSpec extends Spec {
   
   def wasDefinedAt(left: Any, right: Any): String = 
     left + " was defined at " + right

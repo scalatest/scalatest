@@ -87,7 +87,9 @@ class MandarinOrangeSpecs(suites: Suite*) extends Specs(suites: _*)
 class MandarinOrangeSequential(suites: Suite*) extends Sequential(suites: _*)
 class MandarinOrangeStepwise(suites: Suite*) extends Stepwise(suites: _*)
 
-class SuiteSpec extends FunSpec with PrivateMethodTester {
+import PrivateMethodTester._
+
+class SuiteSpec extends FunSpec {
 
   describe("the toString method on Suites and SuiteLike traits other than TestNGSuiteLike") {
     describe("when the suite contains no nested suites") {

@@ -16,8 +16,9 @@
 package org.scalatest
 
 import org.scalatest.exceptions.TestFailedException
+import Matchers._
 
-class ShouldPlusOrMinusSpec extends Spec with Matchers {
+class ShouldPlusOrMinusSpec extends Spec {
 
   object `The be (X +- Y) syntax` {
 

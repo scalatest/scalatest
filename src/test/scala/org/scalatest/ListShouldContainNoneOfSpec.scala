@@ -20,8 +20,9 @@ import org.scalautils.Uniformity
 import org.scalautils.StringNormalizations._
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
+import Matchers._
 
-class ListShouldContainNoneOfSpec extends Spec with Matchers {
+class ListShouldContainNoneOfSpec extends Spec {
 
   val upperCaseEquality =
     new Equality[String] {

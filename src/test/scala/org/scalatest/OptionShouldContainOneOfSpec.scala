@@ -19,8 +19,9 @@ import org.scalautils.Equality
 import org.scalautils.StringNormalizations._
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
+import Matchers._
 
-class OptionShouldContainOneOfSpec extends Spec with Matchers {
+class OptionShouldContainOneOfSpec extends Spec {
 
   val invertedStringEquality =
     new Equality[String] {

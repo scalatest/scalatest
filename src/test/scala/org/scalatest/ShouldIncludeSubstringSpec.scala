@@ -20,8 +20,9 @@ import org.scalacheck._
 import Arbitrary._
 import Prop._
 import org.scalatest.exceptions.TestFailedException
+import Matchers._
 
-class ShouldIncludeSubstringSpec extends Spec with Matchers with Checkers with ReturnsNormallyThrowsAssertion {
+class ShouldIncludeSubstringSpec extends Spec with Checkers with ReturnsNormallyThrowsAssertion {
 
   object `The include substring syntax` {
 

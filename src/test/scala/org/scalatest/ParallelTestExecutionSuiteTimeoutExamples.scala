@@ -58,7 +58,7 @@ class SuiteHoldingReporter(dispatch: Reporter, holdingSuiteId: String, holdingTe
   }
 }
 
-trait ParallelTestExecutionSuiteTimeoutExamples extends Tables {
+object ParallelTestExecutionSuiteTimeoutExamples extends Tables {
   
   def suiteTimeoutExamples = 
     Table(

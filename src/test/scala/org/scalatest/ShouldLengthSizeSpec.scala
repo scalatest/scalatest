@@ -23,8 +23,9 @@ import Integer.MIN_VALUE
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.enablers.Length
 import org.scalatest.enablers.Size
+import Matchers._
 
-class ShouldLengthSizeSpec extends Spec with Matchers with Checkers with ReturnsNormallyThrowsAssertion {
+class ShouldLengthSizeSpec extends Spec with Checkers with ReturnsNormallyThrowsAssertion {
 
   object `the 'should have length/size' syntax on an arbitrary object with both length and size methods` {
 

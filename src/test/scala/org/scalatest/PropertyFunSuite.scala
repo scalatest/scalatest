@@ -15,7 +15,9 @@
  */
 package org.scalatest
 
-class PropertyFunSuite extends FunSuite with Matchers {
+import Matchers._
+
+class PropertyFunSuite extends FunSuite {
 
   test("object has no appropriately named field, method, or get method (0, 0, 0)") {
     class DontGotNuthin

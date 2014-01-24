@@ -21,8 +21,9 @@ import Arbitrary._
 import Prop._
 import Integer.{MAX_VALUE, MIN_VALUE}
 import org.scalatest.exceptions.TestFailedException
+import Matchers._
 
-class ShouldOrderedSpec extends Spec with Matchers with Checkers with ReturnsNormallyThrowsAssertion {
+class ShouldOrderedSpec extends Spec with Checkers with ReturnsNormallyThrowsAssertion {
 
   // Checking for a specific size
   object `The 'be >/</>=/<= (x)' syntax` {

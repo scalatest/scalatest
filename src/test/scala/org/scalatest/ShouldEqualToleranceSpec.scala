@@ -16,8 +16,9 @@
 package org.scalatest
 
 import org.scalautils._
+import Matchers._
 
-class ShouldEqualToleranceSpec extends Spec with Matchers with Tolerance {
+class ShouldEqualToleranceSpec extends Spec with Tolerance {
 
   val sevenDotOh = 7.0
   val minusSevenDotOh = -7.0

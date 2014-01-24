@@ -17,8 +17,9 @@ package org.scalatest
 
 import SharedHelpers.thisLineNumber
 import java.io.FileNotFoundException
+import Matchers._
 
-class ShouldNotBeThrownBySpec extends Spec with Matchers {
+class ShouldNotBeThrownBySpec extends Spec {
   
   val fileName: String = "ShouldNotBeThrownBySpec.scala"
     

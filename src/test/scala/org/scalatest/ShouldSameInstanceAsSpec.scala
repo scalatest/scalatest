@@ -16,8 +16,9 @@
 package org.scalatest
 
 import org.scalatest.exceptions.TestFailedException
+import Matchers._
 
-class ShouldSameInstanceAsSpec extends Spec with Matchers {
+class ShouldSameInstanceAsSpec extends Spec {
 
   object `The be a ('symbol) syntax` {
 

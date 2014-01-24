@@ -19,8 +19,10 @@ import matchers._
 import SharedHelpers._
 import time.Span
 import time.SpanSugar._
+import Matchers._
+import Retries._
 
-class RetriesSpec extends Spec with Matchers with Retries {
+class RetriesSpec extends Spec {
 
   object `The Retries trait` {
     

@@ -20,6 +20,7 @@ import org.scalatest.events._
 import collection.immutable.TreeSet
 import SharedHelpers._
 import tools.Runner.CHOSEN_STYLES
+import PrivateMethodTester._
 
 class SpecSpec extends FunSpec with PrivateMethodTester {
 
