@@ -173,6 +173,8 @@ trait AppendedClues {
     }
   }
 
+  import scala.language.implicitConversions
+
   /**
    * Implicit conversion that allows clues to be place after a block of code.
    */

@@ -1389,6 +1389,8 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
     }
   }
 
+  import scala.language.implicitConversions
+
   /**
    * Implicitly converts an object of type <code>ResultOfStringPassedToVerb</code> to an
    * <code>InAndIgnoreMethods</code>, to enable <code>in</code> and <code>ignore</code>

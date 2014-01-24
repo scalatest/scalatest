@@ -138,6 +138,9 @@ class FunSuiteSpec extends FunSpec {
           testWasInvoked = true
         }
       }
+
+      import scala.language.reflectiveCalls
+
       a.run(None, Args(SilentReporter))
       assert(a.withFixtureWasInvoked)
       assert(a.testWasInvoked)
@@ -151,6 +154,9 @@ class FunSuiteSpec extends FunSpec {
         }
         test("something") {}
       }
+
+      import scala.language.reflectiveCalls
+
       a.run(None, Args(SilentReporter))
       assert(a.correctTestNameWasPassed)
     }
@@ -163,6 +169,9 @@ class FunSuiteSpec extends FunSpec {
         }
         test("something") {}
       }
+
+      import scala.language.reflectiveCalls
+
       a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> 7), None, new Tracker(), Set.empty))
       assert(a.correctConfigMapWasPassed)
     }
@@ -296,6 +305,8 @@ class FunSuiteSpec extends FunSpec {
         test("test that") { theTestThatCalled = true }
       }
 
+      import scala.language.reflectiveCalls
+
       val repA = new TestIgnoredTrackingReporter
       a.run(None, Args(repA))
       assert(!repA.testIgnoredReceived)
@@ -358,6 +369,8 @@ class FunSuiteSpec extends FunSpec {
         test("test that") { theTestThatCalled = true }
       }
 
+      import scala.language.reflectiveCalls
+
       val repE = new TestIgnoredTrackingReporter
       e.run(Some("test this"), Args(repE))
       assert(repE.testIgnoredReceived)
@@ -372,6 +385,8 @@ class FunSuiteSpec extends FunSpec {
         test("test this", mytags.SlowAsMolasses) { theTestThisCalled = true }
         test("test that") { theTestThatCalled = true }
       }
+
+      import scala.language.reflectiveCalls
 
       val repE = new TestIgnoredTrackingReporter
       e.run(Some("test this"), Args(repE, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -389,6 +404,9 @@ class FunSuiteSpec extends FunSpec {
         test("test this", mytags.SlowAsMolasses) { theTestThisCalled = true }
         test("test that") { theTestThatCalled = true }
       }
+
+      import scala.language.reflectiveCalls
+
       val repA = new TestIgnoredTrackingReporter
       a.run(None, Args(repA))
       assert(!repA.testIgnoredReceived)

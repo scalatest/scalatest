@@ -17,8 +17,9 @@ package org.scalatest
 
 import org.scalautils._
 import SharedHelpers.thisLineNumber
+import TypeCheckedTripleEquals._
 
-class TypeCheckedAssertionsSpec extends FunSpec with TypeCheckedTripleEquals {
+class TypeCheckedAssertionsSpec extends FunSpec {
 
   val fileName: String = "TypeCheckedAssertionsSpec.scala"
 

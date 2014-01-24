@@ -20,8 +20,9 @@ import org.scalautils.Uniformity
 import org.scalautils.StringNormalizations._
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
+import Matchers._
 
-class ListShouldContainInOrderLogicalAndSpec extends Spec with Matchers {
+class ListShouldContainInOrderLogicalAndSpec extends Spec {
 
   //ADDITIONAL//
   

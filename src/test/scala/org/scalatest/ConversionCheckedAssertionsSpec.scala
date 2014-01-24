@@ -17,8 +17,9 @@ package org.scalatest
 
 import org.scalautils._
 import SharedHelpers.thisLineNumber
+import ConversionCheckedTripleEquals._
 
-class ConversionCheckedAssertionsSpec extends FunSpec with ConversionCheckedTripleEquals {
+class ConversionCheckedAssertionsSpec extends FunSpec {
 
   val fileName: String = "ConversionCheckedAssertionsSpec.scala"
 

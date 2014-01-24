@@ -121,6 +121,8 @@ import TripleEqualsSupport._
  */
 trait TripleEquals extends TripleEqualsSupport {
 
+  import scala.language.implicitConversions
+
   // Inherit the Scaladoc for these methods
 
   implicit override def convertToEqualizer[T](left: T): Equalizer[T] = new Equalizer(left)

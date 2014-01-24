@@ -250,6 +250,8 @@ object Aggregating {
     count <= 1      
   }
 
+  import scala.language.higherKinds
+
   /**
    * Implicit to support <code>Aggregating</code> nature of <code>GenTraversable</code>.
    *
@@ -276,6 +278,8 @@ object Aggregating {
         checkAtMostOneOf(trav, elements, equality)
       }
     }
+
+  import scala.language.implicitConversions
 
   /**
    * Implicit conversion that converts an <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>E</code>

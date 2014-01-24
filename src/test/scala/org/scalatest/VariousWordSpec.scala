@@ -15,12 +15,9 @@
  */
 package org.scalatest
 
-import org.scalatest.matchers.ShouldMatchers
-import org.scalatest.words.ShouldVerb
-
 private class VariousWordSpec {} // prevents unnecessary recompilation
 
-class AmpersandWordSpec extends WordSpec with ShouldMatchers {
+class AmpersandWordSpec extends WordSpec with Matchers {
 
   "The Scala language" should {
     "provide an && operator" which {

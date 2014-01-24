@@ -88,6 +88,8 @@ import scala.util.Success
  */
 trait TryValues {
 
+  import scala.language.implicitConversions
+
   /**
    * Implicit conversion that adds <code>success</code> and <code>failure</code> methods to <code>Try</code>.
    *

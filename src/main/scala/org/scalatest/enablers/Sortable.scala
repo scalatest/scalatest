@@ -67,6 +67,8 @@ trait Sortable[-S] {
  */
 object Sortable {
 
+  import scala.language.higherKinds
+
 // Sliding doesn't exist on GenSeq, and this is inherently sequential, so make them say .seq if they have a parallel Seq
 // Actually on second thought, I think just do a .seq on it.
   /**

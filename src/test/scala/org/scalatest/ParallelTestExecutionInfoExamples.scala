@@ -22,7 +22,7 @@ trait InfoExpectedResults extends EventHelpers {
   def assertBeforeAfterInfo(events: List[Event])
 }
 
-trait ParallelTestExecutionInfoExamples extends Tables {
+object ParallelTestExecutionInfoExamples extends Tables {
 
   def infoSuite = new ExampleParallelTestExecutionInfoSuite()
   def infoFixtureSuite = new ExampleParallelTestExecutionInfoFixtureSuite()

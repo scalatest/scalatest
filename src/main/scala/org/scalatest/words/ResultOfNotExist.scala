@@ -39,6 +39,8 @@ final class ResultOfNotExist(notWord: NotWord) {
    */
   def and(anotherMatcher: Matcher[Any]): MatcherFactory1[Any, Existence] =
     notWord.exist.and(anotherMatcher)
+
+  import scala.language.higherKinds
     
   /**
    * This method enables the following syntax:

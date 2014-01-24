@@ -18,8 +18,9 @@ package org.scalatest
 import matchers.{BeMatcher, MatchResult, BePropertyMatcher, BePropertyMatchResult}
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
+import Matchers._
 
-class ShouldBeShorthandForAllSpec extends Spec with Matchers with EmptyMocks with BookPropertyMatchers {
+class ShouldBeShorthandForAllSpec extends Spec with EmptyMocks with BookPropertyMatchers {
   
   def errorMessage(index: Int, message: String, lineNumber: Int, left: Any): String = 
     "'all' inspection failed, because: \n" +

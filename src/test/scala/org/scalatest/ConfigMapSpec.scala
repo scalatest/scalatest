@@ -16,8 +16,9 @@
 package org.scalatest
 
 import exceptions.TestCanceledException
+import Matchers._
 
-class ConfigMapSpec extends Spec with Matchers {
+class ConfigMapSpec extends Spec {
 
     class Fruit {
       override def toString = "a Fruit"

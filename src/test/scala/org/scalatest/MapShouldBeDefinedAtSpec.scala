@@ -17,8 +17,9 @@ package org.scalatest
 
 import SharedHelpers.thisLineNumber
 import FailureMessages.decorateToStringValue
+import Matchers._
 
-class MapShouldBeDefinedAtSpec extends Spec with Matchers {
+class MapShouldBeDefinedAtSpec extends Spec {
   
   def wasDefinedAt(left: Any, right: Any): String =
     decorateToStringValue(left) + " was defined at " + decorateToStringValue(right)

@@ -37,31 +37,37 @@ class StatusSpec extends fixture.Spec {
   
   object `StatefulStatus ` {
     def `should by default return false for isCompleted`(status: FixtureParam) {
+      import scala.language.reflectiveCalls
       assert(!status.isCompleted)
     }
     
     def `should return true for isCompleted after completes() is called`(status: FixtureParam) {
+      import scala.language.reflectiveCalls
       status.setCompleted()
       assert(status.isCompleted)
     }
     
     def `should return true for succeeds() after completes() is called without fails()`(status: FixtureParam) {
+      import scala.language.reflectiveCalls
       status.setCompleted()
       assert(status.succeeds)
     }
     
     def `should return false for succeeds() after completes is called after fails()`(status: FixtureParam) {
+      import scala.language.reflectiveCalls
       status.setFailed()
       status.setCompleted()
       assert(!status.succeeds)
     }
     
     def `waitUntilCompleted should not block after completes() is called`(status: FixtureParam) {
+      import scala.language.reflectiveCalls
       status.setCompleted()
       status.waitUntilCompleted()
     }
     
     def `should throw IllegalStateException when setFailed() is called after setCompleted() is set`(status: FixtureParam) {
+      import scala.language.reflectiveCalls
       status.setCompleted()
       intercept[IllegalStateException] {
         status.setFailed()
@@ -69,6 +75,7 @@ class StatusSpec extends fixture.Spec {
     }
     
     def `should allow setCompleted() to be called multiple times`(status: FixtureParam) {
+      import scala.language.reflectiveCalls
       status.setCompleted()
       assert(status.isCompleted)
       status.setCompleted()

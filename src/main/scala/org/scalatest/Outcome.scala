@@ -139,6 +139,8 @@ sealed abstract class Outcome {
  */
 object Outcome {
 
+  import scala.language.implicitConversions
+
   /**
    * Enables collections of <code>Outcome</code>s to be flattened into a collections of contained exceptions.
    *

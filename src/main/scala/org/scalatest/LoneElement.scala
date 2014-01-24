@@ -75,6 +75,8 @@ import enablers.Collecting
  */
 trait LoneElement {
 
+  import scala.language.higherKinds
+
   /**
    * Wrapper class that adds a <code>loneElement</code> method to any collection type <code>C</code> for which 
    * an implicit <code>Collection[C]</code> is available.
@@ -122,6 +124,8 @@ trait LoneElement {
       }
     }
   }
+
+  import scala.language.implicitConversions
   
   /**
    * Implicit conversion that adds a <code>loneElement</code> method to any collection type <code>C</code> for which an

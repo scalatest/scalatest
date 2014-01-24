@@ -189,6 +189,8 @@ object Sequencing {
     checkEqual(left, right.toIterator)
   }
 
+  import scala.language.higherKinds
+
   /**
    * Implicit to support <code>Sequencing</code> nature of <code>scala.collection.GenSeq</code>.
    *
@@ -213,6 +215,8 @@ object Sequencing {
         checkTheSameElementsInOrderAs[E](seq, elements, equality)
       }
     }
+
+  import scala.language.implicitConversions
 
   /**
    * Implicit conversion that converts an <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>E</code>

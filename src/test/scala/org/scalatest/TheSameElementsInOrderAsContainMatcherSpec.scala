@@ -17,8 +17,9 @@ package org.scalatest
 
 import collection.mutable.LinkedHashMap
 import SharedHelpers._
+import Matchers._
 
-class TheSameElementsInOrderAsContainMatcherSpec extends Spec with Matchers  {
+class TheSameElementsInOrderAsContainMatcherSpec extends Spec {
 
   object `theSameElementsInOrderAs ` {
     

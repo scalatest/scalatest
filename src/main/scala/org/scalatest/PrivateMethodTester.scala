@@ -267,6 +267,8 @@ trait PrivateMethodTester {
     }
   }
 
+  import scala.language.implicitConversions
+
   /**
    * Implicit conversion from <code>AnyRef</code> to <code>Invoker</code>, used to enable
    * assertions testing of private methods.

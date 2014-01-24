@@ -220,6 +220,8 @@ trait ShouldVerb {
     }
   }
 
+  import scala.language.implicitConversions
+
   /**
    * Implicitly converts an object of type <code>String</code> to a <code>StringShouldWrapperForVerb</code>,
    * to enable <code>should</code> methods to be invokable on that object.

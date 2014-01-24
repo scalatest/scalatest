@@ -62,6 +62,8 @@ import TripleEqualsSupport._
 @deprecated("org.scalautils.LegacyTripleEquals has been deprecated and will be removed in a future version of ScalaTest. If you need this, please copy the source code into your own trait instead.")
 trait LegacyTripleEquals extends TripleEqualsSupport {
 
+  import scala.language.implicitConversions
+
   implicit override def unconstrainedEquality[A, B](implicit equalityOfA: Equality[A]): Constraint[A, B] = new EqualityConstraint[A, B](equalityOfA)
 
   override def convertToEqualizer[T](left: T): Equalizer[T] = new Equalizer(left)

@@ -16,8 +16,9 @@
 package org.scalatest
 
 import SharedHelpers.thisLineNumber
+import Matchers._
 
-class ShouldBeDefinedAtSpec extends Spec with Matchers {
+class ShouldBeDefinedAtSpec extends Spec {
   
   object `PartialFunction ` {
     

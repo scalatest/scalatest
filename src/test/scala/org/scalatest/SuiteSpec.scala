@@ -87,7 +87,9 @@ class MandarinOrangeSpecs(suites: Suite*) extends Specs(suites: _*)
 class MandarinOrangeSequential(suites: Suite*) extends Sequential(suites: _*)
 class MandarinOrangeStepwise(suites: Suite*) extends Stepwise(suites: _*)
 
-class SuiteSpec extends FunSpec with PrivateMethodTester {
+import PrivateMethodTester._
+
+class SuiteSpec extends FunSpec {
 
   describe("the toString method on Suites and SuiteLike traits other than TestNGSuiteLike") {
     describe("when the suite contains no nested suites") {
@@ -314,6 +316,8 @@ class SuiteSpec extends FunSpec with PrivateMethodTester {
         def `test: that`(r: Informer) { theTestThatCalled = true }
       }
 
+      import scala.language.reflectiveCalls
+
       val repA = new TestIgnoredTrackingReporter
       a.run(None, Args(repA))
       assert(!repA.testIgnoredReceived)
@@ -380,6 +384,8 @@ class SuiteSpec extends FunSpec with PrivateMethodTester {
         def `test: that`(r: Informer) { theTestThatCalled = true }
       }
 
+      import scala.language.reflectiveCalls
+
       val repE = new TestIgnoredTrackingReporter
       e.run(Some(encode("test: this")), Args(repE))
       assert(repE.testIgnoredReceived)
@@ -396,6 +402,8 @@ class SuiteSpec extends FunSpec with PrivateMethodTester {
         def `test: this`() { theTestThisCalled = true }
         def `test: that`(r: Informer) { theTestThatCalled = true }
       }
+
+      import scala.language.reflectiveCalls
 
       val repE = new TestIgnoredTrackingReporter
       e.run(Some(encode("test: this")), Args(repE, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -428,6 +436,9 @@ class SuiteSpec extends FunSpec with PrivateMethodTester {
         def `test: this`() { theTestThisCalled = true }
         def `test: that`(r: Informer) { theTestThatCalled = true }
       }
+
+      import scala.language.reflectiveCalls
+
       val repA = new TestIgnoredTrackingReporter
       a.run(None, Args(repA))
       assert(!repA.testIgnoredReceived)
@@ -767,6 +778,9 @@ class SuiteSpec extends FunSpec with PrivateMethodTester {
           theTestWasInvoked = true
         }
       }
+
+      import scala.language.reflectiveCalls
+
       a.run(None, Args(SilentReporter))
       assert(a.withFixtureWasInvoked)
       assert(a.theTestWasInvoked)
@@ -783,6 +797,9 @@ class SuiteSpec extends FunSpec with PrivateMethodTester {
           theTestWasInvoked = true
         }
       }
+
+      import scala.language.reflectiveCalls
+
       a.run(None, Args(SilentReporter))
       assert(a.withFixtureWasInvoked)
       assert(a.theTestWasInvoked)
@@ -796,6 +813,9 @@ class SuiteSpec extends FunSpec with PrivateMethodTester {
         }
         def `test: something`(r: Informer) {}
       }
+
+      import scala.language.reflectiveCalls
+
       a.run(None, Args(SilentReporter))
       assert(a.correctTestNameWasPassed)
     }
@@ -808,6 +828,9 @@ class SuiteSpec extends FunSpec with PrivateMethodTester {
         }
         def `test: something`(r: Informer) {}
       }
+
+      import scala.language.reflectiveCalls
+
       a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> 7), None, new Tracker(), Set.empty))
       assert(a.correctConfigMapWasPassed)
     }

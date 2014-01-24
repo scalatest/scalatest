@@ -66,6 +66,8 @@ trait Emptiness[-T] {
  */
 object Emptiness {
 
+  import scala.language.higherKinds
+
   /**
    * Enable <code>Emptiness</code> implementation for <code>scala.collection.GenTraversable</code>
    *
@@ -135,6 +137,8 @@ object Emptiness {
     new Emptiness[JMAP[K, V]] {
       def isEmpty(jmap: JMAP[K, V]): Boolean = jmap.isEmpty
     }
+
+  import scala.language.reflectiveCalls
   
   /**
    * Enable <code>Emptiness</code> implementation for any arbitrary object with a <code>isEmpty()</code> method that returns <code>Boolean</code>

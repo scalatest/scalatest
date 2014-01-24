@@ -17,11 +17,12 @@ package org.scalatest
 
 import org.scalautils.Equality
 import org.scalautils.Explicitly
-import org.scalautils.StringNormalizations
+import org.scalautils.StringNormalizations._
 import org.scalautils.Uniformity
 import SharedHelpers._
+import Matchers._
 
-class TheSameElementsInOrderAsContainMatcherDeciderSpec extends Spec with Matchers with Explicitly with StringNormalizations {
+class TheSameElementsInOrderAsContainMatcherDeciderSpec extends Spec with Explicitly {
   
   val incremented: Uniformity[Int] = 
     new Uniformity[Int] {

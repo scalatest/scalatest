@@ -17,8 +17,9 @@ package org.scalatest
 
 import SharedHelpers.thisLineNumber
 import enablers.Definition
+import Matchers._
 
-class ShouldBeDefinedExplicitSpec extends Spec with Matchers {
+class ShouldBeDefinedExplicitSpec extends Spec {
   
   trait Thing {
     def isDefined: Boolean

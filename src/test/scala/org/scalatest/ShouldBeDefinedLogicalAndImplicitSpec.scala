@@ -17,8 +17,9 @@ package org.scalatest
 
 import SharedHelpers.thisLineNumber
 import enablers.Definition
+import Matchers._
 
-class ShouldBeDefinedLogicalAndImplicitSpec extends Spec with Matchers {
+class ShouldBeDefinedLogicalAndImplicitSpec extends Spec {
   
   val fileName: String = "ShouldBeDefinedLogicalAndImplicitSpec.scala"
   

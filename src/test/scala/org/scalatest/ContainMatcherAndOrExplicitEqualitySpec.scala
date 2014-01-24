@@ -19,8 +19,9 @@ import org.scalautils.Equality
 import org.scalautils.Explicitly
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
+import Matchers._
 
-class ContainMatcherAndOrExplicitEqualitySpec extends Spec with Matchers with Explicitly {
+class ContainMatcherAndOrExplicitEqualitySpec extends Spec with Explicitly {
 
   val equality = new Equality[String] {
     def areEqual(left: String, right: Any) = 

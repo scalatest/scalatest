@@ -264,6 +264,8 @@ trait PropSpecLike extends Suite with Informing with Notifying with Alerting wit
   @deprecated("Use propertiesFor instead.")
   protected def testsFor(unit: Unit) {}
 
+  import scala.language.implicitConversions
+
   /**
    * Implicitly converts a function that takes no parameters and results in <code>PendingNothing</code> to
    * a function from <code>FixtureParam</code> to <code>Any</code>, to enable pending tests to registered as by-name parameters

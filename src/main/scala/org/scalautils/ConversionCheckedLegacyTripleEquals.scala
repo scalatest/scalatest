@@ -167,6 +167,8 @@ import TripleEqualsSupport._
 @deprecated("org.scalautils.ConversionCheckedLegacyTripleEquals has been deprecated and will be removed in a future version of ScalaTest. If you need this, please copy the source code into your own trait instead.")
 trait ConversionCheckedLegacyTripleEquals extends LowPriorityConversionCheckedConstraint {
 
+  import scala.language.implicitConversions
+
   override def convertToEqualizer[T](left: T): Equalizer[T] = new Equalizer(left)
   override def convertToLegacyEqualizer[T](left: T): LegacyEqualizer[T] = new LegacyEqualizer(left)
   override def convertToCheckingEqualizer[T](left: T): CheckingEqualizer[T] = new CheckingEqualizer(left)

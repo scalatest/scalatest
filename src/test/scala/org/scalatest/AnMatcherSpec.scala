@@ -18,8 +18,9 @@ package org.scalatest
 import SharedHelpers._
 import matchers._
 import FailureMessages.decorateToStringValue
+import Matchers._
 
-class AnMatcherSpec extends Spec with Matchers {
+class AnMatcherSpec extends Spec {
 
   object `AnMatcher ` {
     

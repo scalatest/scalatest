@@ -211,6 +211,8 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
         scenario("test that") { fixture => theTestThatCalled = true }
       }
 
+      import scala.language.reflectiveCalls
+
       val repA = new TestIgnoredTrackingReporter
       a.run(None, Args(repA))
       assert(!repA.testIgnoredReceived)
@@ -283,6 +285,8 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
         scenario("test that") { fixture => theTestThatCalled = true }
       }
 
+      import scala.language.reflectiveCalls
+
       val repE = new TestIgnoredTrackingReporter
       e.run(Some("Scenario: test this"), Args(repE))
       assert(repE.testIgnoredReceived)
@@ -301,6 +305,9 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
         scenario("test this", mytags.SlowAsMolasses) { fixture => theTestThisCalled = true }
         scenario("test that") { fixture => theTestThatCalled = true }
       }
+
+      import scala.language.reflectiveCalls
+
       val repA = new TestIgnoredTrackingReporter
       a.run(None, Args(repA))
       assert(!repA.testIgnoredReceived)
@@ -662,6 +669,8 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
         scenario("takes a fixture") { s => takesAFixtureInvoked = true }
       }
 
+      import scala.language.reflectiveCalls
+
       a.run(None, Args(SilentReporter))
       assert(a.testNames.size === 2, a.testNames)
       assert(a.takesNoArgsInvoked)
@@ -684,6 +693,8 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
         scenario("should take a fixture") { s => takesAFixtureInvoked = true; true }
       }
 
+      import scala.language.reflectiveCalls
+
       assert(!a.takesNoArgsInvoked)
       assert(!a.takesAFixtureInvoked)
       a.run(None, Args(SilentReporter))
@@ -702,6 +713,8 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
         }
         ignore("should test that") { fixture => theTestThatCalled = true; 42 }
       }
+
+      import scala.language.reflectiveCalls
 
       assert(!a.theTestThisCalled)
       assert(!a.theTestThatCalled)
@@ -915,6 +928,9 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       }
       scenario("should do something") { fixture => }
     }
+
+    import scala.language.reflectiveCalls
+
     a.run(None, Args(SilentReporter))
     assert(a.correctTestNameWasPassed)
   }
@@ -928,6 +944,9 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       }
       scenario("should do something") { fixture => }
     }
+
+    import scala.language.reflectiveCalls
+
     a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> 7), None, new Tracker(), Set.empty))
     assert(a.correctConfigMapWasPassed)
   }

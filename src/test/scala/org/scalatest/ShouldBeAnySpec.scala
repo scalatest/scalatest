@@ -20,8 +20,9 @@ import org.scalacheck._
 import Arbitrary._
 import Prop._
 import org.scalatest.exceptions.TestFailedException
+import Matchers._
 
-class ShouldBeAnySpec extends Spec with Matchers with Checkers with ReturnsNormallyThrowsAssertion {
+class ShouldBeAnySpec extends Spec with Checkers with ReturnsNormallyThrowsAssertion {
 
   // Checking for equality with "be"
   object `The be token` {

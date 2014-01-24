@@ -16,6 +16,7 @@
 package org.scalatest
 
 import SharedHelpers.thisLineNumber
+import Matchers._
 
 class ShouldBeAnTypeSpec extends Spec with Matchers {
 

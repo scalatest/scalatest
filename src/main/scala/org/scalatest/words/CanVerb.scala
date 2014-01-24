@@ -195,6 +195,8 @@ trait CanVerb {
     }
   }
 
+  import scala.language.implicitConversions
+
   /**
    * Implicitly converts an object of type <code>String</code> to a <code>StringCanWrapper</code>,
    * to enable <code>can</code> methods to be invokable on that object.

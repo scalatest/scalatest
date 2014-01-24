@@ -16,11 +16,12 @@
 package org.scalatest
 
 import org.scalautils.Equality
-import org.scalautils.Explicitly
+import org.scalautils.Explicitly._
 import collection.GenTraversable
 import SharedHelpers._
+import Matchers._
 
-class AllOfContainMatcherEqualitySpec extends Spec with Matchers with Explicitly {
+class AllOfContainMatcherEqualitySpec extends Spec {
 
   class TrimEquality extends Equality[String] {
     def areEqual(left: String, right: Any) = 

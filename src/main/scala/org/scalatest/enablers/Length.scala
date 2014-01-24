@@ -134,6 +134,8 @@ object Length {
       def lengthOf(str: String): Long = str.length
     }
 
+  import scala.language.reflectiveCalls
+
   /**
    * Enable <code>Length</code> implementation for arbitary object with <code>length()</code> method that returns <code>Int</code>.
    *

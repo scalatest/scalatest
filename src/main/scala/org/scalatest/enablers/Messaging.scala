@@ -70,6 +70,8 @@ object Messaging {
       def messageOf(exception: EX): String = exception.getMessage
     }
 
+  import scala.language.reflectiveCalls
+
   /**
    * Provides <code>Messaging</code> implementation for any arbitrary object with a <code>message()</code> method that returns <code>String</code>
    *

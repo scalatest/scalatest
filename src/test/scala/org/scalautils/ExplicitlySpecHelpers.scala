@@ -45,6 +45,7 @@ trait ExplicitlySpecHelpers {
 
   class Pomme
 
+  import scala.language.implicitConversions
   implicit def convertPommeToFruit(pomme: Pomme): Fruit = new Fruit("apple")
 
   val downCased: Normalization[String] =

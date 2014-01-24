@@ -145,6 +145,8 @@ object Size {
       def sizeOf(str: String): Long = str.length
     }
 
+  import scala.language.reflectiveCalls
+
   /**
    * Enable <code>Size</code> implementation for arbitary object with <code>size()</code> method that returns <code>Int</code>.
    *
