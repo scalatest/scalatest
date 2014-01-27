@@ -2095,20 +2095,21 @@ object Runner {
     if (args.length == 0) {
       List()
     }
-    else if (args.length == 2) {
-      val dashArg = args(0)
-      val runpathArg = args(1)
+    else if (args.length % 2 == 0) {
+      def parsePair(dashArg: String, runpathArg:String) = {
+        if (dashArg != expectedDashArg)
+          throw new IllegalArgumentException("First arg must be " + expectedDashArg + ", but was: " + dashArg)
 
-      if (dashArg != expectedDashArg)
-        throw new IllegalArgumentException("First arg must be " + expectedDashArg + ", but was: " + dashArg)
+        if (runpathArg.trim.isEmpty)
+          throw new IllegalArgumentException("The runpath string must actually include some non-whitespace characters.")
 
-      if (runpathArg.trim.isEmpty)
-        throw new IllegalArgumentException("The runpath string must actually include some non-whitespace characters.")
+        splitPath(runpathArg)
+      }
+      args.grouped(2).flatMap(p => parsePair(p(0),p(1))).toList
 
-      splitPath(runpathArg)
     }
     else {
-      throw new IllegalArgumentException("Runpath must be either zero or two args: " + args)
+      throw new IllegalArgumentException("Runpath must be either zero or have even number of args: " + args)
     }
   }
   
