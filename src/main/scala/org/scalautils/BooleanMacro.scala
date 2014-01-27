@@ -194,10 +194,190 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
     }
   }
 
-  /*private[this] def getPosition(expr: Tree) = expr.pos.asInstanceOf[scala.reflect.internal.util.Position]
+  //###################################################
+
+  def valDef(name: String, rhs: Tree): ValDef =
+    ValDef(
+      Modifiers(),
+      newTermName(name),
+      TypeTree(),
+      rhs
+    )
+
+  def binaryMacroExpression(select: Select, expressionText: String): Apply = {
+    val macroExpressionClass = context.mirror.staticClass(classOf[BinaryMacroExpression].getName)
+    Apply(
+      Select(
+        New(Ident(macroExpressionClass)),
+        newTermName("<init>")
+      ),
+      List(
+        Ident(newTermName("$org_scalatest_assert_macro_left")),
+        context.literal(select.name.decoded).tree,
+        Ident(newTermName("$org_scalatest_assert_macro_right")),
+        Apply(
+          Select(
+            Ident(newTermName("$org_scalatest_assert_macro_left")),
+            select.name
+          ),
+          List(Ident(newTermName("$org_scalatest_assert_macro_right")))
+        ),
+        context.literal(expressionText).tree
+      )
+    )
+  }
+
+  def binaryMacroExpression(select: Select, expressionText: String, secondArg: Tree): Apply = {
+    val macroExpressionClass = context.mirror.staticClass(classOf[BinaryMacroExpression].getName)
+    Apply(
+      Select(
+        New(Ident(macroExpressionClass)),
+        newTermName("<init>")
+      ),
+      List(
+        Ident(newTermName("$org_scalatest_assert_macro_left")),
+        context.literal(select.name.decoded).tree,
+        Ident(newTermName("$org_scalatest_assert_macro_right")),
+        Apply(
+          Apply(
+            Select(
+              Ident("$org_scalatest_assert_macro_left"),
+              select.name
+            ),
+            List(Ident("$org_scalatest_assert_macro_right"))
+          ),
+          List(secondArg)
+        ),
+        context.literal(expressionText).tree
+      )
+    )
+  }
+
+  def simpleMacroExpression(expression: Tree, expressionText: String): Apply = {
+    val macroExpressionClass = context.mirror.staticClass(classOf[SimpleMacroExpression].getName)
+    Apply(
+      Select(
+        New(Ident(macroExpressionClass)),
+        newTermName("<init>")
+      ),
+      List(
+        expression,
+        context.literal(expressionText).tree
+      )
+    )
+  }
+
+  def notMacroExpression(target: Tree, expressionText: String): Apply = {
+    val macroExpressionClass = context.mirror.staticClass(classOf[NotMacroExpression].getName)
+    Apply(
+      Select(
+        New(Ident(macroExpressionClass)),
+        newTermName("<init>")
+      ),
+      List(
+        target.duplicate,
+        context.literal("!").tree,
+        context.literal(expressionText).tree
+      )
+    )
+  }
+
+  private val logicOperators = Set("&&", "||", "&", "|")
+  private val newSupportedOperations = Set("==", "!=", "===", "!==", "<", ">", ">=", "<=", "&&", "||", "&", "|")
+
+  def newIsSupported(operator: String) = newSupportedOperations.contains(operator)
+
+  def traverseSelect(select: Select, rightExpr: Tree): (Tree, Tree) =
+    if (logicOperators.contains(select.name.decoded)) {
+      val leftTree =
+        select.qualifier match {
+          case selectApply: Apply => transformAst(selectApply.duplicate)
+          case selectSelect: Select => transformAst(selectSelect.duplicate)
+          case _ => select.qualifier.duplicate
+        }
+      val rightTree =
+        rightExpr match {
+          case argApply: Apply => transformAst(argApply.duplicate)
+          case argSelect: Select => transformAst(argSelect.duplicate)
+          case _ => rightExpr.duplicate
+        }
+      (leftTree, rightTree)
+    }
+    else
+      (select.qualifier.duplicate, rightExpr.duplicate)
+
+  def transformAst(tree: Tree): Tree =
+    tree match {
+      case apply: Apply if apply.args.size == 1 =>
+        apply.fun match {
+          case select: Select if newIsSupported(select.name.decoded) =>
+            val (leftTree, rightTree) =  traverseSelect(select, apply.args(0))
+            Block(
+              valDef("$org_scalatest_assert_macro_left", leftTree),
+              valDef("$org_scalatest_assert_macro_right", rightTree),
+              binaryMacroExpression(select.duplicate, getText(tree))
+            )
+          case funApply: Apply if funApply.args.size == 1 => // For === and !== that takes Equality
+            funApply.fun match {
+              case select: Select if select.name.decoded == "===" || select.name.decoded == "!==" =>
+                val (leftTree, rightTree) = traverseSelect(select, funApply.args(0))
+                Block(
+                  valDef("$org_scalatest_assert_macro_left", leftTree),
+                  valDef("$org_scalatest_assert_macro_right", rightTree),
+                  binaryMacroExpression(select.duplicate, getText(tree), apply.args(0).duplicate) // TODO: should apply.args(0) be traversed also?
+                )
+              case typeApply: TypeApply =>
+                typeApply.fun match {
+                  case select: Select if typeApply.args.size == 1 => // For TypeCheckedTripleEquals
+                    val operator: String = select.name.decoded
+                    if (operator == "===" || operator == "!==") {
+                      val (leftTree, rightTree) = traverseSelect(select, funApply.args(0))
+                      Block(
+                        valDef("$org_scalatest_assert_macro_left", leftTree),
+                        valDef("$org_scalatest_assert_macro_right", rightTree),
+                        binaryMacroExpression(select.duplicate, getText(tree), apply.args(0).duplicate) // TODO: should apply.args(0) be traversed also?
+                      )
+                    }
+                    else
+                      simpleMacroExpression(tree.duplicate, getText(tree))
+                  case _ => simpleMacroExpression(tree.duplicate, getText(tree))
+                }
+              case _ => simpleMacroExpression(tree.duplicate, getText(tree))
+            }
+          case _ => simpleMacroExpression(tree.duplicate, getText(tree))
+        }
+      case select: Select if select.name.decoded == "unary_!" => // for !
+        val leftTree =
+          select.qualifier match {
+            case selectApply: Apply => transformAst(selectApply.duplicate)
+            case selectSelect: Select => transformAst(selectSelect.duplicate)
+            case _ => simpleMacroExpression(select.qualifier.duplicate, getText(select.qualifier))
+          }
+        notMacroExpression(leftTree.duplicate, getText(tree))
+      case _ => simpleMacroExpression(tree.duplicate, getText(tree))
+    }
+
+  private[this] def getPosition(expr: Tree) = expr.pos.asInstanceOf[scala.reflect.internal.util.Position]
 
   def getText(expr: Tree): String = getPosition(expr) match {
-    case p: RangePosition => context.echo(expr.pos, "RangePosition found!"); p.lineContent.slice(p.start, p.end).trim
+    case p: scala.reflect.internal.util.RangePosition => context.echo(expr.pos, "RangePosition found!"); p.lineContent.slice(p.start, p.end).trim
     case p: reflect.internal.util.Position => p.lineContent.trim
-  }*/
+  }
+
+  def macroAssert: Apply =
+    Apply(
+      Select(
+        Ident(newTermName(helperName)),
+        newTermName("macroAssert")
+      ),
+      List(Ident(newTermName("$org_scalatest_assert_macro_expr")))
+    )
+
+  def genAssert(booleanExpr: Expr[Boolean]): Expr[Unit] =
+    context.Expr(
+      Block(
+        valDef("$org_scalatest_assert_macro_expr", transformAst(booleanExpr.tree)),
+        macroAssert
+      )
+    )
 }
