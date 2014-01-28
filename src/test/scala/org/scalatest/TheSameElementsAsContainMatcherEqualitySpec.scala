@@ -18,8 +18,9 @@ package org.scalatest
 import org.scalautils.Equality
 import org.scalautils.Explicitly
 import SharedHelpers._
+import Matchers._
 
-class TheSameElementsAsContainMatcherEqualitySpec extends Spec with Matchers with Explicitly {
+class TheSameElementsAsContainMatcherEqualitySpec extends Spec with Explicitly {
 
   class TrimEquality extends Equality[String] {
     def areEqual(left: String, right: Any) = 

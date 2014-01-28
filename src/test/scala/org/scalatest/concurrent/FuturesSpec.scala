@@ -27,6 +27,8 @@ import exceptions.{TestCanceledException, TestFailedException, TestPendingExcept
 
 class FuturesSpec extends FunSpec with ShouldMatchers with OptionValues with Futures with SeveredStackTraces {
 
+  import scala.language.implicitConversions
+
   implicit def convertJavaFuture[T](javaFuture: FutureOfJava[T]): FutureConcept[T] =
     new FutureConcept[T] {
       def eitherValue: Option[Either[Throwable, T]] =

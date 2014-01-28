@@ -18,9 +18,9 @@ package org.scalatest
 import collection.mutable.ListBuffer
 import SharedHelpers.EventRecordingReporter
 import concurrent.Eventually._
-import prop.TableDrivenPropertyChecks
+import prop.TableDrivenPropertyChecks._
 
-class RandomTestOrderSpec extends Spec with TableDrivenPropertyChecks {
+class RandomTestOrderSpec extends Spec {
 
   class ExampleSuite(listBuffer: ListBuffer[Int]) extends Suite with RandomTestOrder {
     def test1() {

@@ -16,6 +16,5 @@
 package org.scalatest
 
 import org.scalatest.prop.TableDrivenPropertyChecks
-import org.scalatest.matchers.ShouldMatchers
 
-trait SuiteProp extends FunSuite with SuiteExamples with TableDrivenPropertyChecks with ShouldMatchers
+trait SuiteProp extends FunSuite with SuiteExamples with TableDrivenPropertyChecks with Matchers

@@ -1261,6 +1261,8 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
    */
   final def sum[U >: T](implicit num: Numeric[U]): U = underlying.sum(num)
 
+  import scala.language.higherKinds
+
   /**
    * Converts this <code>Every</code> into a collection of type <code>Col</code> by copying all elements.
    *
@@ -1506,6 +1508,8 @@ object Every {
           case Some(second) => Some(Many(first, second, seq.tail.tail.seq: _*)) 
         }
     }
+
+  import scala.language.implicitConversions
 
   // Can be flattened: Vector(Every(1, 2, 3), Every(1, 2, 3)).flatten shouldBe Vector(1, 2, 3, 1, 2, 3)
   /**

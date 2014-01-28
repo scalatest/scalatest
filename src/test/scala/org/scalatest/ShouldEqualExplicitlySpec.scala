@@ -19,8 +19,9 @@ import org.scalatest.exceptions._
 import org.scalatest.exceptions.TestFailedException
 import org.scalautils.Explicitly
 import org.scalautils.Equality
+import Matchers._
 
-class ShouldEqualExplicitlySpec extends Spec with Matchers with Explicitly {
+class ShouldEqualExplicitlySpec extends Spec with Explicitly {
 
   implicit val e = new Equality[Int] {
     def areEqual(a: Int, b: Any): Boolean = a != b

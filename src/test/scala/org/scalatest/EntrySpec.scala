@@ -17,8 +17,9 @@ package org.scalatest
 
 import java.util.{Map => JMap}
 import java.util.{HashMap => JHashMap}
+import Matchers._
 
-class EntrySpec extends Spec with Matchers {
+class EntrySpec extends Spec {
 
   object `An org.scalatest.Entry` {
     def `can be compared against an Entry coming from a java.util.Map` {

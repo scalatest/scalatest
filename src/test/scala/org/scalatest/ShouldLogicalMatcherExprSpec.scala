@@ -19,8 +19,9 @@ import org.scalatest.prop.Checkers
 import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
 import org.scalatest.exceptions.TestFailedException
+import Matchers._
 
-class ShouldLogicalMatcherExprSpec extends Spec with Matchers with Checkers with MockitoSugar with ReturnsNormallyThrowsAssertion {
+class ShouldLogicalMatcherExprSpec extends Spec with Checkers with MockitoSugar with ReturnsNormallyThrowsAssertion {
 
   class Clown {
     def hasBigRedNose = true

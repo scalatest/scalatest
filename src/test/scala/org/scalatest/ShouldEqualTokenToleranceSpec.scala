@@ -16,9 +16,10 @@
 package org.scalatest
 
 import org.scalautils._
+import Matchers._
 
 // For shouldEqual instead of should equal
-class ShouldEqualTokenToleranceSpec extends Spec with Matchers with Tolerance {
+class ShouldEqualTokenToleranceSpec extends Spec with Tolerance {
 
   val sevenDotOh = 7.0
   val minusSevenDotOh = -7.0

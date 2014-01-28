@@ -25,8 +25,9 @@ import scala.annotation.tailrec
 import collection._
 import SharedHelpers._
 import FailureMessages._
+import Matchers._
 
-class InspectorsForMapSpec extends Spec with Matchers with Inspectors with TableDrivenPropertyChecks {
+class InspectorsForMapSpec extends Spec with Inspectors with TableDrivenPropertyChecks {
 
   def examples =
     Table[Map[Int, String] => collection.GenMap[Int, String]](

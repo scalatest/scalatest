@@ -20,8 +20,9 @@ import org.scalautils.StringNormalizations._
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
 import scala.collection.mutable.LinkedList
+import Matchers._
 
-class EveryShouldContainTheSameElementsInOrderAsSpec extends Spec with Matchers {
+class EveryShouldContainTheSameElementsInOrderAsSpec extends Spec {
 
   private def upperCase(value: Any): Any =
     value match {

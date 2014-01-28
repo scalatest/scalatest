@@ -25,8 +25,9 @@ import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 import org.scalautils.Equality
 import org.scalautils.TripleEquals
+import Matchers._
 
-class ShouldEqualEqualitySpec extends Spec with Matchers {
+class ShouldEqualEqualitySpec extends Spec {
 
   object `the should equal syntax should use the appropriate Equality type class` {
     def `for Any` {

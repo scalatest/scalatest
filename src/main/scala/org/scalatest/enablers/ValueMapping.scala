@@ -63,6 +63,8 @@ trait ValueMapping[-M] {
  */
 object ValueMapping {
 
+  import scala.language.higherKinds
+
   /**
    * Enable <code>ValueMapping</code> implementation for <code>scala.collection.GenMap</code>.
    *
@@ -79,6 +81,8 @@ object ValueMapping {
         map.iterator.map(_._2).exists((v: V) => equality.areEqual(v, value))
       }
     }
+
+  import scala.language.implicitConversions
 
   /**
    * Implicit conversion that converts an <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>V</code>

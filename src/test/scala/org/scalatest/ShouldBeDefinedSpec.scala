@@ -16,8 +16,9 @@
 package org.scalatest
 
 import SharedHelpers.thisLineNumber
+import Matchers._
 
-class ShouldBeDefinedSpec extends Spec with Matchers {
+class ShouldBeDefinedSpec extends Spec {
   
   val something = Some("Something")
   val nothing = None

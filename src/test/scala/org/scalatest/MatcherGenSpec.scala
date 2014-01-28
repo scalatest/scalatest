@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-class MatcherGenSpec extends Spec with Matchers {
+class MatcherGenSpec extends Spec {
 
   object `A MatcherGen2` {
     def `can be constructed by anding two MatcherGen1s` { pending }

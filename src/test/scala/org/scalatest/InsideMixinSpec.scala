@@ -16,8 +16,11 @@
 package org.scalatest
 
 import org.scalatest.SharedHelpers.thisLineNumber
+import Matchers._
+import Inside._
+import OptionValues._
 
-class InsideMixinSpec extends FunSpec with Matchers with Inside with OptionValues {
+class InsideMixinSpec extends FunSpec {
 
   case class Address(street: String, city: String, state: String, zip: String)
   case class Name(first: String, middle: String, last: String)

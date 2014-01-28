@@ -17,6 +17,7 @@ package org.scalatest
 
 import tagobjects._
 import SharedHelpers._
+import Matchers._
 
 /*
 This just tests a trait, TagGroups, that I created to answer a user query about
@@ -24,7 +25,7 @@ tagging scopes. I probably won't put this into ScalaTest proper to keep tagging
 simple, but I'll leave this in the repo as an example for folks who want to do
 something like this. - bv
 */
-class TaggingScopesSpec extends Spec with Matchers {
+class TaggingScopesSpec extends Spec {
 
   class ExampleSpec extends FreeSpec {
 

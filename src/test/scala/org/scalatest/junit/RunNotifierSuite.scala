@@ -44,6 +44,8 @@ class RunNotifierSuite extends FunSuite {
         }
       }
 
+    import scala.language.reflectiveCalls
+
     val reporter = new RunNotifierReporter(runNotifier)
     reporter(TestStarting(new Ordinal(99), "suite name", "suite ID", Some("suite.class.name"), "some test name", "some test name"))
     assert(runNotifier.fireTestStartedInvocationCount === 1)
@@ -72,6 +74,8 @@ class RunNotifierSuite extends FunSuite {
     val reporter = new RunNotifierReporter(runNotifier)
     val exception = new IllegalArgumentException
 
+    import scala.language.reflectiveCalls
+
     reporter(TestFailed(ordinal, "No msg", "SuiteClassName", "suite ID", Some("fully.qualified.SuiteClassName"), "theTestName", "theTestName", Vector.empty, Some(exception)))
     assert(runNotifier.passed.get.getDescription.getDisplayName === "theTestName(fully.qualified.SuiteClassName)")
     reporter(TestFailed(ordinal, "No msg", "SuiteClassName", "suite ID", None, "theTestName", "theTestName", Vector.empty, Some(exception)))
@@ -89,6 +93,8 @@ class RunNotifierSuite extends FunSuite {
           passed = Some(description)
         }
       }
+
+    import scala.language.reflectiveCalls
 
     val reporter = new RunNotifierReporter(runNotifier)
     reporter(TestSucceeded(ordinal, "SuiteClassName", "suite ID", Some("fully.qualified.SuiteClassName"), "theTestName", "theTestName", Vector.empty))
@@ -108,6 +114,8 @@ class RunNotifierSuite extends FunSuite {
           passed = Some(description)
         }
       }
+
+    import scala.language.reflectiveCalls
 
     val reporter = new RunNotifierReporter(runNotifier)
     reporter(TestIgnored(new Ordinal(99), "suite name", "suite ID", Some("suite class name"), "some test name", "some test name"))
@@ -136,6 +144,8 @@ class RunNotifierSuite extends FunSuite {
           passed = Some(failure)
         }
       }
+
+    import scala.language.reflectiveCalls
 
     val reporter = new RunNotifierReporter(runNotifier)
     val exception = new IllegalArgumentException
@@ -173,6 +183,8 @@ class RunNotifierSuite extends FunSuite {
     val reporter = new RunNotifierReporter(runNotifier)
     val exception = new IllegalArgumentException
     val otherException = new NullPointerException
+
+    import scala.language.reflectiveCalls
 
     reporter(RunAborted(ordinal, "some message", Some(exception)))
     assert(runNotifier.methodInvocationCount === 1)

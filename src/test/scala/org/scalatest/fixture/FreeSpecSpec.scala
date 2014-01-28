@@ -280,6 +280,8 @@ class FreeSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         "test that" in { fixture => theTestThatCalled = true }
       }
 
+      import scala.language.reflectiveCalls
+
       val repA = new TestIgnoredTrackingReporter
       a.run(None, Args(repA))
       assert(!repA.testIgnoredReceived)
@@ -352,6 +354,8 @@ class FreeSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         "test that" in { fixture => theTestThatCalled = true }
       }
 
+      import scala.language.reflectiveCalls
+
       val repE = new TestIgnoredTrackingReporter
       e.run(Some("test this"), Args(repE))
       assert(repE.testIgnoredReceived)
@@ -370,6 +374,9 @@ class FreeSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         "test this" taggedAs(mytags.SlowAsMolasses) in { fixture => theTestThisCalled = true }
         "test that" in { fixture => theTestThatCalled = true }
       }
+
+      import scala.language.reflectiveCalls
+
       val repA = new TestIgnoredTrackingReporter
       a.run(None, Args(repA))
       assert(!repA.testIgnoredReceived)
@@ -846,6 +853,8 @@ class FreeSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         }
       }
 
+      import scala.language.reflectiveCalls
+
       a.run(None, Args(SilentReporter))
       assert(a.testNames.size === 2, a.testNames)
       assert(a.takesNoArgsInvoked)
@@ -867,6 +876,8 @@ class FreeSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         }
       }
 
+      import scala.language.reflectiveCalls
+
       assert(!a.takesNoArgsInvoked)
       assert(!a.takesAFixtureInvoked)
       a.run(None, Args(SilentReporter))
@@ -885,6 +896,8 @@ class FreeSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
           "should take a fixture" ignore { s => takeAFixtureInvoked = true; 42 }
         }
       }
+
+      import scala.language.reflectiveCalls
 
       assert(!a.takeNoArgsInvoked)
       assert(!a.takeAFixtureInvoked)
@@ -969,6 +982,9 @@ class FreeSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         }
         "do something" in { fixture => }
       }
+
+      import scala.language.reflectiveCalls
+
       a.run(None, Args(SilentReporter))
       assert(a.correctTestNameWasPassed)
     }
@@ -982,6 +998,9 @@ class FreeSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         }
         "do something" in { fixture => }
       }
+
+      import scala.language.reflectiveCalls
+
       a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> 7), None, new Tracker(), Set.empty))
       assert(a.correctConfigMapWasPassed)
     }

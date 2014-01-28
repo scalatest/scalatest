@@ -23,8 +23,9 @@ import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.exceptions._
 import org.scalatest.exceptions.TestFailedException
+import Matchers._
 
-class ShouldEqualSpec extends Spec with Matchers with Checkers with ReturnsNormallyThrowsAssertion {
+class ShouldEqualSpec extends Spec with Checkers with ReturnsNormallyThrowsAssertion {
 
   // Checking for equality with "equal"
   object `The equal token` {

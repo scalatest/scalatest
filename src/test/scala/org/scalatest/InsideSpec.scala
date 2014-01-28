@@ -17,11 +17,13 @@ package org.scalatest
 
 import org.scalatest.Inside._
 import org.scalatest.SharedHelpers.thisLineNumber
+import Matchers._
+import OptionValues._
 /* Uncomment after remove type aliases in org.scalatest package object
 import org.scalatest.exceptions.TestFailedException
 */
 
-class InsideSpec extends FunSpec with Matchers with OptionValues {
+class InsideSpec extends FunSpec {
 
   case class Address(street: String, city: String, state: String, zip: String)
   case class Name(first: String, middle: String, last: String)

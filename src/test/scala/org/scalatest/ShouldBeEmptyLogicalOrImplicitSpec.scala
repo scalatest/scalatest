@@ -17,8 +17,9 @@ package org.scalatest
 
 import SharedHelpers.thisLineNumber
 import enablers.Emptiness
+import Matchers._
 
-class ShouldBeEmptyLogicalOrImplicitSpec extends Spec with Matchers {
+class ShouldBeEmptyLogicalOrImplicitSpec extends Spec {
   
   val fileName: String = "ShouldBeEmptyLogicalOrImplicitSpec.scala"
   

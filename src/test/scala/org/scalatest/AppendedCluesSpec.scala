@@ -16,14 +16,15 @@
 package org.scalatest
 
 import exceptions.{GeneratorDrivenPropertyCheckFailedException, TableDrivenPropertyCheckFailedException, TestFailedDueToTimeoutException, TestFailedException, StackDepth, TestCanceledException}
-import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.junit.JUnitTestFailedError
 import prop.{TableDrivenPropertyChecks, TableFor1}
 import time.{Span, Second}
 import SharedHelpers.EventRecordingReporter
+import AppendedClues._
+import TableDrivenPropertyChecks._
 
 // TODO: Test with imported AppendedClues
-class AppendedCluesSpec extends FlatSpec with ShouldMatchers with AppendedClues with TableDrivenPropertyChecks  with SeveredStackTraces {
+class AppendedCluesSpec extends FlatSpec with Matchers with SeveredStackTraces {
 
   def examples: TableFor1[Throwable with ModifiableMessage[_ <: StackDepth]] =
     Table(

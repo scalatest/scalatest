@@ -17,8 +17,9 @@ package org.scalatest
 
 import SharedHelpers.{createTempDirectory, thisLineNumber}
 import enablers.Writability
+import Matchers._
 
-class ShouldBeWritableExplicitSpec extends Spec with Matchers {
+class ShouldBeWritableExplicitSpec extends Spec {
   
   trait Thing {
     def canRead: Boolean

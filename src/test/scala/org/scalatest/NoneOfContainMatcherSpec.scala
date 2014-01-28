@@ -17,8 +17,9 @@ package org.scalatest
 
 import collection.GenTraversable
 import SharedHelpers._
+import Matchers._
 
-class NoneOfContainMatcherSpec extends Spec with Matchers {
+class NoneOfContainMatcherSpec extends Spec {
 
   object `noneOf ` {
     

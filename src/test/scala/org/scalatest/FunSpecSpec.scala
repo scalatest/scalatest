@@ -115,6 +115,9 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
           testWasInvoked = true
         }
       }
+
+      import scala.language.reflectiveCalls
+
       a.run(None, Args(SilentReporter))
       assert(a.withFixtureWasInvoked)
       assert(a.testWasInvoked)
@@ -128,6 +131,9 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
         }
         it("should do something") {}
       }
+
+      import scala.language.reflectiveCalls
+
       a.run(None, Args(SilentReporter))
       assert(a.correctTestNameWasPassed)
     }
@@ -140,6 +146,9 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
         }
         it("should do something") {}
       }
+
+      import scala.language.reflectiveCalls
+
       a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> 7), None, new Tracker(), Set.empty))
       assert(a.correctConfigMapWasPassed)
     }
@@ -397,6 +406,8 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
         it("test that") { theTestThatCalled = true }
       }
 
+      import scala.language.reflectiveCalls
+
       val repA = new TestIgnoredTrackingReporter
       a.run(None, Args(repA))
       assert(!repA.testIgnoredReceived)
@@ -461,6 +472,8 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
         it("test that") { theTestThatCalled = true }
       }
 
+      import scala.language.reflectiveCalls
+
       val repE = new TestIgnoredTrackingReporter
       e.run(Some("test this"), Args(repE))
       assert(repE.testIgnoredReceived)
@@ -477,6 +490,9 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
         it("test this", mytags.SlowAsMolasses) { theTestThisCalled = true }
         it("test that") { theTestThatCalled = true }
       }
+
+      import scala.language.reflectiveCalls
+
       val repA = new TestIgnoredTrackingReporter
       a.run(None, Args(repA))
       assert(!repA.testIgnoredReceived)

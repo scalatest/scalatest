@@ -52,6 +52,8 @@ trait Definition[-T] {
  */
 object Definition {
 
+  import scala.language.higherKinds
+
   /**
    * Provides <code>Definition</code> implementation for <code>scala.Option</code>
    *
@@ -63,6 +65,8 @@ object Definition {
     new Definition[OPT[E]] {
       def isDefined(option: OPT[E]): Boolean = option.isDefined
     }
+
+  import scala.language.reflectiveCalls
   
   /**
    * Provides <code>Definition</code> implementation for any arbitrary object with a <code>isDefined()</code> method that returns <code>Boolean</code>

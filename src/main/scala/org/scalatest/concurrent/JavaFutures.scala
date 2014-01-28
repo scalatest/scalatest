@@ -38,6 +38,8 @@ import org.scalatest.exceptions.TestCanceledException
  */
 trait JavaFutures extends Futures {
 
+  import scala.language.implicitConversions
+
   /**
    * Implicitly converts a <code>java.util.concurrent.Future[T]</code> to
    * <code>FutureConcept[T]</code>, allowing you to invoke the methods

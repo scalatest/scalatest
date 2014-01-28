@@ -117,6 +117,8 @@ package org.scalatest.junit {
 
       (new JUnitRunner(classOf[KerblooeySuite])).run(runNotifier)
 
+      import scala.language.reflectiveCalls
+
       assert(runNotifier.methodInvocationCount === 1)
       assert(runNotifier.passed.get.getDescription.getDisplayName ===
              "org.scalatest.junit.helpers.KerblooeySuite")

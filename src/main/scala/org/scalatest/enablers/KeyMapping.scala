@@ -55,6 +55,8 @@ trait KeyMapping[-M] {
  */
 object KeyMapping {
 
+  import scala.language.higherKinds
+
   /**
    * Enable <code>KeyMapping</code> implementation for <code>scala.collection.GenMap</code>.
    *
@@ -71,6 +73,8 @@ object KeyMapping {
         map.iterator.map(_._1).exists((k: K) => equality.areEqual(k, key))
       }
     }
+
+  import scala.language.implicitConversions
 
   /**
    * Implicit conversion that converts an <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>K</code>

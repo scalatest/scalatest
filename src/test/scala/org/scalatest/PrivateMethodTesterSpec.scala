@@ -15,7 +15,9 @@
  */
 package org.scalatest
 
-class PrivateMethodTesterSpec extends FunSpec with PrivateMethodTester {
+import PrivateMethodTester._
+
+class PrivateMethodTesterSpec extends FunSpec {
 
   describe("The PrivateMethodTester trait") {
 

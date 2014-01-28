@@ -18,8 +18,9 @@ package org.scalatest
 import SharedHelpers.thisLineNumber
 import org.scalatest.enablers.Sortable
 import FailureMessages.decorateToStringValue
+import Matchers._
 
-class ShouldBeSortedLogicalAndSpec extends Spec with Matchers {
+class ShouldBeSortedLogicalAndSpec extends Spec {
   
   //ADDITIONAL//
   

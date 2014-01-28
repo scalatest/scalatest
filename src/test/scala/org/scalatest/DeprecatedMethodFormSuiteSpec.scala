@@ -18,13 +18,14 @@ package org.scalatest
 import collection.immutable.TreeSet
 import SharedHelpers._
 import org.scalatest.events._
+import PrivateMethodTester._
 
 /* Uncomment after remove type aliases in org.scalatest package object
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestPendingException
 */
 
-class DeprecatedMethodFormSuiteSpec extends FunSpec with PrivateMethodTester {
+class DeprecatedMethodFormSuiteSpec extends FunSpec {
 
   describe("The simpleNameForTest method") {
     it("should return the correct test simple name with or without Informer") {
@@ -177,6 +178,8 @@ class DeprecatedMethodFormSuiteSpec extends FunSpec with PrivateMethodTester {
 
     it("should report as ignored, ant not run, tests marked ignored") {
 
+      import scala.language.reflectiveCalls
+
       val a = new Suite {
         var theTestThisCalled = false
         var theTestThatCalled = false
@@ -280,6 +283,8 @@ class DeprecatedMethodFormSuiteSpec extends FunSpec with PrivateMethodTester {
         }
       }
 
+      import scala.language.reflectiveCalls
+
       val repE = new TestIgnoredTrackingReporter
       e.run(Some("testThis"), Args(repE))
       assert(repE.testIgnoredReceived)
@@ -302,6 +307,8 @@ class DeprecatedMethodFormSuiteSpec extends FunSpec with PrivateMethodTester {
           theTestThatCalled = true
         }
       }
+
+      import scala.language.reflectiveCalls
 
       val repE = new TestIgnoredTrackingReporter
       e.run(Some("testThis"), Args(repE, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -346,6 +353,9 @@ class DeprecatedMethodFormSuiteSpec extends FunSpec with PrivateMethodTester {
           theTestThatCalled = true
         }
       }
+
+      import scala.language.reflectiveCalls
+
       val repA = new TestIgnoredTrackingReporter
       a.run(None, Args(repA))
       assert(!repA.testIgnoredReceived)
@@ -366,6 +376,7 @@ class DeprecatedMethodFormSuiteSpec extends FunSpec with PrivateMethodTester {
           theTestThatCalled = true
         }
       }
+
       val repB = new TestIgnoredTrackingReporter
       b.run(None, Args(repB, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set()), ConfigMap.empty, None, new Tracker, Set.empty))
       assert(!repB.testIgnoredReceived)
@@ -791,6 +802,9 @@ class DeprecatedMethodFormSuiteSpec extends FunSpec with PrivateMethodTester {
           testWasInvoked = true
         }
       }
+
+      import scala.language.reflectiveCalls
+
       a.run(None, Args(SilentReporter))
       assert(a.withFixtureWasInvoked)
       assert(a.testWasInvoked)
@@ -809,6 +823,9 @@ class DeprecatedMethodFormSuiteSpec extends FunSpec with PrivateMethodTester {
           testWasInvoked = true
         }
       }
+
+      import scala.language.reflectiveCalls
+
       a.run(None, Args(SilentReporter))
       assert(a.withFixtureWasInvoked)
       assert(a.testWasInvoked)
@@ -824,6 +841,9 @@ class DeprecatedMethodFormSuiteSpec extends FunSpec with PrivateMethodTester {
 
         def testSomething(info: Informer) {}
       }
+
+      import scala.language.reflectiveCalls
+
       a.run(None, Args(SilentReporter))
       assert(a.correctTestNameWasPassed)
     }
@@ -838,6 +858,9 @@ class DeprecatedMethodFormSuiteSpec extends FunSpec with PrivateMethodTester {
 
         def testSomething(info: Informer) {}
       }
+
+      import scala.language.reflectiveCalls
+
       a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> 7), None, new Tracker(), Set.empty))
       assert(a.correctConfigMapWasPassed)
     }

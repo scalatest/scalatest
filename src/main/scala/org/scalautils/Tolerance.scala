@@ -70,6 +70,8 @@ trait Tolerance {
     }
   }
 
+  import scala.language.implicitConversions
+
   /**
    * Implicitly converts an object of a <code>Numeric</code> type to a <code>PlusOrMinusWrapper</code>,
    * to enable a <code>+-</code> method to be invoked on that object.

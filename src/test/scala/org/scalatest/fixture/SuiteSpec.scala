@@ -225,6 +225,8 @@ class SuiteSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         def testThat(fixture: FixtureParam, info: Informer) { theTestThatCalled = true }
       }
 
+      import scala.language.reflectiveCalls
+
       val repA = new TestIgnoredTrackingReporter
       a.run(None, Args(repA))
       assert(!repA.testIgnoredReceived)
@@ -299,6 +301,8 @@ class SuiteSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         def testThat(fixture: FixtureParam, info: Informer) { theTestThatCalled = true }
       }
 
+      import scala.language.reflectiveCalls
+
       val repE = new TestIgnoredTrackingReporter
       e.run(Some("testThis(FixtureParam)"), Args(repE))
       assert(repE.testIgnoredReceived)
@@ -340,6 +344,9 @@ class SuiteSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         def testThis(fixture: FixtureParam) { theTestThisCalled = true }
         def testThat(fixture: FixtureParam, info: Informer) { theTestThatCalled = true }
       }
+
+      import scala.language.reflectiveCalls
+
       val repA = new TestIgnoredTrackingReporter
       a.run(None, Args(repA))
       assert(!repA.testIgnoredReceived)
@@ -743,6 +750,8 @@ class SuiteSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         def testTakesAFixtureAndInformer(s: String, info: Informer) { takesAFixtureAndInformerInvoked = true }
       }
 
+      import scala.language.reflectiveCalls
+
       a.run(None, Args(SilentReporter))
       assert(a.testNames.size === 4, a.testNames)
       assert(a.takesNoArgsInvoked)
@@ -770,6 +779,8 @@ class SuiteSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         var takesAFixtureAndInformerInvoked = false
         def testTakesAFixtureAndInformer(i: Int, info: Informer) { takesAFixtureAndInformerInvoked = true }
       }
+
+      import scala.language.reflectiveCalls
 
       a.run(None, Args(SilentReporter))
       assert(a.testNames.size === 4, a.testNames)
@@ -916,6 +927,9 @@ class SuiteSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         }
         def testSomething(fixture: FixtureParam, info: Informer) {}
       }
+
+      import scala.language.reflectiveCalls
+
       a.run(None, Args(SilentReporter))
       assert(a.correctTestNameWasPassed)
     }
@@ -929,6 +943,9 @@ class SuiteSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         }
         def testSomething(fixture: FixtureParam, info: Informer) {}
       }
+
+      import scala.language.reflectiveCalls
+
       a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> 7), None, new Tracker(), Set.empty))
       assert(a.correctConfigMapWasPassed)
     }
