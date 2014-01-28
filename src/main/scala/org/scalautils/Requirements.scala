@@ -144,6 +144,32 @@ trait Requirements {
       }
     }
 
+    /**
+     * Require that all of the passed in elements are not <code>null</code>, else fail with <code>NullPointerException</code>.
+     *
+     * @param variableNames names of variable passed as appear in source
+     * @param elements elements to check for <code>null</code> value
+     */
+    def macroRequireNonNull(variableNames: Array[String], elements: Array[Any]) {
+      val nullList = elements.zipWithIndex.filter { case (e, idx) =>
+        e == null
+      }
+      val nullCount = nullList.size
+      if (nullCount > 0) {
+        val nullVariableNames = nullList.map { case (e, idx) =>
+          variableNames(idx)
+        }
+        val errorMessage =
+          if (nullCount == 1)
+            FailureMessages("wasNull", UnquotedString(nullVariableNames(0)))
+          else {
+            val combinedVariableNames = nullVariableNames.dropRight(1).mkString(", ") + " and " + nullVariableNames.last
+            FailureMessages("wereNull", UnquotedString(combinedVariableNames))
+          }
+        throw new NullPointerException(errorMessage)
+      }
+    }
+
   }
 
   /**
@@ -242,6 +268,17 @@ trait Requirements {
    * @throws NullPointerException if <code>message</code> is <code>null</code>.
    */
   def requireState(condition: Boolean, clue: Any): Unit = macro RequirementsMacro.requireStateWithClue
+
+  /**
+   * Require that all passed in elements to be non-null.
+   * If none of the passed in elements is <code>null</code>, this method returns normally.
+   * Else, it throws <code>NullPointerException</code> with error message that includes the name(s)
+   * (as appeared in source) of the element(s) that holds <code>null</code> value.
+   *
+   * @param elements elements to check for <code>null</code> value
+   * @throws NullPointerException if any of the passed in elements is <code>null</code>.
+   */
+  def requireNonNull(elements: Any*): Unit = macro RequirementsMacro.requireNonNull
 }
 
 /**
@@ -291,4 +328,42 @@ private[scalautils] object RequirementsMacro {
   def requireStateWithClue(context: Context)(condition: context.Expr[Boolean], clue: context.Expr[Any]): context.Expr[Unit] =
     new BooleanMacro[context.type](context, "requirementsHelper").genMacroCode(condition, "macroRequireState", Some(clue.tree))
 
+  /**
+   * Provides requirement implementation for <code>Requirements.requireNonNull(elements: Any*)</code>, with rich error message.
+   *
+   * @param context macro context
+   * @param elements original elements expression(s)
+   * @return transformed expression that performs the requirement check and throw <code>NullPointerException</code> with rich error message if requirement failed
+   */
+  def requireNonNull(context: Context)(elements: context.Expr[Any]*): context.Expr[Unit] = {
+    import context.universe._
+
+    val variablesNamesArray =
+      Apply(
+        Select(
+          Ident("Array"),
+          newTermName("apply")
+        ),
+        List(elements.map(e => context.literal(show(e.tree)).tree): _*)
+      )
+
+    val elementsArray =
+      Apply(
+        Select(
+          Ident("Array"),
+          newTermName("apply")
+        ),
+        List(elements.map(e => e.tree): _*)
+      )
+
+    context.Expr(
+      Apply(
+        Select(
+          Ident("requirementsHelper"),
+          newTermName("macroRequireNonNull")
+        ),
+        List(variablesNamesArray, elementsArray)
+      )
+    )
+  }
 }
