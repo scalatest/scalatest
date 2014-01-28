@@ -95,6 +95,55 @@ trait Requirements {
       }
     }
 
+    /**
+     * Require that the passed in expression is <code>true</code>, else fail with <code>IllegalStateException</code>.
+     *
+     * @param expression <code>Boolean</code> expression to check as requirement
+     * @param clue optional clue to be included in <code>IllegalStateException</code>'s error message when the requirement failed
+     */
+    def macroRequireState(expression: Boolean, clue: Option[Any]) {
+      if (clue == null)
+        throw new NullPointerException("clue was null")
+      if (!expression)
+        throw new IllegalStateException(if (clue.isDefined) clue.get + "" else FailureMessages("expressionWasFalse"))
+    }
+
+    /**
+     * Require that the passed in expression is <code>true</code>, else fail with <code>IllegalStateException</code>.
+     *
+     * @param left the LHS of the expression
+     * @param operator the operator of the expression
+     * @param right the RHS of the expression
+     * @param expression <code>Boolean</code> expression to check as requirement
+     * @param clue optional clue to be included in <code>IllegalStateException</code>'s error message when requirement failed
+     */
+    def macroRequireState(left: Any, operator: String, right: Any, expression: Boolean, clue: Option[Any]) {
+      if (clue == null)
+        throw new NullPointerException("clue was null")
+      if (!expression) {
+        throw operator match {
+          case "==" =>
+            val (leftee, rightee) = getObjectsForFailureMessage(left, right)
+            throw new IllegalStateException(append(FailureMessages("didNotEqual", leftee, rightee), clue))
+          case "===" =>
+            val (leftee, rightee) = getObjectsForFailureMessage(left, right)
+            throw new IllegalStateException(append(FailureMessages("didNotEqual", leftee, rightee), clue))
+          case "!=" =>
+            val (leftee, rightee) = getObjectsForFailureMessage(left, right)
+            throw new IllegalStateException(append(FailureMessages("equaled", leftee, rightee), clue))
+          case "!==" =>
+            val (leftee, rightee) = getObjectsForFailureMessage(left, right)
+            throw new IllegalStateException(append(FailureMessages("equaled", leftee, rightee), clue))
+          /*case ">" => throw new IllegalStateException(append(Some(FailureMessages("wasNotGreaterThan", left, right)), clue))
+          case ">=" => throw new IllegalStateException(append(Some(FailureMessages("wasNotGreaterThanOrEqualTo", left, right)), clue))
+          case "<" => throw new IllegalStateException(append(Some(FailureMessages("wasNotLessThan", left, right)), clue))
+          case "<=" => throw new IllegalStateException(append(Some(FailureMessages("wasNotLessThanOrEqualTo", left, right)), clue))*/
+          case _ =>
+            throw new IllegalStateException(if (clue.isDefined) clue.get + "" else FailureMessages("expressionWasFalse"))
+        }
+      }
+    }
+
   }
 
   /**
@@ -147,6 +196,52 @@ trait Requirements {
    * @throws NullPointerException if <code>message</code> is <code>null</code>.
    */
   def require(condition: Boolean, clue: Any): Unit = macro RequirementsMacro.requireWithClue
+
+  /**
+   * Require that a boolean condition is true.
+   * If the condition is <code>true</code>, this method returns normally.
+   * Else, it throws <code>IllegalStateException</code>.
+   *
+   * <p>
+   * This method is implemented in terms of a Scala macro that will generate a more helpful error message
+   * for simple quality checks of this form:
+   * </p>
+   *
+   * <ul>
+   * <li>requireState(a == b)</li>
+   * <li>requireState(a != b)</li>
+   * <li>requireState(a === b)</li>
+   * <li>requireState(a !== b)</li>
+   * </ul>
+   *
+   * <p>
+   * Any other form of expression will just get a plain-old <code>IllegalStateException</code> at this time. In the future,
+   * we will enhance this macro to give helpful error messages in more situations. In ScalaTest 2.x, however, this behavior
+   * was sufficient to allow the <code>===</code> that returns <code>Boolean</code>, not <code>Option[String]</code> to be
+   * the default in tests. This makes <code>===</code> consistent between tests and production code. If you have pre-existing
+   * code you wrote under ScalaTest 1.x, in which you are expecting<code>===</code> to return an <code>Option[String]</code>,
+   * use can get that behavior back by mixing in trait <a href="LegacyTripleEquals.html"><code>LegacyTripleEquals</code></a>.
+   * </p>
+   *
+   * @param condition the boolean condition to check as requirement
+   * @throws IllegalStateException if the condition is <code>false</code>.
+   */
+  def requireState(condition: Boolean): Unit = macro RequirementsMacro.requireState
+
+  /**
+   * Require that a boolean condition, described in <code>String</code>
+   * <code>message</code>, is true.
+   * If the condition is <code>true</code>, this method returns normally.
+   * Else, it throws <code>IllegalStateException</code> with the
+   * <code>String</code> obtained by invoking <code>toString</code> on the
+   * specified <code>clue</code> as the exception's detail message.
+   *
+   * @param condition the boolean condition to check as requirement
+   * @param clue An objects whose <code>toString</code> method returns a message to include in a failure report.
+   * @throws IllegalStateException if the condition is <code>false</code>.
+   * @throws NullPointerException if <code>message</code> is <code>null</code>.
+   */
+  def requireState(condition: Boolean, clue: Any): Unit = macro RequirementsMacro.requireStateWithClue
 }
 
 /**
@@ -174,5 +269,26 @@ private[scalautils] object RequirementsMacro {
    */
   def requireWithClue(context: Context)(condition: context.Expr[Boolean], clue: context.Expr[Any]): context.Expr[Unit] =
     new BooleanMacro[context.type](context, "requirementsHelper").genMacroCode(condition, "macroRequire", Some(clue.tree))
+
+  /**
+   * Provides requirement implementation for <code>Requirements.requireState(booleanExpr: Boolean)</code>, with rich error message.
+   *
+   * @param context macro context
+   * @param condition original condition expression
+   * @return transformed expression that performs the requirement check and throw <code>IllegalStateException</code> with rich error message if requirement failed
+   */
+  def requireState(context: Context)(condition: context.Expr[Boolean]): context.Expr[Unit] =
+    new BooleanMacro[context.type](context, "requirementsHelper").genMacroCode(condition, "macroRequireState", None)
+
+  /**
+   * Provides requirement implementation for <code>Requirements.requireState(booleanExpr: Boolean, clue: Any)</code>, with rich error message.
+   *
+   * @param context macro context
+   * @param condition original condition expression
+   * @param clue original clue expression
+   * @return transformed expression that performs the requirement check and throw <code>IllegalStateException</code> with rich error message (clue included) if requirement failed
+   */
+  def requireStateWithClue(context: Context)(condition: context.Expr[Boolean], clue: context.Expr[Any]): context.Expr[Unit] =
+    new BooleanMacro[context.type](context, "requirementsHelper").genMacroCode(condition, "macroRequireState", Some(clue.tree))
 
 }
