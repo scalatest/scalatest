@@ -223,6 +223,7 @@ class StringReporterSummarySpec extends UnitSpec {
         )
       fragments should be (Vector(Fragment(Resources("runStopped"), AnsiCyan)))
     }
+
     def `should produce a good summary when Summary is all zeroes` {
       val summary =
         new Summary(
@@ -254,6 +255,42 @@ class StringReporterSummarySpec extends UnitSpec {
           Fragment(Resources("totalNumberOfTestsRun", summary.testsCompletedCount.toString), AnsiCyan),
           Fragment(Resources("suiteSummary", summary.suitesCompletedCount.toString, summary.suitesAbortedCount.toString), AnsiCyan),
           Fragment(Resources("testSummary", summary.testsSucceededCount.toString, summary.testsFailedCount.toString, summary.testsCanceledCount.toString, summary.testsIgnoredCount.toString, summary.testsPendingCount.toString), AnsiCyan),
+          Fragment(Resources("noTestsWereExecuted"), AnsiYellow)
+        )
+      )
+    }
+
+    def `should produce a good summary when Summary is all tests pass` {
+      val summaryAllPassed =
+        new Summary(
+          testsSucceededCount = 5,
+          testsFailedCount = 0,
+          testsIgnoredCount = 0,
+          testsPendingCount = 0,
+          testsCanceledCount = 0,
+          suitesCompletedCount = 0,
+          suitesAbortedCount = 0,
+          scopesPendingCount = 0
+        )
+
+      val fragments =
+        summaryFragments(
+          true,
+          Some(0L),
+          Some(summaryAllPassed),
+          Vector.empty,
+          presentAllDurations = false,
+          presentReminder = true,
+          presentReminderWithShortStackTraces = false,
+          presentReminderWithFullStackTraces = false,
+          presentReminderWithoutCanceledTests = false
+        )
+      fragments should be (
+        Vector(
+          Fragment(Resources("runCompletedIn", makeDurationString(0)), AnsiCyan),
+          Fragment(Resources("totalNumberOfTestsRun", summaryAllPassed.testsCompletedCount.toString), AnsiCyan),
+          Fragment(Resources("suiteSummary", summaryAllPassed.suitesCompletedCount.toString, summaryAllPassed.suitesAbortedCount.toString), AnsiCyan),
+          Fragment(Resources("testSummary", summaryAllPassed.testsSucceededCount.toString, summaryAllPassed.testsFailedCount.toString, summaryAllPassed.testsCanceledCount.toString, summaryAllPassed.testsIgnoredCount.toString, summaryAllPassed.testsPendingCount.toString), AnsiCyan),
           Fragment(Resources("allTestsPassed"), AnsiGreen)
         )
       )
