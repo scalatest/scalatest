@@ -17,8 +17,9 @@ package org.scalatest
 
 import java.io.File
 import SharedHelpers.{createTempDirectory, thisLineNumber}
+import Matchers._
 
-class ShouldExistLogicalOrSpec extends Spec with Matchers {
+class ShouldExistLogicalOrSpec extends Spec {
   
   val tempDir = createTempDirectory()
   val existFile = File.createTempFile("delete", "me", tempDir)

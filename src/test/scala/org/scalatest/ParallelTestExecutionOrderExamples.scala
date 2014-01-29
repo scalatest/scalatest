@@ -22,7 +22,7 @@ trait OrderExpectedResults extends EventHelpers {
   def assertOrderTest(events: List[Event])
 }
 
-trait ParallelTestExecutionOrderExamples extends Tables {
+object ParallelTestExecutionOrderExamples extends Tables {
 
   def orderSuite = new ExampleParallelTestExecutionOrderSuite
   def orderFixtureSuite = new ExampleParallelTestExecutionOrderFixtureSuite

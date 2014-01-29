@@ -21,8 +21,9 @@ import org.scalautils.Uniformity
 import org.scalautils.StringNormalizations._
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
+import Matchers._
 
-class ListShouldContainSpec extends Spec with Matchers {
+class ListShouldContainSpec extends Spec {
 
   object `a List` {
 

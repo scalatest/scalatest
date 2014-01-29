@@ -15,10 +15,9 @@
  */
 package org.scalatest
 
-import time._
-import SpanSugar._
+import Matchers._
 
-class RunningTestSpec extends Spec with Matchers {
+class RunningTestSpec extends Spec {
 
   object `The RunningTest class` {
     def `should determine equality based on the suite ID and test name only` {

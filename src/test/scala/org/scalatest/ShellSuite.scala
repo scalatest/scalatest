@@ -15,9 +15,9 @@
  */
 package org.scalatest
 
-import org.scalatest.matchers.ShouldMatchers
+import Matchers._
 
-class ShellSuite extends Suite with ShouldMatchers {
+class ShellSuite extends Suite {
 
   def testDefaults() {
 

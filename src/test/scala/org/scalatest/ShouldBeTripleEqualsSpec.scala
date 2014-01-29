@@ -20,8 +20,9 @@ import org.scalacheck._
 import Arbitrary._
 import Prop._
 import org.scalatest.exceptions.TestFailedException
+import Matchers._
 
-class ShouldBeTripleEqualsSpec extends Spec with Matchers with Checkers with ReturnsNormallyThrowsAssertion {
+class ShouldBeTripleEqualsSpec extends Spec with Checkers with ReturnsNormallyThrowsAssertion {
 
   // Checking for a specific size
   object `The 'be === (x)' syntax` {

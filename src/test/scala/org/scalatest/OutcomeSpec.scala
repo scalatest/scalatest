@@ -17,8 +17,9 @@ package org.scalatest
 
 import SharedHelpers.thisLineNumber
 import OptionValues._
+import OutcomeOf._
 
-class OutcomeSpec extends Spec with OptionValues with OutcomeOf {
+class OutcomeSpec extends Spec {
 
   val fileName = "OutcomeSpec.scala"
 

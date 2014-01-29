@@ -755,6 +755,8 @@ object SharedHelpers extends Assertions {
   def getFirstNotContainValue[K, V](col: GenTraversable[GenMap[K, V]], right: V): GenMap[K, V] =
     getFirst[GenMap[K, V]](col, !_.exists(_._2 == right))
 
+  import scala.language.higherKinds
+
   def getFirstJavaMapIsEmpty[K, V, JMAP[k, v] <: java.util.Map[_, _]](col: java.util.Collection[JMAP[K, V]], right: Int = 0): java.util.Map[K, V] = // right is not used, but to be consistent to other so that easier for code generation
     getFirstInJavaCol[java.util.Map[K, V]](col.asInstanceOf[java.util.Collection[java.util.Map[K, V]]], _.isEmpty)
 
@@ -819,11 +821,7 @@ object SharedHelpers extends Assertions {
 
   def indexElementForJavaIterator[K, V](itr: java.util.Iterator[java.util.Map.Entry[K, V]], xs: java.util.Map[K, V], errorFun: java.util.Map.Entry[K, V] => Boolean): Array[String] = {
     val element = getNextInJavaIterator[java.util.Map.Entry[K, V]](itr, errorFun)
-    val indexOrKey =
-      xs match {
-        case map: java.util.Map[_, _] => element.asInstanceOf[java.util.Map.Entry[_, _]].getKey
-        case genTrv: java.util.Collection[_] => getIndex(xs, element)
-      }
+    val indexOrKey = element.asInstanceOf[java.util.Map.Entry[_, _]].getKey
     Array(indexOrKey.toString, decorateToStringValue(element))
   }
 

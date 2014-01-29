@@ -15,7 +15,6 @@
  */
 package org.scalatest
 
-import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.SharedHelpers.EventRecordingReporter
 import collection.mutable.ListBuffer
 import java.util.concurrent.Executors
@@ -32,8 +31,9 @@ import org.scalatest.time.Second
 import org.scalatest.time.Seconds
 import java.io.PrintStream
 import java.io.ByteArrayOutputStream
+import Matchers._
 
-class ParallelTestExecutionSpec extends FunSpec with ShouldMatchers with EventHelpers {
+class ParallelTestExecutionSpec extends FunSpec with EventHelpers {
   /*
   Need 3 tests at least
   1. should have the events reported in correct order when tests are executed in parallel

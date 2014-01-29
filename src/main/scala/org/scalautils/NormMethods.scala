@@ -63,6 +63,8 @@ trait NormMethods {
     def norm: T = normalization.normalized(o)
   }
 
+  import scala.language.implicitConversions
+
   /**
    * Implicit conversion that adds a <code>norm</code> method to a value of any type <code>T</code> for which
    * an implicit <code>Normalization[T]</code> exists.

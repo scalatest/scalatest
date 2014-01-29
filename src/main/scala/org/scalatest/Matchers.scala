@@ -1648,6 +1648,8 @@ import scala.language.higherKinds
  */
 trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWords with Explicitly { matchers =>
 
+  import scala.language.implicitConversions
+
   // This guy is generally done through an implicit conversion from a symbol. It takes that symbol, and 
   // then represents an object with an apply method. So it gives an apply method to symbols.
   // book should have ('author ("Gibson"))

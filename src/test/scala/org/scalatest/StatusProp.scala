@@ -73,7 +73,7 @@ class StatusProp extends AllSuiteProp {
         }
         catch {
           case vme: VirtualMachineError => true
-          case _ => false
+          case _: Throwable => false
         }
       }
     }

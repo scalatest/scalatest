@@ -20,6 +20,7 @@ import org.scalatest.Assertions._
 trait TestLocationMethodServices {
   
   private[events] case class TestStartingPair(testName: String, className: String, methodName: String, var checked: Boolean = false)
+  import scala.language.existentials
   private[events] case class TestResultPair(clazz: Class[_], className: String, methodName: String, var checked: Boolean = false)
   private[events] case class ScopeOpenedPair(testName: String, className: String, var checked: Boolean = false)
   private[events] case class ScopeClosedPair(testName: String, className: String, var checked: Boolean = false)

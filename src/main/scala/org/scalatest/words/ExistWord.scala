@@ -48,6 +48,8 @@ final class ExistWord {
         }
       override def toString: String = "exist"
     }
+
+  import scala.language.higherKinds
   
   /**
    * This method enables the following syntax:

@@ -570,6 +570,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
       override def toString: String = "(" + Prettifier.default(outerInstance) + ") and (" + Prettifier.default(rightMatcher) + ")"
     }
 
+  import scala.language.higherKinds
+
   /**
    * Returns a <code>MatcherFactory</code> whose <code>matcher</code> method returns a <code>Matcher</code>,
    * which has <code>apply</code> method that returns a <code>MatchResult</code> that represents the logical-and

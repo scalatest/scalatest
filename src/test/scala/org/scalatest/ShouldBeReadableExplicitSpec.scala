@@ -17,8 +17,9 @@ package org.scalatest
 
 import SharedHelpers.{createTempDirectory, thisLineNumber}
 import enablers.Readability
+import Matchers._
 
-class ShouldBeReadableExplicitSpec extends Spec with Matchers {
+class ShouldBeReadableExplicitSpec extends Spec {
   
   trait Thing {
     def canRead: Boolean

@@ -966,6 +966,8 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
    */
   protected val they = new TheyWord
 
+  import scala.language.implicitConversions
+
   /**
    * Implicitly converts <code>String</code>s to <code>WordSpecStringWrapper</code>, which enables
    * methods <code>when</code>, <code>which</code>, <code>in</code>, <code>is</code>, <code>taggedAs</code>

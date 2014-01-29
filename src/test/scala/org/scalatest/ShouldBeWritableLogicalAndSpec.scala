@@ -17,8 +17,9 @@ package org.scalatest
 
 import SharedHelpers.{thisLineNumber, createTempDirectory}
 import java.io.File
+import Matchers._
 
-class ShouldBeWritableLogicalAndSpec extends Spec with Matchers {
+class ShouldBeWritableLogicalAndSpec extends Spec {
   
   val fileName: String = "ShouldBeWritableLogicalAndSpec.scala"
   

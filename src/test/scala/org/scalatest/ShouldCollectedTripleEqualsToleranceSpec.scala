@@ -17,8 +17,10 @@ package org.scalatest
 
 import org.scalautils._
 import SharedHelpers._
+import Matchers._
+import TripleEquals._
 
-class ShouldCollectedTripleEqualsToleranceSpec extends Spec /* with NonImplicitAssertions */ with Matchers with TripleEquals with Tolerance {
+class ShouldCollectedTripleEqualsToleranceSpec extends Spec /* with NonImplicitAssertions */ with Tolerance {
 
   val sevenDotOh = 7.0
   val minusSevenDotOh = -7.0

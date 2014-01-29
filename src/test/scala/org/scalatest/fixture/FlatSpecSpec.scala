@@ -449,6 +449,8 @@ class FlatSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         it can "test that" in { fixture => theTestThatCalled = true }
       }
 
+      import scala.language.reflectiveCalls
+
       val repA = new TestIgnoredTrackingReporter
       a.run(None, Args(repA))
       assert(!repA.testIgnoredReceived)
@@ -521,6 +523,8 @@ class FlatSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         it must "test that" in { fixture => theTestThatCalled = true }
       }
 
+      import scala.language.reflectiveCalls
+
       val repE = new TestIgnoredTrackingReporter
       e.run(Some("must test this"), Args(repE))
       assert(repE.testIgnoredReceived)
@@ -539,6 +543,9 @@ class FlatSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         it should "test this" taggedAs(mytags.SlowAsMolasses) in { fixture => theTestThisCalled = true }
         it should "test that" in { fixture => theTestThatCalled = true }
       }
+
+      import scala.language.reflectiveCalls
+
       val repA = new TestIgnoredTrackingReporter
       a.run(None, Args(repA))
       assert(!repA.testIgnoredReceived)
@@ -899,6 +906,8 @@ class FlatSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         it should "take a fixture" in { s => takesAFixtureInvoked = true }
       }
 
+      import scala.language.reflectiveCalls
+
       a.run(None, Args(SilentReporter))
       assert(a.testNames.size === 2, a.testNames)
       assert(a.takesNoArgsInvoked)
@@ -919,6 +928,8 @@ class FlatSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         it should "take a fixture" in { s => takesAFixtureInvoked = true; true }
       }
 
+      import scala.language.reflectiveCalls
+
       assert(!a.takesNoArgsInvoked)
       assert(!a.takesAFixtureInvoked)
       a.run(None, Args(SilentReporter))
@@ -935,6 +946,8 @@ class FlatSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         ignore should "test this" in { () => theTestThisCalled = true; "hi" }
         ignore should "test that" in { fixture => theTestThatCalled = true; 42 }
       }
+
+      import scala.language.reflectiveCalls
 
       assert(!a.theTestThisCalled)
       assert(!a.theTestThatCalled)
@@ -1019,6 +1032,9 @@ class FlatSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         }
         it should "do something" in { fixture => }
       }
+
+      import scala.language.reflectiveCalls
+
       a.run(None, Args(SilentReporter))
       assert(a.correctTestNameWasPassed)
     }
@@ -1032,6 +1048,9 @@ class FlatSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         }
         it should "do something" in { fixture => }
       }
+
+      import scala.language.reflectiveCalls
+
       a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> 7), None, new Tracker(), Set.empty))
       assert(a.correctConfigMapWasPassed)
     }

@@ -20,8 +20,9 @@ import org.scalacheck._
 import Arbitrary._
 import Prop._
 import org.scalatest.exceptions.TestFailedException
+import Matchers._
 
-class ShouldBeNullSpec extends Spec with Matchers with Checkers with ReturnsNormallyThrowsAssertion {
+class ShouldBeNullSpec extends Spec with Checkers with ReturnsNormallyThrowsAssertion {
 
   val nullMap: Map[Int, String] = null
   val map = Map(1 -> "one", 2 -> "two")

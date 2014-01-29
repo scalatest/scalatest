@@ -21,8 +21,9 @@ import org.scalautils.StringNormalizations._
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
 import scala.collection.JavaConverters._
+import Matchers._
 
-class ListShouldContainNoneOfLogicalOrSpec extends Spec with Matchers {
+class ListShouldContainNoneOfLogicalOrSpec extends Spec {
   
   val invertedStringEquality =
     new Equality[String] {

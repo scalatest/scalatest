@@ -20,81 +20,81 @@ import FailureMessages.decorateToStringValue
 import Matchers._
 import LoneElement._
 
-class ListLoneElementSpec extends Spec {
-  
-  def wasNotGreaterThan(left: Any, right: Any): String = 
-    decorateToStringValue(left) + " was not greater than " + (right)
-    
-  def notLoneElement(left: Any, size: Int): String = 
+class StringLoneElementSpec extends Spec {
+
+  def didNotEqual(left: Any, right: Any): String =
+    decorateToStringValue(left) + " did not equal " + decorateToStringValue(right)
+
+  def wasNotEqualTo(left: Any, right: Any): String =
+    decorateToStringValue(left) + " was not equal to " + decorateToStringValue(right)
+
+  def notLoneElement(left: Any, size: Int): String =
     "Expected " + decorateToStringValue(left) + " to contain exactly 1 element, but it has size " + size
 
   object `The loneElement syntax` {
-    
+
     object `when used with List` {
       def `should work with xs.loneElement and passed when should syntax is used and xs only contains one element and the one element passed the check` {
-        List(10).loneElement should be > 9
+        "9".loneElement should be ('9')
       }
-      
+
       def `should work with xs.loneElement and passed when assert syntax is used and xs only contains one element and the one element passed the check` {
-        assert(List(10).loneElement > 9)
+        assert("9".loneElement == '9')
       }
-      
+
       def `should throw TestFailedException with correct stack depth and message when should syntax is used and xs.loneElement contains one element but it failed the check` {
         val e = intercept[exceptions.TestFailedException] {
-          List(8).loneElement should be > 9
+          "8".loneElement should be ('9')
         }
-        e.failedCodeFileName should be (Some("ListLoneElementSpec.scala"))
+        e.failedCodeFileName should be (Some("StringLoneElementSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
-        e.message should be (Some(wasNotGreaterThan(8, 9)))
+        e.message should be (Some(wasNotEqualTo('8', '9')))
       }
-      
+
       def `should throw TestFailedException with correct stack depth and message when assert syntax is used and xs.loneElement contains one element but it failed the check` {
         val e = intercept[exceptions.TestFailedException] {
-          assert(List(8).loneElement > 9)
+          assert("8".loneElement == '9')
         }
-        assert(e.failedCodeFileName === Some("ListLoneElementSpec.scala"))
+        assert(e.failedCodeFileName === Some("StringLoneElementSpec.scala"))
         assert(e.failedCodeLineNumber === Some(thisLineNumber - 3))
-        assert(e.message === None)
+        assert(e.message === Some(didNotEqual('8', '9')))
       }
-      
+
       def `should throw TestFailedException with correct stack depth and message when should syntax is used and xs contains 0 element and xs.loneElement is called` {
-        val xs = List.empty[Int]
         val e = intercept[exceptions.TestFailedException] {
-          xs.loneElement should be > 9
+          "".loneElement should be ('9')
         }
-        e.failedCodeFileName should be (Some("ListLoneElementSpec.scala"))
+        e.failedCodeFileName should be (Some("StringLoneElementSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
-        e.message should be (Some(notLoneElement(xs, 0)))
+        e.message should be (Some(notLoneElement("", 0)))
       }
-      
+
       def `should throw TestFailedException with correct stack depth and message when assert syntax is used and xs contains 0 element and xs.loneElement is called` {
-        val xs = List.empty[Int]
         val e = intercept[exceptions.TestFailedException] {
-          assert(xs.loneElement > 9)
+          assert("".loneElement == '9')
         }
-        assert(e.failedCodeFileName == Some("ListLoneElementSpec.scala"))
+        assert(e.failedCodeFileName == Some("StringLoneElementSpec.scala"))
         assert(e.failedCodeLineNumber == Some(thisLineNumber - 3))
-        assert(e.message === Some(notLoneElement(xs, 0)))
+        assert(e.message === Some(notLoneElement("", 0)))
       }
-      
+
       def `should throw TestFailedException with correct stack depth and message when should syntax is used and xs contains > 1 elements and xs.loneElement is called` {
-        val xs = List(10, 12)
         val e = intercept[exceptions.TestFailedException] {
-          xs.loneElement should be > 9
+          "28".loneElement should be ('9')
         }
-        e.failedCodeFileName should be (Some("ListLoneElementSpec.scala"))
+        e.failedCodeFileName should be (Some("StringLoneElementSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
-        e.message should be (Some(notLoneElement(xs, 2)))
+        e.message should be (Some(notLoneElement("28", 2)))
       }
-      
+
       def `should throw TestFailedException with correct stack depth and message when assert syntax is used and xs contains > 1 elements and xs.loneElement is called` {
         val xs = List(10, 12)
         val e = intercept[exceptions.TestFailedException] {
-          assert(xs.loneElement > 9)
+          assert("28".loneElement == '9')
         }
-        assert(e.failedCodeFileName === Some("ListLoneElementSpec.scala"))
+        assert(e.failedCodeFileName === Some("StringLoneElementSpec.scala"))
         assert(e.failedCodeLineNumber === Some(thisLineNumber - 3))
-        assert(e.message === Some(notLoneElement(xs, 2)))
+        assert(e.message === Some(notLoneElement("28", 2)))
       }
     }
   }

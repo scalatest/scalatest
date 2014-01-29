@@ -18,12 +18,13 @@ package org.scalatest
 import SharedHelpers._
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.events._
+import Matchers._
 /* Uncomment after remove type aliases in org.scalatest package object
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestRegistrationClosedException
 */
 
-class FlatSpecSpec extends FunSpec with GivenWhenThen with ShouldMatchers {
+class FlatSpecSpec extends FunSpec with GivenWhenThen {
 
   describe("A FlatSpec") {
 
@@ -114,6 +115,9 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen with ShouldMatchers {
           testWasInvoked = true
         }
       }
+
+      import scala.language.reflectiveCalls
+
       a.run(None, Args(SilentReporter))
       assert(a.withFixtureWasInvoked)
       assert(a.testWasInvoked)
@@ -127,6 +131,9 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen with ShouldMatchers {
         }
         it should "do something" in {}
       }
+
+      import scala.language.reflectiveCalls
+
       a.run(None, Args(SilentReporter))
       assert(a.correctTestNameWasPassed)
     }
@@ -139,6 +146,9 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen with ShouldMatchers {
         }
         it should "do something" in {}
       }
+
+      import scala.language.reflectiveCalls
+
       a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> 7), None, new Tracker(), Set.empty))
       assert(a.correctConfigMapWasPassed)
     }
@@ -644,6 +654,8 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen with ShouldMatchers {
         it can "test that" in { theTestThatCalled = true }
       }
 
+      import scala.language.reflectiveCalls
+
       val repA = new TestIgnoredTrackingReporter
       a.run(None, Args(repA))
       assert(!repA.testIgnoredReceived)
@@ -708,6 +720,8 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen with ShouldMatchers {
         it must "test that" in { theTestThatCalled = true }
       }
 
+      import scala.language.reflectiveCalls
+
       val repE = new TestIgnoredTrackingReporter
       e.run(Some("must test this"), Args(repE))
       assert(repE.testIgnoredReceived)
@@ -724,6 +738,9 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen with ShouldMatchers {
         it should "test this" taggedAs(mytags.SlowAsMolasses) in { theTestThisCalled = true }
         it should "test that" in { theTestThatCalled = true }
       }
+
+      import scala.language.reflectiveCalls
+
       val repA = new TestIgnoredTrackingReporter
       a.run(None, Args(repA))
       assert(!repA.testIgnoredReceived)

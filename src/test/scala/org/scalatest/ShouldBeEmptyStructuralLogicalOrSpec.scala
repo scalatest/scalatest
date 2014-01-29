@@ -16,8 +16,9 @@
 package org.scalatest
 
 import SharedHelpers.thisLineNumber
+import Matchers._
 
-class ShouldBeEmptyStructuralLogicalOrSpec extends FunSpec with Matchers {
+class ShouldBeEmptyStructuralLogicalOrSpec extends FunSpec {
   
   val fileName: String = "ShouldBeEmptyStructuralLogicalOrSpec.scala"
   

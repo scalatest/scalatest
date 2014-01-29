@@ -54,6 +54,8 @@ import TripleEqualsSupport._
  */
 trait LowPriorityConversionCheckedConstraint extends TripleEqualsSupport {
 
+  import scala.language.implicitConversions
+
   // Inherit the Scaladoc for this method
 
   implicit override def lowPriorityConversionCheckedConstraint[A, B](implicit equivalenceOfB: Equivalence[B], cnv: A => B): Constraint[A, B] = new AToBEquivalenceConstraint[A, B](equivalenceOfB, cnv)

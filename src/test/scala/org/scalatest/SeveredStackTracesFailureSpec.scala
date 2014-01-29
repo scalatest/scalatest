@@ -15,9 +15,9 @@
  */
 package org.scalatest
 
-import org.scalatest.matchers.ShouldMatchers
+import Matchers._
 
-class SeveredStackTracesFailureSpec extends FunSpec with ShouldMatchers with SeveredStackTraces {
+class SeveredStackTracesFailureSpec extends FunSpec with SeveredStackTraces {
 
   override def withFixture(test: NoArgTest): Outcome = {
     super.withFixture(test) match {

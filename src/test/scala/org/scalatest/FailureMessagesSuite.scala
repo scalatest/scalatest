@@ -17,9 +17,10 @@ package org.scalatest
 
 import scala.collection.immutable.TreeSet
 import org.scalatest.events._
-import org.scalatest.matchers.ShouldMatchers
+import Matchers._
 
-class FailureMessagesSuite extends Suite with ShouldMatchers {
+
+class FailureMessagesSuite extends Suite {
 
   def `test: prettify arrays should handle null array element values` {
     assertResult("Array(1, null, 3)") {

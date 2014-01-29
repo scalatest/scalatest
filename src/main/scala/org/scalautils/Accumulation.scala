@@ -51,6 +51,8 @@ import Accumulation.Accumulatable
  */
 trait Accumulation {
 
+  import scala.language.{higherKinds, implicitConversions}
+
   /**
    * Implicitly converts an accumulating <code>Or</code> to an instance of <a href="Accumulation$$Acumulatable.html"><code>Accumulatable</code></a>, which
    * enables <code>zip</code> and <code>when</code> methods to be invoked on it.
@@ -1603,6 +1605,8 @@ trait Accumulation {
  * </p>
  */
 object Accumulation extends Accumulation {
+
+  import scala.language.higherKinds
 
   /**
    * Adds a <code>combined</code> method to &ldquo;collections&rdquo; of accumulating <code>Or</code>s via an implicit conversion provided by

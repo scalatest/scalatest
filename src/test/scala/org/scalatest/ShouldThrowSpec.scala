@@ -17,8 +17,10 @@ package org.scalatest
 
 import org.scalatest.exceptions.TestFailedException
 import SharedHelpers.thisLineNumber
+import Matchers._
+import OptionValues._
 
-class ShouldThrowSpec extends Spec with OptionValues with Matchers {
+class ShouldThrowSpec extends Spec {
 
   object `The evaluating { ... } should produce [ExceptionType] syntax` {
 

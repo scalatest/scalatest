@@ -71,6 +71,8 @@ object Writability {
       def isWritable(file: FILE): Boolean = file.canWrite
     }
 
+  import scala.language.reflectiveCalls
+
   /**
    * Enable <code>Writability</code> implementation for any arbitrary object with a <code>isWritable()</code> method that returns <code>Boolean</code>
    *

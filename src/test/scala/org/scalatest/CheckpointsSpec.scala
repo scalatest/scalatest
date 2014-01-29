@@ -25,8 +25,9 @@ import org.scalatest.exceptions.TestCanceledException
 import org.scalatest.exceptions.TestRegistrationClosedException
 import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.exceptions.DuplicateTestNameException
+import Matchers._
 
-class CheckpointsSpec extends FunSpec with Matchers with AssertionsForJUnit {
+class CheckpointsSpec extends FunSpec with AssertionsForJUnit {
 
   describe("a Checkpoint") {
     describe("with a failure condition") {
