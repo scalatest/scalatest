@@ -24,7 +24,7 @@ import org.scalatest._
  * <p>
  * Since a unit value is unlikely to be of much use to a test, this trait is useful
  * when the unit value fixture is actually never passed into any tests. Instead
- * each test in the <code>fixture.Suite</code> is defined as a <em>no-arg</em> function; no tests are defined as one-arg functions.
+ * each test in the <a href="Suite.html"><code>fixture.Suite</code></a> is defined as a <em>no-arg</em> function; no tests are defined as one-arg functions.
  * This should be quite rare, but occasionally can be useful.
  * For an example, see the main documentation for trait <a href="NoArg.html"><code>NoArg</code></a>.
  * </p>

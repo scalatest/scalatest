@@ -26,8 +26,8 @@ package org.scalatest.exceptions
  * </p>
  *
  * <p>
- * Another purpose of this exception is to encapsulate a payload, an object to be included in a <code>TestFailed</code> event
- * as its payload, so it can be consumed by a custom reporter that understand the payload. For example, tests could take a screen
+ * Another purpose of this exception is to encapsulate a payload, an object to be included in a <a href="../events/TestFailed.html"><code>TestFailed</code></a> event
+ * as its payload, so it can be consumed by a custom reporter that understands the payload. For example, tests could take a screen
  * shot image of a GUI when a test fails, and include that as a payload. A custom reporter could listen for such payloads and
  * display the screen shots to the user.
  * </p>
