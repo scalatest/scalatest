@@ -17,8 +17,8 @@
     <property name="deploy.scala.version" value="2.11.0-M4" />
 	<property name="for.scala" value="2.11.0" />
 -->
-    <property name="release" value="2.1.RC1" />
-    <property name="github.tag" value="release-2.0-for-scala-2.10" /> <!-- for scaladoc source urls -->
+    <property name="release" value="2.1.0-RC2" />
+    <property name="github.tag" value="release-2.1.0-RC2-for-scala-2.10" /> <!-- for scaladoc source urls -->
 
     <property name="scalasrc" value="src/main/scala" />
     <property name="javasrc" value="src/main/java" />
