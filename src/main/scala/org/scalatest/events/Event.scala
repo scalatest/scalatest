@@ -1699,7 +1699,7 @@ final case class AlertProvided (
  *
  * <p>
  * <code>NoteProvided</code> differs from <a href="InfoProvided.html"><code>InfoProvided</code></a> in that unlike <code>InfoProvided</code>, <code>NoteProvided</code> isn't
- * a <a href="RecordableEvent.html"><code>RecordableEvent</code></a>. If fired because of an <code>note</code> call from a test, for example, the <code>NoteProvided</code> will immediately
+ * a <a href="RecordableEvent.html"><code>RecordableEvent</code></a>. If fired because of a <code>note</code> call from a test, for example, the <code>NoteProvided</code> will immediately
  * be sent to the reporters rather than being stored and sent in the <code>recordedEvents</code> field of the test completion event. Thus,
  * <code>NoteProvided</code> enables "status notifications" to be provided
  * while tests are happening. The difference between <code>NoteProvided</code> and <a href="AlertProvided.html"><code>AlertProvided</code></a>, which is also a "status notification"
