@@ -36,6 +36,7 @@ import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.atomic.{AtomicInteger, AtomicBoolean}
 import scala.collection.JavaConverters._
 import StringReporter.fragmentsForEvent
+import scala.collection.mutable.Buffer
 
 /**
  * <p>
@@ -563,6 +564,9 @@ class Framework extends SbtFramework {
     tracker: Tracker,
     tagsToInclude: Set[String], 
     tagsToExclude: Set[String],
+    suiteIds: Set[String],
+    testNames: Set[String],
+    testNameSubstrings: Set[String],
     selectors: Array[Selector],
     explicitlySpecified: Boolean, 
     configMap: ConfigMap, 
@@ -592,8 +596,20 @@ class Framework extends SbtFramework {
     lazy val suiteClass = loadSuiteClass
     lazy val accessible = isAccessibleSuite(suiteClass)
     lazy val runnable = isRunnable(suiteClass)
+
+    lazy val suiteIdMatches: Boolean = {
+      val suite = suiteClass.newInstance.asInstanceOf[Suite]
+
+      suiteIds.contains(suite.suiteId) ||
+      suite.nestedSuites.exists(nestedSuite =>
+        suiteIds.contains(nestedSuite.suiteId))
+    }
+
     lazy val shouldDiscover = 
-      taskDefinition.explicitlySpecified || ((accessible || runnable) && isDiscoverableSuite(suiteClass))
+      taskDefinition.explicitlySpecified
+      ||
+      ((accessible || runnable) &&
+       (isDiscoverableSuite(suiteClass) || suiteIdMatches))
     
     def tags = 
       for { 
@@ -784,6 +800,7 @@ class Framework extends SbtFramework {
     tagsToExclude: Set[String],
     membersOnly: List[String], 
     wildcard: List[String], 
+    suiteArgs: List[String],
     configMap: ConfigMap, 
     repConfig: ReporterConfigurations,
     useSbtLogInfoReporter: Boolean,
@@ -804,10 +821,44 @@ class Framework extends SbtFramework {
     val tracker = new Tracker
     val summaryCounter = new SummaryCounter
     val runStartTime = System.currentTimeMillis
+    val suiteIds:           Set[String] = parseDashArgs("-i", suiteArgs)
+    val testNames:          Set[String] = parseDashArgs("-t", suiteArgs)
+    val testNameSubstrings: Set[String] = parseDashArgs("-z", suiteArgs)
     
     val dispatchReporter = ReporterFactory.getDispatchReporter(repConfig, None, None, loader, Some(resultHolder), detectSlowpokes, slowpokeDetectionDelay, slowpokeDetectionPeriod) 
     
     dispatchReporter(RunStarting(tracker.nextOrdinal(), 0, configMap))
+
+    //
+    // Parses a list of args to find instances of specified dashArg, e.g. "-w",
+    // followed by a name.  Returns set of names found.
+    //
+    private def parseDashArgs(dashArg: String, args: List[String]):
+      Set[String] =
+    {
+      val it = args.iterator
+      val buf = Buffer[String]()
+  
+      while (it.hasNext) {
+        val arg = it.next
+
+        if (arg == dashArg) {
+          if (!it.hasNext)
+            throw new IllegalArgumentException(
+              "argument "+ dashArg +" must be followed by a name")
+  
+          val name = it.next
+  
+          if (name.startsWith("-"))
+            throw new IllegalArgumentException(
+              "argument following "+ dashArg +" must not start with '-': "+
+              name)
+  
+          buf += name
+        }
+      }
+      buf.toList.toSet
+    }
     
     private def createTask(td: TaskDef): ScalaTestTask = 
       new ScalaTestTask(
@@ -817,6 +868,9 @@ class Framework extends SbtFramework {
           tracker,
           tagsToInclude,
           tagsToExclude,
+          suiteIds,
+          testNames,
+          testNameSubstrings,
           td.selectors,
           td.explicitlySpecified, 
           configMap,
@@ -1000,7 +1054,7 @@ class Framework extends SbtFramework {
     if (!runpathArgs.isEmpty)
       throw new IllegalArgumentException("Specifying a runpath (-p, -R <runpath>) is not supported when running ScalaTest from sbt.")
                
-    if (!suiteArgs.isEmpty)
+    if (suiteArgs.contains("-s"))
       throw new IllegalArgumentException("Specifying a suite (-s <suite>) is not supported when running ScalaTest from sbt; Please use sbt's test-only instead.")
     
     if (!againArgs.isEmpty)
@@ -1110,6 +1164,7 @@ class Framework extends SbtFramework {
       tagsToExclude,
       membersOnly, 
       wildcard, 
+      suiteArgs,
       configMap,
       reporterConfigs,
       useStdout, 
