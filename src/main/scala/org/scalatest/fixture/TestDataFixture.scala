@@ -18,7 +18,7 @@ package org.scalatest.fixture
 import org.scalatest._
 
 /**
- * Trait that when mixed into a <code>fixture.Suite</code> passes the
+ * Trait that when mixed into a <a href="Suite.html"><code>fixture.Suite</code></a> passes the
  * <a href="../TestData.html"><code>TestData</code></a> passed to <code>withFixture</code> as a fixture into each test.
  *
  * <p>
