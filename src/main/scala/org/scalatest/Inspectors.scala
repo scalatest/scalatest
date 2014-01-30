@@ -171,7 +171,7 @@ import scala.language.higherKinds
  * Here are some examples:
  * </p>
  *
- * <pre>
+ * <pre class="stREPL">
  * scala&gt; import org.scalatest._
  * import org.scalatest._
  * 

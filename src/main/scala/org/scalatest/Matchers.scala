@@ -105,6 +105,7 @@ import scala.language.higherKinds
  * <li><a href="#inspectorShorthands">Inspector shorthands</a></li>
  * <li><a href="#singleElementCollections">Single-element collections</a></li>
  * <li><a href="#javaCollectionsAndMaps">Java collections and maps</a></li>
+ * <li><a href="#stringsAndArraysAsCollections"><code>String</code>s and <code>Array</code>s as collections</a></li>
  * <li><a href="#beAsAnEqualityComparison">Be as an equality comparison</a></li>
  * <li><a href="#beingNegative">Being negative</a></li>
  * <li><a href="#checkingThatCodeDoesNotCompile">Checking that a snippet of code does not compile</a></li>
@@ -367,8 +368,23 @@ import scala.language.higherKinds
  * "abbcc" should fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "cc"))
  * </pre>
  * 
+ * <p>
+ * You can check whether a string is empty with <code>empty</code>:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * s shouldBe empty
+ * </pre>
+ *
+ * <p>
+ * You can also use most of ScalaTest's matcher syntax for collections on <code>String</code> by
+ * treating the <code>String</code>s as collections of characters. For examples, see the
+ * <a href="#stringsAndArraysAsCollections"><code>String</code>s and <code>Array</code>s as collections</a> section below.
+ * </p>
+ * 
  * <a name="greaterAndLessThan"></a>
  * <h2>Greater and less than</h2>
+ * 
  * <p>
  * You can check whether any type for which an implicit <code>Ordering[T]</code> is available
  * is greater than, less than, greater than or equal, or less
@@ -871,7 +887,7 @@ import scala.language.higherKinds
  * <h2>Working with "sortables"</h2>
  *
  * <p>
- * You can also ask whether the elements of "sortable" objects (such as <code>Array</code>, Java <code>List</code>s, and <code>GenSeq</code>s)
+ * You can also ask whether the elements of "sortable" objects (such as <code>Array</code>s, Java <code>List</code>s, and <code>GenSeq</code>s)
  * are in sorted order, like this:
  * </p>
  *
@@ -1002,31 +1018,61 @@ import scala.language.higherKinds
  * </pre>
  * 
  * <p>
- * Note: in the current 2.0.M6-SNAP release, the type of object used with inspector shorthands must be <code>GenTraversable</code>, but this will likely be widened to
- * include Java collections, arrays, iterators, etc., for 2.0.M6.
+ * Like <a href=""><code>Inspectors</code></a>, objects used with inspector shorthands can be any type <code>T</code> for which a <code>Collecting[T, E]</code>
+ * is availabe, which by default includes <code>GenTraversable</code>, 
+ * Java <code>Collection</code>, Java <code>Map</code>, <code>Array</code>s, and <code>String</code>s.
+ * Here are some examples:
  * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; import org.scalatest._
+ * import org.scalatest._
+ * 
+ * scala&gt; import Matchers._
+ * import Matchers._
+ * 
+ * scala&gt; all (Array(1, 2, 3)) should be &lt; 5
+ * 
+ * scala&gt; import collection.JavaConverters._
+ * import collection.JavaConverters._
+ * 
+ * scala&gt; val js = List(1, 2, 3).asJava
+ * js: java.util.List[Int] = [1, 2, 3]
+ * 
+ * scala&gt; all (js) should be &lt; 5
+ * 
+ * scala&gt; val jmap = Map("a" -&gt; 1, "b" -&gt; 2).asJava 
+ * jmap: java.util.Map[String,Int] = {a=1, b=2}
+ * 
+ * scala&gt; atLeast(1, jmap) shouldBe Entry("b", 2)
+ * 
+ * scala&gt; atLeast(2, "hello, world!") shouldBe 'o'
+ * </pre>
  *
  * <a name="singleElementCollections"></a>
  * <h2>Single-element collections</h2>
  *
  * <p>
  * To assert both that a collection contains just one "lone" element as well as something else about that element, you can use
- * the <code>loneElement</code> syntax. For example, if a <code>Set[Int]</code> should contain just one element, an <code>Int</code>
+ * the <code>loneElement</code> syntax provided by trait <a href="LoneElement.html"><code>LoneElement</code></a>. For example, if a
+ * <code>Set[Int]</code> should contain just one element, an <code>Int</code>
  * less than or equal to 10, you could write:
  * </p>
  *
  * <pre class="stHighlight">
+ * import LoneElement._
  * set.loneElement should be &lt;= 10
  * </pre>
  *
  * <p>
  * You can invoke <code>loneElement</code> on any type <code>T</code> for which an implicit <a href="enablers/Collecting.html"><code>Collecting[E, T]</code></a>
- * is available, where <code>E</code> is the type returned by the <code>loneElement</code> invocation. 
+ * is available, where <code>E</code> is the element type returned by the <code>loneElement</code> invocation. By default, you can use <code>loneElement</code>
+ * on <code>GenTraversable</code>, Java <code>Collection</code>, Java <code>Map</code>, <code>Array</code>, and <code>String</code>.
  * </p>
  *
  * <a name="javaCollectionsAndMaps"></a>
  * <h2>Java collections and maps</h2>
- * 
+ *
  * <p>
  * You can use similar syntax on Java collections (<code>java.util.Collection</code>) and maps (<code>java.util.Map</code>).
  * For example, you can check whether a Java <code>Collection</code> or <code>Map</code> is <code>empty</code>,
@@ -1089,6 +1135,34 @@ import scala.language.higherKinds
  * javaMap should contain value "Howdy"
  * </pre>
  * 
+ * <a name="stringsAndArraysAsCollections"></a>
+ * <h2><code>String</code>s and <code>Array</code>s as collections</h2>
+ * 
+ * <p>
+ * You can also use all the syntax described above for Scala and Java collections on <code>Array</code>s and
+ * <code>String</code>s. Here are some examples:
+ * </p>
+ * 
+ * <pre class="stREPL">
+ * scala&gt; import org.scalatest._
+ * import org.scalatest._
+ *
+ * scala&gt; import Matchers._
+ * import Matchers._
+ *
+ * scala&gt; atLeast (2, Array(1, 2, 3)) should be &gt; 1
+ *
+ * scala&gt; atMost (2, "halloo") shouldBe 'o'
+ *
+ * scala&gt; Array(1, 2, 3) shouldBe sorted
+ *
+ * scala&gt; "abcdefg" shouldBe sorted
+ *
+ * scala&gt; Array(1, 2, 3) should contain atMostOneOf (3, 4, 5)
+ *
+ * scala&gt; "abc" should contain atMostOneOf ('c', 'd', 'e')
+ * </pre>
+ *
  * <a name="beAsAnEqualityComparison"></a>
  * <h2><code>be</code> as an equality comparison</h2>
  * 
