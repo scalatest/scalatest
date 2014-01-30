@@ -158,12 +158,45 @@ import scala.language.higherKinds
  * </p>
  * 
  * <pre>
- * 
  * scala&gt; all (xs) should be &gt; 3
  * org.scalatest.exceptions.TestFailedException: 'all' inspection failed, because: 
  *   at index 0, 1 was not greater than 3 
  * in List(1, 2, 3, 4, 5)
  *      at org.scalatest.InspectorsHelper$.doForAll(Inspectors.scala:146)
+ * </pre>
+ *
+ * <p>
+ * You can use <code>Inspectors</code> on any <code>scala.collection.GenTraversable</code>, <code>java.util.Collection</code>,
+ * <code>java.util.Map</code> (with <a href="Entry.html"><code>Entry</code></a>), <code>Array</code>, or <code>String</code>. 
+ * Here are some examples:
+ * </p>
+ *
+ * <pre>
+ * scala&gt; import org.scalatest._
+ * import org.scalatest._
+ * 
+ * scala&gt; import Inspectors._
+ * import Inspectors._
+ * 
+ * scala&gt; import Matchers._
+ * import Matchers._
+ * 
+ * scala&gt; forAll (Array(1, 2, 3)) { e =&gt; e should be &lt; 5 }
+ * 
+ * scala&gt; import collection.JavaConverters._
+ * import collection.JavaConverters._
+ * 
+ * scala&gt; val js = List(1, 2, 3).asJava
+ * js: java.util.List[Int] = [1, 2, 3]
+ * 
+ * scala&gt; forAll (js) { j =&gt; j should be &lt; 5 }
+ * 
+ * scala&gt; val jmap = Map("a" -&gt; 1, "b" -&gt; 2).asJava 
+ * jmap: java.util.Map[String,Int] = {a=1, b=2}
+ * 
+ * scala&gt; forAtLeast(1, jmap) { e =&gt; e shouldBe Entry("b", 2) }
+ * 
+ * scala&gt; forAtLeast(2, "hello, world!") { c =&gt; c shouldBe 'o' }
  * </pre>
  */
 trait Inspectors {
@@ -171,13 +204,18 @@ trait Inspectors {
   import InspectorsHelper._
 
   /**
-   * Check all elements pass the inspection function.  The difference between <code>forAll</code> and <code>forEvery</code> is that
-   * <code>forAll</code> will stop on the first failure, while <code>forEvery</code> will continue to check all elements after the
-   * first failure.
+   * Ensure that all elements in a given collection pass the given inspection function, where "pass" means returning normally from the function (<em>i.e.</em>,
+   * without throwing an exception).
+   *
+   * <p>
+   *  The difference between <code>forAll</code> and <code>forEvery</code> is that
+   * <code>forAll</code> will stop on the first failure, while <code>forEvery</code> will continue to inspect all elements after the
+   * first failure (and report all failures).
+   * </p>
    *
    * @param xs the collection of elements
    * @param fun the inspection function
-   * @param collecting the implicit <code>Collecting</code> that transform <code>xs</code> into <code>scala.collection.GenTraversable</code>
+   * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>scala.collection.GenTraversable</code>
    * @tparam E the type of element in the collection
    * @tparam C the type of collection
    *
@@ -187,13 +225,18 @@ trait Inspectors {
   }
 
   /**
-   * Check all elements in the <code>java.util.Map</code> pass the inspection function.  The difference between <code>forAll</code> and <code>forEvery</code> is that
-   * <code>forAll</code> will stop on the first failure, while <code>forEvery</code> will continue to check all <code>java.util.Map</code> elements after the
-   * first failure.
+   * Ensure that all elements in a given <code>java.util.Map</code> pass the given inspection function, where "pass" means returning normally from the function (<em>i.e.</em>,
+   * without throwing an exception).
+   *
+   * <p>
+   * The difference between <code>forAll</code> and <code>forEvery</code> is that
+   * <code>forAll</code> will stop on the first failure, while <code>forEvery</code> will continue to inspect all <code>java.util.Map</code> elements after the
+   * first failure (and report all failures).
+   * </p>
    *
    * @param xs the <code>java.util.Map</code>
    * @param fun the inspection function
-   * @param collecting the implicit <code>Collecting</code> that transform <code>xs</code> into <code>scala.collection.GenTraversable</code>
+   * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>scala.collection.GenTraversable</code>
    * @tparam K the type of key in the Java Map
    * @tparam V the type of value in the Java Map
    * @tparam JMAP subtype of <code>java.util.Map</code>
@@ -204,13 +247,18 @@ trait Inspectors {
   }
 
   /**
-   * Check all characters in <code>String</code> pass the inspection function.  The difference between <code>forAll</code> and <code>forEvery</code> is that
-   * <code>forAll</code> will stop on the first failure, while <code>forEvery</code> will continue to check all characters in the <code>String</code> after the
-   * first failure.
+   * Ensure that all characters in a given <code>String</code> pass the given inspection function, where "pass" means returning normally from the function (<em>i.e.</em>,
+   * without throwing an exception).
+   *
+   * <p>
+   * The difference between <code>forAll</code> and <code>forEvery</code> is that
+   * <code>forAll</code> will stop on the first failure, while <code>forEvery</code> will continue to inspect all characters in the <code>String</code> after the
+   * first failure (and report all failures).
+   * </p>
    *
    * @param xs the <code>String</code>
    * @param fun the inspection function
-   * @param collecting the implicit <code>Collecting</code> that transform <code>xs</code> into <code>scala.collection.GenTraversable</code>
+   * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>scala.collection.GenTraversable</code>
    *
    */
   def forAll(xs: String)(fun: Char => Unit)(implicit collecting: Collecting[Char, String]) {
@@ -218,12 +266,12 @@ trait Inspectors {
   }
 
   /**
-   * Check that at least <code>min</code> number of elements pass the inspection function.
+   * Ensure that at least <code>min</code> number of elements of a given collection pass the given inspection function.
    *
    * @param min the minimum number of elements that must pass the inspection function
    * @param xs the collection of elements
    * @param fun the inspection function
-   * @param collecting the implicit <code>Collecting</code> that transform <code>xs</code> into <code>scala.collection.GenTraversable</code>
+   * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>scala.collection.GenTraversable</code>
    * @tparam E the type of element in the collection
    * @tparam C the type of collection
    *
@@ -233,12 +281,12 @@ trait Inspectors {
   }
 
   /**
-   * Check that at least <code>min</code> number of elements in the <code>java.util.Map</code> pass the inspection function.
+   * Ensure that at least <code>min</code> number of elements in a given <code>java.util.Map</code> pass the given inspection function.
    *
    * @param min the minimum number of elements that must pass the inspection function
    * @param xs the <code>java.util.Map</code>
    * @param fun the inspection function
-   * @param collecting the implicit <code>Collecting</code> that transform <code>xs</code> into <code>scala.collection.GenTraversable</code>
+   * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>scala.collection.GenTraversable</code>
    * @tparam K the type of key in the <code>java.util.Map</code>
    * @tparam V the type of value in the <code>java.util.Map</code>
    * @tparam JMAP subtype of <code>java.util.Map</code>
@@ -249,12 +297,12 @@ trait Inspectors {
   }
 
   /**
-   * Check that at least <code>min</code> number of characters in the <code>String</code> pass the inspection function.
+   * Ensure that at least <code>min</code> number of characters in a given <code>String</code> pass the given inspection function.
    *
    * @param min the minimum number of characters in <code>String</code> that must pass the inspection function
    * @param xs the <code>String</code>
    * @param fun the inspection function
-   * @param collecting the implicit <code>Collecting</code> that transform <code>xs</code> into <code>scala.collection.GenTraversable</code>
+   * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>scala.collection.GenTraversable</code>
    *
    */
   def forAtLeast(min: Int, xs: String)(fun: Char => Unit)(implicit collecting: Collecting[Char, String]) {
@@ -271,88 +319,82 @@ trait Inspectors {
   }.mkString(", ")
 
   /**
-   * Check that at most <code>max</code> number of elements pass the inspection function.
+   * Ensure that at most <code>max</code> number of elements of a given collection pass the given inspection function.
    *
    * @param max the maximum number of elements that must pass the inspection function
    * @param xs the collection of elements
    * @param fun the inspection function
-   * @param collecting the implicit <code>Collecting</code> that transform <code>xs</code> into <code>scala.collection.GenTraversable</code>
+   * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>scala.collection.GenTraversable</code>
    * @tparam E the type of element in the collection
    * @tparam C the type of collection
-   *
    */
   def forAtMost[E, C[_]](max: Int, xs: C[E])(fun: E => Unit)(implicit collecting: Collecting[E, C[E]]) {
     doForAtMost(max, collecting.genTraversableFrom(xs), xs, "forAtMostFailed", "Inspectors.scala", "forAtMost", 0)(fun)
   }
 
   /**
-   * Check that at most <code>max</code> number of elements in the <code>java.util.Map</code> pass the inspection function.
+   * Ensure that at most <code>max</code> number of elements in a given <code>java.util.Map</code> pass the given inspection function.
    *
    * @param max the maximum number of elements in the <code>java.util.Map</code> that must pass the inspection function
    * @param xs the <code>java.util.Map</code>
    * @param fun the inspection function
-   * @param collecting the implicit <code>Collecting</code> that transform <code>xs</code> into <code>scala.collection.GenTraversable</code>
+   * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>scala.collection.GenTraversable</code>
    * @tparam K the type of key in the <code>java.util.Map</code>
    * @tparam V the type of value in the <code>java.util.Map</code>
    * @tparam JMAP subtype of <code>java.util.Map</code>
-   *
    */
   def forAtMost[K, V, JMAP[k, v] <: java.util.Map[k, v]](max: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => Unit)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]) {
     doForAtMost(max, collecting.genTraversableFrom(xs), xs, "forAtMostFailed", "Inspectors.scala", "forAtMost", 0)(fun)
   }
 
   /**
-   * Check that at most <code>max</code> number of characters in the <code>String</code> pass the inspection function.
+   * Ensure that at most <code>max</code> number of characters in a given <code>String</code> pass the given inspection function.
    *
    * @param max the maximum number of characters in <code>String</code> that must pass the inspection function
    * @param xs the <code>String</code>
    * @param fun the inspection function
-   * @param collecting the implicit <code>Collecting</code> that transform <code>xs</code> into <code>scala.collection.GenTraversable</code>
-   *
+   * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>scala.collection.GenTraversable</code>
    */
   def forAtMost(max: Int, xs: String)(fun: Char => Unit)(implicit collecting: Collecting[Char, String]) {
     doForAtMost(max, collecting.genTraversableFrom(xs), xs, "forAtMostFailed", "Inspectors.scala", "forAtMost", 0)(fun)
   }
 
   /**
-   * Check that exactly <code>succeededCount</code> number of elements pass the inspection function.
+   * Ensure that exactly <code>succeededCount</code> number of elements of a given collection pass the given inspection function.
    *
    * @param succeededCount the number of elements that must pass the inspection function
    * @param xs the collection of elements
    * @param fun the inspection function
-   * @param collecting the implicit <code>Collecting</code> that transform <code>xs</code> into <code>scala.collection.GenTraversable</code>
+   * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>scala.collection.GenTraversable</code>
    * @tparam E the type of element in the collection
    * @tparam C the type of collection
-   *
    */
   def forExactly[E, C[_]](succeededCount: Int, xs: C[E])(fun: E => Unit)(implicit collecting: Collecting[E, C[E]]) {
     doForExactly(succeededCount, collecting.genTraversableFrom(xs), xs, "forExactlyFailed", "Inspectors.scala", "forExactly", 0)(fun)
   }
 
   /**
-   * Check that exactly <code>succeededCount</code> number of elements in the <code>java.util.Map</code> pass the inspection function.
+   * Ensure that exactly <code>succeededCount</code> number of elements in a given <code>java.util.Map</code> pass the given inspection function.
    *
    * @param succeededCount the number of elements in the <code>java.util.Map</code> that must pass the inspection function
    * @param xs the <code>java.util.Map</code>
    * @param fun the inspection function
-   * @param collecting the implicit <code>Collecting</code> that transform <code>xs</code> into <code>scala.collection.GenTraversable</code>
+   * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>scala.collection.GenTraversable</code>
    * @tparam K the type of key in the <code>java.util.Map</code>
    * @tparam V the type of value in the <code>java.util.Map</code>
    * @tparam JMAP subtype of <code>java.util.Map</code>
-   *
    */
   def forExactly[K, V, JMAP[k, v] <: java.util.Map[k, v]](succeededCount: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => Unit)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]) {
     doForExactly(succeededCount, collecting.genTraversableFrom(xs), xs, "forExactlyFailed", "Inspectors.scala", "forExactly", 0)(fun)
   }
 
   /**
-   * Check that exactly <code>succeededCount</code> number of characters in the <code>String</code> pass the inspection function.
+   * Ensure that exactly <code>succeededCount</code> number of characters in a given <code>String</code> pass the given inspection function.
    *
    * @param succeededCount the number of characters in the <code>String</code> that must pass the inspection function
    * @param xs the <code>String</code>
    * @param fun the inspection function
-   * @param collecting the implicit <code>Collecting</code> that transform <code>xs</code> into <code>scala.collection.GenTraversable</code>
-   *
+   * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>scala.collection.GenTraversable</code>
    */
   def forExactly(succeededCount: Int, xs: String)(fun: Char => Unit)(implicit collecting: Collecting[Char, String]) {
     doForExactly(succeededCount, collecting.genTraversableFrom(xs), xs, "forExactlyFailed", "Inspectors.scala", "forExactly", 0)(fun)
@@ -371,91 +413,103 @@ trait Inspectors {
   }
 
   /**
-   * Check that the number of elements pass the inspection function is between <code>from</code> and <code>upTo</code>.
+   * Ensure the number of elements of a given collection that pass the given inspection function is between <code>from</code> and <code>upTo</code>.
    *
    * @param from the minimum number of elements that must pass the inspection number
    * @param upTo the maximum number of elements that must pass the inspection number
    * @param xs the collection of elements
    * @param fun the inspection function
-   * @param collecting the implicit <code>Collecting</code> that transform <code>xs</code> into <code>scala.collection.GenTraversable</code>
+   * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>scala.collection.GenTraversable</code>
    * @tparam E the type of element in the collection
    * @tparam C the type of collection
-   *
    */
   def forBetween[E, C[_]](from: Int, upTo: Int, xs: C[E])(fun: E => Unit)(implicit collecting: Collecting[E, C[E]]) {
     doForBetween(from, upTo, collecting.genTraversableFrom(xs), xs, "forBetweenFailed", "Inspectors.scala", "forBetween", 0)(fun)
   }
 
   /**
-   * Check that the number of elements in the <code>java.util.Map</code> pass the inspection function is between <code>from</code> and <code>upTo</code>.
+   * Ensure the number of elements in a given <code>java.util.Map</code> that pass the given inspection function is between <code>from</code> and <code>upTo</code>.
    *
    * @param from the minimum number of elements in the <code>java.util.Map</code> that must pass the inspection number
    * @param upTo the maximum number of elements in the <code>java.util.Map</code> that must pass the inspection number
    * @param xs the <code>java.util.Map</code>
    * @param fun the inspection function
-   * @param collecting the implicit <code>Collecting</code> that transform <code>xs</code> into <code>scala.collection.GenTraversable</code>
+   * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>scala.collection.GenTraversable</code>
    * @tparam K the type of key in the <code>java.util.Map</code>
    * @tparam V the type of value in the <code>java.util.Map</code>
    * @tparam JMAP subtype of <code>java.util.Map</code>
-   *
    */
   def forBetween[K, V, JMAP[k, v] <: java.util.Map[k, v]](from: Int, upTo: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => Unit)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]) {
     doForBetween(from, upTo, collecting.genTraversableFrom(xs), xs, "forBetweenFailed", "Inspectors.scala", "forBetween", 0)(fun)
   }
 
   /**
-   * Check that the number of characters of the <code>String</code> pass the inspection function is between <code>from</code> and <code>upTo</code>.
+   * Ensure the number of characters of a given <code>String</code> that pass the given inspection function is between <code>from</code> and <code>upTo</code>.
    *
    * @param from the minimum number of characters in the <code>String</code> that must pass the inspection number
    * @param upTo the maximum number of characters in the <code>String</code> that must pass the inspection number
    * @param xs the <code>String</code>
    * @param fun the inspection function
-   * @param collecting the implicit <code>Collecting</code> that transform <code>xs</code> into <code>scala.collection.GenTraversable</code>
-   *
+   * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>scala.collection.GenTraversable</code>
    */
   def forBetween(from: Int, upTo: Int, xs: String)(fun: Char => Unit)(implicit collecting: Collecting[Char, String]) {
     doForBetween(from, upTo, collecting.genTraversableFrom(xs), xs, "forBetweenFailed", "Inspectors.scala", "forBetween", 0)(fun)
   }
 
   /**
-   * Check that every elements pass the inspection function.  The difference between <code>forEvery</code> and <code>forAll</code> is that
-   * <code>forEvery</code> will continue to check all elements after first failure, while <code>forAll</code> will stop on the first failure.
+   * Ensure that every element in a given collection passes the given inspection function, where "pass" means returning normally from the function (<em>i.e.</em>,
+   * without throwing an exception).
+   *
+   * <p>
+   * The difference between <code>forEvery</code> and <code>forAll</code> is that
+   * <code>forEvery</code> will continue to inspect all elements after first failure, and report all failures,
+   * whereas <code>forAll</code> will stop on (and only report) the first failure.
+   * </p>
    *
    * @param xs the collection of elements
    * @param fun the inspection function
-   * @param collecting the implicit <code>Collecting</code> that transform <code>xs</code> into <code>scala.collection.GenTraversable</code>
+   * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>scala.collection.GenTraversable</code>
    * @tparam E the type of element in the collection
    * @tparam C the type of collection
-   *
    */
   def forEvery[E, C[_]](xs: C[E])(fun: E => Unit)(implicit collecting: Collecting[E, C[E]]) {
     doForEvery(collecting.genTraversableFrom(xs), xs, "forEveryFailed", "Inspectors.scala", "forEvery", 0)(fun)
   }
 
   /**
-   * Check that every elements in the <code>java.util.Map</code> pass the inspection function.  The difference between <code>forEvery</code> and <code>forAll</code> is that
-   * <code>forEvery</code> will continue to check all elements in the <code>java.util.Map</code> after first failure, while <code>forAll</code> will stop on the first failure.
+   * Ensure that every element in a given <code>java.util.Map</code> passes the given inspection function, where "pass" means returning normally
+   * from the function (<em>i.e.</em>, without throwing an exception).
+   *
+   * <p>
+   * The difference between <code>forEvery</code> and <code>forAll</code> is that
+   * <code>forEvery</code> will continue to inspect all elements in the <code>java.util.Map</code> after first failure, and report all failures,
+   * whereas <code>forAll</code> will stop on (and only report) the first failure.
+   * </p>
    *
    * @param xs the <code>java.util.Map</code>
    * @param fun the inspection function
-   * @param collecting the implicit <code>Collecting</code> that transform <code>xs</code> into <code>scala.collection.GenTraversable</code>
+   * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>scala.collection.GenTraversable</code>
    * @tparam K the type of key in the <code>java.util.Map</code>
    * @tparam V the type of value in the <code>java.util.Map</code>
    * @tparam JMAP subtype of <code>java.util.Map</code>
-   *
    */
   def forEvery[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => Unit)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]) {
     doForEvery(collecting.genTraversableFrom(xs), xs, "forEveryFailed", "Inspectors.scala", "forEvery", 0)(fun)
   }
 
   /**
-   * Check that every characters in the <code>String</code> pass the inspection function.  The difference between <code>forEvery</code> and <code>forAll</code> is that
-   * <code>forEvery</code> will continue to check all characters in the <code>String</code> after first failure, while <code>forAll</code> will stop on the first failure.
+   * Ensure that every character in a given <code>String</code> passes the given inspection function, where "pass" means returning normally from the function (<em>i.e.</em>,
+   * without throwing an exception).
+   *
+   * <p>
+   * The difference between <code>forEvery</code> and <code>forAll</code> is that
+   * <code>forEvery</code> will continue to inspect all characters in the <code>String</code> after first failure, and report all failures,
+   * whereas <code>forAll</code> will stop on (and only report) the first failure.
+   * </p>
    *
    * @param xs the <code>String</code>
    * @param fun the inspection function
-   * @param collecting the implicit <code>Collecting</code> that transform <code>xs</code> into <code>scala.collection.GenTraversable</code>
-   *
+   * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>scala.collection.GenTraversable</code>
    */
   def forEvery(xs: String)(fun: Char => Unit)(implicit collecting: Collecting[Char, String]) {
     doForEvery(collecting.genTraversableFrom(xs), xs, "forEveryFailed", "Inspectors.scala", "forEvery", 0)(fun)
