@@ -23,9 +23,17 @@ import org.scalatest.time.Span
 import org.scalatest.tools.{TestSortingReporter, Runner}
 
 /**
- * Trait that causes the tests of any suite it is mixed into run in random order.
+ * Trait that causes tests to be run in pseudo-random order.
  *
- * Although the tests are run in random order, the events fired follows the original order.
+ * <p>
+ * Although the tests are run in pseudo-random order, events will be fired in the &ldquo;normal&rdquo; order for the <code>Suite</code>
+ * that mixes in this trait, as determined by <code>runTests</code>. 
+ * </p>
+ *
+ * <p>
+ * The purpose of this trait is to reduce the likelihood of unintentional order dependencies between tests
+ * in the same test class.
+ * </p>
  *
  * @author Chee Seng
  */
@@ -36,7 +44,7 @@ trait RandomTestOrder extends OneInstancePerTest { this: Suite =>
   private val suiteRunQueue = new LinkedBlockingQueue[DeferredSuiteRun]
 
   /**
-   * Modifies the behavior of <code>super.runTest</code> to facilitate random order test execution.
+   * Modifies the behavior of <code>super.runTest</code> to facilitate pseudo-random order test execution.
    *
    * <p>
    * If <code>runTestInNewInstance</code> is <code>false</code>, this is the test-specific (distributed)
@@ -51,7 +59,7 @@ trait RandomTestOrder extends OneInstancePerTest { this: Suite =>
    * <p>
    * If <code>runTestInNewInstance</code> is <code>true</code>, it notifies <code>args.distributedTestSorter</code>
    * that it is distributing the test by invoking <code>distributingTest</code> on it,
-   * passing in the <code>testName</code>.  The test execution will be deferred to be run in random order later.
+   * passing in the <code>testName</code>.  The test execution will be deferred to be run in pseudo-random order later.
    * </p>
    *
    * <p>
@@ -61,7 +69,7 @@ trait RandomTestOrder extends OneInstancePerTest { this: Suite =>
    * <code>RandomTestOrder</code>, the <code>before</code> and <code>after</code> code would
    * be executed by the general instance on the main test thread, rather than by the test-specific
    * instance on the distributed thread. Marking this method <code>final</code> ensures that
-   * traits like <code>BeforeAndAfter</code> can only be "super" to <code>RandomTestOrder</code>
+   * traits like <code>BeforeAndAfter</code> can only be &lquot;super&rquot; to <code>RandomTestOrder</code>
    * and, therefore, that its <code>before</code> and <code>after</code> code will be run
    * by the same distributed thread that runs the test itself.
    * </p>
@@ -148,7 +156,7 @@ trait RandomTestOrder extends OneInstancePerTest { this: Suite =>
   protected def sortingTimeout: Span = Runner.testSortingReporterTimeout
 
   /**
-   * Modifies the behavior of <code>super.run</code> to facilitate random order test execution.
+   * Modifies the behavior of <code>super.run</code> to facilitate pseudo-random order test execution.
    *
    * <p>
    * If both <code>testName</code> and <code>args.distributedTestSorter</code> are defined,
