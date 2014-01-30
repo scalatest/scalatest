@@ -6085,11 +6085,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    *
    * @author Bill Venners
    */
-  final class AnyShouldWrapper[T](leftSideValue: T) extends StringShouldWrapperForVerb[T] {
-
-    // Now here's a kludge. Will succeed for anything, but is only used if it T is a String.
-    // Aaaand, it got me one of those rarely seen NPEs. Will not succeed for null.
-    lazy val leftSideString: String = if (leftSideValue != null) leftSideValue.toString else null
+  sealed class AnyShouldWrapper[T](leftSideValue: T) {
 
     /**
      * This method enables syntax such as the following:
@@ -6752,51 +6748,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * This method enables syntax such as the following:
      *
      * <pre class="stHighlight">
-     * string should fullyMatch regex ("""(-)?(\d+)(\.\d*)?""")
-     *        ^
-     * </pre>
-     */
-    def should(fullyMatchWord: FullyMatchWord)(implicit ev: T <:< String): ResultOfFullyMatchWordForString = {
-      new ResultOfFullyMatchWordForString(leftSideValue, true)
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * string should fullyMatch regex ("a(b*)c" withGroup "bb") 
-     *                                          ^
-     * </pre>
-     */
-    def withGroup(group: String)(implicit ev: T <:< String) = 
-      new RegexWithGroups(leftSideString.r, IndexedSeq(group))
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * string should fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "cc"))
-     *                                             ^
-     * </pre>
-     */
-    def withGroups(groups: String*)(implicit ev: T <:< String) = 
-      new RegexWithGroups(leftSideString.r, IndexedSeq(groups: _*))
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * string shouldNot fullyMatch regex ("""(-)?(\d+)(\.\d*)?""")
-     *        ^
-     * </pre>
-     */
-    def shouldNot(fullyMatchWord: FullyMatchWord)(implicit ev: T <:< String): ResultOfFullyMatchWordForString = 
-      new ResultOfFullyMatchWordForString(leftSideValue, false)
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
      * string shouldNot startWith regex ("hello")
      *        ^
      * </pre>
@@ -6825,6 +6776,65 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def shouldNot(includeWord: IncludeWord)(implicit ev: T <:< String): ResultOfIncludeWordForString = 
       new ResultOfIncludeWordForString(leftSideValue, false)
+  }
+
+  /**
+   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
+   * the matchers DSL.
+   *
+   * <p>
+   * This class is used in conjunction with an implicit conversion to enable <code>should</code> methods to
+   * be invoked on <code>String</code>s.
+   * </p>
+   *
+   * @author Bill Venners
+   */
+  final class StringShouldWrapper(val leftSideString: String) extends AnyShouldWrapper(leftSideString) with StringShouldWrapperForVerb {
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * string should fullyMatch regex ("a(b*)c" withGroup "bb") 
+     *                                          ^
+     * </pre>
+     */
+    def withGroup(group: String) = 
+      new RegexWithGroups(leftSideString.r, IndexedSeq(group))
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * string should fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "cc"))
+     *                                             ^
+     * </pre>
+     */
+    def withGroups(groups: String*) =
+      new RegexWithGroups(leftSideString.r, IndexedSeq(groups: _*))
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * string should fullyMatch regex ("""(-)?(\d+)(\.\d*)?""")
+     *        ^
+     * </pre>
+     */
+    def should(fullyMatchWord: FullyMatchWord): ResultOfFullyMatchWordForString = {
+      new ResultOfFullyMatchWordForString(leftSideString, true)
+    }
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * string shouldNot fullyMatch regex ("""(-)?(\d+)(\.\d*)?""")
+     *        ^
+     * </pre>
+     */
+    def shouldNot(fullyMatchWord: FullyMatchWord): ResultOfFullyMatchWordForString = 
+      new ResultOfFullyMatchWordForString(leftSideString, false)
 
     /**
      * This method enables syntax such as the following:
@@ -6835,6 +6845,134 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldNot(compileWord: CompileWord): Unit = macro CompileMacro.shouldNotCompileImpl
+
+/*
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * string should include regex ("hi")
+     *        ^
+     * </pre>
+     */
+    def should(includeWord: IncludeWord): ResultOfIncludeWordForString = {
+      new ResultOfIncludeWordForString(leftSideString, true)
+    }
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * string should startWith regex ("hello")
+     *        ^
+     * </pre>
+     */
+    def should(startWithWord: StartWithWord): ResultOfStartWithWordForString = {
+      new ResultOfStartWithWordForString(leftSideString, true)
+    }
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * string should endWith regex ("world")
+     *        ^
+     * </pre>
+     */
+    def should(endWithWord: EndWithWord): ResultOfEndWithWordForString = {
+      new ResultOfEndWithWordForString(leftSideString, true)
+    }
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * string should fullyMatch regex ("""(-)?(\d+)(\.\d*)?""")
+     *        ^
+     * </pre>
+     */
+    def should(fullyMatchWord: FullyMatchWord): ResultOfFullyMatchWordForString = {
+      new ResultOfFullyMatchWordForString(leftSideString, true)
+    }
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * string should not have length (3)
+     *        ^
+     * </pre>
+     */
+    override def should(notWord: NotWord): ResultOfNotWordForString = {
+      new ResultOfNotWordForString(leftSideString, false)
+    }
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * string should fullyMatch regex ("a(b*)c" withGroup "bb") 
+     *                                          ^
+     * </pre>
+     */
+    def withGroup(group: String) = 
+      new RegexWithGroups(leftSideString.r, IndexedSeq(group))
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * string should fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "cc"))
+     *                                             ^
+     * </pre>
+     */
+    def withGroups(groups: String*) = 
+      new RegexWithGroups(leftSideString.r, IndexedSeq(groups: _*))
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * string shouldNot fullyMatch regex ("""(-)?(\d+)(\.\d*)?""")
+     *        ^
+     * </pre>
+     */
+    def shouldNot(fullyMatchWord: FullyMatchWord): ResultOfFullyMatchWordForString = 
+      new ResultOfFullyMatchWordForString(leftSideString, false)
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * string shouldNot startWith regex ("hello")
+     *        ^
+     * </pre>
+     */
+    def shouldNot(startWithWord: StartWithWord): ResultOfStartWithWordForString = 
+      new ResultOfStartWithWordForString(leftSideString, false)
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * string shouldNot endWith regex ("world")
+     *        ^
+     * </pre>
+     */
+    def shouldNot(endWithWord: EndWithWord): ResultOfEndWithWordForString = 
+      new ResultOfEndWithWordForString(leftSideString, false)
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * string shouldNot include regex ("hi")
+     *        ^
+     * </pre>
+     */
+    def shouldNot(includeWord: IncludeWord): ResultOfIncludeWordForString = 
+      new ResultOfIncludeWordForString(leftSideString, false)
+*/
   }
 
   /**
@@ -6877,7 +7015,13 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * Implicitly converts an object of type <code>T</code> to a <code>AnyShouldWrapper[T]</code>,
    * to enable <code>should</code> methods to be invokable on that object.
    */
-  implicit override def convertToAnyShouldWrapper[T](o: T): AnyShouldWrapper[T] = new AnyShouldWrapper(o)
+  implicit def convertToAnyShouldWrapper[T](o: T): AnyShouldWrapper[T] = new AnyShouldWrapper(o)
+
+  /**
+   * Implicitly converts an object of type <code>java.lang.String</code> to a <code>StringShouldWrapper</code>,
+   * to enable <code>should</code> methods to be invokable on that object.
+   */
+  implicit override def convertToStringShouldWrapper(o: String): StringShouldWrapper = new StringShouldWrapper(o)
 
   /**
    * Implicitly converts an object of type <code>scala.util.matching.Regex</code> to a <code>RegexWrapper</code>,

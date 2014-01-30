@@ -16,15 +16,15 @@
 package org.scalatest.exceptions
 
 /**
- * Trait implemented by <code>PayloadField</code> exception types that can modify their payload.
+ * Trait implemented by <a href="PayloadField.html"><code>PayloadField</code></a> exception types that can modify their payload.
  *
  * <p>
  * This trait facilitates the <code>withPayload</code> construct provided by trait
- * <code>Payloads</code>. This construct enables a payload object (or modified
+ * <a href="../Payloads.html"><code>Payloads</code></a>. This construct enables a payload object (or modified
  * payload object) to be included as the payload of a thrown exception. The payload
  * can then be included in the ScalaTest event that results from that exception. For
- * example, the payload included in a <code>TestFailedException</code> will be included
- * as the payload of the resulting <code>TestFailed</code> event. Here's an example in
+ * example, the payload included in a <a href="TestFailedException.html"><code>TestFailedException</code></a> will be included
+ * as the payload of the resulting <a href="../events/TestFailed.html"><code>TestFailed</code></a> event. Here's an example in
  * which a GUI snapshot is included as a payload when a test fails:
  * </p>
  *

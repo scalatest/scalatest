@@ -114,7 +114,7 @@ trait ShouldVerb {
    *
    * @author Bill Venners
    */
-  trait StringShouldWrapperForVerb[T] {
+  trait StringShouldWrapperForVerb {
 
     // Don't use "left" because that conflicts with Scalaz's left method on strings
     val leftSideString: String
@@ -139,7 +139,7 @@ trait ShouldVerb {
      * <code>"should"</code>, and right, and returns the result.
      * </p>
      */
-    def should(right: String)(implicit fun: (String, String, String) => ResultOfStringPassedToVerb, ev: T <:< String): ResultOfStringPassedToVerb = {
+    def should(right: String)(implicit fun: (String, String, String) => ResultOfStringPassedToVerb): ResultOfStringPassedToVerb = {
       fun(leftSideString, "should", right)
     }
 
@@ -162,7 +162,7 @@ trait ShouldVerb {
      * simply invokes this function, passing in leftSideString, and returns the result.
      * </p>
      */
-    def should(right: BehaveWord)(implicit fun: (String) => BehaveWord, ev: T <:< String): BehaveWord = {
+    def should(right: BehaveWord)(implicit fun: (String) => BehaveWord): BehaveWord = {
       fun(leftSideString)
     }
 
@@ -215,7 +215,7 @@ trait ShouldVerb {
      * <code>"should"</code>, and the <code>ResultOfAfterWordApplication</code> passed to <code>should</code>.
      * </p>
      */
-    def should(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit fun: (String, String, ResultOfAfterWordApplication) => Unit, ev: T <:< String) {
+    def should(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit fun: (String, String, ResultOfAfterWordApplication) => Unit) {
       fun(leftSideString, "should", resultOfAfterWordApplication)
     }
   }
@@ -226,9 +226,8 @@ trait ShouldVerb {
    * Implicitly converts an object of type <code>String</code> to a <code>StringShouldWrapperForVerb</code>,
    * to enable <code>should</code> methods to be invokable on that object.
    */
-  implicit def convertToAnyShouldWrapper[T <: String](o: T): StringShouldWrapperForVerb[T] =
-    new StringShouldWrapperForVerb[T] {
+  implicit def convertToStringShouldWrapper(o: String): StringShouldWrapperForVerb =
+    new StringShouldWrapperForVerb {
       val leftSideString = o.trim
     }
 }
-

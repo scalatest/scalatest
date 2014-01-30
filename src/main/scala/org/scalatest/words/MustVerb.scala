@@ -112,7 +112,7 @@ trait MustVerb {
    *
    * @author Bill Venners
    */
-  trait StringMustWrapperForVerb[T] {
+  trait StringMustWrapperForVerb {
 
     val leftSideString: String
 
@@ -136,7 +136,7 @@ trait MustVerb {
      * <code>"must"</code>, and right, and returns the result.
      * </p>
      */
-    def must(right: String)(implicit fun: (String, String, String) => ResultOfStringPassedToVerb, ev: T <:< String): ResultOfStringPassedToVerb = {
+    def must(right: String)(implicit fun: (String, String, String) => ResultOfStringPassedToVerb): ResultOfStringPassedToVerb = {
       fun(leftSideString, "must", right)
     }
 
@@ -159,7 +159,7 @@ trait MustVerb {
      * simply invokes this function, passing in leftSideString, and returns the result.
      * </p>
      */
-    def must(right: BehaveWord)(implicit fun: (String) => BehaveWord, ev: T <:< String): BehaveWord = {
+    def must(right: BehaveWord)(implicit fun: (String) => BehaveWord): BehaveWord = {
       fun(leftSideString)
     }
 
@@ -212,7 +212,7 @@ trait MustVerb {
      * <code>"must"</code>, and the <code>ResultOfAfterWordApplication</code> passed to <code>must</code>.
      * </p>
      */
-    def must(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit fun: (String, String, ResultOfAfterWordApplication) => Unit, ev: T <:< String) {
+    def must(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit fun: (String, String, ResultOfAfterWordApplication) => Unit) {
       fun(leftSideString, "must", resultOfAfterWordApplication)
     }
   }
@@ -223,8 +223,8 @@ trait MustVerb {
    * Implicitly converts an object of type <code>String</code> to a <code>StringMustWrapper</code>,
    * to enable <code>must</code> methods to be invokable on that object.
    */
-  implicit def convertToAnyMustWrapper[T <: String](o: T): StringMustWrapperForVerb[T] =
-    new StringMustWrapperForVerb[T] {
+  implicit def convertToStringMustWrapper(o: String): StringMustWrapperForVerb =
+    new StringMustWrapperForVerb {
       val leftSideString = o.trim
     }
 }

@@ -1379,7 +1379,6 @@ import Suite.autoTagClassAnnotations
  * <p>
  * In this example, the tests actually required two fixture objects, a <code>File</code> and a <code>FileWriter</code>. In such situations you can
  * simply define the <code>FixtureParam</code> type to be a tuple containing the objects, or as is done in this example, a case class containing
- * the objects.
  * the objects.  For more information on the <code>withFixture(OneArgTest)</code> technique, see the <a href="fixture/WordSpec.html">documentation for <code>fixture.WordSpec</code></a>.
  * </p>
  *
