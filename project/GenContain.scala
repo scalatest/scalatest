@@ -35,7 +35,7 @@ object GenContain {
   def genTest(targetBaseDir: File, scalaVersion: String) {
     
     val sourceBaseDir = new File("src/test/scala/org/scalatest")
-    val containDir = new File(targetBaseDir, "contain")
+    val containDir = new File(targetBaseDir, "containTests")
     containDir.mkdirs()
     
     def generateFile(sourceFileName: String, typeName: String, mapping: (String, String)*) {
