@@ -42,6 +42,8 @@ trait JettySpec extends FunSpec {
       "http://localhost:" + conn.getLocalPort + "/"
     }
   }
+
+  import scala.language.reflectiveCalls
   
   lazy val host = serverThread.getHost
 

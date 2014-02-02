@@ -21,8 +21,9 @@ import Arbitrary._
 import Prop._
 import org.scalatest.exceptions.TestFailedException
 import FailureMessages._
+import Matchers._
 
-class ShouldContainKeySpec extends Spec with Matchers with Checkers with ReturnsNormallyThrowsAssertion {
+class ShouldContainKeySpec extends Spec with Checkers with ReturnsNormallyThrowsAssertion {
 
   // Checking for a specific size
   object `The 'contain key (Int)' syntax` {

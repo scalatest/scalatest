@@ -18,8 +18,9 @@ package org.scalatest
 import matchers.{BeMatcher, MatchResult, BePropertyMatcher, BePropertyMatchResult}
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
+import Matchers._
 
-class ShouldNotShorthandSpec extends Spec with Matchers with EmptyMocks with BookPropertyMatchers {
+class ShouldNotShorthandSpec extends Spec with EmptyMocks with BookPropertyMatchers {
 
   object `The shouldNot syntax` {
 

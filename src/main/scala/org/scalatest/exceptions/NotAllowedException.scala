@@ -17,7 +17,7 @@ package org.scalatest.exceptions
 
 /**
  * Exception that indicates something was attempted in test code that is not allowed.
- * For example, in a <code>FeatureSpec</code>, it is not allowed to nest a <code>feature</code>
+ * For example, in a <a href="../FeatureSpec.html"><code>FeatureSpec</code></a>, it is not allowed to nest a <code>feature</code>
  * clause inside another <code>feature</code> clause. If this is attempted, the construction
  * of that suite will fail with a <code>NotAllowedException</code>.
  *

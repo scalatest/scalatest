@@ -22,7 +22,7 @@ import org.scalatest.events.LineInFile
 import org.scalatest.exceptions._
 import org.scalatest.OutcomeOf.outcomeOf
 
-class EngineSpec extends FlatSpec with ShouldMatchers {
+class EngineSpec extends FlatSpec with Matchers {
 
   "EngineSpec.getTestNamePrefix" should "return empty string for Trunk" in {
     val engine = new Engine("concurrentFunSuiteBundleMod", "FunSuite")

@@ -23,8 +23,9 @@ import org.scalatest.exceptions.TestFailedException
 
 import matchers.BePropertyMatcher
 import matchers.BePropertyMatchResult
+import Matchers._
 
-class ShouldBePropertyMatcherSpec extends Spec with Matchers with Checkers with ReturnsNormallyThrowsAssertion with BookPropertyMatchers {
+class ShouldBePropertyMatcherSpec extends Spec with Checkers with ReturnsNormallyThrowsAssertion with BookPropertyMatchers {
 
   // Checking for a specific size
   object `The be (BePropertyMatcher) syntax` {

@@ -27,6 +27,14 @@ import Thread.State._
  */
 private[scalatest] object PimpedThreadGroup {
 
+  import scala.language.implicitConversions
+
+  /**
+   * Implicit conversion that convert a <code>ThreadGroup</code> to a <code>List</code> of <code>Thread</code>
+   *
+   * @param tg the <code>ThreadGroup</code>
+   * @return a <code>List</code> of <code>Thread</code>
+   */
   implicit def ThreadGroupToList(tg:ThreadGroup): List[Thread] = {
     new PimpedThreadGroup(tg).getThreads
   }

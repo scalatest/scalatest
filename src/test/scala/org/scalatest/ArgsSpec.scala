@@ -18,8 +18,10 @@ package org.scalatest
 import matchers.ShouldMatchers
 import prop.TableDrivenPropertyChecks
 import SharedHelpers._
+import TableDrivenPropertyChecks._
+import Matchers._
 
-class ArgsSpec extends WordSpec with TableDrivenPropertyChecks with ShouldMatchers with SeveredStackTraces {
+class ArgsSpec extends WordSpec with SeveredStackTraces {
   "The Args constructor" should {
     "throw NullPointerExcepion when passed a null" in {
 

@@ -17,10 +17,10 @@ package org.scalatest
 
 import org.scalatest.OptionValues._
 import org.scalatest.PartialFunctionValues._
-import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.SharedHelpers.thisLineNumber
+import Matchers._
 
-class PartialFunctionValuesSpec extends FunSpec with ShouldMatchers {
+class PartialFunctionValuesSpec extends FunSpec {
   
   val pf = new PartialFunction[Int, Int]() {
     def isDefinedAt(x: Int): Boolean = x % 2 == 0

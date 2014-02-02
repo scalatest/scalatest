@@ -17,11 +17,12 @@ package org.scalatest
 
 import org.scalatest.SharedHelpers.EventRecordingReporter
 import org.scalatest.matchers.ShouldMatchers
-import org.scalatest.prop.TableDrivenPropertyChecks
+import org.scalatest.prop.TableDrivenPropertyChecks._
 import org.scalatest.Doc.stripMargin
 import org.scalatest.Doc.trimMarkup
+import Matchers._
 
-class OldDocSpec extends FreeSpec with ShouldMatchers with TableDrivenPropertyChecks {
+class OldDocSpec extends FreeSpec {
 
   class DocSpecASuite extends Suite
   class DocSpecBSuite extends Suite

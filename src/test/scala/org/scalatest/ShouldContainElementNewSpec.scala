@@ -23,11 +23,12 @@ import org.scalatest.exceptions.TestFailedException
 import org.scalautils.Equality
 import org.scalautils.Explicitly
 import SharedHelpers.thisLineNumber
+import Matchers._
 
 // Calling this ShouldContainElementNewSpec so that it is easy to 
 // keep track of the new tests that we'll need to port over to
 // inspector shorthands.
-class ShouldContainElementNewSpec extends Spec with Matchers with Explicitly {
+class ShouldContainElementNewSpec extends Spec with Explicitly {
 
   // Checking for a specific size
   object `The 'contain (<value>)' syntax` {

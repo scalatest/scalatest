@@ -20,8 +20,8 @@ package org.scalatest.exceptions
  * and matchers, which includes a stack depth at which the failing line of test code resides.
  *
  * <p>
- * This trait exists so that it can be mixed into two exception superclasses, <code>StackDepthException</code>,
- * from which extend several exceptions that do not depend on JUnit, and <code>JUnitTestFailedError</code>, which
+ * This trait exists so that it can be mixed into two exception superclasses, <a href="StackDepthException.html"><code>StackDepthException</code></a>,
+ * from which extend several exceptions that do not depend on JUnit, and <a href="../junit/JUnitTestFailedError.html"><code>JUnitTestFailedError</code></a>, which
  * does depend on JUnit. The latter, which requires JUnit be in the classpath, ensures failed ScalaTest assertions are
  * reported as "failures," not "errors," by JUnit.
  * </p>

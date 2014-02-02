@@ -18,23 +18,26 @@ package org.scalatest.enablers
 import org.scalautils.Every
 import scala.collection.GenTraversable
 import scala.language.higherKinds
+import org.scalatest.FailureMessages
+import scala.annotation.tailrec
 
 /**
- * Supertrait for typeclasses that enable <code>loneElement</code> matcher syntax for collections.
+ * Supertrait for typeclasses that enable <a href="../LoneElement.html"><code>loneElement</code></a> and <a href="../Inspectors.html">inspectors</a> syntax
+ * for collections.
  *
  * <p>
  * A <code>Collecting[E, C]</code> provides access to the "collecting nature" of type <code>C</code> in such
  * a way that <code>loneElement</code> syntax can be used with type <code>C</code>. A <code>C</code>
  * can be any type of "collecting", a type that in some way collects or brings together elements of type <code>E</code>.
  * ScalaTest provides implicit implementations for several types. You can enable the <code>contain</code> matcher syntax
- * on your own type <code>U</code> by defining an <code>Collecting[U, E]</code> for the type and making it available implicitly.
+ * on your own type <code>U</code> by defining an <code>Collecting[E, U]</code> for the type and making it available implicitly.
+ * </p>
  * 
  * <p>
  * ScalaTest provides implicit <code>Collecting</code> instances for <code>scala.collection.GenTraversable</code>,
  * <code>Array</code>, <code>java.util.Collection</code> and <code>java.util.Map</code> in the
  * <code>Collecting</code> companion object.
  * </p>
- *
  */
 trait Collecting[E, C] {
 
@@ -195,4 +198,5 @@ object Collecting {
       def sizeOf(every: EVERY[E]): Int = every.size
       def genTraversableFrom(collection: EVERY[E]): GenTraversable[E] = collection.toVector
     }
+
 }

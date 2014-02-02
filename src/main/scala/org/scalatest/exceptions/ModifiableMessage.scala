@@ -20,7 +20,7 @@ package org.scalatest.exceptions
  *
  * <p>
  * This trait facilitates the <code>withClue</code> construct provided by trait
- * <code>Assertions</code>. This construct enables extra information (or "clues") to
+ * <a href="../Assertions.html"><code>Assertions</code></a>. This construct enables extra information (or "clues") to
  * be included in the detail message of a thrown exception. Although both
  * <code>assert</code> and <code>expect</code> provide a way for a clue to be
  * included directly, <code>intercept</code> and ScalaTest matcher expressions

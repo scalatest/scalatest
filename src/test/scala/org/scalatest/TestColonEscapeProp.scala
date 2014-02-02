@@ -19,8 +19,8 @@ import org.scalatest.prop.Tables
 import org.scalatest.junit.JUnit3Suite
 import org.scalatest.junit.JUnitSuite
 import org.scalatest.testng.TestNGSuite
-import org.scalatest.prop.TableDrivenPropertyChecks
-import org.scalatest.matchers.ShouldMatchers
+import org.scalatest.prop.TableDrivenPropertyChecks._
+import Matchers._
 import org.scalatest.events.Ordinal
 import org.scalatest.events.IndentedText
 import org.junit.Test
@@ -84,7 +84,7 @@ trait NonTestColonEscapeExamples extends Tables {
     (testngSuite, Some("- test: A Succeeded Test"), Some("- test: A Failed Test"), Some("- test: An Ignored Test"), None, None))
 }
 
-class TestColonEscapeProp extends FunSuite with TestColonEscapeExamples with TableDrivenPropertyChecks with ShouldMatchers {
+class TestColonEscapeProp extends FunSuite with TestColonEscapeExamples {
 
   def assertFormattedText(formatter: Option[Formatter], expected: String) {
     formatter match {
@@ -188,7 +188,7 @@ class TestColonEscapeExamplePathFunSpec extends path.FunSpec {
   }
 }
 
-class NonTestColonEscapeProp extends FunSuite with NonTestColonEscapeExamples with TableDrivenPropertyChecks with ShouldMatchers {
+class NonTestColonEscapeProp extends FunSuite with NonTestColonEscapeExamples {
   
   def assertFormattedText(formatter: Option[Formatter], expected: Option[String]) {
     expected match {

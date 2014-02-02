@@ -21,8 +21,9 @@ import org.scalautils.StringNormalizations._
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
 import scala.collection.mutable.LinkedList
+import Matchers._
 
-class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends FreeSpec with Matchers {
+class ListShouldContainTheSameElementsInOrderAsLogicalOrSpec extends FreeSpec {
   
   //ADDITIONAL//
   

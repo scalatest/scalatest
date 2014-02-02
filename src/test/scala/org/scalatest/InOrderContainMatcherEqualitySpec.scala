@@ -19,8 +19,9 @@ import org.scalautils.Equality
 import org.scalautils.Explicitly
 import collection.GenTraversable
 import SharedHelpers._
+import Matchers._
 
-class InOrderContainMatcherEqualitySpec extends Spec with Matchers with Explicitly {
+class InOrderContainMatcherEqualitySpec extends Spec with Explicitly {
   
   class CustomEquality extends Equality[String] {
     def areEqual(left: String, right: Any) = 

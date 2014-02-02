@@ -17,8 +17,9 @@ package org.scalatest
 
 import collection.GenTraversable
 import SharedHelpers._
+import Matchers._
 
-class OnlyContainMatcherSpec extends Spec with Matchers {
+class OnlyContainMatcherSpec extends Spec {
 
   object `only ` {
     

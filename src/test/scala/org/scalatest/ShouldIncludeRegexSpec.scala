@@ -21,8 +21,9 @@ import Arbitrary._
 import Prop._
 import org.scalatest.exceptions.TestFailedException
 import SharedHelpers._
+import Matchers._
 
-class ShouldIncludeRegexSpec extends Spec with Matchers with Checkers with ReturnsNormallyThrowsAssertion {
+class ShouldIncludeRegexSpec extends Spec with Checkers with ReturnsNormallyThrowsAssertion {
 
 /*
 s should include substring t

@@ -25,8 +25,9 @@ import org.scalautils.TripleEquals
 import org.scalautils.TypeCheckedTripleEquals
 import org.scalautils.ConversionCheckedTripleEquals
 import SharedHelpers._
+import Matchers._
 
-class ShouldCollectedTripleEqualsSpec extends Spec with NonImplicitAssertions with Matchers {
+class ShouldCollectedTripleEqualsSpec extends Spec with NonImplicitAssertions {
 
   case class Super(size: Int)
   class Sub(sz: Int) extends Super(sz)

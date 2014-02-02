@@ -21,8 +21,10 @@ import org.scalautils.StringNormalizations
 import org.scalautils.Uniformity
 import collection.GenTraversable
 import SharedHelpers._
+import Matchers._
+import StringNormalizations._
 
-class InOrderOnlyContainMatcherDeciderSpec extends Spec with Matchers with Explicitly with StringNormalizations {
+class InOrderOnlyContainMatcherDeciderSpec extends Spec with Explicitly {
   
   val incremented: Uniformity[Int] = 
     new Uniformity[Int] {

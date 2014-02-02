@@ -17,12 +17,13 @@ package org.scalatest
 
 import org.scalautils.Equality
 import org.scalautils.Explicitly
-import org.scalautils.StringNormalizations
+import org.scalautils.StringNormalizations._
 import org.scalautils.Uniformity
 import collection.GenTraversable
 import SharedHelpers._
+import Matchers._
 
-class OnlyContainMatcherDeciderSpec extends Spec with Matchers with Explicitly with StringNormalizations {
+class OnlyContainMatcherDeciderSpec extends Spec with Explicitly {
 
   val mapTrimmed: Uniformity[(Int, String)] =
     new Uniformity[(Int, String)] {

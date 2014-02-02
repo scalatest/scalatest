@@ -105,6 +105,7 @@ import scala.language.higherKinds
  * <li><a href="#inspectorShorthands">Inspector shorthands</a></li>
  * <li><a href="#singleElementCollections">Single-element collections</a></li>
  * <li><a href="#javaCollectionsAndMaps">Java collections and maps</a></li>
+ * <li><a href="#stringsAndArraysAsCollections"><code>String</code>s and <code>Array</code>s as collections</a></li>
  * <li><a href="#beAsAnEqualityComparison">Be as an equality comparison</a></li>
  * <li><a href="#beingNegative">Being negative</a></li>
  * <li><a href="#checkingThatCodeDoesNotCompile">Checking that a snippet of code does not compile</a></li>
@@ -367,8 +368,23 @@ import scala.language.higherKinds
  * "abbcc" should fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "cc"))
  * </pre>
  * 
+ * <p>
+ * You can check whether a string is empty with <code>empty</code>:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * s shouldBe empty
+ * </pre>
+ *
+ * <p>
+ * You can also use most of ScalaTest's matcher syntax for collections on <code>String</code> by
+ * treating the <code>String</code>s as collections of characters. For examples, see the
+ * <a href="#stringsAndArraysAsCollections"><code>String</code>s and <code>Array</code>s as collections</a> section below.
+ * </p>
+ * 
  * <a name="greaterAndLessThan"></a>
  * <h2>Greater and less than</h2>
+ * 
  * <p>
  * You can check whether any type for which an implicit <code>Ordering[T]</code> is available
  * is greater than, less than, greater than or equal, or less
@@ -871,7 +887,7 @@ import scala.language.higherKinds
  * <h2>Working with "sortables"</h2>
  *
  * <p>
- * You can also ask whether the elements of "sortable" objects (such as <code>Array</code>, Java <code>List</code>s, and <code>GenSeq</code>s)
+ * You can also ask whether the elements of "sortable" objects (such as <code>Array</code>s, Java <code>List</code>s, and <code>GenSeq</code>s)
  * are in sorted order, like this:
  * </p>
  *
@@ -1002,31 +1018,61 @@ import scala.language.higherKinds
  * </pre>
  * 
  * <p>
- * Note: in the current 2.0.M6-SNAP release, the type of object used with inspector shorthands must be <code>GenTraversable</code>, but this will likely be widened to
- * include Java collections, arrays, iterators, etc., for 2.0.M6.
+ * Like <a href=""><code>Inspectors</code></a>, objects used with inspector shorthands can be any type <code>T</code> for which a <code>Collecting[T, E]</code>
+ * is availabe, which by default includes <code>GenTraversable</code>, 
+ * Java <code>Collection</code>, Java <code>Map</code>, <code>Array</code>s, and <code>String</code>s.
+ * Here are some examples:
  * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; import org.scalatest._
+ * import org.scalatest._
+ * 
+ * scala&gt; import Matchers._
+ * import Matchers._
+ * 
+ * scala&gt; all (Array(1, 2, 3)) should be &lt; 5
+ * 
+ * scala&gt; import collection.JavaConverters._
+ * import collection.JavaConverters._
+ * 
+ * scala&gt; val js = List(1, 2, 3).asJava
+ * js: java.util.List[Int] = [1, 2, 3]
+ * 
+ * scala&gt; all (js) should be &lt; 5
+ * 
+ * scala&gt; val jmap = Map("a" -&gt; 1, "b" -&gt; 2).asJava 
+ * jmap: java.util.Map[String,Int] = {a=1, b=2}
+ * 
+ * scala&gt; atLeast(1, jmap) shouldBe Entry("b", 2)
+ * 
+ * scala&gt; atLeast(2, "hello, world!") shouldBe 'o'
+ * </pre>
  *
  * <a name="singleElementCollections"></a>
  * <h2>Single-element collections</h2>
  *
  * <p>
  * To assert both that a collection contains just one "lone" element as well as something else about that element, you can use
- * the <code>loneElement</code> syntax. For example, if a <code>Set[Int]</code> should contain just one element, an <code>Int</code>
+ * the <code>loneElement</code> syntax provided by trait <a href="LoneElement.html"><code>LoneElement</code></a>. For example, if a
+ * <code>Set[Int]</code> should contain just one element, an <code>Int</code>
  * less than or equal to 10, you could write:
  * </p>
  *
  * <pre class="stHighlight">
+ * import LoneElement._
  * set.loneElement should be &lt;= 10
  * </pre>
  *
  * <p>
  * You can invoke <code>loneElement</code> on any type <code>T</code> for which an implicit <a href="enablers/Collecting.html"><code>Collecting[E, T]</code></a>
- * is available, where <code>E</code> is the type returned by the <code>loneElement</code> invocation. 
+ * is available, where <code>E</code> is the element type returned by the <code>loneElement</code> invocation. By default, you can use <code>loneElement</code>
+ * on <code>GenTraversable</code>, Java <code>Collection</code>, Java <code>Map</code>, <code>Array</code>, and <code>String</code>.
  * </p>
  *
  * <a name="javaCollectionsAndMaps"></a>
  * <h2>Java collections and maps</h2>
- * 
+ *
  * <p>
  * You can use similar syntax on Java collections (<code>java.util.Collection</code>) and maps (<code>java.util.Map</code>).
  * For example, you can check whether a Java <code>Collection</code> or <code>Map</code> is <code>empty</code>,
@@ -1089,6 +1135,34 @@ import scala.language.higherKinds
  * javaMap should contain value "Howdy"
  * </pre>
  * 
+ * <a name="stringsAndArraysAsCollections"></a>
+ * <h2><code>String</code>s and <code>Array</code>s as collections</h2>
+ * 
+ * <p>
+ * You can also use all the syntax described above for Scala and Java collections on <code>Array</code>s and
+ * <code>String</code>s. Here are some examples:
+ * </p>
+ * 
+ * <pre class="stREPL">
+ * scala&gt; import org.scalatest._
+ * import org.scalatest._
+ *
+ * scala&gt; import Matchers._
+ * import Matchers._
+ *
+ * scala&gt; atLeast (2, Array(1, 2, 3)) should be &gt; 1
+ *
+ * scala&gt; atMost (2, "halloo") shouldBe 'o'
+ *
+ * scala&gt; Array(1, 2, 3) shouldBe sorted
+ *
+ * scala&gt; "abcdefg" shouldBe sorted
+ *
+ * scala&gt; Array(1, 2, 3) should contain atMostOneOf (3, 4, 5)
+ *
+ * scala&gt; "abc" should contain atMostOneOf ('c', 'd', 'e')
+ * </pre>
+ *
  * <a name="beAsAnEqualityComparison"></a>
  * <h2><code>be</code> as an equality comparison</h2>
  * 
@@ -1647,6 +1721,8 @@ import scala.language.higherKinds
  * @author Chua Chee Seng
  */
 trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWords with Explicitly { matchers =>
+
+  import scala.language.implicitConversions
 
   // This guy is generally done through an implicit conversion from a symbol. It takes that symbol, and 
   // then represents an object with an apply method. So it gives an apply method to symbols.
@@ -6083,11 +6159,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    *
    * @author Bill Venners
    */
-  final class AnyShouldWrapper[T](leftSideValue: T) extends StringShouldWrapperForVerb[T] {
-
-    // Now here's a kludge. Will succeed for anything, but is only used if it T is a String.
-    // Aaaand, it got me one of those rarely seen NPEs. Will not succeed for null.
-    lazy val leftSideString: String = if (leftSideValue != null) leftSideValue.toString else null
+  sealed class AnyShouldWrapper[T](leftSideValue: T) {
 
     /**
      * This method enables syntax such as the following:
@@ -6750,51 +6822,6 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * This method enables syntax such as the following:
      *
      * <pre class="stHighlight">
-     * string should fullyMatch regex ("""(-)?(\d+)(\.\d*)?""")
-     *        ^
-     * </pre>
-     */
-    def should(fullyMatchWord: FullyMatchWord)(implicit ev: T <:< String): ResultOfFullyMatchWordForString = {
-      new ResultOfFullyMatchWordForString(leftSideValue, true)
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * string should fullyMatch regex ("a(b*)c" withGroup "bb") 
-     *                                          ^
-     * </pre>
-     */
-    def withGroup(group: String)(implicit ev: T <:< String) = 
-      new RegexWithGroups(leftSideString.r, IndexedSeq(group))
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * string should fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "cc"))
-     *                                             ^
-     * </pre>
-     */
-    def withGroups(groups: String*)(implicit ev: T <:< String) = 
-      new RegexWithGroups(leftSideString.r, IndexedSeq(groups: _*))
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * string shouldNot fullyMatch regex ("""(-)?(\d+)(\.\d*)?""")
-     *        ^
-     * </pre>
-     */
-    def shouldNot(fullyMatchWord: FullyMatchWord)(implicit ev: T <:< String): ResultOfFullyMatchWordForString = 
-      new ResultOfFullyMatchWordForString(leftSideValue, false)
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
      * string shouldNot startWith regex ("hello")
      *        ^
      * </pre>
@@ -6823,6 +6850,65 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def shouldNot(includeWord: IncludeWord)(implicit ev: T <:< String): ResultOfIncludeWordForString = 
       new ResultOfIncludeWordForString(leftSideValue, false)
+  }
+
+  /**
+   * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
+   * the matchers DSL.
+   *
+   * <p>
+   * This class is used in conjunction with an implicit conversion to enable <code>should</code> methods to
+   * be invoked on <code>String</code>s.
+   * </p>
+   *
+   * @author Bill Venners
+   */
+  final class StringShouldWrapper(val leftSideString: String) extends AnyShouldWrapper(leftSideString) with StringShouldWrapperForVerb {
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * string should fullyMatch regex ("a(b*)c" withGroup "bb") 
+     *                                          ^
+     * </pre>
+     */
+    def withGroup(group: String) = 
+      new RegexWithGroups(leftSideString.r, IndexedSeq(group))
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * string should fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "cc"))
+     *                                             ^
+     * </pre>
+     */
+    def withGroups(groups: String*) =
+      new RegexWithGroups(leftSideString.r, IndexedSeq(groups: _*))
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * string should fullyMatch regex ("""(-)?(\d+)(\.\d*)?""")
+     *        ^
+     * </pre>
+     */
+    def should(fullyMatchWord: FullyMatchWord): ResultOfFullyMatchWordForString = {
+      new ResultOfFullyMatchWordForString(leftSideString, true)
+    }
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * string shouldNot fullyMatch regex ("""(-)?(\d+)(\.\d*)?""")
+     *        ^
+     * </pre>
+     */
+    def shouldNot(fullyMatchWord: FullyMatchWord): ResultOfFullyMatchWordForString = 
+      new ResultOfFullyMatchWordForString(leftSideString, false)
 
     /**
      * This method enables syntax such as the following:
@@ -6833,6 +6919,134 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldNot(compileWord: CompileWord): Unit = macro CompileMacro.shouldNotCompileImpl
+
+/*
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * string should include regex ("hi")
+     *        ^
+     * </pre>
+     */
+    def should(includeWord: IncludeWord): ResultOfIncludeWordForString = {
+      new ResultOfIncludeWordForString(leftSideString, true)
+    }
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * string should startWith regex ("hello")
+     *        ^
+     * </pre>
+     */
+    def should(startWithWord: StartWithWord): ResultOfStartWithWordForString = {
+      new ResultOfStartWithWordForString(leftSideString, true)
+    }
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * string should endWith regex ("world")
+     *        ^
+     * </pre>
+     */
+    def should(endWithWord: EndWithWord): ResultOfEndWithWordForString = {
+      new ResultOfEndWithWordForString(leftSideString, true)
+    }
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * string should fullyMatch regex ("""(-)?(\d+)(\.\d*)?""")
+     *        ^
+     * </pre>
+     */
+    def should(fullyMatchWord: FullyMatchWord): ResultOfFullyMatchWordForString = {
+      new ResultOfFullyMatchWordForString(leftSideString, true)
+    }
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * string should not have length (3)
+     *        ^
+     * </pre>
+     */
+    override def should(notWord: NotWord): ResultOfNotWordForString = {
+      new ResultOfNotWordForString(leftSideString, false)
+    }
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * string should fullyMatch regex ("a(b*)c" withGroup "bb") 
+     *                                          ^
+     * </pre>
+     */
+    def withGroup(group: String) = 
+      new RegexWithGroups(leftSideString.r, IndexedSeq(group))
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * string should fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "cc"))
+     *                                             ^
+     * </pre>
+     */
+    def withGroups(groups: String*) = 
+      new RegexWithGroups(leftSideString.r, IndexedSeq(groups: _*))
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * string shouldNot fullyMatch regex ("""(-)?(\d+)(\.\d*)?""")
+     *        ^
+     * </pre>
+     */
+    def shouldNot(fullyMatchWord: FullyMatchWord): ResultOfFullyMatchWordForString = 
+      new ResultOfFullyMatchWordForString(leftSideString, false)
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * string shouldNot startWith regex ("hello")
+     *        ^
+     * </pre>
+     */
+    def shouldNot(startWithWord: StartWithWord): ResultOfStartWithWordForString = 
+      new ResultOfStartWithWordForString(leftSideString, false)
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * string shouldNot endWith regex ("world")
+     *        ^
+     * </pre>
+     */
+    def shouldNot(endWithWord: EndWithWord): ResultOfEndWithWordForString = 
+      new ResultOfEndWithWordForString(leftSideString, false)
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
+     * string shouldNot include regex ("hi")
+     *        ^
+     * </pre>
+     */
+    def shouldNot(includeWord: IncludeWord): ResultOfIncludeWordForString = 
+      new ResultOfIncludeWordForString(leftSideString, false)
+*/
   }
 
   /**
@@ -6875,7 +7089,13 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * Implicitly converts an object of type <code>T</code> to a <code>AnyShouldWrapper[T]</code>,
    * to enable <code>should</code> methods to be invokable on that object.
    */
-  implicit override def convertToAnyShouldWrapper[T](o: T): AnyShouldWrapper[T] = new AnyShouldWrapper(o)
+  implicit def convertToAnyShouldWrapper[T](o: T): AnyShouldWrapper[T] = new AnyShouldWrapper(o)
+
+  /**
+   * Implicitly converts an object of type <code>java.lang.String</code> to a <code>StringShouldWrapper</code>,
+   * to enable <code>should</code> methods to be invokable on that object.
+   */
+  implicit override def convertToStringShouldWrapper(o: String): StringShouldWrapper = new StringShouldWrapper(o)
 
   /**
    * Implicitly converts an object of type <code>scala.util.matching.Regex</code> to a <code>RegexWrapper</code>,

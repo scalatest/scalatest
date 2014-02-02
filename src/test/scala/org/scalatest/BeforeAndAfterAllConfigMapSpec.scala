@@ -17,8 +17,9 @@ package org.scalatest
 
 import SharedHelpers._
 import java.util.concurrent.atomic.AtomicInteger
+import Matchers._
 
-class BeforeAndAfterAllConfigMapSpec extends FunSpec with ShouldMatchers {
+class BeforeAndAfterAllConfigMapSpec extends FunSpec {
   
   class ExampleSuite extends FunSuite with BeforeAndAfterAllConfigMap with ParallelTestExecution {
     

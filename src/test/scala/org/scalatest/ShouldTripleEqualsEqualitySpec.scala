@@ -24,9 +24,10 @@ import scala.collection.GenTraversableOnce
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 import org.scalautils.Equality
-import org.scalautils.TripleEquals
+import org.scalautils.TripleEquals._
+import Matchers._
 
-class ShouldTripleEqualsEqualitySpec extends Spec with NonImplicitAssertions with Matchers with TripleEquals {
+class ShouldTripleEqualsEqualitySpec extends Spec with NonImplicitAssertions {
 
   object `the should === operator should use the appropriate Equality type class` {
     def `for Any` {

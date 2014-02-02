@@ -231,6 +231,8 @@ trait MatcherProducers {
       (o: T) => f(o) mapArgs prettify
   }
 
+  import scala.language.implicitConversions
+
   /**
    * Implicit conversion that converts a function of <code>T =&gt; Matcher[T]</code> to an object that has
    * <code>composeTwice</code>, <code>mapResult</code> and <code>mapArgs</code> methods.

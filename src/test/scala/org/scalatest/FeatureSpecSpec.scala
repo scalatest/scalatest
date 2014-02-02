@@ -173,6 +173,8 @@ class FeatureSpecSpec extends FunSpec {
         scenario("test that") { theTestThatCalled = true }
       }
 
+      import scala.language.reflectiveCalls
+
       val repA = new TestIgnoredTrackingReporter
       a.run(None, Args(repA))
       assert(!repA.testIgnoredReceived)
@@ -237,6 +239,8 @@ class FeatureSpecSpec extends FunSpec {
         scenario("test that") { theTestThatCalled = true }
       }
 
+      import scala.language.reflectiveCalls
+
       val repE = new TestIgnoredTrackingReporter
       e.run(Some("Scenario: test this"), Args(repE))
       assert(repE.testIgnoredReceived)
@@ -253,6 +257,9 @@ class FeatureSpecSpec extends FunSpec {
         scenario("test this", mytags.SlowAsMolasses) { theTestThisCalled = true }
         scenario("test that") { theTestThatCalled = true }
       }
+
+      import scala.language.reflectiveCalls
+
       val repA = new TestIgnoredTrackingReporter
       a.run(None, Args(repA))
       assert(!repA.testIgnoredReceived)
@@ -660,6 +667,9 @@ class FeatureSpecSpec extends FunSpec {
           testWasInvoked = true
         }
       }
+
+      import scala.language.reflectiveCalls
+
       a.run(None, Args(SilentReporter))
       assert(a.withFixtureWasInvoked)
       assert(a.testWasInvoked)
@@ -673,6 +683,9 @@ class FeatureSpecSpec extends FunSpec {
         }
         scenario("should do something") {}
       }
+
+      import scala.language.reflectiveCalls
+
       a.run(None, Args(SilentReporter))
       assert(a.correctTestNameWasPassed)
     }
@@ -685,6 +698,9 @@ class FeatureSpecSpec extends FunSpec {
         }
         scenario("should do something") {}
       }
+
+      import scala.language.reflectiveCalls
+
       a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> 7), None, new Tracker(), Set.empty))
       assert(a.correctConfigMapWasPassed)
     }

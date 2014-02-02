@@ -25,6 +25,15 @@ import java.util.concurrent.locks.{Lock, ReadWriteLock}
  * @author Josh Cough
  */
 private[concurrent] object PimpedReadWriteLock {
+
+  import scala.language.implicitConversions
+
+  /**
+   * Implicit conversion that convert a <code>java.util.concurrent.locks.ReadWriteLock</code> to <code>PimpedReadWriteLock</code>.
+   *
+   * @param lock the <code>ReadWriteLock</code>
+   * @return an instance of <code>PimpedReadWriteLock</code>
+   */
   implicit def pimpMyReadWriteLock(lock: ReadWriteLock) = new PimpedReadWriteLock(lock)
 
   /**

@@ -18,7 +18,7 @@ package org.scalatest
 import org.scalatest.prop.Tables
 import scala.collection.mutable.ListBuffer
 import org.scalatest.events.Event
-import org.scalatest.prop.TableDrivenPropertyChecks
+import org.scalatest.prop.TableDrivenPropertyChecks._
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.Future
 import org.scalatest.tools.SuiteRunner
@@ -34,20 +34,13 @@ import java.io.PrintStream
 import java.io.ByteArrayOutputStream
 import org.scalatest.events.TestSucceeded
 import org.scalatest.tools.TestSortingReporter
-import org.scalatest.concurrent.Eventually
+import org.scalatest.concurrent.Eventually._
 import org.scalatest.tools.DistributedTestRunnerSuite
 import org.scalatest.tools.Runner
 import SharedHelpers._
 
-class ParallelTestExecutionProp extends FunSuite 
-  with TableDrivenPropertyChecks 
-  with Eventually
-  with ParallelTestExecutionOrderExamples 
-  with ParallelTestExecutionInfoExamples 
-  with ParallelTestExecutionTestTimeoutExamples
-  with ParallelTestExecutionParallelSuiteExamples 
-  with ParallelTestExecutionSuiteTimeoutExamples {
-  
+class ParallelTestExecutionProp extends FunSuite {
+
   class ControlledOrderDistributor extends Distributor {
     val buf = ListBuffer.empty[(Suite, Args, ScalaTestStatefulStatus)]
     def apply(suite: Suite, args: Args): Status = {
@@ -175,8 +168,9 @@ class ParallelTestExecutionProp extends FunSuite
     fun(distributor)
     recordingReporter.eventsReceived
   }
-  
+
   test("ParallelTestExecution should have the events reported in correct order when tests are executed in parallel") {
+    import ParallelTestExecutionOrderExamples._
     forAll(orderExamples) { example =>
       val inOrderEvents = withDistributor(example, _.executeInOrder)
       example.assertOrderTest(inOrderEvents)
@@ -186,6 +180,7 @@ class ParallelTestExecutionProp extends FunSuite
   }
   
   test("ParallelTestExecution should have InfoProvided fired from before and after block in correct order when tests are executed in parallel") {
+    import ParallelTestExecutionInfoExamples._
     forAll(infoExamples) { example =>
       val inOrderEvents = withDistributor(example, _.executeInOrder)
       example.assertBeforeAfterInfo(inOrderEvents)
@@ -195,7 +190,8 @@ class ParallelTestExecutionProp extends FunSuite
   }
   
   test("ParallelTestExecution should have the blocking test's events fired without waiting when timeout reaches, and when the missing event finally reach later, it should just get fired") {
-    forAll(testTimeoutExamples) { example => 
+    import ParallelTestExecutionTestTimeoutExamples._
+    forAll(testTimeoutExamples) { example =>
       val inOrderEvents = withTestHoldingDistributor(example, _.executeInOrder)
       example.assertTestTimeoutTest(inOrderEvents)
       val reverseOrderEvents = withTestHoldingDistributor(example, _.executeInReverseOrder)
@@ -204,7 +200,8 @@ class ParallelTestExecutionProp extends FunSuite
   }
   
   test("ParallelTestExecution should have the events reported in correct order when multiple suite's tests are executed in parallel") {
-    forAll(parallelExamples) { example => 
+    import ParallelTestExecutionParallelSuiteExamples._
+    forAll(parallelExamples) { example =>
       val inOrderEvents = withSuiteDistributor(example.suite1, example.suite2, _.executeInOrder)
       example.assertParallelSuites(inOrderEvents)
       //val reverseOrderEvents = withSuiteDistributor(example.suite1, example.suite2, _.executeInReverseOrder)
@@ -213,6 +210,7 @@ class ParallelTestExecutionProp extends FunSuite
   }
   
   test("ParallelTestExecution should have the blocking suite's events fired without waiting when timeout reaches, and when the missing event finally reach later, it should just get fired") {
+    import ParallelTestExecutionSuiteTimeoutExamples._
     forAll(suiteTimeoutExamples) { example =>
       val events = withSuiteHoldingDistributor(example, _.executeInOrder)
       example.assertSuiteTimeoutTest(events)

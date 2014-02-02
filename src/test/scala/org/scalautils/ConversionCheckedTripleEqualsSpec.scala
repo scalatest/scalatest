@@ -32,7 +32,7 @@ class ConversionCheckedTripleEqualsSpec extends Spec with ConversionCheckedTripl
     case class Box[T](value: T)
 
     def `should automatically unbox an object on the left` {
-
+      import scala.language.implicitConversions
       implicit def unbox[T](box: Box[T]): T = box.value
 
       assert(Box(1) === 1)
@@ -40,7 +40,7 @@ class ConversionCheckedTripleEqualsSpec extends Spec with ConversionCheckedTripl
     }
 
     def `should automatically unbox an object on the right` {
-
+      import scala.language.implicitConversions
       implicit def unbox[T](box: Box[T]): T = box.value
 
       assert(1 === Box(1))
@@ -48,14 +48,14 @@ class ConversionCheckedTripleEqualsSpec extends Spec with ConversionCheckedTripl
     }
 
     def `should automatically box an object on the left` {
-
+      import scala.language.implicitConversions
       implicit def box[T](obj: T): Box[T] = Box(obj)
 
       assert(1 === Box(1))
       assert("s" === Box("s"))
     }
     def `should automatically box an object on the right` {
-
+      import scala.language.implicitConversions
       implicit def box[T](obj: T): Box[T] = Box(obj)
 
       assert(Box(1) === 1)

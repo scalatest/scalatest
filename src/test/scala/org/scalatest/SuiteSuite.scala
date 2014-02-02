@@ -25,13 +25,14 @@ import java.awt.AWTError
 import SharedHelpers._
 import tools.Runner.CHOSEN_STYLES
 import org.scalatest.Suite.formatterForSuiteStarting
+import PrivateMethodTester._
 
 /* Uncomment after remove type aliases in org.scalatest package object
 import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.exceptions.TestFailedException
 */
 
-class SuiteSuite extends Suite with PrivateMethodTester with SeveredStackTraces {
+class SuiteSuite extends Suite with SeveredStackTraces {
 
   def `test: Suite should discover method names and tags using deprecated Informer form` {
 

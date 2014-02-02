@@ -15,10 +15,9 @@
  */
 package org.scalatest
 
-import org.scalatest.matchers.ShouldMatchers
-import org.scalatest.exceptions._
+import org.scalatest.exceptions.TestFailedException
 
-class TestFailedExceptionSpec extends FunSpec with ShouldMatchers {
+class TestFailedExceptionSpec extends FunSpec with Matchers {
 
   describe("The TestFailedException") {
 

@@ -20,8 +20,9 @@ import org.scalacheck._
 import Arbitrary._
 import Prop._
 import org.scalatest.exceptions.TestFailedException
+import Matchers._
 
-class ShouldEndWithSubstringSpec extends Spec with Matchers with Checkers with ReturnsNormallyThrowsAssertion {
+class ShouldEndWithSubstringSpec extends Spec with Checkers with ReturnsNormallyThrowsAssertion {
 
   object `The endWith substring syntax` {
 

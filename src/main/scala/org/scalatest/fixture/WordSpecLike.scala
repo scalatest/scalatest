@@ -28,7 +28,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
 
 /**
  * Implementation trait for class <code>fixture.WordSpec</code>, which is
- * a sister class to <code>org.scalatest.WordSpec</code> that can pass a
+ * a sister class to <a href="../WordSpec.html"><code>org.scalatest.WordSpec</code></a> that can pass a
  * fixture object into its tests.
  * 
  * <p>
@@ -965,6 +965,8 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
    * </p>
    */
   protected val they = new TheyWord
+
+  import scala.language.implicitConversions
 
   /**
    * Implicitly converts <code>String</code>s to <code>WordSpecStringWrapper</code>, which enables

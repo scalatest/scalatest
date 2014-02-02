@@ -17,8 +17,9 @@ package org.scalatest
 
 import SharedHelpers.{createTempDirectory, thisLineNumber}
 import java.io.File
+import Matchers._
 
-class ShouldBeWritableSpec extends Spec with Matchers {
+class ShouldBeWritableSpec extends Spec {
   
   val tempDir = createTempDirectory()
   val writableFile = File.createTempFile("writable", "me", tempDir)

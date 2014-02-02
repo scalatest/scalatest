@@ -20,8 +20,10 @@ import org.scalautils.Explicitly
 import org.scalautils.StringNormalizations
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
+import Matchers._
+import StringNormalizations._
 
-class ContainMatcherAndOrDeciderSpec extends Spec with Matchers with Explicitly with StringNormalizations {
+class ContainMatcherAndOrDeciderSpec extends Spec with Explicitly {
 
   val equality = new Equality[String] {
     def areEqual(left: String, right: Any) = 

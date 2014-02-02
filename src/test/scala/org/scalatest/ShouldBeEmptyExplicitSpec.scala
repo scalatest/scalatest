@@ -17,8 +17,9 @@ package org.scalatest
 
 import SharedHelpers.thisLineNumber
 import enablers.Emptiness
+import Matchers._
 
-class ShouldBeEmptyExplicitSpec extends Spec with Matchers {
+class ShouldBeEmptyExplicitSpec extends Spec {
   
   trait Thing {
     def isEmpty: Boolean

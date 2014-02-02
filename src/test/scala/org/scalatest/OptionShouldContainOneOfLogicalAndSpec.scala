@@ -19,8 +19,9 @@ import org.scalautils.Equality
 import org.scalautils.StringNormalizations._
 import SharedHelpers._
 import FailureMessages._
+import Matchers._
 
-class OptionShouldContainOneOfLogicalAndSpec extends Spec with Matchers {
+class OptionShouldContainOneOfLogicalAndSpec extends Spec {
   
   val upperCaseStringEquality =
     new Equality[String] {

@@ -19,8 +19,9 @@ import org.scalautils.{Equality, Every, One, Many}
 import org.scalautils.StringNormalizations._
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
+import Matchers._
 
-class EveryShouldContainInOrderOnlyLogicalOrSpec extends Spec with Matchers {
+class EveryShouldContainInOrderOnlyLogicalOrSpec extends Spec {
 
   //ADDITIONAL//
 

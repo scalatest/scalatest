@@ -21,8 +21,9 @@ import Integer.MIN_VALUE
 import org.scalacheck._
 import Arbitrary._
 import Prop._
+import Matchers._
 
-class ShouldStructuralSizeSpec extends FunSpec with Matchers with Checkers with ReturnsNormallyThrowsAssertion {
+class ShouldStructuralSizeSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAssertion {
   
   def hadSizeInsteadOfExpectedSize(left: Any, leftSize: Long, expectedSize: Long): String = 
     FailureMessages("hadSizeInsteadOfExpectedSize", left, leftSize, expectedSize)

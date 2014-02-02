@@ -16,8 +16,9 @@
 package org.scalatest
 
 import SharedHelpers._
+import Matchers._
 
-class ContainMatcherAndOrSpec extends Spec with Matchers {
+class ContainMatcherAndOrSpec extends Spec {
 
   // TODO: Should reenable the all 'and/or contain' without paren flavor when we get MatcherGen2, MatcherGen3 working.
   

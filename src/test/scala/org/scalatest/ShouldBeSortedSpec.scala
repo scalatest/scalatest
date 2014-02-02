@@ -18,8 +18,9 @@ package org.scalatest
 import SharedHelpers.thisLineNumber
 import enablers.Sortable
 import FailureMessages.decorateToStringValue
+import Matchers._
 
-class ShouldBeSortedSpec extends Spec with Matchers {
+class ShouldBeSortedSpec extends Spec {
   
   //ADDITIONAL//
   
@@ -48,6 +49,11 @@ class ShouldBeSortedSpec extends Spec with Matchers {
   val orderedStudents = List(Student("Student 1", 80), Student("Student 2", 88), Student("Student 3", 90))
   val outOfOrderStudents = List(Student("Student 3", 90), Student("Student 2", 88), Student("Student 1", 80))
   
+  val emptyString = ""
+  val loneCharString = "x"
+  val orderedString = "123"
+  val outOfOrderString = "321"
+  
   val trueSortable = 
     new Sortable[List[Int]] {
       def isSorted(o: List[Int]) = true
@@ -65,15 +71,18 @@ class ShouldBeSortedSpec extends Spec with Matchers {
       def `should do nothing when xs is empty` {
         emptyInts should be (sorted)
         emptyStudents should be (sorted)
+        emptyString should be (sorted)
       }
 
       def `should do nothing when xs contains single element` {
         loneInts should be (sorted)
+        loneCharString should be (sorted)
       }
       
       def `should do nothing when xs is sorted` {
         orderedInts should be (sorted)
         orderedStudents should be (sorted)
+        orderedString should be (sorted)
       }
       
       def `should throw TestFailedException with correct stack depth when xs is not sorted` {
@@ -90,6 +99,13 @@ class ShouldBeSortedSpec extends Spec with Matchers {
         assert(caught2.message === Some(wasNotSorted(outOfOrderStudents)))
         assert(caught2.failedCodeFileName === Some("ShouldBeSortedSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+        val caught3 = intercept[TestFailedException] {
+          outOfOrderString should be (sorted)
+        }
+        assert(caught3.message === Some(wasNotSorted(outOfOrderString)))
+        assert(caught3.failedCodeFileName === Some("ShouldBeSortedSpec.scala"))
+        assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
       def `should use implicit Sortable when available` {
@@ -126,6 +142,13 @@ class ShouldBeSortedSpec extends Spec with Matchers {
         assert(caught2.message === Some(wasSorted(emptyStudents)))
         assert(caught2.failedCodeFileName === Some("ShouldBeSortedSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+        val caught3 = intercept[TestFailedException] {
+          emptyString should not be sorted
+        }
+        assert(caught3.message === Some(wasSorted(emptyString)))
+        assert(caught3.failedCodeFileName === Some("ShouldBeSortedSpec.scala"))
+        assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
 
       def `should throw TestFailedException wht correct stack depth when xs contains single element` {
@@ -135,10 +158,18 @@ class ShouldBeSortedSpec extends Spec with Matchers {
         assert(caught1.message === Some(wasSorted(loneInts)))
         assert(caught1.failedCodeFileName === Some("ShouldBeSortedSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+        val caught2 = intercept[TestFailedException] {
+          loneCharString should not be sorted
+        }
+        assert(caught2.message === Some(wasSorted(loneCharString)))
+        assert(caught2.failedCodeFileName === Some("ShouldBeSortedSpec.scala"))
+        assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
       def `should do nothing when xs is not sorted` {
         outOfOrderInts should not be sorted
+        outOfOrderString should not be sorted
         outOfOrderStudents should not be sorted
       }
       
@@ -156,6 +187,13 @@ class ShouldBeSortedSpec extends Spec with Matchers {
         assert(caught2.message === Some(wasSorted(orderedStudents)))
         assert(caught2.failedCodeFileName === Some("ShouldBeSortedSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+        val caught3 = intercept[TestFailedException] {
+          orderedString should not be (sorted)
+        }
+        assert(caught3.message === Some(wasSorted(orderedString)))
+        assert(caught3.failedCodeFileName === Some("ShouldBeSortedSpec.scala"))
+        assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
       def `should use implicit Sortable when available` {
@@ -179,15 +217,18 @@ class ShouldBeSortedSpec extends Spec with Matchers {
       def `should do nothing when xs is empty` {
         emptyInts shouldBe sorted
         emptyStudents shouldBe (sorted)
+        emptyString shouldBe sorted
       }
 
       def `should do nothing when xs contains single element` {
         loneInts shouldBe sorted
+        loneCharString shouldBe sorted
       }
       
       def `should do nothing when xs is sorted` {
         orderedInts shouldBe sorted
         orderedStudents shouldBe sorted
+        orderedString shouldBe sorted
       }
       
       def `should throw TestFailedException with correct stack depth when xs is not sorted` {
@@ -204,6 +245,13 @@ class ShouldBeSortedSpec extends Spec with Matchers {
         assert(caught2.message === Some(wasNotSorted(outOfOrderStudents)))
         assert(caught2.failedCodeFileName === Some("ShouldBeSortedSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+        val caught3 = intercept[TestFailedException] {
+          outOfOrderString shouldBe (sorted)
+        }
+        assert(caught3.message === Some(wasNotSorted(outOfOrderString)))
+        assert(caught3.failedCodeFileName === Some("ShouldBeSortedSpec.scala"))
+        assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
       def `should use implicit Sortable when available` {
@@ -240,6 +288,13 @@ class ShouldBeSortedSpec extends Spec with Matchers {
         assert(caught2.message === Some(wasSorted(emptyStudents)))
         assert(caught2.failedCodeFileName === Some("ShouldBeSortedSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+        val caught3 = intercept[TestFailedException] {
+          emptyString shouldNot be (sorted)
+        }
+        assert(caught3.message === Some(wasSorted(emptyString)))
+        assert(caught3.failedCodeFileName === Some("ShouldBeSortedSpec.scala"))
+        assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
 
       def `should throw TestFailedException wht correct stack depth when xs contains single element` {
@@ -249,11 +304,19 @@ class ShouldBeSortedSpec extends Spec with Matchers {
         assert(caught1.message === Some(wasSorted(loneInts)))
         assert(caught1.failedCodeFileName === Some("ShouldBeSortedSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+        val caught2 = intercept[TestFailedException] {
+          loneCharString shouldNot be (sorted)
+        }
+        assert(caught2.message === Some(wasSorted(loneCharString)))
+        assert(caught2.failedCodeFileName === Some("ShouldBeSortedSpec.scala"))
+        assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
       def `should do nothing when xs is not sorted` {
         outOfOrderInts shouldNot be (sorted)
         outOfOrderStudents shouldNot be (sorted)
+        outOfOrderString shouldNot be (sorted)
       }
       
       def `should throw TestFailedException with correct stack depth when xs is not sorted` {
@@ -270,6 +333,13 @@ class ShouldBeSortedSpec extends Spec with Matchers {
         assert(caught2.message === Some(wasSorted(orderedStudents)))
         assert(caught2.failedCodeFileName === Some("ShouldBeSortedSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+        val caught3 = intercept[TestFailedException] {
+          orderedString shouldNot be (sorted)
+        }
+        assert(caught3.message === Some(wasSorted(orderedString)))
+        assert(caught3.failedCodeFileName === Some("ShouldBeSortedSpec.scala"))
+        assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
       def `should use implicit Sortable when available` {
@@ -293,15 +363,18 @@ class ShouldBeSortedSpec extends Spec with Matchers {
       def `should do nothing when xs is empty` {
         all(List(emptyInts)) should be (sorted)
         all(List(emptyStudents)) should be (sorted)
+        all(List(emptyString)) should be (sorted)
       }
 
       def `should do nothing when xs contains single element` {
         all(List(loneInts)) should be (sorted)
+        all(List(loneCharString)) should be (sorted)
       }
       
       def `should do nothing when xs is sorted` {
         all(List(orderedInts)) should be (sorted)
         all(List(orderedStudents)) should be (sorted)
+        all(List(orderedString)) should be (sorted)
       }
       
       def `should throw TestFailedException with correct stack depth when xs is not sorted` {
@@ -320,6 +393,14 @@ class ShouldBeSortedSpec extends Spec with Matchers {
         assert(caught2.message === Some(allInspectionFailed(0, wasNotSorted(outOfOrderStudents), thisLineNumber - 2, left2)))
         assert(caught2.failedCodeFileName === Some("ShouldBeSortedSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+        val left3 = List(outOfOrderString)
+        val caught3 = intercept[TestFailedException] {
+          all(left3) should be (sorted)
+        }
+        assert(caught3.message === Some(allInspectionFailed(0, wasNotSorted(outOfOrderString), thisLineNumber - 2, left3)))
+        assert(caught3.failedCodeFileName === Some("ShouldBeSortedSpec.scala"))
+        assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
       def `should use implicit Sortable when available` {
@@ -357,6 +438,14 @@ class ShouldBeSortedSpec extends Spec with Matchers {
         assert(caught2.message === Some(allInspectionFailed(0, wasSorted(emptyStudents), thisLineNumber - 2, left2)))
         assert(caught2.failedCodeFileName === Some("ShouldBeSortedSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+        val left3 = List(emptyString)
+        val caught3 = intercept[TestFailedException] {
+          all(left3) should not be sorted
+        }
+        assert(caught3.message === Some(allInspectionFailed(0, wasSorted(emptyString), thisLineNumber - 2, left3)))
+        assert(caught3.failedCodeFileName === Some("ShouldBeSortedSpec.scala"))
+        assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
 
       def `should throw TestFailedException wht correct stack depth when xs contains single element` {
@@ -367,11 +456,20 @@ class ShouldBeSortedSpec extends Spec with Matchers {
         assert(caught1.message === Some(allInspectionFailed(0, wasSorted(loneInts), thisLineNumber - 2, left1)))
         assert(caught1.failedCodeFileName === Some("ShouldBeSortedSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+        val left2 = List(loneCharString)
+        val caught2 = intercept[TestFailedException] {
+          all(left2) should not be sorted
+        }
+        assert(caught2.message === Some(allInspectionFailed(0, wasSorted(loneCharString), thisLineNumber - 2, left2)))
+        assert(caught2.failedCodeFileName === Some("ShouldBeSortedSpec.scala"))
+        assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
       def `should do nothing when xs is not sorted` {
         all(List(outOfOrderInts)) should not be sorted
         all(List(outOfOrderStudents)) should not be sorted
+        all(List(outOfOrderString)) should not be sorted
       }
       
       def `should throw TestFailedException with correct stack depth when xs is not sorted` {
@@ -390,6 +488,14 @@ class ShouldBeSortedSpec extends Spec with Matchers {
         assert(caught2.message === Some(allInspectionFailed(0, wasSorted(orderedStudents), thisLineNumber - 2, left2)))
         assert(caught2.failedCodeFileName === Some("ShouldBeSortedSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+        val left3 = List(orderedString)
+        val caught3 = intercept[TestFailedException] {
+          all(left3) should not be (sorted)
+        }
+        assert(caught3.message === Some(allInspectionFailed(0, wasSorted(orderedString), thisLineNumber - 2, left3)))
+        assert(caught3.failedCodeFileName === Some("ShouldBeSortedSpec.scala"))
+        assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
       def `should use implicit Sortable when available` {
@@ -413,15 +519,18 @@ class ShouldBeSortedSpec extends Spec with Matchers {
       def `should do nothing when xs is empty` {
         all(List(emptyInts)) shouldBe sorted
         all(List(emptyStudents)) shouldBe (sorted)
+        all(List(emptyString)) shouldBe sorted
       }
 
       def `should do nothing when xs contains single element` {
         all(List(loneInts)) shouldBe sorted
+        all(List(loneCharString)) shouldBe sorted
       }
       
       def `should do nothing when xs is sorted` {
         all(List(orderedInts)) shouldBe sorted
         all(List(orderedStudents)) shouldBe sorted
+        all(List(orderedString)) shouldBe sorted
       }
       
       def `should throw TestFailedException with correct stack depth when xs is not sorted` {
@@ -440,6 +549,14 @@ class ShouldBeSortedSpec extends Spec with Matchers {
         assert(caught2.message === Some(allInspectionFailed(0, wasNotSorted(outOfOrderStudents), thisLineNumber - 2, left2)))
         assert(caught2.failedCodeFileName === Some("ShouldBeSortedSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+        val left3 = List(outOfOrderString)
+        val caught3 = intercept[TestFailedException] {
+          all(left3) shouldBe (sorted)
+        }
+        assert(caught3.message === Some(allInspectionFailed(0, wasNotSorted(outOfOrderString), thisLineNumber - 2, left3)))
+        assert(caught3.failedCodeFileName === Some("ShouldBeSortedSpec.scala"))
+        assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
       def `should use implicit Sortable when available` {
@@ -478,6 +595,14 @@ class ShouldBeSortedSpec extends Spec with Matchers {
         assert(caught2.message === Some(allInspectionFailed(0, wasSorted(emptyStudents), thisLineNumber - 2, left2)))
         assert(caught2.failedCodeFileName === Some("ShouldBeSortedSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+        val left3 = List(emptyString)
+        val caught3 = intercept[TestFailedException] {
+          all(left3) shouldNot be (sorted)
+        }
+        assert(caught3.message === Some(allInspectionFailed(0, wasSorted(emptyString), thisLineNumber - 2, left3)))
+        assert(caught3.failedCodeFileName === Some("ShouldBeSortedSpec.scala"))
+        assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
 
       def `should throw TestFailedException wht correct stack depth when xs contains single element` {
@@ -488,11 +613,20 @@ class ShouldBeSortedSpec extends Spec with Matchers {
         assert(caught1.message === Some(allInspectionFailed(0, wasSorted(loneInts), thisLineNumber - 2, left1)))
         assert(caught1.failedCodeFileName === Some("ShouldBeSortedSpec.scala"))
         assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+        val left2 = List(loneCharString)
+        val caught2 = intercept[TestFailedException] {
+          all(left2) shouldNot be (sorted)
+        }
+        assert(caught2.message === Some(allInspectionFailed(0, wasSorted(loneCharString), thisLineNumber - 2, left2)))
+        assert(caught2.failedCodeFileName === Some("ShouldBeSortedSpec.scala"))
+        assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
       def `should do nothing when xs is not sorted` {
         all(List(outOfOrderInts)) shouldNot be (sorted)
         all(List(outOfOrderStudents)) shouldNot be (sorted)
+        all(List(outOfOrderString)) shouldNot be (sorted)
       }
       
       def `should throw TestFailedException with correct stack depth when xs is not sorted` {
@@ -511,6 +645,14 @@ class ShouldBeSortedSpec extends Spec with Matchers {
         assert(caught2.message === Some(allInspectionFailed(0, wasSorted(orderedStudents), thisLineNumber - 2, left2)))
         assert(caught2.failedCodeFileName === Some("ShouldBeSortedSpec.scala"))
         assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
+
+        val left3 = List(orderedString)
+        val caught3 = intercept[TestFailedException] {
+          all(left3) shouldNot be (sorted)
+        }
+        assert(caught3.message === Some(allInspectionFailed(0, wasSorted(orderedString), thisLineNumber - 2, left3)))
+        assert(caught3.failedCodeFileName === Some("ShouldBeSortedSpec.scala"))
+        assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
       }
       
       def `should use implicit Sortable when available` {

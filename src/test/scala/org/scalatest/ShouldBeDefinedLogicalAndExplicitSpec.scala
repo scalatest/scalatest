@@ -17,8 +17,9 @@ package org.scalatest
 
 import SharedHelpers.{thisLineNumber, createTempDirectory}
 import enablers.Definition
+import Matchers._
 
-class ShouldBeDefinedLogicalAndExplicitSpec extends Spec with Matchers {
+class ShouldBeDefinedLogicalAndExplicitSpec extends Spec {
   
   val fileName: String = "ShouldBeDefinedLogicalAndExplicitSpec.scala"
   

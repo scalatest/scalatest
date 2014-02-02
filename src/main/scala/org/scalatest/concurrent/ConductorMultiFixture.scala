@@ -37,6 +37,8 @@ import org.scalatest.fixture
 @deprecated("Please copy the withConductorFixture method into your own trait instead.")
 trait ConductorMultiFixture { this: fixture.Suite with ConfigMapFixture =>
 
+  import scala.language.implicitConversions
+
   /**
    * Creates a new <code>Conductor</code>, passes the <code>Conductor</code> to the
    * specified test function, and ensures that <code>conduct</code> gets invoked

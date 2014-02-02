@@ -24,7 +24,7 @@ trait ParallelSuites extends EventHelpers {
   def assertParallelSuites(events: List[Event])
 }
 
-trait ParallelTestExecutionParallelSuiteExamples extends Tables {
+object ParallelTestExecutionParallelSuiteExamples extends Tables {
   
   def parallelExamples = 
     Table(

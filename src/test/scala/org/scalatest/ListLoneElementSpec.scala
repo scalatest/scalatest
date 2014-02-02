@@ -17,8 +17,10 @@ package org.scalatest
 
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
+import Matchers._
+import LoneElement._
 
-class ListLoneElementSpec extends Spec with Matchers with LoneElement {
+class ListLoneElementSpec extends Spec {
   
   def wasNotGreaterThan(left: Any, right: Any): String = 
     decorateToStringValue(left) + " was not greater than " + (right)

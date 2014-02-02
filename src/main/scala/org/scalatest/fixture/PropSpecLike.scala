@@ -21,7 +21,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
 
 /**
  * Implementation trait for class <code>fixture.PropSpec</code>, which is
- * a sister class to <code>org.scalatest.PropSpec</code> that can pass a
+ * a sister class to <a href="../PropSpec.html"><code>org.scalatest.PropSpec</code></a> that can pass a
  * fixture object into its tests.
  * 
  * <p>
@@ -263,6 +263,8 @@ trait PropSpecLike extends Suite with Informing with Notifying with Alerting wit
 
   @deprecated("Use propertiesFor instead.")
   protected def testsFor(unit: Unit) {}
+
+  import scala.language.implicitConversions
 
   /**
    * Implicitly converts a function that takes no parameters and results in <code>PendingNothing</code> to

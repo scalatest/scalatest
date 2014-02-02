@@ -25,7 +25,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepth
  * <p>
  * The assertion methods provided in this trait look and behave exactly like the ones in
  * <a href="../Assertions.html"><code>Assertions</code></a>, except instead of throwing
- * <a href="../TestFailedException.html"><code>TestFailedException</code></a> they throw
+ * <a href="../exceptions/TestFailedException.html"><code>TestFailedException</code></a> they throw
  * <a href="JUnitTestFailedError.html"><code>JUnitTestFailedError</code></a>,
  * which extends <code>junit.framework.AssertionFailedError</code>.
  *

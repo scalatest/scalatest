@@ -16,8 +16,9 @@
 package org.scalatest
 
 import SharedHelpers.thisLineNumber
+import Matchers._
 
-class ShouldBeEmptyStructuralSpec extends FunSpec with Matchers {
+class ShouldBeEmptyStructuralSpec extends FunSpec {
   
   val fileName: String = "ShouldBeEmptyStructuralSpec.scala"
     

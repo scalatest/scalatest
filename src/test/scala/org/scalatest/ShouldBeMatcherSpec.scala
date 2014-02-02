@@ -23,8 +23,9 @@ import org.scalatest.exceptions.TestFailedException
 
 import matchers.BeMatcher
 import matchers.MatchResult
+import Matchers._
 
-class ShouldBeMatcherSpec extends Spec with Matchers with Checkers with ReturnsNormallyThrowsAssertion with BookPropertyMatchers {
+class ShouldBeMatcherSpec extends Spec with Checkers with ReturnsNormallyThrowsAssertion with BookPropertyMatchers {
 
   class OddMatcher extends BeMatcher[Int] {
     def apply(left: Int): MatchResult = {
