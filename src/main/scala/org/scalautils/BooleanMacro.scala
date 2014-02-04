@@ -359,9 +359,15 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
 
   private[this] def getPosition(expr: Tree) = expr.pos.asInstanceOf[scala.reflect.internal.util.Position]
 
-  def getText(expr: Tree): String = getPosition(expr) match {
-    case p: scala.reflect.internal.util.RangePosition => context.echo(expr.pos, "RangePosition found!"); p.lineContent.slice(p.start, p.end).trim
-    case p: reflect.internal.util.Position => p.lineContent.trim
+  def getText(expr: Tree): String = {
+    val rawText = getPosition(expr) match {
+      case p: scala.reflect.internal.util.RangePosition => context.echo(expr.pos, "RangePosition found!"); p.lineContent.slice(p.start, p.end).trim
+      case p: reflect.internal.util.Position => p.lineContent.trim
+    }
+    if (rawText.startsWith("assert("))
+      rawText.substring(7, rawText.length - 1)
+    else
+      rawText
   }
 
   def macroAssert: Apply =
