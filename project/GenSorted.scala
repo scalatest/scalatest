@@ -35,7 +35,7 @@ object GenSorted {
   def genTest(targetBaseDir: File, scalaVersion: String) {
     
     val sourceBaseDir = new File("src/test/scala/org/scalatest")
-    val sortedDir = new File(targetBaseDir, "sorted")
+    val sortedDir = new File(targetBaseDir, "sortedTests")
     sortedDir.mkdirs()
     
     def generateFile(sourceFileName: String, generatedFileName: String, mapping: (String, String)*) {

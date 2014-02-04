@@ -105,6 +105,21 @@ object Sortable {
     }
 
   /**
+   * Enable <code>Sortable</code> implementation for <code>String</code>
+   *
+   * @param ordering <code>scala.math.Ordering</code></a> of type <code>Char</code>
+   * @return <code>Sortable[String]</code> that supports <code>String</code> in <code>be</code> <code>sortable</code> syntax
+   */
+  implicit def sortableNatureOfString(implicit ordering: Ordering[Char]): Sortable[String] = 
+    new Sortable[String] {
+      def isSorted(o: String): Boolean =
+        if (o.length > 1)
+          o.sliding(2).forall { duo => ordering.lteq(duo(0), duo(1)) }
+        else
+          true
+    }
+
+  /**
    * Enable <code>Sortable</code> implementation for <code>java.util.List</code>
    *
    * @param ordering <code>scala.math.Ordering</code></a> of type <code>E</code>
