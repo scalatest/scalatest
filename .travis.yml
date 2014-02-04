@@ -10,4 +10,12 @@ script:
   - while true; do echo "..."; sleep 60; done &
   - sbt ++$TRAVIS_SCALA_VERSION compile
   - kill %1
-  - sbt ++$TRAVIS_SCALA_VERSION test
+  #- sbt ++$TRAVIS_SCALA_VERSION test
+  - |
+      sbt ++$TRAVIS_SCALA_VERSION testQuick
+      echo first try $?
+      rc=$?
+      if [[ $rc != 0 ]] ; then
+        sbt ++$TRAVIS_SCALA_VERSION testQuick
+        echo second try $?
+      fi
