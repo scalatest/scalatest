@@ -91,9 +91,9 @@ class InOrderOnlyContainMatcherDeciderSpec extends Spec with Explicitly {
     }
     
     def `should take specified normalization when 'should contain' is used` {
-      (List("1", " 2", "3") should contain inOrderOnly) (" 1", "2 ", " 3") (after being trimmed)
-      (Array("1", " 2", "3") should contain inOrderOnly) (" 1", "2 ", " 3") (after being trimmed)
-      (javaList("1", " 2", "3") should contain inOrderOnly) (" 1", "2 ", " 3") (after being trimmed)
+      (List("1", " 2", "3") should contain inOrderOnly (" 1", "2 ", " 3")) (after being trimmed)
+      (Array("1", " 2", "3") should contain inOrderOnly (" 1", "2 ", " 3")) (after being trimmed)
+      (javaList("1", " 2", "3") should contain inOrderOnly (" 1", "2 ", " 3")) (after being trimmed)
     }
     
     def `should take specified normalization when 'should not contain' is used` {
