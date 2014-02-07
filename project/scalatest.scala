@@ -8,11 +8,16 @@ object ScalatestBuild extends Build {
 
   val scalaVersionToUse = "2.10.3"
     
-  val releaseVersion = "2.0-SNAPSHOT"
-  val githubTag = "release-2.0-for-scala-2.10" // for scaladoc source urls
+  val releaseVersion = "2.1.0-RC2"
+  val githubTag = "release-2.1.0-RC2-for-scala-2.10" // for scaladoc source urls
+
+  val docSourceUrl =
+    "https://github.com/scalatest/scalatest/tree/"+ githubTag +
+    "/src/main/scala€{FILE_PATH}.scala"
 
   lazy val scalatest = Project("scalatest", file("."))
    .settings(
+     projectTitle := "ScalaTest",
      organization := "org.scalatest",
      version := releaseVersion,
      scalaVersion := scalaVersionToUse,
@@ -66,21 +71,10 @@ object ScalatestBuild extends Build {
                                                "-h", "target/html", 
                                                "-u", "target/junit", 
                                                "-fW", "target/result.txt")),
-     docsrcDir := target.value / "docsrc",
-     sources in (Compile, doc) :=
-       genDocSources((sources in Compile).value,
-                     (sourceDirectory in Compile).value,
-                     (sourceManaged in Compile).value,
-                     docsrcDir.value),
-     scalacOptions in (Compile, doc) ++= 
-       Seq[String](
-          "-sourcepath", docsrcDir.value.getAbsolutePath,
-          "-doc-title", "ScalaTest "+ releaseVersion,
-          "-doc-source-url", "https://github.com/scalatest/scalatest/tree/"+
-                             githubTag +"/src/main/scala€{FILE_PATH}.scala"
-       ),
-     doc in Compile := docsTask((doc in Compile).value,
-                                (sourceDirectory in Compile).value)
+     docsrcDirSetting,
+     docSourcesSetting,
+     docScalacOptionsSetting,
+     docTaskSetting
    )
    
   lazy val gentests = Project("gentests", file("gentests"))
@@ -127,6 +121,29 @@ object ScalatestBuild extends Build {
                                                "-u", "gentests/target/junit", 
                                                "-fW", "target/result.txt"))
    ).dependsOn(scalatest  % "test->test")
+
+  lazy val scalautils = Project("scalautils", file("scalautils"))
+   .settings(
+     projectTitle := "ScalaUtils",
+     organization := "org.scalatest",
+     version := releaseVersion,
+     scalaVersion := scalaVersionToUse,
+     scalacOptions ++= Seq("-no-specialization", "-feature"),
+     libraryDependencies ++= simpledependencies,
+     resolvers +=
+       "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
+     sourceDirectory in Compile :=
+       (sourceDirectory in Compile in scalatest).value,
+     sources in Compile :=
+       (sources in Compile).value.filter { source =>
+         val sep = java.io.File.separator
+         source.getPath.contains(sep +"scalautils"+ sep)
+       },
+     docsrcDirSetting,
+     docSourcesSetting,
+     docScalacOptionsSetting,
+     docTaskSetting
+   ).dependsOn(scalatest)
 
    def simpledependencies = Seq(
      "org.scala-sbt" % "test-interface" % "1.0" % "optional",
@@ -240,10 +257,6 @@ object ScalatestBuild extends Build {
     GenFactories.genMain(new File(mainTargetDir, "scala/genfactories"), scalaVersionToUse)
   }
 
-  lazy val docsrcDir =
-    settingKey[File](
-      "Directory to hold processed source files for generating scaladocs")
-
   //
   // Prepares source files for running scaladoc.
   //
@@ -307,7 +320,7 @@ object ScalatestBuild extends Build {
   // doc task to rebuild scaladocs from scratch each time.
   // Without that it only rebuilds if needed.
   //
-  def docsTask(docDir: File, srcDir: File): File = {
+  def docTask(docDir: File, srcDir: File, projectName: String): File = {
     val docLibDir = docDir / "lib"
     val htmlSrcDir = srcDir / "html"
     val cssFile = docLibDir / "template.css"
@@ -326,13 +339,40 @@ object ScalatestBuild extends Build {
       finally { writer.close }
     }
 
-    (htmlSrcDir * "*.gif").get.foreach { gif =>
-      val toFile = docLibDir / gif.name
-      if (!toFile.exists || (toFile.lastModified < gif.lastModified)) {
+    if (projectName == "scalatest") {
+      (htmlSrcDir * "*.gif").get.foreach { gif =>
         IO.copyFile(gif, docLibDir / gif.name)
       }
     }
-
     docDir
   }
+
+  lazy val projectTitle =
+    settingKey[String]("Name of project to display in doc titles")
+
+  lazy val docsrcDir =
+    settingKey[File](
+      "Directory to hold processed source files for generating scaladocs")
+
+  val docsrcDirSetting =
+     docsrcDir := target.value / "docsrc"
+
+  val docSourcesSetting =
+     sources in (Compile, doc) :=
+       genDocSources((sources in Compile).value,
+                     (sourceDirectory in Compile).value,
+                     (sourceManaged in Compile).value,
+                     docsrcDir.value)
+
+  val docScalacOptionsSetting =
+    scalacOptions in (Compile, doc) ++= 
+      Seq[String](
+        "-sourcepath", docsrcDir.value.getAbsolutePath,
+        "-doc-title", projectTitle.value +" "+ releaseVersion,
+        "-doc-source-url", docSourceUrl)
+
+  val docTaskSetting =
+    doc in Compile := docTask((doc in Compile).value,
+                              (sourceDirectory in Compile).value,
+                              name.value)
 }
