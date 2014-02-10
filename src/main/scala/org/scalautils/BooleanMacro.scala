@@ -370,22 +370,28 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
       case _ => simpleMacroFact(tree.duplicate, getText(tree))
     }
 
-  def macroFactAssert: Apply =
+  def macroFactAssert(clueTree: Tree): Apply =
     Apply(
       Select(
         Ident(newTermName(helperName)),
-        newTermName("macroAssert")
+        newTermName("macroAssertFact")
       ),
-      List(Ident(newTermName("$org_scalatest_assert_macro_expr")))
+      List(Ident(newTermName("$org_scalatest_assert_macro_expr")), clueTree)
     )
 
-  def genFactAssert(booleanExpr: Expr[Boolean]): Expr[Unit] =
+  def genFactAssert(booleanExpr: Expr[Boolean], clueTree: Option[Tree]): Expr[Unit] = {
+    val clueOption =
+      clueTree match {
+        case Some(clue) => genClue(clue)
+        case _ => Ident("None")
+      }
     context.Expr(
       Block(
         valDef("$org_scalatest_assert_macro_expr", transformFactAst(booleanExpr.tree)),
-        macroFactAssert
+        macroFactAssert(clueOption)
       )
     )
+  }
 
   // ############################# Fact
 }

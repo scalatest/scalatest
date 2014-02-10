@@ -432,9 +432,9 @@ trait Assertions extends TripleEquals {
 
     //############################################
 
-    def macroAssert(fact: Fact) {
+    def macroAssertFact(fact: Fact, clue: Option[Any]) {
       if (!fact.value)
-        throw newAssertionFailedException(Some(fact.failureMessage), None, "Assertions.scala", "macroAssert", 2)
+        throw newAssertionFailedException(append(Some(fact.failureMessage), clue), None, "Assertions.scala", "macroAssertFact", 2)
     }
 
     //############################################
