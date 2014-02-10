@@ -31,7 +31,7 @@ private[scalatest] object AssertionsMacro {
    * @return transformed expression that performs the assertion check and throw <code>TestFailedException</code> with rich error message if assertion failed
    */
   def assert(context: Context)(condition: context.Expr[Boolean]): context.Expr[Unit] =
-    new BooleanMacro[context.type](context, "assertionsHelper").genAssert(condition)
+    new BooleanMacro[context.type](context, "assertionsHelper").genFactAssert(condition)
     //new BooleanMacro[context.type](context, "assertionsHelper").genMacroCode(condition, "macroAssert", None)
 
   /**

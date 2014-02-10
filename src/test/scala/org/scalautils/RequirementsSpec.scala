@@ -66,7 +66,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       val e = intercept[IllegalArgumentException] {
         require(3 == 5)
       }
-      assert(e.getMessage == "Expression was false.")
+      assert(e.getMessage == "Expression was false")
     }
 
     it("should throw IllegalArgumentException when is used to check a == b") {
@@ -337,7 +337,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       val e = intercept[IllegalStateException] {
         requireState(3 == 5)
       }
-      assert(e.getMessage == "Expression was false.")
+      assert(e.getMessage == "Expression was false")
     }
 
     it("should throw IllegalStateException when is used to check a == b") {

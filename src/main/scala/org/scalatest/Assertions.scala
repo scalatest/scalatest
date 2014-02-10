@@ -22,7 +22,7 @@ import org.scalautils.TripleEquals
 import exceptions.StackDepthExceptionHelper.getStackDepthFun
 import exceptions.StackDepthException.toExceptionFunction
 import Assertions.NormalResult
-import org.scalautils.{Prettifier, MacroExpression}
+import org.scalautils.{Prettifier, MacroExpression, Fact}
 
 /**
  * Trait that contains ScalaTest's basic assertion methods.
@@ -457,6 +457,11 @@ trait Assertions extends TripleEquals {
     def macroAssert(expression: MacroExpression) {
       if (!expression.value)
         throw newAssertionFailedException(Some(expression.errorMessage), None, "Assertions.scala", "macroAssert", 2)
+    }
+
+    def macroAssert(fact: Fact) {
+      if (!fact.value)
+        throw newAssertionFailedException(Some(fact.failureMessage), None, "Assertions.scala", "macroAssert", 2)
     }
 
     //############################################
