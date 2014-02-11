@@ -100,6 +100,8 @@ trait Requirements {
     }
 
     def macroRequireFact(fact: Fact, clue: Option[Any]) {
+      if (clue == null)
+        throw new NullPointerException("clue was null")
       if (!fact.value) {
         val failureMessage =
           fact match {
@@ -107,6 +109,19 @@ trait Requirements {
             case _ => append(fact.failureMessage, clue)
           }
         throw new IllegalArgumentException(if (failureMessage.isEmpty) FailureMessages("expressionWasFalse") else failureMessage)
+      }
+    }
+
+    def macroRequireStateFact(fact: Fact, clue: Option[Any]) {
+      if (clue == null)
+        throw new NullPointerException("clue was null")
+      if (!fact.value) {
+        val failureMessage =
+          fact match {
+            case s: org.scalautils.SimpleMacroFact if s.expressionText.isEmpty => append("", clue)
+            case _ => append(fact.failureMessage, clue)
+          }
+        throw new IllegalStateException(if (failureMessage.isEmpty) FailureMessages("expressionWasFalse") else failureMessage)
       }
     }
 
@@ -330,7 +345,7 @@ private[scalautils] object RequirementsMacro {
    * @return transformed expression that performs the requirement check and throw <code>IllegalStateException</code> with rich error message if requirement failed
    */
   def requireState(context: Context)(condition: context.Expr[Boolean]): context.Expr[Unit] =
-    new BooleanMacro[context.type](context, "requirementsHelper").genMacroCode(condition, "macroRequireState", None)
+    new BooleanMacro[context.type](context, "requirementsHelper").genFactMacro(condition, "macroRequireStateFact", None)
 
   /**
    * Provides requirement implementation for <code>Requirements.requireState(booleanExpr: Boolean, clue: Any)</code>, with rich error message.
@@ -341,7 +356,7 @@ private[scalautils] object RequirementsMacro {
    * @return transformed expression that performs the requirement check and throw <code>IllegalStateException</code> with rich error message (clue included) if requirement failed
    */
   def requireStateWithClue(context: Context)(condition: context.Expr[Boolean], clue: context.Expr[Any]): context.Expr[Unit] =
-    new BooleanMacro[context.type](context, "requirementsHelper").genMacroCode(condition, "macroRequireState", Some(clue.tree))
+    new BooleanMacro[context.type](context, "requirementsHelper").genFactMacro(condition, "macroRequireStateFact", Some(clue.tree))
 
   /**
    * Provides requirement implementation for <code>Requirements.requireNonNull(elements: Any*)</code>, with rich error message.

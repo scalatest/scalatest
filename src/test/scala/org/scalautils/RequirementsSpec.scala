@@ -872,6 +872,222 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       assert(e.getMessage == equaled(a, 3))
     }
 
+    it("should do nothing when is used to check a > 2") {
+      requireState(a > 2)
+    }
+
+    it("should do nothing when is used to check 5 > a") {
+      requireState(5 > a)
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check a > 3") {
+      val e = intercept[IllegalStateException] {
+        requireState(a > 3)
+      }
+      assert(e.getMessage == wasNotGreaterThan(3, 3))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check 3 > a") {
+      val e = intercept[IllegalStateException] {
+        requireState(3 > a)
+      }
+      assert(e.getMessage == wasNotGreaterThan(3, 3))
+    }
+
+    it("should do nothing when is used to check a >= 3") {
+      requireState(a >= 3)
+    }
+
+    it("should do nothing when is used to check 3 >= a") {
+      requireState(3 >= a)
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check a >= 4") {
+      val e = intercept[IllegalStateException] {
+        requireState(a >= 4)
+      }
+      assert(e.getMessage == wasNotGreaterThanOrEqualTo(3, 4))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check 2 >= a") {
+      val e = intercept[IllegalStateException] {
+        requireState(2 >= a)
+      }
+      assert(e.getMessage == wasNotGreaterThanOrEqualTo(2, 3))
+    }
+
+    it("should do nothing when is used to check b < 6") {
+      requireState(b < 6)
+    }
+
+    it("should do nothing when is used to check 3 < b") {
+      requireState(3 < b)
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check b < 5") {
+      val e = intercept[IllegalStateException] {
+        requireState(b < 5)
+      }
+      assert(e.getMessage == wasNotLessThan(5, 5))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check 5 < b") {
+      val e = intercept[IllegalStateException] {
+        requireState(5 < b)
+      }
+      assert(e.getMessage == wasNotLessThan(5, 5))
+    }
+
+    it("should do nothing when is used to check b <= 5") {
+      requireState(b <= 5)
+    }
+
+    it("should do nothing when is used to check 5 <= b") {
+      requireState(5 <= b)
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check b <= 4") {
+      val e = intercept[IllegalStateException] {
+        requireState(b <= 4)
+      }
+      assert(e.getMessage == wasNotLessThanOrEqualTo(5, 4))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check 6 <= b") {
+      val e = intercept[IllegalStateException] {
+        requireState(6 <= b)
+      }
+      assert(e.getMessage == wasNotLessThanOrEqualTo(6, 5))
+    }
+
+    it("should do nothing when is used to check a == 3 && b == 5") {
+      requireState(a == 3 && b == 5)
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check a == 3 && b == 6") {
+      val e = intercept[IllegalStateException] {
+        requireState(a == 3 && b == 6)
+      }
+      assert(e.getMessage == commaBut(equaled(3, 3), didNotEqual(5, 6)))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check a == 2 && b == 5") {
+      val e = intercept[IllegalStateException] {
+        requireState(a == 2 && b == 5)
+      }
+      assert(e.getMessage == didNotEqual(3, 2))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check a == 2 && b == 6") {
+      val e = intercept[IllegalStateException] {
+        requireState(a == 2 && b == 6)
+      }
+      assert(e.getMessage == didNotEqual(3, 2))
+    }
+
+    it("should do nothing when is used to check a == 3 & b == 5") {
+      requireState(a == 3 & b == 5)
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check a == 3 & b == 6") {
+      val e = intercept[IllegalStateException] {
+        requireState(a == 3 & b == 6)
+      }
+      assert(e.getMessage == commaBut(equaled(3, 3), didNotEqual(5, 6)))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check a == 2 & b == 5") {
+      val e = intercept[IllegalStateException] {
+        requireState(a == 2 & b == 5)
+      }
+      assert(e.getMessage == didNotEqual(3, 2))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check a == 2 & b == 6") {
+      val e = intercept[IllegalStateException] {
+        requireState(a == 2 & b == 6)
+      }
+      assert(e.getMessage == didNotEqual(3, 2))
+    }
+
+    it("should do nothing when is used to check a == 3 || b == 5") {
+      requireState(a == 3 || b == 5)
+    }
+
+    it("should do nothing when is used to check a == 3 || b == 6") {
+      requireState(a == 3 || b == 6)
+    }
+
+    it("should do nothing when is used to check a == 2 || b == 5") {
+      requireState(a == 2 || b == 5)
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check a == 2 || b == 6") {
+      val e = intercept[IllegalStateException] {
+        requireState(a == 2 || b == 6)
+      }
+      assert(e.getMessage == commaAnd(didNotEqual(3, 2), didNotEqual(5, 6)))
+    }
+
+    it("should do nothing when is used to check a == 3 | b == 5") {
+      requireState(a == 3 | b == 5)
+    }
+
+    it("should do nothing when is used to check a == 3 | b == 6") {
+      requireState(a == 3 | b == 6)
+    }
+
+    it("should do nothing when is used to check a == 2 | b == 5") {
+      requireState(a == 2 | b == 5)
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check a == 2 | b == 6") {
+      val e = intercept[IllegalStateException] {
+        requireState(a == 2 | b == 6)
+      }
+      assert(e.getMessage == commaAnd(didNotEqual(3, 2), didNotEqual(5, 6)))
+    }
+
+    it("should do nothing when is used to check a == 3 && (b == 5 && b > 3)") {
+      requireState(a == 3 && (b == 5 && b > 3))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check a == 3 && (b == 5 && b > 5)") {
+      val e = intercept[IllegalStateException] {
+        requireState(a == 3 && (b == 5 && b > 5))
+      }
+      assert(e.getMessage == commaBut(equaled(3, 3), commaBut(equaled(5, 5), wasNotGreaterThan(5, 5))))
+    }
+
+    it("should do nothing when is used to check !(a == 5)") {
+      requireState(!(a == 5))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !(a == 3)") {
+      val e = intercept[IllegalStateException] {
+        requireState(!(a == 3))
+      }
+      assert(e.getMessage == equaled(3, 3))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check a == 3 && !(b == 5)") {
+      val e = intercept[IllegalStateException] {
+        requireState(a == 3 && !(b == 5))
+      }
+      assert(e.getMessage == commaBut(equaled(3, 3), equaled(5, 5)))
+    }
+
+    it("should do nothing when is used to check (a == 3) == (b == 5)") {
+      requireState((a == 3) == (b == 5))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check (a == 3) == (b != 5)") {
+      val e = intercept[IllegalStateException] {
+        requireState((a == 3) == (b != 5))
+      }
+      assert(e.getMessage === didNotEqual(true, false))
+    }
+
     it("should preserve side effects when Apply with single argument is passed in") {
       requireState(neverRuns1(sys.error("Sad times 1")))
     }
@@ -1022,6 +1238,222 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         requireState(3 !== a, "; dude")
       }
       assert(e.getMessage == equaled(3, a) + "; dude")
+    }
+
+    it("should do nothing when is used to check a > 2") {
+      requireState(a > 2, ", dude")
+    }
+
+    it("should do nothing when is used to check 5 > a") {
+      requireState(5 > a, ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check a > 3") {
+      val e = intercept[IllegalStateException] {
+        requireState(a > 3, ", dude")
+      }
+      assert(e.getMessage == wasNotGreaterThan(3, 3) + ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check 3 > a") {
+      val e = intercept[IllegalStateException] {
+        requireState(3 > a, ", dude")
+      }
+      assert(e.getMessage == wasNotGreaterThan(3, 3) + ", dude")
+    }
+
+    it("should do nothing when is used to check a >= 3") {
+      requireState(a >= 3, ", dude")
+    }
+
+    it("should do nothing when is used to check 3 >= a") {
+      requireState(3 >= a, ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check a >= 4") {
+      val e = intercept[IllegalStateException] {
+        requireState(a >= 4, ", dude")
+      }
+      assert(e.getMessage == wasNotGreaterThanOrEqualTo(3, 4) + ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check 2 >= a") {
+      val e = intercept[IllegalStateException] {
+        requireState(2 >= a, ", dude")
+      }
+      assert(e.getMessage == wasNotGreaterThanOrEqualTo(2, 3) + ", dude")
+    }
+
+    it("should do nothing when is used to check b < 6") {
+      requireState(b < 6, ", dude")
+    }
+
+    it("should do nothing when is used to check 3 < b") {
+      requireState(3 < b, ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check b < 5") {
+      val e = intercept[IllegalStateException] {
+        requireState(b < 5, ", dude")
+      }
+      assert(e.getMessage == wasNotLessThan(5, 5) + ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check 5 < b") {
+      val e = intercept[IllegalStateException] {
+        requireState(5 < b, ", dude")
+      }
+      assert(e.getMessage == wasNotLessThan(5, 5) + ", dude")
+    }
+
+    it("should do nothing when is used to check b <= 5") {
+      requireState(b <= 5, ", dude")
+    }
+
+    it("should do nothing when is used to check 5 <= b") {
+      requireState(5 <= b, ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check b <= 4") {
+      val e = intercept[IllegalStateException] {
+        requireState(b <= 4, ", dude")
+      }
+      assert(e.getMessage == wasNotLessThanOrEqualTo(5, 4) + ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check 6 <= b") {
+      val e = intercept[IllegalStateException] {
+        requireState(6 <= b, ", dude")
+      }
+      assert(e.getMessage == wasNotLessThanOrEqualTo(6, 5) + ", dude")
+    }
+
+    it("should do nothing when is used to check a == 3 && b == 5") {
+      requireState(a == 3 && b == 5, ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check a == 3 && b == 6") {
+      val e = intercept[IllegalStateException] {
+        requireState(a == 3 && b == 6, ", dude")
+      }
+      assert(e.getMessage == commaBut(equaled(3, 3), didNotEqual(5, 6)) + ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check a == 2 && b == 5") {
+      val e = intercept[IllegalStateException] {
+        requireState(a == 2 && b == 5, ", dude")
+      }
+      assert(e.getMessage == didNotEqual(3, 2) + ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check a == 2 && b == 6") {
+      val e = intercept[IllegalStateException] {
+        requireState(a == 2 && b == 6, ", dude")
+      }
+      assert(e.getMessage == didNotEqual(3, 2) + ", dude")
+    }
+
+    it("should do nothing when is used to check a == 3 & b == 5") {
+      requireState(a == 3 & b == 5, ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check a == 3 & b == 6") {
+      val e = intercept[IllegalStateException] {
+        requireState(a == 3 & b == 6, ", dude")
+      }
+      assert(e.getMessage == commaBut(equaled(3, 3), didNotEqual(5, 6)) + ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check a == 2 & b == 5") {
+      val e = intercept[IllegalStateException] {
+        requireState(a == 2 & b == 5, ", dude")
+      }
+      assert(e.getMessage == didNotEqual(3, 2) + ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check a == 2 & b == 6") {
+      val e = intercept[IllegalStateException] {
+        requireState(a == 2 & b == 6, ", dude")
+      }
+      assert(e.getMessage == didNotEqual(3, 2) + ", dude")
+    }
+
+    it("should do nothing when is used to check a == 3 || b == 5") {
+      requireState(a == 3 || b == 5, ", dude")
+    }
+
+    it("should do nothing when is used to check a == 3 || b == 6") {
+      requireState(a == 3 || b == 6, ", dude")
+    }
+
+    it("should do nothing when is used to check a == 2 || b == 5") {
+      requireState(a == 2 || b == 5, ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check a == 2 || b == 6") {
+      val e = intercept[IllegalStateException] {
+        requireState(a == 2 || b == 6, ", dude")
+      }
+      assert(e.getMessage == commaAnd(didNotEqual(3, 2), didNotEqual(5, 6)) + ", dude")
+    }
+
+    it("should do nothing when is used to check a == 3 | b == 5") {
+      requireState(a == 3 | b == 5, ", dude")
+    }
+
+    it("should do nothing when is used to check a == 3 | b == 6") {
+      requireState(a == 3 | b == 6, ", dude")
+    }
+
+    it("should do nothing when is used to check a == 2 | b == 5") {
+      requireState(a == 2 | b == 5, ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check a == 2 | b == 6") {
+      val e = intercept[IllegalStateException] {
+        requireState(a == 2 | b == 6, ", dude")
+      }
+      assert(e.getMessage == commaAnd(didNotEqual(3, 2), didNotEqual(5, 6)) + ", dude")
+    }
+
+    it("should do nothing when is used to check a == 3 && (b == 5 && b > 3)") {
+      requireState(a == 3 && (b == 5 && b > 3), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check a == 3 && (b == 5 && b > 5)") {
+      val e = intercept[IllegalStateException] {
+        requireState(a == 3 && (b == 5 && b > 5), ", dude")
+      }
+      assert(e.getMessage == commaBut(equaled(3, 3), commaBut(equaled(5, 5), wasNotGreaterThan(5, 5))) + ", dude")
+    }
+
+    it("should do nothing when is used to check !(a == 5)") {
+      requireState(!(a == 5), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !(a == 3)") {
+      val e = intercept[IllegalStateException] {
+        requireState(!(a == 3), ", dude")
+      }
+      assert(e.getMessage == equaled(3, 3) + ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check a == 3 && !(b == 5)") {
+      val e = intercept[IllegalStateException] {
+        requireState(a == 3 && !(b == 5), ", dude")
+      }
+      assert(e.getMessage == commaBut(equaled(3, 3), equaled(5, 5)) + ", dude")
+    }
+
+    it("should do nothing when is used to check (a == 3) == (b == 5)") {
+      requireState((a == 3) == (b == 5), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check (a == 3) == (b != 5)") {
+      val e = intercept[IllegalStateException] {
+        requireState((a == 3) == (b != 5), ", dude")
+      }
+      assert(e.getMessage === didNotEqual(true, false) + ", dude")
     }
 
     it("should preserve side effects when Apply with single argument is passed in") {
