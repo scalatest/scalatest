@@ -443,6 +443,17 @@ trait Assertions extends TripleEquals {
       }
     }
 
+    def macroAssumeFact(fact: Fact, clue: Option[Any]) {
+      if (!fact.value) {
+        val failureMessage =
+          fact match {
+            case s: org.scalautils.SimpleMacroFact if s.expressionText.isEmpty => None
+            case _ => Some(fact.failureMessage)
+          }
+        throw newTestCanceledException(append(failureMessage, clue), None, "Assertions.scala", "macroAssumeFact", 2)
+      }
+    }
+
     //############################################
 
     /**
