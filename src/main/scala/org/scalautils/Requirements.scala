@@ -29,11 +29,15 @@ trait Requirements {
     private def append(currentMessage: String, clueOpt: Option[Any]): String =
       clueOpt match {
         case Some(clue) =>
-          val firstChar = clue.toString.head
-          if (firstChar.isWhitespace || firstChar == '.' || firstChar == ',' || firstChar == ';')
-            currentMessage + clue.toString
-          else
-            currentMessage + " " + clue.toString
+          if (currentMessage.isEmpty)
+            clue.toString
+          else {
+            val firstChar = clue.toString.head
+            if (firstChar.isWhitespace || firstChar == '.' || firstChar == ',' || firstChar == ';')
+              currentMessage + clue.toString
+            else
+              currentMessage + " " + clue.toString
+          }
         case None => currentMessage
       }
 
@@ -92,6 +96,17 @@ trait Requirements {
           case _ =>
             throw new IllegalArgumentException(if (clue.isDefined) clue.get + "" else FailureMessages("expressionWasFalse"))
         }
+      }
+    }
+
+    def macroRequireFact(fact: Fact, clue: Option[Any]) {
+      if (!fact.value) {
+        val failureMessage =
+          fact match {
+            case s: org.scalautils.SimpleMacroFact if s.expressionText.isEmpty => append("", clue)
+            case _ => append(fact.failureMessage, clue)
+          }
+        throw new IllegalArgumentException(if (failureMessage.isEmpty) FailureMessages("expressionWasFalse") else failureMessage)
       }
     }
 
@@ -294,7 +309,7 @@ private[scalautils] object RequirementsMacro {
    * @return transformed expression that performs the requirement check and throw <code>IllegalArgumentException</code> with rich error message if requirement failed
    */
   def require(context: Context)(condition: context.Expr[Boolean]): context.Expr[Unit] =
-    new BooleanMacro[context.type](context, "requirementsHelper").genMacroCode(condition, "macroRequire", None)
+    new BooleanMacro[context.type](context, "requirementsHelper").genFactMacro(condition, "macroRequireFact", None)
 
   /**
    * Provides requirement implementation for <code>Requirements.require(booleanExpr: Boolean, clue: Any)</code>, with rich error message.
@@ -305,7 +320,7 @@ private[scalautils] object RequirementsMacro {
    * @return transformed expression that performs the requirement check and throw <code>IllegalArgumentException</code> with rich error message (clue included) if requirement failed
    */
   def requireWithClue(context: Context)(condition: context.Expr[Boolean], clue: context.Expr[Any]): context.Expr[Unit] =
-    new BooleanMacro[context.type](context, "requirementsHelper").genMacroCode(condition, "macroRequire", Some(clue.tree))
+    new BooleanMacro[context.type](context, "requirementsHelper").genFactMacro(condition, "macroRequireFact", Some(clue.tree))
 
   /**
    * Provides requirement implementation for <code>Requirements.requireState(booleanExpr: Boolean)</code>, with rich error message.
