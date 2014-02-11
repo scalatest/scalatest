@@ -338,7 +338,7 @@ object GenInspectors {
             "val col = " + col + "\n" +
             "val firstViolation = " + getFirst(colName) + getElementType(colName) + "(col, " + getLhs(colName, "_") + " >= 2)",
             "forAll(col) { e => \n" +
-              "  assert(" + lhs + " < 2, " + lhs + " + \" was not less than 2\") \n" +
+              "  assert(" + lhs + " < 2) \n" +
               "}",
             "ForAllInspectorsSpec.scala",
             "\"forAll failed, because: \\n\" + \n" +
@@ -514,7 +514,7 @@ object GenInspectors {
             "val itr = col." + iterator(colName) + "\n" +
             "val failed = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " == 3)\n",
             "forAtLeast(3, col) { e => \n" +
-            "  assert(" + lhs + " < 3, " + lhs + " + \" was not less than 3\") \n" +
+            "  assert(" + lhs + " < 3) \n" +
             "}",
             "ForAtLeastInspectorsSpec.scala",
             "\"forAtLeast(3) failed, because only 2 elements satisfied the assertion block: \\n\" + \n" +
@@ -536,7 +536,7 @@ object GenInspectors {
             "val second = itr.next\n" +
             "val third = itr.next\n",
             "forAtLeast(1, col) { e => \n" +
-            "  assert(" + lhs + " > 5, " + lhs + " + \" was not greater than 5\") \n" +
+            "  assert(" + lhs + " > 5) \n" +
             "}",
             "ForAtLeastInspectorsSpec.scala",
             "\"forAtLeast(1) failed, because no element satisfied the assertion block: \\n\" + \n" +
@@ -841,11 +841,11 @@ object GenInspectors {
             "val second = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " < 3)\n" +
             "val failed = " + getFirst(colName) + getElementType(colName) + "(col, " + getLhs(colName, "_") + " >= 3)",
             "forExactly(3, col) { e => \n" +
-            "  assert(" + lhs + " < 3, " + lhs + " + \" was not lesser than 3\") \n" +
+            "  assert(" + lhs + " < 3) \n" +
             "}",
             "ForExactlyInspectorsSpec.scala",
             "\"forExactly(3) failed, because only 2 elements satisfied the assertion block at " + getIndexOrKeyWord(colName) + " \" + " + getIndexOrKey(colName, "first") + " + \" and \" + " + getIndexOrKey(colName, "second") + " + \": \\n\" + \n" +
-            "\"  at \" + " + getVariableIndexForType(colName, "failed") + " + \", \" + " + getLhs(colName, "failed") + " + \" was not lesser than 3 (ForExactlyInspectorsSpec.scala:\" + (thisLineNumber - 6) + \") \\n\" + \n" +
+            "\"  at \" + " + getVariableIndexForType(colName, "failed") + " + \", \" + " + getLhs(colName, "failed") + " + \" was not less than 3 (ForExactlyInspectorsSpec.scala:\" + (thisLineNumber - 6) + \") \\n\" + \n" +
             "\"in \" + decorateToStringValue(col)",
             5)
         ),
@@ -1195,11 +1195,11 @@ object GenInspectors {
             "val second = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " < 3)\n" +
             "val failed = " + getFirst(colName) + getElementType(colName) + "(col, " + getLhs(colName, "_") + " >= 3)",
             "forBetween(3, 4, col) { e => \n" +
-            "  assert(" + lhs + " < 3, " + lhs + " + \" was not lesser than 3\") \n" +
+            "  assert(" + lhs + " < 3) \n" +
             "}",
             "ForBetweenInspectorsSpec.scala",
             "\"forBetween(3, 4) failed, because only 2 elements satisfied the assertion block at " + getIndexOrKeyWord(colName) + " \" + " + getIndexOrKey(colName, "first") + " + \" and \" + " + getIndexOrKey(colName, "second") + " + \": \\n\" + \n" +
-              "\"  at \" + " + getVariableIndexForType(colName, "failed") + " + \", \" + " + getLhs(colName, "failed") + " + \" was not lesser than 3 (ForBetweenInspectorsSpec.scala:\" + (thisLineNumber - 6) + \") \\n\" + \n" +
+              "\"  at \" + " + getVariableIndexForType(colName, "failed") + " + \", \" + " + getLhs(colName, "failed") + " + \" was not less than 3 (ForBetweenInspectorsSpec.scala:\" + (thisLineNumber - 6) + \") \\n\" + \n" +
               "\"in \" + decorateToStringValue(col)",
             5)
         ),
@@ -1228,7 +1228,7 @@ object GenInspectors {
             "val forth = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " <= 4)\n" +
             "val succeeded = " + getFirst(colName) + getElementType(colName) + "(col, " + getLhs(colName, "_") + " > 4)",
             "forBetween(2, 4, col) { e => \n" +
-            "  assert(" + lhs + " > 4, " + lhs + " + \" was not greater than 4\") \n" +
+            "  assert(" + lhs + " > 4) \n" +
             "}",
             "ForBetweenInspectorsSpec.scala",
             "\"forBetween(2, 4) failed, because only 1 element satisfied the assertion block at " + getIndexOrKeyWord(colName) + " \" + " + getIndexOrKey(colName, "succeeded") + " + \": \\n\" + \n" +
@@ -1358,11 +1358,11 @@ object GenInspectors {
             "val itr = col." + iterator(colName) + "\n" +
             "val first = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " >= 2)\n" +
             "val second = " + getNext(colName) + getElementType(colName) + "(itr, " + getLhs(colName, "_") + " >= 2)\n",
-            "forEvery(col) { e => assert(" + lhs + " < 2, " + lhs + " + \" was not lesser than 2\") }",
+            "forEvery(col) { e => assert(" + lhs + " < 2) }",
             "ForEveryInspectorsSpec.scala",
             "\"forEvery failed, because: \\n\" + \n" +
-            "\"  at \" + " + getVariableIndexForType(colName, "first") + " + \", \" + " + getLhs(colName, "first") + " + \" was not lesser than 2 (ForEveryInspectorsSpec.scala:\" + (thisLineNumber - 5) + \"), \\n\" + \n" +
-            "\"  at \" + " + getVariableIndexForType(colName, "second") + " + \", \" + " + getLhs(colName, "second") + " + \" was not lesser than 2 (ForEveryInspectorsSpec.scala:\" + (thisLineNumber - 6) + \") \\n\" + \n" +
+            "\"  at \" + " + getVariableIndexForType(colName, "first") + " + \", \" + " + getLhs(colName, "first") + " + \" was not less than 2 (ForEveryInspectorsSpec.scala:\" + (thisLineNumber - 5) + \"), \\n\" + \n" +
+            "\"  at \" + " + getVariableIndexForType(colName, "second") + " + \", \" + " + getLhs(colName, "second") + " + \" was not less than 2 (ForEveryInspectorsSpec.scala:\" + (thisLineNumber - 6) + \") \\n\" + \n" +
             "\"in \" + decorateToStringValue(col)",
             3)
         ),
