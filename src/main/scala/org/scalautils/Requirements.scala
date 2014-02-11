@@ -41,65 +41,13 @@ trait Requirements {
         case None => currentMessage
       }
 
-    def getObjectsForFailureMessage(a: Any, b: Any) =
-      a match {
-        case aEqualizer: org.scalautils.TripleEqualsSupport#Equalizer[_] =>
-          Prettifier.getObjectsForFailureMessage(aEqualizer.leftSide, b)
-        case aEqualizer: org.scalautils.TripleEqualsSupport#CheckingEqualizer[_] =>
-          Prettifier.getObjectsForFailureMessage(aEqualizer.leftSide, b)
-        case _ => Prettifier.getObjectsForFailureMessage(a, b)
-      }
-
     /**
-     * Require that the passed in expression is <code>true</code>, else fail with <code>IllegalArgumentException</code>.
+     * Require that the passed in <code>Fact</code> is <code>true</code>, else fail with <code>IllegalArgumentException</code>.
      *
-     * @param expression <code>Boolean</code> expression to check as requirement
+     * @param fact the <code>Fact</code> to check as requirement
      * @param clue optional clue to be included in <code>IllegalArgumentException</code>'s error message when the requirement failed
      */
-    def macroRequire(expression: Boolean, clue: Option[Any]) {
-      if (clue == null)
-        throw new NullPointerException("clue was null")
-      if (!expression)
-        throw new IllegalArgumentException(if (clue.isDefined) clue.get + "" else FailureMessages("expressionWasFalse"))
-    }
-
-    /**
-     * Require that the passed in expression is <code>true</code>, else fail with <code>IllegalArgumentException</code>.
-     *
-     * @param left the LHS of the expression
-     * @param operator the operator of the expression
-     * @param right the RHS of the expression
-     * @param expression <code>Boolean</code> expression to check as requirement
-     * @param clue optional clue to be included in <code>IllegalArgumentException</code>'s error message when requirement failed
-     */
-    def macroRequire(left: Any, operator: String, right: Any, expression: Boolean, clue: Option[Any]) {
-      if (clue == null)
-        throw new NullPointerException("clue was null")
-      if (!expression) {
-        throw operator match {
-          case "==" =>
-            val (leftee, rightee) = getObjectsForFailureMessage(left, right)
-            throw new IllegalArgumentException(append(FailureMessages("didNotEqual", leftee, rightee), clue))
-          case "===" =>
-            val (leftee, rightee) = getObjectsForFailureMessage(left, right)
-            throw new IllegalArgumentException(append(FailureMessages("didNotEqual", leftee, rightee), clue))
-          case "!=" =>
-            val (leftee, rightee) = getObjectsForFailureMessage(left, right)
-            throw new IllegalArgumentException(append(FailureMessages("equaled", leftee, rightee), clue))
-          case "!==" =>
-            val (leftee, rightee) = getObjectsForFailureMessage(left, right)
-            throw new IllegalArgumentException(append(FailureMessages("equaled", leftee, rightee), clue))
-          /*case ">" => throw new IllegalArgumentException(append(Some(FailureMessages("wasNotGreaterThan", left, right)), clue))
-          case ">=" => throw new IllegalArgumentException(append(Some(FailureMessages("wasNotGreaterThanOrEqualTo", left, right)), clue))
-          case "<" => throw new IllegalArgumentException(append(Some(FailureMessages("wasNotLessThan", left, right)), clue))
-          case "<=" => throw new IllegalArgumentException(append(Some(FailureMessages("wasNotLessThanOrEqualTo", left, right)), clue))*/
-          case _ =>
-            throw new IllegalArgumentException(if (clue.isDefined) clue.get + "" else FailureMessages("expressionWasFalse"))
-        }
-      }
-    }
-
-    def macroRequireFact(fact: Fact, clue: Option[Any]) {
+    def macroRequire(fact: Fact, clue: Option[Any]) {
       if (clue == null)
         throw new NullPointerException("clue was null")
       if (!fact.value) {
@@ -112,7 +60,13 @@ trait Requirements {
       }
     }
 
-    def macroRequireStateFact(fact: Fact, clue: Option[Any]) {
+    /**
+     * Require that the passed in <code>Fact</code> is <code>true</code>, else fail with <code>IllegalStateException</code>.
+     *
+     * @param fact the <code>Fact</code> to check as requirement
+     * @param clue optional clue to be included in <code>IllegalStateException</code>'s error message when the requirement failed
+     */
+    def macroRequireState(fact: Fact, clue: Option[Any]) {
       if (clue == null)
         throw new NullPointerException("clue was null")
       if (!fact.value) {
@@ -122,55 +76,6 @@ trait Requirements {
             case _ => append(fact.failureMessage, clue)
           }
         throw new IllegalStateException(if (failureMessage.isEmpty) FailureMessages("expressionWasFalse") else failureMessage)
-      }
-    }
-
-    /**
-     * Require that the passed in expression is <code>true</code>, else fail with <code>IllegalStateException</code>.
-     *
-     * @param expression <code>Boolean</code> expression to check as requirement
-     * @param clue optional clue to be included in <code>IllegalStateException</code>'s error message when the requirement failed
-     */
-    def macroRequireState(expression: Boolean, clue: Option[Any]) {
-      if (clue == null)
-        throw new NullPointerException("clue was null")
-      if (!expression)
-        throw new IllegalStateException(if (clue.isDefined) clue.get + "" else FailureMessages("expressionWasFalse"))
-    }
-
-    /**
-     * Require that the passed in expression is <code>true</code>, else fail with <code>IllegalStateException</code>.
-     *
-     * @param left the LHS of the expression
-     * @param operator the operator of the expression
-     * @param right the RHS of the expression
-     * @param expression <code>Boolean</code> expression to check as requirement
-     * @param clue optional clue to be included in <code>IllegalStateException</code>'s error message when requirement failed
-     */
-    def macroRequireState(left: Any, operator: String, right: Any, expression: Boolean, clue: Option[Any]) {
-      if (clue == null)
-        throw new NullPointerException("clue was null")
-      if (!expression) {
-        throw operator match {
-          case "==" =>
-            val (leftee, rightee) = getObjectsForFailureMessage(left, right)
-            throw new IllegalStateException(append(FailureMessages("didNotEqual", leftee, rightee), clue))
-          case "===" =>
-            val (leftee, rightee) = getObjectsForFailureMessage(left, right)
-            throw new IllegalStateException(append(FailureMessages("didNotEqual", leftee, rightee), clue))
-          case "!=" =>
-            val (leftee, rightee) = getObjectsForFailureMessage(left, right)
-            throw new IllegalStateException(append(FailureMessages("equaled", leftee, rightee), clue))
-          case "!==" =>
-            val (leftee, rightee) = getObjectsForFailureMessage(left, right)
-            throw new IllegalStateException(append(FailureMessages("equaled", leftee, rightee), clue))
-          /*case ">" => throw new IllegalStateException(append(Some(FailureMessages("wasNotGreaterThan", left, right)), clue))
-          case ">=" => throw new IllegalStateException(append(Some(FailureMessages("wasNotGreaterThanOrEqualTo", left, right)), clue))
-          case "<" => throw new IllegalStateException(append(Some(FailureMessages("wasNotLessThan", left, right)), clue))
-          case "<=" => throw new IllegalStateException(append(Some(FailureMessages("wasNotLessThanOrEqualTo", left, right)), clue))*/
-          case _ =>
-            throw new IllegalStateException(if (clue.isDefined) clue.get + "" else FailureMessages("expressionWasFalse"))
-        }
       }
     }
 
@@ -324,7 +229,7 @@ private[scalautils] object RequirementsMacro {
    * @return transformed expression that performs the requirement check and throw <code>IllegalArgumentException</code> with rich error message if requirement failed
    */
   def require(context: Context)(condition: context.Expr[Boolean]): context.Expr[Unit] =
-    new BooleanMacro[context.type](context, "requirementsHelper").genFactMacro(condition, "macroRequireFact", None)
+    new BooleanMacro[context.type](context, "requirementsHelper").genMacro(condition, "macroRequire", None)
 
   /**
    * Provides requirement implementation for <code>Requirements.require(booleanExpr: Boolean, clue: Any)</code>, with rich error message.
@@ -335,7 +240,7 @@ private[scalautils] object RequirementsMacro {
    * @return transformed expression that performs the requirement check and throw <code>IllegalArgumentException</code> with rich error message (clue included) if requirement failed
    */
   def requireWithClue(context: Context)(condition: context.Expr[Boolean], clue: context.Expr[Any]): context.Expr[Unit] =
-    new BooleanMacro[context.type](context, "requirementsHelper").genFactMacro(condition, "macroRequireFact", Some(clue.tree))
+    new BooleanMacro[context.type](context, "requirementsHelper").genMacro(condition, "macroRequire", Some(clue.tree))
 
   /**
    * Provides requirement implementation for <code>Requirements.requireState(booleanExpr: Boolean)</code>, with rich error message.
@@ -345,7 +250,7 @@ private[scalautils] object RequirementsMacro {
    * @return transformed expression that performs the requirement check and throw <code>IllegalStateException</code> with rich error message if requirement failed
    */
   def requireState(context: Context)(condition: context.Expr[Boolean]): context.Expr[Unit] =
-    new BooleanMacro[context.type](context, "requirementsHelper").genFactMacro(condition, "macroRequireStateFact", None)
+    new BooleanMacro[context.type](context, "requirementsHelper").genMacro(condition, "macroRequireState", None)
 
   /**
    * Provides requirement implementation for <code>Requirements.requireState(booleanExpr: Boolean, clue: Any)</code>, with rich error message.
@@ -356,7 +261,7 @@ private[scalautils] object RequirementsMacro {
    * @return transformed expression that performs the requirement check and throw <code>IllegalStateException</code> with rich error message (clue included) if requirement failed
    */
   def requireStateWithClue(context: Context)(condition: context.Expr[Boolean], clue: context.Expr[Any]): context.Expr[Unit] =
-    new BooleanMacro[context.type](context, "requirementsHelper").genFactMacro(condition, "macroRequireStateFact", Some(clue.tree))
+    new BooleanMacro[context.type](context, "requirementsHelper").genMacro(condition, "macroRequireState", Some(clue.tree))
 
   /**
    * Provides requirement implementation for <code>Requirements.requireNonNull(elements: Any*)</code>, with rich error message.
