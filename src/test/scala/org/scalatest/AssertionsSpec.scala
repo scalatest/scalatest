@@ -272,7 +272,7 @@ class AssertionsSpec extends FunSpec {
       val e1 = intercept[TestFailedException] {
         assert(3 == 5) 
       }
-      assert(e1.message === Some("3 == 5 was false"))
+      assert(e1.message === None)
       assert(e1.failedCodeFileName === (Some(fileName)))
       assert(e1.failedCodeLineNumber === (Some(thisLineNumber - 4)))
 

@@ -212,14 +212,10 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
   def getText(expr: Tree): String = {
     expr match {
       case literal: Literal =>
-        val rawText = getPosition(expr) match {
-          case p: scala.reflect.internal.util.RangePosition => context.echo(expr.pos, "RangePosition found!"); p.lineContent.slice(p.start, p.end).trim
-          case p: reflect.internal.util.Position => p.lineContent.trim
+        getPosition(expr) match {
+          case p: scala.reflect.internal.util.RangePosition => p.lineContent.slice(p.start, p.end).trim // this only available when -Yrangepos is enabled
+          case p: reflect.internal.util.Position => ""
         }
-        if (rawText.startsWith("assert("))
-          rawText.substring(7, rawText.length - 1)
-        else
-          rawText
       case _ => show(expr)
     }
   }

@@ -114,19 +114,19 @@ trait Fact {
   */
 }
 
-class SimpleMacroFact(expression: => Boolean, expressionText: String) extends Fact {
+class SimpleMacroFact(expression: => Boolean, val expressionText: String) extends Fact {
 
   lazy val value: Boolean = expression
 
-  def rawFailureMessage: String = Resources("wasFalse")
-  def rawNegatedFailureMessage: String = Resources("wasTrue")
-  def rawMidSentenceFailureMessage: String = Resources("wasFalse")
-  def rawMidSentenceNegatedFailureMessage: String = Resources("wasTrue")
+  def rawFailureMessage: String = if (expressionText.isEmpty) Resources("expressionWasFalse") else Resources("wasFalse")
+  def rawNegatedFailureMessage: String = if (expressionText.isEmpty) Resources("expressionWasTrue") else Resources("wasTrue")
+  def rawMidSentenceFailureMessage: String = if (expressionText.isEmpty) Resources("expressionWasFalse") else Resources("wasFalse")
+  def rawMidSentenceNegatedFailureMessage: String = if (expressionText.isEmpty) Resources("expressionWasTrue") else Resources("wasTrue")
 
-  def failureMessageArgs: IndexedSeq[Any] = Vector(UnquotedString(expressionText))
-  def negatedFailureMessageArgs: IndexedSeq[Any] = Vector(UnquotedString(expressionText))
-  def midSentenceFailureMessageArgs: IndexedSeq[Any] = Vector(UnquotedString(expressionText))
-  def midSentenceNegatedFailureMessageArgs: IndexedSeq[Any] = Vector(UnquotedString(expressionText))
+  def failureMessageArgs: IndexedSeq[Any] = if (expressionText.isEmpty) Vector.empty else Vector(UnquotedString(expressionText))
+  def negatedFailureMessageArgs: IndexedSeq[Any] = if (expressionText.isEmpty) Vector.empty else Vector(UnquotedString(expressionText))
+  def midSentenceFailureMessageArgs: IndexedSeq[Any] = if (expressionText.isEmpty) Vector.empty else Vector(UnquotedString(expressionText))
+  def midSentenceNegatedFailureMessageArgs: IndexedSeq[Any] = if (expressionText.isEmpty) Vector.empty else Vector(UnquotedString(expressionText))
 
 }
 

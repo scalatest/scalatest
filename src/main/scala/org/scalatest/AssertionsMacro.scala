@@ -43,7 +43,8 @@ private[scalatest] object AssertionsMacro {
    * @return transformed expression that performs the assertion check and throw <code>TestFailedException</code> with rich error message (clue included) if assertion failed
    */
   def assertWithClue(context: Context)(condition: context.Expr[Boolean], clue: context.Expr[Any]): context.Expr[Unit] =
-    new BooleanMacro[context.type](context, "assertionsHelper").genMacroCode(condition, "macroAssert", Some(clue.tree))
+    new BooleanMacro[context.type](context, "assertionsHelper").genFactAssert(condition, Some(clue.tree))
+    //new BooleanMacro[context.type](context, "assertionsHelper").genMacroCode(condition, "macroAssert", Some(clue.tree))
 
   /**
    * Provides implementation for <code>Assertions.assume(booleanExpr: Boolean)</code>, with rich error message.
