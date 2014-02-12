@@ -207,12 +207,12 @@ class NotFact(fact: Fact) extends Fact {
  * @param expression the <code>Boolean</code> expression
  * @param expressionText the original expression text (source code)
  */
-class SimpleMacroFact(expression: => Boolean, val expressionText: String) extends Fact {
+class SimpleMacroFact(expression: Boolean, val expressionText: String) extends Fact {
 
   /**
    * the <code>Boolean</code> value of this <code>Fact</code>, evaluated from the passed in expression
    */
-  lazy val value: Boolean = expression
+  val value: Boolean = expression
 
   def rawFailureMessage: String = if (expressionText.isEmpty) Resources("expressionWasFalse") else Resources("wasFalse")
   def rawNegatedFailureMessage: String = if (expressionText.isEmpty) Resources("expressionWasTrue") else Resources("wasTrue")
@@ -241,12 +241,12 @@ class NotMacroFact(fact: Fact) extends Fact {
   def midSentenceNegatedFailureMessageArgs: IndexedSeq[Any] = fact.midSentenceFailureMessageArgs
 }
 
-class BinaryMacroFact(left: Any, operator: String, right: Any, expression: => Boolean) extends Fact {
+class BinaryMacroFact(left: Any, operator: String, right: Any, expression: Boolean) extends Fact {
 
   def this(left: Any, operator: String, right: Any, fact: Fact) =
     this(left, operator, right, fact.value)
 
-  lazy val value: Boolean = expression
+  val value: Boolean = expression
 
   def getObjectsForFailureMessage =
     left match {
