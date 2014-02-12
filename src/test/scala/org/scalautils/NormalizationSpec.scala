@@ -63,5 +63,25 @@ class NormalizationSpec extends Spec with StringNormalizations {
       assert(!(lowerCased and trimmed).toEquality.areEqual(" howdy", "XOWDY "))
     }
   }
+  object `A Normalization` {
+    def `can be converted to a NormalizingEquivalence that delegates to implicit Equivalence without using the Explicitly DSL` {
+      assert(lowerCased.toEquivalence.areEquivalent("howdy", "HOWDY"))
+      assert((lowerCased and trimmed).toEquivalence.areEquivalent(" howdy", "HOWDY "))
+      assert(!lowerCased.toEquivalence.areEquivalent("howdy", "HOWDX"))
+      assert(!(lowerCased and trimmed).toEquivalence.areEquivalent(" howdy", "HOWDX "))
+      assert(!lowerCased.toEquivalence.areEquivalent("howdy", "XOWDY"))
+      assert(!(lowerCased and trimmed).toEquivalence.areEquivalent(" howdy", "XOWDY "))
+      implicit val firstCharStringEquivalence =
+        new Equivalence[String] {
+          def areEquivalent(a: String, b: String): Boolean = a(0) == b(0)
+        }
+      assert(lowerCased.toEquivalence.areEquivalent("howdy", "HOWDY"))
+      assert((lowerCased and trimmed).toEquivalence.areEquivalent(" howdy", "HOWDY "))
+      assert(lowerCased.toEquivalence.areEquivalent("howdy", "HOWDX"))
+      assert((lowerCased and trimmed).toEquivalence.areEquivalent(" howdy", "HOWDX "))
+      assert(!lowerCased.toEquivalence.areEquivalent("howdy", "XOWDY"))
+      assert(!(lowerCased and trimmed).toEquivalence.areEquivalent(" howdy", "XOWDY "))
+    }
+  }
 }
 
