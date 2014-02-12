@@ -40,6 +40,28 @@ class NormalizationSpec extends Spec with StringNormalizations {
         assert(!sAndT.isInstanceOf[Uniformity[_]])
       }
     }
+    def `can be converted to a NormalizingEquality that delegates to implicit Equality without using the Explicitly DSL` {
+      assert(lowerCased.toEquality.areEqual("howdy", "HOWDY"))
+      assert((lowerCased and trimmed).toEquality.areEqual(" howdy", "HOWDY "))
+      assert(!lowerCased.toEquality.areEqual("howdy", "HOWDX"))
+      assert(!(lowerCased and trimmed).toEquality.areEqual(" howdy", "HOWDX "))
+      assert(!lowerCased.toEquality.areEqual("howdy", "XOWDY"))
+      assert(!(lowerCased and trimmed).toEquality.areEqual(" howdy", "XOWDY "))
+      implicit val firstCharStringEquality =
+        new Equality[String] {
+          def areEqual(a: String, b: Any): Boolean =
+            b match {
+              case bString: String => a(0) == bString(0)
+              case _ => false
+            }
+        }
+      assert(lowerCased.toEquality.areEqual("howdy", "HOWDY"))
+      assert((lowerCased and trimmed).toEquality.areEqual(" howdy", "HOWDY "))
+      assert(lowerCased.toEquality.areEqual("howdy", "HOWDX"))
+      assert((lowerCased and trimmed).toEquality.areEqual(" howdy", "HOWDX "))
+      assert(!lowerCased.toEquality.areEqual("howdy", "XOWDY"))
+      assert(!(lowerCased and trimmed).toEquality.areEqual(" howdy", "XOWDY "))
+    }
   }
 }
 
