@@ -70,9 +70,9 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
     )
 
   private val logicOperators = Set("&&", "||", "&", "|")
-  private val newSupportedOperations = Set("==", "!=", "===", "!==", "<", ">", ">=", "<=") ++ logicOperators
+  private val supportedOperations = Set("==", "!=", "===", "!==", "<", ">", ">=", "<=") ++ logicOperators
 
-  def newIsSupported(operator: String) = newSupportedOperations.contains(operator)
+  def isSupported(operator: String) = supportedOperations.contains(operator)
 
   private[this] def getPosition(expr: Tree) = expr.pos.asInstanceOf[scala.reflect.internal.util.Position]
 
@@ -86,8 +86,6 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
       case _ => show(expr)
     }
   }
-
-  // ############################# Fact
 
   // Generate AST for:
   // assertionsHelper.methodName(expression, clue)
@@ -188,7 +186,7 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
     tree match {
       case apply: Apply if apply.args.size == 1 =>
         apply.fun match {
-          case select: Select if newIsSupported(select.name.decoded) =>
+          case select: Select if isSupported(select.name.decoded) =>
             val (leftTree, rightTree) =  traverseFactSelect(select, apply.args(0))
             Block(
               valDef("$org_scalatest_assert_macro_left", leftTree),
@@ -259,6 +257,4 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
       )
     )
   }
-
-  // ############################# Fact
 }
