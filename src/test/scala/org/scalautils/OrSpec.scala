@@ -493,6 +493,11 @@ class OrSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
     Some(Bad(One("oops"))).combined shouldBe Bad(One("oops"))
     Some(Bad(Many("oops", "idoops"))).combined shouldBe Bad(Many("oops", "idoops"))
   }
+  it can "be folded with fold" in {
+    Good(3).orBad[String].fold(_ + 1, _.length) shouldBe 4
+    Good[Int].orBad("howdy").fold(_ + 1, _.length) shouldBe 5
+
+  }
   "A Good" can "be widened to an Or type via .asOr" in {
     Good(1).asOr shouldBe Good(1)
     /*
