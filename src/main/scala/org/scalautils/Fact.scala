@@ -113,24 +113,9 @@ trait Fact {
    * @param fact another <code>Fact</code>
    * @return a <code>Fact</code> that represents the result of logical <code>and</code>
    */
-  def &&(fact: => Fact): Fact =
-    if (value) {
-        val myValue = value
-        new Fact {
-
-          lazy val value: Boolean = myValue && fact.value
-
-          def rawFailureMessage: String = Resources("commaBut")
-          def rawNegatedFailureMessage: String = Resources("commaAnd")
-          def rawMidSentenceFailureMessage: String = Resources("commaBut")
-          def rawMidSentenceNegatedFailureMessage: String = Resources("commaAnd")
-
-          def failureMessageArgs = Vector(this.negatedFailureMessage, fact.midSentenceFailureMessage)
-          def negatedFailureMessageArgs = Vector(this.negatedFailureMessage, fact.midSentenceNegatedFailureMessage)
-          def midSentenceFailureMessageArgs = Vector(this.midSentenceNegatedFailureMessage, fact.midSentenceFailureMessage)
-          def midSentenceNegatedFailureMessageArgs = Vector(this.midSentenceNegatedFailureMessage, fact.midSentenceNegatedFailureMessage)
-        }
-      }
+  def &&(fact: Fact): Fact =
+    if (value)
+      new AndFact(this, fact)
     else
       this
 
@@ -140,7 +125,7 @@ trait Fact {
    * @param fact another <code>Fact</code>
    * @return a <code>Fact</code> that represents the result of logical <code>and</code>
    */
-  def &(fact: => Fact): Fact = &&(fact)
+  def &(fact: Fact): Fact = &&(fact)
 
   /**
    * Logical <code>or</code> this <code>Fact</code> with another <code>Fact</code>
@@ -148,23 +133,7 @@ trait Fact {
    * @param fact another <code>Fact</code>
    * @return a <code>Fact</code> that represents the result of logical <code>or</code>
    */
-  def ||(fact: => Fact): Fact = {
-    def myValue = this.value // by-name to be lazy
-    new Fact {
-
-      lazy val value: Boolean = myValue || fact.value
-
-      def rawFailureMessage: String = Resources("commaAnd")
-      def rawNegatedFailureMessage: String = Resources("commaAnd")
-      def rawMidSentenceFailureMessage: String = Resources("commaAnd")
-      def rawMidSentenceNegatedFailureMessage: String = Resources("commaAnd")
-
-      def failureMessageArgs = Vector(this.failureMessage, fact.midSentenceFailureMessage)
-      def negatedFailureMessageArgs = Vector(this.failureMessage, fact.midSentenceNegatedFailureMessage)
-      def midSentenceFailureMessageArgs = Vector(this.midSentenceFailureMessage, fact.midSentenceFailureMessage)
-      def midSentenceNegatedFailureMessageArgs = Vector(this.midSentenceFailureMessage, fact.midSentenceNegatedFailureMessage)
-    }
-  }
+  def ||(fact: => Fact): Fact = new OrFact(this, fact)
 
   /**
    * Logical <code>or</code> this <code>Fact</code> with another <code>Fact</code>
@@ -179,26 +148,57 @@ trait Fact {
    *
    * @return a <code>Fact</code> that represents the result of negating the original <code>Fact</code>
    */
-  def unary_! : Fact =
-    new Fact {
-
-      lazy val value: Boolean = !this.value
-
-      def rawFailureMessage: String = this.rawNegatedFailureMessage
-      def rawNegatedFailureMessage: String = this.rawFailureMessage
-      def rawMidSentenceFailureMessage: String = this.rawMidSentenceNegatedFailureMessage
-      def rawMidSentenceNegatedFailureMessage: String = this.rawMidSentenceFailureMessage
-
-      def failureMessageArgs: IndexedSeq[Any] = this.negatedFailureMessageArgs
-      def negatedFailureMessageArgs: IndexedSeq[Any] = this.failureMessageArgs
-      def midSentenceFailureMessageArgs: IndexedSeq[Any] = this.midSentenceNegatedFailureMessageArgs
-      def midSentenceNegatedFailureMessageArgs: IndexedSeq[Any] = this.midSentenceFailureMessageArgs
-    }
+  def unary_! : Fact = new NotFact(this)
 
   /*
   def &&(bool: => Boolean): Fact = ...
   def ||(bool: => Boolean): Fact = ...
   */
+}
+
+class AndFact(fact1: Fact, fact2: Fact) extends Fact {
+
+  lazy val value: Boolean = fact1.value && fact2.value
+
+  def rawFailureMessage: String = Resources("commaBut")
+  def rawNegatedFailureMessage: String = Resources("commaAnd")
+  def rawMidSentenceFailureMessage: String = Resources("commaBut")
+  def rawMidSentenceNegatedFailureMessage: String = Resources("commaAnd")
+
+  def failureMessageArgs = Vector(fact1.negatedFailureMessage, fact2.midSentenceFailureMessage)
+  def negatedFailureMessageArgs = Vector(fact1.negatedFailureMessage, fact2.midSentenceNegatedFailureMessage)
+  def midSentenceFailureMessageArgs = Vector(fact1.midSentenceNegatedFailureMessage, fact2.midSentenceFailureMessage)
+  def midSentenceNegatedFailureMessageArgs = Vector(fact1.midSentenceNegatedFailureMessage, fact2.midSentenceNegatedFailureMessage)
+}
+
+class OrFact(fact1: Fact, fact2: Fact) extends Fact {
+
+  lazy val value: Boolean = fact1.value || fact2.value
+
+  def rawFailureMessage: String = Resources("commaAnd")
+  def rawNegatedFailureMessage: String = Resources("commaAnd")
+  def rawMidSentenceFailureMessage: String = Resources("commaAnd")
+  def rawMidSentenceNegatedFailureMessage: String = Resources("commaAnd")
+
+  def failureMessageArgs = Vector(fact1.failureMessage, fact2.midSentenceFailureMessage)
+  def negatedFailureMessageArgs = Vector(fact1.failureMessage, fact2.midSentenceNegatedFailureMessage)
+  def midSentenceFailureMessageArgs = Vector(fact1.midSentenceFailureMessage, fact2.midSentenceFailureMessage)
+  def midSentenceNegatedFailureMessageArgs = Vector(fact1.midSentenceFailureMessage, fact2.midSentenceNegatedFailureMessage)
+}
+
+class NotFact(fact: Fact) extends Fact {
+
+  lazy val value: Boolean = !fact.value
+
+  def rawFailureMessage: String = fact.rawNegatedFailureMessage
+  def rawNegatedFailureMessage: String = fact.rawFailureMessage
+  def rawMidSentenceFailureMessage: String = fact.rawMidSentenceNegatedFailureMessage
+  def rawMidSentenceNegatedFailureMessage: String = fact.rawMidSentenceFailureMessage
+
+  def failureMessageArgs: IndexedSeq[Any] = fact.negatedFailureMessageArgs
+  def negatedFailureMessageArgs: IndexedSeq[Any] = fact.failureMessageArgs
+  def midSentenceFailureMessageArgs: IndexedSeq[Any] = fact.midSentenceNegatedFailureMessageArgs
+  def midSentenceNegatedFailureMessageArgs: IndexedSeq[Any] = fact.midSentenceFailureMessageArgs
 }
 
 /**
