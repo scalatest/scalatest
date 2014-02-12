@@ -404,6 +404,13 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     val a = 3
     val b = 5
 
+    it("should throw NullPointerException when null is passed in as clue") {
+      val e = intercept[NullPointerException] {
+        require(a == 3, null)
+      }
+      assert(e.getMessage == "clue was null")
+    }
+
     it("should do nothing when is used to check a == 3") {
       require(a == 3, "dude")
     }
@@ -1106,6 +1113,13 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     val a = 3
     val b = 5
+
+    it("should throw NullPointerException when null is passed in as clue") {
+      val e = intercept[NullPointerException] {
+        requireState(a == 3, null)
+      }
+      assert(e.getMessage == "clue was null")
+    }
 
     it("should do nothing when is used to check a == 3") {
       requireState(a == 3, "dude")

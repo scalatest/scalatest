@@ -26,20 +26,18 @@ trait Requirements {
    */
   class RequirementsHelper {
 
-    private def append(currentMessage: String, clueOpt: Option[Any]): String =
-      clueOpt match {
-        case Some(clue) =>
-          if (currentMessage.isEmpty)
-            clue.toString
-          else {
-            val firstChar = clue.toString.head
-            if (firstChar.isWhitespace || firstChar == '.' || firstChar == ',' || firstChar == ';')
-              currentMessage + clue.toString
-            else
-              currentMessage + " " + clue.toString
-          }
-        case None => currentMessage
+    private def append(currentMessage: String, clue: Any): String = {
+      val clueStr = clue.toString
+      if (clueStr.isEmpty)
+        currentMessage
+      else {
+        val firstChar = clueStr.head
+        if (firstChar.isWhitespace || firstChar == '.' || firstChar == ',' || firstChar == ';' || currentMessage.isEmpty)
+          currentMessage + clueStr
+        else
+          currentMessage + " " + clueStr
       }
+    }
 
     /**
      * Require that the passed in <code>Fact</code> is <code>true</code>, else fail with <code>IllegalArgumentException</code>.
@@ -47,7 +45,7 @@ trait Requirements {
      * @param fact the <code>Fact</code> to check as requirement
      * @param clue optional clue to be included in <code>IllegalArgumentException</code>'s error message when the requirement failed
      */
-    def macroRequire(fact: Fact, clue: Option[Any]) {
+    def macroRequire(fact: Fact, clue: Any) {
       if (clue == null)
         throw new NullPointerException("clue was null")
       if (!fact.value) {
@@ -66,7 +64,7 @@ trait Requirements {
      * @param fact the <code>Fact</code> to check as requirement
      * @param clue optional clue to be included in <code>IllegalStateException</code>'s error message when the requirement failed
      */
-    def macroRequireState(fact: Fact, clue: Option[Any]) {
+    def macroRequireState(fact: Fact, clue: Any) {
       if (clue == null)
         throw new NullPointerException("clue was null")
       if (!fact.value) {
@@ -229,7 +227,7 @@ private[scalautils] object RequirementsMacro {
    * @return transformed expression that performs the requirement check and throw <code>IllegalArgumentException</code> with rich error message if requirement failed
    */
   def require(context: Context)(condition: context.Expr[Boolean]): context.Expr[Unit] =
-    new BooleanMacro[context.type](context, "requirementsHelper").genMacro(condition, "macroRequire", None)
+    new BooleanMacro[context.type](context, "requirementsHelper").genMacro(condition, "macroRequire", context.literal(""))
 
   /**
    * Provides requirement implementation for <code>Requirements.require(booleanExpr: Boolean, clue: Any)</code>, with rich error message.
@@ -240,7 +238,7 @@ private[scalautils] object RequirementsMacro {
    * @return transformed expression that performs the requirement check and throw <code>IllegalArgumentException</code> with rich error message (clue included) if requirement failed
    */
   def requireWithClue(context: Context)(condition: context.Expr[Boolean], clue: context.Expr[Any]): context.Expr[Unit] =
-    new BooleanMacro[context.type](context, "requirementsHelper").genMacro(condition, "macroRequire", Some(clue.tree))
+    new BooleanMacro[context.type](context, "requirementsHelper").genMacro(condition, "macroRequire", clue)
 
   /**
    * Provides requirement implementation for <code>Requirements.requireState(booleanExpr: Boolean)</code>, with rich error message.
@@ -250,7 +248,7 @@ private[scalautils] object RequirementsMacro {
    * @return transformed expression that performs the requirement check and throw <code>IllegalStateException</code> with rich error message if requirement failed
    */
   def requireState(context: Context)(condition: context.Expr[Boolean]): context.Expr[Unit] =
-    new BooleanMacro[context.type](context, "requirementsHelper").genMacro(condition, "macroRequireState", None)
+    new BooleanMacro[context.type](context, "requirementsHelper").genMacro(condition, "macroRequireState", context.literal(""))
 
   /**
    * Provides requirement implementation for <code>Requirements.requireState(booleanExpr: Boolean, clue: Any)</code>, with rich error message.
@@ -261,7 +259,7 @@ private[scalautils] object RequirementsMacro {
    * @return transformed expression that performs the requirement check and throw <code>IllegalStateException</code> with rich error message (clue included) if requirement failed
    */
   def requireStateWithClue(context: Context)(condition: context.Expr[Boolean], clue: context.Expr[Any]): context.Expr[Unit] =
-    new BooleanMacro[context.type](context, "requirementsHelper").genMacro(condition, "macroRequireState", Some(clue.tree))
+    new BooleanMacro[context.type](context, "requirementsHelper").genMacro(condition, "macroRequireState", clue)
 
   /**
    * Provides requirement implementation for <code>Requirements.requireNonNull(elements: Any*)</code>, with rich error message.

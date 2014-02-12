@@ -49,17 +49,6 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
   import context.universe._
 
   // Generate AST for:
-  // Some("message")
-  def genClue(clueTree: Tree): Apply =
-    Apply(
-      Select(
-        Ident("Some"),
-        newTermName("apply")
-      ),
-      List(clueTree)
-    )
-
-  // Generate AST for:
   // val name = rhs
   def valDef(name: String, rhs: Tree): ValDef =
     ValDef(
@@ -244,17 +233,11 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
       List(Ident(newTermName("$org_scalatest_assert_macro_expr")), clueTree)
     )
 
-  def genMacro(booleanExpr: Expr[Boolean], methodName: String, clueTree: Option[Tree]): Expr[Unit] = {
-    val clueOption =
-      clueTree match {
-        case Some(clue) => genClue(clue)
-        case _ => Ident("None")
-      }
+  def genMacro(booleanExpr: Expr[Boolean], methodName: String, clueExpr: Expr[Any]): Expr[Unit] =
     context.Expr(
       Block(
         valDef("$org_scalatest_assert_macro_expr", transformFactAst(booleanExpr.tree)),
-        callHelper(methodName, clueOption)
+        callHelper(methodName, clueExpr.tree)
       )
     )
-  }
 }

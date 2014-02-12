@@ -708,6 +708,13 @@ class AssertionsSpec extends FunSpec {
     val bob = "bob"
     val alice = "alice"
 
+    it("should throw NullPointerException when null is passed in as clue") {
+      val e = intercept[NullPointerException] {
+        assert(a == 3, null)
+      }
+      assert(e.getMessage == "clue was null")
+    }
+
     it("should do nothing when is used to check a == 3") {
       assert(a == 3, "dude")
     }
@@ -1703,6 +1710,13 @@ class AssertionsSpec extends FunSpec {
 
     val bob = "bob"
     val alice = "alice"
+
+    it("should throw NullPointerException when null is passed in as clue") {
+      val e = intercept[NullPointerException] {
+        assume(a == 3, null)
+      }
+      assert(e.getMessage == "clue was null")
+    }
 
     it("should do nothing when is used to check a == 3") {
       assume(a == 3, "dude")

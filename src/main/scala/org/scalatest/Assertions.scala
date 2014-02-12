@@ -356,21 +356,23 @@ trait Assertions extends TripleEquals {
    */
   class AssertionsHelper {
 
-    private def append(currentMessage: Option[String], clueOpt: Option[Any]) =
-      clueOpt match {
-        case Some(clue) =>
-          currentMessage match {
-            case Some(msg) =>
-              // clue.toString.head is guaranteed to work, because append() only called if clue.toString != ""
-              val firstChar = clue.toString.head
-              if (firstChar.isWhitespace || firstChar == '.' || firstChar == ',' || firstChar == ';')
-                Some(msg + clue.toString)
-              else
-                Some(msg + " " + clue.toString)
-            case None => Some(clue.toString)
-          }
-        case None => currentMessage
+    private def append(currentMessage: Option[String], clue: Any) = {
+      val clueStr = clue.toString
+      if (clueStr.isEmpty)
+        currentMessage
+      else {
+        currentMessage match {
+          case Some(msg) =>
+            // clue.toString.head is guaranteed to work, because the previous if check that clue.toString != ""
+            val firstChar = clueStr.head
+            if (firstChar.isWhitespace || firstChar == '.' || firstChar == ',' || firstChar == ';')
+              Some(msg + clueStr)
+            else
+              Some(msg + " " + clueStr)
+          case None => Some(clueStr)
+        }
       }
+    }
 
     /**
      * Assert that the passed in <code>Fact</code> is <code>true</code>, else fail with <code>TestFailedException</code>.
@@ -378,7 +380,9 @@ trait Assertions extends TripleEquals {
      * @param fact the <code>Fact</code> to assert for
      * @param clue optional clue to be included in <code>TestFailedException</code>'s error message when assertion failed
      */
-    def macroAssert(fact: Fact, clue: Option[Any]) {
+    def macroAssert(fact: Fact, clue: Any) {
+      if (clue == null)
+        throw new NullPointerException("clue was null")
       if (!fact.value) {
         val failureMessage =
           fact match {
@@ -395,7 +399,9 @@ trait Assertions extends TripleEquals {
      * @param fact the <code>Fact</code> to assume for
      * @param clue optional clue to be included in <code>TestCanceledException</code>'s error message when assertion failed
      */
-    def macroAssume(fact: Fact, clue: Option[Any]) {
+    def macroAssume(fact: Fact, clue: Any) {
+      if (clue == null)
+        throw new NullPointerException("clue was null")
       if (!fact.value) {
         val failureMessage =
           fact match {
