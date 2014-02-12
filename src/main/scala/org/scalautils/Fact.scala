@@ -17,6 +17,16 @@ package org.scalautils
 
 import java.text.MessageFormat
 
+/**
+ * A trait that represents a fact that:
+ *
+ * <ul>
+ * <li>represents a boolean value</li>
+ * <li>methods useful for failure messages construction</li>
+ * <li>logical expression methods that makes <code>Fact</code> composable</li>
+ * </ul>
+ *
+ */
 trait Fact {
 
   private def makeString(rawString: String, args: IndexedSeq[Any]): String = {
@@ -24,31 +34,85 @@ trait Fact {
     msgFmt.format(args.map(Prettifier.default).toArray)
   }
 
-  // Or defs instead of lazy vals
+  /**
+   * Construct and return failure message, by applying arguments returned from <code>failureMessageArgs</code> to
+   * raw message returned from <code>rawFailureMessage</code>
+   */
   def failureMessage: String =
     if (failureMessageArgs.isEmpty) rawFailureMessage else makeString(rawFailureMessage, failureMessageArgs)
 
+  /**
+   * Construct and return negated failure message, by applying arguments returned from <code>negatedFailureMessageArgs</code> to
+   * raw message returned from <code>rawNegatedFailureMessage</code>
+   */
   def negatedFailureMessage: String =
     if (negatedFailureMessageArgs.isEmpty) rawNegatedFailureMessage else makeString(rawNegatedFailureMessage, negatedFailureMessageArgs)
 
+  /**
+   * Construct and return mid sentence failure message, by applying arguments returned from <code>midSentenceFailureMessageArgs</code> to
+   * raw message returned from <code>rawMidSentenceFailureMessage</code>
+   */
   def midSentenceFailureMessage: String =
     if (midSentenceFailureMessageArgs.isEmpty) rawMidSentenceFailureMessage else makeString(rawMidSentenceFailureMessage, midSentenceFailureMessageArgs)
 
+  /**
+   * Construct and return mid sentence negated failure message, by applying arguments returned from <code>midSentenceNegatedFailureMessageArgs</code> to
+   * raw message returned from <code>rawMidSentenceNegatedFailureMessage</code>
+   */
   def midSentenceNegatedFailureMessage: String =
     if (midSentenceNegatedFailureMessageArgs.isEmpty) rawMidSentenceNegatedFailureMessage else makeString(rawMidSentenceNegatedFailureMessage, midSentenceNegatedFailureMessageArgs)
 
+  /**
+   * the <code>Boolean</code> value of this <code>Fact</code>
+   */
   def value: Boolean
 
+  /**
+   * raw message to report a failure
+   */
   def rawFailureMessage: String
+
+  /**
+   * raw message with a meaning opposite to that of the failure message
+   */
   def rawNegatedFailureMessage: String
+
+  /**
+   * raw mid sentence message to report a failure
+   */
   def rawMidSentenceFailureMessage: String
+
+  /**
+   * raw mid sentence message with a meaning opposite to that of the failure message
+   */
   def rawMidSentenceNegatedFailureMessage: String
 
+  /**
+   * Arguments to construct final failure message with raw message returned from <code>rawFailureMessage</code>.
+   */
   def failureMessageArgs: IndexedSeq[Any]
+
+  /**
+   * Arguments to construct final negated failure message with raw message returned from <code>rawNegatedFailureMessage</code>.
+   */
   def negatedFailureMessageArgs: IndexedSeq[Any]
+
+  /**
+   * Arguments to construct final mid sentence failure message with raw message returned from <code>rawMidSentenceFailureMessage</code>.
+   */
   def midSentenceFailureMessageArgs: IndexedSeq[Any]
+
+  /**
+   * Arguments to construct final negated mid sentence failure message with raw message returned from <code>rawMidSentenceNegatedFailureMessage</code>.
+   */
   def midSentenceNegatedFailureMessageArgs: IndexedSeq[Any]
 
+  /**
+   * Logical <code>and</code> this <code>Fact</code> with another <code>Fact</code>
+   *
+   * @param fact another <code>Fact</code>
+   * @return a <code>Fact</code> that represents the result of logical <code>and</code>
+   */
   def &&(fact: => Fact): Fact =
     if (value) {
         val myValue = value
@@ -70,8 +134,20 @@ trait Fact {
     else
       this
 
+  /**
+   * Logical <code>and</code> this <code>Fact</code> with another <code>Fact</code>
+   *
+   * @param fact another <code>Fact</code>
+   * @return a <code>Fact</code> that represents the result of logical <code>and</code>
+   */
   def &(fact: => Fact): Fact = &&(fact)
 
+  /**
+   * Logical <code>or</code> this <code>Fact</code> with another <code>Fact</code>
+   *
+   * @param fact another <code>Fact</code>
+   * @return a <code>Fact</code> that represents the result of logical <code>or</code>
+   */
   def ||(fact: => Fact): Fact = {
     def myValue = this.value // by-name to be lazy
     new Fact {
@@ -90,8 +166,19 @@ trait Fact {
     }
   }
 
+  /**
+   * Logical <code>or</code> this <code>Fact</code> with another <code>Fact</code>
+   *
+   * @param fact another <code>Fact</code>
+   * @return a <code>Fact</code> that represents the result of logical <code>or</code>
+   */
   def |(fact: => Fact): Fact = ||(fact)
 
+  /**
+   * Negate this <code>Fact</code>
+   *
+   * @return a <code>Fact</code> that represents the result of negating the original <code>Fact</code>
+   */
   def unary_! : Fact =
     new Fact {
 
@@ -114,8 +201,17 @@ trait Fact {
   */
 }
 
+/**
+ * Simple macro fact that is used by <code>BooleanMacro</code> to wrap an unrecognized <code>Boolean</code> expression.
+ *
+ * @param expression the <code>Boolean</code> expression
+ * @param expressionText the original expression text (source code)
+ */
 class SimpleMacroFact(expression: => Boolean, val expressionText: String) extends Fact {
 
+  /**
+   * the <code>Boolean</code> value of this <code>Fact</code>, evaluated from the passed in expression
+   */
   lazy val value: Boolean = expression
 
   def rawFailureMessage: String = if (expressionText.isEmpty) Resources("expressionWasFalse") else Resources("wasFalse")
