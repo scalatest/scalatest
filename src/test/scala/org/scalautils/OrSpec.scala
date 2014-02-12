@@ -108,6 +108,10 @@ class OrSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
     Good(8) map (_ + 1) should equal (Good(9))
     Good[Int].orBad("eight") map (_ + 1) should equal (Bad("eight"))
   }
+  it can "be used with badMap" in {
+    Good(8).orBad[ErrorMessage] badMap (_.toUpperCase) should equal (Good(8))
+    Good[Int].orBad("eight") badMap (_.toUpperCase) should equal (Bad("EIGHT"))
+  }
   it can "be used with foreach" in {
     var vCount = 0
     var eCount = 0
