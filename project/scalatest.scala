@@ -28,14 +28,14 @@ object ScalatestBuild extends Build {
        <dependency org="org.eclipse.jetty.orbit" name="javax.servlet" rev="3.0.0.v201112011016">
          <artifact name="javax.servlet" type="orbit" ext="jar"/>
        </dependency>, 
-     libraryDependencies ++= simpledependencies,
+     libraryDependencies ++= scalatestDependencies,
      libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersionToUse, // this is needed to compile macro
      resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
      publishTo <<= version { v: String =>
        val nexus = "https://oss.sonatype.org/"
        if (v.trim.endsWith("SNAPSHOT")) Some("publish-snapshots" at nexus + "content/repositories/snapshots")
        else                             Some("publish-releases" at nexus + "service/local/staging/deploy/maven2")
-     }, 
+     },
      publishMavenStyle := true,
      publishArtifact in Test := false,
      pomIncludeRepository := { _ => false },
@@ -115,23 +115,85 @@ object ScalatestBuild extends Build {
      docsrcDirSetting,
      docSourcesSetting,
      docScalacOptionsSetting,
-     docTaskSetting
+     scalatestDocTaskSetting
    )
-   
+
+  lazy val scalautils = Project("scalautils", file("genscalautils"))
+    .settings(
+      projectTitle := "ScalaUtils",
+      organization := "org.scalautils",
+      version := releaseVersion,
+      scalaVersion := scalaVersionToUse,
+      scalacOptions ++= Seq("-no-specialization", "-feature", "-target:jvm-1.5"),
+      initialCommands in console := "import org.scalautils._",
+      libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersionToUse, // this is needed to compile macro
+      resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
+      publishTo <<= version { v: String =>
+        val nexus = "https://oss.sonatype.org/"
+        if (v.trim.endsWith("SNAPSHOT")) Some("publish-snapshots" at nexus + "content/repositories/snapshots")
+        else                             Some("publish-releases" at nexus + "service/local/staging/deploy/maven2")
+      },
+      publishMavenStyle := true,
+      publishArtifact in Test := false,
+      pomIncludeRepository := { _ => false },
+      pomExtra := (
+        <url>http://www.scalatest.org</url>
+          <licenses>
+            <license>
+              <name>the Apache License, ASL Version 2.0</name>
+              <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+              <distribution>repo</distribution>
+            </license>
+          </licenses>
+          <scm>
+            <url>https://github.com/scalatest/scalatest</url>
+            <connection>scm:git:git@github.com:scalatest/scalatest.git</connection>
+            <developerConnection>
+              scm:git:git@github.com:scalatest/scalatest.git
+            </developerConnection>
+          </scm>
+          <developers>
+            <developer>
+              <id>bvenners</id>
+              <name>Bill Venners</name>
+              <email>bill@artima.com</email>
+            </developer>
+            <developer>
+              <id>gcberger</id>
+              <name>George Berger</name>
+              <email>george.berger@gmail.com</email>
+            </developer>
+            <developer>
+              <id>cheeseng</id>
+              <name>Chua Chee Seng</name>
+              <email>cheeseng@amaseng.com</email>
+            </developer>
+          </developers>
+        ),
+      sourceGenerators in Compile <+=
+        (baseDirectory, sourceManaged in Compile) map genFiles("", "GenScalaUtils.scala")(GenScalaUtils.genMain),
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test) map genFiles("", "GenScalaUtils.scala")(GenScalaUtils.genTest),
+      docsrcDirSetting,
+      docSourcesSetting,
+      docScalacOptionsSetting,
+      scalautilsDocTaskSetting
+    ).dependsOn(scalatest  % "test->test")
+
   lazy val gentests = Project("gentests", file("gentests"))
    .settings(
      organization := "org.scalatest",
      version := releaseVersion,
      scalaVersion := scalaVersionToUse,
      scalacOptions ++= Seq("-no-specialization", "-feature"),
-     libraryDependencies ++= simpledependencies,
+     libraryDependencies ++= scalatestDependencies,
      resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
      genMustMatchersTask, 
      genGenTask, 
      genTablesTask, 
      genInspectorsTask,
      genInspectorsShorthandsTask,
-    genTheyWordTask,
+     genTheyWordTask,
      genContainTask, 
      genSortedTask, 
      genLoneElementTask, 
@@ -163,30 +225,7 @@ object ScalatestBuild extends Build {
                                                "-fW", "target/result.txt"))
    ).dependsOn(scalatest  % "test->test")
 
-  lazy val scalautils = Project("scalautils", file("scalautils"))
-   .settings(
-     projectTitle := "ScalaUtils",
-     organization := "org.scalatest",
-     version := releaseVersion,
-     scalaVersion := scalaVersionToUse,
-     scalacOptions ++= Seq("-no-specialization", "-feature"),
-     libraryDependencies ++= simpledependencies,
-     resolvers +=
-       "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
-     sourceDirectory in Compile :=
-       (sourceDirectory in Compile in scalatest).value,
-     sources in Compile :=
-       (sources in Compile).value.filter { source =>
-         val sep = java.io.File.separator
-         source.getPath.contains(sep +"scalautils"+ sep)
-       },
-     docsrcDirSetting,
-     docSourcesSetting,
-     docScalacOptionsSetting,
-     docTaskSetting
-   ).dependsOn(scalatest)
-
-   def simpledependencies = Seq(
+   def scalatestDependencies = Seq(
      "org.scala-sbt" % "test-interface" % "1.0" % "optional",
      "org.scalacheck" %% "scalacheck" % "1.11.0" % "optional",
      "org.easymock" % "easymockclassextension" % "3.1" % "optional", 
@@ -412,8 +451,13 @@ object ScalatestBuild extends Build {
         "-doc-title", projectTitle.value +" "+ releaseVersion,
         "-doc-source-url", docSourceUrl)
 
-  val docTaskSetting =
+  val scalatestDocTaskSetting =
     doc in Compile := docTask((doc in Compile).value,
                               (sourceDirectory in Compile).value,
+                              name.value)
+
+  val scalautilsDocTaskSetting =
+    doc in Compile := docTask((doc in Compile).value,
+                              (sourceManaged in Compile).value,
                               name.value)
 }
