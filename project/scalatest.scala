@@ -31,7 +31,49 @@ object ScalatestBuild extends Build {
      libraryDependencies ++= simpledependencies,
      libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersionToUse, // this is needed to compile macro
      resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
-     genMustMatchersTask, 
+     publishTo <<= version { v: String =>
+       val nexus = "https://oss.sonatype.org/"
+       if (v.trim.endsWith("SNAPSHOT")) Some("publish-snapshots" at nexus + "content/repositories/snapshots")
+       else                             Some("publish-releases" at nexus + "service/local/staging/deploy/maven2")
+     }, 
+     publishMavenStyle := true,
+     publishArtifact in Test := false,
+     pomIncludeRepository := { _ => false },
+     pomExtra := (
+       <url>http://www.scalatest.org</url>
+         <licenses>
+           <license>
+             <name>the Apache License, ASL Version 2.0</name>
+             <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+             <distribution>repo</distribution>
+           </license>
+         </licenses>
+         <scm>
+           <url>https://github.com/scalatest/scalatest</url>
+           <connection>scm:git:git@github.com:scalatest/scalatest.git</connection>
+           <developerConnection>
+             scm:git:git@github.com:scalatest/scalatest.git
+           </developerConnection>
+         </scm>
+         <developers>
+           <developer>
+             <id>bvenners</id>
+             <name>Bill Venners</name>
+             <email>bill@artima.com</email>
+           </developer>
+           <developer>
+             <id>gcberger</id>
+             <name>George Berger</name>
+             <email>george.berger@gmail.com</email>
+           </developer>
+           <developer>
+             <id>cheeseng</id>
+             <name>Chua Chee Seng</name>
+             <email>cheeseng@amaseng.com</email>
+           </developer>
+         </developers>
+      ),
+     genMustMatchersTask,
      genGenTask, 
      genTablesTask, 
      genCodeTask, 
