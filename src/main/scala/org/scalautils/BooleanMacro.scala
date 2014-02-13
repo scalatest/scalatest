@@ -139,8 +139,8 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
     )
   }
 
-  def notMacroFact(target: Tree): Apply = {
-    val macroFactClass = context.mirror.staticClass(classOf[NotMacroFact].getName)
+  def notFact(target: Tree): Apply = {
+    val macroFactClass = context.mirror.staticClass(classOf[NotFact].getName)
     Apply(
       Select(
         New(Ident(macroFactClass)),
@@ -258,7 +258,7 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
             case selectSelect: Select => transformFactAst(selectSelect.duplicate)
             case _ => simpleMacroFact(select.qualifier.duplicate, getText(select.qualifier))
           }
-        notMacroFact(leftTree.duplicate)
+        notFact(leftTree.duplicate)
       case _ => simpleMacroFact(tree.duplicate, getText(tree))
     }
 
