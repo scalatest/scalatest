@@ -152,24 +152,62 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
     )
   }
 
-  def traverseFactSelect(select: Select, rightExpr: Tree): (Tree, Tree) =
-    if (logicOperators.contains(select.name.decoded)) {
+  def simpleFact(expression: Tree): Apply = {
+    val simpleFactClass = context.mirror.staticClass(classOf[SimpleFact].getName)
+    Apply(
+      Select(
+        New(Ident(simpleFactClass)),
+        newTermName("<init>")
+      ),
+      List(
+        expression
+      )
+    )
+  }
+
+  def traverseFactSelect(select: Select, rightExpr: Tree): (Tree, Tree) = {
+    val operator = select.name.decoded
+    if (logicOperators.contains(operator)) {
       val leftTree =
         select.qualifier match {
           case selectApply: Apply => transformFactAst(selectApply.duplicate)
           case selectSelect: Select => transformFactAst(selectSelect.duplicate)
           case _ => select.qualifier.duplicate
         }
-      val rightTree =
-        rightExpr match {
-          case argApply: Apply => transformFactAst(argApply.duplicate)
-          case argSelect: Select => transformFactAst(argSelect.duplicate)
-          case _ => rightExpr.duplicate
+      val rightTree = {
+        val evalBlock =
+          rightExpr match {
+            case argApply: Apply => transformFactAst(argApply.duplicate)
+            case argSelect: Select => transformFactAst(argSelect.duplicate)
+            case _ => rightExpr.duplicate
+          }
+        if (operator == "&&" || operator == "&")  {// generate if (left.value) {...} else false
+          If(
+            Select(
+              Ident(newTermName("$org_scalatest_assert_macro_left")),
+              newTermName("value")
+            ),
+            evalBlock,
+            simpleFact(context.literal(false).tree)
+          )
         }
+        else if (operator == "||" || operator == "|") // || and |, generate if (left.value) true else {...}
+          If(
+            Select(
+              Ident(newTermName("$org_scalatest_assert_macro_left")),
+              newTermName("value")
+            ),
+            simpleFact(context.literal(true).tree),
+            evalBlock
+          )
+        else
+          evalBlock
+      }
       (leftTree, rightTree)
     }
     else
       (select.qualifier.duplicate, rightExpr.duplicate)
+  }
 
   def transformFactAst(tree: Tree): Tree =
     tree match {
@@ -177,6 +215,8 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
         apply.fun match {
           case select: Select if isSupported(select.name.decoded) =>
             val (leftTree, rightTree) =  traverseFactSelect(select, apply.args(0))
+
+
             Block(
               valDef("$org_scalatest_assert_macro_left", leftTree),
               valDef("$org_scalatest_assert_macro_right", rightTree),

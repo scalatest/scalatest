@@ -64,6 +64,14 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
   def commaBut(left: String, right: String): String =
     FailureMessages("commaBut", UnquotedString(left), UnquotedString(right))
 
+  class Stateful {
+    var state = false
+    def changeState: Boolean = {
+      state = true
+      state
+    }
+  }
+
   describe("The require(boolean) method") {
 
     val a = 3
@@ -383,6 +391,34 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         require((a == 3) == (b != 5))
       }
       assert(e.getMessage === didNotEqual(true, false))
+    }
+
+    it("should short-circuit && when first condition was false") {
+      val s = new Stateful
+      intercept[IllegalArgumentException] {
+        require(a == 5 && s.changeState)
+      }
+      assert(s.state == false)
+    }
+
+    it("should short-circuit & when first condition was false") {
+      val s = new Stateful
+      intercept[IllegalArgumentException] {
+        require(a == 5 & s.changeState)
+      }
+      assert(s.state == false)
+    }
+
+    it("should short-circuit || when first condition was true") {
+      val s = new Stateful
+      require(a == 3 || s.changeState)
+      assert(s.state == false)
+    }
+
+    it("should short-circuit | when first condition was true") {
+      val s = new Stateful
+      require(a == 3 | s.changeState)
+      assert(s.state == false)
     }
 
     it("should preserve side effects when Apply with single argument is passed in") {
@@ -760,6 +796,34 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       assert(e.getMessage === didNotEqual(true, false) + ", dude")
     }
 
+    it("should short-circuit && when first condition was false") {
+      val s = new Stateful
+      intercept[IllegalArgumentException] {
+        require(a == 5 && s.changeState, ", dude")
+      }
+      assert(s.state == false)
+    }
+
+    it("should short-circuit & when first condition was false") {
+      val s = new Stateful
+      intercept[IllegalArgumentException] {
+        require(a == 5 & s.changeState, ", dude")
+      }
+      assert(s.state == false)
+    }
+
+    it("should short-circuit || when first condition was true") {
+      val s = new Stateful
+      require(a == 3 || s.changeState, ", dude")
+      assert(s.state == false)
+    }
+
+    it("should short-circuit | when first condition was true") {
+      val s = new Stateful
+      require(a == 3 | s.changeState, ", dude")
+      assert(s.state == false)
+    }
+
     it("should preserve side effects when Apply with single argument is passed in") {
       require(neverRuns1(sys.error("Sad times 1")), "should not fail!")
     }
@@ -1093,6 +1157,34 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         requireState((a == 3) == (b != 5))
       }
       assert(e.getMessage === didNotEqual(true, false))
+    }
+
+    it("should short-circuit && when first condition was false") {
+      val s = new Stateful
+      intercept[IllegalStateException] {
+        requireState(a == 5 && s.changeState)
+      }
+      assert(s.state == false)
+    }
+
+    it("should short-circuit & when first condition was false") {
+      val s = new Stateful
+      intercept[IllegalStateException] {
+        requireState(a == 5 & s.changeState)
+      }
+      assert(s.state == false)
+    }
+
+    it("should short-circuit || when first condition was true") {
+      val s = new Stateful
+      requireState(a == 3 || s.changeState)
+      assert(s.state == false)
+    }
+
+    it("should short-circuit | when first condition was true") {
+      val s = new Stateful
+      requireState(a == 3 | s.changeState)
+      assert(s.state == false)
     }
 
     it("should preserve side effects when Apply with single argument is passed in") {
@@ -1468,6 +1560,34 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         requireState((a == 3) == (b != 5), ", dude")
       }
       assert(e.getMessage === didNotEqual(true, false) + ", dude")
+    }
+
+    it("should short-circuit && when first condition was false") {
+      val s = new Stateful
+      intercept[IllegalStateException] {
+        requireState(a == 5 && s.changeState, ", dude")
+      }
+      assert(s.state == false)
+    }
+
+    it("should short-circuit & when first condition was false") {
+      val s = new Stateful
+      intercept[IllegalStateException] {
+        requireState(a == 5 & s.changeState, ", dude")
+      }
+      assert(s.state == false)
+    }
+
+    it("should short-circuit || when first condition was true") {
+      val s = new Stateful
+      requireState(a == 3 || s.changeState, ", dude")
+      assert(s.state == false)
+    }
+
+    it("should short-circuit | when first condition was true") {
+      val s = new Stateful
+      requireState(a == 3 | s.changeState, ", dude")
+      assert(s.state == false)
     }
 
     it("should preserve side effects when Apply with single argument is passed in") {

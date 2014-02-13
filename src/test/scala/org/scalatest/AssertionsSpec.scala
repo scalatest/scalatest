@@ -199,6 +199,14 @@ class AssertionsSpec extends FunSpec {
   def commaBut(left: String, right: String): String =
     FailureMessages("commaBut", UnquotedString(left), UnquotedString(right))
 
+  class Stateful {
+    var state = false
+    def changeState: Boolean = {
+      state = true
+      state
+    }
+  }
+
   private def neverRuns1(f: => Unit): Boolean = true
   private def neverRuns2(f: => Unit)(a: Int): Boolean = true
   private def neverRuns3[T](f: => Unit)(a: T): Boolean = true
@@ -686,6 +694,34 @@ class AssertionsSpec extends FunSpec {
       assert(e.message === Some(didNotEqual(true, false)))
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should short-circuit && when first condition was false") {
+      val s = new Stateful
+      intercept[TestFailedException] {
+        assert(a == 5 && s.changeState)
+      }
+      assert(s.state == false)
+    }
+
+    it("should short-circuit & when first condition was false") {
+      val s = new Stateful
+      intercept[TestFailedException] {
+        assert(a == 5 & s.changeState)
+      }
+      assert(s.state == false)
+    }
+
+    it("should short-circuit || when first condition was true") {
+      val s = new Stateful
+      assert(a == 3 || s.changeState)
+      assert(s.state == false)
+    }
+
+    it("should short-circuit | when first condition was true") {
+      val s = new Stateful
+      assert(a == 3 | s.changeState)
+      assert(s.state == false)
     }
 
     it("should preserve side effects when Apply with single argument is passed in") {
@@ -1193,6 +1229,34 @@ class AssertionsSpec extends FunSpec {
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
 
+    it("should short-circuit && when first condition was false") {
+      val s = new Stateful
+      intercept[TestFailedException] {
+        assert(a == 5 && s.changeState, ", dude")
+      }
+      assert(s.state == false)
+    }
+
+    it("should short-circuit & when first condition was false") {
+      val s = new Stateful
+      intercept[TestFailedException] {
+        assert(a == 5 & s.changeState, ", dude")
+      }
+      assert(s.state == false)
+    }
+
+    it("should short-circuit || when first condition was true") {
+      val s = new Stateful
+      assert(a == 3 || s.changeState, ", dude")
+      assert(s.state == false)
+    }
+
+    it("should short-circuit | when first condition was true") {
+      val s = new Stateful
+      assert(a == 3 | s.changeState, ", dude")
+      assert(s.state == false)
+    }
+
     it("should preserve side effects when Apply with single argument is passed in") {
       assert(neverRuns1(sys.error("Sad times 1")), "should not fail!")
     }
@@ -1689,6 +1753,34 @@ class AssertionsSpec extends FunSpec {
       assert(e.message === Some(didNotEqual(true, false)))
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should short-circuit && when first condition was false") {
+      val s = new Stateful
+      intercept[TestCanceledException] {
+        assume(a == 5 && s.changeState)
+      }
+      assert(s.state == false)
+    }
+
+    it("should short-circuit & when first condition was false") {
+      val s = new Stateful
+      intercept[TestCanceledException] {
+        assume(a == 5 & s.changeState)
+      }
+      assert(s.state == false)
+    }
+
+    it("should short-circuit || when first condition was true") {
+      val s = new Stateful
+      assume(a == 3 || s.changeState)
+      assert(s.state == false)
+    }
+
+    it("should short-circuit | when first condition was true") {
+      val s = new Stateful
+      assume(a == 3 | s.changeState)
+      assert(s.state == false)
     }
 
     it("should preserve side effects when Apply with single argument is passed in") {
@@ -2194,6 +2286,34 @@ class AssertionsSpec extends FunSpec {
       assert(e.message === Some(didNotEqual(true, false) + ", dude"))
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should short-circuit && when first condition was false") {
+      val s = new Stateful
+      intercept[TestCanceledException] {
+        assume(a == 5 && s.changeState, ", dude")
+      }
+      assert(s.state == false)
+    }
+
+    it("should short-circuit & when first condition was false") {
+      val s = new Stateful
+      intercept[TestCanceledException] {
+        assume(a == 5 & s.changeState, ", dude")
+      }
+      assert(s.state == false)
+    }
+
+    it("should short-circuit || when first condition was true") {
+      val s = new Stateful
+      assume(a == 3 || s.changeState, ", dude")
+      assert(s.state == false)
+    }
+
+    it("should short-circuit | when first condition was true") {
+      val s = new Stateful
+      assume(a == 3 | s.changeState, ", dude")
+      assert(s.state == false)
     }
 
     it("should preserve side effects when Apply with single argument is passed in") {

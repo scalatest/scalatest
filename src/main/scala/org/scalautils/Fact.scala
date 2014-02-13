@@ -150,10 +150,22 @@ trait Fact {
    */
   def unary_! : Fact = new NotFact(this)
 
-  /*
-  def &&(bool: => Boolean): Fact = ...
-  def ||(bool: => Boolean): Fact = ...
-  */
+  //def &&(boolValue: Boolean): Fact = &&(new SimpleFact(boolValue))
+  //def ||(boolValue: Boolean): Fact = ||(new SimpleFact(boolValue))
+}
+
+class SimpleFact(expression: Boolean) extends Fact {
+  val value: Boolean = expression
+
+  def rawFailureMessage: String = Resources("expressionWasFalse")
+  def rawNegatedFailureMessage: String = Resources("expressionWasTrue")
+  def rawMidSentenceFailureMessage: String = Resources("expressionWasFalse")
+  def rawMidSentenceNegatedFailureMessage: String = Resources("expressionWasTrue")
+
+  def failureMessageArgs: IndexedSeq[Any] = Vector.empty
+  def negatedFailureMessageArgs: IndexedSeq[Any] = Vector.empty
+  def midSentenceFailureMessageArgs: IndexedSeq[Any] = Vector.empty
+  def midSentenceNegatedFailureMessageArgs: IndexedSeq[Any] = Vector.empty
 }
 
 class AndFact(fact1: Fact, fact2: Fact) extends Fact {
