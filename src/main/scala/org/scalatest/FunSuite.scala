@@ -75,10 +75,6 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <p>
- * See also: <a href="http://www.scalatest.org/getting_started_with_fun_suite" target="_blank">Getting started with <code>FunSuite</code>.</a>
- * </p>
- * 
- * <p>
  * <em>Note: <code>FunSuite</code> was in part inspired by <a href="http://rehersal.sourceforge.net/documentation.shtml" target="_blank">Rehersal</a>,
  * an early test framework for Scala.</em>
  * </p>

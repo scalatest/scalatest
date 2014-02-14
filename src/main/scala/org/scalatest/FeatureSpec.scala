@@ -200,10 +200,6 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <p>
- * See also: <a href="http://www.scalatest.org/getting_started_with_feature_spec" target="_blank">Getting started with <code>FeatureSpec</code>.</a>
- * </p>
- * 
- * <p>
  * <em>Note: Trait <code>FeatureSpec</code>'s syntax is in part inspired by <a href="http://cukes.info/" target="_blank">Cucumber</a>, a Ruby BDD framework.</em>
  *</p>
  *

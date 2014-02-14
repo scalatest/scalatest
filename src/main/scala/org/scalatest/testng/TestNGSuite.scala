@@ -72,10 +72,6 @@ import Suite.wrapReporterIfNecessary
  * This version of <code>TestNGSuite</code> was tested with TestNG version 6.3.1.
  * </p>
  *
- * <p>
- * See also: <a href="http://www.scalatest.org/getting_started_with_testng" target="_blank">Getting started with TestNG and ScalaTest.</a>
- * </p>
- * 
  * @author Josh Cough
  * @author Bill Venners
  */

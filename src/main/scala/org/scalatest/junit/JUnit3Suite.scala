@@ -142,10 +142,6 @@ import Suite.wrapReporterIfNecessary
  * JUnit 3 will not discover or run the <code>testBadIdea</code> method at all.
  * </p>
  *
- * <p>
- * See also: <a href="http://www.scalatest.org/getting_started_with_junit_3" target="_blank">Getting started with JUnit 3 and ScalaTest.</a>
- * </p>
- * 
  * @author Bill Venners
  */
 class JUnit3Suite extends TestCase with Suite with AssertionsForJUnit { thisSuite =>

@@ -72,10 +72,6 @@ import Suite.wrapReporterIfNecessary
  * Instances of this class are not thread safe.
  * </p>
  *
- * <p>
- * See also: <a href="http://www.scalatest.org/getting_started_with_junit_4" target="_blank">Getting started with JUnit 4 and ScalaTest.</a>
- * </p>
- * 
  * @author Bill Venners
  * @author Daniel Watson
  * @author Joel Neely
