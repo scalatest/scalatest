@@ -165,14 +165,6 @@ object Bool {
   def notBool(bool: Bool): Bool = new NotBool(bool)
 
   /**
-   * Create a simple macro <code>Bool</code>.
-   *
-   * @param expression the <code>Boolean</code> expression
-   * @param expressionText the expression text
-   * @return a simple macro <code>Bool</code>
-   */
-
-  /**
    * Create simple macro <code>Bool</code> that is used by <code>BooleanMacro</code> to wrap an unrecognized <code>Boolean</code> expression.
    *
    * @param expression the <code>Boolean</code> expression
