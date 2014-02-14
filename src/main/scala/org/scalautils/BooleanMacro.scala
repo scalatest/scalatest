@@ -166,23 +166,6 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
       )
     )
 
-  def simpleBool(expression: Tree): Apply =
-    Apply(
-      Select(
-        Select(
-          Select(
-            Ident(newTermName("org")),
-            newTermName("scalautils")
-          ),
-          newTermName("Bool")
-        ),
-        newTermName("simpleBool")
-      ),
-      List(
-        expression
-      )
-    )
-
   def traverseSelect(select: Select, rightExpr: Tree): (Tree, Tree) = {
     val operator = select.name.decoded
     if (logicOperators.contains(operator)) {
@@ -206,7 +189,7 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
               newTermName("value")
             ),
             evalBlock,
-            simpleBool(context.literal(false).tree)
+            simpleMacroBool(context.literal(false).tree, "")
           )
         }
         else if (operator == "||" || operator == "|") // || and |, generate if (left.value) true else {...}
@@ -215,7 +198,7 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
               Ident(newTermName("$org_scalatest_assert_macro_left")),
               newTermName("value")
             ),
-            simpleBool(context.literal(true).tree),
+            simpleMacroBool(context.literal(true).tree, ""),
             evalBlock
           )
         else

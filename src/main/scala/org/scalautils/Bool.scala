@@ -157,14 +157,6 @@ trait Bool {
 object Bool {
 
   /**
-   * Create a simple <code>Bool</code>
-   *
-   * @param expression the <code>Boolean</code> expression
-   * @return a simple <code>Bool</code>
-   */
-  def simpleBool(expression: Boolean): Bool = new SimpleBool(expression)
-
-  /**
    * Create a negated version of the given <code>Bool</code>
    *
    * @param bool the given <code>Bool</code>
