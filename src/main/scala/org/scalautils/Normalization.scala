@@ -102,5 +102,19 @@ trait Normalization[A] { thisNormalization =>
     new Normalization[A] {
       def normalized(a: A): A = other.normalized(thisNormalization.normalized(a))
     }
+
+  /**
+   * Converts this <code>Normalization</code> to a <code>NormalizingEquivalence[A]</code> whose <code>normalized</code>
+   * method delegates to this <code>Normalization[A]</code> and whose <code>afterNormalizationEquivalence</code> field returns the
+   * implicitly passed <code>Equivalence[A]</code>.
+   *
+   * @param equivalence the <code>Equivalence</code> that the returned <code>NormalizingEquivalence</code>
+   *     will delegate to determine equality after normalizing both left and right (if appropriate) sides.
+   */
+  final def toEquivalence(implicit equivalence: Equivalence[A]): NormalizingEquivalence[A] =
+    new NormalizingEquivalence[A] {
+      override val afterNormalizationEquivalence = equivalence
+      def normalized(a: A): A = thisNormalization.normalized(a)
+    }
 }
 

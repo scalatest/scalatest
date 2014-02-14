@@ -223,5 +223,22 @@ trait Uniformity[A] extends Normalization[A] { thisUniformity =>
       def normalizedCanHandle(b: Any): Boolean = other.normalizedCanHandle(b) && thisUniformity.normalizedCanHandle(b)
       def normalizedOrSame(b: Any): Any = other.normalizedOrSame(thisUniformity.normalizedOrSame(b))
     }
+
+  /**
+   * Converts this <code>Uniformity</code> to a <code>NormalizingEquality[A]</code> whose <code>normalized</code>,
+   * <code>normalizedCanHandle</code>, and <code>normalizedOrSame</code> methods delegate
+   * to this <code>Uniformity[A]</code> and whose <code>afterNormalizationEquality</code> field returns the
+   * implicitly passed <code>Equality[A]</code>.
+   *
+   * @param equality the <code>Equality</code> that the returned <code>NormalizingEquality</code>
+   *     will delegate to determine equality after normalizing both left and right (if appropriate) sides.
+   */
+  final def toEquality(implicit equality: Equality[A]): NormalizingEquality[A] =
+    new NormalizingEquality[A] {
+      override val afterNormalizationEquality = equality
+      def normalized(a: A): A = thisUniformity.normalized(a)
+      def normalizedCanHandle(b: Any): Boolean = thisUniformity.normalizedCanHandle(b)
+      def normalizedOrSame(b: Any): Any = thisUniformity.normalizedOrSame(b)
+    }
 }
 

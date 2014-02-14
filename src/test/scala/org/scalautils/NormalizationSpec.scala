@@ -40,6 +40,48 @@ class NormalizationSpec extends Spec with StringNormalizations {
         assert(!sAndT.isInstanceOf[Uniformity[_]])
       }
     }
+    def `can be converted to a NormalizingEquality that delegates to implicit Equality without using the Explicitly DSL` {
+      assert(lowerCased.toEquality.areEqual("howdy", "HOWDY"))
+      assert((lowerCased and trimmed).toEquality.areEqual(" howdy", "HOWDY "))
+      assert(!lowerCased.toEquality.areEqual("howdy", "HOWDX"))
+      assert(!(lowerCased and trimmed).toEquality.areEqual(" howdy", "HOWDX "))
+      assert(!lowerCased.toEquality.areEqual("howdy", "XOWDY"))
+      assert(!(lowerCased and trimmed).toEquality.areEqual(" howdy", "XOWDY "))
+      implicit val firstCharStringEquality =
+        new Equality[String] {
+          def areEqual(a: String, b: Any): Boolean =
+            b match {
+              case bString: String => a(0) == bString(0)
+              case _ => false
+            }
+        }
+      assert(lowerCased.toEquality.areEqual("howdy", "HOWDY"))
+      assert((lowerCased and trimmed).toEquality.areEqual(" howdy", "HOWDY "))
+      assert(lowerCased.toEquality.areEqual("howdy", "HOWDX"))
+      assert((lowerCased and trimmed).toEquality.areEqual(" howdy", "HOWDX "))
+      assert(!lowerCased.toEquality.areEqual("howdy", "XOWDY"))
+      assert(!(lowerCased and trimmed).toEquality.areEqual(" howdy", "XOWDY "))
+    }
+  }
+  object `A Normalization` {
+    def `can be converted to a NormalizingEquivalence that delegates to implicit Equivalence without using the Explicitly DSL` {
+      assert(lowerCased.toEquivalence.areEquivalent("howdy", "HOWDY"))
+      assert((lowerCased and trimmed).toEquivalence.areEquivalent(" howdy", "HOWDY "))
+      assert(!lowerCased.toEquivalence.areEquivalent("howdy", "HOWDX"))
+      assert(!(lowerCased and trimmed).toEquivalence.areEquivalent(" howdy", "HOWDX "))
+      assert(!lowerCased.toEquivalence.areEquivalent("howdy", "XOWDY"))
+      assert(!(lowerCased and trimmed).toEquivalence.areEquivalent(" howdy", "XOWDY "))
+      implicit val firstCharStringEquivalence =
+        new Equivalence[String] {
+          def areEquivalent(a: String, b: String): Boolean = a(0) == b(0)
+        }
+      assert(lowerCased.toEquivalence.areEquivalent("howdy", "HOWDY"))
+      assert((lowerCased and trimmed).toEquivalence.areEquivalent(" howdy", "HOWDY "))
+      assert(lowerCased.toEquivalence.areEquivalent("howdy", "HOWDX"))
+      assert((lowerCased and trimmed).toEquivalence.areEquivalent(" howdy", "HOWDX "))
+      assert(!lowerCased.toEquivalence.areEquivalent("howdy", "XOWDY"))
+      assert(!(lowerCased and trimmed).toEquivalence.areEquivalent(" howdy", "XOWDY "))
+    }
   }
 }
 

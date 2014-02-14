@@ -612,6 +612,15 @@ sealed abstract class Or[+G,+B] {
   def map[H](f: G => H): H Or B
 
   /**
+   * Maps the given function to this <code>Or</code>'s value if it is a <code>Bad</code> or returns <code>this</code> if it is a <code>Good</code>.
+   *
+   * @param f the function to apply
+   * @return if this is a <code>Bad</code>, the result of applying the given function to the contained value wrapped in a <code>Bad</code>,
+   *         else this <code>Good<code> is returned
+   */
+  def badMap[C](f: B => C): G Or C
+
+  /**
    * Applies the given function f to the contained value if this <code>Or</code> is a <code>Good</code>; does nothing if this <code>Or</code>
    * is a <code>Bad</code>.
    *
@@ -804,6 +813,16 @@ sealed abstract class Or[+G,+B] {
    * @return the result of applying the appropriate one of the two passed functions, <code>gf</code> or </code>bf</code>, to this <code>Or</code>'s value
    */
   def transform[H, C](gf: G => H Or C, bf: B => H Or C): H Or C
+
+  /**
+   * Folds this <code>Or</code> into a value of type <code>V</code> by applying the given <code>gf</code> function if this is
+   * a <code>Good</code> else the given <code>bf</code> function if this is a <code>Bad</code>.
+   *
+   * @param gf the function to apply to this <code>Or</code>'s <code>Good</code> value, if it is a <code>Good</code>
+   * @param bf the function to apply to this <code>Or</code>'s <code>Bad</code> value, if it is a <code>Bad</code>
+   * @return the result of applying the appropriate one of the two passed functions, <code>gf</code> or </code>bf</code>, to this <code>Or</code>'s value
+   */
+  def fold[V](gf: G => V, bf: B => V): V
 }
 
 /**
@@ -950,7 +969,8 @@ final case class Good[+G,+B](g: G) extends Or[G,B] {
    */
   def orBad[C](implicit ev: B <:< C): Good[G, C] = this.asInstanceOf[Good[G, C]]
   def get: G = g
-  def map[H](f: G => H): Or[H, B] = Good(f(g))
+  def map[H](f: G => H): H Or B = Good(f(g))
+  def badMap[C](f: B => C): G Or C = this.asInstanceOf[G Or C]
   def foreach(f: G => Unit): Unit = f(g)
   def flatMap[H, C >: B](f: G => H Or C): H Or C = f(g)
   def filter[C >: B](f: G => Validation[C]): G Or C =
@@ -969,6 +989,7 @@ final case class Good[+G,+B](g: G) extends Or[G,B] {
   def toTry(implicit ev: B <:< Throwable): Success[G] = Success(g)
   def swap: B Or G = Bad(g)
   def transform[H, C](gf: G => H Or C, bf: B => H Or C): H Or C = gf(g)
+  def fold[V](gf: G => V, bf: B => V): V = gf(g)
 }
 
 /**
@@ -1102,6 +1123,7 @@ final case class Bad[+G,+B](b: B) extends Or[G,B] {
   def asOr: G Or B = this
   def get: G = throw new NoSuchElementException("Bad(" + b + ").get")
   def map[H](f: G => H): H Or B = this.asInstanceOf[H Or B]
+  def badMap[C](f: B => C): G Or C = Bad(f(b))
   def foreach(f: G => Unit): Unit = ()
   def flatMap[H, C >: B](f: G => H Or C): H Or C = this.asInstanceOf[H Or C]
   def filter[C >: B](f: G => Validation[C]): G Or C = this
@@ -1116,5 +1138,6 @@ final case class Bad[+G,+B](b: B) extends Or[G,B] {
   def toTry(implicit ev: B <:< Throwable): Failure[G] = Failure(b)
   def swap: B Or G = Good(b)
   def transform[H, C](gf: G => H Or C, bf: B => H Or C): H Or C = bf(b)
+  def fold[V](gf: G => V, bf: B => V): V = bf(b)
 }
 
