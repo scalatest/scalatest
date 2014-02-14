@@ -63,6 +63,20 @@ package org.scalautils
  * result should equal ("hello") (after being lowerCased and trimmed)
  * </pre>
  *
+ * <p>
+ * If you prefer not to use English-like DSLs in your production code, you can alternatively
+ * not use the <code>Explicitly</code> trait and instead write:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * // To explicitly specify an Equality instance, just specify it:
+ * if ((result === "hello")(Equality.default)) true else false
+ *
+ * // To base an Equality instance on a Uniformity, just
+ * // call toEquality on it:
+ * if ((result === "hello")(lowerCased.toEquality)) true else false
+ * </pre>
+ *
  * @author Bill Venners
  */
 trait Explicitly {
