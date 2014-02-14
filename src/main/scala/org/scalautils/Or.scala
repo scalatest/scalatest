@@ -607,7 +607,7 @@ sealed abstract class Or[+G,+B] {
    *
    * @param f the function to apply
    * @return if this is a <code>Good</code>, the result of applying the given function to the contained value wrapped in a <code>Good</code>,
-   *         else this <code>Bad<code> is returned
+   *         else this <code>Bad</code> is returned
    */
   def map[H](f: G => H): H Or B
 
@@ -616,7 +616,7 @@ sealed abstract class Or[+G,+B] {
    *
    * @param f the function to apply
    * @return if this is a <code>Bad</code>, the result of applying the given function to the contained value wrapped in a <code>Bad</code>,
-   *         else this <code>Good<code> is returned
+   *         else this <code>Good</code> is returned
    */
   def badMap[C](f: B => C): G Or C
 
@@ -634,7 +634,7 @@ sealed abstract class Or[+G,+B] {
    *
    * @param f the function to apply
    * @return if this is a <code>Good</code>, the result of applying the given function to the contained value wrapped in a <code>Good</code>,
-   *         else this <code>Bad<code> is returned
+   *         else this <code>Bad</code> is returned
    */
   def flatMap[H, C >: B](f: G => H Or C): H Or C
 
@@ -751,7 +751,7 @@ sealed abstract class Or[+G,+B] {
    * <code>Int Or One[One[ErrorMessage]]</code>.
    * </p>
    *
-   * @return this <code>Good</value>, if this <code>Or</code> is a <code>Good</code>; or this <code>Bad</code> value wrapped in a <code>One</code> if
+   * @return this <code>Good</code>, if this <code>Or</code> is a <code>Good</code>; or this <code>Bad</code> value wrapped in a <code>One</code> if
    *     this <code>Or</code> is a <code>Bad</code>.
    */
   def accumulating: G Or One[B]
