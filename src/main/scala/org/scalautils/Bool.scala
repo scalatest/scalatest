@@ -18,16 +18,16 @@ package org.scalautils
 import java.text.MessageFormat
 
 /**
- * A trait that represents a fact that:
+ * A trait that represent a rich-featured boolean value, which includes the following members:
  *
  * <ul>
- * <li>represents a boolean value</li>
+ * <li>a boolean value</li>
  * <li>methods useful for failure messages construction</li>
- * <li>logical expression methods that makes <code>Fact</code> composable</li>
+ * <li>logical expression methods that makes <code>Bool</code> composable</li>
  * </ul>
  *
  */
-trait Fact {
+trait Bool {
 
   private def makeString(rawString: String, args: IndexedSeq[Any]): String = {
     val msgFmt = new MessageFormat(rawString)
@@ -63,7 +63,7 @@ trait Fact {
     if (midSentenceNegatedFailureMessageArgs.isEmpty) rawMidSentenceNegatedFailureMessage else makeString(rawMidSentenceNegatedFailureMessage, midSentenceNegatedFailureMessageArgs)
 
   /**
-   * the <code>Boolean</code> value of this <code>Fact</code>
+   * the <code>Boolean</code> value of this <code>Bool</code>
    */
   def value: Boolean
 
@@ -108,56 +108,128 @@ trait Fact {
   def midSentenceNegatedFailureMessageArgs: IndexedSeq[Any]
 
   /**
-   * Logical <code>and</code> this <code>Fact</code> with another <code>Fact</code>
+   * Logical <code>and</code> this <code>Bool</code> with another <code>Bool</code>
    *
-   * @param fact another <code>Fact</code>
-   * @return a <code>Fact</code> that represents the result of logical <code>and</code>
+   * @param bool another <code>Bool</code>
+   * @return a <code>Bool</code> that represents the result of logical <code>and</code>
    */
-  def &&(fact: Fact): Fact =
+  def &&(bool: Bool): Bool =
     if (value)
-      new AndFact(this, fact)
+      new AndBool(this, bool)
     else
       this
 
   /**
-   * Logical <code>and</code> this <code>Fact</code> with another <code>Fact</code>
+   * Logical <code>and</code> this <code>Bool</code> with another <code>Bool</code>
    *
-   * @param fact another <code>Fact</code>
-   * @return a <code>Fact</code> that represents the result of logical <code>and</code>
+   * @param bool another <code>Bool</code>
+   * @return a <code>Bool</code> that represents the result of logical <code>and</code>
    */
-  def &(fact: Fact): Fact = &&(fact)
+  def &(bool: Bool): Bool = &&(bool)
 
   /**
-   * Logical <code>or</code> this <code>Fact</code> with another <code>Fact</code>
+   * Logical <code>or</code> this <code>Bool</code> with another <code>Bool</code>
    *
-   * @param fact another <code>Fact</code>
-   * @return a <code>Fact</code> that represents the result of logical <code>or</code>
+   * @param bool another <code>Bool</code>
+   * @return a <code>Bool</code> that represents the result of logical <code>or</code>
    */
-  def ||(fact: => Fact): Fact = new OrFact(this, fact)
+  def ||(bool: => Bool): Bool = new OrBool(this, bool)
 
   /**
-   * Logical <code>or</code> this <code>Fact</code> with another <code>Fact</code>
+   * Logical <code>or</code> this <code>Bool</code> with another <code>Bool</code>
    *
-   * @param fact another <code>Fact</code>
-   * @return a <code>Fact</code> that represents the result of logical <code>or</code>
+   * @param bool another <code>Bool</code>
+   * @return a <code>Bool</code> that represents the result of logical <code>or</code>
    */
-  def |(fact: => Fact): Fact = ||(fact)
+  def |(bool: => Bool): Bool = ||(bool)
 
   /**
-   * Negate this <code>Fact</code>
+   * Negate this <code>Bool</code>
    *
-   * @return a <code>Fact</code> that represents the result of negating the original <code>Fact</code>
+   * @return a <code>Bool</code> that represents the result of negating the original <code>Bool</code>
    */
-  def unary_! : Fact = new NotFact(this)
-
-  //def &&(boolValue: Boolean): Fact = &&(new SimpleFact(boolValue))
-  //def ||(boolValue: Boolean): Fact = ||(new SimpleFact(boolValue))
+  def unary_! : Bool = new NotBool(this)
 }
 
-class SimpleFact(expression: Boolean) extends Fact {
+/**
+ * <code>Bool</code> companion object that provides factory methods to create different sub types of <code>Bool</code>
+ */
+object Bool {
 
   /**
-   * the <code>Boolean</code> value of this <code>Fact</code>
+   * Create a simple <code>Bool</code>
+   *
+   * @param expression the <code>Boolean</code> expression
+   * @return a simple <code>Bool</code>
+   */
+  def simpleBool(expression: Boolean): Bool = new SimpleBool(expression)
+
+  /**
+   * Create a negated version of the given <code>Bool</code>
+   *
+   * @param bool the given <code>Bool</code>
+   * @return a negated version of the given <code>Bool</code>
+   */
+  def notBool(bool: Bool): Bool = new NotBool(bool)
+
+  /**
+   * Create a simple macro <code>Bool</code>.
+   *
+   * @param expression the <code>Boolean</code> expression
+   * @param expressionText the expression text
+   * @return a simple macro <code>Bool</code>
+   */
+
+  /**
+   * Create simple macro <code>Bool</code> that is used by <code>BooleanMacro</code> to wrap an unrecognized <code>Boolean</code> expression.
+   *
+   * @param expression the <code>Boolean</code> expression
+   * @param expressionText the original expression text (source code)
+   * @return a simple macro <code>Bool</code>
+   */
+  def simpleMacroBool(expression: Boolean, expressionText: String): Bool = new SimpleMacroBool(expression, expressionText)
+
+  /**
+   * Create binary macro <code>Bool</code> that is used by <code>BooleanMacro</code> to wrap a recognized <code>Boolean</code> expression, which includes <code>Boolean</code> expression that
+   * uses <code>==</code>, <code>===</code>, <code>!=</code>, <code>!==</code>, <code>&gt;</code>, <code>&gt;=</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&&</code>,
+   * <code>&</code>, <code>||</code> and <code>|</code>.
+   *
+   * @param left the left-hand-side (LHS) of the <code>Boolean</code> expression
+   * @param operator the operator (method name) of the <code>Boolean</code> expression
+   * @param right the right-hand-side (RHS) of the <code>Boolean</code> expression
+   * @param expression the <code>Boolean</code> expression
+   * @return a binary macro <code>Bool</code>
+   */
+  def binaryMacroBool(left: Any, operator: String, right: Any, expression: Boolean): Bool = new BinaryMacroBool(left, operator, right, expression)
+
+  /**
+   * Overloaded method that takes a <code>Bool</code> in place of <code>Boolean</code> expression to create a new binary macro <code>Bool</code>.
+   *
+   * @param left the left-hand-side (LHS) of the <code>Boolean</code> expression
+   * @param operator the operator (method name) of the <code>Boolean</code> expression
+   * @param right the right-hand-side (RHS) of the <code>Boolean</code> expression
+   * @param bool the <code>Bool</code> that will provide the <code>Boolean</code> expression value with <code>bool.value</code>
+   * @return a binary macro <code>Bool</code>
+   */
+  def binaryMacroBool(left: Any, operator: String, right: Any, bool: Bool): Bool = new BinaryMacroBool(left, operator, right, bool)
+
+  /**
+   * A helper method to check is the given <code>Bool</code> is a simple macro <code>Bool</code> and contains empty expression text.
+   *
+   * @param bool the <code>Bool</code> to check
+   * @return <code>true</code> if the given <code>Bool</code> is a simple macro <code>Bool</code> and contains empty expression text, <code>false</code> otherwise.
+   */
+  def isSimpleWithoutExpressionText(bool: Bool): Boolean =
+    bool match {
+      case s: org.scalautils.SimpleMacroBool if s.expressionText.isEmpty => true
+      case _ => false
+    }
+}
+
+private[scalautils] class SimpleBool(expression: Boolean) extends Bool {
+
+  /**
+   * the <code>Boolean</code> value of this <code>Bool</code>
    */
   val value: Boolean = expression
 
@@ -219,17 +291,17 @@ class SimpleFact(expression: Boolean) extends Fact {
 }
 
 /**
- * Fact that represents the result of logical <code>AND</code> of two <code>Fact</code>.
+ * Bool that represents the result of logical <code>AND</code> of two <code>Bool</code>.
  *
- * @param fact1 the first <code>Fact</code>
- * @param fact2 the second <code>Fact</code>
+ * @param bool1 the first <code>Bool</code>
+ * @param bool2 the second <code>Bool</code>
  */
-class AndFact(fact1: Fact, fact2: Fact) extends Fact {
+private[scalautils] class AndBool(bool1: Bool, bool2: Bool) extends Bool {
 
   /**
-   * the result of <code>fact1.value</code> logical <code>AND</code> <code>fact2.value</code>
+   * the result of <code>bool1.value</code> logical <code>AND</code> <code>bool2.value</code>
    */
-  lazy val value: Boolean = fact1.value && fact2.value
+  lazy val value: Boolean = bool1.value && bool2.value
 
   /**
    * raw message to report a failure
@@ -262,44 +334,44 @@ class AndFact(fact1: Fact, fact2: Fact) extends Fact {
   /**
    * Arguments to construct final failure message with raw message returned from <code>rawFailureMessage</code>.
    *
-   * @return <code>Vector</code> that contains <code>fact1.negatedFailureMessage</code> and <code>fact2.midSentenceFailureMessage</code>
+   * @return <code>Vector</code> that contains <code>bool1.negatedFailureMessage</code> and <code>bool2.midSentenceFailureMessage</code>
    */
-  def failureMessageArgs = Vector(fact1.negatedFailureMessage, fact2.midSentenceFailureMessage)
+  def failureMessageArgs = Vector(bool1.negatedFailureMessage, bool2.midSentenceFailureMessage)
 
   /**
    * Arguments to construct final negated failure message with raw message returned from <code>rawNegatedFailureMessage</code>.
    *
-   * @return <code>Vector</code> that contains <code>fact1.negatedFailureMessage</code> and <code>fact2.midSentenceNegatedFailureMessage</code>
+   * @return <code>Vector</code> that contains <code>bool1.negatedFailureMessage</code> and <code>bool2.midSentenceNegatedFailureMessage</code>
    */
-  def negatedFailureMessageArgs = Vector(fact1.negatedFailureMessage, fact2.midSentenceNegatedFailureMessage)
+  def negatedFailureMessageArgs = Vector(bool1.negatedFailureMessage, bool2.midSentenceNegatedFailureMessage)
 
   /**
    * Arguments to construct final mid sentence failure message with raw message returned from <code>rawMidSentenceFailureMessage</code>.
    *
-   * @return <code>Vector</code> that contains <code>fact1.midSentenceNegatedFailureMessage</code> and <code>fact2.midSentenceFailureMessage</code>
+   * @return <code>Vector</code> that contains <code>bool1.midSentenceNegatedFailureMessage</code> and <code>bool2.midSentenceFailureMessage</code>
    */
-  def midSentenceFailureMessageArgs = Vector(fact1.midSentenceNegatedFailureMessage, fact2.midSentenceFailureMessage)
+  def midSentenceFailureMessageArgs = Vector(bool1.midSentenceNegatedFailureMessage, bool2.midSentenceFailureMessage)
 
   /**
    * Arguments to construct final negated mid sentence failure message with raw message returned from <code>rawMidSentenceNegatedFailureMessage</code>.
    *
-   * @return <code>Vector</code> that contains <code>fact1.midSentenceNegatedFailureMessage</code> and <code>fact2.midSentenceNegatedFailureMessage</code>
+   * @return <code>Vector</code> that contains <code>bool1.midSentenceNegatedFailureMessage</code> and <code>bool2.midSentenceNegatedFailureMessage</code>
    */
-  def midSentenceNegatedFailureMessageArgs = Vector(fact1.midSentenceNegatedFailureMessage, fact2.midSentenceNegatedFailureMessage)
+  def midSentenceNegatedFailureMessageArgs = Vector(bool1.midSentenceNegatedFailureMessage, bool2.midSentenceNegatedFailureMessage)
 }
 
 /**
- * Fact that represents the result of logical <code>OR</code> of two <code>Fact</code>.
+ * Bool that represents the result of logical <code>OR</code> of two <code>Bool</code>.
  *
- * @param fact1 the first <code>Fact</code>
- * @param fact2 the second <code>Fact</code>
+ * @param bool1 the first <code>Bool</code>
+ * @param bool2 the second <code>Bool</code>
  */
-class OrFact(fact1: Fact, fact2: Fact) extends Fact {
+private[scalautils] class OrBool(bool1: Bool, bool2: Bool) extends Bool {
 
   /**
-   * the result of <code>fact1.value</code> logical <code>OR</code> <code>fact2.value</code>
+   * the result of <code>bool1.value</code> logical <code>OR</code> <code>bool2.value</code>
    */
-  lazy val value: Boolean = fact1.value || fact2.value
+  lazy val value: Boolean = bool1.value || bool2.value
 
   /**
    * raw message to report a failure
@@ -332,111 +404,111 @@ class OrFact(fact1: Fact, fact2: Fact) extends Fact {
   /**
    * Arguments to construct final failure message with raw message returned from <code>rawFailureMessage</code>.
    *
-   * @return <code>Vector</code> that contains <code>fact1.failureMessage</code> and <code>fact2.midSentenceFailureMessage</code>
+   * @return <code>Vector</code> that contains <code>bool1.failureMessage</code> and <code>bool2.midSentenceFailureMessage</code>
    */
-  def failureMessageArgs = Vector(fact1.failureMessage, fact2.midSentenceFailureMessage)
+  def failureMessageArgs = Vector(bool1.failureMessage, bool2.midSentenceFailureMessage)
 
   /**
    * Arguments to construct final negated failure message with raw message returned from <code>rawNegatedFailureMessage</code>.
    *
-   * @return <code>Vector</code> that contains <code>fact1.failureMessage</code> and <code>fact2.midSentenceNegatedFailureMessage</code>
+   * @return <code>Vector</code> that contains <code>bool1.failureMessage</code> and <code>bool2.midSentenceNegatedFailureMessage</code>
    */
-  def negatedFailureMessageArgs = Vector(fact1.failureMessage, fact2.midSentenceNegatedFailureMessage)
+  def negatedFailureMessageArgs = Vector(bool1.failureMessage, bool2.midSentenceNegatedFailureMessage)
 
   /**
    * Arguments to construct final mid sentence failure message with raw message returned from <code>rawMidSentenceFailureMessage</code>.
    *
-   * @return <code>Vector</code> that contains <code>fact1.midSentenceFailureMessage</code> and <code>fact2.midSentenceFailureMessage</code>
+   * @return <code>Vector</code> that contains <code>bool1.midSentenceFailureMessage</code> and <code>bool2.midSentenceFailureMessage</code>
    */
-  def midSentenceFailureMessageArgs = Vector(fact1.midSentenceFailureMessage, fact2.midSentenceFailureMessage)
+  def midSentenceFailureMessageArgs = Vector(bool1.midSentenceFailureMessage, bool2.midSentenceFailureMessage)
 
   /**
    * Arguments to construct final negated mid sentence failure message with raw message returned from <code>rawMidSentenceNegatedFailureMessage</code>.
    *
-   * @return <code>Vector</code> that contains <code>fact1.midSentenceFailureMessage</code> and <code>fact2.midSentenceNegatedFailureMessage</code>
+   * @return <code>Vector</code> that contains <code>bool1.midSentenceFailureMessage</code> and <code>bool2.midSentenceNegatedFailureMessage</code>
    */
-  def midSentenceNegatedFailureMessageArgs = Vector(fact1.midSentenceFailureMessage, fact2.midSentenceNegatedFailureMessage)
+  def midSentenceNegatedFailureMessageArgs = Vector(bool1.midSentenceFailureMessage, bool2.midSentenceNegatedFailureMessage)
 }
 
 /**
- * Fact that represents the result of logical <code>NOT</code> of the given <code>Fact</code>.
+ * Bool that represents the result of logical <code>NOT</code> of the given <code>Bool</code>.
  *
- * @param fact the given <code>Fact</code>
+ * @param bool the given <code>Bool</code>
  */
-class NotFact(fact: Fact) extends Fact {
+private[scalautils] class NotBool(bool: Bool) extends Bool {
 
   /**
-   * the negated result of <code>fact1.value</code>
+   * the negated result of <code>bool1.value</code>
    */
-  lazy val value: Boolean = !fact.value
+  lazy val value: Boolean = !bool.value
 
   /**
    * raw message to report a failure
    *
-   * @return the passed in <code>fact.rawNegatedFailureMessage</code>
+   * @return the passed in <code>bool.rawNegatedFailureMessage</code>
    */
-  def rawFailureMessage: String = fact.rawNegatedFailureMessage
+  def rawFailureMessage: String = bool.rawNegatedFailureMessage
 
   /**
    * raw message with a meaning opposite to that of the failure message
    *
-   * @return the passed in <code>fact.rawFailureMessage</code>
+   * @return the passed in <code>bool.rawFailureMessage</code>
    */
-  def rawNegatedFailureMessage: String = fact.rawFailureMessage
+  def rawNegatedFailureMessage: String = bool.rawFailureMessage
 
   /**
    * raw mid sentence message to report a failure
    *
-   * @return the passed in <code>fact.rawMidSentenceNegatedFailureMessage</code>
+   * @return the passed in <code>bool.rawMidSentenceNegatedFailureMessage</code>
    */
-  def rawMidSentenceFailureMessage: String = fact.rawMidSentenceNegatedFailureMessage
+  def rawMidSentenceFailureMessage: String = bool.rawMidSentenceNegatedFailureMessage
 
   /**
    * raw mid sentence message with a meaning opposite to that of the failure message
    *
-   * @return the passed in <code>fact.rawMidSentenceFailureMessage</code>
+   * @return the passed in <code>bool.rawMidSentenceFailureMessage</code>
    */
-  def rawMidSentenceNegatedFailureMessage: String = fact.rawMidSentenceFailureMessage
+  def rawMidSentenceNegatedFailureMessage: String = bool.rawMidSentenceFailureMessage
 
   /**
    * Arguments to construct final failure message with raw message returned from <code>rawFailureMessage</code>.
    *
-   * @return the passed in <code>fact.negatedFailureMessageArgs</code>
+   * @return the passed in <code>bool.negatedFailureMessageArgs</code>
    */
-  def failureMessageArgs: IndexedSeq[Any] = fact.negatedFailureMessageArgs
+  def failureMessageArgs: IndexedSeq[Any] = bool.negatedFailureMessageArgs
 
   /**
    * Arguments to construct final negated failure message with raw message returned from <code>rawNegatedFailureMessage</code>.
    *
-   * @return the passed in <code>fact.failureMessageArgs</code>
+   * @return the passed in <code>bool.failureMessageArgs</code>
    */
-  def negatedFailureMessageArgs: IndexedSeq[Any] = fact.failureMessageArgs
+  def negatedFailureMessageArgs: IndexedSeq[Any] = bool.failureMessageArgs
 
   /**
    * Arguments to construct final mid sentence failure message with raw message returned from <code>rawMidSentenceFailureMessage</code>.
    *
-   * @return the passed in <code>fact.midSentenceNegatedFailureMessageArgs</code>
+   * @return the passed in <code>bool.midSentenceNegatedFailureMessageArgs</code>
    */
-  def midSentenceFailureMessageArgs: IndexedSeq[Any] = fact.midSentenceNegatedFailureMessageArgs
+  def midSentenceFailureMessageArgs: IndexedSeq[Any] = bool.midSentenceNegatedFailureMessageArgs
 
   /**
    * Arguments to construct final negated mid sentence failure message with raw message returned from <code>rawMidSentenceNegatedFailureMessage</code>.
    *
-   * @return the passed in <code>fact.midSentenceFailureMessageArgs</code>
+   * @return the passed in <code>bool.midSentenceFailureMessageArgs</code>
    */
-  def midSentenceNegatedFailureMessageArgs: IndexedSeq[Any] = fact.midSentenceFailureMessageArgs
+  def midSentenceNegatedFailureMessageArgs: IndexedSeq[Any] = bool.midSentenceFailureMessageArgs
 }
 
 /**
- * Simple macro fact that is used by <code>BooleanMacro</code> to wrap an unrecognized <code>Boolean</code> expression.
+ * Simple macro <code>Bool</code> that is used by <code>BooleanMacro</code> to wrap an unrecognized <code>Boolean</code> expression.
  *
  * @param expression the <code>Boolean</code> expression
  * @param expressionText the original expression text (source code)
  */
-class SimpleMacroFact(expression: Boolean, val expressionText: String) extends Fact {
+private[scalautils] class SimpleMacroBool(expression: Boolean, val expressionText: String) extends Bool {
 
   /**
-   * the <code>Boolean</code> value of this <code>Fact</code>, holding the passed in expression value.
+   * the <code>Boolean</code> value of this <code>Bool</code>, holding the passed in expression value.
    */
   val value: Boolean = expression
 
@@ -499,7 +571,7 @@ class SimpleMacroFact(expression: Boolean, val expressionText: String) extends F
 }
 
 /**
- * Binary macro fact that is used by <code>BooleanMacro</code> to wrap a recognized <code>Boolean</code> expression, which includes <code>Boolean</code> expression that
+ * Binary macro <code>Bool</code> that is used by <code>BooleanMacro</code> to wrap a recognized <code>Boolean</code> expression, which includes <code>Boolean</code> expression that
  * uses <code>==</code>, <code>===</code>, <code>!=</code>, <code>!==</code>, <code>&gt;</code>, <code>&gt;=</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&&</code>,
  * <code>&</code>, <code>||</code> and <code>|</code>.
  *
@@ -508,21 +580,21 @@ class SimpleMacroFact(expression: Boolean, val expressionText: String) extends F
  * @param right the right-hand-side (RHS) of the <code>Boolean</code> expression
  * @param expression the <code>Boolean</code> expression
  */
-class BinaryMacroFact(left: Any, operator: String, right: Any, expression: Boolean) extends Fact {
+private[scalautils] class BinaryMacroBool(left: Any, operator: String, right: Any, expression: Boolean) extends Bool {
 
   /**
-   * Overloaded constructor that takes a <code>Fact</code> in place of <code>Boolean</code> expression.
+   * Overloaded constructor that takes a <code>Bool</code> in place of <code>Boolean</code> expression.
    *
    * @param left the left-hand-side (LHS) of the <code>Boolean</code> expression
    * @param operator the operator (method name) of the <code>Boolean</code> expression
    * @param right the right-hand-side (RHS) of the <code>Boolean</code> expression
-   * @param fact the <code>Fact</code> that will provide the <code>Boolean</code> expression value with <code>fact.value</code>
+   * @param bool the <code>Bool</code> that will provide the <code>Boolean</code> expression value with <code>bool.value</code>
    */
-  def this(left: Any, operator: String, right: Any, fact: Fact) =
-    this(left, operator, right, fact.value)
+  def this(left: Any, operator: String, right: Any, bool: Bool) =
+    this(left, operator, right, bool.value)
 
   /**
-   * the <code>Boolean</code> value of this <code>Fact</code>.
+   * the <code>Boolean</code> value of this <code>Bool</code>.
    */
   val value: Boolean = expression
 
@@ -553,16 +625,16 @@ class BinaryMacroFact(left: Any, operator: String, right: Any, expression: Boole
       case "<=" => Resources("wasNotLessThanOrEqualTo")
       case "&&" | "&" =>
         (left, right) match {
-          case (leftFact: Fact, rightFact: Fact) =>
-            if (leftFact.value)
+          case (leftBool: Bool, rightBool: Bool) =>
+            if (leftBool.value)
               Resources("commaBut")
             else
-              leftFact.rawFailureMessage
-          case (leftFact: Fact, rightAny: Any) =>
-            if (leftFact.value)
+              leftBool.rawFailureMessage
+          case (leftBool: Bool, rightAny: Any) =>
+            if (leftBool.value)
               Resources("commaBut")
             else
-              leftFact.rawFailureMessage
+              leftBool.rawFailureMessage
           case _ =>
             Resources("commaBut")
         }
@@ -619,29 +691,29 @@ class BinaryMacroFact(left: Any, operator: String, right: Any, expression: Boole
         Vector(leftee, rightee)
       case "&&" | "&" =>
         (left, right) match {
-          case (leftFact: Fact, rightFact: Fact) =>
-            if (leftFact.value)
-              Vector(UnquotedString(leftFact.negatedFailureMessage), UnquotedString(rightFact.midSentenceFailureMessage))
+          case (leftBool: Bool, rightBool: Bool) =>
+            if (leftBool.value)
+              Vector(UnquotedString(leftBool.negatedFailureMessage), UnquotedString(rightBool.midSentenceFailureMessage))
             else
-              leftFact.failureMessageArgs
-          case (leftFact: Fact, rightAny: Any) =>
-            if (leftFact.value)
-              Vector(UnquotedString(leftFact.negatedFailureMessage), rightAny)
+              leftBool.failureMessageArgs
+          case (leftBool: Bool, rightAny: Any) =>
+            if (leftBool.value)
+              Vector(UnquotedString(leftBool.negatedFailureMessage), rightAny)
             else
-              leftFact.failureMessageArgs
-          case (leftAny: Any, rightFact: Fact) =>
-            Vector(leftAny, UnquotedString(if (rightFact.value) rightFact.midSentenceNegatedFailureMessage else rightFact.midSentenceFailureMessage))
+              leftBool.failureMessageArgs
+          case (leftAny: Any, rightBool: Bool) =>
+            Vector(leftAny, UnquotedString(if (rightBool.value) rightBool.midSentenceNegatedFailureMessage else rightBool.midSentenceFailureMessage))
           case _ =>
             Vector(left, right)
         }
       case "||" | "|" =>
         (left, right) match {
-          case (leftFact: Fact, rightFact: Fact) =>
-            Vector(UnquotedString(leftFact.failureMessage), UnquotedString(rightFact.midSentenceFailureMessage))
-          case (leftFact: Fact, rightAny: Any) =>
-            Vector(UnquotedString(leftFact.failureMessage), rightAny)
-          case (leftAny: Any, rightFact: Fact) =>
-            Vector(leftAny, UnquotedString(rightFact.midSentenceFailureMessage))
+          case (leftBool: Bool, rightBool: Bool) =>
+            Vector(UnquotedString(leftBool.failureMessage), UnquotedString(rightBool.midSentenceFailureMessage))
+          case (leftBool: Bool, rightAny: Any) =>
+            Vector(UnquotedString(leftBool.failureMessage), rightAny)
+          case (leftAny: Any, rightBool: Bool) =>
+            Vector(leftAny, UnquotedString(rightBool.midSentenceFailureMessage))
           case _ =>
             Vector(left, right)
         }
@@ -662,29 +734,29 @@ class BinaryMacroFact(left: Any, operator: String, right: Any, expression: Boole
         Vector(leftee, rightee)
       case "&&" | "&" =>
         (left, right) match {
-          case (leftFact: Fact, rightFact: Fact) =>
+          case (leftBool: Bool, rightBool: Bool) =>
             Vector(
-              UnquotedString(if (leftFact.value) leftFact.negatedFailureMessage else leftFact.failureMessage),
-              UnquotedString(if (rightFact.value) rightFact.midSentenceNegatedFailureMessage else rightFact.midSentenceFailureMessage)
+              UnquotedString(if (leftBool.value) leftBool.negatedFailureMessage else leftBool.failureMessage),
+              UnquotedString(if (rightBool.value) rightBool.midSentenceNegatedFailureMessage else rightBool.midSentenceFailureMessage)
             )
-          case (leftFact: Fact, rightAny: Any) =>
-            Vector(UnquotedString(if (leftFact.value) leftFact.negatedFailureMessage else leftFact.failureMessage), rightAny)
-          case (leftAny: Any, rightFact: Fact) =>
-            Vector(leftAny, UnquotedString(if (rightFact.value) rightFact.midSentenceNegatedFailureMessage else rightFact.negatedFailureMessage))
+          case (leftBool: Bool, rightAny: Any) =>
+            Vector(UnquotedString(if (leftBool.value) leftBool.negatedFailureMessage else leftBool.failureMessage), rightAny)
+          case (leftAny: Any, rightBool: Bool) =>
+            Vector(leftAny, UnquotedString(if (rightBool.value) rightBool.midSentenceNegatedFailureMessage else rightBool.negatedFailureMessage))
           case _ =>
             Vector(left, right)
         }
       case "||" | "|" =>
         (left, right) match {
-          case (leftFact: Fact, rightFact: Fact) =>
+          case (leftBool: Bool, rightBool: Bool) =>
             Vector(
-              UnquotedString(if (leftFact.value) leftFact.negatedFailureMessage else leftFact.failureMessage),
-              UnquotedString(if (rightFact.value) rightFact.midSentenceNegatedFailureMessage else rightFact.midSentenceFailureMessage)
+              UnquotedString(if (leftBool.value) leftBool.negatedFailureMessage else leftBool.failureMessage),
+              UnquotedString(if (rightBool.value) rightBool.midSentenceNegatedFailureMessage else rightBool.midSentenceFailureMessage)
             )
-          case (leftFact: Fact, rightAny: Any) =>
-            Vector(UnquotedString(if (leftFact.value) leftFact.negatedFailureMessage else leftFact.failureMessage), rightAny)
-          case (leftAny: Any, rightFact: Fact) =>
-            Vector(leftAny, UnquotedString(if (rightFact.value) rightFact.midSentenceNegatedFailureMessage else rightFact.midSentenceFailureMessage))
+          case (leftBool: Bool, rightAny: Any) =>
+            Vector(UnquotedString(if (leftBool.value) leftBool.negatedFailureMessage else leftBool.failureMessage), rightAny)
+          case (leftAny: Any, rightBool: Bool) =>
+            Vector(leftAny, UnquotedString(if (rightBool.value) rightBool.midSentenceNegatedFailureMessage else rightBool.midSentenceFailureMessage))
           case _ =>
             Vector(left, right)
         }

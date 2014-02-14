@@ -22,7 +22,7 @@ import org.scalautils.TripleEquals
 import exceptions.StackDepthExceptionHelper.getStackDepthFun
 import exceptions.StackDepthException.toExceptionFunction
 import Assertions.NormalResult
-import org.scalautils.{Prettifier, Fact}
+import org.scalautils.{Prettifier, Bool}
 
 /**
  * Trait that contains ScalaTest's basic assertion methods.
@@ -375,39 +375,31 @@ trait Assertions extends TripleEquals {
     }
 
     /**
-     * Assert that the passed in <code>Fact</code> is <code>true</code>, else fail with <code>TestFailedException</code>.
+     * Assert that the passed in <code>Bool</code> is <code>true</code>, else fail with <code>TestFailedException</code>.
      *
-     * @param fact the <code>Fact</code> to assert for
+     * @param bool the <code>Bool</code> to assert for
      * @param clue optional clue to be included in <code>TestFailedException</code>'s error message when assertion failed
      */
-    def macroAssert(fact: Fact, clue: Any) {
+    def macroAssert(bool: Bool, clue: Any) {
       if (clue == null)
         throw new NullPointerException("clue was null")
-      if (!fact.value) {
-        val failureMessage =
-          fact match {
-            case s: org.scalautils.SimpleMacroFact if s.expressionText.isEmpty => None
-            case _ => Some(fact.failureMessage)
-          }
+      if (!bool.value) {
+        val failureMessage = if (Bool.isSimpleWithoutExpressionText(bool)) None else Some(bool.failureMessage)
         throw newAssertionFailedException(append(failureMessage, clue), None, "Assertions.scala", "macroAssert", 2)
       }
     }
 
     /**
-     * Assume that the passed in <code>Fact</code> is <code>true</code>, else throw <code>TestCanceledException</code>.
+     * Assume that the passed in <code>Bool</code> is <code>true</code>, else throw <code>TestCanceledException</code>.
      *
-     * @param fact the <code>Fact</code> to assume for
+     * @param bool the <code>Bool</code> to assume for
      * @param clue optional clue to be included in <code>TestCanceledException</code>'s error message when assertion failed
      */
-    def macroAssume(fact: Fact, clue: Any) {
+    def macroAssume(bool: Bool, clue: Any) {
       if (clue == null)
         throw new NullPointerException("clue was null")
-      if (!fact.value) {
-        val failureMessage =
-          fact match {
-            case s: org.scalautils.SimpleMacroFact if s.expressionText.isEmpty => None
-            case _ => Some(fact.failureMessage)
-          }
+      if (!bool.value) {
+        val failureMessage = if (Bool.isSimpleWithoutExpressionText(bool)) None else Some(bool.failureMessage)
         throw newTestCanceledException(append(failureMessage, clue), None, "Assertions.scala", "macroAssume", 2)
       }
     }

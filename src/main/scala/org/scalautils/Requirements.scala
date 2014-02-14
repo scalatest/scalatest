@@ -40,39 +40,31 @@ trait Requirements {
     }
 
     /**
-     * Require that the passed in <code>Fact</code> is <code>true</code>, else fail with <code>IllegalArgumentException</code>.
+     * Require that the passed in <code>Bool</code> is <code>true</code>, else fail with <code>IllegalArgumentException</code>.
      *
-     * @param fact the <code>Fact</code> to check as requirement
+     * @param bool the <code>Bool</code> to check as requirement
      * @param clue optional clue to be included in <code>IllegalArgumentException</code>'s error message when the requirement failed
      */
-    def macroRequire(fact: Fact, clue: Any) {
+    def macroRequire(bool: Bool, clue: Any) {
       if (clue == null)
         throw new NullPointerException("clue was null")
-      if (!fact.value) {
-        val failureMessage =
-          fact match {
-            case s: org.scalautils.SimpleMacroFact if s.expressionText.isEmpty => append("", clue)
-            case _ => append(fact.failureMessage, clue)
-          }
+      if (!bool.value) {
+        val failureMessage = if (Bool.isSimpleWithoutExpressionText(bool)) append("", clue) else append(bool.failureMessage, clue)
         throw new IllegalArgumentException(if (failureMessage.isEmpty) FailureMessages("expressionWasFalse") else failureMessage)
       }
     }
 
     /**
-     * Require that the passed in <code>Fact</code> is <code>true</code>, else fail with <code>IllegalStateException</code>.
+     * Require that the passed in <code>Bool</code> is <code>true</code>, else fail with <code>IllegalStateException</code>.
      *
-     * @param fact the <code>Fact</code> to check as requirement
+     * @param bool the <code>Bool</code> to check as requirement
      * @param clue optional clue to be included in <code>IllegalStateException</code>'s error message when the requirement failed
      */
-    def macroRequireState(fact: Fact, clue: Any) {
+    def macroRequireState(bool: Bool, clue: Any) {
       if (clue == null)
         throw new NullPointerException("clue was null")
-      if (!fact.value) {
-        val failureMessage =
-          fact match {
-            case s: org.scalautils.SimpleMacroFact if s.expressionText.isEmpty => append("", clue)
-            case _ => append(fact.failureMessage, clue)
-          }
+      if (!bool.value) {
+        val failureMessage = if (Bool.isSimpleWithoutExpressionText(bool)) append("", clue) else append(bool.failureMessage, clue)
         throw new IllegalStateException(if (failureMessage.isEmpty) FailureMessages("expressionWasFalse") else failureMessage)
       }
     }
