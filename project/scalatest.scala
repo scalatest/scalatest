@@ -73,6 +73,7 @@ object ScalatestBuild extends Build {
            </developer>
          </developers>
       ),
+     credentials += Credentials("Sonatype Nexus Repository Manager", "oss.sonatype.org", sys.env("SCALATEST_NEXUS_LOGIN"), sys.env("SCALATEST_NEXUS_PASSWORD")),
      genMustMatchersTask,
      genGenTask, 
      genTablesTask, 
