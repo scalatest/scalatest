@@ -8,7 +8,7 @@ import com.typesafe.sbt.osgi.SbtOsgi._
 object ScalatestBuild extends Build {
 
   val scalaVersionToUse = "2.10.3"
-  val releaseVersion = "2.2.0-SNAP1"
+  val releaseVersion = "2.2.0-SNAPSHOT"
   val githubTag = "release-2.1.0-RC2-for-scala-2.10" // for scaladoc source urls
 
   val docSourceUrl =
