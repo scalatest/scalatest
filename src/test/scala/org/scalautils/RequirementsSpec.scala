@@ -64,6 +64,12 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
   def commaBut(left: String, right: String): String =
     FailureMessages("commaBut", UnquotedString(left), UnquotedString(right))
 
+  def wasFalse(left: String): String =
+    left + " was false"
+
+  def wasTrue(left: String): String =
+    left + " was true"
+
   class Stateful {
     var state = false
     def changeState: Boolean = {
@@ -419,6 +425,28 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       val s = new Stateful
       require(a == 3 | s.changeState)
       assert(s.state == false)
+    }
+
+    it("should do nothing when it is used to check a == 3 && { println(\"hi\"); b == 5}") {
+      require(a == 3 && { println("hi"); b == 5})
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is usesd to check a == 3 && { println(\"hi\"); b == 3}") {
+      val e = intercept[IllegalArgumentException] {
+        require(a == 3 && { println("hi"); b == 3})
+      }
+      assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{\n  scala.this.Predef.println(\"hi\");\n  b.==(3)\n}")))
+    }
+
+    it("should do nothing when it is used to check { println(\"hi\"); b == 5} && a == 3 ") {
+      require({ println("hi"); b == 5} && a == 3)
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is usesd to check { println(\"hi\"); b == 5} && a == 5") {
+      val e = intercept[IllegalArgumentException] {
+        require({ println("hi"); b == 5} && a == 5)
+      }
+      assert(e.getMessage == commaBut(wasTrue("{\n  scala.this.Predef.println(\"hi\");\n  b.==(5)\n}"), didNotEqual(3, 5)))
     }
 
     it("should preserve side effects when Apply with single argument is passed in") {
@@ -824,6 +852,28 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       assert(s.state == false)
     }
 
+    it("should do nothing when it is used to check a == 3 && { println(\"hi\"); b == 5}") {
+      require(a == 3 && { println("hi"); b == 5}, ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is usesd to check a == 3 && { println(\"hi\"); b == 3}") {
+      val e = intercept[IllegalArgumentException] {
+        require(a == 3 && { println("hi"); b == 3}, ", dude")
+      }
+      assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{\n  scala.this.Predef.println(\"hi\");\n  b.==(3)\n}")) + ", dude")
+    }
+
+    it("should do nothing when it is used to check { println(\"hi\"); b == 5} && a == 3 ") {
+      require({ println("hi"); b == 5} && a == 3, ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is usesd to check { println(\"hi\"); b == 5} && a == 5") {
+      val e = intercept[IllegalArgumentException] {
+        require({ println("hi"); b == 5} && a == 5, ", dude")
+      }
+      assert(e.getMessage == commaBut(wasTrue("{\n  scala.this.Predef.println(\"hi\");\n  b.==(5)\n}"), didNotEqual(3, 5)) + ", dude")
+    }
+
     it("should preserve side effects when Apply with single argument is passed in") {
       require(neverRuns1(sys.error("Sad times 1")), "should not fail!")
     }
@@ -1185,6 +1235,28 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       val s = new Stateful
       requireState(a == 3 | s.changeState)
       assert(s.state == false)
+    }
+
+    it("should do nothing when it is used to check a == 3 && { println(\"hi\"); b == 5}") {
+      requireState(a == 3 && { println("hi"); b == 5})
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is usesd to check a == 3 && { println(\"hi\"); b == 3}") {
+      val e = intercept[IllegalStateException] {
+        requireState(a == 3 && { println("hi"); b == 3})
+      }
+      assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{\n  scala.this.Predef.println(\"hi\");\n  b.==(3)\n}")))
+    }
+
+    it("should do nothing when it is used to check { println(\"hi\"); b == 5} && a == 3 ") {
+      requireState({ println("hi"); b == 5} && a == 3)
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is usesd to check { println(\"hi\"); b == 5} && a == 5") {
+      val e = intercept[IllegalStateException] {
+        requireState({ println("hi"); b == 5} && a == 5)
+      }
+      assert(e.getMessage == commaBut(wasTrue("{\n  scala.this.Predef.println(\"hi\");\n  b.==(5)\n}"), didNotEqual(3, 5)))
     }
 
     it("should preserve side effects when Apply with single argument is passed in") {
@@ -1588,6 +1660,28 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       val s = new Stateful
       requireState(a == 3 | s.changeState, ", dude")
       assert(s.state == false)
+    }
+
+    it("should do nothing when it is used to check a == 3 && { println(\"hi\"); b == 5}") {
+      requireState(a == 3 && { println("hi"); b == 5}, ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is usesd to check a == 3 && { println(\"hi\"); b == 3}") {
+      val e = intercept[IllegalStateException] {
+        requireState(a == 3 && { println("hi"); b == 3}, ", dude")
+      }
+      assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{\n  scala.this.Predef.println(\"hi\");\n  b.==(3)\n}")) + ", dude")
+    }
+
+    it("should do nothing when it is used to check { println(\"hi\"); b == 5} && a == 3 ") {
+      requireState({ println("hi"); b == 5} && a == 3, ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is usesd to check { println(\"hi\"); b == 5} && a == 5") {
+      val e = intercept[IllegalStateException] {
+        requireState({ println("hi"); b == 5} && a == 5, ", dude")
+      }
+      assert(e.getMessage == commaBut(wasTrue("{\n  scala.this.Predef.println(\"hi\");\n  b.==(5)\n}"), didNotEqual(3, 5)) + ", dude")
     }
 
     it("should preserve side effects when Apply with single argument is passed in") {

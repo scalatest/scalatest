@@ -173,14 +173,14 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
         select.qualifier match {
           case selectApply: Apply => transformAst(selectApply.duplicate)
           case selectSelect: Select => transformAst(selectSelect.duplicate)
-          case _ => select.qualifier.duplicate
+          case _ => simpleMacroBool(select.qualifier.duplicate, getText(select.qualifier))
         }
       val rightTree = {
         val evalBlock =
           rightExpr match {
             case argApply: Apply => transformAst(argApply.duplicate)
             case argSelect: Select => transformAst(argSelect.duplicate)
-            case _ => rightExpr.duplicate
+            case _ => simpleMacroBool(rightExpr.duplicate, getText(rightExpr))
           }
         if (operator == "&&" || operator == "&")  {// generate if (left.value) {...} else false
           If(

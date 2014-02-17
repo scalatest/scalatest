@@ -199,6 +199,12 @@ class AssertionsSpec extends FunSpec {
   def commaBut(left: String, right: String): String =
     FailureMessages("commaBut", UnquotedString(left), UnquotedString(right))
 
+  def wasFalse(left: String): String =
+    left + " was false"
+
+  def wasTrue(left: String): String =
+    left + " was true"
+
   class Stateful {
     var state = false
     def changeState: Boolean = {
@@ -722,6 +728,32 @@ class AssertionsSpec extends FunSpec {
       val s = new Stateful
       assert(a == 3 | s.changeState)
       assert(s.state == false)
+    }
+
+    it("should do nothing when it is used to check a == 3 && { println(\"hi\"); b == 5}") {
+      assert(a == 3 && { println("hi"); b == 5})
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is usesd to check a == 3 && { println(\"hi\"); b == 3}") {
+      val e = intercept[TestFailedException] {
+        assert(a == 3 && { println("hi"); b == 3})
+      }
+      assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{\n  scala.this.Predef.println(\"hi\");\n  b.==(3)\n}"))))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when it is used to check { println(\"hi\"); b == 5} && a == 3") {
+      assert({ println("hi"); b == 5} && a == 3)
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is usesd to check { println(\"hi\"); b == 5} && a == 5") {
+      val e = intercept[TestFailedException] {
+        assert({ println("hi"); b == 5} && a == 5)
+      }
+      assert(e.message == Some(commaBut(wasTrue("{\n  scala.this.Predef.println(\"hi\");\n  b.==(5)\n}"), didNotEqual(3, 5))))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
 
     it("should preserve side effects when Apply with single argument is passed in") {
@@ -1257,6 +1289,32 @@ class AssertionsSpec extends FunSpec {
       assert(s.state == false)
     }
 
+    it("should do nothing when it is used to check a == 3 && { println(\"hi\"); b == 5}") {
+      assert(a == 3 && { println("hi"); b == 5}, ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is usesd to check a == 3 && { println(\"hi\"); b == 3}") {
+      val e = intercept[TestFailedException] {
+        assert(a == 3 && { println("hi"); b == 3}, ", dude")
+      }
+      assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{\n  scala.this.Predef.println(\"hi\");\n  b.==(3)\n}")) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when it is used to check { println(\"hi\"); b == 5} && a == 3 ") {
+      assert({ println("hi"); b == 5} && a == 3, ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is usesd to check { println(\"hi\"); b == 5} && a == 5") {
+      val e = intercept[TestFailedException] {
+        assert({ println("hi"); b == 5} && a == 5, ", dude")
+      }
+      assert(e.message == Some(commaBut(wasTrue("{\n  scala.this.Predef.println(\"hi\");\n  b.==(5)\n}"), didNotEqual(3, 5)) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
     it("should preserve side effects when Apply with single argument is passed in") {
       assert(neverRuns1(sys.error("Sad times 1")), "should not fail!")
     }
@@ -1781,6 +1839,32 @@ class AssertionsSpec extends FunSpec {
       val s = new Stateful
       assume(a == 3 | s.changeState)
       assert(s.state == false)
+    }
+
+    it("should do nothing when it is used to check a == 3 && { println(\"hi\"); b == 5}") {
+      assume(a == 3 && { println("hi"); b == 5})
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is usesd to check a == 3 && { println(\"hi\"); b == 3}") {
+      val e = intercept[TestCanceledException] {
+        assume(a == 3 && { println("hi"); b == 3})
+      }
+      assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{\n  scala.this.Predef.println(\"hi\");\n  b.==(3)\n}"))))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when it is used to check { println(\"hi\"); b == 5} && a == 3") {
+      assume({ println("hi"); b == 5} && a == 3)
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is usesd to check { println(\"hi\"); b == 5} && a == 5") {
+      val e = intercept[TestCanceledException] {
+        assume({ println("hi"); b == 5} && a == 5)
+      }
+      assert(e.message == Some(commaBut(wasTrue("{\n  scala.this.Predef.println(\"hi\");\n  b.==(5)\n}"), didNotEqual(3, 5))))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
 
     it("should preserve side effects when Apply with single argument is passed in") {
@@ -2314,6 +2398,32 @@ class AssertionsSpec extends FunSpec {
       val s = new Stateful
       assume(a == 3 | s.changeState, ", dude")
       assert(s.state == false)
+    }
+
+    it("should do nothing when it is used to check a == 3 && { println(\"hi\"); b == 5}") {
+      assume(a == 3 && { println("hi"); b == 5}, ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is usesd to check a == 3 && { println(\"hi\"); b == 3}") {
+      val e = intercept[TestCanceledException] {
+        assume(a == 3 && { println("hi"); b == 3}, ", dude")
+      }
+      assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{\n  scala.this.Predef.println(\"hi\");\n  b.==(3)\n}")) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when it is used to check { println(\"hi\"); b == 5} && a == 3 ") {
+      assume({ println("hi"); b == 5} && a == 3, ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is usesd to { println(\"hi\"); b == 5} && a == 5") {
+      val e = intercept[TestCanceledException] {
+        assume({ println("hi"); b == 5} && a == 5, ", dude")
+      }
+      assert(e.message == Some(commaBut(wasTrue("{\n  scala.this.Predef.println(\"hi\");\n  b.==(5)\n}"), didNotEqual(3, 5)) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
 
     it("should preserve side effects when Apply with single argument is passed in") {
