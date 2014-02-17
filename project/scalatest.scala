@@ -3,6 +3,7 @@ import Keys._
 import java.net.{URL, URLClassLoader}
 import java.io.PrintWriter
 import scala.io.Source
+import com.typesafe.sbt.osgi.SbtOsgi._
 
 object ScalatestBuild extends Build {
 
@@ -111,12 +112,42 @@ object ScalatestBuild extends Build {
                                                "-m", "org.scalatest.enablers", 
                                                "-oDI", 
                                                "-h", "target/html", 
-                                               "-u", "target/junit", 
+                                               "-u", "target/junit",
                                                "-fW", "target/result.txt")),
      docsrcDirSetting,
      docSourcesSetting,
      docScalacOptionsSetting,
      scalatestDocTaskSetting
+   ).settings(osgiSettings: _*).settings(
+      OsgiKeys.exportPackage := Seq(
+        "org.scalatest",
+        "org.scalatest.concurrent",
+        "org.scalatest.enablers",
+        "org.scalatest.events",
+        "org.scalatest.exceptions",
+        "org.scalatest.fixture",
+        "org.scalatest.junit",
+        "org.scalatest.matchers",
+        "org.scalatest.mock",
+        "org.scalatest.path",
+        "org.scalatest.prop",
+        "org.scalatest.selenium",
+        "org.scalatest.tags",
+        "org.scalatest.tagobjects",
+        "org.scalatest.testng",
+        "org.scalatest.time",
+        "org.scalatest.tools",
+        "org.scalatest.verb",
+        "org.scalatest.words",
+        "org.scalautils"
+      ),
+      OsgiKeys.additionalHeaders:= Map(
+        "Bundle-Name" -> "ScalaTest",
+        "Bundle-Description" -> "ScalaTest is an open-source test framework for the Java Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+        "Bundle-DocURL" -> "http://www.scalatest.org/",
+        "Bundle-Vendor" -> "Artima, Inc.",
+        "Main-Class" -> "org.scalatest.tools.Runner"
+      )
    )
 
   lazy val scalautils = Project("scalautils", file("genscalautils"))
@@ -171,6 +202,7 @@ object ScalatestBuild extends Build {
             </developer>
           </developers>
         ),
+      credentials += Credentials("Sonatype Nexus Repository Manager", "oss.sonatype.org", sys.env("SCALATEST_NEXUS_LOGIN"), sys.env("SCALATEST_NEXUS_PASSWORD")),
       sourceGenerators in Compile <+=
         (baseDirectory, sourceManaged in Compile) map genFiles("", "GenScalaUtils.scala")(GenScalaUtils.genMain),
       sourceGenerators in Test <+=
@@ -179,6 +211,16 @@ object ScalatestBuild extends Build {
       docSourcesSetting,
       docScalacOptionsSetting,
       scalautilsDocTaskSetting
+    ).settings(osgiSettings: _*).settings(
+      OsgiKeys.exportPackage := Seq(
+        "org.scalautils"
+      ),
+      OsgiKeys.additionalHeaders:= Map(
+        "Bundle-Name" -> "ScalaUtils",
+        "Bundle-Description" -> "ScalaUtils is an open-source library for Scala projects.",
+        "Bundle-DocURL" -> "http://www.scalautils.org/",
+        "Bundle-Vendor" -> "Artima, Inc."
+      )
     ).dependsOn(scalatest  % "test->test")
 
   lazy val gentests = Project("gentests", file("gentests"))
@@ -198,7 +240,7 @@ object ScalatestBuild extends Build {
      genContainTask, 
      genSortedTask, 
      genLoneElementTask, 
-     genEmptyTask, 
+     genEmptyTask,
      sourceGenerators in Test <+= 
          (baseDirectory, sourceManaged in Test) map genFiles("gengen", "GenGen.scala")(GenGen.genTest),
      sourceGenerators in Test <+= 
