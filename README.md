@@ -70,11 +70,16 @@ To publish to Sonatype, you first need to make sure you have the following:
 *   You have created your GPG keys and distributed your public key to hkp://pool.sks-keyservers.net/. For more information, please refer to [How To Generate PGP Signatures With Maven](https://docs.sonatype.org/display/Repository/How+To+Generate+PGP+Signatures+With+Maven).
 *   You have been granted the right to publish using org.scalatest and org.scalautils domain.
 
-Before publish, you need to export your Sonatype credentials using SCALATEST_NEXUS_LOGIN and SCALATEST_NEXUS_PASSWORD environment variables:
+Before publish, you need to set the following environment variables correctly:
 
-  `$ export SCALATEST_NEXUS_LOGIN=xxxxxx`
+*   SCALATEST_NEXUS_LOGIN - Sonatype login name
+*   SCALATEST_NEXUS_PASSWORD - Sonatype login password
+*   SCALATEST_GPG_FILE - Location of GPG file
+*   SCALATEST_GPG_PASSPHASE - The passphrase for the GPG file
 
-  `$ export SCALATEST_NEXUS_PASSWORD=xxxxxx`
+You can use the following command to export your private key into a GPG file:
+
+  `$ gpg --export-secret-keys example@example.com > example-secret-key.gpg`
 
 To publish ScalaTest, use the following command:
 

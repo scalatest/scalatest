@@ -4,6 +4,7 @@ import java.net.{URL, URLClassLoader}
 import java.io.PrintWriter
 import scala.io.Source
 import com.typesafe.sbt.osgi.SbtOsgi._
+import com.typesafe.sbt.SbtPgp._
 
 object ScalatestBuild extends Build {
 
@@ -14,6 +15,15 @@ object ScalatestBuild extends Build {
   val docSourceUrl =
     "https://github.com/scalatest/scalatest/tree/"+ githubTag +
     "/src/main/scala€{FILE_PATH}.scala"
+
+  def envVar(name: String): String =
+    try {
+      sys.env(name)
+    }
+    catch {
+      case e: NoSuchElementException => "Environment variable '" + name + "' not specified."
+    }
+
 
   lazy val scalatest = Project("scalatest", file("."))
    .settings(
@@ -74,7 +84,9 @@ object ScalatestBuild extends Build {
            </developer>
          </developers>
       ),
-     credentials += Credentials("Sonatype Nexus Repository Manager", "oss.sonatype.org", sys.env("SCALATEST_NEXUS_LOGIN"), sys.env("SCALATEST_NEXUS_PASSWORD")),
+     credentials += Credentials("Sonatype Nexus Repository Manager", "oss.sonatype.org", envVar("SCALATEST_NEXUS_LOGIN"), envVar("SCALATEST_NEXUS_PASSWORD")),
+     pgpSecretRing := file(envVar("SCALATEST_GPG_FILE")),
+     pgpPassphrase := Some(envVar("SCALATEST_GPG_PASSPHASE").toCharArray),
      genMustMatchersTask,
      genGenTask, 
      genTablesTask, 
@@ -202,7 +214,9 @@ object ScalatestBuild extends Build {
             </developer>
           </developers>
         ),
-      credentials += Credentials("Sonatype Nexus Repository Manager", "oss.sonatype.org", sys.env("SCALATEST_NEXUS_LOGIN"), sys.env("SCALATEST_NEXUS_PASSWORD")),
+      credentials += Credentials("Sonatype Nexus Repository Manager", "oss.sonatype.org", envVar("SCALATEST_NEXUS_LOGIN"), envVar("SCALATEST_NEXUS_PASSWORD")),
+      pgpSecretRing := file(envVar("SCALATEST_GPG_FILE")),
+      pgpPassphrase := Some(envVar("SCALATEST_GPG_PASSPHASE").toCharArray),
       sourceGenerators in Compile <+=
         (baseDirectory, sourceManaged in Compile) map genFiles("", "GenScalaUtils.scala")(GenScalaUtils.genMain),
       sourceGenerators in Test <+=
