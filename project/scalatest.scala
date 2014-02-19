@@ -1,12 +1,15 @@
 import sbt._
 import Keys._
 import java.net.{URL, URLClassLoader}
+import java.io.PrintWriter
+import scala.io.Source
 
 object ScalatestBuild extends Build {
 
   val scalaVersionToUse = "2.10.3"
     
   val releaseVersion = "2.0-SNAPSHOT"
+  val githubTag = "release-2.0-for-scala-2.10" // for scaladoc source urls
 
   lazy val scalatest = Project("scalatest", file("."))
    .settings(
@@ -62,7 +65,22 @@ object ScalatestBuild extends Build {
                                                "-oDI", 
                                                "-h", "target/html", 
                                                "-u", "target/junit", 
-                                               "-fW", "target/result.txt"))
+                                               "-fW", "target/result.txt")),
+     docsrcDir := target.value / "docsrc",
+     sources in (Compile, doc) :=
+       genDocSources((sources in Compile).value,
+                     (sourceDirectory in Compile).value,
+                     (sourceManaged in Compile).value,
+                     docsrcDir.value),
+     scalacOptions in (Compile, doc) ++= 
+       Seq[String](
+          "-sourcepath", docsrcDir.value.getAbsolutePath,
+          "-doc-title", "ScalaTest "+ releaseVersion,
+          "-doc-source-url", "https://github.com/scalatest/scalatest/tree/"+
+                             githubTag +"/src/main/scala€{FILE_PATH}.scala"
+       ),
+     doc in Compile := docsTask((doc in Compile).value,
+                                (sourceDirectory in Compile).value)
    )
    
   lazy val gentests = Project("gentests", file("gentests"))
@@ -220,5 +238,101 @@ object ScalatestBuild extends Build {
     GenTable.genMain(new File(mainTargetDir, "scala/gentables"), scalaVersionToUse)
     GenMatchers.genMain(new File(mainTargetDir, "scala/genmatchers"), scalaVersionToUse)
     GenFactories.genMain(new File(mainTargetDir, "scala/genfactories"), scalaVersionToUse)
+  }
+
+  lazy val docsrcDir =
+    settingKey[File](
+      "Directory to hold processed source files for generating scaladocs")
+
+  //
+  // Prepares source files for running scaladoc.
+  //
+  def genDocSources(srcFiles: Seq[File], srcMain: File,
+                    managedSrcMain: File, docsrcDir: File): Seq[File] =
+  {
+    val srcMainScalaDir = srcMain / "scala"
+    val managedSrcMainScalaDir = managedSrcMain / "scala"
+
+    val scalaFiles =
+      for {
+        srcFile <- srcFiles
+        if srcFile.name.endsWith(".scala")
+      } yield {
+        val srcPath = srcFile.getPath
+        val docsrcPath =
+          srcPath.
+            replaceFirst(srcMainScalaDir.getPath, docsrcDir.getPath).
+            replaceFirst(managedSrcMainScalaDir.getPath, docsrcDir.getPath)
+
+        if (srcPath == docsrcPath)
+          throw new RuntimeException("unexpected source path ["+ srcPath +"]")
+
+        copyDocFile(srcFile, file(docsrcPath))
+      }
+
+    val javaSources = srcFiles.filter(_.name.endsWith(".java")).toSet
+    val javaTagFiles = JavaTagDocumenter.docJavaTags(javaSources)
+
+    scalaFiles ++ javaTagFiles
+  }
+
+  //
+  // Copies a file, doing a little filtering along the way to make
+  // destination file suitable for use in generating scaladocs.
+  //
+  // Returns destination file.
+  //
+  private def copyDocFile(srcFile: File, destFile: File): File = {
+    if (!destFile.exists || (destFile.lastModified < srcFile.lastModified)) {
+      IO.createDirectory(file(destFile.getParent))
+
+      val writer = new PrintWriter(destFile)
+
+      try {
+        for (line <- Source.fromFile(srcFile).getLines)
+          writer.println(line.replaceFirst("@Finders(.*)", ""))
+      }
+      finally { writer.close }
+    }
+    destFile
+  }
+
+  //
+  // Adds customization to scaladocs.
+  //
+  // Appends additional css to template.css file and copies
+  // additional gifs into lib directory.
+  //
+  // Note: found that adding new gifs into lib directory causes
+  // doc task to rebuild scaladocs from scratch each time.
+  // Without that it only rebuilds if needed.
+  //
+  def docsTask(docDir: File, srcDir: File): File = {
+    val docLibDir = docDir / "lib"
+    val htmlSrcDir = srcDir / "html"
+    val cssFile = docLibDir / "template.css"
+    val addlCssFile = htmlSrcDir / "addl.css"
+
+    val css = Source.fromFile(cssFile).mkString
+    val addlCss = Source.fromFile(addlCssFile).mkString
+
+    if (!css.contains("pre.stHighlighted")) {
+      val writer = new PrintWriter(cssFile)
+
+      try {
+        writer.println(css)
+        writer.println(addlCss)
+      }
+      finally { writer.close }
+    }
+
+    (htmlSrcDir * "*.gif").get.foreach { gif =>
+      val toFile = docLibDir / gif.name
+      if (!toFile.exists || (toFile.lastModified < gif.lastModified)) {
+        IO.copyFile(gif, docLibDir / gif.name)
+      }
+    }
+
+    docDir
   }
 }
