@@ -49,155 +49,234 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
   import context.universe._
 
   // Generate AST for:
-  // assertionsHelper.methodName(expression, clue)
-  def genCallAssertionsHelperSimple(methodName: String, exprTree: Tree, clueTree: Tree): Expr[Unit] =
-    context.Expr(
-      Apply(
-        Select(
-          Ident(helperName),
-          newTermName(methodName)
-        ),
-        List(exprTree, clueTree)
-      )
+  // val name = rhs
+  def valDef(name: String, rhs: Tree): ValDef =
+    ValDef(
+      Modifiers(),
+      newTermName(name),
+      TypeTree(),
+      rhs
     )
 
-  // Generate AST for:
-  // assertionsHelper.methodName($org_scalautils_assert_macro_left, operator, $org_scalautils_assert_macro_right, $org_scalautils_assert_macro_result, clue)
-  def genCallAssertionsHelper(methodName: String, operator: String, clueTree: Tree): Apply =
-    Apply(
-      Select(
-        Ident(helperName),
-        newTermName(methodName)
-      ),
-      List(Ident(newTermName("$org_scalautils_assert_macro_left")), context.literal(operator).tree, Ident(newTermName("$org_scalautils_assert_macro_right")), Ident(newTermName("$org_scalautils_assert_macro_result")), clueTree)
-    )
-
-  // Generate AST for:
-  // Some("message")
-  def genClue(clueTree: Tree): Apply =
-    Apply(
-      Select(
-        Ident("Some"),
-        newTermName("apply")
-      ),
-      List(clueTree)
-    )
-
-  // Generate AST for:
-  // $org_scalautils_assert_macro_left operator $org_scalautils_assert_macro_right
-  def simpleSubstitute(select: Select): Apply =
-    Apply(
-      Select(
-        Ident("$org_scalautils_assert_macro_left"),
-        select.name
-      ),
-      List(Ident("$org_scalautils_assert_macro_right"))
-    )
-
-  // Generate AST for:
-  // $org_scalautils_assert_macro_left.operator($org_scalautils_assert_macro_right)(arguments)
-  def nestedSubstitute(select: Select, apply: GenericApply): Apply =
-    Apply(
-      Apply(
-        Select(
-          Ident("$org_scalautils_assert_macro_left"),
-          select.name
-        ),
-        List(Ident("$org_scalautils_assert_macro_right"))
-      ),
-      apply.args
-    )
-
-  // Generate AST for:
-  // val $org_scalautils_assert_macro_left = left
-  // val $org_scalautils_assert_macro_right = right
-  // val $org_scalautils_assert_macro_result = subsitutedExpr
-  // assertExpr
-  def genExpression(left: Tree, operator: String, right: Tree, subsitutedExpr: Apply, assertExpr: Apply): Expr[Unit] =
-    context.Expr(
-      Block(
-        ValDef(
-          Modifiers(),
-          newTermName("$org_scalautils_assert_macro_left"),
-          TypeTree(),
-          left.duplicate
-        ),
-        ValDef(
-          Modifiers(),
-          newTermName("$org_scalautils_assert_macro_right"),
-          TypeTree(),
-          right.duplicate
-        ),
-        ValDef(
-          Modifiers(),
-          newTermName("$org_scalautils_assert_macro_result"),
-          TypeTree(),
-          subsitutedExpr
-        ),
-        assertExpr
-      )
-    )
-
-  private val supportedOperations = Set("==", "!=", "===", "!==")
+  private val logicOperators = Set("&&", "||", "&", "|")
+  private val supportedOperations = Set("==", "!=", "===", "!==", "<", ">", ">=", "<=") ++ logicOperators
 
   def isSupported(operator: String) = supportedOperations.contains(operator)
 
-  def genMacroCode(booleanExpr: Expr[Boolean], methodName: String, clueTree: Option[Tree]): Expr[Unit] = {
-    val booleanTree = booleanExpr.tree
-    val clueOption =
-      clueTree match {
-        case Some(clue) => genClue(clue)
-        case _ => Ident("None")
-      }
+  private[this] def getPosition(expr: Tree) = expr.pos.asInstanceOf[scala.reflect.internal.util.Position]
 
-    booleanTree match {
-      case apply: Apply =>
-        apply.fun match {
-          case select: Select if apply.args.size == 1 => // For simple assert(a == b)
-            val operator: String = select.name.decoded
-            if (isSupported(operator)) {
-              val sExpr: Apply = simpleSubstitute(select)
-              val assertExpr: Apply = genCallAssertionsHelper(methodName, operator, clueOption)
-              genExpression(select.qualifier.duplicate, operator, apply.args(0).duplicate, sExpr, assertExpr)
-            }
-            else
-              genCallAssertionsHelperSimple(methodName, booleanTree, clueOption)
-          case funApply: Apply =>
-            funApply.fun match {
-              case select: Select if funApply.args.size == 1 => // For === that takes Equality
-                val operator: String = select.name.decoded
-                if (isSupported(operator)) {
-                  val sExpr: Apply = nestedSubstitute(select, apply)
-                  val assertExpr: Apply = genCallAssertionsHelper(methodName, operator, clueOption)
-                  genExpression(select.qualifier.duplicate, operator, funApply.args(0).duplicate, sExpr, assertExpr)
-                }
-                else
-                  genCallAssertionsHelperSimple(methodName, booleanTree, clueOption)
-              case typeApply: TypeApply =>
-                typeApply.fun match {
-                  case select: Select if funApply.args.size == 1 => // For TypeCheckedTripleEquals
-                    val operator: String = select.name.decoded
-                    if (isSupported(operator)) {
-                      val sExpr: Apply = nestedSubstitute(select, apply)
-                      val assertExpr: Apply = genCallAssertionsHelper(methodName, operator, clueOption)
-                      genExpression(select.qualifier.duplicate, operator, funApply.args(0).duplicate, sExpr, assertExpr)
-                    }
-                    else
-                      genCallAssertionsHelperSimple(methodName, booleanTree, clueOption)
-                  case _ => genCallAssertionsHelperSimple(methodName, booleanTree, clueOption)
-                }
-              case _ => genCallAssertionsHelperSimple(methodName, booleanTree, clueOption)
-            }
-          case _ => genCallAssertionsHelperSimple(methodName, booleanTree, clueOption)
+  def getText(expr: Tree): String = {
+    expr match {
+      case literal: Literal =>
+        getPosition(expr) match {
+          case p: scala.reflect.internal.util.RangePosition => p.lineContent.slice(p.start, p.end).trim // this only available when -Yrangepos is enabled
+          case p: reflect.internal.util.Position => ""
         }
-      case _ => genCallAssertionsHelperSimple(methodName, booleanTree, clueOption)
+      case _ => show(expr)
     }
   }
 
-  /*private[this] def getPosition(expr: Tree) = expr.pos.asInstanceOf[scala.reflect.internal.util.Position]
+  def binaryMacroBool(select: Select): Apply =
+    Apply(
+      Select(
+        Select(
+          Select(
+            Ident(newTermName("org")),
+            newTermName("scalautils")
+          ),
+          newTermName("Bool")
+        ),
+        newTermName("binaryMacroBool")
+      ),
+      List(
+        Ident(newTermName("$org_scalatest_assert_macro_left")),
+        context.literal(select.name.decoded).tree,
+        Ident(newTermName("$org_scalatest_assert_macro_right")),
+        Apply(
+          Select(
+            Ident(newTermName("$org_scalatest_assert_macro_left")),
+            select.name
+          ),
+          List(Ident(newTermName("$org_scalatest_assert_macro_right")))
+        )
+      )
+    )
 
-  def getText(expr: Tree): String = getPosition(expr) match {
-    case p: RangePosition => context.echo(expr.pos, "RangePosition found!"); p.lineContent.slice(p.start, p.end).trim
-    case p: reflect.internal.util.Position => p.lineContent.trim
-  }*/
+  def binaryMacroBool(select: Select, secondArg: Tree): Apply =
+    Apply(
+      Select(
+        Select(
+          Select(
+            Ident(newTermName("org")),
+            newTermName("scalautils")
+          ),
+          newTermName("Bool")
+        ),
+        newTermName("binaryMacroBool")
+      ),
+      List(
+        Ident(newTermName("$org_scalatest_assert_macro_left")),
+        context.literal(select.name.decoded).tree,
+        Ident(newTermName("$org_scalatest_assert_macro_right")),
+        Apply(
+          Apply(
+            Select(
+              Ident("$org_scalatest_assert_macro_left"),
+              select.name
+            ),
+            List(Ident("$org_scalatest_assert_macro_right"))
+          ),
+          List(secondArg)
+        )
+      )
+    )
+
+  def simpleMacroBool(expression: Tree, expressionText: String): Apply =
+    Apply(
+      Select(
+        Select(
+          Select(
+            Ident(newTermName("org")),
+            newTermName("scalautils")
+          ),
+          newTermName("Bool")
+        ),
+        newTermName("simpleMacroBool")
+      ),
+      List(
+        expression,
+        context.literal(expressionText).tree
+      )
+    )
+
+  def notBool(target: Tree): Apply =
+    Apply(
+      Select(
+        Select(
+          Select(
+            Ident(newTermName("org")),
+            newTermName("scalautils")
+          ),
+          newTermName("Bool")
+        ),
+        newTermName("notBool")
+      ),
+      List(
+        target.duplicate
+      )
+    )
+
+  def traverseSelect(select: Select, rightExpr: Tree): (Tree, Tree) = {
+    val operator = select.name.decoded
+    if (logicOperators.contains(operator)) {
+      val leftTree =
+        select.qualifier match {
+          case selectApply: Apply => transformAst(selectApply.duplicate)
+          case selectSelect: Select => transformAst(selectSelect.duplicate)
+          case _ => simpleMacroBool(select.qualifier.duplicate, getText(select.qualifier))
+        }
+      val rightTree = {
+        val evalBlock =
+          rightExpr match {
+            case argApply: Apply => transformAst(argApply.duplicate)
+            case argSelect: Select => transformAst(argSelect.duplicate)
+            case _ => simpleMacroBool(rightExpr.duplicate, getText(rightExpr))
+          }
+        if (operator == "&&" || operator == "&")  {// generate if (left.value) {...} else false
+          If(
+            Select(
+              Ident(newTermName("$org_scalatest_assert_macro_left")),
+              newTermName("value")
+            ),
+            evalBlock,
+            simpleMacroBool(context.literal(false).tree, "")
+          )
+        }
+        else if (operator == "||" || operator == "|") // || and |, generate if (left.value) true else {...}
+          If(
+            Select(
+              Ident(newTermName("$org_scalatest_assert_macro_left")),
+              newTermName("value")
+            ),
+            simpleMacroBool(context.literal(true).tree, ""),
+            evalBlock
+          )
+        else
+          evalBlock
+      }
+      (leftTree, rightTree)
+    }
+    else
+      (select.qualifier.duplicate, rightExpr.duplicate)
+  }
+
+  def transformAst(tree: Tree): Tree =
+    tree match {
+      case apply: Apply if apply.args.size == 1 =>
+        apply.fun match {
+          case select: Select if isSupported(select.name.decoded) =>
+            val (leftTree, rightTree) =  traverseSelect(select, apply.args(0))
+            Block(
+              valDef("$org_scalatest_assert_macro_left", leftTree),
+              valDef("$org_scalatest_assert_macro_right", rightTree),
+              binaryMacroBool(select.duplicate)
+            )
+          case funApply: Apply if funApply.args.size == 1 => // For === and !== that takes Equality
+            funApply.fun match {
+              case select: Select if select.name.decoded == "===" || select.name.decoded == "!==" =>
+                val (leftTree, rightTree) = traverseSelect(select, funApply.args(0))
+                Block(
+                  valDef("$org_scalatest_assert_macro_left", leftTree),
+                  valDef("$org_scalatest_assert_macro_right", rightTree),
+                  binaryMacroBool(select.duplicate, apply.args(0).duplicate) // TODO: should apply.args(0) be traversed also?
+                )
+              case typeApply: TypeApply =>
+                typeApply.fun match {
+                  case select: Select if typeApply.args.size == 1 => // For TypeCheckedTripleEquals
+                    val operator: String = select.name.decoded
+                    if (operator == "===" || operator == "!==") {
+                      val (leftTree, rightTree) = traverseSelect(select, funApply.args(0))
+                      Block(
+                        valDef("$org_scalatest_assert_macro_left", leftTree),
+                        valDef("$org_scalatest_assert_macro_right", rightTree),
+                        binaryMacroBool(select.duplicate, apply.args(0).duplicate) // TODO: should apply.args(0) be traversed also?
+                      )
+                    }
+                    else
+                      simpleMacroBool(tree.duplicate, getText(tree))
+                  case _ => simpleMacroBool(tree.duplicate, getText(tree))
+                }
+              case _ => simpleMacroBool(tree.duplicate, getText(tree))
+            }
+          case _ => simpleMacroBool(tree.duplicate, getText(tree))
+        }
+      case select: Select if select.name.decoded == "unary_!" => // for !
+        val leftTree =
+          select.qualifier match {
+            case selectApply: Apply => transformAst(selectApply.duplicate)
+            case selectSelect: Select => transformAst(selectSelect.duplicate)
+            case _ => simpleMacroBool(select.qualifier.duplicate, getText(select.qualifier))
+          }
+        notBool(leftTree.duplicate)
+      case _ => simpleMacroBool(tree.duplicate, getText(tree))
+    }
+
+  // Generate AST for:
+  // helper.methodName(expression, clue)
+  def callHelper(methodName: String, clueTree: Tree): Apply =
+    Apply(
+      Select(
+        Ident(newTermName(helperName)),
+        newTermName(methodName)
+      ),
+      List(Ident(newTermName("$org_scalatest_assert_macro_expr")), clueTree)
+    )
+
+  def genMacro(booleanExpr: Expr[Boolean], methodName: String, clueExpr: Expr[Any]): Expr[Unit] =
+    context.Expr(
+      Block(
+        valDef("$org_scalatest_assert_macro_expr", transformAst(booleanExpr.tree)),
+        callHelper(methodName, clueExpr.tree)
+      )
+    )
 }

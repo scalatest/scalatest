@@ -53,9 +53,9 @@ class EveryLoneElementSpec extends Spec {
         val e = intercept[exceptions.TestFailedException] {
           assert(One(8).loneElement > 9)
         }
-        assert(e.failedCodeFileName === Some("EveryLoneElementSpec.scala"))
-        assert(e.failedCodeLineNumber === Some(thisLineNumber - 3))
-        assert(e.message === None)
+        assert(e.failedCodeFileName == Some("EveryLoneElementSpec.scala"))
+        assert(e.failedCodeLineNumber == Some(thisLineNumber - 3))
+        assert(e.message == Some(wasNotGreaterThan(8, 9)))
       }
 
       def `should throw TestFailedException with correct stack depth and message when should syntax is used and xs contains > 1 elements and xs.loneElement is called` {

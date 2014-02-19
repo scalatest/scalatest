@@ -215,9 +215,9 @@ class ConversionCheckedAssertionsSpec extends FunSpec {
       val e = intercept[TestFailedException] {
         assert(a === 5)
       }
-      assert(e.message === Some(didNotEqual(3, 5)))
-      assert(e.failedCodeFileName === (Some(fileName)))
-      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+      assert(e.message == Some(didNotEqual(3, 5)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
 
     it("should do nothing when is used to check 3 === a") {
