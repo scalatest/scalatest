@@ -163,7 +163,7 @@ trait Requirements {
           if (nullCount == 1)
             FailureMessages("wasNull", UnquotedString(nullVariableNames(0)))
           else {
-            val combinedVariableNames = nullVariableNames.dropRight(1).mkString(", ") + " and " + nullVariableNames.last
+            val combinedVariableNames = Resources("and", nullVariableNames.dropRight(1).mkString(Resources("comma")), nullVariableNames.last)
             FailureMessages("wereNull", UnquotedString(combinedVariableNames))
           }
         throw new NullPointerException(errorMessage)
