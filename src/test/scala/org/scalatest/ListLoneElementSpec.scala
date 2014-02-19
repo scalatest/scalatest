@@ -52,9 +52,9 @@ class ListLoneElementSpec extends Spec {
         val e = intercept[exceptions.TestFailedException] {
           assert(List(8).loneElement > 9)
         }
-        assert(e.failedCodeFileName === Some("ListLoneElementSpec.scala"))
-        assert(e.failedCodeLineNumber === Some(thisLineNumber - 3))
-        assert(e.message === None)
+        assert(e.failedCodeFileName == Some("ListLoneElementSpec.scala"))
+        assert(e.failedCodeLineNumber == Some(thisLineNumber - 3))
+        assert(e.message == Some(wasNotGreaterThan(8, 9)))
       }
       
       def `should throw TestFailedException with correct stack depth and message when should syntax is used and xs contains 0 element and xs.loneElement is called` {

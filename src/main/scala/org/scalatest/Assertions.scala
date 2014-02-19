@@ -22,7 +22,7 @@ import org.scalautils.TripleEquals
 import exceptions.StackDepthExceptionHelper.getStackDepthFun
 import exceptions.StackDepthException.toExceptionFunction
 import Assertions.NormalResult
-import org.scalautils.Prettifier
+import org.scalautils.{Prettifier, Bool}
 
 /**
  * Trait that contains ScalaTest's basic assertion methods.
@@ -356,127 +356,51 @@ trait Assertions extends TripleEquals {
    */
   class AssertionsHelper {
 
-    private def append(currentMessage: Option[String], clueOpt: Option[Any]) =
-      clueOpt match {
-        case Some(clue) =>
-          currentMessage match {
-            case Some(msg) =>
-              // clue.toString.head is guaranteed to work, because append() only called if clue.toString != ""
-              val firstChar = clue.toString.head
-              if (firstChar.isWhitespace || firstChar == '.' || firstChar == ',' || firstChar == ';')
-                Some(msg + clue.toString)
-              else
-                Some(msg + " " + clue.toString)
-            case None => Some(clue.toString)
-          }
-        case None => currentMessage
-      }
-
-    def getObjectsForFailureMessage(a: Any, b: Any) =
-      a match {
-        case aEqualizer: org.scalautils.TripleEqualsSupport#Equalizer[_] =>
-          Suite.getObjectsForFailureMessage(aEqualizer.leftSide, b)
-        case aEqualizer: org.scalautils.TripleEqualsSupport#CheckingEqualizer[_] =>
-          Suite.getObjectsForFailureMessage(aEqualizer.leftSide, b)
-        case _ => Suite.getObjectsForFailureMessage(a, b)
-      }
-
-    /**
-     * Assert that the passed in expression is <code>true</code>, else fail with <code>TestFailedException</code>.
-     *
-     * @param expression <code>Boolean</code> expression to assert for
-     * @param clue optional clue to be included in <code>TestFailedException</code>'s error message when assertion failed
-     */
-    def macroAssert(expression: Boolean, clue: Option[Any]) {
-      if (clue == null)
-        throw new NullPointerException("clue was null")
-      if (!expression)
-        throw newAssertionFailedException(if (clue.isDefined) Some(clue.get + "") else None, None, "Assertions.scala", "macroAssert", 2)
-    }
-
-    /**
-     * Assert that the passed in expression is <code>true</code>, else fail with <code>TestFailedException</code>.
-     *
-     * @param left the LHS of the expression
-     * @param operator the operator of the expression
-     * @param right the RHS of the expression
-     * @param expression <code>Boolean</code> expression to assert for
-     * @param clue optional clue to be included in <code>TestFailedException</code>'s error message when assertion failed
-     */
-    def macroAssert(left: Any, operator: String, right: Any, expression: Boolean, clue: Option[Any]) {
-      if (clue == null)
-        throw new NullPointerException("clue was null")
-      if (!expression) {
-        throw operator match {
-          case "==" =>
-            val (leftee, rightee) = getObjectsForFailureMessage(left, right)
-            newAssertionFailedException(append(Some(FailureMessages("didNotEqual", leftee, rightee)), clue), None, "Assertions.scala", "macroAssert", 2)
-          case "===" =>
-            val (leftee, rightee) = getObjectsForFailureMessage(left, right)
-            newAssertionFailedException(append(Some(FailureMessages("didNotEqual", leftee, rightee)), clue), None, "Assertions.scala", "macroAssert", 2)
-          case "!=" =>
-            val (leftee, rightee) = getObjectsForFailureMessage(left, right)
-            newAssertionFailedException(append(Some(FailureMessages("equaled", leftee, rightee)), clue), None, "Assertions.scala", "macroAssert", 2)
-          case "!==" =>
-            val (leftee, rightee) = getObjectsForFailureMessage(left, right)
-            newAssertionFailedException(append(Some(FailureMessages("equaled", leftee, rightee)), clue), None, "Assertions.scala", "macroAssert", 2)
-          /*case ">" => newAssertionFailedException(append(Some(FailureMessages("wasNotGreaterThan", left, right)), clue), None, "Assertions.scala", "macroAssertTrue", 2)
-          case ">=" => newAssertionFailedException(append(Some(FailureMessages("wasNotGreaterThanOrEqualTo", left, right)), clue), None, "Assertions.scala", "macroAssertTrue", 2)
-          case "<" => newAssertionFailedException(append(Some(FailureMessages("wasNotLessThan", left, right)), clue), None, "Assertions.scala", "macroAssertTrue", 2)
-          case "<=" => newAssertionFailedException(append(Some(FailureMessages("wasNotLessThanOrEqualTo", left, right)), clue), None, "Assertions.scala", "macroAssertTrue", 2)*/
-          case _ =>
-            throw newAssertionFailedException(if (clue.isDefined) Some(clue.get + "") else None, None, "Assertions.scala", "macroAssert", 2)
+    private def append(currentMessage: Option[String], clue: Any) = {
+      val clueStr = clue.toString
+      if (clueStr.isEmpty)
+        currentMessage
+      else {
+        currentMessage match {
+          case Some(msg) =>
+            // clue.toString.head is guaranteed to work, because the previous if check that clue.toString != ""
+            val firstChar = clueStr.head
+            if (firstChar.isWhitespace || firstChar == '.' || firstChar == ',' || firstChar == ';')
+              Some(msg + clueStr)
+            else
+              Some(msg + " " + clueStr)
+          case None => Some(clueStr)
         }
       }
     }
 
     /**
-     * Assume that the passed in expression is <code>true</code>, else throw <code>TestCanceledException</code>.
+     * Assert that the passed in <code>Bool</code> is <code>true</code>, else fail with <code>TestFailedException</code>.
      *
-     * @param expression <code>Boolean</code> expression to assume for
-     * @param clue optional clue to be included in <code>TestCanceledException</code>'s error message when assertion failed
+     * @param bool the <code>Bool</code> to assert for
+     * @param clue optional clue to be included in <code>TestFailedException</code>'s error message when assertion failed
      */
-    def macroAssume(expression: Boolean, clue: Option[Any]) {
+    def macroAssert(bool: Bool, clue: Any) {
       if (clue == null)
         throw new NullPointerException("clue was null")
-      if (!expression)
-        throw newTestCanceledException(if (clue.isDefined) Some(clue.get + "") else None, None, "Assertions.scala", "macroAssume", 2)
+      if (!bool.value) {
+        val failureMessage = if (Bool.isSimpleWithoutExpressionText(bool)) None else Some(bool.failureMessage)
+        throw newAssertionFailedException(append(failureMessage, clue), None, "Assertions.scala", "macroAssert", 2)
+      }
     }
 
     /**
-     * Assume that the passed in expression is <code>true</code>, else throw <code>TestCanceledException</code>.
+     * Assume that the passed in <code>Bool</code> is <code>true</code>, else throw <code>TestCanceledException</code>.
      *
-     * @param left the LHS of the expression
-     * @param operator the operator of the expression
-     * @param right the RHS of the expression
-     * @param expression <code>Boolean</code> expression to assume for
+     * @param bool the <code>Bool</code> to assume for
      * @param clue optional clue to be included in <code>TestCanceledException</code>'s error message when assertion failed
      */
-    def macroAssume(left: Any, operator: String, right: Any, expression: Boolean, clue: Option[Any]) {
+    def macroAssume(bool: Bool, clue: Any) {
       if (clue == null)
         throw new NullPointerException("clue was null")
-
-      if (!expression) {
-        throw operator match {
-          case "==" =>
-            val (leftee, rightee) = getObjectsForFailureMessage(left, right)
-            newTestCanceledException(append(Some(FailureMessages("didNotEqual", leftee, rightee)), clue), None, "Assertions.scala", "macroAssume", 2)
-          case "===" =>
-            val (leftee, rightee) = getObjectsForFailureMessage(left, right)
-            newTestCanceledException(append(Some(FailureMessages("didNotEqual", leftee, rightee)), clue), None, "Assertions.scala", "macroAssume", 2)
-          case "!=" =>
-            val (leftee, rightee) = getObjectsForFailureMessage(left, right)
-            newTestCanceledException(append(Some(FailureMessages("equaled", leftee, rightee)), clue), None, "Assertions.scala", "macroAssume", 2)
-          case "!==" =>
-            val (leftee, rightee) = getObjectsForFailureMessage(left, right)
-            newTestCanceledException(append(Some(FailureMessages("equaled", leftee, rightee)), clue), None, "Assertions.scala", "macroAssume", 2)
-          /*case ">" => newTestCanceledException(append(Some(FailureMessages("wasNotGreaterThan", left, right)), clue), None, "Assertions.scala", "macroAssertTrue", 2)
-          case ">=" => newTestCanceledException(append(Some(FailureMessages("wasNotGreaterThanOrEqualTo", left, right)), clue), None, "Assertions.scala", "macroAssertTrue", 2)
-          case "<" => newTestCanceledException(append(Some(FailureMessages("wasNotLessThan", left, right)), clue), None, "Assertions.scala", "macroAssertTrue", 2)
-          case "<=" => newTestCanceledException(append(Some(FailureMessages("wasNotLessThanOrEqualTo", left, right)), clue), None, "Assertions.scala", "macroAssertTrue", 2)*/
-          case _ =>
-            throw newTestCanceledException(if (clue.isDefined) Some(clue.get + "") else None, None, "Assertions.scala", "macroAssume", 2)
-        }
+      if (!bool.value) {
+        val failureMessage = if (Bool.isSimpleWithoutExpressionText(bool)) None else Some(bool.failureMessage)
+        throw newTestCanceledException(append(failureMessage, clue), None, "Assertions.scala", "macroAssume", 2)
       }
     }
   }
