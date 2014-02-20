@@ -35,8 +35,7 @@ object GenMatchers {
     val temp7 = temp6.replaceAll("object Matchers extends Matchers", "object MustMatchers extends MustMatchers")
     val temp8 = temp7.replaceAll("I_WAS_must_ORIGINALLY", "should")
     val temp9 = temp8.replaceAll(" I_MUST_STAY_SHOULD", "should")
-    val temp10 = temp9.replaceAll("package org.scalatest // Change me in MustMatchers", "package org.scalatest.matchers\n\nimport org.scalatest._")
-    temp10.replaceAll("I_WAS_Must_ORIGINALLY", "Should")
+    temp9.replaceAll("I_WAS_Must_ORIGINALLY", "Should")
   }
 
   def genMain(targetDir: File, scalaVersion: String) {
