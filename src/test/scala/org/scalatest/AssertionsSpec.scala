@@ -1607,4 +1607,66 @@ class AssertionsSpec extends FunSpec {
     }
 
   }
+  describe("The assertResult method") {
+    it("should be usable when the left expression results in null") {
+      val npe = new NullPointerException
+      assertResult(npe.getMessage) { null }
+    }
+    it("should compare arrays structurally") {
+      val a1 = Array(1, 2, 3)
+      val a2 = Array(1, 2, 3)
+      val a3 = Array(4, 5, 6)
+      assert(a1 ne a2)
+      assertResult(a1) { a2 }
+      intercept[TestFailedException] {
+        assertResult(a1) { a3 }
+      }
+    }
+    it("should compare arrays deeply") {
+      val a1 = Array(1, Array("a", "b"), 3)
+      val a2 = Array(1, Array("a", "b"), 3)
+      val a3 = Array(1, Array("c", "d"), 3)
+      assert(a1 ne a2)
+      assertResult(a1) { a2 }
+      intercept[TestFailedException] {
+        assertResult(a1) { a3 }
+      }
+    }
+    it("should compare arrays containing nulls fine") {
+      val a1 = Array(1, Array("a", null), 3)
+      val a2 = Array(1, Array("a", null), 3)
+      val a3 = Array(1, Array("c", "d"), 3)
+      assert(a1 ne a2)
+      assertResult(a1) { a2 }
+      intercept[TestFailedException] {
+        assertResult(a1) { a3 }
+      }
+      intercept[TestFailedException] {
+        assertResult(a3) { a1 }
+      }
+    }
+    it("should compare nulls in a satisfying manner") {
+      val n1: String = null
+      val n2: String = null
+      assertResult(n1) { n2 }
+      intercept[TestFailedException] {
+        assertResult(n1) { "hi" }
+      }
+      intercept[TestFailedException] {
+        assertResult("hi") { n1 }
+      }
+      val a1 = Array(1, 2, 3)
+      intercept[TestFailedException] {
+        assertResult(n1) { a1 }
+      }
+      intercept[TestFailedException] {
+        assertResult(a1) { n1 }
+      }
+      val a = "hi"
+      val e1 = intercept[TestFailedException] {
+        assertResult(a) { null }
+      }
+      assert(e1.message === Some(FailureMessages("expectedButGot", a, null)))
+    }
+  }
 }
