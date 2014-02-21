@@ -20,8 +20,6 @@ import java.io.{File, FileWriter, BufferedWriter}
 
 object GenMatchers {
 
-  val deprecationLine = "@deprecated(\"Please use org.scalatest.Matchers instead.\")\n"
-
   def translateShouldToMust(shouldLine: String): String = {
     val temp1 = shouldLine.replaceAll("<code>must</code>", "<code>I_WAS_must_ORIGINALLY</code>")
     val temp2 = temp1.replaceAll("<!-- PRESERVE -->should", " I_MUST_STAY_SHOULD")
@@ -35,8 +33,9 @@ object GenMatchers {
     val temp7 = temp6.replaceAll("object Matchers extends Matchers", "object MustMatchers extends MustMatchers")
     val temp8 = temp7.replaceAll("I_WAS_must_ORIGINALLY", "should")
     val temp9 = temp8.replaceAll(" I_MUST_STAY_SHOULD", "should")
-    val temp10 = temp9.replaceAll("package org.scalatest // Change me in MustMatchers", "package org.scalatest.matchers\n\nimport org.scalatest._")
-    temp10.replaceAll("I_WAS_Must_ORIGINALLY", "Should")
+    val temp10 = temp9.replaceAll("import Matchers._", "import MustMatchers._")
+    val temp11 = temp10.replaceAll("Matchers.scala", "MustMatchers.scala")
+    temp11.replaceAll("I_WAS_Must_ORIGINALLY", "Should")
   }
 
   def genMain(targetDir: File, scalaVersion: String) {
@@ -52,9 +51,6 @@ object GenMatchers {
       val lines = Source.fromFile(new File("src/main/scala/org/scalatest/Matchers.scala")).getLines.toList
       for (line <- lines) {
         val mustLine = translateShouldToMust(line)
-        if (mustLine.startsWith("trait MustMatchers extends ") ||
-            mustLine.startsWith("object MustMatchers extends "))
-          mustMatchersWriter.write(deprecationLine)
         mustMatchersWriter.write(mustLine)
         mustMatchersWriter.newLine()
       }
@@ -122,11 +118,33 @@ object GenMatchers {
         "ShouldThrowSpec.scala"
       )
 
+    def transformFile(shouldFile: File, mustFile: File) {
+      val writer = new BufferedWriter(new FileWriter(mustFile))
+      try {
+        val shouldLines = Source.fromFile(shouldFile).getLines().toList // for 2.8
+        for (shouldLine <- shouldLines) {
+          val mustLine = translateShouldToMust(shouldLine)
+          writer.write(mustLine.toString)
+          writer.newLine() // add for 2.8
+        }
+      }
+      finally {
+        writer.close()
+        println("Generated " + mustFile.getAbsolutePath)
+      }
+    }
+
     for (shouldFileName <- shouldFileNames) {
 
       val mustFileName = shouldFileName.replace("Should", "Must")
-      val mustFile = new File(matchersDir, mustFileName)
-      val writer = new BufferedWriter(new FileWriter(mustFile))
+
+      val mustFile = new File(targetBaseDir, mustFileName)
+      transformFile(new File(sourceBaseDir, shouldFileName), mustFile)
+
+      val mustMatchersFile = new File(matchersDir, mustFileName)
+      transformFile(new File(sourceBaseDir, "matchers/" + shouldFileName), mustMatchersFile)
+
+      /*val writer = new BufferedWriter(new FileWriter(mustFile))
       try {
         val shouldLines = Source.fromFile(new File(sourceBaseDir, "matchers/" + shouldFileName)).getLines().toList // for 2.8
         for (shouldLine <- shouldLines) {
@@ -138,7 +156,7 @@ object GenMatchers {
       finally {
         writer.close()
         println("Generated " + mustFile.getAbsolutePath)
-      }
+      }*/
     }
   }
 
