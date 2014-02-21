@@ -1008,10 +1008,11 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
    * @throws TestFailedException if the passed <code>actual</code> value does not equal the passed <code>expected</code> value.
    */
   def assertResult(expected: Any, clue: Any)(actual: Any) {
-    if (actual != expected) {
+    if (!areEqualComparingArraysStructurally(actual, expected)) {
       val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
       val s = FailureMessages("expectedButGot", exp, act)
-      throw newAssertionFailedException(Some(clue + "\n" + s), None, 4)
+      val fullMsg = AppendedClues.appendClue(s, clue.toString)
+      throw newAssertionFailedException(Some(fullMsg), None, 4)
     }
   }
 
