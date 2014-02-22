@@ -68,6 +68,9 @@ object GenMatchers {
       | package org.scalatest.matchers
       |
       | @deprecated("Please use org.scalatest.MustMatchers instead.")
+      | trait MustMatchers extends org.scalatest.MustMatchers
+      |
+      | @deprecated("Please use org.scalatest.MustMatchers instead.")
       | object MustMatchers extends org.scalatest.MustMatchers
     """.stripMargin
 
@@ -82,6 +85,7 @@ object GenMatchers {
       println("Generated " + deprecatedMustMatchersFile.getAbsolutePath)
     }
 
+/*
     val matchersPackageObject = """
       | package org.scalatest
       | 
@@ -113,6 +117,7 @@ object GenMatchers {
       matchersPackageObjectWriter.close()
       println("Generated " + matchersPackageObjectFile.getAbsolutePath)
     }
+*/
   }
 
    def translateShouldToMustInTests(shouldLine: String): String = {
