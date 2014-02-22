@@ -21,21 +21,24 @@ import java.io.{File, FileWriter, BufferedWriter}
 object GenMatchers {
 
   def translateShouldToMust(shouldLine: String): String = {
-    val temp1 = shouldLine.replaceAll("<code>must</code>", "<code>I_WAS_must_ORIGINALLY</code>")
-    val temp2 = temp1.replaceAll("<!-- PRESERVE -->should", " I_MUST_STAY_SHOULD")
-    val temp3 = temp2.replaceAll(
-      "<a href=\"MustMatchers.html\"><code>MustMatchers</code></a>",
-      "<a href=\"I_WAS_Must_ORIGINALLYMatchers.html\"><code>I_WAS_Must_ORIGINALLYMatchers</code></a>"
-    )
-    val temp4 = temp3.replaceAll("should", "must")
-    val temp5 = temp4.replaceAll("Should", "Must")
-    val temp6 = temp5.replaceAll("trait Matchers", "trait MustMatchers")
-    val temp7 = temp6.replaceAll("object Matchers extends Matchers", "object MustMatchers extends MustMatchers")
-    val temp8 = temp7.replaceAll("I_WAS_must_ORIGINALLY", "should")
-    val temp9 = temp8.replaceAll(" I_MUST_STAY_SHOULD", "should")
-    val temp10 = temp9.replaceAll("import Matchers._", "import MustMatchers._")
-    val temp11 = temp10.replaceAll("Matchers.scala", "MustMatchers.scala")
-    temp11.replaceAll("I_WAS_Must_ORIGINALLY", "Should")
+    shouldLine
+      .replaceAll("MustMatchers", "I_NEED_TO_STAY_MUSTMATCHERS")
+      .replaceAll("ShouldMatchers", "I_NEED_TO_STAY_SHOULDMATCHERS")
+      .replaceAll("must", "I_NEED_TO_STAY_SMALL_MUST")
+      .replaceAll("Must", "I_NEED_TO_STAY_BIG_MUST")
+      .replaceAll("<!-- PRESERVE -->should", " I_NEED_TO_STAY_SMALL_SHOULD")
+      .replaceAll("should", "must")
+      .replaceAll("Should", "Must")
+      .replaceAll("trait Matchers", "trait MustMatchers")
+      .replaceAll("object Matchers extends Matchers", "object MustMatchers extends MustMatchers")
+      .replaceAll("I_NEED_TO_STAY_SMALL_SHOULD", "should")
+      .replaceAll("I_NEED_TO_STAY_BIG_MUST", "Must")
+      .replaceAll("I_NEED_TO_STAY_SMALL_MUST", "must")
+      .replaceAll("I_NEED_TO_STAY_SHOULDMATCHERS", "ShouldMatchers")
+      .replaceAll("I_NEED_TO_STAY_MUSTMATCHERS", "MustMatchers")
+      .replaceAll("import Matchers._", "import MustMatchers._")
+      .replaceAll("import org.scalatest.Matchers._", "import org.scalatest.MustMatchers._")
+      .replaceAll("Matchers.scala", "MustMatchers.scala")
   }
 
   def genMain(targetDir: File, scalaVersion: String) {
@@ -45,7 +48,7 @@ object GenMatchers {
     val junitDir = new File(targetDir, "junit")
     junitDir.mkdirs()
 
-    val mustMatchersFile = new File(matchersDir, "MustMatchers.scala")
+    val mustMatchersFile = new File(targetDir, "MustMatchers.scala")
     val mustMatchersWriter = new BufferedWriter(new FileWriter(mustMatchersFile))
     try {
       val lines = Source.fromFile(new File("src/main/scala/org/scalatest/Matchers.scala")).getLines.toList
@@ -61,21 +64,73 @@ object GenMatchers {
       println("Generated " + mustMatchersFile.getAbsolutePath)
     }
 
-    val mustMatchersForJUnitFile = new File(junitDir, "MustMatchersForJUnit.scala")
-    val mustMatchersForJUnitWriter = new BufferedWriter(new FileWriter(mustMatchersForJUnitFile))
+    val deprecatedMustMatchers = """
+      | package org.scalatest.matchers
+      |
+      | @deprecated("Please use org.scalatest.MustMatchers instead.")
+      | object MustMatchers extends org.scalatest.MustMatchers
+    """.stripMargin
+
+    val deprecatedMustMatchersFile = new File(matchersDir, "MustMatchers.scala")
+    val deprecatedMustMatchersWriter = new BufferedWriter(new FileWriter(deprecatedMustMatchersFile))
     try {
-      val lines = Source.fromFile(new File("src/main/scala/org/scalatest/junit/ShouldMatchersForJUnit.scala")).getLines.toList
-      for (line <- lines) {
-        val mustLine = translateShouldToMust(line)
-        mustMatchersForJUnitWriter.write(mustLine)
-        mustMatchersForJUnitWriter.newLine()
-      }
+      deprecatedMustMatchersWriter.write(deprecatedMustMatchers)
     }
     finally {
-      mustMatchersForJUnitWriter.flush()
-      mustMatchersForJUnitWriter.close()
-      println("Generated " + mustMatchersForJUnitFile.getAbsolutePath)
+      deprecatedMustMatchersWriter.flush()
+      deprecatedMustMatchersWriter.close()
+      println("Generated " + deprecatedMustMatchersFile.getAbsolutePath)
     }
+
+    val matchersPackageObject = """
+      | package org.scalatest
+      | 
+      | package object matchers {
+      | 
+      |   /**
+      |    * Convenience type alias allowing <code>MustMatchers</code> to be used in <code>matchers</code> without qualification or another import
+      |    * after a wildcard import of <code>org.scalatest</code>.
+      |    */
+      | 
+      |   /**
+      |    * <p>
+      |    * <strong>This class has been moved to the <code>org.scalatest</code> package. The deprecated type alias that has been left in its place will
+      |    * be removed in a future version of ScalaTest. Please change any uses of <code>org.scalatest.matchers.MustMatchers</code> to <code>org.scalatest.MustMatchers</code>.</strong>
+      |    * </p>
+      |    */
+      |   @deprecated("Please use org.scalatest.MustMatchers instead.")
+      |   type MustMatchers = org.scalatest.MustMatchers
+      | }
+    """.stripMargin
+
+    val matchersPackageObjectFile = new File(matchersDir, "package.scala")
+    val matchersPackageObjectWriter = new BufferedWriter(new FileWriter(matchersPackageObjectFile))
+    try {
+      matchersPackageObjectWriter.write(matchersPackageObject)
+    }
+    finally {
+      matchersPackageObjectWriter.flush()
+      matchersPackageObjectWriter.close()
+      println("Generated " + matchersPackageObjectFile.getAbsolutePath)
+    }
+  }
+
+   def translateShouldToMustInTests(shouldLine: String): String = {
+    val temp1 = shouldLine.replaceAll("<code>must</code>", "<code>I_WAS_must_ORIGINALLY</code>")
+    val temp2 = temp1.replaceAll("<!-- PRESERVE -->should", " I_MUST_STAY_SHOULD")
+    val temp3 = temp2.replaceAll(
+      "<a href=\"MustMatchers.html\"><code>MustMatchers</code></a>",
+      "<a href=\"I_WAS_Must_ORIGINALLYMatchers.html\"><code>I_WAS_Must_ORIGINALLYMatchers</code></a>"
+    )
+    val temp4 = temp3.replaceAll("should", "must")
+    val temp5 = temp4.replaceAll("Should", "Must")
+    val temp6 = temp5.replaceAll("trait Matchers", "trait MustMatchers")
+    val temp7 = temp6.replaceAll("object Matchers extends Matchers", "object MustMatchers extends MustMatchers")
+    val temp8 = temp7.replaceAll("I_WAS_must_ORIGINALLY", "should")
+    val temp9 = temp8.replaceAll(" I_MUST_STAY_SHOULD", "should")
+    val temp10 = temp9.replaceAll("import Matchers._", "import MustMatchers._")
+    val temp11 = temp10.replaceAll("Matchers.scala", "MustMatchers.scala")
+    temp11.replaceAll("I_WAS_Must_ORIGINALLY", "Should")
   }
 
   def genTest(targetBaseDir: File, scalaVersion: String) {
@@ -123,7 +178,7 @@ object GenMatchers {
       try {
         val shouldLines = Source.fromFile(shouldFile).getLines().toList // for 2.8
         for (shouldLine <- shouldLines) {
-          val mustLine = translateShouldToMust(shouldLine)
+          val mustLine = translateShouldToMustInTests(shouldLine)
           writer.write(mustLine.toString)
           writer.newLine() // add for 2.8
         }
@@ -143,20 +198,6 @@ object GenMatchers {
 
       val mustMatchersFile = new File(matchersDir, mustFileName)
       transformFile(new File(sourceBaseDir, "matchers/" + shouldFileName), mustMatchersFile)
-
-      /*val writer = new BufferedWriter(new FileWriter(mustFile))
-      try {
-        val shouldLines = Source.fromFile(new File(sourceBaseDir, "matchers/" + shouldFileName)).getLines().toList // for 2.8
-        for (shouldLine <- shouldLines) {
-          val mustLine = translateShouldToMust(shouldLine)
-          writer.write(mustLine.toString)
-          writer.newLine() // add for 2.8
-        }
-      }
-      finally {
-        writer.close()
-        println("Generated " + mustFile.getAbsolutePath)
-      }*/
     }
   }
 
