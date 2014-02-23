@@ -932,10 +932,11 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
    * @throws TestFailedException if the passed <code>actual</code> value does not equal the passed <code>expected</code> value.
    */
   def assertResult(expected: Any, clue: Any)(actual: Any) {
-    if (actual != expected) {
+    if (!areEqualComparingArraysStructurally(actual, expected)) {
       val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
       val s = FailureMessages("expectedButGot", exp, act)
-      throw newAssertionFailedException(Some(clue + "\n" + s), None, 4)
+      val fullMsg = AppendedClues.appendClue(s, clue.toString)
+      throw newAssertionFailedException(Some(fullMsg), None, 4)
     }
   }
 
@@ -987,7 +988,7 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
    * @throws TestFailedException if the passed <code>actual</code> value does not equal the passed <code>expected</code> value.
    */
   def assertResult(expected: Any)(actual: Any) {
-    if (actual != expected) {
+    if (!areEqualComparingArraysStructurally(actual, expected)) {
       val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
       val s = FailureMessages("expectedButGot", exp, act)
       throw newAssertionFailedException(Some(s), None, 4)
@@ -1308,7 +1309,7 @@ object Assertions extends Assertions {
     override def toString = if (result == ()) Resources("noExceptionWasThrown") else Resources("resultWas", Prettifier.default(result))
   }
 
-  private[scalatest] def areEqualComparingArraysStructurally(left: Any, right: Any) = {
+  private[scalatest] def areEqualComparingArraysStructurally(left: Any, right: Any): Boolean = {
     // Prior to 2.0 this only called .deep if both sides were arrays. Loosened it
     // when nearing 2.0.M6 to call .deep if either left or right side is an array.
     // TODO: this is the same algo as in scalautils.DefaultEquality. Put that one in

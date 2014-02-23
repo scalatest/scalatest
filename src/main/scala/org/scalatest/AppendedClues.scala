@@ -144,13 +144,7 @@ trait AppendedClues {
         throw new NullPointerException("clue was null")
       def append(currentMessage: Option[String]) =
         currentMessage match {
-          case Some(msg) =>
-            // clue.toString.head is guaranteed to work, because append() only called if clue.toString != ""
-            val firstChar = clue.toString.head
-            if (firstChar.isWhitespace || firstChar == '.' || firstChar == ',' || firstChar == ';')
-              Some(msg + clue.toString)
-            else
-              Some(msg + " " + clue.toString)
+          case Some(msg) => Some(AppendedClues.appendClue(msg, clue.toString))
           case None => Some(clue.toString)
         }
       try {
@@ -186,4 +180,13 @@ trait AppendedClues {
  * an alternative to mixing it in. One use case is to import <code>AppendedClues</code>
  * members so you can use them in the Scala interpreter.
  */
-object AppendedClues extends AppendedClues
+object AppendedClues extends AppendedClues {
+  private[scalatest] def appendClue(original: String, clue: String): String =
+    clue.toString.headOption match {
+      case Some(firstChar) if firstChar.isWhitespace ||
+          firstChar == '.' || firstChar == ',' || firstChar == ';' => 
+        original + clue
+      case _ => original + " " + clue
+   }
+}
+
