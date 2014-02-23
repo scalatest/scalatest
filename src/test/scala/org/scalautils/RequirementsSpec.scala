@@ -1730,7 +1730,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       val e = intercept[NullPointerException] {
         requireNonNull(nullPrefix, nullString, nullSuffix)
       }
-      assert(e.getMessage == "nullPrefix, nullString and nullSuffix were null")
+      assert(e.getMessage == "nullPrefix, nullString, and nullSuffix were null")
     }
 
     it("should throw NullPointerException with correct message when one of passed parameters through object property is null") {

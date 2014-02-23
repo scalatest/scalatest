@@ -87,8 +87,12 @@ trait Requirements {
         val errorMessage =
           if (nullCount == 1)
             FailureMessages("wasNull", UnquotedString(nullVariableNames(0)))
+          else if (nullCount == 2) {
+            val combinedVariableNames = Resources("and", nullVariableNames.head, nullVariableNames.last)
+            FailureMessages("wereNull", UnquotedString(combinedVariableNames))
+          }
           else {
-            val combinedVariableNames = Resources("and", nullVariableNames.dropRight(1).mkString(Resources("comma")), nullVariableNames.last)
+            val combinedVariableNames = Resources("commaAnd", nullVariableNames.dropRight(1).mkString(Resources("comma")), nullVariableNames.last)
             FailureMessages("wereNull", UnquotedString(combinedVariableNames))
           }
         throw new NullPointerException(errorMessage)
