@@ -292,3 +292,6 @@ private[scalautils] object RequirementsMacro {
     )
   }
 }
+
+object Requirements extends Requirements
+
