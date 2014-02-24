@@ -21,13 +21,6 @@ import org.scalatest.events._
 import org.scalatest.exceptions.TestRegistrationClosedException
 */
 
-// Tag classes used in tests
-package mytags {
-  object SlowAsMolasses extends Tag("org.scalatest.SlowAsMolasses")
-  object FastAsLight extends Tag("org.scalatest.FastAsLight")
-  object WeakAsAKitten extends Tag("org.scalatest.WeakAsAKitten")
-}
-
 class FunSuiteSuite extends Suite {
 
   def testThatTestMethodsWithNoTagsDontShowUpInTagsMap() {
