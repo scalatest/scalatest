@@ -70,12 +70,27 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
   def wasTrue(left: String): String =
     left + " was true"
 
+  def didNotStartWith(left: Any, right: Any): String =
+    FailureMessages("didNotStartWith", left, right)
+
+  def startedWith(left: Any, right: Any): String =
+    FailureMessages("startedWith", left, right)
+
   class Stateful {
     var state = false
     def changeState: Boolean = {
       state = true
       state
     }
+  }
+
+  class CustomInt(value: Int) {
+
+    def startsWith(v: Int): Boolean = {
+      value.toString.startsWith(v.toString)
+    }
+
+    override def toString: String = value.toString
   }
 
   describe("The require(boolean) method") {
@@ -459,6 +474,58 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should preserve side effects when typed Apply with 2 argument list is passed in") {
       require(neverRuns3(sys.error("Sad times 3"))(0))
+    }
+
+    val s1 = "hi ScalaTest"
+    val s2 = "ScalaTest hi"
+    val s3 = "Say hi to ScalaTest"
+
+    val ci1 = new CustomInt(123)
+    val ci2 = new CustomInt(321)
+
+    it("should do nothing when is used to check s1 startsWith \"hi\"") {
+      require(s1 startsWith "hi")
+      require(s1.startsWith("hi"))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check s2 startsWith \"hi\"") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(s2 startsWith "hi")
+      }
+      assert(e1.getMessage == didNotStartWith(s2, "hi"))
+
+      val e2 = intercept[IllegalArgumentException] {
+        require(s2.startsWith("hi"))
+      }
+      assert(e2.getMessage == didNotStartWith(s2, "hi"))
+    }
+
+    it("should do nothing when is used to check ci1 startsWith 1") {
+      require(ci1 startsWith 1)
+      require(ci1.startsWith(1))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check ci2 startsWith 1") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(ci2 startsWith 1)
+      }
+      assert(e1.getMessage == didNotStartWith(ci2, 1))
+
+      val e2 = intercept[IllegalArgumentException] {
+        require(ci2.startsWith(1))
+      }
+      assert(e2.getMessage == didNotStartWith(ci2, 1))
+    }
+
+    it("should do nothing when is used to check !s2.startsWith(\"hi\")") {
+      require(!s2.startsWith("hi"))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !s1.startsWith(\"hi\")") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(!s1.startsWith("hi"))
+      }
+      assert(e1.getMessage == startedWith(s1, "hi"))
     }
 
   }
@@ -886,6 +953,58 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       require(neverRuns3(sys.error("Sad times 3"))(0), "should not fail!")
     }
 
+    val s1 = "hi ScalaTest"
+    val s2 = "ScalaTest hi"
+    val s3 = "Say hi to ScalaTest"
+
+    val ci1 = new CustomInt(123)
+    val ci2 = new CustomInt(321)
+
+    it("should do nothing when is used to check s1 startsWith \"hi\"") {
+      require(s1 startsWith "hi", ", dude")
+      require(s1.startsWith("hi"), ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check s2 startsWith \"hi\"") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(s2 startsWith "hi", ", dude")
+      }
+      assert(e1.getMessage == didNotStartWith(s2, "hi") + ", dude")
+
+      val e2 = intercept[IllegalArgumentException] {
+        require(s2.startsWith("hi"), ", dude")
+      }
+      assert(e2.getMessage == didNotStartWith(s2, "hi") + ", dude")
+    }
+
+    it("should do nothing when is used to check ci1 startsWith 1") {
+      require(ci1 startsWith 1, ", dude")
+      require(ci1.startsWith(1), ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check ci2 startsWith 1") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(ci2 startsWith 1, ", dude")
+      }
+      assert(e1.getMessage == didNotStartWith(ci2, 1) + ", dude")
+
+      val e2 = intercept[IllegalArgumentException] {
+        require(ci2.startsWith(1), ", dude")
+      }
+      assert(e2.getMessage == didNotStartWith(ci2, 1) + ", dude")
+    }
+
+    it("should do nothing when is used to check !s2.startsWith(\"hi\")") {
+      require(!s2.startsWith("hi"), ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !s1.startsWith(\"hi\")") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(!s1.startsWith("hi"), ", dude")
+      }
+      assert(e1.getMessage == startedWith(s1, "hi") + ", dude")
+    }
+
   }
 
   describe("The requireState(boolean) method") {
@@ -1269,6 +1388,58 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should preserve side effects when typed Apply with 2 argument list is passed in") {
       requireState(neverRuns3(sys.error("Sad times 3"))(0))
+    }
+
+    val s1 = "hi ScalaTest"
+    val s2 = "ScalaTest hi"
+    val s3 = "Say hi to ScalaTest"
+
+    val ci1 = new CustomInt(123)
+    val ci2 = new CustomInt(321)
+
+    it("should do nothing when is used to check s1 startsWith \"hi\"") {
+      requireState(s1 startsWith "hi")
+      requireState(s1.startsWith("hi"))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check s2 startsWith \"hi\"") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(s2 startsWith "hi")
+      }
+      assert(e1.getMessage == didNotStartWith(s2, "hi"))
+
+      val e2 = intercept[IllegalStateException] {
+        requireState(s2.startsWith("hi"))
+      }
+      assert(e2.getMessage == didNotStartWith(s2, "hi"))
+    }
+
+    it("should do nothing when is used to check ci1 startsWith 1") {
+      requireState(ci1 startsWith 1)
+      requireState(ci1.startsWith(1))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check ci2 startsWith 1") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(ci2 startsWith 1)
+      }
+      assert(e1.getMessage == didNotStartWith(ci2, 1))
+
+      val e2 = intercept[IllegalStateException] {
+        requireState(ci2.startsWith(1))
+      }
+      assert(e2.getMessage == didNotStartWith(ci2, 1))
+    }
+
+    it("should do nothing when is used to check !s2.startsWith(\"hi\")") {
+      requireState(!s2.startsWith("hi"))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !s1.startsWith(\"hi\")") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(!s1.startsWith("hi"))
+      }
+      assert(e1.getMessage == startedWith(s1, "hi"))
     }
 
   }
@@ -1694,6 +1865,58 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should preserve side effects when typed Apply with 2 argument list is passed in") {
       requireState(neverRuns3(sys.error("Sad times 3"))(0), "should not fail!")
+    }
+
+    val s1 = "hi ScalaTest"
+    val s2 = "ScalaTest hi"
+    val s3 = "Say hi to ScalaTest"
+
+    val ci1 = new CustomInt(123)
+    val ci2 = new CustomInt(321)
+
+    it("should do nothing when is used to check s1 startsWith \"hi\"") {
+      requireState(s1 startsWith "hi", ", dude")
+      requireState(s1.startsWith("hi"), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check s2 startsWith \"hi\"") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(s2 startsWith "hi", ", dude")
+      }
+      assert(e1.getMessage == didNotStartWith(s2, "hi") + ", dude")
+
+      val e2 = intercept[IllegalStateException] {
+        requireState(s2.startsWith("hi"), ", dude")
+      }
+      assert(e2.getMessage == didNotStartWith(s2, "hi") + ", dude")
+    }
+
+    it("should do nothing when is used to check ci1 startsWith 1") {
+      requireState(ci1 startsWith 1, ", dude")
+      requireState(ci1.startsWith(1), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check ci2 startsWith 1") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(ci2 startsWith 1, ", dude")
+      }
+      assert(e1.getMessage == didNotStartWith(ci2, 1) + ", dude")
+
+      val e2 = intercept[IllegalStateException] {
+        requireState(ci2.startsWith(1), ", dude")
+      }
+      assert(e2.getMessage == didNotStartWith(ci2, 1) + ", dude")
+    }
+
+    it("should do nothing when is used to check !s2.startsWith(\"hi\")") {
+      requireState(!s2.startsWith("hi"), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !s1.startsWith(\"hi\")") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(!s1.startsWith("hi"), ", dude")
+      }
+      assert(e1.getMessage == startedWith(s1, "hi") + ", dude")
     }
 
   }

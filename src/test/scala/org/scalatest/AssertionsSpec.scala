@@ -205,12 +205,33 @@ class AssertionsSpec extends FunSpec {
   def wasTrue(left: String): String =
     left + " was true"
 
+  def quoteString(value: Any): String =
+    value match {
+      case s: String => "\"" + value + "\""
+      case _ => value.toString
+    }
+
+  def didNotStartWith(left: Any, right: Any): String =
+    quoteString(left) + " did not start with " + quoteString(right)
+
+  def startedWith(left: Any, right: Any): String =
+    quoteString(left) + " started with " + quoteString(right)
+
   class Stateful {
     var state = false
     def changeState: Boolean = {
       state = true
       state
     }
+  }
+
+  class CustomInt(value: Int) {
+
+    def startsWith(v: Int): Boolean = {
+      value.toString.startsWith(v.toString)
+    }
+
+    override def toString: String = value.toString
   }
 
   private def neverRuns1(f: => Unit): Boolean = true
@@ -767,6 +788,69 @@ class AssertionsSpec extends FunSpec {
     it("should preserve side effects when typed Apply with 2 argument list is passed in") {
       assert(neverRuns3(sys.error("Sad times 3"))(0))
     }
+
+    val s1 = "hi ScalaTest"
+    val s2 = "ScalaTest hi"
+    val s3 = "Say hi to ScalaTest"
+
+    val ci1 = new CustomInt(123)
+    val ci2 = new CustomInt(321)
+
+    it("should do nothing when is used to check s1 startsWith \"hi\"") {
+      assert(s1 startsWith "hi")
+      assert(s1.startsWith("hi"))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check s2 startsWith \"hi\"") {
+      val e1 = intercept[TestFailedException] {
+        assert(s2 startsWith "hi")
+      }
+      assert(e1.message == Some(didNotStartWith(s2, "hi")))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestFailedException] {
+        assert(s2.startsWith("hi"))
+      }
+      assert(e2.message == Some(didNotStartWith(s2, "hi")))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check ci1 startsWith 1") {
+      assert(ci1 startsWith 1)
+      assert(ci1.startsWith(1))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check ci2 startsWith 1") {
+      val e1 = intercept[TestFailedException] {
+        assert(ci2 startsWith 1)
+      }
+      assert(e1.message == Some(didNotStartWith(ci2, 1)))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestFailedException] {
+        assert(ci2.startsWith(1))
+      }
+      assert(e2.message == Some(didNotStartWith(ci2, 1)))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !s2.startsWith(\"hi\")") {
+      assert(!s2.startsWith("hi"))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check !s1.startsWith(\"hi\")") {
+      val e1 = intercept[TestFailedException] {
+        assert(!s1.startsWith("hi"))
+      }
+      assert(e1.message == Some(startedWith(s1, "hi")))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
   }
 
   describe("The assert(boolean, clue) method") {
@@ -1326,6 +1410,68 @@ class AssertionsSpec extends FunSpec {
     it("should preserve side effects when typed Apply with 2 argument list is passed in") {
       assert(neverRuns3(sys.error("Sad times 3"))(0), "should not fail!")
     }
+
+    val s1 = "hi ScalaTest"
+    val s2 = "ScalaTest hi"
+    val s3 = "Say hi to ScalaTest"
+
+    val ci1 = new CustomInt(123)
+    val ci2 = new CustomInt(321)
+
+    it("should do nothing when is used to check s1 startsWith \"hi\"") {
+      assert(s1 startsWith "hi", ", dude")
+      assert(s1.startsWith("hi"), ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check s2 startsWith \"hi\"") {
+      val e1 = intercept[TestFailedException] {
+        assert(s2 startsWith "hi", ", dude")
+      }
+      assert(e1.message == Some(didNotStartWith(s2, "hi") + ", dude"))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestFailedException] {
+        assert(s2.startsWith("hi"), ", dude")
+      }
+      assert(e2.message == Some(didNotStartWith(s2, "hi") + ", dude"))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check ci1 startsWith 1") {
+      assert(ci1 startsWith 1, ", dude")
+      assert(ci1.startsWith(1), ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check ci2 startsWith 1") {
+      val e1 = intercept[TestFailedException] {
+        assert(ci2 startsWith 1, ", dude")
+      }
+      assert(e1.message == Some(didNotStartWith(ci2, 1) + ", dude"))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestFailedException] {
+        assert(ci2.startsWith(1), ", dude")
+      }
+      assert(e2.message == Some(didNotStartWith(ci2, 1) + ", dude"))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !s2.startsWith(\"hi\")") {
+      assert(!s2.startsWith("hi"), ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check !s1.startsWith(\"hi\")") {
+      val e1 = intercept[TestFailedException] {
+        assert(!s1.startsWith("hi"), ", dude")
+      }
+      assert(e1.message == Some(startedWith(s1, "hi") + ", dude"))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
   }
 
   describe("The assume(boolean) method") {
@@ -1877,6 +2023,68 @@ class AssertionsSpec extends FunSpec {
 
     it("should preserve side effects when typed Apply with 2 argument list is passed in") {
       assume(neverRuns3(sys.error("Sad times 3"))(0))
+    }
+
+    val s1 = "hi ScalaTest"
+    val s2 = "ScalaTest hi"
+    val s3 = "Say hi to ScalaTest"
+
+    val ci1 = new CustomInt(123)
+    val ci2 = new CustomInt(321)
+
+    it("should do nothing when is used to check s1 startsWith \"hi\"") {
+      assume(s1 startsWith "hi")
+      assume(s1.startsWith("hi"))
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check s2 startsWith \"hi\"") {
+      val e1 = intercept[TestCanceledException] {
+        assume(s2 startsWith "hi")
+      }
+      assert(e1.message == Some(didNotStartWith(s2, "hi")))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestCanceledException] {
+        assume(s2.startsWith("hi"))
+      }
+      assert(e2.message == Some(didNotStartWith(s2, "hi")))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check ci1 startsWith 1") {
+      assume(ci1 startsWith 1)
+      assume(ci1.startsWith(1))
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check ci2 startsWith 1") {
+      val e1 = intercept[TestCanceledException] {
+        assume(ci2 startsWith 1)
+      }
+      assert(e1.message == Some(didNotStartWith(ci2, 1)))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestCanceledException] {
+        assume(ci2.startsWith(1))
+      }
+      assert(e2.message == Some(didNotStartWith(ci2, 1)))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !s2.startsWith(\"hi\")") {
+      assume(!s2.startsWith("hi"))
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check !s1.startsWith(\"hi\")") {
+      val e1 = intercept[TestCanceledException] {
+        assume(!s1.startsWith("hi"))
+      }
+      assert(e1.message == Some(startedWith(s1, "hi")))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
   }
 
@@ -2436,6 +2644,68 @@ class AssertionsSpec extends FunSpec {
 
     it("should preserve side effects when typed Apply with 2 argument list is passed in") {
       assume(neverRuns3(sys.error("Sad times 3"))(0), "should not fail!")
+    }
+
+    val s1 = "hi ScalaTest"
+    val s2 = "ScalaTest hi"
+    val s3 = "Say hi to ScalaTest"
+
+    val ci1 = new CustomInt(123)
+    val ci2 = new CustomInt(321)
+
+    it("should do nothing when is used to check s1 startsWith \"hi\"") {
+      assume(s1 startsWith "hi", ", dude")
+      assume(s1.startsWith("hi"), ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check s2 startsWith \"hi\"") {
+      val e1 = intercept[TestCanceledException] {
+        assume(s2 startsWith "hi", ", dude")
+      }
+      assert(e1.message == Some(didNotStartWith(s2, "hi") + ", dude"))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestCanceledException] {
+        assume(s2.startsWith("hi"), ", dude")
+      }
+      assert(e2.message == Some(didNotStartWith(s2, "hi") + ", dude"))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check ci1 startsWith 1") {
+      assume(ci1 startsWith 1, ", dude")
+      assume(ci1.startsWith(1), ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check ci2 startsWith 1") {
+      val e1 = intercept[TestCanceledException] {
+        assume(ci2 startsWith 1, ", dude")
+      }
+      assert(e1.message == Some(didNotStartWith(ci2, 1) + ", dude"))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestCanceledException] {
+        assume(ci2.startsWith(1), ", dude")
+      }
+      assert(e2.message == Some(didNotStartWith(ci2, 1) + ", dude"))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !s2.startsWith(\"hi\")") {
+      assume(!s2.startsWith("hi"), ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check !s1.startsWith(\"hi\")") {
+      val e1 = intercept[TestCanceledException] {
+        assume(!s1.startsWith("hi"), ", dude")
+      }
+      assert(e1.message == Some(startedWith(s1, "hi") + ", dude"))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
   }
 

@@ -597,7 +597,7 @@ private[scalautils] class BinaryMacroBool(left: Any, operator: String, right: An
    *
    * @return Localized friendly raw message based on the passed in <code>operator</code>
    */
-  def rawFailureMessage: String =
+  def rawFailureMessage: String = {
     operator match {
       case "==" => Resources("didNotEqual")
       case "===" => Resources("didNotEqual")
@@ -607,6 +607,7 @@ private[scalautils] class BinaryMacroBool(left: Any, operator: String, right: An
       case ">=" => Resources("wasNotGreaterThanOrEqualTo")
       case "<" => Resources("wasNotLessThan")
       case "<=" => Resources("wasNotLessThanOrEqualTo")
+      case "startsWith" => Resources("didNotStartWith")
       case "&&" | "&" =>
         (left, right) match {
           case (leftBool: Bool, rightBool: Bool) =>
@@ -625,6 +626,7 @@ private[scalautils] class BinaryMacroBool(left: Any, operator: String, right: An
       case "||" | "|" => Resources("commaAnd")
       case _ => Resources("expressionWasFalse")
     }
+  }
 
   /**
    * raw message with a meaning opposite to that of the failure message, this method implementation will return the
@@ -642,6 +644,7 @@ private[scalautils] class BinaryMacroBool(left: Any, operator: String, right: An
       case ">=" => Resources("wasGreaterThanOrEqualTo")
       case "<" => Resources("wasLessThan")
       case "<=" => Resources("wasLessThanOrEqualTo")
+      case "startsWith" => Resources("startedWith")
       case "&&" | "&" => Resources("commaAnd")
       case "||" | "|" => Resources("commaAnd")
       case _ => Resources("expressionWasTrue")
@@ -673,6 +676,8 @@ private[scalautils] class BinaryMacroBool(left: Any, operator: String, right: An
       case "==" | "===" | "!=" | "!==" | ">" | ">=" | "<" | "<=" =>
         val (leftee, rightee) = getObjectsForFailureMessage
         Vector(leftee, rightee)
+      case "startsWith" =>
+        Vector(left, right)
       case "&&" | "&" =>
         (left, right) match {
           case (leftBool: Bool, rightBool: Bool) =>
@@ -716,6 +721,8 @@ private[scalautils] class BinaryMacroBool(left: Any, operator: String, right: An
       case "==" | "===" | "!=" | "!==" | ">" | ">=" | "<" | "<=" =>
         val (leftee, rightee) = getObjectsForFailureMessage
         Vector(leftee, rightee)
+      case "startsWith" =>
+        Vector(left, right)
       case "&&" | "&" =>
         (left, right) match {
           case (leftBool: Bool, rightBool: Bool) =>
