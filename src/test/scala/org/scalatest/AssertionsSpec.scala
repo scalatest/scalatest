@@ -1045,6 +1045,40 @@ class AssertionsSpec extends FunSpec {
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
 
+    it("should do nothing when is used to check ci1 ne ci2") {
+      assert(ci1 ne ci2)
+      assert(ci1.ne(ci2))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check ci1 ne ci3") {
+      val e1 = intercept[TestFailedException] {
+        assert(ci1 ne ci3)
+      }
+      assert(e1.message == Some(wasTheSameInstanceAs(ci1, ci3)))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestFailedException] {
+        assert(ci1.ne(ci3))
+      }
+      assert(e2.message == Some(wasTheSameInstanceAs(ci1, ci3)))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !ci1.ne(ci3)") {
+      assert(!ci1.ne(ci3))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check !ci1.ne(ci2)") {
+      val e = intercept[TestFailedException] {
+        assert(!ci1.ne(ci2))
+      }
+      assert(e.message == Some(wasNotTheSameInstanceAs(ci1, ci2)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
   }
 
   describe("The assert(boolean, clue) method") {
@@ -1834,6 +1868,40 @@ class AssertionsSpec extends FunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
+
+    it("should do nothing when is used to check ci1 ne ci2") {
+      assert(ci1 ne ci2, ", dude")
+      assert(ci1.ne(ci2), ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check ci1 ne ci3") {
+      val e1 = intercept[TestFailedException] {
+        assert(ci1 ne ci3, ", dude")
+      }
+      assert(e1.message == Some(wasTheSameInstanceAs(ci1, ci3) + ", dude"))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestFailedException] {
+        assert(ci1.ne(ci3), ", dude")
+      }
+      assert(e2.message == Some(wasTheSameInstanceAs(ci1, ci3) + ", dude"))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !ci1.ne(ci3)") {
+      assert(!ci1.ne(ci3), ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check !ci1.ne(ci2)") {
+      val e = intercept[TestFailedException] {
+        assert(!ci1.ne(ci2), ", dude")
+      }
+      assert(e.message == Some(wasNotTheSameInstanceAs(ci1, ci2) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
   }
 
   describe("The assume(boolean) method") {
@@ -2613,6 +2681,40 @@ class AssertionsSpec extends FunSpec {
         assume(!ci1.eq(ci3))
       }
       assert(e.message == Some(wasTheSameInstanceAs(ci1, ci3)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check ci1 ne ci2") {
+      assume(ci1 ne ci2)
+      assume(ci1.ne(ci2))
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check ci1 ne ci3") {
+      val e1 = intercept[TestCanceledException] {
+        assume(ci1 ne ci3)
+      }
+      assert(e1.message == Some(wasTheSameInstanceAs(ci1, ci3)))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestCanceledException] {
+        assume(ci1.ne(ci3))
+      }
+      assert(e2.message == Some(wasTheSameInstanceAs(ci1, ci3)))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !ci1.ne(ci3)") {
+      assume(!ci1.ne(ci3))
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check !ci1.ne(ci2)") {
+      val e = intercept[TestCanceledException] {
+        assume(!ci1.ne(ci2))
+      }
+      assert(e.message == Some(wasNotTheSameInstanceAs(ci1, ci2)))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -3402,6 +3504,40 @@ class AssertionsSpec extends FunSpec {
         assume(!ci1.eq(ci3), ", dude")
       }
       assert(e.message == Some(wasTheSameInstanceAs(ci1, ci3) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check ci1 ne ci2") {
+      assume(ci1 ne ci2, ", dude")
+      assume(ci1.ne(ci2), ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check ci1 ne ci3") {
+      val e1 = intercept[TestCanceledException] {
+        assume(ci1 ne ci3, ", dude")
+      }
+      assert(e1.message == Some(wasTheSameInstanceAs(ci1, ci3) + ", dude"))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestCanceledException] {
+        assume(ci1.ne(ci3), ", dude")
+      }
+      assert(e2.message == Some(wasTheSameInstanceAs(ci1, ci3) + ", dude"))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !ci1.ne(ci3)") {
+      assume(!ci1.ne(ci3), ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check !ci1.ne(ci2)") {
+      val e = intercept[TestCanceledException] {
+        assume(!ci1.ne(ci2), ", dude")
+      }
+      assert(e.message == Some(wasNotTheSameInstanceAs(ci1, ci2) + ", dude"))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }

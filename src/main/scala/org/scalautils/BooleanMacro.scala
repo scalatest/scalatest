@@ -72,7 +72,8 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
       "startsWith",
       "endsWith",
       "contains",
-      "eq") ++ logicOperators
+      "eq",
+      "ne") ++ logicOperators
 
   def isSupported(operator: String) = supportedOperations.contains(operator)
 

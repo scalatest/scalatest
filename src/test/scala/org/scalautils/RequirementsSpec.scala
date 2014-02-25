@@ -692,6 +692,34 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       assert(e.getMessage == wasTheSameInstanceAs(ci1, ci3))
     }
 
+    it("should do nothing when is used to check ci1 ne ci2") {
+      require(ci1 ne ci2)
+      require(ci1.ne(ci2))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check ci1 ne ci3") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(ci1 ne ci3)
+      }
+      assert(e1.getMessage == wasTheSameInstanceAs(ci1, ci3))
+
+      val e2 = intercept[IllegalArgumentException] {
+        require(ci1.ne(ci3))
+      }
+      assert(e2.getMessage == wasTheSameInstanceAs(ci1, ci3))
+    }
+
+    it("should do nothing when is used to check !ci1.ne(ci3)") {
+      require(!ci1.ne(ci3))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !ci1.ne(ci2)") {
+      val e = intercept[IllegalArgumentException] {
+        require(!ci1.ne(ci2))
+      }
+      assert(e.getMessage == wasNotTheSameInstanceAs(ci1, ci2))
+    }
+
   }
 
   describe("The require(boolean, clue) method") {
@@ -1307,6 +1335,34 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       assert(e.getMessage == wasTheSameInstanceAs(ci1, ci3) + ", dude")
     }
 
+    it("should do nothing when is used to check ci1 ne ci2") {
+      require(ci1 ne ci2, ", dude")
+      require(ci1.ne(ci2), ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check ci1 ne ci3") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(ci1 ne ci3, ", dude")
+      }
+      assert(e1.getMessage == wasTheSameInstanceAs(ci1, ci3) + ", dude")
+
+      val e2 = intercept[IllegalArgumentException] {
+        require(ci1.ne(ci3), ", dude")
+      }
+      assert(e2.getMessage == wasTheSameInstanceAs(ci1, ci3) + ", dude")
+    }
+
+    it("should do nothing when is used to check !ci1.ne(ci3)") {
+      require(!ci1.ne(ci3), ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !ci1.ne(ci2)") {
+      val e = intercept[IllegalArgumentException] {
+        require(!ci1.ne(ci2), ", dude")
+      }
+      assert(e.getMessage == wasNotTheSameInstanceAs(ci1, ci2) + ", dude")
+    }
+
   }
 
   describe("The requireState(boolean) method") {
@@ -1880,6 +1936,34 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         requireState(!ci1.eq(ci3))
       }
       assert(e.getMessage == wasTheSameInstanceAs(ci1, ci3))
+    }
+
+    it("should do nothing when is used to check ci1 ne ci2") {
+      requireState(ci1 ne ci2)
+      requireState(ci1.ne(ci2))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check ci1 ne ci3") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(ci1 ne ci3)
+      }
+      assert(e1.getMessage == wasTheSameInstanceAs(ci1, ci3))
+
+      val e2 = intercept[IllegalStateException] {
+        requireState(ci1.ne(ci3))
+      }
+      assert(e2.getMessage == wasTheSameInstanceAs(ci1, ci3))
+    }
+
+    it("should do nothing when is used to check !ci1.ne(ci3)") {
+      requireState(!ci1.ne(ci3))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !ci1.ne(ci2)") {
+      val e = intercept[IllegalStateException] {
+        requireState(!ci1.ne(ci2))
+      }
+      assert(e.getMessage == wasNotTheSameInstanceAs(ci1, ci2))
     }
 
   }
@@ -2495,6 +2579,34 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         requireState(!ci1.eq(ci3), ", dude")
       }
       assert(e.getMessage == wasTheSameInstanceAs(ci1, ci3) + ", dude")
+    }
+
+    it("should do nothing when is used to check ci1 ne ci2") {
+      requireState(ci1 ne ci2, ", dude")
+      requireState(ci1.ne(ci2), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check ci1 ne ci3") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(ci1 ne ci3, ", dude")
+      }
+      assert(e1.getMessage == wasTheSameInstanceAs(ci1, ci3) + ", dude")
+
+      val e2 = intercept[IllegalStateException] {
+        requireState(ci1.ne(ci3), ", dude")
+      }
+      assert(e2.getMessage == wasTheSameInstanceAs(ci1, ci3) + ", dude")
+    }
+
+    it("should do nothing when is used to check !ci1.ne(ci3)") {
+      requireState(!ci1.ne(ci3), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !ci1.ne(ci2)") {
+      val e = intercept[IllegalStateException] {
+        requireState(!ci1.ne(ci2), ", dude")
+      }
+      assert(e.getMessage == wasNotTheSameInstanceAs(ci1, ci2) + ", dude")
     }
 
   }
