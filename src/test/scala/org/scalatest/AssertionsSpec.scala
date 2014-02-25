@@ -229,6 +229,12 @@ class AssertionsSpec extends FunSpec {
   def contained(left: Any, right: Any): String =
     quoteString(left) + " contained " + quoteString(right)
 
+  def wasNotTheSameInstanceAs(left: AnyRef, right: AnyRef): String =
+    quoteString(left) + " was not the same instance as " + quoteString(right)
+
+  def wasTheSameInstanceAs(left: AnyRef, right: AnyRef): String =
+    quoteString(left) + " was the same instance as " + quoteString(right)
+
   class Stateful {
     var state = false
     def changeState: Boolean = {
@@ -815,6 +821,7 @@ class AssertionsSpec extends FunSpec {
 
     val ci1 = new CustomInt(123)
     val ci2 = new CustomInt(321)
+    val ci3 = ci1
 
     val l1 = List(1, 2, 3)
 
@@ -1002,6 +1009,40 @@ class AssertionsSpec extends FunSpec {
       assert(e2.message == Some(didNotContain(l1, 5)))
       assert(e2.failedCodeFileName == (Some(fileName)))
       assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check ci1 eq ci3") {
+      assert(ci1 eq ci3)
+      assert(ci1.eq(ci3))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check ci1 eq ci2") {
+      val e1 = intercept[TestFailedException] {
+        assert(ci1 eq ci2)
+      }
+      assert(e1.message == Some(wasNotTheSameInstanceAs(ci1, ci2)))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestFailedException] {
+        assert(ci1.eq(ci2))
+      }
+      assert(e2.message == Some(wasNotTheSameInstanceAs(ci1, ci2)))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !ci1.eq(ci2)") {
+      assert(!ci1.eq(ci2))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check !ci1.eq(ci3)") {
+      val e = intercept[TestFailedException] {
+        assert(!ci1.eq(ci3))
+      }
+      assert(e.message == Some(wasTheSameInstanceAs(ci1, ci3)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
 
   }
@@ -1570,6 +1611,7 @@ class AssertionsSpec extends FunSpec {
 
     val ci1 = new CustomInt(123)
     val ci2 = new CustomInt(321)
+    val ci3 = ci1
 
     val l1 = List(1, 2, 3)
 
@@ -1757,6 +1799,40 @@ class AssertionsSpec extends FunSpec {
       assert(e2.message == Some(didNotContain(l1, 5) + ", dude"))
       assert(e2.failedCodeFileName == (Some(fileName)))
       assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check ci1 eq ci3") {
+      assert(ci1 eq ci3, ", dude")
+      assert(ci1.eq(ci3), ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check ci1 eq ci2") {
+      val e1 = intercept[TestFailedException] {
+        assert(ci1 eq ci2, ", dude")
+      }
+      assert(e1.message == Some(wasNotTheSameInstanceAs(ci1, ci2) + ", dude"))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestFailedException] {
+        assert(ci1.eq(ci2), ", dude")
+      }
+      assert(e2.message == Some(wasNotTheSameInstanceAs(ci1, ci2) + ", dude"))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !ci1.eq(ci2)") {
+      assert(!ci1.eq(ci2), ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check !ci1.eq(ci3)") {
+      val e = intercept[TestFailedException] {
+        assert(!ci1.eq(ci3), ", dude")
+      }
+      assert(e.message == Some(wasTheSameInstanceAs(ci1, ci3) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
   }
 
@@ -2317,6 +2393,7 @@ class AssertionsSpec extends FunSpec {
 
     val ci1 = new CustomInt(123)
     val ci2 = new CustomInt(321)
+    val ci3 = ci1
 
     val l1 = List(1, 2, 3)
 
@@ -2504,6 +2581,40 @@ class AssertionsSpec extends FunSpec {
       assert(e2.message == Some(didNotContain(l1, 5)))
       assert(e2.failedCodeFileName == (Some(fileName)))
       assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check ci1 eq ci3") {
+      assume(ci1 eq ci3)
+      assume(ci1.eq(ci3))
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check ci1 eq ci2") {
+      val e1 = intercept[TestCanceledException] {
+        assume(ci1 eq ci2)
+      }
+      assert(e1.message == Some(wasNotTheSameInstanceAs(ci1, ci2)))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestCanceledException] {
+        assume(ci1.eq(ci2))
+      }
+      assert(e2.message == Some(wasNotTheSameInstanceAs(ci1, ci2)))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !ci1.eq(ci2)") {
+      assume(!ci1.eq(ci2))
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check !ci1.eq(ci3)") {
+      val e = intercept[TestCanceledException] {
+        assume(!ci1.eq(ci3))
+      }
+      assert(e.message == Some(wasTheSameInstanceAs(ci1, ci3)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
   }
 
@@ -3071,6 +3182,7 @@ class AssertionsSpec extends FunSpec {
 
     val ci1 = new CustomInt(123)
     val ci2 = new CustomInt(321)
+    val ci3 = ci1
 
     val l1 = List(1, 2, 3)
 
@@ -3259,6 +3371,41 @@ class AssertionsSpec extends FunSpec {
       assert(e2.failedCodeFileName == (Some(fileName)))
       assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
+
+    it("should do nothing when is used to check ci1 eq ci3") {
+      assume(ci1 eq ci3, ", dude")
+      assume(ci1.eq(ci3), ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check ci1 eq ci2") {
+      val e1 = intercept[TestCanceledException] {
+        assume(ci1 eq ci2, ", dude")
+      }
+      assert(e1.message == Some(wasNotTheSameInstanceAs(ci1, ci2) + ", dude"))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestCanceledException] {
+        assume(ci1.eq(ci2), ", dude")
+      }
+      assert(e2.message == Some(wasNotTheSameInstanceAs(ci1, ci2) + ", dude"))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !ci1.eq(ci2)") {
+      assume(!ci1.eq(ci2), ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check !ci1.eq(ci3)") {
+      val e = intercept[TestCanceledException] {
+        assume(!ci1.eq(ci3), ", dude")
+      }
+      assert(e.message == Some(wasTheSameInstanceAs(ci1, ci3) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
   }
 
   describe("assertTypeError method") {

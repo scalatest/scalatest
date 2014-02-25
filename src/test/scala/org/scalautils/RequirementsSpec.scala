@@ -88,6 +88,12 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
   def contained(left: Any, right: Any): String =
     FailureMessages("contained", left, right)
 
+  def wasNotTheSameInstanceAs(left: AnyRef, right: AnyRef): String =
+    FailureMessages("wasNotTheSameInstanceAs", left, right)
+
+  def wasTheSameInstanceAs(left: AnyRef, right: AnyRef): String =
+    FailureMessages("wasTheSameInstanceAs", left, right)
+
   class Stateful {
     var state = false
     def changeState: Boolean = {
@@ -502,6 +508,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     val ci1 = new CustomInt(123)
     val ci2 = new CustomInt(321)
+    val ci3 = ci1
 
     val l1 = List(1, 2, 3)
 
@@ -655,6 +662,34 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         require(l1.contains(5))
       }
       assert(e2.getMessage == didNotContain(l1, 5))
+    }
+
+    it("should do nothing when is used to check ci1 eq ci3") {
+      require(ci1 eq ci3)
+      require(ci1.eq(ci3))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check ci1 eq ci2") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(ci1 eq ci2)
+      }
+      assert(e1.getMessage == wasNotTheSameInstanceAs(ci1, ci2))
+
+      val e2 = intercept[IllegalArgumentException] {
+        require(ci1.eq(ci2))
+      }
+      assert(e2.getMessage == wasNotTheSameInstanceAs(ci1, ci2))
+    }
+
+    it("should do nothing when is used to check !ci1.eq(ci2)") {
+      require(!ci1.eq(ci2))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !ci1.eq(ci3)") {
+      val e = intercept[IllegalArgumentException] {
+        require(!ci1.eq(ci3))
+      }
+      assert(e.getMessage == wasTheSameInstanceAs(ci1, ci3))
     }
 
   }
@@ -1088,6 +1123,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     val ci1 = new CustomInt(123)
     val ci2 = new CustomInt(321)
+    val ci3 = ci1
 
     val l1 = List(1, 2, 3)
 
@@ -1241,6 +1277,34 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         require(l1.contains(5), ", dude")
       }
       assert(e2.getMessage == didNotContain(l1, 5) + ", dude")
+    }
+
+    it("should do nothing when is used to check ci1 eq ci3") {
+      require(ci1 eq ci3, ", dude")
+      require(ci1.eq(ci3), ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check ci1 eq ci2") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(ci1 eq ci2, ", dude")
+      }
+      assert(e1.getMessage == wasNotTheSameInstanceAs(ci1, ci2) + ", dude")
+
+      val e2 = intercept[IllegalArgumentException] {
+        require(ci1.eq(ci2), ", dude")
+      }
+      assert(e2.getMessage == wasNotTheSameInstanceAs(ci1, ci2) + ", dude")
+    }
+
+    it("should do nothing when is used to check !ci1.eq(ci2)") {
+      require(!ci1.eq(ci2), ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !ci1.eq(ci3)") {
+      val e = intercept[IllegalArgumentException] {
+        require(!ci1.eq(ci3), ", dude")
+      }
+      assert(e.getMessage == wasTheSameInstanceAs(ci1, ci3) + ", dude")
     }
 
   }
@@ -1634,6 +1698,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     val ci1 = new CustomInt(123)
     val ci2 = new CustomInt(321)
+    val ci3 = ci1
 
     val l1 = List(1, 2, 3)
 
@@ -1787,6 +1852,34 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         requireState(l1.contains(5))
       }
       assert(e2.getMessage == didNotContain(l1, 5))
+    }
+
+    it("should do nothing when is used to check ci1 eq ci3") {
+      requireState(ci1 eq ci3)
+      requireState(ci1.eq(ci3))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check ci1 eq ci2") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(ci1 eq ci2)
+      }
+      assert(e1.getMessage == wasNotTheSameInstanceAs(ci1, ci2))
+
+      val e2 = intercept[IllegalStateException] {
+        requireState(ci1.eq(ci2))
+      }
+      assert(e2.getMessage == wasNotTheSameInstanceAs(ci1, ci2))
+    }
+
+    it("should do nothing when is used to check !ci1.eq(ci2)") {
+      requireState(!ci1.eq(ci2))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !ci1.eq(ci3)") {
+      val e = intercept[IllegalStateException] {
+        requireState(!ci1.eq(ci3))
+      }
+      assert(e.getMessage == wasTheSameInstanceAs(ci1, ci3))
     }
 
   }
@@ -2220,6 +2313,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     val ci1 = new CustomInt(123)
     val ci2 = new CustomInt(321)
+    val ci3 = ci1
 
     val l1 = List(1, 2, 3)
 
@@ -2373,6 +2467,34 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         requireState(l1.contains(5), ", dude")
       }
       assert(e2.getMessage == didNotContain(l1, 5) + ", dude")
+    }
+
+    it("should do nothing when is used to check ci1 eq ci3") {
+      requireState(ci1 eq ci3, ", dude")
+      requireState(ci1.eq(ci3), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check ci1 eq ci2") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(ci1 eq ci2, ", dude")
+      }
+      assert(e1.getMessage == wasNotTheSameInstanceAs(ci1, ci2) + ", dude")
+
+      val e2 = intercept[IllegalStateException] {
+        requireState(ci1.eq(ci2), ", dude")
+      }
+      assert(e2.getMessage == wasNotTheSameInstanceAs(ci1, ci2) + ", dude")
+    }
+
+    it("should do nothing when is used to check !ci1.eq(ci2)") {
+      requireState(!ci1.eq(ci2), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !ci1.eq(ci3)") {
+      val e = intercept[IllegalStateException] {
+        requireState(!ci1.eq(ci3), ", dude")
+      }
+      assert(e.getMessage == wasTheSameInstanceAs(ci1, ci3) + ", dude")
     }
 
   }
