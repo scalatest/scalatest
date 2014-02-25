@@ -59,7 +59,7 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
     )
 
   private val logicOperators = Set("&&", "||", "&", "|")
-  private val supportedOperations = Set("==", "!=", "===", "!==", "<", ">", ">=", "<=", "startsWith") ++ logicOperators
+  private val supportedOperations = Set("==", "!=", "===", "!==", "<", ">", ">=", "<=", "startsWith", "endsWith") ++ logicOperators
 
   def isSupported(operator: String) = supportedOperations.contains(operator)
 

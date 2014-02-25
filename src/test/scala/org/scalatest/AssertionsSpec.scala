@@ -217,6 +217,12 @@ class AssertionsSpec extends FunSpec {
   def startedWith(left: Any, right: Any): String =
     quoteString(left) + " started with " + quoteString(right)
 
+  def didNotEndWith(left: Any, right: Any): String =
+    quoteString(left) + " did not end with " + quoteString(right)
+
+  def endedWith(left: Any, right: Any): String =
+    quoteString(left) + " ended with " + quoteString(right)
+
   class Stateful {
     var state = false
     def changeState: Boolean = {
@@ -229,6 +235,10 @@ class AssertionsSpec extends FunSpec {
 
     def startsWith(v: Int): Boolean = {
       value.toString.startsWith(v.toString)
+    }
+
+    def endsWith(v: Int): Boolean = {
+      value.toString.endsWith(v.toString)
     }
 
     override def toString: String = value.toString
@@ -847,6 +857,61 @@ class AssertionsSpec extends FunSpec {
         assert(!s1.startsWith("hi"))
       }
       assert(e1.message == Some(startedWith(s1, "hi")))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check s2 endsWith \"hi\"") {
+      assert(s2 endsWith "hi")
+      assert(s2.endsWith("hi"))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check s1 endsWith \"hi\"") {
+      val e1 = intercept[TestFailedException] {
+        assert(s1 endsWith "hi")
+      }
+      assert(e1.message == Some(didNotEndWith(s1, "hi")))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestFailedException] {
+        assert(s1.endsWith("hi"))
+      }
+      assert(e2.message == Some(didNotEndWith(s1, "hi")))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check ci2 endsWith 1") {
+      assert(ci2 endsWith 1)
+      assert(ci2.endsWith(1))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check ci1 endsWith 1") {
+      val e1 = intercept[TestFailedException] {
+        assert(ci1 endsWith 1)
+      }
+      assert(e1.message == Some(didNotEndWith(ci1, 1)))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestFailedException] {
+        assert(ci1.endsWith(1))
+      }
+      assert(e2.message == Some(didNotEndWith(ci1, 1)))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !s1.endsWith(\"hi\")") {
+      assert(!s1.endsWith("hi"))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check !s2.endsWith(\"hi\")") {
+      val e1 = intercept[TestFailedException] {
+        assert(!s2.endsWith("hi"))
+      }
+      assert(e1.message == Some(endedWith(s2, "hi")))
       assert(e1.failedCodeFileName == (Some(fileName)))
       assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -1472,6 +1537,61 @@ class AssertionsSpec extends FunSpec {
       assert(e1.failedCodeFileName == (Some(fileName)))
       assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
+
+    it("should do nothing when is used to check s2 endsWith \"hi\"") {
+      assert(s2 endsWith "hi", ", dude")
+      assert(s2.endsWith("hi"), ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check s1 endsWith \"hi\"") {
+      val e1 = intercept[TestFailedException] {
+        assert(s1 endsWith "hi", ", dude")
+      }
+      assert(e1.message == Some(didNotEndWith(s1, "hi") + ", dude"))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestFailedException] {
+        assert(s1.endsWith("hi"), ", dude")
+      }
+      assert(e2.message == Some(didNotEndWith(s1, "hi") + ", dude"))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check ci2 endsWith 1") {
+      assert(ci2 endsWith 1, ", dude")
+      assert(ci2.endsWith(1), ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check ci1 endsWith 1") {
+      val e1 = intercept[TestFailedException] {
+        assert(ci1 endsWith 1, ", dude")
+      }
+      assert(e1.message == Some(didNotEndWith(ci1, 1) + ", dude"))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestFailedException] {
+        assert(ci1.endsWith(1), ", dude")
+      }
+      assert(e2.message == Some(didNotEndWith(ci1, 1) + ", dude"))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !s1.endsWith(\"hi\")") {
+      assert(!s1.endsWith("hi"), ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check !s2.endsWith(\"hi\")") {
+      val e1 = intercept[TestFailedException] {
+        assert(!s2.endsWith("hi"), ", dude")
+      }
+      assert(e1.message == Some(endedWith(s2, "hi") + ", dude"))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
   }
 
   describe("The assume(boolean) method") {
@@ -2083,6 +2203,61 @@ class AssertionsSpec extends FunSpec {
         assume(!s1.startsWith("hi"))
       }
       assert(e1.message == Some(startedWith(s1, "hi")))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check s2 endsWith \"hi\"") {
+      assume(s2 endsWith "hi")
+      assume(s2.endsWith("hi"))
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check s1 endsWith \"hi\"") {
+      val e1 = intercept[TestCanceledException] {
+        assume(s1 endsWith "hi")
+      }
+      assert(e1.message == Some(didNotEndWith(s1, "hi")))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestCanceledException] {
+        assume(s1.endsWith("hi"))
+      }
+      assert(e2.message == Some(didNotEndWith(s1, "hi")))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check ci2 endsWith 1") {
+      assume(ci2 endsWith 1)
+      assume(ci2.endsWith(1))
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check ci1 endsWith 1") {
+      val e1 = intercept[TestCanceledException] {
+        assume(ci1 endsWith 1)
+      }
+      assert(e1.message == Some(didNotEndWith(ci1, 1)))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestCanceledException] {
+        assume(ci1.endsWith(1))
+      }
+      assert(e2.message == Some(didNotEndWith(ci1, 1)))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !s1.endsWith(\"hi\")") {
+      assume(!s1.endsWith("hi"))
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check !s2.endsWith(\"hi\")") {
+      val e1 = intercept[TestCanceledException] {
+        assume(!s2.endsWith("hi"))
+      }
+      assert(e1.message == Some(endedWith(s2, "hi")))
       assert(e1.failedCodeFileName == (Some(fileName)))
       assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -2704,6 +2879,61 @@ class AssertionsSpec extends FunSpec {
         assume(!s1.startsWith("hi"), ", dude")
       }
       assert(e1.message == Some(startedWith(s1, "hi") + ", dude"))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check s2 endsWith \"hi\"") {
+      assume(s2 endsWith "hi", ", dude")
+      assume(s2.endsWith("hi"), ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check s1 endsWith \"hi\"") {
+      val e1 = intercept[TestCanceledException] {
+        assume(s1 endsWith "hi", ", dude")
+      }
+      assert(e1.message == Some(didNotEndWith(s1, "hi") + ", dude"))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestCanceledException] {
+        assume(s1.endsWith("hi"), ", dude")
+      }
+      assert(e2.message == Some(didNotEndWith(s1, "hi") + ", dude"))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check ci2 endsWith 1") {
+      assume(ci2 endsWith 1, ", dude")
+      assume(ci2.endsWith(1), ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check ci1 endsWith 1") {
+      val e1 = intercept[TestCanceledException] {
+        assume(ci1 endsWith 1, ", dude")
+      }
+      assert(e1.message == Some(didNotEndWith(ci1, 1) + ", dude"))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestCanceledException] {
+        assume(ci1.endsWith(1), ", dude")
+      }
+      assert(e2.message == Some(didNotEndWith(ci1, 1) + ", dude"))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !s1.endsWith(\"hi\")") {
+      assume(!s1.endsWith("hi"), ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check !s2.endsWith(\"hi\")") {
+      val e1 = intercept[TestCanceledException] {
+        assume(!s2.endsWith("hi"), ", dude")
+      }
+      assert(e1.message == Some(endedWith(s2, "hi") + ", dude"))
       assert(e1.failedCodeFileName == (Some(fileName)))
       assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }

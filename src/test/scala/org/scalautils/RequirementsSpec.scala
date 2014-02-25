@@ -76,6 +76,12 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
   def startedWith(left: Any, right: Any): String =
     FailureMessages("startedWith", left, right)
 
+  def didNotEndWith(left: Any, right: Any): String =
+    FailureMessages("didNotEndWith", left, right)
+
+  def endedWith(left: Any, right: Any): String =
+    FailureMessages("endedWith", left, right)
+
   class Stateful {
     var state = false
     def changeState: Boolean = {
@@ -88,6 +94,10 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     def startsWith(v: Int): Boolean = {
       value.toString.startsWith(v.toString)
+    }
+
+    def endsWith(v: Int): Boolean = {
+      value.toString.endsWith(v.toString)
     }
 
     override def toString: String = value.toString
@@ -526,6 +536,51 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         require(!s1.startsWith("hi"))
       }
       assert(e1.getMessage == startedWith(s1, "hi"))
+    }
+
+    it("should do nothing when is used to check s2 endsWith \"hi\"") {
+      require(s2 endsWith "hi")
+      require(s2.endsWith("hi"))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check s1 endsWith \"hi\"") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(s1 endsWith "hi")
+      }
+      assert(e1.getMessage == didNotEndWith(s1, "hi"))
+
+      val e2 = intercept[IllegalArgumentException] {
+        require(s1.endsWith("hi"))
+      }
+      assert(e2.getMessage == didNotEndWith(s1, "hi"))
+    }
+
+    it("should do nothing when is used to check ci2 endsWith 1") {
+      require(ci2 endsWith 1)
+      require(ci2.endsWith(1))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check ci1 endsWith 1") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(ci1 endsWith 1)
+      }
+      assert(e1.getMessage == didNotEndWith(ci1, 1))
+
+      val e2 = intercept[IllegalArgumentException] {
+        require(ci1.endsWith(1))
+      }
+      assert(e2.getMessage == didNotEndWith(ci1, 1))
+    }
+
+    it("should do nothing when is used to check !s1.endsWith(\"hi\")") {
+      require(!s1.endsWith("hi"))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !s2.endsWith(\"hi\")") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(!s2.endsWith("hi"))
+      }
+      assert(e1.getMessage == endedWith(s2, "hi"))
     }
 
   }
@@ -1005,6 +1060,51 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       assert(e1.getMessage == startedWith(s1, "hi") + ", dude")
     }
 
+    it("should do nothing when is used to check s2 endsWith \"hi\"") {
+      require(s2 endsWith "hi", ", dude")
+      require(s2.endsWith("hi"), ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check s1 endsWith \"hi\"") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(s1 endsWith "hi", ", dude")
+      }
+      assert(e1.getMessage == didNotEndWith(s1, "hi") + ", dude")
+
+      val e2 = intercept[IllegalArgumentException] {
+        require(s1.endsWith("hi"), ", dude")
+      }
+      assert(e2.getMessage == didNotEndWith(s1, "hi") + ", dude")
+    }
+
+    it("should do nothing when is used to check ci2 endsWith 1") {
+      require(ci2 endsWith 1, ", dude")
+      require(ci2.endsWith(1), ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check ci1 endsWith 1") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(ci1 endsWith 1, ", dude")
+      }
+      assert(e1.getMessage == didNotEndWith(ci1, 1) + ", dude")
+
+      val e2 = intercept[IllegalArgumentException] {
+        require(ci1.endsWith(1), ", dude")
+      }
+      assert(e2.getMessage == didNotEndWith(ci1, 1) + ", dude")
+    }
+
+    it("should do nothing when is used to check !s1.endsWith(\"hi\")") {
+      require(!s1.endsWith("hi"), ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !s2.endsWith(\"hi\")") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(!s2.endsWith("hi"), ", dude")
+      }
+      assert(e1.getMessage == endedWith(s2, "hi") + ", dude")
+    }
+
   }
 
   describe("The requireState(boolean) method") {
@@ -1440,6 +1540,51 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         requireState(!s1.startsWith("hi"))
       }
       assert(e1.getMessage == startedWith(s1, "hi"))
+    }
+
+    it("should do nothing when is used to check s2 endsWith \"hi\"") {
+      requireState(s2 endsWith "hi")
+      requireState(s2.endsWith("hi"))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check s1 endsWith \"hi\"") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(s1 endsWith "hi")
+      }
+      assert(e1.getMessage == didNotEndWith(s1, "hi"))
+
+      val e2 = intercept[IllegalStateException] {
+        requireState(s1.endsWith("hi"))
+      }
+      assert(e2.getMessage == didNotEndWith(s1, "hi"))
+    }
+
+    it("should do nothing when is used to check ci2 endsWith 1") {
+      requireState(ci2 endsWith 1)
+      requireState(ci2.endsWith(1))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check ci1 endsWith 1") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(ci1 endsWith 1)
+      }
+      assert(e1.getMessage == didNotEndWith(ci1, 1))
+
+      val e2 = intercept[IllegalStateException] {
+        requireState(ci1.endsWith(1))
+      }
+      assert(e2.getMessage == didNotEndWith(ci1, 1))
+    }
+
+    it("should do nothing when is used to check !s1.endsWith(\"hi\")") {
+      requireState(!s1.endsWith("hi"))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !s2.endsWith(\"hi\")") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(!s2.endsWith("hi"))
+      }
+      assert(e1.getMessage == endedWith(s2, "hi"))
     }
 
   }
@@ -1917,6 +2062,51 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         requireState(!s1.startsWith("hi"), ", dude")
       }
       assert(e1.getMessage == startedWith(s1, "hi") + ", dude")
+    }
+
+    it("should do nothing when is used to check s2 endsWith \"hi\"") {
+      requireState(s2 endsWith "hi", ", dude")
+      requireState(s2.endsWith("hi"), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check s1 endsWith \"hi\"") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(s1 endsWith "hi", ", dude")
+      }
+      assert(e1.getMessage == didNotEndWith(s1, "hi") + ", dude")
+
+      val e2 = intercept[IllegalStateException] {
+        requireState(s1.endsWith("hi"), ", dude")
+      }
+      assert(e2.getMessage == didNotEndWith(s1, "hi") + ", dude")
+    }
+
+    it("should do nothing when is used to check ci2 endsWith 1") {
+      requireState(ci2 endsWith 1, ", dude")
+      requireState(ci2.endsWith(1), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check ci1 endsWith 1") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(ci1 endsWith 1, ", dude")
+      }
+      assert(e1.getMessage == didNotEndWith(ci1, 1) + ", dude")
+
+      val e2 = intercept[IllegalStateException] {
+        requireState(ci1.endsWith(1), ", dude")
+      }
+      assert(e2.getMessage == didNotEndWith(ci1, 1) + ", dude")
+    }
+
+    it("should do nothing when is used to check !s1.endsWith(\"hi\")") {
+      requireState(!s1.endsWith("hi"), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !s2.endsWith(\"hi\")") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(!s2.endsWith("hi"), ", dude")
+      }
+      assert(e1.getMessage == endedWith(s2, "hi") + ", dude")
     }
 
   }

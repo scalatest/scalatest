@@ -608,6 +608,7 @@ private[scalautils] class BinaryMacroBool(left: Any, operator: String, right: An
       case "<" => Resources("wasNotLessThan")
       case "<=" => Resources("wasNotLessThanOrEqualTo")
       case "startsWith" => Resources("didNotStartWith")
+      case "endsWith" => Resources("didNotEndWith")
       case "&&" | "&" =>
         (left, right) match {
           case (leftBool: Bool, rightBool: Bool) =>
@@ -645,6 +646,7 @@ private[scalautils] class BinaryMacroBool(left: Any, operator: String, right: An
       case "<" => Resources("wasLessThan")
       case "<=" => Resources("wasLessThanOrEqualTo")
       case "startsWith" => Resources("startedWith")
+      case "endsWith" => Resources("endedWith")
       case "&&" | "&" => Resources("commaAnd")
       case "||" | "|" => Resources("commaAnd")
       case _ => Resources("expressionWasTrue")
@@ -677,6 +679,8 @@ private[scalautils] class BinaryMacroBool(left: Any, operator: String, right: An
         val (leftee, rightee) = getObjectsForFailureMessage
         Vector(leftee, rightee)
       case "startsWith" =>
+        Vector(left, right)
+      case "endsWith" =>
         Vector(left, right)
       case "&&" | "&" =>
         (left, right) match {
@@ -722,6 +726,8 @@ private[scalautils] class BinaryMacroBool(left: Any, operator: String, right: An
         val (leftee, rightee) = getObjectsForFailureMessage
         Vector(leftee, rightee)
       case "startsWith" =>
+        Vector(left, right)
+      case "endsWith" =>
         Vector(left, right)
       case "&&" | "&" =>
         (left, right) match {
