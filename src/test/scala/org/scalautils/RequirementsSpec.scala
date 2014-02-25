@@ -82,6 +82,12 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
   def endedWith(left: Any, right: Any): String =
     FailureMessages("endedWith", left, right)
 
+  def didNotContain(left: Any, right: Any): String =
+    FailureMessages("didNotContain", left, right)
+
+  def contained(left: Any, right: Any): String =
+    FailureMessages("contained", left, right)
+
   class Stateful {
     var state = false
     def changeState: Boolean = {
@@ -98,6 +104,10 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     def endsWith(v: Int): Boolean = {
       value.toString.endsWith(v.toString)
+    }
+
+    def contains(v: Int): Boolean = {
+      value.toString.contains(v.toString)
     }
 
     override def toString: String = value.toString
@@ -493,6 +503,8 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     val ci1 = new CustomInt(123)
     val ci2 = new CustomInt(321)
 
+    val l1 = List(1, 2, 3)
+
     it("should do nothing when is used to check s1 startsWith \"hi\"") {
       require(s1 startsWith "hi")
       require(s1.startsWith("hi"))
@@ -581,6 +593,68 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         require(!s2.endsWith("hi"))
       }
       assert(e1.getMessage == endedWith(s2, "hi"))
+    }
+
+    it("should do nothing when is used to check s3 contains \"hi\"") {
+      require(s3 contains "hi")
+      require(s3.contains("hi"))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check s3 contains \"hello\"") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(s3 contains "hello")
+      }
+      assert(e1.getMessage == didNotContain(s3, "hello"))
+
+      val e2 = intercept[IllegalArgumentException] {
+        require(s3.contains("hello"))
+      }
+      assert(e2.getMessage == didNotContain(s3, "hello"))
+    }
+
+    it("should do nothing when is used to check ci2 contains 2") {
+      require(ci2 contains 2)
+      require(ci2.contains(2))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check ci1 contains 5") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(ci1 contains 5)
+      }
+      assert(e1.getMessage == didNotContain(ci1, 5))
+
+      val e2 = intercept[IllegalArgumentException] {
+        require(ci1.contains(5))
+      }
+      assert(e2.getMessage == didNotContain(ci1, 5))
+    }
+
+    it("should do nothing when is used to check !s1.contains(\"hello\")") {
+      require(!s3.contains("hello"))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !s3.contains(\"hi\")") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(!s3.contains("hi"))
+      }
+      assert(e1.getMessage == contained(s3, "hi"))
+    }
+
+    it("should do nothing when is used to check l1 contains 2") {
+      require(l1 contains 2)
+      require(l1.contains(2))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1 contains 5") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(l1 contains 5)
+      }
+      assert(e1.getMessage == didNotContain(l1, 5))
+
+      val e2 = intercept[IllegalArgumentException] {
+        require(l1.contains(5))
+      }
+      assert(e2.getMessage == didNotContain(l1, 5))
     }
 
   }
@@ -1015,6 +1089,8 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     val ci1 = new CustomInt(123)
     val ci2 = new CustomInt(321)
 
+    val l1 = List(1, 2, 3)
+
     it("should do nothing when is used to check s1 startsWith \"hi\"") {
       require(s1 startsWith "hi", ", dude")
       require(s1.startsWith("hi"), ", dude")
@@ -1103,6 +1179,68 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         require(!s2.endsWith("hi"), ", dude")
       }
       assert(e1.getMessage == endedWith(s2, "hi") + ", dude")
+    }
+
+    it("should do nothing when is used to check s3 contains \"hi\"") {
+      require(s3 contains "hi", ", dude")
+      require(s3.contains("hi"), ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check s3 contains \"hello\"") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(s3 contains "hello", ", dude")
+      }
+      assert(e1.getMessage == didNotContain(s3, "hello") + ", dude")
+
+      val e2 = intercept[IllegalArgumentException] {
+        require(s3.contains("hello"), ", dude")
+      }
+      assert(e2.getMessage == didNotContain(s3, "hello") + ", dude")
+    }
+
+    it("should do nothing when is used to check ci2 contains 2") {
+      require(ci2 contains 2, ", dude")
+      require(ci2.contains(2), ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check ci1 contains 5") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(ci1 contains 5, ", dude")
+      }
+      assert(e1.getMessage == didNotContain(ci1, 5) + ", dude")
+
+      val e2 = intercept[IllegalArgumentException] {
+        require(ci1.contains(5), ", dude")
+      }
+      assert(e2.getMessage == didNotContain(ci1, 5) + ", dude")
+    }
+
+    it("should do nothing when is used to check !s1.contains(\"hello\")") {
+      require(!s3.contains("hello"), ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !s3.contains(\"hi\")") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(!s3.contains("hi"), ", dude")
+      }
+      assert(e1.getMessage == contained(s3, "hi") + ", dude")
+    }
+
+    it("should do nothing when is used to check l1 contains 2") {
+      require(l1 contains 2, ", dude")
+      require(l1.contains(2), ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1 contains 5") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(l1 contains 5, ", dude")
+      }
+      assert(e1.getMessage == didNotContain(l1, 5) + ", dude")
+
+      val e2 = intercept[IllegalArgumentException] {
+        require(l1.contains(5), ", dude")
+      }
+      assert(e2.getMessage == didNotContain(l1, 5) + ", dude")
     }
 
   }
@@ -1497,6 +1635,8 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     val ci1 = new CustomInt(123)
     val ci2 = new CustomInt(321)
 
+    val l1 = List(1, 2, 3)
+
     it("should do nothing when is used to check s1 startsWith \"hi\"") {
       requireState(s1 startsWith "hi")
       requireState(s1.startsWith("hi"))
@@ -1585,6 +1725,68 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         requireState(!s2.endsWith("hi"))
       }
       assert(e1.getMessage == endedWith(s2, "hi"))
+    }
+
+    it("should do nothing when is used to check s3 contains \"hi\"") {
+      requireState(s3 contains "hi")
+      requireState(s3.contains("hi"))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check s3 contains \"hello\"") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(s3 contains "hello")
+      }
+      assert(e1.getMessage == didNotContain(s3, "hello"))
+
+      val e2 = intercept[IllegalStateException] {
+        requireState(s3.contains("hello"))
+      }
+      assert(e2.getMessage == didNotContain(s3, "hello"))
+    }
+
+    it("should do nothing when is used to check ci2 contains 2") {
+      requireState(ci2 contains 2)
+      requireState(ci2.contains(2))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check ci1 contains 5") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(ci1 contains 5)
+      }
+      assert(e1.getMessage == didNotContain(ci1, 5))
+
+      val e2 = intercept[IllegalStateException] {
+        requireState(ci1.contains(5))
+      }
+      assert(e2.getMessage == didNotContain(ci1, 5))
+    }
+
+    it("should do nothing when is used to check !s1.contains(\"hello\")") {
+      requireState(!s3.contains("hello"))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !s3.contains(\"hi\")") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(!s3.contains("hi"))
+      }
+      assert(e1.getMessage == contained(s3, "hi"))
+    }
+
+    it("should do nothing when is used to check l1 contains 2") {
+      requireState(l1 contains 2)
+      requireState(l1.contains(2))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check l1 contains 5") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(l1 contains 5)
+      }
+      assert(e1.getMessage == didNotContain(l1, 5))
+
+      val e2 = intercept[IllegalStateException] {
+        requireState(l1.contains(5))
+      }
+      assert(e2.getMessage == didNotContain(l1, 5))
     }
 
   }
@@ -2019,6 +2221,8 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     val ci1 = new CustomInt(123)
     val ci2 = new CustomInt(321)
 
+    val l1 = List(1, 2, 3)
+
     it("should do nothing when is used to check s1 startsWith \"hi\"") {
       requireState(s1 startsWith "hi", ", dude")
       requireState(s1.startsWith("hi"), ", dude")
@@ -2107,6 +2311,68 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         requireState(!s2.endsWith("hi"), ", dude")
       }
       assert(e1.getMessage == endedWith(s2, "hi") + ", dude")
+    }
+
+    it("should do nothing when is used to check s3 contains \"hi\"") {
+      requireState(s3 contains "hi", ", dude")
+      requireState(s3.contains("hi"), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check s3 contains \"hello\"") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(s3 contains "hello", ", dude")
+      }
+      assert(e1.getMessage == didNotContain(s3, "hello") + ", dude")
+
+      val e2 = intercept[IllegalStateException] {
+        requireState(s3.contains("hello"), ", dude")
+      }
+      assert(e2.getMessage == didNotContain(s3, "hello") + ", dude")
+    }
+
+    it("should do nothing when is used to check ci2 contains 2") {
+      requireState(ci2 contains 2, ", dude")
+      requireState(ci2.contains(2), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check ci1 contains 5") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(ci1 contains 5, ", dude")
+      }
+      assert(e1.getMessage == didNotContain(ci1, 5) + ", dude")
+
+      val e2 = intercept[IllegalStateException] {
+        requireState(ci1.contains(5), ", dude")
+      }
+      assert(e2.getMessage == didNotContain(ci1, 5) + ", dude")
+    }
+
+    it("should do nothing when is used to check !s1.contains(\"hello\")") {
+      requireState(!s3.contains("hello"), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !s3.contains(\"hi\")") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(!s3.contains("hi"), ", dude")
+      }
+      assert(e1.getMessage == contained(s3, "hi") + ", dude")
+    }
+
+    it("should do nothing when is used to check l1 contains 2") {
+      requireState(l1 contains 2, ", dude")
+      requireState(l1.contains(2), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check l1 contains 5") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(l1 contains 5, ", dude")
+      }
+      assert(e1.getMessage == didNotContain(l1, 5) + ", dude")
+
+      val e2 = intercept[IllegalStateException] {
+        requireState(l1.contains(5), ", dude")
+      }
+      assert(e2.getMessage == didNotContain(l1, 5) + ", dude")
     }
 
   }
