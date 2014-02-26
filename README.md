@@ -61,3 +61,30 @@ You can also publish it to your local Ivy repository using this command:
 Or publish it to local maven repository using this command:
 
   `$ sbt publishM2`
+
+### Publishing
+
+To publish to Sonatype, you first need to make sure you have the following:
+
+*   A GPG client is installed on your command line path. For more information, please refer to [GNU Privacy Guard Website](http://www.gnupg.org/).
+*   You have created your GPG keys and distributed your public key to hkp://pool.sks-keyservers.net/. For more information, please refer to [How To Generate PGP Signatures With Maven](https://docs.sonatype.org/display/Repository/How+To+Generate+PGP+Signatures+With+Maven).
+*   You have been granted the right to publish using org.scalatest and org.scalautils domain.
+
+Before publish, you need to set the following environment variables correctly:
+
+*   SCALATEST_NEXUS_LOGIN - Sonatype login name
+*   SCALATEST_NEXUS_PASSWORD - Sonatype login password
+*   SCALATEST_GPG_FILE - Location of GPG file
+*   SCALATEST_GPG_PASSPHASE - The passphrase for the GPG file
+
+You can use the following command to export your private key into a GPG file:
+
+  `$ gpg --export-secret-keys example@example.com > example-secret-key.gpg`
+
+To publish ScalaTest, use the following command:
+
+  `$ sbt publish-signed`
+
+To publish ScalaUtils, use the following command:
+
+  `$ sbt "project scalautils" "publish-signed"`
