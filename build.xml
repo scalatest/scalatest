@@ -10,7 +10,7 @@
     <property name="scala.version" value="2.10.3" />
     <property name="scala.version.range" value="[2.10.0, 2.10.99]" /> <!-- not using this currently because of what it does to sbt -->
     <property name="deploy.scala.version" value="2.10" />
-	<property name="for.scala" value="2.10.3" />
+	<property name="for.scala" value="2.10" />
 
 <!--
     <property name="scala.version" value="2.11.0-M4" />
