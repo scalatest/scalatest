@@ -3,17 +3,27 @@ import Keys._
 import java.net.{URL, URLClassLoader}
 import java.io.PrintWriter
 import scala.io.Source
+import com.typesafe.sbt.osgi.SbtOsgi._
+import com.typesafe.sbt.SbtPgp._
 
 object ScalatestBuild extends Build {
 
   val scalaVersionToUse = "2.10.3"
-    
-  val releaseVersion = "2.1.0-RC2"
+  val releaseVersion = "2.2.0-SNAPSHOT"
   val githubTag = "release-2.1.0-RC2-for-scala-2.10" // for scaladoc source urls
 
   val docSourceUrl =
     "https://github.com/scalatest/scalatest/tree/"+ githubTag +
     "/src/main/scala€{FILE_PATH}.scala"
+
+  def envVar(name: String): String =
+    try {
+      sys.env(name)
+    }
+    catch {
+      case e: NoSuchElementException => "Environment variable '" + name + "' not specified."
+    }
+
 
   lazy val scalatest = Project("scalatest", file("."))
    .settings(
@@ -29,10 +39,55 @@ object ScalatestBuild extends Build {
        <dependency org="org.eclipse.jetty.orbit" name="javax.servlet" rev="3.0.0.v201112011016">
          <artifact name="javax.servlet" type="orbit" ext="jar"/>
        </dependency>, 
-     libraryDependencies ++= simpledependencies,
+     libraryDependencies ++= scalatestDependencies,
      libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersionToUse, // this is needed to compile macro
      resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
-     genMustMatchersTask, 
+     publishTo <<= version { v: String =>
+       val nexus = "https://oss.sonatype.org/"
+       if (v.trim.endsWith("SNAPSHOT")) Some("publish-snapshots" at nexus + "content/repositories/snapshots")
+       else                             Some("publish-releases" at nexus + "service/local/staging/deploy/maven2")
+     },
+     publishMavenStyle := true,
+     publishArtifact in Test := false,
+     pomIncludeRepository := { _ => false },
+     pomExtra := (
+       <url>http://www.scalatest.org</url>
+         <licenses>
+           <license>
+             <name>the Apache License, ASL Version 2.0</name>
+             <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+             <distribution>repo</distribution>
+           </license>
+         </licenses>
+         <scm>
+           <url>https://github.com/scalatest/scalatest</url>
+           <connection>scm:git:git@github.com:scalatest/scalatest.git</connection>
+           <developerConnection>
+             scm:git:git@github.com:scalatest/scalatest.git
+           </developerConnection>
+         </scm>
+         <developers>
+           <developer>
+             <id>bvenners</id>
+             <name>Bill Venners</name>
+             <email>bill@artima.com</email>
+           </developer>
+           <developer>
+             <id>gcberger</id>
+             <name>George Berger</name>
+             <email>george.berger@gmail.com</email>
+           </developer>
+           <developer>
+             <id>cheeseng</id>
+             <name>Chua Chee Seng</name>
+             <email>cheeseng@amaseng.com</email>
+           </developer>
+         </developers>
+      ),
+     credentials += Credentials("Sonatype Nexus Repository Manager", "oss.sonatype.org", envVar("SCALATEST_NEXUS_LOGIN"), envVar("SCALATEST_NEXUS_PASSWORD")),
+     pgpSecretRing := file(envVar("SCALATEST_GPG_FILE")),
+     pgpPassphrase := Some(envVar("SCALATEST_GPG_PASSPHASE").toCharArray),
+     genMustMatchersTask,
      genGenTask, 
      genTablesTask, 
      genCodeTask, 
@@ -69,32 +124,137 @@ object ScalatestBuild extends Build {
                                                "-m", "org.scalatest.enablers", 
                                                "-oDI", 
                                                "-h", "target/html", 
-                                               "-u", "target/junit", 
+                                               "-u", "target/junit",
                                                "-fW", "target/result.txt")),
      docsrcDirSetting,
      docSourcesSetting,
      docScalacOptionsSetting,
-     docTaskSetting
+     scalatestDocTaskSetting
+   ).settings(osgiSettings: _*).settings(
+      OsgiKeys.exportPackage := Seq(
+        "org.scalatest",
+        "org.scalatest.concurrent",
+        "org.scalatest.enablers",
+        "org.scalatest.events",
+        "org.scalatest.exceptions",
+        "org.scalatest.fixture",
+        "org.scalatest.junit",
+        "org.scalatest.matchers",
+        "org.scalatest.mock",
+        "org.scalatest.path",
+        "org.scalatest.prop",
+        "org.scalatest.selenium",
+        "org.scalatest.tags",
+        "org.scalatest.tagobjects",
+        "org.scalatest.testng",
+        "org.scalatest.time",
+        "org.scalatest.tools",
+        "org.scalatest.verb",
+        "org.scalatest.words",
+        "org.scalautils"
+      ),
+      OsgiKeys.additionalHeaders:= Map(
+        "Bundle-Name" -> "ScalaTest",
+        "Bundle-Description" -> "ScalaTest is an open-source test framework for the Java Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+        "Bundle-DocURL" -> "http://www.scalatest.org/",
+        "Bundle-Vendor" -> "Artima, Inc.",
+        "Main-Class" -> "org.scalatest.tools.Runner"
+      )
    )
-   
+
+  lazy val scalautils = Project("scalautils", file("genscalautils"))
+    .settings(
+      projectTitle := "ScalaUtils",
+      organization := "org.scalautils",
+      version := releaseVersion,
+      scalaVersion := scalaVersionToUse,
+      scalacOptions ++= Seq("-no-specialization", "-feature", "-target:jvm-1.5"),
+      initialCommands in console := "import org.scalautils._",
+      libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersionToUse, // this is needed to compile macro
+      resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
+      publishTo <<= version { v: String =>
+        val nexus = "https://oss.sonatype.org/"
+        if (v.trim.endsWith("SNAPSHOT")) Some("publish-snapshots" at nexus + "content/repositories/snapshots")
+        else                             Some("publish-releases" at nexus + "service/local/staging/deploy/maven2")
+      },
+      publishMavenStyle := true,
+      publishArtifact in Test := false,
+      pomIncludeRepository := { _ => false },
+      pomExtra := (
+        <url>http://www.scalatest.org</url>
+          <licenses>
+            <license>
+              <name>the Apache License, ASL Version 2.0</name>
+              <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+              <distribution>repo</distribution>
+            </license>
+          </licenses>
+          <scm>
+            <url>https://github.com/scalatest/scalatest</url>
+            <connection>scm:git:git@github.com:scalatest/scalatest.git</connection>
+            <developerConnection>
+              scm:git:git@github.com:scalatest/scalatest.git
+            </developerConnection>
+          </scm>
+          <developers>
+            <developer>
+              <id>bvenners</id>
+              <name>Bill Venners</name>
+              <email>bill@artima.com</email>
+            </developer>
+            <developer>
+              <id>gcberger</id>
+              <name>George Berger</name>
+              <email>george.berger@gmail.com</email>
+            </developer>
+            <developer>
+              <id>cheeseng</id>
+              <name>Chua Chee Seng</name>
+              <email>cheeseng@amaseng.com</email>
+            </developer>
+          </developers>
+        ),
+      credentials += Credentials("Sonatype Nexus Repository Manager", "oss.sonatype.org", envVar("SCALATEST_NEXUS_LOGIN"), envVar("SCALATEST_NEXUS_PASSWORD")),
+      pgpSecretRing := file(envVar("SCALATEST_GPG_FILE")),
+      pgpPassphrase := Some(envVar("SCALATEST_GPG_PASSPHASE").toCharArray),
+      sourceGenerators in Compile <+=
+        (baseDirectory, sourceManaged in Compile) map genFiles("", "GenScalaUtils.scala")(GenScalaUtils.genMain),
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test) map genFiles("", "GenScalaUtils.scala")(GenScalaUtils.genTest),
+      docsrcDirSetting,
+      docSourcesSetting,
+      docScalacOptionsSetting,
+      scalautilsDocTaskSetting
+    ).settings(osgiSettings: _*).settings(
+      OsgiKeys.exportPackage := Seq(
+        "org.scalautils"
+      ),
+      OsgiKeys.additionalHeaders:= Map(
+        "Bundle-Name" -> "ScalaUtils",
+        "Bundle-Description" -> "ScalaUtils is an open-source library for Scala projects.",
+        "Bundle-DocURL" -> "http://www.scalautils.org/",
+        "Bundle-Vendor" -> "Artima, Inc."
+      )
+    ).dependsOn(scalatest  % "test->test")
+
   lazy val gentests = Project("gentests", file("gentests"))
    .settings(
      organization := "org.scalatest",
      version := releaseVersion,
      scalaVersion := scalaVersionToUse,
      scalacOptions ++= Seq("-no-specialization", "-feature"),
-     libraryDependencies ++= simpledependencies,
+     libraryDependencies ++= scalatestDependencies,
      resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
      genMustMatchersTask, 
      genGenTask, 
      genTablesTask, 
      genInspectorsTask,
      genInspectorsShorthandsTask,
-    genTheyWordTask,
+     genTheyWordTask,
      genContainTask, 
      genSortedTask, 
      genLoneElementTask, 
-     genEmptyTask, 
+     genEmptyTask,
      sourceGenerators in Test <+= 
          (baseDirectory, sourceManaged in Test) map genFiles("gengen", "GenGen.scala")(GenGen.genTest),
      sourceGenerators in Test <+= 
@@ -122,30 +282,7 @@ object ScalatestBuild extends Build {
                                                "-fW", "target/result.txt"))
    ).dependsOn(scalatest  % "test->test")
 
-  lazy val scalautils = Project("scalautils", file("scalautils"))
-   .settings(
-     projectTitle := "ScalaUtils",
-     organization := "org.scalatest",
-     version := releaseVersion,
-     scalaVersion := scalaVersionToUse,
-     scalacOptions ++= Seq("-no-specialization", "-feature"),
-     libraryDependencies ++= simpledependencies,
-     resolvers +=
-       "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
-     sourceDirectory in Compile :=
-       (sourceDirectory in Compile in scalatest).value,
-     sources in Compile :=
-       (sources in Compile).value.filter { source =>
-         val sep = java.io.File.separator
-         source.getPath.contains(sep +"scalautils"+ sep)
-       },
-     docsrcDirSetting,
-     docSourcesSetting,
-     docScalacOptionsSetting,
-     docTaskSetting
-   ).dependsOn(scalatest)
-
-   def simpledependencies = Seq(
+   def scalatestDependencies = Seq(
      "org.scala-sbt" % "test-interface" % "1.0" % "optional",
      "org.scalacheck" %% "scalacheck" % "1.11.0" % "optional",
      "org.easymock" % "easymockclassextension" % "3.1" % "optional", 
@@ -371,8 +508,13 @@ object ScalatestBuild extends Build {
         "-doc-title", projectTitle.value +" "+ releaseVersion,
         "-doc-source-url", docSourceUrl)
 
-  val docTaskSetting =
+  val scalatestDocTaskSetting =
     doc in Compile := docTask((doc in Compile).value,
                               (sourceDirectory in Compile).value,
+                              name.value)
+
+  val scalautilsDocTaskSetting =
+    doc in Compile := docTask((doc in Compile).value,
+                              (sourceManaged in Compile).value,
                               name.value)
 }
