@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export JVM_OPTS="-server -Xms2G -Xmx2G -Xss8M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=1024M -XX:-UseGCOverheadLimit"
+export JVM_OPTS="-server -Xms2G -Xmx2200M -Xss1M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
 export MODE=$1
 
 if [[ $MODE = 'Compile' ]] ; then
@@ -30,17 +30,17 @@ fi
 
 if [[ $MODE = 'Gentests' ]] ; then
   echo "Doing 'sbt gentests/test'"
-  export JVM_OPTS="-server -Xms5G -Xmx6G -Xss8M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=1024M -XX:-UseGCOverheadLimit"
+  export JVM_OPTS="-server -Xms5G -Xmx5G -Xss1M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
   
   while true; do echo "..."; sleep 60; done &
-  sbt ++$TRAVIS_SCALA_VERSION gentests/test:compile #try to reduce presure on sbt, for OOM
+  sbt ++$TRAVIS_SCALA_VERSION test:compile #try to reduce presure on sbt, for OOM
   sbt ++$TRAVIS_SCALA_VERSION gentests/test
   rc=$?
   kill %1  
   exit $rc
 fi
 
-if [[ $MODE = 'Gentests' ]] ; then
+if [[ $MODE = 'Publish' ]] ; then
   sbt ++$TRAVIS_SCALA_VERSION publishSigned
   sbt ++$TRAVIS_SCALA_VERSION scalautils/publishSigned
 fi
