@@ -207,7 +207,7 @@ object Bool {
    * @return a unary macro <code>Bool</code>
    */
   def unaryMacroBool(left: Any, operator: String, expression: Boolean): Bool =
-    new UnaryMacroBool(left, operator, simpleMacroBool(expression, ""))
+    new UnaryMacroBool(left, operator, expression)
 
   /**
    * Overloaded method that takes a <code>Bool</code> in place of <code>Boolean</code> expression to create a new unary macro <code>Bool</code>.
@@ -218,7 +218,7 @@ object Bool {
    * @return a binary macro <code>Bool</code>
    */
   def unaryMacroBool(left: Any, operator: String, bool: Bool): Bool =
-    new UnaryMacroBool(left, operator, bool)
+    new UnaryMacroBool(left, operator, bool.value)
 
   /**
    * A helper method to check is the given <code>Bool</code> is a simple macro <code>Bool</code> and contains empty expression text.
@@ -800,14 +800,14 @@ private[scalautils] class BinaryMacroBool(left: Any, operator: String, right: An
  *
  * @param left the left-hand-side (LHS) of the <code>Boolean</code> expression
  * @param operator the operator (method name) of the <code>Boolean</code> expression
- * @param bool a raw <code>Bool</code> expression
+ * @param expression the <code>Boolean</code> expression
  */
-private[scalautils] class UnaryMacroBool(left: Any, operator: String, bool: Bool) extends Bool {
+private[scalautils] class UnaryMacroBool(left: Any, operator: String, expression: Boolean) extends Bool {
 
   /**
    * the <code>Boolean</code> value of this <code>Bool</code>.
    */
-  val value: Boolean = bool.value
+  val value: Boolean = expression
 
   /**
    * raw message to report a failure, this method implementation will return the friendly raw message based on the passed
@@ -818,7 +818,7 @@ private[scalautils] class UnaryMacroBool(left: Any, operator: String, bool: Bool
   def rawFailureMessage: String = {
     operator match {
       case "isEmpty" => Resources("wasNotEmpty")
-      case _ => bool.rawFailureMessage
+      case _ => Resources("expressionWasFalse")
     }
   }
 
@@ -831,7 +831,7 @@ private[scalautils] class UnaryMacroBool(left: Any, operator: String, bool: Bool
   def rawNegatedFailureMessage: String =
     operator match {
       case "isEmpty" => Resources("wasEmpty")
-      case _ => bool.rawNegatedFailureMessage
+      case _ => Resources("expressionWasTrue")
     }
 
   /**
@@ -859,7 +859,7 @@ private[scalautils] class UnaryMacroBool(left: Any, operator: String, bool: Bool
     operator match {
       case "isEmpty" =>
         Vector(left)
-      case _ => bool.failureMessageArgs
+      case _ => Vector.empty
     }
 
   /**
@@ -873,7 +873,7 @@ private[scalautils] class UnaryMacroBool(left: Any, operator: String, bool: Bool
     operator match {
       case "isEmpty" =>
         Vector(left)
-      case _ => bool.negatedFailureMessageArgs
+      case _ => Vector.empty
     }
 
   /**
