@@ -94,6 +94,12 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
   def wasTheSameInstanceAs(left: AnyRef, right: AnyRef): String =
     FailureMessages("wasTheSameInstanceAs", left, right)
 
+  def wasNotEmpty(left: Any): String =
+    FailureMessages("wasNotEmpty", left)
+
+  def wasEmpty(left: Any): String =
+    FailureMessages("wasEmpty", left)
+
   class Stateful {
     var state = false
     def changeState: Boolean = {
@@ -505,12 +511,14 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     val s1 = "hi ScalaTest"
     val s2 = "ScalaTest hi"
     val s3 = "Say hi to ScalaTest"
+    val s4 = ""
 
     val ci1 = new CustomInt(123)
     val ci2 = new CustomInt(321)
     val ci3 = ci1
 
     val l1 = List(1, 2, 3)
+    val l2 = List.empty[Int]
 
     it("should do nothing when is used to check s1 startsWith \"hi\"") {
       require(s1 startsWith "hi")
@@ -718,6 +726,50 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         require(!ci1.ne(ci2))
       }
       assert(e.getMessage == wasNotTheSameInstanceAs(ci1, ci2))
+    }
+
+    it("should do nothing when is used to check s4.isEmpty") {
+      require(s4.isEmpty)
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check s3.isEmpty") {
+      val e = intercept[IllegalArgumentException] {
+        require(s3.isEmpty)
+      }
+      assert(e.getMessage == wasNotEmpty(s3))
+    }
+
+    it("should do nothing when is used to check !s3.isEmpty") {
+      require(!s3.isEmpty)
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !s4.isEmpty") {
+      val e = intercept[IllegalArgumentException] {
+        require(!s4.isEmpty)
+      }
+      assert(e.getMessage == wasEmpty(s4))
+    }
+
+    it("should do nothing when is used to check l2.isEmpty") {
+      require(l2.isEmpty)
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1.isEmpty") {
+      val e = intercept[IllegalArgumentException] {
+        require(l1.isEmpty)
+      }
+      assert(e.getMessage == wasNotEmpty(l1))
+    }
+
+    it("should do nothing when is used to check !l1.isEmpty") {
+      require(!l1.isEmpty)
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !l2.isEmpty") {
+      val e = intercept[IllegalArgumentException] {
+        require(!l2.isEmpty)
+      }
+      assert(e.getMessage == wasEmpty(l2))
     }
 
   }
@@ -1148,12 +1200,14 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     val s1 = "hi ScalaTest"
     val s2 = "ScalaTest hi"
     val s3 = "Say hi to ScalaTest"
+    val s4 = ""
 
     val ci1 = new CustomInt(123)
     val ci2 = new CustomInt(321)
     val ci3 = ci1
 
     val l1 = List(1, 2, 3)
+    val l2 = List.empty[Int]
 
     it("should do nothing when is used to check s1 startsWith \"hi\"") {
       require(s1 startsWith "hi", ", dude")
@@ -1361,6 +1415,50 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         require(!ci1.ne(ci2), ", dude")
       }
       assert(e.getMessage == wasNotTheSameInstanceAs(ci1, ci2) + ", dude")
+    }
+
+    it("should do nothing when is used to check s4.isEmpty") {
+      require(s4.isEmpty, ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check s3.isEmpty") {
+      val e = intercept[IllegalArgumentException] {
+        require(s3.isEmpty, ", dude")
+      }
+      assert(e.getMessage == wasNotEmpty(s3) + ", dude")
+    }
+
+    it("should do nothing when is used to check !s3.isEmpty") {
+      require(!s3.isEmpty, ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !s4.isEmpty") {
+      val e = intercept[IllegalArgumentException] {
+        require(!s4.isEmpty, ", dude")
+      }
+      assert(e.getMessage == wasEmpty(s4) + ", dude")
+    }
+
+    it("should do nothing when is used to check l2.isEmpty") {
+      require(l2.isEmpty, ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1.isEmpty") {
+      val e = intercept[IllegalArgumentException] {
+        require(l1.isEmpty, ", dude")
+      }
+      assert(e.getMessage == wasNotEmpty(l1) + ", dude")
+    }
+
+    it("should do nothing when is used to check !l1.isEmpty") {
+      require(!l1.isEmpty, ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !l2.isEmpty") {
+      val e = intercept[IllegalArgumentException] {
+        require(!l2.isEmpty, ", dude")
+      }
+      assert(e.getMessage == wasEmpty(l2) + ", dude")
     }
 
   }
@@ -1751,12 +1849,14 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     val s1 = "hi ScalaTest"
     val s2 = "ScalaTest hi"
     val s3 = "Say hi to ScalaTest"
+    val s4 = ""
 
     val ci1 = new CustomInt(123)
     val ci2 = new CustomInt(321)
     val ci3 = ci1
 
     val l1 = List(1, 2, 3)
+    val l2 = List.empty[Int]
 
     it("should do nothing when is used to check s1 startsWith \"hi\"") {
       requireState(s1 startsWith "hi")
@@ -1964,6 +2064,50 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         requireState(!ci1.ne(ci2))
       }
       assert(e.getMessage == wasNotTheSameInstanceAs(ci1, ci2))
+    }
+
+    it("should do nothing when is used to check s4.isEmpty") {
+      requireState(s4.isEmpty)
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check s3.isEmpty") {
+      val e = intercept[IllegalStateException] {
+        requireState(s3.isEmpty)
+      }
+      assert(e.getMessage == wasNotEmpty(s3))
+    }
+
+    it("should do nothing when is used to check !s3.isEmpty") {
+      requireState(!s3.isEmpty)
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !s4.isEmpty") {
+      val e = intercept[IllegalStateException] {
+        requireState(!s4.isEmpty)
+      }
+      assert(e.getMessage == wasEmpty(s4))
+    }
+
+    it("should do nothing when is used to check l2.isEmpty") {
+      requireState(l2.isEmpty)
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check l1.isEmpty") {
+      val e = intercept[IllegalStateException] {
+        requireState(l1.isEmpty)
+      }
+      assert(e.getMessage == wasNotEmpty(l1))
+    }
+
+    it("should do nothing when is used to check !l1.isEmpty") {
+      requireState(!l1.isEmpty)
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !l2.isEmpty") {
+      val e = intercept[IllegalStateException] {
+        requireState(!l2.isEmpty)
+      }
+      assert(e.getMessage == wasEmpty(l2))
     }
 
   }
@@ -2394,12 +2538,14 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     val s1 = "hi ScalaTest"
     val s2 = "ScalaTest hi"
     val s3 = "Say hi to ScalaTest"
+    val s4 = ""
 
     val ci1 = new CustomInt(123)
     val ci2 = new CustomInt(321)
     val ci3 = ci1
 
     val l1 = List(1, 2, 3)
+    val l2 = List.empty[Int]
 
     it("should do nothing when is used to check s1 startsWith \"hi\"") {
       requireState(s1 startsWith "hi", ", dude")
@@ -2607,6 +2753,50 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         requireState(!ci1.ne(ci2), ", dude")
       }
       assert(e.getMessage == wasNotTheSameInstanceAs(ci1, ci2) + ", dude")
+    }
+
+    it("should do nothing when is used to check s4.isEmpty") {
+      requireState(s4.isEmpty, ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check s3.isEmpty") {
+      val e = intercept[IllegalStateException] {
+        requireState(s3.isEmpty, ", dude")
+      }
+      assert(e.getMessage == wasNotEmpty(s3) + ", dude")
+    }
+
+    it("should do nothing when is used to check !s3.isEmpty") {
+      requireState(!s3.isEmpty, ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !s4.isEmpty") {
+      val e = intercept[IllegalStateException] {
+        requireState(!s4.isEmpty, ", dude")
+      }
+      assert(e.getMessage == wasEmpty(s4) + ", dude")
+    }
+
+    it("should do nothing when is used to check l2.isEmpty") {
+      requireState(l2.isEmpty, ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check l1.isEmpty") {
+      val e = intercept[IllegalStateException] {
+        requireState(l1.isEmpty, ", dude")
+      }
+      assert(e.getMessage == wasNotEmpty(l1) + ", dude")
+    }
+
+    it("should do nothing when is used to check !l1.isEmpty") {
+      requireState(!l1.isEmpty, ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !l2.isEmpty") {
+      val e = intercept[IllegalStateException] {
+        requireState(!l2.isEmpty, ", dude")
+      }
+      assert(e.getMessage == wasEmpty(l2) + ", dude")
     }
 
   }

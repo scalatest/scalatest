@@ -235,6 +235,12 @@ class AssertionsSpec extends FunSpec {
   def wasTheSameInstanceAs(left: AnyRef, right: AnyRef): String =
     quoteString(left) + " was the same instance as " + quoteString(right)
 
+  def wasNotEmpty(left: Any): String =
+    quoteString(left) + " was not empty"
+
+  def wasEmpty(left: Any): String =
+    quoteString(left) + " was empty"
+
   class Stateful {
     var state = false
     def changeState: Boolean = {
@@ -818,12 +824,14 @@ class AssertionsSpec extends FunSpec {
     val s1 = "hi ScalaTest"
     val s2 = "ScalaTest hi"
     val s3 = "Say hi to ScalaTest"
+    val s4 = ""
 
     val ci1 = new CustomInt(123)
     val ci2 = new CustomInt(321)
     val ci3 = ci1
 
     val l1 = List(1, 2, 3)
+    val l2 = List.empty[Int]
 
     it("should do nothing when is used to check s1 startsWith \"hi\"") {
       assert(s1 startsWith "hi")
@@ -1079,6 +1087,57 @@ class AssertionsSpec extends FunSpec {
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
 
+    it("should do nothing when is used to check s4.isEmpty") {
+      assert(s4.isEmpty)
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check s3.isEmpty") {
+      val e = intercept[TestFailedException] {
+        assert(s3.isEmpty)
+      }
+      assert(e.message == Some(wasNotEmpty(s3)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !s3.isEmpty") {
+      assert(!s3.isEmpty)
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check !s4.isEmpty") {
+      val e = intercept[TestFailedException] {
+        assert(!s4.isEmpty)
+      }
+      assert(e.message == Some(wasEmpty(s4)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check l2.isEmpty") {
+      assert(l2.isEmpty)
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check l1.isEmpty") {
+      val e = intercept[TestFailedException] {
+        assert(l1.isEmpty)
+      }
+      assert(e.message == Some(wasNotEmpty(l1)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !l1.isEmpty") {
+      assert(!l1.isEmpty)
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check !l2.isEmpty") {
+      val e = intercept[TestFailedException] {
+        assert(!l2.isEmpty)
+      }
+      assert(e.message == Some(wasEmpty(l2)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
   }
 
   describe("The assert(boolean, clue) method") {
@@ -1642,12 +1701,14 @@ class AssertionsSpec extends FunSpec {
     val s1 = "hi ScalaTest"
     val s2 = "ScalaTest hi"
     val s3 = "Say hi to ScalaTest"
+    val s4 = ""
 
     val ci1 = new CustomInt(123)
     val ci2 = new CustomInt(321)
     val ci3 = ci1
 
     val l1 = List(1, 2, 3)
+    val l2 = List.empty[Int]
 
     it("should do nothing when is used to check s1 startsWith \"hi\"") {
       assert(s1 startsWith "hi", ", dude")
@@ -1899,6 +1960,58 @@ class AssertionsSpec extends FunSpec {
         assert(!ci1.ne(ci2), ", dude")
       }
       assert(e.message == Some(wasNotTheSameInstanceAs(ci1, ci2) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check s4.isEmpty") {
+      assert(s4.isEmpty, ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check s3.isEmpty") {
+      val e = intercept[TestFailedException] {
+        assert(s3.isEmpty, ", dude")
+      }
+      assert(e.message == Some(wasNotEmpty(s3) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !s3.isEmpty") {
+      assert(!s3.isEmpty, ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check !s4.isEmpty") {
+      val e = intercept[TestFailedException] {
+        assert(!s4.isEmpty, ", dude")
+      }
+      assert(e.message == Some(wasEmpty(s4) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check l2.isEmpty") {
+      assert(l2.isEmpty, ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check l1.isEmpty") {
+      val e = intercept[TestFailedException] {
+        assert(l1.isEmpty, ", dude")
+      }
+      assert(e.message == Some(wasNotEmpty(l1) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !l1.isEmpty") {
+      assert(!l1.isEmpty, ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check !l2.isEmpty") {
+      val e = intercept[TestFailedException] {
+        assert(!l2.isEmpty, ", dude")
+      }
+      assert(e.message == Some(wasEmpty(l2) + ", dude"))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -2458,12 +2571,14 @@ class AssertionsSpec extends FunSpec {
     val s1 = "hi ScalaTest"
     val s2 = "ScalaTest hi"
     val s3 = "Say hi to ScalaTest"
+    val s4 = ""
 
     val ci1 = new CustomInt(123)
     val ci2 = new CustomInt(321)
     val ci3 = ci1
 
     val l1 = List(1, 2, 3)
+    val l2 = List.empty[Int]
 
     it("should do nothing when is used to check s1 startsWith \"hi\"") {
       assume(s1 startsWith "hi")
@@ -2715,6 +2830,58 @@ class AssertionsSpec extends FunSpec {
         assume(!ci1.ne(ci2))
       }
       assert(e.message == Some(wasNotTheSameInstanceAs(ci1, ci2)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check s4.isEmpty") {
+      assume(s4.isEmpty)
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check s3.isEmpty") {
+      val e = intercept[TestCanceledException] {
+        assume(s3.isEmpty)
+      }
+      assert(e.message == Some(wasNotEmpty(s3)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !s3.isEmpty") {
+      assume(!s3.isEmpty)
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check !s4.isEmpty") {
+      val e = intercept[TestCanceledException] {
+        assume(!s4.isEmpty)
+      }
+      assert(e.message == Some(wasEmpty(s4)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check l2.isEmpty") {
+      assume(l2.isEmpty)
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check l1.isEmpty") {
+      val e = intercept[TestCanceledException] {
+        assume(l1.isEmpty)
+      }
+      assert(e.message == Some(wasNotEmpty(l1)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !l1.isEmpty") {
+      assume(!l1.isEmpty)
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check !l2.isEmpty") {
+      val e = intercept[TestCanceledException] {
+        assume(!l2.isEmpty)
+      }
+      assert(e.message == Some(wasEmpty(l2)))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -3281,12 +3448,14 @@ class AssertionsSpec extends FunSpec {
     val s1 = "hi ScalaTest"
     val s2 = "ScalaTest hi"
     val s3 = "Say hi to ScalaTest"
+    val s4 = ""
 
     val ci1 = new CustomInt(123)
     val ci2 = new CustomInt(321)
     val ci3 = ci1
 
     val l1 = List(1, 2, 3)
+    val l2 = List.empty[String]
 
     it("should do nothing when is used to check s1 startsWith \"hi\"") {
       assume(s1 startsWith "hi", ", dude")
@@ -3538,6 +3707,58 @@ class AssertionsSpec extends FunSpec {
         assume(!ci1.ne(ci2), ", dude")
       }
       assert(e.message == Some(wasNotTheSameInstanceAs(ci1, ci2) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check s4.isEmpty") {
+      assume(s4.isEmpty, ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check s3.isEmpty") {
+      val e = intercept[TestCanceledException] {
+        assume(s3.isEmpty, ", dude")
+      }
+      assert(e.message == Some(wasNotEmpty(s3) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !s3.isEmpty") {
+      assume(!s3.isEmpty, ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check !s4.isEmpty") {
+      val e = intercept[TestCanceledException] {
+        assume(!s4.isEmpty, ", dude")
+      }
+      assert(e.message == Some(wasEmpty(s4) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check l2.isEmpty") {
+      assume(l2.isEmpty, ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check l1.isEmpty") {
+      val e = intercept[TestCanceledException] {
+        assume(l1.isEmpty, ", dude")
+      }
+      assert(e.message == Some(wasNotEmpty(l1) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !l1.isEmpty") {
+      assume(!l1.isEmpty, ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check !l2.isEmpty") {
+      val e = intercept[TestCanceledException] {
+        assume(!l2.isEmpty, ", dude")
+      }
+      assert(e.message == Some(wasEmpty(l2) + ", dude"))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }

@@ -198,6 +198,29 @@ object Bool {
   def binaryMacroBool(left: Any, operator: String, right: Any, bool: Bool): Bool = new BinaryMacroBool(left, operator, right, bool)
 
   /**
+   * Create unary macro <code>Bool</code> that is used by <code>BooleanMacro</code> to wrap a recognized <code>Boolean</code> expression represented by a unary method call,
+   * which includes <code>Boolean</code> expression that uses <code>isEmpty</code>.
+   *
+   * @param left the left-hand-side (LHS) of the <code>Boolean</code> expression
+   * @param operator the operator (method name) of the <code>Boolean</code> expression
+   * @param expression the <code>Boolean</code> expression
+   * @return a unary macro <code>Bool</code>
+   */
+  def unaryMacroBool(left: Any, operator: String, expression: Boolean): Bool =
+    new UnaryMacroBool(left, operator, simpleMacroBool(expression, ""))
+
+  /**
+   * Overloaded method that takes a <code>Bool</code> in place of <code>Boolean</code> expression to create a new unary macro <code>Bool</code>.
+   *
+   * @param left the left-hand-side (LHS) of the <code>Boolean</code> expression
+   * @param operator the operator (method name) of the <code>Boolean</code> expression
+   * @param bool the <code>Bool</code> that will provide the <code>Boolean</code> expression value with <code>bool.value</code>
+   * @return a binary macro <code>Bool</code>
+   */
+  def unaryMacroBool(left: Any, operator: String, bool: Bool): Bool =
+    new UnaryMacroBool(left, operator, bool)
+
+  /**
    * A helper method to check is the given <code>Bool</code> is a simple macro <code>Bool</code> and contains empty expression text.
    *
    * @param bool the <code>Bool</code> to check
@@ -414,17 +437,9 @@ private[scalautils] class OrBool(bool1: Bool, bool2: Bool) extends Bool {
   def midSentenceNegatedFailureMessageArgs = Vector(bool1.midSentenceFailureMessage, bool2.midSentenceNegatedFailureMessage)
 }
 
-/**
- * Bool that represents the result of logical <code>NOT</code> of the given <code>Bool</code>.
- *
- * @param bool the given <code>Bool</code>
- */
 private[scalautils] class NotBool(bool: Bool) extends Bool {
 
-  /**
-   * the negated result of <code>bool1.value</code>
-   */
-  lazy val value: Boolean = !bool.value
+  val value: Boolean = !bool.value
 
   /**
    * raw message to report a failure
@@ -481,6 +496,7 @@ private[scalautils] class NotBool(bool: Bool) extends Bool {
    * @return the passed in <code>bool.midSentenceFailureMessageArgs</code>
    */
   def midSentenceNegatedFailureMessageArgs: IndexedSeq[Any] = bool.midSentenceFailureMessageArgs
+
 }
 
 /**
@@ -776,4 +792,101 @@ private[scalautils] class BinaryMacroBool(left: Any, operator: String, right: An
    */
   def midSentenceNegatedFailureMessageArgs: IndexedSeq[Any] = negatedFailureMessageArgs
 
+}
+
+/**
+ * Unary macro <code>Bool</code> that is used by <code>BooleanMacro</code> to wrap a recognized <code>Boolean</code> expression represents a unary method call, which includes
+ * <code>Boolean</code> expression that uses <code>isEmpty</code>.
+ *
+ * @param left the left-hand-side (LHS) of the <code>Boolean</code> expression
+ * @param operator the operator (method name) of the <code>Boolean</code> expression
+ * @param bool a raw <code>Bool</code> expression
+ */
+private[scalautils] class UnaryMacroBool(left: Any, operator: String, bool: Bool) extends Bool {
+
+  /**
+   * the <code>Boolean</code> value of this <code>Bool</code>.
+   */
+  val value: Boolean = bool.value
+
+  /**
+   * raw message to report a failure, this method implementation will return the friendly raw message based on the passed
+   * in <code>operator</code>.
+   *
+   * @return Localized friendly raw message based on the passed in <code>operator</code>
+   */
+  def rawFailureMessage: String = {
+    operator match {
+      case "isEmpty" => Resources("wasNotEmpty")
+      case _ => bool.rawFailureMessage
+    }
+  }
+
+  /**
+   * raw message with a meaning opposite to that of the failure message, this method implementation will return the
+   * friendly raw message based on the passed in <code>operator</code>.
+   *
+   * @return Localized negated friendly raw message based on the passed in <code>operator</code>
+   */
+  def rawNegatedFailureMessage: String =
+    operator match {
+      case "isEmpty" => Resources("wasEmpty")
+      case _ => bool.rawNegatedFailureMessage
+    }
+
+  /**
+   * raw mid sentence message to report a failure
+   *
+   * @return the same result as <code>rawFailureMessage</code>
+   */
+  def rawMidSentenceFailureMessage: String = rawFailureMessage
+
+  /**
+   * raw mid sentence message with a meaning opposite to that of the failure message
+   *
+   * @return the same result as <code>rawNegatedFailureMessage</code>
+   */
+  def rawMidSentenceNegatedFailureMessage: String = rawNegatedFailureMessage
+
+  /**
+   * Arguments to construct final failure message with raw message returned from <code>rawFailureMessage</code>.  Based
+   * on the passed in operator, this implementation will return the arguments needed by <code>rawFailureMessage</code>
+   * to construct the final friendly failure message.
+   *
+   * @return Vector that contains arguments needed by <code>rawFailureMessage</code> to construct the final friendly failure message
+   */
+  def failureMessageArgs: IndexedSeq[Any] =
+    operator match {
+      case "isEmpty" =>
+        Vector(left)
+      case _ => bool.failureMessageArgs
+    }
+
+  /**
+   * Arguments to construct final negated failure message with raw message returned from <code>rawNegatedFailureMessage</code>.  Based
+   * on the passed in operator, this implementation will return the arguments needed by <code>rawNegatedFailureMessage</code> to construct
+   * the final negated friendly failure message.
+   *
+   * @return Vector that contains arguments needed by <code>rawNegatedFailureMessage</code> to construct the final negated friendly failure message
+   */
+  def negatedFailureMessageArgs: IndexedSeq[Any] =
+    operator match {
+      case "isEmpty" =>
+        Vector(left)
+      case _ => bool.negatedFailureMessageArgs
+    }
+
+  /**
+   * Arguments to construct final mid sentence failure message with raw message returned from <code>rawMidSentenceFailureMessage</code>.
+   *
+   * @return the same result as <code>failureMessageArgs</code>
+   */
+  def midSentenceFailureMessageArgs: IndexedSeq[Any] = failureMessageArgs
+
+  /**
+   * Arguments to construct final negated mid sentence failure message with raw message returned from <code>rawMidSentenceNegatedFailureMessage</code>.
+   *
+   * @return the same result as <code>negatedFailureMessageArgs</code>
+   */
+  def midSentenceNegatedFailureMessageArgs: IndexedSeq[Any] = negatedFailureMessageArgs
 }
