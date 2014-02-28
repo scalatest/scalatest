@@ -16,6 +16,7 @@
 package org.scalautils
 
 import org.scalatest._
+import java.util.Date
 
 class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
@@ -99,6 +100,12 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
   def wasEmpty(left: Any): String =
     FailureMessages("wasEmpty", left)
+
+  def wasNotInstanceOf(left: Any, className: String): String =
+    FailureMessages("wasNotInstanceOf", left, UnquotedString(className))
+
+  def wasInstanceOf(left: Any, className: String): String =
+    FailureMessages("wasInstanceOf", left, UnquotedString(className))
 
   class Stateful {
     var state = false
@@ -520,6 +527,8 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     val l1 = List(1, 2, 3)
     val l2 = List.empty[Int]
 
+    val date = new Date
+
     it("should do nothing when is used to check s1 startsWith \"hi\"") {
       require(s1 startsWith "hi")
       require(s1.startsWith("hi"))
@@ -770,6 +779,72 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         require(!l2.isEmpty)
       }
       assert(e.getMessage == wasEmpty(l2))
+    }
+
+    it("should do nothing when is used to check s1.isInstanceOf[String]") {
+      require(s1.isInstanceOf[String])
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1.isInstanceOf[String]") {
+      val e = intercept[IllegalArgumentException] {
+        require(l1.isInstanceOf[String])
+      }
+      assert(e.getMessage == wasNotInstanceOf(l1, "scala.Predef.String"))
+    }
+
+    it("should do nothing when is used to check l1.isInstanceOf[List[Int]]") {
+      require(l1.isInstanceOf[List[Int]])
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check s1.isInstanceOf[List[Int]]") {
+      val e = intercept[IllegalArgumentException] {
+        require(s1.isInstanceOf[List[Int]])
+      }
+      assert(e.getMessage == wasNotInstanceOf(s1, "scala.List"))
+    }
+
+    it("should do nothing when is used to check date.isInstanceOf[Date]") {
+      require(date.isInstanceOf[Date])
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1.isInstanceOf[Date]") {
+      val e = intercept[IllegalArgumentException] {
+        require(l1.isInstanceOf[Date])
+      }
+      assert(e.getMessage == wasNotInstanceOf(l1, "java.util.Date"))
+    }
+
+    it("should do nothing when is used to check !l1.isInstanceOf[String]") {
+      require(!l1.isInstanceOf[String])
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !s1.isInstanceOf[String]") {
+      val e = intercept[IllegalArgumentException] {
+        require(!s1.isInstanceOf[String])
+      }
+      assert(e.getMessage == wasInstanceOf(s1, "scala.Predef.String"))
+    }
+
+    it("should do nothing when is used to check !s1.isInstanceOf[List[Int]]") {
+      require(!s1.isInstanceOf[List[Int]])
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !l1.isInstanceOf[List[Int]]") {
+      val e = intercept[IllegalArgumentException] {
+        require(!l1.isInstanceOf[List[Int]])
+      }
+      assert(e.getMessage == wasInstanceOf(l1, "scala.List"))
+    }
+
+    it("should do nothing when is used to check !l1.isInstanceOf[Date]") {
+      require(!l1.isInstanceOf[Date])
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !date.isInstanceOf[Date]") {
+      val e = intercept[IllegalArgumentException] {
+        require(!date.isInstanceOf[Date])
+      }
+      assert(e.getMessage == wasInstanceOf(date, "java.util.Date"))
     }
 
   }
@@ -1209,6 +1284,8 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     val l1 = List(1, 2, 3)
     val l2 = List.empty[Int]
 
+    val date = new Date
+
     it("should do nothing when is used to check s1 startsWith \"hi\"") {
       require(s1 startsWith "hi", ", dude")
       require(s1.startsWith("hi"), ", dude")
@@ -1459,6 +1536,72 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         require(!l2.isEmpty, ", dude")
       }
       assert(e.getMessage == wasEmpty(l2) + ", dude")
+    }
+
+    it("should do nothing when is used to check s1.isInstanceOf[String]") {
+      require(s1.isInstanceOf[String], ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1.isInstanceOf[String]") {
+      val e = intercept[IllegalArgumentException] {
+        require(l1.isInstanceOf[String], ", dude")
+      }
+      assert(e.getMessage == wasNotInstanceOf(l1, "scala.Predef.String") + ", dude")
+    }
+
+    it("should do nothing when is used to check l1.isInstanceOf[List[Int]]") {
+      require(l1.isInstanceOf[List[Int]], ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check s1.isInstanceOf[List[Int]]") {
+      val e = intercept[IllegalArgumentException] {
+        require(s1.isInstanceOf[List[Int]], ", dude")
+      }
+      assert(e.getMessage == wasNotInstanceOf(s1, "scala.List") + ", dude")
+    }
+
+    it("should do nothing when is used to check date.isInstanceOf[Date]") {
+      require(date.isInstanceOf[Date], ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1.isInstanceOf[Date]") {
+      val e = intercept[IllegalArgumentException] {
+        require(l1.isInstanceOf[Date], ", dude")
+      }
+      assert(e.getMessage == wasNotInstanceOf(l1, "java.util.Date") + ", dude")
+    }
+
+    it("should do nothing when is used to check !l1.isInstanceOf[String]") {
+      require(!l1.isInstanceOf[String], ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !s1.isInstanceOf[String]") {
+      val e = intercept[IllegalArgumentException] {
+        require(!s1.isInstanceOf[String], ", dude")
+      }
+      assert(e.getMessage == wasInstanceOf(s1, "scala.Predef.String") + ", dude")
+    }
+
+    it("should do nothing when is used to check !s1.isInstanceOf[List[Int]]") {
+      require(!s1.isInstanceOf[List[Int]], ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !l1.isInstanceOf[List[Int]]") {
+      val e = intercept[IllegalArgumentException] {
+        require(!l1.isInstanceOf[List[Int]], ", dude")
+      }
+      assert(e.getMessage == wasInstanceOf(l1, "scala.List") + ", dude")
+    }
+
+    it("should do nothing when is used to check !l1.isInstanceOf[Date]") {
+      require(!l1.isInstanceOf[Date], ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !date.isInstanceOf[Date]") {
+      val e = intercept[IllegalArgumentException] {
+        require(!date.isInstanceOf[Date], ", dude")
+      }
+      assert(e.getMessage == wasInstanceOf(date, "java.util.Date") + ", dude")
     }
 
   }
@@ -1858,6 +2001,8 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     val l1 = List(1, 2, 3)
     val l2 = List.empty[Int]
 
+    val date = new Date
+
     it("should do nothing when is used to check s1 startsWith \"hi\"") {
       requireState(s1 startsWith "hi")
       requireState(s1.startsWith("hi"))
@@ -2108,6 +2253,72 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         requireState(!l2.isEmpty)
       }
       assert(e.getMessage == wasEmpty(l2))
+    }
+
+    it("should do nothing when is used to check s1.isInstanceOf[String]") {
+      requireState(s1.isInstanceOf[String])
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check l1.isInstanceOf[String]") {
+      val e = intercept[IllegalStateException] {
+        requireState(l1.isInstanceOf[String])
+      }
+      assert(e.getMessage == wasNotInstanceOf(l1, "scala.Predef.String"))
+    }
+
+    it("should do nothing when is used to check l1.isInstanceOf[List[Int]]") {
+      requireState(l1.isInstanceOf[List[Int]])
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check s1.isInstanceOf[List[Int]]") {
+      val e = intercept[IllegalStateException] {
+        requireState(s1.isInstanceOf[List[Int]])
+      }
+      assert(e.getMessage == wasNotInstanceOf(s1, "scala.List"))
+    }
+
+    it("should do nothing when is used to check date.isInstanceOf[Date]") {
+      requireState(date.isInstanceOf[Date])
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check l1.isInstanceOf[Date]") {
+      val e = intercept[IllegalStateException] {
+        requireState(l1.isInstanceOf[Date])
+      }
+      assert(e.getMessage == wasNotInstanceOf(l1, "java.util.Date"))
+    }
+
+    it("should do nothing when is used to check !l1.isInstanceOf[String]") {
+      requireState(!l1.isInstanceOf[String])
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !s1.isInstanceOf[String]") {
+      val e = intercept[IllegalStateException] {
+        requireState(!s1.isInstanceOf[String])
+      }
+      assert(e.getMessage == wasInstanceOf(s1, "scala.Predef.String"))
+    }
+
+    it("should do nothing when is used to check !s1.isInstanceOf[List[Int]]") {
+      requireState(!s1.isInstanceOf[List[Int]])
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !l1.isInstanceOf[List[Int]]") {
+      val e = intercept[IllegalStateException] {
+        requireState(!l1.isInstanceOf[List[Int]])
+      }
+      assert(e.getMessage == wasInstanceOf(l1, "scala.List"))
+    }
+
+    it("should do nothing when is used to check !l1.isInstanceOf[Date]") {
+      requireState(!l1.isInstanceOf[Date])
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !date.isInstanceOf[Date]") {
+      val e = intercept[IllegalStateException] {
+        requireState(!date.isInstanceOf[Date])
+      }
+      assert(e.getMessage == wasInstanceOf(date, "java.util.Date"))
     }
 
   }
@@ -2547,6 +2758,8 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     val l1 = List(1, 2, 3)
     val l2 = List.empty[Int]
 
+    val date = new Date
+
     it("should do nothing when is used to check s1 startsWith \"hi\"") {
       requireState(s1 startsWith "hi", ", dude")
       requireState(s1.startsWith("hi"), ", dude")
@@ -2797,6 +3010,72 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         requireState(!l2.isEmpty, ", dude")
       }
       assert(e.getMessage == wasEmpty(l2) + ", dude")
+    }
+
+    it("should do nothing when is used to check s1.isInstanceOf[String]") {
+      requireState(s1.isInstanceOf[String], ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check l1.isInstanceOf[String]") {
+      val e = intercept[IllegalStateException] {
+        requireState(l1.isInstanceOf[String], ", dude")
+      }
+      assert(e.getMessage == wasNotInstanceOf(l1, "scala.Predef.String") + ", dude")
+    }
+
+    it("should do nothing when is used to check l1.isInstanceOf[List[Int]]") {
+      requireState(l1.isInstanceOf[List[Int]], ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check s1.isInstanceOf[List[Int]]") {
+      val e = intercept[IllegalStateException] {
+        requireState(s1.isInstanceOf[List[Int]], ", dude")
+      }
+      assert(e.getMessage == wasNotInstanceOf(s1, "scala.List") + ", dude")
+    }
+
+    it("should do nothing when is used to check date.isInstanceOf[Date]") {
+      requireState(date.isInstanceOf[Date], ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check l1.isInstanceOf[Date]") {
+      val e = intercept[IllegalStateException] {
+        requireState(l1.isInstanceOf[Date], ", dude")
+      }
+      assert(e.getMessage == wasNotInstanceOf(l1, "java.util.Date") + ", dude")
+    }
+
+    it("should do nothing when is used to check !l1.isInstanceOf[String]") {
+      requireState(!l1.isInstanceOf[String], ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !s1.isInstanceOf[String]") {
+      val e = intercept[IllegalStateException] {
+        requireState(!s1.isInstanceOf[String], ", dude")
+      }
+      assert(e.getMessage == wasInstanceOf(s1, "scala.Predef.String") + ", dude")
+    }
+
+    it("should do nothing when is used to check !s1.isInstanceOf[List[Int]]") {
+      requireState(!s1.isInstanceOf[List[Int]], ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !l1.isInstanceOf[List[Int]]") {
+      val e = intercept[IllegalStateException] {
+        requireState(!l1.isInstanceOf[List[Int]], ", dude")
+      }
+      assert(e.getMessage == wasInstanceOf(l1, "scala.List") + ", dude")
+    }
+
+    it("should do nothing when is used to check !l1.isInstanceOf[Date]") {
+      requireState(!l1.isInstanceOf[Date], ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !date.isInstanceOf[Date]") {
+      val e = intercept[IllegalStateException] {
+        requireState(!date.isInstanceOf[Date], ", dude")
+      }
+      assert(e.getMessage == wasInstanceOf(date, "java.util.Date") + ", dude")
     }
 
   }

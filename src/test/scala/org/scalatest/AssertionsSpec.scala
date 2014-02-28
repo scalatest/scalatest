@@ -25,6 +25,7 @@ import scala.util.Success
 import Assertions.NormalResult
 import org.scalatest.exceptions.TestCanceledException
 import OptionValues._
+import java.util.Date
 
 class AssertionsSpec extends FunSpec {
   
@@ -240,6 +241,12 @@ class AssertionsSpec extends FunSpec {
 
   def wasEmpty(left: Any): String =
     quoteString(left) + " was empty"
+
+  def wasNotInstanceOf(left: Any, className: String) =
+    quoteString(left) + " was not instance of " + className
+
+  def wasInstanceOf(left: Any, className: String) =
+    quoteString(left) + " was instance of " + className
 
   class Stateful {
     var state = false
@@ -833,6 +840,8 @@ class AssertionsSpec extends FunSpec {
     val l1 = List(1, 2, 3)
     val l2 = List.empty[Int]
 
+    val date = new Date
+
     it("should do nothing when is used to check s1 startsWith \"hi\"") {
       assert(s1 startsWith "hi")
       assert(s1.startsWith("hi"))
@@ -1135,6 +1144,84 @@ class AssertionsSpec extends FunSpec {
         assert(!l2.isEmpty)
       }
       assert(e.message == Some(wasEmpty(l2)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check s1.isInstanceOf[String]") {
+      assert(s1.isInstanceOf[String])
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check l1.isInstanceOf[String]") {
+      val e = intercept[TestFailedException] {
+        assert(l1.isInstanceOf[String])
+      }
+      assert(e.message == Some(wasNotInstanceOf(l1, "scala.Predef.String")))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check l1.isInstanceOf[List[Int]]") {
+      assert(l1.isInstanceOf[List[Int]])
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check s1.isInstanceOf[List[Int]]") {
+      val e = intercept[TestFailedException] {
+        assert(s1.isInstanceOf[List[Int]])
+      }
+      assert(e.message == Some(wasNotInstanceOf(s1, "scala.List")))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check date.isInstanceOf[Date]") {
+      assert(date.isInstanceOf[Date])
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check l1.isInstanceOf[Date]") {
+      val e = intercept[TestFailedException] {
+        assert(l1.isInstanceOf[Date])
+      }
+      assert(e.message == Some(wasNotInstanceOf(l1, "java.util.Date")))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !l1.isInstanceOf[String]") {
+      assert(!l1.isInstanceOf[String])
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check !s1.isInstanceOf[String]") {
+      val e = intercept[TestFailedException] {
+        assert(!s1.isInstanceOf[String])
+      }
+      assert(e.message == Some(wasInstanceOf(s1, "scala.Predef.String")))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !s1.isInstanceOf[List[Int]]") {
+      assert(!s1.isInstanceOf[List[Int]])
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check !l1.isInstanceOf[List[Int]]") {
+      val e = intercept[TestFailedException] {
+        assert(!l1.isInstanceOf[List[Int]])
+      }
+      assert(e.message == Some(wasInstanceOf(l1, "scala.List")))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !l1.isInstanceOf[Date]") {
+      assert(!l1.isInstanceOf[Date])
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check !date.isInstanceOf[Date]") {
+      val e = intercept[TestFailedException] {
+        assert(!date.isInstanceOf[Date])
+      }
+      assert(e.message == Some(wasInstanceOf(date, "java.util.Date")))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -1710,6 +1797,8 @@ class AssertionsSpec extends FunSpec {
     val l1 = List(1, 2, 3)
     val l2 = List.empty[Int]
 
+    val date = new Date
+
     it("should do nothing when is used to check s1 startsWith \"hi\"") {
       assert(s1 startsWith "hi", ", dude")
       assert(s1.startsWith("hi"), ", dude")
@@ -2012,6 +2101,84 @@ class AssertionsSpec extends FunSpec {
         assert(!l2.isEmpty, ", dude")
       }
       assert(e.message == Some(wasEmpty(l2) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check s1.isInstanceOf[String]") {
+      assert(s1.isInstanceOf[String], ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check l1.isInstanceOf[String]") {
+      val e = intercept[TestFailedException] {
+        assert(l1.isInstanceOf[String], ", dude")
+      }
+      assert(e.message == Some(wasNotInstanceOf(l1, "scala.Predef.String") + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check l1.isInstanceOf[List[Int]]") {
+      assert(l1.isInstanceOf[List[Int]], ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check s1.isInstanceOf[List[Int]]") {
+      val e = intercept[TestFailedException] {
+        assert(s1.isInstanceOf[List[Int]], ", dude")
+      }
+      assert(e.message == Some(wasNotInstanceOf(s1, "scala.List") + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check date.isInstanceOf[Date]") {
+      assert(date.isInstanceOf[Date], ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check l1.isInstanceOf[Date]") {
+      val e = intercept[TestFailedException] {
+        assert(l1.isInstanceOf[Date], ", dude")
+      }
+      assert(e.message == Some(wasNotInstanceOf(l1, "java.util.Date") + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !l1.isInstanceOf[String]") {
+      assert(!l1.isInstanceOf[String], ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check !s1.isInstanceOf[String]") {
+      val e = intercept[TestFailedException] {
+        assert(!s1.isInstanceOf[String], ", dude")
+      }
+      assert(e.message == Some(wasInstanceOf(s1, "scala.Predef.String") + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !s1.isInstanceOf[List[Int]]") {
+      assert(!s1.isInstanceOf[List[Int]], ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check !l1.isInstanceOf[List[Int]]") {
+      val e = intercept[TestFailedException] {
+        assert(!l1.isInstanceOf[List[Int]], ", dude")
+      }
+      assert(e.message == Some(wasInstanceOf(l1, "scala.List") + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !l1.isInstanceOf[Date]") {
+      assert(!l1.isInstanceOf[Date], ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check !date.isInstanceOf[Date]") {
+      val e = intercept[TestFailedException] {
+        assert(!date.isInstanceOf[Date], ", dude")
+      }
+      assert(e.message == Some(wasInstanceOf(date, "java.util.Date") + ", dude"))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -2580,6 +2747,8 @@ class AssertionsSpec extends FunSpec {
     val l1 = List(1, 2, 3)
     val l2 = List.empty[Int]
 
+    val date = new Date
+
     it("should do nothing when is used to check s1 startsWith \"hi\"") {
       assume(s1 startsWith "hi")
       assume(s1.startsWith("hi"))
@@ -2882,6 +3051,84 @@ class AssertionsSpec extends FunSpec {
         assume(!l2.isEmpty)
       }
       assert(e.message == Some(wasEmpty(l2)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check s1.isInstanceOf[String]") {
+      assume(s1.isInstanceOf[String])
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check l1.isInstanceOf[String]") {
+      val e = intercept[TestCanceledException] {
+        assume(l1.isInstanceOf[String])
+      }
+      assert(e.message == Some(wasNotInstanceOf(l1, "scala.Predef.String")))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check l1.isInstanceOf[List[Int]]") {
+      assume(l1.isInstanceOf[List[Int]])
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check s1.isInstanceOf[List[Int]]") {
+      val e = intercept[TestCanceledException] {
+        assume(s1.isInstanceOf[List[Int]])
+      }
+      assert(e.message == Some(wasNotInstanceOf(s1, "scala.List")))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check date.isInstanceOf[Date]") {
+      assume(date.isInstanceOf[Date])
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check l1.isInstanceOf[Date]") {
+      val e = intercept[TestCanceledException] {
+        assume(l1.isInstanceOf[Date])
+      }
+      assert(e.message == Some(wasNotInstanceOf(l1, "java.util.Date")))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !l1.isInstanceOf[String]") {
+      assume(!l1.isInstanceOf[String])
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check !s1.isInstanceOf[String]") {
+      val e = intercept[TestCanceledException] {
+        assume(!s1.isInstanceOf[String])
+      }
+      assert(e.message == Some(wasInstanceOf(s1, "scala.Predef.String")))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !s1.isInstanceOf[List[Int]]") {
+      assume(!s1.isInstanceOf[List[Int]])
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check !l1.isInstanceOf[List[Int]]") {
+      val e = intercept[TestCanceledException] {
+        assume(!l1.isInstanceOf[List[Int]])
+      }
+      assert(e.message == Some(wasInstanceOf(l1, "scala.List")))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !l1.isInstanceOf[Date]") {
+      assume(!l1.isInstanceOf[Date])
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check !date.isInstanceOf[Date]") {
+      val e = intercept[TestCanceledException] {
+        assume(!date.isInstanceOf[Date])
+      }
+      assert(e.message == Some(wasInstanceOf(date, "java.util.Date")))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -3457,6 +3704,8 @@ class AssertionsSpec extends FunSpec {
     val l1 = List(1, 2, 3)
     val l2 = List.empty[String]
 
+    val date = new Date
+
     it("should do nothing when is used to check s1 startsWith \"hi\"") {
       assume(s1 startsWith "hi", ", dude")
       assume(s1.startsWith("hi"), ", dude")
@@ -3759,6 +4008,84 @@ class AssertionsSpec extends FunSpec {
         assume(!l2.isEmpty, ", dude")
       }
       assert(e.message == Some(wasEmpty(l2) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check s1.isInstanceOf[String]") {
+      assume(s1.isInstanceOf[String], ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check l1.isInstanceOf[String]") {
+      val e = intercept[TestCanceledException] {
+        assume(l1.isInstanceOf[String], ", dude")
+      }
+      assert(e.message == Some(wasNotInstanceOf(l1, "scala.Predef.String") + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check l1.isInstanceOf[List[Int]]") {
+      assume(l1.isInstanceOf[List[Int]], ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check s1.isInstanceOf[List[Int]]") {
+      val e = intercept[TestCanceledException] {
+        assume(s1.isInstanceOf[List[Int]], ", dude")
+      }
+      assert(e.message == Some(wasNotInstanceOf(s1, "scala.List") + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check date.isInstanceOf[Date]") {
+      assume(date.isInstanceOf[Date], ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check l1.isInstanceOf[Date]") {
+      val e = intercept[TestCanceledException] {
+        assume(l1.isInstanceOf[Date], ", dude")
+      }
+      assert(e.message == Some(wasNotInstanceOf(l1, "java.util.Date") + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !l1.isInstanceOf[String]") {
+      assume(!l1.isInstanceOf[String], ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check !s1.isInstanceOf[String]") {
+      val e = intercept[TestCanceledException] {
+        assume(!s1.isInstanceOf[String], ", dude")
+      }
+      assert(e.message == Some(wasInstanceOf(s1, "scala.Predef.String") + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !s1.isInstanceOf[List[Int]]") {
+      assume(!s1.isInstanceOf[List[Int]], ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check !l1.isInstanceOf[List[Int]]") {
+      val e = intercept[TestCanceledException] {
+        assume(!l1.isInstanceOf[List[Int]], ", dude")
+      }
+      assert(e.message == Some(wasInstanceOf(l1, "scala.List") + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !l1.isInstanceOf[Date]") {
+      assume(!l1.isInstanceOf[Date], ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check !date.isInstanceOf[Date]") {
+      val e = intercept[TestCanceledException] {
+        assume(!date.isInstanceOf[Date], ", dude")
+      }
+      assert(e.message == Some(wasInstanceOf(date, "java.util.Date") + ", dude"))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
