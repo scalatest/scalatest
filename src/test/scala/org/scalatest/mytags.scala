@@ -16,7 +16,7 @@
 package org.scalatest
 
 // Tag classes used in tests
-package mytags {
+object mytags {
   object SlowAsMolasses extends Tag("org.scalatest.SlowAsMolasses")
   object FastAsLight extends Tag("org.scalatest.FastAsLight")
   object WeakAsAKitten extends Tag("org.scalatest.WeakAsAKitten")

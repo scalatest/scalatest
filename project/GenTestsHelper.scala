@@ -35,6 +35,8 @@ object GenTestsHelper {
     }
   }
 
+
+
   def genTest(targetDir: File, scalaVersion: String) {
 
     val sharedHelpersSource = new File("src/test/scala/org/scalatest/SharedHelpers.scala")
@@ -74,5 +76,10 @@ object GenTestsHelper {
     copyFile(mytagsSource, mytagsTarget)
   }
 
+  def main(args: Array[String]) {
+    val targetDir = args(0)
+    val scalaVersion = args(1)
+    genTest(new File(targetDir + "/org/scalatest/"), scalaVersion)
+  }
 
 }
