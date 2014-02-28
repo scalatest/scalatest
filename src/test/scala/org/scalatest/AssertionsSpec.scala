@@ -205,12 +205,65 @@ class AssertionsSpec extends FunSpec {
   def wasTrue(left: String): String =
     left + " was true"
 
+  def quoteString(value: Any): String =
+    value match {
+      case s: String => "\"" + value + "\""
+      case _ => value.toString
+    }
+
+  def didNotStartWith(left: Any, right: Any): String =
+    quoteString(left) + " did not start with " + quoteString(right)
+
+  def startedWith(left: Any, right: Any): String =
+    quoteString(left) + " started with " + quoteString(right)
+
+  def didNotEndWith(left: Any, right: Any): String =
+    quoteString(left) + " did not end with " + quoteString(right)
+
+  def endedWith(left: Any, right: Any): String =
+    quoteString(left) + " ended with " + quoteString(right)
+
+  def didNotContain(left: Any, right: Any): String =
+    quoteString(left) + " did not contain " + quoteString(right)
+
+  def contained(left: Any, right: Any): String =
+    quoteString(left) + " contained " + quoteString(right)
+
+  def wasNotTheSameInstanceAs(left: AnyRef, right: AnyRef): String =
+    quoteString(left) + " was not the same instance as " + quoteString(right)
+
+  def wasTheSameInstanceAs(left: AnyRef, right: AnyRef): String =
+    quoteString(left) + " was the same instance as " + quoteString(right)
+
+  def wasNotEmpty(left: Any): String =
+    quoteString(left) + " was not empty"
+
+  def wasEmpty(left: Any): String =
+    quoteString(left) + " was empty"
+
   class Stateful {
     var state = false
     def changeState: Boolean = {
       state = true
       state
     }
+  }
+
+  class CustomInt(value: Int) {
+
+    def startsWith(v: Int): Boolean = {
+      value.toString.startsWith(v.toString)
+    }
+
+    def endsWith(v: Int): Boolean = {
+      value.toString.endsWith(v.toString)
+    }
+
+    def contains(v: Int): Boolean = {
+      value.toString.contains(v.toString)
+    }
+
+    override def toString: String = value.toString
   }
 
   private def neverRuns1(f: => Unit): Boolean = true
@@ -766,6 +819,324 @@ class AssertionsSpec extends FunSpec {
 
     it("should preserve side effects when typed Apply with 2 argument list is passed in") {
       assert(neverRuns3(sys.error("Sad times 3"))(0))
+    }
+
+    val s1 = "hi ScalaTest"
+    val s2 = "ScalaTest hi"
+    val s3 = "Say hi to ScalaTest"
+    val s4 = ""
+
+    val ci1 = new CustomInt(123)
+    val ci2 = new CustomInt(321)
+    val ci3 = ci1
+
+    val l1 = List(1, 2, 3)
+    val l2 = List.empty[Int]
+
+    it("should do nothing when is used to check s1 startsWith \"hi\"") {
+      assert(s1 startsWith "hi")
+      assert(s1.startsWith("hi"))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check s2 startsWith \"hi\"") {
+      val e1 = intercept[TestFailedException] {
+        assert(s2 startsWith "hi")
+      }
+      assert(e1.message == Some(didNotStartWith(s2, "hi")))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestFailedException] {
+        assert(s2.startsWith("hi"))
+      }
+      assert(e2.message == Some(didNotStartWith(s2, "hi")))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check ci1 startsWith 1") {
+      assert(ci1 startsWith 1)
+      assert(ci1.startsWith(1))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check ci2 startsWith 1") {
+      val e1 = intercept[TestFailedException] {
+        assert(ci2 startsWith 1)
+      }
+      assert(e1.message == Some(didNotStartWith(ci2, 1)))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestFailedException] {
+        assert(ci2.startsWith(1))
+      }
+      assert(e2.message == Some(didNotStartWith(ci2, 1)))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !s2.startsWith(\"hi\")") {
+      assert(!s2.startsWith("hi"))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check !s1.startsWith(\"hi\")") {
+      val e1 = intercept[TestFailedException] {
+        assert(!s1.startsWith("hi"))
+      }
+      assert(e1.message == Some(startedWith(s1, "hi")))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check s2 endsWith \"hi\"") {
+      assert(s2 endsWith "hi")
+      assert(s2.endsWith("hi"))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check s1 endsWith \"hi\"") {
+      val e1 = intercept[TestFailedException] {
+        assert(s1 endsWith "hi")
+      }
+      assert(e1.message == Some(didNotEndWith(s1, "hi")))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestFailedException] {
+        assert(s1.endsWith("hi"))
+      }
+      assert(e2.message == Some(didNotEndWith(s1, "hi")))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check ci2 endsWith 1") {
+      assert(ci2 endsWith 1)
+      assert(ci2.endsWith(1))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check ci1 endsWith 1") {
+      val e1 = intercept[TestFailedException] {
+        assert(ci1 endsWith 1)
+      }
+      assert(e1.message == Some(didNotEndWith(ci1, 1)))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestFailedException] {
+        assert(ci1.endsWith(1))
+      }
+      assert(e2.message == Some(didNotEndWith(ci1, 1)))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !s1.endsWith(\"hi\")") {
+      assert(!s1.endsWith("hi"))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check !s2.endsWith(\"hi\")") {
+      val e1 = intercept[TestFailedException] {
+        assert(!s2.endsWith("hi"))
+      }
+      assert(e1.message == Some(endedWith(s2, "hi")))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check s3 contains \"hi\"") {
+      assert(s3 contains "hi")
+      assert(s3.contains("hi"))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check s3 contains \"hello\"") {
+      val e1 = intercept[TestFailedException] {
+        assert(s3 contains "hello")
+      }
+      assert(e1.message == Some(didNotContain(s3, "hello")))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestFailedException] {
+        assert(s3.contains("hello"))
+      }
+      assert(e2.message == Some(didNotContain(s3, "hello")))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check ci2 contains 2") {
+      assert(ci2 contains 2)
+      assert(ci2.contains(2))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check ci1 contains 5") {
+      val e1 = intercept[TestFailedException] {
+        assert(ci1 contains 5)
+      }
+      assert(e1.message == Some(didNotContain(ci1, 5)))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestFailedException] {
+        assert(ci1.contains(5))
+      }
+      assert(e2.message == Some(didNotContain(ci1, 5)))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !s1.contains(\"hello\")") {
+      assert(!s3.contains("hello"))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check !s3.contains(\"hi\")") {
+      val e1 = intercept[TestFailedException] {
+        assert(!s3.contains("hi"))
+      }
+      assert(e1.message == Some(contained(s3, "hi")))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check l1 contains 2") {
+      assert(l1 contains 2)
+      assert(l1.contains(2))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check l1 contains 5") {
+      val e1 = intercept[TestFailedException] {
+        assert(l1 contains 5)
+      }
+      assert(e1.message == Some(didNotContain(l1, 5)))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestFailedException] {
+        assert(l1.contains(5))
+      }
+      assert(e2.message == Some(didNotContain(l1, 5)))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check ci1 eq ci3") {
+      assert(ci1 eq ci3)
+      assert(ci1.eq(ci3))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check ci1 eq ci2") {
+      val e1 = intercept[TestFailedException] {
+        assert(ci1 eq ci2)
+      }
+      assert(e1.message == Some(wasNotTheSameInstanceAs(ci1, ci2)))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestFailedException] {
+        assert(ci1.eq(ci2))
+      }
+      assert(e2.message == Some(wasNotTheSameInstanceAs(ci1, ci2)))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !ci1.eq(ci2)") {
+      assert(!ci1.eq(ci2))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check !ci1.eq(ci3)") {
+      val e = intercept[TestFailedException] {
+        assert(!ci1.eq(ci3))
+      }
+      assert(e.message == Some(wasTheSameInstanceAs(ci1, ci3)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check ci1 ne ci2") {
+      assert(ci1 ne ci2)
+      assert(ci1.ne(ci2))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check ci1 ne ci3") {
+      val e1 = intercept[TestFailedException] {
+        assert(ci1 ne ci3)
+      }
+      assert(e1.message == Some(wasTheSameInstanceAs(ci1, ci3)))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestFailedException] {
+        assert(ci1.ne(ci3))
+      }
+      assert(e2.message == Some(wasTheSameInstanceAs(ci1, ci3)))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !ci1.ne(ci3)") {
+      assert(!ci1.ne(ci3))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check !ci1.ne(ci2)") {
+      val e = intercept[TestFailedException] {
+        assert(!ci1.ne(ci2))
+      }
+      assert(e.message == Some(wasNotTheSameInstanceAs(ci1, ci2)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check s4.isEmpty") {
+      assert(s4.isEmpty)
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check s3.isEmpty") {
+      val e = intercept[TestFailedException] {
+        assert(s3.isEmpty)
+      }
+      assert(e.message == Some(wasNotEmpty(s3)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !s3.isEmpty") {
+      assert(!s3.isEmpty)
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check !s4.isEmpty") {
+      val e = intercept[TestFailedException] {
+        assert(!s4.isEmpty)
+      }
+      assert(e.message == Some(wasEmpty(s4)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check l2.isEmpty") {
+      assert(l2.isEmpty)
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check l1.isEmpty") {
+      val e = intercept[TestFailedException] {
+        assert(l1.isEmpty)
+      }
+      assert(e.message == Some(wasNotEmpty(l1)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !l1.isEmpty") {
+      assert(!l1.isEmpty)
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check !l2.isEmpty") {
+      val e = intercept[TestFailedException] {
+        assert(!l2.isEmpty)
+      }
+      assert(e.message == Some(wasEmpty(l2)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
   }
 
@@ -1326,6 +1697,324 @@ class AssertionsSpec extends FunSpec {
     it("should preserve side effects when typed Apply with 2 argument list is passed in") {
       assert(neverRuns3(sys.error("Sad times 3"))(0), "should not fail!")
     }
+
+    val s1 = "hi ScalaTest"
+    val s2 = "ScalaTest hi"
+    val s3 = "Say hi to ScalaTest"
+    val s4 = ""
+
+    val ci1 = new CustomInt(123)
+    val ci2 = new CustomInt(321)
+    val ci3 = ci1
+
+    val l1 = List(1, 2, 3)
+    val l2 = List.empty[Int]
+
+    it("should do nothing when is used to check s1 startsWith \"hi\"") {
+      assert(s1 startsWith "hi", ", dude")
+      assert(s1.startsWith("hi"), ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check s2 startsWith \"hi\"") {
+      val e1 = intercept[TestFailedException] {
+        assert(s2 startsWith "hi", ", dude")
+      }
+      assert(e1.message == Some(didNotStartWith(s2, "hi") + ", dude"))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestFailedException] {
+        assert(s2.startsWith("hi"), ", dude")
+      }
+      assert(e2.message == Some(didNotStartWith(s2, "hi") + ", dude"))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check ci1 startsWith 1") {
+      assert(ci1 startsWith 1, ", dude")
+      assert(ci1.startsWith(1), ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check ci2 startsWith 1") {
+      val e1 = intercept[TestFailedException] {
+        assert(ci2 startsWith 1, ", dude")
+      }
+      assert(e1.message == Some(didNotStartWith(ci2, 1) + ", dude"))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestFailedException] {
+        assert(ci2.startsWith(1), ", dude")
+      }
+      assert(e2.message == Some(didNotStartWith(ci2, 1) + ", dude"))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !s2.startsWith(\"hi\")") {
+      assert(!s2.startsWith("hi"), ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check !s1.startsWith(\"hi\")") {
+      val e1 = intercept[TestFailedException] {
+        assert(!s1.startsWith("hi"), ", dude")
+      }
+      assert(e1.message == Some(startedWith(s1, "hi") + ", dude"))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check s2 endsWith \"hi\"") {
+      assert(s2 endsWith "hi", ", dude")
+      assert(s2.endsWith("hi"), ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check s1 endsWith \"hi\"") {
+      val e1 = intercept[TestFailedException] {
+        assert(s1 endsWith "hi", ", dude")
+      }
+      assert(e1.message == Some(didNotEndWith(s1, "hi") + ", dude"))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestFailedException] {
+        assert(s1.endsWith("hi"), ", dude")
+      }
+      assert(e2.message == Some(didNotEndWith(s1, "hi") + ", dude"))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check ci2 endsWith 1") {
+      assert(ci2 endsWith 1, ", dude")
+      assert(ci2.endsWith(1), ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check ci1 endsWith 1") {
+      val e1 = intercept[TestFailedException] {
+        assert(ci1 endsWith 1, ", dude")
+      }
+      assert(e1.message == Some(didNotEndWith(ci1, 1) + ", dude"))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestFailedException] {
+        assert(ci1.endsWith(1), ", dude")
+      }
+      assert(e2.message == Some(didNotEndWith(ci1, 1) + ", dude"))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !s1.endsWith(\"hi\")") {
+      assert(!s1.endsWith("hi"), ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check !s2.endsWith(\"hi\")") {
+      val e1 = intercept[TestFailedException] {
+        assert(!s2.endsWith("hi"), ", dude")
+      }
+      assert(e1.message == Some(endedWith(s2, "hi") + ", dude"))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check s3 contains \"hi\"") {
+      assert(s3 contains "hi", ", dude")
+      assert(s3.contains("hi"), ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check s3 contains \"hello\"") {
+      val e1 = intercept[TestFailedException] {
+        assert(s3 contains "hello", ", dude")
+      }
+      assert(e1.message == Some(didNotContain(s3, "hello") + ", dude"))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestFailedException] {
+        assert(s3.contains("hello"), ", dude")
+      }
+      assert(e2.message == Some(didNotContain(s3, "hello") + ", dude"))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check ci2 contains 2") {
+      assert(ci2 contains 2, ", dude")
+      assert(ci2.contains(2), ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check ci1 contains 5") {
+      val e1 = intercept[TestFailedException] {
+        assert(ci1 contains 5, ", dude")
+      }
+      assert(e1.message == Some(didNotContain(ci1, 5) + ", dude"))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestFailedException] {
+        assert(ci1.contains(5), ", dude")
+      }
+      assert(e2.message == Some(didNotContain(ci1, 5) + ", dude"))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !s1.contains(\"hello\")") {
+      assert(!s3.contains("hello"), ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check !s3.contains(\"hi\")") {
+      val e1 = intercept[TestFailedException] {
+        assert(!s3.contains("hi"), ", dude")
+      }
+      assert(e1.message == Some(contained(s3, "hi") + ", dude"))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check l1 contains 2") {
+      assert(l1 contains 2, ", dude")
+      assert(l1.contains(2), ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check l1 contains 5") {
+      val e1 = intercept[TestFailedException] {
+        assert(l1 contains 5, ", dude")
+      }
+      assert(e1.message == Some(didNotContain(l1, 5) + ", dude"))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestFailedException] {
+        assert(l1.contains(5), ", dude")
+      }
+      assert(e2.message == Some(didNotContain(l1, 5) + ", dude"))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check ci1 eq ci3") {
+      assert(ci1 eq ci3, ", dude")
+      assert(ci1.eq(ci3), ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check ci1 eq ci2") {
+      val e1 = intercept[TestFailedException] {
+        assert(ci1 eq ci2, ", dude")
+      }
+      assert(e1.message == Some(wasNotTheSameInstanceAs(ci1, ci2) + ", dude"))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestFailedException] {
+        assert(ci1.eq(ci2), ", dude")
+      }
+      assert(e2.message == Some(wasNotTheSameInstanceAs(ci1, ci2) + ", dude"))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !ci1.eq(ci2)") {
+      assert(!ci1.eq(ci2), ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check !ci1.eq(ci3)") {
+      val e = intercept[TestFailedException] {
+        assert(!ci1.eq(ci3), ", dude")
+      }
+      assert(e.message == Some(wasTheSameInstanceAs(ci1, ci3) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check ci1 ne ci2") {
+      assert(ci1 ne ci2, ", dude")
+      assert(ci1.ne(ci2), ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check ci1 ne ci3") {
+      val e1 = intercept[TestFailedException] {
+        assert(ci1 ne ci3, ", dude")
+      }
+      assert(e1.message == Some(wasTheSameInstanceAs(ci1, ci3) + ", dude"))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestFailedException] {
+        assert(ci1.ne(ci3), ", dude")
+      }
+      assert(e2.message == Some(wasTheSameInstanceAs(ci1, ci3) + ", dude"))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !ci1.ne(ci3)") {
+      assert(!ci1.ne(ci3), ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check !ci1.ne(ci2)") {
+      val e = intercept[TestFailedException] {
+        assert(!ci1.ne(ci2), ", dude")
+      }
+      assert(e.message == Some(wasNotTheSameInstanceAs(ci1, ci2) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check s4.isEmpty") {
+      assert(s4.isEmpty, ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check s3.isEmpty") {
+      val e = intercept[TestFailedException] {
+        assert(s3.isEmpty, ", dude")
+      }
+      assert(e.message == Some(wasNotEmpty(s3) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !s3.isEmpty") {
+      assert(!s3.isEmpty, ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check !s4.isEmpty") {
+      val e = intercept[TestFailedException] {
+        assert(!s4.isEmpty, ", dude")
+      }
+      assert(e.message == Some(wasEmpty(s4) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check l2.isEmpty") {
+      assert(l2.isEmpty, ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check l1.isEmpty") {
+      val e = intercept[TestFailedException] {
+        assert(l1.isEmpty, ", dude")
+      }
+      assert(e.message == Some(wasNotEmpty(l1) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !l1.isEmpty") {
+      assert(!l1.isEmpty, ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check !l2.isEmpty") {
+      val e = intercept[TestFailedException] {
+        assert(!l2.isEmpty, ", dude")
+      }
+      assert(e.message == Some(wasEmpty(l2) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
   }
 
   describe("The assume(boolean) method") {
@@ -1877,6 +2566,324 @@ class AssertionsSpec extends FunSpec {
 
     it("should preserve side effects when typed Apply with 2 argument list is passed in") {
       assume(neverRuns3(sys.error("Sad times 3"))(0))
+    }
+
+    val s1 = "hi ScalaTest"
+    val s2 = "ScalaTest hi"
+    val s3 = "Say hi to ScalaTest"
+    val s4 = ""
+
+    val ci1 = new CustomInt(123)
+    val ci2 = new CustomInt(321)
+    val ci3 = ci1
+
+    val l1 = List(1, 2, 3)
+    val l2 = List.empty[Int]
+
+    it("should do nothing when is used to check s1 startsWith \"hi\"") {
+      assume(s1 startsWith "hi")
+      assume(s1.startsWith("hi"))
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check s2 startsWith \"hi\"") {
+      val e1 = intercept[TestCanceledException] {
+        assume(s2 startsWith "hi")
+      }
+      assert(e1.message == Some(didNotStartWith(s2, "hi")))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestCanceledException] {
+        assume(s2.startsWith("hi"))
+      }
+      assert(e2.message == Some(didNotStartWith(s2, "hi")))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check ci1 startsWith 1") {
+      assume(ci1 startsWith 1)
+      assume(ci1.startsWith(1))
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check ci2 startsWith 1") {
+      val e1 = intercept[TestCanceledException] {
+        assume(ci2 startsWith 1)
+      }
+      assert(e1.message == Some(didNotStartWith(ci2, 1)))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestCanceledException] {
+        assume(ci2.startsWith(1))
+      }
+      assert(e2.message == Some(didNotStartWith(ci2, 1)))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !s2.startsWith(\"hi\")") {
+      assume(!s2.startsWith("hi"))
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check !s1.startsWith(\"hi\")") {
+      val e1 = intercept[TestCanceledException] {
+        assume(!s1.startsWith("hi"))
+      }
+      assert(e1.message == Some(startedWith(s1, "hi")))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check s2 endsWith \"hi\"") {
+      assume(s2 endsWith "hi")
+      assume(s2.endsWith("hi"))
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check s1 endsWith \"hi\"") {
+      val e1 = intercept[TestCanceledException] {
+        assume(s1 endsWith "hi")
+      }
+      assert(e1.message == Some(didNotEndWith(s1, "hi")))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestCanceledException] {
+        assume(s1.endsWith("hi"))
+      }
+      assert(e2.message == Some(didNotEndWith(s1, "hi")))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check ci2 endsWith 1") {
+      assume(ci2 endsWith 1)
+      assume(ci2.endsWith(1))
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check ci1 endsWith 1") {
+      val e1 = intercept[TestCanceledException] {
+        assume(ci1 endsWith 1)
+      }
+      assert(e1.message == Some(didNotEndWith(ci1, 1)))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestCanceledException] {
+        assume(ci1.endsWith(1))
+      }
+      assert(e2.message == Some(didNotEndWith(ci1, 1)))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !s1.endsWith(\"hi\")") {
+      assume(!s1.endsWith("hi"))
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check !s2.endsWith(\"hi\")") {
+      val e1 = intercept[TestCanceledException] {
+        assume(!s2.endsWith("hi"))
+      }
+      assert(e1.message == Some(endedWith(s2, "hi")))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check s3 contains \"hi\"") {
+      assume(s3 contains "hi")
+      assume(s3.contains("hi"))
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check s3 contains \"hello\"") {
+      val e1 = intercept[TestCanceledException] {
+        assume(s3 contains "hello")
+      }
+      assert(e1.message == Some(didNotContain(s3, "hello")))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestCanceledException] {
+        assume(s3.contains("hello"))
+      }
+      assert(e2.message == Some(didNotContain(s3, "hello")))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check ci2 contains 2") {
+      assume(ci2 contains 2)
+      assume(ci2.contains(2))
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check ci1 contains 5") {
+      val e1 = intercept[TestCanceledException] {
+        assume(ci1 contains 5)
+      }
+      assert(e1.message == Some(didNotContain(ci1, 5)))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestCanceledException] {
+        assume(ci1.contains(5))
+      }
+      assert(e2.message == Some(didNotContain(ci1, 5)))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !s1.contains(\"hello\")") {
+      assume(!s3.contains("hello"))
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check !s3.contains(\"hi\")") {
+      val e1 = intercept[TestCanceledException] {
+        assume(!s3.contains("hi"))
+      }
+      assert(e1.message == Some(contained(s3, "hi")))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check l1 contains 2") {
+      assume(l1 contains 2)
+      assume(l1.contains(2))
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check l1 contains 5") {
+      val e1 = intercept[TestCanceledException] {
+        assume(l1 contains 5)
+      }
+      assert(e1.message == Some(didNotContain(l1, 5)))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestCanceledException] {
+        assume(l1.contains(5))
+      }
+      assert(e2.message == Some(didNotContain(l1, 5)))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check ci1 eq ci3") {
+      assume(ci1 eq ci3)
+      assume(ci1.eq(ci3))
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check ci1 eq ci2") {
+      val e1 = intercept[TestCanceledException] {
+        assume(ci1 eq ci2)
+      }
+      assert(e1.message == Some(wasNotTheSameInstanceAs(ci1, ci2)))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestCanceledException] {
+        assume(ci1.eq(ci2))
+      }
+      assert(e2.message == Some(wasNotTheSameInstanceAs(ci1, ci2)))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !ci1.eq(ci2)") {
+      assume(!ci1.eq(ci2))
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check !ci1.eq(ci3)") {
+      val e = intercept[TestCanceledException] {
+        assume(!ci1.eq(ci3))
+      }
+      assert(e.message == Some(wasTheSameInstanceAs(ci1, ci3)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check ci1 ne ci2") {
+      assume(ci1 ne ci2)
+      assume(ci1.ne(ci2))
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check ci1 ne ci3") {
+      val e1 = intercept[TestCanceledException] {
+        assume(ci1 ne ci3)
+      }
+      assert(e1.message == Some(wasTheSameInstanceAs(ci1, ci3)))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestCanceledException] {
+        assume(ci1.ne(ci3))
+      }
+      assert(e2.message == Some(wasTheSameInstanceAs(ci1, ci3)))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !ci1.ne(ci3)") {
+      assume(!ci1.ne(ci3))
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check !ci1.ne(ci2)") {
+      val e = intercept[TestCanceledException] {
+        assume(!ci1.ne(ci2))
+      }
+      assert(e.message == Some(wasNotTheSameInstanceAs(ci1, ci2)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check s4.isEmpty") {
+      assume(s4.isEmpty)
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check s3.isEmpty") {
+      val e = intercept[TestCanceledException] {
+        assume(s3.isEmpty)
+      }
+      assert(e.message == Some(wasNotEmpty(s3)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !s3.isEmpty") {
+      assume(!s3.isEmpty)
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check !s4.isEmpty") {
+      val e = intercept[TestCanceledException] {
+        assume(!s4.isEmpty)
+      }
+      assert(e.message == Some(wasEmpty(s4)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check l2.isEmpty") {
+      assume(l2.isEmpty)
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check l1.isEmpty") {
+      val e = intercept[TestCanceledException] {
+        assume(l1.isEmpty)
+      }
+      assert(e.message == Some(wasNotEmpty(l1)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !l1.isEmpty") {
+      assume(!l1.isEmpty)
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check !l2.isEmpty") {
+      val e = intercept[TestCanceledException] {
+        assume(!l2.isEmpty)
+      }
+      assert(e.message == Some(wasEmpty(l2)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
   }
 
@@ -2437,6 +3444,325 @@ class AssertionsSpec extends FunSpec {
     it("should preserve side effects when typed Apply with 2 argument list is passed in") {
       assume(neverRuns3(sys.error("Sad times 3"))(0), "should not fail!")
     }
+
+    val s1 = "hi ScalaTest"
+    val s2 = "ScalaTest hi"
+    val s3 = "Say hi to ScalaTest"
+    val s4 = ""
+
+    val ci1 = new CustomInt(123)
+    val ci2 = new CustomInt(321)
+    val ci3 = ci1
+
+    val l1 = List(1, 2, 3)
+    val l2 = List.empty[String]
+
+    it("should do nothing when is used to check s1 startsWith \"hi\"") {
+      assume(s1 startsWith "hi", ", dude")
+      assume(s1.startsWith("hi"), ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check s2 startsWith \"hi\"") {
+      val e1 = intercept[TestCanceledException] {
+        assume(s2 startsWith "hi", ", dude")
+      }
+      assert(e1.message == Some(didNotStartWith(s2, "hi") + ", dude"))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestCanceledException] {
+        assume(s2.startsWith("hi"), ", dude")
+      }
+      assert(e2.message == Some(didNotStartWith(s2, "hi") + ", dude"))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check ci1 startsWith 1") {
+      assume(ci1 startsWith 1, ", dude")
+      assume(ci1.startsWith(1), ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check ci2 startsWith 1") {
+      val e1 = intercept[TestCanceledException] {
+        assume(ci2 startsWith 1, ", dude")
+      }
+      assert(e1.message == Some(didNotStartWith(ci2, 1) + ", dude"))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestCanceledException] {
+        assume(ci2.startsWith(1), ", dude")
+      }
+      assert(e2.message == Some(didNotStartWith(ci2, 1) + ", dude"))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !s2.startsWith(\"hi\")") {
+      assume(!s2.startsWith("hi"), ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check !s1.startsWith(\"hi\")") {
+      val e1 = intercept[TestCanceledException] {
+        assume(!s1.startsWith("hi"), ", dude")
+      }
+      assert(e1.message == Some(startedWith(s1, "hi") + ", dude"))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check s2 endsWith \"hi\"") {
+      assume(s2 endsWith "hi", ", dude")
+      assume(s2.endsWith("hi"), ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check s1 endsWith \"hi\"") {
+      val e1 = intercept[TestCanceledException] {
+        assume(s1 endsWith "hi", ", dude")
+      }
+      assert(e1.message == Some(didNotEndWith(s1, "hi") + ", dude"))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestCanceledException] {
+        assume(s1.endsWith("hi"), ", dude")
+      }
+      assert(e2.message == Some(didNotEndWith(s1, "hi") + ", dude"))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check ci2 endsWith 1") {
+      assume(ci2 endsWith 1, ", dude")
+      assume(ci2.endsWith(1), ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check ci1 endsWith 1") {
+      val e1 = intercept[TestCanceledException] {
+        assume(ci1 endsWith 1, ", dude")
+      }
+      assert(e1.message == Some(didNotEndWith(ci1, 1) + ", dude"))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestCanceledException] {
+        assume(ci1.endsWith(1), ", dude")
+      }
+      assert(e2.message == Some(didNotEndWith(ci1, 1) + ", dude"))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !s1.endsWith(\"hi\")") {
+      assume(!s1.endsWith("hi"), ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check !s2.endsWith(\"hi\")") {
+      val e1 = intercept[TestCanceledException] {
+        assume(!s2.endsWith("hi"), ", dude")
+      }
+      assert(e1.message == Some(endedWith(s2, "hi") + ", dude"))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check s3 contains \"hi\"") {
+      assume(s3 contains "hi", ", dude")
+      assume(s3.contains("hi"), ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check s3 contains \"hello\"") {
+      val e1 = intercept[TestCanceledException] {
+        assume(s3 contains "hello", ", dude")
+      }
+      assert(e1.message == Some(didNotContain(s3, "hello") + ", dude"))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestCanceledException] {
+        assume(s3.contains("hello"), ", dude")
+      }
+      assert(e2.message == Some(didNotContain(s3, "hello") + ", dude"))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check ci2 contains 2") {
+      assume(ci2 contains 2, ", dude")
+      assume(ci2.contains(2), ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check ci1 contains 5") {
+      val e1 = intercept[TestCanceledException] {
+        assume(ci1 contains 5, ", dude")
+      }
+      assert(e1.message == Some(didNotContain(ci1, 5) + ", dude"))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestCanceledException] {
+        assume(ci1.contains(5), ", dude")
+      }
+      assert(e2.message == Some(didNotContain(ci1, 5) + ", dude"))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !s1.contains(\"hello\")") {
+      assume(!s3.contains("hello"), ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check !s3.contains(\"hi\")") {
+      val e1 = intercept[TestCanceledException] {
+        assume(!s3.contains("hi"), ", dude")
+      }
+      assert(e1.message == Some(contained(s3, "hi") + ", dude"))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check l1 contains 2") {
+      assume(l1 contains 2, ", dude")
+      assume(l1.contains(2), ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check l1 contains 5") {
+      val e1 = intercept[TestCanceledException] {
+        assume(l1 contains 5, ", dude")
+      }
+      assert(e1.message == Some(didNotContain(l1, 5) + ", dude"))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestCanceledException] {
+        assume(l1.contains(5), ", dude")
+      }
+      assert(e2.message == Some(didNotContain(l1, 5) + ", dude"))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check ci1 eq ci3") {
+      assume(ci1 eq ci3, ", dude")
+      assume(ci1.eq(ci3), ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check ci1 eq ci2") {
+      val e1 = intercept[TestCanceledException] {
+        assume(ci1 eq ci2, ", dude")
+      }
+      assert(e1.message == Some(wasNotTheSameInstanceAs(ci1, ci2) + ", dude"))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestCanceledException] {
+        assume(ci1.eq(ci2), ", dude")
+      }
+      assert(e2.message == Some(wasNotTheSameInstanceAs(ci1, ci2) + ", dude"))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !ci1.eq(ci2)") {
+      assume(!ci1.eq(ci2), ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check !ci1.eq(ci3)") {
+      val e = intercept[TestCanceledException] {
+        assume(!ci1.eq(ci3), ", dude")
+      }
+      assert(e.message == Some(wasTheSameInstanceAs(ci1, ci3) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check ci1 ne ci2") {
+      assume(ci1 ne ci2, ", dude")
+      assume(ci1.ne(ci2), ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check ci1 ne ci3") {
+      val e1 = intercept[TestCanceledException] {
+        assume(ci1 ne ci3, ", dude")
+      }
+      assert(e1.message == Some(wasTheSameInstanceAs(ci1, ci3) + ", dude"))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestCanceledException] {
+        assume(ci1.ne(ci3), ", dude")
+      }
+      assert(e2.message == Some(wasTheSameInstanceAs(ci1, ci3) + ", dude"))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !ci1.ne(ci3)") {
+      assume(!ci1.ne(ci3), ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check !ci1.ne(ci2)") {
+      val e = intercept[TestCanceledException] {
+        assume(!ci1.ne(ci2), ", dude")
+      }
+      assert(e.message == Some(wasNotTheSameInstanceAs(ci1, ci2) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check s4.isEmpty") {
+      assume(s4.isEmpty, ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check s3.isEmpty") {
+      val e = intercept[TestCanceledException] {
+        assume(s3.isEmpty, ", dude")
+      }
+      assert(e.message == Some(wasNotEmpty(s3) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !s3.isEmpty") {
+      assume(!s3.isEmpty, ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check !s4.isEmpty") {
+      val e = intercept[TestCanceledException] {
+        assume(!s4.isEmpty, ", dude")
+      }
+      assert(e.message == Some(wasEmpty(s4) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check l2.isEmpty") {
+      assume(l2.isEmpty, ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check l1.isEmpty") {
+      val e = intercept[TestCanceledException] {
+        assume(l1.isEmpty, ", dude")
+      }
+      assert(e.message == Some(wasNotEmpty(l1) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !l1.isEmpty") {
+      assume(!l1.isEmpty, ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check !l2.isEmpty") {
+      val e = intercept[TestCanceledException] {
+        assume(!l2.isEmpty, ", dude")
+      }
+      assert(e.message == Some(wasEmpty(l2) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
   }
 
   describe("assertTypeError method") {

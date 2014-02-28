@@ -70,12 +70,59 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
   def wasTrue(left: String): String =
     left + " was true"
 
+  def didNotStartWith(left: Any, right: Any): String =
+    FailureMessages("didNotStartWith", left, right)
+
+  def startedWith(left: Any, right: Any): String =
+    FailureMessages("startedWith", left, right)
+
+  def didNotEndWith(left: Any, right: Any): String =
+    FailureMessages("didNotEndWith", left, right)
+
+  def endedWith(left: Any, right: Any): String =
+    FailureMessages("endedWith", left, right)
+
+  def didNotContain(left: Any, right: Any): String =
+    FailureMessages("didNotContain", left, right)
+
+  def contained(left: Any, right: Any): String =
+    FailureMessages("contained", left, right)
+
+  def wasNotTheSameInstanceAs(left: AnyRef, right: AnyRef): String =
+    FailureMessages("wasNotTheSameInstanceAs", left, right)
+
+  def wasTheSameInstanceAs(left: AnyRef, right: AnyRef): String =
+    FailureMessages("wasTheSameInstanceAs", left, right)
+
+  def wasNotEmpty(left: Any): String =
+    FailureMessages("wasNotEmpty", left)
+
+  def wasEmpty(left: Any): String =
+    FailureMessages("wasEmpty", left)
+
   class Stateful {
     var state = false
     def changeState: Boolean = {
       state = true
       state
     }
+  }
+
+  class CustomInt(value: Int) {
+
+    def startsWith(v: Int): Boolean = {
+      value.toString.startsWith(v.toString)
+    }
+
+    def endsWith(v: Int): Boolean = {
+      value.toString.endsWith(v.toString)
+    }
+
+    def contains(v: Int): Boolean = {
+      value.toString.contains(v.toString)
+    }
+
+    override def toString: String = value.toString
   }
 
   describe("The require(boolean) method") {
@@ -459,6 +506,270 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should preserve side effects when typed Apply with 2 argument list is passed in") {
       require(neverRuns3(sys.error("Sad times 3"))(0))
+    }
+
+    val s1 = "hi ScalaTest"
+    val s2 = "ScalaTest hi"
+    val s3 = "Say hi to ScalaTest"
+    val s4 = ""
+
+    val ci1 = new CustomInt(123)
+    val ci2 = new CustomInt(321)
+    val ci3 = ci1
+
+    val l1 = List(1, 2, 3)
+    val l2 = List.empty[Int]
+
+    it("should do nothing when is used to check s1 startsWith \"hi\"") {
+      require(s1 startsWith "hi")
+      require(s1.startsWith("hi"))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check s2 startsWith \"hi\"") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(s2 startsWith "hi")
+      }
+      assert(e1.getMessage == didNotStartWith(s2, "hi"))
+
+      val e2 = intercept[IllegalArgumentException] {
+        require(s2.startsWith("hi"))
+      }
+      assert(e2.getMessage == didNotStartWith(s2, "hi"))
+    }
+
+    it("should do nothing when is used to check ci1 startsWith 1") {
+      require(ci1 startsWith 1)
+      require(ci1.startsWith(1))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check ci2 startsWith 1") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(ci2 startsWith 1)
+      }
+      assert(e1.getMessage == didNotStartWith(ci2, 1))
+
+      val e2 = intercept[IllegalArgumentException] {
+        require(ci2.startsWith(1))
+      }
+      assert(e2.getMessage == didNotStartWith(ci2, 1))
+    }
+
+    it("should do nothing when is used to check !s2.startsWith(\"hi\")") {
+      require(!s2.startsWith("hi"))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !s1.startsWith(\"hi\")") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(!s1.startsWith("hi"))
+      }
+      assert(e1.getMessage == startedWith(s1, "hi"))
+    }
+
+    it("should do nothing when is used to check s2 endsWith \"hi\"") {
+      require(s2 endsWith "hi")
+      require(s2.endsWith("hi"))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check s1 endsWith \"hi\"") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(s1 endsWith "hi")
+      }
+      assert(e1.getMessage == didNotEndWith(s1, "hi"))
+
+      val e2 = intercept[IllegalArgumentException] {
+        require(s1.endsWith("hi"))
+      }
+      assert(e2.getMessage == didNotEndWith(s1, "hi"))
+    }
+
+    it("should do nothing when is used to check ci2 endsWith 1") {
+      require(ci2 endsWith 1)
+      require(ci2.endsWith(1))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check ci1 endsWith 1") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(ci1 endsWith 1)
+      }
+      assert(e1.getMessage == didNotEndWith(ci1, 1))
+
+      val e2 = intercept[IllegalArgumentException] {
+        require(ci1.endsWith(1))
+      }
+      assert(e2.getMessage == didNotEndWith(ci1, 1))
+    }
+
+    it("should do nothing when is used to check !s1.endsWith(\"hi\")") {
+      require(!s1.endsWith("hi"))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !s2.endsWith(\"hi\")") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(!s2.endsWith("hi"))
+      }
+      assert(e1.getMessage == endedWith(s2, "hi"))
+    }
+
+    it("should do nothing when is used to check s3 contains \"hi\"") {
+      require(s3 contains "hi")
+      require(s3.contains("hi"))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check s3 contains \"hello\"") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(s3 contains "hello")
+      }
+      assert(e1.getMessage == didNotContain(s3, "hello"))
+
+      val e2 = intercept[IllegalArgumentException] {
+        require(s3.contains("hello"))
+      }
+      assert(e2.getMessage == didNotContain(s3, "hello"))
+    }
+
+    it("should do nothing when is used to check ci2 contains 2") {
+      require(ci2 contains 2)
+      require(ci2.contains(2))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check ci1 contains 5") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(ci1 contains 5)
+      }
+      assert(e1.getMessage == didNotContain(ci1, 5))
+
+      val e2 = intercept[IllegalArgumentException] {
+        require(ci1.contains(5))
+      }
+      assert(e2.getMessage == didNotContain(ci1, 5))
+    }
+
+    it("should do nothing when is used to check !s1.contains(\"hello\")") {
+      require(!s3.contains("hello"))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !s3.contains(\"hi\")") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(!s3.contains("hi"))
+      }
+      assert(e1.getMessage == contained(s3, "hi"))
+    }
+
+    it("should do nothing when is used to check l1 contains 2") {
+      require(l1 contains 2)
+      require(l1.contains(2))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1 contains 5") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(l1 contains 5)
+      }
+      assert(e1.getMessage == didNotContain(l1, 5))
+
+      val e2 = intercept[IllegalArgumentException] {
+        require(l1.contains(5))
+      }
+      assert(e2.getMessage == didNotContain(l1, 5))
+    }
+
+    it("should do nothing when is used to check ci1 eq ci3") {
+      require(ci1 eq ci3)
+      require(ci1.eq(ci3))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check ci1 eq ci2") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(ci1 eq ci2)
+      }
+      assert(e1.getMessage == wasNotTheSameInstanceAs(ci1, ci2))
+
+      val e2 = intercept[IllegalArgumentException] {
+        require(ci1.eq(ci2))
+      }
+      assert(e2.getMessage == wasNotTheSameInstanceAs(ci1, ci2))
+    }
+
+    it("should do nothing when is used to check !ci1.eq(ci2)") {
+      require(!ci1.eq(ci2))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !ci1.eq(ci3)") {
+      val e = intercept[IllegalArgumentException] {
+        require(!ci1.eq(ci3))
+      }
+      assert(e.getMessage == wasTheSameInstanceAs(ci1, ci3))
+    }
+
+    it("should do nothing when is used to check ci1 ne ci2") {
+      require(ci1 ne ci2)
+      require(ci1.ne(ci2))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check ci1 ne ci3") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(ci1 ne ci3)
+      }
+      assert(e1.getMessage == wasTheSameInstanceAs(ci1, ci3))
+
+      val e2 = intercept[IllegalArgumentException] {
+        require(ci1.ne(ci3))
+      }
+      assert(e2.getMessage == wasTheSameInstanceAs(ci1, ci3))
+    }
+
+    it("should do nothing when is used to check !ci1.ne(ci3)") {
+      require(!ci1.ne(ci3))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !ci1.ne(ci2)") {
+      val e = intercept[IllegalArgumentException] {
+        require(!ci1.ne(ci2))
+      }
+      assert(e.getMessage == wasNotTheSameInstanceAs(ci1, ci2))
+    }
+
+    it("should do nothing when is used to check s4.isEmpty") {
+      require(s4.isEmpty)
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check s3.isEmpty") {
+      val e = intercept[IllegalArgumentException] {
+        require(s3.isEmpty)
+      }
+      assert(e.getMessage == wasNotEmpty(s3))
+    }
+
+    it("should do nothing when is used to check !s3.isEmpty") {
+      require(!s3.isEmpty)
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !s4.isEmpty") {
+      val e = intercept[IllegalArgumentException] {
+        require(!s4.isEmpty)
+      }
+      assert(e.getMessage == wasEmpty(s4))
+    }
+
+    it("should do nothing when is used to check l2.isEmpty") {
+      require(l2.isEmpty)
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1.isEmpty") {
+      val e = intercept[IllegalArgumentException] {
+        require(l1.isEmpty)
+      }
+      assert(e.getMessage == wasNotEmpty(l1))
+    }
+
+    it("should do nothing when is used to check !l1.isEmpty") {
+      require(!l1.isEmpty)
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !l2.isEmpty") {
+      val e = intercept[IllegalArgumentException] {
+        require(!l2.isEmpty)
+      }
+      assert(e.getMessage == wasEmpty(l2))
     }
 
   }
@@ -886,6 +1197,270 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       require(neverRuns3(sys.error("Sad times 3"))(0), "should not fail!")
     }
 
+    val s1 = "hi ScalaTest"
+    val s2 = "ScalaTest hi"
+    val s3 = "Say hi to ScalaTest"
+    val s4 = ""
+
+    val ci1 = new CustomInt(123)
+    val ci2 = new CustomInt(321)
+    val ci3 = ci1
+
+    val l1 = List(1, 2, 3)
+    val l2 = List.empty[Int]
+
+    it("should do nothing when is used to check s1 startsWith \"hi\"") {
+      require(s1 startsWith "hi", ", dude")
+      require(s1.startsWith("hi"), ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check s2 startsWith \"hi\"") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(s2 startsWith "hi", ", dude")
+      }
+      assert(e1.getMessage == didNotStartWith(s2, "hi") + ", dude")
+
+      val e2 = intercept[IllegalArgumentException] {
+        require(s2.startsWith("hi"), ", dude")
+      }
+      assert(e2.getMessage == didNotStartWith(s2, "hi") + ", dude")
+    }
+
+    it("should do nothing when is used to check ci1 startsWith 1") {
+      require(ci1 startsWith 1, ", dude")
+      require(ci1.startsWith(1), ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check ci2 startsWith 1") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(ci2 startsWith 1, ", dude")
+      }
+      assert(e1.getMessage == didNotStartWith(ci2, 1) + ", dude")
+
+      val e2 = intercept[IllegalArgumentException] {
+        require(ci2.startsWith(1), ", dude")
+      }
+      assert(e2.getMessage == didNotStartWith(ci2, 1) + ", dude")
+    }
+
+    it("should do nothing when is used to check !s2.startsWith(\"hi\")") {
+      require(!s2.startsWith("hi"), ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !s1.startsWith(\"hi\")") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(!s1.startsWith("hi"), ", dude")
+      }
+      assert(e1.getMessage == startedWith(s1, "hi") + ", dude")
+    }
+
+    it("should do nothing when is used to check s2 endsWith \"hi\"") {
+      require(s2 endsWith "hi", ", dude")
+      require(s2.endsWith("hi"), ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check s1 endsWith \"hi\"") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(s1 endsWith "hi", ", dude")
+      }
+      assert(e1.getMessage == didNotEndWith(s1, "hi") + ", dude")
+
+      val e2 = intercept[IllegalArgumentException] {
+        require(s1.endsWith("hi"), ", dude")
+      }
+      assert(e2.getMessage == didNotEndWith(s1, "hi") + ", dude")
+    }
+
+    it("should do nothing when is used to check ci2 endsWith 1") {
+      require(ci2 endsWith 1, ", dude")
+      require(ci2.endsWith(1), ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check ci1 endsWith 1") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(ci1 endsWith 1, ", dude")
+      }
+      assert(e1.getMessage == didNotEndWith(ci1, 1) + ", dude")
+
+      val e2 = intercept[IllegalArgumentException] {
+        require(ci1.endsWith(1), ", dude")
+      }
+      assert(e2.getMessage == didNotEndWith(ci1, 1) + ", dude")
+    }
+
+    it("should do nothing when is used to check !s1.endsWith(\"hi\")") {
+      require(!s1.endsWith("hi"), ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !s2.endsWith(\"hi\")") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(!s2.endsWith("hi"), ", dude")
+      }
+      assert(e1.getMessage == endedWith(s2, "hi") + ", dude")
+    }
+
+    it("should do nothing when is used to check s3 contains \"hi\"") {
+      require(s3 contains "hi", ", dude")
+      require(s3.contains("hi"), ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check s3 contains \"hello\"") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(s3 contains "hello", ", dude")
+      }
+      assert(e1.getMessage == didNotContain(s3, "hello") + ", dude")
+
+      val e2 = intercept[IllegalArgumentException] {
+        require(s3.contains("hello"), ", dude")
+      }
+      assert(e2.getMessage == didNotContain(s3, "hello") + ", dude")
+    }
+
+    it("should do nothing when is used to check ci2 contains 2") {
+      require(ci2 contains 2, ", dude")
+      require(ci2.contains(2), ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check ci1 contains 5") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(ci1 contains 5, ", dude")
+      }
+      assert(e1.getMessage == didNotContain(ci1, 5) + ", dude")
+
+      val e2 = intercept[IllegalArgumentException] {
+        require(ci1.contains(5), ", dude")
+      }
+      assert(e2.getMessage == didNotContain(ci1, 5) + ", dude")
+    }
+
+    it("should do nothing when is used to check !s1.contains(\"hello\")") {
+      require(!s3.contains("hello"), ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !s3.contains(\"hi\")") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(!s3.contains("hi"), ", dude")
+      }
+      assert(e1.getMessage == contained(s3, "hi") + ", dude")
+    }
+
+    it("should do nothing when is used to check l1 contains 2") {
+      require(l1 contains 2, ", dude")
+      require(l1.contains(2), ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1 contains 5") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(l1 contains 5, ", dude")
+      }
+      assert(e1.getMessage == didNotContain(l1, 5) + ", dude")
+
+      val e2 = intercept[IllegalArgumentException] {
+        require(l1.contains(5), ", dude")
+      }
+      assert(e2.getMessage == didNotContain(l1, 5) + ", dude")
+    }
+
+    it("should do nothing when is used to check ci1 eq ci3") {
+      require(ci1 eq ci3, ", dude")
+      require(ci1.eq(ci3), ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check ci1 eq ci2") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(ci1 eq ci2, ", dude")
+      }
+      assert(e1.getMessage == wasNotTheSameInstanceAs(ci1, ci2) + ", dude")
+
+      val e2 = intercept[IllegalArgumentException] {
+        require(ci1.eq(ci2), ", dude")
+      }
+      assert(e2.getMessage == wasNotTheSameInstanceAs(ci1, ci2) + ", dude")
+    }
+
+    it("should do nothing when is used to check !ci1.eq(ci2)") {
+      require(!ci1.eq(ci2), ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !ci1.eq(ci3)") {
+      val e = intercept[IllegalArgumentException] {
+        require(!ci1.eq(ci3), ", dude")
+      }
+      assert(e.getMessage == wasTheSameInstanceAs(ci1, ci3) + ", dude")
+    }
+
+    it("should do nothing when is used to check ci1 ne ci2") {
+      require(ci1 ne ci2, ", dude")
+      require(ci1.ne(ci2), ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check ci1 ne ci3") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(ci1 ne ci3, ", dude")
+      }
+      assert(e1.getMessage == wasTheSameInstanceAs(ci1, ci3) + ", dude")
+
+      val e2 = intercept[IllegalArgumentException] {
+        require(ci1.ne(ci3), ", dude")
+      }
+      assert(e2.getMessage == wasTheSameInstanceAs(ci1, ci3) + ", dude")
+    }
+
+    it("should do nothing when is used to check !ci1.ne(ci3)") {
+      require(!ci1.ne(ci3), ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !ci1.ne(ci2)") {
+      val e = intercept[IllegalArgumentException] {
+        require(!ci1.ne(ci2), ", dude")
+      }
+      assert(e.getMessage == wasNotTheSameInstanceAs(ci1, ci2) + ", dude")
+    }
+
+    it("should do nothing when is used to check s4.isEmpty") {
+      require(s4.isEmpty, ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check s3.isEmpty") {
+      val e = intercept[IllegalArgumentException] {
+        require(s3.isEmpty, ", dude")
+      }
+      assert(e.getMessage == wasNotEmpty(s3) + ", dude")
+    }
+
+    it("should do nothing when is used to check !s3.isEmpty") {
+      require(!s3.isEmpty, ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !s4.isEmpty") {
+      val e = intercept[IllegalArgumentException] {
+        require(!s4.isEmpty, ", dude")
+      }
+      assert(e.getMessage == wasEmpty(s4) + ", dude")
+    }
+
+    it("should do nothing when is used to check l2.isEmpty") {
+      require(l2.isEmpty, ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1.isEmpty") {
+      val e = intercept[IllegalArgumentException] {
+        require(l1.isEmpty, ", dude")
+      }
+      assert(e.getMessage == wasNotEmpty(l1) + ", dude")
+    }
+
+    it("should do nothing when is used to check !l1.isEmpty") {
+      require(!l1.isEmpty, ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !l2.isEmpty") {
+      val e = intercept[IllegalArgumentException] {
+        require(!l2.isEmpty, ", dude")
+      }
+      assert(e.getMessage == wasEmpty(l2) + ", dude")
+    }
+
   }
 
   describe("The requireState(boolean) method") {
@@ -1269,6 +1844,270 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should preserve side effects when typed Apply with 2 argument list is passed in") {
       requireState(neverRuns3(sys.error("Sad times 3"))(0))
+    }
+
+    val s1 = "hi ScalaTest"
+    val s2 = "ScalaTest hi"
+    val s3 = "Say hi to ScalaTest"
+    val s4 = ""
+
+    val ci1 = new CustomInt(123)
+    val ci2 = new CustomInt(321)
+    val ci3 = ci1
+
+    val l1 = List(1, 2, 3)
+    val l2 = List.empty[Int]
+
+    it("should do nothing when is used to check s1 startsWith \"hi\"") {
+      requireState(s1 startsWith "hi")
+      requireState(s1.startsWith("hi"))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check s2 startsWith \"hi\"") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(s2 startsWith "hi")
+      }
+      assert(e1.getMessage == didNotStartWith(s2, "hi"))
+
+      val e2 = intercept[IllegalStateException] {
+        requireState(s2.startsWith("hi"))
+      }
+      assert(e2.getMessage == didNotStartWith(s2, "hi"))
+    }
+
+    it("should do nothing when is used to check ci1 startsWith 1") {
+      requireState(ci1 startsWith 1)
+      requireState(ci1.startsWith(1))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check ci2 startsWith 1") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(ci2 startsWith 1)
+      }
+      assert(e1.getMessage == didNotStartWith(ci2, 1))
+
+      val e2 = intercept[IllegalStateException] {
+        requireState(ci2.startsWith(1))
+      }
+      assert(e2.getMessage == didNotStartWith(ci2, 1))
+    }
+
+    it("should do nothing when is used to check !s2.startsWith(\"hi\")") {
+      requireState(!s2.startsWith("hi"))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !s1.startsWith(\"hi\")") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(!s1.startsWith("hi"))
+      }
+      assert(e1.getMessage == startedWith(s1, "hi"))
+    }
+
+    it("should do nothing when is used to check s2 endsWith \"hi\"") {
+      requireState(s2 endsWith "hi")
+      requireState(s2.endsWith("hi"))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check s1 endsWith \"hi\"") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(s1 endsWith "hi")
+      }
+      assert(e1.getMessage == didNotEndWith(s1, "hi"))
+
+      val e2 = intercept[IllegalStateException] {
+        requireState(s1.endsWith("hi"))
+      }
+      assert(e2.getMessage == didNotEndWith(s1, "hi"))
+    }
+
+    it("should do nothing when is used to check ci2 endsWith 1") {
+      requireState(ci2 endsWith 1)
+      requireState(ci2.endsWith(1))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check ci1 endsWith 1") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(ci1 endsWith 1)
+      }
+      assert(e1.getMessage == didNotEndWith(ci1, 1))
+
+      val e2 = intercept[IllegalStateException] {
+        requireState(ci1.endsWith(1))
+      }
+      assert(e2.getMessage == didNotEndWith(ci1, 1))
+    }
+
+    it("should do nothing when is used to check !s1.endsWith(\"hi\")") {
+      requireState(!s1.endsWith("hi"))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !s2.endsWith(\"hi\")") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(!s2.endsWith("hi"))
+      }
+      assert(e1.getMessage == endedWith(s2, "hi"))
+    }
+
+    it("should do nothing when is used to check s3 contains \"hi\"") {
+      requireState(s3 contains "hi")
+      requireState(s3.contains("hi"))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check s3 contains \"hello\"") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(s3 contains "hello")
+      }
+      assert(e1.getMessage == didNotContain(s3, "hello"))
+
+      val e2 = intercept[IllegalStateException] {
+        requireState(s3.contains("hello"))
+      }
+      assert(e2.getMessage == didNotContain(s3, "hello"))
+    }
+
+    it("should do nothing when is used to check ci2 contains 2") {
+      requireState(ci2 contains 2)
+      requireState(ci2.contains(2))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check ci1 contains 5") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(ci1 contains 5)
+      }
+      assert(e1.getMessage == didNotContain(ci1, 5))
+
+      val e2 = intercept[IllegalStateException] {
+        requireState(ci1.contains(5))
+      }
+      assert(e2.getMessage == didNotContain(ci1, 5))
+    }
+
+    it("should do nothing when is used to check !s1.contains(\"hello\")") {
+      requireState(!s3.contains("hello"))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !s3.contains(\"hi\")") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(!s3.contains("hi"))
+      }
+      assert(e1.getMessage == contained(s3, "hi"))
+    }
+
+    it("should do nothing when is used to check l1 contains 2") {
+      requireState(l1 contains 2)
+      requireState(l1.contains(2))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check l1 contains 5") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(l1 contains 5)
+      }
+      assert(e1.getMessage == didNotContain(l1, 5))
+
+      val e2 = intercept[IllegalStateException] {
+        requireState(l1.contains(5))
+      }
+      assert(e2.getMessage == didNotContain(l1, 5))
+    }
+
+    it("should do nothing when is used to check ci1 eq ci3") {
+      requireState(ci1 eq ci3)
+      requireState(ci1.eq(ci3))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check ci1 eq ci2") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(ci1 eq ci2)
+      }
+      assert(e1.getMessage == wasNotTheSameInstanceAs(ci1, ci2))
+
+      val e2 = intercept[IllegalStateException] {
+        requireState(ci1.eq(ci2))
+      }
+      assert(e2.getMessage == wasNotTheSameInstanceAs(ci1, ci2))
+    }
+
+    it("should do nothing when is used to check !ci1.eq(ci2)") {
+      requireState(!ci1.eq(ci2))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !ci1.eq(ci3)") {
+      val e = intercept[IllegalStateException] {
+        requireState(!ci1.eq(ci3))
+      }
+      assert(e.getMessage == wasTheSameInstanceAs(ci1, ci3))
+    }
+
+    it("should do nothing when is used to check ci1 ne ci2") {
+      requireState(ci1 ne ci2)
+      requireState(ci1.ne(ci2))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check ci1 ne ci3") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(ci1 ne ci3)
+      }
+      assert(e1.getMessage == wasTheSameInstanceAs(ci1, ci3))
+
+      val e2 = intercept[IllegalStateException] {
+        requireState(ci1.ne(ci3))
+      }
+      assert(e2.getMessage == wasTheSameInstanceAs(ci1, ci3))
+    }
+
+    it("should do nothing when is used to check !ci1.ne(ci3)") {
+      requireState(!ci1.ne(ci3))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !ci1.ne(ci2)") {
+      val e = intercept[IllegalStateException] {
+        requireState(!ci1.ne(ci2))
+      }
+      assert(e.getMessage == wasNotTheSameInstanceAs(ci1, ci2))
+    }
+
+    it("should do nothing when is used to check s4.isEmpty") {
+      requireState(s4.isEmpty)
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check s3.isEmpty") {
+      val e = intercept[IllegalStateException] {
+        requireState(s3.isEmpty)
+      }
+      assert(e.getMessage == wasNotEmpty(s3))
+    }
+
+    it("should do nothing when is used to check !s3.isEmpty") {
+      requireState(!s3.isEmpty)
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !s4.isEmpty") {
+      val e = intercept[IllegalStateException] {
+        requireState(!s4.isEmpty)
+      }
+      assert(e.getMessage == wasEmpty(s4))
+    }
+
+    it("should do nothing when is used to check l2.isEmpty") {
+      requireState(l2.isEmpty)
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check l1.isEmpty") {
+      val e = intercept[IllegalStateException] {
+        requireState(l1.isEmpty)
+      }
+      assert(e.getMessage == wasNotEmpty(l1))
+    }
+
+    it("should do nothing when is used to check !l1.isEmpty") {
+      requireState(!l1.isEmpty)
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !l2.isEmpty") {
+      val e = intercept[IllegalStateException] {
+        requireState(!l2.isEmpty)
+      }
+      assert(e.getMessage == wasEmpty(l2))
     }
 
   }
@@ -1694,6 +2533,270 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should preserve side effects when typed Apply with 2 argument list is passed in") {
       requireState(neverRuns3(sys.error("Sad times 3"))(0), "should not fail!")
+    }
+
+    val s1 = "hi ScalaTest"
+    val s2 = "ScalaTest hi"
+    val s3 = "Say hi to ScalaTest"
+    val s4 = ""
+
+    val ci1 = new CustomInt(123)
+    val ci2 = new CustomInt(321)
+    val ci3 = ci1
+
+    val l1 = List(1, 2, 3)
+    val l2 = List.empty[Int]
+
+    it("should do nothing when is used to check s1 startsWith \"hi\"") {
+      requireState(s1 startsWith "hi", ", dude")
+      requireState(s1.startsWith("hi"), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check s2 startsWith \"hi\"") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(s2 startsWith "hi", ", dude")
+      }
+      assert(e1.getMessage == didNotStartWith(s2, "hi") + ", dude")
+
+      val e2 = intercept[IllegalStateException] {
+        requireState(s2.startsWith("hi"), ", dude")
+      }
+      assert(e2.getMessage == didNotStartWith(s2, "hi") + ", dude")
+    }
+
+    it("should do nothing when is used to check ci1 startsWith 1") {
+      requireState(ci1 startsWith 1, ", dude")
+      requireState(ci1.startsWith(1), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check ci2 startsWith 1") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(ci2 startsWith 1, ", dude")
+      }
+      assert(e1.getMessage == didNotStartWith(ci2, 1) + ", dude")
+
+      val e2 = intercept[IllegalStateException] {
+        requireState(ci2.startsWith(1), ", dude")
+      }
+      assert(e2.getMessage == didNotStartWith(ci2, 1) + ", dude")
+    }
+
+    it("should do nothing when is used to check !s2.startsWith(\"hi\")") {
+      requireState(!s2.startsWith("hi"), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !s1.startsWith(\"hi\")") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(!s1.startsWith("hi"), ", dude")
+      }
+      assert(e1.getMessage == startedWith(s1, "hi") + ", dude")
+    }
+
+    it("should do nothing when is used to check s2 endsWith \"hi\"") {
+      requireState(s2 endsWith "hi", ", dude")
+      requireState(s2.endsWith("hi"), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check s1 endsWith \"hi\"") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(s1 endsWith "hi", ", dude")
+      }
+      assert(e1.getMessage == didNotEndWith(s1, "hi") + ", dude")
+
+      val e2 = intercept[IllegalStateException] {
+        requireState(s1.endsWith("hi"), ", dude")
+      }
+      assert(e2.getMessage == didNotEndWith(s1, "hi") + ", dude")
+    }
+
+    it("should do nothing when is used to check ci2 endsWith 1") {
+      requireState(ci2 endsWith 1, ", dude")
+      requireState(ci2.endsWith(1), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check ci1 endsWith 1") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(ci1 endsWith 1, ", dude")
+      }
+      assert(e1.getMessage == didNotEndWith(ci1, 1) + ", dude")
+
+      val e2 = intercept[IllegalStateException] {
+        requireState(ci1.endsWith(1), ", dude")
+      }
+      assert(e2.getMessage == didNotEndWith(ci1, 1) + ", dude")
+    }
+
+    it("should do nothing when is used to check !s1.endsWith(\"hi\")") {
+      requireState(!s1.endsWith("hi"), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !s2.endsWith(\"hi\")") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(!s2.endsWith("hi"), ", dude")
+      }
+      assert(e1.getMessage == endedWith(s2, "hi") + ", dude")
+    }
+
+    it("should do nothing when is used to check s3 contains \"hi\"") {
+      requireState(s3 contains "hi", ", dude")
+      requireState(s3.contains("hi"), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check s3 contains \"hello\"") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(s3 contains "hello", ", dude")
+      }
+      assert(e1.getMessage == didNotContain(s3, "hello") + ", dude")
+
+      val e2 = intercept[IllegalStateException] {
+        requireState(s3.contains("hello"), ", dude")
+      }
+      assert(e2.getMessage == didNotContain(s3, "hello") + ", dude")
+    }
+
+    it("should do nothing when is used to check ci2 contains 2") {
+      requireState(ci2 contains 2, ", dude")
+      requireState(ci2.contains(2), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check ci1 contains 5") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(ci1 contains 5, ", dude")
+      }
+      assert(e1.getMessage == didNotContain(ci1, 5) + ", dude")
+
+      val e2 = intercept[IllegalStateException] {
+        requireState(ci1.contains(5), ", dude")
+      }
+      assert(e2.getMessage == didNotContain(ci1, 5) + ", dude")
+    }
+
+    it("should do nothing when is used to check !s1.contains(\"hello\")") {
+      requireState(!s3.contains("hello"), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !s3.contains(\"hi\")") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(!s3.contains("hi"), ", dude")
+      }
+      assert(e1.getMessage == contained(s3, "hi") + ", dude")
+    }
+
+    it("should do nothing when is used to check l1 contains 2") {
+      requireState(l1 contains 2, ", dude")
+      requireState(l1.contains(2), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check l1 contains 5") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(l1 contains 5, ", dude")
+      }
+      assert(e1.getMessage == didNotContain(l1, 5) + ", dude")
+
+      val e2 = intercept[IllegalStateException] {
+        requireState(l1.contains(5), ", dude")
+      }
+      assert(e2.getMessage == didNotContain(l1, 5) + ", dude")
+    }
+
+    it("should do nothing when is used to check ci1 eq ci3") {
+      requireState(ci1 eq ci3, ", dude")
+      requireState(ci1.eq(ci3), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check ci1 eq ci2") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(ci1 eq ci2, ", dude")
+      }
+      assert(e1.getMessage == wasNotTheSameInstanceAs(ci1, ci2) + ", dude")
+
+      val e2 = intercept[IllegalStateException] {
+        requireState(ci1.eq(ci2), ", dude")
+      }
+      assert(e2.getMessage == wasNotTheSameInstanceAs(ci1, ci2) + ", dude")
+    }
+
+    it("should do nothing when is used to check !ci1.eq(ci2)") {
+      requireState(!ci1.eq(ci2), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !ci1.eq(ci3)") {
+      val e = intercept[IllegalStateException] {
+        requireState(!ci1.eq(ci3), ", dude")
+      }
+      assert(e.getMessage == wasTheSameInstanceAs(ci1, ci3) + ", dude")
+    }
+
+    it("should do nothing when is used to check ci1 ne ci2") {
+      requireState(ci1 ne ci2, ", dude")
+      requireState(ci1.ne(ci2), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check ci1 ne ci3") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(ci1 ne ci3, ", dude")
+      }
+      assert(e1.getMessage == wasTheSameInstanceAs(ci1, ci3) + ", dude")
+
+      val e2 = intercept[IllegalStateException] {
+        requireState(ci1.ne(ci3), ", dude")
+      }
+      assert(e2.getMessage == wasTheSameInstanceAs(ci1, ci3) + ", dude")
+    }
+
+    it("should do nothing when is used to check !ci1.ne(ci3)") {
+      requireState(!ci1.ne(ci3), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !ci1.ne(ci2)") {
+      val e = intercept[IllegalStateException] {
+        requireState(!ci1.ne(ci2), ", dude")
+      }
+      assert(e.getMessage == wasNotTheSameInstanceAs(ci1, ci2) + ", dude")
+    }
+
+    it("should do nothing when is used to check s4.isEmpty") {
+      requireState(s4.isEmpty, ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check s3.isEmpty") {
+      val e = intercept[IllegalStateException] {
+        requireState(s3.isEmpty, ", dude")
+      }
+      assert(e.getMessage == wasNotEmpty(s3) + ", dude")
+    }
+
+    it("should do nothing when is used to check !s3.isEmpty") {
+      requireState(!s3.isEmpty, ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !s4.isEmpty") {
+      val e = intercept[IllegalStateException] {
+        requireState(!s4.isEmpty, ", dude")
+      }
+      assert(e.getMessage == wasEmpty(s4) + ", dude")
+    }
+
+    it("should do nothing when is used to check l2.isEmpty") {
+      requireState(l2.isEmpty, ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check l1.isEmpty") {
+      val e = intercept[IllegalStateException] {
+        requireState(l1.isEmpty, ", dude")
+      }
+      assert(e.getMessage == wasNotEmpty(l1) + ", dude")
+    }
+
+    it("should do nothing when is used to check !l1.isEmpty") {
+      requireState(!l1.isEmpty, ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !l2.isEmpty") {
+      val e = intercept[IllegalStateException] {
+        requireState(!l2.isEmpty, ", dude")
+      }
+      assert(e.getMessage == wasEmpty(l2) + ", dude")
     }
 
   }
