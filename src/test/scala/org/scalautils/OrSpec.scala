@@ -108,6 +108,10 @@ class OrSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
     Good(8) map (_ + 1) should equal (Good(9))
     Good[Int].orBad("eight") map (_ + 1) should equal (Bad("eight"))
   }
+  it can "be used with badMap" in {
+    Good(8).orBad[ErrorMessage] badMap (_.toUpperCase) should equal (Good(8))
+    Good[Int].orBad("eight") badMap (_.toUpperCase) should equal (Bad("EIGHT"))
+  }
   it can "be used with foreach" in {
     var vCount = 0
     var eCount = 0
@@ -488,6 +492,11 @@ class OrSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
     (None: Option[Int Or Every[ErrorMessage]]).combined shouldBe Good(None)
     Some(Bad(One("oops"))).combined shouldBe Bad(One("oops"))
     Some(Bad(Many("oops", "idoops"))).combined shouldBe Bad(Many("oops", "idoops"))
+  }
+  it can "be folded with fold" in {
+    Good(3).orBad[String].fold(_ + 1, _.length) shouldBe 4
+    Good[Int].orBad("howdy").fold(_ + 1, _.length) shouldBe 5
+
   }
   "A Good" can "be widened to an Or type via .asOr" in {
     Good(1).asOr shouldBe Good(1)

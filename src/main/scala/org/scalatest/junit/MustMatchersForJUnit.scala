@@ -92,8 +92,8 @@ import _root_.junit.framework.AssertionFailedError
  *
  * @author Bill Venners
  */
-@deprecated("Please use org.scalatest.Matchers with AssertionsForJUnit instead.")
-trait ShouldMatchersForJUnit extends org.scalatest.Matchers with AssertionsForJUnit
+@deprecated("Please use org.scalatest.MustMatchers with AssertionsForJUnit instead.")
+trait MustMatchersForJUnit extends org.scalatest.MustMatchers with AssertionsForJUnit
 
 /**
  * Companion object that facilitates the importing of <code>ShouldMatchersForJUnit</code> members as 
@@ -132,5 +132,7 @@ trait ShouldMatchersForJUnit extends org.scalatest.Matchers with AssertionsForJU
  *
  * @author Bill Venners
  */
-@deprecated("Please use org.scalatest.Matchers with AssertionsForJUnit instead.")
-object ShouldMatchersForJUnit extends ShouldMatchersForJUnit
+@deprecated("Please use org.scalatest.MustMatchers with AssertionsForJUnit instead.")
+object MustMatchersForJUnit extends MustMatchersForJUnit
+
+

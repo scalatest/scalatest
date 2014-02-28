@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest // Change me in MustMatchers
+package org.scalatest
 
 import org.scalatest.matchers._
 import org.scalatest.enablers._
@@ -119,22 +119,24 @@ import scala.language.higherKinds
  * </ul>
  * 
  * <a name="matchersMigration"></a>
- * <h2>Matchers migration in ScalaTest 2.0</h2>
+ * <h2>Matchers migration in ScalaTest 2.0 and 2.1.0</h2>
  *
  * <h3>Deprecations</h3>
  *
  * <p>
- * In ScalaTest 2.0, traits <code>org.scalatest.matchers.ShouldMatchers</code> and <code>org.scalatest.matchers.MustMatchers</code> are deprecated, replaced
- * by trait <code>org.scalatest.Matchers</code>.
- * <code>ShouldMatchers</code> and <code>MustMatchers</code> will continue to work during a lengthy deprecation cycle, but will eventually be removed in 
- * a future version of ScalaTest. You can migrate existing uses of <code>ShouldMatchers</code> 
- * by simply importing or mixing in <code>org.scalatest.Matchers</code> instead of <code>org.scalatest.matchers.ShouldMatchers</code>. You can migrate existing
- * uses of <code>org.scalatest.matchers.MustMatchers</code> in the same manner, by importing or mixing in <code>org.scalatest.Matchers</code> instead of
- * <code>org.scalatest.matchers.MustMatchers</code>, but with one extra step: replacing "<code><!-- PRESERVE -->must</code>"
- * with "<code><!-- PRESERVE -->should</code>". <code>org.scalatest.Matchers</code>
- * only supports the verb "<code><!-- PRESERVE -->should</code>"; We apologize for imposing such a large search-and-replace job on users, but we want to
- * make the verb <code>"must"</code> available to be used for a different purpose in ScalaTest after the deprecation cycle for <code>MustMatchers</code>
- * is completed.
+ * Prior to 2.0, ScalaTest's matchers DSL was provided by traits
+ * <code>org.scalatest.matchers.ShouldMatchers</code> and
+ * <code>org.scalatest.matchers.MustMatchers</code>. These are now deprecated in favor of
+ * traits in package <code>org.scalatest</code>. The fully qualified name of the original
+ * <code>ShouldMatchers</code> is now <code>org.scalatest.Matchers</code>, and the fully qualified
+ * name of the original <code>MustMatchers</code> is now <code>org.scalatest.MustMatchers</code>.
+ * The old fully qualified names will continue to work during a lengthy deprecation cycle, but
+ * will generate a deprecation warning and eventually be removed in a future version
+ * of ScalaTest. You can migrate existing uses of <code>ShouldMatchers</code> by simply importing
+ * or mixing in <code>org.scalatest.Matchers</code> instead of
+ * <code>org.scalatest.matchers.ShouldMatchers</code>, and can migrate existing
+ * uses of <code>org.scalatest.matchers.MustMatchers</code> by importing or
+ * mixing in <code>org.scalatest.MustMatchers</code> instead of <code>org.scalatest.matchers.MustMatchers</code>.
  * </p>
  *
  * <p>
@@ -7117,35 +7119,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
 /**
  * Companion object that facilitates the importing of <code>Matchers</code> members as 
   an alternative to mixing it the trait. One use case is to import <code>Matchers</code> members so you can use
- * them in the Scala interpreter:
- *
- * <pre class="stREPL">
- * $scala -classpath scalatest.jar
- * Welcome to Scala version 2.7.3.final (Java HotSpot(TM) Client VM, Java 1.5.0_16).
- * Type in expressions to have them evaluated.
- * Type :help for more information.
- * 
- * scala&gt; import org.scalatest.Matchers._
- * import org.scalatest.Matchers._
- * 
- * scala&gt; 1 should equal (2)
- * org.scalatest.TestFailedException: 1 did not equal 2
- * 	at org.scalatest.matchers.Helper$.newTestFailedException(Matchers.template:40)
- * 	at org.scalatest.matchers.ShouldMatchers$ShouldMethodHelper$.shouldMatcher(ShouldMatchers.scala:826)
- * 	at org.scalatest.matchers.ShouldMatchers$IntShouldWrapper.should(ShouldMatchers.scala:1123)
- * 	at .&lt;init&gt;(&lt;console&gt;:9)
- * 	at .&lt;clinit&gt;(&lt;console&gt;)
- * 	at RequestR...
- *
- * scala&gt; "hello, world" should startWith ("hello")
- * 
- * scala&gt; 7 should (be &gt;= (3) and not be &lt;= (7))
- * org.scalatest.TestFailedException: 7 was greater than or equal to 3, but 7 was less than or equal to 7
- * 	at org.scalatest.matchers.Helper$.newTestFailedException(Matchers.template:40)
- * 	at org.scalatest.matchers.ShouldMatchers$ShouldMethodHelper$.shouldMatcher(ShouldMatchers.scala:826)
- * 	at org.scalatest.matchers.ShouldMatchers$IntShouldWrapper.should(ShouldMatchers.scala:1123)
- * 	at .&lt;init&gt;(...
- * </pre>
+ * them in the Scala interpreter.
  *
  * @author Bill Venners
  */

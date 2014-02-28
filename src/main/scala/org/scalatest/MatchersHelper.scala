@@ -154,7 +154,7 @@ private[scalatest] object MatchersHelper {
     val elements = temp.getStackTrace.drop(2) 
     // TODO: Perhaps we should add org.scalatest.enablers also here later?
     // TODO: Probably need a MatchersHelper.scala here also
-    val stackDepth = elements.indexWhere(st => st.getFileName != "Matchers.scala" && !st.getClassName.startsWith("org.scalatest.words.")) + 2 // the first 2 elements dropped previously
+    val stackDepth = elements.indexWhere(st => st.getFileName != "Matchers.scala" && st.getFileName != "MustMatchers.scala" && !st.getClassName.startsWith("org.scalatest.words.")) + 2 // the first 2 elements dropped previously
     optionalCause match {
       case Some(cause) => new TestFailedException(message, cause, stackDepth + stackDepthAdjustment)
       case None => new TestFailedException(message, stackDepth + stackDepthAdjustment)
