@@ -621,6 +621,26 @@ sealed abstract class Or[+G,+B] {
   def badMap[C](f: B => C): G Or C
 
   /**
+   * Maps the given function to this <code>Or</code>'s value if it is a <code>Bad</code>, transforming it into a <code>Good</code>, or returns
+   * <code>this</code> if it is already a <code>Good</code>.
+   *
+   * @param f the function to apply
+   * @return if this is a <code>Bad</code>, the result of applying the given function to the contained value wrapped in a <code>Good</code>,
+   *         else this <code>Good</code> is returned
+   */
+  def recover[H >: G](f: B => H): H Or B
+
+  /**
+   * Maps the given function to this <code>Or</code>'s value if it is a <code>Bad</code>, returning the result, or returns
+   * <code>this</code> if it is already a <code>Good</code>.
+   *
+   * @param f the function to apply
+   * @return if this is a <code>Bad</code>, the result of applying the given function to the contained value,
+   *         else this <code>Good</code> is returned
+   */
+  def recoverWith[H >: G, C](f: B => H Or C): H Or C
+
+  /**
    * Applies the given function f to the contained value if this <code>Or</code> is a <code>Good</code>; does nothing if this <code>Or</code>
    * is a <code>Bad</code>.
    *
@@ -699,7 +719,7 @@ sealed abstract class Or[+G,+B] {
    * Returns this <code>Or</code> if it is a <code>Good</code>, otherwise returns the result of evaluating the passed <code>alternative</code>.
    *
    * @param alternative the alternative by-name to evaluate if this <code>Or</code> is a <code>Bad</code>
-   * @return this <code>Or<code>, if it is a <code>Good</code>, else the result of evaluating <code>alternative</code>
+   * @return this <code>Or</code>, if it is a <code>Good</code>, else the result of evaluating <code>alternative</code>
    */
   def orElse[H >: G, C >: B](alternative: => H Or C): H Or C
 
@@ -971,6 +991,8 @@ final case class Good[+G,+B](g: G) extends Or[G,B] {
   def get: G = g
   def map[H](f: G => H): H Or B = Good(f(g))
   def badMap[C](f: B => C): G Or C = this.asInstanceOf[G Or C]
+  def recover[H >: G](f: B => H): H Or B = this.asInstanceOf[H Or B]
+  def recoverWith[H >: G, C](f: B => H Or C): H Or C = this.asInstanceOf[H Or C]
   def foreach(f: G => Unit): Unit = f(g)
   def flatMap[H, C >: B](f: G => H Or C): H Or C = f(g)
   def filter[C >: B](f: G => Validation[C]): G Or C =
@@ -1124,6 +1146,8 @@ final case class Bad[+G,+B](b: B) extends Or[G,B] {
   def get: G = throw new NoSuchElementException("Bad(" + b + ").get")
   def map[H](f: G => H): H Or B = this.asInstanceOf[H Or B]
   def badMap[C](f: B => C): G Or C = Bad(f(b))
+  def recover[H >: G](f: B => H): H Or B = Good(f(b))
+  def recoverWith[H >: G, C](f: B => H Or C): H Or C = f(b)
   def foreach(f: G => Unit): Unit = ()
   def flatMap[H, C >: B](f: G => H Or C): H Or C = this.asInstanceOf[H Or C]
   def filter[C >: B](f: G => Validation[C]): G Or C = this
