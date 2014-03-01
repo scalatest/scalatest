@@ -7,12 +7,12 @@
              classpathref="maven-ant-tasks.classpath" />
 
     <!-- set global properties for this build -->
-    <property name="scala.version" value="2.11.0-M8" />
-    <property name="deploy.scala.version" value="2.11.0-M8" />
-    <property name="for.scala" value="2.11.0-M8" />
+    <property name="scala.version" value="2.11.0-RC1" />
+    <property name="deploy.scala.version" value="2.11.0-RC1" />
+    <property name="for.scala" value="2.11.0-RC1" />
 
-    <property name="scala-xml.version.number"                value="1.0.0-RC7" />
-    <property name="scala-parser-combinators.version.number" value="1.0.0-RC5" />
+    <property name="scala-xml.version.number"                value="1.0.0" />
+    <property name="scala-parser-combinators.version.number" value="1.0.0" />
 
 <!--
     <property name="scala.version" value="2.11.0-M4" />

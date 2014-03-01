@@ -4,9 +4,9 @@ import java.net.{URL, URLClassLoader}
 
 object ScalatestBuild extends Build {
 
-  val scalaVersionToUse = "2.10.3"
+  val scalaVersionToUse = "2.11.0-RC1"
     
-  val releaseVersion = "2.0-SNAPSHOT"
+  val releaseVersion = "2.1.0-RC3"
 
   lazy val scalatest = Project("scalatest", file("."))
    .settings(
@@ -24,6 +24,7 @@ object ScalatestBuild extends Build {
      libraryDependencies ++= simpledependencies,
      libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersionToUse, // this is needed to compile macro
      resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
+     resolvers += "scala-release-temp" at "https://private-repo.typesafe.com/typesafe/scala-release-temp",
      genMustMatchersTask, 
      genGenTask, 
      genTablesTask, 
@@ -112,7 +113,7 @@ object ScalatestBuild extends Build {
 
    def simpledependencies = Seq(
      "org.scala-sbt" % "test-interface" % "1.0" % "optional",
-     "org.scalacheck" %% "scalacheck" % "1.11.0" % "optional",
+     "org.scalacheck" %% "scalacheck" % "1.11.3" % "optional",
      "org.easymock" % "easymockclassextension" % "3.1" % "optional", 
      "org.jmock" % "jmock-legacy" % "2.5.1" % "optional", 
      "org.mockito" % "mockito-all" % "1.9.0" % "optional", 

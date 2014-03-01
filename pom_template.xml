@@ -62,7 +62,7 @@
     <repository>
       <id>typesafe-private</id>
       <name>Typesafe Private Repository</name>
-      <url>http://private-repo.typesafe.com/typesafe/scala-release-temp/</url>
+      <url>https://private-repo.typesafe.com/typesafe/scala-release-temp/</url>
     </repository>
     <repository>
       <id>artima.com</id>
@@ -121,7 +121,7 @@
     <dependency>
       <groupId>org.scalacheck</groupId>
       <artifactId>scalacheck_@DEPLOY_SCALA_VERSION@</artifactId>
-      <version>1.11.2</version>
+      <version>1.11.3</version>
       <optional>true</optional>
     </dependency>
 
