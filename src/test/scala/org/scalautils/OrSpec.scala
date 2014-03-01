@@ -112,6 +112,22 @@ class OrSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
     Good(8).orBad[ErrorMessage] badMap (_.toUpperCase) should equal (Good(8))
     Good[Int].orBad("eight") badMap (_.toUpperCase) should equal (Bad("EIGHT"))
   }
+  it can "be used with recover" in {
+    Good(8).orBad[Throwable] recover {
+      case iae: IllegalArgumentException => 9
+    } should equal (Good(8))
+    Good[Int].orBad(new IllegalArgumentException) recover {
+      case iae: IllegalArgumentException => 9
+    } should equal (Good(9))
+  }
+  it can "be used with recoverWith" in {
+    Good(8).orBad[Throwable] recoverWith {
+      case iae: IllegalArgumentException => Good(9)
+    } should equal (Good(8))
+    Good[Int].orBad(new IllegalArgumentException) recoverWith {
+      case iae: IllegalArgumentException => Good(9)
+    } should equal (Good(9))
+  }
   it can "be used with foreach" in {
     var vCount = 0
     var eCount = 0
