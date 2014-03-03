@@ -82,9 +82,17 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
       "isEmpty"
     )
 
+  private val lengthSizeOperations =
+    Set(
+      "length",
+      "size"
+    )
+
   def isSupportedBinaryOperator(operator: String) = supportedBinaryOperations.contains(operator)
 
   def isSupportedUnaryOperator(operator: String) = supportedUnaryOperations.contains(operator)
+
+  def isSupportedLengthSizeOperator(operator: String) = lengthSizeOperations.contains(operator)
 
   private[this] def getPosition(expr: Tree) = expr.pos.asInstanceOf[scala.reflect.internal.util.Position]
 
@@ -237,6 +245,29 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
       )
     )
 
+  def lengthSizeMacroBool(select: Select): Apply =
+    Apply(
+      Select(
+        Select(
+          Select(
+            Ident(newTermName("org")),
+            newTermName("scalautils")
+          ),
+          newTermName("Bool")
+        ),
+        newTermName("lengthSizeMacroBool")
+      ),
+      List(
+        Ident(newTermName("$org_scalatest_assert_macro_left")),
+        context.literal(select.name.decoded).tree,
+        Select(
+          Ident("$org_scalatest_assert_macro_left"),
+          select.name
+        ),
+        Ident(newTermName("$org_scalatest_assert_macro_right"))
+      )
+    )
+
   def traverseSelect(select: Select, rightExpr: Tree): (Tree, Tree) = {
     val operator = select.name.decoded
     if (logicOperators.contains(operator)) {
@@ -282,17 +313,45 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
       (select.qualifier.duplicate, rightExpr.duplicate)
   }
 
+
   def transformAst(tree: Tree): Tree = {
     tree match {
       case apply: Apply if apply.args.size == 1 =>
         apply.fun match {
           case select: Select if isSupportedBinaryOperator(select.name.decoded) =>
+            val operator = select.name.decoded
             val (leftTree, rightTree) =  traverseSelect(select, apply.args(0))
-            Block(
-              valDef("$org_scalatest_assert_macro_left", leftTree),
-              valDef("$org_scalatest_assert_macro_right", rightTree),
-              binaryMacroBool(select.duplicate)
-            )
+            leftTree match {
+              case leftApply: Apply if operator == "==" =>
+                leftApply.fun match {
+                  case leftApplySelect: Select if isSupportedLengthSizeOperator(leftApplySelect.name.decoded) && leftApply.args.size == 0 => // support for a.length == xxx, a.size == xxxx
+                    Block(
+                      valDef("$org_scalatest_assert_macro_left", leftApplySelect.qualifier.duplicate),
+                      valDef("$org_scalatest_assert_macro_right", rightTree),
+                      lengthSizeMacroBool(leftApplySelect.duplicate)
+                    )
+                  case _ =>
+                    Block(
+                      valDef("$org_scalatest_assert_macro_left", leftTree),
+                      valDef("$org_scalatest_assert_macro_right", rightTree),
+                      binaryMacroBool(select.duplicate)
+                    )
+                }
+
+              case leftSelect: Select if operator == "==" && isSupportedLengthSizeOperator(leftSelect.name.decoded) => // support for a.length == xxx, a.size == xxxx
+                Block(
+                  valDef("$org_scalatest_assert_macro_left", leftSelect.qualifier.duplicate),
+                  valDef("$org_scalatest_assert_macro_right", rightTree),
+                  lengthSizeMacroBool(leftSelect.duplicate)
+                )
+
+              case _ =>
+                Block(
+                  valDef("$org_scalatest_assert_macro_left", leftTree),
+                  valDef("$org_scalatest_assert_macro_right", rightTree),
+                  binaryMacroBool(select.duplicate)
+                )
+            }
           case funApply: Apply if funApply.args.size == 1 => // For === and !== that takes Equality
             funApply.fun match {
               case select: Select if select.name.decoded == "===" || select.name.decoded == "!==" =>

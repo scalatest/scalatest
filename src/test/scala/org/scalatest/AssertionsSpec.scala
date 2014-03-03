@@ -248,6 +248,18 @@ class AssertionsSpec extends FunSpec {
   def wasInstanceOf(left: Any, className: String) =
     quoteString(left) + " was instance of " + className
 
+  def hadLengthInsteadOfExpectedLength(left: Any, actual: Long, expected: Long): String =
+    FailureMessages("hadLengthInsteadOfExpectedLength", left, actual, expected)
+
+  def hadLength(left: Any, actual: Long): String =
+    FailureMessages("hadLength", left, actual)
+
+  def hadSizeInsteadOfExpectedSize(left: Any, actual: Long, expected: Long): String =
+    FailureMessages("hadSizeInsteadOfExpectedSize", left, actual, expected)
+
+  def hadSize(left: Any, actual: Long): String =
+    FailureMessages("hadSize", left, actual)
+
   class Stateful {
     var state = false
     def changeState: Boolean = {
@@ -1225,6 +1237,110 @@ class AssertionsSpec extends FunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
+
+    it("should do nothing when is used to check s1.length == 9") {
+      assert(s1.length == 12)
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check s1.length == 10") {
+      val e = intercept[TestFailedException] {
+        assert(s1.length == 10)
+      }
+      assert(e.message == Some(hadLengthInsteadOfExpectedLength(s1, 12, 10)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check l1.length == 3") {
+      assert(l1.length == 3)
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check l1.length == 10") {
+      val e = intercept[TestFailedException] {
+        assert(l1.length == 10)
+      }
+      assert(e.message == Some(hadLengthInsteadOfExpectedLength(l1, 3, 10)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !(s1.length == 10)") {
+      assert(!(s1.length == 10))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check !(s1.length == 9)") {
+      val e = intercept[TestFailedException] {
+        assert(!(s1.length == 12))
+      }
+      assert(e.message == Some(hadLength(s1, 12)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !(l1.length == 2)") {
+      assert(!(l1.length == 2))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check !(l1.length == 9)") {
+      val e = intercept[TestFailedException] {
+        assert(!(l1.length == 3))
+      }
+      assert(e.message == Some(hadLength(l1, 3)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check s1.size == 9") {
+      assert(s1.size == 12)
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check s1.size == 10") {
+      val e = intercept[TestFailedException] {
+        assert(s1.size == 10)
+      }
+      assert(e.message == Some(hadSizeInsteadOfExpectedSize(s1, 12, 10)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check l1.size == 3") {
+      assert(l1.size == 3)
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check l1.size == 10") {
+      val e = intercept[TestFailedException] {
+        assert(l1.size == 10)
+      }
+      assert(e.message == Some(hadSizeInsteadOfExpectedSize(l1, 3, 10)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !(s1.size == 10)") {
+      assert(!(s1.size == 10))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check !(s1.size == 9)") {
+      val e = intercept[TestFailedException] {
+        assert(!(s1.size == 12))
+      }
+      assert(e.message == Some(hadSize(s1, 12)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !(l1.size == 2)") {
+      assert(!(l1.size == 2))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check !(l1.size == 9)") {
+      val e = intercept[TestFailedException] {
+        assert(!(l1.size == 3))
+      }
+      assert(e.message == Some(hadSize(l1, 3)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
   }
 
   describe("The assert(boolean, clue) method") {
@@ -2182,6 +2298,111 @@ class AssertionsSpec extends FunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
+
+    it("should do nothing when is used to check s1.length == 9") {
+      assert(s1.length == 12, ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check s1.length == 10") {
+      val e = intercept[TestFailedException] {
+        assert(s1.length == 10, ", dude")
+      }
+      assert(e.message == Some(hadLengthInsteadOfExpectedLength(s1, 12, 10) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check l1.length == 3") {
+      assert(l1.length == 3, ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check l1.length == 10") {
+      val e = intercept[TestFailedException] {
+        assert(l1.length == 10, ", dude")
+      }
+      assert(e.message == Some(hadLengthInsteadOfExpectedLength(l1, 3, 10) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !(s1.length == 10)") {
+      assert(!(s1.length == 10), ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check !(s1.length == 9)") {
+      val e = intercept[TestFailedException] {
+        assert(!(s1.length == 12), ", dude")
+      }
+      assert(e.message == Some(hadLength(s1, 12) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !(l1.length == 2)") {
+      assert(!(l1.length == 2))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check !(l1.length == 9)") {
+      val e = intercept[TestFailedException] {
+        assert(!(l1.length == 3), ", dude")
+      }
+      assert(e.message == Some(hadLength(l1, 3) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check s1.size == 9") {
+      assert(s1.size == 12, ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check s1.size == 10") {
+      val e = intercept[TestFailedException] {
+        assert(s1.size == 10, ", dude")
+      }
+      assert(e.message == Some(hadSizeInsteadOfExpectedSize(s1, 12, 10) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check l1.size == 3") {
+      assert(l1.size == 3, ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check l1.size == 10") {
+      val e = intercept[TestFailedException] {
+        assert(l1.size == 10, ", dude")
+      }
+      assert(e.message == Some(hadSizeInsteadOfExpectedSize(l1, 3, 10) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !(s1.size == 10)") {
+      assert(!(s1.size == 10), ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check !(s1.size == 9)") {
+      val e = intercept[TestFailedException] {
+        assert(!(s1.size == 12), ", dude")
+      }
+      assert(e.message == Some(hadSize(s1, 12) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !(l1.size == 2)") {
+      assert(!(l1.size == 2), ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check !(l1.size == 9)") {
+      val e = intercept[TestFailedException] {
+        assert(!(l1.size == 3), ", dude")
+      }
+      assert(e.message == Some(hadSize(l1, 3) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
   }
 
   describe("The assume(boolean) method") {
@@ -3129,6 +3350,110 @@ class AssertionsSpec extends FunSpec {
         assume(!date.isInstanceOf[Date])
       }
       assert(e.message == Some(wasInstanceOf(date, "java.util.Date")))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check s1.length == 9") {
+      assume(s1.length == 12)
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check s1.length == 10") {
+      val e = intercept[TestCanceledException] {
+        assume(s1.length == 10)
+      }
+      assert(e.message == Some(hadLengthInsteadOfExpectedLength(s1, 12, 10)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check l1.length == 3") {
+      assume(l1.length == 3)
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check l1.length == 10") {
+      val e = intercept[TestCanceledException] {
+        assume(l1.length == 10)
+      }
+      assert(e.message == Some(hadLengthInsteadOfExpectedLength(l1, 3, 10)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !(s1.length == 10)") {
+      assume(!(s1.length == 10))
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check !(s1.length == 9)") {
+      val e = intercept[TestCanceledException] {
+        assume(!(s1.length == 12))
+      }
+      assert(e.message == Some(hadLength(s1, 12)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !(l1.length == 2)") {
+      assume(!(l1.length == 2))
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check !(l1.length == 9)") {
+      val e = intercept[TestCanceledException] {
+        assume(!(l1.length == 3))
+      }
+      assert(e.message == Some(hadLength(l1, 3)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check s1.size == 9") {
+      assume(s1.size == 12)
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check s1.size == 10") {
+      val e = intercept[TestCanceledException] {
+        assume(s1.size == 10)
+      }
+      assert(e.message == Some(hadSizeInsteadOfExpectedSize(s1, 12, 10)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check l1.size == 3") {
+      assume(l1.size == 3)
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check l1.size == 10") {
+      val e = intercept[TestCanceledException] {
+        assume(l1.size == 10)
+      }
+      assert(e.message == Some(hadSizeInsteadOfExpectedSize(l1, 3, 10)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !(s1.size == 10)") {
+      assume(!(s1.size == 10))
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check !(s1.size == 9)") {
+      val e = intercept[TestCanceledException] {
+        assume(!(s1.size == 12))
+      }
+      assert(e.message == Some(hadSize(s1, 12)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !(l1.size == 2)") {
+      assume(!(l1.size == 2))
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check !(l1.size == 9)") {
+      val e = intercept[TestCanceledException] {
+        assume(!(l1.size == 3))
+      }
+      assert(e.message == Some(hadSize(l1, 3)))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -4086,6 +4411,110 @@ class AssertionsSpec extends FunSpec {
         assume(!date.isInstanceOf[Date], ", dude")
       }
       assert(e.message == Some(wasInstanceOf(date, "java.util.Date") + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check s1.length == 9") {
+      assume(s1.length == 12, ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check s1.length == 10") {
+      val e = intercept[TestCanceledException] {
+        assume(s1.length == 10, ", dude")
+      }
+      assert(e.message == Some(hadLengthInsteadOfExpectedLength(s1, 12, 10) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check l1.length == 3") {
+      assume(l1.length == 3, ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check l1.length == 10") {
+      val e = intercept[TestCanceledException] {
+        assume(l1.length == 10, ", dude")
+      }
+      assert(e.message == Some(hadLengthInsteadOfExpectedLength(l1, 3, 10) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !(s1.length == 10)") {
+      assume(!(s1.length == 10), ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check !(s1.length == 9)") {
+      val e = intercept[TestCanceledException] {
+        assume(!(s1.length == 12), ", dude")
+      }
+      assert(e.message == Some(hadLength(s1, 12) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !(l1.length == 2)") {
+      assume(!(l1.length == 2), ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check !(l1.length == 9)") {
+      val e = intercept[TestCanceledException] {
+        assume(!(l1.length == 3), ", dude")
+      }
+      assert(e.message == Some(hadLength(l1, 3) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check s1.size == 9") {
+      assume(s1.size == 12, ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check s1.size == 10") {
+      val e = intercept[TestCanceledException] {
+        assume(s1.size == 10, ", dude")
+      }
+      assert(e.message == Some(hadSizeInsteadOfExpectedSize(s1, 12, 10) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check l1.size == 3") {
+      assume(l1.size == 3, ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check l1.size == 10") {
+      val e = intercept[TestCanceledException] {
+        assume(l1.size == 10, ", dude")
+      }
+      assert(e.message == Some(hadSizeInsteadOfExpectedSize(l1, 3, 10) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !(s1.size == 10)") {
+      assume(!(s1.size == 10), ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check !(s1.size == 9)") {
+      val e = intercept[TestCanceledException] {
+        assume(!(s1.size == 12), ", dude")
+      }
+      assert(e.message == Some(hadSize(s1, 12) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !(l1.size == 2)") {
+      assume(!(l1.size == 2), ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check !(l1.size == 9)") {
+      val e = intercept[TestCanceledException] {
+        assume(!(l1.size == 3), ", dude")
+      }
+      assert(e.message == Some(hadSize(l1, 3) + ", dude"))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }

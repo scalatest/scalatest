@@ -107,6 +107,18 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
   def wasInstanceOf(left: Any, className: String): String =
     FailureMessages("wasInstanceOf", left, UnquotedString(className))
 
+  def hadLengthInsteadOfExpectedLength(left: Any, actual: Long, expected: Long): String =
+    FailureMessages("hadLengthInsteadOfExpectedLength", left, actual, expected)
+
+  def hadLength(left: Any, actual: Long): String =
+    FailureMessages("hadLength", left, actual)
+
+  def hadSizeInsteadOfExpectedSize(left: Any, actual: Long, expected: Long): String =
+    FailureMessages("hadSizeInsteadOfExpectedSize", left, actual, expected)
+
+  def hadSize(left: Any, actual: Long): String =
+    FailureMessages("hadSize", left, actual)
+
   class Stateful {
     var state = false
     def changeState: Boolean = {
@@ -845,6 +857,94 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         require(!date.isInstanceOf[Date])
       }
       assert(e.getMessage == wasInstanceOf(date, "java.util.Date"))
+    }
+
+    it("should do nothing when is used to check s1.length == 9") {
+      require(s1.length == 12)
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check s1.length == 10") {
+      val e = intercept[IllegalArgumentException] {
+        require(s1.length == 10)
+      }
+      assert(e.getMessage == hadLengthInsteadOfExpectedLength(s1, 12, 10))
+    }
+
+    it("should do nothing when is used to check l1.length == 3") {
+      require(l1.length == 3)
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1.length == 10") {
+      val e = intercept[IllegalArgumentException] {
+        require(l1.length == 10)
+      }
+      assert(e.getMessage == hadLengthInsteadOfExpectedLength(l1, 3, 10))
+    }
+
+    it("should do nothing when is used to check !(s1.length == 10)") {
+      require(!(s1.length == 10))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !(s1.length == 9)") {
+      val e = intercept[IllegalArgumentException] {
+        require(!(s1.length == 12))
+      }
+      assert(e.getMessage == hadLength(s1, 12))
+    }
+
+    it("should do nothing when is used to check !(l1.length == 2)") {
+      require(!(l1.length == 2))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !(l1.length == 9)") {
+      val e = intercept[IllegalArgumentException] {
+        require(!(l1.length == 3))
+      }
+      assert(e.getMessage == hadLength(l1, 3))
+    }
+
+    it("should do nothing when is used to check s1.size == 9") {
+      require(s1.size == 12)
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check s1.size == 10") {
+      val e = intercept[IllegalArgumentException] {
+        require(s1.size == 10)
+      }
+      assert(e.getMessage == hadSizeInsteadOfExpectedSize(s1, 12, 10))
+    }
+
+    it("should do nothing when is used to check l1.size == 3") {
+      require(l1.size == 3)
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1.size == 10") {
+      val e = intercept[IllegalArgumentException] {
+        require(l1.size == 10)
+      }
+      assert(e.getMessage == hadSizeInsteadOfExpectedSize(l1, 3, 10))
+    }
+
+    it("should do nothing when is used to check !(s1.size == 10)") {
+      require(!(s1.size == 10))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !(s1.size == 9)") {
+      val e = intercept[IllegalArgumentException] {
+        require(!(s1.size == 12))
+      }
+      assert(e.getMessage == hadSize(s1, 12))
+    }
+
+    it("should do nothing when is used to check !(l1.size == 2)") {
+      require(!(l1.size == 2))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !(l1.size == 9)") {
+      val e = intercept[IllegalArgumentException] {
+        require(!(l1.size == 3))
+      }
+      assert(e.getMessage == hadSize(l1, 3))
     }
 
   }
@@ -1604,6 +1704,94 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       assert(e.getMessage == wasInstanceOf(date, "java.util.Date") + ", dude")
     }
 
+    it("should do nothing when is used to check s1.length == 9") {
+      require(s1.length == 12, ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check s1.length == 10") {
+      val e = intercept[IllegalArgumentException] {
+        require(s1.length == 10, ", dude")
+      }
+      assert(e.getMessage == hadLengthInsteadOfExpectedLength(s1, 12, 10) + ", dude")
+    }
+
+    it("should do nothing when is used to check l1.length == 3") {
+      require(l1.length == 3, ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1.length == 10") {
+      val e = intercept[IllegalArgumentException] {
+        require(l1.length == 10, ", dude")
+      }
+      assert(e.getMessage == hadLengthInsteadOfExpectedLength(l1, 3, 10) + ", dude")
+    }
+
+    it("should do nothing when is used to check !(s1.length == 10)") {
+      require(!(s1.length == 10), ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !(s1.length == 9)") {
+      val e = intercept[IllegalArgumentException] {
+        require(!(s1.length == 12), ", dude")
+      }
+      assert(e.getMessage == hadLength(s1, 12) + ", dude")
+    }
+
+    it("should do nothing when is used to check !(l1.length == 2)") {
+      require(!(l1.length == 2), ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !(l1.length == 9)") {
+      val e = intercept[IllegalArgumentException] {
+        require(!(l1.length == 3), ", dude")
+      }
+      assert(e.getMessage == hadLength(l1, 3) + ", dude")
+    }
+
+    it("should do nothing when is used to check s1.size == 9") {
+      require(s1.size == 12, ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check s1.size == 10") {
+      val e = intercept[IllegalArgumentException] {
+        require(s1.size == 10, ", dude")
+      }
+      assert(e.getMessage == hadSizeInsteadOfExpectedSize(s1, 12, 10) + ", dude")
+    }
+
+    it("should do nothing when is used to check l1.size == 3") {
+      require(l1.size == 3, ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1.size == 10") {
+      val e = intercept[IllegalArgumentException] {
+        require(l1.size == 10, ", dude")
+      }
+      assert(e.getMessage == hadSizeInsteadOfExpectedSize(l1, 3, 10) + ", dude")
+    }
+
+    it("should do nothing when is used to check !(s1.size == 10)") {
+      require(!(s1.size == 10), ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !(s1.size == 9)") {
+      val e = intercept[IllegalArgumentException] {
+        require(!(s1.size == 12), ", dude")
+      }
+      assert(e.getMessage == hadSize(s1, 12) + ", dude")
+    }
+
+    it("should do nothing when is used to check !(l1.size == 2)") {
+      require(!(l1.size == 2), ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !(l1.size == 9)") {
+      val e = intercept[IllegalArgumentException] {
+        require(!(l1.size == 3), ", dude")
+      }
+      assert(e.getMessage == hadSize(l1, 3) + ", dude")
+    }
+
   }
 
   describe("The requireState(boolean) method") {
@@ -2319,6 +2507,94 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         requireState(!date.isInstanceOf[Date])
       }
       assert(e.getMessage == wasInstanceOf(date, "java.util.Date"))
+    }
+
+    it("should do nothing when is used to check s1.length == 9") {
+      requireState(s1.length == 12)
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check s1.length == 10") {
+      val e = intercept[IllegalStateException] {
+        requireState(s1.length == 10)
+      }
+      assert(e.getMessage == hadLengthInsteadOfExpectedLength(s1, 12, 10))
+    }
+
+    it("should do nothing when is used to check l1.length == 3") {
+      requireState(l1.length == 3)
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check l1.length == 10") {
+      val e = intercept[IllegalStateException] {
+        requireState(l1.length == 10)
+      }
+      assert(e.getMessage == hadLengthInsteadOfExpectedLength(l1, 3, 10))
+    }
+
+    it("should do nothing when is used to check !(s1.length == 10)") {
+      requireState(!(s1.length == 10))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !(s1.length == 9)") {
+      val e = intercept[IllegalStateException] {
+        requireState(!(s1.length == 12))
+      }
+      assert(e.getMessage == hadLength(s1, 12))
+    }
+
+    it("should do nothing when is used to check !(l1.length == 2)") {
+      requireState(!(l1.length == 2))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !(l1.length == 9)") {
+      val e = intercept[IllegalStateException] {
+        requireState(!(l1.length == 3))
+      }
+      assert(e.getMessage == hadLength(l1, 3))
+    }
+
+    it("should do nothing when is used to check s1.size == 9") {
+      requireState(s1.size == 12)
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check s1.size == 10") {
+      val e = intercept[IllegalStateException] {
+        requireState(s1.size == 10)
+      }
+      assert(e.getMessage == hadSizeInsteadOfExpectedSize(s1, 12, 10))
+    }
+
+    it("should do nothing when is used to check l1.size == 3") {
+      requireState(l1.size == 3)
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check l1.size == 10") {
+      val e = intercept[IllegalStateException] {
+        requireState(l1.size == 10)
+      }
+      assert(e.getMessage == hadSizeInsteadOfExpectedSize(l1, 3, 10))
+    }
+
+    it("should do nothing when is used to check !(s1.size == 10)") {
+      requireState(!(s1.size == 10))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !(s1.size == 9)") {
+      val e = intercept[IllegalStateException] {
+        requireState(!(s1.size == 12))
+      }
+      assert(e.getMessage == hadSize(s1, 12))
+    }
+
+    it("should do nothing when is used to check !(l1.size == 2)") {
+      requireState(!(l1.size == 2))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !(l1.size == 9)") {
+      val e = intercept[IllegalStateException] {
+        requireState(!(l1.size == 3))
+      }
+      assert(e.getMessage == hadSize(l1, 3))
     }
 
   }
@@ -3076,6 +3352,94 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         requireState(!date.isInstanceOf[Date], ", dude")
       }
       assert(e.getMessage == wasInstanceOf(date, "java.util.Date") + ", dude")
+    }
+
+    it("should do nothing when is used to check s1.length == 9") {
+      requireState(s1.length == 12, ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check s1.length == 10") {
+      val e = intercept[IllegalStateException] {
+        requireState(s1.length == 10, ", dude")
+      }
+      assert(e.getMessage == hadLengthInsteadOfExpectedLength(s1, 12, 10) + ", dude")
+    }
+
+    it("should do nothing when is used to check l1.length == 3") {
+      requireState(l1.length == 3, ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check l1.length == 10") {
+      val e = intercept[IllegalStateException] {
+        requireState(l1.length == 10, ", dude")
+      }
+      assert(e.getMessage == hadLengthInsteadOfExpectedLength(l1, 3, 10) + ", dude")
+    }
+
+    it("should do nothing when is used to check !(s1.length == 10)") {
+      requireState(!(s1.length == 10), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !(s1.length == 9)") {
+      val e = intercept[IllegalStateException] {
+        requireState(!(s1.length == 12), ", dude")
+      }
+      assert(e.getMessage == hadLength(s1, 12) + ", dude")
+    }
+
+    it("should do nothing when is used to check !(l1.length == 2)") {
+      requireState(!(l1.length == 2), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !(l1.length == 9)") {
+      val e = intercept[IllegalStateException] {
+        requireState(!(l1.length == 3), ", dude")
+      }
+      assert(e.getMessage == hadLength(l1, 3) + ", dude")
+    }
+
+    it("should do nothing when is used to check s1.size == 9") {
+      requireState(s1.size == 12, ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check s1.size == 10") {
+      val e = intercept[IllegalStateException] {
+        requireState(s1.size == 10, ", dude")
+      }
+      assert(e.getMessage == hadSizeInsteadOfExpectedSize(s1, 12, 10) + ", dude")
+    }
+
+    it("should do nothing when is used to check l1.size == 3") {
+      requireState(l1.size == 3, ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check l1.size == 10") {
+      val e = intercept[IllegalStateException] {
+        requireState(l1.size == 10, ", dude")
+      }
+      assert(e.getMessage == hadSizeInsteadOfExpectedSize(l1, 3, 10) + ", dude")
+    }
+
+    it("should do nothing when is used to check !(s1.size == 10)") {
+      requireState(!(s1.size == 10), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !(s1.size == 9)") {
+      val e = intercept[IllegalStateException] {
+        requireState(!(s1.size == 12), ", dude")
+      }
+      assert(e.getMessage == hadSize(s1, 12) + ", dude")
+    }
+
+    it("should do nothing when is used to check !(l1.size == 2)") {
+      requireState(!(l1.size == 2), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !(l1.size == 9)") {
+      val e = intercept[IllegalStateException] {
+        requireState(!(l1.size == 3), ", dude")
+      }
+      assert(e.getMessage == hadSize(l1, 3) + ", dude")
     }
 
   }
