@@ -1,7 +1,7 @@
 ***ScalaTest/ScalaUtils 2.1.0*** includes the enhancements, deprecations, "resurrections," and bug fixes listed below. No source code using
 ScalaTest 2.0 should break, but you will likely need to do a clean build to upgrade.
 
-###Enhancements
+### Enhancements
 
 * Added a [`RandomTestOrder`](http://doc.scalatest.org/2.1.0/index.html#org.scalatest.RandomTestOrder) trait.
 
@@ -41,17 +41,17 @@ examples of explicitly specifying equality without using the `Explicitly` DSL, f
 
 * Fire [`AlertProvided`](http://doc.scalatest.org/2.1.0/index.html#org.scalatest.events.AlertProvided) if memory file contains test that cannot be rerun.
 
-###Resurrections
+### Resurrections
 
 * Resurrected [`MustMatchers`](http://doc.scalatest.org/2.1.0/index.html#org.scalatest.MustMatchers) in package `org.scalatest`.
 Changed deprecation warning for `org.scalatest.matchers.MustMatchers` to suggest using `org.scalatest.MustMatchers`
 instead of `org.scalatest.Matchers`, which was the suggestion in 2.0. Apologies to `must` users who migrated to `should` already when upgrading to 2.0. This resurrection was made possible by a suggestion by Viktor Klang to use the verb "`will`" instead of "`must`" for pure matchers (that return a result instead of throwing an exception), which may appear in a future version of ScalaTest.
 
-###Deprecations
+### Deprecations
 
 * Deprecated the `evaluating { ... } should produce [...Exception]` syntax, which I intended to deprecate in 2.0.
 
-###Bug fixes
+### Bug fixes
 
 * Ensure sorted matcher works on single-element collections.
 
@@ -59,5 +59,4 @@ instead of `org.scalatest.Matchers`, which was the suggestion in 2.0. Apologies 
 
 * Fixed bug in `assert`/`assume` macros that caused them to accidentally invoke by-names eagerly.
 
-For the full story on ScalaTest and ScalaUtils 2.0, see the release notes here: [http://scalatest.org/release_notes/2.1.0](http://scalatest.org/release_notes/2.1.0)
 
