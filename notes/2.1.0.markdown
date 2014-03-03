@@ -1,0 +1,63 @@
+***ScalaTest 2.1.0*** includes the enhancements, deprecations, "resurrections," and bug fixes listed below. No source code using
+ScalaTest 2.0 should break, but you will likely need to do a clean build to upgrade.
+
+###Enhancements
+
+* Added a [`RandomTestOrder`](http://doc.scalatest.org/2.1.0/index.html#org.scalatest.RandomTestOrder) trait.
+
+* Enhanced default [`Prettifier`](http://doc.scalatest.org/2.1.0/index.html#org.scalautils.Prettifier) to prettify objects inside Scala and Java collections, `Option`, `Either`, `Try`, and ScalaUtils' [`Or`](http://doc.scalatest.org/2.1.0/index.html#org.scalautils.Or) and [`Every`](http://doc.scalatest.org/2.1.0/index.html#org.scalautils.Every).
+
+* Added [assertion](http://doc.scalatest.org/2.1.0/index.html#org.scalatest.Assertions@@checkingThatCodeDoesNotCompile) and [matcher](http://doc.scalatest.org/2.1.0/index.html#org.scalatest.Matchers@@checkingThatCodeDoesNotCompile) syntax to check that a snippet of Scala code does not compile.
+
+* Made [Inspectors](http://doc.scalatest.org/2.1.0/index.html#org.scalatest.Inspectors) and [inspector shorthands](http://doc.scalatest.org/2.1.0/index.html#org.scalatest.Matchers@@inspectorShorthands) more general. Previously you could use them only on Scala Collections. Now can also use them on Java collections, arrays, and strings.
+
+* Added `badMap` and `fold` methods to [`Or`](http://doc.scalatest.org/2.1.0/index.html#org.scalautils.Or).
+
+* Made `assertResult` call `.deep` on `Array`s in [`Assertions`](http://doc.scalatest.org/2.1.0/index.html#org.scalatest.Assertions)
+to make it consistent with other ways to check equality in ScalaTest.
+
+* Added a `toEquality` method on [`Uniformity`](http://doc.scalatest.org/2.1.0/index.html#org.scalautils.Uniformity)
+and a `toEquivalence` method on [`Normalization`](http://doc.scalatest.org/2.1.0/index.html#org.scalautils.Normalization) to provide a way
+to convert a normalization to an equality without using the `Explicitly` DSL. Modified Scaladoc documentation to include
+examples of explicitly specifying equality without using the `Explicitly` DSL, for people who prefer to avoid English-like DSLs in production code.
+
+* Added indentation to [`Inside`](http://doc.scalatest.org/2.1.0/index.html#org.scalatest.Inside)'s error messages.
+
+* Modified the algorithm used for naming threads so that they include an identifier that remains constant through all renames.
+
+* Improved HTML reporter's handling of aborted suites
+
+* Ensure [`SuiteAborted`](http://doc.scalatest.org/2.1.0/index.html#org.scalatest.events.SuiteAborted) events show up in reminders
+
+* Use a ScalaCheck `Pretty` in ScalaTest error messages if it is supplied via a custom generator.
+
+* Added links to source in ScalaTest/ScalaUtils Scaladoc.
+
+* Upgraded ScalaCheck to 1.11.0. Also upgraded versions of other optional dependencies. To see the version numbers, consult [ScalaTest's pom file](https://oss.sonatype.org/content/groups/public/org/scalatest/scalatest_2.10/2.1.0/scalatest_2.10-2.1.0.pom).
+
+* Added support for [`Every`](http://doc.scalatest.org/2.1.0/index.html#org.scalautils.Every) in ScalaTest matchers.
+
+* Made a few classes `Serializable` that could occasionally get serialized in ScalaTest events sent across the network.
+
+* Fire [`AlertProvided`](http://doc.scalatest.org/2.1.0/index.html#org.scalatest.events.AlertProvided) if memory file contains test that cannot be rerun.
+
+###Resurrections
+
+* Resurrected [`MustMatchers`](http://doc.scalatest.org/2.1.0/index.html#org.scalatest.MustMatchers) in package `org.scalatest`.
+Changed deprecation warning for `org.scalatest.matchers.MustMatchers` to suggest using `org.scalatest.MustMatchers`
+instead of `org.scalatest.Matchers`, which was the suggestion in 2.0. Apologies to `must` users who migrated to `should` already when upgrading to 2.0. This resurrection was made possible by a suggestion by Viktor Klang to use the verb "`will`" instead of "`must`" for pure matchers (that return a result instead of throwing an exception), which may appear in a future version of ScalaTest.
+
+###Deprecations
+
+* Deprecated the `evaluating { ... } should produce [...Exception]` syntax, which I intended to deprecate in 2.0.
+
+###Bug fixes
+
+* Ensure sorted matcher works on single-element collections.
+
+* Fixed bug whereby suites with no tests did not appear in the HTML reporter's home page list.
+
+* Fixed bug in `assert`/`assume` macros that caused them to accidentally invoke by-names eagerly.
+
+For the full story on ScalaTest and ScalaUtils 2.0, see the release notes here: [http://scalatest.org/release_notes/2.1.0](http://scalatest.org/release_notes/2.1.0)
+
