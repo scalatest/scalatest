@@ -1,4 +1,4 @@
-***ScalaTest 2.1.0*** includes the enhancements, deprecations, "resurrections," and bug fixes listed below. No source code using
+***ScalaTest/ScalaUtils 2.1.0*** includes the enhancements, deprecations, "resurrections," and bug fixes listed below. No source code using
 ScalaTest 2.0 should break, but you will likely need to do a clean build to upgrade.
 
 ###Enhancements
