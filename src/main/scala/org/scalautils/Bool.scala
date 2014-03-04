@@ -654,7 +654,11 @@ private[scalautils] class BinaryMacroBool(left: Any, operator: String, right: An
       case "<=" => Resources("wasNotLessThanOrEqualTo")
       case "startsWith" => Resources("didNotStartWith")
       case "endsWith" => Resources("didNotEndWith")
-      case "contains" => Resources("didNotContain")
+      case "contains" =>
+        left match {
+          case leftMap: scala.collection.GenMap[_, _] => Resources("didNotContainKey")
+          case _ => Resources("didNotContain")
+        }
       case "eq" => Resources("wasNotTheSameInstanceAs")
       case "ne" => Resources("wasTheSameInstanceAs")
       case "&&" | "&" =>
@@ -695,7 +699,11 @@ private[scalautils] class BinaryMacroBool(left: Any, operator: String, right: An
       case "<=" => Resources("wasLessThanOrEqualTo")
       case "startsWith" => Resources("startedWith")
       case "endsWith" => Resources("endedWith")
-      case "contains" => Resources("contained")
+      case "contains" =>
+        left match {
+          case leftMap: scala.collection.GenMap[_, _] => Resources("containedKey")
+          case _ => Resources("contained")
+        }
       case "eq" => Resources("wasTheSameInstanceAs")
       case "ne" => Resources("wasNotTheSameInstanceAs")
       case "&&" | "&" => Resources("commaAnd")

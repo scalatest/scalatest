@@ -27,26 +27,11 @@ import java.text.MessageFormat
  */
 private[scalautils] object FailureMessages {
   
-  def decorateToStringValue(o: Any): String =
-    o match {
-      case null => "null"
-      case aUnit: Unit => "<(), the Unit value>"
-      case aString: String => "\"" + aString + "\""
-      case aChar: Char =>  "\'" + aChar + "\'"
-      case anArray: Array[_] =>  prettifyArrays(anArray)
-      case anythingElse => anythingElse.toString
-    }
+  def decorateToStringValue(o: Any): String = Prettifier.default(o)
 
   def apply(resourceName: String): String = Resources(resourceName)
   def apply(resourceName: String, args: Any*): String =
     Resources(resourceName, args.map((arg: Any) => decorateToStringValue(arg)): _*)
-
-  def prettifyArrays(o: Any): String = {
-    o match {
-      case arr: Array[_] => "Array(" + (arr map (a => prettifyArrays(a))).mkString(", ") + ")"
-      case _ => if (o != null) o.toString else "null"
-    }
-  }
 }
 
 // This is used to pass a string to the FailureMessages apply method

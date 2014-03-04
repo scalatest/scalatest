@@ -26,6 +26,7 @@ import Assertions.NormalResult
 import org.scalatest.exceptions.TestCanceledException
 import OptionValues._
 import java.util.Date
+import org.scalautils.Prettifier
 
 class AssertionsSpec extends FunSpec {
   
@@ -229,6 +230,12 @@ class AssertionsSpec extends FunSpec {
 
   def contained(left: Any, right: Any): String =
     quoteString(left) + " contained " + quoteString(right)
+
+  def didNotContainKey(left: Any, right: Any): String =
+    Prettifier.default(left) + " did not contain key " + quoteString(right)
+
+  def containedKey(left: Any, right: Any): String =
+    Prettifier.default(left) + " contained key " + quoteString(right)
 
   def wasNotTheSameInstanceAs(left: AnyRef, right: AnyRef): String =
     quoteString(left) + " was not the same instance as " + quoteString(right)
@@ -852,6 +859,9 @@ class AssertionsSpec extends FunSpec {
     val l1 = List(1, 2, 3)
     val l2 = List.empty[Int]
 
+    val m1 = Map(1 -> "one", 2 -> "two", 3 -> "three")
+    val m2 = Map.empty[Int, String]
+
     val date = new Date
 
     it("should do nothing when is used to check s1 startsWith \"hi\"") {
@@ -1036,6 +1046,69 @@ class AssertionsSpec extends FunSpec {
         assert(l1.contains(5))
       }
       assert(e2.message == Some(didNotContain(l1, 5)))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !(l1 contains 5)") {
+      assert(!(l1 contains 5))
+      assert(!l1.contains(5))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check !(l1 contains 2)") {
+      val e1 = intercept[TestFailedException] {
+        assert(!(l1 contains 2))
+      }
+      assert(e1.message == Some(contained(l1, 2)))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestFailedException] {
+        assert(!l1.contains(2))
+      }
+      assert(e2.message == Some(contained(l1, 2)))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check m1 contains 2") {
+      assert(m1 contains 2)
+      assert(m1.contains(2))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check m1 contains 5") {
+      val e1 = intercept[TestFailedException] {
+        assert(m1 contains 5)
+      }
+      assert(e1.message == Some(didNotContainKey(m1, 5)))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestFailedException] {
+        assert(m1.contains(5))
+      }
+      assert(e2.message == Some(didNotContainKey(m1, 5)))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !(m1 contains 5)") {
+      assert(!(m1 contains 5))
+      assert(!m1.contains(5))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check !(m1 contains 2)") {
+      val e1 = intercept[TestFailedException] {
+        assert(!(m1 contains 2))
+      }
+      assert(e1.message == Some(containedKey(m1, 2)))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestFailedException] {
+        assert(!m1.contains(2))
+      }
+      assert(e2.message == Some(containedKey(m1, 2)))
       assert(e2.failedCodeFileName == (Some(fileName)))
       assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -1913,6 +1986,9 @@ class AssertionsSpec extends FunSpec {
     val l1 = List(1, 2, 3)
     val l2 = List.empty[Int]
 
+    val m1 = Map(1 -> "one", 2 -> "two", 3 -> "three")
+    val m2 = Map.empty[Int, String]
+
     val date = new Date
 
     it("should do nothing when is used to check s1 startsWith \"hi\"") {
@@ -2097,6 +2173,69 @@ class AssertionsSpec extends FunSpec {
         assert(l1.contains(5), ", dude")
       }
       assert(e2.message == Some(didNotContain(l1, 5) + ", dude"))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !(l1 contains 5)") {
+      assert(!(l1 contains 5), ", dude")
+      assert(!l1.contains(5), ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check !(l1 contains 2)") {
+      val e1 = intercept[TestFailedException] {
+        assert(!(l1 contains 2), ", dude")
+      }
+      assert(e1.message == Some(contained(l1, 2) + ", dude"))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestFailedException] {
+        assert(!l1.contains(2), ", dude")
+      }
+      assert(e2.message == Some(contained(l1, 2) + ", dude"))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check m1 contains 2") {
+      assert(m1 contains 2, ", dude")
+      assert(m1.contains(2), ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check m1 contains 5") {
+      val e1 = intercept[TestFailedException] {
+        assert(m1 contains 5, ", dude")
+      }
+      assert(e1.message == Some(didNotContainKey(m1, 5) + ", dude"))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestFailedException] {
+        assert(m1.contains(5), ", dude")
+      }
+      assert(e2.message == Some(didNotContainKey(m1, 5) + ", dude"))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !(m1 contains 5)") {
+      assert(!(m1 contains 5), ", dude")
+      assert(!m1.contains(5), ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check !(m1 contains 2)") {
+      val e1 = intercept[TestFailedException] {
+        assert(!(m1 contains 2), ", dude")
+      }
+      assert(e1.message == Some(containedKey(m1, 2) + ", dude"))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestFailedException] {
+        assert(!m1.contains(2), ", dude")
+      }
+      assert(e2.message == Some(containedKey(m1, 2) + ", dude"))
       assert(e2.failedCodeFileName == (Some(fileName)))
       assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -2968,6 +3107,9 @@ class AssertionsSpec extends FunSpec {
     val l1 = List(1, 2, 3)
     val l2 = List.empty[Int]
 
+    val m1 = Map(1 -> "one", 2 -> "two", 3 -> "three")
+    val m2 = Map.empty[Int, String]
+
     val date = new Date
 
     it("should do nothing when is used to check s1 startsWith \"hi\"") {
@@ -3152,6 +3294,69 @@ class AssertionsSpec extends FunSpec {
         assume(l1.contains(5))
       }
       assert(e2.message == Some(didNotContain(l1, 5)))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !(l1 contains 5)") {
+      assume(!(l1 contains 5))
+      assume(!l1.contains(5))
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check !(l1 contains 2)") {
+      val e1 = intercept[TestCanceledException] {
+        assume(!(l1 contains 2))
+      }
+      assert(e1.message == Some(contained(l1, 2)))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestCanceledException] {
+        assume(!l1.contains(2))
+      }
+      assert(e2.message == Some(contained(l1, 2)))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check m1 contains 2") {
+      assume(m1 contains 2)
+      assume(m1.contains(2))
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check m1 contains 5") {
+      val e1 = intercept[TestCanceledException] {
+        assume(m1 contains 5)
+      }
+      assert(e1.message == Some(didNotContainKey(m1, 5)))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestCanceledException] {
+        assume(m1.contains(5))
+      }
+      assert(e2.message == Some(didNotContainKey(m1, 5)))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !(m1 contains 5)") {
+      assume(!(m1 contains 5))
+      assume(!m1.contains(5))
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check !(m1 contains 2)") {
+      val e1 = intercept[TestCanceledException] {
+        assume(!(m1 contains 2))
+      }
+      assert(e1.message == Some(containedKey(m1, 2)))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestCanceledException] {
+        assume(!m1.contains(2))
+      }
+      assert(e2.message == Some(containedKey(m1, 2)))
       assert(e2.failedCodeFileName == (Some(fileName)))
       assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -4027,7 +4232,10 @@ class AssertionsSpec extends FunSpec {
     val ci3 = ci1
 
     val l1 = List(1, 2, 3)
-    val l2 = List.empty[String]
+    val l2 = List.empty[Int]
+
+    val m1 = Map(1 -> "one", 2 -> "two", 3 -> "three")
+    val m2 = Map.empty[Int, String]
 
     val date = new Date
 
@@ -4213,6 +4421,69 @@ class AssertionsSpec extends FunSpec {
         assume(l1.contains(5), ", dude")
       }
       assert(e2.message == Some(didNotContain(l1, 5) + ", dude"))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !(l1 contains 5)") {
+      assume(!(l1 contains 5), ", dude")
+      assume(!l1.contains(5), ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check !(l1 contains 2)") {
+      val e1 = intercept[TestCanceledException] {
+        assume(!(l1 contains 2), ", dude")
+      }
+      assert(e1.message == Some(contained(l1, 2) + ", dude"))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestCanceledException] {
+        assume(!l1.contains(2), ", dude")
+      }
+      assert(e2.message == Some(contained(l1, 2) + ", dude"))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check m1 contains 2") {
+      assume(m1 contains 2, ", dude")
+      assume(m1.contains(2), ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check m1 contains 5") {
+      val e1 = intercept[TestCanceledException] {
+        assume(m1 contains 5, ", dude")
+      }
+      assert(e1.message == Some(didNotContainKey(m1, 5) + ", dude"))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestCanceledException] {
+        assume(m1.contains(5), ", dude")
+      }
+      assert(e2.message == Some(didNotContainKey(m1, 5) + ", dude"))
+      assert(e2.failedCodeFileName == (Some(fileName)))
+      assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !(m1 contains 5)") {
+      assume(!(m1 contains 5), ", dude")
+      assume(!m1.contains(5), ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check !(m1 contains 2)") {
+      val e1 = intercept[TestCanceledException] {
+        assume(!(m1 contains 2), ", dude")
+      }
+      assert(e1.message == Some(containedKey(m1, 2) + ", dude"))
+      assert(e1.failedCodeFileName == (Some(fileName)))
+      assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+
+      val e2 = intercept[TestCanceledException] {
+        assume(!m1.contains(2), ", dude")
+      }
+      assert(e2.message == Some(containedKey(m1, 2) + ", dude"))
       assert(e2.failedCodeFileName == (Some(fileName)))
       assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
