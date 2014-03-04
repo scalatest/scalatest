@@ -1007,6 +1007,28 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       assert(e.getMessage == hadSize(l1, 3))
     }
 
+    it("should do nothing when is used to check l1.exists(_ == 3)") {
+      require(l1.exists(_ == 3))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1.exists(_ == 5)") {
+      val e = intercept[IllegalArgumentException] {
+        require(l1.exists(_ == 5))
+      }
+      assert(e.getMessage == didNotContain(l1, 5))
+    }
+
+    it("should do nothing when is used to check !l1.exists(_ == 5)") {
+      require(!l1.exists(_ == 5))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !l1.exists(_ == 3)") {
+      val e = intercept[IllegalArgumentException] {
+        require(!l1.exists(_ == 3))
+      }
+      assert(e.getMessage == contained(l1, 3))
+    }
+
   }
 
   describe("The require(boolean, clue) method") {
@@ -1906,6 +1928,28 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       assert(e.getMessage == hadSize(l1, 3) + ", dude")
     }
 
+    it("should do nothing when is used to check l1.exists(_ == 3)") {
+      require(l1.exists(_ == 3), ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1.exists(_ == 5)") {
+      val e = intercept[IllegalArgumentException] {
+        require(l1.exists(_ == 5), ", dude")
+      }
+      assert(e.getMessage == didNotContain(l1, 5) + ", dude")
+    }
+
+    it("should do nothing when is used to check !l1.exists(_ == 5)") {
+      require(!l1.exists(_ == 5), ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !l1.exists(_ == 3)") {
+      val e = intercept[IllegalArgumentException] {
+        require(!l1.exists(_ == 3), ", dude")
+      }
+      assert(e.getMessage == contained(l1, 3) + ", dude")
+    }
+
   }
 
   describe("The requireState(boolean) method") {
@@ -2763,6 +2807,28 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         requireState(!(l1.size == 3))
       }
       assert(e.getMessage == hadSize(l1, 3))
+    }
+
+    it("should do nothing when is used to check l1.exists(_ == 3)") {
+      requireState(l1.exists(_ == 3))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check l1.exists(_ == 5)") {
+      val e = intercept[IllegalStateException] {
+        requireState(l1.exists(_ == 5))
+      }
+      assert(e.getMessage == didNotContain(l1, 5))
+    }
+
+    it("should do nothing when is used to check !l1.exists(_ == 5)") {
+      requireState(!l1.exists(_ == 5))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !l1.exists(_ == 3)") {
+      val e = intercept[IllegalStateException] {
+        requireState(!l1.exists(_ == 3))
+      }
+      assert(e.getMessage == contained(l1, 3))
     }
 
   }
@@ -3662,6 +3728,28 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         requireState(!(l1.size == 3), ", dude")
       }
       assert(e.getMessage == hadSize(l1, 3) + ", dude")
+    }
+
+    it("should do nothing when is used to check l1.exists(_ == 3)") {
+      requireState(l1.exists(_ == 3), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check l1.exists(_ == 5)") {
+      val e = intercept[IllegalStateException] {
+        requireState(l1.exists(_ == 5), ", dude")
+      }
+      assert(e.getMessage == didNotContain(l1, 5) + ", dude")
+    }
+
+    it("should do nothing when is used to check !l1.exists(_ == 5)") {
+      requireState(!l1.exists(_ == 5), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !l1.exists(_ == 3)") {
+      val e = intercept[IllegalStateException] {
+        requireState(!l1.exists(_ == 3), ", dude")
+      }
+      assert(e.getMessage == contained(l1, 3) + ", dude")
     }
 
   }

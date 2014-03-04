@@ -1414,6 +1414,32 @@ class AssertionsSpec extends FunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
+
+    it("should do nothing when is used to check l1.exists(_ == 3)") {
+      assert(l1.exists(_ == 3))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check l1.exists(_ == 5)") {
+      val e = intercept[TestFailedException] {
+        assert(l1.exists(_ == 5))
+      }
+      assert(e.message == Some(didNotContain(l1, 5)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !l1.exists(_ == 5)") {
+      assert(!l1.exists(_ == 5))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check !l1.exists(_ == 3)") {
+      val e = intercept[TestFailedException] {
+        assert(!l1.exists(_ == 3))
+      }
+      assert(e.message == Some(contained(l1, 3)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
   }
 
   describe("The assert(boolean, clue) method") {
@@ -2542,6 +2568,32 @@ class AssertionsSpec extends FunSpec {
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
 
+    it("should do nothing when is used to check l1.exists(_ == 3)") {
+      assert(l1.exists(_ == 3), ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check l1.exists(_ == 5)") {
+      val e = intercept[TestFailedException] {
+        assert(l1.exists(_ == 5), ", dude")
+      }
+      assert(e.message == Some(didNotContain(l1, 5) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !l1.exists(_ == 5)") {
+      assert(!l1.exists(_ == 5), ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check !l1.exists(_ == 3)") {
+      val e = intercept[TestFailedException] {
+        assert(!l1.exists(_ == 3), ", dude")
+      }
+      assert(e.message == Some(contained(l1, 3) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
   }
 
   describe("The assume(boolean) method") {
@@ -3659,6 +3711,32 @@ class AssertionsSpec extends FunSpec {
         assume(!(l1.size == 3))
       }
       assert(e.message == Some(hadSize(l1, 3)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check l1.exists(_ == 3)") {
+      assume(l1.exists(_ == 3))
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check l1.exists(_ == 5)") {
+      val e = intercept[TestCanceledException] {
+        assume(l1.exists(_ == 5))
+      }
+      assert(e.message == Some(didNotContain(l1, 5)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !l1.exists(_ == 5)") {
+      assume(!l1.exists(_ == 5))
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check !l1.exists(_ == 3)") {
+      val e = intercept[TestCanceledException] {
+        assume(!l1.exists(_ == 3))
+      }
+      assert(e.message == Some(contained(l1, 3)))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -4786,6 +4864,32 @@ class AssertionsSpec extends FunSpec {
         assume(!(l1.size == 3), ", dude")
       }
       assert(e.message == Some(hadSize(l1, 3) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check l1.exists(_ == 3)") {
+      assume(l1.exists(_ == 3), ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check l1.exists(_ == 5)") {
+      val e = intercept[TestCanceledException] {
+        assume(l1.exists(_ == 5), ", dude")
+      }
+      assert(e.message == Some(didNotContain(l1, 5) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check !l1.exists(_ == 5)") {
+      assume(!l1.exists(_ == 5), ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check !l1.exists(_ == 3)") {
+      val e = intercept[TestCanceledException] {
+        assume(!l1.exists(_ == 3), ", dude")
+      }
+      assert(e.message == Some(contained(l1, 3) + ", dude"))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }

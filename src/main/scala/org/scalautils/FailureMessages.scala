@@ -26,7 +26,7 @@ import java.text.MessageFormat
  * @author Bill Venners
  */
 private[scalautils] object FailureMessages {
-  
+
   def decorateToStringValue(o: Any): String = Prettifier.default(o)
 
   def apply(resourceName: String): String = Resources(resourceName)
