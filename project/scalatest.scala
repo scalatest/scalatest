@@ -256,13 +256,6 @@ object ScalatestBuild extends Build {
      genSortedTask, 
      genLoneElementTask, 
      genEmptyTask,
-<<<<<<< HEAD
-     sourceGenerators in Test <+= 
-         (baseDirectory, sourceManaged in Test) map genFiles("gengen", "GenGen.scala")(GenGen.genTest),
-     sourceGenerators in Test <+= 
-         (baseDirectory, sourceManaged in Test) map genFiles("gentables", "GenTable.scala")(GenTable.genTest),
-=======
->>>>>>> a382fe2b4ce7d47574a401c606e791fec79e1543
      sourceGenerators in Test <+=
        (baseDirectory, sourceManaged in Test) map genFiles("gentestshelper", "GenTestsHelper.scala")(GenTestsHelper.genTest),
      sourceGenerators in Test <+= 
