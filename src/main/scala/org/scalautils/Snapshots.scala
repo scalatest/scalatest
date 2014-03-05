@@ -30,7 +30,7 @@ final case class Snapshot(name: String, value: Any) {
    *
    * @return string in {name} = {value} format
    */
-  override def toString: String = Resources("aEqualB", name, Prettifier.default(value))
+  override def toString: String = Resources("variableWasValue", name, Prettifier.default(value))
 }
 
 /**
