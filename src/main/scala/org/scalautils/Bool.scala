@@ -221,6 +221,57 @@ object Bool {
     new UnaryMacroBool(left, operator, bool.value)
 
   /**
+   * Create macro <code>Bool</code> that is used by <code>BooleanMacro</code> to wrap a recognized <code>Boolean</code> expression
+   * represented by a <code>isInstanceOf</code> method call,
+   *
+   * @param left the left-hand-side (LHS) of the <code>Boolean</code> expression
+   * @param operator the operator (method name) of the <code>Boolean</code> expression
+   * @param className the class name passed to <code>isInstanceOf</code> method call
+   * @param expression the <code>Boolean</code> expression
+   * @return a <code>Bool</code> instance that represents a <code>isInstanceOf</code> method call
+   */
+  def isInstanceOfMacroBool(left: Any, operator: String, className: String, expression: Boolean): Bool =
+    new IsInstanceOfMacroBool(left, operator, className, expression)
+
+  /**
+   * Overloaded method that takes a <code>Bool</code> in place of <code>Boolean</code> expression to create a new <code>isInstanceOf</code>
+   * macro <code>Bool</code>.
+   *
+   * @param left the left-hand-side (LHS) of the <code>Boolean</code> expression
+   * @param operator the operator (method name) of the <code>Boolean</code> expression
+   * @param className the class name passed to <code>isInstanceOf</code> method call
+   * @param bool the <code>Bool</code> that will provide the <code>Boolean</code> expression value with <code>bool.value</code>
+   * @return a <code>Bool</code> instance that represents a <code>isInstanceOf</code> method call
+   */
+  def isInstanceOfMacroBool(left: Any, operator: String, className: String, bool: Bool): Bool =
+    new IsInstanceOfMacroBool(left, operator, className, bool.value)
+
+  /**
+   * Create macro <code>Bool</code> that is used by <code>BooleanMacro</code> to wrap a recognized <code>Boolean</code> expression
+   * represented by <code>length</code> and <code>size</code> method call,
+   *
+   * @param left the left-hand-side (LHS) of the <code>Boolean</code> expression
+   * @param operator the operator (method name) of the <code>Boolean</code> expression
+   * @param actual the actual value returned from <code>length</code> or <code>size</code> method call
+   * @param expected the expected value returned from <code>length</code> or <code>size</code> method call
+   * @return a <code>Bool</code> instance that represents a <code>length</code> or <code>size</code> method call
+   */
+  def lengthSizeMacroBool(left: Any, operator: String, actual: Long, expected: Long): Bool =
+    new LengthSizeMacroBool(left, operator, actual, expected)
+
+  /**
+   * Create exists macro <code>Bool</code> that is used by <code>BooleanMacro</code> to wrap a recognized <code>Boolean</code> expression
+   * represented by <code>exists</code> method call.
+   *
+   * @param left the left-hand-side (LHS) of the <code>Boolean</code> expression
+   * @param right the right-hand-side (RHS) of the <code>Boolean</code> expression
+   * @param expression the <code>Boolean</code> expression
+   * @return a exists macro <code>Bool</code>
+   */
+  def existsMacroBool(left: Any, right: Any, expression: Boolean): Bool =
+    new ExistsMacroBool(left, right, expression)
+
+  /**
    * A helper method to check is the given <code>Bool</code> is a simple macro <code>Bool</code> and contains empty expression text.
    *
    * @param bool the <code>Bool</code> to check
@@ -625,7 +676,11 @@ private[scalautils] class BinaryMacroBool(left: Any, operator: String, right: An
       case "<=" => Resources("wasNotLessThanOrEqualTo")
       case "startsWith" => Resources("didNotStartWith")
       case "endsWith" => Resources("didNotEndWith")
-      case "contains" => Resources("didNotContain")
+      case "contains" =>
+        left match {
+          case leftMap: scala.collection.GenMap[_, _] => Resources("didNotContainKey")
+          case _ => Resources("didNotContain")
+        }
       case "eq" => Resources("wasNotTheSameInstanceAs")
       case "ne" => Resources("wasTheSameInstanceAs")
       case "&&" | "&" =>
@@ -666,7 +721,11 @@ private[scalautils] class BinaryMacroBool(left: Any, operator: String, right: An
       case "<=" => Resources("wasLessThanOrEqualTo")
       case "startsWith" => Resources("startedWith")
       case "endsWith" => Resources("endedWith")
-      case "contains" => Resources("contained")
+      case "contains" =>
+        left match {
+          case leftMap: scala.collection.GenMap[_, _] => Resources("containedKey")
+          case _ => Resources("contained")
+        }
       case "eq" => Resources("wasTheSameInstanceAs")
       case "ne" => Resources("wasNotTheSameInstanceAs")
       case "&&" | "&" => Resources("commaAnd")
@@ -875,6 +934,283 @@ private[scalautils] class UnaryMacroBool(left: Any, operator: String, expression
         Vector(left)
       case _ => Vector.empty
     }
+
+  /**
+   * Arguments to construct final mid sentence failure message with raw message returned from <code>rawMidSentenceFailureMessage</code>.
+   *
+   * @return the same result as <code>failureMessageArgs</code>
+   */
+  def midSentenceFailureMessageArgs: IndexedSeq[Any] = failureMessageArgs
+
+  /**
+   * Arguments to construct final negated mid sentence failure message with raw message returned from <code>rawMidSentenceNegatedFailureMessage</code>.
+   *
+   * @return the same result as <code>negatedFailureMessageArgs</code>
+   */
+  def midSentenceNegatedFailureMessageArgs: IndexedSeq[Any] = negatedFailureMessageArgs
+}
+
+/**
+ * Macro <code>Bool</code> that is used by <code>BooleanMacro</code> to wrap a recognized <code>Boolean</code> expression
+ * that represents a <code>isInstanceOf</code> method call.
+ *
+ * @param left the left-hand-side (LHS) of the <code>Boolean</code> expression
+ * @param operator the operator (method name) of the <code>Boolean</code> expression
+ * @param className the class name passed to <code>isInstanceOf</code> method call
+ * @param expression the <code>Boolean</code> expression
+ */
+private[scalautils] class IsInstanceOfMacroBool(left: Any, operator: String, className: String, expression: Boolean) extends Bool {
+
+  /**
+   * the <code>Boolean</code> value of this <code>Bool</code>.
+   */
+  val value: Boolean = expression
+
+  /**
+   * raw message to report a failure, this method implementation will return the friendly raw message based on the passed
+   * in <code>operator</code>.
+   *
+   * @return Localized friendly raw message based on the passed in <code>operator</code>
+   */
+  def rawFailureMessage: String = {
+    operator match {
+      case "isInstanceOf" => Resources("wasNotInstanceOf")
+      case _ => Resources("expressionWasFalse")
+    }
+  }
+
+  /**
+   * raw message with a meaning opposite to that of the failure message, this method implementation will return the
+   * friendly raw message based on the passed in <code>operator</code>.
+   *
+   * @return Localized negated friendly raw message based on the passed in <code>operator</code>
+   */
+  def rawNegatedFailureMessage: String =
+    operator match {
+      case "isInstanceOf" => Resources("wasInstanceOf")
+      case _ => Resources("expressionWasTrue")
+    }
+
+  /**
+   * raw mid sentence message to report a failure
+   *
+   * @return the same result as <code>rawFailureMessage</code>
+   */
+  def rawMidSentenceFailureMessage: String = rawFailureMessage
+
+  /**
+   * raw mid sentence message with a meaning opposite to that of the failure message
+   *
+   * @return the same result as <code>rawNegatedFailureMessage</code>
+   */
+  def rawMidSentenceNegatedFailureMessage: String = rawNegatedFailureMessage
+
+  /**
+   * Arguments to construct final failure message with raw message returned from <code>rawFailureMessage</code>.  Based
+   * on the passed in operator, this implementation will return the arguments needed by <code>rawFailureMessage</code>
+   * to construct the final friendly failure message.
+   *
+   * @return Vector that contains arguments needed by <code>rawFailureMessage</code> to construct the final friendly failure message
+   */
+  def failureMessageArgs: IndexedSeq[Any] =
+    operator match {
+      case "isInstanceOf" =>
+        Vector(left, UnquotedString(className))
+      case _ => Vector.empty
+    }
+
+  /**
+   * Arguments to construct final negated failure message with raw message returned from <code>rawNegatedFailureMessage</code>.  Based
+   * on the passed in operator, this implementation will return the arguments needed by <code>rawNegatedFailureMessage</code> to construct
+   * the final negated friendly failure message.
+   *
+   * @return Vector that contains arguments needed by <code>rawNegatedFailureMessage</code> to construct the final negated friendly failure message
+   */
+  def negatedFailureMessageArgs: IndexedSeq[Any] =
+    operator match {
+      case "isInstanceOf" =>
+        Vector(left, UnquotedString(className))
+      case _ => Vector.empty
+    }
+
+  /**
+   * Arguments to construct final mid sentence failure message with raw message returned from <code>rawMidSentenceFailureMessage</code>.
+   *
+   * @return the same result as <code>failureMessageArgs</code>
+   */
+  def midSentenceFailureMessageArgs: IndexedSeq[Any] = failureMessageArgs
+
+  /**
+   * Arguments to construct final negated mid sentence failure message with raw message returned from <code>rawMidSentenceNegatedFailureMessage</code>.
+   *
+   * @return the same result as <code>negatedFailureMessageArgs</code>
+   */
+  def midSentenceNegatedFailureMessageArgs: IndexedSeq[Any] = negatedFailureMessageArgs
+}
+
+/**
+ * Macro <code>Bool</code> that is used by <code>BooleanMacro</code> to wrap a recognized <code>Boolean</code> expression
+ * that represents a <code>length</code> or <code>size</code> method call.
+ *
+ * @param left the left-hand-side (LHS) of the <code>Boolean</code> expression
+ * @param operator the operator (method name) of the <code>Boolean</code> expression
+ * @param actual the actual length or size of <code>left</code>
+ * @param expected the expected length or size of <code>left</code>
+ */
+private[scalautils] class LengthSizeMacroBool(left: Any, operator: String, actual: Long, expected: Long) extends Bool {
+
+  /**
+   * the <code>Boolean</code> value of this <code>Bool</code>.
+   */
+  val value: Boolean = actual == expected
+
+  /**
+   * raw message to report a failure, this method implementation will return the friendly raw message based on the passed
+   * in <code>operator</code>.
+   *
+   * @return Localized friendly raw message based on the passed in <code>operator</code>
+   */
+  def rawFailureMessage: String = {
+    operator match {
+      case "length" => Resources("hadLengthInsteadOfExpectedLength")
+      case "size" => Resources("hadSizeInsteadOfExpectedSize")
+      case _ => Resources("expressionWasFalse")
+    }
+  }
+
+  /**
+   * raw message with a meaning opposite to that of the failure message, this method implementation will return the
+   * friendly raw message based on the passed in <code>operator</code>.
+   *
+   * @return Localized negated friendly raw message based on the passed in <code>operator</code>
+   */
+  def rawNegatedFailureMessage: String =
+    operator match {
+      case "length" => Resources("hadLength")
+      case "size" => Resources("hadSize")
+      case _ => Resources("expressionWasTrue")
+    }
+
+  /**
+   * raw mid sentence message to report a failure
+   *
+   * @return the same result as <code>rawFailureMessage</code>
+   */
+  def rawMidSentenceFailureMessage: String = rawFailureMessage
+
+  /**
+   * raw mid sentence message with a meaning opposite to that of the failure message
+   *
+   * @return the same result as <code>rawNegatedFailureMessage</code>
+   */
+  def rawMidSentenceNegatedFailureMessage: String = rawNegatedFailureMessage
+
+  /**
+   * Arguments to construct final failure message with raw message returned from <code>rawFailureMessage</code>.  Based
+   * on the passed in operator, this implementation will return the arguments needed by <code>rawFailureMessage</code>
+   * to construct the final friendly failure message.
+   *
+   * @return Vector that contains arguments needed by <code>rawFailureMessage</code> to construct the final friendly failure message
+   */
+  def failureMessageArgs: IndexedSeq[Any] =
+    operator match {
+      case "length" | "size" =>
+        Vector(left, actual, expected)
+      case _ => Vector.empty
+    }
+
+  /**
+   * Arguments to construct final negated failure message with raw message returned from <code>rawNegatedFailureMessage</code>.  Based
+   * on the passed in operator, this implementation will return the arguments needed by <code>rawNegatedFailureMessage</code> to construct
+   * the final negated friendly failure message.
+   *
+   * @return Vector that contains arguments needed by <code>rawNegatedFailureMessage</code> to construct the final negated friendly failure message
+   */
+  def negatedFailureMessageArgs: IndexedSeq[Any] =
+    operator match {
+      case "length" | "size" =>
+        Vector(left, actual)
+      case _ => Vector.empty
+    }
+
+  /**
+   * Arguments to construct final mid sentence failure message with raw message returned from <code>rawMidSentenceFailureMessage</code>.
+   *
+   * @return the same result as <code>failureMessageArgs</code>
+   */
+  def midSentenceFailureMessageArgs: IndexedSeq[Any] = failureMessageArgs
+
+  /**
+   * Arguments to construct final negated mid sentence failure message with raw message returned from <code>rawMidSentenceNegatedFailureMessage</code>.
+   *
+   * @return the same result as <code>negatedFailureMessageArgs</code>
+   */
+  def midSentenceNegatedFailureMessageArgs: IndexedSeq[Any] = negatedFailureMessageArgs
+}
+
+/**
+ * Macro <code>Bool</code> that is used by <code>BooleanMacro</code> to wrap a recognized <code>Boolean</code> expression
+ * that represents a <code>length</code> or <code>size</code> method call.
+ *
+ * @param left the left-hand-side (LHS) of the <code>Boolean</code> expression
+ * @param right the right-hand-side (RHS) of the <code>Boolean</code> expression
+ * @param expression the <code>Boolean</code> expression
+ */
+private[scalautils] class ExistsMacroBool(left: Any, right: Any, expression: Boolean) extends Bool {
+
+  /**
+   * the <code>Boolean</code> value of this <code>Bool</code>.
+   */
+  val value: Boolean = expression
+
+  /**
+   * raw message to report a failure, this method implementation will return localized "x did not contain y" message.
+   *
+   * @return Localized friendly raw message based on the passed in <code>operator</code>
+   */
+  def rawFailureMessage: String =
+    Resources("didNotContain")
+
+  /**
+   * raw message with a meaning opposite to that of the failure message, this method implementation will return localized
+   * "x contained y" message.
+   *
+   * @return Localized negated friendly raw message based on the passed in <code>operator</code>
+   */
+  def rawNegatedFailureMessage: String =
+    Resources("contained")
+
+  /**
+   * raw mid sentence message to report a failure
+   *
+   * @return the same result as <code>rawFailureMessage</code>
+   */
+  def rawMidSentenceFailureMessage: String = rawFailureMessage
+
+  /**
+   * raw mid sentence message with a meaning opposite to that of the failure message
+   *
+   * @return the same result as <code>rawNegatedFailureMessage</code>
+   */
+  def rawMidSentenceNegatedFailureMessage: String = rawNegatedFailureMessage
+
+  /**
+   * Arguments to construct final failure message with raw message returned from <code>rawFailureMessage</code>.  This
+   * implementation will return a <code>Vector</code> that contains the passed in <code>left</code> and <code>right</code>.
+   *
+   * @return Vector that contains arguments needed by <code>rawFailureMessage</code> to construct the final friendly failure message
+   */
+  def failureMessageArgs: IndexedSeq[Any] =
+    Vector(left, right)
+
+  /**
+   * Arguments to construct final negated failure message with raw message returned from <code>rawNegatedFailureMessage</code>.
+   * This implementation will return a <code>Vector</code> that contains the passed in <code>left</code> and <code>right</code>.
+   *
+   * @return Vector that contains arguments needed by <code>rawNegatedFailureMessage</code> to construct the final negated friendly failure message
+   */
+  def negatedFailureMessageArgs: IndexedSeq[Any] =
+    Vector(left, right)
 
   /**
    * Arguments to construct final mid sentence failure message with raw message returned from <code>rawMidSentenceFailureMessage</code>.

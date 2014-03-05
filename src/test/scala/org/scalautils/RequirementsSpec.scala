@@ -16,6 +16,7 @@
 package org.scalautils
 
 import org.scalatest._
+import java.util.Date
 
 class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
@@ -88,6 +89,12 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
   def contained(left: Any, right: Any): String =
     FailureMessages("contained", left, right)
 
+  def didNotContainKey(left: Any, right: Any): String =
+    FailureMessages("didNotContainKey", left, right)
+
+  def containedKey(left: Any, right: Any): String =
+    FailureMessages("containedKey", left, right)
+
   def wasNotTheSameInstanceAs(left: AnyRef, right: AnyRef): String =
     FailureMessages("wasNotTheSameInstanceAs", left, right)
 
@@ -99,6 +106,24 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
   def wasEmpty(left: Any): String =
     FailureMessages("wasEmpty", left)
+
+  def wasNotInstanceOf(left: Any, className: String): String =
+    FailureMessages("wasNotInstanceOf", left, UnquotedString(className))
+
+  def wasInstanceOf(left: Any, className: String): String =
+    FailureMessages("wasInstanceOf", left, UnquotedString(className))
+
+  def hadLengthInsteadOfExpectedLength(left: Any, actual: Long, expected: Long): String =
+    FailureMessages("hadLengthInsteadOfExpectedLength", left, actual, expected)
+
+  def hadLength(left: Any, actual: Long): String =
+    FailureMessages("hadLength", left, actual)
+
+  def hadSizeInsteadOfExpectedSize(left: Any, actual: Long, expected: Long): String =
+    FailureMessages("hadSizeInsteadOfExpectedSize", left, actual, expected)
+
+  def hadSize(left: Any, actual: Long): String =
+    FailureMessages("hadSize", left, actual)
 
   class Stateful {
     var state = false
@@ -520,6 +545,11 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     val l1 = List(1, 2, 3)
     val l2 = List.empty[Int]
 
+    val m1 = Map(1 -> "one", 2 -> "two", 3 -> "three")
+    val m2 = Map.empty[Int, String]
+
+    val date = new Date
+
     it("should do nothing when is used to check s1 startsWith \"hi\"") {
       require(s1 startsWith "hi")
       require(s1.startsWith("hi"))
@@ -672,6 +702,57 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       assert(e2.getMessage == didNotContain(l1, 5))
     }
 
+    it("should do nothing when is used to check !(l1 contains 5)") {
+      require(!(l1 contains 5))
+      require(!l1.contains(5))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !(l1 contains 2)") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(!(l1 contains 2))
+      }
+      assert(e1.getMessage == contained(l1, 2))
+
+      val e2 = intercept[IllegalArgumentException] {
+        require(!l1.contains(2))
+      }
+      assert(e2.getMessage == contained(l1, 2))
+    }
+
+    it("should do nothing when is used to check m1 contains 2") {
+      require(m1 contains 2)
+      require(m1.contains(2))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check m1 contains 5") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(m1 contains 5)
+      }
+      assert(e1.getMessage == didNotContainKey(m1, 5))
+
+      val e2 = intercept[IllegalArgumentException] {
+        require(m1.contains(5))
+      }
+      assert(e2.getMessage == didNotContainKey(m1, 5))
+    }
+
+    it("should do nothing when is used to check !(m1 contains 5)") {
+      require(!(m1 contains 5))
+      require(!m1.contains(5))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !(m1 contains 2)") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(!(m1 contains 2))
+      }
+      assert(e1.getMessage == containedKey(m1, 2))
+
+      val e2 = intercept[IllegalArgumentException] {
+        require(!m1.contains(2))
+      }
+      assert(e2.getMessage == containedKey(m1, 2))
+    }
+
     it("should do nothing when is used to check ci1 eq ci3") {
       require(ci1 eq ci3)
       require(ci1.eq(ci3))
@@ -770,6 +851,182 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         require(!l2.isEmpty)
       }
       assert(e.getMessage == wasEmpty(l2))
+    }
+
+    it("should do nothing when is used to check s1.isInstanceOf[String]") {
+      require(s1.isInstanceOf[String])
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1.isInstanceOf[String]") {
+      val e = intercept[IllegalArgumentException] {
+        require(l1.isInstanceOf[String])
+      }
+      assert(e.getMessage == wasNotInstanceOf(l1, "scala.Predef.String"))
+    }
+
+    it("should do nothing when is used to check l1.isInstanceOf[List[Int]]") {
+      require(l1.isInstanceOf[List[Int]])
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check s1.isInstanceOf[List[Int]]") {
+      val e = intercept[IllegalArgumentException] {
+        require(s1.isInstanceOf[List[Int]])
+      }
+      assert(e.getMessage == wasNotInstanceOf(s1, "scala.List"))
+    }
+
+    it("should do nothing when is used to check date.isInstanceOf[Date]") {
+      require(date.isInstanceOf[Date])
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1.isInstanceOf[Date]") {
+      val e = intercept[IllegalArgumentException] {
+        require(l1.isInstanceOf[Date])
+      }
+      assert(e.getMessage == wasNotInstanceOf(l1, "java.util.Date"))
+    }
+
+    it("should do nothing when is used to check !l1.isInstanceOf[String]") {
+      require(!l1.isInstanceOf[String])
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !s1.isInstanceOf[String]") {
+      val e = intercept[IllegalArgumentException] {
+        require(!s1.isInstanceOf[String])
+      }
+      assert(e.getMessage == wasInstanceOf(s1, "scala.Predef.String"))
+    }
+
+    it("should do nothing when is used to check !s1.isInstanceOf[List[Int]]") {
+      require(!s1.isInstanceOf[List[Int]])
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !l1.isInstanceOf[List[Int]]") {
+      val e = intercept[IllegalArgumentException] {
+        require(!l1.isInstanceOf[List[Int]])
+      }
+      assert(e.getMessage == wasInstanceOf(l1, "scala.List"))
+    }
+
+    it("should do nothing when is used to check !l1.isInstanceOf[Date]") {
+      require(!l1.isInstanceOf[Date])
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !date.isInstanceOf[Date]") {
+      val e = intercept[IllegalArgumentException] {
+        require(!date.isInstanceOf[Date])
+      }
+      assert(e.getMessage == wasInstanceOf(date, "java.util.Date"))
+    }
+
+    it("should do nothing when is used to check s1.length == 9") {
+      require(s1.length == 12)
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check s1.length == 10") {
+      val e = intercept[IllegalArgumentException] {
+        require(s1.length == 10)
+      }
+      assert(e.getMessage == hadLengthInsteadOfExpectedLength(s1, 12, 10))
+    }
+
+    it("should do nothing when is used to check l1.length == 3") {
+      require(l1.length == 3)
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1.length == 10") {
+      val e = intercept[IllegalArgumentException] {
+        require(l1.length == 10)
+      }
+      assert(e.getMessage == hadLengthInsteadOfExpectedLength(l1, 3, 10))
+    }
+
+    it("should do nothing when is used to check !(s1.length == 10)") {
+      require(!(s1.length == 10))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !(s1.length == 9)") {
+      val e = intercept[IllegalArgumentException] {
+        require(!(s1.length == 12))
+      }
+      assert(e.getMessage == hadLength(s1, 12))
+    }
+
+    it("should do nothing when is used to check !(l1.length == 2)") {
+      require(!(l1.length == 2))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !(l1.length == 9)") {
+      val e = intercept[IllegalArgumentException] {
+        require(!(l1.length == 3))
+      }
+      assert(e.getMessage == hadLength(l1, 3))
+    }
+
+    it("should do nothing when is used to check s1.size == 9") {
+      require(s1.size == 12)
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check s1.size == 10") {
+      val e = intercept[IllegalArgumentException] {
+        require(s1.size == 10)
+      }
+      assert(e.getMessage == hadSizeInsteadOfExpectedSize(s1, 12, 10))
+    }
+
+    it("should do nothing when is used to check l1.size == 3") {
+      require(l1.size == 3)
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1.size == 10") {
+      val e = intercept[IllegalArgumentException] {
+        require(l1.size == 10)
+      }
+      assert(e.getMessage == hadSizeInsteadOfExpectedSize(l1, 3, 10))
+    }
+
+    it("should do nothing when is used to check !(s1.size == 10)") {
+      require(!(s1.size == 10))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !(s1.size == 9)") {
+      val e = intercept[IllegalArgumentException] {
+        require(!(s1.size == 12))
+      }
+      assert(e.getMessage == hadSize(s1, 12))
+    }
+
+    it("should do nothing when is used to check !(l1.size == 2)") {
+      require(!(l1.size == 2))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !(l1.size == 9)") {
+      val e = intercept[IllegalArgumentException] {
+        require(!(l1.size == 3))
+      }
+      assert(e.getMessage == hadSize(l1, 3))
+    }
+
+    it("should do nothing when is used to check l1.exists(_ == 3)") {
+      require(l1.exists(_ == 3))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1.exists(_ == 5)") {
+      val e = intercept[IllegalArgumentException] {
+        require(l1.exists(_ == 5))
+      }
+      assert(e.getMessage == didNotContain(l1, 5))
+    }
+
+    it("should do nothing when is used to check !l1.exists(_ == 5)") {
+      require(!l1.exists(_ == 5))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !l1.exists(_ == 3)") {
+      val e = intercept[IllegalArgumentException] {
+        require(!l1.exists(_ == 3))
+      }
+      assert(e.getMessage == contained(l1, 3))
     }
 
   }
@@ -1209,6 +1466,11 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     val l1 = List(1, 2, 3)
     val l2 = List.empty[Int]
 
+    val m1 = Map(1 -> "one", 2 -> "two", 3 -> "three")
+    val m2 = Map.empty[Int, String]
+
+    val date = new Date
+
     it("should do nothing when is used to check s1 startsWith \"hi\"") {
       require(s1 startsWith "hi", ", dude")
       require(s1.startsWith("hi"), ", dude")
@@ -1361,6 +1623,57 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       assert(e2.getMessage == didNotContain(l1, 5) + ", dude")
     }
 
+    it("should do nothing when is used to check !(l1 contains 5)") {
+      require(!(l1 contains 5), ", dude")
+      require(!l1.contains(5), ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !(l1 contains 2)") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(!(l1 contains 2), ", dude")
+      }
+      assert(e1.getMessage == contained(l1, 2) + ", dude")
+
+      val e2 = intercept[IllegalArgumentException] {
+        require(!l1.contains(2), ", dude")
+      }
+      assert(e2.getMessage == contained(l1, 2) + ", dude")
+    }
+
+    it("should do nothing when is used to check m1 contains 2") {
+      require(m1 contains 2, ", dude")
+      require(m1.contains(2), ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check m1 contains 5") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(m1 contains 5, ", dude")
+      }
+      assert(e1.getMessage == didNotContainKey(m1, 5) + ", dude")
+
+      val e2 = intercept[IllegalArgumentException] {
+        require(m1.contains(5), ", dude")
+      }
+      assert(e2.getMessage == didNotContainKey(m1, 5) + ", dude")
+    }
+
+    it("should do nothing when is used to check !(m1 contains 5)") {
+      require(!(m1 contains 5), ", dude")
+      require(!m1.contains(5), ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !(m1 contains 2)") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(!(m1 contains 2), ", dude")
+      }
+      assert(e1.getMessage == containedKey(m1, 2) + ", dude")
+
+      val e2 = intercept[IllegalArgumentException] {
+        require(!m1.contains(2), ", dude")
+      }
+      assert(e2.getMessage == containedKey(m1, 2) + ", dude")
+    }
+
     it("should do nothing when is used to check ci1 eq ci3") {
       require(ci1 eq ci3, ", dude")
       require(ci1.eq(ci3), ", dude")
@@ -1459,6 +1772,182 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         require(!l2.isEmpty, ", dude")
       }
       assert(e.getMessage == wasEmpty(l2) + ", dude")
+    }
+
+    it("should do nothing when is used to check s1.isInstanceOf[String]") {
+      require(s1.isInstanceOf[String], ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1.isInstanceOf[String]") {
+      val e = intercept[IllegalArgumentException] {
+        require(l1.isInstanceOf[String], ", dude")
+      }
+      assert(e.getMessage == wasNotInstanceOf(l1, "scala.Predef.String") + ", dude")
+    }
+
+    it("should do nothing when is used to check l1.isInstanceOf[List[Int]]") {
+      require(l1.isInstanceOf[List[Int]], ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check s1.isInstanceOf[List[Int]]") {
+      val e = intercept[IllegalArgumentException] {
+        require(s1.isInstanceOf[List[Int]], ", dude")
+      }
+      assert(e.getMessage == wasNotInstanceOf(s1, "scala.List") + ", dude")
+    }
+
+    it("should do nothing when is used to check date.isInstanceOf[Date]") {
+      require(date.isInstanceOf[Date], ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1.isInstanceOf[Date]") {
+      val e = intercept[IllegalArgumentException] {
+        require(l1.isInstanceOf[Date], ", dude")
+      }
+      assert(e.getMessage == wasNotInstanceOf(l1, "java.util.Date") + ", dude")
+    }
+
+    it("should do nothing when is used to check !l1.isInstanceOf[String]") {
+      require(!l1.isInstanceOf[String], ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !s1.isInstanceOf[String]") {
+      val e = intercept[IllegalArgumentException] {
+        require(!s1.isInstanceOf[String], ", dude")
+      }
+      assert(e.getMessage == wasInstanceOf(s1, "scala.Predef.String") + ", dude")
+    }
+
+    it("should do nothing when is used to check !s1.isInstanceOf[List[Int]]") {
+      require(!s1.isInstanceOf[List[Int]], ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !l1.isInstanceOf[List[Int]]") {
+      val e = intercept[IllegalArgumentException] {
+        require(!l1.isInstanceOf[List[Int]], ", dude")
+      }
+      assert(e.getMessage == wasInstanceOf(l1, "scala.List") + ", dude")
+    }
+
+    it("should do nothing when is used to check !l1.isInstanceOf[Date]") {
+      require(!l1.isInstanceOf[Date], ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !date.isInstanceOf[Date]") {
+      val e = intercept[IllegalArgumentException] {
+        require(!date.isInstanceOf[Date], ", dude")
+      }
+      assert(e.getMessage == wasInstanceOf(date, "java.util.Date") + ", dude")
+    }
+
+    it("should do nothing when is used to check s1.length == 9") {
+      require(s1.length == 12, ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check s1.length == 10") {
+      val e = intercept[IllegalArgumentException] {
+        require(s1.length == 10, ", dude")
+      }
+      assert(e.getMessage == hadLengthInsteadOfExpectedLength(s1, 12, 10) + ", dude")
+    }
+
+    it("should do nothing when is used to check l1.length == 3") {
+      require(l1.length == 3, ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1.length == 10") {
+      val e = intercept[IllegalArgumentException] {
+        require(l1.length == 10, ", dude")
+      }
+      assert(e.getMessage == hadLengthInsteadOfExpectedLength(l1, 3, 10) + ", dude")
+    }
+
+    it("should do nothing when is used to check !(s1.length == 10)") {
+      require(!(s1.length == 10), ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !(s1.length == 9)") {
+      val e = intercept[IllegalArgumentException] {
+        require(!(s1.length == 12), ", dude")
+      }
+      assert(e.getMessage == hadLength(s1, 12) + ", dude")
+    }
+
+    it("should do nothing when is used to check !(l1.length == 2)") {
+      require(!(l1.length == 2), ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !(l1.length == 9)") {
+      val e = intercept[IllegalArgumentException] {
+        require(!(l1.length == 3), ", dude")
+      }
+      assert(e.getMessage == hadLength(l1, 3) + ", dude")
+    }
+
+    it("should do nothing when is used to check s1.size == 9") {
+      require(s1.size == 12, ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check s1.size == 10") {
+      val e = intercept[IllegalArgumentException] {
+        require(s1.size == 10, ", dude")
+      }
+      assert(e.getMessage == hadSizeInsteadOfExpectedSize(s1, 12, 10) + ", dude")
+    }
+
+    it("should do nothing when is used to check l1.size == 3") {
+      require(l1.size == 3, ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1.size == 10") {
+      val e = intercept[IllegalArgumentException] {
+        require(l1.size == 10, ", dude")
+      }
+      assert(e.getMessage == hadSizeInsteadOfExpectedSize(l1, 3, 10) + ", dude")
+    }
+
+    it("should do nothing when is used to check !(s1.size == 10)") {
+      require(!(s1.size == 10), ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !(s1.size == 9)") {
+      val e = intercept[IllegalArgumentException] {
+        require(!(s1.size == 12), ", dude")
+      }
+      assert(e.getMessage == hadSize(s1, 12) + ", dude")
+    }
+
+    it("should do nothing when is used to check !(l1.size == 2)") {
+      require(!(l1.size == 2), ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !(l1.size == 9)") {
+      val e = intercept[IllegalArgumentException] {
+        require(!(l1.size == 3), ", dude")
+      }
+      assert(e.getMessage == hadSize(l1, 3) + ", dude")
+    }
+
+    it("should do nothing when is used to check l1.exists(_ == 3)") {
+      require(l1.exists(_ == 3), ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1.exists(_ == 5)") {
+      val e = intercept[IllegalArgumentException] {
+        require(l1.exists(_ == 5), ", dude")
+      }
+      assert(e.getMessage == didNotContain(l1, 5) + ", dude")
+    }
+
+    it("should do nothing when is used to check !l1.exists(_ == 5)") {
+      require(!l1.exists(_ == 5), ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !l1.exists(_ == 3)") {
+      val e = intercept[IllegalArgumentException] {
+        require(!l1.exists(_ == 3), ", dude")
+      }
+      assert(e.getMessage == contained(l1, 3) + ", dude")
     }
 
   }
@@ -1858,6 +2347,11 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     val l1 = List(1, 2, 3)
     val l2 = List.empty[Int]
 
+    val m1 = Map(1 -> "one", 2 -> "two", 3 -> "three")
+    val m2 = Map.empty[Int, String]
+
+    val date = new Date
+
     it("should do nothing when is used to check s1 startsWith \"hi\"") {
       requireState(s1 startsWith "hi")
       requireState(s1.startsWith("hi"))
@@ -2010,6 +2504,57 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       assert(e2.getMessage == didNotContain(l1, 5))
     }
 
+    it("should do nothing when is used to check !(l1 contains 5)") {
+      requireState(!(l1 contains 5))
+      requireState(!l1.contains(5))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !(l1 contains 2)") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(!(l1 contains 2))
+      }
+      assert(e1.getMessage == contained(l1, 2))
+
+      val e2 = intercept[IllegalStateException] {
+        requireState(!l1.contains(2))
+      }
+      assert(e2.getMessage == contained(l1, 2))
+    }
+
+    it("should do nothing when is used to check m1 contains 2") {
+      requireState(m1 contains 2)
+      requireState(m1.contains(2))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check m1 contains 5") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(m1 contains 5)
+      }
+      assert(e1.getMessage == didNotContainKey(m1, 5))
+
+      val e2 = intercept[IllegalStateException] {
+        requireState(m1.contains(5))
+      }
+      assert(e2.getMessage == didNotContainKey(m1, 5))
+    }
+
+    it("should do nothing when is used to check !(m1 contains 5)") {
+      requireState(!(m1 contains 5))
+      requireState(!m1.contains(5))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !(m1 contains 2)") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(!(m1 contains 2))
+      }
+      assert(e1.getMessage == containedKey(m1, 2))
+
+      val e2 = intercept[IllegalStateException] {
+        requireState(!m1.contains(2))
+      }
+      assert(e2.getMessage == containedKey(m1, 2))
+    }
+
     it("should do nothing when is used to check ci1 eq ci3") {
       requireState(ci1 eq ci3)
       requireState(ci1.eq(ci3))
@@ -2108,6 +2653,182 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         requireState(!l2.isEmpty)
       }
       assert(e.getMessage == wasEmpty(l2))
+    }
+
+    it("should do nothing when is used to check s1.isInstanceOf[String]") {
+      requireState(s1.isInstanceOf[String])
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check l1.isInstanceOf[String]") {
+      val e = intercept[IllegalStateException] {
+        requireState(l1.isInstanceOf[String])
+      }
+      assert(e.getMessage == wasNotInstanceOf(l1, "scala.Predef.String"))
+    }
+
+    it("should do nothing when is used to check l1.isInstanceOf[List[Int]]") {
+      requireState(l1.isInstanceOf[List[Int]])
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check s1.isInstanceOf[List[Int]]") {
+      val e = intercept[IllegalStateException] {
+        requireState(s1.isInstanceOf[List[Int]])
+      }
+      assert(e.getMessage == wasNotInstanceOf(s1, "scala.List"))
+    }
+
+    it("should do nothing when is used to check date.isInstanceOf[Date]") {
+      requireState(date.isInstanceOf[Date])
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check l1.isInstanceOf[Date]") {
+      val e = intercept[IllegalStateException] {
+        requireState(l1.isInstanceOf[Date])
+      }
+      assert(e.getMessage == wasNotInstanceOf(l1, "java.util.Date"))
+    }
+
+    it("should do nothing when is used to check !l1.isInstanceOf[String]") {
+      requireState(!l1.isInstanceOf[String])
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !s1.isInstanceOf[String]") {
+      val e = intercept[IllegalStateException] {
+        requireState(!s1.isInstanceOf[String])
+      }
+      assert(e.getMessage == wasInstanceOf(s1, "scala.Predef.String"))
+    }
+
+    it("should do nothing when is used to check !s1.isInstanceOf[List[Int]]") {
+      requireState(!s1.isInstanceOf[List[Int]])
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !l1.isInstanceOf[List[Int]]") {
+      val e = intercept[IllegalStateException] {
+        requireState(!l1.isInstanceOf[List[Int]])
+      }
+      assert(e.getMessage == wasInstanceOf(l1, "scala.List"))
+    }
+
+    it("should do nothing when is used to check !l1.isInstanceOf[Date]") {
+      requireState(!l1.isInstanceOf[Date])
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !date.isInstanceOf[Date]") {
+      val e = intercept[IllegalStateException] {
+        requireState(!date.isInstanceOf[Date])
+      }
+      assert(e.getMessage == wasInstanceOf(date, "java.util.Date"))
+    }
+
+    it("should do nothing when is used to check s1.length == 9") {
+      requireState(s1.length == 12)
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check s1.length == 10") {
+      val e = intercept[IllegalStateException] {
+        requireState(s1.length == 10)
+      }
+      assert(e.getMessage == hadLengthInsteadOfExpectedLength(s1, 12, 10))
+    }
+
+    it("should do nothing when is used to check l1.length == 3") {
+      requireState(l1.length == 3)
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check l1.length == 10") {
+      val e = intercept[IllegalStateException] {
+        requireState(l1.length == 10)
+      }
+      assert(e.getMessage == hadLengthInsteadOfExpectedLength(l1, 3, 10))
+    }
+
+    it("should do nothing when is used to check !(s1.length == 10)") {
+      requireState(!(s1.length == 10))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !(s1.length == 9)") {
+      val e = intercept[IllegalStateException] {
+        requireState(!(s1.length == 12))
+      }
+      assert(e.getMessage == hadLength(s1, 12))
+    }
+
+    it("should do nothing when is used to check !(l1.length == 2)") {
+      requireState(!(l1.length == 2))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !(l1.length == 9)") {
+      val e = intercept[IllegalStateException] {
+        requireState(!(l1.length == 3))
+      }
+      assert(e.getMessage == hadLength(l1, 3))
+    }
+
+    it("should do nothing when is used to check s1.size == 9") {
+      requireState(s1.size == 12)
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check s1.size == 10") {
+      val e = intercept[IllegalStateException] {
+        requireState(s1.size == 10)
+      }
+      assert(e.getMessage == hadSizeInsteadOfExpectedSize(s1, 12, 10))
+    }
+
+    it("should do nothing when is used to check l1.size == 3") {
+      requireState(l1.size == 3)
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check l1.size == 10") {
+      val e = intercept[IllegalStateException] {
+        requireState(l1.size == 10)
+      }
+      assert(e.getMessage == hadSizeInsteadOfExpectedSize(l1, 3, 10))
+    }
+
+    it("should do nothing when is used to check !(s1.size == 10)") {
+      requireState(!(s1.size == 10))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !(s1.size == 9)") {
+      val e = intercept[IllegalStateException] {
+        requireState(!(s1.size == 12))
+      }
+      assert(e.getMessage == hadSize(s1, 12))
+    }
+
+    it("should do nothing when is used to check !(l1.size == 2)") {
+      requireState(!(l1.size == 2))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !(l1.size == 9)") {
+      val e = intercept[IllegalStateException] {
+        requireState(!(l1.size == 3))
+      }
+      assert(e.getMessage == hadSize(l1, 3))
+    }
+
+    it("should do nothing when is used to check l1.exists(_ == 3)") {
+      requireState(l1.exists(_ == 3))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check l1.exists(_ == 5)") {
+      val e = intercept[IllegalStateException] {
+        requireState(l1.exists(_ == 5))
+      }
+      assert(e.getMessage == didNotContain(l1, 5))
+    }
+
+    it("should do nothing when is used to check !l1.exists(_ == 5)") {
+      requireState(!l1.exists(_ == 5))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !l1.exists(_ == 3)") {
+      val e = intercept[IllegalStateException] {
+        requireState(!l1.exists(_ == 3))
+      }
+      assert(e.getMessage == contained(l1, 3))
     }
 
   }
@@ -2547,6 +3268,11 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     val l1 = List(1, 2, 3)
     val l2 = List.empty[Int]
 
+    val m1 = Map(1 -> "one", 2 -> "two", 3 -> "three")
+    val m2 = Map.empty[Int, String]
+
+    val date = new Date
+
     it("should do nothing when is used to check s1 startsWith \"hi\"") {
       requireState(s1 startsWith "hi", ", dude")
       requireState(s1.startsWith("hi"), ", dude")
@@ -2699,6 +3425,57 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       assert(e2.getMessage == didNotContain(l1, 5) + ", dude")
     }
 
+    it("should do nothing when is used to check !(l1 contains 5)") {
+      requireState(!(l1 contains 5), ", dude")
+      requireState(!l1.contains(5), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !(l1 contains 2)") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(!(l1 contains 2), ", dude")
+      }
+      assert(e1.getMessage == contained(l1, 2) + ", dude")
+
+      val e2 = intercept[IllegalStateException] {
+        requireState(!l1.contains(2), ", dude")
+      }
+      assert(e2.getMessage == contained(l1, 2) + ", dude")
+    }
+
+    it("should do nothing when is used to check m1 contains 2") {
+      requireState(m1 contains 2, ", dude")
+      requireState(m1.contains(2), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check m1 contains 5") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(m1 contains 5, ", dude")
+      }
+      assert(e1.getMessage == didNotContainKey(m1, 5) + ", dude")
+
+      val e2 = intercept[IllegalStateException] {
+        requireState(m1.contains(5), ", dude")
+      }
+      assert(e2.getMessage == didNotContainKey(m1, 5) + ", dude")
+    }
+
+    it("should do nothing when is used to check !(m1 contains 5)") {
+      requireState(!(m1 contains 5), ", dude")
+      requireState(!m1.contains(5), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !(m1 contains 2)") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(!(m1 contains 2), ", dude")
+      }
+      assert(e1.getMessage == containedKey(m1, 2) + ", dude")
+
+      val e2 = intercept[IllegalStateException] {
+        requireState(!m1.contains(2), ", dude")
+      }
+      assert(e2.getMessage == containedKey(m1, 2) + ", dude")
+    }
+
     it("should do nothing when is used to check ci1 eq ci3") {
       requireState(ci1 eq ci3, ", dude")
       requireState(ci1.eq(ci3), ", dude")
@@ -2797,6 +3574,182 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         requireState(!l2.isEmpty, ", dude")
       }
       assert(e.getMessage == wasEmpty(l2) + ", dude")
+    }
+
+    it("should do nothing when is used to check s1.isInstanceOf[String]") {
+      requireState(s1.isInstanceOf[String], ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check l1.isInstanceOf[String]") {
+      val e = intercept[IllegalStateException] {
+        requireState(l1.isInstanceOf[String], ", dude")
+      }
+      assert(e.getMessage == wasNotInstanceOf(l1, "scala.Predef.String") + ", dude")
+    }
+
+    it("should do nothing when is used to check l1.isInstanceOf[List[Int]]") {
+      requireState(l1.isInstanceOf[List[Int]], ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check s1.isInstanceOf[List[Int]]") {
+      val e = intercept[IllegalStateException] {
+        requireState(s1.isInstanceOf[List[Int]], ", dude")
+      }
+      assert(e.getMessage == wasNotInstanceOf(s1, "scala.List") + ", dude")
+    }
+
+    it("should do nothing when is used to check date.isInstanceOf[Date]") {
+      requireState(date.isInstanceOf[Date], ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check l1.isInstanceOf[Date]") {
+      val e = intercept[IllegalStateException] {
+        requireState(l1.isInstanceOf[Date], ", dude")
+      }
+      assert(e.getMessage == wasNotInstanceOf(l1, "java.util.Date") + ", dude")
+    }
+
+    it("should do nothing when is used to check !l1.isInstanceOf[String]") {
+      requireState(!l1.isInstanceOf[String], ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !s1.isInstanceOf[String]") {
+      val e = intercept[IllegalStateException] {
+        requireState(!s1.isInstanceOf[String], ", dude")
+      }
+      assert(e.getMessage == wasInstanceOf(s1, "scala.Predef.String") + ", dude")
+    }
+
+    it("should do nothing when is used to check !s1.isInstanceOf[List[Int]]") {
+      requireState(!s1.isInstanceOf[List[Int]], ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !l1.isInstanceOf[List[Int]]") {
+      val e = intercept[IllegalStateException] {
+        requireState(!l1.isInstanceOf[List[Int]], ", dude")
+      }
+      assert(e.getMessage == wasInstanceOf(l1, "scala.List") + ", dude")
+    }
+
+    it("should do nothing when is used to check !l1.isInstanceOf[Date]") {
+      requireState(!l1.isInstanceOf[Date], ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !date.isInstanceOf[Date]") {
+      val e = intercept[IllegalStateException] {
+        requireState(!date.isInstanceOf[Date], ", dude")
+      }
+      assert(e.getMessage == wasInstanceOf(date, "java.util.Date") + ", dude")
+    }
+
+    it("should do nothing when is used to check s1.length == 9") {
+      requireState(s1.length == 12, ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check s1.length == 10") {
+      val e = intercept[IllegalStateException] {
+        requireState(s1.length == 10, ", dude")
+      }
+      assert(e.getMessage == hadLengthInsteadOfExpectedLength(s1, 12, 10) + ", dude")
+    }
+
+    it("should do nothing when is used to check l1.length == 3") {
+      requireState(l1.length == 3, ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check l1.length == 10") {
+      val e = intercept[IllegalStateException] {
+        requireState(l1.length == 10, ", dude")
+      }
+      assert(e.getMessage == hadLengthInsteadOfExpectedLength(l1, 3, 10) + ", dude")
+    }
+
+    it("should do nothing when is used to check !(s1.length == 10)") {
+      requireState(!(s1.length == 10), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !(s1.length == 9)") {
+      val e = intercept[IllegalStateException] {
+        requireState(!(s1.length == 12), ", dude")
+      }
+      assert(e.getMessage == hadLength(s1, 12) + ", dude")
+    }
+
+    it("should do nothing when is used to check !(l1.length == 2)") {
+      requireState(!(l1.length == 2), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !(l1.length == 9)") {
+      val e = intercept[IllegalStateException] {
+        requireState(!(l1.length == 3), ", dude")
+      }
+      assert(e.getMessage == hadLength(l1, 3) + ", dude")
+    }
+
+    it("should do nothing when is used to check s1.size == 9") {
+      requireState(s1.size == 12, ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check s1.size == 10") {
+      val e = intercept[IllegalStateException] {
+        requireState(s1.size == 10, ", dude")
+      }
+      assert(e.getMessage == hadSizeInsteadOfExpectedSize(s1, 12, 10) + ", dude")
+    }
+
+    it("should do nothing when is used to check l1.size == 3") {
+      requireState(l1.size == 3, ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check l1.size == 10") {
+      val e = intercept[IllegalStateException] {
+        requireState(l1.size == 10, ", dude")
+      }
+      assert(e.getMessage == hadSizeInsteadOfExpectedSize(l1, 3, 10) + ", dude")
+    }
+
+    it("should do nothing when is used to check !(s1.size == 10)") {
+      requireState(!(s1.size == 10), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !(s1.size == 9)") {
+      val e = intercept[IllegalStateException] {
+        requireState(!(s1.size == 12), ", dude")
+      }
+      assert(e.getMessage == hadSize(s1, 12) + ", dude")
+    }
+
+    it("should do nothing when is used to check !(l1.size == 2)") {
+      requireState(!(l1.size == 2), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !(l1.size == 9)") {
+      val e = intercept[IllegalStateException] {
+        requireState(!(l1.size == 3), ", dude")
+      }
+      assert(e.getMessage == hadSize(l1, 3) + ", dude")
+    }
+
+    it("should do nothing when is used to check l1.exists(_ == 3)") {
+      requireState(l1.exists(_ == 3), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check l1.exists(_ == 5)") {
+      val e = intercept[IllegalStateException] {
+        requireState(l1.exists(_ == 5), ", dude")
+      }
+      assert(e.getMessage == didNotContain(l1, 5) + ", dude")
+    }
+
+    it("should do nothing when is used to check !l1.exists(_ == 5)") {
+      requireState(!l1.exists(_ == 5), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !l1.exists(_ == 3)") {
+      val e = intercept[IllegalStateException] {
+        requireState(!l1.exists(_ == 3), ", dude")
+      }
+      assert(e.getMessage == contained(l1, 3) + ", dude")
     }
 
   }

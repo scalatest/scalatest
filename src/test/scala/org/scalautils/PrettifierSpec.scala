@@ -188,6 +188,9 @@ class PrettifierSpec extends Spec with Matchers {
     def `should put double quotes around strings` {
       Prettifier.default("hi") should be ("\"hi\"")
     }
+    def `should put double quotes around scala.collection.immutable.StringOps` {
+      Prettifier.default(new scala.collection.immutable.StringOps("hi")) should be ("\"hi\"")
+    }
     def `should put single quotes around chars` {
       Prettifier.default('h') should be ("'h'")
     }
