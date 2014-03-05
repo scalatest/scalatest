@@ -52,8 +52,8 @@ trait Snapshots {
 }
 
 /**
- * Companion object that facilitates the importing of <code>Assertions</code> members as
- * an alternative to mixing it in. One use case is to import <code>Assertions</code> members so you can use
+ * Companion object that facilitates the importing of <code>Snapshots</code> members as
+ * an alternative to mixing it in. One use case is to import <code>Snapshots</code> members so you can use
  * them in the Scala interpreter:
  *
  * <pre class="stREPL">
