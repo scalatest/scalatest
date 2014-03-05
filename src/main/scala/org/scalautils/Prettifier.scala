@@ -169,6 +169,7 @@ object Prettifier {
           case null => "null"
           case aUnit: Unit => "<(), the Unit value>"
           case aString: String => "\"" + aString + "\""
+          case aStringWrapper: scala.collection.immutable.StringOps => "\"" + aStringWrapper + "\""
           case aChar: Char =>  "\'" + aChar + "\'"
           case Some(e) => "Some(" + apply(e) + ")"
           case Success(e) => "Success(" + apply(e) + ")"
