@@ -23,7 +23,7 @@ import reflect.macros.Context
  * @param name the name (as in source) of the expression
  * @param value the value of the expression
  */
-case class Snapshot(name: String, value: Any) {
+final case class Snapshot(name: String, value: Any) {
 
   /**
    * Overriden <code>toString</code> to print in {name} = {value} format.
@@ -31,7 +31,6 @@ case class Snapshot(name: String, value: Any) {
    * @return string in {name} = {value} format
    */
   override def toString: String = Resources("aEqualB", name, Prettifier.default(value))
-
 }
 
 /**
@@ -48,7 +47,79 @@ trait Snapshots {
    * @param expressions expressions to be snapped
    * @return an <code>IndexedSeq</code> of <code>Snapshot</code> for the given expressions.
    */
-  def snap(expressions: Any*): IndexedSeq[Snapshot] = macro SnapshotsMacro.snap
+  def snap(expressions: Any*): SnapshotSeq = macro SnapshotsMacro.snap
+}
+
+final class SnapshotSeq(underlying: collection.immutable.IndexedSeq[Snapshot]) extends collection.immutable.IndexedSeq[Snapshot] {
+
+  /**
+   * Selects an element by its index in the sequence.
+   *
+   * <p>
+   * This method invokes <code>apply</code> on the underlying immutable <code>IndexedSeq[String]</code>, passing in <code>idx</code>, and returns the result.
+   * </p>
+   *
+   * @param idx the index to select
+   * @return the element of this sequence at index <code>idx</code>, where 0 indicates the first element
+   */
+  def apply(idx: Int): Snapshot = underlying.apply(idx)
+
+  /**
+   * The length of this sequence.
+   *
+   * <p>
+   * This method invokes <code>length</code> on the underlying immutable <code>IndexedSeq[String]</code> and returns the result.
+   * </p>
+   *
+   * @return the number of elements in this sequence
+   */
+  def length: Int = underlying.length
+
+  /**
+   * Appends a string element to this sequence, if it doesn't already exist in the sequence.
+   *
+   * <p>
+   * If the string element already exists in this sequence, this method returns itself. If not,
+   * this method returns a new <code>MultiSelOptionSeq</code> with the passed value appended to the
+   * end of the original <code>MultiSelOptionSeq</code>.
+   * </p>
+   *
+   * @param the string element to append to this sequence
+   * @return a <code>MultiSelOptionSeq</code> that contains the passed string value
+   */
+  def +(value: Snapshot): SnapshotSeq = {
+    if (!underlying.contains(value))
+      new SnapshotSeq(underlying :+ value)
+    else
+      this
+  }
+
+  /**
+   * Removes a string element to this sequence, if it already exists in the sequence.
+   *
+   * <p>
+   * If the string element does not already exist in this sequence, this method returns itself. If the element
+   * is contained in this sequence, this method returns a new <code>MultiSelOptionSeq</code> with the passed value
+   * removed from the the original <code>MultiSelOptionSeq</code>, leaving any other elements in the same order.
+   * </p>
+   *
+   * @param the string element to append to this sequence
+   * @return a <code>MultiSelOptionSeq</code> that contains the passed string value
+   */
+  def -(value: Snapshot): SnapshotSeq = {
+    if (underlying.contains(value))
+      new SnapshotSeq(underlying.filter(_ != value))
+    else
+      this
+  }
+
+  override def toString: String = mkString(", ")
+
+  def lines: String = mkString("\n")
+}
+
+object SnapshotSeq {
+  def apply(snapshots: Snapshot*): SnapshotSeq = new SnapshotSeq(Vector(snapshots: _*))
 }
 
 /**
@@ -76,7 +147,7 @@ object Snapshots extends Snapshots
 
 private[scalautils] object SnapshotsMacro {
 
-  def snap(context: Context)(expressions: context.Expr[Any]*): context.Expr[IndexedSeq[Snapshot]] = {
+  def snap(context: Context)(expressions: context.Expr[Any]*): context.Expr[SnapshotSeq] = {
     import context.universe._
 
     val snapshots =
@@ -99,7 +170,13 @@ private[scalautils] object SnapshotsMacro {
     context.Expr(
       Apply(
         Select(
-          Ident("Vector"),
+          Select(
+            Select(
+              Ident(newTermName("org")),
+              newTermName("scalautils")
+            ),
+            newTermName("SnapshotSeq")
+          ),
           newTermName("apply")
         ),
         List(snapshots: _*)
