@@ -17,6 +17,9 @@ package org.scalautils
 
 import reflect.macros.Context
 
+/**
+ * Trait that contains <code>require</code> and <code>requireState</code> to check for requirements.
+ */
 trait Requirements {
 
   import language.experimental.macros
@@ -297,5 +300,32 @@ private[scalautils] object RequirementsMacro {
   }
 }
 
+/**
+ * Companion object that facilitates the importing of <code>Requirements</code> members as
+ * an alternative to mixing it in. One use case is to import <code>Requirements</code> members so you can use
+ * them in the Scala interpreter:
+ *
+ * <pre class="stREPL">
+ * $scala -classpath scalatest.jar
+ * Welcome to Scala version 2.10.3.final (Java HotSpot(TM) Client VM, Java xxxxxx).
+ * Type in expressions to have them evaluated.
+ * Type :help for more information.
+ * &nbsp;
+ * scala&gt; import org.scalautils.Requirements._
+ * import org.scalautils.Requirements._
+ * &nbsp;
+ * scala&gt; val a = 1
+ * a: Int = 1
+ * &nbsp;
+ * scala&gt; require(a == 2)
+ * java.lang.IllegalArgumentException: 1 did not equal 2
+ *      at org.scalautils.Requirements$RequirementsHelper.macroRequire(Requirements.scala:56)
+ *      at .&lt;init&gt;(&lt;console&gt;:20)
+ *      at .&lt;clinit&gt;(&lt;console&gt;)
+ *      at .&lt;init&gt;(&lt;console&gt;:7)
+ *      at .&lt;clinit&gt;(&lt;console&gt;)
+ *      at $print(&lt;console&gt;)
+ *      at sun.reflect.NativeMethodAccessorImpl.invoke...
+ */
 object Requirements extends Requirements
 

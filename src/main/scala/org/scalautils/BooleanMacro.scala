@@ -401,27 +401,12 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
                               valDef("$org_scalatest_assert_macro_right", boolExprApply.args(0).duplicate),
                               existsMacroBool(select.duplicate, func.duplicate)
                             )
-                          case _ =>
-                            Block(
-                              valDef("$org_scalatest_assert_macro_left", leftTree),
-                              valDef("$org_scalatest_assert_macro_right", rightTree),
-                              binaryMacroBool(select.duplicate)
-                            )
+                          case _ => simpleMacroBool(tree.duplicate, getText(tree))
                         }
-                      case _ =>
-                        Block(
-                          valDef("$org_scalatest_assert_macro_left", leftTree),
-                          valDef("$org_scalatest_assert_macro_right", rightTree),
-                          binaryMacroBool(select.duplicate)
-                        )
+                      case _ => simpleMacroBool(tree.duplicate, getText(tree))
                     }
 
-                  case _ =>
-                    Block(
-                      valDef("$org_scalatest_assert_macro_left", leftTree),
-                      valDef("$org_scalatest_assert_macro_right", rightTree),
-                      binaryMacroBool(select.duplicate)
-                    )
+                  case _ => simpleMacroBool(tree.duplicate, getText(tree))
                 }
 
               case _ =>

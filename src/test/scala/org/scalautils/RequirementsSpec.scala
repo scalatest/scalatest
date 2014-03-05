@@ -147,6 +147,10 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       value.toString.contains(v.toString)
     }
 
+    def exists(v: Int): Boolean = {
+      value == v
+    }
+
     override def toString: String = value.toString
   }
 
@@ -544,6 +548,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     val l1 = List(1, 2, 3)
     val l2 = List.empty[Int]
+    val l3 = List("one", "two", "three")
 
     val m1 = Map(1 -> "one", 2 -> "two", 3 -> "three")
     val m2 = Map.empty[Int, String]
@@ -1029,6 +1034,27 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       assert(e.getMessage == contained(l1, 3))
     }
 
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1.exists(_ > 3)") {
+      val e = intercept[IllegalArgumentException] {
+        require(l1.exists(_ > 3))
+      }
+      assert(e.getMessage == wasFalse("l1.exists(((x$6: Int) => x$6.>(3)))"))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check l3.exists(_.isEmpty)") {
+      val e = intercept[IllegalArgumentException] {
+        require(l3.exists(_.isEmpty))
+      }
+      assert(e.getMessage == wasFalse("l3.exists(((x$7: String) => x$7.isEmpty()))"))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check l3.exists(false)") {
+      val e = intercept[IllegalArgumentException] {
+        require(ci1.exists(321))
+      }
+      assert(e.getMessage == wasFalse("ci1.exists(321)"))
+    }
+
   }
 
   describe("The require(boolean, clue) method") {
@@ -1465,6 +1491,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     val l1 = List(1, 2, 3)
     val l2 = List.empty[Int]
+    val l3 = List("one", "two", "three")
 
     val m1 = Map(1 -> "one", 2 -> "two", 3 -> "three")
     val m2 = Map.empty[Int, String]
@@ -1950,6 +1977,27 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       assert(e.getMessage == contained(l1, 3) + ", dude")
     }
 
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1.exists(_ > 3)") {
+      val e = intercept[IllegalArgumentException] {
+        require(l1.exists(_ > 3), ", dude")
+      }
+      assert(e.getMessage == wasFalse("l1.exists(((x$12: Int) => x$12.>(3)))") + ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check l3.exists(_.isEmpty)") {
+      val e = intercept[IllegalArgumentException] {
+        require(l3.exists(_.isEmpty), ", dude")
+      }
+      assert(e.getMessage == wasFalse("l3.exists(((x$13: String) => x$13.isEmpty()))") + ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check l3.exists(false)") {
+      val e = intercept[IllegalArgumentException] {
+        require(ci1.exists(321), ", dude")
+      }
+      assert(e.getMessage == wasFalse("ci1.exists(321)") + ", dude")
+    }
+
   }
 
   describe("The requireState(boolean) method") {
@@ -2346,6 +2394,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     val l1 = List(1, 2, 3)
     val l2 = List.empty[Int]
+    val l3 = List("one", "two", "three")
 
     val m1 = Map(1 -> "one", 2 -> "two", 3 -> "three")
     val m2 = Map.empty[Int, String]
@@ -2831,6 +2880,27 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       assert(e.getMessage == contained(l1, 3))
     }
 
+    it("should throw IllegalStateException with correct message and stack depth when is used to check l1.exists(_ > 3)") {
+      val e = intercept[IllegalStateException] {
+        requireState(l1.exists(_ > 3))
+      }
+      assert(e.getMessage == wasFalse("l1.exists(((x$18: Int) => x$18.>(3)))"))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check l3.exists(_.isEmpty)") {
+      val e = intercept[IllegalStateException] {
+        requireState(l3.exists(_.isEmpty))
+      }
+      assert(e.getMessage == wasFalse("l3.exists(((x$19: String) => x$19.isEmpty()))"))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check l3.exists(false)") {
+      val e = intercept[IllegalStateException] {
+        requireState(ci1.exists(321))
+      }
+      assert(e.getMessage == wasFalse("ci1.exists(321)"))
+    }
+
   }
 
   describe("The requireState(boolean, clue) method") {
@@ -3267,6 +3337,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     val l1 = List(1, 2, 3)
     val l2 = List.empty[Int]
+    val l3 = List("one", "two", "three")
 
     val m1 = Map(1 -> "one", 2 -> "two", 3 -> "three")
     val m2 = Map.empty[Int, String]
@@ -3750,6 +3821,27 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         requireState(!l1.exists(_ == 3), ", dude")
       }
       assert(e.getMessage == contained(l1, 3) + ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check l1.exists(_ > 3)") {
+      val e = intercept[IllegalStateException] {
+        requireState(l1.exists(_ > 3), ", dude")
+      }
+      assert(e.getMessage == wasFalse("l1.exists(((x$24: Int) => x$24.>(3)))") + ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check l3.exists(_.isEmpty)") {
+      val e = intercept[IllegalStateException] {
+        requireState(l3.exists(_.isEmpty), ", dude")
+      }
+      assert(e.getMessage == wasFalse("l3.exists(((x$25: String) => x$25.isEmpty()))") + ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check l3.exists(false)") {
+      val e = intercept[IllegalStateException] {
+        requireState(ci1.exists(321), ", dude")
+      }
+      assert(e.getMessage == wasFalse("ci1.exists(321)") + ", dude")
     }
 
   }
