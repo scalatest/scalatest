@@ -31,6 +31,7 @@ object ScalatestBuild extends Build {
      organization := "org.scalatest",
      version := releaseVersion,
      scalaVersion := scalaVersionToUse,
+     crossScalaVersions := Seq("2.11.0-RC1"),
      scalacOptions ++= Seq("-no-specialization", "-feature", "-target:jvm-1.5"),
      initialCommands in console := """|import org.scalatest._
                                       |import org.scalautils._
@@ -41,6 +42,10 @@ object ScalatestBuild extends Build {
        </dependency>, 
      libraryDependencies ++= scalatestDependencies,
      libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersionToUse, // this is needed to compile macro
+     libraryDependencies ++= (
+       if (scalaVersion.value startsWith "2.11") Seq("org.scala-lang.modules" %% "scala-xml" % "1.0.0-RC6")
+       else Seq.empty
+     ),
      resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
      publishTo <<= version { v: String =>
        val nexus = "https://oss.sonatype.org/"
@@ -287,7 +292,7 @@ object ScalatestBuild extends Build {
 
    def scalatestDependencies = Seq(
      "org.scala-sbt" % "test-interface" % "1.0" % "optional",
-     "org.scalacheck" %% "scalacheck" % "1.11.0" % "optional",
+     "org.scalacheck" %% "scalacheck" % "1.11.3" % "optional",
      "org.easymock" % "easymockclassextension" % "3.1" % "optional", 
      "org.jmock" % "jmock-legacy" % "2.5.1" % "optional", 
      "org.mockito" % "mockito-all" % "1.9.0" % "optional", 
