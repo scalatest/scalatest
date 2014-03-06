@@ -899,7 +899,7 @@ private[scalatest] class HtmlReporter(
   // TODO: probably actually show the exception in the HTML report rather than blowing up the reporter, because that means
   // the whole suite doesn't get recorded. May want to do this more generally though.
   private def markup(elementId: String, text: String, indentLevel: Int, styleName: String) = {
-    val htmlString = HtmlReporter.convertSingleParaToDefinition(pegDown.markdownToHtml(text))
+    val htmlString = convertAmpersand(convertSingleParaToDefinition(pegDown.markdownToHtml(text)))
     <div id={ elementId } class={ styleName } style={ "margin-left: " + (specIndent * twoLess(indentLevel)) + "px;" }>
        {
          try XML.loadString(htmlString)
@@ -1106,4 +1106,7 @@ private[tools] object HtmlReporter {
       html.replace("<p>", "<dl>\n<dt>").replace("</p>", "</dt>\n</dl>")
     else html
   }
+
+  def convertAmpersand(html: String): String =
+    html.replaceAll("&", "&amp;")
 }
