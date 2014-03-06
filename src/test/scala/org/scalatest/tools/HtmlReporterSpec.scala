@@ -17,7 +17,7 @@ package org.scalatest.tools
 
 import org.scalatest._
 import SharedHelpers._
-import org.scalatest.events.{SuiteCompleted, SuiteAborted, Ordinal, TestStarting}
+import org.scalatest.events._
 
 class HtmlReporterSpec extends Spec {
 
@@ -65,6 +65,37 @@ class HtmlReporterSpec extends Spec {
         htmlRep(suiteAborted)
       }
       assert(e.getMessage === "Expected SuiteStarting for completion event: " + suiteAborted + " in the head of suite events, but we got: " + testStarting) 
+    }
+
+    def `should take MarkupProvided with '&' in it without problem` {
+      val tempDir = createTempDirectory()
+      val htmlRep = new HtmlReporter(tempDir.getAbsolutePath, false, None, None)
+      val suiteStarting =
+        SuiteStarting(
+          new Ordinal(99),
+          "TestSuite",
+          "TestSuite",
+          Some("TestSuite")
+        )
+      val markupProvided =
+        MarkupProvided(
+          new Ordinal(99),
+          "<a href=\"http://XXX.xxx.com/stc?registerRandom=true&add_random_sku_to_wait_list_sku_available=true\">a link</a>",
+          Some(
+            NameInfo("TestSuite", "TestSuite", Some("TestSuite"), Some("test 1"))
+          )
+        )
+      val suiteCompleted =
+        SuiteCompleted(
+          new Ordinal(99),
+          "TestSuite",
+          "TestSuite",
+          Some("TestSuite")
+        )
+      htmlRep(suiteStarting)
+      htmlRep(markupProvided)
+      htmlRep(suiteCompleted)
+      htmlRep.dispose()
     }
   }
   object `HtmlReporter's convertSingleParaToDefinition method` {
