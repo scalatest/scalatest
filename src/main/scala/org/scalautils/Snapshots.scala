@@ -150,8 +150,55 @@ private[scalautils] object SnapshotsMacro {
   def snap(context: Context)(expressions: context.Expr[Any]*): context.Expr[SnapshotSeq] = {
     import context.universe._
 
+    def getPosition(expr: Tree): Int = {
+      expr match {
+        case apply: Apply => getPosition(apply.fun)
+        case typeApply: TypeApply => getPosition(typeApply.fun)
+        case select: Select => getPosition(select.qualifier)
+        case other => other.pos.asInstanceOf[scala.reflect.internal.util.Position].point
+      }
+    }
+
+    def getEndOffset(expr: Tree): Int =
+      expr match {
+        case apply: Apply =>
+          if (apply.args.length > 0)
+            getEndOffset(apply.args.last)
+          else
+            getEndOffset(apply.fun)
+        case typeApply: TypeApply =>
+          if (typeApply.args.length > 0)
+            getEndOffset(typeApply.args.last)
+          else
+            getEndOffset(typeApply.fun)
+        case other =>
+          val otherPos = other.pos
+          val otherOffset = otherPos.point
+          val otherColumn = otherPos.column
+          val lineContent = otherPos.lineContent
+          val lineLength = lineContent.length
+          otherOffset + lineLength - otherColumn
+      }
+
+    val content = context.macroApplication.pos.source.content.mkString
+
+    val offsetList =
+      (expressions.map { expr =>
+        getPosition(expr.tree)
+      }).toList ++ List(getEndOffset(expressions.last.tree))
+
+    val rangeList = offsetList.sliding(2)
+    val sourceList =
+      (rangeList.map { case List(start, end) =>
+        val raw = content.substring(start, end).trim
+        if (raw.endsWith(","))
+          raw.substring(0, raw.length - 1)
+        else
+          raw
+      }).toList
+
     val snapshots =
-      expressions.map { expr =>
+      expressions.zipWithIndex.map { case (expr, idx) =>
         Apply(
           Select(
             Select(
@@ -163,7 +210,7 @@ private[scalautils] object SnapshotsMacro {
             ),
             newTermName("apply")
           ),
-          List(context.literal(show(expr.tree)).tree, expr.tree.duplicate)
+          List(context.literal(sourceList(idx)).tree, expr.tree.duplicate)
         )
       }
 

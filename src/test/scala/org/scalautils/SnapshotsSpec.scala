@@ -37,8 +37,8 @@ class SnapshotsSpec extends Spec {
       assert(snapshots.size == 3)
       assert(snapshots(0) == Snapshot("a", 3))
       assert(snapshots(1) == Snapshot("b", 4))
-      assert(snapshots(2) == Snapshot("a.+(b)", 7))
-      assert(snapshots.toString == "a was 3, b was 4, a.+(b) was 7")
+      assert(snapshots(2) == Snapshot("a + b", 7))
+      assert(snapshots.toString == "a was 3, b was 4, a + b was 7")
     }
 
     def `snap variable names and values and user can transform them using map` {
@@ -54,7 +54,7 @@ class SnapshotsSpec extends Spec {
       val a = 3
       val b = 4
       val snapshots = Snapshots.snap(a, b, a + b)
-      assert(snapshots.lines == "a was 3\nb was 4\na.+(b) was 7")
+      assert(snapshots.lines == "a was 3\nb was 4\na + b was 7")
     }
   }
 
