@@ -159,8 +159,8 @@ private[scalautils] object SnapshotsMacro {
       }
     }
 
-    def getEndOffset(expr: Tree): Int =
-      expr match {
+    def getEndOffset(tree: Tree): Int = {
+      tree match {
         case apply: Apply =>
           if (apply.args.length > 0)
             getEndOffset(apply.args.last)
@@ -179,16 +179,17 @@ private[scalautils] object SnapshotsMacro {
           val lineLength = lineContent.length
           otherOffset + lineLength - otherColumn
       }
+    }
 
     val content = context.macroApplication.pos.source.content.mkString
 
     val offsetList =
       (expressions.map { expr =>
         getPosition(expr.tree)
-      }).toList ++ List(getEndOffset(expressions.last.tree))
+      }).toList
 
     val rangeList = offsetList.sliding(2)
-    val sourceList =
+    val initSourceList =
       (rangeList.map { case List(start, end) =>
         val raw = content.substring(start, end).trim
         if (raw.endsWith(","))
@@ -196,6 +197,23 @@ private[scalautils] object SnapshotsMacro {
         else
           raw
       }).toList
+
+    // Let's get the last one, the last one is the most tricky one,
+    // we'll double check the source we get by parse and type check it, and
+    // compare it to the original tree's text (by calling show()).  If they are
+    // different, we'll just fallback to use the show(original) text.
+    val lastSource = content.substring(offsetList.last, getEndOffset(expressions.last.tree))
+    val lastShowText = show(expressions.last.tree)
+    val sourceList =
+      try {
+        if (show(context.typeCheck(context.parse(lastSource))) == lastShowText)
+          initSourceList ++ List(lastSource)
+        else
+          initSourceList ++ List(show(lastShowText))
+      }
+      catch {
+        case e: Throwable => initSourceList ++ List(lastShowText)
+      }
 
     val snapshots =
       expressions.zipWithIndex.map { case (expr, idx) =>

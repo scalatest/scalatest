@@ -41,6 +41,31 @@ class SnapshotsSpec extends Spec {
       assert(snapshots.toString == "a was 3, b was 4, a + b was 7")
     }
 
+    def `snap variable names and values and put them in IndexedSeq of Snapshot when the expression is multiline` {
+
+      val a = 1
+      val b = 2
+
+      val snapshots1 = Snapshots.snap(a, b, a +
+                                      b)
+      assert(snapshots1.size == 3)
+      assert(snapshots1(0) == Snapshot("a", 1))
+      assert(snapshots1(1) == Snapshot("b", 2))
+      assert(snapshots1(2) == Snapshot("a +\n" +
+                                       "                                      b", 3))
+      assert(snapshots1.toString == "a was 1, b was 2, a +\n" +
+                                    "                                      b was 3")
+
+      val snapshots2 = Snapshots.snap(a, b, a +
+                                      b
+                                     )
+      assert(snapshots2.size == 3)
+      assert(snapshots2(0) == Snapshot("a", 1))
+      assert(snapshots2(1) == Snapshot("b", 2))
+      assert(snapshots2(2) == Snapshot("a.+(b)", 3))
+      assert(snapshots2.toString == "a was 1, b was 2, a.+(b) was 3")
+    }
+
     def `snap variable names and values and user can transform them using map` {
       val a = 3
       val b = 4
