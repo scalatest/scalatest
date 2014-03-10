@@ -270,13 +270,15 @@ private[scalautils] object RequirementsMacro {
   def requireNonNull(context: Context)(elements: context.Expr[Any]*): context.Expr[Unit] = {
     import context.universe._
 
+    val sourceList = new MacroSourceHelper[context.type](context).getSourceList(elements: _*)
+
     val variablesNamesArray =
       Apply(
         Select(
           Ident("Array"),
           newTermName("apply")
         ),
-        List(elements.map(e => context.literal(show(e.tree)).tree): _*)
+        sourceList.map(s => context.literal(s).tree)
       )
 
     val elementsArray =
