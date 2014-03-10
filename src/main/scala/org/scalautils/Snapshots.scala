@@ -150,70 +150,7 @@ private[scalautils] object SnapshotsMacro {
   def snap(context: Context)(expressions: context.Expr[Any]*): context.Expr[SnapshotSeq] = {
     import context.universe._
 
-    def getPosition(expr: Tree): Int = {
-      expr match {
-        case apply: Apply => getPosition(apply.fun)
-        case typeApply: TypeApply => getPosition(typeApply.fun)
-        case select: Select => getPosition(select.qualifier)
-        case other => other.pos.asInstanceOf[scala.reflect.internal.util.Position].point
-      }
-    }
-
-    def getEndOffset(tree: Tree): Int = {
-      tree match {
-        case apply: Apply =>
-          if (apply.args.length > 0)
-            getEndOffset(apply.args.last)
-          else
-            getEndOffset(apply.fun)
-        case typeApply: TypeApply =>
-          if (typeApply.args.length > 0)
-            getEndOffset(typeApply.args.last)
-          else
-            getEndOffset(typeApply.fun)
-        case other =>
-          val otherPos = other.pos
-          val otherOffset = otherPos.point
-          val otherColumn = otherPos.column
-          val lineContent = otherPos.lineContent
-          val lineLength = lineContent.length
-          otherOffset + lineLength - otherColumn
-      }
-    }
-
-    val content = context.macroApplication.pos.source.content.mkString
-
-    val offsetList =
-      (expressions.map { expr =>
-        getPosition(expr.tree)
-      }).toList
-
-    val rangeList = offsetList.sliding(2)
-    val initSourceList =
-      (rangeList.map { case List(start, end) =>
-        val raw = content.substring(start, end).trim
-        if (raw.endsWith(","))
-          raw.substring(0, raw.length - 1)
-        else
-          raw
-      }).toList
-
-    // Let's get the last one, the last one is the most tricky one,
-    // we'll double check the source we get by parse and type check it, and
-    // compare it to the original tree's text (by calling show()).  If they are
-    // different, we'll just fallback to use the show(original) text.
-    val lastSource = content.substring(offsetList.last, getEndOffset(expressions.last.tree))
-    val lastShowText = show(expressions.last.tree)
-    val sourceList =
-      try {
-        if (show(context.typeCheck(context.parse(lastSource))) == lastShowText)
-          initSourceList ++ List(lastSource)
-        else
-          initSourceList ++ List(show(lastShowText))
-      }
-      catch {
-        case e: Throwable => initSourceList ++ List(lastShowText)
-      }
+    val sourceList = new MacroSourceHelper[context.type](context).getSourceList(expressions: _*)
 
     val snapshots =
       expressions.zipWithIndex.map { case (expr, idx) =>
