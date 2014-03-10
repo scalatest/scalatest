@@ -1446,11 +1446,11 @@ class AssertionsSpec extends FunSpec {
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
 
-    it("should throw TestFailedException with correct message and stack depth when is used to check l1.exists(_ > 3)") {
+    it("should throw TestFailedException with correct message and stack depth when is used to check l1.exists(_ > 3) ") {
       val e = intercept[TestFailedException] {
         assert(l1.exists(_ > 3))
       }
-      assert(e.message == Some(wasFalse("l1.exists(((x$6: Int) => x$6.>(3)))")))
+      assert(e.message == Some(wasFalse("l1.exists(_ > 3)")))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -1459,7 +1459,7 @@ class AssertionsSpec extends FunSpec {
       val e = intercept[TestFailedException] {
         assert(l3.exists(_.isEmpty))
       }
-      assert(e.message == Some(wasFalse("l3.exists(((x$7: String) => x$7.isEmpty()))")))
+      assert(e.message == Some(wasFalse("l3.exists(_.isEmpty)")))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -2631,7 +2631,7 @@ class AssertionsSpec extends FunSpec {
       val e = intercept[TestFailedException] {
         assert(l1.exists(_ > 3), ", dude")
       }
-      assert(e.message == Some(wasFalse("l1.exists(((x$12: Int) => x$12.>(3)))") + ", dude"))
+      assert(e.message == Some(wasFalse("l1.exists(_ > 3)") + ", dude"))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -2640,7 +2640,7 @@ class AssertionsSpec extends FunSpec {
       val e = intercept[TestFailedException] {
         assert(l3.exists(_.isEmpty), ", dude")
       }
-      assert(e.message == Some(wasFalse("l3.exists(((x$13: String) => x$13.isEmpty()))") + ", dude"))
+      assert(e.message == Some(wasFalse("l3.exists(_.isEmpty)") + ", dude"))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -3806,7 +3806,7 @@ class AssertionsSpec extends FunSpec {
       val e = intercept[TestCanceledException] {
         assume(l1.exists(_ > 3))
       }
-      assert(e.message == Some(wasFalse("l1.exists(((x$18: Int) => x$18.>(3)))")))
+      assert(e.message == Some(wasFalse("l1.exists(_ > 3)")))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -3815,7 +3815,7 @@ class AssertionsSpec extends FunSpec {
       val e = intercept[TestCanceledException] {
         assume(l3.exists(_.isEmpty))
       }
-      assert(e.message == Some(wasFalse("l3.exists(((x$19: String) => x$19.isEmpty()))")))
+      assert(e.message == Some(wasFalse("l3.exists(_.isEmpty)")))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -4987,7 +4987,7 @@ class AssertionsSpec extends FunSpec {
       val e = intercept[TestCanceledException] {
         assume(l1.exists(_ > 3), ", dude")
       }
-      assert(e.message == Some(wasFalse("l1.exists(((x$24: Int) => x$24.>(3)))") + ", dude"))
+      assert(e.message == Some(wasFalse("l1.exists(_ > 3)") + ", dude"))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -4996,7 +4996,7 @@ class AssertionsSpec extends FunSpec {
       val e = intercept[TestCanceledException] {
         assume(l3.exists(_.isEmpty), ", dude")
       }
-      assert(e.message == Some(wasFalse("l3.exists(((x$25: String) => x$25.isEmpty()))") + ", dude"))
+      assert(e.message == Some(wasFalse("l3.exists(_.isEmpty)") + ", dude"))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }

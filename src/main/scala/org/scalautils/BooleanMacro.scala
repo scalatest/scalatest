@@ -108,6 +108,23 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
     }
   }
 
+  def getOriginalSource(tree: Tree, clueTree: Tree): String = {
+    tree match {
+      case literal: Literal =>
+        getPosition(tree) match {
+          case p: scala.reflect.internal.util.RangePosition => p.lineContent.slice(p.start, p.end).trim // this only available when -Yrangepos is enabled
+          case p: reflect.internal.util.Position => ""
+        }
+      case _ =>
+        val sourceHelper = new MacroSourceHelper[context.type](context)
+        if (clueTree.pos.pointOrElse(-1) >= 0)
+          sourceHelper.getTreesSourceList(tree, clueTree).apply(0)
+        else
+          sourceHelper.getTreesSourceList(tree).apply(0)
+
+    }
+  }
+
   def binaryMacroBool(select: Select): Apply =
     Apply(
       Select(
@@ -296,21 +313,21 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
       )
     )
 
-  def traverseSelect(select: Select, rightExpr: Tree): (Tree, Tree) = {
+  def traverseSelect(select: Select, rightExpr: Tree, clueExprTree: Tree): (Tree, Tree) = {
     val operator = select.name.decoded
     if (logicOperators.contains(operator)) {
       val leftTree =
         select.qualifier match {
-          case selectApply: Apply => transformAst(selectApply.duplicate)
-          case selectSelect: Select => transformAst(selectSelect.duplicate)
+          case selectApply: Apply => transformAst(selectApply.duplicate, clueExprTree)
+          case selectSelect: Select => transformAst(selectSelect.duplicate, clueExprTree)
           case _ => simpleMacroBool(select.qualifier.duplicate, getText(select.qualifier))
         }
       val rightTree = {
         val evalBlock =
           rightExpr match {
-            case argApply: Apply => transformAst(argApply.duplicate)
-            case argSelect: Select => transformAst(argSelect)
-            case argTypeApply: TypeApply => transformAst(argTypeApply.duplicate)
+            case argApply: Apply => transformAst(argApply.duplicate, clueExprTree)
+            case argSelect: Select => transformAst(argSelect, clueExprTree)
+            case argTypeApply: TypeApply => transformAst(argTypeApply.duplicate, clueExprTree)
             case _ => simpleMacroBool(rightExpr.duplicate, getText(rightExpr))
           }
         if (operator == "&&" || operator == "&")  {// generate if (left.value) {...} else false
@@ -347,13 +364,13 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
       case _ => false
     }
 
-  def transformAst(tree: Tree): Tree = {
+  def transformAst(tree: Tree, clueExprTree: Tree): Tree = {
     tree match {
       case apply: Apply if apply.args.size == 1 =>
         apply.fun match {
           case select: Select if isSupportedBinaryOperator(select.name.decoded) =>
             val operator = select.name.decoded
-            val (leftTree, rightTree) =  traverseSelect(select, apply.args(0))
+            val (leftTree, rightTree) =  traverseSelect(select, apply.args(0), clueExprTree)
             operator match {
               case "==" =>
                 leftTree match {
@@ -401,12 +418,12 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
                               valDef("$org_scalatest_assert_macro_right", boolExprApply.args(0).duplicate),
                               existsMacroBool(select.duplicate, func.duplicate)
                             )
-                          case _ => simpleMacroBool(tree.duplicate, getText(tree))
+                          case _ => simpleMacroBool(tree.duplicate, getOriginalSource(tree, clueExprTree))
                         }
-                      case _ => simpleMacroBool(tree.duplicate, getText(tree))
+                      case _ => simpleMacroBool(tree.duplicate, getOriginalSource(tree, clueExprTree))
                     }
 
-                  case _ => simpleMacroBool(tree.duplicate, getText(tree))
+                  case _ => simpleMacroBool(tree.duplicate, getOriginalSource(tree, clueExprTree))
                 }
 
               case _ =>
@@ -420,7 +437,7 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
           case funApply: Apply if funApply.args.size == 1 => // For === and !== that takes Equality
             funApply.fun match {
               case select: Select if select.name.decoded == "===" || select.name.decoded == "!==" =>
-                val (leftTree, rightTree) = traverseSelect(select, funApply.args(0))
+                val (leftTree, rightTree) = traverseSelect(select, funApply.args(0), clueExprTree)
                 Block(
                   valDef("$org_scalatest_assert_macro_left", leftTree),
                   valDef("$org_scalatest_assert_macro_right", rightTree),
@@ -431,7 +448,7 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
                   case select: Select if typeApply.args.size == 1 => // For TypeCheckedTripleEquals
                     val operator: String = select.name.decoded
                     if (operator == "===" || operator == "!==") {
-                      val (leftTree, rightTree) = traverseSelect(select, funApply.args(0))
+                      val (leftTree, rightTree) = traverseSelect(select, funApply.args(0), clueExprTree)
                       Block(
                         valDef("$org_scalatest_assert_macro_left", leftTree),
                         valDef("$org_scalatest_assert_macro_right", rightTree),
@@ -477,9 +494,9 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
           if (select.name.decoded == "unary_!") {
             val leftTree =
               select.qualifier match {
-                case selectApply: Apply => transformAst(selectApply.duplicate)
-                case selectSelect: Select => transformAst(selectSelect.duplicate)
-                case selectTypeApply: TypeApply => transformAst(selectTypeApply.duplicate)
+                case selectApply: Apply => transformAst(selectApply.duplicate, clueExprTree)
+                case selectSelect: Select => transformAst(selectSelect.duplicate, clueExprTree)
+                case selectTypeApply: TypeApply => transformAst(selectTypeApply.duplicate, clueExprTree)
                 case _ => simpleMacroBool(select.qualifier.duplicate, getText(select.qualifier))
               }
             notBool(leftTree.duplicate)
@@ -509,7 +526,7 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
   def genMacro(booleanExpr: Expr[Boolean], methodName: String, clueExpr: Expr[Any]): Expr[Unit] =
     context.Expr(
       Block(
-        valDef("$org_scalatest_assert_macro_expr", transformAst(booleanExpr.tree)),
+        valDef("$org_scalatest_assert_macro_expr", transformAst(booleanExpr.tree, clueExpr.tree)),
         callHelper(methodName, clueExpr.tree)
       )
     )

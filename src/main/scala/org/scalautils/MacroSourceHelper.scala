@@ -48,42 +48,48 @@ private[org] class MacroSourceHelper[C <: Context](context: C) {
         val otherColumn = otherPos.column
         val lineContent = otherPos.lineContent
         val lineLength = lineContent.length
-        otherOffset + lineLength - otherColumn
+        otherOffset + lineLength - otherColumn + 1
     }
   }
 
-  def getSourceList(expressions: context.Expr[Any]*): List[String] = {
+  def getTreesSourceList(trees: Tree*): List[String] = {
     val content = context.macroApplication.pos.source.content.mkString
     val offsetList =
-      (expressions.map { expr =>
-        getPosition(expr.tree)
+      (trees.map { tree =>
+        getPosition(tree)
       }).toList
 
-    val rangeList = offsetList.sliding(2)
-    val initSourceList =
-      (rangeList.map { case List(start, end) =>
-        val raw = content.substring(start, end).trim
-        if (raw.endsWith(","))
-          raw.substring(0, raw.length - 1)
-        else
-          raw
-      }).toList
+    val initSourceList: List[String] =
+      if (offsetList.length > 1) {
+        val rangeList = offsetList.sliding(2)
+        (rangeList.map { case List(start, end) =>
+          val raw = content.substring(start, end).trim
+          if (raw.endsWith(","))
+            raw.substring(0, raw.length - 1)
+          else
+            raw
+        }).toList
+      }
+      else
+        List.empty[String]
 
     // Let's get the last one, the last one is the most tricky one,
     // we'll double check the source we get by parse and type check it, and
     // compare it to the original tree's text (by calling show()).  If they are
     // different, we'll just fallback to use the show(original) text.
-    val lastSource = content.substring(offsetList.last, getEndOffset(expressions.last.tree))
-    val lastShowText = show(expressions.last.tree)
-    try {
-      if (show(context.typeCheck(context.parse(lastSource))) == lastShowText)
-        initSourceList ++ List(lastSource)
-      else
-        initSourceList ++ List(show(lastShowText))
-    }
-    catch {
-      case e: Throwable => initSourceList ++ List(lastShowText)
-    }
+    val rawLastSource = content.substring(offsetList.last, getEndOffset(trees.last))
+    val lastSource =
+      try {
+        context.parse(rawLastSource)
+        rawLastSource
+      }
+      catch {
+        case _: Throwable => rawLastSource.substring(0, rawLastSource.length - 1)
+      }
+    initSourceList ++ List(lastSource)
   }
+
+  def getSourceList(expressions: context.Expr[Any]*): List[String] =
+    getTreesSourceList(expressions.map(_.tree): _*)
 
 }
