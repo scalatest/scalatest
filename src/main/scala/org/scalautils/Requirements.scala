@@ -207,10 +207,11 @@ trait Requirements {
    * Else, it throws <code>NullPointerException</code> with error message that includes the name(s)
    * (as appeared in source) of the element(s) that holds <code>null</code> value.
    *
-   * @param elements elements to check for <code>null</code> value
+   * @param headElement the first mandatory element to check for non-null
+   * @param tailElements the rest of elements to check for non-null, optional
    * @throws NullPointerException if any of the passed in elements is <code>null</code>.
    */
-  def requireNonNull(elements: Any*): Unit = macro RequirementsMacro.requireNonNull
+  def requireNonNull(headElement: Any, tailElements: Any*): Unit = macro RequirementsMacro.requireNonNull
 }
 
 /**
@@ -261,14 +262,18 @@ private[scalautils] object RequirementsMacro {
     new BooleanMacro[context.type](context, "requirementsHelper").genMacro(condition, "macroRequireState", clue)
 
   /**
-   * Provides requirement implementation for <code>Requirements.requireNonNull(elements: Any*)</code>, with rich error message.
+   * Provides requirement implementation for <code>Requirements.requireNonNull(headElement, tailElements: Any*)</code>, with rich error message.
    *
    * @param context macro context
-   * @param elements original elements expression(s)
+   * @param headElement the first mandatory element to check for non-null
+   * @param tailElements the rest of elements to check for non-null, optional
    * @return transformed expression that performs the requirement check and throw <code>NullPointerException</code> with rich error message if requirement failed
    */
-  def requireNonNull(context: Context)(elements: context.Expr[Any]*): context.Expr[Unit] = {
+  def requireNonNull(context: Context)(headElement: context.Expr[Any], tailElements: context.Expr[Any]*): context.Expr[Unit] = {
     import context.universe._
+
+    val elements = headElement :: tailElements.toList
+    val sourceList = new MacroSourceHelper[context.type](context).getSourceList(elements: _*)
 
     val variablesNamesArray =
       Apply(
@@ -276,7 +281,7 @@ private[scalautils] object RequirementsMacro {
           Ident("Array"),
           newTermName("apply")
         ),
-        List(elements.map(e => context.literal(show(e.tree)).tree): _*)
+        sourceList.map(s => context.literal(s).tree)
       )
 
     val elementsArray =

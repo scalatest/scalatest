@@ -44,10 +44,11 @@ trait Snapshots {
   /**
    * Snap the given expressions.
    *
-   * @param expressions expressions to be snapped
+   * @param headExpression the first mandatory expression to be snapped
+   * @param tailExpressions the rest of expressions to be snapped, optional
    * @return an <code>IndexedSeq</code> of <code>Snapshot</code> for the given expressions.
    */
-  def snap(expressions: Any*): SnapshotSeq = macro SnapshotsMacro.snap
+  def snap(headExpression: Any, tailExpressions: Any*): SnapshotSeq = macro SnapshotsMacro.snap
 }
 
 final class SnapshotSeq(underlying: collection.immutable.IndexedSeq[Snapshot]) extends collection.immutable.IndexedSeq[Snapshot] {
@@ -147,11 +148,14 @@ object Snapshots extends Snapshots
 
 private[scalautils] object SnapshotsMacro {
 
-  def snap(context: Context)(expressions: context.Expr[Any]*): context.Expr[SnapshotSeq] = {
+  def snap(context: Context)(headExpression: context.Expr[Any], tailExpressions: context.Expr[Any]*): context.Expr[SnapshotSeq] = {
     import context.universe._
 
+    val expressions = headExpression :: tailExpressions.toList
+    val sourceList = new MacroSourceHelper[context.type](context).getSourceList(expressions: _*)
+
     val snapshots =
-      expressions.map { expr =>
+      expressions.zipWithIndex.map { case (expr, idx) =>
         Apply(
           Select(
             Select(
@@ -163,7 +167,7 @@ private[scalautils] object SnapshotsMacro {
             ),
             newTermName("apply")
           ),
-          List(context.literal(show(expr.tree)).tree, expr.tree.duplicate)
+          List(context.literal(sourceList(idx)).tree, expr.tree.duplicate)
         )
       }
 
