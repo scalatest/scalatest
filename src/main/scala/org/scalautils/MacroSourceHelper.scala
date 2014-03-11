@@ -30,6 +30,22 @@ private[org] class MacroSourceHelper[C <: Context](context: C) {
     }
   }
 
+  private def filterComments(sourceList: List[String]): List[String] =
+    sourceList.map { source =>
+      val slashSlash = source.indexOf("//")
+      val source2 =
+        if (slashSlash >= 0)
+          source.substring(0, slashSlash).trim
+        else
+          source.trim
+      val source3 =
+        if (source2.endsWith(")"))
+          source2.substring(0, source2.length - 1)
+        else
+          source2
+      source3
+    }
+
   private def getEndOffset(tree: Tree): Int = {
     tree match {
       case apply: Apply =>
@@ -86,7 +102,7 @@ private[org] class MacroSourceHelper[C <: Context](context: C) {
       catch {
         case _: Throwable => rawLastSource.substring(0, rawLastSource.length - 1)
       }
-    initSourceList ++ List(lastSource)
+    filterComments(initSourceList ++ List(lastSource))
   }
 
   def getSourceList(expressions: context.Expr[Any]*): List[String] =

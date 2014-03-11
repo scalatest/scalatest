@@ -83,6 +83,13 @@ class SnapshotsSpec extends Spec {
       val snapshots = Snapshots.snap(a, b, a + b)
       assert(snapshots.lines == "a was 3\nb was 4\na + b was 7")
     }
+
+    def `snap the last variable name correctly when it is followed by // comment ` {
+      val a = 1
+      val b = 2
+      val snapshots = Snapshots.snap(a, b, a + b) // this is a comment
+      assert(snapshots.toString == "a was 1, b was 2, a + b was 3")
+    }
   }
 
 }
