@@ -16,14 +16,31 @@ object ScalatestBuild extends Build {
     "https://github.com/scalatest/scalatest/tree/"+ githubTag +
     "/src/main/scala€{FILE_PATH}.scala"
 
-  def envVar(name: String): String =
+  def envVar(name: String): Option[String] =
     try {
-      sys.env(name)
+      Some(sys.env(name))
     }
     catch {
-      case e: NoSuchElementException => "Environment variable '" + name + "' not specified."
+      case e: NoSuchElementException => None
     }
 
+  def getGPGFilePath: String =
+    envVar("SCALATEST_GPG_FILE") match {
+      case Some(path) => path
+      case None => (Path.userHome / ".gnupg" / "secring.gpg").getAbsolutePath
+    }
+
+  def getGPGPassphase: Option[Array[Char]] =
+    envVar("SCALATEST_GPG_PASSPHASE") match {
+      case Some(passphase) => Some(passphase.toCharArray)
+      case None => None
+    }
+
+  def getNexusCredentials: Credentials =
+    (envVar("SCALATEST_NEXUS_LOGIN"), envVar("SCALATEST_NEXUS_PASSWORD")) match {
+      case (Some(login), Some(password)) => Credentials("Sonatype Nexus Repository Manager", "oss.sonatype.org", login, password)
+      case _ => Credentials(Path.userHome / ".ivy2" / ".credentials")
+    }
 
   lazy val scalatest = Project("scalatest", file("."))
    .settings(
@@ -84,9 +101,9 @@ object ScalatestBuild extends Build {
            </developer>
          </developers>
       ),
-     credentials += Credentials("Sonatype Nexus Repository Manager", "oss.sonatype.org", envVar("SCALATEST_NEXUS_LOGIN"), envVar("SCALATEST_NEXUS_PASSWORD")),
-     pgpSecretRing := file(envVar("SCALATEST_GPG_FILE")),
-     pgpPassphrase := Some(envVar("SCALATEST_GPG_PASSPHASE").toCharArray),
+     credentials += getNexusCredentials,
+     pgpSecretRing := file(getGPGFilePath),
+     pgpPassphrase := getGPGPassphase,
      genMustMatchersTask,
      genGenTask, 
      genTablesTask, 
@@ -214,9 +231,9 @@ object ScalatestBuild extends Build {
             </developer>
           </developers>
         ),
-      credentials += Credentials("Sonatype Nexus Repository Manager", "oss.sonatype.org", envVar("SCALATEST_NEXUS_LOGIN"), envVar("SCALATEST_NEXUS_PASSWORD")),
-      pgpSecretRing := file(envVar("SCALATEST_GPG_FILE")),
-      pgpPassphrase := Some(envVar("SCALATEST_GPG_PASSPHASE").toCharArray),
+      credentials += getNexusCredentials,
+      pgpSecretRing := file(getGPGFilePath),
+      pgpPassphrase := getGPGPassphase,
       sourceGenerators in Compile <+=
         (baseDirectory, sourceManaged in Compile) map genFiles("", "GenScalaUtils.scala")(GenScalaUtils.genMain),
       sourceGenerators in Test <+=

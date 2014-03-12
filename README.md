@@ -70,21 +70,27 @@ To publish to Sonatype, you first need to make sure you have the following:
 *   You have created your GPG keys and distributed your public key to hkp://pool.sks-keyservers.net/. For more information, please refer to [How To Generate PGP Signatures With Maven](https://docs.sonatype.org/display/Repository/How+To+Generate+PGP+Signatures+With+Maven).
 *   You have been granted the right to publish using org.scalatest and org.scalautils domain.
 
-Before publish, you need to set the following environment variables correctly:
+By default, ScalaTest build will read your Sonatype credentials from ~/.ivy2/.credentials, which is a properties file that looks like this:
 
-*   SCALATEST_NEXUS_LOGIN - Sonatype login name
-*   SCALATEST_NEXUS_PASSWORD - Sonatype login password
-*   SCALATEST_GPG_FILE - Location of GPG file
-*   SCALATEST_GPG_PASSPHASE - The passphrase for the GPG file
+    realm=Sonatype Nexus Repository Manager
+    host=oss.sonatype.org
+    user=xxxxxxxx
+    password=xxxxxxxx
 
-You can use the following command to export your private key into a GPG file:
+You can use SCALATEST_NEXUS_LOGIN and SCALATEST_NEXUS_PASSWORD environment variables to override Sonatype credentials.
+
+For signing, ScalaTest build will use ~/.gnupg/secring.gpg by default and prompt for GPG passphase if required.  Alternatively you can use SCALATEST_GPG_FILE to use a different GPG file, and use SCALATEST_GPG_PASSPHASE to provide GPG passphase to avoid input prompt.
+
+If you would like to export a particular private key into a separate GPG file, you can use the following command:
 
   `$ gpg --export-secret-keys example@example.com > example-secret-key.gpg`
 
+With Sonatype credentials and GPG file in place, you can now publish to Sonatype.
+
 To publish ScalaTest, use the following command:
 
-  `$ sbt publish-signed`
+  `$ sbt publishSigned`
 
 To publish ScalaUtils, use the following command:
 
-  `$ sbt "project scalautils" "publish-signed"`
+  `$ sbt scalautils/publishSigned`
