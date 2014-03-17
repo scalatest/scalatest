@@ -174,9 +174,13 @@ object GenMatchers {
         "ShouldBeNullSpec.scala", 
         "ShouldBeAnySpec.scala", 
         "ShouldBeTripleEqualsSpec.scala", 
-        "ShouldFileBePropertyMatcherSpec.scala", 
-        "ShouldThrowSpec.scala"
-      )
+        "ShouldFileBePropertyMatcherSpec.scala",
+        "ShouldThrowSpec.scala",
+        "ShorthandShouldBeThrownBySpec.scala",
+        "ShorthandShouldNotBeThrownBySpec.scala",
+        "ShouldBeThrownBySpec.scala",
+        "ShouldNotBeThrownBySpec.scala"
+    )
 
     def transformFile(shouldFile: File, mustFile: File) {
       val writer = new BufferedWriter(new FileWriter(mustFile))
@@ -202,7 +206,8 @@ object GenMatchers {
       transformFile(new File(sourceBaseDir, shouldFileName), mustFile)
 
       val mustMatchersFile = new File(matchersDir, mustFileName)
-      transformFile(new File(sourceBaseDir, "matchers/" + shouldFileName), mustMatchersFile)
+      if (mustMatchersFile.exists)
+        transformFile(new File(sourceBaseDir, "matchers/" + shouldFileName), mustMatchersFile)
     }
   }
 
