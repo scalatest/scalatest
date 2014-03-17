@@ -134,53 +134,15 @@ object GenMatchers {
     val temp8 = temp7.replaceAll("I_WAS_must_ORIGINALLY", "should")
     val temp9 = temp8.replaceAll(" I_MUST_STAY_SHOULD", "should")
     val temp10 = temp9.replaceAll("import Matchers._", "import MustMatchers._")
-    val temp11 = temp10.replaceAll("Matchers.scala", "MustMatchers.scala")
-    temp11.replaceAll("I_WAS_Must_ORIGINALLY", "Should")
+    val temp11 = temp10.replaceAll("with Matchers", "with MustMatchers")
+    val temp12 = temp11.replaceAll("Matchers.scala", "MustMatchers.scala")
+    temp12.replaceAll("I_WAS_Must_ORIGINALLY", "Should")
   }
 
   def genTest(targetBaseDir: File, scalaVersion: String) {
     val sourceBaseDir = new File("src/test/scala/org/scalatest")
     val matchersDir = new File(targetBaseDir, "matchers")
     matchersDir.mkdirs()
-    val shouldFileNames =
-      List(
-        "ShouldBehaveLikeSpec.scala",
-        "ShouldContainElementSpec.scala",
-        "ShouldContainKeySpec.scala",
-        "ShouldContainValueSpec.scala",
-        "ShouldEqualSpec.scala",
-        "ShouldHavePropertiesSpec.scala",
-        "ShouldLengthSpec.scala",
-        "ShouldOrderedSpec.scala",
-        "ShouldSizeSpec.scala",
-        // "ShouldStackSpec.scala", now in examples
-        // "ShouldStackFlatSpec.scala",
-        "ShouldBeASymbolSpec.scala",
-        "ShouldBeAnSymbolSpec.scala",
-        "ShouldBeMatcherSpec.scala",
-        "ShouldBePropertyMatcherSpec.scala",
-        "ShouldBeSymbolSpec.scala",
-        "ShouldEndWithRegexSpec.scala",
-        "ShouldEndWithSubstringSpec.scala",
-        "ShouldFullyMatchSpec.scala",
-        "ShouldIncludeRegexSpec.scala",
-        "ShouldIncludeSubstringSpec.scala",
-        "ShouldLogicalMatcherExprSpec.scala",
-        "ShouldMatcherSpec.scala",
-        "ShouldPlusOrMinusSpec.scala",
-        "ShouldSameInstanceAsSpec.scala",
-        "ShouldStartWithRegexSpec.scala",
-        "ShouldStartWithSubstringSpec.scala",
-        "ShouldBeNullSpec.scala", 
-        "ShouldBeAnySpec.scala", 
-        "ShouldBeTripleEqualsSpec.scala", 
-        "ShouldFileBePropertyMatcherSpec.scala",
-        "ShouldThrowSpec.scala",
-        "ShorthandShouldBeThrownBySpec.scala",
-        "ShorthandShouldNotBeThrownBySpec.scala",
-        "ShouldBeThrownBySpec.scala",
-        "ShouldNotBeThrownBySpec.scala"
-    )
 
     def transformFile(shouldFile: File, mustFile: File) {
       val writer = new BufferedWriter(new FileWriter(mustFile))
@@ -198,16 +160,32 @@ object GenMatchers {
       }
     }
 
-    for (shouldFileName <- shouldFileNames) {
+    def isShouldFile(file: File): Boolean =
+      file.isFile && (file.getName.startsWith("Should") || file.getName.startsWith("ListShould") || file.getName.startsWith("EveryShould") || file.getName.startsWith("OptionShould"))
 
-      val mustFileName = shouldFileName.replace("Should", "Must")
+    // For those under org.scalatest
+    for (shouldFile <- sourceBaseDir.listFiles) {
+      if (isShouldFile(shouldFile)) {
+        val shouldFileName = shouldFile.getName
 
-      val mustFile = new File(targetBaseDir, mustFileName)
-      transformFile(new File(sourceBaseDir, shouldFileName), mustFile)
+        val mustFileName = shouldFileName.replace("Should", "Must")
 
-      val mustMatchersFile = new File(matchersDir, mustFileName)
-      if (mustMatchersFile.exists)
-        transformFile(new File(sourceBaseDir, "matchers/" + shouldFileName), mustMatchersFile)
+        val mustFile = new File(targetBaseDir, mustFileName)
+        transformFile(new File(sourceBaseDir, shouldFileName), mustFile)
+      }
+    }
+
+    // For those under org.scalatest.matchers
+    val matchersSourceDir = new File(sourceBaseDir, "matchers")
+    for (shouldFile <- matchersSourceDir.listFiles) {
+      if (isShouldFile(shouldFile)) {
+        val shouldFileName = shouldFile.getName
+
+        val mustFileName = shouldFileName.replace("Should", "Must")
+
+        val mustMatchersFile = new File(matchersDir, mustFileName)
+        transformFile(new File(matchersSourceDir, shouldFileName), mustMatchersFile)
+      }
     }
   }
 
