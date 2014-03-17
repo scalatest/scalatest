@@ -378,8 +378,8 @@ class Framework extends SbtFramework {
         var testTags = Map[String, Map[String, Set[String]]]()
         var hasTest = false
         var hasNested = false
-            
-        selectors.foreach { selector => 
+
+        selectors.foreach { selector =>
           selector match {
             case suiteSelector: SuiteSelector => 
               suiteTags = mergeMap[String, Set[String]](List(suiteTags, Map(suite.suiteId -> Set(SELECTED_TAG)))) { _ ++ _ }
@@ -405,9 +405,11 @@ class Framework extends SbtFramework {
               hasNested = true
           }
         }
+
         // Only exclude nested suites when using -s XXX -t XXXX, same behaviour with Runner.
-        val excludeNestedSuites = hasTest && !hasNested 
-        Filter(if (tagsToInclude.isEmpty) Some(Set(SELECTED_TAG)) else Some(tagsToInclude + SELECTED_TAG), tagsToExclude, false, new DynaTags(suiteTags.toMap, testTags.toMap))
+        val excludeNestedSuites = hasTest && !hasNested
+        // For suiteTags, we need to remove them if there's entry in testTags already, because testTags is more specific.
+        Filter(if (tagsToInclude.isEmpty) Some(Set(SELECTED_TAG)) else Some(tagsToInclude + SELECTED_TAG), tagsToExclude, false, new DynaTags(suiteTags.filter(s => !testTags.contains(s._1)).toMap, testTags.toMap))
       }
 
     report(SuiteStarting(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), formatter, Some(TopOfClass(suiteClass.getName))))
@@ -783,7 +785,8 @@ class Framework extends SbtFramework {
     tagsToInclude: Set[String],
     tagsToExclude: Set[String],
     membersOnly: List[String], 
-    wildcard: List[String], 
+    wildcard: List[String],
+    autoSelectors: List[Selector],
     configMap: ConfigMap, 
     repConfig: ReporterConfigurations,
     useSbtLogInfoReporter: Boolean,
@@ -817,7 +820,7 @@ class Framework extends SbtFramework {
           tracker,
           tagsToInclude,
           tagsToExclude,
-          td.selectors,
+          td.selectors ++ autoSelectors,
           td.explicitlySpecified, 
           configMap,
           summaryCounter, 
@@ -965,6 +968,23 @@ class Framework extends SbtFramework {
     }
   }
 
+  private def parseSuiteArgs(suiteArgs: List[String]): List[String] = {
+    val itr = suiteArgs.iterator
+    val wildcards = new scala.collection.mutable.ListBuffer[String]()
+    while (itr.hasNext) {
+      val next = itr.next
+      if (next == "-z") {
+        if (itr.hasNext)
+          wildcards += itr.next
+        else
+          new IllegalArgumentException("-z must be followed by a wildcard string.")
+      }
+      else
+        throw new IllegalArgumentException("Specifying a suite (-s <suite>) and test (-t, -i) is not supported when running ScalaTest from sbt; Please use sbt's test-only instead.")
+    }
+    wildcards.toList
+  }
+
   /**
    *
    * Initiates a ScalaTest run.
@@ -999,9 +1019,6 @@ class Framework extends SbtFramework {
     
     if (!runpathArgs.isEmpty)
       throw new IllegalArgumentException("Specifying a runpath (-p, -R <runpath>) is not supported when running ScalaTest from sbt.")
-               
-    if (!suiteArgs.isEmpty)
-      throw new IllegalArgumentException("Specifying a suite (-s <suite>) is not supported when running ScalaTest from sbt; Please use sbt's test-only instead.")
     
     if (!againArgs.isEmpty)
       throw new IllegalArgumentException("Run again (-A) is not supported when running ScalaTest from sbt; Please use sbt's test-quick instead.")
@@ -1043,6 +1060,11 @@ class Framework extends SbtFramework {
       }
     
     Runner.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
+
+    val autoSelectors =
+      parseSuiteArgs(suiteArgs).map { testWildcard =>
+        new TestWildcardSelector(testWildcard)
+      }
     
     val fullReporterConfigurations: ReporterConfigurations = 
       if (remoteArgs.isEmpty) {
@@ -1109,7 +1131,8 @@ class Framework extends SbtFramework {
       tagsToInclude,
       tagsToExclude,
       membersOnly, 
-      wildcard, 
+      wildcard,
+      autoSelectors,
       configMap,
       reporterConfigs,
       useStdout, 
