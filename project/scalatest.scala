@@ -254,70 +254,148 @@ object ScalatestBuild extends Build {
       )
     ).dependsOn(scalatest  % "test->test")
 
-  lazy val gentests = Project("gentests", file("gentests"))
-   .settings(
-     organization := "org.scalatest",
-     version := releaseVersion,
-     scalaVersion := scalaVersionToUse,
-     scalacOptions ++= Seq("-no-specialization", "-feature"),
-     libraryDependencies ++= scalatestDependencies,
-     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
-     genTestsHelperTask,
-     genMustMatchersTask, 
-     genGenTask, 
-     genTablesTask, 
-     genInspectorsTask,
-     genInspectorsShorthandsTask,
-     genTheyWordTask,
-     genContainTask, 
-     genSortedTask, 
-     genLoneElementTask, 
-     genEmptyTask,
-     sourceGenerators in Test <+=
-       (baseDirectory, sourceManaged in Test) map genFiles("gentestshelper", "GenTestsHelper.scala")(GenTestsHelper.genTest),
-     sourceGenerators in Test <+= 
-       (baseDirectory, sourceManaged in Test) map genFiles("gengen", "GenGen.scala")(GenGen.genTest),
-     sourceGenerators in Test <+= 
-       (baseDirectory, sourceManaged in Test) map genFiles("gentables", "GenTable.scala")(GenTable.genTest),
-     sourceGenerators in Test <+=
-       (baseDirectory, sourceManaged in Test) map genFiles("genmatchers", "GenMatchers.scala")(GenMatchers.genTest),
-     sourceGenerators in Test <+= 
-       (baseDirectory, sourceManaged in Test) map genFiles("genthey", "GenTheyWord.scala")(GenTheyWord.genTest),
-     sourceGenerators in Test <+= 
-       (baseDirectory, sourceManaged in Test) map genFiles("geninspectors", "GenInspectors.scala")(GenInspectors.genTest),
-     sourceGenerators in Test <+=
-       (baseDirectory, sourceManaged in Test) map genFiles("geninspectorsshorthands", "GenInspectorsShorthands.scala")(GenInspectorsShorthands.genTest),
-     sourceGenerators in Test <+= 
-       (baseDirectory, sourceManaged in Test) map genFiles("gencontain", "GenContain.scala")(GenContain.genTest),
-     sourceGenerators in Test <+= 
-       (baseDirectory, sourceManaged in Test) map genFiles("gensorted", "GenSorted.scala")(GenSorted.genTest),
-     sourceGenerators in Test <+=
-       (baseDirectory, sourceManaged in Test) map genFiles("genloneelement", "GenLoneElement.scala")(GenLoneElement.genTest),
-     sourceGenerators in Test <+=
-       (baseDirectory, sourceManaged in Test) map genFiles("genempty", "GenEmpty.scala")(GenEmpty.genTest),
-     testOptions in Test := Seq(Tests.Argument("-l", "org.scalatest.tags.Slow", 
-                                               "-oDI", 
-                                               "-h", "gentests/target/html", 
-                                               "-u", "gentests/target/junit", 
-                                               "-fW", "target/result.txt"))
-   ).dependsOn(scalatest)
+  lazy val gentestsHelper = Project("gentestsHelper", file("gentests/helper"))
+    .settings(
+      scalaVersion := scalaVersionToUse,
+      scalacOptions ++= Seq("-no-specialization", "-feature"),
+      libraryDependencies ++= scalatestDependencies,
+      resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
+      genTestsHelperTask,
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test) map genFiles("gentestshelper", "GenTestsHelper.scala")(GenTestsHelper.genTest)
+    ).dependsOn(scalatest)
 
-   def scalatestDependencies = Seq(
-     "org.scala-sbt" % "test-interface" % "1.0" % "optional",
-     "org.scalacheck" %% "scalacheck" % "1.11.0" % "optional",
-     "org.easymock" % "easymockclassextension" % "3.1" % "optional", 
-     "org.jmock" % "jmock-legacy" % "2.5.1" % "optional", 
-     "org.mockito" % "mockito-all" % "1.9.0" % "optional", 
-     "org.testng" % "testng" % "6.8.7" % "optional",
-     "com.google.inject" % "guice" % "2.0" % "optional",
-     "junit" % "junit" % "4.10" % "optional", 
-     "org.seleniumhq.selenium" % "selenium-java" % "2.35.0" % "optional",
-     "org.apache.ant" % "ant" % "1.7.1" % "optional",
-     "commons-io" % "commons-io" % "1.3.2" % "test", 
-     "org.eclipse.jetty" % "jetty-server" % "8.1.8.v20121106" % "test", 
-     "org.eclipse.jetty" % "jetty-webapp" % "8.1.8.v20121106" % "test",
-     "org.ow2.asm" % "asm-all" % "4.1" % "optional",
-     "org.pegdown" % "pegdown" % "1.4.2" % "optional"
+  lazy val genMustMatchersTests = Project("genMustMatchersTests", file("gentests/MustMatchers"))
+    .settings(
+      scalaVersion := scalaVersionToUse,
+      scalacOptions ++= Seq("-no-specialization", "-feature"),
+      libraryDependencies ++= scalatestDependencies,
+      resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
+      genMustMatchersTask,
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test) map genFiles("genmatchers", "GenMatchers.scala")(GenMatchers.genTest)
+    ).dependsOn(scalatest, gentestsHelper % "test->test")
+
+  lazy val genGenTests = Project("genGenTests", file("gentests/GenGen"))
+    .settings(
+      scalaVersion := scalaVersionToUse,
+      scalacOptions ++= Seq("-no-specialization", "-feature"),
+      libraryDependencies ++= scalatestDependencies,
+      resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
+      genGenTask,
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test) map genFiles("gengen", "GenGen.scala")(GenGen.genTest)
+    ).dependsOn(scalatest, gentestsHelper % "test->test")
+
+  lazy val genTablesTests = Project("genTablesTests", file("gentests/GenTables"))
+    .settings(
+      scalaVersion := scalaVersionToUse,
+      scalacOptions ++= Seq("-no-specialization", "-feature"),
+      libraryDependencies ++= scalatestDependencies,
+      resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
+      genTablesTask,
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test) map genFiles("gentables", "GenTable.scala")(GenTable.genTest)
+    ).dependsOn(scalatest, gentestsHelper % "test->test")
+
+  lazy val genInspectorsTests = Project("genInspectorsTests", file("gentests/GenInspectors"))
+    .settings(
+      scalaVersion := scalaVersionToUse,
+      scalacOptions ++= Seq("-no-specialization", "-feature"),
+      libraryDependencies ++= scalatestDependencies,
+      resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
+      genInspectorsTask,
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test) map genFiles("geninspectors", "GenInspectors.scala")(GenInspectors.genTest)
+    ).dependsOn(scalatest, gentestsHelper % "test->test")
+
+  lazy val genInspectorsShorthandsTests = Project("genInspectorsShorthandsTests", file("gentests/GenInspectorsShorthands"))
+    .settings(
+      scalaVersion := scalaVersionToUse,
+      scalacOptions ++= Seq("-no-specialization", "-feature"),
+      libraryDependencies ++= scalatestDependencies,
+      resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
+      genInspectorsShorthandsTask,
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test) map genFiles("geninspectorsshorthands", "GenInspectorsShorthands.scala")(GenInspectorsShorthands.genTest)
+    ).dependsOn(scalatest, gentestsHelper % "test->test")
+
+  lazy val genTheyTests = Project("genTheyTests", file("gentests/GenThey"))
+    .settings(
+      scalaVersion := scalaVersionToUse,
+      scalacOptions ++= Seq("-no-specialization", "-feature"),
+      libraryDependencies ++= scalatestDependencies,
+      resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
+      genTheyWordTask,
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test) map genFiles("genthey", "GenTheyWord.scala")(GenTheyWord.genTest)
+    ).dependsOn(scalatest, gentestsHelper % "test->test")
+
+  lazy val genContainTests = Project("genContainTests", file("gentests/GenContain"))
+    .settings(
+      scalaVersion := scalaVersionToUse,
+      scalacOptions ++= Seq("-no-specialization", "-feature"),
+      libraryDependencies ++= scalatestDependencies,
+      resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
+      genContainTask,
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test) map genFiles("gencontain", "GenContain.scala")(GenContain.genTest)
+    ).dependsOn(scalatest, gentestsHelper % "test->test")
+
+  lazy val genSortedTests = Project("genSortedTests", file("gentests/GenSorted"))
+    .settings(
+      scalaVersion := scalaVersionToUse,
+      scalacOptions ++= Seq("-no-specialization", "-feature"),
+      libraryDependencies ++= scalatestDependencies,
+      resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
+      genSortedTask,
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test) map genFiles("gensorted", "GenSorted.scala")(GenSorted.genTest)
+    ).dependsOn(scalatest, gentestsHelper % "test->test")
+
+  lazy val genLoneElementTests = Project("genLoneElementTests", file("gentests/GenLoneElement"))
+    .settings(
+      scalaVersion := scalaVersionToUse,
+      scalacOptions ++= Seq("-no-specialization", "-feature"),
+      libraryDependencies ++= scalatestDependencies,
+      resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
+      genLoneElementTask,
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test) map genFiles("genloneelement", "GenLoneElement.scala")(GenLoneElement.genTest)
+    ).dependsOn(scalatest, gentestsHelper % "test->test")
+
+  lazy val genEmptyTests = Project("genEmptyTests", file("gentests/GenEmpty"))
+    .settings(
+      scalaVersion := scalaVersionToUse,
+      scalacOptions ++= Seq("-no-specialization", "-feature"),
+      libraryDependencies ++= scalatestDependencies,
+      resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
+      genEmptyTask,
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test) map genFiles("genempty", "GenEmpty.scala")(GenEmpty.genTest)
+    ).dependsOn(scalatest, gentestsHelper % "test->test")
+
+  lazy val gentests = Project("gentests", file("gentests"))
+    .aggregate(genMustMatchersTests, genGenTests, genTablesTests, genInspectorsTests, genInspectorsShorthandsTests,
+               genTheyTests, genContainTests, genSortedTests, genLoneElementTests, genEmptyTests)
+
+
+  def scalatestDependencies = Seq(
+    "org.scala-sbt" % "test-interface" % "1.0" % "optional",
+    "org.scalacheck" %% "scalacheck" % "1.11.0" % "optional",
+    "org.easymock" % "easymockclassextension" % "3.1" % "optional",
+    "org.jmock" % "jmock-legacy" % "2.5.1" % "optional",
+    "org.mockito" % "mockito-all" % "1.9.0" % "optional",
+    "org.testng" % "testng" % "6.8.7" % "optional",
+    "com.google.inject" % "guice" % "2.0" % "optional",
+    "junit" % "junit" % "4.10" % "optional",
+    "org.seleniumhq.selenium" % "selenium-java" % "2.35.0" % "optional",
+    "org.apache.ant" % "ant" % "1.7.1" % "optional",
+    "commons-io" % "commons-io" % "1.3.2" % "test",
+    "org.eclipse.jetty" % "jetty-server" % "8.1.8.v20121106" % "test",
+    "org.eclipse.jetty" % "jetty-webapp" % "8.1.8.v20121106" % "test",
+    "org.ow2.asm" % "asm-all" % "4.1" % "optional",
+    "org.pegdown" % "pegdown" % "1.4.2" % "optional"
   )
 
   def genFiles(name: String, generatorSource: String)(gen: (File, String) => Unit)(basedir: File, outDir: File): Seq[File] = {
