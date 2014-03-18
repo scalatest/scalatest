@@ -314,6 +314,9 @@ class PrettifierSpec extends Spec with Matchers {
     def `should pretty print nested string Java Map` {
       Prettifier.default(javaSortedMap(Entry("akey", javaSortedMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))))) should be ("{\"akey\"={1=\"one\", 2=\"two\", 3=\"three\"}}")
     }
+    def `should pretty print xml` {
+      Prettifier.default(<a></a>) should be ("<a></a>")
+    }
   }
 }
 

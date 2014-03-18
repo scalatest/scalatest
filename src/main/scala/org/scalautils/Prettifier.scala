@@ -187,6 +187,7 @@ object Prettifier {
             (aGenMap.toIterator.map { case (key, value) => // toIterator is needed for consistent ordering
               apply(key) + " -> " + apply(value)
             }).mkString(", ") + ")"
+          case anXMLNode: scala.xml.Node => anXMLNode.toString 
           case aGenTraversable: GenTraversable[_] =>
             val defaultToString = aGenTraversable.toString
             val typeName = defaultToString.takeWhile(_ != '(')
