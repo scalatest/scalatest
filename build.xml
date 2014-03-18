@@ -164,7 +164,7 @@
         <uptodate property="genmatchers.uptodate"
                   srcfile="project/GenMatchers.scala">
           <mapper type="merge" to=
-            "${build}/scala-${scala.version}/src_managed/main/scala/org/scalatest/junit/MustMatchersForJUnit.scala">
+            "${build}/scala-${scala.version}/src_managed/main/scala/org/scalatest/MustMatchers.scala">
           </mapper>
         </uptodate>
     	
