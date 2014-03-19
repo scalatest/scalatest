@@ -88,7 +88,6 @@
     </dependency>
 
 <!-- uncomment for Scala 2.11.0-RC3 -->
-<!-- 
     <dependency>
       <groupId>org.scala-lang.modules</groupId>
       <artifactId>scala-parser-combinators_@DEPLOY_SCALA_VERSION@</artifactId>
@@ -100,7 +99,6 @@
       <artifactId>scala-xml_@DEPLOY_SCALA_VERSION@</artifactId>
       <version>@SCALA_XML_VERSION@</version>
     </dependency>
--->
 
     <dependency>
       <groupId>org.scala-sbt</groupId>
