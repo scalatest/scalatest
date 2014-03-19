@@ -317,6 +317,42 @@ class PrettifierSpec extends Spec with Matchers {
     def `should pretty print xml` {
       Prettifier.default(<a></a>) should be ("<a></a>")
     }
+    def `should handle runaway recursion gracefully, if not necessarily quickly` {
+      /*
+        You'd think no one would do this, but:
+
+        scala> val me = <a></a>
+        me: scala.xml.Elem = <a></a>
+
+        scala> val you = me.iterator.next
+        you: scala.xml.Node = <a></a>
+
+        scala> me eq you
+        res0: Boolean = true
+      */
+      class Fred extends Seq[Fred] { thisFred =>
+        override def toIterator: Iterator[Fred] = iterator
+        def iterator: Iterator[Fred] = 
+          new Iterator[Fred] {
+            private var hasNextElement: Boolean = true
+            def next: Fred = {
+              if (hasNextElement) {
+                hasNextElement = false
+                thisFred
+              }
+              else throw new NoSuchElementException
+            }
+            def hasNext: Boolean = hasNextElement
+            override def mkString: String = "Iterator of Fred"
+            override def mkString(sep: String): String = "Iterator of Fred"
+            override def mkString(start: String, sep: String, end: String): String = "Iterator of Fred"
+          }
+        def apply(idx: Int): Fred = if (idx == 0) thisFred else throw new NoSuchElementException
+        def length: Int = 1
+        override def toString = "It's Fred all the way down"
+      }
+      Prettifier.default(new Fred) should startWith ("It's Fred")
+    }
   }
 }
 
