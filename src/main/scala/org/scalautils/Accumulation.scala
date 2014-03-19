@@ -167,6 +167,8 @@ trait Accumulation {
       }
     }
 
+  implicit def convertGenSetToCombinableNothing[ERR, X, EVERY[b] <: Every[b], SET[e] <: GenSet[e]](xs: SET[X with (Nothing Or EVERY[ERR])])(implicit cbf: CanBuildFrom[SET[X with (Nothing Or EVERY[ERR])], Nothing, SET[Nothing]]): Combinable[Nothing, ERR, SET] = convertGenSetToCombinable[Nothing, ERR, X, EVERY, SET](xs)(cbf)
+
   /**
    * Implicitly converts an <code>Every</code> containing accumulating <code>Or</code>s to an instance of
    * <a href="Accumulation$$Combinable.html"><code>Combinable</code></a>, which enables the <code>combined</code> method to be invoked on it.
