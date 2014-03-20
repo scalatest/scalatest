@@ -56,6 +56,37 @@ final class NoExceptionWord {
       }
     }
   }
+
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * noException must be thrownBy { ... }
+   *             ^
+   * </pre>
+   */
+  def must(beWord: BeWord): ResultOfBeWordForNoException =
+    new ResultOfBeWordForNoException
+
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * noException mustBe thrownBy { ... }
+   *             ^
+   * </pre>
+   */
+  def mustBe(thrownBy: ResultOfThrownByApplication) {
+    val caught = try {
+      thrownBy.execute()
+    }
+    catch {
+      case u: Throwable => {
+        val message = Resources("exceptionNotExpected", u.getClass.getName)
+        throw newAssertionFailedException(Some(message), Some(u), 4)
+      }
+    }
+  }
   
   /**
    * Overrides toString to return "noException"

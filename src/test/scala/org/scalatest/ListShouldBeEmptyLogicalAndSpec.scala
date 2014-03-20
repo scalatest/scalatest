@@ -18,7 +18,7 @@ package org.scalatest
 import SharedHelpers.thisLineNumber
 import Matchers._
 
-class ListShouldBeEmptyLogicalAndSpec extends Spec with Matchers {
+class ListShouldBeEmptyLogicalAndSpec extends Spec {
   
   //ADDITIONAL//
   

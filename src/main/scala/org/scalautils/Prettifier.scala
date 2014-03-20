@@ -164,56 +164,67 @@ object Prettifier {
    */
   val default: Prettifier =
     new Prettifier {
-      def apply(o: Any): String =
-        o match {
-          case null => "null"
-          case aUnit: Unit => "<(), the Unit value>"
-          case aString: String => "\"" + aString + "\""
-          case aStringWrapper: scala.collection.immutable.StringOps => "\"" + aStringWrapper + "\""
-          case aChar: Char =>  "\'" + aChar + "\'"
-          case Some(e) => "Some(" + apply(e) + ")"
-          case Success(e) => "Success(" + apply(e) + ")"
-          case Left(e) => "Left(" + apply(e) + ")"
-          case Right(e) => "Right(" + apply(e) + ")"
-          case Good(e) => "Good(" + apply(e) + ")"
-          case Bad(e) => "Bad(" + apply(e) + ")"
-          case One(e) => "One(" + apply(e) + ")"
-          case many: Many[_] => "Many(" + many.toIterator.map(apply(_)).mkString(", ") + ")"
-          case anArray: Array[_] =>  "Array(" + (anArray map apply).mkString(", ") + ")"
-          case aWrappedArray: WrappedArray[_] => "Array(" + (aWrappedArray map apply).mkString(", ") + ")"
-          case aGenMap: GenMap[_, _] =>
-            val defaultToString = aGenMap.toString
-            val typeName = defaultToString.takeWhile(_ != '(')
-            typeName + "(" +
-            (aGenMap.toIterator.map { case (key, value) => // toIterator is needed for consistent ordering
-              apply(key) + " -> " + apply(value)
-            }).mkString(", ") + ")"
-          case aGenTraversable: GenTraversable[_] =>
-            val defaultToString = aGenTraversable.toString
-            val typeName = defaultToString.takeWhile(_ != '(')
-            typeName + "(" + aGenTraversable.toIterator.map(apply(_)).mkString(", ") + ")"  // toIterator is needed for consistent ordering
-          case javaCol: java.util.Collection[_] =>
-            // By default java collection follows http://download.java.net/jdk7/archive/b123/docs/api/java/util/AbstractCollection.html#toString()
-            // let's do our best to prettify its element when it is not overriden
-            import scala.collection.JavaConverters._
-            val theToString = javaCol.toString
-            if (theToString.startsWith("[") && theToString.endsWith("]"))
-              "[" + javaCol.iterator().asScala.map(apply(_)).mkString(", ") + "]"
-            else
-              theToString
-          case javaMap: java.util.Map[_, _] =>
-            // By default java map follows http://download.java.net/jdk7/archive/b123/docs/api/java/util/AbstractMap.html#toString()
-            // let's do our best to prettify its element when it is not overriden
-            import scala.collection.JavaConverters._
-            val theToString = javaMap.toString
-            if (theToString.startsWith("{") && theToString.endsWith("}"))
-              "{" + javaMap.entrySet.iterator.asScala.map { entry =>
-                apply(entry.getKey) + "=" + apply(entry.getValue)
-              }.mkString(", ") + "}"
-            else
-              theToString
-          case anythingElse => anythingElse.toString
+      def apply(o: Any): String = {
+        try {
+          o match {
+            case null => "null"
+            case aUnit: Unit => "<(), the Unit value>"
+            case aString: String => "\"" + aString + "\""
+            case aStringWrapper: scala.collection.immutable.StringOps => "\"" + aStringWrapper + "\""
+            case aChar: Char =>  "\'" + aChar + "\'"
+            case Some(e) => "Some(" + apply(e) + ")"
+            case Success(e) => "Success(" + apply(e) + ")"
+            case Left(e) => "Left(" + apply(e) + ")"
+            case Right(e) => "Right(" + apply(e) + ")"
+            case Good(e) => "Good(" + apply(e) + ")"
+            case Bad(e) => "Bad(" + apply(e) + ")"
+            case One(e) => "One(" + apply(e) + ")"
+            case many: Many[_] => "Many(" + many.toIterator.map(apply(_)).mkString(", ") + ")"
+            case anArray: Array[_] =>  "Array(" + (anArray map apply).mkString(", ") + ")"
+            case aWrappedArray: WrappedArray[_] => "Array(" + (aWrappedArray map apply).mkString(", ") + ")"
+            case aGenMap: GenMap[_, _] =>
+              val defaultToString = aGenMap.toString
+              val typeName = defaultToString.takeWhile(_ != '(')
+              typeName + "(" +
+              (aGenMap.toIterator.map { case (key, value) => // toIterator is needed for consistent ordering
+                apply(key) + " -> " + apply(value)
+              }).mkString(", ") + ")"
+            case anXMLNode: scala.xml.Node => anXMLNode.toString // Must handle this specially, else get infinite recursion and StackOverflowError
+            case aGenTraversable: GenTraversable[_] =>
+              val defaultToString = aGenTraversable.toString
+              val typeName = defaultToString.takeWhile(_ != '(')
+              typeName + "(" + aGenTraversable.toIterator.map(apply(_)).mkString(", ") + ")"  // toIterator is needed for consistent ordering
+            case javaCol: java.util.Collection[_] =>
+              // By default java collection follows http://download.java.net/jdk7/archive/b123/docs/api/java/util/AbstractCollection.html#toString()
+              // let's do our best to prettify its element when it is not overriden
+              import scala.collection.JavaConverters._
+              val theToString = javaCol.toString
+              if (theToString.startsWith("[") && theToString.endsWith("]"))
+                "[" + javaCol.iterator().asScala.map(apply(_)).mkString(", ") + "]"
+              else
+                theToString
+            case javaMap: java.util.Map[_, _] =>
+              // By default java map follows http://download.java.net/jdk7/archive/b123/docs/api/java/util/AbstractMap.html#toString()
+              // let's do our best to prettify its element when it is not overriden
+              import scala.collection.JavaConverters._
+              val theToString = javaMap.toString
+              if (theToString.startsWith("{") && theToString.endsWith("}"))
+                "{" + javaMap.entrySet.iterator.asScala.map { entry =>
+                  apply(entry.getKey) + "=" + apply(entry.getValue)
+                }.mkString(", ") + "}"
+              else
+                theToString
+            case anythingElse => anythingElse.toString
+          }
         }
+        catch {
+          // This is in case of crazy designs like the one for scala.xml.Node. We handle Node
+          // specially above, but in case someone else creates a collection whose iterator
+          // returns itself, which will cause infinite recursion, at least we'll pop out and
+          // give them a string back.
+          case _: StackOverflowError => o.toString
+        }
+      }
     }
 
   /**

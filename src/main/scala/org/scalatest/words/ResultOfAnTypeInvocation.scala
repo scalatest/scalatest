@@ -37,6 +37,16 @@ final class ResultOfAnTypeInvocation[T](val clazz: Class[T]) {
   def should(beWord: BeWord): ResultOfBeWordForAnType[T] = 
     new ResultOfBeWordForAnType[T](clazz)
 
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * an [RuntimeException] should not
+   *                       ^
+   * </pre>
+   *
+   * This method is here to direct people trying to use the above syntax to use <code>noException</code> instead.
+   */
   def should(notWord: NotWord): PleaseUseNoExceptionShouldSyntaxInstead =
     new PleaseUseNoExceptionShouldSyntaxInstead
   
@@ -50,6 +60,63 @@ final class ResultOfAnTypeInvocation[T](val clazz: Class[T]) {
    */
   def shouldBe(thrownBy: ResultOfThrownByApplication) {
     
+    val caught = try {
+      thrownBy.execute()
+      None
+    }
+    catch {
+      case u: Throwable => {
+        if (!clazz.isAssignableFrom(u.getClass)) {
+          val s = Resources("wrongException", clazz.getName, u.getClass.getName)
+          throw newAssertionFailedException(Some(s), Some(u), 4)
+        }
+        else {
+          Some(u)
+        }
+      }
+    }
+    caught match {
+      case None =>
+        val message = Resources("exceptionExpected", clazz.getName)
+        throw newAssertionFailedException(Some(message), None, 4)
+      case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase iSAssignableFrom succeeded above
+    }
+  }
+
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * an [Exception] must be thrownBy { ... }
+   *                ^
+   * </pre>
+   */
+  def must(beWord: BeWord): ResultOfBeWordForAnType[T] =
+    new ResultOfBeWordForAnType[T](clazz)
+
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * an [RuntimeException] must not
+   *                       ^
+   * </pre>
+   *
+   * This method is here to direct people trying to use the above syntax to use <code>noException</code> instead.
+   */
+  def must(notWord: NotWord): PleaseUseNoExceptionShouldSyntaxInstead =
+    new PleaseUseNoExceptionShouldSyntaxInstead
+
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * an [RuntimeException] mustBe thrownBy { ... }
+   *                       ^
+   * </pre>
+   */
+  def mustBe(thrownBy: ResultOfThrownByApplication) {
+
     val caught = try {
       thrownBy.execute()
       None

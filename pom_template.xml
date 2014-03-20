@@ -87,6 +87,21 @@
       <version>@SCALA_VERSION@</version>
     </dependency>
 
+<!-- uncomment for Scala 2.11.0-RC3 -->
+<!-- 
+    <dependency>
+      <groupId>org.scala-lang.modules</groupId>
+      <artifactId>scala-parser-combinators_@DEPLOY_SCALA_VERSION@</artifactId>
+      <version>@SCALA_PARSER_COMBINATORS_VERSION@</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.scala-lang.modules</groupId>
+      <artifactId>scala-xml_@DEPLOY_SCALA_VERSION@</artifactId>
+      <version>@SCALA_XML_VERSION@</version>
+    </dependency>
+-->
+
     <dependency>
       <groupId>org.scala-sbt</groupId>
       <artifactId>test-interface</artifactId>
@@ -104,7 +119,7 @@
     <dependency>
       <groupId>org.scalacheck</groupId>
       <artifactId>scalacheck_@DEPLOY_SCALA_VERSION@</artifactId>
-      <version>1.11.0</version>
+      <version>1.11.3</version>
       <optional>true</optional>
     </dependency>
 
