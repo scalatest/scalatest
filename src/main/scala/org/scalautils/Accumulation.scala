@@ -128,6 +128,8 @@ trait Accumulation {
       }
     }
 
+  implicit def convertGenTraversableOnceToCombinableNothing[ERR, EVERY[b] <: Every[b], TRAVONCE[+e] <: GenTraversableOnce[e]](xs: TRAVONCE[Nothing Or EVERY[ERR]])(implicit cbf: CanBuildFrom[TRAVONCE[Nothing Or EVERY[ERR]], Nothing, TRAVONCE[Nothing]]): Combinable[Nothing, ERR, TRAVONCE] = convertGenTraversableOnceToCombinable[Nothing, ERR, EVERY, TRAVONCE](xs)(cbf)
+
   // Must have another one for Sets, because they are not covariant. Will need to handle Good/Nothing case specially therefore, and plan to do that
   // with another implicit here. Or just don't support Nothing.
 
