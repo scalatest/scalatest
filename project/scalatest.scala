@@ -42,109 +42,113 @@ object ScalatestBuild extends Build {
       case _ => Credentials(Path.userHome / ".ivy2" / ".credentials")
     }
 
+  def sharedSettings: Seq[Setting[_]] = Seq(
+    version := releaseVersion,
+    scalacOptions ++= Seq("-no-specialization", "-feature", "-target:jvm-1.5"),
+    resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
+    publishTo <<= version { v: String =>
+      val nexus = "https://oss.sonatype.org/"
+      if (v.trim.endsWith("SNAPSHOT")) Some("publish-snapshots" at nexus + "content/repositories/snapshots")
+      else                             Some("publish-releases" at nexus + "service/local/staging/deploy/maven2")
+    },
+    publishMavenStyle := true,
+    publishArtifact in Test := false,
+    pomIncludeRepository := { _ => false },
+    pomExtra := (
+      <url>http://www.scalatest.org</url>
+        <licenses>
+          <license>
+            <name>the Apache License, ASL Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <distribution>repo</distribution>
+          </license>
+        </licenses>
+        <scm>
+          <url>https://github.com/scalatest/scalatest</url>
+          <connection>scm:git:git@github.com:scalatest/scalatest.git</connection>
+          <developerConnection>
+            scm:git:git@github.com:scalatest/scalatest.git
+          </developerConnection>
+        </scm>
+        <developers>
+          <developer>
+            <id>bvenners</id>
+            <name>Bill Venners</name>
+            <email>bill@artima.com</email>
+          </developer>
+          <developer>
+            <id>gcberger</id>
+            <name>George Berger</name>
+            <email>george.berger@gmail.com</email>
+          </developer>
+          <developer>
+            <id>cheeseng</id>
+            <name>Chua Chee Seng</name>
+            <email>cheeseng@amaseng.com</email>
+          </developer>
+        </developers>
+      ),
+    credentials += getNexusCredentials,
+    pgpSecretRing := file(getGPGFilePath),
+    pgpPassphrase := getGPGPassphase,
+    docsrcDirSetting,
+    docSourcesSetting,
+    docScalacOptionsSetting
+  )
+
   lazy val scalatest = Project("scalatest", file("."))
+   .settings(sharedSettings: _*)
    .settings(
      projectTitle := "ScalaTest",
      organization := "org.scalatest",
-     version := releaseVersion,
-     scalacOptions ++= Seq("-no-specialization", "-feature", "-target:jvm-1.5"),
      initialCommands in console := """|import org.scalatest._
                                       |import org.scalautils._
                                       |import Matchers._""".stripMargin,
-     ivyXML := 
+     ivyXML :=
        <dependency org="org.eclipse.jetty.orbit" name="javax.servlet" rev="3.0.0.v201112011016">
          <artifact name="javax.servlet" type="orbit" ext="jar"/>
-       </dependency>, 
+       </dependency>,
      libraryDependencies ++= scalatestDependencies,
      libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion.value, // this is needed to compile macro
-     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
-     publishTo <<= version { v: String =>
-       val nexus = "https://oss.sonatype.org/"
-       if (v.trim.endsWith("SNAPSHOT")) Some("publish-snapshots" at nexus + "content/repositories/snapshots")
-       else                             Some("publish-releases" at nexus + "service/local/staging/deploy/maven2")
-     },
-     publishMavenStyle := true,
-     publishArtifact in Test := false,
-     pomIncludeRepository := { _ => false },
-     pomExtra := (
-       <url>http://www.scalatest.org</url>
-         <licenses>
-           <license>
-             <name>the Apache License, ASL Version 2.0</name>
-             <url>http://www.apache.org/licenses/LICENSE-2.0</url>
-             <distribution>repo</distribution>
-           </license>
-         </licenses>
-         <scm>
-           <url>https://github.com/scalatest/scalatest</url>
-           <connection>scm:git:git@github.com:scalatest/scalatest.git</connection>
-           <developerConnection>
-             scm:git:git@github.com:scalatest/scalatest.git
-           </developerConnection>
-         </scm>
-         <developers>
-           <developer>
-             <id>bvenners</id>
-             <name>Bill Venners</name>
-             <email>bill@artima.com</email>
-           </developer>
-           <developer>
-             <id>gcberger</id>
-             <name>George Berger</name>
-             <email>george.berger@gmail.com</email>
-           </developer>
-           <developer>
-             <id>cheeseng</id>
-             <name>Chua Chee Seng</name>
-             <email>cheeseng@amaseng.com</email>
-           </developer>
-         </developers>
-      ),
-     credentials += getNexusCredentials,
-     pgpSecretRing := file(getGPGFilePath),
-     pgpPassphrase := getGPGPassphase,
      genMustMatchersTask,
-     genGenTask, 
-     genTablesTask, 
-     genCodeTask, 
+     genGenTask,
+     genTablesTask,
+     genCodeTask,
      genFactoriesTask,
      genCompatibleClassesTask,
-     sourceGenerators in Compile <+= 
+     sourceGenerators in Compile <+=
          (baseDirectory, sourceManaged in Compile, scalaVersion) map genFiles("gengen", "GenGen.scala")(GenGen.genMain),
-     sourceGenerators in Compile <+= 
+     sourceGenerators in Compile <+=
          (baseDirectory, sourceManaged in Compile, scalaVersion) map genFiles("gentables", "GenTable.scala")(GenTable.genMain),
      sourceGenerators in Compile <+=
          (baseDirectory, sourceManaged in Compile, scalaVersion) map genFiles("genmatchers", "MustMatchers.scala")(GenMatchers.genMain),
-     sourceGenerators in Compile <+= 
+     sourceGenerators in Compile <+=
          (baseDirectory, sourceManaged in Compile, scalaVersion) map genFiles("genfactories", "GenFactories.scala")(GenFactories.genMain),
      sourceGenerators in Compile <+=
          (baseDirectory, sourceManaged in Compile, scalaVersion) map genFiles("gencompcls", "GenCompatibleClasses.scala")(GenCompatibleClasses.genMain),
-     testOptions in Test := Seq(Tests.Argument("-l", "org.scalatest.tags.Slow", 
-                                               "-m", "org.scalatest", 
+     testOptions in Test := Seq(Tests.Argument("-l", "org.scalatest.tags.Slow",
+                                               "-m", "org.scalatest",
                                                "-m", "org.scalautils",
-                                               "-m", "org.scalatest.fixture", 
-                                               "-m", "org.scalatest.concurrent", 
-                                               "-m", "org.scalatest.testng", 
-                                               "-m", "org.scalatest.junit", 
-                                               "-m", "org.scalatest.events", 
-                                               "-m", "org.scalatest.prop", 
-                                               "-m", "org.scalatest.tools", 
-                                               "-m", "org.scalatest.matchers", 
-                                               "-m", "org.scalatest.suiteprop", 
-                                               "-m", "org.scalatest.mock", 
-                                               "-m", "org.scalatest.path", 
-                                               "-m", "org.scalatest.selenium", 
-                                               "-m", "org.scalatest.exceptions", 
-                                               "-m", "org.scalatest.time", 
-                                               "-m", "org.scalatest.words", 
-                                               "-m", "org.scalatest.enablers", 
-                                               "-oDI", 
-                                               "-h", "target/html", 
+                                               "-m", "org.scalatest.fixture",
+                                               "-m", "org.scalatest.concurrent",
+                                               "-m", "org.scalatest.testng",
+                                               "-m", "org.scalatest.junit",
+                                               "-m", "org.scalatest.events",
+                                               "-m", "org.scalatest.prop",
+                                               "-m", "org.scalatest.tools",
+                                               "-m", "org.scalatest.matchers",
+                                               "-m", "org.scalatest.suiteprop",
+                                               "-m", "org.scalatest.mock",
+                                               "-m", "org.scalatest.path",
+                                               "-m", "org.scalatest.selenium",
+                                               "-m", "org.scalatest.exceptions",
+                                               "-m", "org.scalatest.time",
+                                               "-m", "org.scalatest.words",
+                                               "-m", "org.scalatest.enablers",
+                                               "-oDI",
+                                               "-h", "target/html",
                                                "-u", "target/junit",
                                                "-fW", "target/result.txt")),
-     docsrcDirSetting,
-     docSourcesSetting,
-     docScalacOptionsSetting,
      scalatestDocTaskSetting
    ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
@@ -179,66 +183,16 @@ object ScalatestBuild extends Build {
    )
 
   lazy val scalautils = Project("scalautils", file("genscalautils"))
+    .settings(sharedSettings: _*)
     .settings(
       projectTitle := "ScalaUtils",
       organization := "org.scalautils",
-      version := releaseVersion,
-      scalacOptions ++= Seq("-no-specialization", "-feature", "-target:jvm-1.5"),
       initialCommands in console := "import org.scalautils._",
       libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion.value, // this is needed to compile macro
-      resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
-      publishTo <<= version { v: String =>
-        val nexus = "https://oss.sonatype.org/"
-        if (v.trim.endsWith("SNAPSHOT")) Some("publish-snapshots" at nexus + "content/repositories/snapshots")
-        else                             Some("publish-releases" at nexus + "service/local/staging/deploy/maven2")
-      },
-      publishMavenStyle := true,
-      publishArtifact in Test := false,
-      pomIncludeRepository := { _ => false },
-      pomExtra := (
-        <url>http://www.scalatest.org</url>
-          <licenses>
-            <license>
-              <name>the Apache License, ASL Version 2.0</name>
-              <url>http://www.apache.org/licenses/LICENSE-2.0</url>
-              <distribution>repo</distribution>
-            </license>
-          </licenses>
-          <scm>
-            <url>https://github.com/scalatest/scalatest</url>
-            <connection>scm:git:git@github.com:scalatest/scalatest.git</connection>
-            <developerConnection>
-              scm:git:git@github.com:scalatest/scalatest.git
-            </developerConnection>
-          </scm>
-          <developers>
-            <developer>
-              <id>bvenners</id>
-              <name>Bill Venners</name>
-              <email>bill@artima.com</email>
-            </developer>
-            <developer>
-              <id>gcberger</id>
-              <name>George Berger</name>
-              <email>george.berger@gmail.com</email>
-            </developer>
-            <developer>
-              <id>cheeseng</id>
-              <name>Chua Chee Seng</name>
-              <email>cheeseng@amaseng.com</email>
-            </developer>
-          </developers>
-        ),
-      credentials += getNexusCredentials,
-      pgpSecretRing := file(getGPGFilePath),
-      pgpPassphrase := getGPGPassphase,
       sourceGenerators in Compile <+=
         (baseDirectory, sourceManaged in Compile, scalaVersion) map genFiles("", "GenScalaUtils.scala")(GenScalaUtils.genMain),
       sourceGenerators in Test <+=
         (baseDirectory, sourceManaged in Test, scalaVersion) map genFiles("", "GenScalaUtils.scala")(GenScalaUtils.genTest),
-      docsrcDirSetting,
-      docSourcesSetting,
-      docScalacOptionsSetting,
       scalautilsDocTaskSetting
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
@@ -252,111 +206,95 @@ object ScalatestBuild extends Build {
       )
     ).dependsOn(scalatest  % "test->test")
 
+  def gentestsSharedSettings: Seq[Setting[_]] = Seq(
+    scalacOptions ++= Seq("-no-specialization", "-feature"),
+    libraryDependencies ++= scalatestDependencies,
+    resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public"
+  )
+
   lazy val gentestsHelper = Project("gentestsHelper", file("gentests/helper"))
+    .settings(gentestsSharedSettings: _*)
     .settings(
-      scalacOptions ++= Seq("-no-specialization", "-feature"),
-      libraryDependencies ++= scalatestDependencies,
-      resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
       genTestsHelperTask,
       sourceGenerators in Test <+=
         (baseDirectory, sourceManaged in Test, scalaVersion) map genFiles("gentestshelper", "GenTestsHelper.scala")(GenTestsHelper.genTest)
     ).dependsOn(scalatest)
 
   lazy val genMustMatchersTests = Project("genMustMatchersTests", file("gentests/MustMatchers"))
+    .settings(gentestsSharedSettings: _*)
     .settings(
-      scalacOptions ++= Seq("-no-specialization", "-feature"),
-      libraryDependencies ++= scalatestDependencies,
-      resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
       genMustMatchersTask,
       sourceGenerators in Test <+=
         (baseDirectory, sourceManaged in Test, scalaVersion) map genFiles("genmatchers", "GenMatchers.scala")(GenMatchers.genTest)
     ).dependsOn(scalatest, gentestsHelper % "test->test")
 
   lazy val genGenTests = Project("genGenTests", file("gentests/GenGen"))
+    .settings(gentestsSharedSettings: _*)
     .settings(
-      scalacOptions ++= Seq("-no-specialization", "-feature"),
-      libraryDependencies ++= scalatestDependencies,
-      resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
       genGenTask,
       sourceGenerators in Test <+=
         (baseDirectory, sourceManaged in Test, scalaVersion) map genFiles("gengen", "GenGen.scala")(GenGen.genTest)
     ).dependsOn(scalatest, gentestsHelper % "test->test")
 
   lazy val genTablesTests = Project("genTablesTests", file("gentests/GenTables"))
+    .settings(gentestsSharedSettings: _*)
     .settings(
-      scalacOptions ++= Seq("-no-specialization", "-feature"),
-      libraryDependencies ++= scalatestDependencies,
-      resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
       genTablesTask,
       sourceGenerators in Test <+=
         (baseDirectory, sourceManaged in Test, scalaVersion) map genFiles("gentables", "GenTable.scala")(GenTable.genTest)
     ).dependsOn(scalatest, gentestsHelper % "test->test")
 
   lazy val genInspectorsTests = Project("genInspectorsTests", file("gentests/GenInspectors"))
+    .settings(gentestsSharedSettings: _*)
     .settings(
-      scalacOptions ++= Seq("-no-specialization", "-feature"),
-      libraryDependencies ++= scalatestDependencies,
-      resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
       genInspectorsTask,
       sourceGenerators in Test <+=
         (baseDirectory, sourceManaged in Test, scalaVersion) map genFiles("geninspectors", "GenInspectors.scala")(GenInspectors.genTest)
     ).dependsOn(scalatest, gentestsHelper % "test->test")
 
   lazy val genInspectorsShorthandsTests = Project("genInspectorsShorthandsTests", file("gentests/GenInspectorsShorthands"))
+    .settings(gentestsSharedSettings: _*)
     .settings(
-      scalacOptions ++= Seq("-no-specialization", "-feature"),
-      libraryDependencies ++= scalatestDependencies,
-      resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
       genInspectorsShorthandsTask,
       sourceGenerators in Test <+=
         (baseDirectory, sourceManaged in Test, scalaVersion) map genFiles("geninspectorsshorthands", "GenInspectorsShorthands.scala")(GenInspectorsShorthands.genTest)
     ).dependsOn(scalatest, gentestsHelper % "test->test")
 
   lazy val genTheyTests = Project("genTheyTests", file("gentests/GenThey"))
+    .settings(gentestsSharedSettings: _*)
     .settings(
-      scalacOptions ++= Seq("-no-specialization", "-feature"),
-      libraryDependencies ++= scalatestDependencies,
-      resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
       genTheyWordTask,
       sourceGenerators in Test <+=
         (baseDirectory, sourceManaged in Test, scalaVersion) map genFiles("genthey", "GenTheyWord.scala")(GenTheyWord.genTest)
     ).dependsOn(scalatest, gentestsHelper % "test->test")
 
   lazy val genContainTests = Project("genContainTests", file("gentests/GenContain"))
+    .settings(gentestsSharedSettings: _*)
     .settings(
-      scalacOptions ++= Seq("-no-specialization", "-feature"),
-      libraryDependencies ++= scalatestDependencies,
-      resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
       genContainTask,
       sourceGenerators in Test <+=
         (baseDirectory, sourceManaged in Test, scalaVersion) map genFiles("gencontain", "GenContain.scala")(GenContain.genTest)
     ).dependsOn(scalatest, gentestsHelper % "test->test")
 
   lazy val genSortedTests = Project("genSortedTests", file("gentests/GenSorted"))
+    .settings(gentestsSharedSettings: _*)
     .settings(
-      scalacOptions ++= Seq("-no-specialization", "-feature"),
-      libraryDependencies ++= scalatestDependencies,
-      resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
       genSortedTask,
       sourceGenerators in Test <+=
         (baseDirectory, sourceManaged in Test, scalaVersion) map genFiles("gensorted", "GenSorted.scala")(GenSorted.genTest)
     ).dependsOn(scalatest, gentestsHelper % "test->test")
 
   lazy val genLoneElementTests = Project("genLoneElementTests", file("gentests/GenLoneElement"))
+    .settings(gentestsSharedSettings: _*)
     .settings(
-      scalacOptions ++= Seq("-no-specialization", "-feature"),
-      libraryDependencies ++= scalatestDependencies,
-      resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
       genLoneElementTask,
       sourceGenerators in Test <+=
         (baseDirectory, sourceManaged in Test, scalaVersion) map genFiles("genloneelement", "GenLoneElement.scala")(GenLoneElement.genTest)
     ).dependsOn(scalatest, gentestsHelper % "test->test")
 
   lazy val genEmptyTests = Project("genEmptyTests", file("gentests/GenEmpty"))
+    .settings(gentestsSharedSettings: _*)
     .settings(
-      scalacOptions ++= Seq("-no-specialization", "-feature"),
-      libraryDependencies ++= scalatestDependencies,
-      resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
       genEmptyTask,
       sourceGenerators in Test <+=
         (baseDirectory, sourceManaged in Test, scalaVersion) map genFiles("genempty", "GenEmpty.scala")(GenEmpty.genTest)
