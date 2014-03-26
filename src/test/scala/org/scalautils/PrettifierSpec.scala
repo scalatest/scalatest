@@ -19,6 +19,7 @@ import org.scalatest._
 import scala.collection.mutable.WrappedArray
 import scala.util.Success
 import SharedHelpers.{javaList, javaSortedMap}
+import scala.xml.NodeSeq
 
 class PrettifierSpec extends Spec with Matchers {
   object `A Prettifier` {
@@ -314,8 +315,18 @@ class PrettifierSpec extends Spec with Matchers {
     def `should pretty print nested string Java Map` {
       Prettifier.default(javaSortedMap(Entry("akey", javaSortedMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))))) should be ("{\"akey\"={1=\"one\", 2=\"two\", 3=\"three\"}}")
     }
-    def `should pretty print xml` {
-      Prettifier.default(<a></a>) should be ("<a></a>")
+    def `should pretty print xml <a/>` {
+      Prettifier.default(<a/>) should be ("<a/>")
+    }
+    def `should pretty print xml <a><b/></a>` {
+      Prettifier.default(<a><b/></a>) should be ("<a><b/></a>")
+    }
+    def `should pretty print xml <a/><b/>` {
+      Prettifier.default(<a/><b/>) should be ("<a/><b/>")
+    }
+    def `should pretty print xml.NodeSeq <a/><b/>` {
+      val ab: NodeSeq = <a/><b/>;
+      Prettifier.default(ab) should be ("<a/><b/>")
     }
     def `should handle runaway recursion gracefully, if not necessarily quickly` {
       /*

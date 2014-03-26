@@ -18,6 +18,7 @@ package org.scalautils
 import scala.collection._
 import mutable.WrappedArray
 import scala.util.Success
+import scala.xml
 
 /**
  * A function that given any object will produce a &ldquo;pretty&rdquo; string representation of that object,
@@ -188,7 +189,10 @@ object Prettifier {
               (aGenMap.toIterator.map { case (key, value) => // toIterator is needed for consistent ordering
                 apply(key) + " -> " + apply(value)
               }).mkString(", ") + ")"
-            case anXMLNode: scala.xml.Node => anXMLNode.toString // Must handle this specially, else get infinite recursion and StackOverflowError
+            case anXMLNode: xml.Node => anXMLNode.toString // Must handle this specially, else get infinite recursion and StackOverflowError
+            case anXMLNodeSeq: xml.NodeSeq => anXMLNodeSeq.toString 
+            case anXMLNodeBuffer: xml.NodeBuffer =>
+              xml.NodeSeq.fromSeq(anXMLNodeBuffer).toString
             case aGenTraversable: GenTraversable[_] =>
               val defaultToString = aGenTraversable.toString
               val typeName = defaultToString.takeWhile(_ != '(')
