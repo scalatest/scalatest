@@ -189,14 +189,26 @@ object Prettifier {
               (aGenMap.toIterator.map { case (key, value) => // toIterator is needed for consistent ordering
                 apply(key) + " -> " + apply(value)
               }).mkString(", ") + ")"
-            case anXMLNode: xml.Node => anXMLNode.toString // Must handle this specially, else get infinite recursion and StackOverflowError
-            case anXMLNodeSeq: xml.NodeSeq => anXMLNodeSeq.toString 
+            case anXMLNodeSeq: xml.NodeSeq => anXMLNodeSeq.toString
             case anXMLNodeBuffer: xml.NodeBuffer =>
               xml.NodeSeq.fromSeq(anXMLNodeBuffer).toString
             case aGenTraversable: GenTraversable[_] =>
               val defaultToString = aGenTraversable.toString
-              val typeName = defaultToString.takeWhile(_ != '(')
-              typeName + "(" + aGenTraversable.toIterator.map(apply(_)).mkString(", ") + ")"  // toIterator is needed for consistent ordering
+              val isSelf =
+                if (aGenTraversable.size == 1) {
+                  aGenTraversable.head match {
+                    case ref: AnyRef => ref eq aGenTraversable
+                    case other => other == aGenTraversable
+                  }
+                }
+                else
+                  false
+              if (isSelf)
+                defaultToString
+              else {
+                val typeName = defaultToString.takeWhile(_ != '(')
+                typeName + "(" + aGenTraversable.toIterator.map(apply(_)).mkString(", ") + ")" // toIterator is needed for consistent ordering
+              }
             case javaCol: java.util.Collection[_] =>
               // By default java collection follows http://download.java.net/jdk7/archive/b123/docs/api/java/util/AbstractCollection.html#toString()
               // let's do our best to prettify its element when it is not overriden
