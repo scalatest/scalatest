@@ -16,7 +16,16 @@ env:
 
   matrix:
     - MODE=Main
-#    - MODE=Gentests
+    - MODE=genMustMatchersTests
+    - MODE=genGenTests
+    - MODE=genTablesTests
+    - MODE=genInspectorsTests
+    - MODE=genInspectorsShorthandsTests
+    - MODE=genTheyTests
+    - MODE=genContainTests
+    - MODE=genSortedTests
+    - MODE=genLoneElementTests
+    - MODE=genEmptyTests
 
 before_script: ./travis_build.sh Compile
 script: ./travis_build.sh $MODE
