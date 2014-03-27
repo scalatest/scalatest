@@ -38,8 +38,20 @@ import org.scalatest.concurrent.Eventually._
 import org.scalatest.tools.DistributedTestRunnerSuite
 import org.scalatest.tools.Runner
 import SharedHelpers._
+import org.scalatest.Retries._
+import org.scalatest.tagobjects.Retryable
+import org.scalatest.events.SuiteCompleted
+import org.scalatest.events.SuiteStarting
+import org.scalatest.Args
 
 class ParallelTestExecutionProp extends FunSuite {
+
+  override def withFixture(test: NoArgTest) = {
+    if (isRetryable(test))
+      withRetry { super.withFixture(test) }
+    else
+      super.withFixture(test)
+  }
 
   class ControlledOrderDistributor extends Distributor {
     val buf = ListBuffer.empty[(Suite, Args, ScalaTestStatefulStatus)]
@@ -189,7 +201,7 @@ class ParallelTestExecutionProp extends FunSuite {
     }
   }
   
-  test("ParallelTestExecution should have the blocking test's events fired without waiting when timeout reaches, and when the missing event finally reach later, it should just get fired") {
+  test("ParallelTestExecution should have the blocking test's events fired without waiting when timeout reaches, and when the missing event finally reach later, it should just get fired", Retryable) {
     import ParallelTestExecutionTestTimeoutExamples._
     forAll(testTimeoutExamples) { example =>
       val inOrderEvents = withTestHoldingDistributor(example, _.executeInOrder)
