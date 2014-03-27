@@ -209,7 +209,8 @@ object ScalatestBuild extends Build {
   def gentestsSharedSettings: Seq[Setting[_]] = Seq(
     scalacOptions ++= Seq("-no-specialization", "-feature"),
     libraryDependencies ++= scalatestDependencies,
-    resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public"
+    resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
+    testOptions in Test := Seq(Tests.Argument("-h", "target/html"))
   )
 
   lazy val gentestsHelper = Project("gentestsHelper", file("gentests/helper"))
