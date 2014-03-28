@@ -8,7 +8,8 @@ import com.typesafe.sbt.SbtPgp._
 
 object ScalatestBuild extends Build {
 
-  scalaVersion in ThisBuild := "2.10.3"
+  //scalaVersion in ThisBuild := "2.10.3"
+
   val releaseVersion = "2.2.0-SNAPSHOT"
   val githubTag = "release-2.1.0-RC2-for-scala-2.10" // for scaladoc source urls
 
@@ -42,7 +43,15 @@ object ScalatestBuild extends Build {
       case _ => Credentials(Path.userHome / ".ivy2" / ".credentials")
     }
 
+  def getJavaHome: Option[File] =
+    envVar("JAVA_HOME") match {
+      case Some(javaHome) => Some(file(javaHome))
+      case None => Some(file(System.getProperty("java.home")))
+    }
+
   def sharedSettings: Seq[Setting[_]] = Seq(
+    javaHome := getJavaHome,
+    crossScalaVersions := Seq("2.10.3", "2.11.0-RC3"),
     version := releaseVersion,
     scalacOptions ++= Seq("-no-specialization", "-feature", "-target:jvm-1.5"),
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
@@ -96,6 +105,36 @@ object ScalatestBuild extends Build {
     docScalacOptionsSetting
   )
 
+  def crossBuildLibraryDependencies(theScalaVersion: String) =
+    CrossVersion.partialVersion(theScalaVersion) match {
+      // if scala 2.11+ is used, add dependency on scala-xml module
+      case Some((2, scalaMajor)) if scalaMajor >= 11 =>
+        Seq(
+          "org.scala-lang.modules" %% "scala-xml" % "1.0.1",
+          "org.scalacheck" %% "scalacheck" % "1.11.3" % "optional"
+        )
+      case _ =>
+        Seq("org.scalacheck" %% "scalacheck" % "1.11.0" % "optional")
+    }
+
+  def scalatestLibraryDependencies =
+    Seq(
+      "org.scala-sbt" % "test-interface" % "1.0" % "optional",
+      "org.easymock" % "easymockclassextension" % "3.1" % "optional",
+      "org.jmock" % "jmock-legacy" % "2.5.1" % "optional",
+      "org.mockito" % "mockito-all" % "1.9.0" % "optional",
+      "org.testng" % "testng" % "6.8.7" % "optional",
+      "com.google.inject" % "guice" % "2.0" % "optional",
+      "junit" % "junit" % "4.10" % "optional",
+      "org.seleniumhq.selenium" % "selenium-java" % "2.35.0" % "optional",
+      "org.apache.ant" % "ant" % "1.7.1" % "optional",
+      "commons-io" % "commons-io" % "1.3.2" % "test",
+      "org.eclipse.jetty" % "jetty-server" % "8.1.8.v20121106" % "test",
+      "org.eclipse.jetty" % "jetty-webapp" % "8.1.8.v20121106" % "test",
+      "org.ow2.asm" % "asm-all" % "4.1" % "optional",
+      "org.pegdown" % "pegdown" % "1.4.2" % "optional"
+    )
+
   lazy val scalatest = Project("scalatest", file("."))
    .settings(sharedSettings: _*)
    .settings(
@@ -108,7 +147,8 @@ object ScalatestBuild extends Build {
        <dependency org="org.eclipse.jetty.orbit" name="javax.servlet" rev="3.0.0.v201112011016">
          <artifact name="javax.servlet" type="orbit" ext="jar"/>
        </dependency>,
-     libraryDependencies ++= scalatestDependencies,
+     libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
+     libraryDependencies ++= scalatestLibraryDependencies,
      libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion.value, // this is needed to compile macro
      genMustMatchersTask,
      genGenTask,
@@ -207,8 +247,8 @@ object ScalatestBuild extends Build {
     ).dependsOn(scalatest  % "test->test")
 
   def gentestsSharedSettings: Seq[Setting[_]] = Seq(
+    javaHome := getJavaHome,
     scalacOptions ++= Seq("-no-specialization", "-feature"),
-    libraryDependencies ++= scalatestDependencies,
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
     testOptions in Test := Seq(Tests.Argument("-h", "target/html"))
   )
@@ -305,24 +345,23 @@ object ScalatestBuild extends Build {
     .aggregate(genMustMatchersTests, genGenTests, genTablesTests, genInspectorsTests, genInspectorsShorthandsTests,
                genTheyTests, genContainTests, genSortedTests, genLoneElementTests, genEmptyTests)
 
-
-  def scalatestDependencies = Seq(
-    "org.scala-sbt" % "test-interface" % "1.0" % "optional",
-    "org.scalacheck" %% "scalacheck" % "1.11.0" % "optional",
-    "org.easymock" % "easymockclassextension" % "3.1" % "optional",
-    "org.jmock" % "jmock-legacy" % "2.5.1" % "optional",
-    "org.mockito" % "mockito-all" % "1.9.0" % "optional",
-    "org.testng" % "testng" % "6.8.7" % "optional",
-    "com.google.inject" % "guice" % "2.0" % "optional",
-    "junit" % "junit" % "4.10" % "optional",
-    "org.seleniumhq.selenium" % "selenium-java" % "2.35.0" % "optional",
-    "org.apache.ant" % "ant" % "1.7.1" % "optional",
-    "commons-io" % "commons-io" % "1.3.2" % "test",
-    "org.eclipse.jetty" % "jetty-server" % "8.1.8.v20121106" % "test",
-    "org.eclipse.jetty" % "jetty-webapp" % "8.1.8.v20121106" % "test",
-    "org.ow2.asm" % "asm-all" % "4.1" % "optional",
-    "org.pegdown" % "pegdown" % "1.4.2" % "optional"
-  )
+  /*def scalatestDependencies = crossBuildDependencies ++
+    Seq(
+      "org.scala-sbt" % "test-interface" % "1.0" % "optional",
+      "org.easymock" % "easymockclassextension" % "3.1" % "optional",
+      "org.jmock" % "jmock-legacy" % "2.5.1" % "optional",
+      "org.mockito" % "mockito-all" % "1.9.0" % "optional",
+      "org.testng" % "testng" % "6.8.7" % "optional",
+      "com.google.inject" % "guice" % "2.0" % "optional",
+      "junit" % "junit" % "4.10" % "optional",
+      "org.seleniumhq.selenium" % "selenium-java" % "2.35.0" % "optional",
+      "org.apache.ant" % "ant" % "1.7.1" % "optional",
+      "commons-io" % "commons-io" % "1.3.2" % "test",
+      "org.eclipse.jetty" % "jetty-server" % "8.1.8.v20121106" % "test",
+      "org.eclipse.jetty" % "jetty-webapp" % "8.1.8.v20121106" % "test",
+      "org.ow2.asm" % "asm-all" % "4.1" % "optional",
+      "org.pegdown" % "pegdown" % "1.4.2" % "optional"
+    )*/
 
   def genFiles(name: String, generatorSource: String)(gen: (File, String) => Unit)(basedir: File, outDir: File, theScalaVersion: String): Seq[File] = {
     val tdir = outDir / "scala" / name
