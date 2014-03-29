@@ -183,9 +183,7 @@ object Prettifier {
             case anArray: Array[_] =>  "Array(" + (anArray map apply).mkString(", ") + ")"
             case aWrappedArray: WrappedArray[_] => "Array(" + (aWrappedArray map apply).mkString(", ") + ")"
             case aGenMap: GenMap[_, _] =>
-              val defaultToString = aGenMap.toString
-              val typeName = defaultToString.takeWhile(_ != '(')
-              typeName + "(" +
+              aGenMap.stringPrefix + "(" +
               (aGenMap.toIterator.map { case (key, value) => // toIterator is needed for consistent ordering
                 apply(key) + " -> " + apply(value)
               }).mkString(", ") + ")"
@@ -193,7 +191,6 @@ object Prettifier {
             case anXMLNodeBuffer: xml.NodeBuffer =>
               xml.NodeSeq.fromSeq(anXMLNodeBuffer).toString
             case aGenTraversable: GenTraversable[_] =>
-              val defaultToString = aGenTraversable.toString
               val isSelf =
                 if (aGenTraversable.size == 1) {
                   aGenTraversable.head match {
@@ -204,11 +201,9 @@ object Prettifier {
                 else
                   false
               if (isSelf)
-                defaultToString
-              else {
-                val typeName = defaultToString.takeWhile(_ != '(')
-                typeName + "(" + aGenTraversable.toIterator.map(apply(_)).mkString(", ") + ")" // toIterator is needed for consistent ordering
-              }
+                aGenTraversable.toString
+              else
+                aGenTraversable.stringPrefix + "(" + aGenTraversable.toIterator.map(apply(_)).mkString(", ") + ")" // toIterator is needed for consistent ordering
             case javaCol: java.util.Collection[_] =>
               // By default java collection follows http://download.java.net/jdk7/archive/b123/docs/api/java/util/AbstractCollection.html#toString()
               // let's do our best to prettify its element when it is not overriden
