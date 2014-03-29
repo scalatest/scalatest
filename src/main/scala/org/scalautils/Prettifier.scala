@@ -18,6 +18,7 @@ package org.scalautils
 import scala.collection._
 import mutable.WrappedArray
 import scala.util.Success
+import scala.xml
 
 /**
  * A function that given any object will produce a &ldquo;pretty&rdquo; string representation of that object,
@@ -182,17 +183,27 @@ object Prettifier {
             case anArray: Array[_] =>  "Array(" + (anArray map apply).mkString(", ") + ")"
             case aWrappedArray: WrappedArray[_] => "Array(" + (aWrappedArray map apply).mkString(", ") + ")"
             case aGenMap: GenMap[_, _] =>
-              val defaultToString = aGenMap.toString
-              val typeName = defaultToString.takeWhile(_ != '(')
-              typeName + "(" +
+              aGenMap.stringPrefix + "(" +
               (aGenMap.toIterator.map { case (key, value) => // toIterator is needed for consistent ordering
                 apply(key) + " -> " + apply(value)
               }).mkString(", ") + ")"
-            case anXMLNode: scala.xml.Node => anXMLNode.toString // Must handle this specially, else get infinite recursion and StackOverflowError
+            case anXMLNodeSeq: xml.NodeSeq => anXMLNodeSeq.toString
+            case anXMLNodeBuffer: xml.NodeBuffer =>
+              xml.NodeSeq.fromSeq(anXMLNodeBuffer).toString
             case aGenTraversable: GenTraversable[_] =>
-              val defaultToString = aGenTraversable.toString
-              val typeName = defaultToString.takeWhile(_ != '(')
-              typeName + "(" + aGenTraversable.toIterator.map(apply(_)).mkString(", ") + ")"  // toIterator is needed for consistent ordering
+              val isSelf =
+                if (aGenTraversable.size == 1) {
+                  aGenTraversable.head match {
+                    case ref: AnyRef => ref eq aGenTraversable
+                    case other => other == aGenTraversable
+                  }
+                }
+                else
+                  false
+              if (isSelf)
+                aGenTraversable.toString
+              else
+                aGenTraversable.stringPrefix + "(" + aGenTraversable.toIterator.map(apply(_)).mkString(", ") + ")" // toIterator is needed for consistent ordering
             case javaCol: java.util.Collection[_] =>
               // By default java collection follows http://download.java.net/jdk7/archive/b123/docs/api/java/util/AbstractCollection.html#toString()
               // let's do our best to prettify its element when it is not overriden
