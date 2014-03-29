@@ -305,8 +305,8 @@ class OrSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
       case _ => fail()
     }
     divByZero should be a 'bad
-    intercept[NotImplementedError] {
-      attempt { ??? }
+    intercept[VirtualMachineError] {
+      attempt { throw new VirtualMachineError {} }
     }
   }
   it can "be created from a Try via the from factory method" in {
