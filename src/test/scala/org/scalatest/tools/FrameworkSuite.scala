@@ -20,8 +20,16 @@ import org.scalatest.SharedHelpers.{EventRecordingReporter, createTempDirectory}
 import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.tagobjects.Retryable
 import java.io.File
+import org.scalatest.Retries._
 
 class FrameworkSuite extends FunSuite {
+
+  override def withFixture(test: NoArgTest) = {
+    if (isRetryable(test))
+      withRetry { super.withFixture(test) }
+    else
+      super.withFixture(test)
+  }
 
   class TestEventHandler extends EventHandler {
 
