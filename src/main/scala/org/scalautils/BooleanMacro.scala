@@ -134,6 +134,35 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
       )
     )
 
+  def typedBinaryMacroBool(select: Select, typeArgs: List[Tree]): Apply =
+    Apply(
+      Select(
+        Select(
+          Select(
+            Ident(newTermName("org")),
+            newTermName("scalautils")
+          ),
+          newTermName("Bool")
+        ),
+        newTermName("binaryMacroBool")
+      ),
+      List(
+        Ident(newTermName("$org_scalatest_assert_macro_left")),
+        context.literal(select.name.decoded).tree,
+        Ident(newTermName("$org_scalatest_assert_macro_right")),
+        Apply(
+          TypeApply(
+            Select(
+              Ident(newTermName("$org_scalatest_assert_macro_left")),
+              select.name
+            ),
+            typeArgs
+          ),
+          List(Ident(newTermName("$org_scalatest_assert_macro_right")))
+        )
+      )
+    )
+
   def binaryMacroBool(select: Select, secondArg: Tree): Apply =
     Apply(
       Select(
@@ -444,6 +473,20 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
                 }
               case _ => simpleMacroBool(tree.duplicate, getText(tree))
             }
+
+          case funTypeApply: TypeApply =>
+            funTypeApply.fun match {
+              case select: Select if isSupportedBinaryOperator(select.name.decoded) =>
+                val (leftTree, rightTree) = traverseSelect(select, apply.args(0))
+                Block(
+                  valDef("$org_scalatest_assert_macro_left", leftTree),
+                  valDef("$org_scalatest_assert_macro_right", rightTree),
+                  typedBinaryMacroBool(select.duplicate, funTypeApply.args)
+                )
+
+              case _ => simpleMacroBool(tree.duplicate, getText(tree))
+            }
+
           case _ => simpleMacroBool(tree.duplicate, getText(tree))
         }
       case apply: Apply if apply.args.size == 0 => // for unary operation that takes 0 arguments

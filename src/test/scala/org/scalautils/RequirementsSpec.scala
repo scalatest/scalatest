@@ -154,6 +154,12 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     override def toString: String = value.toString
   }
 
+  class CustomContainer[+E](e: E) {
+    val element: E = e
+
+    def contains[E1 >: E](elem: E1): Boolean = elem == element
+  }
+
   describe("The require(boolean) method") {
 
     val a = 3
@@ -553,6 +559,8 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     val m1 = Map(1 -> "one", 2 -> "two", 3 -> "three")
     val m2 = Map.empty[Int, String]
 
+    val ct1 = new CustomContainer(8)
+
     val date = new Date
 
     it("should do nothing when is used to check s1 startsWith \"hi\"") {
@@ -756,6 +764,34 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         require(!m1.contains(2))
       }
       assert(e2.getMessage == containedKey(m1, 2))
+    }
+
+    it("should do nothing when is used to check ct1 contains 8") {
+      require(ct1 contains 8)
+      require(ct1.contains(8))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check ct1 contains 5") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(ct1 contains 5)
+      }
+      assert(e1.getMessage == didNotContain(ct1, 5))
+
+      val e2 = intercept[IllegalArgumentException] {
+        require(ct1.contains(5))
+      }
+      assert(e2.getMessage == didNotContain(ct1, 5))
+    }
+
+    it("should do nothing when is used to check !ct1.contains(5)") {
+      require(!ct1.contains(5))
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !ct1.contains(8)") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(!ct1.contains(8))
+      }
+      assert(e1.getMessage == contained(ct1, 8))
     }
 
     it("should do nothing when is used to check ci1 eq ci3") {
@@ -1496,6 +1532,8 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     val m1 = Map(1 -> "one", 2 -> "two", 3 -> "three")
     val m2 = Map.empty[Int, String]
 
+    val ct1 = new CustomContainer(8)
+
     val date = new Date
 
     it("should do nothing when is used to check s1 startsWith \"hi\"") {
@@ -1699,6 +1737,34 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         require(!m1.contains(2), ", dude")
       }
       assert(e2.getMessage == containedKey(m1, 2) + ", dude")
+    }
+
+    it("should do nothing when is used to check ct1 contains 8") {
+      require(ct1 contains 8, ", dude")
+      require(ct1.contains(8), ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check ct1 contains 5") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(ct1 contains 5, ", dude")
+      }
+      assert(e1.getMessage == didNotContain(ct1, 5) + ", dude")
+
+      val e2 = intercept[IllegalArgumentException] {
+        require(ct1.contains(5), ", dude")
+      }
+      assert(e2.getMessage == didNotContain(ct1, 5) + ", dude")
+    }
+
+    it("should do nothing when is used to check !ct1.contains(5)") {
+      require(!ct1.contains(5), ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !ct1.contains(8)") {
+      val e1 = intercept[IllegalArgumentException] {
+        require(!ct1.contains(8), ", dude")
+      }
+      assert(e1.getMessage == contained(ct1, 8) + ", dude")
     }
 
     it("should do nothing when is used to check ci1 eq ci3") {
@@ -2399,6 +2465,8 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     val m1 = Map(1 -> "one", 2 -> "two", 3 -> "three")
     val m2 = Map.empty[Int, String]
 
+    val ct1 = new CustomContainer(8)
+
     val date = new Date
 
     it("should do nothing when is used to check s1 startsWith \"hi\"") {
@@ -2602,6 +2670,34 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         requireState(!m1.contains(2))
       }
       assert(e2.getMessage == containedKey(m1, 2))
+    }
+
+    it("should do nothing when is used to check ct1 contains 8") {
+      requireState(ct1 contains 8)
+      requireState(ct1.contains(8))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check ct1 contains 5") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(ct1 contains 5)
+      }
+      assert(e1.getMessage == didNotContain(ct1, 5))
+
+      val e2 = intercept[IllegalStateException] {
+        requireState(ct1.contains(5))
+      }
+      assert(e2.getMessage == didNotContain(ct1, 5))
+    }
+
+    it("should do nothing when is used to check !ct1.contains(5)") {
+      requireState(!ct1.contains(5))
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !ct1.contains(8)") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(!ct1.contains(8))
+      }
+      assert(e1.getMessage == contained(ct1, 8))
     }
 
     it("should do nothing when is used to check ci1 eq ci3") {
@@ -3342,6 +3438,8 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     val m1 = Map(1 -> "one", 2 -> "two", 3 -> "three")
     val m2 = Map.empty[Int, String]
 
+    val ct1 = new CustomContainer(8)
+
     val date = new Date
 
     it("should do nothing when is used to check s1 startsWith \"hi\"") {
@@ -3545,6 +3643,34 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         requireState(!m1.contains(2), ", dude")
       }
       assert(e2.getMessage == containedKey(m1, 2) + ", dude")
+    }
+
+    it("should do nothing when is used to check ct1 contains 8") {
+      requireState(ct1 contains 8, ", dude")
+      requireState(ct1.contains(8), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check ct1 contains 5") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(ct1 contains 5, ", dude")
+      }
+      assert(e1.getMessage == didNotContain(ct1, 5) + ", dude")
+
+      val e2 = intercept[IllegalStateException] {
+        requireState(ct1.contains(5), ", dude")
+      }
+      assert(e2.getMessage == didNotContain(ct1, 5) + ", dude")
+    }
+
+    it("should do nothing when is used to check !ct1.contains(5)") {
+      requireState(!ct1.contains(5), ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !ct1.contains(8)") {
+      val e1 = intercept[IllegalStateException] {
+        requireState(!ct1.contains(8), ", dude")
+      }
+      assert(e1.getMessage == contained(ct1, 8) + ", dude")
     }
 
     it("should do nothing when is used to check ci1 eq ci3") {
