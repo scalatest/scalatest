@@ -19,6 +19,7 @@ import org.scalatest._
 import scala.collection.mutable.WrappedArray
 import scala.util.Success
 import SharedHelpers.{javaList, javaSortedMap}
+import scala.xml.NodeSeq
 
 class PrettifierSpec extends Spec with Matchers {
   object `A Prettifier` {
@@ -317,8 +318,21 @@ class PrettifierSpec extends Spec with Matchers {
     def `should pretty print nested string Java Map` {
       Prettifier.default(javaSortedMap(Entry("akey", javaSortedMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))))) should be ("{\"akey\"={1=\"one\", 2=\"two\", 3=\"three\"}}")
     }
-    def `should pretty print xml` {
+    def `should pretty print xml <a></a>` {
       Prettifier.default(<a></a>) should be ("<a></a>")
+    }
+    def `should pretty print xml <a/>` {
+      Prettifier.default(<a/>) should be ("<a/>")
+    }
+    def `should pretty print xml <a><b/></a>` {
+      Prettifier.default(<a><b/></a>) should be ("<a><b/></a>")
+    }
+    def `should pretty print xml <a/><b/>` {
+      Prettifier.default(<a/><b/>) should be ("<a/><b/>")
+    }
+    def `should pretty print xml.NodeSeq <a/><b/>` {
+      val ab: NodeSeq = <a/><b/>;
+      Prettifier.default(ab) should be ("<a/><b/>")
     }
     def `should handle runaway recursion gracefully, if not necessarily quickly` {
       /*
@@ -346,15 +360,12 @@ class PrettifierSpec extends Spec with Matchers {
               else throw new NoSuchElementException
             }
             def hasNext: Boolean = hasNextElement
-            override def mkString: String = "Iterator of Fred"
-            override def mkString(sep: String): String = "Iterator of Fred"
-            override def mkString(start: String, sep: String, end: String): String = "Iterator of Fred"
           }
         def apply(idx: Int): Fred = if (idx == 0) thisFred else throw new NoSuchElementException
         def length: Int = 1
         override def toString = "It's Fred all the way down"
       }
-      Prettifier.default(new Fred) should startWith ("It's Fred")
+      Prettifier.default(new Fred) shouldBe "It's Fred all the way down"
     }
   }
 }
