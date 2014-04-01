@@ -8,7 +8,7 @@ import com.typesafe.sbt.SbtPgp._
 
 object ScalatestBuild extends Build {
 
-  //scalaVersion in ThisBuild := "2.10.3"
+  val buildScalaVersion = "2.10.4"
 
   val releaseVersion = "2.2.0-SNAPSHOT"
   val githubTag = "release-2.1.0-RC2-for-scala-2.10" // for scaladoc source urls
@@ -51,7 +51,8 @@ object ScalatestBuild extends Build {
 
   def sharedSettings: Seq[Setting[_]] = Seq(
     javaHome := getJavaHome,
-    crossScalaVersions := Seq("2.10.3", "2.11.0-RC3"),
+    scalaVersion := buildScalaVersion,
+    crossScalaVersions := Seq(buildScalaVersion, "2.11.0-RC3"),
     version := releaseVersion,
     scalacOptions ++= Seq("-no-specialization", "-feature", "-target:jvm-1.5"),
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
@@ -248,6 +249,7 @@ object ScalatestBuild extends Build {
 
   def gentestsSharedSettings: Seq[Setting[_]] = Seq(
     javaHome := getJavaHome,
+    scalaVersion := buildScalaVersion,
     scalacOptions ++= Seq("-no-specialization", "-feature"),
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
     testOptions in Test := Seq(Tests.Argument("-h", "target/html"))
