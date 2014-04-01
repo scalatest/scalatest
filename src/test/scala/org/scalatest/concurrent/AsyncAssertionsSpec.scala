@@ -22,9 +22,19 @@ import SharedHelpers.thisLineNumber
 import time.{Span, Millis}
 import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.exceptions.TestFailedException
+import org.scalatest.Retries._
+import org.scalatest.tagobjects.Retryable
 
 class AsyncAssertionsSpec extends fixture.FunSpec with ShouldMatchers with ConductorFixture with
     OptionValues with AsyncAssertions {
+
+  override def withFixture(test: NoArgTest) = {
+    if (isRetryable(test))
+      withRetry { super.withFixture(test) }
+    else
+      super.withFixture(test)
+  }
+
 /*
   def withCause(cause: Throwable)(fun: => Unit) {
     try {
@@ -119,7 +129,7 @@ class AsyncAssertionsSpec extends fixture.FunSpec with ShouldMatchers with Condu
       con.conduct()
     }
   
-    it("should wait for multiple dismissals when requested") { con => import con._
+    it("should wait for multiple dismissals when requested", Retryable) { con => import con._
       @volatile var w: Waiter = null
       @volatile var doneWaiting = false
       @volatile var awaitReturnedPrematurely = false

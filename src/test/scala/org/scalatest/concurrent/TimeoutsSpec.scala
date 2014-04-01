@@ -32,12 +32,21 @@ import org.scalatest.time._
 import org.scalatest.{SeveredStackTraces, FunSpec, Resources}
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestCanceledException
+import org.scalatest.Retries._
+import org.scalatest.tagobjects.Retryable
 
 class TimeoutsSpec extends FunSpec with ShouldMatchers with SeveredStackTraces {
 
+  override def withFixture(test: NoArgTest) = {
+    if (isRetryable(test))
+      withRetry { super.withFixture(test) }
+    else
+      super.withFixture(test)
+  }
+
   describe("The failAfter construct") {
 
-    it("should blow up with TestFailedException when it times out") {
+    it("should blow up with TestFailedException when it times out", Retryable) {
       val caught = evaluating {
         failAfter(Span(100, Millis)) {
           Thread.sleep(200)

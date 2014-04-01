@@ -16,23 +16,32 @@ env:
 
   matrix:
     - MODE=Main
-#    - MODE=Gentests
+    - MODE=genMustMatchersTests
+    - MODE=genGenTests
+    - MODE=genTablesTests
+    - MODE=genInspectorsTests
+    - MODE=genInspectorsShorthandsTests
+    - MODE=genTheyTests
+    - MODE=genContainTests
+    - MODE=genSortedTests
+    - MODE=genLoneElementTests
+    - MODE=genEmptyTests
 
-before_script: ./travis_build.sh Compile
+#before_script: ./travis_build.sh Compile
 script: ./travis_build.sh $MODE
 
-after_success:
-  # only 'scalatest/scalatest' 'master' branch is published from the first node
-  - |
-      echo "Succeded on: ${TRAVIS_REPO_SLUG}/${TRAVIS_BRANCH}"
-      if [ "${TRAVIS_REPO_SLUG}/${TRAVIS_BRANCH}" = "scalatest/scalatest/master" ]; then
-        # temporary for convinience taken outside, todo: grab in repo, also some of steps may be hidden in inside of travis_build
-        curl -o travis_after_all.py https://raw.github.com/dmakhno/travis_after_all/master/travis_after_all.py
-        python travis_after_all.py
-        export $(cat .to_export_back)
-        if [ "$BUILD_LEADER" = "YES" ]; then
-          if [ "$BUILD_AGGREGATE_STATUS" = "others_succeeded" ]; then
-            ./travis_build.sh Publish
-          fi
-        fi
-      fi
+#after_success:
+#  # only 'scalatest/scalatest' 'master' branch is published from the first node
+#  - |
+#      echo "Succeded on: ${TRAVIS_REPO_SLUG}/${TRAVIS_BRANCH}"
+#      if [ "${TRAVIS_REPO_SLUG}/${TRAVIS_BRANCH}" = "scalatest/scalatest/master" ]; then
+#        # temporary for convinience taken outside, todo: grab in repo, also some of steps may be hidden in inside of travis_build
+#        curl -o travis_after_all.py https://raw.github.com/dmakhno/travis_after_all/master/travis_after_all.py
+#        python travis_after_all.py
+#        export $(cat .to_export_back)
+#        if [ "$BUILD_LEADER" = "YES" ]; then
+#          if [ "$BUILD_AGGREGATE_STATUS" = "others_succeeded" ]; then
+#            ./travis_build.sh Publish
+#          fi
+#        fi
+#      fi

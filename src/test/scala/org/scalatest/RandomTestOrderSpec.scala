@@ -19,6 +19,8 @@ import collection.mutable.ListBuffer
 import SharedHelpers.EventRecordingReporter
 import concurrent.Eventually._
 import prop.TableDrivenPropertyChecks._
+import org.scalatest.tags.Retryable
+import Retries._
 
 class RandomTestOrderSpec extends Spec {
 
@@ -315,10 +317,16 @@ class RandomTestOrderSpec extends Spec {
       ((buffer: ListBuffer[Int]) => new ExampleFixtureWordSpec(buffer), "Scope 1 should test 1", "Scope 1 should test 2", "Scope 1 should test 3")
     )
 
+  override def withFixture(test: NoArgTest) = {
+    if (isRetryable(test))
+      withRetry { super.withFixture(test) }
+    else
+      super.withFixture(test)
+  }
 
   object `RandomTestOrder ` {
 
-    def `execute tests in random order, but fire events in original order` {
+    @Retryable def `execute tests in random order, but fire events in original order` {
       forAll(examples) { case (specFun, test1Name, test2Name, test3Name) =>
         val rep =
           eventually {

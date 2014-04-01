@@ -8,7 +8,7 @@ import com.typesafe.sbt.SbtPgp._
 
 object ScalatestBuild extends Build {
 
-  val scalaVersionToUse = "2.10.3"
+  scalaVersion in ThisBuild := "2.10.3"
   val releaseVersion = "2.2.0-SNAPSHOT"
   val githubTag = "release-2.1.0-RC2-for-scala-2.10" // for scaladoc source urls
 
@@ -42,110 +42,113 @@ object ScalatestBuild extends Build {
       case _ => Credentials(Path.userHome / ".ivy2" / ".credentials")
     }
 
+  def sharedSettings: Seq[Setting[_]] = Seq(
+    version := releaseVersion,
+    scalacOptions ++= Seq("-no-specialization", "-feature", "-target:jvm-1.5"),
+    resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
+    publishTo <<= version { v: String =>
+      val nexus = "https://oss.sonatype.org/"
+      if (v.trim.endsWith("SNAPSHOT")) Some("publish-snapshots" at nexus + "content/repositories/snapshots")
+      else                             Some("publish-releases" at nexus + "service/local/staging/deploy/maven2")
+    },
+    publishMavenStyle := true,
+    publishArtifact in Test := false,
+    pomIncludeRepository := { _ => false },
+    pomExtra := (
+      <url>http://www.scalatest.org</url>
+        <licenses>
+          <license>
+            <name>the Apache License, ASL Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <distribution>repo</distribution>
+          </license>
+        </licenses>
+        <scm>
+          <url>https://github.com/scalatest/scalatest</url>
+          <connection>scm:git:git@github.com:scalatest/scalatest.git</connection>
+          <developerConnection>
+            scm:git:git@github.com:scalatest/scalatest.git
+          </developerConnection>
+        </scm>
+        <developers>
+          <developer>
+            <id>bvenners</id>
+            <name>Bill Venners</name>
+            <email>bill@artima.com</email>
+          </developer>
+          <developer>
+            <id>gcberger</id>
+            <name>George Berger</name>
+            <email>george.berger@gmail.com</email>
+          </developer>
+          <developer>
+            <id>cheeseng</id>
+            <name>Chua Chee Seng</name>
+            <email>cheeseng@amaseng.com</email>
+          </developer>
+        </developers>
+      ),
+    credentials += getNexusCredentials,
+    pgpSecretRing := file(getGPGFilePath),
+    pgpPassphrase := getGPGPassphase,
+    docsrcDirSetting,
+    docSourcesSetting,
+    docScalacOptionsSetting
+  )
+
   lazy val scalatest = Project("scalatest", file("."))
+   .settings(sharedSettings: _*)
    .settings(
      projectTitle := "ScalaTest",
      organization := "org.scalatest",
-     version := releaseVersion,
-     scalaVersion := scalaVersionToUse,
-     scalacOptions ++= Seq("-no-specialization", "-feature", "-target:jvm-1.5"),
      initialCommands in console := """|import org.scalatest._
                                       |import org.scalautils._
                                       |import Matchers._""".stripMargin,
-     ivyXML := 
+     ivyXML :=
        <dependency org="org.eclipse.jetty.orbit" name="javax.servlet" rev="3.0.0.v201112011016">
          <artifact name="javax.servlet" type="orbit" ext="jar"/>
-       </dependency>, 
+       </dependency>,
      libraryDependencies ++= scalatestDependencies,
-     libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersionToUse, // this is needed to compile macro
-     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
-     publishTo <<= version { v: String =>
-       val nexus = "https://oss.sonatype.org/"
-       if (v.trim.endsWith("SNAPSHOT")) Some("publish-snapshots" at nexus + "content/repositories/snapshots")
-       else                             Some("publish-releases" at nexus + "service/local/staging/deploy/maven2")
-     },
-     publishMavenStyle := true,
-     publishArtifact in Test := false,
-     pomIncludeRepository := { _ => false },
-     pomExtra := (
-       <url>http://www.scalatest.org</url>
-         <licenses>
-           <license>
-             <name>the Apache License, ASL Version 2.0</name>
-             <url>http://www.apache.org/licenses/LICENSE-2.0</url>
-             <distribution>repo</distribution>
-           </license>
-         </licenses>
-         <scm>
-           <url>https://github.com/scalatest/scalatest</url>
-           <connection>scm:git:git@github.com:scalatest/scalatest.git</connection>
-           <developerConnection>
-             scm:git:git@github.com:scalatest/scalatest.git
-           </developerConnection>
-         </scm>
-         <developers>
-           <developer>
-             <id>bvenners</id>
-             <name>Bill Venners</name>
-             <email>bill@artima.com</email>
-           </developer>
-           <developer>
-             <id>gcberger</id>
-             <name>George Berger</name>
-             <email>george.berger@gmail.com</email>
-           </developer>
-           <developer>
-             <id>cheeseng</id>
-             <name>Chua Chee Seng</name>
-             <email>cheeseng@amaseng.com</email>
-           </developer>
-         </developers>
-      ),
-     credentials += getNexusCredentials,
-     pgpSecretRing := file(getGPGFilePath),
-     pgpPassphrase := getGPGPassphase,
+     libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion.value, // this is needed to compile macro
      genMustMatchersTask,
-     genGenTask, 
-     genTablesTask, 
-     genCodeTask, 
+     genGenTask,
+     genTablesTask,
+     genCodeTask,
      genFactoriesTask,
      genCompatibleClassesTask,
-     sourceGenerators in Compile <+= 
-         (baseDirectory, sourceManaged in Compile) map genFiles("gengen", "GenGen.scala")(GenGen.genMain),
-     sourceGenerators in Compile <+= 
-         (baseDirectory, sourceManaged in Compile) map genFiles("gentables", "GenTable.scala")(GenTable.genMain),
      sourceGenerators in Compile <+=
-         (baseDirectory, sourceManaged in Compile) map genFiles("genmatchers", "MustMatchers.scala")(GenMatchers.genMain),
-     sourceGenerators in Compile <+= 
-         (baseDirectory, sourceManaged in Compile) map genFiles("genfactories", "GenFactories.scala")(GenFactories.genMain),
+         (baseDirectory, sourceManaged in Compile, scalaVersion) map genFiles("gengen", "GenGen.scala")(GenGen.genMain),
      sourceGenerators in Compile <+=
-         (baseDirectory, sourceManaged in Compile) map genFiles("gencompcls", "GenCompatibleClasses.scala")(GenCompatibleClasses.genMain),
-     testOptions in Test := Seq(Tests.Argument("-l", "org.scalatest.tags.Slow", 
-                                               "-m", "org.scalatest", 
+         (baseDirectory, sourceManaged in Compile, scalaVersion) map genFiles("gentables", "GenTable.scala")(GenTable.genMain),
+     sourceGenerators in Compile <+=
+         (baseDirectory, sourceManaged in Compile, scalaVersion) map genFiles("genmatchers", "MustMatchers.scala")(GenMatchers.genMain),
+     sourceGenerators in Compile <+=
+         (baseDirectory, sourceManaged in Compile, scalaVersion) map genFiles("genfactories", "GenFactories.scala")(GenFactories.genMain),
+     sourceGenerators in Compile <+=
+         (baseDirectory, sourceManaged in Compile, scalaVersion) map genFiles("gencompcls", "GenCompatibleClasses.scala")(GenCompatibleClasses.genMain),
+     testOptions in Test := Seq(Tests.Argument("-l", "org.scalatest.tags.Slow",
+                                               "-m", "org.scalatest",
                                                "-m", "org.scalautils",
-                                               "-m", "org.scalatest.fixture", 
-                                               "-m", "org.scalatest.concurrent", 
-                                               "-m", "org.scalatest.testng", 
-                                               "-m", "org.scalatest.junit", 
-                                               "-m", "org.scalatest.events", 
-                                               "-m", "org.scalatest.prop", 
-                                               "-m", "org.scalatest.tools", 
-                                               "-m", "org.scalatest.matchers", 
-                                               "-m", "org.scalatest.suiteprop", 
-                                               "-m", "org.scalatest.mock", 
-                                               "-m", "org.scalatest.path", 
-                                               "-m", "org.scalatest.selenium", 
-                                               "-m", "org.scalatest.exceptions", 
-                                               "-m", "org.scalatest.time", 
-                                               "-m", "org.scalatest.words", 
-                                               "-m", "org.scalatest.enablers", 
-                                               "-oDI", 
-                                               "-h", "target/html", 
+                                               "-m", "org.scalatest.fixture",
+                                               "-m", "org.scalatest.concurrent",
+                                               "-m", "org.scalatest.testng",
+                                               "-m", "org.scalatest.junit",
+                                               "-m", "org.scalatest.events",
+                                               "-m", "org.scalatest.prop",
+                                               "-m", "org.scalatest.tools",
+                                               "-m", "org.scalatest.matchers",
+                                               "-m", "org.scalatest.suiteprop",
+                                               "-m", "org.scalatest.mock",
+                                               "-m", "org.scalatest.path",
+                                               "-m", "org.scalatest.selenium",
+                                               "-m", "org.scalatest.exceptions",
+                                               "-m", "org.scalatest.time",
+                                               "-m", "org.scalatest.words",
+                                               "-m", "org.scalatest.enablers",
+                                               "-oDI",
+                                               "-h", "target/html",
                                                "-u", "target/junit",
                                                "-fW", "target/result.txt")),
-     docsrcDirSetting,
-     docSourcesSetting,
-     docScalacOptionsSetting,
      scalatestDocTaskSetting
    ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
@@ -180,67 +183,16 @@ object ScalatestBuild extends Build {
    )
 
   lazy val scalautils = Project("scalautils", file("genscalautils"))
+    .settings(sharedSettings: _*)
     .settings(
       projectTitle := "ScalaUtils",
       organization := "org.scalautils",
-      version := releaseVersion,
-      scalaVersion := scalaVersionToUse,
-      scalacOptions ++= Seq("-no-specialization", "-feature", "-target:jvm-1.5"),
       initialCommands in console := "import org.scalautils._",
-      libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersionToUse, // this is needed to compile macro
-      resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
-      publishTo <<= version { v: String =>
-        val nexus = "https://oss.sonatype.org/"
-        if (v.trim.endsWith("SNAPSHOT")) Some("publish-snapshots" at nexus + "content/repositories/snapshots")
-        else                             Some("publish-releases" at nexus + "service/local/staging/deploy/maven2")
-      },
-      publishMavenStyle := true,
-      publishArtifact in Test := false,
-      pomIncludeRepository := { _ => false },
-      pomExtra := (
-        <url>http://www.scalatest.org</url>
-          <licenses>
-            <license>
-              <name>the Apache License, ASL Version 2.0</name>
-              <url>http://www.apache.org/licenses/LICENSE-2.0</url>
-              <distribution>repo</distribution>
-            </license>
-          </licenses>
-          <scm>
-            <url>https://github.com/scalatest/scalatest</url>
-            <connection>scm:git:git@github.com:scalatest/scalatest.git</connection>
-            <developerConnection>
-              scm:git:git@github.com:scalatest/scalatest.git
-            </developerConnection>
-          </scm>
-          <developers>
-            <developer>
-              <id>bvenners</id>
-              <name>Bill Venners</name>
-              <email>bill@artima.com</email>
-            </developer>
-            <developer>
-              <id>gcberger</id>
-              <name>George Berger</name>
-              <email>george.berger@gmail.com</email>
-            </developer>
-            <developer>
-              <id>cheeseng</id>
-              <name>Chua Chee Seng</name>
-              <email>cheeseng@amaseng.com</email>
-            </developer>
-          </developers>
-        ),
-      credentials += getNexusCredentials,
-      pgpSecretRing := file(getGPGFilePath),
-      pgpPassphrase := getGPGPassphase,
+      libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion.value, // this is needed to compile macro
       sourceGenerators in Compile <+=
-        (baseDirectory, sourceManaged in Compile) map genFiles("", "GenScalaUtils.scala")(GenScalaUtils.genMain),
+        (baseDirectory, sourceManaged in Compile, scalaVersion) map genFiles("", "GenScalaUtils.scala")(GenScalaUtils.genMain),
       sourceGenerators in Test <+=
-        (baseDirectory, sourceManaged in Test) map genFiles("", "GenScalaUtils.scala")(GenScalaUtils.genTest),
-      docsrcDirSetting,
-      docSourcesSetting,
-      docScalacOptionsSetting,
+        (baseDirectory, sourceManaged in Test, scalaVersion) map genFiles("", "GenScalaUtils.scala")(GenScalaUtils.genTest),
       scalautilsDocTaskSetting
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
@@ -254,169 +206,221 @@ object ScalatestBuild extends Build {
       )
     ).dependsOn(scalatest  % "test->test")
 
-  lazy val gentests = Project("gentests", file("gentests"))
-   .settings(
-     organization := "org.scalatest",
-     version := releaseVersion,
-     scalaVersion := scalaVersionToUse,
-     scalacOptions ++= Seq("-no-specialization", "-feature"),
-     libraryDependencies ++= scalatestDependencies,
-     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
-     genTestsHelperTask,
-     genMustMatchersTask, 
-     genGenTask, 
-     genTablesTask, 
-     genInspectorsTask,
-     genInspectorsShorthandsTask,
-     genTheyWordTask,
-     genContainTask, 
-     genSortedTask, 
-     genLoneElementTask, 
-     genEmptyTask,
-     sourceGenerators in Test <+=
-       (baseDirectory, sourceManaged in Test) map genFiles("gentestshelper", "GenTestsHelper.scala")(GenTestsHelper.genTest),
-     sourceGenerators in Test <+= 
-       (baseDirectory, sourceManaged in Test) map genFiles("gengen", "GenGen.scala")(GenGen.genTest),
-     sourceGenerators in Test <+= 
-       (baseDirectory, sourceManaged in Test) map genFiles("gentables", "GenTable.scala")(GenTable.genTest),
-     sourceGenerators in Test <+=
-       (baseDirectory, sourceManaged in Test) map genFiles("genmatchers", "GenMatchers.scala")(GenMatchers.genTest),
-     sourceGenerators in Test <+= 
-       (baseDirectory, sourceManaged in Test) map genFiles("genthey", "GenTheyWord.scala")(GenTheyWord.genTest),
-     sourceGenerators in Test <+= 
-       (baseDirectory, sourceManaged in Test) map genFiles("geninspectors", "GenInspectors.scala")(GenInspectors.genTest),
-     sourceGenerators in Test <+=
-       (baseDirectory, sourceManaged in Test) map genFiles("geninspectorsshorthands", "GenInspectorsShorthands.scala")(GenInspectorsShorthands.genTest),
-     sourceGenerators in Test <+= 
-       (baseDirectory, sourceManaged in Test) map genFiles("gencontain", "GenContain.scala")(GenContain.genTest),
-     sourceGenerators in Test <+= 
-       (baseDirectory, sourceManaged in Test) map genFiles("gensorted", "GenSorted.scala")(GenSorted.genTest),
-     sourceGenerators in Test <+=
-       (baseDirectory, sourceManaged in Test) map genFiles("genloneelement", "GenLoneElement.scala")(GenLoneElement.genTest),
-     sourceGenerators in Test <+=
-       (baseDirectory, sourceManaged in Test) map genFiles("genempty", "GenEmpty.scala")(GenEmpty.genTest),
-     testOptions in Test := Seq(Tests.Argument("-l", "org.scalatest.tags.Slow", 
-                                               "-oDI", 
-                                               "-h", "gentests/target/html", 
-                                               "-u", "gentests/target/junit", 
-                                               "-fW", "target/result.txt"))
-   ).dependsOn(scalatest)
-
-   def scalatestDependencies = Seq(
-     "org.scala-sbt" % "test-interface" % "1.0" % "optional",
-     "org.scalacheck" %% "scalacheck" % "1.11.0" % "optional",
-     "org.easymock" % "easymockclassextension" % "3.1" % "optional", 
-     "org.jmock" % "jmock-legacy" % "2.5.1" % "optional", 
-     "org.mockito" % "mockito-all" % "1.9.0" % "optional", 
-     "org.testng" % "testng" % "6.8.7" % "optional",
-     "com.google.inject" % "guice" % "2.0" % "optional",
-     "junit" % "junit" % "4.10" % "optional", 
-     "org.seleniumhq.selenium" % "selenium-java" % "2.35.0" % "optional",
-     "org.apache.ant" % "ant" % "1.7.1" % "optional",
-     "commons-io" % "commons-io" % "1.3.2" % "test", 
-     "org.eclipse.jetty" % "jetty-server" % "8.1.8.v20121106" % "test", 
-     "org.eclipse.jetty" % "jetty-webapp" % "8.1.8.v20121106" % "test",
-     "org.ow2.asm" % "asm-all" % "4.1" % "optional",
-     "org.pegdown" % "pegdown" % "1.4.2" % "optional"
+  def gentestsSharedSettings: Seq[Setting[_]] = Seq(
+    scalacOptions ++= Seq("-no-specialization", "-feature"),
+    libraryDependencies ++= scalatestDependencies,
+    resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
+    testOptions in Test := Seq(Tests.Argument("-h", "target/html"))
   )
 
-  def genFiles(name: String, generatorSource: String)(gen: (File, String) => Unit)(basedir: File, outDir: File): Seq[File] = {
+  lazy val gentestsHelper = Project("gentestsHelper", file("gentests/helper"))
+    .settings(gentestsSharedSettings: _*)
+    .settings(
+      genTestsHelperTask,
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test, scalaVersion) map genFiles("gentestshelper", "GenTestsHelper.scala")(GenTestsHelper.genTest)
+    ).dependsOn(scalatest)
+
+  lazy val genMustMatchersTests = Project("genMustMatchersTests", file("gentests/MustMatchers"))
+    .settings(gentestsSharedSettings: _*)
+    .settings(
+      genMustMatchersTask,
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test, scalaVersion) map genFiles("genmatchers", "GenMatchers.scala")(GenMatchers.genTest)
+    ).dependsOn(scalatest, gentestsHelper % "test->test")
+
+  lazy val genGenTests = Project("genGenTests", file("gentests/GenGen"))
+    .settings(gentestsSharedSettings: _*)
+    .settings(
+      genGenTask,
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test, scalaVersion) map genFiles("gengen", "GenGen.scala")(GenGen.genTest)
+    ).dependsOn(scalatest, gentestsHelper % "test->test")
+
+  lazy val genTablesTests = Project("genTablesTests", file("gentests/GenTables"))
+    .settings(gentestsSharedSettings: _*)
+    .settings(
+      genTablesTask,
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test, scalaVersion) map genFiles("gentables", "GenTable.scala")(GenTable.genTest)
+    ).dependsOn(scalatest, gentestsHelper % "test->test")
+
+  lazy val genInspectorsTests = Project("genInspectorsTests", file("gentests/GenInspectors"))
+    .settings(gentestsSharedSettings: _*)
+    .settings(
+      genInspectorsTask,
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test, scalaVersion) map genFiles("geninspectors", "GenInspectors.scala")(GenInspectors.genTest)
+    ).dependsOn(scalatest, gentestsHelper % "test->test")
+
+  lazy val genInspectorsShorthandsTests = Project("genInspectorsShorthandsTests", file("gentests/GenInspectorsShorthands"))
+    .settings(gentestsSharedSettings: _*)
+    .settings(
+      genInspectorsShorthandsTask,
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test, scalaVersion) map genFiles("geninspectorsshorthands", "GenInspectorsShorthands.scala")(GenInspectorsShorthands.genTest)
+    ).dependsOn(scalatest, gentestsHelper % "test->test")
+
+  lazy val genTheyTests = Project("genTheyTests", file("gentests/GenThey"))
+    .settings(gentestsSharedSettings: _*)
+    .settings(
+      genTheyWordTask,
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test, scalaVersion) map genFiles("genthey", "GenTheyWord.scala")(GenTheyWord.genTest)
+    ).dependsOn(scalatest, gentestsHelper % "test->test")
+
+  lazy val genContainTests = Project("genContainTests", file("gentests/GenContain"))
+    .settings(gentestsSharedSettings: _*)
+    .settings(
+      genContainTask,
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test, scalaVersion) map genFiles("gencontain", "GenContain.scala")(GenContain.genTest)
+    ).dependsOn(scalatest, gentestsHelper % "test->test")
+
+  lazy val genSortedTests = Project("genSortedTests", file("gentests/GenSorted"))
+    .settings(gentestsSharedSettings: _*)
+    .settings(
+      genSortedTask,
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test, scalaVersion) map genFiles("gensorted", "GenSorted.scala")(GenSorted.genTest)
+    ).dependsOn(scalatest, gentestsHelper % "test->test")
+
+  lazy val genLoneElementTests = Project("genLoneElementTests", file("gentests/GenLoneElement"))
+    .settings(gentestsSharedSettings: _*)
+    .settings(
+      genLoneElementTask,
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test, scalaVersion) map genFiles("genloneelement", "GenLoneElement.scala")(GenLoneElement.genTest)
+    ).dependsOn(scalatest, gentestsHelper % "test->test")
+
+  lazy val genEmptyTests = Project("genEmptyTests", file("gentests/GenEmpty"))
+    .settings(gentestsSharedSettings: _*)
+    .settings(
+      genEmptyTask,
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test, scalaVersion) map genFiles("genempty", "GenEmpty.scala")(GenEmpty.genTest)
+    ).dependsOn(scalatest, gentestsHelper % "test->test")
+
+  lazy val gentests = Project("gentests", file("gentests"))
+    .aggregate(genMustMatchersTests, genGenTests, genTablesTests, genInspectorsTests, genInspectorsShorthandsTests,
+               genTheyTests, genContainTests, genSortedTests, genLoneElementTests, genEmptyTests)
+
+
+  def scalatestDependencies = Seq(
+    "org.scala-sbt" % "test-interface" % "1.0" % "optional",
+    "org.scalacheck" %% "scalacheck" % "1.11.0" % "optional",
+    "org.easymock" % "easymockclassextension" % "3.1" % "optional",
+    "org.jmock" % "jmock-legacy" % "2.5.1" % "optional",
+    "org.mockito" % "mockito-all" % "1.9.0" % "optional",
+    "org.testng" % "testng" % "6.8.7" % "optional",
+    "com.google.inject" % "guice" % "2.0" % "optional",
+    "junit" % "junit" % "4.10" % "optional",
+    "org.seleniumhq.selenium" % "selenium-java" % "2.35.0" % "optional",
+    "org.apache.ant" % "ant" % "1.7.1" % "optional",
+    "commons-io" % "commons-io" % "1.3.2" % "test",
+    "org.eclipse.jetty" % "jetty-server" % "8.1.8.v20121106" % "test",
+    "org.eclipse.jetty" % "jetty-webapp" % "8.1.8.v20121106" % "test",
+    "org.ow2.asm" % "asm-all" % "4.1" % "optional",
+    "org.pegdown" % "pegdown" % "1.4.2" % "optional"
+  )
+
+  def genFiles(name: String, generatorSource: String)(gen: (File, String) => Unit)(basedir: File, outDir: File, theScalaVersion: String): Seq[File] = {
     val tdir = outDir / "scala" / name
     val genSource = basedir / "project" / generatorSource
     def results = (tdir ** "*.scala").get
     if (results.isEmpty || results.exists(_.lastModified < genSource.lastModified)) {
       tdir.mkdirs()
-      gen(tdir, scalaVersionToUse)
+      gen(tdir, theScalaVersion)
     }
     results
   }
   
   val genMustMatchers = TaskKey[Unit]("genmatchers", "Generate Must Matchers")
-  val genMustMatchersTask = genMustMatchers <<= (sourceManaged in Compile, sourceManaged in Test, name) map { (mainTargetDir: File, testTargetDir: File, projName: String) =>
+  val genMustMatchersTask = genMustMatchers <<= (sourceManaged in Compile, sourceManaged in Test, name, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, projName: String, theScalaVersion: String) =>
     projName match {
       case "scalatest" =>
-        GenMatchers.genMain(new File(mainTargetDir, "scala/genmatchers"), scalaVersionToUse)
+        GenMatchers.genMain(new File(mainTargetDir, "scala/genmatchers"), theScalaVersion)
       case "gentests" =>
-        GenMatchers.genTest(new File(testTargetDir, "scala/genmatchers"), scalaVersionToUse)
+        GenMatchers.genTest(new File(testTargetDir, "scala/genmatchers"), theScalaVersion)
     }
   }
   
   val genGen = TaskKey[Unit]("gengen", "Generate Property Checks")
-  val genGenTask = genGen <<= (sourceManaged in Compile, sourceManaged in Test, name) map { (mainTargetDir: File, testTargetDir: File, projName: String) =>
+  val genGenTask = genGen <<= (sourceManaged in Compile, sourceManaged in Test, name, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, projName: String, theScalaVersion: String) =>
     projName match {
       case "scalatest" => 
-        GenGen.genMain(new File(mainTargetDir, "scala/gengen"), scalaVersionToUse)
+        GenGen.genMain(new File(mainTargetDir, "scala/gengen"), theScalaVersion)
       case "gentests" =>
-        GenGen.genTest(new File(testTargetDir, "scala/gengen"), scalaVersionToUse)
+        GenGen.genTest(new File(testTargetDir, "scala/gengen"), theScalaVersion)
     }
   }
   
   val genTables = TaskKey[Unit]("gentables", "Generate Tables")
-  val genTablesTask = genTables <<= (sourceManaged in Compile, sourceManaged in Test, name) map { (mainTargetDir: File, testTargetDir: File, projName: String) =>
+  val genTablesTask = genTables <<= (sourceManaged in Compile, sourceManaged in Test, name, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, projName: String, theScalaVersion: String) =>
     projName match {
       case "scalatest" => 
-        GenTable.genMain(new File(mainTargetDir, "scala/gentables"), scalaVersionToUse)
+        GenTable.genMain(new File(mainTargetDir, "scala/gentables"), theScalaVersion)
       case "gentests" => 
-        GenTable.genTest(new File(testTargetDir, "scala/gentables"), scalaVersionToUse)
+        GenTable.genTest(new File(testTargetDir, "scala/gentables"), theScalaVersion)
     }
   }
   
   val genTheyWord = TaskKey[Unit]("genthey", "Generate They Word tests")
-  val genTheyWordTask = genTheyWord <<= (sourceManaged in Compile, sourceManaged in Test) map { (mainTargetDir: File, testTargetDir: File) =>
-    GenTheyWord.genTest(new File(testTargetDir, "scala/genthey"), scalaVersionToUse)
+  val genTheyWordTask = genTheyWord <<= (sourceManaged in Compile, sourceManaged in Test, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theScalaVersion: String) =>
+    GenTheyWord.genTest(new File(testTargetDir, "scala/genthey"), theScalaVersion)
   }
   
   val genInspectors = TaskKey[Unit]("geninspectors", "Generate Inspectors tests")
-  val genInspectorsTask = genInspectors <<= (sourceManaged in Compile, sourceManaged in Test) map { (mainTargetDir: File, testTargetDir: File) =>
-    GenInspectors.genTest(new File(testTargetDir, "scala/geninspectors"), scalaVersionToUse)
+  val genInspectorsTask = genInspectors <<= (sourceManaged in Compile, sourceManaged in Test, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theScalaVersion: String) =>
+    GenInspectors.genTest(new File(testTargetDir, "scala/geninspectors"), theScalaVersion)
   }
 
   val genInspectorsShorthands = TaskKey[Unit]("geninspectorsshorthands", "Generate Inspectors Shorthands tests")
-  val genInspectorsShorthandsTask = genInspectorsShorthands <<= (sourceManaged in Compile, sourceManaged in Test) map { (mainTargetDir: File, testTargetDir: File) =>
-    GenInspectorsShorthands.genTest(new File(testTargetDir, "scala/geninspectorsshorthands"), scalaVersionToUse)
+  val genInspectorsShorthandsTask = genInspectorsShorthands <<= (sourceManaged in Compile, sourceManaged in Test, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theScalaVersion) =>
+    GenInspectorsShorthands.genTest(new File(testTargetDir, "scala/geninspectorsshorthands"), theScalaVersion)
   }
   
   val genFactories = TaskKey[Unit]("genfactories", "Generate Matcher Factories")
-  val genFactoriesTask = genFactories <<= (sourceManaged in Compile, sourceManaged in Test) map { (mainTargetDir: File, testTargetDir: File) =>
-    GenFactories.genMain(new File(mainTargetDir, "scala/genfactories"), scalaVersionToUse)
+  val genFactoriesTask = genFactories <<= (sourceManaged in Compile, sourceManaged in Test, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theScalaVersion: String) =>
+    GenFactories.genMain(new File(mainTargetDir, "scala/genfactories"), theScalaVersion)
   }
 
   val genCompatibleClasses = TaskKey[Unit]("gencompcls", "Generate Compatible Classes for Java 6 & 7")
-  val genCompatibleClassesTask = genCompatibleClasses <<= (sourceManaged in Compile, sourceManaged in Test) map { (mainTargetDir: File, testTargetDir: File) =>
-    GenCompatibleClasses.genMain(new File(mainTargetDir, "scala/gencompclass"), scalaVersionToUse)
+  val genCompatibleClassesTask = genCompatibleClasses <<= (sourceManaged in Compile, sourceManaged in Test, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theScalaVersion: String) =>
+    GenCompatibleClasses.genMain(new File(mainTargetDir, "scala/gencompclass"), theScalaVersion)
   }
   
   val genContain = TaskKey[Unit]("gencontain", "Generate contain matcher tests")
-  val genContainTask = genContain <<= (sourceManaged in Compile, sourceManaged in Test) map { (mainTargetDir: File, testTargetDir: File) =>
-    GenContain.genTest(new File(testTargetDir, "scala/gencontain"), scalaVersionToUse)
+  val genContainTask = genContain <<= (sourceManaged in Compile, sourceManaged in Test, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theScalaVersion: String) =>
+    GenContain.genTest(new File(testTargetDir, "scala/gencontain"), theScalaVersion)
   }
   
   val genSorted = TaskKey[Unit]("gensorted", "Generate sorted matcher tests")
-  val genSortedTask = genSorted <<= (sourceManaged in Compile, sourceManaged in Test) map { (mainTargetDir: File, testTargetDir: File) =>
-    GenSorted.genTest(new File(testTargetDir, "scala/gensorted"), scalaVersionToUse)
+  val genSortedTask = genSorted <<= (sourceManaged in Compile, sourceManaged in Test, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theScalaVersion: String) =>
+    GenSorted.genTest(new File(testTargetDir, "scala/gensorted"), theScalaVersion)
   }
   
   val genLoneElement = TaskKey[Unit]("genloneelement", "Generate lone element matcher tests")
-  val genLoneElementTask = genLoneElement <<= (sourceManaged in Compile, sourceManaged in Test) map { (mainTargetDir: File, testTargetDir: File) =>
-    GenLoneElement.genTest(new File(testTargetDir, "scala/genloneelement"), scalaVersionToUse)
+  val genLoneElementTask = genLoneElement <<= (sourceManaged in Compile, sourceManaged in Test, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theScalaVersion: String) =>
+    GenLoneElement.genTest(new File(testTargetDir, "scala/genloneelement"), theScalaVersion)
   }
   
   val genEmpty = TaskKey[Unit]("genempty", "Generate empty matcher tests")
-  val genEmptyTask = genEmpty <<= (sourceManaged in Compile, sourceManaged in Test) map { (mainTargetDir: File, testTargetDir: File) =>
-    GenEmpty.genTest(new File(testTargetDir, "scala/genempty"), scalaVersionToUse)
+  val genEmptyTask = genEmpty <<= (sourceManaged in Compile, sourceManaged in Test, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theScalaVersion: String) =>
+    GenEmpty.genTest(new File(testTargetDir, "scala/genempty"), theScalaVersion)
   }
 
   val genTestsHelper = TaskKey[Unit]("gentestshelper", "Generate helper classes for gentests project")
-  val genTestsHelperTask = genEmpty <<= (sourceManaged in Compile, sourceManaged in Test) map { (mainTargetDir: File, testTargetDir: File) =>
-    GenTestsHelper.genTest(new File(testTargetDir, "scala/gentestshelper"), scalaVersionToUse)
+  val genTestsHelperTask = genEmpty <<= (sourceManaged in Compile, sourceManaged in Test, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theScalaVersion: String) =>
+    GenTestsHelper.genTest(new File(testTargetDir, "scala/gentestshelper"), theScalaVersion)
   }
 
   val genCode = TaskKey[Unit]("gencode", "Generate Code, includes Must Matchers and They Word tests.")
-  val genCodeTask = genCode <<= (sourceManaged in Compile, sourceManaged in Test) map { (mainTargetDir: File, testTargetDir: File) =>
-    GenGen.genMain(new File(mainTargetDir, "scala/gengen"), scalaVersionToUse)
-    GenTable.genMain(new File(mainTargetDir, "scala/gentables"), scalaVersionToUse)
-    GenMatchers.genMain(new File(mainTargetDir, "scala/genmatchers"), scalaVersionToUse)
-    GenFactories.genMain(new File(mainTargetDir, "scala/genfactories"), scalaVersionToUse)
+  val genCodeTask = genCode <<= (sourceManaged in Compile, sourceManaged in Test, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theScalaVersion: String) =>
+    GenGen.genMain(new File(mainTargetDir, "scala/gengen"), theScalaVersion)
+    GenTable.genMain(new File(mainTargetDir, "scala/gentables"), theScalaVersion)
+    GenMatchers.genMain(new File(mainTargetDir, "scala/genmatchers"), theScalaVersion)
+    GenFactories.genMain(new File(mainTargetDir, "scala/genfactories"), theScalaVersion)
   }
 
   //
