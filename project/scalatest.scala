@@ -240,6 +240,7 @@ object ScalatestBuild extends Build {
       projectTitle := "ScalaUtils",
       organization := "org.scalautils",
       initialCommands in console := "import org.scalautils._",
+      libraryDependencies += "org.scala-lang" % "scala-compiler" % scalaVersion.value % "provided",
       libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion.value, // this is needed to compile macro
       sourceGenerators in Compile <+=
         (baseDirectory, sourceManaged in Compile, scalaVersion) map genFiles("", "GenScalaUtils.scala")(GenScalaUtils.genMain),
