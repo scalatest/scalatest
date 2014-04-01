@@ -250,7 +250,8 @@ object ScalatestBuild extends Build {
   def gentestsLibraryDependencies =
     Seq(
       "org.mockito" % "mockito-all" % "1.9.0" % "optional",
-      "junit" % "junit" % "4.10" % "optional"
+      "junit" % "junit" % "4.10" % "optional",
+      "org.pegdown" % "pegdown" % "1.4.2" % "optional"
     )
 
   def gentestsSharedSettings: Seq[Setting[_]] = Seq(
