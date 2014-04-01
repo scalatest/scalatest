@@ -252,6 +252,7 @@ object ScalatestBuild extends Build {
     scalaVersion := buildScalaVersion,
     scalacOptions ++= Seq("-no-specialization", "-feature"),
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
+    libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
     testOptions in Test := Seq(Tests.Argument("-h", "target/html"))
   )
 
