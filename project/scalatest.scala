@@ -204,7 +204,7 @@ object ScalatestBuild extends Build {
         "Bundle-DocURL" -> "http://www.scalautils.org/",
         "Bundle-Vendor" -> "Artima, Inc."
       )
-    ).dependsOn(scalatest  % "test->test")
+    ).dependsOn(scalatest)
 
   def gentestsSharedSettings: Seq[Setting[_]] = Seq(
     scalacOptions ++= Seq("-no-specialization", "-feature"),
