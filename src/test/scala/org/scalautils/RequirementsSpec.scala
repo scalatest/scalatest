@@ -1091,6 +1091,20 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       assert(e.getMessage == wasFalse("ci1.exists(321)"))
     }
 
+    def woof(f: => Unit) = "woof"
+    def meow(x: Int = 0, y: Int = 3) = "meow"
+
+    it("should do nothing when used to check woof { meow(y = 5) } == \"woof\"") {
+      require(woof { meow(y = 5) } == "woof")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check woof { meow(y = 5) } == \"meow\"") {
+      val e = intercept[IllegalArgumentException] {
+        require(woof { meow(y = 5) } == "meow")
+      }
+      assert(e.getMessage == didNotEqual("woof", "meow"))
+    }
+
   }
 
   describe("The require(boolean, clue) method") {
@@ -2064,6 +2078,20 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       assert(e.getMessage == wasFalse("ci1.exists(321)") + ", dude")
     }
 
+    def woof(f: => Unit) = "woof"
+    def meow(x: Int = 0, y: Int = 3) = "meow"
+
+    it("should do nothing when used to check woof { meow(y = 5) } == \"woof\"") {
+      require(woof { meow(y = 5) } == "woof", ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check woof { meow(y = 5) } == \"meow\"") {
+      val e = intercept[IllegalArgumentException] {
+        require(woof { meow(y = 5) } == "meow", ", dude")
+      }
+      assert(e.getMessage == didNotEqual("woof", "meow") + ", dude")
+    }
+
   }
 
   describe("The requireState(boolean) method") {
@@ -2995,6 +3023,20 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         requireState(ci1.exists(321))
       }
       assert(e.getMessage == wasFalse("ci1.exists(321)"))
+    }
+
+    def woof(f: => Unit) = "woof"
+    def meow(x: Int = 0, y: Int = 3) = "meow"
+
+    it("should do nothing when used to check woof { meow(y = 5) } == \"woof\"") {
+      requireState(woof { meow(y = 5) } == "woof")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check woof { meow(y = 5) } == \"meow\"") {
+      val e = intercept[IllegalStateException] {
+        requireState(woof { meow(y = 5) } == "meow")
+      }
+      assert(e.getMessage == didNotEqual("woof", "meow"))
     }
 
   }
@@ -3968,6 +4010,20 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         requireState(ci1.exists(321), ", dude")
       }
       assert(e.getMessage == wasFalse("ci1.exists(321)") + ", dude")
+    }
+
+    def woof(f: => Unit) = "woof"
+    def meow(x: Int = 0, y: Int = 3) = "meow"
+
+    it("should do nothing when used to check woof { meow(y = 5) } == \"woof\"") {
+      requireState(woof { meow(y = 5) } == "woof", ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check woof { meow(y = 5) } == \"meow\"") {
+      val e = intercept[IllegalStateException] {
+        requireState(woof { meow(y = 5) } == "meow", ", dude")
+      }
+      assert(e.getMessage == didNotEqual("woof", "meow") + ", dude")
     }
 
   }

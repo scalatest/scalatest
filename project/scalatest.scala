@@ -160,6 +160,7 @@ object ScalatestBuild extends Build {
        </dependency>,
      libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
      libraryDependencies ++= scalatestLibraryDependencies,
+     libraryDependencies += "org.scala-lang" % "scala-compiler" % scalaVersion.value % "provided",
      libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion.value, // this is needed to compile macro
      genMustMatchersTask,
      genGenTask,
