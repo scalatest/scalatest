@@ -247,12 +247,19 @@ object ScalatestBuild extends Build {
       )
     ).dependsOn(scalatest  % "test->test")
 
+  def gentestsLibraryDependencies =
+    Seq(
+      "org.mockito" % "mockito-all" % "1.9.0" % "optional",
+      "junit" % "junit" % "4.10" % "optional"
+    )
+
   def gentestsSharedSettings: Seq[Setting[_]] = Seq(
     javaHome := getJavaHome,
     scalaVersion := buildScalaVersion,
     scalacOptions ++= Seq("-no-specialization", "-feature"),
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
     libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
+    libraryDependencies ++= gentestsLibraryDependencies,
     testOptions in Test := Seq(Tests.Argument("-h", "target/html"))
   )
 
