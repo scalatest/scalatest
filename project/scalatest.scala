@@ -46,7 +46,17 @@ object ScalatestBuild extends Build {
   def getJavaHome: Option[File] =
     envVar("JAVA_HOME") match {
       case Some(javaHome) => Some(file(javaHome))
-      case None => Some(file(System.getProperty("java.home")))
+      case None =>
+        val javaHome = new File(System.getProperty("java.home"))
+        val javaHomeBin = new File(javaHome, "bin")
+        val javac = new File(javaHomeBin, "javac")
+        val javacExe = new File(javaHomeBin, "javac.exe")
+        if (javac.exists || javacExe.exists)
+          Some(file(javaHome.getAbsolutePath))
+        else {
+          println("WARNING: No JAVA_HOME detected, javac on PATH will be used.  Set JAVA_HOME enviroment variable to a JDK to remove this warning.")
+          None
+        }
     }
 
   def sharedSettings: Seq[Setting[_]] = Seq(
