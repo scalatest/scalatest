@@ -59,6 +59,12 @@ object GenScalaUtils {
   }
 
   def genTest(targetDir: File, scalaVersion: String) {
+    val scalatestDir = new File(targetDir, "org/scalatest")
+    scalatestDir.mkdirs()
+    val sharedHelpersSourceFile = new File("src/test/scala/org/scalatest/SharedHelpers.scala")
+    val sharedHelpersTargetFile = new File(scalatestDir, sharedHelpersSourceFile.getName)
+    copyFile(sharedHelpersSourceFile, sharedHelpersTargetFile)
+
     val packageDir = new File(targetDir, "org/scalautils")
     packageDir.mkdirs()
     val sourceDir = new File("src/test/scala/org/scalautils")
