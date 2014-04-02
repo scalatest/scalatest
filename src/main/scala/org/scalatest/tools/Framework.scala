@@ -968,19 +968,25 @@ class Framework extends SbtFramework {
     }
   }
 
-  private def parseSuiteArgs(suiteArgs: List[String]): List[String] = {
+  private def parseSuiteArgs(suiteArgs: List[String]): List[Selector] = {
     val itr = suiteArgs.iterator
-    val wildcards = new scala.collection.mutable.ListBuffer[String]()
+    val wildcards = new scala.collection.mutable.ListBuffer[Selector]()
     while (itr.hasNext) {
       val next = itr.next
-      if (next == "-z") {
-        if (itr.hasNext)
-          wildcards += itr.next
-        else
-          new IllegalArgumentException("-z must be followed by a wildcard string.")
+      next match {
+        case "-z" =>
+          if (itr.hasNext)
+            wildcards += new TestWildcardSelector(itr.next)
+          else
+            new IllegalArgumentException("-z must be followed by a wildcard string.")
+        case "-t" =>
+          if (itr.hasNext)
+            wildcards += new TestSelector(itr.next)
+          else
+            new IllegalArgumentException("-t must be followed by a test name string.")
+        case _ =>
+          throw new IllegalArgumentException("Specifying a suite (-s <suite>) or nested suite (-i <nested suite>) is not supported when running ScalaTest from sbt; Please use sbt's test-only instead.")
       }
-      else
-        throw new IllegalArgumentException("Specifying a suite (-s <suite>) and test (-t, -i) is not supported when running ScalaTest from sbt; Please use sbt's test-only instead.")
     }
     wildcards.toList
   }
@@ -1061,10 +1067,7 @@ class Framework extends SbtFramework {
     
     Runner.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
 
-    val autoSelectors =
-      parseSuiteArgs(suiteArgs).map { testWildcard =>
-        new TestWildcardSelector(testWildcard)
-      }
+    val autoSelectors = parseSuiteArgs(suiteArgs)
     
     val fullReporterConfigurations: ReporterConfigurations = 
       if (remoteArgs.isEmpty) {
