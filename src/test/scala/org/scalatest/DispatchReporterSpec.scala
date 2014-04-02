@@ -24,8 +24,18 @@ import time.SpanSugar._
 import Matchers._
 import OptionValues._
 import Inside._
+import tags.Retryable
+import Retries._
 
 class DispatchReporterSpec extends Spec {
+
+  override def withFixture(test: NoArgTest) = {
+    if (isRetryable(test))
+      withRetry { super.withFixture(test) }
+    else
+      super.withFixture(test)
+  }
+
   val TestStartingOrdinal = new Ordinal(223)
   val SecondTestStartingOrdinal = TestStartingOrdinal.next
   val TestFinishedOrdinal = SecondTestStartingOrdinal.next
@@ -186,7 +196,7 @@ class DispatchReporterSpec extends Spec {
         dispatch.doDispose()
         initialAlertProvided.ordinal should be (TestStartingOrdinal)
       }
-      def `should send AlertProvided events if a slowpoke is detected with largest seen ordinal` {
+      @Retryable def `should send AlertProvided events if a slowpoke is detected with largest seen ordinal` {
         val (erp, dispatch) = fireTestStarting()
         dispatch(
           TestStarting(
