@@ -6,7 +6,7 @@ object ScalatestBuild extends Build {
 
   val scalaVersionToUse = "2.10.3"
     
-  val releaseVersion = "2.0-SNAPSHOT"
+  val releaseVersion = "2.1.3-SNAPSHOT"
 
   lazy val scalatest = Project("scalatest", file("."))
    .settings(
