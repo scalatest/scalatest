@@ -1744,4 +1744,151 @@ class RunnerSpec extends Spec with PrivateMethodTester {
 
     assert(1 === events.filter(_.isInstanceOf[AlertProvided]).size)
   }
+
+  def `parseArgs should disallow -t"something` {
+    val e = intercept[IllegalArgumentException] {
+      Runner.parseArgs(Array("-t\"something", " to test\""))
+    }
+    assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -t\"something")
+  }
+
+  def `parseArgs should disallow -z"something` {
+    val e = intercept[IllegalArgumentException] {
+      Runner.parseArgs(Array("-z\"something", " to test\""))
+    }
+    assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -z\"something")
+  }
+
+  def `parseArgs should disallow -M"aFile` {
+    val e = intercept[IllegalArgumentException] {
+      Runner.parseArgs(Array("-M\"aFile", ".txt\""))
+    }
+    assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -M\"aFile")
+  }
+
+  def `parseArgs should disallow -u"aDirectory` {
+    val e = intercept[IllegalArgumentException] {
+      Runner.parseArgs(Array("-u\"aDirectory", "name\""))
+    }
+    assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -u\"aDirectory")
+  }
+
+  def `parseArgs should disallow -n"tag` {
+    val e = intercept[IllegalArgumentException] {
+      Runner.parseArgs(Array("-n\"tag", "name\""))
+    }
+    assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -n\"tag")
+  }
+
+  def `parseArgs should disallow -l"tag` {
+    val e = intercept[IllegalArgumentException] {
+      Runner.parseArgs(Array("-l\"tag", "name\""))
+    }
+    assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -l\"tag")
+  }
+
+  def `parseArgs should disallow -s"suite` {
+    val e = intercept[IllegalArgumentException] {
+      Runner.parseArgs(Array("-s\"suite", "name\""))
+    }
+    assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -s\"suite")
+  }
+
+  def `parseArgs should disallow -A"aFile` {
+    val e = intercept[IllegalArgumentException] {
+      Runner.parseArgs(Array("-A\"aFile", ".txt\""))
+    }
+    assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -A\"aFile")
+  }
+
+  def `parseArgs should disallow -i"nested` {
+    val e = intercept[IllegalArgumentException] {
+      Runner.parseArgs(Array("-i\"nested", "suite", "name\""))
+    }
+    assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -i\"nested")
+  }
+
+  def `parseArgs should disallow -j"junit` {
+    val e = intercept[IllegalArgumentException] {
+      Runner.parseArgs(Array("-j\"junit", "class", "name\""))
+    }
+    assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -j\"junit")
+  }
+
+  def `parseArgs should disallow -m"package` {
+    val e = intercept[IllegalArgumentException] {
+      Runner.parseArgs(Array("-m\"package", "name\""))
+    }
+    assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -m\"package")
+  }
+
+  def `parseArgs should disallow -w"package` {
+    val e = intercept[IllegalArgumentException] {
+      Runner.parseArgs(Array("-w\"package", "name\""))
+    }
+    assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -w\"package")
+  }
+
+  def `parseArgs should disallow -b"aFile` {
+    val e = intercept[IllegalArgumentException] {
+      Runner.parseArgs(Array("-b\"aFile", ".txt\""))
+    }
+    assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -b\"aFile")
+  }
+
+  def `parseArgs should disallow -q"suffix` {
+    val e = intercept[IllegalArgumentException] {
+      Runner.parseArgs(Array("-q\"suffix", "name\""))
+    }
+    assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -q\"suffix")
+  }
+
+  def `parseArgs should disallow -Q"wrong` {
+    val e = intercept[IllegalArgumentException] {
+      Runner.parseArgs(Array("-Q\"wrong", "thing\""))
+    }
+    assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -Q\"wrong")
+  }
+
+  def `parseArgs should disallow -k"super` {
+    val e = intercept[IllegalArgumentException] {
+      Runner.parseArgs(Array("-k\"super", "host\"", "9000"))
+    }
+    assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -k\"super")
+  }
+
+  def `parseArgs should disallow -K"super` {
+    val e = intercept[IllegalArgumentException] {
+      Runner.parseArgs(Array("-K\"super", "host\"", "9000"))
+    }
+    assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -K\"super")
+  }
+
+  def `parseArgs should disallow -y"chosen` {
+    val e = intercept[IllegalArgumentException] {
+      Runner.parseArgs(Array("-y\"chosen", "style\""))
+    }
+    assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -y\"chosen")
+  }
+
+  def `parseArgs should disallow -F2` {
+    val e = intercept[IllegalArgumentException] {
+      Runner.parseArgs(Array("-F2"))
+    }
+    assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -F2")
+  }
+
+  def `parseArgs should disallow -T20` {
+    val e = intercept[IllegalArgumentException] {
+      Runner.parseArgs(Array("-T20"))
+    }
+    assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -T20")
+  }
+
+  def `parseArgs should disallow -W1` {
+    val e = intercept[IllegalArgumentException] {
+      Runner.parseArgs(Array("-W1", "2"))
+    }
+    assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -W1")
+  }
 }

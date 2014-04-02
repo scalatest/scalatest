@@ -1237,12 +1237,12 @@ object Runner {
         if (it.hasNext)
           reporters += it.next
       }
-      else if (s.startsWith("-M")) {
+      else if (s == "-M") {
         reporters += s
         if (it.hasNext)
           reporters += it.next
       }
-      else if (s.startsWith("-u")) {
+      else if (s == "-u") {
         reporters += s
         if (it.hasNext)
           reporters += it.next
@@ -1272,12 +1272,12 @@ object Runner {
             reporters += it.next
         }
       }
-      else if (s.startsWith("-n")) {
+      else if (s == "-n") {
         includes += s
         if (it.hasNext)
           includes += it.next
       }
-      else if (s.startsWith("-l")) {
+      else if (s == "-l") {
         excludes += s
         if (it.hasNext)
           excludes += it.next
@@ -1294,49 +1294,49 @@ object Runner {
         if (it.hasNext)
           reporters += it.next
       }
-      else if (s.startsWith("-s")) {
+      else if (s == "-s") {
 
         suites += s
         if (it.hasNext)
           suites += it.next
       }
-      else if (s.startsWith("-A")) {
+      else if (s == "-A") {
 
         tryAgains += s
         if (it.hasNext)
           tryAgains += it.next
       }
-      else if (s.startsWith("-i")) {
+      else if (s == "-i") {
         
         suites += s
         if (it.hasNext)
           suites += it.next
       }
-      else if (s.startsWith("-t")) {
+      else if (s == "-t") {
 
         suites += s
         if (it.hasNext)
           suites += it.next
       }
-      else if (s.startsWith("-z")) {
+      else if (s == "-z") {
 
         suites += s
         if (it.hasNext)
           suites += it.next
       }
-      else if (s.startsWith("-j")) {
+      else if (s == "-j") {
 
         junits += s
         if (it.hasNext)
           junits += it.next
       }
-      else if (s.startsWith("-m")) {
+      else if (s == "-m") {
 
         membersOnly += s
         if (it.hasNext)
           membersOnly += it.next
       }
-      else if (s.startsWith("-w")) {
+      else if (s == "-w") {
 
         wildcard += s
         if (it.hasNext)
@@ -1350,20 +1350,20 @@ object Runner {
 
         concurrent += "-c" + s.substring(2)
       }
-      else if (s.startsWith("-b")) {
+      else if (s == "-b") {
 
         testNGXMLFiles += s
         if (it.hasNext)
           testNGXMLFiles += it.next
       }
-      else if (s.startsWith("-q")) {
+      else if (s == "-q") {
         if (it.hasNext)
           suffixes += it.next()
       }
-      else if (s.startsWith("-Q")) {
+      else if (s == "-Q") {
         suffixes += "Spec|Suite"
       }
-      else if (s.startsWith("-k")) {
+      else if (s == "-k") {
         
         reporters += s
         if (it.hasNext && !it.head.startsWith("-")) // for host
@@ -1371,7 +1371,7 @@ object Runner {
         if (it.hasNext && !it.head.startsWith("-")) // for port
           reporters += it.next
       }
-      else if (s.startsWith("-K")) {
+      else if (s == "-K") {
         
         reporters += s
         if (it.hasNext && !it.head.startsWith("-")) // for host
@@ -1379,23 +1379,23 @@ object Runner {
         if (it.hasNext && !it.head.startsWith("-")) // for port
           reporters += it.next
       }
-      else if (s.startsWith("-y")) {
+      else if (s == "-y") {
         chosenStyles += s
         if (it.hasNext)
           chosenStyles += it.next()
       }
-      else if (s.startsWith("-F")) {
+      else if (s == "-F") {
         spanScaleFactor += s
         if (it.hasNext)
           spanScaleFactor += it.next()
       }
-      else if (s.startsWith("-T")) {
+      else if (s == "-T") {
 
         testSortingReporterTimeout += s
         if (it.hasNext)
           testSortingReporterTimeout += it.next
       }
-      else if (s.startsWith("-W")) {
+      else if (s == "-W") {
         def isParsableAsInt(s: String): Boolean = 
           try { s.toInt; true } catch { case _: NumberFormatException => false }
         slowpoke += s
