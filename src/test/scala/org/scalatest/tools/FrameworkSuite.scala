@@ -1221,7 +1221,7 @@ class FrameworkSuite extends FunSuite {
     val iae = intercept[IllegalArgumentException] {
       framework.runner(Array("-s", "org.scalatest.tools.scalasbt.SampleSuite"), Array.empty, testClassLoader)
     }
-    assert(iae.getMessage === "Specifying a suite (-s <suite>) and test (-t, -i) is not supported when running ScalaTest from sbt; Please use sbt's test-only instead.")
+    assert(iae.getMessage === "Specifying a suite (-s <suite>) or nested suite (-i <nested suite>) is not supported when running ScalaTest from sbt; Please use sbt's test-only instead.")
   }
   
   test("Framework.runner should throw IllegalArgumentException when -j is passed in") {
@@ -1693,6 +1693,62 @@ class FrameworkSuite extends FunSuite {
 
   test("should accept -z and added it as TestWildcardSelector, which then do not select and run selected test(s) in suite when it is not explicitly specified and the suite is annotated with @DoNotDiscover") {
     val runner = framework.runner(Array("-z", "est 1", "-z", "t 3"), Array.empty, testClassLoader)
+    try {
+      val testEventHandler = new TestEventHandler
+      val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.DoNotDiscoverSuite", subclassFingerprint, false, Array(new SuiteSelector))))
+      assert(tasks.size === 0)
+    }
+    finally {
+      runner.done()
+    }
+  }
+
+  // #######
+
+  test("should accept -t and added it as TestSelector, which then select and run selected test(s) in suite, excluding nested suites") {
+    val runner = framework.runner(Array("-t", "test 1", "-t", "test 3"), Array.empty, testClassLoader)
+    try {
+      val testEventHandler = new TestEventHandler
+      val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.SampleSuite", subclassFingerprint, false, Array.empty)))
+      assert(tasks.size === 1)
+      val task = tasks(0)
+      task.execute(testEventHandler, Array(new TestLogger))
+      val successEvents = testEventHandler.successEventsReceived
+      assert(successEvents.length === 2)
+      assertSuiteSuccessEvent(successEvents(0), "org.scalatest.tools.scalasbt.SampleSuite", "test 1", subclassFingerprint)
+      assertSuiteSuccessEvent(successEvents(1), "org.scalatest.tools.scalasbt.SampleSuite", "test 3", subclassFingerprint)
+      assert(testEventHandler.errorEventsReceived.length === 0)
+      assert(testEventHandler.failureEventsReceived.length === 0)
+      assert(testEventHandler.skippedEventsReceived.length === 0)
+    }
+    finally {
+      runner.done()
+    }
+  }
+
+  test("should accept -t and added it as TestSelector, which then select and run selected test(s) in suite when it is explicitly specified, even when the suite is annotated with @DoNotDiscover") {
+    val runner = framework.runner(Array("-t", "test 1", "-t", "test 3"), Array.empty, testClassLoader)
+    try {
+      val testEventHandler = new TestEventHandler
+      val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.DoNotDiscoverSuite", subclassFingerprint, true, Array(new SuiteSelector))))
+      assert(tasks.size === 1)
+      val task = tasks(0)
+      task.execute(testEventHandler, Array(new TestLogger))
+      val successEvents = testEventHandler.successEventsReceived
+      assert(successEvents.length === 2)
+      assertSuiteSuccessEvent(successEvents(0), "org.scalatest.tools.scalasbt.DoNotDiscoverSuite", "test 1", subclassFingerprint)
+      assertSuiteSuccessEvent(successEvents(1), "org.scalatest.tools.scalasbt.DoNotDiscoverSuite", "test 3", subclassFingerprint)
+      assert(testEventHandler.errorEventsReceived.length === 0)
+      assert(testEventHandler.failureEventsReceived.length === 0)
+      assert(testEventHandler.skippedEventsReceived.length === 0)
+    }
+    finally {
+      runner.done()
+    }
+  }
+
+  test("should accept -t and added it as TestSelector, which then do not select and run selected test(s) in suite when it is not explicitly specified and the suite is annotated with @DoNotDiscover") {
+    val runner = framework.runner(Array("-t", "test 1", "-t", "test 3"), Array.empty, testClassLoader)
     try {
       val testEventHandler = new TestEventHandler
       val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.DoNotDiscoverSuite", subclassFingerprint, false, Array(new SuiteSelector))))
