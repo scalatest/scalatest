@@ -1773,13 +1773,6 @@ class RunnerSpec extends Spec with PrivateMethodTester {
     assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -u\"aDirectory")
   }
 
-  def `parseArgs should disallow -h"aDirectory` {
-    val e = intercept[IllegalArgumentException] {
-      Runner.parseArgs(Array("-h\"aDirectory", "name\""))
-    }
-    assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -h\"aDirectory")
-  }
-
   def `parseArgs should disallow -n"tag` {
     val e = intercept[IllegalArgumentException] {
       Runner.parseArgs(Array("-n\"tag", "name\""))

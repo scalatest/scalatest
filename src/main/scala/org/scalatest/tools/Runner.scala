@@ -1262,7 +1262,7 @@ object Runner {
         if (it.hasNext)
           reporters += it.next
       }*/
-      else if (s == "-h") {
+      else if (s.startsWith("-h")) {
         reporters += s
         if (it.hasNext)
           reporters += it.next
