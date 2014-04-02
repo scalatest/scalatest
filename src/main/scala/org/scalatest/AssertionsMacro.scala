@@ -99,13 +99,17 @@ private[scalatest] class AssertionsMacro[C <: Context](val context: C) {
       def repairOwners(t: Tree, macroCallSiteOwner: Symbol): Tree = {
         object repairer extends Transformer {
           override def transform(t: Tree): Tree = {
-            // TODO see `fixerUpper` in the pattern matcher for a slightly simpler way to do this.
-            if (currentOwner.hasTransOwner(macroCallSiteOwner) && currentOwner.owner != macroCallSiteOwner)
-              new ChangeOwnerAndModuleClassTraverser(macroCallSiteOwner, currentOwner)(t)
-            else super.transform(t)
+            t match {
+              case (_: DefTree | _: Function | _: Import) if t.symbol.owner == macroCallSiteOwner && macroCallSiteOwner != currentOwner =>
+                new ChangeOwnerAndModuleClassTraverser(macroCallSiteOwner, currentOwner)(t)
+              case _ =>
+                super.transform(t)
+            }
           }
         }
-        repairer transform t
+        repairer.atOwner(macroCallSiteOwner) {
+          repairer transform t
+        }
       }
     }
   }
