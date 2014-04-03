@@ -66,6 +66,7 @@ object ScalatestBuild extends Build {
     version := releaseVersion,
     scalacOptions ++= Seq("-no-specialization", "-feature", "-target:jvm-1.5"),
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
+    libraryDependencies ++= scalaLibraries,
     publishTo <<= version { v: String =>
       val nexus = "https://oss.sonatype.org/"
       if (v.trim.endsWith("SNAPSHOT")) Some("publish-snapshots" at nexus + "content/repositories/snapshots")
@@ -128,6 +129,12 @@ object ScalatestBuild extends Build {
         Seq("org.scalacheck" %% "scalacheck" % "1.11.0" % "optional")
     }
 
+  def scalaLibraries =
+    Seq(
+      "org.scala-lang" % "scala-compiler" % buildScalaVersion % "provided",
+      "org.scala-lang" % "scala-reflect" % buildScalaVersion % "provided" // this is needed to compile macro
+    )
+
   def scalatestLibraryDependencies =
     Seq(
       "org.scala-sbt" % "test-interface" % "1.0" % "optional",
@@ -160,8 +167,6 @@ object ScalatestBuild extends Build {
        </dependency>,
      libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
      libraryDependencies ++= scalatestLibraryDependencies,
-     libraryDependencies += "org.scala-lang" % "scala-compiler" % scalaVersion.value % "provided",
-     libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion.value, // this is needed to compile macro
      genMustMatchersTask,
      genGenTask,
      genTablesTask,
@@ -240,8 +245,6 @@ object ScalatestBuild extends Build {
       projectTitle := "ScalaUtils",
       organization := "org.scalautils",
       initialCommands in console := "import org.scalautils._",
-      libraryDependencies += "org.scala-lang" % "scala-compiler" % scalaVersion.value % "provided",
-      libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion.value, // this is needed to compile macro
       sourceGenerators in Compile <+=
         (baseDirectory, sourceManaged in Compile, scalaVersion) map genFiles("", "GenScalaUtils.scala")(GenScalaUtils.genMain),
       sourceGenerators in Test <+=
