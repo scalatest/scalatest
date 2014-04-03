@@ -23,7 +23,7 @@ object ScalatestBuild extends Build {
        </dependency>, 
      libraryDependencies ++= simpledependencies,
      libraryDependencies += "org.scala-lang" % "scala-compiler" % scalaVersionToUse % "provided",
-     libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersionToUse, // this is needed to compile macro
+     libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersionToUse % "provided", // this is needed to compile macro
      resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
      genMustMatchersTask, 
      genGenTask, 
