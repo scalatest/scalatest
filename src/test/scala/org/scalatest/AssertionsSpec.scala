@@ -541,6 +541,22 @@ class AssertionsSpec extends FunSpec {
     it("should preserve side effects when typed Apply with 2 argument list is passed in") {
       assert(neverRuns3(sys.error("Sad times 3"))(0))
     }
+
+    def woof(f: => Unit) = "woof"
+    def meow(x: Int = 0, y: Int = 3) = "meow"
+
+    it("should do nothing when used to check woof { meow(y = 5) } == \"woof\"") {
+      assert(woof { meow(y = 5) } == "woof")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check woof { meow(y = 5) } == \"meow\"") {
+      val e = intercept[TestFailedException] {
+        assert(woof { meow(y = 5) } == "meow")
+      }
+      assert(e.message == Some(didNotEqual("woof", "meow")))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
   }
 
   describe("The assert(boolean, clue) method") {
@@ -886,6 +902,22 @@ class AssertionsSpec extends FunSpec {
 
     it("should preserve side effects when typed Apply with 2 argument list is passed in") {
       assert(neverRuns3(sys.error("Sad times 3"))(0), "should not fail!")
+    }
+
+    def woof(f: => Unit) = "woof"
+    def meow(x: Int = 0, y: Int = 3) = "meow"
+
+    it("should do nothing when used to check woof { meow(y = 5) } == \"woof\"") {
+      assert(woof { meow(y = 5) } == "woof", ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check woof { meow(y = 5) } == \"meow\"") {
+      val e = intercept[TestFailedException] {
+        assert(woof { meow(y = 5) } == "meow", ", dude")
+      }
+      assert(e.message == Some(didNotEqual("woof", "meow") + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
   }
 
@@ -1233,6 +1265,22 @@ class AssertionsSpec extends FunSpec {
     it("should preserve side effects when typed Apply with 2 argument list is passed in") {
       assume(neverRuns3(sys.error("Sad times 3"))(0))
     }
+
+    def woof(f: => Unit) = "woof"
+    def meow(x: Int = 0, y: Int = 3) = "meow"
+
+    it("should do nothing when used to check woof { meow(y = 5) } == \"woof\"") {
+      assume(woof { meow(y = 5) } == "woof")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check woof { meow(y = 5) } == \"meow\"") {
+      val e = intercept[TestCanceledException] {
+        assume(woof { meow(y = 5) } == "meow")
+      }
+      assert(e.message == Some(didNotEqual("woof", "meow")))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
   }
 
   describe("The assume(boolean, clue) method") {
@@ -1578,6 +1626,22 @@ class AssertionsSpec extends FunSpec {
 
     it("should preserve side effects when typed Apply with 2 argument list is passed in") {
       assume(neverRuns3(sys.error("Sad times 3"))(0), "should not fail!")
+    }
+
+    def woof(f: => Unit) = "woof"
+    def meow(x: Int = 0, y: Int = 3) = "meow"
+
+    it("should do nothing when used to check woof { meow(y = 5) } == \"woof\"") {
+      assume(woof { meow(y = 5) } == "woof", ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check woof { meow(y = 5) } == \"meow\"") {
+      val e = intercept[TestCanceledException] {
+        assume(woof { meow(y = 5) } == "meow", ", dude")
+      }
+      assert(e.message == Some(didNotEqual("woof", "meow") + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
   }
 
