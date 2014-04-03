@@ -549,11 +549,78 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
       List(Ident(newTermName("$org_scalatest_assert_macro_expr")), clueTree)
     )
 
-  def genMacro(booleanExpr: Expr[Boolean], methodName: String, clueExpr: Expr[Any]): Expr[Unit] =
-    context.Expr(
-      Block(
-        valDef("$org_scalatest_assert_macro_expr", transformAst(booleanExpr.tree)),
-        callHelper(methodName, clueExpr.tree)
+  // This is needed to repair owner chain as encountered in the following issue:
+  // https://github.com/scalatest/scalatest/issues/276
+  class OwnerRepair[C <: reflect.macros.Context with Singleton](val c: C) {
+    /**
+     * If macro arguments are spliced into underneath DefTree that introduces
+     * an entry into the symbol ownership chain, any symbols defined in the
+     * spliced tree will be ill-owned.
+     *
+     * This method detects this situation, and corrects the owners.
+     */
+    def repairOwners[A](expr: c.Expr[A]): c.Expr[A] = {
+      val symtab = c.universe.asInstanceOf[reflect.internal.SymbolTable]
+      val utils = new Utils[symtab.type](symtab)
+
+      // Proactively typecheck the tree. This will assign symbols to
+      // DefTrees introduced by the macro.
+      val typed = c.typeCheck(expr.tree).asInstanceOf[symtab.Tree]
+
+      // The current owner at the call site. Symbols owned by this may need
+      // to be transplanted.
+      import scala.reflect.macros.runtime.{Context => MRContext}
+      val callsiteOwner =
+        c.asInstanceOf[MRContext]
+          .callsiteTyper.context.owner
+          .asInstanceOf[symtab.Symbol]
+
+      val repairedTree = utils.repairOwners(typed, callsiteOwner)
+      c.Expr[A](repairedTree.asInstanceOf[c.universe.Tree])
+    }
+
+    private class Utils[U <: reflect.internal.SymbolTable](val u: U) {
+      import u._
+
+      class ChangeOwnerAndModuleClassTraverser(oldowner: Symbol, newowner: Symbol)
+        extends ChangeOwnerTraverser(oldowner, newowner) {
+
+        override def traverse(tree: Tree) {
+          tree match {
+            case _: DefTree => change(tree.symbol.moduleClass)
+            case _          =>
+          }
+          super.traverse(tree)
+        }
+      }
+
+      def repairOwners(t: Tree, macroCallSiteOwner: Symbol): Tree = {
+        object repairer extends Transformer {
+          override def transform(t: Tree): Tree = {
+            t match {
+              case (_: DefTree | _: Function | _: Import) if t.symbol.owner == macroCallSiteOwner && macroCallSiteOwner != currentOwner =>
+                new ChangeOwnerAndModuleClassTraverser(macroCallSiteOwner, currentOwner)(t)
+              case _ =>
+                super.transform(t)
+            }
+          }
+        }
+        repairer.atOwner(macroCallSiteOwner) {
+          repairer transform t
+        }
+      }
+    }
+  }
+
+  def genMacro(booleanExpr: Expr[Boolean], methodName: String, clueExpr: Expr[Any]): Expr[Unit] = {
+    val ownerRepair = new OwnerRepair[context.type](context)
+    val expandedCode =
+      context.Expr(
+        Block(
+          valDef("$org_scalatest_assert_macro_expr", transformAst(booleanExpr.tree)),
+          callHelper(methodName, clueExpr.tree)
+        )
       )
-    )
+    ownerRepair.repairOwners(expandedCode)
+  }
 }

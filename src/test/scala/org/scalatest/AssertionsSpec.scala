@@ -1514,6 +1514,22 @@ class AssertionsSpec extends FunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
+
+    def woof(f: => Unit) = "woof"
+    def meow(x: Int = 0, y: Int = 3) = "meow"
+
+    it("should do nothing when used to check woof { meow(y = 5) } == \"woof\"") {
+      assert(woof { meow(y = 5) } == "woof")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check woof { meow(y = 5) } == \"meow\"") {
+      val e = intercept[TestFailedException] {
+        assert(woof { meow(y = 5) } == "meow")
+      }
+      assert(e.message == Some(didNotEqual("woof", "meow")))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
   }
 
   describe("The assert(boolean, clue) method") {
@@ -2732,6 +2748,22 @@ class AssertionsSpec extends FunSpec {
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
 
+    def woof(f: => Unit) = "woof"
+    def meow(x: Int = 0, y: Int = 3) = "meow"
+
+    it("should do nothing when used to check woof { meow(y = 5) } == \"woof\"") {
+      assert(woof { meow(y = 5) } == "woof", ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check woof { meow(y = 5) } == \"meow\"") {
+      val e = intercept[TestFailedException] {
+        assert(woof { meow(y = 5) } == "meow", ", dude")
+      }
+      assert(e.message == Some(didNotEqual("woof", "meow") + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
   }
 
   describe("The assume(boolean) method") {
@@ -3939,6 +3971,22 @@ class AssertionsSpec extends FunSpec {
         assume(ci1.exists(321))
       }
       assert(e.message == Some(wasFalse("ci1.exists(321)")))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    def woof(f: => Unit) = "woof"
+    def meow(x: Int = 0, y: Int = 3) = "meow"
+
+    it("should do nothing when used to check woof { meow(y = 5) } == \"woof\"") {
+      assume(woof { meow(y = 5) } == "woof")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check woof { meow(y = 5) } == \"meow\"") {
+      val e = intercept[TestCanceledException] {
+        assume(woof { meow(y = 5) } == "meow")
+      }
+      assert(e.message == Some(didNotEqual("woof", "meow")))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -5156,6 +5204,22 @@ class AssertionsSpec extends FunSpec {
         assume(ci1.exists(321), ", dude")
       }
       assert(e.message == Some(wasFalse("ci1.exists(321)") + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    def woof(f: => Unit) = "woof"
+    def meow(x: Int = 0, y: Int = 3) = "meow"
+
+    it("should do nothing when used to check woof { meow(y = 5) } == \"woof\"") {
+      assume(woof { meow(y = 5) } == "woof", ", dude")
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used to check woof { meow(y = 5) } == \"meow\"") {
+      val e = intercept[TestCanceledException] {
+        assume(woof { meow(y = 5) } == "meow", ", dude")
+      }
+      assert(e.message == Some(didNotEqual("woof", "meow") + ", dude"))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
