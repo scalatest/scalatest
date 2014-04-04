@@ -957,7 +957,7 @@ class ShouldContainKeySpec extends Spec with Checkers with ReturnsNormallyThrows
         val caught3 = intercept[TestFailedException] {
           javaMap should (not contain key ("three") and not contain key ("two"))
         }
-        caught3.getMessage should (be === "{one=1, two=2} did not contain key \"three\", but {\"one\"=1, \"two\"=2} contained key \"two\"" or
+        caught3.getMessage should (be === "{\"one\"=1, \"two\"=2} did not contain key \"three\", but {\"one\"=1, \"two\"=2} contained key \"two\"" or
           be === "{\"two\"=2, \"one\"=1} did not contain key \"three\", but {\"two\"=2, \"one\"=1} contained key \"two\"")
       }
 
@@ -966,7 +966,7 @@ class ShouldContainKeySpec extends Spec with Checkers with ReturnsNormallyThrows
         val caught1 = intercept[TestFailedException] {
           javaMap should { not { contain key ("two") } or not { contain key ("two") }}
         }
-        caught1.getMessage should (be === "{one=1, two=2} contained key \"two\", and {one=1, two=2} contained key \"two\"" or
+        caught1.getMessage should (be === "{\"one\"=1, \"two\"=2} contained key \"two\", and {\"one\"=1, \"two\"=2} contained key \"two\"" or
           be === "{\"two\"=2, \"one\"=1} contained key \"two\", and {\"two\"=2, \"one\"=1} contained key \"two\"")
 
         val caught2 = intercept[TestFailedException] {
