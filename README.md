@@ -27,12 +27,16 @@ Building ScalaTest
 
 The followings are needed for building ScalaTest:
 
-*   JDK 6 or 7
+*   JDK 6, 7 or 8
 *   [SBT 0.13.1](http://www.scala-sbt.org/0.13.1/docs/Getting-Started/Setup.html)
 
-and use the following options in your SBT launch file:
+for JDK 6 or 7, use the following options in your SBT launch file:
 
-    SBT_OPTS="-server -Xms512M -Xmx2200M -Xss1M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M"
+    SBT_OPTS="-server -Xms512M -Xmx3000M -Xss1M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewRatio=8 -XX:MaxPermSize=512M"
+
+for JDK 8, use the following SBT options instead:
+
+    SBT_OPTS="-server -Xms512M -Xmx3000M -Xss1M  -XX:+UseConcMarkSweepGC -XX:NewRatio=8"
 
 ### Building and Running Tests
 
@@ -40,7 +44,7 @@ This command will build and run the regular tests:
 
   `$ sbt test`
 
-To run generated tests, you'll need to increase maximum heap size to -Xmx5120M, and use this command instead:
+To run generated tests, you'll need to increase maximum heap size to -Xmx5000M, and use this command instead:
 
   `$ sbt gentests/test`
 
