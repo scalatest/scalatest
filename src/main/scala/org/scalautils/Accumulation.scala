@@ -134,7 +134,7 @@ trait Accumulation {
      * <a href="Accumulation$$Combinable.html"><code>Combinable</code></a>, which
      * enables the <code>combined</code> method to be invoked on it.
      */
-    // implicit def convertGenTraversableOnceToCombinableNothing[ERR, EVERY[b] <: Every[b], TRAVONCE[+e] <: GenTraversableOnce[e]](xs: TRAVONCE[Nothing Or EVERY[ERR]])(implicit cbf: CanBuildFrom[TRAVONCE[Nothing Or EVERY[ERR]], Nothing, TRAVONCE[Nothing]]): Combinable[Nothing, ERR, TRAVONCE] = convertGenTraversableOnceToCombinable[Nothing, ERR, EVERY, TRAVONCE](xs)(cbf)
+    implicit def convertGenTraversableOnceToCombinableNothing[ERR, EVERY[b] <: Every[b], TRAVONCE[+e] <: GenTraversableOnce[e]](xs: TRAVONCE[Nothing Or EVERY[ERR]])(implicit cbf: CanBuildFrom[TRAVONCE[Nothing Or EVERY[ERR]], Nothing, TRAVONCE[Nothing]]): Combinable[Nothing, ERR, TRAVONCE] = convertGenTraversableOnceToCombinable[Nothing, ERR, EVERY, TRAVONCE](xs)(cbf)
 
   // Must have another one for Sets, because they are not covariant. Will need to handle Good/Nothing case specially therefore, and plan to do that
   // with another implicit here. Or just don't support Nothing.
@@ -186,7 +186,7 @@ trait Accumulation {
    * <code>GenTraversableOnce</code>s.
    * </p>
    */
-  // implicit def convertGenSetToCombinableNothing[ERR, X, EVERY[b] <: Every[b], SET[e] <: GenSet[e]](xs: SET[X with (Nothing Or EVERY[ERR])])(implicit cbf: CanBuildFrom[SET[X with (Nothing Or EVERY[ERR])], Nothing, SET[Nothing]]): Combinable[Nothing, ERR, SET] = convertGenSetToCombinable[Nothing, ERR, X, EVERY, SET](xs)(cbf)
+  implicit def convertGenSetToCombinableNothing[ERR, X, EVERY[b] <: Every[b], SET[e] <: GenSet[e]](xs: SET[X with (Nothing Or EVERY[ERR])])(implicit cbf: CanBuildFrom[SET[X with (Nothing Or EVERY[ERR])], Nothing, SET[Nothing]]): Combinable[Nothing, ERR, SET] = convertGenSetToCombinable[Nothing, ERR, X, EVERY, SET](xs)(cbf)
 
   /**
    * Implicitly converts an <code>Every</code> containing accumulating <code>Or</code>s to an instance of
