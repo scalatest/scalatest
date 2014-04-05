@@ -11,10 +11,10 @@
     <scala.version>@SCALA_VERSION@</scala.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <pax.exam.version>2.6.0</pax.exam.version>
-    <pax.url.version>1.5.0</pax.url.version>
+    <pax.exam.version>3.4.0</pax.exam.version>
+    <pax.url.version>1.6.0</pax.url.version>
   </properties>
-	
+
   <groupId>org.scalatest</groupId>
   <artifactId>scalatest_@DEPLOY_SCALA_VERSION@</artifactId>
   <version>@RELEASE@</version>
@@ -52,7 +52,7 @@
   </developers>
 
   <inceptionYear>2009</inceptionYear>
-  
+
   <repositories>
     <repository>
       <id>typesafe</id>
@@ -88,7 +88,7 @@
     </dependency>
 
 <!-- uncomment for Scala 2.11.0-RC3 -->
-<!-- 
+<!--
     <dependency>
       <groupId>org.scala-lang.modules</groupId>
       <artifactId>scala-parser-combinators_@DEPLOY_SCALA_VERSION@</artifactId>
@@ -150,7 +150,7 @@
       <version>6.8.7</version>
       <optional>true</optional>
     </dependency>
-    
+
     <dependency>
       <groupId>com.google.inject</groupId>
       <artifactId>guice</artifactId>
@@ -164,7 +164,7 @@
       <version>4.10</version>
       <optional>true</optional>
     </dependency>
-    
+
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-java</artifactId>
@@ -185,28 +185,28 @@
       <version>1.3.2</version>
       <scope>test</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-server</artifactId>
       <version>8.1.8.v20121106</version>
       <scope>test</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-webapp</artifactId>
       <version>8.1.8.v20121106</version>
       <scope>test</scope>
     </dependency>
-    
+
     <dependency>
-	  <groupId>org.ow2.asm</groupId>
-	  <artifactId>asm-all</artifactId>
-	  <version>4.1</version>
-	  <optional>true</optional>
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm-all</artifactId>
+      <version>4.1</version>
+      <optional>true</optional>
     </dependency>
-    
+
     <dependency>
       <groupId>org.pegdown</groupId>
       <artifactId>pegdown</artifactId>
@@ -245,35 +245,35 @@
     <dependency>
       <groupId>org.apache.felix</groupId>
       <artifactId>org.apache.felix.framework</artifactId>
-      <version>4.0.3</version>
+      <version>4.4.0</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.eclipse.tycho</groupId>
-      <artifactId>org.eclipse.osgi</artifactId>
-      <version>3.7.0.v20110613</version>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.core</artifactId>
+      <version>5.0.0</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>1.7.1</version>
+      <version>1.7.7</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-core</artifactId>
-      <version>1.0.7</version>
+      <version>1.1.2</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>1.0.7</version>
+      <version>1.1.2</version>
       <scope>test</scope>
     </dependency>
 
