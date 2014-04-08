@@ -889,7 +889,7 @@ private[scalatest] class PathEngine(concurrentBundleModResourceName: String, sim
   def handleTest(handlingSuite: Suite, testText: String, testFun: () => Outcome, testRegistrationClosedResourceName: String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], testTags: Tag*) {
 
     if (insideAPathTest) 
-      throw new TestRegistrationClosedException(Resources("itCannotAppearInsideAnotherIt"), getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment))
+      throw new TestRegistrationClosedException(Resources(testRegistrationClosedResourceName), getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment))
     
     insideAPathTest = true
     
@@ -966,7 +966,7 @@ private[scalatest] class PathEngine(concurrentBundleModResourceName: String, sim
         val newTestFun = { () => outcome }
         // register with         informerForThisTest.fireRecordedMessages(testWasPending)
 
-        registerTest(testText, newTestFun, "itCannotAppearInsideAnotherIt", sourceFileName, methodName, stackDepth + 1, adjustment, Some(durationOfRunningTest), location, Some(informerForThisTest), testTags: _*)
+        registerTest(testText, newTestFun, testRegistrationClosedResourceName, sourceFileName, methodName, stackDepth + 1, adjustment, Some(durationOfRunningTest), location, Some(informerForThisTest), testTags: _*)
         targetLeafHasBeenReached = true
       }
       else if (targetLeafHasBeenReached && nextTargetPath.isEmpty) {
@@ -1130,12 +1130,12 @@ private[scalatest] class PathEngine(concurrentBundleModResourceName: String, sim
   def handleIgnoredTest(testText: String, f: () => Outcome, testRegistrationClosedResourceName: String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], testTags: Tag*) {
 
     if (insideAPathTest) 
-      throw new TestRegistrationClosedException(Resources("ignoreCannotAppearInsideAnIt"), getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment))
+      throw new TestRegistrationClosedException(Resources(testRegistrationClosedResourceName), getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment))
     
     describeRegisteredNoTests = false
     val nextPath = getNextPath()
     if (isInTargetPath(nextPath, targetPath)) {
-      super.registerIgnoredTest(testText, f, "ignoreCannotAppearInsideAnIt", sourceFileName, methodName, stackDepth + 1, adjustment, location, testTags: _*)
+      super.registerIgnoredTest(testText, f, testRegistrationClosedResourceName, sourceFileName, methodName, stackDepth + 1, adjustment, location, testTags: _*)
       targetLeafHasBeenReached = true
     }
     else if (targetLeafHasBeenReached && nextTargetPath.isEmpty) {
