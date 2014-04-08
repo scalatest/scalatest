@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-trait TestRegistration {
+trait TestRegistration { theSuite: Suite =>
 
   def registerTest(testText: String, testTags: Tag*)(testFun: => Unit)
 
