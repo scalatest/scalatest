@@ -9,12 +9,12 @@
     <!-- set global properties for this build -->
     <property name="scala.version.range" value="[2.10.0, 2.10.99]" /> <!-- not using this currently because of what it does to sbt -->
 
-    <property name="release" value="2.1.2" />
+    <property name="release" value="2.1.4-SNAP1" />
 
     <property name="scala.version" value="2.10.3" />
     <property name="deploy.scala.version" value="2.10" />
 	<property name="for.scala" value="2.10" />
-    <property name="github.tag" value="release-2.1.2-for-scala-2.10" /> <!-- for scaladoc source urls -->
+    <property name="github.tag" value="release-2.1.4-SNAP1-for-scala-2.10" /> <!-- for scaladoc source urls -->
 
 <!--
     <property name="scala.version" value="2.11.0-RC3" />
