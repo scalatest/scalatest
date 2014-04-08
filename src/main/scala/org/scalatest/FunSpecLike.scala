@@ -93,7 +93,7 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
   protected def markup: Documenter = atomicDocumenter.get
 
   def registerTest(testText: String, testTags: Tag*)(testFun: => Unit) {
-    engine.registerTest(testText, Transformer(testFun _), "testCannotBeNestedInsideAnotherTest", sourceFileName, "registerTest", 3, -2, None, None, None, testTags: _*)
+    engine.registerTest(testText, Transformer(testFun _), "testCannotBeNestedInsideAnotherTest", sourceFileName, "registerTest", 5, -2, None, None, None, testTags: _*)
   }
 
   def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Unit) {
