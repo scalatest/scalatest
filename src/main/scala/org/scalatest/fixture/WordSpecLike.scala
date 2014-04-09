@@ -48,7 +48,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.WordSpecFinder"))
-trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new FixtureEngine[FixtureParam]("concurrentFixtureWordSpecMod", "FixtureWordSpec")
   import engine._
@@ -97,6 +97,14 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
    */
   protected def markup: Documenter = atomicDocumenter.get
 
+  def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
+    engine.registerTest(testText, Transformer(testFun), "testCannotBeNestedInsideAnotherTest", sourceFileName, "registerTest", 4, -1, None, None, None, testTags: _*)
+  }
+
+  def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
+    engine.registerIgnoredTest(testText, Transformer(testFun), "testCannotBeNestedInsideAnotherTest", sourceFileName, "registerIgnoredTest", 4, -3, None, testTags: _*)
+  }
+
   /**
    * Register a test with the given spec text, optional tags, and test function value that takes no arguments.
    * An invocation of this method is called an &ldquo;example.&rdquo;
@@ -117,7 +125,7 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
    * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Any) {
-    registerTest(specText, Transformer(testFun), "itCannotAppearInsideAnotherIt", sourceFileName, methodName, 4, -3, None, None, None, testTags: _*)
+    engine.registerTest(specText, Transformer(testFun), "inCannotAppearInsideAnotherIn", sourceFileName, methodName, 4, -3, None, None, None, testTags: _*)
   }
 
   /**
@@ -140,7 +148,7 @@ trait WordSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
    * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Any) {
-    registerIgnoredTest(specText, Transformer(testFun), "ignoreCannotAppearInsideAnIt", sourceFileName, methodName, 4, -3, None, testTags: _*)
+    engine.registerIgnoredTest(specText, Transformer(testFun), "ignoreCannotAppearInsideAnIn", sourceFileName, methodName, 4, -4, None, testTags: _*)
   }
 
   private def registerBranch(description: String, childPrefix: Option[String], verb: String, methodName: String, stackDepth: Int, adjustment: Int, fun: () => Unit) {

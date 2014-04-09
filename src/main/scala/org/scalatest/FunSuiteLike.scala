@@ -39,7 +39,7 @@ import Suite.autoTagClassAnnotations
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FunSuiteFinder"))
-trait FunSuiteLike extends Suite with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait FunSuiteLike extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new Engine("concurrentFunSuiteMod", "FunSuite")
   import engine._
@@ -86,6 +86,14 @@ trait FunSuiteLike extends Suite with Informing with Notifying with Alerting wit
    */
   protected def markup: Documenter = atomicDocumenter.get
 
+  def registerTest(testText: String, testTags: Tag*)(testFun: => Unit) {
+    engine.registerTest(testText, Transformer(testFun _), "testCannotBeNestedInsideAnotherTest", "FunSuite.scala", "registerTest", 4, -1, None, None, None, testTags: _*)
+  }
+
+  def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Unit) {
+    engine.registerIgnoredTest(testText, Transformer(testFun _), "testCannotBeNestedInsideAnotherTest", "FunSuite.scala", "registerIgnoredTest", 4, -3, None, testTags: _*)
+  }
+
   /**
    * Register a test with the specified name, optional tags, and function value that takes no arguments.
    * This method will register the test for later execution via an invocation of one of the <code>run</code>
@@ -101,7 +109,7 @@ trait FunSuiteLike extends Suite with Informing with Notifying with Alerting wit
    * @throws NullPointerException if <code>testName</code> or any passed test tag is <code>null</code>
    */
   protected def test(testName: String, testTags: Tag*)(testFun: => Unit) {
-    registerTest(testName, Transformer(testFun _), "testCannotAppearInsideAnotherTest", "FunSuite.scala", "test", 4, -2, None, None, None, testTags: _*)
+    engine.registerTest(testName, Transformer(testFun _), "testCannotAppearInsideAnotherTest", "FunSuite.scala", "test", 4, -2, None, None, None, testTags: _*)
   }
 
   /**
@@ -120,7 +128,7 @@ trait FunSuiteLike extends Suite with Informing with Notifying with Alerting wit
    * @throws NotAllowedException if <code>testName</code> had been registered previously
    */
   protected def ignore(testName: String, testTags: Tag*)(testFun: => Unit) {
-    registerIgnoredTest(testName, Transformer(testFun _), "ignoreCannotAppearInsideATest", "FunSuite.scala", "ignore", 4, -2, None, testTags: _*)
+    engine.registerIgnoredTest(testName, Transformer(testFun _), "ignoreCannotAppearInsideATest", "FunSuite.scala", "ignore", 4, -3, None, testTags: _*)
   }
 
   /**
