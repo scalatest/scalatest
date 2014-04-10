@@ -44,7 +44,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FunSpecFinder"))
-trait FunSpecLike extends org.scalatest.Suite with org.scalatest.TestRegistration with OneInstancePerTest with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Informing with Notifying with Alerting with Documenting { thisSuite =>
   
   private final val engine = PathEngine.getEngine()
   import engine._
@@ -92,14 +92,6 @@ trait FunSpecLike extends org.scalatest.Suite with org.scalatest.TestRegistratio
    * This method can be called safely by any thread.
    */
   protected def markup: Documenter = atomicDocumenter.get
-
-  def registerTest(testText: String, testTags: Tag*)(testFun: => Unit) {
-    handleTest(thisSuite, testText, Transformer(testFun _), "testCannotBeNestedInsideAnotherTest", "FunSpecLike.scala", "registerTest", 4, -2, None, testTags: _*)
-  }
-
-  def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Unit) {
-    handleIgnoredTest(testText, Transformer(testFun _), "testCannotBeNestedInsideAnotherTest", "FunSpecLike.scala", "registerIgnoredTest", 4, -2, None, testTags: _*)
-  }
 
   /**
    * Class that, via an instance referenced from the <code>it</code> field,
