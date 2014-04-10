@@ -46,7 +46,7 @@ import Suite.autoTagClassAnnotations
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FlatSpecFinder"))
-trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new Engine("concurrentSpecMod", "Spec")
   import engine._
@@ -93,6 +93,14 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
    */
   protected def markup: Documenter = atomicDocumenter.get
 
+  def registerTest(testText: String, testTags: Tag*)(testFun: => Unit) {
+    engine.registerTest(testText, Transformer(testFun _), "testCannotBeNestedInsideAnotherTest", "FlatSpecLike.scala", "registerTest", 4, -1, None, None, None, testTags: _*)
+  }
+
+  def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Unit) {
+    engine.registerIgnoredTest(testText, Transformer(testFun _), "testCannotBeNestedInsideAnotherTest", "FlatSpecLike.scala", "registerIgnoredTest", 4, -2, None, testTags: _*)
+  }
+
   /**
    * Register a test with the given spec text, optional tags, and test function value that takes no arguments.
    * An invocation of this method is called an &ldquo;example.&rdquo;
@@ -113,7 +121,7 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
    * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   private def registerTestToRun(specText: String, methodName: String, testTags: List[Tag], testFun: () => Unit) {
-    registerTest(specText, Transformer(testFun), "itCannotAppearInsideAnotherIt", "FlatSpecLike.scala", methodName, 4, -3, None, None, None, testTags: _*)
+    engine.registerTest(specText, Transformer(testFun), "itCannotAppearInsideAnotherIt", "FlatSpecLike.scala", methodName, 4, -3, None, None, None, testTags: _*)
   }
 
   /**
@@ -1595,7 +1603,7 @@ trait FlatSpecLike extends Suite with ShouldVerb with MustVerb with CanVerb with
    * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Unit) {
-    registerIgnoredTest(specText, Transformer(testFun), "ignoreCannotAppearInsideAnIt", "FlatSpecLike.scala", methodName, 4, -3, None, testTags: _*)
+    engine.registerIgnoredTest(specText, Transformer(testFun), "ignoreCannotAppearInsideAnIt", "FlatSpecLike.scala", methodName, 4, -3, None, testTags: _*)
   }
 
   /**

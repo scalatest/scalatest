@@ -48,7 +48,7 @@ import Suite.autoTagClassAnnotations
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FreeSpecFinder"))
-trait FreeSpecLike extends Suite with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait FreeSpecLike extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new Engine("concurrentFreeSpecMod", "FreeSpec")
   import engine._
@@ -95,6 +95,14 @@ trait FreeSpecLike extends Suite with Informing with Notifying with Alerting wit
    */
   protected def markup: Documenter = atomicDocumenter.get
 
+  def registerTest(testText: String, testTags: Tag*)(testFun: => Unit) {
+    engine.registerTest(testText, Transformer(testFun _), "testCannotBeNestedInsideAnotherTest", "FreeSpecLike.scala", "registerTest", 5, -2, None, None, None, testTags: _*)
+  }
+
+  def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Unit) {
+    engine.registerIgnoredTest(testText, Transformer(testFun _), "testCannotBeNestedInsideAnotherTest", "FreeSpecLike.scala", "registerIgnoredTest", 4, -2, None, testTags: _*)
+  }
+
   /**
    * Register a test with the given spec text, optional tags, and test function value that takes no arguments.
    * An invocation of this method is called an &ldquo;example.&rdquo;
@@ -115,7 +123,7 @@ trait FreeSpecLike extends Suite with Informing with Notifying with Alerting wit
    * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => Unit) {
-    registerTest(specText, Transformer(testFun), "itCannotAppearInsideAnotherIt", "FreeSpecLike.scala", methodName, 4, -3, None, None, None, testTags: _*)
+    engine.registerTest(specText, Transformer(testFun), "inCannotAppearInsideAnotherIn", "FreeSpecLike.scala", methodName, 4, -3, None, None, None, testTags: _*)
   }
 
   /**
@@ -138,7 +146,7 @@ trait FreeSpecLike extends Suite with Informing with Notifying with Alerting wit
    * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Unit) {
-    registerIgnoredTest(specText, Transformer(testFun), "ignoreCannotAppearInsideAnIt", "FreeSpecLike.scala", methodName, 4, -3, None, testTags: _*)
+    engine.registerIgnoredTest(specText, Transformer(testFun), "ignoreCannotAppearInsideAnIn", "FreeSpecLike.scala", methodName, 4, -3, None, testTags: _*)
   }
 
   /**
