@@ -96,6 +96,14 @@ trait FeatureSpecLike extends Suite with Informing with Notifying with Alerting 
    */
   protected def markup: Documenter = atomicDocumenter.get
 
+  def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
+    engine.registerTest(Resources("scenario", testText.trim), Transformer(testFun), "testCannotBeNestedInsideAnotherTest", "FeatureSpecLike.scala", "registerTest", 4, -1, None, None, None, testTags: _*)
+  }
+
+  def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
+    engine.registerIgnoredTest(Resources("scenario", testText.trim), Transformer(testFun), "testCannotBeNestedInsideAnotherTest", "FeatureSpecLike.scala", "registerIgnoredTest", 4, -3, None, testTags: _*)
+  }
+
   /**
    * Register a test with the given spec text, optional tags, and test function value that takes no arguments.
    * An invocation of this method is called an &ldquo;example.&rdquo;
@@ -115,7 +123,7 @@ trait FeatureSpecLike extends Suite with Informing with Notifying with Alerting 
    * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   protected def scenario(specText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
-    registerTest(Resources("scenario", specText.trim), Transformer(testFun), "scenarioCannotAppearInsideAnotherScenario", sourceFileName, "scenario", 4, -2, None, None, None, testTags: _*)
+    engine.registerTest(Resources("scenario", specText.trim), Transformer(testFun), "scenarioCannotAppearInsideAnotherScenario", sourceFileName, "scenario", 4, -2, None, None, None, testTags: _*)
   }
 
   /**
@@ -137,7 +145,7 @@ trait FeatureSpecLike extends Suite with Informing with Notifying with Alerting 
    * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   protected def ignore(specText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
-    registerIgnoredTest(Resources("scenario", specText), Transformer(testFun), "ignoreCannotAppearInsideAScenario", sourceFileName, "ignore", 4, -2, None, testTags: _*)
+    engine.registerIgnoredTest(Resources("scenario", specText), Transformer(testFun), "ignoreCannotAppearInsideAScenario", sourceFileName, "ignore", 4, -3, None, testTags: _*)
   }
 
   /**
