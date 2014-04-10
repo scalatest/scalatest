@@ -24,7 +24,7 @@ import org.scalatest.TagAnnotation;
 /**
  * Tag that indicates a Selenium test uses the InternetExplorer browser.
  */
-@TagAnnotation("org.scalatest.tags.InternetExplorerTag")
+@TagAnnotation("org.scalatest.tags.InternetExplorerBrowser")
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
-public @interface InternetExplorerTag {}
+public @interface InternetExplorerBrowser {}
