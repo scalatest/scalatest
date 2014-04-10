@@ -24,7 +24,7 @@ import org.scalatest.TagAnnotation;
 /**
  * Tag that indicates a Selenium test uses the HtmlUnit browser.
  */
-@TagAnnotation("org.scalatest.tags.HtmlUnitTag")
+@TagAnnotation("org.scalatest.tags.HtmlUnitBrowser")
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
-public @interface HtmlUnitTag {}
+public @interface HtmlUnitBrowser {}

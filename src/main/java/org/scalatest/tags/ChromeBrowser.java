@@ -24,7 +24,7 @@ import org.scalatest.TagAnnotation;
 /**
  * Tag that indicates a Selenium test uses the Chrome browser.
  */
-@TagAnnotation("org.scalatest.tags.ChromeTag")
+@TagAnnotation("org.scalatest.tags.ChromeBrowser")
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
-public @interface ChromeTag {}
+public @interface ChromeBrowser {}

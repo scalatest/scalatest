@@ -24,7 +24,7 @@ import org.scalatest.TagAnnotation;
 /**
  * Tag that indicates a Selenium test uses the Firefox browser.
  */
-@TagAnnotation("org.scalatest.tags.FirefoxTag")
+@TagAnnotation("org.scalatest.tags.FirefoxBrowser")
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
-public @interface FirefoxTag {}
+public @interface FirefoxBrowser {}
