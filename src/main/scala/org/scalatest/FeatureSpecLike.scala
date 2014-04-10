@@ -45,7 +45,7 @@ import Suite.autoTagClassAnnotations
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FeatureSpecFinder"))
-trait FeatureSpecLike extends Suite with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait FeatureSpecLike extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new Engine("concurrentFeatureSpecMod", "FeatureSpec")
   import engine._
@@ -92,6 +92,14 @@ trait FeatureSpecLike extends Suite with Informing with Notifying with Alerting 
    */
   protected def markup: Documenter = atomicDocumenter.get
 
+  def registerTest(testText: String, testTags: Tag*)(testFun: => Unit) {
+    engine.registerTest(Resources("scenario", testText.trim), Transformer(testFun _), "testCannotBeNestedInsideAnotherTest", "FeatureSpecLike.scala", "registerTest", 4, -1, None, None, None, testTags: _*)
+  }
+
+  def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Unit) {
+    engine.registerIgnoredTest(Resources("scenario", testText.trim), Transformer(testFun _), "testCannotBeNestedInsideAnotherTest", "FeatureSpecLike.scala", "registerIgnoredTest", 4, -2, None, testTags: _*)
+  }
+
   /**
    * Register a test with the given spec text, optional tags, and test function value that takes no arguments.
    * An invocation of this method is called an &ldquo;example.&rdquo;
@@ -111,7 +119,7 @@ trait FeatureSpecLike extends Suite with Informing with Notifying with Alerting 
    * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   protected def scenario(specText: String, testTags: Tag*)(testFun: => Unit) {
-    registerTest(Resources("scenario", specText.trim), Transformer(testFun _), "scenarioCannotAppearInsideAnotherScenario", "FeatureSpecLike.scala", "scenario", 4, -2, None, None, None, testTags: _*)
+    engine.registerTest(Resources("scenario", specText.trim), Transformer(testFun _), "scenarioCannotAppearInsideAnotherScenario", "FeatureSpecLike.scala", "scenario", 4, -2, None, None, None, testTags: _*)
   }
 
   /**
@@ -133,7 +141,7 @@ trait FeatureSpecLike extends Suite with Informing with Notifying with Alerting 
    * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   protected def ignore(specText: String, testTags: Tag*)(testFun: => Unit) {
-    registerIgnoredTest(Resources("scenario", specText), Transformer(testFun _), "ignoreCannotAppearInsideAScenario", "FeatureSpecLike.scala", "ignore", 4, -2, None, testTags: _*)
+    engine.registerIgnoredTest(Resources("scenario", specText), Transformer(testFun _), "ignoreCannotAppearInsideAScenario", "FeatureSpecLike.scala", "ignore", 4, -2, None, testTags: _*)
   }
   
   /**
