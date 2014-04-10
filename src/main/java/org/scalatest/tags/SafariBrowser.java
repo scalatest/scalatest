@@ -24,7 +24,7 @@ import org.scalatest.TagAnnotation;
 /**
  * Tag that indicates a Selenium test uses the Safari browser.
  */
-@TagAnnotation("org.scalatest.tags.SafariTag")
+@TagAnnotation("org.scalatest.tags.SafariBrowser")
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
-public @interface SafariTag {}
+public @interface SafariBrowser {}
