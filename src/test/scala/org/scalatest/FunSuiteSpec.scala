@@ -747,6 +747,115 @@ class FunSuiteSpec extends FunSpec {
         }
       assert(caught3.message.value === Resources("notOneOfTheChosenStyles", "org.scalatest.FunSuite", Suite.makeListForHumans(Vector("org.scalatest.FunSpec", "org.scalatest.FreeSpec", "org.scalatest.FlatSpec"))))
     }
+
+    describe("registerTest and registerIgnoredTest method") {
+
+      it("should allow test registration and ignored test registration") {
+        class TestSpec extends FunSuite {
+          val a = 1
+          registerTest("test 1") {
+            val e = intercept[TestFailedException] {
+              assert(a == 2)
+            }
+            assert(e.message == Some("1 did not equal 2"))
+            assert(e.failedCodeFileName == Some("FunSuiteSpec.scala"))
+            assert(e.failedCodeLineNumber == Some(thisLineNumber - 4))
+          }
+          registerTest("test 2") {
+            assert(a == 2)
+          }
+          registerTest("test 3") {
+            pending
+          }
+          registerTest("test 4") {
+            cancel
+          }
+          registerIgnoredTest("test 5") {
+            assert(a == 2)
+          }
+        }
+
+        val rep = new EventRecordingReporter
+        val s = new TestSpec
+        s.run(None, Args(rep))
+
+        assert(rep.testStartingEventsReceived.length == 4)
+        assert(rep.testSucceededEventsReceived.length == 1)
+        assert(rep.testSucceededEventsReceived(0).testName == "test 1")
+        assert(rep.testFailedEventsReceived.length == 1)
+        assert(rep.testFailedEventsReceived(0).testName == "test 2")
+        assert(rep.testPendingEventsReceived.length == 1)
+        assert(rep.testPendingEventsReceived(0).testName == "test 3")
+        assert(rep.testCanceledEventsReceived.length == 1)
+        assert(rep.testCanceledEventsReceived(0).testName == "test 4")
+        assert(rep.testIgnoredEventsReceived.length == 1)
+        assert(rep.testIgnoredEventsReceived(0).testName == "test 5")
+      }
+
+      it("should generate TestRegistrationClosedException with correct stack depth info when has a registerTest nested inside a registerTest") {
+        class TestSpec extends FunSuite {
+          var registrationClosedThrown = false
+          registerTest("a scenario") {
+            registerTest("nested scenario") {
+              assert(1 == 2)
+            }
+          }
+          override def withFixture(test: NoArgTest): Outcome = {
+            val outcome = test.apply()
+            outcome match {
+              case Exceptional(ex: TestRegistrationClosedException) =>
+                registrationClosedThrown = true
+              case _ =>
+            }
+            outcome
+          }
+        }
+        val rep = new EventRecordingReporter
+        val s = new TestSpec
+        s.run(None, Args(rep))
+        assert(s.registrationClosedThrown == true)
+        val testFailedEvents = rep.testFailedEventsReceived
+        assert(testFailedEvents.size === 1)
+        assert(testFailedEvents(0).throwable.get.getClass() === classOf[TestRegistrationClosedException])
+        val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
+        assert("FunSuiteSpec.scala" === trce.failedCodeFileName.get)
+        assert(trce.failedCodeLineNumber.get === thisLineNumber - 23)
+        assert(trce.message == Some("Test cannot be nested inside another test."))
+      }
+
+      it("should generate TestRegistrationClosedException with correct stack depth info when has an registerIgnoredTest nested inside a registerTest") {
+        class TestSpec extends FunSuite {
+          var registrationClosedThrown = false
+          registerTest("a scenario") {
+            registerIgnoredTest("nested scenario") {
+              assert(1 == 2)
+            }
+          }
+          override def withFixture(test: NoArgTest): Outcome = {
+            val outcome = test.apply()
+            outcome match {
+              case Exceptional(ex: TestRegistrationClosedException) =>
+                registrationClosedThrown = true
+              case _ =>
+            }
+            outcome
+          }
+        }
+        val rep = new EventRecordingReporter
+        val s = new TestSpec
+        s.run(None, Args(rep))
+        assert(s.registrationClosedThrown == true)
+        val testFailedEvents = rep.testFailedEventsReceived
+        assert(testFailedEvents.size === 1)
+        assert(testFailedEvents(0).throwable.get.getClass() === classOf[TestRegistrationClosedException])
+        val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
+        assert("FunSuiteSpec.scala" === trce.failedCodeFileName.get)
+        assert(trce.failedCodeLineNumber.get === thisLineNumber - 23)
+        assert(trce.message == Some("Test cannot be nested inside another test."))
+      }
+
+    }
+
   }
   
   describe("when failure happens") {
@@ -769,7 +878,7 @@ class FunSuiteSpec extends FunSpec {
         var registrationClosedThrown = false
         test("a scenario") {
           test("nested scenario") {
-            assert(1 === 2)
+            assert(1 == 2)
           }
         }
         override def withFixture(test: NoArgTest): Outcome = {
@@ -792,6 +901,38 @@ class FunSuiteSpec extends FunSpec {
       val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
       assert("FunSuiteSpec.scala" === trce.failedCodeFileName.get)
       assert(trce.failedCodeLineNumber.get === thisLineNumber - 23)
+      assert(trce.message == Some("A test clause may not appear inside another test clause."))
+    }
+
+    it("should generate TestRegistrationClosedException with correct stack depth info when has an ignore nested inside a test") {
+      class TestSpec extends FunSuite {
+        var registrationClosedThrown = false
+        test("a scenario") {
+          ignore("nested scenario") {
+            assert(1 == 2)
+          }
+        }
+        override def withFixture(test: NoArgTest): Outcome = {
+          val outcome = test.apply()
+          outcome match {
+            case Exceptional(ex: TestRegistrationClosedException) =>
+              registrationClosedThrown = true
+            case _ =>
+          }
+          outcome
+        }
+      }
+      val rep = new EventRecordingReporter
+      val s = new TestSpec
+      s.run(None, Args(rep))
+      assert(s.registrationClosedThrown == true)
+      val testFailedEvents = rep.testFailedEventsReceived
+      assert(testFailedEvents.size === 1)
+      assert(testFailedEvents(0).throwable.get.getClass() === classOf[TestRegistrationClosedException])
+      val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
+      assert("FunSuiteSpec.scala" === trce.failedCodeFileName.get)
+      assert(trce.failedCodeLineNumber.get === thisLineNumber - 23)
+      assert(trce.message == Some("An ignore clause may not appear inside a test clause."))
     }
   }
 }
