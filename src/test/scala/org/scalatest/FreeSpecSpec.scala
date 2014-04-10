@@ -917,6 +917,48 @@ class FreeSpecSpec extends FunSpec with GivenWhenThen {
       assert(ts.size === 1)
       assert(ts.head.testName === "A Stack should chill out")
     }
+
+    it("should allow test registration with registerTest and registerIgnoredTest") {
+      class TestSpec extends FreeSpec {
+        val a = 1
+        registerTest("test 1") {
+          val e = intercept[TestFailedException] {
+            assert(a == 2)
+          }
+          assert(e.message == Some("1 did not equal 2"))
+          assert(e.failedCodeFileName == Some("FreeSpecSpec.scala"))
+          assert(e.failedCodeLineNumber == Some(thisLineNumber - 4))
+        }
+        registerTest("test 2") {
+          assert(a == 2)
+        }
+        registerTest("test 3") {
+          pending
+        }
+        registerTest("test 4") {
+          cancel
+        }
+        registerIgnoredTest("test 5") {
+          assert(a == 2)
+        }
+      }
+
+      val rep = new EventRecordingReporter
+      val s = new TestSpec
+      s.run(None, Args(rep))
+
+      assert(rep.testStartingEventsReceived.length == 4)
+      assert(rep.testSucceededEventsReceived.length == 1)
+      assert(rep.testSucceededEventsReceived(0).testName == "test 1")
+      assert(rep.testFailedEventsReceived.length == 1)
+      assert(rep.testFailedEventsReceived(0).testName == "test 2")
+      assert(rep.testPendingEventsReceived.length == 1)
+      assert(rep.testPendingEventsReceived(0).testName == "test 3")
+      assert(rep.testCanceledEventsReceived.length == 1)
+      assert(rep.testCanceledEventsReceived(0).testName == "test 4")
+      assert(rep.testIgnoredEventsReceived.length == 1)
+      assert(rep.testIgnoredEventsReceived(0).testName == "test 5")
+    }
   }
   
   describe("when failure happens") {
@@ -972,6 +1014,106 @@ class FreeSpecSpec extends FunSpec with GivenWhenThen {
       val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
       assert("FreeSpecSpec.scala" === trce.failedCodeFileName.get)
       assert(trce.failedCodeLineNumber.get === thisLineNumber - 24)
+      assert(trce.message == Some("An in clause may not appear inside another in clause."))
+    }
+
+    it("should generate TestRegistrationClosedException with correct stack depth info when has an ignore nested inside an in") {
+      class TestSpec extends FreeSpec {
+        var registrationClosedThrown = false
+        "a feature" - {
+          "a scenario" in {
+            "nested scenario" ignore {
+
+            }
+          }
+        }
+        override def withFixture(test: NoArgTest): Outcome = {
+          val outcome = test.apply()
+          outcome match {
+            case Exceptional(ex: TestRegistrationClosedException) =>
+              registrationClosedThrown = true
+            case _ =>
+          }
+          outcome
+        }
+      }
+      val rep = new EventRecordingReporter
+      val s = new TestSpec
+      s.run(None, Args(rep))
+      assert(s.registrationClosedThrown == true)
+      val testFailedEvents = rep.testFailedEventsReceived
+      assert(testFailedEvents.size === 1)
+      assert(testFailedEvents(0).throwable.get.getClass() === classOf[TestRegistrationClosedException])
+      val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
+      assert("FreeSpecSpec.scala" === trce.failedCodeFileName.get)
+      assert(trce.failedCodeLineNumber.get === thisLineNumber - 24)
+      assert(trce.message == Some("An ignore clause may not appear inside an in clause."))
+    }
+
+    it("should generate TestRegistrationClosedException with correct stack depth info when has a registerTest nested inside a registerTest") {
+      class TestSpec extends FreeSpec {
+        var registrationClosedThrown = false
+        "a feature" - {
+          registerTest("a scenario") {
+            registerTest("nested scenario") {
+
+            }
+          }
+        }
+        override def withFixture(test: NoArgTest): Outcome = {
+          val outcome = test.apply()
+          outcome match {
+            case Exceptional(ex: TestRegistrationClosedException) =>
+              registrationClosedThrown = true
+            case _ =>
+          }
+          outcome
+        }
+      }
+      val rep = new EventRecordingReporter
+      val s = new TestSpec
+      s.run(None, Args(rep))
+      assert(s.registrationClosedThrown == true)
+      val testFailedEvents = rep.testFailedEventsReceived
+      assert(testFailedEvents.size === 1)
+      assert(testFailedEvents(0).throwable.get.getClass() === classOf[TestRegistrationClosedException])
+      val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
+      assert("FreeSpecSpec.scala" === trce.failedCodeFileName.get)
+      assert(trce.failedCodeLineNumber.get === thisLineNumber - 24)
+      assert(trce.message == Some("Test cannot be nested inside another test."))
+    }
+
+    it("should generate TestRegistrationClosedException with correct stack depth info when has a registerTest nested inside a registerIgnoredTest") {
+      class TestSpec extends FreeSpec {
+        var registrationClosedThrown = false
+        "a feature" - {
+          registerTest("a scenario") {
+            registerIgnoredTest("nested scenario") {
+
+            }
+          }
+        }
+        override def withFixture(test: NoArgTest): Outcome = {
+          val outcome = test.apply()
+          outcome match {
+            case Exceptional(ex: TestRegistrationClosedException) =>
+              registrationClosedThrown = true
+            case _ =>
+          }
+          outcome
+        }
+      }
+      val rep = new EventRecordingReporter
+      val s = new TestSpec
+      s.run(None, Args(rep))
+      assert(s.registrationClosedThrown == true)
+      val testFailedEvents = rep.testFailedEventsReceived
+      assert(testFailedEvents.size === 1)
+      assert(testFailedEvents(0).throwable.get.getClass() === classOf[TestRegistrationClosedException])
+      val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
+      assert("FreeSpecSpec.scala" === trce.failedCodeFileName.get)
+      assert(trce.failedCodeLineNumber.get === thisLineNumber - 24)
+      assert(trce.message == Some("Test cannot be nested inside another test."))
     }
   }
 }
