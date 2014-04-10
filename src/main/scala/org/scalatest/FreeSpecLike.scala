@@ -123,7 +123,7 @@ trait FreeSpecLike extends Suite with TestRegistration with Informing with Notif
    * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => Unit) {
-    engine.registerTest(specText, Transformer(testFun), methodName + "CannotAppearInsideAnotherIn", "FreeSpecLike.scala", methodName, 4, -3, None, None, None, testTags: _*)
+    engine.registerTest(specText, Transformer(testFun), "inCannotAppearInsideAnotherIn", "FreeSpecLike.scala", methodName, 4, -3, None, None, None, testTags: _*)
   }
 
   /**
