@@ -97,11 +97,11 @@ trait FreeSpecLike extends Suite with TestRegistration with Informing with Notif
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
+  final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
     engine.registerTest(testText, Transformer(testFun), "testCannotBeNestedInsideAnotherTest", "FreeSpecLike.scala", "registerTest", 5, -2, None, None, None, testTags: _*)
   }
 
-  def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
+  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
     engine.registerIgnoredTest(testText, Transformer(testFun), "testCannotBeNestedInsideAnotherTest", "FreeSpecLike.scala", "registerIgnoredTest", 4, -3, None, testTags: _*)
   }
 

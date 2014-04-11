@@ -15,10 +15,28 @@
  */
 package org.scalatest
 
+/**
+ * Trait for test registration support.
+ */
 trait TestRegistration { theSuite: Suite =>
 
+  /**
+   * Register a test.
+   *
+   * @param testText the test text
+   * @param testTags the test tags
+   * @param testFun the test function
+   */
   def registerTest(testText: String, testTags: Tag*)(testFun: => Unit)
 
+  /**
+   * Register an ignored test, note that an ignored test will not be executed, but it will cause a <code>TestIgnored</code>
+   * event to be fired.
+   *
+   * @param testText the test text
+   * @param testTags the test tags
+   * @param testFun the test function
+   */
   def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Unit)
 
 }

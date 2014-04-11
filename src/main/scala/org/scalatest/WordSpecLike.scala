@@ -89,11 +89,11 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  def registerTest(testText: String, testTags: Tag*)(testFun: => Unit) {
+  final def registerTest(testText: String, testTags: Tag*)(testFun: => Unit) {
     engine.registerTest(testText, Transformer(testFun _), "testCannotBeNestedInsideAnotherTest", "WordSpecLike.scala", "registerTest", 4, -1, None, None, None, testTags: _*)
   }
 
-  def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Unit) {
+  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Unit) {
     engine.registerIgnoredTest(testText, Transformer(testFun _), "testCannotBeNestedInsideAnotherTest", "WordSpecLike.scala", "registerIgnoredTest", 4, -2, None, testTags: _*)
   }
 

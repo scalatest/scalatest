@@ -96,11 +96,11 @@ trait FeatureSpecLike extends Suite with Informing with Notifying with Alerting 
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
+  final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
     engine.registerTest(Resources("scenario", testText.trim), Transformer(testFun), "testCannotBeNestedInsideAnotherTest", "FeatureSpecLike.scala", "registerTest", 4, -1, None, None, None, testTags: _*)
   }
 
-  def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
+  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
     engine.registerIgnoredTest(Resources("scenario", testText.trim), Transformer(testFun), "testCannotBeNestedInsideAnotherTest", "FeatureSpecLike.scala", "registerIgnoredTest", 4, -3, None, testTags: _*)
   }
 

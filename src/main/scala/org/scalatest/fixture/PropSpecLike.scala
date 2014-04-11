@@ -41,7 +41,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.PropSpecFinder"))
-trait PropSpecLike extends Suite with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait PropSpecLike extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new FixtureEngine[FixtureParam]("concurrentFixturePropSpecMod", "FixturePropSpec")
   import engine._
@@ -90,6 +90,14 @@ trait PropSpecLike extends Suite with Informing with Notifying with Alerting wit
    */
   protected def markup: Documenter = atomicDocumenter.get
 
+  final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
+    engine.registerTest(testText, Transformer(testFun), "testCannotBeNestedInsideAnotherTest", sourceFileName, "registerTest", 4, -1, None, None, None, testTags: _*)
+  }
+
+  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
+    engine.registerIgnoredTest(testText, Transformer(testFun), "testCannotBeNestedInsideAnotherTest", sourceFileName, "registerIgnoredTest", 4, -3, None, testTags: _*)
+  }
+
   /**
    * Register a property-based test with the specified name, optional tags, and function value that takes no arguments.
    * This method will register the test for later execution via an invocation of one of the <code>run</code>
@@ -105,7 +113,7 @@ trait PropSpecLike extends Suite with Informing with Notifying with Alerting wit
    * @throws NullPointerException if <code>testName</code> or any passed test tag is <code>null</code>
    */
   protected def property(testName: String, testTags: Tag*)(testFun: FixtureParam => Any) {
-    registerTest(testName, Transformer(testFun), "testCannotAppearInsideAnotherTest", sourceFileName, "property", 4, -2, None, None, None, testTags: _*)
+    engine.registerTest(testName, Transformer(testFun), "propertyCannotAppearInsideAnotherProperty", sourceFileName, "property", 4, -2, None, None, None, testTags: _*)
   }
 
   /**
@@ -124,7 +132,7 @@ trait PropSpecLike extends Suite with Informing with Notifying with Alerting wit
    * @throws NotAllowedException if <code>testName</code> had been registered previously
    */
   protected def ignore(testName: String, testTags: Tag*)(testFun: FixtureParam => Any) {
-    registerIgnoredTest(testName, Transformer(testFun), "ignoreCannotAppearInsideATest", sourceFileName, "ignore", 4, 2, None, testTags: _*)
+    engine.registerIgnoredTest(testName, Transformer(testFun), "ignoreCannotAppearInsideAProperty", sourceFileName, "ignore", 4, -3, None, testTags: _*)
   }
 
   /**
