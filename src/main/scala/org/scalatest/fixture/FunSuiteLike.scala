@@ -90,11 +90,11 @@ trait FunSuiteLike extends Suite with TestRegistration with Informing with Notif
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
+  final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
     engine.registerTest(testText, Transformer(testFun), "testCannotBeNestedInsideAnotherTest", "FunSuite.scala", "registerTest", 4, -1, None, None, None, testTags: _*)
   }
 
-  def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
+  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any) {
     engine.registerIgnoredTest(testText, Transformer(testFun), "testCannotBeNestedInsideAnotherTest", "FunSuite.scala", "registerIgnoredTest", 4, -4, None, testTags: _*)
   }
 
