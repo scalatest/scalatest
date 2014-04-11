@@ -1520,6 +1520,21 @@ class FlatSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         val spec = new MySpec
         ensureTestFailedEventReceived(spec, "should blow up")
       }
+      it("should, if they call a nested registerTest with tags from within a registerTest clause, result in a TestFailedException when running the test") {
+
+        class MySpec extends FlatSpec {
+          type FixtureParam = String
+          def withFixture(test: OneArgTest): Outcome = { test("hi") }
+          registerTest("should blow up") { fixture =>
+            registerTest("should never run", mytags.SlowAsMolasses) { fixture =>
+              assert(1 == 1)
+            }
+          }
+        }
+
+        val spec = new MySpec
+        ensureTestFailedEventReceived(spec, "should blow up")
+      }
       it("should, if they call a behavior-of with a nested ignore from within an it clause, result in a TestFailedException when running the test") {
 
         class MySpec extends FlatSpec {
@@ -1558,7 +1573,22 @@ class FlatSpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
           def withFixture(test: OneArgTest): Outcome = { test("hi") }
           it should "blow up" in { fixture =>
             ignore should "never run" taggedAs(mytags.SlowAsMolasses) in { fixture =>
-              assert(1 === 1)
+              assert(1 == 1)
+            }
+          }
+        }
+
+        val spec = new MySpec
+        ensureTestFailedEventReceived(spec, "should blow up")
+      }
+      it("should, if they call a nested registerIgnoredTest with tags from within a registerTest clause, result in a TestFailedException when running the test") {
+
+        class MySpec extends FlatSpec {
+          type FixtureParam = String
+          def withFixture(test: OneArgTest): Outcome = { test("hi") }
+          registerTest("should blow up") { fixture =>
+            registerIgnoredTest("should never run", mytags.SlowAsMolasses) { fixture =>
+              assert(1 == 1)
             }
           }
         }
