@@ -2015,6 +2015,20 @@ class WebBrowserSpec extends JettySpec with ShouldMatchers with SpanSugar with W
       forAll (examples) { d => d shouldBe a [Driver] }
     }
   }
+  describe("Page trait") {
+    it("should be independent from WebBrowser trait") {
+      val code =
+      """
+      class HomePage extends Page {
+        val url = "localhost:9000/index.html"
+      }
+      class BlogSpec extends HtmlUnit {
+        val homePage = new HomePage
+        go to homePage
+      }
+      """ should compile
+    }
+  }
   
   def thisLineNumber = {
     val st = Thread.currentThread.getStackTrace
