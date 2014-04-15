@@ -15,13 +15,66 @@
  */
 package org.scalatest
 
-import org.scalautils.DiagrammedBool
+import org.scalautils.{AnchorValue, DiagrammedBool}
+import scala.collection.mutable.ListBuffer
+import collection.immutable.TreeMap
 
 trait DiagrammedAssertions extends Assertions {
 
   import language.experimental.macros
 
   class DiagrammedAssertionsHelper {
+
+    private[this] def fits(line: StringBuilder, str: String, anchor: Int): Boolean =
+      line.slice(anchor, anchor + str.length + 1).forall(_.isWhitespace)
+
+    private[this] def placeString(line: StringBuilder, str: String, anchor: Int) {
+      val diff = anchor - line.length
+      for (i <- 1 to diff) line.append(' ')
+      line.replace(anchor, anchor + str.length(), str)
+    }
+
+    private[this] def renderValue(value: Any): String =
+      if (value == null) "null" else value.toString
+
+    private[this] def placeValue(lines: ListBuffer[StringBuilder], value: Any, col: Int) {
+      val str = renderValue(value)
+
+      placeString(lines(0), "|", col)
+
+      for (line <- lines.drop(1)) {
+        if (fits(line, str, col)) {
+          placeString(line, str, col)
+          return
+        }
+        placeString(line, "|", col)
+      }
+
+      val newLine = new StringBuilder()
+      placeString(newLine, str, col)
+      lines.append(newLine)
+    }
+
+    private[this] def filterAndSortByAnchor(anchorValues: List[AnchorValue]): Traversable[AnchorValue] = {
+      var map = TreeMap[Int, AnchorValue]()(Ordering.by(-_))
+      // values stemming from compiler generated code often have the same anchor as regular values
+      // and get recorded before them; let's filter them out
+      for (value <- anchorValues) if (!map.contains(value.anchor)) map += (value.anchor -> value)
+      map.values
+    }
+
+    private[this] def renderDiagram(sourceText: String, anchorValues: List[AnchorValue]): String = {
+      val offset = sourceText.prefixLength(_.isWhitespace)
+      val intro = new StringBuilder().append(sourceText.trim())
+      val lines = ListBuffer(new StringBuilder)
+
+      val rightToLeft = filterAndSortByAnchor(anchorValues)
+      for (anchorValue <- rightToLeft) placeValue(lines, anchorValue.value, anchorValue.anchor - offset)
+
+      lines.prepend(intro)
+      lines.append(new StringBuilder)
+      lines.mkString("\n")
+    }
 
     private def append(currentMessage: Option[String], clue: Any) = {
       val clueStr = clue.toString
@@ -49,7 +102,8 @@ trait DiagrammedAssertions extends Assertions {
         val failureMessage =
           Some(
             "Assertion failed for:\n" +
-            sourceText
+            renderDiagram(sourceText, bool.anchorValues)
+            //sourceText + ", anchor values: " + bool.anchorValues
           )
         throw newAssertionFailedException(append(failureMessage, clue), None, "Assertions.scala", "macroAssert", 2)
       }

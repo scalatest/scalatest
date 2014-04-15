@@ -15,9 +15,9 @@
  */
 package org.scalautils
 
-trait DiagrammedBool {
+private[org] case class AnchorValue(anchor: Int, value: Any)
 
-  case class AnchorValue(anchor: Int, value: Any)
+trait DiagrammedBool {
 
   val anchor: Int
   def anchorValues: List[AnchorValue]
