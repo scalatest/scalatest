@@ -41,11 +41,16 @@ trait DiagrammedAssertions extends Assertions {
       }
     }
 
-    def macroAssert(bool: DiagrammedBool, clue: Any) {
+    def macroAssert(bool: DiagrammedBool, clue: Any, sourceText: String) {
       if (clue == null)
         throw new NullPointerException("clue was null")
       if (!bool.value) {
-        val failureMessage = if (DiagrammedBool.isSimpleWithoutExpressionText(bool)) None else Some(bool.failureMessage)
+        //val failureMessage = if (DiagrammedBool.isSimpleWithoutExpressionText(bool)) None else Some(bool.failureMessage)
+        val failureMessage =
+          Some(
+            "Assertion failed for:\n" +
+            sourceText
+          )
         throw newAssertionFailedException(append(failureMessage, clue), None, "Assertions.scala", "macroAssert", 2)
       }
     }

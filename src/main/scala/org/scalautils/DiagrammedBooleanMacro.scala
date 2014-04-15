@@ -538,13 +538,13 @@ private[org] class DiagrammedBooleanMacro[C <: Context](val context: C, helperNa
 
   // Generate AST for:
   // helper.methodName(expression, clue)
-  def callHelper(methodName: String, clueTree: Tree): Apply =
+  def callHelper(methodName: String, clueTree: Tree, sourceText: String): Apply =
     Apply(
       Select(
         Ident(newTermName(helperName)),
         newTermName(methodName)
       ),
-      List(Ident(newTermName("$org_scalatest_assert_macro_expr")), clueTree)
+      List(Ident(newTermName("$org_scalatest_assert_macro_expr")), clueTree, context.literal(sourceText).tree)
     )
 
   // This is needed to repair owner chain as encountered in the following issue:
@@ -610,13 +610,13 @@ private[org] class DiagrammedBooleanMacro[C <: Context](val context: C, helperNa
     }
   }
 
-  def genMacro(booleanExpr: Expr[Boolean], methodName: String, clueExpr: Expr[Any]): Expr[Unit] = {
+  def genMacro(booleanExpr: Expr[Boolean], methodName: String, clueExpr: Expr[Any], sourceText: String): Expr[Unit] = {
     val ownerRepair = new OwnerRepair[context.type](context)
     val expandedCode =
       context.Expr(
         Block(
           valDef("$org_scalatest_assert_macro_expr", transformAst(booleanExpr.tree)),
-          callHelper(methodName, clueExpr.tree)
+          callHelper(methodName, clueExpr.tree, sourceText)
         )
       )
     ownerRepair.repairOwners(expandedCode)
