@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-import org.scalautils.{AnchorValue, DiagrammedBool}
+import org.scalautils.{AnchorValue, DiagrammedExpr, Prettifier}
 import scala.collection.mutable.ListBuffer
 import collection.immutable.TreeMap
 
@@ -34,8 +34,13 @@ trait DiagrammedAssertions extends Assertions {
       line.replace(anchor, anchor + str.length(), str)
     }
 
-    private[this] def renderValue(value: Any): String =
-      if (value == null) "null" else value.toString
+    private[this] def renderValue(value: Any): String = {
+      value match {
+        case aEqualizer: org.scalautils.TripleEqualsSupport#Equalizer[_] => Prettifier.default(aEqualizer.leftSide)
+        case aEqualizer: org.scalautils.TripleEqualsSupport#CheckingEqualizer[_] => Prettifier.default(aEqualizer.leftSide)
+        case _ => Prettifier.default(value)
+      }
+    }
 
     private[this] def placeValue(lines: ListBuffer[StringBuilder], value: Any, col: Int) {
       val str = renderValue(value)
@@ -94,27 +99,17 @@ trait DiagrammedAssertions extends Assertions {
       }
     }
 
-    def macroAssert(bool: DiagrammedBool, clue: Any, sourceText: String) {
+    def macroAssert(bool: DiagrammedExpr[Boolean], clue: Any, sourceText: String) {
       if (clue == null)
         throw new NullPointerException("clue was null")
       if (!bool.value) {
         //val failureMessage = if (DiagrammedBool.isSimpleWithoutExpressionText(bool)) None else Some(bool.failureMessage)
         val failureMessage =
           Some(
-            "Assertion failed for:\n" +
+            "\n" +
             renderDiagram(sourceText, bool.anchorValues)
-            //sourceText + ", anchor values: " + bool.anchorValues
           )
         throw newAssertionFailedException(append(failureMessage, clue), None, "Assertions.scala", "macroAssert", 2)
-      }
-    }
-
-    def macroAssume(bool: DiagrammedBool, clue: Any) {
-      if (clue == null)
-        throw new NullPointerException("clue was null")
-      if (!bool.value) {
-        val failureMessage = if (DiagrammedBool.isSimpleWithoutExpressionText(bool)) None else Some(bool.failureMessage)
-        throw newTestCanceledException(append(failureMessage, clue), None, "Assertions.scala", "macroAssume", 2)
       }
     }
   }

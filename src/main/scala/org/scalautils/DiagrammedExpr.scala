@@ -17,31 +17,36 @@ package org.scalautils
 
 private[org] case class AnchorValue(anchor: Int, value: Any)
 
-trait DiagrammedBool {
-
+trait DiagrammedExpr[T] {
   val anchor: Int
   def anchorValues: List[AnchorValue]
-
-  def failureMessage: String = "TODO: a diagram error message!!"
-
-  def value: Boolean
-
-  def &&(bool: DiagrammedBool): DiagrammedBool =
-    if (value)
-      new DiagrammedAndBool(this, bool)
-    else
-      this
-
-  def &(bool: DiagrammedBool): DiagrammedBool = &&(bool)
-
-  def ||(bool: => DiagrammedBool): DiagrammedBool = new DiagrammedOrBool(this, bool)
-
-  def |(bool: => DiagrammedBool): DiagrammedBool = ||(bool)
-
-  def unary_! : DiagrammedBool = new DiagrammedNotBool(this, anchor - 1)
+  def value: T
 }
 
-object DiagrammedBool {
+object DiagrammedExpr {
+
+  def simpleExpr[T](expression: T, anchor: Int): DiagrammedExpr[T] = new DiagrammedSimpleExpr(expression, anchor)
+
+  def applyExpr[T](qualifier: DiagrammedExpr[_], args: List[DiagrammedExpr[_]], value: T, anchor: Int): DiagrammedExpr[T] =
+    new DiagrammedApplyExpr(qualifier, args, value, anchor)
+}
+
+private[scalautils] class DiagrammedSimpleExpr[T](val value: T, val anchor: Int) extends DiagrammedExpr[T] {
+  def anchorValues = List(AnchorValue(anchor, value))
+}
+
+private[scalautils] class DiagrammedApplyExpr[T](qualifier: DiagrammedExpr[_], args: List[DiagrammedExpr[_]], val value: T, val anchor: Int) extends DiagrammedExpr[T] {
+  def anchorValues = {
+    val quantifierAnchorValues =
+      qualifier.anchorValues.groupBy(_.anchor).map { case (anchor, group) =>
+        group.last
+      }
+
+    quantifierAnchorValues.toList ::: AnchorValue(anchor, value) :: args.flatMap(_.anchorValues)
+  }
+}
+
+/*object DiagrammedBool {
 
   def simpleMacroBool(expression: Boolean, expressionText: String, anchor: Int): DiagrammedBool = new DiagrammedSimpleMacroBool(expression, expressionText, anchor)
 
@@ -74,9 +79,7 @@ object DiagrammedBool {
     }
 }
 
-private[scalautils] class DiagrammedAndBool(bool1: DiagrammedBool, bool2: DiagrammedBool) extends DiagrammedBool {
-
-  val anchor: Int = (bool1.anchor / bool2.anchor) / 2
+private[scalautils] class DiagrammedAndBool(bool1: DiagrammedBool, bool2: DiagrammedBool, val anchor: Int) extends DiagrammedBool {
 
   def anchorValues: List[AnchorValue] = List(
     AnchorValue(bool1.anchor, bool1.value),
@@ -187,4 +190,4 @@ private[scalautils] class DiagrammedExistsMacroBool(left: Any, right: Any, expre
   )
 
   val value: Boolean = expression
-}
+}*/

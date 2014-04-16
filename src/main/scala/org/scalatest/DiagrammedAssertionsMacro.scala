@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-import org.scalautils.{BooleanMacro, DiagrammedBooleanMacro}
+import org.scalautils.{BooleanMacro, DiagrammedExprMacro}
 import reflect.macros.Context
 
 object DiagrammedAssertionsMacro {
@@ -63,7 +63,7 @@ object DiagrammedAssertionsMacro {
     val endLine = getLastLine(context)(condition.tree)
 
     if (startLine == endLine) // Only use diagram macro if it is one line
-      new DiagrammedBooleanMacro[context.type](context, "diagrammedAssertionsHelper").genMacro(condition, "macroAssert", context.literal(""), getSourceText(context)(condition.tree))
+      new DiagrammedExprMacro[context.type](context, "diagrammedAssertionsHelper").genMacro(condition, "macroAssert", context.literal(""), getSourceText(context)(condition.tree))
     else
       new BooleanMacro[context.type](context, "diagrammedAssertionsHelper").genMacro(condition, "macroAssert", context.literal(""))
   }
