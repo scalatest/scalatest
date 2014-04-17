@@ -29,6 +29,9 @@ object DiagrammedExpr {
 
   def applyExpr[T](qualifier: DiagrammedExpr[_], args: List[DiagrammedExpr[_]], value: T, anchor: Int): DiagrammedExpr[T] =
     new DiagrammedApplyExpr(qualifier, args, value, anchor)
+
+  def selectExpr[T](qualifier: DiagrammedExpr[_], value: T, anchor: Int): DiagrammedExpr[T] =
+    new DiagrammedSelectExpr(qualifier, value, anchor)
 }
 
 private[scalautils] class DiagrammedSimpleExpr[T](val value: T, val anchor: Int) extends DiagrammedExpr[T] {
@@ -43,6 +46,17 @@ private[scalautils] class DiagrammedApplyExpr[T](qualifier: DiagrammedExpr[_], a
       }
 
     quantifierAnchorValues.toList ::: AnchorValue(anchor, value) :: args.flatMap(_.anchorValues)
+  }
+}
+
+private[scalautils] class DiagrammedSelectExpr[T](qualifier: DiagrammedExpr[_], val value: T, val anchor: Int) extends DiagrammedExpr[T] {
+  def anchorValues = {
+    val quantifierAnchorValues =
+      qualifier.anchorValues.groupBy(_.anchor).map { case (anchor, group) =>
+        group.last
+      }
+
+    quantifierAnchorValues.toList ::: List(AnchorValue(anchor, value))
   }
 }
 

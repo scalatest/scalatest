@@ -188,9 +188,42 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
     Block(exprList: _*)
   }
 
+  def selectExpr(select: Select): Tree = {
+    val qualifierValDef: Tree = valDef("$org_scalautils_macro_qualifier", transformAst(select.qualifier))
+    val valueExpr =
+      Select(
+        Select(Ident(newTermName("$org_scalautils_macro_qualifier")), newTermName("value")),
+        select.name
+      )
+
+    val resultExpr: Tree =
+      Apply(
+        Select(
+          Select(
+            Select(
+              Ident(newTermName("org")),
+              newTermName("scalautils")
+            ),
+            newTermName("DiagrammedExpr")
+          ),
+          newTermName("selectExpr")
+        ),
+        List(
+          Ident(newTermName("$org_scalautils_macro_qualifier")),
+          valueExpr,
+          Literal(Constant(getAnchor(select)))
+        )
+      )
+
+    val exprList: List[Tree] = List(qualifierValDef, resultExpr)
+
+    Block(exprList: _*)
+  }
+
   def transformAst(tree: Tree): Tree = {
     tree match {
       case apply: Apply => applyExpr(apply)
+      case select: Select => selectExpr(select)
       case other => simpleExpr(other)
     }
   }
