@@ -104,4 +104,60 @@ private[scalatest] object CompileMacro {
     }
   }
 
+  def shouldCompileImpl(c: Context)(compileWord: c.Expr[CompileWord]): c.Expr[Unit] = {
+    import c.universe._
+
+    c.macroApplication match {
+      case Apply(Select(Apply(_, List(Literal(Constant(codeStr)))), _), _) =>
+        val code = codeStr.toString
+
+        try {
+          c.typeCheck(c.parse("{ " + code + " }"))
+          reify {
+            // Do nothing
+          }
+        } catch {
+          case e: TypecheckException =>
+            val messageExpr = c.literal(code + " encountered a type error: " + e.getMessage)
+            reify {
+              throw new exceptions.TestFailedException(messageExpr.splice, 0)
+            }
+          case e: ParseException =>
+            val messageExpr = c.literal(code + " encountered a parse error: " + e.getMessage)
+            reify {
+              throw new exceptions.TestFailedException(messageExpr.splice, 0)
+            }
+        }
+      case _ => c.abort(c.enclosingPosition, "The 'should compile' syntax only works with String literal only.")
+    }
+  }
+
+  def mustCompileImpl(c: Context)(compileWord: c.Expr[CompileWord]): c.Expr[Unit] = {
+    import c.universe._
+
+    c.macroApplication match {
+      case Apply(Select(Apply(_, List(Literal(Constant(codeStr)))), _), _) =>
+        val code = codeStr.toString
+
+        try {
+          c.typeCheck(c.parse("{ " + code + " }"))
+          reify {
+            // Do nothing
+          }
+        } catch {
+          case e: TypecheckException =>
+            val messageExpr = c.literal(code + " encountered a type error: " + e.getMessage)
+            reify {
+              throw new exceptions.TestFailedException(messageExpr.splice, 0)
+            }
+          case e: ParseException =>
+            val messageExpr = c.literal(code + " encountered a parse error: " + e.getMessage)
+            reify {
+              throw new exceptions.TestFailedException(messageExpr.splice, 0)
+            }
+        }
+      case _ => c.abort(c.enclosingPosition, "The 'must compile' syntax only works with String literal only.")
+    }
+  }
+
 }

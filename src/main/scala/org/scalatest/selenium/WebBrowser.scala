@@ -1329,28 +1329,13 @@ trait WebBrowser {
   }
 
   /**
-   * Trait that facilitates using the <em>page object pattern</em> with the ScalaTest Selenium DSL.
-   *
    * <p>
-   * If you use the page object pattern, mixing trait <code>Page</code> into your page classes will allow you to use the <code>go to</code>
-   * syntax with your page objects. Here's an example:
+   * <strong>This trait has been moved as separate trait in <code>org.scalatest.selenium</code> package. The deprecated type alias that has been left in its place will
+   * be removed in a future version of ScalaTest. Please change any uses of this to <code>org.scalatest.selenium.Page</code>.</strong>
    * </p>
-   *
-   * <pre class="stHighlight">
-   * class HomePage extends Page {
-   *   val url = "localhost:9000/index.html"
-   * }
-   *
-   * val homePage = new HomePage
-   * go to homePage
-   * </pre>
    */
-  trait Page {
-    /**
-     * The URL of the page represented by this page object.
-     */
-    val url: String
-  }
+  @deprecated("Please use org.scalatest.selenium.Page instead.")
+  type Page = org.scalatest.selenium.Page
 
   // fluentLinium has a doubleClick. Wonder how they are doing that?
 

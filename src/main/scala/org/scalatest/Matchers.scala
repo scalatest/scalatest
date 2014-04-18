@@ -6916,6 +6916,16 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * This method enables syntax such as the following:
      *
      * <pre class="stHighlight">
+     * string should compile
+     *        ^
+     * </pre>
+     */
+    def should(compileWord: CompileWord): Unit = macro CompileMacro.shouldCompileImpl
+
+    /**
+     * This method enables syntax such as the following:
+     *
+     * <pre class="stHighlight">
      * string shouldNot compile
      *        ^
      * </pre>
