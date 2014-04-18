@@ -48,8 +48,10 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
     case Apply(x, ys) => getAnchor(x) + 0
     case TypeApply(x, ys) => getAnchor(x) + 0
     case _ => {
-      val pos = getPosition(expr)
-      pos.point - pos.source.lineToOffset(pos.line - 1)
+      getPosition(expr) match {
+        case NoPosition => -1
+        case pos => pos.point - pos.source.lineToOffset(pos.line - 1)
+      }
     }
   }
 
@@ -149,7 +151,11 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
         currentApply match {
           case Apply(fun, args) =>
             args.zipWithIndex.map { case (arg, j) =>
-              valDef("$org_scalautils_macro_arg_" + (base + j), transformAst(arg))
+              arg match {
+                case func: Function => valDef("$org_scalautils_macro_arg_" + (base + j), simpleExpr(Literal(Constant("")))) // ignore function, create a dummy val.
+                case byName if arg.tpe.typeSymbol.fullName == "scala.Nothing" => valDef("$org_scalautils_macro_arg_" + (base + j), simpleExpr(Literal(Constant("")))) // TODO: Is there a better way to detect a by-name?
+                case other => valDef("$org_scalautils_macro_arg_" + (base + j), transformAst(arg))
+              }
             }
           case _ => List.empty
         }
@@ -161,7 +167,11 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
         currentApply match {
           case Apply(fun, args) =>
             args.zipWithIndex.map { case (arg, j) =>
-              Select(Ident(newTermName("$org_scalautils_macro_arg_" + (base + j))), newTermName("value"))
+              arg match {
+                case func: Function => func  // for functions, just use back the original
+                case byName if arg.tpe.typeSymbol.fullName == "scala.Nothing" => byName // for by-names, just use back the original
+                case other => Select(Ident(newTermName("$org_scalautils_macro_arg_" + (base + j))), newTermName("value"))
+              }
             }
           case _ => currentApply.args
         }

@@ -77,6 +77,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
   val l1 = List(1, 2, 3)
   val l2 = List.empty[Int]
   val l3 = List("one", "two", "three")
+  val l3Str = Prettifier.default(l3)
 
   val m1 = Map(1 -> "one", 2 -> "two", 3 -> "three")
   val m1Str = Prettifier.default(m1)
@@ -984,7 +985,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
     }
 
-    /*it("should preserve side effects when Apply with single argument is passed in") {
+    it("should preserve side effects when Apply with single argument is passed in") {
       assert(neverRuns1(sys.error("Sad times 1")))
     }
 
@@ -994,7 +995,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
 
     it("should preserve side effects when typed Apply with 2 argument list is passed in") {
       assert(neverRuns3(sys.error("Sad times 3"))(0))
-    }*/
+    }
 
     it("should do nothing when is used to check s1 startsWith \"hi\"") {
       assert(s1 startsWith "hi")
@@ -2051,11 +2052,11 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
     }
 
-    /*it("should do nothing when is used to check l1.exists(_ == 3)") {
+    it("should do nothing when is used to check l1.exists(_ == 3)") {
       assert(l1.exists(_ == 3))
     }
 
-    it("should throw TestFailedException with correct message and stack depth when is used to check l1.exists(_ == 5)") {
+    it("should throw TestFailedException with correct message and stack depth when is used to check l1.exists(_ == 5) ") {
       val e = intercept[TestFailedException] {
         assert(l1.exists(_ == 5))
       }
@@ -2071,9 +2072,9 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       )
       e.failedCodeFileName should be (Some(fileName))
       e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
-    }*/
+    }
 
-    /*it("should do nothing when is used to check !l1.exists(_ == 5)") {
+    it("should do nothing when is used to check !l1.exists(_ == 5)") {
       assert(!l1.exists(_ == 5))
     }
 
@@ -2094,9 +2095,9 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       )
       e.failedCodeFileName should be (Some(fileName))
       e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
-    }*/
+    }
 
-    /*it("should throw TestFailedException with correct message and stack depth when is used to check l1.exists(_ > 3)") {
+    it("should throw TestFailedException with correct message and stack depth when is used to check l1.exists(_ > 3)") {
       val e = intercept[TestFailedException] {
         assert(l1.exists(_ > 3))
       }
@@ -2124,13 +2125,13 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
             |assert(l3.exists(_.isEmpty))
             |       |  |
             |       |  false
-            |       $l3
+            |       $l3Str
             |""".stripMargin
         )
       )
       e.failedCodeFileName should be (Some(fileName))
       e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
-    }*/
+    }
 
     it("should throw TestFailedException with correct message and stack depth when is used to check l3.exists(false)") {
       val e = intercept[TestFailedException] {
@@ -2149,7 +2150,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.failedCodeLineNumber should be (Some(thisLineNumber - 12))
     }
 
-    /*it("should do nothing when used to check woof { meow(y = 5) } == \"woof\"") {
+    it("should do nothing when used to check woof { meow(y = 5) } == \"woof\"") {
       assert(woof { meow(y = 5) } == "woof")
     }
 
@@ -2161,15 +2162,16 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         Some(
           """
             |assert(woof { meow(y = 5) } == "meow")
-            |       |                    |  |
-            |       "meow"               |  "meow"
-            |                            false
+            |       |          |         |  |
+            |       "woof"     |         |  "meow"
+            |                  |         false
+            |                  <(), the Unit value>
             |""".stripMargin
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
-    }*/
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+    }
 
   }
 
