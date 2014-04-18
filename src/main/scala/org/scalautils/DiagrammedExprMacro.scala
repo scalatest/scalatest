@@ -229,6 +229,19 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
           )
         List(qualifierValDef, ifCheck)
       }
+      else if ((funcName == "||" || funcName == "|") && argIdents.length == 1) {
+        // ||, try to be lazy
+        val ifCheck =
+          If(
+            Select(
+              Ident(newTermName("$org_scalautils_macro_qualifier")),
+              newTermName("value")
+            ),
+            Ident(newTermName("$org_scalautils_macro_qualifier")),
+            Block((argsValDefList ::: List(resultExpr)): _*)
+          )
+        List(qualifierValDef, ifCheck)
+      }
       else
         qualifierValDef :: argsValDefList ::: List(resultExpr)
     }

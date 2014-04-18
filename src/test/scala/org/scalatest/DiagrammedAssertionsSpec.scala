@@ -927,7 +927,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       s.state should be (false)
     }
 
-    /*it("should short-circuit || when first condition was true") {
+    it("should short-circuit || when first condition was true") {
       val s = new Stateful
       assert(a == 3 || s.changeState)
       s.state should be (false)
@@ -937,7 +937,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       val s = new Stateful
       assert(a == 3 | s.changeState)
       s.state should be (false)
-    }*/
+    }
 
     it("should do nothing when it is used to check a == 3 && { println(\"hi\"); b == 5}") {
       assert(a == 3 && { println("hi"); b == 5})
