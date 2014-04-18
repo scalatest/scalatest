@@ -92,11 +92,11 @@ trait FeatureSpecLike extends Suite with TestRegistration with Informing with No
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  def registerTest(testText: String, testTags: Tag*)(testFun: => Unit) {
+  final def registerTest(testText: String, testTags: Tag*)(testFun: => Unit) {
     engine.registerTest(Resources("scenario", testText.trim), Transformer(testFun _), "testCannotBeNestedInsideAnotherTest", "FeatureSpecLike.scala", "registerTest", 4, -1, None, None, None, testTags: _*)
   }
 
-  def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Unit) {
+  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Unit) {
     engine.registerIgnoredTest(Resources("scenario", testText.trim), Transformer(testFun _), "testCannotBeNestedInsideAnotherTest", "FeatureSpecLike.scala", "registerIgnoredTest", 4, -2, None, testTags: _*)
   }
 
