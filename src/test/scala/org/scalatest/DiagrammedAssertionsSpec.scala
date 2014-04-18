@@ -1520,7 +1520,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       assert(ci1.eq(ci3))
     }
 
-    /*it("should throw TestFailedException with correct message and stack depth when is used to check ci1 eq ci2") {
+    it("should throw TestFailedException with correct message and stack depth when is used to check ci1 eq ci2") {
       val e1 = intercept[TestFailedException] {
         assert(ci1 eq ci2)
       }
@@ -1529,14 +1529,13 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
           s"""
             |assert(ci1 eq ci2)
             |       |   |  |
-            |       |   |  $ci2Str
-            |       |   false
-            |       $ci1Str
+            |       $ci1Str |  $ci2Str
+            |           false
             |""".stripMargin
         )
       )
       e1.failedCodeFileName should be (Some(fileName))
-      e1.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      e1.failedCodeLineNumber should be (Some(thisLineNumber - 13))
 
       val e2 = intercept[TestFailedException] {
         assert(ci1.eq(ci2))
@@ -1546,15 +1545,14 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
           s"""
             |assert(ci1.eq(ci2))
             |       |   |  |
-            |       |   |  $ci2Str
-            |       |   false
-            |       $ci1Str
+            |       $ci1Str |  $ci2Str
+            |           false
             |""".stripMargin
         )
       )
       e2.failedCodeFileName should be (Some(fileName))
-      e2.failedCodeLineNumber should be (Some(thisLineNumber - 14))
-    }*/
+      e2.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+    }
 
     it("should do nothing when is used to check !ci1.eq(ci2)") {
       assert(!ci1.eq(ci2))
@@ -1584,7 +1582,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       assert(ci1.ne(ci2))
     }
 
-    /*it("should throw TestFailedException with correct message and stack depth when is used to check ci1 ne ci3") {
+    it("should throw TestFailedException with correct message and stack depth when is used to check ci1 ne ci3") {
       val e1 = intercept[TestFailedException] {
         assert(ci1 ne ci3)
       }
@@ -1616,7 +1614,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       )
       e2.failedCodeFileName should be (Some(fileName))
       e2.failedCodeLineNumber should be (Some(thisLineNumber - 13))
-    }*/
+    }
 
     it("should do nothing when is used to check !ci1.ne(ci3)") {
       assert(!ci1.ne(ci3))

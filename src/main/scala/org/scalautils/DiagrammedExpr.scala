@@ -21,6 +21,11 @@ trait DiagrammedExpr[T] {
   val anchor: Int
   def anchorValues: List[AnchorValue]
   def value: T
+
+  protected[scalautils] def eliminateDuplicates(anchorValues: List[AnchorValue]): List[AnchorValue] =
+    (anchorValues.groupBy(_.anchor).map { case (anchor, group) =>
+      group.last
+    }).toList
 }
 
 object DiagrammedExpr {
@@ -39,22 +44,22 @@ private[scalautils] class DiagrammedSimpleExpr[T](val value: T, val anchor: Int)
 }
 
 private[scalautils] class DiagrammedApplyExpr[T](qualifier: DiagrammedExpr[_], args: List[DiagrammedExpr[_]], val value: T, val anchor: Int) extends DiagrammedExpr[T] {
+
   def anchorValues = {
-    val quantifierAnchorValues =
-      qualifier.anchorValues.groupBy(_.anchor).map { case (anchor, group) =>
-        group.last
+    val quantifierAnchorValues = eliminateDuplicates(qualifier.anchorValues)
+
+    val argsAnchorValues =
+      args.flatMap { arg =>
+        eliminateDuplicates(arg.anchorValues)
       }
 
-    quantifierAnchorValues.toList ::: AnchorValue(anchor, value) :: args.flatMap(_.anchorValues)
+    quantifierAnchorValues.toList ::: AnchorValue(anchor, value) :: argsAnchorValues
   }
 }
 
 private[scalautils] class DiagrammedSelectExpr[T](qualifier: DiagrammedExpr[_], val value: T, val anchor: Int) extends DiagrammedExpr[T] {
   def anchorValues = {
-    val quantifierAnchorValues =
-      qualifier.anchorValues.groupBy(_.anchor).map { case (anchor, group) =>
-        group.last
-      }
+    val quantifierAnchorValues = eliminateDuplicates(qualifier.anchorValues)
 
     quantifierAnchorValues.toList ::: List(AnchorValue(anchor, value))
   }
