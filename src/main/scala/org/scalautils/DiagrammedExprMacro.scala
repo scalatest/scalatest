@@ -100,7 +100,7 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
   private def recursiveValueApply(applyList: List[GenericApply], currentApply: GenericApply): GenericApply =
     applyList match {
       case TypeApply(fun, args) :: tail =>
-        recursiveValueApply(tail, TypeApply(currentApply, args.map(_.duplicate)))
+        recursiveValueApply(tail, TypeApply(currentApply, args))
       case Apply(fun, args) :: tail =>
         recursiveValueApply(tail, Apply(currentApply, args))
       case Nil => currentApply
@@ -108,6 +108,7 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
 
   def selectExpr(select: Select): Tree = {
     val qualifierValDef: Tree = valDef("$org_scalautils_macro_qualifier", transformAst(select.qualifier))
+
     val valueExpr =
       Select(
         Select(Ident(newTermName("$org_scalautils_macro_qualifier")), newTermName("value")),
@@ -138,7 +139,7 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
     Block(exprList: _*)
   }
 
-  private def applyExpr(apply: Apply): Tree = {
+  private def applyExpr(apply: GenericApply): Tree = {
     val applyInfo = traverseApply(apply)
     val qualifierValDef: Tree = valDef("$org_scalautils_macro_qualifier", transformAst(applyInfo.select.qualifier))
 
@@ -249,9 +250,51 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
     Block(exprList: _*)
   }
 
+  private def typeApplyExpr(apply: TypeApply): Tree = {
+    apply.fun match {
+      case select: Select =>
+        val qualifierValDef: Tree = valDef("$org_scalautils_macro_qualifier", transformAst(select.qualifier))
+        val valueExpr =
+          TypeApply(
+            Select(
+              Select(Ident(newTermName("$org_scalautils_macro_qualifier")), newTermName("value")),
+              select.name
+            ),
+            apply.args
+          )
+
+        val resultExpr: Tree =
+          Apply(
+            Select(
+              Select(
+                Select(
+                  Ident(newTermName("org")),
+                  newTermName("scalautils")
+                ),
+                newTermName("DiagrammedExpr")
+              ),
+              newTermName("selectExpr")
+            ),
+            List(
+              Ident(newTermName("$org_scalautils_macro_qualifier")),
+              valueExpr,
+              Literal(Constant(getAnchor(select)))
+            )
+          )
+
+        val exprList: List[Tree] = List(qualifierValDef, resultExpr)
+
+        Block(exprList: _*)
+
+      case other => simpleExpr(other)
+    }
+  }
+
   def transformAst(tree: Tree): Tree = {
     tree match {
+      case typeApply: TypeApply => applyExpr(typeApply)
       case apply: Apply => applyExpr(apply)
+      case Select(This(_), _) => simpleExpr(tree)
       case select: Select => selectExpr(select)
       case Block(stats, expr) => transformAst(expr)
       case other => simpleExpr(other)

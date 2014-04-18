@@ -1732,7 +1732,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       assert(s1.isInstanceOf[String])
     }
 
-    /*it("should throw TestFailedException with correct message and stack depth when is used to check l1.isInstanceOf[String]") {
+    it("should throw TestFailedException with correct message and stack depth when is used to check l1.isInstanceOf[String]") {
       val e = intercept[TestFailedException] {
         assert(l1.isInstanceOf[String])
       }
@@ -1748,13 +1748,13 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       )
       e.failedCodeFileName should be (Some(fileName))
       e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
-    }*/
+    }
 
     it("should do nothing when is used to check l1.isInstanceOf[List[Int]]") {
       assert(l1.isInstanceOf[List[Int]])
     }
 
-    /*it("should throw TestFailedException with correct message and stack depth when is used to check s1.isInstanceOf[List[Int]]") {
+    it("should throw TestFailedException with correct message and stack depth when is used to check s1.isInstanceOf[List[Int]]") {
       val e = intercept[TestFailedException] {
         assert(s1.isInstanceOf[List[Int]])
       }
@@ -1770,13 +1770,13 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       )
       e.failedCodeFileName should be (Some(fileName))
       e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
-    }*/
+    }
 
     it("should do nothing when is used to check date.isInstanceOf[Date]") {
       assert(date.isInstanceOf[Date])
     }
 
-    /*it("should throw TestFailedException with correct message and stack depth when is used to check l1.isInstanceOf[Date]") {
+    it("should throw TestFailedException with correct message and stack depth when is used to check l1.isInstanceOf[Date]") {
       val e = intercept[TestFailedException] {
         assert(l1.isInstanceOf[Date])
       }
@@ -1792,13 +1792,13 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       )
       e.failedCodeFileName should be (Some(fileName))
       e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
-    }*/
+    }
 
     it("should do nothing when is used to check !l1.isInstanceOf[String]") {
       assert(!l1.isInstanceOf[String])
     }
 
-    /*it("should throw TestFailedException with correct message and stack depth when is used to check !s1.isInstanceOf[String]") {
+    it("should throw TestFailedException with correct message and stack depth when is used to check !s1.isInstanceOf[String]") {
       val e = intercept[TestFailedException] {
         assert(!s1.isInstanceOf[String])
       }
@@ -1815,13 +1815,13 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       )
       e.failedCodeFileName should be (Some(fileName))
       e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
-    }*/
+    }
 
     it("should do nothing when is used to check !s1.isInstanceOf[List[Int]]") {
       assert(!s1.isInstanceOf[List[Int]])
     }
 
-    /*it("should throw TestFailedException with correct message and stack depth when is used to check !l1.isInstanceOf[List[Int]]") {
+    it("should throw TestFailedException with correct message and stack depth when is used to check !l1.isInstanceOf[List[Int]]") {
       val e = intercept[TestFailedException] {
         assert(!l1.isInstanceOf[List[Int]])
       }
@@ -1838,13 +1838,13 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       )
       e.failedCodeFileName should be (Some(fileName))
       e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
-    }*/
+    }
 
     it("should do nothing when is used to check !l1.isInstanceOf[Date]") {
       assert(!l1.isInstanceOf[Date])
     }
 
-    /*it("should throw TestFailedException with correct message and stack depth when is used to check !date.isInstanceOf[Date]") {
+    it("should throw TestFailedException with correct message and stack depth when is used to check !date.isInstanceOf[Date]") {
       val e = intercept[TestFailedException] {
         assert(!date.isInstanceOf[Date])
       }
@@ -1852,8 +1852,8 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         Some(
           s"""
             |assert(!date.isInstanceOf[Date])
-            |       ||  |
-            |       ||  true
+            |       ||    |
+            |       ||    true
             |       |$date
             |       false
             |""".stripMargin
@@ -1861,7 +1861,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       )
       e.failedCodeFileName should be (Some(fileName))
       e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
-    }*/
+    }
 
     it("should do nothing when is used to check s1.length == 9") {
       assert(s1.length == 12)
@@ -1957,7 +1957,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
     }
 
-    /*it("should do nothing when is used to check s1.size == 9") {
+    it("should do nothing when is used to check s1.size == 9") {
       assert(s1.size == 12)
     }
 
@@ -1978,7 +1978,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       )
       e.failedCodeFileName should be (Some(fileName))
       e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
-    }*/
+    }
 
     it("should do nothing when is used to check l1.size == 3") {
       assert(l1.size == 3)
@@ -2003,7 +2003,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
     }
 
-    /*it("should do nothing when is used to check !(s1.size == 10)") {
+    it("should do nothing when is used to check !(s1.size == 10)") {
       assert(!(s1.size == 10))
     }
 
@@ -2025,7 +2025,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       )
       e.failedCodeFileName should be (Some(fileName))
       e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
-    }*/
+    }
 
     it("should do nothing when is used to check !(l1.size == 2)") {
       assert(!(l1.size == 2))
