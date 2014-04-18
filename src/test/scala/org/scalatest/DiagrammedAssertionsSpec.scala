@@ -2031,7 +2031,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       assert(!(l1.size == 2))
     }
 
-    it("should throw TestFailedException with correct message and stack depth when is used to check !(l1.size == 9)") {
+    it("should throw TestFailedException with correct message and stack depth when is used to check !(l1.size == 9) ") {
       val e = intercept[TestFailedException] {
         assert(!(l1.size == 3))
       }
