@@ -214,8 +214,9 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
         )
       )
 
-    val exprList: List[Tree] =
-      if (applyInfo.select.name.decoded == "&&" && argIdents.length == 1) {
+    val exprList: List[Tree] = {
+      val funcName = applyInfo.select.name.decoded
+      if ((funcName == "&&" || funcName == "&") && argIdents.length == 1) {
         // &&, try to be lazy
         val ifCheck =
           If(
@@ -230,6 +231,7 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
       }
       else
         qualifierValDef :: argsValDefList ::: List(resultExpr)
+    }
 
     Block(exprList: _*)
   }
