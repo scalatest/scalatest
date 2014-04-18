@@ -106,8 +106,39 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
       case Nil => currentApply
     }
 
+  def selectExpr(select: Select): Tree = {
+    val qualifierValDef: Tree = valDef("$org_scalautils_macro_qualifier", transformAst(select.qualifier))
+    val valueExpr =
+      Select(
+        Select(Ident(newTermName("$org_scalautils_macro_qualifier")), newTermName("value")),
+        select.name
+      )
 
-  def applyExpr(apply: Apply): Tree = {
+    val resultExpr: Tree =
+      Apply(
+        Select(
+          Select(
+            Select(
+              Ident(newTermName("org")),
+              newTermName("scalautils")
+            ),
+            newTermName("DiagrammedExpr")
+          ),
+          newTermName("selectExpr")
+        ),
+        List(
+          Ident(newTermName("$org_scalautils_macro_qualifier")),
+          valueExpr,
+          Literal(Constant(getAnchor(select)))
+        )
+      )
+
+    val exprList: List[Tree] = List(qualifierValDef, resultExpr)
+
+    Block(exprList: _*)
+  }
+
+  private def applyExpr(apply: Apply): Tree = {
     val applyInfo = traverseApply(apply)
     val qualifierValDef: Tree = valDef("$org_scalautils_macro_qualifier", transformAst(applyInfo.select.qualifier))
 
@@ -183,39 +214,22 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
         )
       )
 
-    val exprList: List[Tree] = qualifierValDef :: argsValDefList ::: List(resultExpr)
-
-    Block(exprList: _*)
-  }
-
-  def selectExpr(select: Select): Tree = {
-    val qualifierValDef: Tree = valDef("$org_scalautils_macro_qualifier", transformAst(select.qualifier))
-    val valueExpr =
-      Select(
-        Select(Ident(newTermName("$org_scalautils_macro_qualifier")), newTermName("value")),
-        select.name
-      )
-
-    val resultExpr: Tree =
-      Apply(
-        Select(
-          Select(
+    val exprList: List[Tree] =
+      if (applyInfo.select.name.decoded == "&&" && argIdents.length == 1) {
+        // &&, try to be lazy
+        val ifCheck =
+          If(
             Select(
-              Ident(newTermName("org")),
-              newTermName("scalautils")
+              Ident(newTermName("$org_scalautils_macro_qualifier")),
+              newTermName("value")
             ),
-            newTermName("DiagrammedExpr")
-          ),
-          newTermName("selectExpr")
-        ),
-        List(
-          Ident(newTermName("$org_scalautils_macro_qualifier")),
-          valueExpr,
-          Literal(Constant(getAnchor(select)))
-        )
-      )
-
-    val exprList: List[Tree] = List(qualifierValDef, resultExpr)
+            Block((argsValDefList ::: List(resultExpr)): _*),
+            Ident(newTermName("$org_scalautils_macro_qualifier"))
+          )
+        List(qualifierValDef, ifCheck)
+      }
+      else
+        qualifierValDef :: argsValDefList ::: List(resultExpr)
 
     Block(exprList: _*)
   }

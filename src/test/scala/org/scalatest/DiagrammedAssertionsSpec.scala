@@ -672,16 +672,14 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         Some(
           """
             |assert(a == 2 && b == 5)
-            |       | |  | |  | |  |
-            |       3 |  2 |  5 |  5
-            |         |    |    true
-            |         |    false
+            |       | |  |
+            |       3 |  2
             |         false
             |""".stripMargin
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
     }
 
     it("should throw TestFailedException with correct message and stack depth when is used to check a == 2 && b == 6") {
@@ -692,16 +690,14 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         Some(
           """
             |assert(a == 2 && b == 6)
-            |       | |  | |  | |  |
-            |       3 |  2 |  5 |  6
-            |         |    |    false
-            |         |    false
+            |       | |  |
+            |       3 |  2
             |         false
             |""".stripMargin
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
     }
 
     it("should do nothing when is used to check a == 3 & b == 5") {
@@ -919,7 +915,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
     }
 
-    /*it("should short-circuit && when first condition was false") {
+    it("should short-circuit && when first condition was false") {
       val s = new Stateful
       intercept[TestFailedException] {
         assert(a == 5 && s.changeState)
@@ -927,7 +923,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       s.state should be (false)
     }
 
-    it("should short-circuit || when first condition was true") {
+    /*it("should short-circuit || when first condition was true") {
       val s = new Stateful
       assert(a == 3 || s.changeState)
       s.state should be (false)
