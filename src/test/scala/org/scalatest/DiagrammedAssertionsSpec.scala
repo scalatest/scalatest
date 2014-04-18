@@ -939,11 +939,11 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       s.state should be (false)
     }
 
-    it("should do nothing when it is used to check a == 3 && { println(\"hi\"); b == 5}") {
+    it("should do nothing when it is used to check a == 3 && { println(\"hi\"); b == 5} ") {
       assert(a == 3 && { println("hi"); b == 5})
     }
 
-    /*it("should throw TestFailedException with correct message and stack depth when is usesd to check a == 3 && { println(\"hi\"); b == 3}") {
+    it("should throw TestFailedException with correct message and stack depth when is usesd to check a == 3 && { println(\"hi\"); b == 3}") {
       val e = intercept[TestFailedException] {
         assert(a == 3 && { println("hi"); b == 3})
       }
@@ -952,20 +952,20 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
           """
             |assert(a == 3 && { println("hi"); b == 3})
             |       | |  | |                   | |  |
-            |       3 |  3 |                   5 |  3
-            |         true false                 false
+            |       3 |  3 false               5 |  3
+            |         true                       false
             |""".stripMargin
         )
       )
       e.failedCodeFileName should be (Some(fileName))
       e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
-    }*/
+    }
 
     it("should do nothing when it is used to check { println(\"hi\"); b == 5} && a == 3") {
       assert({ println("hi"); b == 5} && a == 3)
     }
 
-    /*it("should throw TestFailedException with correct message and stack depth when is usesd to check { println(\"hi\"); b == 5} && a == 5") {
+    it("should throw TestFailedException with correct message and stack depth when is usesd to check { println(\"hi\"); b == 5} && a == 5") {
       val e = intercept[TestFailedException] {
         assert({ println("hi"); b == 5} && a == 5)
       }
@@ -976,13 +976,13 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
             |                        | |  |  |  | |  |
             |                        5 |  5  |  3 |  5
             |                          true  |    false
-            |                                true
+            |                                false
             |""".stripMargin
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
-    }*/
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+    }
 
     /*it("should preserve side effects when Apply with single argument is passed in") {
       assert(neverRuns1(sys.error("Sad times 1")))

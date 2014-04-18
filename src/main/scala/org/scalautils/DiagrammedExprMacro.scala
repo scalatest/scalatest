@@ -253,6 +253,7 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
     tree match {
       case apply: Apply => applyExpr(apply)
       case select: Select => selectExpr(select)
+      case Block(stats, expr) => transformAst(expr)
       case other => simpleExpr(other)
     }
   }
