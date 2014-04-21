@@ -31,6 +31,7 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
       rhs
     )
 
+  // this is taken from expecty
   private[this] def getPosition(expr: Tree) = expr.pos.asInstanceOf[scala.reflect.internal.util.Position]
 
   def getText(expr: Tree): String = {
@@ -44,6 +45,7 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
     }
   }
 
+  // this is taken from expecty and modified
   private[this] def getAnchor(expr: Tree): Int = expr match {
     case Apply(x, ys) => getAnchor(x) + 0
     case TypeApply(x, ys) => getAnchor(x) + 0

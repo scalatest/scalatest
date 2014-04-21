@@ -25,15 +25,18 @@ trait DiagrammedAssertions extends Assertions {
 
   class DiagrammedAssertionsHelper {
 
+    // this is taken from expecty
     private[this] def fits(line: StringBuilder, str: String, anchor: Int): Boolean =
       line.slice(anchor, anchor + str.length + 1).forall(_.isWhitespace)
 
+    // this is taken from expecty
     private[this] def placeString(line: StringBuilder, str: String, anchor: Int) {
       val diff = anchor - line.length
       for (i <- 1 to diff) line.append(' ')
       line.replace(anchor, anchor + str.length(), str)
     }
 
+    // this is taken from expecty and modified
     private[this] def renderValue(value: Any): String = {
       value match {
         case aEqualizer: org.scalautils.TripleEqualsSupport#Equalizer[_] => Prettifier.default(aEqualizer.leftSide)
@@ -42,6 +45,7 @@ trait DiagrammedAssertions extends Assertions {
       }
     }
 
+    // this is taken from expecty
     private[this] def placeValue(lines: ListBuffer[StringBuilder], value: Any, col: Int) {
       val str = renderValue(value)
 
@@ -60,6 +64,7 @@ trait DiagrammedAssertions extends Assertions {
       lines.append(newLine)
     }
 
+    // this is taken from expecty
     private[this] def filterAndSortByAnchor(anchorValues: List[AnchorValue]): Traversable[AnchorValue] = {
       var map = TreeMap[Int, AnchorValue]()(Ordering.by(-_))
       // values stemming from compiler generated code often have the same anchor as regular values
@@ -68,6 +73,7 @@ trait DiagrammedAssertions extends Assertions {
       map.values
     }
 
+    // this is taken from expecty
     private[this] def renderDiagram(sourceText: String, anchorValues: List[AnchorValue]): String = {
       val offset = sourceText.prefixLength(_.isWhitespace)
       val intro = new StringBuilder().append(sourceText.trim())
