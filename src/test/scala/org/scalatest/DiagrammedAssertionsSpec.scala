@@ -110,6 +110,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(a == 5)
             |       | |  |
             |       3 |  5
@@ -118,7 +119,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
     }
 
     it("should do nothing when is used to check 5 == b") {
@@ -132,6 +133,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(3 == b)
             |       | |  |
             |       3 |  5
@@ -140,7 +142,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
     }
 
     it("should do nothing when is used to check a != 5") {
@@ -154,6 +156,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(a != 3)
             |       | |  |
             |       3 |  3
@@ -162,7 +165,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
     }
 
     it("should do nothing when is used to check 3 != b") {
@@ -176,6 +179,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(5 != b)
             |       | |  |
             |       5 |  5
@@ -184,7 +188,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
     }
 
     it("should do nothing when is used to check 3 == 3") {
@@ -200,6 +204,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e1.message should be (
         Some(
           """
+            |
             |assert(3 == 5)
             |         |
             |         false
@@ -207,7 +212,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e1.failedCodeFileName should be (Some(fileName))
-      e1.failedCodeLineNumber should be (Some(thisLineNumber - 12))
+      e1.failedCodeLineNumber should be (Some(thisLineNumber - 13))
     }
 
     it("should throw TestFailedException with correct message and stack depth when is used to check a == b") {
@@ -217,6 +222,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(a == b)
             |       | |  |
             |       3 |  5
@@ -225,7 +231,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
     }
 
     it("should throw TestFailedException with correct message and stack depth when is used to check a == null") {
@@ -235,6 +241,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(a == null)
             |       | |  |
             |       3 |  null
@@ -243,7 +250,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
     }
 
     it("should throw TestFailedException with correct message and stack depth when is used to check null == a") {
@@ -253,6 +260,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(null == a)
             |       |    |  |
             |       null |  3
@@ -261,7 +269,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
     }
 
     it("should throw TestFailedException with correct message and stack depth when is used to check 3 != a") {
@@ -271,6 +279,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(3 != a)
             |       | |  |
             |       3 |  3
@@ -279,7 +288,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
     }
 
     it("should do nothing when is used to check 5 != a") {
@@ -301,6 +310,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(a > 3)
             |       | | |
             |       3 | 3
@@ -309,7 +319,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
     }
 
     it("should throw TestFailedException with correct message and stack depth when is used to check 3 > a") {
@@ -319,6 +329,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(3 > a)
             |       | | |
             |       3 | 3
@@ -327,7 +338,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
     }
 
     it("should do nothing when is used to check a >= 3") {
@@ -345,6 +356,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(a >= 4)
             |       | |  |
             |       3 |  4
@@ -353,7 +365,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
     }
 
     it("should throw TestFailedException with correct message and stack depth when is used to check 2 >= a") {
@@ -363,6 +375,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(2 >= a)
             |       | |  |
             |       2 |  3
@@ -371,7 +384,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
     }
 
     it("should do nothing when is used to check b < 6") {
@@ -389,6 +402,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(b < 5)
             |       | | |
             |       5 | 5
@@ -397,7 +411,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
     }
 
     it("should throw TestFailedException with correct message and stack depth when is used to check 5 < b") {
@@ -407,6 +421,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(5 < b)
             |       | | |
             |       5 | 5
@@ -415,7 +430,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
     }
 
     it("should do nothing when is used to check b <= 5") {
@@ -433,6 +448,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(b <= 4)
             |       | |  |
             |       5 |  4
@@ -441,7 +457,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
     }
 
     it("should throw TestFailedException with correct message and stack depth when is used to check 6 <= b") {
@@ -451,6 +467,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(6 <= b)
             |       | |  |
             |       6 |  5
@@ -459,7 +476,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
     }
 
     it("should do nothing when is used to check bob == \"bob\"") {
@@ -485,6 +502,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(bob == "alice")
             |       |   |  |
             |       |   |  "alice"
@@ -494,7 +512,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
     }
 
     it("should throw TestFailedException with correct message and stack depth when is used to check bob != \"bob\"") {
@@ -504,6 +522,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(bob != "bob")
             |       |   |  |
             |       |   |  "bob"
@@ -513,7 +532,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
     }
 
     it("should throw TestFailedException with correct message and stack depth when is used to check alice == \"bob\"") {
@@ -523,6 +542,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(alice == "bob")
             |       |     |  |
             |       |     |  "bob"
@@ -532,7 +552,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
     }
 
     it("should throw TestFailedException with correct message and stack depth when is used to check alice != \"alice\"") {
@@ -542,6 +562,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(alice != "alice")
             |       |     |  |
             |       |     |  "alice"
@@ -551,7 +572,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
     }
 
     it("should do nothing when is used to check a === 3") {
@@ -565,6 +586,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(a === 5)
             |       | |   |
             |       3 |   5
@@ -573,7 +595,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
     }
 
     it("should do nothing when is used to check 3 === a") {
@@ -587,6 +609,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(5 === a)
             |       | |   |
             |       5 |   3
@@ -595,7 +618,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
     }
 
     it("should do nothing when is used to check a !== 5") {
@@ -609,6 +632,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(a !== 3)
             |       | |   |
             |       3 |   3
@@ -617,7 +641,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
     }
 
     it("should do nothing when is used to check 5 !== a") {
@@ -631,6 +655,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(3 !== a)
             |       | |   |
             |       3 |   3
@@ -639,7 +664,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
     }
 
     it("should do nothing when is used to check a == 3 && b == 5") {
@@ -653,6 +678,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(a == 3 && b == 6)
             |       | |  | |  | |  |
             |       3 |  3 |  5 |  6
@@ -662,7 +688,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
     }
 
     it("should throw TestFailedException with correct message and stack depth when is used to check a == 2 && b == 5") {
@@ -672,6 +698,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(a == 2 && b == 5)
             |       | |  |
             |       3 |  2
@@ -680,7 +707,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
     }
 
     it("should throw TestFailedException with correct message and stack depth when is used to check a == 2 && b == 6") {
@@ -690,6 +717,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(a == 2 && b == 6)
             |       | |  |
             |       3 |  2
@@ -698,7 +726,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
     }
 
     it("should do nothing when is used to check a == 3 & b == 5") {
@@ -712,6 +740,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(a == 3 & b == 6)
             |       | |  | | | |  |
             |       3 |  3 | 5 |  6
@@ -721,7 +750,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
     }
 
     it("should throw TestFailedException with correct message and stack depth when is used to check a == 2 & b == 5") {
@@ -731,6 +760,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(a == 2 & b == 5)
             |       | |  |
             |       3 |  2
@@ -739,7 +769,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
     }
 
     it("should throw TestFailedException with correct message and stack depth when is used to check a == 2 & b == 6") {
@@ -749,6 +779,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(a == 2 & b == 6)
             |       | |  |
             |       3 |  2
@@ -757,7 +788,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
     }
 
     it("should do nothing when is used to check a == 3 || b == 5") {
@@ -779,6 +810,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(a == 2 || b == 6)
             |       | |  | |  | |  |
             |       3 |  2 |  5 |  6
@@ -789,7 +821,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 16))
     }
 
     it("should do nothing when is used to check a == 3 | b == 5") {
@@ -811,6 +843,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(a == 2 | b == 6)
             |       | |  | | | |  |
             |       3 |  2 | 5 |  6
@@ -821,7 +854,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 16))
     }
 
     it("should do nothing when is used to check a == 3 && (b == 5 && b > 3)") {
@@ -835,6 +868,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(a == 3 && (b == 5 && b > 5))
             |       | |  | |   | |  | |  | | |
             |       3 |  3 |   5 |  5 |  5 | 5
@@ -844,7 +878,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
     }
 
     it("should do nothing when is used to check !(a == 5)") {
@@ -858,6 +892,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(!(a == 3))
             |       | | |  |
             |       | 3 |  3
@@ -867,7 +902,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
     }
 
     it("should throw TestFailedException with correct message and stack depth when is used to check a == 3 && !(b == 5)") {
@@ -877,6 +912,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(a == 3 && !(b == 5))
             |       | |  | |  | | |  |
             |       3 |  3 |  | 5 |  5
@@ -887,7 +923,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 16))
     }
 
     it("should do nothing when is used to check (a == 3) == (b == 5)") {
@@ -901,6 +937,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert((a == 3) == (b != 5))
             |        | |  |  |   | |  |
             |        3 |  3  |   5 |  5
@@ -909,7 +946,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
     }
 
     it("should short-circuit && when first condition was false") {
@@ -951,6 +988,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(a == 3 && { println("hi"); b == 3})
             |       | |  | |                   | |  |
             |       3 |  3 false               5 |  3
@@ -959,7 +997,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
     }
 
     it("should do nothing when it is used to check { println(\"hi\"); b == 5} && a == 3") {
@@ -973,6 +1011,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert({ println("hi"); b == 5} && a == 5)
             |                        | |  |  |  | |  |
             |                        5 |  5  |  3 |  5
@@ -982,7 +1021,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
     }
 
     it("should preserve side effects when Apply with single argument is passed in") {
@@ -1009,6 +1048,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e1.message should be (
         Some(
           """
+            |
             |assert(s2 startsWith "hi")
             |       |  |          |
             |       |  false      "hi"
@@ -1017,7 +1057,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e1.failedCodeFileName should be (Some(fileName))
-      e1.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e1.failedCodeLineNumber should be (Some(thisLineNumber - 14))
 
       val e2 = intercept[TestFailedException] {
         assert(s2.startsWith("hi"))
@@ -1025,6 +1065,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e2.message should be (
         Some(
           """
+            |
             |assert(s2.startsWith("hi"))
             |       |  |          |
             |       |  false      "hi"
@@ -1033,7 +1074,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e2.failedCodeFileName should be (Some(fileName))
-      e2.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e2.failedCodeLineNumber should be (Some(thisLineNumber - 14))
     }
 
     it("should do nothing when is used to check ci1 startsWith 1") {
@@ -1048,6 +1089,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e1.message should be (
         Some(
           """
+            |
             |assert(ci2 startsWith 1)
             |       |   |          |
             |       321 false      1
@@ -1055,7 +1097,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e1.failedCodeFileName should be (Some(fileName))
-      e1.failedCodeLineNumber should be (Some(thisLineNumber - 12))
+      e1.failedCodeLineNumber should be (Some(thisLineNumber - 13))
 
       val e2 = intercept[TestFailedException] {
         assert(ci2.startsWith(1))
@@ -1063,6 +1105,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e2.message should be (
         Some(
           """
+            |
             |assert(ci2.startsWith(1))
             |       |   |          |
             |       321 false      1
@@ -1070,7 +1113,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e2.failedCodeFileName should be (Some(fileName))
-      e2.failedCodeLineNumber should be (Some(thisLineNumber - 12))
+      e2.failedCodeLineNumber should be (Some(thisLineNumber - 13))
     }
 
     it("should do nothing when is used to check !s2.startsWith(\"hi\")") {
@@ -1084,6 +1127,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e1.message should be (
         Some(
           """
+            |
             |assert(!s1.startsWith("hi"))
             |       ||  |          |
             |       ||  true       "hi"
@@ -1093,7 +1137,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e1.failedCodeFileName should be (Some(fileName))
-      e1.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      e1.failedCodeLineNumber should be (Some(thisLineNumber - 15))
     }
 
     it("should do nothing when is used to check s2 endsWith \"hi\"") {
@@ -1108,6 +1152,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e1.message should be (
         Some(
           """
+            |
             |assert(s1 endsWith "hi")
             |       |  |        |
             |       |  false    "hi"
@@ -1116,7 +1161,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e1.failedCodeFileName should be (Some(fileName))
-      e1.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e1.failedCodeLineNumber should be (Some(thisLineNumber - 14))
 
       val e2 = intercept[TestFailedException] {
         assert(s1.endsWith("hi"))
@@ -1124,6 +1169,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e2.message should be (
         Some(
           """
+            |
             |assert(s1.endsWith("hi"))
             |       |  |        |
             |       |  false    "hi"
@@ -1132,7 +1178,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e2.failedCodeFileName should be (Some(fileName))
-      e2.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e2.failedCodeLineNumber should be (Some(thisLineNumber - 14))
     }
 
     it("should do nothing when is used to check ci2 endsWith 1") {
@@ -1147,6 +1193,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e1.message should be (
         Some(
           """
+            |
             |assert(ci1 endsWith 1)
             |       |   |        |
             |       123 false    1
@@ -1154,7 +1201,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e1.failedCodeFileName should be (Some(fileName))
-      e1.failedCodeLineNumber should be (Some(thisLineNumber - 12))
+      e1.failedCodeLineNumber should be (Some(thisLineNumber - 13))
 
       val e2 = intercept[TestFailedException] {
         assert(ci1.endsWith(1))
@@ -1162,6 +1209,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e2.message should be (
         Some(
           """
+            |
             |assert(ci1.endsWith(1))
             |       |   |        |
             |       123 false    1
@@ -1169,7 +1217,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e2.failedCodeFileName should be (Some(fileName))
-      e2.failedCodeLineNumber should be (Some(thisLineNumber - 12))
+      e2.failedCodeLineNumber should be (Some(thisLineNumber - 13))
     }
 
     it("should do nothing when is used to check !s1.endsWith(\"hi\")") {
@@ -1183,6 +1231,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e1.message should be (
         Some(
           """
+            |
             |assert(!s2.endsWith("hi"))
             |       ||  |        |
             |       ||  true     "hi"
@@ -1192,7 +1241,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e1.failedCodeFileName should be (Some(fileName))
-      e1.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      e1.failedCodeLineNumber should be (Some(thisLineNumber - 15))
     }
 
     it("should do nothing when is used to check s3 contains \"hi\"") {
@@ -1207,6 +1256,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e1.message should be (
         Some(
           """
+            |
             |assert(s3 contains "hello")
             |       |  |        |
             |       |  false    "hello"
@@ -1215,7 +1265,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e1.failedCodeFileName should be (Some(fileName))
-      e1.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e1.failedCodeLineNumber should be (Some(thisLineNumber - 14))
 
       val e2 = intercept[TestFailedException] {
         assert(s3.contains("hello"))
@@ -1223,6 +1273,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e2.message should be (
         Some(
           """
+            |
             |assert(s3.contains("hello"))
             |       |  |        |
             |       |  false    "hello"
@@ -1231,7 +1282,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e2.failedCodeFileName should be (Some(fileName))
-      e2.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e2.failedCodeLineNumber should be (Some(thisLineNumber - 14))
     }
 
     it("should do nothing when is used to check ci2 contains 2") {
@@ -1246,6 +1297,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e1.message should be (
         Some(
           """
+            |
             |assert(ci1 contains 5)
             |       |   |        |
             |       123 false    5
@@ -1253,7 +1305,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e1.failedCodeFileName should be (Some(fileName))
-      e1.failedCodeLineNumber should be (Some(thisLineNumber - 12))
+      e1.failedCodeLineNumber should be (Some(thisLineNumber - 13))
 
       val e2 = intercept[TestFailedException] {
         assert(ci1.contains(5))
@@ -1261,6 +1313,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e2.message should be (
         Some(
           """
+            |
             |assert(ci1.contains(5))
             |       |   |        |
             |       123 false    5
@@ -1268,7 +1321,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e2.failedCodeFileName should be (Some(fileName))
-      e2.failedCodeLineNumber should be (Some(thisLineNumber - 12))
+      e2.failedCodeLineNumber should be (Some(thisLineNumber - 13))
     }
 
     it("should do nothing when is used to check !s1.contains(\"hello\")") {
@@ -1282,6 +1335,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e1.message should be (
         Some(
           """
+            |
             |assert(!s3.contains("hi"))
             |       ||  |        |
             |       ||  true     "hi"
@@ -1291,7 +1345,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e1.failedCodeFileName should be (Some(fileName))
-      e1.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      e1.failedCodeLineNumber should be (Some(thisLineNumber - 15))
     }
 
     it("should do nothing when is used to check l1 contains 2") {
@@ -1306,6 +1360,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e1.message should be (
         Some(
           """
+            |
             |assert(l1 contains 5)
             |       |  |        |
             |       |  false    5
@@ -1314,7 +1369,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e1.failedCodeFileName should be (Some(fileName))
-      e1.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e1.failedCodeLineNumber should be (Some(thisLineNumber - 14))
 
       val e2 = intercept[TestFailedException] {
         assert(l1.contains(5))
@@ -1322,6 +1377,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e2.message should be (
         Some(
           """
+            |
             |assert(l1.contains(5))
             |       |  |        |
             |       |  false    5
@@ -1330,7 +1386,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e2.failedCodeFileName should be (Some(fileName))
-      e2.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e2.failedCodeLineNumber should be (Some(thisLineNumber - 14))
     }
 
     it("should do nothing when is used to check !(l1 contains 5)") {
@@ -1345,6 +1401,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e1.message should be (
         Some(
           """
+            |
             |assert(!(l1 contains 2))
             |       | |  |        |
             |       | |  true     2
@@ -1354,7 +1411,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e1.failedCodeFileName should be (Some(fileName))
-      e1.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      e1.failedCodeLineNumber should be (Some(thisLineNumber - 15))
 
       val e2 = intercept[TestFailedException] {
         assert(!l1.contains(2))
@@ -1362,6 +1419,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e2.message should be (
         Some(
           """
+            |
             |assert(!l1.contains(2))
             |       ||  |        |
             |       ||  true     2
@@ -1371,7 +1429,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e2.failedCodeFileName should be (Some(fileName))
-      e2.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      e2.failedCodeLineNumber should be (Some(thisLineNumber - 15))
     }
 
     it("should do nothing when is used to check m1 contains 2") {
@@ -1386,6 +1444,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e1.message should be (
         Some(
           s"""
+            |
             |assert(m1 contains 5)
             |       |  |        |
             |       |  false    5
@@ -1394,7 +1453,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e1.failedCodeFileName should be (Some(fileName))
-      e1.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e1.failedCodeLineNumber should be (Some(thisLineNumber - 14))
 
       val e2 = intercept[TestFailedException] {
         assert(m1.contains(5))
@@ -1402,6 +1461,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e2.message should be (
         Some(
           s"""
+            |
             |assert(m1.contains(5))
             |       |  |        |
             |       |  false    5
@@ -1410,7 +1470,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e2.failedCodeFileName should be (Some(fileName))
-      e2.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e2.failedCodeLineNumber should be (Some(thisLineNumber - 14))
     }
 
     it("should do nothing when is used to check !(m1 contains 5)") {
@@ -1425,6 +1485,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e1.message should be (
         Some(
           s"""
+            |
             |assert(!(m1 contains 2))
             |       | |  |        |
             |       | |  true     2
@@ -1434,7 +1495,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e1.failedCodeFileName should be (Some(fileName))
-      e1.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      e1.failedCodeLineNumber should be (Some(thisLineNumber - 15))
 
       val e2 = intercept[TestFailedException] {
         assert(!m1.contains(2))
@@ -1442,6 +1503,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e2.message should be (
         Some(
           s"""
+            |
             |assert(!m1.contains(2))
             |       ||  |        |
             |       ||  true     2
@@ -1451,7 +1513,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e2.failedCodeFileName should be (Some(fileName))
-      e2.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      e2.failedCodeLineNumber should be (Some(thisLineNumber - 15))
     }
 
     it("should do nothing when is used to check ct1 contains 8") {
@@ -1466,6 +1528,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e1.message should be (
         Some(
           s"""
+            |
             |assert(ct1 contains 5)
             |       |   |        |
             |       |   false    5
@@ -1474,7 +1537,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e1.failedCodeFileName should be (Some(fileName))
-      e1.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e1.failedCodeLineNumber should be (Some(thisLineNumber - 14))
 
       val e2 = intercept[TestFailedException] {
         assert(ct1.contains(5))
@@ -1482,6 +1545,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e2.message should be (
         Some(
           s"""
+            |
             |assert(ct1.contains(5))
             |       |   |        |
             |       |   false    5
@@ -1490,7 +1554,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e2.failedCodeFileName should be (Some(fileName))
-      e2.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e2.failedCodeLineNumber should be (Some(thisLineNumber - 14))
     }
 
     it("should do nothing when is used to check !ct1.contains(5)") {
@@ -1504,6 +1568,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e1.message should be (
         Some(
           s"""
+            |
             |assert(!ct1.contains(8))
             |       ||   |        |
             |       ||   true     8
@@ -1513,7 +1578,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e1.failedCodeFileName should be (Some(fileName))
-      e1.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      e1.failedCodeLineNumber should be (Some(thisLineNumber - 15))
     }
 
     it("should do nothing when is used to check ci1 eq ci3") {
@@ -1528,6 +1593,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e1.message should be (
         Some(
           s"""
+            |
             |assert(ci1 eq ci2)
             |       |   |  |
             |       $ci1Str |  $ci2Str
@@ -1536,7 +1602,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e1.failedCodeFileName should be (Some(fileName))
-      e1.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e1.failedCodeLineNumber should be (Some(thisLineNumber - 14))
 
       val e2 = intercept[TestFailedException] {
         assert(ci1.eq(ci2))
@@ -1544,6 +1610,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e2.message should be (
         Some(
           s"""
+            |
             |assert(ci1.eq(ci2))
             |       |   |  |
             |       $ci1Str |  $ci2Str
@@ -1552,7 +1619,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e2.failedCodeFileName should be (Some(fileName))
-      e2.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e2.failedCodeLineNumber should be (Some(thisLineNumber - 14))
     }
 
     it("should do nothing when is used to check !ci1.eq(ci2)") {
@@ -1566,6 +1633,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           s"""
+            |
             |assert(!ci1.eq(ci3))
             |       ||   |  |
             |       |$ci1Str |  $ci3Str
@@ -1575,7 +1643,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
     }
 
     it("should do nothing when is used to check ci1 ne ci2") {
@@ -1590,6 +1658,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e1.message should be (
         Some(
           s"""
+            |
             |assert(ci1 ne ci3)
             |       |   |  |
             |       $ci1Str |  $ci3Str
@@ -1598,7 +1667,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e1.failedCodeFileName should be (Some(fileName))
-      e1.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e1.failedCodeLineNumber should be (Some(thisLineNumber - 14))
 
       val e2 = intercept[TestFailedException] {
         assert(ci1.ne(ci3))
@@ -1606,6 +1675,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e2.message should be (
         Some(
           s"""
+            |
             |assert(ci1.ne(ci3))
             |       |   |  |
             |       $ci1Str |  $ci3Str
@@ -1614,7 +1684,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e2.failedCodeFileName should be (Some(fileName))
-      e2.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e2.failedCodeLineNumber should be (Some(thisLineNumber - 14))
     }
 
     it("should do nothing when is used to check !ci1.ne(ci3)") {
@@ -1628,6 +1698,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(!ci1.ne(ci2))
             |       ||   |  |
             |       |123 |  321
@@ -1637,7 +1708,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
     }
 
     it("should do nothing when is used to check s4.isEmpty") {
@@ -1651,6 +1722,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(s3.isEmpty)
             |       |  |
             |       |  false
@@ -1659,7 +1731,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
     }
 
     it("should do nothing when is used to check !s3.isEmpty") {
@@ -1673,6 +1745,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(!s4.isEmpty)
             |       ||  |
             |       |"" true
@@ -1681,7 +1754,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
     }
 
     it("should do nothing when is used to check l2.isEmpty") {
@@ -1695,6 +1768,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           s"""
+            |
             |assert(l1.isEmpty)
             |       |  |
             |       |  false
@@ -1703,7 +1777,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
     }
 
     it("should do nothing when is used to check !l1.isEmpty") {
@@ -1717,6 +1791,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           s"""
+            |
             |assert(!l2.isEmpty)
             |       ||  |
             |       ||  true
@@ -1726,7 +1801,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
     }
 
     it("should do nothing when is used to check s1.isInstanceOf[String]") {
@@ -1740,6 +1815,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           s"""
+            |
             |assert(l1.isInstanceOf[String])
             |       |  |
             |       |  false
@@ -1748,7 +1824,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
     }
 
     it("should do nothing when is used to check l1.isInstanceOf[List[Int]]") {
@@ -1762,6 +1838,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(s1.isInstanceOf[List[Int]])
             |       |  |
             |       |  false
@@ -1770,7 +1847,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
     }
 
     it("should do nothing when is used to check date.isInstanceOf[Date]") {
@@ -1784,6 +1861,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           s"""
+            |
             |assert(l1.isInstanceOf[Date])
             |       |  |
             |       |  false
@@ -1792,7 +1870,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
     }
 
     it("should do nothing when is used to check !l1.isInstanceOf[String]") {
@@ -1806,6 +1884,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(!s1.isInstanceOf[String])
             |       ||  |
             |       ||  true
@@ -1815,7 +1894,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
     }
 
     it("should do nothing when is used to check !s1.isInstanceOf[List[Int]]") {
@@ -1829,6 +1908,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           s"""
+            |
             |assert(!l1.isInstanceOf[List[Int]])
             |       ||  |
             |       ||  true
@@ -1838,7 +1918,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
     }
 
     it("should do nothing when is used to check !l1.isInstanceOf[Date]") {
@@ -1852,6 +1932,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           s"""
+            |
             |assert(!date.isInstanceOf[Date])
             |       ||    |
             |       ||    true
@@ -1861,7 +1942,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
     }
 
     it("should do nothing when is used to check s1.length == 9") {
@@ -1875,6 +1956,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(s1.length == 10)
             |       |  |      |  |
             |       |  12     |  10
@@ -1884,7 +1966,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
     }
 
     it("should do nothing when is used to check l1.length == 3") {
@@ -1898,6 +1980,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           s"""
+            |
             |assert(l1.length == 10)
             |       |  |      |  |
             |       |  3      |  10
@@ -1907,7 +1990,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
     }
 
     it("should do nothing when is used to check !(s1.length == 10)") {
@@ -1921,6 +2004,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(!(s1.length == 12))
             |       | |  |      |  |
             |       | |  12     |  12
@@ -1931,7 +2015,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 16))
     }
 
     it("should do nothing when is used to check !(l1.length == 2)") {
@@ -1945,6 +2029,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           s"""
+            |
             |assert(!(l1.length == 3))
             |       | |  |      |  |
             |       | |  3      |  3
@@ -1955,7 +2040,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 16))
     }
 
     it("should do nothing when is used to check s1.size == 9") {
@@ -1969,6 +2054,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(s1.size == 10)
             |       |  |    |  |
             |       |  12   |  10
@@ -1978,7 +2064,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
     }
 
     it("should do nothing when is used to check l1.size == 3") {
@@ -1992,6 +2078,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           s"""
+            |
             |assert(l1.size == 10)
             |       |  |    |  |
             |       |  3    |  10
@@ -2001,7 +2088,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
     }
 
     it("should do nothing when is used to check !(s1.size == 10)") {
@@ -2015,6 +2102,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(!(s1.size == 12))
             |       | |  |    |  |
             |       | |  12   |  12
@@ -2025,7 +2113,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 16))
     }
 
     it("should do nothing when is used to check !(l1.size == 2)") {
@@ -2039,6 +2127,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           s"""
+            |
             |assert(!(l1.size == 3))
             |       | |  |    |  |
             |       | |  3    |  3
@@ -2049,7 +2138,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 16))
     }
 
     it("should do nothing when is used to check l1.exists(_ == 3)") {
@@ -2063,6 +2152,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           s"""
+            |
             |assert(l1.exists(_ == 5))
             |       |  |
             |       |  false
@@ -2071,7 +2161,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
     }
 
     it("should do nothing when is used to check !l1.exists(_ == 5)") {
@@ -2085,6 +2175,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           s"""
+            |
             |assert(!l1.exists(_ == 3))
             |       ||  |
             |       ||  true
@@ -2094,7 +2185,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
     }
 
     it("should throw TestFailedException with correct message and stack depth when is used to check l1.exists(_ > 3)") {
@@ -2104,6 +2195,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           s"""
+            |
             |assert(l1.exists(_ > 3))
             |       |  |
             |       |  false
@@ -2112,7 +2204,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
     }
 
     it("should throw TestFailedException with correct message and stack depth when is used to check l3.exists(_.isEmpty)") {
@@ -2122,6 +2214,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           s"""
+            |
             |assert(l3.exists(_.isEmpty))
             |       |  |
             |       |  false
@@ -2130,7 +2223,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
     }
 
     it("should throw TestFailedException with correct message and stack depth when is used to check l3.exists(false)") {
@@ -2140,6 +2233,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(ci1.exists(321))
             |       |   |      |
             |       123 false  321
@@ -2147,7 +2241,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 12))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
     }
 
     it("should do nothing when used to check woof { meow(y = 5) } == \"woof\"") {
@@ -2161,6 +2255,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.message should be (
         Some(
           """
+            |
             |assert(woof { meow(y = 5) } == "meow")
             |       |          |         |  |
             |       "woof"     |         |  "meow"
@@ -2170,7 +2265,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
       )
       e.failedCodeFileName should be (Some(fileName))
-      e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
     }
 
   }

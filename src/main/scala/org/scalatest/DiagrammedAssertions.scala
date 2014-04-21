@@ -112,7 +112,7 @@ trait DiagrammedAssertions extends Assertions {
         //val failureMessage = if (DiagrammedBool.isSimpleWithoutExpressionText(bool)) None else Some(bool.failureMessage)
         val failureMessage =
           Some(
-            "\n" +
+            "\n\n" +
             renderDiagram(sourceText, bool.anchorValues)
           )
         throw newAssertionFailedException(append(failureMessage, clue), None, "Assertions.scala", "macroAssert", 2)
