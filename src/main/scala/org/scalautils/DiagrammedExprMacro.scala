@@ -264,6 +264,7 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
     tree match {
       case apply: GenericApply => applyExpr(apply)
       case Select(This(_), _) => simpleExpr(tree)
+      case x: Select if x.symbol.isModule => simpleExpr(tree) // don't traverse packages
       case select: Select => selectExpr(select)
       case Block(stats, expr) => transformAst(expr)
       case other => simpleExpr(other)
