@@ -18,7 +18,7 @@ package org.scalatest
 import org.scalautils.{BooleanMacro, DiagrammedExprMacro}
 import reflect.macros.Context
 
-object DiagrammedAssertionsMacro {
+private[scalatest] object DiagrammedAssertionsMacro {
 
   private[this] def getFirstLine(context: Context)(expr: context.Tree): Int = {
     import context.universe._
