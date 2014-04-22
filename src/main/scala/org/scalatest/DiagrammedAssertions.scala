@@ -87,35 +87,13 @@ trait DiagrammedAssertions extends Assertions {
       lines.mkString("\n")
     }
 
-    private def append(currentMessage: Option[String], clue: Any) = {
-      val clueStr = clue.toString
-      if (clueStr.isEmpty)
-        currentMessage
-      else {
-        currentMessage match {
-          case Some(msg) =>
-            // clue.toString.head is guaranteed to work, because the previous if check that clue.toString != ""
-            val firstChar = clueStr.head
-            if (firstChar.isWhitespace || firstChar == '.' || firstChar == ',' || firstChar == ';')
-              Some(msg + clueStr)
-            else
-              Some(msg + " " + clueStr)
-          case None => Some(clueStr)
-        }
-      }
-    }
-
     def macroAssert(bool: DiagrammedExpr[Boolean], clue: Any, sourceText: String) {
       if (clue == null)
         throw new NullPointerException("clue was null")
       if (!bool.value) {
-        //val failureMessage = if (DiagrammedBool.isSimpleWithoutExpressionText(bool)) None else Some(bool.failureMessage)
         val failureMessage =
-          Some(
-            "\n\n" +
-            renderDiagram(sourceText, bool.anchorValues)
-          )
-        throw newAssertionFailedException(append(failureMessage, clue), None, "Assertions.scala", "macroAssert", 2)
+          Some(clue + "\n\n" + renderDiagram(sourceText, bool.anchorValues))
+        throw newAssertionFailedException(failureMessage, None, "Assertions.scala", "macroAssert", 2)
       }
     }
   }
@@ -124,6 +102,7 @@ trait DiagrammedAssertions extends Assertions {
 
   override def assert(condition: Boolean): Unit = macro DiagrammedAssertionsMacro.assert
 
+  override def assert(condition: Boolean, clue: Any): Unit = macro DiagrammedAssertionsMacro.assertWithClue
 }
 
 object DiagrammedAssertions extends DiagrammedAssertions

@@ -55,17 +55,22 @@ object DiagrammedAssertionsMacro {
     }
   }
 
-  def assert(context: Context)(condition: context.Expr[Boolean]): context.Expr[Unit] = {
-
+  private def macroImpl(context: Context)(methodName: String, condition: context.Expr[Boolean], clue: context.Expr[Any]): context.Expr[Unit] = {
     import context.universe._
 
     val startLine = getFirstLine(context)(condition.tree)
     val endLine = getLastLine(context)(condition.tree)
 
     if (startLine == endLine) // Only use diagram macro if it is one line
-      new DiagrammedExprMacro[context.type](context, "diagrammedAssertionsHelper").genMacro(condition, "macroAssert", context.literal(""), getSourceText(context)(condition.tree))
+      new DiagrammedExprMacro[context.type](context, "diagrammedAssertionsHelper").genMacro(condition, methodName, clue, getSourceText(context)(condition.tree))
     else
-      new BooleanMacro[context.type](context, "assertionsHelper").genMacro(condition, "macroAssert", context.literal(""))
+      new BooleanMacro[context.type](context, "assertionsHelper").genMacro(condition, methodName, clue)
   }
+
+  def assert(context: Context)(condition: context.Expr[Boolean]): context.Expr[Unit] =
+    macroImpl(context)("macroAssert", condition, context.literal(""))
+
+  def assertWithClue(context: Context)(condition: context.Expr[Boolean], clue: context.Expr[Any]): context.Expr[Unit] =
+    macroImpl(context)("macroAssert", condition, clue)
 
 }
