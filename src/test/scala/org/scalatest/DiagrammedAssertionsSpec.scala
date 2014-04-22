@@ -2268,6 +2268,21 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
     }
 
+    it("should do nothing when used to check multiline assert((b == a + 2) && (b - 2 <= a)) ") {
+      assert((b == a + 2) && (b - 2 <=
+        a))
+    }
+
+    it("should throw friend message when used to check multiline assert((b == a + 2) && (b - 1 <= a))") {
+      val e = intercept[TestFailedException] {
+        assert((b == a + 2) && (b - 1 <=
+          a))
+      }
+      e.message shouldBe Some("5 equaled 5, but 4 was not less than or equal to 3")
+      e.failedCodeFileName should be (Some(fileName))
+      e.failedCodeLineNumber should be (Some(thisLineNumber - 5))
+    }
+
   }
 
 }

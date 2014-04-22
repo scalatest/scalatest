@@ -65,7 +65,7 @@ object DiagrammedAssertionsMacro {
     if (startLine == endLine) // Only use diagram macro if it is one line
       new DiagrammedExprMacro[context.type](context, "diagrammedAssertionsHelper").genMacro(condition, "macroAssert", context.literal(""), getSourceText(context)(condition.tree))
     else
-      new BooleanMacro[context.type](context, "diagrammedAssertionsHelper").genMacro(condition, "macroAssert", context.literal(""))
+      new BooleanMacro[context.type](context, "assertionsHelper").genMacro(condition, "macroAssert", context.literal(""))
   }
 
 }
