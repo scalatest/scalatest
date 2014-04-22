@@ -76,4 +76,6 @@ object DiagrammedAssertionsMacro {
   def assume(context: Context)(condition: context.Expr[Boolean]): context.Expr[Unit] =
     macroImpl(context)("macroAssume", condition, context.literal(""))
 
+  def assumeWithClue(context: Context)(condition: context.Expr[Boolean], clue: context.Expr[Any]): context.Expr[Unit] =
+    macroImpl(context)("macroAssume", condition, clue)
 }

@@ -6658,6 +6658,2192 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
       }
     }
 
+    describe("The assume(boolean, clue) method") {
+      it("should do nothing when is used to check a == 3") {
+        assume(a == 3, "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check a == 5") {
+        val e = intercept[TestCanceledException] {
+          assume(a == 5, "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(a == 5, "this is a clue")
+              |       | |  |
+              |       3 |  5
+              |         false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should do nothing when is used to check 5 == b") {
+        assume(5 == b, "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check 3 == b") {
+        val e = intercept[TestCanceledException] {
+          assume(3 == b, "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(3 == b, "this is a clue")
+              |       | |  |
+              |       3 |  5
+              |         false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should do nothing when is used to check a != 5") {
+        assume(a != 5, "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check a != 3") {
+        val e = intercept[TestCanceledException] {
+          assume(a != 3, "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(a != 3, "this is a clue")
+              |       | |  |
+              |       3 |  3
+              |         false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should do nothing when is used to check 3 != b") {
+        assume(3 != b, "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check 5 != b") {
+        val e = intercept[TestCanceledException] {
+          assume(5 != b, "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(5 != b, "this is a clue")
+              |       | |  |
+              |       5 |  5
+              |         false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should do nothing when is used to check 3 == 3") {
+        assume(3 == 3, "this is a clue")
+      }
+
+      it("should throw TestCanceledException with message that contains the original code and correct stack depth when is used to check 3 == 5") {
+        // This is because the compiler simply pass the false boolean literal
+        // to the macro, can't find a way to get the 3 == 5 literal.
+        val e1 = intercept[TestCanceledException] {
+          assume(3 == 5, "this is a clue")
+        }
+        e1.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(3 == 5, "this is a clue")
+              |         |
+              |         false
+              |""".stripMargin
+          )
+        )
+        e1.failedCodeFileName should be (Some(fileName))
+        e1.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check a == b") {
+        val e = intercept[TestCanceledException] {
+          assume(a == b, "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(a == b, "this is a clue")
+              |       | |  |
+              |       3 |  5
+              |         false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check a == null") {
+        val e = intercept[TestCanceledException] {
+          assume(a == null, "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(a == null, "this is a clue")
+              |       | |  |
+              |       3 |  null
+              |         false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check null == a") {
+        val e = intercept[TestCanceledException] {
+          assume(null == a, "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(null == a, "this is a clue")
+              |       |    |  |
+              |       null |  3
+              |            false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check 3 != a") {
+        val e = intercept[TestCanceledException] {
+          assume(3 != a, "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(3 != a, "this is a clue")
+              |       | |  |
+              |       3 |  3
+              |         false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should do nothing when is used to check 5 != a") {
+        assume(5 != a, "this is a clue")
+      }
+
+      it("should do nothing when is used to check a > 2") {
+        assume(a > 2, "this is a clue")
+      }
+
+      it("should do nothing when is used to check 5 > a") {
+        assume(5 > a, "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check a > 3") {
+        val e = intercept[TestCanceledException] {
+          assume(a > 3, "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(a > 3, "this is a clue")
+              |       | | |
+              |       3 | 3
+              |         false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check 3 > a") {
+        val e = intercept[TestCanceledException] {
+          assume(3 > a, "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(3 > a, "this is a clue")
+              |       | | |
+              |       3 | 3
+              |         false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should do nothing when is used to check a >= 3") {
+        assume(a >= 3, "this is a clue")
+      }
+
+      it("should do nothing when is used to check 3 >= a") {
+        assume(3 >= a, "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check a >= 4") {
+        val e = intercept[TestCanceledException] {
+          assume(a >= 4, "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(a >= 4, "this is a clue")
+              |       | |  |
+              |       3 |  4
+              |         false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check 2 >= a") {
+        val e = intercept[TestCanceledException] {
+          assume(2 >= a, "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(2 >= a, "this is a clue")
+              |       | |  |
+              |       2 |  3
+              |         false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should do nothing when is used to check b < 6") {
+        assume(b < 6, "this is a clue")
+      }
+
+      it("should do nothing when is used to check 3 < b") {
+        assume(3 < b, "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check b < 5") {
+        val e = intercept[TestCanceledException] {
+          assume(b < 5, "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(b < 5, "this is a clue")
+              |       | | |
+              |       5 | 5
+              |         false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check 5 < b") {
+        val e = intercept[TestCanceledException] {
+          assume(5 < b, "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(5 < b, "this is a clue")
+              |       | | |
+              |       5 | 5
+              |         false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should do nothing when is used to check b <= 5") {
+        assume(b <= 5, "this is a clue")
+      }
+
+      it("should do nothing when is used to check 5 <= b") {
+        assume(5 <= b, "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check b <= 4") {
+        val e = intercept[TestCanceledException] {
+          assume(b <= 4, "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(b <= 4, "this is a clue")
+              |       | |  |
+              |       5 |  4
+              |         false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check 6 <= b") {
+        val e = intercept[TestCanceledException] {
+          assume(6 <= b, "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(6 <= b, "this is a clue")
+              |       | |  |
+              |       6 |  5
+              |         false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should do nothing when is used to check bob == \"bob\"") {
+        assume(bob == "bob", "this is a clue")
+      }
+
+      it("should do nothing when is used to check bob != \"alice\"") {
+        assume(bob != "alice", "this is a clue")
+      }
+
+      it("should do nothing when is used to check alice == \"alice\"") {
+        assume(alice == "alice", "this is a clue")
+      }
+
+      it("should do nothing when is used to check alice != \"bob\"") {
+        assume(alice != "bob", "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check bob == \"alice\"") {
+        val e = intercept[TestCanceledException] {
+          assume(bob == "alice", "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(bob == "alice", "this is a clue")
+              |       |   |  |
+              |       |   |  "alice"
+              |       |   false
+              |       "bob"
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check bob != \"bob\"") {
+        val e = intercept[TestCanceledException] {
+          assume(bob != "bob", "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(bob != "bob", "this is a clue")
+              |       |   |  |
+              |       |   |  "bob"
+              |       |   false
+              |       "bob"
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check alice == \"bob\"") {
+        val e = intercept[TestCanceledException] {
+          assume(alice == "bob", "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(alice == "bob", "this is a clue")
+              |       |     |  |
+              |       |     |  "bob"
+              |       |     false
+              |       "alice"
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check alice != \"alice\"") {
+        val e = intercept[TestCanceledException] {
+          assume(alice != "alice", "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(alice != "alice", "this is a clue")
+              |       |     |  |
+              |       |     |  "alice"
+              |       |     false
+              |       "alice"
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
+      }
+
+      it("should do nothing when is used to check a === 3") {
+        assume(a === 3, "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check a === 5 ") {
+        val e = intercept[TestCanceledException] {
+          assume(a === 5, "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(a === 5, "this is a clue")
+              |       | |   |
+              |       3 |   5
+              |         false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should do nothing when is used to check 3 === a") {
+        assume(3 === a, "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check 5 === a") {
+        val e = intercept[TestCanceledException] {
+          assume(5 === a, "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(5 === a, "this is a clue")
+              |       | |   |
+              |       5 |   3
+              |         false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should do nothing when is used to check a !== 5") {
+        assume(a !== 5, "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check a !== 3") {
+        val e = intercept[TestCanceledException] {
+          assume(a !== 3, "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(a !== 3, "this is a clue")
+              |       | |   |
+              |       3 |   3
+              |         false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should do nothing when is used to check 5 !== a") {
+        assume(5 !== a, "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check 3 !== a") {
+        val e = intercept[TestCanceledException] {
+          assume(3 !== a, "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(3 !== a, "this is a clue")
+              |       | |   |
+              |       3 |   3
+              |         false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should do nothing when is used to check a == 3 && b == 5") {
+        assume(a == 3 && b == 5, "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check a == 3 && b == 6") {
+        val e = intercept[TestCanceledException] {
+          assume(a == 3 && b == 6, "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(a == 3 && b == 6, "this is a clue")
+              |       | |  | |  | |  |
+              |       3 |  3 |  5 |  6
+              |         true |    false
+              |              false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check a == 2 && b == 5") {
+        val e = intercept[TestCanceledException] {
+          assume(a == 2 && b == 5, "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(a == 2 && b == 5, "this is a clue")
+              |       | |  |
+              |       3 |  2
+              |         false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check a == 2 && b == 6") {
+        val e = intercept[TestCanceledException] {
+          assume(a == 2 && b == 6, "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(a == 2 && b == 6, "this is a clue")
+              |       | |  |
+              |       3 |  2
+              |         false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should do nothing when is used to check a == 3 & b == 5") {
+        assume(a == 3 & b == 5, "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check a == 3 & b == 6") {
+        val e = intercept[TestCanceledException] {
+          assume(a == 3 & b == 6, "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(a == 3 & b == 6, "this is a clue")
+              |       | |  | | | |  |
+              |       3 |  3 | 5 |  6
+              |         true |   false
+              |              false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check a == 2 & b == 5") {
+        val e = intercept[TestCanceledException] {
+          assume(a == 2 & b == 5, "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(a == 2 & b == 5, "this is a clue")
+              |       | |  |
+              |       3 |  2
+              |         false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check a == 2 & b == 6") {
+        val e = intercept[TestCanceledException] {
+          assume(a == 2 & b == 6, "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(a == 2 & b == 6, "this is a clue")
+              |       | |  |
+              |       3 |  2
+              |         false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should do nothing when is used to check a == 3 || b == 5") {
+        assume(a == 3 || b == 5, "this is a clue")
+      }
+
+      it("should do nothing when is used to check a == 3 || b == 6") {
+        assume(a == 3 || b == 6, "this is a clue")
+      }
+
+      it("should do nothing when is used to check a == 2 || b == 5") {
+        assume(a == 2 || b == 5, "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check a == 2 || b == 6") {
+        val e = intercept[TestCanceledException] {
+          assume(a == 2 || b == 6, "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(a == 2 || b == 6, "this is a clue")
+              |       | |  | |  | |  |
+              |       3 |  2 |  5 |  6
+              |         |    |    false
+              |         |    false
+              |         false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 16))
+      }
+
+      it("should do nothing when is used to check a == 3 | b == 5") {
+        assume(a == 3 | b == 5, "this is a clue")
+      }
+
+      it("should do nothing when is used to check a == 3 | b == 6") {
+        assume(a == 3 | b == 6, "this is a clue")
+      }
+
+      it("should do nothing when is used to check a == 2 | b == 5") {
+        assume(a == 2 | b == 5, "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check a == 2 | b == 6") {
+        val e = intercept[TestCanceledException] {
+          assume(a == 2 | b == 6, "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(a == 2 | b == 6, "this is a clue")
+              |       | |  | | | |  |
+              |       3 |  2 | 5 |  6
+              |         |    |   false
+              |         |    false
+              |         false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 16))
+      }
+
+      it("should do nothing when is used to check a == 3 && (b == 5 && b > 3)") {
+        assume(a == 3 && (b == 5 && b > 3), "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check a == 3 && (b == 5 && b > 5)") {
+        val e = intercept[TestCanceledException] {
+          assume(a == 3 && (b == 5 && b > 5), "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(a == 3 && (b == 5 && b > 5), "this is a clue")
+              |       | |  | |   | |  | |  | | |
+              |       3 |  3 |   5 |  5 |  5 | 5
+              |         true false true |    false
+              |                         false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
+      }
+
+      it("should do nothing when is used to check !(a == 5)") {
+        assume(!(a == 5), "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check !(a == 3)") {
+        val e = intercept[TestCanceledException] {
+          assume(!(a == 3), "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(!(a == 3), "this is a clue")
+              |       | | |  |
+              |       | 3 |  3
+              |       |   true
+              |       false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check a == 3 && !(b == 5)") {
+        val e = intercept[TestCanceledException] {
+          assume(a == 3 && !(b == 5), "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(a == 3 && !(b == 5), "this is a clue")
+              |       | |  | |  | | |  |
+              |       3 |  3 |  | 5 |  5
+              |         true |  |   true
+              |              |  false
+              |              false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 16))
+      }
+
+      it("should do nothing when is used to check (a == 3) == (b == 5)") {
+        assume((a == 3) == (b == 5), "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check (a == 3) == (b != 5)") {
+        val e = intercept[TestCanceledException] {
+          assume((a == 3) == (b != 5), "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume((a == 3) == (b != 5), "this is a clue")
+              |        | |  |  |   | |  |
+              |        3 |  3  |   5 |  5
+              |          true  false false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should short-circuit && when first condition was false") {
+        val s = new Stateful
+        intercept[TestCanceledException] {
+          assume(a == 5 && s.changeState, "this is a clue")
+        }
+        s.state should be (false)
+      }
+
+      it("should short-circuit & when first condition was false") {
+        val s = new Stateful
+        intercept[TestCanceledException] {
+          assume(a == 5 & s.changeState, "this is a clue")
+        }
+        s.state should be (false)
+      }
+
+      it("should short-circuit || when first condition was true") {
+        val s = new Stateful
+        assume(a == 3 || s.changeState, "this is a clue")
+        s.state should be (false)
+      }
+
+      it("should short-circuit | when first condition was true") {
+        val s = new Stateful
+        assume(a == 3 | s.changeState, "this is a clue")
+        s.state should be (false)
+      }
+
+      it("should do nothing when it is used to check a == 3 && { println(\"hi\"); b == 5} ") {
+        assume(a == 3 && { println("hi"); b == 5}, "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is usesd to check a == 3 && { println(\"hi\"); b == 3}") {
+        val e = intercept[TestCanceledException] {
+          assume(a == 3 && { println("hi"); b == 3}, "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(a == 3 && { println("hi"); b == 3}, "this is a clue")
+              |       | |  | |                   | |  |
+              |       3 |  3 false               5 |  3
+              |         true                       false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should do nothing when it is used to check { println(\"hi\"); b == 5} && a == 3") {
+        assume({ println("hi"); b == 5} && a == 3, "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is usesd to check { println(\"hi\"); b == 5} && a == 5") {
+        val e = intercept[TestCanceledException] {
+          assume({ println("hi"); b == 5} && a == 5, "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume({ println("hi"); b == 5} && a == 5, "this is a clue")
+              |                        | |  |  |  | |  |
+              |                        5 |  5  |  3 |  5
+              |                          true  |    false
+              |                                false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
+      }
+
+      it("should preserve side effects when Apply with single argument is passed in") {
+        assume(neverRuns1(sys.error("Sad times 1")), "this is a clue")
+      }
+
+      it("should preserve side effects when Apply with 2 argument list is passed in") {
+        assume(neverRuns2(sys.error("Sad times 2"))(0), "this is a clue")
+      }
+
+      it("should preserve side effects when typed Apply with 2 argument list is passed in") {
+        assume(neverRuns3(sys.error("Sad times 3"))(0), "this is a clue")
+      }
+
+      it("should do nothing when is used to check s1 startsWith \"hi\"") {
+        assume(s1 startsWith "hi", "this is a clue")
+        assume(s1.startsWith("hi"), "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check s2 startsWith \"hi\"") {
+        val e1 = intercept[TestCanceledException] {
+          assume(s2 startsWith "hi", "this is a clue")
+        }
+        e1.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(s2 startsWith "hi", "this is a clue")
+              |       |  |          |
+              |       |  false      "hi"
+              |       "ScalaTest hi"
+              |""".stripMargin
+          )
+        )
+        e1.failedCodeFileName should be (Some(fileName))
+        e1.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+
+        val e2 = intercept[TestCanceledException] {
+          assume(s2.startsWith("hi"), "this is a clue")
+        }
+        e2.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(s2.startsWith("hi"), "this is a clue")
+              |       |  |          |
+              |       |  false      "hi"
+              |       "ScalaTest hi"
+              |""".stripMargin
+          )
+        )
+        e2.failedCodeFileName should be (Some(fileName))
+        e2.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should do nothing when is used to check ci1 startsWith 1") {
+        assume(ci1 startsWith 1, "this is a clue")
+        assume(ci1.startsWith(1), "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check ci2 startsWith 1") {
+        val e1 = intercept[TestCanceledException] {
+          assume(ci2 startsWith 1, "this is a clue")
+        }
+        e1.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(ci2 startsWith 1, "this is a clue")
+              |       |   |          |
+              |       321 false      1
+              |""".stripMargin
+          )
+        )
+        e1.failedCodeFileName should be (Some(fileName))
+        e1.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+
+        val e2 = intercept[TestCanceledException] {
+          assume(ci2.startsWith(1), "this is a clue")
+        }
+        e2.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(ci2.startsWith(1), "this is a clue")
+              |       |   |          |
+              |       321 false      1
+              |""".stripMargin
+          )
+        )
+        e2.failedCodeFileName should be (Some(fileName))
+        e2.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      }
+
+      it("should do nothing when is used to check !s2.startsWith(\"hi\")") {
+        assume(!s2.startsWith("hi"), "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check !s1.startsWith(\"hi\")") {
+        val e1 = intercept[TestCanceledException] {
+          assume(!s1.startsWith("hi"), "this is a clue")
+        }
+        e1.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(!s1.startsWith("hi"), "this is a clue")
+              |       ||  |          |
+              |       ||  true       "hi"
+              |       |"hi ScalaTest"
+              |       false
+              |""".stripMargin
+          )
+        )
+        e1.failedCodeFileName should be (Some(fileName))
+        e1.failedCodeLineNumber should be (Some(thisLineNumber - 15))
+      }
+
+      it("should do nothing when is used to check s2 endsWith \"hi\"") {
+        assume(s2 endsWith "hi", "this is a clue")
+        assume(s2.endsWith("hi"), "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check s1 endsWith \"hi\"") {
+        val e1 = intercept[TestCanceledException] {
+          assume(s1 endsWith "hi", "this is a clue")
+        }
+        e1.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(s1 endsWith "hi", "this is a clue")
+              |       |  |        |
+              |       |  false    "hi"
+              |       "hi ScalaTest"
+              |""".stripMargin
+          )
+        )
+        e1.failedCodeFileName should be (Some(fileName))
+        e1.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+
+        val e2 = intercept[TestCanceledException] {
+          assume(s1.endsWith("hi"), "this is a clue")
+        }
+        e2.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(s1.endsWith("hi"), "this is a clue")
+              |       |  |        |
+              |       |  false    "hi"
+              |       "hi ScalaTest"
+              |""".stripMargin
+          )
+        )
+        e2.failedCodeFileName should be (Some(fileName))
+        e2.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should do nothing when is used to check ci2 endsWith 1") {
+        assume(ci2 endsWith 1, "this is a clue")
+        assume(ci2.endsWith(1), "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check ci1 endsWith 1") {
+        val e1 = intercept[TestCanceledException] {
+          assume(ci1 endsWith 1, "this is a clue")
+        }
+        e1.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(ci1 endsWith 1, "this is a clue")
+              |       |   |        |
+              |       123 false    1
+              |""".stripMargin
+          )
+        )
+        e1.failedCodeFileName should be (Some(fileName))
+        e1.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+
+        val e2 = intercept[TestCanceledException] {
+          assume(ci1.endsWith(1), "this is a clue")
+        }
+        e2.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(ci1.endsWith(1), "this is a clue")
+              |       |   |        |
+              |       123 false    1
+              |""".stripMargin
+          )
+        )
+        e2.failedCodeFileName should be (Some(fileName))
+        e2.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      }
+
+      it("should do nothing when is used to check !s1.endsWith(\"hi\")") {
+        assume(!s1.endsWith("hi"), "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check !s2.endsWith(\"hi\")") {
+        val e1 = intercept[TestCanceledException] {
+          assume(!s2.endsWith("hi"), "this is a clue")
+        }
+        e1.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(!s2.endsWith("hi"), "this is a clue")
+              |       ||  |        |
+              |       ||  true     "hi"
+              |       |"ScalaTest hi"
+              |       false
+              |""".stripMargin
+          )
+        )
+        e1.failedCodeFileName should be (Some(fileName))
+        e1.failedCodeLineNumber should be (Some(thisLineNumber - 15))
+      }
+
+      it("should do nothing when is used to check s3 contains \"hi\"") {
+        assume(s3 contains "hi", "this is a clue")
+        assume(s3.contains("hi"), "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check s3 contains \"hello\"") {
+        val e1 = intercept[TestCanceledException] {
+          assume(s3 contains "hello", "this is a clue")
+        }
+        e1.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(s3 contains "hello", "this is a clue")
+              |       |  |        |
+              |       |  false    "hello"
+              |       "Say hi to ScalaTest"
+              |""".stripMargin
+          )
+        )
+        e1.failedCodeFileName should be (Some(fileName))
+        e1.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+
+        val e2 = intercept[TestCanceledException] {
+          assume(s3.contains("hello"), "this is a clue")
+        }
+        e2.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(s3.contains("hello"), "this is a clue")
+              |       |  |        |
+              |       |  false    "hello"
+              |       "Say hi to ScalaTest"
+              |""".stripMargin
+          )
+        )
+        e2.failedCodeFileName should be (Some(fileName))
+        e2.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should do nothing when is used to check ci2 contains 2") {
+        assume(ci2 contains 2, "this is a clue")
+        assume(ci2.contains(2), "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check ci1 contains 5") {
+        val e1 = intercept[TestCanceledException] {
+          assume(ci1 contains 5, "this is a clue")
+        }
+        e1.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(ci1 contains 5, "this is a clue")
+              |       |   |        |
+              |       123 false    5
+              |""".stripMargin
+          )
+        )
+        e1.failedCodeFileName should be (Some(fileName))
+        e1.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+
+        val e2 = intercept[TestCanceledException] {
+          assume(ci1.contains(5), "this is a clue")
+        }
+        e2.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(ci1.contains(5), "this is a clue")
+              |       |   |        |
+              |       123 false    5
+              |""".stripMargin
+          )
+        )
+        e2.failedCodeFileName should be (Some(fileName))
+        e2.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      }
+
+      it("should do nothing when is used to check !s1.contains(\"hello\")") {
+        assume(!s3.contains("hello"), "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check !s3.contains(\"hi\")") {
+        val e1 = intercept[TestCanceledException] {
+          assume(!s3.contains("hi"), "this is a clue")
+        }
+        e1.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(!s3.contains("hi"), "this is a clue")
+              |       ||  |        |
+              |       ||  true     "hi"
+              |       |"Say hi to ScalaTest"
+              |       false
+              |""".stripMargin
+          )
+        )
+        e1.failedCodeFileName should be (Some(fileName))
+        e1.failedCodeLineNumber should be (Some(thisLineNumber - 15))
+      }
+
+      it("should do nothing when is used to check l1 contains 2") {
+        assume(l1 contains 2, "this is a clue")
+        assume(l1.contains(2), "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check l1 contains 5") {
+        val e1 = intercept[TestCanceledException] {
+          assume(l1 contains 5, "this is a clue")
+        }
+        e1.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(l1 contains 5, "this is a clue")
+              |       |  |        |
+              |       |  false    5
+              |       List(1, 2, 3)
+              |""".stripMargin
+          )
+        )
+        e1.failedCodeFileName should be (Some(fileName))
+        e1.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+
+        val e2 = intercept[TestCanceledException] {
+          assume(l1.contains(5), "this is a clue")
+        }
+        e2.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(l1.contains(5), "this is a clue")
+              |       |  |        |
+              |       |  false    5
+              |       List(1, 2, 3)
+              |""".stripMargin
+          )
+        )
+        e2.failedCodeFileName should be (Some(fileName))
+        e2.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should do nothing when is used to check !(l1 contains 5)") {
+        assume(!(l1 contains 5), "this is a clue")
+        assume(!l1.contains(5), "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check !(l1 contains 2)") {
+        val e1 = intercept[TestCanceledException] {
+          assume(!(l1 contains 2), "this is a clue")
+        }
+        e1.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(!(l1 contains 2), "this is a clue")
+              |       | |  |        |
+              |       | |  true     2
+              |       | List(1, 2, 3)
+              |       false
+              |""".stripMargin
+          )
+        )
+        e1.failedCodeFileName should be (Some(fileName))
+        e1.failedCodeLineNumber should be (Some(thisLineNumber - 15))
+
+        val e2 = intercept[TestCanceledException] {
+          assume(!l1.contains(2), "this is a clue")
+        }
+        e2.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(!l1.contains(2), "this is a clue")
+              |       ||  |        |
+              |       ||  true     2
+              |       |List(1, 2, 3)
+              |       false
+              |""".stripMargin
+          )
+        )
+        e2.failedCodeFileName should be (Some(fileName))
+        e2.failedCodeLineNumber should be (Some(thisLineNumber - 15))
+      }
+
+      it("should do nothing when is used to check m1 contains 2") {
+        assume(m1 contains 2, "this is a clue")
+        assume(m1.contains(2), "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check m1 contains 5") {
+        val e1 = intercept[TestCanceledException] {
+          assume(m1 contains 5, "this is a clue")
+        }
+        e1.message should be (
+          Some(
+            s"""this is a clue
+            |
+            |assume(m1 contains 5, "this is a clue")
+            |       |  |        |
+            |       |  false    5
+            |       $m1Str
+            |""".stripMargin
+          )
+        )
+        e1.failedCodeFileName should be (Some(fileName))
+        e1.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+
+        val e2 = intercept[TestCanceledException] {
+          assume(m1.contains(5), "this is a clue")
+        }
+        e2.message should be (
+          Some(
+            s"""this is a clue
+            |
+            |assume(m1.contains(5), "this is a clue")
+            |       |  |        |
+            |       |  false    5
+            |       $m1Str
+            |""".stripMargin
+          )
+        )
+        e2.failedCodeFileName should be (Some(fileName))
+        e2.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should do nothing when is used to check !(m1 contains 5)") {
+        assume(!(m1 contains 5), "this is a clue")
+        assume(!m1.contains(5), "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check !(m1 contains 2)") {
+        val e1 = intercept[TestCanceledException] {
+          assume(!(m1 contains 2), "this is a clue")
+        }
+        e1.message should be (
+          Some(
+            s"""this is a clue
+            |
+            |assume(!(m1 contains 2), "this is a clue")
+            |       | |  |        |
+            |       | |  true     2
+            |       | $m1Str
+            |       false
+            |""".stripMargin
+          )
+        )
+        e1.failedCodeFileName should be (Some(fileName))
+        e1.failedCodeLineNumber should be (Some(thisLineNumber - 15))
+
+        val e2 = intercept[TestCanceledException] {
+          assume(!m1.contains(2), "this is a clue")
+        }
+        e2.message should be (
+          Some(
+            s"""this is a clue
+            |
+            |assume(!m1.contains(2), "this is a clue")
+            |       ||  |        |
+            |       ||  true     2
+            |       |$m1Str
+            |       false
+            |""".stripMargin
+          )
+        )
+        e2.failedCodeFileName should be (Some(fileName))
+        e2.failedCodeLineNumber should be (Some(thisLineNumber - 15))
+      }
+
+      it("should do nothing when is used to check ct1 contains 8") {
+        assume(ct1 contains 8, "this is a clue")
+        assume(ct1.contains(8), "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check ct1 contains 5") {
+        val e1 = intercept[TestCanceledException] {
+          assume(ct1 contains 5, "this is a clue")
+        }
+        e1.message should be (
+          Some(
+            s"""this is a clue
+            |
+            |assume(ct1 contains 5, "this is a clue")
+            |       |   |        |
+            |       |   false    5
+            |       $ct1Str
+            |""".stripMargin
+          )
+        )
+        e1.failedCodeFileName should be (Some(fileName))
+        e1.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+
+        val e2 = intercept[TestCanceledException] {
+          assume(ct1.contains(5), "this is a clue")
+        }
+        e2.message should be (
+          Some(
+            s"""this is a clue
+            |
+            |assume(ct1.contains(5), "this is a clue")
+            |       |   |        |
+            |       |   false    5
+            |       $ct1Str
+            |""".stripMargin
+          )
+        )
+        e2.failedCodeFileName should be (Some(fileName))
+        e2.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should do nothing when is used to check !ct1.contains(5)") {
+        assume(!ct1.contains(5), "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check !ct1.contains(8)") {
+        val e1 = intercept[TestCanceledException] {
+          assume(!ct1.contains(8), "this is a clue")
+        }
+        e1.message should be (
+          Some(
+            s"""this is a clue
+            |
+            |assume(!ct1.contains(8), "this is a clue")
+            |       ||   |        |
+            |       ||   true     8
+            |       |$ct1Str
+            |       false
+            |""".stripMargin
+          )
+        )
+        e1.failedCodeFileName should be (Some(fileName))
+        e1.failedCodeLineNumber should be (Some(thisLineNumber - 15))
+      }
+
+      it("should do nothing when is used to check ci1 eq ci3") {
+        assume(ci1 eq ci3, "this is a clue")
+        assume(ci1.eq(ci3), "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check ci1 eq ci2") {
+        val e1 = intercept[TestCanceledException] {
+          assume(ci1 eq ci2, "this is a clue")
+        }
+        e1.message should be (
+          Some(
+            s"""this is a clue
+            |
+            |assume(ci1 eq ci2, "this is a clue")
+            |       |   |  |
+            |       $ci1Str |  $ci2Str
+            |           false
+            |""".stripMargin
+          )
+        )
+        e1.failedCodeFileName should be (Some(fileName))
+        e1.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+
+        val e2 = intercept[TestCanceledException] {
+          assume(ci1.eq(ci2), "this is a clue")
+        }
+        e2.message should be (
+          Some(
+            s"""this is a clue
+            |
+            |assume(ci1.eq(ci2), "this is a clue")
+            |       |   |  |
+            |       $ci1Str |  $ci2Str
+            |           false
+            |""".stripMargin
+          )
+        )
+        e2.failedCodeFileName should be (Some(fileName))
+        e2.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should do nothing when is used to check !ci1.eq(ci2)") {
+        assume(!ci1.eq(ci2), "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check !ci1.eq(ci3)") {
+        val e = intercept[TestCanceledException] {
+          assume(!ci1.eq(ci3), "this is a clue")
+        }
+        e.message should be (
+          Some(
+            s"""this is a clue
+            |
+            |assume(!ci1.eq(ci3), "this is a clue")
+            |       ||   |  |
+            |       |$ci1Str |  $ci3Str
+            |       |    true
+            |       false
+            |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
+      }
+
+      it("should do nothing when is used to check ci1 ne ci2") {
+        assume(ci1 ne ci2, "this is a clue")
+        assume(ci1.ne(ci2), "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check ci1 ne ci3") {
+        val e1 = intercept[TestCanceledException] {
+          assume(ci1 ne ci3, "this is a clue")
+        }
+        e1.message should be (
+          Some(
+            s"""this is a clue
+            |
+            |assume(ci1 ne ci3, "this is a clue")
+            |       |   |  |
+            |       $ci1Str |  $ci3Str
+            |           false
+            |""".stripMargin
+          )
+        )
+        e1.failedCodeFileName should be (Some(fileName))
+        e1.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+
+        val e2 = intercept[TestCanceledException] {
+          assume(ci1.ne(ci3), "this is a clue")
+        }
+        e2.message should be (
+          Some(
+            s"""this is a clue
+            |
+            |assume(ci1.ne(ci3), "this is a clue")
+            |       |   |  |
+            |       $ci1Str |  $ci3Str
+            |           false
+            |""".stripMargin
+          )
+        )
+        e2.failedCodeFileName should be (Some(fileName))
+        e2.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should do nothing when is used to check !ci1.ne(ci3)") {
+        assume(!ci1.ne(ci3), "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check !ci1.ne(ci2)") {
+        val e = intercept[TestCanceledException] {
+          assume(!ci1.ne(ci2), "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(!ci1.ne(ci2), "this is a clue")
+              |       ||   |  |
+              |       |123 |  321
+              |       |    true
+              |       false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
+      }
+
+      it("should do nothing when is used to check s4.isEmpty") {
+        assume(s4.isEmpty, "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check s3.isEmpty") {
+        val e = intercept[TestCanceledException] {
+          assume(s3.isEmpty, "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(s3.isEmpty, "this is a clue")
+              |       |  |
+              |       |  false
+              |       "Say hi to ScalaTest"
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should do nothing when is used to check !s3.isEmpty") {
+        assume(!s3.isEmpty, "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check !s4.isEmpty") {
+        val e = intercept[TestCanceledException] {
+          assume(!s4.isEmpty, "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(!s4.isEmpty, "this is a clue")
+              |       ||  |
+              |       |"" true
+              |       false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should do nothing when is used to check l2.isEmpty") {
+        assume(l2.isEmpty, "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check l1.isEmpty") {
+        val e = intercept[TestCanceledException] {
+          assume(l1.isEmpty, "this is a clue")
+        }
+        e.message should be (
+          Some(
+            s"""this is a clue
+            |
+            |assume(l1.isEmpty, "this is a clue")
+            |       |  |
+            |       |  false
+            |       $l1
+            |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should do nothing when is used to check !l1.isEmpty") {
+        assume(!l1.isEmpty, "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check !l2.isEmpty") {
+        val e = intercept[TestCanceledException] {
+          assume(!l2.isEmpty, "this is a clue")
+        }
+        e.message should be (
+          Some(
+            s"""this is a clue
+            |
+            |assume(!l2.isEmpty, "this is a clue")
+            |       ||  |
+            |       ||  true
+            |       |$l2
+            |       false
+            |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
+      }
+
+      it("should do nothing when is used to check s1.isInstanceOf[String]") {
+        assume(s1.isInstanceOf[String], "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check l1.isInstanceOf[String]") {
+        val e = intercept[TestCanceledException] {
+          assume(l1.isInstanceOf[String], "this is a clue")
+        }
+        e.message should be (
+          Some(
+            s"""this is a clue
+            |
+            |assume(l1.isInstanceOf[String], "this is a clue")
+            |       |  |
+            |       |  false
+            |       $l1
+            |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should do nothing when is used to check l1.isInstanceOf[List[Int]]") {
+        assume(l1.isInstanceOf[List[Int]], "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check s1.isInstanceOf[List[Int]]") {
+        val e = intercept[TestCanceledException] {
+          assume(s1.isInstanceOf[List[Int]], "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(s1.isInstanceOf[List[Int]], "this is a clue")
+              |       |  |
+              |       |  false
+              |       "hi ScalaTest"
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should do nothing when is used to check date.isInstanceOf[Date]") {
+        assume(date.isInstanceOf[Date], "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check l1.isInstanceOf[Date]") {
+        val e = intercept[TestCanceledException] {
+          assume(l1.isInstanceOf[Date], "this is a clue")
+        }
+        e.message should be (
+          Some(
+            s"""this is a clue
+            |
+            |assume(l1.isInstanceOf[Date], "this is a clue")
+            |       |  |
+            |       |  false
+            |       $l1
+            |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should do nothing when is used to check !l1.isInstanceOf[String]") {
+        assume(!l1.isInstanceOf[String], "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check !s1.isInstanceOf[String]") {
+        val e = intercept[TestCanceledException] {
+          assume(!s1.isInstanceOf[String], "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(!s1.isInstanceOf[String], "this is a clue")
+              |       ||  |
+              |       ||  true
+              |       |"hi ScalaTest"
+              |       false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
+      }
+
+      it("should do nothing when is used to check !s1.isInstanceOf[List[Int]]") {
+        assume(!s1.isInstanceOf[List[Int]], "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check !l1.isInstanceOf[List[Int]]") {
+        val e = intercept[TestCanceledException] {
+          assume(!l1.isInstanceOf[List[Int]], "this is a clue")
+        }
+        e.message should be (
+          Some(
+            s"""this is a clue
+            |
+            |assume(!l1.isInstanceOf[List[Int]], "this is a clue")
+            |       ||  |
+            |       ||  true
+            |       |$l1
+            |       false
+            |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
+      }
+
+      it("should do nothing when is used to check !l1.isInstanceOf[Date]") {
+        assume(!l1.isInstanceOf[Date], "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check !date.isInstanceOf[Date]") {
+        val e = intercept[TestCanceledException] {
+          assume(!date.isInstanceOf[Date], "this is a clue")
+        }
+        e.message should be (
+          Some(
+            s"""this is a clue
+            |
+            |assume(!date.isInstanceOf[Date], "this is a clue")
+            |       ||    |
+            |       ||    true
+            |       |$date
+            |       false
+            |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
+      }
+
+      it("should do nothing when is used to check s1.length == 9") {
+        assume(s1.length == 12, "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check s1.length == 10") {
+        val e = intercept[TestCanceledException] {
+          assume(s1.length == 10, "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(s1.length == 10, "this is a clue")
+              |       |  |      |  |
+              |       |  12     |  10
+              |       |         false
+              |       "hi ScalaTest"
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
+      }
+
+      it("should do nothing when is used to check l1.length == 3") {
+        assume(l1.length == 3, "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check l1.length == 10") {
+        val e = intercept[TestCanceledException] {
+          assume(l1.length == 10, "this is a clue")
+        }
+        e.message should be (
+          Some(
+            s"""this is a clue
+            |
+            |assume(l1.length == 10, "this is a clue")
+            |       |  |      |  |
+            |       |  3      |  10
+            |       |         false
+            |       $l1
+            |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
+      }
+
+      it("should do nothing when is used to check !(s1.length == 10)") {
+        assume(!(s1.length == 10), "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check !(s1.length == 9)") {
+        val e = intercept[TestCanceledException] {
+          assume(!(s1.length == 12), "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(!(s1.length == 12), "this is a clue")
+              |       | |  |      |  |
+              |       | |  12     |  12
+              |       | |         true
+              |       | "hi ScalaTest"
+              |       false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 16))
+      }
+
+      it("should do nothing when is used to check !(l1.length == 2)") {
+        assume(!(l1.length == 2), "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check !(l1.length == 9)") {
+        val e = intercept[TestCanceledException] {
+          assume(!(l1.length == 3), "this is a clue")
+        }
+        e.message should be (
+          Some(
+            s"""this is a clue
+            |
+            |assume(!(l1.length == 3), "this is a clue")
+            |       | |  |      |  |
+            |       | |  3      |  3
+            |       | |         true
+            |       | $l1
+            |       false
+            |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 16))
+      }
+
+      it("should do nothing when is used to check s1.size == 9") {
+        assume(s1.size == 12, "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check s1.size == 10") {
+        val e = intercept[TestCanceledException] {
+          assume(s1.size == 10, "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(s1.size == 10, "this is a clue")
+              |       |  |    |  |
+              |       |  12   |  10
+              |       |       false
+              |       "hi ScalaTest"
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
+      }
+
+      it("should do nothing when is used to check l1.size == 3") {
+        assume(l1.size == 3, "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check l1.size == 10") {
+        val e = intercept[TestCanceledException] {
+          assume(l1.size == 10, "this is a clue")
+        }
+        e.message should be (
+          Some(
+            s"""this is a clue
+            |
+            |assume(l1.size == 10, "this is a clue")
+            |       |  |    |  |
+            |       |  3    |  10
+            |       |       false
+            |       $l1
+            |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
+      }
+
+      it("should do nothing when is used to check !(s1.size == 10)") {
+        assume(!(s1.size == 10), "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check !(s1.size == 9)") {
+        val e = intercept[TestCanceledException] {
+          assume(!(s1.size == 12), "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(!(s1.size == 12), "this is a clue")
+              |       | |  |    |  |
+              |       | |  12   |  12
+              |       | |       true
+              |       | "hi ScalaTest"
+              |       false
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 16))
+      }
+
+      it("should do nothing when is used to check !(l1.size == 2)") {
+        assume(!(l1.size == 2), "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check !(l1.size == 9) ") {
+        val e = intercept[TestCanceledException] {
+          assume(!(l1.size == 3), "this is a clue")
+        }
+        e.message should be (
+          Some(
+            s"""this is a clue
+            |
+            |assume(!(l1.size == 3), "this is a clue")
+            |       | |  |    |  |
+            |       | |  3    |  3
+            |       | |       true
+            |       | $l1
+            |       false
+            |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 16))
+      }
+
+      it("should do nothing when is used to check l1.exists(_ == 3)") {
+        assume(l1.exists(_ == 3), "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check l1.exists(_ == 5) ") {
+        val e = intercept[TestCanceledException] {
+          assume(l1.exists(_ == 5), "this is a clue")
+        }
+        e.message should be (
+          Some(
+            s"""this is a clue
+            |
+            |assume(l1.exists(_ == 5), "this is a clue")
+            |       |  |
+            |       |  false
+            |       $l1
+            |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should do nothing when is used to check !l1.exists(_ == 5)") {
+        assume(!l1.exists(_ == 5), "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check !l1.exists(_ == 3)") {
+        val e = intercept[TestCanceledException] {
+          assume(!l1.exists(_ == 3), "this is a clue")
+        }
+        e.message should be (
+          Some(
+            s"""this is a clue
+            |
+            |assume(!l1.exists(_ == 3), "this is a clue")
+            |       ||  |
+            |       ||  true
+            |       |$l1
+            |       false
+            |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check l1.exists(_ > 3)") {
+        val e = intercept[TestCanceledException] {
+          assume(l1.exists(_ > 3), "this is a clue")
+        }
+        e.message should be (
+          Some(
+            s"""this is a clue
+            |
+            |assume(l1.exists(_ > 3), "this is a clue")
+            |       |  |
+            |       |  false
+            |       $l1
+            |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check l3.exists(_.isEmpty)") {
+        val e = intercept[TestCanceledException] {
+          assume(l3.exists(_.isEmpty), "this is a clue")
+        }
+        e.message should be (
+          Some(
+            s"""this is a clue
+            |
+            |assume(l3.exists(_.isEmpty), "this is a clue")
+            |       |  |
+            |       |  false
+            |       $l3Str
+            |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check l3.exists(false)") {
+        val e = intercept[TestCanceledException] {
+          assume(ci1.exists(321), "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(ci1.exists(321), "this is a clue")
+              |       |   |      |
+              |       123 false  321
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 13))
+      }
+
+      it("should do nothing when used to check woof { meow(y = 5) } == \"woof\"") {
+        assume(woof { meow(y = 5) } == "woof", "this is a clue")
+      }
+
+      it("should throw TestCanceledException with correct message and stack depth when is used to check woof { meow(y = 5) } == \"meow\"") {
+        val e = intercept[TestCanceledException] {
+          assume(woof { meow(y = 5) } == "meow", "this is a clue")
+        }
+        e.message should be (
+          Some(
+            """this is a clue
+              |
+              |assume(woof { meow(y = 5) } == "meow", "this is a clue")
+              |       |          |         |  |
+              |       "woof"     |         |  "meow"
+              |                  |         false
+              |                  <(), the Unit value>
+              |""".stripMargin
+          )
+        )
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
+      }
+
+      it("should do nothing when used to check multiline assert((b == a + 2) && (b - 2 <= a)) ") {
+        assume((b == a + 2) && (b - 2 <=
+          a), "this is a clue")
+      }
+
+      it("should throw friend message when used to check multiline assert((b == a + 2) && (b - 1 <= a))") {
+        val e = intercept[TestCanceledException] {
+          assume((b == a + 2) && (b - 1 <=
+            a), "this is a clue")
+        }
+        e.message shouldBe Some("5 equaled 5, but 4 was not less than or equal to 3 this is a clue")
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 5))
+      }
+    }
+
   }
 
 }

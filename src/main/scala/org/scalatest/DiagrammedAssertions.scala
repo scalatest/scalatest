@@ -115,6 +115,8 @@ trait DiagrammedAssertions extends Assertions {
   override def assert(condition: Boolean, clue: Any): Unit = macro DiagrammedAssertionsMacro.assertWithClue
 
   override def assume(condition: Boolean): Unit = macro DiagrammedAssertionsMacro.assume
+
+  override def assume(condition: Boolean, clue: Any): Unit = macro DiagrammedAssertionsMacro.assumeWithClue
 }
 
 object DiagrammedAssertions extends DiagrammedAssertions
