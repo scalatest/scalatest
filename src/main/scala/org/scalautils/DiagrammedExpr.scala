@@ -17,6 +17,16 @@ package org.scalautils
 
 private[org] case class AnchorValue(anchor: Int, value: Any)
 
+/**
+ * A trait that represent an expression recorded by <code>DiagrammedExprMacro</code>, which includes the following members:
+ *
+ * <ul>
+ * <li>a boolean value</li>
+ * <li>an anchor that records the position of this expression</li>
+ * <li>anchor values of this expression (including sub-expressions)</li>
+ * </ul>
+ *
+ */
 trait DiagrammedExpr[T] {
   val anchor: Int
   def anchorValues: List[AnchorValue]
@@ -28,13 +38,40 @@ trait DiagrammedExpr[T] {
     }).toList
 }
 
+/**
+ * <code>DiagrammedExpr</code> companion object that provides factory methods to create different sub types of <code>DiagrammedExpr</code>
+ */
 object DiagrammedExpr {
 
+  /**
+   * Create simple <code>DiagrammedExpr</code> that wraps expressions that is not <code>Select</code>, <code>Apply</code> or <code>TypeApply</code>.
+   *
+   * @param expression the expression value
+   * @param anchor the anchor of the expression
+   * @return a simple <code>DiagrammedExpr</code>
+   */
   def simpleExpr[T](expression: T, anchor: Int): DiagrammedExpr[T] = new DiagrammedSimpleExpr(expression, anchor)
 
+  /**
+   * Create apply <code>DiagrammedExpr</code> that wraps <code>Apply</code> or <code>TypeApply</code> expression.
+   *
+   * @param qualifier the qualifier of the <code>Apply</code> or <code>TypeApply</code> expression
+   * @param args the arguments of the <code>Apply</code> or <code>TypeApply</code> expression
+   * @param value the expression value
+   * @param anchor the anchor of the expression
+   * @return an apply <code>DiagrammedExpr</code>
+   */
   def applyExpr[T](qualifier: DiagrammedExpr[_], args: List[DiagrammedExpr[_]], value: T, anchor: Int): DiagrammedExpr[T] =
     new DiagrammedApplyExpr(qualifier, args, value, anchor)
 
+  /**
+   * Create select <code>DiagrammedExpr</code> that wraps <code>Select</code> expression.
+   *
+   * @param qualifier the qualifier of the <code>Apply</code> or <code>TypeApply</code> expression
+   * @param value the expression value
+   * @param anchor the anchor of the expression
+   * @return a select <code>DiagrammedExpr</code>
+   */
   def selectExpr[T](qualifier: DiagrammedExpr[_], value: T, anchor: Int): DiagrammedExpr[T] =
     new DiagrammedSelectExpr(qualifier, value, anchor)
 }
