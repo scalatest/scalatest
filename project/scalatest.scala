@@ -332,7 +332,8 @@ object ScalatestBuild extends Build {
     .settings(
       genTheyWordTask,
       sourceGenerators in Test <+=
-        (baseDirectory, sourceManaged in Test, scalaVersion) map genFiles("genthey", "GenTheyWord.scala")(GenTheyWord.genTest)
+        (baseDirectory, sourceManaged in Test, scalaVersion) map genFiles("genthey", "GenTheyWord.scala")(GenTheyWord.genTest),
+      testOptions in Test := Seq(Tests.Argument("-oDI"))
     ).dependsOn(scalatest, gentestsHelper % "test->test")
 
   lazy val genContainTests = Project("genContainTests", file("gentests/GenContain"))
