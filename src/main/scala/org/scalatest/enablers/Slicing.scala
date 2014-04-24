@@ -15,7 +15,7 @@
  */
 package org.scalatest.enablers
 
-import org.scalautils.{Equality, Every}
+import org.scalactic.{Equality, Every}
 import org.scalatest.words.ArrayWrapper
 import scala.collection.GenTraversable
 import org.scalatest.FailureMessages
@@ -112,7 +112,7 @@ private[scalatest] object Slicing {
   /**
    * Implicit to support <code>Aggregating</code> nature of <code>String</code>.
    *
-   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of <code>Char</code> in the <code>String</code>
+   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of <code>Char</code> in the <code>String</code>
    * @return <code>Aggregating[String]</code> that supports <code>String</code> in relevant <code>contain</code> syntax
    */
   implicit def slicingNatureOfString: Slicing[String] = 

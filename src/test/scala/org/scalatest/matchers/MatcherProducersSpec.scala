@@ -17,7 +17,7 @@ package org.scalatest.matchers
 
 import org.scalatest._
 import Inside._
-import org.scalautils.PrettyMethods
+import org.scalactic.PrettyMethods
 
 class MatcherProducersSpec extends Spec with Matchers {
 

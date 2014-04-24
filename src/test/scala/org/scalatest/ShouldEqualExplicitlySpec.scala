@@ -17,8 +17,8 @@ package org.scalatest
 
 import org.scalatest.exceptions._
 import org.scalatest.exceptions.TestFailedException
-import org.scalautils.Explicitly
-import org.scalautils.Equality
+import org.scalactic.Explicitly
+import org.scalactic.Equality
 import Matchers._
 
 class ShouldEqualExplicitlySpec extends Spec with Explicitly {

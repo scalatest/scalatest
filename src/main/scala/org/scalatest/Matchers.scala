@@ -28,15 +28,15 @@ import Assertions.areEqualComparingArraysStructurally
 import scala.collection.GenTraversable
 import scala.collection.GenSeq
 import scala.collection.GenMap
-import org.scalautils.Tolerance
-import org.scalautils.Explicitly
-import org.scalautils.TripleEqualsSupport.Spread
-import org.scalautils.TripleEqualsSupport.TripleEqualsInvocation
-import org.scalautils.Equality
-import org.scalautils.TripleEqualsSupport.TripleEqualsInvocationOnSpread
-import org.scalautils.Constraint
-import org.scalautils.Prettifier
-import org.scalautils.Every
+import org.scalactic.Tolerance
+import org.scalactic.Explicitly
+import org.scalactic.TripleEqualsSupport.Spread
+import org.scalactic.TripleEqualsSupport.TripleEqualsInvocation
+import org.scalactic.Equality
+import org.scalactic.TripleEqualsSupport.TripleEqualsInvocationOnSpread
+import org.scalactic.Constraint
+import org.scalactic.Prettifier
+import org.scalactic.Every
 import MatchersHelper.andMatchersAndApply
 import MatchersHelper.orMatchersAndApply
 import org.scalatest.words._
@@ -47,7 +47,7 @@ import MatchersHelper.fullyMatchRegexWithGroups
 import MatchersHelper.startWithRegexWithGroups
 import MatchersHelper.endWithRegexWithGroups
 import MatchersHelper.includeRegexWithGroups
-import org.scalautils.NormalizingEquality
+import org.scalactic.NormalizingEquality
 import Assertions.checkExpectedException
 import Assertions.checkNoException
 import exceptions.StackDepthExceptionHelper.getStackDepthFun
@@ -184,7 +184,7 @@ import scala.language.higherKinds
  *
  * <p>
  * The &ldquo;<code>left</code> <code>should</code> <code>equal</code> <code>(right)</code>&rdquo; syntax requires an
- * <a href="../scalautils/Equality.html"><code>org.scalautils.Equality[L]</code></a> to be provided (either implicitly or explicitly), where
+ * <a href="../scalactic/Equality.html"><code>org.scalactic.Equality[L]</code></a> to be provided (either implicitly or explicitly), where
  * <code>L</code> is the left-hand type on which <code>should</code> is invoked. In the "<code>left</code> <code>should</code> <code>equal</code> <code>(right)</code>" case,
  * for example, <code>L</code> is the type of <code>left</code>. Thus if <code>left</code> is type <code>Int</code>, the "<code>left</code> <code>should</code>
  * <code>equal</code> <code>(right)</code>"
@@ -222,11 +222,11 @@ import scala.language.higherKinds
  * or <code>shouldEqual</code> syntax by defining implicit <code>Equality</code> instances that will be used instead of default <code>Equality</code>. 
  * You might do this to normalize types before comparing them with <code>==</code>, for instance, or to avoid calling the <code>==</code> method entirely,
  * such as if you want to compare <code>Double</code>s with a tolerance.
- * For an example, see the main documentation of <a href="../scalautils/Equality.html">trait <code>Equality</code></a>.
+ * For an example, see the main documentation of <a href="../scalactic/Equality.html">trait <code>Equality</code></a>.
  * </p>
  *
  * <p>
- * You can always supply implicit parameters explicitly, but in the case of implicit parameters of type <code>Equality[T]</code>, ScalaUtils provides a
+ * You can always supply implicit parameters explicitly, but in the case of implicit parameters of type <code>Equality[T]</code>, Scalactic provides a
  * simple "explictly" DSL. For example, here's how you could explicitly supply an <code>Equality[String]</code> instance that normalizes both left and right
  * sides (which must be strings), by transforming them to lowercase:
  * </p>
@@ -235,11 +235,11 @@ import scala.language.higherKinds
  * scala&gt; import org.scalatest.Matchers._
  * import org.scalatest.Matchers._
  *
- * scala&gt; import org.scalautils.Explicitly._
- * import org.scalautils.Explicitly._
+ * scala&gt; import org.scalactic.Explicitly._
+ * import org.scalactic.Explicitly._
  *
- * scala&gt; import org.scalautils.StringNormalizations._
- * import org.scalautils.StringNormalizations._
+ * scala&gt; import org.scalactic.StringNormalizations._
+ * import org.scalactic.StringNormalizations._
  *
  * scala&gt; "Hi" should equal ("hi") (after being lowerCased)
  * </pre>
@@ -247,7 +247,7 @@ import scala.language.higherKinds
  * <p>
  * The <code>after</code> <code>being</code> <code>lowerCased</code> expression results in an <code>Equality[String]</code>, which is then passed
  * explicitly as the second curried parameter to <code>equal</code>. For more information on the explictly DSL, see the main documentation
- * for trait <a href="../scalautils/Explicitly.html"><code>Explicitly</code></a>.
+ * for trait <a href="../scalactic/Explicitly.html"><code>Explicitly</code></a>.
  * </p>
  *
  * <p>
@@ -266,13 +266,13 @@ import scala.language.higherKinds
  * scala&gt; import org.scalatest.Matchers._
  * import org.scalatest.Matchers._
  *
- * scala&gt; import org.scalautils.TypeCheckedTripleEquals._
- * import org.scalautils.TypeCheckedTripleEquals._
+ * scala&gt; import org.scalactic.TypeCheckedTripleEquals._
+ * import org.scalactic.TypeCheckedTripleEquals._
  *
  * scala&gt; Some(2) should === (2)
  * &lt;console&gt;:17: error: types Some[Int] and Int do not adhere to the equality constraint
  * selected for the === and !== operators; the missing implicit parameter is of
- * type org.scalautils.Constraint[Some[Int],Int]
+ * type org.scalactic.Constraint[Some[Int],Int]
  *               Some(2) should === (2)
  *                       ^
  * </pre>
@@ -280,7 +280,7 @@ import scala.language.higherKinds
  * <p>
  * By default, the "<code>Some(2)</code> <code>should</code> <code>===</code> <code>(2)</code>" statement would fail at runtime. By mixing in
  * the equality constraints provided by <code>TypeCheckedTripleEquals</code>, however, the statement fails to compile. For more information
- * and examples, see the main documentation for <a href="../scalautils/TypeCheckedTripleEquals.html">trait <code>TypeCheckedTripleEquals</code></a>.
+ * and examples, see the main documentation for <a href="../scalactic/TypeCheckedTripleEquals.html">trait <code>TypeCheckedTripleEquals</code></a>.
  * </p>
  *
  * <a name="checkingSizeAndLength"></a>
@@ -649,11 +649,11 @@ import scala.language.higherKinds
  * org.scalatest.exceptions.TestFailedException: List(Hi, Di, Ho) did not contain element "ho"
  *         at ...
  *
- * scala&gt; import org.scalautils.Explicitly._
- * import org.scalautils.Explicitly._
+ * scala&gt; import org.scalactic.Explicitly._
+ * import org.scalactic.Explicitly._
  *
- * scala&gt; import org.scalautils.StringNormalizations._
- * import org.scalautils.StringNormalizations._
+ * scala&gt; import org.scalactic.StringNormalizations._
+ * import org.scalactic.StringNormalizations._
  *
  * scala&gt; (List("Hi", "Di", "Ho") should contain ("ho")) (after being lowerCased)
  * </pre>
@@ -4788,7 +4788,7 @@ ys: List[Any] = List(null, null, 1)
 
 scala> all (ys) shouldBe null
 <console>:15: error: ambiguous reference to overloaded definition,
-both method shouldBe in class ResultOfCollectedAny of type (spread: org.scalautils.Spread[Any])Unit
+both method shouldBe in class ResultOfCollectedAny of type (spread: org.scalactic.Spread[Any])Unit
 and  method shouldBe in class ResultOfCollectedAny of type (beMatcher: org.scalatest.matchers.BeMatcher[Any])Unit
 match argument types (Null)
               all (ys) shouldBe null

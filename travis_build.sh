@@ -140,5 +140,5 @@ fi
 
 if [[ $MODE = 'Publish' ]] ; then
   sbt ++$TRAVIS_SCALA_VERSION publishSigned
-  sbt ++$TRAVIS_SCALA_VERSION scalautils/publishSigned
+  sbt ++$TRAVIS_SCALA_VERSION scalactic/publishSigned
 fi

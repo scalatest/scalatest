@@ -17,7 +17,7 @@ package org.scalatest.matchers
 
 import org.scalatest._
 import Inside._
-import org.scalautils.{PrettyMethods, Prettifier}
+import org.scalactic.{PrettyMethods, Prettifier}
 
 class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
 

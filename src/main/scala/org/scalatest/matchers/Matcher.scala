@@ -21,10 +21,10 @@ import org.scalatest.MatchersHelper.andMatchersAndApply
 import org.scalatest.words.MatcherWords
 import scala.collection.GenTraversable
 import scala.util.matching.Regex
-import org.scalautils.Equality
-import org.scalautils.TripleEqualsSupport.Spread
-import org.scalautils.TripleEqualsSupport.TripleEqualsInvocation
-import org.scalautils.Prettifier
+import org.scalactic.Equality
+import org.scalactic.TripleEqualsSupport.Spread
+import org.scalactic.TripleEqualsSupport.TripleEqualsInvocation
+import org.scalactic.Prettifier
 import org.scalatest.FailureMessages
 import org.scalatest.Resources
 import org.scalatest.words.FullyMatchWord

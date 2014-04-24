@@ -15,7 +15,7 @@
  */
 package org.scalatest.enablers
 
-import org.scalautils.Equality
+import org.scalactic.Equality
 import org.scalatest.words.ArrayWrapper
 import scala.collection.GenTraversable
 import org.scalatest.FailureMessages
@@ -60,7 +60,7 @@ object KeyMapping {
   /**
    * Enable <code>KeyMapping</code> implementation for <code>scala.collection.GenMap</code>.
    *
-   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of key in the <code>scala.collection.GenMap</code>
+   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of key in the <code>scala.collection.GenMap</code>
    * @tparam K the type of the key in the <code>scala.collection.GenMap</code>
    * @tparam V the type of the value in the <code>scala.collection.GenMap</code>
    * @tparam MAP any subtype of <code>scala.collection.GenMap</code>
@@ -77,18 +77,18 @@ object KeyMapping {
   import scala.language.implicitConversions
 
   /**
-   * Implicit conversion that converts an <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>K</code>
+   * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>K</code>
    * into <code>KeyMapping</code> of type <code>MAP[K, V]</code>, where <code>MAP</code> is a subtype of <code>scala.collection.GenMap</code>.
-   * This is required to support the explicit <a href="../../scalautils/Equality.html"><code>Equality</code></a> syntax, for example:
+   * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
    *
    * <pre class="stHighlight">
    * (Map("one" -> 1) should contain key "ONE") (after being lowerCased)
    * </pre>
    *
-   * <code>(after being lowerCased)</code> will returns an <a href="../../scalautils/Equality.html"><code>Equality[String]</code></a>
+   * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Equality[String]</code></a>
    * and this implicit conversion will convert it into <code>KeyMapping[Map[String, Int]]</code>.
    *
-   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>K</code>
+   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>K</code>
    * @tparam K the type of the key in the <code>scala.collection.GenMap</code>
    * @tparam V the type of the value in the <code>scala.collection.GenMap</code>
    * @tparam MAP any subtype of <code>scala.collection.GenMap</code>
@@ -100,7 +100,7 @@ object KeyMapping {
   /**
    * Enable <code>KeyMapping</code> implementation for <code>java.util.Map</code>.
    *
-   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of key in the <code>java.util.Map</code>
+   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of key in the <code>java.util.Map</code>
    * @tparam K the type of the key in the <code>java.util.Map</code>
    * @tparam V the type of the value in the <code>java.util.Map</code>
    * @tparam JMAP any subtype of <code>java.util.Map</code>
@@ -114,9 +114,9 @@ object KeyMapping {
     }
 
   /**
-   * Implicit conversion that converts an <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>K</code>
+   * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>K</code>
    * into <code>KeyMapping</code> of type <code>JMAP[K, V]</code>, where <code>JMAP</code> is a subtype of <code>java.util.Map</code>.
-   * This is required to support the explicit <a href="../../scalautils/Equality.html"><code>Equality</code></a> syntax, for example:
+   * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
    *
    * <pre class="stHighlight">
    * val javaMap = new java.util.HashMap[String, Int]()
@@ -124,10 +124,10 @@ object KeyMapping {
    * (javaMap should contain key "ONE") (after being lowerCased)
    * </pre>
    *
-   * <code>(after being lowerCased)</code> will returns an <a href="../../scalautils/Equality.html"><code>Equality[String]</code></a>
+   * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Equality[String]</code></a>
    * and this implicit conversion will convert it into <code>KeyMapping[java.util.HashMap[String, Int]]</code>.
    *
-   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>K</code>
+   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>K</code>
    * @tparam K the type of the key in the <code>java.util.Map</code>
    * @tparam V the type of the value in the <code>java.util.Map</code>
    * @tparam JMAP any subtype of <code>java.util.Map</code>

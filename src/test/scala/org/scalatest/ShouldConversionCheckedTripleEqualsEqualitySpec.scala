@@ -23,8 +23,8 @@ import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
-import org.scalautils.Equality
-import org.scalautils.ConversionCheckedTripleEquals
+import org.scalactic.Equality
+import org.scalactic.ConversionCheckedTripleEquals
 import Matchers._
 import ConversionCheckedTripleEquals._
 

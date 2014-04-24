@@ -26,7 +26,7 @@ import Assertions.NormalResult
 import org.scalatest.exceptions.TestCanceledException
 import OptionValues._
 import java.util.Date
-import org.scalautils.Prettifier
+import org.scalactic.Prettifier
 
 class AssertionsSpec extends FunSpec {
   
@@ -584,7 +584,7 @@ class AssertionsSpec extends FunSpec {
     }
     
     // TripleEquals tests
-    // currently these tests are not calling TripleEquals's === and !== yet, import org.scalautils.TripleEquals does not seems to work
+    // currently these tests are not calling TripleEquals's === and !== yet, import org.scalactic.TripleEquals does not seems to work
     // Should make Assertions to extend TripleEquals instead of LegacyTripleEquals instead.
     
     it("should do nothing when is used to check a === 3") {
@@ -1817,7 +1817,7 @@ class AssertionsSpec extends FunSpec {
     }
 
     // TripleEquals tests
-    // currently these tests are not calling TripleEquals's === and !== yet, import org.scalautils.TripleEquals does not seems to work
+    // currently these tests are not calling TripleEquals's === and !== yet, import org.scalactic.TripleEquals does not seems to work
     // Should make Assertions to extend TripleEquals instead of LegacyTripleEquals instead.
 
     it("should do nothing when is used to check a === 3") {
@@ -3044,7 +3044,7 @@ class AssertionsSpec extends FunSpec {
     }
 
     // TripleEquals tests
-    // currently these tests are not calling TripleEquals's === and !== yet, import org.scalautils.TripleEquals does not seems to work
+    // currently these tests are not calling TripleEquals's === and !== yet, import org.scalactic.TripleEquals does not seems to work
     // Should make Assertions to extend TripleEquals instead of LegacyTripleEquals instead.
 
     it("should do nothing when is used to check a === 3") {
@@ -4277,7 +4277,7 @@ class AssertionsSpec extends FunSpec {
     }
 
     // TripleEquals tests
-    // currently these tests are not calling TripleEquals's === and !== yet, import org.scalautils.TripleEquals does not seems to work
+    // currently these tests are not calling TripleEquals's === and !== yet, import org.scalactic.TripleEquals does not seems to work
     // Should make Assertions to extend TripleEquals instead of LegacyTripleEquals instead.
 
     it("should do nothing when is used to check a === 3") {

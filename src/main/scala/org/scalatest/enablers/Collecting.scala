@@ -15,7 +15,7 @@
  */
 package org.scalatest.enablers
 
-import org.scalautils.Every
+import org.scalactic.Every
 import scala.collection.GenTraversable
 import scala.language.higherKinds
 import org.scalatest.FailureMessages

@@ -15,7 +15,7 @@
  */
 package org.scalatest.enablers
 
-import org.scalautils.{Equality, NormalizingEquality, Every}
+import org.scalactic.{Equality, NormalizingEquality, Every}
 import scala.collection.{GenTraversableOnce, GenTraversable}
 
 /**
@@ -176,7 +176,7 @@ object Containing {
   /**
    * Implicit to support <code>Containing</code> nature of <code>java.util.Collection</code>.
    *
-   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>java.util.Collection</code>
+   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>java.util.Collection</code>
    * @tparam E the type of the element in the <code>java.util.Collection</code>
    * @tparam JCOL any subtype of <code>java.util.Collection</code>
    * @return <code>Containing[JCOL[E]]</code> that supports <code>java.util.Collection</code> in relevant <code>contain</code> syntax
@@ -206,9 +206,9 @@ object Containing {
   import scala.language.implicitConversions
 
   /**
-   * Implicit conversion that converts an <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
    * into <code>Containing</code> of type <code>JCOL[E]</code>, where <code>JCOL</code> is a subtype of <code>java.util.Collection</code>.
-   * This is required to support the explicit <a href="../../scalautils/Equality.html"><code>Equality</code></a> syntax, for example:
+   * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
    *
    * <pre class="stHighlight">
    * val javaList = new java.util.ArrayList[String]()
@@ -216,10 +216,10 @@ object Containing {
    * (javaList should contain oneOf ("HI")) (after being lowerCased)
    * </pre>
    *
-   * <code>(after being lowerCased)</code> will returns an <a href="../../scalautils/Equality.html"><code>Equality[String]</code></a>
+   * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Equality[String]</code></a>
    * and this implicit conversion will convert it into <code>Containing[java.util.ArrayList[String]]</code>.
    *
-   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
    * @tparam E type of elements in the <code>java.util.Collection</code>
    * @tparam JCOL subtype of <code>java.util.Collection</code>
    * @return <code>Containing</code> of type <code>JCOL[E]</code>
@@ -230,7 +230,7 @@ object Containing {
   /**
    * Implicit to support <code>Containing</code> nature of <code>GenTraversable</code>.
    *
-   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>GenTraversable</code>
+   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>GenTraversable</code>
    * @tparam E the type of the element in the <code>GenTraversable</code>
    * @tparam TRAV any subtype of <code>GenTraversable</code>
    * @return <code>Containing[TRAV[E]]</code> that supports <code>GenTraversable</code> in relevant <code>contain</code> syntax
@@ -256,18 +256,18 @@ object Containing {
     }
 
   /**
-   * Implicit conversion that converts an <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
    * into <code>Containing</code> of type <code>TRAV[E]</code>, where <code>TRAV</code> is a subtype of <code>GenTraversable</code>.
-   * This is required to support the explicit <a href="../../scalautils/Equality.html"><code>Equality</code></a> syntax, for example:
+   * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
    *
    * <pre class="stHighlight">
    * (List("hi") should contain oneOf ("HI")) (after being lowerCased)
    * </pre>
    *
-   * <code>(after being lowerCased)</code> will returns an <a href="../../scalautils/Equality.html"><code>Equality[String]</code></a>
+   * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Equality[String]</code></a>
    * and this implicit conversion will convert it into <code>Containing[List[String]]</code>.
    *
-   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
    * @tparam E type of elements in the <code>GenTraversable</code>
    * @tparam TRAV subtype of <code>GenTraversable</code>
    * @return <code>Containing</code> of type <code>TRAV[E]</code>
@@ -279,7 +279,7 @@ object Containing {
   /**
    * Implicit to support <code>Containing</code> nature of <code>scala.Option</code>.
    *
-   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>Option</code>
+   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>Option</code>
    * @tparam E the type of the element in the <code>scala.Option</code>
    * @tparam OPT any subtype of <code>scala.Option</code>
    * @return <code>Containing[OPT[E]]</code> that supports <code>scala.Option</code> in relevant <code>contain</code> syntax
@@ -300,18 +300,18 @@ object Containing {
     }
 
   /**
-   * Implicit conversion that converts an <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
    * into <code>Containing</code> of type <code>OPT[E]</code>, where <code>OPT</code> is a subtype of <code>scala.Option</code>.
-   * This is required to support the explicit <a href="../../scalautils/Equality.html"><code>Equality</code></a> syntax, for example:
+   * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
    *
    * <pre class="stHighlight">
    * (Some("hi") should contain oneOf ("HI")) (after being lowerCased)
    * </pre>
    *
-   * <code>(after being lowerCased)</code> will returns an <a href="../../scalautils/Equality.html"><code>Equality[String]</code></a>
+   * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Equality[String]</code></a>
    * and this implicit conversion will convert it into <code>Containing[Some[String]]</code>.
    *
-   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
    * @tparam E type of elements in the <code>scala.Option</code>
    * @tparam OPT subtype of <code>scala.Option</code>
    * @return <code>Containing</code> of type <code>OPT[E]</code>
@@ -322,7 +322,7 @@ object Containing {
   /**
    * Implicit to support <code>Containing</code> nature of <code>Array</code>.
    *
-   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>Array</code>
+   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>Array</code>
    * @tparam E the type of the element in the <code>Array</code>
    * @return <code>Containing[Array[E]]</code> that supports <code>Array</code> in relevant <code>contain</code> syntax
    */
@@ -341,18 +341,18 @@ object Containing {
     }
 
   /**
-   * Implicit conversion that converts an <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
    * into <code>Containing</code> of type <code>Array[E]</code>.
-   * This is required to support the explicit <a href="../../scalautils/Equality.html"><code>Equality</code></a> syntax, for example:
+   * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
    *
    * <pre class="stHighlight">
    * (Array("hi") should contain oneOf ("HI")) (after being lowerCased)
    * </pre>
    *
-   * <code>(after being lowerCased)</code> will returns an <a href="../../scalautils/Equality.html"><code>Equality[String]</code></a>
+   * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Equality[String]</code></a>
    * and this implicit conversion will convert it into <code>Containing[Array[String]]</code>.
    *
-   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
    * @tparam E type of elements in the <code>Array</code>
    * @return <code>Containing</code> of type <code>Array[E]</code>
    */
@@ -362,7 +362,7 @@ object Containing {
   /**
    * Implicit to support <code>Containing</code> nature of <code>String</code>.
    *
-   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of <code>Char</code> in the <code>String</code>
+   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of <code>Char</code> in the <code>String</code>
    * @return <code>Containing[String]</code> that supports <code>String</code> in relevant <code>contain</code> syntax
    */
   implicit def containingNatureOfString(implicit equality: Equality[Char]): Containing[String] = 
@@ -380,19 +380,19 @@ object Containing {
     }
 
   /**
-   * Implicit conversion that converts an <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>Char</code>
+   * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>Char</code>
    * into <code>Containing</code> of type <code>String</code>.
-   * This is required to support the explicit <a href="../../scalautils/Equality.html"><code>Equality</code></a> syntax, for example:
+   * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
    *
    * <pre class="stHighlight">
    * // lowerCased needs to be implemented as Normalization[Char]
    * ("hi hello" should contain oneOf ('E')) (after being lowerCased)
    * </pre>
    *
-   * <code>(after being lowerCased)</code> will returns an <a href="../../scalautils/Equality.html"><code>Equality[Char]</code></a>
+   * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Equality[Char]</code></a>
    * and this implicit conversion will convert it into <code>Containing[String]</code>.
    *
-   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>Char</code>
+   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>Char</code>
    * @return <code>Containing</code> of type <code>String</code>
    */
   implicit def convertEqualityToStringContaining(equality: Equality[Char]): Containing[String] = 
@@ -401,7 +401,7 @@ object Containing {
   /**
    * Implicit to support <code>Containing</code> nature of <code>java.util.Map</code>.
    *
-   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of entry in the <code>java.util.Map</code>
+   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of entry in the <code>java.util.Map</code>
    * @tparam K the type of the key in the <code>java.util.Map</code>
    * @tparam V the type of the value in the <code>java.util.Map</code>
    * @tparam JMAP any subtype of <code>java.util.Map</code>
@@ -424,9 +424,9 @@ object Containing {
     }
 
   /**
-   * Implicit conversion that converts an <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>java.util.Map.Entry[K, V]</code>
+   * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>java.util.Map.Entry[K, V]</code>
    * into <code>Containing</code> of type <code>JMAP[K, V]</code>, where <code>JMAP</code> is a subtype of <code>java.util.Map</code>.
-   * This is required to support the explicit <a href="../../scalautils/Equality.html"><code>Equality</code></a> syntax, for example:
+   * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
    *
    * <pre class="stHighlight">
    * val javaMap = new java.util.HashMap[Int, String]()
@@ -435,10 +435,10 @@ object Containing {
    * (javaMap should contain (Entry(1, "ONE"))) (after being lowerCased)
    * </pre>
    *
-   * <code>(after being lowerCased)</code> will returns an <a href="../../scalautils/Equality.html"><code>java.util.Map.Entry[Int, String]</code></a>
+   * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>java.util.Map.Entry[Int, String]</code></a>
    * and this implicit conversion will convert it into <code>Containing[java.util.HashMap[Int, String]]</code>.
    *
-   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>java.util.Map.Entry[K, V]</code>
+   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>java.util.Map.Entry[K, V]</code>
    * @tparam K the type of the key in the <code>java.util.Map</code>
    * @tparam V the type of the value in the <code>java.util.Map</code>
    * @tparam JMAP any subtype of <code>java.util.Map</code>
@@ -450,7 +450,7 @@ object Containing {
   /**
    * Implicit to support <code>Containing</code> nature of <code>Every</code>.
    *
-   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>Every</code>
+   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>Every</code>
    * @tparam E the type of the element in the <code>Every</code>
    * @return <code>Containing[Every[E]]</code> that supports <code>Every</code> in relevant <code>contain</code> syntax
    */
@@ -474,18 +474,18 @@ object Containing {
     }
 
   /**
-   * Implicit conversion that converts an <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
    * into <code>Containing</code> of type <code>Every[E]</code>.
-   * This is required to support the explicit <a href="../../scalautils/Equality.html"><code>Equality</code></a> syntax, for example:
+   * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
    *
    * <pre class="stHighlight">
    * (Every("hi", "he", "ho") should contain oneOf ("HI")) (after being lowerCased)
    * </pre>
    *
-   * <code>(after being lowerCased)</code> will returns an <a href="../../scalautils/Equality.html"><code>Equality[String]</code></a>
+   * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Equality[String]</code></a>
    * and this implicit conversion will convert it into <code>Containing[Every[String]]</code>.
    *
-   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
    * @tparam E type of elements in the <code>Every</code>
    * @return <code>Containing</code> of type <code>Every[E]</code>
    */
