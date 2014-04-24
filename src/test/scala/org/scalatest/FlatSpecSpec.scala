@@ -1456,7 +1456,7 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
       val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
       assert("FlatSpecSpec.scala" === trce.failedCodeFileName.get)
       assert(trce.failedCodeLineNumber.get === thisLineNumber - 23)
-      assert(trce.message == Some("An it clause may not appear inside another it clause."))
+      assert(trce.message == Some("An in clause may not appear inside another in or is clause."))
     }
 
     it("should generate TestRegistrationClosedException with correct stack depth info when has an ignore nested inside a in") {
@@ -1488,7 +1488,7 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
       val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
       assert("FlatSpecSpec.scala" === trce.failedCodeFileName.get)
       assert(trce.failedCodeLineNumber.get === thisLineNumber - 23)
-      assert(trce.message == Some("An ignore clause may not appear inside an it clause."))
+      assert(trce.message == Some("An ignore clause may not appear inside an in or an is clause."))
     }
 
     it("should generate TestRegistrationClosedException with correct stack depth info when has a registerTest nested inside a registerTest") {

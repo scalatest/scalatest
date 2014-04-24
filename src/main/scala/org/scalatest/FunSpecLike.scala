@@ -147,7 +147,7 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
      * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
      */
     def apply(specText: String, testTags: Tag*)(testFun: => Unit) {
-      engine.registerTest(specText, Transformer(testFun _), "itCannotAppearInsideAnotherIt", sourceFileName, "apply", 3, -2, None, None, None, testTags: _*)
+      engine.registerTest(specText, Transformer(testFun _), "itCannotAppearInsideAnotherItOrThey", sourceFileName, "apply", 3, -2, None, None, None, testTags: _*)
     }
 
     /**
@@ -259,7 +259,7 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
      * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
      */
     def apply(specText: String, testTags: Tag*)(testFun: => Unit) {
-      engine.registerTest(specText, Transformer(testFun _), "theyCannotAppearInsideAnotherThey", sourceFileName, "apply", 3, -2, None, None, None, testTags: _*)
+      engine.registerTest(specText, Transformer(testFun _), "theyCannotAppearInsideAnotherItOrThey", sourceFileName, "apply", 3, -2, None, None, None, testTags: _*)
     }
 
     /**
@@ -343,7 +343,8 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
    * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   protected def ignore(testText: String, testTags: Tag*)(testFun: => Unit) {
-    engine.registerIgnoredTest(testText, Transformer(testFun _), "ignoreCannotAppearInsideAnIt", sourceFileName, "ignore", 4, -2, None, testTags: _*)
+    //engine.
+    engine.registerIgnoredTest(testText, Transformer(testFun _), "ignoreCannotAppearInsideAnItOrAThey", sourceFileName, "ignore", 4, -2, None, testTags: _*)
   }
 
   /**
