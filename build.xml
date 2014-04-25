@@ -439,7 +439,7 @@
         	   <filter token="SCALAVERSION" value="${for.scala}" />
         	</filterset>
         </copy>
-        <copy file="src/main/resources/org/scalactic/ScalacticBundle.properties" todir="${jar.contents}/org/scalactic" />
+        <copy file="${resources}/org/scalactic/ScalacticBundle.properties" todir="${jar.contents}/org/scalactic" />
         <copy todir="${jar.contents}/images">
             <fileset dir="${images}" />
         </copy>
@@ -659,7 +659,7 @@
                 <filter token="SCALAVERSION" value="${for.scala}" />
             </filterset>
         </copy>
-        <copy file="src/main/resources/org/scalactic/ScalacticBundle.properties" todir="${jar.contents}/org/scalactic" />
+        <copy file="${resources}/org/scalactic/ScalacticBundle.properties" todir="${jar.contents}/org/scalactic" />
         <copy todir="${jar.contents}/images">
             <fileset dir="${images}" />
         </copy>
