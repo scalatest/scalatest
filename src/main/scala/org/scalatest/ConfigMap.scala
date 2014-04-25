@@ -18,7 +18,7 @@ package org.scalatest
 import exceptions.TestCanceledException
 import reflect.ClassManifest
 import collection.immutable.MapLike
-import org.scalautils.Equality
+import org.scalactic.Equality
 import enablers.Containing
 import enablers.Aggregating
 import enablers.KeyMapping

@@ -16,7 +16,7 @@
 package org.scalatest.words
 
 import org.scalatest.matchers._
-import org.scalautils._
+import org.scalactic._
 import scala.util.matching.Regex
 import org.scalatest.UnquotedString
 import org.scalatest.Resources

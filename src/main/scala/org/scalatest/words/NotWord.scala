@@ -18,14 +18,14 @@ package org.scalatest.words
 import org.scalatest.matchers._
 import org.scalatest.enablers._
 import scala.collection.GenTraversable
-import org.scalautils._
-import org.scalautils.TripleEqualsSupport.Spread
+import org.scalactic._
+import org.scalactic.TripleEqualsSupport.Spread
 import TripleEqualsSupport.TripleEqualsInvocation
 import org.scalatest.Suite
 import org.scalatest.Resources
 import org.scalatest.FailureMessages
 import org.scalatest.UnquotedString
-import org.scalautils.Equality
+import org.scalactic.Equality
 import org.scalatest.Assertions.areEqualComparingArraysStructurally
 import org.scalatest.MatchersHelper.matchSymbolToPredicateMethod
 import scala.annotation.tailrec

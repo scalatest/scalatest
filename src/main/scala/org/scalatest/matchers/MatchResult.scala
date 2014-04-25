@@ -16,7 +16,7 @@
 package org.scalatest.matchers
  
 import java.text.MessageFormat
-import org.scalautils.Prettifier
+import org.scalactic.Prettifier
 
 /**
  * The result of a match operation, such as one performed by a <a href="Matcher.html"><code>Matcher</code></a> or

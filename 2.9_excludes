@@ -1,6 +1,6 @@
-org/scalautils/TripleEqualsSpec.scala
-org/scalautils/RestrictedTripleEqualsSpec.scala
-org/scalautils/CopiedForLegacyTripleEqualsSpec.scala
+org/scalactic/TripleEqualsSpec.scala
+org/scalactic/RestrictedTripleEqualsSpec.scala
+org/scalactic/CopiedForLegacyTripleEqualsSpec.scala
 org/scalatest/ShouldTripleEqualsSpec.scala
 org/scalatest/ShouldCollectedTripleEqualsSpec.scala
 org/scalatest/TryValuesSpec.scala

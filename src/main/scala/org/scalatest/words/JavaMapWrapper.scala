@@ -28,10 +28,10 @@ import org.scalatest.Assertions.areEqualComparingArraysStructurally
 import scala.collection.GenTraversable
 import scala.collection.GenSeq
 import scala.collection.GenMap
-import org.scalautils.Tolerance
-import org.scalautils.Explicitly
+import org.scalactic.Tolerance
+import org.scalactic.Explicitly
 import scala.annotation.tailrec
-import org.scalautils.Equality
+import org.scalactic.Equality
 import org.scalatest.MatchersHelper.andMatchersAndApply
 import org.scalatest.MatchersHelper.orMatchersAndApply
 import org.scalatest.MatchersHelper.matchSymbolToPredicateMethod

@@ -15,10 +15,10 @@
  */
 package org.scalatest
 
-import org.scalautils.Equality
-import org.scalautils.Explicitly
-import org.scalautils.StringNormalizations._
-import org.scalautils.Uniformity
+import org.scalactic.Equality
+import org.scalactic.Explicitly
+import org.scalactic.StringNormalizations._
+import org.scalactic.Uniformity
 import SharedHelpers._
 import Matchers._
 

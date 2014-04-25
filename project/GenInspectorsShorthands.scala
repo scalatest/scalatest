@@ -1046,7 +1046,7 @@ object GenInspectorsShorthands {
         packageName = Some("org.scalatest.inspectors.all"),
         importList = List(
           "org.scalatest._",
-          "org.scalautils.Every",
+          "org.scalactic.Every",
           "SharedHelpers._",
           "FailureMessages.decorateToStringValue",
           "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
@@ -1075,7 +1075,7 @@ object GenInspectorsShorthands {
           packageName = Some("org.scalatest.inspectors.all"),
           importList = List(
             "org.scalatest._",
-            "org.scalautils.Every",
+            "org.scalactic.Every",
             "SharedHelpers._",
             "FailureMessages.decorateToStringValue",
             "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
@@ -1108,7 +1108,7 @@ object GenInspectorsShorthands {
         packageName = Some("org.scalatest.inspectors.atLeast"),
         importList = List(
           "org.scalatest._",
-          "org.scalautils.Every",
+          "org.scalactic.Every",
           "SharedHelpers._",
           "FailureMessages.decorateToStringValue",
           "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
@@ -1313,7 +1313,7 @@ object GenInspectorsShorthands {
           packageName = Some("org.scalatest.inspectors.atLeast"),
           importList = List(
             "org.scalatest._",
-            "org.scalautils.Every",
+            "org.scalactic.Every",
             "SharedHelpers._",
             "FailureMessages.decorateToStringValue",
             "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
@@ -1346,7 +1346,7 @@ object GenInspectorsShorthands {
         packageName = Some("org.scalatest.inspectors.every"),
         importList = List(
           "org.scalatest._",
-          "org.scalautils.Every",
+          "org.scalactic.Every",
           "SharedHelpers._",
           "FailureMessages.decorateToStringValue",
           "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
@@ -1552,7 +1552,7 @@ object GenInspectorsShorthands {
           packageName = Some("org.scalatest.inspectors.every"),
           importList = List(
             "org.scalatest._",
-            "org.scalautils.Every",
+            "org.scalactic.Every",
             "SharedHelpers._",
             "FailureMessages.decorateToStringValue",
             "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
@@ -1585,7 +1585,7 @@ object GenInspectorsShorthands {
         packageName = Some("org.scalatest.inspectors.exactly"),
         importList = List(
           "org.scalatest._",
-          "org.scalautils.Every",
+          "org.scalactic.Every",
           "SharedHelpers._",
           "FailureMessages.decorateToStringValue",
           "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
@@ -1791,7 +1791,7 @@ object GenInspectorsShorthands {
           packageName = Some("org.scalatest.inspectors.exactly"),
           importList = List(
             "org.scalatest._",
-            "org.scalautils.Every",
+            "org.scalactic.Every",
             "SharedHelpers._",
             "FailureMessages.decorateToStringValue",
             "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
@@ -1824,7 +1824,7 @@ object GenInspectorsShorthands {
         packageName = Some("org.scalatest.inspectors.no"),
         importList = List(
           "org.scalatest._",
-          "org.scalautils.Every",
+          "org.scalactic.Every",
           "SharedHelpers._",
           "FailureMessages.decorateToStringValue",
           "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
@@ -2029,7 +2029,7 @@ object GenInspectorsShorthands {
           packageName = Some("org.scalatest.inspectors.no"),
           importList = List(
             "org.scalatest._",
-            "org.scalautils.Every",
+            "org.scalactic.Every",
             "SharedHelpers._",
             "FailureMessages.decorateToStringValue",
             "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
@@ -2062,7 +2062,7 @@ object GenInspectorsShorthands {
         packageName = Some("org.scalatest.inspectors.between"),
         importList = List(
           "org.scalatest._",
-          "org.scalautils.Every",
+          "org.scalactic.Every",
           "SharedHelpers._",
           "FailureMessages.decorateToStringValue",
           "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
@@ -2269,7 +2269,7 @@ object GenInspectorsShorthands {
           packageName = Some("org.scalatest.inspectors.between"),
           importList = List(
             "org.scalatest._",
-            "org.scalautils.Every",
+            "org.scalactic.Every",
             "SharedHelpers._",
             "FailureMessages.decorateToStringValue",
             "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
@@ -2302,7 +2302,7 @@ object GenInspectorsShorthands {
         packageName = Some("org.scalatest.inspectors.atMost"),
         importList = List(
           "org.scalatest._",
-          "org.scalautils.Every",
+          "org.scalactic.Every",
           "SharedHelpers._",
           "FailureMessages.decorateToStringValue",
           "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
@@ -2524,7 +2524,7 @@ object GenInspectorsShorthands {
           packageName = Some("org.scalatest.inspectors.atMost"),
           importList = List(
             "org.scalatest._",
-            "org.scalautils.Every",
+            "org.scalactic.Every",
             "SharedHelpers._",
             "FailureMessages.decorateToStringValue",
             "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",

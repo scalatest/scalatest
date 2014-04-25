@@ -30,10 +30,10 @@ import org.scalatest.MatchersHelper.orMatchersAndApply
 import org.scalatest.words.MatcherWords
 import scala.collection.GenTraversable
 import scala.util.matching.Regex
-import org.scalautils.Equality
-import org.scalautils.TripleEqualsSupport.Spread
-import org.scalautils.TripleEqualsSupport.TripleEqualsInvocation
-import org.scalautils.Prettifier
+import org.scalactic.Equality
+import org.scalactic.TripleEqualsSupport.Spread
+import org.scalactic.TripleEqualsSupport.TripleEqualsInvocation
+import org.scalactic.Prettifier
 import org.scalatest.FailureMessages
 import org.scalatest.Resources
 import org.scalatest.words.FullyMatchWord
@@ -110,7 +110,7 @@ abstract class MatcherFactory$arity$[-SC, $typeConstructors$] { thisMatcherFacto
 
 $if (arityIsOne)$
   /**
-   * Enables the <a href="../../org/scalautils/"><code>Explicitly</code></a> DSL to be used directly
+   * Enables the <a href="../../org/scalactic/"><code>Explicitly</code></a> DSL to be used directly
    * on a <code>MatcherFactory1</code>, without invoking the <code>matcher</code> factory method.
    *
    * <p>

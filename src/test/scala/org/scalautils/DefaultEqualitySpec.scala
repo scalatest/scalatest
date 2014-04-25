@@ -41,7 +41,7 @@ class DefaultEqualitySpec extends Spec with NonImplicitAssertions {
       val b = new MyObject
       assert(!a.equalsWasCalled)
       assert(!b.equalsWasCalled)
-      (new DefaultEquality[MyObject]).areEqual(a, b)
+      (Equality.default[MyObject]).areEqual(a, b)
       assert(a.equalsWasCalled)
       assert(!b.equalsWasCalled)
     }
@@ -50,13 +50,13 @@ class DefaultEqualitySpec extends Spec with NonImplicitAssertions {
       val a = Array(1, 2, 3)
       val b = Array(1, 2, 3)
       val v = Vector(1, 2, 3)
-      assert((new DefaultEquality[Array[Int]]).areEqual(a, v))
-      assert((new DefaultEquality[Vector[Int]]).areEqual(v, a))
-      assert((new DefaultEquality[Array[Int]]).areEqual(a, b))
+      assert((Equality.default[Array[Int]]).areEqual(a, v))
+      assert((Equality.default[Vector[Int]]).areEqual(v, a))
+      assert((Equality.default[Array[Int]]).areEqual(a, b))
     }
 
     def `should have a pretty toString` {
-      assert((new DefaultEquality).toString == "Equality.default")
+      assert((Equality.default).toString == "Equality.default")
     }
   }
 }

@@ -17,11 +17,11 @@ package org.scalatest.words
 
 import org.scalatest.matchers._
 import scala.collection.GenTraversable
-import org.scalautils._
+import org.scalactic._
 import org.scalatest.FailureMessages
 import org.scalatest.Resources
 import org.scalatest.UnquotedString
-import org.scalautils.{Equality, Every}
+import org.scalactic.{Equality, Every}
 import org.scalatest.enablers.Containing
 import org.scalatest.enablers.Aggregating
 import org.scalatest.enablers.Sequencing

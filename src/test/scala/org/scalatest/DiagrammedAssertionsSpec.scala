@@ -17,7 +17,7 @@ package org.scalatest
 
 import SharedHelpers.thisLineNumber
 import java.util.Date
-import org.scalautils.Prettifier
+import org.scalactic.Prettifier
 import org.scalatest.exceptions.TestCanceledException
 
 class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAssertions {

@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-import org.scalautils.BooleanMacro
+import org.scalactic.BooleanMacro
 import reflect.macros.Context
 
 /**

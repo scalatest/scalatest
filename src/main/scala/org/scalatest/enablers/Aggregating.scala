@@ -15,7 +15,7 @@
  */
 package org.scalatest.enablers
 
-import org.scalautils.{Equality, Every}
+import org.scalactic.{Equality, Every}
 import org.scalatest.words.ArrayWrapper
 import scala.collection.GenTraversable
 import org.scalatest.FailureMessages
@@ -255,7 +255,7 @@ object Aggregating {
   /**
    * Implicit to support <code>Aggregating</code> nature of <code>GenTraversable</code>.
    *
-   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>GenTraversable</code>
+   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>GenTraversable</code>
    * @tparam E the type of the element in the <code>GenTraversable</code>
    * @tparam TRAV any subtype of <code>GenTraversable</code>
    * @return <code>Aggregating[TRAV[E]]</code> that supports <code>GenTraversable</code> in relevant <code>contain</code> syntax
@@ -282,18 +282,18 @@ object Aggregating {
   import scala.language.implicitConversions
 
   /**
-   * Implicit conversion that converts an <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
    * into <code>Aggregating</code> of type <code>TRAV[E]</code>, where <code>TRAV</code> is a subtype of <code>GenTraversable</code>.
-   * This is required to support the explicit <a href="../../scalautils/Equality.html"><code>Equality</code></a> syntax, for example:
+   * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
    *
    * <pre class="stHighlight">
    * (List("hi") should contain ("HI")) (after being lowerCased)
    * </pre>
    *
-   * <code>(after being lowerCased)</code> will returns an <a href="../../scalautils/Equality.html"><code>Equality[String]</code></a>
+   * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Equality[String]</code></a>
    * and this implicit conversion will convert it into <code>Aggregating[List[String]]</code>.
    *
-   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
    * @tparam E type of elements in the <code>GenTraversable</code>
    * @tparam TRAV subtype of <code>GenTraversable</code>
    * @return <code>Aggregating</code> of type <code>TRAV[E]</code>
@@ -304,7 +304,7 @@ object Aggregating {
   /**
    * Implicit to support <code>Aggregating</code> nature of <code>Array</code>.
    *
-   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>Array</code>
+   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>Array</code>
    * @tparam E the type of the element in the <code>Array</code>
    * @return <code>Aggregating[Array[E]]</code> that supports <code>Array</code> in relevant <code>contain</code> syntax
    */
@@ -328,18 +328,18 @@ object Aggregating {
     }
 
   /**
-   * Implicit conversion that converts an <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
    * into <code>Aggregating</code> of type <code>Array[E]</code>.
-   * This is required to support the explicit <a href="../../scalautils/Equality.html"><code>Equality</code></a> syntax, for example:
+   * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
    *
    * <pre class="stHighlight">
    * (Array("hi") should contain ("HI")) (after being lowerCased)
    * </pre>
    *
-   * <code>(after being lowerCased)</code> will returns an <a href="../../scalautils/Equality.html"><code>Equality[String]</code></a>
+   * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Equality[String]</code></a>
    * and this implicit conversion will convert it into <code>Aggregating[Array[String]]</code>.
    *
-   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
    * @tparam E type of elements in the <code>Array</code>
    * @return <code>Aggregating</code> of type <code>Array[E]</code>
    */
@@ -349,7 +349,7 @@ object Aggregating {
   /**
    * Implicit to support <code>Aggregating</code> nature of <code>String</code>.
    *
-   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of <code>Char</code> in the <code>String</code>
+   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of <code>Char</code> in the <code>String</code>
    * @return <code>Aggregating[String]</code> that supports <code>String</code> in relevant <code>contain</code> syntax
    */
   implicit def aggregatingNatureOfString(implicit equality: Equality[Char]): Aggregating[String] = 
@@ -372,19 +372,19 @@ object Aggregating {
     }
 
   /**
-   * Implicit conversion that converts an <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>Char</code>
+   * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>Char</code>
    * into <code>Aggregating</code> of type <code>String</code>.
-   * This is required to support the explicit <a href="../../scalautils/Equality.html"><code>Equality</code></a> syntax, for example:
+   * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
    *
    * <pre class="stHighlight">
    * // lowerCased needs to be implemented as Normalization[Char]
    * ("hi hello" should contain ('E')) (after being lowerCased)
    * </pre>
    *
-   * <code>(after being lowerCased)</code> will returns an <a href="../../scalautils/Equality.html"><code>Equality[Char]</code></a>
+   * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Equality[Char]</code></a>
    * and this implicit conversion will convert it into <code>Aggregating[String]</code>.
    *
-   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>Char</code>
+   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>Char</code>
    * @return <code>Aggregating</code> of type <code>String</code>
    */
   implicit def convertEqualityToStringAggregating(equality: Equality[Char]): Aggregating[String] =
@@ -393,7 +393,7 @@ object Aggregating {
   /**
    * Implicit to support <code>Aggregating</code> nature of <code>java.util.Collection</code>.
    *
-   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>java.util.Collection</code>
+   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>java.util.Collection</code>
    * @tparam E the type of the element in the <code>java.util.Collection</code>
    * @tparam JCOL any subtype of <code>java.util.Collection</code>
    * @return <code>Aggregating[JCOL[E]]</code> that supports <code>java.util.Collection</code> in relevant <code>contain</code> syntax
@@ -418,9 +418,9 @@ object Aggregating {
     }
 
   /**
-   * Implicit conversion that converts an <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
    * into <code>Aggregating</code> of type <code>JCOL[E]</code>, where <code>JCOL</code> is a subtype of <code>java.util.Collection</code>.
-   * This is required to support the explicit <a href="../../scalautils/Equality.html"><code>Equality</code></a> syntax, for example:
+   * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
    *
    * <pre class="stHighlight">
    * val javaList = new java.util.ArrayList[String]()
@@ -428,10 +428,10 @@ object Aggregating {
    * (javaList should contain ("HI")) (after being lowerCased)
    * </pre>
    *
-   * <code>(after being lowerCased)</code> will returns an <a href="../../scalautils/Equality.html"><code>Equality[String]</code></a>
+   * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Equality[String]</code></a>
    * and this implicit conversion will convert it into <code>Aggregating[java.util.ArrayList[String]]</code>.
    *
-   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
    * @tparam E type of elements in the <code>java.util.Collection</code>
    * @tparam JCOL subtype of <code>java.util.Collection</code>
    * @return <code>Aggregating</code> of type <code>JCOL[E]</code>
@@ -442,7 +442,7 @@ object Aggregating {
   /**
    * Implicit to support <code>Aggregating</code> nature of <code>java.util.Map</code>.
    *
-   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of entry in the <code>java.util.Map</code>
+   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of entry in the <code>java.util.Map</code>
    * @tparam K the type of the key in the <code>java.util.Map</code>
    * @tparam V the type of the value in the <code>java.util.Map</code>
    * @tparam JMAP any subtype of <code>java.util.Map</code>
@@ -470,9 +470,9 @@ object Aggregating {
     }
 
   /**
-   * Implicit conversion that converts an <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>java.util.Map.Entry[K, V]</code>
+   * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>java.util.Map.Entry[K, V]</code>
    * into <code>Aggregating</code> of type <code>JMAP[K, V]</code>, where <code>JMAP</code> is a subtype of <code>java.util.Map</code>.
-   * This is required to support the explicit <a href="../../scalautils/Equality.html"><code>Equality</code></a> syntax, for example:
+   * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
    *
    * <pre class="stHighlight">
    * val javaMap = new java.util.HashMap[Int, String]()
@@ -481,10 +481,10 @@ object Aggregating {
    * (javaMap should contain (Entry(1, "ONE"))) (after being lowerCased)
    * </pre>
    *
-   * <code>(after being lowerCased)</code> will returns an <a href="../../scalautils/Equality.html"><code>java.util.Map.Entry[Int, String]</code></a>
+   * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>java.util.Map.Entry[Int, String]</code></a>
    * and this implicit conversion will convert it into <code>Aggregating[java.util.HashMap[Int, String]]</code>.
    *
-   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>java.util.Map.Entry[K, V]</code>
+   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>java.util.Map.Entry[K, V]</code>
    * @tparam K the type of the key in the <code>java.util.Map</code>
    * @tparam V the type of the value in the <code>java.util.Map</code>
    * @tparam JMAP any subtype of <code>java.util.Map</code>
@@ -496,7 +496,7 @@ object Aggregating {
   /**
    * Implicit to support <code>Aggregating</code> nature of <code>Every</code>.
    *
-   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>Every</code>
+   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>Every</code>
    * @tparam E the type of the element in the <code>Every</code>
    * @return <code>Aggregating[Every[E]]</code> that supports <code>Every</code> in relevant <code>contain</code> syntax
    */
@@ -520,18 +520,18 @@ object Aggregating {
     }
 
   /**
-   * Implicit conversion that converts an <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
    * into <code>Aggregating</code> of type <code>Every[E]</code>.
-   * This is required to support the explicit <a href="../../scalautils/Equality.html"><code>Equality</code></a> syntax, for example:
+   * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
    *
    * <pre class="stHighlight">
    * (Every("hi") should contain ("HI")) (after being lowerCased)
    * </pre>
    *
-   * <code>(after being lowerCased)</code> will returns an <a href="../../scalautils/Equality.html"><code>Equality[String]</code></a>
+   * <code>(after being lowerCased)</code> will returns an <a href="../../scalactic/Equality.html"><code>Equality[String]</code></a>
    * and this implicit conversion will convert it into <code>Aggregating[Every[String]]</code>.
    *
-   * @param equality <a href="../../scalautils/Equality.html"><code>Equality</code></a> of type <code>E</code>
+   * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
    * @tparam E type of elements in the <code>Every</code>
    * @return <code>Aggregating</code> of type <code>Every[E]</code>
    */

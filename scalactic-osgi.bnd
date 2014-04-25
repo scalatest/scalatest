@@ -1,0 +1,16 @@
+Main-Class: org.scalatest.tools.Runner
+
+Bundle-SymbolicName: org.scalactic
+Bundle-Version: ${release}
+Bundle-Name: Scalactic
+Bundle-Description: Scalactic is an open-source library for Scala projects
+that contains portions of the ScalaTest project that may make sense to use in
+production.
+Bundle-DocURL: http://www.scalatest.org/scalactic
+Bundle-Vendor: Artima, Inc.
+
+Import-Package: org.scalatest.*, org.scalactic.*, scala.*;version="$<range;[==,=+);$<replace;${scala.version};-;.>>", *;resolution:=optional
+
+Export-Package: org.scalactic.*;version="${release}"
+
+-removeheaders: Include-Resource

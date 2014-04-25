@@ -16,7 +16,7 @@
 package org.scalatest.enablers
 
 import org.scalatest._
-import org.scalautils.Equality
+import org.scalactic.Equality
 import scala.collection.immutable
 
 class CollectingSpec extends Spec with Matchers {

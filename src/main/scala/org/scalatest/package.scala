@@ -145,6 +145,6 @@ package object scalatest {
   @deprecated("Please use org.scalatest.exceptions.TestRegistrationClosedException instead.")
   type TestRegistrationClosedException = exceptions.TestRegistrationClosedException
 
-  @deprecated("Please use org.scalautils.TimesOnInt instead")
-  type TimesOnInt = org.scalautils.TimesOnInt
+  @deprecated("Please use org.scalactic.TimesOnInt instead")
+  type TimesOnInt = org.scalactic.TimesOnInt
 }

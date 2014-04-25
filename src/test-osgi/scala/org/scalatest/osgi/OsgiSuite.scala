@@ -34,7 +34,7 @@ class OsgiSuite extends JUnitSuite with ShouldMatchersForJUnit {
   @Configuration def config = options(
     junitBundles,
     bundle("file:target/dist/lib/scalatest.jar"),
-    bundle("file:target/dist/lib/scalautils.jar"),
+    bundle("file:target/dist/lib/scalactic.jar"),
     scalaBundles
   )
 
@@ -46,12 +46,12 @@ class OsgiSuite extends JUnitSuite with ShouldMatchersForJUnit {
 
   @Test def verifyScalaTestBundlesResolve {
     bundleNamed("org.scalatest") should be ('defined)
-    bundleNamed("org.scalautils") should be ('defined)
+    bundleNamed("org.scalactic") should be ('defined)
   }
 
   @Test def scalaPackageImportsUseVersionRangeForCurrentMinorUpToNextMinor {
     checkScalaPackage(bundleNamed("org.scalatest").get)
-    checkScalaPackage(bundleNamed("org.scalautils").get)
+    checkScalaPackage(bundleNamed("org.scalactic").get)
   }
 
   private def bundleNamed(symbolicName: String): Option[Bundle] =
