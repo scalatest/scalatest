@@ -7,9 +7,9 @@ Bundle-Description: ScalaTest is an open-source test framework for the Java Plat
 Bundle-DocURL: http://www.scalatest.org/
 Bundle-Vendor: Artima, Inc.
 
-Import-Package: org.scalatest.*, org.scalautils.*, scala.*;version="$<range;[==,=+);$<replace;${scala.version};-;.>>", *;resolution:=optional
+Import-Package: org.scalatest.*, org.scalactic.*, scala.*;version="$<range;[==,=+);$<replace;${scala.version};-;.>>", *;resolution:=optional
 
-Export-Package: org.scalatest.*, org.scalautils.*;version="${release}"
+Export-Package: org.scalatest.*, org.scalactic.*;version="${release}"
 
 Include-Resource: images/=target/jar_contents/images/
 

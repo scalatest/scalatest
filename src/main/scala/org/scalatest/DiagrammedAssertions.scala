@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-import org.scalautils.{AnchorValue, DiagrammedExpr, Prettifier}
+import org.scalactic.{AnchorValue, DiagrammedExpr, Prettifier}
 import scala.collection.mutable.ListBuffer
 import collection.immutable.TreeMap
 
@@ -47,8 +47,8 @@ trait DiagrammedAssertions extends Assertions {
     // this is taken from expecty and modified
     private[this] def renderValue(value: Any): String = {
       value match {
-        case aEqualizer: org.scalautils.TripleEqualsSupport#Equalizer[_] => Prettifier.default(aEqualizer.leftSide)
-        case aEqualizer: org.scalautils.TripleEqualsSupport#CheckingEqualizer[_] => Prettifier.default(aEqualizer.leftSide)
+        case aEqualizer: org.scalactic.TripleEqualsSupport#Equalizer[_] => Prettifier.default(aEqualizer.leftSide)
+        case aEqualizer: org.scalactic.TripleEqualsSupport#CheckingEqualizer[_] => Prettifier.default(aEqualizer.leftSide)
         case _ => Prettifier.default(value)
       }
     }

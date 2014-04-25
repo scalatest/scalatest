@@ -17,7 +17,7 @@ package org.scalatest
 
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
-import org.scalautils.{Every, One, Many}
+import org.scalactic.{Every, One, Many}
 import Matchers._
 import LoneElement._
 

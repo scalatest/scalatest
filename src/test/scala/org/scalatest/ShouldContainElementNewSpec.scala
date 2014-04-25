@@ -20,8 +20,8 @@ import org.scalacheck._
 import Arbitrary._
 import Prop._
 import org.scalatest.exceptions.TestFailedException
-import org.scalautils.Equality
-import org.scalautils.Explicitly
+import org.scalactic.Equality
+import org.scalactic.Explicitly
 import SharedHelpers.thisLineNumber
 import Matchers._
 

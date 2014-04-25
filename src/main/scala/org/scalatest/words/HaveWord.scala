@@ -17,7 +17,7 @@ package org.scalatest.words
 
 import org.scalatest.matchers._
 import org.scalatest.enablers._
-import org.scalautils._
+import org.scalactic._
 import org.scalatest.FailureMessages
 import org.scalatest.UnquotedString
 import org.scalatest.Resources

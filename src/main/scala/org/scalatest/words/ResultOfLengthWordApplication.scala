@@ -18,7 +18,7 @@ package org.scalatest.words
 import org.scalatest.enablers.Length
 import org.scalatest.matchers.HavePropertyMatcher
 import org.scalatest.matchers.HavePropertyMatchResult
-import org.scalautils.Prettifier
+import org.scalactic.Prettifier
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of

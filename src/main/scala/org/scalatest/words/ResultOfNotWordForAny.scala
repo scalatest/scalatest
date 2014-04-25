@@ -28,12 +28,12 @@ import org.scalatest.Assertions.areEqualComparingArraysStructurally
 import scala.collection.GenTraversable
 import scala.collection.GenSeq
 import scala.collection.GenMap
-import org.scalautils.Tolerance
-import org.scalautils.Explicitly
-import org.scalautils.TripleEqualsSupport.Spread
-import org.scalautils.TripleEqualsSupport.TripleEqualsInvocation
+import org.scalactic.Tolerance
+import org.scalactic.Explicitly
+import org.scalactic.TripleEqualsSupport.Spread
+import org.scalactic.TripleEqualsSupport.TripleEqualsInvocation
 import scala.annotation.tailrec
-import org.scalautils.Equality
+import org.scalactic.Equality
 import org.scalatest.MatchersHelper.andMatchersAndApply
 import org.scalatest.MatchersHelper.orMatchersAndApply
 import org.scalatest.MatchersHelper.matchSymbolToPredicateMethod
@@ -44,8 +44,8 @@ import org.scalatest.MatchersHelper.fullyMatchRegexWithGroups
 import org.scalatest.MatchersHelper.startWithRegexWithGroups
 import org.scalatest.MatchersHelper.endWithRegexWithGroups
 import org.scalatest.MatchersHelper.includeRegexWithGroups
-import org.scalautils.Prettifier
-import org.scalautils.Every
+import org.scalactic.Prettifier
+import org.scalactic.Every
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of

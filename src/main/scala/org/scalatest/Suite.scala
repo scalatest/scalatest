@@ -70,7 +70,7 @@ import collection.GenTraversable
 import annotation.tailrec
 import collection.immutable
 import OutcomeOf.outcomeOf
-import org.scalautils.Prettifier
+import org.scalactic.Prettifier
 
 /*
  * <h2>Using <code>info</code> and <code>markup</code></h2>

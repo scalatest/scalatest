@@ -21,9 +21,9 @@ import scala.collection.GenSet
 import scala.collection.GenIterable
 import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
-import org.scalautils.TripleEquals
-import org.scalautils.TypeCheckedTripleEquals
-import org.scalautils.ConversionCheckedTripleEquals
+import org.scalactic.TripleEquals
+import org.scalactic.TypeCheckedTripleEquals
+import org.scalactic.ConversionCheckedTripleEquals
 import Matchers._
 
 class ShouldTripleEqualsSpec extends Spec with NonImplicitAssertions {

@@ -23,8 +23,8 @@ import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
-import org.scalautils.Equality
-import org.scalautils.TripleEquals._
+import org.scalactic.Equality
+import org.scalactic.TripleEquals._
 import Matchers._
 
 class ShouldTripleEqualsEqualitySpec extends Spec with NonImplicitAssertions {

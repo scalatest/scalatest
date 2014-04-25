@@ -16,7 +16,7 @@
 package org.scalatest.matchers
 
 import org.scalatest._
-import org.scalautils.Prettifier
+import org.scalactic.Prettifier
 
 /**
  * Trait extended by matcher objects that can match a value of the specified type.

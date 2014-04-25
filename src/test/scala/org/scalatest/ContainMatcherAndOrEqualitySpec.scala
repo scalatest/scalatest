@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-import org.scalautils.Equality
+import org.scalactic.Equality
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
 

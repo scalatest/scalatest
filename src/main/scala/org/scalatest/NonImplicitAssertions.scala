@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-import org.scalautils._
+import org.scalactic._
 
 import TripleEqualsSupport._
 

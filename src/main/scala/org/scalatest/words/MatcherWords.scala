@@ -16,7 +16,7 @@
 package org.scalatest.words
 
 import org.scalatest.matchers._
-import org.scalautils.{Equality, Prettifier}
+import org.scalactic.{Equality, Prettifier}
 import org.scalatest.Resources
 import org.scalatest.Suite
 import org.scalatest.Assertions.areEqualComparingArraysStructurally

@@ -18,11 +18,11 @@ package org.scalatest
 import exceptions.TestCanceledException
 import scala.reflect.Manifest
 import Assertions.areEqualComparingArraysStructurally
-import org.scalautils.TripleEquals
+import org.scalactic.TripleEquals
 import exceptions.StackDepthExceptionHelper.getStackDepthFun
 import exceptions.StackDepthException.toExceptionFunction
 import Assertions.NormalResult
-import org.scalautils.{Prettifier, Bool}
+import org.scalactic.{Prettifier, Bool}
 
 /**
  * Trait that contains ScalaTest's basic assertion methods.
@@ -90,9 +90,9 @@ import org.scalautils.{Prettifier, Bool}
  * <p>
  * Using this form of <code>assert</code>, the failure report will be more specific to your problem domain, thereby
  * helping you debug the problem. This <code>Assertions</code> trait also mixes in the
- * <a href="../scalautils/TripleEquals.html"><code>TripleEquals</code></a>, which gives you a <code>===</code> operator
- * that allows you to customize <a href="../scalautils/Equality.html"><code>Equality</code></a>, perform equality checks with numeric
- * <a href="../scalautils/Tolerance.html"><code>Tolerance</code></a>, and enforce type constraints at compile time with
+ * <a href="../scalactic/TripleEquals.html"><code>TripleEquals</code></a>, which gives you a <code>===</code> operator
+ * that allows you to customize <a href="../scalactic/Equality.html"><code>Equality</code></a>, perform equality checks with numeric
+ * <a href="../scalactic/Tolerance.html"><code>Tolerance</code></a>, and enforce type constraints at compile time with
  * sibling traits <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a> and
  * <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a>.
  * </p>
@@ -466,7 +466,7 @@ trait Assertions extends TripleEquals {
    * </pre>
    *
    * <p>
-   * For more information on how this mechanism works, see the [[org.scalautils.TripleEqualsSupport.Equalizer documentation for
+   * For more information on how this mechanism works, see the [[org.scalactic.TripleEqualsSupport.Equalizer documentation for
    * <code>Equalizer</code>]].
    * </p>
    *
@@ -500,7 +500,7 @@ trait Assertions extends TripleEquals {
    * </pre>
    *
    * <p>
-   * For more information on how this mechanism works, see the [[org.scalautils.TripleEqualsSupport.Equalizer documentation for
+   * For more information on how this mechanism works, see the [[org.scalactic.TripleEqualsSupport.Equalizer documentation for
    * <code>Equalizer</code>]].
    * </p>
    *
@@ -580,7 +580,7 @@ trait Assertions extends TripleEquals {
    * </pre>
    *
    * <p>
-   * For more information on how this mechanism works, see the [[org.scalautils.TripleEqualsSupport.Equalizer documentation for
+   * For more information on how this mechanism works, see the [[org.scalactic.TripleEqualsSupport.Equalizer documentation for
    * <code>Equalizer</code>]].
    * </p>
    *
@@ -614,7 +614,7 @@ trait Assertions extends TripleEquals {
    * </pre>
    *
    * <p>
-   * For more information on how this mechanism works, see the [[org.scalautils.TripleEqualsSupport.Equalizer documentation for
+   * For more information on how this mechanism works, see the [[org.scalactic.TripleEqualsSupport.Equalizer documentation for
    * <code>Equalizer</code>]].
    * </p>
    *
@@ -1312,7 +1312,7 @@ object Assertions extends Assertions {
   private[scalatest] def areEqualComparingArraysStructurally(left: Any, right: Any): Boolean = {
     // Prior to 2.0 this only called .deep if both sides were arrays. Loosened it
     // when nearing 2.0.M6 to call .deep if either left or right side is an array.
-    // TODO: this is the same algo as in scalautils.DefaultEquality. Put that one in
+    // TODO: this is the same algo as in scalactic.DefaultEquality. Put that one in
     // a singleton and use it in both places.
     left match {
       case leftArray: Array[_] =>

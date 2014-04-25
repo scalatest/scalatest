@@ -159,7 +159,7 @@ object ScalatestBuild extends Build {
      projectTitle := "ScalaTest",
      organization := "org.scalatest",
      initialCommands in console := """|import org.scalatest._
-                                      |import org.scalautils._
+                                      |import org.scalactic._
                                       |import Matchers._""".stripMargin,
      ivyXML :=
        <dependency org="org.eclipse.jetty.orbit" name="javax.servlet" rev="3.0.0.v201112011016">
@@ -185,7 +185,7 @@ object ScalatestBuild extends Build {
          (baseDirectory, sourceManaged in Compile, scalaVersion) map genFiles("gencompcls", "GenCompatibleClasses.scala")(GenCompatibleClasses.genMain),
      testOptions in Test := Seq(Tests.Argument("-l", "org.scalatest.tags.Slow",
                                                "-m", "org.scalatest",
-                                               "-m", "org.scalautils",
+                                               "-m", "org.scalactic",
                                                "-m", "org.scalatest.fixture",
                                                "-m", "org.scalatest.concurrent",
                                                "-m", "org.scalatest.testng",
@@ -202,6 +202,7 @@ object ScalatestBuild extends Build {
                                                "-m", "org.scalatest.time",
                                                "-m", "org.scalatest.words",
                                                "-m", "org.scalatest.enablers",
+                                               "-m", "org.scalautils",
                                                "-oDI",
                                                "-h", "target/html",
                                                "-u", "target/junit",
@@ -228,7 +229,7 @@ object ScalatestBuild extends Build {
         "org.scalatest.tools",
         "org.scalatest.verb",
         "org.scalatest.words",
-        "org.scalautils"
+        "org.scalactic"
       ),
       OsgiKeys.additionalHeaders:= Map(
         "Bundle-Name" -> "ScalaTest",
@@ -239,25 +240,25 @@ object ScalatestBuild extends Build {
       )
    )
 
-  lazy val scalautils = Project("scalautils", file("genscalautils"))
+  lazy val scalactic = Project("scalactic", file("genscalactic"))
     .settings(sharedSettings: _*)
     .settings(
-      projectTitle := "ScalaUtils",
-      organization := "org.scalautils",
-      initialCommands in console := "import org.scalautils._",
+      projectTitle := "Scalactic",
+      organization := "org.scalactic",
+      initialCommands in console := "import org.scalactic._",
       sourceGenerators in Compile <+=
-        (baseDirectory, sourceManaged in Compile, scalaVersion) map genFiles("", "GenScalaUtils.scala")(GenScalaUtils.genMain),
+        (baseDirectory, sourceManaged in Compile, scalaVersion) map genFiles("", "GenScalactic.scala")(GenScalactic.genMain),
       sourceGenerators in Test <+=
-        (baseDirectory, sourceManaged in Test, scalaVersion) map genFiles("", "GenScalaUtils.scala")(GenScalaUtils.genTest),
-      scalautilsDocTaskSetting
+        (baseDirectory, sourceManaged in Test, scalaVersion) map genFiles("", "GenScalactic.scala")(GenScalactic.genTest),
+      scalacticDocTaskSetting
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
-        "org.scalautils"
+        "org.scalactic"
       ),
       OsgiKeys.additionalHeaders:= Map(
-        "Bundle-Name" -> "ScalaUtils",
-        "Bundle-Description" -> "ScalaUtils is an open-source library for Scala projects.",
-        "Bundle-DocURL" -> "http://www.scalautils.org/",
+        "Bundle-Name" -> "Scalactic",
+        "Bundle-Description" -> "Scalactic is an open-source library for Scala projects.",
+        "Bundle-DocURL" -> "http://www.scalactic.org/",
         "Bundle-Vendor" -> "Artima, Inc."
       )
     ).dependsOn(scalatest)
@@ -607,7 +608,7 @@ object ScalatestBuild extends Build {
                               (sourceDirectory in Compile).value,
                               name.value)
 
-  val scalautilsDocTaskSetting =
+  val scalacticDocTaskSetting =
     doc in Compile := docTask((doc in Compile).value,
                               (sourceManaged in Compile).value,
                               name.value)

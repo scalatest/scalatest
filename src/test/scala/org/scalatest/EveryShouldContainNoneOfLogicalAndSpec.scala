@@ -15,8 +15,8 @@
 */
 package org.scalatest
 
-import org.scalautils.{Equality, Every, One, Many}
-import org.scalautils.StringNormalizations._
+import org.scalactic.{Equality, Every, One, Many}
+import org.scalactic.StringNormalizations._
 import SharedHelpers._
 import FailureMessages._
 import scala.collection.JavaConverters._

@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-import org.scalautils._
+import org.scalactic._
 import SharedHelpers.thisLineNumber
 import ConversionCheckedTripleEquals._
 

@@ -15,8 +15,8 @@
  */
 package org.scalatest
 
-import org.scalautils.{Equality, NormalizingEquality, Every}
-import org.scalautils.StringNormalizations._
+import org.scalactic.{Equality, NormalizingEquality, Every}
+import org.scalactic.StringNormalizations._
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
 import Matchers._

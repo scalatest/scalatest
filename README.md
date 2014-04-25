@@ -72,7 +72,7 @@ To publish to Sonatype, you first need to make sure you have the following:
 
 *   A GPG client is installed on your command line path. For more information, please refer to [GNU Privacy Guard Website](http://www.gnupg.org/).
 *   You have created your GPG keys and distributed your public key to hkp://pool.sks-keyservers.net/. For more information, please refer to [How To Generate PGP Signatures With Maven](https://docs.sonatype.org/display/Repository/How+To+Generate+PGP+Signatures+With+Maven).
-*   You have been granted the right to publish using org.scalatest and org.scalautils domain.
+*   You have been granted the right to publish using org.scalatest and org.scalactic domain.
 
 By default, ScalaTest build will read your Sonatype credentials from ~/.ivy2/.credentials, which is a properties file that looks like this:
 
@@ -95,6 +95,6 @@ To publish ScalaTest, use the following command:
 
   `$ sbt publishSigned`
 
-To publish ScalaUtils, use the following command:
+To publish Scalactic, use the following command:
 
-  `$ sbt scalautils/publishSigned`
+  `$ sbt scalalactic/publishSigned`

@@ -17,7 +17,7 @@ package org.scalatest
 
 import java.util.ResourceBundle
 import java.text.MessageFormat
-import org.scalautils.Prettifier
+import org.scalactic.Prettifier
 
 /**
  * Grab a resource intended for use in a failure message. For each argument passed,

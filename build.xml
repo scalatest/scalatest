@@ -439,7 +439,7 @@
         	   <filter token="SCALAVERSION" value="${for.scala}" />
         	</filterset>
         </copy>
-        <copy file="${resources}/org/scalautils/ScalaUtilsBundle.properties" todir="${jar.contents}/org/scalautils" />
+        <copy file="src/main/resources/org/scalactic/ScalacticBundle.properties" todir="${jar.contents}/org/scalactic" />
         <copy todir="${jar.contents}/images">
             <fileset dir="${images}" />
         </copy>
@@ -577,7 +577,7 @@
       <mkdir  dir="${build}/docsrc" />
 
       <copy todir="${build}/docsrc">
-        <fileset dir="src/main/scala" includes="org/scalautils/**"/>
+        <fileset dir="src/main/scala" includes="org/scalactic/**"/>
       </copy>
 
       <replaceregexp match="@Finders(.*)" replace="">
@@ -592,7 +592,7 @@
                 docsourceurl="https://github.com/scalatest/scalatest/tree/${github.tag}/src/main/scala€{FILE_PATH}.scala"
                 destdir="${build}/utilsdoc"
                 classpathref="lib.path"
-                doctitle="ScalaUtils ${release}">
+                doctitle="Scalactic ${release}">
         <include name="**/*.scala" />
       </scaladoc>
 
@@ -615,10 +615,10 @@
              eclipse="false" failok="false" exceptions="true" files="osgi.bnd"
              output="${dist}/lib/scalatest.jar" /> 
 
-        <!-- Create scalautils jar, including OSGi metadata -->
+        <!-- Create scalactic jar, including OSGi metadata -->
         <bnd classpath="${jar.contents}" sourcepath="${jar.contents}"
              eclipse="false" failok="false" exceptions="true"
-             files="scalautils-osgi.bnd" output="${dist}/lib/scalautils.jar" /> 
+             files="scalactic-osgi.bnd" output="${dist}/lib/scalactic.jar" />
 
         <jar jarfile="${dist}/lib/scalatest-wbt.jar" basedir="${build.tests}" includes="org/scalatest/*.class" />
 
@@ -659,7 +659,7 @@
                 <filter token="SCALAVERSION" value="${for.scala}" />
             </filterset>
         </copy>
-        <copy file="${resources}/org/scalautils/ScalaUtilsBundle.properties" todir="${jar.contents}/org/scalautils" />
+        <copy file="src/main/resources/org/scalactic/ScalacticBundle.properties" todir="${jar.contents}/org/scalactic" />
         <copy todir="${jar.contents}/images">
             <fileset dir="${images}" />
         </copy>
@@ -698,7 +698,7 @@
             <reporter type="stdout" config="DI"/>
             <reporter type="html" directory="target/html" config="D" />
             <membersonly package="org.scalatest" />
-            <membersonly package="org.scalautils" />
+            <membersonly package="org.scalactic" />
             <membersonly package="org.scalatest.fixture" />
             <membersonly package="org.scalatest.concurrent" />
             <membersonly package="org.scalatest.testng" />
@@ -715,6 +715,7 @@
             <membersonly package="org.scalatest.time" />
             <membersonly package="org.scalatest.words" />
         	<membersonly package="org.scalatest.enablers" />
+            <membersonly package="org.scalautils" />
             <config name="dbname" value="testdb" />
         </scalatest>
     </target>
@@ -1014,7 +1015,7 @@
     <!-- Note: For 2.11.0-RC3 I deleted the osgi.test dependency, because it fails. Need to figure that out. -->
     <target name="jar" depends="dist,osgi.test"></target>
 
-    <!-- creates jars of scalatest and scalautils source files -->
+    <!-- creates jars of scalatest and scalactic source files -->
     <target name="jarsrc">
       <jar jarfile="${build}/scalatest-sources.jar">
         <fileset dir="src/main/scala"/>
@@ -1023,9 +1024,9 @@
         <fileset dir="${build.generated.src}"/>
       </jar>
 
-      <jar jarfile="${build}/scalautils-sources.jar">
-        <fileset dir="src/main/scala"     includes="org/scalautils/**"/>
-        <fileset dir="src/main/resources" includes="org/scalautils/**"/>
+      <jar jarfile="${build}/scalactic-sources.jar">
+        <fileset dir="src/main/scala"     includes="org/scalactic/**"/>
+        <fileset dir="src/main/resources" includes="org/scalactic/**"/>
       </jar>
     </target>
 
@@ -1040,7 +1041,7 @@
 
     <!--
       - Creates jars of scaladoc and javadoc files for scalatest and
-      - scalautils.
+      - scalactic.
       -->
     <target name="jardoc" depends="doc,docutils">
       <mkdir dir="${build}/dummydoc" />
@@ -1054,15 +1055,15 @@
 
       <jar jarfile="${build}/scalatest-scaladoc.jar" basedir="${doc}"/>
       <jar jarfile="${build}/scalatest-javadoc.jar"  basedir="${jdoc}"/>
-      <jar jarfile="${build}/scalautils-scaladoc.jar"
+      <jar jarfile="${build}/scalactic-scaladoc.jar"
            basedir="${build}/utilsdoc"/>
-      <jar jarfile="${build}/scalautils-javadoc.jar"
+      <jar jarfile="${build}/scalactic-javadoc.jar"
            basedir="${build}/dummydoc"/>
     </target>
 
     <!--
       - Deploys jars to remote repository.  Deploys both scalatest and
-      - scalautils jars.
+      - scalactic jars.
       -
       - Requires username and password for repositories to be defined in your
       - ~/.m2/settings.xml file, e.g.:
@@ -1146,7 +1147,7 @@
     </target>
 
     <!--
-      - Deploys scalautils jars.
+      - Deploys scalactic jars.
       -
       - The deploy-utils target depends on jar, jardoc, and jarsrc
       - being run previously, either on the command line or by the
@@ -1158,7 +1159,7 @@
       - even if they had already been run in the calling project.)
       -->
     <target name="deploy-utils">
-      <copy file="scalautils-pom_template.xml" tofile="${build}/pom.xml"
+      <copy file="scalactic-pom_template.xml" tofile="${build}/pom.xml"
             overwrite="true">
         <filterset>
           <filter token="RELEASE" value="${release}" />
@@ -1173,13 +1174,13 @@
         <param name="deploy.pomfile"
                value="${build}/pom.xml"/>
         <param name="deploy.main"
-               value="${dist}/lib/scalautils.jar"/>
+               value="${dist}/lib/scalactic.jar"/>
         <param name="deploy.sources" 
-               value="${build}/scalautils-sources.jar"/>
+               value="${build}/scalactic-sources.jar"/>
         <param name="deploy.scaladoc" 
-               value="${build}/scalautils-scaladoc.jar"/>
+               value="${build}/scalactic-scaladoc.jar"/>
         <param name="deploy.javadoc" 
-               value="${build}/scalautils-javadoc.jar"/>
+               value="${build}/scalactic-javadoc.jar"/>
         <param name="deploy.release"
                value="${release}"/>
       </antcall>
@@ -1187,7 +1188,7 @@
     </target>
 
     <!--
-      - Deploys scalautils jars identified by properties:
+      - Deploys scalactic jars identified by properties:
       -  deploy.pomfile
       -  deploy.main
       -  deploy.scaladoc
@@ -1329,24 +1330,24 @@
     <target name="redeploy-utils">
       <artifact:dependencies filesetId="old.scala.fileset"
                              versionsId="dependency.versions">
-        <dependency groupId="org.scalautils"
-                    artifactId="scalautils_${old.scala.version}"
+        <dependency groupId="org.scalactic"
+                    artifactId="scalactic_${old.scala.version}"
                     version="${scalatest.version}" />
-        <dependency groupId="org.scalautils"
-                    artifactId="scalautils_${old.scala.version}"
+        <dependency groupId="org.scalactic"
+                    artifactId="scalactic_${old.scala.version}"
                     version="${scalatest.version}"
                     classifier="sources"/>
-        <dependency groupId="org.scalautils"
-                    artifactId="scalautils_${old.scala.version}"
+        <dependency groupId="org.scalactic"
+                    artifactId="scalactic_${old.scala.version}"
                     version="${scalatest.version}"
                     classifier="scaladoc"/>
-        <dependency groupId="org.scalautils"
-                    artifactId="scalautils_${old.scala.version}"
+        <dependency groupId="org.scalactic"
+                    artifactId="scalactic_${old.scala.version}"
                     version="${scalatest.version}"
                     classifier="javadoc"/>
       </artifact:dependencies>
 
-      <copy file="scalautils-pom_template.xml" tofile="${build}/pom.xml"
+      <copy file="scalactic-pom_template.xml" tofile="${build}/pom.xml"
             overwrite="true">
         <filterset>
           <filter token="RELEASE" value="${scalatest.version}" />
@@ -1365,21 +1366,21 @@
       </copy>
 
       <move todir="target/redeploy" verbose="true">
-        <fileset dir="target/redeploy" includes="scalautils_*.jar"/>
-        <globmapper from="scalautils_${old.scala.version}*" to="scalautils*"/>
+        <fileset dir="target/redeploy" includes="scalactic_*.jar"/>
+        <globmapper from="scalactic_${old.scala.version}*" to="scalactic*"/>
       </move>
 
       <antcall target="deploy-utils-jars">
         <param name="deploy.pomfile"
                value="${build}/pom.xml"/>
         <param name="deploy.main"
-               value="target/redeploy/scalautils.jar"/>
+               value="target/redeploy/scalactic.jar"/>
         <param name="deploy.sources" 
-               value="target/redeploy/scalautils-sources.jar"/>
+               value="target/redeploy/scalactic-sources.jar"/>
         <param name="deploy.scaladoc" 
-               value="target/redeploy/scalautils-scaladoc.jar"/>
+               value="target/redeploy/scalactic-scaladoc.jar"/>
         <param name="deploy.javadoc" 
-               value="target/redeploy/scalautils-javadoc.jar"/>
+               value="target/redeploy/scalactic-javadoc.jar"/>
         <param name="deploy.release"
                value="${scalatest.version}"/>
       </antcall>

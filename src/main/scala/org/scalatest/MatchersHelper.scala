@@ -27,9 +27,9 @@ import org.scalatest.exceptions.TestFailedException
 import scala.collection.GenTraversable
 import scala.collection.GenSeq
 import scala.collection.GenMap
-import org.scalautils.Tolerance
+import org.scalactic.Tolerance
 import scala.annotation.tailrec
-import org.scalautils.Equality
+import org.scalactic.Equality
 import org.scalatest.words.ShouldVerb
 import org.scalatest.matchers.HavePropertyMatcher
 import org.scalatest.matchers.HavePropertyMatchResult
