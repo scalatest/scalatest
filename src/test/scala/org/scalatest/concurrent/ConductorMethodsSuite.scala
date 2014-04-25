@@ -20,8 +20,17 @@ import matchers.ShouldMatchers
 import _root_.java.util.concurrent.{Callable, CountDownLatch}
 import Thread.State._
 import org.scalatest.exceptions.NotAllowedException
+import org.scalatest.Retries._
+import org.scalatest.tagobjects.Retryable
 
 class ConductorMethodsSuite extends FunSuite with ConductorMethods with ShouldMatchers {
+
+  override def withFixture(test: NoArgTest) = {
+    if (isRetryable(test))
+      withRetry { super.withFixture(test) }
+    else
+      super.withFixture(test)
+  }
 
   // On Mac, got "BACDEFGHI" was not equal to "ABCDEFGHI"
   // And got: "ABDCEFGHI" was not equal to "ABCDEFGHI"
@@ -168,7 +177,7 @@ class ConductorMethodsSuite extends FunSuite with ConductorMethods with ShouldMa
     }
   }
 
-  test("wait for tick advances when threads are blocked") {
+  test("wait for tick advances when threads are blocked", Retryable) {
     var c = new CountDownLatch(3)
 
     thread {
