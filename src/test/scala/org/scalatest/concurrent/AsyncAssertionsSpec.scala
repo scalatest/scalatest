@@ -205,7 +205,7 @@ class AsyncAssertionsSpec extends fixture.FunSpec with ShouldMatchers with Condu
       con.conduct()
     }
 
-    it("should report just the first exception thrown at it") { con => import con._
+    it("should report just the first exception thrown at it", Retryable) { con => import con._
 
       @volatile var w: Waiter = null
       thread {
@@ -255,7 +255,7 @@ class AsyncAssertionsSpec extends fixture.FunSpec with ShouldMatchers with Condu
       con.conduct()
     }
     
-    it("should should handle many dismissals without races") { con => import con._
+    it("should should handle many dismissals without races", Retryable) { con => import con._
 
       @volatile var w: Waiter = null
       
