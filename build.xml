@@ -715,6 +715,7 @@
             <membersonly package="org.scalatest.time" />
             <membersonly package="org.scalatest.words" />
         	<membersonly package="org.scalatest.enablers" />
+            <membersonly package="org.scalautils" />
             <config name="dbname" value="testdb" />
         </scalatest>
     </target>
