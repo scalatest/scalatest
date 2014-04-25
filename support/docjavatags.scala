@@ -84,12 +84,17 @@ def main() {
                       "Finders.java",
                       "TagAnnotation.java",
                       "WrapWith.java",
+                      "tags/ChromeBrowser.java",
+                      "tags/FirefoxBrowser.java",
+                      "tags/HtmlUnitBrowser.java",
+                      "tags/InternetExplorerBrowser.java",
+                      "tags/SafariBrowser.java",
                       "tags/Slow.java",
                       "tags/CPU.java",
                       "tags/Disk.java",
                       "tags/Network.java",
                       "tags/Retryable.java"
-)
+  )
 
   for (filename <- filenames) {
     val contents  = Source.fromFile(srcDir +"/"+ filename).mkString
