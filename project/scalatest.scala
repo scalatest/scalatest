@@ -8,10 +8,10 @@ import com.typesafe.sbt.SbtPgp._
 
 object ScalatestBuild extends Build {
 
-  val buildScalaVersion = "2.10.4"
+  val buildScalaVersion = "2.11.0"
 
   val releaseVersion = "2.2.0-SNAPSHOT"
-  val githubTag = "release-2.1.0-RC2-for-scala-2.10" // for scaladoc source urls
+  val githubTag = "release-2.1.0-RC2-for-scala-2.11" // for scaladoc source urls
 
   val docSourceUrl =
     "https://github.com/scalatest/scalatest/tree/"+ githubTag +
@@ -62,11 +62,11 @@ object ScalatestBuild extends Build {
   def sharedSettings: Seq[Setting[_]] = Seq(
     javaHome := getJavaHome,
     scalaVersion := buildScalaVersion,
-    crossScalaVersions := Seq(buildScalaVersion, "2.11.0-RC3"),
+    crossScalaVersions := Seq(buildScalaVersion, "2.10.4"),
     version := releaseVersion,
     scalacOptions ++= Seq("-no-specialization", "-feature", "-target:jvm-1.5"),
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
-    libraryDependencies ++= scalaLibraries,
+    libraryDependencies ++= scalaLibraries(scalaVersion.value),
     publishTo <<= version { v: String =>
       val nexus = "https://oss.sonatype.org/"
       if (v.trim.endsWith("SNAPSHOT")) Some("publish-snapshots" at nexus + "content/repositories/snapshots")
@@ -129,10 +129,10 @@ object ScalatestBuild extends Build {
         Seq("org.scalacheck" %% "scalacheck" % "1.11.0" % "optional")
     }
 
-  def scalaLibraries =
+  def scalaLibraries(theScalaVersion: String) =
     Seq(
-      "org.scala-lang" % "scala-compiler" % buildScalaVersion % "provided",
-      "org.scala-lang" % "scala-reflect" % buildScalaVersion % "provided" // this is needed to compile macro
+      "org.scala-lang" % "scala-compiler" % theScalaVersion % "provided",
+      "org.scala-lang" % "scala-reflect" % theScalaVersion % "provided" // this is needed to compile macro
     )
 
   def scalatestLibraryDependencies =
